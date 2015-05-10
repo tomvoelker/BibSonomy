@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Database-Common - Helper classes for database interaction
+ * BibSonomy-Web-Common - Common things for web
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -24,52 +24,33 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.database.common.typehandler;
+package org.bibsonomy.web.spring.converter;
+
+import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.sql.SQLException;
-import java.sql.Types;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.ibatis.sqlmap.client.extensions.ParameterSetter;
+import org.springframework.core.convert.ConversionFailedException;
+import org.springframework.core.convert.TypeDescriptor;
+import org.springframework.core.convert.converter.Converter;
 
 /**
- * An iBATIS type handler callback for {@link URI}s that are mapped to Strings
- * in the database. If a URI cannot be constructed based on the String, then the
- * URI will be set to <code>null</code>.<br/>
- * 
- * Almost copied from <a
- * href="http://opensource.atlassian.com/confluence/oss/display/IBATIS/Type+Handler+Callbacks">Atlassian -
- * Type Handler Callbacks</a>
- * 
- * @author Robert Jäschke
+ * @author dzo
  */
-public class UriTypeHandlerCallback extends AbstractTypeHandlerCallback {
-	private static final Log log = LogFactory.getLog(UriTypeHandlerCallback.class);
+public class StringToURIConverter implements Converter<String, URI> {
 
 	@Override
-	public void setParameter(final ParameterSetter setter, final Object parameter) throws SQLException {
-		if (parameter == null) {
-			setter.setNull(Types.VARCHAR);
-		} else {
-			final URI uri = (URI) parameter;
-			setter.setString(uri.toString());
-		}
-	}
-
-	@Override
-	public Object valueOf(final String str) {
-		if (str == null) {
+	public URI convert(final String source) {
+		if (!present(source)) {
 			return null;
 		}
+		
 		try {
-			return new URI(str);
+			return new URI(source);
 		} catch (final URISyntaxException ex) {
-			log.warn("'" + str + "' is not a valid URI");
-			return null;
+			throw new ConversionFailedException(TypeDescriptor.valueOf(String.class), TypeDescriptor.valueOf(URI.class), source, ex);
 		}
 	}
+
 }

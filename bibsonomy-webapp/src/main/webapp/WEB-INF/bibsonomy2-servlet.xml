@@ -18,11 +18,12 @@
 				<bean class="org.bibsonomy.web.spring.converter.StringToClassConverter" />
 				
 				<!-- 
-					converts strings to urls (empty strings are converted to null)
+					converts strings to urls/uris (empty strings are converted to null)
 					if you do not add this converter the ObjectToObjectConverter tries
-					to call the url constructor and fails instead of returning null
+					to call the url/uri constructor and fails instead of returning null
 				 -->
 				<bean class="org.bibsonomy.web.spring.converter.StringToURLConverter" />
+				<bean class="org.bibsonomy.web.spring.converter.StringToURIConverter" />
 				
 				<!-- convert a string to a list of persons and vice versa -->
 				<bean class="org.bibsonomy.web.spring.converter.StringToPersonListConverter" />
