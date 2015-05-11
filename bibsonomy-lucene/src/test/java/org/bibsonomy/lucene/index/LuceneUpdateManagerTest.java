@@ -141,8 +141,8 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	public void privatePosts() throws PersonListParserException {
 		// set up data structures
 		final Set<String> allowedGroups = new TreeSet<String>();
-		allowedGroups.add(GroupID.PUBLIC.name());
-		allowedGroups.add(GroupID.PRIVATE.name());
+		allowedGroups.add(GroupID.PUBLIC.name().toLowerCase());
+		allowedGroups.add(GroupID.PRIVATE.name().toLowerCase());
 
 		//--------------------------------------------------------------------
 		// TEST 1: insert private post into test database and search for it
