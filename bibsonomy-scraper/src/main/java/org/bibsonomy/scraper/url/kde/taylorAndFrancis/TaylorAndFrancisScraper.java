@@ -68,7 +68,7 @@ public class TaylorAndFrancisScraper extends AbstractUrlScraper implements Refer
 		method.addParameter("downloadFileName", DOWNLOADFILENAME);
 		method.addParameter("format", "bibtex");
 		method.addParameter("direct", "true");
-		method.addParameter("include", "includeAbs");
+		method.addParameter("include", "abs");
 		return method;
 	}
 	
