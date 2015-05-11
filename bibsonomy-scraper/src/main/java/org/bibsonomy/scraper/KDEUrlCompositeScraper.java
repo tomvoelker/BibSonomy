@@ -32,7 +32,6 @@ import org.bibsonomy.scraper.url.kde.aanda.AandAScraper;
 import org.bibsonomy.scraper.url.kde.acl.AclScraper;
 import org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper;
 import org.bibsonomy.scraper.url.kde.acs.ACSScraper;
-import org.bibsonomy.scraper.url.kde.agu.AGUScraper;
 import org.bibsonomy.scraper.url.kde.aip.AipScitationScraper;
 import org.bibsonomy.scraper.url.kde.akademiai.AkademiaiScraper;
 import org.bibsonomy.scraper.url.kde.amazon.AmazonScraper;
@@ -87,7 +86,6 @@ import org.bibsonomy.scraper.url.kde.jstor.JStorScraper;
 import org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper;
 import org.bibsonomy.scraper.url.kde.karlsruhe.BibliographyScraper;
 import org.bibsonomy.scraper.url.kde.karlsruhe.UBKAScraper;
-import org.bibsonomy.scraper.url.kde.langev.LangevScraper;
 import org.bibsonomy.scraper.url.kde.librarything.LibrarythingScraper;
 import org.bibsonomy.scraper.url.kde.liebert.LiebertScraper;
 import org.bibsonomy.scraper.url.kde.mathscinet.MathSciNetScraper;
@@ -225,7 +223,6 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		 *TODO: Enable Scraper if Scientificcommons works properly again
 		 */
 		//addScraper(new ScientificcommonsScraper());
-		addScraper(new AGUScraper());
 		addScraper(new CellScraper());
 		addScraper(new WebOfKnowledgeScraper());
 		addScraper(new CasesJournalScraper());
