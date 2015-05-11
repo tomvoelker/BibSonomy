@@ -34,9 +34,9 @@
 
 		<fieldset id="fsOuter">
 
-			<bsform:fieldset legendKey="cv.heading">
+			<bsform:fieldset legendKey="settings.group.cv.heading">
 				<jsp:attribute name="content">
-					<fmt:message key="cv.admin.topic" >
+					<fmt:message key="settings.group.cv.admin.topic" >
 						<fmt:param>/cv/group/${fn:escapeXml(command.group.name)}</fmt:param>
 					</fmt:message>
 				</jsp:attribute>

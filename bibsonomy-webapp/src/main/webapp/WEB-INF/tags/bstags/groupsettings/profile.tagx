@@ -169,7 +169,7 @@
 					</bsform:fieldset>
 				</c:if>
 				
-				<bsform:fieldset legendKey="settings.picture.header">
+				<bsform:fieldset legendKey="settings.group.picture.header">
 					<jsp:attribute name="content">
 					
 						<!-- current picture -->
