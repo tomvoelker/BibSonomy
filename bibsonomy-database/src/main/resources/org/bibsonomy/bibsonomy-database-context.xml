@@ -296,8 +296,6 @@
 		<property name="databaseManager" ref="goldStandardBookmarkDatabaseMananger" />
 	</bean>
 	
-	
-	
 	<bean id="mainDataSource" class="${database.datasource.class}" parent="basicDataSource">
 		<property name="driverClassName" value="${database.main.driverClassName}" />
 		<property name="url" value="${database.main.url}" />

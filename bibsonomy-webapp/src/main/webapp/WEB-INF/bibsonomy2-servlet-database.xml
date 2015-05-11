@@ -22,4 +22,32 @@
 		<property name="subjectKey" value="group.reporting.mail.subject" />
 		<property name="fromAddress" value="${project.email}" />
 	</bean>
+	
+	<bean id="slaveDataSource" class="${database.datasource.class}" parent="basicDataSource">
+		<property name="driverClassName" value="${database.slave.driverClassName}" />
+		<property name="url" value="${database.slave.url}" />
+		<property name="username" value="${database.slave.username}" />
+		<property name="password" value="${database.slave.password}" />
+		<property name="maxIdle" value="${database.main.maxIdle}" />
+		<property name="maxActive" value="${database.main.maxActive}" />
+		<property name="maxWait" value="${database.main.maxWait}" />
+		<property name="removeAbandoned" value="${database.main.removeAbandoned}" />
+		<property name="removeAbandonedTimeout" value="${database.main.removeAbandonedTimeout}" />
+	</bean>
+	
+	<bean id="slaveSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation" value="classpath:SqlMapConfig.xml" />
+		<property name="dataSource" ref="slaveDataSource" />
+		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
+	</bean>
+	
+	<bean id="slaveDbSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
+		<property name="client" ref="slaveSqlMapClient" />
+	</bean>
+	
+	<bean id="slaveLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.LogicFactoryBean" scope="request">
+		<property name="user" ref="loginUser"/>
+		<property name="dbSessionFactory" ref="slaveDbSessionFactory"/>
+		<property name="bibtexReader" ref="bibtexReader"/>
+	</bean>
 </beans>

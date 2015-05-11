@@ -849,7 +849,7 @@
 	</bean>
 	
 	<bean id="statisticsController" class="org.bibsonomy.webapp.controller.StatisticsController" scope="request">
-		<property name="logic" ref="logic" />
+		<property name="logic" ref="slaveLogic" />
 	</bean>
 
 	<bean id="conceptPageController" class="org.bibsonomy.webapp.controller.ConceptPageController" scope="request">
