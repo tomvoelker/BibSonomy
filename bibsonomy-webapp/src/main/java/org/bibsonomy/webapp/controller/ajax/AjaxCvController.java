@@ -242,7 +242,7 @@ public class AjaxCvController extends AjaxController implements MinimalisticCont
 		if (present(requestedGroup)) {			
 			for (Group g : groups) {
 				if (g.getName().equals(requestedGroup)) {
-					return g;
+					return this.logic.getGroupDetails(g.getName());
 				}
 			}
 		}
