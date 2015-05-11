@@ -890,9 +890,9 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.cell.CellScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_146">
-		<TestDescription>test for AGU scraper</TestDescription>
+		<TestDescription>URL scraping test with a citation page from intersience wiley</TestDescription>
 		<URL>http://onlinelibrary.wiley.com/book/10.1029/AR071</URL>
-		<BibFile>AGUScraperUnitURLTest1.bib</BibFile>
+		<BibFile>WileyIntersienceScraperUnitURLTest5.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_147">
