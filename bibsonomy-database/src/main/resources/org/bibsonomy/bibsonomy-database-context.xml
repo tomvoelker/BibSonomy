@@ -9,6 +9,7 @@
 	
 	
 	<import resource="classpath:org/bibsonomy/bibsonomy-model-context.xml"/>
+	<import resource="classpath:org/bibsonomy/bibsonomy-database-common-context.xml" />
 	<!-- import system tag context -->
 	<import resource="classpath:org/bibsonomy/bibsonomy-systemtags-context.xml"/>
 
@@ -295,14 +296,27 @@
 		<property name="databaseManager" ref="goldStandardBookmarkDatabaseMananger" />
 	</bean>
 	
+	
+	
+	<bean id="mainDataSource" class="${database.datasource.class}" parent="basicDataSource">
+		<property name="driverClassName" value="${database.main.driverClassName}" />
+		<property name="url" value="${database.main.url}" />
+		<property name="username" value="${database.main.username}" />
+		<property name="password" value="${database.main.password}" />
+		<property name="maxIdle" value="${database.main.maxIdle}" />
+		<property name="maxActive" value="${database.main.maxActive}" />
+		<property name="maxWait" value="${database.main.maxWait}" />
+		<property name="removeAbandoned" value="${database.main.removeAbandoned}" />
+		<property name="removeAbandonedTimeout" value="${database.main.removeAbandonedTimeout}" />
+	</bean>
+	
 	<bean id="mainSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
-        <property name="configLocation" value="classpath:SqlMapConfig.xml" />
-        <!-- defined in webapp module using jndi -->
-        <property name="dataSource" ref="mainDataSource" />
-        <property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
-    </bean>
-    
-    <!-- holdes schema informations from the database -->
+		<property name="configLocation" value="classpath:SqlMapConfig.xml" />
+		<property name="dataSource" ref="mainDataSource" />
+		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
+	</bean>
+	
+	<!-- holdes schema informations from the database -->
 	<bean id="dbSchemaInformation" class="org.bibsonomy.database.util.DatabaseSchemaInformation" init-method="init">
 		<property name="client" ref="mainSqlMapClient" />
 	</bean>
@@ -310,5 +324,5 @@
 	<bean id="dbSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
 		<property name="client" ref="mainSqlMapClient" />
 	</bean>
-    
+	
 </beans>

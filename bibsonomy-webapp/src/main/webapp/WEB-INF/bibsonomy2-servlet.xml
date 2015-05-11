@@ -147,16 +147,6 @@
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 		<property name="bibtexReader" ref="bibtexReader"/>
 	</bean>
-	
-	<bean id="basicDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" abstract="true">
-		<property name="validationQuery" value="SELECT 42" />
-		<property name="minEvictableIdleTimeMillis" value="1800000" />
-		<property name="timeBetweenEvictionRunsMillis" value="1800000" />
-		<property name="numTestsPerEvictionRun" value="10" />
-		<property name="testWhileIdle" value="true" />
-		<property name="testOnBorrow" value="true" />
-		<property name="testOnReturn" value="true" />
-	</bean>
 
 	<!-- provides access to the database for all controllers -->
 	<bean id="logic" class="org.bibsonomy.webapp.util.spring.factorybeans.LogicFactoryBean" scope="request">
