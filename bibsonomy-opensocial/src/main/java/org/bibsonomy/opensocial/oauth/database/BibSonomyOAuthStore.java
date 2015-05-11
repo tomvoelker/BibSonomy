@@ -45,19 +45,7 @@ import org.apache.shindig.gadgets.oauth.OAuthStore;
  * @author fei
  */
 public class BibSonomyOAuthStore implements OAuthStore {
-	/** singleton pattern */
-	private static BibSonomyOAuthStore instance;
-	
-	public static BibSonomyOAuthStore getInstance() {
-		if (instance==null) {
-			instance = new BibSonomyOAuthStore();
-		};
-		
-		return instance;
-	}
-	
-	// FIXME: configure via spring
-	private final OAuthLogic authLogic = IbatisOAuthLogic.getInstance();
+	private OAuthLogic authLogic;
 	private String defaultCallbackUrl;
 	private BasicOAuthStoreConsumerKeyAndSecret defaultKey;
 	
@@ -101,5 +89,10 @@ public class BibSonomyOAuthStore implements OAuthStore {
 		return defaultKey;
 	}
 
-	
+	/**
+	 * @param authLogic the authLogic to set
+	 */
+	public void setAuthLogic(OAuthLogic authLogic) {
+		this.authLogic = authLogic;
+	}
 }

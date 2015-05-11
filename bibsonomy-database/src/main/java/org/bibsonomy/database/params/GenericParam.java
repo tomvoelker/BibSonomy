@@ -39,7 +39,8 @@ import java.util.Set;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.bibsonomy.common.enums.FilterEntity;
+import org.bibsonomy.common.enums.ConceptStatus;
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
@@ -228,8 +229,9 @@ public abstract class GenericParam {
 
 	private Order order;
 	private GroupingEntity grouping;
-	private FilterEntity filter;
-
+	private Set<Filter> filters;
+	private ConceptStatus conceptStatus;
+	
 	/** which parts of the posts can the logged in user access */
 	private PostAccess postAccess = PostAccess.POST_ONLY;
 
@@ -912,20 +914,6 @@ public abstract class GenericParam {
 	}
 
 	/**
-	 * @return the filter
-	 */
-	public FilterEntity getFilter() {
-		return this.filter;
-	}
-
-	/**
-	 * @param filter the filter to set
-	 */
-	public void setFilter(final FilterEntity filter) {
-		this.filter = filter;
-	}
-
-	/**
 	 * @return the numSimpleConcepts
 	 */
 	public int getNumSimpleConcepts() {
@@ -1178,5 +1166,44 @@ public abstract class GenericParam {
 	 */
 	public void setSearchType(final SearchType searchType) {
 		this.searchType = searchType;
+	}
+
+	/**
+	 * @return the filters
+	 */
+	public Set<Filter> getFilters() {
+		return this.filters;
+	}
+	
+	/**
+	 * XXX: for ibatis
+	 * @return the filters as list
+	 */
+	public List<Filter> getFiltersAsList() {
+		if (!present(this.filters)) {
+			return Collections.emptyList();
+		}
+		return new ArrayList<Filter>(this.filters);
+	}
+
+	/**
+	 * @param filters the filters to set
+	 */
+	public void setFilters(Set<Filter> filters) {
+		this.filters = filters;
+	}
+
+	/**
+	 * @return the conceptStatus
+	 */
+	public ConceptStatus getConceptStatus() {
+		return this.conceptStatus;
+	}
+
+	/**
+	 * @param conceptStatus the conceptStatus to set
+	 */
+	public void setConceptStatus(ConceptStatus conceptStatus) {
+		this.conceptStatus = conceptStatus;
 	}
 }
