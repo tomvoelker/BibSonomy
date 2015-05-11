@@ -155,7 +155,18 @@
 													<c:set var="isUser" value="${member.groupRole eq 'USER'}" />
 													
 													<td class="col-md-1"><user:thumbnail user="${member.user}" size="16" noname="${true}" /></td>
-													<td class="col-md-3"><user:username user="${member.user}" /></td>
+													
+													<!-- Username -->
+													<td class="col-md-3">
+														<c:choose>
+															<c:when test="${member.user.name eq group.name}">
+																<user:username user="${member.user}" colored="true" />
+															</c:when>
+															<c:otherwise>
+																<user:username user="${member.user}" />
+															</c:otherwise>
+														</c:choose>
+													</td>
 						
 													<!-- GroupRole -->
 													<c:choose>
@@ -167,7 +178,7 @@
 														</c:otherwise>
 													</c:choose>
 													
-													<td class="${fn:escapeXml(col_class)}">
+													<td class="${col_class}">
 														<c:choose>
 															<c:when test="${isAdmin}">
 																<fmt:message key="groups.role.admin" />
