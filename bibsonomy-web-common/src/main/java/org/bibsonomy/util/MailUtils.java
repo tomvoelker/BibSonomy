@@ -153,7 +153,7 @@ public class MailUtils {
 				groupName,
 				loginUser.getName(),
 				reason,
-				this.absoluteURLGenerator.getGroupSettingsUrlByGroupName(groupName),
+				projectHome,
 				// TODO: why toLowerCase?
 				UrlUtils.safeURIEncode(groupName).toLowerCase(),
 				UrlUtils.safeURIEncode(loginUser.getName()).toLowerCase(),
@@ -166,9 +166,6 @@ public class MailUtils {
 		 */
 		final String messageBody    = messageSource.getMessage("mail.joinGroupRequest.body", messagesParameters, locale);
 		final String messageSubject = messageSource.getMessage("mail.joinGroupRequest.subject", messagesParameters, locale);
-
-		System.out.println(messageSubject);
-		System.out.println(messageBody);
 		
 		/*
 		 * send an e-Mail to the group (from our registration Adress)
@@ -208,9 +205,6 @@ public class MailUtils {
 		 */
 		final String messageBody = messageSource.getMessage("mail.joinGroupRequest.denied.body", messagesParameters, locale);
 		final String messageSubject = messageSource.getMessage("mail.joinGroupRequest.denied.subject", messagesParameters, locale);
-
-		System.out.println(messageSubject);
-		System.out.println(messageBody);
 		
 		/*
 		 * set the recipients
