@@ -11,8 +11,10 @@
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"
 	xmlns:spring="urn:http://www.springframework.org/tags"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
-
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+  	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs">
+	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
 	<fmt:message key="navi.admin" var="adminPageTitle" />
@@ -57,62 +59,77 @@
 			<fmt:message var="delete" key="delete"/>
 			<fmt:message var="addService" key="save"/>
 			<fmt:message var="addService" key="synchronization.addService" />
-			<div id="outerBox">
-				<div>
-					<form:form action="${relativeUrlGenerator.getAdminUrlByName('sync')}?action=createService" method="POST" id="clientForm">
-						<fieldset id="clients" class="fsInner">
-							<legend><label><c:out value="Clients"/></label></legend>
-							<c:forEach var="service" items="${command.avlClients}">
-								<div class="fsRow">
-									<span><c:out value="Name: ${service.name} URI: ${service.service} SSL DN: ${service.sslDn} ("/></span>
+			<fmt:message var="name" key="name" />
+			<fmt:message var="serviceURI" key="synchronization.service" />
+			<fmt:message var="sslDn" key="synchronization.sslDn" />
+			<fmt:message var="secureAPI" key="synchronization.secureAPI" />
+				
+				<!-- CLIENTS -->
+				<form:form class="form-horizontal" action="${relativeUrlGenerator.getAdminUrlByName('sync')}?action=createService" method="POST" id="clientForm">
+					<fieldset id="clients" class="fsInner">
+						<legend><label><c:out value="Clients"/></label></legend>
+						<c:forEach var="service" items="${command.avlClients}">
+							<span>
+								<li>
+									<p><b><c:out value="${name}: "/></b>
+									<c:out value="${service.name} ("/>
 									<a href="${relativeUrlGenerator.getAdminUrlByName('sync')}?action=deleteService&amp;service.service=${fn:escapeXml(service)}&amp;server=false">
 										<c:out value="${delete}" />
 									</a>
-									<c:out value=")"/>
-								</div>
-							</c:forEach>
-							<div class="fsRow">
-								<div class="fsRow"><c:out value="${addService}: "/></div>
-								<c:out value="Name:" />
-								<form:input path="service.name" />
-								<c:out value="URI:" />
-								<form:input path="service.service" />
-								<c:out value="  ssl dn:" />
-								<form:input path="service.sslDn" />
-								<input type="hidden" value="false" name="server"/>
-								<input type="submit" value="${addService}"/>
-							</div>
-						</fieldset>
-					</form:form>
-				</div>
-				<div>
-					<form:form action="${relativeUrlGenerator.getAdminUrlByName('sync')}?action=createService" method="POST" id="serverForm">
-						<fieldset id="server" class="fsInner">
-							<legend><label><c:out value="Server"/></label></legend>
-							<c:forEach var="service" items="${command.avlServer}">
-								<div class="fsRow">
-									<span><c:out value="Name: ${service.name} URI: ${service.service} SECURE API URL:: ${service.secureAPI}("/></span>
+									<c:out value=")"/><br/>
+									<b><c:out value="${serviceURI}: "/></b>
+									<c:out value=" ${service.service} "/><br/>
+									<b><c:out value="${sslDn}: "/></b>
+									<c:out value=" ${service.sslDn}"/></p>
+								</li>
+							</span>	
+						</c:forEach>							
+						<div class="form-group"> 
+							<h2><c:out value="${addService}"/></h2> 
+							<bsform:input labelColSpan="4" inputColSpan="8" path="service.name" noHelp="true" labelKey="name"></bsform:input>
+							<bsform:input labelColSpan="4" inputColSpan="8" path="service.service" noHelp="true" labelKey="synchronization.service"></bsform:input>
+							<bsform:input labelColSpan="4" inputColSpan="8" path="service.sslDn" noHelp="true" labelKey="synchronization.sslDn"></bsform:input>
+						</div>						
+						<div class="col-sm-offset-4 col-sm-8">
+							<input type="hidden" value="false" name="server"/>
+							<input type="submit" class="btn btn-default btn-primary" value="${addService}"/>
+						</div>
+				</fieldset>
+				</form:form>
+				
+				<!-- SERVERS -->
+				<form:form class="form-horizontal" action="${relativeUrlGenerator.getAdminUrlByName('sync')}?action=createService" method="POST" id="serverForm">
+					<fieldset id="server" class="fsInner">
+						<legend><label><c:out value="Server"/></label></legend>
+						<c:forEach var="service" items="${command.avlServer}">
+							<span>
+								<li>
+									<p><b><c:out value="${name}: "/></b>
+									<c:out value="${service.name} ("/>
 									<a href="${relativeUrlGenerator.getAdminUrlByName('sync')}?action=deleteService&amp;service.service=${fn:escapeXml(service)}&amp;server=true">
 										<c:out value="${delete}" />
 									</a>
-									<c:out value=")"/>
-								</div>	
-							</c:forEach>
-							<div class="fsRow">
-								<div class="fsRow"><c:out value="${addService}: "/></div>
-								<c:out value="Name:" />
-								<form:input path="service.name" />
-								<c:out value="URI:" />
-								<form:input path="service.service" />
-								<c:out value="  secure API:" />
-								<form:input path="service.secureAPI" />
-								<input type="hidden" value="true" name="server"/>
-								<input type="submit" value="${addService}"/>
-							</div>
-						</fieldset>
-					</form:form>
-				</div>
-			</div>
-		</jsp:attribute>				
+									<c:out value=")"/><br/>
+									<b><c:out value="${serviceURI}: "/></b>
+									<c:out value=" ${service.service} "/><br/>
+									<b><c:out value="${secureAPI}: "/></b>
+									<c:out value=" ${service.secureAPI}"/></p>
+								</li>
+							</span>
+						</c:forEach>
+						<div class="form-group"> 
+							<h2><c:out value="${addService}"/></h2> 
+							<bsform:input labelColSpan="4" inputColSpan="8" path="service.name" noHelp="true" labelKey="name"></bsform:input>
+							<bsform:input labelColSpan="4" inputColSpan="8" path="service.service" noHelp="true" labelKey="synchronization.service"></bsform:input>
+							<bsform:input labelColSpan="4" inputColSpan="8" path="service.secureAPI" noHelp="true" labelKey="synchronization.secureAPI"></bsform:input>
+						</div>						
+						<div class="col-sm-offset-4 col-sm-8">
+							<input type="hidden" value="false" name="server"/>
+							<input type="submit" class="btn btn-default btn-primary" value="${addService}"/>
+						</div>
+					</fieldset>
+				</form:form>
+		
+		</jsp:attribute>		
 	</layout:layout>
 </jsp:root>

@@ -120,7 +120,7 @@
 									</div>
 								</c:forEach>
 								</div>
-								<input type="submit" value="${resetService}" onclick="return confirmReset(this)" />
+								<input type="submit" class="btn btn-default btn-primary" value="${resetService}" onclick="return confirmReset(this)" />
 							</fieldset>
 
 							<fieldset class="fsInner">
@@ -143,13 +143,13 @@
 							
 								<legend><c:out value="${syncPlan}"/></legend>
 								
-								<input type="submit" class="syncPlanBtn" value="${getSyncPlan}" onclick="return getSyncPlan(this);"/>
-
-								<input type="submit" class="synchronizeBtn" value="${synchronize}" style="display:${syncButtonDisplay}" onclick="return doSync(this);"/>
-
-								<img src="${resdir}/image/ajax-loader-bar.gif" alt="${synchronizationRunning}" class="progressGif" style="display:none"/>
+								<div class="form-group">
+									<input type="submit" class="btn btn-default btn-primary" value="${getSyncPlan}" onclick="return getSyncPlan(this);"/>&amp;nbsp;
+									<input type="submit" class="btn btn-default btn-primary" value="${synchronize}" style="display:${syncButtonDisplay}" onclick="return doSync(this);"/>
+									<img src="${resdir}/image/ajax-loader-bar.gif" alt="${synchronizationRunning}" class="progressGif" style="display:none"/>
+								</div>
 							</fieldset>
-	
+
 							<input type="hidden" name="serviceName" value="${service.service}" />
 							<input type="hidden" name="ckey" value="${ckey}" />
 							<input type="hidden" name="_method" value="GET" />
@@ -189,7 +189,7 @@
 													<form action="/ajax/synchronize" method="post" class="clientReset">
 														<input type="hidden" name="serviceName" value="${syncClient.service}/${deviceId}" />
 														<input type="hidden" name="ckey" value="${command.context.ckey}" />
-														<input type="submit" value="${resetService}" onclick="return confirmReset(this)" />
+														<input type="submit" class="btn btn-default btn-primary" value="${resetService}" onclick="return confirmReset(this)" />
 													</form>
 													<ul class="foldList">
 														
