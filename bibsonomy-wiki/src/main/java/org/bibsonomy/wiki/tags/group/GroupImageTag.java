@@ -43,7 +43,7 @@ public class GroupImageTag extends GroupTag {
 	}
 
 	private String renderImage(final String userName) {
-		return "<img class='user-avatar img-responsive' style='width:auto; height:auto;' title='" + userName + "' src='/picture/user/" + userName + "' />";
+		return "<img class='user-avatar img-responsive group-cv-image' title='" + userName + "' src='/picture/user/" + userName + "' />";
 	}
 	
 	/*
@@ -57,7 +57,7 @@ public class GroupImageTag extends GroupTag {
 		final String groupName = this.requestedGroup.getName();
 		renderedHTML.append("<a href='/cv/user/" + this.renderString(groupName) + "' title='" + this.renderString(groupName) + "' class='img-thumbnail img-responsive'>");
 		renderedHTML.append(this.renderImage(groupName));
-		renderedHTML.append("<span style='width: auto;'>" + this.renderString(this.requestedGroup.getRealname()) + "</span>");
+		renderedHTML.append("<span class='group-cv-image-name'>" + this.renderString(this.requestedGroup.getRealname()) + "</span>");
 		renderedHTML.append("</a></div>");
 
 		return renderedHTML.toString();

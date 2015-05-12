@@ -86,3 +86,11 @@ text-align:center;
 	padding: 5px;
 }
 
+/************* username color *****************/
+.userlist_username_orange {
+	color: #ECBA34;
+}
+
+a.userlist_username_orange:hover {
+	color: #ECBA34;
+}

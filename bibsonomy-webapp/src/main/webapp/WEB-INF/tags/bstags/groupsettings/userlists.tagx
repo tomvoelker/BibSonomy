@@ -160,7 +160,7 @@
 													<td class="col-md-3">
 														<c:choose>
 															<c:when test="${member.user.name eq group.name}">
-																<user:username user="${member.user}" colored="true" />
+																<user:username user="${member.user}" classes="userlist_username_orange" />
 															</c:when>
 															<c:otherwise>
 																<user:username user="${member.user}" />

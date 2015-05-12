@@ -9,8 +9,7 @@
 	<jsp:directive.attribute name="username" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="noLink" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="flase"/>
-	<jsp:directive.attribute name="colored" type="java.lang.Boolean" required="false" />
-	<jsp:directive.attribute name="color" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="classes" type="java.lang.String" required="false" />
 
 	<c:choose>
 		<c:when test="${not empty post}">
@@ -36,34 +35,26 @@
 		<c:set var="noLink" value="${false}" />
 	</c:if>
 	
-	<c:if test="${empty colored}">
-		<c:set var="colored" value="${false}" />
-	</c:if>
-	
-	<c:if test="${empty color}">
-		<c:set var="color" value="#ECBA34" />
-	</c:if>
-	
 	<c:choose>
 		<c:when test="${not noLink}">
 			<c:choose>
 				<c:when test="${isRemotePost}">
 					<c:choose>
-						<c:when test="${not colored}">
+						<c:when test="${empty classes}">
 							<a href="${relativeUrlGenerator.getUserUrlByUserNameAndSysUrl(username, post.systemUrl)}"><c:out value="@${username}" /></a>
 						</c:when>
 						<c:otherwise>
-							<a style="color: ${color};" href="${relativeUrlGenerator.getUserUrlByUserNameAndSysUrl(username, post.systemUrl)}"><c:out value="@${username}" /></a>
+							<a class="${classes}" href="${relativeUrlGenerator.getUserUrlByUserNameAndSysUrl(username, post.systemUrl)}"><c:out value="@${username}" /></a>
 						</c:otherwise>
 					</c:choose>
 				</c:when>
 				<c:otherwise>
 					<c:choose>
-						<c:when test="${not colored}">
+						<c:when test="${empty classes}">
 							<a href="${relativeUrlGenerator.getUserUrlByUserName(username)}"><c:out value="@${username}" /></a>
 						</c:when>
 						<c:otherwise>
-							<a style="color: ${color};" href="${relativeUrlGenerator.getUserUrlByUserName(username)}"><c:out value="@${username}" /></a>
+							<a class="${classes}" href="${relativeUrlGenerator.getUserUrlByUserName(username)}"><c:out value="@${username}" /></a>
 						</c:otherwise>
 					</c:choose>
 				</c:otherwise>
@@ -71,11 +62,11 @@
 		</c:when>
 		<c:otherwise>
 			<c:choose>
-				<c:when test="${not colored}">
+				<c:when test="${empty classes}">
 					<c:out value="@${username}" />
 				</c:when>
 				<c:otherwise>
-					<span style="color: ${color};"><c:out value="@${username}" /></span>
+					<span class="${classes}"><c:out value="@${username}" /></span>
 				</c:otherwise>
 			</c:choose>
 		</c:otherwise>
