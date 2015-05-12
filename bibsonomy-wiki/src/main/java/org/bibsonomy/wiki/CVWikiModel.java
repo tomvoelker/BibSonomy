@@ -60,6 +60,7 @@ import org.bibsonomy.wiki.tags.user.InterestsTag;
 import org.bibsonomy.wiki.tags.user.LocationTag;
 import org.bibsonomy.wiki.tags.user.ProfessionTag;
 import org.bibsonomy.wiki.tags.user.RegDateTag;
+import org.bibsonomy.wiki.tags.user.TagcloudTag;
 import org.springframework.context.MessageSource;
 
 /**
@@ -76,6 +77,7 @@ public class CVWikiModel extends AbstractWikiModel {
 		register(new InterestsTag());
 		register(new HobbyTag());
 		register(new ProfessionTag());
+		register(new TagcloudTag());
 		
 		/* Group Tags */
 		register(new MembersTag());

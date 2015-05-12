@@ -66,7 +66,7 @@ public class WikiCvPageController extends ResourceListController implements Mini
 		final String requestedUser = command.getRequestedUser();
 		final User requestedUserWithDetails = this.logic.getUserDetails(requestedUser);
 		
-		// prevent showing cv pages of deleted and not existiing users
+		// prevent showing cv pages of deleted and not existing users
 		if (!present(requestedUserWithDetails.getName())) {
 			throw new ObjectNotFoundException(requestedUser);
 		}
