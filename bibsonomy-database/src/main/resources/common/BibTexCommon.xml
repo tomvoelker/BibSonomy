@@ -28,7 +28,7 @@
 		<result property="bibtexKey"      column="bibtexKey"      javaType="string" />
 		<result property="misc"           column="misc"           javaType="string" />
 		<result property="abstract"       column="bibtexAbstract" javaType="string" />
-		<result property="privnote"       column="privnote" 	  javaType="string" />
+		<result property="privnote"       column="privnote"       javaType="string" />
 		<result property="author"         column="author"         javaType="personNameList" />
 		<result property="editor"         column="editor"         javaType="personNameList" />
 		<result property="year"           column="year"           javaType="string" />

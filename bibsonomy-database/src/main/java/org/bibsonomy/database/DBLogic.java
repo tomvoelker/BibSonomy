@@ -3198,7 +3198,7 @@ public class DBLogic implements LogicInterface {
 //		if ((p.getUser() != null) && !p.getUser().equals(loginUser.getName())) {
 //			throw new AccessDeniedException("person in relation is someone else");
 //		}
-		resourcePersonRelation.setCreatedByUserName(loginUser.getName());
+		resourcePersonRelation.setChangedBy(loginUser.getName());
 		try {
 			this.personDBManager.addResourceRelation(resourcePersonRelation, session);
 		} finally {

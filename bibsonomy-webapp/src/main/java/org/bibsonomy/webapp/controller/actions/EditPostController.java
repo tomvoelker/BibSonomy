@@ -873,7 +873,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
 			resourcePersonRelation.setPerson(person);
 			resourcePersonRelation.setPost((Post<BibTex>) post); // TODO: should we allow personrelations such as authors for bookmarks?
-			resourcePersonRelation.setCreatedByUserName(loginUser.getName());
+			resourcePersonRelation.setChangedBy(loginUser.getName());
 			resourcePersonRelation.setRelationType(role);
 			resourcePersonRelation.setPersonIndex(personIndex);
 			this.logic.addResourceRelation(resourcePersonRelation);

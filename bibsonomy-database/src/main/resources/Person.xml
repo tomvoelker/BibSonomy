@@ -79,7 +79,7 @@
 					AND
 				pub_person.relator_code = #relationType.relatorCode#
 					AND
-				pub_person.author_index = #personIndex#
+				pub_person.person_index = #personIndex#
 	</select>
 	
 	<update id='unlinkUser' parameterClass="java.lang.String">

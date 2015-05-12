@@ -13,7 +13,7 @@ public class ResourcePersonRelation {
 	private int qualifying;
 	private Person person;
 	/** name of the person who created this link */
-	private String createdByUserName;
+	private String changedBy;
 	private Post<BibTex> post;
 	/** the position in the resource's list of authors / editors / ... */
 	private int personIndex;
@@ -88,11 +88,11 @@ public class ResourcePersonRelation {
 	public void setRelationType(PersonResourceRelationType relationType) {
 		this.relationType = relationType;
 	}
-	public String getCreatedByUserName() {
-		return this.createdByUserName;
+	public String getChangedBy() {
+		return this.changedBy;
 	}
-	public void setCreatedByUserName(String createdByUserName) {
-		this.createdByUserName = createdByUserName;
+	public void setChangedBy(String createdByUserName) {
+		this.changedBy = createdByUserName;
 	}
 	
 }
