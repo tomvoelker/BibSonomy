@@ -17,6 +17,7 @@ import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
@@ -52,62 +53,43 @@ public class gImporterDatabaseManagerTest extends AbstractDatabaseManagerTest{
 	}
 
 	@Test
-/*	public void insert_to_database() {
-		testt = (gImporterDatabaseManager)beanFactory.getBean("gImporterDataLogic");
-		//gImporterDatabaseManager gidbm = new gImporterDatabaseManager();
-		gImporterData logdata = new gImporterData();
-		logdata.setTitle("nasim_title");
-		testt.insertLogdata(logdata);
-	}
-	*/
-	
+
 	
 	public void select_dissertations(){
 		
 		
-		List<gImporterData> posts = new ArrayList<gImporterData>();
+		List<gImporterData> posts_param = new ArrayList<gImporterData>();
 		
 		gImporterData param = new gImporterData();
 		param.setDiss(true);
-		posts = testt.select_dissertation(param);
+		posts_param = testt.select_dissertation(param);
 		
-		//testt.insert_bibtex(result);
+		
 		
 		User user = new User();
 		user.setName("testuser1");
 	
-		for(int i =0; i<posts.size();i++){
-	//		final DBSession session = this.openSession();
+		for(int i =0; i<posts_param.size();i++){
 						
 			final Post<GoldStandardPublication> gold = new Post<GoldStandardPublication>();
-	
 			final GoldStandardPublication goldP = new GoldStandardPublication();
-			goldP.setAddress(posts.get(i).getAddress());
-			goldP.setYear(posts.get(i).getYear());
-			goldP.setTitle(posts.get(i).getTitle());
+			goldP.setAddress(posts_param.get(i).getAddress());
+			goldP.setYear(posts_param.get(i).getYear());
+			goldP.setTitle(posts_param.get(i).getTitle());
+			
+			List<PersonName> authors = new ArrayList<PersonName>(); 
+			PersonName author = new PersonName(posts_param.get(i).getFirstName(), posts_param.get(i).getLastName());
+			authors.add(author);
+			goldP.setAuthor(authors);
 			
 			gold.setResource(goldP);
 			gold.setUser(user);
 			gold.getResource().recalculateHashes();
 			
-		/*	Group G = new Group();
-			G.setGroupId(PUBLIC_GROUP_ID);
-			Set<Group> GList=new HashSet<Group>();
-			GList.add(G);
-			gold.setGroups(GList);
-			*/
-		/*	Tag T  = new Tag();
-			T.setName("imported_from_dnb2");
-			Set<Tag> tagSet = new HashSet<Tag>();
-			tagSet.add(T);
-			gold.setTags(tagSet);
-			
-			*/
+	
 			
 			GSDBM.createPost(gold, this.dbSession);
-			
-
-		//	posts.add(gold);
+		
 		}
 		
 
