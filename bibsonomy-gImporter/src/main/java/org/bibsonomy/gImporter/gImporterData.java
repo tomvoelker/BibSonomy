@@ -41,6 +41,10 @@ public class gImporterData {
 	
 	private boolean diss;
 	
+	private String firstName;
+	
+	private String lastName;
+	
 	@Override
 	public String toString() {
 		return "\ntitle: "+ this.title;		
@@ -101,6 +105,34 @@ public class gImporterData {
 	 */
 	public void setYear(String year) {
 		this.year = year;
+	}
+
+	/**
+	 * @return the firstName
+	 */
+	public String getFirstName() {
+		return this.firstName;
+	}
+
+	/**
+	 * @param firstName the firstName to set
+	 */
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	/**
+	 * @return the lastName
+	 */
+	public String getLastName() {
+		return this.lastName;
+	}
+
+	/**
+	 * @param lastName the lastName to set
+	 */
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 	/**
