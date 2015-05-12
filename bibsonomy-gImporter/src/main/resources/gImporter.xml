@@ -9,20 +9,14 @@
     <result property="year" column="pub_year_c" javaType="String"/>
     <result property="address" column="city" />
     <result property="diss" column="diss" javaType="boolean"/>
-    
+    <result property="firstName" column="firstname" />
+    <result property="lastName" column="surname" />
    
   </resultMap>
 	
   <select id="selectDissertation" resultMap="gImporterResult" parameterClass="gImporterData">
-    SELECT title, pub_year_c, city, diss FROM title_hs_title as tht where tht.diss=#diss# limit 10
+    select t.title, t.pub_year_c, t.city, t.diss, p.firstname, p.surname from dnb2_light.title_hs_link l join dnb2_light.title_hs_title t on l.title_id=t.title_id and l.diss=1 join dnb2_light.title_hs_person p on l.person_id=p.person_id limit 10
   </select>
   
-  <insert id="insertgImporterdata" parameterClass="gImporterData">
-    INSERT INTO title_hs_link_kassel_jena (
-		title_id, person_id, person_function
-      )
-    VALUES (
-      3, 3, 4
-    )
-  </insert>
+  
 </sqlMap>
