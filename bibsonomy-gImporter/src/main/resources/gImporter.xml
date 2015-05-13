@@ -5,17 +5,21 @@
   <typeAlias alias="gImporterData" type="org.bibsonomy.gImporter.gImporterData"/>
 
   <resultMap id="gImporterResult" class="gImporterData">
-    <result property="title" column="title" />
-    <result property="year" column="pub_year_c" javaType="String"/>
-    <result property="address" column="city" />
+    <result property="mainTitle" column="title" />
+    <result property="subTitle" column="subtitle" />
+    <result property="pubYear" column="pub_year_c" javaType="String"/>
+    <result property="subYear" column="sub_year_c" javaType="String"/>
+    <result property="schoolP1" column="uni" />
+    <result property="schoolP2" column="city" />
     <result property="diss" column="diss" javaType="boolean"/>
+    <result property="habil" column="habil" javaType="boolean"/>
     <result property="firstName" column="firstname" />
     <result property="lastName" column="surname" />
    
   </resultMap>
 	
   <select id="selectDissertation" resultMap="gImporterResult" parameterClass="gImporterData">
-    select t.title, t.pub_year_c, t.city, t.diss, p.firstname, p.surname from dnb2_light.title_hs_link l join dnb2_light.title_hs_title t on l.title_id=t.title_id and l.diss=1 join dnb2_light.title_hs_person p on l.person_id=p.person_id limit 10
+    select t.title, t.subtitle, t.pub_year_c, t.sub_year_c, t.city, t.uni, t.diss, t.habil, p.firstname, p.surname from dnb2_light.title_hs_link l join dnb2_light.title_hs_title t on l.title_id=t.title_id and (t.diss=1 or t.habil=1) join dnb2_light.title_hs_person p on l.person_id=p.person_id limit 10
   </select>
   
   

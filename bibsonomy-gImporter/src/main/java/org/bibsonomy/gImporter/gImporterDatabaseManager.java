@@ -75,38 +75,6 @@ public class gImporterDatabaseManager extends AbstractDatabaseManager {
 		}
 	
 	}
-	public void insert_bibtex(List<gImporterData> posts){
-		BibTexDatabaseManager bibTexDb = BibTexDatabaseManager.getInstance();
-		//	List<Post<? extends Resource>> posts = new ArrayList<Post<?>>();
-		User user = new User();
-		user.setName("testuser1");
-	
-		for(int i =0; i<posts.size();i++){
-			final DBSession session = this.openSession();
-			try {
-						
-				final Post<BibTex> gold = new Post<BibTex>();
-		
-				final GoldStandardPublication goldP = new GoldStandardPublication();
-				goldP.setAddress(posts.get(i).getAddress());
-				goldP.setYear(posts.get(i).getYear());
-				goldP.setTitle(posts.get(i).getTitle());
-				
-				gold.setResource(goldP);
-				gold.setUser(user);
-				gold.getResource().recalculateHashes();
-				bibTexDb.createPost(gold, session);
-			} finally {
-				session.close();
-			}
-
-		//	posts.add(gold);
-		}
-		
-		
-		//final String createdPost = this.logic.createPosts(posts).get(0);
-
-	}
 
 	/**
 	 * @param sessionFactory the sessionFactory to set

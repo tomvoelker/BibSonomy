@@ -31,9 +31,9 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class gImporterDatabaseManagerTest extends AbstractDatabaseManagerTest{
 	private static final BeanFactory beanFactory = new ClassPathXmlApplicationContext("org/bibsonomy/gImporter/gImporterTestContext.xml");
 	private static gImporterDatabaseManager testt;
-	//private static BibTexDatabaseManager bibTexDb;
+
 	private static GoldStandardPublicationDatabaseManager GSDBM;
-	//protected LogicInterface logic;
+
 	
 	/**
 	 * Initializes the test database.
@@ -69,19 +69,37 @@ public class gImporterDatabaseManagerTest extends AbstractDatabaseManagerTest{
 		User user = new User();
 		user.setName("testuser1");
 	
-		for(int i =0; i<posts_param.size();i++){
-						
+		for(gImporterData p:posts_param){
+				
 			final Post<GoldStandardPublication> gold = new Post<GoldStandardPublication>();
 			final GoldStandardPublication goldP = new GoldStandardPublication();
-			goldP.setAddress(posts_param.get(i).getAddress());
-			goldP.setYear(posts_param.get(i).getYear());
-			goldP.setTitle(posts_param.get(i).getTitle());
-			
+			//set school
+			goldP.setSchool(p.getSchoolP1()+" "+p.getSchoolP2());
+			//set year
+			if(!p.getSubYear().isEmpty()){
+				goldP.setYear(p.getSubYear());
+			}
+			else{goldP.setYear(p.getPubYear());}
+			//set title
+			if(!p.getSubTitle().isEmpty()){
+				goldP.setTitle(p.getMainTitle()+": "+p.getSubTitle());
+			}
+			else{goldP.setTitle(p.getMainTitle());}
+			//set authors
 			List<PersonName> authors = new ArrayList<PersonName>(); 
-			PersonName author = new PersonName(posts_param.get(i).getFirstName(), posts_param.get(i).getLastName());
+			PersonName author = new PersonName(p.getFirstName(), p.getLastName());
+			
 			authors.add(author);
 			goldP.setAuthor(authors);
-			
+			//set entrytype and type
+			if(p.isDiss()){
+				goldP.setEntrytype("phdThesis");
+				goldP.setType("phdThesis");
+			}
+			else if(p.isHabil()){
+				goldP.setEntrytype("phdThesis");
+				goldP.setType("habilitation");
+			}
 			gold.setResource(goldP);
 			gold.setUser(user);
 			gold.getResource().recalculateHashes();
@@ -91,8 +109,6 @@ public class gImporterDatabaseManagerTest extends AbstractDatabaseManagerTest{
 			GSDBM.createPost(gold, this.dbSession);
 		
 		}
-		
-
 		
 	}
 	

@@ -31,53 +31,23 @@ package org.bibsonomy.gImporter;
  */
 public class gImporterData {
 
-
-	/** date of insertion of logdata */
-	private String title;
-
-	private String year;
+	private String mainTitle;
 	
-	private String address;
+	private String subTitle;
+
+	private String subYear;
+	private String pubYear;
+	
+	private String schoolP1;
+	private String schoolP2;
 	
 	private boolean diss;
+	private boolean habil;
 	
 	private String firstName;
 	
 	private String lastName;
 	
-	@Override
-	public String toString() {
-		return "\ntitle: "+ this.title;		
-	}	
-
-	/**
-	 * @return the logdate
-	 */
-	public String getTitle() {
-		return title;
-	}
-
-	/**
-	 * @param logdate the logdate to set
-	 */
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-	
-	/**
-	 * @return the address
-	 */
-	public String getAddress() {
-		return this.address;
-	}
-
-	/**
-	 * @param address the address to set
-	 */
-	public void setAddress(String address) {
-		this.address = address;
-	}
 
 	/**
 	 * @return the diss
@@ -91,20 +61,6 @@ public class gImporterData {
 	 */
 	public void setDiss(boolean diss) {
 		this.diss = diss;
-	}
-
-	/**
-	 * @return the year
-	 */
-	public String getYear() {
-		return this.year;
-	}
-
-	/**
-	 * @param year the year to set
-	 */
-	public void setYear(String year) {
-		this.year = year;
 	}
 
 	/**
@@ -133,6 +89,104 @@ public class gImporterData {
 	 */
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+
+	/**
+	 * @return the mainTitle
+	 */
+	public String getMainTitle() {
+		return this.mainTitle;
+	}
+
+	/**
+	 * @param mainTitle the mainTitle to set
+	 */
+	public void setMainTitle(String mainTitle) {
+		this.mainTitle = mainTitle;
+	}
+
+	/**
+	 * @return the subTitle
+	 */
+	public String getSubTitle() {
+		return this.subTitle;
+	}
+
+	/**
+	 * @param subTitle the subTitle to set
+	 */
+	public void setSubTitle(String subTitle) {
+		this.subTitle = subTitle;
+	}
+
+	/**
+	 * @return the schoolP1
+	 */
+	public String getSchoolP1() {
+		return this.schoolP1;
+	}
+
+	/**
+	 * @param schoolP1 the schoolP1 to set
+	 */
+	public void setSchoolP1(String schoolP1) {
+		this.schoolP1 = schoolP1;
+	}
+
+	/**
+	 * @return the schoolP2
+	 */
+	public String getSchoolP2() {
+		return this.schoolP2;
+	}
+
+	/**
+	 * @param schoolP2 the schoolP2 to set
+	 */
+	public void setSchoolP2(String schoolP2) {
+		this.schoolP2 = schoolP2;
+	}
+
+	/**
+	 * @return the habil
+	 */
+	public boolean isHabil() {
+		return this.habil;
+	}
+
+	/**
+	 * @param habil the habil to set
+	 */
+	public void setHabil(boolean habil) {
+		this.habil = habil;
+	}
+
+	/**
+	 * @return the subYear
+	 */
+	public String getSubYear() {
+		return this.subYear;
+	}
+
+	/**
+	 * @param subYear the subYear to set
+	 */
+	public void setSubYear(String subYear) {
+		this.subYear = subYear;
+	}
+
+	/**
+	 * @return the pubYear
+	 */
+	public String getPubYear() {
+		return this.pubYear;
+	}
+
+	/**
+	 * @param pubYear the pubYear to set
+	 */
+	public void setPubYear(String pubYear) {
+		this.pubYear = pubYear;
 	}
 
 	/**
