@@ -56,6 +56,7 @@ public class JAPScraper extends GenericRISURLScraper implements ReferencesScrape
 	
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "jap.physiology.org"), AbstractUrlScraper.EMPTY_PATTERN));
 	private static final Pattern REFERENCES_PATTERN = Pattern.compile("(?s)<h2>REFERENCES</h2>(.*)<span class=\"highwire-journal-article-marker-end\"></span>");
+	private static final Pattern EXTRADATA = Pattern.compile("\" class=\"\" data-icon-position=\"\" data-hide-link-title=\"0");
 
 	@Override
 	public String getSupportedSiteName() {
@@ -84,8 +85,12 @@ public class JAPScraper extends GenericRISURLScraper implements ReferencesScrape
 	protected String getDownloadURL(URL url) throws ScrapingException {
 		try {
 			final Matcher m = RIS_URL.matcher(WebUtils.getContentAsString(url.toString()));
-			if (m.find())
-				return "http://" + url.getHost().toString() + m.group(1);
+			String download_link = "";
+			if (m.find()) {
+				download_link = "http://" + url.getHost().toString() + m.group(1);
+				download_link = download_link.replaceAll(EXTRADATA.toString(), " ");
+				return download_link;
+			}
 		} catch (IOException e) {
 			log.error("Download link not found", e);
 		}
