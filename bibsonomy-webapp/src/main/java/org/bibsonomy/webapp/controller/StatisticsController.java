@@ -40,6 +40,7 @@ import org.bibsonomy.common.enums.UserFilter;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.StatisticsCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 import org.joda.time.DateTime;
@@ -67,7 +68,8 @@ public class StatisticsController implements MinimalisticController<StatisticsCo
 	 */
 	@Override
 	public View workOn(final StatisticsCommand command) {
-		if (!Role.ADMIN.equals(command.getContext().getLoginUser().getRole())) {
+		final RequestWrapperContext context = command.getContext();
+		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(command.getContext().getLoginUser().getRole())) {
 			throw new AccessDeniedException("only admins can retrieve stats");
 		}
 		final int count;
@@ -109,7 +111,6 @@ public class StatisticsController implements MinimalisticController<StatisticsCo
 	 * @return
 	 */
 	private static Date convertToStartDate(final Integer interval, final StatisticsUnit unit) {
-		final Date startDate;
 		if (present(interval)) {
 			DateTime dateTime = new DateTime();
 			final int intervalAsInt = interval.intValue();
@@ -123,11 +124,9 @@ public class StatisticsController implements MinimalisticController<StatisticsCo
 			default:
 				throw new IllegalArgumentException(unit.toString());
 			}
-			startDate = dateTime.toDate();
-		} else {
-			startDate = null;
+			return dateTime.toDate();
 		}
-		return startDate;
+		return null;
 	}
 
 	/**
