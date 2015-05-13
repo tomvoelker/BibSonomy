@@ -96,38 +96,51 @@ public class TagcloudTag extends UserTag {
 	@Override
 	protected String renderUserTag() {
 		
+		final StringBuilder renderedHTML = new StringBuilder();
+		
 		final Map<String, String> tagAttributes = this.getAttributes();
 		
 		final String requestedName = this.requestedUser.getName();
-		Order tagOrder = Order.FREQUENCY;
+		Order tagOrder = Order.ALPH;
 		int tagMax = 20000;
 		//Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, String regex, TagSimilarity relation, Order order, Date startDate, Date endDate, int start, int end
 		//resourceType, groupingEntity, groupingName, tags, hash, search, regex, null, tagOrder, cmd.getStartDate(), cmd.getEndDate(), 0, tagMax)
 		final List<Tag> tags = this.logic.getTags(Resource.class, GroupingEntity.USER, requestedName, null, null, null, null, null, tagOrder, null, null, 0, tagMax);
 		
 		
-		//final List<Tag> tag = this.requestedUser.getTags();
-		final List<String> tagsToString = new LinkedList<String>();
+//		/*
+//		 * order the tags, alpha or frequency
+//		 */
+//		final String orderValue = tagAttributes.get(ORDER);
+//	
+//			if (orderValue==ORDER_ALPHA){
+//				//nach Alphabet sortieren
+//				Collections.sort(tags);
+//			}
+//			else {
+//				//nach Frequency sortieren
+//			}
+//		
+		
+		renderedHTML.append("<div id='tags'>");
+		renderedHTML.append("<ul class='list-group'>");
+		renderedHTML.append("<li class='list-group-item'>");
 		for (Tag t: tags){
+			final String link = t.getStem();
 			final String tagName = t.getName();
-			tagsToString.add(tagName);
+			final int tagCount = t.getUsercount();
+			renderedHTML.append("<a href='" + link + "' title='" + tagCount + " posts' " + ">" + tagName + " </a>");
+			//tagsToString.add(tagName);
 		}
+		renderedHTML.append("</ul>");
+		renderedHTML.append("</li>");
+		renderedHTML.append("</div>");
 		
-		/*
-		 * order the tags, alpha or frequency
-		 */
-		final String orderValue = tagAttributes.get(ORDER);
 	
-			if (orderValue==ORDER_ALPHA){
-				//nach Alphabet sortieren
-				Collections.sort(tagsToString);
-			}
-			else {
-				//nach Frequency sortieren
-			}
 		
 		
-		return ValidationUtils.present(tagsToString) ? "<div id='tags'>" + tagsToString + "</div>" : "";
+		//return ValidationUtils.present(tagsToString) ? "<div id='tags'>" + tagsToString + "</div>" : "";
+			return renderedHTML.toString();
 	}
 
 }
