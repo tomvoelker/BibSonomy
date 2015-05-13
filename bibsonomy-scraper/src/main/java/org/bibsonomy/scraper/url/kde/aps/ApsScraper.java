@@ -55,6 +55,7 @@ public class ApsScraper extends GenericBibTeXURLScraper{
 	//private static final Pattern ID_PATTERN = Pattern.compile("(\\d+\\W)+");
 	
 	private static final Pattern BIBTEX_PATTERN = Pattern.compile("<li class=\"bibtext first\"><a href=\"(.*)\">BibTeX</a></li>");
+	private static final Pattern EXTRADATA = Pattern.compile("\" class=\"\" data-icon-position=\"\" data-hide-link-title=\"0");
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return PATTERNS;
@@ -82,9 +83,11 @@ public class ApsScraper extends GenericBibTeXURLScraper{
 			String download_link = "";
 			if (m.find()) {
 				download_link = m.group(1);
+				download_link = download_link.replaceAll(EXTRADATA.toString(), " ");
 			} else {
 				throw new ScrapingFailureException("failure getting bibtex url for " + url);
 			}
+			
 			return "http://" + url.getHost().toString() + download_link;
 		} catch (IOException e) {
 			throw new ScrapingException(e);
