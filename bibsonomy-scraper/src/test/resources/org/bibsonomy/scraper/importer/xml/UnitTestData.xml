@@ -1732,6 +1732,8 @@
 		<URL>http://www.akademiai.com/content/y5t2lbg5nn3hxa0y/</URL>
 		<BibFile>AkademiaiScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.akademiai.AkademiaiScraper</Scraper>
+		<!-- 404 -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_282">
 		<TestDescription>test for nature.com</TestDescription>
