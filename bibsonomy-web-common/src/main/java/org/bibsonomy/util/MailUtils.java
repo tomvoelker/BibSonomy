@@ -158,7 +158,8 @@ public class MailUtils {
 				UrlUtils.safeURIEncode(groupName).toLowerCase(),
 				UrlUtils.safeURIEncode(loginUser.getName()).toLowerCase(),
 				projectName.toLowerCase(),
-				projectEmail
+				projectEmail,
+				absoluteURLGenerator.getGroupSettingsUrlByGroupName(groupName)+"?selTab=1#selTab1"
 		};
 		
 		/*
@@ -205,7 +206,7 @@ public class MailUtils {
 		 */
 		final String messageBody = messageSource.getMessage("mail.joinGroupRequest.denied.body", messagesParameters, locale);
 		final String messageSubject = messageSource.getMessage("mail.joinGroupRequest.denied.subject", messagesParameters, locale);
-		
+	
 		/*
 		 * set the recipients
 		 */
@@ -268,12 +269,14 @@ public class MailUtils {
 				invitedUser.getName(),
 				loginUser.getName(),
 				groupName,
-				absoluteURLGenerator.getSettingsUrlWithSelectedTab(3),
+				//absoluteURLGenerator.getSettingsUrlWithSelectedTab(3),
+				projectHome,
 				// TODO: why toLowerCase?
 				UrlUtils.safeURIEncode(groupName).toLowerCase(),
 				UrlUtils.safeURIEncode(loginUser.getName()).toLowerCase(),
 				projectName.toLowerCase(),
-				projectEmail
+				projectEmail,
+				absoluteURLGenerator.getSettingsUrlWithSelectedTab(3)
 		};
 		
 		/*
