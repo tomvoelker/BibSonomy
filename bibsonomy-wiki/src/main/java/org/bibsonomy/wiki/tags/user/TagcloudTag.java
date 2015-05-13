@@ -101,26 +101,26 @@ public class TagcloudTag extends UserTag {
 		final Map<String, String> tagAttributes = this.getAttributes();
 		
 		final String requestedName = this.requestedUser.getName();
-		Order tagOrder = Order.ALPH;
+		Order tagOrder = Order.FREQUENCY;
 		int tagMax = 20000;
 		//Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, String regex, TagSimilarity relation, Order order, Date startDate, Date endDate, int start, int end
 		//resourceType, groupingEntity, groupingName, tags, hash, search, regex, null, tagOrder, cmd.getStartDate(), cmd.getEndDate(), 0, tagMax)
 		final List<Tag> tags = this.logic.getTags(Resource.class, GroupingEntity.USER, requestedName, null, null, null, null, null, tagOrder, null, null, 0, tagMax);
 		
 		
-//		/*
-//		 * order the tags, alpha or frequency
-//		 */
-//		final String orderValue = tagAttributes.get(ORDER);
-//	
-//			if (orderValue==ORDER_ALPHA){
-//				//nach Alphabet sortieren
-//				Collections.sort(tags);
-//			}
-//			else {
-//				//nach Frequency sortieren
-//			}
-//		
+		/*
+		 * order the tags, alpha or frequency
+		 */
+		final String orderValue = tagAttributes.get(ORDER);
+	
+			if (orderValue==ORDER_ALPHA){
+				//nach Alphabet sortieren
+				Collections.sort(tags);
+			}
+			else {
+				//nach Frequency sortieren
+			}
+		
 		
 		renderedHTML.append("<div id='tags'>");
 		renderedHTML.append("<ul class='list-group'>");

@@ -18,11 +18,12 @@
 				<bean class="org.bibsonomy.web.spring.converter.StringToClassConverter" />
 				
 				<!-- 
-					converts strings to urls (empty strings are converted to null)
+					converts strings to urls/uris (empty strings are converted to null)
 					if you do not add this converter the ObjectToObjectConverter tries
-					to call the url constructor and fails instead of returning null
+					to call the url/uri constructor and fails instead of returning null
 				 -->
 				<bean class="org.bibsonomy.web.spring.converter.StringToURLConverter" />
+				<bean class="org.bibsonomy.web.spring.converter.StringToURIConverter" />
 				
 				<!-- convert a string to a list of persons and vice versa -->
 				<bean class="org.bibsonomy.web.spring.converter.StringToPersonListConverter" />
@@ -145,16 +146,6 @@
 		<property name="adminUserName" value="admin"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 		<property name="bibtexReader" ref="bibtexReader"/>
-	</bean>
-	
-	<bean id="basicDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" abstract="true">
-		<property name="validationQuery" value="SELECT 42" />
-		<property name="minEvictableIdleTimeMillis" value="1800000" />
-		<property name="timeBetweenEvictionRunsMillis" value="1800000" />
-		<property name="numTestsPerEvictionRun" value="10" />
-		<property name="testWhileIdle" value="true" />
-		<property name="testOnBorrow" value="true" />
-		<property name="testOnReturn" value="true" />
 	</bean>
 
 	<!-- provides access to the database for all controllers -->
@@ -858,7 +849,7 @@
 	</bean>
 	
 	<bean id="statisticsController" class="org.bibsonomy.webapp.controller.StatisticsController" scope="request">
-		<property name="logic" ref="logic" />
+		<property name="logic" ref="slaveLogic" />
 	</bean>
 
 	<bean id="conceptPageController" class="org.bibsonomy.webapp.controller.ConceptPageController" scope="request">
