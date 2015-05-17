@@ -366,7 +366,7 @@
 						</property>
 					</bean>
 				</entry>
-				<entry key="/pubauthor">
+				<entry key="/persondisambiguation">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="disambiguationPageController"/>
 						<property name="allowedFields">
@@ -376,9 +376,7 @@
 								<value>requestedHash</value>
 								<value>requestedUser</value>
 								<value>requestedRole</value>
-								<value>requestedIndex</value>
-								<value>formPersonId</value>
-								<value>formPersonNameId</value>
+								<value>requestedPersonId</value>
 							</list>
 						</property>
 					</bean>

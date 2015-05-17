@@ -145,7 +145,7 @@
 			<div id='personInfo'>
 				<div  id='aboutThisPerson'>
 					<form method='post' name='personForm' action="" class='form-horizontal'>
-						<c:if test="${command.person.disambiguatingPublication.post ne null}">
+						<c:if test="${false and command.person.disambiguatingPublication.post ne null}">
 							<div class='form-group'>
 								<label class="control-label col-md-4">${textAuthorOf}</label>
 								<div class="col-md-6">
@@ -266,13 +266,13 @@
 												<br/>
 												<ul>
 													<c:forEach var="role" items="${command.availableRoles}">
-														<fmt:message key="person.show.${role}" var="textRole" />
-														<fmt:message key="person.show.${role}Tooltip" var="textRoleTooltip" />
+														<fmt:message key="person.show.${role.relatorCode}" var="textRole" />
+														<fmt:message key="person.show.${role.relatorCode}Tooltip" var="textRoleTooltip" />
 														<li class='${role}'><span class='glyphicon glyphicon-question-sign explainRole' data-toggle="tooltip" data-placement="left" title="${textRoleTooltip}" data-role='${role}'>&#160;</span>${textRole}: 
 															<c:forEach var="relation" items="${post.resourcePersonRelations}">
-																<c:if test="${relation.relatorCode eq role}">
+																<c:if test="${relation.relationType eq role}">
 																	<span class='resourcePersonRelation_${relation.id}'>
-																		<a href="/person/${relation.person.id}/${relation.person.mainName}">${relation.person.mainName.firstName} ${relation.person.mainName.lastName} </a>
+																		<a href="${absoluteUrlGenerator.getPersonUrl(relation.person.id)}"><c:out value="${relation.person.mainName.firstName} "/> <c:out value="${relation.person.mainName.lastName} "/> </a>
 																		<!--  <span data-toggle='modal' data-target="#editRole" data-resource-title="${post.resource.title}" data-person-name="${relation.personName.firstName} ${relation.personName.lastName}" data-relation-simhash1="${relation.simhash1}" data-relation-simhash2='${relation.simhash2}' data-person-role="${role}" style='color:orange;cursor:pointer' href="#editRole" class='editRole glyphicon glyphicon-pencil'>&#160;</span> -->
 																		<span data-toggle='modal' data-target="#deleteRole" data-resourcePersonRelation-id='${relation.id}' style='color:darkred;cursor:pointer' href="#deleteRole" class='deleteRole glyphicon glyphicon-remove'>&#160;</span>
 																	</span>
@@ -315,13 +315,13 @@
 												<br/>
 												<ul>
 													<c:forEach var="role" items="${command.availableRoles}">
-														<fmt:message key="person.show.${role}" var="textRole" />
-														<fmt:message key="person.show.${role}Tooltip" var="textRoleTooltip" />
+														<fmt:message key="person.show.${role.relatorCode}" var="textRole" />
+														<fmt:message key="person.show.${role.relatorCode}Tooltip" var="textRoleTooltip" />
 														<li class='${role}'><span class='glyphicon glyphicon-question-sign explainRole' data-toggle="tooltip" data-placement="left" title="${textRoleTooltip}" data-role='${role}'>&#160;</span>${textRole}: 
 															<c:forEach var="relation" items="${post.resourcePersonRelations}">
-																<c:if test="${relation.relatorCode eq role}">
+																<c:if test="${relation.relationType eq role}">
 																	<span class='resourcePersonRelation_${relation.id}'>
-																		<a href="/person/${relation.person.id}/${relation.person.mainName}">${relation.person.mainName.firstName} ${relation.person.mainName.lastName} </a>
+																		<a href="${absoluteUrlGenerator.getPersonUrl(relation.person.id)}"><c:out value="${relation.person.mainName.firstName} "/> <c:out value="${relation.person.mainName.lastName} "/> </a>
 																		<!--  <span data-toggle='modal' data-target="#editRole" data-resource-title="${post.resource.title}" data-person-name="${relation.personName.firstName} ${relation.personName.lastName}" data-relation-simhash1="${relation.simhash1}" data-relation-simhash2='${relation.simhash2}' data-person-role="${role}" style='color:orange;cursor:pointer' href="#editRole" class='editRole glyphicon glyphicon-pencil'>&#160;</span> -->
 																		<span data-toggle='modal' data-target="#deleteRole" data-resourcePersonRelation-id='${relation.id}' style='color:darkred;cursor:pointer' href="#deleteRole" class='deleteRole glyphicon glyphicon-remove'>&#160;</span>
 																	</span>

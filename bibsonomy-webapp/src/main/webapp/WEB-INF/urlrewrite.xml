@@ -321,7 +321,7 @@
 	
 	<rule>
 		<name>rewrite /person/HASH/ROLE/INDEX</name>
-		<from>^/+persondisambiguation/+([^/]+?)/+([^/]+?)/+([^/]+?)/+([^/]+?)$</from>
+		<from>^/+person/+([^/]+?)/+([^/]+?)/+([^/]+?)$</from>
 		<set type="parameter" name="requestedIndex">$3</set>
 		<set type="parameter" name="requestedHash">$1</set>
 		<set type="parameter" name="requestedRole">$2</set>

@@ -3299,13 +3299,13 @@ public class DBLogic implements LogicInterface {
 		
 		StringBuilder sb = new StringBuilder();
 		if (!StringUtils.isBlank(firstName)) {
-			sb.append(firstName.charAt(0));
+			sb.append(firstName.toLowerCase().charAt(0));
 			sb.append('.');
 		}
-		if (!StringUtils.isBlank(lastName)) {
+		if (StringUtils.isBlank(lastName)) {
 			throw new IllegalArgumentException("lastName may not be empty");
 		}
-		sb.append(lastName);
+		sb.append(lastName.toLowerCase());
 		
 		return sb.toString();
 	}
@@ -3352,9 +3352,42 @@ public class DBLogic implements LogicInterface {
 	}
 	
 	public List<ResourcePersonRelation> getResourceRelations(Person person) {
-		return this.personDBManager.getResourcePersonRelations(person, this.dbSessionFactory.getDatabaseSession());
+		final Map<String, ResourcePersonRelation> byInterHash = new HashMap<>();
+		addIfNotPresent(byInterHash, this.personDBManager.getResourcePersonRelationsWithPosts(person, this.loginUser, GoldStandardPublication.class, this.dbSessionFactory.getDatabaseSession()));
+		addIfNotPresent(byInterHash, this.personDBManager.getResourcePersonRelationsWithPosts(person, this.loginUser, BibTex.class, this.dbSessionFactory.getDatabaseSession()));
+		final List<ResourcePersonRelation> sorted = new ArrayList<>(byInterHash.values());
+		Collections.sort(sorted, new Comparator<ResourcePersonRelation>() {
+			@Override
+			public int compare(ResourcePersonRelation o1, ResourcePersonRelation o2) {
+				try {
+					final int year1 = Integer.parseInt(o1.getPost().getResource().getYear().trim());
+					final int year2 = Integer.parseInt(o2.getPost().getResource().getYear().trim());
+					if (year1 != year2) {
+						return year2 - year1;
+					}
+				} catch (Exception e) {
+					log.warn(e);
+				}
+				return System.identityHashCode(o1) - System.identityHashCode(o2);
+			}
+		});
+		return sorted;
 	}
 	
+	/**
+	 * @param byInterHash
+	 * @param resourcePersonRelationsWithPosts
+	 */
+	private static void addIfNotPresent(Map<String, ResourcePersonRelation> byInterHash, List<ResourcePersonRelation> resourcePersonRelationsWithPosts) {
+		for (ResourcePersonRelation rpr : resourcePersonRelationsWithPosts) {
+			final String interhash = rpr.getPost().getResource().getInterHash();
+			if (byInterHash.containsKey(interhash)) {
+				continue;
+			}
+			byInterHash.put(interhash,rpr);
+		}
+	}
+
 	public void createOrUpdatePersonName(PersonName personName) {
 		this.personDBManager.createPersonName(personName, this.dbSessionFactory.getDatabaseSession());
 	}

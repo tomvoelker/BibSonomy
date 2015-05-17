@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
@@ -180,16 +181,18 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @return
 	 */
 	private View addRoleAction(PersonPageCommand command) {
-		if (!present(command.getFormPersonIndex())) {
-			command.setFormPersonIndex("-1");
+		if (command.getFormPersonIndex() == -1) {
+			throw new IllegalArgumentException();
 		}
 		
 		ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
-		
-			resourcePersonRelation.setSimhash1(command.getFormInterHash())
-			.Relat
-			.withPersonId(command.getFormPersonId())
-			.withAuthorIndex(new Integer(command.getFormPersonIndex()));
+		Post<BibTex> post = new Post<>();
+		post.setResource(new BibTex());
+		post.getResource().setInterHash(command.getFormInterHash());
+		resourcePersonRelation.setPost(post);
+		resourcePersonRelation.setPerson(new Person());
+		resourcePersonRelation.getPerson().setId(command.getFormPersonId());
+		resourcePersonRelation.setPersonIndex(command.getFormPersonIndex());
 		this.logic.addResourceRelation(resourcePersonRelation);
 		command.setResponseString(resourcePersonRelation.getId() + "");
 		return Views.AJAX_TEXT;
@@ -202,12 +205,17 @@ public class PersonPageController extends SingleResourceListController implement
 	 */
 	private View editRoleAction(PersonPageCommand command) {
 		//TODO add new role types to view
-		for(String role : command.getFormPersonRoles()) {
-			ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation()
-			.withSimhash1(command.getFormInterHash())
-			.withRelatorCode(PersonResourceRelationType.valueOf(role).getRelatorCode())
-			.withPersonId(command.getFormPersonId())
-			.withAuthorIndex(new Integer(command.getFormPersonIndex()));
+		for (String role : command.getFormPersonRoles()) {
+			final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
+			Post<BibTex> post = new Post<>();
+			post.setResource(new BibTex());
+			post.getResource().setInterHash(command.getFormInterHash());
+			resourcePersonRelation.setPost(post);
+			resourcePersonRelation.setPerson(new Person());
+			resourcePersonRelation.getPerson().setId(command.getFormPersonId());
+			resourcePersonRelation.setPersonIndex(command.getFormPersonIndex());
+			final PersonResourceRelationType relationType = PersonResourceRelationType.valueOf(StringUtils.upperCase(role)); 
+			resourcePersonRelation.setRelationType(relationType);
 			this.logic.addResourceRelation(resourcePersonRelation);
 		}
 		
@@ -279,7 +287,7 @@ public class PersonPageController extends SingleResourceListController implement
 	private View showAction(PersonPageCommand command) {
 		
 		for(PersonResourceRelationType prr : PersonResourceRelationType.values()) {
-			command.getAvailableRoles().add(prr.getRelatorCode());
+			command.getAvailableRoles().add(prr);
 		}
 		
 		command.setPerson(this.logic.getPersonById(command.getRequestedPersonId()));
@@ -295,10 +303,11 @@ public class PersonPageController extends SingleResourceListController implement
 			
 			resourcePersonRelation.getPost().setResourcePersonRelations(this.logic.getResourceRelations(resourcePersonRelation.getPost()));
 			
-			if(resourcePersonRelation.getRelatorCode().equals(PersonResourceRelationType.AUTHOR.getRelatorCode())) 
+			if (resourcePersonRelation.getRelationType().equals(PersonResourceRelationType.AUTHOR)) { 
 				authorPosts.add(resourcePersonRelation.getPost());
-			else
+			} else {
 				advisorPosts.add(resourcePersonRelation.getPost());
+			}
 		}
 		
 		command.setThesis(authorPosts);

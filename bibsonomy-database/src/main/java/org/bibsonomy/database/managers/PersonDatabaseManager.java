@@ -8,12 +8,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
 
@@ -290,6 +294,33 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		}
 	}
 
+
+	/**
+	 * @param person
+	 * @param loginUser 
+	 * @param publicationType 
+	 * @param session
+	 * @return List<ResourcePersonRelation>
+	 */
+	public List<ResourcePersonRelation> getResourcePersonRelationsWithPosts(
+			Person person, User loginUser, Class<? extends BibTex> publicationType, DBSession session) {
+		
+		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, null, null, null, null, null, 0, Integer.MAX_VALUE, null, null, null, null, loginUser);
+		final ResourcePersonRelation personRelation = new ResourcePersonRelation();
+		personRelation.setPerson(person);
+		param.setPersonRelation(personRelation);
+		
+		session.beginTransaction();
+		try {
+			if (publicationType == GoldStandardPublication.class) {
+				return this.queryForList("getComunityBibTexRelationsForPerson", param, ResourcePersonRelation.class, session);
+			} else {
+				return this.queryForList("getBibTexRelationsForPerson", param, ResourcePersonRelation.class, session);
+			}
+		} finally {
+			session.endTransaction();
+		}
+	}
 
 	/**
 	 * @param person

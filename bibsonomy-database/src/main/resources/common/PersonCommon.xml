@@ -8,8 +8,8 @@
 		<result property="orcid"            column="orcid"               javaType="java.lang.String" />
 		<result property='academicDegree'   column='academic_degree'     javaType='java.lang.String' />
 		<result property="postCounter"      column="post_ctr"            javaType="integer" />
-		<result property="changedBy"        column="log_modified_by"     javaType="java.lang.String" />
-		<result property="changeDate"       column="log_modified_at"     javaType="java.util.Date" />
+		<result property="changedBy"        column="log_changed_by"      javaType="java.lang.String" />
+		<result property="changeDate"       column="log_changed_at"      javaType="java.util.Date" />
 		<result property="user"             column="user_name"           javaType="java.lang.String" />
 		
 		<!-- TODO: probably no longer needed -->
@@ -26,18 +26,31 @@
 		<result property="person"    column="person_id"   javaType='org.bibsonomy.model.Person' select='getPersonById' />
 	</resultMap>
 	
-	<resultMap id='resourcePersonRelation' class='org.bibsonomy.model.ResourcePersonRelation'>
+	<resultMap id='abstractResourcePersonRelation' class='org.bibsonomy.model.ResourcePersonRelation'>
 		<result property='id'              column='id'              javaType='int' />
 		<result property='qualifying'      column='qualifying'      javaType='int' />
 		<result property='relationType'    column='relator_code'    javaType='personResourceRelationType' />
-		<result property='changedBy'       column='log_modified_by' javaType='java.lang.String' />
-		<result property="person"          column="person_id"       javaType='org.bibsonomy.model.Person'       select='getPersonById' />
-		<result property='post'            column='simhash1'        javaType='bibtex'                           select='getPosts'/>
+		<result property='changedBy'       column='log_changed_by'  javaType='java.lang.String' />
 		<result property='personIndex'     column='person_index'    javaType='int' />
 	</resultMap>
 	
+	<resultMap id='lazyLoadingResourcePersonRelation' class='org.bibsonomy.model.ResourcePersonRelation' extends="abstractResourcePersonRelation">
+		<result property="person"          column="person_id"       javaType='org.bibsonomy.model.Person'       select='getPersonById' />
+		<result property='post'            column='simhash1'        javaType='bibtex'                           select='getPosts'/>
+	</resultMap>
+	
+	<resultMap id='preFilledResourcePersonRelation' class='org.bibsonomy.model.ResourcePersonRelation' groupBy="id" extends="abstractResourcePersonRelation">
+		<result property="person"          column="person_id"       javaType='org.bibsonomy.model.Person'       select='getPersonById' />
+		<result property='post'            resultMap="BibTexCommon.bibtexPost" />
+	</resultMap>
+	
+	<resultMap id='preFilledCommunityResourcePersonRelation' class='org.bibsonomy.model.ResourcePersonRelation' groupBy="id" extends="abstractResourcePersonRelation">
+		<result property="person"          column="person_id"       javaType='org.bibsonomy.model.Person'       select='getPersonById' />
+		<result property='post'            resultMap="GoldStandardPublicationCommon.goldStandardPost" />
+	</resultMap>
+	
 	<sql id="commonPersonColumns">
-		person.person_id, person.academic_degree, person.orcid, person.post_ctr, person.log_modified_by, person.log_modified_at, person.user_name
+		person.person_id, person.academic_degree, person.orcid, person.post_ctr, person.log_changed_by, person.log_changed_at, person.user_name
 	</sql>
 	
 	<sql id='commonPersonNameColumns'>
@@ -49,11 +62,15 @@
 	</sql>
 	
 	<sql id="commonResourcePersonRelationAttributes">
-		#id#, #post.resource.interHash#, #post.resource.intraHash#, #qualifying#, #personId#, #relationType.relatorCode# , #post.user.name#, #personIndex#
+		#id#, #post.resource.interHash#, #post.resource.intraHash#, #qualifying#, #person.id#, #relationType.relatorCode# , #changedBy#, #personIndex#
 	</sql>
 	
 	<sql id="commonResourcePersonRelationColumns">
-		pub_person.id, pub_person.simhash1, pub_person.simhash2, pub_person.qualifying, pub_person.person_id, pub_person.relator_code, pub_person.pub_owner, pub_person.person_index
+		pub_person.id, pub_person.simhash1, pub_person.simhash2, pub_person.qualifying, pub_person.person_id, pub_person.relator_code, log_changed_by, pub_person.person_index	
+	</sql>
+	
+	<sql id="commonResourcePersonRelationColumns2">
+		b2.id, b2.simhash1, b2.simhash2, b2.qualifying, b2.person_id, b2.relator_code, b2.log_changed_by, b2.person_index	
 	</sql>
 	
 </sqlMap>

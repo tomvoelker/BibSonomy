@@ -4,8 +4,8 @@ CREATE TABLE `person` (
   `user_name` varchar(30) DEFAULT NULL,
   `post_ctr` int(11) DEFAULT NULL,
   `orcid` char(16) DEFAULT NULL,
-  `log_modified_at` datetime DEFAULT NULL,
-  `log_modified_by` varchar(30) DEFAULT NULL,
+  `log_changed_at` datetime DEFAULT NULL,
+  `log_changed_by` varchar(30) DEFAULT NULL,
   PRIMARY KEY (`person_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=109 DEFAULT CHARSET=utf8;
 
@@ -15,8 +15,8 @@ CREATE TABLE `log_person` (
   `academic_degree` varchar(64) DEFAULT NULL,
   `user_name` varchar(30) DEFAULT NULL,
   `orcid` char(16) DEFAULT NULL,
-  `log_modified_at` datetime DEFAULT NULL,
-  `log_modified_by` varchar(30) DEFAULT NULL,
+  `log_changed_at` datetime DEFAULT NULL,
+  `log_changed_by` varchar(30) DEFAULT NULL,
   `deleted` tinyint(4) NOT NULL DEFAULT 0 COMMENT 'set to 1 for delete actions',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=109 DEFAULT CHARSET=utf8;

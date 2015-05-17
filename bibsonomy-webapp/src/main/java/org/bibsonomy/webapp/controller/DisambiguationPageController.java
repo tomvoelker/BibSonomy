@@ -31,6 +31,8 @@ public class DisambiguationPageController extends SingleResourceListController i
 		command.setPost(this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, command.getRequestedHash(), null, null, null, null, null, null, 0, 100).get(0));
 		if ("newPerson".equals(command.getRequestedAction())) {
 			return newAction(command);
+		} else if ("linkPerson".equals(command.getRequestedAction())) {
+			return linkAction(command);
 		}
 		
 		return disambiguateAction(command);
@@ -55,24 +57,8 @@ public class DisambiguationPageController extends SingleResourceListController i
 	 * @return
 	 */
 	private View newAction(DisambiguationPageCommand command) {
-		final BibTex bibtex = command.getPost().getResource();
-		final List<PersonName> publicationNames = bibtex.getPersonNamesByRole(command.getRequestedRole());
-		final int i = command.getRequestedIndex();
-		if ((publicationNames == null) || (publicationNames.size() <= i)) {
-			throw new IllegalArgumentException();
-		}
-		final PersonName mainName = publicationNames.get(i);
-		final Person person = new Person();
-		mainName.setMain(true);
-		person.setMainName(mainName);
-		this.logic.createOrUpdatePerson(person);
-		command.setPerson(person);
-		
-		final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
-		resourcePersonRelation.setPost(command.getPost());
-		resourcePersonRelation.setRelationType(command.getRequestedRole());
-		resourcePersonRelation.setPersonIndex(i);
-		this.logic.addResourceRelation(resourcePersonRelation);
+		final Person person = createPersonEntity(command);
+		linkToPerson(command, person);
 		
 //		
 //		JSONObject jsonPerson = new JSONObject();
@@ -83,6 +69,49 @@ public class DisambiguationPageController extends SingleResourceListController i
 //		
 //		command.setResponseString(jsonPerson.toJSONString());
 		
+		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(person.getId()));
+	}
+
+	private Person createPersonEntity(DisambiguationPageCommand command) {
+		final PersonName mainName = getMainPersonName(command);
+		
+		final Person person = new Person();
+		mainName.setMain(true);
+		person.setMainName(mainName);
+		this.logic.createOrUpdatePerson(person);
+		command.setPerson(person);
+		return person;
+	}
+
+	private void linkToPerson(DisambiguationPageCommand command, final Person person) {
+		final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
+		resourcePersonRelation.setPerson(person);
+		resourcePersonRelation.setPost(command.getPost());
+		resourcePersonRelation.setRelationType(command.getRequestedRole());
+		resourcePersonRelation.setPersonIndex(command.getRequestedIndex());
+		this.logic.addResourceRelation(resourcePersonRelation);
+	}
+
+	private static PersonName getMainPersonName(DisambiguationPageCommand command) {
+		final BibTex bibtex = command.getPost().getResource();
+		final List<PersonName> publicationNames = bibtex.getPersonNamesByRole(command.getRequestedRole());
+		final int i = command.getRequestedIndex();
+		if ((publicationNames == null) || (publicationNames.size() <= i)) {
+			throw new IllegalArgumentException();
+		}
+		final PersonName mainName = publicationNames.get(i);
+		return mainName;
+	}
+	
+	
+	/**
+	 * creates a new person, links te resource and redirects to the new person page
+	 * @param command
+	 * @return
+	 */
+	private View linkAction(DisambiguationPageCommand command) {
+		final Person person = this.logic.getPersonById(command.getRequestedPersonId());
+		linkToPerson(command, person);		
 		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(person.getId()));
 	}
 }

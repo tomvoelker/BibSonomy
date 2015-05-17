@@ -18,8 +18,7 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	private PersonResourceRelationType requestedRole;
 	private int requestedIndex;
 	
-	private String formPersonId;
-	private String formPersonNameId;
+	private String requestedPersonId;
 	
 	private List<PersonName> suggestedPersonNames;
 	private Person person;
@@ -99,29 +98,15 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	/**
 	 * @return the formAddPersonId
 	 */
-	public String getFormPersonId() {
-		return this.formPersonId;
+	public String getRequestedPersonId() {
+		return this.requestedPersonId;
 	}
 
 	/**
 	 * @param formAddPersonId the formAddPersonId to set
 	 */
-	public void setFormPersonId(String formPersonId) {
-		this.formPersonId = formPersonId;
-	}
-
-	/**
-	 * @return the formPersonNameId
-	 */
-	public String getFormPersonNameId() {
-		return this.formPersonNameId;
-	}
-
-	/**
-	 * @param formPersonNameId the formPersonNameId to set
-	 */
-	public void setFormPersonNameId(String formPersonNameId) {
-		this.formPersonNameId = formPersonNameId;
+	public void setRequestedPersonId(String formPersonId) {
+		this.requestedPersonId = formPersonId;
 	}
 
 	/**

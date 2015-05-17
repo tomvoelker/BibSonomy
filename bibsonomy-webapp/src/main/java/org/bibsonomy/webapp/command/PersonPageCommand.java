@@ -38,7 +38,7 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	private String formInterHash;
 	private String formIntraHash;
 	private boolean formThatsMe;
-	private String formPersonIndex;
+	private int formPersonIndex = -1;
 	
 	private String formAction;
 	
@@ -48,7 +48,7 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	private List<Post<?>> thesis;
 	private List<Post<?>> advisedThesis;
 	private List<Post<?>> allPosts;
-	private List<String> availableRoles = new ArrayList<String>();
+	private List<PersonResourceRelationType> availableRoles = new ArrayList<>();
 	
 	private String responseString;
 	
@@ -157,12 +157,11 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	public List<String> getFormPersonRoles() {
 		return this.formPersonRoles;
 	}
-
+	
 	/**
-	 * @param formPersonRoles 
-	 * @param formPersonRole the formPersonRole to set
+	 * @param formPersonRoles the formPersonRoles to set
 	 */
-	public void setformPersonRoles(List<String> formPersonRoles) {
+	public void setFormPersonRoles(List<String> formPersonRoles) {
 		this.formPersonRoles = formPersonRoles;
 	}
 
@@ -321,13 +320,6 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	}
 
 	/**
-	 * @param formPersonRoles the formPersonRoles to set
-	 */
-	public void setFormPersonRoles(List<String> formPersonRoles) {
-		this.formPersonRoles = formPersonRoles;
-	}
-
-	/**
 	 * @return String
 	 */
 	public String getFormPersonNameId() {
@@ -429,14 +421,14 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	/**
 	 * @return the availableRoles
 	 */
-	public List<String> getAvailableRoles() {
+	public List<PersonResourceRelationType> getAvailableRoles() {
 		return this.availableRoles;
 	}
 
 	/**
 	 * @param availableRoles the availableRoles to set
 	 */
-	public void setAvailableRoles(List<String> availableRoles) {
+	public void setAvailableRoles(List<PersonResourceRelationType> availableRoles) {
 		this.availableRoles = availableRoles;
 	}
 
@@ -457,14 +449,14 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	/**
 	 * @return the formAuthorIndex
 	 */
-	public String getFormPersonIndex() {
+	public int getFormPersonIndex() {
 		return this.formPersonIndex;
 	}
 
 	/**
 	 * @param formAuthorIndex the formAuthorIndex to set
 	 */
-	public void setFormPersonIndex(String formAuthorIndex) {
+	public void setFormPersonIndex(int formAuthorIndex) {
 		this.formPersonIndex = formAuthorIndex;
 	}
 }

@@ -46,6 +46,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.UrlBuilder;
 import org.bibsonomy.util.UrlUtils;
@@ -1711,10 +1712,13 @@ public class URLGenerator {
 	 * @param role
 	 * @return String
 	 */
-	public String getDisambiguationUrl(final String personName, final Integer authorIndex, final String resourceHash, final String role) {
+	public String getDisambiguationUrl(String resourceHash, final PersonResourceRelationType role, final Integer authorIndex) {
+		if (resourceHash.length() < 33) {
+			resourceHash = "1" + resourceHash;
+		}
 		return this.getUrl(new UrlBuilder(this.projectHome + URLGenerator.DISAMBIGUATION_PREFIX) //
-			.addPathElement("1" + resourceHash) //
-			.addPathElement(role) //
+			.addPathElement(resourceHash) //
+			.addPathElement(role.name().toLowerCase()) //
 			.addPathElement(Integer.toString(authorIndex)) //
 			.asString());
 	}
