@@ -1,5 +1,5 @@
 <div style="margin-bottom:1em">
-\format[AuthorLastFirst,HTMLChars2,AntiScriptInjection,DIN1505T2AndsReplacer,DIN1505T2PersonNamesFormatter]{\author}:
+\format[AuthorLastFirst,DIN1505T2AndsReplacer,HTMLCharsAntiScript,DIN1505T2PersonNamesFormatter]{\author}:
 <i>\format[AntiScriptInjection]{\title}</i>\begin{year},
 \format[AntiScriptInjection]{\year}\end{year}. - \format[AntiScriptInjection]{\note}
 </div>

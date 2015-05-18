@@ -3,7 +3,7 @@
 
 <sqlMap namespace="Person">
 
-	<select id="getPersonById" resultMap="PersonCommon.person" parameterClass="int">
+	<select id="getPersonById" resultMap="PersonCommon.person" parameterClass="String">
 		SELECT <include refid="commonPersonColumns"/> FROM person 
 			WHERE person.person_id = #id#
 	</select>
@@ -16,10 +16,6 @@
 	<insert id="insertPerson" parameterClass="org.bibsonomy.model.Person">
 		INSERT INTO person (<include refid="commonPersonColumns"/>)
 			VALUES (<include refid="insertPersonAttributes"/>)
-			
-			<selectKey resultClass="int" keyProperty="id" >
-    		SELECT @@IDENTITY AS ID
-  		</selectKey>
 	</insert>
 	
 	<insert id='insertName' parameterClass="org.bibsonomy.model.PersonName">
@@ -40,7 +36,7 @@
   		</selectKey>
 	</insert>
 	
-	<select id='getNames' resultMap='PersonCommon.personName' parameterClass='int'>
+	<select id='getNames' resultMap='PersonCommon.personName' parameterClass='String'>
 		SELECT <include refid='commonPersonNameColumns'/> FROM person_name 
 			WHERE person_name.person_id = #id#
 	</select>
@@ -76,23 +72,14 @@
 		DELETE FROM person_name WHERE id = #personNameId#
 	</delete>
 	
-	<select id='getResourceRelations' resultMap="PersonCommon.resourcePersonRelation" parameterClass='int'>
-		SELECT <include refid="commonResourcePersonRelationColumns" /> FROM pub_person
-			WHERE pub_person.person_name_id = #personNameId# 
-	</select>
-	
-	<select id='getResourceRelationsByRPR' resultMap="PersonCommon.resourcePersonRelation" parameterClass='org.bibsonomy.model.ResourcePersonRelation'>
-		SELECT <include refid='commonResourcePersonRelationColumns' /> FROM pub_person LEFT JOIN person_name ON person_name.id = pub_person.person_name_id
+	<select id='getResourcePersonRelationByResourcePersonRelation' resultMap="PersonCommon.lazyLoadingResourcePersonRelation" parameterClass='org.bibsonomy.model.ResourcePersonRelation'>
+		SELECT <include refid='commonResourcePersonRelationColumns' /> FROM pub_person 
 			WHERE 
-				person_name.first_name = #personName.firstName#
+				pub_person.simhash1 = #post.resource.interHash#
 					AND
-				person_name.last_name = #personName.lastName#
+				pub_person.relator_code = #relationType.relatorCode#
 					AND
-				pub_person.pub_owner = #pubOwner#
-					AND
-				pub_person.simhash1 = #simhash1#
-					AND
-				pub_person.relator_code = #relatorCode#
+				pub_person.person_index = #personIndex#
 	</select>
 	
 	<update id='unlinkUser' parameterClass="java.lang.String">
@@ -107,36 +94,70 @@
 		IF("hansii" = b.user_name, b.privnote, NULL) AS privnote , b.scraperid, t1.change_date, b.simhash1 AS interHash, b.simhash2 AS intraHash, t1.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name, c.rating_arithmetic_mean AS rating, c.number_of_ratings
 		FROM tas t1, bibhash h, 
 			(SELECT * FROM bibtex
-			 WHERE bibtexKey LIKE "%"  
-			 AND user_name = #pubOwner#) b 
+			 WHERE bibtexKey LIKE "%") b 
 			 LEFT JOIN review_ratings_cache c ON (c.interHash = b.simhash1)
 		WHERE b.content_id = t1.content_id
 		AND (
 			(b.simhash1 = h.hash
 			AND h.type=1
 			AND b.simhash1 = #simhash1#)
-        OR 
-			(b.simhash2 = h.hash
-			AND h.type=2
-			AND b.simhash2 = #simhash2#)
 		)
-		ORDER BY date DESC
+		GROUP BY interHash ORDER BY date DESC
 	</statement>
 	
-	<statement id="getResourcePersonRelationsByPost" resultMap="PersonCommon.resourcePersonRelation">
+	<select id="getBibTexRelationsForPerson" resultMap="PersonCommon.preFilledResourcePersonRelation" parameterClass="bibtexParam">
+		SELECT <include refid ="bibtexAttributes2"/>, t.change_date, t.tag_name, g.*, b2.count, <include refid="reviewRatingsRows" />, <include refid="commonResourcePersonRelationColumns2" />
+		FROM
+			(SELECT
+					t1.*,
+					pp.id, pp.qualifying, pp.person_id, pp.relator_code, pp.log_changed_by, pp.person_index,
+					h.ctr AS count
+				FROM bibtex t1, bibhash h, pub_person pp
+				WHERE
+					<include refid="bibtexSimHash3"/>
+					AND t1.simhash1=pp.simhash1 AND pp.person_id=#personRelation.person.id#
+					<include refid="restrictToGroups"/>
+			) AS b2
+			LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id
+			<include refid="reviewRatingsJoinPublication2" />,
+			groupids AS g
+		WHERE
+			b2.group = g.group
+		ORDER BY b2.date DESC, b2.content_id DESC
+	</select>
+	
+	<select id="getComunityBibTexRelationsForPerson" resultMap="PersonCommon.preFilledCommunityResourcePersonRelation" parameterClass="bibtexParam">
+		SELECT
+			<include refid="allGoldStandardPublicationAttributesAnonym" />, b.simhash2 as intraHash, b.simhash1 as interHash, b.change_date, 0 as count, <include refid="reviewRatingsRows" />, <include refid="commonResourcePersonRelationColumns" />
+		FROM
+			gold_standard b
+			<include refid="reviewRatingsJoinPublication" />,
+			bibhash h, pub_person
+		WHERE
+			<include refid="bibtexSimHash"/>
+			AND b.simhash1=pub_person.simhash1 AND pub_person.person_id=#personRelation.person.id#
+	</select>
+	
+	
+	<statement id="getResourcePersonRelationsByPost" resultMap="PersonCommon.lazyLoadingResourcePersonRelation">
 		SELECT <include refid="commonResourcePersonRelationColumns" /> FROM pub_person
-			WHERE pub_person.pub_owner = #pubOwner#
-				AND (pub_person.simhash1 = #simhash1# OR pub_person.simhash2 = #simhash2#) 
+			WHERE pub_person.pub_owner = #post.user.name#
+				AND (pub_person.simhash1 = #post.resource.interHash#) 
 	</statement>
 	
-	<statement id="getResourcePersonRelationsByNameId" resultMap="PersonCommon.resourcePersonRelation">
+	<statement id="getResourcePersonRelationsByPersonId" parameterClass="java.lang.String" resultMap="PersonCommon.lazyLoadingResourcePersonRelation">
 		SELECT <include refid="commonResourcePersonRelationColumns" /> FROM pub_person
-			WHERE person_name_id = #personNameId# 
+			WHERE person_id = #personId# 
 	</statement>
 	
-	<statement id="getOneResourcePersonRelationsByPersonId" resultMap="PersonCommon.resourcePersonRelation">
+	<statement id="getResourcePersonRelationsByInterhash" parameterClass="java.lang.String" resultMap="PersonCommon.lazyLoadingResourcePersonRelation">
 		SELECT <include refid="commonResourcePersonRelationColumns" /> FROM pub_person
-			WHERE pub_person.person_name_id IN (SELECT person_name.id FROM person_name WHERE person_id = #personId#) 
+			WHERE simhash1 = #post.resource.interhash# 
+	</statement>
+	
+	<statement id="getOneResourcePersonRelationsByPersonId" resultMap="PersonCommon.lazyLoadingResourcePersonRelation">
+		SELECT <include refid="commonResourcePersonRelationColumns" /> FROM pub_person
+			WHERE pub_person.person_id  = #personId# 
 			AND pub_person.relator_code = "Maut"
 			LIMIT 0,1
 	</statement>

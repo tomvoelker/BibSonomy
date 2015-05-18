@@ -65,4 +65,10 @@ public final class ESConstants {
 	 * Index type for the system information
 	 */
 	public static final String SYSTEM_INFO_INDEX_TYPE = "SystemInformation";
+	
+	/** field name in th index schema */
+	public static final String SYSTEM_URL_FIELD_NAME = "systemUrl";
+	
+	/** field name in th index schema */
+	public static final String QUALIFYING_DEGREE_FIELD_NAME = "qualifyingDegree";
 }

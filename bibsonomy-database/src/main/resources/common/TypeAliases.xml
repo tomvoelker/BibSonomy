@@ -34,7 +34,8 @@
 	<typeAlias alias="personNameList"				type="java.util.List" />
 	<typeAlias alias="samlRemoteUserId"    type="org.bibsonomy.model.user.remote.SamlRemoteUserId" />
 	
-	<typeAlias alias="goldStandardRelation" type="org.bibsonomy.model.enums.GoldStandardRelation"/>
+	<typeAlias alias="goldStandardRelation" type="org.bibsonomy.model.enums.GoldStandardRelation" />
+	<typeAlias alias="personResourceRelationType" type="org.bibsonomy.model.enums.PersonResourceRelationType" />
 	
 	<!-- Synchronization -->
 	<typeAlias alias="syncResource"		  type="org.bibsonomy.model.sync.SynchronizationResource" />

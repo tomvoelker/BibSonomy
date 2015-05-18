@@ -19,11 +19,13 @@
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
 	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/publication"
-	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"> 
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
+	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+	xmlns:form="http://www.springframework.org/tags/form"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<c:set var="requestedUserEncoded" value="${mtl:encodeURI(command.requestedUser)}" />
 	<c:set var="post" value="${command.bibtex.list[0]}" />
 	<c:set var="publication" value="${post.resource}" />
 	
@@ -80,8 +82,6 @@
 
 		<jsp:attribute name="content">
 			<fmt:message key="disambiguation.otherPerson" var="textOtherPerson"/>
-			<fmt:message key="disambiguation.otherPerson.modal.title" var="textOtherPersonMsg"><fmt:param value="${command.requestedAuthorName}"/></fmt:message>
-			<fmt:message key="disambiguation.otherPerson.modal.msg" var="textOtherPersonMsg"><fmt:param value="${command.requestedAuthorName}"/></fmt:message>
 			<fmt:message key="disambiguation.otherPerson.modal.newPersonButton" var="textNewPersonButton"/>
 			<fmt:message key="disambiguation.otherPerson.modal.selectPersonButton" var="textSelectPersonButton"/>
 			<fmt:message key="disambiguation.otherPerson.modal.abortButton" var="textAbortButton"/>
@@ -92,7 +92,7 @@
 		
 		
 			<div class="page-header">
-				<h1>${command.requestedAuthorName}</h1>
+				<h1>${command.personName}</h1>
 			</div>
 		
 			<c:if test="${not empty command.post}">
@@ -111,7 +111,7 @@
 			<div class="clearfix">&#160;</div>
 			
 			<div class="clearfix">
-				<h2><fmt:message key="disambiguation.pleaseChooseMsg"><fmt:param value="${command.requestedAuthorName}"/></fmt:message></h2>
+				<h2><fmt:message key="disambiguation.pleaseChooseMsg"><fmt:param value="${command.personName}"/></fmt:message></h2>
 				<p><fmt:message key="disambiguation.listExplanation"/></p>
 					
 					<c:choose>
@@ -119,13 +119,22 @@
 							<div class="list-group">
 								<c:forEach var='personName' items="${command.suggestedPersonNames}">
 									<div class="list-group-item">
-										<a class='btnLinkPerson' data-toggle="modal"  data-target="#linkPerson" href="#linkPerson" data-firstName="${personName.firstName}" data-lastName="${personName.lastName}" data-person-name-id='${personName.id}' data-person-id='${personName.personId}'>
-											<span class="authorName">${personName.lastName}, ${personName.firstName}</span>
+										<a class='btnLinkPerson' data-toggle="modal" data-target="#linkPerson" href="#linkPerson" data-person-url="${absoluteUrlGenerator.getPersonUrl(personName.person.id)}" data-person-id="${fn:escapeXml(personName.person.id)}" >
+											<span class="authorName">
+												<c:if test="${not empty personName.person.mainName.firstName}"><c:out value="${personName.person.mainName.firstName}"/></c:if>
+												<c:if test="${not empty personName.person.mainName.lastName}"><c:out value="${personName.person.mainName.lastName}"/></c:if>
+												<c:if test="${personName.person.mainName.id != personName.id}">
+													(
+													<c:if test="${not empty personName.firstName}"><c:out value="${personName.firstName}"/></c:if>
+													<c:if test="${not empty personName.lastName}"><c:out value="${personName.lastName}"/></c:if>
+													)
+												</c:if>
+											</span>
 											<c:set var="firstInfo" value="${true}"/>
-											<c:if test="${not empty personName.person.academicDegree}"><c:choose><c:when test="${firstInfo}"> (<c:set var="firstInfo" value="${false}"/></c:when><c:otherwise>, </c:otherwise></c:choose>${personName.person.academicDegree}</c:if>	 
-											<c:if test="${not empty personName.person.disambiguatingPublication.post}"><c:choose><c:when test="${firstInfo}"> (<c:set var="firstInfo" value="${false}"/></c:when><c:otherwise>, </c:otherwise></c:choose>${personName.person.disambiguatingPublication.post.resource.title}</c:if>
-											<c:if test="${not empty personName.person.disambiguatingPublication.post.resource.year}"><c:choose><c:when test="${firstInfo}"> (<c:set var="firstInfo" value="${false}"/></c:when><c:otherwise>, </c:otherwise></c:choose>(${personName.person.disambiguatingPublication.post.resource.year})</c:if>
-											<c:choose><c:when test="${not firstInfo}">)</c:when><c:otherwise> (${textNoFurtherInfo})</c:otherwise></c:choose>
+											<c:if test="${not empty personName.person.academicDegree}">                              <c:choose><c:when test="${firstInfo}"> (<c:set var="firstInfo" value="${false}"/></c:when><c:otherwise>, </c:otherwise></c:choose><c:out value="${personName.person.academicDegree}"/></c:if>	 
+											<c:if test="${not empty personName.person.disambiguatingPublication.post}">              <c:choose><c:when test="${firstInfo}"> (<c:set var="firstInfo" value="${false}"/></c:when><c:otherwise>, </c:otherwise></c:choose><c:out value="${personName.person.disambiguatingPublication.post.resource.title}"/></c:if>
+											<c:if test="${not empty personName.person.disambiguatingPublication.post.resource.year}"><c:choose><c:when test="${firstInfo}"> (<c:set var="firstInfo" value="${false}"/></c:when><c:otherwise>, </c:otherwise></c:choose><c:out value="${personName.person.disambiguatingPublication.post.resource.year}"/></c:if>
+											<c:choose><c:when test="${not firstInfo}">)</c:when><c:otherwise> (<c:out value="${textNoFurtherInfo}"/>)</c:otherwise></c:choose>
 										</a>
 									</div>
 								</c:forEach>
@@ -139,7 +148,7 @@
 								<div class="list-group-item">
 									<span>
 										<fmt:message key="disambiguation.notFound">
-											<fmt:param value="${command.requestedAuthorName}" />
+											<fmt:param value="${command.personName}" />
 										</fmt:message>
 									</span>
 								</div>
@@ -147,7 +156,7 @@
 									<a class='btnLinkPerson' data-toggle="modal" data-target="#otherPerson" href="#otherPerson">
 										<span class="authorName">
 											<fmt:message key="disambiguation.newPerson">
-												<fmt:param value="${command.requestedAuthorName}" />
+												<fmt:param value="${command.personName}" />
 											</fmt:message>
 										</span>
 									</a>
@@ -169,38 +178,136 @@
 	
 	</layout:paneLayout>
 
-	<div class="modal fade" id="otherPerson" tabindex="-1" role="dialog"
-		aria-labelledby="otherPersonLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-							aria-hidden="true">&amp;times;</button>
-						<h4 class="modal-title"><p><fmt:message key="disambiguation.otherPerson.modal.title"/></p></h4>
-					</div>
+
+
+
+
+
+	<fmt:message var="otherPersonModalTitle" key="disambiguation.otherPerson.modal.title"/>
+	<bs:modal modalTitle="${otherPersonModalTitle}" id="otherPerson">
+		<jsp:attribute name="modalBody">
+			<p>
+				<fmt:message key="disambiguation.otherPerson.modal.msg"><fmt:param value="${command.personName}"/></fmt:message>
+			</p>
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#newPerson" data-toggle="tab"><fmt:message key="disambiguation.otherPerson.modal.tab.newPerson"/></a></li>
+				<li><a href="#existingPerson" data-toggle="tab"><fmt:message key="disambiguation.otherPerson.modal.tab.linkPerson"/></a></li>
+			</ul>
+			<div id="otherPersonTabs" class="tab-content">
+			
+				<div class="tab-pane active" id="newPerson">
+				<!-- 
+					<button type="button" class="btn btn-default" data-dismiss="modal">${textAbortButton}</button>&#160;
+					<button type="button" class="btn btn-default" id='btnNewPersonSubmit' data-person-firstName="${command.personName.firstName}" data-person-lastName="${command.personName.lastName}" data-resource-simhash1="${command.post.resource.interHash}" data-author-index="${command.requestedIndex}">${textNewPersonButton}</button>
+				 -->
 					
-					<div class="modal-body">
-						<p>${textOtherPersonMsg}</p>
+					<form:form action="${absoluteUrlGenerator.getDisambiguationUrl(command.requestedHash, command.requestedRole, command.requestedIndex)}" id="form_newPerson" method="POST" cssClass="form-horizontal">
 						<fieldset>
+							<input type="hidden" name="requestedAction"   value="newPerson" />
 							<div class="form-group">
-								<label for='addPersonAuto' class="control-label col-md-3">${textPerson}</label>
-								<div class="col-md-7">
-									<div class='input-group'>
-										<input class='form-control typeahead' id='addPersonAuto' type='text' name='addPersonAuto' autocomplete="off" autofocus="autofocus" placeholder="${textPersonSearchPlaceholder}"/>
-										<button type="button" class="btn btn-primary" id='btnOtherPersonSubmit' data-person-firstName="${command.personName.firstName}" data-person-lastName="${command.personName.lastName}" data-resource-simhash1="${command.post.resource.interHash}" data-resource-simhash2="${command.post.resource.intraHash}" data-pubowner="${command.post.user.name}">${textSelectPersonButton}</button>
-									</div>
+								<div class="col-sm-offset-3 col-sm-3 col-md-3 col-lg-3">
+									<button type="button" class="btn btn-default" data-dismiss="modal">${textAbortButton}</button>&#160;
+									
+									<!-- 
+									<button type="button" class="btn btn-primary" id='btnOtherPersonSubmit' data-person-firstName="${command.personName.firstName}" data-person-lastName="${command.personName.lastName}" ></button>
+									 -->
+								</div>
+								<div class="col-sm-3 col-md-3 col-lg-3">
+									<bsform:button type="submit" style="success" value="${textNewPersonButton}" size="defaultSize" />
 								</div>
 							</div>
 						</fieldset>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">${textAbortButton}</button>&#160;
-						<button type="button" class="btn btn-default" id='btnNewPersonSubmit' data-person-firstName="${command.personName.firstName}" data-person-lastName="${command.personName.lastName}" data-resource-simhash1="${command.post.resource.interHash}" data-resource-simhash2="${command.post.resource.intraHash}" data-pubowner="${command.post.user.name}">${textNewPersonButton}</button>
-					</div>
+					</form:form>
+				</div>
+				
+				<div class="tab-pane" id="existingPerson">
+					<form:form action="${absoluteUrlGenerator.getDisambiguationUrl(command.requestedHash, command.requestedRole, command.requestedIndex)}" id="form_existingPerson" method="POST" cssClass="form-horizontal">
+						<fieldset>
+							<input type="hidden" name="requestedAction"   value="linkPerson" />
+							<input type="hidden" name="requestedPersonId" value=""  id="otherPersonId"/>
+							<div class="form-group">
+								<label for='addPersonAuto' class="col-sm-3 control-label">${textPerson}</label>
+								<div class="col-sm-8">
+									<input class="form-control typeahead" id='addPersonAuto' type='text' name='addPersonAuto' autocomplete="off" autofocus="autofocus" placeholder="${textPersonSearchPlaceholder}"/>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-sm-offset-3 col-sm-3 col-md-3 col-lg-3">
+									<button type="button" class="btn btn-default" data-dismiss="modal">${textAbortButton}</button>&#160;
+								</div>
+								<div class="col-sm-3 col-md-3 col-lg-3">
+									<bsform:button type="submit" style="success" value="${textSelectPersonButton}" size="defaultSize" />
+									<!-- 
+									<button type="button" class="btn btn-primary" id='btnOtherPersonSubmit' data-person-firstName="${command.personName.firstName}" data-person-lastName="${command.personName.lastName}" >${textSelectPersonButton}</button>
+									 -->
+								</div>
+							</div>
+						</fieldset>
+					</form:form>
+				</div>
+				
 			</div>
-		</div>
-	</div>
+		</jsp:attribute>
+		<jsp:attribute name="modalFooter"><!-- 
+			<form action="/postPublication" method="post">
+				<input type="hidden" name='personId' value='${command.person.id}'/>
+				<input type="hidden" name='personRole' value='AUTHOR'/>
+				<input type="submit" class="btn btn-primary pull-left" name='submit' value='${textNewThesisButton}' />
+			</form>
+			<form action="" method="post" class='form-inline'>
+				<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
+				<input type='hidden' name='formThesisId' value=''/>&#160;
+				<input type="hidden" name='formAction' value='addThesis' />
+				<input type="submit" class="btn btn-primary" name='submit' id="addThesisBtn" value='${textAddThesisButton}' />
+			</form>
+			-->
+		</jsp:attribute>
+	</bs:modal>
 	
+	
+	
+	
+	
+	<fmt:message var="otherPersonModalTitle" key="disambiguation.link.modal.title"/>
+	<bs:modal modalTitle="${otherPersonModalTitle}" id="linkPerson">
+		<jsp:attribute name="modalBody">
+			<p><fmt:message key="disambiguation.link.modal.msg"/></p>
+		</jsp:attribute>
+		<jsp:attribute name="modalFooter">
+		
+			<div class="form-group">
+				<div class="col-sm-offset-3 col-sm-3 col-md-3 col-lg-3">
+					<button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="disambiguation.link.modal.abortButton"/></button>&#160;
+				</div>
+				<div class="col-sm-3 col-md-3 col-lg-3">
+					<a href='#tmp' id='linkShowPerson' type="button" class="btn btn-default"><fmt:message key="disambiguation.link.modal.viewButton"/></a>
+				</div>
+				<div class="col-sm-3 col-md-3 col-lg-3">
+					<form:form action="${absoluteUrlGenerator.getDisambiguationUrl(command.requestedHash, command.requestedRole, command.requestedIndex)}" id="formLinkPerson" method="POST" cssClass="">
+						<input type="hidden" name="requestedAction"   value="linkPerson" />
+						<input type="hidden" name="requestedPersonId" value="" id="fieldLinkPersonId" />
+						
+						<fmt:message var="textLinkPersonButton" key="disambiguation.link.modal.saveButton"/>
+						<bsform:button type="submit" style="success" value="${textLinkPersonButton}" size="defaultSize" />
+					</form:form>
+					<!-- 
+					<button type="button" class="btn btn-primary" id='btnOtherPersonSubmit' data-person-firstName="${command.personName.firstName}" data-person-lastName="${command.personName.lastName}" >${textSelectPersonButton}</button>
+					 -->
+				</div>
+			</div>
+		
+		<!-- 
+		 
+		<button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="disambiguation.link.modal.abortButton"/></button>&#160;
+		<button type="button" class="btn btn-primary" id='btnLinkPersonSubmit' data-resource-simhash1='${command.post.resource.interHash}' data-author-index='${command.requestedIndex}'><fmt:message key="disambiguation.link.modal.saveButton"/></button>
+		
+		 -->
+		
+		</jsp:attribute>
+	</bs:modal>
+	
+	
+	<!-- 
 	<div class="modal fade" id="linkPerson" tabindex="-1" role="dialog"
 		aria-labelledby="linkPersonLabel" aria-hidden="true">
 		<div class="modal-dialog">
@@ -217,9 +324,10 @@
 					<div class="modal-footer">
 						<a href='#showPerson' id='linkShowPerson' type="button" class="pull-left btn btn-default"><fmt:message key="disambiguation.link.modal.viewButton"/></a> 
 						<button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="disambiguation.link.modal.abortButton"/></button>&#160;
-						<button type="button" class="btn btn-primary" id='btnLinkPersonSubmit' data-resource-simhash1='${command.post.resource.interHash}' data-resource-simhash2='${command.post.resource.intraHash}' data-pub-owner='${command.requestedUser}'><fmt:message key="disambiguation.link.modal.saveButton"/></button>
+						<button type="button" class="btn btn-primary" id='btnLinkPersonSubmit' data-resource-simhash1='${command.post.resource.interHash}' data-author-index='${command.requestedIndex}'><fmt:message key="disambiguation.link.modal.saveButton"/></button>
 					</div>
 			</div>
 		</div>
 	</div>
+	 -->
 </jsp:root>

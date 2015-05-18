@@ -29,8 +29,6 @@ package org.bibsonomy.model;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -53,21 +51,20 @@ public class PersonName implements Serializable {
 	private int id;
 	private String firstName;
 	private String lastName;
-	private int personId;
+	private String personId;
+	// TODO: should not be here. Instead, the entity type should store a single reference to is main name
 	private boolean isMain;
 	private Person person;
-	private List<ResourcePersonRelation> rprs;
-
+	
 	/**
-	 * Default constructor
+	 * default bean constructor
 	 */
 	public PersonName() {
-		rprs = new ArrayList<ResourcePersonRelation>();
+		
 	}
 	
 	/**
 	 * Sets name and extracts first and last name.
-	 * @param firstName 
 	 * @param lastName 
 	 */
 	public PersonName(final String lastName) {
@@ -117,7 +114,7 @@ public class PersonName implements Serializable {
 	}
 	
 	/**
-	 * @return
+	 * @return serialized form
 	 */
 	public String serialize() {
 		return this.lastName + LAST_FIRST_DELIMITER + (present(this.firstName)? this.firstName : "");
@@ -152,24 +149,6 @@ public class PersonName implements Serializable {
 		}
 		return super.hashCode();
 	}
-	
-	/**
-	 * @param firstName
-	 * @return
-	 */
-	public PersonName withFirstName(String firstName) {
-		this.setFirstName(firstName);
-		return this;
-	}
-	
-	/**
-	 * @param lastName
-	 * @return
-	 */
-	public PersonName withLastName(String lastName) {
-		this.setLastName(lastName);
-		return this;
-	}
 
 	/**
 	 * @return the id
@@ -188,14 +167,14 @@ public class PersonName implements Serializable {
 	/**
 	 * @return the personId
 	 */
-	public int getPersonId() {
+	public String getPersonId() {
 		return this.personId;
 	}
 
 	/**
 	 * @param personId the personId to set
 	 */
-	public void setPersonId(int personId) {
+	public void setPersonId(String personId) {
 		this.personId = personId;
 	}
 
@@ -212,16 +191,7 @@ public class PersonName implements Serializable {
 	public void setMain(boolean isMain) {
 		this.isMain = isMain;
 	}
-
-	/**
-	 * @param b
-	 * @return PersonName
-	 */
-	public PersonName withMain(boolean b) {
-		this.setMain(b);
-		return this;
-	}
-
+	
 	/**
 	 * @return the person
 	 */
@@ -234,28 +204,6 @@ public class PersonName implements Serializable {
 	 */
 	public void setPerson(Person person) {
 		this.person = person;
-	}
-
-	/**
-	 * @return PersonName
-	 */
-	public PersonName withPersonId(int personId) {
-		this.setPersonId(personId);
-		return this;
-	}
-
-	/**
-	 * @return the rprs
-	 */
-	public List<ResourcePersonRelation> getRprs() {
-		return this.rprs;
-	}
-
-	/**
-	 * @param rprs the rprs to set
-	 */
-	public void setRprs(List<ResourcePersonRelation> rprs) {
-		this.rprs = rprs;
 	}
 
 }

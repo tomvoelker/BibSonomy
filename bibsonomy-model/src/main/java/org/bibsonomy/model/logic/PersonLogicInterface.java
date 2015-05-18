@@ -6,8 +6,9 @@ import java.util.Map;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.enums.PersonResourceRelation;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 
 /**
  * Interface for person entity logic.
@@ -32,7 +33,7 @@ public interface PersonLogicInterface {
 	 * @return non-null list of all persons matching all given non-null criteria
 	 */
 
-	public void addResourceRelation(ResourcePersonRelation rpr);
+	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation);
 
 	public void removeResourceRelation(int resourceRelationId);
 
@@ -43,7 +44,7 @@ public interface PersonLogicInterface {
 	 */
 	public void createOrUpdatePerson(Person person);
 	
-	public Person getPersonById(int id);
+	public Person getPersonById(String id);
 	
 	public void removePersonName(Integer personNameId);
 
@@ -53,25 +54,30 @@ public interface PersonLogicInterface {
 	 */
 	public Map<Person, BibTex> getQualifyingPublications(String personName);
 	
-	public List<ResourcePersonRelation> getResourceRelations(int personNameId);
-	public List<ResourcePersonRelation> getResourceRelations(Person person);
-	public List<ResourcePersonRelation> getResourceRelations(PersonName person);
-	
-
 	/**
 	 * @param pn
-	 * @param requestedHash
-	 * @param requestedUser
-	 * @param relatorCode
-	 * @return
+	 * @param hash
+	 * @param role
+	 * @param authorIndex
+	 * @return List<ResourcePersonRelation>
 	 */
-	public List<ResourcePersonRelation> getResourceRelations(PersonName pn,
-			String interHash, String intraHash, String requestedUser, PersonResourceRelation relatorCode);
+	public List<ResourcePersonRelation> getResourceRelations(String hash, PersonResourceRelationType role, Integer authorIndex);
 
 	/**
 	 * @param withPersonId
 	 */
 	public void createOrUpdatePersonName(PersonName withPersonId);
+	/**
+	 * @param person
+	 * @return List<ResourcePersonRelation>
+	 */
+	List<ResourcePersonRelation> getResourceRelations(Person person);
+	
+	/**
+	 * @param post
+	 * @return
+	 */
+	public List<ResourcePersonRelation> getResourceRelations(Post<BibTex> post);
 
 
 

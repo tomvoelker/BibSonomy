@@ -3,11 +3,10 @@ package org.bibsonomy.webapp.command;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
-import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 
 /**
  * @author Christian Pfeiffer
@@ -15,10 +14,11 @@ import org.bibsonomy.model.Resource;
 public class PersonPageCommand extends UserResourceViewCommand {
 
 	private String requestedPersonId;
-	private String requestedPersonName;
-	private String requestedHash;
 	private String requestedAction;
-	private String requestedRole;
+	
+//	private String requestedHash;
+//	private String requestedRole;
+//	private String requestedIndex;
 	
 	private String formSelectedName;
 	private String formAcademicDegree;
@@ -27,17 +27,18 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	private String formLastName;
 	private String formResourceHash;
 	private String formPersonId;
-	private String formPersonRole;
+	private PersonResourceRelationType formPersonRole;
 	private String formOrcid;
 	private String formThesisId;
 	private String formUser;
 	private String formPersonNameId;
 	private List<String> formPersonRoles;
 	private String formRequestType;
-	private String formRPRId;
+	private String formResourcePersonRelationId;
 	private String formInterHash;
 	private String formIntraHash;
 	private boolean formThatsMe;
+	private int formPersonIndex = -1;
 	
 	private String formAction;
 	
@@ -47,7 +48,7 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	private List<Post<?>> thesis;
 	private List<Post<?>> advisedThesis;
 	private List<Post<?>> allPosts;
-	private List<String> availableRoles = new ArrayList<String>();
+	private List<PersonResourceRelationType> availableRoles = new ArrayList<>();
 	
 	private String responseString;
 	
@@ -151,31 +152,16 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	}
 
 	/**
-	 * @return the requestedHash
-	 */
-	public String getRequestedHash() {
-		return this.requestedHash;
-	}
-
-	/**
-	 * @param requestedHash the requestedHash to set
-	 */
-	public void setRequestedHash(String requestedHash) {
-		this.requestedHash = requestedHash;
-	}
-
-	/**
 	 * @return the formPersonRole
 	 */
 	public List<String> getFormPersonRoles() {
 		return this.formPersonRoles;
 	}
-
+	
 	/**
-	 * @param formPersonRoles 
-	 * @param formPersonRole the formPersonRole to set
+	 * @param formPersonRoles the formPersonRoles to set
 	 */
-	public void setformPersonRoles(List<String> formPersonRoles) {
+	public void setFormPersonRoles(List<String> formPersonRoles) {
 		this.formPersonRoles = formPersonRoles;
 	}
 
@@ -194,20 +180,6 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	}
 
 	/**
-	 * @return the requestedRole
-	 */
-	public String getRequestedRole() {
-		return this.requestedRole;
-	}
-
-	/**
-	 * @param requestedRole the requestedRole to set
-	 */
-	public void setRequestedRole(String requestedRole) {
-		this.requestedRole = requestedRole;
-	}
-
-	/**
 	 * @return the formMiddleName
 	 */
 	public String getFormMiddleName() {
@@ -219,20 +191,6 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	 */
 	public void setFormMiddleName(String formMiddleName) {
 		this.formMiddleName = formMiddleName;
-	}
-
-	/**
-	 * @return the requestedPersonName
-	 */
-	public String getRequestedPersonName() {
-		return this.requestedPersonName;
-	}
-
-	/**
-	 * @param requestedPersonName the requestedPersonName to set
-	 */
-	public void setRequestedPersonName(String requestedPersonName) {
-		this.requestedPersonName = requestedPersonName;
 	}
 
 	/**
@@ -315,14 +273,14 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	/**
 	 * @return the formPersonRole
 	 */
-	public String getFormPersonRole() {
+	public PersonResourceRelationType getFormPersonRole() {
 		return this.formPersonRole;
 	}
 
 	/**
 	 * @param formPersonRole the formPersonRole to set
 	 */
-	public void setFormPersonRole(String formPersonRole) {
+	public void setFormPersonRole(PersonResourceRelationType formPersonRole) {
 		this.formPersonRole = formPersonRole;
 	}
 
@@ -362,13 +320,6 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	}
 
 	/**
-	 * @param formPersonRoles the formPersonRoles to set
-	 */
-	public void setFormPersonRoles(List<String> formPersonRoles) {
-		this.formPersonRoles = formPersonRoles;
-	}
-
-	/**
 	 * @return String
 	 */
 	public String getFormPersonNameId() {
@@ -376,7 +327,7 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	}
 
 	/**
-	 * @param nameId the nameId to set
+	 * @param personNameId2 the nameId to set
 	 */
 	public void setFormPersonNameId(String personNameId2) {
 		this.formPersonNameId = personNameId2;
@@ -428,15 +379,15 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	/**
 	 * @return String
 	 */
-	public String getFormRPRId() {
-		return this.formRPRId;
+	public String getFormResourcePersonRelationId() {
+		return this.formResourcePersonRelationId;
 	}
 
 	/**
-	 * @param formRPRId the formRPRId to set
+	 * @param formResourcePersonRelationId the formResourcePersonRelationId to set
 	 */
-	public void setFormRPRId(String formRPRId) {
-		this.formRPRId = formRPRId;
+	public void setFormResourcePersonRelationId(String formResourcePersonRelationId) {
+		this.formResourcePersonRelationId = formResourcePersonRelationId;
 	}
 
 	/**
@@ -470,22 +421,42 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	/**
 	 * @return the availableRoles
 	 */
-	public List<String> getAvailableRoles() {
+	public List<PersonResourceRelationType> getAvailableRoles() {
 		return this.availableRoles;
 	}
 
 	/**
 	 * @param availableRoles the availableRoles to set
 	 */
-	public void setAvailableRoles(List<String> availableRoles) {
+	public void setAvailableRoles(List<PersonResourceRelationType> availableRoles) {
 		this.availableRoles = availableRoles;
 	}
 
+	/**
+	 * @return true if the current login user is associated to this person
+	 */
 	public boolean isFormThatsMe() {
 		return this.formThatsMe;
 	}
 
+	/**
+	 * @param formThatsMe if the current login user is associated to this person
+	 */
 	public void setFormThatsMe(boolean formThatsMe) {
 		this.formThatsMe = formThatsMe;
+	}
+
+	/**
+	 * @return the formAuthorIndex
+	 */
+	public int getFormPersonIndex() {
+		return this.formPersonIndex;
+	}
+
+	/**
+	 * @param formAuthorIndex the formAuthorIndex to set
+	 */
+	public void setFormPersonIndex(int formAuthorIndex) {
+		this.formPersonIndex = formAuthorIndex;
 	}
 }

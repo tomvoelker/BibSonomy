@@ -59,8 +59,7 @@
 							<input type="hidden" name="selTab" value="0" />
 							<input type="hidden" name="ckey" value="${ckey}"/>
 							<input type="hidden" name="personId" value="${command.personId}"/> 
-							<input type="hidden" name="person_lastName" value="${command.person_lastName}"/>
-							<input type="hidden" name="person_role" value="${command.person_role}"/>
+							<input type="hidden" name="personRole" value="${command.personRole}"/>
 							
 							<editpub:required post="${post}" autocompletion="${true}" hideBibTeXKey="${true}"/>
 							

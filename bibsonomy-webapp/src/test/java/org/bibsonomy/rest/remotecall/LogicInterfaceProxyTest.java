@@ -87,7 +87,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.enums.PersonResourceRelation;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.model.metadata.PostMetaData;
@@ -1367,12 +1367,6 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 	@Override
-	public Person getPersonById(int id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Map<Person, BibTex> getQualifyingPublications(String personName) {
 		// TODO Auto-generated method stub
 		return null;
@@ -1425,57 +1419,10 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations(int)
-	 */
-	@Override
-	public List<ResourcePersonRelation> getResourceRelations(int personNameId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations(org.bibsonomy.model.Person)
-	 */
-	@Override
-	public List<ResourcePersonRelation> getResourceRelations(Person person) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations(org.bibsonomy.model.PersonName)
-	 */
-	@Override
-	public List<ResourcePersonRelation> getResourceRelations(PersonName person) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations(org.bibsonomy.model.PersonName, java.lang.String, java.lang.String, java.lang.String, org.bibsonomy.model.enums.PersonResourceRelation)
-	 */
-	@Override
-	public List<ResourcePersonRelation> getResourceRelations(PersonName pn,
-			String interHash, String intraHash, String requestedUser,
-			PersonResourceRelation relatorCode) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePersonName(org.bibsonomy.model.PersonName)
 	 */
 	@Override
 	public void createOrUpdatePersonName(PersonName withPersonId) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#linkUser(java.lang.Integer)
-	 */
-	@Override
-	public void linkUser(Integer personId) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -1494,6 +1441,53 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 */
 	@Override
 	public List<Post<BibTex>> searchPostsByTitle(String title) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonById(java.lang.String)
+	 */
+	@Override
+	public Person getPersonById(String id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#linkUser(java.lang.String)
+	 */
+	@Override
+	public void linkUser(String personId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getResourceRelations(java.lang.String, org.bibsonomy.model.enums.PersonResourceRelation, java.lang.Integer)
+	 */
+	@Override
+	public List<ResourcePersonRelation> getResourceRelations(String hash,
+			PersonResourceRelationType role, Integer authorIndex) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getResourceRelations(org.bibsonomy.model.Person)
+	 */
+	@Override
+	public List<ResourcePersonRelation> getResourceRelations(Person person) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getResourceRelations(org.bibsonomy.model.Post)
+	 */
+	@Override
+	public List<ResourcePersonRelation> getResourceRelations(Post<BibTex> post) {
 		// TODO Auto-generated method stub
 		return null;
 	}

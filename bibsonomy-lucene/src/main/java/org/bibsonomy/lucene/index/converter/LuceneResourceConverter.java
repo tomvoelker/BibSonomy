@@ -46,14 +46,17 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
+import org.bibsonomy.es.ESConstants;
 import org.bibsonomy.es.IndexType;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.param.typehandler.LuceneTypeHandler;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.factories.ResourceFactory;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.tex.TexDecode;
 
 /**
@@ -177,6 +180,11 @@ public class LuceneResourceConverter<R extends Resource> {
 		}
 		
 		if (searchType == IndexType.ELASTICSEARCH) {
+			if (BibTex.class.isAssignableFrom(this.resourceClass)) {
+				@SuppressWarnings("unchecked")
+				final int qualifyingDegree = getQualifyingDegree((Post<? extends BibTex>) post);
+				jsonDocument.put(ESConstants.QUALIFYING_DEGREE_FIELD_NAME, Integer.valueOf(qualifyingDegree));
+			}
 			return jsonDocument;
 		}
 		// store merged field
@@ -187,6 +195,30 @@ public class LuceneResourceConverter<R extends Resource> {
 		
 		// all done.
 		return luceneDocument;
+	}
+
+	private static int getQualifyingDegree(final Post<? extends BibTex> post) {
+		int qualifyingDegree = 0;
+		final BibTex bibtex = post.getResource();
+		final String entryType = bibtex.getEntrytype();
+		if (BibTexUtils.PHD_THESIS.equals(entryType)) {
+			qualifyingDegree = 300;
+		}
+		if (BibTexUtils.MASTERS_THESIS.equals(entryType)) {
+			qualifyingDegree = 200;
+		}
+		if (qualifyingDegree != 0) {
+			String type = bibtex.getType();
+			if (type != null) {
+				type = type.toLowerCase().trim();
+				if ((type.contains("master") || type.equals("mathesis"))) {
+					qualifyingDegree = 200;
+				} else if (type.contains("bachelor")) {
+					qualifyingDegree = 100;
+				}
+			}
+		}
+		return qualifyingDegree;
 	}
 	
 	private boolean isFulltextProperty(final String propertyName) {
@@ -322,8 +354,8 @@ public class LuceneResourceConverter<R extends Resource> {
 					log.error("Error setting property " + propertyName + " to " + propertyValue.toString(), e);
 				}
 		}
-		if(result.get("systemUrl")!=null){
-			String systemUrl = result.get("systemUrl").toString();
+		if(result.get("systemUrl") != null){
+			String systemUrl = result.get(ESConstants.SYSTEM_URL_FIELD_NAME).toString();
 			post.setSystemUrl(systemUrl);		
 		}
 		return post;

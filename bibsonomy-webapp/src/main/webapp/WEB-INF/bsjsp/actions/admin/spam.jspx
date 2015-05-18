@@ -518,23 +518,5 @@
 		</div>		
 		</jsp:attribute>
 
-
-
-
-		<jsp:attribute name="sidebar">
-		<ul>			
-			
-			
-			<br />
-			
-			<h4 class="sidebar"><fmt:message key="navi.settings" /></h4>
-				
-			
-			
-			
-			
-		</ul>									
-		</jsp:attribute>
-
 	</layout:oneColumnLayout>
 </jsp:root>

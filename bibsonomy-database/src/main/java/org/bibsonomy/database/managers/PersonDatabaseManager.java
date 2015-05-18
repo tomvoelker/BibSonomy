@@ -8,12 +8,17 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.database.util.LogicInterfaceHelper;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.enums.PersonResourceRelation;
+import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
 
 /**
@@ -64,7 +69,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 * @param session
 	 * @return Person
 	 */
-	public Person getPersonById(int id, DBSession session) {
+	public Person getPersonById(String id, DBSession session) {
 		return (Person) this.queryForObject("getPersonById", id, session);
 	}
 
@@ -143,16 +148,16 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public List<PersonName> findPersonNames(String lastName, String firstName, DBSession session) {
 		PersonName personName = new PersonName();
 		if (StringUtils.isBlank(lastName) == false) {
-			personName.withLastName(lastName.trim() + "%");
+			personName.setLastName(lastName.trim() + "%");
 			if (StringUtils.isBlank(firstName) == false) {
-				personName.withFirstName(firstName.trim().substring(0, 1) + "%");
+				personName.setFirstName(firstName.trim().substring(0, 1) + "%");
 			} else {
-				personName.withFirstName("%");
+				personName.setFirstName("%");
 			}
 		} else {
 			if (StringUtils.isBlank(firstName) == false) {
-				personName.withFirstName(firstName.trim() + "%");
-				personName.withLastName("%");
+				personName.setFirstName(firstName.trim() + "%");
+				personName.setLastName("%");
 			} else {
 				return new ArrayList<>();
 			}
@@ -164,13 +169,13 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 
 
 	/**
-	 * @param rpr
+	 * @param resourcePersonRelation
 	 * @param session 
 	 */
-	public void addResourceRelation(ResourcePersonRelation rpr, DBSession session) {
+	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation, DBSession session) {
 		session.beginTransaction();
 		try {
-			this.insert("addResourceRelation", rpr, session);
+			this.insert("addResourceRelation", resourcePersonRelation, session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -221,17 +226,15 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		return (List<ResourcePersonRelation>) this.queryForList("getResourceRelations", personNameId, databaseSession);
 	}
 	
-	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelation rpr,
+	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelation resourcePersonRelation,
 			DBSession databaseSession) {
-		return (List<ResourcePersonRelation>) this.queryForList("getResourceRelationsByRPR", rpr, databaseSession);
+		return (List<ResourcePersonRelation>) this.queryForList("getResourceRelationsByResourcePersonRelation", resourcePersonRelation, databaseSession);
 	}
 	
-	public List<ResourcePersonRelation> getResourcePersonRelationsByPost(Post<? extends Resource> post,
+	public List<ResourcePersonRelation> getResourcePersonRelationsByPost(Post<BibTex> post,
 			DBSession databaseSession) {
 		ResourcePersonRelation param = new ResourcePersonRelation();
-		param.setPubOwner(post.getUser().getName());
-		param.setSimhash1(post.getResource().getInterHash());
-		param.setSimhash2(post.getResource().getIntraHash());
+		param.setPost(post);
 		return (List<ResourcePersonRelation>) this.queryForList("getResourcePersonRelationsByPost", param, databaseSession);
 	}
 	
@@ -245,8 +248,8 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 * @param rel
 	 * @return
 	 */
-	public String getLastResourceRelationId(ResourcePersonRelation rpr, DBSession session) {
-		return (String) this.queryForObject("getLastResourceRelationId", rpr, session);
+	public String getLastResourceRelationId(ResourcePersonRelation resourcePersonRelation, DBSession session) {
+		return (String) this.queryForObject("getLastResourceRelationId", resourcePersonRelation, session);
 	}
 
 
@@ -262,4 +265,91 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			session.endTransaction();
 		}
 	}
+	
+	/**
+	 * @param hash
+	 * @param authorIndex
+	 * @param role 
+	 * @param session
+	 * @return List<ResourcePersonRelation>
+	 */
+	public List<ResourcePersonRelation> getResourcePersonRelations(final String interhash, final Integer authorIndex, final PersonResourceRelationType role, final DBSession session) {
+		final ResourcePersonRelation rpr = new ResourcePersonRelation();
+		Post<BibTex> post = new Post<>();
+		post.setResource(new BibTex());
+		post.getResource().setInterHash(interhash);
+		rpr.setPost(post);
+		rpr.setPersonIndex(authorIndex);
+		rpr.setRelationType(role);
+			
+			return this.getResourcePersonRelationByResourcePersonRelation(rpr, session);
+	}
+	
+	private List<ResourcePersonRelation> getResourcePersonRelationByResourcePersonRelation(ResourcePersonRelation rpr, DBSession session) {
+		session.beginTransaction();
+		try {
+			return (List<ResourcePersonRelation>) this.queryForList("getResourcePersonRelationByResourcePersonRelation", rpr, session);
+		} finally {
+			session.endTransaction();
+		}
+	}
+
+
+	/**
+	 * @param person
+	 * @param loginUser 
+	 * @param publicationType 
+	 * @param session
+	 * @return List<ResourcePersonRelation>
+	 */
+	public List<ResourcePersonRelation> getResourcePersonRelationsWithPosts(
+			Person person, User loginUser, Class<? extends BibTex> publicationType, DBSession session) {
+		
+		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, null, null, null, null, null, 0, Integer.MAX_VALUE, null, null, null, null, loginUser);
+		final ResourcePersonRelation personRelation = new ResourcePersonRelation();
+		personRelation.setPerson(person);
+		param.setPersonRelation(personRelation);
+		
+		session.beginTransaction();
+		try {
+			if (publicationType == GoldStandardPublication.class) {
+				return this.queryForList("getComunityBibTexRelationsForPerson", param, ResourcePersonRelation.class, session);
+			} else {
+				return this.queryForList("getBibTexRelationsForPerson", param, ResourcePersonRelation.class, session);
+			}
+		} finally {
+			session.endTransaction();
+		}
+	}
+
+	/**
+	 * @param person
+	 * @param session
+	 * @return List<ResourcePersonRelation>
+	 */
+	public List<ResourcePersonRelation> getResourcePersonRelations(
+			Person person, DBSession session) {
+		session.beginTransaction();
+		try {
+			return (List<ResourcePersonRelation>) this.queryForList("getResourcePersonRelationsByPersonId", person.getId(), session);
+		} finally {
+			session.endTransaction();
+		}
+	}
+
+
+	/**
+	 * @param post
+	 * @return
+	 */
+	public List<ResourcePersonRelation> getResourcePersonRelations(
+			Post<BibTex> post, DBSession session) {
+		session.beginTransaction();
+		try {
+			return (List<ResourcePersonRelation>) this.queryForList("getResourcePersonRelationsByInterhash", post.getResource().getInterHash(), session);
+		} finally {
+			session.endTransaction();
+		}
+	} 
+
 }

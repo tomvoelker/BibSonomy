@@ -46,6 +46,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.UrlBuilder;
 import org.bibsonomy.util.UrlUtils;
@@ -99,11 +100,11 @@ public class URLGenerator {
 	private static final String AUTHOR_PREFIX = "author";
 	private static final String BIBTEXEXPORT_PREFIX = "bib";
 	private static final String BIBTEXKEY_PREFIX = "bibtexkey";
-	public static final String BOOKMARK_PREFIX = "url";
+	public  static final String BOOKMARK_PREFIX = "url";
 	private static final String CONCEPTS_PREFIX = "concepts";
 	private static final String CONCEPT_PREFIX = "concept";
 	private static final String DOCUMENT_PREFIX = "documents";
-	private static final String DISAMBIGUATION_PREFIX = "persondisambiguation";
+	private static final String DISAMBIGUATION_PREFIX = "person";
 	private static final String FOLLOWERS_PREFIX = "followers";
 	private static final String FRIEND_PREFIX = "friend";
 	private static final String GROUPS = "groups";
@@ -1696,47 +1697,30 @@ public class URLGenerator {
 	
 	/**
 	 * @param personId
-	 * @param personName
-	 * @param resourceHash
-	 * @param user
-	 * @param role
 	 * @return String
 	 */
-	public String getPersonUrl(final int personId, final String personName, final String resourceHash, final String user, final String role) {
-		String url;
-		try {
-			url = this.projectHome + URLGenerator.PERSON_PREFIX + "/" + personId + "/" + URLEncoder.encode(personName, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			url = this.projectHome + URLGenerator.PERSON_PREFIX + "/" + personId + "/" + personName;
-		}
-
-		if (present(resourceHash) && present(user)) {
-			url = url + "/" + resourceHash + "/" + user;
-			if (present(role)) {
-				url = url + "/" + role;
-			} else {
-				url = url + "/AUTHOR";
-			}
-		}
-		return this.getUrl(url);
+	public String getPersonUrl(final String personId) {
+		UrlBuilder url = new UrlBuilder(this.projectHome + URLGenerator.PERSON_PREFIX);
+		url.addPathElement(personId);
+		return this.getUrl(url.asString());
 	}
 
 	/**
-	 * @param action
 	 * @param personName
+	 * @param authorIndex 
 	 * @param resourceHash
-	 * @param user
 	 * @param role
 	 * @return String
 	 */
-	public String getDisambiguationUrl(final String action, final String personName, final String resourceHash, final String user, final String role) {
-		String url;
-		try {
-			url = this.projectHome + URLGenerator.DISAMBIGUATION_PREFIX + "/" + action + "/" + URLEncoder.encode(personName,"utf-8") + "/" + resourceHash + "/" + user + "/" + role;
-		} catch (UnsupportedEncodingException e) {
-			url = this.projectHome + URLGenerator.DISAMBIGUATION_PREFIX + "/" + action + "/" + personName + "/" + resourceHash + "/" + user + "/" + role;
+	public String getDisambiguationUrl(String resourceHash, final PersonResourceRelationType role, final Integer authorIndex) {
+		if (resourceHash.length() < 33) {
+			resourceHash = "1" + resourceHash;
 		}
-		return this.getUrl(url);
+		return this.getUrl(new UrlBuilder(this.projectHome + URLGenerator.DISAMBIGUATION_PREFIX) //
+			.addPathElement(resourceHash) //
+			.addPathElement(role.name().toLowerCase()) //
+			.addPathElement(Integer.toString(authorIndex)) //
+			.asString());
 	}
 	
 	public String getPersonsUrl() {

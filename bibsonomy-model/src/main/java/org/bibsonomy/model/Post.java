@@ -67,7 +67,7 @@ public class Post<T extends Resource> implements Serializable {
 	 */
 	private Integer contentId;
 	
-	private List<ResourcePersonRelation> rprs;
+	private List<ResourcePersonRelation> resourcePersonRelations;
 
 	/**
 	 * This post belongs to this {@link User}.
@@ -463,17 +463,17 @@ public class Post<T extends Resource> implements Serializable {
 	}
 
 /**
-	 * @return the rprs
+	 * @return the resourcePersonRelations
 	 */
-	public List<ResourcePersonRelation> getRprs() {
-		return this.rprs;
+	public List<ResourcePersonRelation> getResourcePersonRelations() {
+		return this.resourcePersonRelations;
 	}
 
 	/**
-	 * @param rprs the rprs to set
+	 * @param resourcePersonRelations the resourcePersonRelations to set
 	 */
-	public void setRprs(List<ResourcePersonRelation> rprs) {
-		this.rprs = rprs;
+	public void setResourcePersonRelations(List<ResourcePersonRelation> resourcePersonRelations) {
+		this.resourcePersonRelations = resourcePersonRelations;
 	}
 	
 	/**

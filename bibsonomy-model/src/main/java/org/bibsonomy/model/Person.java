@@ -40,7 +40,7 @@ public class Person implements Serializable {
 	private static final long serialVersionUID = 4578956154246424767L;
 	
 	/** null means new non-persistent object */
-	private int id;
+	private String id;
 	/** usually current real name */
 	private PersonName mainName;
 	/** other names like former names or pseudonyms */
@@ -60,25 +60,28 @@ public class Person implements Serializable {
 	/** the number of posts in the system, which this {@link Person} as an author */
 	private int postCounter;
 	
+	private List<ResourcePersonRelation> resourcePersonRelations;
+	
 	/**
 	 * 
 	 */
 	public Person() {
 		this.names = new ArrayList<PersonName>();
+		this.resourcePersonRelations = new ArrayList<ResourcePersonRelation>();
 	}
 	
 	/**
 	 * @return synthetic id. null means new non-persistent object
 	 */
-	public int getId() {
+	public String getId() {
 		return this.id;
 	}
 
 	/**
-	 * @param id synthetic id. null means new non-persistent object
+	 * @param string synthetic id. null means new non-persistent object
 	 */
-	public void setId(int id) {
-		this.id = id;
+	public void setId(String string) {
+		this.id = string;
 		for(PersonName name : this.names)
 			name.setPersonId(this.id);
 	}
@@ -205,18 +208,18 @@ public class Person implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (id == 0) {
+		if (id == null) {
 			return obj == this;
 		}
-		return ((obj instanceof Person) && (this.getId() == ((Person)obj).getId()));
+		return ((obj instanceof Person) && (this.getId().equals(((Person)obj).getId())));
 	}
 	
 	@Override
 	public int hashCode() {
-		if (id == 0) {
+		if (id == null) {
 			return System.identityHashCode(this);
 		}
-		return id;
+		return id.hashCode();
 	}
 
 	/** 
@@ -274,33 +277,19 @@ public class Person implements Serializable {
 	public void setPostCounter(int postCounter) {
 		this.postCounter = postCounter;
 	}
-	
+
 	/**
-	 * 
-	 * @param academicDegree
-	 * @return Person
+	 * @return the resourcePersonRelations
 	 */
-	public Person withAcademicDegree(String academicDegree) {
-		this.setAcademicDegree(academicDegree);
-		return this;	
+	public List<ResourcePersonRelation> getResourcePersonRelations() {
+		return this.resourcePersonRelations;
 	}
 
 	/**
-	 * @param formUser
-	 * @return Person
+	 * @param resourcePersonRelations the resourcePersonRelations to set
 	 */
-	public Person withUser(String user) {
-		this.setUser(user);
-		return this;
-	}
-
-	/**
-	 * @param withMain
-	 * @return Person
-	 */
-	public Person withMainName(PersonName withMain) {
-		this.setMainName(withMain);
-		return this;
+	public void setResourcePersonRelations(List<ResourcePersonRelation> resourcePersonRelations) {
+		this.resourcePersonRelations = resourcePersonRelations;
 	}
 
 }

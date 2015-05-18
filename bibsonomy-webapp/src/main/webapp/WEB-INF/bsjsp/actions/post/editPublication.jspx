@@ -43,8 +43,7 @@
 				</c:if>
 			</c:if>
 			<input type="hidden" name="personId" value="${command.personId}"/>
-			<input type="hidden" name="person_lastName" value="${command.person_lastName}"/>
-			<input type="hidden" name="person_role" value="${command.person_role}"/>
+			<input type="hidden" name="personRole" value="${command.personRole}"/>
 				
 			<editpub:required post="${command.post}" autocompletion="$(false)"/>
 		</jsp:attribute>

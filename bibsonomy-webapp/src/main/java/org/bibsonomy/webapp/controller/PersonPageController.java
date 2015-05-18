@@ -6,12 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.enums.PersonResourceRelation;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
@@ -42,7 +43,6 @@ public class PersonPageController extends SingleResourceListController implement
 				case "editRole": return this.editRoleAction(command);
 				case "deleteRole": return this.deleteRoleAction(command);
 				case "unlink": return this.unlinkAction(command);
-				case "new": return this.newAction(command);
 				case "link": return this.linkAction(command);
 				case "search": return this.searchAction(command);
 				case "searchpub": return this.searchpubAction(command);
@@ -93,8 +93,8 @@ public class PersonPageController extends SingleResourceListController implement
 		JSONArray array = new JSONArray();
 		for(PersonName personName : personNames) {
 			JSONObject jsonPersonName = new JSONObject();
-			jsonPersonName.put("personId", new Integer(personName.getPersonId()));
-			jsonPersonName.put("personNameId", new Integer(personName.getId()));
+			jsonPersonName.put("personId", personName.getPersonId());
+			jsonPersonName.put("personNameId", personName.getId());
 			jsonPersonName.put("personName", BibTexUtils.cleanBibTex(personName.toString()));
 			// FIXME: this is only a quick hack and must be replaced!
 			jsonPersonName.put("extendedPersonName", BibTexUtils.cleanBibTex(getExtendedPersonName(personName)));
@@ -120,10 +120,10 @@ public class PersonPageController extends SingleResourceListController implement
 			extendedNameBuilder.append(", ").append(person.getAcademicDegree());
 		}
 		BibTex res = null;
-		for (ResourcePersonRelation rpr : personName.getRprs()) {
+		for (ResourcePersonRelation resourcePersonRelation : person.getResourcePersonRelations()) {
 			String entryType;
 			try {
-				entryType = rpr.getPost().getResource().getEntrytype();
+				entryType = resourcePersonRelation.getPost().getResource().getEntrytype();
 				if (!present(entryType)) {
 					continue;
 				}
@@ -131,10 +131,10 @@ public class PersonPageController extends SingleResourceListController implement
 				continue;
 			}
 			if (entryType.toLowerCase().endsWith("thesis")) {
-				res = rpr.getPost().getResource();
+				res = resourcePersonRelation.getPost().getResource();
 				break;
 			}
-			res = rpr.getPost().getResource();
+			res = resourcePersonRelation.getPost().getResource();
 		}
 		if (present(res)) {
 			String entryType = res.getEntrytype();
@@ -160,42 +160,6 @@ public class PersonPageController extends SingleResourceListController implement
 		return Views.PERSON;
 	}
 
-
-	/**
-	 * Action which is called a new person button somewhere in an modal dialog
-	 * @param command
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	private View newAction(PersonPageCommand command) {
-		
-		Person person = new Person().withMainName(new PersonName(command.getFormLastName()).withFirstName(command.getFormFirstName()).withMain(true)).withAcademicDegree(command.getFormAcademicDegree());
-		this.logic.createOrUpdatePerson(person);
-		command.setPerson(person);
-		String role = command.getFormPersonRole();
-		if(role.length() != 4) {
-			role = PersonResourceRelation.valueOf(command.getFormPersonRole()).getRelatorCode();
-		}
-		ResourcePersonRelation rpr = new ResourcePersonRelation()
-		.withSimhash1(command.getFormInterHash())
-		.withSimhash2(command.getFormIntraHash())
-		.withRelatorCode(role)
-		.withPersonNameId(person.getMainName().getId())
-		.withPubOwner(command.getFormUser());
-		this.logic.addResourceRelation(rpr);
-		
-		JSONObject jsonPerson = new JSONObject();
-		jsonPerson.put("personId", new Integer(person.getId()));
-		jsonPerson.put("personName", person.getMainName().toString());
-		jsonPerson.put("personNameId", new Integer(person.getMainName().getId()));
-		jsonPerson.put("rprid", new Integer(rpr.getId()));
-		
-		command.setResponseString(jsonPerson.toJSONString());
-		
-		return Views.AJAX_JSON;
-	}
-
-
 	/**
 	 * Action called when a user want to unlink an author from a publication
 	 * @param command
@@ -207,7 +171,7 @@ public class PersonPageController extends SingleResourceListController implement
 	}
 	
 	private View linkAction(PersonPageCommand command) {
-		this.logic.linkUser(new Integer(command.getFormPersonId()));
+		this.logic.linkUser(command.getFormPersonId());
 		return Views.AJAX_TEXT;
 	}
 	
@@ -217,20 +181,20 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @return
 	 */
 	private View addRoleAction(PersonPageCommand command) {
-		String role;
-		if(command.getFormPersonRole().length() == 4)
-			role = command.getFormPersonRole();
-		else
-			role = PersonResourceRelation.valueOf(command.getFormPersonRole()).getRelatorCode();
+		if (command.getFormPersonIndex() == -1) {
+			throw new IllegalArgumentException();
+		}
 		
-		ResourcePersonRelation rpr = new ResourcePersonRelation()
-			.withSimhash1(command.getFormInterHash())
-			.withSimhash2(command.getFormIntraHash())
-			.withRelatorCode(role)
-			.withPersonNameId(Integer.valueOf(command.getFormPersonNameId()).intValue())
-			.withPubOwner(command.getFormUser());
-		this.logic.addResourceRelation(rpr);
-		command.setResponseString(rpr.getId() + "");
+		ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
+		Post<BibTex> post = new Post<>();
+		post.setResource(new BibTex());
+		post.getResource().setInterHash(command.getFormInterHash());
+		resourcePersonRelation.setPost(post);
+		resourcePersonRelation.setPerson(new Person());
+		resourcePersonRelation.getPerson().setId(command.getFormPersonId());
+		resourcePersonRelation.setPersonIndex(command.getFormPersonIndex());
+		this.logic.addResourceRelation(resourcePersonRelation);
+		command.setResponseString(resourcePersonRelation.getId() + "");
 		return Views.AJAX_TEXT;
 	}
 
@@ -241,23 +205,27 @@ public class PersonPageController extends SingleResourceListController implement
 	 */
 	private View editRoleAction(PersonPageCommand command) {
 		//TODO add new role types to view
-		for(String role : command.getFormPersonRoles()) {
-			ResourcePersonRelation rpr = new ResourcePersonRelation()
-			.withSimhash1(command.getFormInterHash())
-			.withSimhash2(command.getFormIntraHash())
-			.withRelatorCode(PersonResourceRelation.valueOf(role).getRelatorCode())
-			.withPersonNameId(Integer.valueOf(command.getFormPersonNameId()).intValue())
-			.withPubOwner(command.getRequestedUser());
-			this.logic.addResourceRelation(rpr);
+		for (String role : command.getFormPersonRoles()) {
+			final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
+			Post<BibTex> post = new Post<>();
+			post.setResource(new BibTex());
+			post.getResource().setInterHash(command.getFormInterHash());
+			resourcePersonRelation.setPost(post);
+			resourcePersonRelation.setPerson(new Person());
+			resourcePersonRelation.getPerson().setId(command.getFormPersonId());
+			resourcePersonRelation.setPersonIndex(command.getFormPersonIndex());
+			final PersonResourceRelationType relationType = PersonResourceRelationType.valueOf(StringUtils.upperCase(role)); 
+			resourcePersonRelation.setRelationType(relationType);
+			this.logic.addResourceRelation(resourcePersonRelation);
 		}
-				
-		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(command.getPerson().getId(), command.getPerson().getMainName().toString(), command.getPost().getResource().getInterHash(), command.getPost().getUser().getName(), command.getRequestedRole()));	
+		
+		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(command.getPerson().getId()));	
 	}
 	
 	@SuppressWarnings("boxing")
 	private View deleteRoleAction(PersonPageCommand command) {
 
-		this.logic.removeResourceRelation(Integer.valueOf(command.getFormRPRId()));
+		this.logic.removeResourceRelation(Integer.valueOf(command.getFormResourcePersonRelationId()));
 				
 		return Views.AJAX_TEXT;	
 	}
@@ -267,7 +235,7 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 */
 	private View updateAction(PersonPageCommand command) {
-		command.setPerson(this.logic.getPersonById(Integer.parseInt(command.getFormPersonId())));
+		command.setPerson(this.logic.getPersonById(command.getFormPersonId()));
 		command.getPerson().setAcademicDegree(command.getFormAcademicDegree());
 		command.getPerson().getMainName().setMain(false);
 		command.getPerson().setMainName(Integer.parseInt(command.getFormSelectedName()));
@@ -283,17 +251,21 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 */
 	private View addNameAction(PersonPageCommand command) {
-		Person person = logic.getPersonById(Integer.valueOf(command.getFormPersonId()).intValue());
-		PersonName personName = new PersonName(command.getFormLastName()).withFirstName(command.getFormFirstName()).withPersonId(Integer.valueOf(command.getFormPersonId()).intValue());
-		for( PersonName otherName : person.getNames()) {
-			if(personName.equals(otherName)) {
+		final Person person = logic.getPersonById(command.getFormPersonId());
+		
+		final PersonName personName = new PersonName(command.getFormLastName());
+		personName.setFirstName(command.getFormFirstName());
+		personName.setPersonId(command.getFormPersonId());
+		
+		for (PersonName otherName : person.getNames()) {
+			if (personName.equals(otherName)) {
 				command.setResponseString(otherName.getId()+ "");
 				return Views.AJAX_TEXT;
 			}
 		}
-		
 		this.logic.createOrUpdatePersonName(personName);
-		command.setResponseString(personName.getId() + "");
+		command.setResponseString(Integer.toString(personName.getId()));
+		
 		return Views.AJAX_TEXT;
 	}
 
@@ -314,21 +286,28 @@ public class PersonPageController extends SingleResourceListController implement
 	 */
 	private View showAction(PersonPageCommand command) {
 		
-		for(PersonResourceRelation prr : PersonResourceRelation.values()) {
-			command.getAvailableRoles().add(prr.getRelatorCode());
+		for(PersonResourceRelationType prr : PersonResourceRelationType.values()) {
+			command.getAvailableRoles().add(prr);
 		}
 		
-		command.setPerson(this.logic.getPersonById(Integer.parseInt(command.getRequestedPersonId())));
+		command.setPerson(this.logic.getPersonById(command.getRequestedPersonId()));
 		
 		List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(command.getPerson());
 		List<Post<?>> authorPosts = new ArrayList<>();
 		List<Post<?>> advisorPosts = new ArrayList<>();
 
-		for(ResourcePersonRelation rpr : resourceRelations) {
-			if(rpr.getRelatorCode().equals(PersonResourceRelation.AUTHOR.getRelatorCode())) 
-				authorPosts.add(rpr.getPost());
-			else
-				advisorPosts.add(rpr.getPost());
+		for(ResourcePersonRelation resourcePersonRelation : resourceRelations) {
+			if(!resourcePersonRelation.getPost().getResource().getEntrytype().toLowerCase().endsWith("thesis")) {
+				continue;	
+			}
+			
+			resourcePersonRelation.getPost().setResourcePersonRelations(this.logic.getResourceRelations(resourcePersonRelation.getPost()));
+			
+			if (resourcePersonRelation.getRelationType().equals(PersonResourceRelationType.AUTHOR)) { 
+				authorPosts.add(resourcePersonRelation.getPost());
+			} else {
+				advisorPosts.add(resourcePersonRelation.getPost());
+			}
 		}
 		
 		command.setThesis(authorPosts);

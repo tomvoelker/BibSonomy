@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConceptStatus;
@@ -63,7 +64,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.PersonResourceRelation;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
@@ -109,7 +110,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 
 	private static final String TAGS_KEY = "tags";
 	protected static final String LOGIN_NOTICE = "login.notice.post.";
-
+	
 	private Recommender<TagRecommendationEntity, recommender.impl.model.RecommendedTag> recommender;
 	private Pingback pingback;
 	private Captcha captcha;
@@ -173,13 +174,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	@Override
 	public View workOn(final COMMAND command) {
 		final RequestWrapperContext context = command.getContext();
-		/*
-		 * We store the referer in the command, to send the user back to the
-		 * page he's coming from at the end of the posting process.
-		 */
-		if (!present(command.getReferer())) {
-			command.setReferer(this.requestLogic.getReferer());
-		}
 
 		/*
 		 * only users which are logged in might post -> send them to login page
@@ -336,7 +330,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 *        - the login user.
 	 * @return The post view.
 	 */
-	protected View getEditPostView(final EditPostCommand<RESOURCE> command, final User loginUser) {
+	protected View getEditPostView(final COMMAND command, final User loginUser) {
 		/*
 		 * initialize tag sets for groups
 		 */
@@ -362,10 +356,39 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			 */
 			command.setCaptchaHTML(this.captcha.createCaptchaHtml(this.requestLogic.getLocale()));
 		}
+		
+		/*
+		 * We store the referrer in the command, to send the user back to the
+		 * page he's coming from at the end of the posting process.
+		 */
+		if (!present(command.getReferer())) {
+			String referer = this.requestLogic.getReferer();
+			if (referer == null) {
+				referer = this.getHttpsReferrer(command);
+			}
+			command.setReferer(referer);
+		}
+		
 		/*
 		 * return the view
 		 */
 		return this.getPostView();
+	}
+
+	/**
+	 * XXX: if the post bookmark button was clicked on a https site
+	 * the referrer is currently not set because we are not supporting
+	 * ssl at the moment (RFC 2616, see https://tools.ietf.org/html/rfc2616#section-15.1.3).
+	 * As a workaround we assume that if there is no referer and the post
+	 * url starts with the https schema that the user was on the post url
+	 * and set this as referer.
+	 * 
+	 * @param command
+	 * @param referer
+	 * @return
+	 */
+	protected String getHttpsReferrer(final COMMAND command) {
+		return null;
 	}
 
 	protected abstract View getPostView();
@@ -513,6 +536,9 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		case "approved":
 			post.setApproved(newPost.getApproved());
 			break;
+		case "groups":
+			post.setGroups(newPost.getGroups());
+			break;
 		default:
 			this.replaceResourceSpecificPostFields(post.getResource(), key, newPost.getResource());
 		}
@@ -538,7 +564,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @param ex
 	 * @return
 	 */
-	private View handleDatabaseException(final EditPostCommand<RESOURCE> command, final User loginUser, final Post<RESOURCE> post, final DatabaseException ex, final String process) {
+	private View handleDatabaseException(final COMMAND command, final User loginUser, final Post<RESOURCE> post, final DatabaseException ex, final String process) {
 		final List<ErrorMessage> errorMessages = ex.getErrorMessages(post.getResource().getIntraHash());
 		for (final ErrorMessage em : errorMessages) {
 			this.errors.reject("error.post.update", "Could not " + process + " this post.");
@@ -681,15 +707,11 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * Create the final redirect after successful creating / updating a post. We
 	 * redirect to the URL the user was initially coming from. If we don't have
 	 * that URL (for whatever reason), we redirect to the user's page.
-	 * 
-	 * @param userName
-	 *            - the name of the loginUser
-	 * @param intraHash
-	 *            - the intra hash of the created/updated post
+	 * @param userName	the logged in user?
+	 * @param post		the saved post
 	 * @param referer
 	 *            - the URL of the page the user is initially coming from
-	 * 
-	 * @return
+	 * @return the redirect view
 	 */
 	protected View finalRedirect(final String userName, final Post<RESOURCE> post, final String referer) {
 		/*
@@ -701,9 +723,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		if (!present(referer) || referer.matches(".*/postPublication$") || referer.matches(".*/postBookmark$") || referer.contains("/history/")) {
 			return new ExtendedRedirectView(this.urlGenerator.getUserUrlByUserName(userName));
 		}
-		/*
-		 * redirect to referer URL
-		 */
+		
 		return new ExtendedRedirectView(referer);
 	}
 
@@ -796,9 +816,9 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		/**
 		 * if the user is adding a new thesis to a person's page, he should be redirected to that person's page
 		 * */
-		if (present(command.getPost().getRprs())){
-			ResourcePersonRelation rpr = post.getRprs().get(post.getRprs().size()-1);
-			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(rpr.getPersonName().getPersonId(), PersonNameUtils.serializePersonName(rpr.getPersonName().getPerson().getMainName()), ((BibTex)post.getResource()).getSimHash2(), command.getRequestedUser(), PersonResourceRelation.AUTHOR.toString()));
+		if (present(command.getPost().getResourcePersonRelations())){
+			ResourcePersonRelation resourcePersonRelation = post.getResourcePersonRelations().get(post.getResourcePersonRelations().size()-1);
+			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(resourcePersonRelation.getPerson().getId()));
 			
 		}
 		return this.finalRedirect(loginUserName, post, command.getReferer());
@@ -832,42 +852,75 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			this.pingback.sendPingback(post);
 		}
 
-		/* if this field is already initiated, it means that we have come from a person page ...
-		 **/
-		if(command.getPersonId()!=0){
-			
-			Person person = this.logic.getPersonById(command.getPersonId());
-			PersonName personName = new PersonName();
-			for(PersonName personname: person.getNames()) {
-				if(personname.getLastName().contains(command.getPerson_lastName())){
-					personName = personname;
-					break;
-				}
-			}
-			if(present(personName)){
-				final ResourcePersonRelation rpr = new ResourcePersonRelation();
-			
-				rpr.setPersonNameId(personName.getId());
-				rpr.setSimhash1(post.getResource().getInterHash());
-				rpr.setSimhash2(post.getResource().getIntraHash());
-				rpr.setPubOwner(loginUser.getName());
-				rpr.setPersonName(personName);
-				if(present(command.getPerson_role())){// if a supervisor is adding a new thesis
-					rpr.setRelatorCode(command.getPerson_role().split("supervisor,")[1]);
-				}
-				else{
-					rpr.setRelatorCode(PersonResourceRelation.AUTHOR.getRelatorCode());
-				}
-				
-				this.logic.addResourceRelation(rpr);
-				
-				if(!present(command.getPost().getRprs())){
-					command.getPost().setRprs(new ArrayList<ResourcePersonRelation>());
-				}
-				command.getPost().getRprs().add(rpr);
-			}
+		// if a PersonId has been provided, it means that we have come from a person page ...
+		if ((command.getPersonId() != null) && (post.getResource() instanceof BibTex)) {
+			storePersonRelation(command, loginUser, post);
 		}
 	
+	}
+
+	private void storePersonRelation(final COMMAND command, final User loginUser, final Post<RESOURCE> post) {
+		final BibTex bibtex = (BibTex) post.getResource();
+		final Person person = this.logic.getPersonById(command.getPersonId());
+		
+		if (person != null) {
+			final PersonResourceRelationType role = command.getPersonRole();
+			final List<PersonName> publicationNames = bibtex.getPersonNamesByRole(role);
+			
+			
+			final int personIndex = findPersonIndex(person, publicationNames);
+
+			final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
+			resourcePersonRelation.setPerson(person);
+			resourcePersonRelation.setPost((Post<BibTex>) post); // TODO: should we allow personrelations such as authors for bookmarks?
+			resourcePersonRelation.setChangedBy(loginUser.getName());
+			resourcePersonRelation.setRelationType(role);
+			resourcePersonRelation.setPersonIndex(personIndex);
+			this.logic.addResourceRelation(resourcePersonRelation);
+			
+			if (!present(command.getPost().getResourcePersonRelations())) {
+				command.getPost().setResourcePersonRelations(new ArrayList<ResourcePersonRelation>());
+			}
+			command.getPost().getResourcePersonRelations().add(resourcePersonRelation);
+		}
+	}
+
+
+
+	private int findPersonIndex(final Person person, final List<PersonName> publicationNames) {
+		int personIndex = -1;
+		
+		if (publicationNames != null) {
+			for (int i = 0; i < publicationNames.size(); ++i) {
+				final PersonName cleanPubName = PersonNameUtils.cleanAndSoftNormalizeName(publicationNames.get(i), true);
+				for (PersonName perName : person.getNames()) {
+					final PersonName cleanPerName = PersonNameUtils.cleanAndSoftNormalizeName(perName, true);
+					final boolean lastNameMatch = checkPotentialNamePartEquality(cleanPerName.getLastName(), cleanPubName.getLastName(), false);
+					final boolean firstNameMatch = checkPotentialNamePartEquality(cleanPerName.getFirstName(), cleanPubName.getFirstName(), true);
+					if (firstNameMatch && lastNameMatch) {
+						personIndex = i;
+					}
+				}
+			}
+		}
+		return personIndex;
+	}
+
+	private boolean checkPotentialNamePartEquality(String namePartA, String namePartB, boolean allowAbbreviation) {
+		boolean lastNameMatch = false;
+		if ((namePartA == null) || (namePartB == null)) {
+			lastNameMatch = (namePartB == namePartA);
+		} else {
+			if (namePartA.endsWith(".")) {
+				namePartA = " " + namePartA.substring(0, namePartA.length() - 1);
+			} else {
+				namePartA = " " + namePartA + " ";
+			}
+			namePartB = " " + namePartB + " ";
+			lastNameMatch |= namePartA.contains(namePartB);
+			lastNameMatch |= namePartB.contains(namePartA);
+		}
+		return lastNameMatch;
 	}
 
 	/**
@@ -1157,6 +1210,5 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	public void setPingback(final Pingback pingback) {
 		this.pingback = pingback;
 	}
-
 
 }

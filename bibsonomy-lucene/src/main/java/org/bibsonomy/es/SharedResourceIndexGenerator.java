@@ -53,7 +53,6 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	
 	private final String indexName = ESConstants.INDEX_NAME;
 	private String resourceType;
-	private final String systemUrlFieldName = "systemUrl";
 
 	/** converts post model objects to elasticsearch documents */
 	protected LuceneResourceConverter<R> resourceConverter;
@@ -106,7 +105,7 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 		}
 		Map<String, Object> jsonDocument = new HashMap<String, Object>();
 		jsonDocument = (Map<String, Object>) this.resourceConverter.readPost(post, IndexType.ELASTICSEARCH);
-		jsonDocument.put(this.systemUrlFieldName, systemHome);
+		jsonDocument.put(ESConstants.SYSTEM_URL_FIELD_NAME, systemHome);
 		long indexId = SharedResourceIndexUpdater.calculateIndexId(post.getContentId(), systemHome);
 		esClient.getClient()
 				.prepareIndex(indexName, resourceType, String.valueOf(indexId))

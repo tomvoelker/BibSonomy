@@ -12,43 +12,45 @@ import org.bibsonomy.model.Resource;
  *
  * @author jil
  */
-public enum PersonResourceRelation {
+public enum PersonResourceRelationType {
 	/**
 	 * doctor vater
 	 */
-	THESIS_DOCTOR_VATER("Bdtv"),
+	DOCTOR_VATER("Bdtv"),
 	/**
 	 * first reviewer of thesis
 	 */
-	THESIS_FIRST_REVIEWER("B1st"),
+	FIRST_REVIEWER("B1st"),
 	/**
 	 * reviewer of a thesis
 	 */
-	THESIS_REVIEWER("Mrev"),
+	REVIEWER("Mrev"),
 	
 	/**
 	 * thesis advisor
 	 */
-	THESIS_ADVISOR("Mths"),
+	ADVISOR("Mths"),
 	/**
 	 * Author
 	 */
 	AUTHOR("Maut"),
+	/** editor */
+	EDITOR("Medt"),
 	/**
 	 * some non-specific relation influence
 	 */
 	OTHER("Moth");
 	
 	private final String relatorCode;
-	private static final Map<String, PersonResourceRelation> byRelatorCode = new HashMap<String, PersonResourceRelation>();
+	private static final Map<String, PersonResourceRelationType> byRelatorCode = new HashMap<String, PersonResourceRelationType>();
 	
 	static {
-		for (PersonResourceRelation value : PersonResourceRelation.values()) {
+		for (PersonResourceRelationType value : PersonResourceRelationType.values()) {
 			byRelatorCode.put(value.getRelatorCode(), value);
 		}
 	}
 
-	private PersonResourceRelation(String relatorCode) {
+	private PersonResourceRelationType(String relatorCode) {
 		this.relatorCode = relatorCode;
 	}
 	
@@ -59,8 +61,8 @@ public enum PersonResourceRelation {
 		return this.relatorCode;
 	}
 	
-	public static PersonResourceRelation getByRelatorCode(String relatorCode) {
-		final PersonResourceRelation rVal = byRelatorCode.get(relatorCode);
+	public static PersonResourceRelationType getByRelatorCode(String relatorCode) {
+		final PersonResourceRelationType rVal = byRelatorCode.get(relatorCode);
 		if (rVal == null) {
 			throw new NoSuchElementException(relatorCode);
 		}

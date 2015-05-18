@@ -1,32 +1,29 @@
 package org.bibsonomy.webapp.command;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.List;
-import java.util.Set;
 
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 
 /**
  * @author Christian Pfeiffer
  */
 public class DisambiguationPageCommand extends UserResourceViewCommand {
 
-	private String requestedAuthorName;
-	private String requestedHash;
 	private String requestedAction;
-	private String requestedRole;
+	private String requestedHash;
+	private PersonResourceRelationType requestedRole;
+	private int requestedIndex;
 	
-	private String formPersonId;
-	private String formPersonNameId;
+	private String requestedPersonId;
 	
 	private List<PersonName> suggestedPersonNames;
 	private Person person;
 	private PersonName personName;
-	private Post<? extends Resource> post;
+	private Post<BibTex> post;
 
 	/**
 	 * @return the suggestedPersons
@@ -40,20 +37,6 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	 */
 	public void setSuggestedPersonNames(List<PersonName> suggestedPersonNames) {
 		this.suggestedPersonNames = suggestedPersonNames;
-	}
-
-	/**
-	 * @return the requestedAction
-	 */
-	public String getRequestedAction() {
-		return this.requestedAction;
-	}
-
-	/**
-	 * @param requestedAction the requestedAction to set
-	 */
-	public void setRequestedAction(String requestedAction) {
-		this.requestedAction = requestedAction;
 	}
 
 	/**
@@ -73,14 +56,14 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	/**
 	 * @return the post
 	 */
-	public Post<? extends Resource> getPost() {
+	public Post<BibTex> getPost() {
 		return this.post;
 	}
 
 	/**
 	 * @param post the post to set
 	 */
-	public void setPost(Post<? extends Resource> post) {
+	public void setPost(Post<BibTex> post) {
 		this.post = post;
 	}
 
@@ -99,59 +82,31 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	}
 
 	/**
-	 * @return the requestedAuthorName
-	 */
-	public String getRequestedAuthorName() {
-			return this.requestedAuthorName;
-	}
-
-	/**
-	 * @param requestedAuthorName the requestedAuthorName to set
-	 */
-	public void setRequestedAuthorName(String requestedAuthorName) {
-		this.requestedAuthorName = requestedAuthorName;
-	}
-
-	/**
 	 * @return
 	 */
-	public String getRequestedRole() {
+	public PersonResourceRelationType getRequestedRole() {
 		return this.requestedRole;
 	}
 
 	/**
 	 * @param requestedRole the requestedRole to set
 	 */
-	public void setRequestedRole(String requestedRole) {
+	public void setRequestedRole(PersonResourceRelationType requestedRole) {
 		this.requestedRole = requestedRole;
 	}
 
 	/**
 	 * @return the formAddPersonId
 	 */
-	public String getFormPersonId() {
-		return this.formPersonId;
+	public String getRequestedPersonId() {
+		return this.requestedPersonId;
 	}
 
 	/**
 	 * @param formAddPersonId the formAddPersonId to set
 	 */
-	public void setFormPersonId(String formPersonId) {
-		this.formPersonId = formPersonId;
-	}
-
-	/**
-	 * @return the formPersonNameId
-	 */
-	public String getFormPersonNameId() {
-		return this.formPersonNameId;
-	}
-
-	/**
-	 * @param formPersonNameId the formPersonNameId to set
-	 */
-	public void setFormPersonNameId(String formPersonNameId) {
-		this.formPersonNameId = formPersonNameId;
+	public void setRequestedPersonId(String formPersonId) {
+		this.requestedPersonId = formPersonId;
 	}
 
 	/**
@@ -166,5 +121,27 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	 */
 	public void setPersonName(PersonName personName) {
 		this.personName = personName;
+	}
+
+	/**
+	 * @return the requestedIndex
+	 */
+	public int getRequestedIndex() {
+		return this.requestedIndex;
+	}
+
+	/**
+	 * @param requestedIndex the requestedIndex to set
+	 */
+	public void setRequestedIndex(int requestedIndex) {
+		this.requestedIndex = requestedIndex;
+	}
+
+	public String getRequestedAction() {
+		return this.requestedAction;
+	}
+
+	public void setRequestedAction(String requestedAction) {
+		this.requestedAction = requestedAction;
 	}
 }

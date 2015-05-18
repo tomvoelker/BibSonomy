@@ -201,7 +201,7 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 		for (final Map<String, Object> infos : allSystemInfos) {
 			final LuceneIndexInfo indexInfo = new LuceneIndexInfo();
 			indexInfo.setActive(true);
-			indexInfo.setBasePath(String.valueOf(infos.get("systemUrl")));
+			indexInfo.setBasePath(String.valueOf(infos.get(ESConstants.SYSTEM_URL_FIELD_NAME)));
 			final LuceneIndexStatistics statistics = new LuceneIndexStatistics();
 			statistics.setNewestRecordDate(new Date(this.getLong(infos, "last_log_date")));
 			statistics.setLastTasId(this.getLong(infos, "last_tas_id"));

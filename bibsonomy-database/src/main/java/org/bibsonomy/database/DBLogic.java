@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Classifier;
@@ -138,7 +139,7 @@ import org.bibsonomy.model.comparators.BibTexPostComparator;
 import org.bibsonomy.model.comparators.ResourcePersonRelationByPostComparator;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.enums.PersonResourceRelation;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -3170,7 +3171,6 @@ public class DBLogic implements LogicInterface {
 	}
 
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<PersonName> getPersonSuggestion(String lastName, String firstName) {
 		DBSession session = this.openSession();
@@ -3192,10 +3192,15 @@ public class DBLogic implements LogicInterface {
 	}
 	
 	@Override
-	public void addResourceRelation(ResourcePersonRelation rpr) {
+	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) {
 		DBSession session = this.openSession();
+//		Person p = getPersonById(resourcePersonRelation.getPerson().getId());
+//		if ((p.getUser() != null) && !p.getUser().equals(loginUser.getName())) {
+//			throw new AccessDeniedException("person in relation is someone else");
+//		}
+		resourcePersonRelation.setChangedBy(loginUser.getName());
 		try {
-			this.personDBManager.addResourceRelation(rpr, session);
+			this.personDBManager.addResourceRelation(resourcePersonRelation, session);
 		} finally {
 			session.close();
 		}
@@ -3226,14 +3231,14 @@ public class DBLogic implements LogicInterface {
 					throw new AccessDeniedException();
 				}
 				// FIXME: this should check for != null, not >0
-				if(person.getId() > 0) {
+				if(person.getId() != null) {
 					Person personOld = this.personDBManager.getPersonById(person.getId(), session);
 					if ((personOld.getUser() != null) && (personOld.getUser().equals(loginUser.getName()) == false)) {
 						throw new AccessDeniedException();
 					}
 				}
 			}
-			if(person.getId() > 0) {
+			if(person.getId() != null) {
 				this.personDBManager.updatePerson(person, this.dbSessionFactory.getDatabaseSession());
 				for(PersonName personName : person.getNames()) {
 					if(personName.getId() > 0) {
@@ -3243,7 +3248,38 @@ public class DBLogic implements LogicInterface {
 					}
 				}
 			} else {
+				int counter = 1;
+				String newPersonId = generatePersonIdBase(person);
+				String tempPersonId = newPersonId;
+				do {
+					Person tempPerson = this.personDBManager.getPersonById(tempPersonId, session);
+					
+					if(tempPerson != null) {
+						if(counter < 10)
+							tempPersonId = newPersonId + "00" + counter;
+						else if (counter < 100)
+							tempPersonId = newPersonId + "0" + counter;
+						else if(counter < 1000)
+							tempPersonId = newPersonId + "" + counter;
+						else {
+							try {
+								throw new Exception("Too many person id occurences");
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								log.error("TODO", e);
+								break;
+							}	
+						}
+					} else {
+						break;
+					}
+					
+					counter++;
+				} while(true);
+				person.setId(tempPersonId);
 				this.personDBManager.createPerson(person, this.dbSessionFactory.getDatabaseSession());
+				// FIXME Creating a person with predefined ID will result in id = 0 after making it persistent to db
+				person.setId(tempPersonId);
 				for(PersonName personName : person.getNames()) {
 					if(personName.getId() > 0) {
 						this.personDBManager.updatePersonName(person.getMainName(), session);
@@ -3257,11 +3293,28 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
+	private String generatePersonIdBase(Person person) {
+		final String firstName = person.getMainName().getFirstName();
+		final String lastName  = person.getMainName().getLastName();
+		
+		StringBuilder sb = new StringBuilder();
+		if (!StringUtils.isBlank(firstName)) {
+			sb.append(firstName.toLowerCase().charAt(0));
+			sb.append('.');
+		}
+		if (StringUtils.isBlank(lastName)) {
+			throw new IllegalArgumentException("lastName may not be empty");
+		}
+		sb.append(lastName.toLowerCase());
+		
+		return sb.toString();
+	}
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonById(int)
 	 */
 	@Override
-	public Person getPersonById(int id) {
+	public Person getPersonById(String id) {
 		DBSession session = this.openSession();
 		try {
 			return this.personDBManager.getPersonById(id, session);
@@ -3299,52 +3352,50 @@ public class DBLogic implements LogicInterface {
 	}
 	
 	public List<ResourcePersonRelation> getResourceRelations(Person person) {
-		DBSession session = this.openSession();
-		try {
-			List<ResourcePersonRelation> relations = new ArrayList<ResourcePersonRelation>();
-			for(PersonName personName: person.getNames()) {
-				relations.addAll(this.getResourceRelations(personName));
+		final Map<String, ResourcePersonRelation> byInterHash = new HashMap<>();
+		addIfNotPresent(byInterHash, this.personDBManager.getResourcePersonRelationsWithPosts(person, this.loginUser, GoldStandardPublication.class, this.dbSessionFactory.getDatabaseSession()));
+		addIfNotPresent(byInterHash, this.personDBManager.getResourcePersonRelationsWithPosts(person, this.loginUser, BibTex.class, this.dbSessionFactory.getDatabaseSession()));
+		final List<ResourcePersonRelation> sorted = new ArrayList<>(byInterHash.values());
+		Collections.sort(sorted, new Comparator<ResourcePersonRelation>() {
+			@Override
+			public int compare(ResourcePersonRelation o1, ResourcePersonRelation o2) {
+				try {
+					final int year1 = Integer.parseInt(o1.getPost().getResource().getYear().trim());
+					final int year2 = Integer.parseInt(o2.getPost().getResource().getYear().trim());
+					if (year1 != year2) {
+						return year2 - year1;
+					}
+				} catch (Exception e) {
+					log.warn(e);
+				}
+				return System.identityHashCode(o1) - System.identityHashCode(o2);
 			}
-			// TODO: add parameter object which states what needs to be fetched when
-			// FIXME: this needs to be done with a join - many individual queries are usually bad
-			for (ResourcePersonRelation rpr : relations) {
-				rpr.getPost().setRprs(this.personDBManager.getResourcePersonRelationsByPost(rpr.getPost(), session));
+		});
+		return sorted;
+	}
+	
+	/**
+	 * @param byInterHash
+	 * @param resourcePersonRelationsWithPosts
+	 */
+	private static void addIfNotPresent(Map<String, ResourcePersonRelation> byInterHash, List<ResourcePersonRelation> resourcePersonRelationsWithPosts) {
+		for (ResourcePersonRelation rpr : resourcePersonRelationsWithPosts) {
+			final String interhash = rpr.getPost().getResource().getInterHash();
+			if (byInterHash.containsKey(interhash)) {
+				continue;
 			}
-			Collections.sort(relations, resourcePersonRelationComparator);
-			return relations;
-			
-		} finally {
-			session.close();
+			byInterHash.put(interhash,rpr);
 		}
 	}
-	
-	public List<ResourcePersonRelation> getResourceRelations(PersonName personName) {
-		return this.getResourceRelations(personName.getId());
-	}
-	
-	public List<ResourcePersonRelation> getResourceRelations(int personNameId) {
-		return this.personDBManager.getResourceRelations(personNameId, this.dbSessionFactory.getDatabaseSession());
-	}
-	
-	public List<ResourcePersonRelation> getResourceRelations(PersonName personName, String interHash, String intraHash, String user, PersonResourceRelation rel) {
-		ResourcePersonRelation rpr = new ResourcePersonRelation().withPubOwner(user).withRelatorCode(rel.getRelatorCode()).withSimhash1(interHash).withSimhash2(intraHash);
-		rpr.setPersonName(personName);
-		return this.personDBManager.getResourceRelations(rpr, this.dbSessionFactory.getDatabaseSession());
-	}
-	
+
 	public void createOrUpdatePersonName(PersonName personName) {
-		DBSession session = this.openSession();
-		try {
-			this.personDBManager.createPersonName(personName, session);
-		} finally {
-			session.close();
-		}
+		this.personDBManager.createPersonName(personName, this.dbSessionFactory.getDatabaseSession());
 	}
 	
-	public void linkUser(Integer personId) {
+	public void linkUser(String personId) {
 		this.unlinkUser(this.getAuthenticatedUser().getName());
 		
-		Person person = this.personDBManager.getPersonById(personId.intValue(), this.dbSessionFactory.getDatabaseSession());
+		Person person = this.personDBManager.getPersonById(personId, this.dbSessionFactory.getDatabaseSession());
 		person.setUser(this.getAuthenticatedUser().getName());
 		this.createOrUpdatePerson(person);
 	}
@@ -3355,5 +3406,23 @@ public class DBLogic implements LogicInterface {
 	
 	public List<Post<BibTex>> searchPostsByTitle(String title) {
 		return new ArrayList<Post<BibTex>>();
+	}
+
+	/**
+	 * @param hash
+	 * @param role
+	 * @param authorIndex
+	 * @return
+	 */
+	public List<ResourcePersonRelation> getResourceRelations(String hash, PersonResourceRelationType role, Integer authorIndex) {
+		return this.personDBManager.getResourcePersonRelations(hash, authorIndex, role, this.dbSessionFactory.getDatabaseSession());
+	}
+	
+	/**
+	 * @param post
+	 * @return
+	 */
+	public List<ResourcePersonRelation> getResourceRelations(Post<BibTex> post) {
+		return this.personDBManager.getResourcePersonRelations(post, this.dbSessionFactory.getDatabaseSession());
 	}
 }

@@ -53,7 +53,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.enums.PersonResourceRelation;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.services.URLGenerator;
@@ -275,7 +275,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * only one thesis can be added each time (by snippet).
 		 ***/
 			
-		if(command.getPersonId()!=0 && present(posts) && posts.size() > 1){
+		if(command.getPersonId() != null && present(posts) && posts.size() > 1){
 			this.errors.reject("error.add_new_thesis", "Only one new thesis is allowed to be added!");
 			return Views.POST_PUBLICATION;
 			}

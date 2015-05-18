@@ -1141,21 +1141,6 @@ CREATE TABLE `pendingUser` (
 SET character_set_client = @saved_cs_client;
 
 --
--- Table structure for table `picked_concepts`
---
-
-DROP TABLE IF EXISTS `picked_concepts`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `picked_concepts` (
-  `upper` varchar(255) character set utf8 collate utf8_bin NOT NULL default '',
-  `user_name` varchar(30) NOT NULL,
-  `date_of_create` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-  PRIMARY KEY  (`user_name`,`upper`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-SET character_set_client = @saved_cs_client;
-
---
 -- Table structure for table `popular_tags`
 --
 
@@ -1756,7 +1741,7 @@ DROP TABLE IF EXISTS `person`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `person` (
-  `person_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `person_id` varchar(10) NOT NULL UNIQUE,
   `academic_degree` varchar(64) DEFAULT NULL,
   `user_name` varchar(30) DEFAULT NULL,
   `post_ctr` int(11) DEFAULT NULL,
@@ -1764,7 +1749,7 @@ CREATE TABLE `person` (
   `log_modified_at` datetime DEFAULT NULL,
   `log_modified_by` varchar(30) DEFAULT NULL,
   PRIMARY KEY (`person_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=79 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1778,7 +1763,7 @@ CREATE TABLE `person_name` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `first_name` varchar(45) DEFAULT NULL,
   `last_name` varchar(45) NOT NULL,
-  `person_id` int(10) unsigned DEFAULT NULL,
+  `person_id` varchar(10) NOT NULL,
   `is_main` int(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `person_id_idx` (`person_id`),
