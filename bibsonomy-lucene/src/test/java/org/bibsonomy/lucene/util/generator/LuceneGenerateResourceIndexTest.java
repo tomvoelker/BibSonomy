@@ -2,14 +2,14 @@
  * BibSonomy-Lucene - Fulltext search facility of BibSonomy
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
- *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
- *                           L3S Research Center,
- *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *							   University of Kassel, Germany
+ *							   http://www.kde.cs.uni-kassel.de/
+ *						   Data Mining and Information Retrieval Group,
+ *							   University of Würzburg, Germany
+ *							   http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *						   L3S Research Center,
+ *							   Leibniz University Hannover, Germany
+ *							   http://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -30,11 +30,11 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.index.manager.LuceneGoldStandardManager;
 import org.bibsonomy.lucene.util.LuceneSpringContextWrapper;
 import org.bibsonomy.model.GoldStandardPublication;
-import org.bibsonomy.testutil.TestDatabaseLoader;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -43,39 +43,38 @@ import org.junit.Test;
  * @author dzo
  */
 public class LuceneGenerateResourceIndexTest {
-    
-    private static LuceneGoldStandardManager<GoldStandardPublication> manager;
+	
+	private static LuceneGoldStandardManager<GoldStandardPublication> manager;
 
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	@BeforeClass
-    public static void initLucene() throws Exception {
+	public static void initLucene() throws Exception {
 		manager = (LuceneGoldStandardManager<GoldStandardPublication>) LuceneSpringContextWrapper.getBeanFactory().getBean("luceneGoldStandardPublicationManager");
 
 		// initialize test database
-		TestDatabaseLoader.getInstance().load();
+		AbstractDatabaseManagerTest.LOADER.load(AbstractDatabaseManagerTest.DATABASE_CONFIG_FILE, AbstractDatabaseManagerTest.DATABASE_ID);
 		
 		// delete old indices
 		final List<LuceneResourceIndex<GoldStandardPublication>> resourceIndices = manager.getResourceIndeces();
 		for (final LuceneResourceIndex<GoldStandardPublication> index : resourceIndices) {
 			index.deleteIndex();
 		}
-    }
-    
-    /**
-     * 
-     * @throws Exception
-     */
-    @Test
-    public void generateIndex() throws Exception {
-    	manager.generateIndex(false, 1);
-
+	}
+	
+	/**
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void generateIndex() throws Exception {
+		manager.generateIndex(false, 1);
 		assertEquals(2, manager.getStatistics().getNumDocs());
-    }
-    
-    @AfterClass
-    public static void resetIndex() {
-    	for (final LuceneResourceIndex<GoldStandardPublication> index : manager.getResourceIndeces()) {
-    		index.reset();
+	}
+	
+	@AfterClass
+	public static void resetIndex() {
+		for (final LuceneResourceIndex<GoldStandardPublication> index : manager.getResourceIndeces()) {
+			index.reset();
 		}
-    }
+	}
 }
