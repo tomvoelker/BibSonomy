@@ -106,8 +106,10 @@
 						<h4 class="sidebar"><fmt:message key="group.doesnotexist.header" /></h4>
 						<ul>
 							<li>
-								<fmt:message key="settings.addgroupdescription">
-									<fmt:param><a href="mailto:${properties['project.email']}">${properties['project.email']}</a></fmt:param>
+								<fmt:message var="linkText" key="settings.group.requestGroup.link"/>
+								<fmt:message key="settings.group.requestGroup.description">
+									<fmt:param value="/grouprequest"/>
+									<fmt:param value="${linkText}"/>
 								</fmt:message>
 							</li>
 						</ul>
