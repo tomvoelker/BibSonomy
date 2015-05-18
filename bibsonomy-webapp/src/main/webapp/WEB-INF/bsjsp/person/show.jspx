@@ -167,7 +167,7 @@
 									<c:when test="${fn:length(command.person.names) gt 0}">
 										<c:forEach var='name' items="${command.person.names}">
 											<c:choose>
-												<c:when test="${name.id eq command.person.mainName.id}">
+												<c:when test="${name.isMain}">
 													<div class='checkbox' id='personName_${name.id}'><label><input type='radio' name='formSelectedName' value='${name.id}' checked='checked' /> ${name.firstName} ${name.lastName}</label>&#160;
 													</div>
 												</c:when>
