@@ -17,6 +17,7 @@ import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
@@ -73,24 +74,33 @@ public class gImporterDatabaseManagerTest extends AbstractDatabaseManagerTest{
 				
 			final Post<GoldStandardPublication> gold = new Post<GoldStandardPublication>();
 			final GoldStandardPublication goldP = new GoldStandardPublication();
+			
 			//set school
 			goldP.setSchool(p.getSchoolP1()+" "+p.getSchoolP2());
+			
 			//set year
 			if(!p.getSubYear().isEmpty()){
 				goldP.setYear(p.getSubYear());
 			}
 			else{goldP.setYear(p.getPubYear());}
+			
 			//set title
 			if(!p.getSubTitle().isEmpty()){
 				goldP.setTitle(p.getMainTitle()+": "+p.getSubTitle());
 			}
 			else{goldP.setTitle(p.getMainTitle());}
+			
 			//set authors
 			List<PersonName> authors = new ArrayList<PersonName>(); 
 			PersonName author = new PersonName(p.getFirstName(), p.getLastName());
 			
+			Person person = new Person();
+			person.addName(author);
+			author.setPerson(person);
+			
 			authors.add(author);
 			goldP.setAuthor(authors);
+			
 			//set entrytype and type
 			if(p.isDiss()){
 				goldP.setEntrytype("phdThesis");
