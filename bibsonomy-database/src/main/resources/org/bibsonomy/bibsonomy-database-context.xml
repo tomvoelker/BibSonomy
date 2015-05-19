@@ -42,7 +42,7 @@
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByFriends" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByFollowedUsers" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptForGroup" parent="publicationChainElement" />
-				<bean class="org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexFromBasketForUser" parent="publicationChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexFromClipboardForUser" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesFromInbox" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByTaggedUserRelation" parent="publicationChainElement" />
 			</list>

@@ -69,7 +69,7 @@
 	<typeAlias alias="adminParam"         type="org.bibsonomy.database.params.AdminParam" />
 	<typeAlias alias="statisticsParam"    type="org.bibsonomy.database.params.StatisticsParam" />	
 	<typeAlias alias="tagSetParam"    	  type="org.bibsonomy.database.params.TagSetParam" />
-	<typeAlias alias="basketParam"    	  type="org.bibsonomy.database.params.BasketParam" />	
+	<typeAlias alias="clipboardParam"    	type="org.bibsonomy.database.params.ClipboardParam" />	
 	<typeAlias alias="inboxParam"			type="org.bibsonomy.database.params.InboxParam" />
 	<typeAlias alias="loggingParam"			type="org.bibsonomy.database.params.LoggingParam" />
 	<typeAlias alias="metaDataPostParam"	type="org.bibsonomy.database.params.metadata.PostParam" />

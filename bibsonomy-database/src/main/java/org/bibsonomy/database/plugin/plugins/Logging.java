@@ -27,7 +27,7 @@
 package org.bibsonomy.database.plugin.plugins;
 
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.params.BasketParam;
+import org.bibsonomy.database.params.ClipboardParam;
 import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
@@ -233,13 +233,13 @@ public class Logging extends AbstractDatabasePlugin {
     }
 
     @Override
-    public void onDeleteBasketItem(final BasketParam param, final DBSession session) {
-        this.insert("logBasketItemDelete", param, session);
+    public void onDeleteClipboardItem(final ClipboardParam param, final DBSession session) {
+        this.insert("logClipboardItemDelete", param, session);
     }
 
     @Override
-    public void onDeleteAllBasketItems(final String userName, final DBSession session) {
-        this.insert("logDeleteAllFromBasket", userName, session);
+    public void onDeleteAllClipboardItems(final String userName, final DBSession session) {
+        this.insert("logDeleteAllFromClipboard", userName, session);
     }
 
     @Override

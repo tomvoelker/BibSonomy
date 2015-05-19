@@ -68,10 +68,10 @@
 	</c:if>
 	
 	<!--+ 
-		+ basket actions (pick, unpick, clear basket) only for publications, and logged-in users
+		+ clipboard actions (pick, unpick, clear clipboard) only for publications, and logged-in users
 		+-->
 	<c:if test="${command.context.userLoggedIn and isPublication}">
-		<div class="listOptionHeading"><fmt:message key="navi.basket"/>:</div>
+		<div class="listOptionHeading"><fmt:message key="navi.clipboard"/>:</div>
 		<ul>	
 			<li>
 				<rc:clipboard isClipboard="${isClipboard}" />

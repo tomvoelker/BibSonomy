@@ -32,12 +32,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.params.BasketParam;
+import org.bibsonomy.database.params.ClipboardParam;
 import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.InboxParam;
 import org.bibsonomy.database.params.UserParam;
-import org.bibsonomy.database.plugin.plugins.BasketPlugin;
+import org.bibsonomy.database.plugin.plugins.ClipboardPlugin;
 import org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin;
 import org.bibsonomy.database.plugin.plugins.DiscussionPlugin;
 import org.bibsonomy.database.plugin.plugins.GoldStandardPublicationReferencePlugin;
@@ -64,7 +64,7 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 		// order matters!
 		DEFAULT_PLUGINS.add(new Logging());
 		DEFAULT_PLUGINS.add(new BibTexExtraPlugin());
-		DEFAULT_PLUGINS.add(new BasketPlugin());
+		DEFAULT_PLUGINS.add(new ClipboardPlugin());
 		DEFAULT_PLUGINS.add(new GoldStandardPublicationReferencePlugin());
 		DEFAULT_PLUGINS.add(new DiscussionPlugin());
 		DEFAULT_PLUGINS.add(new MetaDataPlugin());
@@ -268,16 +268,16 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	}
 	
 	@Override
-	public void onDeleteBasketItem(final BasketParam param, final DBSession session){
+	public void onDeleteClipboardItem(final ClipboardParam param, final DBSession session){
 		for (final DatabasePlugin plugin : this.plugins.values()) {
-			plugin.onDeleteBasketItem(param, session);
+			plugin.onDeleteClipboardItem(param, session);
 		}
 	}
 	
 	@Override
-	public void onDeleteAllBasketItems(final String userName, final DBSession session){
+	public void onDeleteAllClipboardItems(final String userName, final DBSession session){
 		for (final DatabasePlugin plugin : this.plugins.values()){
-			plugin.onDeleteAllBasketItems(userName, session);
+			plugin.onDeleteAllClipboardItems(userName, session);
 		}
 	}
 

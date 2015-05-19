@@ -79,7 +79,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	private final TagDatabaseManager tagDatabaseManager;
 	private final TagRelationDatabaseManager conceptDatabaseManager;
 	private final AdminDatabaseManager adminDatabaseManager;
-	private final BasketDatabaseManager clipboardDatabaseManager;
+	private final ClipboardDatabaseManager clipboardDatabaseManager;
 	private final DocumentDatabaseManager documentDatabaseManager;
 	
 	private final UserDatabaseManager userDatabaseManager;
@@ -93,7 +93,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 		this.bookmarkDBManager = BookmarkDatabaseManager.getInstance();
 		this.tagDatabaseManager = TagDatabaseManager.getInstance();
 		this.conceptDatabaseManager = TagRelationDatabaseManager.getInstance();
-		this.clipboardDatabaseManager = BasketDatabaseManager.getInstance();
+		this.clipboardDatabaseManager = ClipboardDatabaseManager.getInstance();
 		this.documentDatabaseManager = DocumentDatabaseManager.getInstance();
 		
 		this.groupDatabaseManager = GroupDatabaseManager.getInstance();

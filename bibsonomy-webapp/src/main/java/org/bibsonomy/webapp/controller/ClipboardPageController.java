@@ -74,7 +74,7 @@ public class ClipboardPageController extends SingleResourceListController implem
 			}
 
 			// the number of items in this user's clipboard has already been fetched
-			command.getListCommand(resourceType).setTotalCount(command.getContext().getLoginUser().getBasket().getNumPosts());
+			command.getListCommand(resourceType).setTotalCount(command.getContext().getLoginUser().getClipboard().getNumPosts());
 		}	
 
 		this.endTiming();

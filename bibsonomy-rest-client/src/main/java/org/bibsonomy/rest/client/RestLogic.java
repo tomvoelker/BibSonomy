@@ -564,7 +564,7 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public int createBasketItems(final List<Post<? extends Resource>> posts) {
+	public int createClipboardItems(final List<Post<? extends Resource>> posts) {
 		final PickPostQuery query = new PickPostQuery();
 		query.setUserName(posts.get(0).getUser().getName());
 		query.setResourceHash(posts.get(0).getResource().getIntraHash());
@@ -572,7 +572,7 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public int deleteBasketItems(final List<Post<? extends Resource>> posts, final boolean clearAll) {
+	public int deleteClipboardItems(final List<Post<? extends Resource>> posts, final boolean clearAll) {
 		final UnpickClipboardQuery query = new UnpickClipboardQuery();
 		query.setClearAll(clearAll);
 

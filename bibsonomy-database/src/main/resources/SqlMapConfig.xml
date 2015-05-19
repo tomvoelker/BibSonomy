@@ -59,7 +59,7 @@
 	<sqlMap resource="User.xml" />
 	<sqlMap resource="Group.xml" />
 	<sqlMap resource="Document.xml" />
-	<sqlMap resource="Basket.xml" />
+	<sqlMap resource="Clipboard.xml" />
 	<sqlMap resource="Admin.xml" />
 	<sqlMap resource="Statistics.xml" />
 	<sqlMap resource="MetaData.xml" />

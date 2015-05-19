@@ -18,7 +18,7 @@
       <tr><th>homepage</th><td><a href="${fn:escapeXml(user.homepage)}"><c:out value="${user.homepage}"/></a></td></tr>
       
       <tr><th colspan="2">system data</th></tr>
-      <tr><th>basket</th><td><c:out value="${user.basket.numPosts}"/></td></tr>
+      <tr><th>clipboard</th><td><c:out value="${user.clipboard.numPosts}"/></td></tr>
       <tr><th>friends</th><td><c:out value="${user.friends}"/></td></tr>
       <tr>
         <th>groups</th>

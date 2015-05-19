@@ -142,7 +142,7 @@ function processISBN(text) {
 }
 
 /**
- * Adds read entry from reader app to the basket or to post it automatically.
+ * Adds read entry from reader app to the clipboard or to post it automatically.
  * Entry is only added if it has a pick link. Afterwards the pick link is clicked.
  * Entry is pulled via ajax one more time to get the actual entry with unpick link.
  * 
@@ -825,7 +825,7 @@ function addBibtexExportOptions() {
 
 /**
  * adds javascript to the list headers to create a dropdown menu with
- * list action options (export, basket, sort, ...)
+ * list action options (export, clipboard, sort, ...)
  */
 function addListOptions() {
 	
