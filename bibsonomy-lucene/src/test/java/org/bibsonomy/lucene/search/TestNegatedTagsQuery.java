@@ -26,35 +26,23 @@
  */
 package org.bibsonomy.lucene.search;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
+
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
-import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.SearchType;
-import org.bibsonomy.database.AbstractDatabaseTest;
-import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
-import org.bibsonomy.database.managers.GoldStandardPublicationDatabaseManager;
-import org.bibsonomy.database.params.BibtexExtendedParam;
-import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
-import org.bibsonomy.lucene.index.manager.LuceneGoldStandardManager;
 import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
 import org.bibsonomy.lucene.util.LuceneSpringContextWrapper;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
-import org.bibsonomy.testutil.TestDatabaseLoader;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class TestNegatedTagsQuery extends AbstractDatabaseManagerTest {
 
