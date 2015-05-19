@@ -10,6 +10,7 @@
 	xmlns:users="urn:jsptagdir:/WEB-INF/tags/bstags/users"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -59,14 +60,12 @@
 		</jsp:attribute>
 
 		<jsp:attribute name="sidebar">
-			<ul>
-				<li>
-					<h4 class="sidebar"><fmt:message key="tags" /></h4>
-					<tags:cloud requPath="user/${command.requestedUser}" cmd="${command.tagcloud}"
-								tagboxMinfreqStyle="user" tagSizeMode="user"
-								showTooltips="${command.context.loginUser.settings.tagboxTooltip}" />
-				</li>
-        	</ul>
+			<sidebar:sidebarTagCloudItem 
+				requPath="user/${command.requestedUser}" 
+				cmd="${command.tagcloud}"
+				tagboxMinfreqStyle="user"
+				tagSizeMode="user"
+				showTooltips="${command.context.loginUser.settings.tagboxTooltip}" />
 		</jsp:attribute>
 
 		<!--+

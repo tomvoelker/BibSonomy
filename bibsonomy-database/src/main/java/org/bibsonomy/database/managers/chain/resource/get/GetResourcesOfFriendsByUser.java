@@ -79,7 +79,7 @@ public class GetResourcesOfFriendsByUser<R extends Resource, P extends ResourceP
 		 */
 		if (this.generalDb.isFriendOf(param.getUserName(), param.getRequestedUserName(), session)) {
 			final int groupId = GroupID.FRIENDS.getId();
-			return this.databaseManager.getPostsForUser(param.getUserName(), param.getRequestedUserName(), HashID.getSimHash(param.getSimHash()), groupId, param.getGroups(), param.getPostAccess(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
+			return this.databaseManager.getPostsForUser(param.getUserName(), param.getRequestedUserName(), HashID.getSimHash(param.getSimHash()), groupId, param.getGroups(), param.getPostAccess(), param.getFilters(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
 		}
 
 		return new ArrayList<Post<R>>();

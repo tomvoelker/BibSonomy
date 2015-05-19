@@ -1,14 +1,14 @@
 <p>
-\format[HTMLChars,AntiScriptInjection,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author} (\format[AntiScriptInjection]{\year}), 
-\format[HTMLChars,AntiScriptInjection]{\title}, <i>in</i>
+\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLCharsAntiScript]{\author} (\format[AntiScriptInjection]{\year}), 
+\format[HTMLCharsAntiScript]{\title}, <i>in</i>
 \begin{editor}
-\format[HTMLChars,AntiScriptInjection,AuthorFirstFirst,AuthorAndsReplacer]{\editor}, ed.,
+\format[AuthorFirstFirst,AuthorAndsReplacer,HTMLCharsAntiScript]{\editor}, ed.,
 \end{editor}
 \begin{booktitle}
-'\format[HTMLChars,AntiScriptInjection]{\booktitle}'
+'\format[HTMLCharsAntiScript]{\booktitle}'
 \end{booktitle}
 \begin{publisher}
-, \format[HTMLChars,AntiScriptInjection]{\publisher}, \format[HTMLChars,AntiScriptInjection]{\address}
+, \format[HTMLCharsAntiScript]{\publisher}, \format[HTMLCharsAntiScript]{\address}
 \end{publisher}
 \begin{pages}
 , pp. \format[AntiScriptInjection]{\pages}

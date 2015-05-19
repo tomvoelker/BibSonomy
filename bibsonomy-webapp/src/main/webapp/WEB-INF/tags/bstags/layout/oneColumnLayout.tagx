@@ -19,6 +19,7 @@
 	<jsp:directive.attribute name="headerExt" fragment="true" />
 	<jsp:directive.attribute name="infobox" fragment="true" required="false"/>
 	<jsp:directive.attribute name="beforeMainContainer" fragment="true" required="false"/>
+	<!-- FIXME: remove, there is no sidebar -->
 	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="newsbar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="headerContainer" fragment="true" required="false"/>

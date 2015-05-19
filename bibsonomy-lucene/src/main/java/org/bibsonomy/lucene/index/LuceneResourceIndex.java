@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -59,7 +60,11 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.store.NoSuchDirectoryException;
 import org.apache.lucene.util.Version;
+import org.bibsonomy.es.IndexType;
+import org.bibsonomy.es.IndexUpdater;
+import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.param.LuceneIndexStatistics;
+import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.param.comparator.DocumentCacheComparator;
 import org.bibsonomy.model.Resource;
 
@@ -70,7 +75,7 @@ import org.bibsonomy.model.Resource;
  *
  * @param <R> the resource of the index
  */
-public class LuceneResourceIndex<R extends Resource> {
+public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> {
 	private static final Log log = LogFactory.getLog(LuceneResourceIndex.class);
 
 	/** directory prefix and id delimiter for different resource indeces */
@@ -124,9 +129,11 @@ public class LuceneResourceIndex<R extends Resource> {
 
 	private Class<R> resourceClass;
 	
-	/** the maximum field length */
-//	private IndexWriter.MaxFieldLength maxFieldLength;
+	/** converts post model objects to documents of the index structure */
+	protected LuceneResourceConverter<R> resourceConverter;
 
+	/** all sessions which currently use this index */
+	private final Set<LuceneSession> openSessions = new HashSet<>();
 	
 	/**
 	 * constructor disabled
@@ -149,27 +156,30 @@ public class LuceneResourceIndex<R extends Resource> {
 		}
 
 		try {
-			this.searcherManager.maybeRefreshBlocking();
-			IndexSearcher searcher = this.aquireIndexSearcher();
-			
-			try {
-				final DirectoryReader indexReader = (DirectoryReader) searcher.getIndexReader();
-				
-				// Get the ID of this index
-				statistics.setIndexId(this.indexId);
-				statistics.setNumDocs(indexReader.numDocs());
-				statistics.setNumDeletedDocs(indexReader.numDeletedDocs());
-				statistics.setCurrentVersion(indexReader.getVersion());
-				statistics.setCurrent(indexReader.isCurrent());
-				
-			} finally {
-				this.searcherManager.release(searcher);
-				searcher = null;
+			synchronized (this) {
+				this.searcherManager.maybeRefreshBlocking();
 			}
+			try (LuceneSession session = openSession()) {
+				session.execute(new LuceneSessionOperation<Void,IOException>() {
+					@Override
+					public Void doOperation(IndexSearcher searcher) throws IOException {
+						final DirectoryReader indexReader = (DirectoryReader) searcher.getIndexReader();
+						
+						// Get the ID of this index
+						statistics.setIndexId(LuceneResourceIndex.this.indexId);
+						statistics.setNumDocs(indexReader.numDocs());
+						statistics.setNumDeletedDocs(indexReader.numDeletedDocs());
+						statistics.setCurrentVersion(indexReader.getVersion());
+						statistics.setCurrent(indexReader.isCurrent());
+						return null;
+					}
+				});
+			}
+
 		} catch (IOException e1) {
 			log.error(e1);
 		}
-		statistics.setNewestRecordDate(new Date(this.getLastLogDate()));
+		statistics.setNewestRecordDate(this.getLastLogDate());
 
 		return statistics;
 	}
@@ -196,6 +206,7 @@ public class LuceneResourceIndex<R extends Resource> {
 		}
 	}
 	
+	@Override
 	protected void finalize() throws Throwable {
 		close();
 	}
@@ -226,7 +237,7 @@ public class LuceneResourceIndex<R extends Resource> {
 						if (IndexWriter.isLocked(this.indexDirectory)) {
 							log.warn("Unlocking index " + indexPath + " failed silently");
 							if (indexDirectory.fileExists(IndexWriter.WRITE_LOCK_NAME)) {
-								log.error("Trying to unlocking index " + indexPath + " with some more emphasis");
+								log.error("Trying to unlock index " + indexPath + " with some more emphasis");
 								indexDirectory.clearLock(IndexWriter.WRITE_LOCK_NAME);
 							}
 						}
@@ -259,20 +270,22 @@ public class LuceneResourceIndex<R extends Resource> {
 				throw e; 
 			}
 			
-			try {
-				this.openIndexWriter();
-			} catch (final IOException e) {
-				log.error("Error opening IndexWriter (" + e.getMessage() + ") - This is ok while creating a new index.");
-				this.closeIndexWriter();
-				throw e;
-			}
-			
-			try {
-				this.openSearcherManager();
-			} catch (final IOException e) {
-				log.error("Error opening SearcherManager (" + e.getMessage() + ") - This is ok while creating a new index.");
-				this.closeSearcherManager();
-				throw e;
+			synchronized (this) {
+				try {
+					this.openIndexWriter();
+				} catch (final IOException e) {
+					log.error("Error opening IndexWriter (" + e.getMessage() + ") - This is ok while creating a new index.");
+					this.closeIndexWriter();
+					throw e;
+				}
+				
+				try {
+					this.openSearcherManager();
+				} catch (final IOException e) {
+					log.error("Error opening SearcherManager (" + e.getMessage() + ") - This is ok while creating a new index.");
+					this.closeSearcherManager();
+					throw e;
+				}
 			}
 			
 			// everything went fine - enable the index
@@ -283,16 +296,14 @@ public class LuceneResourceIndex<R extends Resource> {
 	}
 	
 	
-	/**
-	 * @return the latest log_date[ms] from index 
-	 */
-	public long getLastLogDate() {
+	@Override
+	public Date getLastLogDate() {
 		// FIXME: this synchronisation is very inefficient 
 		synchronized(this) {
 			if (!isIndexEnabled()) {
-				return Long.MAX_VALUE;
+				return null;
 			} else if (this.lastLogDate != null) {
-				return this.lastLogDate;
+				return new Date(this.lastLogDate);
 			}
 			
 			//----------------------------------------------------------------
@@ -309,13 +320,13 @@ public class LuceneResourceIndex<R extends Resource> {
 				final String lastLogDate = doc.get(LuceneFieldNames.LAST_LOG_DATE);
 				try {
 					// parse date
-					return Long.parseLong(lastLogDate);
+					return new Date(Long.parseLong(lastLogDate));
 				} catch (final NumberFormatException e) {
 					log.error("Error parsing last_log_date " + lastLogDate);
 				}
 			}
 
-			return Long.MAX_VALUE;
+			return null;
 		}
 	}
 	
@@ -330,6 +341,7 @@ public class LuceneResourceIndex<R extends Resource> {
 	/** 
 	 * @return the newest tas_id from index
 	 */
+	@Override
 	public Integer getLastTasId() {
 		synchronized(this) {
 			if (!isIndexEnabled()) {
@@ -374,6 +386,7 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * 
 	 * @param username
 	 */
+	@Override
 	public void flagUser(final String username) {
 		synchronized(this) {
 			this.usersToFlag.add(username);
@@ -385,6 +398,7 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * 
 	 * @param userName
 	 */
+	@Override
 	public void unFlagUser(final String userName) {
 		synchronized(this) {
 			this.usersToFlag.remove(userName);
@@ -396,6 +410,7 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * 
 	 * @param contentId post's content id 
 	 */
+	@Override
 	public void deleteDocumentForContentId(final Integer contentId) {
 		synchronized(this) {
 			this.contentIdsToDelete.add(contentId);
@@ -438,6 +453,7 @@ public class LuceneResourceIndex<R extends Resource> {
 	/**
 	 * perform all cached operations to index
 	 */
+	@Override
 	public void flush() {
 		synchronized(this) {
 			if (!isIndexEnabled()) {
@@ -505,37 +521,39 @@ public class LuceneResourceIndex<R extends Resource> {
 	/**
 	 * closes IndexWriter and SearchManager and reopens them
 	 */
-	public void reset() {
-		synchronized(this) {
-			if (!isIndexEnabled()) {
-				try {
-					init();
-				} catch (final Exception e) {
-					return;
-				}
-			}
-			
+	public synchronized void reset() {
+		if (!isIndexEnabled()) {
 			try {
-				openIndexWriter();
-				try {
-					openSearcherManager();
-				} catch (final IOException e) {
-					log.error("Error opening SearcherManager", e);
-				}
-			} catch(final IndexNotFoundException e) {
-				log.error("Error opening IndexWriter (" + e.getMessage() + ") - This is ok while creating a new index.");
-			} catch (final IOException e) {
-				log.error("Error opening IndexWriter", e);
+				init();
+			} catch (final Exception e) {
+				return;
 			}
+		}
+			
+		try {
+			openIndexWriter();
+			try {
+				openSearcherManager();
+			} catch (final IOException e) {
+				log.error("Error opening SearcherManager", e);
+			}
+		} catch(final IndexNotFoundException e) {
+			log.error("Error opening IndexWriter (" + e.getMessage() + ") - This is ok while creating a new index.");
+		} catch (final IOException e) {
+			log.error("Error opening IndexWriter", e);
+		}
 
-			// delete the lists
-			this.postsToInsert.clear();
-			this.contentIdsToDelete.clear();
-			this.usersToFlag.clear();
+		// delete the lists
+		this.postsToInsert.clear();
+		this.contentIdsToDelete.clear();
+		this.usersToFlag.clear();
 
-			// reset the cached query parameters
-			this.lastLogDate = null;
-			this.lastTasId = null;
+		// reset the cached query parameters
+		this.lastLogDate = null;
+		this.lastTasId = null;
+		
+		if ((this.indexWriter != null) && (this.searcherManager != null)) {
+			this.enableIndex();
 		}
 	}	
 	
@@ -578,28 +596,27 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * @return
 	 */
 	private Document searchIndex(final Query searchQuery, final int hitsPerPage, final Sort ordering) {
-		IndexSearcher searcher = null;
-		// query the index
-		try {
-			searcher = this.aquireIndexSearcher();
-			final TopDocs topDocs = searcher.search(searchQuery, null, hitsPerPage, ordering);
-			if (topDocs.totalHits > 0) {
-				return searcher.doc(topDocs.scoreDocs[0].doc);
-			}
+		try (LuceneSession session = openSession()) {
+			return session.execute(new LuceneSessionOperation<Document,IOException>() {
+				@Override
+				public Document doOperation(IndexSearcher searcher) throws IOException {
+					final TopDocs topDocs = searcher.search(searchQuery, null, hitsPerPage, ordering);
+					if (topDocs.totalHits > 0) {
+						return searcher.doc(topDocs.scoreDocs[0].doc);
+					}
+					return null;
+				}
+			});
 		} catch (final Exception e) {
 			log.error("Error performing index search in file " + this.indexPath, e);
-		} finally {
-			this.releaseIndexSearcher(searcher);
+			return null;
 		}
-		
-		return null;
 	}	
 	
 	/**
 	 * removes given post from index
 	 * 
 	 * @param contentId post's content id 
-	 * @return number of posts deleted from index
 	 * 
 	 * @throws StaleReaderException
 	 * @throws CorruptIndexException
@@ -615,7 +632,6 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * delete all documents of a given user from index
 	 * 
 	 * @param username
-	 * @return
 	 * @throws CorruptIndexException
 	 * @throws IOException
 	 */
@@ -629,7 +645,6 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * remove posts matching to given search term from index
 	 * 
 	 * @param searchTerm
-	 * @return
 	 * @throws CorruptIndexException
 	 * @throws IOException
 	 */
@@ -643,7 +658,7 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * @throws LockObtainFailedException
 	 * @throws IOException
 	 */
-	private void openIndexWriter() throws CorruptIndexException, LockObtainFailedException, IndexNotFoundException, IOException  {
+	private synchronized void openIndexWriter() throws CorruptIndexException, LockObtainFailedException, IndexNotFoundException, IOException  {
 		closeIndexWriter();
 		//open new indexWriter
 		log.debug("Opening indexWriter " + this.indexPath);
@@ -654,10 +669,21 @@ public class LuceneResourceIndex<R extends Resource> {
 	
 	private void closeIndexWriter() throws CorruptIndexException, IOException {
 		if (this.indexWriter != null) {
-			log.debug("Closing indexWriter " + indexPath);
-			//close index for writing
-			indexWriter.close();
-			indexWriter = null;
+			synchronized (this) {
+				while (this.openSessions.size() > 0) {
+					try {
+						log.debug("waiting to close indexWriter " + indexPath);
+						this.wait();
+					} catch (InterruptedException e) {
+						Thread.interrupted();
+					}
+				}
+				log.debug("Closing indexWriter " + indexPath);
+				this.disableIndex();
+				// close index for writing
+				indexWriter.close();
+				indexWriter = null;
+			}
 		}
 	}
 	
@@ -665,7 +691,7 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * Opens a new SearchManager, closes the old one if exists.
 	 * @throws IOException
 	 */
-	private void openSearcherManager() throws IOException {
+	private synchronized void openSearcherManager() throws IOException {
 		closeSearcherManager();
 		//open new SearchManager
 		this.searcherManager = new SearcherManager(this.indexDirectory, new SearcherFactory());
@@ -674,9 +700,22 @@ public class LuceneResourceIndex<R extends Resource> {
 	
 	private void closeSearcherManager() throws IOException {
 		if (this.searcherManager != null) {
-			log.debug("Closing searchManager " + indexPath);
-			this.searcherManager.close();
-			this.searcherManager = null;
+			synchronized (this) {
+				while (this.openSessions.size() > 0) {
+					try {
+						log.debug("waiting to close searchManager " + indexPath);
+						this.wait();
+					} catch (InterruptedException e) {
+						Thread.interrupted();
+					}
+				}
+				log.debug("closing searchManager " + indexPath);
+				this.disableIndex();
+				this.searcherManager.close();
+				this.searcherManager = null;
+			}
+			
+			
 		}
 	}
 
@@ -709,7 +748,7 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * @return IndexSearcher
 	 * @throws IOException
 	 */
-	public IndexSearcher aquireIndexSearcher() throws IOException {
+	protected IndexSearcher acquireIndexSearcher() throws IOException {
 		try {
 			// FIXME: closing and exchanging the searcherManager should be done in a better way
 			// when the updater finished, race-conditions can occur where we don't have a searcheManager for a short time (the reference to it is set to null because it is closed and should then no longer be used)
@@ -728,13 +767,35 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * Releases a previously acquired IndexSearcher.
 	 * @param searcher
 	 */
-	public void releaseIndexSearcher(IndexSearcher searcher) {
+	protected void releaseIndexSearcher(IndexSearcher searcher) {
 		try {
 			if (searcher != null) {
 				this.searcherManager.release(searcher);
 			}
 		} catch (IOException e) {
 			log.error("Could not release IndexSearcher", e);
+		}
+	}
+	
+	/**
+	 * opens a {@link LuceneSession}. All usage of the lucene index should be done via a {@link LuceneSession} returned by this method and all returned objects should be closed (best done via try with resources).
+	 * @return a new a {@link LuceneSession} to access the index.
+	 */
+	public synchronized LuceneSession openSession() {
+		final LuceneSession rVal = new LuceneSession(this);
+		this.openSessions.add(rVal);
+		return rVal;
+	}
+	
+	/**
+	 * releases resources of associated to the {@link LuceneSession}. This is meant to be called only by the close method of the {@link LuceneSession}
+	 * 
+	 * @param session the session to be closed
+	 */
+	protected synchronized void closeSession(LuceneSession session) {
+		openSessions.remove(session);
+		if (openSessions.size() == 0) {
+			this.notifyAll();
 		}
 	}
 	
@@ -833,5 +894,60 @@ public class LuceneResourceIndex<R extends Resource> {
 	@Override
 	public String toString() {
 		return this.resourceClass.getSimpleName() + INDEX_ID_DELIMITER + this.indexId;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#setSystemInformation(java.lang.Integer, java.util.Date)
+	 */
+	@Override
+	public void setSystemInformation(Integer lastTasId, Date lastLogDate) {
+		this.setLastLogDate(lastLogDate.getTime());
+		this.setLastTasId(lastTasId);
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#setContentIdsToDelete(java.util.List)
+	 */
+	@Override
+	public void deleteDocumentsForContentIds(List<Integer> contentIdsToDelete) {
+		this.deleteDocumentsInIndex(contentIdsToDelete);
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#insertDocument(org.bibsonomy.lucene.param.LucenePost, long)
+	 */
+	@Override
+	public void insertDocument(LucenePost<R> post, Date currentLogDate) {
+		if (currentLogDate != null) {
+			post.setLastLogDate(currentLogDate);
+		}
+		final Document postDoc = (Document)this.resourceConverter.readPost(post, IndexType.LUCENE);
+		this.insertDocument(postDoc);	
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#deleteIndexForForUser(java.lang.String)
+	 */
+	@Override
+	public void deleteIndexForUser(String userName) {
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#deleteIndexForIndexId(long)
+	 */
+	@Override
+	public void deleteIndexForIndexId(long indexId) {
+		throw new UnsupportedOperationException();
+	}
+
+	public LuceneResourceConverter<R> getResourceConverter() {
+		return this.resourceConverter;
+	}
+
+	public void setResourceConverter(LuceneResourceConverter<R> resourceConverter) {
+		this.resourceConverter = resourceConverter;
 	}
 }

@@ -1,14 +1,14 @@
 \begin{author}
-\format[HTMLChars,AntiScriptInjection,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\author}
+\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLCharsAntiScript]{\author}
 \end{author}
  (\format[AntiScriptInjection]{\year}). 
-\format[HTMLChars,AntiScriptInjection]{\title}. 
+\format[HTMLCharsAntiScript]{\title}. 
 In 
 \begin{editor}
-\format[HTMLChars,AntiScriptInjection,AuthorLastFirstAbbrCommas,AuthorAndsReplacer]{\editor}
+\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLCharsAntiScript]{\editor}
  (ed.), 
 \end{editor}
-<i> \format[HTMLChars,AntiScriptInjection]{\booktitle}</i>
+<i> \format[HTMLCharsAntiScript]{\booktitle}</i>
 \begin{volume}
 , Vol. \format[AntiScriptInjection]{\volume}
 \end{volume}
@@ -16,10 +16,10 @@ In
  (pp. \format[AntiScriptInjection]{\pages})
 \end{pages}. 
 \begin{publisher}
-\format[HTMLChars,AntiScriptInjection]{\publisher}.
+\format[HTMLCharsAntiScript]{\publisher}.
 \end{publisher}
 \begin{isbn}
-ISBN: \format[HTMLChars,AntiScriptInjection]{\isbn}
+ISBN: \format[HTMLCharsAntiScript]{\isbn}
 \end{isbn}
 <br/>
 <br/>

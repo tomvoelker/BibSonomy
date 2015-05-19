@@ -43,6 +43,7 @@ import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.ConceptUpdateOperation;
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -133,7 +134,7 @@ import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.util.ExceptionUtils;
 
 /**
- * 
+ * {@link LogicInterface} for a remote BibSonomy/PUMA instance
  */
 public class RestLogic implements LogicInterface {
 	private static final Log log = LogFactory.getLog(RestLogic.class); // FIXME: who configs the logging?
@@ -256,13 +257,13 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
-		return getPosts(resourceType, grouping, groupingName, tags, hash, search, SearchType.LOCAL, filter, order, startDate, endDate, start, end);
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+		return getPosts(resourceType, grouping, groupingName, tags, hash, search, SearchType.LOCAL, filters, order, startDate, endDate, start, end);
 	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		// TODO: properly implement searchtype in query and rest-server
 		// TODO: clientside chain of responsibility
 		final GetPostsQuery query = new GetPostsQuery(start, end);
@@ -490,11 +491,6 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public int getClassifiedUserCount(final Classifier classifier, final SpamStatus status, final int interval) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public List<User> getClassifiedUsers(final Classifier classifier, final SpamStatus status, final int limit) {
 		throw new UnsupportedOperationException();
 	}
@@ -510,7 +506,7 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public Statistics getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final StatisticsConstraint constraint, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	public Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -525,7 +521,7 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, final Date startDate, final Date endDate, final int start, final int end) {
+	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, Set<Filter> filters, final Date startDate, final Date endDate, final int start, final int end) {
 		throw new UnsupportedOperationException();
 	}
 

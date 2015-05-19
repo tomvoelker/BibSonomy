@@ -166,7 +166,7 @@ public class PerformanceTest extends AbstractDatabaseManagerTest {
 			bookmarkDb.getPostsByTagNames(param.getGroupId(), param.getTagIndex(), param.getOrder(), param.getLimit(), param.getOffset(), this.dbSession);
 			break;
 		case getBookmarkByTagNamesForUser:
-			bookmarkDb.getPostsByTagNamesForUser(param.getUserName(), param.getRequestedUserName(), param.getTagIndex(), param.getGroupId(), param.getGroups(), param.getLimit(), param.getOffset(), null, param.getFilter(), param.getSystemTags(), this.dbSession);
+			bookmarkDb.getPostsByTagNamesForUser(param.getUserName(), param.getRequestedUserName(), param.getTagIndex(), param.getGroupId(), param.getGroups(), param.getLimit(), param.getOffset(), null, param.getFilters(), param.getSystemTags(), this.dbSession);
 			break;
 		case getBookmarkByConceptForUser:
 			bookmarkDb.getPostsByConceptForUser(param.getUserName(), param.getRequestedUserName(), param.getGroups(), param.getTagIndex(), param.isCaseSensitiveTagNames(), param.getLimit(), param.getOffset(), param.getSystemTags(), this.dbSession);
@@ -175,7 +175,7 @@ public class PerformanceTest extends AbstractDatabaseManagerTest {
 			bookmarkDb.getPostsByUserFriends(param.getUserName(), HashID.getSimHash(param.getSimHash()), param.getLimit(), param.getOffset(), param.getSystemTags(), this.dbSession);
 			break;
 		case getBookmarkForHomepage:
-			bookmarkDb.getPostsForHomepage(param.getFilter(), param.getStartDate(), param.getEndDate(), param.getLimit(), param.getOffset(), param.getSystemTags(), this.dbSession);
+			bookmarkDb.getPostsForHomepage(param.getFilters(), param.getStartDate(), param.getEndDate(), param.getLimit(), param.getOffset(), param.getSystemTags(), this.dbSession);
 			break;
 		case getBookmarkPopular:
 			bookmarkDb.getPostsPopular(param.getDays(), param.getLimit(), param.getOffset(), HashID.getSimHash(param.getSimHash()), this.dbSession);
@@ -193,16 +193,16 @@ public class PerformanceTest extends AbstractDatabaseManagerTest {
 			bookmarkDb.getPostsViewable(param.getRequestedGroupName(), param.getUserName(), param.getGroupId(), HashID.getSimHash(param.getSimHash()), param.getLimit(), param.getOffset(), param.getSystemTags(), this.dbSession);
 			break;
 		case getBookmarkForGroup:
-			bookmarkDb.getPostsForGroup(param.getGroupId(), param.getGroups(), param.getUserName(), HashID.getSimHash(param.getSimHash()), null, param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags(), this.dbSession);
+			bookmarkDb.getPostsForGroup(param.getGroupId(), param.getGroups(), param.getUserName(), HashID.getSimHash(param.getSimHash()), null, param.getFilters(), param.getLimit(), param.getOffset(), param.getSystemTags(), this.dbSession);
 			break;
 		case getBookmarkForGroupCount:
 			bookmarkDb.getPostsForGroupCount(param.getRequestedUserName(), param.getUserName(), param.getGroupId(), param.getGroups(), this.dbSession);
 			break;
 		case getBookmarkForGroupByTag:
-			bookmarkDb.getPostsForGroupByTag(param.getGroupId(), param.getGroups(), param.getUserName(), param.getTagIndex(), null, param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags(), this.dbSession);	
+			bookmarkDb.getPostsForGroupByTag(param.getGroupId(), param.getGroups(), param.getUserName(), param.getTagIndex(), null, param.getFilters(), param.getLimit(), param.getOffset(), param.getSystemTags(), this.dbSession);
 			break;
 		case getBookmarkForUser:
-			bookmarkDb.getPostsForUser(param.getUserName(), param.getRequestedUserName(), HashID.getSimHash(param.getSimHash()), param.getGroupId(), param.getGroups(), null, param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags(), this.dbSession);
+			bookmarkDb.getPostsForUser(param.getUserName(), param.getRequestedUserName(), HashID.getSimHash(param.getSimHash()), param.getGroupId(), param.getGroups(), null, param.getFilters(), param.getLimit(), param.getOffset(), param.getSystemTags(), this.dbSession);
 			break;
 		case getBookmarkForUserCount:
 			bookmarkDb.getPostsForUserCount(param.getRequestedUserName(), param.getUserName(), param.getGroupId(), param.getGroups(), this.dbSession);

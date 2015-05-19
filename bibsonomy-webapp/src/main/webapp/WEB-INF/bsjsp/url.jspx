@@ -12,6 +12,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -80,14 +81,8 @@
 			+ sidebar
 			+ -->
 		<jsp:attribute name="sidebar">
-			<ul>
-				<!-- display tags -->
-				<li>
-					<h4 class="sidebar"><fmt:message key="tags"/></h4>
-					<tags:cloud requPath="tag" cmd="${command.tagcloud}"/>
-				</li>
-				<resource:metaData command="${command}" />
-			</ul>
+			<sidebar:sidebarTagCloudItem requPath="tag" cmd="${command.tagcloud}"/>
+			<resource:metaData command="${command}" />
 		</jsp:attribute>
 		
 		<jsp:attribute name="infobox">
