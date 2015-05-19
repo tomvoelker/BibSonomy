@@ -29,6 +29,7 @@ package org.bibsonomy.wiki.tags.user;
 import static org.bibsonomy.util.ValidationUtils.present;
 import info.bliki.htmlcleaner.Utils;
 
+import java.net.URI;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -45,9 +46,11 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.SortUtils;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.wiki.tags.SharedTag;
 import org.bibsonomy.wiki.tags.UserTag;
+
 
 /**
  * This is a simple tagcloud-tag.
@@ -81,6 +84,18 @@ public class TagcloudTag extends UserTag {
 		defaultOrder.put(TAGSTYLE_TAGLIST, ORDER_ALPHA);
 	}
 	
+	/*
+	 * used by computeTagFontSize.
+	 * 
+	 * - scalingFactor: Controls difference between smallest and largest tag
+	 * (size of largest: 90 -> 200% font size; 40 -> ~170%; 20 -> ~150%; all for
+	 * offset = 10) - offset: controls size of smallest tag ( 10 -> 100%) -
+	 * default: default tag size returned in case of an error during computation
+	 */
+	private static final int TAGCLOUD_SIZE_SCALING_FACTOR = 45;
+	private static final int TAGCLOUD_SIZE_OFFSET = 10;
+	private static final int TAGCLOUD_SIZE_DEFAULT = 100;
+	
 	/**
 	 * set tag name
 	 */
@@ -97,44 +112,98 @@ public class TagcloudTag extends UserTag {
 	protected String renderUserTag() {
 		
 		final StringBuilder renderedHTML = new StringBuilder();
-		
 		final Map<String, String> tagAttributes = this.getAttributes();
-		
 		final String requestedName = this.requestedUser.getName();
-		Order tagOrder = Order.FREQUENCY;
-		int tagMax = 20000;
-		//Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, String regex, TagSimilarity relation, Order order, Date startDate, Date endDate, int start, int end
-		//resourceType, groupingEntity, groupingName, tags, hash, search, regex, null, tagOrder, cmd.getStartDate(), cmd.getEndDate(), 0, tagMax)
-		final List<Tag> tags = this.logic.getTags(Resource.class, GroupingEntity.USER, requestedName, null, null, null, null, null, tagOrder, null, null, 0, tagMax);
-		
+		final List<Tag> tagsFinal = new LinkedList<Tag>();
 		
 		/*
 		 * order the tags, alpha or frequency
 		 */
 		final String orderValue = tagAttributes.get(ORDER);
+		int tagMax = 20000;
+		final List<Tag> tags;
 	
-			if (orderValue==ORDER_ALPHA){
-				//nach Alphabet sortieren
-				Collections.sort(tags);
-			}
-			else {
-				//nach Frequency sortieren
-			}
-		
-		
-		renderedHTML.append("<div id='tags'>");
-		renderedHTML.append("<ul class='list-group'>");
-		renderedHTML.append("<li class='list-group-item'>");
-		for (Tag t: tags){
-			final String link = t.getStem();
-			final String tagName = t.getName();
-			final int tagCount = t.getUsercount();
-			renderedHTML.append("<a href='" + link + "' title='" + tagCount + " posts' " + ">" + tagName + " </a>");
-			//tagsToString.add(tagName);
+		if (orderValue.equals(ORDER_ALPHA)){
+			//nach Alphabet sortieren
+			tags = this.logic.getTags(Resource.class, GroupingEntity.USER, requestedName, null, null, null, null, null, Order.ALPH, null, null, 0, tagMax);
+		} else {
+			tags = this.logic.getTags(Resource.class, GroupingEntity.USER, requestedName, null, null, null, null, null, Order.FREQUENCY, null, null, 0, tagMax);
 		}
-		renderedHTML.append("</ul>");
-		renderedHTML.append("</li>");
-		renderedHTML.append("</div>");
+		
+		final int tagMinFrequency = getMinFreqFromTaglist(tags);
+		final int tagMaxFrequency = getMaxFreqFromTaglist(tags);
+		
+		/*
+		 * only show tags with a frequency higher than minfreq
+		 */
+		final String minfreqValueString = tagAttributes.get(MINFREQ);
+		final int minfreqValue;
+		
+		if (minfreqValueString.equals(null)){
+			//minfreq aus Useroptionen
+			minfreqValue = this.requestedUser.getSettings().getTagboxMinfreq();
+		}
+		else {
+			minfreqValue = Integer.parseInt(minfreqValueString);
+		}
+		
+		for (Tag t:tags){
+			if (t.getUsercount() >= minfreqValue){
+				tagsFinal.add(t);
+			}
+		}
+		
+		/*
+		 * tagcloud or taglist
+		 * 0 = cloud, 1 = list
+		 */
+		String tagstyle = tagAttributes.get(TAGSTYLE);
+		if (tagstyle.equals(null)){
+			int tagstyleInt = this.requestedUser.getSettings().getTagboxStyle();
+			if (tagstyleInt==0){
+				tagstyle=TAGSTYLE_TAGCLOUD;
+			} else {
+				tagstyle=TAGSTYLE_TAGLIST;
+			}
+		}
+		
+		if (tagstyle.equals(TAGSTYLE_TAGLIST)){
+			//taglist
+			renderedHTML.append("<div id='tags'>");
+			renderedHTML.append("<ul class='list-group'>");
+			renderedHTML.append("<li class='list-group-item'>");
+			
+			for (Tag t: tagsFinal){
+				final String tagName = t.getName();
+				final String link = "http://localhost:8080/user/" + this.requestedUser.getName() + "/" + tagName;
+				final int tagCount = t.getUsercount();
+				int fontSize = computeTagFontsize(tagCount, tagMinFrequency, tagMaxFrequency, "user");
+				renderedHTML.append("<a href='" + link + "' title='" + tagCount + " posts' style='font-size:" + fontSize + "%' >" + tagName + " </a><br>");
+			}
+			renderedHTML.append("</ul>");
+			renderedHTML.append("</li>");
+			renderedHTML.append("</div>");
+			
+		} else {
+			//tagcloud
+			
+			renderedHTML.append("<div id='tags'>");
+			renderedHTML.append("<ul class='" + tagstyle + " tagbox'>");
+			for (Tag t: tagsFinal){
+				final String tagName = t.getName();
+				final String link = "http://localhost:8080/user/" + this.requestedUser.getName() + "/" + tagName;
+				final int tagCount = t.getUsercount();
+				String tagSize = getTagSize(tagCount, tagMaxFrequency);
+				int fontSize = computeTagFontsize(tagCount, tagMinFrequency, tagMaxFrequency, "user");
+				renderedHTML.append("<li class='" + tagSize + "'>");
+				renderedHTML.append("<a href='" + link + "' title='" + tagCount + " posts' style='font-size:" + fontSize + "%' >" + tagName + " </a>");
+				renderedHTML.append("</li>");
+			}
+			renderedHTML.append("</ul>");
+			renderedHTML.append("</div>");
+		}
+		
+
 		
 	
 		
@@ -142,5 +211,100 @@ public class TagcloudTag extends UserTag {
 		//return ValidationUtils.present(tagsToString) ? "<div id='tags'>" + tagsToString + "</div>" : "";
 			return renderedHTML.toString();
 	}
+	
+	/**
+	 * returns the css Class for a given tag
+	 * 
+	 * @param tagCount
+	 *        the count of the current Tag
+	 * @param maxTagCount
+	 *        the maximum tag count
+	 * @return the css class for the tag
+	 */
+	public static String getTagSize(final Integer tagCount, final Integer maxTagCount) {
+		/*
+		 * catch incorrect values
+		 */
+		if ((tagCount == 0) || (maxTagCount == 0)) {
+			return "tagtiny";
+		}
 
+		final int percentage = ((tagCount * 100) / maxTagCount);
+
+		if (percentage < 25) {
+			return "tagtiny";
+		} else if ((percentage >= 25) && (percentage < 50)) {
+			return "tagnormal";
+		} else if ((percentage >= 50) && (percentage < 75)) {
+			return "taglarge";
+		} else if (percentage >= 75) {
+			return "taghuge";
+		}
+
+		return "";
+	}
+	
+	/**
+	 * Computes font size for given tag frequency and maximum tag frequency
+	 * inside tag cloud.
+	 * 
+	 * This is used as attribute font-size=X%. We expect 0 < tagMinFrequency <=
+	 * tagFrequency <= tagMaxFrequency. We return a value between 200 and 300 if
+	 * tagsizemode=popular, and between 100 and 200 otherwise.
+	 * 
+	 * @param tagFrequency
+	 *        - the frequency of the tag
+	 * @param tagMinFrequency
+	 *        - the minimum frequency within the tag cloud
+	 * @param tagMaxFrequency
+	 *        - the maximum frequency within the tag cloud
+	 * @param tagSizeMode
+	 *        - which kind of tag cloud is to be done (the one for the
+	 *        popular tags page vs. standard)
+	 * @return font size for the tag cloud with the given parameters
+	 */
+	public static Integer computeTagFontsize(final Integer tagFrequency, final Integer tagMinFrequency, final Integer tagMaxFrequency, final String tagSizeMode) {
+		try {
+			Double size = ((tagFrequency.doubleValue() - tagMinFrequency) / (tagMaxFrequency - tagMinFrequency)) * TAGCLOUD_SIZE_SCALING_FACTOR;
+			if ("popular".equals(tagSizeMode)) {
+				size *= 10;
+			}
+			size += TAGCLOUD_SIZE_OFFSET;
+			size = Math.log10(size);
+			size *= 100;
+			return size.intValue() == 0 ? TAGCLOUD_SIZE_DEFAULT : size.intValue();
+		} catch (final Exception ex) {
+			return TAGCLOUD_SIZE_DEFAULT;
+		}
+	}
+	
+	/**
+	 * returns the lowest frequency of the user's tags
+	 * @param tags a list of a user's tags
+	 * @return the frequency
+	 */
+	public int getMinFreqFromTaglist(List<Tag> tags){
+		int minFreq = tags.get(0).getUsercount();
+		for (Tag t: tags){
+			if (t.getUsercount() < minFreq){
+				minFreq = t.getUsercount();
+			}
+		}
+		return minFreq;
+	}
+	
+	/**
+	 * returns the highest frequency of the user's tags
+	 * @param tags a list of a user's tags
+	 * @return the frequency
+	 */
+	public int getMaxFreqFromTaglist(List<Tag> tags){
+		int maxFreq = tags.get(0).getUsercount();
+		for (Tag t: tags){
+			if (t.getUsercount() > maxFreq){
+				maxFreq = t.getUsercount();
+			}
+		}
+		return maxFreq;
+	}
 }
