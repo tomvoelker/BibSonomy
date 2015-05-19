@@ -36,9 +36,11 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
@@ -377,17 +379,17 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param limit 
 	 * @param offset 
 	 * @param postAccess
-	 * @param filter
+	 * @param filters
 	 * @param systemTags
 	 * @param session 
 	 * @return list of resource posts
 	 */
-	public List<Post<R>> getPostsByTagNamesForUser(final String loginUserName, final String requestedUserName, final List<TagIndex> tagIndex, final int groupId, final List<Integer> visibleGroupIDs, final int limit, final int offset, final PostAccess postAccess, final FilterEntity filter, final Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<R>> getPostsByTagNamesForUser(final String loginUserName, final String requestedUserName, final List<TagIndex> tagIndex, final int groupId, final List<Integer> visibleGroupIDs, final int limit, final int offset, final PostAccess postAccess, final Set<Filter> filters, final Collection<SystemTag> systemTags, final DBSession session) {
 		final P param = this.createParam(loginUserName, requestedUserName, limit, offset);
 		param.setTagIndex(tagIndex);
 		param.setGroupId(groupId);
 		param.setGroups(visibleGroupIDs);
-		param.setFilter(filter);
+		param.setFilters(filters);
 		param.addAllToSystemTags(systemTags);
 		param.setPostAccess(postAccess);
 
@@ -537,7 +539,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * page of BibSonomy. These are typically the X last posted entries. Only
 	 * public posts are shown.
 	 * 
-	 * @param filter
+	 * @param filters
 	 * @param startDate 
 	 * @param endDate 
 	 * @param limit
@@ -546,11 +548,11 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsForHomepage(final FilterEntity filter, final Date startDate, final Date endDate, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<R>> getPostsForHomepage(final Set<Filter> filters, final Date startDate, final Date endDate, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		final P param = this.createParam(limit, offset);
 		param.setGroupId(GroupID.PUBLIC);
 		param.setSimHash(HashID.INTER_HASH);
-		param.setFilter(filter);
+		param.setFilters(filters);
 		param.addAllToSystemTags(systemTags);
 		param.setStartDate(startDate);
 		param.setEndDate(endDate);
@@ -724,10 +726,10 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsViewableByTag(final String requestedGroupName, final String loginUserName, final List<TagIndex> tagIndex, final int groupId, final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<R>> getPostsViewableByTag(final String requestedGroupName, final String loginUserName, final List<TagIndex> tagIndex, final int groupId, final Set<Filter> filters, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		if (GroupID.isSpecialGroupId(groupId)) {
 			// show users own posts; has full access to his/her own posts
-			return this.getPostsByTagNamesForUser(loginUserName, loginUserName, tagIndex, groupId, Collections.<Integer>emptyList(), limit, offset, PostAccess.FULL, filter, systemTags, session);
+			return this.getPostsByTagNamesForUser(loginUserName, loginUserName, tagIndex, groupId, Collections.<Integer>emptyList(), limit, offset, PostAccess.FULL, filters, systemTags, session);
 		}
 
 		final P param = this.createParam(loginUserName, loginUserName, limit, offset);
@@ -754,19 +756,19 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param loginUserName
 	 * @param simHash
 	 * @param postAccess
-	 * @param filter
+	 * @param filters 
 	 * @param limit
 	 * @param offset
 	 * @param systemTags
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsForGroup(final int groupId, final List<Integer> visibleGroupIDs, final SearchType searchType,final String loginUserName, final HashID simHash, final PostAccess postAccess, final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<R>> getPostsForGroup(final int groupId, final List<Integer> visibleGroupIDs, final SearchType searchType,final String loginUserName, final HashID simHash, final PostAccess postAccess, final Set<Filter> filters, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		if(searchType==SearchType.FEDERATED){
 			//TODO
 		}
 		
-		return this.getPostsForGroup(groupId, visibleGroupIDs, loginUserName, simHash, postAccess, filter, limit, offset, systemTags, session);
+		return this.getPostsForGroup(groupId, visibleGroupIDs, loginUserName, simHash, postAccess, filters, limit, offset, systemTags, session);
 	}
 
 
@@ -788,19 +790,19 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param loginUserName
 	 * @param simHash
 	 * @param postAccess
-	 * @param filter
+	 * @param filters
 	 * @param limit
 	 * @param offset
 	 * @param systemTags
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsForGroup(final int groupId, final List<Integer> visibleGroupIDs, final String loginUserName, final HashID simHash, final PostAccess postAccess, final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<R>> getPostsForGroup(final int groupId, final List<Integer> visibleGroupIDs, final String loginUserName, final HashID simHash, final PostAccess postAccess, final Set<Filter> filters, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		final P param = this.createParam(loginUserName, null, limit, offset);
 		param.setGroupId(groupId);
 		param.setGroups(visibleGroupIDs);
 		param.setSimHash(simHash);
-		param.setFilter(filter);
+		param.setFilters(filters);
 		param.addAllToSystemTags(systemTags);
 		param.setPostAccess(postAccess);
 
@@ -893,19 +895,19 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param loginUserName
 	 * @param tagIndex
 	 * @param postAccess
-	 * @param filter
+	 * @param filters
 	 * @param limit
 	 * @param offset
 	 * @param systemTags
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsForGroupByTag(final int groupId, final List<Integer> visibleGroupIDs, final String loginUserName, final List<TagIndex> tagIndex, final PostAccess postAccess, final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<R>> getPostsForGroupByTag(final int groupId, final List<Integer> visibleGroupIDs, final String loginUserName, final List<TagIndex> tagIndex, final PostAccess postAccess, final Set<Filter> filters, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		final P param = this.createParam(loginUserName, null, limit, offset);
-		param.setGroupId(groupId); 
+		param.setGroupId(groupId);
 		param.setGroups(visibleGroupIDs);
 		param.setTagIndex(tagIndex);
-		param.setFilter(filter);
+		param.setFilters(filters);
 		param.addAllToSystemTags(systemTags);
 		param.setPostAccess(postAccess);
 
@@ -942,19 +944,19 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param groupId
 	 * @param visibleGroupIDs 
 	 * @param postAccess TODO
-	 * @param filter
+	 * @param filters
 	 * @param limit
 	 * @param offset
 	 * @param systemTags
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsForUser(final String loginUserName, final String requestedUserName, final SearchType searchType, final HashID simHash, final int groupId, final List<Integer> visibleGroupIDs, final PostAccess postAccess, final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<R>> getPostsForUser(final String loginUserName, final String requestedUserName, final SearchType searchType, final HashID simHash, final int groupId, final List<Integer> visibleGroupIDs, final PostAccess postAccess, final Set<Filter> filters, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		if(searchType==SearchType.FEDERATED){
 			return this.resourceSearch.getPosts(loginUserName, requestedUserName, null, null, null, searchType, null, null, null, null, null, null, null, null, null, limit, offset);
 		}
 		
-		return this.getPostsForUser(loginUserName, requestedUserName, simHash, groupId, visibleGroupIDs, postAccess, filter, limit, offset, systemTags, session);
+		return this.getPostsForUser(loginUserName, requestedUserName, simHash, groupId, visibleGroupIDs, postAccess, filters, limit, offset, systemTags, session);
 	}
 	
 	/** 
@@ -976,19 +978,19 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param groupId
 	 * @param visibleGroupIDs 
 	 * @param postAccess TODO
-	 * @param filter
+	 * @param filters
 	 * @param limit
 	 * @param offset
 	 * @param systemTags
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsForUser(final String loginUserName, final String requestedUserName, final HashID simHash, final int groupId, final List<Integer> visibleGroupIDs, final PostAccess postAccess, final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<R>> getPostsForUser(final String loginUserName, final String requestedUserName, final HashID simHash, final int groupId, final List<Integer> visibleGroupIDs, final PostAccess postAccess, final Set<Filter> filters, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		final P param = this.createParam(loginUserName, requestedUserName, limit, offset);
 		param.setGroupId(groupId);
 		param.setGroups(visibleGroupIDs);
 		param.setSimHash(simHash);
-		param.setFilter(filter);
+		param.setFilters(filters);
 		param.addAllToSystemTags(systemTags);
 		param.setPostAccess(postAccess);
 		
@@ -1073,25 +1075,24 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * 
 	 * @param resourceHash
 	 * @param requestedUserName
-	 * @param loginUserName
-	 * @param filter
 	 * @param limit
 	 * @param offset
-	 * @param systemTags
 	 * @param session	a database session
+	 * @param loginUserName
+	 * @param systemTags
 	 * @return list of  posts
-	 */		
-	public List<Post<R>> getPostsWithHistory(final String resourceHash, final String requestedUserName, final FilterEntity filter, final int limit, final int offset, final DBSession session) {
+	 */
+	public List<Post<R>> getPostsWithHistory(final String resourceHash, final String requestedUserName, final int limit, final int offset, final DBSession session) {
 		final P param = this.createParam(limit, offset);
 		param.setHash(resourceHash);
 		param.setRequestedUserName(requestedUserName);
-		param.setFilter(filter);
 		
 		if (present(requestedUserName)) {
-			return this.postList("get" + this.resourceClassName + "History", param, session);  
-		} else {
-			return this.postList("getGoldStandardHistory", param, session); 
-	}
+			return this.postList("get" + this.resourceClassName + "History", param, session);
+		}
+		
+		// FIXME: move to gold standard database manager; this should not be handled by a post manager
+		return this.postList("getGoldStandardHistory", param, session); 
 	}
 	
 	/**
@@ -1168,6 +1169,48 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		final Integer result = this.queryForObject("getGroup" + this.resourceClassName + "Count", param, Integer.class, session);
 		return saveConvertToint(result);
 	}
+	
+	/**
+	 * @param startDate 
+	 * @param filters 
+	 * @param session
+	 * @return number of unique resources
+	 */
+	public int getUniqueResourcesCount(final Date startDate, Set<Filter> filters, DBSession session) {
+		final P param = this.getNewParam();
+		param.setStartDate(startDate);
+		param.setFilters(filters);
+		final Integer result = this.queryForObject("getUnique" + this.resourceClassName + "Count", param, Integer.class, session);
+		return saveConvertToint(result);
+	}
+	
+	/**
+	 * @param startDate 
+	 * @param filters 
+	 * @param session
+	 * @return number of posts
+	 */
+	public int getPostsCount(final Date startDate, Set<Filter> filters, DBSession session) {
+		final P param = this.getNewParam();
+		param.setStartDate(startDate);
+		param.setFilters(filters);
+		final Integer result = this.queryForObject("get" + this.resourceClassName + "Count", param, Integer.class, session);
+		return saveConvertToint(result);
+	}
+	
+	/**
+	 * @param startDate
+	 * @param filters 
+	 * @param session
+	 * @return number of posts in log table
+	 */
+	public int getHistoryPostsCount(Date startDate, Set<Filter> filters, DBSession session) {
+		final P param = this.getNewParam();
+		param.setStartDate(startDate);
+		param.setFilters(filters);
+		final Integer result = this.queryForObject("getLog" + this.resourceClassName + "Count", param, Integer.class, session);
+		return saveConvertToint(result);
+	}
 
 	/**
 	 * This method prepares a query which retrieves all posts the user
@@ -1206,19 +1249,19 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param loginUserName
 	 * @param requestedUserName
 	 * @param visibleGroupIDs 
-	 * @param filter
+	 * @param filters
 	 * @param limit
 	 * @param offset
 	 * @param systemTags
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsWithDiscussions(final String loginUserName, final String requestedUserName, final List<Integer> visibleGroupIDs, final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<R>> getPostsWithDiscussions(final String loginUserName, final String requestedUserName, final List<Integer> visibleGroupIDs, final Set<Filter> filters, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		final P param;
 		// user param or general param
 		param = this.createParam(loginUserName, requestedUserName, limit, offset);
 		param.setGroups(visibleGroupIDs);
-		param.setFilter(filter);
+		param.setFilters(filters);
 		param.addAllToSystemTags(systemTags);
 		
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
@@ -1242,21 +1285,21 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param loginUserName
 	 * @param requestedGroupId 
 	 * @param visibleGroupIDs 
-	 * @param filter
+	 * @param filters
 	 * @param limit
 	 * @param offset
 	 * @param systemTags
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsWithDiscussionsForGroup(final String loginUserName, final int requestedGroupId, final List<Integer> visibleGroupIDs, final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<R>> getPostsWithDiscussionsForGroup(final String loginUserName, final int requestedGroupId, final List<Integer> visibleGroupIDs, final Set<Filter> filters, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		final P param;
 		//group param
 		param = this.createParam(limit, offset);
 		param.setUserName(loginUserName);
 		param.setGroupId(requestedGroupId);
 		param.setGroups(visibleGroupIDs);
-		param.setFilter(filter);
+		param.setFilters(filters);
 		param.addAllToSystemTags(systemTags);
 		return this.postList("get" + this.resourceClassName + "WithDiscussionsForGroup", param, session);
 	}
@@ -2006,6 +2049,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param userName
 	 * @param metaDataPluginKey
 	 * @param session
+	 * @return 
 	 */
 	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final String userName, final String metaDataPluginKey, final DBSession session) {
 		final PostParam param = new PostParam();

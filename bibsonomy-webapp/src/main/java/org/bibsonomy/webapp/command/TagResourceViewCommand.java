@@ -39,7 +39,7 @@ import org.bibsonomy.model.enums.Order;
  * 
  * @author Michael Wagner
  */
-public class TagResourceViewCommand extends SimpleResourceViewCommand{
+public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	
 	/**
 	 * the selected search type such as 'group', 'search', 'sharedResourceSearch'  

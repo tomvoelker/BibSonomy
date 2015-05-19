@@ -379,32 +379,24 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 			this.update("updateClassifierSettings", param, session);
 		}
 	}
-
-	/**
-	 * Returns number of classfied user
-	 * 
-	 * @param classifier
-	 *            the classifier
-	 * @param status
-	 *            the status classifed
-	 * @param interval
-	 *            the time period of classifications
-	 * @param session
-	 *            db session
-	 * @return count of users
-	 */
-	public Integer getClassifiedUserCount(final Classifier classifier, final SpamStatus status, final int interval, final DBSession session) {
+	
+	public int getNumberOfClassifedUsersByAdmin(final SpamStatus status, final int interval, final DBSession session) {
+		final AdminParam param = buildAdminParam(status, interval);
+		final Integer count = this.queryForObject("getAdminClassifiedUsersCount", param, Integer.class, session);
+		return count == null ? 0 : count.intValue();
+	}
+	
+	public int getNumberOfClassifedUsersByClassifier(final SpamStatus status, final int interval, final DBSession session) {
+		final AdminParam param = buildAdminParam(status, interval);
+		final Integer count = this.queryForObject("getClassifiedUsersCount", param, Integer.class, session);
+		return count == null ? 0 : count.intValue();
+	}
+	
+	private static AdminParam buildAdminParam(final SpamStatus status, final int interval) {
 		final AdminParam param = new AdminParam();
 		param.setInterval(interval);
-
-		if (classifier.equals(Classifier.ADMIN) && (status.equals(SpamStatus.SPAMMER) || status.equals(SpamStatus.NO_SPAMMER))) {
-			param.setPrediction(status.getId());
-			return this.queryForObject("getAdminClassifiedUsersCount", param, Integer.class, session);
-		} else if (classifier.equals(Classifier.CLASSIFIER)) {
-			param.setPrediction(status.getId());
-			return this.queryForObject("getClassifiedUsersCount", param, Integer.class, session);
-		}
-		return null;
+		param.setPrediction(status.getId());
+		return param;
 	}
 
 	/**

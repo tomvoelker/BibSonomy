@@ -149,7 +149,6 @@
 	    | lucene database access logics
 	    + -->
 	<bean id="luceneSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
-		<!-- currently configurated using jndi in bibsonomy-webapp -->
 		<property name="dataSource" ref="luceneDataSource" />
 		<property name="configLocation" value="classpath:SqlMapConfig_lucene.xml" />
 		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />

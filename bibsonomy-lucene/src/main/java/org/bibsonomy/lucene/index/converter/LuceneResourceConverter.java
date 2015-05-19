@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.lucene.index.converter;
 
+import static org.bibsonomy.es.ESConstants.SYSTEMURL_FIELD;
 import static org.bibsonomy.lucene.util.LuceneBase.CFG_FLDINDEX;
 import static org.bibsonomy.lucene.util.LuceneBase.CFG_FLDSTORE;
 import static org.bibsonomy.lucene.util.LuceneBase.CFG_FULLTEXT_FLAG;
@@ -322,8 +323,8 @@ public class LuceneResourceConverter<R extends Resource> {
 					log.error("Error setting property " + propertyName + " to " + propertyValue.toString(), e);
 				}
 		}
-		if(result.get("systemUrl")!=null){
-			String systemUrl = result.get("systemUrl").toString();
+		if(result.get(SYSTEMURL_FIELD)!=null){
+			String systemUrl = result.get(SYSTEMURL_FIELD).toString();
 			post.setSystemUrl(systemUrl);		
 		}
 		return post;

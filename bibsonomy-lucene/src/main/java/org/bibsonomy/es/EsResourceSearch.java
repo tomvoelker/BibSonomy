@@ -122,7 +122,7 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder{
 		final BoolQueryBuilder query= this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags);
 		final Map<Tag, Integer> tagCounter = new HashMap<Tag, Integer>();
 		try {  
-			SearchRequestBuilder searchRequestBuilder = esClient.getClient().prepareSearch(ESConstants.INDEX_NAME);
+			SearchRequestBuilder searchRequestBuilder = esClient.getClient().prepareSearch(ESConstants.ACTIVE_INDEX_ID);
 			searchRequestBuilder.setTypes(resourceType);
 			searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 			searchRequestBuilder.setQuery(query);
@@ -204,7 +204,7 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder{
 		final ResultList<Post<R>> postList = new ResultList<Post<R>>();
 		try {  
 			final BoolQueryBuilder query = this.buildQuery(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexKey, tagIndex, year, firstYear, lastYear, negatedTags);
-			final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(ESConstants.INDEX_NAME);
+			final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(ESConstants.ACTIVE_INDEX_ID);
 			searchRequestBuilder.setTypes(this.resourceType);
 			searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 			searchRequestBuilder.setQuery(query);

@@ -51,7 +51,7 @@ import org.elasticsearch.action.admin.indices.flush.FlushRequest;
  */
 public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIndexGenerator<R> {
 	
-	private final String indexName = ESConstants.INDEX_NAME;
+	private final String indexName;
 	private String resourceType;
 	private final String systemUrlFieldName = "systemUrl";
 
@@ -67,10 +67,12 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	/**
 	 * @param systemHome
 	 * @param updater 
+	 * @param indexName 
 	 */
-	public SharedResourceIndexGenerator(final String systemHome, SharedResourceIndexUpdater<R> updater) {
+	public SharedResourceIndexGenerator(final String systemHome, SharedResourceIndexUpdater<R> updater, String indexName) {
 		this.systemHome = systemHome;
 		this.updater = updater;
+		this.indexName = indexName;
 	}
 
 
@@ -92,7 +94,7 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	@Override
 	protected void writeMetaInfo(Integer lastTasId, Date lastLogDate) throws IOException {
 		updater.setSystemInformation(lastTasId, lastLogDate);
-		updater.flushSystemInformation();
+		updater.flushSystemInformation(indexName);
 	}
 	
 	/* (non-Javadoc)
@@ -162,7 +164,7 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	 */
 	@Override
 	protected void activateIndex() {
-		esClient.getClient().admin().indices().flush(new FlushRequest(ESConstants.INDEX_NAME).full(true)).actionGet();
+		esClient.getClient().admin().indices().flush(new FlushRequest(indexName).full(true)).actionGet();
 	}
 
 	/**

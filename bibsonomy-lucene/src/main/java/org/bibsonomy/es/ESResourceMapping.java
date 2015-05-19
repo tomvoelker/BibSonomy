@@ -72,7 +72,7 @@ public class ESResourceMapping {
 			mappingBuilder = createMappingForPublication(this.resourceType);
 		}
 
-		this.esClient.getClient().admin().indices().preparePutMapping(ESConstants.INDEX_NAME).setType(this.resourceType).setSource(mappingBuilder).execute().actionGet();
+		this.esClient.getClient().admin().indices().preparePutMapping(ESConstants.ACTIVE_INDEX_ID).setType(this.resourceType).setSource(mappingBuilder).execute().actionGet();
 
 		// wait for the yellow (or green) status to prevent
 		// NoShardAvailableActionException later

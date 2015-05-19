@@ -34,9 +34,11 @@ import org.bibsonomy.database.managers.chain.resource.ResourceChainElement;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
- * @author matthias gerecht
+ * @author Matthias Gerecht
+ * 
  * @param <R> the resource
  * @param <P> the param
  */
@@ -44,12 +46,12 @@ public class GetResourcesByParent<R extends Resource, P extends ResourceParam<R>
 
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
-		return this.databaseManager.getPostsWithHistory(param.getHash(),param.getRequestedUserName(), param.getFilter(), param.getLimit(), param.getOffset(), session);
+		return this.databaseManager.getPostsWithHistory(param.getHash(),param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);
 	}
 
 	@Override
 	protected boolean canHandle(final P param) {
-		return (param.getFilter() == FilterEntity.POSTS_HISTORY);
+		return ValidationUtils.safeContains(param.getFilters(), FilterEntity.HISTORY);
 	}
 
 }

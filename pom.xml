@@ -179,6 +179,14 @@
 				<role>Developer</role>
 			</roles>
 		</developer>
+		<developer>
+			<name>Mark Kibanov</name>
+			<id>kibanov</id>
+			<email>kibanov@cs.uni-kassel.de</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
 	</developers>
 	<mailingLists>
 		<mailingList>

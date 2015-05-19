@@ -35,7 +35,26 @@ public final class ESConstants {
 	/**
 	 * Elasticsearch Index Name
 	 */
-	public static final String INDEX_NAME = "posts";
+	public static final String INDEX_NAME_1 = "posts-1";
+	/**
+	 * 
+	 */
+	public static final String INDEX_NAME_2 = "posts-2";
+	
+	/**
+	 * Alias for the active index
+	 */
+	public static final String ACTIVE_INDEX_ID = "activeIndex";
+	/**
+	 * Alias for the inactive index
+	 */
+	public static final String INACTIVE_INDEX_ID = "inactiveIndex";
+
+	/**
+	 * system url field name
+	 */
+	public static final String SYSTEMURL_FIELD = "systemUrl";
+
 	/**
 	 * BATCH size to fetch results
 	 */
