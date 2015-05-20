@@ -119,9 +119,13 @@ public class TagcloudTag extends UserTag {
 		/*
 		 * order the tags, alpha or frequency
 		 */
-		final String orderValue = tagAttributes.get(ORDER);
+		String orderValue = tagAttributes.get(ORDER);
 		int tagMax = 20000;
 		final List<Tag> tags;
+		
+		if (orderValue.equals(null)){
+			orderValue = ORDER_FREQ;
+		}
 	
 		if (orderValue.equals(ORDER_ALPHA)){
 			//nach Alphabet sortieren
