@@ -8,6 +8,11 @@
 			WHERE person.person_id = #id#
 	</select>
 	
+	<select id="getPersonByDnbId" resultMap="PersonCommon.person" parameterClass="String">
+		SELECT <include refid="commonPersonColumns"/> FROM person 
+			WHERE person.dnb_person_id = #id#
+	</select>
+	
 	<select id="getPersonByUser" resultMap="PersonCommon.person" parameterClass="String">
 		SELECT <include refid="commonPersonColumns"/> FROM person
 			WHERE person.user_name = #user#
@@ -19,8 +24,8 @@
 	</insert>
 	
 	<insert id='insertName' parameterClass="org.bibsonomy.model.PersonName">
-		INSERT INTO person_name(first_name, last_name, person_id, is_main)
-			VALUES (#firstName#, #lastName#, #personId#, #isMain#)
+		INSERT INTO person_name(first_name, last_name, person_id, is_main, log_changed_by, log_changed_at)
+			VALUES (#firstName#, #lastName#, #personId#, #isMain#, #changedBy#, #changedAt#)
 			
 			<selectKey resultClass="int" keyProperty="id" >
     		SELECT @@IDENTITY AS ID

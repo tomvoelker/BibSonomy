@@ -139,6 +139,7 @@ import org.bibsonomy.model.comparators.BibTexPostComparator;
 import org.bibsonomy.model.comparators.ResourcePersonRelationByPostComparator;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
@@ -3198,7 +3199,8 @@ public class DBLogic implements LogicInterface {
 //		if ((p.getUser() != null) && !p.getUser().equals(loginUser.getName())) {
 //			throw new AccessDeniedException("person in relation is someone else");
 //		}
-		resourcePersonRelation.setChangedBy(loginUser.getName());
+		resourcePersonRelation.setChangedBy(this.loginUser.getName());
+		resourcePersonRelation.setChangedAt(new Date());
 		try {
 			this.personDBManager.addResourceRelation(resourcePersonRelation, session);
 		} finally {
@@ -3241,6 +3243,8 @@ public class DBLogic implements LogicInterface {
 			if(person.getId() != null) {
 				this.personDBManager.updatePerson(person, this.dbSessionFactory.getDatabaseSession());
 				for(PersonName personName : person.getNames()) {
+					personName.setChangedAt(new Date());
+					personName.setChangedBy(this.loginUser.getName());
 					if(personName.getId() > 0) {
 						this.personDBManager.updatePersonName(person.getMainName(), session);
 					} else {
@@ -3277,10 +3281,14 @@ public class DBLogic implements LogicInterface {
 					counter++;
 				} while(true);
 				person.setId(tempPersonId);
+				person.setChangedBy(this.loginUser.getName());
+				person.setChangeDate(new Date());
 				this.personDBManager.createPerson(person, this.dbSessionFactory.getDatabaseSession());
 				// FIXME Creating a person with predefined ID will result in id = 0 after making it persistent to db
 				person.setId(tempPersonId);
 				for(PersonName personName : person.getNames()) {
+					personName.setChangedAt(new Date());
+					personName.setChangedBy(this.loginUser.getName());
 					if(personName.getId() > 0) {
 						this.personDBManager.updatePersonName(person.getMainName(), session);
 					} else {
@@ -3299,13 +3307,13 @@ public class DBLogic implements LogicInterface {
 		
 		StringBuilder sb = new StringBuilder();
 		if (!StringUtils.isBlank(firstName)) {
-			sb.append(firstName.toLowerCase().charAt(0));
+			sb.append(org.bibsonomy.util.StringUtils.foldToASCII(firstName.toLowerCase().replaceAll("\\s", "_")).charAt(0));
 			sb.append('.');
 		}
 		if (StringUtils.isBlank(lastName)) {
 			throw new IllegalArgumentException("lastName may not be empty");
 		}
-		sb.append(lastName.toLowerCase());
+		sb.append(org.bibsonomy.util.StringUtils.foldToASCII(lastName.toLowerCase().replaceAll("\\s", "_")));
 		
 		return sb.toString();
 	}
@@ -3314,10 +3322,18 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonById(int)
 	 */
 	@Override
-	public Person getPersonById(String id) {
+	public Person getPersonById(PersonIdType idType, String id) {
 		DBSession session = this.openSession();
 		try {
-			return this.personDBManager.getPersonById(id, session);
+			if (PersonIdType.BIBSONOMY_ID == idType) {
+				return this.personDBManager.getPersonById(id, session);
+			} else if (PersonIdType.DNB_ID == idType) {
+				return this.personDBManager.getPersonByDnbId(id, session);
+			// } else if (PersonIdType.ORCID == idType) {
+			//	TODO: implement
+			} else {
+				throw new UnsupportedOperationException("person cannot be found by it type " + idType);
+			}
 		} finally {
 			session.close();
 		}
@@ -3422,7 +3438,8 @@ public class DBLogic implements LogicInterface {
 	 * @param post
 	 * @return
 	 */
-	public List<ResourcePersonRelation> getResourceRelations(Post<BibTex> post) {
+	@Override
+	public List<ResourcePersonRelation> getResourceRelations(Post<? extends BibTex> post) {
 		return this.personDBManager.getResourcePersonRelations(post, this.dbSessionFactory.getDatabaseSession());
 	}
 }

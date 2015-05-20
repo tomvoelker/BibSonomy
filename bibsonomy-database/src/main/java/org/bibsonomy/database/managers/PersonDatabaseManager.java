@@ -75,6 +75,15 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 
 
 	/**
+	 * @param dnbid
+	 * @param session
+	 * @return Person
+	 */
+	public Person getPersonByDnbId(String dnbId, DBSession session) {
+		return (Person) this.queryForObject("getPersonByDnbId", dnbId, session);
+	}
+
+	/**
 	 * @param mainName
 	 * @param session
 	 */
@@ -343,7 +352,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 * @return
 	 */
 	public List<ResourcePersonRelation> getResourcePersonRelations(
-			Post<BibTex> post, DBSession session) {
+			Post<? extends BibTex> post, DBSession session) {
 		session.beginTransaction();
 		try {
 			return (List<ResourcePersonRelation>) this.queryForList("getResourcePersonRelationsByInterhash", post.getResource().getInterHash(), session);
