@@ -11,6 +11,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:button="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/bstags/spheres"	
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
@@ -53,42 +54,38 @@
 		    	}
 			]]>
 			</script>
-			<ul>	
-			
 				<!-- friendrelation members -->
     			<!--+
     				| display buddies
     				+-->
-				<li>
-	    			<div class="sidebar_h">
-	    				<fmt:message key="spheres.sphere.members">
-							<fmt:param value="${fn:escapeXml(command.sphereName)}"/>
-						</fmt:message>
-					</div>
+			<sidebar:sidebarItem>
+				<jsp:attribute name="text"/>
+    				<fmt:message key="spheres.sphere.members">
+						<fmt:param value="${fn:escapeXml(command.sphereName)}"/>
+					</fmt:message>
+				</sidebar:sidebarItem>
+				<jsp:attribute name="content">
 	    			<ul class="sphere_users sidebar_collapse_content">
 	   					<c:forEach items="${command.relatedUsers}" var="item" varStatus="loop">
 	   						<spheres:userLink user="${item}"/>
 				    	</c:forEach>
 			    	</ul>
-		       		<div style="clear: both;"><!--  --></div>
-	
-				</li>
-				
-				<li>
-					<!-- list all spheres -->
-					<fmt:message key="spheres.sphere.list.title" var="spheresCloudTitle" />
+				</jsp:attribute>
+			</sidebar:sidebarItem>
+			
+			
+			<!-- list all spheres -->
+			<sidebar:sidebarItem textKey="spheres.sphere.list.title">
+				<jsp:attribute name="content">
 					<spheres:spheresCloud title="${spheresCloudTitle}"><!-- keep me! --></spheres:spheresCloud>
-				</li>
-
-				<!-- tags -->
-				<li>
-			    <h4 class="sidebar"><fmt:message key="tags" /></h4>
-			      <c:if test="${not empty command.requestedTags}">
-				    <c:set var="requPath" value="${mtl:getLowerPath(requPath)}" />
-			      </c:if>
-			    <tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
-		      </li> 
-			</ul>
+				</jsp:attribute>
+			</sidebar:sidebarItem>
+			
+			<c:if test="${not empty command.requestedTags}">
+				<c:set var="requPath" value="${mtl:getLowerPath(requPath)}" />
+			</c:if>
+			<sidebar:sidebarTagCloudItem requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
+		   
 		</jsp:attribute>
 	</layout:resourceLayout>
 </jsp:root>

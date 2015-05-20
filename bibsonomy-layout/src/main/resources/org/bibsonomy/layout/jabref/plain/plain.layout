@@ -2,14 +2,14 @@
 
 \begin{author}
 	<span class="entry_author">
-		\format[HTMLChars,AntiScriptInjection]{\author}.
+		\format[HTMLCharsAntiScript]{\author}.
 	</span>
 \end{author}
 
 \begin{title}
 	<span class="entry_title">
 		<a href="/bibtex/2\intraHash/\username">
-			\format[HTMLChars,AntiScriptInjection]{\title}
+			\format[HTMLCharsAntiScript]{\title}
 		</a>.
 	</span>
 \end{title}
@@ -17,56 +17,56 @@
 \begin{journal}
 	In
 	<span class="entry_journal"> 
-		\format[HTMLChars,AntiScriptInjection]{\journal}, 
+		\format[HTMLCharsAntiScript]{\journal}, 
 	</span>
 \end{journal}
 
 \begin{booktitle}
 	<span class="entry_booktitle"> 
-		\format[HTMLChars,AntiScriptInjection]{\booktitle}. 
+		\format[HTMLCharsAntiScript]{\booktitle}. 
 	</span>
 \end{booktitle}
 
 \begin{editor}
 	<span class="entry_editor"> 
-		editor(s) \format[HTMLChars,AntiScriptInjection]{\editor}. 
+		editor(s) \format[HTMLCharsAntiScript]{\editor}. 
 	</span>
 \end{editor}
  
 <span class="entry_series">
 	\begin{series} 
-		\format[HTMLChars,AntiScriptInjection]{\series}, 
+		\format[HTMLCharsAntiScript]{\series}, 
 	\end{series}
 	
 	\begin{volume}
-		(\format[HTMLChars,AntiScriptInjection]{\volume})
+		(\format[HTMLCharsAntiScript]{\volume})
 	\end{volume}
 	
 	\begin{number}
-		\format[HTMLChars,AntiScriptInjection]{\number}:
+		\format[HTMLCharsAntiScript]{\number}:
 	\end{number}
 	
 	\begin{pages}
-		\format[HTMLChars,AntiScriptInjection]{\pages},
+		\format[HTMLCharsAntiScript]{\pages},
 	\end{pages}
 </span>
 
 \begin{publisher}
 	<span class="entry_publisher"> 
-		\format[HTMLChars,AntiScriptInjection]{\publisher}, 
+		\format[HTMLCharsAntiScript]{\publisher}, 
 	</span>
 \end{publisher}
 
 \begin{address}
 	<span class="entry_address"> 
-		\format[HTMLChars,AntiScriptInjection]{\address}, 
+		\format[HTMLCharsAntiScript]{\address}, 
 	</span>
 \end{address}
 
 \begin{year}
 	Year 
 	<span class="entry_year"> 
-		\format[HTMLChars,AntiScriptInjection]{\year}. 
+		\format[HTMLCharsAntiScript]{\year}. 
 	</span>
 \end{year}
 

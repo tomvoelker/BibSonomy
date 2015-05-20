@@ -1,16 +1,16 @@
 <tr id="\format[AntiScriptInjection]{\bibtexkey}" class="entry">
-	<td>\format[AuthorLastFirst,AuthorLastFirstAbbreviator,AuthorAndsCommaReplacer,HTMLChars,AntiScriptInjection]{\author}</td>
-	<td>\format[Replace(\n, ),HTMLChars,AntiScriptInjection]{\title} <p class="infolinks">\begin{abstract}[<a href="javascript:toggleInfo('\format[AntiScriptInjection]{\bibtexkey}','abstract')">Abstract</a>] \end{abstract}\begin{review}[<a href="javascript:toggleInfo('\format[AntiScriptInjection]{\bibtexkey}','review')">Review</a>] \end{review}[<a href="javascript:toggleInfo('\format[AntiScriptInjection]{\bibtexkey}','bibtex')">BibTeX</a>]</p></td>
+	<td>\format[AuthorLastFirst,AuthorLastFirstAbbreviator,AuthorAndsCommaReplacer,HTMLCharsAntiScript]{\author}</td>
+	<td>\format[Replace(\n, ),HTMLCharsAntiScript]{\title} <p class="infolinks">\begin{abstract}[<a href="javascript:toggleInfo('\format[AntiScriptInjection]{\bibtexkey}','abstract')">Abstract</a>] \end{abstract}\begin{review}[<a href="javascript:toggleInfo('\format[AntiScriptInjection]{\bibtexkey}','review')">Review</a>] \end{review}[<a href="javascript:toggleInfo('\format[AntiScriptInjection]{\bibtexkey}','bibtex')">BibTeX</a>]</p></td>
 	<td>\format[AntiScriptInjection]{\year}</td>
-	<td>\format[HTMLChars,AntiScriptInjection]{\journal}\format[HTMLChars,AntiScriptInjection]{\booktitle}\begin{school}<i>School</i>: \format[HTMLChars,AntiScriptInjection]{\school}\end{school} &nbsp;</td>
+	<td>\format[HTMLCharsAntiScript]{\journal}\format[HTMLCharsAntiScript]{\booktitle}\begin{school}<i>School</i>: \format[HTMLCharsAntiScript]{\school}\end{school} &nbsp;</td>
 	<td>\format[AntiScriptInjection,ToLowerCase]{\bibtextype}</td>
 	<td>\begin{doi}<a href="\format[AntiScriptInjection,DOICheck]{\doi}">DOI</a>\end{doi}\begin{url}<a href="\format[AntiScriptInjection]{\url}">URL</a>\end{url} &nbsp;</td>
 </tr>\begin{abstract}
 <tr id="abs_\format[AntiScriptInjection]{\bibtexkey}" class="abstract noshow">
-	<td colspan="6"><b>Abstract</b>: \format[HTMLChars,AntiScriptInjection]{\abstract}</td>
+	<td colspan="6"><b>Abstract</b>: \format[HTMLCharsAntiScript]{\abstract}</td>
 </tr>\end{abstract}\begin{review}
 <tr id="rev_\format[AntiScriptInjection]{\bibtexkey}" class="review noshow">
-	<td colspan="6"><b>Review</b>: \format[HTMLChars,AntiScriptInjection]{\review}</td>
+	<td colspan="6"><b>Review</b>: \format[HTMLCharsAntiScript]{\review}</td>
 </tr>\end{review}
 <tr id="bib_\format[AntiScriptInjection]{\bibtexkey}" class="bibtex noshow">
 <td colspan="6">

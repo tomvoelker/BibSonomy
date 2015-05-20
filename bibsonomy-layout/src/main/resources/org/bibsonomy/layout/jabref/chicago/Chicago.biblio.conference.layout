@@ -1,5 +1,5 @@
 <p>
 \begin{author}
-\format[HTMLChars,AntiScriptInjection,AuthorLastFirstCommas]{\author}. \end{author}\begin{title}&quot;\format[HTMLChars,AntiScriptInjection]{\title}.&quot; \end{title}Paper presented at the meeting of the \format[HTMLChars,AntiScriptInjection]{\booktitle}, \begin{address}\format[HTMLChars,AntiScriptInjection]{\address},\end{address} 
-\begin{year}\format[HTMLChars,AntiScriptInjection]{\year}. \end{year}
+\format[HTMLCharsAntiScript,AuthorLastFirstCommas]{\author}. \end{author}\begin{title}&quot;\format[HTMLCharsAntiScript]{\title}.&quot; \end{title}Paper presented at the meeting of the \format[HTMLCharsAntiScript]{\booktitle}, \begin{address}\format[HTMLCharsAntiScript]{\address},\end{address} 
+\begin{year}\format[HTMLCharsAntiScript]{\year}. \end{year}
 </p>

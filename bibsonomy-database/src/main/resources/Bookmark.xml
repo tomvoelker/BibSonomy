@@ -103,8 +103,8 @@
 		|
 		| Queries for the homepage. We have three of them, two are actually in use:
 		| * getBookmarkForHomepage - default; posts from users that are surely classified as non-spammers
-		| * getBookmarkForHomepageCleanTags - old default, unused; non-spam posts that have none of the blacklisted tags 
-		| * getBoommarkForHomepageUnfiltered - non-spam posts
+		| * getBoommarkForHomepageUnfiltered - no filters even not classified users
+		
 		| 
 		+-->
 	<select id="getBookmarkForHomepage" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
@@ -126,32 +126,7 @@
 		  ORDER BY b.date DESC, b.content_id DESC
 	</select>
 	
-	<!-- 
-		This query has to respect spammer tags, i.e. it does not show posts, which contain
-		a tag from the spammer_tags table	 -->
-	<select id="getBookmarkForHomepageCleanTags" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT <include refid="bookmarkAttributes"/>,
-		       u.book_url, u.book_url_ctr AS count, t.tag_name, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
-		FROM (SELECT b.content_id, b.book_description, b.book_extended, b.user_name, b.date, b.change_date, b.book_url_hash
-		      FROM (SELECT b.content_id, b.book_description, b.book_extended, b.user_name, b.date, b.change_date, b.book_url_hash
-		      		FROM bookmark b
-		      		WHERE b.group = #groupId#
-		      		ORDER BY date DESC
-		      		LIMIT 1000
-		     ) AS b
-		     LEFT JOIN tas AS t USING (content_id)
-		     LEFT JOIN spammer_tags AS s USING (tag_name)
-		     GROUP BY b.content_id
-		     HAVING COUNT(s.tag_name) = 0
-		     ORDER BY date DESC
-		     LIMIT #limit# OFFSET #offset#) as b
-		LEFT JOIN tas AS t USING (content_id)
-		JOIN urls u USING (book_url_hash)
-		<include refid="reviewRatingsJoinBookmark" />
-		ORDER BY b.date DESC, b.content_id DESC
-	</select>
-	
-	<!-- This is the query for the unfiltered home page, i.e., posts which contain blacklisted tags are NOT filtered -->
+	<!-- This is the query for the unfiltered homepage, i.e., posts which contain blacklisted tags are NOT filtered -->
 	<select id="getBookmarkForHomepageUnfiltered" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT <include refid="bookmarkAttributes"/>,
 		       u.book_url, u.book_url_ctr AS count, t.tag_name, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
@@ -679,4 +654,20 @@
 	<update id="updateBookmarkInGroupFromLeavingUser" parameterClass="resourceParam">
 		UPDATE bookmark b SET b.group = 1 WHERE b.user_name = #userName# AND b.group = #groupId#
 	</update>
+	
+	<select id="getBookmarkCount" resultClass="int" parameterClass="bookmarkParam">
+		SELECT COUNT(*) FROM bookmark
+		<include refid="statisticRestrictions" />
+	</select>
+	
+	<select id="getLogBookmarkCount" resultClass="int" parameterClass="bookmarkParam">
+		SELECT COUNT(*) FROM log_bookmark
+		<include refid="statisticRestrictions" />
+	</select>
+	
+	
+	<select id="getUniqueBookmarkCount" resultClass="int" parameterClass="bookmarkParam">
+		SELECT COUNT(DISTINCT book_url_hash) AS ctr FROM bookmark
+		<include refid="statisticRestrictions" />
+	</select>
 </sqlMap>

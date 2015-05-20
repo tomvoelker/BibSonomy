@@ -31,6 +31,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.net.URL;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -50,7 +51,10 @@ public class UserUtils {
 	
 	/** the name of the dblp user */
 	public static final String DBLP_USER_NAME = "dblp";
-
+	
+	/** a set of special users */
+	public static final List<String> USER_NAMES_OF_SPECIAL_USERS = Arrays.asList(DBLP_USER_NAME);
+	
 	/** the length of the password salt */
 	private static final int SALT_LENGTH = 16;
 
@@ -319,4 +323,19 @@ public class UserUtils {
 		user.setRole(Role.GROUPUSER);
 		return user;
 	}
+	
+	/**
+	 * Return the user's name in a nice format to be used e.g. in emails. If the user has a non-empty real name, that will be returned, otherwise the username.
+	 * @param user
+	 * @param atPrefix - in cases where the username is returned the at-prefix can be prepended: e.g. @sdo vs. sdo
+	 * @return
+	 */
+	public static String getNiceUserName(final User user, final boolean atPrefix) {
+		if (present(user.getRealname())) {
+			return user.getRealname();
+		} 
+		return (atPrefix? "@" :"") + user.getName(); 
+	
+	}
+	
 }

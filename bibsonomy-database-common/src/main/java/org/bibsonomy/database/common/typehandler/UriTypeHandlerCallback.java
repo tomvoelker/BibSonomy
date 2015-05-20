@@ -54,7 +54,6 @@ public class UriTypeHandlerCallback extends AbstractTypeHandlerCallback {
 	public void setParameter(final ParameterSetter setter, final Object parameter) throws SQLException {
 		if (parameter == null) {
 			setter.setNull(Types.VARCHAR);
-			setter.setString("");
 		} else {
 			final URI uri = (URI) parameter;
 			setter.setString(uri.toString());
@@ -63,6 +62,9 @@ public class UriTypeHandlerCallback extends AbstractTypeHandlerCallback {
 
 	@Override
 	public Object valueOf(final String str) {
+		if (str == null) {
+			return null;
+		}
 		try {
 			return new URI(str);
 		} catch (final URISyntaxException ex) {

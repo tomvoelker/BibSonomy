@@ -124,14 +124,14 @@ function unflagSpammerEvaluator(name, rowId, disable, evaluator) {
 * rowId: table row id 
 * disable:  if true row is removed else row is colorized white
 */	
-function markUncertainUser(name, rowId, disable) {		
+function markUncertainUser(name, rowId, disable) {
 	if (name == null || name == "") {
 		addLogMessage("please specify a user");
 		return;
 	}
 	
 	/* colorize row */
-	if (rowId != null && disable=='false') {			
+	if (rowId != null && disable=='false') {
 		document.getElementById(rowId).className="uncertainUser";
 	} else {
 		document.getElementById(rowId).style.display = "none"; 
@@ -166,7 +166,7 @@ function runAjax(parameter,action) {
 	var request = initRequest(); 
 	var url = "/admin/ajax?" + parameter;	   
    	if (request) {    	   		
-   		request.open('GET',url + "&action=" + action,true);	
+   		request.open('GET',url + "&action=" + action, true);	
    		var handle = ajax_updateLog(request); 	   		
    		request.onreadystatechange = handle;
    		request.send(null);		   		
@@ -196,4 +196,10 @@ function addLogMessage(msg) {
 function clearFields() {		
 	document.getElementsByName("user")[0].value = "";
 	document.getElementsByName("user")[1].value = "";
-}	
+}
+
+$(function () {
+	$('[data-toggle="popover"]').popover({
+		html:true
+	});
+});

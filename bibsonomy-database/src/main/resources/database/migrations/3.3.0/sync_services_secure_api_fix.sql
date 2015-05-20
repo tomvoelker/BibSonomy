@@ -1,0 +1,1 @@
+UPDATE sync_services SET secure_api = NULL WHERE secure_api = '';

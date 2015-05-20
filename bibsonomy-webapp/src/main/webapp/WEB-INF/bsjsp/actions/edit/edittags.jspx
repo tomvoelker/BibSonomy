@@ -143,20 +143,17 @@
 		</jsp:attribute>
 
 		<jsp:attribute name="sidebar">
-			<ul>
-				<li>
-					<!-- TODO: refactor and use it also in user.jspx -->
-					<fmt:message key="tagrelations.title" var="tagRelationsTitle" />
-					<h4 class="sidebar concepts-headline sidebar-headline">
-						<fmt:message key="tagrelations"/>
-					</h4>
-					<tags:concepts cmd="${command.concepts}" usersOwnRelations="${true}" requestedUserName="${command.context.loginUser.name}" disableEditLink="${true}"/>
-				</li>
-				<li>
-					<sidebar:sidebarHeader textKey="tags" />
-					<tags:cloud requPath="user/${command.context.loginUser.name}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" />
-				</li>
-			</ul>
+
+			<sidebar:conceptsItem 
+				usersOwnRelations="${true}" 
+				requestedUserName="${command.context.loginUser.name}" 
+				cmd="${command.concepts}" 
+				disableEditLink="${true}"
+				headingLink="${relativeUrlGenerator.getConceptsUrlByString(command.requestedUser)}"
+				headingTitleKey="tagrelations.user.title"
+				/>
+
+			<sidebar:sidebarTagCloudItem requPath="user/${command.context.loginUser.name}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" />
 
 			<script type="text/javascript">
 <![CDATA[
