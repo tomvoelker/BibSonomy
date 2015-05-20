@@ -87,6 +87,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
@@ -1449,7 +1450,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonById(java.lang.String)
 	 */
 	@Override
-	public Person getPersonById(String id) {
+	public Person getPersonById(PersonIdType idType, String id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1487,7 +1488,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#getResourceRelations(org.bibsonomy.model.Post)
 	 */
 	@Override
-	public List<ResourcePersonRelation> getResourceRelations(Post<BibTex> post) {
+	public List<ResourcePersonRelation> getResourceRelations(Post<? extends BibTex> post) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -192,6 +192,9 @@ public class BibTexUtils {
 	/** PHD thesis */
 	public static final String PHD_THESIS = "phdthesis";
 	
+	/** any thesis */
+	public static final String THESIS = "thesis";
+	
 	/** unpublished work */
 	public static final String UNPUBLISHED = "unpublished";
 	

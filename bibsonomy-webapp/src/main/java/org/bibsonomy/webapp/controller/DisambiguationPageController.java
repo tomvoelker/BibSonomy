@@ -7,6 +7,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.DisambiguationPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -110,7 +111,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 	 * @return
 	 */
 	private View linkAction(DisambiguationPageCommand command) {
-		final Person person = this.logic.getPersonById(command.getRequestedPersonId());
+		final Person person = this.logic.getPersonById(PersonIdType.BIBSONOMY_ID, command.getRequestedPersonId());
 		linkToPerson(command, person);		
 		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(person.getId()));
 	}

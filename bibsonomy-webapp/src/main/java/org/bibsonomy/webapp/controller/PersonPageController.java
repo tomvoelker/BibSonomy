@@ -12,6 +12,7 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
@@ -235,7 +236,7 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 */
 	private View updateAction(PersonPageCommand command) {
-		command.setPerson(this.logic.getPersonById(command.getFormPersonId()));
+		command.setPerson(this.logic.getPersonById(PersonIdType.BIBSONOMY_ID, command.getFormPersonId()));
 		command.getPerson().setAcademicDegree(command.getFormAcademicDegree());
 		command.getPerson().getMainName().setMain(false);
 		command.getPerson().setMainName(Integer.parseInt(command.getFormSelectedName()));
@@ -251,7 +252,7 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 */
 	private View addNameAction(PersonPageCommand command) {
-		final Person person = logic.getPersonById(command.getFormPersonId());
+		final Person person = logic.getPersonById(PersonIdType.BIBSONOMY_ID, command.getFormPersonId());
 		
 		final PersonName personName = new PersonName(command.getFormLastName());
 		personName.setFirstName(command.getFormFirstName());
@@ -290,7 +291,7 @@ public class PersonPageController extends SingleResourceListController implement
 			command.getAvailableRoles().add(prr);
 		}
 		
-		command.setPerson(this.logic.getPersonById(command.getRequestedPersonId()));
+		command.setPerson(this.logic.getPersonById(PersonIdType.BIBSONOMY_ID, command.getRequestedPersonId()));
 		
 		List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(command.getPerson());
 		List<Post<?>> authorPosts = new ArrayList<>();

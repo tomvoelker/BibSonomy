@@ -1,5 +1,7 @@
 package org.bibsonomy.model;
 
+import java.util.Date;
+
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 
 /**
@@ -14,7 +16,8 @@ public class ResourcePersonRelation {
 	private Person person;
 	/** name of the person who created this link */
 	private String changedBy;
-	private Post<BibTex> post;
+	private Date changedAt;
+	private Post<? extends BibTex> post;
 	/** the position in the resource's list of authors / editors / ... */
 	private int personIndex;
 	
@@ -60,13 +63,13 @@ public class ResourcePersonRelation {
 	/**
 	 * @return the post
 	 */
-	public Post<BibTex> getPost() {
+	public Post<? extends BibTex> getPost() {
 		return this.post;
 	}
 	/**
 	 * @param post the post to set
 	 */
-	public void setPost(Post<BibTex> post) {
+	public void setPost(Post<? extends BibTex> post) {
 		this.post = post;
 	}
 
@@ -93,6 +96,12 @@ public class ResourcePersonRelation {
 	}
 	public void setChangedBy(String createdByUserName) {
 		this.changedBy = createdByUserName;
+	}
+	public Date getChangedAt() {
+		return this.changedAt;
+	}
+	public void setChangedAt(Date changedAt) {
+		this.changedAt = changedAt;
 	}
 	
 }

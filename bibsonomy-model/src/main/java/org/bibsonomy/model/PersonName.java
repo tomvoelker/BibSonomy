@@ -29,6 +29,7 @@ package org.bibsonomy.model;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.Serializable;
+import java.util.Date;
 
 
 /**
@@ -55,6 +56,8 @@ public class PersonName implements Serializable {
 	// TODO: should not be here. Instead, the entity type should store a single reference to is main name
 	private boolean isMain;
 	private Person person;
+	private String changedBy;
+	private Date changedAt;
 	
 	/**
 	 * default bean constructor
@@ -204,6 +207,22 @@ public class PersonName implements Serializable {
 	 */
 	public void setPerson(Person person) {
 		this.person = person;
+	}
+
+	public String getChangedBy() {
+		return this.changedBy;
+	}
+
+	public void setChangedBy(String changedBy) {
+		this.changedBy = changedBy;
+	}
+
+	public Date getChangedAt() {
+		return this.changedAt;
+	}
+
+	public void setChangedAt(Date changedAt) {
+		this.changedAt = changedAt;
 	}
 
 }

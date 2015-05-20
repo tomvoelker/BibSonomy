@@ -64,6 +64,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
@@ -861,7 +862,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 
 	private void storePersonRelation(final COMMAND command, final User loginUser, final Post<RESOURCE> post) {
 		final BibTex bibtex = (BibTex) post.getResource();
-		final Person person = this.logic.getPersonById(command.getPersonId());
+		final Person person = this.logic.getPersonById(PersonIdType.BIBSONOMY_ID, command.getPersonId());
 		
 		if (person != null) {
 			final PersonResourceRelationType role = command.getPersonRole();

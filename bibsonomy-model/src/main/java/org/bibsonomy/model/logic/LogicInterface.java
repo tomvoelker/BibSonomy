@@ -707,19 +707,5 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 */
 	public List<Post<BibTex>> searchPostsByTitle(String title);
 	
-	/**
-	 * @param pn
-	 * @param hash
-	 * @param role
-	 * @param authorIndex
-	 * @return List<ResourcePersonRelation>
-	 */
-	@Override
-	public List<ResourcePersonRelation> getResourceRelations(String hash, PersonResourceRelationType role, Integer authorIndex);
 
-	@Override
-	public List<ResourcePersonRelation> getResourceRelations(Person person);
-
-	@Override
-	public List<ResourcePersonRelation> getResourceRelations(Post<BibTex> post);
 }

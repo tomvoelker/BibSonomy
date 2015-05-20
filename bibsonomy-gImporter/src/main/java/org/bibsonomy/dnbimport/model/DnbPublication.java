@@ -24,13 +24,17 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.gImporter;
+package org.bibsonomy.dnbimport.model;
+
+import java.util.List;
+
 
 /**
  * @author sst
  */
-public class gImporterData {
-
+public class DnbPublication {
+	private String titleId;
+	
 	private String mainTitle;
 	
 	private String subTitle;
@@ -44,9 +48,7 @@ public class gImporterData {
 	private boolean diss;
 	private boolean habil;
 	
-	private String firstName;
-	
-	private String lastName;
+	private List<DnbPerson> persons;
 	
 
 	/**
@@ -61,34 +63,6 @@ public class gImporterData {
 	 */
 	public void setDiss(boolean diss) {
 		this.diss = diss;
-	}
-
-	/**
-	 * @return the firstName
-	 */
-	public String getFirstName() {
-		return this.firstName;
-	}
-
-	/**
-	 * @param firstName the firstName to set
-	 */
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	/**
-	 * @return the lastName
-	 */
-	public String getLastName() {
-		return this.lastName;
-	}
-
-	/**
-	 * @param lastName the lastName to set
-	 */
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
 	}
 
 	/**
@@ -189,18 +163,20 @@ public class gImporterData {
 		this.pubYear = pubYear;
 	}
 
-	/**
-	 * @return the diss
-	 */
-/*	public boolean getDiss() {
-		return this.diss;
+	public String getTitleId() {
+		return this.titleId;
 	}
-*/
-	/**
-	 * @param diss the diss to set
-	 */
-	/*public void setDiss(boolean diss) {
-		this.diss = diss;
-	}*/
+
+	public void setTitleId(String titleId) {
+		this.titleId = titleId;
+	}
+
+	public List<DnbPerson> getPersons() {
+		return this.persons;
+	}
+
+	public void setPersons(List<DnbPerson> persons) {
+		this.persons = persons;
+	}
 
 }

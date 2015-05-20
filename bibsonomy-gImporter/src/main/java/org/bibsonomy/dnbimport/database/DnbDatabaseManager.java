@@ -24,26 +24,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.gImporter;
+package org.bibsonomy.dnbimport.database;
 
 import java.util.List;
 
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
-import org.bibsonomy.database.managers.BibTexDatabaseManager;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.GoldStandardPublication;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.User;
+import org.bibsonomy.dnbimport.model.DnbPublication;
 
 /**
  * 
  * @author sst
  */
-public class gImporterDatabaseManager extends AbstractDatabaseManager {
-	
-	private gImporterData gImporterData;
+public class DnbDatabaseManager extends AbstractDatabaseManager {
 	
 	private DBSessionFactory sessionFactory;
 	
@@ -55,7 +49,7 @@ public class gImporterDatabaseManager extends AbstractDatabaseManager {
 	 * inserts the log data into the db
 	 * @param logdata
 	 */
-	public void insertLogdata(final gImporterData logdata) {
+	public void insertLogdata(final DnbPublication logdata) {
 		final DBSession session = this.openSession();
 		try {
 			this.insert("gImporter.insertgImporterdata", logdata, session);
@@ -65,10 +59,10 @@ public class gImporterDatabaseManager extends AbstractDatabaseManager {
 		}
 	}
 	
-	public List<gImporterData> select_dissertation(gImporterData param) {
+	public List<DnbPublication> selectDnbEntries(DnbPublication param) {
 		final DBSession session = this.openSession();
 		try {
-			return (List<gImporterData>) this.queryForList("gImporter.selectDissertation", param, session);
+			return (List<DnbPublication>) this.queryForList("gImporter.selectDissertation", param, session);
 
 		} finally {
 			session.close();
@@ -81,20 +75,6 @@ public class gImporterDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void setSessionFactory(final DBSessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
-	}
-
-	/**
-	 * @return the gImporterData
-	 */
-	public gImporterData getgImporterData() {
-		return this.gImporterData;
-	}
-
-	/**
-	 * @param gImporterData the gImporterData to set
-	 */
-	public void setgImporterData(gImporterData gImporterData) {
-		this.gImporterData = gImporterData;
 	}
 }
 
