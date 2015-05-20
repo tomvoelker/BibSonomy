@@ -113,17 +113,22 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		/*
 		 * get friends for sidebar
 		 */
-		final String loggedInUserName = command.getUser().getName();
+		final String loggedInUserName = loginUser.getName();
 		command.setUserFriends(this.logic.getUserRelationship(loggedInUserName, UserRelation.FRIEND_OF, NetworkRelationSystemTag.BibSonomyFriendSystemTag));
 		command.setFriendsOfUser(this.logic.getUserRelationship(loggedInUserName, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag));
 
-		// show sync tab only for non-spammers
-		command.showSyncTab(!loginUser.isSpammer());
+		/*
+		 * show sync tab only for non-spammers
+		 */
+		final boolean loggedinUserIsSpammer = loginUser.isSpammer();
+		command.showSyncTab(!loggedinUserIsSpammer);
 		// show my profile tab if spammer tries to enter sync settings via selTab-ID
-		if (loginUser.isSpammer() && command.getSelTab() == SettingsViewCommand.SYNC_IDX)
-			command.setSelTab(SettingsViewCommand.MY_PROFILE_IDX);
-
-		if (command.getSelTab() < 0 || command.getSelTab() > 7) {
+		final Integer selectedTab = command.getSelTab();
+		if (loggedinUserIsSpammer && present(selectedTab) && selectedTab.intValue() == SettingsViewCommand.SYNC_IDX) {
+			command.setSelTab(Integer.valueOf(SettingsViewCommand.MY_PROFILE_IDX));
+		}
+		
+		if (!present(selectedTab) || selectedTab.intValue() < SettingsViewCommand.MY_PROFILE_IDX || selectedTab.intValue() > SettingsViewCommand.OAUTH_IDX) {
 			this.errors.reject("error.settings.tab");
 		} else {
 			this.checkInstalledJabrefLayout(command);
@@ -376,8 +381,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		/*
 		 * set the user to render
 		 */
-		this.wikiRenderer.setRequestedUser(requestedUser); // FME: not
-															// thread-safe!
+		this.wikiRenderer.setRequestedUser(requestedUser);
 		command.setRenderedWikiText(this.wikiRenderer.render(wikiText));
 		command.setWikiText(wikiText);
 	}
@@ -397,13 +401,6 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	 */
 	public void setOauthLogic(final OAuthLogic oauthLogic) {
 		this.oauthLogic = oauthLogic;
-	}
-
-	/**
-	 * @return
-	 */
-	public List<String> getInvisibleOAuthConsumers() {
-		return this.invisibleOAuthConsumers;
 	}
 
 	/**
