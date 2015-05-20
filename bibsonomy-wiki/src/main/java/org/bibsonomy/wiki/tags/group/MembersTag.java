@@ -62,7 +62,7 @@ public class MembersTag extends GroupTag {
 
 			if (!user.getName().equals(this.requestedGroup.getName())) {
 				renderedHTML.append("<div class='imageContainer'>");
-				renderedHTML.append("<a class=\"img-thumbnail img-responsive\" title=\""+user.getName()+"\" href=\"/cv/user/" + user.getName() + "\">");
+				renderedHTML.append("<a class=\"img-thumbnail img-responsive\" title=\""+user.getName()+"\" href=\"/user/" + user.getName() + "\">");
 				renderedHTML.append(this.renderImage(user.getName()));
 				renderedHTML.append("<span>@"+this.renderString(user.getName())+"</span>");
 				renderedHTML.append("</a></div>");
