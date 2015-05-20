@@ -380,21 +380,21 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		}
 	}
 	
-	public int getNumberOfClassifedUsersByAdmin(final SpamStatus status, final int interval, final DBSession session) {
-		final AdminParam param = buildAdminParam(status, interval);
+	public int getNumberOfClassifedUsersByAdmin(final SpamStatus status, final Date startDate, final DBSession session) {
+		final AdminParam param = buildAdminParam(status, startDate);
 		final Integer count = this.queryForObject("getAdminClassifiedUsersCount", param, Integer.class, session);
 		return count == null ? 0 : count.intValue();
 	}
 	
-	public int getNumberOfClassifedUsersByClassifier(final SpamStatus status, final int interval, final DBSession session) {
-		final AdminParam param = buildAdminParam(status, interval);
+	public int getNumberOfClassifedUsersByClassifier(final SpamStatus status, final Date startDate, final DBSession session) {
+		final AdminParam param = buildAdminParam(status, startDate);
 		final Integer count = this.queryForObject("getClassifiedUsersCount", param, Integer.class, session);
 		return count == null ? 0 : count.intValue();
 	}
 	
-	private static AdminParam buildAdminParam(final SpamStatus status, final int interval) {
+	private static AdminParam buildAdminParam(final SpamStatus status, final Date startDate) {
 		final AdminParam param = new AdminParam();
-		param.setInterval(interval);
+		param.setStartDate(startDate);
 		param.setPrediction(status.getId());
 		return param;
 	}

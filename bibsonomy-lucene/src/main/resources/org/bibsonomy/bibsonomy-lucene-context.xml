@@ -25,6 +25,7 @@
 	<bean id="realSharedIndexUpdatePlugin" class="org.bibsonomy.es.SharedIndexUpdatePlugin" lazy-init="true">
 		<constructor-arg ref="esClient"/>
 		<constructor-arg value="${project.home}"/>
+		<constructor-arg ref="lucenePublicationConverter"/>
 	</bean>
 	<bean id="sharedIndexUpdatePlugin" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
 		<property name="condition" ref="esClusterNamePresent" />
@@ -110,11 +111,13 @@
 			<property name="indexId" value="0" />
 			<property name="analyzer" ref="luceneBookmarkFieldWrapperAnalyzer" />
 			<property name="resourceClass" ref="luceneBookmarkClass" />
+			<property name="resourceConverter" ref="luceneBookmarkConverter" />
 		</bean>
 		<bean id="luceneBookmarkIndex1" class="org.bibsonomy.lucene.index.LuceneResourceIndex" init-method="init" parent="luceneResourceIndex">
 			<property name="indexId" value="1" />
 			<property name="analyzer" ref="luceneBookmarkFieldWrapperAnalyzer" />
 			<property name="resourceClass" ref="luceneBookmarkClass" />
+			<property name="resourceConverter" ref="luceneBookmarkConverter" />
 		</bean>
 	</util:list>
 
@@ -123,11 +126,13 @@
 			<property name="indexId" value="0" />
 			<property name="analyzer" ref="lucenePublicationFieldWrapperAnalyzer" />
 			<property name="resourceClass" ref="lucenePublicationClass" />
+			<property name="resourceConverter" ref="lucenePublicationConverter" />
 		</bean>
 		<bean id="lucenePublicationIndex1" class="org.bibsonomy.lucene.index.LuceneResourceIndex" init-method="init" parent="luceneResourceIndex">
 			<property name="indexId" value="1" />
 			<property name="analyzer" ref="lucenePublicationFieldWrapperAnalyzer" />
 			<property name="resourceClass" ref="lucenePublicationClass" />
+			<property name="resourceConverter" ref="lucenePublicationConverter" />
 		</bean>
 	</util:list>
 
@@ -136,11 +141,13 @@
 			<property name="indexId" value="0" />
 			<property name="analyzer" ref="lucenePublicationFieldWrapperAnalyzer" />
 			<property name="resourceClass" ref="luceneGoldStandardPublicationClass" />
+			<property name="resourceConverter" ref="luceneGoldStandardPublicationConverter" />
 		</bean>
 		<bean id="goldStandardPublicationIndex1" class="org.bibsonomy.lucene.index.LuceneResourceIndex" init-method="init" parent="luceneResourceIndex">
 			<property name="indexId" value="1" />
 			<property name="analyzer" ref="lucenePublicationFieldWrapperAnalyzer" />
 			<property name="resourceClass" ref="luceneGoldStandardPublicationClass" />
+			<property name="resourceConverter" ref="luceneGoldStandardPublicationConverter" />
 		</bean>
 	</util:list>
 
@@ -207,7 +214,11 @@
         + -->
 	<bean id="luceneResourceManager" class="org.bibsonomy.lucene.index.manager.LuceneResourceManager" abstract="true">
 		<property name="luceneUpdaterEnabled" value="${lucene.enableUpdater}" />
-		<property name="plugin" ref="sharedIndexUpdatePlugin" />
+		<property name="plugins">
+			<list>
+				<ref bean="sharedIndexUpdatePlugin" />
+			</list>
+		</property>
 	</bean>
 
 	<bean id="lucenePublicationManager" class="org.bibsonomy.lucene.index.manager.LuceneResourceManager" init-method="init" parent="luceneResourceManager">

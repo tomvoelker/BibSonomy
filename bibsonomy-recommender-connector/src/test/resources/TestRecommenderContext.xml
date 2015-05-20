@@ -8,20 +8,6 @@
 	
 	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations" value="classpath:recommender-test.properties" />
-    	<property name="ignoreUnresolvablePlaceholders" value ="true"/>
+		<property name="ignoreUnresolvablePlaceholders" value ="true"/>
 	</bean>
-	
-	<bean id="itemRecommenderDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-		<property name="driverClassName" value="${database.recommender.item.driverClassName}" />
-		<property name="url" value="${database.recommender.item.url}" />
-		<property name="username" value="${database.recommender.item.username}" />
-		<property name="password" value="${database.recommender.item.password}" />
-	</bean>
-	
-	<bean id="tagRecommenderDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-		<property name="driverClassName" value="${database.recommender.tag.driverClassName}" />
-		<property name="url" value="${database.recommender.tag.url}" />
-		<property name="username" value="${database.recommender.tag.username}" />
-		<property name="password" value="${database.recommender.tag.password}" />
-	</bean>
-</beans>	                    
+</beans>

@@ -24,29 +24,47 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.webapp.util.spring.factorybeans;
+package org.bibsonomy.webapp.util;
 
-import static org.junit.Assert.assertNull;
+import static org.bibsonomy.util.ValidationUtils.present;
 
-import org.junit.Test;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
+import java.util.Date;
 
+import org.bibsonomy.common.enums.StatisticsUnit;
+import org.joda.time.DateTime;
 
 /**
- * @author rja
+ * utils class for {@link StatisticsUnit}
+ *
+ * @author dzo
  */
-public class NullFactoryBeanTest {
+public class StatisticsUnitUtils {
+	private StatisticsUnitUtils() {}
 
-	@Test
-	public void testSpringInstantiation() throws Exception {
-		final ApplicationContext factory = new FileSystemXmlApplicationContext("src/main/webapp/WEB-INF/bibsonomy2-servlet-bibsonomy.xml");
-		final Object swordService = factory.getBean("swordService_bibsonomy");
-		
-		/*
-		 * the NullFactoryBean shall return a null object
-		 */
-		assertNull(swordService);
+	/**
+	 * @param interval
+	 * @param unit
+	 * @return the date representing the start of the time interval
+	 */
+	public static Date convertToStartDate(final Integer interval, final StatisticsUnit unit) {
+		if (present(interval)) {
+			DateTime dateTime = new DateTime();
+			final int intervalAsInt = interval.intValue();
+			switch (unit) {
+			case HOUR:
+				dateTime = dateTime.minusHours(intervalAsInt);
+				break;
+			case DAY:
+				dateTime = dateTime.minusDays(intervalAsInt);
+				break;
+			case MONTH:
+				dateTime = dateTime.minusMonths(intervalAsInt);
+				break;
+			default:
+				throw new IllegalArgumentException(unit.toString());
+			}
+			return dateTime.toDate();
+		}
+		return null;
 	}
-	
 }

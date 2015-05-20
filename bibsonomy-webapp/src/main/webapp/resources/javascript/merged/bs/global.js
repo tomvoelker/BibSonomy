@@ -31,5 +31,5 @@ includeJavaScript("/resources/javascript/bs/style.js");
 includeJavaScript("/resources/javascript/bs/jquery.fadebox.js");
 includeJavaScript("/resources/javascript/bs/userRelation.js");
 includeJavaScript("/resources/javascript/bs/addToSpheres.js");
-
+/* the following scripts are for development only */
 includeJavaScript("/resources/javascript/less/less.js");

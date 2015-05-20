@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Webapp - The web application for BibSonomy.
+ * BibSonomy-Web-Common - Common things for web
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -12,41 +12,45 @@
  *                               http://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.webapp.util.spring.factorybeans;
+package org.bibsonomy.web.spring.converter;
 
-import static org.junit.Assert.assertNull;
+import static org.bibsonomy.util.ValidationUtils.present;
 
-import org.junit.Test;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
+import java.net.URI;
+import java.net.URISyntaxException;
 
+import org.springframework.core.convert.ConversionFailedException;
+import org.springframework.core.convert.TypeDescriptor;
+import org.springframework.core.convert.converter.Converter;
 
 /**
- * @author rja
+ * @author dzo
  */
-public class NullFactoryBeanTest {
+public class StringToURIConverter implements Converter<String, URI> {
 
-	@Test
-	public void testSpringInstantiation() throws Exception {
-		final ApplicationContext factory = new FileSystemXmlApplicationContext("src/main/webapp/WEB-INF/bibsonomy2-servlet-bibsonomy.xml");
-		final Object swordService = factory.getBean("swordService_bibsonomy");
+	@Override
+	public URI convert(final String source) {
+		if (!present(source)) {
+			return null;
+		}
 		
-		/*
-		 * the NullFactoryBean shall return a null object
-		 */
-		assertNull(swordService);
+		try {
+			return new URI(source);
+		} catch (final URISyntaxException ex) {
+			throw new ConversionFailedException(TypeDescriptor.valueOf(String.class), TypeDescriptor.valueOf(URI.class), source, ex);
+		}
 	}
-	
+
 }
