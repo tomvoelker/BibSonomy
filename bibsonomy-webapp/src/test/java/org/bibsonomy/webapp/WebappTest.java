@@ -60,6 +60,8 @@ import com.gargoylesoftware.htmlunit.BrowserVersion;
  */
 @RunWith(Parameterized.class)
 public abstract class WebappTest extends AbstractDatabaseManagerTest {
+	private static final String SERVER_PROPERTIES_FILE = "server.properties";
+	private static final String WEBAPP_TEST_DATABASE_CONFIG_FILE = "webapp-test-database.properties";
 
 	/**
 	 * TODO: add more drivers? else remove
@@ -100,7 +102,7 @@ public abstract class WebappTest extends AbstractDatabaseManagerTest {
 			final ApplicationParameter parameter = new ApplicationParameter();
 			parameter.setOverride(false);
 			
-			final String serverProps = WebappTest.class.getClassLoader().getResource("server.properties").getFile();
+			final String serverProps = WebappTest.class.getClassLoader().getResource(SERVER_PROPERTIES_FILE).getFile();
 			parameter.setValue(serverProps);
 			parameter.setName("config.location");
 			context.addApplicationParameter(parameter);
@@ -122,6 +124,14 @@ public abstract class WebappTest extends AbstractDatabaseManagerTest {
 	 */
 	public WebappTest(final WebDriver webDriver) {
 		this.webDriver = webDriver;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.managers.AbstractDatabaseManagerTest#getDatabaseConfigFile()
+	 */
+	@Override
+	protected String getDatabaseConfigFile() {
+		return WEBAPP_TEST_DATABASE_CONFIG_FILE;
 	}
 	
 	/**
