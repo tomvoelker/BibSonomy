@@ -39,7 +39,6 @@ import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.SpamStatus;
-import org.bibsonomy.common.enums.StatisticsUnit;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
@@ -154,25 +153,21 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * @param grouping 
 	 * @param startDate 
-	 * @param constraints
 	 * @param filters 
 	 * @param classifier 
 	 * @param status 
-	 * @param interval 
-	 * @param unit 
 	 * @param session 
+	 * @param constraints
 	 * @return the statistics (currently only count) of all registered users matching
 	 * 			the criteria
 	 */
-	public Statistics getUserStatistics(GroupingEntity grouping, Date startDate, Set<Filter> filters, Classifier classifier, SpamStatus status, Integer interval, StatisticsUnit unit, final DBSession session) {
+	public Statistics getUserStatistics(GroupingEntity grouping, Date startDate, Set<Filter> filters, Classifier classifier, SpamStatus status, final DBSession session) {
 		final StatisticsParam param = new StatisticsParam();
 		param.setGrouping(grouping);
 		param.setFilters(filters);
 		param.setClassifier(classifier);
 		param.setSpamStatus(status);
 		param.setStartDate(startDate);
-		param.setInterval(interval);
-		param.setUnit(unit);
 		
 		final Statistics statistics = this.userChain.perform(param, session);
 		if (present(statistics)) {
@@ -501,22 +496,22 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * @param spamStatus
-	 * @param interval
+	 * @param startDate
 	 * @param session
 	 * @return the number of users classified by an admin matching the interval and spam status
 	 */
-	public int getNumberOfClassifiedUsersByAdmin(SpamStatus spamStatus, int interval, DBSession session) {
-		return this.adminDatabaseManager.getNumberOfClassifedUsersByAdmin(spamStatus, interval, session);
+	public int getNumberOfClassifiedUsersByAdmin(SpamStatus spamStatus, Date startDate, DBSession session) {
+		return this.adminDatabaseManager.getNumberOfClassifedUsersByAdmin(spamStatus, startDate, session);
 	}
 	
 	/**
 	 * @param spamStatus
-	 * @param interval
+	 * @param startDate
 	 * @param session
 	 * @return the number of users classified by the classifier
 	 */
-	public int getNumberOfClassifiedUsersByClassifier(SpamStatus spamStatus, int interval, DBSession session) {
-		return this.adminDatabaseManager.getNumberOfClassifedUsersByClassifier(spamStatus, interval, session);
+	public int getNumberOfClassifiedUsersByClassifier(SpamStatus spamStatus, Date startDate, DBSession session) {
+		return this.adminDatabaseManager.getNumberOfClassifedUsersByClassifier(spamStatus, startDate, session);
 	}
 
 	/**
