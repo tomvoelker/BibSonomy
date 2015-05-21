@@ -41,8 +41,10 @@ import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.logic.PostLogicInterface;
+
 import org.bibsonomy.util.Sets;
-import org.bibsonomy.webapp.controller.ajax.AjaxController;
+import org.bibsonomy.webapp.controller.ajaimport org.bibsonomy.util.Sets;
+x.AjaxController;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;

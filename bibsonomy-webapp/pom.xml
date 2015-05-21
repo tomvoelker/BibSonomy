@@ -668,7 +668,12 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>12.0</version>
+					<dependency>
+			<groupId>net.sourceforge.nekohtml</groupId>
+			<artifactId>nekohtml</artifactId>
+			<version>1.9.21</version>
+		</dependency>
+<version>12.0</version>
 		</dependency>
 		<dependency>
 			<groupId>joda-time</groupId>
@@ -692,6 +697,7 @@
 	</dependencies>
 	<properties>
 		<wtpversion>1.5</wtpversion>
+
 		<project.build.webapp.resourcedir>${project.build.directory}/${project.build.finalName}/resources</project.build.webapp.resourcedir>
 		<tomcat.version>7.0.55</tomcat.version>
 		<!-- We need to wrap the maven.build.timestamp property as it is not used 
