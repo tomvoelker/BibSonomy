@@ -1134,6 +1134,26 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePerson(org.bibsonomy.model.Person)
+	 */
+	@Override
+	public void createOrUpdatePerson(Person person) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getQualifyingPublications(java.lang.String)
+	 */
+	@Override
+	public Map<Person, BibTex> getQualifyingPublications(String personName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+
+	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getDocumentStatistics(org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.Set, java.util.Date, java.util.Date)
 	 */
 	@Override

@@ -24,7 +24,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.database.testutil;
+package org.bibsonomy.testutil;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
@@ -42,7 +42,6 @@ import java.util.Scanner;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.Ignore;
 
 /**
  * This class loads the SQL script for the test database. This should be
@@ -50,7 +49,6 @@ import org.junit.Ignore;
  * 
  * @author Christian Schenk
  */
-@Ignore
 public class TestDatabaseLoader {
 	private final static Log log = LogFactory.getLog(TestDatabaseLoader.class);
 	
