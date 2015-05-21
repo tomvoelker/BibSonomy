@@ -37,7 +37,10 @@ import java.util.TreeSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
+import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
+import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.util.GroupUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -57,7 +60,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @param <R>
  *        the resource of the index
  */
-public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpdater {
+public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpdater<R> {
 	private static final Log log = LogFactory.getLog(SharedResourceIndexUpdater.class);
 
 	private final String indexName = ESConstants.INDEX_NAME;
@@ -77,6 +80,10 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 
 	/** list containing content ids of cached delete operations */
 	protected List<Integer> contentIdsToDelete;
+	
+	/** converts post model objects to documents of the index structure */
+	private final LuceneResourceConverter<R> resourceConverter;
+	
 	/**
 	 * 
 	 */
@@ -85,8 +92,9 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	/**
 	 * @param systemHome
 	 */
-	public SharedResourceIndexUpdater(final String systemHome) {
+	public SharedResourceIndexUpdater(final String systemHome, final LuceneResourceConverter<R> resourceConverter) {
 		this.systemHome = systemHome;
+		this.resourceConverter = resourceConverter;
 		this.contentIdsToDelete = new LinkedList<Integer>();
 		this.esPostsToInsert = new ArrayList<Map<String, Object>>();
 		this.usersToFlag = new TreeSet<String>();
@@ -96,15 +104,14 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	/**
 	 * @return lastLogDate
 	 */
-	@Override
 	@SuppressWarnings("boxing")
-	public long getLastLogDate() {
+	public Date getLastLogDate() {
 		synchronized (this) {
 			final String lastLogDateString = this.fetchSystemInfoField(LuceneFieldNames.LAST_LOG_DATE);
 			if (lastLogDateString == null) {
-				return Long.MIN_VALUE;
+				return null;
 			}
-			return Long.parseLong(lastLogDateString);
+			return new Date(Long.parseLong(lastLogDateString));
 		}
 	}
 
@@ -178,7 +185,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 * @param contentIdsToDelete
 	 *        the contentIdsToDelete to set
 	 */
-	public void setContentIdsToDelete(final List<Integer> contentIdsToDelete) {
+	public void deleteDocumentsForContentIds(final List<Integer> contentIdsToDelete) {
 		synchronized (this) {
 			this.contentIdsToDelete = contentIdsToDelete;
 		}
@@ -216,7 +223,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	/**
 	 * perform all cached operations to index
 	 */
-
+	@Override
 	public void flush() {
 		synchronized (this) {
 			// ----------------------------------------------------------------
@@ -236,7 +243,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 					// final int cnt = purgeDocumentsForUser(userName);
 					// log.debug("Purged " + cnt + " posts for user " +
 					// userName);
-					this.deleteIndexForForUser(userName);
+					this.deleteIndexForUser(userName);
 					log.debug("Purged posts for user " + userName);
 				}
 			}
@@ -293,8 +300,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	/**
 	 * @param esPostsToInsert2
 	 */
-	@Override
-	public void insertNewPosts(final ArrayList<Map<String, Object>> esPostsToInsert2) {
+	private void insertNewPosts(final ArrayList<Map<String, Object>> esPostsToInsert2) {
 		// wait for the yellow (or green) status to prevent
 		// NoShardAvailableActionException later
 		this.esClient.getClient().admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
@@ -312,7 +318,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 * @param userName
 	 */
 	@Override
-	public void deleteIndexForForUser(final String userName) {
+	public void deleteIndexForUser(final String userName) {
 
 		this.esClient.getClient().prepareDeleteByQuery(this.indexName).setTypes(this.resourceType).setQuery(QueryBuilders.termQuery(LuceneFieldNames.USER_NAME, userName)).execute().actionGet();
 	}
@@ -405,6 +411,17 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 */
 	public void setEsClient(final ESClient esClient) {
 		this.esClient = esClient;
+	}
+	
+	@Override
+	public void insertDocument(LucenePost<R> post, final Date currentLogDate) {
+		if (post.getGroups().contains(GroupUtils.buildPublicGroup())) {
+			if (currentLogDate != null) {
+				post.setLastLogDate(currentLogDate);
+			}
+			final Map<String, Object> postDoc = (Map<String, Object>)this.resourceConverter.readPost(post, IndexType.ELASTICSEARCH);
+			this.insertDocument(postDoc);
+		}
 	}
 
 }

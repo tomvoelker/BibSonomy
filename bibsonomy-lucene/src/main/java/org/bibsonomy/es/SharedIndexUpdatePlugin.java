@@ -38,6 +38,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
 import org.bibsonomy.lucene.param.LuceneIndexInfo;
 import org.bibsonomy.lucene.param.LuceneIndexStatistics;
@@ -61,14 +62,17 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	private static final Log log = LogFactory.getLog(SharedIndexUpdatePlugin.class);
 	private static final ThreadPoolExecutor generatorThreadExecutor = new ThreadPoolExecutor(0, 1, 20, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 	private final List<SharedResourceIndexGenerator<R>> queuedOrRunningGenerators = Collections.synchronizedList(new ArrayList<SharedResourceIndexGenerator<R>>());
+	/** converts post model objects to documents of the index structure */
+	private final LuceneResourceConverter<R> resourceConverter;
 
 	/**
 	 * @param esClient
 	 * @param systemHome
 	 */
-	public SharedIndexUpdatePlugin(final ESClient esClient, final String systemHome) {
+	public SharedIndexUpdatePlugin(final ESClient esClient, final String systemHome, final LuceneResourceConverter<R> resourceConverter) {
 		this.esClient = esClient;
 		this.systemHome = systemHome;
+		this.resourceConverter = resourceConverter;
 	}
 
 	/*
@@ -91,7 +95,7 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 
 	private SharedResourceIndexUpdater<R> createUpdaterInternal(final String resourceType) {
 		SharedResourceIndexUpdater<R> sharedIndexUpdater;
-		sharedIndexUpdater = new SharedResourceIndexUpdater<R>(this.systemHome);
+		sharedIndexUpdater = new SharedResourceIndexUpdater<R>(this.systemHome, resourceConverter);
 		sharedIndexUpdater.setEsClient(this.esClient);
 		sharedIndexUpdater.setResourceType(resourceType);
 		return sharedIndexUpdater;
@@ -146,7 +150,7 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 		generator.setLogic(manager.getDbLogic());
 		generator.setEsClient(this.esClient);
 		generator.setResourceType(manager.getResourceName());
-		generator.setResourceConverter(manager.getResourceConverter());
+		generator.setResourceConverter(this.resourceConverter);
 		generator.setCallback(this);
 
 		this.queuedOrRunningGenerators.add(generator);

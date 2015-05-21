@@ -4,8 +4,6 @@ $(function() {
 		autoclose : true
 	});
 
-	$('.collapse').collapse();
-
 	$('.toggleAdvanced').click(function(event) {
 		event.preventDefault();
 		$(this).parents('li.media').find('.advanced').toggle();

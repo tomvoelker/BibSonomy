@@ -28,6 +28,7 @@
 	<sqlMap resource="common/DocumentCommon.xml" />
 	<sqlMap resource="common/RepositoryCommon.xml" />
 	<sqlMap resource="common/AuthorCommon.xml"/>
+	<sqlMap resource="common/StatisticCommon.xml" />
 	<sqlMap resource="common/SynchronizationCommon.xml" />
 	<sqlMap resource="common/DiscussionCommon.xml" />
 	<sqlMap resource="common/CommentCommon.xml" />

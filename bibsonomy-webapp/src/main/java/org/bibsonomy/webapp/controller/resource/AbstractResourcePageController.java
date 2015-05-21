@@ -161,7 +161,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 			 * retrieve total count with given hash 
 			 * (only for /<RESOURCE>/HASH)
 			 */
-			this.setTotalCount(command, this.getResourceClass(), groupingEntity, requUser, null, longHash, null, null, null, null, startDate, endDate, entriesPerPage);
+			this.setTotalCount(command, this.getResourceClass(), groupingEntity, requUser, null, longHash, null, null, null, startDate, endDate, entriesPerPage);
 		} else if (GroupingEntity.USER.equals(groupingEntity)) {
 			/*
 			 * Complete the post details for the first post of a given user 
@@ -298,7 +298,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 				 */
 				final Date startDate = command.getStartDate();
 				final Date endDate = command.getEndDate();
-				this.setTotalCount(command, this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null, null, null, null, startDate, endDate, 1000);
+				this.setTotalCount(command, this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null, null, null, startDate, endDate, 1000);
 				firstResource.setCount(command.getListCommand(this.getResourceClass()).getTotalCount());
 
 				/*

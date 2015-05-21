@@ -9,6 +9,14 @@
 		WHERE user_name = #userName#
 	</select>
 	
+	<select id="getClipboardCount" resultClass="int">
+		SELECT count(*) AS ctr FROM collector
+	</select>
+	
+	<select id="getClipboardHistoryCount" resultClass="int">
+		SELECT count(*) AS ctr FROM log_collector
+	</select>
+	
 	<insert id="createBasketItem" parameterClass="basketParam">
 		INSERT IGNORE INTO collector (user_name, content_id) 
 		VALUES (#userName#, #contentId#)

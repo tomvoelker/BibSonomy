@@ -40,6 +40,7 @@ import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * Returns a list of resources for a given user.
@@ -52,11 +53,8 @@ public class GetResourcesWithDiscussions<R extends Resource, P extends ResourceP
 
 	@Override
 	protected boolean canHandle(final P param) {
-	    
-		return ( FilterEntity.POSTS_WITH_DISCUSSIONS.equals(param.getFilter())
-			|| FilterEntity.POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER.equals(param.getFilter())
-			
-		);
+		return ValidationUtils.safeContains(param.getFilters(), FilterEntity.POSTS_WITH_DISCUSSIONS) || 
+				ValidationUtils.safeContains(param.getFilters(), FilterEntity.POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER);
 	}
 
 	@Override
@@ -70,12 +68,12 @@ public class GetResourcesWithDiscussions<R extends Resource, P extends ResourceP
 			final Group group = this.groupDb.getGroupByName(param.getRequestedGroupName(), session);
 			if (!present(group) || (group.getGroupId() == GroupID.INVALID.getId()) || GroupID.isSpecialGroupId(group.getGroupId())) {
 				log.debug("group '" + param.getRequestedGroupName() + "' not found or special group");
-				return new ArrayList<Post<R>>();			
+				return new ArrayList<Post<R>>();
 			}
-			return this.databaseManager.getPostsWithDiscussionsForGroup(param.getUserName(), group.getGroupId(), param.getGroups(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
+			return this.databaseManager.getPostsWithDiscussionsForGroup(param.getUserName(), group.getGroupId(), param.getGroups(), param.getFilters(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
 		}
 		// handle all other grouping Entities (USER and ALL)
-		return this.databaseManager.getPostsWithDiscussions(param.getUserName(), param.getRequestedUserName(), param.getGroups(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
+		return this.databaseManager.getPostsWithDiscussions(param.getUserName(), param.getRequestedUserName(), param.getGroups(), param.getFilters(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
 	}
 
 }
