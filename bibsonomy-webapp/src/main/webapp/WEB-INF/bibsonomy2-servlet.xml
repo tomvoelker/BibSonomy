@@ -377,6 +377,7 @@
 								<value>requestedUser</value>
 								<value>requestedRole</value>
 								<value>requestedPersonId</value>
+								<value>requestedIndex</value>
 							</list>
 						</property>
 					</bean>
