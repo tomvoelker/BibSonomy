@@ -25,11 +25,12 @@
 		<result property="lastName" column="surname" />
 		<result property="gender" column="gender" />
 		<result property="personFunction" column="person_function"/>
+		<result property="uniquePersonId" column="unique_person_id"/>
 	</resultMap>
 
 	<select id="selectDissertation" resultMap="gImporterResult" parameterClass="dnbPublication">
 		SELECT
-			t.title_id, t.title, t.subtitle, t.pub_year_c, t.sub_year_c, t.city, t.uni, t.diss, t.habil, p.person_id, p.firstname, p.surname, p.diff_person, p.gender, l.person_function
+			t.title_id, t.title, t.subtitle, t.pub_year_c, t.sub_year_c, t.city, t.uni, t.diss, t.habil, p.person_id, p.firstname, p.surname, p.diff_person, p.gender, l.person_function, l.unique_person_id
 		FROM
 			dnb2_light.title_hs_link l
 			JOIN dnb2_light.title_hs_title t ON l.title_id=t.title_id AND (t.diss=1 or t.habil=1)

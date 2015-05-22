@@ -8,6 +8,8 @@ package org.bibsonomy.dnbimport.model;
 public class DnbPerson {
 	private String personId;
 	
+	private String uniquePersonId;
+	
 	private String firstName;
 
 	private String lastName;
@@ -64,6 +66,14 @@ public class DnbPerson {
 
 	public void setGender(String gender) {
 		this.gender = gender;
+	}
+
+	public String getUniquePersonId() {
+		return this.uniquePersonId;
+	}
+
+	public void setUniquePersonId(String uniquePersonId) {
+		this.uniquePersonId = uniquePersonId;
 	}
 
 }

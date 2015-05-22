@@ -2,6 +2,13 @@ package org.bibsonomy.dnbimport;
 
 
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +18,6 @@ import org.bibsonomy.dnbimport.database.DnbDatabaseManager;
 import org.bibsonomy.dnbimport.model.DnbPerson;
 import org.bibsonomy.dnbimport.model.DnbPublication;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
@@ -22,6 +28,7 @@ import org.bibsonomy.model.enums.Gender;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.util.BibTexUtils;
 
 
 
@@ -34,15 +41,13 @@ public class DnbImporter /* extends AbstractDatabaseManagerTest */ implements Ru
 
 	@Override
 	public void run() {
-		
-		
 		List<DnbPublication> dnbEntries = new ArrayList<DnbPublication>();
+		
+		Writer w = openErrorLogFile();
 		
 		DnbPublication param = new DnbPublication();
 		param.setDiss(true);
 		dnbEntries = dnbDatabaseManager.selectDnbEntries(param);
-		
-		
 		
 		User user = new User();
 		user.setName(userName);
@@ -52,15 +57,32 @@ public class DnbImporter /* extends AbstractDatabaseManagerTest */ implements Ru
 				final Post<BibTex> gold = new Post<BibTex>();
 				final BibTex goldP = new BibTex();
 				//set school
-				goldP.setSchool(p.getSchoolP1()+" "+p.getSchoolP2());
+				StringBuilder school = new StringBuilder();
+				if (!StringUtils.isEmpty(p.getSchoolP1())) {
+					school.append(p.getSchoolP1());
+				}
+				if (!StringUtils.isEmpty(p.getSchoolP2())) {
+					if (school.length() > 0) {
+						school.append(' ');
+					}
+					school.append(p.getSchoolP2());
+				}
+				goldP.setSchool(school.toString());
+				
 				//set year
 				if (!StringUtils.isEmpty(p.getSubYear())) {
 					goldP.setYear(p.getSubYear());
-				} else {
+				} else if (!StringUtils.isEmpty(p.getPubYear())) {
 					goldP.setYear(p.getPubYear());
+				} else {
+					w.append(p.getTitleId() + "\t" + "noYear");
+					continue;
 				}
-				//set title
-				if (!StringUtils.isEmpty(p.getSubTitle())) {
+				
+				if (StringUtils.isEmpty(p.getMainTitle())) {
+					w.append(p.getTitleId() + "\t" + "noTitle");
+					continue;
+				} else if (!StringUtils.isEmpty(p.getSubTitle())) {
 					goldP.setTitle(p.getMainTitle() + ": " + p.getSubTitle());
 				} else {
 					goldP.setTitle(p.getMainTitle());
@@ -122,6 +144,11 @@ public class DnbImporter /* extends AbstractDatabaseManagerTest */ implements Ru
 					
 				}
 				
+				if (authors.isEmpty()) {
+					w.append(p.getTitleId() + "\t" + "noAuthor");
+					continue;
+				}
+				
 				//set entrytype and type
 				if(p.isDiss()){
 					goldP.setEntrytype("phdthesis");
@@ -134,7 +161,10 @@ public class DnbImporter /* extends AbstractDatabaseManagerTest */ implements Ru
 				gold.setUser(user);
 				gold.addTag("dnbimport");
 				gold.getResource().recalculateHashes();
+				goldP.parseMiscField();
 				goldP.addMiscField("dnbTitleId", p.getTitleId());
+				goldP.serializeMiscFields();
+				goldP.setBibtexKey(BibTexUtils.generateBibtexKey(goldP));
 				
 				List<Post<? extends Resource>> goldies = new ArrayList<>();
 				goldies.add(gold);
@@ -159,6 +189,14 @@ public class DnbImporter /* extends AbstractDatabaseManagerTest */ implements Ru
 			}
 		}
 		
+	}
+
+	private OutputStreamWriter openErrorLogFile() {
+		try {
+			return new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(new File("importErrors_" + System.currentTimeMillis() + ".log"))), "UTF-8");
+		} catch (UnsupportedEncodingException | FileNotFoundException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public DnbDatabaseManager getDnbDatabaseManager() {
