@@ -23,28 +23,34 @@
 			<div class="row">
 				<div class="col-sm-4">
 					<div class="radio">
-						<label>
-							<form:radiobutton path="person_role" value="Bdtv" tabindex="2" /> <fmt:message key="post.person.thesis_doctor_vater"/>
+						<label> <form:radiobutton path="personRole" value="personRole"
+								tabindex="2" /> <fmt:message
+								key="post.person.role.doctor_vater" />
 						</label>
 					</div>
 					<div class="radio">
-						<label>
-       						<form:radiobutton path="person_role" value="B1st" tabindex="2" /> <fmt:message key="post.person.thesis_first_reviewer"/>
-       					</label>
-       				</div>
-       				<div class="radio">
-	       				<label>
-	       					<form:radiobutton path="person_role" value="Mrev" tabindex="2" /> <fmt:message key="post.person.thesis_reviewer"/>
-	       				</label>
-	       			</div>
-	       			<div class="radio">
-	       				<label>
-	       					<form:radiobutton path="person_role" value="Mths" tabindex="2" /> <fmt:message key="post.person.thesis_advisor"/>
-	       				</label>
-	       			</div>
-       			</div>
-   			</div>
-   			
+						<label> <form:radiobutton path="personRole" value="FIRST_REVIEWER"
+								tabindex="2" /> <fmt:message
+								key="post.person.role.first_reviewer" />
+						</label>
+					</div>
+					<div class="radio">
+						<label> <form:radiobutton path="personRole" value="REVIEWER"
+								tabindex="2" /> <fmt:message key="post.person.role.reviewer" />
+						</label>
+					</div>
+					<div class="radio">
+						<label> <form:radiobutton path="personRole" value="ADVISOR"
+								tabindex="2" /> <fmt:message key="post.person.role.advisor" />
+						</label>
+					</div>
+					<div class="radio">
+						<label> <form:radiobutton path="personRole" value="OTHER" 
+								tabindex="2" /> <fmt:message key="post.person.role.other" />
+						</label>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </jsp:root>
