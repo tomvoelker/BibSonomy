@@ -45,7 +45,6 @@ import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.SpamStatus;
-import org.bibsonomy.common.enums.StatisticsUnit;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
@@ -126,17 +125,15 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	
 	/**
 	 * @param grouping TODO
-	 * @param constraints 
 	 * @param filters TODO
 	 * @param classifier 
 	 * @param status 
 	 * @param startDate
 	 * @param endDate
-	 * @param interval 
-	 * @param unit 
+	 * @param constraints 
 	 * @return statistic informations about the users
 	 */
-	public Statistics getUserStatistics(GroupingEntity grouping, Set<Filter> filters, final Classifier classifier, final SpamStatus status, Date startDate, Date endDate, final Integer interval, final StatisticsUnit unit);
+	public Statistics getUserStatistics(GroupingEntity grouping, Set<Filter> filters, final Classifier classifier, final SpamStatus status, Date startDate, Date endDate);
 	
 	/**
 	 * Returns details about a specified user

@@ -66,7 +66,6 @@ import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.common.enums.SpamStatus;
-import org.bibsonomy.common.enums.StatisticsUnit;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
@@ -2420,10 +2419,10 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#getUserStatistics()
 	 */
 	@Override
-	public Statistics getUserStatistics(GroupingEntity grouping, Set<Filter> filters, Classifier classifier, SpamStatus status, Date startDate, Date endDate, Integer interval, final StatisticsUnit unit) {
+	public Statistics getUserStatistics(GroupingEntity grouping, Set<Filter> filters, Classifier classifier, SpamStatus status, Date startDate, Date endDate) {
 		final DBSession session = openSession();
 		try {
-			return this.statisticsDBManager.getUserStatistics(grouping, startDate, filters, classifier, status, interval, unit, session);
+			return this.statisticsDBManager.getUserStatistics(grouping, startDate, filters, classifier, status, session);
 		} finally {
 			session.close();
 		}
