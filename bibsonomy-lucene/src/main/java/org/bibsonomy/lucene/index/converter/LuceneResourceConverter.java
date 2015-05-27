@@ -207,6 +207,10 @@ public class LuceneResourceConverter<R extends Resource> {
 		if (BibTexUtils.MASTERS_THESIS.equals(entryType)) {
 			qualifyingDegree = 200;
 		}
+		if (BibTexUtils.THESIS.equals(entryType)) {
+			qualifyingDegree = 150;
+		}
+		
 		if (qualifyingDegree != 0) {
 			String type = bibtex.getType();
 			if (type != null) {
@@ -215,6 +219,10 @@ public class LuceneResourceConverter<R extends Resource> {
 					qualifyingDegree = 200;
 				} else if (type.contains("bachelor")) {
 					qualifyingDegree = 100;
+				} else if (type.contains("habil")) {
+					qualifyingDegree = 400;
+				} else if (type.equals("candthesis")) {
+					qualifyingDegree = 50;
 				}
 			}
 		}

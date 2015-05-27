@@ -34,7 +34,6 @@ import javax.servlet.http.HttpServletResponseWrapper;
 import javax.servlet.http.HttpSession;
 
 import org.bibsonomy.util.spring.security.RemoteOnlyUserDetails;
-import org.bibsonomy.util.spring.security.UserAdapter;
 import org.bibsonomy.webapp.util.spring.security.authentication.SessionAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
 import org.springframework.security.authentication.AuthenticationTrustResolverImpl;
@@ -56,12 +55,10 @@ import org.springframework.security.web.context.SecurityContextRepository;
  * 
  * @author dzo
  */
-public class UsernameSecurityContextRepository implements SecurityContextRepository {	
+public class UsernameSecurityContextRepository implements SecurityContextRepository {
 	private static final String ATTRIBUTE_LOGIN_USER_NAME = "LOGIN_USER_NAME";
-
-	@Deprecated
-	private static final String REQ_ATTRIB_USER = "user";
-
+	
+	
 	private static final String ATTRIBUTE_CREDS = "ATTRIBUTE_CREDS";
 	
 	/**
@@ -89,13 +86,6 @@ public class UsernameSecurityContextRepository implements SecurityContextReposit
 			 */
 			final UserDetails user = this.service.loadUserByUsername(username);
 			authentication = new SessionAuthenticationToken(user, user.getAuthorities());
-			/*
-			 * For backwards compatibility, we add the user
-			 * as request attribute (used by old servlets and JSPs).
-			 * TODO: remove when all old jsp sites are ported to the new spring system
-			 */
-			request.setAttribute(REQ_ATTRIB_USER, ((UserAdapter)user).getUser());
-			
 		}
 		final Object creds = getSessionAttribute(request, ATTRIBUTE_CREDS);
 		if (creds != null) {

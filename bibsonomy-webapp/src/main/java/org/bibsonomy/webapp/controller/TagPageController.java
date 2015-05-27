@@ -101,7 +101,7 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 			this.setList(command, resourceType, GroupingEntity.ALL, null, requTags, null, null, null, order, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			this.postProcessAndSortList(command, resourceType);
 			
-			this.setTotalCount(command, resourceType, GroupingEntity.ALL, null, requTags, null, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
+			this.setTotalCount(command, resourceType, GroupingEntity.ALL, null, requTags, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			totalNumPosts += listCommand.getTotalCount();
 		}	
 		

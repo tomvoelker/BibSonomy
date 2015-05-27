@@ -5,7 +5,12 @@
 
 	<select id="getPersonById" resultMap="PersonCommon.person" parameterClass="String">
 		SELECT <include refid="commonPersonColumns"/> FROM person 
-			WHERE person.person_id = #personId#
+			WHERE person.person_id = #id#
+	</select>
+	
+	<select id="getPersonByDnbId" resultMap="PersonCommon.person" parameterClass="String">
+		SELECT <include refid="commonPersonColumns"/> FROM person 
+			WHERE person.dnb_person_id = #personId#
 	</select>
 	
 	<select id="getPersonByUser" resultMap="PersonCommon.person" parameterClass="String">
@@ -19,8 +24,8 @@
 	</insert>
 	
 	<insert id='insertName' parameterClass="org.bibsonomy.model.PersonName">
-		INSERT INTO person_name(person_change_id, first_name, last_name, person_id, is_main)
-			VALUES (#personChangeId#, #firstName#, #lastName#, #personId#, #isMain#)
+		INSERT INTO person_name(person_change_id, first_name, last_name, person_id, is_main, log_changed_by, log_changed_at)
+			VALUES (#personChangeId#, #firstName#, #lastName#, #personId#, #isMain#, #changedBy#, #changedAt#)
 			
 			<selectKey resultClass="int" keyProperty="personChangeId" >
     		SELECT @@IDENTITY AS person_change_id
@@ -58,6 +63,11 @@
 		SELECT <include refid="commonPersonNameColumns"/> FROM person_name
 			WHERE person_name.person_change_id = #personChangeId#
 	</select>
+	
+	<update id="updatePersonName" parameterClass='org.bibsonomy.model.PersonName'>
+		Update person_name SET is_main = #isMain# 
+			WHERE person_name.id = #id#
+	</update>
 	
 	<delete id='removeResourceRelation' parameterClass='int'>
 		DELETE FROM pub_person WHERE person_change_id = #resourceRelationId#

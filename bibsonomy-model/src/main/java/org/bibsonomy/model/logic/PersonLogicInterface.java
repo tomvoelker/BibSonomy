@@ -8,6 +8,7 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 
 /**
@@ -44,7 +45,7 @@ public interface PersonLogicInterface {
 	 */
 	public void createOrUpdatePerson(Person person);
 	
-	public Person getPersonById(String id);
+	public Person getPersonById(PersonIdType idType, String id);
 	
 	public void removePersonName(Integer personNameId);
 
@@ -53,9 +54,13 @@ public interface PersonLogicInterface {
 	 * @return
 	 */
 	public Map<Person, BibTex> getQualifyingPublications(String personName);
-	
+
 	/**
-	 * @param pn
+	 * @param withPersonId
+	 */
+	public void createOrUpdatePersonName(PersonName withPersonId);
+
+	/**
 	 * @param hash
 	 * @param role
 	 * @param authorIndex
@@ -63,22 +68,18 @@ public interface PersonLogicInterface {
 	 */
 	public List<ResourcePersonRelation> getResourceRelations(String hash, PersonResourceRelationType role, Integer authorIndex);
 
-	/**
-	 * @param withPersonId
-	 */
-	public void createOrUpdatePersonName(PersonName withPersonId);
+
 	/**
 	 * @param person
-	 * @return List<ResourcePersonRelation>
+	 * @return
 	 */
-	List<ResourcePersonRelation> getResourceRelations(Person person);
-	
+	public List<ResourcePersonRelation> getResourceRelations(Person person);
+
 	/**
 	 * @param post
 	 * @return
 	 */
-	public List<ResourcePersonRelation> getResourceRelations(Post<BibTex> post);
-
+	public List<ResourcePersonRelation> getResourceRelations(Post<? extends BibTex> post);
 
 
 }

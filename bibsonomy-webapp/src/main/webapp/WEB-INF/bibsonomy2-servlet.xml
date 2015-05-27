@@ -18,14 +18,18 @@
 				<bean class="org.bibsonomy.web.spring.converter.StringToClassConverter" />
 				
 				<!-- 
-					converts strings to urls (empty strings are converted to null)
+					converts strings to urls/uris (empty strings are converted to null)
 					if you do not add this converter the ObjectToObjectConverter tries
-					to call the url constructor and fails instead of returning null
+					to call the url/uri constructor and fails instead of returning null
 				 -->
 				<bean class="org.bibsonomy.web.spring.converter.StringToURLConverter" />
+				<bean class="org.bibsonomy.web.spring.converter.StringToURIConverter" />
 				
 				<!-- convert a string to a list of persons and vice versa -->
 				<bean class="org.bibsonomy.web.spring.converter.StringToPersonListConverter" />
+				
+				<bean class="org.bibsonomy.web.spring.converter.StringToFilterConverter" />
+				
 				<bean class="org.bibsonomy.web.spring.converter.PersonListToStringConverter" />
 				
 				<!-- add a custom date converter to support binding of date fields. -->
@@ -72,11 +76,6 @@
 		<property name="conversionService" ref="conversionService" />
 	</bean>
 	
-	<!-- TODO: remove after all jsp are ported to spring mvc -->
-	<bean id="oldPagesFix" class="servlets.utils.ProperiesAttributeSetter" init-method="init">
-		<property name="properties" ref="properties" />
-	</bean>
-	
 	<bean id="controllerBase" class="org.bibsonomy.webapp.util.spring.controller.MinimalisticControllerSpringWrapper" abstract="true">
 		<property name="allowedFields" ref="allowedFields"/>
 		<property name="disallowedFields" ref="disallowedFields"/>
@@ -105,8 +104,6 @@
 
 	<!-- provides access to the response for all controllers, which need it -->
 	<bean id="responseLogic" class="org.bibsonomy.webapp.util.ResponseLogic" scope="request"/>
-	
-	<bean id="oauthLogic" class="org.bibsonomy.opensocial.oauth.database.IbatisOAuthLogic" scope="singleton" factory-method="getInstance"/>
 
 	<bean id="cookieAge" class="java.lang.Integer">
 		<constructor-arg value="31536000" /> <!-- one year (= 3600 * 24 * 365 seconds) -->
@@ -134,12 +131,10 @@
 	
 	<!-- provides access to the wikiRenderer -->
 	<bean id="wikiRenderer" class="org.bibsonomy.wiki.CVWikiModel" scope="request">
+		<constructor-arg value="#{requestLogic.locale}" />
 		<property name="logic" ref="logic"/>
 		<property name="layoutRenderer" ref="jabrefLayoutRenderer" />
 		<property name="messageSource" ref="messageSource"/>
-		<constructor-arg value="#{requestLogic.locale}">
-			
-		</constructor-arg>
 	</bean>
 	
 	<!-- 
@@ -477,6 +472,24 @@
 						<property name="controllerBeanName" value="exportPageController"/>
 					</bean>
 				</entry>
+				<entry key="/statistics">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="statisticsController"/>
+						<property name="allowedFields">
+							<list>
+								<value>spammers</value>
+								<value>all</value>
+								<value>type</value>
+								<value>interval</value>
+								<value>unit</value>
+								<value>grouping</value>
+								<value>filters</value>
+								<value>conceptStatus</value>
+								<value>resourceType</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<entry key="/groups">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="groupsPageController"/>
@@ -779,7 +792,7 @@
 		<property name="logic" ref="logic"/>
 		<property name="requestLogic" ref="requestLogic"/>
 		<property name="wikiRenderer" ref="wikiRenderer" />
-		<property name="oauthLogic" ref="oauthLogic"/>
+		<property name="oauthLogic" ref="oAuthLogic"/>
 		<property name="invisibleOAuthConsumers" value="${invisible.oauth.consumers}"/>
 	</bean>
 	
@@ -897,6 +910,10 @@
 	<bean id="exportPageController" class="org.bibsonomy.webapp.controller.ExportPageController" scope="request">
 		<property name="layoutRenderer" ref="jabrefLayoutRenderer"/>
 		<property name="layouts" ref="standardLayouts" />
+	</bean>
+	
+	<bean id="statisticsController" class="org.bibsonomy.webapp.controller.StatisticsController" scope="request">
+		<property name="logic" ref="slaveLogic" />
 	</bean>
 
 	<bean id="conceptPageController" class="org.bibsonomy.webapp.controller.ConceptPageController" scope="request">

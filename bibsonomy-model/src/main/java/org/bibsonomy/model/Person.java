@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.bibsonomy.model.enums.Gender;
+
 /**
  * Entity class of a real person. Note that {@link User} and {@link Author} are
  * not {@link Person} subclasses since they are not modeled as real persons
@@ -60,6 +62,10 @@ public class Person implements Serializable {
 	private ResourcePersonRelation disambiguatingPublication;
 	/** the number of posts in the system, which this {@link Person} as an author */
 	private int postCounter;
+	/** place to link to the original entries when imported from Deutsche Nationalbibliothek */
+	private String dnbPersonId;
+	/** the gender */
+	private Gender gender;
 	
 	private List<ResourcePersonRelation> resourcePersonRelations;
 	
@@ -121,6 +127,7 @@ public class Person implements Serializable {
 	public void setMainName(PersonName name) {
 		if(!this.names.contains(name)) {
 			name.setPersonId(this.getPersonId());
+			name.setMain(true);
 			this.names.add(name);
 		}
 		this.mainName = name;
@@ -299,6 +306,22 @@ public class Person implements Serializable {
 
 	public void setPersonChangeId(int personChangeId) {
 		this.personChangeId = personChangeId;
+	}
+
+	public String getDnbPersonId() {
+		return this.dnbPersonId;
+	}
+
+	public void setDnbPersonId(String dnbPersonId) {
+		this.dnbPersonId = dnbPersonId;
+	}
+
+	public Gender getGender() {
+		return this.gender;
+	}
+
+	public void setGender(Gender gender) {
+		this.gender = gender;
 	}
 
 }

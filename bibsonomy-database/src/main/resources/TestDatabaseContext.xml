@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	
+	<!-- import property configurer -->
+	<import resource="classpath:org/bibsonomy/bibsonomy-database-context.xml"/>
+	
+	<bean id="systemTagFactory" class="org.bibsonomy.database.systemstags.SystemTagFactory" factory-method="getInstance">
+		<property name="executableSystemTagMap" ref="executableSystemTagSet"/>
+		<property name="searchSystemTagMap" ref="searchSystemTagSet"/>
+		<property name="markUpSystemTagMap" ref="markUpSystemTagSet"/>
+	</bean>
+	
+	<!-- dummies for lucene index -->
+	<bean id="dummySearch" class="org.bibsonomy.testutil.DummyResourceSearch" />
+	<alias name="dummySearch" alias="luceneBookmarkSearch" />
+	<alias name="dummySearch" alias="lucenePublicationSearch" />
+	<alias name="dummySearch" alias="luceneGoldStandardPublicationSearch" />
+	
+	<bean id="reportInformationService" class="org.bibsonomy.testutil.DummyInformationService" />
+</beans>

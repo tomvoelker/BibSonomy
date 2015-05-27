@@ -14,17 +14,17 @@
 	</select>
 
 	<resultMap id="userDiscussionsRatingStatistic" class="statisticsValues" groupBy="count">
-    	<result property="count"	column="maxcnt"			javaType="int" />
-    	<result property="average"	column="avgrating"		javaType="float" />
-    	<result property="max"		column="maxrating"		javaType="float" />
-    	<result property="min"		column="minrating"		javaType="float" />
-    	<result property="values" resultMap="Statistics.userDiscussionsRatingStatisticList"/>
+		<result property="count"	column="maxcnt"			javaType="int" />
+		<result property="average"	column="avgrating"		javaType="float" />
+		<result property="max"		column="maxrating"		javaType="float" />
+		<result property="min"		column="minrating"		javaType="float" />
+		<result property="values" resultMap="Statistics.userDiscussionsRatingStatisticList"/>
 	</resultMap>
 
 	<resultMap id="userDiscussionsRatingStatisticList" class="statistics">
 		<result property="rating"      	column="rating"			javaType="float" />
-    	<result property="count"     	column="cnt"			javaType="int" />
-    	<result property="percentage"		column="percent"		javaType="float" />
+		<result property="count"     	column="cnt"			javaType="int" />
+		<result property="percentage"		column="percent"		javaType="float" />
 	</resultMap>
 
 
@@ -51,7 +51,7 @@
 		    <!-- AND d.group >=0 -->
 		GROUP BY rating
 	</select>
- 
+
 	<select id="userRatingStatisticForGroup" resultMap="Statistics.userDiscussionsRatingStatistic" parameterClass="StatisticsParam" >
 		SELECT rating, COUNT(rating) cnt, (COUNT(rating) / maxcnt * 100) percent, maxcnt, avgrating, maxrating, minrating 
 		FROM group_memberships g, discussion AS d, 
@@ -60,17 +60,33 @@
 				WHERE
 					<include refid="discussionVisibleForGroup"/>
 					AND type = 1 AND rating IS NOT NULL
-   				    AND g.group = #groupId#
- 				    AND g.user_name = d.user_name
-  				    <!-- AND d.group >=0 -->
- 			) AS m 
+				    AND g.group = #groupId#
+				    AND g.user_name = d.user_name
+				    <!-- AND d.group >=0 -->
+			) AS m 
 		WHERE 
 			<include refid="discussionVisibleForGroup"/>
 			AND type = 1 AND rating IS NOT NULL
 		    AND g.group = #groupId#
 		    AND g.user_name = d.user_name
 		    <!-- AND d.group >=0 -->
- 		GROUP BY rating
+		GROUP BY rating
 	</select>
- 
+	
+	<select id="getUserCount" resultClass="int" parameterClass="StatisticsParam" timeout="0">
+		SELECT count(*) FROM user
+		<isNotNull property="spamStatus">
+			WHERE spammer = #spamStatus.id#
+		</isNotNull>
+	</select>
+	
+	<select id="getActiveUserCount" resultClass="int" parameterClass="StatisticsParam" timeout="0">
+		SELECT COUNT(*) AS ctr FROM (SELECT COUNT(*) FROM tas 
+		<dynamic prepend="WHERE">
+			<isNotNull property="startDate">
+				`date` >= #startDate#
+			</isNotNull>
+		</dynamic>
+		GROUP BY user_name) AS users
+	</select>
 </sqlMap>

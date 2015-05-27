@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="gImporter">
+	<typeAlias alias="dnbPublication" type="org.bibsonomy.dnbimport.model.DnbPublication" />
+	<typeAlias alias="dnbPerson" type="org.bibsonomy.dnbimport.model.DnbPerson" />
+
+	<resultMap id="gImporterResult" class="dnbPublication" groupBy="titleId">
+		<result property="titleId" column="title_id" />
+		<result property="mainTitle" column="title" />
+		<result property="subTitle" column="subtitle" />
+		<result property="pubYear" column="pub_year_c" javaType="String" />
+		<result property="subYear" column="sub_year_c" javaType="String" />
+		<result property="schoolP1" column="uni" />
+		<result property="schoolP2" column="city" />
+		<result property="diss" column="diss" javaType="boolean" />
+		<result property="habil" column="habil" javaType="boolean" />
+		<result property="persons" resultMap="gImporter.dnbPerson"/>
+	</resultMap>
+	
+	<resultMap id="dnbPerson" class="dnbPerson" groupBy="personId">
+		<result property="personId" column="person_id" />
+		<result property="diffPerson" column="diff_person" />
+		<result property="firstName" column="firstname" />
+		<result property="lastName" column="surname" />
+		<result property="gender" column="gender" />
+		<result property="personFunction" column="person_function"/>
+		<result property="uniquePersonId" column="unique_person_id"/>
+	</resultMap>
+
+	<select id="selectDissertation" resultMap="gImporterResult" parameterClass="dnbPublication">
+		SELECT
+			t.title_id, t.title, t.subtitle, t.pub_year_c, t.sub_year_c, t.city, t.uni, t.diss, t.habil, p.person_id, p.firstname, p.surname, p.diff_person, p.gender, l.person_function, l.unique_person_id
+		FROM
+			dnb2_light.title_hs_link l
+			JOIN dnb2_light.title_hs_title t ON l.title_id=t.title_id AND (t.diss=1 or t.habil=1)
+			JOIN dnb2_light.title_hs_person p ON l.person_id=p.person_id
+	</select>
+
+
+</sqlMap>

@@ -19,7 +19,7 @@
 			  t1.group=0)
 		GROUP BY t1.tag_name
 		LIMIT #limit# OFFSET #offset#
-	</select>	
+	</select>
 
 	<select id="getTagByCount" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
 		SELECT DISTINCT T.tag_name, T.tag_ctr  
@@ -431,6 +431,15 @@
 		  <include refid="restrictToGroups"/>
 		GROUP BY t1.tag_lower
 		LIMIT #limit# OFFSET #offset#
+	</select>
+	
+	<select id="getGlobalTagCount" resultClass="int" timeout="0">
+		SELECT count(*) AS ctr FROM tags WHERE tag_ctr_public > 0
+	</select>
+	
+	<select id="getGlobalTasCount" resultClass="int" parameterClass="tagParam" timeout="0">
+		SELECT count(*) AS ctr FROM tas
+		<include refid="statisticRestrictionsWithContentType" />
 	</select>
 	
 	<insert id="insertTas" parameterClass="tagParam">
