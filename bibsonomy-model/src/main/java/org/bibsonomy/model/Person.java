@@ -39,8 +39,9 @@ public class Person implements Serializable {
 
 	private static final long serialVersionUID = 4578956154246424767L;
 	
+	private int personChangeId;
 	/** null means new non-persistent object */
-	private String id;
+	private String personId;
 	/** usually current real name */
 	private PersonName mainName;
 	/** other names like former names or pseudonyms */
@@ -73,17 +74,17 @@ public class Person implements Serializable {
 	/**
 	 * @return synthetic id. null means new non-persistent object
 	 */
-	public String getId() {
-		return this.id;
+	public String getPersonId() {
+		return this.personId;
 	}
 
 	/**
 	 * @param string synthetic id. null means new non-persistent object
 	 */
-	public void setId(String string) {
-		this.id = string;
+	public void setPersonId(String string) {
+		this.personId = string;
 		for(PersonName name : this.names)
-			name.setPersonId(this.id);
+			name.setPersonId(this.personId);
 	}
 
 	/**
@@ -104,7 +105,7 @@ public class Person implements Serializable {
 	 */
 	public void setMainName(int id) {
 		for(PersonName name : this.names) {
-			if(name.getId() == id) {
+			if(name.getPersonChangeId() == id) {
 				name.setMain(true);
 				this.mainName = name;
 			} else {
@@ -119,7 +120,7 @@ public class Person implements Serializable {
 	 */
 	public void setMainName(PersonName name) {
 		if(!this.names.contains(name)) {
-			name.setPersonId(this.getId());
+			name.setPersonId(this.getPersonId());
 			this.names.add(name);
 		}
 		this.mainName = name;
@@ -133,7 +134,7 @@ public class Person implements Serializable {
 			return;
 		
 		if(name != null)  {
-			name.setPersonId(this.getId());
+			name.setPersonId(this.getPersonId());
 			name.setMain(false);
 			this.getNames().add(name);
 		}
@@ -208,18 +209,18 @@ public class Person implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (id == null) {
+		if (personId == null) {
 			return obj == this;
 		}
-		return ((obj instanceof Person) && (this.getId().equals(((Person)obj).getId())));
+		return ((obj instanceof Person) && (this.getPersonId().equals(((Person)obj).getPersonId())));
 	}
 	
 	@Override
 	public int hashCode() {
-		if (id == null) {
+		if (personId == null) {
 			return System.identityHashCode(this);
 		}
-		return id.hashCode();
+		return personId.hashCode();
 	}
 
 	/** 
@@ -290,6 +291,14 @@ public class Person implements Serializable {
 	 */
 	public void setResourcePersonRelations(List<ResourcePersonRelation> resourcePersonRelations) {
 		this.resourcePersonRelations = resourcePersonRelations;
+	}
+
+	public int getPersonChangeId() {
+		return this.personChangeId;
+	}
+
+	public void setPersonChangeId(int personChangeId) {
+		this.personChangeId = personChangeId;
 	}
 
 }

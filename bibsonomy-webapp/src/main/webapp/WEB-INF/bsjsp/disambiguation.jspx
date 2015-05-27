@@ -119,13 +119,13 @@
 							<div class="list-group">
 								<c:forEach var='personName' items="${command.suggestedPersonNames}">
 									<div class="list-group-item">
-										<a class='btnLinkPerson' data-toggle="modal" data-target="#linkPerson" href="#linkPerson" data-person-url="${absoluteUrlGenerator.getPersonUrl(personName.person.id)}" data-person-id="${fn:escapeXml(personName.person.id)}" >
+										<a class='btnLinkPerson' data-toggle="modal" data-target="#linkPerson" href="#linkPerson" data-person-url="${absoluteUrlGenerator.getPersonUrl(personName.person.personId)}" data-person-id="${fn:escapeXml(personName.person.personId)}" >
 											<span class="authorName">
-												<c:if test="${not empty personName.person.mainName.firstName}"><c:out value="${personName.person.mainName.firstName}"/></c:if>
+												<c:if test="${not empty personName.person.mainName.firstName}"><c:out value="${personName.person.mainName.firstName} "/></c:if>
 												<c:if test="${not empty personName.person.mainName.lastName}"><c:out value="${personName.person.mainName.lastName}"/></c:if>
-												<c:if test="${personName.person.mainName.id != personName.id}">
+												<c:if test="${personName.person.mainName.personChangeId != personName.personChangeId}">
 													(
-													<c:if test="${not empty personName.firstName}"><c:out value="${personName.firstName}"/></c:if>
+													<c:if test="${not empty personName.firstName}"><c:out value="${personName.firstName} "/></c:if>
 													<c:if test="${not empty personName.lastName}"><c:out value="${personName.lastName}"/></c:if>
 													)
 												</c:if>
@@ -250,7 +250,7 @@
 		</jsp:attribute>
 		<jsp:attribute name="modalFooter"><!-- 
 			<form action="/postPublication" method="post">
-				<input type="hidden" name='personId' value='${command.person.id}'/>
+				<input type="hidden" name='personId' value='${command.person.personId}'/>
 				<input type="hidden" name='personRole' value='AUTHOR'/>
 				<input type="submit" class="btn btn-primary pull-left" name='submit' value='${textNewThesisButton}' />
 			</form>

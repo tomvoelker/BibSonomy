@@ -8,7 +8,7 @@ import org.bibsonomy.model.enums.PersonResourceRelationType;
  * @author Chris
  */
 public class ResourcePersonRelation {
-	private int id;
+	private int personChangeId;
 	private PersonResourceRelationType relationType;
 	private int qualifying;
 	private Person person;
@@ -21,14 +21,14 @@ public class ResourcePersonRelation {
 	/**
 	 * @return the id
 	 */
-	public int getId() {
-		return this.id;
+	public int getPersonChangeId() {
+		return this.personChangeId;
 	}
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(int id) {
-		this.id = id;
+	public void setPersonChangeId(int id) {
+		this.personChangeId = id;
 	}
 
 	/**

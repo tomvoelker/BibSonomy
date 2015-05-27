@@ -41,7 +41,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 	private View disambiguateAction(final DisambiguationPageCommand command) {
 		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations(command.getPost().getResource().getInterHash(), command.getRequestedRole(), new Integer(command.getRequestedIndex()));		
 		if (matchingRelations.size() > 0 ) {
-			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(matchingRelations.get(0).getPerson().getId()));	
+			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(matchingRelations.get(0).getPerson().getPersonId()));	
 		}
 
 		final PersonName requestedName = command.getPost().getResource().getAuthor().get(command.getRequestedIndex());
@@ -69,7 +69,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 //		
 //		command.setResponseString(jsonPerson.toJSONString());
 		
-		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(person.getId()));
+		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(person.getPersonId()));
 	}
 
 	private Person createPersonEntity(DisambiguationPageCommand command) {
@@ -112,7 +112,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 	private View linkAction(DisambiguationPageCommand command) {
 		final Person person = this.logic.getPersonById(command.getRequestedPersonId());
 		linkToPerson(command, person);		
-		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(person.getId()));
+		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(person.getPersonId()));
 	}
 }
 

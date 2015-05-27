@@ -4,6 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -45,7 +46,7 @@ public class PersonPageController extends SingleResourceListController implement
 				case "unlink": return this.unlinkAction(command);
 				case "link": return this.linkAction(command);
 				case "search": return this.searchAction(command);
-				case "searchpub": return this.searchpubAction(command);
+				case "searchpub": return this.searchPubAction(command);
 				default: return this.indexAction(command);
 			}
 		} else if(present(command.getRequestedPersonId())) {
@@ -59,7 +60,7 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 * @return
 	 */
-	private View searchpubAction(PersonPageCommand command) { 
+	private View searchPubAction(PersonPageCommand command) { 
 		JSONArray array = new JSONArray();
 		command.setResponseString(array.toJSONString());
 		
@@ -94,7 +95,7 @@ public class PersonPageController extends SingleResourceListController implement
 		for(PersonName personName : personNames) {
 			JSONObject jsonPersonName = new JSONObject();
 			jsonPersonName.put("personId", personName.getPersonId());
-			jsonPersonName.put("personNameId", personName.getId());
+			jsonPersonName.put("personNameId", personName.getPersonChangeId());
 			jsonPersonName.put("personName", BibTexUtils.cleanBibTex(personName.toString()));
 			// FIXME: this is only a quick hack and must be replaced!
 			jsonPersonName.put("extendedPersonName", BibTexUtils.cleanBibTex(getExtendedPersonName(personName)));
@@ -191,10 +192,10 @@ public class PersonPageController extends SingleResourceListController implement
 		post.getResource().setInterHash(command.getFormInterHash());
 		resourcePersonRelation.setPost(post);
 		resourcePersonRelation.setPerson(new Person());
-		resourcePersonRelation.getPerson().setId(command.getFormPersonId());
+		resourcePersonRelation.getPerson().setPersonId(command.getFormPersonId());
 		resourcePersonRelation.setPersonIndex(command.getFormPersonIndex());
 		this.logic.addResourceRelation(resourcePersonRelation);
-		command.setResponseString(resourcePersonRelation.getId() + "");
+		command.setResponseString(resourcePersonRelation.getPersonChangeId() + "");
 		return Views.AJAX_TEXT;
 	}
 
@@ -212,14 +213,14 @@ public class PersonPageController extends SingleResourceListController implement
 			post.getResource().setInterHash(command.getFormInterHash());
 			resourcePersonRelation.setPost(post);
 			resourcePersonRelation.setPerson(new Person());
-			resourcePersonRelation.getPerson().setId(command.getFormPersonId());
+			resourcePersonRelation.getPerson().setPersonId(command.getFormPersonId());
 			resourcePersonRelation.setPersonIndex(command.getFormPersonIndex());
 			final PersonResourceRelationType relationType = PersonResourceRelationType.valueOf(StringUtils.upperCase(role)); 
 			resourcePersonRelation.setRelationType(relationType);
 			this.logic.addResourceRelation(resourcePersonRelation);
 		}
 		
-		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(command.getPerson().getId()));	
+		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(command.getPerson().getPersonId()));	
 	}
 	
 	@SuppressWarnings("boxing")
@@ -236,6 +237,10 @@ public class PersonPageController extends SingleResourceListController implement
 	 */
 	private View updateAction(PersonPageCommand command) {
 		command.setPerson(this.logic.getPersonById(command.getFormPersonId()));
+		if (command.getPerson() == null) {
+			// TODO: proper frontend responses in cases like this
+			throw new NoSuchElementException();
+		}
 		command.getPerson().setAcademicDegree(command.getFormAcademicDegree());
 		command.getPerson().getMainName().setMain(false);
 		command.getPerson().setMainName(Integer.parseInt(command.getFormSelectedName()));
@@ -259,12 +264,12 @@ public class PersonPageController extends SingleResourceListController implement
 		
 		for (PersonName otherName : person.getNames()) {
 			if (personName.equals(otherName)) {
-				command.setResponseString(otherName.getId()+ "");
+				command.setResponseString(otherName.getPersonChangeId()+ "");
 				return Views.AJAX_TEXT;
 			}
 		}
 		this.logic.createOrUpdatePersonName(personName);
-		command.setResponseString(Integer.toString(personName.getId()));
+		command.setResponseString(Integer.toString(personName.getPersonChangeId()));
 		
 		return Views.AJAX_TEXT;
 	}

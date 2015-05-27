@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -3231,69 +3232,53 @@ public class DBLogic implements LogicInterface {
 					throw new AccessDeniedException();
 				}
 				// FIXME: this should check for != null, not >0
-				if(person.getId() != null) {
-					Person personOld = this.personDBManager.getPersonById(person.getId(), session);
+				if (person.getPersonId() != null) {
+					Person personOld = this.personDBManager.getPersonById(person.getPersonId(), session);
 					if ((personOld.getUser() != null) && (personOld.getUser().equals(loginUser.getName()) == false)) {
 						throw new AccessDeniedException();
 					}
 				}
 			}
-			if(person.getId() != null) {
-				this.personDBManager.updatePerson(person, this.dbSessionFactory.getDatabaseSession());
-				for(PersonName personName : person.getNames()) {
-					if(personName.getId() > 0) {
-						this.personDBManager.updatePersonName(person.getMainName(), session);
-					} else {
-						this.personDBManager.createPersonName(person.getMainName(), session);
-					}
-				}
+			if (person.getPersonId() != null) {
+				this.personDBManager.updatePerson(person, session);
 			} else {
-				int counter = 1;
-				String newPersonId = generatePersonIdBase(person);
-				String tempPersonId = newPersonId;
-				do {
-					Person tempPerson = this.personDBManager.getPersonById(tempPersonId, session);
-					
-					if(tempPerson != null) {
-						if(counter < 10)
-							tempPersonId = newPersonId + "00" + counter;
-						else if (counter < 100)
-							tempPersonId = newPersonId + "0" + counter;
-						else if(counter < 1000)
-							tempPersonId = newPersonId + "" + counter;
-						else {
-							try {
-								throw new Exception("Too many person id occurences");
-							} catch (Exception e) {
-								// TODO Auto-generated catch block
-								log.error("TODO", e);
-								break;
-							}	
-						}
-					} else {
-						break;
-					}
-					
-					counter++;
-				} while(true);
-				person.setId(tempPersonId);
+				final String tempPersonId = generatePersonId(person, session);
+				person.setPersonId(tempPersonId);
 				this.personDBManager.createPerson(person, this.dbSessionFactory.getDatabaseSession());
-				// FIXME Creating a person with predefined ID will result in id = 0 after making it persistent to db
-				person.setId(tempPersonId);
-				for(PersonName personName : person.getNames()) {
-					if(personName.getId() > 0) {
-						this.personDBManager.updatePersonName(person.getMainName(), session);
-					} else {
-						this.personDBManager.createPersonName(person.getMainName(), session);
-					}
-				}
+				person.setPersonId(tempPersonId);
 			}
+			updatePersonNames(person, session);
 		} finally {
 			session.close();
 		}
 	}
 
-	private String generatePersonIdBase(Person person) {
+	private String generatePersonId(Person person, DBSession session) {
+		int counter = 1;
+		String newPersonId = generatePersonIdBase(person);
+		String tempPersonId = newPersonId;
+		do {
+			Person tempPerson = this.personDBManager.getPersonById(tempPersonId, session);
+			
+			if (tempPerson != null) {
+				if (counter < 10) {
+					tempPersonId = newPersonId + "00" + counter;
+				} else if (counter < 100) {
+					tempPersonId = newPersonId + "0" + counter;
+				} else if(counter < 1000) {
+					tempPersonId = newPersonId + "" + counter;
+				} else {
+					throw new RuntimeException("Too many person id occurences");
+				}
+			} else {
+				break;
+			}
+			counter++;
+		} while(true);
+		return tempPersonId;
+	}
+
+	private static String generatePersonIdBase(Person person) {
 		final String firstName = person.getMainName().getFirstName();
 		final String lastName  = person.getMainName().getLastName();
 		
@@ -3308,6 +3293,44 @@ public class DBLogic implements LogicInterface {
 		sb.append(lastName.toLowerCase());
 		
 		return sb.toString();
+	}
+	
+
+	private void updatePersonNames(Person person, DBSession session) {
+		if (!present(person.getNames())) {
+			return;
+		}
+		setMainNameIfNoneSet(person);
+		
+		
+		// TODO: better calculate full diff of names to be deleted, added and changed (=deleted and readded) for a cleaner history where only updated personnames get the username set
+		session.beginTransaction();
+		try {
+			this.personDBManager.deleteAllNamesOfPerson(person.getPersonId(), session);
+			for (PersonName personName : person.getNames()) {
+				// TODO: set the changedBy username
+				this.personDBManager.createPersonName(personName, session);
+			}
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+	}
+
+	private void setMainNameIfNoneSet(Person person) {
+		boolean mainNameFound = false;
+		for (PersonName name : person.getNames()) {
+			if (name.isMain() == true) {
+				if (mainNameFound == true) {
+					name.setMain(false);
+				} else {
+					mainNameFound = true;
+				}
+			}
+		}
+		if (mainNameFound == false) {
+			person.getNames().get(0).setMain(true);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -3346,9 +3369,8 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonName(int)
 	 */
 	@Override
-	public void removePersonName(Integer personNameId) {
-		this.personDBManager.removePersonName(personNameId, this.dbSessionFactory.getDatabaseSession());
-		
+	public void removePersonName(Integer personChangeId) {
+		this.personDBManager.removePersonName(personChangeId, this.dbSessionFactory.getDatabaseSession());
 	}
 	
 	public List<ResourcePersonRelation> getResourceRelations(Person person) {

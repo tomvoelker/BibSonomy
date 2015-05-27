@@ -5,7 +5,7 @@
 
 	<select id="getPersonById" resultMap="PersonCommon.person" parameterClass="String">
 		SELECT <include refid="commonPersonColumns"/> FROM person 
-			WHERE person.person_id = #id#
+			WHERE person.person_id = #personId#
 	</select>
 	
 	<select id="getPersonByUser" resultMap="PersonCommon.person" parameterClass="String">
@@ -19,11 +19,11 @@
 	</insert>
 	
 	<insert id='insertName' parameterClass="org.bibsonomy.model.PersonName">
-		INSERT INTO person_name(first_name, last_name, person_id, is_main)
-			VALUES (#firstName#, #lastName#, #personId#, #isMain#)
+		INSERT INTO person_name(person_change_id, first_name, last_name, person_id, is_main)
+			VALUES (#personChangeId#, #firstName#, #lastName#, #personId#, #isMain#)
 			
-			<selectKey resultClass="int" keyProperty="id" >
-    		SELECT @@IDENTITY AS ID
+			<selectKey resultClass="int" keyProperty="personChangeId" >
+    		SELECT @@IDENTITY AS person_change_id
   		</selectKey>
 	</insert>
 	
@@ -31,14 +31,14 @@
 		INSERT INTO pub_person (<include refid="commonResourcePersonRelationColumns"/>)
 			VALUES (<include refid="commonResourcePersonRelationAttributes" />)
 			
-		<selectKey resultClass="int" keyProperty="id" >
-    		SELECT @@IDENTITY AS ID
+		<selectKey resultClass="int" keyProperty="personChangeId" >
+    		SELECT @@IDENTITY AS person_change_id
   		</selectKey>
 	</insert>
 	
 	<select id='getNames' resultMap='PersonCommon.personName' parameterClass='String'>
 		SELECT <include refid='commonPersonNameColumns'/> FROM person_name 
-			WHERE person_name.person_id = #id#
+			WHERE person_name.person_id = #personId#
 	</select>
 	
 	<select id="findPersonNames" resultMap='PersonCommon.personName' parameterClass='org.bibsonomy.model.PersonName'>
@@ -50,26 +50,25 @@
 	</select>
 	
 	<update id='updatePerson' parameterClass='org.bibsonomy.model.Person'>
-		UPDATE person SET academic_degree = #academicDegree#, orcid = #orcid#, post_ctr = #postCounter#, user_name = #user#
-			WHERE person.person_id = #id#
+		UPDATE person SET person_change_id = #personChangeId#, academic_degree = #academicDegree#, orcid = #orcid#, post_ctr = #postCounter#, user_name = #user#
+			WHERE person.person_id = #personId#
 	</update> 
 	
 	<select id="getPersonNameById" resultMap="PersonCommon.personName" parameterClass="int">
 		SELECT <include refid="commonPersonNameColumns"/> FROM person_name
-			WHERE person_name.id = #id#
+			WHERE person_name.person_change_id = #personChangeId#
 	</select>
 	
-	<update id="updatePersonName" parameterClass='org.bibsonomy.model.PersonName'>
-		Update person_name SET is_main = #isMain# 
-			WHERE person_name.id = #id#
-	</update>
-	
 	<delete id='removeResourceRelation' parameterClass='int'>
-		DELETE FROM pub_person WHERE id = #resourceRelationId#
+		DELETE FROM pub_person WHERE person_change_id = #resourceRelationId#
+	</delete>
+	
+	<delete id="deleteAllNamesOfPerson" parameterClass="java.lang.String">
+		DELETE FROM person_name WHERE person_id = #personId#
 	</delete>
 	
 	<delete id="removePersonName" parameterClass="java.lang.Integer">
-		DELETE FROM person_name WHERE id = #personNameId#
+		DELETE FROM person_name WHERE person_change_id = #personNameId#
 	</delete>
 	
 	<select id='getResourcePersonRelationByResourcePersonRelation' resultMap="PersonCommon.lazyLoadingResourcePersonRelation" parameterClass='org.bibsonomy.model.ResourcePersonRelation'>
@@ -110,12 +109,12 @@
 		FROM
 			(SELECT
 					t1.*,
-					pp.id, pp.qualifying, pp.person_id, pp.relator_code, pp.log_changed_by, pp.person_index,
+					pp.person_change_id, pp.qualifying, pp.person_id, pp.relator_code, pp.log_changed_by, pp.person_index,
 					h.ctr AS count
 				FROM bibtex t1, bibhash h, pub_person pp
 				WHERE
 					<include refid="bibtexSimHash3"/>
-					AND t1.simhash1=pp.simhash1 AND pp.person_id=#personRelation.person.id#
+					AND t1.simhash1=pp.simhash1 AND pp.person_id=#personRelation.person.personId#
 					<include refid="restrictToGroups"/>
 			) AS b2
 			LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id
@@ -135,7 +134,7 @@
 			bibhash h, pub_person
 		WHERE
 			<include refid="bibtexSimHash"/>
-			AND b.simhash1=pub_person.simhash1 AND pub_person.person_id=#personRelation.person.id#
+			AND b.simhash1=pub_person.simhash1 AND pub_person.person_id=#personRelation.person.personId#
 	</select>
 	
 	

@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
@@ -31,11 +32,15 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	private static final Log log = LogFactory.getLog(PersonDatabaseManager.class);
 
 	private final static PersonDatabaseManager singleton = new PersonDatabaseManager();
+	private final GeneralDatabaseManager generalManager;
 
 	public static PersonDatabaseManager getInstance() {
 		return singleton;
 	}
 	
+	public PersonDatabaseManager() {
+		this.generalManager = GeneralDatabaseManager.getInstance();
+	}
 	
 	/**
 	 * Inserts a {@link Person} into the database.
@@ -46,6 +51,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public void createPerson(final Person person, final DBSession session) {
 		session.beginTransaction();
 		try {
+			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("insertPerson", person, session);
 			session.commitTransaction();
 		} finally {
@@ -75,13 +81,14 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 
 
 	/**
-	 * @param mainName
+	 * @param name
 	 * @param session
 	 */
-	public void createPersonName(PersonName mainName, DBSession session) {
+	public void createPersonName(PersonName name, DBSession session) {
 		session.beginTransaction();
 		try {
-			this.insert("insertName", mainName, session);
+			name.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			this.insert("insertName", name, session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -96,6 +103,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public void updatePerson(Person person, DBSession session) {
 		session.beginTransaction();
 		try {
+			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("updatePerson", person, session);
 			session.commitTransaction();
 		} finally {
@@ -121,21 +129,6 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 */
 	public PersonName getPersonNameById(int id, DBSession session) {
 		return (PersonName) this.queryForObject("getPersonNameById", id, session);
-	}
-
-
-	/**
-	 * @param mainName
-	 * @param session
-	 */
-	public void updatePersonName(PersonName mainName, DBSession session) {
-		session.beginTransaction();
-		try {
-			this.insert("updatePersonName", mainName, session);
-			session.commitTransaction();
-		} finally {
-			session.endTransaction();
-		}
 	}
 
 	/**
@@ -175,6 +168,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation, DBSession session) {
 		session.beginTransaction();
 		try {
+			resourcePersonRelation.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("addResourceRelation", resourcePersonRelation, session);
 			session.commitTransaction();
 		} finally {
@@ -202,13 +196,28 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 
 
 	/**
+	 * @param personChangeId
+	 * @param databaseSession 
+	 */
+	public void removePersonName(Integer personChangeId, DBSession databaseSession) {
+		databaseSession.beginTransaction();
+		try {
+			this.delete("removePersonName", personChangeId, databaseSession);
+			databaseSession.commitTransaction();
+		} finally {
+			databaseSession.endTransaction();
+		}	
+	}
+
+
+	/**
 	 * @param personNameId
 	 * @param databaseSession 
 	 */
-	public void removePersonName(Integer personNameId, DBSession databaseSession) {
+	public void deleteAllNamesOfPerson(String personId, DBSession databaseSession) {
 		databaseSession.beginTransaction();
 		try {
-			this.delete("removePersonName", personNameId, databaseSession);
+			this.delete("deleteAllNamesOfPerson", personId, databaseSession);
 			databaseSession.commitTransaction();
 		} finally {
 			databaseSession.endTransaction();
@@ -331,7 +340,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			Person person, DBSession session) {
 		session.beginTransaction();
 		try {
-			return (List<ResourcePersonRelation>) this.queryForList("getResourcePersonRelationsByPersonId", person.getId(), session);
+			return (List<ResourcePersonRelation>) this.queryForList("getResourcePersonRelationsByPersonId", person.getPersonId(), session);
 		} finally {
 			session.endTransaction();
 		}
@@ -350,6 +359,5 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		} finally {
 			session.endTransaction();
 		}
-	} 
-
+	}
 }

@@ -818,7 +818,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * */
 		if (present(command.getPost().getResourcePersonRelations())){
 			ResourcePersonRelation resourcePersonRelation = post.getResourcePersonRelations().get(post.getResourcePersonRelations().size()-1);
-			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(resourcePersonRelation.getPerson().getId()));
+			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(resourcePersonRelation.getPerson().getPersonId()));
 			
 		}
 		return this.finalRedirect(loginUserName, post, command.getReferer());
