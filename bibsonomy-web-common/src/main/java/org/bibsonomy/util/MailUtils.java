@@ -232,8 +232,7 @@ public class MailUtils {
 			UserUtils.getNiceUserName(requestingUser, true),
 			group.getName(),
 			absoluteURLGenerator.getGroupUrlByGroupName(group.getName()),
-			absoluteURLG			UserUtils.getNiceUserName(requestingUser, true),
-yGroupName(group.getName()),
+			absoluteURLGenerator.getGroupSettingsUrlByGroupName(group.getName()),
 			projectHome,
 			projectEmail
 		};
