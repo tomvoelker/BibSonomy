@@ -183,7 +183,7 @@ public class LuceneResourceConverter<R extends Resource> {
 			if (BibTex.class.isAssignableFrom(this.resourceClass)) {
 				@SuppressWarnings("unchecked")
 				final int qualifyingDegree = getQualifyingDegree((Post<? extends BibTex>) post);
-				jsonDocument.put(ESConstants.QUALIFYING_DEGREE_FIELD_NAME, Integer.valueOf(qualifyingDegree));
+				jsonDocument.put(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, Integer.valueOf(qualifyingDegree));
 			}
 			return jsonDocument;
 		}

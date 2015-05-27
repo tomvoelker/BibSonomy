@@ -69,6 +69,21 @@ public final class ESConstants {
 	/** field name in th index schema */
 	public static final String SYSTEM_URL_FIELD_NAME = "systemUrl";
 	
-	/** field name in th index schema */
-	public static final String QUALIFYING_DEGREE_FIELD_NAME = "qualifyingDegree";
+	/** phdthesis+type resolved to habil, phd, master, bachelor*/
+	public static final String NORMALIZED_ENTRY_TYPE_FIELD_NAME = "entryTypeNorm";
+	
+	/** current full names (including titles) of the author person-entities */
+	public static final String AUTHOR_ENTITY_NAMES_FIELD_NAME = "authorEntityNames";
+	
+	/** Ids of the associated author person-entities */
+	public static final String AUTHOR_ENTITY_IDS_FIELD_NAME = "authorEntityIds";
+
+	/** current full names (including titles) of the associated authors, editors, supervisors, etc */
+	public static final String PERSON_ENTITY_NAMES_FIELD_NAME = "personEntityNames";
+	
+	/** Ids of the associated authors, editors, supervisors, etc */
+	public static final String PERSON_ENTITY_IDS_FIELD_NAME = "personEntityIds";
+	
+	/** dummy publication entries are only used to allow non-author person ids to be found in a generic way and do not contain valid publications */
+	public static final String DUMMY_PUBLICATION_FIELD_NAME = "isDummyPublication";
 }

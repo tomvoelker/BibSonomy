@@ -130,7 +130,7 @@ public class ESResourceMapping {
 				.startObject("url").field("type", "string").field("index", "no").endObject() //
 				.startObject("volume").field("type", "string").field("index", "no").endObject() //
 				.startObject("year").field("type", "string").field("index", "not_analyzed").endObject() //
-				.startObject(ESConstants.QUALIFYING_DEGREE_FIELD_NAME).field("type", "integer").field("index", "not_analyzed").endObject() //
+				.startObject(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME).field("type", "integer").field("index", "not_analyzed").endObject() //
 				.endObject().endObject().endObject();
 
 		return mapping;
