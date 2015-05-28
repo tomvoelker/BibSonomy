@@ -658,6 +658,9 @@
 								<value>group.name</value>
 								<value>group.description</value>
 								<value>group.groupRequest.reason</value>
+								<!-- for recaptcha -->
+								<value>recaptcha_response_field</value>
+								<value>recaptcha_challenge_field</value>
 							</list>
 						</property>
 					</bean>
@@ -1136,6 +1139,10 @@
 		<property name="adminLogic" ref ="adminLogic" />
 		<property name="mailer" ref="mailUtils" />
 		<property name="requestLogic" ref="requestLogic" />
+		<!-- To check registration for human beings ... -->
+		<property name="captcha" ref="captcha"></property>	
+		<!-- to access cookies -->
+		<property name="cookieLogic" ref="cookieLogic"/>
 		<property name="groupCreationMode" value="${project.groupcreationmode}" />
 	</bean>
 	

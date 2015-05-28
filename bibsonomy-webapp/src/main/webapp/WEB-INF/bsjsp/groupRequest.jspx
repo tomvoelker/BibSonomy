@@ -89,6 +89,8 @@
 							<bsform:textarea labelKey="settings.group.description" path="group.description" rows="2" labelColSpan="3" inputColSpan="9" />
 							<bsform:textarea labelText="${reason}" path="group.groupRequest.reason" rows="2" labelColSpan="3" inputColSpan="9" />
 	
+							<bsform:captcha labelColSpan="3" inputColSpan="9" />
+	
 							<div class="col-sm-offset-3" >
 								<bsform:button style="primary" size="defaultSize" value="${requestGroup}" type="submit" />
 							</div>

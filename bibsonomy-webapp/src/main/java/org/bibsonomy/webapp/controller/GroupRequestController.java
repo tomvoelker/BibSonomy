@@ -28,17 +28,26 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupCreationMode;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
-
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.webapp.command.GroupRequestCommand;
+import org.bibsonomy.webapp.controller.actions.UserRegistrationController;
+import org.bibsonomy.webapp.util.CookieAware;
+import org.bibsonomy.webapp.util.CookieLogic;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
@@ -46,23 +55,29 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.util.captcha.Captcha;
+import org.bibsonomy.webapp.util.captcha.CaptchaUtil;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.validation.GroupRequestValidator;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.validation.Errors;
 
 
 /**
  * @author Mario Holtmueller
  */
-public class GroupRequestController implements ValidationAwareController<GroupRequestCommand>, ErrorAware, RequestAware {
-
+public class GroupRequestController implements ValidationAwareController<GroupRequestCommand>, ErrorAware, RequestAware, CookieAware {
+	private static final Log log = LogFactory.getLog(UserRegistrationController.class);
+	
 	private Errors errors = null;
 	private LogicInterface logic;
 	private LogicInterface adminLogic;
 	private MailUtils mailer;
 	private GroupCreationMode groupCreationMode;
 	private RequestLogic requestLogic;
+	private Captcha captcha;
+	private CookieLogic cookieLogic;
 	
 	/**
 	 * @param command
@@ -71,7 +86,7 @@ public class GroupRequestController implements ValidationAwareController<GroupRe
 	@Override
 	public View workOn(final GroupRequestCommand command) {
 		final RequestWrapperContext context = command.getContext();
-
+				
 		/*
 		 * user has to be logged in to see this page
 		 */
@@ -93,15 +108,25 @@ public class GroupRequestController implements ValidationAwareController<GroupRe
 			errors.reject("error.field.valid.ckey");
 		}
 		
+		if (this.errors.hasErrors()) {
+			return Views.GROUPREQUEST;
+		}
+
+		/*
+		 * check captacha; an error is added if it fails.
+		 */
+		CaptchaUtil.checkCaptcha(this.captcha, this.errors, log, command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), this.requestLogic.getHostInetAddress());
+		
+		if (errors.hasErrors()) {
+			command.setCaptchaHTML(captcha.createCaptchaHtml(requestLogic.getLocale()));
+			return Views.GROUPREQUEST;
+		}
+		
 		final Group requestedGroup = command.getGroup();
 		
 		/*
 		 * check if group name already exists
 		 */
-		if (this.errors.hasErrors()) {
-			return Views.GROUPREQUEST;
-		}
-		
 		final String groupName = requestedGroup.getName();
 		// we use the admin logic to get all users even deleted ones
 		final List<User> pendingUserList = this.adminLogic.getUsers(null, GroupingEntity.PENDING, groupName, null, null, null, null, null, 0, 1);
@@ -113,6 +138,7 @@ public class GroupRequestController implements ValidationAwareController<GroupRe
 		if (this.errors.hasErrors()) {
 			return Views.GROUPREQUEST;
 		}
+		
 		
 		requestedGroup.getGroupRequest().setUserName(loginUser.getName());
 		this.logic.createGroup(requestedGroup);
@@ -131,7 +157,7 @@ public class GroupRequestController implements ValidationAwareController<GroupRe
 			default:
 				break;
 		}
-		
+
 		return Views.SUCCESS;
 	}
 	
@@ -194,4 +220,24 @@ public class GroupRequestController implements ValidationAwareController<GroupRe
 	public void setRequestLogic(RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
+	
+	/** Give this controller an instance of {@link Captcha}.
+	 * 
+	 * @param captcha
+	 */
+	@Required
+	public void setCaptcha(Captcha captcha) {
+		this.captcha = captcha;
+	}
+	
+	/** The logic needed to access the cookies.
+	 * 
+	 * @param cookieLogic
+	 */
+	@Required
+	@Override
+	public void setCookieLogic(CookieLogic cookieLogic) {
+		this.cookieLogic = cookieLogic;
+	}
+	
 }
