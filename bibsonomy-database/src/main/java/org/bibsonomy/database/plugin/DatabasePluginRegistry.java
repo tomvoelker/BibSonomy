@@ -44,6 +44,7 @@ import org.bibsonomy.database.plugin.plugins.GoldStandardPublicationReferencePlu
 import org.bibsonomy.database.plugin.plugins.Logging;
 import org.bibsonomy.database.plugin.plugins.MetaDataPlugin;
 import org.bibsonomy.model.DiscussionItem;
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.GoldStandardRelation;
@@ -343,6 +344,47 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	public void onDiscussionMassUpdate(String username, int groupId, DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
 			plugin.onDiscussionMassUpdate(username, groupId, session);
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPersonDelete(org.bibsonomy.model.Person, org.bibsonomy.database.common.DBSession)
+	 */
+	@Override
+	public void onPersonNameDelete(Integer personChangeId, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onPersonNameDelete(personChangeId, session);
+		}		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPersonUpdate(java.lang.Integer, org.bibsonomy.database.common.DBSession)
+	 */
+	@Override
+	public void onPersonUpdate(String personId, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onPersonUpdate(personId, session);
+		}	
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPersonDelete(java.lang.Integer, org.bibsonomy.database.common.DBSession)
+	 */
+	@Override
+	public void onPersonDelete(String personId, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onPersonDelete(personId, session);
+		}	
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPubPersonDelete(java.lang.Integer, org.bibsonomy.database.common.DBSession)
+	 */
+	@Override
+	public void onPubPersonDelete(Integer personChangeId, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onPubPersonDelete(personChangeId, session);
 		}
 	}
 }

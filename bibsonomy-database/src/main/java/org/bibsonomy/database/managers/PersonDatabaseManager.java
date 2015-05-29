@@ -10,6 +10,7 @@ import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
@@ -31,6 +32,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 
 	private final static PersonDatabaseManager singleton = new PersonDatabaseManager();
 	private final GeneralDatabaseManager generalManager;
+	private final DatabasePluginRegistry plugins;
 
 	public static PersonDatabaseManager getInstance() {
 		return singleton;
@@ -38,6 +40,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	
 	public PersonDatabaseManager() {
 		this.generalManager = GeneralDatabaseManager.getInstance();
+		this.plugins = DatabasePluginRegistry.getInstance();
 	}
 	
 	/**
@@ -110,6 +113,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public void updatePerson(Person person, DBSession session) {
 		session.beginTransaction();
 		try {
+			this.plugins.onPersonUpdate(person.getPersonId(), session);
 			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("updatePerson", person, session);
 			session.commitTransaction();
@@ -209,6 +213,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public void removePersonName(Integer personChangeId, DBSession databaseSession) {
 		databaseSession.beginTransaction();
 		try {
+			this.plugins.onPersonNameDelete(personChangeId, databaseSession);
 			this.delete("removePersonName", personChangeId, databaseSession);
 			databaseSession.commitTransaction();
 		} finally {
