@@ -256,6 +256,40 @@ public class MailUtils {
 	}
 	
 	/**
+	 * 
+	 * @param group
+	 * @param requestingUser
+	 * @param locale
+	 * @return 
+	 */
+	public boolean sendGroupDeclineNotification(final String groupName, final String declineMessage, User requestingUser, final Locale locale) {
+		final Object[] messagesParameters = new Object[] {
+				requestingUser.getName(),
+				groupName,
+				declineMessage,
+				projectHome,
+				projectEmail
+		};
+		
+		/*
+		 * Format the message "mail.groupInvite.body" with the given parameters.
+		 */
+		final String messageBody    = messageSource.getMessage("mail.group.decline.body", messagesParameters, locale);
+		final String messageSubject = messageSource.getMessage("mail.group.decline.subject", messagesParameters, locale);
+		
+		/*
+		 * send an e-Mail to the group (from our registration Adress)
+		 */
+		try {
+			sendPlainMail(new String[] {requestingUser.getEmail()},  messageSubject, messageBody, projectEmail);
+			return true;
+		} catch (final MessagingException e) {
+			log.fatal("Could not send group decline notification mail: " + e.getMessage());
+		}
+		return false;
+	}
+	
+	/**
 	 * sends a group invite mail to the invited user
 	 * 
 	 * @param groupName

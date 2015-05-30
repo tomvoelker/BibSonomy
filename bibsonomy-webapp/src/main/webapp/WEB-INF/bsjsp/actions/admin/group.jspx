@@ -54,6 +54,9 @@
 			<script src="${resdir}/jquery/plugins/bgiframe/jquery.bgiframe.js" type="text/javascript"><!--  --></script>
 			<script src="${resdir}/jquery/plugins/ui/jquery-ui.js" type="text/javascript"><!--  --></script>
 			<script src="${resdir}/jquery/plugins/ui/jquery-ui-i18n.js" type="text/javascript"><!--  --></script>
+			
+			<!-- declineGroup helper -->
+			<script src="${resdir}/javascript/admin/declineGroup.js" type="text/javascript"><!--  --></script>
 		</jsp:attribute>
 
 		<jsp:attribute name="content">
@@ -165,6 +168,10 @@
 			</bsform:fieldset>
 				
 			<c:if test="${not empty command.pendingGroups}">
+				
+				<fmt:message var="declineMsg" key="admin.actions.group.decline"/>
+				<fmt:message var="cancelMsg" key="settings.cancel"/>
+				
 				<bsform:fieldset legendKey="admin.group.pending">
 					<jsp:attribute name="content">
 						<table class="table table-hover">
@@ -189,10 +196,34 @@
 									</td>
 									<td>
 										<span class="groupsButtons">
-											<a href="/admin/group?action=ACCEPT&amp;group.name=${fn:escapeXml(entry.name)}"><fmt:message key="admin.actions.group.accept"/></a>${mtl:ch('nbsp')}<a href="/admin/group?action=DECLINE&amp;group.name=${fn:escapeXml(entry.name)}"><fmt:message key="admin.actions.group.decline"/></a>	
+											<a href="/admin/group?action=ACCEPT&amp;group.name=${fn:escapeXml(entry.name)}"><fmt:message key="admin.actions.group.accept"/></a>
+											${mtl:ch('nbsp')}
+											<a href="javascript:void(0)" class="declineGroupExpand" onclick="declineGroup(this);"><fmt:message key="admin.actions.group.decline"/></a>	
 										</span>
 									</td>
 								</tr>
+					
+								<tr class="groupDeclineRow">
+									<td colspan="5">
+										
+										<fmt:message var="decLabelText" key="admin.actions.group.decline.reason">
+											<fmt:param value="${fn:escapeXml(entry.name)}" />
+										</fmt:message>										
+									
+										<form:form name="declineGroupRequest" action="/admin/group?action=DECLINE&amp;group.name=${fn:escapeXml(entry.name)}" method="POST" cssClass="form-horizontal" >
+											<bsform:textarea noHelp="true" labelText="${decLabelText}" path="declineMessage" labelColSpan="3" inputColSpan="9" />
+											
+											<div class="form-group">
+												<div class="col-sm-offset-3 col-sm-9">
+													<bsform:button type="submit" style="primary" size="defaultSize" value="${declineMsg}" />
+													${mtl:ch('nbsp')}
+													<bsform:button type="reset" style="primary" size="defaultSize" className="btn-danger declineGroupCancel" value="${cancelMsg}" />
+												</div>
+											</div>
+										</form:form>					
+									</td>
+								</tr>
+								
 							</c:forEach>
 						</table>
 					</jsp:attribute>

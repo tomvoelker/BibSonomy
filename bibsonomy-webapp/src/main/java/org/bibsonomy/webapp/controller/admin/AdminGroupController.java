@@ -104,9 +104,28 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 					}
 					break;
 				case DECLINE:
+					for (Group g : logic.getGroups(true, 0, Integer.MAX_VALUE)) {
+						if (g.getName().equals(group.getName())) {
+							group = g;
+							break;
+						}
+					}
+					
+					final String groupName = group.getName();
+					requestingUser = this.logic.getUserDetails(group.getGroupRequest().getUserName());
+
+					// delete the group
 					log.debug("grouprequest for group \"" + group.getName() + "\" declined");
 					this.logic.updateGroup(group, GroupUpdateOperation.DELETE, null);
-					// TODO: send mail
+					
+					// send mail
+					String declineMessage = command.getDeclineMessage();
+					if (!present(declineMessage)) {
+						declineMessage = "";
+					}
+					if (present(requestingUser.getEmail())) {
+						this.mailUtils.sendGroupDeclineNotification(groupName, declineMessage, requestingUser, LocaleUtils.toLocale(requestingUser.getSettings().getDefaultLanguage()));
+					}
 					break;
 				case FETCH_GROUP_SETTINGS:
 					setGroupOrMarkNonExistent(command);
