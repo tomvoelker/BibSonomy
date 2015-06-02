@@ -35,6 +35,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.store.LockObtainFailedException;
+import org.bibsonomy.es.IndexUpdaterState;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.model.Group;
@@ -141,14 +142,16 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 		log.info("Number of post entries: " + this.numberOfPosts);
 
 		// initialize variables
-		Integer lastTasId = this.dbLogic.getLastTasId();
-		Date lastLogDate = this.dbLogic.getLastLogDate();
+		final IndexUpdaterState newState = new IndexUpdaterState();
+		newState.setLast_tas_id(this.dbLogic.getLastTasId());
+		newState.setLast_log_date(this.dbLogic.getLastLogDate());
+		newState.setLastPersonChangeId(this.dbLogic.getLastPersonChangeId());
 
-		if (lastLogDate == null) {
-			lastLogDate = new Date(System.currentTimeMillis() - 1000);
+		if (newState.getLast_log_date() == null) {
+			newState.setLast_log_date(new Date(System.currentTimeMillis() - 1000));
 		}
 		
-		writeMetaInfo(lastTasId, lastLogDate);
+		writeMetaInfo(newState);
 		
 
 		log.info("Start writing data to lucene index (with duplicate detection)");
@@ -166,11 +169,13 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 
 			// cycle through all posts of currently read block
 			for (final LucenePost<R> post : postList) {
-				post.setLastLogDate(lastLogDate);
+				post.setLastLogDate(newState.getLast_log_date());
 				if (post.getLastTasId() == null) {
-					post.setLastTasId(lastTasId);
+					post.setLastTasId(newState.getLast_tas_id());
 				} else {
-					lastTasId = Math.max(lastTasId, post.getLastTasId());
+					if (post.getLastTasId() < post.getLastTasId()) {
+						post.setLastTasId(post.getLastTasId());
+					}
 				}
 
 				if (AbstractIndexGenerator.this.isNotSpammer(post)) {
@@ -194,7 +199,7 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 	 * @param lastLogDate
 	 * @throws IOException 
 	 */
-	protected abstract void writeMetaInfo(Integer lastTasId, Date lastLogDate) throws IOException;
+	protected abstract void writeMetaInfo(IndexUpdaterState state) throws IOException;
 
 	protected abstract void addPostToIndex(final LucenePost<R> post);
 	

@@ -44,6 +44,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.es.IndexUpdater;
+import org.bibsonomy.es.IndexUpdaterState;
 import org.bibsonomy.es.UpdatePlugin;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
@@ -171,23 +172,26 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		// FIXME: get this date from the log_table via
 		// 'getContentIdsToDelete'
 		//final long currentLogDate = System.currentTimeMillis();
-		final Date currentLogDate = new Date();//this.dbLogic.getLastLogDate();
+		//this.dbLogic.getLastLogDate();
 		
-		final Map<Pair<Date, Integer>, List<IndexUpdater<R>>> lastLogDateAndLastTasIdToUpdaters = getUpdatersBySameState();
+		IndexUpdaterState dbState = new IndexUpdaterState();
+		dbState.setLast_log_date(new Date());
 		
-		for (final Map.Entry<Pair<Date, Integer>, List<IndexUpdater<R>>> e : lastLogDateAndLastTasIdToUpdaters.entrySet()) {
-			final Integer lastTasId = e.getKey().getSecond();
-			log.debug("lastTasId: " + lastTasId);
-			final Date lastLogDate = e.getKey().getFirst();
+		final Map<IndexUpdaterState, List<IndexUpdater<R>>> lastLogDateAndLastTasIdToUpdaters = getUpdatersBySameState();
+		
+		for (final Map.Entry<IndexUpdaterState, List<IndexUpdater<R>>> e : lastLogDateAndLastTasIdToUpdaters.entrySet()) {
 			final List<IndexUpdater<R>> updaters = e.getValue();
-			
-			this.updateIndex(currentLogDate, lastTasId, lastLogDate, updaters);
+			final IndexUpdaterState indexState = e.getKey();
+			// TODO: add paramater for a common newLastTasId to make sure the indices will have the same state next time
+			this.updateIndex(indexState, dbState, updaters);
 		}
 		this.alreadyRunning = 0;
 	}
 
-	private Map<Pair<Date, Integer>, List<IndexUpdater<R>>> getUpdatersBySameState() {
-		final Map<Pair<Date, Integer>, List<IndexUpdater<R>>> lastLogDateAndLastTasIdToUpdaters = new HashMap<>();
+	private Map<IndexUpdaterState, List<IndexUpdater<R>>> getUpdatersBySameState() {
+		
+		
+		final Map<IndexUpdaterState, List<IndexUpdater<R>>> lastLogDateAndLastTasIdToUpdaters = new HashMap<>();
 		
 		for (UpdatePlugin plugin : this.plugins) {
 			@SuppressWarnings("unchecked")
@@ -202,11 +206,13 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			// keeps track of the newest log_date during last index update
 			final Date lastLogDate = updater.getLastLogDate();
 			
-			final Pair<Date, Integer> pair = new Pair<>(lastLogDate, lastTasId);
-			List<IndexUpdater<R>> updatersWithSameState = lastLogDateAndLastTasIdToUpdaters.get(pair);
+			final IndexUpdaterState state = new IndexUpdaterState();
+			state.setLast_log_date(lastLogDate);
+			state.setLast_tas_id(lastTasId);
+			List<IndexUpdater<R>> updatersWithSameState = lastLogDateAndLastTasIdToUpdaters.get(state);
 			if (updatersWithSameState == null) {
 				updatersWithSameState = new ArrayList<>();
-				lastLogDateAndLastTasIdToUpdaters.put(pair, updatersWithSameState);
+				lastLogDateAndLastTasIdToUpdaters.put(state, updatersWithSameState);
 			}
 			updatersWithSameState.add(updater);
 		}
@@ -220,33 +226,34 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 * @param lastTasId
 	 * @param lastLogDate
 	 * @param indexUpdaters the {@link IndexUpdater}s which are to be called 
+	 * @param targetState 
 	 * @return the lastTasId found by generating the new index
 	 */
 	@SuppressWarnings({ "boxing" })
-	protected int updateIndex(final Date currentLogDate, final int lastTasId, final Date lastLogDate, final List<IndexUpdater<R>> indexUpdaters) {
-		int newLastTasId = lastTasId;
+	protected int updateIndex(IndexUpdaterState oldState, IndexUpdaterState targetState, final List<IndexUpdater<R>> indexUpdaters) {
+		int newLastTasId = oldState.getLast_tas_id();
 		
 		/*
 		 * 1) flag/unflag spammer if the index existed before
 		 */
-		if (lastLogDate != null) {
-			this.updatePredictions(indexUpdaters, lastLogDate);
+		if (oldState.getLast_log_date() != null) {
+			this.updatePredictions(indexUpdaters, oldState.getLast_log_date());
 		}
 
 		/*
 		 * 2) get new posts
 		 */
-		final List<LucenePost<R>> newPosts = this.dbLogic.getNewPosts(lastTasId);
+		final List<LucenePost<R>> newPosts = this.dbLogic.getNewPosts(oldState.getLast_tas_id());
 
 		/*
 		 * 3) get posts to delete
 		 */
 		final List<Integer> contentIdsToDelete;
-		if (lastLogDate == null) {
+		if (oldState.getLast_log_date() == null) {
 			// index is empty -> nothing to delete
 			contentIdsToDelete = Collections.emptyList();
 		} else {
-			contentIdsToDelete = this.dbLogic.getContentIdsToDelete(new Date(lastLogDate.getTime() - QUERY_TIME_OFFSET_MS));
+			contentIdsToDelete = this.dbLogic.getContentIdsToDelete(new Date(oldState.getLast_log_date().getTime() - QUERY_TIME_OFFSET_MS));
 		}
 		
 
@@ -256,7 +263,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		 */
 		for (final LucenePost<R> post : newPosts) {
 			contentIdsToDelete.add(post.getContentId());
-			newLastTasId = Math.max(post.getLastTasId(), lastTasId);
+			newLastTasId = Math.max(post.getLastTasId(), oldState.getLast_tas_id());
 		}
 		
 		/*lastTasIdlastTasId
@@ -266,24 +273,28 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		for (IndexUpdater<R> updater : indexUpdaters) {
 			updater.deleteDocumentsForContentIds(contentIdsToDelete);
 			for (final LucenePost<R> post : newPosts) {
-				updater.insertDocument(post, currentLogDate);
+				updater.insertDocument(post, targetState.getLast_log_date());
 			}
 		}
 
 		for (IndexUpdater<R> updater : indexUpdaters) {
 			try {
-				updater.setSystemInformation(newLastTasId, currentLogDate);
+				IndexUpdaterState newState = new IndexUpdaterState(oldState);
+				newState.setLast_log_date(targetState.getLast_log_date());
+				newState.setLast_tas_id(newLastTasId);
+				newState.setLastPersonChangeId(targetState.getLastPersonChangeId());
+				updater.setSystemInformation(newState); //  newLastTasId, currentLogDate
 				updater.flush();
 			} catch (RuntimeException e) {
-				updater.setSystemInformation(lastTasId, lastLogDate);
+				updater.setSystemInformation(oldState);
 				throw e;
 			} catch (Exception e) {
-				updater.setSystemInformation(lastTasId, lastLogDate);
+				updater.setSystemInformation(oldState);
 				throw new RuntimeException(e);
 			}
 		}
 
-		return lastTasId;
+		return newLastTasId;
 	}
 
 	/**

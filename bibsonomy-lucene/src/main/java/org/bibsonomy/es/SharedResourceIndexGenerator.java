@@ -89,8 +89,8 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	}
 	
 	@Override
-	protected void writeMetaInfo(Integer lastTasId, Date lastLogDate) throws IOException {
-		updater.setSystemInformation(lastTasId, lastLogDate);
+	protected void writeMetaInfo(IndexUpdaterState state) throws IOException {
+		updater.setSystemInformation(state);
 		updater.flushSystemInformation();
 	}
 	

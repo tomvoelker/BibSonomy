@@ -392,9 +392,8 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 * @param lastTasId
 	 * @param lastLogDate
 	 */
-	public void setSystemInformation(final Integer lastTasId, final Date lastLogDate) {
-		this.systemInfo.setLast_log_date(lastLogDate);
-		this.systemInfo.setLast_tas_id(lastTasId);
+	public void setSystemInformation(final IndexUpdaterState state) {
+		this.systemInfo.setUpdaterState(state);
 		this.systemInfo.setPostType(this.resourceType);
 		this.systemInfo.setSystemUrl(this.systemHome);
 	}

@@ -47,6 +47,9 @@ public class LucenePost<R extends Resource> extends Post<R> {
 
 	/** newest log_date during last index update */
 	private Date lastLogDate;
+	
+	/** set to true if this is only a placeholder post to allow appearance of persons without publications */ 
+	private boolean dummyPost;
 
 	/**
 	 * @return the lastTasId
@@ -74,5 +77,13 @@ public class LucenePost<R extends Resource> extends Post<R> {
 	 */
 	public void setLastLogDate(Date lastLogDate) {
 		this.lastLogDate = lastLogDate;
+	}
+
+	public boolean isDummyPost() {
+		return this.dummyPost;
+	}
+
+	public void setDummyPost(boolean dummyPost) {
+		this.dummyPost = dummyPost;
 	}	
 }

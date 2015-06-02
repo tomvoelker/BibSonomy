@@ -108,4 +108,9 @@ public interface LuceneDBInterface<R extends Resource> {
 	 * @return post entries for index creation
 	 */
 	public List<LucenePost<R>> getPostEntriesOrderedByHash(int lastOffset, int max);
+
+	/**
+	 * @return
+	 */
+	public long getLastPersonChangeId();
 }

@@ -247,15 +247,10 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		return (List<ResourcePersonRelation>) this.queryForList("getResourceRelationsByResourcePersonRelation", resourcePersonRelation, databaseSession);
 	}
 	
-	public List<ResourcePersonRelation> getResourcePersonRelationsByPost(Post<BibTex> post,
-			DBSession databaseSession) {
-		ResourcePersonRelation param = new ResourcePersonRelation();
-		param.setPost(post);
-		return (List<ResourcePersonRelation>) this.queryForList("getResourcePersonRelationsByPost", param, databaseSession);
+	// TODO: write testcase for this method and test whether groupBy of OR-mapping works as expected 
+	public List<ResourcePersonRelation> getResourcePersonRelationsByPublication(String interHash, DBSession databaseSession) {
+		return (List<ResourcePersonRelation>) this.queryForList("getResourcePersonRelationsByPublication", interHash, databaseSession);
 	}
-	
-	
-
 
 	/**
 	 * @param longHash

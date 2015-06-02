@@ -62,6 +62,7 @@ import org.apache.lucene.store.NoSuchDirectoryException;
 import org.apache.lucene.util.Version;
 import org.bibsonomy.es.IndexType;
 import org.bibsonomy.es.IndexUpdater;
+import org.bibsonomy.es.IndexUpdaterState;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.param.LuceneIndexStatistics;
 import org.bibsonomy.lucene.param.LucenePost;
@@ -121,11 +122,8 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	/** id for identifying redundant resource indeces */
 	private int indexId;
 	
-	/** keeps track of the newest log_date during last index update */
-	private Long lastLogDate;
-	
-	/** keeps track of the newest tas_id during last index update */
-	private Integer lastTasId;
+	/** keeps track of the newest log_date and tas_id during last index update */
+	private IndexUpdaterState state;
 
 	private Class<R> resourceClass;
 	
@@ -302,8 +300,8 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 		synchronized(this) {
 			if (!isIndexEnabled()) {
 				return null;
-			} else if (this.lastLogDate != null) {
-				return new Date(this.lastLogDate);
+			} else if ((this.state != null) && (this.state.getLast_log_date() != null)) {
+				return this.state.getLast_log_date();
 			}
 			
 			//----------------------------------------------------------------
@@ -335,7 +333,10 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	 * @param lastLogDate the lastLogDate to set
 	 */
 	public void setLastLogDate(final Long lastLogDate) {
-		this.lastLogDate = lastLogDate;
+		if (this.state == null) {
+			this.state = new IndexUpdaterState();
+		}
+		this.state.setLast_log_date(new Date(lastLogDate));
 	}
 	
 	/** 
@@ -346,8 +347,8 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 		synchronized(this) {
 			if (!isIndexEnabled()) {
 				return Integer.MAX_VALUE;
-			} else if (this.lastTasId != null) {
-				return this.lastTasId;
+			} else if ((this.state != null) && (this.state.getLast_tas_id() != null)) {
+				return this.state.getLast_tas_id();
 			}
 			
 			//----------------------------------------------------------------
@@ -377,7 +378,10 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	 * @param lastTasId the lastTasId to set
 	 */
 	public void setLastTasId(final Integer lastTasId) {
-		this.lastTasId = lastTasId;
+		if (this.state == null) {
+			this.state = new IndexUpdaterState();
+		}
+		this.state.setLast_tas_id(lastTasId);
 	}
 
 	/**
@@ -549,8 +553,7 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 		this.usersToFlag.clear();
 
 		// reset the cached query parameters
-		this.lastLogDate = null;
-		this.lastTasId = null;
+		this.state = null;
 		
 		if ((this.indexWriter != null) && (this.searcherManager != null)) {
 			this.enableIndex();
@@ -900,9 +903,8 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	 * @see org.bibsonomy.es.IndexUpdater#setSystemInformation(java.lang.Integer, java.util.Date)
 	 */
 	@Override
-	public void setSystemInformation(Integer lastTasId, Date lastLogDate) {
-		this.setLastLogDate(lastLogDate.getTime());
-		this.setLastTasId(lastTasId);
+	public void setSystemInformation(IndexUpdaterState state) {
+		this.state = state;
 	}
 	
 

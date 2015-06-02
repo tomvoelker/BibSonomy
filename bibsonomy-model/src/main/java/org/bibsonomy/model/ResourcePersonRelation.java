@@ -9,6 +9,7 @@ import org.bibsonomy.model.enums.PersonResourceRelationType;
  *
  * @author Chris
  */
+// TODO rename to PersonResourceRelation
 public class ResourcePersonRelation {
 	private int personChangeId;
 	private PersonResourceRelationType relationType;

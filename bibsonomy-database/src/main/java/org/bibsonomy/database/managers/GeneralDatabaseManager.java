@@ -129,6 +129,18 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 		this.updateIds(idsType, session);
 		return this.queryForObject("getNewId", idsType.getId(), Integer.class, session);
 	}
+	
+	/**
+	 * Gets the last database-ID used for inserting an entity with the type specified
+	 * by the idsType argument. Does not Update the ID generator.
+	 * 
+	 * @param idsType type of the id to be created
+	 * @param session a db session
+	 * @return the last database-ID
+	 */
+	public Integer getLastId(final ConstantID idsType, final DBSession session) {
+		return this.queryForObject("getNewId", idsType.getId(), Integer.class, session);
+	}
 
 	protected void updateIds(final ConstantID idsType, final DBSession session) {
 		this.insert("updateIds", idsType.getId(), session);

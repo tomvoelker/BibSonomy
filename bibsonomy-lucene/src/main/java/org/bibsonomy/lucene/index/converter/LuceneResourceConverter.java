@@ -36,7 +36,9 @@ import static org.bibsonomy.lucene.util.LuceneBase.CFG_TYPEHANDLER;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -52,11 +54,16 @@ import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.param.typehandler.LuceneTypeHandler;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.tex.TexDecode;
 
 /**
@@ -75,6 +82,10 @@ public class LuceneResourceConverter<R extends Resource> {
 	private ResourceFactory resourceFactory;
 	
 	private Class<R> resourceClass;
+	
+	private static final String PERSON_DELIMITER = " & ";
+	private static final String NAME_PART_DELIMITER = " ; ";
+	
 	
 	/**
 	 * read property values from given lucene document and creates post model
@@ -181,9 +192,12 @@ public class LuceneResourceConverter<R extends Resource> {
 		
 		if (searchType == IndexType.ELASTICSEARCH) {
 			if (BibTex.class.isAssignableFrom(this.resourceClass)) {
-				@SuppressWarnings("unchecked")
-				final int qualifyingDegree = getQualifyingDegree((Post<? extends BibTex>) post);
-				jsonDocument.put(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, Integer.valueOf(qualifyingDegree));
+				jsonDocument.put(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, getQualifyingDegree((Post<? extends BibTex>) post));
+				jsonDocument.put(ESConstants.AUTHOR_ENTITY_NAMES_FIELD_NAME, appendMainNames(post, PersonResourceRelationType.AUTHOR));
+				jsonDocument.put(ESConstants.AUTHOR_ENTITY_IDS_FIELD_NAME, appendPersonIds(post, PersonResourceRelationType.AUTHOR));
+				jsonDocument.put(ESConstants.PERSON_ENTITY_NAMES_FIELD_NAME, appendMainNames(post, null));
+				jsonDocument.put(ESConstants.PERSON_ENTITY_IDS_FIELD_NAME, appendPersonIds(post, null));
+				jsonDocument.put(ESConstants.DUMMY_PUBLICATION_FIELD_NAME, new Integer(0));
 			}
 			return jsonDocument;
 		}
@@ -197,36 +211,126 @@ public class LuceneResourceConverter<R extends Resource> {
 		return luceneDocument;
 	}
 
-	private static int getQualifyingDegree(final Post<? extends BibTex> post) {
-		int qualifyingDegree = 0;
-		final BibTex bibtex = post.getResource();
-		final String entryType = bibtex.getEntrytype();
-		if (BibTexUtils.PHD_THESIS.equals(entryType)) {
-			qualifyingDegree = 300;
+	/**
+	 * @param post
+	 * @return
+	 */
+	private String appendMainNames(Post<R> post, PersonResourceRelationType type) {
+		final List<ResourcePersonRelation> rels = post.getResourcePersonRelations();
+		if (rels == null) {
+			return "";
 		}
-		if (BibTexUtils.MASTERS_THESIS.equals(entryType)) {
-			qualifyingDegree = 200;
+		final StringBuilder sb = new StringBuilder();
+		for (ResourcePersonRelation rel : rels) {
+			if ((type != null) && (rel.getRelationType() != type)) {
+				continue;
+			}
+			final Person person = rel.getPerson();
+			if (person == null) {
+				continue;
+			}
+			if (sb.length() > 0) {
+				sb.append(PERSON_DELIMITER);
+			}
+			if (ValidationUtils.present(person.getAcademicDegree())) {
+				sb.append(prepareNamePart(person.getAcademicDegree()));
+			}
+			sb.append(NAME_PART_DELIMITER);
+			final PersonName name = person.getMainName();
+			if (ValidationUtils.present(name.getFirstName())) {
+				sb.append(prepareNamePart(name.getFirstName()));
+			}
+			sb.append(NAME_PART_DELIMITER);
+			if (ValidationUtils.present(name.getLastName())) {
+				sb.append(prepareNamePart(name.getLastName()));
+			}
 		}
-		if (BibTexUtils.THESIS.equals(entryType)) {
-			qualifyingDegree = 150;
+		return sb.toString();
+	}
+	
+	private List<ResourcePersonRelation> readPersonRelationsFromIndex(Map<String, Object> result) {
+		final List<ResourcePersonRelation> rels = new ArrayList<>();
+		
+		String ids = (String) result.get(ESConstants.PERSON_ENTITY_IDS_FIELD_NAME);
+		String[] parts = ids.split(" ");
+		
+		final int personIndexCtr[] = new int[PersonResourceRelationType.AUTHOR.values().length];
+		for (int i = 0; i+1 < parts.length; i += 2) {
+			final String relatorCodeStr = parts[i].trim();
+			final PersonResourceRelationType role = PersonResourceRelationType.getByRelatorCode(relatorCodeStr);
+			final int personIndex = personIndexCtr[role.ordinal()]++;
+			final String id = parts[i+1].trim();
+			ResourcePersonRelation rel = new ResourcePersonRelation();
+			//rel.set
 		}
 		
-		if (qualifyingDegree != 0) {
+		result.get(ESConstants.PERSON_ENTITY_NAMES_FIELD_NAME);
+		
+		return rels;
+	}
+
+	/**
+	 * @param value
+	 * @return
+	 */
+	private static String prepareNamePart(String value) {
+		return value.trim().replace(PERSON_DELIMITER, " ").replace(NAME_PART_DELIMITER, " ");
+	}
+
+	private String appendPersonIds(Post<R> post, PersonResourceRelationType type) {
+		final List<ResourcePersonRelation> rels = post.getResourcePersonRelations();
+		if (rels == null) {
+			return "";
+		}
+		final StringBuilder sb = new StringBuilder();
+		for (ResourcePersonRelation rel : rels) {
+			if ((type != null) && (rel.getRelationType() != type)) {
+				continue;
+			}
+			final Person person = rel.getPerson();
+			if (person == null) {
+				continue;
+			}
+			if (sb.length() > 0) {
+				sb.append(" ");
+			}
+			sb.append(rel.getRelationType().getRelatorCode()).append(" ");
+			sb.append(person.getPersonId());
+		}
+		return sb.toString();
+	}
+
+	private String getQualifyingDegree(final Post<? extends BibTex> post) {
+		final BibTex bibtex = post.getResource();
+		String normalizedEntryType = null;
+		
+		final String entryType = bibtex.getEntrytype();
+		if (BibTexUtils.PHD_THESIS.equals(entryType)) {
+			normalizedEntryType = "phd thesis";
+		}
+		if (BibTexUtils.MASTERS_THESIS.equals(entryType)) {
+			normalizedEntryType = "master thesis";
+		}
+		if (BibTexUtils.THESIS.equals(entryType)) {
+			normalizedEntryType = "bachelor thesis";
+		}
+		
+		if (normalizedEntryType != null) {
 			String type = bibtex.getType();
 			if (type != null) {
 				type = type.toLowerCase().trim();
 				if ((type.contains("master") || type.equals("mathesis"))) {
-					qualifyingDegree = 200;
+					normalizedEntryType = "master thesis";
 				} else if (type.contains("bachelor")) {
-					qualifyingDegree = 100;
+					normalizedEntryType = "bachelor thesis";
 				} else if (type.contains("habil")) {
-					qualifyingDegree = 400;
+					normalizedEntryType = "habilitation";
 				} else if (type.equals("candthesis")) {
-					qualifyingDegree = 50;
+					normalizedEntryType = "candidate thesis";
 				}
 			}
 		}
-		return qualifyingDegree;
+		return normalizedEntryType;
 	}
 	
 	private boolean isFulltextProperty(final String propertyName) {
@@ -354,17 +458,23 @@ public class LuceneResourceConverter<R extends Resource> {
 			final String propertyStr = (String) result.get(fieldName); 
 			if (!present(propertyStr)) {
 				continue;
-				}
+			}
 			final Object propertyValue = this.getPropertyValue(propertyName, propertyStr);			
 			try {
 				PropertyUtils.setNestedProperty(post, propertyName, propertyValue);
-				} catch (final Exception e) {
-					log.error("Error setting property " + propertyName + " to " + propertyValue.toString(), e);
-				}
+			} catch (final Exception e) {
+				log.error("Error setting property " + propertyName + " to " + propertyValue.toString(), e);
+			}
 		}
-		if(result.get("systemUrl") != null){
+		if (result.get(ESConstants.SYSTEM_URL_FIELD_NAME) != null) {
 			String systemUrl = result.get(ESConstants.SYSTEM_URL_FIELD_NAME).toString();
-			post.setSystemUrl(systemUrl);		
+			post.setSystemUrl(systemUrl);
+			// not needed (only for retrieval): ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME
+			jsonDocument.put(ESConstants.AUTHOR_ENTITY_NAMES_FIELD_NAME, appendMainNames(post, PersonResourceRelationType.AUTHOR));
+			jsonDocument.put(ESConstants.AUTHOR_ENTITY_IDS_FIELD_NAME, appendPersonIds(post, PersonResourceRelationType.AUTHOR));
+			jsonDocument.put(ESConstants.PERSON_ENTITY_NAMES_FIELD_NAME, appendMainNames(post, null));
+			jsonDocument.put(ESConstants.PERSON_ENTITY_IDS_FIELD_NAME, appendPersonIds(post, null));
+			jsonDocument.put(ESConstants.DUMMY_PUBLICATION_FIELD_NAME, new Integer(0));
 		}
 		return post;
 	}

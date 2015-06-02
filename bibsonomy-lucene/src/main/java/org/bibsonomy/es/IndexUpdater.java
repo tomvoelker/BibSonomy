@@ -82,9 +82,7 @@ public interface IndexUpdater<R extends Resource> {
 	
 	/**
 	 * updates information about the up-to-dateness of the system
-	 * 
-	 * @param lastTasId
-	 * @param lastLogDate
+	 * @param state 
 	 */
-	public void setSystemInformation(final Integer lastTasId, final Date lastLogDate);
+	public void setSystemInformation(final IndexUpdaterState state);
 }
