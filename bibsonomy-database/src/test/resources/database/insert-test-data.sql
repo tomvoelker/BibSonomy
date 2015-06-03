@@ -287,7 +287,8 @@ INSERT INTO `ids` VALUES
 (12, 28, 'grouptas id'),
 (14, 3,  'message_id'),
 (15, 4, 'comment_id'),
-(16, 1, 'sync_service_id');
+(16, 1, 'sync_service_id'),
+(17, 0, 'person_change_id');
 
 
 
