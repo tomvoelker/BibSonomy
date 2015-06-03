@@ -2,10 +2,10 @@
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
 <sqlMap namespace="PersonCommon">
-	<resultMap id="person" class="org.bibsonomy.model.Person" groupBy="id">
+	<resultMap id="abstractPerson" class="org.bibsonomy.model.Person" groupBy="personId">
 		<result property="personChangeId"   column="person_change_id"    javaType="int" />
 		<result property="personId"         column="person_id"           javaType="String" />
-		<result property="names"            column="person_id"           javaType='java.util.ArrayList' select='getNames' />
+		
 		<result property="orcid"            column="orcid"               javaType="java.lang.String" />
 		<result property='academicDegree'   column='academic_degree'     javaType='java.lang.String' />
 		<result property="dnbPersonId"      column="dnb_person_id"       javaType="java.lang.String" />
@@ -20,7 +20,16 @@
 		<result property='resourcePersonRelations'    column='person_id' javaType='org.bibsonomy.model.ResourcePersonRelation' select='getResourcePersonRelationsByPersonId'/>
 	</resultMap>
 	
-	<resultMap id="personName" class="org.bibsonomy.model.PersonName">
+	<resultMap id='lazyLoadingPerson' class='org.bibsonomy.model.Person' extends="abstractPerson">
+		<result property="names"            column="person_id"           javaType='java.util.ArrayList' select='getNames' />
+	</resultMap>
+	
+	<resultMap id='personWithNamesPrefilled' class='org.bibsonomy.model.Person' extends="abstractPerson">
+		<result property="names"            resultMap="personName" />
+	</resultMap>
+	
+	
+	<resultMap id="personName" class="org.bibsonomy.model.PersonName" groupBy="personChangeId">
 		<result property="personChangeId"  column="person_change_id"  javaType="int" />
 		<result property="firstName"       column="first_name"        javaType="java.lang.String" />
 		<result property="lastName"        column="last_name"         javaType="java.lang.String" />
@@ -40,17 +49,22 @@
 		<result property='personIndex'     column='person_index'     javaType='int' />
 	</resultMap>
 	
-	<resultMap id='lazyLoadingResourcePersonRelation' class='org.bibsonomy.model.ResourcePersonRelation' extends="abstractResourcePersonRelation">
+	<resultMap id='lazyLoadingResourcePersonRelation' class='org.bibsonomy.model.ResourcePersonRelation' groupBy="personChangeId" extends="abstractResourcePersonRelation">
 		<result property="person"          column="person_id"       javaType='org.bibsonomy.model.Person'       select='getPersonById' />
 		<result property='post'            column='simhash1'        javaType='bibtex'                           select='getPosts'/>
 	</resultMap>
 	
-	<resultMap id='preFilledResourcePersonRelation' class='org.bibsonomy.model.ResourcePersonRelation' groupBy="id" extends="abstractResourcePersonRelation">
+	<resultMap id='resourcePersonRelationWithPersonPrefilled' class='org.bibsonomy.model.ResourcePersonRelation' groupBy="personChangeId" extends="abstractResourcePersonRelation">
+		<result property="person"          resultMap="PersonCommon.personWithNamesPrefilled" />
+		<result property='post'            column='simhash1'        javaType='bibtex'                           select='getPosts'/>
+	</resultMap>
+	
+	<resultMap id='preFilledResourcePersonRelation' class='org.bibsonomy.model.ResourcePersonRelation' groupBy="personChangeId" extends="abstractResourcePersonRelation">
 		<result property="person"          column="person_id"       javaType='org.bibsonomy.model.Person'       select='getPersonById' />
 		<result property='post'            resultMap="BibTexCommon.bibtexPost" />
 	</resultMap>
 	
-	<resultMap id='preFilledCommunityResourcePersonRelation' class='org.bibsonomy.model.ResourcePersonRelation' groupBy="id" extends="abstractResourcePersonRelation">
+	<resultMap id='preFilledCommunityResourcePersonRelation' class='org.bibsonomy.model.ResourcePersonRelation' groupBy="personChangeId" extends="abstractResourcePersonRelation">
 		<result property="person"          column="person_id"       javaType='org.bibsonomy.model.Person'       select='getPersonById' />
 		<result property='post'            resultMap="GoldStandardPublicationCommon.goldStandardPost" />
 	</resultMap>
