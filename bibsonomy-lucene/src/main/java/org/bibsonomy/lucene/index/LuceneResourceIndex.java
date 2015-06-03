@@ -332,11 +332,11 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	 * set newest log_date[ms] 
 	 * @param lastLogDate the lastLogDate to set
 	 */
-	public void setLastLogDate(final Long lastLogDate) {
+	public void setLastLogDate(final Date lastLogDate) {
 		if (this.state == null) {
 			this.state = new IndexUpdaterState();
 		}
-		this.state.setLast_log_date(new Date(lastLogDate));
+		this.state.setLast_log_date(lastLogDate);
 	}
 	
 	/** 
