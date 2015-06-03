@@ -101,9 +101,7 @@
 		b.school, b.series, b.type, b.volume, b.day, b.url, b.content_id, b.description, b.bibtexKey, b.misc,
 		b.bibtexAbstract, b.user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype, 
 		IF("hansii" = b.user_name, b.privnote, NULL) AS privnote , b.scraperid, t1.change_date, b.simhash1 AS interHash, b.simhash2 AS intraHash, t1.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name, c.rating_arithmetic_mean AS rating, c.number_of_ratings
-		FROM tas t1, bibhash h, 
-			(SELECT * FROM bibtex
-			 WHERE bibtexKey LIKE "%") b 
+		FROM tas t1, bibhash h, bibtex b 
 			 LEFT JOIN review_ratings_cache c ON (c.interHash = b.simhash1)
 		WHERE b.content_id = t1.content_id
 		AND (
