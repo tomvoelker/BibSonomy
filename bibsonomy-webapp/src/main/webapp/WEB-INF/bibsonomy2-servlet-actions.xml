@@ -1141,8 +1141,6 @@
 		<property name="requestLogic" ref="requestLogic" />
 		<!-- To check registration for human beings ... -->
 		<property name="captcha" ref="captcha"></property>	
-		<!-- to access cookies -->
-		<property name="cookieLogic" ref="cookieLogic"/>
 		<property name="groupCreationMode" value="${project.groupcreationmode}" />
 	</bean>
 	
