@@ -693,7 +693,6 @@
 	</dependencies>
 	<properties>
 		<wtpversion>1.5</wtpversion>
-
 		<project.build.webapp.resourcedir>${project.build.directory}/${project.build.finalName}/resources</project.build.webapp.resourcedir>
 		<tomcat.version>7.0.55</tomcat.version>
 		<!-- We need to wrap the maven.build.timestamp property as it is not used 
@@ -710,7 +709,7 @@
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-surefire-plugin</artifactId>
 						<!-- use standard config don't exclude RemoteTests -->
-						<configuration combine.self="override">
+						<configuration>
 							<groups>org.bibsonomy.webapp.WebappTest</groups>
 						</configuration>
 					</plugin>
