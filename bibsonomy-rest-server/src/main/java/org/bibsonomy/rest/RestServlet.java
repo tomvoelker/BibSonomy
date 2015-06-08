@@ -232,7 +232,7 @@ public final class RestServlet extends HttpServlet {
 			UploadedFileAccessor uploadAccessor = new DualUploadedFileAccessor(request);
 
 			// choose rendering format (defaults to xml)
-			final RenderingFormat renderingFormat = RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HeaderUtils.HEADER_ACCEPT), getMainContentType(request));
+			final RenderingFormat renderingFormat = getRenderingFormatForError(request);
 
 			// create Context
 			final Reader reader = RESTUtils.getInputReaderForStream(getMainInputStream(request), REQUEST_ENCODING);
@@ -308,7 +308,7 @@ public final class RestServlet extends HttpServlet {
 			log.error(e.getMessage());
 			sendError(request, response, HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, e.getMessage());
 		} catch (final Exception e) {
-			log.error(e, e);
+			log.error(e.getMessage(), e);
 			// well, lets fetch each and every error...
 			sendError(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 		}
@@ -357,7 +357,7 @@ public final class RestServlet extends HttpServlet {
 	private void sendError(final HttpServletRequest request, final HttpServletResponse response, final int code, final String message) throws IOException {
 		// get renderer
 		// FIXME: handle exception if accept != content rendering format
-		final RenderingFormat mediaType = RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HeaderUtils.HEADER_ACCEPT), getMainContentType(request));
+		final RenderingFormat mediaType = getRenderingFormatForError(request);
 		final Renderer renderer = rendererFactory.getRenderer(mediaType);
 
 		// send error
@@ -371,6 +371,26 @@ public final class RestServlet extends HttpServlet {
 		writer.close();
 		response.setContentLength(cachingStream.size());
 		response.getOutputStream().print(cachingStream.toString(RESPONSE_ENCODING));
+	}
+
+	/**
+	 * @param request
+	 * @return the rendering format 
+	 */
+	protected static RenderingFormat getRenderingFormatForError(final HttpServletRequest request) {
+		try {
+			return RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HeaderUtils.HEADER_ACCEPT), getMainContentType(request));
+		} catch (final UnsupportedMediaTypeException e) {
+			// ignore unsupported media types
+			try {
+				// try only with url parameter and accept header
+				return RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HeaderUtils.HEADER_ACCEPT), null);
+			} catch (final UnsupportedMediaTypeException e2) {
+				// ignore the last time and just return the default rendering format
+			}
+		}
+		
+		return RESTUtils.DEFAULT_RENDERING_FORMAT;
 	}
 
 	/**

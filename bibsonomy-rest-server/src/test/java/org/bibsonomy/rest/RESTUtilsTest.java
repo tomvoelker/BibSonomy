@@ -31,6 +31,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.Collections;
 
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.rest.exceptions.UnsupportedMediaTypeException;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.junit.Test;
 
@@ -89,13 +90,14 @@ public class RESTUtilsTest {
 		assertEquals(RenderingFormat.CSL, format);
 	}
 	
-	@Test
-	public void notSupportedFormats() {
-		RenderingFormat format = RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), "", "application/x-www-form-urlencoded");
-		assertEquals(null, format); // TODO: should result in an exception
-		
-		format = RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), "*/*", "application/x-www-form-urlencoded");
-		assertEquals(null, format);
+	@Test(expected = UnsupportedMediaTypeException.class)
+	public void testNotSupportedFormatXWWWForm() {
+		RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), "", "application/x-www-form-urlencoded");
+	}
+	
+	@Test(expected = UnsupportedMediaTypeException.class)
+	public void testNotSupportedFormatXWWWFormAndHeadere() {
+		RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), "*/*", "application/x-www-form-urlencoded");
 	}
 
 	/**

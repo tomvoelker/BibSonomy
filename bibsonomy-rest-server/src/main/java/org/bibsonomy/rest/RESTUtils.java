@@ -47,6 +47,7 @@ import java.util.SortedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.rest.exceptions.UnsupportedMediaTypeException;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.utils.HeaderUtils;
@@ -57,8 +58,9 @@ import org.bibsonomy.util.io.xml.FilterInvalidXMLCharsWriter;
  */
 public class RESTUtils {
 	private static final Log log = LogFactory.getLog(RESTUtils.class);
-
-	private static final RenderingFormat DEFAULT_RENDERING_FORMAT = RenderingFormat.XML;
+	
+	/** the default rendering format */
+	public static final RenderingFormat DEFAULT_RENDERING_FORMAT = RenderingFormat.XML;
 
 	/**
 	 * all supported rendering formats by the rest server
@@ -69,6 +71,12 @@ public class RESTUtils {
 			RenderingFormat.APP_XML,
 			RenderingFormat.JSON,
 			RenderingFormat.CSL
+	));
+	
+	private static final List<RenderingFormat> SUPPORTED_POST_FORMATS = Collections.unmodifiableList(Arrays.asList(
+			RenderingFormat.XML,
+			RenderingFormat.APP_XML,
+			RenderingFormat.JSON
 	));
 
 	/**
@@ -150,6 +158,11 @@ public class RESTUtils {
 		// 3. check the content type of the request 
 		if (present(contentType)) {
 			final RenderingFormat contentTypeMediaType = RenderingFormat.getMediaType(contentType);
+			
+			final boolean supportedFormat = SUPPORTED_POST_FORMATS.contains(contentTypeMediaType);
+			if (!supportedFormat) {
+				throw new UnsupportedMediaTypeException("'" + contentType + "' not supported");
+			}
 
 			// check if accept header was sent by the client
 			if (present(acceptMediaTypes)) {
