@@ -6,12 +6,24 @@
 	<typeHandler javaType="personNameList"	callback="org.bibsonomy.database.common.typehandler.PersonNameTypeHandlerCallback" />
 
 	<!-- queries to include -->
+	<sqlMap resource="common/TypeAliases.xml" />
 	<sqlMap resource="common/TypeAliases-lucene.xml" />
+	<sqlMap resource="common/DiscussionCommon.xml" />
+	<sqlMap resource="common/CommentCommon.xml" />
+	<sqlMap resource="common/Common.xml" />
 	<sqlMap resource="common/Common-lucene.xml" />
+	<sqlMap resource="common/BookmarkCommon.xml" />
 	<sqlMap resource="common/BookmarkCommon-lucene.xml" />
+	<sqlMap resource="common/BibTexCommon.xml" />
 	<sqlMap resource="common/BibTexCommon-lucene.xml" />
+	<sqlMap resource="common/GoldStandardCommon.xml" />
 	<sqlMap resource="common/GoldStandardPublicationCommon-lucene.xml" />
-
+	<sqlMap resource="common/PersonCommon.xml" />
+	<sqlMap resource="common/ReviewCommon.xml" />
+	
+	<sqlMap resource="Person.xml" />
+	<sqlMap resource="General.xml" />
+	
 	<sqlMap resource="LuceneGenerateIndexQueries.xml" />
 	<sqlMap resource="Queries-lucene.xml" />
 </sqlMapConfig>

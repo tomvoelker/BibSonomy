@@ -54,7 +54,7 @@
 	</select>
 	
 	<!-- get users which where flagged as spammers/non-spammers since last index update --> 
-	<select id="getPredictionForTimeRange" parameterClass="date" resultMap="Common.spamPrediction">
+	<select id="getPredictionForTimeRange" parameterClass="date" resultMap="LuceneCommon.spamPrediction">
 		SELECT user_name, prediction, updated_at 
 			FROM prediction 
 			WHERE updated_at &gt;= #date# 
@@ -62,16 +62,17 @@
 	</select>
 	
 	<!-- get list of all non-spam bookmarks -->
-	<select id="getBookmarkForIndex" parameterClass="luceneParam" resultMap="BookmarkCommon.luceneBookmarkPost">
+	<select id="getBookmarkForIndex" parameterClass="luceneParam" resultMap="LuceneBookmarkCommon.luceneBookmarkPost">
 		SELECT 
 			bb.*, 
 			t.tag_name,
 			g.*,
 			u.book_url, u.book_url_ctr AS count,
-			t.tas_id
+			t.tas_id,
+			-1 AS rating, -1 AS number_of_ratings
 		FROM 
 		( 
-		  SELECT <include refid ="luceneCommonBookmarkAttributes"/>, b.group
+		  SELECT <include refid ="bookmarkAttributes"/>, b.group
 		  FROM bookmark b 
 	      JOIN urls u USING (book_url_hash)
 		  WHERE b.group &gt;= 0
@@ -96,16 +97,17 @@
 	</select>
 	
 	<!-- get list of all non-spam bookmarks ordered by hash -->
-	<select id="getBookmarkForIndexOrderedByHash" parameterClass="luceneParam" resultMap="BookmarkCommon.luceneBookmarkPost">
+	<select id="getBookmarkForIndexOrderedByHash" parameterClass="luceneParam" resultMap="LuceneBookmarkCommon.luceneBookmarkPost">
 		SELECT 
 			bb.*, 
 			t.tag_name,
 			g.*,
 			u.book_url, u.book_url_ctr AS count,
-			t.tas_id
+			t.tas_id,
+			-1 AS rating, -1 AS number_of_ratings
 		FROM 
 		( 
-		  SELECT <include refid ="luceneCommonBookmarkAttributes"/>, b.group
+		  SELECT <include refid ="bookmarkAttributes"/>, b.group
 		  FROM bookmark b 
 	      JOIN urls u USING (book_url_hash)
 		  WHERE b.group &gt;= 0
@@ -119,15 +121,16 @@
 	</select>
 	
 	<!-- get list of all non-spam publication posts -->
-	<select id="getBibTexForIndex" parameterClass="luceneParam" resultMap="BibTexCommon.luceneBibtexPost">
+	<select id="getBibTexForIndex" parameterClass="luceneParam" resultMap="LuceneBibTexCommon.luceneBibtexPost">
 		SELECT 
 			bb.*, 
 			t.tag_name,
 			g.*,
-			t.tas_id
+			t.tas_id,
+			-1 AS rating, -1 AS number_of_ratings
 		FROM 
 		( 
-		  SELECT <include refid ="commonBibtexAttributes2"/>, b2.group, 1 AS count, b2.scraperid
+		  SELECT <include refid ="commonBibtexAttributes2"/>, b2.group, 1 AS count, b2.scraperid, b2.change_date
 		  FROM bibtex b2
 		  WHERE b2.group &gt;= 0
 			  AND b2.content_id &gt; #lastContentId#
@@ -150,12 +153,13 @@
 	</select>
 	
 	<!-- get list of all non-spam publication posts ordered by hash -->
-	<select id="getBibTexForIndexOrderedByHash" parameterClass="luceneParam" resultMap="BibTexCommon.luceneBibtexPost">
+	<select id="getBibTexForIndexOrderedByHash" parameterClass="luceneParam" resultMap="LuceneBibTexCommon.luceneBibtexPost">
 		SELECT 
 			bb.*, 
 			t.tag_name,
 			g.*,
-			t.tas_id
+			t.tas_id,
+			-1 AS rating, -1 AS number_of_ratings
 		FROM 
 		( 
 		  SELECT <include refid ="commonBibtexAttributes2"/>, b2.group, 1 AS count, b2.scraperid
@@ -169,8 +173,8 @@
 	    LEFT JOIN groupids g ON (bb.group = g.group)
 	</select>
 	
-	<select id="getGoldStandardPublicationForIndex" resultMap="GoldStandardPublicationCommon.luceneGoldStandardPublicationPost">
-		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, b.group, 'public' AS group_name, 1 AS count, b.content_id
+	<select id="getGoldStandardPublicationForIndex" resultMap="LuceneGoldStandardPublicationCommon.luceneGoldStandardPublicationPost">
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesLucene"/>, b.change_date, b.group, 'public' AS group_name, 1 AS count, b.content_id, -1 AS rating, -1 AS number_of_ratings
 		FROM gold_standard b
 		WHERE b.content_id &gt; #lastContentId#
 			AND content_type = 2
