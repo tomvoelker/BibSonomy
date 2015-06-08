@@ -86,11 +86,11 @@
 	</sql>
 	
 	<sql id="commonResourcePersonRelationColumns">
-		pub_person.person_change_id, pub_person.simhash1, pub_person.simhash2, pub_person.qualifying, pub_person.person_id, pub_person.relator_code, pub_person.log_changed_by, pub_person.log_changed_at, pub_person.person_index	
+		pub_person.person_change_id, pub_person.simhash1, pub_person.simhash2, pub_person.qualifying, pub_person.person_id, pub_person.relator_code, pub_person.log_changed_by, pub_person.log_changed_at, pub_person.person_index
 	</sql>
 	
 	<sql id="commonResourcePersonRelationColumns2">
-		b2.person_change_id, b2.simhash1, b2.simhash2, b2.qualifying, b2.person_id, b2.relator_code, b2.log_changed_by, b2.person_index	
+		b2.person_change_id, b2.simhash1, b2.simhash2, b2.qualifying, b2.person_id, b2.relator_code, b2.log_changed_by, b2.log_changed_at, b2.person_index
 	</sql>
 	
 </sqlMap>

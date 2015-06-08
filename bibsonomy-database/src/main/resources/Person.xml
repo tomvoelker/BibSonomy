@@ -117,7 +117,7 @@
 		FROM
 			(SELECT
 					t1.*,
-					pp.person_change_id, pp.qualifying, pp.person_id, pp.relator_code, pp.log_changed_by, pp.person_index,
+					pp.person_change_id, pp.qualifying, pp.person_id, pp.relator_code, pp.log_changed_by, pp.log_changed_at, pp.person_index,
 					h.ctr AS count
 				FROM bibtex t1, bibhash h, pub_person pp
 				WHERE
