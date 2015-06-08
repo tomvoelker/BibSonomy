@@ -107,7 +107,7 @@ public class UpdateUserController extends SettingsPageController implements Vali
 		loginUser.setHobbies(commandUser.getHobbies());
 		loginUser.setPlace(commandUser.getPlace());
 		
-		loginUser.setUseExternalPicture(commandUser.getUseExternalPicture());
+		loginUser.setUseExternalPicture(commandUser.isUseExternalPicture());
 		
 		updateUserPicture( loginUser, command );
 
