@@ -53,6 +53,7 @@ import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.rest.enums.HttpMethod;
@@ -307,6 +308,9 @@ public final class RestServlet extends HttpServlet {
 		} catch (final UnsupportedMediaTypeException e) {
 			log.error(e.getMessage());
 			sendError(request, response, HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, e.getMessage());
+		} catch (final UnsupportedResourceTypeException e) {
+			// the user has not specified the resource type
+			sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
 		} catch (final Exception e) {
 			log.error(e.getMessage(), e);
 			// well, lets fetch each and every error...

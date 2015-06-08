@@ -402,13 +402,13 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * Renames an existing document to the given new name. 
 	 * The resourceHash is to find the corresponding
 	 * resource if existing. 
-	 * 
-	 * @param document - the document to rename
+	 * @param userName TODO
 	 * @param resourceHash - the resourceHash of the document
-	 * @param newName - the document's new name
+	 * @param documentName TODO
+	 * @param document - the document to rename
 	 * 	 
 	 */
-	public void updateDocument(Document document, String resourceHash, String newName);
+	public void updateDocument(String userName, String resourceHash, String documentName, Document document);
 	
 	/**
 	 * Adds an InetAddress (IP) with the given status to the list of addresses.

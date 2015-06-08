@@ -736,12 +736,12 @@ public class RestLogic implements LogicInterface {
 		throw new UnsupportedOperationException();
 	}
 	@Override
-	public void updateDocument(final Document document, final String resourceHash, final String newName) {
+	public void updateDocument(String userName, final String resourceHash, String documentName, final Document document) {
 		if (!present(document.getUserName())) {
 			document.setUserName(this.authUser.getName());
 		}
 		
-		this.execute(new ChangeDocumentNameQuery(resourceHash, newName, document));
+		this.execute(new ChangeDocumentNameQuery(userName, resourceHash, documentName, document));
 	}
 
 	@Override
