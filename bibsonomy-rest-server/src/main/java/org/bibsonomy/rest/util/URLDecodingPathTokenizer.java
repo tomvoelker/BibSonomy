@@ -26,46 +26,70 @@
  */
 package org.bibsonomy.rest.util;
 
-import static org.bibsonomy.util.UrlUtils.safeURIDecode;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
-import java.util.StringTokenizer;
+import org.bibsonomy.util.UrlUtils;
 
 
 /**
  * @author wla
+ * @author dzo
  */
-public class URLDecodingStringTokenizer extends StringTokenizer {
-
-	/**
-	 * 
-	 * @param str
-	 */
-	public URLDecodingStringTokenizer(final String str) {
-		super(str);
-	}
+public class URLDecodingPathTokenizer implements Iterator<String> {
+	private String[] tokens;
+	private int pos;
 	
 	/**
 	 * 
 	 * @param str
 	 * @param delim
 	 */
-	public URLDecodingStringTokenizer(final String str, final String delim) {
-		super(str, delim);
-	}
-	
-	/**
-	 * @param str
-	 * @param delim
-	 * @param returnDelims
-	 */
-	public URLDecodingStringTokenizer(final String str, final String delim, final boolean returnDelims) {
-		super(str, delim, returnDelims);
+	public URLDecodingPathTokenizer(final String str, final String delim) {
+		if (str == null) {
+			throw new IllegalArgumentException("path is null");
+		}
+		this.tokens = str.split(delim);
+		if (str.startsWith("/")) {
+			this.pos = 0;
+		} else {
+			this.pos = -1;
+		}
 	}
 
+	/* (non-Javadoc)
+	 * @see java.util.Iterator#hasNext()
+	 */
 	@Override
-	public String nextToken() {
-		final String token = super.nextToken();
-		return safeURIDecode(token);
+	public boolean hasNext() {
+		return this.pos + 1 < tokens.length;
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.util.Iterator#next()
+	 */
+	@Override
+	public String next() {
+		if (!hasNext()) {
+			throw new NoSuchElementException();
+		}
+		// FIXME: safeURIDecode is not the correct method (decodes + => ' ')
+		return UrlUtils.safeURIDecode(this.tokens[++this.pos]);
+	}
+
+	/* (non-Javadoc)
+	 * @see java.util.Iterator#remove()
+	 */
+	@Override
+	public void remove() {
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * @return the number of remaining tokens
+	 */
+	public int countRemainingTokens() {
+		return this.tokens.length - this.pos - 1;
 	}
 
 }
