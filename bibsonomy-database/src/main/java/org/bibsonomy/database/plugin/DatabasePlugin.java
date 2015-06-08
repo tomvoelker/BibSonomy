@@ -322,7 +322,7 @@ public interface DatabasePlugin {
 	 * @param personChangeId 
 	 * @param session
 	 */
-	public void onPersonNameDelete(final Integer personChangeId, final DBSession session);
+	public void onPersonNameDelete(final Object personChangeId, final DBSession session);
 	
 	/**
 	 * called when a person will be updated
@@ -330,6 +330,13 @@ public interface DatabasePlugin {
 	 * @param session
 	 */
 	public void onPersonUpdate(final String personId, final DBSession session);
+	
+	/**
+	 * called when a person will be updated by username change
+	 * @param userName
+	 * @param session
+	 */
+	public void onPersonUpdateByUserName(final String userName, final DBSession session);
 	
 	/**
 	 * called when a person will be deleted

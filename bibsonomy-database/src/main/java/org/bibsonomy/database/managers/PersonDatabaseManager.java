@@ -197,6 +197,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			DBSession databaseSession) {
 		databaseSession.beginTransaction();
 		try {
+			this.plugins.onPubPersonDelete(resourceRelationId, databaseSession);
 			this.delete("removeResourceRelation", resourceRelationId, databaseSession);
 			databaseSession.commitTransaction();
 		} finally {
@@ -229,6 +230,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public void deleteAllNamesOfPerson(String personId, DBSession databaseSession) {
 		databaseSession.beginTransaction();
 		try {
+			this.plugins.onPersonNameDelete(personId, databaseSession);
 			this.delete("deleteAllNamesOfPerson", personId, databaseSession);
 			databaseSession.commitTransaction();
 		} finally {
@@ -280,6 +282,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public void unlinkUser(String username, DBSession session) {
 		session.beginTransaction();
 		try {
+			this.plugins.onPersonUpdateByUserName(username, session);
 			this.update("unlinkUser", username, session);
 			session.commitTransaction();
 		} finally {

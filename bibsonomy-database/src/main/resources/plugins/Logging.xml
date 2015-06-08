@@ -184,6 +184,12 @@
 		FROM person_name WHERE person_change_id = #personChangeId#
 	</insert>
 	
+	<insert id="logPersonNameByPersonId" parameterClass="String">
+		INSERT INTO log_person_name (person_change_id, first_name, last_name, person_id, is_main, log_changed_at, log_changed_by)
+		SELECT person_change_id, first_name, last_name, person_id, is_main, log_changed_at, log_changed_by
+		FROM person_name WHERE person_id = #personId#
+	</insert>
+	
 	<insert id="logPubPerson" parameterClass="Integer">
 		INSERT INTO log_pub_person (person_change_id, simhash1, simhash2, relator_code, person_index, person_id, qualifying, log_changed_at, log_changed_by, deleted)
 		SELECT person_change_id, simhash1, simhash2, relator_code, person_index, person_id, qualifying, log_changed_at, log_changed_by, deleted
@@ -191,14 +197,21 @@
 	</insert>
 	
 	<!-- when updated, 'deleted' field is 0 -->
-	<insert id="logPersonUpdate" parameterClass="Integer">
-		INSERT INTO log_person (person_change_id, person_id, academic_degree, user_name, orcid, log_changed_at, log_changed_by, deleted)
-		SELECT person_change_id, person_id, academic_degree, user_name, orcid, log_changed_at, log_changed_by, 0
+	<insert id="logPersonUpdate" parameterClass="String">
+		INSERT INTO log_person (person_change_id, id, person_id, academic_degree, user_name, orcid, log_changed_at, log_changed_by, deleted)
+		SELECT person_change_id, person_change_id, person_id, academic_degree, user_name, orcid, log_changed_at, log_changed_by, 0
 		FROM person WHERE person_id = #personId#
 	</insert>
 	
+	<!-- when updated, 'deleted' field is 0 -->
+	<insert id="logPersonUpdateByUserName" parameterClass="String">
+		INSERT INTO log_person (person_change_id, id, person_id, academic_degree, user_name, orcid, log_changed_at, log_changed_by, deleted)
+		SELECT person_change_id, person_change_id, person_id, academic_degree, user_name, orcid, log_changed_at, log_changed_by, 0
+		FROM person WHERE user_name = #username#
+	</insert>
+	
 	<!-- when deleted, 'deleted' field is 1 -->
-	<insert id="logPersonDelete" parameterClass="Integer">
+	<insert id="logPersonDelete" parameterClass="String">
 		INSERT INTO log_person (person_change_id, person_id, academic_degree, user_name, orcid, log_changed_at, log_changed_by, deleted)
 		SELECT person_change_id, person_id, academic_degree, user_name, orcid, log_changed_at, log_changed_by, 1
 		FROM person WHERE person_id = #personId#
