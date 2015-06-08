@@ -72,7 +72,7 @@ public class AandAScraper extends AbstractUrlScraper implements ReferencesScrape
 		
 		try {
 			// need to filter the DOI out of the context, because the DOI is a common but not constant finding in the URL
-			final String doi = this.extractDOI(XmlUtils.getDOM(sc.getPageContent()));
+			final String doi = extractDOI(XmlUtils.getDOM(sc.getPageContent()));
 
 			// if the doi is present
 			if (present(doi)) {
@@ -109,7 +109,7 @@ public class AandAScraper extends AbstractUrlScraper implements ReferencesScrape
 	 * @param document
 	 * @return
 	 */
-	private String extractDOI(final Document document){
+	private static String extractDOI(final Document document){
 		final NodeList tdS = document.getElementsByTagName("td");
 		for (int i = 0; i < tdS.getLength(); i++) {
 			final Node node = tdS.item(i);
