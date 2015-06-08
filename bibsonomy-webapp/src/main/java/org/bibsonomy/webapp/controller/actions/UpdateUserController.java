@@ -82,10 +82,9 @@ public class UpdateUserController extends SettingsPageController implements Vali
 			this.errors.reject("error.field.valid.ckey");
 		}
 		
-		//return 
 		super.workOn(command);
 		// FIXME: redirect removes error messages
-		return new ExtendedRedirectView("settings");
+		return new ExtendedRedirectView("/settings");
 	}
 
 	/**
