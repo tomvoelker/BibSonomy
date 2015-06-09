@@ -28,13 +28,16 @@ package org.bibsonomy.common.enums;
 
 /**
  * TODO: add documentation to this class
- *
+ * 
  * @author dzo
  */
 public enum StatisticsUnit {
+	/** hour (60 minutes) */
 	HOUR,
 	
+	/** day (24 hours) */
 	DAY,
 	
+	/** month (28-31 days) */
 	MONTH;
 }

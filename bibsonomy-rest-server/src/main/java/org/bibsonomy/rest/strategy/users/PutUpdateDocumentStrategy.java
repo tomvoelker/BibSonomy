@@ -111,9 +111,9 @@ public class PutUpdateDocumentStrategy extends AbstractUpdateStrategy {
 			throw new AccessDeniedException("Only the owner of the file is allowed to change it!");
 		}
 		
-		this.getLogic().updateDocument(toUpdate, resourceHash, newFilename);
+		this.getLogic().updateDocument(this.userName, this.resourceHash, this.oldFilename, sentDocument);
 		
-		return resourceHash;
+		return this.resourceHash;
 	}
 
 	/**

@@ -60,7 +60,6 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SpamStatus;
-import org.bibsonomy.common.enums.StatisticsUnit;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
@@ -2000,17 +1999,15 @@ public class DBLogic implements LogicInterface {
 	 * .model.Document, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void updateDocument(final Document document, final String resourceHash, final String newName) {
-		this.ensureLoggedIn();
-
-		final String userName = document.getUserName();
+	public void updateDocument(String userName, final String resourceHash, String documentName, final Document document) {
 		/*
 		 * users can only modify their own documents
 		 */
+		this.ensureLoggedIn();
 		this.permissionDBManager.ensureWriteAccess(this.loginUser, userName);
 
 		final DBSession session = this.openSession();
-
+		final String newName = document.getFileName();
 		try {
 			if (resourceHash != null) {
 				/*
@@ -2030,10 +2027,10 @@ public class DBLogic implements LogicInterface {
 					 * the given resource hash belongs to a post of the user ->
 					 * rename the corresponding document to the new name
 					 */
-					final Document existingDocument = this.docDBManager.getDocumentForPost(userName, resourceHash, document.getFileName(), session);
+					final Document existingDocument = this.docDBManager.getDocumentForPost(userName, resourceHash, documentName, session);
 					if (present(existingDocument)) {
-						this.docDBManager.updateDocument(post.getContentId(), document.getFileHash(), newName, document.getDate(),
-								userName, document.getMd5hash(), session);
+						this.docDBManager.updateDocument(post.getContentId().intValue(), existingDocument.getFileHash(), newName, existingDocument.getDate(),
+								userName, existingDocument.getMd5hash(), session);
 					}
 				} else {
 					throw new ValidationException("Could not find a post with hash '" + resourceHash + "'.");
@@ -2044,7 +2041,7 @@ public class DBLogic implements LogicInterface {
 		} finally {
 			session.close();
 		}
-		log.debug("renamed document " + document.getFileName() + " from user " + userName + "to " + newName);
+		log.debug("renamed document " + documentName + " from user " + userName + "to " + newName);
 	}
 
 	/*
@@ -2403,10 +2400,10 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#getUserStatistics()
 	 */
 	@Override
-	public Statistics getUserStatistics(GroupingEntity grouping, Set<Filter> filters, Classifier classifier, SpamStatus status, Date startDate, Date endDate, Integer interval, final StatisticsUnit unit) {
+	public Statistics getUserStatistics(GroupingEntity grouping, Set<Filter> filters, Classifier classifier, SpamStatus status, Date startDate, Date endDate) {
 		final DBSession session = openSession();
 		try {
-			return this.statisticsDBManager.getUserStatistics(grouping, startDate, filters, classifier, status, interval, unit, session);
+			return this.statisticsDBManager.getUserStatistics(grouping, startDate, filters, classifier, status, session);
 		} finally {
 			session.close();
 		}

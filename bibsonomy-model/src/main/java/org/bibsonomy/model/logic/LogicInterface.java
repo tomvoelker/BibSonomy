@@ -42,7 +42,6 @@ import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.SpamStatus;
-import org.bibsonomy.common.enums.StatisticsUnit;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
@@ -119,17 +118,15 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	
 	/**
 	 * @param grouping TODO
-	 * @param constraints 
 	 * @param filters TODO
 	 * @param classifier 
 	 * @param status 
 	 * @param startDate
 	 * @param endDate
-	 * @param interval 
-	 * @param unit 
+	 * @param constraints 
 	 * @return statistic informations about the users
 	 */
-	public Statistics getUserStatistics(GroupingEntity grouping, Set<Filter> filters, final Classifier classifier, final SpamStatus status, Date startDate, Date endDate, final Integer interval, final StatisticsUnit unit);
+	public Statistics getUserStatistics(GroupingEntity grouping, Set<Filter> filters, final Classifier classifier, final SpamStatus status, Date startDate, Date endDate);
 	
 	/**
 	 * Returns details about a specified user
@@ -405,13 +402,13 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * Renames an existing document to the given new name. 
 	 * The resourceHash is to find the corresponding
 	 * resource if existing. 
-	 * 
-	 * @param document - the document to rename
+	 * @param userName TODO
 	 * @param resourceHash - the resourceHash of the document
-	 * @param newName - the document's new name
+	 * @param documentName TODO
+	 * @param document - the document to rename
 	 * 	 
 	 */
-	public void updateDocument(Document document, String resourceHash, String newName);
+	public void updateDocument(String userName, String resourceHash, String documentName, Document document);
 	
 	/**
 	 * Adds an InetAddress (IP) with the given status to the list of addresses.

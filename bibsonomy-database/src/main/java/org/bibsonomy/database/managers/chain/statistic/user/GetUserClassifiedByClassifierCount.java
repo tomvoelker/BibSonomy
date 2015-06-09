@@ -43,7 +43,7 @@ public class GetUserClassifiedByClassifierCount extends StatisticChainElement {
 	 */
 	@Override
 	protected Statistics handle(StatisticsParam param, DBSession session) {
-		return new Statistics(this.db.getNumberOfClassifiedUsersByClassifier(param.getSpamStatus(), param.getInterval(), session));
+		return new Statistics(this.db.getNumberOfClassifiedUsersByClassifier(param.getSpamStatus(), param.getStartDate(), session));
 	}
 
 	/* (non-Javadoc)
