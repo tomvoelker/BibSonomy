@@ -114,7 +114,7 @@ public abstract class HttpWorker<M extends HttpMethod> {
 		// add accept and content type header
 		final String mimeType = this.renderingFormat.getMimeType();
 		method.addRequestHeader("Accept", mimeType);
-		method.addRequestHeader("Content-Type", this.renderingFormat.getMimeType());
+		method.addRequestHeader("Content-Type", mimeType);
 		
 		try {
 			if (LOGGER.isDebugEnabled()) {
