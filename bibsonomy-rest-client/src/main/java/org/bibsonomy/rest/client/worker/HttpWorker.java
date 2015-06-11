@@ -100,7 +100,7 @@ public abstract class HttpWorker<M extends HttpMethod> {
 		//
 		// handle OAuth requests
 		// 
-		if (this.accessor!=null) {
+		if (this.accessor != null) {
 			return accessor.perform(url, requestBody, method, this.renderingFormat);
 		}
 		
@@ -112,10 +112,14 @@ public abstract class HttpWorker<M extends HttpMethod> {
 		method.addRequestHeader(HeaderUtils.HEADER_AUTHORIZATION, HeaderUtils.encodeForAuthorization(this.username, this.apiKey));
 		method.setDoAuthentication(true);
 		// add accept and content type header
-		method.addRequestHeader("Accept", this.renderingFormat.getMimeType());
+		final String mimeType = this.renderingFormat.getMimeType();
+		method.addRequestHeader("Accept", mimeType);
 		method.addRequestHeader("Content-Type", this.renderingFormat.getMimeType());
 		
 		try {
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("calling " + url + " with '" + requestBody + "'");
+			}
 			this.httpResult = getHttpClient().executeMethod(method);
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("HTTP result: " + this.httpResult);
