@@ -46,7 +46,7 @@ import org.bibsonomy.rest.utils.HeaderUtils;
  */
 public abstract class HttpWorker<M extends HttpMethod> {
 	/** the logger for all workers */
-	protected static final Log LOGGER = LogFactory.getLog(HttpWorker.class.getName());
+	protected static final Log LOGGER = LogFactory.getLog(HttpWorker.class);
 	
 	private final HttpClient httpClient;
 	/** the http result code of the worker */
