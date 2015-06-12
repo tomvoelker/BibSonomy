@@ -139,7 +139,7 @@
 				 		
 						<bsform:fieldset legendKey="post.resource.fields.general">
 							<jsp:attribute name="content">
-								<c:if test="${not empty command.personId}">
+								<c:if test="${not empty command.personRole and command.personRole eq 'AUTHOR'}">
 				 					<bs:alert style="info">
 										<jsp:attribute name="alertBody">
 											<c:out value="${personPubLink} ${command.post.resource.author[0].firstName} ${command.post.resource.author[0].lastName}" />
