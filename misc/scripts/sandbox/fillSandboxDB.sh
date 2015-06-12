@@ -11,7 +11,7 @@ source ~/.bash_aliases
 
 database="sandbox_puma"
 dbUser="sandbox_puma"
-dbPw="sandbox48idfd7qUU823op2r"
+dbPw=""
 pumaHome=/home/puma-sandbox
 pumaDataDir=${pumaHome}/pumadata
 sandboxInitDir=${pumaHome}/init_sandbox
