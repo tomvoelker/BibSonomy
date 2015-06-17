@@ -41,7 +41,6 @@ import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
 
 /**
@@ -49,22 +48,22 @@ import org.bibsonomy.util.WebUtils;
  * @author tst
  */
 public class EricScraper extends AbstractUrlScraper {
-	
+
 	private static final String SITE_URL = "http://www.eric.ed.gov/";
 	private static final String SITE_NAME = "Education Resources Information Center";
 	private static final String INFO = "Scraper for publications from the " + href(SITE_URL, SITE_NAME)+".";
-	
+
 	private static final String ERIC_HOST = "eric.ed.gov";
-	
+
 	private static final String EXPORT_BASE_URL = "http://www.eric.ed.gov/ERICWebPortal/MyERIC/clipboard/performExport.jsp?texttype=endnote&accno=";
-	
-	private static final String PATTERN_ACCNO = "accno=([^&]*)";
 
-	private static final Pattern accnoPattern = Pattern.compile("accno=([^&]*)");
+	private static final Pattern ACCNO_PATTERN = Pattern.compile("accno=([^&]*)");
 
-	
+	private static final RisToBibtexConverter CONVERTER = new RisToBibtexConverter();
+
+
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + ERIC_HOST), AbstractUrlScraper.EMPTY_PATTERN));
-	
+
 	public String getInfo() {
 		return INFO;
 	}
@@ -78,51 +77,34 @@ public class EricScraper extends AbstractUrlScraper {
 		 * texttype=endnote
 		 * 
 		 */
-		
-			sc.setScraper(this);
-			
-			//extract accno from url query
-			String accno = null;
-			
-			final Matcher accnoMatcher = accnoPattern.matcher(sc.getUrl().getQuery());
-			if(accnoMatcher.find())
-				accno = accnoMatcher.group(1);
-			
-			// build download URL
-			String downloadUrl = null;
-			if(accno != null)
-				downloadUrl = EXPORT_BASE_URL + accno;
-			
-			// download ris
-			try {
-				
-				if(downloadUrl != null){
-					String ris = WebUtils.getContentAsString(new URL(downloadUrl));
-					
-					// convert to bibtex
-					String bibtex = null;
-					RisToBibtexConverter converter = new RisToBibtexConverter();
-					
-					bibtex = converter.risToBibtex(ris);
-				
-					if(bibtex != null){
-						// append url
-						bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
-						
-						// add downloaded bibtex to result 
-						sc.setBibtexResult(bibtex);
-						return true;
-					}else
-						throw new ScrapingFailureException("getting bibtex failed");
-					
-				}else
-					throw new PageNotSupportedException("Value for accno is missing.");
-				
-			} catch (IOException ex) {
-				throw new InternalFailureException(ex);
+
+		sc.setScraper(this);
+
+		try {
+			final URL url = sc.getUrl();
+			// extract accno from URL query
+			final Matcher accnoMatcher = ACCNO_PATTERN.matcher(url.getQuery());
+			if (accnoMatcher.find()) {
+				final String downloadUrl = EXPORT_BASE_URL + accnoMatcher.group(1);
+
+				// download RIS
+				final String ris = WebUtils.getContentAsString(new URL(downloadUrl));
+
+				// convert to BibTeX
+				final String bibtex = CONVERTER.risToBibtex(ris);
+
+				// add downloaded bibtex to result 
+				sc.setBibtexResult(BibTexUtils.addFieldIfNotContained(bibtex, "url", url.toString()));
+					return true;
+
+			} else {
+				throw new PageNotSupportedException("Value for accno is missing.");
 			}
+		} catch (IOException ex) {
+			throw new InternalFailureException(ex);
+		}
 	}
-	
+
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
