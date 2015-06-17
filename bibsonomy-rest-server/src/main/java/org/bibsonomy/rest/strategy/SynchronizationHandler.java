@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Rest-Server - The REST-server.
+ * BibSonomy-Rest-Server - The REST-server.	
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -28,8 +28,15 @@ package org.bibsonomy.rest.strategy;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.StringTokenizer;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.exceptions.SynchronizationRunningException;
+import org.bibsonomy.model.User;
+import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
@@ -37,12 +44,14 @@ import org.bibsonomy.rest.strategy.sync.DeleteSyncDataStrategy;
 import org.bibsonomy.rest.strategy.sync.GetSyncDataStrategy;
 import org.bibsonomy.rest.strategy.sync.PostSyncPlanStrategy;
 import org.bibsonomy.rest.strategy.sync.PutSyncStatusStrategy;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
- * @author wla
+ * @author wla, vhem
  */
 public class SynchronizationHandler implements ContextHandler {
-		
+	private static final Log log = LogFactory.getLog(SynchronizationHandler.class);
+	
 	@Override
 	public Strategy createStrategy(final Context context, final StringTokenizer urlTokens, final HttpMethod httpMethod) {
 		final int numTokensLeft = urlTokens.countTokens();
@@ -51,6 +60,14 @@ public class SynchronizationHandler implements ContextHandler {
 		}
 		try {
 			final URI serviceURI = new URI(urlTokens.nextToken());
+			final User user = context.getLogic().getAuthenticatedUser();
+			final List<SyncService> syncClient = context.getLogic().getSyncService(user.getName(), serviceURI, false);		
+			
+			// check SSL for Puma instance (client has SSLDn and RestServlet set the role of the user)
+			if ( ValidationUtils.present(syncClient.get(0).getSslDn()) && !user.getRole().equals(Role.SYNC) ) {
+				log.debug("no sync-role was set for the user - check ssl");
+				throw new SynchronizationRunningException();
+			}
 			
 			switch (httpMethod) {
 			case GET:
