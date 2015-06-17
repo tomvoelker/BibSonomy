@@ -42,6 +42,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupRequest;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.springframework.context.MessageSource;
 
@@ -229,7 +230,7 @@ public class MailUtils {
 	 */
 	public boolean sendGroupActivationNotification(final Group group, User requestingUser, final Locale locale) {
 		final Object[] messagesParameters = new Object[] {
-			requestingUser.getName(),
+			UserUtils.getNiceUserName(requestingUser, true),
 			group.getName(),
 			absoluteURLGenerator.getGroupUrlByGroupName(group.getName()),
 			absoluteURLGenerator.getGroupSettingsUrlByGroupName(group.getName()),

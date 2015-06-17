@@ -32,8 +32,8 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.plugin.DatabasePlugin;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
+import org.bibsonomy.database.testutil.TestDatabaseLoader;
 import org.bibsonomy.testutil.DatabasePluginMock;
-import org.bibsonomy.testutil.TestDatabaseLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -47,6 +47,19 @@ import org.junit.BeforeClass;
  * @author Christian Schenk
  */
 public abstract class AbstractDatabaseManagerTest extends AbstractDatabaseTest {
+	
+	/** the id used to retrieve the properties in the config file */
+	public static final String DATABASE_ID = "main";
+	/** the name of the file where username, password, and url are stored */
+	public static final String DATABASE_CONFIG_FILE = "database-test.properties";
+	/** Holds the database schema (script is at /src/main/resources) */
+	private static final String SCHEMA_FILENAME = "bibsonomy-db-schema.sql";
+	/** Holds the test data (script is found at /src/test/resources) */
+	private static final String DATA_FILENAME = "database/insert-test-data.sql";
+	
+	/** holds the database helper class */
+	public static final TestDatabaseLoader LOADER = new TestDatabaseLoader(SCHEMA_FILENAME, DATA_FILENAME);
+	
 	// TODO: move to a TestUtilClass
 	protected static final int PUBLIC_GROUP_ID = GroupID.PUBLIC.getId();
 	protected static final int PUBLIC_GROUP_ID_SPAM = GroupID.PUBLIC_SPAM.getId();
@@ -78,7 +91,7 @@ public abstract class AbstractDatabaseManagerTest extends AbstractDatabaseTest {
 	 */
 	@Before
 	public final void setUp() {
-		TestDatabaseLoader.getInstance().load();
+		LOADER.load(this.getDatabaseConfigFile(), DATABASE_ID);
 		this.dbSession = dbSessionFactory.getDatabaseSession();
 		
 		// load plugins (some tests are removing plugins from the plugin registry
@@ -89,6 +102,13 @@ public abstract class AbstractDatabaseManagerTest extends AbstractDatabaseTest {
 		for (final DatabasePlugin plugin : DatabasePluginRegistry.getDefaultPlugins()) {
 			pluginRegistry.add(plugin);
 		}
+	}
+
+	/**
+	 * @return the database config file to use
+	 */
+	protected String getDatabaseConfigFile() {
+		return DATABASE_CONFIG_FILE;
 	}
 
 	/**

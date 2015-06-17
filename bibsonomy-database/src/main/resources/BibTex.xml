@@ -259,7 +259,7 @@
 		LEFT OUTER JOIN tas AS t ON ba.content_id = t.content_id, bibtex b <include refid="reviewRatingsJoinPublication" />, bibhash h
 		WHERE b.content_id = ba.content_id
 		      AND <include refid="bibtexSimHash"/>
-		ORDER BY ba.date DESC, content_id DESC		
+		ORDER BY ba.date DESC, content_id DESC
 	</select>
 	
 	<!--+
@@ -980,6 +980,21 @@
 		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id <include refid="reviewRatingsJoinPublication2" />, groupids AS g
 		WHERE b2.group = g.group
 		ORDER BY b2.date DESC, b2.content_id DESC
+	</select>
+	
+	<select id="getBibTexCount" resultClass="int" parameterClass="bibtexParam" timeout="0">
+		SELECT COUNT(*) FROM bibtex
+		<include refid="statisticRestrictions" />
+	</select>
+	
+	<select id="getLogBibTexCount" resultClass="int" parameterClass="bibtexParam" timeout="0">
+		SELECT COUNT(*) FROM log_bibtex
+		<include refid="statisticRestrictions" />
+	</select>
+	
+	<select id="getUniqueBibTexCount" resultClass="int" parameterClass="bibtexParam" timeout="0">
+		SELECT count(DISTINCT simhash1) AS ctr FROM bibtex
+		<include refid="statisticRestrictions" />
 	</select>
 	
 	<update id="updateBibTexInGroupFromLeavingUser" parameterClass="resourceParam">

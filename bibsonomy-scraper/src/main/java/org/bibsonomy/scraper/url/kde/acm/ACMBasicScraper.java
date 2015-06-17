@@ -31,7 +31,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.LinkedList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -69,18 +69,16 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 	private static final String SITE_URL = "http://portal.acm.org/";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 
-	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
-
-	static {
-		patterns.add(new Pair<Pattern, Pattern>(
-				Pattern.compile(".*" + "[(portal)(dl)].acm.org"), 
-				Pattern.compile("(/beta)?/citation.cfm.*")
-		));
-		patterns.add(new Pair<Pattern, Pattern>(
+	private static final List<Pair<Pattern,Pattern>> patterns = Arrays.asList(
+		new Pair<Pattern, Pattern>(
+			Pattern.compile(".*" + "[(portal)(dl)].acm.org"), 
+			Pattern.compile("(/beta)?/citation.cfm.*")
+		),
+		new Pair<Pattern, Pattern>(
 				Pattern.compile(".*" + "doi.acm.org"),
 				EMPTY_PATTERN
-		));
-	}
+		)
+	);
 	
 	
 	private static final String BROKEN_END = new String("},\n}");
@@ -88,7 +86,8 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 	private static final Pattern URL_PARAM_ID_PATTERN = Pattern.compile("id=(\\d+(?:\\.(\\d+))?)");
 	private static final Pattern DOI_URL_ID_PATTERN = Pattern.compile("/(\\d+(?:\\.(\\d+))?)");
 	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<div style=\"display:inline\">(\\s*<p>\\s*)?((?s).+?)(\\s*<\\/p>\\s*)?<\\/div>", Pattern.MULTILINE);
-	//remove tags in abstract
+	
+	/** remove tags in abstract */
 	private static final String CLEANUP_ABSTRACT = "<[\\da-zA-Z\\s]*>|<\\s*/\\s*[\\da-zA-Z\\s]*>|\\r\\n|\\n";
 	
 	@Override

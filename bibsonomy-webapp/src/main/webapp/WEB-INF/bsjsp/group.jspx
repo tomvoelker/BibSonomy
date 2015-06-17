@@ -7,11 +7,11 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
     xmlns:group="urn:jsptagdir:/WEB-INF/tags/bstags/resources/group"
-	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:button="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -35,88 +35,47 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-		<ul>
 			<c:choose>
 				<c:when test="${not empty group.name}">
-				<li>
-					<h4 class="sidebar"><group:groupname group="${group}" showRealname="${false}"/></h4>
-					<div class="row">
-						<div class="col-md-6">
-							<group:groupthumbnail group="${group}" noname="${false}" />
-						</div>
-						<div class="col-md-6">
-							<group:groupcv group="${group}" />
-							<c:choose>
-								<c:when test="${mtl:contains(command.context.loginUser.groups, group)}">
-									<!-- TODO: use url generator -->
-									<a href="/settings/group/${group.name}" class="btn btn-success btn-sm"><span class="fa fa-check"><!-- keep me --></span><c:out value=" "/><span class="infotext"><fmt:message key="group.memberOf" /></span></a>
-									<a href="/updateGroup?operation=REMOVE_MEMBER&amp;groupname=${group.name}&amp;username=${command.context.loginUser.name}&amp;ckey=${ckey}" class="btn btn-danger btn-sm"><span class="fa fa-times"><!-- keep me --></span><c:out value=" "/><span class="infotext"><fmt:message key="group.leave" /></span></a>
-								</c:when>
-								<c:otherwise>
-									<c:choose>
-										<c:when test="${mtl:contains(command.context.loginUser.pendingGroups, group)}">
-											<a class="btn btn-default btn-sm">pending</a>
-										</c:when>
-										<c:otherwise>
-											<c:url var="joinLink" value="/joinGroup">
-												<c:param name="group" value="${group.name}" />
-											</c:url>
-											<a href="${joinLink}" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-plus"><!-- keep me --></span><c:out value=" " /><fmt:message key="joinGroup.short"/></a>	
-										</c:otherwise>
-									</c:choose>
-								</c:otherwise>
-							</c:choose>
-						</div>
-					</div>
-				</li>
-					
-				<!-- group description -->
-				<c:if test="${not empty group.description}">
-				<li>
-					<h4 class="sidebar"><fmt:message key="group.description.headline" /></h4>
-					<p><c:out value="${group.description}" /></p>
-					
-				</li>
-				</c:if>
 
-				<!-- group members -->
-				<rc:members group="${command.group}"/>
+					<sidebar:groupDescriptionItem group="${group}"/>
+					<sidebar:groupDetailsItem group="${group}"/>
+					<sidebar:groupMembersItem group="${group}"/>
+
+					<!-- link to discussed posts of the group -->
+					<sidebar:sidebarItem textKey="post.resource.discussion.headline">
+						<jsp:attribute name="content">
+							<ul class="discussionSidebarContent sidebar_collapse_content">
+								<li>
+									<fmt:message key="discussion.byGroup.help" var="title"><fmt:param value="${fn:escapeXml(command.group.name)}"/></fmt:message>
+									<a href="/discussed/group/${fn:escapeXml(command.group.name)}" title="${title}">
+										<fmt:message key="discussion.byGroup"><fmt:param value="${fn:escapeXml(command.group.name)}"/></fmt:message>
+									</a>
+								</li>
+							</ul>
+						</jsp:attribute>
+					</sidebar:sidebarItem>
 				
-				<!-- link to discussed posts of the group -->
-				<li>
-					<h4 class="sidebar"><fmt:message key="post.resource.discussion.headline"/></h4>
-					<ul class="discussionSidebarContent sidebar_collapse_content">
-						<li>
-							<fmt:message key="discussion.byGroup.help" var="title"><fmt:param value="${fn:escapeXml(command.group.name)}"/></fmt:message>
-							<a href="/discussed/group/${fn:escapeXml(command.group.name)}" title="${title}">
-								<fmt:message key="discussion.byGroup"><fmt:param value="${fn:escapeXml(command.group.name)}"/></fmt:message>
-							</a>
-						</li>
-					</ul>
-				</li>
+					<sidebar:sidebarTagCloudItem requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="default" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
 				
-				<!-- tags -->
-				<li>
-					<h4 class="sidebar"><fmt:message key="tags"/></h4>
-					<tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="default" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
-				</li>
-			</c:when>
+				</c:when>
 				<c:otherwise>
-					<li>
-						<h4 class="sidebar"><fmt:message key="group.doesnotexist.header" /></h4>
-						<ul>
-							<li>
-								<fmt:message var="linkText" key="settings.group.requestGroup.link"/>
-								<fmt:message key="settings.group.requestGroup.description">
-									<fmt:param value="/grouprequest"/>
-									<fmt:param value="${linkText}"/>
-								</fmt:message>
-							</li>
-						</ul>
-					</li>
+				
+					<sidebar:sidebarItem textKey="group.doesnotexist.header" /></h4>
+						<jsp:attribute name="content">
+							<ul>
+								<li>
+									<fmt:message var="linkText" key="settings.group.requestGroup.link"/>
+									<fmt:message key="settings.group.requestGroup.description">
+										<fmt:param value="/grouprequest"/>
+										<fmt:param value="${linkText}"/>
+									</fmt:message>
+								</li>
+							</ul>
+						</jsp:attribute>
+					</sidebar:sidebarItem>
 				</c:otherwise>
 			</c:choose>
-		</ul>
 		</jsp:attribute>
 	</layout:resourceLayout>
 </jsp:root>

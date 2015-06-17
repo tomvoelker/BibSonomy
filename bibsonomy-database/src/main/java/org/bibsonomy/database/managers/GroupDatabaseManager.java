@@ -132,7 +132,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		}
 		final String normedGroupName = this.getNormedGroupName(groupname);
 		if ("public".equals(normedGroupName)) {
-			return GroupUtils.getPublicGroup();
+			return GroupUtils.buildPublicGroup();
 		}
 
 		if ("private".equals(normedGroupName)) {
@@ -195,7 +195,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			return group;
 		}
 		if ("public".equals(groupname)) {
-			group = GroupUtils.getPublicGroup();
+			group = GroupUtils.buildPublicGroup();
 			group.setMemberships(Collections.<GroupMembership> emptyList());
 			return group;
 		}
@@ -291,7 +291,9 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Returns true if there's only one admin for the group.
+	 * @param g 
+	 * @param session 
+	 * @return <code>true</code> iff there's only one admin for the group.
 	 */
 	public boolean hasExactlyOneAdmin(final Group g, final DBSession session) {
 		final GroupParam p = new GroupParam();
@@ -300,11 +302,17 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		final Integer count = this.queryForObject("countPerRole", p, Integer.class, session);
 		return (count != null) && (count.intValue() == 1);
 	}
-
+	
 	/**
-	 * Returns true if the user is in the group otherwise false.
+	 * @param session
+	 * @return the number of members in the members log table
 	 */
-	private boolean isUserInGroup(final String username, final Group group) {
+	public int getGroupMembersInHistoryCount(DBSession session) {
+		final Integer count = this.queryForObject("getGroupMemberHistoryCount", Integer.class, session);
+		return saveConvertToint(count);
+	}
+	
+	private static boolean isUserInGroup(final String username, final Group group) {
 		for (final GroupMembership ms : group.getMemberships()) {
 			if (ms.getUser().getName().equals(username)) {
 				return true;

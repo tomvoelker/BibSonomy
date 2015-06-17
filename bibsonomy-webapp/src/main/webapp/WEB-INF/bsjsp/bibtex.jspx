@@ -13,6 +13,7 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -106,10 +107,8 @@
 							<a class="btn btn-primary" href="${editGoldStandardLink}">${goldTitle}</a>
 							<hr />
 						</div>
-					
 					<!-- invokes discussion forms -->
 					<c:if test="${not goldstandardPresent}">
-					
 						<discussion:discussion loginUser="${command.context.loginUser}" resource="${publication}" discussionItems="${command.discussionItems}"  postUserName="${command.postOwner}"/>
 					</c:if>
 					<input type="hidden" id="gs_present" value="${goldstandardPresent}"/>
@@ -122,16 +121,13 @@
 		    | sidebar
 		 	+-->
 		<jsp:attribute name="sidebar">
-			<ul>
-				<!-- display tags -->
-				<li>
-					<h4 class="sidebar"><fmt:message key="tags" /></h4>
-					<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" />
-				</li>
-				<!-- related users -->
-				<c:if test="${not empty command.relatedUserCommand.relatedUsers}">
-					<li>
-						<h4 class="sidebar"><fmt:message key="users"/></h4>
+		
+			<sidebar:sidebarTagCloudItem requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" />
+
+			<!-- related users -->
+			<c:if test="${not empty command.relatedUserCommand.relatedUsers}">
+				<sidebar:sidebarItem textKey="users">
+					<jsp:attribute name="content">
 						<ul class="tagcloud">
 							<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}">
 								<li class="${userclass}">
@@ -140,13 +136,12 @@
 								</li>
 							</c:forEach>
 						</ul> 
-					</li>
-				</c:if>
+					</jsp:attribute>
+				</sidebar:sidebarItem>
+			</c:if>
 				
-				<!-- copy users -->
-				<resources:metaData command="${command}" />
-			</ul>
-			<p class="clearfix"><!--  --></p>
+			<!-- copy users -->
+			<resources:metaData command="${command}" />
 		</jsp:attribute>
 		
 		<!--+

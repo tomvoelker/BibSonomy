@@ -35,17 +35,17 @@
 		WHERE ((u.updated_by != 'classifier' AND u.updated_by != 'on_delete') OR ISNULL(u.updated_by)) AND prediction = #prediction# AND algorithm='admin'
 		<isGreaterThan property="interval" compareValue="0" prepend="AND">
 			u.updated_at > NOW() - INTERVAL #interval# HOUR		
-		</isGreaterThan>
+	    </isGreaterThan>
 		ORDER BY u.updated_at DESC
 		LIMIT #limit#
 	</select>
 
 	<select id="getAdminClassifiedUsersCount" resultClass="integer" parameterClass="adminParam">
 		SELECT COUNT(*) 
-		FROM user WHERE (updated_by != 'classifier' OR ISNULL(updated_by)) AND spammer = #prediction# 
-		<isGreaterThan property="interval" compareValue="0" prepend="AND">
-			updated_at > NOW() - INTERVAL #interval# HOUR		
-		</isGreaterThan>
+		FROM user WHERE (updated_by != 'classifier' OR ISNULL(updated_by)) AND spammer = #prediction#
+		<isNotNull property="startDate" prepend="AND">
+			updated_at >= #startDate#
+		</isNotNull>
 	</select>
 	
 	<select id="getClassifiedUsers" resultMap="AdminCommon.userPredictionWithUserProperties" parameterClass="adminParam" timeout="300">
@@ -78,15 +78,15 @@
 	<select id="getClassifiedUsersCount" resultClass="integer" parameterClass="adminParam">
 		SELECT COUNT(*)  
 		FROM user u JOIN prediction p ON (u.user_name = p.user_name AND u.updated_at = p.updated_at)
-		WHERE updated_by = 'classifier' AND prediction = #prediction#		
-	   <isGreaterThan property="interval" compareValue="0" prepend="AND">	
-			p.updated_at > NOW() - INTERVAL #interval# HOUR		
-		</isGreaterThan>
-	</select>	
+		WHERE updated_by = 'classifier' AND prediction = #prediction#
+		<isNotNull property="startDate" prepend="AND">	
+			p.updated_at >= #startDate#
+		</isNotNull>
+	</select>
 	
 	<select id="getClassifierSettings" resultClass="string" parameterClass="string">
-		SELECT value FROM classifier_settings cs WHERE cs.key = #key#		
-	</select>	
+		SELECT value FROM classifier_settings cs WHERE cs.key = #key#
+	</select>
 
 	<update id="updateClassifierSettings" parameterClass="adminParam">
 		UPDATE classifier_settings cs SET value = #value# WHERE cs.key = #key# 
@@ -162,10 +162,6 @@
 		<isEqual property="spammer" compareValue="false">
 			rating_arithmetic_mean = COALESCE((rating_arithmetic_mean * number_of_ratings + d.rating)/(number_of_ratings + 1), 0),
 			number_of_ratings = number_of_ratings + 1
-		</isEqual>
-		
-		<isEqual property="spammer" compareValue="true">
-			
 		</isEqual>
 	</update>
 	

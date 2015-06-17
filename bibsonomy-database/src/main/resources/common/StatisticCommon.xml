@@ -1,0 +1,42 @@
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="StatisticCommon">
+	<sql id="statisticRestrictions">
+		<dynamic prepend="WHERE">
+			<include refid="statisticDateRestriction" />
+			<include refid="userRestriction" />
+		</dynamic>
+	</sql>
+	
+	<sql id="statisticDateRestriction">
+		<isNotNull prepend="AND" property="startDate">
+			date >= #startDate#
+		</isNotNull>
+	</sql>
+	
+	<sql id="userRestriction">
+		<isNotEmpty property="filters">
+			<iterate property="filtersAsList" conjunction="">
+				<isEqual property="filtersAsList[]" compareValue="NO_SPAMMER" prepend="AND">
+					`group` >= 0
+				</isEqual>
+				<isEqual property="filtersAsList[]" compareValue="SPAMMER" prepend="AND">
+					`group` &lt; 0
+				</isEqual>
+				<isEqual property="filtersAsList[]" compareValue="WITHOUT_DBLP" prepend="AND">
+					user_name != 'dblp'
+				</isEqual>
+			</iterate>
+			
+		</isNotEmpty>
+	</sql>
+	
+	<sql id="statisticRestrictionsWithContentType">
+		<dynamic prepend="WHERE">
+			<isGreaterThan prepend="AND" property="contentType" compareValue="0">
+				content_type = #contentType#
+			</isGreaterThan>
+			<include refid="statisticDateRestriction" />
+			<include refid="userRestriction" />
+		</dynamic>
+	</sql>
+</sqlMap>

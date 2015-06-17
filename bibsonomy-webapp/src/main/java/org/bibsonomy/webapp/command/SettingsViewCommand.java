@@ -31,8 +31,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.bibsonomy.common.enums.GroupUpdateOperation;
 
+import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.sync.SyncService;
@@ -45,9 +45,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
  * @author Steffen Kress
  */
 public class SettingsViewCommand extends TabsCommand<Object> implements Serializable {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -1211293063812357398L;
 	
 	/** Indexes of defined tabs */

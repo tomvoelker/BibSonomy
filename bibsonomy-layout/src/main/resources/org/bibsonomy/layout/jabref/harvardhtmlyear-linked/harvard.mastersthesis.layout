@@ -1,14 +1,14 @@
 \begingroup{year}<h3 class="bibsonomy_quicknav_group"><a name="\format[AntiScriptInjection]{\year}">\format[AntiScriptInjection]{\year}</a></h3>\endgroup{year}
 <p>
-\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\author} (\format[AntiScriptInjection]{\year}), 
-'\format[HTMLChars,AntiScriptInjection]{\title}'\begin{school}, Master's thesis, \format[AntiScriptInjection]{\school}\end{school}.
+\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLCharsAntiScript]{\author} (\format[AntiScriptInjection]{\year}), 
+'\format[HTMLCharsAntiScript]{\title}'\begin{school}, Master's thesis, \format[AntiScriptInjection]{\school}\end{school}.
 <br/>
 
 \begin{pubmedurl}<a href="\pubmedurl" target="_blank"> [Kurzfassung] </a>&nbsp;\end{pubmedurl}
 <a onclick="toggleBibtex('\username', '\intrahash', '\biburl?format=bibtex'); return false;" href="\biburl?format=bibtex">[BibTeX]</a>&nbsp;
 <a onclick="toggleBibtex2('\username', '\intrahash', '\biburl?format=endnote'); return false;" href="\biburl?format=endnote">[Endnote]</a>&nbsp;
 <div id="abs_\intrahash\username" style="display:none;border:1px dotted grey;">
-\format[Replace("\n, "),HTMLChars,AntiScriptInjection]{\abstract}
+\format[Replace("\n, "),HTMLCharsAntiScript]{\abstract}
 </div>
 <div style="position:relative">						
 	<div id="bib_\intrahash\username" style="display:inline;position:relativ;"></div>

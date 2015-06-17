@@ -40,14 +40,14 @@
 		<jsp:attribute name="infobox">
 			<parts:infobox>
 				<jsp:attribute name="infoTextBody">
-		  		<fmt:message key="synchronization.info" />
-		  		<ul>
-		  			<li><fmt:message key="synchronization.info.plan" /></li>
-		  			<li><fmt:message key="synchronization.info.reset" /></li>
-		  		</ul>
+				<fmt:message key="synchronization.info" />
+				<ul>
+					<li><fmt:message key="synchronization.info.plan" /></li>
+					<li><fmt:message key="synchronization.info.reset" /></li>
+				</ul>
 				</jsp:attribute>
 			</parts:infobox>
-         </jsp:attribute>
+		</jsp:attribute>
 		
 		<jsp:attribute name="content">
 			
@@ -120,7 +120,7 @@
 									</div>
 								</c:forEach>
 								</div>
-								<input type="submit" value="${resetService}" onclick="return confirmReset(this)" />
+								<input type="submit" class="btn btn-default btn-primary" value="${resetService}" onclick="return confirmReset(this)" />
 							</fieldset>
 
 							<fieldset class="fsInner">
@@ -143,13 +143,13 @@
 							
 								<legend><c:out value="${syncPlan}"/></legend>
 								
-								<input type="submit" class="syncPlanBtn" value="${getSyncPlan}" onclick="return getSyncPlan(this);"/>
-
-								<input type="submit" class="synchronizeBtn" value="${synchronize}" style="display:${syncButtonDisplay}" onclick="return doSync(this);"/>
-
-								<img src="${resdir}/image/ajax-loader-bar.gif" alt="${synchronizationRunning}" class="progressGif" style="display:none"/>
+								<div class="form-group">
+									<input type="submit" class="btn btn-default btn-primary" value="${getSyncPlan}" onclick="return getSyncPlan(this);"/>&amp;nbsp;
+									<input type="submit" class="btn btn-default btn-primary" value="${synchronize}" style="display:${syncButtonDisplay}" onclick="return doSync(this);"/>
+									<img src="${resdir}/image/ajax-loader-bar.gif" alt="${synchronizationRunning}" class="progressGif" style="display:none"/>
+								</div>
 							</fieldset>
-	
+
 							<input type="hidden" name="serviceName" value="${service.service}" />
 							<input type="hidden" name="ckey" value="${ckey}" />
 							<input type="hidden" name="_method" value="GET" />
@@ -167,7 +167,7 @@
 						<c:set var="isClientOnly" value="${fn:startsWith(syncClient.service, 'client://') }" />
 						<li>
 							<h3>
-								<c:out value="${syncClient.name}" />
+								<c:out value="${syncClient.name}" /><!-- keep me -->
 							</h3>
 							
 							<ul class="foldList">
@@ -189,7 +189,7 @@
 													<form action="/ajax/synchronize" method="post" class="clientReset">
 														<input type="hidden" name="serviceName" value="${syncClient.service}/${deviceId}" />
 														<input type="hidden" name="ckey" value="${command.context.ckey}" />
-														<input type="submit" value="${resetService}" onclick="return confirmReset(this)" />
+														<input type="submit" class="btn btn-default btn-primary" value="${resetService}" onclick="return confirmReset(this)" />
 													</form>
 													<ul class="foldList">
 														
@@ -209,12 +209,12 @@
 												<c:set var="status" value="${fn:toLowerCase(clientSyncData.status)}" />
 												<li class="${fn:toLowerCase(status)}">
 													<fmt:message key="resourceType.${clientSyncData.resourceType.simpleName}.plural"/> - <fmt:message key="synchronization.result.${status}"/> - <fmt:formatDate value="${clientSyncData.lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" />
-												</li>											
+												</li>
 											</c:otherwise>
 										</c:choose>
 										<c:set var="lastDeviceId" value="${deviceId}" />
 									</c:if>
-								</c:forEach>								
+								</c:forEach>
 							</ul>
 						</li>
 					</c:forEach>

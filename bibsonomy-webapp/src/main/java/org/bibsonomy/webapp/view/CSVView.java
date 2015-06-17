@@ -259,7 +259,7 @@ public class CSVView extends AbstractView {
 	private String groupsToString (final Set<Group> groups) {
 		final StringBuilder buf = new StringBuilder();
 		if (groups.isEmpty()) {
-			buf.append(GroupUtils.getPublicGroup().getName());
+			buf.append(GroupUtils.buildPublicGroup().getName());
 		} else {
 			for (final Group group: groups) {
 				buf.append(group.getName() + " ");
