@@ -1,0 +1,23 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:group="urn:jsptagdir:/WEB-INF/tags/bstags/resources/group"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar">
+
+
+	<jsp:directive.attribute name="group" required="true"
+		type="org.bibsonomy.model.Group" />
+
+	<sidebar:sidebarItem>
+		<jsp:attribute name="text">${group.description.headline}</jsp:attribute>
+		<jsp:attribute name="content">
+		
+				<!-- group description -->
+				<c:if test="${not empty group.description}">
+					<div><c:out value="${group.description}" /></div>
+				</c:if>
+		</jsp:attribute>
+	</sidebar:sidebarItem>
+</jsp:root>
