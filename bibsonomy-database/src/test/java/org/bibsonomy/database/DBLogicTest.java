@@ -46,6 +46,7 @@ import java.util.Set;
 
 import junit.framework.Assert;
 
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -77,6 +78,7 @@ import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.testutil.ModelUtils;
+import org.bibsonomy.util.Sets;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -656,12 +658,15 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		document.setUserName(TEST_USER_1);
 		this.getDbLogic(TEST_USER_1).createDocument(document, resourceHash);
 		
-		//check wether document was successfully created
+		// check wether document was successfully created
 		document = this.getDbLogic(TEST_USER_1).getDocument(TEST_USER_1, resourceHash, documentFileName);
 		assertNotNull(document);
 		
-		//rename document
-		this.getDbLogic(TEST_USER_1).updateDocument(document, resourceHash, newDocumentName);
+		// rename document
+		final Document newDocument = new Document();
+		newDocument.setFileName(newDocumentName);
+		this.getDbLogic(TEST_USER_1).updateDocument(TEST_USER_1, resourceHash, document.getFileName(), newDocument);
+		
 		Document renamedDoc = this.getDbLogic(TEST_USER_1).getDocument(TEST_USER_1, resourceHash, newDocumentName);
 		
 		//check wether document was successfully renamed
@@ -915,8 +920,8 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void testNonLimitedUserPosts() throws Exception {
-		postAndAssertGroup(GroupUtils.getPublicGroup(), GroupUtils.getPublicGroup(), TEST_USER_2, BibTex.class);
-		postAndAssertGroup(GroupUtils.getPublicGroup(), GroupUtils.getPublicGroup(), TEST_USER_2, Bookmark.class);
+		postAndAssertGroup(GroupUtils.buildPublicGroup(), GroupUtils.buildPublicGroup(), TEST_USER_2, BibTex.class);
+		postAndAssertGroup(GroupUtils.buildPublicGroup(), GroupUtils.buildPublicGroup(), TEST_USER_2, Bookmark.class);
 	}
 	
 	/**
@@ -925,8 +930,8 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void testLimitedUserPosts() throws Exception {
-		this.postAndAssertGroup(GroupUtils.getPublicGroup(), GroupUtils.buildPrivateGroup(), TEST_LIMITED_USER_NAME, BibTex.class);
-		this.postAndAssertGroup(GroupUtils.getPublicGroup(), GroupUtils.buildPrivateGroup(), TEST_LIMITED_USER_NAME, Bookmark.class);
+		this.postAndAssertGroup(GroupUtils.buildPublicGroup(), GroupUtils.buildPrivateGroup(), TEST_LIMITED_USER_NAME, BibTex.class);
+		this.postAndAssertGroup(GroupUtils.buildPublicGroup(), GroupUtils.buildPrivateGroup(), TEST_LIMITED_USER_NAME, Bookmark.class);
 		this.postAndAssertGroup(GroupUtils.buildFriendsGroup(), GroupUtils.buildPrivateGroup(), TEST_LIMITED_USER_NAME, BibTex.class);
 		this.postAndAssertGroup(GroupUtils.buildFriendsGroup(), GroupUtils.buildPrivateGroup(), TEST_LIMITED_USER_NAME, Bookmark.class);
 	}
@@ -1059,7 +1064,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		updatedPosts = dbl.updatePosts(Collections.<Post<?>>singletonList(createdPost), PostUpdateOperation.UPDATE_REPOSITORY);
 		assertEquals(1, updatedPosts.size());
 		
-		final List<Post<BibTex>> posts = dbl.getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, null, "36a19ee7b7923b062a99a6065fe07792", null,SearchType.LOCAL, FilterEntity.POSTS_WITH_REPOSITORY, null, null, null, 0, Integer.MAX_VALUE);
+		final List<Post<BibTex>> posts = dbl.getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, null, "36a19ee7b7923b062a99a6065fe07792", null, SearchType.LOCAL, Sets.<Filter>asSet(FilterEntity.POSTS_WITH_REPOSITORY), null, null, null, 0, Integer.MAX_VALUE);
 		assertEquals(3, posts.size());
 		
 		Post<BibTex> b = posts.get(0);
@@ -1088,7 +1093,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		
 		assertEquals(1, groups.size());
 		final Group group = groups.iterator().next();
-		assertEquals(GroupUtils.getPublicGroup(), group);
+		assertEquals(GroupUtils.buildPublicGroup(), group);
 		assertEquals(GroupID.PUBLIC.getId(), group.getGroupId());
 		
 		/*

@@ -33,11 +33,8 @@ import java.util.List;
  * @author sven
  */
 
-public class StatisticsValues extends Statistics{
-
-	
+public class StatisticsValues extends Statistics {
 	private List<Statistics> values;
-
 
 	/**
 	 * @return the list of values
@@ -52,6 +49,4 @@ public class StatisticsValues extends Statistics{
 	public void setValues(List<Statistics> values) {
 		this.values = values;
 	}
-
-
 }

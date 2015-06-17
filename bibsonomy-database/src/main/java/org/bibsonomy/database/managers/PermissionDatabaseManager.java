@@ -33,7 +33,6 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.GroupRole;
@@ -175,7 +174,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		/*
 		 * Construct the public group.
 		 */
-		final Group publicGroup = GroupUtils.getPublicGroup();
+		final Group publicGroup = GroupUtils.buildPublicGroup();
 
 		/*
 		 * Find a common group of both users, which allows to share documents.
@@ -213,14 +212,12 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 *        - the requested grouping (GROUP or USER)
 	 * @param groupingName
 	 *        - the name of the requested user / group
-	 * @param filter
-	 *        - the requested filter entity
 	 * @param session
 	 *        - DB session
 	 * @return <code>true</code> if the logged-in user is allowed to access the
 	 *         documents of the requested user / group.
 	 */
-	public boolean isAllowedToAccessUsersOrGroupDocuments(final User loginUser, final GroupingEntity grouping, final String groupingName, final FilterEntity filter, final DBSession session) {
+	public boolean isAllowedToAccessUsersOrGroupDocuments(final User loginUser, final GroupingEntity grouping, final String groupingName, final DBSession session) {
 		if (grouping != null) {
 			switch (grouping) {
 			case USER:

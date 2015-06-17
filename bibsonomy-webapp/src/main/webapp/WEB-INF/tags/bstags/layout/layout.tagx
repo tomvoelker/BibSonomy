@@ -79,6 +79,8 @@
 									<a href="/${mtl:setParam(fn:escapeXml(requPathAndQuery), 'lang', 'en')}">en</a>
 									<span>&amp;nbsp;|&amp;nbsp;</span>
 									<a href="/${mtl:setParam(fn:escapeXml(requPathAndQuery), 'lang', 'de')}">de</a>
+									<span>&amp;nbsp;|&amp;nbsp;</span>
+									<a href="/${mtl:setParam(fn:escapeXml(requPathAndQuery), 'lang', 'ru')}">ru</a>
 									<span>&amp;nbsp;)</span>
 								</div>
 								
@@ -94,9 +96,9 @@
 						</div>
 					</div><!-- /#bib-header -->
 				</div>
-				<div id="navigation">
-					<menu:navi activeTab="${activeTab}" loginUser="${loginUser}" />
-				</div> <!-- /#navigation -->
+				
+				<menu:navi activeTab="${activeTab}" loginUser="${loginUser}" />
+				
 				<div class="container main">
 					
 					<c:choose>

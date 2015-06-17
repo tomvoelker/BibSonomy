@@ -54,6 +54,7 @@ import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.ConceptUpdateOperation;
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
@@ -63,7 +64,6 @@ import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SpamStatus;
-import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
@@ -86,7 +86,6 @@ import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
-import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
@@ -635,7 +634,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 	
 	/**
-	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, String, FilterEntity, Order, Date, Date, int, int)} with arguments as used for the getBookmarkByTagName query
+	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, String, Set, Order, Date, Date, int, int)} with arguments as used for the getBookmarkByTagName query
 	 */
 	@Test
 	public void getPostsTestBookmarkByTag() {
@@ -643,7 +642,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 	
 	/**
-	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, String, FilterEntity, Order, Date, Date, int, int)} with arguments as used for the getPublicationForGroupAndTag query
+	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, String, Set, Order, Date, Date, int, int)} with arguments as used for the getPublicationForGroupAndTag query
 	 */
 	@Test
 	public void getPostsTestPublicationByGroupAndTag() {
@@ -659,7 +658,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 	
 	/**
-	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, String, FilterEntity, Order, Date, Date, int, int)} with arguments as used for the getPublicationByHashForUser query 
+	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, String, Set, Order, Date, Date, int, int)} with arguments as used for the getPublicationByHashForUser query 
 	 */
 	@Test
 	public void getPostsTestPublicationByUserAndHash() {
@@ -673,13 +672,13 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	
 	@SuppressWarnings("deprecation")
 	@Override
-	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
-		return getPosts(resourceType, grouping, groupingName, tags, hash, search, SearchType.LOCAL, filter, order, startDate, endDate, start, end);
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+		return getPosts(resourceType, grouping, groupingName, tags, hash, search, SearchType.LOCAL, filters, order, startDate, endDate, start, end);
 	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends org.bibsonomy.model.Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	public <T extends org.bibsonomy.model.Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		final List<Post<T>> expectedPosts = new ArrayList<Post<T>>();
 		expectedPosts.add(ModelUtils.generatePost(resourceType));
 		expectedPosts.get(0).setDescription("erstes");
@@ -689,10 +688,10 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 			expectedPosts.add( (Post) ModelUtils.generatePost(BibTex.class));
 		}
 		
-		EasyMock.expect(serverLogic.getPosts(resourceType, grouping, groupingName, tags, hash, search,searchType, filter, order, null, null, start, end)).andReturn(expectedPosts);
+		EasyMock.expect(serverLogic.getPosts(resourceType, grouping, groupingName, tags, hash, search,searchType, filters, order, null, null, start, end)).andReturn(expectedPosts);
 		EasyMock.replay(serverLogic);
 
-		final List<Post<T>> returnedPosts = clientLogic.getPosts(resourceType, grouping, groupingName, tags, hash, search, searchType, filter, order, null, null, start, end);
+		final List<Post<T>> returnedPosts = clientLogic.getPosts(resourceType, grouping, groupingName, tags, hash, search, searchType, filters, order, null, null, start, end);
 		CommonModelUtils.assertPropertyEquality(expectedPosts, returnedPosts, 5, Pattern.compile(".*\\.user\\.(" + COMMON_USER_PROPERTIES + "|confidence|activationCode|reminderPassword|openID|ldapId|remoteUserIds|prediction|algorithm|mode)|.*\\.date|.*\\.scraperId|.*\\.openURL|.*\\.numberOfRatings|.*\\.rating"));
 		EasyMock.verify(serverLogic);
 		assertLogin();
@@ -1102,12 +1101,6 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 	@Override
-	public int getClassifiedUserCount(final Classifier classifier, final SpamStatus status, final int interval) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
 	public List<User> getClassifiedUsers(final Classifier classifier, final SpamStatus status, final int interval) {
 		// TODO Auto-generated method stub
 		return null;
@@ -1126,7 +1119,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 	@Override
-	public Statistics getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final StatisticsConstraint constraint, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	public Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1144,7 +1137,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 	
 	@Override
-	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, final Date startDate, final Date endDate, final int start, final int end) {
+	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, Set<Filter> filters, final Date startDate, final Date endDate, final int start, final int end) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -1347,12 +1340,30 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 	
 	@Override
-	public void updateDocument(Document document, String resourceHash, String newName) {
+	public void updateDocument(String userName, String resourceHash, String documentName, Document document) {
 		// TODO Auto-generated method stub
 	}
 	
 	@Override
 	public List<PostMetaData> getPostMetaData(HashID hashType, String resourceHash, String userName, String metaDataPluginKey) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getDocumentStatistics(org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.Set, java.util.Date, java.util.Date)
+	 */
+	@Override
+	public Statistics getDocumentStatistics(GroupingEntity groupingEntity, String grouping, Set<Filter> filters, Date startDate, Date endDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getUserStatistics(org.bibsonomy.common.enums.GroupingEntity, java.util.Set, org.bibsonomy.common.enums.Classifier, org.bibsonomy.common.enums.SpamStatus, java.util.Date, java.util.Date, java.lang.Integer, org.bibsonomy.common.enums.StatisticsUnit)
+	 */
+	@Override
+	public Statistics getUserStatistics(GroupingEntity grouping, Set<Filter> filters, Classifier classifier, SpamStatus status, Date startDate, Date endDate) {
 		// TODO Auto-generated method stub
 		return null;
 	}

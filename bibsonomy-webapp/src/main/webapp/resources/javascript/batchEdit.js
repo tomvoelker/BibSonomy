@@ -456,7 +456,6 @@ function showEditBtn(){
 		$('div[id=cancelBtn]').hide();
 	}
 }
-maximizeById("general");
 
 /**
  * useful functions, for future maybe

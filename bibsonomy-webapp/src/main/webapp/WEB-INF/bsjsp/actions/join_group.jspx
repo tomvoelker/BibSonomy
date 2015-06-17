@@ -12,6 +12,7 @@
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -84,17 +85,16 @@
 			| sidebar
 			+-->
 		<jsp:attribute name="sidebar">
-			<ul>
-				<!-- loginUser.groups -->
-				<li>
-					<h4 class="sidebar"><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="groups"/></a></h4>
+			<sidebar:sidebarItem textKey="groups">
+				<jsp:attribute name="content">
+					<!-- loginUser.groups -->
 					<ul class="sidebar_collapse_content">
 						<c:forEach var="group" items="${command.context.loginUser.groups}">
 							<li><a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}"><c:out value='${group.name}'/></a></li>
 						</c:forEach>
 					</ul>
-				</li>
-			</ul>
+				</jsp:attribute>
+			</sidebar:sidebarItem>
 		</jsp:attribute>
 	
 	</layout:paneLayout>

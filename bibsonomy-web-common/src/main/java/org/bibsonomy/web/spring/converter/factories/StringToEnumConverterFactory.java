@@ -46,5 +46,5 @@ public class StringToEnumConverterFactory<E extends Enum<E>> implements Converte
 	@Override
 	public <T extends Enum<E>> Converter<String, T> getConverter(final Class<T> targetType) {
 		return new StringToEnumConverter(targetType);
-	}	
+	}
 }

@@ -3,39 +3,39 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
-	                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-	                    http://www.springframework.org/schema/util 
-	                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+						http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+						http://www.springframework.org/schema/util 
+						http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 	
-    <!-- +
-    	 | recommender BibSonomy datasource and mappings setup
-    	 + -->
-    
-    <bean id="recommenderMainSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
-        <property name="configLocation" value="classpath:resolver/SqlMapConfig_recommenderBibDB.xml" />
-        <property name="dataSource" ref="mainDataSource" />
-        <property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
-    </bean>
-    
-    <bean id="recommenderMainSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
+	<!-- +
+		 | recommender BibSonomy datasource and mappings setup
+		 + -->
+	
+	<bean id="recommenderMainSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation" value="classpath:resolver/SqlMapConfig_recommenderBibDB.xml" />
+		<property name="dataSource" ref="mainDataSource" />
+		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
+	</bean>
+	
+	<bean id="recommenderMainSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
 		<property name="client" ref="recommenderMainSqlMapClient" />
 	</bean>
-    
-    
-    <!-- +
-    	 | factories for bookmark, bibtex and tag recommendations
-    	 + -->
-    	 
-    <bean id="recommenderBibTexMainLogic" class="org.bibsonomy.recommender.connector.database.RecommenderMainBibTexAccessImpl">
-    	<property name="mainFactory" ref="recommenderMainSessionFactory" />
-    </bean>
-    
-    <bean id="recommenderBookmarkMainLogic" class="org.bibsonomy.recommender.connector.database.RecommenderMainBookmarkAccessImpl">
-    	<property name="mainFactory" ref="recommenderMainSessionFactory" />
-    </bean>
-    
-    <bean id="recommenderTagMainLogic" class="org.bibsonomy.recommender.connector.database.RecommenderMainTagAccessImpl">
-    	<property name="mainFactory" ref="recommenderMainSessionFactory" />
-    </bean>
-    
+	
+	
+	<!-- +
+		 | factories for bookmark, bibtex and tag recommendations
+		 + -->
+		 
+	<bean id="recommenderBibTexMainLogic" class="org.bibsonomy.recommender.connector.database.RecommenderMainBibTexAccessImpl">
+		<property name="mainFactory" ref="recommenderMainSessionFactory" />
+	</bean>
+	
+	<bean id="recommenderBookmarkMainLogic" class="org.bibsonomy.recommender.connector.database.RecommenderMainBookmarkAccessImpl">
+		<property name="mainFactory" ref="recommenderMainSessionFactory" />
+	</bean>
+	
+	<bean id="recommenderTagMainLogic" class="org.bibsonomy.recommender.connector.database.RecommenderMainTagAccessImpl">
+		<property name="mainFactory" ref="recommenderMainSessionFactory" />
+	</bean>
+	
 </beans>

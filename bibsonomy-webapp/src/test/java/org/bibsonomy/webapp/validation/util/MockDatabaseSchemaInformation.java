@@ -47,7 +47,8 @@ public class MockDatabaseSchemaInformation implements DatabaseSchemaInformation 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.services.database.DatabaseSchemaInformation#callTypeHandler(java.lang.Class, java.lang.String, java.lang.Object, java.lang.Class)
 	 */
-	public Object callTypeHandler(final Class<T> resourceClass, final String property, final Object type, final Class<?> resultType) {
+	@Override
+	public <T> T callTypeHandler(Class<?> resourceClass, String property, Object type, Class<T> resultType) {
 		return null;
 	}
 

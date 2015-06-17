@@ -1,9 +1,9 @@
-\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\author}
+\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLCharsAntiScript]{\author}
  (\format[AntiScriptInjection]{\year}). 
-\format[HTMLChars,AntiScriptInjection]{\title}. <i>\format[HTMLChars,AntiScriptInjection]{\journal}</i>, 
+\format[HTMLCharsAntiScript]{\title}. <i>\format[HTMLCharsAntiScript]{\journal}</i>, 
 \begin{volume}\format[AntiScriptInjection]{\volume}\end{volume}\begin{pages}, \format[AntiScriptInjection]{\pages}\end{pages}. 
 \begin{doi}
- doi: \format[HTMLChars,AntiScriptInjection]{\doi}
+ doi: \format[HTMLCharsAntiScript]{\doi}
 \end{doi}
 <br/>
 <br/>

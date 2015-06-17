@@ -8,13 +8,6 @@
 	<import resource="TestDatabaseBaseContext.xml" />
 	<import resource="classpath:org/bibsonomy/bibsonomy-database-context.xml"/>
 	
-	<bean id="mainDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-		<property name="driverClassName" value="${database.main.driverClassName}" />
-		<property name="url" value="${database.main.url}" />
-		<property name="username" value="${database.main.username}" />
-		<property name="password" value="${database.main.password}" />
-	</bean>
-	
 	<bean id="systemTagFactory" class="org.bibsonomy.database.systemstags.SystemTagFactory" factory-method="getInstance">
 		<property name="executableSystemTagMap" ref="executableSystemTagSet"/>
 		<property name="searchSystemTagMap" ref="searchSystemTagSet"/>

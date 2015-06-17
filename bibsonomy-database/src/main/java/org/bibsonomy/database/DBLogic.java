@@ -27,7 +27,6 @@
 package org.bibsonomy.database;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-import static org.bibsonomy.util.ValidationUtils.presentValidGroupId;
 
 import java.net.InetAddress;
 import java.net.URI;
@@ -48,6 +47,7 @@ import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.ConceptUpdateOperation;
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupRole;
@@ -60,7 +60,6 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SpamStatus;
-import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
@@ -694,8 +693,8 @@ public class DBLogic implements LogicInterface {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
-		return this.getPosts(resourceType, grouping, groupingName, tags, hash, search, SearchType.LOCAL, filter, order, startDate, endDate, start, end);
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+		return this.getPosts(resourceType, grouping, groupingName, tags, hash, search, SearchType.LOCAL, filters, order, startDate, endDate, start, end);
 	}
 
 	/*
@@ -709,11 +708,11 @@ public class DBLogic implements LogicInterface {
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		// check allowed start-/end-values
 		this.permissionDBManager.checkStartEnd(this.loginUser, start, end, "post");
 
-		this.handleAdminFilters(filter);
+		this.handleAdminFilters(filters);
 
 		// check for systemTags disabling this resourceType
 		if (!this.systemTagsAllowResourceType(tags, resourceType)) {
@@ -737,18 +736,18 @@ public class DBLogic implements LogicInterface {
 			 * result.addAll(bookmarkDBManager.getPosts(authUser, grouping,
 			 * groupingName, tags, hash, popular, added, start, end, false));
 			 */
-			if (FilterEntity.POSTS_HISTORY.equals(filter) && !((resourceType == GoldStandardPublication.class) || (resourceType == GoldStandardBookmark.class))) {
+			if (FilterEntity.HISTORY.equals(filters) && !((resourceType == GoldStandardPublication.class) || (resourceType == GoldStandardBookmark.class))) {
 				this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, groupingName);
 			}
 			if (resourceType == BibTex.class) {
-				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);
+				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filters, this.loginUser);
 				// sets the search type to ealasticSearch
 				param.setSearchType(searchType);
 
 				// check permissions for displaying links to documents
-				final boolean allowedToAccessUsersOrGroupDocuments = this.permissionDBManager.isAllowedToAccessUsersOrGroupDocuments(this.loginUser, grouping, groupingName, filter, session);
+				final boolean allowedToAccessUsersOrGroupDocuments = this.permissionDBManager.isAllowedToAccessUsersOrGroupDocuments(this.loginUser, grouping, groupingName, session);
 				if (!allowedToAccessUsersOrGroupDocuments) {
-					if (FilterEntity.JUST_PDF.equals(filter)) {
+					if (FilterEntity.JUST_PDF.equals(filters)) {
 						throw new AccessDeniedException("error.pdf_only_not_authorized_for_" + grouping.toString().toLowerCase());
 					}
 					param.setPostAccess(PostAccess.POST_ONLY);
@@ -765,7 +764,7 @@ public class DBLogic implements LogicInterface {
 			}
 
 			if (resourceType == Bookmark.class) {
-				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);
+				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filters, this.loginUser);
 				// sets the search type to ealasticSearch
 				param.setSearchType(searchType);
 				final List<Post<T>> bookmarks = (List) this.bookmarkDBManager.getPosts(param, session);
@@ -774,7 +773,7 @@ public class DBLogic implements LogicInterface {
 			}
 
 			if (resourceType == GoldStandardPublication.class) {
-				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);
+				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filters, this.loginUser);
 				// sets the search type to ealasticSearch
 				param.setSearchType(searchType);
 
@@ -782,7 +781,7 @@ public class DBLogic implements LogicInterface {
 			}
 
 			if (resourceType == GoldStandardBookmark.class) {
-				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);
+				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filters, this.loginUser);
 				// sets the search type to ealasticSearch
 				param.setSearchType(searchType);
 
@@ -1126,7 +1125,7 @@ public class DBLogic implements LogicInterface {
 			if (group.equals(GroupUtils.buildPrivateGroup())) {
 				group.setGroupId(GroupUtils.buildPrivateGroup().getGroupId());
 			} else {
-				group.setGroupId(GroupUtils.getPublicGroup().getGroupId());
+				group.setGroupId(GroupUtils.buildPublicGroup().getGroupId());
 			}
 		} else {
 			/*
@@ -1160,7 +1159,7 @@ public class DBLogic implements LogicInterface {
 
 		// no group specified -> make it public
 		if (groups.isEmpty()) {
-			groups.add(GroupUtils.getPublicGroup());
+			groups.add(GroupUtils.buildPublicGroup());
 		}
 	}
 
@@ -2015,6 +2014,29 @@ public class DBLogic implements LogicInterface {
 		}
 		return null;
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getDocumentStatistics(org.bibsonomy.common.enums.GroupingEntity, java.lang.String, org.bibsonomy.common.enums.FilterEntity, java.util.Set, java.util.Date, java.util.Date)
+	 */
+	@Override
+	public Statistics getDocumentStatistics(GroupingEntity groupingEntity, String grouping, Set<Filter> filters, Date startDate, Date endDate) {
+		this.ensureLoggedIn();
+		this.permissionDBManager.ensureAdminAccess(this.loginUser); // TOOD: currently only for admins
+		final DBSession session = this.openSession();
+		
+		try {
+			this.handleAdminFilters(filters);
+
+			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, groupingEntity, grouping, null, null, null, -1, -1, startDate, endDate, null, filters, this.loginUser);
+			return this.statisticsDBManager.getDocumentStatistics(param, session);
+		} catch (final QueryTimeoutException ex) {
+			// if a query times out, we return 0 (cause we also return empty
+			// list when a query timeout exception is thrown)
+			return new Statistics(0);
+		} finally {
+			session.close();
+		}
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -2024,17 +2046,15 @@ public class DBLogic implements LogicInterface {
 	 * .model.Document, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void updateDocument(final Document document, final String resourceHash, final String newName) {
-		this.ensureLoggedIn();
-
-		final String userName = document.getUserName();
+	public void updateDocument(String userName, final String resourceHash, String documentName, final Document document) {
 		/*
 		 * users can only modify their own documents
 		 */
+		this.ensureLoggedIn();
 		this.permissionDBManager.ensureWriteAccess(this.loginUser, userName);
 
 		final DBSession session = this.openSession();
-
+		final String newName = document.getFileName();
 		try {
 			if (resourceHash != null) {
 				/*
@@ -2054,10 +2074,10 @@ public class DBLogic implements LogicInterface {
 					 * the given resource hash belongs to a post of the user ->
 					 * rename the corresponding document to the new name
 					 */
-					final Document existingDocument = this.docDBManager.getDocumentForPost(userName, resourceHash, document.getFileName(), session);
+					final Document existingDocument = this.docDBManager.getDocumentForPost(userName, resourceHash, documentName, session);
 					if (present(existingDocument)) {
-						this.docDBManager.updateDocument(post.getContentId(), document.getFileHash(), newName, document.getDate(),
-								userName, document.getMd5hash(), session);
+						this.docDBManager.updateDocument(post.getContentId().intValue(), existingDocument.getFileHash(), newName, existingDocument.getDate(),
+								userName, existingDocument.getMd5hash(), session);
 					}
 				} else {
 					throw new ValidationException("Could not find a post with hash '" + resourceHash + "'.");
@@ -2068,7 +2088,7 @@ public class DBLogic implements LogicInterface {
 		} finally {
 			session.close();
 		}
-		log.debug("renamed document " + document.getFileName() + " from user " + userName + "to " + newName);
+		log.debug("renamed document " + documentName + " from user " + userName + "to " + newName);
 	}
 
 	/*
@@ -2197,7 +2217,7 @@ public class DBLogic implements LogicInterface {
 	 * org.bibsonomy.common.enums.StatisticsConstraint)
 	 */
 	@Override
-	public Statistics getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final StatisticsConstraint constraint, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	public Statistics getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final Set<Filter> filter, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		final DBSession session = this.openSession();
 
 		try {
@@ -2422,6 +2442,19 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getUserStatistics()
+	 */
+	@Override
+	public Statistics getUserStatistics(GroupingEntity grouping, Set<Filter> filters, Classifier classifier, SpamStatus status, Date startDate, Date endDate) {
+		final DBSession session = openSession();
+		try {
+			return this.statisticsDBManager.getUserStatistics(grouping, startDate, filters, classifier, status, session);
+		} finally {
+			session.close();
+		}
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -2472,24 +2505,6 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = this.openSession();
 		try {
 			this.adminDBManager.updateClassifierSettings(key, value, session);
-		} finally {
-			session.close();
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.bibsonomy.model.logic.LogicInterface#getClassifiedUserCount(org.bibsonomy
-	 * .common.enums.Classifier, org.bibsonomy.common.enums.SpamStatus, int)
-	 */
-	@Override
-	public int getClassifiedUserCount(final Classifier classifier, final SpamStatus status, final int interval) {
-		this.permissionDBManager.ensureAdminAccess(this.loginUser);
-		final DBSession session = this.openSession();
-		try {
-			return this.adminDBManager.getClassifiedUserCount(classifier, status, interval, session).intValue();
 		} finally {
 			session.close();
 		}
@@ -2588,10 +2603,15 @@ public class DBLogic implements LogicInterface {
 	 * org.bibsonomy.common.enums.ConceptStatus, int, int)
 	 */
 	@Override
-	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, final Date startDate, final Date endDate, final int start, final int end) {
+	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, Set<Filter> filters, final Date startDate, final Date endDate, final int start, final int end) {
 		final DBSession session = this.openSession();
 		try {
-			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, grouping, groupingName, tags, null, null, start, end, startDate, endDate, null, null, this.loginUser);
+			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, grouping, groupingName, tags, null, null, start, end, startDate, endDate, null, filters, this.loginUser);
+			if (present(resourceType)) {
+				param.setContentTypeByClass(resourceType);
+			}
+			
+			param.setConceptStatus(status);
 			return this.statisticsDBManager.getTagStatistics(param, session);
 		} finally {
 			session.close();
@@ -3199,11 +3219,11 @@ public class DBLogic implements LogicInterface {
 		return null;
 	}
 
-	private void handleAdminFilters(final FilterEntity filter) {
+	private void handleAdminFilters(final Set<Filter> filters) {
 		/*
 		 * if filter is set to spam posts admins can see public spam!
 		 */
-		if (FilterEntity.ADMIN_SPAM_POSTS.equals(filter)) {
+		if (present(filters) && filters.contains(FilterEntity.ADMIN_SPAM_POSTS)) {
 			this.permissionDBManager.ensureAdminAccess(this.loginUser);
 			// add public spam group to the groups of the loggedin users
 			this.loginUser.addGroup(new Group(GroupID.PUBLIC_SPAM));

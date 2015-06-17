@@ -55,7 +55,7 @@ public class CommentValidatorTest {
 		Errors errors = ValidationTestUtils.validate(COMMENT_VALIDATOR, command);
 		assertEquals(3, errors.getErrorCount()); // group, hash and comment text
 		
-		command.setAbstractGrouping(GroupUtils.getPublicGroup().getName());
+		command.setAbstractGrouping(GroupUtils.buildPublicGroup().getName());
 		command.setHash("testhash");
 		comment.setText("Great");
 		

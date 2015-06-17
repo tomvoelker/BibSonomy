@@ -8,7 +8,5 @@
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
-	<c:set var="emptyString" value="" />
-	<c:set var="adminLink" value="${relativeUrlGenerator.getAdminUrlByName(emptyString)}" />
-	<nav:crumb nameKey="navi.admin" href="${adminLink}" active="${true}" />
+	<nav:crumb nameKey="navi.admin" active="${true}" />
 </jsp:root>

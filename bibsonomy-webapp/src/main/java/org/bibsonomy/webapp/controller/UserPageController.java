@@ -136,7 +136,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			 * set the post counts
 			 */
 			if (!publicationFilter) {
-				this.setTotalCount(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
+				this.setTotalCount(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 				totalNumPosts += listCommand.getTotalCount();
 			}
 		}
