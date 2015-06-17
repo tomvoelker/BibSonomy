@@ -526,12 +526,16 @@
 		<URL>http://www.isrl.uiuc.edu/~amag/langev/paper/mitchener07middleEnglish.html</URL>
 		<BibFile>LangevScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.langev.LangevScraper</Scraper>
+		<!-- disabled because the website http://www.isrl.uiuc.edu/ is no more available -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_87">
 		<TestDescription>Langev Url test 2</TestDescription>
 		<URL>http://www.isrl.uiuc.edu/~amag/langev/paper/arbib06mirrorSystemEditedBook.html</URL>
 		<BibFile>LangevScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.langev.LangevScraper</Scraper>
+		<!-- disabled because the website http://www.isrl.uiuc.edu/ is no more available -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_88">
 		<TestDescription>Liebert Url test 1</TestDescription>
@@ -886,10 +890,10 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.cell.CellScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_146">
-		<TestDescription>test for AGU scraper</TestDescription>
-		<URL>http://www.agu.org/books/ar/v071/</URL>
-		<BibFile>AGUScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.agu.AGUScraper</Scraper>
+		<TestDescription>URL scraping test with a citation page from intersience wiley</TestDescription>
+		<URL>http://onlinelibrary.wiley.com/book/10.1029/AR071</URL>
+		<BibFile>WileyIntersienceScraperUnitURLTest5.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_147">
 		<TestDescription>eprint url test</TestDescription>
@@ -1728,11 +1732,19 @@
 		<URL>http://www.akademiai.com/content/y5t2lbg5nn3hxa0y/</URL>
 		<BibFile>AkademiaiScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.akademiai.AkademiaiScraper</Scraper>
+		<!-- 404 -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_282">
 		<TestDescription>test for nature.com</TestDescription>
 		<URL>http://www.nature.com/news/images-of-the-month-october-2014-1.16228</URL>
 		<BibFile>NatureScraperUnitURLTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.nature.NatureScraper</Scraper>
+	</URLTest> 
+	<URLTest id="url_283">
+		<TestDescription>Scraping test for IEEE computer society scraper PDF</TestDescription>
+		<URL>http://www.computer.org/csdl/mags/co/2001/02/r2026.pdf</URL>
+		<BibFile>IEEEComputerSocietyScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper</Scraper>
 	</URLTest>
 </test:Tests>
