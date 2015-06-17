@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Rest-Server - The REST-server.	
+ * BibSonomy-Rest-Server - The REST-server.
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -24,12 +24,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.rest.strategy;
+package org.bibsonomy.webapp.controller.ajax;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,6 +39,9 @@ import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
+import org.bibsonomy.rest.strategy.Context;
+import org.bibsonomy.rest.strategy.ContextHandler;
+import org.bibsonomy.rest.strategy.Strategy;
 import org.bibsonomy.rest.strategy.sync.DeleteSyncDataStrategy;
 import org.bibsonomy.rest.strategy.sync.GetSyncDataStrategy;
 import org.bibsonomy.rest.strategy.sync.PostSyncPlanStrategy;
@@ -48,7 +50,7 @@ import org.bibsonomy.rest.util.URLDecodingPathTokenizer;
 import org.bibsonomy.util.ValidationUtils;
 
 /**
- * @author wla, vhem
+ * @author wla
  */
 public class SynchronizationHandler implements ContextHandler {
 	private static final Log log = LogFactory.getLog(SynchronizationHandler.class);
@@ -86,5 +88,4 @@ public class SynchronizationHandler implements ContextHandler {
 			throw new NoSuchResourceException("cannot process url (no strategy available) - please check url syntax ");
 		}
 	}
-
 }

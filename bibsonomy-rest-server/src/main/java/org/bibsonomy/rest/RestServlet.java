@@ -56,6 +56,7 @@ import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.rest.enums.HttpMethod;
@@ -70,7 +71,7 @@ import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.strategy.Context;
-import org.bibsonomy.rest.util.URLDecodingStringTokenizer;
+import org.bibsonomy.rest.util.URLDecodingPathTokenizer;
 import org.bibsonomy.rest.utils.HeaderUtils;
 import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.util.StringUtils;
@@ -84,43 +85,33 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
  */
 public final class RestServlet extends HttpServlet {
 	private static final long serialVersionUID = -1737804091652029470L;
+	
 	private static final Log log = LogFactory.getLog(RestServlet.class);
 
-	/**
-	 * the key for the documents path
-	 */
+	/** the file with the main XML */
+	private static final String MAIN_FILE = "main";
+
+	/** the key for the documents path */
 	public static final String DOCUMENTS_PATH_KEY = "docPath";
 
-	/**
-	 * the key for the project home
-	 */
+	/** the key for the project home */
 	public static final String PROJECT_HOME_KEY = "projectHome";
 
 	private static final String PROJECT_NAME_KEY = "projectName";
 
-	/**
-	 * the response encoding used to encode HTTP responses.
-	 */
+	/** the response encoding used to encode HTTP responses. */
 	public static final String RESPONSE_ENCODING = StringUtils.CHARSET_UTF_8;
 
-	/**
-	 * the request default encoding
-	 */
+	/** the request default encoding */
 	public static final String REQUEST_ENCODING = StringUtils.CHARSET_UTF_8;
 
-	/**
-	 * Name of header, that shows successful ssl verification
-	 */
+	/** Name of header, that shows successful ssl verification */
 	public static final String SSL_VERIFY_HEADER = "SSL_CLIENT_VERIFY";
 
-	/**
-	 * String to show successful ssl key check 
-	 */
+	/** String to show successful ssl key check */
 	public static final String SUCCESS = "SUCCESS";
 
-	/**
-	 * Distinguish name of the client
-	 */
+	/** Distinguish name of the client */
 	public static final String SSL_CLIENT_S_DN = "SSL_CLIENT_S_DN";
 
 	private List<AuthenticationHandler<?>> authenticationHandlers;
@@ -311,6 +302,9 @@ public final class RestServlet extends HttpServlet {
 		} catch (final UnsupportedMediaTypeException e) {
 			log.error(e.getMessage());
 			sendError(request, response, HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, e.getMessage());
+		} catch (final UnsupportedResourceTypeException e) {
+			// the user has not specified the resource type
+			sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
 		} catch (final Exception e) {
 			log.error(e, e);
 			// well, lets fetch each and every error...
@@ -321,7 +315,7 @@ public final class RestServlet extends HttpServlet {
 	protected static String getMainContentType(HttpServletRequest request) {
 		if (request instanceof MultipartHttpServletRequest) {
 			// TODO: add comment
-			final MultipartFile mainFile = ((MultipartHttpServletRequest) request).getFile("main");
+			final MultipartFile mainFile = ((MultipartHttpServletRequest) request).getFile(MAIN_FILE);
 			if (mainFile != null) {
 				return mainFile.getContentType();
 			}
@@ -337,7 +331,7 @@ public final class RestServlet extends HttpServlet {
 	 */
 	protected static InputStream getMainInputStream(HttpServletRequest request) throws IOException {
 		if (request instanceof MultipartHttpServletRequest) {
-			MultipartFile main = ((MultipartHttpServletRequest) request).getFile("main");
+			final MultipartFile main = ((MultipartHttpServletRequest) request).getFile(MAIN_FILE);
 			if (main != null) {
 				return main.getInputStream();
 			}
@@ -429,15 +423,15 @@ public final class RestServlet extends HttpServlet {
 		URI serviceURI = null;
 
 		// check that request URI contains service URI
-		final StringTokenizer urlTokens = new URLDecodingStringTokenizer(request.getRequestURI(), "/");
+		final URLDecodingPathTokenizer urlTokens = new URLDecodingPathTokenizer(request.getRequestURI(), "/");
 		final String userName = logic.getAuthenticatedUser().getName();
 
 		// skip /api token
-		urlTokens.nextToken();
+		urlTokens.next();
 
-		if (urlTokens.nextElement() == "sync") {
+		if (urlTokens.next() == "sync") {
 			try {
-				serviceURI = new URI(urlTokens.nextToken());
+				serviceURI = new URI(urlTokens.next());
 			} catch (URISyntaxException e) {
 				throw new NoSuchResourceException("cannot process url - please check url syntax ");
 			}
