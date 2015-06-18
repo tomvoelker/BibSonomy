@@ -52,8 +52,8 @@ import org.bibsonomy.util.ValidationUtils;
 /**
  * @author wla
  */
-public class SynchronizationHandler implements ContextHandler {
-	private static final Log log = LogFactory.getLog(SynchronizationHandler.class);
+public class SynchronizationController implements ContextHandler {
+	private static final Log log = LogFactory.getLog(SynchronizationController.class);
 	
 	@Override
 	public Strategy createStrategy(final Context context, final URLDecodingPathTokenizer urlTokens, final HttpMethod httpMethod) {
@@ -69,7 +69,9 @@ public class SynchronizationHandler implements ContextHandler {
 			// check SSL for Puma instance (client has SSLDn and RestServlet set the role of the user)
 			if ( ValidationUtils.present(syncClient.get(0).getSslDn()) && !user.getRole().equals(Role.SYNC) ) {
 				log.debug("no sync-role was set for the user - check ssl");
-				throw new SynchronizationRunningException();
+				
+				// 400er error BAD REQUEST --> CERT abgelaufen, client falsch gestellt
+				throw new SynchronizationRunningException(); 
 			}
 			
 			switch (httpMethod) {

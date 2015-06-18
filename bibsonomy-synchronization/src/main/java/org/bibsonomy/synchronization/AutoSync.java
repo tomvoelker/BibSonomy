@@ -67,6 +67,7 @@ public class AutoSync {
 			return;
 		}
 		
+		// anpassen, keine Liste raus - aber registrierte Liste, bzw KONFIGURIERTE clients
 		final List<SyncService> syncServices = this.adminLogic.getSyncService(null, null, true);
 		for (final SyncService syncService : syncServices) {
 			// skip, if autosync not selected or direction is both

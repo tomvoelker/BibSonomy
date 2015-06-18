@@ -62,14 +62,16 @@ public class SynchronizationHandler implements ContextHandler {
 		try {
 			final URI serviceURI = new URI(urlTokens.next());
 			final User user = context.getLogic().getAuthenticatedUser();
-			final List<SyncService> syncClient = context.getLogic().getSyncService(user.getName(), serviceURI, false);		
-			
+			final List<SyncService> syncClient = context.getLogic().getSyncService(user.getName(), serviceURI, false);
+
 			// check SSL for Puma instance (client has SSLDn and RestServlet set the role of the user)
 			if ( ValidationUtils.present(syncClient.get(0).getSslDn()) && !user.getRole().equals(Role.SYNC) ) {
 				log.debug("no sync-role was set for the user - check ssl");
+
+				// 400er error BAD REQUEST --> CERT abgelaufen, client falsch gestellt
 				throw new SynchronizationRunningException();
 			}
-			
+
 			switch (httpMethod) {
 			case GET:
 				return new GetSyncDataStrategy(context, serviceURI);
