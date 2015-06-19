@@ -43,7 +43,7 @@
 					</div>
 					<div class="radio">
 						<label>	
-							<input name="personRole" value="ADVISOR" tabindex="2" type="radio" />
+							<input name="personRole" value="ADVISOR" tabindex="2" type="radio" checked="checked"/>
 							<c:out value=" " /><fmt:message key="post.person.role.advisor"/>
 						</label>
 					</div>
@@ -59,11 +59,13 @@
 	</div>
 	<script type="text/javascript">
 		$(function() {
-			
 			$('input:radio[name=personRole]').change(function() {
 				var thisVal = $(this).val();
 				$('input[name=personRole]').val([thisVal]);
+				}
+				
 			);
 		});
+	
 	</script>
 </jsp:root>
