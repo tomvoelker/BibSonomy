@@ -1277,6 +1277,15 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
     	param.setLimit(limit);
     	return this.queryForList("getUsersBySearch", param, User.class, session);
     }
+	
+	/**
+	 * @param session
+	 * @return
+	 */
+	public int getFriendsInHistoryCount(DBSession session) {
+		final Integer result = this.queryForObject("getFriendHistoryCount", Integer.class, session);
+		return result == null ? 0 : result.intValue();
+	}
 
 	/**
 	 * @param chain the chain to set
@@ -1296,13 +1305,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void setFileLogic(final FileLogic fileLogic) {
 		this.fileLogic = fileLogic;
-	}
-
-	/**
-	 * @return the usersDefaultToClassify
-	 */
-	public Integer getUsersDefaultToClassify() {
-		return this.usersDefaultToClassify;
 	}
 
 	/**

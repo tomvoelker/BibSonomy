@@ -11,8 +11,6 @@
 	                    http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
 
 	<!-- import recommenderLogic -->
-	<jee:jndi-lookup id="itemRecommenderDataSource" jndi-name="jdbc/bibsonomy_item_recommender"/>
-	<jee:jndi-lookup id="tagRecommenderDataSource" jndi-name="jdbc/bibsonomy_recommender"/>
 	<import resource="classpath:org/bibsonomy/bibsonomy-recommender-log-context.xml" />
 	<import resource="classpath:org/bibsonomy/bibsonomy-recommender-main-context.xml" />
 	
@@ -29,7 +27,7 @@
 		<property name="privacyFilter"  ref="postPrivacyFilter"/>
 		<property name="renderer" ref="renderer" />
 	</bean>
-	 
+	
 	<bean id="postPrivacyFilter" class="org.bibsonomy.recommender.connector.filter.PostPrivacyFilter" />
 
 	<bean id="renderer" class="org.bibsonomy.recommender.connector.model.BibsonomyTagRendererFactoryWrapper">
@@ -155,7 +153,7 @@
 		<ref bean="tagBasedBookmarkRecommender"/>
 		<ref bean="cbBookmarkRecommender"/>
 	</util:list>
-	
+	    
 	<!--+ 
 	    | strategy for select primary recommender if it delivered results, else select fallback
 	    +-->
@@ -185,7 +183,7 @@
 		<property name="dbLogic" ref="bibtexRecommenderLogic" />
 		<property name="dbAccess" ref="recommenderBibTexMainLogic" />
 	</bean>
-	
+
 	<bean id="multiplexingBibTexRecommender" class="recommender.impl.multiplexer.MultiplexingRecommender" init-method="init" scope="singleton">
 		<property name="queryTimeout" value="1000" />
 		<property name="resultModifiers" ref="resultFilterList" />

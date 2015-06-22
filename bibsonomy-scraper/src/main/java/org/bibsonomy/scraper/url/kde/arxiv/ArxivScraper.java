@@ -42,10 +42,10 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
 
 
-/** Scraper for arXiv.
+/**
+ * Scraper for arXiv.
  * 
  * @author rja
- *
  */
 public class ArxivScraper extends AbstractUrlScraper {
 	
@@ -60,13 +60,16 @@ public class ArxivScraper extends AbstractUrlScraper {
 
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		
+		/*
+		 * TODO: do we need this check, do not the patterns ensure that
+		 * this scraper is only called on urls starting with ARXIV_HOST?
+		 */
 		if (sc.getUrl() != null && sc.getUrl().getHost().endsWith(ARXIV_HOST)) {
 			try {
 				sc.setScraper(this);
 				
 				final Matcher matcherID = patternID.matcher(sc.getUrl().toString());
-				if(matcherID.find()) {
+				if (matcherID.find()) {
 					final String id = matcherID.group(2);
 					
 					/* 
@@ -76,34 +79,38 @@ public class ArxivScraper extends AbstractUrlScraper {
 					String vId = "";
 					
 					Matcher verID = patternVer.matcher(id);
-					if(verID.find()) vId = verID.group(1);
-					else vId = id;
-									
+					if (verID.find()) {
+						vId = verID.group(1);
+					} else {
+						vId = id;
+					}
+					
 					// build url for oai_dc export
-					String exportURL = "http://export.arxiv.org/oai2?verb=GetRecord&identifier=oai:arXiv.org:" + vId + "&metadataPrefix=oai_dc";
+					final String exportURL = "http://export.arxiv.org/oai2?verb=GetRecord&identifier=oai:arXiv.org:" + vId + "&metadataPrefix=oai_dc";
 					
 					// download oai_dc reference
-					String reference = WebUtils.getContentAsString(exportURL);
+					final String reference = WebUtils.getContentAsString(exportURL);
 					
 					String bibtex = OAIConverter.convert(reference);
 					
 					
 					// add arxiv citation to note
-					if(bibtex.contains("note = {"))
+					if(bibtex.contains("note = {")) {
 						bibtex = bibtex.replace("note = {", "note = {cite arxiv:" + id + "\n");
 					// if note not exist
-					else
+					} else {
 						bibtex = bibtex.replaceFirst("},", "},\nnote = {cite arxiv:" + id + "},");
-					
+					}
 					// set result
 					sc.setBibtexResult(bibtex);
 					return true;
-				}else
-					throw new ScrapingFailureException("no arxiv id found in URL");
+				}
+				
+				throw new ScrapingFailureException("no arxiv id found in URL");
 			} catch (IOException ex) {
 				throw new InternalFailureException(ex);
 			}
-		}		
+		}
 		return false;
 	}
 
@@ -126,5 +133,4 @@ public class ArxivScraper extends AbstractUrlScraper {
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
-	
 }

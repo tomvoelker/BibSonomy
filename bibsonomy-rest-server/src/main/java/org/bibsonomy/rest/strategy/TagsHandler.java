@@ -27,7 +27,6 @@
 package org.bibsonomy.rest.strategy;
 
 import java.util.Arrays;
-import java.util.StringTokenizer;
 
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.rest.enums.HttpMethod;
@@ -35,6 +34,7 @@ import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.tags.GetListOfTagsStrategy;
 import org.bibsonomy.rest.strategy.tags.GetTagDetailsStrategy;
 import org.bibsonomy.rest.strategy.tags.GetTagRelationStrategy;
+import org.bibsonomy.rest.util.URLDecodingPathTokenizer;
 import org.bibsonomy.util.ValidationUtils;
 
 /**
@@ -43,8 +43,8 @@ import org.bibsonomy.util.ValidationUtils;
 public class TagsHandler implements ContextHandler {
 
 	@Override
-	public Strategy createStrategy(final Context context, final StringTokenizer urlTokens, final HttpMethod httpMethod) {
-		final int numTokensLeft = urlTokens.countTokens();
+	public Strategy createStrategy(final Context context, final URLDecodingPathTokenizer urlTokens, final HttpMethod httpMethod) {
+		final int numTokensLeft = urlTokens.countRemainingTokens();
 
 		switch (numTokensLeft) {
 		case 0:
@@ -62,12 +62,12 @@ public class TagsHandler implements ContextHandler {
 				String relationAttribute = context.getStringAttribute("relation", "");
 				
 				if(ValidationUtils.present(relationAttribute)) {
-					return new GetTagRelationStrategy(context, Arrays.asList(urlTokens.nextToken().split(" ")),
+					return new GetTagRelationStrategy(context, Arrays.asList(urlTokens.next().split(" ")),
 							TagRelation.getRelationByString(relationAttribute));
 				}
 				
 				// No relation attribute found, let's just stick with the normal way.
-				return new GetTagDetailsStrategy(context, urlTokens.nextToken());
+				return new GetTagDetailsStrategy(context, urlTokens.next());
 			}
 			break;
 		}

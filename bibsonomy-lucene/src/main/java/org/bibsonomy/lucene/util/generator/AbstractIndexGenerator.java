@@ -89,6 +89,7 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 	 * 
 	 * Database as well as index files are configured in the lucene.properties
 	 * file.
+	 * @throws Exception 
 	 * 
 	 * @throws CorruptIndexException
 	 * @throws IOException
@@ -116,6 +117,7 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 
 	/**
 	 * Create empty index. Attributes must already be configured (via init()).
+	 * @throws Exception 
 	 * 
 	 * @throws CorruptIndexException
 	 * @throws LockObtainFailedException
@@ -125,6 +127,7 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 
 	/**
 	 * creates index of resource entries
+	 * @throws Exception 
 	 * 
 	 * @throws CorruptIndexException
 	 * @throws IOException

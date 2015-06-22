@@ -68,6 +68,9 @@ public class TaylorAndFrancisScraperTest {
 	public void url3TestRun(){
 		UnitTestRunner.runSingleTest("url_241");
 	}
+	/**
+	 * @throws Exception
+	 */
 	@Test
 	public void testReferences() throws Exception{
 		final ScrapingContext sc = new ScrapingContext(new URL("http://www.tandfonline.com/doi/abs/10.1080/14786419.2010.534733?url_ver=Z39.88-2003&amp;rfr_id=ori:rid:crossref.org&amp;rfr_dat=cr_pub%3dpubmed#.VClwLRaWeUk"));

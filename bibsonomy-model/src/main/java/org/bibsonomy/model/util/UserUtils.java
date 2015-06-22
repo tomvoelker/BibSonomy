@@ -31,6 +31,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.net.URL;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -51,7 +52,10 @@ public class UserUtils {
 	
 	/** the name of the dblp user */
 	public static final String DBLP_USER_NAME = "dblp";
-
+	
+	/** a set of special users */
+	public static final List<String> USER_NAMES_OF_SPECIAL_USERS = Arrays.asList(DBLP_USER_NAME);
+	
 	/** the length of the password salt */
 	private static final int SALT_LENGTH = 16;
 
@@ -286,7 +290,7 @@ public class UserUtils {
 		existingUser.setApiKey(!present(updatedUser.getApiKey()) ? existingUser.getApiKey()	: updatedUser.getApiKey());
 		existingUser.setBirthday(!present(updatedUser.getBirthday()) ? existingUser.getBirthday() : updatedUser.getBirthday());
 		existingUser.setGender(!present(updatedUser.getGender()) ? existingUser.getGender() : updatedUser.getGender());
-		existingUser.setUseExternalPicture(!present(updatedUser.getUseExternalPicture()) ? existingUser.getUseExternalPicture() : updatedUser.getUseExternalPicture());
+		existingUser.setUseExternalPicture(!present(updatedUser.isUseExternalPicture()) ? existingUser.isUseExternalPicture() : updatedUser.isUseExternalPicture());
 		existingUser.setHobbies(!present(updatedUser.getHobbies()) ? existingUser.getHobbies() : updatedUser.getHobbies());
 		existingUser.setInterests(!present(updatedUser.getInterests()) ? existingUser.getInterests() : updatedUser.getInterests());
 		existingUser.setIPAddress(!present(updatedUser.getIPAddress()) ? existingUser.getIPAddress() : updatedUser.getIPAddress());

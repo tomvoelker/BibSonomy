@@ -1,0 +1,232 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/users"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/bstags/menu"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="urn:http://www.springframework.org/tags"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<layout:oneColumnLayout  pageTitle="${command.pageTitle}" loginUser="${command.context.loginUser}" requPath="">
+	
+		<jsp:attribute name="heading">
+			
+		</jsp:attribute>
+		
+		<jsp:attribute name="headerExt">
+			<script src="${resdir}/javascript/admin/statistics.js" type="text/javascript"><!-- keep me --></script>
+		</jsp:attribute>
+		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:admin />
+					<nav:crumb name="stats" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+		
+		<jsp:attribute name="content">
+			<c:set var="all" value="${pageContext.request.getParameter('all')}" />
+			<c:if test="${empty all}">
+				<c:set var="all" value="yes" />
+			</c:if>
+			<c:set var="spammers" value="${pageContext.request.getParameter('spammers')}" />
+			<c:if test="${empty spammers}">
+				<c:set var="spammers" value="yes" />
+			</c:if>
+			<c:set var="filters" value="${pageContext.request.getParameter('filters')}" />
+			<h1 class="content-header">Statistics</h1>
+			<div class="row">
+				<div class="col-md-2">
+					<strong>show statistics:</strong>
+				</div>
+				<div class="col-md-10">
+					<div class="btn-group">
+						<a class="btn btn-default ${empty filters ? 'active' : '' }" href="/admin/statistics">with spammers</a>
+						<a class="btn btn-default ${filters == 'NO_SPAMMER' ? 'active' : ''}" href="/admin/statistics?filters=NO_SPAMMER">without spammers</a>
+						<a class="btn btn-default ${filters == 'SPAMMER' ? 'active' : '' }" href="/admin/statistics?filters=SPAMMER">only for spammers</a>
+					</div>
+				</div>
+			</div>
+			
+			<c:choose>
+				<c:when test="${not empty filters}">
+					<c:set var="filtersString" value="&amp;filters=${filters}" />
+				</c:when>
+				<c:otherwise>
+					<c:set var="filtersString" value="" />
+				</c:otherwise>
+			</c:choose>
+			
+			<c:set var="loadingMessage" value="loading ..." />
+			<c:set var="showDBLP" value="${filters != 'SPAMMER'}" />
+			
+			<h2>resource, post and TAS counts</h2>
+			
+			<table class="table table-bordered table-condensed">
+				<tr>
+					<th><!-- keep me --></th>
+					<th colspan="3">overall</th>
+					<c:if test="${showDBLP}">
+						<th colspan="3">overall (without DBLP)</th>
+						<th colspan="3">24 hours (without DBLP)</th>
+					</c:if>
+				</tr>
+				<tr>
+					<th><!-- keep me --></th>
+					<th>all</th>
+					<th>bookmarks</th>
+					<th>publications</th>
+					<c:if test="${showDBLP}">
+						<th>all</th>
+						<th>bookmarks</th>
+						<th>publications</th>
+						<th>all</th>
+						<th>bookmarks</th>
+						<th>publications</th>
+					</c:if>
+				</tr>
+				<tr>
+					<td>resources</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;filters=unique${filtersString}"><c:out value="${loadingMessage}" /></td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;filters=unique&amp;resourceType=bookmark${filtersString}"><c:out value="${loadingMessage}" /></td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;filters=unique&amp;resourceType=publication${filtersString}"><c:out value="${loadingMessage}" /></td>
+					<c:if test="${showDBLP}">
+						<td data-url="/statistics?type=posts&amp;grouping=all&amp;filters=unique&amp;filters=WITHOUT_DBLP">loading</td>
+						<td data-url="/statistics?type=posts&amp;grouping=all&amp;filters=unique&amp;resourceType=bookmark&amp;filters=WITHOUT_DBLP${filtersString}"><c:out value="${loadingMessage}" /></td>
+						<td data-url="/statistics?type=posts&amp;grouping=all&amp;filters=unique&amp;resourceType=publication&amp;filters=WITHOUT_DBLP${filtersString}"><c:out value="${loadingMessage}" /></td>
+						<td data-url="/statistics?type=posts&amp;grouping=all&amp;filters=unique&amp;filters=WITHOUT_DBLP&amp;interval=24&amp;unit=hour${filtersString}"><c:out value="${loadingMessage}" /></td>
+						<td data-url="/statistics?type=posts&amp;grouping=all&amp;filters=unique&amp;resourceType=bookmark&amp;filters=WITHOUT_DBLP&amp;interval=24&amp;unit=hour${filtersString}"><c:out value="${loadingMessage}" /></td>
+						<td data-url="/statistics?type=posts&amp;grouping=all&amp;filters=unique&amp;resourceType=publication&amp;filters=WITHOUT_DBLP&amp;interval=24&amp;unit=hour${filtersString}"><c:out value="${loadingMessage}" /></td>
+					</c:if>
+				</tr>
+				<tr>
+					<td>posts</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all${filtersString}"><c:out value="${loadingMessage}" /></td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=bookmark${filtersString}"><c:out value="${loadingMessage}" /></td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=publication${filtersString}"><c:out value="${loadingMessage}" /></td>
+					<c:if test="${showDBLP}">
+						<td data-url="/statistics?type=posts&amp;grouping=all&amp;filters=WITHOUT_DBLP${filtersString}"><c:out value="${loadingMessage}" /></td>
+						<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=bookmark&amp;filters=WITHOUT_DBLP${filtersString}"><c:out value="${loadingMessage}" /></td>
+						<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=publication&amp;filters=WITHOUT_DBLP${filtersString}"><c:out value="${loadingMessage}" /></td>
+						<td data-url="/statistics?type=posts&amp;grouping=all&amp;filters=WITHOUT_DBLP&amp;interval=24&amp;unit=hour${filtersString}"><c:out value="${loadingMessage}" /></td>
+						<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=bookmark&amp;filters=WITHOUT_DBLP&amp;interval=24&amp;unit=hour${filtersString}"><c:out value="${loadingMessage}" /></td>
+						<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=publication&amp;filters=WITHOUT_DBLP&amp;interval=24&amp;unit=hour${filtersString}"><c:out value="${loadingMessage}" /></td>
+					</c:if>
+				</tr>
+				<tr>
+					<td>tas</td>
+					<td data-url="/statistics?type=tags&amp;grouping=all${filtersString}">loading</td>
+					<td data-url="/statistics?type=tags&amp;grouping=all&amp;resourceType=bookmark${filtersString}">loading</td>
+					<td data-url="/statistics?type=tags&amp;grouping=all&amp;resourceType=publication${filtersString}">loading</td>
+					<c:if test="${showDBLP}">
+						<td data-url="/statistics?type=tags&amp;grouping=all&amp;filters=WITHOUT_DBLP${filtersString}">loading</td>
+						<td data-url="/statistics?type=tags&amp;grouping=all&amp;resourceType=bookmark&amp;filters=WITHOUT_DBLP${filtersString}"><c:out value="${loadingMessage}" /></td>
+						<td data-url="/statistics?type=tags&amp;grouping=all&amp;resourceType=publication&amp;filters=WITHOUT_DBLP${filtersString}"><c:out value="${loadingMessage}" /></td>
+						<td data-url="/statistics?type=tags&amp;grouping=all&amp;filters=WITHOUT_DBLP&amp;interval=24&amp;unit=hour${filtersString}"><c:out value="${loadingMessage}" /></td>
+						<td data-url="/statistics?type=tags&amp;grouping=all&amp;resourceType=bookmark&amp;filters=WITHOUT_DBLP&amp;interval=24&amp;unit=hour${filtersString}"><c:out value="${loadingMessage}" /></td>
+						<td data-url="/statistics?type=tags&amp;grouping=all&amp;resourceType=publication&amp;filters=WITHOUT_DBLP&amp;interval=24&amp;unit=hour${filtersString}"><c:out value="${loadingMessage}" /></td>
+					</c:if>
+				</tr>
+			</table>
+			
+			<h2>misc</h2>
+			<table class="table table-bordered table-condensed">
+				<tr>
+					<td>tags</td>
+					<td data-url="/statistics?type=tags&amp;grouping=all&amp;filters=unique"><c:out value="${loadingMessage}" /></td>
+				</tr>
+				<tr>
+					<td>tag-tag relations</td>
+					<td data-url="/statistics?type=tags&amp;grouping=all&amp;conceptStatus=all"><c:out value="${loadingMessage}" /></td>
+				</tr>
+				<tr>
+					<td>posts in clipboard</td>
+					<td data-url="/statistics?type=posts&amp;grouping=clipboard"><c:out value="${loadingMessage}" /></td>
+				</tr>
+				<tr>
+					<td>user layouts</td>
+					<td data-url="/statistics?type=documents&amp;grouping=all&amp;filters=LAYOUT_DOCUMENTS"><c:out value="${loadingMessage}" /></td>
+				</tr>
+				<tr>
+					<td>uploaded documents</td>
+					<td data-url="/statistics?type=documents&amp;grouping=all"><c:out value="${loadingMessage}" /></td>
+				</tr>
+			</table>
+			
+			<h2>logging tables</h2>
+			<table class="table table-bordered table-condensed">
+				<tr>
+					<th><!-- keep me --></th>
+					<th>overall</th>
+					<c:if test="${showDBLP}">
+						<th>overall (without DBLP)</th>
+					</c:if>
+				</tr>
+				<tr>
+					<td>bookmarks</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=bookmark&amp;filters=history${filtersString}"><c:out value="${loadingMessage}" /></td>
+					<c:if test="${showDBLP}">
+						<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=bookmark&amp;filters=history&amp;filters=WITHOUT_DBLP${filtersString}"><c:out value="${loadingMessage}" /></td>
+					</c:if>
+				</tr>
+				<tr>
+					<td>publications</td>
+					<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=publication&amp;filters=history${filtersString}"><c:out value="${loadingMessage}" /></td>
+					<c:if test="${showDBLP}">
+						<td data-url="/statistics?type=posts&amp;grouping=all&amp;resourceType=publication&amp;filters=history&amp;filters=WITHOUT_DBLP${filtersString}"><c:out value="${loadingMessage}" /></td>
+					</c:if>
+				</tr>
+				<tr>
+					<td>posts in clipboard</td>
+					<td data-url="/statistics?type=posts&amp;grouping=clipboard&amp;filters=history"><c:out value="${loadingMessage}" /></td>
+				</tr>
+				<tr>
+					<td>friendships</td>
+					<td data-url="/statistics?type=users&amp;grouping=friend&amp;filters=history"><c:out value="${loadingMessage}" /></td>
+				</tr>
+				<tr>
+					<td>group memberships</td>
+					<td data-url="/statistics?type=users&amp;grouping=group&amp;filters=history"><c:out value="${loadingMessage}" /></td>
+				</tr>
+				<tr>
+					<td>tag-tag relations</td>
+					<td data-url="/statistics?type=tags&amp;grouping=all&amp;conceptStatus=all&amp;filters=history"><c:out value="${loadingMessage}" /></td>
+				</tr>
+			</table>
+			
+			<h2>users</h2>
+			<table class="table table-bordered table-condensed">
+				<tr>
+					<td>users</td>
+					<td data-url="/statistics?type=users&amp;grouping=all&amp;all=true&amp;spammers=true"><c:out value="${loadingMessage}" /></td>
+				</tr>
+				<tr>
+					<td>spammers</td>
+					<td data-url="/statistics?type=users&amp;grouping=all&amp;spammers=true&amp;all=false"><c:out value="${loadingMessage}" /></td>
+				</tr>
+				<tr>
+					<td>active users</td>
+					<td data-url="/statistics?type=users&amp;grouping=all&amp;filters=ACTIVE_USERS${filtersString}"><c:out value="${loadingMessage}" /></td>
+				</tr>
+				<tr>
+					<td>active users 24 hours</td>
+					<td data-url="/statistics?type=users&amp;grouping=all&amp;filters=ACTIVE_USERS&amp;interval=24&amp;unit=hour${filtersString}">loading</td>
+				</tr>
+				<tr>
+					<td>active users last month</td>
+					<td data-url="/statistics?type=users&amp;grouping=all&amp;filters=ACTIVE_USERS&amp;interval=1&amp;unit=month${filtersString}">loading</td>
+				</tr>
+			</table>
+		</jsp:attribute>
+	</layout:oneColumnLayout>
+</jsp:root>

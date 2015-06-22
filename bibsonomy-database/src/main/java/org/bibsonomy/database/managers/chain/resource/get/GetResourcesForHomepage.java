@@ -61,7 +61,7 @@ public class GetResourcesForHomepage<R extends Resource, P extends ResourceParam
 
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
-		return this.databaseManager.getPostsForHomepage(param.getFilter(), param.getStartDate(), param.getEndDate(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
+		return this.databaseManager.getPostsForHomepage(param.getFilters(), param.getStartDate(), param.getEndDate(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
 	}
 
 }

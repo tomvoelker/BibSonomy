@@ -35,9 +35,8 @@ import java.io.ObjectInputStream;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
@@ -283,14 +282,14 @@ public class IEInterface{
 		
 	}
 	
-	public HashMap<String, String> printResultInHashMap()	
+	public SortedMap<String, String> printResultInHashMap()	
 	{	
 		return printResultInHashMap(viterbiSequence, tokenSequence);
 	}
-	public HashMap<String, String> printResultInHashMap(Sequence viterbiSequence, TokenSequence tokenSequence)
+	public SortedMap<String, String> printResultInHashMap(Sequence viterbiSequence, TokenSequence tokenSequence)
 	{
 
-		HashMap<String, String> map = new HashMap<String, String>();
+		final SortedMap<String, String> map = new TreeMap<String, String>();
 		
 		map.put("author", null);
 		map.put("title", null);
@@ -438,9 +437,9 @@ public class IEInterface{
 	/*
 	 * clean up the end of a bib-field(cut '.' and ',')
 	 */
-	private HashMap<String, String> cleanUp(HashMap<String, String> map){
+	private SortedMap<String, String> cleanUp(final SortedMap<String, String> map){
 		
-		for(String field: map.keySet()){
+		for (final String field: map.keySet()){
 			String value = map.get(field);
 			if(value!=null && value.length()>4){
 				value = value.trim();

@@ -100,7 +100,6 @@
 		<baseFileName>plain</baseFileName>
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
-		<isFavorite>true</isFavorite>
 	</layout>
 	<layout name="tablerefs">
 		<displayName>HTML table</displayName>
