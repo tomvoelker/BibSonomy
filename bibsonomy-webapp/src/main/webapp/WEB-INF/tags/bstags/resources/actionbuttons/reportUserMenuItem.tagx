@@ -11,21 +11,13 @@
 	<jsp:directive.attribute name="userName" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true" />
 	<jsp:directive.attribute name="buttonClasses" type="java.lang.String" required="true" />
-
-	<c:choose>	
-		<c:when test="${not empty post.systemUrl }">
-			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
-		</c:when>
-		<c:otherwise>
-			<c:set var ="isRemotePost" value="false"/>
-		</c:otherwise>
-	</c:choose>
-
+	
+	
 	<c:if test="${not empty post.user.name}">
 		<fmt:message var="reportUser" key="user.report" />
 		<fmt:message var="reportedUser" key="user.reported" />
 		<c:choose>
-			<c:when test="${!mtl:contains(command.context.loginUser.reportedSpammers, post.user.name)}">			
+			<c:when test="${!mtl:contains(command.context.loginUser.reportedSpammers, post.user.name)}">
 				<a onclick="return reportUser(this,'${post.user.name}');"
 					href="${relativeUrlGenerator.getReportUserURL()}"
 					title="${fn:escapeXml(reportUser)}">
