@@ -89,7 +89,7 @@
 						buttonClasses="${buttonClasses}"/>
 				</li>
 				
-				<c:if test="${command.context.userLoggedIn}">
+				<c:if test="${command.context.userLoggedIn and post.user.name ne loginUserName}">
 					<li class="divider"><!--  --></li>
 					<li>
 						<buttons:reportUserMenuItem 
