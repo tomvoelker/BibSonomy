@@ -52,8 +52,6 @@ import org.w3c.dom.NodeList;
  * @author Christian Kramer
  */
 public class AandAScraper extends AbstractUrlScraper implements ReferencesScraper{
-
-	// http://www.aanda.org/component/makeref/?task=output&type=bibtex&doi=10.1051/0004-6361:20053694
 	
 	private static final String SITE_NAME = "Astronomy and Astrophysics";
 	private static final String SITE_URL = "http://www.aanda.org/";
