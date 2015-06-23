@@ -62,7 +62,7 @@ public class TaylorAndFrancisScraper extends AbstractUrlScraper implements Refer
 	private static final String TANDF_BIBTEX_DOWNLOAD_PATH = "action/downloadCitation";
 	private static final String DOWNLOADFILENAME = "tandf_rajp2080_124";
 	
-	private final static Pattern ref_pattern = Pattern.compile("(?s)<ul class=\"references\">(.*)</ul></div></div>");
+	private final static Pattern REF_PATTERN = Pattern.compile("(?s)<ul class=\"references\">(.*)</ul></div></div>");
 	private static PostMethod postContent(PostMethod method, String doi) {
 		method.addParameter("doi", doi);
 		method.addParameter("downloadFileName", DOWNLOADFILENAME);
@@ -95,16 +95,16 @@ public class TaylorAndFrancisScraper extends AbstractUrlScraper implements Refer
 	@Override
 	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
 		scrapingContext.setScraper(this);
-		Matcher matcher = DOI_PATTERN.matcher(scrapingContext.getUrl().toString());
+		final Matcher matcher = DOI_PATTERN.matcher(scrapingContext.getUrl().toString());
 		if (!matcher.find()) throw new ScrapingException("URL pattern not supported yet");
 		try {
-			HttpClient client = WebUtils.getHttpClient();
+			final HttpClient client = WebUtils.getHttpClient();
 			//get the page to start the session
 			WebUtils.getContentAsString(client, scrapingContext.getUrl().toExternalForm());
 			//post to receive the BibTeX file
-			PostMethod method = new PostMethod(SITE_URL + TANDF_BIBTEX_DOWNLOAD_PATH);
-			String doi = matcher.group().substring(1);
-			String bibtexEntry = WebUtils.getPostContentAsString(client, postContent(method, doi));
+			final PostMethod method = new PostMethod(SITE_URL + TANDF_BIBTEX_DOWNLOAD_PATH);
+			final String doi = matcher.group().substring(1);
+			final String bibtexEntry = WebUtils.getPostContentAsString(client, postContent(method, doi));
 			if (present(bibtexEntry)) {
 				scrapingContext.setBibtexResult(bibtexEntry.trim());
 				return true;
@@ -122,14 +122,9 @@ public class TaylorAndFrancisScraper extends AbstractUrlScraper implements Refer
 	@Override
 	public boolean scrapeReferences(ScrapingContext scrapingContext) throws ScrapingException {
 		try{
-			final Matcher m = ref_pattern.matcher(WebUtils.getContentAsString(scrapingContext.getUrl().toString().replace("abs", "ref") + "#tabModule"));
-			String references = null;
+			final Matcher m = REF_PATTERN.matcher(WebUtils.getContentAsString(scrapingContext.getUrl().toString().replace("abs", "ref") + "#tabModule"));
 			if (m.find()) {
-				references = m.group(1);
-			}
-			
-			if (references != null) {
-				scrapingContext.setReferences(references);
+				scrapingContext.setReferences(m.group(1));
 				return true;
 			}
 		} catch (IOException ex) {
