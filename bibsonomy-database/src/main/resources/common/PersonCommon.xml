@@ -59,6 +59,12 @@
 		<result property='post'            column='simhash1'        javaType='bibtex'                           select='getPosts'/>
 	</resultMap>
 	
+	<resultMap id='resourcePersonRelationLogStub' class='org.bibsonomy.model.ResourcePersonRelationLogStub' groupBy="personChangeId" extends="abstractResourcePersonRelation">
+		<result property="personId"        column="person_id"       javaType='java.lang.String' />
+		<result property='postInterhash'   column='simhash1'        javaType='java.lang.String' />
+		<result property='deleted'         column='deleted'         javaType='boolean' />
+	</resultMap>
+	
 	<resultMap id='preFilledResourcePersonRelation' class='org.bibsonomy.model.ResourcePersonRelation' groupBy="personChangeId" extends="abstractResourcePersonRelation">
 		<result property="person"          column="person_id"       javaType='org.bibsonomy.model.Person'       select='getPersonById' />
 		<result property='post'            resultMap="BibTexCommon.bibtexPost" />

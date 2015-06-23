@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
@@ -59,6 +60,7 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.ResourcePersonRelationLogStub;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.factories.ResourceFactory;
@@ -192,11 +194,9 @@ public class LuceneResourceConverter<R extends Resource> {
 		
 		if (searchType == IndexType.ELASTICSEARCH) {
 			if (BibTex.class.isAssignableFrom(this.resourceClass)) {
+				final List<ResourcePersonRelation> rels = post.getResourcePersonRelations();
 				jsonDocument.put(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, getNormalizedEntryType((Post<? extends BibTex>) post));
-				jsonDocument.put(ESConstants.AUTHOR_ENTITY_NAMES_FIELD_NAME, appendMainNames(post, PersonResourceRelationType.AUTHOR));
-				jsonDocument.put(ESConstants.AUTHOR_ENTITY_IDS_FIELD_NAME, appendPersonIds(post, PersonResourceRelationType.AUTHOR));
-				jsonDocument.put(ESConstants.PERSON_ENTITY_NAMES_FIELD_NAME, appendMainNames(post, null));
-				jsonDocument.put(ESConstants.PERSON_ENTITY_IDS_FIELD_NAME, appendPersonIds(post, null));
+				setPersonFields(jsonDocument, rels);
 				jsonDocument.put(ESConstants.DUMMY_PUBLICATION_FIELD_NAME, new Integer(0));
 			}
 			return jsonDocument;
@@ -211,12 +211,14 @@ public class LuceneResourceConverter<R extends Resource> {
 		return luceneDocument;
 	}
 
-	/**
-	 * @param post
-	 * @return
-	 */
-	private String appendMainNames(Post<R> post, PersonResourceRelationType type) {
-		final List<ResourcePersonRelation> rels = post.getResourcePersonRelations();
+	public void setPersonFields(Map<String, Object> jsonDocument, final List<ResourcePersonRelation> rels) {
+		jsonDocument.put(ESConstants.AUTHOR_ENTITY_NAMES_FIELD_NAME, serializeMainNames(rels, PersonResourceRelationType.AUTHOR));
+		jsonDocument.put(ESConstants.AUTHOR_ENTITY_IDS_FIELD_NAME, serializePersonIds(rels, PersonResourceRelationType.AUTHOR));
+		jsonDocument.put(ESConstants.PERSON_ENTITY_NAMES_FIELD_NAME, serializeMainNames(rels, null));
+		jsonDocument.put(ESConstants.PERSON_ENTITY_IDS_FIELD_NAME, serializePersonIds(rels, null));
+	}
+
+	private String serializeMainNames(final List<ResourcePersonRelation> rels, PersonResourceRelationType type) {
 		if (rels == null) {
 			return "";
 		}
@@ -303,8 +305,7 @@ public class LuceneResourceConverter<R extends Resource> {
 		return value.trim().replace(PERSON_DELIMITER, " ").replace(NAME_PART_DELIMITER, " ");
 	}
 
-	private String appendPersonIds(Post<R> post, PersonResourceRelationType type) {
-		final List<ResourcePersonRelation> rels = post.getResourcePersonRelations();
+	private String serializePersonIds(final List<ResourcePersonRelation> rels, PersonResourceRelationType type) {
 		if (rels == null) {
 			return "";
 		}
@@ -504,5 +505,58 @@ public class LuceneResourceConverter<R extends Resource> {
 			}
 		}
 		return post;
+	}
+
+	/**
+	 * @param doc
+	 * @param rel
+	 */
+	@Deprecated
+	public void updatePersonRelation(Map<String, Object> doc, ResourcePersonRelationLogStub rel) {
+		List<ResourcePersonRelation> relsBefore = readPersonRelationsFromIndex(doc);
+		updateRelationList(relsBefore, rel);
+		setPersonFields(doc, relsBefore);
+	}
+
+	@Deprecated
+	private void updateRelationList(List<ResourcePersonRelation> relsBefore, ResourcePersonRelationLogStub rel) {
+		int indexOfRelInRelsBefore = getIndexOfRel(relsBefore, rel);
+		if (indexOfRelInRelsBefore != -1) {
+			if (rel.isDeleted()) {
+				relsBefore.remove(indexOfRelInRelsBefore);
+			} else {
+				updatePersonRelation(relsBefore.get(indexOfRelInRelsBefore), rel);
+			}
+		} else {
+			ResourcePersonRelation relNew = new ResourcePersonRelation();
+			updatePersonRelation(relNew, rel);
+			// relNew.setPerson(rel.getPerson());
+			relsBefore.add(relNew);
+		}
+	}
+
+	/**
+	 * @param rel
+	 * @return
+	 */
+	private void updatePersonRelation(final ResourcePersonRelation relNew, final ResourcePersonRelationLogStub relStub) {
+		relNew.setPerson(new Person());
+		relNew.getPerson().setPersonId(relStub.getPersonId());
+		relNew.setChangedAt(relStub.getChangedAt());
+		relNew.setChangedBy(relStub.getChangedBy());
+		relNew.setPersonChangeId(relStub.getPersonChangeId());
+		relNew.setPersonIndex(relStub.getPersonIndex());
+		relNew.setQualifying(relStub.getQualifying());
+		relNew.setRelationType(relStub.getRelationType());
+	}
+
+	private int getIndexOfRel(List<ResourcePersonRelation> relsBefore, ResourcePersonRelationLogStub rel) {
+		for (int i = 0; i < relsBefore.size(); ++i) {
+			ResourcePersonRelation relBefore = relsBefore.get(i);
+			if ((relBefore.getRelationType() == rel.getRelationType()) && relBefore.getPerson().getPersonId().equals(rel.getPersonId()) && (relBefore.getPersonIndex() == rel.getPersonIndex())) {
+				return i;
+			}
+		}
+		return -1;
 	}
 }

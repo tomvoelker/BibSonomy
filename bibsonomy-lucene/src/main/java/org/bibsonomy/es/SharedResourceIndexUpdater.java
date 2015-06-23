@@ -34,12 +34,18 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.commons.collections.LRUMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.param.LucenePost;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.ResourcePersonRelationLogStub;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.GroupUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -49,6 +55,8 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.indices.IndexMissingException;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.sort.SortOrder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -308,10 +316,18 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 		for (final Map<String, Object> jsonDocument : esPostsToInsert2) {
 			jsonDocument.put(ESConstants.SYSTEM_URL_FIELD_NAME, this.systemHome);
 			final long indexId = this.calculateIndexId(Long.parseLong(jsonDocument.get(LuceneFieldNames.CONTENT_ID).toString()));
-			this.esClient.getClient().prepareIndex(this.indexName, this.resourceType, String.valueOf(indexId)).setSource(jsonDocument).setRefresh(true).execute().actionGet();
+			insertPostDocument(jsonDocument, String.valueOf(indexId));
 		}
 
 		log.info("post has been indexed.");
+	}
+
+	private void insertPostDocument(final Map<String, Object> jsonDocument, String indexIdStr) {
+		this.esClient.getClient().prepareIndex(this.indexName, this.resourceType, indexIdStr).setSource(jsonDocument).setRefresh(true).execute().actionGet();
+	}
+	
+	private void updatePostDocument(final Map<String, Object> jsonDocument, String indexIdStr) {
+		this.esClient.getClient().prepareUpdate(this.indexName, this.resourceType, indexIdStr).setDoc(jsonDocument).setRefresh(true).execute().actionGet();
 	}
 
 	/**
@@ -421,6 +437,47 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 			final Map<String, Object> postDoc = (Map<String, Object>)this.resourceConverter.readPost(post, IndexType.ELASTICSEARCH);
 			this.insertDocument(postDoc);
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#updateIndexWithPersonRelation(java.lang.String, java.util.List)
+	 */
+	@Override
+	public void updateIndexWithPersonRelation(String interhash, List<ResourcePersonRelation> newRels) {
+			
+		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(ESConstants.INDEX_NAME);
+		searchRequestBuilder.setTypes(this.resourceType);
+		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
+		searchRequestBuilder.setQuery(QueryBuilders.matchQuery("interhash", interhash));
+		searchRequestBuilder.setExplain(true);
+
+		final SearchResponse response = searchRequestBuilder.execute().actionGet();
+
+		if (response != null) {
+			for (final SearchHit hit : response.getHits()) {
+				final Map<String, Object> doc = hit.getSource();
+				this.resourceConverter.setPersonFields(doc, newRels);
+				this.updatePostDocument(doc, hit.getId());
+			}
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#updateIndexWithPersonNameInfo(org.bibsonomy.model.PersonName, org.apache.commons.collections.LRUMap)
+	 */
+	@Override
+	public void updateIndexWithPersonNameInfo(PersonName name, LRUMap updatedInterhashes) {
+		// TODO Auto-generated method stub
+		// dotododo
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#updateIndexWithPersonInfo(org.bibsonomy.model.Person, org.apache.commons.collections.LRUMap)
+	 */
+	@Override
+	public void updateIndexWithPersonInfo(Person per, LRUMap updatedInterhashes) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

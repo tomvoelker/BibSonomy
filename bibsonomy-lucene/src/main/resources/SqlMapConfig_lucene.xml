@@ -26,5 +26,6 @@
 	
 	<sqlMap resource="LuceneGenerateIndexQueries.xml" />
 	<sqlMap resource="Queries-lucene.xml" />
+	<sqlMap resource="person-lucene-queries.xml" />
 </sqlMapConfig>
 

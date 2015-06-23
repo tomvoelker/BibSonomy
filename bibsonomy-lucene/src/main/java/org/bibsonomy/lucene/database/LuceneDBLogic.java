@@ -37,10 +37,14 @@ import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.managers.PersonDatabaseManager;
+import org.bibsonomy.lucene.database.managers.PersonLuceneDatabaseManager;
 import org.bibsonomy.lucene.database.params.LuceneParam;
 import org.bibsonomy.lucene.param.LucenePost;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.ResourcePersonRelationLogStub;
 import org.bibsonomy.model.User;
 
 /**
@@ -54,6 +58,7 @@ public class LuceneDBLogic<R extends Resource> extends AbstractDatabaseManager i
 	private DBSessionFactory sessionFactory;
 	private final PersonDatabaseManager personDatabaseManager = PersonDatabaseManager.getInstance();
 	private final GeneralDatabaseManager generalDatabaseManager = GeneralDatabaseManager.getInstance();
+	private final PersonLuceneDatabaseManager personLuceneDatabaseManager = PersonLuceneDatabaseManager.getInstance();
 	
 	protected DBSession openSession() {
 		return this.sessionFactory.getDatabaseSession();
@@ -96,6 +101,16 @@ public class LuceneDBLogic<R extends Resource> extends AbstractDatabaseManager i
 			post.setResourcePersonRelations(rels);
 		}
 		return posts;
+	}
+	
+	@Override
+	public List<ResourcePersonRelation> getResourcePersonRelationsByPublication(String interHash) {
+		final DBSession session = this.openSession();
+		try {
+			return this.personDatabaseManager.getResourcePersonRelationsByPublication(interHash, session);
+		} finally {
+			session.close();
+		}
 	}
 	
 	/*
@@ -252,6 +267,36 @@ public class LuceneDBLogic<R extends Resource> extends AbstractDatabaseManager i
 		final DBSession session = this.openSession();
 		try {
 			return this.generalDatabaseManager.getLastId(ConstantID.PERSON_CHANGE_ID, session);
+		} finally {
+			session.close();
+		}
+	}
+
+	@Override
+	public List<ResourcePersonRelationLogStub> getPubPersonRelationsByChangeIdRange(long fromPersonChangeId, long toPersonChangeIdExclusive) {
+		final DBSession session = this.openSession();
+		try {
+			return personLuceneDatabaseManager.getPubPersonChangesByChangeIdRange(fromPersonChangeId, toPersonChangeIdExclusive, session);
+		} finally {
+			session.close();
+		}
+	}
+
+	@Override
+	public List<PersonName> getPersonMainNamesByChangeIdRange(long firstChangeId, long toPersonChangeIdExclusive) {
+		final DBSession session = this.openSession();
+		try {
+			return personLuceneDatabaseManager.getPersonMainNamesByChangeIdRange(firstChangeId, toPersonChangeIdExclusive, session);
+		} finally {
+			session.close();
+		}
+	}
+
+	@Override
+	public List<Person> getPersonByChangeIdRange(long firstChangeId, long toPersonChangeIdExclusive) {
+		final DBSession session = this.openSession();
+		try {
+			return personLuceneDatabaseManager.getPersonByChangeIdRange(firstChangeId, toPersonChangeIdExclusive, session);
 		} finally {
 			session.close();
 		}

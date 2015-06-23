@@ -29,8 +29,13 @@ package org.bibsonomy.es;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.collections.LRUMap;
 import org.bibsonomy.lucene.param.LucenePost;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.ResourcePersonRelationLogStub;
 
 /**
  * Common interface for updating indices
@@ -85,4 +90,22 @@ public interface IndexUpdater<R extends Resource> {
 	 * @param state 
 	 */
 	public void setSystemInformation(final IndexUpdaterState state);
+
+	/**
+	 * @param interHash
+	 * @param newRels
+	 */
+	public void updateIndexWithPersonRelation(String interHash, List<ResourcePersonRelation> newRels);
+
+	/**
+	 * @param name
+	 * @param updatedInterhashes
+	 */
+	public void updateIndexWithPersonNameInfo(PersonName name, LRUMap updatedInterhashes);
+
+	/**
+	 * @param per
+	 * @param updatedInterhashes
+	 */
+	public void updateIndexWithPersonInfo(Person per, LRUMap updatedInterhashes);
 }

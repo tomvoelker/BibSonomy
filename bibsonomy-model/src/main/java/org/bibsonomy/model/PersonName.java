@@ -53,7 +53,6 @@ public class PersonName implements Serializable {
 	private String firstName;
 	private String lastName;
 	private String personId;
-	// TODO: should not be here. Instead, the entity type should store a single reference to is main name
 	private boolean isMain;
 	private Person person;
 	private String changedBy;

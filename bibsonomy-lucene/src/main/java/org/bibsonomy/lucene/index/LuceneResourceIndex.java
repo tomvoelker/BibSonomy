@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.commons.collections.LRUMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
@@ -67,7 +68,10 @@ import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.param.LuceneIndexStatistics;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.param.comparator.DocumentCacheComparator;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
 
 /**
  * abstract base class for managing lucene resource indices
@@ -945,11 +949,41 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 * @return
+	 */
 	public LuceneResourceConverter<R> getResourceConverter() {
 		return this.resourceConverter;
 	}
 
+	/**
+	 * @param resourceConverter
+	 */
 	public void setResourceConverter(LuceneResourceConverter<R> resourceConverter) {
 		this.resourceConverter = resourceConverter;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#updateIndexWithPersonRelation(java.lang.String, java.util.List)
+	 */
+	@Override
+	public void updateIndexWithPersonRelation(String interHash, List<ResourcePersonRelation> newRels) {
+		// because it is intended to completely replace lucene with elasticsearch, this is only implemented for elasticsearch
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#updateIndexWithPersonNameInfo(org.bibsonomy.model.PersonName, org.apache.commons.collections.LRUMap)
+	 */
+	@Override
+	public void updateIndexWithPersonNameInfo(PersonName name, LRUMap updatedInterhashes) {
+		// because it is intended to completely replace lucene with elasticsearch, this is only implemented for elasticsearch
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#updateIndexWithPersonInfo(org.bibsonomy.model.Person, org.apache.commons.collections.LRUMap)
+	 */
+	@Override
+	public void updateIndexWithPersonInfo(Person per, LRUMap updatedInterhashes) {
+		// because it is intended to completely replace lucene with elasticsearch, this is only implemented for elasticsearch
 	}
 }
