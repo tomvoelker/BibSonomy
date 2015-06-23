@@ -1268,12 +1268,6 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 	@Override
-	public List<URI> getSyncServices(final boolean server) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void createSyncServer(final String userName, final SyncService server) {
 		// TODO Auto-generated method stub
 	}
@@ -1323,7 +1317,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 	
 	@Override
-	public List<SyncService> getAllSyncServices(final boolean server) {
+	public List<SyncService> getSyncServices(final boolean server) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -186,19 +186,23 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * @return all available synchronization services. if server <true> sync server
 	 * otherwise sync clients
 	 */
-	public List<URI> getSyncServices(final boolean server, final DBSession session) {
-		return this.queryForList("getSyncServices", server, URI.class, session);
+	public List<SyncService> getSyncServices(final boolean server, final DBSession session) {
+		return this.queryForList("getSyncServices", server, SyncService.class, session);
 	}
 	
 	/**
+	 * @param sslDn 
+	 * @param serviceURI 
 	 * @param server
 	 * @param session
-	 * @return
+	 * @return get available SyncService via SSLDn / ServiceID - if SSLDn empty, ServiceID is selected
 	 */
-	public List<SyncService> getAllSyncServices(final boolean server, final DBSession session) {
+	public List<SyncService> getSyncServiceDetails(final String sslDn, final URI serviceURI, final DBSession session) {
 		final SyncParam param = new SyncParam();
-		param.setServer(server);
-		return this.queryForList("getAllSyncServices", param, SyncService.class, session);
+		param.setSslDn(sslDn);
+		param.setService(serviceURI);
+			
+		return this.queryForList("getSyncServiceDetails", param, SyncService.class, session);
 	}
 
 	/**

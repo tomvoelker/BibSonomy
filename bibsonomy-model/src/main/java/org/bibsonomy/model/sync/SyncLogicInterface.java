@@ -61,10 +61,8 @@ public interface SyncLogicInterface {
 	 * 
 	 * @param server switch between server and clients
 	 * @return List of allowed synchronization services
-	 * 
-	 * FIXME: duplicate of {@link #getAllSyncServices(boolean)}
 	 */
-	public List<URI> getSyncServices(final boolean server);
+	public List<SyncService> getSyncServices(final boolean server);
 	
 	/* ********************************************************************
 	 * create, read, update, delete sync services - user dependent
@@ -105,14 +103,12 @@ public interface SyncLogicInterface {
 	
 	
 	/**
-	 * returns all on this system available server (or clients) on 
-	 * @param server
-	 * @return A list of all available sync services.
-	 * 
-	 * FIXME: duplicate of {@link #getSyncServices(boolean)}
-	 * 
+	 *  
+	 * @param sslDn 
+	 * @param serviceURI 
+	 * @return SyncService by SSLDn / ServiceURI - if SSLDn is empty, ServiceURI is selected
 	 */
-	public List<SyncService> getAllSyncServices(final boolean server);
+	public List<SyncService> getSyncServiceDetails(final String sslDn, final URI serviceURI);
 	
 	/* ********************************************************************
 	 * get sync posts/plans, update delete, get sync data

@@ -1044,7 +1044,7 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	@Override
-	public List<URI> getSyncServices(final boolean server) {
+	public List<SyncService> getSyncServices(final boolean server) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1099,12 +1099,6 @@ public class TestDBLogic implements LogicInterface {
 	}
 	
 	@Override
-	public List<SyncService> getAllSyncServices(final boolean server) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
 	public String getUsernameByRemoteUserId(final RemoteUserId remoteUserId) {
 		return null;
 	}
@@ -1141,6 +1135,15 @@ public class TestDBLogic implements LogicInterface {
 	 */
 	@Override
 	public Statistics getUserStatistics(GroupingEntity grouping, Set<Filter> filters, Classifier classifier, SpamStatus status, Date startDate, Date endDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncServiceDetails(java.lang.String, java.net.URI)
+	 */
+	@Override
+	public List<SyncService> getSyncServiceDetails(String sslDn, URI serviceURI) {
 		// TODO Auto-generated method stub
 		return null;
 	}

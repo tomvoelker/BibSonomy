@@ -38,6 +38,7 @@ import org.bibsonomy.common.exceptions.SynchronizationRunningException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
 import org.bibsonomy.rest.strategy.sync.DeleteSyncDataStrategy;
@@ -62,14 +63,14 @@ public class SynchronizationHandler implements ContextHandler {
 		try {
 			final URI serviceURI = new URI(urlTokens.next());
 			final User user = context.getLogic().getAuthenticatedUser();
-			final List<SyncService> syncClient = context.getLogic().getSyncService(user.getName(), serviceURI, false);
+			final List<SyncService> syncClient = context.getLogic().getSyncServiceDetails(null, serviceURI);
 
-			// check SSL for Puma instance (client has SSLDn and RestServlet set the role of the user)
-			if ( ValidationUtils.present(syncClient.get(0).getSslDn()) && !user.getRole().equals(Role.SYNC) ) {
-				log.debug("no sync-role was set for the user - check ssl");
-
-				// 400er error BAD REQUEST --> CERT abgelaufen, client falsch gestellt
-				throw new SynchronizationRunningException();
+			if (!syncClient.isEmpty()) {
+				// check SSL for client instance
+				if ( ValidationUtils.present(syncClient.get(0).getSslDn()) && !user.getRole().equals(Role.SYNC) ) {
+					log.debug("no sync-role was set for the user - check ssl");
+					throw new BadRequestOrResponseException("check SSL cert for configured client");
+				}
 			}
 
 			switch (httpMethod) {

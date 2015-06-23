@@ -417,42 +417,26 @@ public final class RestServlet extends HttpServlet {
 		}
 
 		/*
-		 * get syncClient
+		 * get syncClient from SSLDn
 		 */
 		log.debug("checking available sync client against SSL_CLIENT_S_DN '" + sslClientSDn + "'.");
-		URI serviceURI = null;
+		final List<SyncService> syncClient = logic.getSyncServiceDetails(sslClientSDn, null);
 
-		// check that request URI contains service URI
-		final URLDecodingPathTokenizer urlTokens = new URLDecodingPathTokenizer(request.getRequestURI(), "/");
-		final String userName = logic.getAuthenticatedUser().getName();
+		if (!syncClient.isEmpty()) {
+				log.debug("sync client:" + syncClient.get(0).getService() + " | "
+						+ "service ssl_s_dn:" + syncClient.get(0).getSslDn());
 
-		// skip /api token
-		urlTokens.next();
-
-		if (urlTokens.next() == "sync") {
-			try {
-				serviceURI = new URI(urlTokens.next());
-			} catch (URISyntaxException e) {
-				throw new NoSuchResourceException("cannot process url - please check url syntax ");
+			// check if request URI equals service URI
+			if (request.getRequestURI().contains(syncClient.get(0).getService().toString())) {
+				/*
+				 * service with requested ssl_client_s_dn found in available client list -> give user the sync-role
+				 */
+				log.debug("setting user role to SYNC");
+				logic.getAuthenticatedUser().setRole(Role.SYNC);
+				return;
 			}
-
-			// get sync client by serviceURI 
-			if (present(serviceURI)) {
-				final List<SyncService> syncClient = logic.getSyncService(userName, serviceURI, false);
-				if (log.isDebugEnabled()) {
-					log.debug("sync client:" + syncClient.get(0).getService() + " | "
-							+ "service ssl_s_dn:" + syncClient.get(0).getSslDn());
-				}
-
-				if (sslClientSDn.equals(syncClient.get(0).getSslDn())) {
-					/*
-					 * service with requested ssl_client_s_dn found in available client list -> give user the sync-role
-					 */
-					log.debug("setting user role to SYNC");
-					logic.getAuthenticatedUser().setRole(Role.SYNC);
-					return;
-				}
-			}
+		} else {
+			log.debug("no configured SyncClient found with specified client SSLDn!");
 		}
 	}
 

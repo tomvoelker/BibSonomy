@@ -677,7 +677,7 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public List<URI> getSyncServices(final boolean server) {
+	public List<SyncService> getSyncServices(final boolean server) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -725,11 +725,6 @@ public class RestLogic implements LogicInterface {
 	public List<SynchronizationPost> getSyncPlan(final String userName, final URI service, final Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction) {
 		return this.execute(new CreateSyncPlanQuery(service.toString(), clientPosts, resourceType, strategy, direction));
 	}
-
-	@Override
-	public List<SyncService> getAllSyncServices(final boolean server) {
-		throw new UnsupportedOperationException();
-	}
 	
 	@Override
 	public String getUsernameByRemoteUserId(final RemoteUserId remoteUserId) {
@@ -763,6 +758,15 @@ public class RestLogic implements LogicInterface {
 	@Override
 	public Statistics getDocumentStatistics(GroupingEntity groupingEntity, String grouping, Set<Filter> filters, Date startDate, Date endDate) {
 		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncServiceDetails(java.lang.String, java.net.URI)
+	 */
+	@Override
+	public List<SyncService> getSyncServiceDetails(String sslDn, URI serviceURI) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

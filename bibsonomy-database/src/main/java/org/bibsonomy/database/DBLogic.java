@@ -550,28 +550,13 @@ public class DBLogic implements LogicInterface {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getAllSyncServices()
+	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncServiceDetails()
 	 */
 	@Override
-	public List<SyncService> getAllSyncServices(final boolean server) {
+	public List<SyncService> getSyncServiceDetails(final String sslDn, final URI serviceURI) {
 		final DBSession session = this.openSession();
 		try {
-			return this.syncDBManager.getAllSyncServices(server, session);
-		} finally {
-			session.close();
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getAvlSyncServer()
-	 */
-	@Override
-	public List<URI> getSyncServices(final boolean server) {
-		final DBSession session = this.openSession();
-		try {
-			return this.syncDBManager.getSyncServices(server, session);
+			return this.syncDBManager.getSyncServiceDetails(sslDn, serviceURI, session);
 		} finally {
 			session.close();
 		}
@@ -871,7 +856,21 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncServices(final boolean server)
+	 */
+	@Override
+	public List<SyncService> getSyncServices(final boolean server) {
+		final DBSession session = this.openSession();
+		try {
+			return this.syncDBManager.getSyncServices(server, session);
+		} finally {
+			session.close();
+		}
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
