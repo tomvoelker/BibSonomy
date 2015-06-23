@@ -98,8 +98,9 @@ public class DnbImporter /* extends AbstractDatabaseManagerTest */ implements Ru
 				
 				
 				for (DnbPerson dp : p.getPersons()) {
-					final String dnbId = dp.getPersonId().trim();
+					final String dnbId = dp.getUniquePersonId().trim();
 					Person per = adminLogic.getPersonById(PersonIdType.DNB_ID, dnbId);
+					boolean personNeedsToBeStored = false;
 					if (per == null) {
 						per = new Person();
 						if (StringUtils.contains(dp.getGender(), "1")) {
@@ -110,10 +111,7 @@ public class DnbImporter /* extends AbstractDatabaseManagerTest */ implements Ru
 						per.setDnbPersonId(dp.getPersonId());
 						final PersonName name = new PersonName(dp.getFirstName(), dp.getLastName());
 						per.setMainName(name);
-						adminLogic.createOrUpdatePerson(per);
-					} else {
-						// TODO: maybe update person
-						// TODO: implement history of all person-related tables
+						personNeedsToBeStored = true;
 					}
 					
 					
@@ -130,7 +128,10 @@ public class DnbImporter /* extends AbstractDatabaseManagerTest */ implements Ru
 						rel.setRelationType(PersonResourceRelationType.EDITOR);
 						editors.add(per.getMainName());
 					} else if (StringUtils.contains(dp.getPersonFunction(), "gut1")) {
-						rel.setRelationType(PersonResourceRelationType.FIRST_REVIEWER);
+						//rel.setRelationType(PersonResourceRelationType.FIRST_REVIEWER);
+						continue; // mail von Dominik: erstmal nicht importieren
+					} else if (StringUtils.contains(dp.getPersonFunction(), "gut2")) {
+						continue; // mail von Dominik: erstmal nicht importieren
 					} else if (StringUtils.contains(dp.getPersonFunction(), "gut")) {
 						rel.setRelationType(PersonResourceRelationType.REVIEWER);
 					} else if (StringUtils.contains(dp.getPersonFunction(), "btr")) {
@@ -139,9 +140,10 @@ public class DnbImporter /* extends AbstractDatabaseManagerTest */ implements Ru
 					} else {
 						rel.setRelationType(PersonResourceRelationType.OTHER);
 					}
+					if (personNeedsToBeStored == true) {
+						adminLogic.createOrUpdatePerson(per);
+					}
 					relationsToInsert.add(rel);
-					
-					
 				}
 				
 				if (authors.isEmpty()) {
