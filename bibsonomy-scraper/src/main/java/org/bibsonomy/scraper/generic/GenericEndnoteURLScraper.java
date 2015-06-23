@@ -38,7 +38,7 @@ public abstract class GenericEndnoteURLScraper extends AbstractGenericFormatURLS
 	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#convert(java.lang.String)
 	 */
 	@Override
-	protected String convert(String downloadResult) {
+	protected final String convert(String downloadResult) {
 		// TODO: thread save?
 		final EndnoteToBibtexConverter converter = new EndnoteToBibtexConverter();
 		return converter.endnoteToBibtex(downloadResult);

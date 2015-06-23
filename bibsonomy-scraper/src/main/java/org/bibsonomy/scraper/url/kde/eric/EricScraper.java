@@ -26,7 +26,6 @@
  */
 package org.bibsonomy.scraper.url.kde.eric;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -34,20 +33,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.converter.RisToBibtexConverter;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
-import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.GenericRISURLScraper;
 
 /**
- * SCraper for papers from http://www.eric.ed.gov/
+ * Scraper for papers from http://www.eric.ed.gov/
  * @author tst
  */
-public class EricScraper extends AbstractUrlScraper {
+public class EricScraper extends GenericRISURLScraper {
 
 	private static final String SITE_URL = "http://www.eric.ed.gov/";
 	private static final String SITE_NAME = "Education Resources Information Center";
@@ -59,62 +53,39 @@ public class EricScraper extends AbstractUrlScraper {
 
 	private static final Pattern ACCNO_PATTERN = Pattern.compile("accno=([^&]*)");
 
-	private static final RisToBibtexConverter CONVERTER = new RisToBibtexConverter();
-
-
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + ERIC_HOST), AbstractUrlScraper.EMPTY_PATTERN));
-
-	public String getInfo() {
-		return INFO;
-	}
-
-	protected boolean scrapeInternal (ScrapingContext sc)throws ScrapingException {
-		/*
-		 * example:
-		 * http://www.eric.ed.gov/ERICWebPortal/Home.portal?_nfpb=true&ERICExtSearch_SearchValue_0=star&searchtype=keyword&ERICExtSearch_SearchType_0=kw&_pageLabel=RecordDetails&objectId=0900019b802f2e44&accno=EJ786532&_nfls=false
-		 * accno=EJ786532
-		 * 
-		 * texttype=endnote
-		 * 
-		 */
-
-		sc.setScraper(this);
-
-		try {
-			final URL url = sc.getUrl();
-			// extract accno from URL query
-			final Matcher accnoMatcher = ACCNO_PATTERN.matcher(url.getQuery());
-			if (accnoMatcher.find()) {
-				final String downloadUrl = EXPORT_BASE_URL + accnoMatcher.group(1);
-
-				// download RIS
-				final String ris = WebUtils.getContentAsString(new URL(downloadUrl));
-
-				// convert to BibTeX
-				final String bibtex = CONVERTER.risToBibtex(ris);
-
-				// add downloaded bibtex to result 
-				sc.setBibtexResult(BibTexUtils.addFieldIfNotContained(bibtex, "url", url.toString()));
-					return true;
-
-			} else {
-				throw new PageNotSupportedException("Value for accno is missing.");
-			}
-		} catch (IOException ex) {
-			throw new InternalFailureException(ex);
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL)
+	 */
+	@Override
+	protected String getDownloadURL(URL url) throws ScrapingException {
+		final Matcher accnoMatcher = ACCNO_PATTERN.matcher(url.getQuery());
+		if (accnoMatcher.find()) {
+			return EXPORT_BASE_URL + accnoMatcher.group(1);
 		}
+		
+		return null;
 	}
-
+	
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
-
+	
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
-
+	
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
+	}
+	
+	@Override
+	public String getInfo() {
+		return INFO;
 	}
 
 }

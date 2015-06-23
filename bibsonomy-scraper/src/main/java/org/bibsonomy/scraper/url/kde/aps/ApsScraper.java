@@ -35,6 +35,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
@@ -84,11 +85,16 @@ public class ApsScraper extends GenericBibTeXURLScraper{
 			throw new ScrapingException(e);
 		}
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
+	 */
 	@Override
-	protected String convert(final String result){
-		final String firstLine = result.split("\n")[0].trim();
-		if (firstLine.split("\\{").length == 1)
-			return result.replace(firstLine, firstLine.replace("{", "{nokey,"));
-		return result;
+	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
+		final String firstLine = bibtex.split("\n")[0].trim();
+		if (firstLine.split("\\{").length == 1) {
+			return bibtex.replace(firstLine, firstLine.replace("{", "{nokey,"));
+		}
+		return bibtex;
 	}
 }

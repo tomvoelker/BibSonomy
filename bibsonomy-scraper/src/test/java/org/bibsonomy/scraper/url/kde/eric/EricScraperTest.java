@@ -32,10 +32,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * Scraper URL tests #99 #136 for EricScraper
- * 
- * TODO: All tests of {@link EricScraper} are ignored due to partial governmental shutdown in the USA.
- * Enabled tests in xml configuration, when http://www.eric.ed.gov is reachable again.
+ * Scraper URL tests #99, #136 for EricScraper
  * 
  * @author tst
  */
