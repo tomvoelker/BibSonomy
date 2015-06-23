@@ -1115,13 +1115,13 @@
 	</URLTest>
 	<URLTest id="url_181">
 		<TestDescription>A and A scraping test</TestDescription>
-		<URL>http://www.aanda.org/index.php?option=article&amp;access=doi&amp;doi=10.1051/0004-6361:20053694</URL>
+		<URL>http://www.aanda.org/articles/aa/abs/2006/01/aa3694-05/aa3694-05.html</URL>
 		<BibFile>AandAScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.aanda.AandAScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_182">
+	<URLTest id="url_182"> 
 		<TestDescription>A and A scraping test</TestDescription>
-		<URL>http://www.aanda.org/index.php?option=article&amp;access=doi&amp;doi=10.1051/0004-6361/201014294</URL>
+		<URL>http://www.aanda.org/articles/aa/abs/2010/05/aa14294-10/aa14294-10.html</URL>
 		<BibFile>AandAScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.aanda.AandAScraper</Scraper>
 		<AdditionalInfo>wait until AandA changed their output</AdditionalInfo>

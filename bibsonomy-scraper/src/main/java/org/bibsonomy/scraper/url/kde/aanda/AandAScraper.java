@@ -53,13 +53,14 @@ import org.w3c.dom.NodeList;
  */
 public class AandAScraper extends AbstractUrlScraper implements ReferencesScraper{
 
+	// http://www.aanda.org/component/makeref/?task=output&type=bibtex&doi=10.1051/0004-6361:20053694
+	
 	private static final String SITE_NAME = "Astronomy and Astrophysics";
 	private static final String SITE_URL = "http://www.aanda.org/";
 	private static final String INFO = "Scraper for references from " + href(SITE_URL, SITE_NAME)+".";
 	
 	private static final Pattern hostPattern = Pattern.compile(".*" + "aanda.org");
-	private static final String downloadUrl = SITE_URL + "index.php?option=com_makeref&task=output&type=bibtex&doi=";
-	
+	private static final String downloadUrl = SITE_URL + "component/makeref/?task=output&type=bibtex&doi=";
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(hostPattern, AbstractUrlScraper.EMPTY_PATTERN));
 	
 	private static final Pattern pat_references = Pattern.compile("(?s)<ul style=\"list-style-type:\" class=\"references\">(.*)<div class=\"pr_annees\"></div>");
@@ -71,7 +72,7 @@ public class AandAScraper extends AbstractUrlScraper implements ReferencesScrape
 		sc.setScraper(this);
 		
 		try {
-			// need to filter the DOI out of the context, because the DOI is a common but not constant finding in the URL
+			// need to filter the DOI out of the context, because the DOI is a common but not constant finding in the URL		
 			final String doi = extractDOI(XmlUtils.getDOM(sc.getPageContent()));
 
 			// if the doi is present
@@ -101,16 +102,21 @@ public class AandAScraper extends AbstractUrlScraper implements ReferencesScrape
 	 * Structure is as follows:
 	 * 
 	 *  <tr>
-	 *	   <td class="gen">DOI</td>
-	 *	   <td></td>
-	 *	   <td><a href="...">http://dx.doi.org/10.1051/0004-6361/201014294</a></td>
+	 *		<td class="gen">DOI</td>
+	 *	    <td></td>
+	 *	    <td><a href="...">http://dx.doi.org/10.1051/0004-6361/201014294</a></td>
 	 *	</tr>
 	 * 
+	 *  <tr>
+	 *		<th>DOI</th>
+	 *		<td></td>
+	 *		<td><a href="...">http://dx.doi.org/10.1051/0004-6361/201014294</a></td>
+	 *	</tr>
 	 * @param document
 	 * @return
 	 */
 	private static String extractDOI(final Document document){
-		final NodeList tdS = document.getElementsByTagName("td");
+		final NodeList tdS = document.getElementsByTagName("th");
 		for (int i = 0; i < tdS.getLength(); i++) {
 			final Node node = tdS.item(i);
 			if (node.hasChildNodes()){
