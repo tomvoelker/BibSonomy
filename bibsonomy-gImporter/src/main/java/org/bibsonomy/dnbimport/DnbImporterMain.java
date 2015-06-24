@@ -15,7 +15,7 @@ public class DnbImporterMain {
 	 */
 	public static void main(String[] args) {
 		final BeanFactory beanFactory = new ClassPathXmlApplicationContext("org/bibsonomy/dnbimport/dnbImporterContext.xml");
-		beanFactory.getBean("genealogie", Runnable.class).run();
+		beanFactory.getBean("dnbImporter", Runnable.class).run();
 	}
 
 }

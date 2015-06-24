@@ -6,7 +6,7 @@
 	
 	<bean id="dnbImporter" class="org.bibsonomy.dnbimport.DnbImporter">
 		<property name="adminLogic" ref="adminLogic"/>
-		<property name="userName" value="dnbimporter"></property>
+		<property name="userName" value="${dnbimporter.username}" /> <!-- genealogie --> 
 		<property name="dnbDatabaseManager" ref="dnbDatabaseManager"/>
 	</bean>
 				
@@ -39,7 +39,7 @@
 	
 	<bean id="adminLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.AdminLogicFactoryBeanCopy" scope="singleton">
 		<!-- name the admin user will have when accessing the logic interface -->
-		<property name="adminUserName" value="dnbimporter"/>
+		<property name="adminUserName" value="${dnbimporter.username}"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 		<!-- 
 		<property name="bibtexReader" ref="bibtexReader"/>

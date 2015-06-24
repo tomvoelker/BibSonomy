@@ -28,6 +28,8 @@ package org.bibsonomy.dnbimport.model;
 
 import java.util.List;
 
+import org.bibsonomy.common.Pair;
+
 
 /**
  * @author sst
@@ -49,6 +51,8 @@ public class DnbPublication {
 	private boolean habil;
 	
 	private List<DnbPerson> persons;
+	
+	private List<Pair<ClassificationScheme, String>> classInfos;
 	
 
 	/**
@@ -178,5 +182,14 @@ public class DnbPublication {
 	public void setPersons(List<DnbPerson> persons) {
 		this.persons = persons;
 	}
+
+	public List<Pair<ClassificationScheme, String>> getClassInfos() {
+		return this.classInfos;
+	}
+
+	public void setClassInfos(List<Pair<ClassificationScheme, String>> classInfos) {
+		this.classInfos = classInfos;
+	}
+
 
 }

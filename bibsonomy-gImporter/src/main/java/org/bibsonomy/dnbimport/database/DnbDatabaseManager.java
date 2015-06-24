@@ -26,11 +26,15 @@
  */
 package org.bibsonomy.dnbimport.database;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
+import org.bibsonomy.dnbimport.model.ClassificationScheme;
 import org.bibsonomy.dnbimport.model.DnbPublication;
 
 /**
@@ -40,6 +44,7 @@ import org.bibsonomy.dnbimport.model.DnbPublication;
 public class DnbDatabaseManager extends AbstractDatabaseManager {
 	
 	private DBSessionFactory sessionFactory;
+	private final Map<ClassificationScheme, Map<String, String>> classificationSchemes = new HashMap<ClassificationScheme, Map<String,String>>(8);
 	
 	private DBSession openSession() {
 		return this.sessionFactory.getDatabaseSession();
@@ -67,7 +72,16 @@ public class DnbDatabaseManager extends AbstractDatabaseManager {
 		} finally {
 			session.close();
 		}
+	}
 	
+	@SuppressWarnings("unchecked")
+	private List<Pair<String,String>> selectClasses(ClassificationScheme kind) {
+		final DBSession session = this.openSession();
+		try {
+			return (List<Pair<String,String>>) this.queryForList("gImporter.selectClassNames", kind.name(), session);
+		} finally {
+			session.close();
+		}
 	}
 
 	/**
@@ -75,6 +89,30 @@ public class DnbDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void setSessionFactory(final DBSessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
+	}
+	
+	public String getClassName(ClassificationScheme kind, String classId) {
+		Map<String,String> schemeMap = getSchemeMap(kind);
+		if (schemeMap == null) {
+			return null;
+		}
+		return schemeMap.get(classId);
+	}
+
+	/**
+	 * @param kind
+	 * @return
+	 */
+	private Map<String, String> getSchemeMap(ClassificationScheme kind) {
+		Map<String, String> m = this.classificationSchemes.get(kind);
+		if (m == null) {
+			m = new HashMap<>();
+			for (Pair<String,String> classPair : selectClasses(kind)) {
+				m.put(classPair.getFirst(), classPair.getSecond());
+			}
+			this.classificationSchemes.put(kind, m);
+		}
+		return m;
 	}
 }
 

@@ -6,15 +6,19 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.dnbimport.database.DnbDatabaseManager;
+import org.bibsonomy.dnbimport.model.ClassificationScheme;
 import org.bibsonomy.dnbimport.model.DnbPerson;
 import org.bibsonomy.dnbimport.model.DnbPublication;
 import org.bibsonomy.model.BibTex;
@@ -50,12 +54,12 @@ public class DnbImporter /* extends AbstractDatabaseManagerTest */ implements Ru
 		dnbEntries = dnbDatabaseManager.selectDnbEntries(param);
 		
 		User user = new User();
-		user.setName(userName);
+		user.setName(userName); 
 	
 		for (DnbPublication p : dnbEntries) {
 			try {
-				final Post<BibTex> gold = new Post<BibTex>();
-				final BibTex goldP = new BibTex();
+				final Post<BibTex> post = new Post<BibTex>();
+				final BibTex pub = new BibTex();
 				//set school
 				StringBuilder school = new StringBuilder();
 				if (!StringUtils.isEmpty(p.getSchoolP1())) {
@@ -67,32 +71,32 @@ public class DnbImporter /* extends AbstractDatabaseManagerTest */ implements Ru
 					}
 					school.append(p.getSchoolP2());
 				}
-				goldP.setSchool(school.toString());
+				pub.setSchool(school.toString());
 				
 				//set year
 				if (!StringUtils.isEmpty(p.getSubYear())) {
-					goldP.setYear(p.getSubYear());
+					pub.setYear(p.getSubYear());
 				} else if (!StringUtils.isEmpty(p.getPubYear())) {
-					goldP.setYear(p.getPubYear());
+					pub.setYear(p.getPubYear());
 				} else {
-					w.append(p.getTitleId() + "\t" + "noYear");
+					w.append(p.getTitleId() + "\t" + "noYear\n");
 					continue;
 				}
 				
 				if (StringUtils.isEmpty(p.getMainTitle())) {
-					w.append(p.getTitleId() + "\t" + "noTitle");
+					w.append(p.getTitleId() + "\t" + "noTitle\n");
 					continue;
 				} else if (!StringUtils.isEmpty(p.getSubTitle())) {
-					goldP.setTitle(p.getMainTitle() + ": " + p.getSubTitle());
+					pub.setTitle(p.getMainTitle() + ": " + p.getSubTitle());
 				} else {
-					goldP.setTitle(p.getMainTitle());
+					pub.setTitle(p.getMainTitle());
 				}
 				//set authors
 				List<PersonName> authors = new ArrayList<PersonName>();
-				goldP.setAuthor(authors);
+				pub.setAuthor(authors);
 				
 				List<PersonName> editors = new ArrayList<PersonName>();
-				goldP.setEditor(editors);
+				pub.setEditor(editors);
 				
 				List<ResourcePersonRelation> relationsToInsert = new ArrayList<>();
 				
@@ -108,17 +112,30 @@ public class DnbImporter /* extends AbstractDatabaseManagerTest */ implements Ru
 						} else if (StringUtils.contains(dp.getGender(), "2")) {
 							per.setGender(Gender.F);
 						}
-						per.setDnbPersonId(dp.getPersonId());
+						per.setDnbPersonId(dp.getUniquePersonId());
 						final PersonName name = new PersonName(dp.getFirstName(), dp.getLastName());
 						per.setMainName(name);
 						personNeedsToBeStored = true;
 					}
+					if (StringUtils.isEmpty(per.getMainName().getLastName())) {
+						w.append(p.getTitleId() + "\t" + " authorWithoutFirstOrLastname\n");
+						if (!StringUtils.isEmpty(per.getMainName().getFirstName())) {
+							w.append(p.getTitleId() + "\t" + " usingFirstname\n");
+							per.getMainName().setLastName(per.getMainName().getFirstName());
+							per.getMainName().setFirstName(null);
+						}
+						if (StringUtils.isEmpty(per.getMainName().getLastName())) {
+							w.append(p.getTitleId() + "\t" + " aborting\n");
+							continue;
+						}
+					}
+					
 					
 					
 					final ResourcePersonRelation rel = new ResourcePersonRelation();
 					rel.setPerson(per);
 					rel.setPersonIndex(0);
-					rel.setPost(gold);
+					rel.setPost(post);
 					if (StringUtils.contains(dp.getPersonFunction(), "aut")) {
 						rel.setPersonIndex(authors.size());
 						rel.setRelationType(PersonResourceRelationType.AUTHOR);
@@ -147,31 +164,48 @@ public class DnbImporter /* extends AbstractDatabaseManagerTest */ implements Ru
 				}
 				
 				if (authors.isEmpty()) {
-					w.append(p.getTitleId() + "\t" + "noAuthor");
+					w.append(p.getTitleId() + "\t" + "noAuthor\n");
 					continue;
 				}
 				
 				//set entrytype and type
-				if(p.isDiss()){
-					goldP.setEntrytype("phdthesis");
+				if (p.isDiss()) {
+					pub.setEntrytype("phdthesis");
 				}
-				else if(p.isHabil()){
-					goldP.setEntrytype("phdthesis");
-					goldP.setType("habilitation");
+				else if (p.isHabil()) {
+					pub.setEntrytype("phdthesis");
+					pub.setType("habilitation");
 				}
-				gold.setResource(goldP);
-				gold.setUser(user);
-				gold.addTag("dnbimport");
-				gold.getResource().recalculateHashes();
-				goldP.parseMiscField();
-				goldP.addMiscField("dnbTitleId", p.getTitleId());
-				goldP.serializeMiscFields();
-				goldP.setBibtexKey(BibTexUtils.generateBibtexKey(goldP));
+				post.setResource(pub);
+				post.setUser(user);
+				post.addTag("dnb");
+				for (Pair<ClassificationScheme, String> classPair : p.getClassInfos()) {
+					final String className = dnbDatabaseManager.getClassName(classPair.getFirst(), classPair.getSecond());
+					if (className == null) {
+						continue;
+					}
+					String[] classesParts = className.split(",");
+					for (String classesPart : classesParts) {
+						String tag = classesPart.trim().replace('', 'ü').replace('™', 'Ö').replace('”', 'ö').replace('„', 'ä').replace("(", "").replace(")", "").replace("- ", "_").replace(' ', '_');
+						if (!tag.matches(".*\\p{Alpha}.*")) {
+							// not at least one alphabetic character
+							continue;
+						}
+						if (tag.length() > 0) {
+							post.addTag(tag);
+						}
+					}
+				}
+				post.getResource().recalculateHashes();
+				pub.parseMiscField();
+				pub.addMiscField("dnbTitleId", p.getTitleId());
+				pub.serializeMiscFields();
+				pub.setBibtexKey(BibTexUtils.generateBibtexKey(pub));
 				
 				List<Post<? extends Resource>> goldies = new ArrayList<>();
-				goldies.add(gold);
+				goldies.add(post);
 				
-				Post<? extends Resource> existingingPost = adminLogic.getPostDetails(gold.getResource().getIntraHash(), userName);
+				Post<? extends Resource> existingingPost = adminLogic.getPostDetails(post.getResource().getIntraHash(), userName);
 				if (existingingPost != null) {
 					adminLogic.updatePosts(goldies, PostUpdateOperation.UPDATE_ALL);
 				} else {
@@ -187,8 +221,14 @@ public class DnbImporter /* extends AbstractDatabaseManagerTest */ implements Ru
 					}
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				e.printStackTrace(System.out);
+				e.printStackTrace(new PrintWriter(w));
 			}
+		}
+		try {
+			w.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		
 	}
