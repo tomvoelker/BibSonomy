@@ -43,7 +43,7 @@
 		SELECT class_id, class_name FROM title_hs_class_$className$
 	</select>
 
-	<select id="selectDissertation" resultMap="gImporterResult" parameterClass="dnbPublication">
+	<select id="selectDissertation" resultMap="gImporterResult" parameterClass="org.bibsonomy.database.common.params.LimitOffsetParam">
 		SELECT
 			t.title_id, t.title, t.subtitle, t.pub_year_c, t.sub_year_c, t.city, t.uni, t.diss, t.habil, p.person_id, p.firstname, p.surname, p.diff_person, p.gender, l.person_function, l.unique_person_id, ct.kind, ct.class
 		FROM
@@ -51,7 +51,7 @@
 			JOIN title_hs_title t ON l.title_id=t.title_id AND (t.diss=1 or t.habil=1)
 			JOIN title_hs_person p ON l.person_id=p.person_id
 			LEFT OUTER JOIN title_hs_class ct ON t.title_id=ct.title_id
-			LIMIT 800
+			LIMIT #limit# OFFSET #offset#
 	</select>
 
 

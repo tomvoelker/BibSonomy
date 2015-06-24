@@ -5,6 +5,7 @@
 						http://www.springframework.org/schema/beans/spring-beans.xsd">
 	
 	<bean id="dnbImporter" class="org.bibsonomy.dnbimport.DnbImporter">
+		<property name="offset" value="${dnbimporter.initialOffset}"/>
 		<property name="adminLogic" ref="adminLogic"/>
 		<property name="userName" value="${dnbimporter.username}" /> <!-- genealogie --> 
 		<property name="dnbDatabaseManager" ref="dnbDatabaseManager"/>

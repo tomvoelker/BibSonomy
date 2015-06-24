@@ -34,6 +34,7 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
+import org.bibsonomy.database.common.params.LimitOffsetParam;
 import org.bibsonomy.dnbimport.model.ClassificationScheme;
 import org.bibsonomy.dnbimport.model.DnbPublication;
 
@@ -64,9 +65,12 @@ public class DnbDatabaseManager extends AbstractDatabaseManager {
 		}
 	}
 	
-	public List<DnbPublication> selectDnbEntries(DnbPublication param) {
+	public List<DnbPublication> selectDnbEntries(int limit, int offset) {
 		final DBSession session = this.openSession();
 		try {
+			LimitOffsetParam<Void> param = new LimitOffsetParam<>();
+			param.setLimit(limit);
+			param.setOffset(offset);
 			return (List<DnbPublication>) this.queryForList("gImporter.selectDissertation", param, session);
 
 		} finally {

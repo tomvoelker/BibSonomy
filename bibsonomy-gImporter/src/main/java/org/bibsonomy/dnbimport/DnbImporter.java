@@ -37,200 +37,204 @@ import org.bibsonomy.model.util.BibTexUtils;
 
 
 public class DnbImporter /* extends AbstractDatabaseManagerTest */ implements Runnable {
+	private static final int SQL_BLOCK_SIZE = 8192;
 	private LogicInterface adminLogic;
 	
 	private DnbDatabaseManager dnbDatabaseManager;
 
 	private String userName;
+	
+	private int offset;
 
 	@Override
 	public void run() {
-		List<DnbPublication> dnbEntries = new ArrayList<DnbPublication>();
 		
-		Writer w = openErrorLogFile();
+		final Writer logWriter = openErrorLogFile();
 		
-		DnbPublication param = new DnbPublication();
-		param.setDiss(true);
-		dnbEntries = dnbDatabaseManager.selectDnbEntries(param);
+		final User user = new User();
+		user.setName(userName);
 		
-		User user = new User();
-		user.setName(userName); 
-	
-		for (DnbPublication p : dnbEntries) {
-			try {
-				final Post<BibTex> post = new Post<BibTex>();
-				final BibTex pub = new BibTex();
-				//set school
-				StringBuilder school = new StringBuilder();
-				if (!StringUtils.isEmpty(p.getSchoolP1())) {
-					school.append(p.getSchoolP1());
-				}
-				if (!StringUtils.isEmpty(p.getSchoolP2())) {
-					if (school.length() > 0) {
-						school.append(' ');
+		List<DnbPublication> dnbEntries;
+		do {
+			dnbEntries = dnbDatabaseManager.selectDnbEntries(SQL_BLOCK_SIZE, offset);
+			offset += SQL_BLOCK_SIZE;
+
+			for (DnbPublication dnbPub : dnbEntries) {
+				try {
+					final Post<BibTex> post = new Post<BibTex>();
+					final BibTex bibPub = new BibTex();
+					//set school
+					StringBuilder school = new StringBuilder();
+					if (!StringUtils.isEmpty(dnbPub.getSchoolP1())) {
+						school.append(dnbPub.getSchoolP1());
 					}
-					school.append(p.getSchoolP2());
-				}
-				pub.setSchool(school.toString());
-				
-				//set year
-				if (!StringUtils.isEmpty(p.getSubYear())) {
-					pub.setYear(p.getSubYear());
-				} else if (!StringUtils.isEmpty(p.getPubYear())) {
-					pub.setYear(p.getPubYear());
-				} else {
-					w.append(p.getTitleId() + "\t" + "noYear\n");
-					continue;
-				}
-				
-				if (StringUtils.isEmpty(p.getMainTitle())) {
-					w.append(p.getTitleId() + "\t" + "noTitle\n");
-					continue;
-				} else if (!StringUtils.isEmpty(p.getSubTitle())) {
-					pub.setTitle(p.getMainTitle() + ": " + p.getSubTitle());
-				} else {
-					pub.setTitle(p.getMainTitle());
-				}
-				//set authors
-				List<PersonName> authors = new ArrayList<PersonName>();
-				pub.setAuthor(authors);
-				
-				List<PersonName> editors = new ArrayList<PersonName>();
-				pub.setEditor(editors);
-				
-				List<ResourcePersonRelation> relationsToInsert = new ArrayList<>();
-				
-				
-				for (DnbPerson dp : p.getPersons()) {
-					final String dnbId = dp.getUniquePersonId().trim();
-					Person per = adminLogic.getPersonById(PersonIdType.DNB_ID, dnbId);
-					boolean personNeedsToBeStored = false;
-					if (per == null) {
-						per = new Person();
-						if (StringUtils.contains(dp.getGender(), "1")) {
-							per.setGender(Gender.m);
-						} else if (StringUtils.contains(dp.getGender(), "2")) {
-							per.setGender(Gender.F);
+					if (!StringUtils.isEmpty(dnbPub.getSchoolP2())) {
+						if (school.length() > 0) {
+							school.append(' ');
 						}
-						per.setDnbPersonId(dp.getUniquePersonId());
-						final PersonName name = new PersonName(dp.getFirstName(), dp.getLastName());
-						per.setMainName(name);
-						personNeedsToBeStored = true;
+						school.append(dnbPub.getSchoolP2());
 					}
-					if (StringUtils.isEmpty(per.getMainName().getLastName())) {
-						w.append(p.getTitleId() + "\t" + " authorWithoutFirstOrLastname\n");
-						if (!StringUtils.isEmpty(per.getMainName().getFirstName())) {
-							w.append(p.getTitleId() + "\t" + " usingFirstname\n");
-							per.getMainName().setLastName(per.getMainName().getFirstName());
-							per.getMainName().setFirstName(null);
-						}
-						if (StringUtils.isEmpty(per.getMainName().getLastName())) {
-							w.append(p.getTitleId() + "\t" + " aborting\n");
-							continue;
-						}
-					}
+					bibPub.setSchool(school.toString());
 					
-					
-					
-					final ResourcePersonRelation rel = new ResourcePersonRelation();
-					rel.setPerson(per);
-					rel.setPersonIndex(0);
-					rel.setPost(post);
-					if (StringUtils.contains(dp.getPersonFunction(), "aut")) {
-						rel.setPersonIndex(authors.size());
-						rel.setRelationType(PersonResourceRelationType.AUTHOR);
-						authors.add(per.getMainName());
-					} else if (StringUtils.contains(dp.getPersonFunction(), "edt")) {
-						rel.setPersonIndex(editors.size());
-						rel.setRelationType(PersonResourceRelationType.EDITOR);
-						editors.add(per.getMainName());
-					} else if (StringUtils.contains(dp.getPersonFunction(), "gut1")) {
-						//rel.setRelationType(PersonResourceRelationType.FIRST_REVIEWER);
-						continue; // mail von Dominik: erstmal nicht importieren
-					} else if (StringUtils.contains(dp.getPersonFunction(), "gut2")) {
-						continue; // mail von Dominik: erstmal nicht importieren
-					} else if (StringUtils.contains(dp.getPersonFunction(), "gut")) {
-						rel.setRelationType(PersonResourceRelationType.REVIEWER);
-					} else if (StringUtils.contains(dp.getPersonFunction(), "btr")) {
-						rel.setRelationType(PersonResourceRelationType.ADVISOR);
-					//} else if (StringUtils.contains(dp.getPersonFunction(), "ctb")) {
+					//set year
+					if (!StringUtils.isEmpty(dnbPub.getSubYear())) {
+						bibPub.setYear(dnbPub.getSubYear());
+					} else if (!StringUtils.isEmpty(dnbPub.getPubYear())) {
+						bibPub.setYear(dnbPub.getPubYear());
 					} else {
-						rel.setRelationType(PersonResourceRelationType.OTHER);
-					}
-					if (personNeedsToBeStored == true) {
-						adminLogic.createOrUpdatePerson(per);
-					}
-					relationsToInsert.add(rel);
-				}
-				
-				if (authors.isEmpty()) {
-					w.append(p.getTitleId() + "\t" + "noAuthor\n");
-					continue;
-				}
-				
-				//set entrytype and type
-				if (p.isDiss()) {
-					pub.setEntrytype("phdthesis");
-				}
-				else if (p.isHabil()) {
-					pub.setEntrytype("phdthesis");
-					pub.setType("habilitation");
-				}
-				post.setResource(pub);
-				post.setUser(user);
-				post.addTag("dnb");
-				for (Pair<ClassificationScheme, String> classPair : p.getClassInfos()) {
-					final String className = dnbDatabaseManager.getClassName(classPair.getFirst(), classPair.getSecond());
-					if (className == null) {
+						logWriter.append(dnbPub.getTitleId() + "\t" + "noYear\n");
 						continue;
 					}
-					String[] classesParts = className.split(",");
-					for (String classesPart : classesParts) {
-						String tag = classesPart.trim().replace('', 'ü').replace('™', 'Ö').replace('”', 'ö').replace('„', 'ä').replace("(", "").replace(")", "").replace("- ", "_").replace(' ', '_');
-						if (!tag.matches(".*\\p{Alpha}.*")) {
-							// not at least one alphabetic character
+					
+					if (StringUtils.isEmpty(dnbPub.getMainTitle())) {
+						logWriter.append(dnbPub.getTitleId() + "\t" + "noTitle\n");
+						continue;
+					} else if (!StringUtils.isEmpty(dnbPub.getSubTitle())) {
+						bibPub.setTitle(dnbPub.getMainTitle() + ": " + dnbPub.getSubTitle());
+					} else {
+						bibPub.setTitle(dnbPub.getMainTitle());
+					}
+					//set authors
+					List<PersonName> authors = new ArrayList<PersonName>();
+					bibPub.setAuthor(authors);
+					
+					List<PersonName> editors = new ArrayList<PersonName>();
+					bibPub.setEditor(editors);
+					
+					List<ResourcePersonRelation> relationsToInsert = new ArrayList<>();
+					
+					
+					for (DnbPerson dnbPer : dnbPub.getPersons()) {
+						final String dnbId = dnbPer.getUniquePersonId().trim();
+						Person bibPer = adminLogic.getPersonById(PersonIdType.DNB_ID, dnbId);
+						boolean personNeedsToBeStored = false;
+						if (bibPer == null) {
+							bibPer = new Person();
+							if (StringUtils.contains(dnbPer.getGender(), "1")) {
+								bibPer.setGender(Gender.m);
+							} else if (StringUtils.contains(dnbPer.getGender(), "2")) {
+								bibPer.setGender(Gender.F);
+							}
+							bibPer.setDnbPersonId(dnbPer.getUniquePersonId());
+							final PersonName name = new PersonName(dnbPer.getFirstName(), dnbPer.getLastName());
+							bibPer.setMainName(name);
+							personNeedsToBeStored = true;
+						}
+						if (StringUtils.isEmpty(bibPer.getMainName().getLastName())) {
+							logWriter.append(dnbPub.getTitleId() + "\t" + " authorWithoutFirstOrLastname\n");
+							if (!StringUtils.isEmpty(bibPer.getMainName().getFirstName())) {
+								logWriter.append(dnbPub.getTitleId() + "\t" + " usingFirstname\n");
+								bibPer.getMainName().setLastName(bibPer.getMainName().getFirstName());
+								bibPer.getMainName().setFirstName(null);
+							}
+							if (StringUtils.isEmpty(bibPer.getMainName().getLastName())) {
+								logWriter.append(dnbPub.getTitleId() + "\t" + " aborting\n");
+								continue;
+							}
+						}
+						
+						
+						
+						final ResourcePersonRelation rel = new ResourcePersonRelation();
+						rel.setPerson(bibPer);
+						rel.setPersonIndex(0);
+						rel.setPost(post);
+						if (StringUtils.contains(dnbPer.getPersonFunction(), "aut")) {
+							rel.setPersonIndex(authors.size());
+							rel.setRelationType(PersonResourceRelationType.AUTHOR);
+							authors.add(bibPer.getMainName());
+						} else if (StringUtils.contains(dnbPer.getPersonFunction(), "edt")) {
+							rel.setPersonIndex(editors.size());
+							rel.setRelationType(PersonResourceRelationType.EDITOR);
+							editors.add(bibPer.getMainName());
+						} else if (StringUtils.contains(dnbPer.getPersonFunction(), "gut1")) {
+							//rel.setRelationType(PersonResourceRelationType.FIRST_REVIEWER);
+							continue; // mail von Dominik: erstmal nicht importieren
+						} else if (StringUtils.contains(dnbPer.getPersonFunction(), "gut2")) {
+							continue; // mail von Dominik: erstmal nicht importieren
+						} else if (StringUtils.contains(dnbPer.getPersonFunction(), "gut")) {
+							rel.setRelationType(PersonResourceRelationType.REVIEWER);
+						} else if (StringUtils.contains(dnbPer.getPersonFunction(), "btr")) {
+							rel.setRelationType(PersonResourceRelationType.ADVISOR);
+						//} else if (StringUtils.contains(dp.getPersonFunction(), "ctb")) {
+						} else {
+							rel.setRelationType(PersonResourceRelationType.OTHER);
+						}
+						if (personNeedsToBeStored == true) {
+							adminLogic.createOrUpdatePerson(bibPer);
+						}
+						relationsToInsert.add(rel);
+					}
+					
+					if (authors.isEmpty()) {
+						logWriter.append(dnbPub.getTitleId() + "\t" + "noAuthor\n");
+						continue;
+					}
+					
+					//set entrytype and type
+					if (dnbPub.isDiss()) {
+						bibPub.setEntrytype("phdthesis");
+					}
+					else if (dnbPub.isHabil()) {
+						bibPub.setEntrytype("phdthesis");
+						bibPub.setType("habilitation");
+					}
+					post.setResource(bibPub);
+					post.setUser(user);
+					post.addTag("dnb");
+					for (Pair<ClassificationScheme, String> classPair : dnbPub.getClassInfos()) {
+						final String className = dnbDatabaseManager.getClassName(classPair.getFirst(), classPair.getSecond());
+						if (className == null) {
 							continue;
 						}
-						if (tag.length() > 0) {
-							post.addTag(tag);
+						String[] classesParts = className.split(",");
+						for (String classesPart : classesParts) {
+							String tag = classesPart.trim().replace('', 'ü').replace('™', 'Ö').replace('”', 'ö').replace('„', 'ä').replace("(", "").replace(")", "").replace("- ", "_").replace(' ', '_');
+							if (!tag.matches(".*\\p{Alpha}.*")) {
+								// not at least one alphabetic character
+								continue;
+							}
+							if (tag.length() > 0) {
+								post.addTag(tag);
+							}
 						}
 					}
-				}
-				post.getResource().recalculateHashes();
-				pub.parseMiscField();
-				pub.addMiscField("dnbTitleId", p.getTitleId());
-				pub.serializeMiscFields();
-				pub.setBibtexKey(BibTexUtils.generateBibtexKey(pub));
-				
-				List<Post<? extends Resource>> goldies = new ArrayList<>();
-				goldies.add(post);
-				
-				Post<? extends Resource> existingingPost = adminLogic.getPostDetails(post.getResource().getIntraHash(), userName);
-				if (existingingPost != null) {
-					adminLogic.updatePosts(goldies, PostUpdateOperation.UPDATE_ALL);
-				} else {
-					adminLogic.createPosts(goldies);
-				}
-				
-			
-				for (ResourcePersonRelation rel : relationsToInsert) {
-					try {
-						adminLogic.addResourceRelation(rel);
-					} catch (Exception e) {
-						e.printStackTrace();
+					post.getResource().recalculateHashes();
+					bibPub.parseMiscField();
+					bibPub.addMiscField("dnbTitleId", dnbPub.getTitleId());
+					bibPub.serializeMiscFields();
+					bibPub.setBibtexKey(BibTexUtils.generateBibtexKey(bibPub));
+					
+					List<Post<? extends Resource>> goldies = new ArrayList<>();
+					goldies.add(post);
+					
+					Post<? extends Resource> existingingPost = adminLogic.getPostDetails(post.getResource().getIntraHash(), userName);
+					if (existingingPost != null) {
+						adminLogic.updatePosts(goldies, PostUpdateOperation.UPDATE_ALL);
+					} else {
+						adminLogic.createPosts(goldies);
 					}
+					
+				
+					for (ResourcePersonRelation rel : relationsToInsert) {
+						try {
+							adminLogic.addResourceRelation(rel);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace(System.out);
+					e.printStackTrace(new PrintWriter(logWriter));
 				}
-			} catch (Exception e) {
-				e.printStackTrace(System.out);
-				e.printStackTrace(new PrintWriter(w));
 			}
-		}
+		} while (dnbEntries.size() > 0);
+		
 		try {
-			w.close();
+			logWriter.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 	}
 
 	private OutputStreamWriter openErrorLogFile() {
@@ -263,6 +267,14 @@ public class DnbImporter /* extends AbstractDatabaseManagerTest */ implements Ru
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	public int getOffset() {
+		return this.offset;
+	}
+
+	public void setOffset(int offset) {
+		this.offset = offset;
 	}
 	
 }
