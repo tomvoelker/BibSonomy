@@ -11,14 +11,18 @@
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"
-	xmlns:spring="urn:http://www.springframework.org/tags"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
 	<fmt:message key="navi.admin" var="adminPageTitle" />
 	
-	<layout:layout pageTitle="${adminPageTitle} :: OAuth" loginUser="${command.context.loginUser}" requPath="${requPath}">
+	<layout:paneLayout
+			pageTitle="${adminPageTitle} :: OAuth"
+			requPath="${requPath}"
+			headerMessageKey="gettingStarted.headline"
+			command="${command}"
+			noSidebar="${true}">
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
@@ -253,5 +257,5 @@
           </script>
 			
 		</jsp:attribute>
-	</layout:layout>
+	</layout:paneLayout>
 </jsp:root>
