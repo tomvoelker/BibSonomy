@@ -35,7 +35,6 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.ResourcePersonRelationLogStub;
 
 /**
  * Common interface for updating indices
