@@ -11,7 +11,8 @@
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
@@ -44,94 +45,75 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="headerExt">
-		
-			<style type="text/css">
-				#oauthConsumerList {
-				    border-collapse: collapse;
-				    empty-cells: show;
-				    font-size: 80%;
-				    margin-top: 15px;
-				    width: 100%;
-				} 
-				#oauthConsumerList th {
-				    background-color: #EEEEEE;
-				    border: 1px solid #CCCCCC;
-				    font-size: 100%;
-				    font-weight: bold;
-				    padding: 2px;
-				    text-align: center;
-				}
-				#oauthConsumerList img {
-                                    max-width: 300px;
-                                    max-width: 300px;
-                                }
-				.consumerEntry td {
-				    border: 1px solid #CCCCCC;
-				    padding: 2px;
-				    text-align: justify;
-				}
-				#outerBox {
-					margin: 8px;
-				}
-			</style>
+
 		</jsp:attribute>
 				
 		<jsp:attribute name="content">
 			<div id="outerBox">
 				<h2><fmt:message key="admin.actions.oauth"/></h2>
-				
-				<!--+
-					| list all registered consumers
-					+-->
-				<h3><fmt:message key="admin.actions.consumer.list"/></h3>
-				
-				<table id="oauthConsumerList">
-					<thead>
+
+
+				<div class="panel panel-default">
+					<!--+
+						| list all registered consumers
+						+-->
+					<div class="panel-heading"><strong><fmt:message key="admin.actions.consumer.list"/></strong></div>
+					<table class="table" id="oauthConsumerList">
+						<thead>
 						<tr>
+							<th><fmt:message key="admin.oauth.consumer.serviceName"/></th>
+							<th><fmt:message key="admin.oauth.consumer.title"/></th>
 							<th><fmt:message key="admin.oauth.consumer.key"/></th>
 							<th><fmt:message key="admin.oauth.consumer.keyType"/></th>
-							<th><fmt:message key="admin.oauth.consumer.serviceName"/></th>
+
 							<th><fmt:message key="admin.oauth.consumer.callbackUrl"/></th>
 							<th><fmt:message key="admin.oauth.consumer.gadgetUrl"/></th>
-							<th><fmt:message key="admin.oauth.consumer.title"/></th>
+
 							<th><fmt:message key="admin.oauth.consumer.summary"/></th>
 							<th><fmt:message key="admin.oauth.consumer.description"/></th>
+							<!--
 							<th><fmt:message key="admin.oauth.consumer.thumbnail"/></th>
 							<th><fmt:message key="admin.oauth.consumer.icon"/></th>
+							-->
 							<th><fmt:message key="admin.oauth.consumer.delete"/></th>
 						</tr>
-					</thead>
-					
-		    		<c:forEach var="entry" items="${command.consumers}">
-		    			<tr class="consumerEntry">
-		    				<td><c:out value="${entry.consumerKey}"/></td>
-		    				<td><c:out value="${entry.keyType}"/></td>
-		    				<td><c:out value="${entry.serviceName}"/></td>
-		    				<td><c:out value="${entry.callbackUrl}"/></td>
-		    				<td><c:out value="${entry.gadgetUrl}"/></td>
-		    				<td><c:out value="${entry.title}"/></td>
-		    				<td><c:out value="${entry.summary}"/></td>
-		    				<td><c:out value="${entry.description}"/></td>
-		    				<td>
-		    				    <c:if test="${not empty entry.thumbnail}">
-		    				    <a href="${entry.thumbnail}"><img src ="${entry.thumbnail}" /></a>
-		    				    </c:if>
-		    				</td>
-		    				<td>
-		    				    <c:if test="${not empty entry.icon}">
-		    				    <a href="${entry.icon}"><img src ="${entry.icon}" /></a>
-		    				    </c:if>
-		    				</td>
-		    				<td><a onclick="deleteConsumer('${entry.consumerKey}')"><fmt:message key="admin.oauth.consumer.delete"/></a></td>
-		    			</tr>
-					</c:forEach>
-        	    </table>
-        	    
-        	    
+						</thead>
+						<tbody>
+						<c:forEach var="entry" items="${command.consumers}">
+							<tr class="consumerEntry">
+								<td><c:out value="${entry.serviceName}"/></td>
+								<td><c:out value="${entry.title}"/></td>
+								<td><c:out value="${entry.consumerKey}"/></td>
+								<td><c:out value="${entry.keyType}"/></td>
+								<td><c:out value="${entry.callbackUrl}"/></td>
+								<td><c:out value="${entry.gadgetUrl}"/></td>
+
+								<td><c:out value="${entry.summary}"/></td>
+								<td><c:out value="${entry.description}"/></td>
+								<!--
+								<td>
+									<c:if test="${not empty entry.thumbnail}">
+										<a href="${entry.thumbnail}"><img src ="${entry.thumbnail}" /></a>
+									</c:if>
+								</td>
+								<td>
+									<c:if test="${not empty entry.icon}">
+										<a href="${entry.icon}"><img src ="${entry.icon}" /></a>
+									</c:if>
+								</td>
+								-->
+								<fmt:message key="admin.oauth.consumer.delete" var="deleteTitle"/>
+								<td><a title="${deleteTitle}" onclick="deleteConsumer('${entry.consumerKey}')" href="#"><span class="fa fa-times"><!-- --></span></a></td>
+							</tr>
+						</c:forEach>
+						</tbody>
+					</table>
+				</div>
+
         	    <!--+
         	    	| Delete Consumer (invisible)
         	    	+--> 
-		    	<form action="${relativeUrlGenerator.getAdminUrlByName('oauth')}" id="deleteConsumerForm" method="POST">
+		    	<form action="${relativeUrlGenerator.getAdminUrlByName('oauth')}" id="deleteConsumerForm" method="post">
              		<input type="hidden" name="adminAction" value="Remove" />
 		    		<input type="hidden" name="consumerInfo.consumerKey" id="consumerKey" />
 		    	</form>
@@ -142,108 +124,66 @@
 					+-->
 				<h3><fmt:message key="admin.actions.consumer.register"/></h3>
 				
-        	    <form:form action="${relativeUrlGenerator.getAdminUrlByName('oauth')}" method="POST">
+        	    <form:form class="form-horizontal" action="${relativeUrlGenerator.getAdminUrlByName('oauth')}" method="POST">
 		        	<errors:global />
+					<bsform:fieldset legendKey="admin.oauth.consumer.details">
+						<jsp:attribute name="content">
 
-						<fieldset class="fsInner">
-							<legend><fmt:message key="admin.oauth.consumer.details"/></legend>
-						
-							<!-- consumer key -->
-							<div class="fsRow">
-			  					<form:label cssClass="fsLabel" path="consumerInfo.consumerKey" ><fmt:message key="admin.oauth.consumer.key"/>*</form:label>
-			  					<form:input maxlength="255" cssClass="fsInput reqinput" path="consumerInfo.consumerKey" tabindex="1"/>
-			  					<div class="dissError"><form:errors path="consumerInfo.consumerKey" /></div>
-            				</div>
-            				
-							<!-- consumer secret -->
-							<div class="fsRow">
-			  					<form:label cssClass="fsLabel" path="consumerInfo.consumerSecret" ><fmt:message key="admin.oauth.consumer.secret"/>*</form:label>
-			  					<form:textarea cssClass="fsInput reqinput" path="consumerInfo.consumerSecret" tabindex="2" rows="8"/>
-			  					<div class="dissError"><form:errors path="consumerInfo.consumerSecret" /></div>
-			  					<div class="fsSuggestion" id="suggestion.consumerInfo.consumerSecret"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
-            				</div>
-							
-							<!-- service name -->
-							<div class="fsRow">
-			  					<form:label cssClass="fsLabel" path="consumerInfo.serviceName" ><fmt:message key="admin.oauth.consumer.serviceName"/>*</form:label>
-			  					<form:input maxlength="15" cssClass="fsInput reqinput" path="consumerInfo.serviceName" tabindex="3"/>
-			  					<div class="dissError"><form:errors path="consumerInfo.serviceName" /></div>
-            				</div>
-							
-							<!-- key type -->
-							<div class="fsRow">
-			  					<form:label cssClass="fsLabel" path="consumerInfo.keyType" ><fmt:message key="admin.oauth.consumer.keyType"/>*</form:label>
-					      		<form:select cssClass="fsInput reqinput" tabindex="4" path="consumerInfo.keyType" size="1" multiple="false">
-									<c:forEach var="entry" items="${command.keyTypes}">
-										<form:option value="${entry}" label="${entry}" />
-									</c:forEach>
-								</form:select>
-			  					<div class="dissError"><form:errors path="consumerInfo.keyType" /></div>
-            				</div>
-            				
-							<!-- callback url -->
-							<div class="fsRow">
-			  					<form:label cssClass="fsLabel" path="consumerInfo.callbackUrl" ><fmt:message key="admin.oauth.consumer.callbackUrl"/></form:label>
-			  					<form:input maxlength="15" cssClass="fsInput reqinput" path="consumerInfo.callbackUrl" tabindex="5"/>
-			  					<div class="dissError"><form:errors path="consumerInfo.callbackUrl" /></div>
-            				</div>
-            				
-							<!-- gadget url -->
-							<div class="fsRow">
-			  					<form:label cssClass="fsLabel" path="consumerInfo.gadgetUrl" ><fmt:message key="admin.oauth.consumer.gadgetUrl"/></form:label>
-			  					<form:input maxlength="15" cssClass="fsInput reqinput" path="consumerInfo.gadgetUrl" tabindex="6"/>
-			  					<div class="dissError"><form:errors path="consumerInfo.gadgetUrl" /></div>
-            				</div>
-            				
-							<!-- title -->
-							<div class="fsRow">
-			  					<form:label cssClass="fsLabel" path="consumerInfo.title" ><fmt:message key="admin.oauth.consumer.title"/>*</form:label>
-			  					<form:input maxlength="15" cssClass="fsInput reqinput" path="consumerInfo.title" tabindex="7"/>
-			  					<div class="dissError"><form:errors path="consumerInfo.title" /></div>
-            				</div>
+							<errors:global />
 
-							<!-- summary -->
-							<div class="fsRow">
-			  					<form:label cssClass="fsLabel" path="consumerInfo.summary" ><fmt:message key="admin.oauth.consumer.summary"/>*</form:label>
-			  					<form:input maxlength="15" cssClass="fsInput reqinput" path="consumerInfo.summary" tabindex="8"/>
-			  					<div class="dissError"><form:errors path="consumerInfo.summary" /></div>
-            				</div>
+							<bsform:input path="consumerInfo.consumerKey" labelKey="admin.oauth.consumer.key" inputColSpan="9" labelColSpan="3"/>
 
-							<!-- description -->
-							<div class="fsRow">
-			  					<form:label cssClass="fsLabel" path="consumerInfo.description" ><fmt:message key="admin.oauth.consumer.description"/>*</form:label>
-			  					<form:input maxlength="15" cssClass="fsInput reqinput" path="consumerInfo.description" tabindex="9"/>
-			  					<div class="dissError"><form:errors path="consumerInfo.description" /></div>
-            				</div>
-            				
-							<!-- thumbnail url -->
-							<div class="fsRow">
-			  					<form:label cssClass="fsLabel" path="consumerInfo.thumbnail" ><fmt:message key="admin.oauth.consumer.thumbnail"/></form:label>
-			  					<form:input maxlength="15" cssClass="fsInput reqinput" path="consumerInfo.thumbnail" tabindex="10"/>
-			  					<div class="dissError"><form:errors path="consumerInfo.thumbnail" /></div>
-            				</div>
+							<bsform:textarea path="consumerInfo.consumerSecret" labelKey="admin.oauth.consumer.secret" inputColSpan="9" labelColSpan="3"/>
 
-							<!-- icon url -->
-							<div class="fsRow">
-			  					<form:label cssClass="fsLabel" path="consumerInfo.icon" ><fmt:message key="admin.oauth.consumer.icon"/></form:label>
-			  					<form:input maxlength="15" cssClass="fsInput reqinput" path="consumerInfo.icon" tabindex="11"/>
-			  					<div class="dissError"><form:errors path="consumerInfo.icon" /></div>
-            				</div>
+							<bsform:input path="consumerInfo.serviceName" labelKey="admin.oauth.consumer.serviceName" inputColSpan="9" labelColSpan="3"/>
 
-             				<div class="clearfloat p">
-             					<input type="hidden" name="adminAction" value="Register"/>	
-             					<input type="hidden" name="ckey" value="${command.context.ckey}"/>	
-		                    	<fmt:message key="register.send" var="submit"/>
-        		            	<input type="submit" value="${submit}" />
-	             			</div>
-	             		</fieldset>	
+							<div class="form-group">
+								<label for="consumerInfo.keyType" class="col-sm-3 control-label"><fmt:message key="admin.oauth.consumer.keyType"/></label>
+								<div class="col-sm-9">
+									<form:select id="consumerInfo.keyType" cssClass="form-control" path="consumerInfo.keyType">
+										<c:forEach var="entry" items="${command.keyTypes}">
+											<form:option value="${entry}" label="${entry}" />
+										</c:forEach>
+									</form:select>
+								</div>
+							</div>
+
+							<bsform:input path="consumerInfo.callbackUrl" labelKey="admin.oauth.consumer.callbackUrl" inputColSpan="9" labelColSpan="3"/>
+
+							<bsform:input path="consumerInfo.gadgetUrl" labelKey="admin.oauth.consumer.gadgetUrl" inputColSpan="9" labelColSpan="3" />
+
+							<bsform:input path="consumerInfo.title" labelKey="admin.oauth.consumer.title" inputColSpan="9" labelColSpan="3" />
+
+							<bsform:input path="consumerInfo.summary" labelKey="admin.oauth.consumer.summary" inputColSpan="9" labelColSpan="3" />
+
+							<bsform:input path="consumerInfo.description" labelKey="admin.oauth.consumer.description" inputColSpan="9" labelColSpan="3" />
+
+							<bsform:input path="consumerInfo.thumbnail" labelKey="admin.oauth.consumer.thumbnail" inputColSpan="9" labelColSpan="3" />
+
+							<bsform:input path="consumerInfo.icon" labelKey="admin.oauth.consumer.icon" inputColSpan="9" labelColSpan="3" />
+
+							<!-- hidden fields -->
+							<input type="hidden" name="adminAction" value="Register"/>
+							<input type="hidden" name="ckey" value="${command.context.ckey}"/>
+
+							<!-- submit button -->
+							<div class="form-group">
+								<div class="col-sm-offset-3 col-sm-9">
+									<fmt:message key="register.send" var="submit" />
+									<bsform:button size="defaultSize" style="primary" value="${submit}" type="submit" />
+								</div>
+							</div>
+						</jsp:attribute>
+
+					</bsform:fieldset>
             	</form:form>
+
 			</div>
-			
-			
+			<br />
+			<br />
 			<script type="text/javascript">
-             //<mtl:cdata>
-             <![CDATA[
+
+             //<![CDATA[
                 // Ensure consumer is to be removed and delete it.
         		function deleteConsumer(consumerKey) {
         			var box = window.confirm(getString('admin.oauth.consumer.ensure_delete'));
@@ -252,8 +192,7 @@
         				document.getElementById("deleteConsumerForm").submit();
         			}
         		} 
-             ]]> 
-             //</mtl:cdata>
+             //]]>
           </script>
 			
 		</jsp:attribute>
