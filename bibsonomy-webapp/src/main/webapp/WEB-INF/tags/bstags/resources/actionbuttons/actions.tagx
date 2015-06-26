@@ -91,13 +91,11 @@
 				
 				<c:if test="${command.context.userLoggedIn and post.user.name ne loginUserName}">
 					<li class="divider"><!--  --></li>
-					<li>
-						<buttons:reportUserMenuItem 
-							post="${post}"
-							userName="${post.user.name}" 
-							loginUser="${command.context.loginUser}"
-							buttonClasses="${buttonClasses}"/>
-					</li>
+					<buttons:reportUserMenuItem 
+						post="${post}"
+						userName="${post.user.name}" 
+						loginUser="${command.context.loginUser}"
+						buttonClasses="${buttonClasses}"/>
 				</c:if>
 
 				<c:if test="${resourceType eq 'bibtex'}">

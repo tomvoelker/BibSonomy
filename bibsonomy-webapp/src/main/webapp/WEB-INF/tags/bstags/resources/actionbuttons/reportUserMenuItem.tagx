@@ -15,17 +15,18 @@
 	
 	<c:if test="${not empty post.user.name}">
 		<fmt:message var="reportUser" key="user.report" />
-		<fmt:message var="reportedUser" key="user.reported" />
 		<c:choose>
 			<c:when test="${!mtl:contains(command.context.loginUser.reportedSpammers, post.user)}">
-				<a onclick="return reportUser(this,'${post.user.name}');"
-					href="${relativeUrlGenerator.getUserRelationEditUrl()}"
-					title="${fn:escapeXml(reportUser)}" class="report-spammer-link" data-username="${fn:escapeXml(post.user.name)}">
-					<c:out value="${reportUser}" />
-				</a>
+				<li>
+					<a onclick="return reportUser(this,'${post.user.name}');"
+						href="${relativeUrlGenerator.getUserRelationEditUrl()}"
+						title="${fn:escapeXml(reportUser)}" class="report-spammer-link" data-username="${fn:escapeXml(post.user.name)}">
+						<c:out value="${reportUser}" />
+					</a>
+				</li>
 			</c:when>
 			<c:otherwise>
-				 <span class="ilitem"><c:out value="${reportedUser}" /></span>
+				<li class="disabled"><a href="#"><fmt:message key="user.reported" /></a></li>
 			</c:otherwise>
 		</c:choose>
 	</c:if>
