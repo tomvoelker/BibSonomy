@@ -152,6 +152,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		// document retrieval
 		final Set<Filter> filters = param.getFilters();
 		if (present(filters)) {
+			// TODO: support multiple filters
 			if (filters.contains(FilterEntity.JUST_PDF)) {
 				// retrieve only entries with a document attached
 				return this.postList("getJustBibTexForUserWithPDF", param, session);
@@ -167,7 +168,9 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 				return this.postList("getBibTexWithDiscussions", param, session);
 			}
 			
-			throw new IllegalArgumentException("Filters " + filters + " not supported");
+			if (!filters.contains(FilterEntity.ADMIN_SPAM_POSTS)) {
+				throw new IllegalArgumentException("Filters " + filters + " not supported");
+			}
 		}
 
 		// posts with docs
