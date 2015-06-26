@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.Role;
@@ -223,18 +224,18 @@ public class UserUtils {
 	}	
 
 	/**
-	 * Helper function to extract the usernames from a list of user objects into
-	 * a hashset.
+	 * helper function to extract the usernames from a list of user objects into
+	 * a set.
 	 * 
 	 * @param users
 	 * @return
 	 */
-	public static HashSet<String> getHashSetOfUsernames(List<User> users) {
+	public static Set<String> getHashSetOfUsernames(List<User> users) {
 		if (!present(users)) {
 			return null;
 		}
-		HashSet<String> result = new HashSet<String>();
-		for (User u : users) {
+		final Set<String> result = new HashSet<String>();
+		for (final User u : users) {
 			result.add(u.getName());
 		}
 		return result;
@@ -269,7 +270,8 @@ public class UserUtils {
 	}
 	
 	
-	/** Update a user:
+	/**
+	 * Update a user:
 	 * In the existingUser all fields, that are set in updatedUser will be overwritten
 	 * Warning: UserSettings are not Updated!
 	 * @param existingUser = the user before the update
@@ -290,7 +292,7 @@ public class UserUtils {
 		existingUser.setApiKey(!present(updatedUser.getApiKey()) ? existingUser.getApiKey()	: updatedUser.getApiKey());
 		existingUser.setBirthday(!present(updatedUser.getBirthday()) ? existingUser.getBirthday() : updatedUser.getBirthday());
 		existingUser.setGender(!present(updatedUser.getGender()) ? existingUser.getGender() : updatedUser.getGender());
-		existingUser.setUseExternalPicture(!present(updatedUser.isUseExternalPicture()) ? existingUser.isUseExternalPicture() : updatedUser.isUseExternalPicture());
+		existingUser.setUseExternalPicture(updatedUser.isUseExternalPicture());
 		existingUser.setHobbies(!present(updatedUser.getHobbies()) ? existingUser.getHobbies() : updatedUser.getHobbies());
 		existingUser.setInterests(!present(updatedUser.getInterests()) ? existingUser.getInterests() : updatedUser.getInterests());
 		existingUser.setIPAddress(!present(updatedUser.getIPAddress()) ? existingUser.getIPAddress() : updatedUser.getIPAddress());
@@ -353,8 +355,7 @@ public class UserUtils {
 		if (present(user.getRealname())) {
 			return user.getRealname();
 		} 
-		return (atPrefix? "@" :"") + user.getName(); 
+		return (atPrefix? "@" :"") + user.getName();
 	
 	}
-	
 }

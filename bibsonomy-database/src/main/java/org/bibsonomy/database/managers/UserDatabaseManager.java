@@ -29,7 +29,6 @@ package org.bibsonomy.database.managers;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.File;
-import java.util.HashSet;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -213,13 +212,11 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForObject("getApiKeyForUser", username, String.class, session);
 	}
 
-	protected void update( final String query, final User user, final DBSession session )
-	{
+	protected void update( final String query, final User user, final DBSession session ) {
 		super.update(query, user, session);
 		
 		//TODO replace by switch
-		if ( query == "updateUser" || query == "updateUserProfile" )
-		{
+		if (query == "updateUser" || query == "updateUserProfile") {
 			final UploadedFile profilePicture = user.getProfilePicture();
 			
 			if ( !present(profilePicture) )
@@ -938,20 +935,20 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 				 *  (sourceUser, targetUser)\in FOLLOWER_OF
 				 *  
 				 */
-			    if (present(tag)) {
-			        // labeling of user relations is only allowed for
-			        // friendship relations
-			        throw new UnsupportedRelationException();
-			    }
+				if (present(tag)) {
+					// labeling of user relations is only allowed for
+					// friendship relations
+					throw new UnsupportedRelationException();
+				}
 				break;
 			case OF_FRIEND:
 				if (present(tag)) {
-				    // restrict to users labeled with the given tag, if present
-				    param.setTag(new Tag(tag));
+					// restrict to users labeled with the given tag, if present
+					param.setTag(new Tag(tag));
 				} else {
 					param.setTag(BIBSONOMY_FRIEND_SYSTEM_TAG);
 				}
-		    	// TODO: should we introduce network_user_ids???
+				// TODO: should we introduce network_user_ids???
 				break;
 			case SPAMMER:
 				param.setTag(BIBSONOMY_SPAMMER_SYSTEM_TAG);

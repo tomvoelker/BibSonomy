@@ -17,10 +17,10 @@
 		<fmt:message var="reportUser" key="user.report" />
 		<fmt:message var="reportedUser" key="user.reported" />
 		<c:choose>
-			<c:when test="${!mtl:contains(command.context.loginUser.reportedSpammers, post.user.name)}">
+			<c:when test="${!mtl:contains(command.context.loginUser.reportedSpammers, post.user)}">
 				<a onclick="return reportUser(this,'${post.user.name}');"
-					href="${relativeUrlGenerator.getReportUserURL()}"
-					title="${fn:escapeXml(reportUser)}">
+					href="${relativeUrlGenerator.getUserRelationEditUrl()}"
+					title="${fn:escapeXml(reportUser)}" class="report-spammer-link" data-username="${fn:escapeXml(post.user.name)}">
 					<c:out value="${reportUser}" />
 				</a>
 			</c:when>

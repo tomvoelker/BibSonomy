@@ -28,12 +28,14 @@ package org.bibsonomy.webapp.controller.ajax;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
+import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.ajax.UserRelationAjaxCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -70,9 +72,7 @@ public class UserRelationAjaxController extends AjaxController implements Minima
 	
 	private static final int SPHERENAME_MAX_LENGTH = 64;
 	
-	/**
-	 * We allow only a..z A..Z 0..9 - . _ 
-	 */
+	/** We allow only a..z A..Z 0..9 - . _  */
 	private static final Pattern SPHERENAME_DISALLOWED_CHARACTERS_PATTERN = Pattern.compile("[^a-zA-Z0-9:\\.\\-_]");
 	
 	@Override
@@ -94,25 +94,31 @@ public class UserRelationAjaxController extends AjaxController implements Minima
 			return this.getErrorView();
 		}
 		
+		if (!present(command.getRequestedUserName())) {
+			this.errors.rejectValue("requestedUserName", "error.field.required");
+			return this.getErrorView();
+		}
+		
 		//
 		// switch between add or remove and call the right method
 		//
 		try {
-			if (ADD_FOLLOWER.equals(command.getAction()) && (command.getRequestedUserName() != null)) {
+			final String action = command.getAction();
+			if (ADD_FOLLOWER.equals(action)) {
 				this.addFollower(command);
-			} else if (REMOVE_FOLLOWER.equals(command.getAction()) && (command.getRequestedUserName() != null)) {
+			} else if (REMOVE_FOLLOWER.equals(action)) {
 				this.removeFollower(command);
-			} else if (ADD_FRIEND.equals(command.getAction()) && (command.getRequestedUserName() != null)) {
+			} else if (ADD_FRIEND.equals(action)) {
 				this.addFriend(command);
-			} else if (REMOVE_FRIEND.equals(command.getAction()) && (command.getRequestedUserName() != null)) {
+			} else if (REMOVE_FRIEND.equals(action)) {
 				this.removeFriend(command);
-			} else if (ADD_RELATION.equals(command.getAction()) && (command.getRequestedUserName() != null)) {
+			} else if (ADD_RELATION.equals(action)) {
 				this.addRelation(command);
-			} else if (REMOVE_RELATION.equals(command.getAction()) && (command.getRequestedUserName() != null)) {
+			} else if (REMOVE_RELATION.equals(action)) {
 				this.removeRelation(command);
 			}
-		} catch (final org.bibsonomy.common.exceptions.ValidationException e) {
-			log.info("Error establishing a connection for '"+command.getContext().getLoginUser().getName()+"' to user '"+command.getRequestedUserName()+"': " + e.getMessage());
+		} catch (final ValidationException e) {
+			log.info("Error establishing a connection for '" + context.getLoginUser().getName() + "' to user '" + command.getRequestedUserName()+"': " + e.getMessage());
 			this.errors.reject(e.getMessage());
 		}
 		
@@ -157,23 +163,26 @@ public class UserRelationAjaxController extends AjaxController implements Minima
 	 * @param command
 	 */
 	private void addRelation(final UserRelationAjaxCommand command) {
-		if (!present(command.getRelationTags()) || (command.getRelationTags().size()>1)) {
-			this.errors.reject("error.field.valid.sphere.name");
-			return;
+		final String requestedRelation;
+		final List<String> relationTags = command.getRelationTags();
+		// TODO: create a validator for sphere name validation
+		if (UserRelation.OF_FRIEND.equals(command.getUserRelation())) {
+			if (!present(relationTags) || (relationTags.size() > 1)) {
+				this.errors.reject("error.field.valid.sphere.name");
+				return;
+			}
+			requestedRelation = relationTags.get(0);
+			if (!present(requestedRelation) || (requestedRelation.length() > SPHERENAME_MAX_LENGTH) ||
+					SPHERENAME_DISALLOWED_CHARACTERS_PATTERN.matcher(requestedRelation).find()) {
+				this.errors.rejectValue("relationTags","error.field.valid.sphere.name");
+				return;
+			}
+		} else {
+			requestedRelation = null;
 		}
 		
 		final User user = new User(command.getRequestedUserName());
-		final String requestedRelation = command.getRelationTags().get(0);
-		
-		// TODO: create a validator for sphere name validation
-		if ( !present(requestedRelation) ||
-				(requestedRelation.length() > SPHERENAME_MAX_LENGTH) ||
-				SPHERENAME_DISALLOWED_CHARACTERS_PATTERN.matcher(requestedRelation).find())
-		{
-			this.errors.rejectValue("relationTags","error.field.valid.sphere.name");
-		} else {
-			this.logic.createUserRelationship(command.getContext().getLoginUser().getName(),user.getName(), UserRelation.OF_FRIEND, requestedRelation);
-		}
+		this.logic.createUserRelationship(command.getContext().getLoginUser().getName(),user.getName(), command.getUserRelation(), requestedRelation);
 	}
 	
 	/**
@@ -182,7 +191,7 @@ public class UserRelationAjaxController extends AjaxController implements Minima
 	 * @param command
 	 */
 	private void removeRelation(final UserRelationAjaxCommand command) {
-		if (!present(command.getRelationTags()) || (command.getRelationTags().size()>1)) {
+		if (!present(command.getRelationTags()) || (command.getRelationTags().size() > 1)) {
 			throw new IllegalArgumentException("Invalid number of relation names given ("+command.getRelationTags().size()+")");
 		}
 		final User user = new User(command.getRequestedUserName());

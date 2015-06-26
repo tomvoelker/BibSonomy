@@ -288,8 +288,8 @@ public class DBLogic implements LogicInterface {
 				user.setGroups(this.groupDBManager.getGroupsForUser(user.getName(), true, session));
 				user.setPendingGroups(this.groupDBManager.getPendingMembershipsForUser(userName, session));
 				// inject the reported spammers.
-				List<User> reportedSpammersList = this.userDBManager.getUserRelation(user.getName(), UserRelation.SPAMMER, NetworkRelationSystemTag.BibSonomySpammerSystemTag, session);
-				user.setReportedSpammers(UserUtils.getHashSetOfUsernames(reportedSpammersList));
+				final List<User> reportedSpammersList = this.userDBManager.getUserRelation(user.getName(), UserRelation.SPAMMER, NetworkRelationSystemTag.BibSonomySpammerSystemTag, session);
+				user.setReportedSpammers(new HashSet<User>(reportedSpammersList));
 				// fill user's spam informations
 				this.adminDBManager.getClassifierUserDetails(user, session);
 				return user;

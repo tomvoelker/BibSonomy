@@ -125,6 +125,7 @@
 								<value>action</value>
 								<value>forward</value>
 								<value>relationTags</value>
+								<value>userRelation</value>
 								<value>ckey</value>
 							</list>
 						</property>
