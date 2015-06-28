@@ -35,6 +35,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
@@ -47,14 +48,11 @@ public class ApsScraper extends GenericBibTeXURLScraper{
 	private static final String SITE_NAME = "American Psychological Society";
 	private static final String SITE_URL = "http://the-aps.org";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
-	//private static final String BIBTEX_URL = "citmgr?type=bibtex&gca=";
-	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "physiology.org"), AbstractUrlScraper.EMPTY_PATTERN));
 
-	//private static final Pattern URL_PATTERN = Pattern.compile("(http://[^/]++)(\\W+)");
-	//private static final Pattern URL_START = Pattern.compile("/\\w+");
-	//private static final Pattern ID_PATTERN = Pattern.compile("(\\d+\\W)+");
+	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "physiology.org"), AbstractUrlScraper.EMPTY_PATTERN));
 	
-	private static final Pattern BIBTEX_PATTERN = Pattern.compile("<li class=\"bibtext first\"><a href=\"(.*)\">BibTeX</a></li>");
+	private static final Pattern BIBTEX_PATTERN = Pattern.compile("<li class=\"bibtext first\"><a href=\"(.+?)\".*?>BibTeX</a></li>");
+	
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return PATTERNS;
@@ -79,22 +77,24 @@ public class ApsScraper extends GenericBibTeXURLScraper{
 	public String getDownloadURL(final URL url) throws ScrapingException {
 		try {
 			final Matcher m = BIBTEX_PATTERN.matcher(WebUtils.getContentAsString(url));
-			String download_link = "";
 			if (m.find()) {
-				download_link = m.group(1);
-			} else {
-				throw new ScrapingFailureException("failure getting bibtex url for " + url);
-			}
-			return "http://" + url.getHost().toString() + download_link;
+				return "http://" + url.getHost().toString() + m.group(1);
+			} 
+			throw new ScrapingFailureException("failure getting bibtex url for " + url);
 		} catch (IOException e) {
 			throw new ScrapingException(e);
 		}
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
+	 */
 	@Override
-	protected String convert(String result){
-		final String firstLine = result.split("\n")[0].trim();
-		if(firstLine.split("\\{").length == 1)
-			result = result.replace(firstLine,firstLine.replace("{", "{nokey,"));
-		return result;
+	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
+		final String firstLine = bibtex.split("\n")[0].trim();
+		if (firstLine.split("\\{").length == 1) {
+			return bibtex.replace(firstLine, firstLine.replace("{", "{nokey,"));
+		}
+		return bibtex;
 	}
 }

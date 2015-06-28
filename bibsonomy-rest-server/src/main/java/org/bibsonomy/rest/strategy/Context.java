@@ -32,7 +32,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.InternServerException;
@@ -49,7 +48,7 @@ import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.UrlRenderer;
-import org.bibsonomy.rest.util.URLDecodingStringTokenizer;
+import org.bibsonomy.rest.util.URLDecodingPathTokenizer;
 import org.bibsonomy.services.filesystem.FileLogic;
 
 /**
@@ -160,13 +159,13 @@ public final class Context {
 	}
 
 	private Strategy chooseStrategy(final HttpMethod httpMethod, final String url) {
-		final StringTokenizer urlTokens = new URLDecodingStringTokenizer(url, "/");
+		final URLDecodingPathTokenizer urlTokens = new URLDecodingPathTokenizer(url, "/");
 		/*
 		 * skip "/api" token FIXME: is this OK?
 		 */
-		urlTokens.nextToken();
-		if (urlTokens.countTokens() > 0) {
-			final String nextElement = (String) urlTokens.nextElement();
+		urlTokens.next();
+		if (urlTokens.countRemainingTokens() > 0) {
+			final String nextElement = urlTokens.next();
 			final ContextHandler contextHandler = Context.urlHandlers.get(nextElement);
 			if (contextHandler != null) {
 				return contextHandler.createStrategy(this, urlTokens, httpMethod);
