@@ -22,15 +22,34 @@
 	</bean>
 
 
-	<bean id="realSharedIndexUpdatePlugin" class="org.bibsonomy.es.SharedIndexUpdatePlugin" lazy-init="true">
+	<bean id="realSharedIndexUpdatePlugin" class="org.bibsonomy.es.SharedIndexUpdatePlugin" lazy-init="true" abstract="true">
 		<constructor-arg ref="esClient"/>
 		<constructor-arg value="${project.home}"/>
 		<constructor-arg ref="lucenePublicationConverter"/>
-		<property name="dbLogic" ref="luceneDBLogic"/>
 	</bean>
-	<bean id="sharedIndexUpdatePlugin" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
+	
+	<bean id="realSharedIndexUpdatePluginForPublications" lazy-init="true" parent="realSharedIndexUpdatePlugin">
+		<property name="dbLogic" ref="lucenePublicationLogic"/>
+	</bean>
+	<bean id="sharedIndexUpdatePluginForPublications" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
 		<property name="condition" ref="esClusterNamePresent" />
-		<lookup-method name="produceSucessBean" bean="realSharedIndexUpdatePlugin" />
+		<lookup-method name="produceSucessBean" bean="realSharedIndexUpdatePluginForPublications" />
+	</bean>
+	
+	<bean id="realSharedIndexUpdatePluginForBookmarks" lazy-init="true" parent="realSharedIndexUpdatePlugin">
+		<property name="dbLogic" ref="luceneBookmarkLogic"/>
+	</bean>
+	<bean id="sharedIndexUpdatePluginForBookmarks" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
+		<property name="condition" ref="esClusterNamePresent" />
+		<lookup-method name="produceSucessBean" bean="realSharedIndexUpdatePluginForBookmarks" />
+	</bean>
+	
+	<bean id="realSharedIndexUpdatePluginForGoldStandardPublications" lazy-init="true" parent="realSharedIndexUpdatePlugin">
+		<property name="dbLogic" ref="luceneGoldStandardPublicationLogic"/>
+	</bean>
+	<bean id="sharedIndexUpdatePluginForGoldStandardPublications" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
+		<property name="condition" ref="esClusterNamePresent" />
+		<lookup-method name="produceSucessBean" bean="realSharedIndexUpdatePluginForGoldStandardPublications" />
 	</bean>
 	
 	<bean id="realEsPublicationSearch" lazy-init="true" parent="abstractEsResourceSearch">
@@ -215,11 +234,6 @@
         + -->
 	<bean id="luceneResourceManager" class="org.bibsonomy.lucene.index.manager.LuceneResourceManager" abstract="true">
 		<property name="luceneUpdaterEnabled" value="${lucene.enableUpdater}" />
-		<property name="plugins">
-			<list>
-				<ref bean="sharedIndexUpdatePlugin" />
-			</list>
-		</property>
 	</bean>
 
 	<bean id="lucenePublicationManager" class="org.bibsonomy.lucene.index.manager.LuceneResourceManager" init-method="init" parent="luceneResourceManager">
@@ -227,6 +241,11 @@
 		<property name="dbLogic" ref="lucenePublicationLogic" />
 		<property name="searcher" ref="lucenePublicationSearch" />
 		<property name="resourceConverter" ref="lucenePublicationConverter" />
+		<property name="plugins">
+			<list>
+				<ref bean="sharedIndexUpdatePluginForPublications" />
+			</list>
+		</property>
 	</bean>
 
 	<bean id="luceneBookmarkManager" class="org.bibsonomy.lucene.index.manager.LuceneResourceManager" init-method="init" parent="luceneResourceManager">
@@ -234,6 +253,11 @@
 		<property name="dbLogic" ref="luceneBookmarkLogic" />
 		<property name="searcher" ref="luceneBookmarkSearch" />
 		<property name="resourceConverter" ref="luceneBookmarkConverter" />
+		<property name="plugins">
+			<list>
+				<ref bean="sharedIndexUpdatePluginForBookmarks" />
+			</list>
+		</property>
 	</bean>
 
 	<bean id="luceneGoldStandardPublicationManager" class="org.bibsonomy.lucene.index.manager.LuceneGoldStandardManager" init-method="init" parent="luceneResourceManager">
@@ -241,6 +265,11 @@
 		<property name="dbLogic" ref="luceneGoldStandardPublicationLogic" />
 		<property name="searcher" ref="luceneGoldStandardPublicationSearch" />
 		<property name="resourceConverter" ref="luceneGoldStandardPublicationConverter" />
+		<property name="plugins">
+			<list>
+				<ref bean="sharedIndexUpdatePluginForGoldStandardPublications" />
+			</list>
+		</property>
 	</bean>
 
 	<util:map id="allLuceneResourceManagers" key-type="java.lang.Class">

@@ -2,23 +2,23 @@
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="Lucene">
 
-	<select id="getPubPersonChangesByChangeIdRange" parameterClass="org.bibsonomy.common.Pair" resultMap='PersonCommon.resourcePersonRelationLogStub">
+	<select id="getPubPersonChangesByChangeIdRange" parameterClass="org.bibsonomy.common.Pair" resultMap='PersonCommon.resourcePersonRelationLogStub'>
 			SELECT <include refid='commonResourcePersonRelationColumns' />, pub_person.deleted
 				FROM log_pub_person pub_person
-				WHERE person_change_id >= #first# AND person_change_id < #second#
+				WHERE person_change_id >= #first# AND person_change_id &lt; #second#
 				ORDER BY person_change_id
 	</select>
 	
 	<select id='getPersonMainNamesByChangeIdRange' parameterClass="org.bibsonomy.common.Pair" resultMap='PersonCommon.personName'>
 		SELECT <include refid='commonPersonNameColumns'/> FROM person_name 
-			WHERE person_change_id >= #first# AND person_change_id < #second#
+			WHERE person_change_id >= #first# AND person_change_id &lt; #second#
 				AND is_main=1
 			ORDER BY person_change_id
 	</select>
 	
 	<select id='getPersonByChangeIdRange' parameterClass="org.bibsonomy.common.Pair" resultMap='PersonCommon.lazyLoadingPerson'>
 		SELECT <include refid='commonPersonColumns'/> FROM person_name 
-			WHERE person_change_id >= #first# AND person_change_id < #second#
+			WHERE person_change_id >= #first# AND person_change_id &lt; #second#
 			ORDER BY person_change_id
 	</select>
 	
