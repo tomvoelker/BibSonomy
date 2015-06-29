@@ -38,6 +38,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
 import org.bibsonomy.lucene.param.LuceneIndexInfo;
@@ -64,6 +65,8 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	private final List<SharedResourceIndexGenerator<R>> queuedOrRunningGenerators = Collections.synchronizedList(new ArrayList<SharedResourceIndexGenerator<R>>());
 	/** converts post model objects to documents of the index structure */
 	private final LuceneResourceConverter<R> resourceConverter;
+	/** the database manager */
+	protected LuceneDBInterface<R> dbLogic;
 
 	/**
 	 * @param esClient
@@ -98,6 +101,7 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 		sharedIndexUpdater = new SharedResourceIndexUpdater<R>(this.systemHome, resourceConverter);
 		sharedIndexUpdater.setEsClient(this.esClient);
 		sharedIndexUpdater.setResourceType(resourceType);
+		sharedIndexUpdater.setDbLogic(this.dbLogic);
 		return sharedIndexUpdater;
 	}
 
@@ -242,6 +246,14 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	@Override
 	public void generatedIndex(final AbstractIndexGenerator<R> index) {
 		this.queuedOrRunningGenerators.remove(index);
+	}
+
+	public LuceneDBInterface<R> getDbLogic() {
+		return this.dbLogic;
+	}
+
+	public void setDbLogic(LuceneDBInterface<R> dbLogic) {
+		this.dbLogic = dbLogic;
 	}
 
 }

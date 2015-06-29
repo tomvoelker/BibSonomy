@@ -26,6 +26,7 @@
 		<constructor-arg ref="esClient"/>
 		<constructor-arg value="${project.home}"/>
 		<constructor-arg ref="lucenePublicationConverter"/>
+		<property name="dbLogic" ref="luceneDBLogic"/>
 	</bean>
 	<bean id="sharedIndexUpdatePlugin" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
 		<property name="condition" ref="esClusterNamePresent" />

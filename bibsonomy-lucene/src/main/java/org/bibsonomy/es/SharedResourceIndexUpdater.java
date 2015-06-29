@@ -37,6 +37,7 @@ import java.util.TreeSet;
 import org.apache.commons.collections.LRUMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.param.LucenePost;
@@ -96,6 +97,9 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 * 
 	 */
 	protected Set<String> usersToFlag;
+	
+	/** the database manager */
+	protected LuceneDBInterface<R> dbLogic;
 
 	/**
 	 * @param systemHome
@@ -467,8 +471,29 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 */
 	@Override
 	public void updateIndexWithPersonNameInfo(PersonName name, LRUMap updatedInterhashes) {
-		// TODO Auto-generated method stub
-		// dotododo
+		final String personId = name.getPersonId();
+		updateIndexForPersonWithId(updatedInterhashes, personId);
+	}
+
+	private void updateIndexForPersonWithId(LRUMap updatedInterhashes, final String personId) {
+		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(ESConstants.INDEX_NAME);
+		searchRequestBuilder.setTypes(this.resourceType);
+		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
+		searchRequestBuilder.setQuery(QueryBuilders.matchQuery(ESConstants.PERSON_ENTITY_IDS_FIELD_NAME, personId));
+		searchRequestBuilder.setExplain(true);
+
+		final SearchResponse response = searchRequestBuilder.execute().actionGet();
+
+		if (response != null) {
+			for (final SearchHit hit : response.getHits()) {
+				final Map<String, Object> doc = hit.getSource();
+				final String interhash = (String) doc.get("interhash");
+				if (updatedInterhashes.put(interhash, interhash) == null) {
+					List<ResourcePersonRelation> newRels = this.dbLogic.getResourcePersonRelationsByPublication(interhash);
+					this.updateIndexWithPersonRelation(interhash, newRels);
+				}
+			}
+		}
 	}
 
 	/* (non-Javadoc)
@@ -476,8 +501,15 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 */
 	@Override
 	public void updateIndexWithPersonInfo(Person per, LRUMap updatedInterhashes) {
-		// TODO Auto-generated method stub
-		
+		updateIndexForPersonWithId(updatedInterhashes, per.getPersonId());
+	}
+
+	public LuceneDBInterface<R> getDbLogic() {
+		return this.dbLogic;
+	}
+
+	public void setDbLogic(LuceneDBInterface<R> dbLogic) {
+		this.dbLogic = dbLogic;
 	}
 
 }
