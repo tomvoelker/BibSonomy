@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.es.IndexUpdaterState;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
@@ -147,4 +148,9 @@ public interface LuceneDBInterface<R extends Resource> {
 	 * @return
 	 */
 	public List<ResourcePersonRelation> getResourcePersonRelationsByPublication(String interHash);
+
+	/**
+	 * @return
+	 */
+	public IndexUpdaterState getDbState();
 }

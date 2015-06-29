@@ -37,6 +37,7 @@ import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.managers.PersonDatabaseManager;
+import org.bibsonomy.es.IndexUpdaterState;
 import org.bibsonomy.lucene.database.managers.PersonLuceneDatabaseManager;
 import org.bibsonomy.lucene.database.params.LuceneParam;
 import org.bibsonomy.lucene.param.LucenePost;
@@ -300,5 +301,17 @@ public class LuceneDBLogic<R extends Resource> extends AbstractDatabaseManager i
 		} finally {
 			session.close();
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getDbState()
+	 */
+	@Override
+	public IndexUpdaterState getDbState() {
+		final IndexUpdaterState newState = new IndexUpdaterState();
+		newState.setLast_tas_id(this.getLastTasId());
+		newState.setLast_log_date(this.getLastLogDate());
+		newState.setLastPersonChangeId(this.getLastPersonChangeId());
+		return newState;
 	}
 }

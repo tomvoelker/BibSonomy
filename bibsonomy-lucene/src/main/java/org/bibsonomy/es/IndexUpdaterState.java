@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.es;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import org.apache.commons.lang.ObjectUtils;
@@ -35,7 +36,9 @@ import org.apache.commons.lang.ObjectUtils;
  *
  * @author lutful
  */
-public class IndexUpdaterState {
+public class IndexUpdaterState implements Serializable {
+	private static final long serialVersionUID = 1398951571372358877L;
+	
 	private Integer last_tas_id;
 	private Date last_log_date;
 	private long lastPersonChangeId;

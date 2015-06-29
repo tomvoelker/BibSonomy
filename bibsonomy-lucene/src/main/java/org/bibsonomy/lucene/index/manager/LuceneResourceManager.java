@@ -43,7 +43,6 @@ import java.util.Set;
 import org.apache.commons.collections.LRUMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.es.IndexUpdater;
 import org.bibsonomy.es.IndexUpdaterState;
 import org.bibsonomy.es.UpdatePlugin;
@@ -180,22 +179,14 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 * updated posts.
 	 */
 	protected synchronized void updateIndexes() {
-		// current time stamp for storing as 'lastLogDate' in the index
-		// FIXME: get this date from the log_table via
-		// 'getContentIdsToDelete'
-		//final long currentLogDate = System.currentTimeMillis();
-		//this.dbLogic.getLastLogDate();
-		
-		IndexUpdaterState dbState = new IndexUpdaterState();
-		dbState.setLast_log_date(new Date());
-		
 		final Map<IndexUpdaterState, List<IndexUpdater<R>>> lastLogDateAndLastTasIdToUpdaters = getUpdatersBySameState();
+		final IndexUpdaterState targetState = this.dbLogic.getDbState();
 		
 		for (final Map.Entry<IndexUpdaterState, List<IndexUpdater<R>>> e : lastLogDateAndLastTasIdToUpdaters.entrySet()) {
 			final List<IndexUpdater<R>> updaters = e.getValue();
 			final IndexUpdaterState indexState = e.getKey();
-			// TODO: add paramater for a common newLastTasId to make sure the indices will have the same state next time
-			this.updateIndex(indexState, dbState, updaters);
+			// TODO: use the common lastTasId in the dbState to make sure the indices will have the same state after the update, regardless of their execution time and order
+			this.updateIndex(indexState, targetState, updaters);
 		}
 		this.alreadyRunning = 0;
 	}

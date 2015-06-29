@@ -26,13 +26,17 @@
  */
 package org.bibsonomy.es;
 
+import java.io.Serializable;
+
 
 /**
  * Information of the system like System url, lastTasId, lastLogDate
  *
  * @author lutful
  */
-public class SystemInformation {
+public class SystemInformation implements Serializable {
+	private static final long serialVersionUID = 3300034332953151505L;
+	
 	private String systemUrl;
 	private IndexUpdaterState updaterState;
 	private String postType;
