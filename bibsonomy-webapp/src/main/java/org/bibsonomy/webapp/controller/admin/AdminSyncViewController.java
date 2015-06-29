@@ -83,8 +83,8 @@ public class AdminSyncViewController implements MinimalisticController<AdminSync
 		/*
 		 * get services and clients from db
 		 */
-		command.setAvlClients(this.logic.getSyncServices(false));
-		command.setAvlServer(this.logic.getSyncServices(true));
+		command.setAvlClients(this.logic.getSyncServices(false, null));
+		command.setAvlServer(this.logic.getSyncServices(true, null));
 		
 		return Views.ADMIN_SYNC;
 	}

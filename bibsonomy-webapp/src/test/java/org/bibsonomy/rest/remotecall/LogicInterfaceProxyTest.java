@@ -1283,7 +1283,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 	@Override
-	public List<SyncService> getSyncService(final String userName, final URI service, final boolean server) {
+	public List<SyncService> getSyncServiceSettings(final String userName, final URI service, final boolean server) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1317,7 +1317,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 	
 	@Override
-	public List<SyncService> getSyncServices(final boolean server) {
+	public List<SyncService> getSyncServices(final boolean server, String sslDn) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1358,6 +1358,24 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 */
 	@Override
 	public Statistics getUserStatistics(GroupingEntity grouping, Set<Filter> filters, Classifier classifier, SpamStatus status, Date startDate, Date endDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getAutoSyncServer()
+	 */
+	@Override
+	public List<SyncService> getAutoSyncServer() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncServiceDetails(java.net.URI)
+	 */
+	@Override
+	public SyncService getSyncServiceDetails(URI serviceURI) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.rest.strategy;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -37,6 +39,7 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.SynchronizationRunningException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.sync.SyncService;
+import org.bibsonomy.rest.RESTUtils;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
@@ -63,11 +66,11 @@ public class SynchronizationHandler implements ContextHandler {
 		try {
 			final URI serviceURI = new URI(urlTokens.next());
 			final User user = context.getLogic().getAuthenticatedUser();
-			final List<SyncService> syncClient = context.getLogic().getSyncServiceDetails(null, serviceURI);
+			final SyncService syncClient = context.getLogic().getSyncServiceDetails(serviceURI);
 
-			if (!syncClient.isEmpty()) {
-				// check SSL for client instance
-				if ( ValidationUtils.present(syncClient.get(0).getSslDn()) && !user.getRole().equals(Role.SYNC) ) {
+			// check SSL for client instance
+			if ( present(syncClient) && serviceURI.equals(syncClient.getService()) ) {
+				if (present(syncClient.getSslDn()) && !Role.SYNC.equals(user.getRole())) {
 					log.debug("no sync-role was set for the user - check ssl");
 					throw new BadRequestOrResponseException("check SSL cert for configured client");
 				}

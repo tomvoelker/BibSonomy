@@ -67,16 +67,13 @@ public class AutoSync {
 			return;
 		}
 		
-		// anpassen, keine Liste raus - aber registrierte Liste, bzw KONFIGURIERTE clients
-		final List<SyncService> syncServices = this.adminLogic.getSyncService(null, null, true);
-		for (final SyncService syncService : syncServices) {
-			// skip, if autosync not selected or direction is both
-			if (!syncService.isAutosync() || syncService.getDirection() == SynchronizationDirection.BOTH) {
-				continue;
-			}
+		// get configured AutoSync-Servers
+		final List<SyncService> syncServices = this.adminLogic.getAutoSyncServer();
+		for (final SyncService syncService : syncServices) {			
 			
 			final User clientUser = this.adminLogic.getUserDetails(syncService.getUserName());
 			final String userNameToSync = clientUser.getName();
+			
 			log.info("Autosync for user:" + userNameToSync + " and service: " + syncService.getService().toString() + " api: " + syncService.getSecureAPI());
 			try {
 				final LogicInterface clientLogic = this.userLogicFactory.getLogicAccess(userNameToSync, clientUser.getApiKey());

@@ -60,9 +60,10 @@ public interface SyncLogicInterface {
 	/**
 	 * 
 	 * @param server switch between server and clients
+	 * @param sslDn TODO
 	 * @return List of allowed synchronization services
 	 */
-	public List<SyncService> getSyncServices(final boolean server);
+	public List<SyncService> getSyncServices(final boolean server, String sslDn);
 	
 	/* ********************************************************************
 	 * create, read, update, delete sync services - user dependent
@@ -99,16 +100,19 @@ public interface SyncLogicInterface {
 	 * @param server - if <code>true</code>, sync servers are returned. Otherwise clients.
 	 * @return List of synchronization servers for given user 
 	 */
-	public List<SyncService> getSyncService(final String userName, final URI service, final boolean server);
+	public List<SyncService> getSyncServiceSettings(final String userName, final URI service, final boolean server);
 	
+	/**
+	 * @return List of synchronization servers for Auto synchronization ('autosync' or direction is not 'both')
+	 */
+	public List<SyncService> getAutoSyncServer();
 	
 	/**
 	 *  
-	 * @param sslDn 
 	 * @param serviceURI 
-	 * @return SyncService by SSLDn / ServiceURI - if SSLDn is empty, ServiceURI is selected
+	 * @return SyncService by SSLDn / ServiceURI - if SSLDn is empty, ServiceURI is selected 
 	 */
-	public List<SyncService> getSyncServiceDetails(final String sslDn, final URI serviceURI);
+	public SyncService getSyncServiceDetails(final URI serviceURI);
 	
 	/* ********************************************************************
 	 * get sync posts/plans, update delete, get sync data

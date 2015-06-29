@@ -234,8 +234,8 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	 * @param command
 	 */
 	private void workOnSyncSettingsTab(final SettingsViewCommand command) {
-		final List<SyncService> userServers = this.logic.getSyncService(command.getUser().getName(), null, true);
-		final List<SyncService> allServers = this.logic.getSyncServices(true);
+		final List<SyncService> userServers = this.logic.getSyncServiceSettings(command.getUser().getName(), null, true);
+		final List<SyncService> allServers = this.logic.getSyncServices(true, null);
 
 		/*
 		 * Remove all servers the user already has configured.
@@ -248,7 +248,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		}
 		command.setAvailableSyncServers(allServers);
 		command.setSyncServer(userServers);
-		command.setAvailableSyncClients(this.logic.getSyncServices(false));
+		command.setAvailableSyncClients(this.logic.getSyncServices(false, null));
 	}
 
 	/**
