@@ -197,7 +197,6 @@ public class LuceneResourceConverter<R extends Resource> {
 				final List<ResourcePersonRelation> rels = post.getResourcePersonRelations();
 				jsonDocument.put(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, getNormalizedEntryType((Post<? extends BibTex>) post));
 				setPersonFields(jsonDocument, rels);
-				jsonDocument.put(ESConstants.DUMMY_PUBLICATION_FIELD_NAME, new Integer(0));
 			}
 			return jsonDocument;
 		}
@@ -499,10 +498,6 @@ public class LuceneResourceConverter<R extends Resource> {
 			String systemUrl = result.get(ESConstants.SYSTEM_URL_FIELD_NAME).toString();
 			post.setSystemUrl(systemUrl);
 			post.setResourcePersonRelations(readPersonRelationsFromIndex(result));
-			Number dummy = (Number) result.get(ESConstants.DUMMY_PUBLICATION_FIELD_NAME);
-			if ((dummy != null) && (dummy.intValue() == 1)) {
-				post.setDummyPost(true);
-			}
 		}
 		return post;
 	}
