@@ -42,7 +42,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
@@ -65,6 +64,8 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.util.GetProvider;
+import org.bibsonomy.util.MapGetProvider;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.tex.TexDecode;
 
@@ -96,28 +97,17 @@ public class LuceneResourceConverter<R extends Resource> {
 	 * @return the post representation of the lucene document
 	 */
 	public Post<R> writePost(final Document doc) {
-		// initialize 
-		final Post<R> post = this.createEmptyPost();
-
-		// cycle though all properties and set the properties
-		for (final String propertyName : postPropertyMap.keySet()) {
-			// get lucene index properties
-			final String fieldName = this.getFieldName(propertyName);
-			final String propertyStr = doc.get(fieldName); 
-			if (!present(propertyStr)) {
-				continue;
-			}
-
-			final Object propertyValue = this.getPropertyValue(propertyName, propertyStr);			
-			try {
-				PropertyUtils.setNestedProperty(post, propertyName, propertyValue);
-			} catch (final Exception e) {
-				log.error("Error setting property " + propertyName + " to " + propertyValue.toString(), e);
-			}
-		}
-		
-		// all done.
-		return post;
+		return writePost(new LuceneDocumentGetProvider(doc));
+	}
+	
+	/**
+	 * Reads property values from given {@link Map} and creates post model
+	 * 
+	 * @param map
+	 * @return the post representation of the {@link Map}
+	 */
+	public Post<R> writePost(final Map<String, Object> map) {
+		return writePost(new MapGetProvider<>(map));
 	}
 
 	private Object getPropertyValue(final String propertyName, final String propertyStr) {
@@ -256,7 +246,7 @@ public class LuceneResourceConverter<R extends Resource> {
 		return sb.toString();
 	}
 	
-	private List<ResourcePersonRelation> readPersonRelationsFromIndex(Map<String, Object> result) {
+	private List<ResourcePersonRelation> readPersonRelationsFromIndex(GetProvider<String, Object> result) {
 		final List<ResourcePersonRelation> rels = new ArrayList<>();
 		
 		String ids = (String) result.get(ESConstants.PERSON_ENTITY_IDS_FIELD_NAME);
@@ -482,7 +472,7 @@ public class LuceneResourceConverter<R extends Resource> {
 	 * @param result The result from elasticsearch search query
 	 * @return Posts converted from Map
 	 */
-	public Post<R> writePost(Map<String, Object> result) {
+	public Post<R> writePost(GetProvider<String, Object> result) {
 		// initialize 
 		final LucenePost<R> post = this.createEmptyPost();
 				
@@ -515,7 +505,7 @@ public class LuceneResourceConverter<R extends Resource> {
 	 */
 	@Deprecated
 	public void updatePersonRelation(Map<String, Object> doc, ResourcePersonRelationLogStub rel) {
-		List<ResourcePersonRelation> relsBefore = readPersonRelationsFromIndex(doc);
+		List<ResourcePersonRelation> relsBefore = readPersonRelationsFromIndex(new MapGetProvider<>(doc));
 		updateRelationList(relsBefore, rel);
 		setPersonFields(doc, relsBefore);
 	}
