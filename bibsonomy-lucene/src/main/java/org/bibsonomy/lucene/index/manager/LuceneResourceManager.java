@@ -254,7 +254,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		final List<Integer> contentIdsToDelete;
 		if (oldState.getLast_log_date() == null) {
 			// index is empty -> nothing to delete
-			contentIdsToDelete = Collections.emptyList();
+			contentIdsToDelete = new ArrayList<>();
 		} else {
 			contentIdsToDelete = this.dbLogic.getContentIdsToDelete(new Date(oldState.getLast_log_date().getTime() - QUERY_TIME_OFFSET_MS));
 		}
