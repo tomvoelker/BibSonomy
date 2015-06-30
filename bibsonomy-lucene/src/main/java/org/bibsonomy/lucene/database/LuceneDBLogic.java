@@ -173,7 +173,7 @@ public class LuceneDBLogic<R extends Resource> extends AbstractDatabaseManager i
 			if (rVal != null) {
 				return rVal;
 			}
-			return new Date(0l);
+			return new Date();
 		} finally {
 			session.close();
 		}
