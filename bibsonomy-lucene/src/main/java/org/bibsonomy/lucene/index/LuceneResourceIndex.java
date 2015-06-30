@@ -442,6 +442,16 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	 * @param doc post document to insert into the index
 	 */
 	public void insertDocument(final Document doc) {
+		Object val = doc.get(LuceneFieldNames.LAST_LOG_DATE);
+		if (val == null) {
+			throw new IllegalArgumentException();
+		}
+		try {
+			Long.parseLong((String) val);
+		} catch (NumberFormatException e) {
+			throw new RuntimeException(e);
+		}
+		
 		synchronized(this) {
 			this.postsToInsert.add(doc);
 		}

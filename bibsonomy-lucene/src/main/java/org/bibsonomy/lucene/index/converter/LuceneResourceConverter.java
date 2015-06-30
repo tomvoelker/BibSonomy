@@ -162,6 +162,13 @@ public class LuceneResourceConverter<R extends Resource> {
 			 */
 			final String propertyValue = this.extractPropertyValue(post, propertyName);
 			
+			if (LuceneFieldNames.LAST_LOG_DATE.equals(propertyName)) {
+				try {
+					Long.parseLong(propertyValue);
+				} catch (NumberFormatException e) {
+					throw new IllegalArgumentException(e);
+				}
+			}
 			/*
 			 * get index, store and name of lucene field
 			 */

@@ -169,7 +169,11 @@ public class LuceneDBLogic<R extends Resource> extends AbstractDatabaseManager i
 	public Date getLastLogDate() {
 		final DBSession session = this.openSession();
 		try {
-			return this.queryForObject("getLastLog" + this.getResourceName(), Date.class, session);
+			final Date rVal = this.queryForObject("getLastLog" + this.getResourceName(), Date.class, session);
+			if (rVal != null) {
+				return rVal;
+			}
+			return new Date(0l);
 		} finally {
 			session.close();
 		}
