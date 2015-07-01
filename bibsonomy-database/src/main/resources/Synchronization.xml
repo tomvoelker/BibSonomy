@@ -4,7 +4,7 @@
 <sqlMap namespace="Synchronization">
 
 	<select id="getSyncServiceDetails" resultMap="SynchronizationCommon.syncService" parameterClass="syncParam">
-		SELECT ss.name, ss.uri, ss.ssl_dn, ss.secure_api
+		SELECT ss.name, ss.uri, ss.ssl_dn, ss.secure_api, NULL AS credentials, NULL AS direction, NULL AS content_type, NULL AS strategy, false AS autosync, NULL as user_name
 		FROM sync_services ss
 		WHERE ss.uri = #service# 
 	</select>
@@ -32,7 +32,7 @@
           AND s.direction NOT IN ('both');
 	</select>
 	
-	<select id="getSyncClientsForUser" resultMap="SynchronizationCommon.syncServiceDetails" parameterClass="syncParam">
+	<select id="getSyncClientsForUser" resultMap="SynchronizationCommon.syncServiceForUserDetails" parameterClass="syncParam">
 		SELECT ss.service_id, ss.name, <include refid="syncDataColumns"/>
 		FROM sync_services ss JOIN sync_data sd USING(service_id)
 			WHERE ss.server = FALSE

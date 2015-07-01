@@ -191,7 +191,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 		param.setServer(server);
 		param.setSslDn(sslDn);
 		
-		return this.queryForList("getSyncServices", server, SyncService.class, session);
+		return this.queryForList("getSyncServices", param, SyncService.class, session);
 	}
 	
 	/**
