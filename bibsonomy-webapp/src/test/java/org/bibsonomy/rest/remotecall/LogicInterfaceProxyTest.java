@@ -1345,7 +1345,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 	
 	@Override
-	public void updateDocument(Document document, String resourceHash, String newName) {
+	public void updateDocument(String userName, String resourceHash, String documentName, Document document) {
 		// TODO Auto-generated method stub
 	}
 	

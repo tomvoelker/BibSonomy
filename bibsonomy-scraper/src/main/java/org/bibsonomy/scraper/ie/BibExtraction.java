@@ -31,6 +31,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.SortedMap;
 import java.util.regex.Pattern;
 
 import javax.naming.NamingException;
@@ -205,7 +206,7 @@ public class BibExtraction {
 
 	private static Pattern regex = Pattern.compile ("\\p{Alpha}+|\\p{Digit}+|\\p{Punct}");
 
-	public HashMap<String, String> extraction(String fileName, String reference){
+	public SortedMap<String, String> extraction(String fileName, String reference){
 		IEInterface ieInterface = new IEInterface();//crf #2
 
 		ieInterface.loadCRF(new File(fileName));
@@ -228,7 +229,7 @@ public class BibExtraction {
 	}
 
 	
-	public HashMap<String, String> extraction(String reference) throws IOException, ClassNotFoundException, NamingException{
+	public SortedMap<String, String> extraction(String reference) throws IOException, ClassNotFoundException, NamingException{
 		final IEInterface ieInterface = new IEInterface();
 		ieInterface.loadCRF(new CRFSingleton().getCrf());
 
@@ -350,7 +351,7 @@ public class BibExtraction {
 				ieInterface.viterbiCRFTokenSequence(result);
 
 //				ieInterface.viterbiCRFTokenSequence((TokenSequence)cs2ts.pipe(instance).getData());
-				HashMap<String, String> map = ieInterface.printResultInHashMap();
+				SortedMap<String, String> map = ieInterface.printResultInHashMap();
 				System.out.println(reference);
 				System.out.println();
 				String author = map.get("author");

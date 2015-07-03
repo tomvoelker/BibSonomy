@@ -326,19 +326,17 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 */
 			post.getResource().recalculateHashes();
 
-			/**
+			/*
 			 * user may import n bibtexes which m>1 of them are the same.
 			 * 
 			 * Since similar bibtexes have similar intrahashes, we find duplicate bibtexes
 			 * by comparing intrahashes, and then add an error to not_unique bibtexes.
 			 */
-
 			if (!unique_hashes.contains(post.getResource().getIntraHash())) {
 				unique_hashes.add(post.getResource().getIntraHash());
-			}
-			else{
+			} else{
 				errorMessage = new DuplicatePostInSnippetErrorMessage("BibTex", post.getResource().getIntraHash());
-				List<ErrorMessage> errorList = new ArrayList<ErrorMessage>();			
+				List<ErrorMessage> errorList = new ArrayList<ErrorMessage>();
 				errorList.add(errorMessage);
 				command.getPostsErrorList().put(post.getResource().getIntraHash(), errorList);
 			}
@@ -426,23 +424,22 @@ public class PostPublicationController extends AbstractEditPublicationController
 			/*
 			 * check if this post is already stored in DB
 			 * 
-			 * We have already checked if this post bibtex is in the snippet more than one time
+			 * We have already checked if this publication is in the snippet more than one time
 			 * or not.
-			 * (if yes, postErrorMessages.size()>=1)
+			 * (if yes, postErrorMessages.size() >= 1)
 			 */
-			if(present(postErrorMessages) && postErrorMessages.size()>1){ 
+			if (present(postErrorMessages) && postErrorMessages.size() > 1) { 
 				isAlreadyInSnippet = true;
-			}
-			else{
+			} else {
 				if (present(postErrorMessages) && postErrorMessages.size()==1){
 					isAlreadyInSnippet = true;
 				}
 				isAlreadyInCollection = this.isPostDuplicate(posts.get(i), isOverwrite);
-				if(isAlreadyInCollection){
+				if (isAlreadyInCollection){
 					errorMessage = new DuplicatePostErrorMessage("BibTex", posts.get(i).getResource().getIntraHash());
-					if(!present(postErrorMessages)){
-						postErrorMessages = new ArrayList<ErrorMessage>();			
-					}	
+					if (!present(postErrorMessages)){
+						postErrorMessages = new ArrayList<ErrorMessage>();
+					}
 					postErrorMessages.add(errorMessage);
 					errorMessages.put(posts.get(i).getResource().getIntraHash(), postErrorMessages);
 				}

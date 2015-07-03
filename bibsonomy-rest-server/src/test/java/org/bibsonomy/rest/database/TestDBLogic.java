@@ -1121,7 +1121,7 @@ public class TestDBLogic implements LogicInterface {
 	}
 	
 	@Override
-	public void updateDocument(final Document document, final String resourceHash, final String newName) {
+	public void updateDocument(String userName, final String resourceHash, String documentName, final Document document) {
 		// TODO Auto-generated method stub
 		
 	}

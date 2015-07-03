@@ -44,6 +44,7 @@ import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wbi
+ * this scraper is now disabled because the website http://www.isrl.uiuc.edu/ is no longer available
  */
 public class LangevScraper extends AbstractUrlScraper {
 	private static final Log log = LogFactory.getLog(LangevScraper.class);

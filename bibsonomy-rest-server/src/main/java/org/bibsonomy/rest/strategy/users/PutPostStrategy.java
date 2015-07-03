@@ -30,7 +30,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.Writer;
 import java.util.Collections;
-import java.util.Date;
 
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
@@ -144,10 +143,6 @@ public class PutPostStrategy extends AbstractUpdateStrategy {
 	 */
 	protected Post<? extends Resource> getPost() {
 		final Post<? extends Resource> post = this.getRenderer().parsePost(this.doc, getUploadAccessor());
-		/*
-		 * set postingdate to current time
-		 */
-		post.setDate(new Date());				
 		/*
 		 * set the (old) intrahash of the resource as specified in the URL
 		 */

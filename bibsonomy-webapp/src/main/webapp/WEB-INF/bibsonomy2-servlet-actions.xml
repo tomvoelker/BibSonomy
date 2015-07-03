@@ -1104,7 +1104,7 @@
 	<alias name="${project.bean.pingback}" alias="pingback"/>
 	
 	<!-- Handles user's profile picture source -->
-	<bean id="gravatarStdPictureHandlerFactory" class="org.bibsonomy.webapp.util.picture.GravatarStdPictureHandlerFactory" />
+	<bean id="gravatarStdPictureHandlerFactory" class="org.bibsonomy.webapp.util.picture.StandardPictureHandlerFactory" />
 	
 	<!-- Handles the picture download -->
 	<bean id="pictureController" class="org.bibsonomy.webapp.controller.PictureController" scope="request">

@@ -68,6 +68,9 @@ public class LiebertScraperTest {
 	public void url3TestRun(){
 		UnitTestRunner.runSingleTest("url_248");
 	}
+	/**
+	 * @throws Exception
+	 */
 	@Test
 	public void testCitedby() throws Exception {
 		final ScrapingContext sc = new ScrapingContext(new URL("http://www.liebertonline.com/doi/abs/10.1089/152308604773934350"));
