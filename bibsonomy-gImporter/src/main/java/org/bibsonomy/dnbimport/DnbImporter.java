@@ -184,6 +184,9 @@ public class DnbImporter /* extends AbstractDatabaseManagerTest */ implements Ru
 					post.setUser(user);
 					post.addTag("dnb");
 					for (Pair<ClassificationScheme, String> classPair : dnbPub.getClassInfos()) {
+						if ((classPair.getFirst() == null) || (classPair.getSecond() == null)) {
+							continue;
+						}
 						final String className = dnbDatabaseManager.getClassName(classPair.getFirst(), classPair.getSecond());
 						if (className == null) {
 							continue;
