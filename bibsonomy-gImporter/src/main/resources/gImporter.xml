@@ -21,7 +21,7 @@
 	
 	<resultMap id="dnbPerson" class="dnbPerson" groupBy="personId, personFunction">
 		<result property="personId" column="person_id" />
-		<result property="diffPerson" column="diff_person" />
+		<!-- <result property="diffPerson" column="diff_person" /> -->
 		<result property="firstName" column="firstname" />
 		<result property="lastName" column="surname" />
 		<result property="gender" column="gender" />
@@ -47,11 +47,10 @@
 		SELECT
 			t.title_id, t.title, t.subtitle, t.pub_year_c, t.sub_year_c, t.city, t.uni, t.diss, t.habil, p.person_id, p.firstname, p.surname, p.diff_person, p.gender, l.person_function, l.unique_person_id, ct.kind, ct.class
 		FROM
-			title_hs_link l
-			JOIN title_hs_title t ON l.title_id=t.title_id AND (t.diss=1 or t.habil=1)
+			(SELECT * FROM title_hs_title WHERE (diss=1 or habil=1) LIMIT #limit# OFFSET #offset#) t
+			JOIN title_hs_link l ON l.title_id=t.title_id
 			JOIN title_hs_person p ON l.person_id=p.person_id
-			LEFT OUTER JOIN title_hs_class ct ON t.title_id=ct.title_id
-			LIMIT #limit# OFFSET #offset#
+			LEFT OUTER JOIN title_hs_class ct ON ct.title_id=t.title_id
 	</select>
 
 

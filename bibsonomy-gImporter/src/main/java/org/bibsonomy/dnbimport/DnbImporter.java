@@ -58,6 +58,7 @@ public class DnbImporter /* extends AbstractDatabaseManagerTest */ implements Ru
 		do {
 			dnbEntries = dnbDatabaseManager.selectDnbEntries(SQL_BLOCK_SIZE, offset);
 			offset += SQL_BLOCK_SIZE;
+			System.out.println("offset=" +  offset);
 
 			for (DnbPublication dnbPub : dnbEntries) {
 				try {
@@ -224,8 +225,12 @@ public class DnbImporter /* extends AbstractDatabaseManagerTest */ implements Ru
 						}
 					}
 				} catch (Exception e) {
+					System.out.print(dnbPub.getTitleId() + "\t");
 					e.printStackTrace(System.out);
-					e.printStackTrace(new PrintWriter(logWriter));
+					final PrintWriter pw = new PrintWriter(logWriter);
+					pw.print(dnbPub.getTitleId() + "\t");
+					e.printStackTrace(pw);
+					pw.flush();
 				}
 			}
 		} while (dnbEntries.size() > 0);
