@@ -19,6 +19,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.services.searcher.PersonSearch;
 
 /**
  * TODO: add documentation to this class
@@ -31,6 +32,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 
 	private final static PersonDatabaseManager singleton = new PersonDatabaseManager();
 	private final GeneralDatabaseManager generalManager;
+	private PersonSearch personSearch;
 
 	public static PersonDatabaseManager getInstance() {
 		return singleton;
@@ -361,5 +363,17 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		} finally {
 			session.endTransaction();
 		}
+	}
+
+	/**
+	 * @param queryString
+	 * @return
+	 */
+	public List<ResourcePersonRelation> getPersonSuggestion(String queryString) {
+		return this.personSearch.getPersonSuggestion(queryString);
+	}
+
+	public void setPersonSearch(PersonSearch personSearch) {
+		this.personSearch = personSearch;
 	}
 }

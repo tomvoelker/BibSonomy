@@ -25,11 +25,11 @@
 	<bean id="realSharedIndexUpdatePlugin" class="org.bibsonomy.es.SharedIndexUpdatePlugin" lazy-init="true" abstract="true">
 		<constructor-arg ref="esClient"/>
 		<constructor-arg value="${project.home}"/>
-		<constructor-arg ref="lucenePublicationConverter"/>
 	</bean>
 	
 	<bean id="realSharedIndexUpdatePluginForPublications" lazy-init="true" parent="realSharedIndexUpdatePlugin">
 		<property name="dbLogic" ref="lucenePublicationLogic"/>
+		<property name="resourceConverter" ref="lucenePublicationConverter"/>
 	</bean>
 	<bean id="sharedIndexUpdatePluginForPublications" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
 		<property name="condition" ref="esClusterNamePresent" />
@@ -38,6 +38,7 @@
 	
 	<bean id="realSharedIndexUpdatePluginForBookmarks" lazy-init="true" parent="realSharedIndexUpdatePlugin">
 		<property name="dbLogic" ref="luceneBookmarkLogic"/>
+		<property name="resourceConverter" ref="luceneBookmarkConverter"/>
 	</bean>
 	<bean id="sharedIndexUpdatePluginForBookmarks" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
 		<property name="condition" ref="esClusterNamePresent" />
@@ -46,14 +47,22 @@
 	
 	<bean id="realSharedIndexUpdatePluginForGoldStandardPublications" lazy-init="true" parent="realSharedIndexUpdatePlugin">
 		<property name="dbLogic" ref="luceneGoldStandardPublicationLogic"/>
+		<property name="resourceConverter" ref="luceneGoldStandardPublicationConverter"/>
 	</bean>
 	<bean id="sharedIndexUpdatePluginForGoldStandardPublications" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
 		<property name="condition" ref="esClusterNamePresent" />
 		<lookup-method name="produceSucessBean" bean="realSharedIndexUpdatePluginForGoldStandardPublications" />
 	</bean>
 	
+	<util:map id="allSharedIndexUpdatePlugins" key-type="java.lang.Class">
+		<entry key-ref="luceneBookmarkClass" value-ref="sharedIndexUpdatePluginForBookmarks" />
+		<entry key-ref="lucenePublicationClass" value-ref="sharedIndexUpdatePluginForPublications" />
+		<entry key-ref="luceneGoldStandardPublicationClass" value-ref="sharedIndexUpdatePluginForGoldStandardPublications" />
+	</util:map>
+	
 	<bean id="realEsPublicationSearch" lazy-init="true" parent="abstractEsResourceSearch">
 		<property name="resourceType" value="BibTex"/>
+		<property name="systemUrl" value="${project.home}"/>
 		<property name="resourceConverter" ref="lucenePublicationConverter" />
 	</bean>
 	<bean id="esPublicationSearch" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
@@ -83,15 +92,6 @@
 		<property name="value" value="${es.cluster.name}" />
 	</bean>
 
-	
-
-
-	<!-- <bean id= "esClient" class= "org.bibsonomy.es.ESNodeClient"/> -->
-
-	<bean id="esClient" class="org.bibsonomy.es.ESTransportClient" lazy-init="true" init-method="init">
-		<property name="esAddresses" value="${es.address}"/>
-		<property name="esClusterName" value="${es.cluster.name}"/>
-	</bean>
 
 	<bean id="abstractEsResourceSearch" class="org.bibsonomy.es.EsResourceSearch" abstract="true">
 		<property name="esClient" ref="esClient"/>

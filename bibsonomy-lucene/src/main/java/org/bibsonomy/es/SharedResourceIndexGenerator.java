@@ -27,7 +27,6 @@
 package org.bibsonomy.es;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,6 +38,9 @@ import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.util.generator.AbstractIndexGenerator;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.GroupUtils;
+import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
+import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
+import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
 import org.elasticsearch.action.admin.indices.flush.FlushRequest;
 
 /**
@@ -81,6 +83,17 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	 */
 	@Override
 	public void createEmptyIndex() throws IOException {
+		// check if the index already exists if not, it creates empty index
+		final boolean indexExist = this.esClient.getClient().admin().indices().exists(new IndicesExistsRequest(ESConstants.INDEX_NAME)).actionGet().isExists();
+		if (!indexExist) {
+			log.info("index not existing - generating a new one");
+			final CreateIndexResponse createIndex = this.esClient.getClient().admin().indices().create(new CreateIndexRequest(ESConstants.INDEX_NAME)).actionGet();
+			if (!createIndex.isAcknowledged()) {
+				log.error("Error in creating Index");
+				return;
+			}
+		}
+		
 		log.info("Start writing data to shared index");
 		
 		//Add mapping here depending on the resource type which is here indexType

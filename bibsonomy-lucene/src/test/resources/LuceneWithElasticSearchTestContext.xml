@@ -5,8 +5,18 @@
 						http://www.springframework.org/schema/beans/spring-beans.xsd">
 						
 	<bean id="propertyConfigurerLucene" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="locations" value="classpath:lucene-test.properties" />
+		<property name="locations">
+			<list>
+				<value>classpath:lucene-test.properties</value>
+				<value>classpath:elasticsearch-additional-test.properties</value>
+			</list>
+		</property>
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
+	</bean>
+	
+	<bean id="esClient" class="org.bibsonomy.es.ESTestClient" lazy-init="true" init-method="init">
+		<property name="luceneResourceManagers" ref="allLuceneResourceManagers" />
+		<property name="sharedIndexUpdatePlugins" ref="allSharedIndexUpdatePlugins"/>
 	</bean>
 	
 	<!-- TODO: move to bibsonomy-lucene-context as soon as we are not using jndi -->

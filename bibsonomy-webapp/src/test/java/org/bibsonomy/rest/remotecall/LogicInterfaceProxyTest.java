@@ -1384,22 +1384,12 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(java.lang.String, java.lang.String)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(java.lang.String)
 	 */
 	@Override
-	public List<PersonName> getPersonSuggestion(String lastName,
-			String firstName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(org.bibsonomy.model.PersonName)
-	 */
-	@Override
-	public List<PersonName> getPersonSuggestion(PersonName personName) {
+	public List<ResourcePersonRelation> getPersonSuggestion(String queryString) {
 		// TODO Auto-generated method stub
 		return null;
 	}

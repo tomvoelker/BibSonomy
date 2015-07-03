@@ -74,32 +74,16 @@ public class PersonPageController extends SingleResourceListController implement
 	 */
 	@SuppressWarnings("unchecked")
 	private View searchAction(PersonPageCommand command) {
-		List<PersonName> personNames;
-			List<PersonName> personQuery = null;
-			try {
-				personQuery = PersonNameUtils.discoverPersonNames(command.getFormSelectedName());
-			} catch (PersonListParserException e) {
-				// ok
-			}
-			if (!CollectionUtils.isEmpty(personQuery)) {
-				personNames = this.logic.getPersonSuggestion(personQuery.get(0));
-				String firstName = personQuery.get(0).getFirstName();
-				personQuery.get(0).setFirstName(personQuery.get(0).getLastName());
-				personQuery.get(0).setLastName(firstName);
-				personNames.addAll(this.logic.getPersonSuggestion(personQuery.get(0)));
-			} else {
-				personNames = this.logic.getPersonSuggestion(command.getFormSelectedName(), null);
-			}
-		
+		final List<ResourcePersonRelation> suggestions = this.logic.getPersonSuggestion(command.getFormSelectedName());
 		
 		JSONArray array = new JSONArray();
-		for(PersonName personName : personNames) {
+		for (ResourcePersonRelation rel : suggestions) {
 			JSONObject jsonPersonName = new JSONObject();
-			jsonPersonName.put("personId", personName.getPersonId());
-			jsonPersonName.put("personNameId", personName.getPersonChangeId());
-			jsonPersonName.put("personName", BibTexUtils.cleanBibTex(personName.toString()));
+			jsonPersonName.put("personId", rel.getPerson().getPersonId());
+			//jsonPersonName.put("personNameId", personName.getPersonChangeId());
+			jsonPersonName.put("personName", BibTexUtils.cleanBibTex(rel.getPerson().getMainName().toString()));
 			// FIXME: this is only a quick hack and must be replaced!
-			jsonPersonName.put("extendedPersonName", BibTexUtils.cleanBibTex(getExtendedPersonName(personName)));
+			jsonPersonName.put("extendedPersonName", BibTexUtils.cleanBibTex(getExtendedPersonName(rel)));
 			
 			array.add(jsonPersonName);
 		}
@@ -113,10 +97,8 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @return
 	 */
 	private String getExtendedPersonName(PersonName personName) {
-		final StringBuilder extendedNameBuilder = new StringBuilder(personName.getLastName());
-		if (present(personName.getFirstName())) {
-			extendedNameBuilder.append(", ").append(personName.getFirstName());
-		}
+		final StringBuilder extendedNameBuilder = new StringBuilder();
+		appendPersonName(personName, extendedNameBuilder);
 		final Person person = personName.getPerson();
 		if (present(person) && present(person.getAcademicDegree())) {
 			extendedNameBuilder.append(", ").append(person.getAcademicDegree());
@@ -139,22 +121,48 @@ public class PersonPageController extends SingleResourceListController implement
 			res = resourcePersonRelation.getPost().getResource();
 		}
 		if (present(res)) {
-			String entryType = res.getEntrytype();
-			if (entryType.toLowerCase().endsWith("thesis")) {
-				if (present(res.getSchool())) {
-					extendedNameBuilder.append(", ").append(res.getSchool());
-				}
-			}
-			if (present(res.getYear())) {
-				extendedNameBuilder.append(", ").append(res.getYear());
-			}
-			if (present(res.getTitle())) {
-				extendedNameBuilder.append(", \"").append(res.getTitle()).append('"');
-			}
+			appendDisambiguatingBibTexInfo(extendedNameBuilder, res);
 		}
 		return extendedNameBuilder.toString();
 		
 		// Nachname, Vorname, Akad. Grad, sowie Ort, Jahr und Titel 
+	}
+
+	private String getExtendedPersonName(ResourcePersonRelation rel) {
+		final Person person = rel.getPerson();
+		final PersonName personName = person.getMainName();
+		final StringBuilder extendedNameBuilder = new StringBuilder();
+		appendPersonName(personName, extendedNameBuilder);
+		if (present(person) && present(person.getAcademicDegree())) {
+			extendedNameBuilder.append(", ").append(person.getAcademicDegree());
+		}
+		final BibTex res = rel.getPost().getResource();
+		if (present(res)) {
+			appendDisambiguatingBibTexInfo(extendedNameBuilder, res);
+		}
+		return extendedNameBuilder.toString();
+	}
+	
+	private void appendPersonName(PersonName personName, final StringBuilder extendedNameBuilder) {
+		extendedNameBuilder.append(personName.getLastName());
+		if (present(personName.getFirstName())) {
+			extendedNameBuilder.append(", ").append(personName.getFirstName());
+		}
+	}
+
+	private void appendDisambiguatingBibTexInfo(final StringBuilder extendedNameBuilder, BibTex res) {
+		String entryType = res.getEntrytype();
+		if (entryType.toLowerCase().endsWith("thesis")) {
+			if (present(res.getSchool())) {
+				extendedNameBuilder.append(", ").append(res.getSchool());
+			}
+		}
+		if (present(res.getYear())) {
+			extendedNameBuilder.append(", ").append(res.getYear());
+		}
+		if (present(res.getTitle())) {
+			extendedNameBuilder.append(", \"").append(res.getTitle()).append('"');
+		}
 	}
 
 	@SuppressWarnings("static-method")

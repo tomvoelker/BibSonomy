@@ -3197,23 +3197,8 @@ public class DBLogic implements LogicInterface {
 
 
 	@Override
-	public List<PersonName> getPersonSuggestion(String lastName, String firstName) {
-		DBSession session = this.openSession();
-		try {
-			return this.personDBManager.findPersonNames(lastName, firstName, session);
-		} finally {
-			session.close();
-		}
-	}
-	
-	@Override
-	public List<PersonName> getPersonSuggestion(PersonName personName) {
-		DBSession session = this.openSession();
-		try {
-			return this.personDBManager.findPersonNames(personName.getLastName(), personName.getFirstName(), session);
-		} finally {
-			session.close();
-		}
+	public List<ResourcePersonRelation> getPersonSuggestion(String queryString) {
+		return this.personDBManager.getPersonSuggestion(queryString);
 	}
 	
 	@Override
@@ -3291,10 +3276,16 @@ public class DBLogic implements LogicInterface {
 			
 			if (tempPerson != null) {
 				if (counter < 10) {
-					tempPersonId = newPersonId + "00" + counter;
+					tempPersonId = newPersonId + "00000" + counter;
 				} else if (counter < 100) {
-					tempPersonId = newPersonId + "0" + counter;
+					tempPersonId = newPersonId + "0000" + counter;
 				} else if(counter < 1000) {
+					tempPersonId = newPersonId + "000" + counter;
+				} else if(counter < 10000) {
+					tempPersonId = newPersonId + "00" + counter;
+				} else if(counter < 100000) {
+					tempPersonId = newPersonId + "0" + counter;
+				} else if(counter < 1000000) {
 					tempPersonId = newPersonId + "" + counter;
 				} else {
 					throw new RuntimeException("Too many person id occurences");

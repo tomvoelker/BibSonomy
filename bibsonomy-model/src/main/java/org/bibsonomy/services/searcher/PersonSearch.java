@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Lucene - Fulltext search facility of BibSonomy
+ * BibSonomy-Model - Java- and JAXB-Model.
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -24,30 +24,28 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.lucene.index;
+package org.bibsonomy.services.searcher;
+
+import java.util.List;
+
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.ResourcePersonRelation;
 
 /**
+ * Interface for person search operations
  * 
- * @author fmi
+ * @author jil
  */
-public abstract class LuceneFieldNames {
+public interface PersonSearch {
 
-	// FIXME: configure these fieldnames via spring
-	public static final String MERGED_FIELDS  = "mergedfields";
-	public static final String PRIVATE_FIELDS = "privatefields";
-	public static final String INTRAHASH     = "intrahash";
-	public static final String INTERHASH     = "interhash";
-	public static final String GROUP         = "group";
-	public static final String AUTHOR        = "author";
-	public static final String USER          = "user_name";
-	public static final String DATE          = "date";
-	public static final String YEAR          = "year";
-	public static final String TAS           = "tas";	
-	public static final String ADDRESS       = "address";
-	public static final String TITLE         = "title";	
-	public static final String LAST_TAS_ID   = "last_tas_id";
-	public static final String LAST_LOG_DATE = "last_log_date";
-	public static final String USER_NAME     = "user_name";
-	public static final String CONTENT_ID    = "content_id";
-	public static final String SCHOOL        = "resource.school";
+	/**
+	 * Allows autocompletion for persons
+	 * 
+	 * @param queryString some mixture of parts of a name, parts of the title or the university name
+	 * @return a list of {@link ResourcePersonRelation} objects with initialized {@link Person} references. Each {@link Person} object is further initialized with a main name.
+	 */
+	public List<ResourcePersonRelation> getPersonSuggestion(final String queryString);
+	
 }
