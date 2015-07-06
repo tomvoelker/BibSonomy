@@ -30,11 +30,13 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.store.LockObtainFailedException;
+import org.bibsonomy.es.ESClient;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.model.Group;
@@ -65,7 +67,21 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 
 	/** set to true if the generator is currently generating an index */
 	protected boolean isRunning;
+	/**
+	 * the elasticsearch client
+	 */
+	protected ESClient esClient;
+	
+	private boolean generateTempIndex = false;
 
+	/**
+	 * the resource type
+	 */
+	protected String resourceType;
+
+	/**
+	 * 
+	 */
 	protected int numberOfPosts;
 	private int numberOfPostsImported;
 	private boolean running = false;
@@ -89,6 +105,7 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 	 * 
 	 * Database as well as index files are configured in the lucene.properties
 	 * file.
+	 * @throws Exception 
 	 * 
 	 * @throws CorruptIndexException
 	 * @throws IOException
@@ -102,20 +119,46 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 		}
 
 		this.isRunning = true;
-		try {
-			this.createEmptyIndex();
-			this.createIndexFromDatabase();
-			this.activateIndex();
-		} finally {
-			this.isRunning = false;
+		boolean lockAcquired = false;
+		boolean multipleTry = false;
+		while(!lockAcquired){
+			try {  
+				if (esClient!=null && !generateTempIndex) {
+					lockAcquired = this.esClient.getWriteLock(this.resourceType).tryLock(1, TimeUnit.MINUTES);
+				}else{
+					lockAcquired=true;
+				}
+				if (lockAcquired) {
+					this.createEmptyIndex();
+					this.createIndexFromDatabase();
+					this.activateIndex();
+				}
+			} finally {
+				this.isRunning = false;
+				if(lockAcquired && esClient!=null && !generateTempIndex){
+					this.esClient.getWriteLock(this.resourceType).unlock();
+					if(multipleTry){
+						log.info("Lock finally acquired");
+						multipleTry =  false;
+					}
+				}
+				if(!lockAcquired){
+					multipleTry = true;
+					log.info("waiting to acquire lock");
+				}
+			}
 		}
 	}
 
+	/**
+	 * 
+	 */
 	protected abstract void activateIndex();
 
 
 	/**
 	 * Create empty index. Attributes must already be configured (via init()).
+	 * @throws Exception 
 	 * 
 	 * @throws CorruptIndexException
 	 * @throws LockObtainFailedException
@@ -125,10 +168,12 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 
 	/**
 	 * creates index of resource entries
+	 * @throws Exception 
 	 * 
 	 * @throws CorruptIndexException
 	 * @throws IOException
 	 */
+	@SuppressWarnings("boxing")
 	protected void createIndexFromDatabase() throws Exception {
 		log.info("Filling index with database post entries.");
 
@@ -193,6 +238,9 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 	 */
 	protected abstract void writeMetaInfo(Integer lastTasId, Date lastLogDate) throws IOException;
 
+	/**
+	 * @param post
+	 */
 	protected abstract void addPostToIndex(final LucenePost<R> post);
 	
 	/**
@@ -270,7 +318,24 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 		this.callback = callback;
 	}
 
+	/**
+	 * @return returns the running state
+	 */
 	public boolean isRunning() {
 		return this.running;
+	}
+	
+	/**
+	 * @return the generateTempIndex
+	 */
+	public boolean isGenerateTempIndex() {
+		return this.generateTempIndex;
+	}
+
+	/**
+	 * @param generateTempIndex the generateTempIndex to set
+	 */
+	public void setGenerateTempIndex(boolean generateTempIndex) {
+		this.generateTempIndex = generateTempIndex;
 	}
 }

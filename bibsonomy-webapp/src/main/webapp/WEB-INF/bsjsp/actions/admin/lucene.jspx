@@ -234,7 +234,7 @@
 				</c:if>
 				
 				<c:choose>				
-					<c:when test="${fn:length(command.esIndicesInfosBibtex) == 0 or fn:length(command.esIndicesInfosBookmark) == 0 or fn:length(command.esIndicesInfosGoldStandard) == 0}">
+					<c:when test="${fn:length(command.esIndicesInfosBibtex) == 0 and fn:length(command.esIndicesInfosBookmark) == 0 and fn:length(command.esIndicesInfosGoldStandard) == 0}">
 						<p>
 							<a onclick="javascript:generateEsIndex()" href="#generateIndex">
 								<span style="width: 200px; height: 10px; border: 1px; color: grey;">generate</span>
@@ -249,38 +249,46 @@
 							</a>
 						</h3>
 						<div class="indexProperties">
-							<table>
-								<tr>
-									<th>System Path</th>
-									<th>Newest Date</th>
-									<th>last tas id</th>
-								</tr>
-								<c:forEach var="resourceIndexInfo" items="${command.esIndicesInfosBibtex}">
-									<tr>
-										<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
-											<td>"${resIndex.basePath}"</td>
-											<c:if test="${resIndex.id != index.generator.generatingIndexId}">
-												<td><fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${resIndex.indexStatistics.newestRecordDate}" /></td>
-											</c:if>
-											<td><c:out value="${resIndex.indexStatistics.lastTasId}" /></td>
-										</c:forEach>
-									</tr>
-									<!--  TODO
-									<tr>
-										<td>containing docs</td>
-										<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
-											<td>${resIndex.indexStatistics.numDocs}</td>
-										</c:forEach>
-									</tr>
-									<tr>
-										<td>deleted docs</td>
-										<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
-											<td>${resIndex.indexStatistics.numDeletedDocs}</td>
-										</c:forEach>
-									</tr>
-									-->
-								</c:forEach>									
-							</table>
+							<c:set var= "noIdexMessage" value="${command.esIndicesInfosGoldStandard.get(0).luceneResoruceIndicesInfos.get(0).errorMassge }"/>
+							<c:choose>
+								<c:when test="${noIdexMessage != null }">
+									<p>${noIdexMessage}</p>
+								</c:when>
+								<c:otherwise>
+									<table>
+										<tr>
+											<th>System Path</th>
+											<th>Newest Date</th>
+											<th>last tas id</th>
+										</tr>
+										<c:forEach var="resourceIndexInfo" items="${command.esIndicesInfosBibtex}">
+											<tr>
+												<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
+													<td>"${resIndex.basePath}"</td>
+													<c:if test="${resIndex.id != index.generator.generatingIndexId}">
+														<td><fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${resIndex.indexStatistics.newestRecordDate}" /></td>
+													</c:if>
+													<td><c:out value="${resIndex.indexStatistics.lastTasId}" /></td>
+												</c:forEach>
+											</tr>
+											<!--  TODO
+											<tr>
+												<td>containing docs</td>
+												<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
+													<td>${resIndex.indexStatistics.numDocs}</td>
+												</c:forEach>
+											</tr>
+											<tr>
+												<td>deleted docs</td>
+												<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
+													<td>${resIndex.indexStatistics.numDeletedDocs}</td>
+												</c:forEach>
+											</tr>
+											-->
+										</c:forEach>									
+									</table>
+								</c:otherwise>	
+							</c:choose>
 							<c:set var="generatingIndex" value="${resourceIndexInfo.generatingIndex}" />
 							<c:if test="${generatingIndex != null}">
 								<p>Currently generating:</p>
@@ -301,24 +309,32 @@
 							</a>
 						</h3>
 						<div class="indexProperties">
-							<table>
-								<tr>
-									<th>System Path</th>
-									<th>Newest Date</th>
-									<th>last tas id</th>
-								</tr>
-								<c:forEach var="resourceIndexInfo" items="${command.esIndicesInfosBookmark}">
-									<tr>
-										<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
-											<td>"${resIndex.basePath}"</td>
-											<c:if test="${resIndex.id != index.generator.generatingIndexId}">
-												<td><fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${resIndex.indexStatistics.newestRecordDate}" /></td>
-											</c:if>
-											<td><c:out value="${resIndex.indexStatistics.lastTasId}" /></td>
-										</c:forEach>
-									</tr>
-								</c:forEach>									
-							</table>						
+							<c:set var= "noIdexMessage" value="${command.esIndicesInfosGoldStandard.get(0).luceneResoruceIndicesInfos.get(0).errorMassge }"/>
+							<c:choose>
+								<c:when test="${noIdexMessage != null }">
+									<p>${noIdexMessage}</p>
+								</c:when>
+								<c:otherwise>
+									<table>
+										<tr>
+											<th>System Path</th>
+											<th>Newest Date</th>
+											<th>last tas id</th>
+										</tr>
+										<c:forEach var="resourceIndexInfo" items="${command.esIndicesInfosBookmark}">
+											<tr>
+												<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
+													<td>"${resIndex.basePath}"</td>
+													<c:if test="${resIndex.id != index.generator.generatingIndexId}">
+														<td><fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${resIndex.indexStatistics.newestRecordDate}" /></td>
+													</c:if>
+													<td><c:out value="${resIndex.indexStatistics.lastTasId}" /></td>
+												</c:forEach>
+											</tr>
+										</c:forEach>									
+									</table>
+								</c:otherwise>
+							</c:choose>						
 							<c:set var="generatingIndex" value="${resourceIndexInfo.generatingIndex}" />
 							<c:if test="${generatingIndex != null}">
 								<p>Currently generating:</p>
@@ -333,30 +349,39 @@
 							</c:if>
 						</div>
 						<!-- GoldStandardPublication elasticsearch Index-->
+						
 						<h3><c:out value="${command.esIndicesInfosGoldStandard.get(0).resourceName} Index " /> 
-							<a onclick="javascript:generateOneEsIndex('${command.esIndicesInfosGoldStandard.get(0).resourceName}', )" href="#generateIndex">
+							<a onclick="javascript:generateOneEsIndex('${command.esIndicesInfosGoldStandard.get(0).resourceName}')" href="#generateIndex">
 								<span style="width: 200px; height: 10px; border: 1px; color: grey;">re-generate</span>
 							</a>
 						</h3>
 						<div class="indexProperties">
-							<table>
-								<tr>
-									<th>System Path</th>
-									<th>Newest Date</th>
-									<th>last tas id</th>
-								</tr>
-								<c:forEach var="resourceIndexInfo" items="${command.esIndicesInfosGoldStandard}">
-									<tr>
-										<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
-											<td>"${resIndex.basePath}"</td>
-											<c:if test="${resIndex.id != index.generator.generatingIndexId}">
-												<td><fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${resIndex.indexStatistics.newestRecordDate}" /></td>
-											</c:if>
-											<td><c:out value="${resIndex.indexStatistics.lastTasId}" /></td>
-										</c:forEach>
-									</tr>
-								</c:forEach>									
-							</table>			
+							<c:set var= "noIdexMessage" value="${command.esIndicesInfosGoldStandard.get(0).luceneResoruceIndicesInfos.get(0).errorMassge }"/>
+							<c:choose>
+								<c:when test="${noIdexMessage != null }">
+									<p>${noIdexMessage}</p>
+								</c:when>
+								<c:otherwise>
+									<table>
+										<tr>
+											<th>System Path</th>
+											<th>Newest Date</th>
+											<th>last tas id</th>
+										</tr>
+										<c:forEach var="resourceIndexInfo" items="${command.esIndicesInfosGoldStandard}">
+											<tr>
+												<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
+													<td>"${resIndex.basePath}"</td>
+													<c:if test="${resIndex.id != index.generator.generatingIndexId}">
+														<td><fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${resIndex.indexStatistics.newestRecordDate}" /></td>
+													</c:if>
+													<td><c:out value="${resIndex.indexStatistics.lastTasId}" /></td>
+												</c:forEach>
+											</tr>
+										</c:forEach>									
+									</table>	
+								</c:otherwise>						
+							</c:choose>		
 							<c:set var="generatingIndex" value="${resourceIndexInfo.generatingIndex}" />
 							<c:if test="${generatingIndex != null}">
 								<p>Currently generating:</p>
@@ -369,7 +394,7 @@
 									<span>${generatingIndex.indexGenerationProgress} % done.</span>
 								</div>
 							</c:if>
-						</div>
+						</div>						
 					</c:otherwise>
 				</c:choose>	
 			</c:if>

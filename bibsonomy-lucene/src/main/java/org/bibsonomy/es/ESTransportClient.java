@@ -26,8 +26,15 @@
  */
 package org.bibsonomy.es;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
@@ -43,6 +50,15 @@ import org.elasticsearch.node.Node;
 public class ESTransportClient implements ESClient {
 	private final Log log = LogFactory.getLog(ESTransportClient.class);
 	private Client client;
+	private ReadWriteLock rwLockBibTex;
+	private ReadWriteLock rwLockBookmark;
+	private ReadWriteLock rwLockGoldStandard;
+	private Lock readLockBibTex;
+	private Lock writeLockBibTex;
+	private Lock readLockBookmark;
+	private Lock writeLockBookmark;
+	private Lock readLockGoldStandard;
+	private Lock writeLockGoldStandard;
 	/**
 	 * Elasticsearch IP and port values, if we have multiple addresses, they
 	 * will be separated by "," and port and ip are separated by ":"
@@ -57,6 +73,7 @@ public class ESTransportClient implements ESClient {
 	/**
 	 * @return the esAddresses
 	 */
+	@Override
 	public String getEsAddresses() {
 		return this.esAddresses;
 	}
@@ -71,6 +88,7 @@ public class ESTransportClient implements ESClient {
 	/**
 	 * @return the esClusterName
 	 */
+	@Override
 	public String getEsClusterName() {
 		return this.esClusterName;
 	}
@@ -82,6 +100,7 @@ public class ESTransportClient implements ESClient {
 		this.esClusterName = esClusterName;
 	}
 
+
 	/**
 	 * initializing the client.
 	 * 
@@ -90,6 +109,16 @@ public class ESTransportClient implements ESClient {
 		if (this.client == null) {
 			this.client = this.initiateTransportClient();
 		}
+		//TODO another lock for temporary index
+		rwLockBibTex =  new ReentrantReadWriteLock();
+		readLockBibTex = rwLockBibTex.readLock();
+		writeLockBibTex =  rwLockBibTex.writeLock();
+		rwLockBookmark =  new ReentrantReadWriteLock();
+		readLockBookmark = rwLockBookmark.readLock();
+		writeLockBookmark =  rwLockBookmark.writeLock();
+		rwLockGoldStandard =  new ReentrantReadWriteLock();
+		readLockGoldStandard = rwLockGoldStandard.readLock();
+		writeLockGoldStandard =  rwLockGoldStandard.writeLock();
 	}
 
 	/**
@@ -159,6 +188,40 @@ public class ESTransportClient implements ESClient {
 	public void shutdown() {
 		// TODO Auto-generated method stub
 
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.ESClient#getReadLock(java.lang.String)
+	 */
+	@Override
+	public Lock getReadLock(String resourceType) {
+		if(resourceType.equalsIgnoreCase(BibTex.class.getSimpleName())){
+			return this.readLockBibTex;
+		}
+		if(resourceType.equalsIgnoreCase(Bookmark.class.getSimpleName())){
+			return this.readLockBookmark;
+		}
+		if(resourceType.equalsIgnoreCase(GoldStandardPublication.class.getSimpleName())){
+			return this.readLockGoldStandard;
+		}
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.ESClient#getWriteLock(java.lang.String)
+	 */
+	@Override
+	public Lock getWriteLock(String resourceType) {
+		if(resourceType.equalsIgnoreCase(BibTex.class.getSimpleName())){
+			return this.writeLockBibTex;
+		}
+		if(resourceType.equalsIgnoreCase(Bookmark.class.getSimpleName())){
+			return this.writeLockBookmark;
+		}
+		if(resourceType.equalsIgnoreCase(GoldStandardPublication.class.getSimpleName())){
+			return this.writeLockGoldStandard;
+		}
+		return null;
 	}
 
 }

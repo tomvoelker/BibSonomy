@@ -26,6 +26,11 @@
  */
 package org.bibsonomy.lucene.param;
 
+/**
+ * TODO: add documentation to this class
+ *
+ * @author 
+ */
 public class LuceneIndexInfo {
 	
 	/**
@@ -63,6 +68,9 @@ public class LuceneIndexInfo {
 	private boolean correct;
 	
 
+	/**
+	 * @return 
+	 */
 	public boolean isCorrect() {
 		return correct;
 	}
@@ -78,6 +86,7 @@ public class LuceneIndexInfo {
 	private int indexGenerationProgress;
 	private boolean isEnabled;
 	private boolean isActive;
+	private String errorMassge;
 	
 
 	/**
@@ -162,6 +171,20 @@ public class LuceneIndexInfo {
 	 */
 	public boolean isGeneratingIndex() {
 		return generatingIndex;
+	}
+
+	/**
+	 * @return the errorMassge
+	 */
+	public String getErrorMassge() {
+		return this.errorMassge;
+	}
+
+	/**
+	 * @param errorMassge the errorMassge to set
+	 */
+	public void setErrorMassge(String errorMassge) {
+		this.errorMassge = errorMassge;
 	}
 	
 

@@ -35,6 +35,9 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.es.SharedIndexUpdatePlugin;
 import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
 import org.bibsonomy.lucene.param.LuceneIndexInfo;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.admin.AdminLuceneViewCommand;
@@ -138,11 +141,11 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 						LuceneResourceIndicesInfoContainer infoCon = new LuceneResourceIndicesInfoContainer();
 						infoCon.setResourceName(manager.getResourceName() + " elasticsearch");
 						infoCon.getLuceneResoruceIndicesInfos().add(info);
-						if(manager.getResourceName().equalsIgnoreCase("Bibtex")){
+						if(manager.getResourceName().equalsIgnoreCase(BibTex.class.getSimpleName())){
 							command.getEsIndicesInfosBibtex().add(infoCon);
-						}else if(manager.getResourceName().equalsIgnoreCase("Bookmark")){
+						}else if(manager.getResourceName().equalsIgnoreCase(Bookmark.class.getSimpleName())){
 							command.getEsIndicesInfosBookmark().add(infoCon);
-						}else if(manager.getResourceName().equalsIgnoreCase("GoldStandardPublication")){
+						}else if(manager.getResourceName().equalsIgnoreCase(GoldStandardPublication.class.getSimpleName())){
 							command.getEsIndicesInfosGoldStandard().add(infoCon);
 						}
 					}
