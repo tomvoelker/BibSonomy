@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -121,45 +122,63 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder{
 	public List<Tag> getTags(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexkey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
 		final BoolQueryBuilder query= this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags);
 		final Map<Tag, Integer> tagCounter = new HashMap<Tag, Integer>();
+		boolean lockAcquired = false;
 		try {  
-			SearchRequestBuilder searchRequestBuilder = esClient.getClient().prepareSearch(ESConstants.ACTIVE_INDEX_ID);
-			searchRequestBuilder.setTypes(resourceType);
-			searchRequestBuilder.setSearchType(SearchType.DEFAULT);
-			searchRequestBuilder.setQuery(query);
-			searchRequestBuilder.addSort(LuceneFieldNames.DATE, SortOrder.DESC);
-			searchRequestBuilder.setFrom(offset).setSize(limit).setExplain(true);
-			final SearchResponse response = searchRequestBuilder.execute().actionGet();
-
-			if (response != null) {
-				SearchHits hits = response.getHits();				
-				log.info("Current Search results for '" + searchTerms + "': "
-						+ response.getHits().getTotalHits());
-				for (int i = 0; i < Math.min(limit, hits.getTotalHits() - offset); ++i) {
-					SearchHit hit = hits.getAt(i);
-					Map<String, Object> result = hit.getSource();
-					final Post<R> post = this.resourceConverter.writePost(result);
-					// set tag count
-					if (present(post.getTags())) {
-						for (final Tag tag : post.getTags()) {
-							/*
-							 * we remove the requested tags because we assume
-							 * that related tags are requested
-							 */
-							if (present(tagIndex) && tagIndex.contains(tag.getName())) {
-								continue;
+			lockAcquired = this.esClient.getReadLock(this.resourceType).tryLock();
+			if (lockAcquired) {
+				SearchRequestBuilder searchRequestBuilder = esClient
+						.getClient().prepareSearch(
+								ESConstants.getGlobalAliasForResource(resourceType, true));
+				searchRequestBuilder.setTypes(resourceType);
+				searchRequestBuilder.setSearchType(SearchType.DEFAULT);
+				searchRequestBuilder.setQuery(query);
+				searchRequestBuilder.addSort(LuceneFieldNames.DATE,
+						SortOrder.DESC);
+				searchRequestBuilder.setFrom(offset).setSize(limit)
+						.setExplain(true);
+				final SearchResponse response = searchRequestBuilder.execute()
+						.actionGet();
+				if (response != null) {
+					SearchHits hits = response.getHits();
+					log.info("Current Search results for '" + searchTerms
+							+ "': " + response.getHits().getTotalHits());
+					for (int i = 0; i < Math.min(limit, hits.getTotalHits()
+							- offset); ++i) {
+						SearchHit hit = hits.getAt(i);
+						Map<String, Object> result = hit.getSource();
+						final Post<R> post = this.resourceConverter
+								.writePost(result);
+						// set tag count
+						if (present(post.getTags())) {
+							for (final Tag tag : post.getTags()) {
+								/*
+								 * we remove the requested tags because we assume
+								 * that related tags are requested
+								 */
+								if (present(tagIndex)
+										&& tagIndex.contains(tag.getName())) {
+									continue;
+								}
+								Integer oldCnt = tagCounter.get(tag);
+								if (!present(oldCnt)) {
+									oldCnt = 1;
+								} else {
+									oldCnt += 1;
+								}
+								tagCounter.put(tag, oldCnt);
 							}
-							Integer oldCnt = tagCounter.get(tag);
-							if (!present(oldCnt)) {
-								oldCnt = 1;
-							} else {
-								oldCnt += 1;
-							}
-							tagCounter.put(tag, oldCnt);
 						}
-					}				}
+					}
+				}
 			}
 		} catch (IndexMissingException e) {
 			log.error("IndexMissingException: " + e);
+		}finally{
+			if(lockAcquired){
+				this.esClient.getReadLock(this.resourceType).unlock();
+			}else{
+				//TODO warning
+			}
 		}
 		
 		
@@ -202,32 +221,50 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder{
 	 */
 	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) throws CorruptIndexException, IOException {
 		final ResultList<Post<R>> postList = new ResultList<Post<R>>();
+		boolean lockAcquired = false;
 		try {  
-			final BoolQueryBuilder query = this.buildQuery(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexKey, tagIndex, year, firstYear, lastYear, negatedTags);
-			final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(ESConstants.ACTIVE_INDEX_ID);
-			searchRequestBuilder.setTypes(this.resourceType);
-			searchRequestBuilder.setSearchType(SearchType.DEFAULT);
-			searchRequestBuilder.setQuery(query);
-			if (order != Order.RANK) {
-				searchRequestBuilder.addSort(LuceneFieldNames.DATE, SortOrder.DESC);
-			}
-			searchRequestBuilder.setFrom(offset).setSize(limit).setExplain(true);
+			lockAcquired = this.esClient.getReadLock(this.resourceType).tryLock(15, TimeUnit.SECONDS);  
+			if (lockAcquired) {
+				final BoolQueryBuilder query = this.buildQuery(userName,
+						requestedUserName, requestedGroupName,
+						requestedRelationNames, allowedGroups, searchTerms,
+						titleSearchTerms, authorSearchTerms, bibtexKey,
+						tagIndex, year, firstYear, lastYear, negatedTags);
+				final SearchRequestBuilder searchRequestBuilder = this.esClient
+						.getClient().prepareSearch(
+								ESConstants.getGlobalAliasForResource(resourceType, true));
+				searchRequestBuilder.setTypes(this.resourceType);
+				searchRequestBuilder.setSearchType(SearchType.DEFAULT);
+				searchRequestBuilder.setQuery(query);
+				if (order != Order.RANK) {
+					searchRequestBuilder.addSort(LuceneFieldNames.DATE,
+							SortOrder.DESC);
+				}
+				searchRequestBuilder.setFrom(offset).setSize(limit)
+						.setExplain(true);
+				final SearchResponse response = searchRequestBuilder.execute()
+						.actionGet();
+				if (response != null) {
+					final SearchHits hits = response.getHits();
+					postList.setTotalCount((int) hits.getTotalHits());
 
-			final SearchResponse response = searchRequestBuilder.execute().actionGet();
-
-			if (response != null) {
-				final SearchHits hits = response.getHits();
-				postList.setTotalCount((int) hits.getTotalHits());
-
-				log.info("Current Search results for '" + searchTerms + "': " + response.getHits().getTotalHits());
-				for (final SearchHit hit : hits) {
-					postList.add(this.resourceConverter.writePost(hit.getSource()));
+					log.info("Current Search results for '" + searchTerms
+							+ "': " + response.getHits().getTotalHits());
+					for (final SearchHit hit : hits) {
+						postList.add(this.resourceConverter.writePost(hit
+								.getSource()));
+					}
 				}
 			}
 		} catch (final IndexMissingException e) {
 			log.error("IndexMissingException: " + e);
+		} catch (InterruptedException e) {
+			log.error("unable to get the read lock on index: "+ this.resourceType, e);
+		}finally{
+			if(lockAcquired){
+				this.esClient.getReadLock(this.resourceType).unlock();
+			}
 		}
-
 		return postList;
 	}
 

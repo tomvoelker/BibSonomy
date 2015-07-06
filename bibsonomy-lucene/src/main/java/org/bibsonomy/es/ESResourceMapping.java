@@ -44,14 +44,17 @@ public class ESResourceMapping {
 	private final String resourceType;
 	// ElasticSearch client
 	private final ESClient esClient;
+	private final String indexName;
 
 	/**
 	 * @param resourceType
 	 * @param esClient
+	 * @param indexName 
 	 */
-	public ESResourceMapping(final String resourceType, final ESClient esClient) {
+	public ESResourceMapping(final String resourceType, final ESClient esClient, String indexName) {
 		this.resourceType = resourceType;
 		this.esClient = esClient;
+		this.indexName =  indexName;
 	}
 
 	/**
@@ -72,8 +75,7 @@ public class ESResourceMapping {
 			mappingBuilder = createMappingForPublication(this.resourceType);
 		}
 
-		this.esClient.getClient().admin().indices().preparePutMapping(ESConstants.ACTIVE_INDEX_ID).setType(this.resourceType).setSource(mappingBuilder).execute().actionGet();
-
+		this.esClient.getClient().admin().indices().preparePutMapping(indexName).setType(this.resourceType).setSource(mappingBuilder).execute().actionGet();
 		// wait for the yellow (or green) status to prevent
 		// NoShardAvailableActionException later
 		this.esClient.getClient().admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();

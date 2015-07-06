@@ -52,14 +52,11 @@ import org.elasticsearch.action.admin.indices.flush.FlushRequest;
 public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIndexGenerator<R> {
 	
 	private final String indexName;
-	private String resourceType;
-	private final String systemUrlFieldName = "systemUrl";
+	private final String systemUrlFieldName = ESConstants.SYSTEMURL_FIELD;
 
 	/** converts post model objects to elasticsearch documents */
 	protected LuceneResourceConverter<R> resourceConverter;
 
-	// ElasticSearch client
-	private ESClient esClient;
 	private final String systemHome;
 	private static final Log log = LogFactory.getLog(SharedResourceIndexGenerator.class);
 	private final SharedResourceIndexUpdater<R> updater;
@@ -87,7 +84,7 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 		log.info("Start writing data to shared index");
 		
 		//Add mapping here depending on the resource type which is here indexType
-		ESResourceMapping resourceMapping = new ESResourceMapping(resourceType, esClient);
+		ESResourceMapping resourceMapping = new ESResourceMapping(resourceType, esClient, indexName);
 		resourceMapping.doMapping();
 	}
 	

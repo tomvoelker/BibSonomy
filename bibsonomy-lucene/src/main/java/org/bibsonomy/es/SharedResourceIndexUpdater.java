@@ -26,6 +26,9 @@
  */
 package org.bibsonomy.es;
 
+import static org.bibsonomy.es.ESConstants.SYSTEMURL_FIELD;
+import static org.bibsonomy.es.ESConstants.SYSTEM_INFO_INDEX_TYPE;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
@@ -33,25 +36,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.model.Resource;
-import org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse;
+import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.client.Requests;
-import org.elasticsearch.cluster.metadata.AliasMetaData;
-import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.indices.IndexMissingException;
 import org.elasticsearch.search.SearchHit;
-
-import static org.bibsonomy.es.ESConstants.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -66,9 +65,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpdater {
 	private static final Log log = LogFactory.getLog(SharedResourceIndexUpdater.class);
 
-	private final String activeIndex = ACTIVE_INDEX_ID;
+	private final String activeIndexID;
 
-	private String resourceType;
+	private final String resourceType;
+
+	private final ESIndexManager esIndexManager;
 
 	private final SystemInformation systemInfo = new SystemInformation();
 	/** The Url of the project home */
@@ -78,9 +79,8 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 
 	/** list posts to insert into index */
 	private ArrayList<Map<String, Object>> esPostsToInsert;
-	/** the node client */
-	// private final ESNodeClient esClient = new ESNodeClient();
-	/** the transport client */
+
+	/** the Elasticsearch client */
 	private ESClient esClient;
 
 	/** list containing content ids of cached delete operations */
@@ -92,13 +92,16 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 
 	/**
 	 * @param systemHome
+	 * @param resourceType
 	 */
-	public SharedResourceIndexUpdater(final String systemHome) {
+	public SharedResourceIndexUpdater(final String systemHome, String resourceType) {
 		this.systemHome = systemHome;
 		this.contentIdsToDelete = new LinkedList<Integer>();
 		this.esPostsToInsert = new ArrayList<Map<String, Object>>();
 		this.usersToFlag = new TreeSet<String>();
-
+		this.resourceType =  resourceType;
+		this.activeIndexID = ESConstants.getGlobalAliasForResource(this.resourceType, true);
+		esIndexManager = new ESIndexManager(esClient, systemHome);		
 	}
 
 	/**
@@ -141,20 +144,22 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	private List<Map<String, Object>> getAllSystemInfosInternal(final QueryBuilder query, final int size) {
 		// wait for the yellow (or green) status to prevent
 		// NoShardAvailableActionException later
+		SearchResponse response = null;
 		this.esClient.getClient().admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
 
-		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(this.activeIndex);
+		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(this.activeIndexID);
 		searchRequestBuilder.setTypes(SYSTEM_INFO_INDEX_TYPE);
 		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 		searchRequestBuilder.setQuery(query);
 		searchRequestBuilder.setFrom(0).setSize(size).setExplain(true);
 
-		final SearchResponse response = searchRequestBuilder.execute().actionGet();
-
+		response = searchRequestBuilder.execute().actionGet();
+		
 		final List<Map<String, Object>> rVal = new ArrayList<>();
-
-		for (final SearchHit hit : response.getHits()) {
-			rVal.add(hit.getSource());
+		if (response != null) {
+			for (final SearchHit hit : response.getHits()) {
+				rVal.add(hit.getSource());
+			}
 		}
 
 		return rVal;
@@ -229,45 +234,70 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 			// remove cached posts from index
 			// ----------------------------------------------------------------
 			log.debug("Performing " + this.contentIdsToDelete.size() + " delete operations");
-			if ((this.contentIdsToDelete.size() > 0) || (this.usersToFlag.size() > 0)) {
-				// remove each cached post from index
-				for (final Integer contentId : this.contentIdsToDelete) {
-					final long indexID = this.calculateIndexId(contentId);
-					this.deleteIndexForIndexId(indexID);
-					log.debug("deleted post " + contentId);
+			boolean lockAcquired = false;
+			try{
+				lockAcquired = this.esClient.getWriteLock(this.resourceType).tryLock(15, TimeUnit.SECONDS);  
+					if(lockAcquired){
+						//TODO check if any new indexes are waiting to be activated after re-generate
+						this.checkNewIndexInPipeline();
+					if ((this.contentIdsToDelete.size() > 0) || (this.usersToFlag.size() > 0)) {
+						// remove each cached post from index
+						for (final Integer contentId : this.contentIdsToDelete) {
+							final long indexID = this.calculateIndexId(contentId);
+							this.deleteIndexForIndexId(indexID);
+							log.debug("deleted post " + contentId);
+						}
+		
+						// remove spam posts from index
+						for (final String userName : this.usersToFlag) {
+							// final int cnt = purgeDocumentsForUser(userName);
+							// log.debug("Purged " + cnt + " posts for user " +
+							// userName);
+							this.deleteIndexForForUser(userName);
+							log.debug("Purged posts for user " + userName);
+						}
+					}
+		
+					// ----------------------------------------------------------------
+					// add cached posts to index
+					// ----------------------------------------------------------------
+					log.debug("Performing " + this.esPostsToInsert.size() + " insert operations");
+					if (this.esPostsToInsert.size() > 0) {
+						this.insertNewPosts(this.esPostsToInsert);
+					}
+		
+					// ----------------------------------------------------------------
+					// Update system informations
+					// ----------------------------------------------------------------
+					this.flushSystemInformation();
+		
+					// ----------------------------------------------------------------
+					// clear all cached data
+					// ----------------------------------------------------------------
+					this.esPostsToInsert.clear();
+					this.contentIdsToDelete.clear();
+					this.usersToFlag.clear();
 				}
-
-				// remove spam posts from index
-				for (final String userName : this.usersToFlag) {
-					// final int cnt = purgeDocumentsForUser(userName);
-					// log.debug("Purged " + cnt + " posts for user " +
-					// userName);
-					this.deleteIndexForForUser(userName);
-					log.debug("Purged posts for user " + userName);
+			}catch (JsonProcessingException e){
+				log.error("unable to convert the post into JSON document", e);
+			}catch (InterruptedException e) {
+				log.error("unable to get the read lock on index: "+ this.resourceType, e);
+			}finally{
+				if(lockAcquired){
+					this.esClient.getWriteLock(this.resourceType).unlock();
 				}
 			}
-
-			// ----------------------------------------------------------------
-			// add cached posts to index
-			// ----------------------------------------------------------------
-			log.debug("Performing " + this.esPostsToInsert.size() + " insert operations");
-			if (this.esPostsToInsert.size() > 0) {
-				this.insertNewPosts(this.esPostsToInsert);
-			}
-
-			// ----------------------------------------------------------------
-			// Update system informations
-			// ----------------------------------------------------------------
-			this.flushSystemInformation();
-
-			// ----------------------------------------------------------------
-			// clear all cached data
-			// ----------------------------------------------------------------
-			this.esPostsToInsert.clear();
-			this.contentIdsToDelete.clear();
-			this.usersToFlag.clear();
-
 		}
+	}
+
+	/**
+	 * checks if there are any new indexes waiting to be activated after regeneration
+	 * if true then activate the most recent as the active index and the next one as
+	 * backup index
+	 */
+	private void checkNewIndexInPipeline() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	/**
@@ -287,80 +317,42 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 		return (((long) systemHome.hashCode()) << 32l) + contentId.longValue();
 	}
 	
-	/**
-	 * switches to the backup index to active and returns 
-	 * the previously active index name for update
-	 * @param aliasName
-	 * @return returns the indexName under the aliasName
-	 */
-	private String switchToBackupIndex(String aliasName){	
-		String activeIndexName = null;
-		if(aliasName.equalsIgnoreCase(ACTIVE_INDEX_ID)){
-			activeIndexName = this.getIndexNameFromAliasName(aliasName);
-			String backupIndexName  = this.getIndexNameFromAliasName(INACTIVE_INDEX_ID);
-			IndicesAliasesResponse aliasReponse = this.esClient.getClient().admin().indices().prepareAliases()
-	                .removeAlias(activeIndexName, ACTIVE_INDEX_ID)
-	                .addAlias(activeIndexName, INACTIVE_INDEX_ID)
-	                .removeAlias(backupIndexName, INACTIVE_INDEX_ID)
-	                .addAlias(backupIndexName, ACTIVE_INDEX_ID)
-	                .execute()
-	                .actionGet();
-			if (!aliasReponse.isAcknowledged()) {
-				log.error("Error in switching to backup index");
-				return null;
-			}
-		}
-		return activeIndexName;
-	}
 	
-	private String getIndexNameFromAliasName(final String aliasName) {
-	    ImmutableOpenMap<String, AliasMetaData> indexToAliasesMap = this.esClient.getClient().admin().cluster()
-	            .state(Requests.clusterStateRequest())
-	            .actionGet()
-	            .getState()
-	            .getMetaData()
-	            .aliases().get(aliasName);
-	    if(indexToAliasesMap != null && !indexToAliasesMap.isEmpty()){
-	        return indexToAliasesMap.keys().iterator().next().value;
-	    }
-	    return null;
-	}
 	/**
 	 * updates the system information for lastLogDate, lastTasId
+	 * @throws JsonProcessingException 
 	 */
-	public void flushSystemInformation() {
+	public void flushSystemInformation() throws JsonProcessingException {
 		//first update the active index at the same time make the backup index active 
-		String indexName = this.switchToBackupIndex(ACTIVE_INDEX_ID);
+		String indexName = esIndexManager.switchToBackupIndexByAlias(activeIndexID, resourceType);
 		this.flushSystemInformation(indexName);
 		//then update the backup index
-		indexName = this.switchToBackupIndex(ACTIVE_INDEX_ID);
+		indexName = esIndexManager.switchToBackupIndexByAlias(activeIndexID, resourceType);
 		this.flushSystemInformation(indexName);
 	}
 	/**
 	 * updates the system information for lastLogDate, lastTasId
 	 * @param indexName 
+	 * @throws JsonProcessingException 
 	 */
-	public void flushSystemInformation(String indexName) {
-		if(indexName==null){
-			indexName=this.activeIndex;
+	public void flushSystemInformation(String indexName) throws JsonProcessingException {
+		if (indexName == null) {
+			indexName = esIndexManager.switchToBackupIndexByAlias(activeIndexID, resourceType);
 		}
 		final ObjectMapper mapper = new ObjectMapper();
 		String jsonDocumentForSystemInfo;
-		try {
-			jsonDocumentForSystemInfo = mapper.writeValueAsString(this.systemInfo);
-			this.esClient.getClient().prepareIndex(indexName, SYSTEM_INFO_INDEX_TYPE, this.systemHome + this.resourceType).setSource(jsonDocumentForSystemInfo).execute().actionGet();
-		} catch (final JsonProcessingException e) {
-			log.error("Failed to convert SystemInformation into a JSON", e);
-		}
+		jsonDocumentForSystemInfo = mapper.writeValueAsString(this.systemInfo);
+		this.esClient.getClient().prepareIndex(indexName, SYSTEM_INFO_INDEX_TYPE, this.systemHome + this.resourceType).setSource(jsonDocumentForSystemInfo).execute().actionGet();
+		
 	}
 	
 	@Override
 	public void insertNewPosts(final ArrayList<Map<String, Object>> esPostsToInsert2) {
 		//first update the active index at the same time make the backup index active 
-		String indexName = this.switchToBackupIndex(ACTIVE_INDEX_ID);
+		String indexName = esIndexManager.switchToBackupIndexByAlias(activeIndexID, resourceType);
 		this.insertNewPosts(esPostsToInsert2, indexName);
 		//then update the backup index
-		indexName = this.switchToBackupIndex(ACTIVE_INDEX_ID);
+		indexName = esIndexManager.switchToBackupIndexByAlias(activeIndexID, resourceType);
 		this.insertNewPosts(esPostsToInsert2, indexName);
 	}
 	/**
@@ -388,10 +380,10 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	@Override
 	public void deleteIndexForForUser(final String userName) {
 		//first update the active index at the same time make the backup index active 
-		String indexName = this.switchToBackupIndex(ACTIVE_INDEX_ID);
+		String indexName = esIndexManager.switchToBackupIndexByAlias(activeIndexID, resourceType);
 		this.deleteIndexForForUser(userName, indexName);
 		//then update the backup index
-		indexName = this.switchToBackupIndex(ACTIVE_INDEX_ID);
+		indexName = esIndexManager.switchToBackupIndexByAlias(activeIndexID, resourceType);
 		this.deleteIndexForForUser(userName, indexName);
 	}
 	/**
@@ -407,10 +399,10 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	@Override
 	public void deleteIndexForIndexId(final long indexId) {
 		//first update the active index at the same time make the backup index active 
-		String indexName = this.switchToBackupIndex(ACTIVE_INDEX_ID);
+		String indexName = esIndexManager.switchToBackupIndexByAlias(activeIndexID, resourceType);
 		this.deleteIndexForIndexId(indexId, indexName);
 		//then update the backup index
-		indexName = this.switchToBackupIndex(ACTIVE_INDEX_ID);
+		indexName = esIndexManager.switchToBackupIndexByAlias(activeIndexID, resourceType);
 		this.deleteIndexForIndexId(indexId, indexName);
 	}
 	/**
@@ -419,20 +411,13 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 */
 	public void deleteIndexForIndexId(final long indexId, String indexName) {
 		this.esClient.getClient().prepareDelete(indexName, this.resourceType, String.valueOf(indexId)).setRefresh(true).execute().actionGet();
-	}
+		}
 
 	/**
-	 * @return the iNDEX_TYPE
+	 * @return the resourceType
 	 */
 	public String getResourceType() {
 		return this.resourceType;
-	}
-
-	/**
-	 * @param iNDEX_TYPE the iNDEX_TYPE to set
-	 */
-	public void setResourceType(final String iNDEX_TYPE) {
-		this.resourceType = iNDEX_TYPE;
 	}
 
 	/**
