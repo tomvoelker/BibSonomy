@@ -137,6 +137,8 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	/** all sessions which currently use this index */
 	private final Set<LuceneSession> openSessions = new HashSet<>();
 	
+	private boolean closed = true;
+	
 	/**
 	 * constructor disabled
 	 */
@@ -192,10 +194,14 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	 * @throws IOException 
 	 */
 	public void close() throws CorruptIndexException, IOException{
-		this.closeSearcherManager();
-		this.closeIndexWriter();
-		this.closeDirectory();
-		this.disableIndex();
+		if (!closed) {
+			log.error("closing " + this);
+			closed = true;
+			this.closeSearcherManager();
+			this.closeIndexWriter();
+			this.closeDirectory();
+			this.disableIndex();
+		}
 	}
 	
 	/**
@@ -220,8 +226,13 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 		try {
 			this.indexPath = this.baseIndexPath + INDEX_PREFIX + this.resourceClass.getSimpleName() + LuceneResourceIndex.INDEX_ID_DELIMITER + this.indexId;
 			
+			if (!closed) {
+				throw new IllegalStateException("index already opened: " + this);
+			}
+			closed = false;
+			log.error("opening " + this);
 			this.indexDirectory = FSDirectory.open(new File(this.indexPath));
-			
+
 			try {
 				if (IndexWriter.isLocked(this.indexDirectory)) {
 					for (int retry = 0; retry < 3; ++retry) {

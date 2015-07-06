@@ -13,11 +13,5 @@
 		<property name="markUpSystemTagMap" ref="markUpSystemTagSet"/>
 	</bean>
 	
-	<!-- dummies for lucene index -->
-	<bean id="dummySearch" class="org.bibsonomy.testutil.DummyResourceSearch" />
-	<alias name="dummySearch" alias="luceneBookmarkSearch" />
-	<alias name="dummySearch" alias="lucenePublicationSearch" />
-	<alias name="dummySearch" alias="luceneGoldStandardPublicationSearch" />
-	
 	<bean id="reportInformationService" class="org.bibsonomy.testutil.DummyInformationService" />
 </beans>

@@ -29,6 +29,7 @@ package org.bibsonomy.lucene.index.manager;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -43,6 +44,7 @@ import java.util.Set;
 import org.apache.commons.collections.LRUMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.index.CorruptIndexException;
 import org.bibsonomy.es.IndexUpdater;
 import org.bibsonomy.es.IndexUpdaterState;
 import org.bibsonomy.es.UpdatePlugin;
@@ -903,6 +905,19 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	public IndexUpdater<R> createUpdater(String indexType) {
 		this.updatingIndex = this.updateQueue.poll();
 		return this.updatingIndex;
+	}
+
+	/**
+	 * 
+	 */
+	public void close() {
+		for (LuceneResourceIndex<R> index : getResourceIndeces()) {
+			try {
+				index.close();
+			} catch (Exception e) {
+				log.error("error closing index", e);
+			}
+		}
 	}
 
 }

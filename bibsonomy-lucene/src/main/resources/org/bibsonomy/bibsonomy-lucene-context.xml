@@ -70,6 +70,8 @@
 		<lookup-method name="produceSucessBean"  bean="realEsPublicationSearch" />
 	</bean>
 	
+	<alias name="esPublicationSearch" alias="personSearch"/>
+	
 	<bean id="realEsBookmarkSearch" lazy-init="true" parent="abstractEsResourceSearch">
 		<property name="resourceType" value="Bookmark"/>
 		<property name="resourceConverter" ref="luceneBookmarkConverter" />
