@@ -142,13 +142,14 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	 */
 	private void generate(final LuceneResourceManager<? extends Resource> manager, boolean isTempIndex) {
 		/*
-		 *	if index exists create a temp index 
+		 *	if index exists create a temporary index 
 		 */
 		final String oldBackupIndex = esIndexManager.indexExist(manager.getResourceName(), false);
 		final String oldActiveIndex = esIndexManager.indexExist(manager.getResourceName(), true);
 		boolean indexExist = (oldBackupIndex != null && oldBackupIndex != "") && (oldActiveIndex != null && oldActiveIndex != "");
 		if(isTempIndex && indexExist){
-			final String tempIndexName = esIndexManager.createIndex(manager.getResourceName());
+			//TODO check if any existing temp index, then delete them and re-create
+			final String tempIndexName = esIndexManager.createTempIndex(manager.getResourceName());
 			this.generate(manager, tempIndexName , isTempIndex);
 		}else{
 		final String backupIndexName = esIndexManager.checkNcreateIndex(manager.getResourceName(), oldBackupIndex, false);
@@ -160,7 +161,7 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void generate(final LuceneResourceManager<? extends Resource> manager, final String indexName, final boolean isTempIndex) {
-		if(!esIndexManager.switchToBackupIndex(indexName,manager.getResourceName())){
+		if(!isTempIndex && !esIndexManager.switchToBackupIndex(indexName,manager.getResourceName())){
 			log.error("Index generation failed!!");
 			return;
 		}

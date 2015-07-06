@@ -30,6 +30,7 @@ import static org.bibsonomy.es.ESConstants.SYSTEMURL_FIELD;
 import static org.bibsonomy.es.ESConstants.SYSTEM_INFO_INDEX_TYPE;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,6 +44,8 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.model.Resource;
 import org.elasticsearch.ElasticsearchException;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -238,8 +241,9 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 			try{
 				lockAcquired = this.esClient.getWriteLock(this.resourceType).tryLock(15, TimeUnit.SECONDS);  
 					if(lockAcquired){
-						//TODO check if any new indexes are waiting to be activated after re-generate
+						//check if any new indexes are waiting to be activated after re-generate
 						this.checkNewIndexInPipeline();
+						
 					if ((this.contentIdsToDelete.size() > 0) || (this.usersToFlag.size() > 0)) {
 						// remove each cached post from index
 						for (final Integer contentId : this.contentIdsToDelete) {
@@ -297,6 +301,26 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 */
 	private void checkNewIndexInPipeline() {
 		// TODO Auto-generated method stub
+		String tempAlias = ESConstants.getTempAliasForResource(this.resourceType);
+		List<String> indexesList=esIndexManager.getIndexesFfromAlias(tempAlias);
+		String activeIndexAlias = ESConstants.getGlobalAliasForResource(resourceType, true);
+		String backupIndexAlias = ESConstants.getGlobalAliasForResource(resourceType, false);
+		indexesList.addAll(esIndexManager.getIndexesFfromAlias(activeIndexAlias));
+		indexesList.addAll(esIndexManager.getIndexesFfromAlias(backupIndexAlias));
+		Collections.sort(indexesList);
+		/*first remove all aliases for avoiding confusion
+		 * then set alias for last as active and 2nd last as backup
+		 */
+		esIndexManager.removeAliases(indexesList);
+		esIndexManager.setAliasForIndex(activeIndexAlias, indexesList.get(indexesList.size()-1));
+		esIndexManager.setAliasForIndex(backupIndexAlias, indexesList.get(indexesList.size()-2));
+		for(int i=0;i<indexesList.size()-2;i++){
+			final DeleteIndexResponse deleteIndex = this.esClient.getClient().admin().indices().delete(new DeleteIndexRequest(indexesList.get(i))).actionGet();
+			if (!deleteIndex.isAcknowledged()) {
+				log.error("Error in deleting the old index: " + indexesList.get(i)+ " after re-generate");
+				return;
+			}
+		}
 		
 	}
 

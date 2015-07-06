@@ -40,15 +40,6 @@ public final class ESConstants {
 	/**
 	 * Alias for the active index
 	 */
-	private static final String ACTIVE_INDEX_ID = "1";
-	/**
-	 * Alias for the inactive index
-	 */
-	private static final String BACKUP_INDEX_ID = "2";
-	
-	/**
-	 * Alias for the active index
-	 */
 	private static final String ACTIVE_INDEX_ALIAS = "activeIndex";
 	/**
 	 * Alias for the inactive index
@@ -133,6 +124,17 @@ public final class ESConstants {
 			return ACTIVE_INDEX_ALIAS + "-" + resourceType.toLowerCase();
 		}
 		return INACTIVE_INDEX_ALIAS+ "-" + resourceType.toLowerCase();
+	}
+	
+	/**
+	 * returns the temporary alias used commonly for all temporary indexes after re-generation
+	 * of the resource 
+	 * 
+	 * @param resourceType
+	 * @return returns temporary the alias name
+	 */
+	public static String getTempAliasForResource(final String resourceType) {		
+			return TEMP_INDEX_PREFIX + "-" + resourceType.toLowerCase();
 	}
 
 	/**

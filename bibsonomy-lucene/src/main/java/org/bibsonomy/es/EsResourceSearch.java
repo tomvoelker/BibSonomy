@@ -176,8 +176,6 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder{
 		}finally{
 			if(lockAcquired){
 				this.esClient.getReadLock(this.resourceType).unlock();
-			}else{
-				//TODO warning
 			}
 		}
 		
