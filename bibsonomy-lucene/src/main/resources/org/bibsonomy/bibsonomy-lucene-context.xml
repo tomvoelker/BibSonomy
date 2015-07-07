@@ -25,6 +25,7 @@
 	<bean id="realSharedIndexUpdatePlugin" class="org.bibsonomy.es.SharedIndexUpdatePlugin" lazy-init="true" abstract="true">
 		<constructor-arg ref="esClient"/>
 		<constructor-arg value="${project.home}"/>
+		<property name="indexName" value="${es.index.name}"/>
 	</bean>
 	
 	<bean id="realSharedIndexUpdatePluginForPublications" lazy-init="true" parent="realSharedIndexUpdatePlugin">
@@ -97,6 +98,7 @@
 
 	<bean id="abstractEsResourceSearch" class="org.bibsonomy.es.EsResourceSearch" abstract="true">
 		<property name="esClient" ref="esClient"/>
+		<property name="indexName" value="${es.index.name}"/>
 	</bean>
 
 

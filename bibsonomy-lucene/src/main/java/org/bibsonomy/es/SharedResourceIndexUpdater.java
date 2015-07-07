@@ -73,7 +73,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpdater<R> {
 	private static final Log log = LogFactory.getLog(SharedResourceIndexUpdater.class);
 
-	private final String indexName = ESConstants.INDEX_NAME;
+	private final String indexName;
 
 	private String resourceType;
 
@@ -105,9 +105,10 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	/**
 	 * @param systemHome
 	 */
-	public SharedResourceIndexUpdater(final String systemHome, final LuceneResourceConverter<R> resourceConverter) {
+	public SharedResourceIndexUpdater(final String systemHome, final LuceneResourceConverter<R> resourceConverter, final String indexName) {
 		this.systemHome = systemHome;
 		this.resourceConverter = resourceConverter;
+		this.indexName = indexName;
 		this.contentIdsToDelete = new LinkedList<Integer>();
 		this.esPostsToInsert = new ArrayList<Map<String, Object>>();
 		this.usersToFlag = new TreeSet<String>();
@@ -449,7 +450,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	@Override
 	public void updateIndexWithPersonRelation(String interhash, List<ResourcePersonRelation> newRels) {
 			
-		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(ESConstants.INDEX_NAME);
+		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(indexName);
 		searchRequestBuilder.setTypes(this.resourceType);
 		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 		searchRequestBuilder.setQuery(QueryBuilders.constantScoreQuery(FilterBuilders.andFilter(FilterBuilders.termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, systemHome), FilterBuilders.termFilter("interhash", interhash))));
@@ -476,7 +477,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	}
 
 	private void updateIndexForPersonWithId(LRUMap updatedInterhashes, final String personId) {
-		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(ESConstants.INDEX_NAME);
+		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(indexName);
 		searchRequestBuilder.setTypes(this.resourceType);
 		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 		searchRequestBuilder.setQuery(QueryBuilders.constantScoreQuery(FilterBuilders.andFilter(FilterBuilders.termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, systemHome), FilterBuilders.termFilter(ESConstants.PERSON_ENTITY_IDS_FIELD_NAME, personId))));

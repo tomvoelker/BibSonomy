@@ -67,6 +67,7 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	private LuceneResourceConverter<R> resourceConverter;
 	/** the database manager */
 	protected LuceneDBInterface<R> dbLogic;
+	private String indexName = ESConstants.INDEX_NAME;
 
 	/**
 	 * @param esClient
@@ -97,7 +98,7 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 
 	private SharedResourceIndexUpdater<R> createUpdaterInternal(final String resourceType) {
 		SharedResourceIndexUpdater<R> sharedIndexUpdater;
-		sharedIndexUpdater = new SharedResourceIndexUpdater<R>(this.systemHome, resourceConverter);
+		sharedIndexUpdater = new SharedResourceIndexUpdater<R>(this.systemHome, resourceConverter, this.indexName);
 		sharedIndexUpdater.setEsClient(this.esClient);
 		sharedIndexUpdater.setResourceType(resourceType);
 		sharedIndexUpdater.setDbLogic(this.dbLogic);
@@ -105,18 +106,18 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	}
 
 	public String getGlobalIndexNonExistanceError() {
-		final boolean indexExist = this.esClient.getClient().admin().indices().exists(new IndicesExistsRequest(ESConstants.INDEX_NAME)).actionGet().isExists();
+		final boolean indexExist = this.esClient.getClient().admin().indices().exists(new IndicesExistsRequest(indexName)).actionGet().isExists();
 		if (!indexExist) {
-			return "No Index named \"" + ESConstants.INDEX_NAME + "\" found!! Please generate Index";
+			return "No Index named \"" + indexName + "\" found!! Please generate Index";
 		}
 		return null;
 	}
 
 	public String getResourceIndexNonExistanceError(final String indexType) {
 		// Check if a document exists
-		final GetResponse response = this.esClient.getClient().prepareGet(ESConstants.INDEX_NAME, ESConstants.SYSTEM_INFO_INDEX_TYPE, this.systemHome + indexType).setRefresh(true).execute().actionGet();
+		final GetResponse response = this.esClient.getClient().prepareGet(indexName, ESConstants.SYSTEM_INFO_INDEX_TYPE, this.systemHome + indexType).setRefresh(true).execute().actionGet();
 		if (!response.isExists()) {
-			return "No documents for \"" + indexType + "\" in \"" + ESConstants.INDEX_NAME + "\" for current system found!! Please re-generate Index";
+			return "No documents for \"" + indexType + "\" in \"" + indexName + "\" for current system found!! Please re-generate Index";
 		}
 		return null;
 	}
@@ -139,7 +140,7 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	}
 
 	private void generate(final LuceneResourceManager<? extends Resource> manager, boolean sync) {
-		final SharedResourceIndexGenerator generator = new SharedResourceIndexGenerator(this.systemHome, this.createUpdaterInternal(manager.getResourceName()));
+		final SharedResourceIndexGenerator generator = new SharedResourceIndexGenerator(this.systemHome, this.createUpdaterInternal(manager.getResourceName()), this.indexName);
 		generator.setLogic(manager.getDbLogic());
 		generator.setEsClient(this.esClient);
 		generator.setResourceType(manager.getResourceName());
@@ -250,6 +251,14 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 
 	public void setResourceConverter(LuceneResourceConverter<R> resourceConverter) {
 		this.resourceConverter = resourceConverter;
+	}
+
+	public String getIndexName() {
+		return this.indexName;
+	}
+
+	public void setIndexName(String indexName) {
+		this.indexName = indexName;
 	}
 
 }

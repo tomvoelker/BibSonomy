@@ -88,6 +88,8 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch {
 	/** the number of person suggestions */
 	private int personSuggestionSize = 8;
 
+	private String indexName = ESConstants.INDEX_NAME;
+
 	/**
 	 * @param esClient the esClient to set
 	 */
@@ -117,7 +119,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch {
 		final ResultList<Post<R>> postList = new ResultList<Post<R>>();
 		try {
 			final QueryBuilder queryBuilder = QueryBuilders.queryString(searchTerms);
-			final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(ESConstants.INDEX_NAME);
+			final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(indexName);
 			searchRequestBuilder.setTypes(this.resourceType);
 			searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 			searchRequestBuilder.setQuery(queryBuilder);
@@ -226,7 +228,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch {
 						), //
 				FilterBuilders.termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, systemUrl) //
 				);
-		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(ESConstants.INDEX_NAME);
+		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(indexName);
 		searchRequestBuilder.setTypes(this.resourceType);
 		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 		searchRequestBuilder.setQuery(queryBuilder).setFrom(offset).setSize(personSuggestionSize);
@@ -306,6 +308,14 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch {
 
 	public void setPersonSuggestionSize(int personSuggestionSize) {
 		this.personSuggestionSize = personSuggestionSize;
+	}
+
+	public String getIndexName() {
+		return this.indexName;
+	}
+
+	public void setIndexName(String indexName) {
+		this.indexName = indexName;
 	}
 
 }

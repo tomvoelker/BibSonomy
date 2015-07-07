@@ -17,6 +17,7 @@
 	<bean id="esClient" class="org.bibsonomy.es.ESTestClient" lazy-init="true" init-method="init">
 		<property name="luceneResourceManagers" ref="allLuceneResourceManagers" />
 		<property name="sharedIndexUpdatePlugins" ref="allSharedIndexUpdatePlugins"/>
+		<property name="indexName" value="${es.index.name}"/>
 	</bean>
 	
 	<!-- TODO: move to bibsonomy-lucene-context as soon as we are not using jndi -->

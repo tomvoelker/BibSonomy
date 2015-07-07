@@ -20,6 +20,7 @@ public class ESTestClient implements AutoCloseable, ESClient {
 
 	private Node node;
 	private Client client;
+	private String indexName;
 
 	private Map<Class<? extends Resource>, LuceneResourceManager<? extends Resource>>   luceneResourceManagers;
 	private Map<Class<? extends Resource>, SharedIndexUpdatePlugin<? extends Resource>> sharedIndexUpdatePlugins;
@@ -80,7 +81,7 @@ public class ESTestClient implements AutoCloseable, ESClient {
 	 */
 	@Override
 	public void shutdown() {
-		DeleteIndexRequest indexRequest = new DeleteIndexRequest(ESConstants.INDEX_NAME);
+		DeleteIndexRequest indexRequest = new DeleteIndexRequest(indexName);
 		client.admin().indices().delete(indexRequest).actionGet();
 
 		client.close();
@@ -101,5 +102,13 @@ public class ESTestClient implements AutoCloseable, ESClient {
 
 	public void setSharedIndexUpdatePlugins(Map<Class<? extends Resource>, SharedIndexUpdatePlugin<? extends Resource>> sharedIndexUpdatePlugins) {
 		this.sharedIndexUpdatePlugins = sharedIndexUpdatePlugins;
+	}
+
+	public String getIndexName() {
+		return this.indexName;
+	}
+
+	public void setIndexName(String indexName) {
+		this.indexName = indexName;
 	}
 }
