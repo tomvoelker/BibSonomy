@@ -185,7 +185,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		if (log.isDebugEnabled()) {
 			final Enumeration<?> e = request.getAttributeNames();
 			while (e.hasMoreElements()) {
-				log.debug(e.nextElement().toString());			
+				log.debug(e.nextElement().toString());
 			}
 		}
 		

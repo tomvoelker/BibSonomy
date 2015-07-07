@@ -33,7 +33,7 @@
 	<rule>
 		<name>requQueryAttribute</name>
 		<condition type="query-string" operator="equal"></condition>
-		<from>^/+(.+)$</from>
+		<from>^/+(.*)$</from>
 		<set name="requQueryString">?%{query-string}</set>
 	</rule>
 	

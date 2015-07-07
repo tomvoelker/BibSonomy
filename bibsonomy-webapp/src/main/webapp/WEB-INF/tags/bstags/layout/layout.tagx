@@ -33,6 +33,8 @@
 	
 	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
 	
+	
+	
 	<!--+
 		| 
 		| document starts here
@@ -49,7 +51,6 @@
 			pageTitle="${pageTitle}"
 			personalized="${personalized}"
 			/>
-
 			<body>
 				<c:if test="${not empty beforeMainContainer}">
 					<jsp:invoke fragment="beforeMainContainer"/>
@@ -76,11 +77,12 @@
 							<div class="col-md-6">
 								<div id="lang-switcher" class="pull-right">
 									<span>(&amp;nbsp;</span>
-									<a href="/${mtl:setParam(fn:escapeXml(requPathAndQuery), 'lang', 'en')}">en</a>
-									<span>&amp;nbsp;|&amp;nbsp;</span>
-									<a href="/${mtl:setParam(fn:escapeXml(requPathAndQuery), 'lang', 'de')}">de</a>
-									<span>&amp;nbsp;|&amp;nbsp;</span>
-									<a href="/${mtl:setParam(fn:escapeXml(requPathAndQuery), 'lang', 'ru')}">ru</a>
+									<c:forEach var="lang" items="${fn:split('en,de,ru',',')}" varStatus="status">
+										<a href="/${fn:escapeXml(mtl:setParam(requPathAndQuery, 'lang', lang))}">${lang}</a>
+										<c:if test="${not status.last}">
+											<span>&amp;nbsp;|&amp;nbsp;</span>
+										</c:if>
+									</c:forEach>
 									<span>&amp;nbsp;)</span>
 								</div>
 								
