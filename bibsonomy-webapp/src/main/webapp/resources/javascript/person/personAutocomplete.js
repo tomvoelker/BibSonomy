@@ -4,7 +4,7 @@ function setupPersonSearch(inputFieldSelector, buttonSelector, limitToTheses, gr
 		$(buttonSelector).attr("data-extended-person-name", data.extendedPersonName);
 		$(buttonSelector).attr("data-person-id", data.personId);
 		// TODO: $(buttonSelector).attr("data-pub-interhash", data.res.inerhash);
-		$(buttonSelector).attr("data-person-name-id", data.personNameId);
+		//$(buttonSelector).attr("data-person-name-id", data.personNameId);
 	});
 }
 
