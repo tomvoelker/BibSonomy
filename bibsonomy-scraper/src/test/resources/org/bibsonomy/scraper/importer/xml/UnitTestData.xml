@@ -8,7 +8,7 @@
 		<BibFile>ACMBasicScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
 		<Enabled>true</Enabled>
-	</URLTest>
+	</URLTest> 
 	<URLTest id="url_2">
 		<TestDescription>URL test for a single aifb publication (article).</TestDescription>
 		<URL>http://www.aifb.kit.edu/web/Article1764</URL>
