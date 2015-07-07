@@ -578,6 +578,8 @@
 		<URL>http://psycontent.metapress.com/content/wlr0r32161j4j150/?p=077ed4c087c541f8a7a3d80dc02f4290&amp;pi=0</URL>
 		<BibFile>PsyContentScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.psycontent.PsyContentScraper</Scraper>
+		<!-- 404 -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_95">
 		<TestDescription>PsyContent Scraper url test 2</TestDescription>
