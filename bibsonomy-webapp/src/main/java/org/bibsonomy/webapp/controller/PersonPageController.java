@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
@@ -16,8 +15,6 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.util.BibTexUtils;
-import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
-import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.util.spring.security.AuthenticationUtils;
 import org.bibsonomy.webapp.command.PersonPageCommand;
@@ -34,7 +31,7 @@ import org.json.simple.JSONObject;
 public class PersonPageController extends SingleResourceListController implements MinimalisticController<PersonPageCommand> {
 	
 	@Override
-	public View workOn(final PersonPageCommand command) {		
+	public View workOn(final PersonPageCommand command) {
 		
 		if(present(command.getFormAction())) {
 			switch(command.getFormAction()) {
@@ -191,10 +188,6 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @return
 	 */
 	private View addRoleAction(PersonPageCommand command) {
-		if (command.getFormPersonIndex() == -1) {
-			throw new IllegalArgumentException();
-		}
-		
 		ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
 		Post<BibTex> post = new Post<>();
 		post.setResource(new BibTex());
@@ -203,6 +196,7 @@ public class PersonPageController extends SingleResourceListController implement
 		resourcePersonRelation.setPerson(new Person());
 		resourcePersonRelation.getPerson().setPersonId(command.getFormPersonId());
 		resourcePersonRelation.setPersonIndex(command.getFormPersonIndex());
+		resourcePersonRelation.setRelationType(command.getFormPersonRole());
 		this.logic.addResourceRelation(resourcePersonRelation);
 		command.setResponseString(resourcePersonRelation.getPersonRelChangeId() + "");
 		return Views.AJAX_TEXT;
