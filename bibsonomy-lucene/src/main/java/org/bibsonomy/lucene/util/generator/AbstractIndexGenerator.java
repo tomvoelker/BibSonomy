@@ -75,6 +75,12 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 	private boolean generateTempIndex = false;
 
 	/**
+	 * the elasticsearch index name
+	 */
+	protected String indexName;
+
+
+	/**
 	 * the resource type
 	 */
 	protected String resourceType;
@@ -337,5 +343,19 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 	 */
 	public void setGenerateTempIndex(boolean generateTempIndex) {
 		this.generateTempIndex = generateTempIndex;
+	}
+
+	/**
+	 * @return the indexName
+	 */
+	public String getIndexName() {
+		return this.indexName;
+	}
+	
+	/**
+	 * @return the resourceType
+	 */
+	public String getResourceType() {
+		return this.resourceType;
 	}
 }

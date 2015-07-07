@@ -123,13 +123,20 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 
 	private String fetchSystemInfoField(final String fieldToRetrieve) {
 		try {
-			final Map<String, Object> result = this.getSystemInfos();
-			if (result != null) {
-				final Object val = result.get(fieldToRetrieve);
-				if (val == null) {
-					return null;
+			final List<Map<String, Object>> resultList = this.getSystemInfos();
+			if (resultList != null) {
+				List<String> valList = new ArrayList<String>();
+				for(Map<String, Object> result : resultList){
+					final Object val = result.get(fieldToRetrieve);
+					if (val != null) {
+						valList.add(val.toString());
+					}
 				}
-				return val.toString();
+				if(!valList.isEmpty()){
+					Collections.sort(valList);
+					return valList.get(0);
+				}
+				return null;
 			}
 		} catch (final IndexMissingException e) {
 			log.error("IndexMissingException: " + e.getDetailedMessage() + " -> returning null", e);
@@ -171,10 +178,10 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	/**
 	 * @return returns system info of this system
 	 */
-	public Map<String, Object> getSystemInfos() {
+	public List<Map<String, Object>> getSystemInfos() {
 		final List<Map<String, Object>> l = this.getAllSystemInfosInternal(QueryBuilders.idsQuery().ids(this.systemHome + this.resourceType), 1);
 		if (l.size() > 0) {
-			return l.get(0);
+			return l;
 		}
 		return null;
 	}
@@ -206,13 +213,6 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	}
 
 	/**
-	 * @return the nodeClient
-	 */
-	public Client getClient() {
-		return this.getClient();
-	}
-
-	/**
 	 * @return the esPostsToInsert
 	 */
 	public ArrayList<Map<String, Object>> getEsPostsToInsert() {
@@ -237,59 +237,45 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 			// remove cached posts from index
 			// ----------------------------------------------------------------
 			log.debug("Performing " + this.contentIdsToDelete.size() + " delete operations");
-			boolean lockAcquired = false;
 			try{
-				lockAcquired = this.esClient.getWriteLock(this.resourceType).tryLock(15, TimeUnit.SECONDS);  
-					if(lockAcquired){
-						//check if any new indexes are waiting to be activated after re-generate
-						this.checkNewIndexInPipeline();
-						
-					if ((this.contentIdsToDelete.size() > 0) || (this.usersToFlag.size() > 0)) {
-						// remove each cached post from index
-						for (final Integer contentId : this.contentIdsToDelete) {
-							final long indexID = this.calculateIndexId(contentId);
-							this.deleteIndexForIndexId(indexID);
-							log.debug("deleted post " + contentId);
-						}
-		
-						// remove spam posts from index
-						for (final String userName : this.usersToFlag) {
-							// final int cnt = purgeDocumentsForUser(userName);
-							// log.debug("Purged " + cnt + " posts for user " +
-							// userName);
-							this.deleteIndexForForUser(userName);
-							log.debug("Purged posts for user " + userName);
-						}
+				if ((this.contentIdsToDelete.size() > 0) || (this.usersToFlag.size() > 0)) {
+					// remove each cached post from index
+					for (final Integer contentId : this.contentIdsToDelete) {
+						final long indexID = this.calculateIndexId(contentId);
+						this.deleteIndexForIndexId(indexID);
+						log.debug("deleted post " + contentId);
 					}
-		
-					// ----------------------------------------------------------------
-					// add cached posts to index
-					// ----------------------------------------------------------------
-					log.debug("Performing " + this.esPostsToInsert.size() + " insert operations");
-					if (this.esPostsToInsert.size() > 0) {
-						this.insertNewPosts(this.esPostsToInsert);
+					// remove spam posts from index
+					for (final String userName : this.usersToFlag) {
+						// final int cnt = purgeDocumentsForUser(userName);
+						// log.debug("Purged " + cnt + " posts for user " +
+						// userName);
+						this.deleteIndexForForUser(userName);
+						log.debug("Purged posts for user " + userName);
 					}
-		
-					// ----------------------------------------------------------------
-					// Update system informations
-					// ----------------------------------------------------------------
-					this.flushSystemInformation();
-		
-					// ----------------------------------------------------------------
-					// clear all cached data
-					// ----------------------------------------------------------------
-					this.esPostsToInsert.clear();
-					this.contentIdsToDelete.clear();
-					this.usersToFlag.clear();
 				}
+	
+				// ----------------------------------------------------------------
+				// add cached posts to index
+				// ----------------------------------------------------------------
+				log.debug("Performing " + this.esPostsToInsert.size() + " insert operations");
+				if (this.esPostsToInsert.size() > 0) {
+					this.insertNewPosts(this.esPostsToInsert);
+				}
+	
+				// ----------------------------------------------------------------
+				// Update system informations
+				// ----------------------------------------------------------------
+				this.flushSystemInformation();
+	
+				// ----------------------------------------------------------------
+				// clear all cached data
+				// ----------------------------------------------------------------
+				this.esPostsToInsert.clear();
+				this.contentIdsToDelete.clear();
+				this.usersToFlag.clear();
 			}catch (JsonProcessingException e){
 				log.error("unable to convert the post into JSON document", e);
-			}catch (InterruptedException e) {
-				log.error("unable to get the read lock on index: "+ this.resourceType, e);
-			}finally{
-				if(lockAcquired){
-					this.esClient.getWriteLock(this.resourceType).unlock();
-				}
 			}
 		}
 	}
@@ -299,16 +285,15 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 * if true then activate the most recent as the active index and the next one as
 	 * backup index
 	 */
-	private void checkNewIndexInPipeline() {
-		// TODO Auto-generated method stub
-		String tempAlias = ESConstants.getTempAliasForResource(this.resourceType);
+	public void checkNewIndexInPipeline() {
+		String tempAlias = ESConstants.getTempAliasForResource(this.resourceType, false);
 		List<String> indexesList=esIndexManager.getIndexesFfromAlias(tempAlias);
 		String activeIndexAlias = ESConstants.getGlobalAliasForResource(resourceType, true);
 		String backupIndexAlias = ESConstants.getGlobalAliasForResource(resourceType, false);
 		indexesList.addAll(esIndexManager.getIndexesFfromAlias(activeIndexAlias));
 		indexesList.addAll(esIndexManager.getIndexesFfromAlias(backupIndexAlias));
 		Collections.sort(indexesList);
-		/*first remove all aliases for avoiding confusion
+		/* first remove all aliases for avoiding confusion
 		 * then set alias for last as active and 2nd last as backup
 		 */
 		esIndexManager.removeAliases(indexesList);

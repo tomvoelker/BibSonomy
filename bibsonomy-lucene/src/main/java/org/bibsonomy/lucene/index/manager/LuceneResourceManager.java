@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -202,33 +203,47 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			if (plugin != null) {
 				//Shared index updater
 				this.sharedIndexUpdater =  (SharedResourceIndexUpdater<R>) plugin.createUpdater(this.getResourceName());
+				//TODO check if any temporary index waiting to be activated
 				Integer lastTasIdSharedIndex = null;
 				//if there is no shared resource index it can be null
 				if (this.sharedIndexUpdater != null) {
-					lastTasIdSharedIndex = this.sharedIndexUpdater.getLastTasId();
-				}
-				if ((lastTasIdSharedIndex != null) && (lastTasIdSharedIndex.intValue() != Integer.MIN_VALUE)) {
-					final long lastLogDateSharedIndex =  this.sharedIndexUpdater.getLastLogDate();
-					Integer newLastTasId;
-					Integer newLastTasIdSharedIndex;
-					if ((lastLogDate == lastLogDateSharedIndex) && (lastTasId == lastTasIdSharedIndex)) {
-						newLastTasId = this.updateIndex(currentLogDate.getTime(), lastTasId, lastLogDateSharedIndex, IndexType.BOTH);
-						newLastTasIdSharedIndex = newLastTasId;
-					} else {
-						newLastTasId = this.updateIndex(currentLogDate.getTime(), lastTasId, lastLogDate, IndexType.LUCENE);
-						newLastTasIdSharedIndex =  this.updateIndex(currentLogDate.getTime(), lastTasIdSharedIndex, lastLogDateSharedIndex, IndexType.ELASTICSEARCH);
+					boolean lockAcquired = false;
+					try{
+						lockAcquired = this.sharedIndexUpdater.getEsClient().getWriteLock(this.getResourceName()).tryLock(15, TimeUnit.SECONDS);  
+						if(lockAcquired){
+								this.sharedIndexUpdater.checkNewIndexInPipeline();
+								lastTasIdSharedIndex = this.sharedIndexUpdater.getLastTasId();
+							if ((lastTasIdSharedIndex != null) && (lastTasIdSharedIndex.intValue() != Integer.MIN_VALUE)) {
+								final long lastLogDateSharedIndex =  this.sharedIndexUpdater.getLastLogDate();
+								Integer newLastTasId;
+								Integer newLastTasIdSharedIndex;
+								if ((lastLogDate == lastLogDateSharedIndex) && (lastTasId == lastTasIdSharedIndex)) {
+									newLastTasId = this.updateIndex(currentLogDate.getTime(), lastTasId, lastLogDateSharedIndex, IndexType.BOTH);
+									newLastTasIdSharedIndex = newLastTasId;
+								} else {
+									newLastTasId = this.updateIndex(currentLogDate.getTime(), lastTasId, lastLogDate, IndexType.LUCENE);
+									newLastTasIdSharedIndex =  this.updateIndex(currentLogDate.getTime(), lastTasIdSharedIndex, lastLogDateSharedIndex, IndexType.ELASTICSEARCH);
+								}
+								
+								if (newLastTasIdSharedIndex != lastTasIdSharedIndex) {
+									this.sharedIndexUpdater.setSystemInformation(lastTasIdSharedIndex, currentLogDate);
+									this.sharedIndexUpdater.flush();
+								}
+								if (newLastTasId != lastTasId) {
+									this.updatingIndex.setLastLogDate(currentLogDate.getTime());
+									this.updatingIndex.setLastTasId(newLastTasId);
+									this.updatingIndex.flush();
+								}
+							} 
+						}
+					} catch (InterruptedException e) {
+						log.error("unable to get the read lock on index: "+ this.getResourceName(), e);
+					}finally{
+						if(lockAcquired){
+							this.sharedIndexUpdater.getEsClient().getWriteLock(this.getResourceName());
+						}
 					}
-					
-					if (newLastTasIdSharedIndex != lastTasIdSharedIndex) {
-						this.sharedIndexUpdater.setSystemInformation(lastTasIdSharedIndex, currentLogDate);
-						this.sharedIndexUpdater.flush();
-					}
-					if (newLastTasId != lastTasId) {
-						this.updatingIndex.setLastLogDate(currentLogDate.getTime());
-						this.updatingIndex.setLastTasId(newLastTasId);
-						this.updatingIndex.flush();
-					}
-				} else {
+				}else {
 					this.runLuceneIndexUpdate(currentLogDate.getTime(), lastTasId, lastLogDate, IndexType.LUCENE);
 				}
 				

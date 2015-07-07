@@ -127,8 +127,8 @@ public class ESIndexManager {
 	 * @return returns the index name of the temporary index
 	 */
 	public String createTempIndex(final String resourceType){
-		String alias =  ESConstants.getTempAliasForResource(resourceType);
-		List<String> prevTempIndexes = this.getIndexesFfromAlias(alias);
+		String tempAlias =  ESConstants.getTempAliasForResource(resourceType, false);
+		List<String> prevTempIndexes = this.getIndexesFfromAlias(tempAlias);
 		if(!prevTempIndexes.isEmpty()){
 			for(String indexName: prevTempIndexes){
 				final DeleteIndexResponse deleteIndex = this.esClient.getClient().admin().indices().delete(new DeleteIndexRequest(indexName)).actionGet();
@@ -140,7 +140,8 @@ public class ESIndexManager {
 		}
 		String indexName = this.createIndex(resourceType);
 		if(indexName!=null){
-			this.setAliasForIndex(alias, indexName);
+			String onProcessAlias = ESConstants.getTempAliasForResource(resourceType, true);
+			this.setAliasForIndex(onProcessAlias, indexName);
 			return indexName;
 		}
 		return null;		
@@ -338,6 +339,25 @@ public class ESIndexManager {
 			}
 		}
 		return true;
+	}
+	
+	/**
+	 * changes the temporary index's alias from on progress to completed index's alias
+	 * 
+	 * @param indexName
+	 * @param resourceType 
+	 */
+	public void changeTempIndexStaus(final String indexName, final String resourceType){
+		String onPorgAlias = ESConstants.getTempAliasForResource(resourceType, true);
+		String tempAlias =  ESConstants.getTempAliasForResource(resourceType, false);
+		IndicesAliasesResponse aliasReponse = this.esClient.getClient().admin().indices().prepareAliases()
+                .removeAlias(indexName, onPorgAlias)
+                .addAlias(indexName, tempAlias)
+                .execute()
+                .actionGet();
+		if (!aliasReponse.isAcknowledged()) {
+			log.error("Error in removing alias of index: "+ indexName);
+		}
 	}
 	
 	private boolean removeAlias(final String indexName, final String alias){

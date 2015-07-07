@@ -250,6 +250,7 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	 */
 	@Override
 	public void generatedIndex(final AbstractIndexGenerator<R> index) {
+		this.esIndexManager.changeTempIndexStaus(index.getIndexName(), index.getResourceType());
 		this.queuedOrRunningGenerators.remove(index);
 	}
 

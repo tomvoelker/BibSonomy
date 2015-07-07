@@ -51,7 +51,6 @@ import org.elasticsearch.action.admin.indices.flush.FlushRequest;
  */
 public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIndexGenerator<R> {
 	
-	private final String indexName;
 	private final String systemUrlFieldName = ESConstants.SYSTEMURL_FIELD;
 
 	/** converts post model objects to elasticsearch documents */
@@ -124,6 +123,7 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	/**
 	 * @return the indexName
 	 */
+	@Override
 	public String getIndexName() {
 		return this.indexName;
 	}
@@ -131,6 +131,7 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	/**
 	 * @return e.g. "BibTex"
 	 */
+	@Override
 	public String getResourceType() {
 		return this.resourceType;
 	}
