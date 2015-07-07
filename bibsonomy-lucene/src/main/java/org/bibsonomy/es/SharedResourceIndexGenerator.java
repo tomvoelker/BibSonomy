@@ -84,6 +84,8 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	 */
 	@Override
 	public void createEmptyIndex() throws IOException {
+		this.esClient.getClient().admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet(5000);
+		
 		// check if the index already exists if not, it creates empty index
 		final boolean indexExist = this.esClient.getClient().admin().indices().exists(new IndicesExistsRequest(indexName)).actionGet().isExists();
 		if (!indexExist) {

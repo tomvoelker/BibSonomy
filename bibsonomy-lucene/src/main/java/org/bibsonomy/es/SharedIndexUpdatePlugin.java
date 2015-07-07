@@ -61,8 +61,8 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	private final ESClient esClient;
 	private final String systemHome;
 	private static final Log log = LogFactory.getLog(SharedIndexUpdatePlugin.class);
-	private final ThreadPoolExecutor generatorThreadExecutor = new ThreadPoolExecutor(0, 1, 20, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
-	private final List<SharedResourceIndexGenerator<R>> queuedOrRunningGenerators = Collections.synchronizedList(new ArrayList<SharedResourceIndexGenerator<R>>());
+	private static final ThreadPoolExecutor generatorThreadExecutor = new ThreadPoolExecutor(0, 1, 20, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+	private static final List<SharedResourceIndexGenerator<?>> queuedOrRunningGenerators = Collections.synchronizedList(new ArrayList<SharedResourceIndexGenerator<?>>());
 	/** converts post model objects to documents of the index structure */
 	private LuceneResourceConverter<R> resourceConverter;
 	/** the database manager */
@@ -208,7 +208,7 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 			statistics.setLastTasId(this.getLong(infos, "last_tas_id"));
 			indexInfo.setIndexStatistics(statistics);
 
-			for (final SharedResourceIndexGenerator<R> gen : this.queuedOrRunningGenerators) {
+			for (final SharedResourceIndexGenerator<?> gen : this.queuedOrRunningGenerators) {
 				if (resourceType.equals(gen.getResourceType())) {
 					if (gen.isRunning() == true) {
 						indexInfo.setGeneratingIndex(true);

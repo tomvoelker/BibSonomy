@@ -173,5 +173,25 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 	public AdminLuceneViewCommand instantiateCommand() {
 		return new AdminLuceneViewCommand();
 	}
+
+
+	public Map<Class<? extends Resource>, LuceneResourceManager<? extends Resource>> getLuceneResourceManagers() {
+		return this.luceneResourceManagers;
+	}
+
+
+	public void setLuceneResourceManagers(Map<Class<? extends Resource>, LuceneResourceManager<? extends Resource>> luceneResourceManagers) {
+		this.luceneResourceManagers = luceneResourceManagers;
+	}
+
+
+	public Map<Class<? extends Resource>, SharedIndexUpdatePlugin<? extends Resource>> getSharedIndexUpdatePlugins() {
+		return this.sharedIndexUpdatePlugins;
+	}
+
+
+	public void setSharedIndexUpdatePlugins(Map<Class<? extends Resource>, SharedIndexUpdatePlugin<? extends Resource>> sharedIndexUpdatePlugins) {
+		this.sharedIndexUpdatePlugins = sharedIndexUpdatePlugins;
+	}
 	
 }
