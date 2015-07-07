@@ -17,7 +17,7 @@
 	</select>
 	
 	<select id='getPersonByChangeIdRange' parameterClass="org.bibsonomy.common.Pair" resultMap='PersonCommon.lazyLoadingPerson'>
-		SELECT <include refid='commonPersonColumns'/> FROM person_name 
+		SELECT <include refid='commonPersonColumns'/> FROM person 
 			WHERE person_change_id >= #first# AND person_change_id &lt; #second#
 			ORDER BY person_change_id
 	</select>
