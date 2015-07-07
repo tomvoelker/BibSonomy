@@ -300,8 +300,7 @@ INSERT INTO `ids` VALUES
 (14, 3,  'message_id'),
 (15, 4, 'comment_id'),
 (16, 1, 'sync_service_id'),
-(17, 0, 'person_change_id');
-
+(17, 7, 'person_change_id');
 
 
 --
@@ -730,6 +729,8 @@ INSERT INTO `grouptas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `conten
 (24, 'testbibtex',    'testbibtex',    12, 2, 'testuser1',   '1815-12-10 00:00:00', 3, '2008-03-20 20:35:21');
 
 
+INSERT INTO `person` (`person_change_id`, `person_id`, `academic_degree`, `user_name`, `post_ctr`, `orcid`, `dnb_person_id`, `gender`, `log_changed_at`, `log_changed_by`) VALUES
+(5,'h.muller','',NULL,0,'',NULL,NULL,NULL,NULL);
 
 
 INSERT INTO `person_name` VALUES

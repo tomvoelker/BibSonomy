@@ -96,7 +96,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public void createPersonName(PersonName name, DBSession session) {
 		session.beginTransaction();
 		try {
-			name.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			name.setPersonNameChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("insertName", name, session);
 			session.commitTransaction();
 		} finally {
@@ -177,7 +177,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation, DBSession session) {
 		session.beginTransaction();
 		try {
-			resourcePersonRelation.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			resourcePersonRelation.setPersonRelChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("addResourceRelation", resourcePersonRelation, session);
 			session.commitTransaction();
 		} finally {

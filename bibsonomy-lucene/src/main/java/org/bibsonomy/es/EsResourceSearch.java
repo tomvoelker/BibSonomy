@@ -78,6 +78,8 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch {
 	 */
 	protected static final Log log = LogFactory.getLog(EsResourceSearch.class);
 
+	private final int maxOffset = 2048;
+
 	private ESClient esClient;
 
 	/** url of this system */
@@ -189,7 +191,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch {
 			
 			// remember alreadyAnalyzedInterhashes to skip over multiple posts of the same resource
 			final Set<String> alreadyAnalyzedInterhashes = new HashSet<>();
-			for (int offset = 0; relSorter.size() < personSuggestionSize; offset += personSuggestionSize) {
+			for (int offset = 0; relSorter.size() < personSuggestionSize && offset < maxOffset; offset += personSuggestionSize) {
 				boolean moreEntriesMightBeFound = fetchMoreResults(relSorter, queryString, tokenizedQueryString, offset, alreadyAnalyzedInterhashes);
 				if (moreEntriesMightBeFound == false) {
 					break;

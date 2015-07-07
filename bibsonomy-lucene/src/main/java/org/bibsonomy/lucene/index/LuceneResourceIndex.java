@@ -195,7 +195,7 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	 */
 	public void close() throws CorruptIndexException, IOException{
 		if (!closed) {
-			log.error("closing " + this);
+			log.info("closing " + this);
 			closed = true;
 			this.closeSearcherManager();
 			this.closeIndexWriter();
@@ -230,7 +230,7 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 				throw new IllegalStateException("index already opened: " + this);
 			}
 			closed = false;
-			log.error("opening " + this);
+			log.info("opening " + this);
 			this.indexDirectory = FSDirectory.open(new File(this.indexPath));
 
 			try {

@@ -49,7 +49,7 @@ public class PersonName implements Serializable {
 	 */
 	public static final String LAST_FIRST_DELIMITER = ",";
 
-	private int personChangeId;
+	private int personNameChangeId;
 	private String firstName;
 	private String lastName;
 	private String personId;
@@ -155,15 +155,15 @@ public class PersonName implements Serializable {
 	/**
 	 * @return the id
 	 */
-	public int getPersonChangeId() {
-		return this.personChangeId;
+	public int getPersonNameChangeId() {
+		return this.personNameChangeId;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setPersonChangeId(int id) {
-		this.personChangeId = id;
+	public void setPersonNameChangeId(int id) {
+		this.personNameChangeId = id;
 	}
 
 	/**

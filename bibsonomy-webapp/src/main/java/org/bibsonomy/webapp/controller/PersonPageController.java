@@ -204,7 +204,7 @@ public class PersonPageController extends SingleResourceListController implement
 		resourcePersonRelation.getPerson().setPersonId(command.getFormPersonId());
 		resourcePersonRelation.setPersonIndex(command.getFormPersonIndex());
 		this.logic.addResourceRelation(resourcePersonRelation);
-		command.setResponseString(resourcePersonRelation.getPersonChangeId() + "");
+		command.setResponseString(resourcePersonRelation.getPersonRelChangeId() + "");
 		return Views.AJAX_TEXT;
 	}
 
@@ -273,12 +273,12 @@ public class PersonPageController extends SingleResourceListController implement
 		
 		for (PersonName otherName : person.getNames()) {
 			if (personName.equals(otherName)) {
-				command.setResponseString(otherName.getPersonChangeId()+ "");
+				command.setResponseString(otherName.getPersonNameChangeId()+ "");
 				return Views.AJAX_TEXT;
 			}
 		}
 		this.logic.createOrUpdatePersonName(personName);
-		command.setResponseString(Integer.toString(personName.getPersonChangeId()));
+		command.setResponseString(Integer.toString(personName.getPersonNameChangeId()));
 		
 		return Views.AJAX_TEXT;
 	}

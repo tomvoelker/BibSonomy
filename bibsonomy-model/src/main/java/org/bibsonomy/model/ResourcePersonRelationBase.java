@@ -11,7 +11,7 @@ import org.bibsonomy.model.enums.PersonResourceRelationType;
  */
 // TODO rename to PersonResourceRelation
 public abstract class ResourcePersonRelationBase {
-	private int personChangeId;
+	private int personRelChangeId;
 	private PersonResourceRelationType relationType;
 	private int qualifying;
 	/** name of the person who created this link */
@@ -24,14 +24,14 @@ public abstract class ResourcePersonRelationBase {
 	/**
 	 * @return the id
 	 */
-	public int getPersonChangeId() {
-		return this.personChangeId;
+	public int getPersonRelChangeId() {
+		return this.personRelChangeId;
 	}
 	/**
 	 * @param id the id to set
 	 */
-	public void setPersonChangeId(int id) {
-		this.personChangeId = id;
+	public void setPersonRelChangeId(int id) {
+		this.personRelChangeId = id;
 	}
 
 	/**

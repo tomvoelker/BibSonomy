@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
@@ -250,7 +251,7 @@ public class LuceneResourceConverter<R extends Resource> {
 		final List<ResourcePersonRelation> rels = new ArrayList<>();
 		
 		String ids = (String) result.get(ESConstants.PERSON_ENTITY_IDS_FIELD_NAME);
-		String[] parts = ids.split(" ");
+		String[] parts = split(ids, " ");
 		
 		final int personIndexCtr[] = new int[PersonResourceRelationType.AUTHOR.values().length];
 		for (int i = 0; i+1 < parts.length; i += 2) {
@@ -267,12 +268,12 @@ public class LuceneResourceConverter<R extends Resource> {
 		}
 		
 		final String namesField = (String) result.get(ESConstants.PERSON_ENTITY_NAMES_FIELD_NAME);
-		final String[] names = namesField.split(PERSON_DELIMITER);
+		final String[] names = split(namesField,PERSON_DELIMITER);
 		if (names.length != rels.size()) {
 			throw new IllegalStateException();
 		}
 		for (int i = 0; i < names.length; ++i) {
-			String[] nameParts = names[i].split(NAME_PART_DELIMITER);
+			String[] nameParts = split(names[i], NAME_PART_DELIMITER);
 			if (nameParts.length != 3) {
 				throw new IllegalStateException(); 
 			}
@@ -291,6 +292,19 @@ public class LuceneResourceConverter<R extends Resource> {
 		}
 		
 		return rels;
+	}
+
+	/**
+	 * @param fieldName
+	 * @param delimiter
+	 * @return
+	 */
+	private String[] split(String fieldName, String delimiter) {
+		String[] rVal = fieldName.split(delimiter);
+		if ((rVal.length == 1) && (StringUtils.isEmpty(rVal[0]))) {
+			return new String[0];
+		}
+		return rVal;
 	}
 
 	/**
@@ -329,13 +343,13 @@ public class LuceneResourceConverter<R extends Resource> {
 		
 		final String entryType = bibtex.getEntrytype();
 		if (BibTexUtils.PHD_THESIS.equals(entryType)) {
-			normalizedEntryType = "phd thesis";
+			normalizedEntryType = NormalizedEntryTypes.phdthesis.name();
 		}
 		if (BibTexUtils.MASTERS_THESIS.equals(entryType)) {
-			normalizedEntryType = "master thesis";
+			normalizedEntryType = NormalizedEntryTypes.master_thesis.name();
 		}
 		if (BibTexUtils.THESIS.equals(entryType)) {
-			normalizedEntryType = "bachelor thesis";
+			normalizedEntryType = NormalizedEntryTypes.bachelor_thesis.name();
 		}
 		
 		if (normalizedEntryType != null) {
@@ -343,13 +357,13 @@ public class LuceneResourceConverter<R extends Resource> {
 			if (type != null) {
 				type = type.toLowerCase().trim();
 				if ((type.contains("master") || type.equals("mathesis"))) {
-					normalizedEntryType = "master thesis";
+					normalizedEntryType = NormalizedEntryTypes.master_thesis.name();
 				} else if (type.contains("bachelor")) {
-					normalizedEntryType = "bachelor thesis";
+					normalizedEntryType = NormalizedEntryTypes.bachelor_thesis.name();
 				} else if (type.contains("habil")) {
-					normalizedEntryType = "habilitation";
+					normalizedEntryType = NormalizedEntryTypes.habilitation.name();
 				} else if (type.equals("candthesis")) {
-					normalizedEntryType = "candidate thesis";
+					normalizedEntryType = NormalizedEntryTypes.candidate_thesis.name();
 				}
 			}
 		} else {
@@ -495,6 +509,9 @@ public class LuceneResourceConverter<R extends Resource> {
 			String systemUrl = result.get(ESConstants.SYSTEM_URL_FIELD_NAME).toString();
 			post.setSystemUrl(systemUrl);
 			post.setResourcePersonRelations(readPersonRelationsFromIndex(result));
+			for (ResourcePersonRelation rel : post.getResourcePersonRelations()) {
+				rel.setPost((Post<? extends BibTex>) post);
+			}
 		}
 		return post;
 	}
@@ -536,7 +553,7 @@ public class LuceneResourceConverter<R extends Resource> {
 		relNew.getPerson().setPersonId(relStub.getPersonId());
 		relNew.setChangedAt(relStub.getChangedAt());
 		relNew.setChangedBy(relStub.getChangedBy());
-		relNew.setPersonChangeId(relStub.getPersonChangeId());
+		relNew.setPersonRelChangeId(relStub.getPersonRelChangeId());
 		relNew.setPersonIndex(relStub.getPersonIndex());
 		relNew.setQualifying(relStub.getQualifying());
 		relNew.setRelationType(relStub.getRelationType());

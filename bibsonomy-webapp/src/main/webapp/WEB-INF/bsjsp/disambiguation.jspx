@@ -123,7 +123,7 @@
 											<span class="authorName">
 												<c:if test="${not empty personName.person.mainName.firstName}"><c:out value="${personName.person.mainName.firstName} "/></c:if>
 												<c:if test="${not empty personName.person.mainName.lastName}"><c:out value="${personName.person.mainName.lastName}"/></c:if>
-												<c:if test="${personName.person.mainName.personChangeId != personName.personChangeId}">
+												<c:if test="${personName.person.mainName.personNameChangeId != personName.personNameChangeId}">
 													(
 													<c:if test="${not empty personName.firstName}"><c:out value="${personName.firstName} "/></c:if>
 													<c:if test="${not empty personName.lastName}"><c:out value="${personName.lastName}"/></c:if>
