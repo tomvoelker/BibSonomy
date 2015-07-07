@@ -160,6 +160,7 @@ import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.sync.SynchronizationDatabaseManager;
 import org.bibsonomy.util.ExceptionUtils;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * Database Implementation of the LogicInterface
@@ -3201,13 +3202,13 @@ public class DBLogic implements LogicInterface {
 	
 	@Override
 	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) {
-		DBSession session = this.openSession();
-//		Person p = getPersonById(resourcePersonRelation.getPerson().getId());
-//		if ((p.getUser() != null) && !p.getUser().equals(loginUser.getName())) {
-//			throw new AccessDeniedException("person in relation is someone else");
-//		}
+		ValidationUtils.assertNotNull(resourcePersonRelation.getPerson());
+		ValidationUtils.assertNotNull(resourcePersonRelation.getPerson().getPersonId());
+		ValidationUtils.assertNotNull(resourcePersonRelation.getRelationType());
+		
 		resourcePersonRelation.setChangedBy(this.loginUser.getName());
 		resourcePersonRelation.setChangedAt(new Date());
+		DBSession session = this.openSession();
 		try {
 			this.personDBManager.addResourceRelation(resourcePersonRelation, session);
 		} finally {

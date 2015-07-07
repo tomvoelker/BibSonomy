@@ -29,6 +29,7 @@ package org.bibsonomy.es;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -84,7 +85,7 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	 */
 	@Override
 	public void createEmptyIndex() throws IOException {
-		this.esClient.getClient().admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet(5000);
+		this.esClient.getClient().admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet(2, TimeUnit.MINUTES);
 		
 		// check if the index already exists if not, it creates empty index
 		final boolean indexExist = this.esClient.getClient().admin().indices().exists(new IndicesExistsRequest(indexName)).actionGet().isExists();

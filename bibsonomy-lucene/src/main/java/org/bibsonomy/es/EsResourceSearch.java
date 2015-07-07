@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.index.CorruptIndexException;
@@ -186,7 +187,9 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch {
 			
 			final Set<String> tokenizedQueryString = new HashSet<>();
 			for (String token : new SimpleTokenizer(queryString)) {
-				tokenizedQueryString.add(token);
+				if (!StringUtils.isBlank(token)) {
+					tokenizedQueryString.add(token.toLowerCase());
+				}
 			} 
 			
 			// unfortunately our version of elasticsearch does not support topHits aggregation so we have to group by interhash ourselves: AggregationBuilder aggregation = AggregationBuilders.terms("agg").field("gender").subAggregation(AggregationBuilders.topHits("top"));
@@ -255,15 +258,22 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch {
 
 			for (ResourcePersonRelation rpr : post.getResourcePersonRelations()) {
 				PersonName mainName = rpr.getPerson().getMainName();
-				int invertedScore = 0;
+				int invertedScore = -1;
 				for (String token : new SimpleTokenizer(mainName.getFirstName())) {
-					if (queryTerms.contains(token) == true) {
-						invertedScore--;
+					if (!StringUtils.isBlank(token)) {
+						token = token.toLowerCase();
+						if (queryTerms.contains(token) == true) {
+							invertedScore--;
+						}
 					}
+					
 				}
 				for (String token : new SimpleTokenizer(mainName.getLastName())) {
-					if (queryTerms.contains(token) == true) {
-						invertedScore--;
+					if (!StringUtils.isBlank(token)) {
+						token = token.toLowerCase();
+						if (queryTerms.contains(token) == true) {
+							invertedScore--;
+						}
 					}
 				}
 				if (rpr.getRelationType() == PersonResourceRelationType.AUTHOR) {
@@ -271,20 +281,28 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch {
 				}
 				invertedScoreToRpr.put(invertedScore, rpr);
 			}
-			int lastScore = 1;
-			int minInvertedScore = 1;
+			
+			final int minInvertedScore = extractMinimumInvertedScore(invertedScoreToRpr);
+			int lastScore = -1;
 			for (Map.Entry<Integer, ResourcePersonRelation> e : invertedScoreToRpr.entrySet()) {
-				if (minInvertedScore == 1) {
-					minInvertedScore = e.getKey();
-				}
 				if (e.getKey() < lastScore / 2) {
 					lastScore = e.getKey();
-					relSorter.put(-1f * postScore * ((float) lastScore) / ((float) minInvertedScore), e.getValue());
+					relSorter.put(postScore * -((float) lastScore) / ((float) minInvertedScore), e.getValue());
 				}
 			}
 		}
 
 		return true;
+	}
+
+	private int extractMinimumInvertedScore(final TreeMap<Integer, ResourcePersonRelation> invertedScoreToRpr) {
+		int minInvertedScore = -1;
+		for (Map.Entry<Integer, ResourcePersonRelation> e : invertedScoreToRpr.entrySet()) {
+			if (minInvertedScore > e.getKey()) {
+				minInvertedScore = e.getKey();
+			}
+		}
+		return minInvertedScore;
 	}
 
 	private List<ResourcePersonRelation> extractDistinctPersons(final TreeMap<Float, ResourcePersonRelation> rValSorter) {
