@@ -26,8 +26,6 @@
  */
 package org.bibsonomy.webapp.controller;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import java.util.Date;
 import java.util.Set;
 
@@ -40,9 +38,10 @@ import org.bibsonomy.common.enums.UserFilter;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.StatisticsCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
+import org.bibsonomy.webapp.util.StatisticsUnitUtils;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
-import org.joda.time.DateTime;
 import org.springframework.security.access.AccessDeniedException;
 
 /**
@@ -67,7 +66,8 @@ public class StatisticsController implements MinimalisticController<StatisticsCo
 	 */
 	@Override
 	public View workOn(final StatisticsCommand command) {
-		if (!Role.ADMIN.equals(command.getContext().getLoginUser().getRole())) {
+		final RequestWrapperContext context = command.getContext();
+		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(command.getContext().getLoginUser().getRole())) {
 			throw new AccessDeniedException("only admins can retrieve stats");
 		}
 		final int count;
@@ -80,11 +80,11 @@ public class StatisticsController implements MinimalisticController<StatisticsCo
 		}
 		final Integer interval = command.getInterval();
 		final StatisticsUnit unit = command.getUnit();
-		final Date startDate = convertToStartDate(interval, unit);
+		final Date startDate = StatisticsUnitUtils.convertToStartDate(interval, unit);
 		
 		switch (command.getType()) {
 		case USERS:
-			count = this.logic.getUserStatistics(grouping, filters, null, spamStatus, startDate, null, null, null).getCount();
+			count = this.logic.getUserStatistics(grouping, filters, null, spamStatus, startDate, null).getCount();
 			break;
 		case TAGS:
 			count = this.logic.getTagStatistics(command.getResourceType(), grouping, null, null, null, command.getConceptStatus(), filters, startDate, null, 0, 1000);
@@ -101,33 +101,6 @@ public class StatisticsController implements MinimalisticController<StatisticsCo
 		
 		command.setResponseString(String.valueOf(count));
 		return Views.AJAX_JSON;
-	}
-
-	/**
-	 * @param interval
-	 * @param unit
-	 * @return
-	 */
-	private static Date convertToStartDate(final Integer interval, final StatisticsUnit unit) {
-		final Date startDate;
-		if (present(interval)) {
-			DateTime dateTime = new DateTime();
-			final int intervalAsInt = interval.intValue();
-			switch (unit) {
-			case HOUR:
-				dateTime = dateTime.minusHours(intervalAsInt);
-				break;
-			case MONTH:
-				dateTime = dateTime.minusMonths(intervalAsInt);
-				break;
-			default:
-				throw new IllegalArgumentException(unit.toString());
-			}
-			startDate = dateTime.toDate();
-		} else {
-			startDate = null;
-		}
-		return startDate;
 	}
 
 	/**

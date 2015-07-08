@@ -40,12 +40,15 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
 import org.bibsonomy.lucene.param.LuceneIndexInfo;
 import org.bibsonomy.lucene.param.LuceneIndexStatistics;
 import org.bibsonomy.lucene.util.generator.AbstractIndexGenerator;
 import org.bibsonomy.lucene.util.generator.GenerateIndexCallback;
 import org.bibsonomy.model.Resource;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 
 /**
  * Initiates the IndexUpdater for the cronjobs to update indexes
@@ -60,17 +63,51 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	private static final Log log = LogFactory.getLog(SharedIndexUpdatePlugin.class);
 	private static final ThreadPoolExecutor generatorThreadExecutor = new ThreadPoolExecutor(0, 1, 20, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 	private final List<SharedResourceIndexGenerator<R>> queuedOrRunningGenerators = Collections.synchronizedList(new ArrayList<SharedResourceIndexGenerator<R>>());
+	/** converts post model objects to documents of the index structure */
+	private final LuceneResourceConverter<R> resourceConverter;
+	private final String resourceType;
 
 	/**
 	 * @param esClient
 	 * @param systemHome
 	 */
-	public SharedIndexUpdatePlugin(final ESClient esClient, final String systemHome) {
+	public SharedIndexUpdatePlugin(final ESClient esClient, final String systemHome, final LuceneResourceConverter<R> resourceConverter, final String resourceType) {
 		this.esClient = esClient;
 		this.systemHome = systemHome;
-		esIndexManager = new ESIndexManager(this.esClient, this.systemHome);		
+		this.resourceType = resourceType;
+		esIndexManager = new ESIndexManager(this.esClient, this.systemHome);
+		this.resourceConverter = resourceConverter;
 	}
 
+	/**
+	 * checks if there are any new indexes waiting to be activated after regeneration
+	 * if true then activate the most recent as the active index and the next one as
+	 * backup index
+	 */
+	public void checkNewIndexInPipeline() {
+		String tempAlias = ESConstants.getTempAliasForResource(this.resourceType, false);
+		List<String> indexesList=esIndexManager.getIndexesFfromAlias(tempAlias);
+		String activeIndexAlias = ESConstants.getGlobalAliasForResource(resourceType, true);
+		String backupIndexAlias = ESConstants.getGlobalAliasForResource(resourceType, false);
+		indexesList.addAll(esIndexManager.getIndexesFfromAlias(activeIndexAlias));
+		indexesList.addAll(esIndexManager.getIndexesFfromAlias(backupIndexAlias));
+		Collections.sort(indexesList);
+		/* first remove all aliases for avoiding confusion
+		 * then set alias for last as active and 2nd last as backup
+		 */
+		esIndexManager.removeAliases(indexesList);
+		esIndexManager.setAliasForIndex(activeIndexAlias, indexesList.get(indexesList.size()-1));
+		esIndexManager.setAliasForIndex(backupIndexAlias, indexesList.get(indexesList.size()-2));
+		for(int i=0;i<indexesList.size()-2;i++){
+			final DeleteIndexResponse deleteIndex = this.esClient.getClient().admin().indices().delete(new DeleteIndexRequest(indexesList.get(i))).actionGet();
+			if (!deleteIndex.isAcknowledged()) {
+				log.error("Error in deleting the old index: " + indexesList.get(i)+ " after re-generate");
+				return;
+			}
+		}
+		
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -78,6 +115,8 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	 */
 	@Override
 	public SharedResourceIndexUpdater<R> createUpdater(final String resourceType) {
+		checkNewIndexInPipeline();
+		
 		//TODO adjust changes and use read lock
 		String errorMsg = this.getGlobalIndexNonExistanceError();
 		if (errorMsg == null) {
@@ -99,7 +138,7 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 
 	private SharedResourceIndexUpdater<R> createUpdaterInternal(final String resourceType) {
 		SharedResourceIndexUpdater<R> sharedIndexUpdater;
-		sharedIndexUpdater = new SharedResourceIndexUpdater<R>(this.systemHome, resourceType);
+		sharedIndexUpdater = new SharedResourceIndexUpdater<R>(this.systemHome, resourceType, resourceConverter);
 		sharedIndexUpdater.setEsClient(this.esClient);
 		return sharedIndexUpdater;
 	}
@@ -170,7 +209,7 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 		generator.setEsClient(this.esClient);
 		generator.setGenerateTempIndex(isTempIndex);
 		generator.setResourceType(manager.getResourceName());
-		generator.setResourceConverter(manager.getResourceConverter());
+		generator.setResourceConverter(this.resourceConverter);
 		generator.setCallback(this);
 
 		this.queuedOrRunningGenerators.add(generator);

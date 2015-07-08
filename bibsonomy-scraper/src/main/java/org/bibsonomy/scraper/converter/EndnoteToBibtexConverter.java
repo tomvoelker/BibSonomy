@@ -32,6 +32,8 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -163,7 +165,7 @@ public class EndnoteToBibtexConverter {
 	 */
 	public String processEntry(String entry){
 
-		final Map<String,String> map = new HashMap<String,String>();
+		final SortedMap<String,String> map = new TreeMap<String,String>();
 
 		/*
 		 * Handle abstract first

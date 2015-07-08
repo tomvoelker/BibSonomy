@@ -29,7 +29,10 @@ package org.bibsonomy.lucene.index.manager;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,9 +43,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.lucene.document.Document;
-import org.bibsonomy.es.IndexType;
-import org.bibsonomy.es.SharedResourceIndexUpdater;
+import org.bibsonomy.common.Pair;
+import org.bibsonomy.es.IndexUpdater;
 import org.bibsonomy.es.UpdatePlugin;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
@@ -54,10 +56,8 @@ import org.bibsonomy.lucene.search.LuceneResourceSearch;
 import org.bibsonomy.lucene.util.generator.AbstractIndexGenerator;
 import org.bibsonomy.lucene.util.generator.GenerateIndexCallback;
 import org.bibsonomy.lucene.util.generator.LuceneGenerateResourceIndex;
-import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.util.GroupUtils;
 
 /**
  * class for maintaining the lucene index
@@ -69,7 +69,7 @@ import org.bibsonomy.model.util.GroupUtils;
  * @param <R>
  *            the resource to manage
  */
-public class LuceneResourceManager<R extends Resource> implements GenerateIndexCallback<R> {
+public class LuceneResourceManager<R extends Resource> implements GenerateIndexCallback<R>, UpdatePlugin {
 	
 	/**
 	 * this constant determines the difference of docs between the lucene index and the DB that will be tolerated
@@ -104,16 +104,9 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	protected LuceneResourceIndex<R> updatingIndex;
 	
 	/**
-	 * for shared resources index
-	 */
-	// FIXME: object lifecycle is unclear
-	protected SharedResourceIndexUpdater<R> sharedIndexUpdater;
-
-	
-	/**
 	 * The plugin for indexUpdater
 	 */
-	protected UpdatePlugin plugin;
+	private List<UpdatePlugin> plugins = new ArrayList<>();
 
 	/** the queue containing the next indices to be updated */
 	private final Queue<LuceneResourceIndex<R>> updateQueue = new LinkedList<LuceneResourceIndex<R>>();
@@ -124,9 +117,9 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	/** the database manager */
 	protected LuceneDBInterface<R> dbLogic;
 
-	/** converts post model objects to lucene documents */
+	/** converts post model objects to documents of the index structure */
 	protected LuceneResourceConverter<R> resourceConverter;
-
+	
 	private LuceneGenerateResourceIndex<R> generator;
 
 	/**
@@ -174,114 +167,88 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 * t-epsilon. These posts are removed from the index together with the
 	 * updated posts.
 	 */
-	@SuppressWarnings({ "boxing", "unchecked" })
-	protected void updateIndexes() {
-		synchronized (this) {
-			/*
-			 * get next index to update
-			 */
-			this.updatingIndex = this.updateQueue.poll();
-			if (this.updatingIndex == null) {
-				log.warn("no " + getResourceName() + " index to update");
-				return;
-			}
+	protected synchronized void updateIndexes() {
+		// current time stamp for storing as 'lastLogDate' in the index
+		// FIXME: get this date from the log_table via
+		// 'getContentIdsToDelete'
+		//final long currentLogDate = System.currentTimeMillis();
+		final Date currentLogDate = new Date();//this.dbLogic.getLastLogDate();
+		
+		final Map<Pair<Date, Integer>, List<IndexUpdater<R>>> lastLogDateAndLastTasIdToUpdaters = getUpdatersBySameState();
+		
+//					boolean lockAcquired = false;
+//					try{
+//						lockAcquired = this.sharedIndexUpdater.getEsClient().getWriteLock(this.getResourceName()).tryLock(15, TimeUnit.SECONDS);  
+//						if(lockAcquired){
+//								this.sharedIndexUpdater.checkNewIndexInPipeline();
 
-			// current time stamp for storing as 'lastLogDate' in the index
-			// FIXME: get this date from the log_table via
-			// 'getContentIdsToDelete'
-			//final long currentLogDate = System.currentTimeMillis();
-			final Date currentLogDate = new Date();//this.dbLogic.getLastLogDate();
-			
-			// FIXME: this should be done in the constructor
-			// keeps track of the newest tas_id during last index update
-			Integer lastTasId = this.updatingIndex.getLastTasId(); // FIXME
+		for (final Map.Entry<Pair<Date, Integer>, List<IndexUpdater<R>>> e : lastLogDateAndLastTasIdToUpdaters.entrySet()) {
+			final Integer lastTasId = e.getKey().getSecond();
 			log.debug("lastTasId: " + lastTasId);
-
-			// keeps track of the newest log_date during last index update
-			final long lastLogDate = this.updatingIndex.getLastLogDate();
+			final Date lastLogDate = e.getKey().getFirst();
+			final List<IndexUpdater<R>> updaters = e.getValue();
 			
-			if (plugin != null) {
-				//Shared index updater
-				this.sharedIndexUpdater =  (SharedResourceIndexUpdater<R>) plugin.createUpdater(this.getResourceName());
-				//TODO check if any temporary index waiting to be activated
-				Integer lastTasIdSharedIndex = null;
-				//if there is no shared resource index it can be null
-				if (this.sharedIndexUpdater != null) {
-					boolean lockAcquired = false;
-					try{
-						lockAcquired = this.sharedIndexUpdater.getEsClient().getWriteLock(this.getResourceName()).tryLock(15, TimeUnit.SECONDS);  
-						if(lockAcquired){
-								this.sharedIndexUpdater.checkNewIndexInPipeline();
-								lastTasIdSharedIndex = this.sharedIndexUpdater.getLastTasId();
-							if ((lastTasIdSharedIndex != null) && (lastTasIdSharedIndex.intValue() != Integer.MIN_VALUE)) {
-								final long lastLogDateSharedIndex =  this.sharedIndexUpdater.getLastLogDate();
-								Integer newLastTasId;
-								Integer newLastTasIdSharedIndex;
-								if ((lastLogDate == lastLogDateSharedIndex) && (lastTasId == lastTasIdSharedIndex)) {
-									newLastTasId = this.updateIndex(currentLogDate.getTime(), lastTasId, lastLogDateSharedIndex, IndexType.BOTH);
-									newLastTasIdSharedIndex = newLastTasId;
-								} else {
-									newLastTasId = this.updateIndex(currentLogDate.getTime(), lastTasId, lastLogDate, IndexType.LUCENE);
-									newLastTasIdSharedIndex =  this.updateIndex(currentLogDate.getTime(), lastTasIdSharedIndex, lastLogDateSharedIndex, IndexType.ELASTICSEARCH);
-								}
-								
-								if (newLastTasIdSharedIndex != lastTasIdSharedIndex) {
-									this.sharedIndexUpdater.setSystemInformation(lastTasIdSharedIndex, currentLogDate);
-									this.sharedIndexUpdater.flush();
-								}
-								if (newLastTasId != lastTasId) {
-									this.updatingIndex.setLastLogDate(currentLogDate.getTime());
-									this.updatingIndex.setLastTasId(newLastTasId);
-									this.updatingIndex.flush();
-								}
-							} 
-						}
-					} catch (InterruptedException e) {
-						log.error("unable to get the read lock on index: "+ this.getResourceName(), e);
-					}finally{
-						if(lockAcquired){
-							this.sharedIndexUpdater.getEsClient().getWriteLock(this.getResourceName());
-						}
-					}
-				}else {
-					this.runLuceneIndexUpdate(currentLogDate.getTime(), lastTasId, lastLogDate, IndexType.LUCENE);
-				}
-				
-			} else {
-				this.runLuceneIndexUpdate(currentLogDate.getTime(), lastTasId, lastLogDate, IndexType.LUCENE);
-			}
+			this.updateIndex(currentLogDate, lastTasId, lastLogDate, updaters);
 		}
+
+// FIXME: locking is wrong - we need to lock an index not a resourceType
+//					} catch (InterruptedException e) {
+//						log.error("unable to get the read lock on index: "+ this.getResourceName(), e);
+//					}finally{
+//						if(lockAcquired){
+//							this.sharedIndexUpdater.getEsClient().getWriteLock(this.getResourceName());
+//						}
+//					}
+
 		this.alreadyRunning = 0;
 	}
+
+	private Map<Pair<Date, Integer>, List<IndexUpdater<R>>> getUpdatersBySameState() {
+		final Map<Pair<Date, Integer>, List<IndexUpdater<R>>> lastLogDateAndLastTasIdToUpdaters = new HashMap<>();
 		
-	@SuppressWarnings("boxing")
-	private void runLuceneIndexUpdate(final long currentLogDate, Integer lastTasId,final long lastLogDate, IndexType indexType){
-		lastTasId = this.updateIndex(currentLogDate, lastTasId, lastLogDate, indexType);
-		/*
-		 * commit changes
-		 */
-		this.updatingIndex.flush();
-		/*
-		 * update variables
-		 */
-		this.updatingIndex.setLastLogDate(currentLogDate);
-		this.updatingIndex.setLastTasId(lastTasId);
+		for (UpdatePlugin plugin : this.plugins) {
+			@SuppressWarnings("unchecked")
+			final IndexUpdater<R> updater = plugin.createUpdater(this.getResourceName());
+			if (updater == null) {
+				log.warn("no " + getResourceName() + " index to update for " + plugin.toString());
+				continue;
+			}
+			
+			final Integer lastTasId = updater.getLastTasId();
+
+			// keeps track of the newest log_date during last index update
+			final Date lastLogDate = updater.getLastLogDate();
+			
+			final Pair<Date, Integer> pair = new Pair<>(lastLogDate, lastTasId);
+			List<IndexUpdater<R>> updatersWithSameState = lastLogDateAndLastTasIdToUpdaters.get(pair);
+			if (updatersWithSameState == null) {
+				updatersWithSameState = new ArrayList<>();
+				lastLogDateAndLastTasIdToUpdaters.put(pair, updatersWithSameState);
+			}
+			updatersWithSameState.add(updater);
+		}
+		return lastLogDateAndLastTasIdToUpdaters;
 	}
 
 	/**
-	 * udpates the index for the current log data and last tas id and last log date
+	 * updates the index for the current log data and last tas id and last log date.
+	 * 
 	 * @param currentLogDate
 	 * @param lastTasId
 	 * @param lastLogDate
-	 * @param indexType 
+	 * @param indexUpdaters the {@link IndexUpdater}s which are to be called 
 	 * @return the lastTasId found by generating the new index
 	 */
-	@SuppressWarnings({ "boxing", "unchecked" })
-	protected int updateIndex(final long currentLogDate, int lastTasId, final long lastLogDate, final IndexType indexType) {
+	@SuppressWarnings({ "boxing" })
+	protected int updateIndex(final Date currentLogDate, final int lastTasId, final Date lastLogDate, final List<IndexUpdater<R>> indexUpdaters) {
+		int newLastTasId = lastTasId;
+		
 		/*
-		 * 1) flag/unflag spammer
+		 * 1) flag/unflag spammer if the index existed before
 		 */
-		this.updatePredictions(indexType, lastLogDate);
+		if (lastLogDate != null) {
+			this.updatePredictions(indexUpdaters, lastLogDate);
+		}
 
 		/*
 		 * 2) get new posts
@@ -291,7 +258,14 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		/*
 		 * 3) get posts to delete
 		 */
-		final List<Integer> contentIdsToDelete = this.dbLogic.getContentIdsToDelete(new Date(lastLogDate - QUERY_TIME_OFFSET_MS));
+		final List<Integer> contentIdsToDelete;
+		if (lastLogDate == null) {
+			// index is empty -> nothing to delete
+			contentIdsToDelete = Collections.emptyList();
+		} else {
+			contentIdsToDelete = this.dbLogic.getContentIdsToDelete(new Date(lastLogDate.getTime() - QUERY_TIME_OFFSET_MS));
+		}
+		
 
 		/*
 		 * 4) remove posts from 1) & 2) from the index and update field
@@ -299,43 +273,30 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		 */
 		for (final LucenePost<R> post : newPosts) {
 			contentIdsToDelete.add(post.getContentId());
-			lastTasId = Math.max(post.getLastTasId(), lastTasId);
+			newLastTasId = Math.max(post.getLastTasId(), lastTasId);
 		}
 		
 		/*lastTasIdlastTasId
 		 * 5) add all posts from 1) to the index
 		 */
-		if (IndexType.LUCENE == indexType) {
-			this.updatingIndex.deleteDocumentsInIndex(contentIdsToDelete);
-
+		
+		for (IndexUpdater<R> updater : indexUpdaters) {
+			updater.deleteDocumentsForContentIds(contentIdsToDelete);
 			for (final LucenePost<R> post : newPosts) {
-				post.setLastLogDate(new Date(currentLogDate));
-				final Document postDoc = (Document)this.resourceConverter.readPost(post, indexType);
-				this.updatingIndex.insertDocument(postDoc);					
+				updater.insertDocument(post, currentLogDate);
 			}
-		} else if (IndexType.ELASTICSEARCH == indexType) {
-			this.sharedIndexUpdater.setContentIdsToDelete(contentIdsToDelete);
+		}
 
-			for (final LucenePost<R> post : newPosts) {
-				if (post.getGroups().contains(GroupUtils.buildPublicGroup())) {
-					post.setLastLogDate(new Date(currentLogDate));
-					final Map<String, Object> postDoc = (Map<String, Object>)this.resourceConverter.readPost(post, indexType);
-					this.sharedIndexUpdater.insertDocument(postDoc);
-				}
-			}
-		} else if (IndexType.BOTH == indexType) {
-			this.updatingIndex.deleteDocumentsInIndex(contentIdsToDelete);
-			this.sharedIndexUpdater.setContentIdsToDelete(contentIdsToDelete);
-
-			for (final LucenePost<R> post : newPosts) {
-				post.setLastLogDate(new Date(currentLogDate));
-				//sets the system informations for update
-				final Document postDoc = (Document)this.resourceConverter.readPost(post, IndexType.LUCENE);
-				if (post.getGroups().contains(GroupUtils.buildPublicGroup())) {
-					final Map<String, Object> postJsonDoc = (Map<String, Object>)this.resourceConverter.readPost(post, IndexType.ELASTICSEARCH);
-					this.sharedIndexUpdater.insertDocument(postJsonDoc);
-				}
-				this.updatingIndex.insertDocument(postDoc);					
+		for (IndexUpdater<R> updater : indexUpdaters) {
+			try {
+				updater.setSystemInformation(newLastTasId, currentLogDate);
+				updater.flush();
+			} catch (RuntimeException e) {
+				updater.setSystemInformation(lastTasId, lastLogDate);
+				throw e;
+			} catch (Exception e) {
+				updater.setSystemInformation(lastTasId, lastLogDate);
+				throw new RuntimeException(e);
 			}
 		}
 
@@ -500,7 +461,6 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 				final LuceneGenerateResourceIndex<R> generator = new LuceneGenerateResourceIndex<R>();
 				generator.setResourceIndex(indexToGenerate);
 				generator.setLogic(this.dbLogic);
-				generator.setResourceConverter(this.resourceConverter);
 				generator.setCallback(this);
 
 				this.generator = generator;
@@ -550,7 +510,6 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			final LuceneGenerateResourceIndex<R> generator = new LuceneGenerateResourceIndex<R>();
 			generator.setResourceIndex(resourceIndex);
 			generator.setLogic(this.dbLogic);
-			generator.setResourceConverter(this.resourceConverter);
 			generator.setCallback(this);
 
 			this.generator = generator;
@@ -590,14 +549,15 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 * FIXME: this code is due to the old spam-flagging-mechanism it is probably
 	 * more efficient to get all un-flagged-posts directly via a join with the
 	 * user table
-	 * @param searchType 
+	 * @param updaters 
+	 * @param lastLogDate 
 	 */
-	@SuppressWarnings({ "unchecked", "boxing" })
-	private void updatePredictions(IndexType searchType, final long lastLogDate) {
+	@SuppressWarnings({ "boxing" })
+	protected void updatePredictions(List<IndexUpdater<R>> updaters, final Date lastLogDate) {
 		// keeps track of the newest log_date during last index update
 		// final long lastLogDate = lastLogDate - QUERY_TIME_OFFSET_MS;
 		// get date of last index update
-		final Date fromDate = new Date(lastLogDate - QUERY_TIME_OFFSET_MS);
+		final Date fromDate = new Date(lastLogDate.getTime() - QUERY_TIME_OFFSET_MS);
 
 		final List<User> predictedUsers = this.dbLogic.getPredictionForTimeRange(fromDate);
 
@@ -616,56 +576,24 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 				case 0:
 					log.debug("unflag non-spammer");
 					final List<LucenePost<R>> userPosts = this.getDbLogic().getPostsForUser(user.getName(), Integer.MAX_VALUE, 0);
+					
 					// insert new records into index
-					if (searchType == IndexType.LUCENE) {
-						if (present(userPosts)) {
-							for (final Post<R> post : userPosts) {
-								// cache possible pre existing duplicate for
-								// deletion
-								this.updatingIndex.deleteDocumentForContentId(post.getContentId());
-								// cache document for writing
-								this.updatingIndex.insertDocument((Document) this.resourceConverter.readPost(post, searchType));
+					if (present(userPosts)) {
+						for (IndexUpdater<R> updater : updaters) {
+							for (final LucenePost<R> post : userPosts) {
+								updater.deleteDocumentForContentId(post.getContentId());
+								updater.insertDocument(post, null);
 							}
-						}
-						this.updatingIndex.unFlagUser(user.getName());
-					} else if (searchType == IndexType.ELASTICSEARCH) {
-						if (present(userPosts)) {
-							for (final Post<R> post : userPosts) {
-								// cache possible pre existing duplicate for
-								// deletion
-								this.sharedIndexUpdater.deleteDocumentForContentId(post.getContentId());
-								// cache document for writing
-								if (post.getGroups().contains(GroupUtils.buildPublicGroup())) {
-									this.sharedIndexUpdater.insertDocument((Map<String, Object>) this.resourceConverter.readPost(post, searchType));
-								}
-							}
-						}
-						this.sharedIndexUpdater.unFlagUser(user.getName());
-					} else if (searchType == IndexType.BOTH) {
-						for (final Post<R> post : userPosts) {
-							this.updatingIndex.deleteDocumentForContentId(post.getContentId());
-							this.updatingIndex.insertDocument((Document) this.resourceConverter.readPost(post, IndexType.LUCENE));
-							this.sharedIndexUpdater.deleteDocumentForContentId(post.getContentId());
-							if (post.getGroups().contains(GroupUtils.buildPublicGroup())) {
-								this.sharedIndexUpdater.insertDocument((Map<String, Object>) this.resourceConverter.readPost(post, IndexType.ELASTICSEARCH));
-							}
+							updater.unFlagUser(user.getName());
 						}
 					}
 					break;
 				case 1:
 					log.debug("flag spammer");
-					
 					// remove all docs of the user from the index!
-					if (searchType == IndexType.LUCENE) {
-						this.updatingIndex.flagUser(user.getName());	
-					} else if (searchType == IndexType.ELASTICSEARCH) {
-						this.sharedIndexUpdater.flagUser(user.getName());	
-
-					} else if(searchType == IndexType.BOTH) {
-						this.updatingIndex.flagUser(user.getName());	
-						this.sharedIndexUpdater.flagUser(user.getName());	
+					for (IndexUpdater<R> updater : updaters) {
+						updater.flagUser(user.getName());
 					}
-						
 					break;
 				}
 			}
@@ -792,19 +720,19 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			this.updateQueue.add(oldIndex);
 		}
 	}
-
+	
 	/**
-	 * @return the plugin
+	 * @return the plugins
 	 */
-	public UpdatePlugin getPlugin() {
-		return this.plugin;
+	public List<UpdatePlugin> getPlugins() {
+		return this.plugins;
 	}
-
+	
 	/**
-	 * @param plugin the plugin to set
+	 * @param plugins the plugins to set
 	 */
-	public void setPlugin(UpdatePlugin plugin) {
-		this.plugin = plugin;
+	public void setPlugins(List<UpdatePlugin> plugins) {
+		this.plugins = plugins;
 	}
 
 	/**
@@ -821,6 +749,9 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 * @throws Exception
 	 */
 	public void init() throws Exception {
+		this.plugins.remove(null);
+		this.plugins.add(this);
+		
 		/*
 		 * set the first index which is ready to the be the active one
 		 */
@@ -913,5 +844,14 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		return lrii;
 	}
 
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.UpdatePlugin#createUpdater(java.lang.String)
+	 */
+	@Override
+	public IndexUpdater<R> createUpdater(String indexType) {
+		this.updatingIndex = this.updateQueue.poll();
+		return this.updatingIndex;
+	}
 
 }

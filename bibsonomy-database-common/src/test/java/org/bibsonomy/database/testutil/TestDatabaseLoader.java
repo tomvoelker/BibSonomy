@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Database - Database for BibSonomy.
+ * BibSonomy-Database-Common - Helper classes for database interaction
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -24,7 +24,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.testutil;
+package org.bibsonomy.database.testutil;
+
+import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -40,7 +42,6 @@ import java.util.Scanner;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.database.DBLogic;
 import org.junit.Ignore;
 
 /**
@@ -53,20 +54,6 @@ import org.junit.Ignore;
 public class TestDatabaseLoader {
 	private final static Log log = LogFactory.getLog(TestDatabaseLoader.class);
 	
-	/** Holds the database schema (script is at /src/main/resources) */
-	private static final String SCHEMA_FILENAME = "bibsonomy-db-schema.sql";
-	/** Holds the test data (script is found at /src/test/resources) */
-	private static final String DATA_FILENAME   = "database/insert-test-data.sql";
-	
-	private static final TestDatabaseLoader INSTANCE = new TestDatabaseLoader();
-
-	/**
-	 * @return the @{link:TestDatabaseLoader} instance
-	 */
-	public static TestDatabaseLoader getInstance() {
-		return INSTANCE;
-	}
-	
 	private boolean firstRun = true;
 	
 	/** Stores the create table statements  */
@@ -78,16 +65,23 @@ public class TestDatabaseLoader {
 
 	/**
 	 * Loads the SQL statements from the script.
+	 * @param schemaFile 
+	 * @param dataFiles 
 	 */
-	private TestDatabaseLoader() {
+	public TestDatabaseLoader(final String schemaFile, final String ... dataFiles) {
 		// parse all sql scripts
 		final long start = System.currentTimeMillis();
 		log.debug("parsing create statements");
 		this.tableNames = new LinkedList<String>();
-		this.createStatements = this.parseInputStream(DBLogic.class.getClassLoader().getResourceAsStream(SCHEMA_FILENAME));
+		this.createStatements = this.parseInputStream(TestDatabaseLoader.class.getClassLoader().getResourceAsStream(schemaFile));
 		
 		log.debug("parsing insert statements");
-		this.insertStatements = this.parseInputStream(TestDatabaseLoader.class.getClassLoader().getResourceAsStream(DATA_FILENAME));
+		this.insertStatements = new LinkedList<String>();
+		if (present(dataFiles)) {
+			for (String dataFile : dataFiles) {
+				this.insertStatements.addAll(this.parseInputStream(TestDatabaseLoader.class.getClassLoader().getResourceAsStream(dataFile)));
+			}
+		}
 		
 		final long elapsed = (System.currentTimeMillis() - start ) / 1000;
 		log.debug("Done; took " + elapsed + " seconds.");
@@ -105,7 +99,7 @@ public class TestDatabaseLoader {
 		if (scriptStream == null) {
 			throw new RuntimeException("Can't get SQL script.");
 		}
-				
+		
 		/*
 		 * We read every single line and skip it if it's empty or a comment
 		 * (starting with '--'). If the current line doesn't end with a ';'
@@ -157,12 +151,14 @@ public class TestDatabaseLoader {
 
 	/**
 	 * Executes all statements from the SQL scripts.
+	 * @param configFileName 
+	 * @param databaseId 
 	 */
-	public void load() {
+	public void load(String configFileName, String databaseId) {
 		long start, elapsed;
 		try {
 			log.debug("Starting to load test database.");
-			final SimpleJDBCHelper jdbc = new SimpleJDBCHelper();
+			final SimpleJDBCHelper jdbc = new SimpleJDBCHelper(configFileName, databaseId);
 			
 			/*
 			 * mysql >= 5.5 doesn't truncate tables with foreigen keys
@@ -240,7 +236,8 @@ public class TestDatabaseLoader {
  * @author Christian Schenk
  */
 final class SimpleJDBCHelper implements Closeable {
-	private final String configFile = "database-test.properties";
+	private String configFile;
+	private String databaseId;
 	private Connection connection;
 	private final DatabaseConfig cfg;
 	
@@ -271,10 +268,14 @@ final class SimpleJDBCHelper implements Closeable {
 
 	/**
 	 * Loads the MySQL JDBC driver and sets up a connection.
+	 * @param configFile 
+	 * @param databaseId 
 	 */
-	public SimpleJDBCHelper() {
+	public SimpleJDBCHelper(final String configFile, final String databaseId) {
+		this.configFile = configFile;
+		this.databaseId = databaseId;
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName("com.mysql.jdbc.Driver"); // TODO: use the settings of the properties file
 			this.cfg = this.getConfig();
 			this.connection = DriverManager.getConnection(this.cfg.getUrl(), this.cfg.getUsername(), this.cfg.getPassword());
 			
@@ -289,17 +290,17 @@ final class SimpleJDBCHelper implements Closeable {
 	 * @return DatabaseConfig - the database configuration
 	 */
 	private DatabaseConfig getConfig() {
-	    final Properties prop = new Properties();
-	    try {
-	        prop.load(SimpleJDBCHelper.class.getClassLoader().getResourceAsStream(this.configFile));
-	    } catch (final IOException e) {
-	    	throw new RuntimeException("Can't get config file '" + this.configFile + "'");
-	    }
-	    
+		final Properties prop = new Properties();
+		try {
+			prop.load(SimpleJDBCHelper.class.getClassLoader().getResourceAsStream(this.configFile));
+		} catch (final IOException e) {
+			throw new RuntimeException("Can't get config file '" + this.configFile + "'");
+		}
+		
 		return new DatabaseConfig() {
 			@Override
 			public String getUrl() {
-				return prop.getProperty("database.main.url");
+				return prop.getProperty("database." + SimpleJDBCHelper.this.databaseId + ".url");
 			}
 			
 			/**
@@ -320,12 +321,12 @@ final class SimpleJDBCHelper implements Closeable {
 
 			@Override
 			public String getUsername() {
-				return prop.getProperty("database.main.username");
+				return prop.getProperty("database." + SimpleJDBCHelper.this.databaseId + ".username");
 			}
 
 			@Override
 			public String getPassword() {
-				return prop.getProperty("database.main.password");
+				return prop.getProperty("database." + SimpleJDBCHelper.this.databaseId + ".password");
 			}
 		};
 	}

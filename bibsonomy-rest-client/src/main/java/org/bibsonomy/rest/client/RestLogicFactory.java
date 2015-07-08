@@ -38,6 +38,8 @@ import org.bibsonomy.rest.client.util.ProgressCallbackFactoryImpl;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 
 /**
+ * TODO: add a builder for the rest logic factory
+ * 
  * {@link LogicInterfaceFactory} for the {@link RestLogic}
  */
 public class RestLogicFactory implements LogicInterfaceFactory {
@@ -80,6 +82,13 @@ public class RestLogicFactory implements LogicInterfaceFactory {
 	}
 	
 	/**
+	 * @param factory
+	 */
+	public RestLogicFactory(final FileFactory factory) {
+		this(BIBSONOMY_API_URL, DEFAULT_RENDERING_FORMAT, DEFAULT_CALLBACK_FACTORY, factory);
+	}
+	
+	/**
 	 * @param apiUrl the api url
 	 * @param renderingFormat the rendering format to use
 	 */
@@ -95,6 +104,7 @@ public class RestLogicFactory implements LogicInterfaceFactory {
 	 * @param apiUrl the api base url of the REST service
 	 * @param renderingFormat the rendering format to use
 	 * @param progressCallbackFactory the progress callback factory to use
+	 * @param fileFactory 
 	 */
 	public RestLogicFactory(String apiUrl, final RenderingFormat renderingFormat, final ProgressCallbackFactory progressCallbackFactory, FileFactory fileFactory) {
 		this.fileFactory = fileFactory;

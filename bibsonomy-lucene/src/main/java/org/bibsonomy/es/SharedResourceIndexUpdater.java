@@ -42,7 +42,10 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
+import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
+import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.util.GroupUtils;
 import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
@@ -65,7 +68,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @param <R>
  *        the resource of the index
  */
-public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpdater {
+public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpdater<R> {
 	private static final Log log = LogFactory.getLog(SharedResourceIndexUpdater.class);
 
 	private final String activeIndexID;
@@ -88,6 +91,10 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 
 	/** list containing content ids of cached delete operations */
 	protected List<Integer> contentIdsToDelete;
+	
+	/** converts post model objects to documents of the index structure */
+	private final LuceneResourceConverter<R> resourceConverter;
+	
 	/**
 	 * 
 	 */
@@ -97,8 +104,9 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 * @param systemHome
 	 * @param resourceType
 	 */
-	public SharedResourceIndexUpdater(final String systemHome, String resourceType) {
+	public SharedResourceIndexUpdater(final String systemHome, String resourceType, final LuceneResourceConverter<R> resourceConverter) {
 		this.systemHome = systemHome;
+		this.resourceConverter = resourceConverter;
 		this.contentIdsToDelete = new LinkedList<Integer>();
 		this.esPostsToInsert = new ArrayList<Map<String, Object>>();
 		this.usersToFlag = new TreeSet<String>();
@@ -110,14 +118,14 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	/**
 	 * @return lastLogDate
 	 */
-	@Override
-	public long getLastLogDate() {
+	@SuppressWarnings("boxing")
+	public Date getLastLogDate() {
 		synchronized (this) {
 			final String lastLogDateString = this.fetchSystemInfoField(LuceneFieldNames.LAST_LOG_DATE);
 			if (lastLogDateString == null) {
-				return Long.MIN_VALUE;
+				return null;
 			}
-			return Long.parseLong(lastLogDateString);
+			return new Date(Long.parseLong(lastLogDateString));
 		}
 	}
 
@@ -206,7 +214,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 * @param contentIdsToDelete
 	 *        the contentIdsToDelete to set
 	 */
-	public void setContentIdsToDelete(final List<Integer> contentIdsToDelete) {
+	public void deleteDocumentsForContentIds(final List<Integer> contentIdsToDelete) {
 		synchronized (this) {
 			this.contentIdsToDelete = contentIdsToDelete;
 		}
@@ -230,7 +238,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	/**
 	 * perform all cached operations to index
 	 */
-
+	@Override
 	public void flush() {
 		synchronized (this) {
 			// ----------------------------------------------------------------
@@ -250,7 +258,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 						// final int cnt = purgeDocumentsForUser(userName);
 						// log.debug("Purged " + cnt + " posts for user " +
 						// userName);
-						this.deleteIndexForForUser(userName);
+						this.deleteIndexForUser(userName);
 						log.debug("Purged posts for user " + userName);
 					}
 				}
@@ -355,8 +363,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 		
 	}
 	
-	@Override
-	public void insertNewPosts(final ArrayList<Map<String, Object>> esPostsToInsert2) {
+	private void insertNewPosts(final ArrayList<Map<String, Object>> esPostsToInsert2) {
 		//first update the active index at the same time make the backup index active 
 		String indexName = esIndexManager.switchToBackupIndexByAlias(activeIndexID, resourceType);
 		this.insertNewPosts(esPostsToInsert2, indexName);
@@ -369,7 +376,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 * @param indexName 
 	 */
 	@SuppressWarnings("boxing")
-	public void insertNewPosts(final ArrayList<Map<String, Object>> esPostsToInsert2, String indexName) {
+	private void insertNewPosts(final ArrayList<Map<String, Object>> esPostsToInsert2, String indexName) {
 		// wait for the yellow (or green) status to prevent
 		// NoShardAvailableActionException later
 		this.esClient.getClient().admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
@@ -387,7 +394,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 * @param userName
 	 */
 	@Override
-	public void deleteIndexForForUser(final String userName) {
+	public void deleteIndexForUser(final String userName) {
 		//first update the active index at the same time make the backup index active 
 		String indexName = esIndexManager.switchToBackupIndexByAlias(activeIndexID, resourceType);
 		this.deleteIndexForForUser(userName, indexName);
@@ -494,6 +501,17 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 */
 	public void setEsClient(final ESClient esClient) {
 		this.esClient = esClient;
+	}
+	
+	@Override
+	public void insertDocument(LucenePost<R> post, final Date currentLogDate) {
+		if (post.getGroups().contains(GroupUtils.buildPublicGroup())) {
+			if (currentLogDate != null) {
+				post.setLastLogDate(currentLogDate);
+			}
+			final Map<String, Object> postDoc = (Map<String, Object>)this.resourceConverter.readPost(post, IndexType.ELASTICSEARCH);
+			this.insertDocument(postDoc);
+		}
 	}
 
 }
