@@ -48,12 +48,14 @@ public class DisambiguationPageController extends SingleResourceListController i
 
 		final PersonName requestedName = command.getPost().getResource().getAuthor().get(command.getRequestedIndex());
 		command.setPersonName(requestedName);
-		command.setSuggestedPersonNames(new ArrayList<PersonName>()); // TODO this.logic.getPersonSuggestion(requestedName.getLastName(), requestedName.getFirstName()));
+		
+		command.setPersonSuggestions(this.logic.getPersonSuggestion(requestedName.toString()));
 		
 		return Views.DISAMBIGUATION;
 	}
 	
-	/**
+	
+/**
 	 * creates a new person, links te resource and redirects to the new person page
 	 * @param command
 	 * @return

@@ -250,8 +250,12 @@ public class LuceneResourceConverter<R extends Resource> {
 	private List<ResourcePersonRelation> readPersonRelationsFromIndex(GetProvider<String, Object> result) {
 		final List<ResourcePersonRelation> rels = new ArrayList<>();
 		
-		String ids = (String) result.get(ESConstants.PERSON_ENTITY_IDS_FIELD_NAME);
+		final String ids = (String) result.get(ESConstants.PERSON_ENTITY_IDS_FIELD_NAME);
+		if (StringUtils.isEmpty(ids)) {
+			return rels;
+		}
 		String[] parts = split(ids, " ");
+		
 		
 		final int personIndexCtr[] = new int[PersonResourceRelationType.AUTHOR.values().length];
 		for (int i = 0; i+1 < parts.length; i += 2) {
