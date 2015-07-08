@@ -98,7 +98,7 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
 
-			this.setList(command, resourceType, GroupingEntity.ALL, null, requTags, null, null, null, order, command.getStartDate(), command.getEndDate(), entriesPerPage);
+			this.setList(command, resourceType, GroupingEntity.ALL, null, requTags, null, null, command.getScope(),null, order, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			this.postProcessAndSortList(command, resourceType);
 			
 			this.setTotalCount(command, resourceType, GroupingEntity.ALL, null, requTags, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);

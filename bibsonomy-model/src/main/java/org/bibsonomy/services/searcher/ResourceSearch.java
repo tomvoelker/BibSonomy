@@ -100,6 +100,33 @@ public interface ResourceSearch<R extends Resource> {
 			final Collection<String> allowedGroups,final SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms,
 			final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset);
 	
+	
+	
+	/**
+	 * gets post for the requested BibTex key
+	 * 
+	 * @param userName
+	 * @param requestedUserName
+	 * @param requestedGroupName
+	 * @param requestedRelationNames
+	 * @param allowedGroups
+	 * @param searchType
+	 * @param bibtexKey
+	 * @param tagIndex
+	 * @param year
+	 * @param firstYear
+	 * @param lastYear
+	 * @param negatedTags
+	 * @param order
+	 * @param limit
+	 * @param offset
+	 * @return
+	 */
+	public List<Post<R>> getPostsByBibtexKey(
+			final String userName, final Collection<String> allowedGroups,final SearchType searchType, final String bibtexKey,
+			final Collection<String> tagIndex, final List<String> negatedTags, Order order, final int limit, final int offset);
+	
+	
 	/**
 	 * get tag cloud for given search query
 	 * 
@@ -108,6 +135,7 @@ public interface ResourceSearch<R extends Resource> {
 	 * @param requestedGroupName
 	 * @param allowedGroups
 	 * @param searchTerms
+	 * @param searchType 
 	 * @param titleSearchTerms
 	 * @param authorSearchTerms
 	 * @param tagIndex
@@ -122,7 +150,34 @@ public interface ResourceSearch<R extends Resource> {
 	public List<Tag> getTags(
 			final String userName, final String requestedUserName, String requestedGroupName, 
 			final Collection<String> allowedGroups,
-			final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex,
+			final String searchTerms, final SearchType searchType, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex,
 			final String year, final String firstYear, final String lastYear, List<String> negatedTags, int limit, int offset);
-	
+
+
+/**
+ * get tag cloud for given search query
+ * 
+ * @param userName
+ * @param requestedUserName
+ * @param requestedGroupName
+ * @param allowedGroups
+ * @param searchTerms
+ * @param searchType 
+ * @param titleSearchTerms
+ * @param authorSearchTerms
+ * @param tagIndex
+ * @param year
+ * @param firstYear
+ * @param lastYear
+ * @param negatedTags
+ * @param limit
+ * @param offset
+ * @return the tag cloud for the given search
+ */
+public List<Tag> getTags(
+		final String userName, final String requestedUserName, String requestedGroupName, 
+		final Collection<String> allowedGroups,
+		final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex,
+		final String year, final String firstYear, final String lastYear, List<String> negatedTags, int limit, int offset);
+
 }

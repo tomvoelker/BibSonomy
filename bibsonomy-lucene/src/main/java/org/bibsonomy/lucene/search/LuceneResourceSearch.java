@@ -44,6 +44,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
@@ -123,6 +124,8 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	public LuceneResourceSearch() {
 		this.defaultSearchTermJunctor = Operator.AND;
 	}
+	
+	
 
 	/*
 	 * (non-Javadoc)
@@ -141,6 +144,26 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		// perform search query
 		return this.searchLucene(query, limit, offset);
 	}
+
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPostsByBibtexKey(java.lang.String, java.util.Collection, org.bibsonomy.common.enums.SearchType, java.lang.String, java.util.Collection, java.util.List, org.bibsonomy.model.enums.Order, int, int)
+	 */
+	@Override
+	public List<Post<R>> getPostsByBibtexKey(String userName,
+			Collection<String> allowedGroups, SearchType searchType,
+			String bibtexKey, Collection<String> tagIndex,
+			List<String> negatedTags, Order order, int limit, int offset) {
+		if(searchType==SearchType.FEDERATED){
+			try {
+				return this.sharedResourceSearch.getPosts(userName, null, null, null, allowedGroups, null, null, null, bibtexKey, tagIndex, null, null, null, negatedTags, order, limit, offset);
+			} catch (IOException e) {
+				log.error("Failed to search post from shared resource", e);
+			}
+		}
+		return null;
+	}
+
 	
 	/*
 	 * (non-Javadoc)
@@ -787,7 +810,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 			// searchResource.setINDEX_TYPE(resourceType);
 			// searchResource.setResourceConverter(this.resourceConverter);
 			try {
-				List<Post<R>> posts = this.sharedResourceSearch.fullTextSearch(searchTerms, order, limit, offset);
+				List<Post<R>> posts = this.sharedResourceSearch.getPosts(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, null, tagIndex, year, firstYear, lastYear, negatedTags, order, limit, offset);
 				return posts;
 			} catch (IOException e) {
 				log.error("Failed to search post from shared resource", e);
@@ -797,6 +820,26 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		} else if (searchType == SearchType.LOCAL) {
 			return this.getPosts(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, order, limit, offset);
 		}
+		log.warn("unsupported searchType '" + searchType + "'");
+		return new ArrayList<>();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.searcher.ResourceSearch#getTags(java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, org.bibsonomy.common.enums.SearchType, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, int, int)
+	 */
+	@Override
+	public List<Tag> getTags(String userName, String requestedUserName,
+			String requestedGroupName, Collection<String> allowedGroups,
+			String searchTerms, SearchType searchType, String titleSearchTerms,
+			String authorSearchTerms, Collection<String> tagIndex, String year,
+			String firstYear, String lastYear, List<String> negatedTags,
+			int limit, int offset) {
+		if ((this.sharedResourceSearch != null) && (searchType == SearchType.FEDERATED)) {
+			//just for the moment for experimental purpose
+			return	this.sharedResourceSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, null, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
+		}else if(searchType==SearchType.LOCAL){
+			return	this.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
+		}		
 		log.warn("unsupported searchType '" + searchType + "'");
 		return new ArrayList<>();
 	}
@@ -814,5 +857,4 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	public void setSharedResourceSearch(EsResourceSearch<R> sharedResourceSearch) {
 		this.sharedResourceSearch = sharedResourceSearch;
 	}
-
 }

@@ -38,6 +38,10 @@ public enum SearchType {
 	 */
 	FEDERATED, 
 	/**
+	 * search public posts based on author of all connected BibSonomy-based systems (including PUMA)
+	 */
+	FEDERATED_AUTHOR, 
+	/**
 	 * search all viewable posts on the local system
 	 */
 	LOCAL;

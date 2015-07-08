@@ -1,6 +1,7 @@
 package org.bibsonomy.es;
 
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
 
 import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
 import org.bibsonomy.model.Resource;
@@ -16,7 +17,7 @@ import org.elasticsearch.node.NodeBuilder;
  * 
  * @author jensi
  */
-public class ESTestClient implements AutoCloseable, ESClient {
+public class ESTestClient extends AbstractEsClient implements AutoCloseable {
 
 	private Node node;
 	private Client client;
@@ -28,6 +29,7 @@ public class ESTestClient implements AutoCloseable, ESClient {
 	
 	public void init() {
 		startNode();
+		super.init();
 	}
 	
 	public void startNode() {
@@ -43,7 +45,7 @@ public class ESTestClient implements AutoCloseable, ESClient {
 			LuceneResourceManager<? extends Resource> luceneResMgr = luceneResourceManagers.get(resourceClass);
 			SharedIndexUpdatePlugin<? extends Resource> srPlugin = sharedIndexUpdatePlugins.get(resourceClass);
 			if (srPlugin != null) {
-				srPlugin.generateIndex(luceneResMgr, true);
+				srPlugin.generateIndex(luceneResMgr, true, false);
 			}
 		}
 		

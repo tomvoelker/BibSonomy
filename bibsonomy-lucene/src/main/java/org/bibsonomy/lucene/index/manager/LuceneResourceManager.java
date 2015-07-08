@@ -183,6 +183,13 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	protected synchronized void updateIndexes() {
 		final Map<IndexUpdaterState, List<IndexUpdater<R>>> lastLogDateAndLastTasIdToUpdaters = getUpdatersBySameState();
 		final IndexUpdaterState targetState = this.dbLogic.getDbState();
+
+		
+//					boolean lockAcquired = false;
+//					try{
+//						lockAcquired = this.sharedIndexUpdater.getEsClient().getWriteLock(this.getResourceName()).tryLock(15, TimeUnit.SECONDS);  
+//						if(lockAcquired){
+//								this.sharedIndexUpdater.checkNewIndexInPipeline();
 		
 		for (final Map.Entry<IndexUpdaterState, List<IndexUpdater<R>>> e : lastLogDateAndLastTasIdToUpdaters.entrySet()) {
 			final List<IndexUpdater<R>> updaters = e.getValue();
@@ -190,6 +197,16 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			// TODO: use the common lastTasId in the dbState to make sure the indices will have the same state after the update, regardless of their execution time and order
 			this.updateIndex(indexState, targetState, updaters);
 		}
+
+// FIXME: locking is wrong - we need to lock an index not a resourceType
+//					} catch (InterruptedException e) {
+//						log.error("unable to get the read lock on index: "+ this.getResourceName(), e);
+//					}finally{
+//						if(lockAcquired){
+//							this.sharedIndexUpdater.getEsClient().getWriteLock(this.getResourceName());
+//						}
+//					}
+
 		this.alreadyRunning = 0;
 	}
 

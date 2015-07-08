@@ -69,6 +69,7 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	/**
 	 * @param systemHome
 	 * @param updater 
+	 * @param indexName 
 	 */
 	public SharedResourceIndexGenerator(final String systemHome, SharedResourceIndexUpdater<R> updater, final String indexName) {
 		this.systemHome = systemHome;
@@ -101,15 +102,14 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 		log.info("Start writing data to shared index");
 		
 		//Add mapping here depending on the resource type which is here indexType
-		ESResourceMapping resourceMapping = new ESResourceMapping(resourceType, esClient);
-		resourceMapping.setIndexName(indexName);
+		ESResourceMapping resourceMapping = new ESResourceMapping(resourceType, esClient, indexName);
 		resourceMapping.doMapping();
 	}
 	
 	@Override
 	protected void writeMetaInfo(IndexUpdaterState state) throws IOException {
 		updater.setSystemInformation(state);
-		updater.flushSystemInformation();
+		updater.flushSystemInformation(indexName);
 	}
 	
 	/* (non-Javadoc)
@@ -142,6 +142,7 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	/**
 	 * @return the indexName
 	 */
+	@Override
 	public String getIndexName() {
 		return this.indexName;
 	}
@@ -149,6 +150,7 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	/**
 	 * @return e.g. "BibTex"
 	 */
+	@Override
 	public String getResourceType() {
 		return this.resourceType;
 	}

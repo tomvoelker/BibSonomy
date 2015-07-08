@@ -36,6 +36,9 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.es.SharedIndexUpdatePlugin;
 import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
 import org.bibsonomy.lucene.param.LuceneIndexInfo;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.ResourceUtils;
@@ -98,14 +101,14 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 					for (Entry<Class<? extends Resource>, LuceneResourceManager<? extends Resource>> e : luceneResourceManagers.entrySet()) {
 						SharedIndexUpdatePlugin<? extends Resource> esUpdater = sharedIndexUpdatePlugins.get(e.getKey());
 						if (esUpdater != null) {
-							esUpdater.generateIndex(e.getValue(), false);
+							esUpdater.generateIndex(e.getValue(), false, true);
 						}
 					}
 				} else {
 					command.setAdminResponse("unsupported indextype '" + command.getIndexType() + "'");
 				}
 			} else {
-				final Class<? extends Resource> cls = ResourceUtils.getResourceClassBySimpleName(command.getResource());
+				final Class<? extends Resource> cls = ResourceUtils.getResourceClassBySimpleName(command.getResource().replaceAll(" elasticsearch", ""));
 				final LuceneResourceManager<? extends Resource> mng = luceneResourceManagers.get(cls);
 				final SharedIndexUpdatePlugin<? extends Resource> esUpdater = sharedIndexUpdatePlugins.get(cls);
 				if (mng == null) {
@@ -114,7 +117,7 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 					command.setAdminResponse("Cannot build new index because there exists no updater for resource \"" + command.getResource() + "\".");
 				} else {
 					if ((esUpdater != null) && "elasticsearch".equals(command.getIndexType())) {
-						esUpdater.generateIndex(mng, false);
+						esUpdater.generateIndex(mng, false, true);
 					} else {
 						if (!mng.isGeneratingIndex()) {
 							if (GENERATE_INDEX.equals(command.getAction())) {
@@ -157,7 +160,13 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 							LuceneResourceIndicesInfoContainer infoCon = new LuceneResourceIndicesInfoContainer();
 							infoCon.setResourceName(mng.getResourceName() + " elasticsearch");
 							infoCon.getLuceneResoruceIndicesInfos().add(info);
-							command.getEsIndicesInfos().add(infoCon);
+							if(mng.getResourceName().equalsIgnoreCase(BibTex.class.getSimpleName())){
+								command.getEsIndicesInfosBibtex().add(infoCon);
+							}else if(mng.getResourceName().equalsIgnoreCase(Bookmark.class.getSimpleName())){
+								command.getEsIndicesInfosBookmark().add(infoCon);
+							}else if(mng.getResourceName().equalsIgnoreCase(GoldStandardPublication.class.getSimpleName())){
+								command.getEsIndicesInfosGoldStandard().add(infoCon);
+							}
 						}
 					}
 				}

@@ -26,18 +26,26 @@
  */
 package org.bibsonomy.es;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.search.BooleanQuery;
+import org.bibsonomy.lucene.database.LuceneInfoLogic;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.index.converter.NormalizedEntryTypes;
@@ -46,6 +54,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.ResultList;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.services.searcher.PersonSearch;
@@ -53,6 +62,8 @@ import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.index.query.FilterBuilders;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.FilteredQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.indices.IndexMissingException;
@@ -67,13 +78,18 @@ import org.elasticsearch.search.sort.SortOrder;
  * @author lutful
  * @param <R>
  */
-public class EsResourceSearch<R extends Resource> implements PersonSearch {
+public class EsResourceSearch<R extends Resource> extends ESQueryBuilder implements PersonSearch {
 
 	private String resourceType;
 
 	/** post model converter */
 	private LuceneResourceConverter<R> resourceConverter;
 
+	/**
+	 * logic interface for retrieving data from bibsonomy (friends, groups
+	 * members)
+	 */
+	private LuceneInfoLogic dbLogic;
 	/**
 	 * 
 	 */
@@ -89,7 +105,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch {
 	/** the number of person suggestions */
 	private int personSuggestionSize = 8;
 
-	private String indexName = ESConstants.INDEX_NAME;
+	private String indexName;
 
 	/**
 	 * @param esClient the esClient to set
@@ -104,44 +120,166 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch {
 	public ESClient getEsClient() {
 		return this.esClient;
 	}
+	
+	/**
+	 * get tag cloud for given search query for the Shared Resource System
+	 * 
+	 * @param userName
+	 * @param requestedUserName
+	 * @param requestedGroupName
+	 * @param allowedGroups
+	 * @param searchTerms
+	 * @param titleSearchTerms
+	 * @param authorSearchTerms
+	 * @param bibtexkey 
+	 * @param tagIndex
+	 * @param year
+	 * @param firstYear
+	 * @param lastYear
+	 * @param negatedTags
+	 * @param limit
+	 * @param offset
+	 * @return returns the list of tags for the tag cloud
+	 */
+	public List<Tag> getTags(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexkey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
+		final BoolQueryBuilder query= this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags);
+		final Map<Tag, Integer> tagCounter = new HashMap<Tag, Integer>();
+		boolean lockAcquired = false;
+		try {  
+			lockAcquired = this.esClient.getReadLock(this.resourceType).tryLock();
+			if (lockAcquired) {
+				SearchRequestBuilder searchRequestBuilder = esClient
+						.getClient().prepareSearch(
+								ESConstants.getGlobalAliasForResource(resourceType, true));
+				searchRequestBuilder.setTypes(resourceType);
+				searchRequestBuilder.setSearchType(SearchType.DEFAULT);
+				searchRequestBuilder.setQuery(query);
+				searchRequestBuilder.addSort(LuceneFieldNames.DATE,
+						SortOrder.DESC);
+				searchRequestBuilder.setFrom(offset).setSize(limit)
+						.setExplain(true);
+				final SearchResponse response = searchRequestBuilder.execute()
+						.actionGet();
+				if (response != null) {
+					SearchHits hits = response.getHits();
+					log.info("Current Search results for '" + searchTerms
+							+ "': " + response.getHits().getTotalHits());
+					for (int i = 0; i < Math.min(limit, hits.getTotalHits()
+							- offset); ++i) {
+						SearchHit hit = hits.getAt(i);
+						Map<String, Object> result = hit.getSource();
+						final Post<R> post = this.resourceConverter
+								.writePost(result);
+						// set tag count
+						if (present(post.getTags())) {
+							for (final Tag tag : post.getTags()) {
+								/*
+								 * we remove the requested tags because we assume
+								 * that related tags are requested
+								 */
+								if (present(tagIndex)
+										&& tagIndex.contains(tag.getName())) {
+									continue;
+								}
+								Integer oldCnt = tagCounter.get(tag);
+								if (!present(oldCnt)) {
+									oldCnt = 1;
+								} else {
+									oldCnt += 1;
+								}
+								tagCounter.put(tag, oldCnt);
+							}
+						}
+					}
+				}
+			}
+		} catch (IndexMissingException e) {
+			log.error("IndexMissingException: " + e);
+		}finally{
+			if(lockAcquired){
+				this.esClient.getReadLock(this.resourceType).unlock();
+			}
+		}
+		
+		
+		final List<Tag> tags = new LinkedList<Tag>();
+		// extract all tags
+		for (final Map.Entry<Tag, Integer> entry : tagCounter.entrySet()) {
+			final Tag tag = entry.getKey();
+			tag.setUsercount(entry.getValue());
+			tag.setGlobalcount(entry.getValue()); // FIXME: we set user==global count
+			tags.add(tag);
+		}
+		log.debug("Done calculating tag statistics");
+		
+		// all done.
+		return tags;
+	}
+	
 
 	/**
+	 * @param userName
+	 * @param requestedUserName
+	 * @param requestedGroupName
+	 * @param requestedRelationNames
+	 * @param allowedGroups
 	 * @param searchTerms
+	 * @param titleSearchTerms
+	 * @param authorSearchTerms
+	 * @param bibtexKey 
+	 * @param tagIndex
+	 * @param year
+	 * @param firstYear
+	 * @param lastYear
+	 * @param negatedTags
 	 * @param order
-	 * @param offset
 	 * @param limit
-	 * @return postList
-	 * @throws IOException
+	 * @param offset
+	 * @return returns the list of posts
 	 * @throws CorruptIndexException
-	 * 
+	 * @throws IOException
 	 */
-	public ResultList<Post<R>> fullTextSearch(final String searchTerms, final Order order, final int limit, final int offset) throws CorruptIndexException, IOException {
-
+	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) throws CorruptIndexException, IOException {
 		final ResultList<Post<R>> postList = new ResultList<Post<R>>();
-		try {
-			final QueryBuilder queryBuilder = QueryBuilders.queryString(searchTerms);
-			final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(indexName);
-			searchRequestBuilder.setTypes(this.resourceType);
-			searchRequestBuilder.setSearchType(SearchType.DEFAULT);
-			searchRequestBuilder.setQuery(queryBuilder);
-			if (order != Order.RANK) {
-				searchRequestBuilder.addSort(LuceneFieldNames.DATE, SortOrder.DESC);
-			}
-			searchRequestBuilder.setFrom(offset).setSize(limit).setExplain(true);
+		boolean lockAcquired = false;
+		try {  
+			lockAcquired = this.esClient.getReadLock(this.resourceType).tryLock(15, TimeUnit.SECONDS);  
+			if (lockAcquired) {
+				final BoolQueryBuilder queryBuilder = this.buildQuery(userName,
+						requestedUserName, requestedGroupName,
+						requestedRelationNames, allowedGroups, searchTerms,
+						titleSearchTerms, authorSearchTerms, bibtexKey,
+						tagIndex, year, firstYear, lastYear, negatedTags);
+				final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(ESConstants.getGlobalAliasForResource(resourceType, true));
 
-			final SearchResponse response = searchRequestBuilder.execute().actionGet();
+				searchRequestBuilder.setTypes(this.resourceType);
+				searchRequestBuilder.setSearchType(SearchType.DEFAULT);
+				searchRequestBuilder.setQuery(queryBuilder);
+				if (order != Order.RANK) {
+					searchRequestBuilder.addSort(LuceneFieldNames.DATE, SortOrder.DESC);
+				}
+				searchRequestBuilder.setFrom(offset).setSize(limit).setExplain(true);
 
-			if (response != null) {
-				final SearchHits hits = response.getHits();
-				postList.setTotalCount((int) hits.getTotalHits());
+				final SearchResponse response = searchRequestBuilder.execute().actionGet();
 
-				log.info("Current Search results for '" + searchTerms + "': " + response.getHits().getTotalHits());
-				for (final SearchHit hit : hits) {
-					postList.add(this.resourceConverter.writePost(hit.getSource()));
+				if (response != null) {
+					final SearchHits hits = response.getHits();
+					postList.setTotalCount((int) hits.getTotalHits());
+
+					log.info("Current Search results for '" + searchTerms + "': " + response.getHits().getTotalHits());
+					for (final SearchHit hit : hits) {
+						postList.add(this.resourceConverter.writePost(hit.getSource()));
+					}
 				}
 			}
 		} catch (final IndexMissingException e) {
 			log.error("IndexMissingException: " + e);
+		} catch (InterruptedException e) {
+			log.error("unable to get the read lock on index: "+ this.resourceType, e);
+		}finally{
+			if(lockAcquired){
+				this.esClient.getReadLock(this.resourceType).unlock();
+			}
 		}
 
 		return postList;
@@ -162,17 +300,31 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch {
 	}
 
 	/**
-	 * @return the INDEX_TYPE
+	 * @return the resourceType
 	 */
 	public String getResourceType() {
 		return this.resourceType;
 	}
 
 	/**
-	 * @param resourceType
+	 * @param resourceType the resourceType to set
 	 */
 	public void setResourceType(final String resourceType) {
 		this.resourceType = resourceType;
+	}
+
+	/**
+	 * @return the dbLogic
+	 */
+	public LuceneInfoLogic getDbLogic() {
+		return this.dbLogic;
+	}
+
+	/**
+	 * @param dbLogic the dbLogic to set
+	 */
+	public void setDbLogic(LuceneInfoLogic dbLogic) {
+		this.dbLogic = dbLogic;
 	}
 
 	/* (non-Javadoc)
