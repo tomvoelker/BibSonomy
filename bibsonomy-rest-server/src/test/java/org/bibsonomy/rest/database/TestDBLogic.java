@@ -1121,7 +1121,7 @@ public class TestDBLogic implements LogicInterface {
 	}
 	
 	@Override
-	public void updateDocument(final Document document, final String resourceHash, final String newName) {
+	public void updateDocument(String userName, final String resourceHash, String documentName, final Document document) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -1169,23 +1169,11 @@ public class TestDBLogic implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(java.lang.String, java.lang.String)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(java.lang.String)
 	 */
 	@Override
-	public List<PersonName> getPersonSuggestion(String lastName,
-			String firstName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(org.bibsonomy.model.PersonName)
-	 */
-	@Override
-	public List<PersonName> getPersonSuggestion(PersonName personName) {
+	public List<ResourcePersonRelation> getPersonSuggestion(String queryString) {
 		// TODO Auto-generated method stub
 		return null;
 	}

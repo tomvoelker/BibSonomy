@@ -49,11 +49,10 @@ public class PersonName implements Serializable {
 	 */
 	public static final String LAST_FIRST_DELIMITER = ",";
 
-	private int personChangeId;
+	private int personNameChangeId;
 	private String firstName;
 	private String lastName;
 	private String personId;
-	// TODO: should not be here. Instead, the entity type should store a single reference to is main name
 	private boolean isMain;
 	private Person person;
 	private String changedBy;
@@ -156,15 +155,15 @@ public class PersonName implements Serializable {
 	/**
 	 * @return the id
 	 */
-	public int getPersonChangeId() {
-		return this.personChangeId;
+	public int getPersonNameChangeId() {
+		return this.personNameChangeId;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setPersonChangeId(int id) {
-		this.personChangeId = id;
+	public void setPersonNameChangeId(int id) {
+		this.personNameChangeId = id;
 	}
 
 	/**

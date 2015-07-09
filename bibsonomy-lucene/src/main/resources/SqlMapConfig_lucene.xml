@@ -2,12 +2,13 @@
 <!DOCTYPE sqlMapConfig PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
 <sqlMapConfig>
 
-	<typeAlias alias="personNameList"     type="java.util.List" />
-	<typeHandler javaType="personNameList"	callback="org.bibsonomy.database.common.typehandler.PersonNameTypeHandlerCallback" />
-
-	<!-- queries to include -->
 	<sqlMap resource="common/TypeAliases.xml" />
 	<sqlMap resource="common/TypeAliases-lucene.xml" />
+
+	<typeHandler javaType="personNameList"              callback="org.bibsonomy.database.common.typehandler.PersonNameTypeHandlerCallback" />
+	<typeHandler javaType="personResourceRelationType"  callback="org.bibsonomy.database.common.typehandler.PersonResourceRelationTypeHandlerCallback" />	
+
+	<!-- queries to include -->
 	<sqlMap resource="common/DiscussionCommon.xml" />
 	<sqlMap resource="common/CommentCommon.xml" />
 	<sqlMap resource="common/Common.xml" />
@@ -26,5 +27,6 @@
 	
 	<sqlMap resource="LuceneGenerateIndexQueries.xml" />
 	<sqlMap resource="Queries-lucene.xml" />
+	<sqlMap resource="person-lucene-queries.xml" />
 </sqlMapConfig>
 

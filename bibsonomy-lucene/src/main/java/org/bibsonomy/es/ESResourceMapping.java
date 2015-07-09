@@ -44,6 +44,7 @@ public class ESResourceMapping {
 	private final String resourceType;
 	// ElasticSearch client
 	private final ESClient esClient;
+	private String indexName = ESConstants.INDEX_NAME;
 
 	/**
 	 * @param resourceType
@@ -72,7 +73,7 @@ public class ESResourceMapping {
 			mappingBuilder = createMappingForPublication(this.resourceType);
 		}
 
-		this.esClient.getClient().admin().indices().preparePutMapping(ESConstants.INDEX_NAME).setType(this.resourceType).setSource(mappingBuilder).execute().actionGet();
+		this.esClient.getClient().admin().indices().preparePutMapping(indexName).setType(this.resourceType).setSource(mappingBuilder).execute().actionGet();
 
 		// wait for the yellow (or green) status to prevent
 		// NoShardAvailableActionException later
@@ -130,10 +131,23 @@ public class ESResourceMapping {
 				.startObject("url").field("type", "string").field("index", "no").endObject() //
 				.startObject("volume").field("type", "string").field("index", "no").endObject() //
 				.startObject("year").field("type", "string").field("index", "not_analyzed").endObject() //
-				.startObject(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME).field("type", "integer").field("index", "not_analyzed").endObject() //
+				.startObject(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME).field("type", "string").field("index", "not_analyzed").endObject() //
+				.startObject(ESConstants.SYSTEM_URL_FIELD_NAME).field("type", "string").field("index", "not_analyzed").endObject() //
+				.startObject(ESConstants.AUTHOR_ENTITY_NAMES_FIELD_NAME).field("type", "string").field("index", "analyzed").endObject() //
+				.startObject(ESConstants.AUTHOR_ENTITY_IDS_FIELD_NAME).field("type", "string").field("index", "analyzed").endObject() //
+				.startObject(ESConstants.PERSON_ENTITY_NAMES_FIELD_NAME).field("type", "string").field("index", "analyzed").endObject() //
+				.startObject(ESConstants.PERSON_ENTITY_IDS_FIELD_NAME).field("type", "string").field("index", "analyzed").endObject() //
 				.endObject().endObject().endObject();
 
 		return mapping;
 
+	}
+
+	public String getIndexName() {
+		return this.indexName;
+	}
+
+	public void setIndexName(String indexName) {
+		this.indexName = indexName;
 	}
 }

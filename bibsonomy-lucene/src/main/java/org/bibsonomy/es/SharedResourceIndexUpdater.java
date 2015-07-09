@@ -34,21 +34,31 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.commons.collections.LRUMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.param.LucenePost;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.ResourcePersonRelationLogStub;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.GroupUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.indices.IndexMissingException;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.sort.SortOrder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -63,7 +73,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpdater<R> {
 	private static final Log log = LogFactory.getLog(SharedResourceIndexUpdater.class);
 
-	private final String indexName = ESConstants.INDEX_NAME;
+	private final String indexName;
 
 	private String resourceType;
 
@@ -88,13 +98,17 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 * 
 	 */
 	protected Set<String> usersToFlag;
+	
+	/** the database manager */
+	protected LuceneDBInterface<R> dbLogic;
 
 	/**
 	 * @param systemHome
 	 */
-	public SharedResourceIndexUpdater(final String systemHome, final LuceneResourceConverter<R> resourceConverter) {
+	public SharedResourceIndexUpdater(final String systemHome, final LuceneResourceConverter<R> resourceConverter, final String indexName) {
 		this.systemHome = systemHome;
 		this.resourceConverter = resourceConverter;
+		this.indexName = indexName;
 		this.contentIdsToDelete = new LinkedList<Integer>();
 		this.esPostsToInsert = new ArrayList<Map<String, Object>>();
 		this.usersToFlag = new TreeSet<String>();
@@ -308,10 +322,18 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 		for (final Map<String, Object> jsonDocument : esPostsToInsert2) {
 			jsonDocument.put(ESConstants.SYSTEM_URL_FIELD_NAME, this.systemHome);
 			final long indexId = this.calculateIndexId(Long.parseLong(jsonDocument.get(LuceneFieldNames.CONTENT_ID).toString()));
-			this.esClient.getClient().prepareIndex(this.indexName, this.resourceType, String.valueOf(indexId)).setSource(jsonDocument).setRefresh(true).execute().actionGet();
+			insertPostDocument(jsonDocument, String.valueOf(indexId));
 		}
 
 		log.info("post has been indexed.");
+	}
+
+	private void insertPostDocument(final Map<String, Object> jsonDocument, String indexIdStr) {
+		this.esClient.getClient().prepareIndex(this.indexName, this.resourceType, indexIdStr).setSource(jsonDocument).setRefresh(true).execute().actionGet();
+	}
+	
+	private void updatePostDocument(final Map<String, Object> jsonDocument, String indexIdStr) {
+		this.esClient.getClient().prepareUpdate(this.indexName, this.resourceType, indexIdStr).setDoc(jsonDocument).setRefresh(true).execute().actionGet();
 	}
 
 	/**
@@ -319,8 +341,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 */
 	@Override
 	public void deleteIndexForUser(final String userName) {
-
-		this.esClient.getClient().prepareDeleteByQuery(this.indexName).setTypes(this.resourceType).setQuery(QueryBuilders.termQuery(LuceneFieldNames.USER_NAME, userName)).execute().actionGet();
+		this.esClient.getClient().prepareDeleteByQuery(this.indexName).setTypes(this.resourceType).setQuery(QueryBuilders.filteredQuery( QueryBuilders.termQuery(LuceneFieldNames.USER_NAME, userName), FilterBuilders.termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, systemHome))).execute().actionGet();
 	}
 
 	/**
@@ -421,6 +442,75 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 			final Map<String, Object> postDoc = (Map<String, Object>)this.resourceConverter.readPost(post, IndexType.ELASTICSEARCH);
 			this.insertDocument(postDoc);
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#updateIndexWithPersonRelation(java.lang.String, java.util.List)
+	 */
+	@Override
+	public void updateIndexWithPersonRelation(String interhash, List<ResourcePersonRelation> newRels) {
+			
+		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(indexName);
+		searchRequestBuilder.setTypes(this.resourceType);
+		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
+		searchRequestBuilder.setQuery(QueryBuilders.constantScoreQuery(FilterBuilders.andFilter(FilterBuilders.termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, systemHome), FilterBuilders.termFilter("interhash", interhash))));
+		searchRequestBuilder.setExplain(true);
+
+		final SearchResponse response = searchRequestBuilder.execute().actionGet();
+
+		if (response != null) {
+			for (final SearchHit hit : response.getHits()) {
+				final Map<String, Object> doc = hit.getSource();
+				this.resourceConverter.setPersonFields(doc, newRels);
+				this.updatePostDocument(doc, hit.getId());
+			}
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#updateIndexWithPersonNameInfo(org.bibsonomy.model.PersonName, org.apache.commons.collections.LRUMap)
+	 */
+	@Override
+	public void updateIndexWithPersonNameInfo(PersonName name, LRUMap updatedInterhashes) {
+		final String personId = name.getPersonId();
+		updateIndexForPersonWithId(updatedInterhashes, personId);
+	}
+
+	private void updateIndexForPersonWithId(LRUMap updatedInterhashes, final String personId) {
+		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(indexName);
+		searchRequestBuilder.setTypes(this.resourceType);
+		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
+		searchRequestBuilder.setQuery(QueryBuilders.constantScoreQuery(FilterBuilders.andFilter(FilterBuilders.termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, systemHome), FilterBuilders.termFilter(ESConstants.PERSON_ENTITY_IDS_FIELD_NAME, personId))));
+		searchRequestBuilder.setExplain(true);
+
+		final SearchResponse response = searchRequestBuilder.execute().actionGet();
+
+		if (response != null) {
+			for (final SearchHit hit : response.getHits()) {
+				final Map<String, Object> doc = hit.getSource();
+				final String interhash = (String) doc.get("interhash");
+				if (updatedInterhashes.put(interhash, interhash) == null) {
+					List<ResourcePersonRelation> newRels = this.dbLogic.getResourcePersonRelationsByPublication(interhash);
+					this.updateIndexWithPersonRelation(interhash, newRels);
+				}
+			}
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#updateIndexWithPersonInfo(org.bibsonomy.model.Person, org.apache.commons.collections.LRUMap)
+	 */
+	@Override
+	public void updateIndexWithPersonInfo(Person per, LRUMap updatedInterhashes) {
+		updateIndexForPersonWithId(updatedInterhashes, per.getPersonId());
+	}
+
+	public LuceneDBInterface<R> getDbLogic() {
+		return this.dbLogic;
+	}
+
+	public void setDbLogic(LuceneDBInterface<R> dbLogic) {
+		this.dbLogic = dbLogic;
 	}
 
 }

@@ -31,6 +31,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
+import org.bibsonomy.es.AbstractEsIndexTest;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.index.manager.LuceneGoldStandardManager;
 import org.bibsonomy.lucene.util.LuceneSpringContextWrapper;
@@ -76,5 +77,6 @@ public class LuceneGenerateResourceIndexTest {
 		for (final LuceneResourceIndex<GoldStandardPublication> index : manager.getResourceIndeces()) {
 			index.reset();
 		}
+		AbstractEsIndexTest.closeAllLuceneIndices(LuceneSpringContextWrapper.getBeanFactory());
 	}
 }

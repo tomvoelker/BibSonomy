@@ -19,6 +19,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.services.searcher.PersonSearch;
 
 /**
  * TODO: add documentation to this class
@@ -31,6 +32,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 
 	private final static PersonDatabaseManager singleton = new PersonDatabaseManager();
 	private final GeneralDatabaseManager generalManager;
+	private PersonSearch personSearch;
 
 	public static PersonDatabaseManager getInstance() {
 		return singleton;
@@ -94,7 +96,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public void createPersonName(PersonName name, DBSession session) {
 		session.beginTransaction();
 		try {
-			name.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			name.setPersonNameChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("insertName", name, session);
 			session.commitTransaction();
 		} finally {
@@ -175,7 +177,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation, DBSession session) {
 		session.beginTransaction();
 		try {
-			resourcePersonRelation.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			resourcePersonRelation.setPersonRelChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("addResourceRelation", resourcePersonRelation, session);
 			session.commitTransaction();
 		} finally {
@@ -361,5 +363,17 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		} finally {
 			session.endTransaction();
 		}
+	}
+
+	/**
+	 * @param queryString
+	 * @return
+	 */
+	public List<ResourcePersonRelation> getPersonSuggestion(String queryString) {
+		return this.personSearch.getPersonSuggestion(queryString);
+	}
+
+	public void setPersonSearch(PersonSearch personSearch) {
+		this.personSearch = personSearch;
 	}
 }

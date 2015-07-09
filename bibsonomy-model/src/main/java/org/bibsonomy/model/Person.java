@@ -58,8 +58,6 @@ public class Person implements Serializable {
 	private String changedBy;
 	/** point in time when the last change was made */
 	private Date changeDate;
-	/** a publication which disambiguates the person. Usually the person's thesis of highest degree such as a phd thesis. */
-	private ResourcePersonRelation disambiguatingPublication;
 	/** the number of posts in the system, which this {@link Person} as an author */
 	private int postCounter;
 	/** place to link to the original entries when imported from Deutsche Nationalbibliothek */
@@ -111,7 +109,7 @@ public class Person implements Serializable {
 	 */
 	public void setMainName(int id) {
 		for(PersonName name : this.names) {
-			if(name.getPersonChangeId() == id) {
+			if(name.getPersonNameChangeId() == id) {
 				name.setMain(true);
 				this.mainName = name;
 			} else {
@@ -256,20 +254,6 @@ public class Person implements Serializable {
 	 */
 	public void setOrcid(String orcid) {
 		this.orcid = orcid;
-	}
-
-	/**
-	 * @return a publication which disambiguates the person. Usually the person's thesis of highest degree such as a phd thesis.
-	 */
-	public ResourcePersonRelation getDisambiguatingPublication() {
-		return this.disambiguatingPublication;
-	}
-
-	/**
-	 * @param disambiguatingPublication a publication which disambiguates the person. Usually the person's thesis of highest degree such as a phd thesis.
-	 */
-	public void setDisambiguatingPublication(ResourcePersonRelation disambiguatingPublication) {
-		this.disambiguatingPublication = disambiguatingPublication;
 	}
 
 	/**

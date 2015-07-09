@@ -49,4 +49,5 @@ public abstract class LuceneFieldNames {
 	public static final String LAST_LOG_DATE = "last_log_date";
 	public static final String USER_NAME     = "user_name";
 	public static final String CONTENT_ID    = "content_id";
+	public static final String SCHOOL        = "resource.school";
 }

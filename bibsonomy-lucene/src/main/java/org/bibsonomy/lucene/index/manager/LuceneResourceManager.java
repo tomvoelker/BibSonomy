@@ -29,6 +29,7 @@ package org.bibsonomy.lucene.index.manager;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -40,9 +41,10 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import org.apache.commons.collections.LRUMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.Pair;
+import org.apache.lucene.index.CorruptIndexException;
 import org.bibsonomy.es.IndexUpdater;
 import org.bibsonomy.es.IndexUpdaterState;
 import org.bibsonomy.es.UpdatePlugin;
@@ -56,7 +58,11 @@ import org.bibsonomy.lucene.search.LuceneResourceSearch;
 import org.bibsonomy.lucene.util.generator.AbstractIndexGenerator;
 import org.bibsonomy.lucene.util.generator.GenerateIndexCallback;
 import org.bibsonomy.lucene.util.generator.LuceneGenerateResourceIndex;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.ResourcePersonRelationLogStub;
 import org.bibsonomy.model.User;
 
 /**
@@ -70,6 +76,11 @@ import org.bibsonomy.model.User;
  *            the resource to manage
  */
 public class LuceneResourceManager<R extends Resource> implements GenerateIndexCallback<R>, UpdatePlugin {
+
+	/** the number of posts to fetch from the database by a single generating step */
+	protected static final int SQL_BLOCKSIZE = 5000;
+	
+	private static final int UPDATED_INTERHASHES_CACHE_SIZE = 25000;
 	
 	/**
 	 * this constant determines the difference of docs between the lucene index and the DB that will be tolerated
@@ -84,6 +95,8 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 * last index update
 	 */
 	protected static final long QUERY_TIME_OFFSET_MS = 30 * 1000;
+
+	
 
 	/** flag indicating whether to update the index or not */
 	private boolean luceneUpdaterEnabled = true;
@@ -168,22 +181,14 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 * updated posts.
 	 */
 	protected synchronized void updateIndexes() {
-		// current time stamp for storing as 'lastLogDate' in the index
-		// FIXME: get this date from the log_table via
-		// 'getContentIdsToDelete'
-		//final long currentLogDate = System.currentTimeMillis();
-		//this.dbLogic.getLastLogDate();
-		
-		IndexUpdaterState dbState = new IndexUpdaterState();
-		dbState.setLast_log_date(new Date());
-		
 		final Map<IndexUpdaterState, List<IndexUpdater<R>>> lastLogDateAndLastTasIdToUpdaters = getUpdatersBySameState();
+		final IndexUpdaterState targetState = this.dbLogic.getDbState();
 		
 		for (final Map.Entry<IndexUpdaterState, List<IndexUpdater<R>>> e : lastLogDateAndLastTasIdToUpdaters.entrySet()) {
 			final List<IndexUpdater<R>> updaters = e.getValue();
 			final IndexUpdaterState indexState = e.getKey();
-			// TODO: add paramater for a common newLastTasId to make sure the indices will have the same state next time
-			this.updateIndex(indexState, dbState, updaters);
+			// TODO: use the common lastTasId in the dbState to make sure the indices will have the same state after the update, regardless of their execution time and order
+			this.updateIndex(indexState, targetState, updaters);
 		}
 		this.alreadyRunning = 0;
 	}
@@ -251,7 +256,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		final List<Integer> contentIdsToDelete;
 		if (oldState.getLast_log_date() == null) {
 			// index is empty -> nothing to delete
-			contentIdsToDelete = Collections.emptyList();
+			contentIdsToDelete = new ArrayList<>();
 		} else {
 			contentIdsToDelete = this.dbLogic.getContentIdsToDelete(new Date(oldState.getLast_log_date().getTime() - QUERY_TIME_OFFSET_MS));
 		}
@@ -293,8 +298,62 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 				throw new RuntimeException(e);
 			}
 		}
+		
+		// now the index is up to date wrt the documents and posts
+		updateUpdatedIndexWithPersonChanges(oldState, targetState, indexUpdaters);
 
 		return newLastTasId;
+	}
+
+	/**
+	 * @param oldState
+	 * @param targetState
+	 * @param indexUpdaters
+	 * @param databaseSession 
+	 */
+	private void updateUpdatedIndexWithPersonChanges(IndexUpdaterState oldState, IndexUpdaterState targetState, List<IndexUpdater<R>> indexUpdaters) {
+		final LRUMap updatedInterhashes = new LRUMap(UPDATED_INTERHASHES_CACHE_SIZE);
+		applyChangesInPubPersonRelationsToIndex(oldState, targetState, indexUpdaters, updatedInterhashes);
+		applyPersonChangesToIndex(oldState, targetState, indexUpdaters, updatedInterhashes);
+	}
+
+	/**
+	 * @param targetState
+	 * @param indexUpdaters
+	 * @param updatedInterhashes
+	 */
+	private void applyPersonChangesToIndex(IndexUpdaterState oldState, IndexUpdaterState targetState, List<IndexUpdater<R>> indexUpdaters, LRUMap updatedInterhashes) {
+		for (long minPersonChangeId = oldState.getLastPersonChangeId() + 1; minPersonChangeId < targetState.getLastPersonChangeId(); minPersonChangeId = Math.min(targetState.getLastPersonChangeId(), minPersonChangeId + SQL_BLOCKSIZE)) {
+			List<PersonName> personMainNameChanges = this.dbLogic.getPersonMainNamesByChangeIdRange(minPersonChangeId, minPersonChangeId + SQL_BLOCKSIZE);
+			for (PersonName name : personMainNameChanges) {
+				for (IndexUpdater<R> updater : indexUpdaters) {
+					updater.updateIndexWithPersonNameInfo(name, updatedInterhashes);
+				}
+			}
+			personMainNameChanges.clear();
+			List<Person> personChanges = this.dbLogic.getPersonByChangeIdRange(minPersonChangeId, minPersonChangeId + SQL_BLOCKSIZE);
+			for (Person per : personChanges) {
+				for (IndexUpdater<R> updater : indexUpdaters) {
+					updater.updateIndexWithPersonInfo(per, updatedInterhashes);
+				}
+			}
+			personChanges.clear();
+		}
+	}
+
+	private void applyChangesInPubPersonRelationsToIndex(IndexUpdaterState oldState, IndexUpdaterState targetState, List<IndexUpdater<R>> indexUpdaters, final LRUMap updatedInterhashes) {
+		for (long minPersonChangeId = oldState.getLastPersonChangeId() + 1; minPersonChangeId < targetState.getLastPersonChangeId(); minPersonChangeId += SQL_BLOCKSIZE) {
+			final List<ResourcePersonRelationLogStub> relChanges = this.dbLogic.getPubPersonRelationsByChangeIdRange(minPersonChangeId, minPersonChangeId + SQL_BLOCKSIZE);
+			for (ResourcePersonRelationLogStub rel : relChanges) {
+				final String interhash = rel.getPostInterhash();
+				if (updatedInterhashes.put(interhash, interhash) == null) {
+					List<ResourcePersonRelation> newRels = this.dbLogic.getResourcePersonRelationsByPublication(interhash);
+					for (IndexUpdater<R> updater : indexUpdaters) {
+						updater.updateIndexWithPersonRelation(interhash, newRels);
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -846,6 +905,19 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	public IndexUpdater<R> createUpdater(String indexType) {
 		this.updatingIndex = this.updateQueue.poll();
 		return this.updatingIndex;
+	}
+
+	/**
+	 * 
+	 */
+	public void close() {
+		for (LuceneResourceIndex<R> index : getResourceIndeces()) {
+			try {
+				index.close();
+			} catch (Exception e) {
+				log.error("error closing index", e);
+			}
+		}
 	}
 
 }

@@ -27,9 +27,9 @@
 package org.bibsonomy.es;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,6 +39,9 @@ import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.util.generator.AbstractIndexGenerator;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.GroupUtils;
+import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
+import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
+import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
 import org.elasticsearch.action.admin.indices.flush.FlushRequest;
 
 /**
@@ -51,7 +54,7 @@ import org.elasticsearch.action.admin.indices.flush.FlushRequest;
  */
 public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIndexGenerator<R> {
 	
-	private final String indexName = ESConstants.INDEX_NAME;
+	private final String indexName;
 	private String resourceType;
 
 	/** converts post model objects to elasticsearch documents */
@@ -67,9 +70,10 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	 * @param systemHome
 	 * @param updater 
 	 */
-	public SharedResourceIndexGenerator(final String systemHome, SharedResourceIndexUpdater<R> updater) {
+	public SharedResourceIndexGenerator(final String systemHome, SharedResourceIndexUpdater<R> updater, final String indexName) {
 		this.systemHome = systemHome;
 		this.updater = updater;
+		this.indexName = indexName;
 	}
 
 
@@ -81,10 +85,24 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	 */
 	@Override
 	public void createEmptyIndex() throws IOException {
+		this.esClient.getClient().admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet(2, TimeUnit.MINUTES);
+		
+		// check if the index already exists if not, it creates empty index
+		final boolean indexExist = this.esClient.getClient().admin().indices().exists(new IndicesExistsRequest(indexName)).actionGet().isExists();
+		if (!indexExist) {
+			log.info("index not existing - generating a new one");
+			final CreateIndexResponse createIndex = this.esClient.getClient().admin().indices().create(new CreateIndexRequest(indexName)).actionGet();
+			if (!createIndex.isAcknowledged()) {
+				log.error("Error in creating Index");
+				return;
+			}
+		}
+		
 		log.info("Start writing data to shared index");
 		
 		//Add mapping here depending on the resource type which is here indexType
 		ESResourceMapping resourceMapping = new ESResourceMapping(resourceType, esClient);
+		resourceMapping.setIndexName(indexName);
 		resourceMapping.doMapping();
 	}
 	
@@ -161,7 +179,7 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	 */
 	@Override
 	protected void activateIndex() {
-		esClient.getClient().admin().indices().flush(new FlushRequest(ESConstants.INDEX_NAME).full(true)).actionGet();
+		esClient.getClient().admin().indices().flush(new FlushRequest(indexName).full(true)).actionGet();
 	}
 
 	/**

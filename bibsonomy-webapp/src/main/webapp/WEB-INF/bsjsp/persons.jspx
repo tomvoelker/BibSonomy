@@ -78,16 +78,16 @@
 					<!-- 
 					<hr />
  					-->
-					<s:eval expression="T(java.util.Arrays).asList('genealogy', 'dataset', 'wiskidz' )" var="sections" />
+					<s:eval expression="T(java.util.Arrays).asList('genealogy', 'dataset', 'reg', 'wiskidz' )" var="sections" />
 					
 					<div class="row">
 					
 						<div class="hidden-xs col-sm-3">
 							<div class="affix">
 								<div class="list-group section-scroll">
-									<a class="list-group-item active" href="#search"><fmt:message key="persons.intro.navi.search" /> </a>
+									<a class="list-group-item active" href="#search" style="max-width: 165px"><fmt:message key="persons.intro.navi.search" /> </a>
 									<c:forEach var="sectionKey" items="${sections}">
-										<a class="list-group-item" href="#${sectionKey}">
+										<a class="list-group-item" href="#${sectionKey}" style="max-width: 165px">
 											<fmt:message key="persons.intro.navi.${sectionKey}">
 												<fmt:param value="${properties['project.name']}" />
 											</fmt:message>
@@ -123,31 +123,31 @@
 								</div>
 							</div>
 						
+							
 							<c:forEach var="sectionKey" items="${sections}">
 								<hr />
 								
 								<div id="${sectionKey}">
 									<a name="${sectionKey}"><!--  --></a>
-									<h2 class="getting-started">
+									<h2 class="getting-started" style="margin-bottom: 17px">
 										<fmt:message key="persons.intro.navi.${sectionKey}">
 											<fmt:param value="${properties['project.name']}" />
 										</fmt:message>
 									</h2>
-									<div class="lead text-center">
-										<fmt:message key="persons.intro.${sectionKey}.desc">
-											<fmt:param value="${properties['project.name']}" />
-										</fmt:message>
+									<div class="row">
+										<div class="col-sm-6">
+											<fmt:message key="persons.intro.${sectionKey}.text">
+												<fmt:param value="${properties['project.name']}" />
+											</fmt:message>
+										</div>
+										<div class="col-sm-6">
+										<img class="img-responsive" alt="${sectionKey}" src="/resources/image/logo_person_${sectionKey}.png" /> 
+										</div>
 									</div>
-									<p>
-										<fmt:message key="persons.intro.${sectionKey}.text">
-											<fmt:param value="${properties['project.name']}" />
-										</fmt:message>
-									</p>
 								</div>
 							</c:forEach>
+							</div>
 							<p>${mtl:ch('nbsp')}</p>
-						</div>
-						
 						<br />
 					</div>
 					
@@ -157,5 +157,5 @@
 
 
 	</layout:paneLayout>
-	
+
 </jsp:root>

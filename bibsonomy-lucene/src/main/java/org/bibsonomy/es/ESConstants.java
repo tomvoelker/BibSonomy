@@ -83,7 +83,5 @@ public final class ESConstants {
 	
 	/** Ids of the associated authors, editors, supervisors, etc */
 	public static final String PERSON_ENTITY_IDS_FIELD_NAME = "personEntityIds";
-	
-	/** dummy publication entries are only used to allow non-author person ids to be found in a generic way and do not contain valid publications */
-	public static final String DUMMY_PUBLICATION_FIELD_NAME = "isDummyPublication";
+
 }

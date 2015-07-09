@@ -68,7 +68,9 @@ public class RESTUtils {
 			RenderingFormat.XML,
 			RenderingFormat.APP_XML,
 			RenderingFormat.JSON,
-			RenderingFormat.CSL
+			RenderingFormat.CSL,
+			RenderingFormat.BIBTEX,
+			RenderingFormat.ENDNOTE
 	));
 
 	/**

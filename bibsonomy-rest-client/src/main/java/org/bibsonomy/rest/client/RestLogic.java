@@ -742,12 +742,12 @@ public class RestLogic implements LogicInterface {
 		throw new UnsupportedOperationException();
 	}
 	@Override
-	public void updateDocument(final Document document, final String resourceHash, final String newName) {
+	public void updateDocument(String userName, final String resourceHash, String documentName, final Document document) {
 		if (!present(document.getUserName())) {
 			document.setUserName(this.authUser.getName());
 		}
 		
-		this.execute(new ChangeDocumentNameQuery(resourceHash, newName, document));
+		this.execute(new ChangeDocumentNameQuery(userName, resourceHash, documentName, document));
 	}
 
 	@Override
@@ -772,20 +772,10 @@ public class RestLogic implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(java.lang.String, java.lang.String)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(java.lang.String)
 	 */
 	@Override
-	public List<PersonName> getPersonSuggestion(String lastName,
-			String firstName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(org.bibsonomy.model.PersonName)
-	 */
-	@Override
-	public List<PersonName> getPersonSuggestion(PersonName personName) {
+	public List<ResourcePersonRelation> getPersonSuggestion(String queryString) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -907,5 +897,4 @@ public class RestLogic implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 }

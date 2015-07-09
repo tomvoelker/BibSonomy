@@ -142,10 +142,7 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 		log.info("Number of post entries: " + this.numberOfPosts);
 
 		// initialize variables
-		final IndexUpdaterState newState = new IndexUpdaterState();
-		newState.setLast_tas_id(this.dbLogic.getLastTasId());
-		newState.setLast_log_date(this.dbLogic.getLastLogDate());
-		newState.setLastPersonChangeId(this.dbLogic.getLastPersonChangeId());
+		final IndexUpdaterState newState = this.dbLogic.getDbState();
 
 		if (newState.getLast_log_date() == null) {
 			newState.setLast_log_date(new Date(System.currentTimeMillis() - 1000));

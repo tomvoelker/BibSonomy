@@ -29,6 +29,7 @@ package org.bibsonomy.rest.strategy.groups;
 import java.io.ByteArrayOutputStream;
 import java.io.Reader;
 import java.util.List;
+
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.exceptions.InternServerException;
@@ -72,11 +73,11 @@ public class AddUserToGroupStrategy extends Strategy {
 		 */
 		try {
 			// TODO: Convert this to the new group concept, aka you can't just
-			// add users.
-			for (User u : users)
+			// add users. (dzo: what about admins?)
+			for (final User u : users) {
 				this.getLogic().updateGroup(group, GroupUpdateOperation.ADD_MEMBER, new GroupMembership(u, GroupRole.USER, false));
-		}
-		catch (ValidationException ve) {
+			}
+		} catch (ValidationException ve) {
 			throw new BadRequestOrResponseException(ve.getMessage());
 		}
 		/*

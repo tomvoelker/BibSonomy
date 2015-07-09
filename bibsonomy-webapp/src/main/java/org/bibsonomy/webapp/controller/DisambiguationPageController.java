@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -47,7 +48,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 
 		final PersonName requestedName = command.getPost().getResource().getAuthor().get(command.getRequestedIndex());
 		command.setPersonName(requestedName);
-		command.setSuggestedPersonNames(this.logic.getPersonSuggestion(requestedName.getLastName(), requestedName.getFirstName()));
+		command.setSuggestedPersonNames(new ArrayList<PersonName>()); // TODO this.logic.getPersonSuggestion(requestedName.getLastName(), requestedName.getFirstName()));
 		
 		return Views.DISAMBIGUATION;
 	}

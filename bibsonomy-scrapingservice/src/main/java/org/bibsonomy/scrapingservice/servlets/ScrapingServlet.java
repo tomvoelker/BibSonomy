@@ -279,5 +279,5 @@ public class ScrapingServlet extends HttpServlet {
 			return new URL(urlString);
 		}
 		return null;
-	}   	  	    
+	}
 }

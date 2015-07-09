@@ -28,7 +28,6 @@ package org.bibsonomy.rest.strategy;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.StringTokenizer;
 
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
@@ -37,6 +36,7 @@ import org.bibsonomy.rest.strategy.sync.DeleteSyncDataStrategy;
 import org.bibsonomy.rest.strategy.sync.GetSyncDataStrategy;
 import org.bibsonomy.rest.strategy.sync.PostSyncPlanStrategy;
 import org.bibsonomy.rest.strategy.sync.PutSyncStatusStrategy;
+import org.bibsonomy.rest.util.URLDecodingPathTokenizer;
 
 /**
  * @author wla
@@ -44,13 +44,13 @@ import org.bibsonomy.rest.strategy.sync.PutSyncStatusStrategy;
 public class SynchronizationHandler implements ContextHandler {
 		
 	@Override
-	public Strategy createStrategy(final Context context, final StringTokenizer urlTokens, final HttpMethod httpMethod) {
-		final int numTokensLeft = urlTokens.countTokens();
+	public Strategy createStrategy(final Context context, final URLDecodingPathTokenizer urlTokens, final HttpMethod httpMethod) {
+		final int numTokensLeft = urlTokens.countRemainingTokens();
 		if (numTokensLeft != 1) {
 			throw new NoSuchResourceException("cannot process url (no strategy available) - please check url syntax ");
 		}
 		try {
-			final URI serviceURI = new URI(urlTokens.nextToken());
+			final URI serviceURI = new URI(urlTokens.next());
 			
 			switch (httpMethod) {
 			case GET:

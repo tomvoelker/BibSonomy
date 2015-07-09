@@ -29,9 +29,8 @@ package org.bibsonomy.webapp.util.picture;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.bibsonomy.model.User;
-import org.bibsonomy.webapp.command.actions.PictureCommand;
+import org.bibsonomy.util.StringUtils;
 
 /**
  * A {@link PictureHandler} implementation requesting user's <a href="http://gravatar.com">Gravatar</a> profile picture.
@@ -41,19 +40,7 @@ import org.bibsonomy.webapp.command.actions.PictureCommand;
  * @see ExternalPictureHandler
  * @see <a href="http://gravatar.com/site/implement/">http://gravatar.com/site/implement/</a>
  */
-public class GravatarPictureHandler extends ExternalPictureHandler
-{
-	
-	/**
-	 * Creates a new {@link GravatarPictureHandler} instance with target user and command.
-	 * 
-	 * @param user - requested user
-	 * @param command - actual picture command
-	 */
-	public GravatarPictureHandler ( User user, PictureCommand command )
-	{
-		super(user, command);
-	}
+public class GravatarPictureHandler extends ExternalPictureHandler {
 
 	/**
 	 * The Gravatar request url, where
@@ -80,39 +67,20 @@ public class GravatarPictureHandler extends ExternalPictureHandler
 	/**
 	 * Generates Gravatar URI for this request's email address.
 	 * 
-	 * @param address :	Gravatar email address as String
+	 * @param requesteUser :	the requested user
 	 * @param defaultBehav : specifies Gravatar behaviour if there is no picture for the address
 	 * @param fileExtension : requested file extension or empty String.
 	 * @return Gravatar URI as String
 	 */
 	@Override
-	protected URL getPictureURL ( String address, String fileExtension )
-	{
-		//hash user's gravatar email, use default-picture "mystery-man", use resolution 128x128;
+	protected URL getPictureURL(User requestedUser, String fileExtension) {
+		// hash user's gravatar email, use default-picture "mystery-man", use resolution 128x128;
 		try {
-			return new URL( String.format(GRAVATAR_REQ_URL, hashAddress(address), fileExtension, DEFAULT_BEHAVIOUR) );
-		} 
-		catch (MalformedURLException ex) {
+			return new URL(String.format(GRAVATAR_REQ_URL, StringUtils.getMD5Hash(requestedUser.getEmail()), fileExtension, DEFAULT_BEHAVIOUR));
+		} catch (MalformedURLException ex) {
 			//shouldn't happen!
 			return null;
 		}
-	}
-	
-	/**
-	 * Hashes target user's address.
-	 * <p>Note: {@link ExternalPictureHandler} implementation applies <em>Apache's MD5</em> hash.</p>
-	 * 
-	 * @param address - target address as string
-	 * @return address' hash
-	 */
-	protected String hashAddress ( String address )
-	{
-		if ( address == null || address.isEmpty() )
-			return "0";
-		
-		//else:
-		String result = DigestUtils.md5Hex( address.trim().toLowerCase() );
-		return result;
 	}
 
 }

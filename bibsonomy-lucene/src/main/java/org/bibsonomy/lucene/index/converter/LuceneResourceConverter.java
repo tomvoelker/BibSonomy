@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
@@ -59,10 +60,13 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.ResourcePersonRelationLogStub;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.util.GetProvider;
+import org.bibsonomy.util.MapGetProvider;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.tex.TexDecode;
 
@@ -94,28 +98,17 @@ public class LuceneResourceConverter<R extends Resource> {
 	 * @return the post representation of the lucene document
 	 */
 	public Post<R> writePost(final Document doc) {
-		// initialize 
-		final Post<R> post = this.createEmptyPost();
-
-		// cycle though all properties and set the properties
-		for (final String propertyName : postPropertyMap.keySet()) {
-			// get lucene index properties
-			final String fieldName = this.getFieldName(propertyName);
-			final String propertyStr = doc.get(fieldName); 
-			if (!present(propertyStr)) {
-				continue;
-			}
-
-			final Object propertyValue = this.getPropertyValue(propertyName, propertyStr);			
-			try {
-				PropertyUtils.setNestedProperty(post, propertyName, propertyValue);
-			} catch (final Exception e) {
-				log.error("Error setting property " + propertyName + " to " + propertyValue.toString(), e);
-			}
-		}
-		
-		// all done.
-		return post;
+		return writePost(new LuceneDocumentGetProvider(doc));
+	}
+	
+	/**
+	 * Reads property values from given {@link Map} and creates post model
+	 * 
+	 * @param map
+	 * @return the post representation of the {@link Map}
+	 */
+	public Post<R> writePost(final Map<String, Object> map) {
+		return writePost(new MapGetProvider<>(map));
 	}
 
 	private Object getPropertyValue(final String propertyName, final String propertyStr) {
@@ -160,6 +153,13 @@ public class LuceneResourceConverter<R extends Resource> {
 			 */
 			final String propertyValue = this.extractPropertyValue(post, propertyName);
 			
+			if (LuceneFieldNames.LAST_LOG_DATE.equals(propertyName)) {
+				try {
+					Long.parseLong(propertyValue);
+				} catch (NumberFormatException e) {
+					throw new IllegalArgumentException(e);
+				}
+			}
 			/*
 			 * get index, store and name of lucene field
 			 */
@@ -192,12 +192,9 @@ public class LuceneResourceConverter<R extends Resource> {
 		
 		if (searchType == IndexType.ELASTICSEARCH) {
 			if (BibTex.class.isAssignableFrom(this.resourceClass)) {
+				final List<ResourcePersonRelation> rels = post.getResourcePersonRelations();
 				jsonDocument.put(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, getNormalizedEntryType((Post<? extends BibTex>) post));
-				jsonDocument.put(ESConstants.AUTHOR_ENTITY_NAMES_FIELD_NAME, appendMainNames(post, PersonResourceRelationType.AUTHOR));
-				jsonDocument.put(ESConstants.AUTHOR_ENTITY_IDS_FIELD_NAME, appendPersonIds(post, PersonResourceRelationType.AUTHOR));
-				jsonDocument.put(ESConstants.PERSON_ENTITY_NAMES_FIELD_NAME, appendMainNames(post, null));
-				jsonDocument.put(ESConstants.PERSON_ENTITY_IDS_FIELD_NAME, appendPersonIds(post, null));
-				jsonDocument.put(ESConstants.DUMMY_PUBLICATION_FIELD_NAME, new Integer(0));
+				setPersonFields(jsonDocument, rels);
 			}
 			return jsonDocument;
 		}
@@ -211,12 +208,14 @@ public class LuceneResourceConverter<R extends Resource> {
 		return luceneDocument;
 	}
 
-	/**
-	 * @param post
-	 * @return
-	 */
-	private String appendMainNames(Post<R> post, PersonResourceRelationType type) {
-		final List<ResourcePersonRelation> rels = post.getResourcePersonRelations();
+	public void setPersonFields(Map<String, Object> jsonDocument, final List<ResourcePersonRelation> rels) {
+		jsonDocument.put(ESConstants.AUTHOR_ENTITY_NAMES_FIELD_NAME, serializeMainNames(rels, PersonResourceRelationType.AUTHOR));
+		jsonDocument.put(ESConstants.AUTHOR_ENTITY_IDS_FIELD_NAME, serializePersonIds(rels, PersonResourceRelationType.AUTHOR));
+		jsonDocument.put(ESConstants.PERSON_ENTITY_NAMES_FIELD_NAME, serializeMainNames(rels, null));
+		jsonDocument.put(ESConstants.PERSON_ENTITY_IDS_FIELD_NAME, serializePersonIds(rels, null));
+	}
+
+	private String serializeMainNames(final List<ResourcePersonRelation> rels, PersonResourceRelationType type) {
 		if (rels == null) {
 			return "";
 		}
@@ -248,11 +247,11 @@ public class LuceneResourceConverter<R extends Resource> {
 		return sb.toString();
 	}
 	
-	private List<ResourcePersonRelation> readPersonRelationsFromIndex(Map<String, Object> result) {
+	private List<ResourcePersonRelation> readPersonRelationsFromIndex(GetProvider<String, Object> result) {
 		final List<ResourcePersonRelation> rels = new ArrayList<>();
 		
 		String ids = (String) result.get(ESConstants.PERSON_ENTITY_IDS_FIELD_NAME);
-		String[] parts = ids.split(" ");
+		String[] parts = split(ids, " ");
 		
 		final int personIndexCtr[] = new int[PersonResourceRelationType.AUTHOR.values().length];
 		for (int i = 0; i+1 < parts.length; i += 2) {
@@ -269,12 +268,12 @@ public class LuceneResourceConverter<R extends Resource> {
 		}
 		
 		final String namesField = (String) result.get(ESConstants.PERSON_ENTITY_NAMES_FIELD_NAME);
-		final String[] names = namesField.split(PERSON_DELIMITER);
+		final String[] names = split(namesField,PERSON_DELIMITER);
 		if (names.length != rels.size()) {
 			throw new IllegalStateException();
 		}
 		for (int i = 0; i < names.length; ++i) {
-			String[] nameParts = names[i].split(NAME_PART_DELIMITER);
+			String[] nameParts = split(names[i], NAME_PART_DELIMITER);
 			if (nameParts.length != 3) {
 				throw new IllegalStateException(); 
 			}
@@ -296,6 +295,19 @@ public class LuceneResourceConverter<R extends Resource> {
 	}
 
 	/**
+	 * @param fieldName
+	 * @param delimiter
+	 * @return
+	 */
+	private String[] split(String fieldName, String delimiter) {
+		String[] rVal = fieldName.split(delimiter);
+		if ((rVal.length == 1) && (StringUtils.isEmpty(rVal[0]))) {
+			return new String[0];
+		}
+		return rVal;
+	}
+
+	/**
 	 * @param value
 	 * @return
 	 */
@@ -303,8 +315,7 @@ public class LuceneResourceConverter<R extends Resource> {
 		return value.trim().replace(PERSON_DELIMITER, " ").replace(NAME_PART_DELIMITER, " ");
 	}
 
-	private String appendPersonIds(Post<R> post, PersonResourceRelationType type) {
-		final List<ResourcePersonRelation> rels = post.getResourcePersonRelations();
+	private String serializePersonIds(final List<ResourcePersonRelation> rels, PersonResourceRelationType type) {
 		if (rels == null) {
 			return "";
 		}
@@ -332,13 +343,13 @@ public class LuceneResourceConverter<R extends Resource> {
 		
 		final String entryType = bibtex.getEntrytype();
 		if (BibTexUtils.PHD_THESIS.equals(entryType)) {
-			normalizedEntryType = "phd thesis";
+			normalizedEntryType = NormalizedEntryTypes.phdthesis.name();
 		}
 		if (BibTexUtils.MASTERS_THESIS.equals(entryType)) {
-			normalizedEntryType = "master thesis";
+			normalizedEntryType = NormalizedEntryTypes.master_thesis.name();
 		}
 		if (BibTexUtils.THESIS.equals(entryType)) {
-			normalizedEntryType = "bachelor thesis";
+			normalizedEntryType = NormalizedEntryTypes.bachelor_thesis.name();
 		}
 		
 		if (normalizedEntryType != null) {
@@ -346,13 +357,13 @@ public class LuceneResourceConverter<R extends Resource> {
 			if (type != null) {
 				type = type.toLowerCase().trim();
 				if ((type.contains("master") || type.equals("mathesis"))) {
-					normalizedEntryType = "master thesis";
+					normalizedEntryType = NormalizedEntryTypes.master_thesis.name();
 				} else if (type.contains("bachelor")) {
-					normalizedEntryType = "bachelor thesis";
+					normalizedEntryType = NormalizedEntryTypes.bachelor_thesis.name();
 				} else if (type.contains("habil")) {
-					normalizedEntryType = "habilitation";
+					normalizedEntryType = NormalizedEntryTypes.habilitation.name();
 				} else if (type.equals("candthesis")) {
-					normalizedEntryType = "candidate thesis";
+					normalizedEntryType = NormalizedEntryTypes.candidate_thesis.name();
 				}
 			}
 		} else {
@@ -475,7 +486,7 @@ public class LuceneResourceConverter<R extends Resource> {
 	 * @param result The result from elasticsearch search query
 	 * @return Posts converted from Map
 	 */
-	public Post<R> writePost(Map<String, Object> result) {
+	public Post<R> writePost(GetProvider<String, Object> result) {
 		// initialize 
 		final LucenePost<R> post = this.createEmptyPost();
 				
@@ -498,11 +509,63 @@ public class LuceneResourceConverter<R extends Resource> {
 			String systemUrl = result.get(ESConstants.SYSTEM_URL_FIELD_NAME).toString();
 			post.setSystemUrl(systemUrl);
 			post.setResourcePersonRelations(readPersonRelationsFromIndex(result));
-			Number dummy = (Number) result.get(ESConstants.DUMMY_PUBLICATION_FIELD_NAME);
-			if ((dummy != null) && (dummy.intValue() == 1)) {
-				post.setDummyPost(true);
+			for (ResourcePersonRelation rel : post.getResourcePersonRelations()) {
+				rel.setPost((Post<? extends BibTex>) post);
 			}
 		}
 		return post;
+	}
+
+	/**
+	 * @param doc
+	 * @param rel
+	 */
+	@Deprecated
+	public void updatePersonRelation(Map<String, Object> doc, ResourcePersonRelationLogStub rel) {
+		List<ResourcePersonRelation> relsBefore = readPersonRelationsFromIndex(new MapGetProvider<>(doc));
+		updateRelationList(relsBefore, rel);
+		setPersonFields(doc, relsBefore);
+	}
+
+	@Deprecated
+	private void updateRelationList(List<ResourcePersonRelation> relsBefore, ResourcePersonRelationLogStub rel) {
+		int indexOfRelInRelsBefore = getIndexOfRel(relsBefore, rel);
+		if (indexOfRelInRelsBefore != -1) {
+			if (rel.isDeleted()) {
+				relsBefore.remove(indexOfRelInRelsBefore);
+			} else {
+				updatePersonRelation(relsBefore.get(indexOfRelInRelsBefore), rel);
+			}
+		} else {
+			ResourcePersonRelation relNew = new ResourcePersonRelation();
+			updatePersonRelation(relNew, rel);
+			// relNew.setPerson(rel.getPerson());
+			relsBefore.add(relNew);
+		}
+	}
+
+	/**
+	 * @param rel
+	 * @return
+	 */
+	private void updatePersonRelation(final ResourcePersonRelation relNew, final ResourcePersonRelationLogStub relStub) {
+		relNew.setPerson(new Person());
+		relNew.getPerson().setPersonId(relStub.getPersonId());
+		relNew.setChangedAt(relStub.getChangedAt());
+		relNew.setChangedBy(relStub.getChangedBy());
+		relNew.setPersonRelChangeId(relStub.getPersonRelChangeId());
+		relNew.setPersonIndex(relStub.getPersonIndex());
+		relNew.setQualifying(relStub.getQualifying());
+		relNew.setRelationType(relStub.getRelationType());
+	}
+
+	private int getIndexOfRel(List<ResourcePersonRelation> relsBefore, ResourcePersonRelationLogStub rel) {
+		for (int i = 0; i < relsBefore.size(); ++i) {
+			ResourcePersonRelation relBefore = relsBefore.get(i);
+			if ((relBefore.getRelationType() == rel.getRelationType()) && relBefore.getPerson().getPersonId().equals(rel.getPersonId()) && (relBefore.getPersonIndex() == rel.getPersonIndex())) {
+				return i;
+			}
+		}
+		return -1;
 	}
 }

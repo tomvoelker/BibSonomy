@@ -296,6 +296,10 @@
 		<property name="databaseManager" ref="goldStandardBookmarkDatabaseMananger" />
 	</bean>
 	
+	<bean id="personDatabaseManager" class="org.bibsonomy.database.managers.PersonDatabaseManager" factory-method="getInstance">
+		<property name="personSearch" ref="personSearch" />
+	</bean>
+	
 	<bean id="mainDataSource" class="${database.datasource.class}" parent="basicDataSource">
 		<property name="driverClassName" value="${database.main.driverClassName}" />
 		<property name="url" value="${database.main.url}" />

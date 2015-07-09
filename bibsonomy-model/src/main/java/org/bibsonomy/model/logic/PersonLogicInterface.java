@@ -18,22 +18,6 @@ import org.bibsonomy.model.enums.PersonResourceRelationType;
  */
 public interface PersonLogicInterface {
 
-	/**
-	 * @param searchString a serach string coming from an autocomplete field. May contain an incomplete word, which will be internally autocompleted before searching persons
-	 * @param string 
-	 * @return a list of Persons
-	 */
-	public List<PersonName> getPersonSuggestion(String lastName, String firstName);
-	public List<PersonName> getPersonSuggestion(PersonName personName);
-
-	/**
-	 * @param longHash publication hash with prefix 1 or 2. Can be null for instance when searching persons just by name.
-	 * @param publicationOwner owner of the publication post. May be null which, e.g., is reasonable for inter- or null-hashes. 
-	 * @param personName exact name of the person as appearing in the resource. Can be null, when searching for all persons related to a resource
-	 * @param rel type of relation. null means all 
-	 * @return non-null list of all persons matching all given non-null criteria
-	 */
-
 	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation);
 
 	public void removeResourceRelation(int resourceRelationId);
@@ -80,6 +64,12 @@ public interface PersonLogicInterface {
 	 * @return
 	 */
 	public List<ResourcePersonRelation> getResourceRelations(Post<? extends BibTex> post);
+	
+	/**
+	 * @param queryString a search string coming from an autocomplete field. Planned but not yet implemented: May contain an incomplete word, which will be internally autocompleted before searching persons
+	 * @return
+	 */
+	public List<ResourcePersonRelation> getPersonSuggestion(String queryString);
 
 
 }

@@ -32,12 +32,15 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
 import org.bibsonomy.lucene.param.LuceneIndexInfo;
@@ -45,8 +48,6 @@ import org.bibsonomy.lucene.param.LuceneIndexStatistics;
 import org.bibsonomy.lucene.util.generator.AbstractIndexGenerator;
 import org.bibsonomy.lucene.util.generator.GenerateIndexCallback;
 import org.bibsonomy.model.Resource;
-import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
-import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
 import org.elasticsearch.action.get.GetResponse;
 
@@ -61,18 +62,20 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	private final String systemHome;
 	private static final Log log = LogFactory.getLog(SharedIndexUpdatePlugin.class);
 	private static final ThreadPoolExecutor generatorThreadExecutor = new ThreadPoolExecutor(0, 1, 20, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
-	private final List<SharedResourceIndexGenerator<R>> queuedOrRunningGenerators = Collections.synchronizedList(new ArrayList<SharedResourceIndexGenerator<R>>());
+	private static final List<SharedResourceIndexGenerator<?>> queuedOrRunningGenerators = Collections.synchronizedList(new ArrayList<SharedResourceIndexGenerator<?>>());
 	/** converts post model objects to documents of the index structure */
-	private final LuceneResourceConverter<R> resourceConverter;
+	private LuceneResourceConverter<R> resourceConverter;
+	/** the database manager */
+	protected LuceneDBInterface<R> dbLogic;
+	private String indexName = ESConstants.INDEX_NAME;
 
 	/**
 	 * @param esClient
 	 * @param systemHome
 	 */
-	public SharedIndexUpdatePlugin(final ESClient esClient, final String systemHome, final LuceneResourceConverter<R> resourceConverter) {
+	public SharedIndexUpdatePlugin(final ESClient esClient, final String systemHome) {
 		this.esClient = esClient;
 		this.systemHome = systemHome;
-		this.resourceConverter = resourceConverter;
 	}
 
 	/*
@@ -95,25 +98,26 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 
 	private SharedResourceIndexUpdater<R> createUpdaterInternal(final String resourceType) {
 		SharedResourceIndexUpdater<R> sharedIndexUpdater;
-		sharedIndexUpdater = new SharedResourceIndexUpdater<R>(this.systemHome, resourceConverter);
+		sharedIndexUpdater = new SharedResourceIndexUpdater<R>(this.systemHome, resourceConverter, this.indexName);
 		sharedIndexUpdater.setEsClient(this.esClient);
 		sharedIndexUpdater.setResourceType(resourceType);
+		sharedIndexUpdater.setDbLogic(this.dbLogic);
 		return sharedIndexUpdater;
 	}
 
 	public String getGlobalIndexNonExistanceError() {
-		final boolean indexExist = this.esClient.getClient().admin().indices().exists(new IndicesExistsRequest(ESConstants.INDEX_NAME)).actionGet().isExists();
+		final boolean indexExist = this.esClient.getClient().admin().indices().exists(new IndicesExistsRequest(indexName)).actionGet().isExists();
 		if (!indexExist) {
-			return "No Index named \"" + ESConstants.INDEX_NAME + "\" found!! Please generate Index";
+			return "No Index named \"" + indexName + "\" found!! Please generate Index";
 		}
 		return null;
 	}
 
 	public String getResourceIndexNonExistanceError(final String indexType) {
 		// Check if a document exists
-		final GetResponse response = this.esClient.getClient().prepareGet(ESConstants.INDEX_NAME, ESConstants.SYSTEM_INFO_INDEX_TYPE, this.systemHome + indexType).setRefresh(true).execute().actionGet();
+		final GetResponse response = this.esClient.getClient().prepareGet(indexName, ESConstants.SYSTEM_INFO_INDEX_TYPE, this.systemHome + indexType).setRefresh(true).execute().actionGet();
 		if (!response.isExists()) {
-			return "No documents for \"" + indexType + "\" in \"" + ESConstants.INDEX_NAME + "\" for current system found!! Please re-generate Index";
+			return "No documents for \"" + indexType + "\" in \"" + indexName + "\" for current system found!! Please re-generate Index";
 		}
 		return null;
 	}
@@ -124,29 +128,19 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	 * @param luceneResourceManagers
 	 */
 	@SuppressWarnings("unchecked")
-	public synchronized void generateIndex(final List<LuceneResourceManager<? extends Resource>> luceneResourceManagers) {
+	public synchronized void generateIndex(final List<LuceneResourceManager<? extends Resource>> luceneResourceManagers, boolean sync) {
 		// allow only one index-generation at a time
 		if (generatorThreadExecutor.getQueue().isEmpty() == false) {
 			return;
 		}
 
-		// check if the index already exists if not, it creates empty index
-		final boolean indexExist = this.esClient.getClient().admin().indices().exists(new IndicesExistsRequest(ESConstants.INDEX_NAME)).actionGet().isExists();
-		if (!indexExist) {
-			final CreateIndexResponse createIndex = this.esClient.getClient().admin().indices().create(new CreateIndexRequest(ESConstants.INDEX_NAME)).actionGet();
-			if (!createIndex.isAcknowledged()) {
-				log.error("Error in creating Index");
-				return;
-			}
-		}
-
 		for (final LuceneResourceManager<? extends Resource> manager : luceneResourceManagers) {
-			this.generate(manager);
+			this.generate(manager, sync);
 		}
 	}
 
-	private void generate(final LuceneResourceManager<? extends Resource> manager) {
-		final SharedResourceIndexGenerator generator = new SharedResourceIndexGenerator(this.systemHome, this.createUpdaterInternal(manager.getResourceName()));
+	private void generate(final LuceneResourceManager<? extends Resource> manager, boolean sync) {
+		final SharedResourceIndexGenerator generator = new SharedResourceIndexGenerator(this.systemHome, this.createUpdaterInternal(manager.getResourceName()), this.indexName);
 		generator.setLogic(manager.getDbLogic());
 		generator.setEsClient(this.esClient);
 		generator.setResourceType(manager.getResourceName());
@@ -154,7 +148,16 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 		generator.setCallback(this);
 
 		this.queuedOrRunningGenerators.add(generator);
-		generatorThreadExecutor.execute(generator);
+		Future<?> future = generatorThreadExecutor.submit(generator);
+		if (sync) {
+			try {
+				future.get();
+			} catch (InterruptedException e) {
+				Thread.currentThread().interrupt();
+			} catch (ExecutionException e) {
+				log.error("syncronous generator for " + manager.getResourceName() + " threw exception", e);
+			}
+		}
 	}
 
 	/*
@@ -171,19 +174,13 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	/**
 	 * @param mng
 	 */
-	public void generateIndex(final LuceneResourceManager<? extends Resource> mng) {
+	public void generateIndex(final LuceneResourceManager<? extends Resource> mng, boolean sync) {
 		// allow only one index-generation at a time
 		if (generatorThreadExecutor.getQueue().isEmpty() == false) {
 			return;
 		}
 
-		// check if the index already exists if not, it creates empty index
-		final boolean indexExist = this.esClient.getClient().admin().indices().exists(new IndicesExistsRequest(ESConstants.INDEX_NAME)).actionGet().isExists();
-		if (!indexExist) {
-			return;
-		}
-
-		this.generate(mng);
+		this.generate(mng, sync);
 	}
 
 	/**
@@ -211,7 +208,7 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 			statistics.setLastTasId(this.getLong(infos, "last_tas_id"));
 			indexInfo.setIndexStatistics(statistics);
 
-			for (final SharedResourceIndexGenerator<R> gen : this.queuedOrRunningGenerators) {
+			for (final SharedResourceIndexGenerator<?> gen : this.queuedOrRunningGenerators) {
 				if (resourceType.equals(gen.getResourceType())) {
 					if (gen.isRunning() == true) {
 						indexInfo.setGeneratingIndex(true);
@@ -242,6 +239,26 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	@Override
 	public void generatedIndex(final AbstractIndexGenerator<R> index) {
 		this.queuedOrRunningGenerators.remove(index);
+	}
+
+	public LuceneDBInterface<R> getDbLogic() {
+		return this.dbLogic;
+	}
+
+	public void setDbLogic(LuceneDBInterface<R> dbLogic) {
+		this.dbLogic = dbLogic;
+	}
+
+	public void setResourceConverter(LuceneResourceConverter<R> resourceConverter) {
+		this.resourceConverter = resourceConverter;
+	}
+
+	public String getIndexName() {
+		return this.indexName;
+	}
+
+	public void setIndexName(String indexName) {
+		this.indexName = indexName;
 	}
 
 }
