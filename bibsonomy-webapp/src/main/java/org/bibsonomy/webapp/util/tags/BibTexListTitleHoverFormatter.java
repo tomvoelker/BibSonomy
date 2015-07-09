@@ -68,11 +68,11 @@ public class BibTexListTitleHoverFormatter {
 	 * @param locale
 	 * @return String
 	 */
-	public static String renderHover(final Post post, final Locale locale) {
+	public static String renderHover(final Post<?> post, final Locale locale) {
 		
 		final BibTex publication = (BibTex)post.getResource();
 		
-		BibTexListTitleHoverFormatter renderer = new BibTexListTitleHoverFormatter(publication,locale);
+		BibTexListTitleHoverFormatter renderer = new BibTexListTitleHoverFormatter(publication, locale);
 		
 		renderer.title().add(LB);
 		
@@ -114,7 +114,6 @@ public class BibTexListTitleHoverFormatter {
 			renderer.howpublished().year(true).note();
 		}
 		return renderer.getOutput();
-		
 	}
 	
 	private BibTexListTitleHoverFormatter add(String s) {
