@@ -97,7 +97,7 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder impleme
 
 	private final int maxOffset = 2048;
 
-	private ESClient esClient;
+	private ESIndexManager esIndexManager;
 
 	/** url of this system */
 	private String systemUrl;
@@ -105,21 +105,6 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder impleme
 	/** the number of person suggestions */
 	private int personSuggestionSize = 8;
 
-	private String indexName;
-
-	/**
-	 * @param esClient the esClient to set
-	 */
-	public void setEsClient(final ESClient esClient) {
-		this.esClient = esClient;
-	}
-
-	/**
-	 * @return the ElasticSearch Client
-	 */
-	public ESClient getEsClient() {
-		return this.esClient;
-	}
 	
 	/**
 	 * get tag cloud for given search query for the Shared Resource System
@@ -144,13 +129,11 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder impleme
 	public List<Tag> getTags(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexkey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
 		final BoolQueryBuilder query= this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags);
 		final Map<Tag, Integer> tagCounter = new HashMap<Tag, Integer>();
-		boolean lockAcquired = false;
-		try {  
-			lockAcquired = this.esClient.getReadLock(this.resourceType).tryLock();
-			if (lockAcquired) {
-				SearchRequestBuilder searchRequestBuilder = esClient
-						.getClient().prepareSearch(
-								ESConstants.getGlobalAliasForResource(resourceType, true));
+
+		try (final IndexLock indexLock = getEsIndexManager().aquireReadLockForTheActiveIndex(this.resourceType)) {
+			
+
+				SearchRequestBuilder searchRequestBuilder = getEsIndexManager().getClient().prepareSearch(indexLock.getIndexName());
 				searchRequestBuilder.setTypes(resourceType);
 				searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 				searchRequestBuilder.setQuery(query);
@@ -192,14 +175,10 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder impleme
 						}
 					}
 				}
+			} catch (IndexMissingException e) {
+				log.error("IndexMissingException: " + e);
 			}
-		} catch (IndexMissingException e) {
-			log.error("IndexMissingException: " + e);
-		}finally{
-			if(lockAcquired){
-				this.esClient.getReadLock(this.resourceType).unlock();
-			}
-		}
+		
 		
 		
 		final List<Tag> tags = new LinkedList<Tag>();
@@ -241,16 +220,14 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder impleme
 	 */
 	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) throws CorruptIndexException, IOException {
 		final ResultList<Post<R>> postList = new ResultList<Post<R>>();
-		boolean lockAcquired = false;
-		try {  
-			lockAcquired = this.esClient.getReadLock(this.resourceType).tryLock(15, TimeUnit.SECONDS);  
-			if (lockAcquired) {
+		try (final IndexLock indexLock = getEsIndexManager().aquireReadLockForTheActiveIndex(this.resourceType)) {
+			
 				final BoolQueryBuilder queryBuilder = this.buildQuery(userName,
 						requestedUserName, requestedGroupName,
 						requestedRelationNames, allowedGroups, searchTerms,
 						titleSearchTerms, authorSearchTerms, bibtexKey,
 						tagIndex, year, firstYear, lastYear, negatedTags);
-				final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(ESConstants.getGlobalAliasForResource(resourceType, true));
+				final SearchRequestBuilder searchRequestBuilder = this.esIndexManager.getClient().prepareSearch(indexLock.getIndexName());
 
 				searchRequestBuilder.setTypes(this.resourceType);
 				searchRequestBuilder.setSearchType(SearchType.DEFAULT);
@@ -271,15 +248,8 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder impleme
 						postList.add(this.resourceConverter.writePost(hit.getSource()));
 					}
 				}
-			}
 		} catch (final IndexMissingException e) {
 			log.error("IndexMissingException: " + e);
-		} catch (InterruptedException e) {
-			log.error("unable to get the read lock on index: "+ this.resourceType, e);
-		}finally{
-			if(lockAcquired){
-				this.esClient.getReadLock(this.resourceType).unlock();
-			}
 		}
 
 		return postList;
@@ -332,7 +302,7 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder impleme
 	 */
 	@Override
 	public List<ResourcePersonRelation> getPersonSuggestion(String queryString) {
-		try {
+		try (final IndexLock indexLock = getEsIndexManager().aquireReadLockForTheActiveIndex(this.resourceType)) {
 			
 			// we use inverted scores such that the best results automatically appear first according to the ascending order of a sorted map
 			final TreeMap<Float, ResourcePersonRelation> relSorter = new TreeMap<>();
@@ -349,7 +319,7 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder impleme
 			// remember alreadyAnalyzedInterhashes to skip over multiple posts of the same resource
 			final Set<String> alreadyAnalyzedInterhashes = new HashSet<>();
 			for (int offset = 0; relSorter.size() < personSuggestionSize && offset < maxOffset; offset += personSuggestionSize) {
-				boolean moreEntriesMightBeFound = fetchMoreResults(relSorter, queryString, tokenizedQueryString, offset, alreadyAnalyzedInterhashes);
+				boolean moreEntriesMightBeFound = fetchMoreResults(relSorter, queryString, tokenizedQueryString, offset, alreadyAnalyzedInterhashes, indexLock.getIndexName());
 				if (moreEntriesMightBeFound == false) {
 					break;
 				}
@@ -363,7 +333,7 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder impleme
 		return new ArrayList<>();
 	}
 
-	private boolean fetchMoreResults(final TreeMap<Float, ResourcePersonRelation> relSorter, String queryString, final Set<String> queryTerms, int offset, final Set<String> alreadyAnalyzedInterhashes) {
+	private boolean fetchMoreResults(final TreeMap<Float, ResourcePersonRelation> relSorter, String queryString, final Set<String> queryTerms, int offset, final Set<String> alreadyAnalyzedInterhashes, String indexName) {
 		final QueryBuilder queryBuilder = QueryBuilders.filteredQuery( //
 				QueryBuilders.boolQuery() //
 						.should(QueryBuilders.multiMatchQuery(queryString) //
@@ -383,7 +353,7 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder impleme
 						), //
 				FilterBuilders.termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, systemUrl) //
 				);
-		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(indexName);
+		final SearchRequestBuilder searchRequestBuilder = this.esIndexManager.getClient().prepareSearch(indexName);
 		searchRequestBuilder.setTypes(this.resourceType);
 		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 		searchRequestBuilder.setQuery(queryBuilder).setFrom(offset).setSize(personSuggestionSize);
@@ -480,12 +450,14 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder impleme
 		this.personSuggestionSize = personSuggestionSize;
 	}
 
-	public String getIndexName() {
-		return this.indexName;
+
+	public ESIndexManager getEsIndexManager() {
+		return this.esIndexManager;
 	}
 
-	public void setIndexName(String indexName) {
-		this.indexName = indexName;
+
+	public void setEsIndexManager(ESIndexManager esIndexManager) {
+		this.esIndexManager = esIndexManager;
 	}
 
 }

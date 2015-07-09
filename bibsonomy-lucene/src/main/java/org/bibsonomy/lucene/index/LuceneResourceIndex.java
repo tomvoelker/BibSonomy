@@ -1007,4 +1007,28 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	public void updateIndexWithPersonInfo(Person per, LRUMap updatedInterhashes) {
 		// because it is intended to completely replace lucene with elasticsearch, this is only implemented for elasticsearch
 	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#onUpdateComplete()
+	 */
+	@Override
+	public void onUpdateComplete() {
+		// activating the index is done elsewhere by some other legacy magic
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#getUpdaterState()
+	 */
+	@Override
+	public IndexUpdaterState getUpdaterState() {
+		if (state == null) {
+			state = new IndexUpdaterState();
+		}
+		final Integer lastTasId = this.getLastTasId();
+		// keeps track of the newest log_date during last index update
+		final Date lastLogDate = this.getLastLogDate();
+		state.setLast_log_date(lastLogDate);
+		state.setLast_tas_id(lastTasId);
+		return state;
+	}
 }

@@ -86,7 +86,7 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	 */
 	@Override
 	public void createEmptyIndex() throws IOException {
-		this.esClient.getClient().admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet(2, TimeUnit.MINUTES);
+		this.esClient.waitForReadyState();
 		
 		// check if the index already exists if not, it creates empty index
 		final boolean indexExist = this.esClient.getClient().admin().indices().exists(new IndicesExistsRequest(indexName)).actionGet().isExists();
@@ -109,7 +109,7 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	@Override
 	protected void writeMetaInfo(IndexUpdaterState state) throws IOException {
 		updater.setSystemInformation(state);
-		updater.flushSystemInformation(indexName);
+		updater.flushSystemInformation();
 	}
 	
 	/* (non-Javadoc)
@@ -182,6 +182,7 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	@Override
 	protected void activateIndex() {
 		esClient.getClient().admin().indices().flush(new FlushRequest(indexName).full(true)).actionGet();
+		// do not truly activate the index by now. Later, an updater will find it, update it and activate it  
 	}
 
 	/**

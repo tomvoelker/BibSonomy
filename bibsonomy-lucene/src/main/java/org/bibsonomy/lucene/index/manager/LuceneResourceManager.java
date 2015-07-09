@@ -222,15 +222,10 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 				log.warn("no " + getResourceName() + " index to update for " + plugin.toString());
 				continue;
 			}
-			
-			final Integer lastTasId = updater.getLastTasId();
 
-			// keeps track of the newest log_date during last index update
-			final Date lastLogDate = updater.getLastLogDate();
 			
-			final IndexUpdaterState state = new IndexUpdaterState();
-			state.setLast_log_date(lastLogDate);
-			state.setLast_tas_id(lastTasId);
+			final IndexUpdaterState state = updater.getUpdaterState();
+			
 			List<IndexUpdater<R>> updatersWithSameState = lastLogDateAndLastTasIdToUpdaters.get(state);
 			if (updatersWithSameState == null) {
 				updatersWithSameState = new ArrayList<>();
@@ -318,6 +313,10 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		
 		// now the index is up to date wrt the documents and posts
 		updateUpdatedIndexWithPersonChanges(oldState, targetState, indexUpdaters);
+		
+		for (IndexUpdater<R> updater : indexUpdaters) {
+			updater.onUpdateComplete();
+		}
 
 		return newLastTasId;
 	}

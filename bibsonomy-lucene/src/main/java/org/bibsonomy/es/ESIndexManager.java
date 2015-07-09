@@ -2,33 +2,38 @@ package org.bibsonomy.es;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandardPublication;
+import org.bibsonomy.util.LockAutoCloseable;
 import org.elasticsearch.action.admin.cluster.state.ClusterStateResponse;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
+import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.cluster.metadata.AliasMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.hppc.cursors.ObjectCursor;
 
 /**
- * TODO: add documentation to this class
+ * Class for every basic functionality on top of elasticsearch ee.g. resolving index names by alias names and locking indices
  *
  * @author lutful
+ * @author jil
  */
 public class ESIndexManager {
+	private final Map<String, ReadWriteLock> locksByIndexName = new HashMap<String, ReadWriteLock>();
 	private final ESClient esClient;
 	private final String systemHome;
 	private static final Log log = LogFactory.getLog(ESIndexManager.class);
@@ -41,6 +46,15 @@ public class ESIndexManager {
 	public ESIndexManager(ESClient esClient, String systemHome) {
 		this.esClient = esClient;
 		this.systemHome = systemHome;
+	}
+	
+	private ReadWriteLock getRwLock(String indexName) {
+		ReadWriteLock rwLock = locksByIndexName.get(indexName);
+		if (rwLock == null) {
+			rwLock = new ReentrantReadWriteLock();
+			locksByIndexName.put(indexName, rwLock);
+		}
+		return rwLock;
 	}
 
 
@@ -67,40 +81,13 @@ public class ESIndexManager {
 	 * @return checks if documents for a particular resource exists
 	 */
 	public String getResourceIndexNonExistanceError(final String resourceType) {
-		final String activeIndex = getIndexNameFromAliasName(ESConstants.getGlobalAliasForResource(resourceType, true));
-		final String backupIndex =  getIndexNameFromAliasName(ESConstants.getGlobalAliasForResource(resourceType, false));
-		if (activeIndex == null || backupIndex == null) {
+		final String activeIndex = getThisSystemsIndexNameFromAlias(ESConstants.getGlobalAliasForResource(resourceType, true));
+		final String backupIndex =  getThisSystemsIndexNameFromAlias(ESConstants.getGlobalAliasForResource(resourceType, false));
+		if (activeIndex == null && backupIndex == null) {
 			return "No index for \"" + resourceType	+ "\" of current system found!! Please re-generate Index";
 		}
 		return null;
 	}
-	
-	/**
-	 * check if the index already exists if yes, it deletes the index and finally it creates empty index and assigns Aliases
-	 * Index Name: systemurl + ResourceType + Unix time stamp
-	 * @param resourceType
-	 * @param indexNumber
-	 * @param isActiveIndex
-	 * @param oldIndexname 
-	 * @return returns the indexName
-	 */
-	public String checkNcreateIndex(final String resourceType, final String oldIndexname, final boolean isActiveIndex){
-		if (oldIndexname != null && oldIndexname != "") {
-			final DeleteIndexResponse deleteIndex = this.esClient.getClient().admin().indices().delete(new DeleteIndexRequest(oldIndexname)).actionGet();
-			if (!deleteIndex.isAcknowledged()) {
-				log.error("Error in deleting the existing index: " + oldIndexname);
-				return null;
-			}
-			//refresh the change
-			this.esClient.getClient().admin().indices().prepareRefresh().execute().actionGet();
-		}
-		String newIndexName = this.createIndex(resourceType);
-		if(newIndexName != null){
-			this.setAliasForIndex(ESConstants.getGlobalAliasForResource(resourceType, isActiveIndex), newIndexName);
-		}
-		return newIndexName;
-	}
-
 
 	/**
 	 * only creates the index/ a temporary index based on the resource type
@@ -127,21 +114,24 @@ public class ESIndexManager {
 	 * @return returns the index name of the temporary index
 	 */
 	public String createTempIndex(final String resourceType){
-		String tempAlias =  ESConstants.getTempAliasForResource(resourceType, false);
-		List<String> prevTempIndexes = this.getIndexesFfromAlias(tempAlias);
+		final String tempAlias =  ESConstants.getTempAliasForResource(resourceType);
+		final List<String> prevTempIndexes = this.getThisSystemsIndexesFromAlias(tempAlias);
 		if(!prevTempIndexes.isEmpty()){
 			for(String indexName: prevTempIndexes){
+				if (removeAlias(indexName, tempAlias) == false) {
+					log.error("Error deleting the existing temp index alias: " + tempAlias + "->" + indexName);
+					return null;
+				}
 				final DeleteIndexResponse deleteIndex = this.esClient.getClient().admin().indices().delete(new DeleteIndexRequest(indexName)).actionGet();
 				if (!deleteIndex.isAcknowledged()) {
-					log.error("Error in deleting the existing temp index: " + indexName);
+					log.error("Error deleting the existing temp index: " + indexName);
 					return null;
 				}
 			}
 		}
-		String indexName = this.createIndex(resourceType);
+		final String indexName = this.createIndex(resourceType);
 		if(indexName!=null){
-			String onProcessAlias = ESConstants.getTempAliasForResource(resourceType, true);
-			this.setAliasForIndex(onProcessAlias, indexName);
+			this.setAliasForIndex(tempAlias, indexName);
 			return indexName;
 		}
 		return null;		
@@ -155,7 +145,7 @@ public class ESIndexManager {
 	 * @return returns the index name if exists
 	 */
 	public String indexExist(final String resourceType, final boolean isActiveIndex){
-		return this.getIndexNameFromAliasName(ESConstants.getGlobalAliasForResource(resourceType, isActiveIndex));
+		return this.getThisSystemsIndexNameFromAlias(ESConstants.getGlobalAliasForResource(resourceType, isActiveIndex));
 	}
 	
 	/**
@@ -186,8 +176,8 @@ public class ESIndexManager {
 	public String switchToBackupIndexByAlias(String activeIndexAlias, String resourceType){	
 		String activeIndexName = null;
 		String backupIndexAlias = ESConstants.getGlobalAliasForResource(resourceType, false);
-		activeIndexName = this.getIndexNameFromAliasName(activeIndexAlias);
-		String backupIndexName  = this.getIndexNameFromAliasName(backupIndexAlias);
+		activeIndexName = this.getThisSystemsIndexNameFromAlias(activeIndexAlias);
+		String backupIndexName  = this.getThisSystemsIndexNameFromAlias(backupIndexAlias);
 		IndicesAliasesResponse aliasReponse = this.esClient.getClient().admin().indices().prepareAliases()
                 .removeAlias(activeIndexName, activeIndexAlias)
                 .addAlias(activeIndexName, backupIndexAlias)
@@ -200,6 +190,33 @@ public class ESIndexManager {
 		}
 		return activeIndexName;
 	}
+	
+	/**
+	 * @param indexName
+	 * @param resourceType
+	 * @return true if switch successful
+	 */
+	public boolean activateIndex(String indexName, String resourceType) {
+		
+		try (final IndexLock indexLock = aquireLockForIndexName(indexName, false)) {
+			// inside this lock we can be sure that nobody currently writes to the index which is to be activated
+			try (final IndexLock indexActivityLock = aquireWriteLockForTheActiveIndex(resourceType)) {
+				// inside this lock we can be sure that nobody changes this system's active alias
+				final String activeIndexAlias = ESConstants.getGlobalAliasForResource(resourceType, true);
+				final String backupIndexAlias = ESConstants.getGlobalAliasForResource(resourceType, false);
+				
+				final String oldActiveIndexName = getThisSystemsIndexNameFromAlias(activeIndexAlias);
+				removeAlias(indexName, backupIndexAlias);
+				if (oldActiveIndexName != null) {
+					removeAlias(oldActiveIndexName, activeIndexAlias);
+					setAliasForIndex(backupIndexAlias, oldActiveIndexName);
+				}
+				setAliasForIndex(activeIndexAlias, indexName);
+			}
+		}
+		return true;
+	}
+	
 	/**
 	 * @param indexName
 	 * @param resourceType
@@ -209,11 +226,11 @@ public class ESIndexManager {
 		/*
 		 * get the index for this system from the alias and compare
 		 */
-		String activeIndexAlias = ESConstants.getGlobalAliasForResource(resourceType, true);
-		String backupIndexAlias = ESConstants.getGlobalAliasForResource(resourceType, false);
+		final String activeIndexAlias = ESConstants.getGlobalAliasForResource(resourceType, true);
+		final String backupIndexAlias = ESConstants.getGlobalAliasForResource(resourceType, false);
 
-		if(indexName.equalsIgnoreCase(this.getIndexNameFromAliasName(activeIndexAlias))){
-			String backupIndexName  = this.getIndexNameFromAliasName(backupIndexAlias);
+		if(indexName.equalsIgnoreCase(this.getThisSystemsIndexNameFromAlias(activeIndexAlias))){
+			String backupIndexName  = this.getThisSystemsIndexNameFromAlias(backupIndexAlias);
 			IndicesAliasesResponse aliasReponse = this.esClient.getClient().admin().indices().prepareAliases()
 	                .removeAlias(indexName, activeIndexAlias)
 	                .addAlias(indexName, backupIndexAlias)
@@ -231,23 +248,16 @@ public class ESIndexManager {
 		return false;
 	}
 	
-	private String getIndexNameFromAliasName(String aliasName) {
-	    ImmutableOpenMap<String, AliasMetaData> indexToAliasesMap = this.esClient.getClient().admin().cluster()
-	            .state(Requests.clusterStateRequest())
-	            .actionGet()
-	            .getState()
-	            .getMetaData()
-	            .aliases().get(aliasName);
-	    if(indexToAliasesMap != null && !indexToAliasesMap.isEmpty()){
-	    	Iterator<ObjectCursor<String>> it = indexToAliasesMap.keys().iterator();
-	        while( it.hasNext()){
-	        	String indexName = it.next().value;
-	        	if(indexName.contains(this.systemHome.replaceAll("[^a-zA-Z0-9]", "").toLowerCase())){
-	        		return indexName;
-	        	}
-	        }
-	    }
-	    return null;
+	private String getThisSystemsIndexNameFromAlias(String aliasName) {
+		List<String> indexList = getThisSystemsIndexesFromAlias(aliasName);
+		if (indexList.size() > 1) {
+			log.warn("local system has more than one index for " + aliasName + ": " + indexList);
+		}
+		if (indexList.size() < 1) {
+			log.warn("local system has no index for " + aliasName);
+			return null;
+		}
+		return indexList.get(0);
 	}
 	
 	/**
@@ -256,7 +266,7 @@ public class ESIndexManager {
 	 * @param alias
 	 * @return return a list of indexes
 	 */
-	public List<String> getIndexesFfromAlias(String alias){
+	public List<String> getThisSystemsIndexesFromAlias(String alias){
 		List<String> indexes = new ArrayList<String>();
 		  ImmutableOpenMap<String, AliasMetaData> indexToAliasesMap = this.esClient.getClient().admin().cluster()
 		            .state(Requests.clusterStateRequest())
@@ -265,9 +275,8 @@ public class ESIndexManager {
 		            .getMetaData()
 		            .aliases().get(alias);
 		    if(indexToAliasesMap != null && !indexToAliasesMap.isEmpty()){
-		    	Iterator<ObjectCursor<String>> it = indexToAliasesMap.keys().iterator();
-		        while( it.hasNext()){
-		        	String indexName = it.next().value;
+		    	for (ObjectCursor<String> cursor : indexToAliasesMap.keys()) {
+		        	final String indexName = cursor.value;
 		        	if(indexName.contains(this.systemHome.replaceAll("[^a-zA-Z0-9]", "").toLowerCase())){
 		        		indexes.add(indexName);
 		        	}
@@ -283,7 +292,7 @@ public class ESIndexManager {
 	 * @return returns the active indexName
 	 */
 	public String getActiveIndexnameForResource(String resourceType){
-		return getIndexNameFromAliasName(ESConstants.getGlobalAliasForResource(resourceType, true));
+		return getThisSystemsIndexNameFromAlias(ESConstants.getGlobalAliasForResource(resourceType, true));
 	}
 	
 	/**
@@ -342,17 +351,17 @@ public class ESIndexManager {
 	}
 	
 	/**
-	 * changes the temporary index's alias from on progress to completed index's alias
+	 * removes the temporary index's alias and adds the index to the set of backup indices that may later be taken by the updater for updating and activation
 	 * 
 	 * @param indexName
 	 * @param resourceType 
 	 */
-	public void changeTempIndexStaus(final String indexName, final String resourceType){
-		String onPorgAlias = ESConstants.getTempAliasForResource(resourceType, true);
-		String tempAlias =  ESConstants.getTempAliasForResource(resourceType, false);
-		IndicesAliasesResponse aliasReponse = this.esClient.getClient().admin().indices().prepareAliases()
-                .removeAlias(indexName, onPorgAlias)
-                .addAlias(indexName, tempAlias)
+	public void changeUnderConstructionStatus(final String indexName, final String resourceType){
+		final String underConstructionAlias = ESConstants.getTempAliasForResource(resourceType);
+		final String backupIndexAlias = ESConstants.getGlobalAliasForResource(resourceType, false);
+		final IndicesAliasesResponse aliasReponse = this.esClient.getClient().admin().indices().prepareAliases()
+                .removeAlias(indexName, underConstructionAlias)
+                .addAlias(indexName, backupIndexAlias)
                 .execute()
                 .actionGet();
 		if (!aliasReponse.isAcknowledged()) {
@@ -360,7 +369,13 @@ public class ESIndexManager {
 		}
 	}
 	
-	private boolean removeAlias(final String indexName, final String alias){
+	/**
+	 * removes one particular alias linking one aliasName to one indexName
+	 * @param indexName
+	 * @param alias
+	 * @return
+	 */
+	public boolean removeAlias(final String indexName, final String alias){
 		IndicesAliasesResponse aliasReponse = this.esClient.getClient().admin().indices().prepareAliases()
                 .removeAlias(indexName, alias)
                 .execute()
@@ -370,5 +385,56 @@ public class ESIndexManager {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * @return
+	 */
+	public Client getClient() {
+		return esClient.getClient();
+	}
+
+	/**
+	 * @param resourceType
+	 * @return
+	 */
+	public IndexLock aquireReadLockForTheActiveIndex(String resourceType) {
+		return acquireLockForTheActiveIndex(resourceType, false);
+	}
+	
+	/**
+	 * @param resourceType
+	 * @return
+	 */
+	public IndexLock aquireWriteLockForTheActiveIndex(String resourceType) {
+		return acquireLockForTheActiveIndex(resourceType, true);
+	}
+	
+	private IndexLock acquireLockForTheActiveIndex(String resourceType, boolean writeAccess) {
+		// here we lock the alias name instead of the nme of a real index because: a) active indices are never modified and b) an active index can only become inactive when a write lock on the active index is acquired 
+		final String activeAliasName = ESConstants.getGlobalAliasForResource(resourceType, true);
+		// wrong: nevertheless, the name of the real index is said to be locked, because there is only one active index per resource at a time
+		//final String realIndexName = getThisSystemsIndexNameFromAlias(activeAliasName);
+		return aquireLockForIndexName(activeAliasName, writeAccess);
+	}
+
+	/**
+	 * @param indexName
+	 * @param writeAccess
+	 * @return 
+	 */
+	protected IndexLock aquireLockForIndexName(String indexName, boolean writeAccess) {
+		final ReadWriteLock rwlock = getRwLock(indexName);
+		final Lock lock = writeAccess ? rwlock.writeLock() : rwlock.readLock();
+		return new IndexLock(indexName, lock);
+	}
+
+	/**
+	 * @param resourceType
+	 * @return
+	 */
+	public IndexLock aquireWriteLockForAnInactiveIndex(String resourceType) {
+		final String realIndexName = getThisSystemsIndexNameFromAlias(ESConstants.getGlobalAliasForResource(resourceType, false));
+		return new IndexLock(realIndexName, getRwLock(realIndexName).writeLock());
 	}
 }

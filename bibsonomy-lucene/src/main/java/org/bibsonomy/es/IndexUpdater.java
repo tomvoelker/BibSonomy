@@ -107,4 +107,14 @@ public interface IndexUpdater<R extends Resource> {
 	 * @param updatedInterhashes
 	 */
 	public void updateIndexWithPersonInfo(Person per, LRUMap updatedInterhashes);
+
+	/**
+	 * this may for example set an updated index to active
+	 */
+	void onUpdateComplete();
+
+	/**
+	 * @return
+	 */
+	public IndexUpdaterState getUpdaterState();
 }

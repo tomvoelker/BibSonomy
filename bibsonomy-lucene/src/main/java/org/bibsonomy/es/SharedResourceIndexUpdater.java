@@ -32,9 +32,9 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.collections.LRUMap;
 import org.apache.commons.logging.Log;
@@ -47,10 +47,7 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
-import org.bibsonomy.model.ResourcePersonRelationLogStub;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.GroupUtils;
-import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -62,8 +59,6 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.indices.IndexMissingException;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.search.sort.SortOrder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -77,10 +72,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpdater<R> {
 	private static final Log log = LogFactory.getLog(SharedResourceIndexUpdater.class);
-
-	private final String indexName;
-
-	private final String activeIndexID;
 
 	private final String resourceType;
 
@@ -110,20 +101,26 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	/** the database manager */
 	protected LuceneDBInterface<R> dbLogic;
 
+	private final SharedIndexUpdatePlugin<R> plugin;
+
+	private final IndexLock lockOfIndexBeingUpdated;
+
 	/**
 	 * @param systemHome
 	 * @param resourceType
+	 * @param resourceConverter 
+	 * @param nameOfIndexBeingUpdated 
 	 */
-	public SharedResourceIndexUpdater(final String systemHome, String resourceType, final LuceneResourceConverter<R> resourceConverter, final String indexName) {
+	public SharedResourceIndexUpdater(final String systemHome, String resourceType, final LuceneResourceConverter<R> resourceConverter, final IndexLock lockOfIndexBeingUpdated, final SharedIndexUpdatePlugin<R> plugin) {
 		this.systemHome = systemHome;
 		this.resourceConverter = resourceConverter;
-		this.indexName = indexName;
+		this.lockOfIndexBeingUpdated = lockOfIndexBeingUpdated;
+		this.plugin = plugin;
 		this.contentIdsToDelete = new LinkedList<Integer>();
 		this.esPostsToInsert = new ArrayList<Map<String, Object>>();
 		this.usersToFlag = new TreeSet<String>();
 		this.resourceType =  resourceType;
-		this.activeIndexID = ESConstants.getGlobalAliasForResource(this.resourceType, true);
-		esIndexManager = new ESIndexManager(esClient, systemHome);		
+		this.esIndexManager = new ESIndexManager(esClient, systemHome);		
 	}
 
 	/**
@@ -131,13 +128,20 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 */
 	@SuppressWarnings("boxing")
 	public Date getLastLogDate() {
-		synchronized (this) {
-			final String lastLogDateString = this.fetchSystemInfoField(LuceneFieldNames.LAST_LOG_DATE);
-			if (lastLogDateString == null) {
-				return null;
-			}
-			return new Date(Long.parseLong(lastLogDateString));
+		SystemInformation sysinfos = getSingleSystemInfos();
+		if (sysinfos == null) {
+			log.error("no lastLogDate for index " + this.lockOfIndexBeingUpdated.getIndexName());
+			return null;
 		}
+		return sysinfos.getUpdaterState().getLast_log_date();
+		
+//		synchronized (this) {
+//			final String lastLogDateString = this.fetchSystemInfoField(LuceneFieldNames.LAST_LOG_DATE);
+//			if (lastLogDateString == null) {
+//				return null;
+//			}
+//			return new Date(Long.parseLong(lastLogDateString));
+//		}
 	}
 
 	private String fetchSystemInfoField(final String fieldToRetrieve) {
@@ -173,9 +177,9 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	private List<Map<String, Object>> getAllSystemInfosInternal(final QueryBuilder query, final int size) {
 		// wait for the yellow (or green) status to prevent
 		// NoShardAvailableActionException later
-		this.esClient.getClient().admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
+		this.esClient.waitForReadyState();
 
-		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(this.activeIndexID);
+		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(this.lockOfIndexBeingUpdated.getIndexName());
 		searchRequestBuilder.setTypes(ESConstants.SYSTEM_INFO_INDEX_TYPE);
 		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 		searchRequestBuilder.setQuery(query);
@@ -192,6 +196,29 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 
 		return rVal;
 	}
+	
+	private List<SystemInformation> getAllSystemInfosAsObjects(final QueryBuilder query, final int size) {
+		// wait for the yellow (or green) status to prevent
+		// NoShardAvailableActionException later
+		this.esClient.waitForReadyState();
+
+		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(this.lockOfIndexBeingUpdated.getIndexName());
+		searchRequestBuilder.setTypes(ESConstants.SYSTEM_INFO_INDEX_TYPE);
+		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
+		searchRequestBuilder.setQuery(query);
+		searchRequestBuilder.setFrom(0).setSize(size).setExplain(true);
+
+		final SearchResponse response = searchRequestBuilder.execute().actionGet();
+
+		final List<SystemInformation> rVal = new ArrayList<>();
+		if (response != null) {
+			for (final SearchHit hit : response.getHits()) {
+				rVal.add(parseSystemInformation(hit.getSourceAsString()));
+			}
+		}
+
+		return rVal;
+	}
 
 	/**
 	 * @return returns system info of this system
@@ -203,6 +230,31 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 		}
 		return null;
 	}
+	
+	public SystemInformation getSingleSystemInfos() {
+		List<SystemInformation> list = getAllSystemInfosAsObjects(QueryBuilders.matchQuery("postType", this.resourceType), 2);
+		if (list == null) {
+			throw new NoSuchElementException("no systeminfos for index " + this.lockOfIndexBeingUpdated.getIndexName());
+		}
+		if (list.size() > 1) {
+			throw new IllegalStateException("" + list.size() + " systeminfos for index " + this.lockOfIndexBeingUpdated.getIndexName());
+		}
+		return list.get(0);
+	}
+	
+	/**
+	 * @param map
+	 * @return
+	 */
+	private SystemInformation parseSystemInformation(String json) {
+		try {
+			return new ObjectMapper().readValue(json, SystemInformation.class);
+		} catch (Exception e) {
+			log.error("cannot parse systeminformation for index " + this.lockOfIndexBeingUpdated.getIndexName() + ": " + json);
+			return null;
+		}
+	}
+
 
 	/**
 	 * @return lastTasId
@@ -210,14 +262,20 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	@Override
 	@SuppressWarnings("boxing")
 	public Integer getLastTasId() {
-		synchronized (this) {
-			final String lastTasIdString = this.fetchSystemInfoField(LuceneFieldNames.LAST_TAS_ID);
-			if (lastTasIdString == null) {
-				log.error("no lastTasId  -> starting from the very beginning");
-				return Integer.MIN_VALUE;
-			}
-			return Integer.parseInt(lastTasIdString);
+		SystemInformation sysinfos = getSingleSystemInfos();
+		if (sysinfos == null) {
+			log.error("no lastTasId  -> starting from the very beginning");
+			return Integer.MIN_VALUE;
 		}
+		return sysinfos.getUpdaterState().getLast_tas_id();
+//		
+//		final String lastTasIdString = this.fetchSystemInfoField(LuceneFieldNames.LAST_TAS_ID);
+//			if (lastTasIdString == null) {
+//				log.error("no lastTasId  -> starting from the very beginning");
+//				return Integer.MIN_VALUE;
+//			}
+//			return Integer.parseInt(lastTasIdString);
+//		}
 	}
 
 	/**
@@ -235,13 +293,6 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 */
 	public Client getClient() {
 		return this.getClient();
-	}
-
-	/**
-	 * @return the iNDEX_NAME
-	 */
-	public String getIndexName() {
-		return this.indexName;
 	}
 
 	/**
@@ -313,35 +364,6 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	}
 
 	/**
-	 * checks if there are any new indexes waiting to be activated after regeneration
-	 * if true then activate the most recent as the active index and the next one as
-	 * backup index
-	 */
-	public void checkNewIndexInPipeline() {
-		String tempAlias = ESConstants.getTempAliasForResource(this.resourceType, false);
-		List<String> indexesList=esIndexManager.getIndexesFfromAlias(tempAlias);
-		String activeIndexAlias = ESConstants.getGlobalAliasForResource(resourceType, true);
-		String backupIndexAlias = ESConstants.getGlobalAliasForResource(resourceType, false);
-		indexesList.addAll(esIndexManager.getIndexesFfromAlias(activeIndexAlias));
-		indexesList.addAll(esIndexManager.getIndexesFfromAlias(backupIndexAlias));
-		Collections.sort(indexesList);
-		/* first remove all aliases for avoiding confusion
-		 * then set alias for last as active and 2nd last as backup
-		 */
-		esIndexManager.removeAliases(indexesList);
-		esIndexManager.setAliasForIndex(activeIndexAlias, indexesList.get(indexesList.size()-1));
-		esIndexManager.setAliasForIndex(backupIndexAlias, indexesList.get(indexesList.size()-2));
-		for(int i=0;i<indexesList.size()-2;i++){
-			final DeleteIndexResponse deleteIndex = this.esClient.getClient().admin().indices().delete(new DeleteIndexRequest(indexesList.get(i))).actionGet();
-			if (!deleteIndex.isAcknowledged()) {
-				log.error("Error in deleting the old index: " + indexesList.get(i)+ " after re-generate");
-				return;
-			}
-		}
-		
-	}
-
-	/**
 	 * @param contentId
 	 * @return
 	 */
@@ -360,91 +382,51 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 
 	/**
 	 * updates the system information for lastLogDate, lastTasId
-	 * @throws JsonProcessingException 
-	 */
-	public void flushSystemInformation() throws JsonProcessingException {
-		// FIXME: we should only write information about the updated index!
-		//first update the active index at the same time make the backup index active 
-		String indexName = esIndexManager.switchToBackupIndexByAlias(activeIndexID, resourceType);
-		this.flushSystemInformation(indexName);
-		//then update the backup index
-		indexName = esIndexManager.switchToBackupIndexByAlias(activeIndexID, resourceType);
-		this.flushSystemInformation(indexName);
-	}
-	/**
-	 * updates the system information for lastLogDate, lastTasId
 	 * @param indexName 
 	 * @throws JsonProcessingException 
 	 */
-	public void flushSystemInformation(String indexName) throws JsonProcessingException {
-		if (indexName == null) {
-			indexName = esIndexManager.switchToBackupIndexByAlias(activeIndexID, resourceType);
-		}
+	public void flushSystemInformation() throws JsonProcessingException {
 		final ObjectMapper mapper = new ObjectMapper();
 		String jsonDocumentForSystemInfo;
 		try {
 			jsonDocumentForSystemInfo = mapper.writeValueAsString(this.systemInfo);
-			this.esClient.getClient().prepareIndex(this.indexName, ESConstants.SYSTEM_INFO_INDEX_TYPE, this.systemHome + this.resourceType).setSource(jsonDocumentForSystemInfo).execute().actionGet();
+			this.esClient.getClient().prepareIndex(this.lockOfIndexBeingUpdated.getIndexName(), ESConstants.SYSTEM_INFO_INDEX_TYPE, this.systemHome + this.resourceType).setSource(jsonDocumentForSystemInfo).execute().actionGet();
 		} catch (final JsonProcessingException e) {
 			log.error("Failed to convert SystemInformation into a JSON", e);
 		}
-	}
-	
-	private void insertNewPosts(final ArrayList<Map<String, Object>> esPostsToInsert2) {
-		//first update the active index at the same time make the backup index active 
-		String indexName = esIndexManager.switchToBackupIndexByAlias(activeIndexID, resourceType);
-		this.insertNewPosts(esPostsToInsert2, indexName);
-		//then update the backup index
-		indexName = esIndexManager.switchToBackupIndexByAlias(activeIndexID, resourceType);
-		this.insertNewPosts(esPostsToInsert2, indexName);
 	}
 
 	/**
 	 * @param esPostsToInsert2
 	 * @param indexName 
 	 */
-	private void insertNewPosts(final ArrayList<Map<String, Object>> esPostsToInsert2, String indexName) {
-		// wait for the yellow (or green) status to prevent
-		// NoShardAvailableActionException later
-		this.esClient.getClient().admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
+	private void insertNewPosts(final ArrayList<Map<String, Object>> esPostsToInsert2) {
+		this.esClient.waitForReadyState();
 
 		for (final Map<String, Object> jsonDocument : esPostsToInsert2) {
 			jsonDocument.put(ESConstants.SYSTEM_URL_FIELD_NAME, this.systemHome);
 			final long indexId = this.calculateIndexId(Long.parseLong(jsonDocument.get(LuceneFieldNames.CONTENT_ID).toString()));
 			// TODO: this method needs to support the additional parameter?
-			insertPostDocument(jsonDocument, String.valueOf(indexId), indexName);
+			insertPostDocument(jsonDocument, String.valueOf(indexId));
 		}
 
 		log.info("post has been indexed.");
 	}
 
-	private void insertPostDocument(final Map<String, Object> jsonDocument, String indexIdStr, String indexName) {
-		this.esClient.getClient().prepareIndex(indexName, this.resourceType, indexIdStr).setSource(jsonDocument).setRefresh(true).execute().actionGet();
+	private void insertPostDocument(final Map<String, Object> jsonDocument, String indexIdStr) {
+		this.esClient.getClient().prepareIndex(this.lockOfIndexBeingUpdated.getIndexName(), this.resourceType, indexIdStr).setSource(jsonDocument).setRefresh(true).execute().actionGet();
 	}
 	
 	private void updatePostDocument(final Map<String, Object> jsonDocument, String indexIdStr) {
-		this.esClient.getClient().prepareUpdate(indexName, this.resourceType, indexIdStr).setDoc(jsonDocument).setRefresh(true).execute().actionGet();
+		this.esClient.getClient().prepareUpdate(this.lockOfIndexBeingUpdated.getIndexName(), this.resourceType, indexIdStr).setDoc(jsonDocument).setRefresh(true).execute().actionGet();
 	}
 
 	/**
 	 * @param userName
 	 */
 	@Override
-	public void deleteIndexForUser(final String userName) {
-		//first update the active index at the same time make the backup index active 
-		String indexName = esIndexManager.switchToBackupIndexByAlias(activeIndexID, resourceType);
-		this.deleteIndexForForUser(userName, indexName);
-		//then update the backup index
-		indexName = esIndexManager.switchToBackupIndexByAlias(activeIndexID, resourceType);
-		this.deleteIndexForForUser(userName, indexName);
-	}
-
-	/**
-	 * @param userName
-	 * @param indexName
-	 */
-	public void deleteIndexForForUser(final String userName, String indexName){
-		this.esClient.getClient().prepareDeleteByQuery(indexName).setTypes(this.resourceType).setQuery(QueryBuilders.filteredQuery( QueryBuilders.termQuery(LuceneFieldNames.USER_NAME, userName), FilterBuilders.termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, systemHome))).execute().actionGet();
+	public void deleteIndexForUser(final String userName){
+		this.esClient.getClient().prepareDeleteByQuery(this.lockOfIndexBeingUpdated.getIndexName()).setTypes(this.resourceType).setQuery(QueryBuilders.filteredQuery( QueryBuilders.termQuery(LuceneFieldNames.USER_NAME, userName), FilterBuilders.termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, systemHome))).execute().actionGet();
 	}
 
 	/**
@@ -452,20 +434,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 */
 	@Override
 	public void deleteIndexForIndexId(final long indexId) {
-		//first update the active index at the same time make the backup index active 
-		String indexName = esIndexManager.switchToBackupIndexByAlias(activeIndexID, resourceType);
-		this.deleteIndexForIndexId(indexId, indexName);
-		//then update the backup index
-		indexName = esIndexManager.switchToBackupIndexByAlias(activeIndexID, resourceType);
-		this.deleteIndexForIndexId(indexId, indexName);
-	}
-
-	/**
-	 * @param indexId
-	 * @param indexName 
-	 */
-	public void deleteIndexForIndexId(final long indexId, String indexName) {
-		this.esClient.getClient().prepareDelete(indexName, this.resourceType, String.valueOf(indexId)).setRefresh(true).execute().actionGet();
+		this.esClient.getClient().prepareDelete(this.lockOfIndexBeingUpdated.getIndexName(), this.resourceType, String.valueOf(indexId)).setRefresh(true).execute().actionGet();
 	}
 
 	/**
@@ -558,7 +527,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	@Override
 	public void updateIndexWithPersonRelation(String interhash, List<ResourcePersonRelation> newRels) {
 			
-		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(indexName);
+		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(this.lockOfIndexBeingUpdated.getIndexName());
 		searchRequestBuilder.setTypes(this.resourceType);
 		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 		searchRequestBuilder.setQuery(QueryBuilders.constantScoreQuery(FilterBuilders.andFilter(FilterBuilders.termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, systemHome), FilterBuilders.termFilter("interhash", interhash))));
@@ -585,7 +554,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	}
 
 	private void updateIndexForPersonWithId(LRUMap updatedInterhashes, final String personId) {
-		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(indexName);
+		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(this.lockOfIndexBeingUpdated.getIndexName());
 		searchRequestBuilder.setTypes(this.resourceType);
 		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 		searchRequestBuilder.setQuery(QueryBuilders.constantScoreQuery(FilterBuilders.andFilter(FilterBuilders.termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, systemHome), FilterBuilders.termFilter(ESConstants.PERSON_ENTITY_IDS_FIELD_NAME, personId))));
@@ -619,6 +588,27 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 
 	public void setDbLogic(LuceneDBInterface<R> dbLogic) {
 		this.dbLogic = dbLogic;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#onUpdateComplete()
+	 */
+	@Override
+	public void onUpdateComplete() {
+		this.lockOfIndexBeingUpdated.close();
+		this.plugin.activateIndex(this.lockOfIndexBeingUpdated.getIndexName());
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#getUpdaterState()
+	 */
+	@Override
+	public IndexUpdaterState getUpdaterState() {
+		SystemInformation sysi = getSingleSystemInfos();
+		if (sysi != null) {
+			return sysi.getUpdaterState();
+		}
+		return null;
 	}
 
 }

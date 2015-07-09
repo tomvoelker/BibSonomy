@@ -150,18 +150,12 @@ public final class ESConstants {
 	}
 	
 	/**
-	 * returns the temporary alias used commonly for all temporary indexes after re-generation
-	 * of the resource 
+	 * returns the temporary alias used commonly for all newly built indices which are still in build
 	 * 
 	 * @param resourceType
-	 * @param onGenProcess true when the temporary index is initially created
-	 * 						false when index generation finished
 	 * @return returns temporary the alias name
 	 */
-	public static String getTempAliasForResource(final String resourceType, final boolean onGenProcess) {		
-		if(onGenProcess){
-			return TEMP_ON_PROCESS_INDEX_PREFIX + "-" + resourceType.toLowerCase();
-		}
+	public static String getTempAliasForResource(final String resourceType) {
 		return TEMP_INDEX_PREFIX + "-" + resourceType.toLowerCase();
 	}
 

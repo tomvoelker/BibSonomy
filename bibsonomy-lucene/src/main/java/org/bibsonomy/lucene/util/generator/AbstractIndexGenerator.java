@@ -66,14 +66,10 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 	/** database logic */
 	protected LuceneDBInterface<R> dbLogic;
 
-	/** set to true if the generator is currently generating an index */
-	protected boolean isRunning;
 	/**
 	 * the elasticsearch client
 	 */
 	protected ESClient esClient;
-	
-	private boolean generateTempIndex = false;
 
 	/**
 	 * the elasticsearch index name
@@ -120,41 +116,9 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 	 * @throws SQLException
 	 */
 	public void generateIndex() throws Exception {
-		// Allow only one index-generation at a time.
-		if (this.isRunning) {
-			return;
-		}
-
-		this.isRunning = true;
-		boolean lockAcquired = false;
-		boolean multipleTry = false;
-		while(!lockAcquired){
-			try {  
-				if (esClient!=null && !generateTempIndex) {
-					lockAcquired = this.esClient.getWriteLock(this.resourceType).tryLock(1, TimeUnit.MINUTES);
-				}else{
-					lockAcquired=true;
-				}
-				if (lockAcquired) {
-					this.createEmptyIndex();
-					this.createIndexFromDatabase();
-					this.activateIndex();
-				}
-			} finally {
-				this.isRunning = false;
-				if(lockAcquired && esClient!=null && !generateTempIndex){
-					this.esClient.getWriteLock(this.resourceType).unlock();
-					if(multipleTry){
-						log.info("Lock finally acquired");
-						multipleTry =  false;
-					}
-				}
-				if(!lockAcquired){
-					multipleTry = true;
-					log.info("waiting to acquire lock");
-				}
-			}
-		}
+		this.createEmptyIndex();
+		this.createIndexFromDatabase();
+		this.activateIndex();
 	}
 
 	protected abstract void activateIndex();
@@ -327,20 +291,6 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 	 */
 	public boolean isRunning() {
 		return this.running;
-	}
-	
-	/**
-	 * @return the generateTempIndex
-	 */
-	public boolean isGenerateTempIndex() {
-		return this.generateTempIndex;
-	}
-
-	/**
-	 * @param generateTempIndex the generateTempIndex to set
-	 */
-	public void setGenerateTempIndex(boolean generateTempIndex) {
-		this.generateTempIndex = generateTempIndex;
 	}
 
 	/**

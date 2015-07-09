@@ -26,8 +26,6 @@
  */
 package org.bibsonomy.es;
 
-import static org.bibsonomy.es.ESConstants.SYSTEMURL_FIELD;
-
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,12 +48,8 @@ import org.bibsonomy.lucene.param.LuceneIndexStatistics;
 import org.bibsonomy.lucene.util.generator.AbstractIndexGenerator;
 import org.bibsonomy.lucene.util.generator.GenerateIndexCallback;
 import org.bibsonomy.model.Resource;
-import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
-import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
-import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
-import org.elasticsearch.action.get.GetResponse;
 
 /**
  * Initiates the IndexUpdater for the cronjobs to update indexes
@@ -74,7 +68,6 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	private LuceneResourceConverter<R> resourceConverter;
 	/** the database manager */
 	protected LuceneDBInterface<R> dbLogic;
-	private String indexName;
 	private String resourceType;
 
 	/**
@@ -86,34 +79,28 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 		this.systemHome = systemHome;
 		esIndexManager = new ESIndexManager(this.esClient, this.systemHome);
 	}
-
+	
 	/**
-	 * checks if there are any new indexes waiting to be activated after regeneration
-	 * if true then activate the most recent as the active index and the next one as
-	 * backup index
+	 * removes the oldest indices if there are more than two indices. Does not remove active indices.
 	 */
-	public void checkNewIndexInPipeline() {
-		String tempAlias = ESConstants.getTempAliasForResource(this.resourceType, false);
-		List<String> indexesList=esIndexManager.getIndexesFfromAlias(tempAlias);
-		String activeIndexAlias = ESConstants.getGlobalAliasForResource(resourceType, true);
-		String backupIndexAlias = ESConstants.getGlobalAliasForResource(resourceType, false);
-		indexesList.addAll(esIndexManager.getIndexesFfromAlias(activeIndexAlias));
-		indexesList.addAll(esIndexManager.getIndexesFfromAlias(backupIndexAlias));
+	private void removeOutdatedIndices() {
+		String tempAlias = ESConstants.getTempAliasForResource(this.resourceType);
+		List<String> indexesList=esIndexManager.getThisSystemsIndexesFromAlias(tempAlias);
+		final String activeIndexAlias = ESConstants.getGlobalAliasForResource(resourceType, true);
+		final String backupIndexAlias = ESConstants.getGlobalAliasForResource(resourceType, false);
+		final List<String> activeIndices = esIndexManager.getThisSystemsIndexesFromAlias(activeIndexAlias);
+		indexesList.addAll(activeIndices);
+		indexesList.addAll(esIndexManager.getThisSystemsIndexesFromAlias(backupIndexAlias));
 		Collections.sort(indexesList);
-		/* first remove all aliases for avoiding confusion
-		 * then set alias for last as active and 2nd last as backup
-		 */
-		esIndexManager.removeAliases(indexesList);
-		esIndexManager.setAliasForIndex(activeIndexAlias, indexesList.get(indexesList.size()-1));
-		esIndexManager.setAliasForIndex(backupIndexAlias, indexesList.get(indexesList.size()-2));
-		for(int i=0;i<indexesList.size()-2;i++){
-			final DeleteIndexResponse deleteIndex = this.esClient.getClient().admin().indices().delete(new DeleteIndexRequest(indexesList.get(i))).actionGet();
-			if (!deleteIndex.isAcknowledged()) {
-				log.error("Error in deleting the old index: " + indexesList.get(i)+ " after re-generate");
-				return;
+		
+		if (indexesList.size() < 3) {
+			return;
+		}
+		for (int i = 2; i < indexesList.size(); ++i) {
+			if (!activeIndices.contains(indexesList.get(i))) {
+				esIndexManager.removeAlias(indexesList.get(i), backupIndexAlias);
 			}
 		}
-		
 	}
 	
 	/*
@@ -123,18 +110,15 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	 */
 	@Override
 	public SharedResourceIndexUpdater<R> createUpdater(final String resourceType) {
-		checkNewIndexInPipeline();
-		
-		//TODO adjust changes and use read lock
-		String errorMsg = this.getGlobalIndexNonExistanceError();
-		if (errorMsg == null) {
-			errorMsg = esIndexManager.getResourceIndexNonExistanceError(resourceType);
-		}
-		if (errorMsg != null) {
-			log.error(errorMsg);
-			return null;
-		}
-		return this.createUpdaterInternal(resourceType);
+//		String errorMsg = this.getGlobalIndexNonExistanceError();
+//		if (errorMsg == null) {
+//			errorMsg = esIndexManager.getResourceIndexNonExistanceError(resourceType);
+//		}
+//		if (errorMsg != null) {
+//			log.error(errorMsg);
+//			return null;
+//		}
+		return this.createUpdaterInternal(resourceType, this.esIndexManager.aquireWriteLockForAnInactiveIndex(resourceType));
 	}
 
 	/**
@@ -144,9 +128,9 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 		return esIndexManager.getGlobalIndexNonExistanceError();
 	}
 
-	private SharedResourceIndexUpdater<R> createUpdaterInternal(final String resourceType) {
+	private SharedResourceIndexUpdater<R> createUpdaterInternal(final String resourceType, IndexLock indexLock) {
 		SharedResourceIndexUpdater<R> sharedIndexUpdater;
-		sharedIndexUpdater = new SharedResourceIndexUpdater<R>(this.systemHome, resourceType, resourceConverter, this.indexName);
+		sharedIndexUpdater = new SharedResourceIndexUpdater<R>(this.systemHome, resourceType, this.resourceConverter, indexLock, this);
 		sharedIndexUpdater.setEsClient(this.esClient);
 		sharedIndexUpdater.setDbLogic(this.dbLogic);
 		return sharedIndexUpdater;
@@ -166,7 +150,7 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 		}
 
 		for (final LuceneResourceManager<? extends Resource> manager : luceneResourceManagers) {
-			this.generate(manager, sync, true);
+			this.generate(manager, sync);
 		}
 	}
 
@@ -175,12 +159,12 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	 * @param sync 
 	 * @param temp 
 	 */
-	public void generateIndex(final LuceneResourceManager<? extends Resource> manager, boolean sync, boolean temp) {
+	public void generateIndex(final LuceneResourceManager<? extends Resource> manager, boolean sync) {
 		// allow only one index-generation at a time
 		if (generatorThreadExecutor.getQueue().isEmpty() == false) {
 			return;
 		}
-		this.generate(manager, sync, temp);
+		this.generate(manager, sync);
 	}
 	
 
@@ -192,35 +176,16 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	 * the updater checks for the latest two indexes and deletes the other old indexes
 	 * @param manager
 	 */
-	private void generate(final LuceneResourceManager<? extends Resource> manager, boolean sync, boolean isTempIndex) {
-		/*
-		 *	if index exists create a temporary index 
-		 */
-		final String oldBackupIndex = esIndexManager.indexExist(manager.getResourceName(), false);
-		final String oldActiveIndex = esIndexManager.indexExist(manager.getResourceName(), true);
-		boolean indexExist = (oldBackupIndex != null && oldBackupIndex != "") && (oldActiveIndex != null && oldActiveIndex != "");
-		if(isTempIndex && indexExist){
-			//TODO check if any existing temp index, then delete them and re-create
-			final String tempIndexName = esIndexManager.createTempIndex(manager.getResourceName());
-			this.generate(manager, sync, tempIndexName , isTempIndex);
-		}else{
-		final String backupIndexName = esIndexManager.checkNcreateIndex(manager.getResourceName(), oldBackupIndex, false);
-		final String activeIndexName = esIndexManager.checkNcreateIndex(manager.getResourceName(), oldActiveIndex, true);
-		this.generate(manager, sync, activeIndexName, isTempIndex);
-		this.generate(manager, sync, backupIndexName, isTempIndex);
-		}
+	private void generate(final LuceneResourceManager<? extends Resource> manager, boolean sync) {
+		final String tempIndexName = esIndexManager.createTempIndex(manager.getResourceName());
+		this.generate(manager, sync, tempIndexName);
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void generate(final LuceneResourceManager<? extends Resource> manager, boolean sync, final String indexName, final boolean isTempIndex) {
-		if(!isTempIndex && !esIndexManager.switchToBackupIndex(indexName,manager.getResourceName())){
-			log.error("Index generation failed!!");
-			return;
-		}
-		final SharedResourceIndexGenerator generator = new SharedResourceIndexGenerator(this.systemHome, this.createUpdaterInternal(manager.getResourceName()), indexName);
+	private void generate(final LuceneResourceManager<? extends Resource> manager, boolean sync, final String indexName) {
+		final SharedResourceIndexGenerator generator = new SharedResourceIndexGenerator(this.systemHome, this.createUpdaterInternal(manager.getResourceName(), this.esIndexManager.aquireLockForIndexName(indexName, true)), indexName);
 		generator.setLogic(manager.getDbLogic());
 		generator.setEsClient(this.esClient);
-		generator.setGenerateTempIndex(isTempIndex);
 		generator.setResourceType(manager.getResourceName());
 		generator.setResourceConverter(this.resourceConverter);
 		generator.setCallback(this);
@@ -311,7 +276,7 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	 */
 	@Override
 	public void generatedIndex(final AbstractIndexGenerator<R> index) {
-		this.esIndexManager.changeTempIndexStaus(index.getIndexName(), index.getResourceType());
+		this.esIndexManager.changeUnderConstructionStatus(index.getIndexName(), index.getResourceType());
 		this.queuedOrRunningGenerators.remove(index);
 	}
 
@@ -327,16 +292,16 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 		this.resourceConverter = resourceConverter;
 	}
 
-	public String getIndexName() {
-		return this.indexName;
-	}
-
-	public void setIndexName(String indexName) {
-		this.indexName = indexName;
-	}
-
 	public void setResourceType(String resourceType) {
 		this.resourceType = resourceType;
+	}
+
+	/**
+	 * @param nameOfIndexToBeActivated
+	 */
+	public void activateIndex(String nameOfIndexToBeActivated) {
+		this.esIndexManager.activateIndex(nameOfIndexToBeActivated, this.resourceType);
+		removeOutdatedIndices();
 	}
 
 }

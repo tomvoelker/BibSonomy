@@ -26,8 +26,7 @@
  */
 package org.bibsonomy.es;
 
-import java.util.concurrent.locks.Lock;
-
+import org.bibsonomy.util.LockAutoCloseable;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.node.Node;
 
@@ -38,20 +37,7 @@ import org.elasticsearch.node.Node;
  * @author lka
  */
 public interface ESClient {
-
-	/**
-	 * @param resourceType 
-	 * @return the readLock
-	 */
-	public Lock getReadLock(String resourceType);
-
-	/**
-	 * @param resourceType 
-	 * @return the writeLock
-	 */
-	public Lock getWriteLock(String resourceType);
-
-	/**
+/**
 	 * Get a reference to an ElasticSearch Client.
 	 * 
 	 * @return the Client.
@@ -69,4 +55,9 @@ public interface ESClient {
 	 * for querying and indexing.
 	 */
 	void shutdown();
+
+	/**
+	 * if necessary wait for the index to be ready to work
+	 */
+	public void waitForReadyState();
 }

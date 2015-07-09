@@ -99,7 +99,6 @@ public class ESTransportClient extends AbstractEsClient implements ESClient {
 		if (this.client == null) {
 			this.client = this.initiateTransportClient();
 		}
-		super.init();
 	}
 
 	/**
