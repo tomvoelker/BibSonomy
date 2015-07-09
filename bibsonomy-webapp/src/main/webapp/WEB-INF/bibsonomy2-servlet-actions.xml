@@ -316,11 +316,6 @@
 								<value>ckey</value>
 								<value>tags</value>
 								<value>postsErrorList</value>
-								<value>personId</value>
-								<value>person_lastName</value>
-								<value>person_role</value>
-								
-								
 								
 							</list>
 						</property>
@@ -451,8 +446,7 @@
 								<value>approved</value>
 								
 								<value>personId</value>
-								<value>person_lastName</value>
-								<value>person_role</value>
+								<value>personRole</value>
 								
 								
 							</list>
@@ -482,9 +476,6 @@
 						<property name="allowedFields">
 							<list>
 								<value>selTab</value>
-								<value>personId</value>
-								<value>person_lastName</value>
-								<value>person_role</value>
 								
 							</list>
 						</property>

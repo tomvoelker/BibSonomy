@@ -34,6 +34,7 @@
     <jsp:directive.attribute name="postApproval" fragment="true" required="false" description="A checkbox inorder to approve goldstandard posts"/>
 	
 	<fmt:message key="navi.edit${resourceType}" var="editPageTitle" />
+	<fmt:message key="person.pub.link" var="personPubLink" />
 
 	<layout:layout
 		loginUser="${command.context.loginUser}"
@@ -135,9 +136,16 @@
 		                    | general information 
 		                    +-->
 				 		<a name="generalInformation"><!--  --></a>
+				 		
 						<bsform:fieldset legendKey="post.resource.fields.general">
 							<jsp:attribute name="content">
-								
+								<c:if test="${not empty command.personRole and command.personRole eq 'AUTHOR'}">
+				 					<bs:alert style="info">
+										<jsp:attribute name="alertBody">
+											<c:out value="${personPubLink} ${command.post.resource.author[0].firstName} ${command.post.resource.author[0].lastName}" />
+										</jsp:attribute>
+									</bs:alert>
+				 				</c:if>
 								<jsp:invoke fragment="generalInformation"/>
 							</jsp:attribute>
 						</bsform:fieldset>
