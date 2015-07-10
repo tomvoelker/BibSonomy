@@ -48,8 +48,7 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.util.GroupUtils;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
+import org.bibsonomy.util.ValidationUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -233,7 +232,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	
 	public SystemInformation getSingleSystemInfos() {
 		List<SystemInformation> list = getAllSystemInfosAsObjects(QueryBuilders.matchQuery("postType", this.resourceType), 2);
-		if (list == null) {
+		if (!ValidationUtils.present(list)) {
 			throw new NoSuchElementException("no systeminfos for index " + this.lockOfIndexBeingUpdated.getIndexName());
 		}
 		if (list.size() > 1) {
