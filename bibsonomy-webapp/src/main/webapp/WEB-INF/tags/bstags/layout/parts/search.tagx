@@ -45,6 +45,10 @@
 							<li><a onclick="return switchNavi('search', this);"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></a></li>
 							<c:if test="${not empty properties['es.cluster.name']}">					
 								<li><a onclick="return switchNavi('federated', this);"><fmt:message key="navi.federated"/>:<fmt:message key="navi.all"/></a></li>
+								<li><a onclick="return switchNavi('federated_tag', this);"><fmt:message key="navi.federatedTag"/></a></li>						
+								<li><a onclick="return switchNavi('federated_user', this);"><fmt:message key="navi.federatedUser"/></a></li>						
+								<li><a onclick="return switchNavi('federated_bibtexkey', this);"><fmt:message key="navi.federatedBibtexKey"/></a></li>						
+								<li><a onclick="return switchNavi('federated_author', this);"><fmt:message key="navi.federatedAuthor"/></a></li>						
 							</c:if>
 							<c:if test="${not empty requestedUser}">
 								<li><a onclick="return switchNavi('user:${fn:escapeXml(requestedUser)}', this);"><fmt:message key="navi.search"/>:<c:out value='${requestedUser}'/></a></li>

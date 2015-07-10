@@ -44,6 +44,7 @@ import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
@@ -148,8 +149,6 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 */
 	public User getUserDetails(String userName);
 	
-	
-
 	/**
 	 * @param userName
 	 * @return WikiVersions
@@ -221,6 +220,35 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @return a set of tags, an empty list else
 	 */
 	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, String regex, TagSimilarity relation, Order order, Date startDate, Date endDate, int start, int end);
+
+	/** 
+	 * Returns a list of tags which can be filtered.
+	 * @param resourceType
+	 * 			  a resourceType (i.e. {@link BibTex} or {@link Bookmark}) to get tags
+	 *  		  only from a bookmark or a publication entry
+	 * @param grouping
+	 *            grouping tells whom tags are to be shown: the tags of a user,
+	 *            of a group or of the viewables.
+	 * @param groupingName
+	 *            name of the grouping. if grouping is user, then its the
+	 *            username. if grouping is set to {@link GroupingEntity#ALL},
+	 *            then its an empty string!
+	 * @param tags
+	 * @param hash
+				  a resource hash (publication or bookmark)
+	 * @param search - search string
+	 * @param searchType the search type
+	 * @param regex
+	 *            a regular expression used to filter the tagnames
+	 * @param relation TODO
+	 * @param order 
+	 * @param startDate - if given, only tags of posts that have been created after (inclusive) startDate are returned  
+	 * @param endDate - if given, only tags of posts that have been created before (inclusive) endDate are returned 
+	 * @param start
+	 * @param end
+	 * @return a set of tags, an empty list else
+	 */
+	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, String regex, TagSimilarity relation, Order order, Date startDate, Date endDate, int start, int end);
 
 	/**  
 	 * retrieves a filterable list of authors.

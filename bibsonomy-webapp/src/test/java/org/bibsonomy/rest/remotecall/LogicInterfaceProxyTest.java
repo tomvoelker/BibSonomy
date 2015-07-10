@@ -1356,6 +1356,19 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getTags(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, org.bibsonomy.common.enums.SearchType, java.lang.String, org.bibsonomy.common.enums.TagSimilarity, org.bibsonomy.model.enums.Order, java.util.Date, java.util.Date, int, int)
+	 */
+	@Override
+	public List<Tag> getTags(Class<? extends Resource> resourceType,
+			GroupingEntity grouping, String groupingName, List<String> tags,
+			String hash, String search, SearchType searchType, String regex,
+			TagSimilarity relation, Order order, Date startDate, Date endDate,
+			int start, int end) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getDocumentStatistics(org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.Set, java.util.Date, java.util.Date)
 	 */
 	@Override

@@ -44,15 +44,17 @@ public class ESResourceMapping {
 	private final String resourceType;
 	// ElasticSearch client
 	private final ESClient esClient;
-	private String indexName = ESConstants.INDEX_NAME;
+	private final String indexName;
 
 	/**
 	 * @param resourceType
 	 * @param esClient
+	 * @param indexName 
 	 */
-	public ESResourceMapping(final String resourceType, final ESClient esClient) {
+	public ESResourceMapping(final String resourceType, final ESClient esClient, String indexName) {
 		this.resourceType = resourceType;
 		this.esClient = esClient;
+		this.indexName =  indexName;
 	}
 
 	/**
@@ -122,7 +124,7 @@ public class ESResourceMapping {
 				.startObject("number").field("type", "string").field("index", "no").endObject() //
 				.startObject("organization").field("type", "string").field("index", "no").endObject() //
 				.startObject("pages").field("type", "string").field("index", "no").endObject() //
-				// .startObject("privnote").field("type", "string").field("index", "not_analyzed").field("store", "false").endObject() //
+				.startObject("privnote").field("type", "string").field("index", "not_analyzed").field("store", "false").endObject() //
 				.startObject("publisher").field("type", "string").field("index", "no").endObject() //
 				.startObject("school").field("type", "string").field("index", "analyzed").endObject() //
 				.startObject("series").field("type", "string").field("index", "no").endObject() //
@@ -147,7 +149,4 @@ public class ESResourceMapping {
 		return this.indexName;
 	}
 
-	public void setIndexName(String indexName) {
-		this.indexName = indexName;
-	}
 }

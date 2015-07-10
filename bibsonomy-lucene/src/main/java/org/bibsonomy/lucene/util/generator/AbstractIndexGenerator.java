@@ -30,12 +30,14 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.bibsonomy.es.IndexUpdaterState;
+import org.bibsonomy.es.ESClient;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.model.Group;
@@ -64,9 +66,25 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 	/** database logic */
 	protected LuceneDBInterface<R> dbLogic;
 
-	/** set to true if the generator is currently generating an index */
-	protected boolean isRunning;
+	/**
+	 * the elasticsearch client
+	 */
+	protected ESClient esClient;
 
+	/**
+	 * the elasticsearch index name
+	 */
+	protected String indexName;
+
+
+	/**
+	 * the resource type
+	 */
+	protected String resourceType;
+
+	/**
+	 * 
+	 */
 	protected int numberOfPosts;
 	private int numberOfPostsImported;
 	private boolean running = false;
@@ -98,19 +116,9 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 	 * @throws SQLException
 	 */
 	public void generateIndex() throws Exception {
-		// Allow only one index-generation at a time.
-		if (this.isRunning) {
-			return;
-		}
-
-		this.isRunning = true;
-		try {
-			this.createEmptyIndex();
-			this.createIndexFromDatabase();
-			this.activateIndex();
-		} finally {
-			this.isRunning = false;
-		}
+		this.createEmptyIndex();
+		this.createIndexFromDatabase();
+		this.activateIndex();
 	}
 
 	protected abstract void activateIndex();
@@ -198,6 +206,9 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 	 */
 	protected abstract void writeMetaInfo(IndexUpdaterState state) throws IOException;
 
+	/**
+	 * @param post
+	 */
 	protected abstract void addPostToIndex(final LucenePost<R> post);
 	
 	/**
@@ -275,7 +286,24 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 		this.callback = callback;
 	}
 
+	/**
+	 * @return returns the running state
+	 */
 	public boolean isRunning() {
 		return this.running;
+	}
+
+	/**
+	 * @return the indexName
+	 */
+	public String getIndexName() {
+		return this.indexName;
+	}
+	
+	/**
+	 * @return the resourceType
+	 */
+	public String getResourceType() {
+		return this.resourceType;
 	}
 }

@@ -26,8 +26,15 @@
  */
 package org.bibsonomy.es;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
@@ -40,9 +47,10 @@ import org.elasticsearch.node.Node;
  * 
  * @author lutful
  */
-public class ESTransportClient implements ESClient {
+public class ESTransportClient extends AbstractEsClient implements ESClient {
 	private final Log log = LogFactory.getLog(ESTransportClient.class);
 	private Client client;
+
 	/**
 	 * Elasticsearch IP and port values, if we have multiple addresses, they
 	 * will be separated by "," and port and ip are separated by ":"
@@ -81,6 +89,7 @@ public class ESTransportClient implements ESClient {
 	public void setEsClusterName(final String esClusterName) {
 		this.esClusterName = esClusterName;
 	}
+
 
 	/**
 	 * initializing the client.
@@ -160,5 +169,4 @@ public class ESTransportClient implements ESClient {
 		// TODO Auto-generated method stub
 
 	}
-
 }

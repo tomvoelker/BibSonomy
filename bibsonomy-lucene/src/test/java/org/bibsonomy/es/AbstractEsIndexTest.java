@@ -5,6 +5,8 @@ import java.util.Map;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Resource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -22,8 +24,10 @@ public abstract class AbstractEsIndexTest {
 	@BeforeClass
 	public static void beforeClass() {
 		initTestDatabase();
-		testClient  = (ESTestClient) EsSpringContextWrapper.getBeanFactory().getBean("esClient");
-		testClient.createIndex();
+		ESTestClientInitializer testClientInitializer = (ESTestClientInitializer) EsSpringContextWrapper.getBeanFactory().getBean("esClientInitializer");
+		testClientInitializer.init();
+		testClient = testClientInitializer.getEsClient();
+		
 	}
 
 	private static void initTestDatabase() {

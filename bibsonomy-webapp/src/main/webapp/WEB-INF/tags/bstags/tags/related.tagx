@@ -9,6 +9,7 @@
 	<jsp:directive.attribute name="order" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="relevantfor" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="tagsRequested" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="scope" type="java.lang.String" required="false"/>
 	
 	<c:if test="${empty order}">
 		<c:set var="order" value=""/>
@@ -58,19 +59,41 @@
 			<!-- construct url to single tag and several tags -->
 			<c:choose>
 				<c:when test="${!relevantfor}">
-					<c:url var="tagUrl"
-					   value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
-					<c:url var="tagsUrl"
-						value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(fn:join(fn:split(cmd.requestedTags, ' '), '+'))}+${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
-				</c:when>
+					<c:choose>
+						<c:when test="${not empty scope and scope ne 'LOCAL'}">
+							<c:url var="tagUrl"
+						   		value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}?scope=${scope}"/>
+							<c:url var="tagsUrl"
+								value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(fn:join(fn:split(cmd.requestedTags, ' '), '+'))}+${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}?scope=${scope}"/>											
+						</c:when>
+						<c:otherwise>
+							<c:url var="tagUrl"
+						   		value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
+							<c:url var="tagsUrl"
+								value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(fn:join(fn:split(cmd.requestedTags, ' '), '+'))}+${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>						
+						</c:otherwise>
+					</c:choose>
+									</c:when>
 				<!-- construct relevantfor/group url -->
 				<c:otherwise>
-						<c:url var="tagUrl"
-								value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${command.requestedGroup}/${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
-						<c:if test="${showRelatedTagsURL}">
-							<c:url var="tagsUrl"
-								value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${command.requestedGroup}/${fn:escapeXml(fn:join(fn:split(cmd.requestedTags, ' '), '+'))}+${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
-						</c:if>
+					<c:choose>
+						<c:when test="${not empty scope and scope ne 'LOCAL'}">
+							<c:url var="tagUrl"
+									value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${command.requestedGroup}/${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}?scope=${scope}"/>
+							<c:if test="${showRelatedTagsURL}">
+								<c:url var="tagsUrl"
+									value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${command.requestedGroup}/${fn:escapeXml(fn:join(fn:split(cmd.requestedTags, ' '), '+'))}+${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}?scope=${scope}"/>
+							</c:if>
+						</c:when>
+						<c:otherwise>
+							<c:url var="tagUrl"
+									value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${command.requestedGroup}/${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
+							<c:if test="${showRelatedTagsURL}">
+								<c:url var="tagsUrl"
+									value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${command.requestedGroup}/${fn:escapeXml(fn:join(fn:split(cmd.requestedTags, ' '), '+'))}+${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
+							</c:if>
+						</c:otherwise>
+					</c:choose>						
 				</c:otherwise>
 			</c:choose>
 		

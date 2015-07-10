@@ -21,16 +21,20 @@
 		<constructor-arg value="org.bibsonomy.model.GoldStandardPublication" />
 	</bean>
 
+	<bean id="esIndexManager" class="org.bibsonomy.es.ESIndexManager" lazy-init="true">
+		<constructor-arg ref="esClient"/>
+		<constructor-arg value="${project.home}"/>
+	</bean>
 
 	<bean id="realSharedIndexUpdatePlugin" class="org.bibsonomy.es.SharedIndexUpdatePlugin" lazy-init="true" abstract="true">
 		<constructor-arg ref="esClient"/>
 		<constructor-arg value="${project.home}"/>
-		<property name="indexName" value="${es.index.name}"/>
 	</bean>
 	
 	<bean id="realSharedIndexUpdatePluginForPublications" lazy-init="true" parent="realSharedIndexUpdatePlugin">
 		<property name="dbLogic" ref="lucenePublicationLogic"/>
 		<property name="resourceConverter" ref="lucenePublicationConverter"/>
+		<property name="resourceType" value="BibTex"/>
 	</bean>
 	<bean id="sharedIndexUpdatePluginForPublications" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
 		<property name="condition" ref="esClusterNamePresent" />
@@ -40,6 +44,7 @@
 	<bean id="realSharedIndexUpdatePluginForBookmarks" lazy-init="true" parent="realSharedIndexUpdatePlugin">
 		<property name="dbLogic" ref="luceneBookmarkLogic"/>
 		<property name="resourceConverter" ref="luceneBookmarkConverter"/>
+		<property name="resourceType" value="Bookmark"/>
 	</bean>
 	<bean id="sharedIndexUpdatePluginForBookmarks" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
 		<property name="condition" ref="esClusterNamePresent" />
@@ -49,6 +54,7 @@
 	<bean id="realSharedIndexUpdatePluginForGoldStandardPublications" lazy-init="true" parent="realSharedIndexUpdatePlugin">
 		<property name="dbLogic" ref="luceneGoldStandardPublicationLogic"/>
 		<property name="resourceConverter" ref="luceneGoldStandardPublicationConverter"/>
+		<property name="resourceType" value="GoldStandardPublication"/>
 	</bean>
 	<bean id="sharedIndexUpdatePluginForGoldStandardPublications" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
 		<property name="condition" ref="esClusterNamePresent" />
@@ -97,11 +103,9 @@
 
 
 	<bean id="abstractEsResourceSearch" class="org.bibsonomy.es.EsResourceSearch" abstract="true">
-		<property name="esClient" ref="esClient"/>
-		<property name="indexName" value="${es.index.name}"/>
+		<property name="esIndexManager" ref="esIndexManager"/>
+		<property name="dbLogic" ref="luceneInfoDBLogic" />
 	</bean>
-
-
 
 	<!--+ | lucene post converter + -->
 	<!-- abstract converter -->

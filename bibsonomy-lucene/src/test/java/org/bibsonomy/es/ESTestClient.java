@@ -1,53 +1,19 @@
 package org.bibsonomy.es;
 
-import java.util.Map;
-
-import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
-import org.bibsonomy.model.Resource;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.common.settings.ImmutableSettings;
-import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.Node;
-import org.elasticsearch.node.NodeBuilder;
 
 /**
  * TODO: add documentation to this class
  * 
  * @author jensi
  */
-public class ESTestClient implements AutoCloseable, ESClient {
+public class ESTestClient extends AbstractEsClient implements AutoCloseable {
 
 	private Node node;
 	private Client client;
-	private String indexName;
 
-	private Map<Class<? extends Resource>, LuceneResourceManager<? extends Resource>>   luceneResourceManagers;
-	private Map<Class<? extends Resource>, SharedIndexUpdatePlugin<? extends Resource>> sharedIndexUpdatePlugins;
-	
-	
-	public void init() {
-		startNode();
-	}
-	
-	public void startNode() {
-		Settings settings = ImmutableSettings.settingsBuilder().put("script.disable_dynamic", false).build();
-		this.node = NodeBuilder.nodeBuilder().settings(settings).node();
-
-		this.client = node.client();
-	}
-	
-	public void createIndex() {
-		
-		for (Class<? extends Resource> resourceClass : luceneResourceManagers.keySet()) {
-			LuceneResourceManager<? extends Resource> luceneResMgr = luceneResourceManagers.get(resourceClass);
-			SharedIndexUpdatePlugin<? extends Resource> srPlugin = sharedIndexUpdatePlugins.get(resourceClass);
-			if (srPlugin != null) {
-				srPlugin.generateIndex(luceneResMgr, true);
-			}
-		}
-		
-	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -81,34 +47,24 @@ public class ESTestClient implements AutoCloseable, ESClient {
 	 */
 	@Override
 	public void shutdown() {
-		DeleteIndexRequest indexRequest = new DeleteIndexRequest(indexName);
+		DeleteIndexRequest indexRequest = new DeleteIndexRequest("_all");
 		client.admin().indices().delete(indexRequest).actionGet();
 
 		client.close();
 		node.close();
 	}
 
-	public Map<Class<? extends Resource>, LuceneResourceManager<? extends Resource>> getLuceneResourceManagers() {
-		return this.luceneResourceManagers;
+
+
+	public void setNode(Node node) {
+		this.node = node;
 	}
 
-	public void setLuceneResourceManagers(Map<Class<? extends Resource>, LuceneResourceManager<? extends Resource>> luceneResourceManagers) {
-		this.luceneResourceManagers = luceneResourceManagers;
-	}
 
-	public Map<Class<? extends Resource>, SharedIndexUpdatePlugin<? extends Resource>> getSharedIndexUpdatePlugins() {
-		return this.sharedIndexUpdatePlugins;
-	}
 
-	public void setSharedIndexUpdatePlugins(Map<Class<? extends Resource>, SharedIndexUpdatePlugin<? extends Resource>> sharedIndexUpdatePlugins) {
-		this.sharedIndexUpdatePlugins = sharedIndexUpdatePlugins;
+	public void setClient(Client client) {
+		this.client = client;
 	}
-
-	public String getIndexName() {
-		return this.indexName;
-	}
-
-	public void setIndexName(String indexName) {
-		this.indexName = indexName;
-	}
+	
+	
 }

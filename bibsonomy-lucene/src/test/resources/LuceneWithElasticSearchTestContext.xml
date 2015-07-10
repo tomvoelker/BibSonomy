@@ -14,10 +14,13 @@
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
 	</bean>
 	
-	<bean id="esClient" class="org.bibsonomy.es.ESTestClient" lazy-init="true" init-method="init">
+	<bean id="esClient" class="org.bibsonomy.es.ESTestClient" lazy-init="true">
+	</bean>
+	
+	<bean id="esClientInitializer" class="org.bibsonomy.es.ESTestClientInitializer" lazy-init="true">
 		<property name="luceneResourceManagers" ref="allLuceneResourceManagers" />
 		<property name="sharedIndexUpdatePlugins" ref="allSharedIndexUpdatePlugins"/>
-		<property name="indexName" value="${es.index.name}"/>
+		<property name="esClient" ref="esClient" />
 	</bean>
 	
 	<!-- TODO: move to bibsonomy-lucene-context as soon as we are not using jndi -->
