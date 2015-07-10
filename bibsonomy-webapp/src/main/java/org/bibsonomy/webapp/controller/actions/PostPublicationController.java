@@ -276,7 +276,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 ***/
 			
 		if(command.getPersonId() != null && present(posts) && posts.size() > 1){
-			this.errors.reject("error.add_new_thesis", "Only one new thesis is allowed to be added!");
+			this.errors.reject("error.add_new_thesis", "Only ONE new thesis is allowed to be added!");
 			return Views.POST_PUBLICATION;
 			}
 	
