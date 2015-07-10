@@ -57,22 +57,13 @@ public class ESTestClientInitializer {
 	}
 	
 	private void createIndex() {
-		
-		for (Class<? extends Resource> resourceClass : luceneResourceManagers.keySet()) {
-			LuceneResourceManager<? extends Resource> luceneResMgr = luceneResourceManagers.get(resourceClass);
-			SharedIndexUpdatePlugin<? extends Resource> srPlugin = sharedIndexUpdatePlugins.get(resourceClass);
-			if (srPlugin != null) {
-				srPlugin.generateIndex(luceneResMgr, true);
-			}
+		for (SharedIndexUpdatePlugin<? extends Resource> srPlugin : sharedIndexUpdatePlugins.values()) {
+			srPlugin.generateIndex(true);
 		}
-		
-		LuceneGoldStandardManager<GoldStandardPublication> manager = (LuceneGoldStandardManager<GoldStandardPublication>) LuceneSpringContextWrapper.getBeanFactory().getBean("luceneGoldStandardPublicationManager");
-		manager.updateAndReloadIndex();
-		LuceneResourceManager<BibTex> lucenePublicationUpdater = (LuceneResourceManager<BibTex>) EsSpringContextWrapper.getBeanFactory().getBean("lucenePublicationManager");
-		lucenePublicationUpdater.updateAndReloadIndex();
-		LuceneResourceManager<Bookmark> luceneBookmarkUpdater = (LuceneResourceManager<Bookmark>) EsSpringContextWrapper.getBeanFactory().getBean("luceneBookmarkManager");
-		luceneBookmarkUpdater.updateAndReloadIndex();
-		
+		// run updates in order to activate the indices
+		for (LuceneResourceManager<?> manager : luceneResourceManagers.values()) {
+			manager.updateAndReloadIndex();
+		}
 	}
 
 	public ESTestClient getEsClient() {

@@ -70,7 +70,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @param <R>
  *        the resource of the index
  */
-public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpdater<R> {
+public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpdater<R>, AutoCloseable {
 	private static final Log log = LogFactory.getLog(SharedResourceIndexUpdater.class);
 
 	private final String resourceType;
@@ -610,5 +610,28 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 		}
 		return null;
 	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "[" + this.getClass().getSimpleName() + ": " + this.lockOfIndexBeingUpdated + "]";
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.AutoCloseable#close()
+	 */
+	@Override
+	public void close() {
+		this.lockOfIndexBeingUpdated.close();
+	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#closeUpdateProcess()
+	 */
+	@Override
+	public void closeUpdateProcess() {
+		close();
+	}
 }

@@ -182,30 +182,26 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 */
 	protected synchronized void updateIndexes() {
 		final Map<IndexUpdaterState, List<IndexUpdater<R>>> lastLogDateAndLastTasIdToUpdaters = getUpdatersBySameState();
-		final IndexUpdaterState targetState = this.dbLogic.getDbState();
+		try {
+			final IndexUpdaterState targetState = this.dbLogic.getDbState();
+			
+			for (final Map.Entry<IndexUpdaterState, List<IndexUpdater<R>>> e : lastLogDateAndLastTasIdToUpdaters.entrySet()) {
+				final List<IndexUpdater<R>> updaters = e.getValue();
+				final IndexUpdaterState indexState = e.getKey();
+				// TODO: use the common lastTasId in the dbState to make sure the indices will have the same state after the update, regardless of their execution time and order
+				this.updateIndex(indexState, targetState, updaters);
+			}
 
-		
-//					boolean lockAcquired = false;
-//					try{
-//						lockAcquired = this.sharedIndexUpdater.getEsClient().getWriteLock(this.getResourceName()).tryLock(15, TimeUnit.SECONDS);  
-//						if(lockAcquired){
-//								this.sharedIndexUpdater.checkNewIndexInPipeline();
-		
-		for (final Map.Entry<IndexUpdaterState, List<IndexUpdater<R>>> e : lastLogDateAndLastTasIdToUpdaters.entrySet()) {
-			final List<IndexUpdater<R>> updaters = e.getValue();
-			final IndexUpdaterState indexState = e.getKey();
-			// TODO: use the common lastTasId in the dbState to make sure the indices will have the same state after the update, regardless of their execution time and order
-			this.updateIndex(indexState, targetState, updaters);
+		} finally {
+			for (List<IndexUpdater<R>> ul : lastLogDateAndLastTasIdToUpdaters.values()) {
+				for (IndexUpdater<R> u : ul) {
+					try {
+						u.closeUpdateProcess();
+					} catch (Exception e) {
+					}
+				}
+			}
 		}
-
-// FIXME: locking is wrong - we need to lock an index not a resourceType
-//					} catch (InterruptedException e) {
-//						log.error("unable to get the read lock on index: "+ this.getResourceName(), e);
-//					}finally{
-//						if(lockAcquired){
-//							this.sharedIndexUpdater.getEsClient().getWriteLock(this.getResourceName());
-//						}
-//					}
 
 		this.alreadyRunning = 0;
 	}
@@ -216,22 +212,35 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		final Map<IndexUpdaterState, List<IndexUpdater<R>>> lastLogDateAndLastTasIdToUpdaters = new HashMap<>();
 		
 		for (UpdatePlugin plugin : this.plugins) {
-			@SuppressWarnings("unchecked")
-			final IndexUpdater<R> updater = plugin.createUpdater(this.getResourceName());
-			if (updater == null) {
-				log.warn("no " + getResourceName() + " index to update for " + plugin.toString());
+			final IndexUpdater<R> updater;
+			try {
+				updater = plugin.createUpdater(this.getResourceName());
+			} catch (Exception e) {
+				log.error("unable to retrieve index updater from plugin " + plugin, e);
 				continue;
 			}
-
+				if (updater == null) {
+					log.warn("no " + getResourceName() + " index to update for " + plugin.toString());
+					continue;
+				}
+				
+				try {
+					final IndexUpdaterState state = updater.getUpdaterState();
+					
+					List<IndexUpdater<R>> updatersWithSameState = lastLogDateAndLastTasIdToUpdaters.get(state);
+					if (updatersWithSameState == null) {
+						updatersWithSameState = new ArrayList<>();
+						lastLogDateAndLastTasIdToUpdaters.put(state, updatersWithSameState);
+					}
+					updatersWithSameState.add(updater);
+				} catch (Exception e) {
+					log.error("unable to ask index update plugin about its state: " + updater, e);
+					updater.closeUpdateProcess();
+					continue;
+				}
+				
+				
 			
-			final IndexUpdaterState state = updater.getUpdaterState();
-			
-			List<IndexUpdater<R>> updatersWithSameState = lastLogDateAndLastTasIdToUpdaters.get(state);
-			if (updatersWithSameState == null) {
-				updatersWithSameState = new ArrayList<>();
-				lastLogDateAndLastTasIdToUpdaters.put(state, updatersWithSameState);
-			}
-			updatersWithSameState.add(updater);
 		}
 		return lastLogDateAndLastTasIdToUpdaters;
 	}

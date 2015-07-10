@@ -137,6 +137,11 @@ public class ESIndexManager {
 		return null;		
 	}
 	
+	public List<String> getTempIndicesOfThisSystem(String resourceType) {
+		final String tempAlias =  ESConstants.getTempAliasForResource(resourceType);
+		return this.getThisSystemsIndexesFromAlias(tempAlias);
+	}
+	
 	/**
 	 * checks if there are any active and backup index for the pair for the resource type 
 	 * 
@@ -435,6 +440,9 @@ public class ESIndexManager {
 	 */
 	public IndexLock aquireWriteLockForAnInactiveIndex(String resourceType) {
 		final String realIndexName = getThisSystemsIndexNameFromAlias(ESConstants.getGlobalAliasForResource(resourceType, false));
+		if (realIndexName == null) {
+			return null;
+		}
 		return new IndexLock(realIndexName, getRwLock(realIndexName).writeLock());
 	}
 }

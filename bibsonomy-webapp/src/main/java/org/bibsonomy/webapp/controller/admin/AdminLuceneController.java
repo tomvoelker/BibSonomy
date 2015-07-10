@@ -98,11 +98,8 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 				|| (GENERATE_ONE_INDEX.equals(command.getAction()))) {
 			if (command.getResource() == null) {
 				if ("elasticsearch".equals(command.getIndexType())) {
-					for (Entry<Class<? extends Resource>, LuceneResourceManager<? extends Resource>> e : luceneResourceManagers.entrySet()) {
-						SharedIndexUpdatePlugin<? extends Resource> esUpdater = sharedIndexUpdatePlugins.get(e.getKey());
-						if (esUpdater != null) {
-							esUpdater.generateIndex(e.getValue(), false, true);
-						}
+					for (SharedIndexUpdatePlugin<? extends Resource> srPlugin : sharedIndexUpdatePlugins.values()) {
+						srPlugin.generateIndex(false);
 					}
 				} else {
 					command.setAdminResponse("unsupported indextype '" + command.getIndexType() + "'");
@@ -116,8 +113,8 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 				} else if (esUpdater == null) {
 					command.setAdminResponse("Cannot build new index because there exists no updater for resource \"" + command.getResource() + "\".");
 				} else {
-					if ((esUpdater != null) && "elasticsearch".equals(command.getIndexType())) {
-						esUpdater.generateIndex(mng, false, true);
+					if ("elasticsearch".equals(command.getIndexType())) {
+						esUpdater.generateIndex(false);
 					} else {
 						if (!mng.isGeneratingIndex()) {
 							if (GENERATE_INDEX.equals(command.getAction())) {

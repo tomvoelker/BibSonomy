@@ -28,4 +28,12 @@ public class IndexLock extends LockAutoCloseable {
 	public String getIndexName() {
 		return this.indexName;
 	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "[" + this.getClass().getSimpleName() + ": " + this.indexName + "]"; 
+	}
 }

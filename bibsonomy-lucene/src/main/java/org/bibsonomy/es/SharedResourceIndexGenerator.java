@@ -64,19 +64,32 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	private ESClient esClient;
 	private final String systemHome;
 	private static final Log log = LogFactory.getLog(SharedResourceIndexGenerator.class);
-	private final SharedResourceIndexUpdater<R> updater;
+	private SharedResourceIndexUpdater<R> updater;
+	private final SharedIndexUpdatePlugin<R> updatePlugin;
 		
 	/**
 	 * @param systemHome
-	 * @param updater 
+	 * @param sharedIndexUpdatePlugin 
 	 * @param indexName 
 	 */
-	public SharedResourceIndexGenerator(final String systemHome, SharedResourceIndexUpdater<R> updater, final String indexName) {
+	public SharedResourceIndexGenerator(final String systemHome, SharedIndexUpdatePlugin<R> sharedIndexUpdatePlugin, final String indexName) {
 		this.systemHome = systemHome;
-		this.updater = updater;
+		this.updatePlugin = sharedIndexUpdatePlugin;
 		this.indexName = indexName;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.lucene.util.generator.AbstractIndexGenerator#run()
+	 */
+	@Override
+	public void run() {
+		this.updater = updatePlugin.createUpdaterForGenerator(this.indexName);
+		try {
+			super.run();
+		} finally {
+			this.updater.close();
+		}
+	}
 
 	/**
 	 * creates index of resource entries

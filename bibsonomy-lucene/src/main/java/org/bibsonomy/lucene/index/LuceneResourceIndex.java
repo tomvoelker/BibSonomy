@@ -1031,4 +1031,12 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 		state.setLast_tas_id(lastTasId);
 		return state;
 	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#closeUpdateProcess()
+	 */
+	@Override
+	public void closeUpdateProcess() {
+		// nothing to be done
+	}
 }

@@ -9,6 +9,7 @@ import java.util.concurrent.locks.Lock;
  */
 public class LockAutoCloseable implements AutoCloseable {
 	private final Lock lock;
+	private boolean unlocked = false;
 	
 	/**
 	 * aquires a lock and unlocks in {@link #close()} method
@@ -24,6 +25,9 @@ public class LockAutoCloseable implements AutoCloseable {
 	 */
 	@Override
 	public void close() {
-		lock.unlock();
+		if (!unlocked) {
+			lock.unlock();
+			unlocked = true;
+		}
 	}
 }
