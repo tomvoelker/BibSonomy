@@ -80,7 +80,7 @@ public class PersonPageController extends SingleResourceListController implement
 			//jsonPersonName.put("personNameId", personName.getPersonChangeId());
 			jsonPersonName.put("personName", BibTexUtils.cleanBibTex(rel.getPerson().getMainName().toString()));
 			// FIXME: this is only a quick hack and must be replaced!
-			jsonPersonName.put("extendedPersonName", BibTexUtils.cleanBibTex(getExtendedPersonName(rel)));
+			jsonPersonName.put("extendedPersonName", getExtendedPersonName(rel));
 			
 			array.add(jsonPersonName);
 		}
@@ -151,14 +151,14 @@ public class PersonPageController extends SingleResourceListController implement
 		String entryType = res.getEntrytype();
 		if (entryType.toLowerCase().endsWith("thesis")) {
 			if (present(res.getSchool())) {
-				extendedNameBuilder.append(", ").append(res.getSchool());
+				extendedNameBuilder.append(", ").append(BibTexUtils.cleanBibTex(res.getSchool()));
 			}
 		}
 		if (present(res.getYear())) {
-			extendedNameBuilder.append(", ").append(res.getYear());
+			extendedNameBuilder.append(", ").append(BibTexUtils.cleanBibTex(res.getYear()));
 		}
 		if (present(res.getTitle())) {
-			extendedNameBuilder.append(", \"").append(res.getTitle()).append('"');
+			extendedNameBuilder.append(", \"").append(BibTexUtils.cleanBibTex(res.getTitle())).append('"');
 		}
 	}
 
