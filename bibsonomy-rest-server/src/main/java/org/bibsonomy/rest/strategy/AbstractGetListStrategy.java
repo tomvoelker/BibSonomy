@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.rest.strategy;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.ByteArrayOutputStream;
 import java.io.Writer;
 import java.util.List;
@@ -53,8 +55,11 @@ public abstract class AbstractGetListStrategy<L extends List<?>> extends Strateg
 		this.view.setEndValue(context.getIntAttribute(RESTConfig.END_PARAM, 20));
 		
 		try {
-			final Order order = Order.getOrderByName(context.getStringAttribute(RESTConfig.ORDER_PARAM, null));
-			this.view.setOrder(order);
+			final String orderAsString = context.getStringAttribute(RESTConfig.ORDER_PARAM, null);
+			if (present(orderAsString)) {
+				final Order order = Order.getOrderByName(orderAsString);
+				this.view.setOrder(order);
+			}
 		} catch (final IllegalArgumentException e) {
 			// the client send a wrong query param throw correct exception
 			throw new BadRequestOrResponseException(e);
