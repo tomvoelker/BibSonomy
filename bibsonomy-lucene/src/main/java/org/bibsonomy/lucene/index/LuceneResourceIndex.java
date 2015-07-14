@@ -698,13 +698,13 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	private void closeIndexWriter() throws CorruptIndexException, IOException {
 		if (this.indexWriter != null) {
 			synchronized (this) {
-				while (this.openSessions.size() > 0) {
-					try {
+				try {
+					while (this.openSessions.size() > 0) {
 						log.debug("waiting to close indexWriter " + indexPath);
 						this.wait();
-					} catch (InterruptedException e) {
-						Thread.interrupted();
 					}
+				} catch (InterruptedException e) {
+					Thread.interrupted();
 				}
 				log.debug("Closing indexWriter " + indexPath);
 				this.disableIndex();
@@ -729,13 +729,13 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	private void closeSearcherManager() throws IOException {
 		if (this.searcherManager != null) {
 			synchronized (this) {
-				while (this.openSessions.size() > 0) {
-					try {
+				try {
+					while (this.openSessions.size() > 0) {
 						log.debug("waiting to close searchManager " + indexPath);
 						this.wait();
-					} catch (InterruptedException e) {
-						Thread.interrupted();
 					}
+				} catch (InterruptedException e) {
+					Thread.interrupted();
 				}
 				log.debug("closing searchManager " + indexPath);
 				this.disableIndex();
