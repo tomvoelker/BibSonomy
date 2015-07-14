@@ -87,8 +87,8 @@
 								<jsp:attribute name="content">
 									<fmt:message var="decuser" key="settings.group.deny.button"/>
 									<fmt:message var="decuserTitle" key="settings.group.deny.button.title"/>
-									<fmt:message var="accuser" key="settings.group.accUser.button"/>
-									<fmt:message var="accuserTitle" key="settings.group.accUser.button.title"/>
+									<fmt:message var="accuser" key="settings.group.addUser.button"/>
+									<fmt:message var="accuserTitle" key="settings.group.addUser.button.title"/>
 
 									<table class="table table-striped table-condensed">
 										<c:forEach items="${group.pendingMemberships}" var="member">
