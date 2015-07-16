@@ -30,14 +30,14 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Callable;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.store.LockObtainFailedException;
-import org.bibsonomy.es.IndexUpdaterState;
 import org.bibsonomy.es.ESClient;
+import org.bibsonomy.es.IndexUpdaterState;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.model.Group;
@@ -53,7 +53,7 @@ import org.bibsonomy.model.Resource;
  * 
  * @param <R> the resource of the index to generate
  */
-public abstract class AbstractIndexGenerator<R extends Resource> implements Runnable {
+public abstract class AbstractIndexGenerator<R extends Resource> implements Callable<Void>, Runnable {
 
 	/** suffix for temporary indices */
 	public static final String TMP_INDEX_SUFFIX = ".tmp";
@@ -261,6 +261,15 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 				log.error("Failed to close index-writer!", e);
 			}
 		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.util.concurrent.Callable#call()
+	 */
+	@Override
+	public Void call() throws Exception {
+		this.run();
+		return null;
 	}
 
 	/**

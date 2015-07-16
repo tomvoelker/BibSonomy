@@ -25,10 +25,15 @@
 		<constructor-arg ref="esClient"/>
 		<constructor-arg value="${project.home}"/>
 	</bean>
+	
+	<bean id="indexGeneratorThreadPool" class="org.bibsonomy.util.SimpleBlockingThreadPoolExecutor" lazy-init="true" destroy-method="shutdownNow">
+		<constructor-arg value="indexGenerator"/>
+	</bean>
 
 	<bean id="realSharedIndexUpdatePlugin" class="org.bibsonomy.es.SharedIndexUpdatePlugin" lazy-init="true" abstract="true">
 		<constructor-arg ref="esClient"/>
 		<constructor-arg value="${project.home}"/>
+		<property name="generatorThreadPool" ref="indexGeneratorThreadPool" />
 	</bean>
 	
 	<bean id="realSharedIndexUpdatePluginForPublications" lazy-init="true" parent="realSharedIndexUpdatePlugin">

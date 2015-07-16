@@ -3,10 +3,16 @@
 <sqlMap namespace="Lucene">
 
 	<select id="getPubPersonChangesByChangeIdRange" parameterClass="org.bibsonomy.common.Pair" resultMap='PersonCommon.resourcePersonRelationLogStub'>
-			SELECT <include refid='commonResourcePersonRelationColumns' />, pub_person.deleted
+			SELECT * from ((SELECT <include refid='commonResourcePersonRelationColumns' />, pub_person.deleted
 				FROM log_pub_person pub_person
 				WHERE person_change_id >= #first# AND person_change_id &lt; #second#
-				ORDER BY person_change_id
+				ORDER BY person_change_id)
+			UNION
+			(SELECT <include refid='commonResourcePersonRelationColumns' />, pub_person.deleted
+				FROM pub_person
+				WHERE person_change_id >= #first# AND person_change_id &lt; #second#
+				ORDER BY person_change_id)) u ORDER BY r_person_change_id
+				<!-- should be read from log_pub_person pub_person as well, because otherwise we miss deleted entries -->
 	</select>
 	
 	<select id='getPersonMainNamesByChangeIdRange' parameterClass="org.bibsonomy.common.Pair" resultMap='PersonCommon.personName'>

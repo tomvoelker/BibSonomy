@@ -115,7 +115,7 @@
 				<p><fmt:message key="disambiguation.listExplanation"/></p>
 					
 					<c:choose>
-						<c:when test="${fn:length(command.suggestedPersonNames) gt 0}">
+						<c:when test="${fn:length(command.personSuggestions) gt 0}">
 							<div class="list-group">
 								<c:forEach var='rel' items="${command.personSuggestions}">
 									<div class="list-group-item">

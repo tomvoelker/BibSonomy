@@ -12,7 +12,7 @@
 	<!-- import the config from the lucene module -->
 	<import resource="classpath:org/bibsonomy/bibsonomy-search-context.xml" />
 	
-	<bean id="luceneDataSource" class="org.apache.tomcat.dbcp.dbcp.BasicDataSource" parent="basicDataSource">
+	<bean id="luceneDataSource" class="org.bibsonomy.webapp.DebugDataSource" parent="basicDataSource">
 		<property name="driverClassName" value="${database.lucene.driverClassName}" />
 		<property name="url" value="${database.lucene.url}" />
 		<property name="username" value="${database.lucene.username}" />
