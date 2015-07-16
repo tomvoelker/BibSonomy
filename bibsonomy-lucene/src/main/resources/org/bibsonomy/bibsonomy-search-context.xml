@@ -6,7 +6,7 @@
 						http://www.springframework.org/schema/util
 						http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 	
-	<bean id="esClient" class="org.bibsonomy.es.ESTransportClient" lazy-init="true" init-method="init">
+	<bean id="esClient" class="org.bibsonomy.es.ESTransportClient" lazy-init="true" init-method="init" destroy-method="shutdown">
 		<property name="esAddresses" value="${es.address}"/>
 		<property name="esClusterName" value="${es.cluster.name}"/>
 	</bean>
