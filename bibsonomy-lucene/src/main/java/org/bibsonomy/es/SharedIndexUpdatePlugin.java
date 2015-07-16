@@ -251,7 +251,9 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	 */
 	@Override
 	public void generatedIndex(final AbstractIndexGenerator<R> index) {
-		this.esIndexManager.changeUnderConstructionStatus(index.getIndexName(), index.getResourceType());
+		if (index.isFinishedSuccesfully()) {
+			this.esIndexManager.changeUnderConstructionStatus(index.getIndexName(), index.getResourceType());
+		}
 	}
 
 	public LuceneDBInterface<R> getDbLogic() {
