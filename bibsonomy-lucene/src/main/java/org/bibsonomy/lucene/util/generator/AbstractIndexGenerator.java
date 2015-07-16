@@ -75,7 +75,8 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Call
 	 * the elasticsearch index name
 	 */
 	protected String indexName;
-
+	
+	protected boolean finishedSuccesfully;
 
 	/**
 	 * the resource type
@@ -252,6 +253,7 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Call
 		try {
 			this.running = true;
 			this.generateIndex();
+			this.finishedSuccesfully = true;
 		} catch (final Exception e) {
 			log.error("Failed to generate " + getName() + "!", e);
 		} finally {
@@ -314,5 +316,9 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Call
 	 */
 	public String getResourceType() {
 		return this.resourceType;
+	}
+
+	public boolean isFinishedSuccesfully() {
+		return this.finishedSuccesfully;
 	}
 }
