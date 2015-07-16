@@ -166,7 +166,6 @@ public class ESTransportClient extends AbstractEsClient implements ESClient {
 	 */
 	@Override
 	public void shutdown() {
-		// TODO Auto-generated method stub
-
+		this.client.close();
 	}
 }
