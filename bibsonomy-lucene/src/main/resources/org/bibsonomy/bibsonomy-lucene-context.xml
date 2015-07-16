@@ -23,7 +23,8 @@
 
 	<bean id="esIndexManager" class="org.bibsonomy.es.ESIndexManager" lazy-init="true">
 		<constructor-arg ref="esClient"/>
-		<constructor-arg value="${project.home}"/>
+		<constructor-arg value="${es.project.home}"/>
+		<!-- <constructor-arg value="${project.home}"/> -->
 	</bean>
 	
 	<bean id="indexGeneratorThreadPool" class="org.bibsonomy.util.SimpleBlockingThreadPoolExecutor" lazy-init="true" destroy-method="shutdownNow">
@@ -74,7 +75,7 @@
 	
 	<bean id="realEsPublicationSearch" lazy-init="true" parent="abstractEsResourceSearch">
 		<property name="resourceType" value="BibTex"/>
-		<property name="systemUrl" value="${project.home}"/>
+		<property name="systemUrl" value="${es.project.home}"/>
 		<property name="resourceConverter" ref="lucenePublicationConverter" />
 	</bean>
 	<bean id="esPublicationSearch" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
