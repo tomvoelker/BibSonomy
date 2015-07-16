@@ -130,11 +130,11 @@ public class ESIndexManager {
 			}
 		}
 		final String indexName = this.createIndex(resourceType);
-		if(indexName!=null){
+		if (indexName != null) {
 			this.setAliasForIndex(tempAlias, indexName);
 			return indexName;
 		}
-		return null;		
+		return null;
 	}
 	
 	public List<String> getTempIndicesOfThisSystem(String resourceType) {

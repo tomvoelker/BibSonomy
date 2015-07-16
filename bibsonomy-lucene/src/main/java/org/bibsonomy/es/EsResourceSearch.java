@@ -313,11 +313,16 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder impleme
 			
 			// unfortunately our version of elasticsearch does not support topHits aggregation so we have to group by interhash ourselves: AggregationBuilder aggregation = AggregationBuilders.terms("agg").field("gender").subAggregation(AggregationBuilders.topHits("top"));
 			
+			double bestScore = Double.NaN;
 			// remember alreadyAnalyzedInterhashes to skip over multiple posts of the same resource
 			final Set<String> alreadyAnalyzedInterhashes = new HashSet<>();
 			for (int offset = 0; relSorter.size() < personSuggestionSize && offset < maxOffset; offset += personSuggestionSize) {
-				boolean moreEntriesMightBeFound = fetchMoreResults(relSorter, queryString, tokenizedQueryString, offset, alreadyAnalyzedInterhashes, indexLock.getIndexName());
-				if (moreEntriesMightBeFound == false) {
+				double minScore = Double.isNaN(bestScore) ? 0.05 : (bestScore / 3d);
+				double bestScoreThisRound = fetchMoreResults(relSorter, queryString, tokenizedQueryString, offset, alreadyAnalyzedInterhashes, indexLock.getIndexName(), minScore);
+				if (Double.isNaN(bestScore)) {
+					bestScore = bestScoreThisRound;
+				}
+				if (Double.isNaN(bestScoreThisRound) || (bestScoreThisRound < minScore)) {
 					break;
 				}
 			}
@@ -330,7 +335,7 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder impleme
 		return new ArrayList<>();
 	}
 
-	private boolean fetchMoreResults(final TreeMap<Float, ResourcePersonRelation> relSorter, String queryString, final Set<String> queryTerms, int offset, final Set<String> alreadyAnalyzedInterhashes, String indexName) {
+	private double fetchMoreResults(final TreeMap<Float, ResourcePersonRelation> relSorter, String queryString, final Set<String> queryTerms, int offset, final Set<String> alreadyAnalyzedInterhashes, String indexName, double minPlainEsScore) {
 		final QueryBuilder queryBuilder = QueryBuilders.filteredQuery( //
 				QueryBuilders.boolQuery() //
 						.should(QueryBuilders.multiMatchQuery(queryString) //
@@ -354,19 +359,24 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder impleme
 		searchRequestBuilder.setTypes(this.resourceType);
 		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 		searchRequestBuilder.setQuery(queryBuilder) //
-		.setMinScore(0.05f) //
+		.setMinScore((float)minPlainEsScore) //
 		.setFrom(offset).setSize(personSuggestionSize);
 
 		final SearchResponse response = searchRequestBuilder.execute().actionGet();
 		if (response == null) {
-			return false;
+			return 0;
 		}
 		final SearchHits hits = response.getHits();
 		if (hits.getTotalHits() < 1) {
-			return false;
+			return 0;
 		}
+		
+		double bestPlainEsScore = 0;
 
 		for (final SearchHit hit : hits) {
+			if (bestPlainEsScore < hit.getScore()) {
+				bestPlainEsScore = hit.getScore();
+			}
 			String interhash = (String) hit.getSource().get(LuceneFieldNames.INTERHASH);
 			if (!alreadyAnalyzedInterhashes.add(interhash)) {
 				// we have seen this interhash before -> skip
@@ -413,7 +423,7 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder impleme
 			}
 		}
 
-		return true;
+		return bestPlainEsScore;
 	}
 
 	private int extractMinimumInvertedScore(final TreeMap<Integer, ResourcePersonRelation> invertedScoreToRpr) {
