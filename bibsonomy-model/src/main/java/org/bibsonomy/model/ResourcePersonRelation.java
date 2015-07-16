@@ -34,4 +34,29 @@ public class ResourcePersonRelation extends ResourcePersonRelationBase {
 	public void setPost(Post<? extends BibTex> post) {
 		this.post = post;
 	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder(this.getClass().getSimpleName()).append("[");
+		sb.append(getPersonRelChangeId());
+		sb.append("-");
+		if (person != null) {
+			sb.append(person.getPersonId());
+		} else {
+			sb.append("null");
+		}
+		sb.append("-");
+		sb.append(this.getRelationType());
+		sb.append("-");
+		if ((post != null) && (post.getResource() != null)) {
+			sb.append(post.getResource().getIntraHash());
+		} else {
+			sb.append("null");
+		}
+		sb.append("]");
+		return sb.toString();
+	}
 }
