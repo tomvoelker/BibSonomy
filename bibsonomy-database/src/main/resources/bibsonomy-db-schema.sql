@@ -40,6 +40,7 @@ CREATE TABLE `sync`(
   `direction` varchar(4) default 'both',
   `strategy` varchar(2) default 'lw',
   `autosync` boolean default false,
+  `firstsync` boolean default true, 
    PRIMARY KEY  (`service_id`, `user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

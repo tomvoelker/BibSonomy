@@ -34,7 +34,7 @@ import java.util.Properties;
 import org.bibsonomy.model.Resource;
 
 /** 
- * @author wla
+ * @author wla, vhem
  */
 public class SyncService {
 	
@@ -49,6 +49,7 @@ public class SyncService {
 	private Map<Class<? extends Resource>, Map<String, String>> plan;
 	private String sslDn;
 	private boolean autosync = false;
+	private boolean firstsync = true;
 	private String userName;
 	
 	/**
@@ -259,5 +260,21 @@ public class SyncService {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * @return get firstsync
+	 * if there was a bidirectional sync before autosync
+	 */
+	public boolean isFirstsync() {
+		return this.firstsync;
+	}
+
+	/**
+	 * @param firstsync 
+	 * first bidirectional sync was successful
+	 */
+	public void setFirstsync(boolean firstsync) {
+		this.firstsync = firstsync;
 	}
 }
