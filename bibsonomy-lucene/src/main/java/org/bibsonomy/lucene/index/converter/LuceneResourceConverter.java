@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -217,7 +218,7 @@ public class LuceneResourceConverter<R extends Resource> {
 
 	private String serializeMainNames(final List<ResourcePersonRelation> rels, PersonResourceRelationType type) {
 		if (rels == null) {
-			return "";
+			return null;
 		}
 		final StringBuilder sb = new StringBuilder();
 		for (ResourcePersonRelation rel : rels) {
@@ -243,6 +244,9 @@ public class LuceneResourceConverter<R extends Resource> {
 			if (ValidationUtils.present(name.getLastName())) {
 				sb.append(prepareNamePart(name.getLastName()));
 			}
+		}
+		if (sb.length() == 0) {
+			return null;
 		}
 		return sb.toString();
 	}
@@ -278,24 +282,36 @@ public class LuceneResourceConverter<R extends Resource> {
 		}
 		for (int i = 0; i < names.length; ++i) {
 			String[] nameParts = split(names[i], NAME_PART_DELIMITER);
-			if (nameParts.length != 3) {
+			if (nameParts.length < 3) {
 				throw new IllegalStateException(); 
 			}
 			Person p = rels.get(i).getPerson();
-			PersonName mainName = new PersonName();
-			if (present(nameParts[1])) {
-				mainName.setFirstName(nameParts[1].trim());
-			}
-			if (present(nameParts[2])) {
-				mainName.setLastName(nameParts[2].trim());
-			}
+			PersonName mainName = buildNameFromParts(nameParts, 1);
 			p.setMainName(mainName);
 			if (present(nameParts[0])) {
 				p.setAcademicDegree(nameParts[0].trim());
 			}
+			if (nameParts.length % 2 != 1) {
+				log.error("wrong number of name parts found for person " + p.getPersonId() + ": " + nameParts);
+			} else {
+				for (int namePartI = 3; namePartI < nameParts.length; namePartI += 2) {
+					p.addName(buildNameFromParts(nameParts, namePartI));
+				}
+			}
 		}
 		
 		return rels;
+	}
+
+	private PersonName buildNameFromParts(String[] nameParts, int firstPartIndex) {
+		PersonName name = new PersonName();
+		if (present(nameParts[1])) {
+			name.setFirstName(nameParts[firstPartIndex].trim());
+		}
+		if (present(nameParts[2])) {
+			name.setLastName(nameParts[firstPartIndex+1].trim());
+		}
+		return name;
 	}
 
 	/**
@@ -304,6 +320,9 @@ public class LuceneResourceConverter<R extends Resource> {
 	 * @return
 	 */
 	private String[] split(String fieldName, String delimiter) {
+		if (fieldName == null) {
+			return ArrayUtils.EMPTY_STRING_ARRAY;
+		}
 		String[] rVal = fieldName.split(delimiter);
 		if ((rVal.length == 1) && (StringUtils.isEmpty(rVal[0]))) {
 			return new String[0];
@@ -321,7 +340,7 @@ public class LuceneResourceConverter<R extends Resource> {
 
 	private String serializePersonIds(final List<ResourcePersonRelation> rels, PersonResourceRelationType type) {
 		if (rels == null) {
-			return "";
+			return null;
 		}
 		final StringBuilder sb = new StringBuilder();
 		for (ResourcePersonRelation rel : rels) {
@@ -335,10 +354,22 @@ public class LuceneResourceConverter<R extends Resource> {
 			if (sb.length() > 0) {
 				sb.append(" ");
 			}
-			sb.append(rel.getRelationType().getRelatorCode()).append(" ");
+			sb.append(getRelatorCodeOrEmptyString(rel)).append(" ");
 			sb.append(person.getPersonId());
 		}
+		if (sb.length() == 0) {
+			return null;
+		}
 		return sb.toString();
+	}
+
+	private String getRelatorCodeOrEmptyString(ResourcePersonRelation rel) {
+		PersonResourceRelationType type = rel.getRelationType();
+		if (type == null) {
+			log.error("relation without relatorcode: " + rel);
+			return "";
+		}
+		return type.getRelatorCode();
 	}
 
 	private String getNormalizedEntryType(final Post<? extends BibTex> post) {
