@@ -353,7 +353,9 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder impleme
 		final SearchRequestBuilder searchRequestBuilder = this.esIndexManager.getClient().prepareSearch(indexName);
 		searchRequestBuilder.setTypes(this.resourceType);
 		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
-		searchRequestBuilder.setQuery(queryBuilder).setFrom(offset).setSize(personSuggestionSize);
+		searchRequestBuilder.setQuery(queryBuilder) //
+		.setMinScore(0.05f) //
+		.setFrom(offset).setSize(personSuggestionSize);
 
 		final SearchResponse response = searchRequestBuilder.execute().actionGet();
 		if (response == null) {
