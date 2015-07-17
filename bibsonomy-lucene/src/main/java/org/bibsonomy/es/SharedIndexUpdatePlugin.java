@@ -105,20 +105,13 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	 */
 	@Override
 	public SharedResourceIndexUpdater<R> createUpdater(final String resourceType) {
-
-		//		String errorMsg = this.getGlobalIndexNonExistanceError();
-//		if (errorMsg == null) {
-//			errorMsg = esIndexManager.getResourceIndexNonExistanceError(resourceType);
-//		}
-//		if (errorMsg != null) {
-//			log.error(errorMsg);
-//			return null;
-//		}
 		final IndexLock inactiveIndexLock = this.esIndexManager.aquireWriteLockForAnInactiveIndex(resourceType);
 		if (inactiveIndexLock == null) {
-			log.error("no inactive index found for resource type " + resourceType + "@" + systemHome + "  -> not updating");
-			if (!ValidationUtils.present(this.esIndexManager.getTempIndicesOfThisSystem(resourceType))) {
-				log.error("no inactive index found for resource type " + resourceType + "@" + systemHome + " -> scheduling new index generation");
+			List<String> tempIndices = this.esIndexManager.getTempIndicesOfThisSystem(resourceType);
+			if (tempIndices.size() > 5) {
+				log.error("no inactive index found for resource type " + resourceType + "@" + systemHome + " and too many aborted regenerations -> giving up");
+			} else {
+				log.warn("no inactive index found for resource type " + resourceType + "@" + systemHome + "  -> not updating, regeneration is triggered");
 				this.generateIndex(false);
 			}
 			return null;
