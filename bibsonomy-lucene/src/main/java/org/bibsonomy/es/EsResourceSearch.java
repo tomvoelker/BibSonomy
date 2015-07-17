@@ -38,6 +38,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -60,9 +62,11 @@ import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.TermFilterBuilder;
 import org.elasticsearch.indices.IndexMissingException;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
@@ -77,6 +81,8 @@ import org.elasticsearch.search.sort.SortOrder;
  */
 public class EsResourceSearch<R extends Resource> extends ESQueryBuilder implements PersonSearch {
 
+	private static final Pattern YEAR_PATTERN = Pattern.compile("[12][0-9]{3}");
+	
 	private String resourceType;
 
 	/** post model converter */
@@ -340,11 +346,10 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder impleme
 				QueryBuilders.boolQuery() //
 						.should(QueryBuilders.multiMatchQuery(queryString) //
 								.field(ESConstants.AUTHOR_ENTITY_NAMES_FIELD_NAME, 2) //
-								.field(ESConstants.PERSON_ENTITY_NAMES_FIELD_NAME, 2) //
-								.field(LuceneFieldNames.TITLE, 2) //
-								.field(LuceneFieldNames.YEAR, 2) //
+								.field(ESConstants.PERSON_ENTITY_NAMES_FIELD_NAME, 1) //
+								.field(LuceneFieldNames.TITLE, 3) //
 								.field(LuceneFieldNames.SCHOOL, 2) //
-								.tieBreaker(0.2f) //
+								.tieBreaker(0.8f) //
 								.boost(2)) //
 						.should(QueryBuilders.boolQuery() //
 								.should(QueryBuilders.termQuery(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, NormalizedEntryTypes.habilitation.name()).boost(11)) //
@@ -353,14 +358,16 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder impleme
 								.should(QueryBuilders.termQuery(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, NormalizedEntryTypes.bachelor_thesis.name()).boost(6)) //
 								.should(QueryBuilders.termQuery(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, NormalizedEntryTypes.candidate_thesis.name()).boost(5)) //
 						), //
-				FilterBuilders.termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, systemUrl) //
+						addShouldYearIfYearInQuery(
+								FilterBuilders.termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, systemUrl),
+								queryString) //
 				);
 		final SearchRequestBuilder searchRequestBuilder = this.esIndexManager.getClient().prepareSearch(indexName);
 		searchRequestBuilder.setTypes(this.resourceType);
 		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 		searchRequestBuilder.setQuery(queryBuilder) //
 		.setMinScore((float)minPlainEsScore) //
-		.setFrom(offset).setSize(personSuggestionSize);
+		.setFrom(offset).setSize(personSuggestionSize * 5);
 
 		final SearchResponse response = searchRequestBuilder.execute().actionGet();
 		if (response == null) {
@@ -372,10 +379,14 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder impleme
 		}
 		
 		double bestPlainEsScore = 0;
+		double minScore = 0;
 
 		for (final SearchHit hit : hits) {
 			if (bestPlainEsScore < hit.getScore()) {
 				bestPlainEsScore = hit.getScore();
+				minScore = bestPlainEsScore / 3.0;
+			} else if (hit.getScore() < minScore) {
+				break;
 			}
 			String interhash = (String) hit.getSource().get(LuceneFieldNames.INTERHASH);
 			if (!alreadyAnalyzedInterhashes.add(interhash)) {
@@ -425,6 +436,21 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder impleme
 
 		return bestPlainEsScore;
 	}
+
+	/**
+	 * @param termFilterBuilder
+	 * @param queryString
+	 * @return
+	 */
+	private FilterBuilder addShouldYearIfYearInQuery(FilterBuilder filterBuilder, String queryString) {
+		Matcher m = YEAR_PATTERN.matcher(queryString);
+		if (!m.find()) {
+			return filterBuilder;
+		}
+		String year = queryString.substring(m.start(), m.end());
+		return FilterBuilders.andFilter(filterBuilder, FilterBuilders.termFilter(LuceneFieldNames.YEAR, year));
+	}
+
 
 	private int extractMinimumInvertedScore(final TreeMap<Integer, ResourcePersonRelation> invertedScoreToRpr) {
 		int minInvertedScore = -1;
