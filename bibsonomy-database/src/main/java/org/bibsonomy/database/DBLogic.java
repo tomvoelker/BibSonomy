@@ -3207,6 +3207,11 @@ public class DBLogic implements LogicInterface {
 	}
 	
 	@Override
+	public List<Post<BibTex>> getPublicationSuggestion(String queryString) {
+		return this.publicationDBManager.getPublicationSuggestion(queryString);
+	}
+	
+	@Override
 	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) {
 		ValidationUtils.assertNotNull(resourcePersonRelation.getPerson());
 		ValidationUtils.assertNotNull(resourcePersonRelation.getPerson().getPersonId());

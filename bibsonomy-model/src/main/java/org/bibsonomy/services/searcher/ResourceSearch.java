@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -68,7 +69,7 @@ public interface ResourceSearch<R extends Resource> {
 	public List<Post<R>> getPosts(
 			final String userName, final String requestedUserName, String requestedGroupName, 
 			final List<String> requestedRelationNames,
-			final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms,
+			final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, 
 			final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset);
 	
 
@@ -97,7 +98,7 @@ public interface ResourceSearch<R extends Resource> {
 	public List<Post<R>> getPosts(
 			final String userName, final String requestedUserName, String requestedGroupName, 
 			final List<String> requestedRelationNames,
-			final Collection<String> allowedGroups,final SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms,
+			final Collection<String> allowedGroups,final SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, 
 			final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset);
 	
 	
@@ -154,30 +155,37 @@ public interface ResourceSearch<R extends Resource> {
 			final String year, final String firstYear, final String lastYear, List<String> negatedTags, int limit, int offset);
 
 
-/**
- * get tag cloud for given search query
- * 
- * @param userName
- * @param requestedUserName
- * @param requestedGroupName
- * @param allowedGroups
- * @param searchTerms
- * @param searchType 
- * @param titleSearchTerms
- * @param authorSearchTerms
- * @param tagIndex
- * @param year
- * @param firstYear
- * @param lastYear
- * @param negatedTags
- * @param limit
- * @param offset
- * @return the tag cloud for the given search
- */
-public List<Tag> getTags(
+	/**
+	 * get tag cloud for given search query
+	 * 
+	 * @param userName
+	 * @param requestedUserName
+	 * @param requestedGroupName
+	 * @param allowedGroups
+	 * @param searchTerms
+	 * @param searchType 
+	 * @param titleSearchTerms
+	 * @param authorSearchTerms
+	 * @param tagIndex
+	 * @param year
+	 * @param firstYear
+	 * @param lastYear
+	 * @param negatedTags
+	 * @param limit
+	 * @param offset
+	 * @return the tag cloud for the given search
+	 */
+	public List<Tag> getTags(
 		final String userName, final String requestedUserName, String requestedGroupName, 
 		final Collection<String> allowedGroups,
 		final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex,
 		final String year, final String firstYear, final String lastYear, List<String> negatedTags, int limit, int offset);
+
+
+	/**
+	 * @param queryString any combination of title, author-name, year, school
+	 * @return a ranked list of (more-or-less) matching publications. Each resource is contained in a post of some user.
+	 */
+	public List<Post<BibTex>> getPublicationSuggestions(String queryString);
 
 }

@@ -29,6 +29,7 @@ package org.bibsonomy.database.managers;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +59,7 @@ import org.bibsonomy.model.ScraperMetadata;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.util.file.FileSystemFile;
 import org.bibsonomy.services.filesystem.FileLogic;
+import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
  * Used to create, read, update and delete BibTexs from the database.
@@ -77,6 +79,8 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	private static final BibTexDatabaseManager singleton = new BibTexDatabaseManager();
 
 	private static final HashID[] hashRange = HashID.getAllHashIDs();
+	
+	private ResourceSearch<BibTex> publicationSearch;
 
 	/**
 	 * @return BibTexDatabaseManager
@@ -675,5 +679,21 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 */
 	public void setFileLogic(final FileLogic fileLogic) {
 		this.fileLogic = fileLogic;
+	}
+
+	/**
+	 * @param queryString
+	 * @return
+	 */
+	public List<Post<BibTex>> getPublicationSuggestion(String queryString) {
+		if (this.publicationSearch != null) {
+			return this.publicationSearch.getPublicationSuggestions(queryString);
+		}
+		log.warn("no publicationSearch available for publication suggestions");
+		return new ArrayList<>();
+	}
+
+	public void setPublicationSearch(ResourceSearch<BibTex> publicationSearch) {
+		this.publicationSearch = publicationSearch;
 	}
 }

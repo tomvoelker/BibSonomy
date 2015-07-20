@@ -1507,4 +1507,13 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPublicationSuggestion(java.lang.String)
+	 */
+	@Override
+	public List<Post<BibTex>> getPublicationSuggestion(String queryString) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

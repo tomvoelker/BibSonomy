@@ -781,8 +781,7 @@ public class RestLogic implements LogicInterface {
 	 */
 	@Override
 	public List<ResourcePersonRelation> getPersonSuggestion(String queryString) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	/* (non-Javadoc)
@@ -790,7 +789,7 @@ public class RestLogic implements LogicInterface {
 	 */
 	@Override
 	public void addResourceRelation(ResourcePersonRelation rpr) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 		
 	}
 
@@ -799,7 +798,7 @@ public class RestLogic implements LogicInterface {
 	 */
 	@Override
 	public void removeResourceRelation(int resourceRelationId) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 		
 	}
 
@@ -808,7 +807,7 @@ public class RestLogic implements LogicInterface {
 	 */
 	@Override
 	public void createOrUpdatePerson(Person person) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 		
 	}
 
@@ -817,8 +816,7 @@ public class RestLogic implements LogicInterface {
 	 */
 	@Override
 	public Person getPersonById(PersonIdType idType, String id) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	/* (non-Javadoc)
@@ -826,8 +824,7 @@ public class RestLogic implements LogicInterface {
 	 */
 	@Override
 	public void removePersonName(Integer personNameId) {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException();
 	}
 
 	/* (non-Javadoc)
@@ -835,8 +832,7 @@ public class RestLogic implements LogicInterface {
 	 */
 	@Override
 	public Map<Person, BibTex> getQualifyingPublications(String personName) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 
@@ -845,8 +841,7 @@ public class RestLogic implements LogicInterface {
 	 */
 	@Override
 	public void createOrUpdatePersonName(PersonName withPersonId) {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException();
 	}
 
 	/* (non-Javadoc)
@@ -854,8 +849,7 @@ public class RestLogic implements LogicInterface {
 	 */
 	@Override
 	public void linkUser(String personId) {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException();
 	}
 
 	/* (non-Javadoc)
@@ -863,8 +857,7 @@ public class RestLogic implements LogicInterface {
 	 */
 	@Override
 	public void unlinkUser(String username) {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException();
 	}
 
 	/* (non-Javadoc)
@@ -872,8 +865,7 @@ public class RestLogic implements LogicInterface {
 	 */
 	@Override
 	public List<Post<BibTex>> searchPostsByTitle(String title) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 	
 	/* (non-Javadoc)
@@ -881,8 +873,7 @@ public class RestLogic implements LogicInterface {
 	 */
 	@Override
 	public List<ResourcePersonRelation> getResourceRelations(String hash, PersonResourceRelationType role, Integer authorIndex) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	/* (non-Javadoc)
@@ -890,8 +881,7 @@ public class RestLogic implements LogicInterface {
 	 */
 	@Override
 	public List<ResourcePersonRelation> getResourceRelations(Person person) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	/* (non-Javadoc)
@@ -899,7 +889,14 @@ public class RestLogic implements LogicInterface {
 	 */
 	@Override
 	public List<ResourcePersonRelation> getResourceRelations(Post<? extends BibTex> post) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPublicationSuggestion(java.lang.String)
+	 */
+	@Override
+	public List<Post<BibTex>> getPublicationSuggestion(String queryString) {
+		throw new UnsupportedOperationException();
 	}
 }

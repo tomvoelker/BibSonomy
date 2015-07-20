@@ -29,8 +29,6 @@ package org.bibsonomy.services.searcher;
 import java.util.List;
 
 import org.bibsonomy.model.Person;
-import org.bibsonomy.model.PersonName;
-import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 
 /**

@@ -84,6 +84,7 @@
 	</bean>
 	
 	<alias name="esPublicationSearch" alias="personSearch"/>
+	<alias name="esPublicationSearch" alias="publicationSearch"/>
 	
 	<bean id="realEsBookmarkSearch" lazy-init="true" parent="abstractEsResourceSearch">
 		<property name="resourceType" value="Bookmark"/>
@@ -111,6 +112,7 @@
 	<bean id="abstractEsResourceSearch" class="org.bibsonomy.es.EsResourceSearch" abstract="true">
 		<property name="esIndexManager" ref="esIndexManager"/>
 		<property name="dbLogic" ref="luceneInfoDBLogic" />
+		<property name="genealogyUser" value="${genealogy.import.user}"/>
 	</bean>
 
 	<!--+ | lucene post converter + -->

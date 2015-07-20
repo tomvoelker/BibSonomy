@@ -27,15 +27,18 @@
 package org.bibsonomy.es;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
@@ -49,6 +52,7 @@ import org.bibsonomy.lucene.database.LuceneInfoLogic;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.index.converter.NormalizedEntryTypes;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -58,15 +62,16 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.services.searcher.PersonSearch;
+import org.bibsonomy.services.searcher.ResourceSearch;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
+import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.TermFilterBuilder;
 import org.elasticsearch.indices.IndexMissingException;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
@@ -79,7 +84,12 @@ import org.elasticsearch.search.sort.SortOrder;
  * @author lutful
  * @param <R>
  */
-public class EsResourceSearch<R extends Resource> extends ESQueryBuilder implements PersonSearch {
+public class EsResourceSearch<R extends Resource> implements PersonSearch, ResourceSearch<R> {
+
+	/**
+	 * 
+	 */
+	private static final float GENEALOGY_USER_PREFERENCE_FACTOR = 1.1f;
 
 	private static final Pattern YEAR_PATTERN = Pattern.compile("[12][0-9]{3}");
 	
@@ -106,7 +116,9 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder impleme
 	private String systemUrl;
 
 	/** the number of person suggestions */
-	private int personSuggestionSize = 8;
+	private int suggestionSize = 8;
+
+	private String genealogyUser;
 
 	
 	/**
@@ -130,7 +142,7 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder impleme
 	 * @return returns the list of tags for the tag cloud
 	 */
 	public List<Tag> getTags(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexkey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
-		final BoolQueryBuilder query= this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags);
+		final QueryBuilder query= this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, org.bibsonomy.common.enums.SearchType.LOCAL, null, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags);
 		final Map<Tag, Integer> tagCounter = new HashMap<Tag, Integer>();
 
 		try (final IndexLock indexLock = getEsIndexManager().aquireReadLockForTheActiveIndex(this.resourceType)) {
@@ -221,13 +233,14 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder impleme
 	 * @throws CorruptIndexException
 	 * @throws IOException
 	 */
-	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) throws CorruptIndexException, IOException {
+	@Override
+	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final org.bibsonomy.common.enums.SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) {
 		final ResultList<Post<R>> postList = new ResultList<Post<R>>();
 		try (final IndexLock indexLock = getEsIndexManager().aquireReadLockForTheActiveIndex(this.resourceType)) {
 			
-				final BoolQueryBuilder queryBuilder = this.buildQuery(userName,
+				final QueryBuilder queryBuilder = this.buildQuery(userName,
 						requestedUserName, requestedGroupName,
-						requestedRelationNames, allowedGroups, searchTerms,
+						requestedRelationNames, allowedGroups, searchType, searchTerms,
 						titleSearchTerms, authorSearchTerms, bibtexKey,
 						tagIndex, year, firstYear, lastYear, negatedTags);
 				final SearchRequestBuilder searchRequestBuilder = this.esIndexManager.getClient().prepareSearch(indexLock.getIndexName());
@@ -299,6 +312,60 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder impleme
 	public void setDbLogic(LuceneInfoLogic dbLogic) {
 		this.dbLogic = dbLogic;
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.searcher.PersonSearch#getPersonSuggestion(java.lang.String)
+	 */
+	@Override
+	public List<Post<BibTex>> getPublicationSuggestions(String queryString) {
+		try (final IndexLock indexLock = getEsIndexManager().aquireReadLockForTheActiveIndex(this.resourceType)) {
+			// we use inverted scores such that the best results automatically appear first according to the ascending order of a sorted map
+			final TreeMap<Float, ResourcePersonRelation> relSorter = iterativelyFetchSuggestions(queryString, indexLock, true, null);
+				
+			return extractResources(relSorter);
+				
+		} catch (final IndexMissingException e) {
+			log.error("IndexMissingException: " + e);
+		}
+		return new ArrayList<>();
+	}
+
+
+	private TreeMap<Float, ResourcePersonRelation> iterativelyFetchSuggestions(String queryString, final IndexLock indexLock, boolean postsOnly, Set<String> tokenizedQueryString) {
+		// we use inverted scores such that the best results automatically appear first according to the ascending order of a sorted map
+		final TreeMap<Float, ResourcePersonRelation> relSorter = new TreeMap<>();
+		
+		// unfortunately our version of elasticsearch does not support topHits aggregation so we have to group by interhash ourselves: AggregationBuilder aggregation = AggregationBuilders.terms("agg").field("gender").subAggregation(AggregationBuilders.topHits("top"));
+		double bestScore = Double.NaN;
+		// remember alreadyAnalyzedInterhashes to skip over multiple posts of the same resource
+		final Set<String> alreadyAnalyzedInterhashes = new HashSet<>();
+		for (int offset = 0; relSorter.size() < suggestionSize && offset < maxOffset; offset += suggestionSize) {
+			double minScore = Double.isNaN(bestScore) ? 0.05 : (bestScore / 3d);
+			;
+			double bestScoreThisRound = fetchMoreResults(relSorter, queryString, tokenizedQueryString, offset, alreadyAnalyzedInterhashes, indexLock.getIndexName(), minScore, postsOnly);
+			if (Double.isNaN(bestScore)) {
+				bestScore = bestScoreThisRound;
+			}
+			if (Double.isNaN(bestScoreThisRound) || (bestScoreThisRound < minScore)) {
+				break;
+			}
+		}
+		return relSorter;
+	}
+
+	/**
+	 * @param relSorter
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private static List<Post<BibTex>> extractResources(TreeMap<Float, ResourcePersonRelation> relSorter) {
+		final List<Post<BibTex>> rVal = new ArrayList<>();
+		for (ResourcePersonRelation rel : relSorter.values()) {
+			rVal.add((Post<BibTex>) rel.getPost());
+		}
+		return rVal;
+	}
+
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.services.searcher.PersonSearch#getPersonSuggestion(java.lang.String)
@@ -306,33 +373,13 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder impleme
 	@Override
 	public List<ResourcePersonRelation> getPersonSuggestion(String queryString) {
 		try (final IndexLock indexLock = getEsIndexManager().aquireReadLockForTheActiveIndex(this.resourceType)) {
-			
-			// we use inverted scores such that the best results automatically appear first according to the ascending order of a sorted map
-			final TreeMap<Float, ResourcePersonRelation> relSorter = new TreeMap<>();
-			
 			final Set<String> tokenizedQueryString = new HashSet<>();
 			for (String token : new SimpleTokenizer(queryString)) {
 				if (!StringUtils.isBlank(token)) {
 					tokenizedQueryString.add(token.toLowerCase());
 				}
 			} 
-			
-			// unfortunately our version of elasticsearch does not support topHits aggregation so we have to group by interhash ourselves: AggregationBuilder aggregation = AggregationBuilders.terms("agg").field("gender").subAggregation(AggregationBuilders.topHits("top"));
-			
-			double bestScore = Double.NaN;
-			// remember alreadyAnalyzedInterhashes to skip over multiple posts of the same resource
-			final Set<String> alreadyAnalyzedInterhashes = new HashSet<>();
-			for (int offset = 0; relSorter.size() < personSuggestionSize && offset < maxOffset; offset += personSuggestionSize) {
-				double minScore = Double.isNaN(bestScore) ? 0.05 : (bestScore / 3d);
-				double bestScoreThisRound = fetchMoreResults(relSorter, queryString, tokenizedQueryString, offset, alreadyAnalyzedInterhashes, indexLock.getIndexName(), minScore);
-				if (Double.isNaN(bestScore)) {
-					bestScore = bestScoreThisRound;
-				}
-				if (Double.isNaN(bestScoreThisRound) || (bestScoreThisRound < minScore)) {
-					break;
-				}
-			}
-				
+			final TreeMap<Float, ResourcePersonRelation> relSorter = iterativelyFetchSuggestions(queryString, indexLock, false, tokenizedQueryString);
 			return extractDistinctPersons(relSorter);
 				
 		} catch (final IndexMissingException e) {
@@ -341,33 +388,65 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder impleme
 		return new ArrayList<>();
 	}
 
-	private double fetchMoreResults(final TreeMap<Float, ResourcePersonRelation> relSorter, String queryString, final Set<String> queryTerms, int offset, final Set<String> alreadyAnalyzedInterhashes, String indexName, double minPlainEsScore) {
+	private QueryBuilder buildQuery(String queryString, boolean usePersonEntitiesForSearch) {
 		final QueryBuilder queryBuilder = QueryBuilders.filteredQuery( //
 				QueryBuilders.boolQuery() //
-						.should(QueryBuilders.multiMatchQuery(queryString) //
-								.field(ESConstants.AUTHOR_ENTITY_NAMES_FIELD_NAME, 2) //
-								.field(ESConstants.PERSON_ENTITY_NAMES_FIELD_NAME, 1) //
-								.field(LuceneFieldNames.TITLE, 3) //
-								.field(LuceneFieldNames.SCHOOL, 2) //
+						.should(
+								addPersonSearch(usePersonEntitiesForSearch, //
+									QueryBuilders.multiMatchQuery(queryString) //
+									.field(LuceneFieldNames.TITLE, 3) //
+									.field(LuceneFieldNames.SCHOOL, 2) //
+								) //
 								.tieBreaker(0.8f) //
-								.boost(2)) //
+								.boost(4) //
+						) //
 						.should(QueryBuilders.boolQuery() //
 								.should(QueryBuilders.termQuery(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, NormalizedEntryTypes.habilitation.name()).boost(11)) //
 								.should(QueryBuilders.termQuery(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, NormalizedEntryTypes.phdthesis.name()).boost(10)) //
 								.should(QueryBuilders.termQuery(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, NormalizedEntryTypes.master_thesis.name()).boost(7)) //
 								.should(QueryBuilders.termQuery(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, NormalizedEntryTypes.bachelor_thesis.name()).boost(6)) //
 								.should(QueryBuilders.termQuery(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, NormalizedEntryTypes.candidate_thesis.name()).boost(5)) //
-						), //
-						addShouldYearIfYearInQuery(
-								FilterBuilders.termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, systemUrl),
+						) //
+						//.should(QueryBuilders.termQuery(LuceneFieldNames.USER_NAME, genealogyUser)) //
+						, addShouldYearIfYearInQuery( //
+								FilterBuilders.termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, systemUrl), //
 								queryString) //
 				);
+		return queryBuilder;
+	}
+
+	/**
+	 * @param usePersonEntitiesForSearch
+	 * @param field
+	 * @return
+	 */
+	private MultiMatchQueryBuilder addPersonSearch(boolean usePersonEntitiesForSearch, MultiMatchQueryBuilder builder) {
+		if (usePersonEntitiesForSearch) {
+			return builder //
+					.field(ESConstants.AUTHOR_ENTITY_NAMES_FIELD_NAME, 2) //
+					.field(ESConstants.PERSON_ENTITY_NAMES_FIELD_NAME, 1) //
+			;
+		} else {
+			return builder.field(LuceneFieldNames.AUTHOR, 1);
+		}
+	}
+
+
+	private SearchRequestBuilder buildRequest(int offset, String indexName, double minPlainEsScore, final QueryBuilder queryBuilder) {
 		final SearchRequestBuilder searchRequestBuilder = this.esIndexManager.getClient().prepareSearch(indexName);
 		searchRequestBuilder.setTypes(this.resourceType);
 		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 		searchRequestBuilder.setQuery(queryBuilder) //
 		.setMinScore((float)minPlainEsScore) //
-		.setFrom(offset).setSize(personSuggestionSize * 5);
+		.setFrom(offset).setSize(suggestionSize * 5);
+		return searchRequestBuilder;
+	}
+	
+	private double fetchMoreResults(final TreeMap<Float, ResourcePersonRelation> relSorter, String queryString, final Set<String> queryTerms, int offset, final Set<String> alreadyAnalyzedInterhashes, String indexName, double minPlainEsScore, boolean postsOnly) {
+		// for finding persons, we use their names but for finding publications, we like to find publications which are not yet associated to a person entity
+		final boolean usePersonEntitiesForSearch = !postsOnly;
+		final QueryBuilder queryBuilder = buildQuery(queryString, usePersonEntitiesForSearch);
+		final SearchRequestBuilder searchRequestBuilder = buildRequest(offset, indexName, minPlainEsScore, queryBuilder);
 
 		final SearchResponse response = searchRequestBuilder.execute().actionGet();
 		if (response == null) {
@@ -390,51 +469,92 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder impleme
 			}
 			String interhash = (String) hit.getSource().get(LuceneFieldNames.INTERHASH);
 			if (!alreadyAnalyzedInterhashes.add(interhash)) {
+				String userName = (String) hit.getSource().get(LuceneFieldNames.USER_NAME);
+				if (this.genealogyUser.equals(userName)) {
+					// we prefer posts by the genealogy user
+					final Post<R> post = this.resourceConverter.writePost(hit.getSource());
+					exchangePost(relSorter, post);
+				}
 				// we have seen this interhash before -> skip
 				continue;
 			}
 			final Post<R> post = this.resourceConverter.writePost(hit.getSource());
-			final float postScore = hit.getScore();
+			float postScore = hit.getScore();
+			if (this.genealogyUser.equals(post.getUser().getName())) {
+				postScore *= GENEALOGY_USER_PREFERENCE_FACTOR;
+			}
 			//
 			final TreeMap<Integer, ResourcePersonRelation> invertedScoreToRpr = new TreeMap<>();
 
-			for (ResourcePersonRelation rpr : post.getResourcePersonRelations()) {
-				PersonName mainName = rpr.getPerson().getMainName();
-				int invertedScore = -1;
-				for (String token : new SimpleTokenizer(mainName.getFirstName())) {
-					if (!StringUtils.isBlank(token)) {
-						token = token.toLowerCase();
-						if (queryTerms.contains(token) == true) {
-							invertedScore--;
-						}
-					}
-					
-				}
-				for (String token : new SimpleTokenizer(mainName.getLastName())) {
-					if (!StringUtils.isBlank(token)) {
-						token = token.toLowerCase();
-						if (queryTerms.contains(token) == true) {
-							invertedScore--;
-						}
-					}
-				}
-				if (rpr.getRelationType() == PersonResourceRelationType.AUTHOR) {
-					invertedScore *= 2;
-				}
-				invertedScoreToRpr.put(invertedScore, rpr);
-			}
-			
-			final int minInvertedScore = extractMinimumInvertedScore(invertedScoreToRpr);
-			int lastScore = -1;
-			for (Map.Entry<Integer, ResourcePersonRelation> e : invertedScoreToRpr.entrySet()) {
-				if (e.getKey() < lastScore / 2) {
-					lastScore = e.getKey();
-					relSorter.put(postScore * -((float) lastScore) / ((float) minInvertedScore), e.getValue());
-				}
+			if (postsOnly == true) {
+				ResourcePersonRelation rpr = new ResourcePersonRelation();
+				rpr.setPost((Post<? extends BibTex>) post);
+				relSorter.put(postScore, rpr);
+			} else {
+				extractResourceRelationsForMatchingPersons(relSorter, queryTerms, post, postScore, invertedScoreToRpr);
 			}
 		}
 
 		return bestPlainEsScore;
+	}
+
+
+	/**
+	 * @param relSorter
+	 * @param post
+	 */
+	private void exchangePost(TreeMap<Float, ResourcePersonRelation> relSorter, Post<R> post) {
+		final String interHash = post.getResource().getInterHash();
+		final Map<Float, ResourcePersonRelation> toBeAdded = new TreeMap<>();
+		for (Iterator<Map.Entry<Float,ResourcePersonRelation>> it = relSorter.entrySet().iterator(); it.hasNext();) {
+			final Entry<Float, ResourcePersonRelation> scoredRel = it.next();
+			Post<? extends BibTex> oldPost = scoredRel.getValue().getPost();
+			if (interHash.equals(oldPost.getResource().getInterHash())) {
+				it.remove();
+				scoredRel.getValue().setPost((Post<? extends BibTex>) post);
+				// rescore to prefer exchanged posts
+				toBeAdded.put(scoredRel.getKey() * GENEALOGY_USER_PREFERENCE_FACTOR, scoredRel.getValue());
+			}
+		}
+		relSorter.putAll(toBeAdded);
+	}
+
+
+	private void extractResourceRelationsForMatchingPersons(final TreeMap<Float, ResourcePersonRelation> relSorter, final Set<String> queryTerms, final Post<R> post, final float postScore, final TreeMap<Integer, ResourcePersonRelation> invertedScoreToRpr) {
+		for (ResourcePersonRelation rpr : post.getResourcePersonRelations()) {
+			PersonName mainName = rpr.getPerson().getMainName();
+			int invertedScore = -1;
+			for (String token : new SimpleTokenizer(mainName.getFirstName())) {
+				if (!StringUtils.isBlank(token)) {
+					token = token.toLowerCase();
+					if (queryTerms.contains(token) == true) {
+						invertedScore--;
+					}
+				}
+				
+			}
+			for (String token : new SimpleTokenizer(mainName.getLastName())) {
+				if (!StringUtils.isBlank(token)) {
+					token = token.toLowerCase();
+					if (queryTerms.contains(token) == true) {
+						invertedScore--;
+					}
+				}
+			}
+			if (rpr.getRelationType() == PersonResourceRelationType.AUTHOR) {
+				invertedScore *= 2;
+			}
+			invertedScoreToRpr.put(invertedScore, rpr);
+		}
+		
+		final int minInvertedScore = extractMinimumInvertedScore(invertedScoreToRpr);
+		int lastScore = -1;
+		for (Map.Entry<Integer, ResourcePersonRelation> e : invertedScoreToRpr.entrySet()) {
+			if (e.getKey() < lastScore / 2) {
+				lastScore = e.getKey();
+				relSorter.put(postScore * -((float) lastScore) / ((float) minInvertedScore), e.getValue());
+			}
+		}
 	}
 
 	/**
@@ -469,7 +589,7 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder impleme
 			if (foundPersonIds.add(rpr.getPerson().getPersonId()) == true) {
 				// we have not seen this personId earlier in the sorted map, so add it to the response list
 				rVal.add(rpr);
-				if (rVal.size() == personSuggestionSize) {
+				if (rVal.size() == suggestionSize) {
 					return rVal;
 				}
 			}
@@ -481,8 +601,8 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder impleme
 		this.systemUrl = systemUrl;
 	}
 
-	public void setPersonSuggestionSize(int personSuggestionSize) {
-		this.personSuggestionSize = personSuggestionSize;
+	public void setSuggestionSize(int personSuggestionSize) {
+		this.suggestionSize = personSuggestionSize;
 	}
 
 
@@ -495,4 +615,184 @@ public class EsResourceSearch<R extends Resource> extends ESQueryBuilder impleme
 		this.esIndexManager = esIndexManager;
 	}
 
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPostsByBibtexKey(java.lang.String, java.util.Collection, org.bibsonomy.common.enums.SearchType, java.lang.String, java.util.Collection, java.util.List, org.bibsonomy.model.enums.Order, int, int)
+	 */
+	@Override
+	public List<Post<R>> getPostsByBibtexKey(String userName, Collection<String> allowedGroups, org.bibsonomy.common.enums.SearchType searchType, String bibtexKey, Collection<String> tagIndex, List<String> negatedTags, Order order, int limit, int offset) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.searcher.ResourceSearch#getTags(java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, org.bibsonomy.common.enums.SearchType, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, int, int)
+	 */
+	@Override
+	public List<Tag> getTags(String userName, String requestedUserName, String requestedGroupName, Collection<String> allowedGroups, String searchTerms, org.bibsonomy.common.enums.SearchType searchType, String titleSearchTerms, String authorSearchTerms, Collection<String> tagIndex, String year, String firstYear, String lastYear, List<String> negatedTags, int limit, int offset) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.searcher.ResourceSearch#getTags(java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, int, int)
+	 */
+	@Override
+	public List<Tag> getTags(String userName, String requestedUserName, String requestedGroupName, Collection<String> allowedGroups, String searchTerms, String titleSearchTerms, String authorSearchTerms, Collection<String> tagIndex, String year, String firstYear, String lastYear, List<String> negatedTags, int limit, int offset) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	public void setGenealogyUser(String genealogyUser) {
+		this.genealogyUser = genealogyUser;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPosts(java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, org.bibsonomy.common.enums.SearchType, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.model.enums.Order, int, int)
+	 */
+	@Override
+	public List<Post<R>> getPosts(String userName, String requestedUserName, String requestedGroupName, List<String> requestedRelationNames, Collection<String> allowedGroups, String searchTerms, String titleSearchTerms, String authorSearchTerms, String bibtexKey, Collection<String> tagIndex, String year, String firstYear, String lastYear, List<String> negatedTags, Order order, int limit, int offset) {
+		return getPosts(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, org.bibsonomy.common.enums.SearchType.LOCAL, searchTerms, titleSearchTerms, authorSearchTerms, bibtexKey, tagIndex, year, firstYear, lastYear, negatedTags, order, limit, offset);
+	}
+
+	
+	/**
+	 * build the overall elasticsearch query term
+	 * 
+	 * @param userName
+	 * @param requestedUserName
+	 *            restrict the resulting posts to those which are owned by this
+	 *            user name
+	 * @param requestedGroupName
+	 *            restrict the resulting posts to those which are owned this
+	 *            group
+	 * @param requestedRelationNames
+	 * 				expand the search in the post of users which are defined by the given 
+	 * 				relation names
+	 * @param allowedGroups 
+	 * @param searchType 
+	 * @param searchTerms
+	 * @param titleSearchTerms 
+	 * @param authorSearchTerms 
+	 * @param bibtexKey 
+	 * @param tagIndex 
+	 * @param year 
+	 * @param firstYear 
+	 * @param lastYear 
+	 * @param negatedTags
+	 * @return overall elasticsearch query
+	 */
+	protected QueryBuilder buildQuery(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, org.bibsonomy.common.enums.SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final Collection<String> negatedTags) {
+
+		BoolQueryBuilder mainQueryBuilder = QueryBuilders.boolQuery();
+
+		// --------------------------------------------------------------------
+		// build the query
+		// --------------------------------------------------------------------
+		// the resulting main query
+		if (present(searchTerms)) {
+			QueryBuilder queryBuilder = QueryBuilders.queryString(searchTerms);
+			mainQueryBuilder.must(queryBuilder);
+		}
+
+		if (present(titleSearchTerms)) {
+			QueryBuilder titleSearchQuery = termQuery(LuceneFieldNames.TITLE, titleSearchTerms);
+			mainQueryBuilder.must(titleSearchQuery);		}
+		
+		if (present(authorSearchTerms)) {
+			QueryBuilder authorSearchQuery = termQuery(LuceneFieldNames.AUTHOR, authorSearchTerms);
+			mainQueryBuilder.must(authorSearchQuery);			
+		}
+		
+		if(present(bibtexKey)){
+			QueryBuilder bibtexKeyQuery = termQuery(LuceneFieldNames.BIBTEXKEY, bibtexKey);
+			mainQueryBuilder.must(bibtexKeyQuery);			
+		}
+		
+		// Add the requested tags
+		if (present(tagIndex) || present(negatedTags)) {
+			this.addTagQuerries(tagIndex, negatedTags, mainQueryBuilder);
+		}
+
+		// restrict result to given group
+		if (present(requestedGroupName)) {
+			//TODO	
+		}
+		
+		if(allowedGroups!=null){
+			final BoolQueryBuilder groupSearchQuery = new BoolQueryBuilder();
+			for(String allowedGroup:allowedGroups){
+				groupSearchQuery.should(termQuery(LuceneFieldNames.GROUP, allowedGroup));
+			}
+			mainQueryBuilder.must(groupSearchQuery);
+		}else{
+			QueryBuilder groupSearchQuery = termQuery(LuceneFieldNames.GROUP, "public");
+			mainQueryBuilder.must(groupSearchQuery);			
+		}
+		// restricting access to posts visible to the user
+
+		// --------------------------------------------------------------------
+		// post owned by user 
+		// Use this restriction iff there is no user relation
+		// --------------------------------------------------------------------
+		if (present(requestedUserName) && !present(requestedRelationNames)) {
+			QueryBuilder requesterUserSearchQuery = termQuery(LuceneFieldNames.USER, requestedUserName);
+			mainQueryBuilder.must(requesterUserSearchQuery);			
+		}
+		// If there is at once one relation then restrict the results only 
+		// to the users in the given relations (inclduing posts of the logged in users)
+		else if (present(requestedRelationNames)) {
+			// for all relations: TODO
+
+		}
+		
+		
+		QueryBuilder rVal = mainQueryBuilder;
+		if (searchType == org.bibsonomy.common.enums.SearchType.LOCAL) {
+			rVal = QueryBuilders.filtered(mainQueryBuilder, FilterBuilders.termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, this.systemUrl));
+		}
+		// all done
+		log.debug("Search query: " + mainQueryBuilder.toString());
+		
+		return rVal;
+	}
+	
+	private void addTagQuerries(final Collection<String> tagIndex, final Collection<String> negatedTags, final BoolQueryBuilder mainQuery) {
+		/*
+		 * Process normal tags
+		 */
+		if (present(tagIndex)) {
+			for (final String tag : tagIndex) {
+				// Is the tag string a concept name?
+				if (tag.startsWith(Tag.CONCEPT_PREFIX)) {
+					final String conceptTag = tag.substring(2);
+					// get related tags:
+					final BoolQueryBuilder conceptTags = new BoolQueryBuilder();
+					QueryBuilder termQuery = termQuery(LuceneFieldNames.TAS, conceptTag);
+					conceptTags.must(termQuery);
+					for (final String t : this.dbLogic.getSubTagsForConceptTag(conceptTag)) {
+						conceptTags.should(termQuery(LuceneFieldNames.TAS, t));
+					}
+					mainQuery.must(conceptTags);
+				} else {
+					mainQuery.must(termQuery(LuceneFieldNames.TAS, tag));
+				}
+			}
+		}
+		/*
+		 * Process negated Tags
+		 */
+		
+		if (present(negatedTags)) {
+			for (final String negatedTag : negatedTags) {
+				final QueryBuilder negatedSearchQuery = termQuery(LuceneFieldNames.TAS, negatedTag);
+				mainQuery.mustNot(negatedSearchQuery);
+			}
+		}
+
+	}	
 }
