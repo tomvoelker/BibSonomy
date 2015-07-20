@@ -665,6 +665,18 @@
 						</property>
 					</bean>
 				</entry>
+				<!-- delete group request -->
+				<entry key="/deletegrouprequest">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="deleteGroupRequestController"/>
+						<property name="allowedFields">
+							<list>
+								<value>ckey</value>
+								<value>groupName</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<!--  delete group -->
 				<entry key="/actions/deleteGroup">
 					<bean parent="controllerBase">
@@ -1143,6 +1155,9 @@
 		<property name="captcha" ref="captcha"></property>	
 		<property name="groupCreationMode" value="${project.groupcreationmode}" />
 	</bean>
+	
+	<!-- delete group request -->
+	<bean id="deleteGroupRequestController" class="org.bibsonomy.webapp.controller.actions.DeleteGroupRequestController" scope="request" parent="settingsPageController" />
 	
 	<!-- Handles delete group process  -->
 	<bean id="deleteGroupController" class="org.bibsonomy.webapp.controller.actions.DeleteGroupController" scope="request" parent="groupSettingsPageController" />

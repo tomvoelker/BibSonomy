@@ -115,6 +115,22 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		param.setLimit(end);
 		return this.queryForList("getPendingGroups", param, Group.class, session);
 	}
+		
+	/**
+	 * Returns a list of all requested pending groups of a user
+	 * @param start
+	 * @param end
+	 * @param userName
+	 * @param session
+	 * @return list of all pending requested groups of a user
+	 */
+	public List<Group> getRequestedPendingGroupsForUser(final int start, final int end, final String userName, final DBSession session) {
+		final GroupParam param = new GroupParam();
+		param.setUserName(userName);
+		param.setOffset(start);
+		param.setLimit(end);
+		return this.queryForList("getRequestedPendingGroupsForUser", param, Group.class, session);
+	}
 
 	/**
 	 * Returns a specific group with memberships

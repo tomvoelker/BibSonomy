@@ -30,7 +30,7 @@
 					
 						<c:forEach items="${group.memberships}" var="member">
 							<c:if test="${member.groupRole ne 'DUMMY'}">
-								<c:if test="${member.user.name ne user.name}">
+								<c:if test="${member.user.name ne loginUser.name}">
 									<c:set var="groupHasMembers" value="${true}" />
 								</c:if>
 							</c:if>

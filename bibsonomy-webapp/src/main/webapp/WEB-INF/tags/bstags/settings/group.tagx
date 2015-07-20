@@ -43,6 +43,7 @@
 				<!-- Pending invites for the user -->
 				<c:set var="showPendingInvites" value="${false}" />
 				<c:set var="showPendingRequests" value="${false}" />
+				<c:set var="showPendingGroupRequests" value="${false}" />
 				<c:forEach items="${command.user.pendingGroups}" var="group" varStatus="status">
 					<c:forEach items="${group.memberships}" var="membership">
 						<c:if test="${membership.groupRole eq 'INVITED' }">
@@ -53,6 +54,10 @@
 						</c:if>
 					</c:forEach>
 				</c:forEach>
+				<c:if test="${not empty command.pendingRequestedgroups}">
+					<c:set var="showPendingGroupRequests" value="${true}" />
+				</c:if>
+
 				<c:if test="${showPendingInvites}">
 					<bsform:fieldset legendKey="settings.group.pendingInvites.headline">
 						<jsp:attribute name="content">
@@ -120,6 +125,42 @@
 					</bsform:fieldset>
 				</c:if>
 			</c:if>
+			
+			
+			
+			<!-- pending group creation requests -->
+			<c:if test="${showPendingGroupRequests}">
+				<bsform:fieldset legendKey="settings.group.pendingRequests">
+					<jsp:attribute name="content">
+						<fmt:message var="revuser" key="settings.group.removeGroupRequest"/>
+						<fmt:message var="revuserTitle" key="settings.group.removeGroupRequest.title"/>
+						<dl class="dl-horizontal dt-thumbnail-items group-list">
+						
+						<c:forEach items="${command.pendingRequestedgroups}" var="group">
+								<dt>
+									<group:groupthumbnail group="${group}" noname="${true}" size="16" />
+								</dt>
+	
+								<dd>
+									<div class="row">
+										<div class="col-xs-9">
+											<c:out value="${group.name}"/>
+										</div>
+	
+										<div class="col-xs-3">
+											<a class="btn btn-default btn-block btn-sm" href="/deletegrouprequest?groupName=${mtl:encodeURI(group.name)}&amp;ckey=${ckey}" title="${revuserTitle}">${revuser}</a>
+										</div>
+									</div>
+								</dd>
+						</c:forEach>
+						
+						</dl>
+					</jsp:attribute>
+				</bsform:fieldset>
+			</c:if>
+			
+			
+			
 
 			<bsform:fieldset legendKey="settings.groups">
 				<jsp:attribute name="content">

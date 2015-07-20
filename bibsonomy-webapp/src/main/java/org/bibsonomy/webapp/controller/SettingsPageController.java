@@ -128,6 +128,11 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			command.setSelTab(Integer.valueOf(SettingsViewCommand.MY_PROFILE_IDX));
 		}
 		
+		/*
+		 * Get pending requested groups
+		 */
+		command.setPendingRequestedgroups(logic.getGroups(true, 0, Integer.MAX_VALUE));
+		
 		if (!present(selectedTab) || selectedTab.intValue() < SettingsViewCommand.MY_PROFILE_IDX || selectedTab.intValue() > SettingsViewCommand.OAUTH_IDX) {
 			this.errors.reject("error.settings.tab");
 		} else {

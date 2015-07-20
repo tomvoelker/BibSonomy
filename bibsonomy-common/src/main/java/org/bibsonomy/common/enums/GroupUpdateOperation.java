@@ -76,5 +76,8 @@ public enum GroupUpdateOperation {
 	DECLINE_JOIN_REQUEST,
 
 	/** Add a group-level-permission @see org.bibsonomy.GroupLevelPermission **/
-	UPDATE_PERMISSIONS;
+	UPDATE_PERMISSIONS,
+	
+	/** deletes the pending group - used for the request deletion by the user */
+	DELETE_GROUP_REQUEST;
 }
