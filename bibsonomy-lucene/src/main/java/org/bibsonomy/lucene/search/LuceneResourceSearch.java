@@ -44,7 +44,6 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
@@ -79,6 +78,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
@@ -139,7 +139,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 */
 	@Override
 	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) {
-		if (bibtexKey != null) {
+		if (present(bibtexKey)) {
 			throw new UnsupportedOperationException("bibtexKey search only available via elasticsearch");
 		}
 		
@@ -852,14 +852,14 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	public void setSharedResourceSearch(EsResourceSearch<R> sharedResourceSearch) {
 		this.sharedResourceSearch = sharedResourceSearch;
 	}
-	
+
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPublicationSuggestions(java.lang.String)
+	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPublicationSuggestions(org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder)
 	 */
 	@Override
-	public List<Post<BibTex>> getPublicationSuggestions(String queryString) {
+	public List<Post<BibTex>> getPublicationSuggestions(PublicationSuggestionQueryBuilder options) {
 		if (this.sharedResourceSearch != null) {
-			return sharedResourceSearch.getPublicationSuggestions(queryString);
+			return sharedResourceSearch.getPublicationSuggestions(options);
 		}
 		return new ArrayList<>();
 	}

@@ -9,6 +9,8 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.DisambiguationPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -49,7 +51,9 @@ public class DisambiguationPageController extends SingleResourceListController i
 		final PersonName requestedName = command.getPost().getResource().getAuthor().get(command.getRequestedIndex());
 		command.setPersonName(requestedName);
 		
-		command.setPersonSuggestions(this.logic.getPersonSuggestion(requestedName.toString()));
+		String name = requestedName.toString();
+		PersonSuggestionQueryBuilder query = this.logic.getPersonSuggestion(name).withEntityPersons(true).withRelationType(PersonResourceRelationType.values());
+		command.setPersonSuggestions(query.doIt());
 		
 		return Views.DISAMBIGUATION;
 	}

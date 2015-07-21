@@ -19,6 +19,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.services.searcher.PersonSearch;
 
 /**
@@ -369,8 +370,8 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 * @param queryString
 	 * @return
 	 */
-	public List<ResourcePersonRelation> getPersonSuggestion(String queryString) {
-		return this.personSearch.getPersonSuggestion(queryString);
+	public List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder options) {
+		return this.personSearch.getPersonSuggestion(options);
 	}
 
 	public void setPersonSearch(PersonSearch personSearch) {

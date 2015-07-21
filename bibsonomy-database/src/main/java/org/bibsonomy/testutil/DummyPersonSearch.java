@@ -3,6 +3,7 @@ package org.bibsonomy.testutil;
 import java.util.List;
 
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.services.searcher.PersonSearch;
 
 /**
@@ -16,8 +17,7 @@ public class DummyPersonSearch implements PersonSearch {
 	 * @see org.bibsonomy.services.searcher.PersonSearch#getPersonSuggestion(java.lang.String)
 	 */
 	@Override
-	public List<ResourcePersonRelation> getPersonSuggestion(String queryString) {
-		// TODO Auto-generated method stub
+	public List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder options) {
 		return null;
 	}
 

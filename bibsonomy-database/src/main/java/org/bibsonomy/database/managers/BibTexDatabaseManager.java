@@ -57,6 +57,7 @@ import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ScraperMetadata;
 import org.bibsonomy.model.extra.BibTexExtra;
+import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.model.util.file.FileSystemFile;
 import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.services.searcher.ResourceSearch;
@@ -682,12 +683,14 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 
 	/**
+	 * @param options 
 	 * @param queryString
+	 * @param options 
 	 * @return
 	 */
-	public List<Post<BibTex>> getPublicationSuggestion(String queryString) {
+	public List<Post<BibTex>> getPublicationSuggestion(PublicationSuggestionQueryBuilder options) {
 		if (this.publicationSearch != null) {
-			return this.publicationSearch.getPublicationSuggestions(queryString);
+			return this.publicationSearch.getPublicationSuggestions(options);
 		}
 		log.warn("no publicationSearch available for publication suggestions");
 		return new ArrayList<>();

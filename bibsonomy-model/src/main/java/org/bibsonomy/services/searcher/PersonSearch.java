@@ -30,6 +30,7 @@ import java.util.List;
 
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 
 /**
  * Interface for person search operations
@@ -40,10 +41,9 @@ public interface PersonSearch {
 
 	/**
 	 * Allows autocompletion for persons
-	 * 
-	 * @param queryString some mixture of parts of a name, parts of the title or the university name
+	 * @param options contains a query with some mixture of parts of a name, parts of the title or the university name
 	 * @return a list of {@link ResourcePersonRelation} objects with initialized {@link Person} references. Each {@link Person} object is further initialized with a main name.
 	 */
-	public List<ResourcePersonRelation> getPersonSuggestion(final String queryString);
+	public  List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder options);
 	
 }

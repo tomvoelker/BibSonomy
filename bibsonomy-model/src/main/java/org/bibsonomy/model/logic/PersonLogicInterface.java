@@ -10,6 +10,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 
 /**
  * Interface for person entity logic.
@@ -67,9 +68,9 @@ public interface PersonLogicInterface {
 	
 	/**
 	 * @param queryString a search string coming from an autocomplete field. Planned but not yet implemented: May contain an incomplete word, which will be internally autocompleted before searching persons
-	 * @return
+	 * @return a builder object fo optional parameters
 	 */
-	public List<ResourcePersonRelation> getPersonSuggestion(String queryString);
+	public PersonSuggestionQueryBuilder getPersonSuggestion(String queryString);
 
 
 }

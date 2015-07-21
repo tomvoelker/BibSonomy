@@ -44,7 +44,8 @@ public class PersonPageController extends SingleResourceListController implement
 				case "unlink": return this.unlinkAction(command);
 				case "link": return this.linkAction(command);
 				case "search": return this.searchAction(command);
-				case "searchpub": return this.searchPubAction(command);
+				case "searchAuthor": return this.searchAuthorAction(command);
+				case "searchPub": return this.searchPubAction(command);
 				default: return this.indexAction(command);
 			}
 		} else if(present(command.getRequestedPersonId())) {
@@ -58,29 +59,18 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 * @return
 	 */
-	private View searchPubAction(PersonPageCommand command) { 
-		JSONArray array = new JSONArray();
-		command.setResponseString(array.toJSONString());
-		
-		return Views.AJAX_JSON;
-	}
-
-	/**
-	 * @param command
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	private View searchAction(PersonPageCommand command) {
-		final List<ResourcePersonRelation> suggestions = this.logic.getPersonSuggestion(command.getFormSelectedName());
+	private View searchAuthorAction(PersonPageCommand command) { 
+		final List<ResourcePersonRelation> suggestions = this.logic.getPersonSuggestion(command.getFormSelectedName()).withNonEntityPersons(true).withRelationType(PersonResourceRelationType.AUTHOR).doIt();
 		
 		JSONArray array = new JSONArray();
 		for (ResourcePersonRelation rel : suggestions) {
 			JSONObject jsonPersonName = new JSONObject();
-			jsonPersonName.put("personId", rel.getPerson().getPersonId());
+			jsonPersonName.put("interhash", rel.getPost().getResource().getInterHash());
+			jsonPersonName.put("personIndex", rel.getPersonIndex());
 			//jsonPersonName.put("personNameId", personName.getPersonChangeId());
-			jsonPersonName.put("personName", BibTexUtils.cleanBibTex(rel.getPerson().getMainName().toString()));
-			// FIXME: this is only a quick hack and must be replaced!
-			jsonPersonName.put("extendedPersonName", getExtendedPersonName(rel));
+			final List<PersonName> authors = rel.getPost().getResource().getAuthor();
+			jsonPersonName.put("personName", BibTexUtils.cleanBibTex(authors.get(rel.getPersonIndex()).toString()));
+			jsonPersonName.put("extendedPublicationName", getExtendedPublicationName(rel.getPost()));
 			
 			array.add(jsonPersonName);
 		}
@@ -89,43 +79,59 @@ public class PersonPageController extends SingleResourceListController implement
 		return Views.AJAX_JSON;
 	}
 	
-	/**
-	 * @param personName
-	 * @return
-	 */
-	private String getExtendedPersonName(PersonName personName) {
-		final StringBuilder extendedNameBuilder = new StringBuilder();
-		appendPersonName(personName, extendedNameBuilder);
-		final Person person = personName.getPerson();
-		if (present(person) && present(person.getAcademicDegree())) {
-			extendedNameBuilder.append(", ").append(person.getAcademicDegree());
-		}
-		BibTex res = null;
-		for (ResourcePersonRelation resourcePersonRelation : person.getResourcePersonRelations()) {
-			String entryType;
-			try {
-				entryType = resourcePersonRelation.getPost().getResource().getEntrytype();
-				if (!present(entryType)) {
-					continue;
-				}
-			} catch (Exception e) {
-				continue;
-			}
-			if (entryType.toLowerCase().endsWith("thesis")) {
-				res = resourcePersonRelation.getPost().getResource();
-				break;
-			}
-			res = resourcePersonRelation.getPost().getResource();
-		}
-		if (present(res)) {
-			appendDisambiguatingBibTexInfo(extendedNameBuilder, res);
-		}
-		return extendedNameBuilder.toString();
+	private View searchPubAction(PersonPageCommand command) { 
+		final List<Post<BibTex>> suggestions = this.logic.getPublicationSuggestion(command.getFormSelectedName());
 		
-		// Nachname, Vorname, Akad. Grad, sowie Ort, Jahr und Titel 
+		JSONArray array = new JSONArray();
+		for (Post<BibTex> pub : suggestions) {
+			JSONObject jsonPersonName = new JSONObject();
+			jsonPersonName.put("interhash", pub.getResource().getInterHash());
+			jsonPersonName.put("extendedName", getExtendedPublicationName(pub));
+			array.add(jsonPersonName);
+		}
+		command.setResponseString(array.toJSONString());
+		
+		return Views.AJAX_JSON;
 	}
 
-	private String getExtendedPersonName(ResourcePersonRelation rel) {
+	/**
+	 * @param pub
+	 * @return
+	 */
+	private String getExtendedPublicationName(Post<? extends BibTex> pub) {
+		final StringBuilder extendedNameBuilder = new StringBuilder();
+		for (PersonName personName : pub.getResource().getAuthor()) {
+			appendPersonName(personName, extendedNameBuilder);
+			extendedNameBuilder.append(", ");
+			appendDisambiguatingBibTexInfo(extendedNameBuilder, pub.getResource());
+		}
+		return extendedNameBuilder.toString();
+	}
+
+	/**
+	 * @param command
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private View searchAction(PersonPageCommand command) {
+		final List<ResourcePersonRelation> suggestions = this.logic.getPersonSuggestion(command.getFormSelectedName()).withEntityPersons(true).withRelationType(PersonResourceRelationType.values()).doIt();
+		
+		JSONArray array = new JSONArray();
+		for (ResourcePersonRelation rel : suggestions) {
+			JSONObject jsonPersonName = new JSONObject();
+			jsonPersonName.put("personId", rel.getPerson().getPersonId());
+			//jsonPersonName.put("personNameId", personName.getPersonChangeId());
+			jsonPersonName.put("personName", BibTexUtils.cleanBibTex(rel.getPerson().getMainName().toString()));
+			jsonPersonName.put("extendedPersonName", getExtendedPersonName(rel));
+			
+			array.add(jsonPersonName);
+		}
+		command.setResponseString(array.toJSONString());
+		
+		return Views.AJAX_JSON;
+	}
+
+	private static String getExtendedPersonName(ResourcePersonRelation rel) {
 		final Person person = rel.getPerson();
 		final PersonName personName = person.getMainName();
 		final StringBuilder extendedNameBuilder = new StringBuilder();
@@ -140,14 +146,14 @@ public class PersonPageController extends SingleResourceListController implement
 		return extendedNameBuilder.toString();
 	}
 	
-	private void appendPersonName(PersonName personName, final StringBuilder extendedNameBuilder) {
+	private static void appendPersonName(PersonName personName, final StringBuilder extendedNameBuilder) {
 		extendedNameBuilder.append(personName.getLastName());
 		if (present(personName.getFirstName())) {
 			extendedNameBuilder.append(", ").append(personName.getFirstName());
 		}
 	}
 
-	private void appendDisambiguatingBibTexInfo(final StringBuilder extendedNameBuilder, BibTex res) {
+	private static void appendDisambiguatingBibTexInfo(final StringBuilder extendedNameBuilder, BibTex res) {
 		String entryType = res.getEntrytype();
 		if (entryType.toLowerCase().endsWith("thesis")) {
 			if (present(res.getSchool())) {
@@ -208,7 +214,7 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @return
 	 */
 	private View editRoleAction(PersonPageCommand command) {
-		//TODO add new role types to view
+		//TODO not used? remove?
 		for (String role : command.getFormPersonRoles()) {
 			final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
 			Post<BibTex> post = new Post<>();

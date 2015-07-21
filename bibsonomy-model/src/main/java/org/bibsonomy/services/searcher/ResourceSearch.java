@@ -35,6 +35,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 
 /**
  * Interface for resource search operations
@@ -56,6 +57,7 @@ public interface ResourceSearch<R extends Resource> {
 	 * @param searchTerms
 	 * @param titleSearchTerms
 	 * @param authorSearchTerms
+	 * @param bibtexKey 
 	 * @param tagIndex
 	 * @param year
 	 * @param firstYear
@@ -74,8 +76,7 @@ public interface ResourceSearch<R extends Resource> {
 	
 
 	/**
-	 * search for posts using the ES / lucene index
-	 * @param resourceType resourceType of the posts to set the index type in ES node 
+	 * search for posts using the ES / lucene index 
 	 * @param userName
 	 * @param requestedUserName
 	 * @param requestedGroupName
@@ -85,6 +86,7 @@ public interface ResourceSearch<R extends Resource> {
 	 * @param searchTerms
 	 * @param titleSearchTerms
 	 * @param authorSearchTerms
+	 * @param bibtexKey 
 	 * @param tagIndex
 	 * @param year
 	 * @param firstYear
@@ -104,24 +106,16 @@ public interface ResourceSearch<R extends Resource> {
 	
 	
 	/**
-	 * gets post for the requested BibTex key
-	 * 
 	 * @param userName
-	 * @param requestedUserName
-	 * @param requestedGroupName
-	 * @param requestedRelationNames
 	 * @param allowedGroups
 	 * @param searchType
 	 * @param bibtexKey
 	 * @param tagIndex
-	 * @param year
-	 * @param firstYear
-	 * @param lastYear
 	 * @param negatedTags
 	 * @param order
 	 * @param limit
 	 * @param offset
-	 * @return
+	 * @return  post for the requested BibTex key
 	 */
 	public List<Post<R>> getPostsByBibtexKey(
 			final String userName, final Collection<String> allowedGroups,final SearchType searchType, final String bibtexKey,
@@ -163,7 +157,6 @@ public interface ResourceSearch<R extends Resource> {
 	 * @param requestedGroupName
 	 * @param allowedGroups
 	 * @param searchTerms
-	 * @param searchType 
 	 * @param titleSearchTerms
 	 * @param authorSearchTerms
 	 * @param tagIndex
@@ -183,9 +176,9 @@ public interface ResourceSearch<R extends Resource> {
 
 
 	/**
-	 * @param queryString any combination of title, author-name, year, school
+	 * @param options options about the search including the querystring
 	 * @return a ranked list of (more-or-less) matching publications. Each resource is contained in a post of some user.
 	 */
-	public List<Post<BibTex>> getPublicationSuggestions(String queryString);
+	public List<Post<BibTex>> getPublicationSuggestions(PublicationSuggestionQueryBuilder options);
 
 }

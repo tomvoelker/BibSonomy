@@ -36,6 +36,8 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
+import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
@@ -105,7 +107,7 @@ public class DummyResourceSearch implements ResourceSearch<Resource> {
 	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPublicationSuggestions(java.lang.String)
 	 */
 	@Override
-	public List<Post<BibTex>> getPublicationSuggestions(String queryString) {
+	public List<Post<BibTex>> getPublicationSuggestions(PublicationSuggestionQueryBuilder options) {
 		return new ArrayList<>();
 	}
 

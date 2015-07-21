@@ -145,6 +145,8 @@ import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
+import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
@@ -3202,13 +3204,19 @@ public class DBLogic implements LogicInterface {
 
 
 	@Override
-	public List<ResourcePersonRelation> getPersonSuggestion(String queryString) {
-		return this.personDBManager.getPersonSuggestion(queryString);
+	public PersonSuggestionQueryBuilder getPersonSuggestion(String queryString) {
+		return new PersonSuggestionQueryBuilder(queryString) {
+			@Override
+			public List<ResourcePersonRelation> doIt() {
+				return DBLogic.this.personDBManager.getPersonSuggestion(this);
+			}
+		};
 	}
 	
 	@Override
-	public List<Post<BibTex>> getPublicationSuggestion(String queryString) {
-		return this.publicationDBManager.getPublicationSuggestion(queryString);
+	public List<Post<BibTex>> getPublicationSuggestion(final String queryString) {
+		final PublicationSuggestionQueryBuilder options = new PublicationSuggestionQueryBuilder(queryString).withNonEntityPersons(true);
+		return this.publicationDBManager.getPublicationSuggestion(options);
 	}
 	
 	@Override

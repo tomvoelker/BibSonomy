@@ -31,6 +31,7 @@ import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -61,6 +62,9 @@ import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.logic.querybuilder.AbstractSuggestionQueryBuilder;
+import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
+import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.services.searcher.PersonSearch;
 import org.bibsonomy.services.searcher.ResourceSearch;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -317,10 +321,10 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @see org.bibsonomy.services.searcher.PersonSearch#getPersonSuggestion(java.lang.String)
 	 */
 	@Override
-	public List<Post<BibTex>> getPublicationSuggestions(String queryString) {
+	public List<Post<BibTex>> getPublicationSuggestions(PublicationSuggestionQueryBuilder options) {
 		try (final IndexLock indexLock = getEsIndexManager().aquireReadLockForTheActiveIndex(this.resourceType)) {
 			// we use inverted scores such that the best results automatically appear first according to the ascending order of a sorted map
-			final TreeMap<Float, ResourcePersonRelation> relSorter = iterativelyFetchSuggestions(queryString, indexLock, true, null);
+			final TreeMap<Float, ResourcePersonRelation> relSorter = iterativelyFetchSuggestions(indexLock, null, options);
 				
 			return extractResources(relSorter);
 				
@@ -331,7 +335,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	}
 
 
-	private TreeMap<Float, ResourcePersonRelation> iterativelyFetchSuggestions(String queryString, final IndexLock indexLock, boolean postsOnly, Set<String> tokenizedQueryString) {
+	private TreeMap<Float, ResourcePersonRelation> iterativelyFetchSuggestions(final IndexLock indexLock, Set<String> tokenizedQueryString, AbstractSuggestionQueryBuilder<?> options) {
 		// we use inverted scores such that the best results automatically appear first according to the ascending order of a sorted map
 		final TreeMap<Float, ResourcePersonRelation> relSorter = new TreeMap<>();
 		
@@ -341,8 +345,8 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		final Set<String> alreadyAnalyzedInterhashes = new HashSet<>();
 		for (int offset = 0; relSorter.size() < suggestionSize && offset < maxOffset; offset += suggestionSize) {
 			double minScore = Double.isNaN(bestScore) ? 0.05 : (bestScore / 3d);
-			;
-			double bestScoreThisRound = fetchMoreResults(relSorter, queryString, tokenizedQueryString, offset, alreadyAnalyzedInterhashes, indexLock.getIndexName(), minScore, postsOnly);
+
+			double bestScoreThisRound = fetchMoreResults(relSorter, tokenizedQueryString, offset, alreadyAnalyzedInterhashes, indexLock.getIndexName(), minScore, options);
 			if (Double.isNaN(bestScore)) {
 				bestScore = bestScoreThisRound;
 			}
@@ -371,29 +375,30 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @see org.bibsonomy.services.searcher.PersonSearch#getPersonSuggestion(java.lang.String)
 	 */
 	@Override
-	public List<ResourcePersonRelation> getPersonSuggestion(String queryString) {
-		try (final IndexLock indexLock = getEsIndexManager().aquireReadLockForTheActiveIndex(this.resourceType)) {
-			final Set<String> tokenizedQueryString = new HashSet<>();
-			for (String token : new SimpleTokenizer(queryString)) {
-				if (!StringUtils.isBlank(token)) {
-					tokenizedQueryString.add(token.toLowerCase());
+	public List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder options) {
+				try (final IndexLock indexLock = getEsIndexManager().aquireReadLockForTheActiveIndex(resourceType)) {
+					final Set<String> tokenizedQueryString = new HashSet<>();
+					for (String token : new SimpleTokenizer(options.getQuery())) {
+						if (!StringUtils.isBlank(token)) {
+							tokenizedQueryString.add(token.toLowerCase());
+						}
+					} 
+					final TreeMap<Float, ResourcePersonRelation> relSorter = iterativelyFetchSuggestions(indexLock, tokenizedQueryString, options);
+					return extractDistinctPersons(relSorter);
+						
+				} catch (final IndexMissingException e) {
+					log.error("IndexMissingException: " + e);
 				}
-			} 
-			final TreeMap<Float, ResourcePersonRelation> relSorter = iterativelyFetchSuggestions(queryString, indexLock, false, tokenizedQueryString);
-			return extractDistinctPersons(relSorter);
-				
-		} catch (final IndexMissingException e) {
-			log.error("IndexMissingException: " + e);
-		}
-		return new ArrayList<>();
+				return new ArrayList<>();
+		
 	}
 
-	private QueryBuilder buildQuery(String queryString, boolean usePersonEntitiesForSearch) {
+	private QueryBuilder buildQuery(AbstractSuggestionQueryBuilder<?> options) {
 		final QueryBuilder queryBuilder = QueryBuilders.filteredQuery( //
 				QueryBuilders.boolQuery() //
 						.should(
-								addPersonSearch(usePersonEntitiesForSearch, //
-									QueryBuilders.multiMatchQuery(queryString) //
+								addPersonSearch(options, //
+									QueryBuilders.multiMatchQuery(options.getQuery()) //
 									.field(LuceneFieldNames.TITLE, 3) //
 									.field(LuceneFieldNames.SCHOOL, 2) //
 								) //
@@ -410,25 +415,29 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 						//.should(QueryBuilders.termQuery(LuceneFieldNames.USER_NAME, genealogyUser)) //
 						, addShouldYearIfYearInQuery( //
 								FilterBuilders.termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, systemUrl), //
-								queryString) //
+								options.getQuery()) //
 				);
 		return queryBuilder;
 	}
 
 	/**
-	 * @param usePersonEntitiesForSearch
+	 * @param options
 	 * @param field
 	 * @return
 	 */
-	private MultiMatchQueryBuilder addPersonSearch(boolean usePersonEntitiesForSearch, MultiMatchQueryBuilder builder) {
-		if (usePersonEntitiesForSearch) {
-			return builder //
-					.field(ESConstants.AUTHOR_ENTITY_NAMES_FIELD_NAME, 2) //
-					.field(ESConstants.PERSON_ENTITY_NAMES_FIELD_NAME, 1) //
-			;
-		} else {
-			return builder.field(LuceneFieldNames.AUTHOR, 1);
+	private static MultiMatchQueryBuilder addPersonSearch(AbstractSuggestionQueryBuilder<?> options, MultiMatchQueryBuilder builder) {
+		if (options.isWithEntityPersons()) {
+			if (options.getRelationTypes().contains(PersonResourceRelationType.AUTHOR)) {
+				builder.field(ESConstants.AUTHOR_ENTITY_NAMES_FIELD_NAME, 2);
+			}
+			if (options.getRelationTypes().containsAll(Arrays.asList(PersonResourceRelationType.values()))) {
+				builder.field(ESConstants.PERSON_ENTITY_NAMES_FIELD_NAME, 1);
+			}
 		}
+		if (options.isWithNonEntityPersons()) {
+			builder.field(LuceneFieldNames.AUTHOR, 1);
+		}
+		return builder;
 	}
 
 
@@ -442,10 +451,9 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		return searchRequestBuilder;
 	}
 	
-	private double fetchMoreResults(final TreeMap<Float, ResourcePersonRelation> relSorter, String queryString, final Set<String> queryTerms, int offset, final Set<String> alreadyAnalyzedInterhashes, String indexName, double minPlainEsScore, boolean postsOnly) {
+	private double fetchMoreResults(final TreeMap<Float, ResourcePersonRelation> relSorter, final Set<String> queryTerms, int offset, final Set<String> alreadyAnalyzedInterhashes, String indexName, double minPlainEsScore, AbstractSuggestionQueryBuilder<?> options) {
 		// for finding persons, we use their names but for finding publications, we like to find publications which are not yet associated to a person entity
-		final boolean usePersonEntitiesForSearch = !postsOnly;
-		final QueryBuilder queryBuilder = buildQuery(queryString, usePersonEntitiesForSearch);
+		final QueryBuilder queryBuilder = buildQuery(options);
 		final SearchRequestBuilder searchRequestBuilder = buildRequest(offset, indexName, minPlainEsScore, queryBuilder);
 
 		final SearchResponse response = searchRequestBuilder.execute().actionGet();
@@ -486,12 +494,12 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			//
 			final TreeMap<Integer, ResourcePersonRelation> invertedScoreToRpr = new TreeMap<>();
 
-			if (postsOnly == true) {
+			if (options instanceof PersonSuggestionQueryBuilder) {
+				extractResourceRelationsForMatchingPersons(relSorter, queryTerms, post, postScore, invertedScoreToRpr);
+			} else {
 				ResourcePersonRelation rpr = new ResourcePersonRelation();
 				rpr.setPost((Post<? extends BibTex>) post);
 				relSorter.put(postScore, rpr);
-			} else {
-				extractResourceRelationsForMatchingPersons(relSorter, queryTerms, post, postScore, invertedScoreToRpr);
 			}
 		}
 
@@ -552,7 +560,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		for (Map.Entry<Integer, ResourcePersonRelation> e : invertedScoreToRpr.entrySet()) {
 			if (e.getKey() < lastScore / 2) {
 				lastScore = e.getKey();
-				relSorter.put(postScore * -((float) lastScore) / ((float) minInvertedScore), e.getValue());
+				relSorter.put(postScore * -((float) lastScore) / minInvertedScore, e.getValue());
 			}
 		}
 	}
@@ -562,7 +570,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @param queryString
 	 * @return
 	 */
-	private FilterBuilder addShouldYearIfYearInQuery(FilterBuilder filterBuilder, String queryString) {
+	private static FilterBuilder addShouldYearIfYearInQuery(FilterBuilder filterBuilder, String queryString) {
 		Matcher m = YEAR_PATTERN.matcher(queryString);
 		if (!m.find()) {
 			return filterBuilder;
@@ -572,7 +580,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	}
 
 
-	private int extractMinimumInvertedScore(final TreeMap<Integer, ResourcePersonRelation> invertedScoreToRpr) {
+	private static int extractMinimumInvertedScore(final TreeMap<Integer, ResourcePersonRelation> invertedScoreToRpr) {
 		int minInvertedScore = -1;
 		for (Map.Entry<Integer, ResourcePersonRelation> e : invertedScoreToRpr.entrySet()) {
 			if (minInvertedScore > e.getKey()) {
@@ -646,6 +654,9 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	}
 
 
+	/**
+	 * @param genealogyUser
+	 */
 	public void setGenealogyUser(String genealogyUser) {
 		this.genealogyUser = genealogyUser;
 	}
@@ -753,7 +764,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		
 		QueryBuilder rVal = mainQueryBuilder;
 		if (searchType == org.bibsonomy.common.enums.SearchType.LOCAL) {
-			rVal = QueryBuilders.filtered(mainQueryBuilder, FilterBuilders.termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, this.systemUrl));
+			rVal = QueryBuilders.filteredQuery(mainQueryBuilder, FilterBuilders.termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, this.systemUrl));
 		}
 		// all done
 		log.debug("Search query: " + mainQueryBuilder.toString());
