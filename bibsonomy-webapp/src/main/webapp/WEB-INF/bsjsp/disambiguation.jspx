@@ -92,7 +92,7 @@
 		
 		
 			<div class="page-header">
-				<h1>${command.personName}</h1>
+				<h1><c:out value="${mtl:cleanBibtex(command.personName)}"/></h1>
 			</div>
 		
 			<c:if test="${not empty command.post}">
@@ -111,7 +111,7 @@
 			<div class="clearfix">&#160;</div>
 			
 			<div class="clearfix">
-				<h2><fmt:message key="disambiguation.pleaseChooseMsg"><fmt:param value="${command.personName}"/></fmt:message></h2>
+				<h2><fmt:message key="disambiguation.pleaseChooseMsg"><fmt:param value="${mtl:cleanBibtex(command.personName)}"/></fmt:message></h2>
 				<p><fmt:message key="disambiguation.listExplanation"/></p>
 					
 					<c:choose>
@@ -134,8 +134,12 @@
 											</span>
 											<c:set var="firstInfo" value="${true}"/>
 											<c:if test="${not empty rel.person.academicDegree}">                              <c:choose><c:when test="${firstInfo}"> (<c:set var="firstInfo" value="${false}"/></c:when><c:otherwise>, </c:otherwise></c:choose><c:out value="${rel.person.academicDegree}"/></c:if>	 
-											<c:if test="${not empty rel.post}">              <c:choose><c:when test="${firstInfo}"> (<c:set var="firstInfo" value="${false}"/></c:when><c:otherwise>, </c:otherwise></c:choose><c:out value="${rel.post.resource.title}"/></c:if>
-											<c:if test="${not empty rel.post.resource.year}"><c:choose><c:when test="${firstInfo}"> (<c:set var="firstInfo" value="${false}"/></c:when><c:otherwise>, </c:otherwise></c:choose><c:out value="${rel.post.resource.year}"/></c:if>
+											<c:if test="${not empty rel.post}">
+													<c:choose><c:when test="${firstInfo}"> (<c:set var="firstInfo" value="${false}"/></c:when><c:otherwise>, </c:otherwise></c:choose><fmt:message key="person.show.${rel.relationType.relatorCode}.of"/><c:out value=" "/><span class="disambiguationTitle"><c:out value="${rel.post.resource.title}"/></span>
+												<c:if test="${not empty rel.post.resource.year}">
+													<c:choose><c:when test="${firstInfo}"> (<c:set var="firstInfo" value="${false}"/></c:when><c:otherwise>, </c:otherwise></c:choose><c:out value="${rel.post.resource.year}"/>
+												</c:if>
+											</c:if>
 											<c:choose><c:when test="${not firstInfo}">)</c:when><c:otherwise> (<c:out value="${textNoFurtherInfo}"/>)</c:otherwise></c:choose>
 										</a>
 									</div>
