@@ -77,17 +77,14 @@
 
 		<buttons:dropDownList>
 			<jsp:attribute name="listContent">
-
 				<li><buttons:communityPostMenuItem post="${post}" resourceType="${resourceType}"/></li>
-
-				<li>
-					<buttons:historyMenuItem 
-						post ="${post}" 
-						loginUserName="${loginUserName}" 
-						userLoggedIn="${command.context.userLoggedIn}" 
-						resourceType="${resourceType}"
-						buttonClasses="${buttonClasses}"/>
-				</li>
+			
+				<buttons:historyMenuItem 
+					post ="${post}" 
+					loginUserName="${loginUserName}" 
+					userLoggedIn="${command.context.userLoggedIn}" 
+					resourceType="${resourceType}"
+					buttonClasses="${buttonClasses}"/>
 
 				<c:if test="${resourceType eq 'bibtex'}">
 
@@ -99,32 +96,37 @@
 						+-->
 					<c:if test="${not disableResourceLinks}">
 						<!-- URL -->
-						<li>
-							<c:choose>
-								<c:when test="${not empty post.resource.url}">
+						<c:choose>
+							<c:when test="${not empty post.resource.url}">
+								<li>
 									<fmt:message key="bibtex.actions.url.title" var="urlTitle" />
 									<a class="litem" href="${fn:escapeXml(mtl:cleanUrl(post.resource.url))}" title="${urlTitle}"><fmt:message key="bibtex.actions.url"/></a>
-								</c:when>
-								<c:otherwise>
+								</li>
+							</c:when>
+							<c:otherwise>
+								<li class="disabled">
 									<fmt:message key="bibtex.actions.url.inactive" var="urlTitle" />
-									<span class="ilitem" title="${urlTitle}"><fmt:message key="bibtex.actions.url"/></span>
-								</c:otherwise>
-							</c:choose>
-						</li>
+									<a href="#" title="${urlTitle}"><fmt:message key="bibtex.actions.url"/></a>
+								</li>
+							</c:otherwise>
+						</c:choose>
 
 						<!-- DOI -->
-						<li>
-							<c:choose>
-								<c:when test="${not empty post.resource.miscFields['doi']}">
+						<c:choose>
+							<c:when test="${not empty post.resource.miscFields['doi']}">
+								<li>
 									<fmt:message key="bibtex.actions.doi" var="urlTitle"/>
 									<a class="litem" href="http://dx.doi.org/${mtl:encodeURI(mtl:extractDOI(post.resource.miscFields['doi']))}" title="${urlTitle}"><fmt:message key="bibtex.actions.doi"/></a>
-								</c:when>
-								<c:otherwise>
+								</li>
+							</c:when>
+							<c:otherwise>
+								<li class="disabled">
 									<fmt:message key="bibtex.actions.doi.inactive" var="urlTitle"/>
-									<span class="ilitem" title="${urlTitle}"><fmt:message key="bibtex.actions.doi"/></span>
-								</c:otherwise>
-							</c:choose>
-						</li>
+									<a href="#" title="${urlTitle}"><fmt:message key="bibtex.actions.doi"/></a>
+								</li>
+							</c:otherwise>
+						</c:choose>
+						
 						<li class="divider"><!--  --></li>
 						<!-- BibTeX -->
 						<li>

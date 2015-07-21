@@ -48,13 +48,6 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
  */
 public class UpdateUserSettingsController extends SettingsPageController {
 	private static final Log log = LogFactory.getLog(UpdateUserSettingsController.class);
-		
-	@Override
-	public SettingsViewCommand instantiateCommand() {
-		final SettingsViewCommand command = new SettingsViewCommand();
-		command.setUser(new User());
-		return command;
-	}
 
 	@Override
 	public View workOn(final SettingsViewCommand command) {		
