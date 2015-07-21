@@ -33,7 +33,7 @@
 					<key>
 						<util:constant static-field="org.bibsonomy.rest.renderer.RenderingFormat.XML" />
 					</key>
-					<bean class="org.bibsonomy.rest.renderer.impl.xml.XMLRenderer" parent="abstractRenderer">
+					<bean class="org.bibsonomy.rest.renderer.impl.xml.XMLRenderer" parent="abstractRenderer" init-method="init">
 						<constructor-arg name="urlRenderer" ref="restUrlRenderer" />
 					</bean>
 				</entry>

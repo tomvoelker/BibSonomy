@@ -98,7 +98,12 @@ public class ScrapingServlet extends HttpServlet {
 	private static final String APPLICATION_XML_MIME_TYPE = RenderingFormat.APP_XML.getMimeType();
 
 	private static final User XML_DUMMY_USER = new User("scrapingService");
-	private static final XMLRenderer XML_RENDERER = new XMLRenderer(new UrlRenderer(""));
+	private static final XMLRenderer XML_RENDERER;
+	
+	static {
+		XML_RENDERER = new XMLRenderer(new UrlRenderer(""));
+		XML_RENDERER.init();
+	}
 	
 	/**
 	 * Scrapers used in this servlet.
