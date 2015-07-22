@@ -65,15 +65,13 @@ public class MendeleyScraper extends AbstractUrlScraper{
 	protected boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {
 		scrapingContext.setScraper(this);
 		final URL url = scrapingContext.getUrl();
-	
 		try {
-			final String bibTex = WebUtils.getContentAsString(url);
+			final String bibTex = WebUtils.getContentAsString(url.toString());
 			final Matcher match = BIBTEX_PATTERN.matcher(bibTex);
 			if (!match.find()) {
 				this.log.error("can't parse publication");
 				return false; 
 			}
-			
 			final String strCitation = this.strBibtex(match.group(0));
 			if (present(strCitation)) {
 				scrapingContext.setBibtexResult(strCitation);
