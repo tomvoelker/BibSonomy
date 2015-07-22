@@ -25,7 +25,11 @@
     <c:set var="showBookmark" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
     <c:set var="bookmarksWidthClass" value="${showPublication and showBookmark ? 'standard' : (showBookmark ? 'wide' : 'narrow')}"/>
     <c:set var="publicationsWidthClass" value="${showPublication and showBookmark ? 'standard' : (showPublication ? 'wide' : 'narrow')}"/>
-  
+  	<!--+ 
+		| To have the locale available on all pages we set the scope to "request".
+		| see http://stackoverflow.com/questions/333729/how-do-i-access-locale-from-a-jsp 
+		|-->
+	<c:set var="locale" value="${pageContext.response.locale}" scope="request"/>
 
 	<!-- not valid XHTML, since only allowed in <head> -->
 <!--	<base href="${properties['project.home']}"/>-->

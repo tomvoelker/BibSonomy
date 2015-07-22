@@ -50,6 +50,12 @@ public class BibTexListTitleHoverFormatter {
 	private ResourceBundle rb;
 	
 	private BibTexListTitleHoverFormatter(final BibTex publication, final Locale locale) {
+		if (publication == null) {
+			throw new IllegalArgumentException("publication can't be null!");
+		}
+		if (locale == null) {
+			throw new IllegalArgumentException("locale can't be null!");
+		}
 		this.publication = publication;
 		this.locale = locale;
 		this.output = new StringBuilder();
@@ -281,5 +287,6 @@ public class BibTexListTitleHoverFormatter {
 	private String getOutput() {
 		return output.toString();
 	}
+	
 	
 }
