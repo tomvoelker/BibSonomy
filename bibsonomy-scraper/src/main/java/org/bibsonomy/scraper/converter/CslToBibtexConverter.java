@@ -29,7 +29,6 @@
  */
 package org.bibsonomy.scraper.converter;
 
-import java.io.IOException;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
@@ -42,7 +41,7 @@ public class CslToBibtexConverter {
 
 	/** Function is to convert csl format to bibtex
 	 * 
-	 * @param Ris
+	 * @param cslCitation
 	 * @return The resulting BibTeX string.
 	 */
 	public String cslToBibtex(final String cslCitation)  throws JSONException {
