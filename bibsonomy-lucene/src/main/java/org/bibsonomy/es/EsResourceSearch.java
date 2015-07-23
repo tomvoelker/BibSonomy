@@ -54,6 +54,7 @@ import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.index.converter.NormalizedEntryTypes;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -399,8 +400,8 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 						.should(
 								addPersonSearch(options, //
 									QueryBuilders.multiMatchQuery(options.getQuery()) //
-									.field(LuceneFieldNames.TITLE, 3) //
-									.field(LuceneFieldNames.SCHOOL, 2) //
+									.field(LuceneFieldNames.TITLE, 2.5f) //
+									.field(LuceneFieldNames.SCHOOL, 1.8f) //
 								) //
 								.tieBreaker(0.8f) //
 								.boost(4) //
@@ -435,7 +436,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			}
 		}
 		if (options.isWithNonEntityPersons()) {
-			builder.field(LuceneFieldNames.AUTHOR, 1);
+			builder.field(LuceneFieldNames.AUTHOR, 2.5f);
 		}
 		return builder;
 	}
@@ -486,7 +487,11 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 				// we have seen this interhash before -> skip
 				continue;
 			}
-			final Post<R> post = this.resourceConverter.writePost(hit.getSource());
+			final Post<R> postTmp = this.resourceConverter.writePost(hit.getSource());
+			if (!(postTmp.getResource() instanceof BibTex)) {
+				continue;
+			}
+			final Post<BibTex> post = (Post<BibTex>) postTmp;
 			float postScore = hit.getScore();
 			if (this.genealogyUser.equals(post.getUser().getName())) {
 				postScore *= GENEALOGY_USER_PREFERENCE_FACTOR;
@@ -495,7 +500,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			final TreeMap<Integer, ResourcePersonRelation> invertedScoreToRpr = new TreeMap<>();
 
 			if (options instanceof PersonSuggestionQueryBuilder) {
-				extractResourceRelationsForMatchingPersons(relSorter, queryTerms, post, postScore, invertedScoreToRpr);
+				extractResourceRelationsForMatchingPersons(relSorter, queryTerms, post, postScore, invertedScoreToRpr, (PersonSuggestionQueryBuilder) options);
 			} else {
 				ResourcePersonRelation rpr = new ResourcePersonRelation();
 				rpr.setPost((Post<? extends BibTex>) post);
@@ -528,31 +533,24 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	}
 
 
-	private void extractResourceRelationsForMatchingPersons(final TreeMap<Float, ResourcePersonRelation> relSorter, final Set<String> queryTerms, final Post<R> post, final float postScore, final TreeMap<Integer, ResourcePersonRelation> invertedScoreToRpr) {
-		for (ResourcePersonRelation rpr : post.getResourcePersonRelations()) {
-			PersonName mainName = rpr.getPerson().getMainName();
-			int invertedScore = -1;
-			for (String token : new SimpleTokenizer(mainName.getFirstName())) {
-				if (!StringUtils.isBlank(token)) {
-					token = token.toLowerCase();
-					if (queryTerms.contains(token) == true) {
-						invertedScore--;
-					}
+	private void extractResourceRelationsForMatchingPersons(final TreeMap<Float, ResourcePersonRelation> relSorter, final Set<String> queryTerms, final Post<BibTex> post, final float postScore, final TreeMap<Integer, ResourcePersonRelation> invertedScoreToRpr, PersonSuggestionQueryBuilder options) {
+		if (options.isWithEntityPersons()) {
+			for (ResourcePersonRelation rpr : post.getResourcePersonRelations()) {
+				PersonName mainName = rpr.getPerson().getMainName();
+				int invertedScore = calculateInvertedPersonNameScore(queryTerms, mainName);
+				if (rpr.getRelationType() == PersonResourceRelationType.AUTHOR) {
+					invertedScore *= 2;
 				}
-				
+				invertedScoreToRpr.put(invertedScore, rpr);
 			}
-			for (String token : new SimpleTokenizer(mainName.getLastName())) {
-				if (!StringUtils.isBlank(token)) {
-					token = token.toLowerCase();
-					if (queryTerms.contains(token) == true) {
-						invertedScore--;
-					}
-				}
+		}
+		if (options.isWithNonEntityPersons()) {
+			if (options.getRelationTypes().contains(PersonResourceRelationType.AUTHOR)) {
+				addScoredPersonNames(post.getResource().getAuthor(), PersonResourceRelationType.AUTHOR, queryTerms, post, invertedScoreToRpr, options);
 			}
-			if (rpr.getRelationType() == PersonResourceRelationType.AUTHOR) {
-				invertedScore *= 2;
+			if (options.getRelationTypes().contains(PersonResourceRelationType.EDITOR)) {
+				addScoredPersonNames(post.getResource().getEditor(), PersonResourceRelationType.EDITOR, queryTerms, post, invertedScoreToRpr, options);
 			}
-			invertedScoreToRpr.put(invertedScore, rpr);
 		}
 		
 		final int minInvertedScore = extractMinimumInvertedScore(invertedScoreToRpr);
@@ -563,6 +561,53 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 				relSorter.put(postScore * -((float) lastScore) / minInvertedScore, e.getValue());
 			}
 		}
+	}
+
+
+	private void addScoredPersonNames(List<PersonName> names, PersonResourceRelationType relationType, final Set<String> queryTerms, final Post<BibTex> post, final TreeMap<Integer, ResourcePersonRelation> invertedScoreToRpr, PersonSuggestionQueryBuilder options) {
+		if (!present(names)) {
+			return;
+		}
+		for (int i = 0; i < names.size(); ++i) {
+			PersonName name = names.get(i);
+			ResourcePersonRelation rpr = new ResourcePersonRelation();
+			rpr.setPerson(new Person());
+			rpr.getPerson().setMainName(name);
+			rpr.setPersonIndex(i);
+			rpr.setPost(post);
+			rpr.setRelationType(relationType);
+			int invertedScore = calculateInvertedPersonNameScore(queryTerms, name) * 2;
+			if (options.isPreferUnlinked()) {
+				invertedScore *= 2;
+			}
+			if (rpr.getRelationType() == PersonResourceRelationType.AUTHOR) {
+				invertedScore *= 2;
+			}
+			invertedScoreToRpr.put(invertedScore, rpr);
+		}
+	}
+
+
+	private int calculateInvertedPersonNameScore(final Set<String> queryTerms, PersonName mainName) {
+		int invertedScore = -1;
+		for (String token : new SimpleTokenizer(mainName.getFirstName())) {
+			if (!StringUtils.isBlank(token)) {
+				token = token.toLowerCase();
+				if (queryTerms.contains(token) == true) {
+					invertedScore--;
+				}
+			}
+			
+		}
+		for (String token : new SimpleTokenizer(mainName.getLastName())) {
+			if (!StringUtils.isBlank(token)) {
+				token = token.toLowerCase();
+				if (queryTerms.contains(token) == true) {
+					invertedScore--;
+				}
+			}
+		}
+		return invertedScore;
 	}
 
 	/**
@@ -594,7 +639,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		List<ResourcePersonRelation> rVal = new ArrayList<>();
 		Set<String> foundPersonIds = new HashSet<>();
 		for (ResourcePersonRelation rpr : rValSorter.values()) {
-			if (foundPersonIds.add(rpr.getPerson().getPersonId()) == true) {
+			if ((rpr.getPerson().getPersonId() == null) || (foundPersonIds.add(rpr.getPerson().getPersonId()) == true)) {
 				// we have not seen this personId earlier in the sorted map, so add it to the response list
 				rVal.add(rpr);
 				if (rVal.size() == suggestionSize) {

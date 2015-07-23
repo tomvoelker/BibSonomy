@@ -13,6 +13,8 @@ import org.bibsonomy.model.ResourcePersonRelation;
 public abstract class PersonSuggestionQueryBuilder extends AbstractSuggestionQueryBuilder<PersonSuggestionQueryBuilder> {
 	
 	
+	private boolean preferUnlinked;
+
 	/**
 	 * @param query any combination of title, author-name, year, school
 	 */
@@ -31,5 +33,18 @@ public abstract class PersonSuggestionQueryBuilder extends AbstractSuggestionQue
 	@Override
 	protected PersonSuggestionQueryBuilder getThis() {
 		return this;
+	}
+
+	/**
+	 * @param b
+	 * @return
+	 */
+	public PersonSuggestionQueryBuilder preferUnlinked(boolean preferUnlinked) {
+		this.preferUnlinked = preferUnlinked;
+		return this;
+	}
+
+	public boolean isPreferUnlinked() {
+		return this.preferUnlinked;
 	}
 }

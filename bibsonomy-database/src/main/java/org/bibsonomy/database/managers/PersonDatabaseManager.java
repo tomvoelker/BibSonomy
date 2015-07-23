@@ -22,6 +22,9 @@ import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.services.searcher.PersonSearch;
 
+import com.ibatis.common.jdbc.exception.NestedSQLException;
+import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
+
 /**
  * TODO: add documentation to this class
  *
@@ -175,12 +178,20 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 * @param resourcePersonRelation
 	 * @param session 
 	 */
-	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation, DBSession session) {
+	public boolean addResourceRelation(ResourcePersonRelation resourcePersonRelation, DBSession session) {
 		session.beginTransaction();
 		try {
 			resourcePersonRelation.setPersonRelChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("addResourceRelation", resourcePersonRelation, session);
 			session.commitTransaction();
+			return true;
+		} catch (RuntimeException e) {
+			if (e.getCause() instanceof NestedSQLException) {
+				if ((e.getCause().getCause() != null) && (e.getCause().getCause().getMessage().contains("Duplicate entry"))) {
+					return false;
+				}
+			}
+			throw e;
 		} finally {
 			session.endTransaction();
 		}

@@ -791,5 +791,4 @@ public class BibTex extends Resource {
 		return publicationNames;
 	}
 
-
 }

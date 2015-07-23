@@ -1,6 +1,7 @@
 $(document).ready(function() {
-	setupPersonSearch("#addThesisAuto", "#addThesisBtn", true, false);
-	setupPersonSearch("#addSupervisedThesisAuto", "#addSupervisedThesisBtn", true, false);
+	setupBibtexAuthorSearchForForm("#addThesisAuto", "#addThesisForm");
+	//setupBibtexAuthorSearchForForm("#addThesisAuto", "#addThesisForm");
+	//setupPersonSearch("#addSupervisedThesisAuto", "#addSupervisedThesisBtn");
 });
 
 /*

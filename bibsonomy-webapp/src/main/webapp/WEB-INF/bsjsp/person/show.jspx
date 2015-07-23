@@ -88,10 +88,11 @@
 		<jsp:attribute name="headerExt">
 			<script type='text/javascript' src='/resources/typeahead.js/js/typeahead.bundle.js'><!-- keep me --></script>
 			
+			<script type='text/javascript' src='/resources/javascript/person/personAutocomplete.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/autocompleteThesis.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/names.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/linkUser.js'><!-- keep me --></script>
-			<script type='text/javascript' src='/resources/javascript/person/personAutocomplete.js'><!-- keep me --></script>
+
 			<script type='text/javascript' src='/resources/javascript/person/roles.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/update.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/explainRoles.js'><!-- keep me --></script>
@@ -138,10 +139,13 @@
 		</jsp:attribute>
 
 		<jsp:attribute name="content">
+			<errors:logicExceptions exceptions="${command.logicExceptions}" />
 		
 			<div class="page-header">
 				<h1>${command.person.mainName.firstName} ${command.person.mainName.lastName}</h1>
 			</div>
+			
+			
 			<div id='personInfo'>
 				<div  id='aboutThisPerson'>
 					<form method='post' name='personForm' action="" class='form-horizontal'>
@@ -424,10 +428,16 @@
 				<input type="hidden" name='post.resource.author' value='${command.person.mainName.lastName}, ${command.person.mainName.firstName}'/>
 				<input type="submit" class="btn btn-primary pull-left" name='submit' value='${textNewThesisButton}' />
 			</form>
-			<form action="" method="post" class='form-inline'>
-				<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
-				<input type='hidden' name='formThesisId' value=''/>&#160;
+			<form id="addThesisForm" action="${absoluteUrlGenerator.getPersonUrl(command.person.personId)}" method="post" class='form-inline'>
+				<!-- set via autocomplete -->
+				<input type='hidden' name='formInterHash' value=''/>
+				<input type='hidden' name='formPersonIndex' value=''/>
+				<!-- set statically -->
+				<input type='hidden' name='formPersonId' value='${command.person.personId}'/>
+				<input type='hidden' name='formPersonRole' value='AUTHOR'/>
 				<input type="hidden" name='formAction' value='addThesis' />
+				<!-- visible elements -->
+				<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
 				<input type="submit" class="btn btn-primary" name='submit' id="addThesisBtn" value='${textAddThesisButton}' />
 			</form>
 		</jsp:attribute>
@@ -438,7 +448,7 @@
 		<jsp:attribute name="modalBody">
 			<fieldset>
 				<div class="form-group">
-					<label for='addThesisAuto' class="control-label"><fmt:message key="person.show.modal.addSupervisedThesis.text" /></label>
+					<label for='addSupervisedThesisAuto' class="control-label"><fmt:message key="person.show.modal.addSupervisedThesis.text" /></label>
 					<fmt:message key="person.show.modal.addSupervisedThesis.placeholder" var="tmpMsg" />
 					<input class='form-control typeahead' id='addSupervisedThesisAuto' type='text' name='addSupervisedThesisAuto' autocomplete="off" placeholder="${tmpMsg}"/>
 				</div>

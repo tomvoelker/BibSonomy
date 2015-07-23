@@ -10,6 +10,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 
 /**
@@ -19,7 +20,7 @@ import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
  */
 public interface PersonLogicInterface {
 
-	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation);
+	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) throws ResourcePersonAlreadyAssignedException;
 
 	public void removeResourceRelation(int resourceRelationId);
 

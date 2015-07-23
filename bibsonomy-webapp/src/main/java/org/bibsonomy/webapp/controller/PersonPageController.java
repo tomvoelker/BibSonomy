@@ -14,6 +14,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.logic.exception.LogicException;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.util.spring.security.AuthenticationUtils;
@@ -39,6 +40,7 @@ public class PersonPageController extends SingleResourceListController implement
 				case "addName": return this.addNameAction(command);
 				case "deleteName": return this.deleteNameAction(command);
 				case "addRole": return this.addRoleAction(command);
+				case "addThesis": return this.addThesisAction(command);
 				case "editRole": return this.editRoleAction(command);
 				case "deleteRole": return this.deleteRoleAction(command);
 				case "unlink": return this.unlinkAction(command);
@@ -59,8 +61,17 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 * @return
 	 */
+	private View addThesisAction(PersonPageCommand command) {
+		addRoleAction(command);
+		return showAction(command);
+	}
+
+	/**
+	 * @param command
+	 * @return
+	 */
 	private View searchAuthorAction(PersonPageCommand command) { 
-		final List<ResourcePersonRelation> suggestions = this.logic.getPersonSuggestion(command.getFormSelectedName()).withNonEntityPersons(true).withRelationType(PersonResourceRelationType.AUTHOR).doIt();
+		final List<ResourcePersonRelation> suggestions = this.logic.getPersonSuggestion(command.getFormSelectedName()).withNonEntityPersons(true).withRelationType(PersonResourceRelationType.AUTHOR).preferUnlinked(true).doIt();
 		
 		JSONArray array = new JSONArray();
 		for (ResourcePersonRelation rel : suggestions) {
@@ -170,7 +181,7 @@ public class PersonPageController extends SingleResourceListController implement
 
 	@SuppressWarnings("static-method")
 	private View indexAction(@SuppressWarnings("unused") PersonPageCommand command) {
-		return Views.PERSON;
+		return Views.PERSON_SHOW;
 	}
 
 	/**
@@ -203,7 +214,11 @@ public class PersonPageController extends SingleResourceListController implement
 		resourcePersonRelation.getPerson().setPersonId(command.getFormPersonId());
 		resourcePersonRelation.setPersonIndex(command.getFormPersonIndex());
 		resourcePersonRelation.setRelationType(command.getFormPersonRole());
-		this.logic.addResourceRelation(resourcePersonRelation);
+		try {
+			this.logic.addResourceRelation(resourcePersonRelation);
+		} catch (LogicException e) {
+			command.getLogicExceptions().add(e);
+		}
 		command.setResponseString(resourcePersonRelation.getPersonRelChangeId() + "");
 		return Views.AJAX_TEXT;
 	}
@@ -226,7 +241,11 @@ public class PersonPageController extends SingleResourceListController implement
 			resourcePersonRelation.setPersonIndex(command.getFormPersonIndex());
 			final PersonResourceRelationType relationType = PersonResourceRelationType.valueOf(StringUtils.upperCase(role)); 
 			resourcePersonRelation.setRelationType(relationType);
-			this.logic.addResourceRelation(resourcePersonRelation);
+			try {
+				this.logic.addResourceRelation(resourcePersonRelation);
+			} catch (LogicException e) {
+				command.getLogicExceptions().add(e);
+			}
 		}
 		
 		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(command.getPerson().getPersonId()));	

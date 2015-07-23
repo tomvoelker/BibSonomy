@@ -145,6 +145,7 @@ import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
@@ -3220,10 +3221,16 @@ public class DBLogic implements LogicInterface {
 	}
 	
 	@Override
-	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) {
+	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) throws ResourcePersonAlreadyAssignedException {
 		ValidationUtils.assertNotNull(resourcePersonRelation.getPerson());
 		ValidationUtils.assertNotNull(resourcePersonRelation.getPerson().getPersonId());
 		ValidationUtils.assertNotNull(resourcePersonRelation.getRelationType());
+		
+		final List<ResourcePersonRelation> existingRelations = getResourceRelations( resourcePersonRelation.getPost().getResource().getInterHash(), resourcePersonRelation.getRelationType(), Integer.valueOf(resourcePersonRelation.getPersonIndex()));		
+		if (existingRelations.size() > 0 ) {
+			ResourcePersonRelation existingRelation = existingRelations.get(0);
+			throw new ResourcePersonAlreadyAssignedException(existingRelation);
+		}
 		
 		resourcePersonRelation.setChangedBy(this.loginUser.getName());
 		resourcePersonRelation.setChangedAt(new Date());
