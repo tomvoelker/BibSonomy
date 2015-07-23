@@ -8,7 +8,6 @@ function setupPersonSearch(inputFieldSelector, buttonSelector) {
 
 function setupBibtexAuthorSearchForForm(inputFieldSelector, formSelector) {
 	setupPersonAutocomplete(inputFieldSelector, "searchAuthor", 'extendedPublicationName', function(data) {
-		//$(formSelector).find("input[name='formInterHash']") val(data.interhash);
 		$(formSelector + " input[name='formInterHash']").val(data.interhash);
 		$(formSelector + " input[name='formPersonIndex']").val(data.personIndex);
 		// already set in form:
@@ -18,12 +17,9 @@ function setupBibtexAuthorSearchForForm(inputFieldSelector, formSelector) {
 }
 
 function setupBibtexSearch(inputFieldSelector, buttonSelector) {
-	setupPersonAutocomplete(inputFieldSelector, "search", 'extendedPersonName', function(data) {
-		$(buttonSelector).attr("data-person-name", data.personName);
-		$(buttonSelector).attr("data-extended-person-name", data.extendedPersonName);
-		$(buttonSelector).attr("data-person-id", data.personId);
-		// TODO: $(buttonSelector).attr("data-pub-interhash", data.res.inerhash);
-		//$(buttonSelector).attr("data-person-name-id", data.personNameId);
+	setupPersonAutocomplete(inputFieldSelector, "searchPub", 'extendedPublicationName', function(data) {
+		$(formSelector + " input[name='formInterHash']").val(data.interhash);
+		$(formSelector + " input[name='formPersonIndex']").val(data.personIndex);
 	});
 }
 

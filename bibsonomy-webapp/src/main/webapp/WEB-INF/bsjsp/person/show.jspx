@@ -142,7 +142,7 @@
 			<errors:logicExceptions exceptions="${command.logicExceptions}" />
 		
 			<div class="page-header">
-				<h1>${command.person.mainName.firstName} ${command.person.mainName.lastName}</h1>
+				<h1><c:out value="${mtl:cleanBibtex(command.person.mainName.firstName)} "/><c:out value="${mtl:cleanBibtex(command.person.mainName.lastName)}"/></h1>
 			</div>
 			
 			
@@ -446,13 +446,41 @@
 	<fmt:message key="person.show.modal.addSupervisedThesis.header" var="tmpMsg" />
 	<bs:modal modalTitle="${tmpMsg}" id="addSupervisedThesis">
 		<jsp:attribute name="modalBody">
-			<fieldset>
-				<div class="form-group">
-					<label for='addSupervisedThesisAuto' class="control-label"><fmt:message key="person.show.modal.addSupervisedThesis.text" /></label>
-					<fmt:message key="person.show.modal.addSupervisedThesis.placeholder" var="tmpMsg" />
-					<input class='form-control typeahead' id='addSupervisedThesisAuto' type='text' name='addSupervisedThesisAuto' autocomplete="off" placeholder="${tmpMsg}"/>
-				</div>
-			</fieldset>
+			<form id="addSupervisedThesisForm" action="${absoluteUrlGenerator.getPersonUrl(command.person.personId)}" method="post" class="form-horizontal">
+				<fieldset>
+					<div class="form-group">
+						<label for='addSupervisedThesisAuto' class="control-label"><fmt:message key="person.show.modal.addSupervisedThesis.text" /></label>
+						<fmt:message key="person.show.modal.addSupervisedThesis.placeholder" var="tmpMsg" />
+						<input class='form-control typeahead' id='addSupervisedThesisAuto' type='text' name='addSupervisedThesisAuto' autocomplete="off" placeholder="${tmpMsg}"/>
+					</div>
+					<div class="form-group">
+						<label for='addSupervisedThesisRole' class="control-label">
+							<fmt:message key="person.show.modal.addSupervisedThesis.role">
+								<fmt:param><c:out value="${mtl:cleanBibtex(command.person.mainName.firstName)} "/> <c:out value="${mtl:cleanBibtex(command.person.mainName.lastName)}"/></fmt:param>
+							</fmt:message>
+						</label>
+						<select id="addSupervisedThesisRole" name="formPersonRole" class="form-control">
+							<c:forEach var="role" items="${command.availableRoles}">
+								<c:choose>
+									<c:when test="${(role != 'AUTHOR') and (role != 'EDITOR') and (role != 'DOCTOR_VATER')}">
+										<option value="${role}"><fmt:message key="person.show.${role.relatorCode}" /></option>
+									</c:when>
+									<c:when test="${role == 'DOCTOR_VATER'}">
+										<option value="${role}" selected="selected"><fmt:message key="person.show.${role.relatorCode}" /></option>
+									</c:when>
+								</c:choose>
+							</c:forEach>
+						</select>
+					</div>
+				</fieldset>
+				<!-- set via autocomplete -->
+				<input type='hidden' name='formInterHash' value=''/>
+				<input type='hidden' name='formPersonIndex' value=''/>
+				<!-- set statically -->
+				<input type='hidden' name='formPersonId' value='${command.person.personId}'/>
+				<input type="hidden" name='formAction' value='addThesis' />
+			</form>
+			
 		</jsp:attribute>
 		<jsp:attribute name="modalFooter">
 			<form action="/editPublication" method="post">
@@ -462,11 +490,9 @@
 				<input type="hidden" name='formAction' value='newThesis'/>
 				<input type="submit" class="btn btn-primary pull-left" name='submit' value='${textNewThesisButton}' />
 			</form>
-			<form action="" method="post" class='form-inline'>
-				<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
-				<input type='hidden' name='formThesisId' value=''/>&#160;
-				<input type="hidden" name='formAction' value='addThesis' />
-				<input type="submit" class="btn btn-primary" name='submit' id="addSupervisedThesisBtn" value='${textAddThesisButton}' />
+			<form action="#">
+				<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
+				<input type="submit" class="btn btn-primary" name='submit' id="addSupervisedThesisBtn" value='${textAddThesisButton}' onclick="javascript:$('#addSupervisedThesisForm').submit(); return false;" />
 			</form>
 		</jsp:attribute>
 	</bs:modal>
