@@ -27,12 +27,9 @@
 package org.bibsonomy.scraper.converter;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
-
-import org.bibsonomy.testutil.TestUtils;
 import org.junit.Test;
+import org.bibsonomy.testutil.TestUtils;
 
 /**
  * @author Mohamemd Abed
@@ -48,9 +45,6 @@ public class CslToBibtexConverterTest {
 	@Test
 	public void testCslToBibtex1() throws IOException {
 		final String csl = TestUtils.readEntryFromFile(PATH_TO_FILES + "csltobibtextest1.json");
-
-		// test the canHandle heuristic
-		//assertTrue(RisToBibtexConverter.canHandle(csl));
 
 		// test the conversion
 		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "csltobibtextest1.bib");
