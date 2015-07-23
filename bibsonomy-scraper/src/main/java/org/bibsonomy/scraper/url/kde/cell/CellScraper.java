@@ -50,7 +50,7 @@ public class CellScraper extends GenericRISURLScraper{
 	private static final String SITE_NAME = "Cell";
 	private static final String SITE_URL = "http://www.cell.com/";
 	private static final String INFO = "Scraper for Journals from " + href(SITE_URL, SITE_NAME)+".";
-	private static final Pattern patternId = Pattern.compile("pii:(.*?);"); //pii:S0092867409002712
+	private static final Pattern patternId = Pattern.compile("pii:(.*?);");
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "cell.com"), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	@Override
