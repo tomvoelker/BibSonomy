@@ -879,7 +879,7 @@
 	</URLTest>
 	<URLTest id="url_144">
 		<TestDescription>test for cell scraper</TestDescription>
-		<URL>http://www.cell.com/abstract/S0092-8674(09)00271-2</URL>
+		<URL>http://www.cell.com/cell/abstract/S0092-8674(09)00271-2</URL>
 		<BibFile>CellScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.cell.CellScraper</Scraper>
 	</URLTest>

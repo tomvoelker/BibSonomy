@@ -50,7 +50,7 @@ public class CellScraper extends GenericRISURLScraper{
 	private static final String SITE_NAME = "Cell";
 	private static final String SITE_URL = "http://www.cell.com/";
 	private static final String INFO = "Scraper for Journals from " + href(SITE_URL, SITE_NAME)+".";
-	private static final Pattern patternId = Pattern.compile("pii=(.*?);");
+	private static final Pattern patternId = Pattern.compile("pii:(.*?);"); //pii:S0092867409002712
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "cell.com"), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	@Override
@@ -76,8 +76,9 @@ public class CellScraper extends GenericRISURLScraper{
 	private static String extractId(URL url){
 		try {
 			final Matcher m = patternId.matcher(WebUtils.getContentAsString(url.toString()));
-			if(m.find())
+			if(m.find()) {
 				return m.group(1);
+			}
 		} catch (IOException e) {
 			log.error("article id parsing failed " + url, e);
 		}
@@ -88,6 +89,7 @@ public class CellScraper extends GenericRISURLScraper{
 	 */
 	@Override
 	protected String getDownloadURL(URL url) throws ScrapingException {
+		//System.out.println(url.toString());
 		final String contentID = extractId(url);
 		final String downloadUrl = "http://" + url.getHost().toString() + "/action/downloadCitation?objectUri=pii:" + contentID + "&direct=true&include=abs&submit=Export";
 		return downloadUrl;
