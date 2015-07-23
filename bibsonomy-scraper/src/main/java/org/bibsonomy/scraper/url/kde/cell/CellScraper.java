@@ -89,7 +89,6 @@ public class CellScraper extends GenericRISURLScraper{
 	 */
 	@Override
 	protected String getDownloadURL(URL url) throws ScrapingException {
-		//System.out.println(url.toString());
 		final String contentID = extractId(url);
 		final String downloadUrl = "http://" + url.getHost().toString() + "/action/downloadCitation?objectUri=pii:" + contentID + "&direct=true&include=abs&submit=Export";
 		return downloadUrl;
