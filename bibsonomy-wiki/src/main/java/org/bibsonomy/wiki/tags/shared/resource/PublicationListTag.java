@@ -170,7 +170,7 @@ public class PublicationListTag extends SharedTag {
 
 		if (dropdownMenuEnabled) {
 			// Standard selected layout is plain.
-			this.addDropDownMenu(renderedHTML, tags, requestedName);
+			//this.addDropDownMenu(renderedHTML, tags, requestedName);
 		}
 
 		/*
