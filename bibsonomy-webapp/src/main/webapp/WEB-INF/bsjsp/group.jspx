@@ -16,8 +16,8 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	<c:set var="group" value="${command.group}" />
-	<fmt:message var="headline" key="page.group.headline" />
-	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" activeTab="groups" headline="${headline}${command.group.name}">
+	<!--<fmt:message var="headline" key="page.group.headline" />-->
+	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" activeTab="groups" headline="${command.group.name}">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.group" formAction="${relativeUrlGenerator.getGroupUrlByGroupName(command.requestedGroup)}" formInputName="tag">
 				<jsp:attribute name="pathPart">
@@ -61,7 +61,7 @@
 				</c:when>
 				<c:otherwise>
 				
-					<sidebar:sidebarItem textKey="group.doesnotexist.header" /></h4>
+					<sidebar:sidebarItem textKey="group.doesnotexist.header">
 						<jsp:attribute name="content">
 							<ul>
 								<li>
