@@ -23,7 +23,6 @@ import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.services.searcher.PersonSearch;
 
 import com.ibatis.common.jdbc.exception.NestedSQLException;
-import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
 
 /**
  * TODO: add documentation to this class
