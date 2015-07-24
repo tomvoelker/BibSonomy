@@ -12,6 +12,7 @@
 		  xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
 		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 		  xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
+		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 		  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons">
 
 	<jsp:directive.attribute name="command"  type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
@@ -168,6 +169,44 @@
 						</jsp:attribute>
 					</bsform:fieldset>
 				</c:if>
+				
+				
+				<!-- API key -->
+				<fieldset>
+					<legend>API</legend>
+					<!-- show API key -->
+					<c:choose>
+						<c:when test="${command.context.loginUser.apiKey eq null}">
+							<p>
+								<fmt:message key="settings.apisupport"><fmt:param><a href="/help/doc/api.html">API</a></fmt:param></fmt:message>
+							</p> 
+						</c:when>
+						<c:otherwise>
+						
+							<div class="form-group">
+								<label class="col-sm-3 control-label"><fmt:message key="settings.yourapikey"/></label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><tt><c:out value="${command.context.loginUser.apiKey}" /></tt></p>
+								</div>
+								<div class="col-sm-offset-3 col-sm-9">
+									<p class="help-block">
+										<fmt:message key="settings.questionsregardingapi">
+											<fmt:param>
+												<span style="white-space: pre-wrap;"><a href="/help/doc/api.html"><fmt:message key="settings.apidoc"/></a></span>
+											</fmt:param>
+											<fmt:param>
+												<!--
+													TODO: make this configurable 
+									 			-->
+												<span style="white-space: nowrap;"><parts:email address="api-support@bibsonomy.org"/></span>
+											</fmt:param>
+										</fmt:message>
+									</p>
+								</div>
+							</div>
+						</c:otherwise>
+					</c:choose>
+				</fieldset>				
 				
 				<bsform:fieldset legendKey="settings.group.picture.header">
 					<jsp:attribute name="content">
