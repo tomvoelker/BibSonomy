@@ -52,7 +52,7 @@ public class ResourcePersonRelation extends ResourcePersonRelationBase {
 		sb.append(this.getRelationType());
 		sb.append("-");
 		if ((post != null) && (post.getResource() != null)) {
-			sb.append(post.getResource().getIntraHash());
+			sb.append(post.getResource().getInterHash());
 		} else {
 			sb.append("null");
 		}

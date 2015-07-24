@@ -91,6 +91,7 @@ import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
+import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
@@ -1397,15 +1398,6 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(java.lang.String)
-	 */
-	@Override
-	public List<ResourcePersonRelation> getPersonSuggestion(String queryString) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#addResourceRelation(org.bibsonomy.model.ResourcePersonRelation)
@@ -1516,4 +1508,14 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(java.lang.String)
+	 */
+	@Override
+	public PersonSuggestionQueryBuilder getPersonSuggestion(String queryString) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -303,10 +303,14 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		post.setResource(new BibTex());
 		post.getResource().setInterHash(interhash);
 		rpr.setPost(post);
-		rpr.setPersonIndex(authorIndex);
+		if (authorIndex != null) {
+			rpr.setPersonIndex(authorIndex.intValue());
+		} else {
+			rpr.setPersonIndex(-1);
+		}
 		rpr.setRelationType(role);
 			
-			return this.getResourcePersonRelationByResourcePersonRelation(rpr, session);
+		return this.getResourcePersonRelationByResourcePersonRelation(rpr, session);
 	}
 	
 	private List<ResourcePersonRelation> getResourcePersonRelationByResourcePersonRelation(ResourcePersonRelation rpr, DBSession session) {

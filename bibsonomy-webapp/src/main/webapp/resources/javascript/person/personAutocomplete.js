@@ -16,7 +16,7 @@ function setupBibtexAuthorSearchForForm(inputFieldSelector, formSelector) {
 	});
 }
 
-function setupBibtexSearch(inputFieldSelector, buttonSelector) {
+function setupBibtexSearchForForm(inputFieldSelector, formSelector) {
 	setupPersonAutocomplete(inputFieldSelector, "searchPub", 'extendedPublicationName', function(data) {
 		$(formSelector + " input[name='formInterHash']").val(data.interhash);
 		$(formSelector + " input[name='formPersonIndex']").val(data.personIndex);

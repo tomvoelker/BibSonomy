@@ -1,6 +1,6 @@
 $(document).ready(function() {
 	setupBibtexAuthorSearchForForm("#addThesisAuto", "#addThesisForm");
-	setupBibtexSearch("#addSupervisedThesisAuto", "#addSupervisedThesisForm");
+	setupBibtexSearchForForm("#addSupervisedThesisAuto", "#addSupervisedThesisForm");
 });
 
 /*

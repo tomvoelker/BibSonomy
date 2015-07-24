@@ -3329,13 +3329,13 @@ public class DBLogic implements LogicInterface {
 		
 		StringBuilder sb = new StringBuilder();
 		if (!StringUtils.isBlank(firstName)) {
-			sb.append(org.bibsonomy.util.StringUtils.foldToASCII(firstName.toLowerCase().replaceAll("\\s", "_")).charAt(0));
+			sb.append(org.bibsonomy.util.StringUtils.foldToASCII(firstName.trim().toLowerCase().replaceAll("\\s", "_")).charAt(0));
 			sb.append('.');
 		}
 		if (StringUtils.isBlank(lastName)) {
 			throw new IllegalArgumentException("lastName may not be empty");
 		}
-		sb.append(org.bibsonomy.util.StringUtils.foldToASCII(lastName.toLowerCase().replaceAll("\\s", "_")));
+		sb.append(org.bibsonomy.util.StringUtils.foldToASCII(lastName.trim().toLowerCase().replaceAll("\\s", "_")));
 		
 		return sb.toString();
 	}

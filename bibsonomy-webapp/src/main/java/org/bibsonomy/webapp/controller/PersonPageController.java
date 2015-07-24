@@ -97,7 +97,7 @@ public class PersonPageController extends SingleResourceListController implement
 		for (Post<BibTex> pub : suggestions) {
 			JSONObject jsonPersonName = new JSONObject();
 			jsonPersonName.put("interhash", pub.getResource().getInterHash());
-			jsonPersonName.put("extendedName", getExtendedPublicationName(pub));
+			jsonPersonName.put("extendedPublicationName", getExtendedPublicationName(pub));
 			array.add(jsonPersonName);
 		}
 		command.setResponseString(array.toJSONString());
@@ -205,22 +205,41 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @return
 	 */
 	private View addRoleAction(PersonPageCommand command) {
-		ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
-		Post<BibTex> post = new Post<>();
+		final JSONObject jsonResponse = new JSONObject();
+		final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
+		final Post<BibTex> post = new Post<>();
 		post.setResource(new BibTex());
 		post.getResource().setInterHash(command.getFormInterHash());
 		resourcePersonRelation.setPost(post);
-		resourcePersonRelation.setPerson(new Person());
-		resourcePersonRelation.getPerson().setPersonId(command.getFormPersonId());
-		resourcePersonRelation.setPersonIndex(command.getFormPersonIndex());
-		resourcePersonRelation.setRelationType(command.getFormPersonRole());
+		
 		try {
+			Person person = new Person();
+			if (present(command.getFormPersonId())) {
+				person.setPersonId(command.getFormPersonId());
+			} else {
+				final PersonName mainName = new PersonName();
+				mainName.setMain(true);
+				mainName.setFirstName(command.getFormFirstName());
+				mainName.setLastName(command.getFormLastName());
+				person.setMainName(mainName);
+				this.logic.createOrUpdatePerson(person);
+			}
+			resourcePersonRelation.setPerson(person);
+			resourcePersonRelation.setPersonIndex(command.getFormPersonIndex());
+			resourcePersonRelation.setRelationType(command.getFormPersonRole());
+
 			this.logic.addResourceRelation(resourcePersonRelation);
 		} catch (LogicException e) {
 			command.getLogicExceptions().add(e);
+			jsonResponse.put("exception", e.getClass().getSimpleName());
 		}
-		command.setResponseString(resourcePersonRelation.getPersonRelChangeId() + "");
-		return Views.AJAX_TEXT;
+
+		jsonResponse.put("personId", resourcePersonRelation.getPerson().getPersonId());
+		jsonResponse.put("resourcePersonRelationid", resourcePersonRelation.getPersonRelChangeId() + "");
+		jsonResponse.put("personUrl", new URLGenerator().getPersonUrl(resourcePersonRelation.getPerson().getPersonId()));
+		command.setResponseString(jsonResponse.toJSONString());
+		
+		return Views.AJAX_JSON;
 	}
 
 	/**
