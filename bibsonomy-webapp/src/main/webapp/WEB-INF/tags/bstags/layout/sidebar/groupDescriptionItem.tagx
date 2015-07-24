@@ -11,7 +11,7 @@
 		type="org.bibsonomy.model.Group" />
 
 	<sidebar:sidebarItem>
-		<jsp:attribute name="text">${group.description.headline}</jsp:attribute>
+		<jsp:attribute name="text"><fmt:message key="group.description.headline" /></jsp:attribute>
 		<jsp:attribute name="content">
 		
 				<!-- group description -->
