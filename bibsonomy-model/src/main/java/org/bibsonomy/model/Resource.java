@@ -180,7 +180,7 @@ public abstract class Resource implements Serializable, Rateable {
 	 * @param rating the rating to set
 	 */
 	@Override
-	public void setRating(final double rating) {
+	public void setRating(final Double rating) {
 		this.rating = rating;
 	}
 	
@@ -196,7 +196,7 @@ public abstract class Resource implements Serializable, Rateable {
 	 * @param numberOfRatings the numberOfRatings to set
 	 */
 	@Override
-	public void setNumberOfRatings(final int numberOfRatings) {
+	public void setNumberOfRatings(final Integer numberOfRatings) {
 		this.numberOfRatings = numberOfRatings;
 	}
 
