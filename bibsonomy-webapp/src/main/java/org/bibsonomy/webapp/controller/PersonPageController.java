@@ -347,23 +347,32 @@ public class PersonPageController extends SingleResourceListController implement
 		List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(command.getPerson());
 		List<Post<?>> authorPosts = new ArrayList<>();
 		List<Post<?>> advisorPosts = new ArrayList<>();
+		List<Post<?>> otherAuthorPosts = new ArrayList<>();
+		List<Post<?>> otherAdvisorPosts = new ArrayList<>();
 
 		for(ResourcePersonRelation resourcePersonRelation : resourceRelations) {
-			if(!resourcePersonRelation.getPost().getResource().getEntrytype().toLowerCase().endsWith("thesis")) {
-				continue;	
-			}
-			
+			final boolean isThesis = resourcePersonRelation.getPost().getResource().getEntrytype().toLowerCase().endsWith("thesis");
 			resourcePersonRelation.getPost().setResourcePersonRelations(this.logic.getResourceRelations(resourcePersonRelation.getPost()));
 			
-			if (resourcePersonRelation.getRelationType().equals(PersonResourceRelationType.AUTHOR)) { 
-				authorPosts.add(resourcePersonRelation.getPost());
+			if (resourcePersonRelation.getRelationType().equals(PersonResourceRelationType.AUTHOR)) {
+				if (isThesis) {
+					authorPosts.add(resourcePersonRelation.getPost());
+				} else {
+					otherAuthorPosts.add(resourcePersonRelation.getPost());
+				}
 			} else {
-				advisorPosts.add(resourcePersonRelation.getPost());
+				if (isThesis) {
+					advisorPosts.add(resourcePersonRelation.getPost());
+				} else {
+					otherAdvisorPosts.add(resourcePersonRelation.getPost());
+				}
 			}
 		}
 		
 		command.setThesis(authorPosts);
+		command.setOtherPubs(otherAuthorPosts);
 		command.setAdvisedThesis(advisorPosts);
+		command.setOtherAdvisedPubs(otherAdvisorPosts);
 		
 		return Views.PERSON_SHOW;
 	}

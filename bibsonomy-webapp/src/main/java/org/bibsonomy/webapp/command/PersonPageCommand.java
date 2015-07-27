@@ -51,6 +51,8 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	private List<PersonResourceRelationType> availableRoles = new ArrayList<>();
 	
 	private String responseString;
+	private List<Post<?>> otherPubs;
+	private List<Post<?>> otherAdvisedPubs;
 	
 
 	/**
@@ -459,4 +461,27 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	public void setFormPersonIndex(int formAuthorIndex) {
 		this.formPersonIndex = formAuthorIndex;
 	}
+
+	/**
+	 * @param otherAuthorPosts
+	 */
+	public void setOtherPubs(List<Post<?>> otherAuthorPosts) {
+		this.otherPubs = otherAuthorPosts;
+	}
+
+	public List<Post<?>> getOtherPubs() {
+		return this.otherPubs;
+	}
+
+	/**
+	 * @param otherAdvisorPosts
+	 */
+	public void setOtherAdvisedPubs(List<Post<?>> otherAdvisedPubs) {
+		this.otherAdvisedPubs = otherAdvisedPubs;
+	}
+
+	public List<Post<?>> getOtherAdvisedPubs() {
+		return this.otherAdvisedPubs;
+	}
+	
 }
