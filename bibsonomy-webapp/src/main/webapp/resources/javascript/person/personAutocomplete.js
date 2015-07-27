@@ -23,7 +23,6 @@ function setupBibtexSearchForForm(inputFieldSelector, formSelector) {
 	});
 }
 
-
 function setupPersonAutocomplete(inputFieldSelector, formAction, displayKey, selectionHandler) {
 	// constructs the suggestion engine
 	var personNames = new Bloodhound({
