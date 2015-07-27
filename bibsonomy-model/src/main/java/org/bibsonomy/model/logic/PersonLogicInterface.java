@@ -1,17 +1,15 @@
 package org.bibsonomy.model.logic;
 
-import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
-import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
-import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
+import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 
 /**
  * Interface for person entity logic.
@@ -45,33 +43,17 @@ public interface PersonLogicInterface {
 	 * @param withPersonId
 	 */
 	public void createOrUpdatePersonName(PersonName withPersonId);
-
-	/**
-	 * @param hash
-	 * @param role
-	 * @param authorIndex
-	 * @return List<ResourcePersonRelation>
-	 */
-	public List<ResourcePersonRelation> getResourceRelations(String hash, PersonResourceRelationType role, Integer authorIndex);
-
-
-	/**
-	 * @param person
-	 * @return
-	 */
-	public List<ResourcePersonRelation> getResourceRelations(Person person);
-
-	/**
-	 * @param post
-	 * @return
-	 */
-	public List<ResourcePersonRelation> getResourceRelations(Post<? extends BibTex> post);
 	
 	/**
 	 * @param queryString a search string coming from an autocomplete field. Planned but not yet implemented: May contain an incomplete word, which will be internally autocompleted before searching persons
 	 * @return a builder object fo optional parameters
 	 */
 	public PersonSuggestionQueryBuilder getPersonSuggestion(String queryString);
+
+	/**
+	 * @return a querybuilder object by which options for the query can be specified
+	 */
+	public ResourcePersonRelationQueryBuilder getResourceRelations();
 
 
 }

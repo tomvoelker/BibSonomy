@@ -73,14 +73,13 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
-import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.enums.PersonIdType;
-import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
+import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
@@ -1220,15 +1219,6 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations(org.bibsonomy.model.Person)
-	 */
-	@Override
-	public List<ResourcePersonRelation> getResourceRelations(Person person) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePersonName(org.bibsonomy.model.PersonName)
 	 */
 	@Override
@@ -1275,26 +1265,14 @@ public class TestDBLogic implements LogicInterface {
 		
 	}
 
-
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#getResourceRelations(java.lang.String, org.bibsonomy.model.enums.PersonResourceRelation, java.lang.Integer)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations()
 	 */
 	@Override
-	public List<ResourcePersonRelation> getResourceRelations(String hash, PersonResourceRelationType role, Integer authorIndex) {
+	public ResourcePersonRelationQueryBuilder getResourceRelations() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#getResourceRelations(org.bibsonomy.model.Post)
-	 */
-	@Override
-	public List<ResourcePersonRelation> getResourceRelations(Post<? extends BibTex> post) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPublicationSuggestion(java.lang.String)
