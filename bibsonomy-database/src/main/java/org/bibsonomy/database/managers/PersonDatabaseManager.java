@@ -331,11 +331,12 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 * @return List<ResourcePersonRelation>
 	 */
 	public List<ResourcePersonRelation> getResourcePersonRelationsWithPosts(
-			Person person, User loginUser, Class<? extends BibTex> publicationType, DBSession session) {
+			String personId, User loginUser, Class<? extends BibTex> publicationType, DBSession session) {
 		
 		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, null, null, null, null, null, 0, Integer.MAX_VALUE, null, null, null, null, loginUser);
 		final ResourcePersonRelation personRelation = new ResourcePersonRelation();
-		personRelation.setPerson(person);
+		personRelation.setPerson(new Person());
+		personRelation.getPerson().setPersonId(personId);
 		param.setPersonRelation(personRelation);
 		
 		session.beginTransaction();
@@ -365,16 +366,15 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		}
 	}
 
-
 	/**
-	 * @param post
+	 * @param interhash
+	 * @param session
 	 * @return
 	 */
-	public List<ResourcePersonRelation> getResourcePersonRelations(
-			Post<? extends BibTex> post, DBSession session) {
+	public List<ResourcePersonRelation> getResourcePersonRelationsWithPersonsByInterhash(String interhash, DBSession session) {
 		session.beginTransaction();
 		try {
-			return (List<ResourcePersonRelation>) this.queryForList("getResourcePersonRelationsByInterhash", post.getResource().getInterHash(), session);
+			return (List<ResourcePersonRelation>) this.queryForList("getResourcePersonRelationsWithPersonsByInterhash", interhash, session);
 		} finally {
 			session.endTransaction();
 		}
@@ -391,4 +391,5 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public void setPersonSearch(PersonSearch personSearch) {
 		this.personSearch = personSearch;
 	}
+
 }

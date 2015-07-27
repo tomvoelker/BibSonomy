@@ -100,9 +100,8 @@
 		b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
 		b.school, b.series, b.type, b.volume, b.day, b.url, b.content_id, b.description, b.bibtexKey, b.misc,
 		b.bibtexAbstract, b.user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype, 
-		IF("hansii" = b.user_name, b.privnote, NULL) AS privnote , b.scraperid, t1.change_date, b.simhash1 AS interHash, b.simhash2 AS intraHash, t1.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name, c.rating_arithmetic_mean AS rating, c.number_of_ratings
-		FROM tas t1, bibhash h, bibtex b 
-			 LEFT JOIN review_ratings_cache c ON (c.interHash = b.simhash1)
+		IF("hansii" = b.user_name, b.privnote, NULL) AS privnote , b.scraperid, t1.change_date, b.simhash1 AS interHash, b.simhash2 AS intraHash, t1.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsDummyRows" />
+		FROM tas t1, bibhash h, bibtex b
 		WHERE b.content_id = t1.content_id
 		AND (
 			(b.simhash1 = h.hash
@@ -113,7 +112,7 @@
 	</statement>
 	
 	<select id="getBibTexRelationsForPerson" resultMap="PersonCommon.preFilledResourcePersonRelation" parameterClass="bibtexParam">
-		SELECT <include refid ="bibtexAttributes2"/>, t.change_date, t.tag_name, g.*, b2.count, <include refid="reviewRatingsRows" />, <include refid="commonResourcePersonRelationColumns2" />
+		SELECT <include refid ="bibtexAttributes2"/>, t.change_date, t.tag_name, g.*, b2.count, <include refid="reviewRatingsDummyRows" />, <include refid="commonResourcePersonRelationColumns2" />
 		FROM
 			(SELECT
 					t1.*,
@@ -125,8 +124,7 @@
 					AND t1.simhash1=pp.simhash1 AND pp.person_id=#personRelation.person.personId#
 					<include refid="restrictToGroups"/>
 			) AS b2
-			LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id
-			<include refid="reviewRatingsJoinPublication2" />,
+			LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id,
 			groupids AS g
 		WHERE
 			b2.group = g.group
@@ -155,8 +153,8 @@
 			WHERE person_id = #personId# 
 	</statement>
 	
-	<statement id="getResourcePersonRelationsByInterhash" parameterClass="java.lang.String" resultMap="PersonCommon.lazyLoadingResourcePersonRelation">
-		SELECT <include refid="commonResourcePersonRelationColumns" /> FROM pub_person
+	<statement id="getResourcePersonRelationsWithPersonsByInterhash" parameterClass="java.lang.String" resultMap="PersonCommon.resourcePersonRelationWithPersonPrefilled">
+		SELECT <include refid="commonResourcePersonRelationColumns" />, <include refid="commonPersonColumns"/>, <include refid="commonPersonNameColumns"/>  FROM pub_person JOIN person USING (person_id) JOIN person_name USING (person_id) 
 			WHERE simhash1 = #post.resource.interhash# 
 	</statement>
 	

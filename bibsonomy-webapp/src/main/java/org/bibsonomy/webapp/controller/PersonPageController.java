@@ -344,7 +344,7 @@ public class PersonPageController extends SingleResourceListController implement
 		
 		command.setPerson(this.logic.getPersonById(PersonIdType.BIBSONOMY_ID, command.getRequestedPersonId()));
 		
-		List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(command.getPerson());
+		List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations().byPersonId(command.getPerson().getPersonId()).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).getIt();
 		List<Post<?>> authorPosts = new ArrayList<>();
 		List<Post<?>> advisorPosts = new ArrayList<>();
 		List<Post<?>> otherAuthorPosts = new ArrayList<>();
@@ -352,7 +352,6 @@ public class PersonPageController extends SingleResourceListController implement
 
 		for(ResourcePersonRelation resourcePersonRelation : resourceRelations) {
 			final boolean isThesis = resourcePersonRelation.getPost().getResource().getEntrytype().toLowerCase().endsWith("thesis");
-			resourcePersonRelation.getPost().setResourcePersonRelations(this.logic.getResourceRelations(resourcePersonRelation.getPost()));
 			
 			if (resourcePersonRelation.getRelationType().equals(PersonResourceRelationType.AUTHOR)) {
 				if (isThesis) {
@@ -367,6 +366,10 @@ public class PersonPageController extends SingleResourceListController implement
 					otherAdvisorPosts.add(resourcePersonRelation.getPost());
 				}
 			}
+			
+			// we explicitly do not want ratings on the person pages because this might cause users of the genealogy feature to hesitate putting in their dissertations
+			resourcePersonRelation.getPost().getResource().setRating(null);
+			resourcePersonRelation.getPost().getResource().setNumberOfRatings(null);
 		}
 		
 		command.setThesis(authorPosts);
