@@ -3523,6 +3523,9 @@ public class DBLogic implements LogicInterface {
 						}
 					} else if (present(this.getPersonId()) && !this.isWithPersons() && !present(this.getAuthorIndex()) && !present(this.getRelationType())) {
 						List<ResourcePersonRelation> rVal = DBLogic.this.personDBManager.getResourcePersonRelationsWithPosts(this.getPersonId(), DBLogic.this.loginUser, BibTex.class, session);
+						for (ResourcePersonRelation rpr : rVal) {
+							SystemTagsExtractor.handleHiddenSystemTags(rpr.getPost(), DBLogic.this.loginUser.getName());
+						}
 						if (this.isWithPersonsOfPosts()) {
 							for (ResourcePersonRelation resourcePersonRelation : rVal) {
 								final String interHash = resourcePersonRelation.getPost().getResource().getInterHash();
