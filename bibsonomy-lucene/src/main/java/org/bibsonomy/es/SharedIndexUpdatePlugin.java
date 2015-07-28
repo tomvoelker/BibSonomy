@@ -72,7 +72,7 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	public SharedIndexUpdatePlugin(final ESClient esClient, final String systemHome) {
 		this.esClient = esClient;
 		this.systemHome = systemHome;
-		esIndexManager = new ESIndexManager(this.esClient, this.systemHome);
+		this.esIndexManager = new ESIndexManager(this.esClient, this.systemHome);
 	}
 	
 	/**
@@ -132,8 +132,7 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 
 	private SharedResourceIndexUpdater<R> createUpdaterInternal(final String resourceType, IndexLock indexLock) {
 		SharedResourceIndexUpdater<R> sharedIndexUpdater;
-		sharedIndexUpdater = new SharedResourceIndexUpdater<R>(this.systemHome, resourceType, this.resourceConverter, indexLock, this);
-		sharedIndexUpdater.setEsClient(this.esClient);
+		sharedIndexUpdater = new SharedResourceIndexUpdater<R>(this.esClient, this.systemHome, resourceType, this.resourceConverter, indexLock, this);
 		sharedIndexUpdater.setDbLogic(this.dbLogic);
 		return sharedIndexUpdater;
 	}
