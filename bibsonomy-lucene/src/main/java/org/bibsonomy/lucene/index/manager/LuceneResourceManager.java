@@ -384,20 +384,26 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	public void reloadIndex() {
 		// if lucene updater is disabled or index-generation running, return
 		// without doing something
-		if (!this.luceneUpdaterEnabled || this.generatingIndex) {
+		if (!this.luceneUpdaterEnabled) {
 			log.debug("lucene updater is disabled by user");
 			return;
 		}
-
-		// don't run twice at the same time - if something went wrong, delete
-		// alreadyRunning
-		if ((this.alreadyRunning > 0) && (this.alreadyRunning < this.maxAlreadyRunningTrys)) {
-			this.alreadyRunning++;
-			log.warn("reloadIndex - alreadyRunning (" + this.alreadyRunning + "/" + this.maxAlreadyRunningTrys + ")");
+		if  (this.generatingIndex) {
+			log.debug("lucene index is currently re-generating -> not updating");
 			return;
 		}
-		this.alreadyRunning = 1;
-		log.debug("reloadIndex - run and reset alreadyRunning (" + this.alreadyRunning + "/" + this.maxAlreadyRunningTrys + ")");
+
+		// should be synchronized, but as we have far too many index enabled/running/generating flags and synchronized stuff in this old lucene code, better do not lock before we remove lucene. Othewise me will risk a deadlock
+			// don't run twice at the same time - if something went wrong, delete
+			// alreadyRunning
+			if ((this.alreadyRunning > 0) && (this.alreadyRunning < this.maxAlreadyRunningTrys)) {
+				this.alreadyRunning++;
+				log.warn("reloadIndex - alreadyRunning (" + this.alreadyRunning + "/" + this.maxAlreadyRunningTrys + ")");
+				return;
+			}
+			this.alreadyRunning = 1;
+			log.debug("reloadIndex - run and reset alreadyRunning (" + this.alreadyRunning + "/" + this.maxAlreadyRunningTrys + ")");
+		//}
 
 		// do the actual work, check if there IS a index to switch and if it is correct
 		if (this.updatingIndex != null && isIndexCorrect(this.updatingIndex)) {
@@ -420,7 +426,12 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	protected void updateIndex() {
 		// if lucene updater is disabled, return without doing something
 		if (!this.luceneUpdaterEnabled) {
-			log.debug("updateIndex - lucene updater is disabled");
+			log.debug("lucene updater is disabled by user");
+			this.alreadyRunning = 0;
+			return;
+		}
+		if  (this.generatingIndex) {
+			log.debug("lucene index is currently re-generating -> not updating");
 			this.alreadyRunning = 0;
 			return;
 		}
@@ -511,46 +522,49 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		if (this.generatingIndex) {
 			return;
 		}
-
 		synchronized (this) {
+			if (this.generatingIndex) {
+				return;
+			}
 			this.generatingIndex = true;
-			// Stop the updating process
-			this.setLuceneUpdaterEnabled(false);
-			LuceneResourceIndex<R> indexToGenerate = null;
-			for (final LuceneResourceIndex<R> index : this.getResourceIndeces()) {
-				if (index.getIndexId() == id) {
-					indexToGenerate = index;
-					break;
-				}
+		}
+		
+		// Stop the updating process
+		//this.setLuceneUpdaterEnabled(false);
+		LuceneResourceIndex<R> indexToGenerate = null;
+		for (final LuceneResourceIndex<R> index : this.getResourceIndeces()) {
+			if (index.getIndexId() == id) {
+				indexToGenerate = index;
+				break;
 			}
-			if (this.activeIndex.getStatistics().getIndexId() == id) {
-				this.setActiveIndex(this.updateQueue.poll());
-			} 
-			if (indexToGenerate != null) {
-				/* the method 'setActiveIndex' will add the old 
-				 * activeIndex to the updateQueue. This will
-				 * cause that we have a third index after regenerating
-				 * a new active one, since the old active one is
-				 * added to the queue too */
-				this.updateQueue.remove(indexToGenerate);
-				final LuceneGenerateResourceIndex<R> generator = new LuceneGenerateResourceIndex<R>();
-				generator.setResourceIndex(indexToGenerate);
-				generator.setLogic(this.dbLogic);
-				generator.setCallback(this);
+		}
+		if (this.activeIndex.getStatistics().getIndexId() == id) {
+			this.setActiveIndex(this.updateQueue.poll());
+		} 
+		if (indexToGenerate != null) {
+			/* the method 'setActiveIndex' will add the old 
+			 * activeIndex to the updateQueue. This will
+			 * cause that we have a third index after regenerating
+			 * a new active one, since the old active one is
+			 * added to the queue too */
+			this.updateQueue.remove(indexToGenerate);
+			final LuceneGenerateResourceIndex<R> generator = new LuceneGenerateResourceIndex<R>();
+			generator.setResourceIndex(indexToGenerate);
+			generator.setLogic(this.dbLogic);
+			generator.setCallback(this);
 
-				this.generator = generator;
+			this.generator = generator;
 
-				if (async) {
-					// run in another thread (non blocking)
-					new Thread(generator).start();
-				} else {
-					generator.run();
-				}
+			if (async) {
+				// run in another thread (non blocking)
+				new Thread(generator).start();
 			} else {
-				log.warn("There was no index with id " + id + " found.");
-			
-				this.generatingIndex = false;
+				generator.run();
 			}
+		} else {
+			log.warn("There was no index with id " + id + " found.");
+			
+			this.generatingIndex = false;
 		}
 	}
 
@@ -571,7 +585,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		synchronized (this) {
 			this.generatingIndex = true;
 
-			this.setLuceneUpdaterEnabled(false);
+			//this.setLuceneUpdaterEnabled(false);
 
 			// get the next index to update for generating new index
 			final LuceneResourceIndex<R> resourceIndex = this.updateQueue.poll();
