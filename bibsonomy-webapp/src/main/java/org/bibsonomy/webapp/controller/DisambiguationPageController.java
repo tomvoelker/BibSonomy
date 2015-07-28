@@ -44,7 +44,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 	}
 
 	private View disambiguateAction(final DisambiguationPageCommand command) {
-		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations(command.getPost().getResource().getInterHash(), command.getRequestedRole(), new Integer(command.getRequestedIndex()));		
+		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations().byInterhash(command.getPost().getResource().getInterHash()).byRelationType(command.getRequestedRole()).byAuthorIndex(command.getRequestedIndex()).getIt();		
 		if (matchingRelations.size() > 0 ) {
 			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(matchingRelations.get(0).getPerson().getPersonId()));	
 		}
