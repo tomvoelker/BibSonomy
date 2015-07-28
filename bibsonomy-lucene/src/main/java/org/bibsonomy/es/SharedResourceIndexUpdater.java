@@ -27,7 +27,7 @@
 package org.bibsonomy.es;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -57,7 +57,6 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.indices.IndexMissingException;
 import org.elasticsearch.search.SearchHit;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -126,6 +125,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	/**
 	 * @return lastLogDate
 	 */
+	@Override
 	@SuppressWarnings("boxing")
 	public Date getLastLogDate() {
 		SystemInformation sysinfos = getSingleSystemInfos();
@@ -134,126 +134,21 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 			return null;
 		}
 		return sysinfos.getUpdaterState().getLast_log_date();
-		
-//		synchronized (this) {
-//			final String lastLogDateString = this.fetchSystemInfoField(LuceneFieldNames.LAST_LOG_DATE);
-//			if (lastLogDateString == null) {
-//				return null;
-//			}
-//			return new Date(Long.parseLong(lastLogDateString));
-//		}
 	}
 
-	private String fetchSystemInfoField(final String fieldToRetrieve) {
-		try {
-			final List<Map<String, Object>> resultList = this.getSystemInfos();
-			if (resultList != null) {
-				List<String> valList = new ArrayList<String>();
-				for(Map<String, Object> result : resultList){
-					final Object val = result.get(fieldToRetrieve);
-					if (val != null) {
-						valList.add(val.toString());
-					}
-				}
-				if(!valList.isEmpty()){
-					Collections.sort(valList);
-					return valList.get(0);
-				}
-				return null;
-			}
-		} catch (final IndexMissingException e) {
-			log.error("IndexMissingException: " + e.getDetailedMessage() + " -> returning null", e);
-		}
-		return null;
-	}
-
-	/**
-	 * @return returns the index informations on all the systems
-	 */
-	public List<Map<String, Object>> getAllSystemInfos() {
-		return this.getAllSystemInfosInternal(QueryBuilders.matchQuery("postType", this.resourceType), 200);
-	}
-
-	private List<Map<String, Object>> getAllSystemInfosInternal(final QueryBuilder query, final int size) {
-		// wait for the yellow (or green) status to prevent
-		// NoShardAvailableActionException later
-		this.esClient.waitForReadyState();
-
-		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(this.lockOfIndexBeingUpdated.getIndexName());
-		searchRequestBuilder.setTypes(ESConstants.SYSTEM_INFO_INDEX_TYPE);
-		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
-		searchRequestBuilder.setQuery(query);
-		searchRequestBuilder.setFrom(0).setSize(size).setExplain(true);
-
-		final SearchResponse response = searchRequestBuilder.execute().actionGet();
-
-		final List<Map<String, Object>> rVal = new ArrayList<>();
-		if (response != null) {
-			for (final SearchHit hit : response.getHits()) {
-				rVal.add(hit.getSource());
-			}
-		}
-
-		return rVal;
-	}
 	
-	private List<SystemInformation> getAllSystemInfosAsObjects(final QueryBuilder query, final int size) {
-		// wait for the yellow (or green) status to prevent
-		// NoShardAvailableActionException later
-		this.esClient.waitForReadyState();
-
-		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(this.lockOfIndexBeingUpdated.getIndexName());
-		searchRequestBuilder.setTypes(ESConstants.SYSTEM_INFO_INDEX_TYPE);
-		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
-		searchRequestBuilder.setQuery(query);
-		searchRequestBuilder.setFrom(0).setSize(size).setExplain(true);
-
-		final SearchResponse response = searchRequestBuilder.execute().actionGet();
-
-		final List<SystemInformation> rVal = new ArrayList<>();
-		if (response != null) {
-			for (final SearchHit hit : response.getHits()) {
-				rVal.add(parseSystemInformation(hit.getSourceAsString()));
-			}
-		}
-
-		return rVal;
-	}
-
-	/**
-	 * @return returns system info of this system
-	 */
-	public List<Map<String, Object>> getSystemInfos() {
-		final List<Map<String, Object>> l = this.getAllSystemInfosInternal(QueryBuilders.idsQuery().ids(this.systemHome + this.resourceType), 1);
-		if (l.size() > 0) {
-			return l;
-		}
-		return null;
-	}
-	
-	public SystemInformation getSingleSystemInfos() {
-		List<SystemInformation> list = getAllSystemInfosAsObjects(QueryBuilders.matchQuery("postType", this.resourceType), 2);
+	private SystemInformation getSingleSystemInfos() {
+		Collection<SystemInformation> list = this.esIndexManager.getAllSystemInfosAsObjects(QueryBuilders.matchQuery("postType", this.resourceType), 2, this.lockOfIndexBeingUpdated.getIndexName()).values();
 		if (!ValidationUtils.present(list)) {
 			throw new NoSuchElementException("no systeminfos for index " + this.lockOfIndexBeingUpdated.getIndexName());
 		}
 		if (list.size() > 1) {
 			throw new IllegalStateException("" + list.size() + " systeminfos for index " + this.lockOfIndexBeingUpdated.getIndexName());
 		}
-		return list.get(0);
+		return list.iterator().next();
 	}
 	
-	/**
-	 * @param map
-	 * @return
-	 */
-	private SystemInformation parseSystemInformation(String json) {
-		try {
-			return new ObjectMapper().readValue(json, SystemInformation.class);
-		} catch (Exception e) {
-			log.error("cannot parse systeminformation for index " + this.lockOfIndexBeingUpdated.getIndexName() + ": " + json);
-			return null;
-		}
-	}
+
 
 
 	/**

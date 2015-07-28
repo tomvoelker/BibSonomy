@@ -182,48 +182,79 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	}
 
 	/**
-	 * @param manager
+	 * @param resourceType something like Bibtex or Bookmark
 	 * @return returns informations on the lucene or elasticsearch indices
 	 */
-	public Collection<? extends LuceneIndexInfo> getIndicesInfos(final LuceneResourceManager<? extends Resource> manager) {
+	public Collection<? extends LuceneIndexInfo> getIndicesInfos(final String resourceType) {
 		final Collection<LuceneIndexInfo> rVal = new ArrayList<>();
-		final String resourceType = manager.getResourceName();
 
-		try (SharedResourceIndexUpdater<R> updater = this.createUpdater(resourceType)) {
-		if (updater == null) {
-			final LuceneIndexInfo indexInfo = new LuceneIndexInfo();
-			indexInfo.setErrorMassage("No Index found! please regenerate!");
-			rVal.add(indexInfo);
-			return rVal;
-		}
-		final List<Map<String, Object>> allSystemInfos = updater.getAllSystemInfos();
-		if (allSystemInfos == null) {
-			final LuceneIndexInfo indexInfo = new LuceneIndexInfo();
-			indexInfo.setErrorMassage("No Index found! please regenerate!");
-			rVal.add(indexInfo);
-			return rVal;
-		}
-		for (final Map<String, Object> infos : allSystemInfos) {
-			final LuceneIndexInfo indexInfo = new LuceneIndexInfo();
-			indexInfo.setActive(true);
-			indexInfo.setBasePath(String.valueOf(infos.get(ESConstants.SYSTEM_URL_FIELD_NAME)));
+		Map<String, SystemInformation> activeSystemInfos = esIndexManager.getAllActiveIndexSystemInformations(resourceType);
+		Map<String, SystemInformation> inactiveSystemInfos = esIndexManager.getAllInactiveIndexSystemInformations(resourceType);
+		Map<String, SystemInformation> generatingSystemInfos = esIndexManager.getAllGeneratingIndexSystemInformations(resourceType);
+		
+		rVal.addAll(getIndexInfos(activeSystemInfos, true, false));
+		rVal.addAll(getIndexInfos(inactiveSystemInfos, false, false));
+		rVal.addAll(getIndexInfos(generatingSystemInfos, false, true));
+		
+		return rVal;
+		
+//		try (SharedResourceIndexUpdater<R> updater = this.createUpdater(resourceType)) {
+//		if (updater == null) {
+//			final LuceneIndexInfo indexInfo = new LuceneIndexInfo();
+//			indexInfo.setErrorMassage("No Index found! please regenerate!");
+//			rVal.add(indexInfo);
+//			return rVal;
+//		}
+//		final List<Map<String, Object>> allSystemInfos = updater.getAllSystemInfos();
+//		if (allSystemInfos == null) {
+//			final LuceneIndexInfo indexInfo = new LuceneIndexInfo();
+//			indexInfo.setErrorMassage("No Index found! please regenerate!");
+//			rVal.add(indexInfo);
+//			return rVal;
+//		}
+//		for (final Map<String, Object> infos : allSystemInfos) {
+//			final LuceneIndexInfo indexInfo = new LuceneIndexInfo();
+//			indexInfo.setActive(true);
+//			indexInfo.setBasePath(String.valueOf(infos.get(ESConstants.SYSTEM_URL_FIELD_NAME)));
+//			final LuceneIndexStatistics statistics = new LuceneIndexStatistics();
+//			statistics.setNewestRecordDate(new Date(this.getLong(infos, "last_log_date")));
+//			statistics.setLastTasId(this.getLong(infos, "last_tas_id"));
+//			indexInfo.setIndexStatistics(statistics);
+//
+//			for (final SharedResourceIndexGenerator<?> gen : this.generatorThreadPool.getRunningTasks()) {
+//				if (resourceType.equals(gen.getResourceType())) {
+//					if (gen.isRunning() == true) {
+//						indexInfo.setGeneratingIndex(true);
+//						indexInfo.setIndexGenerationProgress(gen.getProgressPercentage());
+//					}
+//				}
+//			}
+//			rVal.add(indexInfo);
+//		}
+//		return rVal;
+//		}
+	}
+
+	private Collection<LuceneIndexInfo> getIndexInfos(Map<String, SystemInformation> systemInfos, boolean active, boolean generating) {
+		final Collection<LuceneIndexInfo> rVal = new ArrayList<>();
+		for (Map.Entry<String, SystemInformation> infoPair : systemInfos.entrySet()) {
+			final String indexName = infoPair.getKey();
+			final SystemInformation sysInf = infoPair.getValue();
+			final LuceneIndexInfo indexInfo = new LuceneIndexInfo(); 
+			indexInfo.setBasePath(indexName);
+			indexInfo.setActive(active);
+			
 			final LuceneIndexStatistics statistics = new LuceneIndexStatistics();
-			statistics.setNewestRecordDate(new Date(this.getLong(infos, "last_log_date")));
-			statistics.setLastTasId(this.getLong(infos, "last_tas_id"));
+			statistics.setNewestRecordDate(sysInf.getUpdaterState().getLast_log_date());
+			Number lastTasId = sysInf.getUpdaterState().getLast_tas_id();
+			statistics.setLastTasId((lastTasId == null) ? -1 : lastTasId.longValue());
+			// TODO: fetch index statistics: statistics.setNumDocs(numDocs)
 			indexInfo.setIndexStatistics(statistics);
-
-			for (final SharedResourceIndexGenerator<?> gen : this.generatorThreadPool.getRunningTasks()) {
-				if (resourceType.equals(gen.getResourceType())) {
-					if (gen.isRunning() == true) {
-						indexInfo.setGeneratingIndex(true);
-						indexInfo.setIndexGenerationProgress(gen.getProgressPercentage());
-					}
-				}
-			}
+			
+			indexInfo.setGeneratingIndex(generating);
 			rVal.add(indexInfo);
 		}
 		return rVal;
-		}
 	}
 
 	@SuppressWarnings("static-method")
