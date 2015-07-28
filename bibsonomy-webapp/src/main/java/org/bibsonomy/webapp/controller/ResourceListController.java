@@ -427,10 +427,11 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * if possible.
 	 * 
 	 * @param format e.g. "json"
-	 * @param resourcesToInitialize initially filled by ?resourcetype=bookmark&resourcetype=publication
+	 * @param resourcesToInitializeFromUser initially filled by ?resourcetype=bookmark&resourcetype=publication
 	 * @return all resources that must be initialized by this controller
 	 */
-	public Set<Class<? extends Resource>> getListsToInitialize(final String format, final Set<Class<? extends Resource>> resourcesToInitialize) {
+	public Set<Class<? extends Resource>> getListsToInitialize(final String format, final Set<Class<? extends Resource>> resourcesToInitializeFromUser) {
+		final Set<Class<? extends Resource>> resourcesToInitialize = new HashSet<Class<? extends Resource>>(resourcesToInitializeFromUser);
 		// explictly don't intialize resources (e.g. when only tags are requested)
 		if (this.initializeNoResources) {
 			resourcesToInitialize.clear();
@@ -452,7 +453,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 			// controller does not support resources required by format param -> empty list
 			if (!present(supportFormat) && !present(supportParam)) {
 				// do nothing -> return empty set
-			}			
+			}
 			else if (present(supportFormat)) {
 				final Set<Class<? extends Resource>> supportFormatParam = intersection(supportFormat, supportParam);
 				if (present(supportFormatParam)) {
