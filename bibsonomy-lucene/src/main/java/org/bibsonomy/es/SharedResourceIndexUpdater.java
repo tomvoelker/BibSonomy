@@ -110,7 +110,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 * @param resourceConverter 
 	 * @param nameOfIndexBeingUpdated 
 	 */
-	public SharedResourceIndexUpdater(final String systemHome, String resourceType, final LuceneResourceConverter<R> resourceConverter, final IndexLock lockOfIndexBeingUpdated, final SharedIndexUpdatePlugin<R> plugin) {
+	public SharedResourceIndexUpdater(final ESClient esClient, final String systemHome, String resourceType, final LuceneResourceConverter<R> resourceConverter, final IndexLock lockOfIndexBeingUpdated, final SharedIndexUpdatePlugin<R> plugin) {
 		this.systemHome = systemHome;
 		this.resourceConverter = resourceConverter;
 		this.lockOfIndexBeingUpdated = lockOfIndexBeingUpdated;
@@ -119,6 +119,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 		this.esPostsToInsert = new ArrayList<Map<String, Object>>();
 		this.usersToFlag = new TreeSet<String>();
 		this.resourceType =  resourceType;
+		this.esClient = esClient;
 		this.esIndexManager = new ESIndexManager(esClient, systemHome);		
 	}
 
