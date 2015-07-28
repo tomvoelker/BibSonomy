@@ -21,13 +21,15 @@
 	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/publication"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
-	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"> 
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+	xmlns:per="urn:jsptagdir:/WEB-INF/tags/bstags/person"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<c:set var="requestedUserEncoded" value="${mtl:encodeURI(command.requestedUser)}" />
 	<c:set var="post" value="${command.post}" />
 	<c:set var="publication" value="${post.resource}" />
+	<c:set var="loginUserName" value="${command.context.loginUser.name}" />
 	
 	<fmt:message key="navi.person" var="PersonPageTitle" />
 	<fmt:message key="person.show.academicDegree" var="textAcademicDegree" />
@@ -88,10 +90,11 @@
 		<jsp:attribute name="headerExt">
 			<script type='text/javascript' src='/resources/typeahead.js/js/typeahead.bundle.js'><!-- keep me --></script>
 			
+			<script type='text/javascript' src='/resources/javascript/person/personAutocomplete.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/autocompleteThesis.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/names.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/linkUser.js'><!-- keep me --></script>
-			<script type='text/javascript' src='/resources/javascript/person/personAutocomplete.js'><!-- keep me --></script>
+
 			<script type='text/javascript' src='/resources/javascript/person/roles.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/update.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/explainRoles.js'><!-- keep me --></script>
@@ -138,10 +141,13 @@
 		</jsp:attribute>
 
 		<jsp:attribute name="content">
+			<errors:logicExceptions exceptions="${command.logicExceptions}" />
 		
 			<div class="page-header">
-				<h1>${command.person.mainName.firstName} ${command.person.mainName.lastName}</h1>
+				<h1><c:out value="${mtl:cleanBibtex(command.person.mainName.firstName)} "/><c:out value="${mtl:cleanBibtex(command.person.mainName.lastName)}"/></h1>
 			</div>
+			
+			
 			<div id='personInfo'>
 				<div  id='aboutThisPerson'>
 					<form method='post' name='personForm' action="" class='form-horizontal'>
@@ -159,7 +165,6 @@
 								<input class='form-control' type="text" name='formAcademicDegree' id='formAcademicDegree' placeholder="${textAcademicDegree}" autocomplete="off" value="${command.person.academicDegree }"/>
 							</div>
 						</div>
-						<br/>
 						<div class='form-group'>
 							<label class="control-label col-md-4">${textPersonAlternateNames}<br/>${textPersonAlternateNamesSelect}</label>
 							<div class="col-md-6">
@@ -243,96 +248,29 @@
 				<li><a href="#ownPublications" role="tab" data-toggle="tab"><strong>${textRolePubTab}</strong></a></li>
 			</ul>
 					<div class='tab-content pub-person-tab-content'>
+					
 						<div id='ownThesis' class='tab-pane'>
 							<br/>
 							<button style='width: 100%;' class='btn btn-default' data-toggle='modal' data-target='#addThesis'>${textAddThesisButton}</button>
-							<hr/>
+							<br/>
+							<h3 class="list-headline"><fmt:message key="person.show.thesis" /></h3>
 							<c:choose>
 								<c:when test="${fn:length(command.thesis) gt 0}">
 									<c:forEach var="post" items="${command.thesis}">
-										<div class='row ${post.resource.interHash}_${post.resource.intraHash}'>
-											<div style='border-right:1px solid lightgrey' class='col-md-6 publication-list'>
-												<div class="title">
-													<!-- show one post -->
-													<rc:post post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}" resourceType="publication">
-														<jsp:attribute name="title">    <bib:title post="${post}"/>    </jsp:attribute>
-														<jsp:attribute name="actions">  <bib:actions loginUserName="${loginUserName}" post="${post}" disableResourceLinks="${false}"/></jsp:attribute>
-														<jsp:attribute name="desc">     <bib:desc post="${post}" publication="${post.resource}"/></jsp:attribute>
-														<jsp:attribute name="documents"><bib:documents post="${post}"/></jsp:attribute>
-													</rc:post>
-												</div>
-											</div>
-											<div class='col-md-6'>
-												<br/>
-												<ul>
-													<c:forEach var="role" items="${command.availableRoles}">
-														<fmt:message key="person.show.${role.relatorCode}" var="textRole" />
-														<fmt:message key="person.show.${role.relatorCode}Tooltip" var="textRoleTooltip" />
-														<li class='${role}'><span class='glyphicon glyphicon-question-sign explainRole' data-toggle="tooltip" data-placement="left" title="${textRoleTooltip}" data-role='${role}'>&#160;</span>${textRole}: 
-															<c:forEach var="relation" items="${post.resourcePersonRelations}">
-																<c:if test="${relation.relationType eq role}">
-																	<span class='resourcePersonRelation_${relation.personRelChangeId}'>
-																		<a href="${absoluteUrlGenerator.getPersonUrl(relation.person.personId)}"><c:out value="${relation.person.mainName.firstName} "/> <c:out value="${relation.person.mainName.lastName} "/> </a>
-																		<!--  <span data-toggle='modal' data-target="#editRole" data-resource-title="${post.resource.title}" data-person-name="${relation.personName.firstName} ${relation.personName.lastName}" data-relation-simhash1="${relation.simhash1}" data-relation-simhash2='${relation.simhash2}' data-person-role="${role}" style='color:orange;cursor:pointer' href="#editRole" class='editRole glyphicon glyphicon-pencil'>&#160;</span> -->
-																		<span data-toggle='modal' data-target="#deleteRole" data-resourcePersonRelation-id='${relation.personRelChangeId}' style='color:darkred;cursor:pointer' href="#deleteRole" class='deleteRole glyphicon glyphicon-remove'>&#160;</span>
-																	</span>
-																</c:if>
-															</c:forEach>
-															<span data-toggle='modal' data-target="#addRole" data-relation-pubowner="${post.user.name}" data-resourceTitle="${post.resource.title}" data-relation-simhash1="${post.resource.interHash}" data-relation-simhash2='${post.resource.intraHash}' data-person-role="${role}" style='color:green;cursor:pointer' href="#addRole" class='addRole glyphicon glyphicon-plus'>&#160;</span> 
-														</li>
-													</c:forEach>
-												</ul>
-											</div>
-										</div>
-										<HR />
+										<per:pubWithRoles post="${post}" loginUserName="${loginUserName}" availableRoles="${command.availableRoles}" />
+										<hr />
 									</c:forEach>
 								</c:when>
 								<c:otherwise>
 									<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
 								</c:otherwise>
 							</c:choose>
-						</div>
-						<div id='ownPublications' class='tab-pane'>
-							<br/>
-							<button style='width: 100%;' class='btn btn-default' data-toggle='modal' data-target='#addSupervisedThesis'>${textAddThesisButton}</button>
-							<hr/>
+							
+							<h3 class="list-headline"><fmt:message key="person.show.otherPub" /></h3>
 							<c:choose>
-								<c:when test="${fn:length(command.advisedThesis) gt 0}">
-									<c:forEach var="post" items="${command.advisedThesis}">
-										<div class='row ${post.resource.interHash}_${post.resource.intraHash}'>
-											<div style='border-right:1px solid lightgrey' class='col-md-6 publication-list'>
-												<div class="title">
-													<!-- show one post -->
-													<rc:post post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}" resourceType="publication">
-														<jsp:attribute name="title">    <bib:title post="${post}"/>    </jsp:attribute>
-														<jsp:attribute name="actions">  <bib:actions loginUserName="${loginUserName}" post="${post}" disableResourceLinks="${false}"/></jsp:attribute>
-														<jsp:attribute name="desc">     <bib:desc post="${post}" publication="${post.resource}"/></jsp:attribute>
-														<jsp:attribute name="documents"><bib:documents post="${post}"/></jsp:attribute>
-													</rc:post>
-												</div>
-											</div>
-											<div class='col-md-6'>
-												<br/>
-												<ul>
-													<c:forEach var="role" items="${command.availableRoles}">
-														<fmt:message key="person.show.${role.relatorCode}" var="textRole" />
-														<fmt:message key="person.show.${role.relatorCode}Tooltip" var="textRoleTooltip" />
-														<li class='${role}'><span class='glyphicon glyphicon-question-sign explainRole' data-toggle="tooltip" data-placement="left" title="${textRoleTooltip}" data-role='${role}'>&#160;</span>${textRole}: 
-															<c:forEach var="relation" items="${post.resourcePersonRelations}">
-																<c:if test="${relation.relationType eq role}">
-																	<span class='resourcePersonRelation_${relation.personRelChangeId}'>
-																		<a href="${absoluteUrlGenerator.getPersonUrl(relation.person.personId)}"><c:out value="${relation.person.mainName.firstName} "/> <c:out value="${relation.person.mainName.lastName} "/> </a>
-																		<!--  <span data-toggle='modal' data-target="#editRole" data-resource-title="${post.resource.title}" data-person-name="${relation.personName.firstName} ${relation.personName.lastName}" data-relation-simhash1="${relation.simhash1}" data-relation-simhash2='${relation.simhash2}' data-person-role="${role}" style='color:orange;cursor:pointer' href="#editRole" class='editRole glyphicon glyphicon-pencil'>&#160;</span> -->
-																		<span data-toggle='modal' data-target="#deleteRole" data-resourcePersonRelation-id='${relation.personRelChangeId}' style='color:darkred;cursor:pointer' href="#deleteRole" class='deleteRole glyphicon glyphicon-remove'>&#160;</span>
-																	</span>
-																</c:if>
-															</c:forEach>
-															<span data-toggle='modal' data-target="#addRole" data-relation-pubowner="${post.user.name}" data-resourceTitle="${post.resource.title}" data-relation-simhash1="${post.resource.interHash}" data-relation-simhash2='${post.resource.intraHash}' data-person-role="${role}" style='color:green;cursor:pointer' href="#addRole" class='addRole glyphicon glyphicon-plus'>&#160;</span> 
-														</li>
-													</c:forEach>
-												</ul>
-											</div>
-										</div>
+								<c:when test="${fn:length(command.otherPubs) gt 0}">
+									<c:forEach var="post" items="${command.otherPubs}">
+										<per:pubWithRoles post="${post}" loginUserName="${loginUserName}" availableRoles="${command.availableRoles}" />
 										<hr />
 									</c:forEach>
 								</c:when>
@@ -341,10 +279,43 @@
 								</c:otherwise>
 							</c:choose>
 						</div>
-					<SCRIPT type="text/javascript">
-						$("#resourcesTabList a:first").click();
-					</SCRIPT>
-				</div>
+						
+						
+						<div id='ownPublications' class='tab-pane'>
+							<br/>
+							<button style='width: 100%;' class='btn btn-default' data-toggle='modal' data-target='#addSupervisedThesis'>${textAddThesisButton}</button>
+							<br/>
+							<h3 class="list-headline"><fmt:message key="person.show.thesis" /></h3>
+							<c:choose>
+								<c:when test="${fn:length(command.advisedThesis) gt 0}">
+									<c:forEach var="post" items="${command.advisedThesis}">
+										<per:pubWithRoles post="${post}" loginUserName="${loginUserName}" availableRoles="${command.availableRoles}" />
+										<hr />
+									</c:forEach>
+								</c:when>
+								<c:otherwise>
+									<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
+								</c:otherwise>
+							</c:choose>
+							
+							<h3 class="list-headline"><fmt:message key="person.show.otherPub" /></h3>
+							<c:choose>
+								<c:when test="${fn:length(command.otherAdvisedPubs) gt 0}">
+									<c:forEach var="post" items="${command.otherAdvisedPubs}">
+										<per:pubWithRoles post="${post}" loginUserName="${loginUserName}" availableRoles="${command.availableRoles}" />
+										<hr />
+									</c:forEach>
+								</c:when>
+								<c:otherwise>
+									<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
+								</c:otherwise>
+							</c:choose>
+						</div>
+						
+						<script type="text/javascript">
+							$("#resourcesTabList a:first").click();
+						</script>
+					</div>
 
 		</jsp:attribute>
 	
@@ -424,10 +395,16 @@
 				<input type="hidden" name='post.resource.author' value='${command.person.mainName.lastName}, ${command.person.mainName.firstName}'/>
 				<input type="submit" class="btn btn-primary pull-left" name='submit' value='${textNewThesisButton}' />
 			</form>
-			<form action="" method="post" class='form-inline'>
-				<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
-				<input type='hidden' name='formThesisId' value=''/>&#160;
+			<form id="addThesisForm" action="${absoluteUrlGenerator.getPersonUrl(command.person.personId)}" method="post" class='form-inline'>
+				<!-- set via autocomplete -->
+				<input type='hidden' name='formInterHash' value=''/>
+				<input type='hidden' name='formPersonIndex' value=''/>
+				<!-- set statically -->
+				<input type='hidden' name='formPersonId' value='${command.person.personId}'/>
+				<input type='hidden' name='formPersonRole' value='AUTHOR'/>
 				<input type="hidden" name='formAction' value='addThesis' />
+				<!-- visible elements -->
+				<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
 				<input type="submit" class="btn btn-primary" name='submit' id="addThesisBtn" value='${textAddThesisButton}' />
 			</form>
 		</jsp:attribute>
@@ -436,13 +413,41 @@
 	<fmt:message key="person.show.modal.addSupervisedThesis.header" var="tmpMsg" />
 	<bs:modal modalTitle="${tmpMsg}" id="addSupervisedThesis">
 		<jsp:attribute name="modalBody">
-			<fieldset>
-				<div class="form-group">
-					<label for='addThesisAuto' class="control-label"><fmt:message key="person.show.modal.addSupervisedThesis.text" /></label>
-					<fmt:message key="person.show.modal.addSupervisedThesis.placeholder" var="tmpMsg" />
-					<input class='form-control typeahead' id='addSupervisedThesisAuto' type='text' name='addSupervisedThesisAuto' autocomplete="off" placeholder="${tmpMsg}"/>
-				</div>
-			</fieldset>
+			<form id="addSupervisedThesisForm" action="${absoluteUrlGenerator.getPersonUrl(command.person.personId)}" method="post" class="form-horizontal">
+				<fieldset>
+					<div class="form-group">
+						<label for='addSupervisedThesisAuto' class="control-label"><fmt:message key="person.show.modal.addSupervisedThesis.text" /></label>
+						<fmt:message key="person.show.modal.addSupervisedThesis.placeholder" var="tmpMsg" />
+						<input class='form-control typeahead' id='addSupervisedThesisAuto' type='text' name='addSupervisedThesisAuto' autocomplete="off" placeholder="${tmpMsg}"/>
+					</div>
+					<div class="form-group">
+						<label for='addSupervisedThesisRole' class="control-label">
+							<fmt:message key="person.show.modal.addSupervisedThesis.role">
+								<fmt:param><c:out value="${mtl:cleanBibtex(command.person.mainName.firstName)} "/> <c:out value="${mtl:cleanBibtex(command.person.mainName.lastName)}"/></fmt:param>
+							</fmt:message>
+						</label>
+						<select id="addSupervisedThesisRole" name="formPersonRole" class="form-control">
+							<c:forEach var="role" items="${command.availableRoles}">
+								<c:choose>
+									<c:when test="${(role != 'AUTHOR') and (role != 'EDITOR') and (role != 'DOCTOR_VATER')}">
+										<option value="${role}"><fmt:message key="person.show.${role.relatorCode}" /></option>
+									</c:when>
+									<c:when test="${role == 'DOCTOR_VATER'}">
+										<option value="${role}" selected="selected"><fmt:message key="person.show.${role.relatorCode}" /></option>
+									</c:when>
+								</c:choose>
+							</c:forEach>
+						</select>
+					</div>
+				</fieldset>
+				<!-- set via autocomplete -->
+				<input type='hidden' name='formInterHash' value=''/>
+				<input type='hidden' name='formPersonIndex' value=''/>
+				<!-- set statically -->
+				<input type='hidden' name='formPersonId' value='${command.person.personId}'/>
+				<input type="hidden" name='formAction' value='addThesis' />
+			</form>
+			
 		</jsp:attribute>
 		<jsp:attribute name="modalFooter">
 			<form action="/editPublication" method="post">
@@ -452,11 +457,9 @@
 				<input type="hidden" name='formAction' value='newThesis'/>
 				<input type="submit" class="btn btn-primary pull-left" name='submit' value='${textNewThesisButton}' />
 			</form>
-			<form action="" method="post" class='form-inline'>
-				<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
-				<input type='hidden' name='formThesisId' value=''/>&#160;
-				<input type="hidden" name='formAction' value='addThesis' />
-				<input type="submit" class="btn btn-primary" name='submit' id="addSupervisedThesisBtn" value='${textAddThesisButton}' />
+			<form action="#">
+				<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
+				<input type="submit" class="btn btn-primary" name='submit' id="addSupervisedThesisBtn" value='${textAddThesisButton}' onclick="javascript:$('#addSupervisedThesisForm').submit(); return false;" />
 			</form>
 		</jsp:attribute>
 	</bs:modal>

@@ -29,9 +29,7 @@ package org.bibsonomy.lucene.index.manager;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,10 +39,9 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import org.apache.commons.collections.LRUMap;
+import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.lucene.index.CorruptIndexException;
 import org.bibsonomy.es.IndexUpdater;
 import org.bibsonomy.es.IndexUpdaterState;
 import org.bibsonomy.es.UpdatePlugin;

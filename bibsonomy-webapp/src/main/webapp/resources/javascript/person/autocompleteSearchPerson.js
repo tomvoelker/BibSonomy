@@ -1,5 +1,5 @@
 $(document).ready(function() {
-	setupPersonAutocomplete('.typeahead', function(data) {
+	setupPersonAutocomplete('.typeahead', "search", 'extendedPersonName', function(data) {
 		window.location.pathname = "/person/" + data.personId;
 	});
 }); 

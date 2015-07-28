@@ -1,6 +1,5 @@
 package org.bibsonomy.webapp.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -9,6 +8,10 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.logic.exception.LogicException;
+import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
+import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.DisambiguationPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -41,7 +44,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 	}
 
 	private View disambiguateAction(final DisambiguationPageCommand command) {
-		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations(command.getPost().getResource().getInterHash(), command.getRequestedRole(), new Integer(command.getRequestedIndex()));		
+		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations().byInterhash(command.getPost().getResource().getInterHash()).byRelationType(command.getRequestedRole()).byAuthorIndex(command.getRequestedIndex()).getIt();		
 		if (matchingRelations.size() > 0 ) {
 			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(matchingRelations.get(0).getPerson().getPersonId()));	
 		}
@@ -49,7 +52,9 @@ public class DisambiguationPageController extends SingleResourceListController i
 		final PersonName requestedName = command.getPost().getResource().getAuthor().get(command.getRequestedIndex());
 		command.setPersonName(requestedName);
 		
-		command.setPersonSuggestions(this.logic.getPersonSuggestion(requestedName.toString()));
+		String name = requestedName.toString();
+		PersonSuggestionQueryBuilder query = this.logic.getPersonSuggestion(name).withEntityPersons(true).withRelationType(PersonResourceRelationType.values());
+		command.setPersonSuggestions(query.doIt());
 		
 		return Views.DISAMBIGUATION;
 	}
@@ -62,7 +67,12 @@ public class DisambiguationPageController extends SingleResourceListController i
 	 */
 	private View newAction(DisambiguationPageCommand command) {
 		final Person person = createPersonEntity(command);
-		linkToPerson(command, person);
+		try {
+			linkToPerson(command, person);
+		} catch (LogicException e) {
+			command.getLogicExceptions().add(e);
+			return disambiguateAction(command);
+		}
 		
 //		
 //		JSONObject jsonPerson = new JSONObject();
@@ -87,7 +97,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 		return person;
 	}
 
-	private void linkToPerson(DisambiguationPageCommand command, final Person person) {
+	private void linkToPerson(DisambiguationPageCommand command, final Person person) throws ResourcePersonAlreadyAssignedException {
 		final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
 		resourcePersonRelation.setPerson(person);
 		resourcePersonRelation.setPost(command.getPost());
@@ -109,13 +119,18 @@ public class DisambiguationPageController extends SingleResourceListController i
 	
 	
 	/**
-	 * creates a new person, links te resource and redirects to the new person page
+	 * creates a new person, links the resource and redirects to the new person page
 	 * @param command
 	 * @return
 	 */
 	private View linkAction(DisambiguationPageCommand command) {
 		final Person person = this.logic.getPersonById(PersonIdType.BIBSONOMY_ID, command.getRequestedPersonId());
-		linkToPerson(command, person);		
+		try {
+			linkToPerson(command, person);
+		} catch (LogicException e) {
+			command.getLogicExceptions().add(e);
+			return disambiguateAction(command);
+		}		
 		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(person.getPersonId()));
 	}
 }

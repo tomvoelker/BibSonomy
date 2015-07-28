@@ -251,6 +251,7 @@
 		<property name="resourceSearch" ref="lucenePublicationSearch" />
 		<property name="chain" ref="publicationChain" />
 		<property name="fileLogic" ref="fileLogic" />
+		<property name="publicationSearch" ref="publicationSearch" />
 	</bean>
 	
 	<bean id="tagRelationDatabaseManager" class="org.bibsonomy.database.managers.TagRelationDatabaseManager" factory-method="getInstance">

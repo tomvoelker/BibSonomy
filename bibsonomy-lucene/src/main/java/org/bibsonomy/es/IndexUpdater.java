@@ -29,7 +29,7 @@ package org.bibsonomy.es;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.collections.LRUMap;
+import org.apache.commons.collections.map.LRUMap;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;

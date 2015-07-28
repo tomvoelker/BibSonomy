@@ -19,7 +19,10 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.services.searcher.PersonSearch;
+
+import com.ibatis.common.jdbc.exception.NestedSQLException;
 
 /**
  * TODO: add documentation to this class
@@ -174,12 +177,20 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 * @param resourcePersonRelation
 	 * @param session 
 	 */
-	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation, DBSession session) {
+	public boolean addResourceRelation(ResourcePersonRelation resourcePersonRelation, DBSession session) {
 		session.beginTransaction();
 		try {
 			resourcePersonRelation.setPersonRelChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("addResourceRelation", resourcePersonRelation, session);
 			session.commitTransaction();
+			return true;
+		} catch (RuntimeException e) {
+			if (e.getCause() instanceof NestedSQLException) {
+				if ((e.getCause().getCause() != null) && (e.getCause().getCause().getMessage().contains("Duplicate entry"))) {
+					return false;
+				}
+			}
+			throw e;
 		} finally {
 			session.endTransaction();
 		}
@@ -292,10 +303,14 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		post.setResource(new BibTex());
 		post.getResource().setInterHash(interhash);
 		rpr.setPost(post);
-		rpr.setPersonIndex(authorIndex);
+		if (authorIndex != null) {
+			rpr.setPersonIndex(authorIndex.intValue());
+		} else {
+			rpr.setPersonIndex(-1);
+		}
 		rpr.setRelationType(role);
 			
-			return this.getResourcePersonRelationByResourcePersonRelation(rpr, session);
+		return this.getResourcePersonRelationByResourcePersonRelation(rpr, session);
 	}
 	
 	private List<ResourcePersonRelation> getResourcePersonRelationByResourcePersonRelation(ResourcePersonRelation rpr, DBSession session) {
@@ -316,11 +331,12 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 * @return List<ResourcePersonRelation>
 	 */
 	public List<ResourcePersonRelation> getResourcePersonRelationsWithPosts(
-			Person person, User loginUser, Class<? extends BibTex> publicationType, DBSession session) {
+			String personId, User loginUser, Class<? extends BibTex> publicationType, DBSession session) {
 		
 		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, null, null, null, null, null, 0, Integer.MAX_VALUE, null, null, null, null, loginUser);
 		final ResourcePersonRelation personRelation = new ResourcePersonRelation();
-		personRelation.setPerson(person);
+		personRelation.setPerson(new Person());
+		personRelation.getPerson().setPersonId(personId);
 		param.setPersonRelation(personRelation);
 		
 		session.beginTransaction();
@@ -350,16 +366,15 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		}
 	}
 
-
 	/**
-	 * @param post
+	 * @param interhash
+	 * @param session
 	 * @return
 	 */
-	public List<ResourcePersonRelation> getResourcePersonRelations(
-			Post<? extends BibTex> post, DBSession session) {
+	public List<ResourcePersonRelation> getResourcePersonRelationsWithPersonsByInterhash(String interhash, DBSession session) {
 		session.beginTransaction();
 		try {
-			return (List<ResourcePersonRelation>) this.queryForList("getResourcePersonRelationsByInterhash", post.getResource().getInterHash(), session);
+			return (List<ResourcePersonRelation>) this.queryForList("getResourcePersonRelationsWithPersonsByInterhash", interhash, session);
 		} finally {
 			session.endTransaction();
 		}
@@ -369,11 +384,12 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 * @param queryString
 	 * @return
 	 */
-	public List<ResourcePersonRelation> getPersonSuggestion(String queryString) {
-		return this.personSearch.getPersonSuggestion(queryString);
+	public List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder options) {
+		return this.personSearch.getPersonSuggestion(options);
 	}
 
 	public void setPersonSearch(PersonSearch personSearch) {
 		this.personSearch = personSearch;
 	}
+
 }

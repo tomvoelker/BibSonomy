@@ -38,7 +38,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConceptStatus;
@@ -68,6 +67,8 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.PostLogicInterface;
+import org.bibsonomy.model.logic.exception.LogicException;
+import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.SimHash;
@@ -857,25 +858,36 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 
 		// if a PersonId has been provided, it means that we have come from a person page ...
 		if ((command.getPersonId() != null) && (post.getResource() instanceof BibTex)) {
-			storePersonRelation(command, loginUser, post);
+			try {
+				storePersonRelation(command, loginUser, post);
+			} catch (LogicException e) {
+				// should not happen
+				log.error("error associating new post to person", e);
+				throw new RuntimeException(e);
+			}
 		}
 	
 	}
 
-	private void storePersonRelation(final COMMAND command, final User loginUser, final Post<RESOURCE> post) {
-		final BibTex bibtex = (BibTex) post.getResource();
+	private void storePersonRelation(final COMMAND command, final User loginUser, final Post<RESOURCE> post) throws ResourcePersonAlreadyAssignedException {
+		if (!(post.getResource() instanceof BibTex)) {
+			return;
+		}
+		@SuppressWarnings("unchecked")
+		Post<BibTex> pubPost = (Post<BibTex>) post;
+
 		final Person person = this.logic.getPersonById(PersonIdType.BIBSONOMY_ID, command.getPersonId());
 		
 		if (person != null) {
 			final PersonResourceRelationType role = command.getPersonRole();
-			final List<PersonName> publicationNames = bibtex.getPersonNamesByRole(role);
+			final List<PersonName> publicationNames = pubPost.getResource().getPersonNamesByRole(role);
 			
 			
 			final int personIndex = findPersonIndex(person, publicationNames);
 
 			final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
 			resourcePersonRelation.setPerson(person);
-			resourcePersonRelation.setPost((Post<BibTex>) post); // TODO: should we allow personrelations such as authors for bookmarks?
+			resourcePersonRelation.setPost(pubPost);
 			resourcePersonRelation.setChangedBy(loginUser.getName());
 			resourcePersonRelation.setRelationType(role);
 			resourcePersonRelation.setPersonIndex(personIndex);
