@@ -49,6 +49,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.util.ValidationUtils;
+import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -389,9 +390,14 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 		String jsonDocumentForSystemInfo;
 		try {
 			jsonDocumentForSystemInfo = mapper.writeValueAsString(this.systemInfo);
-			this.esClient.getClient().prepareIndex(this.lockOfIndexBeingUpdated.getIndexName(), ESConstants.SYSTEM_INFO_INDEX_TYPE, this.systemHome + this.resourceType).setSource(jsonDocumentForSystemInfo).execute().actionGet();
+			IndexResponse res = this.esClient.getClient().prepareIndex(this.lockOfIndexBeingUpdated.getIndexName(), ESConstants.SYSTEM_INFO_INDEX_TYPE, this.systemHome + this.resourceType).setSource(jsonDocumentForSystemInfo).execute().actionGet();
+			if ((res == null) || !ValidationUtils.present(res.getId())) {
+				throw new RuntimeException("failed to save systeminformation for index " + this.lockOfIndexBeingUpdated.getIndexName());
+			} else {
+				log.info("updated systeminformation of index " + this.lockOfIndexBeingUpdated.getIndexName() + " to " + jsonDocumentForSystemInfo);
+			}
 		} catch (final JsonProcessingException e) {
-			log.error("Failed to convert SystemInformation into a JSON", e);
+			log.error("Failed to convert SystemInformation into JSON", e);
 		}
 	}
 
