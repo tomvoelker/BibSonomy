@@ -2,8 +2,10 @@ package org.bibsonomy.es;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -13,18 +15,25 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandardPublication;
-import org.bibsonomy.util.LockAutoCloseable;
 import org.elasticsearch.action.admin.cluster.state.ClusterStateResponse;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
+import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.cluster.metadata.AliasMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.hppc.cursors.ObjectCursor;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Class for every basic functionality on top of elasticsearch ee.g. resolving index names by alias names and locking indices
@@ -271,22 +280,30 @@ public class ESIndexManager {
 	 * @param alias
 	 * @return return a list of indexes
 	 */
-	public List<String> getThisSystemsIndexesFromAlias(String alias){
-		List<String> indexes = new ArrayList<String>();
-		  ImmutableOpenMap<String, AliasMetaData> indexToAliasesMap = this.esClient.getClient().admin().cluster()
-		            .state(Requests.clusterStateRequest())
-		            .actionGet()
-		            .getState()
-		            .getMetaData()
-		            .aliases().get(alias);
-		    if(indexToAliasesMap != null && !indexToAliasesMap.isEmpty()){
-		    	for (ObjectCursor<String> cursor : indexToAliasesMap.keys()) {
-		        	final String indexName = cursor.value;
-		        	if(indexName.contains(this.systemHome.replaceAll("[^a-zA-Z0-9]", "").toLowerCase())){
-		        		indexes.add(indexName);
-		        	}
-		        }
-		    }
+	public List<String> getThisSystemsIndexesFromAlias(String alias) {
+		final String thisSystemPrefix = this.systemHome.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
+		final List<String> rVal = getIndexesFromAlias(alias);
+		for (Iterator<String> it = rVal.iterator(); it.hasNext();) {
+			String indexName = it.next();
+			if (!indexName.contains(thisSystemPrefix)) {
+				it.remove();
+			}
+		}
+		return rVal;
+	}
+	public List<String> getIndexesFromAlias(String alias){
+		final List<String> indexes = new ArrayList<String>();
+		final ImmutableOpenMap<String, AliasMetaData> indexToAliasesMap = this.esClient.getClient().admin().cluster() //
+				.state(Requests.clusterStateRequest()) //
+				.actionGet() //
+				.getState() //
+				.getMetaData() //
+				.aliases().get(alias);
+		if (indexToAliasesMap != null && !indexToAliasesMap.isEmpty()) {
+			for (ObjectCursor<String> cursor : indexToAliasesMap.keys()) {
+				indexes.add(cursor.value);
+			}
+		}
 		return indexes;
 	}
 	
@@ -444,5 +461,80 @@ public class ESIndexManager {
 			return null;
 		}
 		return new IndexLock(realIndexName, getRwLock(realIndexName).writeLock());
+	}
+
+	public Map<String,SystemInformation> getAllSystemInfosAsObjects(final QueryBuilder query, final int size, String indexName) {
+		// wait for the yellow (or green) status to prevent
+		// NoShardAvailableActionException later
+		this.esClient.waitForReadyState();
+
+		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(indexName);
+		searchRequestBuilder.setTypes(ESConstants.SYSTEM_INFO_INDEX_TYPE);
+		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
+		searchRequestBuilder.setQuery(query);
+		searchRequestBuilder.setFrom(0).setSize(size).setExplain(true);
+
+		final SearchResponse response = searchRequestBuilder.execute().actionGet();
+
+		final Map<String, SystemInformation> rVal = new TreeMap<String, SystemInformation>();
+		if (response != null) {
+			for (final SearchHit hit : response.getHits()) {
+				rVal.put(hit.getIndex(), parseSystemInformation(hit.getSourceAsString(), indexName));
+			}
+		}
+
+		return rVal;
+	}
+	
+	/**
+	 * @param map
+	 * @return
+	 */
+	private SystemInformation parseSystemInformation(String json, String indexName) {
+		try {
+			return new ObjectMapper().readValue(json, SystemInformation.class);
+		} catch (Exception e) {
+			log.error("cannot parse systeminformation for index " + indexName + ": " + json);
+			return null;
+		}
+	}
+
+	private Map<String, SystemInformation> getAllIndexSystemInformations(String resourceType, final String alias) {
+		final Map<String, SystemInformation> rVal = new TreeMap<>();
+		for (String indexName : getIndexesFromAlias(alias)) {
+			rVal.putAll(getAllSystemInfosByAlias(resourceType, indexName));
+		}
+		return rVal;
+	}
+
+	/**
+	 * @param resourceType
+	 * @return
+	 */
+	public Map<String, SystemInformation> getAllActiveIndexSystemInformations(String resourceType) {
+		final String alias = ESConstants.getGlobalAliasForResource(resourceType, true);
+		return getAllIndexSystemInformations(resourceType, alias);
+	}
+	
+	/**
+	 * @param resourceType
+	 * @return
+	 */
+	public Map<String, SystemInformation> getAllInactiveIndexSystemInformations(String resourceType) {
+		final String alias = ESConstants.getGlobalAliasForResource(resourceType, false);
+		return getAllIndexSystemInformations(resourceType, alias);
+	}
+	
+	/**
+	 * @param resourceType
+	 * @return
+	 */
+	public Map<String, SystemInformation> getAllGeneratingIndexSystemInformations(String resourceType) {
+		final String alias = ESConstants.getTempAliasForResource(resourceType);
+		return getAllIndexSystemInformations(resourceType, alias);
+	}
+
+	private Map<String, SystemInformation> getAllSystemInfosByAlias(String resourceType, final String alias) {
+		return this.getAllSystemInfosAsObjects(QueryBuilders.matchQuery("postType", resourceType), 10000, alias);
 	}
 }
