@@ -105,11 +105,12 @@ public class ESIndexManager {
 	 * @param resourceType
 	 * @return returns the index name
 	 */
-	private String createIndex(final String resourceType){
-		String indexName = ESConstants.getIndexNameWithTime(this.systemHome, resourceType);
+	private String createIndex(final String resourceType) {
+		final String indexName = ESConstants.getIndexNameWithTime(this.systemHome, resourceType);
+		log.info("creating index: " + indexName);
 		final CreateIndexResponse createIndex = this.esClient.getClient().admin().indices().create(new CreateIndexRequest(indexName)).actionGet();
 		if (!createIndex.isAcknowledged()) {
-			log.error("Error in creating Index: " + indexName);
+			log.error("Error in creating index: " + indexName);
 			return null;
 		}
 		return indexName;
@@ -127,6 +128,7 @@ public class ESIndexManager {
 		final List<String> prevTempIndexes = this.getThisSystemsIndexesFromAlias(tempAlias);
 		if(!prevTempIndexes.isEmpty()){
 			for(String indexName: prevTempIndexes){
+				log.info("removing alias and index: " + tempAlias + "->" + indexName);
 				if (removeAlias(indexName, tempAlias) == false) {
 					log.error("Error deleting the existing temp index alias: " + tempAlias + "->" + indexName);
 					return null;
