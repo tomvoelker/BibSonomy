@@ -47,7 +47,7 @@ public class CslToBibtexConverterTest {
 		final String csl = TestUtils.readEntryFromFile(PATH_TO_FILES + "csltobibtextest1.json");
 
 		// test the conversion
-		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "csltobibtextest1.bib");
+		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "csltobibtextest1.bib").trim();
 		final CslToBibtexConverter cslToBibtexConverter = new CslToBibtexConverter();
 		final String bibTeX = cslToBibtexConverter.cslToBibtex(csl);
 		assertEquals (expectedBibTeX, bibTeX);
