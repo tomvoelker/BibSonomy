@@ -323,7 +323,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 */
 	@Override
 	public List<Post<BibTex>> getPublicationSuggestions(PublicationSuggestionQueryBuilder options) {
-		try (final IndexLock indexLock = getEsIndexManager().aquireReadLockForTheActiveIndex(this.resourceType)) {
+		try (final IndexLock indexLock = getEsIndexManager().acquireReadLockForTheLocalActiveIndex(this.resourceType)) {
 			// we use inverted scores such that the best results automatically appear first according to the ascending order of a sorted map
 			final TreeMap<Float, ResourcePersonRelation> relSorter = iterativelyFetchSuggestions(indexLock, null, options);
 				
@@ -377,20 +377,20 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 */
 	@Override
 	public List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder options) {
-				try (final IndexLock indexLock = getEsIndexManager().aquireReadLockForTheActiveIndex(resourceType)) {
-					final Set<String> tokenizedQueryString = new HashSet<>();
-					for (String token : new SimpleTokenizer(options.getQuery())) {
-						if (!StringUtils.isBlank(token)) {
-							tokenizedQueryString.add(token.toLowerCase());
-						}
-					} 
-					final TreeMap<Float, ResourcePersonRelation> relSorter = iterativelyFetchSuggestions(indexLock, tokenizedQueryString, options);
-					return extractDistinctPersons(relSorter);
-						
-				} catch (final IndexMissingException e) {
-					log.error("IndexMissingException: " + e);
+		try (final IndexLock indexLock = getEsIndexManager().acquireReadLockForTheLocalActiveIndex(resourceType)) {
+			final Set<String> tokenizedQueryString = new HashSet<>();
+			for (String token : new SimpleTokenizer(options.getQuery())) {
+				if (!StringUtils.isBlank(token)) {
+					tokenizedQueryString.add(token.toLowerCase());
 				}
-				return new ArrayList<>();
+			} 
+			final TreeMap<Float, ResourcePersonRelation> relSorter = iterativelyFetchSuggestions(indexLock, tokenizedQueryString, options);
+			return extractDistinctPersons(relSorter);
+				
+		} catch (final IndexMissingException e) {
+			log.error("IndexMissingException: " + e);
+		}
+		return new ArrayList<>();
 		
 	}
 
@@ -415,7 +415,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 						) //
 						//.should(QueryBuilders.termQuery(LuceneFieldNames.USER_NAME, genealogyUser)) //
 						, addShouldYearIfYearInQuery( //
-								FilterBuilders.termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, systemUrl), //
+								FilterBuilders.matchAllFilter(), // termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, systemUrl), //
 								options.getQuery()) //
 				);
 		return queryBuilder;

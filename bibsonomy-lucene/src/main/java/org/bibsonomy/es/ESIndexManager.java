@@ -439,6 +439,22 @@ public class ESIndexManager {
 		//final String realIndexName = getThisSystemsIndexNameFromAlias(activeAliasName);
 		return aquireLockForIndexName(activeAliasName, writeAccess);
 	}
+	
+	public IndexLock acquireReadLockForTheLocalActiveIndex(String resourceType) {
+		return acquireLockForTheLocalActiveIndex(resourceType, false);
+	}
+	
+	private IndexLock acquireLockForTheLocalActiveIndex(String resourceType, boolean writeAccess) {
+		// here we lock the alias name instead of the nme of a real index because: a) active indices are never modified and b) an active index can only become inactive when a write lock on the active index is acquired 
+		final String activeAliasName = ESConstants.getGlobalAliasForResource(resourceType, true);
+
+		final ReadWriteLock rwlock = getRwLock(activeAliasName);
+		final String realIndexName = getThisSystemsIndexNameFromAlias(activeAliasName);
+		final Lock lock = writeAccess ? rwlock.writeLock() : rwlock.readLock();
+		// we locked the active-alias to prevent the updater from changing the active alias in the meantime which in turn hinders the modification or deletion of the active index of this system.
+		// Yet, we only use the active index of the local system as the indexName of the lock object (independently of the underlying lock)
+		return new IndexLock(realIndexName, lock);
+	}
 
 	/**
 	 * @param indexName
