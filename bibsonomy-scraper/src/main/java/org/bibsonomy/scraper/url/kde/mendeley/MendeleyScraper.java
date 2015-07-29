@@ -55,7 +55,10 @@ public class MendeleyScraper extends AbstractUrlScraper{
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 	
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "mendeley.com"), AbstractUrlScraper.EMPTY_PATTERN));
-	private static final Pattern BIBTEX_PATTERN = Pattern.compile("citation_json.*");	
+	// input: citation_json = {"authors": ...};
+	private static final Pattern BIBTEX_PATTERN = Pattern.compile("citation_json = (.+?);");
+	
+	private final CslToBibtexConverter cslConverter = new CslToBibtexConverter();
 	
 	@Override
 	protected boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {
@@ -68,7 +71,7 @@ public class MendeleyScraper extends AbstractUrlScraper{
 				this.log.error("can't parse publication");
 				return false; 
 			}
-			final String strCitation = new CslToBibtexConverter().cslToBibtex(match.group(0));
+			final String strCitation = this.cslConverter.cslToBibtex(match.group(1));
 			if (present(strCitation)) {
 				scrapingContext.setBibtexResult(strCitation);
 				return true;
