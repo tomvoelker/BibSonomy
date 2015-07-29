@@ -162,13 +162,21 @@
 	<bean id="notLoggedInUser" class="org.bibsonomy.model.User"/>
 	
 	<bean id="qrCodeRenderer" class="org.bibsonomy.util.QRCodeRenderer" scope="singleton">
-		<property name="projectHome" value="${project.home}" />
+		<property name="projectHome" ref="projectHome" />
 	</bean>
-		
+	
+	<bean id="projectName" class="java.lang.String">
+		<constructor-arg value="${project.name}" />
+	</bean>
+	
+	<bean id="projectHome" class="java.lang.String">
+		<constructor-arg value="${project.home}" />
+	</bean>
+	
 	<!-- handles sending of mails  -->
 	<bean id="mailUtils" class="org.bibsonomy.util.MailUtils" scope="singleton">
-		<property name="projectHome" value="${project.home}" />
-		<property name="projectName" value="${project.name}" />
+		<property name="projectHome" ref="projectHome" />
+		<property name="projectName" ref="projectName" />
 		<property name="projectBlog" value="${project.blog}" />
 		<property name="projectEmail" value="${project.email}" />
 		<property name="projectRegistrationFromAddress" value="${project.registrationFromAddress}" />
@@ -201,7 +209,7 @@
 	<bean id="relativeUrlGenerator" class="org.bibsonomy.services.URLGenerator" scope="prototype"/>
 	
 	<bean id="absoluteUrlGenerator" class="org.bibsonomy.services.URLGenerator" scope="prototype">
-		<property name="projectHome" value="${project.home}" />
+		<property name="projectHome" ref="projectHome" />
 	</bean>
 	
 	<bean id="vuFindUrlGenerator" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
@@ -215,7 +223,7 @@
 	</bean>
 	
 	<bean id="realVuFindUrlGenerator" class="org.bibsonomy.webapp.view.urlbuilder.VuFindURLGenerator" lazy-init="true">
-		<property name="projectHome" value="${project.home}" />
+		<property name="projectHome" ref="projectHome" />
 		<property name="vuFindUrlPrefix" value="${export.bibtex.vufind.marc.biburl}" />
 		<property name="ebscoVuFindUrlPrefix" value="${export.bibtex.vufind.ebsco.biburl}" />
 		<property name="vuFindUrlMiscFieldName" value="hdsurl" />
@@ -974,7 +982,7 @@
 	</bean>
 	
 	<bean id="contextPathFilter" class="org.bibsonomy.webapp.filters.ContextPathFilter">
-		<property name="projectHomeUrl" value="${project.home}"/>
+		<property name="projectHomeUrl" ref="projectHome"/>
 	</bean>
 	
 	<!--  #################### imports #################### -->

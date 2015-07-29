@@ -33,7 +33,12 @@
 <!--	<spring:theme code="stylesheet.main" var="stylesheet_main" text="${relativeUrlGenerator.getProjectHome()}${resdir}/css/style.css"/>-->
 <!--	<link rel="stylesheet" type="text/css" href="${stylesheet_main}" />-->
 	<link rel="stylesheet" type="text/css" href="${relativeUrlGenerator.getProjectHome()}${resdir}/css/style.css" />
-
+		<!--+ 
+		| To have the locale available on all pages we set the scope to "request".
+		| see http://stackoverflow.com/questions/333729/how-do-i-access-locale-from-a-jsp 
+		|-->
+	<c:set var="locale" value="${pageContext.response.locale}" scope="request"/>
+	
 	<c:if test="${not empty command.bookmark.list}">
 		<resources:bookmarks listView="${command.bookmark}" 
 						loginUserName="${command.context.loginUser.name}" 
