@@ -84,7 +84,7 @@ public class RecommendedPostsPageController extends SingleResourceListController
 		// no sorting, recommender gives sorted results
 		command.setSortPage(null);
 		
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			listCommand.setStart(0);

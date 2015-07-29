@@ -87,7 +87,7 @@ public class BibtexkeyPageController extends SingleResourceListController implem
 		}
 		
 		// retrieve and set the requested resource lists
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			setList(command, resourceType, groupingEntity, groupingName, command.getRequestedTagsList(), null, null, null, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
 			postProcessAndSortList(command, resourceType);
 		}
