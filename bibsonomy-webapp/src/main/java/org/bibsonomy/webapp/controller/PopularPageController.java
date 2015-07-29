@@ -80,7 +80,7 @@ public class PopularPageController extends MultiResourceListController implement
 		int days = 0;
 
 		do {
-			for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
+			for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 				// build day systemtag
 				final List<String> tags = Collections.singletonList(SystemTagsUtil.buildSystemTagString(DaysSystemTag.NAME, begin));
 				// determine the value of popular days, e.g. the last 10 days

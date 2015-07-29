@@ -57,7 +57,7 @@ public class InboxPageController extends SingleResourceListController implements
 				
 		final String loginUserName = command.getContext().getLoginUser().getName();
 		// retrieve and set the requested resource lists
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final int entriesPerPage = command.getListCommand(resourceType).getEntriesPerPage();
 			this.setList(command, resourceType, GroupingEntity.INBOX, loginUserName, null, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			postProcessAndSortList(command, resourceType);
