@@ -15,6 +15,7 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.LogicException;
+import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.util.spring.security.AuthenticationUtils;
@@ -344,7 +345,7 @@ public class PersonPageController extends SingleResourceListController implement
 		
 		command.setPerson(this.logic.getPersonById(PersonIdType.BIBSONOMY_ID, command.getRequestedPersonId()));
 		
-		List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations().byPersonId(command.getPerson().getPersonId()).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).getIt();
+		List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations().byPersonId(command.getPerson().getPersonId()).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear).getIt();
 		List<Post<?>> authorPosts = new ArrayList<>();
 		List<Post<?>> advisorPosts = new ArrayList<>();
 		List<Post<?>> otherAuthorPosts = new ArrayList<>();

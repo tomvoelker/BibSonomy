@@ -119,7 +119,19 @@
 							<div class="list-group">
 								<c:forEach var='rel' items="${command.personSuggestions}">
 									<div class="list-group-item">
-										<a class='btnLinkPerson' data-toggle="modal" data-target="#linkPerson" href="#linkPerson" data-person-url="${absoluteUrlGenerator.getPersonUrl(rel.person.personId)}" data-person-id="${fn:escapeXml(rel.person.personId)}" >
+										<c:choose>
+											<c:when test="${not empty command.context.loginUser.name}">
+												<c:set var="dataToggle" value="modal"/>
+												<c:set var="href" value="#linkPerson"/>
+												<c:set var="dataTarget" value="#linkPerson"/>
+											</c:when>
+											<c:otherwise>
+												<c:set var="dataToggle" value=""/>
+												<c:set var="href" value="${absoluteUrlGenerator.getPersonUrl(rel.person.personId)}"/>
+												<c:set var="dataTarget" value=""/>
+											</c:otherwise>
+										</c:choose>
+										<a class='btnLinkPerson' data-toggle="${dataToggle}" data-target="${dataTarget}" href="${href}" data-person-url="${absoluteUrlGenerator.getPersonUrl(rel.person.personId)}" data-person-id="${fn:escapeXml(rel.person.personId)}" >
 											<span class="authorName">
 												<c:if test="${not empty rel.person.mainName.firstName}"><c:out value="${rel.person.mainName.firstName} "/></c:if>
 												<c:if test="${not empty rel.person.mainName.lastName}"><c:out value="${rel.person.mainName.lastName}"/></c:if>
@@ -144,9 +156,11 @@
 										</a>
 									</div>
 								</c:forEach>
-								<div class="list-group-item">
-									<a class='btnLinkPerson' data-toggle="modal" data-target="#otherPerson" href="#otherPerson"><span class="authorName">${textOtherPerson}</span></a>
-								</div>
+								<c:if test="${not empty command.context.loginUser.name}">
+									<div class="list-group-item">
+										<a class='btnLinkPerson' data-toggle="modal" data-target="#otherPerson" href="#otherPerson"><span class="authorName">${textOtherPerson}</span></a>
+									</div>
+								</c:if>
 							</div>
 						</c:when>
 						<c:otherwise>

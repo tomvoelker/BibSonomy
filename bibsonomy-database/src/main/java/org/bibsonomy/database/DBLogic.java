@@ -3223,6 +3223,7 @@ public class DBLogic implements LogicInterface {
 	
 	@Override
 	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) throws ResourcePersonAlreadyAssignedException {
+		this.ensureLoggedIn();
 		ValidationUtils.assertNotNull(resourcePersonRelation.getPerson());
 		ValidationUtils.assertNotNull(resourcePersonRelation.getPerson().getPersonId());
 		ValidationUtils.assertNotNull(resourcePersonRelation.getRelationType());
@@ -3252,6 +3253,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public void removeResourceRelation(int resourceRelationId) {
+		this.ensureLoggedIn();
 		DBSession session = this.openSession();
 		try {
 			this.personDBManager.removeResourceRelation(resourceRelationId, session);
@@ -3265,6 +3267,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public void createOrUpdatePerson(Person person) {
+		this.ensureLoggedIn();
 		final DBSession session = this.openSession();
 		try {
 			createOrUpdatePerson(person, session);
@@ -3274,6 +3277,7 @@ public class DBLogic implements LogicInterface {
 	}
 
 	private void createOrUpdatePerson(Person person, final DBSession session) {
+		this.ensureLoggedIn();
 		if (person.getUser() != null) {
 			if (person.getUser().equals(loginUser.getName()) == false) {
 				throw new AccessDeniedException();
@@ -3347,6 +3351,7 @@ public class DBLogic implements LogicInterface {
 	
 
 	private void updatePersonNames(Person person, DBSession session) {
+		this.ensureLoggedIn();
 		if (!present(person.getNames())) {
 			return;
 		}
@@ -3368,7 +3373,7 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	private void setMainNameIfNoneSet(Person person) {
+	private static void setMainNameIfNoneSet(Person person) {
 		boolean mainNameFound = false;
 		for (PersonName name : person.getNames()) {
 			if (name.isMain() == true) {
@@ -3439,6 +3444,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public void removePersonName(Integer personChangeId) {
+		this.ensureLoggedIn();
 		final DBSession session = this.openSession();
 		try {
 			this.personDBManager.removePersonName(personChangeId, session);
@@ -3451,7 +3457,7 @@ public class DBLogic implements LogicInterface {
 	 * @param byInterHash
 	 * @param resourcePersonRelationsWithPosts
 	 */
-	private static void addIfNotPresent(Map<String, ResourcePersonRelation> byInterHash, List<ResourcePersonRelation> resourcePersonRelationsWithPosts) {
+	private static void addToMapIfNotPresent(Map<String, ResourcePersonRelation> byInterHash, List<ResourcePersonRelation> resourcePersonRelationsWithPosts) {
 		for (ResourcePersonRelation rpr : resourcePersonRelationsWithPosts) {
 			final String interhash = rpr.getPost().getResource().getInterHash();
 			if (byInterHash.containsKey(interhash)) {
@@ -3462,6 +3468,7 @@ public class DBLogic implements LogicInterface {
 	}
 
 	public void createOrUpdatePersonName(PersonName personName) {
+		this.ensureLoggedIn();
 		final DBSession session = this.openSession();
 		try {
 			this.personDBManager.createPersonName(personName, session);
@@ -3471,6 +3478,7 @@ public class DBLogic implements LogicInterface {
 	}
 	
 	public void linkUser(String personId) {
+		this.ensureLoggedIn();
 		final DBSession session = this.openSession();
 		try {
 			this.personDBManager.unlinkUser(this.getAuthenticatedUser().getName(), session);
@@ -3484,6 +3492,7 @@ public class DBLogic implements LogicInterface {
 	}
 	
 	public void unlinkUser(String username) {
+		this.ensureLoggedIn();
 		final DBSession session = this.openSession();
 		try {
 			this.personDBManager.unlinkUser(username, session);
@@ -3544,7 +3553,7 @@ public class DBLogic implements LogicInterface {
 			private void postProcess(List<ResourcePersonRelation> rVal) {
 				if (this.isGroupByInterhash()) {
 					final Map<String, ResourcePersonRelation> byInterHash = new HashMap<>();
-					addIfNotPresent(byInterHash, rVal);
+					addToMapIfNotPresent(byInterHash, rVal);
 					rVal.clear();
 					rVal.addAll(byInterHash.values());
 				}
