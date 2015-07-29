@@ -26,7 +26,6 @@
  */
 package org.bibsonomy.es;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,14 +36,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
-import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
 import org.bibsonomy.lucene.param.LuceneIndexInfo;
 import org.bibsonomy.lucene.param.LuceneIndexStatistics;
 import org.bibsonomy.lucene.util.generator.AbstractIndexGenerator;
 import org.bibsonomy.lucene.util.generator.GenerateIndexCallback;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.util.SimpleBlockingThreadPoolExecutor;
-import org.bibsonomy.util.ValidationUtils;
 
 /**
  * Initiates the IndexUpdater for the cronjobs to update indexes
@@ -194,6 +191,30 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 		rVal.addAll(getIndexInfos(activeSystemInfos, true, false));
 		rVal.addAll(getIndexInfos(inactiveSystemInfos, false, false));
 		rVal.addAll(getIndexInfos(generatingSystemInfos, false, true));
+		
+		for (final SharedResourceIndexGenerator<?> gen : this.generatorThreadPool.getRunningTasks()) {
+			if (resourceType.equals(gen.getResourceType())) {
+				final String indexName = gen.getIndexName();
+				for (LuceneIndexInfo lii : rVal) {
+					if (indexName.equals(lii.getBasePath())) {
+						lii.setProcessInfo("currently running as " + gen.toString());
+					}
+				}
+			}
+		}
+		
+		int i = 0;
+		for (final SharedResourceIndexGenerator<?> gen : this.generatorThreadPool.getWaitingTasks()) {
+			if (resourceType.equals(gen.getResourceType())) {
+				final String indexName = gen.getIndexName();
+				for (LuceneIndexInfo lii : rVal) {
+					if (indexName.equals(lii.getBasePath())) {
+						lii.setProcessInfo("waiting at index " + i + " as " + gen.toString());
+					}
+				}
+			}
+			++i;
+		}
 		
 		return rVal;
 		

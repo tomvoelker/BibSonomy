@@ -145,8 +145,8 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 
 			
 			for (Entry<Class<? extends Resource>, SharedIndexUpdatePlugin<? extends Resource>> e : sharedIndexUpdatePlugins.entrySet()) {
-				final SharedIndexUpdatePlugin<? extends Resource> esUpdater = e.getValue();
-				final String globalError = esUpdater.getGlobalIndexNonExistanceError();
+				final SharedIndexUpdatePlugin<? extends Resource> esUpdatePlugin = e.getValue();
+				final String globalError = esUpdatePlugin.getGlobalIndexNonExistanceError();
 				if (globalError != null) {
 					command.setEsGlobalMessage(globalError);
 				}
@@ -154,7 +154,7 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 					if (mng == null) {
 						command.setAdminResponse("Cannot show elasticsearch index info for \"" + command.getResource() + "\" because there is no luceneResourceManager.");
 					} else {
-						Collection<? extends LuceneIndexInfo> infos = esUpdater.getIndicesInfos(mng.getResourceName());
+						Collection<? extends LuceneIndexInfo> infos = esUpdatePlugin.getIndicesInfos(mng.getResourceName());
 						for (LuceneIndexInfo info : infos) {
 							LuceneResourceIndicesInfoContainer infoCon = new LuceneResourceIndicesInfoContainer();
 							infoCon.setResourceName(mng.getResourceName() + " elasticsearch");
