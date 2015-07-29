@@ -61,7 +61,7 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Call
 	private static final Log log = LogFactory.getLog(AbstractIndexGenerator.class);
 
 	/** the number of posts to fetch from the database by a single generating step */
-	protected static final int SQL_BLOCKSIZE = 25000;
+	protected static final int SQL_BLOCKSIZE = 5000;
 
 	/** database logic */
 	protected LuceneDBInterface<R> dbLogic;
