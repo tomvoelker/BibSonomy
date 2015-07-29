@@ -26,7 +26,6 @@
  */
 package org.bibsonomy.es;
 
-import org.bibsonomy.util.LockAutoCloseable;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.node.Node;
 
