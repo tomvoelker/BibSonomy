@@ -1,5 +1,6 @@
 package org.bibsonomy.es;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 
 import org.bibsonomy.util.LockAutoCloseable;
@@ -19,6 +20,11 @@ public class IndexLock extends LockAutoCloseable {
 	 */
 	public IndexLock(final String indexName, final Lock lock) {
 		super(lock);
+		this.indexName = indexName;
+	}
+	
+	public IndexLock(final String indexName, final Lock lock, long maxWaitForLock, TimeUnit maxWaitForLockUnit) throws LockFailedException {
+		super(lock, maxWaitForLock, maxWaitForLockUnit);
 		this.indexName = indexName;
 	}
 

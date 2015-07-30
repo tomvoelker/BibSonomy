@@ -124,7 +124,7 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	}
 	
 	protected SharedResourceIndexUpdater<R> createUpdaterForGenerator(String indexName) {
-		return this.createUpdaterInternal(this.resourceType, this.esIndexManager.aquireLockForIndexName(indexName, true));
+		return this.createUpdaterInternal(this.resourceType, this.esIndexManager.aquireLockForIndexName(indexName, true, null));
 	}
 
 	private SharedResourceIndexUpdater<R> createUpdaterInternal(final String resourceType, IndexLock indexLock) {
@@ -154,9 +154,10 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	 * @param sync
 	 */
 	private void generate(boolean sync) {
-		for (SharedResourceIndexGenerator<?> generator : generatorThreadPool.getWaitingTasks()) {
+		generatorThreadPool.getWaitingTasks();
+		for (SharedResourceIndexGenerator<?> generator : generatorThreadPool.getUnfinishedTasks()) {
 			if (this.resourceType.equals(generator.getResourceType())) {
-				log.warn("The " + this.resourceType + " index '" + generator.getIndexName() + "' is already waiting to be generated -> no further generator scheduled");
+				log.warn("The " + this.resourceType + " index '" + generator.getIndexName() + "' is already  being / waiting to be  generated -> no further generator scheduled");
 				return;
 			}
 		}

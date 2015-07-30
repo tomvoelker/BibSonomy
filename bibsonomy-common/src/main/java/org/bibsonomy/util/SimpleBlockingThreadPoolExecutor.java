@@ -108,6 +108,12 @@ public class SimpleBlockingThreadPoolExecutor<R extends Callable<?>> {
 	public List<R> getRunningTasks() {
 		return (List<R>) getExecutor().getRunningTasks();
 	}
+	
+	public List<R> getUnfinishedTasks() {
+		List<R> rVal = (List<R>) getExecutor().getWaitingTasks();
+		rVal.addAll((List<R>) getExecutor().getRunningTasks());
+		return rVal;
+	}
 
 	public void setMinThreadPoolSize(int minThreadPoolSize) {
 		this.minThreadPoolSize = minThreadPoolSize;

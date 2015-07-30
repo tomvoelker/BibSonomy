@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -15,6 +16,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandardPublication;
+import org.bibsonomy.util.LockAutoCloseable.LockFailedException;
 import org.elasticsearch.action.admin.cluster.state.ClusterStateResponse;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
@@ -126,18 +128,26 @@ public class ESIndexManager {
 	public String createTempIndex(final String resourceType){
 		final String tempAlias =  ESConstants.getTempAliasForResource(resourceType);
 		final List<String> prevTempIndexes = this.getThisSystemsIndexesFromAlias(tempAlias);
-		if(!prevTempIndexes.isEmpty()){
-			for(String indexName: prevTempIndexes){
-				log.info("removing alias and index: " + tempAlias + "->" + indexName);
-				if (removeAlias(indexName, tempAlias) == false) {
-					log.error("Error deleting the existing temp index alias: " + tempAlias + "->" + indexName);
-					return null;
+		for (String indexName : prevTempIndexes) {
+			
+			log.info("removing alias and index: " + tempAlias + "->" + indexName);
+			final IndexLock lock = aquireLockForIndexName(indexName, true, 10000l);
+			if (lock != null) {
+				try {
+					if (removeAlias(indexName, tempAlias) == false) {
+						log.error("Error deleting the existing temp index alias: " + tempAlias + "->" + indexName);
+						return null;
+					}
+					final DeleteIndexResponse deleteIndex = this.esClient.getClient().admin().indices().delete(new DeleteIndexRequest(indexName)).actionGet();
+					if (!deleteIndex.isAcknowledged()) {
+						log.error("Error deleting the existing temp index: " + indexName);
+						return null;
+					}
+				} finally {
+					lock.close();
 				}
-				final DeleteIndexResponse deleteIndex = this.esClient.getClient().admin().indices().delete(new DeleteIndexRequest(indexName)).actionGet();
-				if (!deleteIndex.isAcknowledged()) {
-					log.error("Error deleting the existing temp index: " + indexName);
-					return null;
-				}
+			} else {
+				log.warn("timeout waiting for lock to delete index " + indexName);
 			}
 		}
 		final String indexName = this.createIndex(resourceType);
@@ -214,7 +224,7 @@ public class ESIndexManager {
 	 */
 	public boolean activateIndex(String indexName, String resourceType) {
 		
-		try (final IndexLock indexLock = aquireLockForIndexName(indexName, false)) {
+		try (final IndexLock indexLock = aquireLockForIndexName(indexName, false, null)) {
 			// inside this lock we can be sure that nobody currently writes to the index which is to be activated
 			try (final IndexLock indexActivityLock = aquireWriteLockForTheActiveIndex(resourceType)) {
 				// inside this lock we can be sure that nobody changes this system's active alias
@@ -439,7 +449,7 @@ public class ESIndexManager {
 		final String activeAliasName = ESConstants.getGlobalAliasForResource(resourceType, true);
 		// wrong: nevertheless, the name of the real index is said to be locked, because there is only one active index per resource at a time
 		//final String realIndexName = getThisSystemsIndexNameFromAlias(activeAliasName);
-		return aquireLockForIndexName(activeAliasName, writeAccess);
+		return aquireLockForIndexName(activeAliasName, writeAccess, null);
 	}
 	
 	public IndexLock acquireReadLockForTheLocalActiveIndex(String resourceType) {
@@ -463,10 +473,17 @@ public class ESIndexManager {
 	 * @param writeAccess
 	 * @return 
 	 */
-	protected IndexLock aquireLockForIndexName(String indexName, boolean writeAccess) {
+	protected IndexLock aquireLockForIndexName(String indexName, boolean writeAccess, Long maxWaitMillis) {
 		final ReadWriteLock rwlock = getRwLock(indexName);
 		final Lock lock = writeAccess ? rwlock.writeLock() : rwlock.readLock();
-		return new IndexLock(indexName, lock);
+		if (maxWaitMillis == null) {
+			return new IndexLock(indexName, lock);
+		}
+		try {
+			return new IndexLock(indexName, lock, maxWaitMillis, TimeUnit.MILLISECONDS);
+		} catch (LockFailedException e) {
+			return null;
+		}
 	}
 
 	/**
