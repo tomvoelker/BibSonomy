@@ -118,8 +118,11 @@ public class PersonPageController extends SingleResourceListController implement
 		for (PersonName personName : pub.getResource().getAuthor()) {
 			appendPersonName(personName, extendedNameBuilder);
 			extendedNameBuilder.append(", ");
-			appendDisambiguatingBibTexInfo(extendedNameBuilder, pub.getResource());
 		}
+		if (extendedNameBuilder.length() >= 2) {
+			extendedNameBuilder.setLength(extendedNameBuilder.length() - 2);
+		}
+		appendDisambiguatingBibTexInfo(extendedNameBuilder, pub.getResource());
 		return extendedNameBuilder.toString();
 	}
 
@@ -162,10 +165,10 @@ public class PersonPageController extends SingleResourceListController implement
 	}
 	
 	private static void appendPersonName(PersonName personName, final StringBuilder extendedNameBuilder) {
-		extendedNameBuilder.append(personName.getLastName());
 		if (present(personName.getFirstName())) {
-			extendedNameBuilder.append(", ").append(personName.getFirstName());
+			extendedNameBuilder.append(personName.getFirstName()).append(" ");
 		}
+		extendedNameBuilder.append(personName.getLastName());
 	}
 
 	private static void appendDisambiguatingBibTexInfo(final StringBuilder extendedNameBuilder, BibTex res) {
