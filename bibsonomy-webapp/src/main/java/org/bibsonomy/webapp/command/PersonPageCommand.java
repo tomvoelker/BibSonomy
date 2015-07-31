@@ -53,6 +53,7 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	private String responseString;
 	private List<Post<?>> otherPubs;
 	private List<Post<?>> otherAdvisedPubs;
+	private String okHintKey;
 	
 
 	/**
@@ -482,6 +483,20 @@ public class PersonPageCommand extends UserResourceViewCommand {
 
 	public List<Post<?>> getOtherAdvisedPubs() {
 		return this.otherAdvisedPubs;
+	}
+
+	/**
+	 * @param actionKeyCreateAndLinkPerson
+	 */
+	public void setOkHintKey(String okHintKey) {
+		this.okHintKey = okHintKey;
+	}
+	
+	/**
+	 * @return the okHintKey
+	 */
+	public String getOkHintKey() {
+		return this.okHintKey;
 	}
 	
 }

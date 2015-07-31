@@ -21,6 +21,7 @@ import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.util.spring.security.AuthenticationUtils;
 import org.bibsonomy.webapp.command.PersonPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
@@ -31,6 +32,8 @@ import org.json.simple.JSONObject;
  * @author Christian Pfeiffer
  */
 public class PersonPageController extends SingleResourceListController implements MinimalisticController<PersonPageCommand> {
+	
+	protected RequestLogic requestLogic;
 	
 	@Override
 	public View workOn(final PersonPageCommand command) {
@@ -345,6 +348,11 @@ public class PersonPageController extends SingleResourceListController implement
 		
 		command.setPerson(this.logic.getPersonById(PersonIdType.BIBSONOMY_ID, command.getRequestedPersonId()));
 		
+		if (DisambiguationPageController.ACTION_KEY_CREATE_AND_LINK_PERSON.equals(this.requestLogic.getLastAction()) || DisambiguationPageController.ACTION_KEY_LINK_PERSON.equals(this.requestLogic.getLastAction())) {
+			command.setOkHintKey(this.requestLogic.getLastAction());
+			this.requestLogic.setLastAction(null);
+		}
+		
 		List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations().byPersonId(command.getPerson().getPersonId()).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear).getIt();
 		List<Post<?>> authorPosts = new ArrayList<>();
 		List<Post<?>> advisorPosts = new ArrayList<>();
@@ -384,6 +392,10 @@ public class PersonPageController extends SingleResourceListController implement
 	@Override
 	public PersonPageCommand instantiateCommand() {
 		return new PersonPageCommand();
+	}
+
+	public void setRequestLogic(RequestLogic requestLogic) {
+		this.requestLogic = requestLogic;
 	}
 }
 

@@ -15,6 +15,7 @@ import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.DisambiguationPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
@@ -24,6 +25,14 @@ import org.bibsonomy.webapp.view.Views;
  */
 public class DisambiguationPageController extends SingleResourceListController implements MinimalisticController<DisambiguationPageCommand> {
 	//private static final Log log = LogFactory.getLog(DisambiguationPageController.class);
+	
+	/**
+	 * put into the session to tell the personPageController that the person has just been created
+	 */
+	public static final String ACTION_KEY_CREATE_AND_LINK_PERSON = "createAndLinkPerson";
+	public static final String ACTION_KEY_LINK_PERSON = "linkPerson";
+	
+	protected RequestLogic requestLogic;
 	
 	@Override
 	public DisambiguationPageCommand instantiateCommand() {
@@ -74,6 +83,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 			return disambiguateAction(command);
 		}
 		
+		
 //		
 //		JSONObject jsonPerson = new JSONObject();
 //		jsonPerson.put("personId", person.getId());
@@ -83,6 +93,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 //		
 //		command.setResponseString(jsonPerson.toJSONString());
 		
+		this.requestLogic.setLastAction(ACTION_KEY_CREATE_AND_LINK_PERSON);
 		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(person.getPersonId()));
 	}
 
@@ -130,8 +141,13 @@ public class DisambiguationPageController extends SingleResourceListController i
 		} catch (LogicException e) {
 			command.getLogicExceptions().add(e);
 			return disambiguateAction(command);
-		}		
+		}
+		this.requestLogic.setLastAction(ACTION_KEY_LINK_PERSON);
 		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(person.getPersonId()));
+	}
+
+	public void setRequestLogic(RequestLogic requestLogic) {
+		this.requestLogic = requestLogic;
 	}
 }
 

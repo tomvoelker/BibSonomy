@@ -87,6 +87,8 @@ public class LuceneIndexInfo {
 	private boolean isEnabled;
 	private boolean isActive;
 	private String errorMassage;
+
+	private String processInfo;
 	
 
 	/**
@@ -186,6 +188,19 @@ public class LuceneIndexInfo {
 	public void setErrorMassage(String errorMassage) {
 		this.errorMassage = errorMassage;
 	}
+
+	/**
+	 * @param string
+	 */
+	public void setProcessInfo(String processInfo) {
+		this.processInfo = processInfo;
+	}
 	
+	/**
+	 * @return the processInfo
+	 */
+	public String getProcessInfo() {
+		return this.processInfo;
+	}
 
 }

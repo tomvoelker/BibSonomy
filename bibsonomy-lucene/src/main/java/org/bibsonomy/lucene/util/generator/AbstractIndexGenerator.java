@@ -254,9 +254,10 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Call
 			this.running = true;
 			this.generateIndex();
 			this.finishedSuccesfully = true;
-		} catch (final Exception e) {
-			log.error("Failed to generate " + getName() + "!", e);
+		} catch (Throwable t) {
+			log.error("Failed to generate " + getName() + "!", t);
 		} finally {
+			log.info("Generator terminating: " + getName());
 			try {
 				this.shutdown();
 			} catch (final Exception e) {

@@ -142,6 +142,13 @@
 
 		<jsp:attribute name="content">
 			<errors:logicExceptions exceptions="${command.logicExceptions}" />
+			<c:if test="${not empty command.okHintKey}">
+				<bs:alert style="success">
+					<jsp:attribute name="alertBody">
+						<fmt:message key="person.show.created.${command.okHintKey}"/>
+					</jsp:attribute>
+				</bs:alert>
+			</c:if>
 		
 			<div class="page-header">
 				<h1><c:out value="${mtl:cleanBibtex(command.person.mainName.firstName)} "/><c:out value="${mtl:cleanBibtex(command.person.mainName.lastName)}"/></h1>
