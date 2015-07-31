@@ -426,7 +426,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 */
 	@Override
 	public void updateIndexWithPersonRelation(String interhash, List<ResourcePersonRelation> newRels) {
-			
+		
 		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(this.lockOfIndexBeingUpdated.getIndexName());
 		searchRequestBuilder.setTypes(this.resourceType);
 		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
@@ -435,12 +435,17 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 
 		final SearchResponse response = searchRequestBuilder.execute().actionGet();
 
+		int numUpdatedPosts = 0;
 		if (response != null) {
 			for (final SearchHit hit : response.getHits()) {
 				final Map<String, Object> doc = hit.getSource();
 				this.resourceConverter.setPersonFields(doc, newRels);
 				this.updatePostDocument(doc, hit.getId());
+				numUpdatedPosts++;
 			}
+		}
+		if (log.isDebugEnabled()) {
+			log.debug("updating " + this.toString() + " with " + numUpdatedPosts + " posts having interhash=" + interhash);
 		}
 	}
 

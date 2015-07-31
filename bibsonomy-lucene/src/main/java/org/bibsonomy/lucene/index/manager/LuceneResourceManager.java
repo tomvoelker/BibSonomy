@@ -61,6 +61,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.ResourcePersonRelationLogStub;
 import org.bibsonomy.model.User;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * class for maintaining the lucene index
@@ -244,6 +245,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 
 	/**
 	 * updates the index for the current log data and last tas id and last log date.
+	 * @param oldState 
 	 * 
 	 * @param currentLogDate
 	 * @param lastTasId
@@ -254,6 +256,8 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 */
 	@SuppressWarnings({ "boxing" })
 	protected int updateIndex(IndexUpdaterState oldState, IndexUpdaterState targetState, final List<IndexUpdater<R>> indexUpdaters) {
+		log.info("updating indices with same state " + oldState + " : " + indexUpdaters.toString());
+		
 		int newLastTasId = oldState.getLast_tas_id();
 		
 		/*
@@ -293,6 +297,10 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		 * 5) add all posts from 1) to the index
 		 */
 		
+		if (log.isDebugEnabled() || (contentIdsToDelete.size() > 0) || (newPosts.size() > 0)) {
+			log.info("deleting " + contentIdsToDelete.size() + " and inserting " + newPosts.size() + " posts from/to " + indexUpdaters.toString());
+		}
+		
 		for (IndexUpdater<R> updater : indexUpdaters) {
 			updater.deleteDocumentsForContentIds(contentIdsToDelete);
 			for (final LucenePost<R> post : newPosts) {
@@ -315,6 +323,10 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 				updater.setSystemInformation(oldState);
 				throw new RuntimeException(e);
 			}
+		}
+		
+		if (log.isDebugEnabled()) {
+			log.debug("publications updated for " + indexUpdaters.toString());
 		}
 		
 		// now the index is up to date wrt the documents and posts
@@ -366,6 +378,9 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	private void applyChangesInPubPersonRelationsToIndex(IndexUpdaterState oldState, IndexUpdaterState targetState, List<IndexUpdater<R>> indexUpdaters, final LRUMap updatedInterhashes) {
 		for (long minPersonChangeId = oldState.getLastPersonChangeId() + 1; minPersonChangeId < targetState.getLastPersonChangeId(); minPersonChangeId += SQL_BLOCKSIZE) {
 			final List<ResourcePersonRelationLogStub> relChanges = this.dbLogic.getPubPersonRelationsByChangeIdRange(minPersonChangeId, minPersonChangeId + SQL_BLOCKSIZE);
+			if (log.isDebugEnabled() || ValidationUtils.present(relChanges)) {
+				log.info("found " + relChanges.size() + " relation changes to update " + indexUpdaters.toString());
+			}
 			for (ResourcePersonRelationLogStub rel : relChanges) {
 				final String interhash = rel.getPostInterhash();
 				if (updatedInterhashes.put(interhash, interhash) == null) {
