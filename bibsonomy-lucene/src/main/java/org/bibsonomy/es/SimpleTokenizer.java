@@ -12,8 +12,8 @@ import java.util.regex.Pattern;
  */
 public class SimpleTokenizer implements Iterable<String> {
 
-	private static final Pattern nonStandardCharsPattern = Pattern.compile("[^\\p{Alpha}\\p{Digit}\\w]");
-	private static final Pattern delimiterPattern = Pattern.compile("\\w*]");
+	private static final Pattern nonStandardCharsPattern = Pattern.compile("[^\\p{Alpha}\\p{Digit}\\s]");
+	private static final Pattern delimiterPattern = Pattern.compile("\\s{1,}");
 	
 	private final String toBeTokenized;
 	
