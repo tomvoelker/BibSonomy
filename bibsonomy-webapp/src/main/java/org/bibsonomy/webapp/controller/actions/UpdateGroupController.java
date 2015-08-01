@@ -143,8 +143,13 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 							try {
 								// since now only one user can be invited to a
 								// group at once
-								this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_INVITED, ms);
-								this.mailUtils.sendGroupInvite(groupToUpdate.getName(), loginUser, invitedUser, this.requestLogic.getLocale());
+								if (invitedUser.isSpammer()) {
+									this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_INVITED_SPAMMER, ms);
+									this.mailUtils.sendGroupInvite(groupToUpdate.getName(), loginUser, invitedUser, this.requestLogic.getLocale());																		
+								} else {
+									this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_INVITED, ms);
+									this.mailUtils.sendGroupInvite(groupToUpdate.getName(), loginUser, invitedUser, this.requestLogic.getLocale());									
+								}
 							} catch (final Exception ex) {
 								log.error("error while inviting user '" + username + "' to group '" + groupToUpdate + "'", ex);
 								// if a user can't be added to a group, this

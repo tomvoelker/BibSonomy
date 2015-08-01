@@ -40,20 +40,22 @@
 						<!-- FIXME: add link to leave group, if user is already member -->
 					</c:when>
 					<c:otherwise>
-						<li style="padding: 5px;">
-							<fmt:message var="joinGroup" key="navi.join">
-								<fmt:param>${fn:escapeXml(command.group.name)}</fmt:param>
-							</fmt:message>
-							<button:linkButton
-								title="${joinGroup}"
-								href="/joinGroup?group=${fn:escapeXml(command.group.name)}"
-								image="${resdir}/image/starblue_unselected.png"
-							>
-								<jsp:attribute name="text">
-									<fmt:message key="joinGroup"/>
-								</jsp:attribute>
-							</button:linkButton>
-						</li>
+						<c:if test="${!command.context.loginUser.spammer}">
+							<li style="padding: 5px;">
+								<fmt:message var="joinGroup" key="navi.join">
+									<fmt:param>${fn:escapeXml(command.group.name)}</fmt:param>
+								</fmt:message>
+								<button:linkButton
+									title="${joinGroup}"
+									href="/joinGroup?group=${fn:escapeXml(command.group.name)}"
+									image="${resdir}/image/starblue_unselected.png"
+								>
+									<jsp:attribute name="text">
+										<fmt:message key="joinGroup"/>
+									</jsp:attribute>
+								</button:linkButton>
+							</li>
+						</c:if>
 					</c:otherwise>
 				</c:choose>
 			</c:if>

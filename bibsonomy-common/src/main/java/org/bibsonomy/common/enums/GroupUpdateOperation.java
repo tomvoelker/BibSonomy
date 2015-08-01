@@ -64,6 +64,9 @@ public enum GroupUpdateOperation {
 
 	/** Add an invited user */
 	ADD_INVITED,
+	
+	/** Add an invited user, that is marked as spammer */
+	ADD_INVITED_SPAMMER,
 
 	/** Remove an invited user */
 	REMOVE_INVITED,

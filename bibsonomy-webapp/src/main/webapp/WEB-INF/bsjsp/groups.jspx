@@ -127,10 +127,12 @@
 											</c:when>
 											<c:otherwise>
 												<c:if test="${group.allowJoin}">
-													<c:url var="joinLink" value="/joinGroup">
-														<c:param name="group" value="${group.name}" />
-													</c:url>
-													<a href="${joinLink}" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-plus"><!-- keep me --></span><c:out value=" " /><fmt:message key="joinGroup.short"/></a>	
+													<c:if test="${!command.context.loginUser.spammer}">
+														<c:url var="joinLink" value="/joinGroup">
+															<c:param name="group" value="${group.name}" />
+														</c:url>
+														<a href="${joinLink}" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-plus"><!-- keep me --></span><c:out value=" " /><fmt:message key="joinGroup.short"/></a>	
+													</c:if>
 												</c:if>
 											</c:otherwise>
 										</c:choose>
