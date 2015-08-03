@@ -24,46 +24,6 @@ function setupBibtexSearchForForm(inputFieldSelector, formSelector) {
 }
 
 function setupPersonAutocomplete(inputFieldSelector, formAction, displayKey, selectionHandler) {
-	
-	/* jquery autocomplete does not work like in the examples
-	var hurz = $(inputFieldSelector).autocomplete({
-	    source: function (request, response) {
-	        jQuery.get("/person", {
-	        	formAction: formAction,
-	        	formSelectedName: request.term
-	        }, function (data) {
-	            // assuming data is a JavaScript array such as
-	            // ["one@abc.de", "onf@abc.de","ong@abc.de"]
-	            // and not a string
-	            // response(data);
-	            response($.map(data, function(item) {
-					return {
-						label: item[displayKey],
-						value: item
-					}
-				}));
-	        });
-	    },
-	    minLength: 2,
-	    select: function( event, ui ) {
-	    	selectionHandler(ui.item.value);
-	    },
-	    _renderItem: function( ul, item ) {
-		      return $( "<li>BLA " )
-		        .append( "<a>" + item[displayKey] + "</a>" )
-		        .appendTo( ul );
-		    }
-	});
-	
-	hurz._renderItem = function( ul, item ) {
-	      return $( "<li>BLA " )
-	        .append( "<a>" + item[displayKey] + "</a>" )
-	        .appendTo( ul );
-	    };
-	*/
-	
-	
-	
 	// constructs the suggestion engine
 	var personNames = new Bloodhound({
 		datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
