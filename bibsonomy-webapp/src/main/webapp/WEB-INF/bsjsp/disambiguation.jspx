@@ -132,27 +132,7 @@
 											</c:otherwise>
 										</c:choose>
 										<a class='btnLinkPerson' data-toggle="${dataToggle}" data-target="${dataTarget}" href="${href}" data-person-url="${absoluteUrlGenerator.getPersonUrl(rel.person.personId)}" data-person-id="${fn:escapeXml(rel.person.personId)}" >
-											<span class="authorName">
-												<c:if test="${not empty rel.person.mainName.firstName}"><c:out value="${rel.person.mainName.firstName} "/></c:if>
-												<c:if test="${not empty rel.person.mainName.lastName}"><c:out value="${rel.person.mainName.lastName}"/></c:if>
-												<!-- 
-												<c:if test="${personName.person.mainName.personNameChangeId != personName.personNameChangeId}">
-													(
-													<c:if test="${not empty personName.firstName}"><c:out value="${personName.firstName} "/></c:if>
-													<c:if test="${not empty personName.lastName}"><c:out value="${personName.lastName}"/></c:if>
-													)
-												</c:if>
-												 -->
-											</span>
-											<c:set var="firstInfo" value="${true}"/>
-											<c:if test="${not empty rel.person.academicDegree}">                              <c:choose><c:when test="${firstInfo}"> (<c:set var="firstInfo" value="${false}"/></c:when><c:otherwise>, </c:otherwise></c:choose><c:out value="${rel.person.academicDegree}"/></c:if>	 
-											<c:if test="${not empty rel.post}">
-													<c:choose><c:when test="${firstInfo}"> (<c:set var="firstInfo" value="${false}"/></c:when><c:otherwise>, </c:otherwise></c:choose><fmt:message key="person.show.${rel.relationType.relatorCode}.of"/><c:out value=" "/><span class="disambiguationTitle"><c:out value="${rel.post.resource.title}"/></span>
-												<c:if test="${not empty rel.post.resource.year}">
-													<c:choose><c:when test="${firstInfo}"> (<c:set var="firstInfo" value="${false}"/></c:when><c:otherwise>, </c:otherwise></c:choose><c:out value="${rel.post.resource.year}"/>
-												</c:if>
-											</c:if>
-											<c:choose><c:when test="${not firstInfo}">)</c:when><c:otherwise> (<c:out value="${textNoFurtherInfo}"/>)</c:otherwise></c:choose>
+											${command.personRoleRenderer.getExtendedPersonName(rel, request.locale, true)}
 										</a>
 									</div>
 								</c:forEach>

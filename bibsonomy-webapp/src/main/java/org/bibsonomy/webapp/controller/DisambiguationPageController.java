@@ -13,6 +13,7 @@ import org.bibsonomy.model.logic.exception.LogicException;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.services.URLGenerator;
+import org.bibsonomy.services.person.PersonRoleRenderer;
 import org.bibsonomy.webapp.command.DisambiguationPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
@@ -33,10 +34,13 @@ public class DisambiguationPageController extends SingleResourceListController i
 	public static final String ACTION_KEY_LINK_PERSON = "linkPerson";
 	
 	protected RequestLogic requestLogic;
+	private PersonRoleRenderer personRoleRenderer;
 	
 	@Override
 	public DisambiguationPageCommand instantiateCommand() {
-		return new DisambiguationPageCommand();
+		final DisambiguationPageCommand command = new DisambiguationPageCommand();
+		command.setPersonRoleRenderer(personRoleRenderer);
+		return command;
 	}
 	
 	@Override
@@ -148,6 +152,10 @@ public class DisambiguationPageController extends SingleResourceListController i
 
 	public void setRequestLogic(RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
+	}
+
+	public void setPersonRoleRenderer(PersonRoleRenderer personRoleRenderer) {
+		this.personRoleRenderer = personRoleRenderer;
 	}
 }
 
