@@ -114,7 +114,6 @@ public class BlockingQueueExecutorTest {
 		
 		Assert.assertTrue((submissionTimes[1] - submissionTimes[0]) < SLEEP_MILLIS * 1000 * 1000);
 		Assert.assertTrue((submissionTimes[2] - timeBefore) > SLEEP_MILLIS * 1000 * 1000); // first finished, second in execution -> third can be submitted
-		Assert.assertTrue((submissionTimes[2] - submissionTimes[1]) < SLEEP_MILLIS * 1100 * 1000);
 		Assert.assertTrue((submissionTimes[3] - timeBefore) > 2 * SLEEP_MILLIS * 1000 * 1000); // first and second finished, third in execution -> fourth can be submitted
 		Assert.assertTrue((submissionTimes[3] - submissionTimes[2]) < SLEEP_MILLIS * 1100 * 1000);
 		assertBlockingOfTaskSubmission(submissionTimes);
