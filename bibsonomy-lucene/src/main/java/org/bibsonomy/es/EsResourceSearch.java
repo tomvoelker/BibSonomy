@@ -397,22 +397,22 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	private QueryBuilder buildQuery(AbstractSuggestionQueryBuilder<?> options) {
 		final QueryBuilder queryBuilder = QueryBuilders.filteredQuery( //
 				QueryBuilders.boolQuery() //
-						.should(
+						.must(
 								addPersonSearch(options, //
 									QueryBuilders.multiMatchQuery(options.getQuery()) //
 									.field(LuceneFieldNames.TITLE, 2.5f) //
-									.field(LuceneFieldNames.SCHOOL, 1.8f) //
+									.field(LuceneFieldNames.SCHOOL, 1.3f) //
 								) //
 								.tieBreaker(0.8f) //
 								.boost(4) //
 						) //
-						.should(QueryBuilders.boolQuery() //
-								.should(QueryBuilders.termQuery(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, NormalizedEntryTypes.habilitation.name()).boost(11)) //
-								.should(QueryBuilders.termQuery(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, NormalizedEntryTypes.phdthesis.name()).boost(10)) //
-								.should(QueryBuilders.termQuery(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, NormalizedEntryTypes.master_thesis.name()).boost(7)) //
-								.should(QueryBuilders.termQuery(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, NormalizedEntryTypes.bachelor_thesis.name()).boost(6)) //
-								.should(QueryBuilders.termQuery(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, NormalizedEntryTypes.candidate_thesis.name()).boost(5)) //
-						) //
+//						.should(QueryBuilders.boolQuery() //
+//								.should(QueryBuilders.termQuery(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, NormalizedEntryTypes.habilitation.name()).boost(11)) //
+//								.should(QueryBuilders.termQuery(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, NormalizedEntryTypes.phdthesis.name()).boost(10)) //
+//								.should(QueryBuilders.termQuery(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, NormalizedEntryTypes.master_thesis.name()).boost(7)) //
+//								.should(QueryBuilders.termQuery(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, NormalizedEntryTypes.bachelor_thesis.name()).boost(6)) //
+//								.should(QueryBuilders.termQuery(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, NormalizedEntryTypes.candidate_thesis.name()).boost(5)) //
+//						) //
 						//.should(QueryBuilders.termQuery(LuceneFieldNames.USER_NAME, genealogyUser)) //
 						, addShouldYearIfYearInQuery( //
 								FilterBuilders.matchAllFilter(), // termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, systemUrl), //
@@ -429,10 +429,10 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	private static MultiMatchQueryBuilder addPersonSearch(AbstractSuggestionQueryBuilder<?> options, MultiMatchQueryBuilder builder) {
 		if (options.isWithEntityPersons()) {
 			if (options.getRelationTypes().contains(PersonResourceRelationType.AUTHOR)) {
-				builder.field(ESConstants.AUTHOR_ENTITY_NAMES_FIELD_NAME, 2);
+				builder.field(ESConstants.AUTHOR_ENTITY_NAMES_FIELD_NAME, 2.2f);
 			}
 			if (options.getRelationTypes().containsAll(Arrays.asList(PersonResourceRelationType.values()))) {
-				builder.field(ESConstants.PERSON_ENTITY_NAMES_FIELD_NAME, 1);
+				builder.field(ESConstants.PERSON_ENTITY_NAMES_FIELD_NAME, 1.1f);
 			}
 		}
 		if (options.isWithNonEntityPersons()) {
