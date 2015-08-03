@@ -709,7 +709,7 @@
                 cache: true,
                 prepare: null,
                 replace: null,
-                wildcard: null,
+                wildcard: '%QUERY',
                 limiter: null,
                 rateLimitBy: "debounce",
                 rateLimitWait: 300,
