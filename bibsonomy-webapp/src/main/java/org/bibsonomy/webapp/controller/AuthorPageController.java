@@ -101,7 +101,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		
 		int totalNumPosts = 0;
 		// retrieve and set the requested resource lists
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			this.setList(command, resourceType, groupingEntity, null, requTags, null, null, null, null, command.getStartDate(), command.getEndDate(), listCommand.getEntriesPerPage());
 			

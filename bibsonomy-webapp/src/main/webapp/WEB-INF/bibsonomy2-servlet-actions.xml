@@ -887,7 +887,7 @@
 
 	<!-- Handles registration of users. -->
 	<bean id="userRegistrationController" class="org.bibsonomy.webapp.controller.actions.UserRegistrationController" scope="request">
-		<property name="projectName" value="${project.name}" />
+		<property name="projectName" ref="projectName" />
 		<property name="logic" ref="logic" />
 		<!-- 
 		    If the user is not logged in, we need an instance of the LogicInterface
