@@ -19,6 +19,10 @@
 	<jsp:directive.attribute name="hideBibTeXKey" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="hideAuthorClaim" type="java.lang.Boolean" required="false"/>
 	
+	<jsp:directive.attribute name="personIndex" type="java.lang.Integer" required="false"/>
+	<jsp:directive.attribute name="person" type="org.bibsonomy.model.Person" required="false"/>
+	
+	
 	<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/jquery-ui.css" type="text/css" media="all" />
 	<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/ui.theme.css" type="text/css" media="all" />
 	
@@ -113,6 +117,43 @@
 	<bsform:textarea labelColSpan="3" id="post.resource.title" path="post.resource.title" required="${true}" />
 	
 	<bsform:textarea labelColSpan="3" id="post.resource.author" path="post.resource.author" required="${true}" />
+	
+	<c:if test="${person != null }">
+		<div class="form-group">
+			<div class="col-sm-offset-3 col-sm-9">
+			<!-- 
+					<label style="margin-left: 0px; padding-left: 0px;">
+					 -->
+						<c:choose>
+							<c:when test="${not empty person.personId}">
+								<c:set var="personLink">
+									<a href="${absoluteUrlGenerator.getPersonUrl(person.personId)}"><c:out value="${person.mainName.firstName} ${person.mainName.lastName}"/></a>
+								</c:set>
+								<fmt:message key="post.resource.person.associate.personIndex">
+									<fmt:param value="${personLink}" />
+								</fmt:message>
+							</c:when>
+							<c:otherwise>
+								<fmt:message key="post.resource.person.new.personIndex" />
+							</c:otherwise>
+						</c:choose>
+					
+					<select name="personIndex" id="personIndex" style="display: inline-block; width: auto; margin-left: 1em;" class="form-control">
+						<c:forEach begin="0" end="8" var="curPersonIndex">
+							<c:choose>
+								<c:when test="${curPersonIndex == personIndex}">
+									<option value="${curPersonIndex}" selected="selected">${curPersonIndex + 1}</option>
+								</c:when>
+								<c:otherwise>
+									<option value="${curPersonIndex}">${curPersonIndex + 1}</option>
+								</c:otherwise>
+							</c:choose>
+						</c:forEach>
+					</select>
+					
+			</div>
+		</div>
+	</c:if>
 	
 	<c:if test="${empty hideAuthorClaim or not hideAuthorClaim}">
 		<div class="form-group">

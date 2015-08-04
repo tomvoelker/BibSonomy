@@ -58,10 +58,12 @@
 						
 							<input type="hidden" name="selTab" value="0" />
 							<input type="hidden" name="ckey" value="${ckey}"/>
-							<input type="hidden" name="personId" value="${command.personId}"/> 
+							<c:if test="${command.person != null}">
+								<input type="hidden" name="personId" value="${command.person.personId}"/>
+							</c:if>
 							<input type="hidden" name="personRole" value="${command.personRole}"/>
 							
-							<editpub:required post="${post}" autocompletion="${true}" hideBibTeXKey="${true}"/>
+							<editpub:required post="${post}" autocompletion="${true}" hideBibTeXKey="${true}" personIndex="${command.personIndex}" person="${command.person}" />
 							
 							<div class="form-group">
  								<div class="col-sm-offset-3 col-sm-9">

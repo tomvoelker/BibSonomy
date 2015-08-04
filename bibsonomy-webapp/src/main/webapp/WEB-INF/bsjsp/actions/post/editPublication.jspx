@@ -42,10 +42,12 @@
 					<hr />
 				</c:if>
 			</c:if>
-			<input type="hidden" name="personId" value="${command.personId}"/>
+			<c:if test="${command.person != null}">
+				<input type="hidden" name="personId" value="${command.person.personId}"/>
+			</c:if>
 			<input type="hidden" name="personRole" value="${command.personRole}"/>
-				
-			<editpub:required post="${command.post}" autocompletion="$(false)"/>
+			
+			<editpub:required post="${command.post}" autocompletion="${false}" personIndex="${command.personIndex}" person="${command.person}" />
 		</jsp:attribute>
 	
 		<jsp:attribute name="detailedInformation">

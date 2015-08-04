@@ -103,7 +103,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 	}
 
 	@Override
-	protected void preparePost(final EditPostCommand<BibTex> command, final Post<BibTex> post) {
+	protected void preparePost(final COMMAND command, final Post<BibTex> post) {
 		super.preparePost(command, post);
 
 		/*
