@@ -140,7 +140,6 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 		esClient.getClient()
 				.prepareIndex(indexName, resourceType, String.valueOf(indexId))
 				.setSource(jsonDocument).execute().actionGet();
-		log.info("post has been indexed.");
 	}
 	
 	/* (non-Javadoc)

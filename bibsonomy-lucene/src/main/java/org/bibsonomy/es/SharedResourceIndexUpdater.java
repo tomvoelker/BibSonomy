@@ -309,8 +309,6 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 			// TODO: this method needs to support the additional parameter?
 			insertPostDocument(jsonDocument, String.valueOf(indexId));
 		}
-
-		log.info("post has been indexed.");
 	}
 
 	private void insertPostDocument(final Map<String, Object> jsonDocument, String indexIdStr) {
