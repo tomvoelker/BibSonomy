@@ -121,6 +121,18 @@
 										</div>
 									</form>
 								</div>
+								<div style="text-align: right;">
+									
+									<form action="${absoluteUrlGenerator.getPostPublicationUrl()}">
+										<input type="hidden" name="personId" value=""/>
+										<input type="hidden" name='personRole' value='AUTHOR'/>
+										<input type="hidden" name='post.resource.entrytype' value='phdthesis'/>
+										
+										<fmt:message key="persons.intro.addperson.text"/>
+										<fmt:message key="persons.intro.addperson.button" var="textAddPersonButton"/>
+										<input type="submit" style="margin: 0px 20px 0px 10px;" class="btn btn-sm btn-default" name='submit' id="addPersonBtn" value='${textAddPersonButton}' />
+									</form>
+								</div>
 							</div>
 						
 							
