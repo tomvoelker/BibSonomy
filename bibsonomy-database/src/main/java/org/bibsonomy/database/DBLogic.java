@@ -41,6 +41,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -3282,15 +3283,17 @@ public class DBLogic implements LogicInterface {
 			if (person.getUser().equals(loginUser.getName()) == false) {
 				throw new AccessDeniedException();
 			}
-			// FIXME: this should check for != null, not >0
-			if (person.getPersonId() != null) {
+			if (present(person.getPersonId())) {
 				Person personOld = this.personDBManager.getPersonById(person.getPersonId(), session);
+				if (personOld == null) {
+					throw new NoSuchElementException("person " + person.getPersonId());
+				}
 				if ((personOld.getUser() != null) && (personOld.getUser().equals(loginUser.getName()) == false)) {
 					throw new AccessDeniedException();
 				}
 			}
 		}
-		if (person.getPersonId() != null) {
+		if (present(person.getPersonId())) {
 			this.personDBManager.updatePerson(person, session);
 		} else {
 			final String tempPersonId = generatePersonId(person, session);
