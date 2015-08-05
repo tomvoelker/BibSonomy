@@ -712,7 +712,7 @@
                 wildcard: '%QUERY',
                 limiter: null,
                 rateLimitBy: "debounce",
-                rateLimitWait: 300,
+                rateLimitWait: 800,
                 transform: _.identity,
                 transport: null
             };
@@ -1720,8 +1720,8 @@
                     suggestions = suggestions || [];
                     if (!canceled && rendered < that.limit) {
                         that.cancel = $.noop;
-                        rendered += suggestions.length;
                         that._append(query, suggestions.slice(0, that.limit - rendered));
+                        rendered += suggestions.length;
                         that.async && that.trigger("asyncReceived", query);
                     }
                 }
