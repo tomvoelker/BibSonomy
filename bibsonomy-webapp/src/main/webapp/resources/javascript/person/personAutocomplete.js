@@ -29,7 +29,8 @@ function setupPersonAutocomplete(inputFieldSelector, formAction, displayKey, sel
 		datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
 		queryTokenizer: Bloodhound.tokenizers.whitespace,
 		remote: '/person?formAction=' + formAction + '&formSelectedName=%QUERY',
-		wildcard: '%QUERY'
+		wildcard: '%QUERY',
+		rateLimitWait: 800
 	});
 
 	// kicks off the loading/processing of `local` and `prefetch`
