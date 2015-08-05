@@ -74,7 +74,9 @@ import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
+import org.elasticsearch.index.query.MatchQueryBuilder.Operator;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
+import org.elasticsearch.index.query.MultiMatchQueryBuilder.Type;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.indices.IndexMissingException;
@@ -113,7 +115,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 */
 	protected static final Log log = LogFactory.getLog(EsResourceSearch.class);
 
-	private final int maxOffset = 2048;
+	private final int maxOffset = 1024;
 
 	private ESIndexManager esIndexManager;
 
@@ -121,7 +123,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	private String systemUrl;
 
 	/** the number of person suggestions */
-	private int suggestionSize = 8;
+	private int suggestionSize = 5;
 
 	private String genealogyUser;
 
@@ -344,7 +346,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		double bestScore = Double.NaN;
 		// remember alreadyAnalyzedInterhashes to skip over multiple posts of the same resource
 		final Set<String> alreadyAnalyzedInterhashes = new HashSet<>();
-		for (int offset = 0; relSorter.size() < suggestionSize && offset < maxOffset; offset += suggestionSize) {
+		for (int offset = 0; relSorter.size() < suggestionSize && offset < maxOffset; offset += maxOffset / 10) {
 			double minScore = Double.isNaN(bestScore) ? 0.05 : (bestScore / 3d);
 
 			double bestScoreThisRound = fetchMoreResults(relSorter, tokenizedQueryString, offset, alreadyAnalyzedInterhashes, indexLock.getIndexName(), minScore, options);
@@ -395,11 +397,14 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	}
 
 	private QueryBuilder buildQuery(AbstractSuggestionQueryBuilder<?> options) {
-		final QueryBuilder queryBuilder = QueryBuilders.filteredQuery( //
+		final QueryBuilder queryBuilder = filterQuery( //
 				QueryBuilders.boolQuery() //
 						.must(
 								addPersonSearch(options, //
 									QueryBuilders.multiMatchQuery(options.getQuery()) //
+									.type(Type.CROSS_FIELDS)
+									//.minimumShouldMatch("70%")
+									.operator(Operator.AND)
 									.field(LuceneFieldNames.TITLE, 2.5f) //
 									.field(LuceneFieldNames.SCHOOL, 1.3f) //
 								) //
@@ -415,11 +420,26 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 //						) //
 						//.should(QueryBuilders.termQuery(LuceneFieldNames.USER_NAME, genealogyUser)) //
 						, addShouldYearIfYearInQuery( //
-								FilterBuilders.matchAllFilter(), // termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, systemUrl), //
+								null, // termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, systemUrl), //
 								options.getQuery()) //
 				);
 		return queryBuilder;
 	}
+
+
+
+	/**
+	 * @param must
+	 * @param addShouldYearIfYearInQuery
+	 * @return
+	 */
+	private QueryBuilder filterQuery(QueryBuilder must, FilterBuilder filter) {
+		if (filter == null) {
+			return must;
+		}
+		return QueryBuilders.filteredQuery(must, filter);
+	}
+
 
 	/**
 	 * @param options
@@ -448,7 +468,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 		searchRequestBuilder.setQuery(queryBuilder) //
 		.setMinScore((float)minPlainEsScore) //
-		.setFrom(offset).setSize(suggestionSize * 5);
+		.setFrom(offset).setSize(maxOffset / 10);
 		return searchRequestBuilder;
 	}
 	
@@ -621,8 +641,24 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			return filterBuilder;
 		}
 		String year = queryString.substring(m.start(), m.end());
-		return FilterBuilders.andFilter(filterBuilder, FilterBuilders.termFilter(LuceneFieldNames.YEAR, year));
+		FilterBuilder filter = FilterBuilders.termFilter(LuceneFieldNames.YEAR, year);
+		if (filterBuilder == null) {
+			return filter;
+		}
+		return FilterBuilders.andFilter(filterBuilder, filter);
 	}
+
+
+	/**
+	 * @param boolQuery
+	 * @return
+	 */
+	/*
+	private BoolQueryBuilder addMustMatchYearIfYearPresent(BoolQueryBuilder boolQuery, String queryString) {
+		QueryBuilders.termQuery(name, value)
+		return null;
+	}
+	*/
 
 
 	private static int extractMinimumInvertedScore(final TreeMap<Integer, ResourcePersonRelation> invertedScoreToRpr) {
