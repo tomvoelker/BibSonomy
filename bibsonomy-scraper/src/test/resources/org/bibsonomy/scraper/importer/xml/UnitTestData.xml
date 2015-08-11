@@ -1750,4 +1750,10 @@
 		<BibFile>IEEEComputerSocietyScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_284">
+		<TestDescription>scraping test for jornal page from plos.org</TestDescription>
+		<URL>http://www.plosone.org/article/info%3Adoi%2F10.1371%2Fjournal.pone.0114825</URL>
+		<BibFile>PlosScraperUnitURLTest10.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
+	</URLTest>
 </test:Tests>
