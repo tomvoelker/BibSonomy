@@ -924,7 +924,7 @@
 		<URL>http://apps.webofknowledge.com/full_record.do?product=UA&amp;search_mode=GeneralSearch&amp;qid=1&amp;SID=T1oiG1PgP2L42IlFLI4&amp;page=1&amp;doc=8</URL>
 		<BibFile>WebOfKnowledgeUnitUrlTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.webofknowledge.WebOfKnowledgeScraper</Scraper>
-		<Enabled>false</Enabled>
+		<Enabled>true</Enabled>
 		<AdditionalInfo>Important: To run the test, insert an url with fresh SID. Otherwise the test will fail</AdditionalInfo>
 	</URLTest>
 	<URLTest id="url_152">
@@ -1755,5 +1755,11 @@
 		<URL>http://www.plosone.org/article/info%3Adoi%2F10.1371%2Fjournal.pone.0114825</URL>
 		<BibFile>PlosScraperUnitURLTest10.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_285">
+		<TestDescription>scraping test for jornal page from nowpublishers.com</TestDescription>
+		<URL>http://www.nowpublishers.com/article/Details/INR-043</URL>
+		<BibFile>NowPublishersScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.nowpublishers.NowPublishersScraper</Scraper>
 	</URLTest>
 </test:Tests>
