@@ -236,32 +236,7 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
-
-	// TODO create tests and remove main method
-	public static void main(String[] args) throws MalformedURLException, ScrapingException {
-		final String[] urls = new String[] {
-				"http://portal.acm.org/citation.cfm?id=1015428&amp;coll=Portal&amp;dl=ACM&amp;CFID=22531872&amp;CFTOKEN=18437036",
-				"http://portal.acm.org/citation.cfm?id=333115.333119&amp;coll=GUIDE&amp;dl=GUIDE&amp;CFID=11052258&amp;CFTOKEN=84161555",
-				"http://portal.acm.org/citation.cfm?id=1105676",
-				"http://portal.acm.org/citation.cfm?id=553876",
-				"http://portal.acm.org/beta/citation.cfm?id=359859",
-				"http://portal.acm.org/citation.cfm?id=1082036.1082037&amp;coll=Portal&amp;dl=GUIDE&amp;CFID=88775871&amp;CFTOKEN=40392553#",
-				"http://doi.acm.org/10.1145/1105664.1105676",
-				"http://portal.acm.org/citation.cfm?id=500737.500755"
-		};
-		for (String url : urls) {
-			System.out.println("trying url " + url);
-			final ScrapingContext sc = new ScrapingContext(new URL(url));
-
-			final ACMBasicScraper scraper = new ACMBasicScraper();
-			scraper.scrape(sc);
-			System.out.println("\n----------------------------------------\n");
-			System.out.println(sc.getBibtexResult());
-			System.out.println("----------------------------------------\n");
-
-		}
-	}
-
+	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.scraper.CitedbyScraper#scrapeCitedby(org.bibsonomy.scraper.ScrapingContext)
 	 */
