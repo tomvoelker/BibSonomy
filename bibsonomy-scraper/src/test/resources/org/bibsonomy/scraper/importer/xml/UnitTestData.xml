@@ -1762,4 +1762,10 @@
 		<BibFile>NowPublishersScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.nowpublishers.NowPublishersScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_286">
+		<TestDescription>scraping test for ACM Queue page</TestDescription>
+		<URL>https://queue.acm.org/detail.cfm?id=2801719</URL>
+		<BibFile>ACMBasicScraperUnitURLTest8.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
+	</URLTest>	
 </test:Tests>
