@@ -75,6 +75,10 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 			Pattern.compile("(/beta)?/citation.cfm.*")
 		),
 		new Pair<Pattern, Pattern>(
+				Pattern.compile(".*" + "queue.acm.org"), 
+				Pattern.compile("/detail.cfm.*")
+			),
+		new Pair<Pattern, Pattern>(
 				Pattern.compile(".*" + "doi.acm.org"),
 				EMPTY_PATTERN
 		)
@@ -107,7 +111,7 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 				matcher = URL_PARAM_ID_PATTERN.matcher(query);
 			}
 			
-			if(matcher == null) return false;
+			if (matcher == null) return false;
 			
 			/*
 			 * if present take the id behind the dot
