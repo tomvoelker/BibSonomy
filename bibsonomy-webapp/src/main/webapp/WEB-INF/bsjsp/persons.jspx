@@ -1,0 +1,178 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"
+	xmlns:s="http://www.springframework.org/tags"
+	xmlns:sec="http://www.springframework.org/security/tags">
+
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<fmt:message key="persons.intro.head.title" var="personIntroTitle">
+		<fmt:param value="${properties['project.name']}" />
+	</fmt:message>
+
+	<layout:paneLayout pageTitle="${personIntroTitle}" headerMessageKey="gettingStarted.headline" command="${command}" requPath="${requPath}" noSidebar="${true}">
+
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.persons" formAction="/search" formInputName="search"/>
+		</jsp:attribute>
+
+		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="/resources/javascript/bs/animatescroll.js"><!-- --></script>
+			<script type="text/javascript" src="/resources/javascript/bs/animate-scroll-affix.js"><!-- --></script>
+
+			<script type='text/javascript' src='/resources/typeahead.js/js/typeahead.bundle.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/person/personAutocomplete.js'><!-- keep me --></script>
+			<script type='text/javascript' src='/resources/javascript/person/autocompleteSearchPerson.js'><!-- keep me --></script>
+			
+			<link rel="stylesheet" type="text/css" href='/resources/typeahead.js/css/typeahead.css'/>
+		</jsp:attribute>
+
+		
+		<!-- TODO: (Bootstrap) breadcrumbs
+		<jsp:attribute name="breadcrumbs">	
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:crumb name="${personIntroTitle}" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+		-->
+		
+		<jsp:attribute name="content">
+			<div class="row">
+				<div class="col-md-offset-1 col-xs-12 col-sm-12 col-md-10 authors">
+					
+					<div class="text-center head">
+					
+						<h1>
+							<fmt:message key="persons.intro.head.title">
+								<fmt:param value="${properties['project.name']}" />
+							</fmt:message>
+						</h1>
+						
+						<!-- 
+						<div class="lead">
+							<p>
+								<fmt:message key="persons.intro.intro">
+									<fmt:param value="${properties['project.name']}" />
+								</fmt:message>
+							</p>
+						</div>
+						 -->
+						 
+						<div class="lead text-center">
+							<p>
+								<fmt:message key="persons.intro.head.desc">
+									<fmt:param value="${properties['project.name']}" />
+								</fmt:message>
+							</p>
+						</div>
+						
+					</div>
+					<!-- 
+					<hr />
+ 					-->
+					<s:eval expression="T(java.util.Arrays).asList('genealogy', 'dataset', 'reg', 'wiskidz' )" var="sections" />
+					
+					<div class="row">
+					
+						<div class="hidden-xs col-sm-3">
+							<div class="affix">
+								<div class="list-group section-scroll">
+									<a class="list-group-item active" href="#search" style="max-width: 165px"><fmt:message key="persons.intro.navi.search" /> </a>
+									<c:forEach var="sectionKey" items="${sections}">
+										<a class="list-group-item" href="#${sectionKey}" style="max-width: 165px">
+											<fmt:message key="persons.intro.navi.${sectionKey}">
+												<fmt:param value="${properties['project.name']}" />
+											</fmt:message>
+										</a>
+									</c:forEach>
+								</div>
+							</div>
+						</div>
+						
+						<div class="col-sm-9">
+							
+							<div id="search">
+								<a name="search"><!--  --></a>
+								<h2 class="getting-started">
+									<fmt:message key="persons.intro.navi.search">
+										<fmt:param value="${properties['project.name']}" />
+									</fmt:message>
+								</h2>
+
+								<div class="text-center">
+									<form action="#">
+										<div class='input-group' style="margin-left: auto; width: 100%; margin-right: auto; ">
+											
+											<fmt:message key="person.index.placeholder" var="placeholderText"/>
+											<input class='form-control typeahead' id='searchPersonAutocomplete' type='text' name='searchPersonAutocomplete' autocomplete="off" placeholder='${placeholderText}'/>
+											<!-- 
+											<span class="input-group-btn">
+												<button class="btn btn-default" type="button"><fmt:message key="person.index.header" /></button>
+											</span>
+											 -->
+										</div>
+									</form>
+								</div>
+								<!-- <sec:authorize access="hasRole('ROLE_USER')"> -->
+								<c:if test="${not empty command.context.loginUser.name}">
+									<div style="text-align: right;">
+										<form action="${absoluteUrlGenerator.getPostPublicationUrl()}">
+											<input type="hidden" name="personId" value=""/>
+											<input type="hidden" name='personRole' value='AUTHOR'/>
+											<input type="hidden" name='post.resource.entrytype' value='phdthesis'/>
+											
+											<fmt:message key="persons.intro.addperson.text"/>
+											<fmt:message key="persons.intro.addperson.button" var="textAddPersonButton"/>
+											<input type="submit" style="margin: 0px 20px 0px 10px;" class="btn btn-sm btn-default" name='submit' id="addPersonBtn" value='${textAddPersonButton}' />
+										</form>
+									</div>
+								</c:if>
+								<!-- </sec:authorize> -->
+							</div>
+						
+							
+							<c:forEach var="sectionKey" items="${sections}">
+								<hr />
+								
+								<div id="${sectionKey}">
+									<a name="${sectionKey}"><!--  --></a>
+									<h2 class="getting-started" style="margin-bottom: 17px">
+										<fmt:message key="persons.intro.navi.${sectionKey}">
+											<fmt:param value="${properties['project.name']}" />
+										</fmt:message>
+									</h2>
+									<div class="row">
+										<div class="col-sm-6">
+											<fmt:message key="persons.intro.${sectionKey}.text">
+												<fmt:param value="${properties['project.name']}" />
+											</fmt:message>
+										</div>
+										<div class="col-sm-6">
+										<fmt:message key="persons.intro.${sectionKey}.img" var="linkToImage" />
+										<img class="img-responsive" alt="${sectionKey}" src="${linkToImage}" />
+										</div>
+									</div>
+								</div>
+							</c:forEach>
+							</div>
+							<p>${mtl:ch('nbsp')}</p>
+						<br />
+					</div>
+					
+				</div>
+			</div>
+		</jsp:attribute>
+
+
+	</layout:paneLayout>
+
+</jsp:root>
