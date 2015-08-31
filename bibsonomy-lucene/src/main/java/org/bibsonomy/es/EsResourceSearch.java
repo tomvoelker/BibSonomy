@@ -152,7 +152,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		final QueryBuilder query= this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, org.bibsonomy.common.enums.SearchType.LOCAL, null, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags);
 		final Map<Tag, Integer> tagCounter = new HashMap<Tag, Integer>();
 
-		try (final IndexLock indexLock = getEsIndexManager().aquireReadLockForTheActiveIndex(this.resourceType)) {
+		try (final IndexLock indexLock = getEsIndexManager().aquireReadLockForTheActiveIndexAlias(this.resourceType)) {
 			
 
 				SearchRequestBuilder searchRequestBuilder = getEsIndexManager().getClient().prepareSearch(indexLock.getIndexName());
@@ -243,7 +243,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	@Override
 	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final org.bibsonomy.common.enums.SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) {
 		final ResultList<Post<R>> postList = new ResultList<Post<R>>();
-		try (final IndexLock indexLock = getEsIndexManager().aquireReadLockForTheActiveIndex(this.resourceType)) {
+		try (final IndexLock indexLock = getEsIndexManager().aquireReadLockForTheActiveIndexAlias(this.resourceType)) {
 			
 				final QueryBuilder queryBuilder = this.buildQuery(userName,
 						requestedUserName, requestedGroupName,
@@ -325,9 +325,10 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 */
 	@Override
 	public List<Post<BibTex>> getPublicationSuggestions(PublicationSuggestionQueryBuilder options) {
-		try (final IndexLock indexLock = getEsIndexManager().acquireReadLockForTheLocalActiveIndex(this.resourceType)) {
+		try (final IndexLock indexLock = getEsIndexManager().aquireReadLockForTheActiveIndexAlias(this.resourceType)) {
+			final String localIndexName = getEsIndexManager().getActiveIndexnameForResource(this.resourceType);
 			// we use inverted scores such that the best results automatically appear first according to the ascending order of a sorted map
-			final TreeMap<Float, ResourcePersonRelation> relSorter = iterativelyFetchSuggestions(indexLock, null, options);
+			final TreeMap<Float, ResourcePersonRelation> relSorter = iterativelyFetchSuggestions(localIndexName, null, options);
 				
 			return extractResources(relSorter);
 				
@@ -338,8 +339,9 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	}
 
 
-	private TreeMap<Float, ResourcePersonRelation> iterativelyFetchSuggestions(final IndexLock indexLock, Set<String> tokenizedQueryString, AbstractSuggestionQueryBuilder<?> options) {
+	private TreeMap<Float, ResourcePersonRelation> iterativelyFetchSuggestions(final String indexName, Set<String> tokenizedQueryString, AbstractSuggestionQueryBuilder<?> options) {
 		// we use inverted scores such that the best results automatically appear first according to the ascending order of a sorted map
+		// FIXME: this may cause posts with the same score to overwrite each other!
 		final TreeMap<Float, ResourcePersonRelation> relSorter = new TreeMap<>();
 		
 		// unfortunately our version of elasticsearch does not support topHits aggregation so we have to group by interhash ourselves: AggregationBuilder aggregation = AggregationBuilders.terms("agg").field("gender").subAggregation(AggregationBuilders.topHits("top"));
@@ -349,7 +351,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		for (int offset = 0; relSorter.size() < suggestionSize && offset < maxOffset; offset += maxOffset / 10) {
 			double minScore = Double.isNaN(bestScore) ? 0.05 : (bestScore / 3d);
 
-			double bestScoreThisRound = fetchMoreResults(relSorter, tokenizedQueryString, offset, alreadyAnalyzedInterhashes, indexLock.getIndexName(), minScore, options);
+			double bestScoreThisRound = fetchMoreResults(relSorter, tokenizedQueryString, offset, alreadyAnalyzedInterhashes, indexName, minScore, options);
 			if (Double.isNaN(bestScore)) {
 				bestScore = bestScoreThisRound;
 			}
@@ -379,14 +381,15 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 */
 	@Override
 	public List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder options) {
-		try (final IndexLock indexLock = getEsIndexManager().acquireReadLockForTheLocalActiveIndex(resourceType)) {
+		try (final IndexLock indexLock = getEsIndexManager().aquireReadLockForTheActiveIndexAlias(this.resourceType)) {
+			final String localIndexName = getEsIndexManager().getActiveIndexnameForResource(this.resourceType);
 			final Set<String> tokenizedQueryString = new HashSet<>();
 			for (String token : new SimpleTokenizer(options.getQuery())) {
 				if (!StringUtils.isBlank(token)) {
 					tokenizedQueryString.add(token.toLowerCase());
 				}
 			} 
-			final TreeMap<Float, ResourcePersonRelation> relSorter = iterativelyFetchSuggestions(indexLock, tokenizedQueryString, options);
+			final TreeMap<Float, ResourcePersonRelation> relSorter = iterativelyFetchSuggestions(localIndexName, tokenizedQueryString, options);
 			return extractDistinctPersons(relSorter);
 				
 		} catch (final IndexMissingException e) {
