@@ -39,9 +39,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,10 +50,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.index.CorruptIndexException;
+import org.bibsonomy.common.FirstValuePairComparator;
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.lucene.database.LuceneInfoLogic;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
-import org.bibsonomy.lucene.index.converter.NormalizedEntryTypes;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
@@ -152,7 +154,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		final QueryBuilder query= this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, org.bibsonomy.common.enums.SearchType.LOCAL, null, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags);
 		final Map<Tag, Integer> tagCounter = new HashMap<Tag, Integer>();
 
-		try (final IndexLock indexLock = getEsIndexManager().aquireReadLockForTheActiveIndex(this.resourceType)) {
+		try (final IndexLock indexLock = getEsIndexManager().aquireReadLockForTheActiveIndexAlias(this.resourceType)) {
 			
 
 				SearchRequestBuilder searchRequestBuilder = getEsIndexManager().getClient().prepareSearch(indexLock.getIndexName());
@@ -243,7 +245,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	@Override
 	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final org.bibsonomy.common.enums.SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) {
 		final ResultList<Post<R>> postList = new ResultList<Post<R>>();
-		try (final IndexLock indexLock = getEsIndexManager().aquireReadLockForTheActiveIndex(this.resourceType)) {
+		try (final IndexLock indexLock = getEsIndexManager().aquireReadLockForTheActiveIndexAlias(this.resourceType)) {
 			
 				final QueryBuilder queryBuilder = this.buildQuery(userName,
 						requestedUserName, requestedGroupName,
@@ -325,9 +327,10 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 */
 	@Override
 	public List<Post<BibTex>> getPublicationSuggestions(PublicationSuggestionQueryBuilder options) {
-		try (final IndexLock indexLock = getEsIndexManager().acquireReadLockForTheLocalActiveIndex(this.resourceType)) {
+		try (final IndexLock indexLock = getEsIndexManager().aquireReadLockForTheActiveIndexAlias(this.resourceType)) {
+			final String localIndexName = getEsIndexManager().getActiveIndexnameForResource(this.resourceType);
 			// we use inverted scores such that the best results automatically appear first according to the ascending order of a sorted map
-			final TreeMap<Float, ResourcePersonRelation> relSorter = iterativelyFetchSuggestions(indexLock, null, options);
+			final SortedSet<Pair<Float, ResourcePersonRelation>> relSorter = iterativelyFetchSuggestions(localIndexName, null, options);
 				
 			return extractResources(relSorter);
 				
@@ -338,9 +341,9 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	}
 
 
-	private TreeMap<Float, ResourcePersonRelation> iterativelyFetchSuggestions(final IndexLock indexLock, Set<String> tokenizedQueryString, AbstractSuggestionQueryBuilder<?> options) {
+	private SortedSet<Pair<Float, ResourcePersonRelation>> iterativelyFetchSuggestions(final String indexName, Set<String> tokenizedQueryString, AbstractSuggestionQueryBuilder<?> options) {
 		// we use inverted scores such that the best results automatically appear first according to the ascending order of a sorted map
-		final TreeMap<Float, ResourcePersonRelation> relSorter = new TreeMap<>();
+		final SortedSet<Pair<Float, ResourcePersonRelation>> relSorter = new TreeSet<>(new FirstValuePairComparator<Float, ResourcePersonRelation>(false));
 		
 		// unfortunately our version of elasticsearch does not support topHits aggregation so we have to group by interhash ourselves: AggregationBuilder aggregation = AggregationBuilders.terms("agg").field("gender").subAggregation(AggregationBuilders.topHits("top"));
 		double bestScore = Double.NaN;
@@ -349,7 +352,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		for (int offset = 0; relSorter.size() < suggestionSize && offset < maxOffset; offset += maxOffset / 10) {
 			double minScore = Double.isNaN(bestScore) ? 0.05 : (bestScore / 3d);
 
-			double bestScoreThisRound = fetchMoreResults(relSorter, tokenizedQueryString, offset, alreadyAnalyzedInterhashes, indexLock.getIndexName(), minScore, options);
+			double bestScoreThisRound = fetchMoreResults(relSorter, tokenizedQueryString, offset, alreadyAnalyzedInterhashes, indexName, minScore, options);
 			if (Double.isNaN(bestScore)) {
 				bestScore = bestScoreThisRound;
 			}
@@ -365,9 +368,10 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private static List<Post<BibTex>> extractResources(TreeMap<Float, ResourcePersonRelation> relSorter) {
+	private static List<Post<BibTex>> extractResources( SortedSet<Pair<Float, ResourcePersonRelation>> relSorter) {
 		final List<Post<BibTex>> rVal = new ArrayList<>();
-		for (ResourcePersonRelation rel : relSorter.values()) {
+		for (Pair<Float, ResourcePersonRelation> scoreAndRel : relSorter) {
+			final ResourcePersonRelation rel = scoreAndRel.getSecond();
 			rVal.add((Post<BibTex>) rel.getPost());
 		}
 		return rVal;
@@ -379,14 +383,15 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 */
 	@Override
 	public List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder options) {
-		try (final IndexLock indexLock = getEsIndexManager().acquireReadLockForTheLocalActiveIndex(resourceType)) {
+		try (final IndexLock indexLock = getEsIndexManager().aquireReadLockForTheActiveIndexAlias(this.resourceType)) {
+			final String localIndexName = getEsIndexManager().getActiveIndexnameForResource(this.resourceType);
 			final Set<String> tokenizedQueryString = new HashSet<>();
 			for (String token : new SimpleTokenizer(options.getQuery())) {
 				if (!StringUtils.isBlank(token)) {
 					tokenizedQueryString.add(token.toLowerCase());
 				}
 			} 
-			final TreeMap<Float, ResourcePersonRelation> relSorter = iterativelyFetchSuggestions(indexLock, tokenizedQueryString, options);
+			final SortedSet<Pair<Float, ResourcePersonRelation>> relSorter = iterativelyFetchSuggestions(localIndexName, tokenizedQueryString, options);
 			return extractDistinctPersons(relSorter);
 				
 		} catch (final IndexMissingException e) {
@@ -472,7 +477,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		return searchRequestBuilder;
 	}
 	
-	private double fetchMoreResults(final TreeMap<Float, ResourcePersonRelation> relSorter, final Set<String> queryTerms, int offset, final Set<String> alreadyAnalyzedInterhashes, String indexName, double minPlainEsScore, AbstractSuggestionQueryBuilder<?> options) {
+	private double fetchMoreResults(final SortedSet<Pair<Float, ResourcePersonRelation>> relSorter, final Set<String> queryTerms, int offset, final Set<String> alreadyAnalyzedInterhashes, String indexName, double minPlainEsScore, AbstractSuggestionQueryBuilder<?> options) {
 		// for finding persons, we use their names but for finding publications, we like to find publications which are not yet associated to a person entity
 		final QueryBuilder queryBuilder = buildQuery(options);
 		final SearchRequestBuilder searchRequestBuilder = buildRequest(offset, indexName, minPlainEsScore, queryBuilder);
@@ -524,7 +529,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			} else {
 				ResourcePersonRelation rpr = new ResourcePersonRelation();
 				rpr.setPost((Post<? extends BibTex>) post);
-				relSorter.put(postScore, rpr);
+				relSorter.add(new Pair<>(postScore, rpr));
 			}
 		}
 
@@ -536,24 +541,27 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @param relSorter
 	 * @param post
 	 */
-	private void exchangePost(TreeMap<Float, ResourcePersonRelation> relSorter, Post<R> post) {
+	private void exchangePost(final SortedSet<Pair<Float, ResourcePersonRelation>> relSorter, final Post<R> post) {
 		final String interHash = post.getResource().getInterHash();
-		final Map<Float, ResourcePersonRelation> toBeAdded = new TreeMap<>();
-		for (Iterator<Map.Entry<Float,ResourcePersonRelation>> it = relSorter.entrySet().iterator(); it.hasNext();) {
-			final Entry<Float, ResourcePersonRelation> scoredRel = it.next();
-			Post<? extends BibTex> oldPost = scoredRel.getValue().getPost();
+		final Collection<Pair<Float, ResourcePersonRelation>> toBeAdded = new ArrayList<>();
+		for (Iterator<Pair<Float,ResourcePersonRelation>> it = relSorter.iterator(); it.hasNext();) {
+			final Pair<Float, ResourcePersonRelation> scoreAndRel = it.next();
+			Post<? extends BibTex> oldPost = scoreAndRel.getSecond().getPost();
 			if (interHash.equals(oldPost.getResource().getInterHash())) {
+				final ResourcePersonRelation oldRel = scoreAndRel.getSecond();
+				final Float oldScore = scoreAndRel.getFirst();
 				it.remove();
-				scoredRel.getValue().setPost((Post<? extends BibTex>) post);
+				oldRel.setPost((Post<? extends BibTex>) post);
+				
 				// rescore to prefer exchanged posts
-				toBeAdded.put(scoredRel.getKey() * GENEALOGY_USER_PREFERENCE_FACTOR, scoredRel.getValue());
+				toBeAdded.add(new Pair<>(oldScore * GENEALOGY_USER_PREFERENCE_FACTOR, oldRel));
 			}
 		}
-		relSorter.putAll(toBeAdded);
+		relSorter.addAll(toBeAdded);
 	}
 
 
-	private void extractResourceRelationsForMatchingPersons(final TreeMap<Float, ResourcePersonRelation> relSorter, final Set<String> queryTerms, final Post<BibTex> post, final float postScore, final TreeMap<Integer, ResourcePersonRelation> invertedScoreToRpr, PersonSuggestionQueryBuilder options) {
+	private void extractResourceRelationsForMatchingPersons(final SortedSet<Pair<Float, ResourcePersonRelation>> relSorter, final Set<String> queryTerms, final Post<BibTex> post, final float postScore, final TreeMap<Integer, ResourcePersonRelation> invertedScoreToRpr, PersonSuggestionQueryBuilder options) {
 		if (options.isWithEntityPersons()) {
 			for (ResourcePersonRelation rpr : post.getResourcePersonRelations()) {
 				PersonName mainName = rpr.getPerson().getMainName();
@@ -578,7 +586,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		for (Map.Entry<Integer, ResourcePersonRelation> e : invertedScoreToRpr.entrySet()) {
 			if (e.getKey() < lastScore / 2) {
 				lastScore = e.getKey();
-				relSorter.put(postScore * -((float) lastScore) / minInvertedScore, e.getValue());
+				relSorter.add(new Pair<>(postScore * -((float) lastScore) / minInvertedScore, e.getValue()));
 			}
 		}
 	}
@@ -671,10 +679,11 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		return minInvertedScore;
 	}
 
-	private List<ResourcePersonRelation> extractDistinctPersons(final TreeMap<Float, ResourcePersonRelation> rValSorter) {
+	private List<ResourcePersonRelation> extractDistinctPersons(final SortedSet<Pair<Float, ResourcePersonRelation>> rValSorter) {
 		List<ResourcePersonRelation> rVal = new ArrayList<>();
 		Set<String> foundPersonIds = new HashSet<>();
-		for (ResourcePersonRelation rpr : rValSorter.values()) {
+		for (Pair<Float,ResourcePersonRelation> scoreAndRpr : rValSorter) {
+			ResourcePersonRelation rpr = scoreAndRpr.getSecond();
 			if ((rpr.getPerson().getPersonId() == null) || (foundPersonIds.add(rpr.getPerson().getPersonId()) == true)) {
 				// we have not seen this personId earlier in the sorted map, so add it to the response list
 				rVal.add(rpr);
