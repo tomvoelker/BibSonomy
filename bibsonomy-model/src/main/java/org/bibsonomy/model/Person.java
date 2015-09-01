@@ -65,14 +65,11 @@ public class Person implements Serializable {
 	/** the gender */
 	private Gender gender;
 	
-	private List<ResourcePersonRelation> resourcePersonRelations;
-	
 	/**
 	 * 
 	 */
 	public Person() {
 		this.names = new ArrayList<PersonName>();
-		this.resourcePersonRelations = new ArrayList<ResourcePersonRelation>();
 	}
 	
 	/**
@@ -268,20 +265,6 @@ public class Person implements Serializable {
 	 */
 	public void setPostCounter(int postCounter) {
 		this.postCounter = postCounter;
-	}
-
-	/**
-	 * @return the resourcePersonRelations
-	 */
-	public List<ResourcePersonRelation> getResourcePersonRelations() {
-		return this.resourcePersonRelations;
-	}
-
-	/**
-	 * @param resourcePersonRelations the resourcePersonRelations to set
-	 */
-	public void setResourcePersonRelations(List<ResourcePersonRelation> resourcePersonRelations) {
-		this.resourcePersonRelations = resourcePersonRelations;
 	}
 
 	public int getPersonChangeId() {
