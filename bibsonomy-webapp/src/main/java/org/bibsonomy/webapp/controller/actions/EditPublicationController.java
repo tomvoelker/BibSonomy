@@ -133,7 +133,7 @@ public class EditPublicationController extends AbstractEditPublicationController
 	protected void validatePost(EditPublicationCommand command) {
 		super.validatePost(command);
 		final List<PersonName> publicationNames = (command.getPersonRole() != null) ? command.getPost().getResource().getPersonNamesByRole(command.getPersonRole()) : null;
-		if ((command.getPersonIndex() == null) || ((publicationNames != null) && (command.getPersonIndex() >= publicationNames.size()))) {
+		if (((command.getPersonIndex() != null) && (publicationNames != null) && (command.getPersonIndex() >= publicationNames.size())) || ((command.getPersonId() != null) && (command.getPersonIndex() == null))) {
 			this.errors.reject("error.field.valid.personId", "The provided person index is invalid.");
 			return;
 		}
@@ -150,7 +150,7 @@ public class EditPublicationController extends AbstractEditPublicationController
 			}
 		} else {
 			final List<PersonName> publicationNames = pubPost.getResource().getPersonNamesByRole(command.getPersonRole());
-			if ((command.getPersonIndex() == null) || (command.getPersonIndex() >= publicationNames.size())) {
+			if ((command.getPersonIndex() != null) && (command.getPersonIndex() >= publicationNames.size())) {
 				this.errors.reject("error.field.valid.personId", "The provided person index is invalid.");
 				return;
 			}
