@@ -64,7 +64,8 @@
 	<!-- get list of all non-spam bookmarks -->
 	<select id="getBookmarkForIndex" parameterClass="luceneParam" resultMap="LuceneBookmarkCommon.luceneBookmarkPost">
 		SELECT 
-			bb.*, 
+			bb.*,
+			t.change_date,
 			t.tag_name,
 			g.*,
 			u.book_url, u.book_url_ctr AS count,
@@ -72,7 +73,7 @@
 			-1 AS rating, -1 AS number_of_ratings
 		FROM 
 		( 
-		  SELECT <include refid ="bookmarkAttributes"/>, b.group
+		  SELECT <include refid ="bookmarkAttributesNoChangeDate"/>, b.group
 		  FROM bookmark b 
 	      JOIN urls u USING (book_url_hash)
 		  WHERE b.group &gt;= 0
@@ -99,7 +100,8 @@
 	<!-- get list of all non-spam bookmarks ordered by hash -->
 	<select id="getBookmarkForIndexOrderedByHash" parameterClass="luceneParam" resultMap="LuceneBookmarkCommon.luceneBookmarkPost">
 		SELECT 
-			bb.*, 
+			bb.*,
+			t.change_date,
 			t.tag_name,
 			g.*,
 			u.book_url, u.book_url_ctr AS count,
@@ -107,7 +109,7 @@
 			-1 AS rating, -1 AS number_of_ratings
 		FROM 
 		( 
-		  SELECT <include refid ="bookmarkAttributes"/>, b.group
+		  SELECT <include refid ="bookmarkAttributesNoChangeDate"/>, b.group
 		  FROM bookmark b 
 	      JOIN urls u USING (book_url_hash)
 		  WHERE b.group &gt;= 0

@@ -3,7 +3,7 @@
 
 <sqlMap namespace="Bookmark">
 	<select id="getBookmarkByTagNames" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT <include refid="bookmarkAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
+		SELECT <include refid="bookmarkPostAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
 		FROM bookmark b <include refid="reviewRatingsJoinBookmark" />, urls u, tas t,
 		     (SELECT t1.content_id 
 		      FROM <include refid="tagFromQuery"/>
@@ -27,7 +27,7 @@
 	</select>
 	
 	<select id="getBookmarkByTagNamesAndFolkrank" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT <include refid="bookmarkAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
+		SELECT <include refid="bookmarkPostAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
 		FROM bookmark b <include refid="reviewRatingsJoinBookmark" />, urls u, tas t,
 		     (SELECT b.book_url_hash, MIN(b.content_id) AS content_id, xy.weight
 		     FROM  bookmark b,
@@ -49,7 +49,7 @@
 	</select>
 
 	<select id="getBookmarkByTagNamesForUser" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT <include refid="bookmarkAttributes"/>,
+		SELECT <include refid="bookmarkPostAttributes"/>,
 		       u.book_url, u.book_url_ctr AS count, t.tag_name, g.group, g.group_name, <include refid="reviewRatingsRows" />
 		FROM 
 			(   <!-- select all bookmark posts from the user with the given tags -->
@@ -108,7 +108,7 @@
 		| 
 		+-->
 	<select id="getBookmarkForHomepage" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT <include refid="bookmarkAttributes"/>,
+		SELECT <include refid="bookmarkPostAttributes"/>,
 		       u.book_url, u.book_url_ctr AS count, t.tag_name, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
 		  FROM (
 		    SELECT b.content_id, b.book_description, b.book_extended, b.user_name, b.date, b.book_url_hash, b.change_date
@@ -128,7 +128,7 @@
 	
 	<!-- This is the query for the unfiltered homepage, i.e., posts which contain blacklisted tags are NOT filtered -->
 	<select id="getBookmarkForHomepageUnfiltered" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT <include refid="bookmarkAttributes"/>,
+		SELECT <include refid="bookmarkPostAttributes"/>,
 		       u.book_url, u.book_url_ctr AS count, t.tag_name, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
 		  FROM (
 		    SELECT b.content_id, b.book_description, b.book_extended, b.user_name, b.date, b.book_url_hash, b.change_date
@@ -143,7 +143,7 @@
 	</select>
 	
 	<select id="getBookmarkPopular" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT <include refid="bookmarkAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
+		SELECT <include refid="bookmarkPostAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
 		FROM (SELECT *, date AS change_date FROM temp_bookmark b2 
 			  WHERE b2.popular_days = (SELECT popular_days FROM temp_bookmark GROUP BY popular_days ORDER by popular_days LIMIT 1 OFFSET #days#)
 			  ORDER BY b2.rank LIMIT #limit# OFFSET #offset#) b
@@ -178,7 +178,7 @@
 		| get all publi bookmark posts from all related users according to the given relation tag
 		+-->
 	<select id="getBookmarkByTaggedUserRelation" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT <include refid="bookmarkAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr AS count, b.`group`, g.group_name AS group_name, <include refid="reviewRatingsRows" /> 
+		SELECT <include refid="bookmarkPostAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr AS count, b.`group`, g.group_name AS group_name, <include refid="reviewRatingsRows" /> 
 	    FROM urls u, bookmark b <include refid="reviewRatingsJoinBookmark" />,
 			(SELECT b.content_id, b.date                                  <!-- bookmarks from users which are tagged accordingly -->
 			 FROM bookmark b, 
@@ -367,7 +367,7 @@
 	</select>
 	
 	<select id="getBookmarkViewableByTag" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT <include refid="bookmarkAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr AS count, b.group, #requestedGroupName# AS group_name, <include refid="reviewRatingsRows" />
+		SELECT <include refid="bookmarkPostAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr AS count, b.group, #requestedGroupName# AS group_name, <include refid="reviewRatingsRows" />
 		FROM bookmark b <include refid="reviewRatingsJoinBookmark" />, urls u, tas t,
 		     (SELECT t1.content_id 
 		      FROM <include refid="tagFromQuery"/>

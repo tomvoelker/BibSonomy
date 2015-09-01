@@ -109,7 +109,7 @@
 		|    lastTasId 
 		+-->
 	<select id="getBookmarkPostsForTimeRange" resultMap="LuceneBookmarkCommon.luceneBookmarkPost" parameterClass="luceneParam">
-		SELECT <include refid="bookmarkAttributes"/>,
+		SELECT <include refid="bookmarkPostAttributes"/>,
 			g.*,
 			t.tag_name, t.tas_id,
 			u.book_url, u.book_url_ctr AS count,
