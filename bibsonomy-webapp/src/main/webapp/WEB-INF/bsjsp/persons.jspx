@@ -102,7 +102,7 @@
 							
 							<div id="search">
 								<a name="search"><!--  --></a>
-								<h2 class="getting-started">
+								<h2 class="getting-started" style="text-align: left">
 									<fmt:message key="persons.intro.navi.search">
 										<fmt:param value="${properties['project.name']}" />
 									</fmt:message>
@@ -145,7 +145,7 @@
 								
 								<div id="${sectionKey}">
 									<a name="${sectionKey}"><!--  --></a>
-									<h2 class="getting-started" style="margin-bottom: 17px">
+									<h2 class="getting-started" style="margin-bottom: 17px; text-align: left">
 										<fmt:message key="persons.intro.navi.${sectionKey}">
 											<fmt:param value="${properties['project.name']}" />
 										</fmt:message>

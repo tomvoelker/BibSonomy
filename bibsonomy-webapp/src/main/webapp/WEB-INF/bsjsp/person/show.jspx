@@ -448,7 +448,7 @@
 										<option value="${role}"><fmt:message key="person.show.${role.relatorCode}" /></option>
 									</c:when>
 									<c:when test="${role == 'DOCTOR_VATER'}">
-										<option value="${role}" selected="selected"><fmt:message key="person.show.${role.relatorCode}" /></option>
+									<option value="${role}" selected="selected"><fmt:message key="person.show.${role.relatorCode}" /></option> 
 									</c:when>
 								</c:choose>
 							</c:forEach>
