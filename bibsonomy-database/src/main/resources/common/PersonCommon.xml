@@ -14,12 +14,6 @@
 		<result property="changedBy"        column="log_changed_by"      javaType="java.lang.String" />
 		<result property="changeDate"       column="log_changed_at"      javaType="java.util.Date" />
 		<result property="user"             column="user_name"           javaType="java.lang.String" />
-		
-		<!-- TODO: probably no longer needed 
-		<result property='disambiguatingPublication'  column='person_id' javaType='org.bibsonomy.model.ResourcePersonRelation' select='getOneResourcePersonRelationsByPersonId'/>
-
-		<result property='resourcePersonRelations'    column='person_id' javaType='org.bibsonomy.model.ResourcePersonRelation' select='getResourcePersonRelationsByPersonId' />
-				 -->
 	</resultMap>
 	
 	<resultMap id='lazyLoadingPerson' class='org.bibsonomy.model.Person' extends="abstractPerson">
@@ -37,9 +31,6 @@
 		<result property="lastName"        column="last_name"         javaType="java.lang.String" />
 		<result property="personId"        column="person_id"         javaType="java.lang.String" />
 		<result property='isMain'          column='is_main'           javaType='boolean' />
-<!-- 
-		<result property="person"          column="person_id"         javaType='org.bibsonomy.model.Person' select='getPersonById' />
- -->
 		<result property='changedBy'       column='log_changed_by'    javaType='java.lang.String' />
 		<result property="changedAt"       column="log_changed_at"    javaType="java.util.Date" />
 	</resultMap>
@@ -60,9 +51,6 @@
 	
 	<resultMap id='resourcePersonRelationWithPersonPrefilled' class='org.bibsonomy.model.ResourcePersonRelation' groupBy="personRelChangeId" extends="abstractResourcePersonRelation">
 		<result property="person"          resultMap="PersonCommon.personWithNamesPrefilled" />
-		<!-- 
-		<result property='post'            column='simhash1'        javaType='bibtex'                           select='getPosts'/>
-		 -->
 	</resultMap>
 	
 	<resultMap id='resourcePersonRelationLogStub' class='org.bibsonomy.model.ResourcePersonRelationLogStub' groupBy="personRelChangeId" extends="abstractResourcePersonRelation">

@@ -57,12 +57,7 @@
 	<update id='updatePerson' parameterClass='org.bibsonomy.model.Person'>
 		UPDATE person SET person_change_id = #personChangeId#, academic_degree = #academicDegree#, orcid = #orcid#, post_ctr = #postCounter#, user_name = #user#
 			WHERE person.person_id = #personId#
-	</update> 
-	
-	<select id="getPersonNameById" resultMap="PersonCommon.personName" parameterClass="int">
-		SELECT <include refid="commonPersonNameColumns"/> FROM person_name
-			WHERE person_name.person_change_id = #personNameChangeId#
-	</select>
+	</update>
 	
 	<update id="updatePersonName" parameterClass='org.bibsonomy.model.PersonName'>
 		Update person_name SET is_main = #isMain# 

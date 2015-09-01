@@ -1,9 +1,7 @@
 package org.bibsonomy.database.managers;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
@@ -41,7 +39,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		return singleton;
 	}
 	
-	public PersonDatabaseManager() {
+	private PersonDatabaseManager() {
 		this.generalManager = GeneralDatabaseManager.getInstance();
 	}
 	
@@ -123,56 +121,6 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		}
 	}
 
-
-	/**
-	 * @param id
-	 * @param session
-	 * @return Set<PersonName>
-	 */
-	public List<?> getAlternateNames(int id, DBSession session) {
-		return this.queryForList("getAlternateNames", id, session);
-	}
-
-
-	/**
-	 * @param id
-	 * @param session
-	 * @return PersonName
-	 */
-	public PersonName getPersonNameById(int id, DBSession session) {
-		return (PersonName) this.queryForObject("getPersonNameById", id, session);
-	}
-
-	/**
-	 * @param name 
-	 * @param firstName 
-	 * @param session 
-	 * @return List<PersonName>
-	 * 
-	 */
-	public List<PersonName> findPersonNames(String lastName, String firstName, DBSession session) {
-		PersonName personName = new PersonName();
-		if (StringUtils.isBlank(lastName) == false) {
-			personName.setLastName(lastName.trim() + "%");
-			if (StringUtils.isBlank(firstName) == false) {
-				personName.setFirstName(firstName.trim().substring(0, 1) + "%");
-			} else {
-				personName.setFirstName("%");
-			}
-		} else {
-			if (StringUtils.isBlank(firstName) == false) {
-				personName.setFirstName(firstName.trim() + "%");
-				personName.setLastName("%");
-			} else {
-				return new ArrayList<>();
-			}
-		}
-		
-		
-		return (List<PersonName>) this.queryForList("findPersonNames", personName, session);
-	}
-
-
 	/**
 	 * @param resourcePersonRelation
 	 * @param session 
@@ -244,38 +192,10 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		}	
 	}
 
-
-	/**
-	 * @param personNameId
-	 * @param databaseSession
-	 * @return
-	 */
-	public List<ResourcePersonRelation> getResourceRelations(int personNameId,
-			DBSession databaseSession) {
-		return (List<ResourcePersonRelation>) this.queryForList("getResourceRelations", personNameId, databaseSession);
-	}
-	
-	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelation resourcePersonRelation,
-			DBSession databaseSession) {
-		return (List<ResourcePersonRelation>) this.queryForList("getResourceRelationsByResourcePersonRelation", resourcePersonRelation, databaseSession);
-	}
-	
 	// TODO: write testcase for this method and test whether groupBy of OR-mapping works as expected 
 	public List<ResourcePersonRelation> getResourcePersonRelationsByPublication(String interHash, DBSession databaseSession) {
 		return (List<ResourcePersonRelation>) this.queryForList("getResourcePersonRelationsByPublication", interHash, databaseSession);
 	}
-
-	/**
-	 * @param longHash
-	 * @param publicationOwner
-	 * @param personNameId
-	 * @param rel
-	 * @return
-	 */
-	public String getLastResourceRelationId(ResourcePersonRelation resourcePersonRelation, DBSession session) {
-		return (String) this.queryForObject("getLastResourceRelationId", resourcePersonRelation, session);
-	}
-
 
 	/**
 	 * @param username
@@ -346,21 +266,6 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			} else {
 				return this.queryForList("getBibTexRelationsForPerson", param, ResourcePersonRelation.class, session);
 			}
-		} finally {
-			session.endTransaction();
-		}
-	}
-
-	/**
-	 * @param person
-	 * @param session
-	 * @return List<ResourcePersonRelation>
-	 */
-	public List<ResourcePersonRelation> getResourcePersonRelations(
-			Person person, DBSession session) {
-		session.beginTransaction();
-		try {
-			return (List<ResourcePersonRelation>) this.queryForList("getResourcePersonRelationsByPersonId", person.getPersonId(), session);
 		} finally {
 			session.endTransaction();
 		}

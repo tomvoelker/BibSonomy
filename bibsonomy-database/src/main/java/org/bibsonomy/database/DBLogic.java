@@ -3403,6 +3403,8 @@ public class DBLogic implements LogicInterface {
 				return this.personDBManager.getPersonByDnbId(id, session);
 			// } else if (PersonIdType.ORCID == idType) {
 			//	TODO: implement
+			} else if (PersonIdType.BIBSONOMY_USER == idType) {
+				return this.personDBManager.getPersonByUser(id, session);
 			} else {
 				throw new UnsupportedOperationException("person cannot be found by it type " + idType);
 			}
