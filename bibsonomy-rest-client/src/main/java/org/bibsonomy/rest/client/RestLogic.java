@@ -829,15 +829,6 @@ public class RestLogic implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getQualifyingPublications(java.lang.String)
-	 */
-	@Override
-	public Map<Person, BibTex> getQualifyingPublications(String personName) {
-		throw new UnsupportedOperationException();
-	}
-
-
-	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePersonName(org.bibsonomy.model.PersonName)
 	 */
 	@Override
@@ -861,13 +852,6 @@ public class RestLogic implements LogicInterface {
 		throw new UnsupportedOperationException();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#searchPostsByTitle(java.lang.String)
-	 */
-	@Override
-	public List<Post<BibTex>> searchPostsByTitle(String title) {
-		throw new UnsupportedOperationException();
-	}
 	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations()

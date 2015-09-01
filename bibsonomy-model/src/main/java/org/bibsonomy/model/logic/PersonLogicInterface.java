@@ -34,12 +34,6 @@ public interface PersonLogicInterface {
 	public void removePersonName(Integer personNameId);
 
 	/**
-	 * @param personName
-	 * @return
-	 */
-	public Map<Person, BibTex> getQualifyingPublications(String personName);
-
-	/**
 	 * @param withPersonId
 	 */
 	public void createOrUpdatePersonName(PersonName withPersonId);

@@ -44,7 +44,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -142,7 +141,6 @@ import org.bibsonomy.model.comparators.ResourcePersonRelationByPostComparator;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
-import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -3412,35 +3410,6 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
-	
-	@Override
-	public Map<Person, BibTex> getQualifyingPublications(String personName) {
-		return null;
-	}
-	/**
-	 * @param id
-	 * @return Set<PersonName>
-	 */
-	public List<?> getAlternateNames(int id) {
-		final DBSession session = this.openSession();
-		try {
-			return this.personDBManager.getAlternateNames(id, session);
-		} finally {
-			session.close();
-		}
-	}
-	/**
-	 * @param id
-	 * @return PersonName
-	 */
-	public PersonName getPersonNameById(int id) {
-		final DBSession session = this.openSession();
-		try {
-			return this.personDBManager.getPersonNameById(id, session);
-		} finally {
-			session.close();
-		}
-	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonName(int)
@@ -3502,10 +3471,6 @@ public class DBLogic implements LogicInterface {
 		} finally {
 			session.close();
 		}
-	}
-	
-	public List<Post<BibTex>> searchPostsByTitle(String title) {
-		return new ArrayList<Post<BibTex>>();
 	}
 
 	@Override

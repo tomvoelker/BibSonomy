@@ -751,11 +751,4 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 */
 	public void unlinkUser(String username);
 
-	/**
-	 * @param formSelectedName
-	 * @return
-	 */
-	public List<Post<BibTex>> searchPostsByTitle(String title);
-	
-
 }

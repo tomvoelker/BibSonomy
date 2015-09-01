@@ -1151,17 +1151,6 @@ public class TestDBLogic implements LogicInterface {
 		
 	}
 
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getQualifyingPublications(java.lang.String)
-	 */
-	@Override
-	public Map<Person, BibTex> getQualifyingPublications(String personName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getDocumentStatistics(org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.Set, java.util.Date, java.util.Date)
 	 */
@@ -1234,16 +1223,6 @@ public class TestDBLogic implements LogicInterface {
 	public void unlinkUser(String username) {
 		// TODO Auto-generated method stub
 		
-	}
-
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#searchPostsByTitle(java.lang.String)
-	 */
-	@Override
-	public List<Post<BibTex>> searchPostsByTitle(String title) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 

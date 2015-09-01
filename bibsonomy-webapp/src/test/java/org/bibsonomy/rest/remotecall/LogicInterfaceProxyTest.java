@@ -1393,12 +1393,6 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		
 	}
 
-	@Override
-	public Map<Person, BibTex> getQualifyingPublications(String personName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#addResourceRelation(org.bibsonomy.model.ResourcePersonRelation)
 	 */
@@ -1442,15 +1436,6 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	public void unlinkUser(String username) {
 		// TODO Auto-generated method stub
 		
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#searchPostsByTitle(java.lang.String)
-	 */
-	@Override
-	public List<Post<BibTex>> searchPostsByTitle(String title) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	/* (non-Javadoc)
