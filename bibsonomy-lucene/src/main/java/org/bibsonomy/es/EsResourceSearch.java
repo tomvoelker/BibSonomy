@@ -55,6 +55,7 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.lucene.database.LuceneInfoLogic;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
+import org.bibsonomy.lucene.index.converter.NormalizedEntryTypes;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
@@ -409,20 +410,20 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 									QueryBuilders.multiMatchQuery(options.getQuery()) //
 									.type(Type.CROSS_FIELDS)
 									//.minimumShouldMatch("70%")
-									.operator(Operator.AND)
+									.operator(Operator.AND) // "and" here means every term in the query must be in one of the following fields
 									.field(LuceneFieldNames.TITLE, 2.5f) //
 									.field(LuceneFieldNames.SCHOOL, 1.3f) //
 								) //
 								.tieBreaker(0.8f) //
 								.boost(4) //
 						) //
-//						.should(QueryBuilders.boolQuery() //
+						.should(QueryBuilders.boolQuery() //
 //								.should(QueryBuilders.termQuery(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, NormalizedEntryTypes.habilitation.name()).boost(11)) //
-//								.should(QueryBuilders.termQuery(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, NormalizedEntryTypes.phdthesis.name()).boost(10)) //
+								.should(QueryBuilders.termQuery(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, NormalizedEntryTypes.phdthesis.name()).boost(10)) //
 //								.should(QueryBuilders.termQuery(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, NormalizedEntryTypes.master_thesis.name()).boost(7)) //
 //								.should(QueryBuilders.termQuery(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, NormalizedEntryTypes.bachelor_thesis.name()).boost(6)) //
 //								.should(QueryBuilders.termQuery(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, NormalizedEntryTypes.candidate_thesis.name()).boost(5)) //
-//						) //
+						) //
 						//.should(QueryBuilders.termQuery(LuceneFieldNames.USER_NAME, genealogyUser)) //
 						, addShouldYearIfYearInQuery( //
 								null, // termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, systemUrl), //
