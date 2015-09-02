@@ -261,4 +261,35 @@ public class Logging extends AbstractDatabasePlugin {
     public void onBibTexExtraDelete(final BibTexExtraParam deletedBibTexExtraParam, final DBSession session) {
         this.insert("logBibTexURL", deletedBibTexExtraParam, session);
     }
+    
+    @Override
+	public void onPersonNameDelete(final Object personChangeId, final DBSession session) {
+    	if (personChangeId instanceof Integer){
+    		this.insert("logPersonName", personChangeId, session);
+    	}
+    	if(personChangeId instanceof String){
+    		this.insert("logPersonNameByPersonId", personChangeId, session);
+    	}
+	}
+    
+    @Override
+	public void onPersonUpdate(final String personId, final DBSession session) {
+    	this.insert("logPersonUpdate", personId, session);
+	}
+    
+    @Override
+	public void onPersonUpdateByUserName(final String userName, final DBSession session) {
+    	this.insert("logPersonUpdateByUserName", userName, session);
+	}
+    
+    @Override
+	public void onPersonDelete(final String personId, final DBSession session) {
+    	this.insert("logPersonDelete", personId, session);
+	}
+    
+    @Override
+	public void onPubPersonDelete(final Integer personChangeId, final DBSession session) {
+    	this.insert("logPubPerson", personChangeId, session);
+	}
+    
 }

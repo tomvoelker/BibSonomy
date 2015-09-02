@@ -8,6 +8,7 @@ import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
@@ -33,6 +34,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 
 	private final static PersonDatabaseManager singleton = new PersonDatabaseManager();
 	private final GeneralDatabaseManager generalManager;
+	private final DatabasePluginRegistry plugins;
 	private PersonSearch personSearch;
 
 	public static PersonDatabaseManager getInstance() {
@@ -41,6 +43,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	
 	private PersonDatabaseManager() {
 		this.generalManager = GeneralDatabaseManager.getInstance();
+		this.plugins = DatabasePluginRegistry.getInstance();
 	}
 	
 	/**
@@ -113,6 +116,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public void updatePerson(Person person, DBSession session) {
 		session.beginTransaction();
 		try {
+			this.plugins.onPersonUpdate(person.getPersonId(), session);
 			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("updatePerson", person, session);
 			session.commitTransaction();
@@ -154,6 +158,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			DBSession databaseSession) {
 		databaseSession.beginTransaction();
 		try {
+			this.plugins.onPubPersonDelete(resourceRelationId, databaseSession);
 			this.delete("removeResourceRelation", resourceRelationId, databaseSession);
 			databaseSession.commitTransaction();
 		} finally {
@@ -170,6 +175,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public void removePersonName(Integer personChangeId, DBSession databaseSession) {
 		databaseSession.beginTransaction();
 		try {
+			this.plugins.onPersonNameDelete(personChangeId, databaseSession);
 			this.delete("removePersonName", personChangeId, databaseSession);
 			databaseSession.commitTransaction();
 		} finally {
@@ -185,6 +191,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public void deleteAllNamesOfPerson(String personId, DBSession databaseSession) {
 		databaseSession.beginTransaction();
 		try {
+			this.plugins.onPersonNameDelete(personId, databaseSession);
 			this.delete("deleteAllNamesOfPerson", personId, databaseSession);
 			databaseSession.commitTransaction();
 		} finally {
@@ -203,6 +210,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public void unlinkUser(String username, DBSession session) {
 		session.beginTransaction();
 		try {
+			this.plugins.onPersonUpdateByUserName(username, session);
 			this.update("unlinkUser", username, session);
 			session.commitTransaction();
 		} finally {

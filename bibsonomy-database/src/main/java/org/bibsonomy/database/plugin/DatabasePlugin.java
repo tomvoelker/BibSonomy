@@ -33,6 +33,7 @@ import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.InboxParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.DiscussionItem;
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.GoldStandardRelation;
@@ -315,5 +316,39 @@ public interface DatabasePlugin {
 	 * @author MarcelM
 	 */
 	public void onBibTexExtraDelete(final BibTexExtraParam deletedBibTexExtraParam, final DBSession session);
-
+	
+	/**
+	 * called when a personName will be deleted
+	 * @param personChangeId 
+	 * @param session
+	 */
+	public void onPersonNameDelete(final Object personChangeId, final DBSession session);
+	
+	/**
+	 * called when a person will be updated
+	 * @param personId
+	 * @param session
+	 */
+	public void onPersonUpdate(final String personId, final DBSession session);
+	
+	/**
+	 * called when a person will be updated by username change
+	 * @param userName
+	 * @param session
+	 */
+	public void onPersonUpdateByUserName(final String userName, final DBSession session);
+	
+	/**
+	 * called when a person will be deleted
+	 * @param personId
+	 * @param session
+	 */
+	public void onPersonDelete(final String personId, final DBSession session);
+	
+	/**
+	 * called when a pubPerson will be deleted
+	 * @param personChangeId
+	 * @param session
+	 */
+	public void onPubPersonDelete(final Integer personChangeId, final DBSession session);
 }
