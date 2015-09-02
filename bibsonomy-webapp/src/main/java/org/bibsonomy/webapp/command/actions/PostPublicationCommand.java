@@ -34,6 +34,7 @@ import java.util.Map;
 
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.webapp.command.BibtexViewCommand;
 import org.bibsonomy.webapp.command.LayoutViewCommand;
@@ -342,6 +343,8 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	 */
 	private ListCommand<Post<BibTex>> posts = new ListCommand<Post<BibTex>>(this);
 
+	private Person person;
+
 	/**
 	 * @return The list of publication posts.
 	 */
@@ -430,6 +433,5 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	public void setPostsErrorList(Map<String, List<ErrorMessage>> postsErrorList) {
 		this.postsErrorList = postsErrorList;
 	}
-
 	
 }

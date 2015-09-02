@@ -768,10 +768,14 @@
 	
 	<bean id="personPageController" class="org.bibsonomy.webapp.controller.PersonPageController" scope="request" parent="multiResourceListControllerWithTags">
 		<property name="supportedResources" ref="allResources"/>
+		<property name="requestLogic" ref="requestLogic"/>
+		<property name="personRoleRenderer" ref="personRoleRenderer"/>
 	</bean>
 	
 	<bean id="disambiguationPageController" class="org.bibsonomy.webapp.controller.DisambiguationPageController" scope="request" parent="multiResourceListControllerWithTags">
 		<property name="supportedResources" ref="allResources"/>
+		<property name="requestLogic" ref="requestLogic"/>
+		<property name="personRoleRenderer" ref="personRoleRenderer"/>
 	</bean>
 	
 	<bean id="relationsController" class="org.bibsonomy.webapp.controller.RelationsController" scope="request">
@@ -1043,6 +1047,11 @@
 	<bean id="contextPathFilter" class="org.bibsonomy.webapp.filters.ContextPathFilter">
 		<property name="projectHomeUrl" value="${project.home}"/>
 	</bean>
+	
+	<bean id="personRoleRenderer" class="org.bibsonomy.services.person.PersonRoleRenderer">
+		<constructor-arg ref="messageSource"/>
+	</bean>
+	
 	
 	<!--  #################### imports #################### -->
 	<import resource="classpath:org/bibsonomy/bibsonomy-model-context.xml" />

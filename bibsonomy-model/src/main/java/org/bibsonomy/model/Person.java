@@ -58,8 +58,6 @@ public class Person implements Serializable {
 	private String changedBy;
 	/** point in time when the last change was made */
 	private Date changeDate;
-	/** a publication which disambiguates the person. Usually the person's thesis of highest degree such as a phd thesis. */
-	private ResourcePersonRelation disambiguatingPublication;
 	/** the number of posts in the system, which this {@link Person} as an author */
 	private int postCounter;
 	/** place to link to the original entries when imported from Deutsche Nationalbibliothek */
@@ -67,14 +65,11 @@ public class Person implements Serializable {
 	/** the gender */
 	private Gender gender;
 	
-	private List<ResourcePersonRelation> resourcePersonRelations;
-	
 	/**
 	 * 
 	 */
 	public Person() {
 		this.names = new ArrayList<PersonName>();
-		this.resourcePersonRelations = new ArrayList<ResourcePersonRelation>();
 	}
 	
 	/**
@@ -111,7 +106,7 @@ public class Person implements Serializable {
 	 */
 	public void setMainName(int id) {
 		for(PersonName name : this.names) {
-			if(name.getPersonChangeId() == id) {
+			if(name.getPersonNameChangeId() == id) {
 				name.setMain(true);
 				this.mainName = name;
 			} else {
@@ -259,20 +254,6 @@ public class Person implements Serializable {
 	}
 
 	/**
-	 * @return a publication which disambiguates the person. Usually the person's thesis of highest degree such as a phd thesis.
-	 */
-	public ResourcePersonRelation getDisambiguatingPublication() {
-		return this.disambiguatingPublication;
-	}
-
-	/**
-	 * @param disambiguatingPublication a publication which disambiguates the person. Usually the person's thesis of highest degree such as a phd thesis.
-	 */
-	public void setDisambiguatingPublication(ResourcePersonRelation disambiguatingPublication) {
-		this.disambiguatingPublication = disambiguatingPublication;
-	}
-
-	/**
 	 * @return the number of posts in the system, which this {@link Person} as an author
 	 */
 	public int getPostCounter() {
@@ -284,20 +265,6 @@ public class Person implements Serializable {
 	 */
 	public void setPostCounter(int postCounter) {
 		this.postCounter = postCounter;
-	}
-
-	/**
-	 * @return the resourcePersonRelations
-	 */
-	public List<ResourcePersonRelation> getResourcePersonRelations() {
-		return this.resourcePersonRelations;
-	}
-
-	/**
-	 * @param resourcePersonRelations the resourcePersonRelations to set
-	 */
-	public void setResourcePersonRelations(List<ResourcePersonRelation> resourcePersonRelations) {
-		this.resourcePersonRelations = resourcePersonRelations;
 	}
 
 	public int getPersonChangeId() {

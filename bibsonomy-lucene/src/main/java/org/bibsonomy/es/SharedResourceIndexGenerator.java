@@ -27,7 +27,6 @@
 package org.bibsonomy.es;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,6 +38,9 @@ import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.util.generator.AbstractIndexGenerator;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.GroupUtils;
+import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
+import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
+import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
 import org.elasticsearch.action.admin.indices.flush.FlushRequest;
 
 /**
@@ -51,7 +53,7 @@ import org.elasticsearch.action.admin.indices.flush.FlushRequest;
  */
 public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIndexGenerator<R> {
 	
-	private final String indexName = ESConstants.INDEX_NAME;
+	private final String indexName;
 	private String resourceType;
 
 	/** converts post model objects to elasticsearch documents */
@@ -61,17 +63,32 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	private ESClient esClient;
 	private final String systemHome;
 	private static final Log log = LogFactory.getLog(SharedResourceIndexGenerator.class);
-	private final SharedResourceIndexUpdater<R> updater;
+	private SharedResourceIndexUpdater<R> updater;
+	private final SharedIndexUpdatePlugin<R> updatePlugin;
 		
 	/**
 	 * @param systemHome
-	 * @param updater 
+	 * @param sharedIndexUpdatePlugin 
+	 * @param indexName 
 	 */
-	public SharedResourceIndexGenerator(final String systemHome, SharedResourceIndexUpdater<R> updater) {
+	public SharedResourceIndexGenerator(final String systemHome, SharedIndexUpdatePlugin<R> sharedIndexUpdatePlugin, final String indexName) {
 		this.systemHome = systemHome;
-		this.updater = updater;
+		this.updatePlugin = sharedIndexUpdatePlugin;
+		this.indexName = indexName;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.lucene.util.generator.AbstractIndexGenerator#run()
+	 */
+	@Override
+	public void run() {
+		this.updater = updatePlugin.createUpdaterForGenerator(this.indexName);
+		try {
+			super.run();
+		} finally {
+			this.updater.close();
+		}
+	}
 
 	/**
 	 * creates index of resource entries
@@ -81,16 +98,29 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	 */
 	@Override
 	public void createEmptyIndex() throws IOException {
+		this.esClient.waitForReadyState();
+		
+		// check if the index already exists if not, it creates empty index
+		final boolean indexExist = this.esClient.getClient().admin().indices().exists(new IndicesExistsRequest(indexName)).actionGet().isExists();
+		if (!indexExist) {
+			log.info("index not existing - generating a new one");
+			final CreateIndexResponse createIndex = this.esClient.getClient().admin().indices().create(new CreateIndexRequest(indexName)).actionGet();
+			if (!createIndex.isAcknowledged()) {
+				log.error("Error in creating Index");
+				return;
+			}
+		}
+		
 		log.info("Start writing data to shared index");
 		
 		//Add mapping here depending on the resource type which is here indexType
-		ESResourceMapping resourceMapping = new ESResourceMapping(resourceType, esClient);
+		ESResourceMapping resourceMapping = new ESResourceMapping(resourceType, esClient, indexName);
 		resourceMapping.doMapping();
 	}
 	
 	@Override
-	protected void writeMetaInfo(Integer lastTasId, Date lastLogDate) throws IOException {
-		updater.setSystemInformation(lastTasId, lastLogDate);
+	protected void writeMetaInfo(IndexUpdaterState state) throws IOException {
+		updater.setSystemInformation(state);
 		updater.flushSystemInformation();
 	}
 	
@@ -110,7 +140,6 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 		esClient.getClient()
 				.prepareIndex(indexName, resourceType, String.valueOf(indexId))
 				.setSource(jsonDocument).execute().actionGet();
-		log.info("post has been indexed.");
 	}
 	
 	/* (non-Javadoc)
@@ -124,6 +153,7 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	/**
 	 * @return the indexName
 	 */
+	@Override
 	public String getIndexName() {
 		return this.indexName;
 	}
@@ -131,6 +161,7 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	/**
 	 * @return e.g. "BibTex"
 	 */
+	@Override
 	public String getResourceType() {
 		return this.resourceType;
 	}
@@ -161,7 +192,8 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	 */
 	@Override
 	protected void activateIndex() {
-		esClient.getClient().admin().indices().flush(new FlushRequest(ESConstants.INDEX_NAME).full(true)).actionGet();
+		esClient.getClient().admin().indices().flush(new FlushRequest(indexName).full(true)).actionGet();
+		// do not truly activate the index by now. Later, an updater will find it, update it and activate it  
 	}
 
 	/**
@@ -178,4 +210,11 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 		this.resourceConverter = resourceConverter;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + "[" + indexName + "]";
+	}
 }

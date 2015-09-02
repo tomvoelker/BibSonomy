@@ -462,7 +462,7 @@ public class Post<T extends Resource> implements Serializable {
 		this.approved = approved;
 	}
 
-/**
+	/**
 	 * @return the resourcePersonRelations
 	 */
 	public List<ResourcePersonRelation> getResourcePersonRelations() {

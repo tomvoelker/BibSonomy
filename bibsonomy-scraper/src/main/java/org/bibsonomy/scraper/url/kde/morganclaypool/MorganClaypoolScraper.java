@@ -43,16 +43,14 @@ import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 public class MorganClaypoolScraper extends GenericBibTeXURLScraper {
 	private static final String SITE_NAME = "Morgan & Claypool Publisher";
 	private static final String SITE_URL = "http://www.morganclaypool.com/";
-	private static final String INFO = "This Scraper parses a publication from "
-			+ href(SITE_URL, SITE_NAME) + ".";
+	private static final String INFO = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME) + ".";
 
 	private static final Pattern BIBTEX_DOI = Pattern.compile("[abs/|doi=](\\d.*)");
-	private static final String BIBTEX_PATH = "/action/downloadCitation/showCitFormats?doi=";
+	private static final String BIBTEX_PATH = "/action/downloadCitation/showCitFormats?format=bibtex&doi=";
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = new ArrayList<Pair<Pattern, Pattern>>();
 
 	static {
-		URL_PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*?"
-				+ "www.morganclaypool.com"), AbstractUrlScraper.EMPTY_PATTERN));
+		URL_PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*?www.morganclaypool.com"), AbstractUrlScraper.EMPTY_PATTERN));
 	}
 
 	@Override
@@ -76,11 +74,10 @@ public class MorganClaypoolScraper extends GenericBibTeXURLScraper {
 	}
 
 	@Override
-	public String getDownloadURL(URL url) throws ScrapingException {
+	public String getDownloadURL(final URL url) throws ScrapingException {
 		final Matcher m = BIBTEX_DOI.matcher(url.toString());
 		if (m.find()) {
-			final String DOI = m.group(1);
-			return "http://" + url.getHost().toString() + BIBTEX_PATH + DOI + "&format=bibtex";
+			return "http://" + url.getHost().toString() + BIBTEX_PATH + m.group(1);
 		}
 		
 		return null;

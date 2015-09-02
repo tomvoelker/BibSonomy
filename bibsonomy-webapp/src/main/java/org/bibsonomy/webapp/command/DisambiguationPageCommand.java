@@ -6,13 +6,16 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.services.person.PersonRoleRenderer;
 
 /**
  * @author Christian Pfeiffer
  */
 public class DisambiguationPageCommand extends UserResourceViewCommand {
 
+	private PersonRoleRenderer personRoleRenderer;
 	private String requestedAction;
 	private String requestedHash;
 	private PersonResourceRelationType requestedRole;
@@ -20,24 +23,10 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	
 	private String requestedPersonId;
 	
-	private List<PersonName> suggestedPersonNames;
 	private Person person;
 	private PersonName personName;
 	private Post<BibTex> post;
-
-	/**
-	 * @return the suggestedPersons
-	 */
-	public List<PersonName> getSuggestedPersonNames() {
-		return this.suggestedPersonNames;
-	}
-
-	/**
-	 * @param suggestedPersons the suggestedPersons to set
-	 */
-	public void setSuggestedPersonNames(List<PersonName> suggestedPersonNames) {
-		this.suggestedPersonNames = suggestedPersonNames;
-	}
+	private List<ResourcePersonRelation> personSuggestions;
 
 	/**
 	 * @return the requestedHash
@@ -143,5 +132,24 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 
 	public void setRequestedAction(String requestedAction) {
 		this.requestedAction = requestedAction;
+	}
+
+	/**
+	 * @param personSuggestions
+	 */
+	public void setPersonSuggestions(List<ResourcePersonRelation> personSuggestions) {
+		this.personSuggestions = personSuggestions;
+	}
+
+	public List<ResourcePersonRelation> getPersonSuggestions() {
+		return this.personSuggestions;
+	}
+
+	public PersonRoleRenderer getPersonRoleRenderer() {
+		return this.personRoleRenderer;
+	}
+
+	public void setPersonRoleRenderer(PersonRoleRenderer personRoleRenderer) {
+		this.personRoleRenderer = personRoleRenderer;
 	}
 }

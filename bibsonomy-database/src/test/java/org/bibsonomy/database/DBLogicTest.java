@@ -662,12 +662,15 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		document.setUserName(TEST_USER_1);
 		this.getDbLogic(TEST_USER_1).createDocument(document, resourceHash);
 		
-		//check wether document was successfully created
+		// check wether document was successfully created
 		document = this.getDbLogic(TEST_USER_1).getDocument(TEST_USER_1, resourceHash, documentFileName);
 		assertNotNull(document);
 		
-		//rename document
-		this.getDbLogic(TEST_USER_1).updateDocument(document, resourceHash, newDocumentName);
+		// rename document
+		final Document newDocument = new Document();
+		newDocument.setFileName(newDocumentName);
+		this.getDbLogic(TEST_USER_1).updateDocument(TEST_USER_1, resourceHash, document.getFileName(), newDocument);
+		
 		Document renamedDoc = this.getDbLogic(TEST_USER_1).getDocument(TEST_USER_1, resourceHash, newDocumentName);
 		
 		//check wether document was successfully renamed

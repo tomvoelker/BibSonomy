@@ -316,11 +316,6 @@
 								<value>ckey</value>
 								<value>tags</value>
 								<value>postsErrorList</value>
-								<value>personId</value>
-								<value>person_lastName</value>
-								<value>person_role</value>
-								
-								
 								
 							</list>
 						</property>
@@ -451,8 +446,8 @@
 								<value>approved</value>
 								
 								<value>personId</value>
-								<value>person_lastName</value>
-								<value>person_role</value>
+								<value>personIndex</value>
+								<value>personRole</value>
 								
 								
 							</list>
@@ -483,9 +478,8 @@
 							<list>
 								<value>selTab</value>
 								<value>personId</value>
-								<value>person_lastName</value>
-								<value>person_role</value>
-								
+								<value>personIndex</value>
+								<value>post.resource.entrytype</value>
 							</list>
 						</property>
 					</bean>
@@ -1104,7 +1098,7 @@
 	<alias name="${project.bean.pingback}" alias="pingback"/>
 	
 	<!-- Handles user's profile picture source -->
-	<bean id="gravatarStdPictureHandlerFactory" class="org.bibsonomy.webapp.util.picture.GravatarStdPictureHandlerFactory" />
+	<bean id="gravatarStdPictureHandlerFactory" class="org.bibsonomy.webapp.util.picture.StandardPictureHandlerFactory" />
 	
 	<!-- Handles the picture download -->
 	<bean id="pictureController" class="org.bibsonomy.webapp.controller.PictureController" scope="request">

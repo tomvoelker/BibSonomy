@@ -126,11 +126,6 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	private int compareVersion;
 	private List<String> differentEntryKeys;
 	
-	/** id of a {@link Person} which is to be associated with the new publication */
-	private String personId;
-	/** the role of the person given by {@link #personId} */
-	private PersonResourceRelationType personRole;
-	
 	/**
 	 * @return saveAndRate
 	 */
@@ -513,34 +508,5 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	public void setApproved(boolean approved) {
 		this.approved = approved;
 	}
-
-	/**
-	 * @return the personId
-	 */
-	public String getPersonId() {
-		return this.personId;
-	}
-
-	/**
-	 * @param personId the personId to set
-	 */
-	public void setPersonId(String personId) {
-		this.personId = personId;
-	}
-
-	/**
-	 * @return the role of the person given by {@link #personId} 
-	 */
-	public PersonResourceRelationType getPersonRole() {
-		return this.personRole;
-	}
-
-	/**
-	 * @param personRole
-	 */
-	public void setPersonRole(PersonResourceRelationType personRole) {
-		this.personRole = personRole;
-	}
-
 	
 }

@@ -33,7 +33,7 @@
 	<rule>
 		<name>requQueryAttribute</name>
 		<condition type="query-string" operator="equal"></condition>
-		<from>^/+(.+)$</from>
+		<from>^/+(.*)$</from>
 		<set name="requQueryString">?%{query-string}</set>
 	</rule>
 	
@@ -328,22 +328,7 @@
 		<to last="true">/persondisambiguation</to>
 	</rule>
 	
-	<rule>
- 		<name>/postPublication/SUPERVISOR/PERSONID/PERSONLASTNAME</name>
-		<from>^/+postPublication/+(.+)/+(.+)/+(.+)$</from>
-		<set type="parameter" name="person_role">$1</set>
-		<set type="parameter" name="personId">$2</set>
-		<set type="parameter" name="person_lastName">$3</set>
-		<to last="true">/postPublication</to>
-	</rule> 
-	
-	<rule>
- 		<name>/postPublication/PERSONID/PERSONLASTNAME</name>
-		<from>^/+postPublication/+(.+)/+(.+)$</from>
-		<set type="parameter" name="personId">$1</set>
-		<set type="parameter" name="person_lastName">$2</set> 
-		<to last="true">/postPublication</to>
-	</rule>
+
 	<!-- ############## /concept pages ############### -->
 	<!-- /concept/user/USER/TAG -->
 	<rule>
@@ -870,13 +855,6 @@
 	 
 <!-- ############## search pages ############### -->
 
-	<!--+ 
-	    | KEEP ME
-	    | FIXME: The following 2 rules for search are currently disabled.
-	    | They are related to trouble with particular characters in search queries.
-	    | However to enable restricting search queries using tags they should in fact be used after such troubles have been fixed.
-	    | Related to issue #2439
-	    	    
 	<rule>
 		<name>/search/SEARCH/TAG</name>
 		<from>^/+search/+([^/]+?)/(.+)$</from>
@@ -885,12 +863,12 @@
 		<to last="true">/search</to>
 	</rule>
 	<rule>
-		<name>/search/SEARCH</name>
+		<name>/search/SEARCH/TAG</name>
+		<note>redirect /search/SEARCH?tag=TAG to /search/SEARCH/TAG</note>
+		<condition type="parameter" name="tag">(.+)</condition>
 		<from>^/+search/+([^/]+)$</from>
-		<set type="parameter" name="requestedSearch">$1</set>
-		<to last="true">/search</to>
+		<to type="redirect" last="true">/search/${escape:$1}/${escape:%1}</to>
 	</rule>
-	KEEP ME -->
 
 	<rule>
 		<name>/search/SEARCH</name>

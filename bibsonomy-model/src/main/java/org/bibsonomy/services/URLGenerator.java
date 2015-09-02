@@ -140,6 +140,8 @@ public class URLGenerator {
 
 	private static final String PERSON_INTRO = "persons";
 
+	private static final String POST_PUBLICATION = "/postPublication";
+
 	/**
 	 * The default gives relative URLs.
 	 */
@@ -1725,5 +1727,9 @@ public class URLGenerator {
 	
 	public String getPersonsUrl() {
 		return this.projectHome + URLGenerator.PERSON_INTRO;
+	}
+	
+	public String getPostPublicationUrl() {
+		return this.projectHome + URLGenerator.POST_PUBLICATION;
 	}
 }

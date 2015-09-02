@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
@@ -15,26 +14,33 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.logic.exception.LogicException;
+import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.util.BibTexUtils;
-import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
-import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.services.URLGenerator;
+import org.bibsonomy.services.person.PersonRoleRenderer;
 import org.bibsonomy.util.spring.security.AuthenticationUtils;
 import org.bibsonomy.webapp.command.PersonPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.springframework.context.MessageSource;
 
 /**
  * @author Christian Pfeiffer
  */
 public class PersonPageController extends SingleResourceListController implements MinimalisticController<PersonPageCommand> {
 	
+	private RequestLogic requestLogic;
+	private PersonRoleRenderer personRoleRenderer;
+	
+	
 	@Override
-	public View workOn(final PersonPageCommand command) {		
+	public View workOn(final PersonPageCommand command) {
 		
 		if(present(command.getFormAction())) {
 			switch(command.getFormAction()) {
@@ -42,12 +48,14 @@ public class PersonPageController extends SingleResourceListController implement
 				case "addName": return this.addNameAction(command);
 				case "deleteName": return this.deleteNameAction(command);
 				case "addRole": return this.addRoleAction(command);
+				case "addThesis": return this.addThesisAction(command);
 				case "editRole": return this.editRoleAction(command);
 				case "deleteRole": return this.deleteRoleAction(command);
 				case "unlink": return this.unlinkAction(command);
 				case "link": return this.linkAction(command);
 				case "search": return this.searchAction(command);
-				case "searchpub": return this.searchPubAction(command);
+				case "searchAuthor": return this.searchAuthorAction(command);
+				case "searchPub": return this.searchPubAction(command);
 				default: return this.indexAction(command);
 			}
 		} else if(present(command.getRequestedPersonId())) {
@@ -61,45 +69,28 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 * @return
 	 */
-	private View searchPubAction(PersonPageCommand command) { 
-		JSONArray array = new JSONArray();
-		command.setResponseString(array.toJSONString());
-		
-		return Views.AJAX_JSON;
+	private View addThesisAction(PersonPageCommand command) {
+		addRoleAction(command);
+		return showAction(command);
 	}
 
 	/**
 	 * @param command
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-	private View searchAction(PersonPageCommand command) {
-		List<PersonName> personNames;
-			List<PersonName> personQuery = null;
-			try {
-				personQuery = PersonNameUtils.discoverPersonNames(command.getFormSelectedName());
-			} catch (PersonListParserException e) {
-				// ok
-			}
-			if (!CollectionUtils.isEmpty(personQuery)) {
-				personNames = this.logic.getPersonSuggestion(personQuery.get(0));
-				String firstName = personQuery.get(0).getFirstName();
-				personQuery.get(0).setFirstName(personQuery.get(0).getLastName());
-				personQuery.get(0).setLastName(firstName);
-				personNames.addAll(this.logic.getPersonSuggestion(personQuery.get(0)));
-			} else {
-				personNames = this.logic.getPersonSuggestion(command.getFormSelectedName(), null);
-			}
-		
+	private View searchAuthorAction(PersonPageCommand command) { 
+		final List<ResourcePersonRelation> suggestions = this.logic.getPersonSuggestion(command.getFormSelectedName()).withNonEntityPersons(true).withRelationType(PersonResourceRelationType.AUTHOR).preferUnlinked(true).doIt();
 		
 		JSONArray array = new JSONArray();
-		for(PersonName personName : personNames) {
+		for (ResourcePersonRelation rel : suggestions) {
 			JSONObject jsonPersonName = new JSONObject();
-			jsonPersonName.put("personId", personName.getPersonId());
-			jsonPersonName.put("personNameId", personName.getPersonChangeId());
-			jsonPersonName.put("personName", BibTexUtils.cleanBibTex(personName.toString()));
-			// FIXME: this is only a quick hack and must be replaced!
-			jsonPersonName.put("extendedPersonName", BibTexUtils.cleanBibTex(getExtendedPersonName(personName)));
+			jsonPersonName.put("interhash", rel.getPost().getResource().getInterHash());
+			jsonPersonName.put("personIndex", rel.getPersonIndex());
+			//jsonPersonName.put("personNameId", personName.getPersonChangeId());
+			final BibTex pub = rel.getPost().getResource();
+			final List<PersonName> authors = pub.getAuthor();
+			jsonPersonName.put("personName", BibTexUtils.cleanBibTex(authors.get(rel.getPersonIndex()).toString()));
+			jsonPersonName.put("extendedPublicationName", this.personRoleRenderer.getExtendedPublicationName(pub, this.requestLogic.getLocale(), false));
 			
 			array.add(jsonPersonName);
 		}
@@ -108,58 +99,51 @@ public class PersonPageController extends SingleResourceListController implement
 		return Views.AJAX_JSON;
 	}
 	
+	private View searchPubAction(PersonPageCommand command) { 
+		final List<Post<BibTex>> suggestions = this.logic.getPublicationSuggestion(command.getFormSelectedName());
+		
+		JSONArray array = new JSONArray();
+		for (Post<BibTex> pub : suggestions) {
+			JSONObject jsonPersonName = new JSONObject();
+			jsonPersonName.put("interhash", pub.getResource().getInterHash());
+			jsonPersonName.put("extendedPublicationName", this.personRoleRenderer.getExtendedPublicationName(pub.getResource(), this.requestLogic.getLocale(), false));
+			array.add(jsonPersonName);
+		}
+		command.setResponseString(array.toJSONString());
+		
+		return Views.AJAX_JSON;
+	}
+
+
+
 	/**
-	 * @param personName
+	 * @param command
 	 * @return
 	 */
-	private String getExtendedPersonName(PersonName personName) {
-		final StringBuilder extendedNameBuilder = new StringBuilder(personName.getLastName());
-		if (present(personName.getFirstName())) {
-			extendedNameBuilder.append(", ").append(personName.getFirstName());
-		}
-		final Person person = personName.getPerson();
-		if (present(person) && present(person.getAcademicDegree())) {
-			extendedNameBuilder.append(", ").append(person.getAcademicDegree());
-		}
-		BibTex res = null;
-		for (ResourcePersonRelation resourcePersonRelation : person.getResourcePersonRelations()) {
-			String entryType;
-			try {
-				entryType = resourcePersonRelation.getPost().getResource().getEntrytype();
-				if (!present(entryType)) {
-					continue;
-				}
-			} catch (Exception e) {
-				continue;
-			}
-			if (entryType.toLowerCase().endsWith("thesis")) {
-				res = resourcePersonRelation.getPost().getResource();
-				break;
-			}
-			res = resourcePersonRelation.getPost().getResource();
-		}
-		if (present(res)) {
-			String entryType = res.getEntrytype();
-			if (entryType.toLowerCase().endsWith("thesis")) {
-				if (present(res.getSchool())) {
-					extendedNameBuilder.append(", ").append(res.getSchool());
-				}
-			}
-			if (present(res.getYear())) {
-				extendedNameBuilder.append(", ").append(res.getYear());
-			}
-			if (present(res.getTitle())) {
-				extendedNameBuilder.append(", \"").append(res.getTitle()).append('"');
-			}
-		}
-		return extendedNameBuilder.toString();
+	@SuppressWarnings("unchecked")
+	private View searchAction(PersonPageCommand command) {
+		final List<ResourcePersonRelation> suggestions = this.logic.getPersonSuggestion(command.getFormSelectedName()).withEntityPersons(true).withRelationType(PersonResourceRelationType.values()).doIt();
 		
-		// Nachname, Vorname, Akad. Grad, sowie Ort, Jahr und Titel 
+		JSONArray array = new JSONArray();
+		for (ResourcePersonRelation rel : suggestions) {
+			JSONObject jsonPersonName = new JSONObject();
+			jsonPersonName.put("personId", rel.getPerson().getPersonId());
+			//jsonPersonName.put("personNameId", personName.getPersonChangeId());
+			jsonPersonName.put("personName", BibTexUtils.cleanBibTex(rel.getPerson().getMainName().toString()));
+			jsonPersonName.put("extendedPersonName", this.personRoleRenderer.getExtendedPersonName(rel, this.requestLogic.getLocale(), false));
+			
+			array.add(jsonPersonName);
+		}
+		command.setResponseString(array.toJSONString());
+		
+		return Views.AJAX_JSON;
 	}
+
+
 
 	@SuppressWarnings("static-method")
 	private View indexAction(@SuppressWarnings("unused") PersonPageCommand command) {
-		return Views.PERSON;
+		return Views.PERSON_SHOW;
 	}
 
 	/**
@@ -183,21 +167,41 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @return
 	 */
 	private View addRoleAction(PersonPageCommand command) {
-		if (command.getFormPersonIndex() == -1) {
-			throw new IllegalArgumentException();
-		}
-		
-		ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
-		Post<BibTex> post = new Post<>();
+		final JSONObject jsonResponse = new JSONObject();
+		final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
+		final Post<BibTex> post = new Post<>();
 		post.setResource(new BibTex());
 		post.getResource().setInterHash(command.getFormInterHash());
 		resourcePersonRelation.setPost(post);
-		resourcePersonRelation.setPerson(new Person());
-		resourcePersonRelation.getPerson().setPersonId(command.getFormPersonId());
-		resourcePersonRelation.setPersonIndex(command.getFormPersonIndex());
-		this.logic.addResourceRelation(resourcePersonRelation);
-		command.setResponseString(resourcePersonRelation.getPersonChangeId() + "");
-		return Views.AJAX_TEXT;
+		
+		try {
+			Person person = new Person();
+			if (present(command.getFormPersonId())) {
+				person.setPersonId(command.getFormPersonId());
+			} else {
+				final PersonName mainName = new PersonName();
+				mainName.setMain(true);
+				mainName.setFirstName(command.getFormFirstName());
+				mainName.setLastName(command.getFormLastName());
+				person.setMainName(mainName);
+				this.logic.createOrUpdatePerson(person);
+			}
+			resourcePersonRelation.setPerson(person);
+			resourcePersonRelation.setPersonIndex(command.getFormPersonIndex());
+			resourcePersonRelation.setRelationType(command.getFormPersonRole());
+
+			this.logic.addResourceRelation(resourcePersonRelation);
+		} catch (LogicException e) {
+			command.getLogicExceptions().add(e);
+			jsonResponse.put("exception", e.getClass().getSimpleName());
+		}
+
+		jsonResponse.put("personId", resourcePersonRelation.getPerson().getPersonId());
+		jsonResponse.put("resourcePersonRelationid", resourcePersonRelation.getPersonRelChangeId() + "");
+		jsonResponse.put("personUrl", new URLGenerator().getPersonUrl(resourcePersonRelation.getPerson().getPersonId()));
+		command.setResponseString(jsonResponse.toJSONString());
+		
+		return Views.AJAX_JSON;
 	}
 
 	/**
@@ -206,7 +210,7 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @return
 	 */
 	private View editRoleAction(PersonPageCommand command) {
-		//TODO add new role types to view
+		//TODO not used? remove?
 		for (String role : command.getFormPersonRoles()) {
 			final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
 			Post<BibTex> post = new Post<>();
@@ -218,7 +222,11 @@ public class PersonPageController extends SingleResourceListController implement
 			resourcePersonRelation.setPersonIndex(command.getFormPersonIndex());
 			final PersonResourceRelationType relationType = PersonResourceRelationType.valueOf(StringUtils.upperCase(role)); 
 			resourcePersonRelation.setRelationType(relationType);
-			this.logic.addResourceRelation(resourcePersonRelation);
+			try {
+				this.logic.addResourceRelation(resourcePersonRelation);
+			} catch (LogicException e) {
+				command.getLogicExceptions().add(e);
+			}
 		}
 		
 		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(command.getPerson().getPersonId()));	
@@ -265,12 +273,12 @@ public class PersonPageController extends SingleResourceListController implement
 		
 		for (PersonName otherName : person.getNames()) {
 			if (personName.equals(otherName)) {
-				command.setResponseString(otherName.getPersonChangeId()+ "");
+				command.setResponseString(otherName.getPersonNameChangeId()+ "");
 				return Views.AJAX_TEXT;
 			}
 		}
 		this.logic.createOrUpdatePersonName(personName);
-		command.setResponseString(Integer.toString(personName.getPersonChangeId()));
+		command.setResponseString(Integer.toString(personName.getPersonNameChangeId()));
 		
 		return Views.AJAX_TEXT;
 	}
@@ -298,26 +306,43 @@ public class PersonPageController extends SingleResourceListController implement
 		
 		command.setPerson(this.logic.getPersonById(PersonIdType.BIBSONOMY_ID, command.getRequestedPersonId()));
 		
-		List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations(command.getPerson());
+		if (DisambiguationPageController.ACTION_KEY_CREATE_AND_LINK_PERSON.equals(this.requestLogic.getLastAction()) || DisambiguationPageController.ACTION_KEY_LINK_PERSON.equals(this.requestLogic.getLastAction())) {
+			command.setOkHintKey(this.requestLogic.getLastAction());
+			this.requestLogic.setLastAction(null);
+		}
+		
+		List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations().byPersonId(command.getPerson().getPersonId()).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear).getIt();
 		List<Post<?>> authorPosts = new ArrayList<>();
 		List<Post<?>> advisorPosts = new ArrayList<>();
+		List<Post<?>> otherAuthorPosts = new ArrayList<>();
+		List<Post<?>> otherAdvisorPosts = new ArrayList<>();
 
 		for(ResourcePersonRelation resourcePersonRelation : resourceRelations) {
-			if(!resourcePersonRelation.getPost().getResource().getEntrytype().toLowerCase().endsWith("thesis")) {
-				continue;	
-			}
+			final boolean isThesis = resourcePersonRelation.getPost().getResource().getEntrytype().toLowerCase().endsWith("thesis");
 			
-			resourcePersonRelation.getPost().setResourcePersonRelations(this.logic.getResourceRelations(resourcePersonRelation.getPost()));
-			
-			if (resourcePersonRelation.getRelationType().equals(PersonResourceRelationType.AUTHOR)) { 
-				authorPosts.add(resourcePersonRelation.getPost());
+			if (resourcePersonRelation.getRelationType().equals(PersonResourceRelationType.AUTHOR)) {
+				if (isThesis) {
+					authorPosts.add(resourcePersonRelation.getPost());
+				} else {
+					otherAuthorPosts.add(resourcePersonRelation.getPost());
+				}
 			} else {
-				advisorPosts.add(resourcePersonRelation.getPost());
+				if (isThesis) {
+					advisorPosts.add(resourcePersonRelation.getPost());
+				} else {
+					otherAdvisorPosts.add(resourcePersonRelation.getPost());
+				}
 			}
+			
+			// we explicitly do not want ratings on the person pages because this might cause users of the genealogy feature to hesitate putting in their dissertations
+			resourcePersonRelation.getPost().getResource().setRating(null);
+			resourcePersonRelation.getPost().getResource().setNumberOfRatings(null);
 		}
 		
 		command.setThesis(authorPosts);
+		command.setOtherPubs(otherAuthorPosts);
 		command.setAdvisedThesis(advisorPosts);
+		command.setOtherAdvisedPubs(otherAdvisorPosts);
 		
 		return Views.PERSON_SHOW;
 	}
@@ -325,6 +350,14 @@ public class PersonPageController extends SingleResourceListController implement
 	@Override
 	public PersonPageCommand instantiateCommand() {
 		return new PersonPageCommand();
+	}
+
+	public void setRequestLogic(RequestLogic requestLogic) {
+		this.requestLogic = requestLogic;
+	}
+
+	public void setPersonRoleRenderer(PersonRoleRenderer personRoleRenderer) {
+		this.personRoleRenderer = personRoleRenderer;
 	}
 }
 

@@ -38,7 +38,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConceptStatus;
@@ -68,6 +67,8 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.PostLogicInterface;
+import org.bibsonomy.model.logic.exception.LogicException;
+import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.SimHash;
@@ -637,7 +638,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @param command
 	 * @param post
 	 */
-	protected void preparePost(final EditPostCommand<RESOURCE> command, final Post<RESOURCE> post) {
+	protected void preparePost(final COMMAND command, final Post<RESOURCE> post) {
 		try {
 			/*
 			 * we use addAll here because there might already be system tags in
@@ -664,7 +665,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * 
 	 * @param command
 	 */
-	protected void validatePost(final EditPostCommand<RESOURCE> command) {
+	protected void validatePost(final COMMAND command) {
 		ValidationUtils.invokeValidator(this.getValidator(), command, this.errors);
 	}
 
@@ -855,76 +856,11 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			this.pingback.sendPingback(post);
 		}
 
-		// if a PersonId has been provided, it means that we have come from a person page ...
-		if ((command.getPersonId() != null) && (post.getResource() instanceof BibTex)) {
-			storePersonRelation(command, loginUser, post);
-		}
-	
-	}
-
-	private void storePersonRelation(final COMMAND command, final User loginUser, final Post<RESOURCE> post) {
-		final BibTex bibtex = (BibTex) post.getResource();
-		final Person person = this.logic.getPersonById(PersonIdType.BIBSONOMY_ID, command.getPersonId());
-		
-		if (person != null) {
-			final PersonResourceRelationType role = command.getPersonRole();
-			final List<PersonName> publicationNames = bibtex.getPersonNamesByRole(role);
-			
-			
-			final int personIndex = findPersonIndex(person, publicationNames);
-
-			final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
-			resourcePersonRelation.setPerson(person);
-			resourcePersonRelation.setPost((Post<BibTex>) post); // TODO: should we allow personrelations such as authors for bookmarks?
-			resourcePersonRelation.setChangedBy(loginUser.getName());
-			resourcePersonRelation.setRelationType(role);
-			resourcePersonRelation.setPersonIndex(personIndex);
-			this.logic.addResourceRelation(resourcePersonRelation);
-			
-			if (!present(command.getPost().getResourcePersonRelations())) {
-				command.getPost().setResourcePersonRelations(new ArrayList<ResourcePersonRelation>());
-			}
-			command.getPost().getResourcePersonRelations().add(resourcePersonRelation);
-		}
 	}
 
 
 
-	private int findPersonIndex(final Person person, final List<PersonName> publicationNames) {
-		int personIndex = -1;
-		
-		if (publicationNames != null) {
-			for (int i = 0; i < publicationNames.size(); ++i) {
-				final PersonName cleanPubName = PersonNameUtils.cleanAndSoftNormalizeName(publicationNames.get(i), true);
-				for (PersonName perName : person.getNames()) {
-					final PersonName cleanPerName = PersonNameUtils.cleanAndSoftNormalizeName(perName, true);
-					final boolean lastNameMatch = checkPotentialNamePartEquality(cleanPerName.getLastName(), cleanPubName.getLastName(), false);
-					final boolean firstNameMatch = checkPotentialNamePartEquality(cleanPerName.getFirstName(), cleanPubName.getFirstName(), true);
-					if (firstNameMatch && lastNameMatch) {
-						personIndex = i;
-					}
-				}
-			}
-		}
-		return personIndex;
-	}
 
-	private boolean checkPotentialNamePartEquality(String namePartA, String namePartB, boolean allowAbbreviation) {
-		boolean lastNameMatch = false;
-		if ((namePartA == null) || (namePartB == null)) {
-			lastNameMatch = (namePartB == namePartA);
-		} else {
-			if (namePartA.endsWith(".")) {
-				namePartA = " " + namePartA.substring(0, namePartA.length() - 1);
-			} else {
-				namePartA = " " + namePartA + " ";
-			}
-			namePartB = " " + namePartB + " ";
-			lastNameMatch |= namePartA.contains(namePartB);
-			lastNameMatch |= namePartB.contains(namePartA);
-		}
-		return lastNameMatch;
-	}
 
 	/**
 	 * Populates the command with the given post. Ensures, that fields which
@@ -934,7 +870,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @param command
 	 * @param post
 	 */
-	protected void populateCommandWithPost(final EditPostCommand<RESOURCE> command, final Post<RESOURCE> post) {
+	protected void populateCommandWithPost(final COMMAND command, final Post<RESOURCE> post) {
 		/*
 		 * put post into command
 		 */
@@ -1051,7 +987,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @param command
 	 * @return <code>true</code> iff user already owns resource
 	 */
-	protected boolean setDiffPost(final EditPostCommand<RESOURCE> command) {
+	protected boolean setDiffPost(final COMMAND command) {
 		final RequestWrapperContext context = command.getContext();
 		final Post<RESOURCE> post = command.getPost();
 		final String loginUserName = context.getLoginUser().getName();

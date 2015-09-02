@@ -92,7 +92,7 @@
 		
 		
 			<div class="page-header">
-				<h1>${command.personName}</h1>
+				<h1><c:out value="${mtl:cleanBibtex(command.personName)}"/></h1>
 			</div>
 		
 			<c:if test="${not empty command.post}">
@@ -111,36 +111,36 @@
 			<div class="clearfix">&#160;</div>
 			
 			<div class="clearfix">
-				<h2><fmt:message key="disambiguation.pleaseChooseMsg"><fmt:param value="${command.personName}"/></fmt:message></h2>
+				<h2><fmt:message key="disambiguation.pleaseChooseMsg"><fmt:param value="${mtl:cleanBibtex(command.personName)}"/></fmt:message></h2>
 				<p><fmt:message key="disambiguation.listExplanation"/></p>
 					
 					<c:choose>
-						<c:when test="${fn:length(command.suggestedPersonNames) gt 0}">
+						<c:when test="${fn:length(command.personSuggestions) gt 0}">
 							<div class="list-group">
-								<c:forEach var='personName' items="${command.suggestedPersonNames}">
+								<c:forEach var='rel' items="${command.personSuggestions}">
 									<div class="list-group-item">
-										<a class='btnLinkPerson' data-toggle="modal" data-target="#linkPerson" href="#linkPerson" data-person-url="${absoluteUrlGenerator.getPersonUrl(personName.person.personId)}" data-person-id="${fn:escapeXml(personName.person.personId)}" >
-											<span class="authorName">
-												<c:if test="${not empty personName.person.mainName.firstName}"><c:out value="${personName.person.mainName.firstName} "/></c:if>
-												<c:if test="${not empty personName.person.mainName.lastName}"><c:out value="${personName.person.mainName.lastName}"/></c:if>
-												<c:if test="${personName.person.mainName.personChangeId != personName.personChangeId}">
-													(
-													<c:if test="${not empty personName.firstName}"><c:out value="${personName.firstName} "/></c:if>
-													<c:if test="${not empty personName.lastName}"><c:out value="${personName.lastName}"/></c:if>
-													)
-												</c:if>
-											</span>
-											<c:set var="firstInfo" value="${true}"/>
-											<c:if test="${not empty personName.person.academicDegree}">                              <c:choose><c:when test="${firstInfo}"> (<c:set var="firstInfo" value="${false}"/></c:when><c:otherwise>, </c:otherwise></c:choose><c:out value="${personName.person.academicDegree}"/></c:if>	 
-											<c:if test="${not empty personName.person.disambiguatingPublication.post}">              <c:choose><c:when test="${firstInfo}"> (<c:set var="firstInfo" value="${false}"/></c:when><c:otherwise>, </c:otherwise></c:choose><c:out value="${personName.person.disambiguatingPublication.post.resource.title}"/></c:if>
-											<c:if test="${not empty personName.person.disambiguatingPublication.post.resource.year}"><c:choose><c:when test="${firstInfo}"> (<c:set var="firstInfo" value="${false}"/></c:when><c:otherwise>, </c:otherwise></c:choose><c:out value="${personName.person.disambiguatingPublication.post.resource.year}"/></c:if>
-											<c:choose><c:when test="${not firstInfo}">)</c:when><c:otherwise> (<c:out value="${textNoFurtherInfo}"/>)</c:otherwise></c:choose>
+										<c:choose>
+											<c:when test="${not empty command.context.loginUser.name}">
+												<c:set var="dataToggle" value="modal"/>
+												<c:set var="href" value="#linkPerson"/>
+												<c:set var="dataTarget" value="#linkPerson"/>
+											</c:when>
+											<c:otherwise>
+												<c:set var="dataToggle" value=""/>
+												<c:set var="href" value="${absoluteUrlGenerator.getPersonUrl(rel.person.personId)}"/>
+												<c:set var="dataTarget" value=""/>
+											</c:otherwise>
+										</c:choose>
+										<a class='btnLinkPerson' data-toggle="${dataToggle}" data-target="${dataTarget}" href="${href}" data-person-url="${absoluteUrlGenerator.getPersonUrl(rel.person.personId)}" data-person-id="${fn:escapeXml(rel.person.personId)}" >
+											${command.personRoleRenderer.getExtendedPersonName(rel, request.locale, true)}
 										</a>
 									</div>
 								</c:forEach>
-								<div class="list-group-item">
-									<a class='btnLinkPerson' data-toggle="modal" data-target="#otherPerson" href="#otherPerson"><span class="authorName">${textOtherPerson}</span></a>
-								</div>
+								<c:if test="${not empty command.context.loginUser.name}">
+									<div class="list-group-item">
+										<a class='btnLinkPerson' data-toggle="modal" data-target="#otherPerson" href="#otherPerson"><span class="authorName">${textOtherPerson}</span></a>
+									</div>
+								</c:if>
 							</div>
 						</c:when>
 						<c:otherwise>

@@ -135,9 +135,9 @@
 		                    | general information 
 		                    +-->
 				 		<a name="generalInformation"><!--  --></a>
+				 		
 						<bsform:fieldset legendKey="post.resource.fields.general">
 							<jsp:attribute name="content">
-								
 								<jsp:invoke fragment="generalInformation"/>
 							</jsp:attribute>
 						</bsform:fieldset>

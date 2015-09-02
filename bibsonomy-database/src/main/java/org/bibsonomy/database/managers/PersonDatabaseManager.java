@@ -1,9 +1,7 @@
 package org.bibsonomy.database.managers;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
@@ -20,6 +18,10 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
+import org.bibsonomy.services.searcher.PersonSearch;
+
+import com.ibatis.common.jdbc.exception.NestedSQLException;
 
 /**
  * TODO: add documentation to this class
@@ -33,12 +35,13 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	private final static PersonDatabaseManager singleton = new PersonDatabaseManager();
 	private final GeneralDatabaseManager generalManager;
 	private final DatabasePluginRegistry plugins;
+	private PersonSearch personSearch;
 
 	public static PersonDatabaseManager getInstance() {
 		return singleton;
 	}
 	
-	public PersonDatabaseManager() {
+	private PersonDatabaseManager() {
 		this.generalManager = GeneralDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();
 	}
@@ -97,7 +100,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	public void createPersonName(PersonName name, DBSession session) {
 		session.beginTransaction();
 		try {
-			name.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			name.setPersonNameChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("insertName", name, session);
 			session.commitTransaction();
 		} finally {
@@ -122,66 +125,24 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		}
 	}
 
-
-	/**
-	 * @param id
-	 * @param session
-	 * @return Set<PersonName>
-	 */
-	public List<?> getAlternateNames(int id, DBSession session) {
-		return this.queryForList("getAlternateNames", id, session);
-	}
-
-
-	/**
-	 * @param id
-	 * @param session
-	 * @return PersonName
-	 */
-	public PersonName getPersonNameById(int id, DBSession session) {
-		return (PersonName) this.queryForObject("getPersonNameById", id, session);
-	}
-
-	/**
-	 * @param name 
-	 * @param firstName 
-	 * @param session 
-	 * @return List<PersonName>
-	 * 
-	 */
-	public List<PersonName> findPersonNames(String lastName, String firstName, DBSession session) {
-		PersonName personName = new PersonName();
-		if (StringUtils.isBlank(lastName) == false) {
-			personName.setLastName(lastName.trim() + "%");
-			if (StringUtils.isBlank(firstName) == false) {
-				personName.setFirstName(firstName.trim().substring(0, 1) + "%");
-			} else {
-				personName.setFirstName("%");
-			}
-		} else {
-			if (StringUtils.isBlank(firstName) == false) {
-				personName.setFirstName(firstName.trim() + "%");
-				personName.setLastName("%");
-			} else {
-				return new ArrayList<>();
-			}
-		}
-		
-		
-		return (List<PersonName>) this.queryForList("findPersonNames", personName, session);
-	}
-
-
 	/**
 	 * @param resourcePersonRelation
 	 * @param session 
 	 */
-	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation, DBSession session) {
+	public boolean addResourceRelation(ResourcePersonRelation resourcePersonRelation, DBSession session) {
 		session.beginTransaction();
 		try {
-			resourcePersonRelation.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			resourcePersonRelation.setPersonRelChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("addResourceRelation", resourcePersonRelation, session);
 			session.commitTransaction();
+			return true;
+		} catch (RuntimeException e) {
+			if (e.getCause() instanceof NestedSQLException) {
+				if ((e.getCause().getCause() != null) && (e.getCause().getCause().getMessage().contains("Duplicate entry"))) {
+					return false;
+				}
+			}
+			throw e;
 		} finally {
 			session.endTransaction();
 		}
@@ -238,43 +199,10 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		}	
 	}
 
-
-	/**
-	 * @param personNameId
-	 * @param databaseSession
-	 * @return
-	 */
-	public List<ResourcePersonRelation> getResourceRelations(int personNameId,
-			DBSession databaseSession) {
-		return (List<ResourcePersonRelation>) this.queryForList("getResourceRelations", personNameId, databaseSession);
+	// TODO: write testcase for this method and test whether groupBy of OR-mapping works as expected 
+	public List<ResourcePersonRelation> getResourcePersonRelationsByPublication(String interHash, DBSession databaseSession) {
+		return (List<ResourcePersonRelation>) this.queryForList("getResourcePersonRelationsByPublication", interHash, databaseSession);
 	}
-	
-	public List<ResourcePersonRelation> getResourceRelations(ResourcePersonRelation resourcePersonRelation,
-			DBSession databaseSession) {
-		return (List<ResourcePersonRelation>) this.queryForList("getResourceRelationsByResourcePersonRelation", resourcePersonRelation, databaseSession);
-	}
-	
-	public List<ResourcePersonRelation> getResourcePersonRelationsByPost(Post<BibTex> post,
-			DBSession databaseSession) {
-		ResourcePersonRelation param = new ResourcePersonRelation();
-		param.setPost(post);
-		return (List<ResourcePersonRelation>) this.queryForList("getResourcePersonRelationsByPost", param, databaseSession);
-	}
-	
-	
-
-
-	/**
-	 * @param longHash
-	 * @param publicationOwner
-	 * @param personNameId
-	 * @param rel
-	 * @return
-	 */
-	public String getLastResourceRelationId(ResourcePersonRelation resourcePersonRelation, DBSession session) {
-		return (String) this.queryForObject("getLastResourceRelationId", resourcePersonRelation, session);
-	}
-
 
 	/**
 	 * @param username
@@ -303,10 +231,14 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		post.setResource(new BibTex());
 		post.getResource().setInterHash(interhash);
 		rpr.setPost(post);
-		rpr.setPersonIndex(authorIndex);
+		if (authorIndex != null) {
+			rpr.setPersonIndex(authorIndex.intValue());
+		} else {
+			rpr.setPersonIndex(-1);
+		}
 		rpr.setRelationType(role);
 			
-			return this.getResourcePersonRelationByResourcePersonRelation(rpr, session);
+		return this.getResourcePersonRelationByResourcePersonRelation(rpr, session);
 	}
 	
 	private List<ResourcePersonRelation> getResourcePersonRelationByResourcePersonRelation(ResourcePersonRelation rpr, DBSession session) {
@@ -327,11 +259,12 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 * @return List<ResourcePersonRelation>
 	 */
 	public List<ResourcePersonRelation> getResourcePersonRelationsWithPosts(
-			Person person, User loginUser, Class<? extends BibTex> publicationType, DBSession session) {
+			String personId, User loginUser, Class<? extends BibTex> publicationType, DBSession session) {
 		
 		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, null, null, null, null, null, 0, Integer.MAX_VALUE, null, null, null, null, loginUser);
 		final ResourcePersonRelation personRelation = new ResourcePersonRelation();
-		personRelation.setPerson(person);
+		personRelation.setPerson(new Person());
+		personRelation.getPerson().setPersonId(personId);
 		param.setPersonRelation(personRelation);
 		
 		session.beginTransaction();
@@ -347,32 +280,29 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * @param person
+	 * @param interhash
 	 * @param session
-	 * @return List<ResourcePersonRelation>
-	 */
-	public List<ResourcePersonRelation> getResourcePersonRelations(
-			Person person, DBSession session) {
-		session.beginTransaction();
-		try {
-			return (List<ResourcePersonRelation>) this.queryForList("getResourcePersonRelationsByPersonId", person.getPersonId(), session);
-		} finally {
-			session.endTransaction();
-		}
-	}
-
-
-	/**
-	 * @param post
 	 * @return
 	 */
-	public List<ResourcePersonRelation> getResourcePersonRelations(
-			Post<? extends BibTex> post, DBSession session) {
+	public List<ResourcePersonRelation> getResourcePersonRelationsWithPersonsByInterhash(String interhash, DBSession session) {
 		session.beginTransaction();
 		try {
-			return (List<ResourcePersonRelation>) this.queryForList("getResourcePersonRelationsByInterhash", post.getResource().getInterHash(), session);
+			return (List<ResourcePersonRelation>) this.queryForList("getResourcePersonRelationsWithPersonsByInterhash", interhash, session);
 		} finally {
 			session.endTransaction();
 		}
 	}
+
+	/**
+	 * @param queryString
+	 * @return
+	 */
+	public List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder options) {
+		return this.personSearch.getPersonSuggestion(options);
+	}
+
+	public void setPersonSearch(PersonSearch personSearch) {
+		this.personSearch = personSearch;
+	}
+
 }

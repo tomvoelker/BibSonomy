@@ -709,7 +709,7 @@
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-surefire-plugin</artifactId>
 						<!-- use standard config don't exclude RemoteTests -->
-						<configuration>
+						<configuration combine.self="override">
 							<groups>org.bibsonomy.webapp.WebappTest</groups>
 						</configuration>
 					</plugin>

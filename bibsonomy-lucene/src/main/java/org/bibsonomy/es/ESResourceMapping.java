@@ -44,14 +44,17 @@ public class ESResourceMapping {
 	private final String resourceType;
 	// ElasticSearch client
 	private final ESClient esClient;
+	private final String indexName;
 
 	/**
 	 * @param resourceType
 	 * @param esClient
+	 * @param indexName 
 	 */
-	public ESResourceMapping(final String resourceType, final ESClient esClient) {
+	public ESResourceMapping(final String resourceType, final ESClient esClient, String indexName) {
 		this.resourceType = resourceType;
 		this.esClient = esClient;
+		this.indexName =  indexName;
 	}
 
 	/**
@@ -72,7 +75,7 @@ public class ESResourceMapping {
 			mappingBuilder = createMappingForPublication(this.resourceType);
 		}
 
-		this.esClient.getClient().admin().indices().preparePutMapping(ESConstants.INDEX_NAME).setType(this.resourceType).setSource(mappingBuilder).execute().actionGet();
+		this.esClient.getClient().admin().indices().preparePutMapping(indexName).setType(this.resourceType).setSource(mappingBuilder).execute().actionGet();
 
 		// wait for the yellow (or green) status to prevent
 		// NoShardAvailableActionException later
@@ -121,7 +124,7 @@ public class ESResourceMapping {
 				.startObject("number").field("type", "string").field("index", "no").endObject() //
 				.startObject("organization").field("type", "string").field("index", "no").endObject() //
 				.startObject("pages").field("type", "string").field("index", "no").endObject() //
-				// .startObject("privnote").field("type", "string").field("index", "not_analyzed").field("store", "false").endObject() //
+				.startObject("privnote").field("type", "string").field("index", "not_analyzed").field("store", "false").endObject() //
 				.startObject("publisher").field("type", "string").field("index", "no").endObject() //
 				.startObject("school").field("type", "string").field("index", "analyzed").endObject() //
 				.startObject("series").field("type", "string").field("index", "no").endObject() //
@@ -130,10 +133,20 @@ public class ESResourceMapping {
 				.startObject("url").field("type", "string").field("index", "no").endObject() //
 				.startObject("volume").field("type", "string").field("index", "no").endObject() //
 				.startObject("year").field("type", "string").field("index", "not_analyzed").endObject() //
-				.startObject(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME).field("type", "integer").field("index", "not_analyzed").endObject() //
+				.startObject(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME).field("type", "string").field("index", "not_analyzed").endObject() //
+				.startObject(ESConstants.SYSTEM_URL_FIELD_NAME).field("type", "string").field("index", "not_analyzed").endObject() //
+				.startObject(ESConstants.AUTHOR_ENTITY_NAMES_FIELD_NAME).field("type", "string").field("index", "analyzed").endObject() //
+				.startObject(ESConstants.AUTHOR_ENTITY_IDS_FIELD_NAME).field("type", "string").field("index", "analyzed").endObject() //
+				.startObject(ESConstants.PERSON_ENTITY_NAMES_FIELD_NAME).field("type", "string").field("index", "analyzed").endObject() //
+				.startObject(ESConstants.PERSON_ENTITY_IDS_FIELD_NAME).field("type", "string").field("index", "analyzed").endObject() //
 				.endObject().endObject().endObject();
 
 		return mapping;
 
 	}
+
+	public String getIndexName() {
+		return this.indexName;
+	}
+
 }

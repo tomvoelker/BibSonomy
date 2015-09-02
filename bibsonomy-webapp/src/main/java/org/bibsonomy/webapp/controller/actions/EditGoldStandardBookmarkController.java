@@ -131,7 +131,7 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
 	}
 
 	@Override
-	protected void preparePost(final EditPostCommand<Bookmark> command, final Post<Bookmark> post) {
+	protected void preparePost(final EditBookmarkCommand command, final Post<Bookmark> post) {
 		super.preparePost(command, post);
 		post.setApproved(command.isApproved());
 	}

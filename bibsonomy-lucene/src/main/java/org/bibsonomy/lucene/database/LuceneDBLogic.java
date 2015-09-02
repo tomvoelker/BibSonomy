@@ -26,15 +26,26 @@
  */
 package org.bibsonomy.lucene.database;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
+import org.bibsonomy.database.common.enums.ConstantID;
+import org.bibsonomy.database.managers.GeneralDatabaseManager;
+import org.bibsonomy.database.managers.PersonDatabaseManager;
+import org.bibsonomy.es.IndexUpdaterState;
+import org.bibsonomy.lucene.database.managers.PersonLuceneDatabaseManager;
 import org.bibsonomy.lucene.database.params.LuceneParam;
 import org.bibsonomy.lucene.param.LucenePost;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.ResourcePersonRelationLogStub;
 import org.bibsonomy.model.User;
 
 /**
@@ -46,6 +57,9 @@ import org.bibsonomy.model.User;
 public class LuceneDBLogic<R extends Resource> extends AbstractDatabaseManager implements LuceneDBInterface<R> {
 	private Class<R> resourceClass;
 	private DBSessionFactory sessionFactory;
+	private final PersonDatabaseManager personDatabaseManager = PersonDatabaseManager.getInstance();
+	private final GeneralDatabaseManager generalDatabaseManager = GeneralDatabaseManager.getInstance();
+	private final PersonLuceneDatabaseManager personLuceneDatabaseManager = PersonLuceneDatabaseManager.getInstance();
 	
 	protected DBSession openSession() {
 		return this.sessionFactory.getDatabaseSession();
@@ -73,7 +87,31 @@ public class LuceneDBLogic<R extends Resource> extends AbstractDatabaseManager i
 	
 	@SuppressWarnings("unchecked")
 	private List<LucenePost<R>> queryForLucenePosts(final String query, final Object param, final DBSession session) {
-		return (List<LucenePost<R>>) this.queryForList(query, param, session);
+		final List<LucenePost<R>> posts = (List<LucenePost<R>>) this.queryForList(query, param, session);
+		final HashMap<String, List<ResourcePersonRelation>> relationCache = new HashMap<>();
+		for (LucenePost<R> post : posts) {
+			final String interHash = post.getResource().getInterHash();
+			List<ResourcePersonRelation> rels = relationCache.get(interHash);
+			if (rels == null) {
+				rels = this.personDatabaseManager.getResourcePersonRelationsByPublication(interHash, session);
+				if (rels == null) {
+					rels = Collections.emptyList();
+				}
+				relationCache.put(interHash, rels);
+			}
+			post.setResourcePersonRelations(rels);
+		}
+		return posts;
+	}
+	
+	@Override
+	public List<ResourcePersonRelation> getResourcePersonRelationsByPublication(String interHash) {
+		final DBSession session = this.openSession();
+		try {
+			return this.personDatabaseManager.getResourcePersonRelationsByPublication(interHash, session);
+		} finally {
+			session.close();
+		}
 	}
 	
 	/*
@@ -131,7 +169,11 @@ public class LuceneDBLogic<R extends Resource> extends AbstractDatabaseManager i
 	public Date getLastLogDate() {
 		final DBSession session = this.openSession();
 		try {
-			return this.queryForObject("getLastLog" + this.getResourceName(), Date.class, session);
+			final Date rVal = this.queryForObject("getLastLog" + this.getResourceName(), Date.class, session);
+			if (rVal != null) {
+				return rVal;
+			}
+			return new Date();
 		} finally {
 			session.close();
 		}
@@ -220,5 +262,60 @@ public class LuceneDBLogic<R extends Resource> extends AbstractDatabaseManager i
 	 */
 	public void setSessionFactory(final DBSessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getLastPersonChangeId()
+	 */
+	@Override
+	public long getLastPersonChangeId() {
+		final DBSession session = this.openSession();
+		try {
+			return this.generalDatabaseManager.getLastId(ConstantID.PERSON_CHANGE_ID, session);
+		} finally {
+			session.close();
+		}
+	}
+
+	@Override
+	public List<ResourcePersonRelationLogStub> getPubPersonRelationsByChangeIdRange(long fromPersonChangeId, long toPersonChangeIdExclusive) {
+		final DBSession session = this.openSession();
+		try {
+			return personLuceneDatabaseManager.getPubPersonChangesByChangeIdRange(fromPersonChangeId, toPersonChangeIdExclusive, session);
+		} finally {
+			session.close();
+		}
+	}
+
+	@Override
+	public List<PersonName> getPersonMainNamesByChangeIdRange(long firstChangeId, long toPersonChangeIdExclusive) {
+		final DBSession session = this.openSession();
+		try {
+			return personLuceneDatabaseManager.getPersonMainNamesByChangeIdRange(firstChangeId, toPersonChangeIdExclusive, session);
+		} finally {
+			session.close();
+		}
+	}
+
+	@Override
+	public List<Person> getPersonByChangeIdRange(long firstChangeId, long toPersonChangeIdExclusive) {
+		final DBSession session = this.openSession();
+		try {
+			return personLuceneDatabaseManager.getPersonByChangeIdRange(firstChangeId, toPersonChangeIdExclusive, session);
+		} finally {
+			session.close();
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getDbState()
+	 */
+	@Override
+	public IndexUpdaterState getDbState() {
+		final IndexUpdaterState newState = new IndexUpdaterState();
+		newState.setLast_tas_id(this.getLastTasId());
+		newState.setLast_log_date(this.getLastLogDate());
+		newState.setLastPersonChangeId(this.getLastPersonChangeId());
+		return newState;
 	}
 }

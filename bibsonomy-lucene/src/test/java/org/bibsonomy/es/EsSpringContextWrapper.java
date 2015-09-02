@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Webapp - The web application for BibSonomy.
+ * BibSonomy-Lucene - Fulltext search facility of BibSonomy
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -12,35 +12,39 @@
  *                               http://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.webapp.util.picture;
+package org.bibsonomy.es;
 
-import org.bibsonomy.model.User;
-import org.bibsonomy.webapp.command.actions.PictureCommand;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
- * A {@link StandardPictureHandlerFactory} implementation using
- * <a href="http://gravatar.com">Gravatar</a> profile picture service.
+ * this class wraps a single application context for the elasticsearch module
  * 
- * @author cunis
+ * @author fei
+ * @author jil
  */
-public class GravatarStdPictureHandlerFactory extends StandardPictureHandlerFactory
-{
-
-	@Override
-	public GravatarPictureHandler getExternalHandler ( User user, PictureCommand command )
-	{
-		return new GravatarPictureHandler( user, command );
+public class EsSpringContextWrapper {
+	private static final String CONFIG_LOCATION = "LuceneWithElasticSearchTestContext.xml";
+	
+	/** bean factory */
+	private static final BeanFactory beanFactory = new ClassPathXmlApplicationContext(CONFIG_LOCATION);
+	
+	/**
+	 * @return the beanfactory for the bibsonomy modul
+	 */
+	public static BeanFactory getBeanFactory() {
+		return beanFactory;
 	}
 }

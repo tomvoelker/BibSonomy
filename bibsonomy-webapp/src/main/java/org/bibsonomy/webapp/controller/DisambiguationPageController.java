@@ -3,14 +3,23 @@ package org.bibsonomy.webapp.controller;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.logic.exception.LogicException;
+import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
+import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.services.URLGenerator;
+import org.bibsonomy.services.person.PersonRoleRenderer;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.DisambiguationPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
@@ -21,15 +30,29 @@ import org.bibsonomy.webapp.view.Views;
 public class DisambiguationPageController extends SingleResourceListController implements MinimalisticController<DisambiguationPageCommand> {
 	//private static final Log log = LogFactory.getLog(DisambiguationPageController.class);
 	
+	/**
+	 * put into the session to tell the personPageController that the person has just been created
+	 */
+	public static final String ACTION_KEY_CREATE_AND_LINK_PERSON = "createAndLinkPerson";
+	public static final String ACTION_KEY_LINK_PERSON = "linkPerson";
+	
+	protected RequestLogic requestLogic;
+	private PersonRoleRenderer personRoleRenderer;
+	
 	@Override
 	public DisambiguationPageCommand instantiateCommand() {
-		return new DisambiguationPageCommand();
+		final DisambiguationPageCommand command = new DisambiguationPageCommand();
+		command.setPersonRoleRenderer(personRoleRenderer);
+		return command;
 	}
 	
 	@Override
 	public View workOn(final DisambiguationPageCommand command) {
-		// TODO: make sure that goldstandard posts are preferred here
-		command.setPost(this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, command.getRequestedHash(), null, null, null, null, null, null, 0, 100).get(0));
+		final List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, command.getRequestedHash(), null, null, null, null, null, null, 0, 100);
+		if (!ValidationUtils.present(posts)) {
+			throw new ObjectNotFoundException(command.getRequestedHash());
+		}
+		command.setPost(posts.get(0));
 		if ("newPerson".equals(command.getRequestedAction())) {
 			return newAction(command);
 		} else if ("linkPerson".equals(command.getRequestedAction())) {
@@ -40,26 +63,36 @@ public class DisambiguationPageController extends SingleResourceListController i
 	}
 
 	private View disambiguateAction(final DisambiguationPageCommand command) {
-		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations(command.getPost().getResource().getInterHash(), command.getRequestedRole(), new Integer(command.getRequestedIndex()));		
+		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations().byInterhash(command.getPost().getResource().getInterHash()).byRelationType(command.getRequestedRole()).byAuthorIndex(command.getRequestedIndex()).getIt();		
 		if (matchingRelations.size() > 0 ) {
 			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(matchingRelations.get(0).getPerson().getPersonId()));	
 		}
 
 		final PersonName requestedName = command.getPost().getResource().getAuthor().get(command.getRequestedIndex());
 		command.setPersonName(requestedName);
-		command.setSuggestedPersonNames(this.logic.getPersonSuggestion(requestedName.getLastName(), requestedName.getFirstName()));
+		
+		String name = requestedName.toString();
+		PersonSuggestionQueryBuilder query = this.logic.getPersonSuggestion(name).withEntityPersons(true).withRelationType(PersonResourceRelationType.values());
+		command.setPersonSuggestions(query.doIt());
 		
 		return Views.DISAMBIGUATION;
 	}
 	
-	/**
+	
+/**
 	 * creates a new person, links te resource and redirects to the new person page
 	 * @param command
 	 * @return
 	 */
 	private View newAction(DisambiguationPageCommand command) {
 		final Person person = createPersonEntity(command);
-		linkToPerson(command, person);
+		try {
+			linkToPerson(command, person);
+		} catch (LogicException e) {
+			command.getLogicExceptions().add(e);
+			return disambiguateAction(command);
+		}
+		
 		
 //		
 //		JSONObject jsonPerson = new JSONObject();
@@ -70,6 +103,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 //		
 //		command.setResponseString(jsonPerson.toJSONString());
 		
+		this.requestLogic.setLastAction(ACTION_KEY_CREATE_AND_LINK_PERSON);
 		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(person.getPersonId()));
 	}
 
@@ -84,7 +118,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 		return person;
 	}
 
-	private void linkToPerson(DisambiguationPageCommand command, final Person person) {
+	private void linkToPerson(DisambiguationPageCommand command, final Person person) throws ResourcePersonAlreadyAssignedException {
 		final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
 		resourcePersonRelation.setPerson(person);
 		resourcePersonRelation.setPost(command.getPost());
@@ -106,14 +140,28 @@ public class DisambiguationPageController extends SingleResourceListController i
 	
 	
 	/**
-	 * creates a new person, links te resource and redirects to the new person page
+	 * creates a new person, links the resource and redirects to the new person page
 	 * @param command
 	 * @return
 	 */
 	private View linkAction(DisambiguationPageCommand command) {
 		final Person person = this.logic.getPersonById(PersonIdType.BIBSONOMY_ID, command.getRequestedPersonId());
-		linkToPerson(command, person);		
+		try {
+			linkToPerson(command, person);
+		} catch (LogicException e) {
+			command.getLogicExceptions().add(e);
+			return disambiguateAction(command);
+		}
+		this.requestLogic.setLastAction(ACTION_KEY_LINK_PERSON);
 		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(person.getPersonId()));
+	}
+
+	public void setRequestLogic(RequestLogic requestLogic) {
+		this.requestLogic = requestLogic;
+	}
+
+	public void setPersonRoleRenderer(PersonRoleRenderer personRoleRenderer) {
+		this.personRoleRenderer = personRoleRenderer;
 	}
 }
 

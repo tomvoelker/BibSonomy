@@ -1,6 +1,6 @@
 //instantiate the bloodhound suggestion engine
 $(document).ready(function() {
-	setupPersonAutocomplete('.typeahead', function(data) {
+	setupPersonAutocomplete('.typeahead', "search", 'extendedPersonName', function(data) {
 		$("#otherPersonId").val(data.personId);
 		//$("#btnOtherPersonSubmit").attr("data-person-id", );
 		//$("#btnOtherPersonSubmit").attr("data-person-name-id", data.personNameId);

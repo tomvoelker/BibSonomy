@@ -75,8 +75,9 @@ import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
-import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
+import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
@@ -289,6 +290,11 @@ public class RestLogic implements LogicInterface {
 
 	@Override
 	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final String regex, final TagSimilarity relation, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+		return this.getTags(resourceType, grouping, groupingName, tags, hash, search, SearchType.LOCAL, regex, relation, order, startDate, endDate, start, end);
+	}
+	
+	@Override
+	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType,final String regex, final TagSimilarity relation, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		final GetTagsQuery query = new GetTagsQuery(start, end);
 		query.setResourceType(resourceType);
 		query.setGrouping(grouping, groupingName);
@@ -742,12 +748,12 @@ public class RestLogic implements LogicInterface {
 		throw new UnsupportedOperationException();
 	}
 	@Override
-	public void updateDocument(final Document document, final String resourceHash, final String newName) {
+	public void updateDocument(String userName, final String resourceHash, String documentName, final Document document) {
 		if (!present(document.getUserName())) {
 			document.setUserName(this.authUser.getName());
 		}
 		
-		this.execute(new ChangeDocumentNameQuery(resourceHash, newName, document));
+		this.execute(new ChangeDocumentNameQuery(userName, resourceHash, documentName, document));
 	}
 
 	@Override
@@ -772,22 +778,11 @@ public class RestLogic implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(java.lang.String, java.lang.String)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(java.lang.String)
 	 */
 	@Override
-	public List<PersonName> getPersonSuggestion(String lastName,
-			String firstName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(org.bibsonomy.model.PersonName)
-	 */
-	@Override
-	public List<PersonName> getPersonSuggestion(PersonName personName) {
-		// TODO Auto-generated method stub
-		return null;
+	public PersonSuggestionQueryBuilder getPersonSuggestion(String queryString) {
+		throw new UnsupportedOperationException();
 	}
 
 	/* (non-Javadoc)
@@ -795,7 +790,7 @@ public class RestLogic implements LogicInterface {
 	 */
 	@Override
 	public void addResourceRelation(ResourcePersonRelation rpr) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 		
 	}
 
@@ -804,7 +799,7 @@ public class RestLogic implements LogicInterface {
 	 */
 	@Override
 	public void removeResourceRelation(int resourceRelationId) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 		
 	}
 
@@ -813,7 +808,7 @@ public class RestLogic implements LogicInterface {
 	 */
 	@Override
 	public void createOrUpdatePerson(Person person) {
-		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException();
 		
 	}
 
@@ -822,8 +817,7 @@ public class RestLogic implements LogicInterface {
 	 */
 	@Override
 	public Person getPersonById(PersonIdType idType, String id) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	/* (non-Javadoc)
@@ -831,27 +825,15 @@ public class RestLogic implements LogicInterface {
 	 */
 	@Override
 	public void removePersonName(Integer personNameId) {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException();
 	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getQualifyingPublications(java.lang.String)
-	 */
-	@Override
-	public Map<Person, BibTex> getQualifyingPublications(String personName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePersonName(org.bibsonomy.model.PersonName)
 	 */
 	@Override
 	public void createOrUpdatePersonName(PersonName withPersonId) {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException();
 	}
 
 	/* (non-Javadoc)
@@ -859,8 +841,7 @@ public class RestLogic implements LogicInterface {
 	 */
 	@Override
 	public void linkUser(String personId) {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException();
 	}
 
 	/* (non-Javadoc)
@@ -868,44 +849,23 @@ public class RestLogic implements LogicInterface {
 	 */
 	@Override
 	public void unlinkUser(String username) {
-		// TODO Auto-generated method stub
-		
+		throw new UnsupportedOperationException();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#searchPostsByTitle(java.lang.String)
-	 */
-	@Override
-	public List<Post<BibTex>> searchPostsByTitle(String title) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations(org.bibsonomy.model.PersonName, java.lang.String, org.bibsonomy.model.enums.PersonResourceRelation, java.lang.Integer)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations()
 	 */
 	@Override
-	public List<ResourcePersonRelation> getResourceRelations(String hash, PersonResourceRelationType role, Integer authorIndex) {
-		// TODO Auto-generated method stub
-		return null;
+	public ResourcePersonRelationQueryBuilder getResourceRelations() {
+		throw new UnsupportedOperationException();
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#getResourceRelations(org.bibsonomy.model.Person)
+	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPublicationSuggestion(java.lang.String)
 	 */
 	@Override
-	public List<ResourcePersonRelation> getResourceRelations(Person person) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Post<BibTex>> getPublicationSuggestion(String queryString) {
+		throw new UnsupportedOperationException();
 	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#getResourceRelations(org.bibsonomy.model.Post)
-	 */
-	@Override
-	public List<ResourcePersonRelation> getResourceRelations(Post<? extends BibTex> post) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

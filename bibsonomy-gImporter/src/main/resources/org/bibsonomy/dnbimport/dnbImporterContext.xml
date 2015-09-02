@@ -5,12 +5,21 @@
 						http://www.springframework.org/schema/beans/spring-beans.xsd">
 	
 	<bean id="dnbImporter" class="org.bibsonomy.dnbimport.DnbImporter">
+		<property name="offset" value="${dnbimporter.initialOffset}"/>
 		<property name="adminLogic" ref="adminLogic"/>
-		<property name="userName" value="dnbimporter"></property>
+		<property name="userName" value="${dnbimporter.username}" /> <!-- genealogie --> 
 		<property name="dnbDatabaseManager" ref="dnbDatabaseManager"/>
 	</bean>
 				
 	<bean id="fileLogic" class="org.bibsonomy.testutil.DummyFileLogic" />
+	
+	<!-- dummies for lucene index -->
+	<bean id="dummySearch" class="org.bibsonomy.testutil.DummyResourceSearch" />
+	<alias name="dummySearch" alias="luceneBookmarkSearch" />
+	<alias name="dummySearch" alias="lucenePublicationSearch" />
+	<alias name="dummySearch" alias="luceneGoldStandardPublicationSearch" />
+	
+	<bean id="personSearch" class="org.bibsonomy.testutil.DummyPersonSearch" />
 	
 	<import resource="classpath:TestDatabaseContext.xml"/>
 	
@@ -39,7 +48,7 @@
 	
 	<bean id="adminLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.AdminLogicFactoryBeanCopy" scope="singleton">
 		<!-- name the admin user will have when accessing the logic interface -->
-		<property name="adminUserName" value="dnbimporter"/>
+		<property name="adminUserName" value="${dnbimporter.username}"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 		<!-- 
 		<property name="bibtexReader" ref="bibtexReader"/>

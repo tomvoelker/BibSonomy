@@ -8,7 +8,8 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"
-	xmlns:s="http://www.springframework.org/tags">
+	xmlns:s="http://www.springframework.org/tags"
+	xmlns:sec="http://www.springframework.org/security/tags">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
@@ -78,16 +79,16 @@
 					<!-- 
 					<hr />
  					-->
-					<s:eval expression="T(java.util.Arrays).asList('genealogy', 'dataset', 'wiskidz' )" var="sections" />
+					<s:eval expression="T(java.util.Arrays).asList('genealogy', 'dataset', 'reg', 'wiskidz' )" var="sections" />
 					
 					<div class="row">
 					
 						<div class="hidden-xs col-sm-3">
 							<div class="affix">
 								<div class="list-group section-scroll">
-									<a class="list-group-item active" href="#search"><fmt:message key="persons.intro.navi.search" /> </a>
+									<a class="list-group-item active" href="#search" style="max-width: 165px"><fmt:message key="persons.intro.navi.search" /> </a>
 									<c:forEach var="sectionKey" items="${sections}">
-										<a class="list-group-item" href="#${sectionKey}">
+										<a class="list-group-item" href="#${sectionKey}" style="max-width: 165px">
 											<fmt:message key="persons.intro.navi.${sectionKey}">
 												<fmt:param value="${properties['project.name']}" />
 											</fmt:message>
@@ -101,7 +102,7 @@
 							
 							<div id="search">
 								<a name="search"><!--  --></a>
-								<h2 class="getting-started">
+								<h2 class="getting-started" style="text-align: left">
 									<fmt:message key="persons.intro.navi.search">
 										<fmt:param value="${properties['project.name']}" />
 									</fmt:message>
@@ -121,33 +122,49 @@
 										</div>
 									</form>
 								</div>
+								<!-- <sec:authorize access="hasRole('ROLE_USER')"> -->
+								<c:if test="${not empty command.context.loginUser.name}">
+									<div style="text-align: right;">
+										<form action="${absoluteUrlGenerator.getPostPublicationUrl()}">
+											<input type="hidden" name="personId" value=""/>
+											<input type="hidden" name='personRole' value='AUTHOR'/>
+											<input type="hidden" name='post.resource.entrytype' value='phdthesis'/>
+											
+											<fmt:message key="persons.intro.addperson.text"/>
+											<fmt:message key="persons.intro.addperson.button" var="textAddPersonButton"/>
+											<input type="submit" style="margin: 0px 20px 0px 10px;" class="btn btn-sm btn-default" name='submit' id="addPersonBtn" value='${textAddPersonButton}' />
+										</form>
+									</div>
+								</c:if>
+								<!-- </sec:authorize> -->
 							</div>
 						
+							
 							<c:forEach var="sectionKey" items="${sections}">
 								<hr />
 								
 								<div id="${sectionKey}">
 									<a name="${sectionKey}"><!--  --></a>
-									<h2 class="getting-started">
+									<h2 class="getting-started" style="margin-bottom: 17px; text-align: left">
 										<fmt:message key="persons.intro.navi.${sectionKey}">
 											<fmt:param value="${properties['project.name']}" />
 										</fmt:message>
 									</h2>
-									<div class="lead text-center">
-										<fmt:message key="persons.intro.${sectionKey}.desc">
-											<fmt:param value="${properties['project.name']}" />
-										</fmt:message>
+									<div class="row">
+										<div class="col-sm-6">
+											<fmt:message key="persons.intro.${sectionKey}.text">
+												<fmt:param value="${properties['project.name']}" />
+											</fmt:message>
+										</div>
+										<div class="col-sm-6">
+										<fmt:message key="persons.intro.${sectionKey}.img" var="linkToImage" />
+										<img class="img-responsive" alt="${sectionKey}" src="${linkToImage}" />
+										</div>
 									</div>
-									<p>
-										<fmt:message key="persons.intro.${sectionKey}.text">
-											<fmt:param value="${properties['project.name']}" />
-										</fmt:message>
-									</p>
 								</div>
 							</c:forEach>
+							</div>
 							<p>${mtl:ch('nbsp')}</p>
-						</div>
-						
 						<br />
 					</div>
 					
@@ -157,5 +174,5 @@
 
 
 	</layout:paneLayout>
-	
+
 </jsp:root>

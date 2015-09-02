@@ -27,15 +27,16 @@
 package org.bibsonomy.scraper.url.kde.dblp;
 
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.Scraper;
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
@@ -49,25 +50,13 @@ public class DBLPScraper extends GenericBibTeXURLScraper {
 	private static final String info = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final String DBLP_HOST1  = "dblp.uni-trier.de";
-	private static final String DBLP_HOST_NAME2  = "http://search.mpi-inf.mpg.de/dblp/";
 	private static final String DBLP_HOST2  = "search.mpi-inf.mpg.de";
 	private static final String DBLP_PATH2  = "/dblp/";
 
-	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
-
-	static {
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + DBLP_HOST1), AbstractUrlScraper.EMPTY_PATTERN));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + DBLP_HOST2), Pattern.compile(DBLP_PATH2 + ".*")));
-	}
-	
-	/*
-	 * These are no mirrors, they just link to above hosts
-	 */
-	/*
-	private static final String DBLP_HOST_NAME3  = "http://www.sigmod.org/dblp/";
-	private static final String DBLP_HOST_NAME4  = "http://www.vldb.org/dblp/";
-	private static final String DBLP_HOST_NAME5  = "http://sunsite.informatik.rwth-aachen.de/dblp/";
-	 */
+	private static final List<Pair<Pattern,Pattern>> patterns = Arrays.asList(
+		new Pair<Pattern, Pattern>(Pattern.compile(".*" + DBLP_HOST1), AbstractUrlScraper.EMPTY_PATTERN),
+		new Pair<Pattern, Pattern>(Pattern.compile(".*" + DBLP_HOST2), Pattern.compile(DBLP_PATH2 + ".*"))
+	);
 	
 	@Override
 	public String getInfo() {
@@ -102,8 +91,11 @@ public class DBLPScraper extends GenericBibTeXURLScraper {
 		return url.toString().replace("bibtex", "bib") + ".bib";
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
+	 */
 	@Override
-	protected String convert(String downloadResult) {
-		return downloadResult.replaceAll("timesta.*\\n", "");
+	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
+		return bibtex.replaceAll("timesta.*\\n", "");
 	}
 }

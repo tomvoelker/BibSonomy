@@ -73,13 +73,13 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
-import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.enums.PersonIdType;
-import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
+import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
+import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
@@ -178,12 +178,22 @@ public class TestDBLogic implements LogicInterface {
 	public Group getGroupDetails(final String groupName) {
 		return this.dbGroups.get(groupName);
 	}
+	
 
 	/**
 	 * note: the regex is currently not considered
 	 */
 	@Override
 	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags_, final String hash, final String search, final String regex, final TagSimilarity relation, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+		return this.getTags(resourceType, grouping, groupingName, tags_, hash, search, SearchType.LOCAL, regex, relation, order, startDate, endDate, start, end);
+	}
+		
+
+	/**
+	 * note: the regex is currently not considered
+	 */
+	@Override
+	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags_, final String hash, final String search, final SearchType searchType,final String regex, final TagSimilarity relation, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		final List<Tag> tags = new LinkedList<Tag>();
 
 		switch (grouping) {
@@ -1121,7 +1131,7 @@ public class TestDBLogic implements LogicInterface {
 	}
 	
 	@Override
-	public void updateDocument(final Document document, final String resourceHash, final String newName) {
+	public void updateDocument(String userName, final String resourceHash, String documentName, final Document document) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -1141,17 +1151,6 @@ public class TestDBLogic implements LogicInterface {
 		
 	}
 
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getQualifyingPublications(java.lang.String)
-	 */
-	@Override
-	public Map<Person, BibTex> getQualifyingPublications(String personName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getDocumentStatistics(org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.Set, java.util.Date, java.util.Date)
 	 */
@@ -1169,23 +1168,11 @@ public class TestDBLogic implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(java.lang.String, java.lang.String)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(java.lang.String)
 	 */
 	@Override
-	public List<PersonName> getPersonSuggestion(String lastName,
-			String firstName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(org.bibsonomy.model.PersonName)
-	 */
-	@Override
-	public List<PersonName> getPersonSuggestion(PersonName personName) {
+	public PersonSuggestionQueryBuilder getPersonSuggestion(String queryString) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1221,15 +1208,6 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations(org.bibsonomy.model.Person)
-	 */
-	@Override
-	public List<ResourcePersonRelation> getResourceRelations(Person person) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePersonName(org.bibsonomy.model.PersonName)
 	 */
 	@Override
@@ -1245,16 +1223,6 @@ public class TestDBLogic implements LogicInterface {
 	public void unlinkUser(String username) {
 		// TODO Auto-generated method stub
 		
-	}
-
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#searchPostsByTitle(java.lang.String)
-	 */
-	@Override
-	public List<Post<BibTex>> searchPostsByTitle(String title) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 
@@ -1276,22 +1244,20 @@ public class TestDBLogic implements LogicInterface {
 		
 	}
 
-
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#getResourceRelations(java.lang.String, org.bibsonomy.model.enums.PersonResourceRelation, java.lang.Integer)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations()
 	 */
 	@Override
-	public List<ResourcePersonRelation> getResourceRelations(String hash, PersonResourceRelationType role, Integer authorIndex) {
+	public ResourcePersonRelationQueryBuilder getResourceRelations() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#getResourceRelations(org.bibsonomy.model.Post)
+	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPublicationSuggestion(java.lang.String)
 	 */
 	@Override
-	public List<ResourcePersonRelation> getResourceRelations(Post<? extends BibTex> post) {
+	public List<Post<BibTex>> getPublicationSuggestion(String queryString) {
 		// TODO Auto-generated method stub
 		return null;
 	}

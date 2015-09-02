@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
+ * BibSonomy-Model - Java- and JAXB-Model.
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -12,38 +12,38 @@
  *                               http://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.scraper.url.kde.agu;
+package org.bibsonomy.services.searcher;
 
-import org.bibsonomy.scraper.UnitTestRunner;
-import org.bibsonomy.scraper.junit.RemoteTest;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
+import java.util.List;
+
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 
 /**
- * URL Tests for AGUScraper #
- * @author tst
+ * Interface for person search operations
+ * 
+ * @author jil
  */
-@Category(RemoteTest.class)
-public class AGUScraperTest {
+public interface PersonSearch {
 
 	/**
-	 * starts URL test with id url_146
+	 * Allows autocompletion for persons
+	 * @param options contains a query with some mixture of parts of a name, parts of the title or the university name
+	 * @return a list of {@link ResourcePersonRelation} objects with initialized {@link Person} references. Each {@link Person} object is further initialized with a main name.
 	 */
-	@Test
-	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_146");
-	}
+	public  List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder options);
 	
 }

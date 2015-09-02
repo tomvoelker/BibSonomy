@@ -44,6 +44,7 @@ import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.store.NoSuchDirectoryException;
 import org.apache.lucene.util.Version;
 import org.bibsonomy.es.IndexType;
+import org.bibsonomy.es.IndexUpdaterState;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.model.Resource;
@@ -282,7 +283,7 @@ public class LuceneGenerateResourceIndex<R extends Resource> extends AbstractInd
 	 * @see org.bibsonomy.lucene.util.generator.AbstractIndexGenerator#writeMetaInfo(java.lang.Integer, java.util.Date)
 	 */
 	@Override
-	protected void writeMetaInfo(Integer lastTasId, Date lastLogDate) throws IOException {
+	protected void writeMetaInfo(IndexUpdaterState state) throws IOException {
 		// lucene does not store meta-info in the index - it retrieves it directly from all the entries
 	}
 
