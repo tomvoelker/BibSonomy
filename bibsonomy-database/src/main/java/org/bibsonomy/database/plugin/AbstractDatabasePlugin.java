@@ -70,6 +70,7 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	 * @param groupId
 	 * @param session
 	 */
+	@Override
 	public void onPublicationMassUpdate(String username, int groupId, DBSession session) {
 		// noop
 	}
@@ -216,7 +217,16 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPersonDelete(java.lang.Integer, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public void onPersonNameDelete(Object personChangeId, DBSession session) {
+	public void onPersonNameDelete(Integer personChangeId, DBSession session) {
+		// noop
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onDeleteAllNamesOfPerson(java.lang.String, org.bibsonomy.database.common.DBSession)
+	 */
+	@Override
+	public void onDeleteAllNamesOfPerson(String personId, DBSession databaseSession) {
 		// noop
 	}
 

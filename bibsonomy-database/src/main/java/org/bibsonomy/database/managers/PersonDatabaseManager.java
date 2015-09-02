@@ -185,13 +185,13 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 
 
 	/**
-	 * @param personNameId
+	 * @param personId 
 	 * @param databaseSession 
 	 */
 	public void deleteAllNamesOfPerson(String personId, DBSession databaseSession) {
 		databaseSession.beginTransaction();
 		try {
-			this.plugins.onPersonNameDelete(personId, databaseSession);
+			this.plugins.onDeleteAllNamesOfPerson(personId, databaseSession);
 			this.delete("deleteAllNamesOfPerson", personId, databaseSession);
 			databaseSession.commitTransaction();
 		} finally {

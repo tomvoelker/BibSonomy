@@ -44,7 +44,6 @@ import org.bibsonomy.database.plugin.plugins.GoldStandardPublicationReferencePlu
 import org.bibsonomy.database.plugin.plugins.Logging;
 import org.bibsonomy.database.plugin.plugins.MetaDataPlugin;
 import org.bibsonomy.model.DiscussionItem;
-import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.GoldStandardRelation;
@@ -351,10 +350,17 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPersonDelete(org.bibsonomy.model.Person, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public void onPersonNameDelete(Object personChangeId, DBSession session) {
+	public void onPersonNameDelete(Integer personChangeId, DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
 			plugin.onPersonNameDelete(personChangeId, session);
-		}		
+		}
+	}
+	
+	@Override
+	public void onDeleteAllNamesOfPerson(String personId, DBSession databaseSession) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onDeleteAllNamesOfPerson(personId, databaseSession);
+		}
 	}
 
 	/* (non-Javadoc)

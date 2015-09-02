@@ -33,7 +33,6 @@ import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.InboxParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.DiscussionItem;
-import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.GoldStandardRelation;
@@ -322,7 +321,14 @@ public interface DatabasePlugin {
 	 * @param personChangeId 
 	 * @param session
 	 */
-	public void onPersonNameDelete(final Object personChangeId, final DBSession session);
+	public void onPersonNameDelete(final Integer personChangeId, final DBSession session);
+	
+	/**
+	 * called when a all personNames of a person will be deleted
+	 * @param personId
+	 * @param databaseSession
+	 */
+	public void onDeleteAllNamesOfPerson(String personId, DBSession databaseSession);
 	
 	/**
 	 * called when a person will be updated
@@ -351,4 +357,5 @@ public interface DatabasePlugin {
 	 * @param session
 	 */
 	public void onPubPersonDelete(final Integer personChangeId, final DBSession session);
+
 }
