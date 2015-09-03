@@ -7,7 +7,7 @@ $(document).ready(function() {
 					formLastName: $("#formLastName").val()
 				}
 		).done(function(data) {
-			$("#nameInsertionPoint").before("<div class='checkbox' id='personName_"+data+"'><label><input type='radio' name='formSelectedName' value='" + $("#formPersonId").val() + "' /> " + $("#formFirstName").val() + " " + $("#formLastName").val() + "</label> &#160;<span data-person-name-id='" + data + "' data-firstName='"+$("#formFirstName").val()+"' data-lastName='"+$("#formFirstName").val()+"' data-toggle='modal' data-target='#removeName' style='color:darkred;cursor:pointer' href='#remName' id='removeName_"+data+"' class='removeName glyphicon glyphicon-remove'></span></div>");
+			$("#nameInsertionPoint").before("<div class='checkbox' id='personName_"+data+"'><label><input type='radio' name='formSelectedName' value='" + data + "' /> " + $("#formFirstName").val() + " " + $("#formLastName").val() + "</label> &#160;<span data-person-name-id='" + data + "' data-firstName='"+$("#formFirstName").val()+"' data-lastName='"+$("#formFirstName").val()+"' data-toggle='modal' data-target='#removeName' style='color:darkred;cursor:pointer' href='#remName' id='removeName_"+data+"' class='removeName glyphicon glyphicon-remove'></span></div>");
 			$("#addName").modal("hide");
 			$("#formFirstName").val("");
 			$("#formLastName").val("");
