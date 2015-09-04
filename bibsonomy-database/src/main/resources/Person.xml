@@ -55,7 +55,7 @@
 	</select>
 	
 	<update id='updatePerson' parameterClass='org.bibsonomy.model.Person'>
-		UPDATE person SET person_change_id = #personChangeId#, academic_degree = #academicDegree#, orcid = #orcid#, post_ctr = #postCounter#, user_name = #user#
+		UPDATE person SET person_change_id = #personChangeId#, academic_degree = #academicDegree#, orcid = #orcid#, post_ctr = #postCounter#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
 			WHERE person.person_id = #personId#
 	</update>
 	
