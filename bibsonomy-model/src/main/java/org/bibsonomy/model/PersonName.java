@@ -131,6 +131,10 @@ public class PersonName implements Serializable {
 		return super.equals(obj);
 	}
 	
+	public boolean equalsWithDetails(PersonName obj) {
+		return equals(obj) && (this.isMain == obj.isMain);
+	}
+	
 	private static boolean equal(final String a, final String b) {
 		if (present(a)) return a.equals(b);
 		if (present(b)) return b.equals(a);

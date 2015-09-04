@@ -44,8 +44,11 @@ import org.bibsonomy.database.plugin.plugins.GoldStandardPublicationReferencePlu
 import org.bibsonomy.database.plugin.plugins.Logging;
 import org.bibsonomy.database.plugin.plugins.MetaDataPlugin;
 import org.bibsonomy.model.DiscussionItem;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 
 /**
@@ -350,9 +353,9 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPersonDelete(org.bibsonomy.model.Person, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public void onPersonNameDelete(Integer personChangeId, DBSession session) {
+	public void onPersonNameDelete(PersonName personName, DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
-			plugin.onPersonNameDelete(personChangeId, session);
+			plugin.onPersonNameDelete(personName, session);
 		}
 	}
 	
@@ -378,9 +381,9 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPersonDelete(java.lang.Integer, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public void onPersonDelete(String personId, DBSession session) {
+	public void onPersonDelete(Person person, DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
-			plugin.onPersonDelete(personId, session);
+			plugin.onPersonDelete(person, session);
 		}	
 	}
 
@@ -388,9 +391,9 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPubPersonDelete(java.lang.Integer, org.bibsonomy.database.common.DBSession)
 	 */
 	@Override
-	public void onPubPersonDelete(Integer personChangeId, DBSession session) {
+	public void onPubPersonDelete(ResourcePersonRelation rel, DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
-			plugin.onPubPersonDelete(personChangeId, session);
+			plugin.onPubPersonDelete(rel, session);
 		}
 	}
 
@@ -402,5 +405,15 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
 			plugin.onPersonUpdateByUserName(userName, session);
 		}		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onUpdatePersonName(java.lang.Integer, org.bibsonomy.database.common.DBSession)
+	 */
+	@Override
+	public void onPersonNameUpdate(Integer personChangeId, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onPersonNameUpdate(personChangeId, session);
+		}
 	}
 }

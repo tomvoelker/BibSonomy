@@ -3255,7 +3255,7 @@ public class DBLogic implements LogicInterface {
 		this.ensureLoggedIn();
 		DBSession session = this.openSession();
 		try {
-			this.personDBManager.removeResourceRelation(resourceRelationId, session);
+			this.personDBManager.removeResourceRelation(resourceRelationId, this.loginUser.getName(), session);
 		} finally {
 			session.close();
 		}
@@ -3291,6 +3291,9 @@ public class DBLogic implements LogicInterface {
 				}
 			}
 		}
+		person.setChangeDate(new Date());
+		person.setChangedBy(this.loginUser.getName());
+		
 		if (present(person.getPersonId())) {
 			this.personDBManager.updatePerson(person, session);
 		} else {
@@ -3358,20 +3361,45 @@ public class DBLogic implements LogicInterface {
 		}
 		setMainNameIfNoneSet(person);
 		
-		
-		// TODO: better calculate full diff of names to be deleted, added and changed (=deleted and readded) for a cleaner history where only updated personnames get the username set
 		session.beginTransaction();
 		try {
-			this.personDBManager.deleteAllNamesOfPerson(person.getPersonId(), session);
-			for (PersonName personName : person.getNames()) {
-				personName.setChangedAt(new Date());
-				personName.setChangedBy(this.loginUser.getName());
-				this.personDBManager.createPersonName(personName, session);
+			final List<PersonName> oldNames = personDBManager.getPersonNames(person.getPersonId(), session);
+			
+			final Map<PersonName, PersonName> oldNamesMap = buildIdentityNamesMapFromNames(oldNames);
+			final Map<PersonName, PersonName> newNamesMap = buildIdentityNamesMapFromNames(person.getNames());
+			for (PersonName oldName : oldNames) {
+				PersonName newName = newNamesMap.get(oldName);
+				if (newName != null) {
+					if (!newName.equalsWithDetails(oldName)) {
+						newName.setChangedAt(new Date());
+						newName.setChangedBy(this.loginUser.getName());
+						newName.setPersonNameChangeId(oldName.getPersonNameChangeId());
+						this.personDBManager.updatePersonName(newName, session);
+					}
+				} else {
+					this.personDBManager.removePersonName(oldName.getPersonNameChangeId(), this.loginUser.getName(), session);
+				}
+			}
+			for (PersonName newName : oldNames) {
+				PersonName oldName = oldNamesMap.get(newName);
+				if (oldName == null) {
+					newName.setChangedAt(new Date());
+					newName.setChangedBy(this.loginUser.getName());
+					this.personDBManager.createPersonName(newName, session);
+				}
 			}
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
 		}
+	}
+
+	private static Map<PersonName, PersonName> buildIdentityNamesMapFromNames(final List<PersonName> names) {
+		final Map<PersonName,PersonName> namesMap = new HashMap<>();
+		for (PersonName name : names) {
+			namesMap.put(name, name);
+		}
+		return namesMap;
 	}
 
 	private static void setMainNameIfNoneSet(Person person) {
@@ -3421,7 +3449,7 @@ public class DBLogic implements LogicInterface {
 		this.ensureLoggedIn();
 		final DBSession session = this.openSession();
 		try {
-			this.personDBManager.removePersonName(personChangeId, session);
+			this.personDBManager.removePersonName(personChangeId, this.loginUser.getName(), session);
 		} finally {
 			session.close();
 		}
@@ -3441,6 +3469,7 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
+	@Override
 	public void createOrUpdatePersonName(PersonName personName) {
 		this.ensureLoggedIn();
 		final DBSession session = this.openSession();
@@ -3451,6 +3480,7 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 	
+	@Override
 	public void linkUser(String personId) {
 		this.ensureLoggedIn();
 		final DBSession session = this.openSession();
@@ -3465,6 +3495,7 @@ public class DBLogic implements LogicInterface {
 		
 	}
 	
+	@Override
 	public void unlinkUser(String username) {
 		this.ensureLoggedIn();
 		final DBSession session = this.openSession();

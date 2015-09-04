@@ -1,5 +1,6 @@
 package org.bibsonomy.database.managers;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -151,32 +152,39 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 
 
 	/**
-	 * @param resourceRelationId
+	 * @param personRelChangeId
+	 * @param loginUser 
 	 * @param databaseSession
 	 */
-	public void removeResourceRelation(int resourceRelationId,
-			DBSession databaseSession) {
+	public void removeResourceRelation(int personRelChangeId, String loginUser, DBSession databaseSession) {
 		databaseSession.beginTransaction();
 		try {
-			this.plugins.onPubPersonDelete(resourceRelationId, databaseSession);
-			this.delete("removeResourceRelation", resourceRelationId, databaseSession);
+			ResourcePersonRelation rel = new ResourcePersonRelation();
+			rel.setPersonRelChangeId(personRelChangeId);
+			rel.setChangedBy(loginUser);
+			rel.setChangedAt(new Date());
+			this.plugins.onPubPersonDelete(rel, databaseSession);
+			this.delete("removeResourceRelation", Integer.valueOf(personRelChangeId), databaseSession);
 			databaseSession.commitTransaction();
 		} finally {
 			databaseSession.endTransaction();
 		}
-		
 	}
 
 
 	/**
-	 * @param personChangeId
+	 * @param personNameChangeId
 	 * @param databaseSession 
 	 */
-	public void removePersonName(Integer personChangeId, DBSession databaseSession) {
+	public void removePersonName(int personNameChangeId, String loginUser, DBSession databaseSession) {
 		databaseSession.beginTransaction();
 		try {
-			this.plugins.onPersonNameDelete(personChangeId, databaseSession);
-			this.delete("removePersonName", personChangeId, databaseSession);
+			PersonName person = new PersonName();
+			person.setPersonNameChangeId(personNameChangeId);
+			person.setChangedAt(new Date());
+			person.setChangedBy(loginUser);
+			this.plugins.onPersonNameDelete(person, databaseSession);
+			this.delete("removePersonName", Integer.valueOf(personNameChangeId), databaseSession);
 			databaseSession.commitTransaction();
 		} finally {
 			databaseSession.endTransaction();
@@ -201,7 +209,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 
 	// TODO: write testcase for this method and test whether groupBy of OR-mapping works as expected 
 	public List<ResourcePersonRelation> getResourcePersonRelationsByPublication(String interHash, DBSession databaseSession) {
-		return (List<ResourcePersonRelation>) this.queryForList("getResourcePersonRelationsByPublication", interHash, databaseSession);
+		return this.queryForList("getResourcePersonRelationsByPublication", interHash, ResourcePersonRelation.class, databaseSession);
 	}
 
 	/**
@@ -242,12 +250,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	}
 	
 	private List<ResourcePersonRelation> getResourcePersonRelationByResourcePersonRelation(ResourcePersonRelation rpr, DBSession session) {
-		session.beginTransaction();
-		try {
-			return (List<ResourcePersonRelation>) this.queryForList("getResourcePersonRelationByResourcePersonRelation", rpr, session);
-		} finally {
-			session.endTransaction();
-		}
+		return this.queryForList("getResourcePersonRelationByResourcePersonRelation", rpr, ResourcePersonRelation.class, session);
 	}
 
 
@@ -267,15 +270,10 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		personRelation.getPerson().setPersonId(personId);
 		param.setPersonRelation(personRelation);
 		
-		session.beginTransaction();
-		try {
-			if (publicationType == GoldStandardPublication.class) {
-				return this.queryForList("getComunityBibTexRelationsForPerson", param, ResourcePersonRelation.class, session);
-			} else {
-				return this.queryForList("getBibTexRelationsForPerson", param, ResourcePersonRelation.class, session);
-			}
-		} finally {
-			session.endTransaction();
+		if (publicationType == GoldStandardPublication.class) {
+			return this.queryForList("getComunityBibTexRelationsForPerson", param, ResourcePersonRelation.class, session);
+		} else {
+			return this.queryForList("getBibTexRelationsForPerson", param, ResourcePersonRelation.class, session);
 		}
 	}
 
@@ -285,12 +283,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 * @return
 	 */
 	public List<ResourcePersonRelation> getResourcePersonRelationsWithPersonsByInterhash(String interhash, DBSession session) {
-		session.beginTransaction();
-		try {
-			return (List<ResourcePersonRelation>) this.queryForList("getResourcePersonRelationsWithPersonsByInterhash", interhash, session);
-		} finally {
-			session.endTransaction();
-		}
+		return (List<ResourcePersonRelation>) this.queryForList("getResourcePersonRelationsWithPersonsByInterhash", interhash, ResourcePersonRelation.class, session);
 	}
 
 	/**
@@ -303,6 +296,32 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 
 	public void setPersonSearch(PersonSearch personSearch) {
 		this.personSearch = personSearch;
+	}
+
+	/**
+	 * @param personId
+	 * @param session
+	 * @return
+	 */
+	public List<PersonName> getPersonNames(String personId, DBSession session) {
+		return this.queryForList("getNames", personId, PersonName.class, session);
+	}
+
+	/**
+	 * @param personNameChangeId
+	 * @param newName
+	 * @param session
+	 */
+	public void updatePersonName(PersonName newNameWithOldId, DBSession session) {
+		session.beginTransaction();
+		try {
+			this.plugins.onPersonNameUpdate(newNameWithOldId.getPersonNameChangeId(), session);
+			this.delete("removePersonName", newNameWithOldId.getPersonNameChangeId(), session);
+			this.createPersonName(newNameWithOldId, session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
 	}
 
 }

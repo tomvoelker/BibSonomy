@@ -27,6 +27,8 @@
 package org.bibsonomy.database.plugin.plugins;
 
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.enums.ConstantID;
+import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.params.BasketParam;
 import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.params.BibTexParam;
@@ -42,6 +44,9 @@ import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.params.discussion.DiscussionItemParam;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 import org.bibsonomy.model.DiscussionItem;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 
 /**
@@ -58,6 +63,16 @@ import org.bibsonomy.model.enums.GoldStandardRelation;
  */
 public class Logging extends AbstractDatabasePlugin {
 
+	private final GeneralDatabaseManager generalManager;
+
+
+	/**
+	 * 
+	 */
+	public Logging() {
+		this.generalManager = GeneralDatabaseManager.getInstance();
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -267,8 +282,16 @@ public class Logging extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public void onPersonNameDelete(final Integer personChangeId, final DBSession session) {
+	public void onPersonNameUpdate(final Integer personChangeId, final DBSession session) {
 		this.insert("logPersonName", personChangeId, session);
+	}
+	
+	@Override
+	public void onPersonNameDelete(final PersonName personName, final DBSession session) {
+		this.insert("logPersonName", personName.getPersonNameChangeId(), session);
+		// we need to fetch a new id so the next insert statement can refer to the last generated id
+		this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session);
+		this.insert("logPersonNameDelete", personName, session);
 	}
 
 	/* (non-Javadoc)
@@ -290,13 +313,19 @@ public class Logging extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public void onPersonDelete(final String personId, final DBSession session) {
-		this.insert("logPersonDelete", personId, session);
+	public void onPersonDelete(final Person person, final DBSession session) {
+		this.insert("logPersonUpdate", person.getPersonId(), session);
+		person.setPersonChangeId(this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+		this.insert("logPersonDelete", person, session);
 	}
+	
 
 	@Override
-	public void onPubPersonDelete(final Integer personChangeId, final DBSession session) {
-		this.insert("logPubPerson", personChangeId, session);
+	public void onPubPersonDelete(final ResourcePersonRelation rel, final DBSession session) {
+		this.insert("logPubPerson", rel.getPersonRelChangeId(), session);
+		// we need to fetch a new id so the next insert statement can refer to the last generated id
+		this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session);
+		this.insert("logPubPersonDelete", rel, session);
 	}
 
 }
