@@ -39,7 +39,6 @@
 					</jsp:attribute>
 				</bsform:fieldset>
 				
-				 
 				<!-- Pending invites for the user -->
 				<c:set var="showPendingInvites" value="${false}" />
 				<c:set var="showPendingRequests" value="${false}" />
@@ -63,8 +62,6 @@
 
 							<c:forEach items="${command.user.pendingGroups}" var="group">
 								<c:if test="${group.getGroupMembershipForUser(loginUser).groupRole eq 'INVITED' }">
-
-
 									<dl class="dl-horizontal dt-thumbnail-items group-list">
 										<dt>
 											<group:groupthumbnail group="${group}" noname="${true}" size="16" />
@@ -77,14 +74,12 @@
 												</div>
 
 												<div class="col-xs-3">
-													<a class="btn btn-success btn-block btn-sm" title="${accinviteTitle}" href="/updateGroup?operation=add_member&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}">${accinvite}</a>
-													<a class="btn btn-danger btn-block btn-sm" title="${revuserTitle}" href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}">${revuser}</a>
+													<a class="btn btn-success btn-block btn-sm ${systemReadOnly ? 'disabled' : ''}" title="${accinviteTitle}" href="/updateGroup?operation=add_member&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}">${accinvite}</a>
+													<a class="btn btn-danger btn-block btn-sm ${systemReadOnly ? 'disabled' : ''}" title="${revuserTitle}" href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}">${revuser}</a>
 												</div>
 											</div>
 										</dd>
 									</dl>
-
-
 								</c:if>
 							</c:forEach>
 						</jsp:attribute>
@@ -101,7 +96,6 @@
 									<dt>
 										<group:groupthumbnail group="${group}" noname="${true}" size="16" />
 									</dt>
-
 									<dd>
 										<div class="row">
 											<div class="col-xs-9">
@@ -109,7 +103,7 @@
 											</div>
 
 											<div class="col-xs-3">
-												<a class="btn btn-default btn-block btn-sm" href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}" title="${revuserTitle}">${revuser}</a>
+												<a class="btn btn-default btn-block btn-sm ${systemReadOnly ? 'disabled' : ''}" href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}" title="${revuserTitle}">${revuser}</a>
 											</div>
 										</div>
 									</dd>
@@ -160,19 +154,19 @@
 																		<fmt:message var="buttonTitle" key="settings.groups.documentsharing.shared.title" />
 																		<fmt:message var="buttonValue" key="settings.groups.documentsharing.shared" />
 																		<input type="hidden" name="action" value="unshareDocuments" />
-																		<bsform:button style="success" size="defaultSize" type="submit" className="btn-block groupUnshare" value="${buttonValue}" icon="check" />
+																		<bsform:button style="success" size="defaultSize" type="submit" className="btn-block groupUnshare" value="${buttonValue}" icon="check" disabled="${systemReadOnly}" />
 																	</c:when>
 																	<c:otherwise>
 																		<fmt:message var="buttonTitle" key="settings.groups.actions.shareDocuments.title" />
 																		<fmt:message var="buttonValue" key="settings.groups.actions.shareDocuments" />
 																		<input type="hidden" name="action" value="shareDocuments" />
-																		<bsform:button style="defaultStyle" size="defaultSize" type="submit" value="${buttonValue}" className="btn-block" />
+																		<bsform:button style="defaultStyle" size="defaultSize" type="submit" value="${buttonValue}" className="btn-block" disabled="${systemReadOnly}" />
 																	</c:otherwise>
 																</c:choose>
 															</c:when>
 															<c:otherwise>
 																<fmt:message var="disabled" key="settings.groups.documentsharing.disabled" />
-																<bsform:button style="defaultStyle" size="defaultSize" type="button" value="${disabled}" className="disabled btn-block" />
+																<bsform:button style="defaultStyle" size="defaultSize" type="button" value="${disabled}" className="disabled btn-block" disabled="${systemReadOnly}" />
 															</c:otherwise>
 														</c:choose>
 														<c:url var="joinLink" value="/joinGroup">

@@ -104,7 +104,7 @@
 				</c:forEach>
 				<c:out value=" "/>
 			</ul>
-			<c:if test="${usersOwnRelations and (empty disableEditLink or not disableEditLink)}">
+			<c:if test="${usersOwnRelations and (empty disableEditLink or not disableEditLink) and not systemReadOnly}">
 				<br />
 				<p><fmt:message key="relations.editRelations" /></p>
 			</c:if>

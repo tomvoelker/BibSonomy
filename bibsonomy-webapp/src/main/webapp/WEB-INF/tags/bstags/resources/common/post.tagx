@@ -43,7 +43,6 @@
 		<div class="hidden-xs hidden-md pull-left thumbnail-container">
 			<jsp:invoke fragment="documents"/>
 			<!-- IN MY COLLECTION: only display the in-my-collection-icon when the user is logged in -->
-			<!-- FIXME: user name for community posts not given - copying currently not possible -->
 			<c:choose>
 				<c:when test="${isRemotePost}">
 					<c:set var="extraCssClass" value="remote-post fa-external-link"/>
@@ -69,7 +68,6 @@
 					</c:choose>
 				</c:if>
 			</c:forEach>
-			
 		</div>
 		<div class="media-body">
 			<div class="pdesc ellipsis">
@@ -82,7 +80,7 @@
 				<!-- Edit tags link -->
 				<c:if test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name) and not isRemotePost }">
 					<fmt:message key="navi.editTags" var="editTags" />
-					<a class="tags-edit-link" 
+					<a class="btn btn-xs tags-edit-link ${systemReadOnly ? 'disabled' : ''}" 
 						data-toggle="modal" 
 						data-target="#tag-modal-${post.resource.intraHash}${post.user.name}" 
 						title="${editTags}" href="#">

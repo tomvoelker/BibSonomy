@@ -318,12 +318,10 @@
 						<input type="hidden" name="action" value="layoutTagPost"/>
 						<input type="hidden" name="selTab" value="1"/>
 						
-						
 						<div class="col-sm-offset-3 col-sm-9">
-							<bsform:button type="submit" style="primary" size="defaultSize"  value="${setlayout}" />
+							<bsform:button type="submit" style="primary" size="defaultSize"  value="${setlayout}" disabled="${systemReadOnly}" />
 						</div>
 					</div>
-					
 				</fieldset>
 			</form:form>
 					
@@ -366,7 +364,7 @@
 								<input type="hidden" name="action" value="api" />
 
 								<div class="col-sm-offset-3 col-sm-9">
-									<bsform:button type="submit" style="primary" size="defaultSize" value="${generateapikey}" />
+									<bsform:button type="submit" style="primary" size="defaultSize" value="${generateapikey}" disabled="${systemReadOnly}" />
 								</div>
 							</div>
 						</c:otherwise>
@@ -426,7 +424,7 @@
 						<input type="hidden" name="selTab" value="1"/>
 						<input type="hidden" name="action" value="logging"/>
 						<div class="col-sm-offset-3 col-sm-9">
-							<bsform:button type="submit" style="primary" size="defaultSize" value="${updatesettings}" />
+							<bsform:button type="submit" style="primary" size="defaultSize" value="${updatesettings}" disabled="${systemReadOnly}" />
 						</div>
 					</div>
 				</fieldset>
@@ -438,13 +436,11 @@
 			<c:if test="${mtl:contains(authConfig, mtl:convertToEnum('org.bibsonomy.common.enums.AuthMethod', 'internal')) and not openIdOrLDAPUser}">
 				<settings:passwordChange loginUser="${command.context.loginUser}"/>
 			</c:if>
-					
+			
 			<form:form cssClass="form-horizontal" id="postForm" method="post" action="/actions/goodBye">
 				<fieldset>
 					<legend><fmt:message key="settings.deletemyaccount" /></legend>
 					<!-- Are you sure? -->
-					
-								
 					<fmt:message var="labelText" key="settings.really" />
 					<bsform:input path="delete" placeholder="no" labelColSpan="3" inputColSpan="9" noHelp="true" labelText="${labelText }" />
 					
@@ -460,7 +456,7 @@
 							
 							<input type="hidden" name="ckey" value="${command.context.ckey}"/>
 							<input type="hidden" name="selTab" value="1"/>
-							<bsform:button type="submit" style="danger" size="defaultSize" value="${deleteaccount}" />
+							<bsform:button type="submit" style="danger" size="defaultSize" value="${deleteaccount}" disabled="${systemReadOnly}" />
 						</div>
 					</div>
 			</fieldset>

@@ -74,7 +74,7 @@
 								<input class="form-control input-sm rename-tags" type="text" name="newTags['${fn:escapeXml(publication.intraHash)}']" value="${fn:escapeXml(tagsString)}"/>
 								<fmt:message key="bibtex.actions.tags.update" var="updateTags"/>
 								<span class="input-group-btn">
-									<button class="btn btn-sm btn-default rename-tags-btn" title="${updateTags}" type="submit"><span class="fa fa-pencil"><!-- KEEP ME --></span><span class="sr-only"><c:out value="${updateTags}" /></span></button>
+									<button class="btn btn-sm btn-default rename-tags-btn ${systemReadOnly ? 'disabled' : '' }" title="${updateTags}" type="submit"><span class="fa fa-pencil"><!-- KEEP ME --></span><span class="sr-only"><c:out value="${updateTags}" /></span></button>
 									<button class="btn btn-sm btn-default rename-tags-submit-btn" style="display: none;" title="${updateTags}" type="button"><span class="glyphicon glyphicon-ok"><!-- KEEP ME --></span><span class="sr-only">OK</span></button>
 								</span>
 							</div>
@@ -141,7 +141,7 @@
 								</div>
 								<div class="pull-right">
 									<fmt:message key="save" var="save" />
-									<button type="submit" class="btn btn-primary btn-xs" id="makeP" onclick="javascript: return updatePrivNote($(this))"><c:out value="${save}" /></button>
+									<button type="submit" class="btn btn-primary btn-xs ${systemReadOnly ? 'disabled' : '' }" id="makeP" onclick="javascript: return updatePrivNote($(this))"><c:out value="${save}" /></button>
 								</div>
 							</form>
 						</div>

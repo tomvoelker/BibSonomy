@@ -230,10 +230,11 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * do some post processing with the retrieved resources
 	 * 
 	 * @param cmd
+	 * @param posts 
 	 */
 	protected void postProcessAndSortList(final ResourceViewCommand cmd, final List<Post<BibTex>> posts) {
 		for (final Post<BibTex> post : posts) {
-			// insert openURL into bibtex objects
+			// insert openURL into publication objects
 			post.getResource().setOpenURL(BibTexUtils.getOpenurl(post.getResource()));
 		}
 		// if a jabref layout is to be rendered and no special order is given, set to default order 
@@ -270,6 +271,13 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @param resourceType the resource type
 	 * @param groupingEntity the grouping entity
 	 * @param groupingName the grouping name
+	 * @param tags 
+	 * @param hash 
+	 * @param search 
+	 * @param filter 
+	 * @param order 
+	 * @param startDate 
+	 * @param endDate 
 	 * @param itemsPerPage number of items to be displayed on each page
 	 */
 	protected <T extends Resource> void setList(final SimpleResourceViewCommand cmd, final Class<T> resourceType, final GroupingEntity groupingEntity, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int itemsPerPage) {
@@ -296,7 +304,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 */
 	protected <T extends Resource> void setList(final SimpleResourceViewCommand cmd, final Class<T> resourceType, final GroupingEntity groupingEntity, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int itemsPerPage) {
 		final ListCommand<Post<T>> listCommand = cmd.getListCommand(resourceType);
-		// retrieve posts		
+		// retrieve posts
 		log.debug("getPosts " + resourceType + " " + searchType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
 		final int start = listCommand.getStart();
 		final Set<Filter> filters = new HashSet<Filter>();

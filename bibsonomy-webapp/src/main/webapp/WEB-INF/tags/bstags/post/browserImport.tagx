@@ -28,9 +28,9 @@
 					<p class="help-block"><fmt:message key="settings.browser.fileselect.help"/></p>
 				</div>
 			</div>
-				
-			<!-- viewable for -->		
-			<div class="form-group">		
+			
+			<!-- viewable for -->
+			<div class="form-group">
 				<form:label cssClass="col-sm-3 control-label" path="group">
 					<fmt:message key="settings.browser.viewable"/>
 				</form:label>
@@ -66,7 +66,7 @@
 			<!-- import button -->
 			<div class="form-group">
 				<div class="col-sm-offset-3 col-sm-9">
-					<bsform:button type="submit" style="primary" size="defaultSize" value="${valueButton}" />
+					<bsform:button type="submit" style="primary" size="defaultSize" value="${valueButton}" disabled="${systemReadOnly}" />
 				</div>
 			</div>
 

@@ -103,7 +103,7 @@
 				</ul>
 				<c:if test="${isOwnEntry}">
 					<fmt:message var="addAdditionalUrl" key="bibtex.actions.additional_url.add" />
-					<a type="button" class="btn btn-xs btn-primary" role="button" data-toggle="modal" href="#add-url-modal"><span class="glyphicon glyphicon-plus"><!-- KEEP ME --></span>&amp;nbsp;<c:out value="${addAdditionalUrl}" /></a>
+					<a type="button" class="btn btn-xs btn-primary ${systemReadOnly ? 'disabled' : '' }" role="button" data-toggle="modal" href="#add-url-modal"><span class="glyphicon glyphicon-plus"><!-- KEEP ME --></span>&amp;nbsp;<c:out value="${addAdditionalUrl}" /></a>
 					
 					<fmt:message var="addAdditionalUrlTitle" key="bibtex.actions.additional_url.add.title" />
 					

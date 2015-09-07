@@ -74,7 +74,6 @@
 									<bsform:button gear="${true}" value="" dropdown="${true}" size="xsmall" style="defaultStyle" dataToggle="dropdown" />
 									
 									<ul class="dropdown-menu list-options">
-				
 										<rc:actions 
 											resourceType="bookmark" 
 											sortPage="${command.sortPage}" 
@@ -85,8 +84,7 @@
 											isClipboard="${isClipboard}"
 											disableListNavigation="${disableListNavigation}"
 											disableResourcetypeSelection="${disableResourcetypeSelection}"/>
-							  		</ul>
-								  	
+									</ul>
 								</div>
 							</c:otherwise>
 						</c:choose>

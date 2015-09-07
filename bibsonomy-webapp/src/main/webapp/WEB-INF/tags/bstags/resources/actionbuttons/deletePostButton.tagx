@@ -12,31 +12,38 @@
 	<jsp:directive.attribute name="buttonClasses" type="java.lang.String" required="true" />
 
 	<c:choose>
-		<c:when test="${not empty post.systemUrl }">
+		<c:when test="${not empty post.systemUrl}">
 			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
 		</c:when>
 		<c:otherwise>
 			<c:set var ="isRemotePost" value="false"/>
 		</c:otherwise>
 	</c:choose>
+	
+	<c:set var="disabled" value="${false}" />
 	<c:choose>
-		<c:when test="${userLoggedIn and loginUserName eq post.user.name and not isRemotePost}">
-			<fmt:message key="${resourceType}.actions.delete.title" var="deleteTitle"/>
-			<c:url var="deleteUrl" value="/deletePost">
-				<c:param name="resourceHash" value="${post.resource.intraHash}" />
-				<c:param name="ckey" value="${ckey}" />
-			</c:url>
-			<a class="${buttonClasses} confirmdelete" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" data-type="post">
-				<span class="fa fa-times"><!--  --></span>
-				<span class="sr-only"><fmt:message key="post.actions.delete"/></span>
-			</a>
+		<c:when test="${not userLoggedIn or loginUserName ne post.user.name or isRemotePost}">
+			<fmt:message key="${resourceType}.actions.delete.inactive" var="deleteTitle"/>
+			<c:set var="disabled" value="${true}" />
+		</c:when>
+		<c:when test="${systemReadOnly}">
+			<fmt:message key="system.readOnly.info" var="deleteTitle" />
+			<c:set var="disabled" value="${true}" />
 		</c:when>
 		<c:otherwise>
-			<fmt:message key="${resourceType}.actions.delete.inactive" var="deleteTitle"/>
-			<span class="${buttonClasses}" title="${deleteTitle}" disabled="disabled">
-				<span class="fa fa-times"><!--  --></span>
-			</span>
+			<fmt:message key="${resourceType}.actions.delete.title" var="deleteTitle"/>
 		</c:otherwise>
 	</c:choose>
+	
+	<c:set var="buttonClasses" value="${buttonClasses}${disabled ? ' disabled' : ''}" />
+	
+	<c:url var="deleteUrl" value="/deletePost">
+		<c:param name="resourceHash" value="${post.resource.intraHash}" />
+		<c:param name="ckey" value="${ckey}" />
+	</c:url>
+	<a class="${buttonClasses} confirmdelete" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" data-type="post">
+		<span class="fa fa-times"><!--  --></span>
+		<span class="sr-only"><fmt:message key="post.actions.delete"/></span>
+	</a>
 </jsp:root>
 	

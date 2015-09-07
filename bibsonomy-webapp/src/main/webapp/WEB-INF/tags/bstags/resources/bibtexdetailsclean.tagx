@@ -43,7 +43,7 @@
 			| 
 			| if own entry, render a two column layout to display documents on the right side
 			| 
-		   	+-->	
+		   	+-->
 
 		<c:when test="${isOwnEntry or not empty publication.documents}">
 			
