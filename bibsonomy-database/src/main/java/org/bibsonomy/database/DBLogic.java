@@ -3369,7 +3369,7 @@ public class DBLogic implements LogicInterface {
 					this.personDBManager.removePersonName(oldName.getPersonNameChangeId(), this.loginUser.getName(), session);
 				}
 			}
-			for (PersonName newName : oldNames) {
+			for (PersonName newName : person.getNames()) {
 				PersonName oldName = oldNamesMap.get(newName);
 				if (oldName == null) {
 					newName.setChangedAt(new Date());
