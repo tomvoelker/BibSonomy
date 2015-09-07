@@ -67,8 +67,11 @@ public class DisambiguationPageController extends SingleResourceListController i
 		if (matchingRelations.size() > 0 ) {
 			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(matchingRelations.get(0).getPerson().getPersonId()));	
 		}
-
-		final PersonName requestedName = command.getPost().getResource().getAuthor().get(command.getRequestedIndex());
+		
+		final BibTex res = command.getPost().getResource();
+		final List<PersonName> persons = res.getPersonNamesByRole(command.getRequestedRole());
+		
+		final PersonName requestedName = persons.get(command.getRequestedIndex());
 		command.setPersonName(requestedName);
 		
 		String name = requestedName.toString();
