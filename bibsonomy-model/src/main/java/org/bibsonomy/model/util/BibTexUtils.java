@@ -487,7 +487,7 @@ public class BibTexUtils {
 		if (present(bib.getEditor())) {
 			values.put(BIBTEX_EDITOR_FIELD, addBibTeXBrackets(PersonNameUtils.serializePersonNames(bib.getEditor(), lastFirstNames)));
 		}
-				
+		
 		/*
 		 * process miscFields map, if present
 		 */
