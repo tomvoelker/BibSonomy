@@ -249,11 +249,6 @@ public class RestLogic implements LogicInterface {
 	public Post<? extends Resource> getPostDetails(final String resourceHash, final String userName) {
 		return execute(new GetPostDetailsQuery(userName, resourceHash));
 	}
-
-	@Override
-	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
-		return getPosts(resourceType, grouping, groupingName, tags, hash, search, SearchType.LOCAL, filters, order, startDate, endDate, start, end);
-	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
