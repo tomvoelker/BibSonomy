@@ -351,6 +351,9 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		// remember alreadyAnalyzedInterhashes to skip over multiple posts of the same resource
 		final Set<String> alreadyAnalyzedInterhashes = new HashSet<>();
 		for (int offset = 0; relSorter.size() < suggestionSize && offset < maxOffset; offset += maxOffset / 10) {
+			// although we change the query by changing the minimum score of the results, we can still
+			// reuse the same offset(skip) counter, because the order of the ranked results remains the
+			// same and the increased minimum score only drops results beyond those we have seen so far.
 			double minScore = Double.isNaN(bestScore) ? 0.05 : (bestScore / 3d);
 
 			double bestScoreThisRound = fetchMoreResults(relSorter, tokenizedQueryString, offset, alreadyAnalyzedInterhashes, indexName, minScore, options);
@@ -462,7 +465,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			}
 		}
 		if (options.isWithNonEntityPersons()) {
-			builder.field(LuceneFieldNames.AUTHOR, 2.5f);
+			builder.field(LuceneFieldNames.AUTHOR, 2.7f);
 		}
 		return builder;
 	}
@@ -498,7 +501,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		for (final SearchHit hit : hits) {
 			if (bestPlainEsScore < hit.getScore()) {
 				bestPlainEsScore = hit.getScore();
-				minScore = bestPlainEsScore / 3.0;
+				minScore = bestPlainEsScore / 4.0;
 			} else if (hit.getScore() < minScore) {
 				break;
 			}

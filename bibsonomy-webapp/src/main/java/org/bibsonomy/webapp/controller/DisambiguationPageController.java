@@ -72,7 +72,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 		command.setPersonName(requestedName);
 		
 		String name = requestedName.toString();
-		PersonSuggestionQueryBuilder query = this.logic.getPersonSuggestion(name).withEntityPersons(true).withRelationType(PersonResourceRelationType.values());
+		PersonSuggestionQueryBuilder query = this.logic.getPersonSuggestion(name).withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values());
 		command.setPersonSuggestions(query.doIt());
 		
 		return Views.DISAMBIGUATION;
