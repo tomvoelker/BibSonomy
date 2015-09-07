@@ -83,13 +83,18 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * Checks whether the requested start- / end-values are OK
 	 * 
 	 * @param loginUser
+	 * @param groupingEntity
 	 * @param start
 	 * @param end
 	 * @param itemType
 	 */
-	public void checkStartEnd(final User loginUser, final int start, final int end, final String itemType) {
+	public void checkStartEnd(final User loginUser, final GroupingEntity groupingEntity, final int start, final int end, final String itemType) {
 		if (!this.isAdmin(loginUser) && ((end - start) > PostLogicInterface.MAX_QUERY_SIZE)) {
 			throw new AccessDeniedException("You are not authorized to retrieve more than " + PostLogicInterface.MAX_QUERY_SIZE + " " + itemType + " items at a time.");
+		}
+		
+		if (!this.isAdmin(loginUser) && GroupingEntity.ALL.equals(groupingEntity) && (start > PostLogicInterface.MAX_RECENT_POSTS || end > PostLogicInterface.MAX_RECENT_POSTS)) {
+			throw new AccessDeniedException("You are only authorized to retrieve the latest " + PostLogicInterface.MAX_RECENT_POSTS + " " + itemType);
 		}
 	}
 

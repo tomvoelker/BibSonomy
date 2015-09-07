@@ -24,58 +24,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.scraper.url.kde.aanda;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+package org.bibsonomy.scraper.url.kde.nowpublishers;
 
-import java.net.URL;
-
-import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * @author DaiLL
+ * Scraper URL tests #285 #286
+
+ * @author Mohammed Abed
  */
 @Category(RemoteTest.class)
-public class AandAScraperTest {
-	/**
-	 * starts URL test with id url_181
-	 */
-	@Test
-	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_181");
-	}
+public class NowPublishersScraperTest {
 
 	/**
-	 * starts URL test with id url_182
+	 * starts URL test with id url_285
 	 */
 	@Test
-	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_182");
+	public void urlTest1Run(){
+		UnitTestRunner.runSingleTest("url_285");
 	}
+	
+	/**
+	 * starts URL test with id url_286
+	 */
 	@Test
-	public void testReferences() throws Exception{
-		final ScrapingContext sc = new ScrapingContext(new URL("http://www.aanda.org/articles/aa/abs/2010/05/aa14294-10/aa14294-10.html"));
-		
-		AandAScraper aas = new AandAScraper();
-		
-		assertTrue(aas.scrape(sc));
-		
-		assertTrue(aas.scrapeReferences(sc));
-		
-		final String reference = sc.getReferences();
-		
-		assertNotNull(reference);
-		
-		assertTrue(reference.length() > 100);
-		
-		assertEquals("<li>\n\t\t\t<a name=\"BH98\"></a>Balbus, S. A., &amp; Hawley, J. F. 1998, Rev. Mod.".trim(), reference.substring(0, 85).trim());
-		
-		assertTrue(reference.contains("Balbus, S. A."));
+	public void urlTest2Run(){
+		UnitTestRunner.runSingleTest("url_286");
 	}
 }
