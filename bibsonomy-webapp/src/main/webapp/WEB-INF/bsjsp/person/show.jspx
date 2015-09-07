@@ -158,6 +158,7 @@
 			<div id='personInfo'>
 				<div  id='aboutThisPerson'>
 					<form method='post' name='personForm' action="" class='form-horizontal'>
+						<input type="hidden" name="ckey" value="${ckey}"/>
 						<c:if test="${false and command.person.disambiguatingPublication.post ne null}">
 							<div class='form-group'>
 								<label class="control-label col-md-4">${textAuthorOf}</label>
@@ -341,6 +342,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
       <form action="" method="post" id='addNameForm' name="addNameForm" class='form-horizontal'>
+      	<input type="hidden" name="ckey" value="${ckey}"/>
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>
           <h4 class="modal-title">${textModalAddNameHeader}</h4>
@@ -384,6 +386,7 @@
 					</div>
 					<div class="modal-footer">
 						<form action="" method="post" class='form-inline' id='removeNameForm'>
+							<input type="hidden" name="ckey" value="${ckey}"/>
 							<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
 							<input type='hidden' name='formPersonNameId' id='formPersonNameId' value=''/>&#160;
 							<button type="button" class="btn btn-primary" id='btnRemoveNameSubmit'>${textDeleteNameButton}</button>
@@ -405,6 +408,7 @@
 		</jsp:attribute>
 		<jsp:attribute name="modalFooter">
 			<form action="/postPublication" method="post">
+				<input type="hidden" name="ckey" value="${ckey}"/>
 				<input type="hidden" name='personId' value='${command.person.personId}'/>
 				<input type="hidden" name='personRole' value='AUTHOR'/>
 				<input type="hidden" name='post.resource.entrytype' value='phdthesis'/>
@@ -412,6 +416,7 @@
 			</form>
 			<form id="addThesisForm" action="${absoluteUrlGenerator.getPersonUrl(command.person.personId)}" method="post" class='form-inline'>
 				<!-- set via autocomplete -->
+				<input type="hidden" name="ckey" value="${ckey}"/>
 				<input type='hidden' name='formInterHash' value=''/>
 				<input type='hidden' name='formPersonIndex' value=''/>
 				<!-- set statically -->
@@ -429,6 +434,7 @@
 	<bs:modal modalTitle="${tmpMsg}" id="addSupervisedThesis">
 		<jsp:attribute name="modalBody">
 			<form id="addSupervisedThesisForm" action="${absoluteUrlGenerator.getPersonUrl(command.person.personId)}" method="post" class="form-horizontal">
+				<input type="hidden" name="ckey" value="${ckey}"/>
 				<fieldset>
 					<div class="form-group">
 						<label for='addSupervisedThesisAuto' class="control-label"><fmt:message key="person.show.modal.addSupervisedThesis.text" /></label>
@@ -466,6 +472,7 @@
 		</jsp:attribute>
 		<jsp:attribute name="modalFooter">
 			<form action="/editPublication" method="post">
+				<input type="hidden" name="ckey" value="${ckey}"/>
 				<input type="hidden" name='personId' value='${command.person.personId}'/>
 				<input type="hidden" name='personRole' value='ADVISOR'/><!-- TODO: this should be selectable via a dropdown button -->
 				<input type="hidden" name='post.resource.entrytype' value='phdThesis'/>
@@ -473,6 +480,7 @@
 				<input type="submit" class="btn btn-primary pull-left" name='submit' value='${textNewThesisButton}' />
 			</form>
 			<form action="#">
+				<input type="hidden" name="ckey" value="${ckey}"/>
 				<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
 				<input type="submit" class="btn btn-primary" name='submit' id="addSupervisedThesisBtn" value='${textAddThesisButton}' onclick="javascript:$('#addSupervisedThesisForm').submit(); return false;" />
 			</form>
@@ -499,6 +507,7 @@
 					</div>
 					<div class="modal-footer">
 						<form action="" method="post" id='addRoleForm' class='form-horizontal'>
+							<input type="hidden" name="ckey" value="${ckey}"/>
 							<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
 							<button type="button" class="btn btn-primary" id='btnAddRoleSubmit'>${textAddRoleButton}</button>
 						</form>
@@ -553,6 +562,7 @@
 					</div>
 					<div class="modal-footer">
 						<form action="" method="post" class='form-inline' id='deleteRoleForm'>
+							<input type="hidden" name="ckey" value="${ckey}"/>
 							<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
 							<button type="button" class="btn btn-primary" id='btnDeleteRoleSubmit'>${textDeleteRoleButton}</button>
 						</form>
@@ -576,6 +586,7 @@
 					</div>
 					<div class="modal-footer">
 						<form action="" method="post" class='form-inline' id='linkPersonForm'>
+							<input type="hidden" name="ckey" value="${ckey}"/>
 							<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>&#160;
 							<button type="button" class="btn btn-primary" data-action='link' data-person-id='${command.person.personId}' id='btnLinkSubmit'>${textThatsMeButton}</button>
 						</form>

@@ -21,26 +21,34 @@ import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.person.PersonRoleRenderer;
 import org.bibsonomy.util.spring.security.AuthenticationUtils;
 import org.bibsonomy.webapp.command.PersonPageCommand;
+import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.springframework.context.MessageSource;
+import org.springframework.validation.Errors;
 
 /**
  * @author Christian Pfeiffer
  */
-public class PersonPageController extends SingleResourceListController implements MinimalisticController<PersonPageCommand> {
+public class PersonPageController extends SingleResourceListController implements MinimalisticController<PersonPageCommand>, ErrorAware {
 	
 	private RequestLogic requestLogic;
 	private PersonRoleRenderer personRoleRenderer;
+	private Errors errors;
 	
 	
 	@Override
 	public View workOn(final PersonPageCommand command) {
+		final RequestWrapperContext context = command.getContext();
+		
+		if (!context.isValidCkey()) {
+			errors.reject("error.field.valid.ckey");
+		}
 		
 		if(present(command.getFormAction())) {
 			switch(command.getFormAction()) {
@@ -345,6 +353,16 @@ public class PersonPageController extends SingleResourceListController implement
 		command.setOtherAdvisedPubs(otherAdvisorPosts);
 		
 		return Views.PERSON_SHOW;
+	}
+	
+	@Override
+	public Errors getErrors() {
+		return this.errors;
+	}
+
+	@Override
+	public void setErrors(Errors errors) {
+		this.errors = errors;
 	}
 
 	@Override
