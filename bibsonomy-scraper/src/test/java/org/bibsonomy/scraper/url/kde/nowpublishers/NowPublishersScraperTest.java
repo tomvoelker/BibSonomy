@@ -33,7 +33,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * Scraper URL tests #285 #286
+ * Scraper URL tests #285 #287
 
  * @author Mohammed Abed
  */
