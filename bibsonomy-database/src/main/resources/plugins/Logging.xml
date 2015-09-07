@@ -210,15 +210,15 @@
 	
 	<!-- when updated, 'deleted' field is 0 -->
 	<insert id="logPersonUpdate" parameterClass="String">
-		INSERT INTO log_person (person_change_id, id, person_id, academic_degree, user_name, orcid, log_changed_at, log_changed_by, deleted)
-		SELECT person_change_id, person_change_id, person_id, academic_degree, user_name, orcid, log_changed_at, log_changed_by, 0
+		INSERT INTO log_person (person_change_id, person_id, academic_degree, user_name, orcid, log_changed_at, log_changed_by, deleted)
+		SELECT person_change_id, person_id, academic_degree, user_name, orcid, log_changed_at, log_changed_by, 0
 		FROM person WHERE person_id = #personId#
 	</insert>
 	
 	<!-- when updated, 'deleted' field is 0 -->
 	<insert id="logPersonUpdateByUserName" parameterClass="String">
-		INSERT INTO log_person (person_change_id, id, person_id, academic_degree, user_name, orcid, log_changed_at, log_changed_by, deleted)
-		SELECT person_change_id, person_change_id, person_id, academic_degree, user_name, orcid, log_changed_at, log_changed_by, 0
+		INSERT INTO log_person (person_change_id, person_id, academic_degree, user_name, orcid, log_changed_at, log_changed_by, deleted)
+		SELECT person_change_id, person_id, academic_degree, user_name, orcid, log_changed_at, log_changed_by, 0
 		FROM person WHERE user_name = #username#
 	</insert>
 	

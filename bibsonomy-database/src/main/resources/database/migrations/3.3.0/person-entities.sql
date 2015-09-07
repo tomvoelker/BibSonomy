@@ -16,7 +16,6 @@ CREATE TABLE `person` (
 
 CREATE TABLE `log_person` (
   `person_change_id` int(10) unsigned NOT NULL unique COMMENT 'sequential number shared among all person tables. Ensures the order of changes and helps updating separate search indexes like elasticsearch.',
-  `id` int(10) unsigned NOT NULL,
   `person_id` varchar(64) NOT NULL,
   `academic_degree` varchar(64) DEFAULT NULL,
   `user_name` varchar(30) DEFAULT NULL,
@@ -26,7 +25,7 @@ CREATE TABLE `log_person` (
   `log_changed_at` datetime DEFAULT NULL,
   `log_changed_by` varchar(30) DEFAULT NULL,
   `deleted` tinyint(4) NOT NULL DEFAULT 0 COMMENT 'set to 1 for delete actions',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`person_change_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -67,8 +66,7 @@ CREATE TABLE `person_name` (
   `is_main` tinyint(1) DEFAULT '0',
   `log_changed_at` datetime DEFAULT NULL,
   `log_changed_by` varchar(30) DEFAULT NULL COMMENT 'user_name of the user, who changed the tuple last',
-  PRIMARY KEY (`person_change_id`),
-  CONSTRAINT `person_name.person_id` FOREIGN KEY (`person_id`) REFERENCES `person` (`person_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  PRIMARY KEY (`person_change_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `log_person_name` (
