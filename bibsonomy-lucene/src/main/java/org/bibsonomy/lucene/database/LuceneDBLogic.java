@@ -41,6 +41,7 @@ import org.bibsonomy.es.IndexUpdaterState;
 import org.bibsonomy.lucene.database.managers.PersonLuceneDatabaseManager;
 import org.bibsonomy.lucene.database.params.LuceneParam;
 import org.bibsonomy.lucene.param.LucenePost;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Resource;
@@ -88,6 +89,13 @@ public class LuceneDBLogic<R extends Resource> extends AbstractDatabaseManager i
 	@SuppressWarnings("unchecked")
 	private List<LucenePost<R>> queryForLucenePosts(final String query, final Object param, final DBSession session) {
 		final List<LucenePost<R>> posts = (List<LucenePost<R>>) this.queryForList(query, param, session);
+		if (BibTex.class.isAssignableFrom(this.resourceClass)) {
+			setPersonRelations(posts, session);
+		}
+		return posts;
+	}
+
+	private void setPersonRelations(final List<LucenePost<R>> posts, final DBSession session) {
 		final HashMap<String, List<ResourcePersonRelation>> relationCache = new HashMap<>();
 		for (LucenePost<R> post : posts) {
 			final String interHash = post.getResource().getInterHash();
@@ -101,7 +109,6 @@ public class LuceneDBLogic<R extends Resource> extends AbstractDatabaseManager i
 			}
 			post.setResourcePersonRelations(rels);
 		}
-		return posts;
 	}
 	
 	@Override
