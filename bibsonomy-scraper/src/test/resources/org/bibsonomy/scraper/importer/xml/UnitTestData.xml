@@ -1762,4 +1762,10 @@
 		<BibFile>NowPublishersScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.nowpublishers.NowPublishersScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_286">
+		<TestDescription>scraping test for jornal page from nowpublishers.com</TestDescription>
+		<URL>http://www.nowpublishers.com/article/Details/INR-012</URL>
+		<BibFile>NowPublishersScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.nowpublishers.NowPublishersScraper</Scraper>
+	</URLTest>
 </test:Tests>
