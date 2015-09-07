@@ -3310,21 +3310,10 @@ public class DBLogic implements LogicInterface {
 		String newPersonId = generatePersonIdBase(person);
 		String tempPersonId = newPersonId;
 		do {
-			Person tempPerson = this.personDBManager.getPersonById(tempPersonId, session);
-			
+			final Person tempPerson = this.personDBManager.getPersonById(tempPersonId, session);
 			if (tempPerson != null) {
-				if (counter < 10) {
-					tempPersonId = newPersonId + "00000" + counter;
-				} else if (counter < 100) {
-					tempPersonId = newPersonId + "0000" + counter;
-				} else if(counter < 1000) {
-					tempPersonId = newPersonId + "000" + counter;
-				} else if(counter < 10000) {
-					tempPersonId = newPersonId + "00" + counter;
-				} else if(counter < 100000) {
-					tempPersonId = newPersonId + "0" + counter;
-				} else if(counter < 1000000) {
-					tempPersonId = newPersonId + "" + counter;
+				if (counter < 1000000) {
+					tempPersonId = newPersonId + "." + counter;
 				} else {
 					throw new RuntimeException("Too many person id occurences");
 				}
