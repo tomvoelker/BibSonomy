@@ -704,7 +704,7 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		// check allowed start-/end-values
-		this.permissionDBManager.checkStartEnd(this.loginUser, start, end, "post");
+		this.permissionDBManager.checkStartEnd(this.loginUser, grouping, start, end, "posts");
 
 		this.handleAdminFilters(filters);
 
@@ -906,7 +906,7 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final String regex, final TagSimilarity relation, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		if (GroupingEntity.ALL.equals(grouping)) {
-			this.permissionDBManager.checkStartEnd(this.loginUser, start, end, "Tag");
+			this.permissionDBManager.checkStartEnd(this.loginUser, grouping, start, end, "tags");
 		}
 
 		final DBSession session = this.openSession();
@@ -2378,7 +2378,7 @@ public class DBLogic implements LogicInterface {
 
 		// check start/end values
 		if (GroupingEntity.ALL.equals(grouping)) {
-			this.permissionDBManager.checkStartEnd(this.loginUser, start, end, "User");
+			this.permissionDBManager.checkStartEnd(this.loginUser, grouping, start, end, "users");
 		}
 
 		final DBSession session = this.openSession();

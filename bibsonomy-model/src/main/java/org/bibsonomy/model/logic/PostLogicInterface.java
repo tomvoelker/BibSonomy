@@ -61,6 +61,9 @@ public interface PostLogicInterface {
 	 */
 	public static final int MAX_QUERY_SIZE = 1000;
 	
+	/** the maximum offset number of posts (global)  */
+	public static final int MAX_GLOBAL_END = 100000;
+	
 	/**  
 	 * retrieves a filterable list of posts.
 	 * 
