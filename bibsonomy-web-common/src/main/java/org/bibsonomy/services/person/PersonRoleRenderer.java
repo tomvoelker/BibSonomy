@@ -49,7 +49,7 @@ public class PersonRoleRenderer {
 		if (present(person.getAcademicDegree())) {
 			extendedNameBuilder.append(", ").append(person.getAcademicDegree());
 		}
-		if ((rel.getRelationType() != PersonResourceRelationType.AUTHOR) || (!containsName(res, personName))) {
+		if ((rel.getRelationType() != PersonResourceRelationType.AUTHOR) || (!containsName(res, personName)) || (getAuthorsOrEditors(res).size() > 1)) {
 			extendedNameBuilder.append(' ');
 			final String relationStr = messageSource.getMessage("person.show." + rel.getRelationType().getRelatorCode() + ".of", null, locale);
 			extendedNameBuilder.append(relationStr);
@@ -121,11 +121,7 @@ public class PersonRoleRenderer {
 
 	private void appendAuthorsOrEditors(final StringBuilder extendedNameBuilder, BibTex pub) {
 		final List<PersonName> names;
-		if (present(pub.getAuthor())) {
-			names = pub.getAuthor();
-		} else {
-			names = pub.getEditor();
-		}
+		names = getAuthorsOrEditors(pub);
 		for (PersonName personName : names) {
 			appendPersonName(personName, extendedNameBuilder);
 			extendedNameBuilder.append(", ");
@@ -133,5 +129,15 @@ public class PersonRoleRenderer {
 		if (extendedNameBuilder.length() >= 2) {
 			extendedNameBuilder.setLength(extendedNameBuilder.length() - 2);
 		}
+	}
+
+	private List<PersonName> getAuthorsOrEditors(BibTex pub) {
+		final List<PersonName> names;
+		if (present(pub.getAuthor())) {
+			names = pub.getAuthor();
+		} else {
+			names = pub.getEditor();
+		}
+		return names;
 	}
 }

@@ -575,11 +575,20 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		}
 		if (options.isWithNonEntityPersons()) {
 			if (options.getRelationTypes().contains(PersonResourceRelationType.AUTHOR)) {
-				addScoredPersonNames(post.getResource().getAuthor(), PersonResourceRelationType.AUTHOR, queryTerms, post, invertedScoreToRpr, options);
+				Map<Integer, Person> personsByIndex = null;
+				if (!options.isAllowNamesWithoutEntities()) {
+					personsByIndex = getIndicesOfKnownPersons(post, PersonResourceRelationType.AUTHOR);
+				}
+				addScoredPersonNames(post.getResource().getAuthor(), PersonResourceRelationType.AUTHOR, queryTerms, post, invertedScoreToRpr, options, personsByIndex);
 			}
 			if (options.getRelationTypes().contains(PersonResourceRelationType.EDITOR)) {
-				addScoredPersonNames(post.getResource().getEditor(), PersonResourceRelationType.EDITOR, queryTerms, post, invertedScoreToRpr, options);
+				Map<Integer, Person> personsByIndex = null;
+				if (!options.isAllowNamesWithoutEntities()) {
+					personsByIndex = getIndicesOfKnownPersons(post, PersonResourceRelationType.EDITOR);
+				}
+				addScoredPersonNames(post.getResource().getEditor(), PersonResourceRelationType.EDITOR, queryTerms, post, invertedScoreToRpr, options, personsByIndex);
 			}
+			
 		}
 		
 		final int minInvertedScore = extractMinimumInvertedScore(invertedScoreToRpr);
@@ -593,7 +602,19 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	}
 
 
-	private void addScoredPersonNames(List<PersonName> names, PersonResourceRelationType relationType, final Set<String> queryTerms, final Post<BibTex> post, final TreeMap<Integer, ResourcePersonRelation> invertedScoreToRpr, PersonSuggestionQueryBuilder options) {
+	private Map<Integer, Person> getIndicesOfKnownPersons(final Post<BibTex> post, PersonResourceRelationType relType) {
+		Map<Integer, Person> allowedIndices;
+		allowedIndices = new HashMap<>();
+		for (ResourcePersonRelation rel : post.getResourcePersonRelations()) {
+			if ((rel.getPersonIndex() >= 0) && (rel.getRelationType() == relType)) {
+				allowedIndices.put(rel.getPersonIndex(), rel.getPerson());
+			}
+		}
+		return allowedIndices;
+	}
+
+
+	private void addScoredPersonNames(List<PersonName> names, PersonResourceRelationType relationType, final Set<String> queryTerms, final Post<BibTex> post, final TreeMap<Integer, ResourcePersonRelation> invertedScoreToRpr, PersonSuggestionQueryBuilder options, Map<Integer, Person> allowedPersonsByIndex) {
 		if (!present(names)) {
 			return;
 		}
@@ -605,6 +626,14 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			rpr.setPersonIndex(i);
 			rpr.setPost(post);
 			rpr.setRelationType(relationType);
+			
+			if (allowedPersonsByIndex != null) {
+				Person person = allowedPersonsByIndex.get(i);
+				if (person == null) {
+					continue;
+				}
+				rpr.getPerson().setPersonId(person.getPersonId());
+			}
 			int invertedScore = calculateInvertedPersonNameScore(queryTerms, name) * 2;
 			if (options.isPreferUnlinked()) {
 				invertedScore *= 2;
