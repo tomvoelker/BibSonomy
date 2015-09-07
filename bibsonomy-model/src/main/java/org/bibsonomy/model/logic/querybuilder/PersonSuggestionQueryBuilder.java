@@ -14,6 +14,7 @@ public abstract class PersonSuggestionQueryBuilder extends AbstractSuggestionQue
 	
 	
 	private boolean preferUnlinked;
+	private boolean allowNamesWithoutEntities = true;
 
 	/**
 	 * @param query any combination of title, author-name, year, school
@@ -46,5 +47,21 @@ public abstract class PersonSuggestionQueryBuilder extends AbstractSuggestionQue
 
 	public boolean isPreferUnlinked() {
 		return this.preferUnlinked;
+	}
+
+	/**
+	 * @param allowNamesWithoutEntities - whether the query response may contain names of bibtex-authors/editors that are not associated to a person entity.
+	 * @return this
+	 */
+	public AbstractSuggestionQueryBuilder<PersonSuggestionQueryBuilder> allowNamesWithoutEntities(boolean allowNamesWithoutEntities) {
+		this.allowNamesWithoutEntities = allowNamesWithoutEntities;
+		return this;
+	}
+
+	/**
+	 * @return see {@link #allowNamesWithoutEntities(boolean)}
+	 */
+	public boolean isAllowNamesWithoutEntities() {
+		return this.allowNamesWithoutEntities;
 	}
 }
