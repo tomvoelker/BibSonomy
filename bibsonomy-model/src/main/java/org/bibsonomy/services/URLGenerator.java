@@ -338,11 +338,9 @@ public class URLGenerator {
 	 * @param systemUrl
 	 * @return returns the BibTex Export url
 	 */
-	public String getBibtexExportUrlByIntraHashAndUserName(final String intraHash,
-			final String userName){
-		
+	@Deprecated // see getMSWordUrlByIntraHashAndUserName
+	public String getBibtexExportUrlByIntraHashAndUserName(final String intraHash, final String userName){
 		return this.getBibtexExportUrlByIntraHashUserNameAndSysUrl(intraHash, userName, this.projectHome);
-		
 	}
 	/**
 	 * url for BibTex export for a specific system
@@ -361,7 +359,6 @@ public class URLGenerator {
 
 		}
 		return this.getUrl(url);
-		
 	}
 	
 	/**
@@ -372,10 +369,9 @@ public class URLGenerator {
 	 * @param systemUrl
 	 * @return returns the Endnote export url
 	 */
+	@Deprecated // FIXME: see getMSWordUrlByIntraHashAndUserName
 	public String getEndnoteUrlByIntraHashAndUserName(final String intraHash, final String userName){
-		
 		return this.getEndnoteUrlByIntraHashUserNameAndSysUrl(intraHash, userName, this.projectHome);
-		
 	}
 	/**
 	 * url for Endnote export for a specific system
@@ -402,6 +398,7 @@ public class URLGenerator {
 	 * @param systemUrl
 	 * @return returns the MS WORD Reference Manager url
 	 */
+	@Deprecated // FIXME: a more generic method getExportUrlForPost()
 	public String getMSWordUrlByIntraHashAndUserName(final String intraHash, final String userName){
 		return this.getMSWordUrlByIntraHashUserNameAndSysUrl(intraHash, userName, this.projectHome);
 	}
@@ -1379,6 +1376,7 @@ public class URLGenerator {
 	 * @param systemUrl
 	 * @return The URL for the user's page for the system
 	 */
+	@Deprecated
 	public String getUserUrlByUserNameAndSysUrl(final String userName,
 			final String systemUrl) {
 		String url = systemUrl + prefix + USER_PREFIX + "/"
@@ -1408,6 +1406,7 @@ public class URLGenerator {
 	 * @return The URL for the user's page with all posts tagged with tagName
 	 *         and systemUrl
 	 */
+	@Deprecated
 	public String getUserUrlByUserNameTagNameAndSysUrl(final String userName,
 			final String tagName, final String systemUrl) {
 		String url = this.getUserUrlByUserNameAndSysUrl(userName, systemUrl);
@@ -1518,6 +1517,7 @@ public class URLGenerator {
 	 * @param systemurl
 	 * @return the URL for all viewable posts of a group.
 	 */
+	@Deprecated
 	public String getViewableUrlByGroupNameAndSysUrl(final String groupName,
 			final String systemurl) {
 		String url = systemurl + prefix + VIEWABLE_PREFIX;

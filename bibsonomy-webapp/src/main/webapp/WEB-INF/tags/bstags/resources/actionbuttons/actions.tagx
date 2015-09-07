@@ -144,7 +144,7 @@
 						<li>
 							<fmt:message key="bibtex.actions.endnote.title" var="endnoteTitle" />
 							<c:choose>
-								<c:when test="${isRemotePost}">									
+								<c:when test="${isRemotePost}">
 									<a class="litem" href="${relativeUrlGenerator.getEndnoteUrlByIntraHashUserNameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}?formatEmbedded=true" title="${endnoteTitle}"><fmt:message key="bibtex.actions.endnote"/></a>
 								</c:when>
 								<c:otherwise>
@@ -157,7 +157,7 @@
 						<li>
 							<fmt:message key="bibtex.actions.msword.title" var="mswordTitle" />
 							<c:choose>
-								<c:when test="${isRemotePost}">									
+								<c:when test="${isRemotePost}">
 									<a class="litem" href="${relativeUrlGenerator.getMSWordUrlByIntraHashUserNameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}?formatEmbedded=true" title="${mswordTitle}"><fmt:message key="bibtex.actions.msword"/></a>
 								</c:when>
 								<c:otherwise>
@@ -165,10 +165,11 @@
 								</c:otherwise>
 							</c:choose>
 						</li>
-					
+						
 						<!-- OPENURL -->
-						<li>
-							<c:if test="${command.context.userLoggedIn and not command.context.loginUser.settings.layoutSettings.simpleInterface}">
+						<c:if test="${command.context.userLoggedIn and not command.context.loginUser.settings.layoutSettings.simpleInterface}">
+							<li class="divider"><!--  --></li>
+							<li>
 								<c:choose>
 									<c:when test="${not empty command.context.loginUser.openURL}">
 										<fmt:message key="bibtex.actions.openurl.title" var="openurlTitle" />
@@ -179,14 +180,12 @@
 										<span class="ilitem" title="${openurlTitle}"><fmt:message key="bibtex.actions.openurl"/></span>
 									</c:otherwise>
 								</c:choose>
-							</c:if>
-						</li>
+							</li>
+						</c:if>
 					</c:if>
 
 					<c:if test="${mtl:userIsGroup(command.context.loginUser)}">
-
 						<li class="divider"><!--  --></li>
-
 						<li>
 							<!-- TODO: get the group the group user represents -->
 							<c:forEach var="group" items="${command.context.loginUser.groups}">
@@ -199,7 +198,6 @@
 					</c:if>
 
 					<c:if test="${mtl:hasTagMyown(post) and properties['publication.reporting.mode'] eq 'GROUP' and not mtl:userIsGroup(command.context.loginUser)}">
-
 						<li class="divider"><!--  --></li>
 						<li>
 							<c:forEach var="group" items="${command.context.loginUser.groups}">
@@ -213,7 +211,6 @@
 							</c:forEach>
 						</li>
 					</c:if>
-
 					<!-- UnAPI -->
 					<li><abbr class="unapi-id" title="${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"><c:out value=" "/></abbr></li>
 				</c:if>
