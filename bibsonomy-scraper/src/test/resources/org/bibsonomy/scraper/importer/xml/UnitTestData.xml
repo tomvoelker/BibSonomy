@@ -1768,4 +1768,10 @@
 		<BibFile>NowPublishersScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.nowpublishers.NowPublishersScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_287">
+		<TestDescription>scraping test for jornal page from genomebiology.com</TestDescription>
+		<URL>http://www.genomebiology.com/2014/15/7/424</URL>
+		<BibFile>GenomeBiologyScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.genome.GenomeBiologyScraper</Scraper>
+	</URLTest>
 </test:Tests>
