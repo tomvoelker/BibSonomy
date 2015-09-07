@@ -164,17 +164,17 @@ public class CslModelConverter {
 		final String cleanedJournal = BibTexUtils.cleanBibTex(publication.getJournal());
 		final String cleanedBooktitle = BibTexUtils.cleanBibTex(publication.getBooktitle());
 		final String cleanedSeries = BibTexUtils.cleanBibTex(publication.getSeries());
-		final String colTitleToUse;
+		final String containerTitleToUse;
 		if (present(cleanedJournal)) {
-			colTitleToUse = cleanedJournal;
+			containerTitleToUse = cleanedJournal;
 		} else if (present(cleanedBooktitle)) {
-			colTitleToUse = cleanedBooktitle;
+			containerTitleToUse = cleanedBooktitle;
 		} else {
-			colTitleToUse = cleanedSeries;
+			containerTitleToUse = "";
 		}
 		
-		rec.setContainer_title(colTitleToUse);
-		rec.setCollection_title(colTitleToUse);
+		rec.setContainer_title(containerTitleToUse);
+		rec.setCollection_title(cleanedSeries);
 		
 		// mapping publisher, techreport, thesis, organization
 		if (present(publication.getPublisher())) {
