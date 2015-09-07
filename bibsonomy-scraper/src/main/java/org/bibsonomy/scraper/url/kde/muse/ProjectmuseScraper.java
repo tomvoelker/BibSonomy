@@ -41,6 +41,7 @@ import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
 
 /**
@@ -58,24 +59,23 @@ public class ProjectmuseScraper extends AbstractUrlScraper implements References
 
 	private static final String PREFIX_DOWNLOAD_URL = "http://muse.jhu.edu/metadata/sgml/journals/";
 
-	private static final String PATTERN_JOURNAL_ID = "/journals/(.*)";
+	private static final Pattern PATTERN_JOURNAL_ID = Pattern.compile("/journals/(.*)");
 	/*
 	 * regex pattern (sgml)
 	 */
-	private static final String PATTERN_URL = "<url>(.*)</url>";
-	private static final String PATTERN_JOURNAL = "<journal>(.*)</journal>";
-	private static final String PATTERN_ISSN = "<issn>(.*)</issn>";
-	private static final String PATTERN_VOLUME = "<volume>(.*)</volume>";
-	private static final String PATTERN_ISSUE = "<issue>(.*)</issue>";
-	private static final String PATTERN_YEAR = "<year>(.*)</year>";
-	private static final String PATTERN_FPAGES = "<fpage>(.*)</fpage>";
-	private static final String PATTERN_LPAGES = "<lpage>(.*)</lpage>";
-	private static final String PATTERN_COPYRIGHT = "<copyright>(.*)</copyright>";
-	private static final String PATTERN_TITLE = "<doctitle>(.*)</doctitle>";
-	private static final String PATTERN_AUTHOR = "<docauthor>(.*)</docauthor>";
-	private static final String PATTERN_SURNAME = "<surname>(.*)</surname>";
-	private static final String PATTERN_FNAME = "<fname>(.*)</fname>";
-	private static final String PATTERN_ABSTRACT = "<abstract>\\s*<p>([^<]*)</p>\\s*</abstract>";
+	private static final Pattern PATTERN_URL = Pattern.compile("<url>(.*)</url>");
+	private static final Pattern PATTERN_JOURNAL = Pattern.compile("<journal>(.*)</journal>");
+	private static final Pattern PATTERN_ISSN = Pattern.compile("<issn>(.*)</issn>");
+	private static final Pattern PATTERN_VOLUME = Pattern.compile("<volume>(.*)</volume>");
+	private static final Pattern PATTERN_ISSUE = Pattern.compile("<issue>(.*)</issue>");
+	private static final Pattern PATTERN_YEAR = Pattern.compile("<year>(.*)</year>");
+	private static final Pattern PATTERN_FPAGES = Pattern.compile("<fpage>(.*)</fpage>");
+	private static final Pattern PATTERN_LPAGES = Pattern.compile("<lpage>(.*)</lpage>");
+	private static final Pattern PATTERN_TITLE = Pattern.compile("<doctitle>(.*)</doctitle>");
+	private static final Pattern PATTERN_AUTHOR = Pattern.compile("<docauthor>(.*)</docauthor>");
+	private static final Pattern PATTERN_SURNAME = Pattern.compile("<surname>(.*)</surname>");
+	private static final Pattern PATTERN_FNAME = Pattern.compile("<fname>(.*)</fname>");
+	private static final Pattern PATTERN_ABSTRACT = Pattern.compile("<abstract>\\s*<p>([^<]*)</p>\\s*</abstract>");
 	private static final Pattern references_pattern = Pattern.compile("(?s)<h3 class=\"references\">(.*)</div>");
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
@@ -89,132 +89,67 @@ public class ProjectmuseScraper extends AbstractUrlScraper implements References
 	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
 		sc.setScraper(this);
 
-		// build sgml download url
+		/*
+		 * get article ID from URL
+		 */
 		final String journalID = getRegexResult(PATTERN_JOURNAL_ID, sc.getUrl().toString());
 
 		try {
-			URL downloadUrl = new URL(PREFIX_DOWNLOAD_URL + journalID);
+			final String sgml = WebUtils.getContentAsString(new URL(PREFIX_DOWNLOAD_URL + journalID));
 
-			String sgml = WebUtils.getContentAsString(downloadUrl);
+			final StringBuilder bibKey = new StringBuilder();
+			final StringBuilder authors = new StringBuilder();
 
-			String bibKey = null;
-			String authors = "";
-
-			// author may be occur more then one time, thats why special behaviour
-			Pattern pattern = Pattern.compile(PATTERN_AUTHOR);
-			Matcher matcher = pattern.matcher(sgml);
+			/*
+			 * author may be occur more then one time ...
+			 */
+			final Matcher matcher = PATTERN_AUTHOR.matcher(sgml);
 			while (matcher.find()) {
-				String author = matcher.group(1);
-				String surname = getRegexResult(PATTERN_SURNAME, author); 
-				String fname = getRegexResult(PATTERN_FNAME, author);
+				final String author = matcher.group(1);
+				final String surname = getRegexResult(PATTERN_SURNAME, author); 
+				final String fname = getRegexResult(PATTERN_FNAME, author);
 
-				// first surname is the first part of the bibtex key
-				if(bibKey == null)
-					bibKey = surname;
-
-				// first author
-				if(authors.equals(""))
-					authors = fname + " " + surname;
-				// additional authors
-				else
-					authors = authors + " and " + fname + " " + surname;
+				// append authors
+				if (authors.length() > 0) {
+					authors.append(" and ");
+				} else {
+					// first author
+					bibKey.append(surname.toLowerCase());
+				}
+				authors.append(surname).append(", ").append(fname);
 			}
 
 			// get year
-			String year = getRegexResult(PATTERN_YEAR, sgml);
+			final String year = getRegexResult(PATTERN_YEAR, sgml);
 			// add year to bibtex key
-			if(year != null){
-				if(bibKey == null)
-					bibKey = year;
-				else
-					bibKey = bibKey + year;
+			if (ValidationUtils.present(year)) {
+				bibKey.append(year);
 			}
+			
+			
+			/*
+			 * build BibTeX
+			 */
+			final StringBuilder bibtex = new StringBuilder("@inproceedings{");
 
-			// get title
-			String title = getRegexResult(PATTERN_TITLE, sgml);
-
-			// get url
-			String url = getRegexResult(PATTERN_URL, sgml);
-
-			// get journal
-			String journal = getRegexResult(PATTERN_JOURNAL, sgml);
-
-			// get issn
-			String issn = getRegexResult(PATTERN_ISSN, sgml);
-
-			// get volume
-			String volume = getRegexResult(PATTERN_VOLUME, sgml);
-
-			// get issue
-			String issue = getRegexResult(PATTERN_ISSUE, sgml);
-
-			// get pages
-			String fpages = getRegexResult(PATTERN_FPAGES, sgml);
-			String lpages = getRegexResult(PATTERN_LPAGES, sgml);
-			String pages = null;
-			if(fpages != null && lpages == null)
-				pages = fpages;
-			else if(fpages == null && lpages != null)
-				pages = lpages;
-			else if(fpages != null && lpages != null)
-				pages = fpages + "-" + lpages;
-
-			// get abstract
-			String abstractCitation = getRegexResult(PATTERN_ABSTRACT, sgml);
-
-			StringBuffer bibtex = new StringBuffer();
-			bibtex.append("@inproceedings{");
-
-			// add bibtex key
-			if (bibKey != null)
+			// add BibTeX key
+			if (ValidationUtils.present(bibKey))
 				bibtex.append(bibKey).append(",\n");
 			else
 				bibtex.append("noKey,\n");
+			
+			appendValue(bibtex, "title", getRegexResult(PATTERN_TITLE, sgml));
+			appendValue(bibtex, "url", getRegexResult(PATTERN_URL, sgml));
+			appendValue(bibtex, "journal", getRegexResult(PATTERN_JOURNAL, sgml));
+			appendValue(bibtex, "issn", getRegexResult(PATTERN_ISSN, sgml));
+			appendValue(bibtex, "volume", getRegexResult(PATTERN_VOLUME, sgml));
+			appendValue(bibtex, "number", getRegexResult(PATTERN_ISSUE, sgml));
+			appendValue(bibtex, "author", authors);
+			appendValue(bibtex, "year", year);
+			appendValue(bibtex, "pages", getPages(sgml));
+			appendValue(bibtex, "abstract", getRegexResult(PATTERN_ABSTRACT, sgml));
 
-			// add author
-			if (authors != null)
-				bibtex.append("author = {").append(authors).append("},\n");
-
-			// add year
-			if(year != null)
-				bibtex.append("year = {").append(year).append("},\n");
-
-			// add title
-			if(title != null)
-				bibtex.append("title = {").append(title).append("},\n");
-
-			// add url
-			if(url != null)
-				bibtex.append("url = {").append(url).append("},\n");
-
-			// add journal
-			if(journal != null)
-				bibtex.append("journal = {").append(journal).append("},\n");
-
-			// add issn
-			if(issn != null)
-				bibtex.append("issn = {").append(issn).append("},\n");
-
-			// add volume
-			if(volume != null)
-				bibtex.append("volume = {").append(volume).append("},\n");
-
-			// add issue
-			if(issue != null)
-				bibtex.append("issue = {").append(issue).append("},\n");
-
-			// add pages
-			if(pages != null)
-				bibtex.append("pages = {").append(pages).append("},\n");
-
-			// add abstratc
-			if(abstractCitation != null)
-				bibtex.append("abstract = {").append(abstractCitation).append("},\n");
-
-			// remove last ","
-			bibtex.deleteCharAt(bibtex.length()-2);
-
-			// add last parts
+			// close entry
 			bibtex.append("}\n");
 
 			sc.setBibtexResult(bibtex.toString());
@@ -226,14 +161,34 @@ public class ProjectmuseScraper extends AbstractUrlScraper implements References
 
 	}
 
+	private String getPages(final String sgml) {
+		final String fpages = getRegexResult(PATTERN_FPAGES, sgml);
+		final String lpages = getRegexResult(PATTERN_LPAGES, sgml);
+		String pages = null;
+		if (fpages != null && lpages == null)
+			pages = fpages;
+		else if (fpages == null && lpages != null)
+			pages = lpages;
+		else if (fpages != null && lpages != null)
+			pages = fpages + "--" + lpages;
+		return pages;
+	}
+	
+	private void appendValue(final StringBuilder bibtex, final String key, final CharSequence value) {
+		if (ValidationUtils.present(value)) {
+			bibtex.append("  ").append(key).append(" = {").append(value).append("},\n");
+		}
+	}
+	
+
 	/**
 	 * execute regex and return matching result
 	 * @param regex Regular Expression
 	 * @param content target of regex
 	 * @return matching result, null if no matching
 	 */
-	private static String getRegexResult(String regex, String content){
-		final Matcher matcher = Pattern.compile(regex).matcher(content);
+	private static String getRegexResult(final Pattern regex, final String content){
+		final Matcher matcher = regex.matcher(content);
 		if (matcher.find()) {
 			return matcher.group(1);
 		}
@@ -261,8 +216,8 @@ public class ProjectmuseScraper extends AbstractUrlScraper implements References
 	@Override
 	public boolean scrapeReferences(ScrapingContext scrapingContext)throws ScrapingException {
 		try {
-			Matcher m = references_pattern.matcher(WebUtils.getContentAsString(scrapingContext.getUrl()));
-			if(m.find()){
+			final Matcher m = references_pattern.matcher(WebUtils.getContentAsString(scrapingContext.getUrl()));
+			if (m.find()) {
 				scrapingContext.setReferences(m.group(1));
 				return true;
 			}
