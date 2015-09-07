@@ -27,6 +27,8 @@
 
 package org.bibsonomy.scraper.url.kde.nowpublishers;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -43,24 +45,34 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.WebUtils;
 
-/** Scrapes publications from NowPublishers.
+/**
+ * Scrapes publications from NowPublishers.
  * 
  * @author Mohammed Abed
- *
  */
-public class NowPublishersScraper extends AbstractUrlScraper{
-
+public class NowPublishersScraper extends AbstractUrlScraper {
 	private static final String SITE_NAME = "Now The essence of Knowledge";
 	private static final String SITE_URL = "http://www.nowpublishers.com";
 	private static final String INFO 	= "Scrapes publications from " + href(SITE_URL, SITE_NAME);
+	
+	private static final URL DOWNLOAD_URL;
+	private static final String DOWNLOAD_PATH = "/article/ExportCitation";
+	
 	private static final String NOWPUBLISHERS_HOST = "nowpublishers.com";
 	private static final String NOWPUBLISHERS_URL_PATH_START = "/article/Details/";
-	private static final Pattern formPublicationIdPattern = Pattern.compile("<input.*type=\"hidden\".*name=\"id\".*value=\"(.*)\".*>");
+	
+	private static final Pattern ID_URL_PATTERN = Pattern.compile(".*" + NOWPUBLISHERS_HOST + NOWPUBLISHERS_URL_PATH_START + "(.*)");
+	
 	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
 	static{
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + NOWPUBLISHERS_HOST), Pattern.compile(NOWPUBLISHERS_URL_PATH_START + ".*")));
+		try {
+			DOWNLOAD_URL = new URL(SITE_URL + DOWNLOAD_PATH);
+		} catch (final MalformedURLException e) {
+			throw new RuntimeException(e);
+		}
 	}
-		
+	
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
@@ -75,10 +87,6 @@ public class NowPublishersScraper extends AbstractUrlScraper{
 	public String getInfo() {
 		return INFO;
 	}
-
-	public String getDownloadURL(URL url) throws ScrapingException {
-		return "";
-	}
 	
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
@@ -86,31 +94,30 @@ public class NowPublishersScraper extends AbstractUrlScraper{
 	}
 	
 	@Override
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 		
-		final String articlePageContent = sc.getPageContent();
-		final Matcher publicationIdMatcher = formPublicationIdPattern.matcher(articlePageContent);
-		String pubId = "";
-		while (publicationIdMatcher.find()) {
-			pubId = publicationIdMatcher.group(1);
+		final String urlAsString = sc.getUrl().toString();
+		final Matcher idURLMatcher = ID_URL_PATTERN.matcher(urlAsString);
+		if (!idURLMatcher.find()) {
+			throw new ScrapingFailureException("Can't get acticle id for scraping bibtex for " + urlAsString);
 		}
 		
-		final String postArgs = "id="+ pubId + 
-				"&format=BIB";
+		final String pubIdUrl = idURLMatcher.group(1);
+		final String postArgs = "id=" + pubIdUrl + "&format=BIB";
 		
-		String bibtex = "";
 		try {
-			bibtex = WebUtils.getPostContentAsString(new URL("http://www.nowpublishers.com/article/ExportCitation"), postArgs, StringUtils.CHARSET_UTF_8);
-		} catch (MalformedURLException ex) {
+			final String bibtex = WebUtils.getPostContentAsString(DOWNLOAD_URL, postArgs, StringUtils.CHARSET_UTF_8);
+			if (present(bibtex)) {
+				sc.setBibtexResult(bibtex.trim());
+				return true;
+			}
+		} catch (final MalformedURLException ex) {
 			throw new ScrapingFailureException("URL to scrape does not exist. It maybe malformed.");
-		} catch (IOException ex) {
+		} catch (final IOException ex) {
 			throw new ScrapingFailureException("An unexpected IO error has occurred. Maybe NowPublishers is down.");
 		}
-		if (bibtex != null) {
-			sc.setBibtexResult(bibtex.trim());
-			return true;
-		}
+		
 		return false;
 	}
 }

@@ -27,7 +27,6 @@
 package org.bibsonomy.scraper.url.kde.genome;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -36,8 +35,8 @@ import java.util.regex.Pattern;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
 
 /**
@@ -51,59 +50,62 @@ public class GenomeBiologyScraper extends AbstractUrlScraper {
 	private static final String info = "This Scraper parse a publication from " + href(SITE_URL, SITE_NAME) + ".";
 	private static final String GENOMEBIOLOGY_HOST = "genomebiology.com";
 
-	private static final String GNOMEBIOLOGY_BIBTEX_PATH = "citation";
-	private static final String GNOMEBIOLOGY_BIBTEX_PARAMS = "format=bibtex&include=cit&direct=on&action=submit";
+	private static final String GENOMEBIOLOGY_BIBTEX_PATH = "citation";
+	private static final String GENOMEBIOLOGY_BIBTEX_PARAMS = "format=bibtex&include=cit&direct=on&action=submit";
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + GENOMEBIOLOGY_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
 	@Override
-	protected boolean scrapeInternal(ScrapingContext sc)
-			throws ScrapingException {
-
+	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
-		String url = sc.getUrl().toString();
-
-		if (!(url.endsWith("/" + GNOMEBIOLOGY_BIBTEX_PATH + "/")
-				|| url.endsWith("/" + GNOMEBIOLOGY_BIBTEX_PATH) || 
-				url.endsWith(GNOMEBIOLOGY_BIBTEX_PATH))) {
-
-			if (!url.endsWith("/")) {
-				url += "/" + GNOMEBIOLOGY_BIBTEX_PATH;
-			} else {
-				url += GNOMEBIOLOGY_BIBTEX_PATH;
-			}
-		}
+		final String url = sc.getUrl().toString();
+		final String bibtexDownloadUrl = appendIfNotPresent(url, GENOMEBIOLOGY_BIBTEX_PATH);
 
 		try {
-			sc.setUrl(new URL(url));
-		} catch (MalformedURLException ex) {
-			throw new InternalFailureException(ex);
-		}
-
-		try {
-			String bibResult = WebUtils.getPostContentAsString(sc.getUrl(),
-					GNOMEBIOLOGY_BIBTEX_PARAMS);
+			final String bibResult = WebUtils.getPostContentAsString(new URL(bibtexDownloadUrl), GENOMEBIOLOGY_BIBTEX_PARAMS);
 			if (bibResult != null) {
 				sc.setBibtexResult(bibResult);
 				return true;
 			}
-		} catch (IOException ex) {
+		} catch (final IOException ex) {
+			throw new ScrapingFailureException(ex);
 		}
 		return false;
 	}
 
+	/**
+	 * @param url
+	 * @param gnomebiologyBibtexPath
+	 * @return
+	 */
+	private static String appendIfNotPresent(String url, final String subPath) {
+		// norm url
+		if (!url.endsWith("/")) {
+			url += "/";
+		}
+		// check for existing subPath
+		if (!url.endsWith(subPath + "/")) {
+			return url + subPath;
+		}
+		return url;
+	}
+
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
 
+	@Override
 	public String getInfo() {
 		return info;
 	}
