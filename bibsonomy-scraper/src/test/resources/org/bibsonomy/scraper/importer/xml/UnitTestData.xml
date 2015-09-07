@@ -1763,9 +1763,15 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.nowpublishers.NowPublishersScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_286">
-		<TestDescription>scraping test for ACM Queue page</TestDescription>
-		<URL>https://queue.acm.org/detail.cfm?id=2801719</URL>
-		<BibFile>ACMBasicScraperUnitURLTest8.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
-	</URLTest>	
+		<TestDescription>scraping test for jornal page from nowpublishers.com</TestDescription>
+		<URL>http://www.nowpublishers.com/article/Details/INR-012</URL>
+		<BibFile>NowPublishersScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.nowpublishers.NowPublishersScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_287">
+		<TestDescription>scraping test for jornal page from genomebiology.com</TestDescription>
+		<URL>http://www.genomebiology.com/2014/15/7/424</URL>
+		<BibFile>GenomeBiologyScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.genome.GenomeBiologyScraper</Scraper>
+	</URLTest>
 </test:Tests>
