@@ -83,9 +83,9 @@ public class PersonRoleRenderer {
 
 	private static void appendPersonName(PersonName personName, final StringBuilder extendedNameBuilder) {
 		if (present(personName.getFirstName())) {
-			extendedNameBuilder.append(personName.getFirstName()).append(" ");
+			extendedNameBuilder.append(BibTexUtils.cleanBibTex(personName.getFirstName())).append(" ");
 		}
-		extendedNameBuilder.append(personName.getLastName());
+		extendedNameBuilder.append(BibTexUtils.cleanBibTex(personName.getLastName()));
 	}
 
 	private static void appendDisambiguatingBibTexInfo(final StringBuilder extendedNameBuilder, BibTex res) {
