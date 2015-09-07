@@ -100,7 +100,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		}
 		
 		// OK
-		for (int i = 0; i < PostLogicInterface.MAX_GLOBAL_END; i+= PostLogicInterface.MAX_QUERY_SIZE) {
+		for (int i = 0; i < PostLogicInterface.MAX_RECENT_POSTS; i+= PostLogicInterface.MAX_QUERY_SIZE) {
 			try {
 				permissionDb.checkStartEnd(notLoggedInUser, GroupingEntity.ALL, i, i + 1, "test");
 			} catch (final AccessDeniedException ignore) {
@@ -109,7 +109,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		}
 		
 		// not ok
-		for (int i = PostLogicInterface.MAX_GLOBAL_END; i < PostLogicInterface.MAX_GLOBAL_END * 2; i+= PostLogicInterface.MAX_QUERY_SIZE) {
+		for (int i = PostLogicInterface.MAX_RECENT_POSTS; i < PostLogicInterface.MAX_RECENT_POSTS * 2; i+= PostLogicInterface.MAX_QUERY_SIZE) {
 			try {
 				permissionDb.checkStartEnd(notLoggedInUser, GroupingEntity.ALL, i, i + PostLogicInterface.MAX_QUERY_SIZE / 2, "test");
 				fail("expected exception");
@@ -120,7 +120,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		
 		// but ok for admin
 		
-		for (int i = PostLogicInterface.MAX_GLOBAL_END; i < PostLogicInterface.MAX_GLOBAL_END * 2; i+= PostLogicInterface.MAX_QUERY_SIZE) {
+		for (int i = PostLogicInterface.MAX_RECENT_POSTS; i < PostLogicInterface.MAX_RECENT_POSTS * 2; i+= PostLogicInterface.MAX_QUERY_SIZE) {
 			try {
 				permissionDb.checkStartEnd(admin, GroupingEntity.ALL, i, i + PostLogicInterface.MAX_QUERY_SIZE / 2, "test");
 			} catch (final AccessDeniedException ignore) {

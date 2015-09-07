@@ -93,8 +93,8 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 			throw new AccessDeniedException("You are not authorized to retrieve more than " + PostLogicInterface.MAX_QUERY_SIZE + " " + itemType + " items at a time.");
 		}
 		
-		if (!this.isAdmin(loginUser) && GroupingEntity.ALL.equals(groupingEntity) && (start > PostLogicInterface.MAX_GLOBAL_END || end > PostLogicInterface.MAX_GLOBAL_END)) {
-			throw new AccessDeniedException("You are only authorized to retrieve the latest " + PostLogicInterface.MAX_GLOBAL_END + " " + itemType);
+		if (!this.isAdmin(loginUser) && GroupingEntity.ALL.equals(groupingEntity) && (start > PostLogicInterface.MAX_RECENT_POSTS || end > PostLogicInterface.MAX_RECENT_POSTS)) {
+			throw new AccessDeniedException("You are only authorized to retrieve the latest " + PostLogicInterface.MAX_RECENT_POSTS + " " + itemType);
 		}
 	}
 
