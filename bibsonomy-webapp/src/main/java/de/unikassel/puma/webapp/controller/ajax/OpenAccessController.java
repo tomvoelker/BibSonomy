@@ -5,7 +5,7 @@
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
- *                               University of Würzburg, Germany
+ *                               University of WÃ¼rzburg, Germany
  *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
@@ -83,7 +83,7 @@ public class OpenAccessController extends AjaxController implements Minimalistic
 
 				// TODO: implement this
 				/*
-				 * Schleife über alle Posts
+				 * Schleife Ã¼ber alle Posts
 				 * nimm Repository-Speicher-Datum und User
 				 * schreibe JSON-Output mit Datum und Flag ob selbst versendet oder durch wen anderes
 				 * 

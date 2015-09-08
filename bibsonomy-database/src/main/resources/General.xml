@@ -16,8 +16,15 @@
 		SELECT spammer FROM user WHERE user_name = #userName#
 	</select>
 
-	<select id="getNewId" resultClass="int" parameterClass="int">
-		SELECT value FROM ids WHERE name = #idsType# FOR UPDATE
+	<insert id="getNewId" parameterClass="int">
+		UPDATE ids SET value = LAST_INSERT_ID(value + 1) WHERE name = #idsType#
+		<selectKey resultClass="Integer">
+			SELECT CASE WHEN row_count()>0 THEN LAST_INSERT_ID() ELSE NULL END
+		</selectKey>
+	</insert>
+	
+	<select id="getLastId" resultClass="int" parameterClass="int">
+		SELECT value FROM ids WHERE name = #idsType#
 	</select>
 
 	<select id="getCurrentContentId" resultClass="int" parameterClass="int">

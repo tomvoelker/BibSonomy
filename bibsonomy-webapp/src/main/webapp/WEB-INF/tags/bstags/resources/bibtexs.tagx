@@ -61,7 +61,7 @@
 				<!-- Display total number of entries in list --> 
 				<c:if test="${!empty command.bibtex.list}">
 					<c:if test="${command.bibtex.totalCount != 0}">
-						<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${command.bibtex.totalCount} "/> <fmt:message key="bookmarks" /></c:set>
+						<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${command.bibtex.totalCount} "/> <fmt:message key="publications" /></c:set>
 						<span class="badge" title="${totalTitle}" style="position:relative; top: -3px; left: 3px;">${command.bibtex.totalCount}</span>
 					</c:if>
 				</c:if>

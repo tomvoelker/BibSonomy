@@ -27,27 +27,35 @@
 package org.bibsonomy.es;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.param.LucenePost;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.util.ValidationUtils;
+import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.indices.IndexMissingException;
 import org.elasticsearch.search.SearchHit;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -60,24 +68,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @param <R>
  *        the resource of the index
  */
-public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpdater<R> {
+public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpdater<R>, AutoCloseable {
 	private static final Log log = LogFactory.getLog(SharedResourceIndexUpdater.class);
 
-	private final String indexName = ESConstants.INDEX_NAME;
+	private final String resourceType;
 
-	private String resourceType;
+	private final ESIndexManager esIndexManager;
 
 	private final SystemInformation systemInfo = new SystemInformation();
 	/** The Url of the project home */
 	private final String systemHome;
 
-	private final String systemUrlFieldName = "systemUrl";
-
 	/** list posts to insert into index */
 	private ArrayList<Map<String, Object>> esPostsToInsert;
-	/** the node client */
-	// private final ESNodeClient esClient = new ESNodeClient();
-	/** the transport client */
+
+	/** the Elasticsearch client */
 	private ESClient esClient;
 
 	/** list containing content ids of cached delete operations */
@@ -90,82 +95,61 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 * 
 	 */
 	protected Set<String> usersToFlag;
+	
+	/** the database manager */
+	protected LuceneDBInterface<R> dbLogic;
+
+	private final SharedIndexUpdatePlugin<R> plugin;
+
+	private final IndexLock lockOfIndexBeingUpdated;
 
 	/**
 	 * @param systemHome
+	 * @param resourceType
+	 * @param resourceConverter 
+	 * @param nameOfIndexBeingUpdated 
 	 */
-	public SharedResourceIndexUpdater(final String systemHome, final LuceneResourceConverter<R> resourceConverter) {
+	public SharedResourceIndexUpdater(final ESClient esClient, final String systemHome, String resourceType, final LuceneResourceConverter<R> resourceConverter, final IndexLock lockOfIndexBeingUpdated, final SharedIndexUpdatePlugin<R> plugin) {
 		this.systemHome = systemHome;
 		this.resourceConverter = resourceConverter;
+		this.lockOfIndexBeingUpdated = lockOfIndexBeingUpdated;
+		this.plugin = plugin;
 		this.contentIdsToDelete = new LinkedList<Integer>();
 		this.esPostsToInsert = new ArrayList<Map<String, Object>>();
 		this.usersToFlag = new TreeSet<String>();
-
+		this.resourceType =  resourceType;
+		this.esClient = esClient;
+		this.esIndexManager = new ESIndexManager(esClient, systemHome);		
 	}
 
 	/**
 	 * @return lastLogDate
 	 */
+	@Override
 	@SuppressWarnings("boxing")
 	public Date getLastLogDate() {
-		synchronized (this) {
-			final String lastLogDateString = this.fetchSystemInfoField(LuceneFieldNames.LAST_LOG_DATE);
-			if (lastLogDateString == null) {
-				return null;
-			}
-			return new Date(Long.parseLong(lastLogDateString));
+		SystemInformation sysinfos = getSingleSystemInfos();
+		if (sysinfos == null) {
+			log.error("no lastLogDate for index " + this.lockOfIndexBeingUpdated.getIndexName());
+			return null;
 		}
+		return sysinfos.getUpdaterState().getLast_log_date();
 	}
 
-	private String fetchSystemInfoField(final String fieldToRetrieve) {
-		try {
-			final Map<String, Object> result = this.getSystemInfos();
-			if (result != null) {
-				final Object val = result.get(fieldToRetrieve);
-				if (val == null) {
-					return null;
-				}
-				return val.toString();
-			}
-		} catch (final IndexMissingException e) {
-			log.error("IndexMissingException: " + e.getDetailedMessage() + " -> returning null", e);
+	
+	private SystemInformation getSingleSystemInfos() {
+		Collection<SystemInformation> list = this.esIndexManager.getAllSystemInfosAsObjects(QueryBuilders.matchQuery("postType", this.resourceType), 2, this.lockOfIndexBeingUpdated.getIndexName()).values();
+		if (!ValidationUtils.present(list)) {
+			throw new NoSuchElementException("no systeminfos for index " + this.lockOfIndexBeingUpdated.getIndexName());
 		}
-		return null;
-	}
-
-	public List<Map<String, Object>> getAllSystemInfos() {
-		return this.getAllSystemInfosInternal(QueryBuilders.matchQuery("postType", this.resourceType), 200);
-	}
-
-	private List<Map<String, Object>> getAllSystemInfosInternal(final QueryBuilder query, final int size) {
-		// wait for the yellow (or green) status to prevent
-		// NoShardAvailableActionException later
-		this.esClient.getClient().admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
-
-		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(this.indexName);
-		searchRequestBuilder.setTypes(ESConstants.SYSTEM_INFO_INDEX_TYPE);
-		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
-		searchRequestBuilder.setQuery(query);
-		searchRequestBuilder.setFrom(0).setSize(size).setExplain(true);
-
-		final SearchResponse response = searchRequestBuilder.execute().actionGet();
-
-		final List<Map<String, Object>> rVal = new ArrayList<>();
-
-		for (final SearchHit hit : response.getHits()) {
-			rVal.add(hit.getSource());
+		if (list.size() > 1) {
+			throw new IllegalStateException("" + list.size() + " systeminfos for index " + this.lockOfIndexBeingUpdated.getIndexName());
 		}
-
-		return rVal;
+		return list.iterator().next();
 	}
+	
 
-	public Map<String, Object> getSystemInfos() {
-		final List<Map<String, Object>> l = this.getAllSystemInfosInternal(QueryBuilders.idsQuery().ids(this.systemHome + this.resourceType), 1);
-		if (l.size() > 0) {
-			return l.get(0);
-		}
-		return null;
-	}
+
 
 	/**
 	 * @return lastTasId
@@ -173,14 +157,20 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	@Override
 	@SuppressWarnings("boxing")
 	public Integer getLastTasId() {
-		synchronized (this) {
-			final String lastTasIdString = this.fetchSystemInfoField(LuceneFieldNames.LAST_TAS_ID);
-			if (lastTasIdString == null) {
-				log.error("no lastTasId  -> starting from the very beginning");
-				return Integer.MIN_VALUE;
-			}
-			return Integer.parseInt(lastTasIdString);
+		SystemInformation sysinfos = getSingleSystemInfos();
+		if (sysinfos == null) {
+			log.error("no lastTasId  -> starting from the very beginning");
+			return Integer.MIN_VALUE;
 		}
+		return sysinfos.getUpdaterState().getLast_tas_id();
+//		
+//		final String lastTasIdString = this.fetchSystemInfoField(LuceneFieldNames.LAST_TAS_ID);
+//			if (lastTasIdString == null) {
+//				log.error("no lastTasId  -> starting from the very beginning");
+//				return Integer.MIN_VALUE;
+//			}
+//			return Integer.parseInt(lastTasIdString);
+//		}
 	}
 
 	/**
@@ -198,13 +188,6 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 */
 	public Client getClient() {
 		return this.getClient();
-	}
-
-	/**
-	 * @return the iNDEX_NAME
-	 */
-	public String getIndexName() {
-		return this.indexName;
 	}
 
 	/**
@@ -232,44 +215,46 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 			// remove cached posts from index
 			// ----------------------------------------------------------------
 			log.debug("Performing " + this.contentIdsToDelete.size() + " delete operations");
-			if ((this.contentIdsToDelete.size() > 0) || (this.usersToFlag.size() > 0)) {
-				// remove each cached post from index
-				for (final Integer contentId : this.contentIdsToDelete) {
-					final long indexID = this.calculateIndexId(contentId);
-					this.deleteIndexForIndexId(indexID);
-					log.debug("deleted post " + contentId);
+			try{
+				if ((this.contentIdsToDelete.size() > 0) || (this.usersToFlag.size() > 0)) {
+					// remove each cached post from index
+					for (final Integer contentId : this.contentIdsToDelete) {
+						final long indexID = this.calculateIndexId(contentId);
+						this.deleteIndexForIndexId(indexID);
+						log.debug("deleted post " + contentId);
+					}
+					// remove spam posts from index
+					for (final String userName : this.usersToFlag) {
+						// final int cnt = purgeDocumentsForUser(userName);
+						// log.debug("Purged " + cnt + " posts for user " +
+						// userName);
+						this.deleteIndexForUser(userName);
+						log.debug("Purged posts for user " + userName);
+					}
 				}
-
-				// remove spam posts from index
-				for (final String userName : this.usersToFlag) {
-					// final int cnt = purgeDocumentsForUser(userName);
-					// log.debug("Purged " + cnt + " posts for user " +
-					// userName);
-					this.deleteIndexForUser(userName);
-					log.debug("Purged posts for user " + userName);
+	
+				// ----------------------------------------------------------------
+				// add cached posts to index
+				// ----------------------------------------------------------------
+				log.debug("Performing " + this.esPostsToInsert.size() + " insert operations");
+				if (this.esPostsToInsert.size() > 0) {
+					this.insertNewPosts(this.esPostsToInsert);
 				}
+	
+				// ----------------------------------------------------------------
+				// Update system informations
+				// ----------------------------------------------------------------
+				this.flushSystemInformation();
+	
+				// ----------------------------------------------------------------
+				// clear all cached data
+				// ----------------------------------------------------------------
+				this.esPostsToInsert.clear();
+				this.contentIdsToDelete.clear();
+				this.usersToFlag.clear();
+			}catch (JsonProcessingException e){
+				log.error("unable to convert the post into JSON document", e);
 			}
-
-			// ----------------------------------------------------------------
-			// add cached posts to index
-			// ----------------------------------------------------------------
-			log.debug("Performing " + this.esPostsToInsert.size() + " insert operations");
-			if (this.esPostsToInsert.size() > 0) {
-				this.insertNewPosts(this.esPostsToInsert);
-			}
-
-			// ----------------------------------------------------------------
-			// Update system informations
-			// ----------------------------------------------------------------
-			this.flushSystemInformation();
-
-			// ----------------------------------------------------------------
-			// clear all cached data
-			// ----------------------------------------------------------------
-			this.esPostsToInsert.clear();
-			this.contentIdsToDelete.clear();
-			this.usersToFlag.clear();
-
 		}
 	}
 
@@ -281,71 +266,80 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 		return calculateIndexId(contentId, this.systemHome);
 	}
 
+	/**
+	 * @param contentId
+	 * @param systemHome
+	 * @return returns the indexId for a document
+	 */
 	protected static long calculateIndexId(final Number contentId, final String systemHome) {
 		return (((long) systemHome.hashCode()) << 32l) + contentId.longValue();
 	}
 
 	/**
 	 * updates the system information for lastLogDate, lastTasId
+	 * @param indexName 
+	 * @throws JsonProcessingException 
 	 */
-	public void flushSystemInformation() {
+	public void flushSystemInformation() throws JsonProcessingException {
 		final ObjectMapper mapper = new ObjectMapper();
 		String jsonDocumentForSystemInfo;
 		try {
 			jsonDocumentForSystemInfo = mapper.writeValueAsString(this.systemInfo);
-			this.esClient.getClient().prepareIndex(this.indexName, ESConstants.SYSTEM_INFO_INDEX_TYPE, this.systemHome + this.resourceType).setSource(jsonDocumentForSystemInfo).execute().actionGet();
+			IndexResponse res = this.esClient.getClient().prepareIndex(this.lockOfIndexBeingUpdated.getIndexName(), ESConstants.SYSTEM_INFO_INDEX_TYPE, this.systemHome + this.resourceType).setSource(jsonDocumentForSystemInfo).execute().actionGet();
+			if ((res == null) || !ValidationUtils.present(res.getId())) {
+				throw new RuntimeException("failed to save systeminformation for index " + this.lockOfIndexBeingUpdated.getIndexName());
+			} else {
+				log.info("updated systeminformation of index " + this.lockOfIndexBeingUpdated.getIndexName() + " to " + jsonDocumentForSystemInfo);
+			}
 		} catch (final JsonProcessingException e) {
-			log.error("Failed to convert SystemInformation into a JSON", e);
+			log.error("Failed to convert SystemInformation into JSON", e);
 		}
 	}
 
 	/**
 	 * @param esPostsToInsert2
+	 * @param indexName 
 	 */
 	private void insertNewPosts(final ArrayList<Map<String, Object>> esPostsToInsert2) {
-		// wait for the yellow (or green) status to prevent
-		// NoShardAvailableActionException later
-		this.esClient.getClient().admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
+		this.esClient.waitForReadyState();
 
 		for (final Map<String, Object> jsonDocument : esPostsToInsert2) {
-			jsonDocument.put(this.systemUrlFieldName, this.systemHome);
+			jsonDocument.put(ESConstants.SYSTEM_URL_FIELD_NAME, this.systemHome);
 			final long indexId = this.calculateIndexId(Long.parseLong(jsonDocument.get(LuceneFieldNames.CONTENT_ID).toString()));
-			this.esClient.getClient().prepareIndex(this.indexName, this.resourceType, String.valueOf(indexId)).setSource(jsonDocument).setRefresh(true).execute().actionGet();
+			// TODO: this method needs to support the additional parameter?
+			insertPostDocument(jsonDocument, String.valueOf(indexId));
 		}
+	}
 
-		log.info("post has been indexed.");
+	private void insertPostDocument(final Map<String, Object> jsonDocument, String indexIdStr) {
+		this.esClient.getClient().prepareIndex(this.lockOfIndexBeingUpdated.getIndexName(), this.resourceType, indexIdStr).setSource(jsonDocument).setRefresh(true).execute().actionGet();
+	}
+	
+	private void updatePostDocument(final Map<String, Object> jsonDocument, String indexIdStr) {
+		this.esClient.getClient().prepareUpdate(this.lockOfIndexBeingUpdated.getIndexName(), this.resourceType, indexIdStr).setDoc(jsonDocument).setRefresh(true).execute().actionGet();
 	}
 
 	/**
 	 * @param userName
 	 */
 	@Override
-	public void deleteIndexForUser(final String userName) {
-
-		this.esClient.getClient().prepareDeleteByQuery(this.indexName).setTypes(this.resourceType).setQuery(QueryBuilders.termQuery(LuceneFieldNames.USER_NAME, userName)).execute().actionGet();
+	public void deleteIndexForUser(final String userName){
+		this.esClient.getClient().prepareDeleteByQuery(this.lockOfIndexBeingUpdated.getIndexName()).setTypes(this.resourceType).setQuery(QueryBuilders.filteredQuery( QueryBuilders.termQuery(LuceneFieldNames.USER_NAME, userName), FilterBuilders.termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, systemHome))).execute().actionGet();
 	}
 
 	/**
 	 * @param indexId
 	 */
-
 	@Override
 	public void deleteIndexForIndexId(final long indexId) {
-		this.esClient.getClient().prepareDelete(this.indexName, this.resourceType, String.valueOf(indexId)).setRefresh(true).execute().actionGet();
+		this.esClient.getClient().prepareDelete(this.lockOfIndexBeingUpdated.getIndexName(), this.resourceType, String.valueOf(indexId)).setRefresh(true).execute().actionGet();
 	}
 
 	/**
-	 * @return the iNDEX_TYPE
+	 * @return the resourceType
 	 */
 	public String getResourceType() {
 		return this.resourceType;
-	}
-
-	/**
-	 * @param iNDEX_TYPE the iNDEX_TYPE to set
-	 */
-	public void setResourceType(final String iNDEX_TYPE) {
-		this.resourceType = iNDEX_TYPE;
 	}
 
 	/**
@@ -394,9 +388,8 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 * @param lastTasId
 	 * @param lastLogDate
 	 */
-	public void setSystemInformation(final Integer lastTasId, final Date lastLogDate) {
-		this.systemInfo.setLast_log_date(lastLogDate);
-		this.systemInfo.setLast_tas_id(lastTasId);
+	public void setSystemInformation(final IndexUpdaterState state) {
+		this.systemInfo.setUpdaterState(state);
 		this.systemInfo.setPostType(this.resourceType);
 		this.systemInfo.setSystemUrl(this.systemHome);
 	}
@@ -426,4 +419,122 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#updateIndexWithPersonRelation(java.lang.String, java.util.List)
+	 */
+	@Override
+	public void updateIndexWithPersonRelation(String interhash, List<ResourcePersonRelation> newRels) {
+		
+		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(this.lockOfIndexBeingUpdated.getIndexName());
+		searchRequestBuilder.setTypes(this.resourceType);
+		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
+		searchRequestBuilder.setQuery(QueryBuilders.constantScoreQuery(FilterBuilders.andFilter(FilterBuilders.termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, systemHome), FilterBuilders.termFilter("interhash", interhash))));
+		searchRequestBuilder.setExplain(true);
+
+		final SearchResponse response = searchRequestBuilder.execute().actionGet();
+
+		int numUpdatedPosts = 0;
+		if (response != null) {
+			for (final SearchHit hit : response.getHits()) {
+				final Map<String, Object> doc = hit.getSource();
+				this.resourceConverter.setPersonFields(doc, newRels);
+				this.updatePostDocument(doc, hit.getId());
+				numUpdatedPosts++;
+			}
+		}
+		if (log.isDebugEnabled()) {
+			log.debug("updating " + this.toString() + " with " + numUpdatedPosts + " posts having interhash=" + interhash);
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#updateIndexWithPersonNameInfo(org.bibsonomy.model.PersonName, org.apache.commons.collections.LRUMap)
+	 */
+	@Override
+	public void updateIndexWithPersonNameInfo(PersonName name, LRUMap updatedInterhashes) {
+		final String personId = name.getPersonId();
+		updateIndexForPersonWithId(updatedInterhashes, personId);
+	}
+
+	private void updateIndexForPersonWithId(LRUMap updatedInterhashes, final String personId) {
+		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(this.lockOfIndexBeingUpdated.getIndexName());
+		searchRequestBuilder.setTypes(this.resourceType);
+		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
+		searchRequestBuilder.setQuery(QueryBuilders.constantScoreQuery(FilterBuilders.andFilter(FilterBuilders.termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, systemHome), FilterBuilders.termFilter(ESConstants.PERSON_ENTITY_IDS_FIELD_NAME, personId))));
+		searchRequestBuilder.setExplain(true);
+
+		final SearchResponse response = searchRequestBuilder.execute().actionGet();
+
+		if (response != null) {
+			for (final SearchHit hit : response.getHits()) {
+				final Map<String, Object> doc = hit.getSource();
+				final String interhash = (String) doc.get("interhash");
+				if (updatedInterhashes.put(interhash, interhash) == null) {
+					List<ResourcePersonRelation> newRels = this.dbLogic.getResourcePersonRelationsByPublication(interhash);
+					this.updateIndexWithPersonRelation(interhash, newRels);
+				}
+			}
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#updateIndexWithPersonInfo(org.bibsonomy.model.Person, org.apache.commons.collections.LRUMap)
+	 */
+	@Override
+	public void updateIndexWithPersonInfo(Person per, LRUMap updatedInterhashes) {
+		updateIndexForPersonWithId(updatedInterhashes, per.getPersonId());
+	}
+
+	public LuceneDBInterface<R> getDbLogic() {
+		return this.dbLogic;
+	}
+
+	public void setDbLogic(LuceneDBInterface<R> dbLogic) {
+		this.dbLogic = dbLogic;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#onUpdateComplete()
+	 */
+	@Override
+	public void onUpdateComplete() {
+		this.lockOfIndexBeingUpdated.close();
+		this.plugin.activateIndex(this.lockOfIndexBeingUpdated.getIndexName());
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#getUpdaterState()
+	 */
+	@Override
+	public IndexUpdaterState getUpdaterState() {
+		SystemInformation sysi = getSingleSystemInfos();
+		if (sysi != null) {
+			return sysi.getUpdaterState();
+		}
+		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "[" + this.getClass().getSimpleName() + ": " + this.lockOfIndexBeingUpdated + "]";
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.AutoCloseable#close()
+	 */
+	@Override
+	public void close() {
+		this.lockOfIndexBeingUpdated.close();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#closeUpdateProcess()
+	 */
+	@Override
+	public void closeUpdateProcess() {
+		close();
+	}
 }

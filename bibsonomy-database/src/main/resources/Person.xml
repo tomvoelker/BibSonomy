@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Person">
+
+	<select id="getPersonById" resultMap="PersonCommon.lazyLoadingPerson" parameterClass="String">
+		SELECT <include refid="commonPersonColumns"/> FROM person 
+			WHERE person.person_id = #id#
+	</select>
+	
+	<select id="getPersonByDnbId" resultMap="PersonCommon.lazyLoadingPerson" parameterClass="String">
+		SELECT <include refid="commonPersonColumns"/> FROM person 
+			WHERE person.dnb_person_id = #personId#
+	</select>
+	
+	<select id="getPersonByUser" resultMap="PersonCommon.lazyLoadingPerson" parameterClass="String">
+		SELECT <include refid="commonPersonColumns"/> FROM person
+			WHERE person.user_name = #user#
+	</select>	
+	
+	<insert id="insertPerson" parameterClass="org.bibsonomy.model.Person">
+		INSERT INTO person (<include refid="commonPersonColumnsPlain"/>)
+			VALUES (<include refid="insertPersonAttributes"/>)
+	</insert>
+	
+	<insert id='insertName' parameterClass="org.bibsonomy.model.PersonName">
+		INSERT INTO person_name(person_change_id, first_name, last_name, person_id, is_main, log_changed_by, log_changed_at)
+			VALUES (#personNameChangeId#, #firstName#, #lastName#, #personId#, #isMain#, #changedBy#, #changedAt#)
+			
+			<selectKey resultClass="int" keyProperty="personNameChangeId" >
+    		SELECT @@IDENTITY AS person_change_id
+  		</selectKey>
+	</insert>
+	
+	<insert id='addResourceRelation' parameterClass='org.bibsonomy.model.ResourcePersonRelation'>
+		INSERT INTO pub_person (<include refid="commonResourcePersonRelationColumnsPlain"/>)
+			VALUES (<include refid="commonResourcePersonRelationAttributes" />)
+			
+		<selectKey resultClass="int" keyProperty="personRelChangeId" >
+    		SELECT @@IDENTITY AS person_change_id
+  		</selectKey>
+	</insert>
+	
+	<select id='getNames' resultMap='PersonCommon.personName' parameterClass='String'>
+		SELECT <include refid='commonPersonNameColumns'/> FROM person_name 
+			WHERE person_name.person_id = #personId#
+	</select>
+	
+	<select id="findPersonNames" resultMap='PersonCommon.personName' parameterClass='org.bibsonomy.model.PersonName'>
+		SELECT <include refid='commonPersonNameColumns'/> FROM person_name
+			WHERE 
+				person_name.first_name LIKE #firstName# 
+			AND person_name.last_name LIKE #lastName#
+			GROUP BY person_id
+	</select>
+	
+	<update id='updatePerson' parameterClass='org.bibsonomy.model.Person'>
+		UPDATE person SET person_change_id = #personChangeId#, academic_degree = #academicDegree#, orcid = #orcid#, post_ctr = #postCounter#, user_name = #user#, log_changed_by = #changedBy#, log_changed_at = #changeDate#
+			WHERE person.person_id = #personId#
+	</update>
+	
+	<update id="updatePersonName" parameterClass='org.bibsonomy.model.PersonName'>
+		Update person_name SET is_main = #isMain# 
+			WHERE person_name.person_change_id = #personNameChangeId#
+	</update>
+	
+	<delete id='removeResourceRelation' parameterClass='int'>
+		DELETE FROM pub_person WHERE person_change_id = #resourceRelationId#
+	</delete>
+	
+	<delete id="deleteAllNamesOfPerson" parameterClass="java.lang.String">
+		DELETE FROM person_name WHERE person_id = #personId#
+	</delete>
+	
+	<delete id="removePersonName" parameterClass="java.lang.Integer">
+		DELETE FROM person_name WHERE person_change_id = #personNameId#
+	</delete>
+	
+	<select id='getResourcePersonRelationByResourcePersonRelation' resultMap="PersonCommon.lazyLoadingResourcePersonRelation" parameterClass='org.bibsonomy.model.ResourcePersonRelation'>
+		SELECT <include refid='commonResourcePersonRelationColumns' /> FROM pub_person 
+			WHERE 
+				pub_person.simhash1 = #post.resource.interHash#
+					AND
+				pub_person.relator_code = #relationType.relatorCode#
+					AND
+				pub_person.person_index = #personIndex#
+	</select>
+	
+	<update id='unlinkUser' parameterClass="java.lang.String">
+		UPDATE person set user_name = null WHERE user_name = #username#
+	</update>
+	
+	<statement id="getPosts" resultMap="BibTexCommon.bibtexPost">
+		SELECT b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
+		b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
+		b.school, b.series, b.type, b.volume, b.day, b.url, b.content_id, b.description, b.bibtexKey, b.misc,
+		b.bibtexAbstract, b.user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype, 
+		IF("hansii" = b.user_name, b.privnote, NULL) AS privnote , b.scraperid, t1.change_date, b.simhash1 AS interHash, b.simhash2 AS intraHash, t1.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsDummyRows" />
+		FROM tas t1, bibhash h, bibtex b
+		WHERE b.content_id = t1.content_id
+		AND (
+			(b.simhash1 = h.hash
+			AND h.type=1
+			AND b.simhash1 = #simhash1#)
+		)
+		GROUP BY interHash ORDER BY date DESC
+	</statement>
+	
+	<select id="getBibTexRelationsForPerson" resultMap="PersonCommon.preFilledResourcePersonRelation" parameterClass="bibtexParam">
+		SELECT <include refid ="bibtexAttributes2"/>, t.change_date, t.tag_name, g.*, b2.count, <include refid="reviewRatingsDummyRows" />, <include refid="commonResourcePersonRelationColumns2" />
+		FROM
+			(SELECT
+					t1.*,
+					pp.person_change_id, pp.qualifying, pp.person_id, pp.relator_code, pp.log_changed_by, pp.log_changed_at, pp.person_index,
+					h.ctr AS count
+				FROM bibtex t1, bibhash h, pub_person pp
+				WHERE
+					<include refid="bibtexSimHash3"/>
+					AND t1.simhash1=pp.simhash1 AND pp.person_id=#personRelation.person.personId#
+					<include refid="restrictToGroups"/>
+			) AS b2
+			LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id,
+			groupids AS g
+		WHERE
+			b2.group = g.group
+		ORDER BY b2.date DESC, b2.content_id DESC
+	</select>
+	
+	<select id="getComunityBibTexRelationsForPerson" resultMap="PersonCommon.preFilledCommunityResourcePersonRelation" parameterClass="bibtexParam">
+		SELECT
+			<include refid="allGoldStandardPublicationAttributesAnonym" />, b.simhash2 as intraHash, b.simhash1 as interHash, b.change_date, 0 as count, <include refid="reviewRatingsRows" />, <include refid="commonResourcePersonRelationColumns" />
+		FROM
+			gold_standard b
+			<include refid="reviewRatingsJoinPublication" />,
+			bibhash h, pub_person
+		WHERE
+			<include refid="bibtexSimHash"/>
+			AND b.simhash1=pub_person.simhash1 AND pub_person.person_id=#personRelation.person.personId#
+	</select>
+	
+	<statement id="getResourcePersonRelationsByPublication" parameterClass="java.lang.String" resultMap="PersonCommon.resourcePersonRelationWithPersonPrefilled">
+		SELECT <include refid="commonResourcePersonRelationColumns" />, <include refid="commonPersonColumns" />, <include refid="commonPersonNameColumns" />
+			FROM pub_person, person, person_name WHERE pub_person.simhash1 = #interHash# AND pub_person.person_id = person.person_id AND pub_person.person_id = person_name.person_id ORDER BY pub_person.simhash1, pub_person.relator_code, pub_person.person_index
+	</statement>
+	
+	<statement id="getResourcePersonRelationsByPersonId" parameterClass="java.lang.String" resultMap="PersonCommon.lazyLoadingResourcePersonRelation">
+		SELECT <include refid="commonResourcePersonRelationColumns" /> FROM pub_person
+			WHERE person_id = #personId# 
+	</statement>
+	
+	<statement id="getResourcePersonRelationsWithPersonsByInterhash" parameterClass="java.lang.String" resultMap="PersonCommon.resourcePersonRelationWithPersonPrefilled">
+		SELECT <include refid="commonResourcePersonRelationColumns" />, <include refid="commonPersonColumns"/>, <include refid="commonPersonNameColumns"/>  FROM pub_person JOIN person USING (person_id) JOIN person_name USING (person_id) 
+			WHERE simhash1 = #post.resource.interhash# 
+	</statement>
+	
+	<statement id="getOneResourcePersonRelationsByPersonId" resultMap="PersonCommon.lazyLoadingResourcePersonRelation">
+		SELECT <include refid="commonResourcePersonRelationColumns" /> FROM pub_person
+			WHERE pub_person.person_id  = #personId# 
+			AND pub_person.relator_code = "Maut"
+			LIMIT 0,1
+	</statement>
+	
+</sqlMap>

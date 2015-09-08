@@ -32,6 +32,7 @@ import java.util.Map;
 
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.InvalidModelException;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.SimHash;
@@ -69,6 +70,7 @@ public class BibTex extends Resource {
 	private String annote;
 	// TODO: rename to authors
 	private List<PersonName> author;
+	private List<Person> authorEntities;
 	private String booktitle;
 	private String chapter;
 	private String crossref;
@@ -765,5 +767,28 @@ public class BibTex extends Resource {
 		}
 	}
 
+	public List<Person> getAuthorEntities() {
+		return this.authorEntities;
+	}
+
+	public void setAuthorEntities(List<Person> authorEntities) {
+		this.authorEntities = authorEntities;
+	}
+
+	/**
+	 * @param role
+	 * @return
+	 */
+	public List<PersonName> getPersonNamesByRole(PersonResourceRelationType role) {
+		final List<PersonName> publicationNames;
+		if (role == PersonResourceRelationType.AUTHOR) {
+			publicationNames = getAuthor();
+		} else if (role == PersonResourceRelationType.EDITOR) {
+			publicationNames = getEditor();
+		} else {
+			publicationNames = null;
+		}
+		return publicationNames;
+	}
 
 }

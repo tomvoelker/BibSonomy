@@ -444,6 +444,12 @@
 								
 								<value>saveAndRate</value>
 								<value>approved</value>
+								
+								<value>personId</value>
+								<value>personIndex</value>
+								<value>personRole</value>
+								
+								
 							</list>
 						</property>
 					</bean>
@@ -471,6 +477,9 @@
 						<property name="allowedFields">
 							<list>
 								<value>selTab</value>
+								<value>personId</value>
+								<value>personIndex</value>
+								<value>post.resource.entrytype</value>
 							</list>
 						</property>
 					</bean>

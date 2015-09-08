@@ -228,6 +228,7 @@
 		<module>bibsonomy-layout</module>
 		<module>bibsonomy-logging</module>
 		<module>bibsonomy-lucene</module>
+		<module>bibsonomy-gImporter</module>
 		<module>bibsonomy-marc-parser</module>
 		<module>bibsonomy-model</module>
 		<module>bibsonomy-openaccess</module>
@@ -651,6 +652,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
+				<artifactId>bibsonomy-gImporter</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-openaccess</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -704,7 +710,7 @@
 			<dependency>
 				<groupId>mysql</groupId>
 				<artifactId>mysql-connector-java</artifactId>
-				<version>5.0.8</version>
+				<version>5.1.16</version>
 				<scope>provided</scope>
 			</dependency>
 			<!-- the xml apis and xerces are included in Java 1.5 -->
@@ -757,7 +763,12 @@
 			<dependency>
 				<groupId>commons-dbcp</groupId>
 				<artifactId>commons-dbcp</artifactId>
-				<version>1.2.1</version>
+				<version>1.4</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-collections</groupId>
+				<artifactId>commons-collections</artifactId>
+				<version>3.2.1</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-codec</groupId>

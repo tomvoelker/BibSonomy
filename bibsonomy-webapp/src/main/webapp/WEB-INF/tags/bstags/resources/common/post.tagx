@@ -129,7 +129,6 @@
 											<c:set var="tagString" value=" " />
 											<c:forEach var="tag" items="${post.tags}">
 												<c:set var="tagString" value="${tagString} ${tag.name}" />
-												
 											</c:forEach>
 											<input type="hidden" name="ckey" value="${command.context.ckey }"/>
 											<input type="hidden" name="oldTags['${post.resource.intraHash}']" value="${fn:escapeXml(fn:trim(tagString))}" />

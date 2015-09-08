@@ -9,7 +9,8 @@
 	<jsp:directive.attribute name="username" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="noLink" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="flase"/>
-
+	<jsp:directive.attribute name="scope" type="java.lang.String" required="false"/>
+	
 	<c:choose>
 		<c:when test="${not empty post}">
 			<c:choose>
@@ -34,7 +35,7 @@
 		<c:set var="noLink" value="${false}" />
 	</c:if>
 	<c:choose>
-		<c:when test="${not noLink}">
+		<c:when test="${not noLink and scope ne 'FEDERATED'}">
 			<c:choose>
 				<c:when test="${isRemotePost}">
 					<a href="${relativeUrlGenerator.getUserUrlByUserNameAndSysUrl(username, post.systemUrl)}"><c:out value="@${username}" /></a>
