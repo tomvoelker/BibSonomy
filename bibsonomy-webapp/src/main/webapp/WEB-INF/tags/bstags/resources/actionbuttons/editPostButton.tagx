@@ -6,22 +6,21 @@
 	>
 
 	<!-- user must be logged in -->
-
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="buttonClasses" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="enforceCommunityPost" type="java.lang.Boolean" required="false"/>
 	
-
 	<!-- TODO: use the urlGenerator for this -->
 	<c:set var="url" value="Publication"/>
 	<c:if test="${resourceType eq 'bookmark'}">
 		<c:set var="url" value="Bookmark"/>
 	</c:if>
 	<c:set var="editTitle" value=""/>
-
+	
+	<c:set var="isCommunityPost" value="${enforceCommunityPost or empty post.user.name}" />
 	<c:choose>
-		<c:when test="${enforceCommunityPost or empty post.user.name}">
+		<c:when test="${isCommunityPost}">
 			<fmt:message key="post.actions.edit.gold.title" var="editTitle"/>
 			<c:set var="url" value="/editGoldStandard${url}?intraHashToUpdate=${post.resource.interHash}"/>
 		</c:when>
@@ -30,7 +29,7 @@
 			<c:set var="url" value="/edit${url}?intraHashToUpdate=${post.resource.intraHash}"/>
 		</c:otherwise>
 	</c:choose>
-
+	
 	<a class="${buttonClasses}" href="${url}" title="${editTitle}">
 		<span class="fa fa-pencil"><!--  --></span>
 		<span class="sr-only"><fmt:message key="post.actions.edit"/></span>

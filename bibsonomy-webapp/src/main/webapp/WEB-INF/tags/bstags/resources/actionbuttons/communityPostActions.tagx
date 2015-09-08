@@ -17,13 +17,13 @@
 				resourceType="${resourceType}"
 				buttonClasses="${buttonClasses}"
 				enforceCommunityPost="${true}"/>
-
-			<buttons:editPostButton
-				post="${post}"
-				resourceType="${resourceType}"
-				buttonClasses="${buttonClasses}"
-				enforceCommunityPost="${true}"/>
-
+			<c:if test="${not command.context.loginUser.spammer}">
+				<buttons:editPostButton
+					post="${post}"
+					resourceType="${resourceType}"
+					buttonClasses="${buttonClasses}"
+					enforceCommunityPost="${true}"/>
+			</c:if>
 			<buttons:historyButton
 				post="${post}"
 				resourceType="${resourceType}"
