@@ -164,15 +164,6 @@
 							</div>
 						</c:otherwise>
 					</c:choose>
-						
-					
-					<!-- 
-					<div class='btn-group pull-right'>
-						<button class='btn btn-primary' data-toggle="modal" data-target="#newPerson">${textNewPersonButton}</button>
-						<button class='btn btn-primary' data-toggle="modal" data-target="#otherPerson">${textSearchPersonButton}</button>
-					</div>	
-				</div>
-				 -->
 			</div>
 		</jsp:attribute>
 	
@@ -196,10 +187,6 @@
 			<div id="otherPersonTabs" class="tab-content">
 			
 				<div class="tab-pane active" id="newPerson">
-				<!-- 
-					<button type="button" class="btn btn-default" data-dismiss="modal">${textAbortButton}</button>&#160;
-					<button type="button" class="btn btn-default" id='btnNewPersonSubmit' data-person-firstName="${command.personName.firstName}" data-person-lastName="${command.personName.lastName}" data-resource-simhash1="${command.post.resource.interHash}" data-author-index="${command.requestedIndex}">${textNewPersonButton}</button>
-				 -->
 					
 					<form:form action="${absoluteUrlGenerator.getDisambiguationUrl(command.requestedHash, command.requestedRole, command.requestedIndex)}" id="form_newPerson" method="POST" cssClass="form-horizontal">
 						<fieldset>
@@ -207,10 +194,6 @@
 							<div class="form-group">
 								<div class="col-sm-offset-3 col-sm-3 col-md-3 col-lg-3">
 									<button type="button" class="btn btn-default" data-dismiss="modal">${textAbortButton}</button>&#160;
-									
-									<!-- 
-									<button type="button" class="btn btn-primary" id='btnOtherPersonSubmit' data-person-firstName="${command.personName.firstName}" data-person-lastName="${command.personName.lastName}" ></button>
-									 -->
 								</div>
 								<div class="col-sm-3 col-md-3 col-lg-3">
 									<bsform:button type="submit" style="success" value="${textNewPersonButton}" size="defaultSize" />
@@ -237,9 +220,6 @@
 								</div>
 								<div class="col-sm-3 col-md-3 col-lg-3">
 									<bsform:button type="submit" style="success" value="${textSelectPersonButton}" size="defaultSize" />
-									<!-- 
-									<button type="button" class="btn btn-primary" id='btnOtherPersonSubmit' data-person-firstName="${command.personName.firstName}" data-person-lastName="${command.personName.lastName}" >${textSelectPersonButton}</button>
-									 -->
 								</div>
 							</div>
 						</fieldset>
@@ -248,19 +228,7 @@
 				
 			</div>
 		</jsp:attribute>
-		<jsp:attribute name="modalFooter"><!-- 
-			<form action="/postPublication" method="post">
-				<input type="hidden" name='personId' value='${command.person.personId}'/>
-				<input type="hidden" name='personRole' value='AUTHOR'/>
-				<input type="submit" class="btn btn-primary pull-left" name='submit' value='${textNewThesisButton}' />
-			</form>
-			<form action="" method="post" class='form-inline'>
-				<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
-				<input type='hidden' name='formThesisId' value=''/>&#160;
-				<input type="hidden" name='formAction' value='addThesis' />
-				<input type="submit" class="btn btn-primary" name='submit' id="addThesisBtn" value='${textAddThesisButton}' />
-			</form>
-			-->
+		<jsp:attribute name="modalFooter">
 		</jsp:attribute>
 	</bs:modal>
 	
@@ -276,58 +244,24 @@
 		<jsp:attribute name="modalFooter">
 		
 			<div class="form-group">
-				<div class="col-sm-offset-3 col-sm-3 col-md-3 col-lg-3">
+				<div class="col-sm-8 col-md-4 col-lg-4">
 					<button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="disambiguation.link.modal.abortButton"/></button>&#160;
 				</div>
-				<div class="col-sm-3 col-md-3 col-lg-3">
-					<a href='#tmp' id='linkShowPerson' type="button" class="btn btn-default"><fmt:message key="disambiguation.link.modal.viewButton"/></a>
-				</div>
-				<div class="col-sm-3 col-md-3 col-lg-3">
+				<div class="col-sm-4 col-md-8 col-lg-8">
+
 					<form:form action="${absoluteUrlGenerator.getDisambiguationUrl(command.requestedHash, command.requestedRole, command.requestedIndex)}" id="formLinkPerson" method="POST" cssClass="">
 						<input type="hidden" name="requestedAction"   value="linkPerson" />
 						<input type="hidden" name="requestedPersonId" value="" id="fieldLinkPersonId" />
 						
 						<fmt:message var="textLinkPersonButton" key="disambiguation.link.modal.saveButton"/>
-						<bsform:button type="submit" style="success" value="${textLinkPersonButton}" size="defaultSize" />
+						<bsform:button type="submit" style="success" className="pull-right "  value="${textLinkPersonButton}" size="defaultSize" />
 					</form:form>
-					<!-- 
-					<button type="button" class="btn btn-primary" id='btnOtherPersonSubmit' data-person-firstName="${command.personName.firstName}" data-person-lastName="${command.personName.lastName}" >${textSelectPersonButton}</button>
-					 -->
+					
+					<a href='#tmp' id='linkShowPerson' type="button" class="btn btn-default pull-right" style="margin-right: 1em;"><fmt:message key="disambiguation.link.modal.viewButton"/></a>
 				</div>
 			</div>
-		
-		<!-- 
-		 
-		<button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="disambiguation.link.modal.abortButton"/></button>&#160;
-		<button type="button" class="btn btn-primary" id='btnLinkPersonSubmit' data-resource-simhash1='${command.post.resource.interHash}' data-author-index='${command.requestedIndex}'><fmt:message key="disambiguation.link.modal.saveButton"/></button>
-		
-		 -->
 		
 		</jsp:attribute>
 	</bs:modal>
 	
-	
-	<!-- 
-	<div class="modal fade" id="linkPerson" tabindex="-1" role="dialog"
-		aria-labelledby="linkPersonLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-							aria-hidden="true">&amp;times;</button>
-						<h4 class="modal-title"><fmt:message key="disambiguation.link.modal.title"/></h4>
-					</div>
-					
-					<div class="modal-body">
-						<p><fmt:message key="disambiguation.link.modal.msg"/></p>
-					</div>
-					<div class="modal-footer">
-						<a href='#showPerson' id='linkShowPerson' type="button" class="pull-left btn btn-default"><fmt:message key="disambiguation.link.modal.viewButton"/></a> 
-						<button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="disambiguation.link.modal.abortButton"/></button>&#160;
-						<button type="button" class="btn btn-primary" id='btnLinkPersonSubmit' data-resource-simhash1='${command.post.resource.interHash}' data-author-index='${command.requestedIndex}'><fmt:message key="disambiguation.link.modal.saveButton"/></button>
-					</div>
-			</div>
-		</div>
-	</div>
-	 -->
 </jsp:root>
