@@ -54,7 +54,7 @@
 		
 			<editpub:files post="${command.post}" />
 		
-			<editpub:details post="${command.post}" />
+			<editpub:details post="${command.post}" person="${command.person}" />
 			
 			<c:if test="${not empty command.scrapingContext}">
 				<c:if test="${not command.context.loginUser.settings.layoutSettings.simpleInterface}">

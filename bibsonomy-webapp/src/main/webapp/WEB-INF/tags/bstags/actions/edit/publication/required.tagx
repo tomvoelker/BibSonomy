@@ -152,7 +152,13 @@
 					</select>
 					
 			</div>
+			<fmt:message var="genealogyDefaultTag" key="person.newthesis.default.tag" />
+			<input type="hidden" name="tags" value="${genealogyDefaultTag}" />
 		</div>
+		
+		<c:if test="${((post.resource.entrytype eq 'phdthesis') or (post.resource.entrytype eq 'masterthesis'))}">
+			<bsform:input labelColSpan="3" path="post.resource.school"/>
+		</c:if>
 	</c:if>
 	
 	<c:if test="${empty hideAuthorClaim or not hideAuthorClaim}">

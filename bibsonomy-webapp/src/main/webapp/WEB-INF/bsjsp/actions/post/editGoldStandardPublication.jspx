@@ -16,7 +16,7 @@
 		</jsp:attribute>
 
 		<jsp:attribute name="detailedInformation">
-			<editpub:details post="${command.post}" />
+			<editpub:details post="${command.post}" person="${command.person}" />
 		</jsp:attribute>
 
 		<jsp:attribute name="headerExtResource">
