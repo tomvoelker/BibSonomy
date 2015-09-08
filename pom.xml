@@ -710,7 +710,7 @@
 			<dependency>
 				<groupId>mysql</groupId>
 				<artifactId>mysql-connector-java</artifactId>
-				<version>5.0.8</version>
+				<version>5.1.16</version>
 				<scope>provided</scope>
 			</dependency>
 			<!-- the xml apis and xerces are included in Java 1.5 -->
