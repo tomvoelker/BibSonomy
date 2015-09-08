@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Logging - Logs clicks from users of the BibSonomy webapp.
+ * BibSonomy-gImporter - exports from dnb2, imports to bibsonomy
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany

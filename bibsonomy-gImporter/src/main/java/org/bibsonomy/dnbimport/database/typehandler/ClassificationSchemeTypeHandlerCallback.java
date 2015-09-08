@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Database-Common - Helper classes for database interaction
+ * BibSonomy-gImporter - exports from dnb2, imports to bibsonomy
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
