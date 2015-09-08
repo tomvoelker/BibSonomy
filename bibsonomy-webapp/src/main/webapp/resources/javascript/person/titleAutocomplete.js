@@ -224,7 +224,7 @@ function setupTitleAutocomplete(inputFieldSelector) {
 	{
 		name: 'titles',
 		hint: false,
-		//displayKey: 'title',
+		displayKey: 'value',
 		// `ttAdapter` wraps the suggestion engine in an adapter that
 		// is compatible with the typeahead jQuery plugin
 		//source: titles.ttAdapter(),
