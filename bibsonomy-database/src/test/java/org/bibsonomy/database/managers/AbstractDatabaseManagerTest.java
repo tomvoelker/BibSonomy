@@ -32,7 +32,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.plugin.DatabasePlugin;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
-import org.bibsonomy.database.testutil.TestDatabaseLoader;
+import org.bibsonomy.testutil.TestDatabaseLoader;
 import org.bibsonomy.testutil.DatabasePluginMock;
 import org.junit.After;
 import org.junit.Before;

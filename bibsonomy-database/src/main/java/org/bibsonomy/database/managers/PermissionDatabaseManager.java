@@ -90,7 +90,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void checkStartEnd(final User loginUser, final GroupingEntity groupingEntity, final int start, final int end, final String itemType) {
 		if (!this.isAdmin(loginUser) && ((end - start) > PostLogicInterface.MAX_QUERY_SIZE)) {
-			throw new AccessDeniedException("You are not authorized to retrieve more than " + PostLogicInterface.MAX_QUERY_SIZE + " " + itemType + " items at a time.");
+			throw new AccessDeniedException("You are not authorized to retrieve more than " + PostLogicInterface.MAX_QUERY_SIZE + " " + itemType + " at a time.");
 		}
 		
 		if (!this.isAdmin(loginUser) && GroupingEntity.ALL.equals(groupingEntity) && (start > PostLogicInterface.MAX_RECENT_POSTS || end > PostLogicInterface.MAX_RECENT_POSTS)) {

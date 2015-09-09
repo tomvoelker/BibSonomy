@@ -37,6 +37,7 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
@@ -178,4 +179,10 @@ public interface PostLogicInterface {
 	 * @return a filtered list of posts. may be empty but not null
 	 */
 	public Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end);
+
+	/**
+	 * @param queryString a query string which may be an arbitrary combination of tokens from title, author, year and school fields
+	 * @return a ranked list of publication posts matching the query. Only one post of the same {@link Resource} is contained in the list
+	 */
+	public List<Post<BibTex>> getPublicationSuggestion(String queryString);
 }

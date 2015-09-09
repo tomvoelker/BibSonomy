@@ -664,6 +664,7 @@
 			<artifactId>nekohtml</artifactId>
 			<version>1.9.21</version>
 		</dependency>
+		
 		<!-- TODO: shinding not compatible with newer version -->
 		<dependency>
 			<groupId>com.google.guava</groupId>
