@@ -223,15 +223,6 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	public void onPersonNameDelete(PersonName personName, DBSession session) {
 		// noop
 	}
-	
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onDeleteAllNamesOfPerson(java.lang.String, org.bibsonomy.database.common.DBSession)
-	 */
-	@Override
-	public void onDeleteAllNamesOfPerson(String personId, DBSession databaseSession) {
-		// noop
-	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPersonUpdate(java.lang.Integer, org.bibsonomy.database.common.DBSession)

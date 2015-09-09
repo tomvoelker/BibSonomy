@@ -190,12 +190,6 @@
 		FROM person_name WHERE person_change_id = #personNameChangeId#
 	</insert>
 	
-	<insert id="logPersonNameByPersonId" parameterClass="String">
-		INSERT INTO log_person_name (person_change_id, first_name, last_name, person_id, is_main, log_changed_at, log_changed_by)
-		SELECT person_change_id, first_name, last_name, person_id, is_main, log_changed_at, log_changed_by
-		FROM person_name WHERE person_id = #personId#
-	</insert>
-	
 	<insert id="logPubPerson" parameterClass="Integer">
 		INSERT INTO log_pub_person (person_change_id, simhash1, simhash2, relator_code, person_index, person_id, qualifying, log_changed_at, log_changed_by, deleted)
 		SELECT person_change_id, simhash1, simhash2, relator_code, person_index, person_id, qualifying, log_changed_at, log_changed_by, deleted

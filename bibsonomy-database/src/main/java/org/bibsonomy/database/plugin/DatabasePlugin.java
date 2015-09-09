@@ -327,13 +327,6 @@ public interface DatabasePlugin {
 	public void onPersonNameDelete(final PersonName personName, final DBSession session);
 	
 	/**
-	 * called when a all personNames of a person will be deleted
-	 * @param personId
-	 * @param databaseSession
-	 */
-	public void onDeleteAllNamesOfPerson(String personId, DBSession databaseSession);
-	
-	/**
 	 * called when a person will be updated
 	 * @param personId
 	 * @param session

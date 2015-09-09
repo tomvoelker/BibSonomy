@@ -358,13 +358,6 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 			plugin.onPersonNameDelete(personName, session);
 		}
 	}
-	
-	@Override
-	public void onDeleteAllNamesOfPerson(String personId, DBSession databaseSession) {
-		for (final DatabasePlugin plugin : this.plugins.values()) {
-			plugin.onDeleteAllNamesOfPerson(personId, databaseSession);
-		}
-	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPersonUpdate(java.lang.Integer, org.bibsonomy.database.common.DBSession)

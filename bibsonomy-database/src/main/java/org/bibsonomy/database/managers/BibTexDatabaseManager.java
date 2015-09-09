@@ -173,7 +173,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 				return this.postList("getBibTexWithDiscussions", param, session);
 			}
 			
-			if (!filters.contains(FilterEntity.ADMIN_SPAM_POSTS)) {
+			if (!(filters.contains(FilterEntity.ADMIN_SPAM_POSTS) && (filters.size() == 1))) {
 				throw new IllegalArgumentException("Filters " + filters + " not supported");
 			}
 		}

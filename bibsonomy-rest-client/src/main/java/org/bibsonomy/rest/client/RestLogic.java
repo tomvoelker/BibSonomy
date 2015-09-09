@@ -827,7 +827,7 @@ public class RestLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePersonName(org.bibsonomy.model.PersonName)
 	 */
 	@Override
-	public void createOrUpdatePersonName(PersonName withPersonId) {
+	public void createPersonName(PersonName withPersonId) {
 		throw new UnsupportedOperationException();
 	}
 

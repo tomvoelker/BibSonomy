@@ -751,7 +751,7 @@ public class DBLogic implements LogicInterface {
 			 * result.addAll(bookmarkDBManager.getPosts(authUser, grouping,
 			 * groupingName, tags, hash, popular, added, start, end, false));
 			 */
-			if (FilterEntity.HISTORY.equals(filters) && !((resourceType == GoldStandardPublication.class) || (resourceType == GoldStandardBookmark.class))) {
+			if (ValidationUtils.safeContains(filters, FilterEntity.HISTORY) && !((resourceType == GoldStandardPublication.class) || (resourceType == GoldStandardBookmark.class))) {
 				this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, groupingName);
 			}
 			if (resourceType == BibTex.class) {
@@ -762,7 +762,7 @@ public class DBLogic implements LogicInterface {
 				// check permissions for displaying links to documents
 				final boolean allowedToAccessUsersOrGroupDocuments = this.permissionDBManager.isAllowedToAccessUsersOrGroupDocuments(this.loginUser, grouping, groupingName, session);
 				if (!allowedToAccessUsersOrGroupDocuments) {
-					if (FilterEntity.JUST_PDF.equals(filters)) {
+					if (ValidationUtils.safeContains(filters, FilterEntity.JUST_PDF)) {
 						throw new AccessDeniedException("error.pdf_only_not_authorized_for_" + grouping.toString().toLowerCase());
 					}
 					param.setPostAccess(PostAccess.POST_ONLY);
@@ -2028,8 +2028,8 @@ public class DBLogic implements LogicInterface {
 		this.permissionDBManager.ensureWriteAccess(this.loginUser, userName);
 
 		final DBSession session = this.openSession();
-		final String newName = document.getFileName();
 		try {
+			final String newName = document.getFileName();
 			if (resourceHash != null) {
 				/*
 				 * the document belongs to a post --> check if the user owns the
@@ -2059,10 +2059,10 @@ public class DBLogic implements LogicInterface {
 			} else {
 				throw new ValidationException("update document without resourceHash is not possible");
 			}
+			log.debug("renamed document " + documentName + " from user " + userName + "to " + newName);
 		} finally {
 			session.close();
 		}
-		log.debug("renamed document " + documentName + " from user " + userName + "to " + newName);
 	}
 
 	/*
@@ -2191,13 +2191,13 @@ public class DBLogic implements LogicInterface {
 	 * org.bibsonomy.common.enums.StatisticsConstraint)
 	 */
 	@Override
-	public Statistics getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final Set<Filter> filter, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	public Statistics getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		final DBSession session = this.openSession();
 
 		try {
-			this.handleAdminFilters(filter);
+			this.handleAdminFilters(filters);
 
-			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filter, this.loginUser);
+			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filters, this.loginUser);
 			if ((resourceType == GoldStandardPublication.class) || (resourceType == BibTex.class) || (resourceType == Bookmark.class) || (resourceType == Resource.class)) {
 				param.setContentTypeByClass(resourceType);
 				return this.statisticsDBManager.getPostStatistics(param, session);
@@ -3190,7 +3190,7 @@ public class DBLogic implements LogicInterface {
 		/*
 		 * if filter is set to spam posts admins can see public spam!
 		 */
-		if (present(filters) && filters.contains(FilterEntity.ADMIN_SPAM_POSTS)) {
+		if (ValidationUtils.safeContains(filters, FilterEntity.ADMIN_SPAM_POSTS)) {
 			this.permissionDBManager.ensureAdminAccess(this.loginUser);
 			// add public spam group to the groups of the loggedin users
 			this.loginUser.addGroup(new Group(GroupID.PUBLIC_SPAM));
@@ -3453,7 +3453,7 @@ public class DBLogic implements LogicInterface {
 	}
 
 	@Override
-	public void createOrUpdatePersonName(PersonName personName) {
+	public void createPersonName(PersonName personName) {
 		this.ensureLoggedIn();
 		final DBSession session = this.openSession();
 		try {

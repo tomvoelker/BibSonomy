@@ -293,14 +293,6 @@ public class Logging extends AbstractDatabasePlugin {
 		this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session);
 		this.insert("logPersonNameDelete", personName, session);
 	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.database.plugin.AbstractDatabasePlugin#onDeleteAllNamesOfPerson(java.lang.String, org.bibsonomy.database.common.DBSession)
-	 */
-	@Override
-	public void onDeleteAllNamesOfPerson(String personId, DBSession databaseSession) {
-		this.insert("logPersonNameByPersonId", personId, databaseSession);
-	}
 	
 	@Override
 	public void onPersonUpdate(final String personId, final DBSession session) {
@@ -323,7 +315,7 @@ public class Logging extends AbstractDatabasePlugin {
 	@Override
 	public void onPubPersonDelete(final ResourcePersonRelation rel, final DBSession session) {
 		this.insert("logPubPerson", rel.getPersonRelChangeId(), session);
-		// we need to fetch a new id so the next insert statement can refer to the last generated id
+		// XXX: we need to fetch a new id so the next insert statement can refer to the last generated id
 		this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session);
 		this.insert("logPubPersonDelete", rel, session);
 	}

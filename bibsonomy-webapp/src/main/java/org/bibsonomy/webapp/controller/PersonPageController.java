@@ -311,7 +311,7 @@ public class PersonPageController extends SingleResourceListController implement
 				return Views.AJAX_TEXT;
 			}
 		}
-		this.logic.createOrUpdatePersonName(personName);
+		this.logic.createPersonName(personName);
 		command.setResponseString(Integer.toString(personName.getPersonNameChangeId()));
 		
 		return Views.AJAX_TEXT;

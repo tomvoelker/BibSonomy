@@ -68,10 +68,6 @@
 		DELETE FROM pub_person WHERE person_change_id = #resourceRelationId#
 	</delete>
 	
-	<delete id="deleteAllNamesOfPerson" parameterClass="java.lang.String">
-		DELETE FROM person_name WHERE person_id = #personId#
-	</delete>
-	
 	<delete id="removePersonName" parameterClass="java.lang.Integer">
 		DELETE FROM person_name WHERE person_change_id = #personNameId#
 	</delete>

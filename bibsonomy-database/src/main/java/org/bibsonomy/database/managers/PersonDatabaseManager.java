@@ -217,22 +217,6 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		}	
 	}
 
-
-	/**
-	 * @param personId 
-	 * @param databaseSession 
-	 */
-	public void deleteAllNamesOfPerson(String personId, DBSession databaseSession) {
-		databaseSession.beginTransaction();
-		try {
-			this.plugins.onDeleteAllNamesOfPerson(personId, databaseSession);
-			this.delete("deleteAllNamesOfPerson", personId, databaseSession);
-			databaseSession.commitTransaction();
-		} finally {
-			databaseSession.endTransaction();
-		}	
-	}
-
 	// TODO: write testcase for this method and test whether groupBy of OR-mapping works as expected 
 	public List<ResourcePersonRelation> getResourcePersonRelationsByPublication(String interHash, DBSession databaseSession) {
 		return this.queryForList("getResourcePersonRelationsByPublication", interHash, ResourcePersonRelation.class, databaseSession);

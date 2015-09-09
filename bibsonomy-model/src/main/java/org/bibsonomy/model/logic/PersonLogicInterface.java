@@ -62,7 +62,7 @@ public interface PersonLogicInterface {
 	/**
 	 * @param withPersonId
 	 */
-	public void createOrUpdatePersonName(PersonName withPersonId);
+	public void createPersonName(PersonName withPersonId);
 	
 	/**
 	 * @param queryString a search string coming from an autocomplete field. Planned but not yet implemented: May contain an incomplete word, which will be internally autocompleted before searching persons
