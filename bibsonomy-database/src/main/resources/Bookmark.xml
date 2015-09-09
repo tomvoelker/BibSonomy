@@ -19,7 +19,7 @@
 	</select>
 	
 	<select id="getBookmarkByTagNamesCount" resultClass="Integer" timeout="1" parameterClass="bookmarkParam">
-		SELECT count(*) as count
+		SELECT COUNT(*) as count
 		FROM <include refid="tagFromQuery"/>
 		WHERE <include refid="tagWhereQuery"/>
 			AND t1.content_type = #contentType#
@@ -71,7 +71,7 @@
 	</select>
 	
 	<select id="getBookmarkByTagNamesForUserCount" resultClass="int" parameterClass="bookmarkParam">
-		SELECT count(*) AS count
+		SELECT COUNT(*) AS count
 		FROM <include refid="tagFromQuery"/>
 		WHERE <include refid="tagWhereQuery"/>
 			<include refid="restrictToGroups"/>
@@ -415,7 +415,7 @@
 	</select>
 
 	<select id="getBookmarkForGroupCount" resultClass="int" parameterClass="bookmarkParam" timeout="1">
-		SELECT count(*)
+		SELECT COUNT(*)
 		FROM bookmark t1, group_memberships g
 		WHERE g.group = #groupId#
 		      AND t1.user_name = g.user_name
@@ -450,7 +450,7 @@
 	</select>
 
 	<select id="getBookmarkForUserCount" resultClass="int" parameterClass="bookmarkParam" timeout="1">
-		SELECT count(*)
+		SELECT COUNT(*)
 		FROM bookmark t1
 		WHERE t1.user_name = #requestedUserName#
 		      <include refid="restrictToGroups"/>
