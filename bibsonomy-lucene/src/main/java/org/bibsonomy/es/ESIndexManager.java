@@ -98,7 +98,7 @@ public class ESIndexManager {
 	}
 
 	/**
-	 * @return returns true if an active index exists
+	 * @return returns the error message or null if everything seems ok
 	 */
 	public String getGlobalIndexNonExistanceError() {
 		final ClusterStateResponse response = this.esClient.getClient().admin().cluster().prepareState().execute().actionGet(); 
@@ -122,8 +122,8 @@ public class ESIndexManager {
 	 */
 	private String getResourceIndexNonExistanceError(final String resourceType) {
 		final String activeIndex = getThisSystemsIndexNameFromAlias(ESConstants.getGlobalAliasForResource(resourceType, true));
-		final String backupIndex =  getThisSystemsIndexNameFromAlias(ESConstants.getGlobalAliasForResource(resourceType, false));
-		if (activeIndex == null && backupIndex == null) {
+		final String inactiveIndex =  getThisSystemsIndexNameFromAlias(ESConstants.getGlobalAliasForResource(resourceType, false));
+		if (activeIndex == null && inactiveIndex == null) {
 			return "No index for \"" + resourceType	+ "\" of current system found!! Please re-generate Index";
 		}
 		return null;
