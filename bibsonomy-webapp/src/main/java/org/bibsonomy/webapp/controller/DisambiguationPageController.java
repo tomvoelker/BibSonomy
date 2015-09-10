@@ -108,7 +108,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 	}
 	
 	
-/**
+	/**
 	 * creates a new person, links te resource and redirects to the new person page
 	 * @param command
 	 * @return
@@ -121,16 +121,6 @@ public class DisambiguationPageController extends SingleResourceListController i
 			command.getLogicExceptions().add(e);
 			return disambiguateAction(command);
 		}
-		
-		
-//		
-//		JSONObject jsonPerson = new JSONObject();
-//		jsonPerson.put("personId", person.getId());
-//		jsonPerson.put("personName", person.getMainName().toString());
-//		jsonPerson.put("personNameId", new Integer(person.getMainName().getId()));
-//		jsonPerson.put("resourcePersonRelationId", new Integer(resourcePersonRelation.getId()));
-//		
-//		command.setResponseString(jsonPerson.toJSONString());
 		
 		this.requestLogic.setLastAction(ACTION_KEY_CREATE_AND_LINK_PERSON);
 		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(person.getPersonId()));

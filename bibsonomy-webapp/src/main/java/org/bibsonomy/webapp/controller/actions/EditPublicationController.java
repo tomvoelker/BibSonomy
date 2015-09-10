@@ -143,12 +143,15 @@ public class EditPublicationController extends AbstractEditPublicationController
 		
 		final Person person;
 		if (present(command.getPerson().getPersonId())) {
+			// a new publication is added to an existing person
 			person = this.logic.getPersonById(PersonIdType.BIBSONOMY_ID, command.getPerson().getPersonId());
 			if (command.getPersonIndex() == null) {
 				final List<PersonName> publicationNames = pubPost.getResource().getPersonNamesByRole(command.getPersonRole());
 				command.setPersonIndex(findPersonIndex(person, publicationNames));
 			}
 		} else {
+			// a new person entity is created by creating a publication post and taking its author name
+			// as the name of the new person (accessible via add person button on persons/genealogy page)
 			final List<PersonName> publicationNames = pubPost.getResource().getPersonNamesByRole(command.getPersonRole());
 			if ((command.getPersonIndex() != null) && (command.getPersonIndex() >= publicationNames.size())) {
 				this.errors.reject("error.field.valid.personId", "The provided person index is invalid.");
@@ -160,8 +163,6 @@ public class EditPublicationController extends AbstractEditPublicationController
 		}
 		
 		if (person != null) {
-			
-			
 			final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
 			resourcePersonRelation.setPerson(person);
 			resourcePersonRelation.setPost(pubPost);

@@ -352,7 +352,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 				 */
 				if (!unique_hashes.contains(post.getResource().getIntraHash())) {
 					unique_hashes.add(post.getResource().getIntraHash());
-				} else{
+				} else {
 					errorMessage = new DuplicatePostInSnippetErrorMessage("BibTex", post.getResource().getIntraHash());
 					List<ErrorMessage> errorList = new ArrayList<ErrorMessage>();
 					errorList.add(errorMessage);

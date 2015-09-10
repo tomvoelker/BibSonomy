@@ -34,7 +34,6 @@ import java.util.Map;
 
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.webapp.command.BibtexViewCommand;
 import org.bibsonomy.webapp.command.LayoutViewCommand;
@@ -96,6 +95,11 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	 * each intrahash(post) is maped to a list of errors. Erroneous posts cannot be edited later*/
 	private Map<String, List<ErrorMessage>> postsErrorList;
 
+	/**
+	 * For multiple posts
+	 */
+	private ListCommand<Post<BibTex>> posts = new ListCommand<Post<BibTex>>(this);
+	
 	/**
 	 * constructor
 	 * inits the tabs and sets their titles
@@ -337,13 +341,6 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	public void setUpdatedPosts(Map<String, String> updatedPosts) {
 		this.updatedPosts = updatedPosts;
 	}
-
-	/**
-	 * For multiple posts
-	 */
-	private ListCommand<Post<BibTex>> posts = new ListCommand<Post<BibTex>>(this);
-
-	private Person person;
 
 	/**
 	 * @return The list of publication posts.

@@ -98,9 +98,11 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		sysTags.add(sysAuthor);
 		
 		//sets the search type
-		SearchType searchType = SearchType.LOCAL; 
-		if(command.getScope()!=null && command.getScope()!=SearchType.LOCAL){
-			searchType = SearchType.FEDERATED;
+		final SearchType searchType;
+		if (command.getScope() == null) {
+			searchType = SearchType.LOCAL;
+		} else {
+			searchType = command.getScope();
 		}
 		
 		// handle case when only tags are requested
