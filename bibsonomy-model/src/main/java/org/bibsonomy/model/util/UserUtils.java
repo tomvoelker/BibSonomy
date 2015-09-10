@@ -52,8 +52,10 @@ public class UserUtils {
 	/** the name of the dblp user */
 	public static final String DBLP_USER_NAME = "dblp";
 	
+	public static final String GNEALOGY_USER = "genealogie";
+	
 	/** a set of special users */
-	public static final List<String> USER_NAMES_OF_SPECIAL_USERS = Arrays.asList(DBLP_USER_NAME);
+	public static final List<String> USER_NAMES_OF_SPECIAL_USERS = Arrays.asList(DBLP_USER_NAME, GNEALOGY_USER);
 	
 	/** the length of the password salt */
 	private static final int SALT_LENGTH = 16;
@@ -336,6 +338,14 @@ public class UserUtils {
 		} 
 		return (atPrefix? "@" :"") + user.getName(); 
 	
+	}
+
+	/**
+	 * @param user
+	 * @return true iff there the given user is a special user (usually those with too many posts to handle)
+	 */
+	public static boolean isSpecialUser(User user) {
+		return present(user) && USER_NAMES_OF_SPECIAL_USERS.contains(user.getName());
 	}
 	
 }

@@ -41,11 +41,7 @@ public class PersonPageCommand extends UserResourceViewCommand {
 
 	private String requestedPersonId;
 	private String requestedAction;
-	
-//	private String requestedHash;
-//	private String requestedRole;
-//	private String requestedIndex;
-	
+
 	private String formSelectedName;
 	private String formAcademicDegree;
 	private String formFirstName;

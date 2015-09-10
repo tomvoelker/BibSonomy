@@ -118,7 +118,7 @@ public class ActionValidationFilter implements Filter {
 			
 			boolean valid = storedCredential.equals(requestCredential);
 			if (!valid && log.isDebugEnabled()) {
-				log.info("requested ckey not valid: Expected '" + storedCredential + "' but was '" + requestCredential + "' for '" + ((HttpServletRequest) request).getRequestURI() + "'");
+				log.debug("requested ckey not valid: Expected '" + storedCredential + "' but was '" + requestCredential + "' for '" + ((HttpServletRequest) request).getRequestURI() + "'");
 			}
 			/*
 			 * check and propagate correctness 

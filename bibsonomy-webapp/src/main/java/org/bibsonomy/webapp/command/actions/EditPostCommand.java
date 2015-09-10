@@ -30,12 +30,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 
-import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.webapp.command.GroupingCommand;
 import org.bibsonomy.webapp.command.PostCommand;
 
