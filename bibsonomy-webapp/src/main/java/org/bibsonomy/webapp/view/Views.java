@@ -55,8 +55,6 @@ public enum Views implements View {
 	 */
 	HASHEXAMPLE("hashexample"),
 	
-	@Deprecated
-	PERSON("person/index"),
 	PERSON_INTRO("persons"),
 	PERSON_SHOW("person/show"),
 	DISAMBIGUATION("disambiguation"),
