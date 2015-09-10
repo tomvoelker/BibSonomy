@@ -64,16 +64,19 @@ import org.elasticsearch.search.SearchHit;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Class for every basic functionality on top of elasticsearch ee.g. resolving index names by alias names and locking indices
+ * Class for every basic functionality on top of elasticsearch ee.g. resolving
+ * index names by alias names and locking indices
  *
  * @author lutful
  * @author jil
  */
 public class ESIndexManager {
+	private static final Log log = LogFactory.getLog(ESIndexManager.class);
+	
+	// FIXME: synchronized map!
 	private final Map<String, ReadWriteLock> locksByIndexName = new HashMap<String, ReadWriteLock>();
 	private final ESClient esClient;
 	private final String systemHome;
-	private static final Log log = LogFactory.getLog(ESIndexManager.class);
 
 	
 	/**
@@ -86,14 +89,13 @@ public class ESIndexManager {
 	}
 	
 	private ReadWriteLock getRwLock(String indexName) {
-		ReadWriteLock rwLock = locksByIndexName.get(indexName);
+		ReadWriteLock rwLock = this.locksByIndexName.get(indexName);
 		if (rwLock == null) {
 			rwLock = new ReentrantReadWriteLock();
-			locksByIndexName.put(indexName, rwLock);
+			this.locksByIndexName.put(indexName, rwLock);
 		}
 		return rwLock;
 	}
-
 
 	/**
 	 * @return returns true if an active index exists
@@ -101,13 +103,14 @@ public class ESIndexManager {
 	public String getGlobalIndexNonExistanceError() {
 		final ClusterStateResponse response = this.esClient.getClient().admin().cluster().prepareState().execute().actionGet(); 
 		final ImmutableOpenMap<String, ImmutableOpenMap<String, AliasMetaData>> aliases = response.getState().metaData().getAliases(); 
-		if(aliases.isEmpty()){
+		if (aliases.isEmpty()) {
 			return "No Index found!! Please generate Index";
 		}
-		final String bibtexNonExistanceError= this.getResourceIndexNonExistanceError(BibTex.class.getSimpleName());
-		final String bookmarkNonExistanceError= this.getResourceIndexNonExistanceError(Bookmark.class.getSimpleName());
-		final String goldStandardNonExistanceError= this.getResourceIndexNonExistanceError(GoldStandardPublication.class.getSimpleName());
-		if(bibtexNonExistanceError!=null && bookmarkNonExistanceError!=null && goldStandardNonExistanceError!=null){
+		
+		final String bibtexNonExistanceError = this.getResourceIndexNonExistanceError(BibTex.class.getSimpleName());
+		final String bookmarkNonExistanceError = this.getResourceIndexNonExistanceError(Bookmark.class.getSimpleName());
+		final String goldStandardNonExistanceError = this.getResourceIndexNonExistanceError(GoldStandardPublication.class.getSimpleName());
+		if (bibtexNonExistanceError != null && bookmarkNonExistanceError != null && goldStandardNonExistanceError != null){
 			return "No Index found for this system!! Please generate Index";
 		}
 		return null;
@@ -356,6 +359,7 @@ public class ESIndexManager {
 	/**
 	 * @param indexName
 	 * @param writeAccess
+	 * @param maxWaitMillis 
 	 * @return 
 	 */
 	protected IndexLock aquireLockForIndexName(String indexName, boolean writeAccess, Long maxWaitMillis) {
@@ -365,8 +369,8 @@ public class ESIndexManager {
 			return new IndexLock(indexName, lock);
 		}
 		try {
-			return new IndexLock(indexName, lock, maxWaitMillis, TimeUnit.MILLISECONDS);
-		} catch (LockFailedException e) {
+			return new IndexLock(indexName, lock, maxWaitMillis.longValue(), TimeUnit.MILLISECONDS);
+		} catch (final LockFailedException e) {
 			return null;
 		}
 	}
