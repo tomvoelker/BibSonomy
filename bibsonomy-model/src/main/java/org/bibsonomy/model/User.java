@@ -601,7 +601,7 @@ public class User implements Serializable {
 	 * 
 	 * @return <code>true</code> iff external picture shall be used
 	 */
-	public boolean getUseExternalPicture() {
+	public boolean isUseExternalPicture() {
 		return useExternalPicture;
 	}
 	

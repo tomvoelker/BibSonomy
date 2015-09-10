@@ -67,7 +67,26 @@ public class BasketDatabaseManager extends AbstractDatabaseManager {
 	 * @return the number of entries currently stored in the basket
 	 */
 	public int getNumberOfBasketEntries(final String username, final DBSession session) {
-		return this.queryForObject("getNumBasketEntries", username, Integer.class, session);
+		final Integer result = this.queryForObject("getNumBasketEntries", username, Integer.class, session);
+		return saveConvertToint(result);
+	}
+	
+	/**
+	 * @param session
+	 * @return the number of clipboard posts
+	 */
+	public int getNumberOfClipboardPosts(DBSession session) {
+		final Integer result = this.queryForObject("getClipboardCount", Integer.class, session);
+		return saveConvertToint(result);
+	}
+
+	/**
+	 * @param session
+	 * @return the number of clipboard posts in log table
+	 */
+	public int getNumberOfClipboardPostsInHistory(DBSession session) {
+		final Integer result = this.queryForObject("getClipboardHistoryCount", Integer.class, session);
+		return saveConvertToint(result);
 	}
 	
 	/**
@@ -77,7 +96,7 @@ public class BasketDatabaseManager extends AbstractDatabaseManager {
 	 * @param session 
 	 */
 	public void createItem(final String userName, final int contentId, final DBSession session){
-		final BasketParam param = new BasketParam();			
+		final BasketParam param = new BasketParam();
 		param.setUserName(userName);
 		param.setContentId(contentId);
 		this.insert("createBasketItem", param, session);
@@ -133,5 +152,4 @@ public class BasketDatabaseManager extends AbstractDatabaseManager {
 		this.plugins.onDeleteAllBasketItems(userName, session);
 		this.delete("deleteAllItems", userName, session);
 	}
-		
 }

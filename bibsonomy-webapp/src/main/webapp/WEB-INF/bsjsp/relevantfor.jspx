@@ -10,6 +10,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -55,12 +56,8 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-		<ul>
-			<li>
-				<h4 class="sidebar"><fmt:message key="relatedtags"/></h4>
-				<tags:related requPath="${requPath}" cmd="${command.relatedTagCommand}" order="" relevantfor="${true}" tagsRequested="${not empty command.requestedTags}"/>
-			</li>
-		</ul>
+			<sidebar:relatedTagsItem requPath="${requPath}" cmd="${command.relatedTagCommand}" relevantfor="${true}" tagsRequested="${not empty command.requestedTags}"/>
 		</jsp:attribute>
+
 	</layout:resourceLayout>
 </jsp:root>

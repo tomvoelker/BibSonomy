@@ -87,7 +87,7 @@ public class UserUserPageController extends SingleResourceListControllerWithTags
 		
 		// retrieve and set the requested resource lists, along with total
 		// counts
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			
 			final int origEntriesPerPage = listCommand.getEntriesPerPage();
@@ -106,7 +106,7 @@ public class UserUserPageController extends SingleResourceListControllerWithTags
 			}
 			
 			// set total nr. 
-			this.setTotalCount(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, null, command.getStartDate(), command.getEndDate(), origEntriesPerPage);
+			this.setTotalCount(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, command.getStartDate(), command.getEndDate(), origEntriesPerPage);
 		}
 
 		// html format - retrieve tags and return HTML view

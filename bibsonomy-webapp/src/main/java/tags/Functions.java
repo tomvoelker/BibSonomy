@@ -55,6 +55,7 @@ import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.DiscussionItem;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -63,6 +64,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.EndnoteUtils;
+import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.model.util.UserUtils;
@@ -499,15 +501,41 @@ public class Functions {
 	 * @param diffMap
 	 */
 	public static void diffEntriesPost(final Post<? extends Resource> newPost, final Post<? extends Resource> oldPost, final Map<String, String> diffMap) {
-
 		final Resource newResource = newPost.getResource();
 		final Resource oldResource = oldPost.getResource();
 
 		diffStringEntry(diffMap, "title", newResource.getTitle(), oldResource.getTitle());
 		diffStringEntry(diffMap, "description", newPost.getDescription(), oldPost.getDescription());
+		
 		if (!newPost.getTags().equals(oldPost.getTags())) {
 			diffMap.put("tags", compareTagSets(newPost.getTags(), oldPost.getTags()));
 		}
+		if (!newPost.getGroups().equals(oldPost.getGroups())) {
+			diffMap.put("groups", diffGroupSetEntry(newPost.getGroups(), oldPost.getGroups()));
+		}
+	}
+	
+	/**
+	 * TODO: how are groups sorted?
+	 * 
+	 * @param groups1
+	 * @param groups2
+	 */
+	private static String diffGroupSetEntry(Set<Group> groups1, Set<Group> groups2) {
+		final StringBuilder newSetAsString = new StringBuilder();
+		final StringBuilder oldSetAsString = new StringBuilder();
+		
+		for (Group group : groups1) {
+			newSetAsString.append(group.getName());
+			newSetAsString.append(" ");
+		}
+		
+		for (Group group : groups2) {
+			oldSetAsString.append(group.getName());
+			oldSetAsString.append(" ");
+		}
+		
+		return compareString(newSetAsString.toString().trim(), oldSetAsString.toString().trim());
 	}
 
 	private static String compareTagSets(final Set<Tag> newTags, final Set<Tag> oldTags) {
@@ -551,16 +579,13 @@ public class Functions {
 	public static String customized_diff_prettyHtml(final LinkedList<Diff> diffs) {
 		final StringBuilder html = new StringBuilder();
 		for (final Diff aDiff : diffs) {
-			final String text = aDiff.text.replace("&", "&amp;").replace("<", "&lt;")
-					.replace(">", "&gt;").replace("\n", "&para;<br>");
+			final String text = aDiff.text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\n", "&para;<br>");
 			switch (aDiff.operation) {
 			case INSERT:
-				html.append("<span style=\"background:#e6ffe6;\">").append(text)
-						.append("</span>");
+				html.append("<span style=\"background:#e6ffe6;\">").append(text).append("</span>");
 				break;
 			case DELETE:
-				html.append("<del style=\"background:#ffe6e6;\">").append(text)
-						.append("</del>");
+				html.append("<del style=\"background:#ffe6e6;\">").append(text).append("</del>");
 				break;
 			case EQUAL:
 				html.append("<span>").append(text).append("</span>");
@@ -1088,6 +1113,10 @@ public class Functions {
 	// TODO: (bootstrap) remove and use not empty check
 	public static Boolean hasDidYouKnowMessage(final BaseCommand command) {
 		return (command.getDidYouKnowMessage() != null);
+	}
+
+	public static Boolean isRegularGroup(final Group group) {
+		return GroupUtils.isValidGroup(group) && !GroupUtils.isExclusiveGroup(group);
 	}
 
 }

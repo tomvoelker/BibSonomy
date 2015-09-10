@@ -12,7 +12,8 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
-	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/publication">
+	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/publication"
+	xmlns:post="urn:jsptagdir:/WEB-INF/tags/bstags/post">
 
 
 	<!--
@@ -41,14 +42,19 @@
 					<hr />
 				</c:if>
 			</c:if>
-			<editpub:required post="${command.post}" autocompletion="$(false)"/>
+			<c:if test="${command.person != null}">
+				<input type="hidden" name="personId" value="${command.person.personId}"/>
+			</c:if>
+			<input type="hidden" name="personRole" value="${command.personRole}"/>
+			
+			<editpub:required post="${command.post}" autocompletion="${false}" personIndex="${command.personIndex}" person="${command.person}" />
 		</jsp:attribute>
-		
+	
 		<jsp:attribute name="detailedInformation">
 		
 			<editpub:files post="${command.post}" />
 		
-			<editpub:details post="${command.post}" />
+			<editpub:details post="${command.post}" person="${command.person}" />
 			
 			<c:if test="${not empty command.scrapingContext}">
 				<c:if test="${not command.context.loginUser.settings.layoutSettings.simpleInterface}">

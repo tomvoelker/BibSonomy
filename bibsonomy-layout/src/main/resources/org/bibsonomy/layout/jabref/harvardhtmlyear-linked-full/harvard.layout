@@ -1,18 +1,18 @@
 \begingroup{year}<h3 class="bibsonomy_quicknav_group"><a name="\format[AntiScriptInjection]{\year}">\format[AntiScriptInjection]{\year}</a></h3>\endgroup{year}
 <p>
-\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\author} (\format[AntiScriptInjection]{\year}),
-'\format[HTMLChars,AntiScriptInjection]{\title}'
+\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLCharsAntiScript]{\author} (\format[AntiScriptInjection]{\year}),
+'\format[HTMLCharsAntiScript]{\title}'
 \begin{journal}
-, <i>\format[HTMLChars,AntiScriptInjection]{\journal}</i> <b>\format[AntiScriptInjection]{\volume}</b>
+, <i>\format[HTMLCharsAntiScript]{\journal}</i> <b>\format[AntiScriptInjection]{\volume}</b>
 \end{journal}
 \begin{number}
 (\format[AntiScriptInjection]{\number})
 \end{number}
 \begin{editor}
-, <i> in \format[AuthorFirstFirst,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\editor}</i>, ed.,
+, <i> in \format[AuthorFirstFirst,AuthorAndsReplacer,HTMLCharsAntiScript]{\editor}</i>, ed.,
 \end{editor}
 \begin{booktitle}
-'\format[HTMLChars,AntiScriptInjection]{\booktitle}'
+'\format[HTMLCharsAntiScript]{\booktitle}'
 \end{booktitle}
 \begin{organization}
 , \format[AntiScriptInjection]{\organization}
@@ -21,13 +21,13 @@
 , Technical report, \format[AntiScriptInjection]{\institution}
 \end{institution}
 \begin{publisher}
-, \format[HTMLChars,AntiScriptInjection]{\publisher}
+, \format[HTMLCharsAntiScript]{\publisher}
 \end{publisher}
 \begin{howpublished}
 , \format[AntiScriptInjection]{\howpublished}
 \end{howpublished}
 \begin{address}
-, \format[HTMLChars,AntiScriptInjection]{\address}
+, \format[HTMLCharsAntiScript]{\address}
 \end{address}
 \begin{note}
 , \format[AntiScriptInjection]{\note}
@@ -42,7 +42,7 @@
 <a onclick="toggleBibtex('\username', '\intrahash', '\biburl?format=bibtex'); return false;" href="\biburl?format=bibtex">[BibTeX]</a>&nbsp;
 <a onclick="toggleBibtex2('\username', '\intrahash', '\biburl?format=endnote'); return false;" href="\biburl?format=endnote">[Endnote]</a>&nbsp;
 <div id="abs_\intrahash\username" style="display:none;border:1px dotted grey;">
-\format[Replace("\n, "),HTMLChars,AntiScriptInjection]{\abstract}
+\format[Replace("\n, "),HTMLCharsAntiScript]{\abstract}
 </div>
 <div style="position:relative">						
 	<div id="bib_\intrahash\username" style="display:inline;position:relativ;"></div>

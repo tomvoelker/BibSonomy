@@ -113,7 +113,15 @@ public class ValidationUtils {
 		}
 		return false;
 	}
-
+	
+	/**
+	 * @param collection
+	 * @param entry
+	 * @return <code>true</code> if the collection contains the entry
+	 */
+	public static <E> boolean safeContains(final Collection<E> collection, final E entry) {
+		return present(collection) && collection.contains(entry);
+	}
 
 	/**
 	 * @param obj object to be tested
@@ -123,6 +131,5 @@ public class ValidationUtils {
 		if (obj == null) {
 			throw new IllegalStateException("should not be null");
 		}
-		
 	}
 }

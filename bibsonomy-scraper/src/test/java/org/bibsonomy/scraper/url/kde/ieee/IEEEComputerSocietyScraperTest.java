@@ -55,4 +55,11 @@ public class IEEEComputerSocietyScraperTest {
 		UnitTestRunner.runSingleTest("url_137");
 	}
 	
+	/**
+	 * starts URL test with id url_283
+	 */
+	@Test
+	public void url3TestRun(){
+		UnitTestRunner.runSingleTest("url_283");
+	}
 }

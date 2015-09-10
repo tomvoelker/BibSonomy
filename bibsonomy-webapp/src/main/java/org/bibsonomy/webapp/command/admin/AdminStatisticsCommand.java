@@ -95,5 +95,5 @@ public class AdminStatisticsCommand {
 
 	public void setNumClassifierNoSpammerUnsure(final Long interval, final int counts) {
 		this.numClassifierNoSpammerUnsure.put(interval, counts);
-	}	
+	}
 }

@@ -32,15 +32,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 
-/** Scraper for CiteSeer
+/**
+ * Scraper for CiteSeer
+ * 
  * @author rja
- *
  */
 public class CiteseerBasicScraper extends AbstractUrlScraper {
 
@@ -56,6 +57,7 @@ public class CiteseerBasicScraper extends AbstractUrlScraper {
 	
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + CS_HOST_NAME), AbstractUrlScraper.EMPTY_PATTERN));
 	
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException{
 		sc.setScraper(this);
 		
@@ -63,22 +65,27 @@ public class CiteseerBasicScraper extends AbstractUrlScraper {
 		if (m.matches()) {
 			sc.setBibtexResult(m.group(1));
 			return true;
-		}else
-			throw new PageNotSupportedException("no bibtex snippet available");
+		}
+		
+		throw new PageNotSupportedException("no bibtex snippet available");
 	}
 
+	@Override
 	public String getInfo() {
 		return info;
 	}
 
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return CITE_URL;
 	}

@@ -50,8 +50,11 @@ import org.bibsonomy.common.errors.DuplicatePostInSnippetErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.webapp.command.ListCommand;
@@ -143,8 +146,10 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * 
 		 * To find out, if the data was entered manually, a good heuristic is to
 		 * check if an entrytype is given, because that field can't be empty.
+		 * We furthermore need to check the title, because the title cannot be empty 
+		 * either and sometimes we like to preselect a certain entrytype.
 		 */
-		if (present(publication.getEntrytype())) {
+		if (present(publication.getEntrytype()) && present(publication.getTitle())) {
 			log.debug("user has manually entered post data -> forwarding to edit post controller");
 			return super.workOn(command);
 		}
@@ -158,6 +163,13 @@ public class PostPublicationController extends AbstractEditPublicationController
 		if ((hasFile || hasSelection) && !context.isValidCkey()) {
 			errors.reject("error.field.valid.ckey");
 			return Views.ERROR;
+		}
+		
+		if (command.getPerson() != null) {
+			if (present(command.getPerson().getPersonId())) {
+				final Person person = this.logic.getPersonById(PersonIdType.BIBSONOMY_ID, command.getPersonId());
+				command.setPerson(person);
+			}
 		}
 
 		/*
@@ -191,6 +203,15 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 * user send empty snippet or "nonexisting" file
 			 * FIXME: that second case should result in some error and hint for the user
 			 */
+			if (command.getPerson() != null) {
+				final PersonName mainName = command.getPerson().getMainName();
+				if (mainName != null) {
+					List<PersonName> authorNames = new ArrayList<>();
+					authorNames.add(mainName);
+					publication.setAuthor(authorNames);
+				}
+			}
+			
 			return Views.POST_PUBLICATION;
 		}
 
@@ -263,12 +284,24 @@ public class PostPublicationController extends AbstractEditPublicationController
 			this.errors.reject("error.upload.failed.parse", "Upload failed because of parser errors.");
 			return Views.POST_PUBLICATION;
 		}
-
+		/* case:
+		 * 	1) we are redirected to this page from a person page, and
+		 * 	2) a new thesis wants to be added
+		 * 
+		 * only one thesis can be added each time (by snippet).
+		 ***/
+		if (command.getPerson() != null) {
+			if ((posts != null) && (posts.size() > 1)) {
+				this.errors.reject("error.add_new_thesis", "Only ONE new thesis is allowed to be added!");
+				return Views.POST_PUBLICATION;
+			}
+		}
+	
 		/*
 		 * If exactly one post has been extracted, and there were no parse exceptions, 
 		 * the edit post controller can handle the remaining work.
 		 */
-		if (posts.size() == 1 && !this.errors.hasErrors()) {
+		if ((posts != null) && (posts.size() == 1) && !this.errors.hasErrors()) {
 			final Post<BibTex> post = posts.get(0);
 			if (present(post)) {
 				/*
@@ -295,36 +328,36 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 */
 		final Set<String> unique_hashes = new TreeSet<String>();
 		ErrorMessage errorMessage;
-		for (final Post<BibTex> post : posts) {
-			post.setUser(context.getLoginUser());
-			post.setDescription(command.getDescription());
-			if (!present(post.getTags())) {
-				post.setTags(Collections.singleton(TagUtils.getImportedTag()));
-			}
-			 /* set visibility of this post for the groups, the user specified
-
-			 */
-			GroupingCommandUtils.initGroups(command, post.getGroups());
-			/*
-			 * hashes have to be set, in order to call the validator
-			 */
-			post.getResource().recalculateHashes();
-
-			/**
-			 * user may import n bibtexes which m>1 of them are the same.
-			 * 
-			 * Since similar bibtexes have similar intrahashes, we find duplicate bibtexes
-			 * by comparing intrahashes, and then add an error to not_unique bibtexes.
-			 */
-
-			if (!unique_hashes.contains(post.getResource().getIntraHash())) {
-				unique_hashes.add(post.getResource().getIntraHash());
-			}
-			else{
-				errorMessage = new DuplicatePostInSnippetErrorMessage("BibTex", post.getResource().getIntraHash());
-				List<ErrorMessage> errorList = new ArrayList<ErrorMessage>();			
-				errorList.add(errorMessage);
-				command.getPostsErrorList().put(post.getResource().getIntraHash(), errorList);
+		if  (posts != null) {
+			for (final Post<BibTex> post : posts) {
+				post.setUser(context.getLoginUser());
+				post.setDescription(command.getDescription());
+				if (!present(post.getTags())) {
+					post.setTags(Collections.singleton(TagUtils.getImportedTag()));
+				}
+				 /* set visibility of this post for the groups, the user specified
+	
+				 */
+				GroupingCommandUtils.initGroups(command, post.getGroups());
+				/*
+				 * hashes have to be set, in order to call the validator
+				 */
+				post.getResource().recalculateHashes();
+	
+				/*
+				 * user may import n bibtexes which m>1 of them are the same.
+				 * 
+				 * Since similar bibtexes have similar intrahashes, we find duplicate bibtexes
+				 * by comparing intrahashes, and then add an error to not_unique bibtexes.
+				 */
+				if (!unique_hashes.contains(post.getResource().getIntraHash())) {
+					unique_hashes.add(post.getResource().getIntraHash());
+				} else {
+					errorMessage = new DuplicatePostInSnippetErrorMessage("BibTex", post.getResource().getIntraHash());
+					List<ErrorMessage> errorList = new ArrayList<ErrorMessage>();
+					errorList.add(errorMessage);
+					command.getPostsErrorList().put(post.getResource().getIntraHash(), errorList);
+				}
 			}
 		}
 
@@ -353,7 +386,9 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 */
 		final Map<Post<BibTex>, Integer> postsToStore = this.getPostsWithNoValidationErrors(posts, command.getPostsErrorList(),command.isOverwrite());
 
-		log.debug("will try to store " + postsToStore.size() + " of " + posts.size() + " posts in database");
+		if (log.isDebugEnabled()) {
+			log.debug("will try to store " + postsToStore.size() + " of " + ((posts != null) ? Integer.toString(posts.size()) : "null") + " posts in database");
+		}
 		final List<Post<?>> validPosts = new LinkedList<Post<?>>(postsToStore.keySet());
 
 		/*
@@ -410,23 +445,22 @@ public class PostPublicationController extends AbstractEditPublicationController
 			/*
 			 * check if this post is already stored in DB
 			 * 
-			 * We have already checked if this post bibtex is in the snippet more than one time
+			 * We have already checked if this publication is in the snippet more than one time
 			 * or not.
-			 * (if yes, postErrorMessages.size()>=1)
+			 * (if yes, postErrorMessages.size() >= 1)
 			 */
-			if(present(postErrorMessages) && postErrorMessages.size()>1){ 
+			if (present(postErrorMessages) && postErrorMessages.size() > 1) { 
 				isAlreadyInSnippet = true;
-			}
-			else{
+			} else {
 				if (present(postErrorMessages) && postErrorMessages.size()==1){
 					isAlreadyInSnippet = true;
 				}
 				isAlreadyInCollection = this.isPostDuplicate(posts.get(i), isOverwrite);
-				if(isAlreadyInCollection){
+				if (isAlreadyInCollection){
 					errorMessage = new DuplicatePostErrorMessage("BibTex", posts.get(i).getResource().getIntraHash());
-					if(!present(postErrorMessages)){
-						postErrorMessages = new ArrayList<ErrorMessage>();			
-					}	
+					if (!present(postErrorMessages)){
+						postErrorMessages = new ArrayList<ErrorMessage>();
+					}
 					postErrorMessages.add(errorMessage);
 					errorMessages.put(posts.get(i).getResource().getIntraHash(), postErrorMessages);
 				}

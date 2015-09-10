@@ -34,10 +34,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.json.JsonConfig;
-import net.sf.json.processors.PropertyNameProcessor;
-import net.sf.json.util.PropertyFilter;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.layout.csl.model.Date;
 import org.bibsonomy.layout.csl.model.DateParts;
 import org.bibsonomy.layout.csl.model.DocumentCslWrapper;
@@ -52,6 +51,10 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.TagUtils;
 
+import net.sf.json.JsonConfig;
+import net.sf.json.processors.PropertyNameProcessor;
+import net.sf.json.util.PropertyFilter;
+
 /**
  * TENTATIVE implementation of a mapping of our publication model to the CSL model,
  * which we transform to JSON later on.
@@ -59,7 +62,8 @@ import org.bibsonomy.model.util.TagUtils;
  * @author Dominik Benz, benz@cs.uni-kassel.de
  */
 public class CslModelConverter {
-
+	private static final Log log = LogFactory.getLog(CslModelConverter.class);
+	
 	/**
 	 * BibTeX entry types -> csl types
 	 * XXX: mapping is incomplete
@@ -106,12 +110,19 @@ public class CslModelConverter {
 	 * This mapping is based on http://www.docear.org/2012/08/08/docear4word-mapping-bibtex-fields-and-types-with-the-citation-style-language/
 	 * 
 	 * @param post
-	 *            - the bibtex post
+	 *            - the publication post
 	 * @return the corresponding CSL model
 	 */
 	public static Record convertPost(final Post<? extends Resource> post) {
 		final Record rec = new Record();
 		final BibTex publication = (BibTex) post.getResource();
+		if (!publication.isMiscFieldParsed()) {
+			try {
+				publication.parseMiscField();
+			} catch (final InvalidModelException e) {
+				log.debug("error while parsing misc fields", e);
+			}
+		}
 		
 		// id
 		rec.setId(createId(post));
@@ -153,17 +164,17 @@ public class CslModelConverter {
 		final String cleanedJournal = BibTexUtils.cleanBibTex(publication.getJournal());
 		final String cleanedBooktitle = BibTexUtils.cleanBibTex(publication.getBooktitle());
 		final String cleanedSeries = BibTexUtils.cleanBibTex(publication.getSeries());
-		final String colTitleToUse;
+		final String containerTitleToUse;
 		if (present(cleanedJournal)) {
-			colTitleToUse = cleanedJournal;
+			containerTitleToUse = cleanedJournal;
 		} else if (present(cleanedBooktitle)) {
-			colTitleToUse = cleanedBooktitle;
+			containerTitleToUse = cleanedBooktitle;
 		} else {
-			colTitleToUse = cleanedSeries;
+			containerTitleToUse = "";
 		}
 		
-		rec.setContainer_title(colTitleToUse);
-		rec.setCollection_title(colTitleToUse);
+		rec.setContainer_title(containerTitleToUse);
+		rec.setCollection_title(cleanedSeries);
 		
 		// mapping publisher, techreport, thesis, organization
 		if (present(publication.getPublisher())) {

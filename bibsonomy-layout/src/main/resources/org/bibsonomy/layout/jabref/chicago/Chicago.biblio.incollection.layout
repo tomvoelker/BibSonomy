@@ -1,11 +1,11 @@
 <p>
 \begin{author}
-\format[HTMLChars,AntiScriptInjection,AuthorLastFirstCommas]{\author}. \end{author}
-\begin{title}&quot;\format[HTMLChars,AntiScriptInjection]{\title}.&quot; \end{title} In <i> \format[HTMLChars,AntiScriptInjection]{\booktitle}</i>
-\begin{editor}, edited by \format[HTMLChars,AntiScriptInjection,AuthorFirstFirstCommas]{\editor}\end{editor}
+\format[HTMLCharsAntiScript,AuthorLastFirstCommas]{\author}. \end{author}
+\begin{title}&quot;\format[HTMLCharsAntiScript]{\title}.&quot; \end{title} In <i> \format[HTMLCharsAntiScript]{\booktitle}</i>
+\begin{editor}, edited by \format[HTMLCharsAntiScript,AuthorFirstFirstCommas]{\editor}\end{editor}
 \begin{pages}, \format[AntiScriptInjection]{\pages}\end{pages}.
-\begin{edition}\format[HTMLChars,AntiScriptInjection]{\edition}\end{edition} 
-\begin{address}\format[HTMLChars,AntiScriptInjection]{\address}\end{address}:
-\begin{publisher} \format[HTMLChars,AntiScriptInjection]{\publisher}\end{publisher}, 
-\begin{year}\format[HTMLChars,AntiScriptInjection]{\year}. \end{year}
+\begin{edition}\format[HTMLCharsAntiScript]{\edition}\end{edition} 
+\begin{address}\format[HTMLCharsAntiScript]{\address}\end{address}:
+\begin{publisher} \format[HTMLCharsAntiScript]{\publisher}\end{publisher}, 
+\begin{year}\format[HTMLCharsAntiScript]{\year}. \end{year}
 </p>

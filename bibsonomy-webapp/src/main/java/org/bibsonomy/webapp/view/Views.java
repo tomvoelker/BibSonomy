@@ -54,6 +54,10 @@ public enum Views implements View {
 	 * here users can calculate the hashes of their publications
 	 */
 	HASHEXAMPLE("hashexample"),
+	
+	PERSON_INTRO("persons"),
+	PERSON_SHOW("person/show"),
+	DISAMBIGUATION("disambiguation"),
 
 	/**
 	 * the page where a user can change his personal settings
@@ -363,10 +367,9 @@ public enum Views implements View {
 	 * manage synchronization settings
 	 */
 	ADMIN_SYNC("actions/admin/sync"),
-	/**
-	 * general admin page
-	 */
-	ADMIN("actions/admin/index"),
+	
+	/** statistics about the system */
+	ADMIN_STATISTICS("admin/statistics"),
 
 	/* *****************************************************
 	 * action views

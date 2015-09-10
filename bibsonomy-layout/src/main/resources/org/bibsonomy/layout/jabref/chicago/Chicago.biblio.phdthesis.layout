@@ -1,4 +1,4 @@
 <p>
 \begin{author}
-\format[HTMLChars,AntiScriptInjection,AuthorLastFirstCommas]{\author}. \end{author}\begin{title}&quot;\format[HTMLChars,AntiScriptInjection]{\title}.&quot; \end{title}PhD diss., \format[HTMLChars,AntiScriptInjection]{\school}, \begin{year}\format[HTMLChars,AntiScriptInjection]{\year}. \end{year}
+\format[HTMLCharsAntiScript,AuthorLastFirstCommas]{\author}. \end{author}\begin{title}&quot;\format[HTMLCharsAntiScript]{\title}.&quot; \end{title}PhD diss., \format[HTMLCharsAntiScript]{\school}, \begin{year}\format[HTMLCharsAntiScript]{\year}. \end{year}
 </p>

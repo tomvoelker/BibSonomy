@@ -30,11 +30,12 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
+import org.bibsonomy.es.AbstractEsIndexTest;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.index.manager.LuceneGoldStandardManager;
 import org.bibsonomy.lucene.util.LuceneSpringContextWrapper;
 import org.bibsonomy.model.GoldStandardPublication;
-import org.bibsonomy.testutil.TestDatabaseLoader;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -43,39 +44,39 @@ import org.junit.Test;
  * @author dzo
  */
 public class LuceneGenerateResourceIndexTest {
-    
-    private static LuceneGoldStandardManager<GoldStandardPublication> manager;
+	
+	private static LuceneGoldStandardManager<GoldStandardPublication> manager;
 
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	@BeforeClass
-    public static void initLucene() throws Exception {
+	public static void initLucene() throws Exception {
 		manager = (LuceneGoldStandardManager<GoldStandardPublication>) LuceneSpringContextWrapper.getBeanFactory().getBean("luceneGoldStandardPublicationManager");
 
 		// initialize test database
-		TestDatabaseLoader.getInstance().load();
+		AbstractDatabaseManagerTest.LOADER.load(AbstractDatabaseManagerTest.DATABASE_CONFIG_FILE, AbstractDatabaseManagerTest.DATABASE_ID);
 		
 		// delete old indices
 		final List<LuceneResourceIndex<GoldStandardPublication>> resourceIndices = manager.getResourceIndeces();
 		for (final LuceneResourceIndex<GoldStandardPublication> index : resourceIndices) {
 			index.deleteIndex();
 		}
-    }
-    
-    /**
-     * 
-     * @throws Exception
-     */
-    @Test
-    public void generateIndex() throws Exception {
-    	manager.generateIndex(false, 1);
-
+	}
+	
+	/**
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void generateIndex() throws Exception {
+		manager.generateIndex(false, 1);
 		assertEquals(2, manager.getStatistics().getNumDocs());
-    }
-    
-    @AfterClass
-    public static void resetIndex() {
-    	for (final LuceneResourceIndex<GoldStandardPublication> index : manager.getResourceIndeces()) {
-    		index.reset();
+	}
+	
+	@AfterClass
+	public static void resetIndex() {
+		for (final LuceneResourceIndex<GoldStandardPublication> index : manager.getResourceIndeces()) {
+			index.reset();
 		}
-    }
+		AbstractEsIndexTest.closeAllLuceneIndices(LuceneSpringContextWrapper.getBeanFactory());
+	}
 }

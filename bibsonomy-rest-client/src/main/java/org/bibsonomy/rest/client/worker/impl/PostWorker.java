@@ -128,10 +128,12 @@ public final class PostWorker extends HttpWorker<PostMethod> {
 			
 
 			this.httpResult = this.getHttpClient().executeMethod(post);
+			final String response = post.getResponseBodyAsString();
+			
 			LOGGER.debug("HTTP result: " + this.httpResult);
-			LOGGER.debug("response:\n" + post.getResponseBodyAsString());
+			LOGGER.debug("response:\n" + response);
 			LOGGER.debug("===================================================");
-			return new StringReader(post.getResponseBodyAsString());
+			return new StringReader(response);
 		} catch (final IOException e) {
 			LOGGER.debug(e.getMessage(), e);
 			throw new ErrorPerformingRequestException(e);

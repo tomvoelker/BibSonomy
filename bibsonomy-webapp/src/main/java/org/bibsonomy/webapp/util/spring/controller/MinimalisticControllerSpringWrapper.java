@@ -185,7 +185,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		if (log.isDebugEnabled()) {
 			final Enumeration<?> e = request.getAttributeNames();
 			while (e.hasMoreElements()) {
-				log.debug(e.nextElement().toString());			
+				log.debug(e.nextElement().toString());
 			}
 		}
 		
@@ -234,7 +234,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 			log.warn("Could not complete controller (invalid URL scheme) : " + malformed.getMessage());
 		} catch (final AccessDeniedException ad) {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			errors.reject(ad.getMessage());
+			errors.reject(ad.getMessage(), ad.getMessage());
 			log.warn("Could not complete controller (AccessDeniedException), occured in: " + ad.getStackTrace()[0] + ", msg is: " + ad.getMessage());
 		} catch (final SpecialAuthMethodRequiredException sam) {
 			// ok -> pass to filter to do the required authentication

@@ -33,8 +33,11 @@ import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.InboxParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.DiscussionItem;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 
 /**
@@ -315,5 +318,46 @@ public interface DatabasePlugin {
 	 * @author MarcelM
 	 */
 	public void onBibTexExtraDelete(final BibTexExtraParam deletedBibTexExtraParam, final DBSession session);
+	
+	/**
+	 * called when a personName will be deleted
+	 * @param personName should be set to the old personNameChangeId and the new modifiedBy and modifiedBy values
+	 * @param session
+	 */
+	public void onPersonNameDelete(final PersonName personName, final DBSession session);
+	
+	/**
+	 * called when a person will be updated
+	 * @param personId
+	 * @param session
+	 */
+	public void onPersonUpdate(final String personId, final DBSession session);
+	
+	/**
+	 * called when a person will be updated by username change
+	 * @param userName
+	 * @param session
+	 */
+	public void onPersonUpdateByUserName(final String userName, final DBSession session);
+	
+	/**
+	 * called when a person will be deleted
+	 * @param person should be set to the old personId and the new modifiedBy and modifiedBy values
+	 * @param session
+	 */
+	public void onPersonDelete(final Person person, final DBSession session);
+	
+	/**
+	 * called when a pubPerson will be deleted
+	 * @param rel the relation to be deleted updated with the deleting user and the date of the deletion
+	 * @param session
+	 */
+	public void onPubPersonDelete(final ResourcePersonRelation rel, final DBSession session);
+
+	/**
+	 * @param personChangeId
+	 * @param session
+	 */
+	public void onPersonNameUpdate(Integer personChangeId, DBSession session);
 
 }

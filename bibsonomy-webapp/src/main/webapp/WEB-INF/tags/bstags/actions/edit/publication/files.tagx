@@ -80,7 +80,7 @@
 					
 					<label class="col-sm-3 control-label"><fmt:message key="post.bibtex.addedFiles"/></label>
 					
-					<div class="col-sm-3">
+					<div class="col-sm-9">
 						<ul class="documents"><!-- list of files !-->
 							<c:if test="${not empty command.fileName}">
 								<c:forEach var="fileN" items="${command.fileName}" varStatus="status">

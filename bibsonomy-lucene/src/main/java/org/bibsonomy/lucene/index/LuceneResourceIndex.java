@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
@@ -60,9 +61,17 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.store.NoSuchDirectoryException;
 import org.apache.lucene.util.Version;
+import org.bibsonomy.es.IndexType;
+import org.bibsonomy.es.IndexUpdater;
+import org.bibsonomy.es.IndexUpdaterState;
+import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.param.LuceneIndexStatistics;
+import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.param.comparator.DocumentCacheComparator;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
 
 /**
  * abstract base class for managing lucene resource indices
@@ -71,7 +80,7 @@ import org.bibsonomy.model.Resource;
  *
  * @param <R> the resource of the index
  */
-public class LuceneResourceIndex<R extends Resource> {
+public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> {
 	private static final Log log = LogFactory.getLog(LuceneResourceIndex.class);
 
 	/** directory prefix and id delimiter for different resource indeces */
@@ -117,19 +126,18 @@ public class LuceneResourceIndex<R extends Resource> {
 	/** id for identifying redundant resource indeces */
 	private int indexId;
 	
-	/** keeps track of the newest log_date during last index update */
-	private Long lastLogDate;
-	
-	/** keeps track of the newest tas_id during last index update */
-	private Integer lastTasId;
+	/** keeps track of the newest log_date and tas_id during last index update */
+	private IndexUpdaterState state;
 
 	private Class<R> resourceClass;
 	
-	/** the maximum field length */
-//	private IndexWriter.MaxFieldLength maxFieldLength;
+	/** converts post model objects to documents of the index structure */
+	protected LuceneResourceConverter<R> resourceConverter;
 
 	/** all sessions which currently use this index */
 	private final Set<LuceneSession> openSessions = new HashSet<>();
+	
+	private boolean closed = true;
 	
 	/**
 	 * constructor disabled
@@ -175,7 +183,7 @@ public class LuceneResourceIndex<R extends Resource> {
 		} catch (IOException e1) {
 			log.error(e1);
 		}
-		statistics.setNewestRecordDate(new Date(this.getLastLogDate()));
+		statistics.setNewestRecordDate(this.getLastLogDate());
 
 		return statistics;
 	}
@@ -186,10 +194,14 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * @throws IOException 
 	 */
 	public void close() throws CorruptIndexException, IOException{
-		this.closeSearcherManager();
-		this.closeIndexWriter();
-		this.closeDirectory();
-		this.disableIndex();
+		if (!closed) {
+			log.info("closing " + this);
+			closed = true;
+			this.closeSearcherManager();
+			this.closeIndexWriter();
+			this.closeDirectory();
+			this.disableIndex();
+		}
 	}
 	
 	/**
@@ -214,8 +226,13 @@ public class LuceneResourceIndex<R extends Resource> {
 		try {
 			this.indexPath = this.baseIndexPath + INDEX_PREFIX + this.resourceClass.getSimpleName() + LuceneResourceIndex.INDEX_ID_DELIMITER + this.indexId;
 			
+			if (!closed) {
+				throw new IllegalStateException("index already opened: " + this);
+			}
+			closed = false;
+			log.info("opening " + this);
 			this.indexDirectory = FSDirectory.open(new File(this.indexPath));
-			
+
 			try {
 				if (IndexWriter.isLocked(this.indexDirectory)) {
 					for (int retry = 0; retry < 3; ++retry) {
@@ -292,16 +309,14 @@ public class LuceneResourceIndex<R extends Resource> {
 	}
 	
 	
-	/**
-	 * @return the latest log_date[ms] from index 
-	 */
-	public long getLastLogDate() {
+	@Override
+	public Date getLastLogDate() {
 		// FIXME: this synchronisation is very inefficient 
 		synchronized(this) {
 			if (!isIndexEnabled()) {
-				return Long.MAX_VALUE;
-			} else if (this.lastLogDate != null) {
-				return this.lastLogDate;
+				return null;
+			} else if ((this.state != null) && (this.state.getLast_log_date() != null)) {
+				return this.state.getLast_log_date();
 			}
 			
 			//----------------------------------------------------------------
@@ -318,13 +333,13 @@ public class LuceneResourceIndex<R extends Resource> {
 				final String lastLogDate = doc.get(LuceneFieldNames.LAST_LOG_DATE);
 				try {
 					// parse date
-					return Long.parseLong(lastLogDate);
+					return new Date(Long.parseLong(lastLogDate));
 				} catch (final NumberFormatException e) {
 					log.error("Error parsing last_log_date " + lastLogDate);
 				}
 			}
 
-			return Long.MAX_VALUE;
+			return null;
 		}
 	}
 	
@@ -332,19 +347,23 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * set newest log_date[ms] 
 	 * @param lastLogDate the lastLogDate to set
 	 */
-	public void setLastLogDate(final Long lastLogDate) {
-		this.lastLogDate = lastLogDate;
+	public void setLastLogDate(final Date lastLogDate) {
+		if (this.state == null) {
+			this.state = new IndexUpdaterState();
+		}
+		this.state.setLast_log_date(lastLogDate);
 	}
 	
 	/** 
 	 * @return the newest tas_id from index
 	 */
+	@Override
 	public Integer getLastTasId() {
 		synchronized(this) {
 			if (!isIndexEnabled()) {
-				return Integer.MAX_VALUE;
-			} else if (this.lastTasId != null) {
-				return this.lastTasId;
+				return Integer.valueOf(Integer.MAX_VALUE);
+			} else if ((this.state != null) && (this.state.getLast_tas_id() != null)) {
+				return this.state.getLast_tas_id();
 			}
 			
 			//----------------------------------------------------------------
@@ -374,7 +393,10 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * @param lastTasId the lastTasId to set
 	 */
 	public void setLastTasId(final Integer lastTasId) {
-		this.lastTasId = lastTasId;
+		if (this.state == null) {
+			this.state = new IndexUpdaterState();
+		}
+		this.state.setLast_tas_id(lastTasId);
 	}
 
 	/**
@@ -383,6 +405,7 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * 
 	 * @param username
 	 */
+	@Override
 	public void flagUser(final String username) {
 		synchronized(this) {
 			this.usersToFlag.add(username);
@@ -394,6 +417,7 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * 
 	 * @param userName
 	 */
+	@Override
 	public void unFlagUser(final String userName) {
 		synchronized(this) {
 			this.usersToFlag.remove(userName);
@@ -405,6 +429,7 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * 
 	 * @param contentId post's content id 
 	 */
+	@Override
 	public void deleteDocumentForContentId(final Integer contentId) {
 		synchronized(this) {
 			this.contentIdsToDelete.add(contentId);
@@ -428,6 +453,16 @@ public class LuceneResourceIndex<R extends Resource> {
 	 * @param doc post document to insert into the index
 	 */
 	public void insertDocument(final Document doc) {
+		Object val = doc.get(LuceneFieldNames.LAST_LOG_DATE);
+		if (val == null) {
+			throw new IllegalArgumentException();
+		}
+		try {
+			Long.parseLong((String) val);
+		} catch (NumberFormatException e) {
+			throw new RuntimeException(e);
+		}
+		
 		synchronized(this) {
 			this.postsToInsert.add(doc);
 		}
@@ -447,6 +482,7 @@ public class LuceneResourceIndex<R extends Resource> {
 	/**
 	 * perform all cached operations to index
 	 */
+	@Override
 	public void flush() {
 		synchronized(this) {
 			if (!isIndexEnabled()) {
@@ -542,8 +578,7 @@ public class LuceneResourceIndex<R extends Resource> {
 		this.usersToFlag.clear();
 
 		// reset the cached query parameters
-		this.lastLogDate = null;
-		this.lastTasId = null;
+		this.state = null;
 		
 		if ((this.indexWriter != null) && (this.searcherManager != null)) {
 			this.enableIndex();
@@ -663,13 +698,13 @@ public class LuceneResourceIndex<R extends Resource> {
 	private void closeIndexWriter() throws CorruptIndexException, IOException {
 		if (this.indexWriter != null) {
 			synchronized (this) {
-				while (this.openSessions.size() > 0) {
-					try {
+				try {
+					while (this.openSessions.size() > 0) {
 						log.debug("waiting to close indexWriter " + indexPath);
 						this.wait();
-					} catch (InterruptedException e) {
-						Thread.interrupted();
 					}
+				} catch (InterruptedException e) {
+					Thread.interrupted();
 				}
 				log.debug("Closing indexWriter " + indexPath);
 				this.disableIndex();
@@ -694,13 +729,13 @@ public class LuceneResourceIndex<R extends Resource> {
 	private void closeSearcherManager() throws IOException {
 		if (this.searcherManager != null) {
 			synchronized (this) {
-				while (this.openSessions.size() > 0) {
-					try {
+				try {
+					while (this.openSessions.size() > 0) {
 						log.debug("waiting to close searchManager " + indexPath);
 						this.wait();
-					} catch (InterruptedException e) {
-						Thread.interrupted();
 					}
+				} catch (InterruptedException e) {
+					Thread.interrupted();
 				}
 				log.debug("closing searchManager " + indexPath);
 				this.disableIndex();
@@ -887,5 +922,123 @@ public class LuceneResourceIndex<R extends Resource> {
 	@Override
 	public String toString() {
 		return this.resourceClass.getSimpleName() + INDEX_ID_DELIMITER + this.indexId;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#setSystemInformation(java.lang.Integer, java.util.Date)
+	 */
+	@Override
+	public void setSystemInformation(IndexUpdaterState state) {
+		this.state = state;
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#setContentIdsToDelete(java.util.List)
+	 */
+	@Override
+	public void deleteDocumentsForContentIds(List<Integer> contentIdsToDelete) {
+		this.deleteDocumentsInIndex(contentIdsToDelete);
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#insertDocument(org.bibsonomy.lucene.param.LucenePost, long)
+	 */
+	@Override
+	public void insertDocument(LucenePost<R> post, Date currentLogDate) {
+		if (currentLogDate != null) {
+			post.setLastLogDate(currentLogDate);
+		}
+		final Document postDoc = (Document)this.resourceConverter.readPost(post, IndexType.LUCENE);
+		this.insertDocument(postDoc);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#deleteIndexForForUser(java.lang.String)
+	 */
+	@Override
+	public void deleteIndexForUser(String userName) {
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#deleteIndexForIndexId(long)
+	 */
+	@Override
+	public void deleteIndexForIndexId(long indexId) {
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * @return
+	 */
+	public LuceneResourceConverter<R> getResourceConverter() {
+		return this.resourceConverter;
+	}
+
+	/**
+	 * @param resourceConverter
+	 */
+	public void setResourceConverter(LuceneResourceConverter<R> resourceConverter) {
+		this.resourceConverter = resourceConverter;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#updateIndexWithPersonRelation(java.lang.String, java.util.List)
+	 */
+	@Override
+	public void updateIndexWithPersonRelation(String interHash, List<ResourcePersonRelation> newRels) {
+		// because it is intended to completely replace lucene with elasticsearch, this is only implemented for elasticsearch
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#updateIndexWithPersonNameInfo(org.bibsonomy.model.PersonName, org.apache.commons.collections.LRUMap)
+	 */
+	@Override
+	public void updateIndexWithPersonNameInfo(PersonName name, LRUMap updatedInterhashes) {
+		// because it is intended to completely replace lucene with elasticsearch, this is only implemented for elasticsearch
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#updateIndexWithPersonInfo(org.bibsonomy.model.Person, org.apache.commons.collections.LRUMap)
+	 */
+	@Override
+	public void updateIndexWithPersonInfo(Person per, LRUMap updatedInterhashes) {
+		// because it is intended to completely replace lucene with elasticsearch, this is only implemented for elasticsearch
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#onUpdateComplete()
+	 */
+	@Override
+	public void onUpdateComplete() {
+		// activating the index is done elsewhere by some other legacy magic
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#getUpdaterState()
+	 */
+	@Override
+	public IndexUpdaterState getUpdaterState() {
+		if (state == null) {
+			state = new IndexUpdaterState();
+		}
+		final Integer lastTasId = this.getLastTasId();
+		// keeps track of the newest log_date during last index update
+		final Date lastLogDate = this.getLastLogDate();
+		state.setLast_log_date(lastLogDate);
+		state.setLast_tas_id(lastTasId);
+		// lucene does not support person information. So we set last personChangeId to maximum to make the updater search for the empty set of changes greater than this change id (-1 is needed to prevent an overflow when searching for a newer id)
+		state.setLastPersonChangeId(Long.MAX_VALUE-1);
+		return state;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.es.IndexUpdater#closeUpdateProcess()
+	 */
+	@Override
+	public void closeUpdateProcess() {
+		// nothing to be done
 	}
 }

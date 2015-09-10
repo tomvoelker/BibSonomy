@@ -87,15 +87,15 @@ public class BibtexkeyPageController extends SingleResourceListController implem
 		}
 		
 		// retrieve and set the requested resource lists
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
-			setList(command, resourceType, groupingEntity, groupingName, command.getRequestedTagsList(), null, null, null, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
+			setList(command, resourceType, groupingEntity, groupingName, command.getRequestedTagsList(), null, null, command.getScope(), null, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceType).getEntriesPerPage());
 			postProcessAndSortList(command, resourceType);
 		}
 		
 		// html format - fetch tags and return HTML view
 		if (format.equals("html")) {
 			// tags
-			setTags(command, BibTex.class, groupingEntity, groupingName, null, command.getRequestedTagsList(), null, 1000, null);
+			setTags(command, BibTex.class, groupingEntity, groupingName, null, command.getRequestedTagsList(), null, 1000, null, command.getScope());
 			if (command.getTagcloud().getTags().size() > 999) {
 				log.error("Found bibtex entries by bibtex keys with more than 1000 tags assigned!!");
 			}

@@ -40,8 +40,10 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.errors.MissingTagsErrorMessage;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
@@ -49,6 +51,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.Chain;
+import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.systemstags.SystemTagsExtractor;
@@ -639,7 +642,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * <ul>
 	 * <li>details about the tag itself, like number of occurrences etc</li>
 	 * <li>list of subtags</li>
-	 * <li>list of supertags</li>
+	 * <li>list of supertags</li>,
 	 * </ul>
 	 * 
 	 * FIXME: is this global or for a given user/group only?
@@ -685,23 +688,19 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @return list of tags
 	 */
 	public List<Tag> getTagsByUser(final TagParam param, final DBSession session) {
-		/*
-		 * another DBLP extra sausage - don't query DB for tags (as only "dblp"
-		 * will be returned anyways), but return that directly
-		 */
-		if (UserUtils.isDBLPUser(param.getRequestedUserName())) {
-			final List<Tag> tags = new ArrayList<Tag>();
-			final Tag dblp = new Tag();
-			dblp.setName(UserUtils.DBLP_USER_NAME);
-			dblp.setGlobalcount(1000000);
-			dblp.setUsercount(1000000);
-			tags.add(dblp);
-			return tags;
+		if (UserUtils.isSpecialUser(param.getRequestedUserName())) {
+			/*
+			 * another DBLP extra sausage - don't query DB for tags (as only "dblp"
+			 * will be returned anyways), but return that directly
+			 */
+			return UserUtils.getTagsOfSpecialUser(param.getRequestedUserName());
 		}
 
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
 		return this.queryForList("getTagsByUser", param, Tag.class, session);
 	}
+
+
 
 	/**
 	 * returns all tags assigned to posts which are matching the given query
@@ -710,6 +709,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param requestedUserName
 	 * @param requestedGroupName
 	 * @param allowedGroups
+	 * @param searchType 
 	 * @param searchTerms
 	 * @param titleSearchTerms
 	 * @param authorSearchTerms
@@ -724,15 +724,14 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public List<Tag> getTagsByResourceSearch(
 			final String userName, final String requestedUserName, final String requestedGroupName,
-			final Collection<String> allowedGroups,
-			final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex,
+			final Collection<String> allowedGroups, final SearchType searchType, final String searchTerms,final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex,
 			final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
 
 		if (present(this.publicationSearch) && present(this.bookmarkSearch)) {
 			final List<Tag> bookmarkTags =
-					this.bookmarkSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
+					this.bookmarkSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, searchType, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
 			final List<Tag> publicationTags =
-					this.publicationSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
+					this.publicationSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, searchType, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
 			final List<Tag> retVal = TagUtils.mergeTagLists(bookmarkTags, publicationTags, Order.POPULAR, Order.POPULAR, limit);
 			return retVal;
 		}
@@ -1116,6 +1115,31 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		param.setLimit(limit);
 		param.setOffset(offset);
 		return this.queryForList("getTagsByBibtexkey", param, Tag.class, session);
+	}
+
+	/**
+	 * @param session
+	 * @return the number of distinct tags
+	 */
+	public int getNumberOfTags(DBSession session) {
+		final Integer count = this.queryForObject("getGlobalTagCount", Integer.class, session);
+		return saveConvertToint(count);
+	}
+	
+	/**
+	 * @param contentType 
+	 * @param startDate 
+	 * @param filters 
+	 * @param session
+	 * @return the number of tas
+	 */
+	public int getNumberOfTas(final int contentType, final Date startDate, Set<Filter> filters, DBSession session) {
+		final GenericParam param = new TagParam();
+		param.setContentType(ConstantID.getContentTypeByClass(ConstantID.getClassByContentType(contentType)));
+		param.setStartDate(startDate);
+		param.setFilters(filters);
+		final Integer count = this.queryForObject("getGlobalTasCount", param, Integer.class, session);
+		return saveConvertToint(count);
 	}
 
 	public void updateTasInGroupFromLeavingUser(final String leavingUser, final int groupId, final DBSession session) {

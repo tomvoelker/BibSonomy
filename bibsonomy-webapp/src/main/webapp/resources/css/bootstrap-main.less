@@ -935,8 +935,12 @@ h1#pubtitle {
 }
 
 img.user-avatar {
-	width: 64px;
-	height: 64px;
+	margin-left: auto;
+	margin-right: auto;
+	max-width: 64px;
+	max-height: 64px;
+	text-align: center;
+	display: block;
 }
 
 a.img-thumbnail span {
@@ -980,14 +984,17 @@ h4.pub-details {
 	display: none;
 }
 
-div.pub-citation-tab-content {
-
-	height: 132px;
+div.pub-citation-tab-content,
+div.pub-person-tab-content {
 	border-bottom: 1px solid #ddd;
 	border-left: 1px solid #ddd;
 	border-right: 1px solid #ddd;
 	padding: 1em;
 	border-radius: 0 0 4px 4px;
+}
+
+div.pub-citation-tab-content {
+	height: 132px;
 }
 
 div.pub-citation-tab-content textarea {
@@ -1248,6 +1255,8 @@ h2.getting-started {
 	font-size: 34px !important;
 	font-weight: 400;
 	text-align:center;
+	line-height: 38px !important;
+	height: auto !important;
 }
 
 .content-header,

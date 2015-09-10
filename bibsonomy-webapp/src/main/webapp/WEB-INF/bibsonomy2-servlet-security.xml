@@ -379,9 +379,9 @@
 	<bean id="openidRememberMeServices" class="org.bibsonomy.webapp.util.spring.security.rememberMeServices.OpenIDRememberMeServices">
 		<constructor-arg ref="cookieKey" />
 		<constructor-arg ref="databaseUserService" />
-			<property name="parameter" ref="rememberMeParameter" />
-			<property name="cookieName" value="openID_user" />
-			<property name="filterUrl" ref="openidLoginUrl" />
+		<property name="parameter" ref="rememberMeParameter" />
+		<property name="cookieName" value="openID_user" />
+		<property name="filterUrl" ref="openidLoginUrl" />
 		<property name="projectRoot" value="${project.home}" />
 		<property name="consumer" ref="openidConsumer" />
 		<property name="returnToUrlParameters" ref="openIdReturnParameters" />

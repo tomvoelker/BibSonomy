@@ -33,7 +33,6 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.GroupRole;
@@ -84,13 +83,18 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * Checks whether the requested start- / end-values are OK
 	 * 
 	 * @param loginUser
+	 * @param groupingEntity
 	 * @param start
 	 * @param end
 	 * @param itemType
 	 */
-	public void checkStartEnd(final User loginUser, final int start, final int end, final String itemType) {
+	public void checkStartEnd(final User loginUser, final GroupingEntity groupingEntity, final int start, final int end, final String itemType) {
 		if (!this.isAdmin(loginUser) && ((end - start) > PostLogicInterface.MAX_QUERY_SIZE)) {
-			throw new AccessDeniedException("You are not authorized to retrieve more than " + PostLogicInterface.MAX_QUERY_SIZE + " " + itemType + " items at a time.");
+			throw new AccessDeniedException("You are not authorized to retrieve more than " + PostLogicInterface.MAX_QUERY_SIZE + " " + itemType + " at a time.");
+		}
+		
+		if (!this.isAdmin(loginUser) && GroupingEntity.ALL.equals(groupingEntity) && (start > PostLogicInterface.MAX_RECENT_POSTS || end > PostLogicInterface.MAX_RECENT_POSTS)) {
+			throw new AccessDeniedException("You are only authorized to retrieve the latest " + PostLogicInterface.MAX_RECENT_POSTS + " " + itemType);
 		}
 	}
 
@@ -213,14 +217,12 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 *        - the requested grouping (GROUP or USER)
 	 * @param groupingName
 	 *        - the name of the requested user / group
-	 * @param filter
-	 *        - the requested filter entity
 	 * @param session
 	 *        - DB session
 	 * @return <code>true</code> if the logged-in user is allowed to access the
 	 *         documents of the requested user / group.
 	 */
-	public boolean isAllowedToAccessUsersOrGroupDocuments(final User loginUser, final GroupingEntity grouping, final String groupingName, final FilterEntity filter, final DBSession session) {
+	public boolean isAllowedToAccessUsersOrGroupDocuments(final User loginUser, final GroupingEntity grouping, final String groupingName, final DBSession session) {
 		if (grouping != null) {
 			switch (grouping) {
 			case USER:
@@ -513,6 +515,9 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 			}
 			if (UserUtils.isDBLPUser(targetUser)) {
 				throw new ValidationException("error.relationship_with_dblp");
+			}
+			if (UserUtils.isSpecialUser(targetUser)) {
+				throw new ValidationException("error.relationship_with_special_user");
 			}
 			if (loginUser.isSpammer()) {
 				throw new ValidationException("error.relationship_from_spammer");

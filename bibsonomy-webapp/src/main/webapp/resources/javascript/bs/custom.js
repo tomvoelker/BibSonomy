@@ -4,8 +4,6 @@ $(function() {
 		autoclose : true
 	});
 
-	$('.collapse').collapse();
-
 	$('.toggleAdvanced').click(function(event) {
 		event.preventDefault();
 		$(this).parents('li.media').find('.advanced').toggle();
@@ -48,7 +46,7 @@ $(function() {
 	 * publication details abstract and description more link
 	 */
 	maxChar = 350;
-	dots = "&hellip;";
+    	dots = "&hellip;";
 	moretext = "";
 	lesstext = "";
 
@@ -215,6 +213,7 @@ $(function() {
 		if (el.innerHTML.length > maxChar + dots.length) {
 			text = text.substr(0, maxChar) + dots;
 			shortened = true;
+    
 		}
 		$(el).html(text);
 		return shortened;

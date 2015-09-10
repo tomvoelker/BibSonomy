@@ -28,6 +28,7 @@ package org.bibsonomy.scraper.generic;
 
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -42,6 +43,7 @@ public class CoinsScraperTest {
 	/**
 	 * starts URL test with id url_130
 	 */
+	@Ignore
 	@Test
 	public void url1TestRun(){
 		UnitTestRunner.runSingleTest("url_130");

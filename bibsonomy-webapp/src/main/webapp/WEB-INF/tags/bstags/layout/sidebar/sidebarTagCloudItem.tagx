@@ -1,0 +1,33 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar">
+
+	<jsp:directive.attribute name="cmd"	type="org.bibsonomy.webapp.command.TagCloudCommand" required="true" />
+	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true" />
+
+	<jsp:directive.attribute name="tagboxMinfreqStyle" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="tagSizeMode" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="showPlain" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="textKey" type="java.lang.String" required="false" />
+	<!-- 
+		highlighTags is a space-separated string of tags; each one will be highlighted
+		in the tagcloud (if present)
+	-->
+	<jsp:directive.attribute name="highlightTags" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="showTooltips" type="java.lang.Integer" required="false"/>
+	<jsp:directive.attribute name="suppressTitle" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="scope" type="java.lang.String" required="false"/>
+
+	<c:if test="${empty textKey}">
+		<c:set var="textKey" value="tags"/>
+	</c:if>
+	
+	<sidebar:sidebarItem textKey="${textKey}">
+		<jsp:attribute name="content">
+			<tags:cloud requPath="${requPath}" cmd="${cmd}" tagboxMinfreqStyle="${tagboxMinfreqStyle}" showTooltips="${showTooltips}" tagSizeMode="${tagSizeMode}" scope="${scope}"/>
+		</jsp:attribute>
+	</sidebar:sidebarItem>
+	
+	
+</jsp:root>
