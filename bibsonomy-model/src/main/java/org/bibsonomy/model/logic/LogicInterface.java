@@ -26,10 +26,7 @@
  */
 package org.bibsonomy.model.logic;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import java.net.InetAddress;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -56,17 +53,13 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
-import org.bibsonomy.model.Person;
-import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.user.remote.RemoteUserId;
@@ -668,10 +661,10 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param tags
 	 * @param regex
 	 * @param status
-	 * @param filters TODO
+	 * @param filters
 	 * @param contraints the statistic contraint
-	 * @param startDate TODO
-	 * @param endDate TODO
+	 * @param startDate
+	 * @param endDate
 	 * @param start
 	 * @param end
 	 * @return the number of relations from a user
