@@ -64,7 +64,7 @@ import org.elasticsearch.search.SearchHit;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Class for every basic functionality on top of elasticsearch ee.g. resolving
+ * Class for every basic functionality on top of elasticsearch e.g. resolving
  * index names by alias names and locking indices
  *
  * @author lutful
@@ -188,7 +188,7 @@ public class ESIndexManager {
 	}
 	
 	public List<String> getTempIndicesOfThisSystem(String resourceType) {
-		final String tempAlias =  ESConstants.getTempAliasForResource(resourceType);
+		final String tempAlias = ESConstants.getTempAliasForResource(resourceType);
 		return this.getThisSystemsIndexesFromAlias(tempAlias);
 	}
 	
@@ -258,10 +258,10 @@ public class ESIndexManager {
 	 * @return return a list of indexes
 	 */
 	public List<String> getThisSystemsIndexesFromAlias(String alias) {
-		final String thisSystemPrefix = this.systemHome.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
+		final String thisSystemPrefix = this.systemHome.replaceAll("[^a-zA-Z0-9]", "").toLowerCase(); // TODO: use config?
 		final List<String> rVal = getIndexesFromAlias(alias);
-		for (Iterator<String> it = rVal.iterator(); it.hasNext();) {
-			String indexName = it.next();
+		for (final Iterator<String> it = rVal.iterator(); it.hasNext();) {
+			final String indexName = it.next();
 			if (!indexName.contains(thisSystemPrefix)) {
 				it.remove();
 			}
@@ -269,8 +269,7 @@ public class ESIndexManager {
 		return rVal;
 	}
 	
-	
-	private List<String> getIndexesFromAlias(String alias){
+	private List<String> getIndexesFromAlias(String alias) {
 		final List<String> indexes = new ArrayList<String>();
 		final ImmutableOpenMap<String, AliasMetaData> indexToAliasesMap = this.esClient.getClient().admin().cluster() //
 				.state(Requests.clusterStateRequest()) //
@@ -279,7 +278,7 @@ public class ESIndexManager {
 				.getMetaData() //
 				.aliases().get(alias);
 		if (indexToAliasesMap != null && !indexToAliasesMap.isEmpty()) {
-			for (ObjectCursor<String> cursor : indexToAliasesMap.keys()) {
+			for (final ObjectCursor<String> cursor : indexToAliasesMap.keys()) {
 				indexes.add(cursor.value);
 			}
 		}
@@ -292,8 +291,8 @@ public class ESIndexManager {
 	 * @param resourceType
 	 * @return returns the active indexName
 	 */
-	public String getActiveIndexnameForResource(String resourceType){
-		return getThisSystemsIndexNameFromAlias(ESConstants.getGlobalAliasForResource(resourceType, true));
+	public String getActiveIndexnameForResource(String resourceType) {
+		return this.getThisSystemsIndexNameFromAlias(ESConstants.getGlobalAliasForResource(resourceType, true));
 	}
 	
 	/**
@@ -306,10 +305,10 @@ public class ESIndexManager {
 		final String underConstructionAlias = ESConstants.getTempAliasForResource(resourceType);
 		final String backupIndexAlias = ESConstants.getGlobalAliasForResource(resourceType, false);
 		final IndicesAliasesResponse aliasReponse = this.esClient.getClient().admin().indices().prepareAliases()
-                .removeAlias(indexName, underConstructionAlias)
-                .addAlias(indexName, backupIndexAlias)
-                .execute()
-                .actionGet();
+				.removeAlias(indexName, underConstructionAlias)
+				.addAlias(indexName, backupIndexAlias)
+				.execute()
+				.actionGet();
 		if (!aliasReponse.isAcknowledged()) {
 			log.error("Error in removing alias of index: "+ indexName);
 		}
@@ -322,10 +321,10 @@ public class ESIndexManager {
 	 * @return
 	 */
 	public boolean removeAlias(final String indexName, final String alias){
-		IndicesAliasesResponse aliasReponse = this.esClient.getClient().admin().indices().prepareAliases()
-                .removeAlias(indexName, alias)
-                .execute()
-                .actionGet();
+		final IndicesAliasesResponse aliasReponse = this.esClient.getClient().admin().indices().prepareAliases()
+				.removeAlias(indexName, alias)
+				.execute()
+				.actionGet();
 		if (!aliasReponse.isAcknowledged()) {
 			log.error("Error in removing alias of index: "+ indexName);
 			return false;
@@ -334,13 +333,11 @@ public class ESIndexManager {
 	}
 
 	/**
-	 * @return
+	 * @return the client
 	 */
 	public Client getClient() {
 		return esClient.getClient();
 	}
-
-	
 
 	/**
 	 * @param resourceType
@@ -390,12 +387,12 @@ public class ESIndexManager {
 					return null;
 				}
 				return new IndexLock(realIndexName, getRwLock(realIndexName).writeLock(), 5, TimeUnit.MILLISECONDS);
-			} catch (LockFailedException e) {
+			} catch (final LockFailedException e) {
 				log.error("timeout waiting for inactive index - attempt " + attempt + "/10", e);
 			}
 			try {
 				Thread.sleep(200);
-			} catch (InterruptedException e) {
+			} catch (final InterruptedException e) {
 				Thread.currentThread().interrupt();
 				throw new RuntimeException("got interrupted while waiting for inactive index");
 			}
@@ -412,7 +409,7 @@ public class ESIndexManager {
 		searchRequestBuilder.setTypes(ESConstants.SYSTEM_INFO_INDEX_TYPE);
 		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 		searchRequestBuilder.setQuery(query);
-		searchRequestBuilder.setFrom(0).setSize(size).setExplain(true);
+		searchRequestBuilder.setFrom(0).setSize(size).setExplain(true); // FIXME: remove explain
 
 		final SearchResponse response = searchRequestBuilder.execute().actionGet();
 
@@ -422,10 +419,9 @@ public class ESIndexManager {
 				rVal.put(hit.getIndex(), parseSystemInformation(hit.getSourceAsString(), indexName));
 			}
 		}
-
+		
 		return rVal;
 	}
-	
 
 	private static SystemInformation parseSystemInformation(String json, String indexName) {
 		try {
@@ -474,5 +470,4 @@ public class ESIndexManager {
 	private Map<String, SystemInformation> getAllSystemInfosByAlias(String resourceType, final String alias) {
 		return this.getAllSystemInfosAsObjects(QueryBuilders.matchQuery("postType", resourceType), 10000, alias);
 	}
-
 }
