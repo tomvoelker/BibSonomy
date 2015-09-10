@@ -21,11 +21,12 @@
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"> 
 	
-	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/><!-- post -->
-	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/><!-- loginUserName -->
-	<jsp:directive.attribute name="availableRoles" type="java.util.Collection" required="true"/> <!-- command.availableRoles -->
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
+	<jsp:directive.attribute name="availableRoles" type="java.util.Collection" required="true"/>
 	
-
+	<c:set var="loginUserName" value="${loginUser.name}"/>
+	
 										<div class='row ${post.resource.interHash}_${post.resource.intraHash}'>
 											<div style='border-right:1px solid lightgrey' class='col-md-6 publication-list'>
 												<div class="title">
@@ -49,13 +50,13 @@
 																	<span class='resourcePersonRelation_${relation.personRelChangeId}'>
 																		<a href="${absoluteUrlGenerator.getPersonUrl(relation.person.personId)}"><c:out value="${relation.person.mainName.firstName} "/> <c:out value="${relation.person.mainName.lastName} "/> </a>
 																		<!--  <span data-toggle='modal' data-target="#editRole" data-resource-title="${post.resource.title}" data-person-name="${relation.personName.firstName} ${relation.personName.lastName}" data-relation-simhash1="${relation.simhash1}" data-relation-simhash2='${relation.simhash2}' data-person-role="${role}" style='color:orange;cursor:pointer' href="#editRole" class='editRole glyphicon glyphicon-pencil'>&#160;</span> -->
-																		<c:if test="${not empty loginUserName}">
+																		<c:if test="${not empty loginUserName and not loginUser.spammer}">
 																			<span data-toggle='modal' data-target="#deleteRole" data-resourcePersonRelation-id='${relation.personRelChangeId}' style='color:darkred;cursor:pointer' href="#deleteRole" class='deleteRole glyphicon glyphicon-remove'>&#160;</span>
 																		</c:if>
 																	</span>
 																</c:if>
 															</c:forEach>
-															<c:if test="${not empty loginUserName}">
+															<c:if test="${not empty loginUserName and not loginUser.spammer}">
 																<span data-toggle='modal' data-target="#addRole" data-relation-pubowner="${post.user.name}" data-resourceTitle="${post.resource.title}" data-relation-simhash1="${post.resource.interHash}" data-relation-simhash2='${post.resource.intraHash}' data-person-role="${role}" style='color:green;cursor:pointer' href="#addRole" class='addRole glyphicon glyphicon-plus'>&#160;</span>
 															</c:if> 
 														</li>

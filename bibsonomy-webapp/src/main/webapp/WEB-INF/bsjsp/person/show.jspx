@@ -186,7 +186,9 @@
 												</c:when>
 												<c:otherwise>
 													<div class='checkbox' id='personName_${name.personNameChangeId}'><label><input type='radio' name='formSelectedName' value='${name.personNameChangeId}' /> ${name.firstName} ${name.lastName}</label>&#160;
-														<span data-person-name-id='${name.personNameChangeId}' data-firstName='${name.firstName}' data-lastName='${name.lastName}' data-toggle='modal' data-target='#removeName' style='color:darkred;cursor:pointer' href='#remName' id='removeName_${name.personNameChangeId}' class='removeName glyphicon glyphicon-remove'></span>
+														<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
+															<span data-person-name-id='${name.personNameChangeId}' data-firstName='${name.firstName}' data-lastName='${name.lastName}' data-toggle='modal' data-target='#removeName' style='color:darkred;cursor:pointer' href='#remName' id='removeName_${name.personNameChangeId}' class='removeName glyphicon glyphicon-remove'></span>
+														</c:if>
 													</div>
 												</c:otherwise>
 											</c:choose>
@@ -197,7 +199,7 @@
 									</c:otherwise>
 								</c:choose>
 								<br id='nameInsertionPoint'/>
-								<c:if test="${not empty command.context.loginUser.name}">
+								<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
 									<button type='button' class='btn btn-default' data-toggle="modal" data-target="#addName" href='#addPerson'>${textAddAlternateNameButton}</button>
 								</c:if>
 							</div>
@@ -208,7 +210,7 @@
 								<input class='form-control' type="text" name='formOrcid' id='formOrcid' placeholder="${textOrcidId}" value="${command.person.orcid}"/>
 							</div>
 						</div>
-						<c:if test="${not empty command.context.loginUser.name}">
+						<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
 							<div class='form-group'>
 								<label class="control-label col-md-4" for='thatsMe'>${textThatsMeLabel}</label>
 									<div class="col-md-6">
@@ -247,7 +249,7 @@
 								<button style='${displayLinkButton}' type='button' id='btnLink' class='btn btn-default' data-toggle="modal" data-target="#linkPerson">${textThatsMeButton}</button>
 								<button style='${displayUnlinkButton}' type='button' id='btnUnlink' class='btn btn-default' data-toggle="modal" data-target="#unlinkPerson">${textThatsNotMeButton}</button>
 								-->
-								<c:if test="${not empty command.context.loginUser.name}">
+								<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
 									<button id='btnSaveSubmit' data-person-id="${command.person.personId}" type='button' class='btn btn-primary pull-right'>${textSaveButton}</button>
 								</c:if>
 							</div>
@@ -263,7 +265,7 @@
 					<div class='tab-content pub-person-tab-content'>
 					
 						<div id='ownThesis' class='tab-pane'>
-							<c:if test="${not empty command.context.loginUser.name}">
+							<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
 								<br/>
 								<button style='width: 100%;' class='btn btn-default' data-toggle='modal' data-target='#addThesis'>${textAddThesisButton}</button>
 								<br/>
@@ -272,7 +274,7 @@
 							<c:choose>
 								<c:when test="${fn:length(command.thesis) gt 0}">
 									<c:forEach var="post" items="${command.thesis}">
-										<per:pubWithRoles post="${post}" loginUserName="${loginUserName}" availableRoles="${command.availableRoles}" />
+										<per:pubWithRoles post="${post}" loginUser="${command.context.loginUser}" availableRoles="${command.availableRoles}" />
 										<hr />
 									</c:forEach>
 								</c:when>
@@ -285,7 +287,7 @@
 							<c:choose>
 								<c:when test="${fn:length(command.otherPubs) gt 0}">
 									<c:forEach var="post" items="${command.otherPubs}">
-										<per:pubWithRoles post="${post}" loginUserName="${loginUserName}" availableRoles="${command.availableRoles}" />
+										<per:pubWithRoles post="${post}" loginUser="${command.context.loginUser}" availableRoles="${command.availableRoles}" />
 										<hr />
 									</c:forEach>
 								</c:when>
@@ -297,7 +299,7 @@
 						
 						
 						<div id='ownPublications' class='tab-pane'>
-							<c:if test="${not empty command.context.loginUser.name}">
+							<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
 								<br/>
 								<button style='width: 100%;' class='btn btn-default' data-toggle='modal' data-target='#addSupervisedThesis'>${textAddThesisButton}</button>
 								<br/>
@@ -306,7 +308,7 @@
 							<c:choose>
 								<c:when test="${fn:length(command.advisedThesis) gt 0}">
 									<c:forEach var="post" items="${command.advisedThesis}">
-										<per:pubWithRoles post="${post}" loginUserName="${loginUserName}" availableRoles="${command.availableRoles}" />
+										<per:pubWithRoles post="${post}" loginUser="${command.context.loginUser}" availableRoles="${command.availableRoles}" />
 										<hr />
 									</c:forEach>
 								</c:when>
@@ -319,7 +321,7 @@
 							<c:choose>
 								<c:when test="${fn:length(command.otherAdvisedPubs) gt 0}">
 									<c:forEach var="post" items="${command.otherAdvisedPubs}">
-										<per:pubWithRoles post="${post}" loginUserName="${loginUserName}" availableRoles="${command.availableRoles}" />
+										<per:pubWithRoles post="${post}" loginUser="${command.context.loginUser}" availableRoles="${command.availableRoles}" />
 										<hr />
 									</c:forEach>
 								</c:when>
