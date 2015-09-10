@@ -688,23 +688,19 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @return list of tags
 	 */
 	public List<Tag> getTagsByUser(final TagParam param, final DBSession session) {
-		/*
-		 * another DBLP extra sausage - don't query DB for tags (as only "dblp"
-		 * will be returned anyways), but return that directly
-		 */
-		if (UserUtils.isDBLPUser(param.getRequestedUserName())) {
-			final List<Tag> tags = new ArrayList<Tag>();
-			final Tag dblp = new Tag();
-			dblp.setName(UserUtils.DBLP_USER_NAME);
-			dblp.setGlobalcount(1000000);
-			dblp.setUsercount(1000000);
-			tags.add(dblp);
-			return tags;
+		if (UserUtils.isSpecialUser(param.getRequestedUserName())) {
+			/*
+			 * another DBLP extra sausage - don't query DB for tags (as only "dblp"
+			 * will be returned anyways), but return that directly
+			 */
+			return UserUtils.getTagsOfSpecialUser(param.getRequestedUserName());
 		}
 
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
 		return this.queryForList("getTagsByUser", param, Tag.class, session);
 	}
+
+
 
 	/**
 	 * returns all tags assigned to posts which are matching the given query
