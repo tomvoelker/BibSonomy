@@ -1177,6 +1177,13 @@ public class DBLogic implements LogicInterface {
 			throw new AccessDeniedException("Please log in!");
 		}
 	}
+	
+	private void ensureLoggedInAndNoSpammer() {
+		this.ensureLoggedIn();
+		if (this.loginUser.isSpammer()) {
+			throw new AccessDeniedException("You are not allowed to use this function!");
+		}
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -3216,7 +3223,7 @@ public class DBLogic implements LogicInterface {
 	
 	@Override
 	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) throws ResourcePersonAlreadyAssignedException {
-		this.ensureLoggedIn();
+		this.ensureLoggedInAndNoSpammer();
 		ValidationUtils.assertNotNull(resourcePersonRelation.getPerson());
 		ValidationUtils.assertNotNull(resourcePersonRelation.getPerson().getPersonId());
 		ValidationUtils.assertNotNull(resourcePersonRelation.getRelationType());
@@ -3246,7 +3253,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public void removeResourceRelation(int resourceRelationId) {
-		this.ensureLoggedIn();
+		this.ensureLoggedInAndNoSpammer();
 		DBSession session = this.openSession();
 		try {
 			this.personDBManager.removeResourceRelation(resourceRelationId, this.loginUser.getName(), session);
@@ -3260,7 +3267,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public void createOrUpdatePerson(Person person) {
-		this.ensureLoggedIn();
+		this.ensureLoggedInAndNoSpammer();
 		final DBSession session = this.openSession();
 		try {
 			createOrUpdatePerson(person, session);
@@ -3270,7 +3277,7 @@ public class DBLogic implements LogicInterface {
 	}
 
 	private void createOrUpdatePerson(Person person, final DBSession session) {
-		this.ensureLoggedIn();
+		this.ensureLoggedInAndNoSpammer();
 		if (person.getUser() != null) {
 			if (person.getUser().equals(loginUser.getName()) == false) {
 				throw new AccessDeniedException();
@@ -3429,7 +3436,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public void removePersonName(Integer personChangeId) {
-		this.ensureLoggedIn();
+		this.ensureLoggedInAndNoSpammer();
 		final DBSession session = this.openSession();
 		try {
 			this.personDBManager.removePersonName(personChangeId, this.loginUser.getName(), session);
@@ -3454,7 +3461,7 @@ public class DBLogic implements LogicInterface {
 
 	@Override
 	public void createPersonName(PersonName personName) {
-		this.ensureLoggedIn();
+		this.ensureLoggedInAndNoSpammer();
 		final DBSession session = this.openSession();
 		try {
 			this.personDBManager.createPersonName(personName, session);
@@ -3465,7 +3472,7 @@ public class DBLogic implements LogicInterface {
 	
 	@Override
 	public void linkUser(String personId) {
-		this.ensureLoggedIn();
+		this.ensureLoggedInAndNoSpammer();
 		final DBSession session = this.openSession();
 		try {
 			this.personDBManager.unlinkUser(this.getAuthenticatedUser().getName(), session);
@@ -3480,7 +3487,7 @@ public class DBLogic implements LogicInterface {
 	
 	@Override
 	public void unlinkUser(String username) {
-		this.ensureLoggedIn();
+		this.ensureLoggedInAndNoSpammer();
 		final DBSession session = this.openSession();
 		try {
 			this.personDBManager.unlinkUser(username, session);
