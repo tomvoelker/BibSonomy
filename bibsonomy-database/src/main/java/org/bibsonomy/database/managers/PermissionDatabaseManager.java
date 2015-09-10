@@ -516,6 +516,9 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 			if (UserUtils.isDBLPUser(targetUser)) {
 				throw new ValidationException("error.relationship_with_dblp");
 			}
+			if (UserUtils.isSpecialUser(targetUser)) {
+				throw new ValidationException("error.relationship_with_special_user");
+			}
 			if (loginUser.isSpammer()) {
 				throw new ValidationException("error.relationship_from_spammer");
 			}
