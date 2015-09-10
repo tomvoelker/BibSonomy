@@ -115,12 +115,8 @@ public class SearchPageController extends SingleResourceListController implement
 		if (groupingEntity.equals(GroupingEntity.ALL)) {
 			maximumTags = 1000;
 		}
-
-		SearchType searchType = SearchType.LOCAL; 
-		if(command.getScope()!=null && command.getScope()!=SearchType.LOCAL){
-			searchType = SearchType.FEDERATED;
-		}
-			
+		
+		final SearchType searchType = command.getScope();
 		final List<String> requestedTags = command.getRequestedTagsList();
 
 		// retrieve and set the requested resource lists

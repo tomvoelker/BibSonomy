@@ -76,8 +76,9 @@ public class PersonPageController extends SingleResourceListController implement
 			errors.reject("error.field.valid.ckey");
 		}
 		
-		if(present(command.getFormAction())) {
-			switch(command.getFormAction()) {
+		final String formAction = command.getFormAction();
+		if (present(formAction)) {
+			switch(formAction) {
 				case "update": return this.updateAction(command);
 				case "addName": return this.addNameAction(command);
 				case "deleteName": return this.deleteNameAction(command);
@@ -90,13 +91,12 @@ public class PersonPageController extends SingleResourceListController implement
 				case "search": return this.searchAction(command);
 				case "searchAuthor": return this.searchAuthorAction(command);
 				case "searchPub": return this.searchPubAction(command);
-				default: return this.indexAction(command);
+				default: return indexAction();
 			}
-		} else if(present(command.getRequestedPersonId())) {
+		} else if (present(command.getRequestedPersonId())) {
 			return this.showAction(command);
 		}
-		return this.indexAction(command);
-		
+		return indexAction();
 	}
 
 	/**
@@ -173,10 +173,7 @@ public class PersonPageController extends SingleResourceListController implement
 		return Views.AJAX_JSON;
 	}
 
-
-
-	@SuppressWarnings("static-method")
-	private View indexAction(@SuppressWarnings("unused") PersonPageCommand command) {
+	private static View indexAction() {
 		return Views.PERSON_SHOW;
 	}
 

@@ -76,16 +76,16 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	/**
 	 * @return the requested tagstring as a list
 	 */
-	public List<String> getRequestedTagsList() {		
+	public List<String> getRequestedTagsList() {
 		// tagstring has not yet been tokenized 
 		if (this.requestedTagsList == null) {
-			this.requestedTagsList = new ArrayList<String>();			
+			this.requestedTagsList = new ArrayList<String>();
 			final StringTokenizer st = new StringTokenizer(requestedTags);
-			while (st.hasMoreTokens()) {			
-				final String tagname = st.nextToken();			
-				this.requestedTagsList.add(tagname);			
-			}			
-		}		
+			while (st.hasMoreTokens()) {
+				final String tagname = st.nextToken();
+				this.requestedTagsList.add(tagname);
+			}
+		}
 		return this.requestedTagsList;
 	}
 	
