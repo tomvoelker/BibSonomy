@@ -855,6 +855,13 @@
 	 
 <!-- ############## search pages ############### -->
 
+	<!--+ 
+	    | KEEP ME
+	    | FIXME: The following 2 rules for search are currently disabled.
+	    | They are related to trouble with particular characters in search queries.
+	    | However to enable restricting search queries using tags they should in fact be used after such troubles have been fixed.
+	    | Related to issue #2439
+	    	    
 	<rule>
 		<name>/search/SEARCH/TAG</name>
 		<from>^/+search/+([^/]+?)/(.+)$</from>
@@ -863,12 +870,12 @@
 		<to last="true">/search</to>
 	</rule>
 	<rule>
-		<name>/search/SEARCH/TAG</name>
-		<note>redirect /search/SEARCH?tag=TAG to /search/SEARCH/TAG</note>
-		<condition type="parameter" name="tag">(.+)</condition>
+		<name>/search/SEARCH</name>
 		<from>^/+search/+([^/]+)$</from>
-		<to type="redirect" last="true">/search/${escape:$1}/${escape:%1}</to>
+		<set type="parameter" name="requestedSearch">$1</set>
+		<to last="true">/search</to>
 	</rule>
+	KEEP ME -->
 
 	<rule>
 		<name>/search/SEARCH</name>
