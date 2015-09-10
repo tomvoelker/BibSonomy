@@ -61,7 +61,6 @@
 
 		<jsp:attribute name="headerExt">
 			<script type='text/javascript' src='/resources/javascript/disambiguation/linkPerson.js'><!-- keep me --></script>
-			<script type='text/javascript' src='/resources/javascript/disambiguation/newPerson.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/typeahead.js/js/typeahead.bundle.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/personAutocomplete.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/disambiguation/autocompleteOtherPerson.js'><!-- keep me --></script>
@@ -89,8 +88,6 @@
 			
 			<fmt:message key="disambiguation.noInfo" var="textNoFurtherInfo"/>
 			
-		
-		
 			<div class="page-header">
 				<h1><c:out value="${mtl:cleanBibtex(command.personName)}"/></h1>
 			</div>
@@ -113,7 +110,6 @@
 			<div class="clearfix">
 				<h2><fmt:message key="disambiguation.pleaseChooseMsg"><fmt:param value="${mtl:cleanBibtex(command.personName)}"/></fmt:message></h2>
 				<p><fmt:message key="disambiguation.listExplanation"/></p>
-					
 					<c:choose>
 						<c:when test="${fn:length(command.personSuggestions) gt 0}">
 							<div class="list-group">
