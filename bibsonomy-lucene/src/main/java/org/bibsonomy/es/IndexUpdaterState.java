@@ -39,7 +39,9 @@ import org.apache.commons.lang.ObjectUtils;
 public class IndexUpdaterState implements Serializable {
 	private static final long serialVersionUID = 1398951571372358877L;
 	
+	// TODO: rename attribute to lastTASId
 	private Integer last_tas_id;
+	// TODO: rename attribute to lastLogDate
 	private Date last_log_date;
 	private long lastPersonChangeId;
 

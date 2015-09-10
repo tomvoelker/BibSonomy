@@ -76,7 +76,7 @@ public class LuceneDBLogic<R extends Resource> extends AbstractDatabaseManager i
 		}
 	}
 	
-	@Override 
+	@Override
 	public List<User> getPredictionForTimeRange(final Date fromDate) {
 		final DBSession session = this.openSession();
 		try {
@@ -278,7 +278,7 @@ public class LuceneDBLogic<R extends Resource> extends AbstractDatabaseManager i
 	public long getLastPersonChangeId() {
 		final DBSession session = this.openSession();
 		try {
-			return this.generalDatabaseManager.getLastId(ConstantID.PERSON_CHANGE_ID, session);
+			return this.generalDatabaseManager.getLastId(ConstantID.PERSON_CHANGE_ID, session).longValue();
 		} finally {
 			session.close();
 		}

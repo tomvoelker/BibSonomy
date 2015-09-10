@@ -41,8 +41,6 @@ import org.bibsonomy.model.ResourcePersonRelationLogStub;
  * @author jensi
  */
 public class PersonLuceneDatabaseManager  extends AbstractDatabaseManager {
-	//private static final Log log = LogFactory.getLog(PersonLuceneDatabaseManager.class);
-
 	private final static PersonLuceneDatabaseManager singleton = new PersonLuceneDatabaseManager();
 
 	public static PersonLuceneDatabaseManager getInstance() {
@@ -62,10 +60,8 @@ public class PersonLuceneDatabaseManager  extends AbstractDatabaseManager {
 		return this.queryForList("getPersonMainNamesByChangeIdRange", range, PersonName.class, databaseSession);
 	}
 	
-	
 	public List<Person> getPersonByChangeIdRange(long firstChangeId, long toPersonChangeIdExclusive, DBSession databaseSession) {
 		final Pair<Long, Long> range = new Pair<>(firstChangeId, toPersonChangeIdExclusive);
 		return this.queryForList("getPersonByChangeIdRange", range, Person.class, databaseSession);
 	}
-	
 }

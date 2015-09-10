@@ -104,9 +104,12 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	private final IndexLock lockOfIndexBeingUpdated;
 
 	/**
+	 * @param esClient 
 	 * @param systemHome
 	 * @param resourceType
 	 * @param resourceConverter 
+	 * @param lockOfIndexBeingUpdated 
+	 * @param plugin 
 	 * @param nameOfIndexBeingUpdated 
 	 */
 	public SharedResourceIndexUpdater(final ESClient esClient, final String systemHome, String resourceType, final LuceneResourceConverter<R> resourceConverter, final IndexLock lockOfIndexBeingUpdated, final SharedIndexUpdatePlugin<R> plugin) {
@@ -119,14 +122,13 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 		this.usersToFlag = new TreeSet<String>();
 		this.resourceType =  resourceType;
 		this.esClient = esClient;
-		this.esIndexManager = new ESIndexManager(esClient, systemHome);		
+		this.esIndexManager = new ESIndexManager(esClient, systemHome);
 	}
 
 	/**
 	 * @return lastLogDate
 	 */
 	@Override
-	@SuppressWarnings("boxing")
 	public Date getLastLogDate() {
 		SystemInformation sysinfos = getSingleSystemInfos();
 		if (sysinfos == null) {
@@ -135,7 +137,6 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 		}
 		return sysinfos.getUpdaterState().getLast_log_date();
 	}
-
 	
 	private SystemInformation getSingleSystemInfos() {
 		Collection<SystemInformation> list = this.esIndexManager.getAllSystemInfosAsObjects(QueryBuilders.matchQuery("postType", this.resourceType), 2, this.lockOfIndexBeingUpdated.getIndexName()).values();
@@ -148,9 +149,6 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 		return list.iterator().next();
 	}
 	
-
-
-
 	/**
 	 * @return lastTasId
 	 */
@@ -163,20 +161,13 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 			return Integer.MIN_VALUE;
 		}
 		return sysinfos.getUpdaterState().getLast_tas_id();
-//		
-//		final String lastTasIdString = this.fetchSystemInfoField(LuceneFieldNames.LAST_TAS_ID);
-//			if (lastTasIdString == null) {
-//				log.error("no lastTasId  -> starting from the very beginning");
-//				return Integer.MIN_VALUE;
-//			}
-//			return Integer.parseInt(lastTasIdString);
-//		}
 	}
 
 	/**
 	 * @param contentIdsToDelete
 	 *        the contentIdsToDelete to set
 	 */
+	@Override
 	public void deleteDocumentsForContentIds(final List<Integer> contentIdsToDelete) {
 		synchronized (this) {
 			this.contentIdsToDelete = contentIdsToDelete;
@@ -215,7 +206,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 			// remove cached posts from index
 			// ----------------------------------------------------------------
 			log.debug("Performing " + this.contentIdsToDelete.size() + " delete operations");
-			try{
+			try {
 				if ((this.contentIdsToDelete.size() > 0) || (this.usersToFlag.size() > 0)) {
 					// remove each cached post from index
 					for (final Integer contentId : this.contentIdsToDelete) {
@@ -232,7 +223,6 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 						log.debug("Purged posts for user " + userName);
 					}
 				}
-	
 				// ----------------------------------------------------------------
 				// add cached posts to index
 				// ----------------------------------------------------------------
@@ -240,19 +230,19 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 				if (this.esPostsToInsert.size() > 0) {
 					this.insertNewPosts(this.esPostsToInsert);
 				}
-	
+				
 				// ----------------------------------------------------------------
 				// Update system informations
 				// ----------------------------------------------------------------
 				this.flushSystemInformation();
-	
+				
 				// ----------------------------------------------------------------
 				// clear all cached data
 				// ----------------------------------------------------------------
 				this.esPostsToInsert.clear();
 				this.contentIdsToDelete.clear();
 				this.usersToFlag.clear();
-			}catch (JsonProcessingException e){
+			} catch (JsonProcessingException e) {
 				log.error("unable to convert the post into JSON document", e);
 			}
 		}
@@ -288,9 +278,9 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 			IndexResponse res = this.esClient.getClient().prepareIndex(this.lockOfIndexBeingUpdated.getIndexName(), ESConstants.SYSTEM_INFO_INDEX_TYPE, this.systemHome + this.resourceType).setSource(jsonDocumentForSystemInfo).execute().actionGet();
 			if ((res == null) || !ValidationUtils.present(res.getId())) {
 				throw new RuntimeException("failed to save systeminformation for index " + this.lockOfIndexBeingUpdated.getIndexName());
-			} else {
-				log.info("updated systeminformation of index " + this.lockOfIndexBeingUpdated.getIndexName() + " to " + jsonDocumentForSystemInfo);
 			}
+			
+			log.info("updated systeminformation of index " + this.lockOfIndexBeingUpdated.getIndexName() + " to " + jsonDocumentForSystemInfo);
 		} catch (final JsonProcessingException e) {
 			log.error("Failed to convert SystemInformation into JSON", e);
 		}
@@ -365,6 +355,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 * 
 	 * @param username
 	 */
+	@Override
 	public void flagUser(final String username) {
 		synchronized (this) {
 			this.usersToFlag.add(username);
@@ -376,6 +367,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 * 
 	 * @param userName
 	 */
+	@Override
 	public void unFlagUser(final String userName) {
 		synchronized (this) {
 			this.usersToFlag.remove(userName);
@@ -385,9 +377,9 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	/**
 	 * sets the system informations to update
 	 * 
-	 * @param lastTasId
-	 * @param lastLogDate
+	 * @param state
 	 */
+	@Override
 	public void setSystemInformation(final IndexUpdaterState state) {
 		this.systemInfo.setUpdaterState(state);
 		this.systemInfo.setPostType(this.resourceType);
@@ -429,7 +421,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 		searchRequestBuilder.setTypes(this.resourceType);
 		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 		searchRequestBuilder.setQuery(QueryBuilders.constantScoreQuery(FilterBuilders.andFilter(FilterBuilders.termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, systemHome), FilterBuilders.termFilter("interhash", interhash))));
-		searchRequestBuilder.setExplain(true);
+		searchRequestBuilder.setExplain(true); // TODO: remove
 
 		final SearchResponse response = searchRequestBuilder.execute().actionGet();
 
@@ -461,7 +453,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 		searchRequestBuilder.setTypes(this.resourceType);
 		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 		searchRequestBuilder.setQuery(QueryBuilders.constantScoreQuery(FilterBuilders.andFilter(FilterBuilders.termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, systemHome), FilterBuilders.termFilter(ESConstants.PERSON_ENTITY_IDS_FIELD_NAME, personId))));
-		searchRequestBuilder.setExplain(true);
+		searchRequestBuilder.setExplain(true); // TODO: remove explain?
 
 		final SearchResponse response = searchRequestBuilder.execute().actionGet();
 
@@ -470,7 +462,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 				final Map<String, Object> doc = hit.getSource();
 				final String interhash = (String) doc.get("interhash");
 				if (updatedInterhashes.put(interhash, interhash) == null) {
-					List<ResourcePersonRelation> newRels = this.dbLogic.getResourcePersonRelationsByPublication(interhash);
+					final List<ResourcePersonRelation> newRels = this.dbLogic.getResourcePersonRelationsByPublication(interhash);
 					this.updateIndexWithPersonRelation(interhash, newRels);
 				}
 			}
@@ -483,10 +475,6 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	@Override
 	public void updateIndexWithPersonInfo(Person per, LRUMap updatedInterhashes) {
 		updateIndexForPersonWithId(updatedInterhashes, per.getPersonId());
-	}
-
-	public LuceneDBInterface<R> getDbLogic() {
-		return this.dbLogic;
 	}
 
 	public void setDbLogic(LuceneDBInterface<R> dbLogic) {

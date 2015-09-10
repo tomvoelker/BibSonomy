@@ -95,10 +95,8 @@ import org.elasticsearch.search.sort.SortOrder;
  * @param <R>
  */
 public class EsResourceSearch<R extends Resource> implements PersonSearch, ResourceSearch<R> {
-
-	/**
-	 * 
-	 */
+	private static final Log log = LogFactory.getLog(EsResourceSearch.class);
+	
 	private static final float GENEALOGY_USER_PREFERENCE_FACTOR = 1.1f;
 
 	private static final Pattern YEAR_PATTERN = Pattern.compile("[12][0-9]{3}");
@@ -112,11 +110,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * logic interface for retrieving data from bibsonomy (friends, groups
 	 * members)
 	 */
-	private LuceneInfoLogic dbLogic;
-	/**
-	 * 
-	 */
-	protected static final Log log = LogFactory.getLog(EsResourceSearch.class);
+	private LuceneInfoLogic infoLogic;
 
 	private final int maxOffset = 1024;
 
@@ -170,7 +164,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 						.actionGet();
 				if (response != null) {
 					SearchHits hits = response.getHits();
-					log.info("Current Search results for '" + searchTerms
+					log.debug("Current Search results for '" + searchTerms
 							+ "': " + response.getHits().getTotalHits());
 					for (int i = 0; i < Math.min(limit, hits.getTotalHits()
 							- offset); ++i) {
@@ -219,7 +213,6 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		// all done.
 		return tags;
 	}
-	
 
 	/**
 	 * @param userName
@@ -247,21 +240,19 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final org.bibsonomy.common.enums.SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) {
 		final ResultList<Post<R>> postList = new ResultList<Post<R>>();
 		try (final IndexLock indexLock = getEsIndexManager().aquireReadLockForTheActiveIndexAlias(this.resourceType)) {
-			
 				final QueryBuilder queryBuilder = this.buildQuery(userName,
 						requestedUserName, requestedGroupName,
 						requestedRelationNames, allowedGroups, searchType, searchTerms,
 						titleSearchTerms, authorSearchTerms, bibtexKey,
 						tagIndex, year, firstYear, lastYear, negatedTags);
 				final SearchRequestBuilder searchRequestBuilder = this.esIndexManager.getClient().prepareSearch(indexLock.getIndexName());
-
 				searchRequestBuilder.setTypes(this.resourceType);
 				searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 				searchRequestBuilder.setQuery(queryBuilder);
 				if (order != Order.RANK) {
 					searchRequestBuilder.addSort(LuceneFieldNames.DATE, SortOrder.DESC);
 				}
-				searchRequestBuilder.setFrom(offset).setSize(limit).setExplain(true);
+				searchRequestBuilder.setFrom(offset).setSize(limit).setExplain(true); // FIXME: remove explain
 
 				final SearchResponse response = searchRequestBuilder.execute().actionGet();
 
@@ -269,23 +260,15 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 					final SearchHits hits = response.getHits();
 					postList.setTotalCount((int) hits.getTotalHits());
 
-					log.info("Current Search results for '" + searchTerms + "': " + response.getHits().getTotalHits());
+					log.debug("Current Search results for '" + searchTerms + "': " + response.getHits().getTotalHits());
 					for (final SearchHit hit : hits) {
 						postList.add(this.resourceConverter.writePost(hit.getSource()));
 					}
 				}
 		} catch (final IndexMissingException e) {
-			log.error("IndexMissingException: " + e);
+			log.error("no index found: " + e);
 		}
-
 		return postList;
-	}
-
-	/**
-	 * @return the resourceConverter
-	 */
-	public LuceneResourceConverter<R> getResourceConverter() {
-		return this.resourceConverter;
 	}
 
 	/**
@@ -296,13 +279,6 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	}
 
 	/**
-	 * @return the resourceType
-	 */
-	public String getResourceType() {
-		return this.resourceType;
-	}
-
-	/**
 	 * @param resourceType the resourceType to set
 	 */
 	public void setResourceType(final String resourceType) {
@@ -310,17 +286,10 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	}
 
 	/**
-	 * @return the dbLogic
-	 */
-	public LuceneInfoLogic getDbLogic() {
-		return this.dbLogic;
-	}
-
-	/**
 	 * @param dbLogic the dbLogic to set
 	 */
 	public void setDbLogic(LuceneInfoLogic dbLogic) {
-		this.dbLogic = dbLogic;
+		this.infoLogic = dbLogic;
 	}
 	
 	/* (non-Javadoc)
@@ -332,20 +301,16 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			final String localIndexName = getEsIndexManager().getActiveIndexnameForResource(this.resourceType);
 			// we use inverted scores such that the best results automatically appear first according to the ascending order of a sorted map
 			final SortedSet<Pair<Float, ResourcePersonRelation>> relSorter = iterativelyFetchSuggestions(localIndexName, null, options);
-				
 			return extractResources(relSorter);
-				
 		} catch (final IndexMissingException e) {
 			log.error("IndexMissingException: " + e);
 		}
 		return new ArrayList<>();
 	}
 
-
 	private SortedSet<Pair<Float, ResourcePersonRelation>> iterativelyFetchSuggestions(final String indexName, Set<String> tokenizedQueryString, AbstractSuggestionQueryBuilder<?> options) {
 		// we use inverted scores such that the best results automatically appear first according to the ascending order of a sorted map
 		final SortedSet<Pair<Float, ResourcePersonRelation>> relSorter = new TreeSet<>(new FirstValuePairComparator<Float, ResourcePersonRelation>(false));
-		
 		// unfortunately our version of elasticsearch does not support topHits aggregation so we have to group by interhash ourselves: AggregationBuilder aggregation = AggregationBuilders.terms("agg").field("gender").subAggregation(AggregationBuilders.topHits("top"));
 		double bestScore = Double.NaN;
 		// remember alreadyAnalyzedInterhashes to skip over multiple posts of the same resource
@@ -355,7 +320,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			// reuse the same offset(skip) counter, because the order of the ranked results remains the
 			// same and the increased minimum score only drops results beyond those we have seen so far.
 			double minScore = Double.isNaN(bestScore) ? 0.05 : (bestScore / 3d);
-
+			
 			double bestScoreThisRound = fetchMoreResults(relSorter, tokenizedQueryString, offset, alreadyAnalyzedInterhashes, indexName, minScore, options);
 			if (Double.isNaN(bestScore)) {
 				bestScore = bestScoreThisRound;
@@ -372,7 +337,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private static List<Post<BibTex>> extractResources( SortedSet<Pair<Float, ResourcePersonRelation>> relSorter) {
+	private static List<Post<BibTex>> extractResources(SortedSet<Pair<Float, ResourcePersonRelation>> relSorter) {
 		final List<Post<BibTex>> rVal = new ArrayList<>();
 		for (Pair<Float, ResourcePersonRelation> scoreAndRel : relSorter) {
 			final ResourcePersonRelation rel = scoreAndRel.getSecond();
@@ -394,17 +359,17 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 				if (!StringUtils.isBlank(token)) {
 					tokenizedQueryString.add(token.toLowerCase());
 				}
-			} 
+			}
 			final SortedSet<Pair<Float, ResourcePersonRelation>> relSorter = iterativelyFetchSuggestions(localIndexName, tokenizedQueryString, options);
 			return extractDistinctPersons(relSorter);
-				
 		} catch (final IndexMissingException e) {
 			log.error("IndexMissingException: " + e);
 		}
 		return new ArrayList<>();
 		
 	}
-
+	
+	// TODO: the outcomment calls would be nice but whould slow down the query
 	private QueryBuilder buildQuery(AbstractSuggestionQueryBuilder<?> options) {
 		final QueryBuilder queryBuilder = filterQuery( //
 				QueryBuilders.boolQuery() //
@@ -428,15 +393,13 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 //								.should(QueryBuilders.termQuery(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, NormalizedEntryTypes.candidate_thesis.name()).boost(5)) //
 						) //
 						//.should(QueryBuilders.termQuery(LuceneFieldNames.USER_NAME, genealogyUser)) //
-						, addShouldYearIfYearInQuery( //
+						, addYearFilterIfYearInQuery( //
 								null, // termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, systemUrl), //
 								options.getQuery()) //
 				);
 		return queryBuilder;
 	}
-
-
-
+	
 	/**
 	 * @param must
 	 * @param addShouldYearIfYearInQuery
@@ -448,7 +411,6 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		}
 		return QueryBuilders.filteredQuery(must, filter);
 	}
-
 
 	/**
 	 * @param options
@@ -469,7 +431,6 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		}
 		return builder;
 	}
-
 
 	private SearchRequestBuilder buildRequest(int offset, String indexName, double minPlainEsScore, final QueryBuilder queryBuilder) {
 		final SearchRequestBuilder searchRequestBuilder = this.esIndexManager.getClient().prepareSearch(indexName);
@@ -505,9 +466,10 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			} else if (hit.getScore() < minScore) {
 				break;
 			}
-			String interhash = (String) hit.getSource().get(LuceneFieldNames.INTERHASH);
+			final String interhash = (String) hit.getSource().get(LuceneFieldNames.INTERHASH);
 			if (!alreadyAnalyzedInterhashes.add(interhash)) {
-				String userName = (String) hit.getSource().get(LuceneFieldNames.USER_NAME);
+				final String userName = (String) hit.getSource().get(LuceneFieldNames.USER_NAME);
+				// prefer posts og the genealogy user
 				if (this.genealogyUser.equals(userName)) {
 					// we prefer posts by the genealogy user
 					final Post<R> post = this.resourceConverter.writePost(hit.getSource());
@@ -520,6 +482,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			if (!(postTmp.getResource() instanceof BibTex)) {
 				continue;
 			}
+			@SuppressWarnings("unchecked") // ok, we checked this before
 			final Post<BibTex> post = (Post<BibTex>) postTmp;
 			float postScore = hit.getScore();
 			if (this.genealogyUser.equals(post.getUser().getName())) {
@@ -531,15 +494,13 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			if (options instanceof PersonSuggestionQueryBuilder) {
 				extractResourceRelationsForMatchingPersons(relSorter, queryTerms, post, postScore, invertedScoreToRpr, (PersonSuggestionQueryBuilder) options);
 			} else {
-				ResourcePersonRelation rpr = new ResourcePersonRelation();
-				rpr.setPost((Post<? extends BibTex>) post);
-				relSorter.add(new Pair<>(postScore, rpr));
+				final ResourcePersonRelation rpr = new ResourcePersonRelation();
+				rpr.setPost(post);
+				relSorter.add(new Pair<>(Float.valueOf(postScore), rpr));
 			}
 		}
-
 		return bestPlainEsScore;
 	}
-
 
 	/**
 	 * @param relSorter
@@ -550,7 +511,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		final Collection<Pair<Float, ResourcePersonRelation>> toBeAdded = new ArrayList<>();
 		for (Iterator<Pair<Float,ResourcePersonRelation>> it = relSorter.iterator(); it.hasNext();) {
 			final Pair<Float, ResourcePersonRelation> scoreAndRel = it.next();
-			Post<? extends BibTex> oldPost = scoreAndRel.getSecond().getPost();
+			final Post<? extends BibTex> oldPost = scoreAndRel.getSecond().getPost();
 			if (interHash.equals(oldPost.getResource().getInterHash())) {
 				final ResourcePersonRelation oldRel = scoreAndRel.getSecond();
 				final Float oldScore = scoreAndRel.getFirst();
@@ -563,7 +524,6 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		}
 		relSorter.addAll(toBeAdded);
 	}
-
 
 	private void extractResourceRelationsForMatchingPersons(final SortedSet<Pair<Float, ResourcePersonRelation>> relSorter, final Set<String> queryTerms, final Post<BibTex> post, final float postScore, final TreeMap<Integer, ResourcePersonRelation> invertedScoreToRpr, PersonSuggestionQueryBuilder options) {
 		if (options.isWithEntityPersons()) {
@@ -591,19 +551,18 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 				}
 				addScoredPersonNames(post.getResource().getEditor(), PersonResourceRelationType.EDITOR, queryTerms, post, invertedScoreToRpr, options, personsByIndex);
 			}
-			
 		}
 		
 		final int minInvertedScore = extractMinimumInvertedScore(invertedScoreToRpr);
 		int lastScore = -1;
 		for (Map.Entry<Integer, ResourcePersonRelation> e : invertedScoreToRpr.entrySet()) {
-			if (e.getKey() < lastScore / 2) {
-				lastScore = e.getKey();
+			final Integer score = e.getKey();
+			if (score.intValue() < lastScore / 2) {
+				lastScore = score;
 				relSorter.add(new Pair<>(postScore * -((float) lastScore) / minInvertedScore, e.getValue()));
 			}
 		}
 	}
-
 
 	private Map<Integer, Person> getIndicesOfKnownPersons(final Post<BibTex> post, PersonResourceRelationType relType) {
 		Map<Integer, Person> allowedIndices;
@@ -615,7 +574,6 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		}
 		return allowedIndices;
 	}
-
 
 	private void addScoredPersonNames(List<PersonName> names, PersonResourceRelationType relationType, final Set<String> queryTerms, final Post<BibTex> post, final TreeMap<Integer, ResourcePersonRelation> invertedScoreToRpr, PersonSuggestionQueryBuilder options, Map<Integer, Person> allowedPersonsByIndex) {
 		if (!present(names)) {
@@ -648,13 +606,12 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		}
 	}
 
-
 	private int calculateInvertedPersonNameScore(final Set<String> queryTerms, PersonName mainName) {
 		int invertedScore = -1;
 		for (String token : new SimpleTokenizer(mainName.getFirstName())) {
 			if (!StringUtils.isBlank(token)) {
 				token = token.toLowerCase();
-				if (queryTerms.contains(token) == true) {
+				if (queryTerms.contains(token)) {
 					invertedScore--;
 				}
 			}
@@ -663,7 +620,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		for (String token : new SimpleTokenizer(mainName.getLastName())) {
 			if (!StringUtils.isBlank(token)) {
 				token = token.toLowerCase();
-				if (queryTerms.contains(token) == true) {
+				if (queryTerms.contains(token)) {
 					invertedScore--;
 				}
 			}
@@ -676,13 +633,13 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @param queryString
 	 * @return
 	 */
-	private static FilterBuilder addShouldYearIfYearInQuery(FilterBuilder filterBuilder, String queryString) {
-		Matcher m = YEAR_PATTERN.matcher(queryString);
+	private static FilterBuilder addYearFilterIfYearInQuery(FilterBuilder filterBuilder, String queryString) {
+		final Matcher m = YEAR_PATTERN.matcher(queryString);
 		if (!m.find()) {
 			return filterBuilder;
 		}
-		String year = queryString.substring(m.start(), m.end());
-		FilterBuilder filter = FilterBuilders.termFilter(LuceneFieldNames.YEAR, year);
+		final String year = queryString.substring(m.start(), m.end());
+		final FilterBuilder filter = FilterBuilders.termFilter(LuceneFieldNames.YEAR, year);
 		if (filterBuilder == null) {
 			return filter;
 		}
@@ -821,7 +778,6 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @return overall elasticsearch query
 	 */
 	protected QueryBuilder buildQuery(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, org.bibsonomy.common.enums.SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final Collection<String> negatedTags) {
-
 		BoolQueryBuilder mainQueryBuilder = QueryBuilders.boolQuery();
 
 		// --------------------------------------------------------------------
@@ -835,16 +791,17 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 
 		if (present(titleSearchTerms)) {
 			QueryBuilder titleSearchQuery = termQuery(LuceneFieldNames.TITLE, titleSearchTerms);
-			mainQueryBuilder.must(titleSearchQuery);		}
+			mainQueryBuilder.must(titleSearchQuery);
+		}
 		
 		if (present(authorSearchTerms)) {
 			QueryBuilder authorSearchQuery = termQuery(LuceneFieldNames.AUTHOR, authorSearchTerms);
-			mainQueryBuilder.must(authorSearchQuery);			
+			mainQueryBuilder.must(authorSearchQuery);
 		}
 		
-		if(present(bibtexKey)){
+		if (present(bibtexKey)) {
 			QueryBuilder bibtexKeyQuery = termQuery(LuceneFieldNames.BIBTEXKEY, bibtexKey);
-			mainQueryBuilder.must(bibtexKeyQuery);			
+			mainQueryBuilder.must(bibtexKeyQuery);
 		}
 		
 		// Add the requested tags
@@ -854,18 +811,18 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 
 		// restrict result to given group
 		if (present(requestedGroupName)) {
-			//TODO	
+			// FIXME: group query
 		}
 		
-		if(allowedGroups!=null){
+		if (allowedGroups != null) {
 			final BoolQueryBuilder groupSearchQuery = new BoolQueryBuilder();
 			for(String allowedGroup:allowedGroups){
 				groupSearchQuery.should(termQuery(LuceneFieldNames.GROUP, allowedGroup));
 			}
 			mainQueryBuilder.must(groupSearchQuery);
-		}else{
+		} else {
 			QueryBuilder groupSearchQuery = termQuery(LuceneFieldNames.GROUP, "public");
-			mainQueryBuilder.must(groupSearchQuery);			
+			mainQueryBuilder.must(groupSearchQuery);
 		}
 		// restricting access to posts visible to the user
 
@@ -875,15 +832,13 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		// --------------------------------------------------------------------
 		if (present(requestedUserName) && !present(requestedRelationNames)) {
 			QueryBuilder requesterUserSearchQuery = termQuery(LuceneFieldNames.USER, requestedUserName);
-			mainQueryBuilder.must(requesterUserSearchQuery);			
+			mainQueryBuilder.must(requesterUserSearchQuery);
 		}
 		// If there is at once one relation then restrict the results only 
 		// to the users in the given relations (inclduing posts of the logged in users)
 		else if (present(requestedRelationNames)) {
 			// for all relations: TODO
-
 		}
-		
 		
 		QueryBuilder rVal = mainQueryBuilder;
 		if (searchType == org.bibsonomy.common.enums.SearchType.LOCAL) {
@@ -908,7 +863,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 					final BoolQueryBuilder conceptTags = new BoolQueryBuilder();
 					QueryBuilder termQuery = termQuery(LuceneFieldNames.TAS, conceptTag);
 					conceptTags.must(termQuery);
-					for (final String t : this.dbLogic.getSubTagsForConceptTag(conceptTag)) {
+					for (final String t : this.infoLogic.getSubTagsForConceptTag(conceptTag)) {
 						conceptTags.should(termQuery(LuceneFieldNames.TAS, t));
 					}
 					mainQuery.must(conceptTags);
@@ -920,13 +875,11 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		/*
 		 * Process negated Tags
 		 */
-		
 		if (present(negatedTags)) {
 			for (final String negatedTag : negatedTags) {
 				final QueryBuilder negatedSearchQuery = termQuery(LuceneFieldNames.TAS, negatedTag);
 				mainQuery.mustNot(negatedSearchQuery);
 			}
 		}
-
-	}	
+	}
 }

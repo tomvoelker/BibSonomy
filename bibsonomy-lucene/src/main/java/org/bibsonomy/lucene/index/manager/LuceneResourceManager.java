@@ -74,6 +74,7 @@ import org.bibsonomy.util.ValidationUtils;
  *            the resource to manage
  */
 public class LuceneResourceManager<R extends Resource> implements GenerateIndexCallback<R>, UpdatePlugin {
+	private static final Log log = LogFactory.getLog(LuceneResourceManager.class);
 
 	/** the number of posts to fetch from the database by a single generating step */
 	protected static final int SQL_BLOCKSIZE = 5000;
@@ -86,15 +87,11 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 */
 	private static final int DOC_TOLERANCE = 1000;
 
-	private static final Log log = LogFactory.getLog(LuceneResourceManager.class);
-
 	/**
 	 * constant for querying for all posts which have been deleted since the
 	 * last index update
 	 */
 	protected static final long QUERY_TIME_OFFSET_MS = 30 * 1000;
-
-	
 
 	/** flag indicating whether to update the index or not */
 	private boolean luceneUpdaterEnabled = true;
@@ -186,16 +183,15 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			for (final Map.Entry<IndexUpdaterState, List<IndexUpdater<R>>> e : lastLogDateAndLastTasIdToUpdaters.entrySet()) {
 				final List<IndexUpdater<R>> updaters = e.getValue();
 				final IndexUpdaterState indexState = e.getKey();
-				// TODO: use the common lastTasId in the dbState to make sure the indices will have the same state after the update, regardless of their execution time and order
 				this.updateIndex(indexState, targetState, updaters);
 			}
-
 		} finally {
-			for (List<IndexUpdater<R>> ul : lastLogDateAndLastTasIdToUpdaters.values()) {
+			for (final List<IndexUpdater<R>> ul : lastLogDateAndLastTasIdToUpdaters.values()) {
 				for (IndexUpdater<R> u : ul) {
 					try {
 						u.closeUpdateProcess();
 					} catch (Exception e) {
+						// ignore
 					}
 				}
 			}
@@ -205,8 +201,6 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	}
 
 	private Map<IndexUpdaterState, List<IndexUpdater<R>>> getUpdatersBySameState() {
-		
-		
 		final Map<IndexUpdaterState, List<IndexUpdater<R>>> lastLogDateAndLastTasIdToUpdaters = new HashMap<>();
 		
 		for (UpdatePlugin plugin : this.plugins) {
@@ -217,28 +211,25 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 				log.error("unable to retrieve index updater from plugin " + plugin, e);
 				continue;
 			}
-				if (updater == null) {
-					log.warn("no " + getResourceName() + " index to update for " + plugin.toString());
-					continue;
-				}
-				
-				try {
-					final IndexUpdaterState state = updater.getUpdaterState();
-					
-					List<IndexUpdater<R>> updatersWithSameState = lastLogDateAndLastTasIdToUpdaters.get(state);
-					if (updatersWithSameState == null) {
-						updatersWithSameState = new ArrayList<>();
-						lastLogDateAndLastTasIdToUpdaters.put(state, updatersWithSameState);
-					}
-					updatersWithSameState.add(updater);
-				} catch (Exception e) {
-					log.error("unable to ask index update plugin about its state: " + updater, e);
-					updater.closeUpdateProcess();
-					continue;
-				}
-				
-				
+			if (updater == null) {
+				log.warn("no " + getResourceName() + " index to update for " + plugin.toString());
+				continue;
+			}
 			
+			try {
+				final IndexUpdaterState state = updater.getUpdaterState();
+				
+				List<IndexUpdater<R>> updatersWithSameState = lastLogDateAndLastTasIdToUpdaters.get(state);
+				if (updatersWithSameState == null) {
+					updatersWithSameState = new ArrayList<>();
+					lastLogDateAndLastTasIdToUpdaters.put(state, updatersWithSameState);
+				}
+				updatersWithSameState.add(updater);
+			} catch (final Exception e) {
+				log.error("unable to ask index update plugin about its state: " + updater, e);
+				updater.closeUpdateProcess();
+				continue;
+			}
 		}
 		return lastLogDateAndLastTasIdToUpdaters;
 	}
@@ -283,7 +274,6 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			contentIdsToDelete = this.dbLogic.getContentIdsToDelete(new Date(oldState.getLast_log_date().getTime() - QUERY_TIME_OFFSET_MS));
 		}
 		
-
 		/*
 		 * 4) remove posts from 1) & 2) from the index and update field
 		 * 'lastTasId'
@@ -293,7 +283,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			newLastTasId = Math.max(post.getLastTasId(), oldState.getLast_tas_id());
 		}
 		
-		/*lastTasIdlastTasId
+		/* lastTasIdlastTasId
 		 * 5) add all posts from 1) to the index
 		 */
 		
@@ -656,7 +646,6 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 * @param updaters 
 	 * @param lastLogDate 
 	 */
-	@SuppressWarnings({ "boxing" })
 	protected void updatePredictions(List<IndexUpdater<R>> updaters, final Date lastLogDate) {
 		// keeps track of the newest log_date during last index update
 		// final long lastLogDate = lastLogDate - QUERY_TIME_OFFSET_MS;
@@ -676,10 +665,10 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 				 * flag/unflag spammer, depending on user.getPrediction()
 				 */
 				log.debug("updating spammer status for user " + user.getName());
-				switch (user.getPrediction()) {
+				switch (user.getPrediction().intValue()) {
 				case 0:
 					log.debug("unflag non-spammer");
-					final List<LucenePost<R>> userPosts = this.getDbLogic().getPostsForUser(user.getName(), Integer.MAX_VALUE, 0);
+					final List<LucenePost<R>> userPosts = this.dbLogic.getPostsForUser(user.getName(), Integer.MAX_VALUE, 0);
 					
 					// insert new records into index
 					if (present(userPosts)) {
@@ -702,13 +691,6 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 				}
 			}
 		}
-	}
-
-	/**
-	 * @return the dbLogic
-	 */
-	public LuceneDBInterface<R> getDbLogic() {
-		return this.dbLogic;
 	}
 
 	/**

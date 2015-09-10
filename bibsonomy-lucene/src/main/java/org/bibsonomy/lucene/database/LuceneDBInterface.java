@@ -29,7 +29,6 @@ package org.bibsonomy.lucene.database;
 import java.util.Date;
 import java.util.List;
 
-import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.es.IndexUpdaterState;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.model.Person;
@@ -130,15 +129,14 @@ public interface LuceneDBInterface<R extends Resource> {
 
 	/**
 	 * @param firstChangeId
-	 * @param l 
-	 * @param databaseSession
+	 * @param toPersonChangeIdExclusive
 	 * @return
 	 */
 	public List<PersonName> getPersonMainNamesByChangeIdRange(long firstChangeId, long toPersonChangeIdExclusive);
 
 	/**
 	 * @param firstChangeId
-	 * @param databaseSession
+	 * @param toPersonChangeIdExclusive 
 	 * @return
 	 */
 	public List<Person> getPersonByChangeIdRange(long firstChangeId, long toPersonChangeIdExclusive);

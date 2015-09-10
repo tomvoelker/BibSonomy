@@ -50,10 +50,11 @@ import org.bibsonomy.util.SimpleBlockingThreadPoolExecutor;
  * @param <R>
  */
 public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin, GenerateIndexCallback<R> {
+	private static final Log log = LogFactory.getLog(SharedIndexUpdatePlugin.class);
+	
 	private final ESClient esClient;
 	private final String systemHome;
 	private final ESIndexManager esIndexManager;
-	private static final Log log = LogFactory.getLog(SharedIndexUpdatePlugin.class);
 	private SimpleBlockingThreadPoolExecutor<SharedResourceIndexGenerator<? super R>> generatorThreadPool;
 	
 	/** converts post model objects to documents of the index structure */

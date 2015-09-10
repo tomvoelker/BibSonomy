@@ -72,6 +72,9 @@ import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.tex.TexDecode;
 
 /**
+ * FIXME: split into lucene resource converter and elasticsearch resource
+ * converter
+ * 
  * class for converting bibsonomy post model objects to lucene documents
  * 
  * @author fei
@@ -129,7 +132,6 @@ public class LuceneResourceConverter<R extends Resource> {
 	 * @param searchType 
 	 * @return the lucene document representation of the post
 	 */
-	@SuppressWarnings("null")
 	public Object readPost(final Post<R> post, final IndexType searchType) {
 		Document luceneDocument = null;
 		Map<String, Object> jsonDocument = null;

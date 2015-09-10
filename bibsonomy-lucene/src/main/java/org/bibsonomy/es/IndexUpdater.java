@@ -44,7 +44,7 @@ import org.bibsonomy.model.ResourcePersonRelation;
  * @author lutful
  * @author jil
  */
-public interface IndexUpdater<R extends Resource> { // extends AutoCloseable {
+public interface IndexUpdater<R extends Resource> {
 
 	/**
 	 * @return the latest log_date from the index. This is null if the index is not existing or empty.
@@ -94,7 +94,7 @@ public interface IndexUpdater<R extends Resource> { // extends AutoCloseable {
 	 * @param interHash
 	 * @param newRels
 	 */
-	public void updateIndexWithPersonRelation(String interHash, List<ResourcePersonRelation> newRels);
+	public void updateIndexWithPersonRelation(final String interHash, final List<ResourcePersonRelation> newRels);
 
 	/**
 	 * @param name
@@ -122,10 +122,4 @@ public interface IndexUpdater<R extends Resource> { // extends AutoCloseable {
 	 * 
 	 */
 	void closeUpdateProcess();
-	
-	/* (non-Javadoc)
-	 * @see java.lang.AutoCloseable#close()
-	 */
-//	@Override
-	//public void close();
 }

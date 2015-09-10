@@ -64,7 +64,8 @@ public class ESResourceMapping {
 	 */
 	public void doMapping() throws IOException {
 		final XContentBuilder mappingBuilder;
-
+		
+		// TODO: a more generic version
 		if (this.resourceType.equalsIgnoreCase("Bookmark")) {
 			/*
 			 * FIXME: What about GoldStandardBookmarks?
@@ -88,9 +89,7 @@ public class ESResourceMapping {
 	 * @throws IOException
 	 */
 	private static XContentBuilder createMappingForBookmark(final String documentType) throws IOException {
-		final XContentBuilder mapping = jsonBuilder().startObject().startObject(documentType).startObject("properties").startObject("intrahash").field("type", "string").field("index", "not_analyzed").endObject().startObject("interhash").field("type", "string").field("index", "not_analyzed").endObject().endObject().endObject().endObject();
-
-		return mapping;
+		return jsonBuilder().startObject().startObject(documentType).startObject("properties").startObject("intrahash").field("type", "string").field("index", "not_analyzed").endObject().startObject("interhash").field("type", "string").field("index", "not_analyzed").endObject().endObject().endObject().endObject();
 	}
 
 	/**
@@ -100,7 +99,7 @@ public class ESResourceMapping {
 	 * 
 	 */
 	private static XContentBuilder createMappingForPublication(final String documentType) throws IOException {
-		final XContentBuilder mapping = jsonBuilder().startObject().startObject(documentType).startObject("properties") //
+		return jsonBuilder().startObject().startObject(documentType).startObject("properties") //
 				.startObject("address").field("type", "string").field("index", "no").endObject() //
 				.startObject("annote").field("type", "string").field("index", "no").endObject() //
 				.startObject("bKey").field("type", "string").field("index", "no").endObject() //
@@ -140,11 +139,11 @@ public class ESResourceMapping {
 				.startObject(ESConstants.PERSON_ENTITY_NAMES_FIELD_NAME).field("type", "string").field("index", "analyzed").endObject() //
 				.startObject(ESConstants.PERSON_ENTITY_IDS_FIELD_NAME).field("type", "string").field("index", "analyzed").endObject() //
 				.endObject().endObject().endObject();
-
-		return mapping;
-
 	}
-
+	
+	/**
+	 * @return the indexName
+	 */
 	public String getIndexName() {
 		return this.indexName;
 	}

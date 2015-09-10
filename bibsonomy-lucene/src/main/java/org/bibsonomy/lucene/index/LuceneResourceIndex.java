@@ -361,7 +361,7 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	public Integer getLastTasId() {
 		synchronized(this) {
 			if (!isIndexEnabled()) {
-				return Integer.MAX_VALUE;
+				return Integer.valueOf(Integer.MAX_VALUE);
 			} else if ((this.state != null) && (this.state.getLast_tas_id() != null)) {
 				return this.state.getLast_tas_id();
 			}
@@ -951,7 +951,7 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 			post.setLastLogDate(currentLogDate);
 		}
 		final Document postDoc = (Document)this.resourceConverter.readPost(post, IndexType.LUCENE);
-		this.insertDocument(postDoc);	
+		this.insertDocument(postDoc);
 	}
 
 	/* (non-Javadoc)

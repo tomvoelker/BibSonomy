@@ -468,6 +468,6 @@ public class ESIndexManager {
 	}
 
 	private Map<String, SystemInformation> getAllSystemInfosByAlias(String resourceType, final String alias) {
-		return this.getAllSystemInfosAsObjects(QueryBuilders.matchQuery("postType", resourceType), 10000, alias);
+		return this.getAllSystemInfosAsObjects(QueryBuilders.matchQuery("postType", resourceType), 10000, alias); // TODO: constant: postType! 
 	}
 }
