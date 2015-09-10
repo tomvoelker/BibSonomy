@@ -46,7 +46,5 @@
 				</div>
 			</div>
 		</jsp:attribute>
-	</sidebar:sidebarItem>					
-	
-	
+	</sidebar:sidebarItem>
 </jsp:root>
