@@ -19,7 +19,7 @@
 	
 	<sidebar:sidebarItem textKey="tagrelations" headingLink="${headingLink}" headingTitleKey="${headingTitleKey}">
 		<jsp:attribute name="content">
-			<tags:concepts cmd="${cmd}" usersOwnRelations="${usersOwnRelations}" requestedUserName="${requestedUserName}" disableEditLink="${disableEditLink}" scope="${scope}"/>
+			<tags:concepts requestedConcepts="${requestedConcepts}" cmd="${cmd}" usersOwnRelations="${usersOwnRelations}" requestedUserName="${requestedUserName}" disableEditLink="${disableEditLink}" scope="${scope}"/>
 		</jsp:attribute>
 	</sidebar:sidebarItem>
 </jsp:root>	
