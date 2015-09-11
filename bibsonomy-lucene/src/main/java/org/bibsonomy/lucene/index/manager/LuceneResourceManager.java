@@ -77,9 +77,9 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	private static final Log log = LogFactory.getLog(LuceneResourceManager.class);
 
 	/** the number of posts to fetch from the database by a single generating step */
-	protected static final int SQL_BLOCKSIZE = 5000;
+	protected static final int SQL_BLOCKSIZE = 4096;
 	
-	private static final int UPDATED_INTERHASHES_CACHE_SIZE = 25000;
+	private static final int UPDATED_INTERHASHES_CACHE_SIZE = 15000;
 	
 	/**
 	 * this constant determines the difference of docs between the lucene index and the DB that will be tolerated
