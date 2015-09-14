@@ -87,6 +87,12 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 */
 	private static final int DOC_TOLERANCE = 1000;
 
+	/**
+	 * constant for querying for all posts which have been deleted since the
+	 * last index update
+	 */
+	protected static final long QUERY_TIME_OFFSET_MS = 3 * 1000;
+
 	/** flag indicating whether to update the index or not */
 	private boolean luceneUpdaterEnabled = true;
 
@@ -265,7 +271,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			// index is empty -> nothing to delete
 			contentIdsToDelete = new ArrayList<>();
 		} else {
-			contentIdsToDelete = this.dbLogic.getContentIdsToDelete(new Date(oldState.getLast_log_date().getTime()));
+			contentIdsToDelete = this.dbLogic.getContentIdsToDelete(new Date(oldState.getLast_log_date().getTime() - QUERY_TIME_OFFSET_MS));
 		}
 		
 		/*
@@ -642,7 +648,9 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 */
 	protected void updatePredictions(List<IndexUpdater<R>> updaters, final Date lastLogDate) {
 		// keeps track of the newest log_date during last index update
-		final Date fromDate = new Date(lastLogDate.getTime());
+		// final long lastLogDate = lastLogDate - QUERY_TIME_OFFSET_MS;
+		// get date of last index update
+		final Date fromDate = new Date(lastLogDate.getTime() - QUERY_TIME_OFFSET_MS);
 
 		final List<User> predictedUsers = this.dbLogic.getPredictionForTimeRange(fromDate);
 
