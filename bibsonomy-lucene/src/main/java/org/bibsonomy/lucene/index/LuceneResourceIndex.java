@@ -921,7 +921,7 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 
 	@Override
 	public String toString() {
-		return this.resourceClass.getSimpleName() + INDEX_ID_DELIMITER + this.indexId;
+		return this.indexPath;
 	}
 	
 	/* (non-Javadoc)
@@ -971,7 +971,7 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	}
 
 	/**
-	 * @return
+	 * @return resourceConverter
 	 */
 	public LuceneResourceConverter<R> getResourceConverter() {
 		return this.resourceConverter;
