@@ -56,7 +56,11 @@
      * Adds the given item as a new tag. Pass true to dontPushVal to prevent
      * updating the elements val()
      */
-    add: function(item, dontPushVal) {
+    add: function(itemBefore, dontPushVal) {
+    	
+    	var itemMiddle = itemBefore.toString().replace(/</g, "&lt;");
+    	var item = itemMiddle.toString().replace(/>/g, "&gt;");
+    	
       var self = this;
 
       if (self.options.maxTags && self.itemsArray.length >= self.options.maxTags)
@@ -78,6 +82,7 @@
       // Ignore strings only containg whitespace
       if (item.toString().match(/^\s*$/))
         return;
+      
 
       // If SELECT but not multiple, remove current tag
       if (self.isSelect && !self.multiple && self.itemsArray.length > 0)
@@ -125,7 +130,7 @@
       self.itemsArray.push(item);
 
       // add a tag element
-      var $tag = $('<span class="tag ' + htmlEncode(tagClass) + '">' + htmlEncode(itemText) + '<span data-role="remove"></span></span>');
+      var $tag = $('<span class="tag ' + htmlEncode(tagClass) + '">' + itemText + '<span data-role="remove"></span></span>');
       $tag.data('item', item);
       self.findInputWrapper().before($tag);
       $tag.after(' ');
@@ -145,7 +150,7 @@
       if (self.options.maxTags === self.itemsArray.length || self.items().toString().length === self.options.maxInputLength)
         self.$container.addClass('bootstrap-tagsinput-max');
 
-      self.$element.trigger($.Event('itemAdded', { item: item }));
+      self.$element.trigger($.Event('itemAdded', { item: itemText }));
     },
 
     /**
