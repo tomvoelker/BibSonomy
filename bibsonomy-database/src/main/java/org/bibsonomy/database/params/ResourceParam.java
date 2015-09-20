@@ -28,6 +28,7 @@ package org.bibsonomy.database.params;
 
 import org.bibsonomy.common.enums.RatingAverage;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 
 /** 
@@ -43,6 +44,7 @@ public class ResourceParam<T extends Resource> extends GenericParam {
 
 	protected T resource;
 	protected GoldStandardRelation relation;
+	protected ResourcePersonRelation personRelation;
 	
 
 	/**
@@ -85,4 +87,13 @@ public class ResourceParam<T extends Resource> extends GenericParam {
 	public void setRatingAverage(final RatingAverage ratingAverage) {
 		this.ratingAverage = ratingAverage;
 	}
+
+	public ResourcePersonRelation getPersonRelation() {
+		return this.personRelation;
+	}
+
+	public void setPersonRelation(ResourcePersonRelation personRelation) {
+		this.personRelation = personRelation;
+	}
+
 }

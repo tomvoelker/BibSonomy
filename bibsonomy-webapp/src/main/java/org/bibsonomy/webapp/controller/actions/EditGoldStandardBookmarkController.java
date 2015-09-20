@@ -37,6 +37,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.util.ObjectUtils;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.GoldStandardPostValidator;
 import org.bibsonomy.webapp.validation.PostValidator;
@@ -131,7 +132,7 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
 	}
 
 	@Override
-	protected void preparePost(final EditPostCommand<Bookmark> command, final Post<Bookmark> post) {
+	protected void preparePost(final EditBookmarkCommand command, final Post<Bookmark> post) {
 		super.preparePost(command, post);
 		post.setApproved(command.isApproved());
 	}
@@ -149,6 +150,14 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
 	@Override
 	protected PostValidator<Bookmark> getValidator() {
 		return new GoldStandardPostValidator<Bookmark>();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#canEditPost(org.bibsonomy.webapp.util.RequestWrapperContext)
+	 */
+	@Override
+	protected boolean canEditPost(final RequestWrapperContext context) {
+		return super.canEditPost(context) && !context.getLoginUser().isSpammer();
 	}
 
 	@Override

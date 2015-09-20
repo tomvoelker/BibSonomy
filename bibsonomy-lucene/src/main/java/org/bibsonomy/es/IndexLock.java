@@ -1,5 +1,5 @@
 /**
- * BibSonomy-OpenSocial - Implementation of the Opensocial specification and OAuth Security Handling
+ * BibSonomy-Lucene - Fulltext search facility of BibSonomy
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -24,41 +24,48 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.opensocial.oauth.database.typehandler;
+package org.bibsonomy.es;
 
-import java.sql.SQLException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
 
-import com.ibatis.sqlmap.client.extensions.ParameterSetter;
-import com.ibatis.sqlmap.client.extensions.ResultGetter;
-import com.ibatis.sqlmap.client.extensions.TypeHandlerCallback;
+import org.bibsonomy.util.LockAutoCloseable;
 
 /**
- * temporary type handler for mapping boolean values in IBatis (used for debugging only)
- *  
- * @author fei
+ * Access to the index should be done by first acquiring an {@link IndexLock}. The index name returned by {@link #getIndexName()} is then guaranteed to be the one that has been locked.
  *
+ * @author jensi
  */
-public class BooleanTypeHandler implements TypeHandlerCallback{
+public class IndexLock extends LockAutoCloseable {
 
-	public Object getResult(ResultGetter arg) throws SQLException {
-		return valueOf(arg.getString());
+	private final String indexName;
+
+	/**
+	 * @param indexName the name of the index that is to be locked
+	 * @param lock
+	 */
+	public IndexLock(final String indexName, final Lock lock) {
+		super(lock);
+		this.indexName = indexName;
+	}
+	
+	public IndexLock(final String indexName, final Lock lock, long maxWaitForLock, TimeUnit maxWaitForLockUnit) throws LockFailedException {
+		super(lock, maxWaitForLock, maxWaitForLockUnit);
+		this.indexName = indexName;
 	}
 
-	public void setParameter(ParameterSetter param, Object value) throws SQLException {
-		Boolean truth = (Boolean) value;
-		if( value!=null ) {
-			param.setInt(truth?1:0);
-		}
+	/**
+	 * @return the name of the index that has been locked
+	 */
+	public String getIndexName() {
+		return this.indexName;
 	}
-
-	public Object valueOf(String arg) {
-		if ("0".equals(arg)) {
-			return Boolean.FALSE;
-		} else if ("1".equals(arg)) {
-			return Boolean.TRUE;
-		} else {
-			throw new RuntimeException("Given truth value '"+arg+"' ist not supported.");
-		}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "[" + this.getClass().getSimpleName() + ": " + this.indexName + "]"; 
 	}
-
 }

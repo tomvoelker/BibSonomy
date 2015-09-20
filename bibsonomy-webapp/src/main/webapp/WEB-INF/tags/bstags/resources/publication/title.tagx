@@ -32,7 +32,7 @@
 				<c:out value="${pubTitle}" />
 			
 			</h1>
-			<p><bib:desc publication="${post.resource}"/></p>
+			<p><bib:desc post="${post}" publication="${post.resource}"/></p>
 		</div>
 	</div>
 </jsp:root>

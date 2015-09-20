@@ -60,7 +60,7 @@
 	</select>
 
 	<select id="getBibTexByTagNamesCount" resultClass="int" timeout="2" parameterClass="bibtexParam">
-		SELECT count(*)
+		SELECT COUNT(*)
 		FROM <include refid="tagFromQuery"/>
 		WHERE <include refid="tagWhereQuery"/>
 			AND t1.content_type = #contentType#
@@ -156,7 +156,7 @@
 	</select>
 
 	<select id="getBibTexByTagNamesForUserCount" resultClass="int" parameterClass="bibtexParam">
-		SELECT count(*) AS count
+		SELECT COUNT(*) AS count
 		FROM <include refid="tagFromQuery"/>
 		WHERE <include refid="tagWhereQuery"/>
 			<include refid="restrictToGroups"/>
@@ -515,7 +515,7 @@
 	</select>
 	
 	<select id="getBibTexDuplicateCount" resultClass="int" parameterClass="bibtexParam">
-		SELECT count(*) FROM (<include refid ="duplicatesCount"/>) AS duplicates
+		SELECT COUNT(*) FROM (<include refid ="duplicatesCount"/>) AS duplicates
 	</select>
 
 	<select id="getBibTexForGroup" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
@@ -624,7 +624,7 @@
 	</select>
 
 	<select id="getBibTexForGroupCount" resultClass="int" parameterClass="bibtexParam" timeout="1">
-		SELECT count(*)
+		SELECT COUNT(*)
 		FROM bibtex t1, group_memberships g
 		WHERE g.group = #groupId#
 		      AND t1.user_name = g.user_name
@@ -786,7 +786,7 @@
   	</select> 
 
 	<select id="getBibTexForUserCount" resultClass="int" parameterClass="bibtexParam" timeout="1">
-		SELECT count(*)
+		SELECT COUNT(*)
 		FROM bibtex t1
 		WHERE t1.user_name = #requestedUserName#
 	      <include refid="restrictToGroups"/>
@@ -993,7 +993,7 @@
 	</select>
 	
 	<select id="getUniqueBibTexCount" resultClass="int" parameterClass="bibtexParam" timeout="0">
-		SELECT count(DISTINCT simhash1) AS ctr FROM bibtex
+		SELECT COUNT(DISTINCT simhash1) AS ctr FROM bibtex
 		<include refid="statisticRestrictions" />
 	</select>
 	

@@ -34,8 +34,11 @@ import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.InboxParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.DiscussionItem;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 
 /**
@@ -70,6 +73,7 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	 * @param groupId
 	 * @param session
 	 */
+	@Override
 	public void onPublicationMassUpdate(String username, int groupId, DBSession session) {
 		// noop
 	}
@@ -210,6 +214,55 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	@Override
 	public void onDiscussionMassUpdate(String username, int groupId, DBSession session) {
 		// poon
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPersonDelete(java.lang.Integer, org.bibsonomy.database.common.DBSession)
+	 */
+	@Override
+	public void onPersonNameDelete(PersonName personName, DBSession session) {
+		// noop
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPersonUpdate(java.lang.Integer, org.bibsonomy.database.common.DBSession)
+	 */
+	@Override
+	public void onPersonUpdate(String personId, DBSession session) {
+		// noop
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPersonDelete(java.lang.Integer, org.bibsonomy.database.common.DBSession)
+	 */
+	@Override
+	public void onPersonDelete(Person person, DBSession session) {
+		// noop
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPubPersonDelete(java.lang.Integer, org.bibsonomy.database.common.DBSession)
+	 */
+	@Override
+	public void onPubPersonDelete(ResourcePersonRelation rel, DBSession session) {
+		// noop
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPersonUpdateByUserName(java.lang.String, org.bibsonomy.database.common.DBSession)
+	 */
+	@Override
+	public void onPersonUpdateByUserName(String userName, DBSession session) {
+		// noop		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onUpdatePersonName(java.lang.Integer, org.bibsonomy.database.common.DBSession)
+	 */
+	@Override
+	public void onPersonNameUpdate(Integer personChangeId, DBSession session) {
+		// noop
 	}
 	
 }

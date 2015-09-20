@@ -23,6 +23,9 @@
 			<!-- XXX: is a multipart/form-data request, this has no effect (currently)! -->
 			<input type="hidden" name="ckey" value="${ckey}"/>
 			
+			<input type="hidden" name="personId" value="${command.personId}" />
+			<input type="hidden" name="personRole" value="${command.personRole}"/>
+			 
 			<!-- 
 				file, group, SUBMIT
 			 -->

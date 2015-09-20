@@ -125,17 +125,20 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 	 * @param contentId
 	 * @param fileHash
 	 * @param fileName
+	 * @param oldDate 
+	 * @param userName 
 	 * @param md5hash
 	 * @param session
 	 */
-	public void updateDocument(final int contentId, final String fileHash, final String fileName, final Date date, final String userName,
+	public void updateDocument(final int contentId, final String fileHash, final String fileName, final Date oldDate, final String userName,
 			final String md5hash, final DBSession session) {
 		final DocumentParam docParam = new DocumentParam();
 		docParam.setFileHash(fileHash);
 		docParam.setFileName(fileName);
 		docParam.setContentId(contentId);
 		docParam.setUserName(userName);
-		docParam.setDate(date);
+		// we need it for logging
+		docParam.setDate(oldDate);
 		docParam.setMd5hash(md5hash);
 		
 		this.onDocumentUpdate(docParam, session);
