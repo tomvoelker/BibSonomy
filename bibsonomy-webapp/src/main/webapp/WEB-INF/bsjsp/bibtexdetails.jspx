@@ -17,6 +17,7 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/resources/actionbuttons"
 	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar"
 	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/publication">
@@ -74,7 +75,7 @@
 								<input class="form-control input-sm rename-tags" type="text" name="newTags['${fn:escapeXml(publication.intraHash)}']" value="${fn:escapeXml(tagsString)}"/>
 								<fmt:message key="bibtex.actions.tags.update" var="updateTags"/>
 								<span class="input-group-btn">
-									<button class="btn btn-sm btn-default rename-tags-btn" title="${updateTags}" type="submit"><span class="fa fa-pencil"><!-- KEEP ME --></span><span class="sr-only"><c:out value="${updateTags}" /></span></button>
+									<bsform:button style="defaultStyle" value="" size="small" type="submit" icon="pencil" className="rename-tags-btn" title="${updateTags}" srText="${updateTags}" />
 									<button class="btn btn-sm btn-default rename-tags-submit-btn" style="display: none;" title="${updateTags}" type="button"><span class="glyphicon glyphicon-ok"><!-- KEEP ME --></span><span class="sr-only">OK</span></button>
 								</span>
 							</div>
@@ -111,7 +112,6 @@
 							|
 							+-->
 						<li><h5><fmt:message key="tags"/>
-								
 								<small style="font-size:80%;">
 									(<user:username user="${post.user}" />
 									<fmt:message key="tags.highlighted.by_user"/>)
@@ -141,7 +141,7 @@
 								</div>
 								<div class="pull-right">
 									<fmt:message key="save" var="save" />
-									<button type="submit" class="btn btn-primary btn-xs" id="makeP" onclick="javascript: return updatePrivNote($(this))"><c:out value="${save}" /></button>
+									<bsform:button style="primary" value="${save}" size="xsmall" onclick="javascript: return updatePrivNote($(this))" id="makeP" />
 								</div>
 							</form>
 						</div>

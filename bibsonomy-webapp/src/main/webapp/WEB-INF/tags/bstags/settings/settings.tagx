@@ -318,12 +318,10 @@
 						<input type="hidden" name="action" value="layoutTagPost"/>
 						<input type="hidden" name="selTab" value="1"/>
 						
-						
 						<div class="col-sm-offset-3 col-sm-9">
 							<bsform:button type="submit" style="primary" size="defaultSize"  value="${setlayout}" />
 						</div>
 					</div>
-					
 				</fieldset>
 			</form:form>
 					
@@ -351,9 +349,7 @@
 												<span style="white-space: pre-wrap;"><a href="/help/doc/api.html"><fmt:message key="settings.apidoc"/></a></span>
 											</fmt:param>
 											<fmt:param>
-												<!--
-													TODO: make this configurable 
-									 			-->
+												<!-- TODO: make this configurable -->
 												<span style="white-space: nowrap;"><parts:email address="api-support@bibsonomy.org"/></span>
 											</fmt:param>
 										</fmt:message>
@@ -438,13 +434,11 @@
 			<c:if test="${mtl:contains(authConfig, mtl:convertToEnum('org.bibsonomy.common.enums.AuthMethod', 'internal')) and not openIdOrLDAPUser}">
 				<settings:passwordChange loginUser="${command.context.loginUser}"/>
 			</c:if>
-					
+			
 			<form:form cssClass="form-horizontal" id="postForm" method="post" action="/actions/goodBye">
 				<fieldset>
 					<legend><fmt:message key="settings.deletemyaccount" /></legend>
 					<!-- Are you sure? -->
-					
-								
 					<fmt:message var="labelText" key="settings.really" />
 					<bsform:input path="delete" placeholder="no" labelColSpan="3" inputColSpan="9" noHelp="true" labelText="${labelText }" />
 					

@@ -200,7 +200,7 @@
 								</c:choose>
 								<br id='nameInsertionPoint'/>
 								<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-									<button type='button' class='btn btn-default' data-toggle="modal" data-target="#addName" href='#addPerson'>${textAddAlternateNameButton}</button>
+									<bsform:button size="defaultSize" value="${textAddAlternateNameButton}" style="defaultStyle" dataToggle="modal" dataTarget="#addName" />
 								</c:if>
 							</div>
 						</div>
@@ -250,7 +250,8 @@
 								<button style='${displayUnlinkButton}' type='button' id='btnUnlink' class='btn btn-default' data-toggle="modal" data-target="#unlinkPerson">${textThatsNotMeButton}</button>
 								-->
 								<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-									<button id='btnSaveSubmit' data-person-id="${command.person.personId}" type='button' class='btn btn-primary pull-right'>${textSaveButton}</button>
+									<!-- TODO: can we use the bsform:button tagx file? -->
+									<button id='btnSaveSubmit' data-person-id="${command.person.personId}" type='button' class="btn btn-primary pull-right ${systemReadOnly ? 'disabled' : '' }">${textSaveButton}</button>
 								</c:if>
 							</div>
 						</div>
@@ -267,7 +268,7 @@
 						<div id='ownThesis' class='tab-pane'>
 							<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
 								<br/>
-								<button style='width: 100%;' class='btn btn-default' data-toggle='modal' data-target='#addThesis'>${textAddThesisButton}</button>
+								<bsform:button size="defaultSize" value="${textAddThesisButton}" style="defaultStyle" dataToggle="modal" dataTarget="#addThesis" block="${true}" />
 								<br/>
 							</c:if>
 							<h3 class="list-headline"><fmt:message key="person.show.thesis" /></h3>
@@ -296,7 +297,6 @@
 								</c:otherwise>
 							</c:choose>
 						</div>
-						
 						
 						<div id='ownPublications' class='tab-pane'>
 							<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
@@ -545,9 +545,9 @@
           <button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
           <button type="button" class="btn btn-primary" id='btnEditRoleSubmit'>${textEditRoleButton}</button>
         </div>
-      </div>
-    </div>
-  </div>
+			</div>
+		</div>
+	</div>
 	
 	<div class="modal fade" id="deleteRole" tabindex="-1" role="dialog"
 		aria-labelledby="deleteRoleLabel" aria-hidden="true">

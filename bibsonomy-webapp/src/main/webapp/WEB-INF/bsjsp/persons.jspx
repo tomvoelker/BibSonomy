@@ -5,6 +5,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"
@@ -110,7 +111,7 @@
 
 								<div class="text-center">
 									<form action="#">
-										<input type="hidden" name="ckey" value="${ckey}"/>								
+										<input type="hidden" name="ckey" value="${ckey}"/>
 										<div class='input-group' style="margin-left: auto; width: 100%; margin-right: auto; ">
 											
 											<fmt:message key="person.index.placeholder" var="placeholderText"/>
@@ -132,9 +133,10 @@
 											<input type="hidden" name='post.resource.entrytype' value='phdthesis'/>
 											<input type="hidden" name="ckey" value="${ckey}"/>
 											
-											<fmt:message key="persons.intro.addperson.text"/>
+											<fmt:message key="persons.intro.addperson.text"/><c:out value=" " />
 											<fmt:message key="persons.intro.addperson.button" var="textAddPersonButton"/>
-											<input type="submit" style="margin: 0px 20px 0px 10px;" class="btn btn-sm btn-default" name='submit' id="addPersonBtn" value='${textAddPersonButton}' />
+											
+											<bsform:button type="submit" size="small" value="${textAddPersonButton}" style="defaultStyle" id="addPersonBtn" />
 										</form>
 									</div>
 								</c:if>

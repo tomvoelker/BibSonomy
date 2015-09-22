@@ -90,14 +90,11 @@
 							</div>
 						</div>
 						<input type='hidden' name='ckey' id='ckey' value="${fn:escapeXml(command.context.ckey)}" />
-
-
 						<div class="form-group">
-
 							<div class="col-sm-offset-3 col-sm-9" id="saveButtons">
 								<div class="btn-group btn-group-sm">
-									<button type="button" id="saveButton" href='#' onclick="return submitWiki('save');" class="btn btn-primary"><c:out value="${save}" /></button>
-									<button type="button" id="showAdmin" class="btn btn-default"><c:out value="${show}" /></button>
+									<bsform:button size="defaultSize" id="saveButton" onclick="return submitWiki('save');" value="${save}" style="primary" />
+									<bsform:button size="defaultSize" id="showAdmin" value="${show}" style="defaultStyle" />
 									<button type="button" id="hideAdmin" class="btn btn-default" style="display:none"><c:out value="${hide}" /></button>
 								</div>
 							</div>
@@ -108,8 +105,7 @@
 								<div id="statusText" class="col-md-10"><!-- keep me --></div>
 							</div>
 						</div>
-
-
+						
 						<!-- Text edit area -->
 						<div style="display: none" id="wikiEditArea">
 							<bsform:textarea labelColSpan="3" inputColSpan="9" id="wikiTextArea" path="wikiText" labelKey="cv.editCV" noHelp="true" rows="10" />
