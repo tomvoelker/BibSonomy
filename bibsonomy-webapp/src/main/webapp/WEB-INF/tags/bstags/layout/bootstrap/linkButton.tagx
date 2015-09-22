@@ -19,14 +19,14 @@
 	<jsp:directive.attribute name="disabled" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="dataToggle" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="dataTarget" type="java.lang.String" required="false" />
+	<jsp:directive.attribute name="onclick" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="content" fragment="true" required="false"/>
-	
 	
 	<c:if test="${not empty titleKey}">
 		<fmt:message key="${titleKey}" var="title" />
 	</c:if>
 	
-	<a href="${fn:escapeXml(href)}" data-target="${dataTarget}" data-toggle="${dataToggle}" title="${fn:escapeXml(title)}" class="btn ${not empty block and block ? 'btn-block' : ''} ${not empty style ? style.cssClassName : ''} ${size.cssClassName} ${(not empty disabled and disabled) or systemReadOnly ? 'disabled' : ''} ${additionalClass}">
+	<a href="${fn:escapeXml(href)}" data-target="${dataTarget}" data-toggle="${dataToggle}" title="${fn:escapeXml(title)}" class="btn ${not empty block and block ? 'btn-block' : ''} ${not empty style ? style.cssClassName : ''} ${size.cssClassName} ${(not empty disabled and disabled) or systemReadOnly ? 'disabled' : ''} ${additionalClass}" onclick="${onclick}">
 		<c:if test="${not empty icon}"><fontawesome:icon icon="${icon}" /></c:if>
 		<c:if test="${not empty srText}">
 			<span class="sr-only"><c:out value="${srText}" /></span>
