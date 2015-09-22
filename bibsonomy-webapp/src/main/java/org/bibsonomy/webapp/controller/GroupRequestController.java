@@ -30,9 +30,9 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Collections;
 import java.util.List;
+
 import org.bibsonomy.common.enums.GroupCreationMode;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
-
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
@@ -125,7 +125,6 @@ public class GroupRequestController implements ValidationAwareController<GroupRe
 				break;
 			case REQUESTEDBASED:
 				this.mailer.sendGroupRequest(requestedGroup);
-
 				command.setMessage("success.groupRequest.sent", Collections.singletonList(groupName));
 				break;
 			default:

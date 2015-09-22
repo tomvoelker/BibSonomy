@@ -41,6 +41,7 @@ import java.util.TreeSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConceptStatus;
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
@@ -52,20 +53,30 @@ import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.PostLogicInterface;
+import org.bibsonomy.model.logic.exception.LogicException;
+import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
 import org.bibsonomy.services.Pingback;
 import org.bibsonomy.services.URLGenerator;
+import org.bibsonomy.util.Sets;
 import org.bibsonomy.webapp.command.ContextCommand;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListController;
@@ -103,7 +114,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 
 	private static final String TAGS_KEY = "tags";
 	protected static final String LOGIN_NOTICE = "login.notice.post.";
-
+	
 	private Recommender<TagRecommendationEntity, recommender.impl.model.RecommendedTag> recommender;
 	private Pingback pingback;
 	private Captcha captcha;
@@ -167,13 +178,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	@Override
 	public View workOn(final COMMAND command) {
 		final RequestWrapperContext context = command.getContext();
-		/*
-		 * We store the referer in the command, to send the user back to the
-		 * page he's coming from at the end of the posting process.
-		 */
-		if (!present(command.getReferer())) {
-			command.setReferer(this.requestLogic.getReferer());
-		}
 
 		/*
 		 * only users which are logged in might post -> send them to login page
@@ -330,7 +334,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 *        - the login user.
 	 * @return The post view.
 	 */
-	protected View getEditPostView(final EditPostCommand<RESOURCE> command, final User loginUser) {
+	protected View getEditPostView(final COMMAND command, final User loginUser) {
 		/*
 		 * initialize tag sets for groups
 		 */
@@ -356,10 +360,39 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			 */
 			command.setCaptchaHTML(this.captcha.createCaptchaHtml(this.requestLogic.getLocale()));
 		}
+		
+		/*
+		 * We store the referrer in the command, to send the user back to the
+		 * page he's coming from at the end of the posting process.
+		 */
+		if (!present(command.getReferer())) {
+			String referer = this.requestLogic.getReferer();
+			if (referer == null) {
+				referer = this.getHttpsReferrer(command);
+			}
+			command.setReferer(referer);
+		}
+		
 		/*
 		 * return the view
 		 */
 		return this.getPostView();
+	}
+
+	/**
+	 * XXX: if the post bookmark button was clicked on a https site
+	 * the referrer is currently not set because we are not supporting
+	 * ssl at the moment (RFC 2616, see https://tools.ietf.org/html/rfc2616#section-15.1.3).
+	 * As a workaround we assume that if there is no referer and the post
+	 * url starts with the https schema that the user was on the post url
+	 * and set this as referer.
+	 * 
+	 * @param command
+	 * @param referer
+	 * @return
+	 */
+	protected String getHttpsReferrer(final COMMAND command) {
+		return null;
 	}
 
 	protected abstract View getPostView();
@@ -406,7 +439,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				// comparePost is the history revision which will be restored.
 				final int compareVersion = command.getCompareVersion();
 				@SuppressWarnings("unchecked")
-				final Post<RESOURCE> comparePost = (Post<RESOURCE>) this.logic.getPosts(dbPost.getResource().getClass(), GroupingEntity.USER, this.getGrouping(loginUser), null, intraHashToUpdate, null, SearchType.LOCAL, FilterEntity.POSTS_HISTORY, null, null, null, compareVersion, compareVersion + 1).get(0);
+				final Post<RESOURCE> comparePost = (Post<RESOURCE>) this.logic.getPosts(dbPost.getResource().getClass(), GroupingEntity.USER, this.getGrouping(loginUser), null, intraHashToUpdate, null, SearchType.LOCAL, Sets.<Filter>asSet(FilterEntity.HISTORY), null, null, null, compareVersion, compareVersion + 1).get(0);
 
 				// TODO: why don't we set the dbPost = comparePost? why do we
 				// have to restore all fields by hand?
@@ -507,6 +540,9 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		case "approved":
 			post.setApproved(newPost.getApproved());
 			break;
+		case "groups":
+			post.setGroups(newPost.getGroups());
+			break;
 		default:
 			this.replaceResourceSpecificPostFields(post.getResource(), key, newPost.getResource());
 		}
@@ -532,7 +568,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @param ex
 	 * @return
 	 */
-	private View handleDatabaseException(final EditPostCommand<RESOURCE> command, final User loginUser, final Post<RESOURCE> post, final DatabaseException ex, final String process) {
+	private View handleDatabaseException(final COMMAND command, final User loginUser, final Post<RESOURCE> post, final DatabaseException ex, final String process) {
 		final List<ErrorMessage> errorMessages = ex.getErrorMessages(post.getResource().getIntraHash());
 		for (final ErrorMessage em : errorMessages) {
 			this.errors.reject("error.post.update", "Could not " + process + " this post.");
@@ -602,7 +638,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @param command
 	 * @param post
 	 */
-	protected void preparePost(final EditPostCommand<RESOURCE> command, final Post<RESOURCE> post) {
+	protected void preparePost(final COMMAND command, final Post<RESOURCE> post) {
 		try {
 			/*
 			 * we use addAll here because there might already be system tags in
@@ -629,7 +665,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * 
 	 * @param command
 	 */
-	protected void validatePost(final EditPostCommand<RESOURCE> command) {
+	protected void validatePost(final COMMAND command) {
 		ValidationUtils.invokeValidator(this.getValidator(), command, this.errors);
 	}
 
@@ -675,15 +711,11 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * Create the final redirect after successful creating / updating a post. We
 	 * redirect to the URL the user was initially coming from. If we don't have
 	 * that URL (for whatever reason), we redirect to the user's page.
-	 * 
-	 * @param userName
-	 *            - the name of the loginUser
-	 * @param intraHash
-	 *            - the intra hash of the created/updated post
+	 * @param userName	the logged in user?
+	 * @param post		the saved post
 	 * @param referer
 	 *            - the URL of the page the user is initially coming from
-	 * 
-	 * @return
+	 * @return the redirect view
 	 */
 	protected View finalRedirect(final String userName, final Post<RESOURCE> post, final String referer) {
 		/*
@@ -695,9 +727,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		if (!present(referer) || referer.matches(".*/postPublication$") || referer.matches(".*/postBookmark$") || referer.contains("/history/")) {
 			return new ExtendedRedirectView(this.urlGenerator.getUserUrlByUserName(userName));
 		}
-		/*
-		 * redirect to referer URL
-		 */
+		
 		return new ExtendedRedirectView(referer);
 	}
 
@@ -787,6 +817,14 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			final String ratingUrl = this.urlGenerator.getCommunityRatingUrl(post);
 			return new ExtendedRedirectView(ratingUrl);
 			}
+		/**
+		 * if the user is adding a new thesis to a person's page, he should be redirected to that person's page
+		 * */
+		if (present(command.getPost().getResourcePersonRelations())){
+			ResourcePersonRelation resourcePersonRelation = post.getResourcePersonRelations().get(post.getResourcePersonRelations().size()-1);
+			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(resourcePersonRelation.getPerson().getPersonId()));
+			
+		}
 		return this.finalRedirect(loginUserName, post, command.getReferer());
 	}
 
@@ -817,7 +855,12 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		if (present(this.pingback) && !loginUser.isSpammer() && GroupUtils.isPublicGroup(post.getGroups())) {
 			this.pingback.sendPingback(post);
 		}
+
 	}
+
+
+
+
 
 	/**
 	 * Populates the command with the given post. Ensures, that fields which
@@ -827,7 +870,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @param command
 	 * @param post
 	 */
-	protected void populateCommandWithPost(final EditPostCommand<RESOURCE> command, final Post<RESOURCE> post) {
+	protected void populateCommandWithPost(final COMMAND command, final Post<RESOURCE> post) {
 		/*
 		 * put post into command
 		 */
@@ -944,7 +987,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @param command
 	 * @return <code>true</code> iff user already owns resource
 	 */
-	protected boolean setDiffPost(final EditPostCommand<RESOURCE> command) {
+	protected boolean setDiffPost(final COMMAND command) {
 		final RequestWrapperContext context = command.getContext();
 		final Post<RESOURCE> post = command.getPost();
 		final String loginUserName = context.getLoginUser().getName();

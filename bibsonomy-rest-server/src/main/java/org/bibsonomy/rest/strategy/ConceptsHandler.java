@@ -26,12 +26,11 @@
  */
 package org.bibsonomy.rest.strategy;
 
-import java.util.StringTokenizer;
-
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.concepts.GetConceptDetailsStrategy;
 import org.bibsonomy.rest.strategy.concepts.GetConceptsStrategy;
+import org.bibsonomy.rest.util.URLDecodingPathTokenizer;
 
 /**
  * A Context Handler for all <em>/concept</em> urls
@@ -41,8 +40,8 @@ import org.bibsonomy.rest.strategy.concepts.GetConceptsStrategy;
 public class ConceptsHandler implements ContextHandler {
 	
 	@Override
-	public Strategy createStrategy(final Context context, final StringTokenizer urlTokens, final HttpMethod httpMethod) {
-		final int numTokensLeft = urlTokens.countTokens();
+	public Strategy createStrategy(final Context context, final URLDecodingPathTokenizer urlTokens, final HttpMethod httpMethod) {
+		final int numTokensLeft = urlTokens.countRemainingTokens();
 
 		switch (numTokensLeft) {
 		case 0:
@@ -54,7 +53,7 @@ public class ConceptsHandler implements ContextHandler {
 		case 1:
 			// /concepts/[conceptname]
 			if (HttpMethod.GET == httpMethod) {
-				final String conceptName = urlTokens.nextToken();
+				final String conceptName = urlTokens.next();
 				return new GetConceptDetailsStrategy(context, conceptName);
 			}
 			break;

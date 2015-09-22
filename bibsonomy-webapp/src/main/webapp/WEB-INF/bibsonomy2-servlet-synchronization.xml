@@ -68,12 +68,12 @@
 	<bean id="syncController" class="org.bibsonomy.webapp.controller.ajax.SynchronizationController" scope="request" parent="ajaxController">
 		<property name="client" ref="synchronizationClient"/>
 		<property name="messageSource" ref="messageSource"/>
-		<property name="projectHome" value="${project.home}"/>
+		<property name="projectHome" ref="projectHome" />
 	</bean>
 
 	<!-- client bean, handles synchronization -->
 	<bean id="realSynchronizationClient" class="org.bibsonomy.synchronization.TwoStepSynchronizationClient" lazy-init="true">
-		<property name="ownUri" value="${project.home}"/>
+		<property name="ownUri" ref="projectHome" />
 	</bean>
 	<bean id="mockSynchronizationClient" class="org.bibsonomy.webapp.util.spring.factorybeans.NullFactoryBean" />
 	<alias name="${project.bean.syncclient}" alias="synchronizationClient" />

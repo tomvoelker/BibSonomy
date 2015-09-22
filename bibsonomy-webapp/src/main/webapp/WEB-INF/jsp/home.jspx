@@ -73,6 +73,15 @@
 								</fmt:message>
 							</div>
 							
+							<!-- end of life remark -->
+							<div class="systemAbout">
+							  <b>
+							    <fmt:message key="system.bib3.switch.endoflife">
+							      <fmt:param value="${properties['project.name']}"/>
+							    </fmt:message>
+							  </b>
+							</div>
+
 							<!-- switch -->
 							<div class="systemRegister">
 								<h2>

@@ -9,7 +9,7 @@
 
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
-		
+	
 	<c:choose>
 		<c:when test="${not empty post.systemUrl }">
 			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
@@ -22,7 +22,6 @@
 	<c:set var="rscType" value="bookmark" />
 
 	<div class="edit-media-buttons btn-group btn-group-xs dropdown-align-right">
-
 		<c:set var="buttonClasses" value="btn btn-default btn-xsmall"/>
 
 		<!--+
@@ -52,7 +51,7 @@
 									<c:param name="hash" value="${post.resource.intraHash}" />
 									<c:param name="user" value="${post.user.name}" />
 									<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
-								</c:url>		
+								</c:url>
 								<fmt:message key="bookmark.actions.copy.title" var="copyTitle"/>
 								<a class="${buttonClasses}" href="${copyLink}" title="${fn:escapeXml(copyTitle)}">
 									<span class="fa fa-copy"><!--  --></span>
@@ -136,7 +135,6 @@
 		</button>
 
 		<ul class="dropdown-menu" style="min-width: 230px;">
-
 			<!--+
 				| COMMUNITY POST
 				+ -->
@@ -144,7 +142,6 @@
 				<fmt:message key="actions.communityPost.title" var="communityPost" />
 				<a href="${relativeUrlGenerator.getCommunityBookmarkUrlByInterHash(post.resource.interHash)}" title="${fn:escapeXml(communityPost)}">
 					<fmt:message key="actions.communityPost" />
-					&amp;nbsp;<span class="badge" style="position: absolute; right: 10px;">new</span>
 				</a>
 			</li>
 
@@ -157,13 +154,11 @@
 					<c:when test="${(command.context.userLoggedIn and (loginUserName eq post.user.name)) or (empty post.user)}">
 						<a href="${relativeUrlGenerator.getHistoryURLByHashAndUserName(post.resource.interHash, post.user.name, true)}" title="${postHistoryTitle}">
 							<fmt:message key="bookmark.actions.posthistory.title" />
-							&amp;nbsp;<span class="badge" style="position: absolute; right: 10px;">new</span>
 						</a>
 					</c:when>
 					<c:otherwise>
 						<span class="ilitem" title="${historyTitle}">
 							<fmt:message key="bookmark.actions.posthistory.title" />
-							&amp;nbsp;<span class="badge" style="position: absolute; right: 10px;">new</span>
 						</span>
 					</c:otherwise>
 				</c:choose>

@@ -61,7 +61,7 @@ public class JCIScraperTest {
 		final String reference = sc.getReferences();
 		assertNotNull(reference);
 		assertTrue(reference.length() > 100);
-		assertEquals("<a class=\"in-page\" NAME=\"B1\"></a><li class=\"reference\" VALUE=\"1\">".trim(), reference.substring(0, 67).trim());
+		assertEquals("<a class=\"in-page\" name=\"B1\"></a><li class=\"reference\" value=\"1\">L".trim(), reference.substring(0, 67).trim());
 		assertTrue(reference.contains("Liu, J"));
 	}
 }

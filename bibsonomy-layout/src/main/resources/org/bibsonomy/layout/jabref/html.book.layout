@@ -22,19 +22,19 @@
 
 		\begin{title}
 		<div class="bibtex_title">
-			\format[HTMLChars,RemoveLatexCommands,AntiScriptInjection]{\title}
+			\format[HTMLCharsAntiScript,RemoveLatexCommands]{\title}
 		</div>
  		\end{title}
 
 		\begin{author}
 		<div class="bibtex_author">
-			\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\author}
+			\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLCharsAntiScript]{\author}
 		</div>
 		\end{author}
 
 		\begin{publisher}
 		<div class="bibtex_publisher">
-			\format[HTMLChars,AntiScriptInjection]{\publisher}
+			\format[HTMLCharsAntiScript]{\publisher}
 		</div>,
 		\end{publisher}
 

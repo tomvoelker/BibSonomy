@@ -9,6 +9,11 @@
 	
 	
 	<jsp:directive.attribute type="java.lang.String" name="value" required="true" description="inscription of the button" />
+	<jsp:directive.attribute type="java.lang.String" name="id" required="false" description="id of the button" />
+	<jsp:directive.attribute type="java.lang.String" name="href" required="false" description="title of the button" />
+	<jsp:directive.attribute type="java.lang.String" name="title" required="false" description="title of the button" />
+	<jsp:directive.attribute type="java.lang.String" name="srText" required="false" description="screen reader text" />
+	<jsp:directive.attribute name="block" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute type="org.bibsonomy.webapp.view.constants.BootstrapButtonStyle" name="style" required="true" description="Button Style Type" />
 	<jsp:directive.attribute type="org.bibsonomy.webapp.view.constants.BootstrapButtonSize" name="size" required="true" description="Button Style Type" />
 	<jsp:directive.attribute type="java.lang.String" name="type" required="false" description="content for html attribute type" />
@@ -20,6 +25,8 @@
 	<jsp:directive.attribute type="java.lang.Boolean"	name="dropup"		required="false" description="Add dropdown menu to the button" />
 	<jsp:directive.attribute type="java.lang.Boolean"	name="gear"			required="false" description="Add dropdown menu to the button" />
 	<jsp:directive.attribute type="java.lang.String"	name="className"	required="false" description="Additional class for the button" />
+	<jsp:directive.attribute type="java.lang.String"	name="disabled"		required="false" description="Should the button be disabled?"/>
+	<jsp:directive.attribute type="java.lang.Boolean"	name="forceEnabled"		required="false" description="Should the button be fored active?"/>
 	
 	<jsp:directive.attribute name="onclick" type="java.lang.String" required="false" description="javascript code for execution" />
 	<jsp:directive.attribute name="tabindex" type="java.lang.Integer" required="false" description="" />
@@ -32,11 +39,22 @@
 		<c:set var="className" value="${fn:escapeXml(className)} " />
 	</c:if>
 	
-	<button type="${fn:escapeXml(type)}" class="${className}btn ${fn:escapeXml(style.cssClassName)} ${fn:escapeXml(size.cssClassName)} ${dropdown ? 'dropdown-toggle':''} ${dropup ? 'dropup-toggle':''}" data-toggle="${fn:escapeXml(dataToggle)}" data-target="${fn:escapeXml(dataTarget)}" data-dismiss="${fn:escapeXml(dataDismiss)}" onclick="${fn:escapeXml(onclick)}">
-		<c:if test="${not empty value and not gear}">
-			<c:if test="${not empty icon}">
-				<span class="fa fa-${icon}"><!-- keep me --></span><c:out value=" " />
+	<c:if test="${(not empty disabled and disabled) or (systemReadOnly and empty forceEnabled)}">
+		<c:set var="className" value="${className}disabled " />
+	</c:if>
+	
+	<c:if test="${not empty block and block}">
+		<c:set var="className" value="${className}btn-block " />
+	</c:if>
+	
+	<button id="${id}" type="${fn:escapeXml(type)}" class="${className}btn ${fn:escapeXml(style.cssClassName)} ${fn:escapeXml(size.cssClassName)} ${dropdown ? 'dropdown-toggle':''} ${dropup ? 'dropup-toggle':''}" data-toggle="${fn:escapeXml(dataToggle)}" data-target="${fn:escapeXml(dataTarget)}" data-dismiss="${fn:escapeXml(dataDismiss)}" onclick="${fn:escapeXml(onclick)}">
+		<c:if test="${not empty icon}">
+			<span class="fa fa-${icon}"><!-- keep me --></span><c:out value=" " />
+			<c:if test="${not empty srText}">
+				<span class="sr-only"><c:out value="${srText}" /></span>
 			</c:if>
+		</c:if>
+		<c:if test="${not empty value and not gear}">
 			<span class="button-text"><c:out value="${value}" /></span>
 		</c:if>
 		<c:if test="${gear}">

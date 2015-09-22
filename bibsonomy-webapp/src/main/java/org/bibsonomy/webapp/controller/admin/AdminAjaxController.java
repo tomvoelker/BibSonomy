@@ -29,11 +29,13 @@ package org.bibsonomy.webapp.controller.admin;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.AdminActions;
 import org.bibsonomy.common.enums.ClassifierSettings;
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -49,6 +51,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.util.Sets;
 import org.bibsonomy.webapp.command.ajax.AdminAjaxCommand;
 import org.bibsonomy.webapp.controller.ajax.AjaxController;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -232,24 +235,25 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 	private void setLatestPosts(final AdminAjaxCommand command) {
 		if (present(command.getUserName())) {
 			// set filter to display spam posts
-			FilterEntity filter = null;
+			Set<Filter> filters = null;
 			if (command.getShowSpamPosts().equals("true")) {
-				filter = FilterEntity.ADMIN_SPAM_POSTS;
+				filters = Sets.<Filter>asSet(FilterEntity.ADMIN_SPAM_POSTS);
 			}
-			final List<Post<Bookmark>> bookmarks = this.logic.getPosts(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, null, SearchType.LOCAL,filter, Order.ADDED, null, null, 0, 5);
+			final List<Post<Bookmark>> bookmarks = this.logic.getPosts(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, null, SearchType.LOCAL, filters, Order.ADDED, null, null, 0, 5);
 			command.setBookmarks(bookmarks);
 
-			final int totalBookmarks = this.logic.getPostStatistics(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, null, filter, null, null, null, null, 0, 100).getCount();
+			final int totalBookmarks = this.logic.getPostStatistics(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, null, filters, null, null, null, 0, 100).getCount();
 			command.setBookmarkCount(totalBookmarks);
 
-			final int totalBibtex = this.logic.getPostStatistics(BibTex.class, GroupingEntity.USER, command.getUserName(), null, null, null, filter, null, null, null, null, 0, 10000).getCount();
+			final int totalBibtex = this.logic.getPostStatistics(BibTex.class, GroupingEntity.USER, command.getUserName(), null, null, null, filters, null, null, null, 0, 10000).getCount();
 			command.setBibtexCount(totalBibtex);
 		}
 	}
 
 	private void setPredictionHistory(final AdminAjaxCommand command) {
-		if (command.getUserName() != null && command.getUserName() != "") {
-			final List<User> predictions = this.logic.getClassifierHistory(command.getUserName());
+		final String userName = command.getUserName();
+		if (present(userName)) {
+			final List<User> predictions = this.logic.getClassifierHistory(userName);
 			command.setPredictionHistory(predictions);
 		}
 	}

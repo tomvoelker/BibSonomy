@@ -13,7 +13,7 @@
 	<jsp:directive.attribute name="disableResourceLinks" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
 
-	<c:set var="buttonClasses" value="btn btn-default btn-xs"/>
+	<c:set var="buttonClasses" value="btn btn-default btn-xs "/>
 	
 	<c:choose>
 		<c:when test="${not empty post.systemUrl }">
@@ -25,7 +25,6 @@
 	</c:choose>
 
 	<div class="edit-media-buttons btn-group btn-group-xs dropdown dropdown-align-right">
-
 		<!-- edit/delete -->
 		<c:choose>
 			<c:when test="${command.context.userLoggedIn and (loginUserName eq post.user.name) and not isRemotePost}">
@@ -77,17 +76,14 @@
 
 		<buttons:dropDownList>
 			<jsp:attribute name="listContent">
-
 				<li><buttons:communityPostMenuItem post="${post}" resourceType="${resourceType}"/></li>
-
-				<li>
-					<buttons:historyMenuItem 
-						post ="${post}" 
-						loginUserName="${loginUserName}" 
-						userLoggedIn="${command.context.userLoggedIn}" 
-						resourceType="${resourceType}"
-						buttonClasses="${buttonClasses}"/>
-				</li>
+			
+				<buttons:historyMenuItem 
+					post ="${post}" 
+					loginUserName="${loginUserName}" 
+					userLoggedIn="${command.context.userLoggedIn}" 
+					resourceType="${resourceType}"
+					buttonClasses="${buttonClasses}"/>
 
 				<c:if test="${resourceType eq 'bibtex'}">
 
@@ -99,38 +95,43 @@
 						+-->
 					<c:if test="${not disableResourceLinks}">
 						<!-- URL -->
-						<li>
-							<c:choose>
-								<c:when test="${not empty post.resource.url}">
+						<c:choose>
+							<c:when test="${not empty post.resource.url}">
+								<li>
 									<fmt:message key="bibtex.actions.url.title" var="urlTitle" />
 									<a class="litem" href="${fn:escapeXml(mtl:cleanUrl(post.resource.url))}" title="${urlTitle}"><fmt:message key="bibtex.actions.url"/></a>
-								</c:when>
-								<c:otherwise>
+								</li>
+							</c:when>
+							<c:otherwise>
+								<li class="disabled">
 									<fmt:message key="bibtex.actions.url.inactive" var="urlTitle" />
-									<span class="ilitem" title="${urlTitle}"><fmt:message key="bibtex.actions.url"/></span>
-								</c:otherwise>
-							</c:choose>
-						</li>
+									<a href="#" title="${urlTitle}"><fmt:message key="bibtex.actions.url"/></a>
+								</li>
+							</c:otherwise>
+						</c:choose>
 
 						<!-- DOI -->
-						<li>		
-							<c:choose>
-								<c:when test="${not empty post.resource.miscFields['doi']}">
+						<c:choose>
+							<c:when test="${not empty post.resource.miscFields['doi']}">
+								<li>
 									<fmt:message key="bibtex.actions.doi" var="urlTitle"/>
 									<a class="litem" href="http://dx.doi.org/${mtl:encodeURI(mtl:extractDOI(post.resource.miscFields['doi']))}" title="${urlTitle}"><fmt:message key="bibtex.actions.doi"/></a>
-								</c:when>
-								<c:otherwise>
+								</li>
+							</c:when>
+							<c:otherwise>
+								<li class="disabled">
 									<fmt:message key="bibtex.actions.doi.inactive" var="urlTitle"/>
-									<span class="ilitem" title="${urlTitle}"><fmt:message key="bibtex.actions.doi"/></span>
-								</c:otherwise>
-							</c:choose>
-						</li>
+									<a href="#" title="${urlTitle}"><fmt:message key="bibtex.actions.doi"/></a>
+								</li>
+							</c:otherwise>
+						</c:choose>
+						
 						<li class="divider"><!--  --></li>
 						<!-- BibTeX -->
 						<li>
 							<fmt:message key="bibtex.actions.bibtex.title" var="bibtexTitle" />
 							<c:choose>
-								<c:when test="${isRemotePost}">									
+								<c:when test="${isRemotePost}">
 									<a class="litem" href="${relativeUrlGenerator.getBibtexExportUrlByIntraHashUserNameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}"><fmt:message key="bibtex.actions.bibtex"/></a>															
 								</c:when>
 								<c:otherwise>
@@ -143,7 +144,7 @@
 						<li>
 							<fmt:message key="bibtex.actions.endnote.title" var="endnoteTitle" />
 							<c:choose>
-								<c:when test="${isRemotePost}">									
+								<c:when test="${isRemotePost}">
 									<a class="litem" href="${relativeUrlGenerator.getEndnoteUrlByIntraHashUserNameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}?formatEmbedded=true" title="${endnoteTitle}"><fmt:message key="bibtex.actions.endnote"/></a>
 								</c:when>
 								<c:otherwise>
@@ -156,7 +157,7 @@
 						<li>
 							<fmt:message key="bibtex.actions.msword.title" var="mswordTitle" />
 							<c:choose>
-								<c:when test="${isRemotePost}">									
+								<c:when test="${isRemotePost}">
 									<a class="litem" href="${relativeUrlGenerator.getMSWordUrlByIntraHashUserNameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}?formatEmbedded=true" title="${mswordTitle}"><fmt:message key="bibtex.actions.msword"/></a>
 								</c:when>
 								<c:otherwise>
@@ -164,10 +165,11 @@
 								</c:otherwise>
 							</c:choose>
 						</li>
-					
+						
 						<!-- OPENURL -->
-						<li>
-							<c:if test="${command.context.userLoggedIn and not command.context.loginUser.settings.layoutSettings.simpleInterface}">
+						<c:if test="${command.context.userLoggedIn and not command.context.loginUser.settings.layoutSettings.simpleInterface}">
+							<li class="divider"><!--  --></li>
+							<li>
 								<c:choose>
 									<c:when test="${not empty command.context.loginUser.openURL}">
 										<fmt:message key="bibtex.actions.openurl.title" var="openurlTitle" />
@@ -178,14 +180,12 @@
 										<span class="ilitem" title="${openurlTitle}"><fmt:message key="bibtex.actions.openurl"/></span>
 									</c:otherwise>
 								</c:choose>
-							</c:if>
-						</li>
+							</li>
+						</c:if>
 					</c:if>
 
 					<c:if test="${mtl:userIsGroup(command.context.loginUser)}">
-
 						<li class="divider"><!--  --></li>
-
 						<li>
 							<!-- TODO: get the group the group user represents -->
 							<c:forEach var="group" items="${command.context.loginUser.groups}">
@@ -198,7 +198,6 @@
 					</c:if>
 
 					<c:if test="${mtl:hasTagMyown(post) and properties['publication.reporting.mode'] eq 'GROUP' and not mtl:userIsGroup(command.context.loginUser)}">
-
 						<li class="divider"><!--  --></li>
 						<li>
 							<c:forEach var="group" items="${command.context.loginUser.groups}">
@@ -212,7 +211,6 @@
 							</c:forEach>
 						</li>
 					</c:if>
-
 					<!-- UnAPI -->
 					<li><abbr class="unapi-id" title="${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"><c:out value=" "/></abbr></li>
 				</c:if>

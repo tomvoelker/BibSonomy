@@ -10,4 +10,5 @@
 	</bean>
 	
 	<bean id="fileLogic" class="org.bibsonomy.testutil.DummyFileLogic" />
+
 </beans>

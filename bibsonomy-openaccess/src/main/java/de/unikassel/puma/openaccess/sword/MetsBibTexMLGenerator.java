@@ -99,9 +99,14 @@ public class MetsBibTexMLGenerator {
 	public void setUser(final User user) {
 		this.user = user;
 	}
-
+	
+	/**
+	 * default renderer
+	 * @param urlRenderer
+	 */
 	public MetsBibTexMLGenerator(final UrlRenderer urlRenderer) {
 		this.xmlRenderer = new METSRenderer(urlRenderer);
+		this.xmlRenderer.init();
 		this.post = new PumaData<BibTex>();
 	}
 

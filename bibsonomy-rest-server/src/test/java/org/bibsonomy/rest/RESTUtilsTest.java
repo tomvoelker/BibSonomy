@@ -78,6 +78,18 @@ public class RESTUtilsTest {
 
 		format = RESTUtils.getRenderingFormatForRequest(Collections.singletonMap("format", new String[] { "csl" }), "", "");
 		assertEquals(RenderingFormat.CSL, format);
+		
+		format = RESTUtils.getRenderingFormatForRequest(Collections.singletonMap("format", new String[] { "bibtex" }), "", "");
+		assertEquals(RenderingFormat.BIBTEX, format);
+		
+		format = RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), RenderingFormat.BIBTEX.getMimeType(), "");
+		assertEquals(RenderingFormat.BIBTEX, format);
+		
+		format = RESTUtils.getRenderingFormatForRequest(Collections.singletonMap("format", new String[] { "endnote" }), "", "");
+		assertEquals(RenderingFormat.ENDNOTE, format);
+		
+		format = RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), RenderingFormat.ENDNOTE.getMimeType(), "");
+		assertEquals(RenderingFormat.ENDNOTE, format);
 	}
 
 	/**

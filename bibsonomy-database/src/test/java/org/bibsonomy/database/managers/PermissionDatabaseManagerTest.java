@@ -43,10 +43,10 @@ import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.testutil.ParamUtils;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -70,9 +70,10 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void checkStartEnd() {
 		// ok
+		final User notLoggedInUser = new User();
 		for (int i = 0; i <= 1000; i++) {
 			try {
-				permissionDb.checkStartEnd(new User(), 0, i, "test");
+				permissionDb.checkStartEnd(notLoggedInUser, GroupingEntity.ALL, 0, i, "test");
 			} catch (final AccessDeniedException ignore) {
 				fail("no exception expected");
 			}
@@ -80,18 +81,48 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// not ok
 		for (int i = 1001; i < 10000; i++) {
 			try {
-				permissionDb.checkStartEnd(new User(), 0, i, "test");
+				permissionDb.checkStartEnd(notLoggedInUser, GroupingEntity.ALL, 0, i, "test");
 				fail("expected exception");
 			} catch (final AccessDeniedException ignore) {
 				// ignore
 			}
 		}
+		
 		// OK 
 		final User admin = new User();
 		admin.setRole(Role.ADMIN);
-		for (int i = 1001; i < 10000; i++) {
+		for (int i = PostLogicInterface.MAX_QUERY_SIZE + 1; i < 10000; i++) {
 			try {
-				permissionDb.checkStartEnd(admin, 0, i, "test");
+				permissionDb.checkStartEnd(admin, GroupingEntity.ALL, 0, i, "test");
+			} catch (final AccessDeniedException ignore) {
+				fail("no exception expected");
+			}
+		}
+		
+		// OK
+		for (int i = 0; i < PostLogicInterface.MAX_RECENT_POSTS; i+= PostLogicInterface.MAX_QUERY_SIZE) {
+			try {
+				permissionDb.checkStartEnd(notLoggedInUser, GroupingEntity.ALL, i, i + 1, "test");
+			} catch (final AccessDeniedException ignore) {
+				fail("no exception expected");
+			}
+		}
+		
+		// not ok
+		for (int i = PostLogicInterface.MAX_RECENT_POSTS; i < PostLogicInterface.MAX_RECENT_POSTS * 2; i+= PostLogicInterface.MAX_QUERY_SIZE) {
+			try {
+				permissionDb.checkStartEnd(notLoggedInUser, GroupingEntity.ALL, i, i + PostLogicInterface.MAX_QUERY_SIZE / 2, "test");
+				fail("expected exception");
+			} catch (final AccessDeniedException ignore) {
+				// ignored
+			}
+		}
+		
+		// but ok for admin
+		
+		for (int i = PostLogicInterface.MAX_RECENT_POSTS; i < PostLogicInterface.MAX_RECENT_POSTS * 2; i+= PostLogicInterface.MAX_QUERY_SIZE) {
+			try {
+				permissionDb.checkStartEnd(admin, GroupingEntity.ALL, i, i + PostLogicInterface.MAX_QUERY_SIZE / 2, "test");
 			} catch (final AccessDeniedException ignore) {
 				fail("no exception expected");
 			}
@@ -130,15 +161,6 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		} catch (final AccessDeniedException ignore) {
 			// ignore
 		}
-	}
-
-	/**
-	 * tests isAllowedToAccessPostsDocuments
-	 */
-	@Ignore
-	@Test
-	public void isAllowedToAccessPostsDocuments() {
-		// TODO: implement test
 	}
 
 	/**
@@ -202,21 +224,21 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void testIsAllowedToAccessUsersOrGroupDocuments() {
 		final User loginUser = new User("testuser1");
 		// user page: own posts -> yes
-		assertTrue(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.USER, "testuser1", null, this.dbSession));
+		assertTrue(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.USER, "testuser1", this.dbSession));
 		// user page: posts of other users -> no
-		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.USER, "testuser2", null, this.dbSession));
+		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.USER, "testuser2", this.dbSession));
 		// null user -> no
-		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.USER, null, null, this.dbSession));
+		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.USER, null, this.dbSession));
 		// user not logged in -> no
-		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(new User(), GroupingEntity.USER, "testuser1", null, this.dbSession));
+		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(new User(), GroupingEntity.USER, "testuser1", this.dbSession));
 
 		// loginUser is member of group testgroup1, loginUser2 is not
 		// (both may see public posts)
 		// FIXME: Manually add the correct groups and userSharedDocuments settings
-		loginUser.addGroup(GroupUtils.getPublicGroup());
+		loginUser.addGroup(GroupUtils.buildPublicGroup());
 		
 		final User loginUser2 = new User("testuser1");
-		loginUser2.addGroup(GroupUtils.getPublicGroup());
+		loginUser2.addGroup(GroupUtils.buildPublicGroup());
 		
 		final Group testgroup1 = new Group(TESTGROUP1_ID);
 		final GroupMembership groupMembership1 = new GroupMembership();
@@ -251,25 +273,25 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		loginUser.addGroup(testgroup4);
 		
 		// non-existent group -> no
-		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, ParamUtils.NOGROUP_NAME, null, this.dbSession));
+		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, ParamUtils.NOGROUP_NAME, this.dbSession));
 	
 		// non-group members are not -> no
-		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser2, GroupingEntity.GROUP, "testgroup1", null, this.dbSession));
+		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser2, GroupingEntity.GROUP, "testgroup1", this.dbSession));
 		
 		// dummy tests / null values -> no
-		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(new User(), null, null, null, this.dbSession));
+		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(new User(), null, null, this.dbSession));
 		
 		// group sharedDocuments = 0 && userSharedDocuments = 0 -> no
-		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, "testgroup3", null, this.dbSession));
+		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, "testgroup3", this.dbSession));
 		
 		// group sharedDocuments = 0 && userSharedDocuments = 1 -> no
-		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, "testgroup2", null, this.dbSession));
+		assertFalse(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, "testgroup2", this.dbSession));
 		
 		// group sharedDocuments = 1 && userSharedDocuments = 0 -> yes (because we have group setting)
-		assertTrue(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, "testgroup4", null, this.dbSession));
+		assertTrue(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, "testgroup4", this.dbSession));
 		
 		// group sharedDocuments = 1 && userSharedDocuments = 1 -> yes
-		assertTrue(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, "testgroup1", null, this.dbSession));
+		assertTrue(permissionDb.isAllowedToAccessUsersOrGroupDocuments(loginUser, GroupingEntity.GROUP, "testgroup1", this.dbSession));
 	}
 	
 	@Test

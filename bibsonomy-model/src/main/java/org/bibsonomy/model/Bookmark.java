@@ -39,7 +39,7 @@ public class Bookmark extends Resource {
 	
 	/**
 	 * An {@link URL} pointing to some website.
-	 * FIXME: Use URL instead of String
+	 * FIXME: Use URI instead of String
 	 */
 	private String url;
 

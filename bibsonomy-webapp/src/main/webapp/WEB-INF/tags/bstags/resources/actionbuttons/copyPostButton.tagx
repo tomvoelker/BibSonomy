@@ -25,67 +25,55 @@
 	<c:if test="${resourceType eq 'bookmark'}">
 		<c:set var="url" value="Bookmark"/>
 	</c:if>
-	<c:set var="copyTitle" value=""/>
+	<c:set var="copyTitle" value="" />
 	
 	<c:choose>
-		<c:when test="${userLoggedIn}">
-			<c:choose> 
-				<c:when test="${isRemotePost and resourceType ne 'bookmark'}">
-					<c:url var="url" value="/BibtexHandler">
-					<c:param name="requTask" value="upload"/>
-					<c:param name="url" value="${relativeUrlGenerator.getPublicationUrlByIntraHashUsernameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}"/>
-					<c:param name="description" value="${post.description}"/>
-					<c:param name="selection"/>
-					<c:param name="referer" value="${mtl:cleanUrl(post.resource.url)}"/>
-					</c:url>
-					<a class="${buttonClasses}" href="${url}" title="${copyTitle}">
-						<span class="fa fa-copy"><!--  --></span>
-						<span class="sr-only"><fmt:message key="post.actions.copy"/></span>
-					</a>
-				</c:when>
-				<c:when test="${isRemotePost and resourceType eq 'bookmark'}">
-					<c:url var="url" value="/ShowBookmarkEntry">
-						<c:param name="url" value="${mtl:cleanUrl(post.resource.url)}"/>
-						<c:param name="description" value="${post.description}"/>
-						<c:param name="extended"/>
-						<c:param name="referer" value="${mtl:cleanUrl(post.resource.url)}"/>
-					</c:url>
-					<a class="${buttonClasses}" href="${url}" title="${copyTitle}">
-						<span class="fa fa-copy"><!--  --></span>
-						<span class="sr-only"><fmt:message key="post.actions.copy"/></span>
-					</a>
-				</c:when>
-				<c:otherwise>
-					<c:choose>
-						<c:when test="${enforceCommunityPost or empty post.user.name}">
-							<!-- community-post -->
-							<fmt:message key="post.actions.copy.title" var="copyTitle"/>
-							<c:url var="url" value="/edit${url}">
-								<c:param name="hash" value="${post.resource.interHash}"/>
-							</c:url>
-						</c:when>
-						<c:otherwise>
-							<!-- user is not post's owner -->
-							<c:url var="url" value="/edit${url}">
-								<c:param name="hash" value="${post.resource.intraHash}" />
-								<c:param name="user" value="${post.user.name}" />
-								<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
-							</c:url>
-							<fmt:message key="${resourceType}.actions.copy.title" var="copyTitle"/>
-						</c:otherwise>
-					</c:choose>
-					<a class="${buttonClasses}" href="${url}" title="${copyTitle}">
-						<span class="fa fa-copy"><!--  --></span>
-						<span class="sr-only"><fmt:message key="post.actions.copy"/></span>
-					</a>			
-				</c:otherwise>				
-			</c:choose>
+		<c:when test="${isRemotePost and resourceType ne 'bookmark'}">
+			<c:url var="url" value="/BibtexHandler">
+				<c:param name="requTask" value="upload"/>
+				<c:param name="url" value="${relativeUrlGenerator.getPublicationUrlByIntraHashUsernameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}"/>
+				<c:param name="description" value="${post.description}"/>
+				<c:param name="selection"/>
+				<c:param name="referer" value="${mtl:cleanUrl(post.resource.url)}"/>
+			</c:url>
+		</c:when>
+		<c:when test="${isRemotePost and resourceType eq 'bookmark'}">
+			<c:url var="url" value="/ShowBookmarkEntry">
+				<c:param name="url" value="${mtl:cleanUrl(post.resource.url)}"/>
+				<c:param name="description" value="${post.description}"/>
+				<c:param name="extended"/>
+				<c:param name="referer" value="${mtl:cleanUrl(post.resource.url)}"/>
+			</c:url>
+			<a class="${buttonClasses}" href="${url}" title="${copyTitle}">
+				<span class="fa fa-copy"><!--  --></span>
+				<span class="sr-only"><fmt:message key="post.actions.copy"/></span>
+			</a>
+		</c:when>
+		<c:when test="${systemReadOnly}">
+			<c:set var="buttonClasses" value="${buttonClasses} disabled" />
+			<fmt:message var="copyTitle" key="system.readOnly.info" />
+		</c:when>
+		<c:when test="${enforceCommunityPost or empty post.user.name}">
+			<!-- community-post -->
+			<fmt:message key="post.actions.copy.title" var="copyTitle"/>
+			<c:url var="url" value="/edit${url}">
+				<c:param name="hash" value="${post.resource.interHash}"/>
+			</c:url>
 		</c:when>
 		<c:otherwise>
-			<fmt:message key="${resourceType}.actions.copy.inactive" var="copyTitle"/>
-			<a class="${buttonClasses}" title="${copyTitle}" disabled="disabled">
-				<span class="fa fa-copy"><!-- Keep Me --></span>
-			</a>
+			<c:set var="url" value="/edit${url}" />
+			<!-- user is not post's owner -->
+			<c:url var="url" value="/edit${url}">
+				<c:param name="hash" value="${post.resource.intraHash}" />
+				<c:param name="user" value="${post.user.name}" />
+				<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
+			</c:url>
+			<fmt:message key="${resourceType}.actions.copy.title" var="copyTitle"/>
 		</c:otherwise>
-	</c:choose>	
+	</c:choose>
+	
+	<a class="${buttonClasses}" href="${url}" title="${copyTitle}">
+		<span class="fa fa-copy"><!--  --></span>
+		<span class="sr-only"><fmt:message key="post.actions.copy"/></span>
+	</a>
 </jsp:root>

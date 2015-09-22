@@ -17,7 +17,9 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/resources/actionbuttons"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar"
 	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/publication">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -54,24 +56,26 @@
 			| sidebar
 			+-->
 		<jsp:attribute name="sidebar">
-			<ul>
-				
-				<li><h4 class="sidebar"><fmt:message key="bibtex.details.meta"/></h4>
+			<sidebar:sidebarItem textKey="bibtex.details.meta">
+				<jsp:attribute name="content">
 					<ul>
 						<li><fmt:message key="post.change_date" /> <rc:metaChangeDate post="${post}"/><br /></li>
 						<li><fmt:message key="post.date" /> <rc:metaDate post="${post}" withoutClock="${true}"/><br /></li>
 					</ul>
-				</li>
-				<c:set var="tagsString" value="${mtl:toTagString(post.tags)}" />
-				<!-- edit tags -->
-				<c:if test="${isOwnPost}">
-					<li><h4 class="sidebar"><fmt:message key="navi.editTags"/></h4>
+				</jsp:attribute>
+			</sidebar:sidebarItem>
+
+			<c:set var="tagsString" value="${mtl:toTagString(post.tags)}" />
+			<!-- edit tags -->
+			<c:if test="${isOwnPost}">
+				<sidebar:sidebarItem textKey="navi.editTags">
+					<jsp:attribute name="content">
 						<form action="/batchEdit?action=2" method="POST" style="padding:0.8em;" class="sidebar_collapse_content">
 							<div class="input-group">
 								<input class="form-control input-sm rename-tags" type="text" name="newTags['${fn:escapeXml(publication.intraHash)}']" value="${fn:escapeXml(tagsString)}"/>
 								<fmt:message key="bibtex.actions.tags.update" var="updateTags"/>
 								<span class="input-group-btn">
-									<button class="btn btn-sm btn-default rename-tags-btn" title="${updateTags}" type="submit"><span class="fa fa-pencil"><!-- KEEP ME --></span><span class="sr-only"><c:out value="${updateTags}" /></span></button>
+									<bsform:button style="defaultStyle" value="" size="small" type="submit" icon="pencil" className="rename-tags-btn" title="${updateTags}" srText="${updateTags}" />
 									<button class="btn btn-sm btn-default rename-tags-submit-btn" style="display: none;" title="${updateTags}" type="button"><span class="fa fa-check"><!-- KEEP ME --></span><span class="sr-only">OK</span></button>
 								</span>
 							</div>
@@ -82,9 +86,11 @@
 							<input type="hidden" name="resourcetype" value="bibtex"/>
 							<input type="hidden" name="updateExistingPost" value="true"/>
 						</form>
-					</li>
-				</c:if>
-				<li><h4 class="sidebar"><fmt:message key="community" /></h4>
+					</jsp:attribute>
+				</sidebar:sidebarItem>
+			</c:if>
+			<sidebar:sidebarItem textKey="community">
+				<jsp:attribute name="content">
 					<ul>
 						<c:if test="${fn:length(command.relatedUserCommand.relatedUsers) gt 1}">
 							<li>
@@ -106,7 +112,6 @@
 							|
 							+-->
 						<li><h5><fmt:message key="tags"/>
-								
 								<small style="font-size:80%;">
 									(<user:username user="${post.user}" />
 									<fmt:message key="tags.highlighted.by_user"/>)
@@ -115,14 +120,14 @@
 							<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagSizeMode="detail" tagboxMinfreqStyle="none" highlightTags="${tagsString}"/>
 						</li>
 					</ul>
-				</li>
-				
-				<!--+
-					| private note
-					+-->
-				<c:if test="${isOwnPost}">
-				
-					<li><h4 class="sidebar"><label for="private-note" style="font-size: 18px; font-weight: 500;"><fmt:message key="post.resource.privnote"/></label></h4>
+				</jsp:attribute>
+			</sidebar:sidebarItem>
+			<!--+
+				| private note
+				+-->
+			<c:if test="${isOwnPost}">
+				<sidebar:sidebarItem textKey="post.resource.privnote">
+					<jsp:attribute name="content">
 						<div id="privnote">
 							<form method="post" id="note" role="form">
 								<div class="form-group">
@@ -136,14 +141,13 @@
 								</div>
 								<div class="pull-right">
 									<fmt:message key="save" var="save" />
-									<button type="submit" class="btn btn-primary btn-xs" id="makeP" onclick="javascript: return updatePrivNote($(this))"><c:out value="${save}" /></button>
+									<bsform:button style="primary" value="${save}" size="xsmall" onclick="javascript: return updatePrivNote($(this))" id="makeP" />
 								</div>
-								<div class="clearfix">&amp;nbsp;</div>
 							</form>
 						</div>
-					</li>
-				</c:if>
-			</ul>
+					</jsp:attribute>
+				</sidebar:sidebarItem>
+			</c:if>
 		</jsp:attribute>
 
 		<jsp:attribute name="content">

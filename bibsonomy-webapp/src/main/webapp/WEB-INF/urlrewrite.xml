@@ -33,7 +33,7 @@
 	<rule>
 		<name>requQueryAttribute</name>
 		<condition type="query-string" operator="equal"></condition>
-		<from>^/+(.+)$</from>
+		<from>^/+(.*)$</from>
 		<set name="requQueryString">?%{query-string}</set>
 	</rule>
 	
@@ -310,6 +310,24 @@
 		<to last="true">/reminder/change_password</to>
 	</rule>
 
+	<!-- ############## /person pages ############### -->
+	<!-- redirect to /person/PERSON page -->
+	<rule>
+		<name>redirect /person/PERSONID</name>
+		<from>^/+person/([^/]+?)$</from>
+		<set type="parameter" name="requestedPersonId">$1</set>
+		<to last="true">/person</to>
+	</rule>
+	
+	<rule>
+		<name>rewrite /person/HASH/ROLE/INDEX</name>
+		<from>^/+person/+([^/]+?)/+([^/]+?)/+([^/]+?)$</from>
+		<set type="parameter" name="requestedIndex">$3</set>
+		<set type="parameter" name="requestedHash">$1</set>
+		<set type="parameter" name="requestedRole">$2</set>
+		<to last="true">/persondisambiguation</to>
+	</rule>
+	
 
 	<!-- ############## /concept pages ############### -->
 	<!-- /concept/user/USER/TAG -->
@@ -1015,6 +1033,13 @@
 		<name>/BibTeXHashExample.jsp</name>
 		<from>^/BibTeXHashExample.jsp</from>
 		<to type="redirect" last="true">/hashExample</to>
+	</rule>
+	
+	<!-- old msoffice urls -->
+	<rule>
+		<name>/msofficexml</name>
+		<from>^/+msofficexml/(.*)$</from>
+		<to type="redirect" last="true">/layout/msofficexml/$1</to>
 	</rule>
 	
 	<!-- TODO: (Bootstrap) remove after updating the link in the blog -->

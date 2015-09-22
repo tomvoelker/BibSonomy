@@ -43,5 +43,4 @@ public class MendeleyScraperTest {
 	public void urlTestRun() {
 		UnitTestRunner.runSingleTest("url_253");
 	}
-
 }

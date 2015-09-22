@@ -74,12 +74,14 @@
 		   LEFT JOIN user u ON (u.user_name = i.group_name)
 		   LEFT JOIN group_level_permission p USING (`group`)
 		 WHERE g.user_name = #userName#
+		ORDER BY i.group_name
 	</select>
 	
 	<select id="getSpecialGroupsForUser" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="string">
 		SELECT i.group_name, i.group, i.privlevel, i.sharedDocuments, <include refid="reportingColumns" />, "" AS user_realname, NULL AS user_homepage, #userName# AS user_name, FALSE AS user_shared_documents, 2 AS group_role
 		 FROM groupids i
 		 WHERE i.group BETWEEN 0 AND 2
+		ORDER BY i.group_name
 	</select>
 
 	<select id="getGroupsForContentId" resultMap="GroupCommon.group_basic" parameterClass="int">
@@ -236,6 +238,10 @@
 		   LEFT JOIN pending_group_memberships g USING (`group`)
 		   LEFT JOIN user u ON (u.user_name = i.group_name)
 		 WHERE g.user_name = #userName# AND g.group_role != 2
+	</select>
+	
+	<select id="getGroupMemberHistoryCount" resultClass="int">
+		SELECT COUNT(*) FROM log_group_memberships
 	</select>
 	
 	<insert id="insertGroupLevelPermission" parameterClass="groupParam">

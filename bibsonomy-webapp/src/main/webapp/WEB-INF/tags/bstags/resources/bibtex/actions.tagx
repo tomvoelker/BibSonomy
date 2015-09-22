@@ -176,7 +176,6 @@
 			<li>
 				<a href="${communityPostUrl}" title="${fn:escapeXml(communityPost)}">
 					<fmt:message key="actions.communityPost" />
-					&amp;nbsp;<span class="badge" style="position: absolute; right: 10px;">new</span>
 				</a>
 			</li>
 
@@ -193,13 +192,11 @@
 						</c:if>
 						<a href="${relativeUrlGenerator.getHistoryURLByHashAndUserName(hash, post.user.name, false)}" title="${postHistoryTitle}">
 							<fmt:message key="bibtex.actions.posthistory.title" />
-							&amp;nbsp;<span class="badge" style="position: absolute; right: 10px;">new</span>
 						</a>
 					</c:when>
 					<c:otherwise>
 						<span class="ilitem" title="${historyTitle}">
 							<fmt:message key="bibtex.actions.posthistory.title" />
-							&amp;nbsp;<span class="badge" style="position: absolute; right: 10px;">new</span>
 						</span>
 					</c:otherwise>
 				</c:choose>

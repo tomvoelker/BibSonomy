@@ -71,8 +71,8 @@
 					
 						<div class="form-group">
 							<div class="col-sm-offset-4 col-sm-8">
-								<input type="submit" class="btn btn-default btn-primary" value="${save}" />&amp;nbsp;
-								<input type="submit" class="btn btn-default btn-primary" value="${removeService}" onclick="return confirmDelete(this)"/>
+								<bsform:button type="submit" style="primary" size="defaultSize" value="${save}" />&amp;nbsp;
+								<bsform:button type="submit" style="primary" size="defaultSize" value="${removeService}" onclick="return confirmDelete(this)" />
 							</div>
 						</div>
 					</form:form>
@@ -99,7 +99,7 @@
 				<input type="hidden" name="_method" value="POST"/>
 				<input type="hidden" name="selTab" value="${command.selTab}"/>
 				<div class="col-sm-offset-4 col-sm-9">
-					<input type="submit" value="${save}" class="btn btn-primary" />
+					<bsform:button type="submit" style="primary" size="defaultSize" value="${save}" />
 				</div>
 			</form:form>
 		</c:if>
@@ -153,9 +153,8 @@
 				<input type="hidden" name="selTab" value="${command.selTab}"/>
 				
 				<div class="col-sm-offset-4 col-sm-8">
-					<input type="submit" value="${save}" class="btn btn-primary" />
+					<bsform:button type="submit" style="primary" size="defaultSize" value="${save}" />
 				</div>
-				
 			</form>
 		</c:if>
 	</div>

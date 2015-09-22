@@ -6,6 +6,8 @@
 	<jsp:directive.attribute name="text" fragment="true" required="false" />
 	<jsp:directive.attribute name="textKey" type="java.lang.String" required="false" />
 	
+	<!-- TODO: remove and replace with sidebarItem -->
+	
 	<h4 class="sidebar">
 		<c:choose>
 			<c:when test="${not empty textKey}">

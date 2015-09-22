@@ -40,7 +40,7 @@ public interface Rateable {
 	/**
 	 * @param rating the rating to set
 	 */
-	public void setRating(double rating);
+	public void setRating(Double rating);
 	
 	/**
 	 * @return the number of ratings
@@ -50,5 +50,5 @@ public interface Rateable {
 	/**
 	 * @param numberOfRatings the number of ratings to set
 	 */
-	public void setNumberOfRatings(int numberOfRatings);
+	public void setNumberOfRatings(Integer numberOfRatings);
 }

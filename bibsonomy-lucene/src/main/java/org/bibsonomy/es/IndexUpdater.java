@@ -26,30 +26,35 @@
  */
 package org.bibsonomy.es;
 
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.collections.map.LRUMap;
+import org.bibsonomy.lucene.param.LucenePost;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
 
 /**
- * TODO: add documentation to this class
+ * Common interface for updating indices
+ * 
+ * @param <R> the type of resource stored by the index
  * 
  * @author lutful
+ * @author jil
  */
-public interface IndexUpdater {
+public interface IndexUpdater<R extends Resource> {
 
 	/**
-	 * @return LastLogDate
+	 * @return the latest log_date from the index. This is null if the index is not existing or empty.
 	 */
-	long getLastLogDate();
+	Date getLastLogDate();
 
 	/**
 	 * @return LastTasId
 	 */
 	Integer getLastTasId();
-	
-	/**
-	 * @param postsToInsert
-	 */
-	void insertNewPosts(ArrayList<Map<String, Object>> postsToInsert);
 
 	/**
 	 * @param contentId
@@ -59,10 +64,62 @@ public interface IndexUpdater {
 	/**
 	 * @param userName
 	 */
-	void deleteIndexForForUser(String userName);
+	void deleteIndexForUser(String userName);
 
 	/**
 	 * @param indexId
 	 */
 	void deleteIndexForIndexId(long indexId);
+
+	/**
+	 * @param contentIdsToDelete
+	 */
+	void deleteDocumentsForContentIds(List<Integer> contentIdsToDelete);
+	
+	void insertDocument(LucenePost<R> post, final Date currentLogDate);
+
+	void flagUser(final String username);
+	
+	void unFlagUser(final String userName);
+	
+	void flush();
+	
+	/**
+	 * updates information about the up-to-dateness of the system
+	 * @param state 
+	 */
+	public void setSystemInformation(final IndexUpdaterState state);
+
+	/**
+	 * @param interHash
+	 * @param newRels
+	 */
+	public void updateIndexWithPersonRelation(final String interHash, final List<ResourcePersonRelation> newRels);
+
+	/**
+	 * @param name
+	 * @param updatedInterhashes
+	 */
+	public void updateIndexWithPersonNameInfo(PersonName name, LRUMap updatedInterhashes);
+
+	/**
+	 * @param per
+	 * @param updatedInterhashes
+	 */
+	public void updateIndexWithPersonInfo(Person per, LRUMap updatedInterhashes);
+
+	/**
+	 * this may for example set an updated index to active
+	 */
+	void onUpdateComplete();
+
+	/**
+	 * @return
+	 */
+	public IndexUpdaterState getUpdaterState();
+
+	/**
+	 * 
+	 */
+	void closeUpdateProcess();
 }

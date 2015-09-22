@@ -121,18 +121,18 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 
 		// retrieve and set the requested resource lists, along with total
 		// counts
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
 			
-			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, command.getFilter(), null, command.getStartDate(), command.getEndDate(), entriesPerPage);
+			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, command.getScope(), command.getFilter(), null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			this.postProcessAndSortList(command, resourceType);
 
 			/*
 			 * set the post counts
 			 */
 			if (!publicationFilter) {
-				this.setTotalCount(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
+				this.setTotalCount(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 				totalNumPosts += listCommand.getTotalCount();
 			}
 		}
@@ -148,7 +148,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			
 			// only fetch tags if they were not already fetched by handleTagsOnly
 			if (command.getTagstype() == null) {
-				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, Integer.MAX_VALUE, null);
+				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, Integer.MAX_VALUE, null, command.getScope());
 			}
 
 			// retrieve concepts
@@ -165,6 +165,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			command.getRelatedUserCommand().setRelatedUsers(similarUsers);
 			
 			if (present(requTags)) {
+				//TODO: make it federated search enable
 				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, command.getStartDate(), command.getEndDate(), Order.ADDED, 0, 20, null);
 				command.getRelatedTagCommand().setTagGlobalCount(totalNumPosts);
 				this.endTiming();

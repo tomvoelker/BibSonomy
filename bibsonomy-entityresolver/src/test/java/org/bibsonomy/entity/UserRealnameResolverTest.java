@@ -38,8 +38,8 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.model.User;
-import org.bibsonomy.testutil.TestDatabaseLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,7 +62,7 @@ public class UserRealnameResolverTest {
 		final String path = context.getBean("path", String.class);
 		context.close();
 		FileUtils.deleteDirectory(new File(path));
-		TestDatabaseLoader.getInstance().load();
+		AbstractDatabaseManagerTest.LOADER.load(AbstractDatabaseManagerTest.DATABASE_CONFIG_FILE, AbstractDatabaseManagerTest.DATABASE_ID);
 		
 		context.refresh();
 		

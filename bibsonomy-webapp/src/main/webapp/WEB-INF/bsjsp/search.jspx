@@ -9,6 +9,7 @@
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -63,18 +64,11 @@
 			| sidebar
 			+-->
 		<jsp:attribute name="sidebar">
-		<ul>
-			<li>
-				<h4 class="sidebar"><fmt:message key="tags"/></h4>
-				
-				<c:set var="requPathToUse" value="${requPath}" />
-				<c:if test="${hasTags}">
-					<c:set var="requPathToUse" value="${mtl:getLowerPath(requPath)}" />
-				</c:if>
-				
-				<tags:cloud requPath="${requPathToUse}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
-			</li>
-		</ul>
+			<c:set var="requPathToUse" value="${requPath}" />
+			<c:if test="${hasTags}">
+				<c:set var="requPathToUse" value="${mtl:getLowerPath(requPath)}" />
+			</c:if>
+			<sidebar:sidebarTagCloudItem requPath="${requPathToUse}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" scope="${command.scope.name()}"/>
 		</jsp:attribute>
 	
 	</layout:resourceLayout>
