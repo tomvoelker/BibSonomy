@@ -35,10 +35,13 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -69,6 +72,7 @@ import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.strategy.Context;
+import org.bibsonomy.rest.util.URLDecodingPathTokenizer;
 import org.bibsonomy.rest.utils.HeaderUtils;
 import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.util.StringUtils;
@@ -396,7 +400,7 @@ public final class RestServlet extends HttpServlet {
 	}
 
 	/**
-	 * Checks the SSL headers for configured sync clients.
+	 * Checks the SSL headers for configured sync client
 	 * 
 	 * @param request
 	 * @param logic
@@ -416,24 +420,21 @@ public final class RestServlet extends HttpServlet {
 		}
 
 		/*
-		 * get all available sync clients
+		 * get syncClient from SSLDn
 		 */
-		log.debug("checking list of available sync clients against SSL_CLIENT_S_DN '" + sslClientSDn + "'.");
-		final List<SyncService> syncClients = logic.getAllSyncServices(false);
-		for (final SyncService syncClient : syncClients) {
-			if (log.isDebugEnabled()) {
-				log.debug("sync client:" + syncClient.getService() + " | service ssl_s_dn:" + syncClient.getSslDn());
-			}
-			if (sslClientSDn.equals(syncClient.getSslDn())) {
-				/*
-				 * FIXME: check, that request URI contains service URI
-				 * 
-				 * service with requested ssl_client_s_dn found in available client list -> give user the sync-role
-				 */
-				log.debug("setting user role to SYNC");
-				logic.getAuthenticatedUser().setRole(Role.SYNC);
-				return;
-			}
+		log.debug("checking available sync client against SSL_CLIENT_S_DN '" + sslClientSDn + "'.");
+		final List<SyncService> syncClient = logic.getSyncServices(true, sslClientSDn);
+
+		if (!syncClient.isEmpty()) {
+			log.debug("sync client:" + syncClient.get(0).getService() + " | "
+					+ "service ssl_s_dn:" + syncClient.get(0).getSslDn());
+
+			/*
+			 * service with requested ssl_client_s_dn found in available client list -> give user the sync-role
+			 */
+			log.debug("setting user role to SYNC");
+			logic.getAuthenticatedUser().setRole(Role.SYNC);
+			return;
 		}
 	}
 

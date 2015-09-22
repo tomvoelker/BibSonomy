@@ -180,6 +180,38 @@ public class ReadOnlyLogic implements LogicInterface {
 	public List<DiscussionItem> getDiscussionSpace(String interHash) {
 		return this.logicinterface.getDiscussionSpace(interHash);
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getAutoSyncServer()
+	 */
+	@Override
+	public List<SyncService> getAutoSyncServer() {
+		return this.logicinterface.getAutoSyncServer();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncServiceDetails(java.net.URI)
+	 */
+	@Override
+	public SyncService getSyncServiceDetails(URI serviceURI) {
+		return this.logicinterface.getSyncServiceDetails(serviceURI);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncServices(boolean, java.lang.String)
+	 */
+	@Override
+	public List<SyncService> getSyncServices(boolean server, String sslDn) {
+		return this.logicinterface.getSyncServices(server, sslDn);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncServiceSettings(java.lang.String, java.net.URI, boolean)
+	 */
+	@Override
+	public List<SyncService> getSyncServiceSettings(String userName, URI service, boolean server) {
+		return this.logicinterface.getSyncServiceSettings(userName, service, server);
+	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.sync.SyncLogicInterface#createSyncService(org.bibsonomy.model.sync.SyncService, boolean)
@@ -195,14 +227,6 @@ public class ReadOnlyLogic implements LogicInterface {
 	@Override
 	public void deleteSyncService(URI service, boolean server) {
 		throwReadOnlyException();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncServices(boolean)
-	 */
-	@Override
-	public List<URI> getSyncServices(boolean server) {
-		return this.logicinterface.getSyncServices(server);
 	}
 
 	/* (non-Javadoc)
@@ -227,22 +251,6 @@ public class ReadOnlyLogic implements LogicInterface {
 	@Override
 	public void deleteSyncServer(String userName, URI service) {
 		throwReadOnlyException();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncService(java.lang.String, java.net.URI, boolean)
-	 */
-	@Override
-	public List<SyncService> getSyncService(String userName, URI service, boolean server) {
-		return this.logicinterface.getSyncService(userName, service, server);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getAllSyncServices(boolean)
-	 */
-	@Override
-	public List<SyncService> getAllSyncServices(boolean server) {
-		return this.logicinterface.getAllSyncServices(server);
 	}
 
 	/* (non-Javadoc)
