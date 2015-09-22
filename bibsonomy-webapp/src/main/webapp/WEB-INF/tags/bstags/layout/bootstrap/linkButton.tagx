@@ -1,0 +1,49 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/bstags/layout/fontawesome"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	
+	<jsp:directive.attribute name="href" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="title" type="java.lang.String" required="false" />
+	<jsp:directive.attribute name="titleKey" type="java.lang.String" required="false" />
+	<jsp:directive.attribute name="icon" type="java.lang.String" required="false" />
+	<jsp:directive.attribute type="org.bibsonomy.webapp.view.constants.BootstrapButtonStyle" name="style" required="false" description="Button Style Type" />
+	<jsp:directive.attribute type="org.bibsonomy.webapp.view.constants.BootstrapButtonSize" name="size" required="true" description="Button Style Type" />
+	<jsp:directive.attribute name="block" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="additionalClass" type="java.lang.String" required="false" />
+	<jsp:directive.attribute name="text" type="java.lang.String" required="false" />
+	<jsp:directive.attribute name="textKey" type="java.lang.String" required="false" />
+	<jsp:directive.attribute name="srText" type="java.lang.String" required="false" />
+	<jsp:directive.attribute name="disabled" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="dataToggle" type="java.lang.String" required="false" />
+	<jsp:directive.attribute name="dataTarget" type="java.lang.String" required="false" />
+	<jsp:directive.attribute name="content" fragment="true" required="false"/>
+	
+	
+	<c:if test="${not empty titleKey}">
+		<fmt:message key="${titleKey}" var="title" />
+	</c:if>
+	
+	<a href="${fn:escapeXml(href)}" data-target="${dataTarget}" data-toggle="${dataToggle}" title="${fn:escapeXml(title)}" class="btn ${not empty block and block ? 'btn-block' : ''} ${not empty style ? style.cssClassName : ''} ${size.cssClassName} ${(not empty disabled and disabled) or systemReadOnly ? 'disabled' : ''} ${additionalClass}">
+		<c:if test="${not empty icon}"><fontawesome:icon icon="${icon}" /></c:if>
+		<c:if test="${not empty srText}">
+			<span class="sr-only"><c:out value="${srText}" /></span>
+		</c:if>
+		<c:choose>
+			<c:when test="${not empty textKey}">
+				<c:if test="${not empty icon}"><c:out value=" " /></c:if>
+				<fmt:message key="${textKey}" />
+			</c:when>
+			<c:when test="${not empty text}">
+				<c:if test="${not empty icon}"><c:out value=" " /></c:if>
+				<c:out value="${text}" />
+			</c:when>
+			<c:when test="${not empty content}">
+				<c:if test="${not empty icon}"><c:out value=" " /></c:if>
+				<jsp:invoke fragment="content"/>
+			</c:when>
+		</c:choose>
+	</a>
+</jsp:root>

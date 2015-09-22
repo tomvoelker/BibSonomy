@@ -10,7 +10,7 @@
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:button="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
-	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/layout/bootstrap"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
@@ -50,9 +50,7 @@
 														<user:username user="${member.user}" />
 													</td>
 													<td class="col-md-2" style="text-align: right">
-														<a href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" class="btn btn-default btn-xs ${systemReadOnly ? 'disabled' : '' }" title="${revuserTitle}">
-															<span class="fa fa-times"><!-- Keep me --></span>
-														</a>
+														<bs:linkButton title="${revuserTitle}" icon="times" style="defaultStyle" href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" size="xsmall" />
 													</td>
 												</tr>
 											</c:if>
@@ -70,7 +68,7 @@
 									<input type="hidden" name="groupname" value="${group.name}"/>
 									<input type="hidden" name="operation" value="ADD_INVITED" />
 									<fmt:message var="inviteuser" key="settings.group.inviteUser.button"/>
-									<bsform:button type="submit" size="defaultSize" style="primary" value="${inviteuser}" disabled="${systemReadOnly}"/>
+									<bsform:button type="submit" size="defaultSize" style="primary" value="${inviteuser}" />
 								</form:form>
 								
 								<!-- Error inviting a member -->
@@ -103,8 +101,8 @@
 													<td class="col-md-8"><user:username user="${member.user}" /></td>
 													<td class="col-md-3" style="text-align: right">
 														<div class="btn-group" role="group">
-															<a href="/updateGroup?operation=ADD_MEMBER&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" class="btn btn-default btn-xs ${systemReadOnly ? 'disabled' : '' }" title="${accuserTitle}"><span class="fa fa-check"><!-- Keep me --></span></a>
-															<a href="/updateGroup?operation=decline_join_request&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" class="btn btn-default btn-xs ${systemReadOnly ? 'disabled' : '' }" title="${decuserTitle}"><span class="fa fa-times"><!-- Keep me --></span></a>
+															<bs:linkButton style="defaultStyle" href="/updateGroup?operation=ADD_MEMBER&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" size="xsmall" icon="check" title="${accuserTitle}" />
+															<bs:linkButton style="defaultStyle" href="/updateGroup?operation=decline_join_request&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" size="xsmall" icon="times" title="${decuserTitle}" />
 														</div>
 													</td>
 												</tr>
@@ -202,7 +200,7 @@
 														-->
 														<c:choose>
 															<c:when test="${groupRole eq 'ADMINISTRATOR'}">
-																<a href="/updateGroup?operation=remove_member&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" title="${deluserTitle}" class="btn btn-default btn-xs ${systemReadOnly ? 'disabled' : '' }"><span class="fa fa-times"><!-- Keep me --></span><!-- keep me --></a>
+																<bs:linkButton href="/updateGroup?operation=remove_member&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" size="xsmall" title="${deluserTitle}" style="defaultStyle" icon="times" />
 															</c:when>
 															<c:otherwise>
 																<c:out value=" " />

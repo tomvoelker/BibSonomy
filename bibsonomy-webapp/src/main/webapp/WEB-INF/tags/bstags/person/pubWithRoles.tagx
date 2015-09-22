@@ -17,9 +17,11 @@
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/bstags/resources"
 	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/publication"
+	xmlns:actionbuttons="urn:jsptagdir:/WEB-INF/tags/bstags/resources/actionbuttons"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
-	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
-	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"> 
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/layout/bootstrap"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/bstags/layout/fontawesome">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
@@ -27,42 +29,46 @@
 	
 	<c:set var="loginUserName" value="${loginUser.name}"/>
 	
-										<div class='row ${post.resource.interHash}_${post.resource.intraHash}'>
-											<div style='border-right:1px solid lightgrey' class='col-md-6 publication-list'>
-												<div class="title">
-													<!-- show one post -->
-													<rc:post post="${post}" otherPostsUrlPrefix="/bibtex/" loginUserName="${loginUserName}" resourceType="publication">
-														<jsp:attribute name="title">    <bib:title post="${post}"/>    </jsp:attribute>
-														<jsp:attribute name="actions">  <bib:actions loginUserName="${loginUserName}" post="${post}" disableResourceLinks="${false}"/></jsp:attribute>
-														<jsp:attribute name="desc">     <bib:desc post="${post}" publication="${post.resource}"/></jsp:attribute>
-														<jsp:attribute name="documents"><bib:documents post="${post}"/></jsp:attribute>
-													</rc:post>
-												</div>
-											</div>
-											<div class='col-md-6'>
-												<ul>
-													<c:forEach var="role" items="${availableRoles}">
-														<fmt:message key="person.show.${role.relatorCode}" var="textRole" />
-														<fmt:message key="person.show.${role.relatorCode}Tooltip" var="textRoleTooltip" />
-														<li class='${role}'><span class='glyphicon glyphicon-question-sign explainRole' data-toggle="tooltip" data-placement="left" title="${textRoleTooltip}" data-role='${role}'>&#160;</span>${textRole}: 
-															<c:forEach var="relation" items="${post.resourcePersonRelations}">
-																<c:if test="${relation.relationType eq role}">
-																	<span class='resourcePersonRelation_${relation.personRelChangeId}'>
-																		<a href="${absoluteUrlGenerator.getPersonUrl(relation.person.personId)}"><c:out value="${relation.person.mainName.firstName} "/> <c:out value="${relation.person.mainName.lastName} "/> </a>
-																		<!--  <span data-toggle='modal' data-target="#editRole" data-resource-title="${post.resource.title}" data-person-name="${relation.personName.firstName} ${relation.personName.lastName}" data-relation-simhash1="${relation.simhash1}" data-relation-simhash2='${relation.simhash2}' data-person-role="${role}" style='color:orange;cursor:pointer' href="#editRole" class='editRole glyphicon glyphicon-pencil'>&#160;</span> -->
-																		<c:if test="${not empty loginUserName and not loginUser.spammer}">
-																			<span data-toggle='modal' data-target="#deleteRole" data-resourcePersonRelation-id='${relation.personRelChangeId}' style='color:darkred;cursor:pointer' href="#deleteRole" class='deleteRole glyphicon glyphicon-remove'>&#160;</span>
-																		</c:if>
-																	</span>
-																</c:if>
-															</c:forEach>
-															<c:if test="${not empty loginUserName and not loginUser.spammer}">
-																<span data-toggle='modal' data-target="#addRole" data-relation-pubowner="${post.user.name}" data-resourceTitle="${post.resource.title}" data-relation-simhash1="${post.resource.interHash}" data-relation-simhash2='${post.resource.intraHash}' data-person-role="${role}" style='color:green;cursor:pointer' href="#addRole" class='addRole glyphicon glyphicon-plus'>&#160;</span>
-															</c:if> 
-														</li>
-													</c:forEach>
-												</ul>
-											</div>
-										</div>
-  
+	<div class='row ${post.resource.interHash}_${post.resource.intraHash}'>
+		<div style='border-right:1px solid lightgrey' class='col-md-6 publication-list'>
+			<div class="title">
+				<!-- show one post -->
+				<rc:post post="${post}" otherPostsUrlPrefix="/bibtex/" loginUserName="${loginUserName}" resourceType="publication">
+					<jsp:attribute name="title">    <bib:title post="${post}"/>    </jsp:attribute>
+					<jsp:attribute name="actions">  <actionbuttons:actions loginUserName="${loginUserName}" post="${post}" disableResourceLinks="${false}" resourceType="bibtex"/></jsp:attribute>
+					<jsp:attribute name="desc">     <bib:desc post="${post}" publication="${post.resource}"/></jsp:attribute>
+					<jsp:attribute name="documents"><bib:documents post="${post}"/></jsp:attribute>
+				</rc:post>
+			</div>
+		</div>
+		<div class='col-md-6'>
+			<ul>
+				<c:forEach var="role" items="${availableRoles}">
+					<fmt:message key="person.show.${role.relatorCode}" var="textRole" />
+					<fmt:message key="person.show.${role.relatorCode}Tooltip" var="textRoleTooltip" />
+					<li class='${role}'><span class='glyphicon glyphicon-question-sign explainRole' data-toggle="tooltip" data-placement="left" title="${textRoleTooltip}" data-role='${role}'>&#160;</span>${textRole}: 
+						<c:forEach var="relation" items="${post.resourcePersonRelations}">
+							<c:if test="${relation.relationType eq role}">
+								<span class='resourcePersonRelation_${relation.personRelChangeId}'>
+									<a href="${absoluteUrlGenerator.getPersonUrl(relation.person.personId)}"><c:out value="${relation.person.mainName.firstName} "/> <c:out value="${relation.person.mainName.lastName}"/></a><c:out value=" " />
+									<!--  <span data-toggle='modal' data-target="#editRole" data-resource-title="${post.resource.title}" data-person-name="${relation.personName.firstName} ${relation.personName.lastName}" data-relation-simhash1="${relation.simhash1}" data-relation-simhash2='${relation.simhash2}' data-person-role="${role}" style='color:orange;cursor:pointer' href="#editRole" class='editRole glyphicon glyphicon-pencil'>&#160;</span> -->
+									<c:if test="${not empty loginUserName and not loginUser.spammer}">
+										<!-- TODO: use tagx file -->
+										<button class="btn btn-default btn-xs ${systemReadOnly ? 'disabled' : '' }">
+											<span data-toggle='modal' data-target="#deleteRole" data-resourcePersonRelation-id='${relation.personRelChangeId}' style='color:darkred;cursor:pointer' href="#deleteRole" class='deleteRole'><fontawsome:icon icon="times" /></span>
+										</button>
+									</c:if>
+								</span>
+							</c:if>
+						</c:forEach>
+						<c:if test="${not empty loginUserName and not loginUser.spammer}">
+							<button class="btn btn-default btn-xs ${systemReadOnly ? 'disabled' : '' }">
+								<span data-toggle='modal' data-target="#addRole" data-relation-pubowner="${post.user.name}" data-resourceTitle="${post.resource.title}" data-relation-simhash1="${post.resource.interHash}" data-relation-simhash2='${post.resource.intraHash}' data-person-role="${role}" style='color:green;cursor:pointer' href="#addRole" class='addRole'><fontawsome:icon icon="plus" /></span>
+							</button>
+						</c:if> 
+					</li>
+				</c:forEach>
+			</ul>
+		</div>
+	</div>
 </jsp:root>

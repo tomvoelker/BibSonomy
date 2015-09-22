@@ -100,7 +100,7 @@
 			        				<c:out value="${command.endName} "/>
 			        				<a class="action" href="/import/jabref?hash=${command.endHash}&amp;action=delete&amp;ckey=${mtl:encodeURI(ckey)}">delete</a>
 			        			</c:otherwise>
-			      			</c:choose>
+							</c:choose>
 							<p class="help-block"><fmt:message key="settings.jabRef.end.help"/></p>
 						</div>
 						
@@ -108,7 +108,7 @@
 						<input name="importType" type="hidden" value="jabref"/>
 						<fmt:message var="jabRefButton" key="settings.jabRef.button"/>
 						<div class="col-sm-offset-3 col-sm-9">
-							<bsform:button type="submit" style="primary" size="defaultSize" value="${jabRefButton}" disabled="${systemReadOnly}" />
+							<bsform:button type="submit" style="primary" size="defaultSize" value="${jabRefButton}" />
 						</div>
 					</div>
 				</fieldset>

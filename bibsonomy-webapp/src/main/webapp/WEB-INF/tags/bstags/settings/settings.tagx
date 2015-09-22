@@ -319,7 +319,7 @@
 						<input type="hidden" name="selTab" value="1"/>
 						
 						<div class="col-sm-offset-3 col-sm-9">
-							<bsform:button type="submit" style="primary" size="defaultSize"  value="${setlayout}" disabled="${systemReadOnly}" />
+							<bsform:button type="submit" style="primary" size="defaultSize"  value="${setlayout}" />
 						</div>
 					</div>
 				</fieldset>
@@ -349,9 +349,7 @@
 												<span style="white-space: pre-wrap;"><a href="/help/doc/api.html"><fmt:message key="settings.apidoc"/></a></span>
 											</fmt:param>
 											<fmt:param>
-												<!--
-													TODO: make this configurable 
-									 			-->
+												<!-- TODO: make this configurable -->
 												<span style="white-space: nowrap;"><parts:email address="api-support@bibsonomy.org"/></span>
 											</fmt:param>
 										</fmt:message>
@@ -364,7 +362,7 @@
 								<input type="hidden" name="action" value="api" />
 
 								<div class="col-sm-offset-3 col-sm-9">
-									<bsform:button type="submit" style="primary" size="defaultSize" value="${generateapikey}" disabled="${systemReadOnly}" />
+									<bsform:button type="submit" style="primary" size="defaultSize" value="${generateapikey}" />
 								</div>
 							</div>
 						</c:otherwise>
@@ -424,7 +422,7 @@
 						<input type="hidden" name="selTab" value="1"/>
 						<input type="hidden" name="action" value="logging"/>
 						<div class="col-sm-offset-3 col-sm-9">
-							<bsform:button type="submit" style="primary" size="defaultSize" value="${updatesettings}" disabled="${systemReadOnly}" />
+							<bsform:button type="submit" style="primary" size="defaultSize" value="${updatesettings}" />
 						</div>
 					</div>
 				</fieldset>
@@ -456,7 +454,7 @@
 							
 							<input type="hidden" name="ckey" value="${command.context.ckey}"/>
 							<input type="hidden" name="selTab" value="1"/>
-							<bsform:button type="submit" style="danger" size="defaultSize" value="${deleteaccount}" disabled="${systemReadOnly}" />
+							<bsform:button type="submit" style="danger" size="defaultSize" value="${deleteaccount}" />
 						</div>
 					</div>
 			</fieldset>

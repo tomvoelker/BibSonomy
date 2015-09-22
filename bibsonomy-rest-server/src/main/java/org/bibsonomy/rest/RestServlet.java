@@ -52,6 +52,7 @@ import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.common.exceptions.ReadOnlyDatabaseException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -286,6 +287,8 @@ public final class RestServlet extends HttpServlet {
 			 */
 			response.setHeader("Location", urlRenderer.createHrefForResource(e.getUserName(), e.getNewIntraHash()));
 			sendError(request, response, HttpServletResponse.SC_MOVED_PERMANENTLY, e.getMessage());
+		} catch (final ReadOnlyDatabaseException e) {
+			sendError(request, response, HttpServletResponse.SC_SERVICE_UNAVAILABLE, e.getMessage());
 		} catch (final DatabaseException e) {
 			final StringBuilder returnMessage = new StringBuilder("");
 			for (final String hash : e.getErrorMessages().keySet()) {

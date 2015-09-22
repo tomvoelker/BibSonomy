@@ -68,7 +68,7 @@
 							<input type="hidden" name="ckey" value="${ckey}"/>
 							<input type="hidden" name="forcedAction" value="1"/>
 							<fmt:message var="replace" key="replace"/>
-							<bsform:button type="submit" style="primary" size="defaultSize" value="${replace}" disabled="${systemReadOnly}" />
+							<bsform:button type="submit" style="primary" size="defaultSize" value="${replace}" />
 							<c:out value=" "/>
 							<bsform:button type="reset" style="defaultStyle" size="defaultSize" value="${reset}"/>
 						</div>
@@ -103,7 +103,7 @@
 							<input type="hidden" name="forcedAction" value="2"/>
 							<input type="hidden" name="relationsEdit.forcedAction" value="0"/>
 							<fmt:message var="insert" key="insert"/>
-							<bsform:button type="submit" style="primary" size="defaultSize" value="${insert}" disabled="${systemReadOnly}" /><c:out value=" "/>
+							<bsform:button type="submit" style="primary" size="defaultSize" value="${insert}" /><c:out value=" "/>
 							<bsform:button type="reset" style="defaultStyle" size="defaultSize" value="${reset}"/>
 						</div>
 					</div>
@@ -132,7 +132,7 @@
 							<input type="hidden" name="forcedAction" value="2"/>
 							<input type="hidden" name="relationsEdit.forcedAction" value="1"/>
 							<fmt:message var="delete" key="delete"/>
-							<bsform:button type="submit" style="primary" size="defaultSize" value="${delete}" disabled="${systemReadOnly}" /><c:out value=" "/>
+							<bsform:button type="submit" style="primary" size="defaultSize" value="${delete}" /><c:out value=" "/>
 							<bsform:button type="reset" style="defaultStyle" size="defaultSize" value="${reset}"/>
 						</div>
 					</div>

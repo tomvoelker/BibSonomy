@@ -6,6 +6,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/layout/bootstrap"
 	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/publication"
 	xmlns:form="http://www.springframework.org/tags/form">
 	
@@ -41,13 +42,13 @@
 						<c:set var="downloadTitle"><fmt:message key="qrcode.actions.download"/></c:set>
 						<c:set var="downloadQrTitle"><fmt:message key="qrcode.actions.qrDownload"/></c:set>
 						<c:set var="delete_doc"><fmt:message key="bibtex.actions.private_document.delete"/></c:set>
-						
+						<!-- TODO: use url generator -->
 						<form class="renameDocForm" action="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}&amp;fileName=FILENAME_PLACEHOLDER&amp;action=rename" method='POST' enctype='multipart/form-data' autocomplete='off'>
 							<span class="show-name" style="display:none;"><!-- keep --></span>
 							<div class="input-group" data-toggle="tooltip">
 								<input class="form-control input-sm renameDocInput" data-ajax-rename="true" name='newFileName' type="text" value="" />
 								<span class="input-group-btn">
-									<a class="btn btn-sm btn-default btn-stripped ${systemReadOnly ? 'disabled' : '' } rename-btn" title="${renameDocTitle}"><span class="fa fa-pencil"><!-- KEEP ME --></span></a>
+									<bs:linkButton style="defaultStyle" href="" size="small" additionalClass="btn-stripped rename-btn" title="${renameDocTitle}" icon="pencil" />
 									<a class="btn btn-sm btn-default btn-stripped remove-btn" title="${deleteDocTitle}" href="${deleteUrl}" data-filename=""><span class="fa fa-times"><!-- KEEP ME --></span></a>
 									<a class="btn btn-sm btn-default btn-stripped download-btn" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/FILENAME_PLACEHOLDER" title="Download ${downloadTitle}"><span class="fa fa-download"><!-- KEEP ME --></span></a>
 									<a class="btn btn-sm btn-default btn-stripped qrcode-btn" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/FILENAME_PLACEHOLDER?qrcode=true"  title="${downloadQrTitle}"><span class="fa fa-qrcode"><!-- KEEP ME --></span></a>
@@ -96,8 +97,6 @@
 										</div>
 									</c:otherwise>
 								</c:choose>
-									
-								
 							</c:when>
 							<c:otherwise>
 								<c:choose>

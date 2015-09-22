@@ -25,20 +25,29 @@ import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
+import org.bibsonomy.common.exceptions.ReadOnlyDatabaseException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.Author;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
+import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
+import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
@@ -658,7 +667,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	 */
 	@Override
 	public List<Tag> getConcepts(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end) {
-		return this.getConcepts(resourceType, grouping, groupingName, regex, tags, status, start, end);
+		return this.logicinterface.getConcepts(resourceType, grouping, groupingName, regex, tags, status, start, end);
 	}
 
 	/* (non-Javadoc)
@@ -720,8 +729,115 @@ public class ReadOnlyLogic implements LogicInterface {
 		return 0;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#addResourceRelation(org.bibsonomy.model.ResourcePersonRelation)
+	 */
+	@Override
+	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) throws ResourcePersonAlreadyAssignedException {
+		throwReadOnlyException();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createOrUpdatePerson(org.bibsonomy.model.Person)
+	 */
+	@Override
+	public void createOrUpdatePerson(Person person) {
+		throwReadOnlyException();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#createPersonName(org.bibsonomy.model.PersonName)
+	 */
+	@Override
+	public void createPersonName(PersonName withPersonId) {
+		throwReadOnlyException();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonById(org.bibsonomy.model.enums.PersonIdType, java.lang.String)
+	 */
+	@Override
+	public Person getPersonById(PersonIdType idType, String id) {
+		return this.logicinterface.getPersonById(idType, id);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(java.lang.String)
+	 */
+	@Override
+	public PersonSuggestionQueryBuilder getPersonSuggestion(String queryString) {
+		return this.logicinterface.getPersonSuggestion(queryString);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPublicationSuggestion(java.lang.String)
+	 */
+	@Override
+	public List<Post<BibTex>> getPublicationSuggestion(String queryString) {
+		return this.logicinterface.getPublicationSuggestion(queryString);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getResourceRelations()
+	 */
+	@Override
+	public ResourcePersonRelationQueryBuilder getResourceRelations() {
+		return this.logicinterface.getResourceRelations();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getTags(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, org.bibsonomy.common.enums.SearchType, java.lang.String, org.bibsonomy.common.enums.TagSimilarity, org.bibsonomy.model.enums.Order, java.util.Date, java.util.Date, int, int)
+	 */
+	@Override
+	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, String regex, TagSimilarity relation, Order order, Date startDate, Date endDate, int start, int end) {
+		return this.logicinterface.getTags(resourceType, grouping, groupingName, tags, hash, search, searchType, regex, relation, order, startDate, endDate, start, end);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#linkUser(java.lang.String)
+	 */
+	@Override
+	public void linkUser(String personId) {
+		throwReadOnlyException();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removePersonName(java.lang.Integer)
+	 */
+	@Override
+	public void removePersonName(Integer personNameId) {
+		throwReadOnlyException();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PersonLogicInterface#removeResourceRelation(int)
+	 */
+	@Override
+	public void removeResourceRelation(int resourceRelationId) {
+		throwReadOnlyException();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#unlinkUser(java.lang.String)
+	 */
+	@Override
+	public void unlinkUser(String username) {
+		throwReadOnlyException();
+	}
+	
 	private static void throwReadOnlyException() throws RuntimeException {
-		// FIXME: throw exception and catch in minimalistcontroller wrapper
-		throw new RuntimeException("todo");
+		throw new ReadOnlyDatabaseException();
+	}
+
+	/**
+	 * @param logicAccess
+	 * @param readOnly
+	 * @return the mask logic
+	 */
+	public static LogicInterface maskLogic(LogicInterface logicAccess, boolean readOnly) {
+		if (!readOnly) {
+			return logicAccess;
+		}
+		return new ReadOnlyLogic(logicAccess);
 	}
 }

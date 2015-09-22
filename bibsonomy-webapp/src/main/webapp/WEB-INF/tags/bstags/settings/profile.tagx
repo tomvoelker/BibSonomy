@@ -219,7 +219,7 @@
 							<p class="clearfix"><!--  --></p>
 							<div class="col-sm-offset-3">
 								<fmt:message var="submitButton" key="settings.saveChanges" />
-								<bsform:button type="submit" style="primary" size="defaultSize" value="${submitButton}" disabled="${systemReadOnly}"/>
+								<bsform:button type="submit" style="primary" size="defaultSize" value="${submitButton}" />
 							</div>
 							
 						</fieldset>
