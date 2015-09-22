@@ -10,7 +10,7 @@
 	                    http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
 	
 	<!-- import the config from the lucene module -->
-	<import resource="classpath:org/bibsonomy/bibsonomy-lucene-context.xml" />
+	<import resource="classpath:org/bibsonomy/bibsonomy-search-context.xml" />
 	
 	<bean id="luceneDataSource" class="org.apache.tomcat.dbcp.dbcp.BasicDataSource" parent="basicDataSource">
 		<property name="driverClassName" value="${database.lucene.driverClassName}" />
@@ -23,13 +23,6 @@
 		<property name="removeAbandoned" value="${database.lucene.removeAbandoned}" />
 		<property name="removeAbandonedTimeout" value="${database.lucene.removeAbandonedTimeout}" />
 	</bean>
-	
-	<!-- a list of all resource managers -->
-	<util:list id="luceneResourceManagers">
-		<ref bean="lucenePublicationManager" />
-		<ref bean="luceneBookmarkManager" />
-		<ref bean="luceneGoldStandardPublicationManager" />
-	</util:list>
 
 	<!--+ 
 	 	|

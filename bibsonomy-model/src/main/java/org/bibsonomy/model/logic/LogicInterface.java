@@ -41,6 +41,7 @@ import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
@@ -83,7 +84,7 @@ import org.bibsonomy.model.user.remote.RemoteUserId;
  * @author Jens Illig <illig@innofinity.de>
  * @author Christian Kramer
  */
-public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogicInterface, DiscussionLogicInterface, SyncLogicInterface {
+public interface LogicInterface extends PersonLogicInterface, PostLogicInterface, GoldStandardPostLogicInterface, DiscussionLogicInterface, SyncLogicInterface {
 
 	/**
 	 * @return the name of the authenticated user
@@ -141,8 +142,6 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 */
 	public User getUserDetails(String userName);
 	
-	
-
 	/**
 	 * @param userName
 	 * @return WikiVersions
@@ -214,6 +213,35 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @return a set of tags, an empty list else
 	 */
 	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, String regex, TagSimilarity relation, Order order, Date startDate, Date endDate, int start, int end);
+
+	/** 
+	 * Returns a list of tags which can be filtered.
+	 * @param resourceType
+	 * 			  a resourceType (i.e. {@link BibTex} or {@link Bookmark}) to get tags
+	 *  		  only from a bookmark or a publication entry
+	 * @param grouping
+	 *            grouping tells whom tags are to be shown: the tags of a user,
+	 *            of a group or of the viewables.
+	 * @param groupingName
+	 *            name of the grouping. if grouping is user, then its the
+	 *            username. if grouping is set to {@link GroupingEntity#ALL},
+	 *            then its an empty string!
+	 * @param tags
+	 * @param hash
+				  a resource hash (publication or bookmark)
+	 * @param search - search string
+	 * @param searchType the search type
+	 * @param regex
+	 *            a regular expression used to filter the tagnames
+	 * @param relation TODO
+	 * @param order 
+	 * @param startDate - if given, only tags of posts that have been created after (inclusive) startDate are returned  
+	 * @param endDate - if given, only tags of posts that have been created before (inclusive) endDate are returned 
+	 * @param start
+	 * @param end
+	 * @return a set of tags, an empty list else
+	 */
+	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, String regex, TagSimilarity relation, Order order, Date startDate, Date endDate, int start, int end);
 
 	/**  
 	 * retrieves a filterable list of authors.
@@ -633,10 +661,10 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @param tags
 	 * @param regex
 	 * @param status
-	 * @param filters TODO
+	 * @param filters
 	 * @param contraints the statistic contraint
-	 * @param startDate TODO
-	 * @param endDate TODO
+	 * @param startDate
+	 * @param endDate
 	 * @param start
 	 * @param end
 	 * @return the number of relations from a user
@@ -705,4 +733,15 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @return the new size of the inbox
 	 */
 	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox);
+
+	/**
+	 * @param personId
+	 */
+	public void linkUser(String personId);
+
+	/**
+	 * @param username
+	 */
+	public void unlinkUser(String username);
+
 }

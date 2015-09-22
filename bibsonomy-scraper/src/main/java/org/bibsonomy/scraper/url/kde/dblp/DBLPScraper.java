@@ -36,6 +36,7 @@ import java.util.regex.Pattern;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.Scraper;
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
@@ -90,8 +91,11 @@ public class DBLPScraper extends GenericBibTeXURLScraper {
 		return url.toString().replace("bibtex", "bib") + ".bib";
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
+	 */
 	@Override
-	protected String convert(String downloadResult) {
-		return downloadResult.replaceAll("timesta.*\\n", "");
+	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
+		return bibtex.replaceAll("timesta.*\\n", "");
 	}
 }

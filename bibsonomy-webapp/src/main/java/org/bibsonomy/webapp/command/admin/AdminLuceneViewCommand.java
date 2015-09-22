@@ -38,7 +38,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * @author Sven Stefani
  * @author bsc
  */
-public class AdminLuceneViewCommand extends BaseCommand {		
+public class AdminLuceneViewCommand extends BaseCommand {
 	/** specific action for admin page */
 	private String action;
 	
@@ -58,7 +58,10 @@ public class AdminLuceneViewCommand extends BaseCommand {
 	
 	private final List<LuceneResourceIndicesInfoContainer> indicesInfos = new LinkedList<LuceneResourceIndicesInfoContainer>();
 	
-	private final List<LuceneResourceIndicesInfoContainer> esIndicesInfos = new LinkedList<LuceneResourceIndicesInfoContainer>();
+	// TODO: more generic (map<Resource.class, ContainerInfo>)
+	private final List<LuceneResourceIndicesInfoContainer> esIndicesInfosBibtex = new LinkedList<LuceneResourceIndicesInfoContainer>();
+	private final List<LuceneResourceIndicesInfoContainer> esIndicesInfosBookmark = new LinkedList<LuceneResourceIndicesInfoContainer>();
+	private final List<LuceneResourceIndicesInfoContainer> esIndicesInfosGoldStandard = new LinkedList<LuceneResourceIndicesInfoContainer>();
 	
 	private String esGlobalMessage;
 
@@ -125,10 +128,6 @@ public class AdminLuceneViewCommand extends BaseCommand {
 		this.resource = resource;
 	}
 
-	public List<LuceneResourceIndicesInfoContainer> getEsIndicesInfos() {
-		return this.esIndicesInfos;
-	}
-
 	public String getEsGlobalMessage() {
 		return this.esGlobalMessage;
 	}
@@ -143,5 +142,26 @@ public class AdminLuceneViewCommand extends BaseCommand {
 
 	public void setIndexType(String indexType) {
 		this.indexType = indexType;
+	}
+
+	/**
+	 * @return the esIndicesInfosBibtex
+	 */
+	public List<LuceneResourceIndicesInfoContainer> getEsIndicesInfosBibtex() {
+		return this.esIndicesInfosBibtex;
+	}
+
+	/**
+	 * @return the esIndicesInfosBookmark
+	 */
+	public List<LuceneResourceIndicesInfoContainer> getEsIndicesInfosBookmark() {
+		return this.esIndicesInfosBookmark;
+	}
+
+	/**
+	 * @return the esIndicesInfosGoldStandard
+	 */
+	public List<LuceneResourceIndicesInfoContainer> getEsIndicesInfosGoldStandard() {
+		return this.esIndicesInfosGoldStandard;
 	}
 }

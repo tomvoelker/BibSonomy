@@ -74,5 +74,6 @@ public class LucenePost<R extends Resource> extends Post<R> {
 	 */
 	public void setLastLogDate(Date lastLogDate) {
 		this.lastLogDate = lastLogDate;
-	}	
+	}
+
 }

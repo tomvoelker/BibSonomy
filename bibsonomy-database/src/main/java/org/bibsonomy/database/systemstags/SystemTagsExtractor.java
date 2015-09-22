@@ -185,7 +185,7 @@ public class SystemTagsExtractor {
 	}
 	
 	/**
-	 * removes all hidden System Tags if the loginUser ist not he posts owner
+	 * removes all hidden System Tags if the loginUser is not the post's owner
 	 * @param post
 	 * @param loginUserName
 	 */

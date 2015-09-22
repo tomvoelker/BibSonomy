@@ -40,10 +40,12 @@
 		<c:when test="${not empty publication.author}">
 			<c:set var="personList" value="${publication.author}"/>
 			<c:set var="authorEditor" value="author"/>
+			<c:set var="authorEditorUppper" value="AUTHOR"/>
 		</c:when>
 		<c:when test="${not empty publication.editor}">
 			<c:set var="personList" value="${publication.editor}"/>
 			<c:set var="authorEditor" value="editor"/>
+			<c:set var="authorEditorUppper" value="EDITOR"/>
 		</c:when>
 	</c:choose>
 	
@@ -59,6 +61,9 @@
 			<c:if test="${loopStatus.last and not loopStatus.first}">
 				<c:out value=" "/><fmt:message key="and"/><c:out value=" "/>
 			</c:if>
+			
+			<!-- FIXME: urls should be build correctly for remote posts. urls should be built using urlgenerator methods -->
+			<c:url var='pubAuthorUrl' value='${urlGenerator.getDisambiguationUrl(publication.interHash, authorEditorUppper, loopStatus.index)}'/>
 			<c:choose>
 				<c:when test="${isRemotePost}">
 					<a href="${urlGenerator.getAuthorUrlByNameAndSysUrl(person.lastName, post.systemUrl)}"><c:out value="${personName}" /></a>	
@@ -67,13 +72,13 @@
 					<c:choose>
 						<c:when test="${schemaOrgMarkUp}">
 							<span itemprop="${authorEditor}" itemscope="itemscope" itemtype="http://schema.org/Person">
-								<a href="${urlGenerator.getAuthorUrlByName(person.lastName)}" itemprop="name">
+								<a href="${pubAuthorUrl}" itemprop="name">
 									<c:out value="${personName}"/>
 								</a>
 							</span>
 						</c:when>
 						<c:otherwise>
-						 	<a href="${urlGenerator.getAuthorUrlByName(person.lastName)}">
+						 	<a href="${pubAuthorUrl}">
 								<c:out value="${personName}"/>
 						 	</a>
 						</c:otherwise>

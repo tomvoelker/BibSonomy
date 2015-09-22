@@ -20,12 +20,11 @@
 
 	<c:set var="resdir" scope="application" value="/resources" />
 
-    <c:set var="showPublicationList" value="${mtl:containsResourceClass(command.resourcetype, 'publication') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
-    <c:set var="showPublication" value="${showPublicationList and empty command.goldStandardPublications.list}" />
-    <c:set var="showBookmark" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
-    <c:set var="bookmarksWidthClass" value="${showPublication and showBookmark ? 'standard' : (showBookmark ? 'wide' : 'narrow')}"/>
-    <c:set var="publicationsWidthClass" value="${showPublication and showBookmark ? 'standard' : (showPublication ? 'wide' : 'narrow')}"/>
-  
+	<c:set var="showPublicationList" value="${mtl:containsResourceClass(command.resourcetype, 'publication') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
+	<c:set var="showPublication" value="${showPublicationList and empty command.goldStandardPublications.list}" />
+	<c:set var="showBookmark" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark') or mtl:containsResourceClass(command.resourcetype, 'all')}" />
+	<c:set var="bookmarksWidthClass" value="${showPublication and showBookmark ? 'standard' : (showBookmark ? 'wide' : 'narrow')}"/>
+	<c:set var="publicationsWidthClass" value="${showPublication and showBookmark ? 'standard' : (showPublication ? 'wide' : 'narrow')}"/>
 
 	<!-- not valid XHTML, since only allowed in <head> -->
 <!--	<base href="${relativeUrlGenerator.getProjectHome()}"/>-->
@@ -34,7 +33,12 @@
 <!--	<spring:theme code="stylesheet.main" var="stylesheet_main" text="${relativeUrlGenerator.getProjectHome()}${resdir}/css/style.css"/>-->
 <!--	<link rel="stylesheet" type="text/css" href="${stylesheet_main}" />-->
 	<link rel="stylesheet" type="text/css" href="${relativeUrlGenerator.getProjectHome()}${resdir}/css/style.css" />
-
+		<!--+ 
+		| To have the locale available on all pages we set the scope to "request".
+		| see http://stackoverflow.com/questions/333729/how-do-i-access-locale-from-a-jsp 
+		|-->
+	<c:set var="locale" value="${pageContext.response.locale}" scope="request"/>
+	
 	<c:if test="${not empty command.bookmark.list}">
 		<resources:bookmarks listView="${command.bookmark}" 
 						loginUserName="${command.context.loginUser.name}" 

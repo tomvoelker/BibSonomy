@@ -139,6 +139,18 @@ public class PlosScraperTest {
 	public void urlTest11Run(){
 		UnitTestRunner.runSingleTest("url_206");
 	}
+	
+	/**
+	 * starts URL test with id url_284
+	 */
+	@Test
+	public void urlTest12Run(){
+		UnitTestRunner.runSingleTest("url_284");
+	}
+	
+	/**
+	 * @throws Exception
+	 */
 	@Test
 	public void testReferences() throws Exception{
 		final ScrapingContext sc = new ScrapingContext(new URL("http://www.plosntds.org/article/info%3Adoi%2F10.1371%2Fjournal.pntd.0001305"));
@@ -149,7 +161,7 @@ public class PlosScraperTest {
 		final String reference = sc.getReferences();		
 		assertNotNull(reference);
 		assertTrue(reference.length() > 100);
-		assertEquals("<li><span class=\"order\">1.".trim(), reference.substring(0, 30).trim());
+		assertEquals("<li id=\"ref1\"><span class=\"ord".trim(), reference.substring(0, 30).trim());
 		assertTrue(reference.contains("Portaels F"));
 	}
 

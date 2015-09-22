@@ -24,6 +24,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.bibsonomy.model;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -65,6 +66,8 @@ public class Post<T extends Resource> implements Serializable {
 	 * TODO: Is this field really part of the model?
 	 */
 	private Integer contentId;
+	
+	private List<ResourcePersonRelation> resourcePersonRelations;
 
 	/**
 	 * This post belongs to this {@link User}.
@@ -457,6 +460,20 @@ public class Post<T extends Resource> implements Serializable {
 	 */
 	public void setApproved(boolean approved) {
 		this.approved = approved;
+	}
+
+	/**
+	 * @return the resourcePersonRelations
+	 */
+	public List<ResourcePersonRelation> getResourcePersonRelations() {
+		return this.resourcePersonRelations;
+	}
+
+	/**
+	 * @param resourcePersonRelations the resourcePersonRelations to set
+	 */
+	public void setResourcePersonRelations(List<ResourcePersonRelation> resourcePersonRelations) {
+		this.resourcePersonRelations = resourcePersonRelations;
 	}
 	
 	/**

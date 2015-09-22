@@ -99,11 +99,10 @@ public class ViewModel {
 	}
 
 	/**
-	 * @param newOrderName
-	 *            The Name of the new Order to set
+	 * @param order the order
 	 */
-	public void setOrder(String newOrderName) {
-		if (newOrderName != null) this.order = Order.getOrderByName(newOrderName);
+	public void setOrder(final Order order) {
+		this.order = order;
 	}
 
 	/**

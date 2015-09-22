@@ -29,8 +29,13 @@ package org.bibsonomy.lucene.database;
 import java.util.Date;
 import java.util.List;
 
+import org.bibsonomy.es.IndexUpdaterState;
 import org.bibsonomy.lucene.param.LucenePost;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.ResourcePersonRelationLogStub;
 import org.bibsonomy.model.User;
 
 /**
@@ -108,4 +113,42 @@ public interface LuceneDBInterface<R extends Resource> {
 	 * @return post entries for index creation
 	 */
 	public List<LucenePost<R>> getPostEntriesOrderedByHash(int lastOffset, int max);
+
+	/**
+	 * @return
+	 */
+	public long getLastPersonChangeId();
+
+	/**
+	 * @param fromPersonChangeId
+	 * @param toPersonChangeIdExclusive
+	 * @param databaseSession
+	 * @return
+	 */
+	public List<ResourcePersonRelationLogStub> getPubPersonRelationsByChangeIdRange(long fromPersonChangeId, long toPersonChangeIdExclusive);
+
+	/**
+	 * @param firstChangeId
+	 * @param toPersonChangeIdExclusive
+	 * @return
+	 */
+	public List<PersonName> getPersonMainNamesByChangeIdRange(long firstChangeId, long toPersonChangeIdExclusive);
+
+	/**
+	 * @param firstChangeId
+	 * @param toPersonChangeIdExclusive 
+	 * @return
+	 */
+	public List<Person> getPersonByChangeIdRange(long firstChangeId, long toPersonChangeIdExclusive);
+
+	/**
+	 * @param interHash
+	 * @return
+	 */
+	public List<ResourcePersonRelation> getResourcePersonRelationsByPublication(String interHash);
+
+	/**
+	 * @return
+	 */
+	public IndexUpdaterState getDbState();
 }

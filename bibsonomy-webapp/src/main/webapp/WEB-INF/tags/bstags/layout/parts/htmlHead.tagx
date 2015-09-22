@@ -116,7 +116,7 @@
 			<script type="text/javascript" src="${resdir}/javascript/tooltip.js"><!-- keep me --></script>
 		</c:if>
 		<!-- enable logging with user permission -->
-		<c:if test="${loginUser.settings.logLevel != 1}">
+		<c:if test="${loginUser.settings.logLevel != 1 and not systemReadOnly}">
 		   <script type="text/javascript" src="${resdir}/javascript/logging.js"><!-- KEEP ME --></script> 
 		</c:if>
 		<!-- enable on-site spammer killing when user is admin -->

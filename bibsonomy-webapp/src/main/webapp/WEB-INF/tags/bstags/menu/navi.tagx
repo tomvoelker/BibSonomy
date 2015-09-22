@@ -59,12 +59,13 @@
 						<!--+
 							| post a post
 							+-->
-						<li class="dropdown ${activeTab eq 'post' ? 'active' : ''}">
+						<li class="dropdown ${activeTab eq 'post' ? 'active' : ''} ${systemReadOnly ? 'disabled' : ''}">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.postPost"/><b class="caret">&amp;nbsp;</b></a>
 							<ul class="dropdown-menu">
-								<li><a href="/postBookmark"><fmt:message key="navi.postBookmark"/></a></li>
-								<li><a href="/postPublication"><fmt:message key="navi.postPublication"/></a></li>
+								<li class="${systemReadOnly ? 'disabled' : ''}"><a href="/postBookmark"><fmt:message key="navi.postBookmark"/></a></li>
+								<li class="${systemReadOnly ? 'disabled' : ''}"><a href="/postPublication"><fmt:message key="navi.postPublication"/></a></li>
 							</ul>
+							
 						</li>
 					</c:if>
 					<!--+
@@ -139,6 +140,8 @@
 							<li><a href="/discussed"><fmt:message key="navi.discussions"/></a></li>
 						</ul>
 					</li>
+					
+					<li class="${activeTab eq 'persons' ? 'active' : ''}"><a href="${relativeUrlGenerator.getPersonsUrl()}"><fmt:message key="navi.persons"/></a></li>
 					
 					<c:if test="${loginUser.role eq 'ADMIN' }">
 						<li class="dropdown ${activeTab eq 'admin' ? 'active' : ''}" data-touch="false">

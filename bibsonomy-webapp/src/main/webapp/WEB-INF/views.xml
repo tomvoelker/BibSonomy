@@ -35,8 +35,8 @@
 
 	<bean id="oembed" class="org.bibsonomy.webapp.view.OEmbedView">
 		<property name="viewResolver" ref="viewResolver"/>
-		<property name="projectName" value="${project.name}"/>
-		<property name="projectHome" value="${project.home}"/>
+		<property name="projectName" ref="projectName" />
+		<property name="projectHome" ref="projectHome" />
 	</bean>
 
 

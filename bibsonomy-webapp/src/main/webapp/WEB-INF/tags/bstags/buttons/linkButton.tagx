@@ -8,10 +8,11 @@
 	<jsp:directive.attribute name="image" fragment="false" required="false" />
 	<jsp:directive.attribute name="name" fragment="false" required="false" />
 	<jsp:directive.attribute name="text" fragment="true" required="true" />
+	<jsp:directive.attribute name="disabled" fragment="false" required="false" />
 
-	<a class="btn btn-primary btn-sm btn-block" href="${href}" title="${title}"> 
+	<a class="btn btn-primary btn-sm btn-block ${not empty disabled and disabled ? 'disabled' : '' }" href="${href}" title="${title}"> 
 		<c:choose>
-			<c:when test='${image != null}'>
+			<c:when test='${not empty image}'>
 				<span class="glyphicon ${image}"><!-- --></span>&amp;nbsp;<jsp:invoke fragment="text" />
 			</c:when> 
 			<c:otherwise>
