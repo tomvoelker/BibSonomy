@@ -61,7 +61,7 @@ public class LogicInterfaceFactoryTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getLogicAccessUser() {
 		for (final String username : new String[] { "testuser1", "testuser2", "testuser3" }) {
-			assertNotNull(userFactory.getLogicAccess(username, StringUtils.getMD5Hash("test123")));
+			assertNotNull(userFactory.getLogicAccess(username, StringUtils.getMD5Hash(StringUtils.getMD5Hash("test123")))); // note: salt is ''
 			this.assertNoLogin(userFactory, username);
 		}
 	}

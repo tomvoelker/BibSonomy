@@ -30,11 +30,14 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.store.LockObtainFailedException;
+import org.bibsonomy.es.ESClient;
+import org.bibsonomy.es.IndexUpdaterState;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.model.Group;
@@ -50,7 +53,7 @@ import org.bibsonomy.model.Resource;
  * 
  * @param <R> the resource of the index to generate
  */
-public abstract class AbstractIndexGenerator<R extends Resource> implements Runnable {
+public abstract class AbstractIndexGenerator<R extends Resource> implements Callable<Void>, Runnable {
 
 	/** suffix for temporary indices */
 	public static final String TMP_INDEX_SUFFIX = ".tmp";
@@ -58,14 +61,31 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 	private static final Log log = LogFactory.getLog(AbstractIndexGenerator.class);
 
 	/** the number of posts to fetch from the database by a single generating step */
-	protected static final int SQL_BLOCKSIZE = 25000;
+	protected static final int SQL_BLOCKSIZE = 5000;
 
 	/** database logic */
 	protected LuceneDBInterface<R> dbLogic;
 
-	/** set to true if the generator is currently generating an index */
-	protected boolean isRunning;
+	/**
+	 * the elasticsearch client
+	 */
+	protected ESClient esClient;
 
+	/**
+	 * the elasticsearch index name
+	 */
+	protected String indexName;
+	
+	protected boolean finishedSuccesfully;
+
+	/**
+	 * the resource type
+	 */
+	protected String resourceType;
+
+	/**
+	 * 
+	 */
 	protected int numberOfPosts;
 	private int numberOfPostsImported;
 	private boolean running = false;
@@ -89,6 +109,7 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 	 * 
 	 * Database as well as index files are configured in the lucene.properties
 	 * file.
+	 * @throws Exception 
 	 * 
 	 * @throws CorruptIndexException
 	 * @throws IOException
@@ -96,19 +117,9 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 	 * @throws SQLException
 	 */
 	public void generateIndex() throws Exception {
-		// Allow only one index-generation at a time.
-		if (this.isRunning) {
-			return;
-		}
-
-		this.isRunning = true;
-		try {
-			this.createEmptyIndex();
-			this.createIndexFromDatabase();
-			this.activateIndex();
-		} finally {
-			this.isRunning = false;
-		}
+		this.createEmptyIndex();
+		this.createIndexFromDatabase();
+		this.activateIndex();
 	}
 
 	protected abstract void activateIndex();
@@ -116,6 +127,7 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 
 	/**
 	 * Create empty index. Attributes must already be configured (via init()).
+	 * @throws Exception 
 	 * 
 	 * @throws CorruptIndexException
 	 * @throws LockObtainFailedException
@@ -125,6 +137,7 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 
 	/**
 	 * creates index of resource entries
+	 * @throws Exception 
 	 * 
 	 * @throws CorruptIndexException
 	 * @throws IOException
@@ -138,14 +151,13 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 		log.info("Number of post entries: " + this.numberOfPosts);
 
 		// initialize variables
-		Integer lastTasId = this.dbLogic.getLastTasId();
-		Date lastLogDate = this.dbLogic.getLastLogDate();
+		final IndexUpdaterState newState = this.dbLogic.getDbState();
 
-		if (lastLogDate == null) {
-			lastLogDate = new Date(System.currentTimeMillis() - 1000);
+		if (newState.getLast_log_date() == null) {
+			newState.setLast_log_date(new Date(System.currentTimeMillis() - 1000));
 		}
 		
-		writeMetaInfo(lastTasId, lastLogDate);
+		writeMetaInfo(newState);
 		
 
 		log.info("Start writing data to lucene index (with duplicate detection)");
@@ -163,11 +175,13 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 
 			// cycle through all posts of currently read block
 			for (final LucenePost<R> post : postList) {
-				post.setLastLogDate(lastLogDate);
+				post.setLastLogDate(newState.getLast_log_date());
 				if (post.getLastTasId() == null) {
-					post.setLastTasId(lastTasId);
+					post.setLastTasId(newState.getLast_tas_id());
 				} else {
-					lastTasId = Math.max(lastTasId, post.getLastTasId());
+					if (post.getLastTasId() < post.getLastTasId()) {
+						post.setLastTasId(post.getLastTasId());
+					}
 				}
 
 				if (AbstractIndexGenerator.this.isNotSpammer(post)) {
@@ -191,8 +205,11 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 	 * @param lastLogDate
 	 * @throws IOException 
 	 */
-	protected abstract void writeMetaInfo(Integer lastTasId, Date lastLogDate) throws IOException;
+	protected abstract void writeMetaInfo(IndexUpdaterState state) throws IOException;
 
+	/**
+	 * @param post
+	 */
 	protected abstract void addPostToIndex(final LucenePost<R> post);
 	
 	/**
@@ -236,15 +253,26 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 		try {
 			this.running = true;
 			this.generateIndex();
-		} catch (final Exception e) {
-			log.error("Failed to generate " + getName() + "!", e);
+			this.finishedSuccesfully = true;
+		} catch (Throwable t) {
+			log.error("Failed to generate " + getName() + "!", t);
 		} finally {
+			log.info("Generator terminating: " + getName());
 			try {
 				this.shutdown();
 			} catch (final Exception e) {
 				log.error("Failed to close index-writer!", e);
 			}
 		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.util.concurrent.Callable#call()
+	 */
+	@Override
+	public Void call() throws Exception {
+		this.run();
+		return null;
 	}
 
 	/**
@@ -270,7 +298,28 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Runn
 		this.callback = callback;
 	}
 
+	/**
+	 * @return returns the running state
+	 */
 	public boolean isRunning() {
 		return this.running;
+	}
+
+	/**
+	 * @return the indexName
+	 */
+	public String getIndexName() {
+		return this.indexName;
+	}
+	
+	/**
+	 * @return the resourceType
+	 */
+	public String getResourceType() {
+		return this.resourceType;
+	}
+
+	public boolean isFinishedSuccesfully() {
+		return this.finishedSuccesfully;
 	}
 }

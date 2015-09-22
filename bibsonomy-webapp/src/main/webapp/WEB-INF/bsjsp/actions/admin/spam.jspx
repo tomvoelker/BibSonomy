@@ -13,8 +13,7 @@
 	xmlns:spring="urn:http://www.springframework.org/tags"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
-	<jsp:directive.page contentType="text/html; charset=UTF-8"
-		language="java" pageEncoding="UTF-8" session="true" />
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<c:set var="settingsCommand" value="${command.settingsCommand}" />
 	<c:set var="statisticsCommand" value="${command.statisticsCommand}" />
@@ -35,10 +34,6 @@
 		</jsp:attribute>
 
 		<jsp:attribute name="headerExt">
-			<link rel="stylesheet" type="text/css"
-				href="${resdir}/css/spammer.css" />
-			<link rel="stylesheet" type="text/css" href="${resdir}/css/admin.css" />
-			
 			<style type="text/css" >
 				.ajax_tooltip_content {
 					background: #eee;
@@ -47,6 +42,12 @@
 			
 			</style>
 			
+			<!--include spammer scripts -->
+			<script type="text/javascript" src="${resdir}/javascript/admin/spammer.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/admin/ajax-dynamic-content.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/admin/ajax.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/admin/ajax-tooltip.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/admin/marksame.js"><!-- keep me --></script>
 		</jsp:attribute>
 
 		<jsp:attribute name="heading">
@@ -59,12 +60,47 @@
 			</parts:search>
 		</jsp:attribute>
 
-		<jsp:attribute name="content">	
+		<jsp:attribute name="content">
+			<h1 class="content-heading">Users <a class="btn btn-default pull-right" title="killSpammer" href="javascript:location.href='/admin/spam?action=flag_spammer&amp;aclUserInfo='+encodeURIComponent(location.href.replace(/.*\\//, ''))" onclick="return false;">SpammerKillerButton</a></h1>
+			<!-- Get information about a specific user -->
+			<div class="row">
+				<div class="col-md-4">
+					<form:form cssClass="form-inline" name="userinfo" role="form" action="${relativeUrlGenerator.getAdminUrlByName('spam')}">
+						<div class="form-group">
+							<form:label  path="aclUserInfo">User name</form:label>
+							<form:input class="form-control" path="aclUserInfo" />
+						</div>
+						<button class="btn btn-default" type="submit">submit</button>
+					</form:form>
+				</div>
+				<div class="col-md-4 col-md-offset-4">
+					<parts:logbox initialValue="no log messages" />
+				</div>
+			</div>
 			
+			<c:if test="${not empty command.user}">
+				<table class="table table-condensed userInfoTable ">
+					<tr>
+						<th><fmt:message key="admin.userinfo.Spam" /></th>
+						<th><fmt:message key="admin.userinfo.Username" /></th>
+						<th><fmt:message key="admin.userinfo.Name" /></th>
+						<th><fmt:message key="admin.userinfo.IP" /></th>
+						<th><fmt:message key="admin.userinfo.EMail" /></th>
+						<th><fmt:message key="admin.userinfo.Regdate" /></th>  	
+						<th><fmt:message key="admin.userinfo.UpdatedBy" /></th>
+						<th><fmt:message key="admin.userinfo.UpdatedAt" /></th>
+					</tr>
+				
+					<!-- Row number is set negative, so that row is not removed 
+					 	 when flagging and unflagging the specific user  
+					-->
+					<tags:userInfo spamUser="${command.user}" rowNumber='-1'
+						moveFromTabSpammer="false" moveFromTabNSpammer="false"
+						moveFromTabUncertain="false" selTab="userInformation" />
+				</table>
+			</c:if>
 			
-		
-			<h1 class="content-heading">Spam</h1>
-			
+			<br />
 			<c:if test="${not empty command.tabs}">
 
 				<!--  
@@ -92,81 +128,17 @@
 									</li>
 								</c:otherwise>
 							</c:choose>
-						</c:if>		
+						</c:if>
 					</c:forEach>
-				</ul>	
+				</ul>
 			</c:if>
 			
 			<div class="row">
-				<div class="col-sm-9">
+				<div class="col-sm-12">
 	
-			<!-- Get information about a specific user -->
-			<div class="userInfoBox">
 			
-			<fieldset>
-					<legend><fmt:message key="admin.actions.user" /></legend>
-					<form:form cssClass="form-inline" name="userinfo" role="form" action="${relativeUrlGenerator.getAdminUrlByName('spam')}">
-						<div class="form-group">
-							<form:label  path="aclUserInfo">User name</form:label>
-							<form:input class="form-control" path="aclUserInfo" />
-						</div>
-						 
-						<button class="btn btn-default adminBtn" type="submit">submit</button>
-					</form:form>
-				</fieldset>
-
-		
-				<c:if test="${not empty command.user}">
-				
-					<table class="table table-condensed table-striped userInfoTable ">
-						<tr>
-					    	<th><fmt:message key="admin.userinfo.Spam" /></th>
-							<th><fmt:message key="admin.userinfo.Username" /></th>
-							<th><fmt:message key="admin.userinfo.Name" /></th>
-							<th><fmt:message key="admin.userinfo.IP" /></th>
-							<th><fmt:message key="admin.userinfo.EMail" /></th>
-							<th><fmt:message key="admin.userinfo.Regdate" /></th>  	
-					    	<th><fmt:message key="admin.userinfo.UpdatedBy" /></th>
-					    	<th><fmt:message key="admin.userinfo.UpdatedAt" /></th>
-					 	</tr>
-					 
-					 	<!-- Row number is set negative, so that row is not removed 
-						 	 when flagging and unflagging the specific user  
-						-->
-					 	<tags:userInfo spamUser="${command.user}" rowNumber='-1'
-							moveFromTabSpammer="false" moveFromTabNSpammer="false"
-							moveFromTabUncertain="false" selTab="userInformation" />
-				    </table>
-			    </c:if>   
-			</div>
-			<br /><br />
-			<!--include spammer scripts -->
-				<script type="text/javascript"
-				src="${resdir}/javascript/admin/spammer.js">
-				<!-- keep me -->
-					
-				</script>
-				<script type="text/javascript"
-				src="${resdir}/javascript/admin/ajax-dynamic-content.js">
-				<!-- keep me -->
-					
-				</script>
-				<script type="text/javascript"
-				src="${resdir}/javascript/admin/ajax.js">
-				<!-- keep me -->
-					
-				</script>
-				<script type="text/javascript"
-				src="${resdir}/javascript/admin/ajax-tooltip.js">
-				<!-- keep me -->
-					
-				</script>
-				<script type="text/javascript"
-				src="${resdir}/javascript/admin/marksame.js">
-				<!-- keep me -->
-					
-				</script>
-		
+			
+			
 	
 			<!--check which tab command to include -->	
 			<c:if test="${not empty command.content}">
@@ -185,7 +157,7 @@
 				<table id="spammers" class="table table-condensed table-striped spammertable" style="font-size: 11px;">
 					
 				    <tr>
-				    	<th>Spam?</th>
+				    	<th>Spammer?</th>
 						<th>Username</th>
 						<th>Name</th>
 						<th>IP</th>
@@ -272,7 +244,7 @@
 							</c:otherwise>
 						</c:choose>
 	
-						<c:set var="userIndex" value="${status.index+1}" />
+						<c:set var="userIndex" value="${status.index + 1}" />
 						<c:set var="nextUser" value="${command.content[userIndex].name}" />
 				
 					  	<tags:userInfo spamUser="${user}" rowNumber="${status.count}"
@@ -347,9 +319,96 @@
 			</div>
 			
 			<div class="col-sm-3">
-				<h4>logging</h4>	
-				<parts:logbox initialValue="no log messages" />
-				<form:form>			
+				
+				
+				
+				<!-- sidebar with specific counts only on classifier (sure) tabs -->
+				<c:if test="${command.selTab == 4 or command.selTab == 7}">
+				
+				<h4 class="sidebar_h"><fmt:message key="statistic" /></h4>
+				<table class="stattable">
+					<tr class="counts">
+						<th>Activities in the last</th>
+						<th>7 days</th>
+						<th>24 h</th>
+						<th>12 h</th>
+					</tr>
+					<tr>
+						<th>Admin</th>
+						<th></th>
+						<th></th>
+						<th></th>
+					</tr>
+						
+					<tr>
+						<td>Spammers</td>
+						<c:forEach items="${statisticsCommand.numAdminSpammer}"
+									var="counts">
+						<td><c:out value="${counts.value}" /></td>
+						</c:forEach>			
+					</tr>
+					<tr>
+						<td>No Spammers</td>
+						<c:forEach items="${statisticsCommand.numAdminNoSpammer}"
+									var="counts">
+						<td><c:out value="${counts.value}" /></td>
+						</c:forEach>	
+					</tr>
+					<tr>
+						<th>Classifier</th>
+						<th></th>
+						<th></th>
+						<th></th>
+					</tr>
+					
+					<tr>
+						<td>Spammers</td>
+						<c:forEach items="${statisticsCommand.numClassifierSpammer}"
+									var="counts">
+						<td><c:out value="${counts.value}" /></td>
+						</c:forEach>	
+					</tr>
+					<tr>
+						<td>Spammers unsure</td>
+						<c:forEach items="${statisticsCommand.numClassifierSpammerUnsure}"
+									var="counts">
+						<td><c:out value="${counts.value}" /></td>
+						</c:forEach>
+					</tr>
+					<tr>
+						<td>No Spammers unsure</td>
+						<c:forEach
+									items="${statisticsCommand.numClassifierNoSpammerUnsure}"
+									var="counts">
+						<td><c:out value="${counts.value}" /></td>
+						</c:forEach>
+					</tr>
+					<tr>
+						<td>No Spammers</td>
+						<c:forEach items="${statisticsCommand.numClassifierNoSpammer}"
+									var="counts">
+						<td><c:out value="${counts.value}" /></td>
+						</c:forEach>
+					</tr>
+				</table>
+				</c:if>
+			
+			
+				<script type="text/javascript">
+					/** hack for preselect options in combobox */
+					function preselect() {
+						var mode = "${settingsCommand.mode}";
+						var algorithm = "${settingsCommand.algorithm}";
+	
+						document.getElementById(mode).selected = true;
+						document.getElementById(algorithm).selected = true;
+	
+					}
+					preselect();
+				</script>
+			</div>
+		</div>
+		<form:form>
 					<table class="stattable">
 						<tr>
 							<td>mode:</td>
@@ -422,101 +481,6 @@
 						</tr>
 					</table>
 				</form:form>	
-				
-				
-				<!-- sidebar with specific counts only on classifier (sure) tabs -->
-				<c:if test="${command.selTab == 4 or command.selTab == 7}">
-				
-				<h4 class="sidebar_h"><fmt:message key="statistic" /></h4>
-				<table class="stattable">
-					<tr class="counts">
-						<th>Activities in the last</th>
-						<th>7 days</th>
-						<th>24 h</th>
-						<th>12 h</th>
-					</tr>
-					<tr>
-						<th>Admin</th>
-						<th></th>
-						<th></th>
-						<th></th>
-					</tr>
-						
-					<tr>
-						<td>Spammers</td>
-						<c:forEach items="${statisticsCommand.numAdminSpammer}"
-									var="counts">
-						<td><c:out value="${counts.value}" /></td>
-						</c:forEach>			
-					</tr>
-					<tr>
-						<td>No Spammers</td>
-						<c:forEach items="${statisticsCommand.numAdminNoSpammer}"
-									var="counts">
-						<td><c:out value="${counts.value}" /></td>
-						</c:forEach>	
-					</tr>
-					<tr>
-						<th>Classifier</th>
-						<th></th>
-						<th></th>
-						<th></th>
-					</tr>
-					
-					<tr>
-						<td>Spammers</td>
-						<c:forEach items="${statisticsCommand.numClassifierSpammer}"
-									var="counts">
-						<td><c:out value="${counts.value}" /></td>
-						</c:forEach>	
-					</tr>
-					<tr>
-						<td>Spammers unsure</td>
-						<c:forEach items="${statisticsCommand.numClassifierSpammerUnsure}"
-									var="counts">
-						<td><c:out value="${counts.value}" /></td>
-						</c:forEach>
-					</tr>
-					<tr>
-						<td>No Spammers unsure</td>
-						<c:forEach
-									items="${statisticsCommand.numClassifierNoSpammerUnsure}"
-									var="counts">
-						<td><c:out value="${counts.value}" /></td>
-						</c:forEach>
-					</tr>
-					<tr>
-						<td>No Spammers</td>
-						<c:forEach items="${statisticsCommand.numClassifierNoSpammer}"
-									var="counts">
-						<td><c:out value="${counts.value}" /></td>
-						</c:forEach>
-					</tr>	
-				</table>
-				</c:if>
-			
-			
-				<script type="text/javascript">
-					/** hack for preselect options in combobox */
-					function preselect() {
-						var mode = "${settingsCommand.mode}";
-						var algorithm = "${settingsCommand.algorithm}";
-	
-						document.getElementById(mode).selected = true;
-						document.getElementById(algorithm).selected = true;
-	
-					}
-					preselect();
-				</script>	
-				
-				
-				
-				
-			</div>
-			
-			
-		</div>		
 		</jsp:attribute>
-
 	</layout:oneColumnLayout>
 </jsp:root>

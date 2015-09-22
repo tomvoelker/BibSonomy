@@ -33,7 +33,7 @@
 			
 			</h1>
 		</div>
-		<p><bib:desc publication="${post.resource}"/></p>
+		<p><bib:desc post="${post}" publication="${post.resource}"/></p>
 		
 	</div>
 </jsp:root>

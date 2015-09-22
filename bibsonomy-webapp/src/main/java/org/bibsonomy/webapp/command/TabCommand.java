@@ -38,7 +38,7 @@ public class TabCommand {
 	private Integer id;
 	
 	/** The title of the tab */
-	private String title;		
+	private String title;
 	
 	/**
 	 * Constructor

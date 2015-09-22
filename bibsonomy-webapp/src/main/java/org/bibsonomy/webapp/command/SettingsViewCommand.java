@@ -31,8 +31,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.bibsonomy.common.enums.GroupUpdateOperation;
 
+import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.sync.SyncService;
@@ -45,9 +45,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
  * @author Steffen Kress
  */
 public class SettingsViewCommand extends TabsCommand<Object> implements Serializable {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -1211293063812357398L;
 	
 	/** Indexes of defined tabs */
@@ -182,8 +179,8 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	private List<SyncService> syncServer;
 	private SyncService newSyncServer;
 	
-	private List<URI> availableSyncClients;
-	private List<URI> availableSyncServers;
+	private List<SyncService> availableSyncClients;
+	private List<SyncService> availableSyncServers;
 	
 	/** 
 	 * this field contains the username of the user, who should be added/removed to/from the group.
@@ -600,14 +597,14 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	/**
 	 * @param availableSyncServers the avlSyncServer to set
 	 */
-	public void setAvailableSyncServers(List<URI> availableSyncServers) {
+	public void setAvailableSyncServers(List<SyncService> availableSyncServers) {
 		this.availableSyncServers = availableSyncServers;
 	}
 
 	/**
 	 * @return the avlSyncServer
 	 */
-	public List<URI> getAvailableSyncServers() {
+	public List<SyncService> getAvailableSyncServers() {
 		return availableSyncServers;
 	}
 
@@ -628,14 +625,14 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	/**
 	 * @return The available synchronization clients.
 	 */
-	public List<URI> getAvailableSyncClients() {
+	public List<SyncService> getAvailableSyncClients() {
 		return this.availableSyncClients;
 	}
 
 	/**
 	 * @param availableSyncClients
 	 */
-	public void setAvailableSyncClients(final List<URI> availableSyncClients) {
+	public void setAvailableSyncClients(final List<SyncService> availableSyncClients) {
 		this.availableSyncClients = availableSyncClients;
 	}
 	

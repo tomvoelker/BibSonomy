@@ -35,10 +35,13 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -52,7 +55,9 @@ import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.common.exceptions.ReadOnlyDatabaseException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.rest.enums.HttpMethod;
@@ -67,6 +72,7 @@ import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.strategy.Context;
+import org.bibsonomy.rest.util.URLDecodingPathTokenizer;
 import org.bibsonomy.rest.utils.HeaderUtils;
 import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.util.StringUtils;
@@ -80,43 +86,33 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
  */
 public final class RestServlet extends HttpServlet {
 	private static final long serialVersionUID = -1737804091652029470L;
+	
 	private static final Log log = LogFactory.getLog(RestServlet.class);
 
-	/**
-	 * the key for the documents path
-	 */
+	/** the file with the main XML */
+	private static final String MAIN_FILE = "main";
+
+	/** the key for the documents path */
 	public static final String DOCUMENTS_PATH_KEY = "docPath";
 
-	/**
-	 * the key for the project home
-	 */
+	/** the key for the project home */
 	public static final String PROJECT_HOME_KEY = "projectHome";
 
 	private static final String PROJECT_NAME_KEY = "projectName";
 
-	/**
-	 * the response encoding used to encode HTTP responses.
-	 */
+	/** the response encoding used to encode HTTP responses. */
 	public static final String RESPONSE_ENCODING = StringUtils.CHARSET_UTF_8;
 
-	/**
-	 * the request default encoding
-	 */
+	/** the request default encoding */
 	public static final String REQUEST_ENCODING = StringUtils.CHARSET_UTF_8;
 
-	/**
-	 * Name of header, that shows successful ssl verification
-	 */
+	/** Name of header, that shows successful ssl verification */
 	public static final String SSL_VERIFY_HEADER = "SSL_CLIENT_VERIFY";
 
-	/**
-	 * String to show successful ssl key check 
-	 */
+	/** String to show successful ssl key check */
 	public static final String SUCCESS = "SUCCESS";
 
-	/**
-	 * Distinguish name of the client
-	 */
+	/** Distinguish name of the client */
 	public static final String SSL_CLIENT_S_DN = "SSL_CLIENT_S_DN";
 
 	private List<AuthenticationHandler<?>> authenticationHandlers;
@@ -295,6 +291,8 @@ public final class RestServlet extends HttpServlet {
 			 */
 			response.setHeader("Location", urlRenderer.createHrefForResource(e.getUserName(), e.getNewIntraHash()));
 			sendError(request, response, HttpServletResponse.SC_MOVED_PERMANENTLY, e.getMessage());
+		} catch (final ReadOnlyDatabaseException e) {
+			sendError(request, response, HttpServletResponse.SC_SERVICE_UNAVAILABLE, e.getMessage());
 		} catch (final DatabaseException e) {
 			final StringBuilder returnMessage = new StringBuilder("");
 			for (final String hash : e.getErrorMessages().keySet()) {
@@ -307,6 +305,9 @@ public final class RestServlet extends HttpServlet {
 		} catch (final UnsupportedMediaTypeException e) {
 			log.error(e.getMessage());
 			sendError(request, response, HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, e.getMessage());
+		} catch (final UnsupportedResourceTypeException e) {
+			// the user has not specified the resource type
+			sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
 		} catch (final Exception e) {
 			log.error(e, e);
 			// well, lets fetch each and every error...
@@ -317,7 +318,7 @@ public final class RestServlet extends HttpServlet {
 	protected static String getMainContentType(HttpServletRequest request) {
 		if (request instanceof MultipartHttpServletRequest) {
 			// TODO: add comment
-			final MultipartFile mainFile = ((MultipartHttpServletRequest) request).getFile("main");
+			final MultipartFile mainFile = ((MultipartHttpServletRequest) request).getFile(MAIN_FILE);
 			if (mainFile != null) {
 				return mainFile.getContentType();
 			}
@@ -333,7 +334,7 @@ public final class RestServlet extends HttpServlet {
 	 */
 	protected static InputStream getMainInputStream(HttpServletRequest request) throws IOException {
 		if (request instanceof MultipartHttpServletRequest) {
-			MultipartFile main = ((MultipartHttpServletRequest) request).getFile("main");
+			final MultipartFile main = ((MultipartHttpServletRequest) request).getFile(MAIN_FILE);
 			if (main != null) {
 				return main.getInputStream();
 			}
@@ -399,7 +400,7 @@ public final class RestServlet extends HttpServlet {
 	}
 
 	/**
-	 * Checks the SSL headers for configured sync clients.
+	 * Checks the SSL headers for configured sync client
 	 * 
 	 * @param request
 	 * @param logic
@@ -419,24 +420,21 @@ public final class RestServlet extends HttpServlet {
 		}
 
 		/*
-		 * get all available sync clients
+		 * get syncClient from SSLDn
 		 */
-		log.debug("checking list of available sync clients against SSL_CLIENT_S_DN '" + sslClientSDn + "'.");
-		final List<SyncService> syncClients = logic.getAllSyncServices(false);
-		for (final SyncService syncClient : syncClients) {
-			if (log.isDebugEnabled()) {
-				log.debug("sync client:" + syncClient.getService() + " | service ssl_s_dn:" + syncClient.getSslDn());
-			}
-			if (sslClientSDn.equals(syncClient.getSslDn())) {
-				/*
-				 * FIXME: check, that request URI contains service URI
-				 * 
-				 * service with requested ssl_client_s_dn found in available client list -> give user the sync-role
-				 */
-				log.debug("setting user role to SYNC");
-				logic.getAuthenticatedUser().setRole(Role.SYNC);
-				return;
-			}
+		log.debug("checking available sync client against SSL_CLIENT_S_DN '" + sslClientSDn + "'.");
+		final List<SyncService> syncClient = logic.getSyncServices(true, sslClientSDn);
+
+		if (!syncClient.isEmpty()) {
+			log.debug("sync client:" + syncClient.get(0).getService() + " | "
+					+ "service ssl_s_dn:" + syncClient.get(0).getSslDn());
+
+			/*
+			 * service with requested ssl_client_s_dn found in available client list -> give user the sync-role
+			 */
+			log.debug("setting user role to SYNC");
+			logic.getAuthenticatedUser().setRole(Role.SYNC);
+			return;
 		}
 	}
 

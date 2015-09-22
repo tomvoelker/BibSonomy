@@ -62,6 +62,24 @@ import org.bibsonomy.rest.client.RestLogicFactory;
  */
 public abstract class AbstractSynchronizationClient {
 	private static final Log log = LogFactory.getLog(AbstractSynchronizationClient.class);
+
+	private static final String SLASH = "/";
+	
+	/**
+	 * @param api
+	 * @return
+	 */
+	private static String buildApiUrl(URI api) {
+		String apiUrl = api.toString();
+		if (!apiUrl.endsWith(RestLogicFactory.API_SUBPATH)) {
+			if (!apiUrl.endsWith(SLASH)) {
+				apiUrl += SLASH;
+			}
+			return apiUrl + RestLogicFactory.API_SUBPATH;
+		}
+		return apiUrl;
+	}
+
 	
 	/** own URI */
 	protected URI ownUri;
@@ -75,7 +93,7 @@ public abstract class AbstractSynchronizationClient {
 	 * @return syncService
 	 */
 	public SyncService getServerByURI(final LogicInterface clientLogic, final URI service) {
-		final List<SyncService> syncServers = clientLogic.getSyncService(clientLogic.getAuthenticatedUser().getName(), service, true);
+		final List<SyncService> syncServers = clientLogic.getSyncServiceSettings(clientLogic.getAuthenticatedUser().getName(), service, true);
 
 		// return the first found service (there should be at most one with the given URI! 
 		if (present(syncServers)) {
@@ -95,15 +113,14 @@ public abstract class AbstractSynchronizationClient {
 		log.info("get server logic for: " + syncServer.getService() + " (api: " + syncServer.getSecureAPI() +")");
 		URI api = syncServer.getSecureAPI();
 		
-		// FIXME: logic returns empty not null uri as secure api
 		if (!present(api)) {
 			api = syncServer.getService();
 		}
 		
-		final RestLogicFactory factory = new RestLogicFactory(api + RestLogicFactory.API_SUBPATH);
+		final String apiUrl = buildApiUrl(api);
+		final RestLogicFactory factory = new RestLogicFactory(apiUrl);
 		return factory.getLogicAccess(serverUser.getProperty("userName"), serverUser.getProperty("apiKey"));
 	}
-	
 
 	/**
 	 * Used in a synchronization process, in case that server logic already created 

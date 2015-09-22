@@ -43,6 +43,7 @@ public class SyncParam {
 
 	private String userName;
 	private URI service;
+	private String sslDn;
 	private int serviceId;
 	private boolean server;
 
@@ -142,5 +143,19 @@ public class SyncParam {
 	 */
 	public void setSyncService(final SyncService syncService) {
 		this.syncService = syncService;
+	}
+
+	/**
+	 * @return the sslDn of the synService
+	 */
+	public String getSslDn() {
+		return this.sslDn;
+	}
+
+	/**
+	 * @param sslDn the sslDn to set
+	 */
+	public void setSslDn(String sslDn) {
+		this.sslDn = sslDn;
 	}
 }

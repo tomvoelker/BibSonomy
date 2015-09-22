@@ -65,7 +65,7 @@ public class GetResourcesForUser<R extends Resource, P extends ResourceParam<R>>
 
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
-		return this.databaseManager.getPostsForUser(param.getUserName(), param.getRequestedUserName(), HashID.getSimHash(param.getSimHash()), param.getGroupId(), param.getGroups(), param.getPostAccess(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
+		return this.databaseManager.getPostsForUser(param.getUserName(), param.getRequestedUserName(), param.getSearchType(), HashID.getSimHash(param.getSimHash()), param.getGroupId(), param.getGroups(), param.getPostAccess(), param.getFilters(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
 	}
 
 }

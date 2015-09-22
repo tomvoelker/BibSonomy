@@ -12,7 +12,22 @@
 	<div id="footer-more">
 		<nav class="row">
 			<dl class="col-md-3 col-sm-6">
-				<dt><fmt:message key="footer.what"><fmt:param>${properties['project.name']}</fmt:param></fmt:message></dt>
+				<dt>
+					<fmt:message key="footer.what">
+						<fmt:param>${properties['project.name']}</fmt:param>
+					</fmt:message>
+					<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
+						&amp;nbsp;
+						<c:set var="infoContent">
+							<fmt:message key="build.version" >
+								<fmt:param>${properties['project.name']}</fmt:param>
+							</fmt:message>
+							<br />
+							(<fmt:message key="build.time" />)
+						</c:set>
+						<span class="fa fa-info-circle" data-container="body" data-toggle="popover" data-placement="top" data-content="${infoContent}"><!-- keep me --></span>
+					</c:if>
+				</dt>
 				
 				<dd><a href="/gettingStarted"><fmt:message key="footer.gettingStarted"/></a></dd>
 				<dd><a href="/buttons"><fmt:message key="footer.buttons"/></a></dd>
@@ -45,7 +60,7 @@
 				<dd><a href="/scraperinfo"><fmt:message key="footer.scraperInfo" /></a></dd>
 				<dd><a href="${helpLangUrl}/Integration"><fmt:message key="more"/></a></dd>
 			</dl>
-						
+			
 			<dl class="col-md-3 col-sm-6">
 				<dt><fmt:message key="footer.about"/>&amp;nbsp;<c:out value="${properties['project.name']}" /></dt>
 				
@@ -54,8 +69,8 @@
 				<dd><a href="https://mail.cs.uni-kassel.de/mailman/listinfo/bibsonomy-discuss"><fmt:message key="footer.mailingList"/></a></dd>
 				
 				<dt><fmt:message key="footer.socialMedia"/></dt>
-				<dd><span class="socicon socicon-twitter"><!--  --></span>&amp;nbsp;<a href="http://twitter.com/bibsonomyCrew"><fmt:message key="footer.twitter"/></a></dd>
-				<dd><span class="socicon socicon-google"><!--  --></span>&amp;nbsp;<a href="https://plus.google.com/communities/102073418538419220890"><fmt:message key="footer.google"/></a></dd>
+				<dd><span class="fa fa-twitter"><!--  --></span>&amp;nbsp;<a href="http://twitter.com/bibsonomyCrew"><fmt:message key="footer.twitter"/></a></dd>
+				<dd><span class="fa fa-google-plus"><!--  --></span>&amp;nbsp;<a href="https://plus.google.com/communities/102073418538419220890"><fmt:message key="footer.google"/></a></dd>
 			</dl>
 		</nav>
 

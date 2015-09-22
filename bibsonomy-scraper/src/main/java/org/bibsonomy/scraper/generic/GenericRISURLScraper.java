@@ -37,7 +37,7 @@ public abstract class GenericRISURLScraper extends AbstractGenericFormatURLScrap
 	private static final RisToBibtexConverter RIS2BIB = new RisToBibtexConverter();
 	
 	@Override
-	protected String convert(String downloadResult) {
+	protected final String convert(String downloadResult) {
 		return RIS2BIB.risToBibtex(downloadResult);
 	}
 }

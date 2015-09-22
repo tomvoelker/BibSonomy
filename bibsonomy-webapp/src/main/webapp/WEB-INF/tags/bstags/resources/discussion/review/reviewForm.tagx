@@ -47,8 +47,8 @@
 									</c:when>
 									<c:otherwise>
 										<input type="checkbox" style="vertical-align:middle" class="ratingToggleCheckbox" disabled="disabled"/>
-									    <div class="help help-header hide"><c:out value="${labelText}" /></div>
-						              	<div class="help-content hide"><fmt:message key="post.resource.discussion.rating.disabled"/></div>
+										<div class="help help-header hide"><c:out value="${labelText}" /></div>
+										<div class="help-content hide"><fmt:message key="post.resource.discussion.rating.disabled"/></div>
 									</c:otherwise>
 								</c:choose>
 							<c:out value=" " /><fmt:message key="post.resource.rating.enabled"/>
@@ -60,7 +60,7 @@
 								<span class="reviewrating discussionStarsContainer" onclick="updateRatingCounter(this);">
 										<c:forEach var="i" begin="1" end="10">
 											<c:set var="ratingStep" value="${i / 2}" />
-												<c:choose>								
+												<c:choose>
 													<c:when test="${not empty review and review.rating eq ratingStep}">
 														<input name="discussionItem.rating" type="radio" value="${ratingStep}" />
 													</c:when>
@@ -86,9 +86,6 @@
 				</div>
 		</jsp:attribute>
 		<jsp:attribute name="additionalInputs">
-			
-				
-
 		</jsp:attribute>
 	</discussionItem:discussionItemForm>
 </jsp:root>

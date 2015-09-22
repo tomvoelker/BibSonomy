@@ -123,7 +123,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	
 	private int compareVersion;
 	private List<String> differentEntryKeys;
-
+	
 	/**
 	 * @return saveAndRate
 	 */

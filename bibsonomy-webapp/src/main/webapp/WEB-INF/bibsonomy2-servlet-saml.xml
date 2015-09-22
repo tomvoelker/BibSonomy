@@ -60,7 +60,10 @@
 		<property name="authenticationManager" ref="samlAuthenticationManager" />
 		<property name="authenticationFailureHandler" ref="failureHandler" />
 		<property name="rememberMeServices" ref="internalRememberMeServices" />
+		<property name="requestCache" ref="dummyRequestCache" />
 	</bean>
+	
+	<bean id="dummyRequestCache" class="org.springframework.security.web.savedrequest.NullRequestCache" />
 	
 	<bean id="realSamlAutoLoginFilter" class="org.bibsonomy.webapp.util.spring.security.filter.ParameterTriggeredAutoLoginFilter">
 		<property name="loginParameterName" value="autoLogin" />
@@ -150,7 +153,7 @@
 	<bean id="realSamlMetadataGeneratorFilter" class="org.bibsonomy.webapp.util.spring.security.saml.metadata.HttpsMetadataGeneratorFilter">
 		<constructor-arg>
 			<bean class="org.springframework.security.saml.metadata.MetadataGenerator">
-				<property name="entityBaseURL" value="${project.home}"/>
+				<property name="entityBaseURL" ref="projectHome" />
 				<property name="entityAlias">
 					<value>${auth.saml.entityalias}</value>
 				</property>

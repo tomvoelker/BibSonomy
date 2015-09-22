@@ -31,7 +31,7 @@ package org.bibsonomy.common.exceptions;
  */
 public class UnsupportedResourceTypeException extends RuntimeException {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 5595987091250216696L;
 
 	/**
 	 * Constructs a new unsupported resource type exception with a default

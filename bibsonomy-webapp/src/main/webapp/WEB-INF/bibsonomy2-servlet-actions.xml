@@ -444,6 +444,12 @@
 								
 								<value>saveAndRate</value>
 								<value>approved</value>
+								
+								<value>personId</value>
+								<value>personIndex</value>
+								<value>personRole</value>
+								
+								
 							</list>
 						</property>
 					</bean>
@@ -471,6 +477,9 @@
 						<property name="allowedFields">
 							<list>
 								<value>selTab</value>
+								<value>personId</value>
+								<value>personIndex</value>
+								<value>post.resource.entrytype</value>
 							</list>
 						</property>
 					</bean>
@@ -887,7 +896,7 @@
 
 	<!-- Handles registration of users. -->
 	<bean id="userRegistrationController" class="org.bibsonomy.webapp.controller.actions.UserRegistrationController" scope="request">
-		<property name="projectName" value="${project.name}" />
+		<property name="projectName" ref="projectName" />
 		<property name="logic" ref="logic" />
 		<!-- 
 		    If the user is not logged in, we need an instance of the LogicInterface
@@ -1089,7 +1098,7 @@
 	<alias name="${project.bean.pingback}" alias="pingback"/>
 	
 	<!-- Handles user's profile picture source -->
-	<bean id="gravatarStdPictureHandlerFactory" class="org.bibsonomy.webapp.util.picture.GravatarStdPictureHandlerFactory" />
+	<bean id="gravatarStdPictureHandlerFactory" class="org.bibsonomy.webapp.util.picture.StandardPictureHandlerFactory" />
 	
 	<!-- Handles the picture download -->
 	<bean id="pictureController" class="org.bibsonomy.webapp.controller.PictureController" scope="request">

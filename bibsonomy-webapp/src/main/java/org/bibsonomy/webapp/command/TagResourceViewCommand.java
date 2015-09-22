@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
 
@@ -38,7 +39,12 @@ import org.bibsonomy.model.enums.Order;
  * 
  * @author Michael Wagner
  */
-public class TagResourceViewCommand extends SimpleResourceViewCommand{
+public class TagResourceViewCommand extends SimpleResourceViewCommand {
+	
+	/**
+	 * the selected search type such as 'group', 'search', 'sharedResourceSearch'  
+	 */
+	private SearchType scope = SearchType.LOCAL;
 	
 	/** tags to search for */
 	private String requestedTags = "";
@@ -70,16 +76,16 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand{
 	/**
 	 * @return the requested tagstring as a list
 	 */
-	public List<String> getRequestedTagsList() {		
+	public List<String> getRequestedTagsList() {
 		// tagstring has not yet been tokenized 
 		if (this.requestedTagsList == null) {
-			this.requestedTagsList = new ArrayList<String>();			
+			this.requestedTagsList = new ArrayList<String>();
 			final StringTokenizer st = new StringTokenizer(requestedTags);
-			while (st.hasMoreTokens()) {			
-				final String tagname = st.nextToken();			
-				this.requestedTagsList.add(tagname);			
-			}			
-		}		
+			while (st.hasMoreTokens()) {
+				final String tagname = st.nextToken();
+				this.requestedTagsList.add(tagname);
+			}
+		}
 		return this.requestedTagsList;
 	}
 	
@@ -266,5 +272,19 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand{
 	 */
 	public List<Tag> getConceptsOfAll() {
 		return conceptsOfAll;
+	}
+
+	/**
+	 * @return the selected search type such as 'group', 'search', 'sharedResourceSearch'
+	 */
+	public SearchType getScope() {
+		return this.scope;
+	}
+
+	/**
+	 * @param selectedSearchScope the selected search type such as 'group', 'search', 'sharedResourceSearch'
+	 */
+	public void setScope(SearchType scope) {
+		this.scope = scope;
 	}
 }

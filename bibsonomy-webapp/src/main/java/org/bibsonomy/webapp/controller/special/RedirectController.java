@@ -180,6 +180,22 @@ public class RedirectController implements MinimalisticController<RedirectComman
 			log.debug("scope is federated");
 			return "/search/" + UrlUtils.safeURIEncode(search) + "?scope=FEDERATED";
 		}
+		if (scope.equals("federated_author")) {
+			log.debug("scope is federated author");
+			return "/author/" + UrlUtils.safeURIEncode(search) + "?scope=FEDERATED_AUTHOR";
+		}
+		if (scope.equals("federated_tag")) {
+			log.debug("scope is federated tag");
+			return "/tag/" + UrlUtils.safeURIEncode(search) + "?scope=FEDERATED";
+		}
+		if (scope.equals("federated_user")) {
+			log.debug("scope is federated user");
+			return "/user/" + UrlUtils.safeURIEncode(search) + "?scope=FEDERATED";
+		}
+		if (scope.equals("federated_bibtexkey")) {
+			log.debug("scope is federated group");
+			return "/bibtexkey/"+ UrlUtils.safeURIEncode(search) + "?scope=FEDERATED";
+		}
 		/*
 		 * all other pages simply go to /scope/search
 		 */

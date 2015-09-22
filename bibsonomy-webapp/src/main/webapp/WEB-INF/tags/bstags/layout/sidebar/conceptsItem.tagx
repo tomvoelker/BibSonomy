@@ -15,10 +15,11 @@
 	<jsp:directive.attribute name="disableEditLink" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="headingLink" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="headingTitleKey" type="java.lang.String" required="false" />
+	<jsp:directive.attribute name="scope" type="java.lang.String" required="false" />
 	
 	<sidebar:sidebarItem textKey="tagrelations" headingLink="${headingLink}" headingTitleKey="${headingTitleKey}">
 		<jsp:attribute name="content">
-			<tags:concepts cmd="${cmd}" usersOwnRelations="${usersOwnRelations}" requestedUserName="${requestedUserName}" disableEditLink="${disableEditLink}"/>
+			<tags:concepts cmd="${cmd}" usersOwnRelations="${usersOwnRelations}" requestedUserName="${requestedUserName}" disableEditLink="${disableEditLink}" scope="${scope}"/>
 		</jsp:attribute>
 	</sidebar:sidebarItem>
 </jsp:root>	

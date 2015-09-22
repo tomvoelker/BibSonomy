@@ -26,17 +26,19 @@
  */
 package org.bibsonomy.es;
 
-import java.util.Date;
+import java.io.Serializable;
+
 
 /**
  * Information of the system like System url, lastTasId, lastLogDate
  *
  * @author lutful
  */
-public class SystemInformation {
+public class SystemInformation implements Serializable {
+	private static final long serialVersionUID = 3300034332953151505L;
+	
 	private String systemUrl;
-	private Integer last_tas_id;
-	private Date last_log_date;
+	private IndexUpdaterState updaterState;
 	private String postType;
 
 	/**
@@ -68,32 +70,14 @@ public class SystemInformation {
 		this.postType = postType;
 	}
 
-	/**
-	 * @return the last_log_date
-	 */
-	public Date getLast_log_date() {
-		return this.last_log_date;
+	public IndexUpdaterState getUpdaterState() {
+		return this.updaterState;
 	}
 
-	/**
-	 * @param last_log_date the last_log_date to set
-	 */
-	public void setLast_log_date(Date last_log_date) {
-		this.last_log_date = last_log_date;
+	public void setUpdaterState(IndexUpdaterState updaterState) {
+		this.updaterState = updaterState;
 	}
-
-	/**
-	 * @return the last_tas_id
-	 */
-	public Integer getLast_tas_id() {
-		return this.last_tas_id;
-	}
-
-	/**
-	 * @param last_tas_id the last_tas_id to set
-	 */
-	public void setLast_tas_id(Integer last_tas_id) {
-		this.last_tas_id = last_tas_id;
-	}
+	
+	
 
 }

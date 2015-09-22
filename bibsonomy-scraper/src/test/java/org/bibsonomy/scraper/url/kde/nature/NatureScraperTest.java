@@ -48,12 +48,13 @@ public class NatureScraperTest {
 
 	/**
 	 * starts URL test with id url_45
-	 */
+	 
 	@Test
 	public void urlTest1Run(){
 		UnitTestRunner.runSingleTest("url_45");
 	}
-
+	 */
+	
 	/**
 	 * starts URL test with id url_231
 	 */
@@ -75,6 +76,9 @@ public class NatureScraperTest {
 	public void urlTest4Run(){
 		UnitTestRunner.runSingleTest("url_282");
 	}
+	/**
+	 * @throws Exception
+	 */
 	@Test
 	public void testReferences() throws Exception{
 		final ScrapingContext sc = new ScrapingContext(new URL("http://www.nature.com/ncomms/2014/141215/ncomms6341/full/ncomms6341.html"));

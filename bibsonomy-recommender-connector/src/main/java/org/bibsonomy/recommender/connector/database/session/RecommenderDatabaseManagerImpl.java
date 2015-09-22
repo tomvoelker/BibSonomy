@@ -52,13 +52,11 @@ public class RecommenderDatabaseManagerImpl extends AbstractDatabaseManager impl
 	@Override
 	public Object processInsertQuery(final String query, final Object param) {
 		final DBSession session = factory.getDatabaseSession();
-		Object result = null;
 		try {
-			result = this.insert(query, param, session);
+			return this.insert(query, param, session);
 		} finally {
 			session.close();
 		}
-		return result;
 	}
 
 	/*
@@ -68,13 +66,11 @@ public class RecommenderDatabaseManagerImpl extends AbstractDatabaseManager impl
 	@Override
 	public <T> T processQueryForObject(final Class<T> objectClass, final String query, final Object param) {
 		final DBSession session = factory.getDatabaseSession();
-		T result = null;
 		try {
-			result = this.queryForObject(query, param, objectClass, session);
+			return this.queryForObject(query, param, objectClass, session);
 		} finally {
 			session.close();
 		}
-		return result;
 	}
 
 	/*
@@ -84,13 +80,11 @@ public class RecommenderDatabaseManagerImpl extends AbstractDatabaseManager impl
 	@Override
 	public <T> List<T> processQueryForList(final Class<T> objectClass, final String query, final Object param) {
 		final DBSession session = factory.getDatabaseSession();
-		List<T> result = null;
 		try {
-			result = this.queryForList(query, param, objectClass, session);
+			return this.queryForList(query, param, objectClass, session);
 		} finally {
 			session.close();
 		}
-		return result;
 	}
 
 	/*

@@ -38,32 +38,25 @@
 	</div> <!-- border -->
 	
 	<c:choose>
-	
 		<!--+
 			| 
 			| if own entry, render a two column layout to display documents on the right side
 			| 
-		   	+-->	
-
+		   	+-->
 		<c:when test="${isOwnEntry or not empty publication.documents}">
-			
 			<bs:twoColumns columnSizeLeft="8" columnSizeRight="4">
 				<jsp:attribute name="columnLeft">
-				
 					<!-- PUBLICATION DETAILS -->
 					<pub:publicationdetailscontent post="${post}" referer="${referer}" />
 				</jsp:attribute>
-			
+				
 				<jsp:attribute name="columnRight">
 					<div class="documents">
-					
 						<!-- META DATA ABOUT ATTACHED DOCUMENTS  -->
 						<pub:doc post="${post}" />
 					</div>
 				</jsp:attribute>
-			
 			</bs:twoColumns>
-			
 		</c:when>
 		
 		<!--+
@@ -73,7 +66,6 @@
 		   	+-->	
 		<c:otherwise>
 			<div class="row">
-			
 				<!-- PUBLICATION DETAILS -->
 				<div class="col-md-12">
 					<pub:publicationdetailscontent post="${post}" referer="${referer}" />

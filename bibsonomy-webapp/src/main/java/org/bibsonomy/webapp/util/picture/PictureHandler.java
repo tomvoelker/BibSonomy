@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.webapp.util.picture;
 
+import org.bibsonomy.model.User;
+import org.bibsonomy.webapp.command.actions.PictureCommand;
 import org.bibsonomy.webapp.util.View;
 
 /**
@@ -38,11 +40,12 @@ public interface PictureHandler {
 
 	/**
 	 * Returns a view containing requested user's profile picture.<br/>
+	 * @param requestedUser 
 	 * 
 	 * @param user - requested user
 	 * @param command - the actual picture command
 	 * @return view containing profile picture
 	 */
-	public View getProfilePictureView ();
+	public View getProfilePictureView (final User requestedUser, final PictureCommand command);
 
 }

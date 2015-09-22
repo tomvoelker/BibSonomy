@@ -34,5 +34,5 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public abstract class AbstractDatabaseTest {
 
-	public static final ApplicationContext testDatabaseContext = new ClassPathXmlApplicationContext("TestDatabaseContext.xml");
+	public static final ApplicationContext testDatabaseContext = new ClassPathXmlApplicationContext("TestDatabaseMainContext.xml");
 }

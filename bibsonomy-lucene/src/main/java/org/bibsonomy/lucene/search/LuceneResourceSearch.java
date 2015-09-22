@@ -63,19 +63,22 @@ import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.Version;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.SearchType;
-import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.es.EsResourceSearch;
 import org.bibsonomy.lucene.database.LuceneInfoLogic;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
+import org.bibsonomy.lucene.index.LuceneSession;
+import org.bibsonomy.lucene.index.LuceneSessionOperation;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.param.QuerySortContainer;
 import org.bibsonomy.lucene.search.collector.TagCountCollector;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
@@ -122,6 +125,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	public LuceneResourceSearch() {
 		this.defaultSearchTermJunctor = Operator.AND;
 	}
+	
 
 	/*
 	 * (non-Javadoc)
@@ -134,12 +138,32 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 * java.lang.String, int, int)
 	 */
 	@Override
-	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) {
+	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) {
+		if (present(bibtexKey)) {
+			throw new UnsupportedOperationException("bibtexKey search only available via elasticsearch");
+		}
+		
 		// build query
 		final QuerySortContainer query = this.buildQuery(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, order);
 		// perform search query
 		return this.searchLucene(query, limit, offset);
 	}
+
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPostsByBibtexKey(java.lang.String, java.util.Collection, org.bibsonomy.common.enums.SearchType, java.lang.String, java.util.Collection, java.util.List, org.bibsonomy.model.enums.Order, int, int)
+	 */
+	@Override
+	public List<Post<R>> getPostsByBibtexKey(String userName,
+			Collection<String> allowedGroups, SearchType searchType,
+			String bibtexKey, Collection<String> tagIndex,
+			List<String> negatedTags, Order order, int limit, int offset) {
+		if(searchType==SearchType.FEDERATED){
+			return this.sharedResourceSearch.getPosts(userName, null, null, null, allowedGroups, null, null, null, bibtexKey, tagIndex, null, null, null, negatedTags, order, limit, offset);
+		}
+		return null;
+	}
+
 	
 	/*
 	 * (non-Javadoc)
@@ -161,51 +185,53 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		final QuerySortContainer qf = this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, null);
 		final Map<Tag, Integer> tagCounter = new HashMap<Tag, Integer>();
 		
-		IndexSearcher searcher = null;
-		try {
-			//Aquire searcher
-			searcher = this.index.aquireIndexSearcher();
-			log.debug("Starting tag collection");
-			final TopDocs topDocs = searcher.search(qf.getQuery(), null, this.tagCloudLimit, qf.getSort());
-			log.debug("Done collecting tags");
-			/*
-			 * extract tags from top n documents
-			 * number of posts to consider for building the tag cloud are configurated
-			 * by the tagCloudLimit property
-			 */
-			final int hitsLimit = ((this.tagCloudLimit < topDocs.totalHits) ? (this.tagCloudLimit) : topDocs.totalHits);
-			for (int i = 0; i < hitsLimit; i++) {
-				/*
-				 * get document from index and
-				 * convert document to bibsonomy post model	
-				 */
-				final Document doc = searcher.doc(topDocs.scoreDocs[i].doc);
-				final Post<R> post = this.resourceConverter.writePost(doc);
 		
-				// set tag count
-				if (present(post.getTags())) {
-					for (final Tag tag : post.getTags()) {
+		try (LuceneSession session = this.index.openSession()) {
+			session.execute(new LuceneSessionOperation<Void,IOException>() {
+				@Override
+				public Void doOperation(IndexSearcher searcher) throws IOException {
+					log.debug("Starting tag collection");
+					final TopDocs topDocs = searcher.search(qf.getQuery(), null, LuceneResourceSearch.this.tagCloudLimit, qf.getSort());
+					log.debug("Done collecting tags");
+					/*
+					 * extract tags from top n documents
+					 * number of posts to consider for building the tag cloud are configurated
+					 * by the tagCloudLimit property
+					 */
+					final int hitsLimit = ((LuceneResourceSearch.this.tagCloudLimit < topDocs.totalHits) ? (LuceneResourceSearch.this.tagCloudLimit) : topDocs.totalHits);
+					for (int i = 0; i < hitsLimit; i++) {
 						/*
-						 * we remove the requested tags because we assume
-						 * that related tags are requested
+						 * get document from index and
+						 * convert document to bibsonomy post model	
 						 */
-						if (present(tagIndex) && tagIndex.contains(tag.getName())) {
-							continue;
+						final Document doc = searcher.doc(topDocs.scoreDocs[i].doc);
+						final Post<R> post = LuceneResourceSearch.this.resourceConverter.writePost(doc);
+				
+						// set tag count
+						if (present(post.getTags())) {
+							for (final Tag tag : post.getTags()) {
+								/*
+								 * we remove the requested tags because we assume
+								 * that related tags are requested
+								 */
+								if (present(tagIndex) && tagIndex.contains(tag.getName())) {
+									continue;
+								}
+								Integer oldCnt = tagCounter.get(tag);
+								if (!present(oldCnt)) {
+									oldCnt = 1;
+								} else {
+									oldCnt += 1;
+								}
+								tagCounter.put(tag, oldCnt);
+							}
 						}
-						Integer oldCnt = tagCounter.get(tag);
-						if (!present(oldCnt)) {
-							oldCnt = 1;
-						} else {
-							oldCnt += 1;
-						}
-						tagCounter.put(tag, oldCnt);
 					}
+					return null;
 				}
-			}
+			});
 		} catch (final IOException e) {
 			log.error("Error building full text tag cloud for query " + qf.getQuery().toString(), e);
-		} finally {
-			this.index.releaseIndexSearcher(searcher);
 		}
 		
 		final List<Tag> tags = new LinkedList<Tag>();
@@ -230,61 +256,56 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 			return new ResultList<Post<R>>();
 		}
 		
-		IndexSearcher searcher = null;
 		final ResultList<Post<R>> postList = new ResultList<Post<R>>();
-		try {
-			
-			try {
-				searcher = this.index.aquireIndexSearcher();
-			} catch (IllegalStateException e) {
-				throw new InternServerException(e);
-			}
-			// initialize data
-			final Query query = qf.getQuery();
-			final Sort sort = qf.getSort();
-			log.debug("Querystring:  " + query.toString() + " sorted by: " + sort);
-			/*
-			 * querying the index
-			 */
-			long starttimeQuery = System.currentTimeMillis();
-			final TopDocs topDocs = searcher.search(query, null, offset + limit, sort);
+		try (LuceneSession session = this.index.openSession()) {
+			session.execute(new LuceneSessionOperation<Void,IOException>() {
+				@Override
+				public Void doOperation(IndexSearcher searcher) throws IOException {
+					// initialize data
+					final Query query = qf.getQuery();
+					final Sort sort = qf.getSort();
+					log.debug("Querystring:  " + query.toString() + " sorted by: " + sort);
+					/*
+					 * querying the index
+					 */
+					long starttimeQuery = System.currentTimeMillis();
+					final TopDocs topDocs = searcher.search(query, null, offset + limit, sort);
 
-			// determine number of posts to display
-			final int hitslimit = (((offset + limit) < topDocs.totalHits) ? (offset + limit) : topDocs.totalHits);
-			log.debug("offset / limit / hitslimit / hits.length():  " + offset + " / " + limit + " / " + hitslimit + " / " + topDocs.totalHits);
-			log.debug("Query time: " + (System.currentTimeMillis() - starttimeQuery) + "ms");
+					// determine number of posts to display
+					final int hitslimit = (((offset + limit) < topDocs.totalHits) ? (offset + limit) : topDocs.totalHits);
+					log.debug("offset / limit / hitslimit / hits.length():  " + offset + " / " + limit + " / " + hitslimit + " / " + topDocs.totalHits);
+					log.debug("Query time: " + (System.currentTimeMillis() - starttimeQuery) + "ms");
 
-			postList.setTotalCount(topDocs.totalHits);
+					postList.setTotalCount(topDocs.totalHits);
 
-			/*
-			 * extract posts
-			 */
-			for (int i = offset; i < hitslimit; i++) {
-				// get document from index
-				final Document doc = searcher.doc(topDocs.scoreDocs[i].doc);
-				// convert document to bibsonomy model
-				final Post<R> post = this.resourceConverter.writePost(doc);
+					/*
+					 * extract posts
+					 */
+					for (int i = offset; i < hitslimit; i++) {
+						// get document from index
+						final Document doc = searcher.doc(topDocs.scoreDocs[i].doc);
+						// convert document to bibsonomy model
+						final Post<R> post = LuceneResourceSearch.this.resourceConverter.writePost(doc);
 
-				// set post frequency
-				starttimeQuery = System.currentTimeMillis();
-				int postFreq = 1;
-				final String interHash = doc.get(LuceneFieldNames.INTERHASH);
-				if (interHash != null) {
-					//Count documents for interHash
-					postFreq = searcher.getIndexReader().docFreq(new Term(LuceneFieldNames.INTERHASH, interHash));
+						// set post frequency
+						starttimeQuery = System.currentTimeMillis();
+						int postFreq = 1;
+						final String interHash = doc.get(LuceneFieldNames.INTERHASH);
+						if (interHash != null) {
+							//Count documents for interHash
+							postFreq = searcher.getIndexReader().docFreq(new Term(LuceneFieldNames.INTERHASH, interHash));
+						}
+						log.debug("PostFreq query time: " + (System.currentTimeMillis() - starttimeQuery) + "ms");
+						post.getResource().setCount(postFreq);
+
+						postList.add(post);
+					}
+					return null;
 				}
-				log.debug("PostFreq query time: " + (System.currentTimeMillis() - starttimeQuery) + "ms");
-				post.getResource().setCount(postFreq);
-
-				postList.add(post);
-			}
-
+			});
 		} catch (final IOException e) {
 			log.debug("LuceneResourceSearch: IOException: " + e.getMessage());
-		} finally {
-			this.index.releaseIndexSearcher(searcher);
 		}
-
 		return postList;
 	}
 
@@ -735,7 +756,6 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 */
 	public void setIndex(final LuceneResourceIndex<R> index) {
 		this.index = index;
-		this.index.reset();
 	}
 
 	/**
@@ -782,24 +802,39 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPosts(java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.model.enums.Order, int, int)
 	 */
 	@Override
-	public List<Post<R>> getPosts(String userName,String requestedUserName, String requestedGroupName,List<String> requestedRelationNames,	Collection<String> allowedGroups,SearchType searchType,String searchTerms,String titleSearchTerms, String authorSearchTerms,
+	public List<Post<R>> getPosts(String userName,String requestedUserName, String requestedGroupName,List<String> requestedRelationNames,	Collection<String> allowedGroups, SearchType searchType, String searchTerms, String titleSearchTerms, String authorSearchTerms, String bibtexKeySearch, 
 			Collection<String> tagIndex, String year, String firstYear,
 			String lastYear, List<String> negatedTags, Order order, int limit,
 			int offset) {
 		if ((this.sharedResourceSearch != null) && (searchType == SearchType.FEDERATED)) {
 			// searchResource.setINDEX_TYPE(resourceType);
 			// searchResource.setResourceConverter(this.resourceConverter);
-			try {
-				List<Post<R>> posts = this.sharedResourceSearch.fullTextSearch(searchTerms, order, limit, offset);
-				return posts;
-			} catch (IOException e) {
-				log.error("Failed to search post from shared resource", e);
-			}
+			List<Post<R>> posts = this.sharedResourceSearch.getPosts(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexKeySearch, tagIndex, year, firstYear, lastYear, negatedTags, order, limit, offset);
+			return posts;
 
-			return null;
 		} else if (searchType == SearchType.LOCAL) {
-			return this.getPosts(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, order, limit, offset);
+			return this.getPosts(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexKeySearch, tagIndex, year, firstYear, lastYear, negatedTags, order, limit, offset);
 		}
+		log.warn("unsupported searchType '" + searchType + "'");
+		return new ArrayList<>();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.searcher.ResourceSearch#getTags(java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, org.bibsonomy.common.enums.SearchType, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, int, int)
+	 */
+	@Override
+	public List<Tag> getTags(String userName, String requestedUserName,
+			String requestedGroupName, Collection<String> allowedGroups,
+			String searchTerms, SearchType searchType, String titleSearchTerms,
+			String authorSearchTerms, Collection<String> tagIndex, String year,
+			String firstYear, String lastYear, List<String> negatedTags,
+			int limit, int offset) {
+		if ((this.sharedResourceSearch != null) && (searchType == SearchType.FEDERATED)) {
+			//just for the moment for experimental purpose
+			return	this.sharedResourceSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, null, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
+		}else if(searchType==SearchType.LOCAL){
+			return	this.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
+		}		
 		log.warn("unsupported searchType '" + searchType + "'");
 		return new ArrayList<>();
 	}
@@ -818,4 +853,14 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		this.sharedResourceSearch = sharedResourceSearch;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPublicationSuggestions(org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder)
+	 */
+	@Override
+	public List<Post<BibTex>> getPublicationSuggestions(PublicationSuggestionQueryBuilder options) {
+		if (this.sharedResourceSearch != null) {
+			return sharedResourceSearch.getPublicationSuggestions(options);
+		}
+		return new ArrayList<>();
+	}
 }

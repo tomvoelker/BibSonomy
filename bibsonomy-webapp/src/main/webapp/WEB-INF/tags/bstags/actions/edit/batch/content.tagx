@@ -11,6 +11,7 @@
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:batch="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/batch"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/bstags/post"
 	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion">
@@ -64,7 +65,7 @@
 
 	<fmt:message key="batchedit.button.update" var="buttonUpdate" />
 	<fmt:message key="batchedit.button.update" var="buttonUpdateViewable" />
-	<fmt:message key="batchedit.disregardedPosts.info" var="disregardedPosts" />	
+	<fmt:message key="batchedit.disregardedPosts.info" var="disregardedPosts" />
 	<!--=======================-->
 	<!-- VARIABLEN DEKLARATION -->
 	<!--=======================-->
@@ -177,7 +178,7 @@
 							<div class="alert alert-warning col-sm-10 invisible hidden deleteAlert" style="margin-bottom:0px;" role="alert"><fmt:message key="batchedit.deleteAlert" /></div>
 							<div class="alert alert-info col-sm-10 invisible hidden normalizeAlert" style="margin-bottom:0px;" role="alert"><fmt:message key="batchedit.normalizeAlert" /></div>
 							<div class="alert alert-info col-sm-10 invisible hidden selectPostAlert" style="margin-bottom:0px;" role="alert"><fmt:message key="batchedit.editHint" /></div>
-							<button type="submit" class="btn btn-primary batchUpdateButton" style="float:right" disabled="disabled"><c:out value="${buttonUpdate}" /></button>
+							<bsform:button size="defaultSize" value="${buttonUpdate}" style="primary" className="batchUpdateButton pull-right" disabled="disabled" />
 						</td>
 					</tr>
 				</TBODY>

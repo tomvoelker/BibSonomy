@@ -12,13 +12,13 @@
 	<layout:editGoldStandardPostLayout command="${command}" requPath="${requPath}" resourceType="GoldStandardPublication" minimizedContentWidth="${true}">
 		
 		<jsp:attribute name="generalInformation">
-			<editpub:required post="${post}" autocompletion="$(false)"/>
+			<editpub:required post="${command.post}" autocompletion="$(false)"/>
 		</jsp:attribute>
 
-        <jsp:attribute name="detailedInformation">
-			<editpub:details post="${post}" />
-       	</jsp:attribute>
-       
+		<jsp:attribute name="detailedInformation">
+			<editpub:details post="${command.post}" person="${command.person}" />
+		</jsp:attribute>
+
 		<jsp:attribute name="headerExtResource">
 			<script type="text/javascript" src="${resdir}/javascript/bs/editPublication.js"><!-- keep me --></script>
 		</jsp:attribute>

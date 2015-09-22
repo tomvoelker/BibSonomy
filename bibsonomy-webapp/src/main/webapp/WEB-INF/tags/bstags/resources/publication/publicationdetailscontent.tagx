@@ -15,7 +15,8 @@
 	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/publication"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion"
-	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/layout/bootstrap"
+	xmlns:bsold="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" description="The publication post that should be rendered."/>
@@ -96,19 +97,19 @@
 						
 							<c:if test="${isOwnEntry}">
 								<fmt:message var="deleteUrl" key="post.bibtex.remove"/>
-								<c:out value=" " /><a title="${deleteUrl}" style="cursor:pointer;" onclick="deleteUrl(this, '${escapedUrl}','${fn:escapeXml(publication.intraHash)}','${fn:escapeXml(command.context.ckey)}');return false;" ><span class="glyphicon glyphicon-remove"><!--  --></span></a>
+							<c:out value=" " /><a title="${deleteUrl}" style="cursor:pointer;" onclick="deleteUrl(this, '${escapedUrl}','${fn:escapeXml(publication.intraHash)}','${fn:escapeXml(command.context.ckey)}');return false;" ><span class="fa fa-times"><!--  --></span></a>
 							</c:if>
 						</li>
 					</c:forEach>
 					</ul>
 					<c:if test="${isOwnEntry}">
 						<fmt:message var="addAdditionalUrl" key="bibtex.actions.additional_url.add" />
-						<a type="button" class="btn btn-xs btn-primary" role="button" data-toggle="modal" href="#add-url-modal"><span class="glyphicon glyphicon-plus"><!-- KEEP ME --></span>&amp;nbsp;<c:out value="${addAdditionalUrl}" /></a>
+						<a type="button" class="btn btn-xs btn-primary" role="button" data-toggle="modal" href="#add-url-modal"><span class="fa fa-plus"><!-- KEEP ME --></span>&amp;nbsp;<c:out value="${addAdditionalUrl}" /></a>
 						
 						<fmt:message var="addAdditionalUrlTitle" key="bibtex.actions.additional_url.add.title" />
 						
 						<!-- modal window for adding new extra urls -->
-						<bs:modal id="add-url-modal" modalTitle="${addAdditionalUrlTitle}">
+						<bsold:modal id="add-url-modal" modalTitle="${addAdditionalUrlTitle}">
 							<jsp:attribute name="modalBody">
 								<form role="form" method="POST" action="/ajax/additionalURLs" id="f_addURL" class="form-horizontal">
 									<!-- input fields -->
@@ -136,7 +137,7 @@
 								<fmt:message var="closeMessage" key="box.close" />
 								<bsform:button size="defaultSize" style="defaultStyle" dataDismiss="modal" value="${closeMessage}" />
 							</jsp:attribute>
-						</bs:modal>
+						</bsold:modal>
 					</c:if>
 				</dd>
 			</c:if>

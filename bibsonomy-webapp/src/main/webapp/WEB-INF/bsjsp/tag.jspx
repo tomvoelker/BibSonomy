@@ -27,10 +27,23 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.tag" formAction="/tag/" formInputName="tag" formInputValue="${command.requestedTags}">
+			<c:choose>
+				<c:when test="${not empty command.scope and command.scope.name() ne 'LOCAL'}">					
+					<c:set var="pathMessageKey" value="navi.federatedTag"/>
+					<c:url var="tagUrl" value="${relativeUrlGenerator.getTagUrlByTagName(command.requestedTags)}?scope=FEDERATED"/>
+					<c:url var="tagUrlFolkRank" value ="${tagUrl}">
+						<c:param name="order" value="folkrank"/>
+					</c:url>
+				</c:when>
+				<c:otherwise>
+					<c:set var="pathMessageKey" value="navi.tag"/>		
+					<c:url var="tagUrl" value="${relativeUrlGenerator.getTagUrlByTagName(command.requestedTags)}"/>					
+					<c:url var="tagUrlFolkRank" value="${tagUrl}?order=folkrank"/>
+				</c:otherwise>
+			</c:choose>
+			<parts:search scope="${command.scope}" pathMessageKey="${pathMessageKey}" formAction="/tag/" formInputName="tag" formInputValue="${command.requestedTags}">
 				<jsp:attribute name="afterInput">
 					<!--  sorting options -->
-					<c:url var="tagUrl" value="${relativeUrlGenerator.getTagUrlByTagName(command.requestedTags)}"/>
 					<span style="font-size: 65%">
 						<fmt:message key="sort.orderBy"/>
 						(
@@ -49,7 +62,7 @@
 								<fmt:message key="sort.folkrank"/>
 							</c:when>
 							<c:otherwise>
-								<a href="${tagUrl}?order=folkrank"><fmt:message key="sort.folkrank"/></a>
+								<a href="${tagUrlFolkRank}"><fmt:message key="sort.folkrank"/></a>
 							</c:otherwise>
 						</c:choose>
 						)
@@ -64,7 +77,7 @@
 			
 			<!-- related tags -->
 			<c:if test="${not empty command.relatedTagCommand.relatedTags}">
-				<sidebar:relatedTagsItem requPath="${requPath}" cmd="${command.relatedTagCommand}" order="${command.order}"/>
+				<sidebar:relatedTagsItem requPath="${requPath}" cmd="${command.relatedTagCommand}" scope="${command.scope.name()}" order="${command.order}"/>
 			</c:if>
 
 			<fmt:message key="help.link.tag.similarRelated" var="helpLink"/>
@@ -73,7 +86,7 @@
 			<c:if test="${not empty command.similarTags.relatedTags}">
 				<sidebar:sidebarItem textKey="similartags" helpLink="${helpLink}">
 					<jsp:attribute name="content">
-						<tags:similar requPath="${requPath}" cmd="${command.similarTags}"/>
+						<tags:similar requPath="${requPath}" cmd="${command.similarTags}" scope="${command.scope.name()}"/>
 					</jsp:attribute>
 				</sidebar:sidebarItem>
 			</c:if>			
@@ -82,7 +95,7 @@
 			<c:if test="${not empty command.relatedUserCommand.relatedUsers}">
 				<sidebar:sidebarItem textKey="relatedusers">
 					<jsp:attribute name="content">
-						<users:related cmd="${command.relatedUserCommand}" userSimilarity="folkrank" displayFollowLink="${false}"/>
+						<users:related cmd="${command.relatedUserCommand}" userSimilarity="folkrank" displayFollowLink="${false}" scope="${command.scope.name()}"/>
 					</jsp:attribute>
 				</sidebar:sidebarItem>
 			</c:if>

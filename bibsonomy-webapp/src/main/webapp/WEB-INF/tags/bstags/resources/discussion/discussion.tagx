@@ -8,53 +8,37 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion/discussionItem"
 	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion">
-    
-    <jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
-    <jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
-    <jsp:directive.attribute name="discussionItems" type="java.util.List" required="false" />
- 	<jsp:directive.attribute name="postUserName" type="java.lang.String" required="true"/>
-    
-   	<!-- create new review / comment for create review / comment form -->
-   	<jsp:useBean id="newDate" class="java.util.Date" />
-    <jsp:useBean id="newReview" class="org.bibsonomy.model.Review">
-    	<jsp:setProperty name="newReview" property="date" value="${newDate}"/>
-    	<jsp:setProperty name="newReview" property="user" value="${loginUser}" />
-    </jsp:useBean>
-    
-    <jsp:useBean id="newComment" class="org.bibsonomy.model.Comment">
-    	<jsp:setProperty name="newComment" property="date" value="${newDate}" />
-    	<jsp:setProperty name="newComment" property="user" value="${loginUser}" />
-    </jsp:useBean>
-    
-    <c:if test="${empty discussionItems}">
-   		<c:set var="discussionItems" value="${resource.discussionItems}" />
-   	</c:if>
-   	
- 	<div class="discussion-all">  	
 	
-		<!-- hide/show discussion field  		
-	   	<a class="foldUnfold" href="div#discussion" style="font-size: 16px; margin: 0 auto;">
-	   		<img id="imgCollapseDiscussion" class="imgCollapse" border="0" src="/resources/image/icon_collapse.png" style="display:none;"/>
-	   		<img id="imgExpandDiscussion" class="imgExpand" border="0" src="/resources/image/icon_expand.png" style="display:none;" />
-	   		
-	   		<span id="textCollapseDiscussion" class="imgCollapse" style="display:none;">
-	   			<fmt:message key="post.resource.discussion.actions.hide" />
-	   		</span>
-	   		
-	   		<span id="textExpandDiscussion" class="imgExpand" style="display:none;">
-	   			<fmt:message key="post.resource.discussion.actions.show" />
-	   		</span>
-	   	</a>		
-   		-->
-
-			<!-- TODO: use spring security tags -->
-			<c:if test="${command.context.userLoggedIn}">
-				<h4 class="pub-details">
-					<span class="fa fa-comment-o"><!--  --></span>
-					<c:out value=" " />
-					<fmt:message key="post.resource.comment.actions.create" />
-				</h4>
-			</c:if>
+	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
+	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
+	<jsp:directive.attribute name="discussionItems" type="java.util.List" required="false" />
+	<jsp:directive.attribute name="postUserName" type="java.lang.String" required="true"/>
+	
+	<!-- create new review / comment for create review / comment form -->
+	<jsp:useBean id="newDate" class="java.util.Date" />
+	<jsp:useBean id="newReview" class="org.bibsonomy.model.Review">
+		<jsp:setProperty name="newReview" property="date" value="${newDate}"/>
+		<jsp:setProperty name="newReview" property="user" value="${loginUser}" />
+	</jsp:useBean>
+	
+	<jsp:useBean id="newComment" class="org.bibsonomy.model.Comment">
+		<jsp:setProperty name="newComment" property="date" value="${newDate}" />
+		<jsp:setProperty name="newComment" property="user" value="${loginUser}" />
+	</jsp:useBean>
+	
+	<c:if test="${empty discussionItems}">
+		<c:set var="discussionItems" value="${resource.discussionItems}" />
+	</c:if>
+	
+	<div class="discussion-all">
+		<!-- TODO: use spring security tags -->
+		<c:if test="${command.context.userLoggedIn}">
+			<h4 class="pub-details">
+				<span class="fa fa-comment-o"><!--  --></span>
+				<c:out value=" " />
+				<fmt:message key="post.resource.comment.actions.create" />
+			</h4>
+		</c:if>
 
 
 		<c:if test="${not fn:contains(resource['class'].simpleName, 'Bookmark') and resource.entrytype=='preprint' and empty resource.discussionItems}">
@@ -63,8 +47,8 @@
 			</p>
 		</c:if>
 	
- 	  	<!-- The input forms -->
- 	  	<div id="discussion" data-interhash="${resource.interHash}">
+		<!-- The input forms -->
+		<div id="discussion" data-interhash="${resource.interHash}">
 	    	<!-- TODO: use spring security tags -->
 		    <c:if test="${command.context.userLoggedIn}">
 		    	<div id="createReview" class="createReview">
@@ -95,7 +79,6 @@
 					<div id="commentTemplate">
 				   		<comment:comment comment="${newComment}" loginUser="${loginUser}" resource="${resource}" schemaOrgMarkUp="false"/>
 					</div>
-			    
 					<ul>
 						<!-- create li, div structure for new review -->
 						<li id="newReview">
