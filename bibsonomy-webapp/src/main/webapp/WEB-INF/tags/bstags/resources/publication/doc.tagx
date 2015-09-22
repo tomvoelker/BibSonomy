@@ -22,6 +22,7 @@
 			<div class="modal fade bs-example-modal-lg" style="text-align:center" tabindex="-1" role="dialog" aria-hidden="true"><iframe id="pdfViewer" style="margin: auto; width: 80%; height: 100%; border-top: none; border-bottom: none"><!--  keep  --></iframe></div>
 			<h4>&amp;nbsp;</h4>
 			<ul class="edit-document-forms">
+				<!-- FIXME: remove duplicates see below -->
 				<li class="document" style="display:none" id="file-upload-placeholder">
 					<div class="preview_meta">
 						<!--+ 
@@ -49,7 +50,7 @@
 								<input class="form-control input-sm renameDocInput" data-ajax-rename="true" name='newFileName' type="text" value="" />
 								<span class="input-group-btn">
 									<bs:linkButton style="defaultStyle" href="" size="small" additionalClass="btn-stripped rename-btn" title="${renameDocTitle}" icon="pencil" />
-									<a class="btn btn-sm btn-default btn-stripped remove-btn" title="${deleteDocTitle}" href="${deleteUrl}" data-filename=""><span class="fa fa-times"><!-- KEEP ME --></span></a>
+									<bs:linkButton style="defaultStyle" href="${deleteUrl}" title="${deleteDocTitle}" icon="times" size="small" />
 									<a class="btn btn-sm btn-default btn-stripped download-btn" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/FILENAME_PLACEHOLDER" title="Download ${downloadTitle}"><span class="fa fa-download"><!-- KEEP ME --></span></a>
 									<a class="btn btn-sm btn-default btn-stripped qrcode-btn" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/FILENAME_PLACEHOLDER?qrcode=true"  title="${downloadQrTitle}"><span class="fa fa-qrcode"><!-- KEEP ME --></span></a>
 								</span>
@@ -169,8 +170,8 @@
 										<div class="input-group">
 											<input class="form-control input-sm renameDocInput" data-ajax-rename="true" name='newFileName' type="text" value="${filename}" />
 											<span class="input-group-btn">
-												<a class="btn btn-sm btn-default btn-stripped rename-btn" title="${renameDocTitle}"><span class="fa fa-pencil"><!-- KEEP ME --></span></a>
-												<a class="btn btn-sm btn-default btn-stripped remove-btn" title="${deleteDocTitle}" href="${deleteUrl}" data-filename="${fn:escapeXml(document.fileName)}" data-ident="${mtl:downloadFileId(document.fileName)}"><span class="fa fa-times"><!-- KEEP ME --></span></a>
+												<bs:linkButton href="" size="small" style="defaultStyle" additionalClass="rename-btn" title="${renameDocTitle}" icon="pencil"/>
+												<a class="btn btn-sm btn-default btn-stripped remove-btn ${systemReadOnly ? 'disabled' : ''}" title="${deleteDocTitle}" href="${deleteUrl}" data-filename="${fn:escapeXml(document.fileName)}" data-ident="${mtl:downloadFileId(document.fileName)}"><span class="fa fa-times"><!-- KEEP ME --></span></a>
 												<a class="btn btn-sm btn-default btn-stripped download-btn" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}" title="Download ${downloadTitle}"><span class="fa fa-download"><!-- KEEP ME --></span></a>
 												<c:if test="${fn:endsWith(fn:toLowerCase(document.fileName), '.pdf')}">
 													<a class="btn btn-sm btn-default btn-stripped qrcode-btn" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=true" title="${downloadQrTitle}"><span class="fa fa-qrcode"><!-- KEEP ME --></span></a>
@@ -187,11 +188,9 @@
 						<li>
 							<div class="preview_meta">
 								<c:if test="${isOwnEntry}">
-									<a class="addDocument" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}">
-										<span><fmt:message key="bibtex.actions.additionalFiles"/></span>
-									</a>
+									<bs:linkButton href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}" size="defaultSize" textKey="bibtex.actions.additionalFiles" additionalClass="addDocument pull-right" style="defaultStyle" />
 									<div id="inputDiv">
-											<!-- keep me! - temporary content -->										
+											<!-- keep me! - temporary content -->
 									</div> 
 								</c:if>
 							</div>
