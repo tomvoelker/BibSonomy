@@ -30,16 +30,12 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.StringTokenizer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.common.exceptions.SynchronizationRunningException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.sync.SyncService;
-import org.bibsonomy.rest.RESTUtils;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
@@ -49,7 +45,6 @@ import org.bibsonomy.rest.strategy.sync.GetSyncDataStrategy;
 import org.bibsonomy.rest.strategy.sync.PostSyncPlanStrategy;
 import org.bibsonomy.rest.strategy.sync.PutSyncStatusStrategy;
 import org.bibsonomy.rest.util.URLDecodingPathTokenizer;
-import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author wla, vhem
@@ -69,9 +64,9 @@ public class SynchronizationHandler implements ContextHandler {
 			final SyncService syncClient = context.getLogic().getSyncServiceDetails(serviceURI);
 
 			// check SSL for client instance
-			if ( present(syncClient) && serviceURI.equals(syncClient.getService()) ) {
+			if (present(syncClient) && serviceURI.equals(syncClient.getService()) ) {
 				if (present(syncClient.getSslDn()) && !Role.SYNC.equals(user.getRole())) {
-					log.debug("no sync-role was set for the user - check ssl");
+					log.error("no sync-role was set for the user - check ssl for " + serviceURI.toString());
 					throw new BadRequestOrResponseException("check SSL cert for configured client");
 				}
 			}
