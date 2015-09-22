@@ -14,3 +14,4 @@ bibsonomy-lucene/src/test/resources/lucene_*
 nbactions.xml
 nb-configuration.xml
 Thumbs.db
+bibsonomy-lucene/data

@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.es;
 
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.elasticsearch.client.Client;
@@ -40,9 +41,10 @@ import org.elasticsearch.node.Node;
  * 
  * @author lutful
  */
-public class ESTransportClient implements ESClient {
+public class ESTransportClient extends AbstractEsClient {
 	private final Log log = LogFactory.getLog(ESTransportClient.class);
 	private Client client;
+
 	/**
 	 * Elasticsearch IP and port values, if we have multiple addresses, they
 	 * will be separated by "," and port and ip are separated by ":"
@@ -81,6 +83,7 @@ public class ESTransportClient implements ESClient {
 	public void setEsClusterName(final String esClusterName) {
 		this.esClusterName = esClusterName;
 	}
+
 
 	/**
 	 * initializing the client.
@@ -157,8 +160,6 @@ public class ESTransportClient implements ESClient {
 	 */
 	@Override
 	public void shutdown() {
-		// TODO Auto-generated method stub
-
+		this.client.close();
 	}
-
 }

@@ -19,5 +19,5 @@
 	
 	<import resource="classpath:TestDatabaseBaseContext.xml" />
 	
-	<import resource="classpath:org/bibsonomy/bibsonomy-lucene-context.xml" />
+	<import resource="classpath:org/bibsonomy/bibsonomy-search-context-common.xml" />
 </beans>

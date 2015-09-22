@@ -10,6 +10,7 @@
 	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="ckey" type="java.lang.String"/>
 	<jsp:directive.attribute name="displayFollowLink" type="java.lang.Boolean"/>
+	<jsp:directive.attribute name="scope" type="java.lang.String" required="false"/>
 
 	<!--  counter for the ranking position of similar users -->
 	<c:set var="userRank" value="${0}"/>

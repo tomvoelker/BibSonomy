@@ -59,7 +59,7 @@ public class ClipboardPageController extends SingleResourceListController implem
 		final GroupingEntity groupingEntity = GroupingEntity.CLIPBOARD;
 
 		// retrieve and set the requested resource lists
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
 			this.setList(command, resourceType, groupingEntity, loginUserName, null, null, null, null, null, null, null, entriesPerPage);

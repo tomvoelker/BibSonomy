@@ -38,7 +38,7 @@
 		<div class="btn-group btn-group-xs">
 			
 	 		<!-- button for CV link -->
-			<a class="btn btn-default btn-sm" href="/cv/user/${fn:escapeXml(user.name)}" title="${cvtitle}"><span class="glyphicon glyphicon-user"><!-- --></span><fmt:message key="navi.cv.abbrev"/></a>
+			<a class="btn btn-default btn-sm" href="/cv/user/${fn:escapeXml(user.name)}" title="${cvtitle}"><span class="fa fa-user"><!-- --></span><fmt:message key="navi.cv.abbrev"/></a>
 			
 			<!-- dropdown toggle button -->
 			<button data-toggle="dropdown" class="btn btn-default btn-small dropdown-toggle"><span class="caret"></span></button>

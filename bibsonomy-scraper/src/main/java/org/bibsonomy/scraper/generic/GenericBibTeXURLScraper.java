@@ -40,8 +40,9 @@ public abstract class GenericBibTeXURLScraper extends AbstractGenericFormatURLSc
 	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#convert(java.lang.String)
 	 */
 	@Override
-	protected String convert(String downloadResult) {
+	protected final String convert(String downloadResult) {
 		// nothing to convert
+		// TODO: move to AbstractGenericFormatURLScraper?
 		return StringEscapeUtils.unescapeHtml(downloadResult);
 	}
 

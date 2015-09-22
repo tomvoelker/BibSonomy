@@ -29,6 +29,7 @@ package org.bibsonomy.database.managers;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -56,8 +57,10 @@ import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ScraperMetadata;
 import org.bibsonomy.model.extra.BibTexExtra;
+import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.model.util.file.FileSystemFile;
 import org.bibsonomy.services.filesystem.FileLogic;
+import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
  * Used to create, read, update and delete BibTexs from the database.
@@ -77,6 +80,8 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	private static final BibTexDatabaseManager singleton = new BibTexDatabaseManager();
 
 	private static final HashID[] hashRange = HashID.getAllHashIDs();
+	
+	private ResourceSearch<BibTex> publicationSearch;
 
 	/**
 	 * @return BibTexDatabaseManager
@@ -152,6 +157,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		// document retrieval
 		final Set<Filter> filters = param.getFilters();
 		if (present(filters)) {
+			// TODO: support multiple filters
 			if (filters.contains(FilterEntity.JUST_PDF)) {
 				// retrieve only entries with a document attached
 				return this.postList("getJustBibTexForUserWithPDF", param, session);
@@ -167,7 +173,9 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 				return this.postList("getBibTexWithDiscussions", param, session);
 			}
 			
-			throw new IllegalArgumentException("Filters " + filters + " not supported");
+			if (!(filters.contains(FilterEntity.ADMIN_SPAM_POSTS) && (filters.size() == 1))) {
+				throw new IllegalArgumentException("Filters " + filters + " not supported");
+			}
 		}
 
 		// posts with docs
@@ -672,5 +680,23 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 */
 	public void setFileLogic(final FileLogic fileLogic) {
 		this.fileLogic = fileLogic;
+	}
+
+	/**
+	 * @param options 
+	 * @param queryString
+	 * @param options 
+	 * @return
+	 */
+	public List<Post<BibTex>> getPublicationSuggestion(PublicationSuggestionQueryBuilder options) {
+		if (this.publicationSearch != null) {
+			return this.publicationSearch.getPublicationSuggestions(options);
+		}
+		log.warn("no publicationSearch available for publication suggestions");
+		return new ArrayList<>();
+	}
+
+	public void setPublicationSearch(ResourceSearch<BibTex> publicationSearch) {
+		this.publicationSearch = publicationSearch;
 	}
 }

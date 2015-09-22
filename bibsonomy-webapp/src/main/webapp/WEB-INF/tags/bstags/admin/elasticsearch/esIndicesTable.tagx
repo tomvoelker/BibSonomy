@@ -1,0 +1,83 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/users"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/bstags/menu"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="urn:http://www.springframework.org/tags"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<jsp:directive.attribute type="	java.util.List" name="indexInfoList" required="true" description="List of LuceneResourceIndicesInfoContainer objects"/>
+
+	<h3><c:out value="${indexInfoList.get(0).resourceName} Index " /> 
+		<a onclick="javascript:generateOneEsIndex('${indexInfoList.get(0).resourceName}')" href="#generateIndex">
+			<span style="width: 200px; height: 10px; border: 1px; color: grey;">re-generate</span>
+		</a>
+	</h3>
+	<div class="indexProperties">
+		<c:set var= "noIdexMessage" value="${indexInfoList.get(0).luceneResoruceIndicesInfos.get(0).errorMassage }"/>
+		<c:choose>
+			<c:when test="${noIdexMessage != null }">
+				<p>${noIdexMessage}</p>
+			</c:when>
+			<c:otherwise>
+				<table>
+					<tr>
+						<th>System Path</th>
+						<th>Newest Date</th>
+						<th>last tas id</th>
+						<th>state</th>
+					</tr>
+					<c:forEach var="resourceIndexInfo" items="${indexInfoList}">
+						<tr>
+							<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
+								<td>"${resIndex.basePath}"</td>
+								<td><fmt:formatDate pattern="yyyy/MM/dd HH:mm:ss" value="${resIndex.indexStatistics.newestRecordDate}" /></td>
+								<td><c:out value="${resIndex.indexStatistics.lastTasId}" /></td>
+								<td>
+									<c:if test="${resIndex.active}">active </c:if>
+									<c:if test="${resIndex.generatingIndex}">generating </c:if>
+									<c:out value="${resIndex.processInfo}"/>
+								</td>
+							</c:forEach>
+						</tr>
+						<!--  TODO
+						<tr>
+							<td>containing docs</td>
+							<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
+								<td>${resIndex.indexStatistics.numDocs}</td>
+							</c:forEach>
+						</tr>
+						<tr>
+							<td>deleted docs</td>
+							<c:forEach var="resIndex" items="${resourceIndexInfo.luceneResoruceIndicesInfos}">
+								<td>${resIndex.indexStatistics.numDeletedDocs}</td>
+							</c:forEach>
+						</tr>
+						-->
+					</c:forEach>									
+				</table>
+			</c:otherwise>	
+		</c:choose>
+		<c:set var="generatingIndex" value="${resourceIndexInfo.generatingIndex}" />
+		<c:if test="${generatingIndex != null}">
+			<p>Currently generating:</p>
+			<div style="width: 202px; height: 12px; border: 1px solid #999999; background-color: #CCCCCC">
+					<div style="width: ${generatingIndex.indexGenerationProgress * 2}px; height:10px; border: 1px solid #CCCCCC; background-color: #002244">
+					<!-- placeholder -->
+				</div>
+			</div>
+			<div>
+				<span>${generatingIndex.indexGenerationProgress} % done.</span>
+			</div>
+		</c:if>
+	</div>
+
+
+</jsp:root>
