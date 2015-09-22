@@ -98,7 +98,7 @@
 										<!-- FIXME: deleteDocument() does not work -->
 										<a title="${delete}" class="deleteDocument" onclick="return deleteFunction(this);" href="/ajax/documents?fileHash=${fn:substring(fileN, 0, 64)}&amp;ckey=${ckey}&amp;temp=true&amp;action=delete">
 											<!-- <c:out value="${delete}"/> -->
-											<span class="glyphicon glyphicon-remove"><!--  --></span>
+											<span class="fa fa-remove"><!--  --></span>
 										</a>
 										
 										<input type="hidden" class="tempFileName" value="${fn:escapeXml(fileN)}" name="fileName"/>

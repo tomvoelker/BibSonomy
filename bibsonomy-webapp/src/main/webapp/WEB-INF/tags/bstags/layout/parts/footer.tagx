@@ -69,8 +69,8 @@
 				<dd><a href="https://mail.cs.uni-kassel.de/mailman/listinfo/bibsonomy-discuss"><fmt:message key="footer.mailingList"/></a></dd>
 				
 				<dt><fmt:message key="footer.socialMedia"/></dt>
-				<dd><span class="socicon socicon-twitter"><!--  --></span>&amp;nbsp;<a href="http://twitter.com/bibsonomyCrew"><fmt:message key="footer.twitter"/></a></dd>
-				<dd><span class="socicon socicon-google"><!--  --></span>&amp;nbsp;<a href="https://plus.google.com/communities/102073418538419220890"><fmt:message key="footer.google"/></a></dd>
+				<dd><span class="fa fa-twitter"><!--  --></span>&amp;nbsp;<a href="http://twitter.com/bibsonomyCrew"><fmt:message key="footer.twitter"/></a></dd>
+				<dd><span class="fa fa-google-plus"><!--  --></span>&amp;nbsp;<a href="https://plus.google.com/communities/102073418538419220890"><fmt:message key="footer.google"/></a></dd>
 			</dl>
 		</nav>
 
