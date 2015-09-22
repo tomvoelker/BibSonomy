@@ -154,7 +154,7 @@ public class CslModelConverterTest {
 		final BibTex inproceedings = inproceedingPost.getResource();
 		final Record inproceedingsRec = CslModelConverter.convertPost(inproceedingPost);
 		// test series => collection title
-		assertEquals(BibTexUtils.cleanBibTex(inproceedings.getBooktitle()), inproceedingsRec.getCollection_title());
+		assertEquals(BibTexUtils.cleanBibTex(inproceedings.getSeries()), inproceedingsRec.getCollection_title());
 		// test booktitle => container title
 		assertEquals(BibTexUtils.cleanBibTex(inproceedings.getBooktitle()), inproceedingsRec.getContainer_title());
 		// test inproceedings => paper-conference

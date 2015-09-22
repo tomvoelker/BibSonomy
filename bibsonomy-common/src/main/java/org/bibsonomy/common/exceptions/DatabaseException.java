@@ -52,6 +52,14 @@ public class DatabaseException extends RuntimeException {
 	}
 	
 	/**
+	 * @param message
+	 */
+	public DatabaseException(String message) {
+		super(message);
+		this.errorMessages = null;
+	}
+	
+	/**
 	 * @param errorMessages
 	 */
 	public DatabaseException(final Map<String, List<ErrorMessage>> errorMessages) {

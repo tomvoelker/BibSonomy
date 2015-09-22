@@ -146,6 +146,7 @@
 		<property name="adminUserName" value="admin"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 		<property name="bibtexReader" ref="bibtexReader"/>
+		<property name="readOnly" value="${system.mode.readOnly}" />
 	</bean>
 
 	<!-- provides access to the database for all controllers -->
@@ -153,22 +154,32 @@
 		<property name="user" ref="loginUser"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 		<property name="bibtexReader" ref="bibtexReader"/>
+		<property name="readOnly" value="${system.mode.readOnly}" />
 	</bean>
 	<bean id="notLoggedInUserLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.LogicFactoryBean">
 		<property name="user" ref="notLoggedInUser"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 		<property name="bibtexReader" ref="bibtexReader"/>
+		<property name="readOnly" value="${system.mode.readOnly}" />
 	</bean>
 	<bean id="notLoggedInUser" class="org.bibsonomy.model.User"/>
 	
 	<bean id="qrCodeRenderer" class="org.bibsonomy.util.QRCodeRenderer" scope="singleton">
-		<property name="projectHome" value="${project.home}" />
+		<property name="projectHome" ref="projectHome" />
 	</bean>
-		
+	
+	<bean id="projectName" class="java.lang.String">
+		<constructor-arg value="${project.name}" />
+	</bean>
+	
+	<bean id="projectHome" class="java.lang.String">
+		<constructor-arg value="${project.home}" />
+	</bean>
+	
 	<!-- handles sending of mails  -->
 	<bean id="mailUtils" class="org.bibsonomy.util.MailUtils" scope="singleton">
-		<property name="projectHome" value="${project.home}" />
-		<property name="projectName" value="${project.name}" />
+		<property name="projectHome" ref="projectHome" />
+		<property name="projectName" ref="projectName" />
 		<property name="projectBlog" value="${project.blog}" />
 		<property name="projectEmail" value="${project.email}" />
 		<property name="projectRegistrationFromAddress" value="${project.registrationFromAddress}" />
@@ -201,7 +212,7 @@
 	<bean id="relativeUrlGenerator" class="org.bibsonomy.services.URLGenerator" scope="prototype"/>
 	
 	<bean id="absoluteUrlGenerator" class="org.bibsonomy.services.URLGenerator" scope="prototype">
-		<property name="projectHome" value="${project.home}" />
+		<property name="projectHome" ref="projectHome" />
 	</bean>
 	
 	<bean id="vuFindUrlGenerator" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
@@ -215,7 +226,7 @@
 	</bean>
 	
 	<bean id="realVuFindUrlGenerator" class="org.bibsonomy.webapp.view.urlbuilder.VuFindURLGenerator" lazy-init="true">
-		<property name="projectHome" value="${project.home}" />
+		<property name="projectHome" ref="projectHome" />
 		<property name="vuFindUrlPrefix" value="${export.bibtex.vufind.marc.biburl}" />
 		<property name="ebscoVuFindUrlPrefix" value="${export.bibtex.vufind.ebsco.biburl}" />
 		<property name="vuFindUrlMiscFieldName" value="hdsurl" />
@@ -324,6 +335,57 @@
 				<entry key="/homepage">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="homepageController"/>
+					</bean>
+				</entry>
+				<entry key="/person">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="personPageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>requestedPersonId</value>
+								<value>requestedPersonName</value>
+								<value>requestedAction</value>
+								<value>requestedHash</value>
+								<value>requestedUser</value>
+								<value>requestedRole</value>
+								<value>requestedIndex</value>
+								<value>formAction</value>
+								<value>formPersonRoles</value>
+								<value>formPersonRole</value>
+								<value>formPersonId</value>
+								<value>formInterHash</value>
+								<value>formIntraHash</value>
+								<value>formResourceHash</value>
+								<value>formUser</value>
+								<value>formThatsMe</value>
+								<value>formOrcid</value>
+								<value>formPersonNameId</value>
+								<value>formFirstName</value>
+								<value>formMiddleName</value>
+								<value>formLastName</value>
+								<value>formSelectedName</value>
+								<value>formAcademicDegree</value>
+								<value>formThesisId</value>
+								<value>formResourcePersonRelationId</value>
+								<value>formPersonIndex</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/persondisambiguation">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="disambiguationPageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>requestedAuthorName</value>
+								<value>requestedAction</value>
+								<value>requestedHash</value>
+								<value>requestedUser</value>
+								<value>requestedRole</value>
+								<value>requestedPersonId</value>
+								<value>requestedIndex</value>
+							</list>
+						</property>
 					</bean>
 				</entry>
 				<entry key="/recommended">
@@ -683,6 +745,11 @@
 						<property name="controllerBeanName" value="bibsonomyPreview"/>
 					</bean>
 				</entry>
+				<entry key="/persons">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="personIntroPageController"/>
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>
@@ -708,6 +775,18 @@
 		<property name="supportedResources" ref="allResources"/>
 		<property name="newsGroup" value="${news.group}"/>
 		<property name="newsTag" value="${news.tag}"/>
+	</bean>
+	
+	<bean id="personPageController" class="org.bibsonomy.webapp.controller.PersonPageController" scope="request" parent="multiResourceListControllerWithTags">
+		<property name="supportedResources" ref="allResources"/>
+		<property name="requestLogic" ref="requestLogic"/>
+		<property name="personRoleRenderer" ref="personRoleRenderer"/>
+	</bean>
+	
+	<bean id="disambiguationPageController" class="org.bibsonomy.webapp.controller.DisambiguationPageController" scope="request" parent="multiResourceListControllerWithTags">
+		<property name="supportedResources" ref="allResources"/>
+		<property name="requestLogic" ref="requestLogic"/>
+		<property name="personRoleRenderer" ref="personRoleRenderer"/>
 	</bean>
 	
 	<bean id="relationsController" class="org.bibsonomy.webapp.controller.RelationsController" scope="request">
@@ -944,6 +1023,9 @@
 
 	
 	<!--  #################### static views #################### -->
+	<bean id="personIntroPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="PERSON_INTRO"/>
+	</bean>
 	<bean id="bootstrapDemoController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="BOOTSTRAP_DEMO"/>
 	</bean>
@@ -974,8 +1056,13 @@
 	</bean>
 	
 	<bean id="contextPathFilter" class="org.bibsonomy.webapp.filters.ContextPathFilter">
-		<property name="projectHomeUrl" value="${project.home}"/>
+		<property name="projectHomeUrl" ref="projectHome"/>
 	</bean>
+	
+	<bean id="personRoleRenderer" class="org.bibsonomy.services.person.PersonRoleRenderer">
+		<constructor-arg ref="messageSource"/>
+	</bean>
+	
 	
 	<!--  #################### imports #################### -->
 	<import resource="classpath:org/bibsonomy/bibsonomy-model-context.xml" />

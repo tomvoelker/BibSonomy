@@ -38,7 +38,7 @@
 	<!-- cronExpression is like "sec  min  hour  day  month  dow year(optional)	" -->
 	<!--  http://www.opensymphony.com/quartz/api/    http://www.opensymphony.com/quartz/api/org/quartz/CronExpression.html  -->
 	<bean id="luceneUpdateBibTexCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-		<property name="cronExpression" value="22 1/5 * * * ?" /> <!-- *:01,11,..,51:22 -->
+		<property name="cronExpression" value="1/15 * * * * ?" /> <!-- *:01,11,..,51:22 -->
 		<property name="jobDetail" ref="luceneUpdateBibTexJob" />
 	</bean>
 	<bean id="luceneUpdateBookmarkCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">

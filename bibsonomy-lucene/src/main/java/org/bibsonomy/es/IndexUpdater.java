@@ -29,8 +29,12 @@ package org.bibsonomy.es;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.collections.map.LRUMap;
 import org.bibsonomy.lucene.param.LucenePost;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
 
 /**
  * Common interface for updating indices
@@ -82,9 +86,40 @@ public interface IndexUpdater<R extends Resource> {
 	
 	/**
 	 * updates information about the up-to-dateness of the system
-	 * 
-	 * @param lastTasId
-	 * @param lastLogDate
+	 * @param state 
 	 */
-	public void setSystemInformation(final Integer lastTasId, final Date lastLogDate);
+	public void setSystemInformation(final IndexUpdaterState state);
+
+	/**
+	 * @param interHash
+	 * @param newRels
+	 */
+	public void updateIndexWithPersonRelation(final String interHash, final List<ResourcePersonRelation> newRels);
+
+	/**
+	 * @param name
+	 * @param updatedInterhashes
+	 */
+	public void updateIndexWithPersonNameInfo(PersonName name, LRUMap updatedInterhashes);
+
+	/**
+	 * @param per
+	 * @param updatedInterhashes
+	 */
+	public void updateIndexWithPersonInfo(Person per, LRUMap updatedInterhashes);
+
+	/**
+	 * this may for example set an updated index to active
+	 */
+	void onUpdateComplete();
+
+	/**
+	 * @return
+	 */
+	public IndexUpdaterState getUpdaterState();
+
+	/**
+	 * 
+	 */
+	void closeUpdateProcess();
 }

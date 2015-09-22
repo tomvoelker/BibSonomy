@@ -191,7 +191,7 @@ public class METSRenderer extends JAXBRenderer {
 	}
 
 	@Override
-	protected JAXBContext getJAXBContext() throws JAXBException {
+	protected JAXBContext initJAXBContext() throws JAXBException {
 		return JAXBContext.newInstance("org.bibsonomy.rest.renderer.xml:de.unikassel.puma.openaccess.sword.renderer.xml", this.getClass().getClassLoader());
 	}
 
@@ -206,14 +206,11 @@ public class METSRenderer extends JAXBRenderer {
 	 */
 	public void serializeMets(final Writer writer, final Mets mets) throws InternServerException {
 		try {
-			// initialize context for java xml bindings
-			final JAXBContext jc = this.getJAXBContext();
-
 			// buildup document model
 			final JAXBElement<Mets> webserviceElement = new JAXBElement<Mets>(new QName("http://www.loc.gov/METS/", "mets"), Mets.class, null, mets);
 
 			// create a marshaller
-			final Marshaller marshaller = jc.createMarshaller();
+			final Marshaller marshaller = this.context.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 			marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd");
 			

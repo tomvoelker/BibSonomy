@@ -34,10 +34,11 @@
 			</nav:breadcrumbs>
 		</jsp:attribute>
 		
+		<c:set var="group" value="${command.group}" />
 		<jsp:attribute name="sidebar">
-			<c:if test="${mtl:isRegularGroup(command.group)}">
-				<sidebar:groupDetailsItem group="${command.group}"/>
-				<sidebar:groupMembersItem group="${command.group}"/>
+			<c:if test="${mtl:isRegularGroup(group)}">
+				<sidebar:groupDetailsItem group="${group}"/>
+				<sidebar:groupMembersItem group="${group}"/>
 			</c:if>
 			<sidebar:sidebarTagCloudItem requPath="${requPath}" cmd="${command.tagcloud}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
 		</jsp:attribute>

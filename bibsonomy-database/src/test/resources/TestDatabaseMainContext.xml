@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	
+	<!-- dummies for lucene index -->
+	<bean id="dummySearch" class="org.bibsonomy.testutil.DummyResourceSearch" />
+	<alias name="dummySearch" alias="luceneBookmarkSearch" />
+	<alias name="dummySearch" alias="lucenePublicationSearch" />
+	<alias name="dummySearch" alias="luceneGoldStandardPublicationSearch" />
+	<alias name="dummySearch" alias="publicationSearch" />
+	
+	<bean id="personSearch" class="org.bibsonomy.testutil.DummyPersonSearch" />
+	
+	<import resource="classpath:TestDatabaseBaseContext.xml"/>
+	<import resource="classpath:TestDatabaseContext.xml"/>
+	
+</beans>
