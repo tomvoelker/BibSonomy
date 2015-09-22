@@ -137,7 +137,7 @@
 												<c:url var="joinLink" value="/joinGroup">
 													<c:param name="group" value="${group.name}" />
 												</c:url>
-												<a href="${joinLink}" class="btn btn-primary btn-sm ${systemReadOnly ? 'disabled' : ''}"><span class="glyphicon glyphicon-plus"><!-- keep me --></span><c:out value=" " /><fmt:message key="joinGroup.short"/></a>	
+												<a href="${joinLink}" class="btn btn-primary btn-sm ${systemReadOnly ? 'disabled' : ''}"><span class="fa fa-plus"><!-- keep me --></span><c:out value=" " /><fmt:message key="joinGroup.short"/></a>	
 											</c:otherwise>
 										</c:choose>
 									</c:otherwise>

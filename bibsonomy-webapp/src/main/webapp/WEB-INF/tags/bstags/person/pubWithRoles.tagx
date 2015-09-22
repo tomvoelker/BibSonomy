@@ -46,12 +46,12 @@
 				<c:forEach var="role" items="${availableRoles}">
 					<fmt:message key="person.show.${role.relatorCode}" var="textRole" />
 					<fmt:message key="person.show.${role.relatorCode}Tooltip" var="textRoleTooltip" />
-					<li class='${role}'><span class='glyphicon glyphicon-question-sign explainRole' data-toggle="tooltip" data-placement="left" title="${textRoleTooltip}" data-role='${role}'>&#160;</span>${textRole}: 
+					<li class='${role}'><span class='fa fa-question-circle explainRole' data-toggle="tooltip" data-placement="left" title="${textRoleTooltip}" data-role='${role}'>&#160;</span>${textRole}: 
 						<c:forEach var="relation" items="${post.resourcePersonRelations}">
 							<c:if test="${relation.relationType eq role}">
 								<span class='resourcePersonRelation_${relation.personRelChangeId}'>
 									<a href="${absoluteUrlGenerator.getPersonUrl(relation.person.personId)}"><c:out value="${relation.person.mainName.firstName} "/> <c:out value="${relation.person.mainName.lastName}"/></a><c:out value=" " />
-									<!--  <span data-toggle='modal' data-target="#editRole" data-resource-title="${post.resource.title}" data-person-name="${relation.personName.firstName} ${relation.personName.lastName}" data-relation-simhash1="${relation.simhash1}" data-relation-simhash2='${relation.simhash2}' data-person-role="${role}" style='color:orange;cursor:pointer' href="#editRole" class='editRole glyphicon glyphicon-pencil'>&#160;</span> -->
+									<!--  <span data-toggle='modal' data-target="#editRole" data-resource-title="${post.resource.title}" data-person-name="${relation.personName.firstName} ${relation.personName.lastName}" data-relation-simhash1="${relation.simhash1}" data-relation-simhash2='${relation.simhash2}' data-person-role="${role}" style='color:orange;cursor:pointer' href="#editRole" class='editRole fa fa-pencil'>&#160;</span> -->
 									<c:if test="${not empty loginUserName and not loginUser.spammer}">
 										<!-- TODO: use tagx file -->
 										<button class="btn btn-default btn-xs ${systemReadOnly ? 'disabled' : '' }">

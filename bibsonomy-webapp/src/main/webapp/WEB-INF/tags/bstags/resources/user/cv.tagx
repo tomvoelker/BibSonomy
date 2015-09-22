@@ -21,7 +21,7 @@
     	</fmt:message>
     	
     	<!-- disabled success button for user icon -->
-    	<button class="btn btn-success disabled"><span class="glyphicon glyphicon-user"><!-- --></span></button>
+    	<button class="btn btn-success disabled"><span class="fa fa-user"><!-- --></span></button>
     	
     	<!-- button for CV link -->
 		<a class="btn btn-success btn-sm" href="/cv/user/${fn:escapeXml(user.name)}" title="${cvtitle}"><fmt:message key="navi.cv.abbrev"/></a>
@@ -35,7 +35,7 @@
  			onclick="javascript:$(this).hide(); $(this).next().show();updateUserRelation('remove','${fn:escapeXml(user.name)}', 'sys:network:bibsonomy-friend', '${ckey}');return false;"
  			title="${removeFriend}"
  			href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=removeFriend&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(requestedUser)}">
-				<span class="glyphicon glyphicon-minus"><!--  --></span>&amp;nbsp;
+				<span class="fa fa-minus"><!--  --></span>&amp;nbsp;
 				<fmt:message key="navi.friend"/>
 		</a>
  		
@@ -48,7 +48,7 @@
 	    	onclick="javascript:$(this).hide(); $(this).prev().show();updateUserRelation('add','${fn:escapeXml(user.name)}', 'sys:network:bibsonomy-friend', '${ckey}');return false;"
 		  	title="${addFriend}"
 		   	href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(requestedUser)}&amp;action=addFriend&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(user.name)}">
-		   		<span class="glyphicon glyphicon-plus"><!--  --></span>&amp;nbsp;
+		   		<span class="fa fa-plus"><!--  --></span>&amp;nbsp;
 				<fmt:message key="navi.friend"/>
 		</a>
 		

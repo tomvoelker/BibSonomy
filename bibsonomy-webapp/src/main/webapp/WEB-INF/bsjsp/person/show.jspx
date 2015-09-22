@@ -100,15 +100,6 @@
 			<script type='text/javascript' src='/resources/javascript/person/explainRoles.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/titleAutocomplete.js'><!-- keep me --></script>
 			<style type='text/css'>
-				#personInfo .panel-heading a:after {
-				    font-family: 'Glyphicons Halflings';
-				    content: "\e114";    
-				    float: right; 
-				    color: grey; 
-				}
-				#personInfo .panel-heading a.collapsed:after {
-				    content: "\e080";
-				}
 				.row ul {
 					-webkit-padding-start: 10px;
 				}
@@ -187,7 +178,7 @@
 												<c:otherwise>
 													<div class='checkbox' id='personName_${name.personNameChangeId}'><label><input type='radio' name='formSelectedName' value='${name.personNameChangeId}' /> ${name.firstName} ${name.lastName}</label>&#160;
 														<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-															<span data-person-name-id='${name.personNameChangeId}' data-firstName='${name.firstName}' data-lastName='${name.lastName}' data-toggle='modal' data-target='#removeName' style='color:darkred;cursor:pointer' href='#remName' id='removeName_${name.personNameChangeId}' class='removeName glyphicon glyphicon-remove'></span>
+															<span data-person-name-id='${name.personNameChangeId}' data-firstName='${name.firstName}' data-lastName='${name.lastName}' data-toggle='modal' data-target='#removeName' style='color:darkred;cursor:pointer' href='#remName' id='removeName_${name.personNameChangeId}' class='removeName fa fa-remove'></span>
 														</c:if>
 													</div>
 												</c:otherwise>
