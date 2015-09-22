@@ -113,7 +113,7 @@ public class EndnoteUtils {
 	 * @throws IOException
 	 */
 	public static void append(final Appendable a, final Post<BibTex> post, final boolean skipDummyValues) throws IOException {
-		if (skipDummyValues == false) {
+		if (!skipDummyValues) {
 			appendInternal(a, post);
 			return;
 		}
@@ -212,7 +212,7 @@ public class EndnoteUtils {
 		try {
 			EndnoteUtils.append(sw, post, skipDummyValues);
 		} catch (IOException ex) {
-			// newver happens
+			// never happens
 		}
 		return sw.toString();
 	}

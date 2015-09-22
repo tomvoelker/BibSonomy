@@ -41,6 +41,7 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.Filter;
+import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
@@ -1173,6 +1174,15 @@ public abstract class GenericParam {
 	 */
 	public Set<Filter> getFilters() {
 		return this.filters;
+	}
+	
+	/**
+	 * XXX: ibatis knows no contains?
+	 * @return <code>true</code> iff filters contains a
+	 * {@link FilterEntity#POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER} filter
+	 */
+	public boolean isDiscussionUnclassifiedFilterContained() {
+		return present(this.filters) && this.filters.contains(FilterEntity.POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER);
 	}
 	
 	/**

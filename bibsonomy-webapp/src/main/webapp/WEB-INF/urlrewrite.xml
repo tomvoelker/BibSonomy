@@ -310,6 +310,24 @@
 		<to last="true">/reminder/change_password</to>
 	</rule>
 
+	<!-- ############## /person pages ############### -->
+	<!-- redirect to /person/PERSON page -->
+	<rule>
+		<name>redirect /person/PERSONID</name>
+		<from>^/+person/([^/]+?)$</from>
+		<set type="parameter" name="requestedPersonId">$1</set>
+		<to last="true">/person</to>
+	</rule>
+	
+	<rule>
+		<name>rewrite /person/HASH/ROLE/INDEX</name>
+		<from>^/+person/+([^/]+?)/+([^/]+?)/+([^/]+?)$</from>
+		<set type="parameter" name="requestedIndex">$3</set>
+		<set type="parameter" name="requestedHash">$1</set>
+		<set type="parameter" name="requestedRole">$2</set>
+		<to last="true">/persondisambiguation</to>
+	</rule>
+	
 
 	<!-- ############## /concept pages ############### -->
 	<!-- /concept/user/USER/TAG -->

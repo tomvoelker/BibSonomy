@@ -82,7 +82,7 @@ public class DiscussedPageController extends SingleResourceListControllerWithTag
 		final FilterEntity filter = present(command.getFilter()) ? command.getFilter() : FilterEntity.POSTS_WITH_DISCUSSIONS;
 		
 		// retrieve and set the requested resource lists, along with total counts
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
 			
@@ -96,7 +96,7 @@ public class DiscussedPageController extends SingleResourceListControllerWithTag
 		}
 
 		// get discussion statistics
-		command.setDiscussionsStatistic(this.logic.getPostStatistics(Resource.class, groupingEntity, groupingName, null, null, null, Sets.<Filter>asSet(FilterEntity.POSTS_WITH_DISCUSSIONS), null, null, command.getStartDate(), 0, 0));
+		command.setDiscussionsStatistic(this.logic.getPostStatistics(Resource.class, groupingEntity, groupingName, null, null, null, Sets.<Filter>asSet(FilterEntity.POSTS_WITH_DISCUSSIONS), null, command.getStartDate(), command.getEndDate(), 0, 0));
 		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {

@@ -56,7 +56,7 @@ CREATE TABLE `oauth_provider_tokens` (
   `oauth_version` varchar(10) DEFAULT NULL,
   `callback_token` text,
   `creation_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `callback_url` varchar(255) DEFAULT NULL,
+  `callback_url` text DEFAULT NULL,
   `is_authorized` tinyint(1) NOT NULL DEFAULT '0',
   `token_type` tinyint(2) DEFAULT NULL,
   PRIMARY KEY (`access_token`(70))

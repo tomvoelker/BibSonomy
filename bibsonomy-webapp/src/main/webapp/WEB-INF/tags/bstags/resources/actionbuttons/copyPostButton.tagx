@@ -87,5 +87,5 @@
 				<span class="fa fa-copy"><!-- Keep Me --></span>
 			</a>
 		</c:otherwise>
-	</c:choose>	
+	</c:choose>
 </jsp:root>

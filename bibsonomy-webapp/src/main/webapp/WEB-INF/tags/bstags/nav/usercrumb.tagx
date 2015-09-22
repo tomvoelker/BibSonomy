@@ -11,11 +11,19 @@
 	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="false" description="the requested user"/>
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true" description="the requested user"/>
 	<jsp:directive.attribute name="active" type="java.lang.Boolean" required="false" description="the requested user"/>
-	
+	<jsp:directive.attribute name="scope" type="java.lang.String" required="false"/>
+
 	<c:if test="${empty active}">
 		<c:set var="active" value="${false}" />
 	</c:if>
-	<c:set var="ownPage" value="${command.context.userLoggedIn and ((requestedUser eq loginUser) or empty requestedUser)}" />
+	<c:choose>
+		<c:when test="${not empty scope and scope ne 'LOCAL'}">
+			<c:set var="ownPage" value="false" />		
+		</c:when>
+		<c:otherwise>
+			<c:set var="ownPage" value="${command.context.userLoggedIn and ((requestedUser eq loginUser) or empty requestedUser)}" />		
+		</c:otherwise>
+	</c:choose>	
 	<c:choose>
 		<c:when test="${ownPage}">
 			<nav:myUserCrumb loginUser="${loginUser}" active="${active}" />

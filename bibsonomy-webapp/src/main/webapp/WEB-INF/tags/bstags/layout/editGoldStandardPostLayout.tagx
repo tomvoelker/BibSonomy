@@ -135,9 +135,9 @@
 		                    | general information 
 		                    +-->
 				 		<a name="generalInformation"><!--  --></a>
+				 		
 						<bsform:fieldset legendKey="post.resource.fields.general">
 							<jsp:attribute name="content">
-								
 								<jsp:invoke fragment="generalInformation"/>
 							</jsp:attribute>
 						</bsform:fieldset>
@@ -180,7 +180,15 @@
 						<c:if test="${not empty postApproval and (command.context.loginUser.hasGroupLevelPermission('COMMUNITY_POST_INSPECTION') or command.context.loginUser.role eq 'ADMIN')}">
 							<jsp:invoke fragment="postApproval"/>
 						</c:if>
-		               
+
+						<c:if test="${command.personRole eq 'ADVISOR'}">
+							<bsform:fieldset legendKey="post.person.role">
+								<jsp:attribute name="content">
+									<post:personRole_groupBox />
+								</jsp:attribute>
+							</bsform:fieldset>
+						</c:if>
+		
 		                <!--+
 		               
 		               		| buttons 

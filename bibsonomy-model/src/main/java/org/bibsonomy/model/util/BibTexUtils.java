@@ -192,6 +192,9 @@ public class BibTexUtils {
 	/** PHD thesis */
 	public static final String PHD_THESIS = "phdthesis";
 	
+	/** any thesis */
+	public static final String THESIS = "thesis";
+	
 	/** unpublished work */
 	public static final String UNPUBLISHED = "unpublished";
 	
@@ -487,7 +490,7 @@ public class BibTexUtils {
 		if (present(bib.getEditor())) {
 			values.put(BIBTEX_EDITOR_FIELD, addBibTeXBrackets(PersonNameUtils.serializePersonNames(bib.getEditor(), lastFirstNames)));
 		}
-				
+		
 		/*
 		 * process miscFields map, if present
 		 */
