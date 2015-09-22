@@ -57,7 +57,7 @@
 					<jsp:invoke fragment="beforeMainContainer"/>
 				</c:if>
 				<div class="container header">
-					<div id="page-header bib-header">
+					<div id="page-header" class="bib-header">
 						<div class="row">
 							<div class="col-md-6">
 								<!--+ 
