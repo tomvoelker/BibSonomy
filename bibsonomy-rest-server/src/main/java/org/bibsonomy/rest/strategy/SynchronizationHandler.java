@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Rest-Server - The REST-server.	
+ * BibSonomy-Rest-Server - The REST-server.
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
