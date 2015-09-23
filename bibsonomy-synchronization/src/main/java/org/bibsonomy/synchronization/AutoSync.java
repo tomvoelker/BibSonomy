@@ -39,7 +39,6 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
-import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationDirection;
@@ -68,33 +67,18 @@ public class AutoSync {
 			return;
 		}
 		
-		final List<SyncService> syncServices = this.adminLogic.getSyncService(null, null, true);
-		for (final SyncService syncService : syncServices) {
-			// skip, if autosync not selected or direction is both
-			if (!syncService.isAutosync() || syncService.getDirection() == SynchronizationDirection.BOTH) {
-				continue;
-			}
+		// get configured AutoSync-Servers
+		final List<SyncService> syncServices = this.adminLogic.getAutoSyncServer();
+		for (final SyncService syncService : syncServices) {			
 			
 			final User clientUser = this.adminLogic.getUserDetails(syncService.getUserName());
 			final String userNameToSync = clientUser.getName();
+			
 			log.info("Autosync for user:" + userNameToSync + " and service: " + syncService.getService().toString() + " api: " + syncService.getSecureAPI());
 			try {
 				final LogicInterface clientLogic = this.userLogicFactory.getLogicAccess(userNameToSync, clientUser.getApiKey());
-				final Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan;
 				
-				// check if it's the users first autosync
-				if (syncService.isFirstsync()) {
-					log.info("first autosync! initiate bidirectional sync-plan");
-
-					// create dummy syncService with bidirectional properties
-					final SyncService BiDirectSyncService = syncService;
-					BiDirectSyncService.setDirection(SynchronizationDirection.BOTH);
-					syncPlan = this.syncClient.getSyncPlan(clientLogic, BiDirectSyncService);
-					// TODO set firstSync false
-				} else {
-					syncPlan = this.syncClient. getSyncPlan(clientLogic, syncService);
-				}
-				
+				final Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan = this.syncClient.getSyncPlan(clientLogic, syncService);
 				if (!present(syncPlan)) {
 					log.info("no sync plan received");
 					continue;

@@ -7,7 +7,8 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs">
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
+	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/bstags/layout/fontawesome">
 
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
 	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="false"/>
@@ -24,17 +25,17 @@
 	<jsp:directive.attribute name="headerContainer" fragment="true" required="false"/>
 	<!-- FIXME: footerContainer not used -->
 	<jsp:directive.attribute name="footerContainer" fragment="true" required="false"/>
+	<jsp:directive.attribute name="hideFooterContainer" type="java.lang.Boolean" required="false"/>
+	
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="noLoginBox" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="hideFooterContainer" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="noSidebar" type="java.lang.Boolean" required="false"/>
-	
 	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
 	
 	
-	
+	<c:set var="systemReadOnly" value="${properties['system.mode.readOnly']}" scope="request" />
 	<!--+
 		| 
 		| document starts here
@@ -56,7 +57,7 @@
 					<jsp:invoke fragment="beforeMainContainer"/>
 				</c:if>
 				<div class="container header">
-					<div id="page-header bib-header">
+					<div id="page-header" class="bib-header">
 						<div class="row">
 							<div class="col-md-6">
 								<!--+ 
@@ -102,9 +103,7 @@
 				<menu:navi activeTab="${activeTab}" loginUser="${loginUser}" />
 				
 				<div class="container main">
-					
 					<c:choose>
-						
 						<c:when test="${noSidebar}">
 							
 							<!-- without sidebar -->
@@ -117,11 +116,20 @@
 							</div>
 							<jsp:invoke fragment="content"/>
 						</c:when>
-						
 						<c:otherwise>
 							<!-- with sidebar -->
 							<div class="row">
 								<div class="col-md-9 col-sm-12 col-xs-12 content">
+									<c:if test="${not empty loginUser.name and systemReadOnly}">
+										<bs:alert style="warning">
+											<jsp:attribute name="alertBody">
+												<fontawsome:icon icon="exclamation-triangle" /><c:out value=" " />
+												<fmt:message key="system.readOnly.notice">
+													<fmt:param value="${properties['project.name']}" />
+												</fmt:message>
+											</jsp:attribute>
+										</bs:alert>
+									</c:if>
 									<!-- Breadcrumbs -->
 									<c:if test="${not empty breadcrumbs}">
 										<jsp:invoke fragment="breadcrumbs" />
@@ -139,7 +147,6 @@
 							</div><!-- /.row -->
 						</c:otherwise>
 					</c:choose>
-					
 				</div> <!--  /.container -->
 				<div class="container footer">
 					<parts:footer />

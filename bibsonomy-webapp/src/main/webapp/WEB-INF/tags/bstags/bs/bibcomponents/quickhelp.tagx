@@ -20,7 +20,7 @@
 	
 	<fmt:message var="message" key="${messagesPropertiesKey}"/>
 	
-	<span class="glyphicon glyphicon-question-sign help-popover" data-trigger="hover" data-toggle="popover"><!-- KEEP ME -->&amp;nbsp;</span>
+	<span class="fa fa-question-circle help-popover" data-trigger="hover" data-toggle="popover"><!-- KEEP ME -->&amp;nbsp;</span>
   	<c:if test="${not empty header}">
   		<div class="help help-header hide">Schnellhilfe</div>
 	</c:if>

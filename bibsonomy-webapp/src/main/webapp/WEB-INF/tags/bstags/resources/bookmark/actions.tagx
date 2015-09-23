@@ -40,7 +40,7 @@
 						</c:url>
 						<fmt:message key="bookmark.actions.copy.title" var="copyTitle"/>
 						<a class="${buttonClasses}" href="${copyLink}" title="${fn:escapeXml(copyTitle)}">
-							<span class="glyphicon glyphicon glyphicon-floppy-disk"><!--  --></span>
+							<span class="fa fa-copy"><!--  --></span>
 						</a>
 					</c:when>
 					<c:otherwise>
@@ -54,7 +54,7 @@
 								</c:url>
 								<fmt:message key="bookmark.actions.copy.title" var="copyTitle"/>
 								<a class="${buttonClasses}" href="${copyLink}" title="${fn:escapeXml(copyTitle)}">
-									<span class="glyphicon glyphicon glyphicon-floppy-disk"><!--  --></span>
+									<span class="fa fa-copy"><!--  --></span>
 								</a>
 							</c:when>
 
@@ -62,7 +62,7 @@
 							<c:otherwise><!-- user is post's owner -->
 								<fmt:message key="bookmark.actions.edit.title" var="editTitle" />
 								<a class="${buttonClasses}" href="/editBookmark?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}">
-									<span class="glyphicon glyphicon-edit"><!--  --></span>
+									<span class="fa fa-pencil"><!--  --></span>
 								</a>
 							</c:otherwise>
 						</c:choose>
@@ -73,7 +73,7 @@
 				<!-- For signed out users we always show the inactive copy button -->
 				<fmt:message key="bookmark.actions.copy.inactive" var="copyTitle" />
  				<a class="${buttonClasses}" title="${copyTitle}" disabled="disabled">
- 					<span class="glyphicon glyphicon-floppy-disk"><!--  --></span>
+ 					<span class="fa fa-copy"><!--  --></span>
  				</a>
 			</c:otherwise>
 		</c:choose>
@@ -102,7 +102,7 @@
 				</c:url>
 				<fmt:message key="bookmark.actions.removeMessage.title" var="removeTitle" />
 				<a class="${buttonClasses}" href="${message_remove}" title="${removeTitle}" data-type="inboxpost">
-					<span class="glyphicon glyphicon-remove"><!--  --></span>
+					<span class="fa fa-times"><!--  --></span>
 				</a>
 			</c:when>
 			<c:otherwise>
@@ -115,13 +115,13 @@
 							<c:param name="ckey" value="${ckey}" />
 						</c:url>
 						<a class="${buttonClasses} confirmdelete" href="${deleteUrl}" title="${deleteTitle}" data-type="post">
-							<span class="glyphicon glyphicon-remove"><!--  --></span>
+							<span class="fa fa-times"><!--  --></span>
 						</a>
 					</c:when>
 					<c:otherwise>
 						<fmt:message key="bookmark.actions.delete.inactive" var="deleteTitle"/>
 						<span class="${buttonClasses}" title="${deleteTitle}" disabled="disabled">
-							<span class="glyphicon glyphicon-remove"><!--  --></span>
+							<span class="fa fa-times"><!--  --></span>
 						</span>
 					</c:otherwise>
 				</c:choose>

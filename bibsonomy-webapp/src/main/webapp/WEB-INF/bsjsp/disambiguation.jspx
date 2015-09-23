@@ -17,9 +17,10 @@
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/bstags/resources"
 	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/bstags/spheres"
 	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bibtex"
+	xmlns:actionbuttons="urn:jsptagdir:/WEB-INF/tags/bstags/resources/actionbuttons"
 	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/publication"
-	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/layout/bootstrap"
+	xmlns:bsold="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
 	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
 	xmlns:form="http://www.springframework.org/tags/form"> 
@@ -98,7 +99,7 @@
 							<pub:title post="${command.post}">
 								<jsp:attribute name="bibActionButtons">
 									<div class="pull-right">
-										<bib:actions post="${command.post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}"/>
+										<actionbuttons:actions post="${command.post }" resourceType="bibtex" loginUserName="${command.context.loginUser.name}" />
 									</div>
 								</jsp:attribute>
 							</pub:title>
@@ -140,38 +141,34 @@
 							</div>
 						</c:when>
 						<c:otherwise>
-							<div class="list-group">
-								<div class="list-group-item">
-									<span>
+							<bsold:alert style="info">
+								<jsp:attribute name="alertBody">
+									<div>
 										<fmt:message key="disambiguation.notFound">
 											<fmt:param value="${command.personName}" />
 										</fmt:message>
+									</div>
+								</jsp:attribute>
+							</bsold:alert>
+							
+							<bs:linkButton style="primary" href="#otherPerson" size="defaultSize" dataToggle="modal" dataTarget="#otherPerson">
+								<jsp:attribute name="content">
+									<span class="authorName">
+										<fmt:message key="disambiguation.newPerson">
+											<fmt:param value="${command.personName}" />
+										</fmt:message>
 									</span>
-								</div>
-								<div class="list-group-item">
-									<a class='btnLinkPerson' data-toggle="modal" data-target="#otherPerson" href="#otherPerson">
-										<span class="authorName">
-											<fmt:message key="disambiguation.newPerson">
-												<fmt:param value="${command.personName}" />
-											</fmt:message>
-										</span>
-									</a>
-								</div>
-							</div>
+								</jsp:attribute>
+							</bs:linkButton>
 						</c:otherwise>
 					</c:choose>
 			</div>
 		</jsp:attribute>
 	
 	</layout:paneLayout>
-
-
-
-
-
-
+	
 	<fmt:message var="otherPersonModalTitle" key="disambiguation.otherPerson.modal.title"/>
-	<bs:modal modalTitle="${otherPersonModalTitle}" id="otherPerson">
+	<bsold:modal modalTitle="${otherPersonModalTitle}" id="otherPerson">
 		<jsp:attribute name="modalBody">
 			<p>
 				<fmt:message key="disambiguation.otherPerson.modal.msg"><fmt:param value="${command.personName}"/></fmt:message>
@@ -226,14 +223,14 @@
 		</jsp:attribute>
 		<jsp:attribute name="modalFooter">
 		</jsp:attribute>
-	</bs:modal>
+	</bsold:modal>
 	
 	
 	
 	
 	
 	<fmt:message var="otherPersonModalTitle" key="disambiguation.link.modal.title"/>
-	<bs:modal modalTitle="${otherPersonModalTitle}" id="linkPerson">
+	<bsold:modal modalTitle="${otherPersonModalTitle}" id="linkPerson">
 		<jsp:attribute name="modalBody">
 			<p><fmt:message key="disambiguation.link.modal.msg"/></p>
 		</jsp:attribute>
@@ -258,6 +255,6 @@
 			</div>
 		
 		</jsp:attribute>
-	</bs:modal>
+	</bsold:modal>
 	
 </jsp:root>

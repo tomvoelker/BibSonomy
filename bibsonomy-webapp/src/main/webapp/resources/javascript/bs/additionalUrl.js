@@ -63,7 +63,7 @@ $(function(){
 	            			$("#add-url-modal").modal("hide");
 	            			
 	            			return $("<li><a href='" + url + "'>" + urlText + "</a> </li>")
-	            				.append($("<a href=''><span class='glyphicon glyphicon-remove'><!--  --></span></a>").click(function() {
+	            				.append($("<a href=''><span class='fa fa-times'><!--  --></span></a>").click(function() {
 	            					deleteUrl(this, url, hash, ckey);
 	            					return false;
 	            				}));

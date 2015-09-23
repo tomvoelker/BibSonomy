@@ -554,15 +554,14 @@ public class DBLogic implements LogicInterface {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.bibsonomy.model.sync.SyncLogicInterface#getSyncServerForUser(java
-	 * .lang.String)
+	 * org.bibsonomy.model.sync.SyncLogicInterface#getSyncServiceSettings()
 	 */
 	@Override
-	public List<SyncService> getSyncService(final String userName, final URI service, final boolean server) {
+	public List<SyncService> getSyncServiceSettings(final String userName, final URI service, final boolean server) {
 		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
 		final DBSession session = this.openSession();
 		try {
-			return this.syncDBManager.getSyncServices(userName, service, server, session);
+			return this.syncDBManager.getSyncServiceSettings(userName, service, server, session);
 		} finally {
 			session.close();
 		}
@@ -571,28 +570,13 @@ public class DBLogic implements LogicInterface {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getAllSyncServices()
+	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncServiceDetails()
 	 */
 	@Override
-	public List<SyncService> getAllSyncServices(final boolean server) {
+	public SyncService getSyncServiceDetails(final URI serviceURI) {
 		final DBSession session = this.openSession();
 		try {
-			return this.syncDBManager.getAllSyncServices(server, session);
-		} finally {
-			session.close();
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getAvlSyncServer()
-	 */
-	@Override
-	public List<URI> getSyncServices(final boolean server) {
-		final DBSession session = this.openSession();
-		try {
-			return this.syncDBManager.getSyncServices(server, session);
+			return this.syncDBManager.getSyncServiceDetails(serviceURI, session);
 		} finally {
 			session.close();
 		}
@@ -886,7 +870,37 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncServices(final boolean server)
+	 */
+	@Override
+	public List<SyncService> getAutoSyncServer() {
+		final DBSession session = this.openSession();
+		try {
+			return this.syncDBManager.getAutoSyncServer(session);
+		} finally {
+			session.close();
+		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getAutoSyncServer()
+	 */	
+	@Override
+	public List<SyncService> getSyncServices(final boolean server, String sslDn) {
+		final DBSession session = this.openSession();
+		try {
+			return this.syncDBManager.getSyncServices(server, sslDn, session);
+		} finally {
+			session.close();
+		}
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

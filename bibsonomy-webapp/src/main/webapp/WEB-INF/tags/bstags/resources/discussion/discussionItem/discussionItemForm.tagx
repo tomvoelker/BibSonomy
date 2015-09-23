@@ -4,7 +4,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
 	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/bstags/resources/discussion">
 
 	<jsp:directive.attribute name="discussionItem" type="org.bibsonomy.model.DiscussionItem" required="false" />
@@ -123,7 +123,7 @@
 			<div class="form-group">
 				<div class="col-sm-offset-3 col-sm-9">
 					<fmt:message key="post.resource.${discussionItemClass}.actions.${action}" var="buttonText" />
-					<input type="submit" class="btn btn-primary" value="${buttonText}" />
+					<bsform:button type="submit" size="defaultSize" value="${buttonText}" style="primary" />
 				</div>
 			</div>
 
@@ -132,6 +132,5 @@
 			</div>
 		</fieldset>
 	</form>
-
 
 </jsp:root>

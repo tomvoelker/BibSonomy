@@ -48,9 +48,14 @@
 	
 	<!-- TODO: application-context.xml in opensocial also defines an oauthLogicFactory -->
 	
-	<bean id="oauthLogicFactory" class="org.bibsonomy.database.ShindigDBLogicUserInterfaceFactory">
-		<property name="dbSessionFactory" ref="dbSessionFactory" />
-		<property name="bibtexReader" ref="bibtexReader"/>
+	<bean id="oauthLogicFactory" class="org.bibsonomy.database.ReadOnlyAwareShindigDBLogicUserInterfaceFactory">
+		<constructor-arg>
+			<bean class="org.bibsonomy.database.ShindigDBLogicUserInterfaceFactory">
+				<property name="dbSessionFactory" ref="dbSessionFactory" />
+				<property name="bibtexReader" ref="bibtexReader"/>
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="${system.mode.readOnly}" />
 	</bean>
 	
 	<bean id="oauthRequestValidator" class="org.bibsonomy.opensocial.oauth.OAuthRequestValidator">

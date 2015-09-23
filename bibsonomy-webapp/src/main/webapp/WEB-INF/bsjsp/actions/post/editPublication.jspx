@@ -100,10 +100,6 @@
 	            	</bsform:fieldset>
 	            </c:if>
          	</c:if>
-         	
        </jsp:attribute>
-
-		                  
 	</layout:editPostLayout>
-
 </jsp:root>

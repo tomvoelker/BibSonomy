@@ -204,8 +204,10 @@
 								<div class="col-sm-offset-3 col-sm-9">
 									<fmt:message key="save" var="save" />
 									<fmt:message key="save.and.rate" var="saveAndRate" />
-									<input class="btn btn-primary" id="save-post-button" style="margin-right:5px" type="submit" value="${save}" onclick="clear_tags();" tabindex="2"/> 
-									<input class="btn btn-primary" id="save-rate-post-button" type="submit" value="${saveAndRate}" name="saveAndRate" onclick="clear_tags();" tabindex="2"/>
+									<div class="btn-group">
+										<bsform:button type="submit" id="save-post-button" size="defaultSize" value="${save}" style="primary" onclick="clear_tags();" tabindex="2"/>
+										<bsform:button type="submit" id="save-rate-post-button" size="defaultSize" value="${saveAndRate}" style="primary" onclick="clear_tags();" tabindex="2"/>
+									</div>
 								</div>
 							</div>
 						</div>	

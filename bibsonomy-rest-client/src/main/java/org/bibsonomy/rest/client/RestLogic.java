@@ -684,7 +684,7 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public List<URI> getSyncServices(final boolean server) {
+	public List<SyncService> getSyncServices(final boolean server, String sslDn) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -704,7 +704,7 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public List<SyncService> getSyncService(final String userName, final URI service, final boolean server) {
+	public List<SyncService> getSyncServiceSettings(final String userName, final URI service, final boolean server) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -731,11 +731,6 @@ public class RestLogic implements LogicInterface {
 	@Override
 	public List<SynchronizationPost> getSyncPlan(final String userName, final URI service, final Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction) {
 		return this.execute(new CreateSyncPlanQuery(service.toString(), clientPosts, resourceType, strategy, direction));
-	}
-
-	@Override
-	public List<SyncService> getAllSyncServices(final boolean server) {
-		throw new UnsupportedOperationException();
 	}
 	
 	@Override
@@ -769,6 +764,22 @@ public class RestLogic implements LogicInterface {
 	 */
 	@Override
 	public Statistics getDocumentStatistics(GroupingEntity groupingEntity, String grouping, Set<Filter> filters, Date startDate, Date endDate) {
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncServiceDetails(java.lang.String, java.net.URI)
+	 */
+	@Override
+	public SyncService getSyncServiceDetails(URI serviceURI) {
+		throw new UnsupportedOperationException();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getAutoSyncServer()
+	 */
+	@Override
+	public List<SyncService> getAutoSyncServer() {
 		throw new UnsupportedOperationException();
 	}
 
