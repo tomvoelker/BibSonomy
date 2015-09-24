@@ -44,6 +44,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
+import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.sync.util.SynchronizationUtils;
@@ -160,7 +161,9 @@ public class SynchronizationController extends AjaxController implements Minimal
 			 * run sync plan
 			 */
 			final Map<Class<? extends Resource>, SynchronizationData> syncResult;
-			try {
+			try{
+				// remove sync plan from session
+				SyncUtils.setSyncPlan(serviceURI, null, requestLogic);
 				syncResult = client.synchronize(logic, server, syncPlan2);
 			} catch (final SynchronizationRunningException e) {
 				errors.reject("error.synchronization.running");
@@ -170,7 +173,14 @@ public class SynchronizationController extends AjaxController implements Minimal
 			 * remove sync plan from session
 			 * FIXME: do this before synchronize()?
 			 */
-			SyncUtils.setSyncPlan(serviceURI, null, requestLogic);
+			// SyncUtils.setSyncPlan(serviceURI, null, requestLogic);
+
+			// check for initial sync for auto-sync
+			if (server.isFirstsync() && server.getDirection() == SynchronizationDirection.BOTH){
+				// sync in both directions 
+				server.setFirstsync(false);
+			}
+			
 			/*
 			 * serialize result
 			 */

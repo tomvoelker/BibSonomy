@@ -44,6 +44,7 @@ import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.util.MailUtils;
 
 /**
  * @author wla
@@ -54,6 +55,7 @@ public class AutoSync {
 	private LogicInterface adminLogic;
 	private TwoStepSynchronizationClient syncClient;
 	private LogicInterfaceFactory userLogicFactory;
+	private MailUtils mailUtils;
 	
 	
 	/**
@@ -61,7 +63,7 @@ public class AutoSync {
 	 */
 	public void performAutoSync() {
 		log.info("start automatic synchronization");
-		
+	
 		if (!present(this.syncClient)) {
 			log.info("snyc client not available");
 			return;
@@ -70,8 +72,14 @@ public class AutoSync {
 		// get configured AutoSync-Servers
 		final List<SyncService> syncServices = this.adminLogic.getAutoSyncServer();
 		for (final SyncService syncService : syncServices) {			
-			
 			final User clientUser = this.adminLogic.getUserDetails(syncService.getUserName());
+
+			// check if user has run a sync in both-directions before, send notification mail
+			if (syncService.isFirstsync())
+			{
+				// mailUtils.sendPlainMail(clientUser.getEmail(), subject, content, from);
+			}
+			
 			final String userNameToSync = clientUser.getName();
 			
 			log.info("Autosync for user:" + userNameToSync + " and service: " + syncService.getService().toString() + " api: " + syncService.getSecureAPI());
