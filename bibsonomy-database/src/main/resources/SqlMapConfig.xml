@@ -26,7 +26,6 @@
 	<typeHandler javaType="syncDirection"         callback="org.bibsonomy.database.common.typehandler.SyncDirectionTypeHandlerCallback" />
 	<typeHandler javaType="conflictStrategy"      callback="org.bibsonomy.database.common.typehandler.ConflictResolutionStrategyTypeHandlerCallback" />
 	<typeHandler javaType="personNameList"        callback="org.bibsonomy.database.common.typehandler.PersonNameTypeHandlerCallback" />
-	<typeHandler javaType="LayoutSettings"        callback="org.bibsonomy.database.common.typehandler.LayoutSettingsTypeHandlerCallback" />
 	<typeHandler javaType="goldStandardRelation"  callback="org.bibsonomy.database.common.typehandler.GoldStandardRelationTypeHandlerCallback"/>
 	<typeHandler javaType="personResourceRelationType"  callback="org.bibsonomy.database.common.typehandler.PersonResourceRelationTypeHandlerCallback" />	
 	

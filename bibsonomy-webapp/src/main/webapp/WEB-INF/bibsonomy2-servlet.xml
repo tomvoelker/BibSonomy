@@ -243,8 +243,6 @@
 				<value>classpath:/custom/messages</value>
 				<value>classpath:/projects/${project.name}_messages</value>
 				<value>classpath:/themes/${project.theme}_messages</value>
-				<!-- TODO: (Bootstrap) remove when old layout is removed -->
-				<value>classpath:/old_layout_messages</value>
 				<value>classpath:/messages</value>
 			</list>
 		</property>
@@ -254,45 +252,19 @@
 
 	<!--  #################### view resolver #################### -->
 	<!-- default: JSPs -->
-	<bean id="viewResolver" class="org.bibsonomy.webapp.util.spring.servlet.LayoutSwitchingViewResolver">
-		<property name="resolverMap">
-			<map>
-				<entry key="BOOTSTRAP">
-					<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-						<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
-						<property name="prefix" value="/WEB-INF/bsjsp/" /> 
-						<property name="suffix" value=".jspx" />
-						<!-- expose the application context's beans to the view layer so that they can be accessed in all jsp's via ${beanName} -->
-						<property name="exposedContextBeanNames">
-							<list>
-								<value>authConfig</value>
-								<value>properties</value>
-								<value>relativeUrlGenerator</value>
-								<value>absoluteUrlGenerator</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
-				
-				<entry key="CLASSIC">
-					<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-						<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
-						<property name="prefix" value="/WEB-INF/jsp/" /> 
-						<property name="suffix" value=".jspx" />
-						<!-- expose the application context's beans to the view layer so that they can be accessed in all jsp's via ${beanName} -->
-						<property name="exposedContextBeanNames">
-							<list>
-								<value>authConfig</value>
-								<value>properties</value>
-								<value>relativeUrlGenerator</value>
-								<value>absoluteUrlGenerator</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
-			</map>
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/bsjsp/" /> 
+		<property name="suffix" value=".jspx" />
+		<!-- expose the application context's beans to the view layer so that they can be accessed in all jsp's via ${beanName} -->
+		<property name="exposedContextBeanNames">
+			<list>
+				<value>authConfig</value>
+				<value>properties</value>
+				<value>relativeUrlGenerator</value>
+				<value>absoluteUrlGenerator</value>
+			</list>
 		</property>
-	
 	</bean>
 	
 	<!-- used to resolve non-JSP views, e.g., JabRef's layout views -->
@@ -302,18 +274,14 @@
 	
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
 
-			<util:map id="bibtexReaders">
-				<entry key="application/marc">
-					<bean class="org.bibsonomy.marc.MarcToBibTexReader"/>
-				</entry>
-				<!-- 
-				<entry key="application/pica">
-				</entry>
-				 -->
-				<entry key="application/marc:application/pica">
-					<bean class="org.bibsonomy.marc.MarcToBibTexReader"/>
-				</entry>
-			</util:map>
+	<util:map id="bibtexReaders">
+		<entry key="application/marc">
+			<bean class="org.bibsonomy.marc.MarcToBibTexReader"/>
+		</entry>
+		<entry key="application/marc:application/pica">
+			<bean class="org.bibsonomy.marc.MarcToBibTexReader"/>
+		</entry>
+	</util:map>
 	
 	<bean id="bibtexReader" class="org.bibsonomy.model.util.CompositeBibtexReader">
 		<constructor-arg ref="bibtexReaders"/>
@@ -708,12 +676,6 @@
 						<property name="controllerBeanName" value="friendsOverviewController"/>
 					</bean>
 				</entry>
-				<!-- TODO: (bootstrap) remove -->
-				<entry key="/bootstrapDemo">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="bootstrapDemoController"/>
-					</bean>
-				</entry>
 				<entry key="/errors/403">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="error403PageController"/>
@@ -737,12 +699,6 @@
 				<entry key="/errors/504">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="error503PageController"/>
-					</bean>
-				</entry>
-				<!-- TODO: (bootstrap) remove -->
-				<entry key="/bibsonomy3">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="bibsonomyPreview"/>
 					</bean>
 				</entry>
 				<entry key="/persons">
@@ -1026,9 +982,6 @@
 	<bean id="personIntroPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="PERSON_INTRO"/>
 	</bean>
-	<bean id="bootstrapDemoController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
-		<property name="view" value="BOOTSTRAP_DEMO"/>
-	</bean>
 	<bean id="buttonPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="BUTTONS"/>
 	</bean>
@@ -1049,10 +1002,6 @@
 	</bean>
 	<bean id="error503PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="ERROR503"/>
-	</bean>
-	<!-- TOOD: remove -->
-	<bean id="bibsonomyPreview" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
-		<property name="view" value="BIBSONOMY3"/>
 	</bean>
 	
 	<bean id="contextPathFilter" class="org.bibsonomy.webapp.filters.ContextPathFilter">
