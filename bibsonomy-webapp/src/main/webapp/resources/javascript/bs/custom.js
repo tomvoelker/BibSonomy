@@ -146,7 +146,6 @@ $(function() {
 			url : url,
 			type : 'POST',
 			data : data,
-			
 		}).done(function(result) { //on success
 			
 			// remove tags
@@ -155,20 +154,23 @@ $(function() {
 			// remove system tags
 			$('#list-item-' + resourceHash + ' .hiddenSystemTag ul.tags li').remove();
 			
+			function buildTagLabel(labelClass, tag) {
+				var item = $('<span class="label label-' + labelClass + '"></span>');
+				var link = $('<a href="/user/' + encodeURIComponent(currUser) + '/' + encodeURIComponent(tag) + '"></a>').text(tag);
+				item.append(link);
+				return item;
+			}
+			
 			// append current tags
-			$(tags).each(function(i, v) {
-				if(!isSystemTag(v)) {
-					var itemText = htmlEncode(tags[i]);
-					var item = '<span class="label label-grey"><a href="/user/' + encodeURIComponent(currUser) + '/' + encodeURIComponent(tags[i]) + '">' + itemText + '</a></span> ';
-					$('#list-item-' + resourceHash + ' .ptags').append(item);
+			$(tags).each(function(i, tag) {
+				if (!isSystemTag(tag)) {
+					$('#list-item-' + resourceHash + ' .ptags').append(buildTagLabel('grey', tag));
 				} else {
-					var itemText = htmlEncode(tags[i]);
-					var item = '<li><span class="label label-warning"><a href="/user/' + encodeURIComponent(currUser) + '/' + encodeURIComponent(tags[i]) + '">' + itemText + '</a></span></li>';
+					var item = $('<li></li>').append(buildTagLabel('warning', tag));
 					$('#list-item-' + resourceHash + ' .hiddenSystemTag ul.tags').append(item);
 					$('#system-tags-link-' + resourceHash).show();
 				}
 			});
-			
 			
 			var systags = $('#list-item-' + resourceHash + ' .hiddenSystemTag ul.tags li');
 			//if there are no systags, hide systag button
@@ -176,7 +178,7 @@ $(function() {
 				$('#system-tags-link-' + resourceHash).hide();
 			}
 			
-			//success message
+			// success message
 			$(responseMsg).append('<div class="alert alert-success" role="alert">' + getString('edittags.update.success') + '</div>');
 			$(submitButton).removeAttr("disabled");
 		}).fail(function(result) { //on fail
@@ -184,7 +186,6 @@ $(function() {
 			$(responseMsg).append('<div class="alert alert-danger" role="alert">' + getString('edittags.update.error') + '</div>');
 			$(submitButton).removeAttr("disabled");
 		});
-			
 		return false;
 	});
 
