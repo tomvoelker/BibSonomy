@@ -64,13 +64,13 @@
 						<c:when test="${command.context.userLoggedIn and command.context.loginUser.name eq command.requestedUser}">
 							<p class="small-font"><fmt:message key="friends.addfriend.you" /></p>
 							<!-- button for CV link -->
-							<a class="btn btn-default btn-sm" href="/cv/user/${fn:escapeXml(user.name)}" title="${cvtitle}"><span class="glyphicon glyphicon-user"><!-- --></span><fmt:message key="navi.cv.abbrev"/></a>
+							<a class="btn btn-default btn-sm" href="/cv/user/${fn:escapeXml(command.user.name)}" title="${cvtitle}"><span class="fa fa-user"><!-- --></span><fmt:message key="navi.cv.abbrev"/></a>
 						</c:when>
 					</c:choose>
 				</div>
 			</div>
  			<p class="clearfix"></p>
 		</jsp:attribute>
-	</sidebar:sidebarItem>		
+	</sidebar:sidebarItem>
 
 </jsp:root>

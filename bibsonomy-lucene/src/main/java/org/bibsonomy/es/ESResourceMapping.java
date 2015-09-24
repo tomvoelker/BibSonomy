@@ -44,14 +44,17 @@ public class ESResourceMapping {
 	private final String resourceType;
 	// ElasticSearch client
 	private final ESClient esClient;
+	private final String indexName;
 
 	/**
 	 * @param resourceType
 	 * @param esClient
+	 * @param indexName 
 	 */
-	public ESResourceMapping(final String resourceType, final ESClient esClient) {
+	public ESResourceMapping(final String resourceType, final ESClient esClient, String indexName) {
 		this.resourceType = resourceType;
 		this.esClient = esClient;
+		this.indexName =  indexName;
 	}
 
 	/**
@@ -61,7 +64,8 @@ public class ESResourceMapping {
 	 */
 	public void doMapping() throws IOException {
 		final XContentBuilder mappingBuilder;
-
+		
+		// TODO: a more generic version
 		if (this.resourceType.equalsIgnoreCase("Bookmark")) {
 			/*
 			 * FIXME: What about GoldStandardBookmarks?
@@ -72,7 +76,7 @@ public class ESResourceMapping {
 			mappingBuilder = createMappingForPublication(this.resourceType);
 		}
 
-		this.esClient.getClient().admin().indices().preparePutMapping(ESConstants.INDEX_NAME).setType(this.resourceType).setSource(mappingBuilder).execute().actionGet();
+		this.esClient.getClient().admin().indices().preparePutMapping(indexName).setType(this.resourceType).setSource(mappingBuilder).execute().actionGet();
 
 		// wait for the yellow (or green) status to prevent
 		// NoShardAvailableActionException later
@@ -85,9 +89,7 @@ public class ESResourceMapping {
 	 * @throws IOException
 	 */
 	private static XContentBuilder createMappingForBookmark(final String documentType) throws IOException {
-		final XContentBuilder mapping = jsonBuilder().startObject().startObject(documentType).startObject("properties").startObject("intrahash").field("type", "string").field("index", "not_analyzed").endObject().startObject("interhash").field("type", "string").field("index", "not_analyzed").endObject().endObject().endObject().endObject();
-
-		return mapping;
+		return jsonBuilder().startObject().startObject(documentType).startObject("properties").startObject("intrahash").field("type", "string").field("index", "not_analyzed").endObject().startObject("interhash").field("type", "string").field("index", "not_analyzed").endObject().endObject().endObject().endObject();
 	}
 
 	/**
@@ -97,11 +99,53 @@ public class ESResourceMapping {
 	 * 
 	 */
 	private static XContentBuilder createMappingForPublication(final String documentType) throws IOException {
-		final XContentBuilder mapping = jsonBuilder().startObject().startObject(documentType).startObject("properties").startObject("address").field("type", "string").field("index", "no").endObject().startObject("annote").field("type", "string").field("index", "no").endObject().startObject("bKey").field("type", "string").field("index", "no").endObject().startObject("bibtexAbstract").field("type", "string").field("index", "no").endObject().startObject("bibtexKey").field("type", "string").field("index", "no").endObject().startObject("booktitle").field("type", "string").field("index", "no").endObject().startObject("chapter").field("type", "string").field("index", "no").endObject().startObject("crossref").field("type", "string").field("index", "no").endObject().startObject("day").field("type", "string").field("index", "no").endObject().startObject("edition").field("type", "string").field("index", "no").endObject().startObject("editor").field("type", "string").field("index", "no")
-				.endObject().startObject("entrytype").field("type", "string").field("index", "no").endObject().startObject("howPublished").field("type", "string").field("index", "no").endObject().startObject("institution").field("type", "string").field("index", "no").endObject().startObject("interhash").field("type", "string").field("index", "not_analyzed").endObject().startObject("intrahash").field("type", "string").field("index", "not_analyzed").endObject().startObject("journal").field("type", "string").field("index", "no").endObject().startObject("misc").field("type", "string").field("index", "no").endObject().startObject("month").field("type", "string").field("index", "no").endObject().startObject("note").field("type", "string").field("index", "no").endObject().startObject("number").field("type", "string").field("index", "no").endObject().startObject("organization").field("type", "string").field("index", "no").endObject().startObject("pages").field("type", "string")
-				.field("index", "no").endObject().startObject("privnote").field("type", "string").field("index", "not_analyzed").field("store", "false").endObject().startObject("publisher").field("type", "string").field("index", "no").endObject().startObject("school").field("type", "string").field("index", "no").endObject().startObject("series").field("type", "string").field("index", "no").endObject().startObject("title").field("type", "string").field("index", "analyzed").endObject().startObject("type").field("type", "string").field("index", "no").endObject().startObject("url").field("type", "string").field("index", "no").endObject().startObject("volume").field("type", "string").field("index", "no").endObject().startObject("year").field("type", "string").field("index", "not_analyzed").endObject().endObject().endObject().endObject();
-
-		return mapping;
-
+		return jsonBuilder().startObject().startObject(documentType).startObject("properties") //
+				.startObject("address").field("type", "string").field("index", "no").endObject() //
+				.startObject("annote").field("type", "string").field("index", "no").endObject() //
+				.startObject("bKey").field("type", "string").field("index", "no").endObject() //
+				.startObject("bibtexAbstract").field("type", "string").field("index", "no").endObject() //
+				.startObject("bibtexKey").field("type", "string").field("index", "no").endObject() //
+				.startObject("booktitle").field("type", "string").field("index", "no").endObject() //
+				.startObject("chapter").field("type", "string").field("index", "no").endObject() //
+				.startObject("crossref").field("type", "string").field("index", "no").endObject() //
+				.startObject("day").field("type", "string").field("index", "no").endObject() //
+				.startObject("edition").field("type", "string").field("index", "no").endObject() //
+				.startObject("editor").field("type", "string").field("index", "no").endObject() //
+				.startObject("entrytype").field("type", "string").field("index", "no").endObject() //
+				.startObject("howPublished").field("type", "string").field("index", "no").endObject() //
+				.startObject("institution").field("type", "string").field("index", "no").endObject() //
+				.startObject("interhash").field("type", "string").field("index", "not_analyzed").endObject() //
+				.startObject("intrahash").field("type", "string").field("index", "not_analyzed").endObject() //
+				.startObject("journal").field("type", "string").field("index", "no").endObject() //
+				.startObject("misc").field("type", "string").field("index", "no").endObject() //
+				.startObject("month").field("type", "string").field("index", "no").endObject() //
+				.startObject("note").field("type", "string").field("index", "no").endObject() //
+				.startObject("number").field("type", "string").field("index", "no").endObject() //
+				.startObject("organization").field("type", "string").field("index", "no").endObject() //
+				.startObject("pages").field("type", "string").field("index", "no").endObject() //
+				.startObject("privnote").field("type", "string").field("index", "not_analyzed").field("store", "false").endObject() //
+				.startObject("publisher").field("type", "string").field("index", "no").endObject() //
+				.startObject("school").field("type", "string").field("index", "analyzed").endObject() //
+				.startObject("series").field("type", "string").field("index", "no").endObject() //
+				.startObject("title").field("type", "string").field("index", "analyzed").endObject() //
+				.startObject("type").field("type", "string").field("index", "no").endObject() //
+				.startObject("url").field("type", "string").field("index", "no").endObject() //
+				.startObject("volume").field("type", "string").field("index", "no").endObject() //
+				.startObject("year").field("type", "string").field("index", "not_analyzed").endObject() //
+				.startObject(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME).field("type", "string").field("index", "not_analyzed").endObject() //
+				.startObject(ESConstants.SYSTEM_URL_FIELD_NAME).field("type", "string").field("index", "not_analyzed").endObject() //
+				.startObject(ESConstants.AUTHOR_ENTITY_NAMES_FIELD_NAME).field("type", "string").field("index", "analyzed").endObject() //
+				.startObject(ESConstants.AUTHOR_ENTITY_IDS_FIELD_NAME).field("type", "string").field("index", "analyzed").endObject() //
+				.startObject(ESConstants.PERSON_ENTITY_NAMES_FIELD_NAME).field("type", "string").field("index", "analyzed").endObject() //
+				.startObject(ESConstants.PERSON_ENTITY_IDS_FIELD_NAME).field("type", "string").field("index", "analyzed").endObject() //
+				.endObject().endObject().endObject();
 	}
+	
+	/**
+	 * @return the indexName
+	 */
+	public String getIndexName() {
+		return this.indexName;
+	}
+
 }

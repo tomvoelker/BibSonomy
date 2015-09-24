@@ -422,7 +422,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	public void testGetPostsForHomepage() {
 		this.printMethod("testGetPostsForHomepage");
 		final List<Post<BibTex>> post = publicationDb.getPostsForHomepage(null, null, null, 10, 0, null, this.dbSession);
-		assertEquals(2, post.size());
+		assertEquals(4, post.size());
 	}
 
 	/**
@@ -740,12 +740,12 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		param.setHash("");
 		
 		List<Post<BibTex>> posts = publicationDb.getPosts(param, this.dbSession);
-		assertEquals(2, posts.size());
+		assertEquals(4, posts.size());
 		
 		// setting group id to public shouldn't change anything
 		param.setGroupId(PUBLIC_GROUP_ID);
 		posts = publicationDb.getPosts(param, this.dbSession);
-		assertEquals(2, posts.size());
+		assertEquals(4, posts.size());
 	}
 
 	

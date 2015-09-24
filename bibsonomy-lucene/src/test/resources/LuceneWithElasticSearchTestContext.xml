@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans.xsd">
+						
+	<bean id="propertyConfigurerLucene" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:lucene-test.properties</value>
+				<value>classpath:elasticsearch-additional-test.properties</value>
+			</list>
+		</property>
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+	</bean>
+	
+	<bean id="esClient" class="org.bibsonomy.es.ESTestClient" lazy-init="true">
+	</bean>
+	
+	<bean id="esClientInitializer" class="org.bibsonomy.es.ESTestClientInitializer" lazy-init="true">
+		<property name="luceneResourceManagers" ref="allLuceneResourceManagers" />
+		<property name="sharedIndexUpdatePlugins" ref="allSharedIndexUpdatePlugins"/>
+		<property name="esClient" ref="esClient" />
+	</bean>
+	
+	<!-- TODO: move to bibsonomy-lucene-context as soon as we are not using jndi -->
+	<bean id="luceneDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${database.lucene.driverClassName}" />
+		<property name="url" value="${database.lucene.url}" />
+		<property name="username" value="${database.lucene.username}" />
+		<property name="password" value="${database.lucene.password}" />
+	</bean>
+	
+	<import resource="classpath:TestDatabaseBaseContext.xml"/>
+	<import resource="classpath:TestDatabaseContext.xml"/>
+	
+	<import resource="classpath:org/bibsonomy/bibsonomy-search-context-common.xml" />
+</beans>

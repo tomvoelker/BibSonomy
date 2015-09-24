@@ -27,7 +27,8 @@
 package org.bibsonomy.webapp.controller.admin;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,8 +36,12 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.es.SharedIndexUpdatePlugin;
 import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
 import org.bibsonomy.lucene.param.LuceneIndexInfo;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.webapp.command.admin.AdminLuceneViewCommand;
 import org.bibsonomy.webapp.command.admin.LuceneResourceIndicesInfoContainer;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -58,9 +63,12 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 	private static final String GENERATE_INDEX = "generateIndex";
 	private static final String GENERATE_ONE_INDEX = "generateOneIndex";
 	
-	private List<LuceneResourceManager<? extends Resource>> luceneResourceManagers;
-	/** plugin for elasticsearch */
-	private SharedIndexUpdatePlugin<? extends Resource> srPlugin;
+//	private List<LuceneResourceManager<? extends Resource>> luceneResourceManagers;
+//	/** plugin for elasticsearch */
+//	private SharedIndexUpdatePlugin<? extends Resource> srPlugin;
+//	
+	private Map<Class<? extends Resource>, LuceneResourceManager<? extends Resource>>   luceneResourceManagers;
+	private Map<Class<? extends Resource>, SharedIndexUpdatePlugin<? extends Resource>> sharedIndexUpdatePlugins;
 
 	@Override
 	public View workOn(final AdminLuceneViewCommand command) {
@@ -89,16 +97,24 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 		if (GENERATE_INDEX.equals(command.getAction()) 
 				|| (GENERATE_ONE_INDEX.equals(command.getAction()))) {
 			if (command.getResource() == null) {
-				if ((srPlugin != null) && "elasticsearch".equals(command.getIndexType())) {
-					srPlugin.generateIndex(luceneResourceManagers);
+				if ("elasticsearch".equals(command.getIndexType())) {
+					for (SharedIndexUpdatePlugin<? extends Resource> srPlugin : sharedIndexUpdatePlugins.values()) {
+						srPlugin.generateIndex(false);
+					}
 				} else {
-					throw new IllegalArgumentException("unsupported indextype '" + command.getIndexType() + "'");
+					command.setAdminResponse("unsupported indextype '" + command.getIndexType() + "'");
 				}
 			} else {
-				final LuceneResourceManager<? extends Resource> mng = getManagerByResourceName(command.getResource());
-				if (mng != null) {
-					if ((srPlugin != null) && "elasticsearch".equals(command.getIndexType())) {
-						srPlugin.generateIndex(mng);
+				final Class<? extends Resource> cls = ResourceUtils.getResourceClassBySimpleName(command.getResource().replaceAll(" elasticsearch", ""));
+				final LuceneResourceManager<? extends Resource> mng = luceneResourceManagers.get(cls);
+				final SharedIndexUpdatePlugin<? extends Resource> esUpdater = sharedIndexUpdatePlugins.get(cls);
+				if (mng == null) {
+					command.setAdminResponse("Cannot build new index because there exists no manager for resource \"" + command.getResource() + "\".");
+				} else if (esUpdater == null) {
+					command.setAdminResponse("Cannot build new index because there exists no updater for resource \"" + command.getResource() + "\".");
+				} else {
+					if ("elasticsearch".equals(command.getIndexType())) {
+						esUpdater.generateIndex(false);
 					} else {
 						if (!mng.isGeneratingIndex()) {
 							if (GENERATE_INDEX.equals(command.getAction())) {
@@ -111,8 +127,6 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 							command.setAdminResponse("Already building lucene-index for resource \"" + command.getResource() + "\".");
 						}
 					}
-				} else {
-					command.setAdminResponse("Cannot build new index because there exists no manager for resource \"" + command.getResource() + "\".");
 				}
 			}
 			
@@ -120,41 +134,46 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 		}
 		// Infos über die einzelnen Indexe
 		// Anzahl Einträge, letztes Update, ...
-		for (final LuceneResourceManager<? extends Resource> manager: luceneResourceManagers) {
+		for (final LuceneResourceManager<? extends Resource> manager: luceneResourceManagers.values()) {
 			LuceneResourceIndicesInfoContainer lriic = new LuceneResourceIndicesInfoContainer();
 			lriic.setResourceName(manager.getResourceName());
 			lriic.getLuceneResoruceIndicesInfos().addAll(manager.getIndicesInfos());
 			command.getIndicesInfos().add(lriic);
 		}
 		
-		if (srPlugin != null) {
-			String globalError = srPlugin.getGlobalIndexNonExistanceError();
-			if (globalError != null) {
-				command.setEsGlobalMessage(globalError);
-			} else {
-				for (final LuceneResourceManager<? extends Resource> manager: luceneResourceManagers) {
-					Collection<? extends LuceneIndexInfo> infos = srPlugin.getIndicesInfos(manager);
-					for (LuceneIndexInfo info : infos) {
-						LuceneResourceIndicesInfoContainer infoCon = new LuceneResourceIndicesInfoContainer();
-						infoCon.setResourceName(manager.getResourceName() + " elasticsearch");
-						infoCon.getLuceneResoruceIndicesInfos().add(info);
-						command.getEsIndicesInfos().add(infoCon);
-					}
-					
+		if (sharedIndexUpdatePlugins != null) {
+
+			
+			for (Entry<Class<? extends Resource>, SharedIndexUpdatePlugin<? extends Resource>> e : sharedIndexUpdatePlugins.entrySet()) {
+				final SharedIndexUpdatePlugin<? extends Resource> esUpdatePlugin = e.getValue();
+				final String globalError = esUpdatePlugin.getGlobalIndexNonExistanceError();
+				if (globalError != null) {
+					command.setEsGlobalMessage(globalError);
 				}
+					final LuceneResourceManager<? extends Resource> mng = luceneResourceManagers.get(e.getKey());
+					if (mng == null) {
+						command.setAdminResponse("Cannot show elasticsearch index info for \"" + command.getResource() + "\" because there is no luceneResourceManager.");
+					} else {
+						Collection<? extends LuceneIndexInfo> infos = esUpdatePlugin.getIndicesInfos(mng.getResourceName());
+						for (LuceneIndexInfo info : infos) {
+							LuceneResourceIndicesInfoContainer infoCon = new LuceneResourceIndicesInfoContainer();
+							infoCon.setResourceName(mng.getResourceName() + " elasticsearch");
+							infoCon.getLuceneResoruceIndicesInfos().add(info);
+							if(mng.getResourceName().equalsIgnoreCase(BibTex.class.getSimpleName())){
+								command.getEsIndicesInfosBibtex().add(infoCon);
+							}else if(mng.getResourceName().equalsIgnoreCase(Bookmark.class.getSimpleName())){
+								command.getEsIndicesInfosBookmark().add(infoCon);
+							}else if(mng.getResourceName().equalsIgnoreCase(GoldStandardPublication.class.getSimpleName())){
+								command.getEsIndicesInfosGoldStandard().add(infoCon);
+							}
+						}
+					}
+				
 			}
+			
 		}
 		
 		return Views.ADMIN_LUCENE;
-	}
-	
-	private LuceneResourceManager<? extends Resource> getManagerByResourceName(final String resource) {
-		for(final LuceneResourceManager<? extends Resource> mng: luceneResourceManagers) {
-			if(mng.getResourceName().equals(resource)) {
-				return mng;
-			}
-		}
-		return null;
 	}
 	
 
@@ -162,26 +181,25 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 	public AdminLuceneViewCommand instantiateCommand() {
 		return new AdminLuceneViewCommand();
 	}
-	
-	/**
-	 * TODO: use the Map<ResourceClass, LuceneResourceManager>
-	 * @param luceneResourceManagers
-	 */
-	public void setLuceneResourceManagers(final List<LuceneResourceManager<? extends Resource>> luceneResourceManagers) {
+
+
+	public Map<Class<? extends Resource>, LuceneResourceManager<? extends Resource>> getLuceneResourceManagers() {
+		return this.luceneResourceManagers;
+	}
+
+
+	public void setLuceneResourceManagers(Map<Class<? extends Resource>, LuceneResourceManager<? extends Resource>> luceneResourceManagers) {
 		this.luceneResourceManagers = luceneResourceManagers;
 	}
 
-	/**
-	 * @return srPlugin
-	 */
-	public SharedIndexUpdatePlugin<? extends Resource> getSrPlugin() {
-		return this.srPlugin;
+
+	public Map<Class<? extends Resource>, SharedIndexUpdatePlugin<? extends Resource>> getSharedIndexUpdatePlugins() {
+		return this.sharedIndexUpdatePlugins;
 	}
 
-	/**
-	 * @param srPlugin
-	 */
-	public void setSrPlugin(SharedIndexUpdatePlugin<? extends Resource> srPlugin) {
-		this.srPlugin = srPlugin;
+
+	public void setSharedIndexUpdatePlugins(Map<Class<? extends Resource>, SharedIndexUpdatePlugin<? extends Resource>> sharedIndexUpdatePlugins) {
+		this.sharedIndexUpdatePlugins = sharedIndexUpdatePlugins;
 	}
+	
 }

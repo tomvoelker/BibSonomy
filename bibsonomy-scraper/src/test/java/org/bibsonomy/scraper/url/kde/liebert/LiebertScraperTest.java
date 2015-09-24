@@ -86,7 +86,7 @@ public class LiebertScraperTest {
 		
 		assertTrue(cby.length() > 100);
 		
-		assertEquals("<div class=\"citedByEntry\"><div class=\"art_title\">RGD-conjugated triarylmethyl radical as probe".trim(), cby.substring(0, 95).trim());
+		assertEquals("<div class=\"citedByEntry\"><div class=\"art_title\">Synthesis, Characterization, and Nanoencapsula".trim(), cby.substring(0, 95).trim());
 		
 		assertTrue(cby.contains("Benoît Driesschaert"));
 	}

@@ -5,6 +5,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/layout/bootstrap"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:form="http://www.springframework.org/tags/form">
@@ -36,22 +37,29 @@
 								<li>
 									<!-- link to document -->
 									<a class="document-filename" href="/documents/${command.post.resource.intraHash}/${mtl:encodeURI(command.post.user.name)}/${mtl:encodeURI(document.fileName)}"><c:out value="${document.fileName}"/></a>
-									
+									<c:out value="  " /> <!-- TODO: use css -->
 									<!-- link for delete document -->
-									<a class="delete-document" onclick="return deleteFunction(this);" href="/ajax/documents?intraHash=${command.intraHashToUpdate}&amp;fileName=${fn:escapeXml(document.fileName)}&amp;ckey=${ckey}&amp;temp=false&amp;action=delete"><span class="glyphicon glyphicon-remove"><!--  --></span></a>
+									<!-- FIXME. use form! -->
+									<bs:linkButton onclick="return deleteFunction(this);" additionalClass="delete-document" href="/ajax/documents?intraHash=${command.intraHashToUpdate}&amp;fileName=${document.fileName}&amp;ckey=${ckey}&amp;temp=false&amp;action=delete" size="xsmall" style="defaultStyle" icon="times" />
 								</li>
 							</c:forEach>
 						</ul>
 					</div>
 				</div>
 			</c:if>
-				
-
+			
 			<div class="form-group">
 				<label class="col-sm-3 control-label" for="fu"><fmt:message key="bibtex.actions.private_document.upload"/></label>
 				<div class="col-sm-9">
 					<div id="inputDiv">
-						<input id="fu" type="file" name="file"/>
+						<c:choose>
+							<c:when test="${systemReadOnly}">
+								<input id="fu" type="file" name="file" disabled="disabled" />
+							</c:when>
+							<c:otherwise>
+								<input id="fu" type="file" name="file" />
+							</c:otherwise>
+						</c:choose>
 					</div>
 					<p class="help-block"><fmt:message key="post.bibtex.help"/></p>
 					<script type="text/javascript">
@@ -90,7 +98,7 @@
 										<!-- FIXME: deleteDocument() does not work -->
 										<a title="${delete}" class="deleteDocument" onclick="return deleteFunction(this);" href="/ajax/documents?fileHash=${fn:substring(fileN, 0, 64)}&amp;ckey=${ckey}&amp;temp=true&amp;action=delete">
 											<!-- <c:out value="${delete}"/> -->
-											<span class="glyphicon glyphicon-remove"><!--  --></span>
+											<span class="fa fa-remove"><!--  --></span>
 										</a>
 										
 										<input type="hidden" class="tempFileName" value="${fn:escapeXml(fileN)}" name="fileName"/>
@@ -98,13 +106,11 @@
 									<!-- increase temporary file counter -->
 									<script type="text/javascript">$(".counter").val(${status.count});</script>
 								</c:forEach>
-							</c:if>		
+							</c:if>
 						</ul>
 					</div>
 				</div>
-			</div>		
+			</div>
 		</jsp:attribute>
-		
 	</bsform:fieldset>
-	
 </jsp:root>

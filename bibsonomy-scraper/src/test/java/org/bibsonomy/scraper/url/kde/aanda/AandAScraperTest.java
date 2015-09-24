@@ -60,7 +60,7 @@ public class AandAScraperTest {
 	}
 	@Test
 	public void testReferences() throws Exception{
-		final ScrapingContext sc = new ScrapingContext(new URL("http://www.aanda.org/index.php?option=article&amp;access=doi&amp;doi=10.1051/0004-6361/201014294"));
+		final ScrapingContext sc = new ScrapingContext(new URL("http://www.aanda.org/articles/aa/abs/2010/05/aa14294-10/aa14294-10.html"));
 		
 		AandAScraper aas = new AandAScraper();
 		

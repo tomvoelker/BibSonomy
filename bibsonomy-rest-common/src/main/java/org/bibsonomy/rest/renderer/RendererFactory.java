@@ -47,15 +47,25 @@ public class RendererFactory {
 	private Map<RenderingFormat, Renderer> renderers;
 
 	private UrlRenderer urlRenderer;
-
+	
+	/**
+	 * constructs an empty renderer factory without any renderers
+	 */
 	public RendererFactory() {
 	}
-
+	
+	/**
+	 * constructs a renderer factory with a {@link JSONRenderer} and a
+	 * {@link XMLRenderer}
+	 * @param urlRenderer 
+	 */
 	public RendererFactory(final UrlRenderer urlRenderer) {
 		this.urlRenderer = urlRenderer;
 		this.renderers = new HashMap<RenderingFormat, Renderer>();
 		this.renderers.put(RenderingFormat.JSON, new JSONRenderer(urlRenderer));
-		this.renderers.put(RenderingFormat.XML, new XMLRenderer(urlRenderer));
+		final XMLRenderer renderer = new XMLRenderer(urlRenderer);
+		renderer.init();
+		this.renderers.put(RenderingFormat.XML, renderer);
 	}
 
 	/**

@@ -55,7 +55,7 @@
 											<input type="hidden" name="selTab" value="6"/>
 											<input type="hidden" name="action" value="Delete" />
 											<input type="hidden" name="accessTokenDelete" value="${oauthInfo.accessToken}"/>
-											<bsform:button type="submit" value="${buttonMessage}" size="xsmall" style="danger"/>
+											<bsform:button type="submit" value="${buttonMessage}" size="xsmall" style="danger" />
 										</form>
 									</td>
 								</tr>

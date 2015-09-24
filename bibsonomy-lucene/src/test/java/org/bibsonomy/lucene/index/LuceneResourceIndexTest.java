@@ -163,6 +163,7 @@ public class LuceneResourceIndexTest {
 		bibtex.setType("2");
 		bibtex.recalculateHashes();
 		LucenePost.setResource(resource);
+		LucenePost.setLastLogDate(new Date());
 		return LucenePost;
 	}
 	
@@ -207,6 +208,7 @@ public class LuceneResourceIndexTest {
 		resource = bookmark;
 		
 		LucenePost.setResource(resource);
+		LucenePost.setLastLogDate(new Date());
 		return LucenePost;
 	}
 }

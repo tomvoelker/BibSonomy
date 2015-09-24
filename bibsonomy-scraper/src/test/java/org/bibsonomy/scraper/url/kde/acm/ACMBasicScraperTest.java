@@ -102,6 +102,14 @@ public class ACMBasicScraperTest {
 		UnitTestRunner.runSingleTest("url_199");
 	}
 	
+	/**
+	 * ACM Queue
+	 */
+	@Test
+	public void urlTestRun8(){
+		UnitTestRunner.runSingleTest("url_286");
+	}
+	
 	@Test
 	public void test2() throws MalformedURLException {
 		

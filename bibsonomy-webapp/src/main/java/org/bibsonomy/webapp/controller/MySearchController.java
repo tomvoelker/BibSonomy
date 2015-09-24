@@ -86,7 +86,7 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 		}
 
 		// retrieve and set the requested resource lists, along with total counts
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			/* 
 			 * FIXME: we should deliver items dynamically via ajax,
 			 * displaying a 'wheel of fortune' until all items are loaded

@@ -36,7 +36,11 @@ import org.custommonkey.xmlunit.XMLAssert;
  */
 public class XMLRendererTest extends AbstractRendererTest {
 	
-	private final static XMLRenderer RENDERER = new XMLRenderer(new UrlRenderer("http://www.bibsonomy.org/api/"));
+	private final static XMLRenderer RENDERER;
+	static {
+		RENDERER = new XMLRenderer(new UrlRenderer("http://www.bibsonomy.org/api/"));
+		RENDERER.init();
+	}
 
 	@Override
 	public void compare(final String expected, final String actual) throws Exception {

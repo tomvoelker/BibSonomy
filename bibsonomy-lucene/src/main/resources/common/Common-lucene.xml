@@ -1,39 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
-<sqlMap namespace="Common">
-	<resultMap id="resource" class="resource" groupBy="intraHash">
-		<result property="interHash"   column="interHash"       javaType="string" />
-		<result property="intraHash"   column="intraHash"       javaType="string" />
-        <result property="title"       column="title"           javaType="string" />
-	</resultMap>
-
-	<resultMap id="posts" class="post" groupBy="contentId">
-		<result property="contentId"    column="content_id"     javaType="int" />
-		<result property="tags"         resultMap="Common.tag" />
-		<result property="date"         column="date"           javaType="date" />
-		<result property="groups"       resultMap="Common.group" />
-		<result property="user"         resultMap="Common.user" />
-		<result property="description"  column="description"    javaType="string" />
-	</resultMap>
-
-	<resultMap id="group" class="group" groupBy="groupId">
-		<result property="groupId" column="group"       javaType="int" />
-		<result property="name"    column="group_name"  javaType="string" />
-	</resultMap>
-
-	<resultMap id="user" class="user" groupBy="name">
-		<result property="name" column="user_name" javaType="string" />
-	</resultMap>
-
-	<resultMap id="tag" class="tag" groupBy="name">
-		<result property="name" column="tag_name" javaType="string" />
-	</resultMap>
+<sqlMap namespace="LuceneCommon">
 
 	<!-- spam prediction parameter -->	
 	<resultMap id="spamPrediction" class="user">
-		<result property="name" column="user_name" javaType="string" />
+		<result property="name"       column="user_name"  javaType="string" />
 		<result property="prediction" column="prediction" javaType="integer" />
-		<result property="updatedAt" column="updated_at" javaType="date" />
+		<result property="updatedAt"  column="updated_at" javaType="date" />
 	</resultMap>
 </sqlMap>
