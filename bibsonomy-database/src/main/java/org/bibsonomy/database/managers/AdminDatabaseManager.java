@@ -267,6 +267,11 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 			param.setGroupIdTable(table);
 			this.update("updateGroupIds", param, session);
 		}
+		
+		// remove the spammer from all groups he is in
+		if(param.isSpammer()) {
+			this.update("removeSpammerFromGroups", param, session);
+		}
 	}
 
 	/**

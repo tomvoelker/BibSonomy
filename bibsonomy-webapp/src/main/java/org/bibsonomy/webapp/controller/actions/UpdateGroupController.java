@@ -145,7 +145,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 								// group at once
 								if (invitedUser.isSpammer()) {
 									this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_INVITED_SPAMMER, ms);
-									this.mailUtils.sendGroupInvite(groupToUpdate.getName(), loginUser, invitedUser, this.requestLogic.getLocale());																		
+									//this.mailUtils.sendGroupInvite(groupToUpdate.getName(), loginUser, invitedUser, this.requestLogic.getLocale());																		
 								} else {
 									this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_INVITED, ms);
 									this.mailUtils.sendGroupInvite(groupToUpdate.getName(), loginUser, invitedUser, this.requestLogic.getLocale());									

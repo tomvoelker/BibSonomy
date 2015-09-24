@@ -165,4 +165,10 @@
 		</isEqual>
 	</update>
 	
+	
+	<delete id="removeSpammerFromGroups" parameterClass="adminParam">
+		DELETE FROM group_memberships
+		WHERE user_name = #userName#
+	</delete>
+	
 </sqlMap>
