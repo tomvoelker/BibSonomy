@@ -124,7 +124,7 @@
 						<property name="presenceCondition" ref="samlActivatedCondition" />
 						<property name="controllerBeanName" value="userSamlRegistrationController"/>
 						<property name="allowedFields">	
-							<list>		
+							<list>
 								<value>step</value>
 								<value>registerUser.name</value>
 								<value>registerUser.email</value>
@@ -989,7 +989,7 @@
 		    If the user is not logged in, we need an instance of the LogicInterface
 		    which has admin rights. 
 		 -->
-		<property name="adminLogic" ref="adminLogic"/>		
+		<property name="adminLogic" ref="adminLogic"/>
 		
 		<!-- reCaptcha needs access to some HTTP headers, so we need the requestLogic -->
 		<property name="requestLogic" ref="requestLogic"/>
@@ -1002,7 +1002,7 @@
 		<!-- After successful registration, the user is redirected to this page.  -->
 		<property name="successRedirect" value="/register_ldap_success"/>
 		<!--
-			to log the user into the system after successful registration			 
+			to log the user into the system after successful registration
 		 -->
 		<property name="rememberMeServices" ref="ldapRememberMeServices"/>
 		<property name="authenticationManager" ref="ldapAuthenticationManager"/>

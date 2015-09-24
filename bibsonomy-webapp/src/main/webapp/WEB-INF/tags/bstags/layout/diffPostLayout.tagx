@@ -12,7 +12,7 @@
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/bstags/post"
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons">
 
 <!-- FIXME: some code duplicate of editGoldStandardPostLayout -->
@@ -91,35 +91,15 @@
                                    <!--
                                    | general information 
                                    -->
-                                <bform:fieldset maximized="true" legendKey="post.resource.fields.general">
+                                <bsform:fieldset legendKey="post.resource.fields.general">
                                 	<jsp:attribute name="content">
     	                                <jsp:invoke fragment="generalInformation"/>
 									</jsp:attribute>
-                                </bform:fieldset>
+                                </bsform:fieldset>
                                 
                                 <c:if test="${not empty detailedInformation}">
                                     <jsp:invoke fragment="detailedInformation"/>
                                 </c:if>
-								<!--
-									| a Captcha for our spammers ...
-									 TODO: check if uncomment needed
-								<c:if test="${not empty command.captchaHTML}">
-									<bform:fieldset maximized="true" legendKey="captcha">
-										<jsp:attribute name="content">
-									
-											<c:if test="${resourceType eq 'Publication'}">
-												<p>
-													<fmt:message key="post.edit.spam_note">
-														<fmt:param value="user ${command.context.loginUser.name} was flagged as spammer"/>
-														<fmt:param value="${properties['project.noSpamEmail']}" />
-													</fmt:message>
-												</p>
-											</c:if>
-											<bform:captcha />
-										</jsp:attribute>
-									 </bform:fieldset>
-								</c:if>
-                                -->
                                 <div>
 									<form:hidden path="post.resource.interHash"/>
 	                                <input type="hidden" name="user" value="${command.user}"/>
@@ -165,7 +145,5 @@
           </script>
           
 		</jsp:attribute>
-	    
 	</layout:paneLayout>
-
 </jsp:root>

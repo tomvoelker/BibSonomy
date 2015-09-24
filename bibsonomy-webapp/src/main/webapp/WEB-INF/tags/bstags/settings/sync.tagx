@@ -8,7 +8,6 @@
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
-	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:settings="urn:jsptagdir:/WEB-INF/tags/bstags/settings"

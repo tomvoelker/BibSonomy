@@ -3,9 +3,6 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:form="http://www.springframework.org/tags/form"
-	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
-	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form">
 
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
