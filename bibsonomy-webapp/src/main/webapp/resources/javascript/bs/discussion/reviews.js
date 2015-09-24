@@ -116,17 +116,31 @@ function validateRating(starsWrapperId) {
 }
 
 function plotRatingDistribution() {
-	if ($("#ratingDistributionGraph").length == 0) {
+	$('#averageRating').rating({
+		min : 0,
+		max : 5,
+		step : 0.0001,
+		size : 'xs',
+		readonly : true,
+		showCaption : false,
+		glyphicon : false,
+		ratingClass : 'rating-fa'
+	});
+	
+	var average = getAvg()
+	$('#averageRating').rating('update', average);
+
+	
+	if ($("#rating-distribution").length == 0) {
 		return;
 	}
 	
 	var ratings = [];
 	var rating_ticks = [];
-	var d1 = [];
 	var maxValue = 0;
 
 	if ($(".ratingDistributionData").length > 0) {
-		// get all ratings from hidden statistik tags
+		// get all ratings from hidden statistic tags
 		$('#ratingDistribution').find('.ratingDistributionData').each(function() {
 			var key = $(this).data("rating");
 			var value = $(this).data("count");
@@ -137,7 +151,7 @@ function plotRatingDistribution() {
 		});
 	} else {
 		// get all ratings from all reviews
-		$('.subdiscussionItems li').not('#newReview').find('.rating').each(function() {
+		$('.discussionItems li').not('#newReview').find('.rating').each(function() {
 			var key = parseFloat($(this).data("rating"));
 			if (ratings[key]) {
 				ratings[key] += 1;
@@ -149,7 +163,7 @@ function plotRatingDistribution() {
 			}
 		});
 	}
-	
+	var ratingCounts = [];
 	for (var i = 0; i < RATING_STEPS; i++) {
 		var key = parseFloat(i) / parseFloat(STEP_RATING);
 		var value = 0;
@@ -161,44 +175,29 @@ function plotRatingDistribution() {
 		if (value > 0) {
 			value = value / maxValue * 100;
 		} else {
-			// 0 values are producing a thin line
-			value = Number.NaN;
+			value = 0;
 		}
-		d1.push([key, value]);
+		
+		ratingCounts.push(value);
 		rating_ticks.push(key);
 	}
 	
-	// set bars default styles 
-	var barsStyleColor	= null;
-
-	// set bars values, if set as tag attribute
-	if ($("#ratingDistributionGraph").css("border-left-style") == "dashed") {
-		barsStyleColor = $("#ratingDistributionGraph").css("border-left-color");
-	}
+	var data = {
+		labels : rating_ticks,
+		datasets : [ {
+			label : "reviews",
+			fillColor : "rgba(239,205,106,1)",
+			strokeColor : "rgba(235,191,69,1)",
+			highlightFill : "rgba(239,205,106,1)",
+			highlightStroke : "rgba(235,191,69,1)",
+			data : ratingCounts
+		}]
+	};
 	
-	$.plot($("#ratingDistributionGraph"),[ { data: d1, color: barsStyleColor } ], {
-		bars: {
-			show: true,
-			align: "center",
-			lineWidth: 1,
-			barWidth: 0.3,
-			fill: 0.7,
-		},
-		xaxis: {
-			ticks: rating_ticks,
-			tickDecimals: 1,
-			tickColor: 'transparent',
-			autoscaleMargin: 0.02
-		},
-		yaxis: {
-			show: false,
-			min: 0,
-		    max: 110
-		},
-		grid: {
-			markings: [ { xaxis: { from: getAvg(), to: getAvg() }, yaxis: { from: 0, to: 110 }, color: "#bb0000" }]
-		}
-    });
+	var ctx = $("#rating-distribution").get(0).getContext("2d");
+	var myBarChart = new Chart(ctx).Bar(data, {
+		scaleShowLabels: false,
+	});
 }
 
 function createReview() {

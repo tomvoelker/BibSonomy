@@ -22,8 +22,7 @@
 		headerLogoClass="search" 
 		command="${command}" 
 		requPath="${requPath}" 
-		activeTab="my"
-		minimizedContentWidth="${true}">
+		activeTab="my">
 
     	<jsp:attribute name="heading">
     		<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>

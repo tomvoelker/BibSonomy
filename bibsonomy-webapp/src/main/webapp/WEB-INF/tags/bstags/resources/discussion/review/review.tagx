@@ -10,32 +10,23 @@
 	<jsp:directive.attribute name="review" type="org.bibsonomy.model.Review" required="true" />
 	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
-	<jsp:directive.attribute name="schemaOrgMarkUp" type="java.lang.Boolean" required="true" />
 	
 	<c:set var="ownReview" value="${loginUser.name eq review.user.name }" />
 	
-	<discussionItem:discussionItem resource="${resource}" discussionItem="${review}" loginUser="${loginUser}" schemaOrgMarkUp="${schemaOrgMarkUp}">
+	<discussionItem:discussionItem resource="${resource}" discussionItem="${review}" loginUser="${loginUser}">
 		<jsp:attribute name="content">
-			<div class="rating" data-rating="${review.rating}">
+			<div class="rating" data-rating="${review.rating}" itemscope="itemscope" itemtype="http://schema.org/Rating">
 				<review:reviewStars rating="${review.rating}"/>
-				<c:if test="${schemaOrgMarkUp}">
-					<meta itemprop="reviewRating" content="${review.rating}"/>
-				</c:if>
+				<meta itemprop="ratingValue" content="${review.rating}" />
+				<meta itemprop="bestRating" content="5" />
+				<meta itemprop="worstRating" content="0" />
+				<!-- <meta itemprop="reviewRating" content="${review.rating}"/>  -->
 			</div>
-			<!-- use schema.org markup or not -->
-			<c:choose>
-				<c:when test="${schemaOrgMarkUp}">
-					<div class="review text" itemprop="reviewBody">
-						<mtl:publicationReference text="${fn:escapeXml(review.text)}" />
-					</div>
-				</c:when>
-				<c:otherwise>
-					<div class="review text">
-						<mtl:publicationReference text="${fn:escapeXml(review.text)}" />
-					</div>
-				</c:otherwise>
-			</c:choose>
-
+			
+			<div class="review text" itemprop="reviewBody">
+				<mtl:publicationReference text="${fn:escapeXml(review.text)}" />
+			</div>
+			
 			<c:if test="${ownReview}">
 				<!-- This form is only displayed where a goldstandard post exists. Therefore the postUserName ist the goldStandardPostUserName "" -->
 				<review:reviewForm review="${review}" resource="${resource}" userName="${loginUser.name}" postUserName=""/>

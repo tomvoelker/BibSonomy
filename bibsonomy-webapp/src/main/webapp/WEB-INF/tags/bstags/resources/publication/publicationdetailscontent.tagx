@@ -68,7 +68,8 @@
 			<c:if test="${not empty doi}">
 				<dt><fmt:message key="bibtex.actions.doi"/>:</dt>
 				<dd>
-					<a itemprop="sameAs" href="http://dx.doi.org/${mtl:encodeURI(mtl:extractDOI(doi))}"><c:out value="${mtl:extractDOI(doi)}"/></a>
+					<c:set var="doi" value="${mtl:extractDOI(doi)}" />
+					<a itemprop="sameAs" href="http://dx.doi.org/${fn:escapeXml(doi)}"><c:out value="${doi}"/></a>
 				</dd>
 			</c:if>
 			

@@ -18,8 +18,7 @@
 	<layout:paneLayout 
 		pageTitle="${buttonsPageTitle}" 
 		headerMessageKey="buttons.bookmarklet"  
-		command="${command}" requPath="${requPath}"
-		minimizedContentWidth="${true}" >
+		command="${command}" requPath="${requPath}">
 	
 		<jsp:attribute name="headerExt">
 			<script type="text/javascript" src="/resources/bootstrap/js/holder.js"><!-- KEEP ME --></script>

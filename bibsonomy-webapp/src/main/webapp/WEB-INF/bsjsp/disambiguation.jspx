@@ -57,8 +57,7 @@
 		command="${command}" 
 		requestedUser="${command.requestedUser}" 
 		requPath="${requPath}"
-		showPageOptions="${true}"
-		minimizedContentWidth="${true}" >
+		showPageOptions="${true}">
 
 		<jsp:attribute name="headerExt">
 			<script type='text/javascript' src='/resources/javascript/disambiguation/linkPerson.js'><!-- keep me --></script>

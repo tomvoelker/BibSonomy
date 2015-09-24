@@ -19,7 +19,6 @@
 		command="${command}" 
 		requPath="${requPath}" 
 		disableResourcetypeSelection="${true}"
-		minimizedContentWidth="${true}" 
 		headline="${headline}${command.requestedKey}">
 		
 		<jsp:attribute name="breadcrumbs">

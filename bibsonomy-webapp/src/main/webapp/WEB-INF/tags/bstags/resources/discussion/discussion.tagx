@@ -32,13 +32,7 @@
 	
 	<div class="discussion-all">
 		<!-- TODO: use spring security tags -->
-		<c:if test="${command.context.userLoggedIn}">
-			<h4 class="pub-details">
-				<span class="fa fa-comment-o"><!--  --></span>
-				<c:out value=" " />
-				<fmt:message key="post.resource.comment.actions.create" />
-			</h4>
-		</c:if>
+		
 
 
 		<c:if test="${not fn:contains(resource['class'].simpleName, 'Bookmark') and resource.entrytype=='preprint' and empty resource.discussionItems}">
@@ -49,26 +43,30 @@
 	
 		<!-- The input forms -->
 		<div id="discussion" data-interhash="${resource.interHash}">
-	    	<!-- TODO: use spring security tags -->
-		    <c:if test="${command.context.userLoggedIn}">
-		    	<div id="createReview" class="createReview">
-		    		<review:reviewForm resource="${resource}" userName="${loginUser.name}" postUserName="${postUserName}"/>
-		    		<!-- TODO: add tips for reviewing a resource !--> 
-	    		</div>
-		    	<!-- review and comment forms !-->
-	    		<div id="createComment" class="hidden">
-		    		<review:reviewForm resource="${resource}" userName="${loginUser.name}" postUserName="${postUserName}" type="comment"/>
-		    		<!-- TODO: add tips for reviewing a resource !--> 
-	    		</div>
-	    		<!-- review and comment forms !-->
-	    		<div id="createCommentInstance" class="hidden">
-		    		<review:reviewForm resource="${resource}" userName="${loginUser.name}" postUserName="${postUserName}" type="comment"/>
-		    		<!-- TODO: add tips for reviewing a resource !--> 
-	    		</div>
-
-			</c:if>
-
 			<discussionItem:discussionItems discussionItems="${discussionItems}" loginUser="${loginUser}" resource="${resource}" />
+			
+			<!-- TODO: use spring security tags -->
+			<c:if test="${command.context.userLoggedIn}">
+				<h4 class="pub-details">
+					<span class="fa fa-comment-o"><!--  --></span>
+					<c:out value=" " />
+					<fmt:message key="post.resource.comment.actions.create" />
+				</h4>
+				<div id="createReview" class="createReview">
+					<review:reviewForm resource="${resource}" userName="${loginUser.name}" postUserName="${postUserName}"/>
+					<!-- TODO: add tips for reviewing a resource !-->
+				</div>
+				<!-- review and comment forms !-->
+				<div id="createComment" class="hidden">
+					<review:reviewForm resource="${resource}" userName="${loginUser.name}" postUserName="${postUserName}" type="comment"/>
+					<!-- TODO: add tips for reviewing a resource !--> 
+				</div>
+				<!-- review and comment forms !-->
+				<div id="createCommentInstance" class="hidden">
+					<review:reviewForm resource="${resource}" userName="${loginUser.name}" postUserName="${postUserName}" type="comment"/>
+					<!-- TODO: add tips for reviewing a resource !--> 
+				</div>
+			</c:if>
 		</div>
 
 		<!-- TODO: use spring security tags -->
@@ -77,14 +75,14 @@
 				<div id="discussionTemplates" class="hidden">
 					<!-- create comment div structure -->
 					<div id="commentTemplate">
-				   		<comment:comment comment="${newComment}" loginUser="${loginUser}" resource="${resource}" schemaOrgMarkUp="false"/>
+						<comment:comment comment="${newComment}" loginUser="${loginUser}" resource="${resource}" />
 					</div>
 					<ul>
 						<!-- create li, div structure for new review -->
 						<li id="newReview">
-							<review:review review="${newReview}" resource="${resource}" loginUser="${loginUser}" schemaOrgMarkUp="false"/>
+							<review:review review="${newReview}" resource="${resource}" loginUser="${loginUser}" />
 						</li>
-		    		</ul>
+					</ul>
 				</div>
 			</c:when>
 			<c:otherwise>

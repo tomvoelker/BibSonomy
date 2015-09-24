@@ -32,7 +32,7 @@
 	<c:set var="isOwnPost" value="${post.user.name eq command.context.loginUser.name}"/>
 	<fmt:message key="navi.publication" var="pageTitle" />
 	
-	<layout:paneLayout pageTitle="${pageTitle} :: ${title}" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}" showPageOptions="${true}" minimizedContentWidth="${true}">
+	<layout:paneLayout pageTitle="${pageTitle} :: ${title}" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}" showPageOptions="${true}">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.publication" formAction="/search" formInputName="search" formInputValue="${title}"/>
 		</jsp:attribute>

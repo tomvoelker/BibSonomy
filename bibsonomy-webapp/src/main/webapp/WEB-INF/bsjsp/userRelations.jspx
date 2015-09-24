@@ -47,8 +47,7 @@
 			command="${command}" 
 			requestedUser="${command.requestedUser}" 
 			requPath="${requPath}"
-			showPageOptions="${true}"
-			minimizedContentWidth="${true}">
+			showPageOptions="${true}">
 
 		<jsp:attribute name="heading">
 <!-- FIXME: Currently the search is the same on all pages (it used to depend on the current page at hand) -->

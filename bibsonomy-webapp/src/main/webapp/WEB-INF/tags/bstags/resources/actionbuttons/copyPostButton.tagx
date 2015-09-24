@@ -10,15 +10,29 @@
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="buttonClasses" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="enforceCommunityPost" type="java.lang.Boolean" required="false"/>
-
-	<c:choose>
-		<c:when test="${not empty post.systemUrl }">
-			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
-		</c:when>
-		<c:otherwise>
-			<c:set var ="isRemotePost" value="false"/>
-		</c:otherwise>
-	</c:choose>
+	<jsp:directive.attribute name="forceCommunityCreate" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="icon" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="titleKey" type="java.lang.String" required="false"/>
+	
+	<c:if test="${empty icon}">
+		<c:set var="icon" value="copy" />
+	</c:if>
+	
+	<c:set var="isCommunityPost" value="${enforceCommunityPost or empty post.user.name}" />
+	
+	<c:if test="${empty titleKey}">
+		<c:choose>
+			<c:when test="${isCommunityPost}">
+				<c:set var="titleKey" value="post.actions.copy.title" />
+			</c:when>
+			<c:otherwise>
+				<c:set var="titleKey" value="${resourceType}.actions.copy.title" />
+			</c:otherwise>
+		</c:choose>
+		
+	</c:if>
+	
+	<c:set var="isRemotePost" value="${not empty post.systemUrl and post.systemUrl ne properties['project.home']}"/>
 
 	<!-- TODO: use the urlGenerator for this -->
 	<c:set var="url" value="Publication"/>
@@ -29,6 +43,7 @@
 	
 	<c:choose>
 		<c:when test="${isRemotePost and resourceType ne 'bookmark'}">
+			<!-- FIXME: remove old url calling -->
 			<c:url var="url" value="/BibtexHandler">
 				<c:param name="requTask" value="upload"/>
 				<c:param name="url" value="${relativeUrlGenerator.getPublicationUrlByIntraHashUsernameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}"/>
@@ -38,6 +53,7 @@
 			</c:url>
 		</c:when>
 		<c:when test="${isRemotePost and resourceType eq 'bookmark'}">
+			<!-- FIXME: remove old url calling -->
 			<c:url var="url" value="/ShowBookmarkEntry">
 				<c:param name="url" value="${mtl:cleanUrl(post.resource.url)}"/>
 				<c:param name="description" value="${post.description}"/>
@@ -53,27 +69,38 @@
 			<c:set var="buttonClasses" value="${buttonClasses} disabled" />
 			<fmt:message var="copyTitle" key="system.readOnly.info" />
 		</c:when>
-		<c:when test="${enforceCommunityPost or empty post.user.name}">
+		<c:when test="${isCommunityPost}">
 			<!-- community-post -->
-			<fmt:message key="post.actions.copy.title" var="copyTitle"/>
+			<fmt:message key="${titleKey}" var="copyTitle"/>
 			<c:url var="url" value="/edit${url}">
 				<c:param name="hash" value="${post.resource.interHash}"/>
 			</c:url>
 		</c:when>
 		<c:otherwise>
-			<c:set var="url" value="/edit${url}" />
 			<!-- user is not post's owner -->
-			<c:url var="url" value="/edit${url}">
-				<c:param name="hash" value="${post.resource.intraHash}" />
-				<c:param name="user" value="${post.user.name}" />
-				<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
-			</c:url>
-			<fmt:message key="${resourceType}.actions.copy.title" var="copyTitle"/>
+			<c:choose>
+				<c:when test="${not forceCommunityCreate}">
+					<c:url var="url" value="/edit${url}">
+						<c:param name="hash" value="${post.resource.intraHash}" />
+						<c:param name="user" value="${post.user.name}" />
+						<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
+					</c:url>
+				</c:when>
+				<c:otherwise>
+					<c:url var="url" value="/editGoldStandard${url}">
+						<c:param name="hash" value="${post.resource.intraHash}" />
+						<c:param name="user" value="${post.user.name}" />
+						<c:param name="editBeforeSaving" value="true" />
+					</c:url>
+				</c:otherwise>
+			</c:choose>
+			
+			<fmt:message key="${titleKey}" var="copyTitle"/>
 		</c:otherwise>
 	</c:choose>
 	
 	<a class="${buttonClasses}" href="${url}" title="${copyTitle}">
-		<span class="fa fa-copy"><!--  --></span>
+		<span class="fa fa-${icon}"><!--  --></span>
 		<span class="sr-only"><fmt:message key="post.actions.copy"/></span>
 	</a>
 </jsp:root>

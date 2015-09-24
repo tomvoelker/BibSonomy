@@ -44,10 +44,10 @@ $(function() {
 	if ($(REVIEW_OWN_SELECTOR).length > 0) {
 		// user has reviewed this resource hide all create review forms
 		removeReviewActions();
-		$(COMMENT_CREATE_FORM).show();
+		// $(COMMENT_CREATE_FORM).show();
 		
 		$(document).ready(function() {
-			createStandaloneReply($("#createCommentInstance"));
+			// createStandaloneReply($("#createCommentInstance"));
 		});
 	}
 	

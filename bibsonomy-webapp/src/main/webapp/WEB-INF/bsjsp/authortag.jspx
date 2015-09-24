@@ -21,7 +21,6 @@
 		pageTitle="${authorPageTitle} :: ${command.requestedAuthor} :: ${command.requestedTags}"
 		command="${command}"
 		requPath="${requPath}"
-		minimizedContentWidth="${true}"
 		disableResourcetypeSelection="${true}"
 		headline="">
 		

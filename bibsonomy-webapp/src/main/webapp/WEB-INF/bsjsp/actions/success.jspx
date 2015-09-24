@@ -14,7 +14,7 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<layout:paneLayout command="${command}" pageTitle="${command.pageTitle}" requPath="${requPath}" headerMessageKey="success" minimizedContentWidth="${true}">
+	<layout:paneLayout command="${command}" pageTitle="${command.pageTitle}" requPath="${requPath}" headerMessageKey="success">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="success"/>
 		</jsp:attribute>

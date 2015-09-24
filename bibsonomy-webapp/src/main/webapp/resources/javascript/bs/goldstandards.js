@@ -5,15 +5,6 @@
 var FADE_DURATION = 1000;
 var GOLD_REFERENCE_URL = '/ajax/goldstandards/references';
 
-$(function() {
-	$("#gold_exports").tabs();
-	
-	// hide reference list if no publication references it
-	if ($("li.reference").length == 1) { // 1 because template for list item is in the list :)
-		$("#gold_references").hide();
-	}
-});
-
 function editReferences() {
 	// TODO replace menu text
 	if ($('.reference_menu').length > 0) {

@@ -342,6 +342,7 @@ function switchNavi(scope, element) {
 $(function() {
 	$('a.delete-toggle').hover(deleteToggleShowDeleteInfo);
 	$('a.delete-toggle').mouseleave(deleteToggleShowDefaultInfo);
+	$('[data-toggle="tooltip"]').tooltip();
 });
 
 function deleteToggleShowDefaultInfo() {

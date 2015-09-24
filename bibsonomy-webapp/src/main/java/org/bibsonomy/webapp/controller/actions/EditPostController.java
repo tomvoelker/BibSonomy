@@ -53,24 +53,16 @@ import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Group;
-import org.bibsonomy.model.Person;
-import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.PersonIdType;
-import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.PostLogicInterface;
-import org.bibsonomy.model.logic.exception.LogicException;
-import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.util.GroupUtils;
-import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
@@ -855,12 +847,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		if (present(this.pingback) && !loginUser.isSpammer() && GroupUtils.isPublicGroup(post.getGroups())) {
 			this.pingback.sendPingback(post);
 		}
-
 	}
-
-
-
-
 
 	/**
 	 * Populates the command with the given post. Ensures, that fields which

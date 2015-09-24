@@ -17,7 +17,7 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<layout:paneLayout pageTitle="${command.pageTitle}" requPath="${requPath}" command="${command}" headerMessageKey="joinGroup" minimizedContentWidth="${true}">
+	<layout:paneLayout pageTitle="${command.pageTitle}" requPath="${requPath}" command="${command}" headerMessageKey="joinGroup">
 		<!--+
 		 	| heading
 		 	+-->

@@ -22,7 +22,6 @@
 	<jsp:directive.attribute name="beforeMainContainer" fragment="true" required="false" />
 	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="newsbar" fragment="true" required="false"/>
-	<jsp:directive.attribute name="headerContainer" fragment="true" required="false"/>
 	<!-- FIXME: footerContainer not used -->
 	<jsp:directive.attribute name="footerContainer" fragment="true" required="false"/>
 	<jsp:directive.attribute name="hideFooterContainer" type="java.lang.Boolean" required="false"/>
@@ -30,7 +29,6 @@
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="noLoginBox" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="noSidebar" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
 	
@@ -52,7 +50,7 @@
 			pageTitle="${pageTitle}"
 			personalized="${personalized}"
 			/>
-			<body>
+			<body data-spy="scroll" data-target="#sidebar-nav">
 				<c:if test="${not empty beforeMainContainer}">
 					<jsp:invoke fragment="beforeMainContainer"/>
 				</c:if>
@@ -105,7 +103,6 @@
 				<div class="container main">
 					<c:choose>
 						<c:when test="${noSidebar}">
-							
 							<!-- without sidebar -->
 							<!-- Breadcrumbs -->
 							<c:if test="${not empty breadcrumbs}">

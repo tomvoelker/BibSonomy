@@ -21,7 +21,6 @@
 		command="${command}" 
 		requPath="${requPath}" 
 		disableResourcetypeSelection="${true}"
-		minimizedContentWidth="${true}"
 		headline="${headline}">
 		
 		<jsp:attribute name="heading">

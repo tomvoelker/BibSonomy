@@ -23,8 +23,7 @@
 		pageTitle="${cvPageTitle}" 
 		headerMessageKey="navi.cv${ownCVPage ? '.my' : ''}" 
 		headerLogoClass="cv" 
-		showPageOptions="${command.context.userLoggedIn and command.context.loginUser.name eq command.requestedUser}"
-		minimizedContentWidth="${true}">
+		showPageOptions="${command.context.userLoggedIn and command.context.loginUser.name eq command.requestedUser}">
 		
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>

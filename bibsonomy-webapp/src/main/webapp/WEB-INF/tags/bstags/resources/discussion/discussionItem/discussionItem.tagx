@@ -9,7 +9,6 @@
 	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true" />
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>
-	<jsp:directive.attribute name="schemaOrgMarkUp" type="java.lang.Boolean" required="true" />
 	
 	<c:set var="discussionItemUserName" value="${discussionItem.user.name}" />
 	
@@ -21,7 +20,6 @@
 	<c:set var="displayUserName"><user:username noLink="${true}" username="${discussionItemUserName}"/></c:set>
 	
 	<a href="/user/${fn:escapeXml(discussionItemUserName)}" class="thumbnail img-thumbnail pull-left" title="${displayUserName}">
-		
 		<c:choose>
 			<c:when test="${anonymous}">
 				<img src="${resdir}/image/anonymous.png" alt="anonymous" class="media-object commentPicture" />
@@ -32,42 +30,26 @@
 		</c:choose>
 		<span><c:out value="${displayUserName}" /></span>
 	</a>
-	<div class="media-body">
-		<c:choose>
-			<c:when test="${schemaOrgMarkUp}">
-				<c:set var="itemtype" value="http://schema.org/Review"/>
-				<c:set var="itemprop" value="reviews"/>
-				<c:if test="${clazz eq 'comment'}">
-					<c:set var="itemtype" value="http://schema.org/UserComment"/>
-					<c:set var="itemprop" value="comment"/>
-				</c:if>
 	
-				<div class="${clazz} details"  itemprop="${itemprop}" itemscope="itemscope" itemtype="${itemtype}">
-					<discussionItem:discussionItemInfo discussionItem="${discussionItem}" content="${content}" anonymous="${anonymous}" ownDiscussionItem="${ownDiscussionItem}" schemaOrgMarkUp="${schemaOrgMarkUp}"/>
-					<div class="citeBox" style="display:none" >
-						<!-- keep it -->
-						<h3><fmt:message key="discussion.references" /></h3>
-					</div>
-					<div class="bookCiteBox" style="display:none" >
-							<!-- keep it -->
-							<h3><fmt:message key="discussion.bookmarkReferences" /></h3>
-						</div>
-				</div>
-			</c:when>
-			<c:otherwise>
-				<div class="${clazz} details">
-					<discussionItem:discussionItemInfo discussionItem="${discussionItem}" content="${content}" anonymous="${anonymous}" ownDiscussionItem="${ownDiscussionItem}" schemaOrgMarkUp="${schemaOrgMarkUp}"/>
-						<div class="citeBox" style="display:none" >
-							<!-- keep it -->
-							<h3><fmt:message key="discussion.references" /></h3>
-						</div>
-						<div class="bookCiteBox" style="display:none" >
-							<!-- keep it -->
-							<h3><fmt:message key="discussion.bookmarkReferences" /></h3>
-						</div>
-				</div>
-			</c:otherwise>
-		</c:choose>
+	<div class="media-body">
+		<c:set var="itemtype" value="http://schema.org/Review"/>
+		<c:set var="itemprop" value="review"/>
+		<c:if test="${clazz eq 'comment'}">
+			<c:set var="itemtype" value="http://schema.org/UserComment"/>
+			<c:set var="itemprop" value="comment"/>
+		</c:if>
+
+		<div class="${clazz} details"  itemprop="${itemprop}" itemscope="itemscope" itemtype="${itemtype}">
+			<discussionItem:discussionItemInfo discussionItem="${discussionItem}" content="${content}" anonymous="${anonymous}" ownDiscussionItem="${ownDiscussionItem}" />
+			<div class="citeBox" style="display:none" >
+				<!-- keep it -->
+				<h3><fmt:message key="discussion.references" /></h3>
+			</div>
+			<div class="bookCiteBox" style="display:none">
+				<!-- keep it -->
+				<h3><fmt:message key="discussion.bookmarkReferences" /></h3>
+			</div>
+		</div>
 	
 		<!-- actions -->
 		<discussionItem:discussionItemActions discussionItem="${discussionItem}" />

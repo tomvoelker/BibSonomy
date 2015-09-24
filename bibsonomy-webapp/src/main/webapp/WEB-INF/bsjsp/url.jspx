@@ -56,7 +56,6 @@
 		showPageOptions="${false}"
 		resource="${bookmark}"
 		discussionBox="${true}"
-		minimizedContentWidth="${true}"
 		headline="${headline}${bookmark.title}">
 		
 		<!--+

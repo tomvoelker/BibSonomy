@@ -28,10 +28,8 @@ package org.bibsonomy.services;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.SearchType;
@@ -47,7 +45,9 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlBuilder;
 import org.bibsonomy.util.UrlUtils;
 
@@ -468,6 +468,25 @@ public class URLGenerator {
 		url += "/" + UrlUtils.safeURIEncode(tagName);
 
 		return this.getUrl(url);
+	}
+	
+	/**
+	 * @param post
+	 * @return the copy url for the community post
+	 */
+	public String getCopyUrlOfPost(final Post<? extends Resource> post) {
+		final UrlBuilder urlBuilder = new UrlBuilder(this.projectHome);
+		final Resource resource = post.getResource();
+		final Class<? extends Resource> superiorResourceClass = ResourceFactory.findSuperiorResourceClass(resource);
+		urlBuilder.addPathElement(this.prefix).addPathElement("edit" + StringUtils.capitalizeWord(ResourceFactory.getResourceName(superiorResourceClass)));
+		if (ResourceFactory.isCommunityResource(resource)) {
+			urlBuilder.addParameter("hash", resource.getInterHash());
+		} else {
+			urlBuilder.addParameter("hash", resource.getIntraHash());
+			urlBuilder.addParameter("user", post.getUser().getName());
+		}
+		
+		return this.getUrl(urlBuilder.asString());
 	}
 	
 	/**

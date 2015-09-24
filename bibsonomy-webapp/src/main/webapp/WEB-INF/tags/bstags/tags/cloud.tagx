@@ -74,7 +74,7 @@
 			<!-- display the tag -->
 			<c:if test="${tag.usercount >= cmd.minFreq or tagboxMinfreqStyle == 'none'}">
 				<li class="${tagclass}">
-					<jspx:element name="a">					
+					<jspx:element name="a">
 						<c:choose>
 							<c:when test="${not empty scope and scope ne 'LOCAL'}">
 								<jspx:attribute name="href">/${fn:escapeXml(mtl:getPath(requPath))}/${fn:escapeXml(tag.name)}?scope=${scope}</jspx:attribute>

@@ -29,8 +29,7 @@
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="noLoginBox" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="hideFooterContainer" type="java.lang.Boolean" required="false"/>	
-	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="hideFooterContainer" type="java.lang.Boolean" required="false"/>
 	
 	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
 	
@@ -46,7 +45,6 @@
 			pageTitle="${editPageTitle}" 
 			requPath="${requPath}" 
 			activeTab="${activeTab}"
-			minimizedContentWidth="${minimizedContentWidth}"
 			noSidebar="${true}"
 			headerExt="${headerExt}"
 			breadcrumbs="${breadcrumbs}"

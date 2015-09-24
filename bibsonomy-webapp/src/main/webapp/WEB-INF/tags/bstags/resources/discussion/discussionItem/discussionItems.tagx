@@ -25,19 +25,19 @@
 							<!-- check if user has reviewed this resource -->
 							<c:when test="${discussionItem.user.name eq command.context.loginUser.name}">
 								<li id="ownReview" class="${clazz} media">
-									<review:review review="${discussionItem}" resource="${resource}" loginUser="${loginUser}" schemaOrgMarkUp="true"/>
+									<review:review review="${discussionItem}" resource="${resource}" loginUser="${loginUser}" />
 								</li>
 							</c:when>
 							<c:otherwise>
 								<li class="${clazz} media">
-									<review:review review="${discussionItem}" resource="${resource}" loginUser="${loginUser}" schemaOrgMarkUp="true"/>
+									<review:review review="${discussionItem}" resource="${resource}" loginUser="${loginUser}" />
 								</li>
 							</c:otherwise>
 						</c:choose>
 					</c:when>
 					<c:when test="${'Comment' eq discussionItem['class'].simpleName}">
 						<li class="${clazz} media">
-							<comment:comment comment="${discussionItem}" loginUser="${loginUser}" resource="${resource}" schemaOrgMarkUp="true"/>
+							<comment:comment comment="${discussionItem}" loginUser="${loginUser}" resource="${resource}" />
 						</li>
 					</c:when>
 					<c:when test="${discussionItem['class'].simpleName eq 'DiscussionItem'}">

@@ -17,7 +17,7 @@
 	
 	<fmt:message key="limited_account.activation.naviActivate" var="pageTitle" />
 	
-	<layout:paneLayout command="${command}" pageTitle="${pageTitle}" requPath="${requPath}" headerMessageKey="limited_account.activation.naviActivate" minimizedContentWidth="${false}">
+	<layout:paneLayout command="${command}" pageTitle="${pageTitle}" requPath="${requPath}" headerMessageKey="limited_account.activation.naviActivate">
 	
 		<jsp:attribute name="headerExt">
 			<style type="text/css">

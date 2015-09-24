@@ -29,16 +29,16 @@
 	<jsp:directive.attribute name="customPageOptions" fragment="true" required="false"/>
 	<jsp:directive.attribute name="customBookmarksHeaderText" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="customPublicationsHeaderText" type="java.lang.String" required="false"/>
-	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>
 	
 	<!-- quick fix for discussion page -->
 	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="false" />
 	<jsp:directive.attribute name="discussionBox" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="noSidebar" type="java.lang.Boolean" required="false"/>
 	
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="infobox" fragment="true" required="false"/>
 	<jsp:directive.attribute name="beforeMainContainer" fragment="true" required="false"/>
-	<jsp:directive.attribute name="sidebar" fragment="true" required="true"/>
+	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="newsbar" fragment="true" required="false"/>	
 	<jsp:directive.attribute name="contentHeading" fragment="true" required="false"/>
 	<jsp:directive.attribute name="headerExt" fragment="true" required="false"/>
@@ -73,13 +73,13 @@
 			requestedUser="${command.requestedUser}"
 			infobox="${infobox}"
 			sidebar="${sidebar}"
+			noSidebar="${noSidebar}"
 			newsbar="${newsbar}"
 			requPath="${requPath}"
 			activeTab="${activeTab}"
 			personalized="${command.personalized}"
 			hideFooterContainer="${hideFooterContainer}"
 			beforeMainContainer="${beforeMainContainer}"
-			minimizedContentWidth="${minimizedContentWidth}"
 			breadcrumbs="${breadcrumbs}">
 			
 		<!--+
@@ -100,53 +100,23 @@
 
 			<jsp:invoke fragment="headerExt"/>
 		</jsp:attribute>
-
-			
-		<!--+
-			| header for resource lists and sidebar
-			+-->
-		<jsp:attribute name="headerContainer">
-			<c:if test="${discussionBox}">
-				<!-- Headline -->
-				<div class="header">
-					<c:out value="${mtl:cleanBibtex(resource.title)}" />
-				</div>
-			</c:if>
-			
-			<!-- FIXME: Explain or clean up (left-over from pre-bootstrap?) -->
-			<c:if test="${empty discussion}">
- 				<!-- bookmarks -->
- 				<div class="row">
-					<div class="col-md-6" id="bookmarkListConfig">
-					</div>
-					<!-- publications -->
-					<div class="col-md-6" id="publicationListConfig">
-					</div>
-				</div>
- 			</c:if>
-		</jsp:attribute>
 		
 		<!--+
 			+ main content (resource lists)
 			+-->
 		<jsp:attribute name="content">
-			<!-- 
-			<c:if test="${not empty headline}">
-				<h1 class="content-header"><c:out value="${headline}"/></h1>
-			</c:if>
-			-->
-			
 			<jsp:invoke fragment="content" />
 			
 			<c:choose>
 				<!-- if a community post is present show the community post, not the list of posts -->
 				<c:when test="${not empty command.goldStandardPublications.list}">
-					<goldstandardpublication:details otherPosts="${command.bibtex.list}" post="${command.goldStandardPublications.list[0]}" loginUser="${command.context.loginUser}"/>
+					<goldstandardpublication:details post="${command.goldStandardPublications.list[0]}" loginUser="${command.context.loginUser}"/>
 				</c:when>
 
 				<!-- if a community post is present show the community post, not the list of posts -->
 				<c:when test="${not empty command.goldStandardBookmarks.list}">
-					<goldstandardbookmark:details post="${command.goldStandardBookmarks.list[0]}" loginUser="${command.context.loginUser}"/>
+					TODO
+					<!--<goldstandardbookmark:details post="${command.goldStandardBookmarks.list[0]}" loginUser="${command.context.loginUser}"/>-->
 				</c:when>
 				
 				<c:otherwise>
@@ -200,7 +170,6 @@
 									</c:if>
 								</jsp:attribute>
 							</resources:bibtexs>
-							
 						</div>
 					</div>
 				</c:otherwise>

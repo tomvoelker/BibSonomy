@@ -16,7 +16,6 @@
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="sidebar" fragment="true" required="true"/>	
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
-	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>	
 	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
 	
 	<layout:layout 
@@ -28,22 +27,11 @@
 		sidebar="${sidebar}" 
 		requPath="${requPath}" 
 		activeTab="${activeTab}"
-		minimizedContentWidth="${minimizedContentWidth}"
 		breadcrumbs="${breadcrumbs}">
 		
 		<jsp:attribute name="headerExt"/>
 
 		<!-- FIXME: layout assumes that always both entrytypes are displayed; adapt to ?resourceType=XY -->
-
-		<jsp:attribute name="headerContainer">
-			<div id="bookmarksheader" class="standard">
-				<h2 class="header standard"><fmt:message key="bookmarks" /></h2>
-			</div>
-			
-			<div id="publicationsheader" class="standard">
-				<h2 class="header standard"><fmt:message key="publications" /></h2>
-			</div>
-		</jsp:attribute>
 
 		<jsp:attribute name="content">
 			<div class="row">

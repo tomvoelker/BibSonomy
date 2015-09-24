@@ -19,8 +19,7 @@
 		requPath="${requPath}" 
 		pageTitle="${syncPageTitle}" 
 		command="${command}" 
-		headerMessageKey="navi.sync"
-		minimizedContentWidth="${true}">
+		headerMessageKey="navi.sync">
 	
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/sync.css" />

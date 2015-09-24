@@ -9,7 +9,7 @@
 	<jsp:directive.attribute name="userList" type="java.util.List" required="true"/>
 
 	<c:if test="${not empty userList}">
-		<h4 class="pub-details"><span class="fa fa-users"><!--  --></span><c:out value=" " /><fmt:message key="goldstandard.resource.relatedUsers"/></h4>
+		<h4 class="pub-details" id="users"><fmt:message key="goldstandard.resource.relatedUsers"/></h4>
 		
 		<ul class="list-inline community-page-user-list">
 			<c:forEach var="user" items="${userList}" varStatus="count">
@@ -38,6 +38,5 @@
 				<li class="show"><a class="show-more" href="#">show all</a></li>
 			</c:if>
 		</ul>
-		<br />
 	</c:if>
 </jsp:root>

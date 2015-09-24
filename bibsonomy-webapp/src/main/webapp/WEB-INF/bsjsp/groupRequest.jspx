@@ -39,7 +39,7 @@
 		</c:otherwise>
 	</c:choose>
 	
-	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.groups" command="${command}" pageTitle="${pageTitle}" minimizedContentWidth="${true}">
+	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.groups" command="${command}" pageTitle="${pageTitle}">
 
 		<!--+
 		 	| heading

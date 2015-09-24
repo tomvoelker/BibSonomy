@@ -18,7 +18,7 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
 	<fmt:message key="navi.groups" var="pageTitle" />
-	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.groups" command="${command}" pageTitle="${pageTitle}" activeTab="groups" minimizedContentWidth="${true}">
+	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.groups" command="${command}" pageTitle="${pageTitle}" activeTab="groups">
 
 		<!--+
 		 	| heading

@@ -21,7 +21,6 @@
 		command="${command}" 
 		requPath="${requPath}" 
 		disableResourcetypeSelection="${true}"
-		minimizedContentWidth="${true}"
 		headline="${headline}${command.requestedUser}">	
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.documents" formAction="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}" formInputName="tag" formInputValue="${command.requestedTags}">

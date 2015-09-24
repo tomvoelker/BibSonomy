@@ -23,7 +23,7 @@
 	
 	<fmt:message key="navi.settings" var="settingsPageTitle"/>
 	
-	<layout:tabLayout pageTitle="${settingsPageTitle}" headerMessageKey="navi.settings" headerLogoClass="settings" command="${command}" requPath="${requPath}" activeTab="myprofile" minimizedContentWidth="${true}">
+	<layout:tabLayout pageTitle="${settingsPageTitle}" headerMessageKey="navi.settings" headerLogoClass="settings" command="${command}" requPath="${requPath}" activeTab="myprofile">
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/cv_page.css" />
 			<script type="text/javascript" src="${resdir}/javascript/cv/handlers.js"><!--  --></script>

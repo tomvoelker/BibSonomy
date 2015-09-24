@@ -20,7 +20,6 @@
 			requPath="${requPath}" isClipboard="${true}" 
 			disableListNavigation="${true}"
 			disableResourcetypeSelection="${true}"
-			minimizedContentWidth="${true}"
 			headline="${headline}">
 
 		<jsp:attribute name="heading">

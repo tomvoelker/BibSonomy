@@ -18,8 +18,7 @@
 
 	<layout:paneLayout pageTitle="${buttonsPageTitle}"
 		headerMessageKey="buttons.bookmarklet" command="${command}"
-		requPath="${requPath}" minimizedContentWidth="${true}"
-		noSidebar="${true}">
+		requPath="${requPath}" noSidebar="${true}">
 
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.buttoSchaltflächenns" />

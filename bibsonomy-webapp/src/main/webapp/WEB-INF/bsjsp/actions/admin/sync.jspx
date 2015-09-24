@@ -22,8 +22,7 @@
 	<layout:layout 
 		pageTitle="${adminPageTitle} :: Synchronization" 
 		loginUser="${command.context.loginUser}" 
-		requPath="${requPath}"
-		minimizedContentWidth="${true}">
+		requPath="${requPath}">
 		
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>

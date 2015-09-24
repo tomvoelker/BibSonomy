@@ -96,12 +96,12 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 	/**
 	 * Creates the Map with the Copy Metadata.
 	 */
-	private Map<String, List<String>> createCopyUserMap(final List<PostMetaData> metaDataList) {
+	private static Map<String, List<String>> createCopyUserMap(final List<PostMetaData> metaDataList) {
 		Map<String, List<String>> res = new HashMap<String, List<String>>();
 		for (PostMetaData data : metaDataList) {
 			List<String> copyUsers = res.get(data.getValue());
 			// author does not yet exist ?
-			if ( copyUsers == null ) {
+			if (copyUsers == null ) {
 				copyUsers = new ArrayList<String>();
 				res.put(data.getValue(), copyUsers);
 			} 
@@ -311,7 +311,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 			/*
 			 * get only those tags, related to the resource
 			 */
-			this.setTags(command, this.getResourceClass(), groupingEntity, requUser, null, null, longHash, TAG_LIMIT, null);			
+			this.setTags(command, this.getResourceClass(), groupingEntity, requUser, null, null, longHash, TAG_LIMIT, null);
 			return this.getResourcePage();
 		}
 
