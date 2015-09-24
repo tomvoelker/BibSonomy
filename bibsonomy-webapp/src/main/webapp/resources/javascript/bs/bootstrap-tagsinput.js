@@ -57,7 +57,6 @@
      * updating the elements val()
      */
     add: function(item, dontPushVal) {
-    	
       var self = this;
 
       if (self.options.maxTags && self.itemsArray.length >= self.options.maxTags)
@@ -76,10 +75,9 @@
       if (typeof item === "object" && !self.objectItems)
         throw("Can't add objects when itemValue option is not set");
 
-      // Ignore strings only containing whitespace
+      // Ignore strings only containg whitespace
       if (item.toString().match(/^\s*$/))
         return;
-      
 
       // If SELECT but not multiple, remove current tag
       if (self.isSelect && !self.multiple && self.itemsArray.length > 0)
@@ -102,7 +100,7 @@
           itemText = self.options.itemText(item),
           tagClass = self.options.tagClass(item);
 
-      // Ignore items already added
+      // Ignore items allready added
       var existing = $.grep(self.itemsArray, function(item) { return self.options.itemValue(item) === itemValue; } )[0];
       if (existing && !self.options.allowDuplicates) {
         // Invoke onTagExists
@@ -147,7 +145,7 @@
       if (self.options.maxTags === self.itemsArray.length || self.items().toString().length === self.options.maxInputLength)
         self.$container.addClass('bootstrap-tagsinput-max');
 
-      self.$element.trigger($.Event('itemAdded', { item: itemText }));
+      self.$element.trigger($.Event('itemAdded', { item: item }));
     },
 
     /**
