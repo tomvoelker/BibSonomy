@@ -37,6 +37,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
+import org.bibsonomy.common.exceptions.ReadOnlyDatabaseException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.ContextCommand;
@@ -263,6 +264,8 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 			 * page (if user is not logged in) or to the access denied page)
 			 */
 			throw ex;
+		} catch (final ReadOnlyDatabaseException e) {
+			errors.reject("system.readOnly.notice");
 		} catch (final Exception ex) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			errors.reject("error.internal", new Object[]{ex}, "Internal Server Error: " + ex.getMessage());

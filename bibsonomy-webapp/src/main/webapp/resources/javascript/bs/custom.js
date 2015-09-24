@@ -158,11 +158,13 @@ $(function() {
 			// append current tags
 			$(tags).each(function(i, v) {
 				if(!isSystemTag(v)) {
-					var item = '<span class="label label-grey"><a href="/user/' + encodeURIComponent(currUser) + '/' + encodeURIComponent(tags[i]) + '">' + tags[i] + '</a></span> ';
+					var itemText = $(tags[i]).html();
+					console.log(itemText);
+					var item = '<span class="label label-grey"><a href="/user/' + encodeURIComponent(currUser) + '/' + encodeURIComponent(tags[i]) + '">' + itemText + '</a></span> ';
 					$('#list-item-' + resourceHash + ' .ptags').append(item);
 				} else {
-					
-					var item = '<li><span class="label label-warning"><a href="/user/' + encodeURIComponent(currUser) + '/' + encodeURIComponent(tags[i]) + '">' + tags[i] + '</a></span></li>';
+					var itemText = $(tags[i]).text();
+					var item = '<li><span class="label label-warning"><a href="/user/' + encodeURIComponent(currUser) + '/' + encodeURIComponent(tags[i]) + '">' + itemText + '</a></span></li>';
 					$('#list-item-' + resourceHash + ' .hiddenSystemTag ul.tags').append(item);
 					$('#system-tags-link-' + resourceHash).show();
 				}

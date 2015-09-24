@@ -71,10 +71,9 @@
 							</c:when>
 							<c:otherwise>
 								<div class="pull-right btn-group dropdown-align-right" style="margin-bottom: 2px;">
-									<bsform:button gear="${true}" value="" dropdown="${true}" size="xsmall" style="defaultStyle" dataToggle="dropdown" />
+									<bsform:button forceEnabled="${true}" gear="${true}" value="" dropdown="${true}" size="xsmall" style="defaultStyle" dataToggle="dropdown" />
 									
 									<ul class="dropdown-menu list-options">
-				
 										<rc:actions 
 											resourceType="bookmark" 
 											sortPage="${command.sortPage}" 
@@ -85,8 +84,7 @@
 											isClipboard="${isClipboard}"
 											disableListNavigation="${disableListNavigation}"
 											disableResourcetypeSelection="${disableResourcetypeSelection}"/>
-							  		</ul>
-								  	
+									</ul>
 								</div>
 							</c:otherwise>
 						</c:choose>

@@ -47,34 +47,34 @@
 
 		<jsp:attribute name="content">
 			<div class="row">
-			
-				<!-- bookmark lists -->
-				<div class="col-md-6 bookmark-list">
-					<h3 class="list-headline"><fmt:message key="bookmarks" />${mtl:ch('nbsp')}</h3>
-					
+
 					<c:forEach var="bibtex" items="${command.listsBookmark}" varStatus="status">
-						<c:set var="extTitle">${command.listsBookmarkDescription[status.index]}<c:out value=" "/><fmt:message key="days"/></c:set>
-						<resources:simplebookmarks listView="${command.listsBookmark[status.index]}" loginUserName="${command.context.loginUser.name}" disablePagination="${true}">
-							<jsp:attribute name="extTitle">
-								<h4 class="list-sub-headline"><fmt:message key="within.last.days"><fmt:param value="${command.listsBookmarkDescription[status.index]}" /></fmt:message></h4>
-							</jsp:attribute>
-						</resources:simplebookmarks>
+					<c:choose>
+						<c:when test="${status.index == 0 or status.index == 1 or status.index == 2}">
+							<div class="col-md-12">
+								<c:set var="extTitle">${command.listsBibTeXDescription[status.index]}<c:out value=" "/><fmt:message key="days"/></c:set>
+								<h4 class="list-sub-headline"><fmt:message key="within.last.days"><fmt:param value="${command.listsBibTeXDescription[status.index]}" /></fmt:message></h4></div>
+							<div class="col-md-6 bookmark-list">
+								<h3 class="list-headline"><fmt:message key="bookmarks" />${mtl:ch('nbsp')}</h3>
+								<resources:simplebookmarks listView="${command.listsBookmark[status.index]}" loginUserName="${command.context.loginUser.name}" disablePagination="${true}"></resources:simplebookmarks>
+							</div>
+							<div class="col-md-6 publication-list">
+								<h3 class="list-headline"><fmt:message key="publications" />${mtl:ch('nbsp')}</h3>
+								<resources:simplebibtexs listView="${command.listsBibTeX[status.index]}" loginUserName="${command.context.loginUser.name}" disablePagination="${true}"></resources:simplebibtexs>
+							</div>
+						</c:when>
+						<c:otherwise>
+							<div class="col-md-6 bookmark-list"> 
+								<resources:simplebookmarks listView="${command.listsBookmark[status.index]}" loginUserName="${command.context.loginUser.name}" disablePagination="${true}">	
+								</resources:simplebookmarks>
+							</div>
+							<div class="col-md-6 publication-list">
+								<resources:simplebibtexs listView="${command.listsBibTeX[status.index]}" loginUserName="${command.context.loginUser.name}" disablePagination="${true}">	
+								</resources:simplebibtexs>
+							</div>
+						</c:otherwise>
+					</c:choose>	
 					</c:forEach>
-				</div>
-				
-				<!-- publication lists -->
-				<div class="col-md-6 publication-list">
-					<h3 class="list-headline"><fmt:message key="publications" />${mtl:ch('nbsp')}</h3>
-					 
-					<c:forEach var="bibtex" items="${command.listsBookmark}" varStatus="status">
-						<c:set var="extTitle">${command.listsBibTeXDescription[status.index]}<c:out value=" "/><fmt:message key="days"/></c:set>
-						<resources:simplebibtexs listView="${command.listsBibTeX[status.index]}" loginUserName="${command.context.loginUser.name}" disablePagination="${true}">
-							<jsp:attribute name="extTitle">
-								<h4 class="list-sub-headline"><fmt:message key="within.last.days"><fmt:param value="${command.listsBibTeXDescription[status.index]}" /></fmt:message></h4>
-							</jsp:attribute>
-						</resources:simplebibtexs>
-					</c:forEach>
-				</div>
 				
 			</div>
 		</jsp:attribute>

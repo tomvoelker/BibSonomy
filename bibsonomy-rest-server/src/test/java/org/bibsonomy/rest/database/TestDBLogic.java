@@ -178,7 +178,6 @@ public class TestDBLogic implements LogicInterface {
 	public Group getGroupDetails(final String groupName) {
 		return this.dbGroups.get(groupName);
 	}
-	
 
 	/**
 	 * note: the regex is currently not considered
@@ -187,7 +186,6 @@ public class TestDBLogic implements LogicInterface {
 	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags_, final String hash, final String search, final String regex, final TagSimilarity relation, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		return this.getTags(resourceType, grouping, groupingName, tags_, hash, search, SearchType.LOCAL, regex, relation, order, startDate, endDate, start, end);
 	}
-		
 
 	/**
 	 * note: the regex is currently not considered
@@ -1053,7 +1051,7 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	@Override
-	public List<URI> getSyncServices(final boolean server) {
+	public List<SyncService> getSyncServices(final boolean server, String sslDn) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1074,7 +1072,7 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	@Override
-	public List<SyncService> getSyncService(final String userName, final URI service, final boolean server) {
+	public List<SyncService> getSyncServiceSettings(final String userName, final URI service, final boolean server) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1103,12 +1101,6 @@ public class TestDBLogic implements LogicInterface {
 
 	@Override
 	public List<SynchronizationPost> getSyncPlan(final String userName, final URI service, final Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public List<SyncService> getAllSyncServices(final boolean server) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -1162,6 +1154,25 @@ public class TestDBLogic implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncServiceDetails(java.lang.String, java.net.URI)
+	 */
+	@Override
+	public SyncService getSyncServiceDetails(URI serviceURI) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getAutoSyncServer()
+	 */
+	@Override
+	public List<SyncService> getAutoSyncServer() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PersonLogicInterface#getPersonSuggestion(java.lang.String)
 	 */

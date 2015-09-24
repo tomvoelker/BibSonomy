@@ -1,94 +1,6 @@
-
-.glyphicon,
-.socicon {
-    display: inline-block;
-    font-family: FontAwesome;
-    font-style: normal;
-    font-weight: normal;
-    line-height: 1;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
 .fa {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}
-
-.glyphicon-bookmark:before {
-    content: @fa-var-bookmark;   
-}
-
-.glyphicon-asterisk:before {
-    content: @fa-var-asterisk;
-}
-
-.glyphicon-remove:before {
-    content: @fa-var-times;
-}
-
-.glyphicon-edit:before {
-    content: @fa-var-pencil;  
-} 
-
-.glyphicon-floppy-disk:before {
-    content: @fa-var-copy;   
-}
-
-.glyphicon-folder-open:before {
-	content: @fa-var-clipboard;
-}
-
-.glyphicon-inbox:before {
-	content: @fa-var-inbox;
-}
-
-.glyphicon-user:before {
-	content: @fa-var-user;
-}
-
-.glyphicon-tag:before {
-	content: @fa-var-tag;
-}
-
-.glyphicon-tags:before {
-	content: @fa-var-tags;
-}
-
-.glyphicon-question-sign:before {
-	content: @fa-var-question-circle;
-}
-
-.glyphicon-cog:before {
-	content: @fa-var-cog;
-}
-
-.glyphicon-off:before {
-	content: @fa-var-power-off;
-}
-
-.glyphicon-calendar:before {
-	content: @fa-var-calendar;
-}
-
-.glyphicon-plus:before {
-	content: @fa-var-plus;
-}
-
-.glyphicon-download-alt:before {
-	content: @fa-var-download;
-}
-
-.socicon-blogger:before {
-	content: @fa-var-book;
-}
-
-.socicon-twitter:before {
-	content: @fa-var-twitter;
-}
-
-.socicon-google:before {
-	content: @fa-var-google-plus;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 .capitalize {
@@ -109,11 +21,11 @@ ul.checklist {
 }
 
 .label-grey {
-    background-color: @light-grey;
+	background-color: @light-grey;
 }
 
 .label-grey a {
-    color: @font-color;   
+	color: @font-color;
 }
 
 body {
@@ -407,6 +319,8 @@ h4.list-sub-headline {
 	margin-bottom: 1em;
 	margin-left: 0.5em;
 	margin-top: 1.5em;
+    text-align: center;
+    background-color: #ADF;
 }  
  
 ul.posts,
@@ -428,13 +342,11 @@ ul.posts li.post:last-child {
 	border-bottom: none;
 }
 
-.glyphicon-private:before {
-    content: @fa-var-eye-slash ;
-}
+
 
 
 li.post div.in-my-collection,
-li.post div.glyphicon-private,
+li.post div.fa-eye-slash,
 li.post div.remote-post {
 	position:relative; 
 	width: 0px;
@@ -457,7 +369,7 @@ li.post div.remote-post {
 }
 
 
-li.post div.glyphicon-private {
+li.post div.fa-eye-slash {
 	font-size: 18px; 
 	top: -88px; 
 	left: 42px; 
@@ -842,7 +754,7 @@ div.newsbox ul.news {
 	cursor: pointer;
 }
 
-#recommendedTags li > span.glyphicon {
+#recommendedTags li > span.fa {
 	font-size: 10px;
 	line-height: 18px;
 	margin-right: 2px;
@@ -1149,7 +1061,7 @@ span.label.label-danger > a {
 	margin-bottom: 8px;
 }
 
-.thumbnail-container .glyphicon {
+.thumbnail-container .fa {
 	display: block;
 }
 

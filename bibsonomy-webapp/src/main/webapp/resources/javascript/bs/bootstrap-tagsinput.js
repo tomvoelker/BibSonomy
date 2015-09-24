@@ -56,10 +56,7 @@
      * Adds the given item as a new tag. Pass true to dontPushVal to prevent
      * updating the elements val()
      */
-    add: function(itemBefore, dontPushVal) {
-    	
-    	var itemMiddle = itemBefore.toString().replace(/</g, "&lt;");
-    	var item = itemMiddle.toString().replace(/>/g, "&gt;");
+    add: function(item, dontPushVal) {
     	
       var self = this;
 
@@ -79,7 +76,7 @@
       if (typeof item === "object" && !self.objectItems)
         throw("Can't add objects when itemValue option is not set");
 
-      // Ignore strings only containg whitespace
+      // Ignore strings only containing whitespace
       if (item.toString().match(/^\s*$/))
         return;
       
@@ -105,7 +102,7 @@
           itemText = self.options.itemText(item),
           tagClass = self.options.tagClass(item);
 
-      // Ignore items allready added
+      // Ignore items already added
       var existing = $.grep(self.itemsArray, function(item) { return self.options.itemValue(item) === itemValue; } )[0];
       if (existing && !self.options.allowDuplicates) {
         // Invoke onTagExists
@@ -130,7 +127,7 @@
       self.itemsArray.push(item);
 
       // add a tag element
-      var $tag = $('<span class="tag ' + htmlEncode(tagClass) + '">' + itemText + '<span data-role="remove"></span></span>');
+      var $tag = $('<span class="tag ' + htmlEncode(tagClass) + '">' + htmlEncode(itemText) + '<span data-role="remove"></span></span>');
       $tag.data('item', item);
       self.findInputWrapper().before($tag);
       $tag.after(' ');

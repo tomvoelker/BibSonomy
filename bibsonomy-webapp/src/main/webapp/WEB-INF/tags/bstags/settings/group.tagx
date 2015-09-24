@@ -1,18 +1,17 @@
-
 <jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
-		  xmlns:jsp="http://java.sun.com/JSP/Page"
-		  xmlns:c="http://java.sun.com/jsp/jstl/core"
-		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
-		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-		  xmlns:form="http://www.springframework.org/tags/form"
-		  xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
-		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
-		  xmlns:users="urn:jsptagdir:/WEB-INF/tags/bstags/users"
-		  xmlns:spring="http://www.springframework.org/tags"
-		  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
-		  xmlns:group="urn:jsptagdir:/WEB-INF/tags/bstags/resources/group"
-		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/layout/bootstrap"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+	xmlns:users="urn:jsptagdir:/WEB-INF/tags/bstags/users"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
+	xmlns:group="urn:jsptagdir:/WEB-INF/tags/bstags/resources/group"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true" />
 
@@ -39,7 +38,6 @@
 					</jsp:attribute>
 				</bsform:fieldset>
 				
-				 
 				<!-- Pending invites for the user -->
 				<c:set var="showPendingInvites" value="${false}" />
 				<c:set var="showPendingRequests" value="${false}" />
@@ -63,8 +61,6 @@
 
 							<c:forEach items="${command.user.pendingGroups}" var="group">
 								<c:if test="${group.getGroupMembershipForUser(loginUser).groupRole eq 'INVITED' }">
-
-
 									<dl class="dl-horizontal dt-thumbnail-items group-list">
 										<dt>
 											<group:groupthumbnail group="${group}" noname="${true}" size="16" />
@@ -77,14 +73,12 @@
 												</div>
 
 												<div class="col-xs-3">
-													<a class="btn btn-success btn-block btn-sm" title="${accinviteTitle}" href="/updateGroup?operation=add_member&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}">${accinvite}</a>
-													<a class="btn btn-danger btn-block btn-sm" title="${revuserTitle}" href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}">${revuser}</a>
+													<bs:linkButton style="success" title="${accinviteTitle}" text="${accinvite}" block="${true}" href="/updateGroup?operation=add_member&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}" size="small" />
+													<bs:linkButton style="danger" title="${revuserTitle}" href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}" size="small" text="${revuser}"/>
 												</div>
 											</div>
 										</dd>
 									</dl>
-
-
 								</c:if>
 							</c:forEach>
 						</jsp:attribute>
@@ -101,7 +95,6 @@
 									<dt>
 										<group:groupthumbnail group="${group}" noname="${true}" size="16" />
 									</dt>
-
 									<dd>
 										<div class="row">
 											<div class="col-xs-9">
@@ -109,7 +102,7 @@
 											</div>
 
 											<div class="col-xs-3">
-												<a class="btn btn-default btn-block btn-sm" href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}" title="${revuserTitle}">${revuser}</a>
+												<bs:linkButton title="${revuserTitle}" text="${revuser}" block="${true}" href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}" size="small" style="defaultStyle" />
 											</div>
 										</div>
 									</dd>

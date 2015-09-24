@@ -146,6 +146,7 @@
 		<property name="adminUserName" value="admin"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 		<property name="bibtexReader" ref="bibtexReader"/>
+		<property name="readOnly" value="${system.mode.readOnly}" />
 	</bean>
 
 	<!-- provides access to the database for all controllers -->
@@ -153,11 +154,13 @@
 		<property name="user" ref="loginUser"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 		<property name="bibtexReader" ref="bibtexReader"/>
+		<property name="readOnly" value="${system.mode.readOnly}" />
 	</bean>
 	<bean id="notLoggedInUserLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.LogicFactoryBean">
 		<property name="user" ref="notLoggedInUser"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 		<property name="bibtexReader" ref="bibtexReader"/>
+		<property name="readOnly" value="${system.mode.readOnly}" />
 	</bean>
 	<bean id="notLoggedInUser" class="org.bibsonomy.model.User"/>
 	

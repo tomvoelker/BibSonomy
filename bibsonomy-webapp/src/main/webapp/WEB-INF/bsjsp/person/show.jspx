@@ -100,15 +100,6 @@
 			<script type='text/javascript' src='/resources/javascript/person/explainRoles.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/titleAutocomplete.js'><!-- keep me --></script>
 			<style type='text/css'>
-				#personInfo .panel-heading a:after {
-				    font-family: 'Glyphicons Halflings';
-				    content: "\e114";    
-				    float: right; 
-				    color: grey; 
-				}
-				#personInfo .panel-heading a.collapsed:after {
-				    content: "\e080";
-				}
 				.row ul {
 					-webkit-padding-start: 10px;
 				}
@@ -187,7 +178,7 @@
 												<c:otherwise>
 													<div class='checkbox' id='personName_${name.personNameChangeId}'><label><input type='radio' name='formSelectedName' value='${name.personNameChangeId}' /> ${name.firstName} ${name.lastName}</label>&#160;
 														<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-															<span data-person-name-id='${name.personNameChangeId}' data-firstName='${name.firstName}' data-lastName='${name.lastName}' data-toggle='modal' data-target='#removeName' style='color:darkred;cursor:pointer' href='#remName' id='removeName_${name.personNameChangeId}' class='removeName glyphicon glyphicon-remove'></span>
+															<span data-person-name-id='${name.personNameChangeId}' data-firstName='${name.firstName}' data-lastName='${name.lastName}' data-toggle='modal' data-target='#removeName' style='color:darkred;cursor:pointer' href='#remName' id='removeName_${name.personNameChangeId}' class='removeName fa fa-remove'></span>
 														</c:if>
 													</div>
 												</c:otherwise>
@@ -200,7 +191,7 @@
 								</c:choose>
 								<br id='nameInsertionPoint'/>
 								<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-									<button type='button' class='btn btn-default' data-toggle="modal" data-target="#addName" href='#addPerson'>${textAddAlternateNameButton}</button>
+									<bsform:button size="defaultSize" value="${textAddAlternateNameButton}" style="defaultStyle" dataToggle="modal" dataTarget="#addName" />
 								</c:if>
 							</div>
 						</div>
@@ -250,7 +241,8 @@
 								<button style='${displayUnlinkButton}' type='button' id='btnUnlink' class='btn btn-default' data-toggle="modal" data-target="#unlinkPerson">${textThatsNotMeButton}</button>
 								-->
 								<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-									<button id='btnSaveSubmit' data-person-id="${command.person.personId}" type='button' class='btn btn-primary pull-right'>${textSaveButton}</button>
+									<!-- TODO: can we use the bsform:button tagx file? -->
+									<button id='btnSaveSubmit' data-person-id="${command.person.personId}" type='button' class="btn btn-primary pull-right ${systemReadOnly ? 'disabled' : '' }">${textSaveButton}</button>
 								</c:if>
 							</div>
 						</div>
@@ -267,7 +259,7 @@
 						<div id='ownThesis' class='tab-pane'>
 							<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
 								<br/>
-								<button style='width: 100%;' class='btn btn-default' data-toggle='modal' data-target='#addThesis'>${textAddThesisButton}</button>
+								<bsform:button size="defaultSize" value="${textAddThesisButton}" style="defaultStyle" dataToggle="modal" dataTarget="#addThesis" block="${true}" />
 								<br/>
 							</c:if>
 							<h3 class="list-headline"><fmt:message key="person.show.thesis" /></h3>
@@ -296,7 +288,6 @@
 								</c:otherwise>
 							</c:choose>
 						</div>
-						
 						
 						<div id='ownPublications' class='tab-pane'>
 							<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
@@ -545,9 +536,9 @@
           <button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
           <button type="button" class="btn btn-primary" id='btnEditRoleSubmit'>${textEditRoleButton}</button>
         </div>
-      </div>
-    </div>
-  </div>
+			</div>
+		</div>
+	</div>
 	
 	<div class="modal fade" id="deleteRole" tabindex="-1" role="dialog"
 		aria-labelledby="deleteRoleLabel" aria-hidden="true">
