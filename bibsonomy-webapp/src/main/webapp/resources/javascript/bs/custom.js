@@ -158,12 +158,11 @@ $(function() {
 			// append current tags
 			$(tags).each(function(i, v) {
 				if(!isSystemTag(v)) {
-					var itemText = $(tags[i]).html();
-					console.log(itemText);
+					var itemText = htmlEncode(tags[i]);
 					var item = '<span class="label label-grey"><a href="/user/' + encodeURIComponent(currUser) + '/' + encodeURIComponent(tags[i]) + '">' + itemText + '</a></span> ';
 					$('#list-item-' + resourceHash + ' .ptags').append(item);
 				} else {
-					var itemText = $(tags[i]).text();
+					var itemText = htmlEncode(tags[i]);
 					var item = '<li><span class="label label-warning"><a href="/user/' + encodeURIComponent(currUser) + '/' + encodeURIComponent(tags[i]) + '">' + itemText + '</a></span></li>';
 					$('#list-item-' + resourceHash + ' .hiddenSystemTag ul.tags').append(item);
 					$('#system-tags-link-' + resourceHash).show();
@@ -289,6 +288,15 @@ function activateAffixEntry(el) {
 		$(g).removeClass("active");
 	});
 }
+
+var htmlEncodeContainer = $('<div />');
+function htmlEncode(value) {
+    if (value) {
+      return htmlEncodeContainer.text(value).html();
+    } else {
+      return '';
+    }
+  }
 
 function findBootstrapEnvironment() {
 	var envs = [ 'xs', 'sm', 'md', 'lg' ];

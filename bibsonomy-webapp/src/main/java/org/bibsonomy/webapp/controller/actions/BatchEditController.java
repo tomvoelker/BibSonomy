@@ -256,7 +256,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		/*
 		 * for each post we have its old tags and its new tags
 		 */
-		Map<String, String> newTagsMap = new HashMap<String, String>();
+		final Map<String, String> newTagsMap = command.getNewTags();
 		final Map<String, String> oldTagsMap = command.getOldTags();
 
 		log.debug("#postFlags: " + markedPostsMap.size() + ", #postMap: " + postMap.size() + ", #addTags: " + addTags.size() + ", #newTags: " + newTagsMap.size() + ", #oldTags: " + oldTagsMap.size());
