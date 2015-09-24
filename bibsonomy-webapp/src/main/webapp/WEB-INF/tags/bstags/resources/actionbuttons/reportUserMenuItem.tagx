@@ -17,7 +17,7 @@
 		<fmt:message var="reportUser" key="user.report" />
 		<c:choose>
 			<c:when test="${!mtl:contains(command.context.loginUser.reportedSpammers, post.user)}">
-				<li>
+				<li class="${systemReadOnly ? 'disabled' : ''}">
 					<a onclick="return reportUser(this,'${post.user.name}');"
 						href="${relativeUrlGenerator.getUserRelationEditUrl()}"
 						title="${fn:escapeXml(reportUser)}" class="report-spammer-link" data-username="${fn:escapeXml(post.user.name)}">
