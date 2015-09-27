@@ -228,7 +228,7 @@
 		<module>bibsonomy-layout</module>
 		<module>bibsonomy-logging</module>
 		<module>bibsonomy-lucene</module>
-		<module>bibsonomy-gImporter</module>
+		
 		<module>bibsonomy-marc-parser</module>
 		<module>bibsonomy-model</module>
 		<module>bibsonomy-openaccess</module>
