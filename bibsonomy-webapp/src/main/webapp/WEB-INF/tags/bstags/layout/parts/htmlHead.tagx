@@ -110,7 +110,6 @@
 		</script>
 		<!-- localized JavaScript messages -->
 		<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale.language}.js"><!-- keep me --></script>
-		<script type="text/javascript" src="${resdir}/javascript/systemmessage.js"><!-- keep me --></script>
 		<!-- include tooltip JavaScript only for users that have tooltips enabled -->
 		<c:if test="${loginUser.settings.tagboxTooltip == 1}">	
 			<script type="text/javascript" src="${resdir}/javascript/tooltip.js"><!-- keep me --></script>

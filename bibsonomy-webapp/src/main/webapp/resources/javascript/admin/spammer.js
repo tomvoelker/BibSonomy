@@ -164,20 +164,20 @@ function generateApiKey(name) {
 /* function interacts with server via ajax */
 function runAjax(parameter,action) {
 	var request = initRequest(); 
-	var url = "/admin/ajax?" + parameter;	   
+	var url = "/admin/ajax?" + parameter;
    	if (request) {    	   		
-   		request.open('GET',url + "&action=" + action, true);	
-   		var handle = ajax_updateLog(request); 	   		
+   		request.open('GET',url + "&action=" + action, true);
+   		var handle = ajax_updateLog(request);
    		request.onreadystatechange = handle;
-   		request.send(null);		   		
-   	}    	
+   		request.send(null);
+   	}
 }
 
 /* handler function */
-function ajax_updateLog(request) {   			
-	return function() {			
-		if (4 == request.readyState) {    	
-	    	addLogMessage(request.responseText);	    			    	   
+function ajax_updateLog(request) {
+	return function() {
+		if (4 == request.readyState) {
+	    	addLogMessage(request.responseText);
 	    }
 	}
 }
@@ -193,7 +193,7 @@ function addLogMessage(msg) {
 }	
 
 /* resets input fields */
-function clearFields() {		
+function clearFields() {
 	document.getElementsByName("user")[0].value = "";
 	document.getElementsByName("user")[1].value = "";
 }
