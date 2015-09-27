@@ -31,7 +31,7 @@
 		<constructor-arg value="indexGenerator"/>
 	</bean>
 
-	<bean id="realSharedIndexUpdatePlugin" class="org.bibsonomy.es.SharedIndexUpdatePlugin" lazy-init="true" abstract="true">
+	<bean id="realSharedIndexUpdatePlugin" class="org.bibsonomy.search.es.updater.SharedIndexUpdatePlugin" lazy-init="true" abstract="true">
 		<constructor-arg ref="esClient"/>
 		<constructor-arg value="${project.home}"/>
 		<property name="generatorThreadPool" ref="indexGeneratorThreadPool" />

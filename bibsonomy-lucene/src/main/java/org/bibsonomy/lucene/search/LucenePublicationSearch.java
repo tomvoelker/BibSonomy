@@ -42,8 +42,8 @@ import org.bibsonomy.model.BibTex;
  */
 public class LucenePublicationSearch<P extends BibTex> extends LuceneResourceSearch<P> {
 
-    @Override
-    protected BooleanQuery buildSearchQuery(final String userName, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms) {
+	@Override
+	protected BooleanQuery buildSearchQuery(final String userName, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms) {
 		final BooleanQuery searchQuery = super.buildSearchQuery(userName, searchTerms, titleSearchTerms, authorSearchTerms);
 			
 		// search author
@@ -53,5 +53,5 @@ public class LucenePublicationSearch<P extends BibTex> extends LuceneResourceSea
 		}
 		
 		return searchQuery;
-    }
+	}
 }

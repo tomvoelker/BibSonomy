@@ -34,6 +34,7 @@ import org.bibsonomy.util.GetProvider;
  *
  * @author jensi
  */
+@Deprecated // TODO: remove lucene
 public class LuceneDocumentGetProvider implements GetProvider<String, Object> {
 	private final Document doc;
 	

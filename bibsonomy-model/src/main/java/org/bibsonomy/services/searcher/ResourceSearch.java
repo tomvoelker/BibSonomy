@@ -97,6 +97,7 @@ public interface ResourceSearch<R extends Resource> {
 	 * @param offset
 	 * @return a list of posts containing the search result
 	 */
+	@Deprecated
 	public List<Post<R>> getPosts(
 			final String userName, final String requestedUserName, String requestedGroupName, 
 			final List<String> requestedRelationNames,
@@ -117,6 +118,7 @@ public interface ResourceSearch<R extends Resource> {
 	 * @param offset
 	 * @return  post for the requested BibTex key
 	 */
+	@Deprecated
 	public List<Post<R>> getPostsByBibtexKey(
 			final String userName, final Collection<String> allowedGroups,final SearchType searchType, final String bibtexKey,
 			final Collection<String> tagIndex, final List<String> negatedTags, Order order, final int limit, final int offset);
@@ -142,6 +144,7 @@ public interface ResourceSearch<R extends Resource> {
 	 * @param offset
 	 * @return the tag cloud for the given search
 	 */
+	@Deprecated
 	public List<Tag> getTags(
 			final String userName, final String requestedUserName, String requestedGroupName, 
 			final Collection<String> allowedGroups,

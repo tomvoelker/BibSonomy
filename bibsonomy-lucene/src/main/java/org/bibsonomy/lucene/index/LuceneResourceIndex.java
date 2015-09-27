@@ -61,17 +61,16 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.store.NoSuchDirectoryException;
 import org.apache.lucene.util.Version;
-import org.bibsonomy.es.IndexType;
-import org.bibsonomy.es.IndexUpdater;
-import org.bibsonomy.es.IndexUpdaterState;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.param.LuceneIndexStatistics;
-import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.param.comparator.DocumentCacheComparator;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.search.SearchPost;
+import org.bibsonomy.search.update.IndexUpdater;
+import org.bibsonomy.search.update.IndexUpdaterState;
 
 /**
  * abstract base class for managing lucene resource indices
@@ -80,6 +79,7 @@ import org.bibsonomy.model.ResourcePersonRelation;
  *
  * @param <R> the resource of the index
  */
+@Deprecated // TODO: remove lucene
 public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> {
 	private static final Log log = LogFactory.getLog(LuceneResourceIndex.class);
 
@@ -946,11 +946,11 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	 * @see org.bibsonomy.es.IndexUpdater#insertDocument(org.bibsonomy.lucene.param.LucenePost, long)
 	 */
 	@Override
-	public void insertDocument(LucenePost<R> post, Date currentLogDate) {
+	public void insertDocument(SearchPost<R> post, Date currentLogDate) {
 		if (currentLogDate != null) {
 			post.setLastLogDate(currentLogDate);
 		}
-		final Document postDoc = (Document)this.resourceConverter.readPost(post, IndexType.LUCENE);
+		final Document postDoc = this.resourceConverter.readPost(post);
 		this.insertDocument(postDoc);
 	}
 

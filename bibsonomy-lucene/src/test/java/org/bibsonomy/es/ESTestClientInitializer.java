@@ -35,6 +35,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.search.es.update.SharedIndexUpdatePlugin;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.Node;

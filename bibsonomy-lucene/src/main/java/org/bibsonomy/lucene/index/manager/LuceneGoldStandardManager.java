@@ -29,20 +29,20 @@ package org.bibsonomy.lucene.index.manager;
 import java.util.Date;
 import java.util.List;
 
-import org.bibsonomy.es.IndexUpdater;
-import org.bibsonomy.lucene.database.LuceneDBLogic;
-import org.bibsonomy.lucene.database.LuceneGoldStandardLogic;
+import org.bibsonomy.lucene.database.SearchDBLogic;
+import org.bibsonomy.lucene.database.SearchGoldStandardLogic;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.search.update.IndexUpdater;
 
 /**
  * Updates the gold standard publication posts
  * uses the {@link LuceneFieldNames#LAST_TAS_ID} for the latest content id
  * (gold standard posts have no tags)
  * 
- * {@link LuceneGoldStandardLogic} overrides {@link LuceneDBLogic#getLastTasId()}
+ * {@link SearchGoldStandardLogic} overrides {@link SearchDBLogic#getLastTasId()}
  * to query for the latest content id
  * 
  * @author dzo
@@ -55,6 +55,7 @@ public class LuceneGoldStandardManager<R extends Resource & GoldStandard<?>> ext
 	 */
 	@Override
 	protected void updatePredictions(List<IndexUpdater<GoldStandardPublication>> updaters, Date lastLogDate) {
+		// FIXME: maybe we must update a goldstandard that was updated by a spammer
 		// nothing to do here, because goldstandard posts do not have an owner
 	}
 }

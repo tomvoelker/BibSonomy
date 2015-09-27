@@ -42,18 +42,10 @@ import java.util.Set;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.es.IndexUpdater;
-import org.bibsonomy.es.IndexUpdaterState;
-import org.bibsonomy.es.UpdatePlugin;
-import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
-import org.bibsonomy.lucene.param.LuceneIndexInfo;
 import org.bibsonomy.lucene.param.LuceneIndexStatistics;
-import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.search.LuceneResourceSearch;
-import org.bibsonomy.lucene.util.generator.AbstractIndexGenerator;
-import org.bibsonomy.lucene.util.generator.GenerateIndexCallback;
 import org.bibsonomy.lucene.util.generator.LuceneGenerateResourceIndex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
@@ -61,6 +53,15 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.ResourcePersonRelationLogStub;
 import org.bibsonomy.model.User;
+import org.bibsonomy.search.SearchPost;
+import org.bibsonomy.search.generator.AbstractIndexGenerator;
+import org.bibsonomy.search.generator.GenerateIndexCallback;
+import org.bibsonomy.search.management.database.SearchDBInterface;
+import org.bibsonomy.search.model.SearchIndexInfo;
+import org.bibsonomy.search.model.SearchIndexStatistics;
+import org.bibsonomy.search.update.IndexUpdater;
+import org.bibsonomy.search.update.IndexUpdaterState;
+import org.bibsonomy.search.update.UpdatePlugin;
 import org.bibsonomy.util.ValidationUtils;
 
 /**
@@ -123,7 +124,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	private LuceneResourceSearch<R> searcher;
 
 	/** the database manager */
-	protected LuceneDBInterface<R> dbLogic;
+	protected SearchDBInterface<R> dbLogic;
 
 	/** converts post model objects to documents of the index structure */
 	protected LuceneResourceConverter<R> resourceConverter;
@@ -135,7 +136,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 * 
 	 * @return LuceneIndexStatistics for the active index
 	 */
-	public LuceneIndexStatistics getStatistics() {
+	public SearchIndexStatistics getStatistics() {
 		return this.activeIndex.isIndexEnabled() ? this.activeIndex.getStatistics() : null;
 	}
 
@@ -261,7 +262,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		/*
 		 * 2) get new posts
 		 */
-		final List<LucenePost<R>> newPosts = this.dbLogic.getNewPosts(oldState.getLast_tas_id());
+		final List<SearchPost<R>> newPosts = this.dbLogic.getNewPosts(oldState.getLast_tas_id());
 
 		/*
 		 * 3) get posts to delete
@@ -278,7 +279,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		 * 4) remove posts from 1) & 2) from the index and update field
 		 * 'lastTasId'
 		 */
-		for (final LucenePost<R> post : newPosts) {
+		for (final SearchPost<R> post : newPosts) {
 			contentIdsToDelete.add(post.getContentId());
 			newLastTasId = Math.max(post.getLastTasId(), oldState.getLast_tas_id());
 		}
@@ -293,7 +294,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		
 		for (IndexUpdater<R> updater : indexUpdaters) {
 			updater.deleteDocumentsForContentIds(contentIdsToDelete);
-			for (final LucenePost<R> post : newPosts) {
+			for (final SearchPost<R> post : newPosts) {
 				updater.insertDocument(post, targetState.getLast_log_date());
 			}
 		}
@@ -535,7 +536,6 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		}
 		
 		// Stop the updating process
-		//this.setLuceneUpdaterEnabled(false);
 		LuceneResourceIndex<R> indexToGenerate = null;
 		for (final LuceneResourceIndex<R> index : this.getResourceIndeces()) {
 			if (index.getIndexId() == id) {
@@ -668,12 +668,12 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 				switch (user.getPrediction().intValue()) {
 				case 0:
 					log.debug("unflag non-spammer");
-					final List<LucenePost<R>> userPosts = this.dbLogic.getPostsForUser(user.getName(), Integer.MAX_VALUE, 0);
+					final List<SearchPost<R>> userPosts = this.dbLogic.getPostsForUser(user.getName(), Integer.MAX_VALUE, 0);
 					
 					// insert new records into index
 					if (present(userPosts)) {
 						for (IndexUpdater<R> updater : updaters) {
-							for (final LucenePost<R> post : userPosts) {
+							for (final SearchPost<R> post : userPosts) {
 								updater.deleteDocumentForContentId(post.getContentId());
 								updater.insertDocument(post, null);
 							}
@@ -697,7 +697,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 * @param dbLogic
 	 *            the dbLogic to set
 	 */
-	public void setDbLogic(final LuceneDBInterface<R> dbLogic) {
+	public void setDbLogic(final SearchDBInterface<R> dbLogic) {
 		this.dbLogic = dbLogic;
 	}
 
@@ -872,6 +872,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		return this.resourceIndices.get(0);
 	}
 
+	
 	@Override
 	public void generatedIndex(AbstractIndexGenerator<R> index) {
 		/*
@@ -890,18 +891,18 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	}
 	
 	/**
-	 * @return	a list of {@link LuceneIndexInfo} for each managed resource index
+	 * @return	a list of {@link SearchIndexInfo} for each managed resource index
 	 * 			of this manager
 	 */
-	public List<LuceneIndexInfo> getIndicesInfos() {
-		final List<LuceneIndexInfo> lrii = new LinkedList<LuceneIndexInfo>();
+	public List<SearchIndexInfo> getIndicesInfos() {
+		final List<SearchIndexInfo> lrii = new LinkedList<SearchIndexInfo>();
 		
 		// First put the active index in the list if it exists
-		LuceneIndexInfo indexInfo;
+		SearchIndexInfo indexInfo;
 		
 		// put the inactive indices to the list
 		for (final LuceneResourceIndex<R> resourceIndex: this.resourceIndices) {
-			indexInfo = new LuceneIndexInfo();
+			indexInfo = new SearchIndexInfo();
 			final boolean isIndexEnabled = resourceIndex.isIndexEnabled();
 			indexInfo.setCorrect(isIndexCorrect(resourceIndex));
 			indexInfo.setBasePath(resourceIndex.getIndexPath());

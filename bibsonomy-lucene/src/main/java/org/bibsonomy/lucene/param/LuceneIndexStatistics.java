@@ -28,23 +28,23 @@ package org.bibsonomy.lucene.param;
 
 import java.util.Date;
 
+import org.bibsonomy.search.model.SearchIndexStatistics;
+
 
 /**
  * lucene statistics like current version, number of docs
  *  
  * @author sst
  */
-public class LuceneIndexStatistics {
+@Deprecated
+public class LuceneIndexStatistics extends SearchIndexStatistics {
 
-	private Date newestRecordDate;
 	private int numDocs = 0;
 	private int numDeletedDocs = 0;
 	private Date lastModified;
 	private long currentVersion = 0;
 	private boolean isCurrent = true;
 	private int indexId;
-	private long lastTasId;
-	
 	public LuceneIndexStatistics() {
 		this.indexId = -1;
 	}
@@ -62,20 +62,6 @@ public class LuceneIndexStatistics {
 	 */
 	public void setCurrentVersion(final long currentVersion) {
 		this.currentVersion = currentVersion;
-	}
-
-	/**
-	 * @return the newestRecordDate
-	 */
-	public Date getNewestRecordDate() {
-		return this.newestRecordDate;
-	}
-
-	/**
-	 * @param newestRecordDate the newestRecordDate to set
-	 */
-	public void setNewestRecordDate(final Date newestRecordDate) {
-		this.newestRecordDate = newestRecordDate;
 	}
 
 	/**
@@ -136,20 +122,9 @@ public class LuceneIndexStatistics {
 
 	public void setIndexId(int indexId) {
 		this.indexId = indexId;
-		
-	}	
+	}
 	
 	public int getIndexId() {
 		return indexId;
-	}
-
-
-	public long getLastTasId() {
-		return this.lastTasId;
-	}
-
-
-	public void setLastTasId(long lastTasId) {
-		this.lastTasId = lastTasId;
 	}
 }

@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.es;
 
+import org.bibsonomy.search.es.client.AbstractEsClient;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.node.Node;

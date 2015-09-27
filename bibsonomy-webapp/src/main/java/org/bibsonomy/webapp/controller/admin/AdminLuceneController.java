@@ -33,15 +33,15 @@ import java.util.Map.Entry;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.es.SharedIndexUpdatePlugin;
 import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
-import org.bibsonomy.lucene.param.LuceneIndexInfo;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.ResourceUtils;
+import org.bibsonomy.search.es.update.SharedIndexUpdatePlugin;
+import org.bibsonomy.search.model.SearchIndexInfo;
 import org.bibsonomy.webapp.command.admin.AdminLuceneViewCommand;
 import org.bibsonomy.webapp.command.admin.LuceneResourceIndicesInfoContainer;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -154,8 +154,8 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 					if (mng == null) {
 						command.setAdminResponse("Cannot show elasticsearch index info for \"" + command.getResource() + "\" because there is no luceneResourceManager.");
 					} else {
-						Collection<? extends LuceneIndexInfo> infos = esUpdatePlugin.getIndicesInfos(mng.getResourceName());
-						for (LuceneIndexInfo info : infos) {
+						Collection<? extends SearchIndexInfo> infos = esUpdatePlugin.getIndicesInfos(mng.getResourceName());
+						for (SearchIndexInfo info : infos) {
 							LuceneResourceIndicesInfoContainer infoCon = new LuceneResourceIndicesInfoContainer();
 							infoCon.setResourceName(mng.getResourceName() + " elasticsearch");
 							infoCon.getLuceneResoruceIndicesInfos().add(info);

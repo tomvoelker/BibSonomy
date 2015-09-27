@@ -1,0 +1,359 @@
+/**
+ * BibSonomy-Lucene - Fulltext search facility of BibSonomy
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.bibsonomy.lucene.database;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
+import org.bibsonomy.database.managers.BibTexDatabaseManager;
+import org.bibsonomy.database.managers.BookmarkDatabaseManager;
+import org.bibsonomy.database.plugin.DatabasePluginRegistry;
+import org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin;
+import org.bibsonomy.lucene.util.LuceneSpringContextWrapper;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
+import org.bibsonomy.search.LucenePost;
+import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.testutil.CommonModelUtils;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+/**
+ * 
+ * @author fei
+ */
+public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
+
+	private static final String LUCENE_MAGIC_AUTHOR = "luceneAuthor";
+	private static final String LUCENE_MAGIC_TAG    = "luceneTag";
+	private static final String LUCENE_MAGIC_EDITOR = "luceneEditor";
+	private static final String LUCENE_MAGIC_TITLE  = "luceneTitle";
+
+	/** constant for querying for all posts which have been deleted since the last index update */
+	private static final long QUERY_TIME_OFFSET_MS = 60 * 1000;
+
+	private static BookmarkDatabaseManager bookmarkDb;
+	private static BibTexDatabaseManager bibTexDb;
+
+	/** bookmark database interface */
+	private static SearchDBLogic<Bookmark> luceneBookmarkLogic;
+
+	/** bibtex database interface */
+	private static SearchDBLogic<BibTex> luceneBibTexLogic;
+
+	/**
+	 * Initializes the test database.
+	 */
+	@BeforeClass
+	public static void initDatabaseManager() {
+		bookmarkDb = BookmarkDatabaseManager.getInstance();	
+		bibTexDb = BibTexDatabaseManager.getInstance();
+	}
+
+	@SuppressWarnings("unchecked")
+	@BeforeClass
+	public static void setUpLucene() {
+		luceneBookmarkLogic = (SearchDBLogic<Bookmark>) LuceneSpringContextWrapper.getBeanFactory().getBean("luceneBookmarkLogic");
+		luceneBibTexLogic = (SearchDBLogic<BibTex>) LuceneSpringContextWrapper.getBeanFactory().getBean("lucenePublicationLogic");
+	}
+
+	/**
+	 * tests confluence of lucene's and bibsonomy's database post queries 
+	 */
+	@Test
+	public void getBibtexUserPosts() {
+		// get all public posts for the testuser
+		String requestedUserName = "testuser1";
+		final int groupId = -1;
+		final List<Integer> groups = new ArrayList<Integer>();
+
+		List<LucenePost<BibTex>> posts = luceneBibTexLogic.getPostsForUser(requestedUserName, 10, 0);
+		List<Post<BibTex>> postsRef = bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, null, 10, 0, null, this.dbSession);
+		assertEquals(postsRef.size(), posts.size());
+
+		posts = luceneBibTexLogic.getPostsForUser(requestedUserName, 10, 0);
+		postsRef = bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, null, 10, 0, null, this.dbSession);
+		assertEquals(postsRef.size(), posts.size()); 
+
+		requestedUserName = "testuser2";
+		posts = luceneBibTexLogic.getPostsForUser(requestedUserName, 10, 0);
+		postsRef = bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, null, 10, 0, null, this.dbSession);
+		assertEquals(postsRef.size(), posts.size());
+	}
+
+	/**
+	 * tests whether all newly added posts are retrieved
+	 * @throws PersonListParserException 
+	 */
+	@Test
+	public void retrieveRecordsFromDatabase() throws PersonListParserException {
+		DatabasePluginRegistry.getInstance().clearPlugins();
+		DatabasePluginRegistry.getInstance().add(new BibTexExtraPlugin());
+		final List<Post<? extends Resource>> refPosts = new LinkedList<Post<? extends Resource>>();
+		//--------------------------------------------------------------------
+		// TEST 1: insert special posts into test database and search for it
+		//--------------------------------------------------------------------
+		final Integer lastTasId = luceneBibTexLogic.getLastTasId();
+		for (int i = 0; i < 5; i++) {
+			// store test posts in database
+			final Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
+			refPosts.add(bibtexPost);
+			bibTexDb.createPost(bibtexPost, this.dbSession);
+		}
+
+		// retrieve posts
+		final List<? extends Post<BibTex>> posts = luceneBibTexLogic.getNewPosts(lastTasId);
+
+		assertEquals(refPosts.size(), posts.size());
+
+		final Map<String,Boolean> testMap = new HashMap<String, Boolean>(); 
+		for (final Post<? extends Resource> post : posts) {
+			testMap.put(post.getResource().getTitle(), true);
+		}
+		for (final Post<? extends Resource> post : refPosts) {
+			assertNotNull(testMap.get(post.getResource().getTitle()));
+		}
+	}
+
+	/**
+	 * tests whether all posts whithin a given time range are retrieved
+	 * 
+	 * FIXME: fails too often - please fix! 
+	 * @throws PersonListParserException 
+	 */
+	@Test
+	public void getContentIdsToDelete() throws PersonListParserException {
+		final List<Post<? extends Resource>> refPosts = new LinkedList<Post<? extends Resource>>();
+
+		//--------------------------------------------------------------------
+		// TEST 1: insert and delete special posts into test database and search for it
+		//--------------------------------------------------------------------
+		// start time - we ignore milliseconds
+		final long start    = System.currentTimeMillis();
+		final long fromDate = start - (start % 1000);
+
+		for (int i = 0; i < 5; i++) {
+			// store test posts in database
+			final Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
+			refPosts.add(bibtexPost);
+			bibTexDb.createPost(bibtexPost, this.dbSession);
+			// delete test post
+			bibTexDb.deletePost(bibtexPost.getUser().getName(), bibtexPost.getResource().getIntraHash(), this.dbSession);
+		}
+		// retrieve posts
+		final List<Integer> posts = luceneBibTexLogic.getContentIdsToDelete(new Date(fromDate-QUERY_TIME_OFFSET_MS));
+
+		assertTrue(refPosts.size() <= posts.size());
+	}
+
+	/**
+	 * test whether newest post's date is detected
+	 * @throws PersonListParserException 
+	 */
+	@Test
+	public void getNewestRecordDateFromTas() throws PersonListParserException {
+		//--------------------------------------------------------------------
+		// TEST 1: insert special post into test database and search for it
+		//--------------------------------------------------------------------
+		// store test post in database
+		final Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
+		bibTexDb.createPost(bibtexPost, this.dbSession);
+
+		Date postDate = luceneBibTexLogic.getNewestRecordDateFromTas();
+		// compare modulo milliseconds 
+		assertEquals(bibtexPost.getDate().getTime() - (bibtexPost.getDate().getTime() % 100000), postDate.getTime()-(postDate.getTime() % 100000));
+
+		final Post<Bookmark> bookmarkPost = this.generateBookmarkDatabaseManagerTestPost();
+		bookmarkDb.createPost(bookmarkPost, this.dbSession);
+
+		postDate = luceneBookmarkLogic.getNewestRecordDateFromTas();
+		assertEquals(bookmarkPost.getDate().getTime() - (bookmarkPost.getDate().getTime() % 100000), postDate.getTime()-(postDate.getTime() % 100000));
+	}
+
+	/**
+	 * tests confluence of lucene's and bibsonomy's database post queries 
+	 */
+	@Test
+	public void getBookmarkUserPosts() {
+		// get all public posts for the testuser
+		String requestedUserName = "testuser1";
+		final int groupId = -1;
+		final List<Integer> groups = new ArrayList<Integer>();
+
+		List<LucenePost<Bookmark>> posts;    
+		List<Post<Bookmark>> postsRef;
+
+		posts    = luceneBookmarkLogic.getPostsForUser(requestedUserName, 10, 0);
+		postsRef = bookmarkDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, null, 10, 0, null, this.dbSession);
+		assertEquals(postsRef.size(), posts.size());
+
+		requestedUserName = "testuser2";
+		posts    = luceneBookmarkLogic.getPostsForUser(requestedUserName, 10, 0);
+		postsRef = bookmarkDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, null, 10, 0, null, this.dbSession);  
+		assertEquals(postsRef.size(), posts.size());
+	}
+
+	/**
+	 * tests confluence of lucene's and bibsonomy's database post queries 
+	 */
+	@Test
+	public void getBookmarkNewPosts() {
+		// FIXME: implement a test
+	}
+
+	/**
+	 * tests confluence of lucene's and bibsonomy's database post queries 
+	 */
+	@Test
+	public void getBibTexNewPosts() {
+		// FIXME: implement a test
+	}
+
+	//------------------------------------------------------------------------
+	// private helpers
+	//------------------------------------------------------------------------
+	/**
+	 * generate a BibTex Post, can't call setBeanPropertiesOn() because private
+	 * so copy & paste the setBeanPropertiesOn() into this method
+	 * @throws PersonListParserException 
+	 */
+	private Post <BibTex> generateBibTexDatabaseManagerTestPost(final GroupID groupID) throws PersonListParserException {
+
+		final Post<BibTex> post = new Post<BibTex>();
+
+		final Group group = new Group(groupID);
+
+		post.getGroups().add(group);
+
+		Tag tag = new Tag();
+		tag.setName("tag1");
+		post.getTags().add(tag);
+		tag = new Tag();
+		tag.setName("tag2");
+		post.getTags().add(tag);
+		tag = new Tag();
+		tag.setName(LUCENE_MAGIC_TAG);
+		post.getTags().add(tag);
+
+		post.setContentId(null); // will be set in storePost()
+		post.setDescription("luceneTestPost");
+		post.setDate(new Date(System.currentTimeMillis()));
+		final User user = new User();
+		CommonModelUtils.setBeanPropertiesOn(user);
+		user.setName("testuser1");
+		user.setRole(Role.NOBODY);
+		post.setUser(user);
+
+
+		final BibTex publication = new BibTex();
+		CommonModelUtils.setBeanPropertiesOn(publication);
+		publication.setCount(0);		
+		publication.setEntrytype("inproceedings");
+		publication.setAuthor(PersonNameUtils.discoverPersonNames("MegaMan and Lucene GigaWoman " + LUCENE_MAGIC_AUTHOR));
+		publication.setEditor(PersonNameUtils.discoverPersonNames("Peter Silie " + LUCENE_MAGIC_EDITOR));
+		publication.setTitle("bibtex insertpost test");
+
+		String title, year, journal, booktitle, volume, number = null;
+		title = "title "+ (Math.round(Math.random()*Integer.MAX_VALUE))+" "+LUCENE_MAGIC_TITLE;
+		year = "test year";
+		journal = "test journal";
+		booktitle = "test booktitle";
+		volume = "test volume";
+		number = "test number";
+		publication.setTitle(title);
+		publication.setYear(year);
+		publication.setJournal(journal);
+		publication.setBooktitle(booktitle);
+		publication.setVolume(volume);
+		publication.setNumber(number);
+		publication.setScraperId(-1);
+		publication.setType("2");
+		publication.recalculateHashes();
+		post.setResource(publication);
+		return post;
+	}
+
+	/**
+	 * generate a Bookmark Post, can't call setBeanPropertiesOn() because private
+	 * so copy & paste the setBeanPropertiesOn() into this method
+	 */
+	private Post<Bookmark> generateBookmarkDatabaseManagerTestPost() {
+		final Post<Bookmark> post = new Post<Bookmark>();
+
+		final Group group = new Group();
+		group.setDescription(null);
+		group.setName("public");
+		group.setGroupId(GroupID.PUBLIC.getId());
+		post.getGroups().add(group);
+
+		Tag tag = new Tag();
+		tag.setName("tag1");
+		post.getTags().add(tag);
+		tag = new Tag();
+		tag.setName("tag2");
+		post.getTags().add(tag);
+
+		post.setContentId(null); // will be set in storePost()
+		post.setDescription("Some description");
+		post.setDate(new Date());
+		final User user = new User();
+		CommonModelUtils.setBeanPropertiesOn(user);
+		user.setName("testuser1");
+		user.setRole(Role.NOBODY);
+		post.setUser(user);
+		final Bookmark resource;
+
+
+		final Bookmark bookmark = new Bookmark();
+		bookmark.setCount(0);
+		bookmark.setTitle("test" + (Math.round(Math.random() * Integer.MAX_VALUE)) + " " + LUCENE_MAGIC_TITLE);
+		bookmark.setUrl("http://www.testurl.orgg");
+		bookmark.recalculateHashes();
+		resource = bookmark;
+
+		post.setResource(resource);
+		return post;
+	}
+}

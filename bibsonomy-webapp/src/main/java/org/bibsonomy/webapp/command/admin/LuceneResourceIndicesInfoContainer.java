@@ -29,7 +29,7 @@ package org.bibsonomy.webapp.command.admin;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.bibsonomy.lucene.param.LuceneIndexInfo;
+import org.bibsonomy.search.model.SearchIndexInfo;
 
 
 /**
@@ -38,7 +38,7 @@ import org.bibsonomy.lucene.param.LuceneIndexInfo;
 public class LuceneResourceIndicesInfoContainer {
 	
 	private String resourceName;
-	private List<LuceneIndexInfo> luceneResoruceIndicesInfos = new LinkedList<LuceneIndexInfo>();
+	private List<SearchIndexInfo> luceneResoruceIndicesInfos = new LinkedList<SearchIndexInfo>();
 
 	/**
 	 * @return the resourceName
@@ -55,21 +55,21 @@ public class LuceneResourceIndicesInfoContainer {
 	/**
 	 * @return the luceneResoruceIndicesInfos
 	 */
-	public List<LuceneIndexInfo> getLuceneResoruceIndicesInfos() {
+	public List<SearchIndexInfo> getLuceneResoruceIndicesInfos() {
 		return this.luceneResoruceIndicesInfos;
 	}
 	/**
 	 * @param luceneResoruceIndicesInfos the luceneResoruceIndicesInfos to set
 	 */
-	public void setLuceneResoruceIndicesInfos(List<LuceneIndexInfo> luceneResoruceIndicesInfos) {
+	public void setLuceneResoruceIndicesInfos(List<SearchIndexInfo> luceneResoruceIndicesInfos) {
 		this.luceneResoruceIndicesInfos = luceneResoruceIndicesInfos;
 	}
 	
 	/**
 	 * @return
 	 */
-	public LuceneIndexInfo getGeneratingIndex() {
-		for (LuceneIndexInfo lii: luceneResoruceIndicesInfos) {
+	public SearchIndexInfo getGeneratingIndex() {
+		for (SearchIndexInfo lii: luceneResoruceIndicesInfos) {
 			if (lii.isGeneratingIndex())
 				return lii;
 		}

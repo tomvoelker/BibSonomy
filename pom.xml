@@ -246,6 +246,8 @@
 		<module>bibsonomy-wiki</module>
 		<module>bibsonomy-recommender-connector</module>
 		<module>bibsonomy-suggestionservice</module>
+		<module>bibsonomy-search</module>
+		<module>bibsonomy-search-elasticsearch</module>
 	</modules>
 	<build>
 		<pluginManagement>
