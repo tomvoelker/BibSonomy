@@ -320,26 +320,7 @@
 							</list>
 						</property>
 					</bean>
-				</entry>		
-				<!--+ 
-				    | /import/facebook
-				    +-->
-				<entry key="/import/facebook">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="facebookFriendsImportController"/>
-						<property name="allowedFields">
-							<list>
-								<value>code</value>
-								<value>accessToken</value>
-								<value>state</value>
-								<value>adminAction</value>
-								<value>socialAction</value>
-								<value>requestedUser</value>
-							</list>
-						</property>
-					</bean>
 				</entry>
-				
 				<!--+
 				 	|
 				 	| to directly render imported publications
@@ -1156,19 +1137,6 @@
 		<property name="protocol" value="https"/>
 		<property name="host" value="api.del.icio.us"/>
 		<property name="userAgent" value="BibSonomy Delicious Importer"/>
-	</bean>
-
-	<!-- <import resource="classpath:org/bibsonomy/bibsonomy-entityresolver-context.xml" /> -->
-
-	<jee:jndi-lookup id="entityDataSource" jndi-name="jdbc/bibsonomy_entities" lookup-on-startup="false" expected-type="javax.sql.DataSource" />
-	
-	<!-- handles import of facebook friends -->
-	<bean id="facebookFriendsImportController" class="org.bibsonomy.webapp.controller.actions.FacebookFriendsImportController" scope="request">
-		<property name="urlGenerator" ref="absoluteUrlGenerator"/>
-		<property name="fbApiKey" value="${facebook.api.key}"/>
-		<property name="fbSecret" value="${facebook.api.secret}"/>
-		<!-- defined in bibsonomy-entityresolver-context.xml -->
-		<property name="friendsResolver" ref="facebookIdentityResolver"/>
 	</bean>
 	
 	<bean id="extensionChecker" class="org.bibsonomy.webapp.util.spring.factorybeans.ExtensionCheckerFactoryBean" >
