@@ -26,17 +26,20 @@
  */
 package org.bibsonomy.search.update;
 
+import org.bibsonomy.model.Resource;
+
 /**
  * TODO: add documentation to this class
  *
  * @author lutful
+ * @param <R> 
  */
-public interface UpdatePlugin {
+public interface UpdatePlugin<R extends Resource> {
 
 	/**
 	 * @param indexType
 	 * @param esClient
 	 * @return IndexUpdater
 	 */
-	IndexUpdater createUpdater(String indexType);
+	IndexUpdater createUpdater(Class<R> resourceClass);
 }

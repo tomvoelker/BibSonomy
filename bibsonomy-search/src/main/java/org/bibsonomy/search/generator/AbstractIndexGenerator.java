@@ -63,18 +63,13 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Call
 
 	/** database logic */
 	protected SearchDBInterface<R> dbLogic;
-
-	/**
-	 * the elasticsearch index name
-	 */
-	protected String indexName;
 	
 	protected boolean finishedSuccesfully;
 
 	/**
 	 * the resource type
 	 */
-	protected String resourceType;
+	protected Class<R> resourceType;
 
 	/**
 	 * 
@@ -83,7 +78,7 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Call
 	private int numberOfPostsImported;
 	private boolean running = false;
 	
-	private GenerateIndexCallback<R> callback = null;
+	private GenerateIndexCallback<AbstractIndexGenerator<R>> callback = null;
 
 	/**
 	 * frees allocated resources and closes all files
@@ -280,7 +275,7 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Call
 	 * @param callback
 	 *            the callback to set
 	 */
-	public void setCallback(final GenerateIndexCallback<R> callback) {
+	public void setCallback(final GenerateIndexCallback<AbstractIndexGenerator<R>> callback) {
 		this.callback = callback;
 	}
 
@@ -290,19 +285,19 @@ public abstract class AbstractIndexGenerator<R extends Resource> implements Call
 	public boolean isRunning() {
 		return this.running;
 	}
-
-	/**
-	 * @return the indexName
-	 */
-	public String getIndexName() {
-		return this.indexName;
-	}
 	
 	/**
 	 * @return the resourceType
 	 */
-	public String getResourceType() {
+	public Class<R> getResourceType() {
 		return this.resourceType;
+	}
+
+	/**
+	 * @param resourceType the resourceType to set
+	 */
+	public void setResourceType(Class<R> resourceType) {
+		this.resourceType = resourceType;
 	}
 
 	public boolean isFinishedSuccesfully() {

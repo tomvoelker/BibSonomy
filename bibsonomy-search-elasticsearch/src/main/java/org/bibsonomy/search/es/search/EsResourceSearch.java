@@ -62,6 +62,7 @@ import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.logic.querybuilder.AbstractSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
@@ -104,7 +105,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	private static final float GENEALOGY_USER_PREFERENCE_FACTOR = 1.1f;
 	private static final Pattern YEAR_PATTERN = Pattern.compile("[12][0-9]{3}");
 	
-	private String resourceType;
+	private Class<R> resourceType;
 
 	/** post model converter */
 	private ResourceConverter<R> resourceConverter;
@@ -149,12 +150,12 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @return returns the list of tags for the tag cloud
 	 */
 	public List<Tag> getTags(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexkey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
-		final QueryBuilder query= this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, org.bibsonomy.common.enums.SearchType.LOCAL, null, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags);
+		final QueryBuilder query = this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, org.bibsonomy.common.enums.SearchType.LOCAL, null, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags);
 		final Map<Tag, Integer> tagCounter = new HashMap<Tag, Integer>();
 
 		try (final IndexLock indexLock = getEsIndexManager().aquireReadLockForTheActiveIndexAlias(this.resourceType)) {
 			final SearchRequestBuilder searchRequestBuilder = getEsIndexManager().getClient().prepareSearch(indexLock.getIndexName());
-			searchRequestBuilder.setTypes(resourceType);
+			searchRequestBuilder.setTypes(ResourceFactory.getResourceName(resourceType));
 			searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 			searchRequestBuilder.setQuery(query);
 			searchRequestBuilder.addSort(Fields.DATE, SortOrder.DESC);
@@ -238,7 +239,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 						titleSearchTerms, authorSearchTerms, bibtexKey,
 						tagIndex, year, firstYear, lastYear, negatedTags);
 				final SearchRequestBuilder searchRequestBuilder = this.esIndexManager.getClient().prepareSearch(indexLock.getIndexName());
-				searchRequestBuilder.setTypes(this.resourceType);
+				searchRequestBuilder.setTypes(ResourceFactory.getResourceName(this.resourceType));
 				searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 				searchRequestBuilder.setQuery(queryBuilder);
 				if (order != Order.RANK) {
@@ -273,7 +274,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	/**
 	 * @param resourceType the resourceType to set
 	 */
-	public void setResourceType(final String resourceType) {
+	public void setResourceType(final Class<R> resourceType) {
 		this.resourceType = resourceType;
 	}
 
@@ -345,7 +346,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	@Override
 	public List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder options) {
 		try (final IndexLock indexLock = getEsIndexManager().aquireReadLockForTheActiveIndexAlias(this.resourceType)) {
-			final String localIndexName = getEsIndexManager().getActiveIndexnameForResource(this.resourceType);
+			final String localIndexName = indexLock.getIndexName();
 			final Set<String> tokenizedQueryString = new HashSet<>();
 			for (String token : new SimpleTokenizer(options.getQuery())) {
 				if (!StringUtils.isBlank(token)) {
@@ -358,7 +359,6 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			log.error("IndexMissingException: " + e);
 		}
 		return new ArrayList<>();
-		
 	}
 	
 	// TODO: the outcomment calls would be nice but would slow down the query
@@ -426,7 +426,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 
 	private SearchRequestBuilder buildRequest(int offset, String indexName, double minPlainEsScore, final QueryBuilder queryBuilder) {
 		final SearchRequestBuilder searchRequestBuilder = this.esIndexManager.getClient().prepareSearch(indexName);
-		searchRequestBuilder.setTypes(this.resourceType);
+		searchRequestBuilder.setTypes(ResourceFactory.getResourceName(this.resourceType));
 		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 		searchRequestBuilder.setQuery(queryBuilder) //
 		.setMinScore((float)minPlainEsScore) //

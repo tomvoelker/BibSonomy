@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.search.es.update;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -36,13 +37,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.search.es.ESClient;
-import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.generator.SharedResourceIndexGenerator;
 import org.bibsonomy.search.es.index.ResourceConverter;
 import org.bibsonomy.search.es.management.ESIndexManager;
 import org.bibsonomy.search.es.management.IndexLock;
 import org.bibsonomy.search.es.management.SystemInformation;
-import org.bibsonomy.search.generator.AbstractIndexGenerator;
+import org.bibsonomy.search.es.management.util.ElasticSearchUtils;
 import org.bibsonomy.search.generator.GenerateIndexCallback;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.model.SearchIndexInfo;
@@ -56,11 +56,11 @@ import org.bibsonomy.util.SimpleBlockingThreadPoolExecutor;
  * @author lutful
  * @param <R>
  */
-public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin, GenerateIndexCallback<R> {
+public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin<R>, GenerateIndexCallback<SharedResourceIndexGenerator<R>> {
 	private static final Log log = LogFactory.getLog(SharedIndexUpdatePlugin.class);
 	
 	private final ESClient esClient;
-	private final String systemHome;
+	private final URI systemHome;
 	private final ESIndexManager esIndexManager;
 	private SimpleBlockingThreadPoolExecutor<SharedResourceIndexGenerator<? super R>> generatorThreadPool;
 	
@@ -68,13 +68,13 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	private ResourceConverter<R> resourceConverter;
 	/** the database manager */
 	protected SearchDBInterface<R> dbLogic;
-	private String resourceType;
+	private Class<R> resourceType; // TODO: remove?
 
 	/**
 	 * @param esClient
 	 * @param systemHome
 	 */
-	public SharedIndexUpdatePlugin(final ESClient esClient, final String systemHome) {
+	public SharedIndexUpdatePlugin(final ESClient esClient, final URI systemHome) {
 		this.esClient = esClient;
 		this.systemHome = systemHome;
 		this.esIndexManager = new ESIndexManager(this.esClient, this.systemHome);
@@ -84,10 +84,10 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	 * removes the oldest indices if there are more than two indices. Does not remove active indices.
 	 */
 	private void removeOutdatedIndices() {
-		final String tempAlias = ESConstants.getTempAliasForResource(this.resourceType);
+		final String tempAlias = ElasticSearchUtils.getTempAliasForResource(this.resourceType);
 		List<String> indexesList=esIndexManager.getThisSystemsIndexesFromAlias(tempAlias);
-		final String activeIndexAlias = ESConstants.getGlobalAliasForResource(resourceType, true);
-		final String backupIndexAlias = ESConstants.getGlobalAliasForResource(resourceType, false);
+		final String activeIndexAlias = ElasticSearchUtils.getGlobalAliasForResource(resourceType, true);
+		final String backupIndexAlias = ElasticSearchUtils.getGlobalAliasForResource(resourceType, false);
 		final List<String> activeIndices = esIndexManager.getThisSystemsIndexesFromAlias(activeIndexAlias);
 		indexesList.addAll(activeIndices);
 		indexesList.addAll(esIndexManager.getThisSystemsIndexesFromAlias(backupIndexAlias));
@@ -109,7 +109,7 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	 * @see org.bibsonomy.model.es.UpdatePlugin#createUpdater(java.lang.String)
 	 */
 	@Override
-	public SharedResourceIndexUpdater<R> createUpdater(final String resourceType) {
+	public SharedResourceIndexUpdater<R> createUpdater(final Class<R> resourceType) {
 		final IndexLock inactiveIndexLock = this.esIndexManager.aquireWriteLockForAnInactiveIndex(resourceType);
 		if (inactiveIndexLock == null) {
 			List<String> tempIndices = this.esIndexManager.getTempIndicesOfThisSystem(resourceType);
@@ -135,7 +135,7 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 		return this.createUpdaterInternal(this.resourceType, this.esIndexManager.aquireLockForIndexName(indexName, true, null));
 	}
 
-	private SharedResourceIndexUpdater<R> createUpdaterInternal(final String resourceType, IndexLock indexLock) {
+	private SharedResourceIndexUpdater<R> createUpdaterInternal(final Class<R> resourceType, IndexLock indexLock) {
 		SharedResourceIndexUpdater<R> sharedIndexUpdater;
 		sharedIndexUpdater = new SharedResourceIndexUpdater<R>(this.esClient, this.systemHome, resourceType, this.resourceConverter, indexLock, this);
 		sharedIndexUpdater.setDbLogic(this.dbLogic);
@@ -190,7 +190,7 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	 * @param resourceType something like Bibtex or Bookmark TODO: should be Class<? extends Resource>
 	 * @return returns informations on the lucene or elasticsearch indices
 	 */
-	public Collection<? extends SearchIndexInfo> getIndicesInfos(final String resourceType) {
+	public Collection<? extends SearchIndexInfo> getIndicesInfos(final Class<? extends Resource> resourceType) {
 		final Collection<SearchIndexInfo> rVal = new ArrayList<>();
 
 		final Map<String, SystemInformation> activeSystemInfos = esIndexManager.getAllActiveIndexSystemInformations(resourceType);
@@ -249,8 +249,7 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 		}
 		return rVal;
 	}
-
-	@SuppressWarnings("static-method")
+	
 	private long getLong(final Map<String, Object> infos, final String key) {
 		final Object strVal = infos.get(key);
 		if (strVal == null) {
@@ -267,7 +266,7 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	 * (org.bibsonomy.lucene.util.generator.AbstractIndexGenerator)
 	 */
 	@Override
-	public void generatedIndex(final AbstractIndexGenerator<R> index) {
+	public void generatedIndex(final SharedResourceIndexGenerator<R> index) {
 		if (index.isFinishedSuccesfully()) {
 			this.esIndexManager.changeUnderConstructionStatus(index.getIndexName(), index.getResourceType());
 		}
@@ -285,7 +284,7 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 		this.resourceConverter = resourceConverter;
 	}
 
-	public void setResourceType(String resourceType) {
+	public void setResourceType(Class<R> resourceType) {
 		this.resourceType = resourceType;
 	}
 

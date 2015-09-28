@@ -27,6 +27,7 @@
 package org.bibsonomy.search.es.management;
 
 import java.io.Serializable;
+import java.net.URI;
 
 import org.bibsonomy.search.update.IndexUpdaterState;
 
@@ -39,21 +40,21 @@ import org.bibsonomy.search.update.IndexUpdaterState;
 public class SystemInformation implements Serializable {
 	private static final long serialVersionUID = 3300034332953151505L;
 	
-	private String systemUrl;
+	private URI systemUrl;
 	private IndexUpdaterState updaterState;
 	private String postType;
 
 	/**
 	 * @return the systemUrl
 	 */
-	public String getSystemUrl() {
+	public URI getSystemUrl() {
 		return this.systemUrl;
 	}
 
 	/**
 	 * @param systemUrl the systemUrl to set
 	 */
-	public void setSystemUrl(String systemUrl) {
+	public void setSystemUrl(URI systemUrl) {
 		this.systemUrl = systemUrl;
 	}
 

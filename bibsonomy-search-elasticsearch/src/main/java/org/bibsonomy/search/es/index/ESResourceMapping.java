@@ -30,6 +30,9 @@ import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
 import java.io.IOException;
 
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.ESConstants.Fields;
@@ -45,7 +48,7 @@ import org.elasticsearch.common.xcontent.XContentBuilder;
 public class ESResourceMapping {
 	
 	@Deprecated // TODO: remove this dependency!
-	private final String resourceType;
+	private final Class<? extends Resource> resourceType;
 	@Deprecated // TODO: remove
 	private final ESClient esClient;
 	private final String indexName;
@@ -55,7 +58,7 @@ public class ESResourceMapping {
 	 * @param esClient
 	 * @param indexName 
 	 */
-	public ESResourceMapping(final String resourceType, final ESClient esClient, String indexName) {
+	public ESResourceMapping(final Class<? extends Resource> resourceType, final ESClient esClient, String indexName) {
 		this.resourceType = resourceType;
 		this.esClient = esClient;
 		this.indexName =  indexName;
@@ -68,19 +71,19 @@ public class ESResourceMapping {
 	 */
 	public void doMapping() throws IOException {
 		final XContentBuilder mappingBuilder;
-		
+		final String objectType = ResourceFactory.getResourceName(this.resourceType);
 		// TODO: a more generic version
-		if (this.resourceType.equalsIgnoreCase("Bookmark")) {
+		if (Bookmark.class == this.resourceType) {
 			/*
 			 * FIXME: What about GoldStandardBookmarks?
 			 */
-			mappingBuilder = createMappingForBookmark(this.resourceType);
+			mappingBuilder = createMappingForBookmark(objectType);
 		} else {
 			// mapping is identical for both BibTex and GoldStandardPublication
-			mappingBuilder = createMappingForPublication(this.resourceType);
+			mappingBuilder = createMappingForPublication(objectType);
 		}
 
-		this.esClient.getClient().admin().indices().preparePutMapping(indexName).setType(this.resourceType).setSource(mappingBuilder).execute().actionGet();
+		this.esClient.getClient().admin().indices().preparePutMapping(indexName).setType(objectType).setSource(mappingBuilder).execute().actionGet();
 
 		// wait for the yellow (or green) status to prevent
 		// NoShardAvailableActionException later

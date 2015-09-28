@@ -27,12 +27,14 @@
 package org.bibsonomy.search.es.generator;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.index.CorruptIndexException;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.search.SearchPost;
 import org.bibsonomy.search.es.ESClient;
@@ -61,14 +63,12 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	private static final Log log = LogFactory.getLog(SharedResourceIndexGenerator.class);
 	
 	private final String indexName;
-	private String resourceType;
 
 	/** converts post model objects to elasticsearch documents */
 	protected ResourceConverter<R> resourceConverter;
-
-	// ElasticSearch client
+	
 	private ESClient esClient;
-	private final String systemHome;
+	private final URI systemHome;
 	private SharedResourceIndexUpdater<R> updater;
 	private final SharedIndexUpdatePlugin<R> updatePlugin;
 	
@@ -77,7 +77,7 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	 * @param sharedIndexUpdatePlugin 
 	 * @param indexName 
 	 */
-	public SharedResourceIndexGenerator(final String systemHome, SharedIndexUpdatePlugin<R> sharedIndexUpdatePlugin, final String indexName) {
+	public SharedResourceIndexGenerator(final URI systemHome, SharedIndexUpdatePlugin<R> sharedIndexUpdatePlugin, final String indexName) {
 		this.systemHome = systemHome;
 		this.updatePlugin = sharedIndexUpdatePlugin;
 		this.indexName = indexName;
@@ -144,7 +144,7 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 		jsonDocument.put(Fields.SYSTEM_URL, systemHome);
 		final long indexId = SharedResourceIndexUpdater.calculateIndexId(post.getContentId(), this.systemHome);
 		esClient.getClient()
-				.prepareIndex(indexName, resourceType, String.valueOf(indexId))
+				.prepareIndex(indexName, ResourceFactory.getResourceName(this.resourceType), String.valueOf(indexId))
 				.setSource(jsonDocument).execute().actionGet();
 	}
 	
@@ -159,24 +159,8 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	/**
 	 * @return the indexName
 	 */
-	@Override
 	public String getIndexName() {
 		return this.indexName;
-	}
-
-	/**
-	 * @return e.g. "BibTex"
-	 */
-	@Override
-	public String getResourceType() {
-		return this.resourceType;
-	}
-
-	/**
-	 * @param resourceType
-	 */
-	public void setResourceType(String resourceType) {
-		this.resourceType = resourceType;
 	}
 
 	/**

@@ -1030,7 +1030,7 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 		state.setLast_log_date(lastLogDate);
 		state.setLast_tas_id(lastTasId);
 		// lucene does not support person information. So we set last personChangeId to maximum to make the updater search for the empty set of changes greater than this change id (-1 is needed to prevent an overflow when searching for a newer id)
-		state.setLastPersonChangeId(Long.MAX_VALUE-1);
+		state.setLastPersonChangeId(Long.MAX_VALUE - 1);
 		return state;
 	}
 

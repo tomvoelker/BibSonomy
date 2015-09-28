@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.search.es.update;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -43,6 +44,7 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.search.SearchPost;
 import org.bibsonomy.search.es.ESClient;
@@ -52,6 +54,7 @@ import org.bibsonomy.search.es.index.ResourceConverter;
 import org.bibsonomy.search.es.management.ESIndexManager;
 import org.bibsonomy.search.es.management.IndexLock;
 import org.bibsonomy.search.es.management.SystemInformation;
+import org.bibsonomy.search.es.management.util.ElasticSearchUtils;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.update.IndexUpdater;
 import org.bibsonomy.search.update.IndexUpdaterState;
@@ -78,18 +81,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpdater<R>, AutoCloseable {
 	private static final Log log = LogFactory.getLog(SharedResourceIndexUpdater.class);
 
-	private final String resourceType;
+	private final Class<R> resourceType;
 
 	private final ESIndexManager esIndexManager;
-
+	
 	private final SystemInformation systemInfo = new SystemInformation();
+	
 	/** The Url of the project home */
-	private final String systemHome;
+	private final URI systemHome;
 
 	/** list posts to insert into index */
 	private List<Map<String, Object>> esPostsToInsert;
 
 	/** the Elasticsearch client */
+	@Deprecated
 	private ESClient esClient;
 
 	/** list containing content ids of cached delete operations */
@@ -117,7 +122,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 * @param plugin 
 	 * @param nameOfIndexBeingUpdated 
 	 */
-	public SharedResourceIndexUpdater(final ESClient esClient, final String systemHome, String resourceType, final ResourceConverter<R> resourceConverter, final IndexLock lockOfIndexBeingUpdated, final SharedIndexUpdatePlugin<R> plugin) {
+	public SharedResourceIndexUpdater(final ESClient esClient, final URI systemHome, Class<R> resourceType, final ResourceConverter<R> resourceConverter, final IndexLock lockOfIndexBeingUpdated, final SharedIndexUpdatePlugin<R> plugin) {
 		this.systemHome = systemHome;
 		this.resourceConverter = resourceConverter;
 		this.lockOfIndexBeingUpdated = lockOfIndexBeingUpdated;
@@ -135,7 +140,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 */
 	@Override
 	public Date getLastLogDate() {
-		SystemInformation sysinfos = getSingleSystemInfos();
+		final SystemInformation sysinfos = getSingleSystemInfos();
 		if (sysinfos == null) {
 			log.error("no lastLogDate for index " + this.lockOfIndexBeingUpdated.getIndexName());
 			return null;
@@ -144,7 +149,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	}
 	
 	private SystemInformation getSingleSystemInfos() {
-		Collection<SystemInformation> list = this.esIndexManager.getAllSystemInfosAsObjects(QueryBuilders.matchQuery("postType", this.resourceType), 2, this.lockOfIndexBeingUpdated.getIndexName()).values();
+		final Collection<SystemInformation> list = this.esIndexManager.getAllSystemInfosAsObjects(QueryBuilders.matchQuery("postType", getResorceTypeAsString()), 2, this.lockOfIndexBeingUpdated.getIndexName()).values();
 		if (!ValidationUtils.present(list)) {
 			throw new NoSuchElementException("no systeminfos for index " + this.lockOfIndexBeingUpdated.getIndexName());
 		}
@@ -158,12 +163,11 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 * @return lastTasId
 	 */
 	@Override
-	@SuppressWarnings("boxing")
 	public Integer getLastTasId() {
 		SystemInformation sysinfos = getSingleSystemInfos();
 		if (sysinfos == null) {
 			log.error("no lastTasId  -> starting from the very beginning");
-			return Integer.MIN_VALUE;
+			return Integer.valueOf(Integer.MIN_VALUE);
 		}
 		return sysinfos.getUpdaterState().getLast_tas_id();
 	}
@@ -258,7 +262,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 * @param systemHome
 	 * @return returns the indexId for a document
 	 */
-	public static long calculateIndexId(final Number contentId, final String systemHome) {
+	public static long calculateIndexId(final Number contentId, final URI systemHome) {
 		return (((long) systemHome.hashCode()) << 32l) + contentId.longValue();
 	}
 
@@ -268,11 +272,10 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 * @throws JsonProcessingException 
 	 */
 	public void flushSystemInformation() throws JsonProcessingException {
-		final ObjectMapper mapper = new ObjectMapper();
-		String jsonDocumentForSystemInfo;
 		try {
-			jsonDocumentForSystemInfo = mapper.writeValueAsString(this.systemInfo);
-			IndexResponse res = this.esClient.getClient().prepareIndex(this.lockOfIndexBeingUpdated.getIndexName(), ESConstants.SYSTEM_INFO_INDEX_TYPE, this.systemHome + this.resourceType).setSource(jsonDocumentForSystemInfo).execute().actionGet();
+			final ObjectMapper mapper = new ObjectMapper();
+			final String jsonDocumentForSystemInfo = mapper.writeValueAsString(this.systemInfo);
+			final IndexResponse res = this.esClient.getClient().prepareIndex(this.lockOfIndexBeingUpdated.getIndexName(), ESConstants.SYSTEM_INFO_INDEX_TYPE, ElasticSearchUtils.getIndexName(this.systemHome, this.resourceType)).setSource(jsonDocumentForSystemInfo).execute().actionGet();
 			if ((res == null) || !ValidationUtils.present(res.getId())) {
 				throw new RuntimeException("failed to save systeminformation for index " + this.lockOfIndexBeingUpdated.getIndexName());
 			}
@@ -300,11 +303,18 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	}
 
 	private void insertPostDocument(final Map<String, Object> jsonDocument, String indexIdStr) {
-		this.esClient.getClient().prepareIndex(this.lockOfIndexBeingUpdated.getIndexName(), this.resourceType, indexIdStr).setSource(jsonDocument).setRefresh(true).execute().actionGet();
+		this.esClient.getClient().prepareIndex(this.lockOfIndexBeingUpdated.getIndexName(), getResorceTypeAsString(), indexIdStr).setSource(jsonDocument).setRefresh(true).execute().actionGet();
 	}
 	
 	private void updatePostDocument(final Map<String, Object> jsonDocument, String indexIdStr) {
-		this.esClient.getClient().prepareUpdate(this.lockOfIndexBeingUpdated.getIndexName(), this.resourceType, indexIdStr).setDoc(jsonDocument).setRefresh(true).execute().actionGet();
+		this.esClient.getClient().prepareUpdate(this.lockOfIndexBeingUpdated.getIndexName(), getResorceTypeAsString(), indexIdStr).setDoc(jsonDocument).setRefresh(true).execute().actionGet();
+	}
+
+	/**
+	 * @return
+	 */
+	protected String getResorceTypeAsString() {
+		return ResourceFactory.getResourceName(this.resourceType);
 	}
 
 	/**
@@ -312,7 +322,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 */
 	@Override
 	public void deleteIndexForUser(final String userName){
-		this.esClient.getClient().prepareDeleteByQuery(this.lockOfIndexBeingUpdated.getIndexName()).setTypes(this.resourceType).setQuery(QueryBuilders.filteredQuery( QueryBuilders.termQuery(Fields.USER_NAME, userName), FilterBuilders.termFilter(Fields.SYSTEM_URL, systemHome))).execute().actionGet();
+		this.esClient.getClient().prepareDeleteByQuery(this.lockOfIndexBeingUpdated.getIndexName()).setTypes(getResorceTypeAsString()).setQuery(QueryBuilders.filteredQuery( QueryBuilders.termQuery(Fields.USER_NAME, userName), FilterBuilders.termFilter(Fields.SYSTEM_URL, systemHome))).execute().actionGet();
 	}
 
 	/**
@@ -320,14 +330,14 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 */
 	@Override
 	public void deleteIndexForIndexId(final long indexId) {
-		this.esClient.getClient().prepareDelete(this.lockOfIndexBeingUpdated.getIndexName(), this.resourceType, String.valueOf(indexId)).setRefresh(true).execute().actionGet();
+		this.esClient.getClient().prepareDelete(this.lockOfIndexBeingUpdated.getIndexName(), getResorceTypeAsString(), String.valueOf(indexId)).setRefresh(true).execute().actionGet();
 	}
 
 	/**
 	 * @return the resourceType
 	 */
 	public String getResourceType() {
-		return this.resourceType;
+		return getResorceTypeAsString();
 	}
 
 	/**
@@ -380,7 +390,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	@Override
 	public void setSystemInformation(final IndexUpdaterState state) {
 		this.systemInfo.setUpdaterState(state);
-		this.systemInfo.setPostType(this.resourceType);
+		this.systemInfo.setPostType(getResorceTypeAsString());
 		this.systemInfo.setSystemUrl(this.systemHome);
 	}
 
@@ -416,7 +426,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	@Override
 	public void updateIndexWithPersonRelation(String interhash, List<ResourcePersonRelation> newRels) {
 		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(this.lockOfIndexBeingUpdated.getIndexName());
-		searchRequestBuilder.setTypes(this.resourceType);
+		searchRequestBuilder.setTypes(ResourceFactory.getResourceName(this.resourceType));
 		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 		searchRequestBuilder.setQuery(QueryBuilders.constantScoreQuery(FilterBuilders.andFilter(FilterBuilders.termFilter(Fields.SYSTEM_URL, systemHome), FilterBuilders.termFilter("interhash", interhash))));
 		searchRequestBuilder.setExplain(true); // TODO: remove
@@ -427,7 +437,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 		if (response != null) {
 			for (final SearchHit hit : response.getHits()) {
 				final Map<String, Object> doc = hit.getSource();
-				// FIXME: this.resourceConverter.setPersonFields(doc, newRels);
+				// FIXME: readd this.resourceConverter.setPersonFields(doc, newRels); TODODZO
 				this.updatePostDocument(doc, hit.getId());
 				numUpdatedPosts++;
 			}
@@ -448,10 +458,9 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 
 	private void updateIndexForPersonWithId(LRUMap updatedInterhashes, final String personId) {
 		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(this.lockOfIndexBeingUpdated.getIndexName());
-		searchRequestBuilder.setTypes(this.resourceType);
+		searchRequestBuilder.setTypes(ResourceFactory.getResourceName(this.resourceType));
 		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 		searchRequestBuilder.setQuery(QueryBuilders.constantScoreQuery(FilterBuilders.andFilter(FilterBuilders.termFilter(Fields.SYSTEM_URL, systemHome), FilterBuilders.termFilter(ESConstants.PERSON_ENTITY_IDS_FIELD_NAME, personId))));
-		searchRequestBuilder.setExplain(true); // TODO: remove explain?
 
 		final SearchResponse response = searchRequestBuilder.execute().actionGet();
 

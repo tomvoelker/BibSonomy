@@ -33,11 +33,11 @@ import org.bibsonomy.model.Resource;
  * @author bsc
  * @param <R> 
  */
-public interface GenerateIndexCallback<R extends Resource> {
+public interface GenerateIndexCallback<A extends AbstractIndexGenerator<? extends Resource>> {
 	
 	/**
 	 * called when generating of index is done
 	 * @param index the generated index
 	 */
-	public void generatedIndex(AbstractIndexGenerator<R> index);
+	public void generatedIndex(A index);
 }
