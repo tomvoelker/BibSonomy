@@ -204,7 +204,7 @@ public class ESIndexManager {
 	 * @param alias
 	 * @param indexName
 	 */
-	private void setAliasForIndex(String alias, String indexName){
+	private void setAliasForIndex(String alias, String indexName) {
 		final IndicesAliasesResponse aliasReponse = this.esClient.getClient().admin().indices().prepareAliases() //
 				.addAlias(indexName, alias) //
 				.execute() //

@@ -24,7 +24,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.lucene.database;
+package org.bibsonomy.search.management.database;
 
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.GoldStandardPublication;

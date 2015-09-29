@@ -29,7 +29,7 @@ package org.bibsonomy.search.es.management;
 import java.io.Serializable;
 import java.net.URI;
 
-import org.bibsonomy.search.update.IndexUpdaterState;
+import org.bibsonomy.search.update.SearchIndexState;
 
 
 /**
@@ -37,11 +37,12 @@ import org.bibsonomy.search.update.IndexUpdaterState;
  *
  * @author lutful
  */
+@Deprecated // TODO: check if system url is 
 public class SystemInformation implements Serializable {
 	private static final long serialVersionUID = 3300034332953151505L;
 	
 	private URI systemUrl;
-	private IndexUpdaterState updaterState;
+	private SearchIndexState updaterState;
 	private String postType;
 
 	/**
@@ -73,11 +74,11 @@ public class SystemInformation implements Serializable {
 		this.postType = postType;
 	}
 
-	public IndexUpdaterState getUpdaterState() {
+	public SearchIndexState getUpdaterState() {
 		return this.updaterState;
 	}
 
-	public void setUpdaterState(IndexUpdaterState updaterState) {
+	public void setUpdaterState(SearchIndexState updaterState) {
 		this.updaterState = updaterState;
 	}
 	

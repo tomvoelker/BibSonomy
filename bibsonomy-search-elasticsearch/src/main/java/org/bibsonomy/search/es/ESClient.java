@@ -47,6 +47,7 @@ public interface ESClient {
 	/**
 	 * @return the node
 	 */
+	@Deprecated // TODO: remove TODODZO
 	Node getNode();
 
 	/**

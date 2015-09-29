@@ -34,6 +34,7 @@ import org.bibsonomy.model.Resource;
  * @author lutful
  * @param <R> 
  */
+@Deprecated // TODODZO: remove
 public interface UpdatePlugin<R extends Resource> {
 
 	/**

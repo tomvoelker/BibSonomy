@@ -36,7 +36,7 @@ import org.apache.commons.lang.ObjectUtils;
  *
  * @author lutful
  */
-public class IndexUpdaterState implements Serializable {
+public class SearchIndexState implements Serializable {
 	private static final long serialVersionUID = 1398951571372358877L;
 	
 	// TODO: rename attribute to lastTASId
@@ -48,13 +48,13 @@ public class IndexUpdaterState implements Serializable {
 	/**
 	 * default constructor
 	 */
-	public IndexUpdaterState() {
+	public SearchIndexState() {
 	}
 	
 	/**
 	 * @param state
 	 */
-	public IndexUpdaterState(IndexUpdaterState state) {
+	public SearchIndexState(SearchIndexState state) {
 		this.last_log_date = state.last_log_date;
 		this.last_tas_id = state.last_tas_id;
 		this.lastPersonChangeId = state.lastPersonChangeId;
@@ -109,16 +109,16 @@ public class IndexUpdaterState implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof IndexUpdaterState)) {
+		if (!(obj instanceof SearchIndexState)) {
 			return false;
 		}
-		if (!ObjectUtils.equals(last_log_date, ((IndexUpdaterState)obj).last_log_date)) {
+		if (!ObjectUtils.equals(last_log_date, ((SearchIndexState)obj).last_log_date)) {
 			return false;
 		}
-		if (!ObjectUtils.equals(last_tas_id, ((IndexUpdaterState)obj).last_tas_id)) {
+		if (!ObjectUtils.equals(last_tas_id, ((SearchIndexState)obj).last_tas_id)) {
 			return false;
 		}
-		if (!ObjectUtils.equals(lastPersonChangeId, ((IndexUpdaterState)obj).lastPersonChangeId)) {
+		if (!ObjectUtils.equals(lastPersonChangeId, ((SearchIndexState)obj).lastPersonChangeId)) {
 			return false;
 		}
 		return true;

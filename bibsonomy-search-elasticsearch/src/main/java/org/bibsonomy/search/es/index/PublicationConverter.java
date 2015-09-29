@@ -106,7 +106,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		jsonDocument.put(ESConstants.AUTHOR_ENTITY_NAMES_FIELD_NAME, serializeMainNames(rels, PersonResourceRelationType.AUTHOR));
 		jsonDocument.put(ESConstants.AUTHOR_ENTITY_IDS_FIELD_NAME, serializePersonIds(rels, PersonResourceRelationType.AUTHOR));
 		jsonDocument.put(ESConstants.PERSON_ENTITY_NAMES_FIELD_NAME, serializeMainNames(rels, null));
-		jsonDocument.put(ESConstants.PERSON_ENTITY_IDS_FIELD_NAME, serializePersonIds(rels, null));
+		jsonDocument.put(Fields.PERSON_ENTITY_IDS_FIELD_NAME, serializePersonIds(rels, null));
 	}
 	
 	private static String getNormalizedEntryType(final Post<? extends BibTex> post) {
@@ -207,7 +207,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	private static List<ResourcePersonRelation> readPersonRelationsFromIndex(Map<String, Object> result) {
 		final List<ResourcePersonRelation> rels = new ArrayList<>();
 		
-		final String ids = (String) result.get(ESConstants.PERSON_ENTITY_IDS_FIELD_NAME);
+		final String ids = (String) result.get(Fields.PERSON_ENTITY_IDS_FIELD_NAME);
 		if (StringUtils.isEmpty(ids)) {
 			return rels;
 		}

@@ -60,7 +60,7 @@ import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.model.SearchIndexInfo;
 import org.bibsonomy.search.model.SearchIndexStatistics;
 import org.bibsonomy.search.update.IndexUpdater;
-import org.bibsonomy.search.update.IndexUpdaterState;
+import org.bibsonomy.search.update.SearchIndexState;
 import org.bibsonomy.search.update.UpdatePlugin;
 import org.bibsonomy.util.ValidationUtils;
 
@@ -177,13 +177,13 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 * updated posts.
 	 */
 	protected synchronized void updateIndexes() {
-		final Map<IndexUpdaterState, List<IndexUpdater<R>>> lastLogDateAndLastTasIdToUpdaters = getUpdatersBySameState();
+		final Map<SearchIndexState, List<IndexUpdater<R>>> lastLogDateAndLastTasIdToUpdaters = getUpdatersBySameState();
 		try {
-			final IndexUpdaterState targetState = this.dbLogic.getDbState();
+			final SearchIndexState targetState = this.dbLogic.getDbState();
 			
-			for (final Map.Entry<IndexUpdaterState, List<IndexUpdater<R>>> e : lastLogDateAndLastTasIdToUpdaters.entrySet()) {
+			for (final Map.Entry<SearchIndexState, List<IndexUpdater<R>>> e : lastLogDateAndLastTasIdToUpdaters.entrySet()) {
 				final List<IndexUpdater<R>> updaters = e.getValue();
-				final IndexUpdaterState indexState = e.getKey();
+				final SearchIndexState indexState = e.getKey();
 				this.updateIndex(indexState, targetState, updaters);
 			}
 		} finally {
@@ -201,8 +201,8 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		this.alreadyRunning = 0;
 	}
 
-	private Map<IndexUpdaterState, List<IndexUpdater<R>>> getUpdatersBySameState() {
-		final Map<IndexUpdaterState, List<IndexUpdater<R>>> lastLogDateAndLastTasIdToUpdaters = new HashMap<>();
+	private Map<SearchIndexState, List<IndexUpdater<R>>> getUpdatersBySameState() {
+		final Map<SearchIndexState, List<IndexUpdater<R>>> lastLogDateAndLastTasIdToUpdaters = new HashMap<>();
 		
 		for (UpdatePlugin plugin : this.plugins) {
 			final IndexUpdater<R> updater;
@@ -218,7 +218,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			}
 			
 			try {
-				final IndexUpdaterState state = updater.getUpdaterState();
+				final SearchIndexState state = updater.getUpdaterState();
 				
 				List<IndexUpdater<R>> updatersWithSameState = lastLogDateAndLastTasIdToUpdaters.get(state);
 				if (updatersWithSameState == null) {
@@ -247,7 +247,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 * @return the lastTasId found by generating the new index
 	 */
 	@SuppressWarnings({ "boxing" })
-	protected int updateIndex(IndexUpdaterState oldState, IndexUpdaterState targetState, final List<IndexUpdater<R>> indexUpdaters) {
+	protected int updateIndex(SearchIndexState oldState, SearchIndexState targetState, final List<IndexUpdater<R>> indexUpdaters) {
 		log.info("updating indices with same state " + oldState + " : " + indexUpdaters.toString());
 		
 		int newLastTasId = oldState.getLast_tas_id();
@@ -301,7 +301,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 
 		for (IndexUpdater<R> updater : indexUpdaters) {
 			try {
-				IndexUpdaterState newState = new IndexUpdaterState(oldState);
+				SearchIndexState newState = new SearchIndexState(oldState);
 				newState.setLast_log_date(targetState.getLast_log_date());
 				newState.setLast_tas_id(newLastTasId);
 				newState.setLastPersonChangeId(targetState.getLastPersonChangeId());
@@ -336,7 +336,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 * @param indexUpdaters
 	 * @param databaseSession 
 	 */
-	private void updateUpdatedIndexWithPersonChanges(IndexUpdaterState oldState, IndexUpdaterState targetState, List<IndexUpdater<R>> indexUpdaters) {
+	private void updateUpdatedIndexWithPersonChanges(SearchIndexState oldState, SearchIndexState targetState, List<IndexUpdater<R>> indexUpdaters) {
 		final LRUMap updatedInterhashes = new LRUMap(UPDATED_INTERHASHES_CACHE_SIZE);
 		applyChangesInPubPersonRelationsToIndex(oldState, targetState, indexUpdaters, updatedInterhashes);
 		applyPersonChangesToIndex(oldState, targetState, indexUpdaters, updatedInterhashes);
@@ -347,7 +347,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 * @param indexUpdaters
 	 * @param updatedInterhashes
 	 */
-	private void applyPersonChangesToIndex(IndexUpdaterState oldState, IndexUpdaterState targetState, List<IndexUpdater<R>> indexUpdaters, LRUMap updatedInterhashes) {
+	private void applyPersonChangesToIndex(SearchIndexState oldState, SearchIndexState targetState, List<IndexUpdater<R>> indexUpdaters, LRUMap updatedInterhashes) {
 		for (long minPersonChangeId = oldState.getLastPersonChangeId() + 1; minPersonChangeId < targetState.getLastPersonChangeId(); minPersonChangeId = Math.min(targetState.getLastPersonChangeId(), minPersonChangeId + SQL_BLOCKSIZE)) {
 			List<PersonName> personMainNameChanges = this.dbLogic.getPersonMainNamesByChangeIdRange(minPersonChangeId, minPersonChangeId + SQL_BLOCKSIZE);
 			for (PersonName name : personMainNameChanges) {
@@ -366,7 +366,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 		}
 	}
 
-	private void applyChangesInPubPersonRelationsToIndex(IndexUpdaterState oldState, IndexUpdaterState targetState, List<IndexUpdater<R>> indexUpdaters, final LRUMap updatedInterhashes) {
+	private void applyChangesInPubPersonRelationsToIndex(SearchIndexState oldState, SearchIndexState targetState, List<IndexUpdater<R>> indexUpdaters, final LRUMap updatedInterhashes) {
 		for (long minPersonChangeId = oldState.getLastPersonChangeId() + 1; minPersonChangeId < targetState.getLastPersonChangeId(); minPersonChangeId += SQL_BLOCKSIZE) {
 			final List<ResourcePersonRelationLogStub> relChanges = this.dbLogic.getPubPersonRelationsByChangeIdRange(minPersonChangeId, minPersonChangeId + SQL_BLOCKSIZE);
 			if (log.isDebugEnabled() || ValidationUtils.present(relChanges)) {
@@ -543,7 +543,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 				break;
 			}
 		}
-		if (this.activeIndex.getStatistics().getIndexId() == id) {
+		if (this.activeIndex.getIndexId() == id) {
 			this.setActiveIndex(this.updateQueue.poll());
 		} 
 		if (indexToGenerate != null) {

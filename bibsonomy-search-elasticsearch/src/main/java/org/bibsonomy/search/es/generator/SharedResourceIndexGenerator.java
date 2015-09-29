@@ -44,7 +44,7 @@ import org.bibsonomy.search.es.index.ResourceConverter;
 import org.bibsonomy.search.es.update.SharedIndexUpdatePlugin;
 import org.bibsonomy.search.es.update.SharedResourceIndexUpdater;
 import org.bibsonomy.search.generator.AbstractIndexGenerator;
-import org.bibsonomy.search.update.IndexUpdaterState;
+import org.bibsonomy.search.update.SearchIndexState;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
@@ -126,7 +126,7 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	}
 	
 	@Override
-	protected void writeMetaInfo(IndexUpdaterState state) throws IOException {
+	protected void writeMetaInfo(SearchIndexState state) throws IOException {
 		updater.setSystemInformation(state);
 		updater.flushSystemInformation();
 	}

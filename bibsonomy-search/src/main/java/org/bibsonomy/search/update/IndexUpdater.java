@@ -44,6 +44,7 @@ import org.bibsonomy.search.SearchPost;
  * @author lutful
  * @author jil
  */
+@Deprecated // TODODZO: remove
 public interface IndexUpdater<R extends Resource> {
 
 	/**
@@ -88,7 +89,7 @@ public interface IndexUpdater<R extends Resource> {
 	 * updates information about the up-to-dateness of the system
 	 * @param state 
 	 */
-	public void setSystemInformation(final IndexUpdaterState state);
+	public void setSystemInformation(final SearchIndexState state);
 
 	/**
 	 * @param interHash
@@ -116,7 +117,7 @@ public interface IndexUpdater<R extends Resource> {
 	/**
 	 * @return
 	 */
-	public IndexUpdaterState getUpdaterState();
+	public SearchIndexState getUpdaterState();
 
 	/**
 	 * 

@@ -9,12 +9,13 @@ import org.bibsonomy.search.model.SearchIndexInfo;
  * interface which describes methods for managing a resource search
  *
  * @author dzo
+ * @param <R> 
  */
-public interface SearchResourceManagerInterface {
+public interface SearchResourceManagerInterface<R extends Resource> {
 	
-	public void generateIndexForResource(final Class<? extends Resource> resourceType);
+	public void generateIndexForResource(final String containerId, final String indexId);
 	
-	public List<SearchIndexInfo> getInfomationOfIndexForResource(final Class<? extends Resource> resourceType);
+	public List<SearchIndexInfo> getInfomationOfIndexForResource();
 	
 	/**
 	 * updates the index, that is - adds new posts - updates posts, where tag
@@ -33,5 +34,5 @@ public interface SearchResourceManagerInterface {
 	 * updated posts.
 	 * @param resourceType the resource search index to be updated
 	 */
-	public void updateIndex(final Class<? extends Resource> resourceType);
+	public void updateAllIndices();
 }

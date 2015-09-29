@@ -57,7 +57,7 @@ import org.bibsonomy.search.es.management.SystemInformation;
 import org.bibsonomy.search.es.management.util.ElasticSearchUtils;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.update.IndexUpdater;
-import org.bibsonomy.search.update.IndexUpdaterState;
+import org.bibsonomy.search.update.SearchIndexState;
 import org.bibsonomy.util.ValidationUtils;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -78,6 +78,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @param <R>
  *        the resource of the index
  */
+@Deprecated // TODO: replace with ElasticSearchIndexUpdater
 public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpdater<R>, AutoCloseable {
 	private static final Log log = LogFactory.getLog(SharedResourceIndexUpdater.class);
 
@@ -388,7 +389,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 * @param state
 	 */
 	@Override
-	public void setSystemInformation(final IndexUpdaterState state) {
+	public void setSystemInformation(final SearchIndexState state) {
 		this.systemInfo.setUpdaterState(state);
 		this.systemInfo.setPostType(getResorceTypeAsString());
 		this.systemInfo.setSystemUrl(this.systemHome);
@@ -460,7 +461,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(this.lockOfIndexBeingUpdated.getIndexName());
 		searchRequestBuilder.setTypes(ResourceFactory.getResourceName(this.resourceType));
 		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
-		searchRequestBuilder.setQuery(QueryBuilders.constantScoreQuery(FilterBuilders.andFilter(FilterBuilders.termFilter(Fields.SYSTEM_URL, systemHome), FilterBuilders.termFilter(ESConstants.PERSON_ENTITY_IDS_FIELD_NAME, personId))));
+		searchRequestBuilder.setQuery(QueryBuilders.constantScoreQuery(FilterBuilders.andFilter(FilterBuilders.termFilter(Fields.SYSTEM_URL, systemHome), FilterBuilders.termFilter(Fields.PERSON_ENTITY_IDS_FIELD_NAME, personId))));
 
 		final SearchResponse response = searchRequestBuilder.execute().actionGet();
 
@@ -501,7 +502,7 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 * @see org.bibsonomy.es.IndexUpdater#getUpdaterState()
 	 */
 	@Override
-	public IndexUpdaterState getUpdaterState() {
+	public SearchIndexState getUpdaterState() {
 		SystemInformation sysi = getSingleSystemInfos();
 		if (sysi != null) {
 			return sysi.getUpdaterState();

@@ -24,7 +24,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.lucene.database;
+package org.bibsonomy.search.management.database;
 
 import java.util.Collections;
 import java.util.Date;
@@ -37,8 +37,6 @@ import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.managers.PersonDatabaseManager;
-import org.bibsonomy.lucene.database.managers.PersonLuceneDatabaseManager;
-import org.bibsonomy.lucene.database.params.LuceneParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
@@ -47,8 +45,9 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.ResourcePersonRelationLogStub;
 import org.bibsonomy.model.User;
 import org.bibsonomy.search.SearchPost;
-import org.bibsonomy.search.management.database.SearchDBInterface;
-import org.bibsonomy.search.update.IndexUpdaterState;
+import org.bibsonomy.search.management.database.manager.PersonLuceneDatabaseManager;
+import org.bibsonomy.search.management.database.params.LuceneParam;
+import org.bibsonomy.search.update.SearchIndexState;
 
 /**
  * class for accessing the bibsonomy database 
@@ -245,7 +244,7 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getNewPosts(java.lang.Integer)
 	 */
 	@Override
-	public List<SearchPost<R>> getNewPosts(final Integer lastTasId) {
+	public List<SearchPost<R>> getNewPosts(final int lastTasId) {
 		final LuceneParam param = new LuceneParam();
 		param.setLastTasId(lastTasId);
 		
@@ -322,8 +321,8 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getDbState()
 	 */
 	@Override
-	public IndexUpdaterState getDbState() {
-		final IndexUpdaterState newState = new IndexUpdaterState();
+	public SearchIndexState getDbState() {
+		final SearchIndexState newState = new SearchIndexState();
 		newState.setLast_tas_id(this.getLastTasId());
 		newState.setLast_log_date(this.getLastLogDate());
 		newState.setLastPersonChangeId(this.getLastPersonChangeId());

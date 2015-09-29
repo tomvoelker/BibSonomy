@@ -70,7 +70,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.search.SearchPost;
 import org.bibsonomy.search.update.IndexUpdater;
-import org.bibsonomy.search.update.IndexUpdaterState;
+import org.bibsonomy.search.update.SearchIndexState;
 
 /**
  * abstract base class for managing lucene resource indices
@@ -89,7 +89,6 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	
 
 	/** gives read only access to the lucene index */
-	//private DirectoryReader indexReader;
 	private SearcherManager searcherManager;
 
 	/** gives write access to the lucene index */
@@ -127,7 +126,7 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	private int indexId;
 	
 	/** keeps track of the newest log_date and tas_id during last index update */
-	private IndexUpdaterState state;
+	private SearchIndexState state;
 
 	private Class<R> resourceClass;
 	
@@ -349,7 +348,7 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	 */
 	public void setLastLogDate(final Date lastLogDate) {
 		if (this.state == null) {
-			this.state = new IndexUpdaterState();
+			this.state = new SearchIndexState();
 		}
 		this.state.setLast_log_date(lastLogDate);
 	}
@@ -394,7 +393,7 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	 */
 	public void setLastTasId(final Integer lastTasId) {
 		if (this.state == null) {
-			this.state = new IndexUpdaterState();
+			this.state = new SearchIndexState();
 		}
 		this.state.setLast_tas_id(lastTasId);
 	}
@@ -928,7 +927,7 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	 * @see org.bibsonomy.es.IndexUpdater#setSystemInformation(java.lang.Integer, java.util.Date)
 	 */
 	@Override
-	public void setSystemInformation(IndexUpdaterState state) {
+	public void setSystemInformation(SearchIndexState state) {
 		this.state = state;
 	}
 	
@@ -1020,9 +1019,9 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	 * @see org.bibsonomy.es.IndexUpdater#getUpdaterState()
 	 */
 	@Override
-	public IndexUpdaterState getUpdaterState() {
+	public SearchIndexState getUpdaterState() {
 		if (state == null) {
-			state = new IndexUpdaterState();
+			state = new SearchIndexState();
 		}
 		final Integer lastTasId = this.getLastTasId();
 		// keeps track of the newest log_date during last index update

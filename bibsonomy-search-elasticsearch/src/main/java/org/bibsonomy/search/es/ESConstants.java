@@ -80,10 +80,6 @@ public final class ESConstants {
 	/** current full names (including titles) of the associated authors, editors, supervisors, etc */
 	public static final String PERSON_ENTITY_NAMES_FIELD_NAME = "personEntityNames";
 	
-	/** Ids of the associated authors, editors, supervisors, etc */
-	public static final String PERSON_ENTITY_IDS_FIELD_NAME = "personEntityIds";
-
-	
 	/**
 	 * prefix for temporary index
 	 */
@@ -110,6 +106,8 @@ public final class ESConstants {
 		public static final String CHANGE_DATE = "change_date";
 		/** the description */
 		public static final String DESCRIPTION = "description";
+		/** Ids of the associated authors, editors, supervisors, etc */
+		public static final String PERSON_ENTITY_IDS_FIELD_NAME = "personEntityIds";
 		
 		public static interface Resource {
 			/** the title of the resource */

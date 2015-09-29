@@ -45,7 +45,7 @@ import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.search.SearchPost;
 import org.bibsonomy.search.generator.AbstractIndexGenerator;
-import org.bibsonomy.search.update.IndexUpdaterState;
+import org.bibsonomy.search.update.SearchIndexState;
 
 /**
  * reads data from database and builds lucene index for all resource entries
@@ -202,7 +202,7 @@ public class LuceneGenerateResourceIndex<R extends Resource> extends AbstractInd
 	 * @see org.bibsonomy.lucene.util.generator.AbstractIndexGenerator#writeMetaInfo(java.lang.Integer, java.util.Date)
 	 */
 	@Override
-	protected void writeMetaInfo(IndexUpdaterState state) throws IOException {
+	protected void writeMetaInfo(SearchIndexState state) throws IOException {
 		// lucene does not store meta-info in the index - it retrieves it directly from all the entries
 	}
 

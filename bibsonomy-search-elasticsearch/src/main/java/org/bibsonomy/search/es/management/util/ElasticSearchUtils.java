@@ -93,4 +93,13 @@ public final class ElasticSearchUtils {
 	public static String normSystemHome(final URI systemHome) {
 		return (systemHome.getHost() + systemHome.getPath()).replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
 	}
+
+	/**
+	 * @param contentId
+	 * @return the id for the elastic search index
+	 */
+	public static String createElasticSearchId(int contentId) {
+		// TODO: handle Systemhome? TODODZO return (((long) systemHome.hashCode()) << 32l) + contentId.longValue();
+		return String.valueOf(contentId);
+	}
 }

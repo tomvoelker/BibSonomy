@@ -24,13 +24,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.lucene.database.params;
+package org.bibsonomy.search.management.database.params;
 
 import java.util.Date;
 
 /**
  * Class for lucene queries
- * 
+ * TODO: rename TODODZO
  * @author Jens Illig
  */
 public class LuceneParam {
@@ -45,7 +45,7 @@ public class LuceneParam {
 	
 	/** newest tas_id during last index update */
 	private Integer lastTasId;
-		
+	
 	private int lastContentId;
 	
 	private int lastOffset; // TODO or just use offset?

@@ -8,8 +8,8 @@
 
 	
 	<!-- lucene model types -->
-	<typeAlias alias="lucenePost"         type="org.bibsonomy.lucene.param.LucenePost" />
+	<typeAlias alias="lucenePost"         type="org.bibsonomy.search.SearchPost" />
 	
 	<!-- Parameters -->
-	<typeAlias alias="luceneParam"      type="org.bibsonomy.lucene.database.params.LuceneParam" />
+	<typeAlias alias="luceneParam"      type="org.bibsonomy.search.management.database.params.LuceneParam" />
 </sqlMap>

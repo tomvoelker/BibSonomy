@@ -47,9 +47,9 @@ import org.elasticsearch.common.xcontent.XContentBuilder;
  */
 public class ESResourceMapping {
 	
-	@Deprecated // TODO: remove this dependency!
+	@Deprecated // TODO: remove this dependency! TODODZO
 	private final Class<? extends Resource> resourceType;
-	@Deprecated // TODO: remove
+	@Deprecated // TODO: remove TODODZO
 	private final ESClient esClient;
 	private final String indexName;
 
@@ -83,7 +83,7 @@ public class ESResourceMapping {
 			mappingBuilder = createMappingForPublication(objectType);
 		}
 
-		this.esClient.getClient().admin().indices().preparePutMapping(indexName).setType(objectType).setSource(mappingBuilder).execute().actionGet();
+		this.esClient.getClient().admin().indices().preparePutMapping(this.indexName).setType(objectType).setSource(mappingBuilder).execute().actionGet();
 
 		// wait for the yellow (or green) status to prevent
 		// NoShardAvailableActionException later
@@ -144,7 +144,7 @@ public class ESResourceMapping {
 				.startObject(ESConstants.AUTHOR_ENTITY_NAMES_FIELD_NAME).field("type", "string").field("index", "analyzed").endObject() //
 				.startObject(ESConstants.AUTHOR_ENTITY_IDS_FIELD_NAME).field("type", "string").field("index", "analyzed").endObject() //
 				.startObject(ESConstants.PERSON_ENTITY_NAMES_FIELD_NAME).field("type", "string").field("index", "analyzed").endObject() //
-				.startObject(ESConstants.PERSON_ENTITY_IDS_FIELD_NAME).field("type", "string").field("index", "analyzed").endObject() //
+				.startObject(Fields.PERSON_ENTITY_IDS_FIELD_NAME).field("type", "string").field("index", "analyzed").endObject() //
 				.endObject().endObject().endObject();
 	}
 	

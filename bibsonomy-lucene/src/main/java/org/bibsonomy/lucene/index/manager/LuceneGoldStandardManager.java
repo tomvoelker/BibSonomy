@@ -29,12 +29,12 @@ package org.bibsonomy.lucene.index.manager;
 import java.util.Date;
 import java.util.List;
 
-import org.bibsonomy.lucene.database.SearchDBLogic;
-import org.bibsonomy.lucene.database.SearchGoldStandardLogic;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.search.management.database.SearchDBLogic;
+import org.bibsonomy.search.management.database.SearchGoldStandardLogic;
 import org.bibsonomy.search.update.IndexUpdater;
 
 /**
