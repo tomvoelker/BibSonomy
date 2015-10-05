@@ -165,8 +165,8 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		applicationContext.getBean("responseLogic", ResponseLogic.class).setResponse(response); // hack but thats springs fault
 		
 		log.debug("Processing " + request.getRequestURI() + "?" + request.getQueryString() + " from " + requestLogic.getInetAddress());
-		if ((presenceCondition!= null) && (presenceCondition.eval() == false)) {
-			 throw new NoSuchRequestHandlingMethodException(request);
+		if (presenceCondition != null && !presenceCondition.eval()) {
+			throw new NoSuchRequestHandlingMethodException(request);
 		}
 		
 		final MinimalisticController<T> controller = (MinimalisticController<T>) applicationContext.getBean(controllerBeanName);

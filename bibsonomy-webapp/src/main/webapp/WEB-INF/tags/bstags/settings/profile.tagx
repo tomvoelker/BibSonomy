@@ -7,7 +7,6 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"

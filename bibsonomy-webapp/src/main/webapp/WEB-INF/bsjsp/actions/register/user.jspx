@@ -12,7 +12,6 @@
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
 	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/actions/user"
 	>
 

@@ -1,3 +1,4 @@
+// TODO: move to settings.js file
 /**
  * Handlers for the user profile update site
  * @author cut

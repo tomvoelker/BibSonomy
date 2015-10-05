@@ -3,7 +3,6 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:form="http://www.springframework.org/tags/form"
-	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
 	xmlns:spring="http://www.springframework.org/tags"
@@ -160,7 +159,6 @@
 						<c:if test="${not empty command.captchaHTML}">
 							<bsform:fieldset legendKey="captcha">
 								<jsp:attribute name="content">
-											
 									<c:if test="${resourceType eq 'Publication'}">
 										<p>
 											<fmt:message key="post.edit.spam_note">
@@ -169,11 +167,10 @@
 											</fmt:message>
 										</p>
 									</c:if>
-									<bform:captcha />
+									<bsform:captcha />
 								</jsp:attribute>
 							</bsform:fieldset>
 						</c:if>
-											
 						<!--+
 							| goldStandard post's approval  
 							+-->

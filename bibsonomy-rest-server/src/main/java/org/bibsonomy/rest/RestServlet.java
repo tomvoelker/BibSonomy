@@ -423,7 +423,7 @@ public final class RestServlet extends HttpServlet {
 		 * get syncClient from SSLDn
 		 */
 		log.debug("checking available sync client against SSL_CLIENT_S_DN '" + sslClientSDn + "'.");
-		final List<SyncService> syncClient = logic.getSyncServices(true, sslClientSDn);
+		final List<SyncService> syncClient = logic.getSyncServices(false, sslClientSDn);
 
 		if (!syncClient.isEmpty()) {
 			log.debug("sync client:" + syncClient.get(0).getService() + " | "

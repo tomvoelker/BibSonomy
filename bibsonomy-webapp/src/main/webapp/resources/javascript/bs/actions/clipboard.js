@@ -77,3 +77,22 @@ function updateBasket (param) {
 	});
 	return false;
 }
+
+// TODO: maybe wrong place ?
+function reportUser(a, userName){
+	$.ajax({
+		type: 'POST',
+		url: $(a).attr("href")+ "?ckey=" + ckey,
+		data: 'requestedUserName=' + userName + '&userRelation=SPAMMER&action=addRelation',
+		dataType: 'text',
+		success: function(data) {
+			$('a.report-spammer-link ').each(function(index, link) {
+				if ($(link).data('username') == userName) {
+					$(link).parent().append($("<span class=\"ilitem\"></span>").text(getString("user.reported")));
+					$(link).remove();
+				}
+			});
+		}
+	});
+	return false;
+}

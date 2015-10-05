@@ -683,11 +683,6 @@ public enum Views implements View {
 	 */
 	FOLLOWERS("followers"),
 
-	/**
-	 * 
-	 */
-	BOOTSTRAP_DEMO("bootstrapDemo"),
-
 	/*
 	 * Error pages
 	 */
@@ -737,11 +732,6 @@ public enum Views implements View {
 	 * bookmarks.
 	 */
 	RECOMMENDEDPAGE("recommended"),
-
-	/**
-	 * show bibsonomy3 demo
-	 */
-	BIBSONOMY3("bibsonomy3"),
 
 	/**
 	 * group request page
