@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    BibSonomy-Rest-Client-OAuth - The REST-client OAuth Accessor.
+    BibSonomy - A blue social bookmark and publication sharing system.
 
     Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
                                   University of Kassel, Germany
@@ -28,15 +28,16 @@
 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
 	<modelVersion>4.0.0</modelVersion>
-	<name>BibSonomy-Rest-Client-OAuth</name>
-	<artifactId>bibsonomy-rest-client-oauth</artifactId>
+	<artifactId>bibsonomy-entityresolver</artifactId>
 	<packaging>jar</packaging>
-	<description>The REST-client OAuth Accessor.</description>
+	<name>BibSonomy Entity Resolver</name>
+	<description>Username/author identiy resolving for BibSonomy.</description>
 	<parent>
-		<groupId>org.bibsonomy</groupId>
 		<artifactId>bibsonomy</artifactId>
+		<groupId>org.bibsonomy</groupId>
 		<version>3.3.0</version>
 	</parent>
 	<licenses>
@@ -48,39 +49,72 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-rest-client</artifactId>
+			<artifactId>bibsonomy-common</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-model</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>net.oauth.core</groupId>
-			<artifactId>oauth</artifactId>
-			<version>20100527</version>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<!--+ | duke - the deduplication engine + -->
+		<dependency>
+			<groupId>no.priv.garshol.duke</groupId>
+			<artifactId>duke</artifactId>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
-			<groupId>net.oauth.core</groupId>
-			<artifactId>oauth-consumer</artifactId>
-			<version>20100527</version>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-database</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>net.oauth.core</groupId>
-			<artifactId>oauth-httpclient3</artifactId>
-			<version>20090617</version>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-database</artifactId>
+			<scope>test</scope>
+			<type>test-jar</type>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-server</artifactId>
-			<version>7.2.0.v20101020</version>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-database-common</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-database-common</artifactId>
+			<scope>test</scope>
+			<type>test-jar</type>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
-	<repositories>
-		<repository>
-			<id>oauth.googlecode.com</id>
-			<url>http://oauth.googlecode.com/svn/code/maven</url>
-		</repository>
-	</repositories>
+	
+	<build>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<excludes>
+					<exclude>**/*.properties</exclude>
+				</excludes>
+			</testResource>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/*.properties</include>
+				</includes>
+			</testResource>
+		</testResources>
+	</build>
 </project>
