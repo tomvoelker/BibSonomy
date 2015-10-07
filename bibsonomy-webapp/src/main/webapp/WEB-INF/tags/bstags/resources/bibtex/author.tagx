@@ -63,9 +63,7 @@
 			</c:if>
 			
 			<!-- FIXME: urls should be build correctly for remote posts. urls should be built using urlgenerator methods -->
-			<!-- FIXME use disambigulationUrl -->
-			<!-- <c:url var='pubAuthorUrl' value='${urlGenerator.getDisambiguationUrl(publication.interHash, authorEditorUppper, loopStatus.index)}'/> -->
-			<c:url var="pubAuthorUrl" value='${urlGenerator.getAuthorUrlByName(person.lastName)}' />
+			<c:url var='pubAuthorUrl' value='${urlGenerator.getDisambiguationUrl(publication.interHash, authorEditorUppper, loopStatus.index)}'/>
 			<c:choose>
 				<c:when test="${isRemotePost}">
 					<a href="${urlGenerator.getAuthorUrlByNameAndSysUrl(person.lastName, post.systemUrl)}"><c:out value="${personName}" /></a>	
