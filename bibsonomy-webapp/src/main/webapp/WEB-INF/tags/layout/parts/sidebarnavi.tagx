@@ -32,11 +32,11 @@
 						</c:otherwise>
 					</c:choose>
 					<c:choose>
-						<c:when test="${command.context.loginUser.basket.numPosts gt 0}">
-							<buttons:singularPluralMsgVar var="titleBasket" key="navi.inClipboard" count="${command.context.loginUser.basket.numPosts}" />
+						<c:when test="${command.context.loginUser.clipboard.numPosts gt 0}">
+							<buttons:singularPluralMsgVar var="titleClipboard" key="navi.inClipboard" count="${command.context.loginUser.clipboard.numPosts}" />
 						</c:when>
 						<c:otherwise>
-							<fmt:message var="titleBasket" key="navi.basket.empty" />
+							<fmt:message var="titleClipboard" key="navi.clipboard.empty" />
 						</c:otherwise>
 					</c:choose>
 					<fmt:message var="titleSpheres" key="navi.spheres.my" />
@@ -53,10 +53,10 @@
 					</li>
 					
 					<li class="sidebarnavi_entry sidebarnavi_entry_active sidebarnavi_entry_02">
-						<a href="/clipboard" title="${titleBasket}"><!-- empty -->
+						<a href="/clipboard" title="${titleClipboard}"><!-- empty -->
 							<div id="pickctr" class="sidebarnavi_info"><!-- maybe empty -->
-								<c:if test="${command.context.loginUser.basket.numPosts gt 0}">
-									<c:out value="${command.context.loginUser.basket.numPosts}"/>
+								<c:if test="${command.context.loginUser.clipboard.numPosts gt 0}">
+									<c:out value="${command.context.loginUser.clipboard.numPosts}"/>
 								</c:if>
 							</div>
 						</a>
@@ -74,14 +74,14 @@
 				</c:when>
 				<c:otherwise>
 					<fmt:message var="titleInbox" key="navi.inbox.inactive" />
-					<fmt:message var="titleBasket" key="navi.basket.inactive" />
+					<fmt:message var="titleClipboard" key="navi.clipboard.inactive" />
 					<fmt:message var="titleSpheres" key="navi.spheres.inactive" />
 					<fmt:message var="titleSettings" key="navi.settings.inactive" />
 					<fmt:message var="titleEditTags" key="navi.editTags.inactive"/>
 				
 					<!-- show the menu items -->
 					<li class="sidebarnavi_entry sidebarnavi_entry_01_inactive" title="${titleInbox}"><!-- empty --></li>
-					<li class="sidebarnavi_entry sidebarnavi_entry_02_inactive" title="${titleBasket}"><!-- empty --></li>
+					<li class="sidebarnavi_entry sidebarnavi_entry_02_inactive" title="${titleClipboard}"><!-- empty --></li>
 					<li class="sidebarnavi_entry sidebarnavi_entry_03_inactive" title="${titleSpheres}"><!-- empty --></li>
 					<li class="sidebarnavi_entry sidebarnavi_entry_04_inactive" title="${titleEditTags}"><!-- empty --></li>
 					<li class="sidebarnavi_entry sidebarnavi_entry_05_inactive" title="${titleSettings}"><!-- empty --></li>

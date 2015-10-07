@@ -69,7 +69,7 @@ public class PostClipboardStrategy extends Strategy {
 
 	@Override
 	public void perform(ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ResourceMovedException, ObjectNotFoundException {
-		this.getLogic().createBasketItems(createPost(resourceHash, userName));
+		this.getLogic().createClipboardItems(createPost(resourceHash, userName));
 		this.getRenderer().serializeOK(this.writer);
 	}
 

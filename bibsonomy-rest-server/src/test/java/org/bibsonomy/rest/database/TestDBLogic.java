@@ -950,13 +950,13 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	@Override
-	public int createBasketItems(final List<Post<? extends Resource>> posts) {
+	public int createClipboardItems(final List<Post<? extends Resource>> posts) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public int deleteBasketItems(final List<Post<? extends Resource>> posts, final boolean clearAll) {
+	public int deleteClipboardItems(final List<Post<? extends Resource>> posts, final boolean clearAll) {
 		// TODO Auto-generated method stub
 		return 0;
 	}

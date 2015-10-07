@@ -181,9 +181,9 @@ public class User implements Serializable {
 	 */
 	private UserSettings settings;
 	/**
-	 * Basket of this user where he can pick some entries
+	 * Clipboard of this user where he can pick some entries
 	 */
-	private Basket basket;
+	private Clipboard clipboard;
 	/**
 	 * Inbox of this user where he gets Posts sent by other users
 	 */
@@ -673,20 +673,20 @@ public class User implements Serializable {
 	}
 
 	/**
-	 * @return basket
+	 * @return clipboard
 	 */
-	public Basket getBasket() {
-		if (this.basket == null) {
-			this.basket = new Basket();
+	public Clipboard getClipboard() {
+		if (this.clipboard == null) {
+			this.clipboard = new Clipboard();
 		}
-		return this.basket;
+		return this.clipboard;
 	}
 
 	/**
-	 * @param basket
+	 * @param clipboard
 	 */
-	public void setBasket(final Basket basket) {
-		this.basket = basket;
+	public void setClipboard(final Clipboard clipboard) {
+		this.clipboard = clipboard;
 	}
 	
 	/**

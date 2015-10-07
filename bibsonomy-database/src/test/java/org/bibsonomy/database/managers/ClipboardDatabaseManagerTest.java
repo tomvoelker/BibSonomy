@@ -32,54 +32,54 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Tests related to basket
+ * Tests related to clipboard
  * 
  * @author Christian Kramer
  */
-public class BasketDatabaseManagerTest extends AbstractDatabaseManagerTest {
+public class ClipboardDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	private static final String TESTUSER1_NAME = "testuser1";
 	
-	private static BasketDatabaseManager basketDb;
+	private static ClipboardDatabaseManager clipboardDb;
 	
 	/**
 	 * sets up used managers
 	 */
 	@BeforeClass
 	public static void setupManager() {
-		basketDb = BasketDatabaseManager.getInstance();
+		clipboardDb = ClipboardDatabaseManager.getInstance();
 	}
 	
 	/**
-	 * Test the creation and deletion of a basket item
+	 * Test the creation and deletion of a clipboard item
 	 */
 	@Test
-	public void createAndDeleteBasketItem(){
-		int basketSize = 0;
+	public void createAndDeleteClipboardItem(){
+		int clipboardSize = 0;
 		
-		// get actual basketsize
-		basketSize = basketDb.getNumberOfBasketEntries(TESTUSER1_NAME, this.dbSession);
-		assertEquals(2, basketSize);
+		// get actual clipboardsize
+		clipboardSize = clipboardDb.getNumberOfClipboardEntries(TESTUSER1_NAME, this.dbSession);
+		assertEquals(2, clipboardSize);
 		
-		// create new basket item with content id 14
-		basketDb.createItem(TESTUSER1_NAME, 14, this.dbSession);
+		// create new clipboard item with content id 14
+		clipboardDb.createItem(TESTUSER1_NAME, 14, this.dbSession);
 		
-		// get actual basketsize
-		basketSize = basketDb.getNumberOfBasketEntries(TESTUSER1_NAME, this.dbSession);
-		assertEquals(3, basketSize);
+		// get actual clipboardsize
+		clipboardSize = clipboardDb.getNumberOfClipboardEntries(TESTUSER1_NAME, this.dbSession);
+		assertEquals(3, clipboardSize);
 		
-		// delete basket item with content id 14
-		basketDb.deleteItem(TESTUSER1_NAME, 14, this.dbSession);
+		// delete clipboard item with content id 14
+		clipboardDb.deleteItem(TESTUSER1_NAME, 14, this.dbSession);
 		
-		// get actual basket size
-		basketSize = basketDb.getNumberOfBasketEntries(TESTUSER1_NAME, this.dbSession);
-		assertEquals(2, basketSize);
+		// get actual clipboard size
+		clipboardSize = clipboardDb.getNumberOfClipboardEntries(TESTUSER1_NAME, this.dbSession);
+		assertEquals(2, clipboardSize);
 		
 		// delete ALL items
-		basketDb.deleteAllItems(TESTUSER1_NAME, this.dbSession);
+		clipboardDb.deleteAllItems(TESTUSER1_NAME, this.dbSession);
 		
-		// get actual basket size
-		basketSize = basketDb.getNumberOfBasketEntries(TESTUSER1_NAME, this.dbSession);
-		assertEquals(0, basketSize);
+		// get actual clipboard size
+		clipboardSize = clipboardDb.getNumberOfClipboardEntries(TESTUSER1_NAME, this.dbSession);
+		assertEquals(0, clipboardSize);
 	}
 
 }

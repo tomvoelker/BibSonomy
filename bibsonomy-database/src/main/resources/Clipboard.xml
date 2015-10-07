@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
-<sqlMap namespace="Basket">
+<sqlMap namespace="Clipboard">
 
-	<select id="getNumBasketEntries" resultClass="Integer" parameterClass="String">
+	<select id="getNumClipboardEntries" resultClass="Integer" parameterClass="String">
 		SELECT count(user_name) AS count 
 		FROM collector 
 		WHERE user_name = #userName#
@@ -17,23 +17,23 @@
 		SELECT count(*) AS ctr FROM log_collector
 	</select>
 	
-	<insert id="createBasketItem" parameterClass="basketParam">
+	<insert id="createClipboardItem" parameterClass="clipboardParam">
 		INSERT IGNORE INTO collector (user_name, content_id) 
 		VALUES (#userName#, #contentId#)
 	</insert>
 	
-	<update id="updateBasketItems" parameterClass="basketParam">
+	<update id="updateClipboardItems" parameterClass="clipboardParam">
 		UPDATE collector 
 		SET content_id = #newContentId#
 		WHERE content_id = #contentId#
 	</update>
 	
-	<delete id="deleteBasketItems" parameterClass="basketParam">
+	<delete id="deleteClipboardItems" parameterClass="clipboardParam">
 		DELETE FROM collector
 		WHERE content_id = #contentId#
 	</delete>
 	
-	<delete id="deleteBasketItem" parameterClass="basketParam">
+	<delete id="deleteClipboardItem" parameterClass="clipboardParam">
 		DELETE FROM collector
 		WHERE content_id = #contentId#
 			AND user_name = #userName#

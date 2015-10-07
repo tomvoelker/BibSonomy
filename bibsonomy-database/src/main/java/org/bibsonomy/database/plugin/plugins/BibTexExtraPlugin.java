@@ -27,7 +27,7 @@
 package org.bibsonomy.database.plugin.plugins;
 
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.managers.BasketDatabaseManager;
+import org.bibsonomy.database.managers.ClipboardDatabaseManager;
 import org.bibsonomy.database.managers.BibTexExtraDatabaseManager;
 import org.bibsonomy.database.managers.DocumentDatabaseManager;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
@@ -35,7 +35,7 @@ import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 /**
  * This plugin takes care of additional features for BibTex posts.
  * 
- * XXX: we can't have a static/singleton {@link BasketDatabaseManager} instance,
+ * XXX: we can't have a static/singleton {@link ClipboardDatabaseManager} instance,
  * because we have a circular dependency (the manager contains the plugins ...) could
  * be fixed by configuration the registry by spring beans
  * 

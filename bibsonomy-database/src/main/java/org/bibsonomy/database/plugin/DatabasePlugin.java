@@ -27,7 +27,7 @@
 package org.bibsonomy.database.plugin;
 
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.params.BasketParam;
+import org.bibsonomy.database.params.ClipboardParam;
 import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.InboxParam;
@@ -242,21 +242,21 @@ public interface DatabasePlugin {
 	public void onDeleteFriendship(final UserParam param, final DBSession session);
 	
 	/**
-	 * Called when a basket item will be deleted
+	 * Called when a clipboard item will be deleted
 	 * 
 	 * @param param
 	 * @param session
 	 */
-	public void onDeleteBasketItem(final BasketParam param, final DBSession session);
+	public void onDeleteClipboardItem(final ClipboardParam param, final DBSession session);
 	
 	/**
-	 * Called when all basket items will be deleted
+	 * Called when all clipboard items will be deleted
 	 * 
 	 * @param userName 
 	 * @param session 
 	 * 
 	 */
-	public void onDeleteAllBasketItems(final String userName, final DBSession session);
+	public void onDeleteAllClipboardItems(final String userName, final DBSession session);
 	
 	/**
 	 * called when a comment was updated

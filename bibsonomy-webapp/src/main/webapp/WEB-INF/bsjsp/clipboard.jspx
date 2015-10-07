@@ -16,7 +16,7 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true"/>
 	
-	<fmt:message key="navi.basket" var="pageTitle"/>
+	<fmt:message key="navi.clipboard" var="pageTitle"/>
 	
 	<layout:resourceLayout pageTitle="${pageTitle}" command="${command}" 
 			requPath="${requPath}" isClipboard="${true}" 
@@ -26,7 +26,7 @@
 			headline="${headline}">
 
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.basket"/>
+			<parts:search pathMessageKey="navi.clipboard"/>
 		</jsp:attribute>
 		
 		<jsp:attribute name="breadcrumbs">
@@ -44,7 +44,7 @@
 		<jsp:attribute name="sidebar">
 			<sidebar:sidebarItem textKey="post_bibtex.scan.title">
 				<jsp:attribute name="content">
-					<parts:qrcode infoMessageKey="qrcode.info.basket.readerInfoMessage" />
+					<parts:qrcode infoMessageKey="qrcode.info.clipboard.readerInfoMessage" />
 				</jsp:attribute>
 			</sidebar:sidebarItem>
 		</jsp:attribute>
@@ -55,40 +55,40 @@
 		<jsp:attribute name="infobox">
 			<parts:infobox>
 				<jsp:attribute name="infoTextBody">
-					<!-- short info, what the basket is -->
-					<fmt:message key="basket.info"/>
-					<p><fmt:message key="basket.info.examples"/></p>
+					<!-- short info, what the clipboard is -->
+					<fmt:message key="clipboard.info"/>
+					<p><fmt:message key="clipboard.info.examples"/></p>
 					<!-- link-buttons on what you can do -->
 					<ul>
 						<li>
 						<!-- edit -->
 						<div class="form-group">
-							<fmt:message key="basket.edit.tags" var="editTags"/>
+							<fmt:message key="clipboard.edit.tags" var="editTags"/>
 							<button:linkButton name="linkButton" title="${fn:escapeXml(editTags)}" href="/beditbib/${fn:escapeXml(requPath)}">
 								<jsp:attribute name="text">
-									<fmt:message key="basket.editTags"/>
+									<fmt:message key="clipboard.editTags"/>
 								</jsp:attribute>
 							</button:linkButton>
 						</div>
 						
 						<!-- export -->
 			            <div class="form-group">
-				            <fmt:message key="basket.export" var="exportPosts"/>
+				            <fmt:message key="clipboard.export" var="exportPosts"/>
 				          	<button:linkButton name="linkButton" title="${fn:escapeXml(exportPosts)}"
 				          		href="/export/${fn:escapeXml(requPath)}${requQueryString}">
 								<jsp:attribute name="text">
-									<fmt:message key="basket.exportPosts"/>
+									<fmt:message key="clipboard.exportPosts"/>
 								</jsp:attribute>
 							</button:linkButton>
 			            </div>
 			            
 			            <!-- remove -->
 			            <div class="form-group">
-				            <fmt:message key="basket.removeAllVerbose" var="removeAllVerbose"/>
+				            <fmt:message key="clipboard.removeAllVerbose" var="removeAllVerbose"/>
 				          	<button:linkButton name="linkButton" title="${fn:escapeXml(removeAllVerbose)}"
 				          		href="/ajax/pickUnpickPost?action=clearAll&amp;ckey=${mtl:encodeURI(command.context.ckey)}">
 								<jsp:attribute name="text">
-									<fmt:message key="basket.removeAll" />
+									<fmt:message key="clipboard.removeAll" />
 								</jsp:attribute>
 							</button:linkButton>
 						</div>

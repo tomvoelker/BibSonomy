@@ -29,7 +29,7 @@ package org.bibsonomy.database.params;
 /**
  * @author Christian Kramer
  */
-public class BasketParam extends GenericParam{
+public class ClipboardParam extends GenericParam{
 	private int contentId;
 
 	/**
