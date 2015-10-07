@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Database - Database for BibSonomy.
+ * BibSonomy-Model - Java- and JAXB-Model.
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -24,39 +24,33 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.database.managers.chain.bibtex.get;
+package org.bibsonomy.model;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.util.List;
-
-import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.managers.chain.resource.ResourceChainElement;
-import org.bibsonomy.database.params.BibTexParam;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Post;
+import java.io.Serializable;
 
 /**
- * Returns a list of BibTexs contained in a certain user's basket
+ * A clipboard that holds some posts for a user.
+ * 
+ * TODO: implement full clipboard functionality
  * 
  * @author Dominik Benz
  */
-public class GetBibtexFromBasketForUser extends ResourceChainElement<BibTex, BibTexParam> {
-	
-	@Override
-	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
-		return this.databaseManager.getPostsFromBasketForUser(param.getUserName(), param.getLimit(), param.getOffset(), session);
+public class Clipboard implements Serializable {
+	private static final long serialVersionUID = -3051707370037449963L;
+
+	private int numPosts;
+
+	/**
+	 * @return numPosts
+	 */
+	public int getNumPosts() {
+		return this.numPosts;
 	}
 
-	@Override
-	protected boolean canHandle(final BibTexParam param) {
-		return (param.getGrouping() == GroupingEntity.CLIPBOARD &&
-				present(param.getUserName()) && 
-				!present(param.getBibtexKey()) &&
-				!present(param.getSearch()) &&
-				!present(param.getHash()) &&
-				!present(param.getTagIndex())
-		);
+	/**
+	 * @param numPosts
+	 */
+	public void setNumPosts(int numPosts) {
+		this.numPosts = numPosts;
 	}
 }

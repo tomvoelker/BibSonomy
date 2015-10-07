@@ -6,10 +6,6 @@ function unpickAll() {
 	return pickUnpickAll("unpick");
 }
 
-function unescapeAmp(string) {
-	return string.replace(/&amp;/g, "&");
-}
-
 /**
  * Pick or unpick all publications from the current post list.
  * 
@@ -25,7 +21,7 @@ function pickUnpickAll(pickUnpick) {
 		}
 	}
 	);
-	return updateClipboard("action=" + pickUnpick + "&hash=" + unescapeAmp(encodeURIComponent(param)));
+	return updateClipboard("action=" + pickUnpick + "&hash=" + encodeURIComponent(param));
 }
 
 /**
@@ -38,7 +34,7 @@ function pickUnpickPublication(element) {
 	/*
 	 * pick/unpick publication
 	 */
-	var params = unescapeAmp($(element).attr("href")).replace(/^.*?\?/, "");
+	var params = $(element).attr("href").replace(/^.*?\?/, "");
 	return updateClipboard(params);
 }
 
@@ -69,30 +65,9 @@ function updateClipboard (param) {
 			// special case for the /clipboard page
 			window.location.reload();
 		} else {
-			//$("#pickctr").empty().append(data);
-			$("#clipboard-counter").html(data);
-			updateCounter();
+			$("#pickctr").empty().append(data);
 		}
 	}
-	});
-	return false;
-}
-
-// TODO: maybe wrong place ?
-function reportUser(a, userName){
-	$.ajax({
-		type: 'POST',
-		url: $(a).attr("href")+ "?ckey=" + ckey,
-		data: 'requestedUserName=' + userName + '&userRelation=SPAMMER&action=addRelation',
-		dataType: 'text',
-		success: function(data) {
-			$('a.report-spammer-link ').each(function(index, link) {
-				if ($(link).data('username') == userName) {
-					$(link).parent().append($("<span class=\"ilitem\"></span>").text(getString("user.reported")));
-					$(link).remove();
-				}
-			});
-		}
 	});
 	return false;
 }

@@ -28,7 +28,7 @@ package org.bibsonomy.database.plugin;
 
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.params.BasketParam;
+import org.bibsonomy.database.params.ClipboardParam;
 import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.InboxParam;
@@ -172,14 +172,14 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	}
 
 	@Override
-	public void onDeleteBasketItem(final BasketParam param, final DBSession session) {
+	public void onDeleteClipboardItem(ClipboardParam param, DBSession session) {
 		// noop
-	}
+	};
 
 	@Override
-	public void onDeleteAllBasketItems(final String userName, final DBSession session) {
+	public void onDeleteAllClipboardItems(String userName, DBSession session) {
 		// noop
-	}
+	};
 
 	@Override
 	public void onDiscussionUpdate(final String interHash, final DiscussionItem comment, final DiscussionItem oldComment, final DBSession session) {

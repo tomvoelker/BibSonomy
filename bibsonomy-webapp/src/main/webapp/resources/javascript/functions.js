@@ -9,25 +9,12 @@ var getPos = null;
 var setPos = null;
 var getSetPos = 0;
 
-var constants = {
-		RESPONSE_TIMEOUT: 5000
-}
+
 
 $(function() {
 	$('a.confirmdelete').click(function() {
 		var messageKey = $(this).data('type');
 		return confirmDeleteByUser(messageKey);
-	});
-	/*
-	 * adds a click event handler for the search scope form option entries
-	 */
-	$('#scopeDomain').children().each(function(i, el){
-		$(el.childNodes[0]).click(function(e){
-			e.preventDefault();
-			$("#scope").val($(this).data("domain"));
-			$('#searchForm').attr('action','/redirect').submit();
-		});
-		
 	});
 });
 
@@ -98,7 +85,7 @@ function init(tagbox_style, tagbox_sort, tagbox_minfreq) {
 	/*
 	 * initialize the sidebar (basically adds the [-] togglers)
 	 */
-	//init_sidebar();
+	init_sidebar();
 
 	/* *************************************************************************
 	 * scope: post lists
@@ -115,14 +102,14 @@ function init(tagbox_style, tagbox_sort, tagbox_minfreq) {
 	 * in-place tag edit for posts
 	 */
 	$(".editTags").click(editTags);
-	if($('.extend').hoverIntent!== undefined)
-		$('.extend').hoverIntent(function(event) {
-			var infoBox = $('div', this);
-			infoBox.show("fade", {}, 500);
-		}, function(event){
-			var infoBox = $('div', this);
-			infoBox.hide("fade", {}, 500);
-		});
+	
+	$('.extend').hoverIntent(function(event) {
+		var infoBox = $('div', this);
+		infoBox.show("fade", {}, 500);
+	}, function(event){
+		var infoBox = $('div', this);
+		infoBox.hide("fade", {}, 500);
+	});
 }
 
 /**
@@ -309,6 +296,35 @@ function updatePosts(query, seconds) {
  */
 function fadePostIn(post) {
 	post.fadeIn("slow").parents("ul.posts").find("li.post:last").fadeOut("slow").remove();
+}
+
+
+/**
+ * Adds [-] buttons to sidebar elements to toggle visibility of each element. 
+ * 
+ * @return
+ */
+function init_sidebar() {
+	$("#sidebar li .sidebar_h").each(function(index,item){
+		var span;
+		if ($(item).hasClass("initially_collapsed")) {
+			span = $("<span class='toggler'><img src='/resources/image/icon_expand.png'/></span>");
+		} else { 
+			span = $("<span class='toggler'><img src='/resources/image/icon_collapse.png'/></span>");
+		}
+		
+		span.click(function(){
+			fadeNextList(item);
+		});
+		$(this).prepend(span); 
+	});
+
+}
+
+function fadeNextList(target) {
+	$(target).nextAll(".sidebar_collapse_content").toggle("slow", function(){
+		$(target).find(".toggler img").attr("src", "/resources/image/icon_" + ($(this).css('display') == 'none' ? "expand" : "collapse") + ".png");
+	});
 }
 
 /** 
@@ -763,8 +779,8 @@ function addBibtexExportOptions() {
 	/*
 	 * add and show export options when hovering over the link
 	 */
-	var elm = $("#bibtexListExport");
-	if(elm!=null && elm !== undefined && elm.hoverIntent !== undefined)
+	var elm = $("#bibtexListExport"); 
+	if(elm===undefined) return;
 	elm.hoverIntent(function() {
 		/*
 		 * anchor element where to put the options
@@ -900,7 +916,6 @@ function addListOptions() {
 					});
 				}		
 		);
-		return this;
 	};
 })(jQuery);
 
@@ -980,12 +995,7 @@ this.imagePreview = function(){
 		 * build preview image URL by fetching URL from small preview pic
 		 * (insde the current <a href...></a>) and replacing the preview param
 		 */
-		var url = $(this).children("img.pre_pic").first().attr("src");
-		
-		if(url===undefined) return;
-
-		var largePreviewImgUrl = url.replace("preview\=SMALL", "preview=LARGE");		
-		
+		var largePreviewImgUrl = $(this).children("img.pre_pic").first().attr("src").replace("preview\=SMALL", "preview=LARGE");		
 		$("body").append("<p id='preview'><img src='" + largePreviewImgUrl + "'/>"+ c +"</p>");
 		$("#preview")
 		.css("top", (e.pageY + (e.pageY < window.innerHeight/2 ? 0 : -yOff)) + "px")
@@ -1530,25 +1540,24 @@ function setupPostExportSize() {
 	    }
 	}
 	
-	var links = $(".export-link");
+	var links = $("dt").children();
 	
-	// append to all links '?items=5' - exportPostSize initiated with '5'
+	//append to all links '?items=5' - exportPostSize initiated with '5'
 	$.each(links, function(index, value) {
-		// get the elements of all links [<a..] 
-		var linkHref = $(value).attr('href');
+		//get the elements of all links [<a..] without the ones with a star '*' [they reference only to jabref on the page - #jabref]
+		if(value.href.indexOf("#jabref") == -1) {
 			
-		// contains the href any other parameters? Distinguish this cases.
-		if (linkHref.indexOf("?") != -1) {
-			if (linkHref.indexOf("items=") != -1) {
-				linkHref = linkHref.replace(/\items=\d*/g, "items=" + exportPostSize);
+			//Contains the href any other parameters? Distinguish this cases.
+			if(value.href.indexOf("?") != -1) {
+				if(value.href.indexOf("items=") != -1) {
+					value.href = value.href.replace(/\items=\d*/g, "items=" + exportPostSize);
+				} else {
+					value.href = value.href + '&items=' + exportPostSize;
+				}
 			} else {
-				linkHref = linkHref + '&items=' + exportPostSize;
+				value.href = value.href + "?items=" + exportPostSize;
 			}
-		} else {
-			linkHref = linkHref + "?items=" + exportPostSize;
 		}
-		
-		$(value).attr('href', linkHref);
 	});
 	
 	//A click on a radio button replaces in any link the old value X '?items=X' with the new value Y '?items=Y'
@@ -1605,15 +1614,3 @@ function generateExportPostLink(value) {
 		self.location = value;
 	}
 };		
-
-
-/*
- * update the counter at the navigation bar to reflect the amount of picked publications and unread messages
- */
-function updateCounter() {
-	var clipboardNum = document.getElementById("clipboard-counter");
-	var inboxNum = document.getElementById("inbox-counter");
-	var counter = document.getElementById("inbox-clipboard-counter");
-	if(counter!=null)
-		counter.innerHTML = (clipboardNum==null?0:parseInt(clipboardNum.innerHTML))+(inboxNum==null?0:parseInt(inboxNum.innerHTML));
-}

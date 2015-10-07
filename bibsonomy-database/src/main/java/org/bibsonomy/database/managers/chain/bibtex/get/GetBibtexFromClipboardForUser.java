@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Model - Java- and JAXB-Model.
+ * BibSonomy-Database - Database for BibSonomy.
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -24,33 +24,39 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.model;
+package org.bibsonomy.database.managers.chain.bibtex.get;
 
-import java.io.Serializable;
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.List;
+
+import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.managers.chain.resource.ResourceChainElement;
+import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Post;
 
 /**
- * A basket that holds some posts for a user.
- * 
- * TODO: implement full basket functionality
+ * Returns a list of BibTexs contained in a certain user's clipboard
  * 
  * @author Dominik Benz
  */
-public class Basket implements Serializable {
-	private static final long serialVersionUID = -3051707370037449963L;
-
-	private int numPosts;
-
-	/**
-	 * @return numPosts
-	 */
-	public int getNumPosts() {
-		return this.numPosts;
+public class GetBibtexFromClipboardForUser extends ResourceChainElement<BibTex, BibTexParam> {
+	
+	@Override
+	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
+		return this.databaseManager.getPostsFromClipboardForUser(param.getUserName(), param.getLimit(), param.getOffset(), session);
 	}
 
-	/**
-	 * @param numPosts
-	 */
-	public void setNumPosts(int numPosts) {
-		this.numPosts = numPosts;
+	@Override
+	protected boolean canHandle(final BibTexParam param) {
+		return (param.getGrouping() == GroupingEntity.CLIPBOARD &&
+				present(param.getUserName()) && 
+				!present(param.getBibtexKey()) &&
+				!present(param.getSearch()) &&
+				!present(param.getHash()) &&
+				!present(param.getTagIndex())
+		);
 	}
 }

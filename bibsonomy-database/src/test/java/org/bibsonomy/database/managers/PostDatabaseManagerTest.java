@@ -236,10 +236,10 @@ public abstract class PostDatabaseManagerTest<R extends Resource> extends Abstra
 	}
 
 	/**
-	 * Test method for {@link org.bibsonomy.database.managers.PostDatabaseManager#getPostsFromBasketForUser(java.lang.String, int, int, org.bibsonomy.database.common.DBSession)}.
+	 * Test method for {@link org.bibsonomy.database.managers.PostDatabaseManager#getPostsFromClipboardForUser(java.lang.String, int, int, org.bibsonomy.database.common.DBSession)}.
 	 */
 	@Test
-	public abstract void testGetPostsFromBasketForUser();
+	public abstract void testGetPostsFromClipboardForUser();
 
 	/**
 	 * Test method for {@link org.bibsonomy.database.managers.PostDatabaseManager#getPostDetails(java.lang.String, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.database.common.DBSession)}.

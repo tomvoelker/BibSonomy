@@ -165,9 +165,9 @@
 					<li class="dropdown ${activeTab eq 'myprofile' ? 'active' : ''}">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 							<span class="fa fa-user"><!-- KEEP ME --></span>
-							<c:if test="${(loginUser.inbox.numPosts + loginUser.basket.numPosts) gt 0}">
+							<c:if test="${(loginUser.inbox.numPosts + loginUser.clipboard.numPosts) gt 0}">
 								<b class="navi-info">
-									<span id="inbox-basket-counter"><c:out value="${(loginUser.inbox.numPosts + loginUser.basket.numPosts)}"/></span>
+									<span id="inbox-clipboard-counter"><c:out value="${(loginUser.inbox.numPosts + loginUser.clipboard.numPosts)}"/></span>
 								</b>
 							</c:if>
 							<b class="caret">&amp;nbsp;</b></a>
@@ -189,12 +189,12 @@
 										</a>
 									</li>
 									<li>
-										<fmt:message var="titleBasket" key="navi.basket"/>
-										<a href="/clipboard" title="${titleBasket}"><!-- empty -->
+										<fmt:message var="titleClipboard" key="navi.clipboard"/>
+										<a href="/clipboard" title="${titleClipboard}"><!-- empty -->
 											<span class="fa fa-folder-open"><!--  --></span>
-											<fmt:message key="navi.basket" />
-											<c:if test="${loginUser.basket.numPosts gt 0}">
-												<span id="basket-counter" style="position: absolute; right: 10px;" class="badge"><c:out value="${loginUser.basket.numPosts}"/></span>
+											<fmt:message key="navi.clipboard" />
+											<c:if test="${loginUser.clipboard.numPosts gt 0}">
+												<span id="clipboard-counter" style="position: absolute; right: 10px;" class="badge"><c:out value="${loginUser.clipboard.numPosts}"/></span>
 											</c:if>
 										</a>
 									</li>
