@@ -854,7 +854,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#createBasketItems(java.util.List)
 	 */
 	@Override
-	public int createBasketItems(List<Post<? extends Resource>> posts) {
+	public int createClipboardItems(List<Post<? extends Resource>> posts) {
 		this.doDefaultAction();
 		return 0;
 	}
@@ -863,7 +863,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#deleteBasketItems(java.util.List, boolean)
 	 */
 	@Override
-	public int deleteBasketItems(List<Post<? extends Resource>> posts, boolean clearBasket) {
+	public int deleteClipboardItems(List<Post<? extends Resource>> posts, boolean clearBasket) {
 		this.doDefaultAction();
 		return 0;
 	}
