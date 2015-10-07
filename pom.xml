@@ -651,11 +651,6 @@
 			</dependency>
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
-				<artifactId>bibsonomy-gImporter</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-openaccess</artifactId>
 				<version>${project.version}</version>
 			</dependency>
