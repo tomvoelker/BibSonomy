@@ -81,43 +81,33 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
  */
 public final class RestServlet extends HttpServlet {
 	private static final long serialVersionUID = -1737804091652029470L;
+	
 	private static final Log log = LogFactory.getLog(RestServlet.class);
 
-	/**
-	 * the key for the documents path
-	 */
+	/** the file with the main XML */
+	private static final String MAIN_FILE = "main";
+
+	/** the key for the documents path */
 	public static final String DOCUMENTS_PATH_KEY = "docPath";
 
-	/**
-	 * the key for the project home
-	 */
+	/** the key for the project home */
 	public static final String PROJECT_HOME_KEY = "projectHome";
 
 	private static final String PROJECT_NAME_KEY = "projectName";
 
-	/**
-	 * the response encoding used to encode HTTP responses.
-	 */
+	/** the response encoding used to encode HTTP responses. */
 	public static final String RESPONSE_ENCODING = StringUtils.CHARSET_UTF_8;
 
-	/**
-	 * the request default encoding
-	 */
+	/** the request default encoding */
 	public static final String REQUEST_ENCODING = StringUtils.CHARSET_UTF_8;
 
-	/**
-	 * Name of header, that shows successful ssl verification
-	 */
+	/** Name of header, that shows successful ssl verification */
 	public static final String SSL_VERIFY_HEADER = "SSL_CLIENT_VERIFY";
 
-	/**
-	 * String to show successful ssl key check 
-	 */
+	/** String to show successful ssl key check */
 	public static final String SUCCESS = "SUCCESS";
 
-	/**
-	 * Distinguish name of the client
-	 */
+	/** Distinguish name of the client */
 	public static final String SSL_CLIENT_S_DN = "SSL_CLIENT_S_DN";
 
 	private List<AuthenticationHandler<?>> authenticationHandlers;
@@ -321,7 +311,7 @@ public final class RestServlet extends HttpServlet {
 	protected static String getMainContentType(HttpServletRequest request) {
 		if (request instanceof MultipartHttpServletRequest) {
 			// TODO: add comment
-			final MultipartFile mainFile = ((MultipartHttpServletRequest) request).getFile("main");
+			final MultipartFile mainFile = ((MultipartHttpServletRequest) request).getFile(MAIN_FILE);
 			if (mainFile != null) {
 				return mainFile.getContentType();
 			}
@@ -337,7 +327,7 @@ public final class RestServlet extends HttpServlet {
 	 */
 	protected static InputStream getMainInputStream(HttpServletRequest request) throws IOException {
 		if (request instanceof MultipartHttpServletRequest) {
-			MultipartFile main = ((MultipartHttpServletRequest) request).getFile("main");
+			final MultipartFile main = ((MultipartHttpServletRequest) request).getFile(MAIN_FILE);
 			if (main != null) {
 				return main.getInputStream();
 			}
