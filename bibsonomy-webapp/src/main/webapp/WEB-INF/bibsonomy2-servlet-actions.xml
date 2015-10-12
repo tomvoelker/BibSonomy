@@ -124,7 +124,7 @@
 						<property name="presenceCondition" ref="samlActivatedCondition" />
 						<property name="controllerBeanName" value="userSamlRegistrationController"/>
 						<property name="allowedFields">	
-							<list>		
+							<list>
 								<value>step</value>
 								<value>registerUser.name</value>
 								<value>registerUser.email</value>
@@ -320,26 +320,7 @@
 							</list>
 						</property>
 					</bean>
-				</entry>		
-				<!--+ 
-				    | /import/facebook
-				    +-->
-				<entry key="/import/facebook">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="facebookFriendsImportController"/>
-						<property name="allowedFields">
-							<list>
-								<value>code</value>
-								<value>accessToken</value>
-								<value>state</value>
-								<value>adminAction</value>
-								<value>socialAction</value>
-								<value>requestedUser</value>
-							</list>
-						</property>
-					</bean>
 				</entry>
-				
 				<!--+
 				 	|
 				 	| to directly render imported publications
@@ -444,6 +425,12 @@
 								
 								<value>saveAndRate</value>
 								<value>approved</value>
+								
+								<value>personId</value>
+								<value>personIndex</value>
+								<value>personRole</value>
+								
+								
 							</list>
 						</property>
 					</bean>
@@ -471,6 +458,9 @@
 						<property name="allowedFields">
 							<list>
 								<value>selTab</value>
+								<value>personId</value>
+								<value>personIndex</value>
+								<value>post.resource.entrytype</value>
 							</list>
 						</property>
 					</bean>
@@ -580,7 +570,6 @@
 								<value>user.settings.showBookmark</value>
 								<value>user.settings.showBibtex</value>
 								<value>user.settings.layoutSettings.simpleInterface</value>
-								<value>user.settings.layoutSettings.viewLayout</value>
 							</list>
 						</property>
 					</bean>
@@ -981,7 +970,7 @@
 		    If the user is not logged in, we need an instance of the LogicInterface
 		    which has admin rights. 
 		 -->
-		<property name="adminLogic" ref="adminLogic"/>		
+		<property name="adminLogic" ref="adminLogic"/>
 		
 		<!-- reCaptcha needs access to some HTTP headers, so we need the requestLogic -->
 		<property name="requestLogic" ref="requestLogic"/>
@@ -994,7 +983,7 @@
 		<!-- After successful registration, the user is redirected to this page.  -->
 		<property name="successRedirect" value="/register_ldap_success"/>
 		<!--
-			to log the user into the system after successful registration			 
+			to log the user into the system after successful registration
 		 -->
 		<property name="rememberMeServices" ref="ldapRememberMeServices"/>
 		<property name="authenticationManager" ref="ldapAuthenticationManager"/>
@@ -1148,19 +1137,6 @@
 		<property name="protocol" value="https"/>
 		<property name="host" value="api.del.icio.us"/>
 		<property name="userAgent" value="BibSonomy Delicious Importer"/>
-	</bean>
-
-	<!-- <import resource="classpath:org/bibsonomy/bibsonomy-entityresolver-context.xml" /> -->
-
-	<jee:jndi-lookup id="entityDataSource" jndi-name="jdbc/bibsonomy_entities" lookup-on-startup="false" expected-type="javax.sql.DataSource" />
-	
-	<!-- handles import of facebook friends -->
-	<bean id="facebookFriendsImportController" class="org.bibsonomy.webapp.controller.actions.FacebookFriendsImportController" scope="request">
-		<property name="urlGenerator" ref="absoluteUrlGenerator"/>
-		<property name="fbApiKey" value="${facebook.api.key}"/>
-		<property name="fbSecret" value="${facebook.api.secret}"/>
-		<!-- defined in bibsonomy-entityresolver-context.xml -->
-		<property name="friendsResolver" ref="facebookIdentityResolver"/>
 	</bean>
 	
 	<bean id="extensionChecker" class="org.bibsonomy.webapp.util.spring.factorybeans.ExtensionCheckerFactoryBean" >

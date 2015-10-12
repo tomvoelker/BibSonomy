@@ -28,6 +28,7 @@ package org.bibsonomy.model.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.SortedSet;
@@ -339,6 +340,47 @@ public class PersonNameUtils {
 		 */
 		final int pos = cleanedLast.lastIndexOf(' ');
 		return pos > 0 ? cleanedLast.substring(pos + 1) : cleanedLast;
+	}
+
+	
+	/**
+	 * @param pns
+	 * @param lowercase
+	 * @return a new {@link List} of new {@link PersonName}s as returned by {@link #cleanAndSoftNormalizeName(PersonName, boolean)}
+	 */
+	public static List<PersonName> cleanAndSoftNormalizeNames(List<PersonName> pns, boolean lowercase) {
+		final List<PersonName> rVal = new ArrayList<>();
+		for (PersonName pn : pns) {
+			rVal.add(cleanAndSoftNormalizeName(pn, lowercase));
+		}
+		return rVal;
+	}
+	
+	/**
+	 * @param pn
+	 * @param lowercase whether name should be transformed to all lowercase
+	 * @return a new {@link PersonName} object with all name parts normalized (cleanbibtex, remove strange characters, remove redundant whitespaces) 
+	 */
+	public static PersonName cleanAndSoftNormalizeName(PersonName pn, boolean lowercase) {
+		final PersonName newName = new PersonName();
+		newName.setFirstName(cleanAndSoftNormalize(pn.getFirstName(), lowercase));
+		newName.setLastName(cleanAndSoftNormalize(pn.getLastName(), lowercase));
+		return newName;
+	}
+
+	/**
+	 * @param namePart
+	 * @return
+	 */
+	private static String cleanAndSoftNormalize(String namePart, boolean lowercase) {
+		if (namePart == null) {
+			return null;
+		}
+		String val = StringUtils.normalizeWhitespace(StringUtils.removeNonNumbersOrLettersOrDotsOrCommaOrSpace(BibTexUtils.cleanBibTex(namePart))).trim();
+		if (lowercase) {
+			val = val.toLowerCase();
+		}
+		return val;
 	}
 	
 }

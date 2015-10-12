@@ -96,6 +96,11 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	private Map<String, List<ErrorMessage>> postsErrorList;
 
 	/**
+	 * For multiple posts
+	 */
+	private ListCommand<Post<BibTex>> posts = new ListCommand<Post<BibTex>>(this);
+	
+	/**
 	 * constructor
 	 * inits the tabs and sets their titles
 	 */
@@ -338,11 +343,6 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	}
 
 	/**
-	 * For multiple posts
-	 */
-	private ListCommand<Post<BibTex>> posts = new ListCommand<Post<BibTex>>(this);
-
-	/**
 	 * @return The list of publication posts.
 	 */
 	@Override
@@ -430,6 +430,5 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	public void setPostsErrorList(Map<String, List<ErrorMessage>> postsErrorList) {
 		this.postsErrorList = postsErrorList;
 	}
-
 	
 }

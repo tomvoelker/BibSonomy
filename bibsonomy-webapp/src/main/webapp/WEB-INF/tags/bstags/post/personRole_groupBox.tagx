@@ -1,0 +1,70 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form">
+
+    <!-- 
+    
+        when a supervisor adds a new thesis to a person's page, he should choose his role.    
+    
+     -->
+
+	<div class="form-group">
+		<label class="col-sm-2 control-label" for="${fn:escapeXml(id)}">
+			<fmt:message key="post.person.role" />
+		</label>
+		<div class="col-sm-10">
+			<div class="row">
+				<div class="col-sm-4">
+					<div class="radio">
+						<label>	
+							<input name="personRole" value="DOCTOR_VATER" tabindex="2" type="radio" />
+							<c:out value=" " /><fmt:message key="post.person.role.doctor_vater"/>
+						</label>
+					</div>
+					
+					<div class="radio">
+						<label>	
+							<input name="personRole" value="FIRST_REVIEWER" tabindex="2" type="radio" />
+							<c:out value=" " /><fmt:message key="post.person.role.first_reviewer"/>
+						</label>
+					</div>
+					<div class="radio">
+						<label>	
+							<input name="personRole" value="REVIEWER" tabindex="2" type="radio" />
+							<c:out value=" " /><fmt:message key="post.person.role.reviewer"/>
+						</label>
+					</div>
+					<div class="radio">
+						<label>	
+							<input name="personRole" value="ADVISOR" tabindex="2" type="radio" checked="checked"/>
+							<c:out value=" " /><fmt:message key="post.person.role.advisor"/>
+						</label>
+					</div>
+					<div class="radio">
+						<label>	
+							<input name="personRole" value="OTHER" tabindex="2" type="radio" />
+							<c:out value=" " /><fmt:message key="post.person.role.other"/>
+						</label>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		$(function() {
+			$('input:radio[name=personRole]').change(function() {
+				var thisVal = $(this).val();
+				$('input[name=personRole]').val([thisVal]);
+				}
+				
+			);
+		});
+	
+	</script>
+</jsp:root>

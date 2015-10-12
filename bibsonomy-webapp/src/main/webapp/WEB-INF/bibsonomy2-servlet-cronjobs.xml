@@ -17,20 +17,20 @@
 	 	+-->
 	<!-- update jobs without index optimization -->
 	<bean id="luceneUpdateBibTexJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="lucenePublicationManager" />
-		<property name="targetMethod" value="updateAndReloadIndex" />
+		<property name="targetObject" ref="lucenePublicationUpdateTrigger" />
+		<property name="targetMethod" value="triggerUpdate" />
 		<property name="concurrent" value="false" />
 	</bean>
 	
 	<bean id="luceneUpdateBookmarkJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="luceneBookmarkManager" />
-		<property name="targetMethod" value="updateAndReloadIndex" />
+		<property name="targetObject" ref="luceneBookmarkUpdateTrigger" />
+		<property name="targetMethod" value="triggerUpdate" />
 		<property name="concurrent" value="false" />
 	</bean>
 	
 	<bean id="luceneUpdateGoldStandardPublicationJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="luceneGoldStandardPublicationManager" />
-		<property name="targetMethod" value="updateAndReloadIndex" />
+		<property name="targetObject" ref="luceneGoldStandardPublicationUpdateTrigger" />
+		<property name="targetMethod" value="triggerUpdate" />
 		<property name="concurrent" value="false" />
 	</bean>
 
@@ -38,7 +38,7 @@
 	<!-- cronExpression is like "sec  min  hour  day  month  dow year(optional)	" -->
 	<!--  http://www.opensymphony.com/quartz/api/    http://www.opensymphony.com/quartz/api/org/quartz/CronExpression.html  -->
 	<bean id="luceneUpdateBibTexCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-		<property name="cronExpression" value="22 1/5 * * * ?" /> <!-- *:01,11,..,51:22 -->
+		<property name="cronExpression" value="1/15 * * * * ?" /> <!-- *:01,11,..,51:22 -->
 		<property name="jobDetail" ref="luceneUpdateBibTexJob" />
 	</bean>
 	<bean id="luceneUpdateBookmarkCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">

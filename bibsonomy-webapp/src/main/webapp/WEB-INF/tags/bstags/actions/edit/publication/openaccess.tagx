@@ -1,5 +1,5 @@
 <jsp:root version="2.0" 
-    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
@@ -9,12 +9,12 @@
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/bstags/post"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
 	xmlns:form="http://www.springframework.org/tags/form"
-    xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/publication"
-    xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form">
+	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/bstags/actions/edit/publication"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form">
 
-    <jsp:directive.attribute name="tags" type="java.lang.String" required="false"/>
-    <jsp:directive.attribute name="bibtex" type="org.bibsonomy.model.BibTex" required="true"/>
-    <jsp:directive.attribute name="referer" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="tags" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="bibtex" type="org.bibsonomy.model.BibTex" required="true"/>
+	<jsp:directive.attribute name="referer" type="java.lang.String" required="true"/>
 
 	<!--+
 		|

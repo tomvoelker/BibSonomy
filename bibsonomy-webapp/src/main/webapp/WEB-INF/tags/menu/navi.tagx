@@ -34,7 +34,7 @@
 					<li class="separator">${mtl:ch('nbsp')}</li>
 					
 					<li><a href="/discussed/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.discussedPosts"/></a></li>
-					<li><a href="${relativeUrlGenerator.getBasketUrl()}"><fmt:message key="navi.basket"/></a></li>
+					<li><a href="${relativeUrlGenerator.getClipboardUrl()}"><fmt:message key="navi.clipboard"/></a></li>
 					<li><a href="/inbox"><fmt:message key="navi.inbox"/></a></li>
 					<li class="separator">${mtl:ch('nbsp')}</li>
 					

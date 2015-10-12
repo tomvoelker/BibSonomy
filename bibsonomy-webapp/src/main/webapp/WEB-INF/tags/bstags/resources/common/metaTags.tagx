@@ -35,7 +35,7 @@
 	<div class="extend hiddenSystemTag pull-left">
 		
 		<a id="system-tags-link-${post.resource.intraHash}${post.user.name}" href="#" class="system-tags-link" style="${empty post.hiddenSystemTags ? 'display: none;' : ''}">
-			<span class="glyphicon glyphicon-asterisk"><!-- KEEP ME --></span>
+			<span class="fa fa-asterisk"><!-- KEEP ME --></span>
 		</a>&amp;nbsp;
 		
 		<div class="popover popover-dismiss system-tags hide" id="system-tags-${post.resource.intraHash}${post.user.name}">

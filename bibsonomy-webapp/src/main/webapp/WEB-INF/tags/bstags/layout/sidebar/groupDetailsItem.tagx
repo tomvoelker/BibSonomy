@@ -2,7 +2,7 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-    xmlns:group="urn:jsptagdir:/WEB-INF/tags/bstags/resources/group"
+	xmlns:group="urn:jsptagdir:/WEB-INF/tags/bstags/resources/group"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar">
 
@@ -38,7 +38,7 @@
 									<c:url var="joinLink" value="/joinGroup">
 										<c:param name="group" value="${group.name}" />
 									</c:url>
-									<a href="${joinLink}" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-plus"><!-- keep me --></span><c:out value=" " /><fmt:message key="joinGroup.short"/></a>	
+									<a href="${joinLink}" class="btn btn-primary btn-sm"><span class="fa fa-plus"><!-- keep me --></span><c:out value=" " /><fmt:message key="joinGroup.short"/></a>	
 								</c:otherwise>
 							</c:choose>
 						</c:otherwise>
@@ -46,7 +46,5 @@
 				</div>
 			</div>
 		</jsp:attribute>
-	</sidebar:sidebarItem>					
-	
-	
+	</sidebar:sidebarItem>
 </jsp:root>

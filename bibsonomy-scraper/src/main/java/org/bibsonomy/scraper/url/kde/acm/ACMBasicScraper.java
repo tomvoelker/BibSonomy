@@ -78,6 +78,13 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 				Pattern.compile(".*" + "queue.acm.org"), 
 				Pattern.compile("/detail.cfm.*")
 			),
+			
+			// my code
+		new Pair<Pattern, Pattern>(
+				Pattern.compile("cacm.acm.org"),
+				Pattern.compile("/magazines/*")
+				),
+				
 		new Pair<Pattern, Pattern>(
 				Pattern.compile(".*" + "doi.acm.org"),
 				EMPTY_PATTERN
@@ -91,12 +98,17 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 	private static final Pattern DOI_URL_ID_PATTERN = Pattern.compile("/(\\d+(?:\\.(\\d+))?)");
 	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<div style=\"display:inline\">(\\s*<p>\\s*)?((?s).+?)(\\s*<\\/p>\\s*)?<\\/div>", Pattern.MULTILINE);
 	
+	// to get publication for CACM
+	private static final Pattern CACM_ID = Pattern.compile("<a href=\"http://dl.acm.org/citation.cfm?id=(\\d+(?:\\.(\\d+))?)&amp;coll=portal&amp;dl=ACM\"");
+	private static final Pattern test_id= Pattern.compile("<a href=\"http://dl.acm.org/citation.cfm?id=2808213.2790854&amp;coll=portal&amp;dl=ACM\"");
+
 	/** remove tags in abstract */
 	private static final String CLEANUP_ABSTRACT = "<[\\da-zA-Z\\s]*>|<\\s*/\\s*[\\da-zA-Z\\s]*>|\\r\\n|\\n";
 	
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
+		
 		try {
 
 			/*
@@ -104,6 +116,7 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 			 */
 			final String id;
 			final String query = sc.getUrl().getQuery();
+			//System.out.println(sc.getUrl().toString());
 			final Matcher matcher;
 			if (query == null) {
 				matcher = DOI_URL_ID_PATTERN.matcher(sc.getUrl().toExternalForm());

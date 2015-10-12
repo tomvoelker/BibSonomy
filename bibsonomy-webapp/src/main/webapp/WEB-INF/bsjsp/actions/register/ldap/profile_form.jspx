@@ -10,7 +10,7 @@
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/bstags/errors"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -24,53 +24,58 @@
 
 		<jsp:attribute name="content">
 
-			<form:form action="/registerLDAP" method="POST">
+			<form:form action="/registerLDAP" method="POST" cssClass="form-horizontal">
 				<errors:global />
 
 				<fieldset class="fsOuter">
 					<!-- FIXME: is this the right place for this description? -->
 					<fmt:message key="register.ldap.step2.description"/>
-				
-					<bform:fieldset maximized="${true}" legendKey="register.ldap.required">
+					
+					<bsform:fieldset legendKey="register.ldap.required">
 						<jsp:attribute name="content">
-							<div class="fsRow">
-								<form:label cssClass="fsLabel" path="registerUser.name" ><fmt:message key="navi.username"/>*</form:label>
-								<form:input maxlength="15" cssClass="fsInput reqinput" path="registerUser.name" tabindex="2"/>
-								<div class="dissError"><form:errors path="registerUser.name" /></div>
-							</div>
-
-							<bform:input path="registerUser.email" required="${true}" labelMessageKey="user.settings.email" noHelp="${true}"/>
-
-							<div class="fsRow">
-								<form:label cssClass="fsLabel" path="registerUser.ldapId" ><fmt:message key="user.settings.ldapid"/>*</form:label>
-								<c:out value="${command.registerUser.ldapId}"/>
-								<div class="dissError"><form:errors cssClass="errmsg" path="registerUser.ldapId" /></div>
-							</div>
+							<!-- TODO: maxlength 15 -->
+							<bsform:input path="registerUser.name" labelKey="navi.username" required="${true}" inputColSpan="8" labelColSpan="4" noHelp="${true}" />
+							
+							<bsform:input path="registerUser.email" labelKey="user.settings.email" required="${true}" inputColSpan="8" labelColSpan="4" noHelp="${true}" />
+							
+							<bsform:input path="registerUser.ldapId" labelKey="user.settings.ldapid" disabled="${true}" inputColSpan="8" labelColSpan="4" noHelp="${true}" />
 						</jsp:attribute>
-					</bform:fieldset>
+					</bsform:fieldset>
 
-					<bform:fieldset maximized="${true}" legendKey="register.ldap.optional">
-						<jsp:attribute name="content">  
-							<bform:input path="registerUser.realname" labelMessageKey="user.settings.realname" noHelp="${true}"/>
-							<div class="fsRow">
-								<form:label cssClass="fsLabel" path="registerUser.gender" ><fmt:message key="navi.gender"/></form:label>
-								<form:select path="registerUser.gender">
-									<form:option value="F" label="female" />
-									<form:option value="M" label="male" />
-								</form:select>
+					<bsform:fieldset legendKey="register.ldap.optional">
+						<jsp:attribute name="content">
+							<bsform:input path="registerUser.realname" labelKey="user.settings.realname" required="${true}" inputColSpan="8" labelColSpan="4" noHelp="${true}" />
+							
+							<!-- GENDER -->
+							<div class="form-group clearfix">
+								<form:label cssClass="col-sm-4 control-label" path="registerUser.gender"><fmt:message key="user.gender"/></form:label>
+								
+								<fmt:message var="male" key="settings.male"/>
+								<fmt:message var="female" key="settings.female"/>
+								<div class="col-sm-8">
+									<form:select cssClass="form-control" path="registerUser.gender">
+										<form:option label="${male}" value="m"/>
+										<form:option label="${female}" value="f"/>
+									</form:select>
+								</div>
+								
 								<div class="dissError"><form:errors path="registerUser.gender" /></div>
 							</div>
-
-							<bform:input path="registerUser.place" labelMessageKey="user.place" noHelp="${true}"/>
-							<bform:input path="registerUser.homepage" labelMessageKey="user.settings.homepage" noHelp="${true}"/>
-
+							
+							<bsform:input path="registerUser.place" labelKey="user.place" required="${true}" inputColSpan="8" labelColSpan="4" noHelp="${true}" />
+							
+							<bsform:input path="registerUser.homepage" labelKey="user.settings.homepage" required="${true}" inputColSpan="8" labelColSpan="4" noHelp="${true}" />
 						</jsp:attribute>
-					</bform:fieldset>
+					</bsform:fieldset>
 
 					<input type="hidden" name="step" value="3" />
 					<input type="hidden" name="rememberMe" value="${command.rememberMe}" />
-
-					<bform:submit messageKey="register.send"/>
+					
+					<div class="form-group">
+						<div class="col-sm-offset-4 col-sm-3 col-md-3 col-lg-3">
+							<bsform:button type="submit" style="success" valueKey="register.send" size="defaultSize" />
+						</div>
+					</div>
 
 				</fieldset>
 			</form:form>

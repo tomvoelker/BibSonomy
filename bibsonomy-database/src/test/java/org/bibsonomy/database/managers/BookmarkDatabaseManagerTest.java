@@ -802,7 +802,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 	}
 
 	@Override
-	public void testGetPostsFromBasketForUser() {
+	public void testGetPostsFromClipboardForUser() {
 		// not supported by bookmark manager
 	}
 	

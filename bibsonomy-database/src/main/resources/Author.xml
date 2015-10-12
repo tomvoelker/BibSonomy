@@ -2,7 +2,6 @@
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
 <sqlMap namespace="Author">
-
 	<select id="getAuthors" resultMap="AuthorCommon.author">
         SELECT first_name, last_name, ctr
         FROM (

@@ -49,5 +49,6 @@
 		<property name="user" ref="loginUser"/>
 		<property name="dbSessionFactory" ref="slaveDbSessionFactory"/>
 		<property name="bibtexReader" ref="bibtexReader"/>
+		<property name="readOnly" value="true" /> <!-- don't write to slaves -->
 	</bean>
 </beans>

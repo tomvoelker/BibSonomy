@@ -83,7 +83,7 @@ public class OpenAccessController extends AjaxController implements Minimalistic
 
 				// TODO: implement this
 				/*
-				 * Schleife über alle Posts
+				 * Schleife Ã¼ber alle Posts
 				 * nimm Repository-Speicher-Datum und User
 				 * schreibe JSON-Output mit Datum und Flag ob selbst versendet oder durch wen anderes
 				 * 

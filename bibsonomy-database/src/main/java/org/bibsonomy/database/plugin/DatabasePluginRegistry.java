@@ -32,20 +32,23 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.params.BasketParam;
+import org.bibsonomy.database.params.ClipboardParam;
 import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.InboxParam;
 import org.bibsonomy.database.params.UserParam;
-import org.bibsonomy.database.plugin.plugins.BasketPlugin;
+import org.bibsonomy.database.plugin.plugins.ClipboardPlugin;
 import org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin;
 import org.bibsonomy.database.plugin.plugins.DiscussionPlugin;
 import org.bibsonomy.database.plugin.plugins.GoldStandardPublicationReferencePlugin;
 import org.bibsonomy.database.plugin.plugins.Logging;
 import org.bibsonomy.database.plugin.plugins.MetaDataPlugin;
 import org.bibsonomy.model.DiscussionItem;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 
 /**
@@ -64,7 +67,7 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 		// order matters!
 		DEFAULT_PLUGINS.add(new Logging());
 		DEFAULT_PLUGINS.add(new BibTexExtraPlugin());
-		DEFAULT_PLUGINS.add(new BasketPlugin());
+		DEFAULT_PLUGINS.add(new ClipboardPlugin());
 		DEFAULT_PLUGINS.add(new GoldStandardPublicationReferencePlugin());
 		DEFAULT_PLUGINS.add(new DiscussionPlugin());
 		DEFAULT_PLUGINS.add(new MetaDataPlugin());
@@ -268,16 +271,16 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	}
 	
 	@Override
-	public void onDeleteBasketItem(final BasketParam param, final DBSession session){
+	public void onDeleteClipboardItem(final ClipboardParam param, final DBSession session){
 		for (final DatabasePlugin plugin : this.plugins.values()) {
-			plugin.onDeleteBasketItem(param, session);
+			plugin.onDeleteClipboardItem(param, session);
 		}
 	}
 	
 	@Override
-	public void onDeleteAllBasketItems(final String userName, final DBSession session){
+	public void onDeleteAllClipboardItems(final String userName, final DBSession session){
 		for (final DatabasePlugin plugin : this.plugins.values()){
-			plugin.onDeleteAllBasketItems(userName, session);
+			plugin.onDeleteAllClipboardItems(userName, session);
 		}
 	}
 
@@ -343,6 +346,67 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	public void onDiscussionMassUpdate(String username, int groupId, DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
 			plugin.onDiscussionMassUpdate(username, groupId, session);
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPersonDelete(org.bibsonomy.model.Person, org.bibsonomy.database.common.DBSession)
+	 */
+	@Override
+	public void onPersonNameDelete(PersonName personName, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onPersonNameDelete(personName, session);
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPersonUpdate(java.lang.Integer, org.bibsonomy.database.common.DBSession)
+	 */
+	@Override
+	public void onPersonUpdate(String personId, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onPersonUpdate(personId, session);
+		}	
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPersonDelete(java.lang.Integer, org.bibsonomy.database.common.DBSession)
+	 */
+	@Override
+	public void onPersonDelete(Person person, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onPersonDelete(person, session);
+		}	
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPubPersonDelete(java.lang.Integer, org.bibsonomy.database.common.DBSession)
+	 */
+	@Override
+	public void onPubPersonDelete(ResourcePersonRelation rel, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onPubPersonDelete(rel, session);
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onPersonUpdateByUserName(java.lang.String, org.bibsonomy.database.common.DBSession)
+	 */
+	@Override
+	public void onPersonUpdateByUserName(String userName, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onPersonUpdateByUserName(userName, session);
+		}		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.plugin.DatabasePlugin#onUpdatePersonName(java.lang.Integer, org.bibsonomy.database.common.DBSession)
+	 */
+	@Override
+	public void onPersonNameUpdate(Integer personChangeId, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			plugin.onPersonNameUpdate(personChangeId, session);
 		}
 	}
 }

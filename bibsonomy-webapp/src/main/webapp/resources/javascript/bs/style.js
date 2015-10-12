@@ -338,3 +338,20 @@ function switchNavi(scope, element) {
 	
 	return false;
 }
+
+$(function() {
+	$('a.delete-toggle').hover(deleteToggleShowDeleteInfo);
+	$('a.delete-toggle').mouseleave(deleteToggleShowDefaultInfo);
+});
+
+function deleteToggleShowDefaultInfo() {
+	$(this).removeClass('btn-danger').addClass('btn-success');
+	$(this).children('.fa').removeClass('fa-times').addClass('fa-check');
+	$(this).children('.infotext').text($(this).data('default-text'));
+}
+
+function deleteToggleShowDeleteInfo() {
+	$(this).removeClass('btn-success').addClass('btn-danger');
+	$(this).children('.fa').removeClass('fa-check').addClass('fa-times');
+	$(this).children('.infotext').text($(this).data('delete-text'));
+}
