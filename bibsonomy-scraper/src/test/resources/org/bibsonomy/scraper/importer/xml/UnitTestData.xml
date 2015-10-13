@@ -1825,4 +1825,10 @@
 		<BibFile>CSHLPScraperUnitURLTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_296">
+		<TestDescription>URL scraping test with publication from AAAI</TestDescription>
+		<URL>http://www.aaai.org/ocs/index.php/IAAI/IAAI14/paper/view/8607</URL>
+		<BibFile>AAAIScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.aaai.AAAIScraper</Scraper>
+	</URLTest>
 </test:Tests>
