@@ -92,19 +92,20 @@
 					});
 				]]>
 		</script>
-		<!-- localized JavaScript messages -->
-		<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale.language}.js"><!-- keep me --></script>
+		
+		<parts:messages locale="${locale}" />
+		
 		<!-- include tooltip JavaScript only for users that have tooltips enabled -->
 		<c:if test="${loginUser.settings.tagboxTooltip == 1}">	
 			<script type="text/javascript" src="${resdir}/javascript/tooltip.js"><!-- keep me --></script>
 		</c:if>
 		<!-- enable logging with user permission -->
 		<c:if test="${loginUser.settings.logLevel != 1 and not systemReadOnly}">
-		   <script type="text/javascript" src="${resdir}/javascript/logging.js"><!-- KEEP ME --></script> 
+			<script type="text/javascript" src="${resdir}/javascript/logging.js"><!-- KEEP ME --></script> 
 		</c:if>
 		<!-- enable on-site spammer killing when user is admin -->
 		<c:if test="${loginUser.role eq 'ADMIN'}">
-		  <script type="text/javascript" src="${resdir}/javascript/admin/spammer.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/admin/spammer.js"><!-- keep me --></script>
 		</c:if>
 
 		<c:if test="${not empty additionalJS}">
@@ -116,8 +117,8 @@
 			| Piwik
 			|
 			+--> 
-		<!-- TODO: Discuss where to store the piwik id and adress 
-			+ current: in theme files the whole piwik code ist stored
+		<!-- TODO: Discuss where to store the piwik id and address 
+			+ current: in theme files the whole piwik code is stored
 			+ should (probably): code here/some js + id in config file
 			+-->
 		<spring:theme code="javascriptcode.piwik" var="piwikJS" text=""/> 

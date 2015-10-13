@@ -54,7 +54,7 @@
 				<configuration>
 					<!-- otherwise the javascript/css files compressed by yuicompressor-maven-plugin 
 						are overwritten by this plugin -->
-					<warSourceExcludes>**/*.js,**/*.css</warSourceExcludes>
+					<warSourceExcludes>**/*.js,**/*.css,WEB-INF/tags/bstags/layout/parts/messages.tagx</warSourceExcludes>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -158,6 +158,30 @@
 				</dependencies>
 			</plugin>
 			<plugin>
+				<groupId>org.bibsonomy</groupId>
+				<artifactId>javascript-i18n-messagesource-maven-plugin</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+				<configuration>
+					<messageSources>
+						<messageSource>file://${project.basedir}/src/main/resources/messages</messageSource>
+					</messageSources>
+					<locales>
+						<locale>en</locale>
+						<locale>de</locale>
+						<locale>ru</locale>
+					</locales>
+					<outputFile>${project.build.directory}/${project.build.finalName}/WEB-INF/tags/bstags/layout/parts/messages.tagx</outputFile>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>compile</phase>
+						<goals>
+							<goal>buildMessageFiles</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
@@ -217,6 +241,25 @@
 										<versionRange>[1.1,)</versionRange>
 										<goals>
 											<goal>compress</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.bibsonomy</groupId>
+										<artifactId>
+											javascript-i18n-messagesource-maven-plugin
+										</artifactId>
+										<versionRange>
+											[0.0.1-SNAPSHOT,)
+										</versionRange>
+										<goals>
+											<goal>
+												buildMessageFiles
+											</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>
