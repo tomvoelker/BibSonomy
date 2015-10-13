@@ -84,6 +84,14 @@
 					var projectName = "${properties['project.name']}";
 					var ckey = "${command.context.ckey}";
 					var currUser = "${loginUser.name}";
+					var userSettings = {
+						"logging" : ${loginUser.settings.logLevel != 1 and not systemReadOnly},
+						"tagbox" : {
+							"style" : ${loginUser.settings.tagboxStyle},
+							"sort"  : ${loginUser.settings.tagboxSort},
+							"minfreq" : ${loginUser.settings.tagboxMinfreq}
+						}
+					};
 					var requUser = ${(requestedUser ne '') ? requestedUserString : "null"};
 					var confirmDelete = ${loginUser.settings.confirmDelete};
 					
@@ -99,15 +107,12 @@
 		<c:if test="${loginUser.settings.tagboxTooltip == 1}">	
 			<script type="text/javascript" src="${resdir}/javascript/tooltip.js"><!-- keep me --></script>
 		</c:if>
-		<!-- enable logging with user permission -->
-		<c:if test="${loginUser.settings.logLevel != 1 and not systemReadOnly}">
-			<script type="text/javascript" src="${resdir}/javascript/logging.js"><!-- KEEP ME --></script> 
-		</c:if>
+		
 		<!-- enable on-site spammer killing when user is admin -->
 		<c:if test="${loginUser.role eq 'ADMIN'}">
 			<script type="text/javascript" src="${resdir}/javascript/admin/spammer.js"><!-- keep me --></script>
 		</c:if>
-
+		
 		<c:if test="${not empty additionalJS}">
 			<script type="text/javascript" src="${additionalJS}"><!-- keep me --></script>
 		</c:if>
