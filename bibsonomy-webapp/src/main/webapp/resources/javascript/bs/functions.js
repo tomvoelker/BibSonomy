@@ -14,6 +14,7 @@ var constants = {
 }
 
 $(function() {
+	initView();
 	$('a.confirmdelete').click(function() {
 		var messageKey = $(this).data('type');
 		return confirmDeleteByUser(messageKey);
@@ -33,7 +34,7 @@ $(function() {
 
 function confirmDeleteByUser(messageKey) {
 	// get confirmation
-	if (confirmDelete) {
+	if (userSettings.confirmDelete) {
 		var message = getString("delete.confirm." + messageKey);
 		message += "\n" + getString("delete.confirm");
 		return confirm(message);
@@ -42,16 +43,13 @@ function confirmDeleteByUser(messageKey) {
 }
 
 /**
- * This method is called on document.ready. Thus, methods that should 
- * be called ON EVERY page should be added here.
- * 
- * @param tagbox_style
- * @param tagbox_sort
- * @param tagbox_minfreq
+ * This method is called on document.ready.
  * @return
  */
-function init(tagbox_style, tagbox_sort, tagbox_minfreq) {
-	
+function initView() {
+	var tagbox_style = userSettings.tagbox.style;
+	var tagbox_sort = userSettings.tagbox.sort;
+	var tagbox_minfreq = userSettings.tagbox.minfreq;
 	/*
 	 * assign functions for cursor position; FIXME: why here?
 	 */
