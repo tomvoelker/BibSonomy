@@ -48,7 +48,7 @@ import org.bibsonomy.util.WebUtils;
 public class APHAScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "American Journal of PUBLIC HEALTH";
-	private static final String SITE_URL = "";
+	private static final String SITE_URL = "http://ajph.aphapublications.org/";
 	private static final String info = "This scraper parses a publication page of citations from "
 			+ href(SITE_URL, SITE_NAME) + ".";
 	private static final String HOST = "aphapublications.org";
