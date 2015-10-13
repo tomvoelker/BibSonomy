@@ -1807,4 +1807,22 @@
 		<BibFile>CSHLPScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_293">
+		<TestDescription>scraping test for CSHLP Scraper</TestDescription>
+		<URL>http://cshperspectives.cshlp.org/content/7/9/a015719.abstract</URL>
+		<BibFile>CSHLPScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_294">
+		<TestDescription>scraping test for CSHLP Scraper</TestDescription>
+		<URL>http://cshperspectives.cshlp.org/content/7/7/a018770.full.pdf+html</URL>
+		<BibFile>CSHLPScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_295">
+		<TestDescription>scraping test for CSHLP Scraper</TestDescription>
+		<URL>http://cshperspectives.cshlp.org/content/7/9/a023358.full</URL>
+		<BibFile>CSHLPScraperUnitURLTest4.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
+	</URLTest>
 </test:Tests>
