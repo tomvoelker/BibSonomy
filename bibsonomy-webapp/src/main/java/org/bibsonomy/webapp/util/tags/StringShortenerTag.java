@@ -33,6 +33,7 @@ import org.springframework.web.servlet.tags.RequestContextAwareTag;
  * 
  * @author sbo <sbo@cs.uni-kassel.de>
  */
+@Deprecated // use tagx for that, no need for a java class
 public class StringShortenerTag extends RequestContextAwareTag {
 
 	/**
