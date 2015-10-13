@@ -235,14 +235,11 @@ function processQRCode(text) {
  * @return
  */
 function renderPosts(query, list) {
-	
 	$.ajax({
 		url : "/posts" + query,
 		dataType : "html",
 		success : function(data) {
-			
 			$(list).append($(data));
-							
 			/*
 			 * FIXME: does this really always work? 
 			 * What about posts that have already been prepared?
