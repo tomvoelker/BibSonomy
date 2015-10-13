@@ -81,11 +81,10 @@ public class APHAScraper extends AbstractUrlScraper {
 		if (m.find()) {
 			doi = "doi=" + m.group(1);
 		}
-		final String postArgs = doi;
 		
-		String risString = "";
+		String risString = null;
 		try {
-			risString = WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL), postArgs);
+			risString = WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL), doi);
 		} catch (MalformedURLException ex) {
 			throw new ScrapingFailureException("URL to scrape does not exist. It maybe malformed.");
 		} catch (IOException ex) {
