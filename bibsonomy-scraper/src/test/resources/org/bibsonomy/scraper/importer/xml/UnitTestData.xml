@@ -1801,4 +1801,10 @@
 		<BibFile>APHAScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.apha.APHAScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_292">
+		<TestDescription>scraping test for CSHLP Scraper</TestDescription>
+		<URL>http://cshperspectives.cshlp.org/content/3/3/a004994.short</URL>
+		<BibFile>CSHLPScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
+	</URLTest>
 </test:Tests>

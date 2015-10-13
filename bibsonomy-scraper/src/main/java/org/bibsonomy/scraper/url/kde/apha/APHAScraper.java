@@ -38,6 +38,7 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
@@ -49,33 +50,34 @@ public class APHAScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "American Journal of PUBLIC HEALTH";
 	private static final String SITE_URL = "http://ajph.aphapublications.org/";
-	private static final String info = "This scraper parses a publication page of citations from "
-			+ href(SITE_URL, SITE_NAME) + ".";
+	private static final String info = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
+	
+	private static final Pattern DOI_PATTERN_FROM_URL = Pattern.compile("/abs/(.+?)$");
+	private static final String DOWNLOAD_URL = "http://ajph.aphapublications.org/action/downloadCitation";
+	
 	private static final String HOST = "aphapublications.org";
 	private static final String AJPH_HOST = "ajph.aphapublications.org";
-	private static final Pattern DOI_PATTERN_FROM_URL = Pattern
-			.compile("/abs/(.+?)$");
-	private static final String DOWNLOAD_URL = "http://ajph.aphapublications.org/action/downloadCitation";
+	
 	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern, Pattern>>();
 	static {
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST),
-				AbstractUrlScraper.EMPTY_PATTERN));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*"
-				+ AJPH_HOST), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + AJPH_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	}
+	
 	private final RisToBibtexConverter ris = new RisToBibtexConverter();
 
 	@Override
-	protected boolean scrapeInternal(ScrapingContext sc)
-			throws ScrapingException {
+	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 		String cookie = null;
 		String doi = null;
+		
 		try {
 			cookie = WebUtils.getCookies(sc.getUrl());
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (final IOException ex) {
+			throw new InternalFailureException("An unexpected IO error has occurred. No Cookie has been generated.");
 		}
+		
 		final Matcher m = DOI_PATTERN_FROM_URL.matcher(sc.getUrl().toString());
 		if (m.find()) {
 			doi = "doi=" + m.group(1);
@@ -83,17 +85,16 @@ public class APHAScraper extends AbstractUrlScraper {
 		final String postArgs = doi + "&downloadFileName=apha_ajph100_1769"
 				+ "&direct=true" + "&submit=Download article citation data"
 				+ "&include=cit";
+		
 		String risString = "";
 		try {
-			risString = WebUtils.getPostContentAsString(cookie, new URL(
-					DOWNLOAD_URL), postArgs);
+			risString = WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL), postArgs);
 		} catch (MalformedURLException ex) {
-			throw new ScrapingFailureException(
-					"URL to scrape does not exist. It maybe malformed.");
+			throw new ScrapingFailureException("URL to scrape does not exist. It maybe malformed.");
 		} catch (IOException ex) {
-			throw new ScrapingFailureException(
-					"An unexpected IO error has occurred. Maybe APHA Publications is down.");
+			throw new ScrapingFailureException("An unexpected IO error has occurred. Maybe APHA Publications is down.");
 		}
+		
 		String bibResult = ris.risToBibtex(risString);
 		if (bibResult != null) {
 			sc.setBibtexResult(bibResult);
