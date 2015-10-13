@@ -93,7 +93,7 @@
 				headingLink="${relativeUrlGenerator.getConceptsUrlByString(command.requestedUser)}"	
 				headingTitleKey="tagrelations.user.title"
 				scope="${command.scope.name()}"/>
-				
+			
 			<!-- display similar users -->
 			<sidebar:sidebarItem textKey="users.similar">
 				<jsp:attribute name="content">
@@ -104,9 +104,9 @@
 					<users:related cmd="${command.relatedUserCommand}" displayFollowLink="${false}" personalized="${true}" userSimilarity="${command.userSimilarity}"/>
 				</jsp:attribute>
 			</sidebar:sidebarItem>
-				
+			
 			<sidebar:sidebarTagCloudItem requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" scope="${command.scope.name()}"/>
-						
+			
 			<c:if test="${isAdmin}">
 				<sidebar:sidebarItem textKey="user.details">
 					<jsp:attribute name="content">

@@ -1,5 +1,5 @@
 <jsp:root version="2.0" 
-    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
@@ -7,6 +7,7 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/bstags/layout/fontawesome"
 	xmlns:form="http://www.springframework.org/tags/form">
 
 	<jsp:directive.attribute name="tags" type="java.lang.String" required="true"/>
@@ -61,14 +62,16 @@
 		<label class="col-sm-${labelColSpan} control-label">
 			<fmt:message key="post.resource.recommendation"/>
 		</label>
-		<div class="col-sm-${inputColSpan}">
+		<div class="col-sm-${inputColSpan - 1}">
 			<ul id="recommendedTags" class="recommended ${command.postID} list-inline">
-				<div class="fsWaitingText" style="font-weight: normal; color: #666;"><fmt:message key="post.resource.waitingForTags"/></div>
+				<div class="fsWaitingText"><fmt:message key="post.resource.waitingForTags"/></div>
 				<!-- This comment is needed, otherwise this will result in a self-closing element -->
 			</ul>
-			<a id="fsReloadLink" href="#">
-				<fmt:message var="reloadTags" key="post.resource.reloadRecommendation"/>
-				<img id="fsReloadButton" src="${resdir}/image/button_reload-inactive.png" alt="${reloadTags}" title="${reloadTags}"/>
+		</div>
+		<div class="col-sm-1">
+			<fmt:message var="reloadTags" key="post.resource.reloadRecommendation"/>
+			<a id="recommendationReloadButton" href="#" class="btn btn-default btn-sm disabled" title="${reloadTags}">
+				<fontawesome:icon icon="refresh" />
 			</a>
 		</div>
 	</div>

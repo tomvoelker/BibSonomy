@@ -136,7 +136,6 @@
 					<outputDirectory>${project.build.directory}/${project.build.finalName}/resources/css</outputDirectory>
 					<compress>true</compress>
 					<includes>
-						<include>bootstrap.less</include>
 						<include>bootstrap-style.less</include>
 						<include>style.less</include>
 					</includes>
@@ -148,6 +147,15 @@
 						</goals>
 					</execution>
 				</executions>
+				<dependencies>
+					<!-- this is our version of less css java
+						which supports inline css -->
+					<dependency>
+						<groupId>org.lesscss</groupId>
+						<artifactId>lesscss</artifactId>
+						<version>1.7.0.1.2</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

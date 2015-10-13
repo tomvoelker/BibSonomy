@@ -14,7 +14,6 @@
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false"/>
 	
-	
 	<!--+
 		|
 		| setting (global) variables
@@ -45,35 +44,20 @@
 		|
 		+-->
 	<head>
-		<!--  <meta http-equiv="X-UA-Compatible" content="IE=8" /> -->
 		<meta charset="UTF-8" />
 		
 		<!--+
 			| BOOTSTRAP SETTINGS 
 			+-->
-		
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />  
 		
-		<!-- Latest compiled and minified CSS -->
-		<mtl:styleSheet path="${resdir}/css/bootstrap.css"  />
-
-		<!-- font awesome icon set -->
-		<mtl:styleSheet path="${resdir}/fonts/font-awesome/css/font-awesome.min.css" />
-
-
+		<!-- latest compiled and minified CSS -->
 		<mtl:styleSheet path="${resdir}/css/bootstrap-style.css" />
 		<!--+
 			| END BOOTSTRAP SETTINGS 
 			+ -->
-			
-
-		<!-- FIXME: do we really need the complete jquery-ui.css? -->
-		<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/jquery-ui.css" type="text/css" media="all" />
-		
-		<!-- 
-		<mtl:styleSheet path="${resdir}/css/style.css" />
-		-->
 		<c:if test="${not empty personalized and personalized}">
+			<!-- FIXME: personalized style sheet -->
 			<!-- <link rel="stylesheet" type="text/css" href="${resdir}/css/personalized.css" /> -->
 		</c:if>
 		
@@ -152,7 +136,7 @@
 		<link rel="alternate" type="application/rss+xml"  title="${properties['project.name']} Blog - RSS"  href="http://blog.bibsonomy.org/feeds/posts/default?alt=rss" />
 		<title>${properties['project.name']} <c:if test="${not empty pageTitle}"> :: <c:out value="${pageTitle}"/></c:if></title>
 		<jsp:invoke fragment="headerExt"/>
-		
+		<!-- FIXME: readd print style -->
 <!-- 		<c:if test="${not empty additionalPrintCSS}"> -->
 <!-- 			<link rel="stylesheet" type="text/css" media="print" href="${additionalPrintCSS}" /> -->
 <!-- 		</c:if> -->
