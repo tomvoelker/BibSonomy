@@ -1793,7 +1793,7 @@
 		<TestDescription>scraping test for Copac Scraper</TestDescription>
 		<URL>http://copac.jisc.ac.uk/search?title=clustering&amp;rn=1</URL>
 		<BibFile>CopacScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.Copac.CopacScraper</Scraper>
+		<Scraper>org.bibsonomy.scraper.url.kde.copac.CopacScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_291">
 		<TestDescription>scraping test for journal page from ajph.aphapublications.org/</TestDescription>

@@ -54,7 +54,6 @@ public class APHAScraper extends AbstractUrlScraper {
 	
 	private static final Pattern DOI_PATTERN_FROM_URL = Pattern.compile("/abs/(.+?)$");
 	private static final String DOWNLOAD_URL = "http://ajph.aphapublications.org/action/downloadCitation";
-	
 	private static final String HOST = "aphapublications.org";
 	private static final String AJPH_HOST = "ajph.aphapublications.org";
 	
@@ -82,9 +81,7 @@ public class APHAScraper extends AbstractUrlScraper {
 		if (m.find()) {
 			doi = "doi=" + m.group(1);
 		}
-		final String postArgs = doi + "&downloadFileName=apha_ajph100_1769"
-				+ "&direct=true" + "&submit=Download article citation data"
-				+ "&include=cit";
+		final String postArgs = doi;
 		
 		String risString = "";
 		try {
