@@ -24,7 +24,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.rest.strategy.posts.community.references;
+package org.bibsonomy.rest.strategy.posts.community.relations;
 
 import java.io.Writer;
 import java.util.Set;
@@ -57,7 +57,7 @@ public class PostRelationsStrategy extends AbstractCreateStrategy {
 	@Override
 	protected String create() {
 		final Set<String> references = this.getRenderer().parseReferences(this.doc);
-		this.getLogic().createRelations(this.hash, references, relation);
+		this.getLogic().createRelations(this.hash, references, this.relation);
 		
 		return this.hash;
 	}

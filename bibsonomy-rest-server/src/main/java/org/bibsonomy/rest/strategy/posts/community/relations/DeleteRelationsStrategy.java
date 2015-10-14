@@ -24,7 +24,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.rest.strategy.posts.community.references;
+package org.bibsonomy.rest.strategy.posts.community.relations;
 
 import java.io.Reader;
 import java.util.Set;
@@ -49,7 +49,6 @@ public class DeleteRelationsStrategy extends AbstractDeleteStrategy {
 	 */
 	public DeleteRelationsStrategy(final Context context, final String hash, final GoldStandardRelation relation) {
 		super(context);
-
 		this.hash = hash;
 		this.doc = context.getDocument();
 		this.relation =  relation;
@@ -58,7 +57,7 @@ public class DeleteRelationsStrategy extends AbstractDeleteStrategy {
 	@Override
 	protected boolean delete() {
 		final Set<String> references = this.getRenderer().parseReferences(this.doc);
-		this.getLogic().deleteRelations(this.hash, references, relation);
+		this.getLogic().deleteRelations(this.hash, references, this.relation);
 
 		// no exception => delete successful
 		return true;
