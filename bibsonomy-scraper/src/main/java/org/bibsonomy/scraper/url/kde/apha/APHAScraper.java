@@ -51,18 +51,16 @@ public class APHAScraper extends AbstractUrlScraper {
 	private static final String SITE_NAME = "American Journal of PUBLIC HEALTH";
 	private static final String SITE_URL = "http://ajph.aphapublications.org/";
 	private static final String info = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
-	
+
 	private static final Pattern DOI_PATTERN_FROM_URL = Pattern.compile("/abs/(.+?)$");
 	private static final String DOWNLOAD_URL = "http://ajph.aphapublications.org/action/downloadCitation";
-	private static final String HOST = "aphapublications.org";
 	private static final String AJPH_HOST = "ajph.aphapublications.org";
-	
+
 	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern, Pattern>>();
 	static {
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + AJPH_HOST), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ AJPH_HOST), Pattern.compile("/doi/abs")));
 	}
-	
+
 	private final RisToBibtexConverter ris = new RisToBibtexConverter();
 
 	@Override
@@ -70,31 +68,33 @@ public class APHAScraper extends AbstractUrlScraper {
 		sc.setScraper(this);
 		String cookie = null;
 		String doi = null;
-		
+
 		try {
 			cookie = WebUtils.getCookies(sc.getUrl());
 		} catch (final IOException ex) {
-			throw new InternalFailureException("An unexpected IO error has occurred. No Cookie has been generated.");
+			throw new InternalFailureException(
+					"An unexpected IO error has occurred. No Cookie has been generated.");
 		}
-		
+
 		final Matcher m = DOI_PATTERN_FROM_URL.matcher(sc.getUrl().toString());
 		if (m.find()) {
 			doi = "doi=" + m.group(1);
 		}
-		
-		String risString = null;
-		try {
-			risString = WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL), doi);
-		} catch (MalformedURLException ex) {
-			throw new ScrapingFailureException("URL to scrape does not exist. It maybe malformed.");
-		} catch (IOException ex) {
-			throw new ScrapingFailureException("An unexpected IO error has occurred. Maybe APHA Publications is down.");
-		}
-		
-		String bibResult = ris.risToBibtex(risString);
-		if (bibResult != null) {
-			sc.setBibtexResult(bibResult);
-			return true;
+		if (doi != null && cookie != null) {
+			String risString = null;
+			try {
+				risString = WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL), doi);
+			} catch (MalformedURLException ex) {
+				throw new ScrapingFailureException("URL to scrape does not exist. It maybe malformed.");
+			} catch (IOException ex) {
+				throw new ScrapingFailureException("An unexpected IO error has occurred. Maybe APHA Publications is down.");
+			}
+
+			final String bibResult = ris.risToBibtex(risString);
+			if (bibResult != null) {
+				sc.setBibtexResult(bibResult);
+				return true;
+			}
 		}
 		return false;
 	}
