@@ -265,23 +265,23 @@ public final class RestServlet extends HttpServlet {
 
 			cachingStream.writeTo(response.getOutputStream());
 		} catch (final AuthenticationException e) {
-			log.warn(e.getMessage());
+			log.info(e.getMessage());
 			response.setHeader("WWW-Authenticate", "Basic realm=\"" + this.additionalInfos.get(PROJECT_NAME_KEY) + "WebService\"");
 			sendError(request, response, HttpURLConnection.HTTP_UNAUTHORIZED, e.getMessage());
 		} catch (final InternServerException e) {
 			log.error(e.getMessage());
 			sendError(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 		} catch (final NoSuchResourceException e) {
-			log.error(e.getMessage());
+			log.info(e.getMessage());
 			sendError(request, response, HttpServletResponse.SC_NOT_FOUND, e.getMessage());
 		} catch (final BadRequestOrResponseException | InvalidModelException e) {
 			log.info(e.getMessage(), e);
 			sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
 		} catch (final AccessDeniedException e) {
-			log.error(e.getMessage());
+			log.info(e.getMessage());
 			sendError(request, response, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		} catch (final ResourceMovedException e) {
-			log.error(e.getMessage());
+			log.info(e.getMessage());
 			/*
 			 * sending new location
 			 * TODO: add date using
