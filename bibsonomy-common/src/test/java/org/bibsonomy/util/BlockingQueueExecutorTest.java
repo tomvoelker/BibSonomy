@@ -74,6 +74,7 @@ public class BlockingQueueExecutorTest {
 		Assert.assertEquals(true, doneContainer[0]);
 		Assert.assertEquals(0, executor.getWaitingTasks().size());
 		Assert.assertEquals(0, executor.getRunningTasks().size());
+		executor.shutdownNow();
 	}
 	
 	/**

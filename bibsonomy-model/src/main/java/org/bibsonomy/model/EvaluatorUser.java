@@ -56,7 +56,7 @@ public class EvaluatorUser extends User {
 	 */
 	public EvaluatorUser(final String name) {
 		super.setName(name); 
-		super.setBasket(new Basket());
+		super.setClipboard(new Clipboard());
 		super.setSettings(new UserSettings());
 		super.setRole(Role.ADMIN); // TODO: check, if this has any bad implications!
 	}

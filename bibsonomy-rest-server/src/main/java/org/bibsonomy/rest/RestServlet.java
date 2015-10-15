@@ -35,13 +35,10 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -55,6 +52,7 @@ import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.common.exceptions.ReadOnlyDatabaseException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
@@ -72,7 +70,6 @@ import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.strategy.Context;
-import org.bibsonomy.rest.util.URLDecodingPathTokenizer;
 import org.bibsonomy.rest.utils.HeaderUtils;
 import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.util.StringUtils;
@@ -268,23 +265,23 @@ public final class RestServlet extends HttpServlet {
 
 			cachingStream.writeTo(response.getOutputStream());
 		} catch (final AuthenticationException e) {
-			log.warn(e.getMessage());
+			log.info(e.getMessage());
 			response.setHeader("WWW-Authenticate", "Basic realm=\"" + this.additionalInfos.get(PROJECT_NAME_KEY) + "WebService\"");
 			sendError(request, response, HttpURLConnection.HTTP_UNAUTHORIZED, e.getMessage());
 		} catch (final InternServerException e) {
 			log.error(e.getMessage());
 			sendError(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 		} catch (final NoSuchResourceException e) {
-			log.error(e.getMessage());
+			log.info(e.getMessage());
 			sendError(request, response, HttpServletResponse.SC_NOT_FOUND, e.getMessage());
-		} catch (final BadRequestOrResponseException e) {
-			log.error(e.getMessage(), e);
+		} catch (final BadRequestOrResponseException | InvalidModelException e) {
+			log.info(e.getMessage(), e);
 			sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
 		} catch (final AccessDeniedException e) {
-			log.error(e.getMessage());
+			log.info(e.getMessage());
 			sendError(request, response, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		} catch (final ResourceMovedException e) {
-			log.error(e.getMessage());
+			log.info(e.getMessage());
 			/*
 			 * sending new location
 			 * TODO: add date using
@@ -309,7 +306,7 @@ public final class RestServlet extends HttpServlet {
 			// the user has not specified the resource type
 			sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
 		} catch (final Exception e) {
-			log.error(e, e);
+			log.error(e.getMessage(), e);
 			// well, lets fetch each and every error...
 			sendError(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 		}
@@ -423,7 +420,7 @@ public final class RestServlet extends HttpServlet {
 		 * get syncClient from SSLDn
 		 */
 		log.debug("checking available sync client against SSL_CLIENT_S_DN '" + sslClientSDn + "'.");
-		final List<SyncService> syncClient = logic.getSyncServices(true, sslClientSDn);
+		final List<SyncService> syncClient = logic.getSyncServices(false, sslClientSDn);
 
 		if (!syncClient.isEmpty()) {
 			log.debug("sync client:" + syncClient.get(0).getService() + " | "

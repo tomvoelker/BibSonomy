@@ -17,20 +17,20 @@
 	 	+-->
 	<!-- update jobs without index optimization -->
 	<bean id="luceneUpdateBibTexJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="lucenePublicationManager" />
-		<property name="targetMethod" value="updateAndReloadIndex" />
+		<property name="targetObject" ref="lucenePublicationUpdateTrigger" />
+		<property name="targetMethod" value="triggerUpdate" />
 		<property name="concurrent" value="false" />
 	</bean>
 	
 	<bean id="luceneUpdateBookmarkJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="luceneBookmarkManager" />
-		<property name="targetMethod" value="updateAndReloadIndex" />
+		<property name="targetObject" ref="luceneBookmarkUpdateTrigger" />
+		<property name="targetMethod" value="triggerUpdate" />
 		<property name="concurrent" value="false" />
 	</bean>
 	
 	<bean id="luceneUpdateGoldStandardPublicationJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="luceneGoldStandardPublicationManager" />
-		<property name="targetMethod" value="updateAndReloadIndex" />
+		<property name="targetObject" ref="luceneGoldStandardPublicationUpdateTrigger" />
+		<property name="targetMethod" value="triggerUpdate" />
 		<property name="concurrent" value="false" />
 	</bean>
 

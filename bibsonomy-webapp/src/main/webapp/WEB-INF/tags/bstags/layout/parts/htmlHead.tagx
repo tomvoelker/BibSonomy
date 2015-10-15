@@ -14,7 +14,6 @@
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false"/>
 	
-	
 	<!--+
 		|
 		| setting (global) variables
@@ -45,35 +44,20 @@
 		|
 		+-->
 	<head>
-		<!--  <meta http-equiv="X-UA-Compatible" content="IE=8" /> -->
 		<meta charset="UTF-8" />
 		
 		<!--+
 			| BOOTSTRAP SETTINGS 
 			+-->
-		
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />  
 		
-		<!-- Latest compiled and minified CSS -->
-		<mtl:styleSheet path="${resdir}/css/bootstrap.css"  />
-
-		<!-- font awesome icon set -->
-		<mtl:styleSheet path="${resdir}/fonts/font-awesome/css/font-awesome.min.css" />
-
-
+		<!-- latest compiled and minified CSS -->
 		<mtl:styleSheet path="${resdir}/css/bootstrap-style.css" />
 		<!--+
 			| END BOOTSTRAP SETTINGS 
 			+ -->
-			
-
-		<!-- FIXME: do we really need the complete jquery-ui.css? -->
-		<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/jquery-ui.css" type="text/css" media="all" />
-		
-		<!-- 
-		<mtl:styleSheet path="${resdir}/css/style.css" />
-		-->
 		<c:if test="${not empty personalized and personalized}">
+			<!-- FIXME: personalized style sheet -->
 			<!-- <link rel="stylesheet" type="text/css" href="${resdir}/css/personalized.css" /> -->
 		</c:if>
 		
@@ -100,30 +84,31 @@
 					var projectName = "${properties['project.name']}";
 					var ckey = "${command.context.ckey}";
 					var currUser = "${loginUser.name}";
+					var userSettings = {
+						"logging" : ${loginUser.settings.logLevel != 1 and not systemReadOnly},
+						"tagbox" : {
+							"style" : ${loginUser.settings.tagboxStyle},
+							"sort"  : ${loginUser.settings.tagboxSort},
+							"minfreq" : ${loginUser.settings.tagboxMinfreq}
+						},
+						"confirmDelete" : ${loginUser.settings.confirmDelete}
+					};
 					var requUser = ${(requestedUser ne '') ? requestedUserString : "null"};
-					var confirmDelete = ${loginUser.settings.confirmDelete};
-					
-					$(function() {
-						init("${loginUser.settings.tagboxStyle}", "${loginUser.settings.tagboxSort}", "${loginUser.settings.tagboxMinfreq}");
-					});
 				]]>
 		</script>
-		<!-- localized JavaScript messages -->
-		<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale.language}.js"><!-- keep me --></script>
-		<script type="text/javascript" src="${resdir}/javascript/systemmessage.js"><!-- keep me --></script>
+		
+		<parts:messages locale="${locale}" />
+		
 		<!-- include tooltip JavaScript only for users that have tooltips enabled -->
 		<c:if test="${loginUser.settings.tagboxTooltip == 1}">	
 			<script type="text/javascript" src="${resdir}/javascript/tooltip.js"><!-- keep me --></script>
 		</c:if>
-		<!-- enable logging with user permission -->
-		<c:if test="${loginUser.settings.logLevel != 1 and not systemReadOnly}">
-		   <script type="text/javascript" src="${resdir}/javascript/logging.js"><!-- KEEP ME --></script> 
-		</c:if>
+		
 		<!-- enable on-site spammer killing when user is admin -->
 		<c:if test="${loginUser.role eq 'ADMIN'}">
-		  <script type="text/javascript" src="${resdir}/javascript/admin/spammer.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/admin/spammer.js"><!-- keep me --></script>
 		</c:if>
-
+		
 		<c:if test="${not empty additionalJS}">
 			<script type="text/javascript" src="${additionalJS}"><!-- keep me --></script>
 		</c:if>
@@ -133,8 +118,8 @@
 			| Piwik
 			|
 			+--> 
-		<!-- TODO: Discuss where to store the piwik id and adress 
-			+ current: in theme files the whole piwik code ist stored
+		<!-- TODO: Discuss where to store the piwik id and address 
+			+ current: in theme files the whole piwik code is stored
 			+ should (probably): code here/some js + id in config file
 			+-->
 		<spring:theme code="javascriptcode.piwik" var="piwikJS" text=""/> 
@@ -153,7 +138,7 @@
 		<link rel="alternate" type="application/rss+xml"  title="${properties['project.name']} Blog - RSS"  href="http://blog.bibsonomy.org/feeds/posts/default?alt=rss" />
 		<title><c:if test="${not empty pageTitle}"><c:out value="${pageTitle}"/> | </c:if>${properties['project.name']}</title>
 		<jsp:invoke fragment="headerExt"/>
-		
+		<!-- FIXME: readd print style -->
 <!-- 		<c:if test="${not empty additionalPrintCSS}"> -->
 <!-- 			<link rel="stylesheet" type="text/css" media="print" href="${additionalPrintCSS}" /> -->
 <!-- 		</c:if> -->

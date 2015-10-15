@@ -135,18 +135,13 @@
 			
 			<div class="row">
 				<div class="col-sm-12">
-	
-			
-			
-			
-	
-			<!--check which tab command to include -->	
+			<!--check which tab command to include -->
 			<c:if test="${not empty command.content}">
 				
 				<c:choose>
 				
 				<!-- classifier results tabs -->
-				<c:when test="${command.selTab &lt; 9}">	
+				<c:when test="${command.selTab &lt; 9}">
 				
 				<div>(show 
 					<a href="?limit=100&amp;selTab=${command.selTab}">100</a> -

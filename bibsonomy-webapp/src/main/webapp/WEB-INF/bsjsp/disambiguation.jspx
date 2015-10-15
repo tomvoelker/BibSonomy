@@ -21,7 +21,6 @@
 	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/bstags/resources/publication"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/layout/bootstrap"
 	xmlns:bsold="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
-	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
 	xmlns:form="http://www.springframework.org/tags/form"> 
 	

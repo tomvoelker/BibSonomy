@@ -330,7 +330,7 @@ public class UserSettings implements Serializable {
 	/**
 	 * @param layoutSettings the layoutSettings to set
 	 */
-	public void setLayoutSettings(LayoutSettings layoutSettings) {
+	public void setLayoutSettings(final LayoutSettings layoutSettings) {
 		this.layoutSettings = layoutSettings;
 	}
 }

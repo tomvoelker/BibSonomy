@@ -78,7 +78,7 @@ public class URLGenerator {
 		/**
 		 * all posts I have picked
 		 */
-		BASKET("clipboard");
+		CLIPBOARD("clipboard");
 
 		private final String path;
 
@@ -134,6 +134,7 @@ public class URLGenerator {
 	private static final String VIEWABLE_PRIVATE_SUFFIX = "private";
 	private static final String VIEWABLE_PUBLIC_SUFFIX = "public";
 	private static final String HISTORY_PREFIX = "history";
+	private static final String USER_RELATION = "handleUserRelation";
 
 	private static final String PUBLICATION_INTRA_HASH_ID = String.valueOf(HashID.INTRA_HASH.getId());
 	private static final String PUBLICATION_INTER_HASH_ID = String.valueOf(HashID.INTER_HASH.getId());
@@ -272,12 +273,12 @@ public class URLGenerator {
 	}
 
 	/**
-	 * Constructs a URL for the basket page, i.e. /basket
+	 * Constructs a URL for the clipboard page, i.e. /clipboard
 	 * 
-	 * @return URL pointing to the basket page.
+	 * @return URL pointing to the clipboard page.
 	 */
-	public String getBasketUrl() {
-		String url = this.projectHome + prefix + Page.BASKET.getPath();
+	public String getClipboardUrl() {
+		String url = this.projectHome + prefix + Page.CLIPBOARD.getPath();
 		return this.getUrl(url);
 	}
 

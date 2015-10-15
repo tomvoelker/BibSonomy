@@ -5,12 +5,12 @@
 
 	<jsp:directive.attribute name="initialValue" type="java.lang.String" required="false"/>
 
-	<div class="logbox">			
+	<div class="logbox">
 		<ul id="log">
 			<li>
 				<c:if test="${not empty initialValue}">
 					<c:out value="${initialValue}"/>
-				</c:if>			
+				</c:if>
 			</li>
 		</ul>
 	</div>

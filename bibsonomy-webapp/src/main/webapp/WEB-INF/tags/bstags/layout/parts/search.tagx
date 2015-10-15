@@ -10,7 +10,6 @@
     <!-- 
       set theme variables    
      -->
-    <spring:theme code="image.dropdown.large" var="imageDropdown"/>
 	
 	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="false"/>
 	

@@ -6,11 +6,11 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
-    xmlns:bm="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bookmark"
+	xmlns:bm="urn:jsptagdir:/WEB-INF/tags/bstags/resources/bookmark"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-    xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
-    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">	 	
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.attribute name="errors" type="org.springframework.web.servlet.support.BindStatus" required="true" description="The errors (Spring's BindStatus) this tag shall show."/>
 	<jsp:directive.attribute name="fastEdit" type="java.lang.Boolean" required="false" description="Whether this errors are displayed during fastediting of tags or not."/>

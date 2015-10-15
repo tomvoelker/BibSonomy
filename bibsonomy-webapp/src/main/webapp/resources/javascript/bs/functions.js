@@ -14,6 +14,7 @@ var constants = {
 }
 
 $(function() {
+	initView();
 	$('a.confirmdelete').click(function() {
 		var messageKey = $(this).data('type');
 		return confirmDeleteByUser(messageKey);
@@ -33,7 +34,7 @@ $(function() {
 
 function confirmDeleteByUser(messageKey) {
 	// get confirmation
-	if (confirmDelete) {
+	if (userSettings.confirmDelete) {
 		var message = getString("delete.confirm." + messageKey);
 		message += "\n" + getString("delete.confirm");
 		return confirm(message);
@@ -42,16 +43,13 @@ function confirmDeleteByUser(messageKey) {
 }
 
 /**
- * This method is called on document.ready. Thus, methods that should 
- * be called ON EVERY page should be added here.
- * 
- * @param tagbox_style
- * @param tagbox_sort
- * @param tagbox_minfreq
+ * This method is called on document.ready.
  * @return
  */
-function init(tagbox_style, tagbox_sort, tagbox_minfreq) {
-	
+function initView() {
+	var tagbox_style = userSettings.tagbox.style;
+	var tagbox_sort = userSettings.tagbox.sort;
+	var tagbox_minfreq = userSettings.tagbox.minfreq;
 	/*
 	 * assign functions for cursor position; FIXME: why here?
 	 */
@@ -155,7 +153,7 @@ function processISBN(text) {
 }
 
 /**
- * Adds read entry from reader app to the basket or to post it automatically.
+ * Adds read entry from reader app to the clipboard or to post it automatically.
  * Entry is only added if it has a pick link. Afterwards the pick link is clicked.
  * Entry is pulled via ajax one more time to get the actual entry with unpick link.
  * 
@@ -237,14 +235,11 @@ function processQRCode(text) {
  * @return
  */
 function renderPosts(query, list) {
-	
 	$.ajax({
 		url : "/posts" + query,
 		dataType : "html",
 		success : function(data) {
-			
 			$(list).append($(data));
-							
 			/*
 			 * FIXME: does this really always work? 
 			 * What about posts that have already been prepared?
@@ -809,7 +804,7 @@ function addBibtexExportOptions() {
 
 /**
  * adds javascript to the list headers to create a dropdown menu with
- * list action options (export, basket, sort, ...)
+ * list action options (export, clipboard, sort, ...)
  */
 function addListOptions() {
 	
@@ -1611,9 +1606,9 @@ function generateExportPostLink(value) {
  * update the counter at the navigation bar to reflect the amount of picked publications and unread messages
  */
 function updateCounter() {
-	var basketNum = document.getElementById("basket-counter");
+	var clipboardNum = document.getElementById("clipboard-counter");
 	var inboxNum = document.getElementById("inbox-counter");
-	var counter = document.getElementById("inbox-basket-counter");
+	var counter = document.getElementById("inbox-clipboard-counter");
 	if(counter!=null)
-		counter.innerHTML = (basketNum==null?0:parseInt(basketNum.innerHTML))+(inboxNum==null?0:parseInt(inboxNum.innerHTML));
+		counter.innerHTML = (clipboardNum==null?0:parseInt(clipboardNum.innerHTML))+(inboxNum==null?0:parseInt(inboxNum.innerHTML));
 }

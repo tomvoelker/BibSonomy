@@ -61,21 +61,25 @@
 	</resultMap>
 	
 	<resultMap id="userSettings" class="userSettings">
-		<result property="listItemcount"   	column="list_itemcount" 	javaType="integer" />	
+		<result property="listItemcount"   	column="list_itemcount" 	javaType="integer" />
 		<result property="tagboxMinfreq"   	column="tagbox_minfreq" 	javaType="integer" />
 		<result property="tagboxMaxCount"  	column="tagbox_max_count" 	javaType="integer" />
 		<result property="isMaxCount"      	column="is_max_count"   	javaType="boolean" />
 		<result property="tagboxSort"      	column="tagbox_sort"    	javaType="integer" />
 		<result property="tagboxStyle"     	column="tagbox_style"   	javaType="integer" />
-		<result property="tagboxTooltip"   	column="tagbox_tooltip" 	javaType="integer" />	
+		<result property="tagboxTooltip"   	column="tagbox_tooltip" 	javaType="integer" />
 		<result property="logLevel"        	column="log_level"      	javaType="integer" />
-		<result property="defaultLanguage" 	column="lang" 	       		javaType="string" />	
+		<result property="defaultLanguage" 	column="lang" 	       		javaType="string" />
 		<result property="confirmDelete"   	column="confirmDelete"  	javaType="boolean" />
-		<result property="profilePrivlevel" column="profilegroup"   	javaType="ProfilePrivlevel" />	
+		<result property="profilePrivlevel" column="profilegroup"   	javaType="ProfilePrivlevel" />
 		<result property="showBookmark"   	column="show_bookmark"  	javaType="boolean" />
 		<result property="showBibtex"   	column="show_bibtex"  		javaType="boolean" />
-		<result property="layoutSettings"   column="simple_interface"  javaType="LayoutSettings" />	
-	</resultMap>	
+		<result property="layoutSettings"   resultMap="UserCommon.layoutSettings" />
+	</resultMap>
+	
+	<resultMap class="layoutSettings" id="layoutSettings">
+		<result property="simpleInterface" column="simple_interface"   javaType="boolean" />
+	</resultMap>
 
 	<resultMap id="userWithTags" extends="Common.user" class="user">
 		<result property="tags" column="tag" resultMap="Common.tag"/>
@@ -117,7 +121,7 @@
 		<isNotNull property="settings.defaultLanguage">#settings.defaultLanguage#,</isNotNull>
 		<isNull property="settings.defaultLanguage">DEFAULT(lang),</isNull> 
 		#settings.logLevel#, #settings.confirmDelete#, #settings.profilePrivlevel#, #settings.tagboxMaxCount#, #settings.isMaxCount#, 
-		#settings.showBookmark#, #settings.showBibtex#, #settings.layoutSettings#
+		#settings.showBookmark#, #settings.showBibtex#, #settings.layoutSettings.simpleInterface#
 	</sql>
 
 	<sql id="updateUserProfileAttributes">
@@ -148,7 +152,7 @@
 		confirmDelete = #settings.confirmDelete#, 
 		show_bookmark = #settings.showBookmark#,
 		show_bibtex = #settings.showBibtex#, 
-		simple_interface = #settings.layoutSettings#
+		simple_interface = #settings.layoutSettings.simpleInterface#
 	</sql>
 	
 	<!-- matches resources owned by group members which trust the currUser -->
