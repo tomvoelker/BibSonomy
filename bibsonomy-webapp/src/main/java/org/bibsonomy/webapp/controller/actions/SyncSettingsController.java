@@ -43,6 +43,7 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.util.sync.SyncUtils;
 import org.bibsonomy.webapp.validation.SyncSettingsValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 
@@ -119,9 +120,15 @@ public class SyncSettingsController extends SettingsPageController implements Mi
 		case POST:
 			final SyncService newSyncServer = command.getNewSyncServer();
 			this.logic.createSyncServer(loginUserName, newSyncServer);
+			// forward user to sync-page to perform an initial sync in BOTH directions first 
+			if (SyncUtils.checkFirstAutoSync(newSyncServer))
+				return new ExtendedRedirectView("/sync");
 			break;
 		case PUT:
 			this.logic.updateSyncServer(loginUserName, syncServer);
+			// forward user to sync-page to perform an initial sync in BOTH directions first 
+			if (SyncUtils.checkFirstAutoSync(syncServer))
+				return new ExtendedRedirectView("/sync");
 			break;
 		case DELETE:
 			this.logic.deleteSyncServer(loginUserName, syncServer.getService());
@@ -131,7 +138,7 @@ public class SyncSettingsController extends SettingsPageController implements Mi
 			break;
 		}
 
-		return new ExtendedRedirectView("/settings?selTab=" + command.getSelTab());
+		return new ExtendedRedirectView("/settings?selTab=" + SettingsViewCommand.SYNC_IDX);
 	}
 	
 	/**

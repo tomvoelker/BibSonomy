@@ -121,6 +121,10 @@ public class SynchronizationController extends AjaxController implements Minimal
 			 */
 			final Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan;
 			try {
+				// overwrite sync direction if first sync & auto sync
+				if (SyncUtils.checkFirstAutoSync(server)) {
+					server.setDirection(SynchronizationDirection.BOTH);
+				}
 				syncPlan = client.getSyncPlan(logic, server);
 			} catch (final SynchronizationRunningException e) {
 				errors.reject("error.synchronization.running");
@@ -164,23 +168,20 @@ public class SynchronizationController extends AjaxController implements Minimal
 			try{
 				// remove sync plan from session
 				SyncUtils.setSyncPlan(serviceURI, null, requestLogic);
+
+				// synchronize
 				syncResult = client.synchronize(logic, server, syncPlan2);
+
+				// check servers firstSync and set the servers firstSync to false
+				if (SyncUtils.checkFirstAutoSync(server)) {
+					server.setFirstsync(false);
+					this.logic.updateSyncServer(loginUser.getName(), server);
+				}
 			} catch (final SynchronizationRunningException e) {
 				errors.reject("error.synchronization.running");
 				return Views.AJAX_ERRORS;
 			}
-			/*
-			 * remove sync plan from session
-			 * FIXME: do this before synchronize()?
-			 */
-			// SyncUtils.setSyncPlan(serviceURI, null, requestLogic);
 
-			// check for initial sync for auto-sync
-			if (server.isFirstsync() && server.getDirection() == SynchronizationDirection.BOTH){
-				// sync in both directions 
-				server.setFirstsync(false);
-			}
-			
 			/*
 			 * serialize result
 			 */

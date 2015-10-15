@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationAction;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.webapp.util.RequestLogic;
@@ -131,5 +132,18 @@ public class SyncUtils {
 			result.put(resourceType, messages);
 		}
 		return result;
+	}
+	
+	/**
+	 * @param service
+	 * @return true if service isFirstSync && isAutosync  	
+	 */
+	public static boolean checkFirstAutoSync(SyncService service) {
+
+		if (present(service))
+			return (service.isFirstsync() && service.isAutosync());
+		
+		return false;
+		
 	}
 }

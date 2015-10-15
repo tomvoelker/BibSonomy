@@ -20,6 +20,7 @@
 	<fmt:message var="cancel" key="settings.synchronization.cancel"/>
 	<fmt:message var="removeService" key="synchronization.server.delete" />
 	<fmt:message var="confirmDelete" key="synchronization.server.delete.confirm" />
+	<fmt:message var="syncpage" key="synchronization.syncpage" />
 
 
 	<div id="selTab4" class="tab-pane ${(command.selTab eq 4) ? 'active' : ''}">
@@ -71,7 +72,8 @@
 						<div class="form-group">
 							<div class="col-sm-offset-4 col-sm-8">
 								<bsform:button type="submit" style="primary" size="defaultSize" value="${save}" />&amp;nbsp;
-								<bsform:button type="submit" style="primary" size="defaultSize" value="${removeService}" onclick="return confirmDelete(this)" />
+								<bsform:button type="submit" style="primary" size="defaultSize" value="${removeService}" onclick="return confirmDelete(this)" />&amp;nbsp;
+								<a href="/sync" size="defaultSize" class="btn btn-primary">${syncpage}</a>
 							</div>
 						</div>
 					</form:form>

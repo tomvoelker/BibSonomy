@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.SynchronizationRunningException;
@@ -41,17 +42,19 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
-import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.util.MailUtils;
+
+
+import com.ibm.icu.util.Calendar;
 
 /**
  * @author wla
  */
 public class AutoSync {
 	private static final Log log = LogFactory.getLog(AutoSync.class);
-
+	private static Calendar calc = Calendar.getInstance(); 
 	private LogicInterface adminLogic;
 	private TwoStepSynchronizationClient syncClient;
 	private LogicInterfaceFactory userLogicFactory;
@@ -77,7 +80,11 @@ public class AutoSync {
 			// check if user has run a sync in both-directions before, send notification mail
 			if (syncService.isFirstsync())
 			{
-				// mailUtils.sendPlainMail(clientUser.getEmail(), subject, content, from);
+				if (calc.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+					log.info("no initial sync in both-directions was done; send eMail to User");
+					mailUtils.sendSyncErrorMail(clientUser.getName(), clientUser.getEmail(), syncService.getName(), 
+							LocaleUtils.toLocale(clientUser.getSettings().getDefaultLanguage())); 
+				}
 			}
 			
 			final String userNameToSync = clientUser.getName();

@@ -56,8 +56,8 @@
 	</select>
 	
 	<insert id="insertSyncServiceForUser" parameterClass="syncParam">
-		INSERT INTO sync (user_name, service_id, credentials, content_type, direction, strategy)
-		  SELECT #userName#, service_id, #syncService.serverUser# , #syncService.resourceType#, #syncService.direction#, #syncService.strategy#
+		INSERT INTO sync (user_name, service_id, credentials, content_type, direction, strategy, autosync)
+		  SELECT #userName#, service_id, #syncService.serverUser# , #syncService.resourceType#, #syncService.direction#, #syncService.strategy#, #syncService.autosync#
 		    FROM sync_services 
 		    WHERE uri = #syncService.service# 
 		      AND server = TRUE
@@ -137,7 +137,7 @@
 		  	  s.direction = #syncService.direction#,
 		  	  s.content_type = #syncService.resourceType#,
 		  	  s.strategy = #syncService.strategy#,
-		  	  s.autosync = #syncService.autosync#
+		  	  s.autosync = #syncService.autosync#,
 		  	  s.firstsync = #syncService.firstsync#
 		  WHERE s.user_name = #userName#
 			AND ss.uri = #syncService.service#
