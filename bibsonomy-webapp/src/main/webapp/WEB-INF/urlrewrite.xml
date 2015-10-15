@@ -1043,9 +1043,9 @@
 		<from>^/BibtexHandler$</from>
 		<to last="true">/editPublication</to>
 	</rule>
-	<rule><!-- in February 2012 we renamed the clipboard to "clipboard" -->
-		<name>/clipboard</name>
-		<from>^/clipboard$</from>
+	<rule><!-- in February 2012 we renamed the basket to "clipboard" -->
+		<name>/basket</name>
+		<from>^/basket$</from>
 		<to type="redirect" last="true">/clipboard</to>
 	</rule>
 	<rule><!-- in February 2012 we build the new "BibTeXHashExample" -->
