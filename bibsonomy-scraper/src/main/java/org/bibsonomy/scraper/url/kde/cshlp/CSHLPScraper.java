@@ -26,63 +26,45 @@
  */
 package org.bibsonomy.scraper.url.kde.cshlp;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
 /**
  * @author Mohammed Abed
  */
-public class CSHLPScraper extends AbstractUrlScraper {
+public class CSHLPScraper extends GenericBibTeXURLScraper {
 
 	private static final String SITE_NAME = "Cold Spting Harbor Perspetives in Biology";
 	private static final String SITE_URL = "http://cshperspectives.cshlp.org/";
 	private static final String info = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
-	
 	private static final String CSHLP_HOST = "cshperspectives.cshlp.org";
-	private static final String HOST = "cshlp.org";
 	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern, Pattern>>();
 	static {
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + CSHLP_HOST), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + CSHLP_HOST), Pattern.compile("/content/")));
 	}
 	
 	private static final Pattern PATTERN_FROM_URL = Pattern.compile("/content/(.+?)\\.");
-	private static final String DOWNLOAD_URL = "http://cshperspectives.cshlp.org/citmgr?type=bibtex&gca=cshperspect;";
+	private static final Pattern DOWNLOAD_URL = Pattern.compile("http://cshperspectives.cshlp.org/citmgr?type=bibtex&gca=cshperspect;");
 
 	@Override
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		sc.setScraper(this);
+	protected String getDownloadURL(URL url) throws ScrapingException {
 		String id = null;
-
-		final Matcher m = PATTERN_FROM_URL.matcher(sc.getUrl().toString());
+		
+		final Matcher m = PATTERN_FROM_URL.matcher(url.getPath());
 		if (m.find()) {
 			id = m.group(1);
+			return DOWNLOAD_URL.toString() + id;
 		}
-		try {
-			final String bibResult = WebUtils.getContentAsString(DOWNLOAD_URL + id);
-			if (bibResult != null) {
-				sc.setBibtexResult(bibResult);
-				return true;
-			}
-		} catch (MalformedURLException ex) {
-			throw new ScrapingFailureException("URL to scrape does not exist. It maybe malformed.");
-		}catch (IOException ex) {
-			throw new ScrapingFailureException("An unexpected IO error has occurred. Maybe CSHLP Publications is down.");
-		}
-		return false;
+		return url.toExternalForm();
 	}
-
+	
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
