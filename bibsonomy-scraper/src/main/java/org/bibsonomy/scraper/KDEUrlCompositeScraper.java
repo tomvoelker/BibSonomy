@@ -225,7 +225,11 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		 */
 		//addScraper(new ScientificcommonsScraper());
 		addScraper(new CellScraper());
-		addScraper(new WebOfKnowledgeScraper());
+		/*
+		 * the scraper and the related information in the xml file are disabled because the version of the website 
+		 * is session-based and hence, the scraping does not work.
+		 */
+		//addScraper(new WebOfKnowledgeScraper());
 		addScraper(new CasesJournalScraper());
 		addScraper(new ElsevierhealthScraper());
 		addScraper(new AandAScraper());

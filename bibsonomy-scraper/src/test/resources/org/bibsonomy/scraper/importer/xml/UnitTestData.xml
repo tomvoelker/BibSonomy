@@ -927,7 +927,7 @@
 		<URL>http://apps.webofknowledge.com/full_record.do?product=UA&amp;search_mode=GeneralSearch&amp;qid=1&amp;SID=T1oiG1PgP2L42IlFLI4&amp;page=1&amp;doc=8</URL>
 		<BibFile>WebOfKnowledgeUnitUrlTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.webofknowledge.WebOfKnowledgeScraper</Scraper>
-		<Enabled>true</Enabled>
+		<Enabled>false</Enabled>
 		<AdditionalInfo>Important: To run the test, insert an url with fresh SID. Otherwise the test will fail</AdditionalInfo>
 	</URLTest>
 	<URLTest id="url_152">
@@ -1791,7 +1791,7 @@
 	</URLTest>
 	<URLTest id="url_290">
 		<TestDescription>scraping test for Copac Scraper</TestDescription>
-		<URL>http://copac.jisc.ac.uk/search?title=clustering&amp;rn=1</URL>
+		<URL>http://copac.jisc.ac.uk/search?title=Measures%20and%20aggregation%3A%20formal%20aspects%20and%20applications%20to%20clustering%20and%20decision.&amp;rn=1</URL>
 		<BibFile>CopacScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.copac.CopacScraper</Scraper>
 	</URLTest>
