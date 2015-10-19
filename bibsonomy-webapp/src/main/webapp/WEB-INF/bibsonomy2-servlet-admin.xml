@@ -161,8 +161,8 @@
 	</bean>
 
 	<bean id="adminLuceneController" class="org.bibsonomy.webapp.controller.admin.AdminLuceneController" scope="request">
-		<property name="luceneResourceManagers" ref="luceneResourceManagers" />
-		<property name="srPlugin" ref="sharedIndexUpdatePlugin"/>
+		<property name="luceneResourceManagers" ref="allLuceneResourceManagers" />
+		<property name="sharedIndexUpdatePlugins" ref="allSharedIndexUpdatePlugins"/>
 	</bean>
 	
 	<bean id="adminAjaxController" class="org.bibsonomy.webapp.controller.admin.AdminAjaxController" scope="request">

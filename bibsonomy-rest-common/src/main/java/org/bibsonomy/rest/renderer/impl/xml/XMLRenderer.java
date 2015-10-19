@@ -49,9 +49,10 @@ public class XMLRenderer extends JAXBRenderer {
 	}
 	
 	@Override
-	protected JAXBContext getJAXBContext() throws JAXBException {
+	protected JAXBContext initJAXBContext() throws JAXBException {
 		/*
-		 * XXX: initialize JAXB context. We provide the classloader here because
+		 * initialize JAXB context.
+		 * XXX:  We provide the classloader here because
 		 * we experienced that under certain circumstances (e.g. when used
 		 * within JabRef as a JPF-Plugin), the wrong classloader is used which
 		 * has the following exception as consequence:

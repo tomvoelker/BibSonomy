@@ -403,15 +403,15 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	}
 
 	/**
-	 * tests testGetPostsFromBasketForUser
+	 * tests testGetPostsFromClipboardForUser
 	 */
 	@Override
-	public void testGetPostsFromBasketForUser() {
-		this.printMethod("testGetPostsFromBasketForUser");
-		List<Post<BibTex>> posts = publicationDb.getPostsFromBasketForUser("testuser1", Integer.MAX_VALUE, 0, this.dbSession);
+	public void testGetPostsFromClipboardForUser() {
+		this.printMethod("testGetPostsFromClipboardForUser");
+		List<Post<BibTex>> posts = publicationDb.getPostsFromClipboardForUser("testuser1", Integer.MAX_VALUE, 0, this.dbSession);
 		assertEquals(2, posts.size());
 		
-		posts = publicationDb.getPostsFromBasketForUser("testuser2", Integer.MAX_VALUE, 0, this.dbSession);
+		posts = publicationDb.getPostsFromClipboardForUser("testuser2", Integer.MAX_VALUE, 0, this.dbSession);
 		assertEquals(2, posts.size());
 	}
 
@@ -422,7 +422,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	public void testGetPostsForHomepage() {
 		this.printMethod("testGetPostsForHomepage");
 		final List<Post<BibTex>> post = publicationDb.getPostsForHomepage(null, null, null, 10, 0, null, this.dbSession);
-		assertEquals(2, post.size());
+		assertEquals(4, post.size());
 	}
 
 	/**
@@ -740,12 +740,12 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		param.setHash("");
 		
 		List<Post<BibTex>> posts = publicationDb.getPosts(param, this.dbSession);
-		assertEquals(2, posts.size());
+		assertEquals(4, posts.size());
 		
 		// setting group id to public shouldn't change anything
 		param.setGroupId(PUBLIC_GROUP_ID);
 		posts = publicationDb.getPosts(param, this.dbSession);
-		assertEquals(2, posts.size());
+		assertEquals(4, posts.size());
 	}
 
 	

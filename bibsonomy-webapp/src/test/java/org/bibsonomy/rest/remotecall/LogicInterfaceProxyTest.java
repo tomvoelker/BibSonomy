@@ -31,8 +31,6 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,7 +38,6 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -50,30 +47,19 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.Classifier;
-import org.bibsonomy.common.enums.ClassifierSettings;
-import org.bibsonomy.common.enums.ConceptStatus;
-import org.bibsonomy.common.enums.ConceptUpdateOperation;
 import org.bibsonomy.common.enums.Filter;
-import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.HashID;
-import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.SearchType;
-import org.bibsonomy.common.enums.SpamStatus;
-import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
-import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
@@ -81,20 +67,10 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.Wiki;
-import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
-import org.bibsonomy.model.metadata.PostMetaData;
-import org.bibsonomy.model.statistics.Statistics;
-import org.bibsonomy.model.sync.ConflictResolutionStrategy;
-import org.bibsonomy.model.sync.SyncService;
-import org.bibsonomy.model.sync.SynchronizationData;
-import org.bibsonomy.model.sync.SynchronizationDirection;
-import org.bibsonomy.model.sync.SynchronizationPost;
-import org.bibsonomy.model.sync.SynchronizationStatus;
-import org.bibsonomy.model.user.remote.RemoteUserId;
+import org.bibsonomy.model.logic.util.AbstractLogicInterface;
 import org.bibsonomy.rest.AuthenticationHandler;
 import org.bibsonomy.rest.BasicAuthenticationHandler;
 import org.bibsonomy.rest.RestServlet;
@@ -145,15 +121,15 @@ import org.springframework.web.multipart.support.MultipartFilter;
  * @author Jens Illig
  * @author Christian Kramer
  */
-public class LogicInterfaceProxyTest implements LogicInterface {
+public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	
 	/*
 	 * FIXME: clean up this mess :-(
 	 */
-	private static final String COMMON_USER_PROPERTIES = "apiKey|homepage|realname|email|password|date|openURL|gender|place|interests|hobbies|IPAddress|basket|inbox|profession|institution|place|spammer|settings|toClassify|updatedBy|gravatarAddress";
-	private static final String[] IGNORE1 = new String[] {"[0].date", "[0].user.apiKey", "[0].user.email", "[0].user.homepage", "[0].user.password", "[0].user.passwordSalt", "[0].user.realname", "[0].user.confidence", "[0].resource.scraperId", "[0].resource.openURL", "[0].resource.numberOfRatings", "[0].resource.rating", "[0].user.IPAddress", "[0].user.basket", "[0].user.inbox", "[0].user.gender", "[0].user.interests", "[0].user.hobbies", "[0].user.profession", "[0].user.institution", "[0].user.openURL", "[0].user.place", "[0].user.spammer", "[0].user.settings", "[0].user.algorithm", "[0].user.prediction", "[0].user.mode", "[0].user.updatedBy", "[0].user.toClassify", "[0].user.reminderPassword", "[0].user.openID", "[0].user.ldapId", "[0].user.activationCode", "[0].user.remoteUserIds", "[0].user.gravatarAddress"};
-	private static final String[] IGNORE2 = new String[] {"activationCode", "apiKey", "email", "homepage", "password", "passwordSalt", "realname", "date", "openURL", "gender", "place", "IPAddress", "basket", "inbox", "profession", "spammer", "settings", "hobbies", "interests", "toClassify", "updatedBy", "reminderPassword", "openID", "ldapId", "institution", "remoteUserIds", "gravatarAddress"};
-	private static final String[] IGNORE3 = new String[] {"date", "user.activationCode", "user.apiKey", "user.email", "user.homepage", "user.password", "user.passwordSalt", "user.realname", "resource.scraperId", "resource.openURL", "resource.numberOfRatings", "resource.rating", "user.IPAddress", "user.basket", "user.inbox", "user.gender", "user.interests", "user.hobbies", "user.profession", "user.institution", "user.openURL", "user.place", "user.spammer", "user.confidence", "user.settings", "user.algorithm", "user.prediction", "user.mode", "user.toClassify", "user.updatedBy", "user.reminderPassword", "user.openID", "user.ldapId", "user.remoteUserIds", "user.gravatarAddress"};
+	private static final String COMMON_USER_PROPERTIES = "apiKey|homepage|realname|email|password|date|openURL|gender|place|interests|hobbies|IPAddress|clipboard|inbox|profession|institution|place|spammer|settings|toClassify|updatedBy|gravatarAddress";
+	private static final String[] IGNORE1 = new String[] {"[0].date", "[0].user.apiKey", "[0].user.email", "[0].user.homepage", "[0].user.password", "[0].user.passwordSalt", "[0].user.realname", "[0].user.confidence", "[0].resource.scraperId", "[0].resource.openURL", "[0].resource.numberOfRatings", "[0].resource.rating", "[0].user.IPAddress", "[0].user.clipboard", "[0].user.inbox", "[0].user.gender", "[0].user.interests", "[0].user.hobbies", "[0].user.profession", "[0].user.institution", "[0].user.openURL", "[0].user.place", "[0].user.spammer", "[0].user.settings", "[0].user.algorithm", "[0].user.prediction", "[0].user.mode", "[0].user.updatedBy", "[0].user.toClassify", "[0].user.reminderPassword", "[0].user.openID", "[0].user.ldapId", "[0].user.activationCode", "[0].user.remoteUserIds", "[0].user.gravatarAddress"};
+	private static final String[] IGNORE2 = new String[] {"activationCode", "apiKey", "email", "homepage", "password", "passwordSalt", "realname", "date", "openURL", "gender", "place", "IPAddress", "clipboard", "inbox", "profession", "spammer", "settings", "hobbies", "interests", "toClassify", "updatedBy", "reminderPassword", "openID", "ldapId", "institution", "remoteUserIds", "gravatarAddress"};
+	private static final String[] IGNORE3 = new String[] {"date", "user.activationCode", "user.apiKey", "user.email", "user.homepage", "user.password", "user.passwordSalt", "user.realname", "resource.scraperId", "resource.openURL", "resource.numberOfRatings", "resource.rating", "user.IPAddress", "user.clipboard", "user.inbox", "user.gender", "user.interests", "user.hobbies", "user.profession", "user.institution", "user.openURL", "user.place", "user.spammer", "user.confidence", "user.settings", "user.algorithm", "user.prediction", "user.mode", "user.toClassify", "user.updatedBy", "user.reminderPassword", "user.openID", "user.ldapId", "user.remoteUserIds", "user.gravatarAddress"};
 	
 	private static final int PORT = 41252;
 
@@ -670,12 +646,6 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), "search",SearchType.LOCAL, null, Order.FOLKRANK, null, null, 0, 5);
 	}
 	
-	@SuppressWarnings("deprecation")
-	@Override
-	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
-		return getPosts(resourceType, grouping, groupingName, tags, hash, search, SearchType.LOCAL, filters, order, startDate, endDate, start, end);
-	}
-	
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends org.bibsonomy.model.Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
@@ -946,45 +916,6 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		EasyMock.verify(serverLogic);
 		return null;
 	}
-	
-	@Override
-	public Document getDocument(final String userName, final String fileHash) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Document getDocument(final String userName, final String resourceHash, final String fileName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void deleteDocument(final Document document, final String fileName) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void createInetAddressStatus(final InetAddress address, final InetAddressStatus status) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void deleteInetAdressStatus(final InetAddress address) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public InetAddressStatus getInetAddressStatus(final InetAddress address) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public List<Tag> getConcepts(final Class<? extends org.bibsonomy.model.Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final ConceptStatus status, final int start, final int end) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Test
 	public void createConceptTest() {
@@ -1031,29 +962,6 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		return concept.getName();
 	}
 
-	@Override
-	public void deleteConcept(final String concept, final GroupingEntity grouping, final String groupingName) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void deleteRelation(final String upper, final String lower, final GroupingEntity grouping, final String groupingName) {
-		// TODO Auto-generated method stub	
-	}
-
-	@Override
-	public Tag getConceptDetails(final String conceptName, final GroupingEntity grouping, final String groupingName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String updateConcept(final Tag concept, final GroupingEntity grouping, final String groupingName, final ConceptUpdateOperation operation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	/**
 	 * runs the test defined by {@link #getUsers(Class, GroupingEntity, String, List, String, Order, UserRelation, String, int, int)} with certain arguments
 	 * (in order to retrieve all users)
@@ -1070,8 +978,8 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 */
 	@Test
 	public void getGroupMembersTest() {
-		getUsers(null, GroupingEntity.GROUP, "grpX", null, null, null, null, null, 1, 56);				
-	}	
+		getUsers(null, GroupingEntity.GROUP, "grpX", null, null, null, null, null, 1, 56);
+	}
 	
 	@Override
 	public List<User> getUsers(final Class<? extends org.bibsonomy.model.Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final UserRelation relation, final String search, final int start, final int end) {
@@ -1081,289 +989,23 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		expected.add(ModelUtils.getUser());
 		expected.get(1).setName("Nr2");
 		EasyMock.expect(serverLogic.getUsers(resourceType, grouping, groupingName, tags, hash, order, relation, search, start, end)).andReturn(expected);
-		EasyMock.replay(serverLogic);		
+		EasyMock.replay(serverLogic);
 		final List<User> returned = clientLogic.getUsers(resourceType, grouping, groupingName, tags, hash, order, relation, search, start, end);
 		CommonModelUtils.assertPropertyEquality(expected, returned, 5, Pattern.compile(       ".*\\.(" + COMMON_USER_PROPERTIES + "|activationCode|reminderPassword|openID|ldapId|remoteUserIds)"));
 		EasyMock.verify(serverLogic);
-		assertLogin();			
+		assertLogin();
 		return returned;
 	}
 
-	@Override
-	public String getClassifierSettings(final ClassifierSettings key) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void updateClassifierSettings(final ClassifierSettings key, final String value) {
-		// TODO Auto-generated method stub		
-	}
-
-	@Override
-	public List<User> getClassifiedUsers(final Classifier classifier, final SpamStatus status, final int interval) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<User> getClassifierHistory(final String userName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<User> getClassifierComparison(final int interval, final int limit) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getOpenIDUser(final String openID) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public int updateTags(final User user, final List<Tag> tagsToReplace, final List<Tag> replacementTags, final boolean updateRelations) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	
-	@Override
-	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, Set<Filter> filters, final Date startDate, final Date endDate, final int start, final int end) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public List<Author> getAuthors(final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void createUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation, final String tag) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public List<User> getUserRelationship(final String sourceUser, final UserRelation relation, final String tag) {
-		//TODO Auto-generated method stub
-		return new ArrayList<User>();
-	}
-
-	
-	@Override
-	public void deleteUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation, final String tag) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public int createBasketItems(final List<Post<? extends org.bibsonomy.model.Resource>> posts) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int deleteBasketItems(final List<Post<? extends org.bibsonomy.model.Resource>> posts, final boolean clearBasket) {
-		return 0;
-	}
-	
-	@Override
-	public int deleteInboxMessages(final List<Post<? extends org.bibsonomy.model.Resource>> posts, final boolean clearInbox) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public String getUsernameByLdapUserId(final String userId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void createRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void deleteRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public List<Date> getWikiVersions(final String userName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void createWiki(final String userName, final Wiki wiki) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public Wiki getWiki(final String userName, final Date date) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void updateWiki(final String userName, final Wiki wiki) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void createExtendedField(final Class<? extends org.bibsonomy.model.Resource> resourceType, final String userName, final String intraHash, final String key, final String value) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void deleteExtendedField(final Class<? extends org.bibsonomy.model.Resource> resourceType, final String userName, final String intraHash, final String key, final String value) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public Map<String, List<String>> getExtendedFields(final Class<? extends org.bibsonomy.model.Resource> resourceType, final String userName, final String intraHash, final String key) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void createDiscussionItem(final String interHash, final String username, final DiscussionItem discussionItem) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void updateDiscussionItem(final String username, final String interHash, final DiscussionItem discussionItem) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void deleteDiscussionItem(final String username, final String interHash, final String discussionItemHash) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public List<DiscussionItem> getDiscussionSpace(final String interHash) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void createSyncService(final SyncService service, final boolean server) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void deleteSyncService(final URI service, final boolean server) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public List<URI> getSyncServices(final boolean server) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void createSyncServer(final String userName, final SyncService server) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void deleteSyncServer(final String userName, final URI service) {
-		// TODO Auto-generated method stub	
-	}
-
-	@Override
-	public void updateSyncServer(final String userName, final SyncService server) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public List<SyncService> getSyncService(final String userName, final URI service, final boolean server) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<SynchronizationPost> getSyncPosts(final String userName, final Class<? extends Resource> resourceType) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info, Date newDate) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void deleteSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public SynchronizationData getLastSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<SynchronizationPost> getSyncPlan(final String userName, final URI service, final Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public List<SyncService> getAllSyncServices(final boolean server) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getUsernameByRemoteUserId(RemoteUserId remoteUserId) {
-		return null;
-	}
-
-	@Override
-	public List<Tag> getTagRelation(int start, int end, TagRelation relation, List<String> tagNames) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public void updateDocument(String userName, String resourceHash, String documentName, Document document) {
-		// TODO Auto-generated method stub
-	}
-	
-	@Override
-	public List<PostMetaData> getPostMetaData(HashID hashType, String resourceHash, String userName, String metaDataPluginKey) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#getDocumentStatistics(org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.Set, java.util.Date, java.util.Date)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getTags(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, java.lang.String, org.bibsonomy.common.enums.SearchType, java.lang.String, org.bibsonomy.common.enums.TagSimilarity, org.bibsonomy.model.enums.Order, java.util.Date, java.util.Date, int, int)
 	 */
 	@Override
-	public Statistics getDocumentStatistics(GroupingEntity groupingEntity, String grouping, Set<Filter> filters, Date startDate, Date endDate) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.logic.LogicInterface#getUserStatistics(org.bibsonomy.common.enums.GroupingEntity, java.util.Set, org.bibsonomy.common.enums.Classifier, org.bibsonomy.common.enums.SpamStatus, java.util.Date, java.util.Date, java.lang.Integer, org.bibsonomy.common.enums.StatisticsUnit)
-	 */
-	@Override
-	public Statistics getUserStatistics(GroupingEntity grouping, Set<Filter> filters, Classifier classifier, SpamStatus status, Date startDate, Date endDate) {
+	public List<Tag> getTags(Class<? extends Resource> resourceType,
+			GroupingEntity grouping, String groupingName, List<String> tags,
+			String hash, String search, SearchType searchType, String regex,
+			TagSimilarity relation, Order order, Date startDate, Date endDate,
+			int start, int end) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -13,9 +13,9 @@ function includeJavaScript(jsFile) {
 	document.write('<script type="text/javascript" src="' + jsFile + '"></scr' + 'ipt>');
 }
 
-includeJavaScript("/resources/javascript/bs/jquery-2.1.1.js");
+includeJavaScript("/resources/jquery/jquery.js");
 includeJavaScript("/resources/jquery/plugins/ui/jquery-ui.js");
-includeJavaScript("/resources/javascript/bs/bootstrap.js");
+includeJavaScript("/resources/bootstrap/js/bootstrap.js");
 includeJavaScript("/resources/javascript/bs/holder.js");
 includeJavaScript("/resources/javascript/bs/bootstrap-dialog.js");
 includeJavaScript("/resources/javascript/bs/custom.js");
@@ -32,4 +32,4 @@ includeJavaScript("/resources/javascript/bs/jquery.fadebox.js");
 includeJavaScript("/resources/javascript/bs/userRelation.js");
 includeJavaScript("/resources/javascript/bs/addToSpheres.js");
 /* the following scripts are for development only */
-includeJavaScript("/resources/javascript/less/less.js");
+includeJavaScript("/resources/less/less.js");

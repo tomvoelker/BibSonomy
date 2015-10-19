@@ -14,7 +14,4 @@ bibsonomy-lucene/src/test/resources/lucene_*
 nbactions.xml
 nb-configuration.xml
 Thumbs.db
-syntax: regexp
-^bibsonomy-webapp/src/main/webapp/WEB-INF/project\.properties$
-syntax: regexp
-^bibsonomy-webapp/src/main/webapp/WEB-INF/project\.properties$
+bibsonomy-lucene/data

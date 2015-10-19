@@ -83,8 +83,9 @@ public class SpamPageController implements MinimalisticController<AdminViewComma
 		 * only compute counts for specific tabs to save 
 		 * processing time for frequently used tabs
 		 */
-		if (command.getSelTab() == AdminViewCommand.CLASSIFIER_NOSPAMMER_INDEX
-				|| command.getSelTab() == AdminViewCommand.CLASSIFIER_SPAMMER_INDEX) {
+		final Integer selectedTab = command.getSelTab();
+		if (selectedTab == AdminViewCommand.CLASSIFIER_NOSPAMMER_INDEX
+				|| selectedTab == AdminViewCommand.CLASSIFIER_SPAMMER_INDEX) {
 			this.setStatistics(command);
 		}
 

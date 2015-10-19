@@ -9,8 +9,9 @@
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/bstags/resources/common"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-    xmlns:group="urn:jsptagdir:/WEB-INF/tags/bstags/resources/group"
+	xmlns:group="urn:jsptagdir:/WEB-INF/tags/bstags/resources/group"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/bstags/layout/fontawesome"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"> 
 	
@@ -95,13 +96,12 @@
 						</dt>
 						<dd>
 							<p><small><a href="#letter-pagination"><span class="fa fa-arrow-up"><!-- keep me --></span><c:out value=" " /><fmt:message key="totop" /></a></small></p>
-							
 						</dd>
 					</c:if>
 					<dt><group:groupthumbnail noname="${true}" group="${group}" /></dt>
 					<dd>
 						<div class="row">
-							<div class="col-xs-9">
+							<div class="col-md-8">
 								<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}">
 									<group:groupname group="${group}" noLink="${true}" showRealname="${true}"/>
 								</a>
@@ -113,12 +113,20 @@
 								<small><a href="/cv/group/${fn:escapeXml(group.name)}">CV</a></small>
 								
 							</div>
-							<div class="col-xs-3">
+							<div class="col-md-4 text-right">
 								<c:choose>
 									<c:when test="${mtl:contains(command.context.loginUser.groups, group)}">
 										<!-- TODO: use url generator -->
-										<a href="/settings/group/${group.name}" class="btn btn-success btn-sm"><span class="fa fa-check"><!-- keep me --></span><c:out value=" "/><span class="infotext"><fmt:message key="group.memberOf" /></span></a>
-										<a href="/updateGroup?operation=REMOVE_MEMBER&amp;groupname=${group.name}&amp;username=${command.context.loginUser.name}&amp;ckey=${ckey}" class="btn btn-danger btn-sm"><span class="fa fa-times"><!-- keep me --></span><c:out value=" "/><span class="infotext"><fmt:message key="group.leave" /></span></a>
+										<div class="btn-group">
+											<fmt:message var="groupLeaveMessage" key="group.leave" />
+											<fmt:message var="memberOfMessage" key="group.memberOf" />
+											<a data-delete-text="${groupLeaveMessage}" data-default-text="${memberOfMessage}" href="/updateGroup?operation=REMOVE_MEMBER&amp;groupname=${group.name}&amp;username=${command.context.loginUser.name}&amp;ckey=${ckey}" class="btn btn-success btn-sm delete-toggle ${systemReadOnly ? 'disabled' : ''}">
+												<fontawesome:icon icon="check" /><c:out value=" "/><span class="infotext"><c:out value="${memberOfMessage}"/></span>
+											</a>
+											<a href="/settings/group/${group.name}" class="btn btn-default btn-sm">
+												<fontawesome:icon icon="cogs" /><c:out value=" "/><span class="infotext"><fmt:message key="group.settings" /></span>
+											</a>
+										</div>
 									</c:when>
 									<c:otherwise>
 										<c:choose>

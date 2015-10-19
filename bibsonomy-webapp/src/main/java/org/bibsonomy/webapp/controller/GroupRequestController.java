@@ -86,8 +86,7 @@ public class GroupRequestController implements
 		 * user has to be logged in to see this page
 		 */
 		if (!command.getContext().isUserLoggedIn()) {
-			throw new AccessDeniedNoticeException("please log in",
-					"error.general.login");
+			throw new AccessDeniedNoticeException("please log in", "error.general.login");
 		}
 
 		final User loginUser = context.getLoginUser();
@@ -131,19 +130,14 @@ public class GroupRequestController implements
 		 */
 		final String groupName = requestedGroup.getName();
 		// we use the admin logic to get all users even deleted ones
-		final List<User> pendingUserList = this.adminLogic.getUsers(null,
-				GroupingEntity.PENDING, groupName, null, null, null, null,
-				null, 0, 1);
-		if (this.adminLogic.getUserDetails(groupName).getName() != null
-				|| present(pendingUserList)) {
+		final List<User> pendingUserList = this.adminLogic.getUsers(null, GroupingEntity.PENDING, groupName, null, null, null, null, null, 0, 1);
+		if (this.adminLogic.getUserDetails(groupName).getName() != null || present(pendingUserList)) {
 			// group name still exists, another one is required
-			this.errors.rejectValue("group.name",
-					"error.field.duplicate.group.name");
+			this.errors.rejectValue("group.name", "error.field.duplicate.group.name");
 		}
 
 		if (this.errors.hasErrors()) {
-			command.setCaptchaHTML(this.captcha
-					.createCaptchaHtml(this.requestLogic.getLocale()));
+			command.setCaptchaHTML(this.captcha.createCaptchaHtml(this.requestLogic.getLocale()));
 			return Views.GROUPREQUEST;
 		}
 
@@ -161,7 +155,6 @@ public class GroupRequestController implements
 			break;
 		case REQUESTEDBASED:
 			this.mailer.sendGroupRequest(requestedGroup);
-
 			command.setMessage("success.groupRequest.sent",
 					Collections.singletonList(groupName));
 			break;

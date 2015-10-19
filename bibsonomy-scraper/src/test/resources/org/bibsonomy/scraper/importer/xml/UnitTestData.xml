@@ -8,7 +8,7 @@
 		<BibFile>ACMBasicScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
 		<Enabled>true</Enabled>
-	</URLTest>
+	</URLTest> 
 	<URLTest id="url_2">
 		<TestDescription>URL test for a single aifb publication (article).</TestDescription>
 		<URL>http://www.aifb.kit.edu/web/Article1764</URL>
@@ -578,6 +578,8 @@
 		<URL>http://psycontent.metapress.com/content/wlr0r32161j4j150/?p=077ed4c087c541f8a7a3d80dc02f4290&amp;pi=0</URL>
 		<BibFile>PsyContentScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.psycontent.PsyContentScraper</Scraper>
+		<!-- 404 -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_95">
 		<TestDescription>PsyContent Scraper url test 2</TestDescription>
@@ -877,7 +879,7 @@
 	</URLTest>
 	<URLTest id="url_144">
 		<TestDescription>test for cell scraper</TestDescription>
-		<URL>http://www.cell.com/abstract/S0092-8674(09)00271-2</URL>
+		<URL>http://www.cell.com/cell/abstract/S0092-8674(09)00271-2</URL>
 		<BibFile>CellScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.cell.CellScraper</Scraper>
 	</URLTest>
@@ -922,7 +924,7 @@
 		<URL>http://apps.webofknowledge.com/full_record.do?product=UA&amp;search_mode=GeneralSearch&amp;qid=1&amp;SID=T1oiG1PgP2L42IlFLI4&amp;page=1&amp;doc=8</URL>
 		<BibFile>WebOfKnowledgeUnitUrlTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.webofknowledge.WebOfKnowledgeScraper</Scraper>
-		<Enabled>false</Enabled>
+		<Enabled>true</Enabled>
 		<AdditionalInfo>Important: To run the test, insert an url with fresh SID. Otherwise the test will fail</AdditionalInfo>
 	</URLTest>
 	<URLTest id="url_152">
@@ -1105,7 +1107,8 @@
 		<URL>http://www.sciencedirect.com/science?_ob=ArticleURL&amp;_udi=B6TFN-3YYMK95-X&amp;_user=4861060&amp;_coverDate=03%2F31%2F2000&amp;_rdoc=1&amp;_fmt=high&amp;_orig=search&amp;_sort=d&amp;_docanchor=&amp;view=c&amp;_acct=C000065416&amp;_version=1&amp;_urlVersion=0&amp;_userid=4861060&amp;md5=97f0b3ba3f66fa8a5d57a5b48b0beb8c</URL>
 		<BibFile>ScienceDirectScraperUnitURLTest5.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper</Scraper>
-		<Enabled>true</Enabled>
+		<!-- URL is incorrect -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_180">
 		<TestDescription>DBLP scraping test (html page)</TestDescription>
@@ -1115,13 +1118,13 @@
 	</URLTest>
 	<URLTest id="url_181">
 		<TestDescription>A and A scraping test</TestDescription>
-		<URL>http://www.aanda.org/index.php?option=article&amp;access=doi&amp;doi=10.1051/0004-6361:20053694</URL>
+		<URL>http://www.aanda.org/articles/aa/abs/2006/01/aa3694-05/aa3694-05.html</URL>
 		<BibFile>AandAScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.aanda.AandAScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_182">
+	<URLTest id="url_182"> 
 		<TestDescription>A and A scraping test</TestDescription>
-		<URL>http://www.aanda.org/index.php?option=article&amp;access=doi&amp;doi=10.1051/0004-6361/201014294</URL>
+		<URL>http://www.aanda.org/articles/aa/abs/2010/05/aa14294-10/aa14294-10.html</URL>
 		<BibFile>AandAScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.aanda.AandAScraper</Scraper>
 		<AdditionalInfo>wait until AandA changed their output</AdditionalInfo>
@@ -1143,6 +1146,8 @@
 		<URL>http://www.sciencedirect.com/science?_ob=ArticleURL&amp;_udi=B758F-4YXK4HW-1&amp;_user=616166&amp;_coverDate=07%2F31%2F2010&amp;_rdoc=1&amp;_fmt=high&amp;_orig=search&amp;_sort=d&amp;_docanchor=&amp;view=c&amp;_acct=C000032339&amp;_version=1&amp;_urlVersion=0&amp;_userid=616166&amp;md5=f5c400363dcb6cc7cfddf6c637c3484c</URL>
 		<BibFile>ScienceDirectScraperUnitURLTest6.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper</Scraper>
+		<!-- URL is incorrect -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_186">
 		<TestDescription>acm url test</TestDescription>
@@ -1744,5 +1749,29 @@
 		<URL>http://www.computer.org/csdl/mags/co/2001/02/r2026.pdf</URL>
 		<BibFile>IEEEComputerSocietyScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_284">
+		<TestDescription>scraping test for journal page from plos.org</TestDescription>
+		<URL>http://www.plosone.org/article/info%3Adoi%2F10.1371%2Fjournal.pone.0114825</URL>
+		<BibFile>PlosScraperUnitURLTest10.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_285">
+		<TestDescription>scraping test for journal page from nowpublishers.com</TestDescription>
+		<URL>http://www.nowpublishers.com/article/Details/INR-043</URL>
+		<BibFile>NowPublishersScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.nowpublishers.NowPublishersScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_286">
+		<TestDescription>scraping test for journal page from nowpublishers.com</TestDescription>
+		<URL>http://www.nowpublishers.com/article/Details/INR-012</URL>
+		<BibFile>NowPublishersScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.nowpublishers.NowPublishersScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_287">
+		<TestDescription>scraping test for journal page from genomebiology.com</TestDescription>
+		<URL>http://www.genomebiology.com/2014/15/7/424</URL>
+		<BibFile>GenomeBiologyScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.genome.GenomeBiologyScraper</Scraper>
 	</URLTest>
 </test:Tests>

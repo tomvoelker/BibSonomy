@@ -9,6 +9,7 @@
 	<jsp:directive.attribute name="requestedUserName" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="requestedConcepts" type="java.util.List" required="false" />	
 	<jsp:directive.attribute name="disableEditLink" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="scope" type="java.lang.String" required="false" />
 	<!-- show buttons to hide/show all of the users (own!) relations -->
 		
 	
@@ -104,10 +105,12 @@
 				</c:forEach>
 				<c:out value=" "/>
 			</ul>
-			<c:if test="${usersOwnRelations and (empty disableEditLink or not disableEditLink)}">
+			<c:if test="${usersOwnRelations and (empty disableEditLink or not disableEditLink) and not systemReadOnly}">
 				<br />
 				<p><fmt:message key="relations.editRelations" /></p>
 			</c:if>
+		</c:when>
+		<c:when test="${scope eq 'FEDERATED'}">
 		</c:when>
 		<c:otherwise>
 			<c:if test="${usersOwnRelations}">

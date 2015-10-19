@@ -16,7 +16,7 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	<!-- TODO: this key is missing -->
 	<fmt:message var="headline" key="page.viewable.headline" />
-	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" headline="${headline}${command.requestedGroup}">
+	<layout:resourceLayout  pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" headline="${headline}${command.requestedGroup}">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.viewable" formAction="${relativeUrlGenerator.getViewableUrlByGroupName(command.requestedGroup)}" formInputName="tag">
 				<jsp:attribute name="pathPart">
@@ -35,12 +35,15 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-			<c:if test="${mtl:isRegularGroup(command.group)}">
-				<sidebar:groupDetailsItem group="${command.group}"/>
-				<sidebar:groupMembersItem group="${command.group}"/>
+			<c:set var="group" value="${command.group}" />
+			<c:if test="${mtl:isRegularGroup(group)}">
+				<sidebar:groupDetailsItem group="${group}"/>
+				<sidebar:groupMembersItem group="${group}"/>
 			</c:if>
 			<sidebar:sidebarTagCloudItem requPath="${requPath}" cmd="${command.tagcloud}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
 		</jsp:attribute>
+		
+		
 	</layout:resourceLayout>
 
 </jsp:root>

@@ -28,8 +28,6 @@ package org.bibsonomy.model.user.settings;
 
 import java.io.Serializable;
 
-import org.bibsonomy.webapp.view.constants.ViewLayout;
-
 /**
  * Compined settings influencing the layout viewed to a user
  *
@@ -42,25 +40,6 @@ public class LayoutSettings implements Serializable {
 	 * are advanced buttons & ui options hidden from the user?
 	 */
 	private boolean simpleInterface = true;
-	
-	/**
-	 * which layout should be used?
-	 */
-	private ViewLayout viewLayout = ViewLayout.BOOTSTRAP;
-
-	/**
-	 * @return {@link ViewLayout} 
-	 */
-	public ViewLayout getViewLayout() {
-		return viewLayout;
-	}
-
-	/**
-	 * @param layout
-	 */
-	public void setViewLayout(ViewLayout layout) {
-		this.viewLayout = layout;
-	}
 
 	/**
 	 * @return the simpleInterface

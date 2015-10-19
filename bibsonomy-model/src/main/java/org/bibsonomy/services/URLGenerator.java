@@ -28,8 +28,10 @@ package org.bibsonomy.services;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.SearchType;
@@ -44,6 +46,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.UrlBuilder;
 import org.bibsonomy.util.UrlUtils;
@@ -75,7 +78,7 @@ public class URLGenerator {
 		/**
 		 * all posts I have picked
 		 */
-		BASKET("clipboard");
+		CLIPBOARD("clipboard");
 
 		private final String path;
 
@@ -97,10 +100,11 @@ public class URLGenerator {
 	private static final String AUTHOR_PREFIX = "author";
 	private static final String BIBTEXEXPORT_PREFIX = "bib";
 	private static final String BIBTEXKEY_PREFIX = "bibtexkey";
-	public static final String BOOKMARK_PREFIX = "url";
+	public  static final String BOOKMARK_PREFIX = "url";
 	private static final String CONCEPTS_PREFIX = "concepts";
 	private static final String CONCEPT_PREFIX = "concept";
 	private static final String DOCUMENT_PREFIX = "documents";
+	private static final String DISAMBIGUATION_PREFIX = "person";
 	private static final String FOLLOWERS_PREFIX = "followers";
 	private static final String FRIEND_PREFIX = "friend";
 	private static final String GROUPS = "groups";
@@ -117,6 +121,7 @@ public class URLGenerator {
 	private static final String MYRELATIONS_PREFIX = "myRelations";
 	private static final String MYSEARCH_PREFIX = "mySearch";
 	private static final String PICTURE_PREFIX = "picture";
+	private static final String PERSON_PREFIX = "person";
 	private static final String PUBLICATION_PREFIX = "bibtex";
 	private static final String RELEVANTFOR_PREFIX = "relevantfor";
 	private static final String SEARCH_PREFIX = "search";
@@ -129,9 +134,14 @@ public class URLGenerator {
 	private static final String VIEWABLE_PRIVATE_SUFFIX = "private";
 	private static final String VIEWABLE_PUBLIC_SUFFIX = "public";
 	private static final String HISTORY_PREFIX = "history";
+	private static final String USER_RELATION = "handleUserRelation";
 
 	private static final String PUBLICATION_INTRA_HASH_ID = String.valueOf(HashID.INTRA_HASH.getId());
 	private static final String PUBLICATION_INTER_HASH_ID = String.valueOf(HashID.INTER_HASH.getId());
+
+	private static final String PERSON_INTRO = "persons";
+
+	private static final String POST_PUBLICATION = "/postPublication";
 
 	/**
 	 * The default gives relative URLs.
@@ -263,12 +273,12 @@ public class URLGenerator {
 	}
 
 	/**
-	 * Constructs a URL for the basket page, i.e. /basket
+	 * Constructs a URL for the clipboard page, i.e. /clipboard
 	 * 
-	 * @return URL pointing to the basket page.
+	 * @return URL pointing to the clipboard page.
 	 */
-	public String getBasketUrl() {
-		String url = this.projectHome + prefix + Page.BASKET.getPath();
+	public String getClipboardUrl() {
+		String url = this.projectHome + prefix + Page.CLIPBOARD.getPath();
 		return this.getUrl(url);
 	}
 
@@ -338,11 +348,9 @@ public class URLGenerator {
 	 * @param systemUrl
 	 * @return returns the BibTex Export url
 	 */
-	public String getBibtexExportUrlByIntraHashAndUserName(final String intraHash,
-			final String userName){
-		
+	@Deprecated // see getMSWordUrlByIntraHashAndUserName
+	public String getBibtexExportUrlByIntraHashAndUserName(final String intraHash, final String userName){
 		return this.getBibtexExportUrlByIntraHashUserNameAndSysUrl(intraHash, userName, this.projectHome);
-		
 	}
 	/**
 	 * url for BibTex export for a specific system
@@ -361,7 +369,6 @@ public class URLGenerator {
 
 		}
 		return this.getUrl(url);
-		
 	}
 	
 	/**
@@ -372,10 +379,9 @@ public class URLGenerator {
 	 * @param systemUrl
 	 * @return returns the Endnote export url
 	 */
+	@Deprecated // FIXME: see getMSWordUrlByIntraHashAndUserName
 	public String getEndnoteUrlByIntraHashAndUserName(final String intraHash, final String userName){
-		
 		return this.getEndnoteUrlByIntraHashUserNameAndSysUrl(intraHash, userName, this.projectHome);
-		
 	}
 	/**
 	 * url for Endnote export for a specific system
@@ -402,6 +408,7 @@ public class URLGenerator {
 	 * @param systemUrl
 	 * @return returns the MS WORD Reference Manager url
 	 */
+	@Deprecated // FIXME: a more generic method getExportUrlForPost()
 	public String getMSWordUrlByIntraHashAndUserName(final String intraHash, final String userName){
 		return this.getMSWordUrlByIntraHashUserNameAndSysUrl(intraHash, userName, this.projectHome);
 	}
@@ -1379,10 +1386,22 @@ public class URLGenerator {
 	 * @param systemUrl
 	 * @return The URL for the user's page for the system
 	 */
+	@Deprecated
 	public String getUserUrlByUserNameAndSysUrl(final String userName,
 			final String systemUrl) {
 		String url = systemUrl + prefix + USER_PREFIX + "/"
 				+ UrlUtils.safeURIEncode(userName);
+		return this.getUrl(url);
+	}
+
+	/**
+	 * Constructs the URL for the report as spammer url
+	 * 
+	 * @param userName
+	 * @return The URL for the user's page for the system
+	 */
+	public String getUserRelationEditUrl() {
+		String url = this.projectHome + prefix + "ajax/"+ USER_RELATION;
 		return this.getUrl(url);
 	}
 
@@ -1408,6 +1427,7 @@ public class URLGenerator {
 	 * @return The URL for the user's page with all posts tagged with tagName
 	 *         and systemUrl
 	 */
+	@Deprecated
 	public String getUserUrlByUserNameTagNameAndSysUrl(final String userName,
 			final String tagName, final String systemUrl) {
 		String url = this.getUserUrlByUserNameAndSysUrl(userName, systemUrl);
@@ -1518,6 +1538,7 @@ public class URLGenerator {
 	 * @param systemurl
 	 * @return the URL for all viewable posts of a group.
 	 */
+	@Deprecated
 	public String getViewableUrlByGroupNameAndSysUrl(final String groupName,
 			final String systemurl) {
 		String url = systemurl + prefix + VIEWABLE_PREFIX;
@@ -1686,5 +1707,41 @@ public class URLGenerator {
 	 */
 	public void setProjectHome(final String projectHome) {
 		this.projectHome = projectHome;
+	}
+	
+	/**
+	 * @param personId
+	 * @return String
+	 */
+	public String getPersonUrl(final String personId) {
+		UrlBuilder url = new UrlBuilder(this.projectHome + URLGenerator.PERSON_PREFIX);
+		url.addPathElement(personId);
+		return this.getUrl(url.asString());
+	}
+
+	/**
+	 * @param personName
+	 * @param authorIndex 
+	 * @param resourceHash
+	 * @param role
+	 * @return String
+	 */
+	public String getDisambiguationUrl(String resourceHash, final PersonResourceRelationType role, final Integer authorIndex) {
+		if (resourceHash.length() < 33) {
+			resourceHash = "1" + resourceHash;
+		}
+		return this.getUrl(new UrlBuilder(this.projectHome + URLGenerator.DISAMBIGUATION_PREFIX) //
+			.addPathElement(resourceHash) //
+			.addPathElement(role.name().toLowerCase()) //
+			.addPathElement(Integer.toString(authorIndex)) //
+			.asString());
+	}
+	
+	public String getPersonsUrl() {
+		return this.projectHome + URLGenerator.PERSON_INTRO;
+	}
+	
+	public String getPostPublicationUrl() {
+		return this.projectHome + URLGenerator.POST_PUBLICATION;
 	}
 }

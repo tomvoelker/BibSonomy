@@ -6,6 +6,7 @@
 
 	<jsp:directive.attribute name="cmd" type="org.bibsonomy.webapp.command.RelatedTagCommand" required="true" />
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="scope" type="java.lang.String" required="false"/>
 	
 	<ul class="taglist sidebar_collapse_content">
 		<c:forEach var="tag" items="${cmd.relatedTags}">
@@ -26,8 +27,16 @@
 			</c:if>
 			
 			<!-- construct url to tag -->
-			<c:url var="tagUrl"
-				   value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
+			<c:choose>
+				<c:when test="${not empty scope and scope ne 'LOCAL'}">
+				<c:url var="tagUrl"
+				   value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}?scope=${scope}"/>
+				</c:when>
+				<c:otherwise>
+				<c:url var="tagUrl"
+				   value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>				
+				</c:otherwise>
+			</c:choose>
 			<!-- set title -->
 			<c:set var="tagTitle" value="${tag.usercount}"/>
 			

@@ -27,9 +27,12 @@
 package org.bibsonomy.webapp.command;
 
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.logic.exception.LogicException;
 
 /**
  * Bean for User-Sites
@@ -38,6 +41,8 @@ import org.bibsonomy.model.Group;
  */
 public class UserResourceViewCommand extends TagResourceViewCommand {
 
+	private final Collection<LogicException> logicExceptions = new ArrayList<>();
+	
 	/** the group whode resources are requested*/
 	private ConceptsCommand concepts = new ConceptsCommand();
 	/**
@@ -168,6 +173,13 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	 */
 	public void setSharedGroups(List<Group> sharedGroups) {
 		this.sharedGroups = sharedGroups;
+	}
+	
+	/**
+	 * @return the logicExceptions
+	 */
+	public Collection<LogicException> getLogicExceptions() {
+		return this.logicExceptions;
 	}
 	
 }

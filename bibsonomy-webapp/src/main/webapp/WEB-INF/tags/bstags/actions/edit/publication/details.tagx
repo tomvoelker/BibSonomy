@@ -1,5 +1,5 @@
 <jsp:root version="2.0" 
-    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
@@ -10,6 +10,8 @@
 	xmlns:form="http://www.springframework.org/tags/form">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+	<jsp:directive.attribute name="person" type="org.bibsonomy.model.Person" required="false"/>
+	
 	<a name="detailedInformation"><!--  --></a>
 	<bsform:fieldset legendKey="post.resource.fields.detailed">
 		<jsp:attribute name="legendExt">
@@ -35,7 +37,9 @@
         	<bsform:input labelColSpan="3" path="post.resource.howpublished"/>
         	<bsform:input labelColSpan="3" path="post.resource.institution"/>
         	<bsform:input labelColSpan="3" path="post.resource.organization"/>
-        	<bsform:input labelColSpan="3" path="post.resource.school"/>
+			<c:if test="${(person == null) or ((post.resource.entrytype ne 'phdthesis') and (post.resource.entrytype ne 'masterthesis'))}">
+				<bsform:input labelColSpan="3" path="post.resource.school"/>
+			</c:if>
 			<bsform:input labelColSpan="3" path="post.resource.series"/>
 			<bsform:input labelColSpan="3" path="post.resource.crossref"/>	
 			<bsform:textarea labelColSpan="3" path="post.resource.misc"/>

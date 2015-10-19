@@ -54,6 +54,10 @@ public enum Views implements View {
 	 * here users can calculate the hashes of their publications
 	 */
 	HASHEXAMPLE("hashexample"),
+	
+	PERSON_INTRO("persons"),
+	PERSON_SHOW("person/show"),
+	DISAMBIGUATION("disambiguation"),
 
 	/**
 	 * the page where a user can change his personal settings
@@ -679,11 +683,6 @@ public enum Views implements View {
 	 */
 	FOLLOWERS("followers"),
 
-	/**
-	 * 
-	 */
-	BOOTSTRAP_DEMO("bootstrapDemo"),
-
 	/*
 	 * Error pages
 	 */
@@ -733,11 +732,6 @@ public enum Views implements View {
 	 * bookmarks.
 	 */
 	RECOMMENDEDPAGE("recommended"),
-
-	/**
-	 * show bibsonomy3 demo
-	 */
-	BIBSONOMY3("bibsonomy3"),
 
 	/**
 	 * group request page

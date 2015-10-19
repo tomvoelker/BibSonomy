@@ -93,7 +93,7 @@ public abstract class AbstractSynchronizationClient {
 	 * @return syncService
 	 */
 	public SyncService getServerByURI(final LogicInterface clientLogic, final URI service) {
-		final List<SyncService> syncServers = clientLogic.getSyncService(clientLogic.getAuthenticatedUser().getName(), service, true);
+		final List<SyncService> syncServers = clientLogic.getSyncServiceSettings(clientLogic.getAuthenticatedUser().getName(), service, true);
 
 		// return the first found service (there should be at most one with the given URI! 
 		if (present(syncServers)) {

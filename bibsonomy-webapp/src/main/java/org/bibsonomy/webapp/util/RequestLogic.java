@@ -64,6 +64,7 @@ public class RequestLogic {
 	private static final String HEADER_REFERER = "Referer";
 	private static final String HEADER_X_FORWARDED_FOR = "x-forwarded-for";
 	private static final String HEADER_ACCEPT = "accept";
+	private static final String LAST_ACTION_SESSION_KEY = "lastAction";
 	
 
 	/**
@@ -278,5 +279,13 @@ public class RequestLogic {
 	 */
 	public void ensureSession() {
 		request.getSession(true);
+	}
+	
+	public void setLastAction(String lastAction) {
+		setSessionAttribute(LAST_ACTION_SESSION_KEY, lastAction);
+	}
+	
+	public String getLastAction() {
+		return (String) getSessionAttribute(LAST_ACTION_SESSION_KEY);
 	}
 }

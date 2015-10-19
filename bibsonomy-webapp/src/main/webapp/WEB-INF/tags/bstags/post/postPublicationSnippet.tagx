@@ -24,7 +24,9 @@
 			
 				<input type="hidden" name="selTab" value="1" />
 				<input type="hidden" name="ckey" value="${ckey}" />
-	
+				<input type="hidden" name="personId" value="${command.personId}" /> 
+				<input type="hidden" name="personRole" value="${command.personRole}"/>
+				
 				<bsform:textarea labelColSpan="2" inputColSpan="10" path="selection" id="selection" />
 				<div class="form-group">
 					<label class="col-sm-2 control-label" for="${fn:escapeXml(id)}">
@@ -48,7 +50,7 @@
 				
 					<bsform:checkbox inputColSpan="10" path="editBeforeImport" labelKey="import.edit_before_import" helpKey="import.edit_before_import.help" />
 					<bsform:checkbox inputColSpan="10" path="overwrite"  labelKey="import.overwrite2" helpKey="import.overwritten"/>
-				
+					
 					<!--+
 						|
 						| Dirty hack because spring form's option tag cannot find their parent select field, when invokes in jsp fragment.
@@ -59,7 +61,6 @@
 				   	<bsform:select id="delimiter-0" path="delimiter" items="${fn:split(' |,|;','|')}" itemLabels="${fn:split(labels, '|')}" />
 				
 				    <bsform:input id="whitespace-0" path="whitespace" labelKey="post_bibtex.upload.option.whitespace_substitute" helpKey="post_bibtex.upload.option.whitespace_substitute_help" small="${true}" />
-				  	
 				
 				<div class="form-group">
 					<div class="col-sm-offset-2 col-sm-10">

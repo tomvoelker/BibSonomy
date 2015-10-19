@@ -1,17 +1,15 @@
-
 <jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
-		  xmlns:jsp="http://java.sun.com/JSP/Page"
-		  xmlns:c="http://java.sun.com/jsp/jstl/core"
-		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
-		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
-		  xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
-		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
-		  xmlns:form="http://www.springframework.org/tags/form"
-		  xmlns:spring="http://www.springframework.org/tags"
-		  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
-		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/bstags/buttons"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true" />
 	<jsp:directive.attribute name="isGroup" required="false" />
@@ -90,14 +88,11 @@
 							</div>
 						</div>
 						<input type='hidden' name='ckey' id='ckey' value="${fn:escapeXml(command.context.ckey)}" />
-
-
 						<div class="form-group">
-
 							<div class="col-sm-offset-3 col-sm-9" id="saveButtons">
 								<div class="btn-group btn-group-sm">
-									<button type="button" id="saveButton" href='#' onclick="return submitWiki('save');" class="btn btn-primary"><c:out value="${save}" /></button>
-									<button type="button" id="showAdmin" class="btn btn-default"><c:out value="${show}" /></button>
+									<bsform:button size="defaultSize" id="saveButton" onclick="return submitWiki('save');" value="${save}" style="primary" />
+									<bsform:button size="defaultSize" id="showAdmin" value="${show}" style="defaultStyle" />
 									<button type="button" id="hideAdmin" class="btn btn-default" style="display:none"><c:out value="${hide}" /></button>
 								</div>
 							</div>
@@ -108,8 +103,7 @@
 								<div id="statusText" class="col-md-10"><!-- keep me --></div>
 							</div>
 						</div>
-
-
+						
 						<!-- Text edit area -->
 						<div style="display: none" id="wikiEditArea">
 							<bsform:textarea labelColSpan="3" inputColSpan="9" id="wikiTextArea" path="wikiText" labelKey="cv.editCV" noHelp="true" rows="10" />

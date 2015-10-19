@@ -110,13 +110,12 @@
 		</script>
 		<!-- localized JavaScript messages -->
 		<script type="text/javascript" src="${resdir}/javascript/localized_strings_${locale.language}.js"><!-- keep me --></script>
-		<script type="text/javascript" src="${resdir}/javascript/systemmessage.js"><!-- keep me --></script>
 		<!-- include tooltip JavaScript only for users that have tooltips enabled -->
 		<c:if test="${loginUser.settings.tagboxTooltip == 1}">	
 			<script type="text/javascript" src="${resdir}/javascript/tooltip.js"><!-- keep me --></script>
 		</c:if>
 		<!-- enable logging with user permission -->
-		<c:if test="${loginUser.settings.logLevel != 1}">
+		<c:if test="${loginUser.settings.logLevel != 1 and not systemReadOnly}">
 		   <script type="text/javascript" src="${resdir}/javascript/logging.js"><!-- KEEP ME --></script> 
 		</c:if>
 		<!-- enable on-site spammer killing when user is admin -->
