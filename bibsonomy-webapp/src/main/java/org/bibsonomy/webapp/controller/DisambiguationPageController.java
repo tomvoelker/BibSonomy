@@ -96,7 +96,15 @@ public class DisambiguationPageController extends SingleResourceListController i
 		}
 		
 		final BibTex res = command.getPost().getResource();
-		final List<PersonName> persons = res.getPersonNamesByRole(command.getRequestedRole());
+		final List<PersonName> personsTmp = res.getPersonNamesByRole(command.getRequestedRole());
+		final List<PersonName> persons;
+		// MacGyver-fix, in case there are multiple similar simhash1 caused by Author == Editor  
+		if (personsTmp == null ){ 
+			final PersonResourceRelationType requestedRole = PersonResourceRelationType.valueOf("EDITOR");
+			persons = res.getPersonNamesByRole(requestedRole);
+		}else{
+			persons = personsTmp;
+		}
 		
 		final PersonName requestedName = persons.get(command.getRequestedIndex());
 		command.setPersonName(requestedName);
