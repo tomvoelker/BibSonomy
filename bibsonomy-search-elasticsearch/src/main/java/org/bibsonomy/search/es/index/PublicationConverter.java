@@ -127,6 +127,14 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		jsonDocument.put(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, getNormalizedEntryType((Post<? extends BibTex>) post));
 		
 		final List<ResourcePersonRelation> rels = post.getResourcePersonRelations();
+		this.updateDocumentWithPersonRelation(jsonDocument, rels);
+	}
+
+	/**
+	 * @param jsonDocument
+	 * @param rels
+	 */
+	public void updateDocumentWithPersonRelation(Map<String, Object> jsonDocument, final List<ResourcePersonRelation> rels) {
 		jsonDocument.put(ESConstants.AUTHOR_ENTITY_NAMES_FIELD_NAME, serializeMainNames(rels, PersonResourceRelationType.AUTHOR));
 		jsonDocument.put(ESConstants.AUTHOR_ENTITY_IDS_FIELD_NAME, serializePersonIds(rels, PersonResourceRelationType.AUTHOR));
 		jsonDocument.put(ESConstants.PERSON_ENTITY_NAMES_FIELD_NAME, serializeMainNames(rels, null));

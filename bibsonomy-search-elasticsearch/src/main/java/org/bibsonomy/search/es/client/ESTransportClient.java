@@ -35,9 +35,11 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.update.SearchIndexState;
 import org.bibsonomy.search.util.Mapping;
+import org.bibsonomy.util.ValidationUtils;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequestBuilder;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse;
 import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest;
@@ -46,6 +48,9 @@ import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
+import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.action.delete.DeleteResponse;
+import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -160,8 +165,9 @@ public class ESTransportClient extends AbstractEsClient {
 	 * @see org.bibsonomy.search.es.ESClient#insertNewDocument(java.lang.String, java.lang.String, java.lang.String, java.util.Map)
 	 */
 	@Override
-	public void insertNewDocument(String indexName, String type, String id, Map<String, Object> jsonDocument) {
-		this.client.prepareIndex(indexName, type, id).setSource(jsonDocument).setRefresh(true).get();
+	public boolean insertNewDocument(String indexName, String type, String id, Map<String, Object> jsonDocument) {
+		final IndexResponse indexResponse = this.client.prepareIndex(indexName, type, id).setSource(jsonDocument).setRefresh(true).get();
+		return ((indexResponse != null) && ValidationUtils.present(indexResponse.getId()));
 	}
 	
 	/* (non-Javadoc)
@@ -222,6 +228,16 @@ public class ESTransportClient extends AbstractEsClient {
 			return null;
 		}
 	}
+	
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.es.ESClient#removeDocumentInIndex(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public boolean removeDocumentFromIndex(String indexName, String type, String indexID) {
+		final DeleteResponse deleteResponse = this.client.delete(new DeleteRequest(indexName, type, indexID)).actionGet();
+		return deleteResponse.getId() != null;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.search.es.ESClient#deleteIndex(java.lang.String)
@@ -255,6 +271,25 @@ public class ESTransportClient extends AbstractEsClient {
 			return false;
 		}
 		return false;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.es.ESClient#updateAliases(java.util.Set, java.util.Set)
+	 */
+	@Override
+	public boolean updateAliases(Set<Pair<String, String>> aliasesToAdd, Set<Pair<String, String>> aliasesToRemove) {
+		final IndicesAliasesRequestBuilder aliasesBuilder = this.client.admin().indices().prepareAliases();
+		
+		for (Pair<String, String> aliasToAdd : aliasesToAdd) {
+			aliasesBuilder.addAlias(aliasToAdd.getFirst(), aliasToAdd.getSecond());
+		}
+		
+		for (Pair<String, String> aliasToRemove : aliasesToRemove) {
+			aliasesBuilder.removeAlias(aliasToRemove.getFirst(), aliasToRemove.getSecond());
+		}
+		
+		final IndicesAliasesResponse aliasResponse = aliasesBuilder.get();
+		return aliasResponse.isAcknowledged();
 	}
 	
 	/* (non-Javadoc)

@@ -29,6 +29,7 @@ package org.bibsonomy.search.es;
 import java.util.Map;
 import java.util.Set;
 
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.search.update.SearchIndexState;
 import org.bibsonomy.search.util.Mapping;
 import org.elasticsearch.client.Client;
@@ -72,8 +73,9 @@ public interface ESClient {
 	 * @param type
 	 * @param id
 	 * @param jsonDocument
+	 * @return 
 	 */
-	void insertNewDocument(String indexName, String type, String id, Map<String, Object> jsonDocument);
+	boolean insertNewDocument(String indexName, String type, String id, Map<String, Object> jsonDocument);
 	
 	/**
 	 * @param indexName
@@ -106,5 +108,18 @@ public interface ESClient {
 	 */
 	void shutdown();
 
-	
+	/**
+	 * @param aliasesToAdd
+	 * @param aliasesToRemove
+	 * @return 
+	 */
+	boolean updateAliases(Set<Pair<String, String>> aliasesToAdd, Set<Pair<String, String>> aliasesToRemove);
+
+	/**
+	 * @param indexName
+	 * @param resourceTypeAsString
+	 * @param indexID
+	 * @return 
+	 */
+	boolean removeDocumentFromIndex(String indexName, String resourceTypeAsString, String indexID);
 }

@@ -1,10 +1,13 @@
 package org.bibsonomy.search.es.management.util;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.search.es.ESConstants;
+import org.bibsonomy.search.update.SearchIndexState;
 
 /**
  * util methods for managing the index
@@ -99,5 +102,17 @@ public final class ElasticSearchUtils {
 	public static String createElasticSearchId(int contentId) {
 		// TODO: handle Systemhome? TODODZO return (((long) systemHome.hashCode()) << 32l) + contentId.longValue();
 		return String.valueOf(contentId);
+	}
+
+	/**
+	 * @param state
+	 * @return
+	 */
+	public static Map<String, Object> serializeSearchIndexState(SearchIndexState state) {
+		final Map<String, Object> values = new HashMap<>();
+		values.put("last_tas_id", state.getLast_tas_id());
+		values.put("last_log_date", state.getLast_log_date());
+		values.put("last_person_change_id", state.getLastPersonChangeId());
+		return values;
 	}
 }

@@ -1,4 +1,4 @@
-import org.bibsonomy.search.management.SearchResourceManagerInterface;
+import org.bibsonomy.search.es.management.ElasticSearchManager;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
@@ -10,10 +10,10 @@ public class ESTest {
 	public static void main(String[] args) throws Exception {
 		final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("TestElasticSearch.xml");
 		
-		final SearchResourceManagerInterface<?> manager = context.getBean("publicationManager", SearchResourceManagerInterface.class);
+		final ElasticSearchManager manager = context.getBean("publicationManager", ElasticSearchManager.class);
+		manager.generateIndexForResource();
 		// manager.generateIndexForResource("elasticSearch", "");
 		// manager.generateIndexForResource("elasticSearch", "");
-		manager.updateAllIndices();
 		context.close();
 	}
 }

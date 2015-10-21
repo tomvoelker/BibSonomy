@@ -1,9 +1,6 @@
 package org.bibsonomy.search.es.management;
 
-import java.util.Map;
-
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.search.management.SearchIndex;
 
 /**
  * class representing a ElasticSearch index
@@ -11,17 +8,14 @@ import org.bibsonomy.search.management.SearchIndex;
  * @author dzo
  * @param <R> 
  */
-public class ElasticSearchIndex<R extends Resource> extends SearchIndex<R, Map<String, Object>, ElasticSearchIndex<R>, String> {
+public class ElasticSearchIndex<R extends Resource> {
 	
 	private final String indexName;
 	
 	/**
-	 * @param indexName 
-	 * @param container
-	 * @param resourceType 
+	 * @param indexName
 	 */
-	public ElasticSearchIndex(final String indexName, ElasticSearchIndexContainer<R> container) {
-		super(container);
+	public ElasticSearchIndex(final String indexName) {
 		this.indexName = indexName;
 	}
 

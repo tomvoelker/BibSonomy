@@ -20,6 +20,9 @@ import org.bibsonomy.search.update.SearchIndexState;
  * @param <R> resource type
  */
 public interface SearchDBInterface<R extends Resource> {
+	
+	/** the max entries to fetch from the database into memory */
+	public static final int SQL_BLOCKSIZE = 40000;
 
 	/** 
 	 * @param userName

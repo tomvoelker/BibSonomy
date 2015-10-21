@@ -50,26 +50,30 @@
 		<property name="resourceClass" ref="searchGoldStandardPublicationClass" />
 	</bean>
 	
-	<bean id="bookmarkManager" class="org.bibsonomy.search.management.SearchResourceManagerImpl" destroy-method="shutdown">
+	<bean id="bookmarkManager" class="org.bibsonomy.search.es.management.ElasticSearchManager" destroy-method="shutdown">
+		<constructor-arg ref="esClient" />
+		<constructor-arg ref="systemURI" />
 		<constructor-arg ref="bookmarkSearchDBLogic" />
-		<constructor-arg>
-			<list>
-				<ref bean="elasticSearchBookmarkContainer"/>
-			</list>
-		</constructor-arg>
+		<constructor-arg ref="elasticSearchBookmarkTools" />
 	</bean>
 	
-	<bean id="publicationManager" class="org.bibsonomy.search.management.SearchResourceManagerImpl" destroy-method="shutdown">
+	<bean id="publicationManager" class="org.bibsonomy.search.es.management.ElasticSearchPublicationManager" destroy-method="shutdown">
+		<constructor-arg ref="esClient" />
+		<constructor-arg ref="systemURI" />
 		<constructor-arg ref="publicationSearchDBLogic" />
-		<constructor-arg>
-			<list>
-				<ref bean="elasticSearchPublicationContainer"/>
-			</list>
-		</constructor-arg>
+		<constructor-arg ref="elasticSearchPublicationTools" />
 	</bean>
 	
 	<bean id="systemURI" class="java.net.URI">
 		<constructor-arg value="${project.home}" />
+	</bean>
+	
+	<bean id="elasticSearchBookmarkMappingBuilder" class="org.bibsonomy.search.es.index.BookmarkMappingBuilder">
+		<constructor-arg ref="searchBookmarkClass" />
+	</bean>
+	
+	<bean id="elasticSearchPublicationMappingBuilder" class="org.bibsonomy.search.es.index.PublicationMappingBuilder">
+		<constructor-arg ref="searchPublicationClass" />
 	</bean>
 	
 	<bean id="elasticSearchResourceConverter" class="org.bibsonomy.search.es.index.ResourceConverter" abstract="true">
@@ -80,19 +84,15 @@
 	
 	<bean id="elasticSearchPublicationConverter" class="org.bibsonomy.search.es.index.PublicationConverter" parent="elasticSearchResourceConverter"/>
 	
-	<bean id="elasticSearchBookmarkContainer" class="org.bibsonomy.search.es.management.ElasticSearchIndexContainer">
+	<bean id="elasticSearchBookmarkTools" class="org.bibsonomy.search.es.management.ElasticSearchIndexTools">
 		<constructor-arg ref="searchBookmarkClass" />
-		<constructor-arg value="elasticSearch" />
 		<constructor-arg ref="elasticSearchBookmarkConverter" />
-		<constructor-arg ref="esClient" />
-		<constructor-arg ref="systemURI" />
+		<constructor-arg ref="elasticSearchBookmarkMappingBuilder" />
 	</bean>
 	
-	<bean id="elasticSearchPublicationContainer" class="org.bibsonomy.search.es.management.ElasticSearchIndexContainer">
+	<bean id="elasticSearchPublicationTools" class="org.bibsonomy.search.es.management.ElasticSearchIndexTools">
 		<constructor-arg ref="searchPublicationClass" />
-		<constructor-arg value="elasticSearch" />
 		<constructor-arg ref="elasticSearchPublicationConverter" />
-		<constructor-arg ref="esClient" />
-		<constructor-arg ref="systemURI" />
+		<constructor-arg ref="elasticSearchPublicationMappingBuilder" />
 	</bean>
 </beans>

@@ -69,8 +69,7 @@ import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.search.es.index.NormalizedEntryTypes;
 import org.bibsonomy.search.es.index.ResourceConverter;
-import org.bibsonomy.search.es.management.ESIndexManager;
-import org.bibsonomy.search.es.management.IndexLock;
+import org.bibsonomy.search.es.management.ElasticSearchManager;
 import org.bibsonomy.search.es.search.tokenizer.SimpleTokenizer;
 import org.bibsonomy.services.searcher.PersonSearch;
 import org.bibsonomy.services.searcher.ResourceSearch;
@@ -95,10 +94,15 @@ import org.elasticsearch.search.sort.SortOrder;
  * search term
  * 
  * @author lutful
+ * @author dzo
  * @param <R>
  */
 public class EsResourceSearch<R extends Resource> implements PersonSearch, ResourceSearch<R> {
 	private static final Log log = LogFactory.getLog(EsResourceSearch.class);
+	
+	
+	/** the max offset for suggestions */
+	private static final int MAX_OFFSET = 1024;
 	
 	private static final float GENEALOGY_USER_PREFERENCE_FACTOR = 1.1f;
 	private static final Pattern YEAR_PATTERN = Pattern.compile("[12][0-9]{3}");
@@ -113,13 +117,8 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * members)
 	 */
 	private SearchInfoLogic infoLogic;
-
-	private final int maxOffset = 1024;
-
-	private ESIndexManager esIndexManager;
-
-	/** url of this system */
-	private String systemUrl;
+	
+	private ElasticSearchManager<R> manager;
 
 	/** the number of person suggestions */
 	private int suggestionSize = 5;
@@ -151,8 +150,8 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		final QueryBuilder query = this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, org.bibsonomy.common.enums.SearchType.LOCAL, null, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags);
 		final Map<Tag, Integer> tagCounter = new HashMap<Tag, Integer>();
 
-		try (final IndexLock indexLock = getEsIndexManager().aquireReadLockForTheActiveIndexAlias(this.resourceType)) {
-			final SearchRequestBuilder searchRequestBuilder = getEsIndexManager().getClient().prepareSearch(indexLock.getIndexName());
+		try {
+			final SearchRequestBuilder searchRequestBuilder = this.manager.prepareSearch();
 			searchRequestBuilder.setTypes(ResourceFactory.getResourceName(resourceType));
 			searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 			searchRequestBuilder.setQuery(query);
@@ -228,13 +227,13 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	@Override
 	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final org.bibsonomy.common.enums.SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) {
 		final ResultList<Post<R>> postList = new ResultList<Post<R>>();
-		try (final IndexLock indexLock = getEsIndexManager().aquireReadLockForTheActiveIndexAlias(this.resourceType)) {
+		try {
 				final QueryBuilder queryBuilder = this.buildQuery(userName,
 						requestedUserName, requestedGroupName,
 						requestedRelationNames, allowedGroups, searchType, searchTerms,
 						titleSearchTerms, authorSearchTerms, bibtexKey,
 						tagIndex, year, firstYear, lastYear, negatedTags);
-				final SearchRequestBuilder searchRequestBuilder = this.esIndexManager.getClient().prepareSearch(indexLock.getIndexName());
+				final SearchRequestBuilder searchRequestBuilder = this.manager.prepareSearch();
 				searchRequestBuilder.setTypes(ResourceFactory.getResourceName(this.resourceType));
 				searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 				searchRequestBuilder.setQuery(queryBuilder);
@@ -286,10 +285,9 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 */
 	@Override
 	public List<Post<BibTex>> getPublicationSuggestions(PublicationSuggestionQueryBuilder options) {
-		try (final IndexLock indexLock = getEsIndexManager().aquireReadLockForTheActiveIndexAlias(this.resourceType)) {
-			final String localIndexName = getEsIndexManager().getActiveIndexnameForResource(this.resourceType);
+		try {
 			// we use inverted scores such that the best results automatically appear first according to the ascending order of a sorted map
-			final SortedSet<Pair<Float, ResourcePersonRelation>> relSorter = iterativelyFetchSuggestions(localIndexName, null, options);
+			final SortedSet<Pair<Float, ResourcePersonRelation>> relSorter = iterativelyFetchSuggestions(null, options);
 			return extractResources(relSorter);
 		} catch (final IndexMissingException e) {
 			log.error("IndexMissingException: " + e);
@@ -297,20 +295,20 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		return new ArrayList<>();
 	}
 
-	private SortedSet<Pair<Float, ResourcePersonRelation>> iterativelyFetchSuggestions(final String indexName, Set<String> tokenizedQueryString, AbstractSuggestionQueryBuilder<?> options) {
+	private SortedSet<Pair<Float, ResourcePersonRelation>> iterativelyFetchSuggestions(Set<String> tokenizedQueryString, AbstractSuggestionQueryBuilder<?> options) {
 		// we use inverted scores such that the best results automatically appear first according to the ascending order of a sorted map
 		final SortedSet<Pair<Float, ResourcePersonRelation>> relSorter = new TreeSet<>(new FirstValuePairComparator<Float, ResourcePersonRelation>(false));
 		// unfortunately our version of elasticsearch does not support topHits aggregation so we have to group by interhash ourselves: AggregationBuilder aggregation = AggregationBuilders.terms("agg").field("gender").subAggregation(AggregationBuilders.topHits("top"));
 		double bestScore = Double.NaN;
 		// remember alreadyAnalyzedInterhashes to skip over multiple posts of the same resource
 		final Set<String> alreadyAnalyzedInterhashes = new HashSet<>();
-		for (int offset = 0; relSorter.size() < suggestionSize && offset < maxOffset; offset += maxOffset / 10) {
+		for (int offset = 0; relSorter.size() < suggestionSize && offset < MAX_OFFSET; offset += 1024 / 10) {
 			// although we change the query by changing the minimum score of the results, we can still
 			// reuse the same offset(skip) counter, because the order of the ranked results remains the
 			// same and the increased minimum score only drops results beyond those we have seen so far.
 			double minScore = Double.isNaN(bestScore) ? 0.05 : (bestScore / 3d);
 			
-			double bestScoreThisRound = fetchMoreResults(relSorter, tokenizedQueryString, offset, alreadyAnalyzedInterhashes, indexName, minScore, options);
+			double bestScoreThisRound = fetchMoreResults(relSorter, tokenizedQueryString, offset, alreadyAnalyzedInterhashes, minScore, options);
 			if (Double.isNaN(bestScore)) {
 				bestScore = bestScoreThisRound;
 			}
@@ -341,15 +339,14 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 */
 	@Override
 	public List<ResourcePersonRelation> getPersonSuggestion(PersonSuggestionQueryBuilder options) {
-		try (final IndexLock indexLock = getEsIndexManager().aquireReadLockForTheActiveIndexAlias(this.resourceType)) {
-			final String localIndexName = indexLock.getIndexName();
+		try {
 			final Set<String> tokenizedQueryString = new HashSet<>();
 			for (String token : new SimpleTokenizer(options.getQuery())) {
 				if (!StringUtils.isBlank(token)) {
 					tokenizedQueryString.add(token.toLowerCase());
 				}
 			}
-			final SortedSet<Pair<Float, ResourcePersonRelation>> relSorter = iterativelyFetchSuggestions(localIndexName, tokenizedQueryString, options);
+			final SortedSet<Pair<Float, ResourcePersonRelation>> relSorter = iterativelyFetchSuggestions(tokenizedQueryString, options);
 			return extractDistinctPersons(relSorter);
 		} catch (final IndexMissingException e) {
 			log.error("IndexMissingException: " + e);
@@ -420,20 +417,20 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		return builder;
 	}
 
-	private SearchRequestBuilder buildRequest(int offset, String indexName, double minPlainEsScore, final QueryBuilder queryBuilder) {
-		final SearchRequestBuilder searchRequestBuilder = this.esIndexManager.getClient().prepareSearch(indexName);
+	private SearchRequestBuilder buildRequest(int offset, double minPlainEsScore, final QueryBuilder queryBuilder) {
+		final SearchRequestBuilder searchRequestBuilder = this.manager.prepareSearch();
 		searchRequestBuilder.setTypes(ResourceFactory.getResourceName(this.resourceType));
 		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 		searchRequestBuilder.setQuery(queryBuilder) //
 		.setMinScore((float)minPlainEsScore) //
-		.setFrom(offset).setSize(maxOffset / 10);
+		.setFrom(offset).setSize(MAX_OFFSET / 10);
 		return searchRequestBuilder;
 	}
 	
-	private double fetchMoreResults(final SortedSet<Pair<Float, ResourcePersonRelation>> relSorter, final Set<String> queryTerms, int offset, final Set<String> alreadyAnalyzedInterhashes, String indexName, double minPlainEsScore, AbstractSuggestionQueryBuilder<?> options) {
+	private double fetchMoreResults(final SortedSet<Pair<Float, ResourcePersonRelation>> relSorter, final Set<String> queryTerms, int offset, final Set<String> alreadyAnalyzedInterhashes, double minPlainEsScore, AbstractSuggestionQueryBuilder<?> options) {
 		// for finding persons, we use their names but for finding publications, we like to find publications which are not yet associated to a person entity
 		final QueryBuilder queryBuilder = buildQuery(options);
-		final SearchRequestBuilder searchRequestBuilder = buildRequest(offset, indexName, minPlainEsScore, queryBuilder);
+		final SearchRequestBuilder searchRequestBuilder = buildRequest(offset, minPlainEsScore, queryBuilder);
 
 		final SearchResponse response = searchRequestBuilder.execute().actionGet();
 		if (response == null) {
@@ -673,24 +670,9 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		return rVal;
 	}
 
-	public void setSystemUrl(String systemUrl) {
-		this.systemUrl = systemUrl;
-	}
-
 	public void setSuggestionSize(int personSuggestionSize) {
 		this.suggestionSize = personSuggestionSize;
 	}
-
-
-	public ESIndexManager getEsIndexManager() {
-		return this.esIndexManager;
-	}
-
-
-	public void setEsIndexManager(ESIndexManager esIndexManager) {
-		this.esIndexManager = esIndexManager;
-	}
-
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPostsByBibtexKey(java.lang.String, java.util.Collection, org.bibsonomy.common.enums.SearchType, java.lang.String, java.util.Collection, java.util.List, org.bibsonomy.model.enums.Order, int, int)
@@ -828,15 +810,10 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			// for all relations: TODO
 		}
 		
-		// TODO: remove
-		QueryBuilder rVal = mainQueryBuilder;
-		if (searchType == org.bibsonomy.common.enums.SearchType.LOCAL) {
-			rVal = QueryBuilders.filteredQuery(mainQueryBuilder, FilterBuilders.termFilter(Fields.SYSTEM_URL, this.systemUrl));
-		}
 		// all done
 		log.debug("Search query: " + mainQueryBuilder.toString());
 		
-		return rVal;
+		return mainQueryBuilder;
 	}
 	
 	private void addTagQuerries(final Collection<String> tagIndex, final Collection<String> negatedTags, final BoolQueryBuilder mainQuery) {
