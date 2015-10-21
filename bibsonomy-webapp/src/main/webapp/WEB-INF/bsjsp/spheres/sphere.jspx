@@ -63,7 +63,6 @@
     				<fmt:message key="spheres.sphere.members">
 						<fmt:param value="${fn:escapeXml(command.sphereName)}"/>
 					</fmt:message>
-				</sidebar:sidebarItem>
 				<jsp:attribute name="content">
 	    			<ul class="sphere_users sidebar_collapse_content">
 	   					<c:forEach items="${command.relatedUsers}" var="item" varStatus="loop">
