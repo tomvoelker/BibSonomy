@@ -10,6 +10,7 @@
 	<jsp:directive.attribute name="noLink" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="flase"/>
 	<jsp:directive.attribute name="scope" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="classes" type="java.lang.String" required="false" />
 	
 	<c:choose>
 		<c:when test="${not empty post}">
@@ -38,15 +39,36 @@
 		<c:when test="${not noLink and scope ne 'FEDERATED'}">
 			<c:choose>
 				<c:when test="${isRemotePost}">
-					<a href="${relativeUrlGenerator.getUserUrlByUserNameAndSysUrl(username, post.systemUrl)}"><c:out value="@${username}" /></a>
+					<c:choose>
+						<c:when test="${empty classes}">
+							<a href="${relativeUrlGenerator.getUserUrlByUserNameAndSysUrl(username, post.systemUrl)}"><c:out value="@${username}" /></a>
+						</c:when>
+						<c:otherwise>
+							<a class="${classes}" href="${relativeUrlGenerator.getUserUrlByUserNameAndSysUrl(username, post.systemUrl)}"><c:out value="@${username}" /></a>
+						</c:otherwise>
+					</c:choose>
 				</c:when>
 				<c:otherwise>
-					<a href="${relativeUrlGenerator.getUserUrlByUserName(username)}"><c:out value="@${username}" /></a>
+					<c:choose>
+						<c:when test="${empty classes}">
+							<a href="${relativeUrlGenerator.getUserUrlByUserName(username)}"><c:out value="@${username}" /></a>
+						</c:when>
+						<c:otherwise>
+							<a class="${classes}" href="${relativeUrlGenerator.getUserUrlByUserName(username)}"><c:out value="@${username}" /></a>
+						</c:otherwise>
+					</c:choose>
 				</c:otherwise>
 			</c:choose>
 		</c:when>
 		<c:otherwise>
-			<c:out value="@${username}" />
+			<c:choose>
+				<c:when test="${empty classes}">
+					<c:out value="@${username}" />
+				</c:when>
+				<c:otherwise>
+					<span class="${classes}"><c:out value="@${username}" /></span>
+				</c:otherwise>
+			</c:choose>
 		</c:otherwise>
 	</c:choose>
 	
