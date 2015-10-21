@@ -1,0 +1,130 @@
+package org.bibsonomy.search.es.index;
+
+import java.io.IOException;
+
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.factories.ResourceFactory;
+import org.bibsonomy.search.es.ESConstants;
+import org.bibsonomy.search.es.ESConstants.Fields;
+import org.bibsonomy.search.util.Mapping;
+import org.bibsonomy.search.util.MappingBuilder;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.XContentFactory;
+
+/**
+ * TODO: add documentation to this class
+ *
+ * @author dzo
+ * @param <R> 
+ */
+public abstract class ResourceMappingBuilder<R extends Resource> implements MappingBuilder<String> {
+
+	/** type string */
+	protected static final String STRING_TYPE = "string";
+	
+	/** date type */
+	protected static final String DATE_TYPE = "date";
+	
+	/** the type field */
+	protected static final String TYPE_FIELD = "type";
+	
+	/** the index field */
+	protected static final String INDEX_FIELD = "index";
+	
+	/** e.g the date format field */
+	protected static final String FORMAT_FIELD = "format";
+	
+	/** iso date format */
+	protected static final String FORMAT_DATE_OPTIONAL_TIME = "dateOptionalTime";
+	
+	/** not analysed field */
+	protected static final String NOT_ANALYZED = "not_analyzed";
+	
+	/** field should not be indexed */
+	protected static final String NOT_INDEXED = "no";
+	
+	
+	private Class<R> resourceType;
+
+	/**
+	 * @param resourceType
+	 */
+	public ResourceMappingBuilder(Class<R> resourceType) {
+		super();
+		this.resourceType = resourceType;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.util.MappingBuilder#getMapping()
+	 */
+	@SuppressWarnings("resource")
+	@Override
+	public Mapping<String> getMapping() {
+		try {
+			final String documentType = this.getDocumentType();
+			XContentBuilder commonPostResourceFields = XContentFactory.jsonBuilder()
+					.startObject()
+						.startObject(documentType)
+							.startObject("properties")
+								.startObject(ESConstants.Fields.Resource.INTRAHASH)
+									.field(TYPE_FIELD, STRING_TYPE)
+									.field(INDEX_FIELD, NOT_ANALYZED)
+								.endObject()
+								.startObject(ESConstants.Fields.Resource.INTERHASH)
+									.field(TYPE_FIELD, STRING_TYPE)
+									.field(INDEX_FIELD, NOT_ANALYZED)
+								.endObject()
+								.startObject(ESConstants.Fields.TAGS)
+									.field(TYPE_FIELD, STRING_TYPE)
+								.endObject()
+								.startObject(ESConstants.Fields.GROUPS)
+									.field(TYPE_FIELD, STRING_TYPE)
+									.field(INDEX_FIELD, NOT_ANALYZED)
+								.endObject()
+								.startObject(ESConstants.Fields.DATE)
+									.field(TYPE_FIELD, DATE_TYPE)
+									.field(INDEX_FIELD, NOT_INDEXED)
+									.field(FORMAT_FIELD, FORMAT_DATE_OPTIONAL_TIME)
+								.endObject()
+								.startObject(ESConstants.Fields.CHANGE_DATE)
+									.field(TYPE_FIELD, DATE_TYPE)
+									.field(INDEX_FIELD, NOT_INDEXED)
+									.field(FORMAT_FIELD, FORMAT_DATE_OPTIONAL_TIME)
+								.endObject()
+								.startObject(Fields.SYSTEM_URL)
+									.field(TYPE_FIELD, STRING_TYPE)
+									.field(INDEX_FIELD, NOT_ANALYZED) // TODO: change to no?
+								.endObject()
+								.startObject(ESConstants.Fields.Resource.TITLE)
+									.field(TYPE_FIELD, STRING_TYPE)
+								.endObject();
+			
+			this.doResourceSpecificMapping(commonPostResourceFields);
+			
+			final XContentBuilder finalObject = commonPostResourceFields
+							.endObject()
+						.endObject()
+					.endObject();
+			final String info = finalObject.string();
+			final Mapping<String> mapping = new Mapping<>();
+			mapping.setMappingInfo(info);
+			mapping.setType(documentType);
+			return mapping;
+		} catch (final IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * @param builder
+	 * @throws IOException TODO
+	 */
+	protected abstract void doResourceSpecificMapping(XContentBuilder builder) throws IOException;
+
+	/**
+	 * @return
+	 */
+	private String getDocumentType() {
+		return ResourceFactory.getResourceName(this.resourceType);
+	}
+}

@@ -18,6 +18,7 @@ import org.bibsonomy.search.generator.SearchIndexGeneratorTask;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.update.SearchIndexState;
 import org.bibsonomy.search.update.SearchIndexUpdater;
+import org.bibsonomy.search.util.MappingBuilder;
 import org.bibsonomy.search.util.ResourceConverter;
 
 /**
@@ -28,8 +29,9 @@ import org.bibsonomy.search.util.ResourceConverter;
  * @param <R> 
  * @param <T> 
  * @param <I> 
+ * @param <M> 
  */
-public abstract class SearchIndexContainer<R extends Resource, T, I extends SearchIndex<R, T, I>> {
+public abstract class SearchIndexContainer<R extends Resource, T, I extends SearchIndex<R, T, I, M>, M> {
 	private static final Log log = LogFactory.getLog(SearchIndexContainer.class);
 	
 	private boolean enabled; // TODO: use this property? TODODZO
@@ -41,7 +43,9 @@ public abstract class SearchIndexContainer<R extends Resource, T, I extends Sear
 	
 	protected I activeIndex;
 	protected I inactiveIndex;
+	
 	private final ResourceConverter<R, T> converter;
+	private final MappingBuilder<M> mappingBuilder;
 	
 	private final Semaphore generatorLock;
 	private final ExecutorService generatorExecutorService;
@@ -51,9 +55,11 @@ public abstract class SearchIndexContainer<R extends Resource, T, I extends Sear
 	 * @param id
 	 * @param converter
 	 */
-	public SearchIndexContainer(final Class<R> resourceType, final String id, final ResourceConverter<R, T> converter) {
+	public SearchIndexContainer(final Class<R> resourceType, final String id, final ResourceConverter<R, T> converter, final MappingBuilder<M> mappingBuilder) {
 		this.id = id;
 		this.converter = converter;
+		this.mappingBuilder = mappingBuilder;
+		
 		this.resourceType = resourceType;
 		
 		this.generatorLock = new Semaphore(1);
@@ -63,7 +69,7 @@ public abstract class SearchIndexContainer<R extends Resource, T, I extends Sear
 	/**
 	 * @return
 	 */
-	public SearchIndex<R, T, I> getIndexToUpdate() {
+	public SearchIndex<R, T, I, M> getIndexToUpdate() {
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -73,7 +79,7 @@ public abstract class SearchIndexContainer<R extends Resource, T, I extends Sear
 	 * @param indexToUpdate
 	 * @return
 	 */
-	public SearchIndexState getUpdaterStateForIndex(SearchIndex<R, T, I> indexToUpdate) {
+	public SearchIndexState getUpdaterStateForIndex(SearchIndex<R, T, I, M> indexToUpdate) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -89,7 +95,7 @@ public abstract class SearchIndexContainer<R extends Resource, T, I extends Sear
 	 */
 	public void activateIndex(final I index) {
 		if (this.activeIndex != null) {
-			try (final IndexLock<R, T, I> lock = this.acquireWriteLockForIndex(this.activeIndex)) {
+			try (final IndexLock<R, T, I, M> lock = this.acquireWriteLockForIndex(this.activeIndex)) {
 				this.lockAndSwitchIndices(index);
 			}
 		} else {
@@ -101,7 +107,7 @@ public abstract class SearchIndexContainer<R extends Resource, T, I extends Sear
 	 * @param index
 	 */
 	private void lockAndSwitchIndices(final I index) {
-		try (final IndexLock<R, T, I> newIndexLock = this.acquireWriteLockForIndex(index)) {
+		try (final IndexLock<R, T, I, M> newIndexLock = this.acquireWriteLockForIndex(index)) {
 			this.doSwitchIndex(this.activeIndex, index, this.inactiveIndex);
 			this.inactiveIndex = this.activeIndex;
 			this.activeIndex = index;
@@ -138,16 +144,16 @@ public abstract class SearchIndexContainer<R extends Resource, T, I extends Sear
 	public abstract SearchIndexGeneratorTask<R, I> createRegeneratorTaskForIndex(String indexId, final SearchDBInterface<R> inputLogic);
 	
 	
-	public IndexLock<R, T, I> acquireWriteLockForIndex(final I index) {
+	public IndexLock<R, T, I, M> acquireWriteLockForIndex(final I index) {
 		final ReadWriteLock lock = getLockForIndex(index);
 		final Lock writeLock = lock.writeLock();
-		return new IndexLock<R, T, I>(index, writeLock);
+		return new IndexLock<R, T, I, M>(index, writeLock);
 	}
 	
-	public IndexLock<R, T, I> acquireReadLockForIndex(final I index) {
+	public IndexLock<R, T, I, M> acquireReadLockForIndex(final I index) {
 		final ReadWriteLock lock = getLockForIndex(index);
 		final Lock readLock = lock.readLock();
-		return new IndexLock<R, T, I>(index, readLock);
+		return new IndexLock<R, T, I, M>(index, readLock);
 	}
 
 	/**
@@ -217,6 +223,13 @@ public abstract class SearchIndexContainer<R extends Resource, T, I extends Sear
 	 */
 	public ResourceConverter<R, T> getConverter() {
 		return this.converter;
+	}
+	
+	/**
+	 * @return the mappingBuilder
+	 */
+	public MappingBuilder<M> getMappingBuilder() {
+		return this.mappingBuilder;
 	}
 	
 	/**

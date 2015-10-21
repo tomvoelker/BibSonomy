@@ -29,7 +29,7 @@ public class SearchPublicationManager<P extends BibTex> extends SearchResourceMa
 	 * @param searchDBLogic
 	 * @param containers
 	 */
-	public SearchPublicationManager(SearchDBInterface<P> searchDBLogic, List<SearchIndexContainer<P, ?, ?>> containers) {
+	public SearchPublicationManager(SearchDBInterface<P> searchDBLogic, List<SearchIndexContainer<P, ?, ?, ?>> containers) {
 		super(searchDBLogic, containers);
 	}
 

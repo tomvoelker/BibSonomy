@@ -118,6 +118,11 @@ public final class ESConstants {
 			public static final String INTRAHASH = "intrahash";
 		}
 		
+		public static interface Bookmark {
+			/** the url of the bookmark */
+			public static final String URL = "url";
+		}
+		
 		public static interface Publication {
 			public static final String AUTHOR = "author";
 			public static final String SCHOOL = "school";
@@ -125,6 +130,7 @@ public final class ESConstants {
 			public static final String YEAR = "year";
 			/** the bibtex key field name */
 			public static final String BIBTEXKEY = "bibtexkey";
+			public static final String ADDRESS = "address";
 		}
 	}
 }

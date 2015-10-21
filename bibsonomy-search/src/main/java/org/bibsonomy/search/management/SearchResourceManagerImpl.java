@@ -39,14 +39,14 @@ public class SearchResourceManagerImpl<R extends Resource> implements SearchReso
 	
 	/** access to the main database with all informations (users, posts, tags) */
 	protected final SearchDBInterface<R> searchDBLogic;
-	private final List<SearchIndexContainer<R, ?, ?>> containers;
+	private final List<SearchIndexContainer<R, ?, ?, ?>> containers;
 	
 	/**
 	 * @param searchDBLogic
 	 * @param containers
 	 * @param generatorExecutorService
 	 */
-	public SearchResourceManagerImpl(SearchDBInterface<R> searchDBLogic, List<SearchIndexContainer<R, ?, ?>> containers) {
+	public SearchResourceManagerImpl(SearchDBInterface<R> searchDBLogic, List<SearchIndexContainer<R, ?, ?, ?>> containers) {
 		super();
 		this.searchDBLogic = searchDBLogic;
 		this.containers = containers;
@@ -57,7 +57,7 @@ public class SearchResourceManagerImpl<R extends Resource> implements SearchReso
 	 */
 	@Override
 	public void generateIndexForResource(final String containerId, final String indexId) throws ExecutionException {
-		final SearchIndexContainer<R, ?, ?> container = this.getContainerById(containerId);
+		final SearchIndexContainer<R, ?, ?, ?> container = this.getContainerById(containerId);
 		container.generateIndex(indexId, this.searchDBLogic);
 	}
 
@@ -65,8 +65,8 @@ public class SearchResourceManagerImpl<R extends Resource> implements SearchReso
 	 * @param containerId
 	 * @return
 	 */
-	private SearchIndexContainer<R, ?, ?> getContainerById(String containerId) {
-		for (final SearchIndexContainer<R, ?, ?> searchIndexContainer : containers) {
+	private SearchIndexContainer<R, ?, ?, ?> getContainerById(String containerId) {
+		for (final SearchIndexContainer<R, ?, ?, ?> searchIndexContainer : containers) {
 			if (searchIndexContainer.getId().equals(containerId)) {
 				return searchIndexContainer;
 			}
@@ -89,18 +89,18 @@ public class SearchResourceManagerImpl<R extends Resource> implements SearchReso
 	@Override
 	public void updateAllIndices() {
 		// FIXME: lock this method
-		final Map<SearchIndexState, List<SearchIndex<R, ?, ?>>> lastLogDateAndLastTasIdToUpdaters = getUpdatersBySameState();
+		final Map<SearchIndexState, List<SearchIndex<R, ?, ?, ?>>> lastLogDateAndLastTasIdToUpdaters = getUpdatersBySameState();
 		try {
 			final SearchIndexState targetState = this.searchDBLogic.getDbState();
 			
-			for (Entry<SearchIndexState, List<SearchIndex<R, ?, ?>>> e : lastLogDateAndLastTasIdToUpdaters.entrySet()) {
-				final List<SearchIndex<R, ?, ?>> indices = e.getValue();
+			for (Entry<SearchIndexState, List<SearchIndex<R, ?, ?, ?>>> e : lastLogDateAndLastTasIdToUpdaters.entrySet()) {
+				final List<SearchIndex<R, ?, ?, ?>> indices = e.getValue();
 				final SearchIndexState indexState = e.getKey();
 				this.updateIndex(indexState, targetState, indices);
 			}
 		} finally {
-			for (final List<SearchIndex<R, ?, ?>> ul : lastLogDateAndLastTasIdToUpdaters.values()) {
-				for (SearchIndex<R, ?, ?> u : ul) {
+			for (final List<SearchIndex<R, ?, ?, ?>> ul : lastLogDateAndLastTasIdToUpdaters.values()) {
+				for (SearchIndex<R, ?, ?, ?> u : ul) {
 					try {
 						// TODO: index unlocking TODODZO
 						// u.closeUpdateProcess();
@@ -117,11 +117,11 @@ public class SearchResourceManagerImpl<R extends Resource> implements SearchReso
 	 * @param targetState
 	 * @param indices
 	 */
-	private void updateIndex(final SearchIndexState oldState, SearchIndexState targetState, List<SearchIndex<R, ?, ?>> indices) {
+	private void updateIndex(final SearchIndexState oldState, SearchIndexState targetState, List<SearchIndex<R, ?, ?, ?>> indices) {
 		log.info("updating indices with same state " + oldState + " : " + indices.toString());
 		
 		final List<SearchIndexUpdater<R>> indexUpdaters = new LinkedList<>();
-		for (final SearchIndex<R, ?, ?> index : indices) {
+		for (final SearchIndex<R, ?, ?, ?> index : indices) {
 			final SearchIndexUpdater<R> searchIndexUpdater = createUpdater(index);
 			indexUpdaters.add(searchIndexUpdater);
 		}
@@ -197,8 +197,8 @@ public class SearchResourceManagerImpl<R extends Resource> implements SearchReso
 	 * @param index
 	 * @return
 	 */
-	private <T, I extends SearchIndex<R, T, I>> SearchIndexUpdater<R> createUpdater(SearchIndex<R, T, I> index) {
-		final SearchIndexContainer<R, T, I> container = index.getContainer();
+	private <T, I extends SearchIndex<R, T, I, M>, M> SearchIndexUpdater<R> createUpdater(SearchIndex<R, T, I, M> index) {
+		final SearchIndexContainer<R, T, I, M> container = index.getContainer();
 		return container.createUpdaterForIndex((I) index);
 	}
 
@@ -271,16 +271,16 @@ public class SearchResourceManagerImpl<R extends Resource> implements SearchReso
 		}
 	}
 
-	private Map<SearchIndexState, List<SearchIndex<R, ?, ?>>> getUpdatersBySameState() {
-		final Map<SearchIndexState, List<SearchIndex<R, ?, ?>>> lastLogDateAndLastTasIdToUpdaters = new HashMap<>();
+	private Map<SearchIndexState, List<SearchIndex<R, ?, ?, ?>>> getUpdatersBySameState() {
+		final Map<SearchIndexState, List<SearchIndex<R, ?, ?, ?>>> lastLogDateAndLastTasIdToUpdaters = new HashMap<>();
 		
-		for (final SearchIndexContainer<R, ?, ?> container : this.containers) {
+		for (final SearchIndexContainer<R, ?, ?, ?> container : this.containers) {
 			// TODO: throw exception if no index is available for update
 			
-			final SearchIndex<R, ?, ?> indexToUpdate = container.getIndexToUpdate();
+			final SearchIndex<R, ?, ?, ?> indexToUpdate = container.getIndexToUpdate();
 			final SearchIndexState indexUpdaterState = getIndexUpdaterStateForContainer(container);
 			
-			List<SearchIndex<R, ?, ?>> indicesWithSameState = lastLogDateAndLastTasIdToUpdaters.get(indexUpdaterState);
+			List<SearchIndex<R, ?, ?, ?>> indicesWithSameState = lastLogDateAndLastTasIdToUpdaters.get(indexUpdaterState);
 			if (indicesWithSameState == null) {
 				indicesWithSameState = new ArrayList<>();
 				lastLogDateAndLastTasIdToUpdaters.put(indexUpdaterState, indicesWithSameState);
@@ -295,8 +295,8 @@ public class SearchResourceManagerImpl<R extends Resource> implements SearchReso
 	 * @param indexToUpdate 
 	 * @return
 	 */
-	private <T, I extends SearchIndex<R, T, I>> SearchIndexState getIndexUpdaterStateForContainer(SearchIndexContainer<R, T, I> container) {
-		final SearchIndex<R, T, I> indexToUpdate = container.getIndexToUpdate();
+	private <T, I extends SearchIndex<R, T, I, M>, M> SearchIndexState getIndexUpdaterStateForContainer(SearchIndexContainer<R, T, I, M> container) {
+		final SearchIndex<R, T, I, M> indexToUpdate = container.getIndexToUpdate();
 		return container.getUpdaterStateForIndex(indexToUpdate);
 	}
 	
@@ -304,7 +304,7 @@ public class SearchResourceManagerImpl<R extends Resource> implements SearchReso
 	 * shutdown search containers
 	 */
 	public void shutdown() {
-		for (SearchIndexContainer<R, ?, ?> searchIndexContainer : containers) {
+		for (SearchIndexContainer<R, ?, ?, ?> searchIndexContainer : containers) {
 			try {
 				searchIndexContainer.shutdown();
 			} catch (Exception e) {

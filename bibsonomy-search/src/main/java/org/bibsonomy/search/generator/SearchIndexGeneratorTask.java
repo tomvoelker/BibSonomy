@@ -27,7 +27,7 @@ import org.bibsonomy.search.update.SearchIndexState;
  * @param <R> 
  * @param <I> 
  */
-public abstract class SearchIndexGeneratorTask<R extends Resource, I extends SearchIndex<R, ?, ?>> implements Callable<Void> {
+public abstract class SearchIndexGeneratorTask<R extends Resource, I extends SearchIndex<R, ?, ?, ?>> implements Callable<Void> {
 	private static final Log log = LogFactory.getLog(SearchIndexGeneratorTask.class);
 	
 	private final SearchDBInterface<R> inputLogic;

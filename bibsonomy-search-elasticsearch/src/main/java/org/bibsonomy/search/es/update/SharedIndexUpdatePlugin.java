@@ -54,6 +54,8 @@ import org.bibsonomy.util.SimpleBlockingThreadPoolExecutor;
  * @author lutful
  * @param <R>
  */
+
+@Deprecated // TODODZO remove
 public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin<R>, GenerateIndexCallback<SharedResourceIndexGenerator<R>> {
 	private static final Log log = LogFactory.getLog(SharedIndexUpdatePlugin.class);
 	

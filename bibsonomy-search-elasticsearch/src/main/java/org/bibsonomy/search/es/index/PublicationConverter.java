@@ -60,7 +60,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	 */
 	@Override
 	protected void convertResource(Map<String, Object> jsonDocument, BibTex resource) {
-		jsonDocument.put("address", resource.getAddress());
+		jsonDocument.put(Fields.Publication.ADDRESS, resource.getAddress());
 		jsonDocument.put("annote", resource.getAnnote());
 		jsonDocument.put("bkey", resource.getKey());
 		jsonDocument.put("abstract", resource.getAbstract());

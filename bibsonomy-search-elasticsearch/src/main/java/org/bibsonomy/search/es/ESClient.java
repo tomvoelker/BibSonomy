@@ -27,7 +27,9 @@
 package org.bibsonomy.search.es;
 
 import java.util.Map;
+import java.util.Set;
 
+import org.bibsonomy.search.util.Mapping;
 import org.elasticsearch.client.Client;
 
 /**
@@ -72,6 +74,24 @@ public interface ESClient {
 	 */
 	void insertNewDocument(String indexName, String type, String id, Map<String, Object> jsonDocument);
 	
+	/**
+	 * @param indexName
+	 * @return <code>true</code> if the index exists on the cluster
+	 */
+	boolean existsIndexWithName(String indexName);
+	
+	/**
+	 * @param indexName
+	 * @param mappings 
+	 * @return
+	 */
+	boolean createIndex(String indexName, Set<Mapping<String>> mappings);
+	
+	/**
+	 * @param oldIndexName
+	 * @return 
+	 */
+	boolean deleteIndex(String oldIndexName);
 	
 	/**
 	 * Shutdown the ElasticSearch Client. The client will be no more available

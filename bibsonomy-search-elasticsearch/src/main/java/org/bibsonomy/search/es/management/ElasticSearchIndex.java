@@ -4,7 +4,6 @@ import java.util.Map;
 
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.search.management.SearchIndex;
-import org.bibsonomy.search.management.SearchIndexContainer;
 
 /**
  * class representing a ElasticSearch index
@@ -12,7 +11,7 @@ import org.bibsonomy.search.management.SearchIndexContainer;
  * @author dzo
  * @param <R> 
  */
-public class ElasticSearchIndex<R extends Resource> extends SearchIndex<R, Map<String, Object>, ElasticSearchIndex<R>> {
+public class ElasticSearchIndex<R extends Resource> extends SearchIndex<R, Map<String, Object>, ElasticSearchIndex<R>, String> {
 	
 	private final String indexName;
 	
@@ -21,7 +20,7 @@ public class ElasticSearchIndex<R extends Resource> extends SearchIndex<R, Map<S
 	 * @param container
 	 * @param resourceType 
 	 */
-	public ElasticSearchIndex(final String indexName, SearchIndexContainer<R, Map<String, Object>, ElasticSearchIndex<R>> container) {
+	public ElasticSearchIndex(final String indexName, ElasticSearchIndexContainer<R> container) {
 		super(container);
 		this.indexName = indexName;
 	}

@@ -1,6 +1,7 @@
 package org.bibsonomy.search.es.update;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -10,17 +11,13 @@ import org.bibsonomy.search.SearchPost;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.ESConstants.Fields;
-import org.bibsonomy.search.es.index.ESResourceMapping;
 import org.bibsonomy.search.es.management.ElasticSearchIndex;
 import org.bibsonomy.search.es.management.util.ElasticSearchUtils;
 import org.bibsonomy.search.update.SearchIndexState;
 import org.bibsonomy.search.update.SearchIndexUpdater;
+import org.bibsonomy.search.util.Mapping;
 import org.bibsonomy.util.ValidationUtils;
-import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
-import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
-import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
 import org.elasticsearch.action.index.IndexResponse;
-import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.index.query.QueryBuilders;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -62,27 +59,21 @@ public class ElasticSearchIndexUpdater<R extends Resource> implements SearchInde
 		final String indexName = this.index.getIndexName();
 		
 		// check if the index already exists if not, it creates empty index
-		final IndicesAdminClient indices = this.esClient.getClient().admin().indices();
-		final boolean indexExist = indices.exists(new IndicesExistsRequest(indexName)).actionGet().isExists();
-		if (!indexExist) {
-			log.info("index not existing - generating a new one");
-			final CreateIndexResponse createIndex = indices.create(new CreateIndexRequest(indexName)).actionGet();
-			if (!createIndex.isAcknowledged()) {
-				log.error("Error in creating Index");
-				return;
-			}
-		} else {
-			throw new IllegalStateException("index '" + indexName + "' already exists");
+		final boolean indexExists = this.esClient.existsIndexWithName(indexName);
+		if (indexExists) {
+			throw new IllegalStateException("index '" + indexName + "' already exists while generating an index");
 		}
 		
-		log.debug("Start writing mapping to shared index");
-		// add mapping here depending on the resource type which is here indexType
-		final ESResourceMapping resourceMapping = new ESResourceMapping(this.index.getContainer().getResourceType(), esClient, indexName);
-		resourceMapping.doMapping();
-		log.debug("wrote mapping to shared index");
+		final Mapping<String> mapping = this.index.getContainer().getMappingBuilder().getMapping();
+		log.info("index not existing - generating a new one with mapping");
 		
-		// FIXME: use system url
-		this.esClient.createAlias(this.index.getIndexName(), ElasticSearchUtils.getTempAliasForResource(this.index.getContainer().getResourceType()));
+		final boolean created = this.esClient.createIndex(indexName, Collections.singleton(mapping));
+		if (!created) {
+			throw new RuntimeException("can not create index '" + indexName + "'"); // TODO: use specific exception
+		}
+		
+		// FIXME: use system url TODODZO
+		this.esClient.createAlias(indexName, ElasticSearchUtils.getTempAliasForResource(this.index.getContainer().getResourceType()));
 	}
 	
 	/* (non-Javadoc)

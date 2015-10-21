@@ -31,14 +31,22 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.search.es.ESConstants;
+import org.bibsonomy.search.util.Mapping;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequestBuilder;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse;
 import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest;
+import org.elasticsearch.action.admin.indices.create.CreateIndexRequest;
+import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
+import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.cluster.metadata.AliasMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
@@ -58,13 +66,11 @@ public class ESTransportClient extends AbstractEsClient {
 	/**
 	 * Elasticsearch IP and port values, if we have multiple addresses, they
 	 * will be separated by ","; port and ip are separated by ":"
+	 * TODO: initialize this with the correct model
 	 */
-	// TODO: initialize this witht the correct model
 	private String esAddresses;
 
-	/**
-	 * Elasticsearch CLustername
-	 */
+	/** Elasticsearch cluster name */
 	private String esClusterName;
 
 	/**
@@ -148,7 +154,46 @@ public class ESTransportClient extends AbstractEsClient {
 	 */
 	@Override
 	public void insertNewDocument(String indexName, String type, String id, Map<String, Object> jsonDocument) {
-		this.client.prepareIndex(indexName, type, id).setSource(jsonDocument).setRefresh(true).execute().actionGet();
+		this.client.prepareIndex(indexName, type, id).setSource(jsonDocument).setRefresh(true).get();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.es.ESClient#createIndex(java.lang.String, java.util.Set)
+	 */
+	@Override
+	public boolean createIndex(String indexName, Set<Mapping<String>> mappings) {
+		final CreateIndexResponse createIndex = this.client.admin().indices().create(new CreateIndexRequest(indexName)).actionGet();
+		if (!createIndex.isAcknowledged()) {
+			log.error("Error in creating Index");
+			return false;
+		}
+		
+		for (final Mapping<String> mapping : mappings) {
+			this.client.admin().indices().preparePutMapping(indexName).setType(mapping.getType()).setSource(mapping.getMappingInfo()).execute().actionGet();
+		}
+		
+		// wait for the yellow (or green) status to prevent
+		// NoShardAvailableActionException later
+		this.waitForReadyState();
+		return true;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.es.ESClient#deleteIndex(java.lang.String)
+	 */
+	@Override
+	public boolean deleteIndex(String oldIndexName) {
+		final DeleteIndexResponse deleteResult = this.client.admin().indices().delete(new DeleteIndexRequest(oldIndexName)).actionGet();
+		return deleteResult.isAcknowledged();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.es.ESClient#existsIndexWithName(java.lang.String)
+	 */
+	@Override
+	public boolean existsIndexWithName(String indexName) {
+		final IndicesAdminClient indices = this.client.admin().indices();
+		return indices.exists(new IndicesExistsRequest(indexName)).actionGet().isExists();
 	}
 	
 	/* (non-Javadoc)

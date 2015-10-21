@@ -39,7 +39,6 @@ import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.search.SearchPost;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants.Fields;
-import org.bibsonomy.search.es.index.ESResourceMapping;
 import org.bibsonomy.search.es.index.ResourceConverter;
 import org.bibsonomy.search.es.update.SharedIndexUpdatePlugin;
 import org.bibsonomy.search.es.update.SharedResourceIndexUpdater;
@@ -121,8 +120,8 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 		log.info("Start writing data to shared index");
 		
 		// add mapping here depending on the resource type which is here indexType
-		ESResourceMapping resourceMapping = new ESResourceMapping(resourceType, esClient, indexName);
-		resourceMapping.doMapping();
+		// ESResourceMapping resourceMapping = new ESResourceMapping(resourceType, esClient, indexName);
+		// resourceMapping.doMapping();
 	}
 	
 	@Override

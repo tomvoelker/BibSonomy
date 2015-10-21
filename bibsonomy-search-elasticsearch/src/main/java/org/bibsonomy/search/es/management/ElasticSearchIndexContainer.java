@@ -19,12 +19,11 @@ import org.bibsonomy.search.generator.SearchIndexGeneratorTask;
 import org.bibsonomy.search.management.SearchIndexContainer;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.update.SearchIndexUpdater;
+import org.bibsonomy.search.util.MappingBuilder;
 import org.bibsonomy.search.util.ResourceConverter;
 import org.elasticsearch.action.admin.cluster.state.ClusterStateRequest;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequestBuilder;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.cluster.metadata.AliasMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
@@ -40,7 +39,7 @@ import org.elasticsearch.common.hppc.cursors.ObjectCursor;
  * @param <T> 
  * @param <I> 
  */
-public class ElasticSearchIndexContainer<R extends Resource> extends SearchIndexContainer<R, Map<String, Object>, ElasticSearchIndex<R>> {
+public class ElasticSearchIndexContainer<R extends Resource> extends SearchIndexContainer<R, Map<String, Object>, ElasticSearchIndex<R>, String> {
 	private static final Log log = LogFactory.getLog(ElasticSearchIndexContainer.class);
 	
 	private ESClient esClient;
@@ -52,11 +51,12 @@ public class ElasticSearchIndexContainer<R extends Resource> extends SearchIndex
 	 * @param activeIndex
 	 * @param inactiveIndex
 	 * @param converter
+	 * @param mappingBuilder 
 	 * @param esClient 
 	 * @param systemURI 
 	 */
-	public ElasticSearchIndexContainer(Class<R> resourceClass, String id, ResourceConverter<R, Map<String, Object>> converter, final ESClient esClient, final URI systemURI) {
-		super(resourceClass, id, converter);
+	public ElasticSearchIndexContainer(Class<R> resourceClass, String id, ResourceConverter<R, Map<String, Object>> converter, final MappingBuilder<String> mappingBuilder, final ESClient esClient, final URI systemURI) {
+		super(resourceClass, id, converter, mappingBuilder);
 		this.esClient = esClient;
 		this.systemURI = systemURI;
 		this.initIndices();
@@ -99,13 +99,14 @@ public class ElasticSearchIndexContainer<R extends Resource> extends SearchIndex
 		if (oldIndex != null) {
 			final String oldIndexName = oldIndex.getIndexName();
 			final ClusterStateRequest clusterStateRequest = new ClusterStateRequest().indices(oldIndexName);
+			// TODO: move to es client
 			final ObjectLookupContainer<String> aliases = this.esClient.getClient().admin().cluster().state(clusterStateRequest).actionGet().getState().getMetaData().aliases().keys();
 			if (!aliases.isEmpty()) {
 				throw new IllegalStateException("Found aliases for index '" + oldIndexName + "' while trying to delete index.");
 			}
 			
-			final DeleteIndexResponse deleteResult = this.esClient.getClient().admin().indices().delete(new DeleteIndexRequest(oldIndexName)).actionGet();
-			if (deleteResult.isAcknowledged()) {
+			final boolean deleted = this.esClient.deleteIndex(oldIndexName);
+			if (deleted) {
 				log.debug("deleted index '" + oldIndexName + "'.");
 				this.deletedIndex(oldIndex);
 			} else {
@@ -197,32 +198,5 @@ public class ElasticSearchIndexContainer<R extends Resource> extends SearchIndex
 			}
 		}
 		return indexes;
-	}
-	
-	/**
-	 * removes one particular alias linking one aliasName to one indexName
-	 * @param indexName
-	 * @param alias
-	 * @return
-	 */
-	private boolean removeAlias(final String indexName, final String alias){
-		final IndicesAliasesResponse aliasReponse = this.esClient.getClient().admin().indices().prepareAliases()
-				.removeAlias(indexName, alias)
-				.execute()
-				.actionGet();
-		if (!aliasReponse.isAcknowledged()) {
-			log.error("Error in removing alias of index: "+ indexName);
-			return false;
-		}
-		return true;
-	}
-	
-	/**
-	 * @param indexName
-	 * @param localAliasForResource
-	 */
-	private void addAlias(String indexName, String aliasName) {
-		final IndicesAliasesResponse actionGet = this.esClient.getClient().admin().indices().prepareAliases().addAlias(indexName, aliasName).execute().actionGet();
-		
 	}
 }
