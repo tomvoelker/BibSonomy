@@ -29,7 +29,6 @@ package org.bibsonomy.search.es.search;
 import static org.bibsonomy.util.ValidationUtils.present;
 import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -49,7 +48,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.lucene.index.CorruptIndexException;
 import org.bibsonomy.common.FirstValuePairComparator;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.BibTex;
@@ -226,8 +224,6 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @param limit
 	 * @param offset
 	 * @return returns the list of posts
-	 * @throws CorruptIndexException
-	 * @throws IOException
 	 */
 	@Override
 	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final org.bibsonomy.common.enums.SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) {

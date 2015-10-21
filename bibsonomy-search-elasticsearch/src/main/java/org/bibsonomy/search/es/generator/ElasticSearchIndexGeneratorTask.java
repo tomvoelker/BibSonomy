@@ -1,11 +1,13 @@
 package org.bibsonomy.search.es.generator;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.search.SearchPost;
 import org.bibsonomy.search.es.management.ElasticSearchIndex;
 import org.bibsonomy.search.generator.SearchIndexGeneratorTask;
+import org.bibsonomy.search.management.IndexLock;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.update.SearchIndexState;
 import org.bibsonomy.search.update.SearchIndexUpdater;
@@ -27,9 +29,9 @@ public class ElasticSearchIndexGeneratorTask<R extends Resource> extends SearchI
 	 * @param oldSearchIndex 
 	 * @param client 
 	 */
-	public ElasticSearchIndexGeneratorTask(SearchDBInterface<R> inputLogic, ElasticSearchIndex<R> searchIndex, final ElasticSearchIndex<R> oldSearchIndex) {
-		super(inputLogic, searchIndex, oldSearchIndex);
-		this.updater = this.getSearchIndex().getContainer().createUpdaterForIndex(this.getSearchIndex());
+	public ElasticSearchIndexGeneratorTask(SearchDBInterface<R> inputLogic, IndexLock<R, Map<String, Object>, ElasticSearchIndex<R>, String> indexLock) {
+		super(inputLogic, indexLock);
+		this.updater = indexLock.getSearchIndex().getContainer().createUpdaterForIndex(indexLock);
 	}
 
 	/* (non-Javadoc)

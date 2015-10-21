@@ -53,7 +53,6 @@ import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.search.es.index.ResourceConverter;
 import org.bibsonomy.search.es.management.ESIndexManager;
 import org.bibsonomy.search.es.management.IndexLock;
-import org.bibsonomy.search.es.management.SystemInformation;
 import org.bibsonomy.search.es.management.util.ElasticSearchUtils;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.update.IndexUpdater;
@@ -503,10 +502,10 @@ public class SharedResourceIndexUpdater<R extends Resource> implements IndexUpda
 	 */
 	@Override
 	public SearchIndexState getUpdaterState() {
-		SystemInformation sysi = getSingleSystemInfos();
-		if (sysi != null) {
-			return sysi.getUpdaterState();
-		}
+		// SystemInformation sysi = getSingleSystemInfos();
+		// if (sysi != null) {
+		//	return sysi.getUpdaterState();
+		// }
 		return null;
 	}
 	

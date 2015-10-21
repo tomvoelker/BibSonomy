@@ -11,6 +11,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.search.SearchPost;
+import org.bibsonomy.search.management.IndexLock;
 import org.bibsonomy.search.management.SearchIndex;
 import org.bibsonomy.search.management.SearchResourceManagerImpl;
 import org.bibsonomy.search.management.database.SearchDBInterface;
@@ -27,12 +28,11 @@ import org.bibsonomy.search.update.SearchIndexState;
  * @param <R> 
  * @param <I> 
  */
-public abstract class SearchIndexGeneratorTask<R extends Resource, I extends SearchIndex<R, ?, ?, ?>> implements Callable<Void> {
+public abstract class SearchIndexGeneratorTask<R extends Resource, I extends SearchIndex<R, ?, I, ?>> implements Callable<Void> {
 	private static final Log log = LogFactory.getLog(SearchIndexGeneratorTask.class);
 	
 	private final SearchDBInterface<R> inputLogic;
-	private final I searchIndex;
-	private final I oldSearchIndex;
+	private final IndexLock<R, ?, I, ?> indexLock;
 	
 	private boolean running = false;
 	private boolean finishedSuccessfully = false;
@@ -41,13 +41,11 @@ public abstract class SearchIndexGeneratorTask<R extends Resource, I extends Sea
 
 	/**
 	 * @param inputLogic
-	 * @param searchIndex
-	 * @param oldSearchIndex 
+	 * @param indexLock
 	 */
-	public SearchIndexGeneratorTask(SearchDBInterface<R> inputLogic, final I searchIndex, final I oldSearchIndex) {
+	public SearchIndexGeneratorTask(SearchDBInterface<R> inputLogic, final IndexLock<R, ?, I, ?> indexLock) {
 		this.inputLogic = inputLogic;
-		this.searchIndex = searchIndex;
-		this.oldSearchIndex = oldSearchIndex;
+		this.indexLock = indexLock;
 	}
 
 	/* (non-Javadoc)
@@ -165,14 +163,7 @@ public abstract class SearchIndexGeneratorTask<R extends Resource, I extends Sea
 	/**
 	 * @return the searchIndex
 	 */
-	public I getSearchIndex() {
-		return this.searchIndex;
-	}
-
-	/**
-	 * @return the oldSearchIndex
-	 */
-	public I getOldSearchIndex() {
-		return this.oldSearchIndex;
+	public IndexLock<R, ?, I, ?> getSearchIndexLock() {
+		return this.indexLock;
 	}
 }

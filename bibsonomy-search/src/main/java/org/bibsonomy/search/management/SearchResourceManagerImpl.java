@@ -20,6 +20,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.search.SearchPost;
 import org.bibsonomy.search.management.database.SearchDBInterface;
+import org.bibsonomy.search.management.exceptions.NoIndexAvaiableException;
 import org.bibsonomy.search.model.SearchIndexInfo;
 import org.bibsonomy.search.update.SearchIndexState;
 import org.bibsonomy.search.update.SearchIndexUpdater;
@@ -89,12 +90,12 @@ public class SearchResourceManagerImpl<R extends Resource> implements SearchReso
 	@Override
 	public void updateAllIndices() {
 		// FIXME: lock this method
-		final Map<SearchIndexState, List<SearchIndex<R, ?, ?, ?>>> lastLogDateAndLastTasIdToUpdaters = getUpdatersBySameState();
+		final Map<SearchIndexState, List<IndexLock<R, ?, ?, ?>>> lastLogDateAndLastTasIdToUpdaters = this.getIndicesBySameState();
 		try {
 			final SearchIndexState targetState = this.searchDBLogic.getDbState();
 			
-			for (Entry<SearchIndexState, List<SearchIndex<R, ?, ?, ?>>> e : lastLogDateAndLastTasIdToUpdaters.entrySet()) {
-				final List<SearchIndex<R, ?, ?, ?>> indices = e.getValue();
+			for (Entry<SearchIndexState, List<IndexLock<R, ?, ?, ?>>> e : lastLogDateAndLastTasIdToUpdaters.entrySet()) {
+				final List<IndexLock<R, ?, ?, ?>> indices = e.getValue();
 				final SearchIndexState indexState = e.getKey();
 				this.updateIndex(indexState, targetState, indices);
 			}
@@ -115,14 +116,14 @@ public class SearchResourceManagerImpl<R extends Resource> implements SearchReso
 	/**
 	 * @param indexState
 	 * @param targetState
-	 * @param indices
+	 * @param indexLocks
 	 */
-	private void updateIndex(final SearchIndexState oldState, SearchIndexState targetState, List<SearchIndex<R, ?, ?, ?>> indices) {
-		log.info("updating indices with same state " + oldState + " : " + indices.toString());
+	private void updateIndex(final SearchIndexState oldState, SearchIndexState targetState, List<IndexLock<R, ?, ?, ?>> indexLocks) {
+		log.info("updating indices with same state " + oldState + " : " + indexLocks.toString());
 		
 		final List<SearchIndexUpdater<R>> indexUpdaters = new LinkedList<>();
-		for (final SearchIndex<R, ?, ?, ?> index : indices) {
-			final SearchIndexUpdater<R> searchIndexUpdater = createUpdater(index);
+		for (final IndexLock<R, ?, ?, ?> indexLock : indexLocks) {
+			final SearchIndexUpdater<R> searchIndexUpdater = createUpdater(indexLock);
 			indexUpdaters.add(searchIndexUpdater);
 		}
 		
@@ -197,9 +198,9 @@ public class SearchResourceManagerImpl<R extends Resource> implements SearchReso
 	 * @param index
 	 * @return
 	 */
-	private <T, I extends SearchIndex<R, T, I, M>, M> SearchIndexUpdater<R> createUpdater(SearchIndex<R, T, I, M> index) {
-		final SearchIndexContainer<R, T, I, M> container = index.getContainer();
-		return container.createUpdaterForIndex((I) index);
+	private <T, I extends SearchIndex<R, T, I, M>, M> SearchIndexUpdater<R> createUpdater(IndexLock<R, T, I, M> indexLock) {
+		final SearchIndexContainer<R, T, I, M> container = indexLock.getSearchIndex().getContainer();
+		return container.createUpdaterForIndex(indexLock);
 	}
 
 	/**
@@ -271,33 +272,38 @@ public class SearchResourceManagerImpl<R extends Resource> implements SearchReso
 		}
 	}
 
-	private Map<SearchIndexState, List<SearchIndex<R, ?, ?, ?>>> getUpdatersBySameState() {
-		final Map<SearchIndexState, List<SearchIndex<R, ?, ?, ?>>> lastLogDateAndLastTasIdToUpdaters = new HashMap<>();
+	private Map<SearchIndexState, List<IndexLock<R, ?, ?, ?>>> getIndicesBySameState() {
+		final Map<SearchIndexState, List<IndexLock<R, ?, ?, ?>>> lastLogDateAndLastTasIdToUpdaters = new HashMap<>();
 		
 		for (final SearchIndexContainer<R, ?, ?, ?> container : this.containers) {
-			// TODO: throw exception if no index is available for update
-			
-			final SearchIndex<R, ?, ?, ?> indexToUpdate = container.getIndexToUpdate();
-			final SearchIndexState indexUpdaterState = getIndexUpdaterStateForContainer(container);
-			
-			List<SearchIndex<R, ?, ?, ?>> indicesWithSameState = lastLogDateAndLastTasIdToUpdaters.get(indexUpdaterState);
-			if (indicesWithSameState == null) {
-				indicesWithSameState = new ArrayList<>();
-				lastLogDateAndLastTasIdToUpdaters.put(indexUpdaterState, indicesWithSameState);
+			try {
+				// TODO: throw exception if no index is available for update
+				
+				@SuppressWarnings("resource") // we close the lock later and not now TODO: fix?
+				final IndexLock<R, ?, ?, ?> indexToUpdateLock = container.acquireWriteLockForIndexToUpdate();
+				final SearchIndexState indexUpdaterState = this.getIndexUpdaterStateForContainer(indexToUpdateLock);
+				
+				List<IndexLock<R, ?, ?, ?>> indicesWithSameState = lastLogDateAndLastTasIdToUpdaters.get(indexUpdaterState);
+				if (indicesWithSameState == null) {
+					indicesWithSameState = new ArrayList<>();
+					lastLogDateAndLastTasIdToUpdaters.put(indexUpdaterState, indicesWithSameState);
+				}
+				indicesWithSameState.add(indexToUpdateLock);
+			} catch (NoIndexAvaiableException e) {
+				log.warn("no index for update for container " + container.getId());
 			}
-			indicesWithSameState.add(indexToUpdate);
 		}
 		return lastLogDateAndLastTasIdToUpdaters;
 	}
 
 	/**
 	 * @param container
-	 * @param indexToUpdate 
+	 * @param searchIndex
 	 * @return
 	 */
-	private <T, I extends SearchIndex<R, T, I, M>, M> SearchIndexState getIndexUpdaterStateForContainer(SearchIndexContainer<R, T, I, M> container) {
-		final SearchIndex<R, T, I, M> indexToUpdate = container.getIndexToUpdate();
-		return container.getUpdaterStateForIndex(indexToUpdate);
+	private <T, I extends SearchIndex<R, T, I, M>, M> SearchIndexState getIndexUpdaterStateForContainer(IndexLock<R, T, I, M> indexLock) {
+		final SearchIndex<R, T, I, M> searchIndex = indexLock.getSearchIndex();
+		return searchIndex.getContainer().getUpdaterStateForIndex((I) searchIndex);
 	}
 	
 	/**

@@ -16,6 +16,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.search.generator.SearchIndexGeneratorTask;
 import org.bibsonomy.search.management.database.SearchDBInterface;
+import org.bibsonomy.search.management.exceptions.NoIndexAvaiableException;
 import org.bibsonomy.search.update.SearchIndexState;
 import org.bibsonomy.search.update.SearchIndexUpdater;
 import org.bibsonomy.search.util.MappingBuilder;
@@ -54,6 +55,7 @@ public abstract class SearchIndexContainer<R extends Resource, T, I extends Sear
 	 * @param resourceType
 	 * @param id
 	 * @param converter
+	 * @param mappingBuilder 
 	 */
 	public SearchIndexContainer(final Class<R> resourceType, final String id, final ResourceConverter<R, T> converter, final MappingBuilder<M> mappingBuilder) {
 		this.id = id;
@@ -67,41 +69,35 @@ public abstract class SearchIndexContainer<R extends Resource, T, I extends Sear
 	}
 
 	/**
-	 * @return
+	 * @return the index to update
 	 */
-	public SearchIndex<R, T, I, M> getIndexToUpdate() {
+	public IndexLock<R, T, I, M> acquireWriteLockForIndexToUpdate() throws NoIndexAvaiableException {
+		final I indexToUpdate = this.inactiveIndex;
+		if (indexToUpdate == null) {
+			throw new NoIndexAvaiableException(); // TODODZO: 
+		}
+		final IndexLock<R, T, I, M> writeLock = this.acquireWriteLockForIndex(this.inactiveIndex);
+		this.inactiveIndex = null;
 		
-		// TODO Auto-generated method stub
-		return null;
+		return writeLock;
 	}
 	
 	/**
 	 * @param indexToUpdate
-	 * @return
+	 * @return the current state for the index
 	 */
-	public SearchIndexState getUpdaterStateForIndex(SearchIndex<R, T, I, M> indexToUpdate) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public abstract SearchIndexState getUpdaterStateForIndex(I indexToUpdate);
 	
 	/**
 	 * @param index
 	 * @return
 	 */
-	public abstract SearchIndexUpdater<R> createUpdaterForIndex(I index);
-	
+	public abstract SearchIndexUpdater<R> createUpdaterForIndex(IndexLock<R, T, I, M> index);
+
 	/**
 	 * @param index
 	 */
-	public void activateIndex(final I index) {
-		if (this.activeIndex != null) {
-			try (final IndexLock<R, T, I, M> lock = this.acquireWriteLockForIndex(this.activeIndex)) {
-				this.lockAndSwitchIndices(index);
-			}
-		} else {
-			this.lockAndSwitchIndices(index);
-		}
-	}
+	public abstract void activateIndex(final I index);
 
 	/**
 	 * @param index
@@ -122,13 +118,6 @@ public abstract class SearchIndexContainer<R extends Resource, T, I extends Sear
 	protected abstract void doSwitchIndex(final I oldActiveIndex, final I newActiveIndex, final I inactiveIndex);
 	
 	/**
-	 * replaces the oldindex with the new index
-	 * @param oldIndex
-	 * @param newIndex
-	 */
-	public abstract void replaceOldIndexWithNewOne(final I oldIndex, final I newIndex);
-	
-	/**
 	 * @param index
 	 */
 	public void deletedIndex(final I index) {
@@ -139,10 +128,10 @@ public abstract class SearchIndexContainer<R extends Resource, T, I extends Sear
 	/**
 	 * @param indexId
 	 * @param inputLogic
-	 * @return the task to execute
+	 * @param lockForIndex
+	 * @return
 	 */
 	public abstract SearchIndexGeneratorTask<R, I> createRegeneratorTaskForIndex(String indexId, final SearchDBInterface<R> inputLogic);
-	
 	
 	public IndexLock<R, T, I, M> acquireWriteLockForIndex(final I index) {
 		final ReadWriteLock lock = getLockForIndex(index);
@@ -192,7 +181,8 @@ public abstract class SearchIndexContainer<R extends Resource, T, I extends Sear
 						generatorTask.call();
 						// if the generation was successful activate index
 						if (generatorTask.isFinishedSuccessfully()) {
-							replaceOldIndexWithNewOne(generatorTask.getOldSearchIndex(), generatorTask.getSearchIndex());
+							// replace the active index
+							exchangeActiveIndexWith(generatorTask.getSearchIndexLock().getSearchIndex());
 						}
 					} catch (Exception e) {
 						log.error("error while generating index.", e);
@@ -207,8 +197,16 @@ public abstract class SearchIndexContainer<R extends Resource, T, I extends Sear
 			log.info("finished generation task");
 			
 		} else {
-			log.warn("can't acquire lock for index generation,");
+			log.warn("can't acquire lock for index generation. Already generating another one.");
 		}
+	}
+
+	/**
+	 * @param searchIndex
+	 */
+	protected void exchangeActiveIndexWith(I searchIndex) {
+		final I indexToDelete = this.inactiveIndex;
+		this.activateIndex(searchIndex);
 	}
 
 	/**

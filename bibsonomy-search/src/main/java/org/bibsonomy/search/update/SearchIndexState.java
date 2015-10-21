@@ -112,13 +112,15 @@ public class SearchIndexState implements Serializable {
 		if (!(obj instanceof SearchIndexState)) {
 			return false;
 		}
-		if (!ObjectUtils.equals(last_log_date, ((SearchIndexState)obj).last_log_date)) {
+		
+		final SearchIndexState otherState = (SearchIndexState)obj;
+		if (!ObjectUtils.equals(last_log_date, otherState.last_log_date)) {
 			return false;
 		}
-		if (!ObjectUtils.equals(last_tas_id, ((SearchIndexState)obj).last_tas_id)) {
+		if (!ObjectUtils.equals(last_tas_id, otherState.last_tas_id)) {
 			return false;
 		}
-		if (!ObjectUtils.equals(lastPersonChangeId, ((SearchIndexState)obj).lastPersonChangeId)) {
+		if (!ObjectUtils.equals(lastPersonChangeId, otherState.lastPersonChangeId)) {
 			return false;
 		}
 		return true;

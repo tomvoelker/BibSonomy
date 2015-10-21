@@ -58,6 +58,7 @@ import org.elasticsearch.client.IndicesAdminClient;
  * @author lutful
  * @author jil
  */
+@Deprecated // TODO: remove TODODZO
 public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIndexGenerator<R> {
 	private static final Log log = LogFactory.getLog(SharedResourceIndexGenerator.class);
 	

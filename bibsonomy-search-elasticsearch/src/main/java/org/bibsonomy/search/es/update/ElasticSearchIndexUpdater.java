@@ -13,6 +13,8 @@ import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.search.es.management.ElasticSearchIndex;
 import org.bibsonomy.search.es.management.util.ElasticSearchUtils;
+import org.bibsonomy.search.management.IndexLock;
+import org.bibsonomy.search.management.SearchIndexContainer;
 import org.bibsonomy.search.update.SearchIndexState;
 import org.bibsonomy.search.update.SearchIndexUpdater;
 import org.bibsonomy.search.util.Mapping;
@@ -38,16 +40,16 @@ public class ElasticSearchIndexUpdater<R extends Resource> implements SearchInde
 	protected ESClient esClient;
 	
 	/** the index to update */
-	protected ElasticSearchIndex<R> index;
+	protected IndexLock<R, Map<String, Object>, ElasticSearchIndex<R>, String> indexLock;
 	
 	/**
 	 * @param esClient
-	 * @param index
+	 * @param indexLock
 	 */
-	public ElasticSearchIndexUpdater(ESClient esClient, ElasticSearchIndex<R> index) {
+	public ElasticSearchIndexUpdater(ESClient esClient, IndexLock<R, Map<String, Object>, ElasticSearchIndex<R>, String> indexLock) {
 		super();
 		this.esClient = esClient;
-		this.index = index;
+		this.indexLock = indexLock;
 	}
 
 	/* (non-Javadoc)
@@ -56,7 +58,8 @@ public class ElasticSearchIndexUpdater<R extends Resource> implements SearchInde
 	@Override
 	public void createEmptyIndex() throws IOException {
 		this.esClient.waitForReadyState();
-		final String indexName = this.index.getIndexName();
+		final ElasticSearchIndex<R> searchIndex = getIndex();
+		final String indexName = searchIndex.getIndexName();
 		
 		// check if the index already exists if not, it creates empty index
 		final boolean indexExists = this.esClient.existsIndexWithName(indexName);
@@ -64,7 +67,8 @@ public class ElasticSearchIndexUpdater<R extends Resource> implements SearchInde
 			throw new IllegalStateException("index '" + indexName + "' already exists while generating an index");
 		}
 		
-		final Mapping<String> mapping = this.index.getContainer().getMappingBuilder().getMapping();
+		final SearchIndexContainer<R, Map<String, Object>, ElasticSearchIndex<R>, String> container = searchIndex.getContainer();
+		final Mapping<String> mapping = container.getMappingBuilder().getMapping();
 		log.info("index not existing - generating a new one with mapping");
 		
 		final boolean created = this.esClient.createIndex(indexName, Collections.singleton(mapping));
@@ -73,7 +77,7 @@ public class ElasticSearchIndexUpdater<R extends Resource> implements SearchInde
 		}
 		
 		// FIXME: use system url TODODZO
-		this.esClient.createAlias(indexName, ElasticSearchUtils.getTempAliasForResource(this.index.getContainer().getResourceType()));
+		this.esClient.createAlias(indexName, ElasticSearchUtils.getTempAliasForResource(container.getResourceType()));
 	}
 	
 	/* (non-Javadoc)
@@ -92,7 +96,7 @@ public class ElasticSearchIndexUpdater<R extends Resource> implements SearchInde
 	public void insertPost(SearchPost<R> post) {
 		this.esClient.waitForReadyState();
 		
-		final Map<String, Object> jsonDocument = this.index.getContainer().getConverter().convert(post);
+		final Map<String, Object> jsonDocument = this.indexLock.getSearchIndex().getContainer().getConverter().convert(post);
 		// jsonDocument.put(Fields.SYSTEM_URL, this.systemHome); TODO: handle Systemhome TODODZO
 		final String indexId = ElasticSearchUtils.createElasticSearchId(post.getContentId().intValue());
 		// TODO: this method needs to support the additional parameter?
@@ -100,7 +104,15 @@ public class ElasticSearchIndexUpdater<R extends Resource> implements SearchInde
 	}
 	
 	private void insertPostDocument(final Map<String, Object> jsonDocument, String indexIdStr) {
-		this.esClient.insertNewDocument(this.index.getIndexName(), this.index.getContainer().getResourceTypeAsString(), indexIdStr, jsonDocument);
+		final ElasticSearchIndex<R> searchIndex = getIndex();
+		this.esClient.insertNewDocument(searchIndex.getIndexName(), searchIndex.getContainer().getResourceTypeAsString(), indexIdStr, jsonDocument);
+	}
+	
+	/**
+	 * @return the index hold by the lock
+	 */
+	protected ElasticSearchIndex<R> getIndex() {
+		return this.indexLock.getSearchIndex();
 	}
 	
 	/* (non-Javadoc)
@@ -108,16 +120,18 @@ public class ElasticSearchIndexUpdater<R extends Resource> implements SearchInde
 	 */
 	@Override
 	public void removeAllPostsOfUser(final String userName) {
+		final ElasticSearchIndex<R> index = this.getIndex();
 		// FIXME: system url TODODZO?
-		this.esClient.getClient().prepareDeleteByQuery(this.index.getIndexName())
-			.setTypes(this.index.getContainer().getResourceTypeAsString())
+		this.esClient.getClient().prepareDeleteByQuery(index.getIndexName())
+			.setTypes(index.getContainer().getResourceTypeAsString())
 			.setQuery(QueryBuilders.termQuery(Fields.USER_NAME, userName))
 			.execute().actionGet();
 	}
 	
 	private void deletePostForIndexId(final String indexId) {
+		final ElasticSearchIndex<R> index = this.getIndex();
 		// FIXME: system url TODODZO?
-		this.esClient.getClient().prepareDelete(this.index.getIndexName(), this.index.getContainer().getResourceTypeAsString(), indexId)
+		this.esClient.getClient().prepareDelete(index.getIndexName(), index.getContainer().getResourceTypeAsString(), indexId)
 		.setRefresh(true)
 		.execute().actionGet();
 	}
@@ -130,7 +144,7 @@ public class ElasticSearchIndexUpdater<R extends Resource> implements SearchInde
 		try {
 			final ObjectMapper mapper = new ObjectMapper();
 			final String jsonDocumentForSystemInfo = mapper.writeValueAsString(newState);
-			final String indexName = this.index.getIndexName();
+			final String indexName = this.getIndex().getIndexName();
 			final IndexResponse res = this.esClient.getClient().prepareIndex(indexName, ESConstants.SYSTEM_INFO_INDEX_TYPE, ESConstants.SYSTEM_INFO_INDEX_TYPE).setSource(jsonDocumentForSystemInfo).execute().actionGet();
 			if ((res == null) || !ValidationUtils.present(res.getId())) {
 				throw new RuntimeException("failed to save systeminformation for index " + indexName);

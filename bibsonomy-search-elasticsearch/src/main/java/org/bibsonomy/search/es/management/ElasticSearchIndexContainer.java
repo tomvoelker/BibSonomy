@@ -16,8 +16,10 @@ import org.bibsonomy.search.es.generator.ElasticSearchIndexGeneratorTask;
 import org.bibsonomy.search.es.management.util.ElasticSearchUtils;
 import org.bibsonomy.search.es.update.ElasticSearchIndexUpdater;
 import org.bibsonomy.search.generator.SearchIndexGeneratorTask;
+import org.bibsonomy.search.management.IndexLock;
 import org.bibsonomy.search.management.SearchIndexContainer;
 import org.bibsonomy.search.management.database.SearchDBInterface;
+import org.bibsonomy.search.update.SearchIndexState;
 import org.bibsonomy.search.update.SearchIndexUpdater;
 import org.bibsonomy.search.util.MappingBuilder;
 import org.bibsonomy.search.util.ResourceConverter;
@@ -82,11 +84,19 @@ public class ElasticSearchIndexContainer<R extends Resource> extends SearchIndex
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.management.SearchIndexContainer#createUpdaterForIndex(org.bibsonomy.search.management.SearchIndex)
+	 * @see org.bibsonomy.search.management.SearchIndexContainer#createUpdaterForIndex(org.bibsonomy.search.management.IndexLock)
 	 */
 	@Override
-	public SearchIndexUpdater<R> createUpdaterForIndex(ElasticSearchIndex<R> index) {
-		return new ElasticSearchIndexUpdater<R>(this.esClient, index);
+	public SearchIndexUpdater<R> createUpdaterForIndex(IndexLock<R, Map<String, Object>, ElasticSearchIndex<R>, String> indexLock) {
+		return new ElasticSearchIndexUpdater<>(esClient, indexLock);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.management.SearchIndexContainer#getUpdaterStateForIndex(org.bibsonomy.search.management.SearchIndex)
+	 */
+	@Override
+	public SearchIndexState getUpdaterStateForIndex(ElasticSearchIndex<R> indexToUpdate) {
+		return this.esClient.getSearchIndexStateForIndex(indexToUpdate.getIndexName());
 	}
 	
 	/* (non-Javadoc)
@@ -144,16 +154,13 @@ public class ElasticSearchIndexContainer<R extends Resource> extends SearchIndex
 	 */
 	@Override
 	public SearchIndexGeneratorTask<R, ElasticSearchIndex<R>> createRegeneratorTaskForIndex(String indexId, SearchDBInterface<R> inputLogic) {
-		// TODO: lock the index
-		final ElasticSearchIndex<R> oldIndex = this.inactiveIndex;
-		this.inactiveIndex = null;
-		
 		final String newIndexName = ElasticSearchUtils.getIndexNameWithTime(this.systemURI, this.getResourceType());
 		final ElasticSearchIndex<R> newIndex = new ElasticSearchIndex<>(newIndexName, this);
 		
-		return new ElasticSearchIndexGeneratorTask<>(inputLogic, newIndex, oldIndex);
+		return new ElasticSearchIndexGeneratorTask<>(inputLogic, this.acquireWriteLockForIndex(newIndex));
 	}
 	
+	// TODO: remove
 	private String getThisSystemsIndexNameFromAlias(String aliasName) {
 		List<String> indexList = getThisSystemsIndexesFromAlias(aliasName);
 		if (indexList.size() > 1) {

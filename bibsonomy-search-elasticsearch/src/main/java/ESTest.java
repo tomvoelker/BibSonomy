@@ -13,7 +13,7 @@ public class ESTest {
 		final SearchResourceManagerInterface<?> manager = context.getBean("publicationManager", SearchResourceManagerInterface.class);
 		// manager.generateIndexForResource("elasticSearch", "");
 		// manager.generateIndexForResource("elasticSearch", "");
-
+		manager.updateAllIndices();
 		context.close();
 	}
 }

@@ -13,6 +13,7 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.search.es.management.ElasticSearchIndex;
+import org.bibsonomy.search.management.IndexLock;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.update.SearchPublicationIndexUpdater;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -32,10 +33,10 @@ public class ElasticSearchPublicationindexUpdater<P extends BibTex> extends Elas
 	
 	/**
 	 * @param esClient
-	 * @param index
+	 * @param indexLock
 	 */
-	public ElasticSearchPublicationindexUpdater(ESClient esClient, ElasticSearchIndex<P> index) {
-		super(esClient, index);
+	public ElasticSearchPublicationindexUpdater(ESClient esClient, IndexLock<P, Map<String, Object>, ElasticSearchIndex<P>, String> indexLock) {
+		super(esClient, indexLock);
 	}
 	
 	/* (non-Javadoc)
@@ -47,8 +48,9 @@ public class ElasticSearchPublicationindexUpdater<P extends BibTex> extends Elas
 	}
 	
 	private void updateIndexForPersonWithId(LRUMap updatedInterhashes, final String personId, final SearchDBInterface<P> dbLogic) {
-		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(this.index.getIndexName());
-		searchRequestBuilder.setTypes(this.index.getContainer().getResourceTypeAsString());
+		final ElasticSearchIndex<P> index = this.getIndex();
+		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(index.getIndexName());
+		searchRequestBuilder.setTypes(index.getContainer().getResourceTypeAsString());
 		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 		searchRequestBuilder.setQuery(QueryBuilders.termQuery(Fields.PERSON_ENTITY_IDS_FIELD_NAME, personId));
 
@@ -71,8 +73,9 @@ public class ElasticSearchPublicationindexUpdater<P extends BibTex> extends Elas
 	 */
 	@Override
 	public void updateIndexWithPersonRelation(String interhash, List<ResourcePersonRelation> newRels) {
-		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(this.index.getIndexName());
-		searchRequestBuilder.setTypes(this.index.getContainer().getResourceTypeAsString());
+		final ElasticSearchIndex<P> index = this.getIndex();
+		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(index.getIndexName());
+		searchRequestBuilder.setTypes(index.getContainer().getResourceTypeAsString());
 		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 		// FIXME: systemURL necessary? TODODZO
 		searchRequestBuilder.setQuery(QueryBuilders.termQuery(Fields.Resource.INTERHASH, interhash));
@@ -94,7 +97,8 @@ public class ElasticSearchPublicationindexUpdater<P extends BibTex> extends Elas
 	}
 	
 	private void updatePostDocument(final Map<String, Object> jsonDocument, String indexIdStr) {
-		this.esClient.getClient().prepareUpdate(this.index.getIndexName(), this.index.getContainer().getResourceTypeAsString(), indexIdStr)
+		final ElasticSearchIndex<P> index = this.getIndex();
+		this.esClient.getClient().prepareUpdate(index.getIndexName(), index.getContainer().getResourceTypeAsString(), indexIdStr)
 			.setDoc(jsonDocument)
 			.setRefresh(true).execute().actionGet();
 	}

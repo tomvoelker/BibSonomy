@@ -36,6 +36,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.search.es.ESConstants;
+import org.bibsonomy.search.update.SearchIndexState;
 import org.bibsonomy.search.util.Mapping;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequestBuilder;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse;
@@ -45,6 +46,9 @@ import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
+import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.client.transport.TransportClient;
@@ -54,7 +58,10 @@ import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.ImmutableSettings.Builder;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
+ * TODO: move methods to {@link AbstractEsClient} TODODZO
  * starts the Transport Client for connecting with the elastic search cluster
  * 
  * @author lutful
@@ -178,6 +185,44 @@ public class ESTransportClient extends AbstractEsClient {
 		return true;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.es.ESClient#getSearchIndexStateForIndex(java.lang.String)
+	 */
+	@Override
+	public SearchIndexState getSearchIndexStateForIndex(String indexName) {
+		// wait for the yellow (or green) status to prevent
+		// NoShardAvailableActionException later
+		this.waitForReadyState();
+		
+		final SearchRequestBuilder searchRequestBuilder = this.client.prepareSearch(indexName);
+		searchRequestBuilder.setTypes(ESConstants.SYSTEM_INFO_INDEX_TYPE);
+		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
+		searchRequestBuilder.setFrom(0).setSize(1).setExplain(true); // FIXME: remove explain
+		
+		final SearchResponse searchResponse = searchRequestBuilder.get();
+		
+		// ensure that there is only one index state stored in the index
+		long hitsInIndex = searchResponse.getHits().totalHits();
+		if (hitsInIndex > 1) {
+			throw new IllegalStateException(hitsInIndex + " systeminfos for index " + indexName);
+		}
+		
+		return parseIndexState(searchResponse.getHits().iterator().next().getSourceAsString());
+	}
+	
+	/**
+	 * @param sourceAsString
+	 * @return
+	 */
+	private static SearchIndexState parseIndexState(String json) {
+		try {
+			return new ObjectMapper().readValue(json, SearchIndexState.class);
+		} catch (final Exception e) {
+			log.error("cannot parse systeminformation for index: " + json);
+			return null;
+		}
+	}
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.search.es.ESClient#deleteIndex(java.lang.String)
 	 */

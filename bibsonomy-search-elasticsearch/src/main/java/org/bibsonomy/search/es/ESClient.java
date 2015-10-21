@@ -29,6 +29,7 @@ package org.bibsonomy.search.es;
 import java.util.Map;
 import java.util.Set;
 
+import org.bibsonomy.search.update.SearchIndexState;
 import org.bibsonomy.search.util.Mapping;
 import org.elasticsearch.client.Client;
 
@@ -82,6 +83,12 @@ public interface ESClient {
 	
 	/**
 	 * @param indexName
+	 * @return
+	 */
+	public SearchIndexState getSearchIndexStateForIndex(String indexName);
+	
+	/**
+	 * @param indexName
 	 * @param mappings 
 	 * @return
 	 */
@@ -98,4 +105,6 @@ public interface ESClient {
 	 * for querying and indexing.
 	 */
 	void shutdown();
+
+	
 }
