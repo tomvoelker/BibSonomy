@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
+ * BibSonomy-Webapp - The web application for BibSonomy.
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -12,44 +12,38 @@
  *                               http://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
+ * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.common.enums;
+package org.bibsonomy.webapp.util.spring.i18n;
+
+import java.util.Collection;
+import java.util.Locale;
+
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
 /**
- * Enum for the different tag relations.
- * 
- * @author niebler
+ * some helper methods for the MessageBundleSource
+ *
+ * @author dzo
  */
-public enum TagRelation {
-	/** Co-Occurring tags. */
-	RELATED,
-	/** Cosine-similar tags. */
-	SIMILAR;
+public class ExposedResourceMessageBundleSource extends ReloadableResourceBundleMessageSource {
 	
 	/**
-	 * Tries to match a string onto a relation.
-	 * @param string a string
-	 * @return the requested relation or null if no match was found.
+	 * get all message keys
+	 * @param locale
+	 * @return the message keys for the specified locale
 	 */
-	public static TagRelation getRelationByString(String string) {
-		if (string.equalsIgnoreCase("related")) {
-			return TagRelation.RELATED;
-		}
-		if (string.equalsIgnoreCase("similar")) {
-			return TagRelation.SIMILAR;
-		}
-		
-		return null;
+	public Collection<Object> getAllMessageKeys(final Locale locale) {
+		return getMergedProperties(locale).getProperties().keySet();
 	}
 }

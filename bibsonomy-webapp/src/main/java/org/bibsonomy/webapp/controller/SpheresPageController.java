@@ -264,6 +264,5 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 			return Views.SPHERELIST;
 		}
 		return Views.getViewByFormat(format);
-	}	
-
+	}
 }

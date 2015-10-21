@@ -94,7 +94,7 @@
 				headingLink="${relativeUrlGenerator.getConceptsUrlByString(command.requestedUser)}"	
 				headingTitleKey="tagrelations.user.title"
 				scope="${command.scope.name()}"/>
-				
+			
 			<!-- display similar users -->
 			<sidebar:sidebarItem textKey="users.similar">
 				<jsp:attribute name="content">

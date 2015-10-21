@@ -26,67 +26,60 @@
  */
 package org.bibsonomy.webapp.util.tags;
 
+import java.util.Collection;
+import java.util.Locale;
+
+import javax.servlet.jsp.PageContext;
+
+import org.bibsonomy.webapp.util.spring.i18n.ExposedResourceMessageBundleSource;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.support.RequestContext;
 import org.springframework.web.servlet.tags.RequestContextAwareTag;
 
 /**
- * TODO: document the use of this tag
- * 
- * @author sbo <sbo@cs.uni-kassel.de>
+ * TODO: add documentation to this class
+ *
+ * @author dzo
  */
-@Deprecated // use tagx for that, no need for a java class
-public class StringShortenerTag extends RequestContextAwareTag {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	private String value;
+public class MessageSourceKeysTag extends RequestContextAwareTag {
+	private static final long serialVersionUID = 8814519023061404076L;
 	
-	private int maxlen;
+	private Locale locale;
+	private String var;
+
+	private int scope = PageContext.PAGE_SCOPE;
 	
-	/**
-	 * @return maxlen
+	/* (non-Javadoc)
+	 * @see org.springframework.web.servlet.tags.RequestContextAwareTag#doStartTagInternal()
 	 */
-	public int getMaxlen() {
-		return this.maxlen;
-	}
-
-	/**
-	 * @param maxlen
-	 */
-	public void setMaxlen(final int maxlen) {
-		this.maxlen = maxlen;
-	}
-
-	/**
-	 * @return filename
-	 */
-	public String getValue() {
-		return this.value;
-	}
-
-	/**
-	 * @param value
-	 */
-	public void setValue(final String value) {
-		this.value = value;
-	}
-
 	@Override
 	protected int doStartTagInternal() throws Exception {
-		String newFilename = "";
-		if(value.length() >= maxlen) {
-			
-			int offset = maxlen / 2;
-			
-			newFilename += value.substring(0, offset) + "…" + value.substring(value.length()-offset, value.length());
-			this.pageContext.getOut().print(newFilename);
-		} else {
-			this.pageContext.getOut().print(value);
-		}
-		return SKIP_BODY;
-
+		final RequestContext requestContext = this.getRequestContext();
+		final WebApplicationContext context = requestContext.getWebApplicationContext();
+		final ExposedResourceMessageBundleSource messageSource = context.getBean(ExposedResourceMessageBundleSource.class);
+		final Collection<Object> keys = messageSource.getAllMessageKeys(this.locale);
+		this.pageContext.setAttribute(this.var, keys, this.scope);
+		return 0;
 	}
 
+	/**
+	 * @param locale the locale to set
+	 */
+	public void setLocale(Locale locale) {
+		this.locale = locale;
+	}
+
+	/**
+	 * @param var the var to set
+	 */
+	public void setVar(String var) {
+		this.var = var;
+	}
+
+	/**
+	 * @param scope the scope to set
+	 */
+	public void setScope(int scope) {
+		this.scope = scope;
+	}
 }

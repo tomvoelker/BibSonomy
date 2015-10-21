@@ -402,7 +402,7 @@
 		<name>/user/USER/TAG</name>
 		<from>^/+user/+([^/]+?)/(.+)$</from>
 		<set type="parameter" name="requestedUser">$1</set>
-		<set type="parameter" name="requestedTags">$2</set>		
+		<set type="parameter" name="requestedTags">$2</set>
 		<to last="true">/user</to>
 	</rule>
 	<!-- /user/USER -->
@@ -449,7 +449,7 @@
 		<name>/discussed/user/USER/TAG</name>
 		<from>^/+discussed/user/+([^/]+?)/(.+)$</from>
 		<set type="parameter" name="requestedUser">$1</set>
-		<set type="parameter" name="requestedTags">$2</set>		
+		<set type="parameter" name="requestedTags">$2</set>
 		<to last="true">/discussed</to>
 	</rule>
 
@@ -467,6 +467,13 @@
 		<from>^/+discussed/group/+([^/]+)$</from>
 		<set type="parameter" name="requestedGroup">$1</set>
 		<to last="true">/discussed</to>
+	</rule>
+	
+	<!-- /discussed/ -->
+	<rule>
+		<name>/discussed/</name>
+		<from>^/+discussed/$</from>
+		<to last="true" type="redirect">/discussed</to>
 	</rule>
 
 	<!-- ############## Curriculum vitae pages ############### -->
@@ -771,6 +778,12 @@
 		<set type="parameter" name="requestedAuthor">$1</set>
 		<to last="true">/author</to>
 	</rule>
+	<!-- /author/AUTHOR/ (with slash) -->
+	<rule>
+		<name>/author/AUTHOR/</name>
+		<from>^/+author/([^/]+)/$</from>
+		<to type="redirect" last="true">/author/${escape:$1}</to>
+	</rule>
 	<!-- redirect for author formular on /author/AUTHOR page -->
 	<rule>
 		<name>redirect /author/AUTHOR</name>
@@ -826,6 +839,12 @@
 		<set type="parameter" name="requestedHash">$2$3</set>
 		<to last="true">/bibtex</to>
 	</rule>
+	<!-- /[0-3][32] with slash -->
+	<rule>
+		<name>/bibtex/SHASH/</name>
+		<from>^/+(bibtex|publication)/+([0-3])([0-9a-fA-F]{32})/$</from>
+		<to type="redirect" last="true">/$1/$2$3</to>
+	</rule>
 	<rule><!-- /[32] (arbitrary hash) defaults to simhash1 -->
 		<name>/bibtex/HASH</name>
 		<from>^/+(bibtex|publication)/+([0-9a-fA-F]{32})$</from>
@@ -866,7 +885,7 @@
 		<name>/search/SEARCH/TAG</name>
 		<from>^/+search/+([^/]+?)/(.+)$</from>
 		<set type="parameter" name="requestedSearch">$1</set>
-		<set type="parameter" name="requestedTags">$2</set>		
+		<set type="parameter" name="requestedTags">$2</set>
 		<to last="true">/search</to>
 	</rule>
 	<rule>
@@ -1024,9 +1043,9 @@
 		<from>^/BibtexHandler$</from>
 		<to last="true">/editPublication</to>
 	</rule>
-	<rule><!-- in February 2012 we renamed the clipboard to "clipboard" -->
-		<name>/clipboard</name>
-		<from>^/clipboard$</from>
+	<rule><!-- in February 2012 we renamed the basket to "clipboard" -->
+		<name>/basket</name>
+		<from>^/basket$</from>
 		<to type="redirect" last="true">/clipboard</to>
 	</rule>
 	<rule><!-- in February 2012 we build the new "BibTeXHashExample" -->
@@ -1035,17 +1054,17 @@
 		<to type="redirect" last="true">/hashExample</to>
 	</rule>
 	
+	<!-- old join group urls -->
+	<rule>
+		<name>/joingroup</name>
+		<from casesensitive="true">^/joingroup$</from>
+		<to last="true" type="redirect">/joinGroup?%{query-string}</to>
+	</rule>
+	
 	<!-- old msoffice urls -->
 	<rule>
 		<name>/msofficexml</name>
 		<from>^/+msofficexml/(.*)$</from>
 		<to type="redirect" last="true">/layout/msofficexml/$1</to>
-	</rule>
-	
-	<!-- TODO: (Bootstrap) remove after updating the link in the blog -->
-	<rule>
-		<name>/bibsonomy3preview</name>
-		<from>^/bibsonomy3preview$</from>
-		<to type="redirect" last="true">/bibsonomy3</to>
 	</rule>
 </urlrewrite>

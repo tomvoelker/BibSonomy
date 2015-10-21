@@ -75,8 +75,7 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		if (tagCount == 0 && requTags.size() == 1 && MyOwnSystemTag.NAME.equalsIgnoreCase(requTags.get(0))) {
 			tagCount = 1;
 		}
-			
-			
+		
 		// handle case when only tags are requested
 		// FIXME we can only retrieve 1000 tags here
 		this.handleTagsOnly(command, GroupingEntity.ALL, null, null, requTags, null, 1000, null);
@@ -103,7 +102,7 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 			
 			this.setTotalCount(command, resourceType, GroupingEntity.ALL, null, requTags, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			totalNumPosts += listCommand.getTotalCount();
-		}	
+		}
 		
 		/*
 		 *  if order = folkrank - retrieve related users
@@ -143,7 +142,7 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 	public TagResourceViewCommand instantiateCommand() {
 		return new TagResourceViewCommand();
 	}
-		
+	
 	/**
 	 * retrieve related user by tag
 	 * 
@@ -157,5 +156,4 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		final RelatedUserCommand relatedUserCommand = cmd.getRelatedUserCommand();
 		relatedUserCommand.setRelatedUsers(this.logic.getUsers(null, grouping, null, tags, null, order, relation, null, start, end));
 	}
-	
 }

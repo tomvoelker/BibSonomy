@@ -98,6 +98,23 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+	
+	<tag>
+		<name>messageSourceKeys</name>
+		<info>stores all keys of the messagesource into the specified var</info>
+		<tagclass>org.bibsonomy.webapp.util.tags.MessageSourceKeysTag</tagclass>
+		<bodycontent>empty</bodycontent>
+		<attribute>
+			<name>locale</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>var</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
 
 	<tag>
 		<name>formatTimeDiff</name>

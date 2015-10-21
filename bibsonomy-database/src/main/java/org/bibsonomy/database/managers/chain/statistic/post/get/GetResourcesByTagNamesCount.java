@@ -57,8 +57,8 @@ public class GetResourcesByTagNamesCount extends StatisticChainElement {
 	}
 
 	@Override
-	protected boolean canHandle(StatisticsParam param) {						
-		return 	(param.getGrouping() == GroupingEntity.ALL) &&
+	protected boolean canHandle(StatisticsParam param) {
+		return (param.getGrouping() == GroupingEntity.ALL) &&
 				present(param.getTagIndex()) && 
 				(param.getNumSimpleConcepts() == 0) && 
 				(param.getNumSimpleTags() > 0) && 
