@@ -24,11 +24,12 @@ public class ElasticSearchIndexGeneratorTask<R extends Resource> extends SearchI
 	/**
 	 * @param inputLogic
 	 * @param searchIndex
+	 * @param oldSearchIndex 
 	 * @param client 
 	 */
-	public ElasticSearchIndexGeneratorTask(SearchDBInterface<R> inputLogic, ElasticSearchIndex<R> searchIndex) {
-		super(inputLogic, searchIndex);
-		this.updater = this.searchIndex.getContainer().createUpdaterForIndex(this.searchIndex);
+	public ElasticSearchIndexGeneratorTask(SearchDBInterface<R> inputLogic, ElasticSearchIndex<R> searchIndex, final ElasticSearchIndex<R> oldSearchIndex) {
+		super(inputLogic, searchIndex, oldSearchIndex);
+		this.updater = this.getSearchIndex().getContainer().createUpdaterForIndex(this.getSearchIndex());
 	}
 
 	/* (non-Javadoc)

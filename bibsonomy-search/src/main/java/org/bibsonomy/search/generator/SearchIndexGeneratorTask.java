@@ -31,7 +31,8 @@ public abstract class SearchIndexGeneratorTask<R extends Resource, I extends Sea
 	private static final Log log = LogFactory.getLog(SearchIndexGeneratorTask.class);
 	
 	private final SearchDBInterface<R> inputLogic;
-	protected final I searchIndex;
+	private final I searchIndex;
+	private final I oldSearchIndex;
 	
 	private boolean running = false;
 	private boolean finishedSuccessfully = false;
@@ -41,10 +42,12 @@ public abstract class SearchIndexGeneratorTask<R extends Resource, I extends Sea
 	/**
 	 * @param inputLogic
 	 * @param searchIndex
+	 * @param oldSearchIndex 
 	 */
-	public SearchIndexGeneratorTask(SearchDBInterface<R> inputLogic, final I searchIndex) {
+	public SearchIndexGeneratorTask(SearchDBInterface<R> inputLogic, final I searchIndex, final I oldSearchIndex) {
 		this.inputLogic = inputLogic;
 		this.searchIndex = searchIndex;
+		this.oldSearchIndex = oldSearchIndex;
 	}
 
 	/* (non-Javadoc)
@@ -120,6 +123,10 @@ public abstract class SearchIndexGeneratorTask<R extends Resource, I extends Sea
 		writeMetaInfo(newState);
 	}
 	
+	public double getProgress() {
+		return this.writtenPosts / (double) this.numberOfPosts;
+	}
+	
 	/**
 	 * @param newState
 	 */
@@ -148,4 +155,24 @@ public abstract class SearchIndexGeneratorTask<R extends Resource, I extends Sea
 	 */
 	protected abstract void createEmptyIndex() throws IOException;
 
+	/**
+	 * @return the finishedSuccessfully
+	 */
+	public boolean isFinishedSuccessfully() {
+		return this.finishedSuccessfully;
+	}
+
+	/**
+	 * @return the searchIndex
+	 */
+	public I getSearchIndex() {
+		return this.searchIndex;
+	}
+
+	/**
+	 * @return the oldSearchIndex
+	 */
+	public I getOldSearchIndex() {
+		return this.oldSearchIndex;
+	}
 }

@@ -2,7 +2,9 @@ package org.bibsonomy.search.es.index;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +19,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.search.es.ESConstants.Fields.Publication;
@@ -34,6 +37,13 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	private static final String PERSON_DELIMITER = " & ";
 	private static final String NAME_PART_DELIMITER = " ; ";
 	
+	/**
+	 * @param systemURI
+	 */
+	public PublicationConverter(URI systemURI) {
+		super(systemURI);
+	}
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.search.es.index.ResourceConverter#convertPostInternal(java.util.Map, org.bibsonomy.model.Post)
 	 */
@@ -52,7 +62,6 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	protected void convertResource(Map<String, Object> jsonDocument, BibTex resource) {
 		jsonDocument.put("address", resource.getAddress());
 		jsonDocument.put("annote", resource.getAnnote());
-		jsonDocument.put(Fields.Publication.AUTHOR, convertPersonNames(resource.getAuthor()));
 		jsonDocument.put("bkey", resource.getKey());
 		jsonDocument.put("abstract", resource.getAbstract());
 		jsonDocument.put(Fields.Publication.BIBTEXKEY, resource.getBibtexKey());
@@ -61,7 +70,17 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		jsonDocument.put("crossref", resource.getCrossref());
 		jsonDocument.put("day", resource.getDay());
 		jsonDocument.put("edition", resource.getEdition());
-		jsonDocument.put("editor", convertPersonNames(resource.getEditor()));
+		
+		final List<PersonName> editors = resource.getEditor();
+		if (present(editors)) {
+			jsonDocument.put("editor", convertPersonNames(editors));
+		}
+		
+		final List<PersonName> authors = resource.getAuthor();
+		if (present(authors)) {
+			jsonDocument.put(Fields.Publication.AUTHOR, convertPersonNames(authors));
+		}
+		
 		jsonDocument.put("entrytype", resource.getEntrytype());
 		jsonDocument.put("howPublished", resource.getHowpublished());
 		
@@ -90,9 +109,14 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	 * @param author
 	 * @return
 	 */
-	private static Object convertPersonNames(List<PersonName> author) {
-		// FIXME: convert to string?
-		return author;
+	private static List<String> convertPersonNames(List<PersonName> persons) {
+		final List<String> serializedPersonNames = new LinkedList<>();
+		
+		for (final PersonName person : persons) {
+			serializedPersonNames.add(PersonNameUtils.serializePersonName(person));
+		}
+		
+		return serializedPersonNames;
 	}
 
 	/* (non-Javadoc)

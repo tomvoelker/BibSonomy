@@ -1,6 +1,7 @@
 package org.bibsonomy.search.management;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.search.model.SearchIndexInfo;
@@ -13,7 +14,7 @@ import org.bibsonomy.search.model.SearchIndexInfo;
  */
 public interface SearchResourceManagerInterface<R extends Resource> {
 	
-	public void generateIndexForResource(final String containerId, final String indexId);
+	public void generateIndexForResource(final String containerId, final String indexId) throws ExecutionException;
 	
 	public List<SearchIndexInfo> getInfomationOfIndexForResource();
 	

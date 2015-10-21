@@ -27,9 +27,7 @@
 package org.bibsonomy.search.es.management;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -59,10 +57,8 @@ import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.client.Requests;
 import org.elasticsearch.cluster.metadata.AliasMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
-import org.elasticsearch.common.hppc.cursors.ObjectCursor;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
@@ -257,39 +253,7 @@ public class ESIndexManager {
 		return indexList.get(0);
 	}
 	
-	/**
-	 * gets all the indexes set under the alias for the current system
-	 *  
-	 * @param alias
-	 * @return return a list of indexes
-	 */
-	public List<String> getThisSystemsIndexesFromAlias(String alias) {
-		final String thisSystemPrefix = ElasticSearchUtils.normSystemHome(this.systemHome);
-		final List<String> rVal = getIndexesFromAlias(alias);
-		for (final Iterator<String> it = rVal.iterator(); it.hasNext();) {
-			final String indexName = it.next();
-			if (!indexName.contains(thisSystemPrefix)) {
-				it.remove();
-			}
-		}
-		return rVal;
-	}
 	
-	private List<String> getIndexesFromAlias(String alias) {
-		final List<String> indexes = new ArrayList<String>();
-		final ImmutableOpenMap<String, AliasMetaData> indexToAliasesMap = this.esClient.getClient().admin().cluster() //
-				.state(Requests.clusterStateRequest()) //
-				.actionGet() //
-				.getState() //
-				.getMetaData() //
-				.aliases().get(alias);
-		if (indexToAliasesMap != null && !indexToAliasesMap.isEmpty()) {
-			for (final ObjectCursor<String> cursor : indexToAliasesMap.keys()) {
-				indexes.add(cursor.value);
-			}
-		}
-		return indexes;
-	}
 	
 	/**
 	 * gets the active indexName for the resource of the current system

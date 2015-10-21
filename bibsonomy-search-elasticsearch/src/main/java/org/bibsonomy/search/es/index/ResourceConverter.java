@@ -1,10 +1,17 @@
 package org.bibsonomy.search.es.index;
 
+import java.net.URI;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.search.es.ESConstants.Fields;
 
 /**
@@ -15,6 +22,15 @@ import org.bibsonomy.search.es.ESConstants.Fields;
  */
 public abstract class ResourceConverter<R extends Resource> implements org.bibsonomy.search.util.ResourceConverter<R, Map<String, Object>> {
 	
+	private final URI systemURI;
+	
+	/**
+	 * @param systemURI
+	 */
+	public ResourceConverter(final URI systemURI) {
+		this.systemURI = systemURI;
+	}
+
 	@Override
 	public Post<R> convert(final Map<String, Object> source) {
 		// TODO: implement me
@@ -49,13 +65,42 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 		
 		jsonDocument.put(Fields.USER_NAME, post.getUser().getName());
 		
-		jsonDocument.put(Fields.GROUPS, post.getGroups());
-		jsonDocument.put(Fields.TAGS, post.getTags());
-		jsonDocument.put(Fields.SYSTEM_URL, ""); // FIXME: projectHome
+		jsonDocument.put(Fields.GROUPS, convertGroups(post.getGroups()));
+		
+		jsonDocument.put(Fields.TAGS, convertTags(post.getTags()));
+		jsonDocument.put(Fields.SYSTEM_URL, this.systemURI);
 		
 		this.convertResourceInternal(jsonDocument, post.getResource());
 		this.convertPostInternal(post, jsonDocument);
 		return jsonDocument;
+	}
+
+	/**
+	 * @param groups
+	 * @return
+	 */
+	private static List<String> convertGroups(final Set<Group> groups) {
+		final List<String> groupsAsString = new LinkedList<>();
+		
+		for (final Group group : groups) {
+			groupsAsString.add(group.getName());
+		}
+		
+		return groupsAsString;
+	}
+
+	/**
+	 * @param set
+	 * @return
+	 */
+	private static Set<String> convertTags(final Set<Tag> tags) {
+		final Set<String> tagsAsString = new HashSet<>();
+		
+		for (final Tag tag : tags) {
+			tagsAsString.add(tag.getName());
+		}
+		
+		return tagsAsString;
 	}
 
 	/**

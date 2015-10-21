@@ -1,8 +1,13 @@
 package org.bibsonomy.search.es.management;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.generator.ElasticSearchIndexGeneratorTask;
@@ -13,8 +18,18 @@ import org.bibsonomy.search.management.SearchIndexContainer;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.update.SearchIndexUpdater;
 import org.bibsonomy.search.util.ResourceConverter;
+import org.elasticsearch.action.admin.cluster.state.ClusterStateRequest;
+import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequestBuilder;
+import org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse;
 import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.client.IndicesAdminClient;
+import org.elasticsearch.client.Requests;
+import org.elasticsearch.cluster.metadata.AliasMetaData;
+import org.elasticsearch.common.collect.ImmutableOpenMap;
+import org.elasticsearch.common.hppc.ObjectLookupContainer;
+import org.elasticsearch.common.hppc.cursors.ObjectCursor;
 
 /**
  * TODO: add documentation to this class
@@ -26,6 +41,8 @@ import org.elasticsearch.client.IndicesAdminClient;
  * @param <I> 
  */
 public class ElasticSearchIndexContainer<R extends Resource> extends SearchIndexContainer<R, Map<String, Object>, ElasticSearchIndex<R>> {
+	private static final Log log = LogFactory.getLog(ElasticSearchIndexContainer.class);
+	
 	private ESClient esClient;
 	private URI systemURI;
 	
@@ -46,11 +63,27 @@ public class ElasticSearchIndexContainer<R extends Resource> extends SearchIndex
 	}
 	
 	private void initIndices() {
+		/*
+		 * look for indices which have the active / unactive aliases set
+		 */
 		final String activeIndexAlias = ElasticSearchUtils.getLocalAliasForResource(this.resourceClass, this.systemURI, true);
 		
 		final IndicesAdminClient indicesClient = this.esClient.getClient().admin().indices();
-		if (!indicesClient.getAliases(new GetAliasesRequest().aliases(activeIndexAlias)).actionGet().getAliases().isEmpty()) {
-			this.activeIndex = new ElasticSearchIndex<>(activeIndexAlias, this, this.resourceClass);
+		final ImmutableOpenMap<String, List<AliasMetaData>> activeindices = indicesClient.getAliases(new GetAliasesRequest().aliases(activeIndexAlias)).actionGet().getAliases();
+		if (!activeindices.isEmpty()) {
+			if (activeindices.size() > 1) {
+				throw new IllegalStateException("found more than one active index for this system!");
+			}
+			this.activeIndex = new ElasticSearchIndex<>(activeindices.iterator().next().key, this, this.resourceClass);
+		}
+		
+		final String inactiveIndexAlias = ElasticSearchUtils.getLocalAliasForResource(this.resourceClass, this.systemURI, false);
+		final ImmutableOpenMap<String, List<AliasMetaData>> inactiveIndices = indicesClient.getAliases(new GetAliasesRequest().aliases(inactiveIndexAlias)).actionGet().getAliases();
+		if (!inactiveIndices.isEmpty()) {
+			if (inactiveIndices.size() > 1) {
+				throw new IllegalStateException("found more than one inactive index for this system!");
+			}
+			this.inactiveIndex = new ElasticSearchIndex<>(inactiveIndices.iterator().next().key, this, this.resourceClass);
 		}
 	}
 	
@@ -61,25 +94,141 @@ public class ElasticSearchIndexContainer<R extends Resource> extends SearchIndex
 	public SearchIndexUpdater<R> createUpdaterForIndex(ElasticSearchIndex<R> index) {
 		return new ElasticSearchIndexUpdater<R>(this.esClient, index);
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.management.SearchIndexContainer#replaceOldIndexWithNewOne(org.bibsonomy.search.management.SearchIndex, org.bibsonomy.search.management.SearchIndex)
+	 */
+	@Override
+	public void replaceOldIndexWithNewOne(ElasticSearchIndex<R> oldIndex, ElasticSearchIndex<R> newIndex) {
+		this.activateIndex(newIndex);
+		
+		if (oldIndex != null) {
+			final String oldIndexName = oldIndex.getIndexName();
+			final ClusterStateRequest clusterStateRequest = new ClusterStateRequest().indices(oldIndexName);
+			final ObjectLookupContainer<String> aliases = this.esClient.getClient().admin().cluster().state(clusterStateRequest).actionGet().getState().getMetaData().aliases().keys();
+			if (!aliases.isEmpty()) {
+				throw new IllegalStateException("Found aliases for index '" + oldIndexName + "' while trying to delete index.");
+			}
+			
+			final DeleteIndexResponse deleteResult = this.esClient.getClient().admin().indices().delete(new DeleteIndexRequest(oldIndexName)).actionGet();
+			if (deleteResult.isAcknowledged()) {
+				log.debug("deleted index '" + oldIndexName + "'.");
+				this.deletedIndex(oldIndex);
+			} else {
+				log.error("can't delete index '" + oldIndexName + "'.");
+			}
+		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.management.SearchIndexContainer#doSwitchIndex(org.bibsonomy.search.management.SearchIndex, org.bibsonomy.search.management.SearchIndex, org.bibsonomy.search.management.SearchIndex)
+	 */
+	@Override
+	protected void doSwitchIndex(ElasticSearchIndex<R> oldActiveIndex, ElasticSearchIndex<R> newActiveIndex, ElasticSearchIndex<R> inactiveIndex) {
+		final String activeIndexAliasName = ElasticSearchUtils.getLocalAliasForResource(this.resourceClass, this.systemURI, true);
+		final String inactiveAliasName = ElasticSearchUtils.getLocalAliasForResource(this.resourceClass, this.systemURI, false);
+		final IndicesAliasesRequestBuilder prepareAliases = this.esClient.getClient().admin().indices().prepareAliases();
+		if (oldActiveIndex != null) {
+			prepareAliases.removeAlias(oldActiveIndex.getIndexName(), activeIndexAliasName)
+							.addAlias(oldActiveIndex.getIndexName(), inactiveAliasName);
+		}
+		
+		if (inactiveIndex != null) {
+			prepareAliases.removeAlias(inactiveIndex.getIndexName(), inactiveAliasName);
+		}
+		
+		prepareAliases.addAlias(newActiveIndex.getIndexName(), activeIndexAliasName);
+		final IndicesAliasesResponse aliasReponse = prepareAliases.execute().actionGet();
+		if (!aliasReponse.isAcknowledged()) {
+			log.error("error switching indices.");
+		}
+	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.search.management.SearchIndexContainer#createRegeneratorTaskForIndex(java.lang.String, org.bibsonomy.search.management.database.SearchDBInterface)
 	 */
 	@Override
 	public SearchIndexGeneratorTask<R, ElasticSearchIndex<R>> createRegeneratorTaskForIndex(String indexId, SearchDBInterface<R> inputLogic) {
-		final ElasticSearchIndex<R> oldIndex;
-//		// indexId == indexName
-//		if (this.activeIndex.getIndexName().equals(indexId)) {
-//			// TODO: switch indices, inactive index maybe updating while we try to regenerate the index
-//			oldIndex = this.activeIndex;
-//		} else {
-//			oldIndex = this.inactiveIndex;
-//		}
+		// TODO: lock the index
+		final ElasticSearchIndex<R> oldIndex = this.inactiveIndex;
+		this.inactiveIndex = null;
 		
 		final String newIndexName = ElasticSearchUtils.getIndexNameWithTime(this.systemURI, this.resourceClass);
 		final ElasticSearchIndex<R> newIndex = new ElasticSearchIndex<>(newIndexName, this, this.resourceClass);
 		
-		return new ElasticSearchIndexGeneratorTask<>(inputLogic, newIndex);
+		return new ElasticSearchIndexGeneratorTask<>(inputLogic, newIndex, oldIndex);
 	}
-
+	
+	private String getThisSystemsIndexNameFromAlias(String aliasName) {
+		List<String> indexList = getThisSystemsIndexesFromAlias(aliasName);
+		if (indexList.size() > 1) {
+			log.warn("local system has more than one index for " + aliasName + ": " + indexList);
+		}
+		if (indexList.size() < 1) {
+			log.warn("local system has no index for " + aliasName);
+			return null;
+		}
+		return indexList.get(0);
+	}
+	
+	/**
+	 * gets all the indexes set under the alias for the current system
+	 *  
+	 * @param alias
+	 * @return return a list of indexes
+	 */
+	public List<String> getThisSystemsIndexesFromAlias(String alias) {
+		final String thisSystemPrefix = ElasticSearchUtils.normSystemHome(this.systemURI);
+		final List<String> rVal = getIndexesFromAlias(alias);
+		for (final Iterator<String> it = rVal.iterator(); it.hasNext();) {
+			final String indexName = it.next();
+			if (!indexName.contains(thisSystemPrefix)) {
+				it.remove();
+			}
+		}
+		return rVal;
+	}
+	
+	private List<String> getIndexesFromAlias(String alias) {
+		final List<String> indexes = new ArrayList<String>();
+		final ImmutableOpenMap<String, AliasMetaData> indexToAliasesMap = this.esClient.getClient().admin().cluster() //
+				.state(Requests.clusterStateRequest()) //
+				.actionGet() //
+				.getState() //
+				.getMetaData() //
+				.aliases().get(alias);
+		if (indexToAliasesMap != null && !indexToAliasesMap.isEmpty()) {
+			for (final ObjectCursor<String> cursor : indexToAliasesMap.keys()) {
+				indexes.add(cursor.value);
+			}
+		}
+		return indexes;
+	}
+	
+	/**
+	 * removes one particular alias linking one aliasName to one indexName
+	 * @param indexName
+	 * @param alias
+	 * @return
+	 */
+	private boolean removeAlias(final String indexName, final String alias){
+		final IndicesAliasesResponse aliasReponse = this.esClient.getClient().admin().indices().prepareAliases()
+				.removeAlias(indexName, alias)
+				.execute()
+				.actionGet();
+		if (!aliasReponse.isAcknowledged()) {
+			log.error("Error in removing alias of index: "+ indexName);
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * @param indexName
+	 * @param localAliasForResource
+	 */
+	private void addAlias(String indexName, String aliasName) {
+		final IndicesAliasesResponse actionGet = this.esClient.getClient().admin().indices().prepareAliases().addAlias(indexName, aliasName).execute().actionGet();
+		
+	}
 }

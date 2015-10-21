@@ -1,5 +1,17 @@
 package org.bibsonomy.search.management;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.search.generator.SearchIndexGeneratorTask;
 import org.bibsonomy.search.management.database.SearchDBInterface;
@@ -17,30 +29,41 @@ import org.bibsonomy.search.util.ResourceConverter;
  * @param <I> 
  */
 public abstract class SearchIndexContainer<R extends Resource, T, I extends SearchIndex<R, T, I>> {
+	private static final Log log = LogFactory.getLog(SearchIndexContainer.class);
+	
 	private boolean enabled; // TODO: use this property? TODODZO
 	
 	private final String id;
 	protected final Class<R> resourceClass;
+	
+	private final ConcurrentMap<I, ReadWriteLock> locksByIndex = new ConcurrentHashMap<>();
+	
 	protected I activeIndex;
 	protected I inactiveIndex;
 	private final ResourceConverter<R, T> converter;
+	
+	private final Semaphore generatorLock;
+	private final ExecutorService generatorExecutorService;
 	
 	/**
 	 * @param resourceClass
 	 * @param id
 	 * @param converter
 	 */
-	public SearchIndexContainer(final Class<R> resourceClass, String id, ResourceConverter<R, T> converter) {
-		super();
+	public SearchIndexContainer(final Class<R> resourceClass, final String id, final ResourceConverter<R, T> converter) {
 		this.id = id;
 		this.converter = converter;
 		this.resourceClass = resourceClass;
+		
+		this.generatorLock = new Semaphore(1);
+		this.generatorExecutorService = Executors.newFixedThreadPool(1);
 	}
 
 	/**
 	 * @return
 	 */
 	public SearchIndex<R, T, I> getIndexToUpdate() {
+		
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -63,11 +86,127 @@ public abstract class SearchIndexContainer<R extends Resource, T, I extends Sear
 	/**
 	 * @param index
 	 */
-	public void activateIndex(SearchIndex<R, T, I> index) {
-		// TODO Auto-generated method stub
-		
+	public void activateIndex(final I index) {
+		if (this.activeIndex != null) {
+			try (final IndexLock<R, T, I> lock = this.acquireWriteLockForIndex(this.activeIndex)) {
+				lockAndSwitchIndices(index);
+			}
+		} else {
+			lockAndSwitchIndices(index);
+		}
+	}
+
+	/**
+	 * @param index
+	 */
+	private void lockAndSwitchIndices(final I index) {
+		try (final IndexLock<R, T, I> newIndexLock = this.acquireWriteLockForIndex(index)) {
+			this.doSwitchIndex(this.activeIndex, index, this.inactiveIndex);
+			this.inactiveIndex = this.activeIndex;
+			this.activeIndex = index;
+		}
 	}
 	
+	/**
+	 * @param oldActiveIndex 
+	 * @param newActiveIndex 
+	 * @param inactiveIndex 
+	 */
+	protected abstract void doSwitchIndex(final I oldActiveIndex, final I newActiveIndex, final I inactiveIndex);
+	
+	/**
+	 * replaces the oldindex with the new index
+	 * @param oldIndex
+	 * @param newIndex
+	 */
+	public abstract void replaceOldIndexWithNewOne(final I oldIndex, final I newIndex);
+	
+	/**
+	 * 
+	 * @param index
+	 */
+	public void deletedIndex(final I index) {
+		// clean up the locks
+		this.locksByIndex.remove(index);
+	}
+	
+	/**
+	 * @param indexId
+	 * @param inputLogic
+	 * @return the task to execute
+	 */
+	public abstract SearchIndexGeneratorTask<R, I> createRegeneratorTaskForIndex(String indexId, final SearchDBInterface<R> inputLogic);
+	
+	
+	public IndexLock<R, T, I> acquireWriteLockForIndex(final I index) {
+		final ReadWriteLock lock = getLockForIndex(index);
+		final Lock writeLock = lock.writeLock();
+		writeLock.lock();
+		return new IndexLock<R, T, I>(index, writeLock);
+	}
+
+	/**
+	 * @param index
+	 * @return
+	 */
+	private ReadWriteLock getLockForIndex(final I index) {
+		ReadWriteLock lock = this.locksByIndex.get(index);
+		if (lock == null) {
+			final ReadWriteLock newLock = new ReentrantReadWriteLock();
+			lock = this.locksByIndex.putIfAbsent(index, newLock);
+			if (lock == null) {
+				return newLock;
+			}
+		}
+		return lock;
+	}
+	
+	/**
+	 * @param indexId
+	 * @param searchDB 
+	 */
+	public void generateIndex(String indexId, final SearchDBInterface<R> searchDB) {
+		if (this.generatorLock.tryAcquire()) {
+			final SearchIndexGeneratorTask<R, I> generatorTask = this.createRegeneratorTaskForIndex(indexId, searchDB);
+			log.info("starting generation task.");
+			// TODO: get status of generating task
+			this.generatorExecutorService.submit(new Callable<Void>() {
+				
+				/* (non-Javadoc)
+				 * @see java.util.concurrent.Callable#call()
+				 */
+				@Override
+				public Void call() throws Exception {
+					try {
+						generatorTask.call();
+						// if the generation was successful activate index
+						if (generatorTask.isFinishedSuccessfully()) {
+							replaceOldIndexWithNewOne(generatorTask.getOldSearchIndex(), generatorTask.getSearchIndex());
+						}
+					} catch (Exception e) {
+						log.error("error while generating index.", e);
+					}
+					
+					// release the lock
+					SearchIndexContainer.this.generatorLock.release();
+					
+					return null;
+				}
+			});
+			log.info("finished generation task");
+			
+		} else {
+			log.warn("can't acquire lock for index generation,");
+		}
+	}
+
+	/**
+	 * 
+	 */
+	public void shutdown() {
+		this.generatorExecutorService.shutdownNow();
+	}
+
 	/**
 	 * @return the converter
 	 */
@@ -81,11 +220,4 @@ public abstract class SearchIndexContainer<R extends Resource, T, I extends Sear
 	public String getId() {
 		return this.id;
 	}
-
-	/**
-	 * @param indexId
-	 * @param inputLogic 
-	 * @return the task to execute
-	 */
-	public abstract SearchIndexGeneratorTask<R, I> createRegeneratorTaskForIndex(String indexId, final SearchDBInterface<R> inputLogic);
 }

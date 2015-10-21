@@ -39,6 +39,7 @@ public class ElasticSearchIndexUpdater<R extends Resource> implements SearchInde
 	
 	/** the client to use for communication with elastic search cluster */
 	protected ESClient esClient;
+	
 	/** the index to update */
 	protected ElasticSearchIndex<R> index;
 	
@@ -87,7 +88,7 @@ public class ElasticSearchIndexUpdater<R extends Resource> implements SearchInde
 	@Override
 	public void deletePostWithContentId(final int contentId) {
 		final String indexID = ElasticSearchUtils.createElasticSearchId(contentId);
-		this.deleteIndexForIndexId(indexID);
+		this.deletePostForIndexId(indexID);
 	}
 	
 	/* (non-Javadoc)
@@ -95,7 +96,7 @@ public class ElasticSearchIndexUpdater<R extends Resource> implements SearchInde
 	 */
 	@Override
 	public void insertPost(SearchPost<R> post) {
-		this.esClient.waitForReadyState(); // TODO: remove? TODODZO
+		this.esClient.waitForReadyState();
 		
 		final Map<String, Object> jsonDocument = this.index.getContainer().getConverter().convert(post);
 		// jsonDocument.put(Fields.SYSTEM_URL, this.systemHome); TODO: handle Systemhome TODODZO
@@ -113,7 +114,7 @@ public class ElasticSearchIndexUpdater<R extends Resource> implements SearchInde
 	 * @see org.bibsonomy.search.management.SearchIndexUpdater#removeAllPostsOfUser(java.lang.String)
 	 */
 	@Override
-	public void removeAllPostsOfUser(String userName) {
+	public void removeAllPostsOfUser(final String userName) {
 		// FIXME: system url TODODZO?
 		this.esClient.getClient().prepareDeleteByQuery(this.index.getIndexName())
 			.setTypes(this.index.getResourceTypeAsString())
@@ -121,7 +122,7 @@ public class ElasticSearchIndexUpdater<R extends Resource> implements SearchInde
 			.execute().actionGet();
 	}
 	
-	private void deleteIndexForIndexId(final String indexId) {
+	private void deletePostForIndexId(final String indexId) {
 		// FIXME: system url TODODZO?
 		this.esClient.getClient().prepareDelete(this.index.getIndexName(), this.index.getResourceTypeAsString(), indexId)
 		.setRefresh(true)

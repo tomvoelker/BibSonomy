@@ -10,17 +10,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.search.SearchPost;
-import org.bibsonomy.search.generator.SearchIndexGeneratorTask;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.model.SearchIndexInfo;
 import org.bibsonomy.search.update.SearchIndexState;
@@ -43,8 +41,6 @@ public class SearchResourceManagerImpl<R extends Resource> implements SearchReso
 	protected final SearchDBInterface<R> searchDBLogic;
 	private final List<SearchIndexContainer<R, ?, ?>> containers;
 	
-	private final ExecutorService generatorExecutorService = Executors.newFixedThreadPool(2);
-	
 	/**
 	 * @param searchDBLogic
 	 * @param containers
@@ -60,12 +56,9 @@ public class SearchResourceManagerImpl<R extends Resource> implements SearchReso
 	 * @see org.bibsonomy.search.management.SearchResourceManagerInterface#generateIndexForResource(java.lang.Class)
 	 */
 	@Override
-	public void generateIndexForResource(final String containerId, final String indexId) {
+	public void generateIndexForResource(final String containerId, final String indexId) throws ExecutionException {
 		final SearchIndexContainer<R, ?, ?> container = this.getContainerById(containerId);
-		
-		final SearchIndexGeneratorTask<R, ?> generatorTask = container.createRegeneratorTaskForIndex(indexId, this.searchDBLogic);
-		// TODO: TODODZO
-		final Future<Void> submit = this.generatorExecutorService.submit(generatorTask);
+		container.generateIndex(indexId, this.searchDBLogic);
 	}
 
 	/**
@@ -73,12 +66,12 @@ public class SearchResourceManagerImpl<R extends Resource> implements SearchReso
 	 * @return
 	 */
 	private SearchIndexContainer<R, ?, ?> getContainerById(String containerId) {
-		for (SearchIndexContainer<R, ?, ?> searchIndexContainer : containers) {
+		for (final SearchIndexContainer<R, ?, ?> searchIndexContainer : containers) {
 			if (searchIndexContainer.getId().equals(containerId)) {
 				return searchIndexContainer;
 			}
 		}
-		return null;
+		throw new NoSuchElementException("can't find container with id " + containerId);
 	}
 
 	/* (non-Javadoc)
@@ -306,5 +299,17 @@ public class SearchResourceManagerImpl<R extends Resource> implements SearchReso
 		final SearchIndex<R, T, I> indexToUpdate = container.getIndexToUpdate();
 		return container.getUpdaterStateForIndex(indexToUpdate);
 	}
-
+	
+	/**
+	 * shutdown search containers
+	 */
+	public void shutdown() {
+		for (SearchIndexContainer<R, ?, ?> searchIndexContainer : containers) {
+			try {
+				searchIndexContainer.shutdown();
+			} catch (Exception e) {
+				log.error("error while shuting down container " + searchIndexContainer, e);
+			}
+		}
+	}
 }

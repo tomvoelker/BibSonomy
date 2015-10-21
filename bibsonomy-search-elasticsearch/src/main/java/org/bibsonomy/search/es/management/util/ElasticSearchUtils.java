@@ -14,14 +14,11 @@ import org.bibsonomy.search.es.ESConstants;
 public final class ElasticSearchUtils {
 	private ElasticSearchUtils() {}
 	
-	/**
-	 * Alias for the inactive index
-	 */
-	public static final String INACTIVE_INDEX_ALIAS = "inactiveIndex";
-	/**
-	 * Alias for the active index
-	 */
-	public static final String ACTIVE_INDEX_ALIAS = "activeIndex";
+	/** Alias for the inactive index */
+	private static final String INACTIVE_INDEX_ALIAS = "inactiveIndex";
+	
+	/** Alias for the active index */
+	private static final String ACTIVE_INDEX_ALIAS = "activeIndex";
 
 	/**
 	 * returns the temporary alias used commonly for all newly built indices which are still in build
@@ -40,6 +37,7 @@ public final class ElasticSearchUtils {
 	 * @param isActiveIndex
 	 * @return returns the alias name
 	 */
+	@Deprecated // TODO: use system uri as param
 	public static String getGlobalAliasForResource(final Class<? extends Resource> resourceType, final boolean isActiveIndex) {
 		if (isActiveIndex) {
 			return ElasticSearchUtils.ACTIVE_INDEX_ALIAS + "-" + ResourceFactory.getResourceName(resourceType).toLowerCase();

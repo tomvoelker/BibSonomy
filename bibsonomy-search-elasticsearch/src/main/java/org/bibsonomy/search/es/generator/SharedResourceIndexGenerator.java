@@ -175,7 +175,7 @@ public class SharedResourceIndexGenerator<R extends Resource> extends AbstractIn
 	 */
 	@Override
 	protected void activateIndex() {
-		esClient.getClient().admin().indices().flush(new FlushRequest(indexName).full(true)).actionGet();
+		esClient.getClient().admin().indices().flush(new FlushRequest(indexName)).actionGet();
 		// do not truly activate the index by now. Later, an updater will find it, update it and activate it  
 	}
 
