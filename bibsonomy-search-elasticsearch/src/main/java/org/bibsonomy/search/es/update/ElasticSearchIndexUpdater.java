@@ -71,15 +71,18 @@ public class ElasticSearchIndexUpdater<R extends Resource> implements SearchInde
 				log.error("Error in creating Index");
 				return;
 			}
+		} else {
+			throw new IllegalStateException("index '" + indexName + "' already exists");
 		}
 		
 		log.debug("Start writing mapping to shared index");
-		
 		// add mapping here depending on the resource type which is here indexType
-		ESResourceMapping resourceMapping = new ESResourceMapping(this.index.getResourceType(), esClient, indexName);
+		final ESResourceMapping resourceMapping = new ESResourceMapping(this.index.getContainer().getResourceType(), esClient, indexName);
 		resourceMapping.doMapping();
-		
 		log.debug("wrote mapping to shared index");
+		
+		// FIXME: use system url
+		this.esClient.createAlias(this.index.getIndexName(), ElasticSearchUtils.getTempAliasForResource(this.index.getContainer().getResourceType()));
 	}
 	
 	/* (non-Javadoc)
@@ -106,8 +109,7 @@ public class ElasticSearchIndexUpdater<R extends Resource> implements SearchInde
 	}
 	
 	private void insertPostDocument(final Map<String, Object> jsonDocument, String indexIdStr) {
-		this.esClient.getClient().prepareIndex(this.index.getIndexName(), this.index.getResourceTypeAsString(), indexIdStr)
-			.setSource(jsonDocument).setRefresh(true).execute().actionGet();
+		this.esClient.insertNewDocument(this.index.getIndexName(), this.index.getContainer().getResourceTypeAsString(), indexIdStr, jsonDocument);
 	}
 	
 	/* (non-Javadoc)
@@ -117,14 +119,14 @@ public class ElasticSearchIndexUpdater<R extends Resource> implements SearchInde
 	public void removeAllPostsOfUser(final String userName) {
 		// FIXME: system url TODODZO?
 		this.esClient.getClient().prepareDeleteByQuery(this.index.getIndexName())
-			.setTypes(this.index.getResourceTypeAsString())
+			.setTypes(this.index.getContainer().getResourceTypeAsString())
 			.setQuery(QueryBuilders.termQuery(Fields.USER_NAME, userName))
 			.execute().actionGet();
 	}
 	
 	private void deletePostForIndexId(final String indexId) {
 		// FIXME: system url TODODZO?
-		this.esClient.getClient().prepareDelete(this.index.getIndexName(), this.index.getResourceTypeAsString(), indexId)
+		this.esClient.getClient().prepareDelete(this.index.getIndexName(), this.index.getContainer().getResourceTypeAsString(), indexId)
 		.setRefresh(true)
 		.execute().actionGet();
 	}

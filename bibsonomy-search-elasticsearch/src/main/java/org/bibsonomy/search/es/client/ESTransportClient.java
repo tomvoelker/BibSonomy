@@ -29,11 +29,19 @@ package org.bibsonomy.search.es.client;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.search.es.ESConstants;
+import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequestBuilder;
+import org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse;
+import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.cluster.metadata.AliasMetaData;
+import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.ImmutableSettings.Builder;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
@@ -133,6 +141,46 @@ public class ESTransportClient extends AbstractEsClient {
 			log.error("Error in TransportClient", e);
 			return null;
 		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.es.ESClient#insertNewDocument(java.lang.String, java.lang.String, java.lang.String, java.util.Map)
+	 */
+	@Override
+	public void insertNewDocument(String indexName, String type, String id, Map<String, Object> jsonDocument) {
+		this.client.prepareIndex(indexName, type, id).setSource(jsonDocument).setRefresh(true).execute().actionGet();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.es.ESClient#createAlias(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public boolean createAlias(String indexName, String alias) {
+		final IndicesAliasesRequestBuilder prepareAliases = this.getClient().admin().indices().prepareAliases();
+		
+		prepareAliases.addAlias(indexName, alias);
+		final IndicesAliasesResponse aliasReponse = prepareAliases.execute().actionGet();
+		if (!aliasReponse.isAcknowledged()) {
+			log.error("error creating alias '" + alias + "' for index '" + indexName + "'.");
+			return false;
+		}
+		return false;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.es.ESClient#getIndexNameForAlias(java.lang.String)
+	 */
+	@Override
+	public String getIndexNameForAlias(final String alias) {
+		final ImmutableOpenMap<String, List<AliasMetaData>> activeindices = this.client.admin().indices().getAliases(new GetAliasesRequest().aliases(alias)).actionGet().getAliases();
+		if (!activeindices.isEmpty()) {
+			if (activeindices.size() > 1) {
+				throw new IllegalStateException("found more than one index for this system!");
+			}
+			
+			return activeindices.iterator().next().key;
+		}
+		return null;
 	}
 
 	/*

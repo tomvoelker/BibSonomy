@@ -1,5 +1,7 @@
 package org.bibsonomy.search.es.management;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -21,10 +23,8 @@ import org.bibsonomy.search.util.ResourceConverter;
 import org.elasticsearch.action.admin.cluster.state.ClusterStateRequest;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequestBuilder;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesResponse;
-import org.elasticsearch.action.admin.indices.alias.get.GetAliasesRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
-import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.cluster.metadata.AliasMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
@@ -66,24 +66,18 @@ public class ElasticSearchIndexContainer<R extends Resource> extends SearchIndex
 		/*
 		 * look for indices which have the active / unactive aliases set
 		 */
-		final String activeIndexAlias = ElasticSearchUtils.getLocalAliasForResource(this.resourceClass, this.systemURI, true);
+		final String activeIndexAlias = ElasticSearchUtils.getLocalAliasForResource(this.getResourceType(), this.systemURI, true);
 		
-		final IndicesAdminClient indicesClient = this.esClient.getClient().admin().indices();
-		final ImmutableOpenMap<String, List<AliasMetaData>> activeindices = indicesClient.getAliases(new GetAliasesRequest().aliases(activeIndexAlias)).actionGet().getAliases();
-		if (!activeindices.isEmpty()) {
-			if (activeindices.size() > 1) {
-				throw new IllegalStateException("found more than one active index for this system!");
-			}
-			this.activeIndex = new ElasticSearchIndex<>(activeindices.iterator().next().key, this, this.resourceClass);
+		final String activeIndexName = this.esClient.getIndexNameForAlias(activeIndexAlias);
+		if (present(activeIndexName)) {
+			this.activeIndex = new ElasticSearchIndex<>(activeIndexName, this);
 		}
 		
-		final String inactiveIndexAlias = ElasticSearchUtils.getLocalAliasForResource(this.resourceClass, this.systemURI, false);
-		final ImmutableOpenMap<String, List<AliasMetaData>> inactiveIndices = indicesClient.getAliases(new GetAliasesRequest().aliases(inactiveIndexAlias)).actionGet().getAliases();
-		if (!inactiveIndices.isEmpty()) {
-			if (inactiveIndices.size() > 1) {
-				throw new IllegalStateException("found more than one inactive index for this system!");
-			}
-			this.inactiveIndex = new ElasticSearchIndex<>(inactiveIndices.iterator().next().key, this, this.resourceClass);
+		final String inactiveIndexAlias = ElasticSearchUtils.getLocalAliasForResource(this.getResourceType(), this.systemURI, false);
+		final String inactiveIndexName = this.esClient.getIndexNameForAlias(inactiveIndexAlias);
+		
+		if (present(inactiveIndexName)) {
+			this.inactiveIndex = new ElasticSearchIndex<>(inactiveIndexName, this);
 		}
 	}
 	
@@ -125,8 +119,8 @@ public class ElasticSearchIndexContainer<R extends Resource> extends SearchIndex
 	 */
 	@Override
 	protected void doSwitchIndex(ElasticSearchIndex<R> oldActiveIndex, ElasticSearchIndex<R> newActiveIndex, ElasticSearchIndex<R> inactiveIndex) {
-		final String activeIndexAliasName = ElasticSearchUtils.getLocalAliasForResource(this.resourceClass, this.systemURI, true);
-		final String inactiveAliasName = ElasticSearchUtils.getLocalAliasForResource(this.resourceClass, this.systemURI, false);
+		final String activeIndexAliasName = ElasticSearchUtils.getLocalAliasForResource(this.getResourceType(), this.systemURI, true);
+		final String inactiveAliasName = ElasticSearchUtils.getLocalAliasForResource(this.getResourceType(), this.systemURI, false);
 		final IndicesAliasesRequestBuilder prepareAliases = this.esClient.getClient().admin().indices().prepareAliases();
 		if (oldActiveIndex != null) {
 			prepareAliases.removeAlias(oldActiveIndex.getIndexName(), activeIndexAliasName)
@@ -153,8 +147,8 @@ public class ElasticSearchIndexContainer<R extends Resource> extends SearchIndex
 		final ElasticSearchIndex<R> oldIndex = this.inactiveIndex;
 		this.inactiveIndex = null;
 		
-		final String newIndexName = ElasticSearchUtils.getIndexNameWithTime(this.systemURI, this.resourceClass);
-		final ElasticSearchIndex<R> newIndex = new ElasticSearchIndex<>(newIndexName, this, this.resourceClass);
+		final String newIndexName = ElasticSearchUtils.getIndexNameWithTime(this.systemURI, this.getResourceType());
+		final ElasticSearchIndex<R> newIndex = new ElasticSearchIndex<>(newIndexName, this);
 		
 		return new ElasticSearchIndexGeneratorTask<>(inputLogic, newIndex, oldIndex);
 	}

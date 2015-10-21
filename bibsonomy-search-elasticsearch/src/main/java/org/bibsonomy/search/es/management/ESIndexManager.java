@@ -72,6 +72,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author lutful
  * @author jil
  */
+@Deprecated // remove TODODZO
 public class ESIndexManager {
 	private static final Log log = LogFactory.getLog(ESIndexManager.class);
 	

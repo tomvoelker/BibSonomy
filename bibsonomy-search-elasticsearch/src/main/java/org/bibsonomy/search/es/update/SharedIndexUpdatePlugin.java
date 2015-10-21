@@ -29,7 +29,6 @@ package org.bibsonomy.search.es.update;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -42,7 +41,6 @@ import org.bibsonomy.search.es.index.ResourceConverter;
 import org.bibsonomy.search.es.management.ESIndexManager;
 import org.bibsonomy.search.es.management.IndexLock;
 import org.bibsonomy.search.es.management.SystemInformation;
-import org.bibsonomy.search.es.management.util.ElasticSearchUtils;
 import org.bibsonomy.search.generator.GenerateIndexCallback;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.model.SearchIndexInfo;
@@ -78,29 +76,6 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 		this.esClient = esClient;
 		this.systemHome = systemHome;
 		this.esIndexManager = new ESIndexManager(this.esClient, this.systemHome);
-	}
-	
-	/**
-	 * removes the oldest indices if there are more than two indices. Does not remove active indices.
-	 */
-	private void removeOutdatedIndices() {
-		final String tempAlias = ElasticSearchUtils.getTempAliasForResource(this.resourceType);
-		List<String> indexesList=esIndexManager.getThisSystemsIndexesFromAlias(tempAlias);
-		final String activeIndexAlias = ElasticSearchUtils.getGlobalAliasForResource(resourceType, true);
-		final String backupIndexAlias = ElasticSearchUtils.getGlobalAliasForResource(resourceType, false);
-		final List<String> activeIndices = esIndexManager.getThisSystemsIndexesFromAlias(activeIndexAlias);
-		indexesList.addAll(activeIndices);
-		indexesList.addAll(esIndexManager.getThisSystemsIndexesFromAlias(backupIndexAlias));
-		Collections.sort(indexesList);
-		
-		if (indexesList.size() < 3) {
-			return;
-		}
-		for (int i = 2; i < indexesList.size(); ++i) {
-			if (!activeIndices.contains(indexesList.get(i))) {
-				esIndexManager.removeAlias(indexesList.get(i), backupIndexAlias);
-			}
-		}
 	}
 	
 	/*
@@ -293,7 +268,6 @@ public class SharedIndexUpdatePlugin<R extends Resource> implements UpdatePlugin
 	 */
 	public void activateIndex(String nameOfIndexToBeActivated) {
 		this.esIndexManager.activateIndex(nameOfIndexToBeActivated, this.resourceType);
-		removeOutdatedIndices();
 	}
 
 	public void setGeneratorThreadPool(SimpleBlockingThreadPoolExecutor<SharedResourceIndexGenerator<? super R>> generatorThreadPool) {

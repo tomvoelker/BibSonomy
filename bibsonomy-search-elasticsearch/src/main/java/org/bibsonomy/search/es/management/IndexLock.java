@@ -32,10 +32,13 @@ import java.util.concurrent.locks.Lock;
 import org.bibsonomy.util.LockAutoCloseable;
 
 /**
- * Access to the index should be done by first acquiring an {@link IndexLock}. The index name returned by {@link #getIndexName()} is then guaranteed to be the one that has been locked.
+ * Access to the index should be done by first acquiring an {@link IndexLock}.
+ * The index name returned by {@link #getIndexName()} is then guaranteed to be
+ * the one that has been locked.
  *
  * @author jensi
  */
+@Deprecated // use IndexLock in search module instead TODODZO
 public class IndexLock extends LockAutoCloseable {
 
 	private final String indexName;

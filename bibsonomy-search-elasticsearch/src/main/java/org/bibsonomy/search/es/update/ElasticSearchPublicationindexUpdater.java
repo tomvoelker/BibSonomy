@@ -48,7 +48,7 @@ public class ElasticSearchPublicationindexUpdater<P extends BibTex> extends Elas
 	
 	private void updateIndexForPersonWithId(LRUMap updatedInterhashes, final String personId, final SearchDBInterface<P> dbLogic) {
 		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(this.index.getIndexName());
-		searchRequestBuilder.setTypes(this.index.getResourceTypeAsString());
+		searchRequestBuilder.setTypes(this.index.getContainer().getResourceTypeAsString());
 		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 		searchRequestBuilder.setQuery(QueryBuilders.termQuery(Fields.PERSON_ENTITY_IDS_FIELD_NAME, personId));
 
@@ -72,7 +72,7 @@ public class ElasticSearchPublicationindexUpdater<P extends BibTex> extends Elas
 	@Override
 	public void updateIndexWithPersonRelation(String interhash, List<ResourcePersonRelation> newRels) {
 		final SearchRequestBuilder searchRequestBuilder = this.esClient.getClient().prepareSearch(this.index.getIndexName());
-		searchRequestBuilder.setTypes(this.index.getResourceTypeAsString());
+		searchRequestBuilder.setTypes(this.index.getContainer().getResourceTypeAsString());
 		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 		// FIXME: systemURL necessary? TODODZO
 		searchRequestBuilder.setQuery(QueryBuilders.termQuery(Fields.Resource.INTERHASH, interhash));
@@ -94,7 +94,7 @@ public class ElasticSearchPublicationindexUpdater<P extends BibTex> extends Elas
 	}
 	
 	private void updatePostDocument(final Map<String, Object> jsonDocument, String indexIdStr) {
-		this.esClient.getClient().prepareUpdate(this.index.getIndexName(), this.index.getResourceTypeAsString(), indexIdStr)
+		this.esClient.getClient().prepareUpdate(this.index.getIndexName(), this.index.getContainer().getResourceTypeAsString(), indexIdStr)
 			.setDoc(jsonDocument)
 			.setRefresh(true).execute().actionGet();
 	}

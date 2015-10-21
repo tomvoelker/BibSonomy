@@ -13,6 +13,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.search.generator.SearchIndexGeneratorTask;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.update.SearchIndexState;
@@ -34,7 +35,7 @@ public abstract class SearchIndexContainer<R extends Resource, T, I extends Sear
 	private boolean enabled; // TODO: use this property? TODODZO
 	
 	private final String id;
-	protected final Class<R> resourceClass;
+	private final Class<R> resourceType;
 	
 	private final ConcurrentMap<I, ReadWriteLock> locksByIndex = new ConcurrentHashMap<>();
 	
@@ -46,14 +47,14 @@ public abstract class SearchIndexContainer<R extends Resource, T, I extends Sear
 	private final ExecutorService generatorExecutorService;
 	
 	/**
-	 * @param resourceClass
+	 * @param resourceType
 	 * @param id
 	 * @param converter
 	 */
-	public SearchIndexContainer(final Class<R> resourceClass, final String id, final ResourceConverter<R, T> converter) {
+	public SearchIndexContainer(final Class<R> resourceType, final String id, final ResourceConverter<R, T> converter) {
 		this.id = id;
 		this.converter = converter;
-		this.resourceClass = resourceClass;
+		this.resourceType = resourceType;
 		
 		this.generatorLock = new Semaphore(1);
 		this.generatorExecutorService = Executors.newFixedThreadPool(1);
@@ -89,10 +90,10 @@ public abstract class SearchIndexContainer<R extends Resource, T, I extends Sear
 	public void activateIndex(final I index) {
 		if (this.activeIndex != null) {
 			try (final IndexLock<R, T, I> lock = this.acquireWriteLockForIndex(this.activeIndex)) {
-				lockAndSwitchIndices(index);
+				this.lockAndSwitchIndices(index);
 			}
 		} else {
-			lockAndSwitchIndices(index);
+			this.lockAndSwitchIndices(index);
 		}
 	}
 
@@ -122,7 +123,6 @@ public abstract class SearchIndexContainer<R extends Resource, T, I extends Sear
 	public abstract void replaceOldIndexWithNewOne(final I oldIndex, final I newIndex);
 	
 	/**
-	 * 
 	 * @param index
 	 */
 	public void deletedIndex(final I index) {
@@ -141,8 +141,13 @@ public abstract class SearchIndexContainer<R extends Resource, T, I extends Sear
 	public IndexLock<R, T, I> acquireWriteLockForIndex(final I index) {
 		final ReadWriteLock lock = getLockForIndex(index);
 		final Lock writeLock = lock.writeLock();
-		writeLock.lock();
 		return new IndexLock<R, T, I>(index, writeLock);
+	}
+	
+	public IndexLock<R, T, I> acquireReadLockForIndex(final I index) {
+		final ReadWriteLock lock = getLockForIndex(index);
+		final Lock readLock = lock.readLock();
+		return new IndexLock<R, T, I>(index, readLock);
 	}
 
 	/**
@@ -214,6 +219,20 @@ public abstract class SearchIndexContainer<R extends Resource, T, I extends Sear
 		return this.converter;
 	}
 	
+	/**
+	 * @return the resourceType
+	 */
+	public Class<R> getResourceType() {
+		return this.resourceType;
+	}
+	
+	/**
+	 * @return the resource type as string
+	 */
+	public String getResourceTypeAsString() {
+		return ResourceFactory.getResourceName(this.resourceType);
+	}
+
 	/**
 	 * @return the id
 	 */

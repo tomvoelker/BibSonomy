@@ -21,8 +21,8 @@ public class ElasticSearchIndex<R extends Resource> extends SearchIndex<R, Map<S
 	 * @param container
 	 * @param resourceType 
 	 */
-	public ElasticSearchIndex(final String indexName, SearchIndexContainer<R, Map<String, Object>, ElasticSearchIndex<R>> container, final Class<R> resourceType) {
-		super(container, resourceType);
+	public ElasticSearchIndex(final String indexName, SearchIndexContainer<R, Map<String, Object>, ElasticSearchIndex<R>> container) {
+		super(container);
 		this.indexName = indexName;
 	}
 

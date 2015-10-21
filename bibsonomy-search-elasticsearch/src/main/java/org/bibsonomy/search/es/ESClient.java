@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.search.es;
 
+import java.util.Map;
+
 import org.elasticsearch.client.Client;
 
 /**
@@ -35,7 +37,7 @@ import org.elasticsearch.client.Client;
  * @author lka
  */
 public interface ESClient {
-/**
+	/**
 	 * Get a reference to an ElasticSearch Client.
 	 * 
 	 * @return the Client.
@@ -44,13 +46,36 @@ public interface ESClient {
 	Client getClient();
 
 	/**
+	 * if necessary wait for the index to be ready to work
+	 */
+	public void waitForReadyState();
+
+	/**
+	 * @param indexName
+	 * @param alias
+	 * @return <code>true</code> iff the index was updated
+	 */
+	boolean createAlias(String indexName, String alias);
+
+	/**
+	 * @param alias
+	 * @return the index name of the alias
+	 * @throws IllegalStateException if an alias has multiple indices
+	 */
+	public String getIndexNameForAlias(String alias);
+
+	/**
+	 * @param indexName
+	 * @param type
+	 * @param id
+	 * @param jsonDocument
+	 */
+	void insertNewDocument(String indexName, String type, String id, Map<String, Object> jsonDocument);
+	
+	
+	/**
 	 * Shutdown the ElasticSearch Client. The client will be no more available
 	 * for querying and indexing.
 	 */
 	void shutdown();
-
-	/**
-	 * if necessary wait for the index to be ready to work
-	 */
-	public void waitForReadyState();
 }
