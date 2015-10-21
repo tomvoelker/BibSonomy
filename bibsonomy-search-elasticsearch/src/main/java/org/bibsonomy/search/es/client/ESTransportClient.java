@@ -37,7 +37,6 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.ImmutableSettings.Builder;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.node.Node;
 
 /**
  * starts the Transport Client for connecting with the elastic search cluster
@@ -144,16 +143,6 @@ public class ESTransportClient extends AbstractEsClient {
 	@Override
 	public Client getClient() {
 		return this.client;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.bibsonomy.model.es.ESClient#getNode()
-	 */
-	@Override
-	public Node getNode() {
-		return null;
 	}
 
 	/*

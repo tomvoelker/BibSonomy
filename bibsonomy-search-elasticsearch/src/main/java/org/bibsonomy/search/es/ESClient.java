@@ -27,7 +27,6 @@
 package org.bibsonomy.search.es;
 
 import org.elasticsearch.client.Client;
-import org.elasticsearch.node.Node;
 
 /**
  * Wrapper around an ElasticSearch Client. Different ways of obtaining a Client
@@ -41,14 +40,8 @@ public interface ESClient {
 	 * 
 	 * @return the Client.
 	 */
-
+	@Deprecated
 	Client getClient();
-
-	/**
-	 * @return the node
-	 */
-	@Deprecated // TODO: remove TODODZO
-	Node getNode();
 
 	/**
 	 * Shutdown the ElasticSearch Client. The client will be no more available
