@@ -122,4 +122,10 @@ public interface ESClient {
 	 * @return 
 	 */
 	boolean removeDocumentFromIndex(String indexName, String resourceTypeAsString, String indexID);
+
+	/**
+	 * @param indexName
+	 * @param alias
+	 */
+	void deleteAlias(String indexName, String alias);
 }

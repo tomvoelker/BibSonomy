@@ -29,6 +29,7 @@ package org.bibsonomy.search.es.client;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -280,16 +281,28 @@ public class ESTransportClient extends AbstractEsClient {
 	public boolean updateAliases(Set<Pair<String, String>> aliasesToAdd, Set<Pair<String, String>> aliasesToRemove) {
 		final IndicesAliasesRequestBuilder aliasesBuilder = this.client.admin().indices().prepareAliases();
 		
-		for (Pair<String, String> aliasToAdd : aliasesToAdd) {
-			aliasesBuilder.addAlias(aliasToAdd.getFirst(), aliasToAdd.getSecond());
+		if (present(aliasesToAdd)) {
+			for (Pair<String, String> aliasToAdd : aliasesToAdd) {
+				aliasesBuilder.addAlias(aliasToAdd.getFirst(), aliasToAdd.getSecond());
+			}
 		}
 		
-		for (Pair<String, String> aliasToRemove : aliasesToRemove) {
-			aliasesBuilder.removeAlias(aliasToRemove.getFirst(), aliasToRemove.getSecond());
+		if (present(aliasesToRemove)) {
+			for (Pair<String, String> aliasToRemove : aliasesToRemove) {
+				aliasesBuilder.removeAlias(aliasToRemove.getFirst(), aliasToRemove.getSecond());
+			}
 		}
 		
 		final IndicesAliasesResponse aliasResponse = aliasesBuilder.get();
 		return aliasResponse.isAcknowledged();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.es.ESClient#deleteAlias(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void deleteAlias(String indexName, String alias) {
+		this.updateAliases(null, Collections.singleton(new Pair<>(indexName, alias)));
 	}
 	
 	/* (non-Javadoc)

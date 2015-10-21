@@ -63,8 +63,9 @@ public class ElasticSearchIndexGenerator<R extends Resource> {
 	public void generateIndex() {
 		this.createNewIndex();
 		this.fillIndexWithPosts();
+		this.indexCreated();
 	}
-
+	
 	/**
 	 * 
 	 */
@@ -119,7 +120,7 @@ public class ElasticSearchIndexGenerator<R extends Resource> {
 			}
 		} while (postListSize == SearchDBInterface.SQL_BLOCKSIZE);
 		
-		writeMetaInfo(newState);
+		this.writeMetaInfo(newState);
 	}
 
 	/**
@@ -171,7 +172,7 @@ public class ElasticSearchIndexGenerator<R extends Resource> {
 	 */
 	private void createNewIndex() {
 		this.client.waitForReadyState();
-		final String indexName = index.getIndexName();
+		final String indexName = this.index.getIndexName();
 		
 		// check if the index already exists if not, it creates empty index
 		final boolean indexExists = this.client.existsIndexWithName(indexName);
@@ -191,4 +192,13 @@ public class ElasticSearchIndexGenerator<R extends Resource> {
 		// FIXME: use system url TODODZO
 		this.client.createAlias(indexName, ElasticSearchUtils.getTempAliasForResource(this.tools.getResourceType()));
 	}
+	
+	/**
+	 * 
+	 */
+	private void indexCreated() {
+		// FIXME: use system url TODODZO
+		this.client.deleteAlias(this.index.getIndexName(), ElasticSearchUtils.getTempAliasForResource(this.tools.getResourceType()));
+	}
+
 }
