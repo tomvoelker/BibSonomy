@@ -1,6 +1,7 @@
 package org.bibsonomy.search.es.management.util;
 
 import java.net.URI;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,6 +17,10 @@ import org.bibsonomy.search.update.SearchIndexState;
  */
 public final class ElasticSearchUtils {
 	private ElasticSearchUtils() {}
+	
+	private static final String LAST_PERSON_CHANGE_ID_KEY = "last_person_change_id";
+	private static final String LAST_LOG_DATE_KEY = "last_log_date";
+	private static final String LAST_TAS_KEY = "last_tas_id";
 	
 	/** Alias for the inactive index */
 	private static final String INACTIVE_INDEX_ALIAS = "inactiveIndex";
@@ -110,9 +115,23 @@ public final class ElasticSearchUtils {
 	 */
 	public static Map<String, Object> serializeSearchIndexState(SearchIndexState state) {
 		final Map<String, Object> values = new HashMap<>();
-		values.put("last_tas_id", state.getLast_tas_id());
-		values.put("last_log_date", state.getLast_log_date());
-		values.put("last_person_change_id", state.getLastPersonChangeId());
+		values.put(LAST_TAS_KEY, state.getLast_tas_id());
+		values.put(LAST_LOG_DATE_KEY, Long.valueOf(state.getLast_log_date().getTime()));
+		values.put(LAST_PERSON_CHANGE_ID_KEY, Long.valueOf(state.getLastPersonChangeId()));
 		return values;
+	}
+
+	/**
+	 * @param source
+	 * @return the search index state
+	 */
+	public static SearchIndexState deserializeSearchIndexState(Map<String, Object> source) {
+		final SearchIndexState searchIndexState = new SearchIndexState();
+		searchIndexState.setLast_tas_id((Integer) source.get(LAST_TAS_KEY));
+		final Long dateAsTime = (Long) source.get(LAST_LOG_DATE_KEY);
+		searchIndexState.setLast_log_date(new Date(dateAsTime.longValue()));
+		
+		searchIndexState.setLastPersonChangeId(((Integer) source.get(LAST_PERSON_CHANGE_ID_KEY)).longValue());
+		return searchIndexState;
 	}
 }

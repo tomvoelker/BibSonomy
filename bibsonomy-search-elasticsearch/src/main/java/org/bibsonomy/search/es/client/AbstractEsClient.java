@@ -38,6 +38,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants;
+import org.bibsonomy.search.es.management.util.ElasticSearchUtils;
 import org.bibsonomy.search.update.SearchIndexState;
 import org.bibsonomy.search.util.Mapping;
 import org.bibsonomy.util.ValidationUtils;
@@ -59,8 +60,6 @@ import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.cluster.metadata.AliasMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 /**
  * TODO: add documentation to this class
  *
@@ -68,19 +67,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public abstract class AbstractEsClient implements ESClient {
 	private static final Log log = LogFactory.getLog(AbstractEsClient.class);
-	
-	/**
-	 * @param sourceAsString
-	 * @return
-	 */
-	private static SearchIndexState parseIndexState(String json) {
-		try {
-			return new ObjectMapper().readValue(json, SearchIndexState.class);
-		} catch (final Exception e) {
-			log.error("cannot parse systeminformation for index: " + json);
-			return null;
-		}
-	}
 
 	/**
 	 * waits for the yellow (or green) status to prevent NoShardAvailableActionException later
@@ -127,7 +113,7 @@ public abstract class AbstractEsClient implements ESClient {
 			throw new IllegalStateException(hitsInIndex + " systeminfos for index " + indexName);
 		}
 		
-		return parseIndexState(searchResponse.getHits().iterator().next().getSourceAsString());
+		return ElasticSearchUtils.deserializeSearchIndexState(searchResponse.getHits().iterator().next().getSource());
 	}
 
 	@Override
