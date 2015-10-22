@@ -56,4 +56,8 @@
 		<property name="removeAbandoned" value="${database.search.removeAbandoned}" />
 		<property name="removeAbandonedTimeout" value="${database.search.removeAbandonedTimeout}" />
 	</bean>
+	
+	<bean id="searchInfoLogic" class="org.bibsonomy.search.SearchInfoDBLogic">
+		<property name="sessionFactory" ref="searchSessionFactory" />
+	</bean>
 </beans>

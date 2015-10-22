@@ -26,7 +26,7 @@ public class BookmarkMappingBuilder extends ResourceMappingBuilder<Bookmark> {
 	@Override
 	protected void doResourceSpecificMapping(XContentBuilder builder) throws IOException {
 		builder.startObject(Fields.Bookmark.URL)
-			.field(TYPE_FIELD, STRING_TYPE)
-		.endObject();
+					.field(TYPE_FIELD, STRING_TYPE)
+				.endObject();
 	}
 }

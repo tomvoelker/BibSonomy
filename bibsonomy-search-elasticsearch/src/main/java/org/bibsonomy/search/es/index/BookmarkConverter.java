@@ -26,4 +26,21 @@ public class BookmarkConverter extends ResourceConverter<Bookmark> {
 	protected void convertResource(Map<String, Object> jsonDocument, Bookmark resource) {
 		jsonDocument.put("url", resource.getUrl());
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.es.index.ResourceConverter#createNewResource()
+	 */
+	@Override
+	protected Bookmark createNewResource() {
+		return new Bookmark();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.es.index.ResourceConverter#convertResourceInternal(org.bibsonomy.model.Resource, java.util.Map)
+	 */
+	@Override
+	protected void convertResourceInternal(Bookmark resource, Map<String, Object> source) {
+		// TODO Auto-generated method stub
+		
+	}
 }

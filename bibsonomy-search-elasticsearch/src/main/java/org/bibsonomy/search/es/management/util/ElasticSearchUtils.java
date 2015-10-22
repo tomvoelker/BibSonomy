@@ -1,10 +1,14 @@
 package org.bibsonomy.search.es.management.util;
 
 import java.net.URI;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.search.es.ESConstants;
@@ -17,6 +21,11 @@ import org.bibsonomy.search.update.SearchIndexState;
  */
 public final class ElasticSearchUtils {
 	private ElasticSearchUtils() {}
+	
+	private static final Log log = LogFactory.getLog(ElasticSearchUtils.class);
+	
+	
+	private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	
 	private static final String LAST_PERSON_CHANGE_ID_KEY = "last_person_change_id";
 	private static final String LAST_LOG_DATE_KEY = "last_log_date";
@@ -133,5 +142,21 @@ public final class ElasticSearchUtils {
 		
 		searchIndexState.setLastPersonChangeId(((Integer) source.get(LAST_PERSON_CHANGE_ID_KEY)).longValue());
 		return searchIndexState;
+	}
+
+	/**
+	 * @param dateAsString
+	 * @return the date
+	 */
+	public static Date parseDate(String dateAsString) {
+		final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+		
+		try {
+			return dateFormat.parse(dateAsString);
+		} catch (final ParseException e) {
+			log.error("can't parse '" + dateAsString + "'.", e);
+		}
+		
+		return null;
 	}
 }

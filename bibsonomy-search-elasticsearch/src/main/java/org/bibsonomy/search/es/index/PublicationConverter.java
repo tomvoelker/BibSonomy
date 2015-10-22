@@ -43,6 +43,60 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	public PublicationConverter(URI systemURI) {
 		super(systemURI);
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.es.index.ResourceConverter#createNewResource()
+	 */
+	@Override
+	protected BibTex createNewResource() {
+		return new BibTex();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.es.index.ResourceConverter#convertResourceInternal(org.bibsonomy.model.Resource, java.util.Map)
+	 */
+	@Override
+	protected void convertResourceInternal(BibTex publication, Map<String, Object> source) {
+		publication.setAddress((String) source.get(Fields.Publication.ADDRESS));
+		publication.setAnnote((String) source.get(Fields.Publication.ANNOTE));
+		publication.setKey((String) source.get(Fields.Publication.BKEY));
+		publication.setAbstract((String) source.get(Fields.Publication.ABSTRACT));
+		publication.setBibtexKey((String) source.get(Fields.Publication.BIBTEXKEY));
+		publication.setBooktitle((String) source.get(Fields.Publication.BOOKTITLE));
+		publication.setChapter((String) source.get(Fields.Publication.CHAPTER));
+		publication.setCrossref((String) source.get(Fields.Publication.CROSSREF));
+		publication.setDay((String) source.get(Fields.Publication.DAY));
+		publication.setEdition((String) source.get(Fields.Publication.EDITION));
+		
+		@SuppressWarnings("unchecked")
+		final List<String> editorsList = (List<String>) source.get(Fields.Publication.EDITOR);
+		final String editorsString = org.bibsonomy.util.StringUtils.implodeStringCollection(editorsList, PersonNameUtils.PERSON_NAME_DELIMITER);
+		publication.setEditor(PersonNameUtils.discoverPersonNamesIgnoreExceptions(editorsString));
+		
+		@SuppressWarnings("unchecked")
+		final List<String> authorsList = (List<String>) source.get(Fields.Publication.EDITOR);
+		final String authorsString = org.bibsonomy.util.StringUtils.implodeStringCollection(authorsList, PersonNameUtils.PERSON_NAME_DELIMITER);
+		publication.setAuthor(PersonNameUtils.discoverPersonNamesIgnoreExceptions(authorsString));
+		
+		publication.setEntrytype((String) source.get(Publication.ENTRY_TYPE));
+		publication.setHowpublished((String) source.get(Publication.HOWPUBLISHED));
+		publication.setInstitution((String) source.get(Publication.INSTITUTION));
+		publication.setJournal((String) source.get(Publication.JOURNAL));
+		publication.setMisc((String) source.get(Publication.MISC));
+		publication.setMonth((String) source.get(Publication.MONTH));
+		publication.setNote((String) source.get(Publication.NOTE));
+		publication.setNumber((String) source.get(Publication.NUMBER));
+		publication.setOrganization((String) source.get(Publication.ORGANIZATION));
+		publication.setPages((String) source.get(Publication.PAGES));
+		publication.setPrivnote((String) source.get(Publication.PRIVNOTE));
+		publication.setPublisher((String) source.get(Publication.PUBLISHER));
+		publication.setSchool((String) source.get(Publication.SCHOOL));
+		publication.setSeries((String) source.get(Publication.SERIES));
+		publication.setType((String) source.get(Publication.TYPE));
+		publication.setUrl((String) source.get(Publication.URL));
+		publication.setVolume((String) source.get(Publication.VOLUME));
+		publication.setYear((String) source.get(Publication.YEAR));
+	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.search.es.index.ResourceConverter#convertPostInternal(java.util.Map, org.bibsonomy.model.Post)
@@ -61,19 +115,19 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	@Override
 	protected void convertResource(Map<String, Object> jsonDocument, BibTex resource) {
 		jsonDocument.put(Fields.Publication.ADDRESS, resource.getAddress());
-		jsonDocument.put("annote", resource.getAnnote());
-		jsonDocument.put("bkey", resource.getKey());
-		jsonDocument.put("abstract", resource.getAbstract());
+		jsonDocument.put(Fields.Publication.ANNOTE, resource.getAnnote());
+		jsonDocument.put(Fields.Publication.BKEY, resource.getKey());
+		jsonDocument.put(Fields.Publication.ABSTRACT, resource.getAbstract());
 		jsonDocument.put(Fields.Publication.BIBTEXKEY, resource.getBibtexKey());
-		jsonDocument.put("booktitle", resource.getBooktitle());
-		jsonDocument.put("chapter", resource.getChapter());
-		jsonDocument.put("crossref", resource.getCrossref());
-		jsonDocument.put("day", resource.getDay());
-		jsonDocument.put("edition", resource.getEdition());
+		jsonDocument.put(Fields.Publication.BOOKTITLE, resource.getBooktitle());
+		jsonDocument.put(Fields.Publication.CHAPTER, resource.getChapter());
+		jsonDocument.put(Fields.Publication.CROSSREF, resource.getCrossref());
+		jsonDocument.put(Fields.Publication.DAY, resource.getDay());
+		jsonDocument.put(Fields.Publication.EDITION, resource.getEdition());
 		
 		final List<PersonName> editors = resource.getEditor();
 		if (present(editors)) {
-			jsonDocument.put("editor", convertPersonNames(editors));
+			jsonDocument.put(Fields.Publication.EDITOR, convertPersonNames(editors));
 		}
 		
 		final List<PersonName> authors = resource.getAuthor();
@@ -81,26 +135,26 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 			jsonDocument.put(Fields.Publication.AUTHOR, convertPersonNames(authors));
 		}
 		
-		jsonDocument.put("entrytype", resource.getEntrytype());
-		jsonDocument.put("howPublished", resource.getHowpublished());
+		jsonDocument.put(Publication.ENTRY_TYPE, resource.getEntrytype());
+		jsonDocument.put(Fields.Publication.HOWPUBLISHED, resource.getHowpublished());
 		
-		jsonDocument.put("institution", resource.getInstitution());
-		jsonDocument.put("journal", resource.getJournal());
-		jsonDocument.put("misc", resource.getMisc());
-		jsonDocument.put("month", resource.getMonth());
-		jsonDocument.put("note", resource.getNote());
-		jsonDocument.put("number", resource.getNumber());
-		jsonDocument.put("organization", resource.getOrganization());
-		jsonDocument.put("pages", resource.getPages());
+		jsonDocument.put(Fields.Publication.INSTITUTION, resource.getInstitution());
+		jsonDocument.put(Fields.Publication.JOURNAL, resource.getJournal());
+		jsonDocument.put(Fields.Publication.MISC, resource.getMisc());
+		jsonDocument.put(Fields.Publication.MONTH, resource.getMonth());
+		jsonDocument.put(Fields.Publication.NOTE, resource.getNote());
+		jsonDocument.put(Fields.Publication.NUMBER, resource.getNumber());
+		jsonDocument.put(Fields.Publication.ORGANIZATION, resource.getOrganization());
+		jsonDocument.put(Fields.Publication.PAGES, resource.getPages());
 		
-		jsonDocument.put("privnote", resource.getPrivnote());
-		jsonDocument.put("publisher", resource.getPublisher());
+		jsonDocument.put(Fields.Publication.PRIVNOTE, resource.getPrivnote());
+		jsonDocument.put(Fields.Publication.PUBLISHER, resource.getPublisher());
 		jsonDocument.put(Fields.Publication.SCHOOL, resource.getSchool());
-		jsonDocument.put("series", resource.getSeries());
+		jsonDocument.put(Fields.Publication.SERIES, resource.getSeries());
 		
-		jsonDocument.put("type", resource.getType());
-		jsonDocument.put("url", resource.getUrl());
-		jsonDocument.put("volume", resource.getVolume());
+		jsonDocument.put(Fields.Publication.TYPE, resource.getType());
+		jsonDocument.put(Fields.Publication.URL, resource.getUrl());
+		jsonDocument.put(Fields.Publication.VOLUME, resource.getVolume());
 		
 		jsonDocument.put(Publication.YEAR, resource.getYear());
 	}

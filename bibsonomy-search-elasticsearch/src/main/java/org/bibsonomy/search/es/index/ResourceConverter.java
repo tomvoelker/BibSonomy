@@ -1,6 +1,7 @@
 package org.bibsonomy.search.es.index;
 
 import java.net.URI;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -12,7 +13,9 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.search.es.ESConstants.Fields;
+import org.bibsonomy.search.es.management.util.ElasticSearchUtils;
 
 /**
  * TODO: add documentation to this class
@@ -31,6 +34,7 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 		this.systemURI = systemURI;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Post<R> convert(final Map<String, Object> source) {
 		// TODO: implement me
@@ -41,10 +45,79 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 			post.setSystemUrl(systemUrl);
 		}
 		
+		// post.setContentId((Integer) source.get(Fields.CONTENT_ID)); TODODZO
+		post.setDate(parseDate(source, Fields.DATE));
+		post.setDate(parseDate(source, Fields.CHANGE_DATE));
+		post.setUser(new User((String) source.get(Fields.USER_NAME)));
+		post.setDescription((String) source.get(Fields.DESCRIPTION));
+		
+		post.setGroups(convertToGroups((List<String>) source.get(Fields.GROUPS)));
+		
+		// FIXME: hidden tags TODODZO
+		post.setTags(convertToTags((List<String>) source.get(Fields.TAGS)));
+		
 		this.convertPostInternal(source, post);
+		final R resource = this.createNewResource();
+		
+		resource.setInterHash((String) source.get(Fields.Resource.INTERHASH));
+		resource.setIntraHash((String) source.get(Fields.Resource.INTRAHASH));
+		resource.setTitle((String) source.get(Fields.Resource.TITLE));
+		
+		this.convertResourceInternal(resource, source);
+		
+		post.setResource(resource);
 		return post;
 	}
 	
+	/**
+	 * @param object
+	 * @return
+	 */
+	private static Set<Tag> convertToTags(List<String> tagsStringList) {
+		final Set<Tag> tags = new HashSet<>();
+		
+		for (String tagString : tagsStringList) {
+			tags.add(new Tag(tagString));
+		}
+		
+		return tags;
+	}
+
+	/**
+	 * @param resource
+	 * @param source
+	 */
+	protected abstract void convertResourceInternal(R resource, Map<String, Object> source);
+
+	/**
+	 * @return a new instance of a resource
+	 */
+	protected abstract R createNewResource();
+
+	/**
+	 * @param object
+	 * @return
+	 */
+	private static Set<Group> convertToGroups(List<String> list) {
+		final Set<Group> groups = new HashSet<>();
+		
+		for (final String groupString : list) {
+			groups.add(new Group(groupString));
+		}
+		
+		return groups;
+	}
+
+	/**
+	 * @param source
+	 * @param changeDate
+	 * @return
+	 */
+	private static Date parseDate(Map<String, Object> source, String key) {
+		final String dateAsString = (String) source.get(key);
+		return ElasticSearchUtils.parseDate(dateAsString);
+	}
+
 	/**
 	 * @param source
 	 * @param post
@@ -57,7 +130,7 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 	public Map<String, Object> convert(final Post<R> post) {
 		final Map<String, Object> jsonDocument = new HashMap<>();
 		
-		jsonDocument.put(Fields.CONTENT_ID, post.getContentId());
+		// jsonDocument.put(Fields.CONTENT_ID, post.getContentId());
 		jsonDocument.put(Fields.DATE, post.getDate());
 		jsonDocument.put(Fields.CHANGE_DATE, post.getChangeDate());
 		

@@ -61,10 +61,16 @@
 	</bean>
 	
 	<bean id="elasticSearchBookmarkSearch" class="org.bibsonomy.search.es.search.EsResourceSearch">
-		<!-- TODODZO: add properties -->
+		<property name="manager" ref="elasticSearchBookmarkManager" />
+		<property name="resourceConverter" ref="elasticSearchBookmarkConverter" />
+		<property name="resourceType" ref="searchBookmarkClass" />
+		<property name="infoLogic" ref="searchInfoLogic" />
 	</bean>
 	
 	<bean id="elasticSearchPublicationSearch" class="org.bibsonomy.search.es.search.EsResourceSearch">
-		<!-- TODODZO: add properties -->
+		<property name="manager" ref="elasticSearchPublicationManager" />
+		<property name="resourceConverter" ref="elasticSearchPublicationConverter" />
+		<property name="resourceType" ref="searchPublicationClass" />
+		<property name="infoLogic" ref="searchInfoLogic" />
 	</bean>
 </beans>

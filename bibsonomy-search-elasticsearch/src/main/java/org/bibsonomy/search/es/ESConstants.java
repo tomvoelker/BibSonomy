@@ -131,6 +131,31 @@ public final class ESConstants {
 			/** the bibtex key field name */
 			public static final String BIBTEXKEY = "bibtexkey";
 			public static final String ADDRESS = "address";
+			public static final String ENTRY_TYPE = "entrytype";
+			public static final String ANNOTE = "annote";
+			public static final String BKEY = "bkey";
+			public static final String ABSTRACT = "abstract";
+			public static final String BOOKTITLE = "booktitle";
+			public static final String CHAPTER = "chapter";
+			public static final String CROSSREF = "crossref";
+			public static final String DAY = "day";
+			public static final String EDITION = "edition";
+			public static final String EDITOR = "editor";
+			public static final String HOWPUBLISHED = "howPublished";
+			public static final String INSTITUTION = "institution";
+			public static final String JOURNAL = "journal";
+			public static final String MISC = "misc";
+			public static final String MONTH = "month";
+			public static final String NOTE = "note";
+			public static final String NUMBER = "number";
+			public static final String ORGANIZATION = "organization";
+			public static final String PAGES = "pages";
+			public static final String PRIVNOTE = "privnote";
+			public static final String PUBLISHER = "publisher";
+			public static final String SERIES = "series";
+			public static final String TYPE = "type";
+			public static final String URL = "url";
+			public static final String VOLUME = "volume";
 		}
 	}
 }
