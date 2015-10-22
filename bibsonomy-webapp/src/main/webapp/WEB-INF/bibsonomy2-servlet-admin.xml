@@ -43,15 +43,13 @@
 						</property>
 					</bean>
 				</entry>
-				<entry key="/admin/lucene">
+				<entry key="/admin/fulltextsearch">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName"	value="adminLuceneController" />
+						<property name="controllerBeanName"	value="adminFullTextSearchController" />
 						<property name="allowedFields">
 							<list>
 								<value>action</value>
 								<value>resource</value>
-								<value>id</value>
-								<value>indexType</value>
 							</list>
 						</property>
 					</bean>
@@ -159,9 +157,8 @@
 		<property name="logic" ref="logic"/>
 	</bean>
 
-	<bean id="adminLuceneController" class="org.bibsonomy.webapp.controller.admin.AdminLuceneController" scope="request">
-		<property name="luceneResourceManagers" ref="allLuceneResourceManagers" />
-		<property name="sharedIndexUpdatePlugins" ref="allSharedIndexUpdatePlugins"/>
+	<bean id="adminFullTextSearchController" class="org.bibsonomy.webapp.controller.admin.AdminFullTextSearchController" scope="request">
+		
 	</bean>
 	
 	<bean id="adminAjaxController" class="org.bibsonomy.webapp.controller.admin.AdminAjaxController" scope="request">

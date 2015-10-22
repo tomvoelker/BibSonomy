@@ -29,6 +29,7 @@ package org.bibsonomy.webapp.command.admin;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.BaseCommand;
 
 
@@ -38,23 +39,21 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * @author Sven Stefani
  * @author bsc
  */
-public class AdminLuceneViewCommand extends BaseCommand {
+public class AdminFullTextSearchCommand extends BaseCommand {
 	/** specific action for admin page */
 	private String action;
-	
-	/** elasticsearch or null(lucene) */
-	private String indexType;
 	
 	/** the specific index id for the indexd to be updated **/
 	private int id;
 	
-	
 	/** the resource class to handle */
-	// TODO: should be Class<? extends Resource>
-	private String resource;
+	private Class<? extends Resource> resource;
 	
 	/** the string response for the admin */
 	private String adminResponse = "";
+	
+	
+	
 	
 	private final List<LuceneResourceIndicesInfoContainer> indicesInfos = new LinkedList<LuceneResourceIndicesInfoContainer>();
 	
@@ -62,8 +61,6 @@ public class AdminLuceneViewCommand extends BaseCommand {
 	private final List<LuceneResourceIndicesInfoContainer> esIndicesInfosBibtex = new LinkedList<LuceneResourceIndicesInfoContainer>();
 	private final List<LuceneResourceIndicesInfoContainer> esIndicesInfosBookmark = new LinkedList<LuceneResourceIndicesInfoContainer>();
 	private final List<LuceneResourceIndicesInfoContainer> esIndicesInfosGoldStandard = new LinkedList<LuceneResourceIndicesInfoContainer>();
-	
-	private String esGlobalMessage;
 
 	/**
 	 * @return the action
@@ -113,35 +110,19 @@ public class AdminLuceneViewCommand extends BaseCommand {
 	public String getAdminResponse() {
 		return adminResponse;
 	}
-
+	
 	/**
 	 * @return the resource
 	 */
-	public String getResource() {
+	public Class<? extends Resource> getResource() {
 		return this.resource;
 	}
 
 	/**
 	 * @param resource the resource to set
 	 */
-	public void setResource(final String resource) {
+	public void setResource(Class<? extends Resource> resource) {
 		this.resource = resource;
-	}
-
-	public String getEsGlobalMessage() {
-		return this.esGlobalMessage;
-	}
-
-	public void setEsGlobalMessage(String esGlobalMessage) {
-		this.esGlobalMessage = esGlobalMessage;
-	}
-
-	public String getIndexType() {
-		return this.indexType;
-	}
-
-	public void setIndexType(String indexType) {
-		this.indexType = indexType;
 	}
 
 	/**

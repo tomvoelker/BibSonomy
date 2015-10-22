@@ -227,7 +227,6 @@
 		<module>bibsonomy-importer</module>
 		<module>bibsonomy-layout</module>
 		<module>bibsonomy-logging</module>
-		<module>bibsonomy-lucene</module>
 		<module>bibsonomy-marc-parser</module>
 		<module>bibsonomy-model</module>
 		<module>bibsonomy-openaccess</module>
@@ -240,14 +239,14 @@
 		<module>bibsonomy-rest-server</module>
 		<module>bibsonomy-scraper</module>
 		<module>bibsonomy-scrapingservice</module>
+		<module>bibsonomy-search</module>
+		<module>bibsonomy-search-elasticsearch</module>
 		<module>bibsonomy-synchronization</module>
 		<module>bibsonomy-web-common</module>
 		<module>bibsonomy-webapp</module>
 		<module>bibsonomy-wiki</module>
 		<module>bibsonomy-recommender-connector</module>
 		<module>bibsonomy-suggestionservice</module>
-		<module>bibsonomy-search</module>
-		<module>bibsonomy-search-elasticsearch</module>
 	</modules>
 	<build>
 		<pluginManagement>
@@ -648,7 +647,12 @@
 			</dependency>
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
-				<artifactId>bibsonomy-lucene</artifactId>
+				<artifactId>bibsonomy-search</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bibsonomy</groupId>
+				<artifactId>bibsonomy-search-elasticsearch</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

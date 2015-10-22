@@ -45,7 +45,6 @@ import org.bibsonomy.database.managers.BibTexDatabaseManager;
 import org.bibsonomy.database.managers.BookmarkDatabaseManager;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin;
-import org.bibsonomy.lucene.util.LuceneSpringContextWrapper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -54,9 +53,8 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
-import org.bibsonomy.search.LucenePost;
-import org.bibsonomy.search.management.database.SearchDBLogic;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.search.SearchPost;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -110,7 +108,7 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 		final int groupId = -1;
 		final List<Integer> groups = new ArrayList<Integer>();
 
-		List<LucenePost<BibTex>> posts = luceneBibTexLogic.getPostsForUser(requestedUserName, 10, 0);
+		List<SearchPost<BibTex>> posts = luceneBibTexLogic.getPostsForUser(requestedUserName, 10, 0);
 		List<Post<BibTex>> postsRef = bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, null, 10, 0, null, this.dbSession);
 		assertEquals(postsRef.size(), posts.size());
 
