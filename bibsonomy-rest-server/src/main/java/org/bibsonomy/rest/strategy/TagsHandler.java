@@ -29,6 +29,7 @@ package org.bibsonomy.rest.strategy;
 import java.util.Arrays;
 
 import org.bibsonomy.common.enums.TagRelation;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.tags.GetListOfTagsStrategy;
@@ -59,9 +60,9 @@ public class TagsHandler implements ContextHandler {
 				
 				// if a "relation" GET attribute is present, we will handle the request with
 				// the relationStrategy. Otherwise, we'll just return the tagDetails.
-				String relationAttribute = context.getStringAttribute("relation", "");
+				final String relationAttribute = context.getStringAttribute(RESTConfig.RELATION_PARAM, "");
 				
-				if(ValidationUtils.present(relationAttribute)) {
+				if (ValidationUtils.present(relationAttribute)) {
 					return new GetTagRelationStrategy(context, Arrays.asList(urlTokens.next().split(" ")),
 							TagRelation.getRelationByString(relationAttribute));
 				}

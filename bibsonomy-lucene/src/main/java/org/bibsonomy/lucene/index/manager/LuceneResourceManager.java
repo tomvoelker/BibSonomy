@@ -78,9 +78,9 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	private static final Log log = LogFactory.getLog(LuceneResourceManager.class);
 
 	/** the number of posts to fetch from the database by a single generating step */
-	protected static final int SQL_BLOCKSIZE = 5000;
+	protected static final int SQL_BLOCKSIZE = 4096;
 	
-	private static final int UPDATED_INTERHASHES_CACHE_SIZE = 25000;
+	private static final int UPDATED_INTERHASHES_CACHE_SIZE = 15000;
 	
 	/**
 	 * this constant determines the difference of docs between the lucene index and the DB that will be tolerated
@@ -92,7 +92,7 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 	 * constant for querying for all posts which have been deleted since the
 	 * last index update
 	 */
-	protected static final long QUERY_TIME_OFFSET_MS = 30 * 1000;
+	protected static final long QUERY_TIME_OFFSET_MS = 3 * 1000;
 
 	/** flag indicating whether to update the index or not */
 	private boolean luceneUpdaterEnabled = true;
@@ -929,6 +929,21 @@ public class LuceneResourceManager<R extends Resource> implements GenerateIndexC
 			lrii.add(indexInfo);
 		}
 		return lrii;
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder rVal = new StringBuilder();
+		rVal.append(this.getClass().getSimpleName()).append(" ");
+		if (this.resourceIndices != null) {
+			rVal.append(this.resourceIndices.toString());
+		} else {
+			rVal.append("null");
+		}
+		return rVal.toString();
 	}
 
 	

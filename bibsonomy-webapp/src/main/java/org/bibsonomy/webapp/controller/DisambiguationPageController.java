@@ -91,6 +91,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 	private View disambiguateAction(final DisambiguationPageCommand command) {
 		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations().byInterhash(command.getPost().getResource().getInterHash()).byRelationType(command.getRequestedRole()).byAuthorIndex(command.getRequestedIndex()).getIt();		
 		if (matchingRelations.size() > 0 ) {
+			// FIXME: cache urlgenerator
 			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(matchingRelations.get(0).getPerson().getPersonId()));	
 		}
 		

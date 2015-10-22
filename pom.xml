@@ -34,7 +34,7 @@
 	<groupId>org.bibsonomy</groupId>
 	<artifactId>bibsonomy</artifactId>
 	<packaging>pom</packaging>
-	<version>3.3.0-SNAPSHOT</version>
+	<version>3.4.0-SNAPSHOT</version>
 	<description>
 		A blue social bookmark and publication sharing system.
 	</description>
@@ -214,6 +214,16 @@
 			</snapshots>
 		</repository>
 	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>dev.bibsonomy.org-plugin</id>
+			<name>Official Source Code Releases of selected BibSonomy Plugins</name>
+			<url>http://dev.bibsonomy.org/maven2/</url>
+			<snapshots>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring.version>3.1.3.RELEASE</spring.version>
@@ -653,11 +663,6 @@
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-search-elasticsearch</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.bibsonomy</groupId>
-				<artifactId>bibsonomy-gImporter</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

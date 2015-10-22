@@ -85,7 +85,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	
 	private final DatabasePluginRegistry plugins;
 	private final AdminDatabaseManager adminDBManager;
-	private final BasketDatabaseManager basketDBManager;
+	private final ClipboardDatabaseManager clipboardDBManager;
 	private final InboxDatabaseManager inboxDBManager;
 
 	private DatabaseModelValidator<User> validator;
@@ -99,7 +99,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 
 	private UserDatabaseManager() {
 		this.inboxDBManager = InboxDatabaseManager.getInstance();
-		this.basketDBManager = BasketDatabaseManager.getInstance();
+		this.clipboardDBManager = ClipboardDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();
 		this.adminDBManager = AdminDatabaseManager.getInstance();
 	}
@@ -141,10 +141,10 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		}
 		
 		/*
-		 * user exists: get number of posts in his basket and inbox
+		 * user exists: get number of posts in his clipboard and inbox
 		 */
-		final int numPosts = this.basketDBManager.getNumberOfBasketEntries(lowerCaseUsername, session);
-		user.getBasket().setNumPosts(numPosts);
+		final int numPosts = this.clipboardDBManager.getNumberOfClipboardEntries(lowerCaseUsername, session);
+		user.getClipboard().setNumPosts(numPosts);
 		final int inboxMessages = this.inboxDBManager.getNumInboxMessages(lowerCaseUsername, session);
 		user.getInbox().setNumPosts(inboxMessages);
 		/*

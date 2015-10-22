@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Database - Database for BibSonomy.
+ * BibSonomy-Webapp - The web application for BibSonomy.
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -12,37 +12,38 @@
  *                               http://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
+ * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.database.params;
+package org.bibsonomy.webapp.util.spring.i18n;
+
+import java.util.Collection;
+import java.util.Locale;
+
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
 /**
- * @author Christian Kramer
+ * some helper methods for the MessageBundleSource
+ *
+ * @author dzo
  */
-public class BasketParam extends GenericParam{
-	private int contentId;
-
+public class ExposedResourceMessageBundleSource extends ReloadableResourceBundleMessageSource {
+	
 	/**
-	 * @return int
+	 * get all message keys
+	 * @param locale
+	 * @return the message keys for the specified locale
 	 */
-	public int getContentId() {
-		return this.contentId;
-	}
-
-	/**
-	 * @param contentId
-	 */
-	public void setContentId(final int contentId) {
-		this.contentId = contentId;
+	public Collection<Object> getAllMessageKeys(final Locale locale) {
+		return getMergedProperties(locale).getProperties().keySet();
 	}
 }

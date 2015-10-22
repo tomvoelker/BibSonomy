@@ -55,7 +55,7 @@ public class DeleteClipboardStrategy extends PostClipboardStrategy {
 
 	@Override
 	public void perform(ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ResourceMovedException, ObjectNotFoundException {
-		this.getLogic().deleteBasketItems(createPost(resourceHash, userName), clearClipboard);
+		this.getLogic().deleteClipboardItems(createPost(resourceHash, userName), clearClipboard);
 		this.getRenderer().serializeOK(this.writer);
 	}
 

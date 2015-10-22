@@ -75,7 +75,7 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 	}
 
 	@Override
-	public List<Post<Bookmark>> getPostsFromBasketForUser(final String loginUser, final int limit, final int offset, final DBSession session) {
+	public List<Post<Bookmark>> getPostsFromClipboardForUser(final String loginUser, final int limit, final int offset, final DBSession session) {
 		throw new UnsupportedOperationException("not available for bookmarks");
 	}
 

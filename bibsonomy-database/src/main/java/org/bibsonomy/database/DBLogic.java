@@ -83,7 +83,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.managers.AdminDatabaseManager;
 import org.bibsonomy.database.managers.AuthorDatabaseManager;
-import org.bibsonomy.database.managers.BasketDatabaseManager;
+import org.bibsonomy.database.managers.ClipboardDatabaseManager;
 import org.bibsonomy.database.managers.BibTexDatabaseManager;
 import org.bibsonomy.database.managers.BibTexExtraDatabaseManager;
 import org.bibsonomy.database.managers.BookmarkDatabaseManager;
@@ -208,7 +208,7 @@ public class DBLogic implements LogicInterface {
 	private final DBSessionFactory dbSessionFactory;
 	private final StatisticsDatabaseManager statisticsDBManager;
 	private final TagRelationDatabaseManager tagRelationsDBManager;
-	private final BasketDatabaseManager clipboardDBManager;
+	private final ClipboardDatabaseManager clipboardDBManager;
 	private final InboxDatabaseManager inboxDBManager;
 	private final WikiDatabaseManager wikiDBManager;
 
@@ -263,7 +263,7 @@ public class DBLogic implements LogicInterface {
 		this.tagRelationsDBManager = TagRelationDatabaseManager.getInstance();
 		this.personDBManager = PersonDatabaseManager.getInstance();
 
-		this.clipboardDBManager = BasketDatabaseManager.getInstance();
+		this.clipboardDBManager = ClipboardDatabaseManager.getInstance();
 		this.inboxDBManager = InboxDatabaseManager.getInstance();
 
 		this.wikiDBManager = WikiDatabaseManager.getInstance();
@@ -2709,17 +2709,17 @@ public class DBLogic implements LogicInterface {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.bibsonomy.model.logic.LogicInterface#createBasketItems()
+	 * @see org.bibsonomy.model.logic.LogicInterface#createClipboardItems()
 	 */
 	@Override
-	public int createBasketItems(final List<Post<? extends Resource>> posts) {
+	public int createClipboardItems(final List<Post<? extends Resource>> posts) {
 		this.ensureLoggedIn();
 
 		final DBSession session = this.openSession();
 		try {
 			for (final Post<? extends Resource> post : posts) {
 				if (post.getResource() instanceof Bookmark) {
-					throw new UnsupportedResourceTypeException("Bookmarks can't be stored in the basket");
+					throw new UnsupportedResourceTypeException("Bookmarks can't be stored in the clipboard");
 				}
 				/*
 				 * get the complete post from the database
@@ -2746,7 +2746,7 @@ public class DBLogic implements LogicInterface {
 			}
 
 			// get actual clipboard size
-			return this.clipboardDBManager.getNumberOfBasketEntries(this.loginUser.getName(), session);
+			return this.clipboardDBManager.getNumberOfClipboardEntries(this.loginUser.getName(), session);
 		} catch (final Exception ex) {
 			log.error(ex);
 			throw new RuntimeException(ex);
@@ -2758,17 +2758,17 @@ public class DBLogic implements LogicInterface {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.bibsonomy.model.logic.LogicInterface#deleteBasketItems()
+	 * @see org.bibsonomy.model.logic.LogicInterface#deleteClipboardItems()
 	 */
 	@Override
-	public int deleteBasketItems(final List<Post<? extends Resource>> posts, final boolean clearBasket) {
+	public int deleteClipboardItems(final List<Post<? extends Resource>> posts, final boolean clearClipboard) {
 		this.ensureLoggedIn();
 
 		final DBSession session = this.openSession();
 
 		try {
 			// decide which delete function will be called
-			if (clearBasket) {
+			if (clearClipboard) {
 				// clear all in clipboard
 				this.clipboardDBManager.deleteAllItems(this.loginUser.getName(), session);
 			} else {
@@ -2785,14 +2785,14 @@ public class DBLogic implements LogicInterface {
 						throw new ValidationException("Post not found. Can't remove post from clipboard.");
 					}
 					/*
-					 * delete the post from the user's basket
+					 * delete the post from the user's clipboard
 					 */
 					this.clipboardDBManager.deleteItem(this.loginUser.getName(), contentIdOfPost, session);
 				}
 			}
 
-			// get actual basketsize
-			return this.clipboardDBManager.getNumberOfBasketEntries(this.loginUser.getName(), session);
+			// get actual clipboardsize
+			return this.clipboardDBManager.getNumberOfClipboardEntries(this.loginUser.getName(), session);
 		} finally {
 			session.close();
 		}

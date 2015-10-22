@@ -5,7 +5,10 @@ var tagRecoOptions = {
 		type: "POST",
 		url: '/ajax/getPublicationRecommendedTags',
 		data: $('#postForm').serialize(),
-		dataType: "json"
+		dataType: "json",
+		success : function showResponse(responseText, statusText) {
+			handleRecommendedTags(responseText);
+		}
 	}; 
 
 var getFriends = null;

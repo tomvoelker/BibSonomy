@@ -25,7 +25,7 @@ function pickUnpickAll(pickUnpick) {
 		}
 	}
 	);
-	return updateBasket("action=" + pickUnpick + "&hash=" + unescapeAmp(encodeURIComponent(param)));
+	return updateClipboard("action=" + pickUnpick + "&hash=" + unescapeAmp(encodeURIComponent(param)));
 }
 
 /**
@@ -39,7 +39,7 @@ function pickUnpickPublication(element) {
 	 * pick/unpick publication
 	 */
 	var params = unescapeAmp($(element).attr("href")).replace(/^.*?\?/, "");
-	return updateBasket(params);
+	return updateClipboard(params);
 }
 
 
@@ -50,7 +50,7 @@ function pickUnpickPublication(element) {
  * @param param
  * @return
  */
-function updateBasket (param) {
+function updateClipboard (param) {
 	var isUnpick = param.search(/action=unpick/) != -1;
 	if (isUnpick && !confirmDeleteByUser("clipboardpost")) {
 		return false;
@@ -70,7 +70,7 @@ function updateBasket (param) {
 			window.location.reload();
 		} else {
 			//$("#pickctr").empty().append(data);
-			$("#basket-counter").html(data);
+			$("#clipboard-counter").html(data);
 			updateCounter();
 		}
 	}

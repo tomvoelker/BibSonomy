@@ -177,13 +177,16 @@
 						<c:if test="${not empty postApproval and (command.context.loginUser.hasGroupLevelPermission('COMMUNITY_POST_INSPECTION') or command.context.loginUser.role eq 'ADMIN')}">
 							<jsp:invoke fragment="postApproval"/>
 						</c:if>
-
+						
+						<!-- FIXME: remove the following from this file; only publications have a  -->
+						<c:if test="${resourceType eq 'Publication'}">
 						<c:if test="${command.personRole eq 'ADVISOR'}">
 							<bsform:fieldset legendKey="post.person.role">
 								<jsp:attribute name="content">
 									<post:personRole_groupBox />
 								</jsp:attribute>
 							</bsform:fieldset>
+						</c:if>
 						</c:if>
 		
 		                <!--+

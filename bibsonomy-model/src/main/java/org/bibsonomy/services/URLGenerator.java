@@ -78,7 +78,7 @@ public class URLGenerator {
 		/**
 		 * all posts I have picked
 		 */
-		BASKET("clipboard");
+		CLIPBOARD("clipboard");
 
 		private final String path;
 
@@ -273,12 +273,12 @@ public class URLGenerator {
 	}
 
 	/**
-	 * Constructs a URL for the basket page, i.e. /basket
+	 * Constructs a URL for the clipboard page, i.e. /clipboard
 	 * 
-	 * @return URL pointing to the basket page.
+	 * @return URL pointing to the clipboard page.
 	 */
-	public String getBasketUrl() {
-		String url = this.projectHome + prefix + Page.BASKET.getPath();
+	public String getClipboardUrl() {
+		String url = this.projectHome + prefix + Page.CLIPBOARD.getPath();
 		return this.getUrl(url);
 	}
 

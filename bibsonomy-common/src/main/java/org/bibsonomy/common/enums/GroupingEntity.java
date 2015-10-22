@@ -83,7 +83,7 @@ public enum GroupingEntity {
 	
 	/**
 	 * for constraining the entities in the list to the ones contained in the
-	 * basket collection of a given user
+	 * clipboard collection of a given user
 	 */
 	CLIPBOARD, 
 	

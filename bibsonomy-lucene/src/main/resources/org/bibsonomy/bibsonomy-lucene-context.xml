@@ -27,6 +27,18 @@
 		<!-- <constructor-arg value="${project.home}"/> -->
 	</bean>
 	
+	<bean id="luceneBookmarkUpdateTrigger" class="org.bibsonomy.index.IndexUpdateTrigger">
+		<constructor-arg ref="luceneBookmarkManager" />
+	</bean>
+	
+	<bean id="lucenePublicationUpdateTrigger" class="org.bibsonomy.index.IndexUpdateTrigger">
+		<constructor-arg ref="lucenePublicationManager" />
+	</bean>
+	
+	<bean id="luceneGoldStandardPublicationUpdateTrigger" class="org.bibsonomy.index.IndexUpdateTrigger">
+		<constructor-arg ref="luceneGoldStandardPublicationManager" />
+	</bean>
+	
 	<bean id="indexGeneratorThreadPool" class="org.bibsonomy.util.SimpleBlockingThreadPoolExecutor" lazy-init="true" destroy-method="shutdownNow">
 		<constructor-arg value="indexGenerator"/>
 	</bean>

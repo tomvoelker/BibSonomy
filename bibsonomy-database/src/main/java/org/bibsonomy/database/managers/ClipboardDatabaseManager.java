@@ -28,46 +28,46 @@ package org.bibsonomy.database.managers;
 
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.params.BasketParam;
+import org.bibsonomy.database.params.ClipboardParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 
 /**
  * Manages Clipboard functionalities
  * 
  * TODO: rename to ClipboardDatabaseManager
- * TODO: implement full basket functionality
+ * TODO: implement full clipboard functionality
  * 
  * @author Dominik Benz
  * @author Christian Kramer
  */
-public class BasketDatabaseManager extends AbstractDatabaseManager {
-	private final static BasketDatabaseManager singleton = new BasketDatabaseManager();
+public class ClipboardDatabaseManager extends AbstractDatabaseManager {
+	private final static ClipboardDatabaseManager singleton = new ClipboardDatabaseManager();
 	
 	/**
-	 * @return a singleon instance of this BasketDatabaseManager
+	 * @return a singleon instance of this ClipboardDatabaseManager
 	 */
-	public static BasketDatabaseManager getInstance() {
+	public static ClipboardDatabaseManager getInstance() {
 		return singleton;
 	}
 	
 	private final DatabasePluginRegistry plugins;
 
-	private BasketDatabaseManager() {
+	private ClipboardDatabaseManager() {
 		this.plugins = DatabasePluginRegistry.getInstance();
 	}
 
 	/**
-	 * Retrieve the number of entries currently present in the basket of the
+	 * Retrieve the number of entries currently present in the clipboard of the
 	 * given user.
 	 * 
 	 * @param username
 	 *            the username
 	 * @param session
 	 *            the database session
-	 * @return the number of entries currently stored in the basket
+	 * @return the number of entries currently stored in the clipboard
 	 */
-	public int getNumberOfBasketEntries(final String username, final DBSession session) {
-		final Integer result = this.queryForObject("getNumBasketEntries", username, Integer.class, session);
+	public int getNumberOfClipboardEntries(final String username, final DBSession session) {
+		final Integer result = this.queryForObject("getNumClipboardEntries", username, Integer.class, session);
 		return saveConvertToint(result);
 	}
 	
@@ -90,66 +90,66 @@ public class BasketDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	/**
-	 * creates basket items
-	 * @param userName - name of the user from whose basket we want to delete the item
+	 * creates clipboard items
+	 * @param userName - name of the user from whose clipboard we want to delete the item
 	 * @param contentId 
 	 * @param session 
 	 */
 	public void createItem(final String userName, final int contentId, final DBSession session){
-		final BasketParam param = new BasketParam();
+		final ClipboardParam param = new ClipboardParam();
 		param.setUserName(userName);
 		param.setContentId(contentId);
-		this.insert("createBasketItem", param, session);
+		this.insert("createClipboardItem", param, session);
 	}
 	
 	/**
-	 * deletes basket items
-	 * @param userName - name of the user from whose basket we want to delete the item
+	 * deletes clipboard items
+	 * @param userName - name of the user from whose clipboard we want to delete the item
 	 * @param contentId 
 	 * @param session 
 	 */
 	public void deleteItem(final String userName, final int contentId, final DBSession session){
-		final BasketParam param = new BasketParam();			
+		final ClipboardParam param = new ClipboardParam();			
 		param.setUserName(userName);
 		param.setContentId(contentId);
-		this.plugins.onDeleteBasketItem(param, session);
-		this.delete("deleteBasketItem", param, session);
+		this.plugins.onDeleteClipboardItem(param, session);
+		this.delete("deleteClipboardItem", param, session);
 	}
 	
 	/**
-	 * Deletes all items with the given content_id from the basket.
+	 * Deletes all items with the given content_id from the clipboard.
 	 * 
 	 * @param contentId
 	 * @param session
 	 */
 	public void deleteItems(final int contentId, final DBSession session){
-		final BasketParam param = new BasketParam();			
+		final ClipboardParam param = new ClipboardParam();			
 		param.setContentId(contentId);
-		this.plugins.onDeleteBasketItem(param, session);
-		this.delete("deleteBasketItems", param, session);
+		this.plugins.onDeleteClipboardItem(param, session);
+		this.delete("deleteClipboardItems", param, session);
 	}
 	
 	/**
-	 * updates basket items
+	 * updates clipboard items
 	 * @param newContentId 
 	 * @param contentId 
 	 * @param session 
 	 */
 	public void updateItems(final int newContentId, final int contentId, final DBSession session){
-		final BasketParam param = new BasketParam();
+		final ClipboardParam param = new ClipboardParam();
 		param.setContentId(contentId);
 		param.setNewContentId(newContentId);
-		this.update("updateBasketItems", param, session);
+		this.update("updateClipboardItems", param, session);
 	}
 	
 	/**
-	 * drops all basket items related to this user name
+	 * drops all clipboard items related to this user name
 	 * 
 	 * @param userName
 	 * @param session
 	 */
 	public void deleteAllItems(final String userName, final DBSession session){
-		this.plugins.onDeleteAllBasketItems(userName, session);
+		this.plugins.onDeleteAllClipboardItems(userName, session);
 		this.delete("deleteAllItems", userName, session);
 	}
 }

@@ -16,7 +16,7 @@
 		<tr>
 			<th>name</th>
 			<td>
-				<a href="/admin?aclUserInfo=${fn:escapeXml(user.name)}"><c:out value="${user.name}"/></a>
+				<a href="/admin/spam?aclUserInfo=${fn:escapeXml(user.name)}"><c:out value="${user.name}"/></a>
 			</td>
 		</tr>
 		<tr>
@@ -41,8 +41,8 @@
 			<th colspan="2">system data</th>
 		</tr>
 		<tr>
-			<th>basket</th>
-			<td><c:out value="${user.basket.numPosts}"/></td>
+			<th>clipboard</th>
+			<td><c:out value="${user.clipboard.numPosts}"/></td>
 		</tr>
 		<tr>
 			<th>friends</th>

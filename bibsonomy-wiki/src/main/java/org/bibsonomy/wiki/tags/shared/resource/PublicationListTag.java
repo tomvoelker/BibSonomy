@@ -53,46 +53,20 @@ import org.bibsonomy.wiki.tags.SharedTag;
 
 /**
  * TODO: abstract resource tag
- * 
- */
-/*
  * TODO: add order by content type as a valid sort order
- */
-/*
  * FIXME: escape ALL data coming from the database
- */
-/*
- * @author philipp
  * 
+ * @author philipp
  * @author Bernd Terbrack
  */
 public class PublicationListTag extends SharedTag {
-	/**
-	 * 
-	 */
-	private static final String ORDER_TITLE = "title";
-
-	/**
-	 * 
-	 */
-	private static final String ORDER_AUTHOR = "author";
-
-	/**
-	 * 
-	 */
-	private static final String ORDER_YEAR = "year";
-
-	/**
-	 * 
-	 */
-	private static final String ORDER_DESC = "desc";
-
-	/**
-	 * 
-	 */
-	private static final String ORDER_ASC = "asc";
-
 	private static final Log log = LogFactory.getLog(PublicationListTag.class);
+	
+	private static final String ORDER_TITLE = "title";
+	private static final String ORDER_AUTHOR = "author";
+	private static final String ORDER_YEAR = "year";
+	private static final String ORDER_DESC = "desc";
+	private static final String ORDER_ASC = "asc";
 
 	private static final String DEFAULT_LAYOUT = "plain";
 

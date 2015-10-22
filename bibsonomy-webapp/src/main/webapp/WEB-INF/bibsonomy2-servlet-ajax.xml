@@ -281,6 +281,7 @@
 		<property name="recommender"	ref="multiplexingTagRecommender" />
 		<!-- tag recommender used for spammer -->
 		<property name="spamTagRecommender" ref="jensRecommender"/>
+		<property name="rendererFactory" ref="rendererFactory" />
 	</bean>
 	
 	
