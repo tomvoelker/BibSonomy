@@ -149,7 +149,7 @@
 							<ul class="dropdown-menu">
 								<li><a href="${relativeUrlGenerator.getAdminUrlByName('spam')}">users</a></li>
 								<li><a href="${relativeUrlGenerator.getAdminUrlByName('group')}">groups</a></li>
-								<li><a href="${relativeUrlGenerator.getAdminUrlByName('lucene')}">full text search</a></li>
+								<li><a href="${relativeUrlGenerator.getAdminUrlByName('fulltextsearch')}">full text search</a></li>
 								<li><a href="${relativeUrlGenerator.getAdminUrlByName('recommender')}">recommenders</a></li>
 								<li><a href="${relativeUrlGenerator.getAdminUrlByName('oauth')}">OAuth consumers</a></li>
 								<li><a href="${relativeUrlGenerator.getAdminUrlByName('sync')}">synchronization</a></li>

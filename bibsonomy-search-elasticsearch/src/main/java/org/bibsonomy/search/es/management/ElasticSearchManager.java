@@ -80,7 +80,7 @@ public class ElasticSearchManager<R extends Resource> {
 	 * generates a new index for the resource
 	 * @throws IndexAlreadyGeneratingException
 	 */
-	public void generateIndexForResource() throws IndexAlreadyGeneratingException {
+	public void generateIndex() throws IndexAlreadyGeneratingException {
 		if (!this.generatorLock.tryAcquire()) {
 			throw new IndexAlreadyGeneratingException();
 		}

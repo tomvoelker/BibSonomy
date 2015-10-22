@@ -84,7 +84,6 @@
 				<c:if test="${not empty command.adminResponse}">
 					<div class="adminResponse"><c:out value="${command.adminResponse}"/></div>
 				</c:if>
-				  
 			<c:forEach var="resourceIndexInfo" items="${command.indicesInfos}">
 			<div class="indexProperties">
 			<h3><c:out value="${resourceIndexInfo.resourceName}" /> Index</h3>

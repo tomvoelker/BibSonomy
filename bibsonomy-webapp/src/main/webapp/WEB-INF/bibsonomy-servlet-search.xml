@@ -9,24 +9,17 @@
 	                    http://www.springframework.org/schema/jee
 	                    http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
 	
-	<!-- import the config from the lucene module -->
-	<import resource="classpath:org/bibsonomy/bibsonomy-search-context.xml" />
+	<!-- import the config from the elasticsearch search module -->
+	<import resource="classpath:org/bibsonomy/bibsonomy-search-elasticsearch-context.xml" />
 	
-	<bean id="luceneDataSource" class="org.apache.tomcat.dbcp.dbcp.BasicDataSource" parent="basicDataSource">
-		<property name="driverClassName" value="${database.lucene.driverClassName}" />
-		<property name="url" value="${database.lucene.url}" />
-		<property name="username" value="${database.lucene.username}" />
-		<property name="password" value="${database.lucene.password}" />
-		<property name="maxIdle" value="${database.lucene.maxIdle}" />
-		<property name="maxActive" value="${database.lucene.maxActive}" />
-		<property name="maxWait" value="${database.lucene.maxWait}" />
-		<property name="removeAbandoned" value="${database.lucene.removeAbandoned}" />
-		<property name="removeAbandonedTimeout" value="${database.lucene.removeAbandonedTimeout}" />
-	</bean>
-
-	<!--+ 
-	 	|
-	 	| lucene CRON jobs are defined in bibsonomy2-servlet-cronjobs.xml
-	 	|
-	 	+-->
+	<alias name="elasticSearchBookmarkManager" alias="searchBookmarkManager" />
+	<alias name="elasticSearchPublicationManager" alias="searchPublicationManager" />
+	
+	<alias name="elasticSearchPublicationSearch" alias="personSearch" />
+	
+	<alias name="elasticSearchBookmarkSearch" alias="bookmarkSearch" />
+	<alias name="elasticSearchPublicationSearch" alias="publicationSearch" />
+	
+	<!-- FIXME: replace with correct search index -->
+	<alias name="elasticSearchPublicationSearch" alias="goldStandardPublicationSearch" />
 </beans>

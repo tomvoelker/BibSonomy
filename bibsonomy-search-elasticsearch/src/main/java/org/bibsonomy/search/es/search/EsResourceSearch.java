@@ -100,7 +100,6 @@ import org.elasticsearch.search.sort.SortOrder;
 public class EsResourceSearch<R extends Resource> implements PersonSearch, ResourceSearch<R> {
 	private static final Log log = LogFactory.getLog(EsResourceSearch.class);
 	
-	
 	/** the max offset for suggestions */
 	private static final int MAX_OFFSET = 1024;
 	
@@ -161,6 +160,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			if (response != null) {
 				final SearchHits hits = response.getHits();
 				log.debug("Current Search results for '" + searchTerms + "': " + response.getHits().getTotalHits());
+				// TODO: check min TODODZO
 				for (int i = 0; i < Math.min(limit, hits.getTotalHits() - offset); ++i) {
 					SearchHit hit = hits.getAt(i);
 					final Map<String, Object> result = hit.getSource();
@@ -257,27 +257,6 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			log.error("no index found: " + e);
 		}
 		return postList;
-	}
-
-	/**
-	 * @param resourceConverter the resourceConverter to set
-	 */
-	public void setResourceConverter(final ResourceConverter<R> resourceConverter) {
-		this.resourceConverter = resourceConverter;
-	}
-
-	/**
-	 * @param resourceType the resourceType to set
-	 */
-	public void setResourceType(final Class<R> resourceType) {
-		this.resourceType = resourceType;
-	}
-
-	/**
-	 * @param dbLogic the dbLogic to set
-	 */
-	public void setDbLogic(SearchInfoLogic dbLogic) {
-		this.infoLogic = dbLogic;
 	}
 	
 	/* (non-Javadoc)
@@ -693,7 +672,6 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		return null;
 	}
 
-
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.services.searcher.ResourceSearch#getTags(java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, int, int)
 	 */
@@ -702,15 +680,6 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-
-	/**
-	 * @param genealogyUser
-	 */
-	public void setGenealogyUser(String genealogyUser) {
-		this.genealogyUser = genealogyUser;
-	}
-
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPosts(java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, org.bibsonomy.common.enums.SearchType, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.model.enums.Order, int, int)
@@ -847,5 +816,47 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 				mainQuery.mustNot(negatedSearchQuery);
 			}
 		}
+	}
+	
+	/**
+	 * @param resourceConverter the resourceConverter to set
+	 */
+	public void setResourceConverter(final ResourceConverter<R> resourceConverter) {
+		this.resourceConverter = resourceConverter;
+	}
+
+	/**
+	 * @param resourceType the resourceType to set
+	 */
+	public void setResourceType(final Class<R> resourceType) {
+		this.resourceType = resourceType;
+	}
+
+	/**
+	 * @param dbLogic the dbLogic to set
+	 */
+	public void setDbLogic(SearchInfoLogic dbLogic) {
+		this.infoLogic = dbLogic;
+	}
+
+	/**
+	 * @param infoLogic the infoLogic to set
+	 */
+	public void setInfoLogic(SearchInfoLogic infoLogic) {
+		this.infoLogic = infoLogic;
+	}
+
+	/**
+	 * @param manager the manager to set
+	 */
+	public void setManager(ElasticSearchManager<R> manager) {
+		this.manager = manager;
+	}
+	
+	/**
+	 * @param genealogyUser
+	 */
+	public void setGenealogyUser(String genealogyUser) {
+		this.genealogyUser = genealogyUser;
 	}
 }

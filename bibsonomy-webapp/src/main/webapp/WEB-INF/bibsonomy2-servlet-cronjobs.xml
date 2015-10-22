@@ -6,75 +6,71 @@
 
 	<!--+ 
 	 	| TODO: for more readability we should use the spring task namespace
-	 	| e.g. <task:scheduled ref="lucenePublicationManager" method="updateAndReloadIndex" cron="22 1/5 * * * ?"/>
 	 	| @see http://static.springsource.org/spring/docs/3.0.x/spring-framework-reference/html/scheduling.html
 	 	| Define CRON-like jobs in this file
 	 	|
 	 	+-->
-
 	<!--+ 
-	 	| lucene jobs
+	 	| search index update cron jobs
 	 	+-->
-	<!-- update jobs without index optimization -->
-	<bean id="luceneUpdateBibTexJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="lucenePublicationUpdateTrigger" />
-		<property name="targetMethod" value="triggerUpdate" />
-		<property name="concurrent" value="false" />
-	</bean>
-	
-	<bean id="luceneUpdateBookmarkJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="luceneBookmarkUpdateTrigger" />
-		<property name="targetMethod" value="triggerUpdate" />
-		<property name="concurrent" value="false" />
-	</bean>
-	
-	<bean id="luceneUpdateGoldStandardPublicationJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="luceneGoldStandardPublicationUpdateTrigger" />
-		<property name="targetMethod" value="triggerUpdate" />
-		<property name="concurrent" value="false" />
-	</bean>
-
-	<!-- lucene index update cron jobs -->
-	<!-- cronExpression is like "sec  min  hour  day  month  dow year(optional)	" -->
-	<!--  http://www.opensymphony.com/quartz/api/    http://www.opensymphony.com/quartz/api/org/quartz/CronExpression.html  -->
-	<bean id="luceneUpdateBibTexCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-		<property name="cronExpression" value="1/15 * * * * ?" /> <!-- *:01,11,..,51:22 -->
-		<property name="jobDetail" ref="luceneUpdateBibTexJob" />
-	</bean>
-	<bean id="luceneUpdateBookmarkCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="searchUpdateBookmarkIndexCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="cronExpression" value="55 1/5 * * * ?" /> <!-- *:01,11,..,51:22 -->
-		<property name="jobDetail" ref="luceneUpdateBookmarkJob" />
-	</bean>
-	<bean id="luceneUpdateGoldStandardPublicationCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
- 		<property name="cronExpression" value="22 1/5 * * * ?" /> <!-- *:01,11,..,51:22 -->
-		<property name="jobDetail" ref="luceneUpdateGoldStandardPublicationJob" />
+		<property name="jobDetail" ref="searchUpdateBookmarkIndexJob" />
 	</bean>
 	
-	<!-- Generate index jobs -->
-	<bean id="luceneGenerateBibTexJob" class="org.bibsonomy.webapp.util.spring.scheduling.DeactivatableMethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="lucenePublicationManager" />
-		<property name="targetMethod" value="generateIndex" />
+	<bean id="searchUpdateBookmarkIndexJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="searchBookmarkManager" />
+		<property name="targetMethod" value="updateIndex" />
 		<property name="concurrent" value="false" />
-		<property name="enabled" value="${cron.fulltextsearch.regenerate.enabled.publication}" />
 	</bean>
 	
-	<bean id="luceneGenerateBookmarkJob" class="org.bibsonomy.webapp.util.spring.scheduling.DeactivatableMethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="luceneBookmarkManager" />
+	<bean id="searchUpdatePublicationIndexCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="cronExpression" value="1/15 * * * * ?" />
+		<property name="jobDetail" ref="searchUpdatePublicationIndexJob" />
+	</bean>
+	
+	<bean id="searchUpdatePublicationIndexJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="searchPublicationManager" />
+		<property name="targetMethod" value="updateIndex" />
+		<property name="concurrent" value="false" />
+	</bean>
+	
+	<!-- 
+	<bean id="searchUpdateGoldStandardPublicationIndexJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="searchGoldStandardPublicationIndexUpdateTrigger" />
+		<property name="targetMethod" value="triggerUpdate" />
+		<property name="concurrent" value="false" />
+	</bean>
+	
+	<bean id="searchGoldStandardPublicationIndexUpdateTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+ 		<property name="cronExpression" value="22 1/5 * * * ?" />
+		<property name="jobDetail" ref="searchUpdateGoldStandardPublicationJob" />
+	</bean>
+	-->
+	<!-- Generate index cron jobs -->
+	<bean id="searchGenerateBookmarkIndexCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="cronExpression" value="0 0 9 ? * 2 *" />
+		<property name="jobDetail" ref="searchGenerateBookmarkIndexJob" />
+	</bean>
+	
+	<bean id="searchGenerateBookmarkIndexJob" class="org.bibsonomy.webapp.util.spring.scheduling.DeactivatableMethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="searchBookmarkManager" />
 		<property name="targetMethod" value="generateIndex" />
 		<property name="concurrent" value="false" />
 		<property name="enabled" value="${cron.fulltextsearch.regenerate.enabled.bookmark}" />
 	</bean>
 	
-	<!-- Generate index triggers -->
-	<bean id="luceneGenerateBibTexCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="searchGeneratePublicationIndexCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="cronExpression" value="0 0 12 ? * 2 *" />
-		<property name="jobDetail" ref="luceneGenerateBibTexJob" />
-	</bean>
-	<bean id="luceneGenerateBookmarkCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-		<property name="cronExpression" value="0 0 9 ? * 2 *" />
-		<property name="jobDetail" ref="luceneGenerateBookmarkJob" />
+		<property name="jobDetail" ref="searchGeneratePublicationIndexJob" />
 	</bean>
 	
+	<bean id="searchGeneratePublicationIndexJob" class="org.bibsonomy.webapp.util.spring.scheduling.DeactivatableMethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="searchPublicationManager" />
+		<property name="targetMethod" value="generateIndex" />
+		<property name="concurrent" value="false" />
+		<property name="enabled" value="${cron.fulltextsearch.regenerate.enabled.publication}" />
+	</bean>
 	
 	<!--+
 		| CRON job to send pings to bookmarked web pages
@@ -122,12 +118,12 @@
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
-				<ref bean="luceneUpdateBibTexCronTrigger" />
-				<ref bean="luceneUpdateBookmarkCronTrigger" />
-				<ref bean="luceneUpdateGoldStandardPublicationCronTrigger" />
+				<ref bean="searchUpdatePublicationIndexCronTrigger" />
+				<ref bean="searchUpdateBookmarkIndexCronTrigger" />
+				<!-- <ref bean="searchUpdateGoldStandardPublicationIndexCronTrigger" /> -->
+				<ref bean="searchGeneratePublicationIndexCronTrigger" />
+				<ref bean="searchGenerateBookmarkIndexCronTrigger" />
 				<ref bean="autoSyncCronTrigger" />
-				<ref bean="luceneGenerateBibTexCronTrigger" />
-				<ref bean="luceneGenerateBookmarkCronTrigger" />
 				<ref bean="pingbackTrigger" />
 			</list>
 		</property>

@@ -340,7 +340,7 @@ public enum Views implements View {
 	/**
 	 * lucene admin page
 	 */
-	ADMIN_FULL_TEXT_SEARCH("actions/admin/search"),
+	ADMIN_FULL_TEXT_SEARCH("admin/search"),
 	/**
 	 * recommender admin page
 	 */
