@@ -29,6 +29,7 @@ import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.model.SearchIndexInfo;
 import org.bibsonomy.search.update.SearchIndexState;
 import org.bibsonomy.util.Sets;
+import org.elasticsearch.action.count.CountRequestBuilder;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 
@@ -358,11 +359,25 @@ public class ElasticSearchManager<R extends Resource> {
 	}
 	
 	/**
+	 * @return 
+	 * 
+	 */
+	public CountRequestBuilder prepareCount() {
+		return this.client.getClient().prepareCount(this.getActiveIndexName());
+	}
+	
+	/**
 	 * @return
 	 */
 	public SearchRequestBuilder prepareSearch() {
-		final String indexToUse = ElasticSearchUtils.getLocalAliasForResource(this.tools.getResourceType(), systemURI, true);
-		return prepareSearch(indexToUse);
+		return prepareSearch(this.getActiveIndexName());
+	}
+
+	/**
+	 * @return
+	 */
+	private String getActiveIndexName() {
+		return ElasticSearchUtils.getLocalAliasForResource(this.tools.getResourceType(), systemURI, true);
 	}
 
 	/**

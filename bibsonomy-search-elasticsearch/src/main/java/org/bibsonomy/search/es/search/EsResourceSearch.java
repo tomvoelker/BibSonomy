@@ -73,6 +73,8 @@ import org.bibsonomy.search.es.management.ElasticSearchManager;
 import org.bibsonomy.search.es.search.tokenizer.SimpleTokenizer;
 import org.bibsonomy.services.searcher.PersonSearch;
 import org.bibsonomy.services.searcher.ResourceSearch;
+import org.elasticsearch.action.count.CountRequestBuilder;
+import org.elasticsearch.action.count.CountResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -164,6 +166,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 				for (int i = 0; i < Math.min(limit, hits.getTotalHits() - offset); ++i) {
 					SearchHit hit = hits.getAt(i);
 					final Map<String, Object> result = hit.getSource();
+					// FIXME: convert the complete post but only use the tags? TODODZO
 					final Post<R> post = this.resourceConverter.convert(result);
 					// set tag count
 					if (present(post.getTags())) {
@@ -250,7 +253,15 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 
 					log.debug("Current Search results for '" + searchTerms + "': " + response.getHits().getTotalHits());
 					for (final SearchHit hit : hits) {
-						postList.add(this.resourceConverter.convert(hit.getSource()));
+						final Post<R> post = this.resourceConverter.convert(hit.getSource());
+						
+						final CountRequestBuilder countBuilder = this.manager.prepareCount();
+						final R resource = post.getResource();
+						countBuilder.setQuery(QueryBuilders.termQuery(Fields.Resource.INTERHASH, resource.getInterHash()));
+						final CountResponse countResponse = countBuilder.execute().actionGet();
+						
+						resource.setCount((int) countResponse.getCount());
+						postList.add(post);
 					}
 				}
 		} catch (final IndexMissingException e) {
