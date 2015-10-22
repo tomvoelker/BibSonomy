@@ -45,10 +45,15 @@
 		<property name="resourceClass" ref="searchGoldStandardPublicationClass" />
 	</bean>
 	
-	<bean id="searchDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+	<bean id="searchDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" parent="basicDataSource">
 		<property name="driverClassName" value="${database.search.driverClassName}" />
 		<property name="url" value="${database.search.url}" />
 		<property name="username" value="${database.search.username}" />
 		<property name="password" value="${database.search.password}" />
+		<property name="maxIdle" value="${database.search.maxIdle}" />
+		<property name="maxActive" value="${database.search.maxActive}" />
+		<property name="maxWait" value="${database.search.maxWait}" />
+		<property name="removeAbandoned" value="${database.search.removeAbandoned}" />
+		<property name="removeAbandonedTimeout" value="${database.search.removeAbandonedTimeout}" />
 	</bean>
 </beans>
