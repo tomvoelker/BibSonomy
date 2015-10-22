@@ -3,7 +3,7 @@
 <sqlMapConfig>
 
 	<sqlMap resource="common/TypeAliases.xml" />
-	<sqlMap resource="common/TypeAliases-lucene.xml" />
+	<sqlMap resource="common/TypeAliases-search.xml" />
 
 	<typeHandler javaType="personNameList"              callback="org.bibsonomy.database.common.typehandler.PersonNameTypeHandlerCallback" />
 	<typeHandler javaType="personResourceRelationType"  callback="org.bibsonomy.database.common.typehandler.PersonResourceRelationTypeHandlerCallback" />	
@@ -12,21 +12,21 @@
 	<sqlMap resource="common/DiscussionCommon.xml" />
 	<sqlMap resource="common/CommentCommon.xml" />
 	<sqlMap resource="common/Common.xml" />
-	<sqlMap resource="common/Common-lucene.xml" />
+	<sqlMap resource="common/Common-search.xml" />
 	<sqlMap resource="common/BookmarkCommon.xml" />
-	<sqlMap resource="common/BookmarkCommon-lucene.xml" />
+	<sqlMap resource="common/BookmarkCommon-search.xml" />
 	<sqlMap resource="common/BibTexCommon.xml" />
-	<sqlMap resource="common/BibTexCommon-lucene.xml" />
+	<sqlMap resource="common/BibTexCommon-search.xml" />
 	<sqlMap resource="common/GoldStandardCommon.xml" />
-	<sqlMap resource="common/GoldStandardPublicationCommon-lucene.xml" />
+	<sqlMap resource="common/GoldStandardPublicationCommon-search.xml" />
 	<sqlMap resource="common/PersonCommon.xml" />
 	<sqlMap resource="common/ReviewCommon.xml" />
 	
 	<sqlMap resource="Person.xml" />
 	<sqlMap resource="General.xml" />
 	
-	<sqlMap resource="LuceneGenerateIndexQueries.xml" />
-	<sqlMap resource="Queries-lucene.xml" />
-	<sqlMap resource="person-lucene-queries.xml" />
+	<sqlMap resource="SearchGenerateIndexQueries.xml" />
+	<sqlMap resource="Queries-search.xml" />
+	<sqlMap resource="person-search-queries.xml" />
 </sqlMapConfig>
 
