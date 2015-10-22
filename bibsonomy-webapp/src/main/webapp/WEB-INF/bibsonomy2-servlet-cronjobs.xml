@@ -14,7 +14,7 @@
 	 	| search index update cron jobs
 	 	+-->
 	<bean id="searchUpdateBookmarkIndexCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-		<property name="cronExpression" value="55 1/5 * * * ?" /> <!-- *:01,11,..,51:22 -->
+		<property name="cronExpression" value="55 1/5 * * * ?" />
 		<property name="jobDetail" ref="searchUpdateBookmarkIndexJob" />
 	</bean>
 	
@@ -47,6 +47,7 @@
 		<property name="jobDetail" ref="searchUpdateGoldStandardPublicationJob" />
 	</bean>
 	-->
+	
 	<!-- Generate index cron jobs -->
 	<bean id="searchGenerateBookmarkIndexCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="cronExpression" value="0 0 9 ? * 2 *" />
@@ -108,7 +109,6 @@
 <!--		<property name="startDelay" value="60000" />  start one minute after startup -->
 <!--		<property name="repeatInterval" value="300000" />  repeat all 5 minutes -->
 <!--	</bean>-->
-	
 	
 	<!--+ 
 	 	|

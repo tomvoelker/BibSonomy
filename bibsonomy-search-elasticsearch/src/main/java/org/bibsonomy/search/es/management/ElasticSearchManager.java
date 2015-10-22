@@ -51,7 +51,7 @@ public class ElasticSearchManager<R extends Resource> {
 	
 	private URI systemURI;
 	
-	private final Semaphore aliasLock = new Semaphore(1);
+	private final Semaphore updateLock = new Semaphore(1);
 	
 	private final Semaphore generatorLock = new Semaphore(1);
 	private final ExecutorService executorService = Executors.newFixedThreadPool(1);
@@ -114,7 +114,7 @@ public class ElasticSearchManager<R extends Resource> {
 	 */
 	protected void activateNewIndex(ElasticSearchIndex<R> newIndex) {
 		try {
-			this.aliasLock.acquire();
+			this.updateLock.acquire();
 			
 			final String localActiveAlias = ElasticSearchUtils.getLocalAliasForResource(this.tools.getResourceType(), this.systemURI, true);
 			final String localInactiveAlias = ElasticSearchUtils.getLocalAliasForResource(this.tools.getResourceType(), this.systemURI, false);
@@ -135,9 +135,9 @@ public class ElasticSearchManager<R extends Resource> {
 			
 			this.client.deleteIndex(inactiveIndexName);
 		} catch (InterruptedException e) {
-			log.error("", e);
+			log.error("can't acquire lock to update aliases", e);
 		} finally {
-			this.aliasLock.release();
+			this.updateLock.release();
 		}
 	}
 
@@ -153,101 +153,103 @@ public class ElasticSearchManager<R extends Resource> {
 	 * update the inactive index
 	 */
 	public void updateIndex() {
-		final String localInactiveAlias = ElasticSearchUtils.getLocalAliasForResource(this.tools.getResourceType(), this.systemURI, false);
-		final SearchIndexState oldState = this.client.getSearchIndexStateForIndex(localInactiveAlias);
-		final SearchIndexState targetState = this.inputLogic.getDbState();
-		
-		final int oldLastTasId = oldState.getLast_tas_id().intValue();
-		int newLastTasId = oldLastTasId;
-		
-		/*
-		 * 1) flag/unflag spammer if the index existed before
-		 */
-		if (oldState.getLast_log_date() != null) {
-			this.updatePredictions(localInactiveAlias, oldState.getLast_log_date());
+		if (!this.updateLock.tryAcquire()) {
+			log.warn("Another update in progress. Skipping update.");
 		}
 		
-		/*
-		 * 2) remove old deleted or updated posts
-		 */
-		if (oldState.getLast_log_date() != null) {
-			final List<Integer> contentIdsToDelete = this.inputLogic.getContentIdsToDelete(new Date(oldState.getLast_log_date().getTime() - QUERY_TIME_OFFSET_MS));
-			
-			for (final Integer contentId : contentIdsToDelete) {
-				this.deletePostWithContentId(localInactiveAlias, contentId.intValue());
-			}
-		}
-
-		/*
-		 * 3) add new and updated posts to the index
-		 * FIXME: use steps TODODZO
-		 */
-		final List<SearchPost<R>> newPosts = this.inputLogic.getNewPosts(oldLastTasId);
-		final int totalCountNewPosts = newPosts.size();
-		
-		log.debug("inserting new/updated posts into " + localInactiveAlias);
-		for (final SearchPost<R> post : newPosts) {
-			// just in case there is already a post with this id
-			this.deletePostWithContentId(localInactiveAlias, post.getContentId().intValue());
-			this.insertPost(localInactiveAlias, post);
-			newLastTasId = Math.max(post.getLastTasId().intValue(), newLastTasId);
-		}
-		
-		log.debug("inserted " + totalCountNewPosts + " new/updated posts");
-		
-		this.updateResourceSpecificProperties(localInactiveAlias, oldState, targetState);
-		
-		// 4) update the index state
 		try {
-			SearchIndexState newState = new SearchIndexState(oldState);
-			newState.setLast_log_date(targetState.getLast_log_date());
-			newState.setLast_tas_id(Integer.valueOf(newLastTasId));
-			newState.setLastPersonChangeId(targetState.getLastPersonChangeId());
-			this.updateIndexState(localInactiveAlias, newState);
-		} catch (final RuntimeException e) {
-			this.updateIndexState(localInactiveAlias, oldState);
-			throw e;
-		} catch (final Exception e) {
-			this.updateIndexState(localInactiveAlias, oldState);
-			throw new RuntimeException(e);
+			final String localInactiveAlias = ElasticSearchUtils.getLocalAliasForResource(this.tools.getResourceType(), this.systemURI, false);
+			final SearchIndexState oldState = this.client.getSearchIndexStateForIndex(localInactiveAlias);
+			final SearchIndexState targetState = this.inputLogic.getDbState();
+			
+			final int oldLastTasId = oldState.getLast_tas_id().intValue();
+			int newLastTasId = oldLastTasId;
+			
+			/*
+			 * 1) flag/unflag spammer if the index existed before
+			 */
+			if (oldState.getLast_log_date() != null) {
+				this.updatePredictions(localInactiveAlias, oldState.getLast_log_date());
+			}
+			
+			/*
+			 * 2) remove old deleted or updated posts
+			 */
+			if (oldState.getLast_log_date() != null) {
+				final List<Integer> contentIdsToDelete = this.inputLogic.getContentIdsToDelete(new Date(oldState.getLast_log_date().getTime() - QUERY_TIME_OFFSET_MS));
+				
+				for (final Integer contentId : contentIdsToDelete) {
+					this.deletePostWithContentId(localInactiveAlias, contentId.intValue());
+				}
+			}
+	
+			/*
+			 * 3) add new and updated posts to the index
+			 * FIXME: use steps TODODZO
+			 */
+			final List<SearchPost<R>> newPosts = this.inputLogic.getNewPosts(oldLastTasId);
+			final int totalCountNewPosts = newPosts.size();
+			
+			log.debug("inserting new/updated posts into " + localInactiveAlias);
+			for (final SearchPost<R> post : newPosts) {
+				// just in case there is already a post with this id
+				this.deletePostWithContentId(localInactiveAlias, post.getContentId().intValue());
+				this.insertPost(localInactiveAlias, post);
+				newLastTasId = Math.max(post.getLastTasId().intValue(), newLastTasId);
+			}
+			
+			log.debug("inserted " + totalCountNewPosts + " new/updated posts");
+			
+			this.updateResourceSpecificProperties(localInactiveAlias, oldState, targetState);
+			
+			// 4) update the index state
+			try {
+				SearchIndexState newState = new SearchIndexState(oldState);
+				newState.setLast_log_date(targetState.getLast_log_date());
+				newState.setLast_tas_id(Integer.valueOf(newLastTasId));
+				newState.setLastPersonChangeId(targetState.getLastPersonChangeId());
+				this.updateIndexState(localInactiveAlias, newState);
+			} catch (final RuntimeException e) {
+				this.updateIndexState(localInactiveAlias, oldState);
+				throw e;
+			} catch (final Exception e) {
+				this.updateIndexState(localInactiveAlias, oldState);
+				throw new RuntimeException(e);
+			}
+			
+			if (log.isDebugEnabled()) {
+				log.debug("posts updated for " + localInactiveAlias);
+			}
+			
+			this.switchActiveAndInactiveIndex();
+		} finally {
+			this.updateLock.release();
 		}
-		
-		if (log.isDebugEnabled()) {
-			log.debug("posts updated for " + localInactiveAlias);
-		}
-		
-		this.switchActiveAndInactiveIndex();
 	}
 	
 	/**
 	 * switch active and inactive index
 	 */
 	private void switchActiveAndInactiveIndex() {
-		try {
-			final String localActiveAlias = ElasticSearchUtils.getLocalAliasForResource(this.tools.getResourceType(), this.systemURI, true);
-			final String localInactiveAlias = ElasticSearchUtils.getLocalAliasForResource(this.tools.getResourceType(), this.systemURI, false);
-			final String activeIndexName = this.client.getIndexNameForAlias(localActiveAlias);
-			final String inactiveIndexName = this.client.getIndexNameForAlias(localInactiveAlias);
-			
-			@SuppressWarnings("unchecked")
-			final Set<Pair<String, String>> aliasesToAdd = Sets.asSet(
-				new Pair<>(inactiveIndexName, localActiveAlias),
-				new Pair<>(activeIndexName, localInactiveAlias)
-			);
-			@SuppressWarnings("unchecked")
-			final Set<Pair<String, String>> aliasesToRemove = Sets.asSet(
-				new Pair<>(activeIndexName, localActiveAlias),
-				new Pair<>(inactiveIndexName, localInactiveAlias)
-			);
-			
-			// update the aliases (atomic, see elastic search docu)
-			this.client.updateAliases(aliasesToAdd, aliasesToRemove);
-			this.aliasLock.acquire();
-		} catch (InterruptedException e) {
-			log.error("can not switch active and inactive alias", e);
-		} finally {
-			this.aliasLock.release();
-		}
+		
+		final String localActiveAlias = ElasticSearchUtils.getLocalAliasForResource(this.tools.getResourceType(), this.systemURI, true);
+		final String localInactiveAlias = ElasticSearchUtils.getLocalAliasForResource(this.tools.getResourceType(), this.systemURI, false);
+		final String activeIndexName = this.client.getIndexNameForAlias(localActiveAlias);
+		final String inactiveIndexName = this.client.getIndexNameForAlias(localInactiveAlias);
+		
+		@SuppressWarnings("unchecked")
+		final Set<Pair<String, String>> aliasesToAdd = Sets.asSet(
+			new Pair<>(inactiveIndexName, localActiveAlias),
+			new Pair<>(activeIndexName, localInactiveAlias)
+		);
+		@SuppressWarnings("unchecked")
+		final Set<Pair<String, String>> aliasesToRemove = Sets.asSet(
+			new Pair<>(activeIndexName, localActiveAlias),
+			new Pair<>(inactiveIndexName, localInactiveAlias)
+		);
+		
+		// update the aliases (atomic, see elastic search docu)
+		this.client.updateAliases(aliasesToAdd, aliasesToRemove);
 	}
 
 	/**
