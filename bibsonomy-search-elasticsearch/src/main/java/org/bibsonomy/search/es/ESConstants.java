@@ -133,7 +133,7 @@ public final class ESConstants {
 			public static final String ADDRESS = "address";
 			public static final String ENTRY_TYPE = "entrytype";
 			public static final String ANNOTE = "annote";
-			public static final String BKEY = "bkey";
+			public static final String KEY = "bkey";
 			public static final String ABSTRACT = "abstract";
 			public static final String BOOKTITLE = "booktitle";
 			public static final String CHAPTER = "chapter";

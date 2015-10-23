@@ -59,7 +59,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	protected void convertResourceInternal(BibTex publication, Map<String, Object> source) {
 		publication.setAddress((String) source.get(Fields.Publication.ADDRESS));
 		publication.setAnnote((String) source.get(Fields.Publication.ANNOTE));
-		publication.setKey((String) source.get(Fields.Publication.BKEY));
+		publication.setKey((String) source.get(Fields.Publication.KEY));
 		publication.setAbstract((String) source.get(Fields.Publication.ABSTRACT));
 		publication.setBibtexKey((String) source.get(Fields.Publication.BIBTEXKEY));
 		publication.setBooktitle((String) source.get(Fields.Publication.BOOKTITLE));
@@ -116,7 +116,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	protected void convertResource(Map<String, Object> jsonDocument, BibTex resource) {
 		jsonDocument.put(Fields.Publication.ADDRESS, resource.getAddress());
 		jsonDocument.put(Fields.Publication.ANNOTE, resource.getAnnote());
-		jsonDocument.put(Fields.Publication.BKEY, resource.getKey());
+		jsonDocument.put(Fields.Publication.KEY, resource.getKey());
 		jsonDocument.put(Fields.Publication.ABSTRACT, resource.getAbstract());
 		jsonDocument.put(Fields.Publication.BIBTEXKEY, resource.getBibtexKey());
 		jsonDocument.put(Fields.Publication.BOOKTITLE, resource.getBooktitle());

@@ -43,6 +43,12 @@ public abstract class ResourceMappingBuilder<R extends Resource> implements Mapp
 	/** field should not be indexed */
 	protected static final String NOT_INDEXED = "no";
 	
+	/** controls if the field is added to the _all field */
+	protected static final String INCLUDE_FIELD = "include_in_all";
+	
+	/** include the field in the _all field */
+	protected static final String INCLUDE = "yes";
+	
 	
 	private Class<R> resourceType;
 
