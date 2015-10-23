@@ -54,7 +54,7 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 		post.setGroups(convertToGroups((List<String>) source.get(Fields.GROUPS)));
 		
 		// FIXME: hidden tags TODODZO
-		post.setTags(convertToTags((List<String>) source.get(Fields.TAGS)));
+		post.setTags(onlyConvertTags(source));
 		
 		this.convertPostInternal(source, post);
 		final R resource = this.createNewResource();
@@ -67,6 +67,15 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 		
 		post.setResource(resource);
 		return post;
+	}
+	
+	/**
+	 * only convert the tags
+	 * @param source
+	 * @return the tags of the es document
+	 */
+	public Set<Tag> onlyConvertTags(final Map<String, Object> source) {
+		return convertToTags((List<String>) source.get(Fields.TAGS));
 	}
 	
 	/**

@@ -159,6 +159,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			searchRequestBuilder.setTypes(ResourceFactory.getResourceName(resourceType));
 			searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 			searchRequestBuilder.setQuery(query);
+			searchRequestBuilder.setFetchSource(Fields.TAGS, null);
 			searchRequestBuilder.addSort(Fields.DATE, SortOrder.DESC);
 			searchRequestBuilder.setFrom(offset).setSize(limit).setExplain(true);
 			final SearchResponse response = searchRequestBuilder.execute().actionGet();
@@ -169,11 +170,10 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 				for (int i = 0; i < Math.min(limit, hits.getTotalHits() - offset); ++i) {
 					SearchHit hit = hits.getAt(i);
 					final Map<String, Object> result = hit.getSource();
-					// FIXME: convert the complete post but only use the tags? TODODZO
-					final Post<R> post = this.resourceConverter.convert(result);
+					final Set<Tag> tags = this.resourceConverter.onlyConvertTags(result);
 					// set tag count
-					if (present(post.getTags())) {
-						for (final Tag tag : post.getTags()) {
+					if (present(tags)) {
+						for (final Tag tag : tags) {
 							/*
 							 * we remove the requested tags because we assume
 							 * that related tags are requested
