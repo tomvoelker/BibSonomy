@@ -50,6 +50,7 @@ import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
+import org.elasticsearch.action.admin.indices.stats.IndicesStatsResponse;
 import org.elasticsearch.action.count.CountRequestBuilder;
 import org.elasticsearch.action.count.CountResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
@@ -198,8 +199,13 @@ public abstract class AbstractEsClient implements ESClient {
 	 * @see org.bibsonomy.search.es.ESClient#getDocumentCount(java.lang.String, org.elasticsearch.index.query.QueryBuilder)
 	 */
 	@Override
-	public long getDocumentCount(String indexName, QueryBuilder query) {
+	public long getDocumentCount(String indexName, String type, QueryBuilder query) {
+		if (query == null) {
+			final IndicesStatsResponse statResponse = this.getClient().admin().indices().prepareStats(indexName).setTypes(type).setStore(true).execute().actionGet();
+			return statResponse.getTotal().getDocs().getCount() - 1;
+		}
 		final CountRequestBuilder count = this.getClient().prepareCount(indexName);
+		count.setTypes(type);
 		final CountResponse response = count.setQuery(query).get();
 		return response.getCount();
 	}

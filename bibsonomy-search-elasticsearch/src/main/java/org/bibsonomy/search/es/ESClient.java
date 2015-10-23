@@ -135,5 +135,5 @@ public interface ESClient {
 	 * @param query
 	 * @return
 	 */
-	long getDocumentCount(String indexName, QueryBuilder query);
+	long getDocumentCount(String indexName, String type, QueryBuilder query);
 }

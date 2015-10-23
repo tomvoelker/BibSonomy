@@ -35,12 +35,15 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.search.es.management.ElasticSearchManager;
+import org.bibsonomy.search.exceptions.IndexAlreadyGeneratingException;
 import org.bibsonomy.search.model.SearchIndexInfo;
 import org.bibsonomy.webapp.command.admin.AdminFullTextSearchCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.security.access.AccessDeniedException;
 
@@ -106,17 +109,29 @@ public class AdminFullTextSearchController implements MinimalisticController<Adm
 					}
 				}
 			}
+			*/
 			
-			return new ExtendedRedirectView("/admin/fulltextsearch");*/
+			final ElasticSearchManager<? extends Resource> mananger = this.managers.get(command.getResource());
+			
+			if (mananger == null) {
+				throw new IllegalArgumentException(""); // TODO: nice error handling
+			}
+			try {
+				mananger.generateIndex();
+			} catch (IndexAlreadyGeneratingException e) {
+				throw new IllegalStateException(e);
+			}
+			
+			return new ExtendedRedirectView("/admin/fulltextsearch");
 		}
 		
 		// get some infos about the search indices
-		final Map<Class<? extends Resource>, List<SearchIndexInfo>> infoMap = command.getSearchIndexInfo();
+		final Map<String, List<SearchIndexInfo>> infoMap = command.getSearchIndexInfo();
 		for (final Entry<Class<? extends Resource>, ElasticSearchManager<? extends Resource>> managementEntry : this.managers.entrySet()) {
 			final ElasticSearchManager<? extends Resource> manager = managementEntry.getValue();
 			
-			final List<SearchIndexInfo> information = manager.getInfomationOfIndexForResource();
-			infoMap.put(managementEntry.getKey(), information);
+			final List<SearchIndexInfo> information = manager.getIndexInformations();
+			infoMap.put(ResourceFactory.getResourceName(managementEntry.getKey()), information);
 		}
 		
 		return Views.ADMIN_FULL_TEXT_SEARCH;

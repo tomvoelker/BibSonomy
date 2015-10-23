@@ -126,16 +126,20 @@ public class ElasticSearchManager<R extends Resource> {
 			final String activeIndexName = this.client.getIndexNameForAlias(localActiveAlias);
 			final String inactiveIndexName = this.client.getIndexNameForAlias(localInactiveAlias);
 			
-			@SuppressWarnings("unchecked")
-			final Set<Pair<String, String>> aliasesToAdd = Sets.asSet(
-				new Pair<>(newIndex.getIndexName(), localActiveAlias),
-				new Pair<>(activeIndexName, localInactiveAlias)
-			);
-			@SuppressWarnings("unchecked")
-			final Set<Pair<String, String>> aliasesToRemove = Sets.asSet(
-				new Pair<>(activeIndexName, localActiveAlias),
-				new Pair<>(inactiveIndexName, localInactiveAlias)
-			);
+			final Set<Pair<String, String>> aliasesToAdd = new HashSet<>();
+			aliasesToAdd.add(new Pair<>(newIndex.getIndexName(), localActiveAlias));
+			if (present(activeIndexName)) {
+				aliasesToAdd.add(new Pair<>(activeIndexName, localInactiveAlias));
+			}
+			
+			final Set<Pair<String, String>> aliasesToRemove = new HashSet<>();
+			if (present(activeIndexName)) {
+				aliasesToRemove.add(new Pair<>(activeIndexName, localActiveAlias));
+			}
+			if (present(inactiveIndexName)) {
+				aliasesToRemove.add(new Pair<>(inactiveIndexName, localInactiveAlias));
+			}
+			
 			this.client.updateAliases(aliasesToAdd, aliasesToRemove);
 			
 			this.client.deleteIndex(inactiveIndexName);
@@ -149,16 +153,23 @@ public class ElasticSearchManager<R extends Resource> {
 	/**
 	 * @return informations about the indices managed by this manager
 	 */
-	public List<SearchIndexInfo> getInfomationOfIndexForResource() {
+	public List<SearchIndexInfo> getIndexInformations() {
 		final List<SearchIndexInfo> infos = new LinkedList<>();
+		try {
+			final String localActiveAlias = this.getActiveLocalAlias();
+			final SearchIndexInfo searchIndexInfo = getIndexInfoForIndex(localActiveAlias, SearchIndexState.ACTIVE);
+			infos.add(searchIndexInfo);
+		} catch (IndexMissingException e) {
+			// ignore
+		}
 		
-		final String localActiveAlias = this.getActiveLocalAlias();
-		final SearchIndexInfo searchIndexInfo = getIndexInfoForIndex(localActiveAlias, SearchIndexState.ACTIVE);
-		infos.add(searchIndexInfo);
-		
-		final String localInactiveAlias = this.getInactiveLocalAlias();
-		final SearchIndexInfo searchIndexInfoInactive = getIndexInfoForIndex(localInactiveAlias, SearchIndexState.INACTIVE);
-		infos.add(searchIndexInfoInactive);
+		try {
+			final String localInactiveAlias = this.getInactiveLocalAlias();
+			final SearchIndexInfo searchIndexInfoInactive = getIndexInfoForIndex(localInactiveAlias, SearchIndexState.INACTIVE);
+			infos.add(searchIndexInfoInactive);
+		} catch (IndexMissingException e) {
+			// ignore
+		}
 		
 		return infos;
 	}
@@ -174,7 +185,7 @@ public class ElasticSearchManager<R extends Resource> {
 		searchIndexInfo.setId(this.client.getIndexNameForAlias(indexName));
 		searchIndexInfo.setSyncState(this.client.getSearchIndexStateForIndex(indexName));
 		final SearchIndexStatistics statistics = new SearchIndexStatistics();
-		final long count = this.client.getDocumentCount(indexName, null);
+		final long count = this.client.getDocumentCount(indexName, this.tools.getResourceTypeAsString(), null);
 		statistics.setNumberOfDocuments(count);
 		searchIndexInfo.setStatistics(statistics);
 		return searchIndexInfo;

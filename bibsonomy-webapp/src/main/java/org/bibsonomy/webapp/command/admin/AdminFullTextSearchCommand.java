@@ -54,7 +54,7 @@ public class AdminFullTextSearchCommand extends BaseCommand {
 	/** the string response for the admin */
 	private String adminResponse = "";
 	
-	private final Map<Class<? extends Resource>, List<SearchIndexInfo>> searchIndexInfo = new HashMap<>();
+	private final Map<String, List<SearchIndexInfo>> searchIndexInfo = new HashMap<>();
 	
 	/**
 	 * @return the action
@@ -115,7 +115,7 @@ public class AdminFullTextSearchCommand extends BaseCommand {
 	/**
 	 * @return the searchIndexInfo
 	 */
-	public Map<Class<? extends Resource>, List<SearchIndexInfo>> getSearchIndexInfo() {
+	public Map<String, List<SearchIndexInfo>> getSearchIndexInfo() {
 		return this.searchIndexInfo;
 	}
 }

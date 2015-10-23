@@ -6,7 +6,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
-    xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/bstags/resources/user"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
