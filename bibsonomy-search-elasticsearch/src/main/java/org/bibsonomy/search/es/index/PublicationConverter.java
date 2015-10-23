@@ -74,7 +74,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		publication.setEditor(PersonNameUtils.discoverPersonNamesIgnoreExceptions(editorsString));
 		
 		@SuppressWarnings("unchecked")
-		final List<String> authorsList = (List<String>) source.get(Fields.Publication.EDITOR);
+		final List<String> authorsList = (List<String>) source.get(Fields.Publication.AUTHOR);
 		final String authorsString = org.bibsonomy.util.StringUtils.implodeStringCollection(authorsList, PersonNameUtils.PERSON_NAME_DELIMITER);
 		publication.setAuthor(PersonNameUtils.discoverPersonNamesIgnoreExceptions(authorsString));
 		
