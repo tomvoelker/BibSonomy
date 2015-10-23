@@ -27,11 +27,11 @@
 package org.bibsonomy.search.es.search;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-import static org.elasticsearch.index.query.QueryBuilders.termQuery;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -64,6 +64,7 @@ import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.logic.querybuilder.AbstractSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
+import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.search.SearchInfoLogic;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.ESConstants.Fields;
@@ -78,6 +79,7 @@ import org.elasticsearch.action.count.CountResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.index.query.BoolFilterBuilder;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.FilterBuilder;
 import org.elasticsearch.index.query.FilterBuilders;
@@ -86,6 +88,7 @@ import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder.Type;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.TermFilterBuilder;
 import org.elasticsearch.indices.IndexMissingException;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
@@ -240,6 +243,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 				searchRequestBuilder.setTypes(ResourceFactory.getResourceName(this.resourceType));
 				searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 				searchRequestBuilder.setQuery(queryBuilder);
+			
 				if (order != Order.RANK) {
 					searchRequestBuilder.addSort(Fields.DATE, SortOrder.DESC);
 				}
@@ -727,8 +731,9 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @param negatedTags
 	 * @return overall elasticsearch query
 	 */
-	protected QueryBuilder buildQuery(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, org.bibsonomy.common.enums.SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final Collection<String> negatedTags) {
+	protected QueryBuilder buildQuery(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, Collection<String> allowedGroups, org.bibsonomy.common.enums.SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final Collection<String> negatedTags) {
 		final BoolQueryBuilder mainQueryBuilder = QueryBuilders.boolQuery();
+		final BoolFilterBuilder mainFilterBuilder = FilterBuilders.boolFilter();
 
 		// --------------------------------------------------------------------
 		// build the query
@@ -740,17 +745,17 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		}
 
 		if (present(titleSearchTerms)) {
-			final QueryBuilder titleSearchQuery = termQuery(Fields.Resource.TITLE, titleSearchTerms);
+			final QueryBuilder titleSearchQuery = QueryBuilders.termQuery(Fields.Resource.TITLE, titleSearchTerms);
 			mainQueryBuilder.must(titleSearchQuery);
 		}
 		
 		if (present(authorSearchTerms)) {
-			final QueryBuilder authorSearchQuery = termQuery(Fields.Publication.AUTHOR, authorSearchTerms);
+			final QueryBuilder authorSearchQuery = QueryBuilders.termQuery(Fields.Publication.AUTHOR, authorSearchTerms);
 			mainQueryBuilder.must(authorSearchQuery);
 		}
 		
 		if (present(bibtexKey)) {
-			final QueryBuilder bibtexKeyQuery = termQuery(Fields.Publication.BIBTEXKEY, bibtexKey);
+			final QueryBuilder bibtexKeyQuery = QueryBuilders.termQuery(Fields.Publication.BIBTEXKEY, bibtexKey);
 			mainQueryBuilder.must(bibtexKeyQuery);
 		}
 		
@@ -761,41 +766,63 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 
 		// restrict result to given group
 		if (present(requestedGroupName)) {
-			// FIXME: group query
+			final BoolFilterBuilder groupMembersFilter = this.buildGroupMembersFilter(requestedGroupName);
+			if (groupMembersFilter != null) {
+				mainFilterBuilder.must(groupMembersFilter);
+			}
+		}
+		
+		// restricting access to posts visible to the user
+		if (!present(allowedGroups)) {
+			allowedGroups = Collections.singleton(GroupUtils.buildPublicGroup().getName());
 		}
 		
 		if (allowedGroups != null) {
-			final BoolQueryBuilder groupSearchQuery = new BoolQueryBuilder();
-			for(String allowedGroup:allowedGroups){
-				groupSearchQuery.should(termQuery(Fields.GROUPS, allowedGroup));
+			final BoolFilterBuilder groupFilter = FilterBuilders.boolFilter();
+			for (String allowedGroup:allowedGroups){
+				groupFilter.should(FilterBuilders.termFilter(Fields.GROUPS, allowedGroup));
 			}
-			mainQueryBuilder.must(groupSearchQuery);
-		} else {
-			QueryBuilder groupSearchQuery = termQuery(Fields.GROUPS, "public");
-			mainQueryBuilder.must(groupSearchQuery);
+			mainFilterBuilder.must(groupFilter);
 		}
-		// restricting access to posts visible to the user
-
+		
 		// --------------------------------------------------------------------
 		// post owned by user 
 		// Use this restriction iff there is no user relation
 		// --------------------------------------------------------------------
 		if (present(requestedUserName) && !present(requestedRelationNames)) {
-			QueryBuilder requesterUserSearchQuery = termQuery(Fields.USER_NAME, requestedUserName);
+			QueryBuilder requesterUserSearchQuery = QueryBuilders.termQuery(Fields.USER_NAME, requestedUserName);
 			mainQueryBuilder.must(requesterUserSearchQuery);
 		}
 		// If there is at once one relation then restrict the results only 
 		// to the users in the given relations (inclduing posts of the logged in users)
 		else if (present(requestedRelationNames)) {
-			// for all relations: TODO
+			// for all relations: TODO TODODZO
 		}
 		
 		// all done
 		log.debug("Search query: " + mainQueryBuilder.toString());
 		
-		return mainQueryBuilder;
+		return QueryBuilders.filteredQuery(mainQueryBuilder, mainFilterBuilder);
 	}
 	
+	/**
+	 * @param requestedGroupName
+	 * @return 
+	 */
+	private BoolFilterBuilder buildGroupMembersFilter(String requestedGroupName) {
+		final Collection<String> groupMembers = this.infoLogic.getGroupMembersByGroupName(requestedGroupName);
+		if (present(requestedGroupName) && present(groupMembers)) {
+			final BoolFilterBuilder groupMemberFilter = FilterBuilders.boolFilter();
+			for (final String member : groupMembers) {
+				final TermFilterBuilder memberFilter = FilterBuilders.termFilter(Fields.USER_NAME, member);
+				groupMemberFilter.should(memberFilter);
+			}
+			
+			return groupMemberFilter;
+		}
+		return null;
+	}
+
 	private void addTagQuerries(final Collection<String> tagIndex, final Collection<String> negatedTags, final BoolQueryBuilder mainQuery) {
 		/*
 		 * Process normal tags
@@ -807,14 +834,14 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 					final String conceptTag = tag.substring(2);
 					// get related tags:
 					final BoolQueryBuilder conceptTags = new BoolQueryBuilder();
-					QueryBuilder termQuery = termQuery(Fields.TAGS, conceptTag);
+					QueryBuilder termQuery = QueryBuilders.termQuery(Fields.TAGS, conceptTag);
 					conceptTags.must(termQuery);
 					for (final String t : this.infoLogic.getSubTagsForConceptTag(conceptTag)) {
-						conceptTags.should(termQuery(Fields.TAGS, t));
+						conceptTags.should(QueryBuilders.termQuery(Fields.TAGS, t));
 					}
 					mainQuery.must(conceptTags);
 				} else {
-					mainQuery.must(termQuery(Fields.TAGS, tag));
+					mainQuery.must(QueryBuilders.termQuery(Fields.TAGS, tag));
 				}
 			}
 		}
@@ -823,7 +850,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		 */
 		if (present(negatedTags)) {
 			for (final String negatedTag : negatedTags) {
-				final QueryBuilder negatedSearchQuery = termQuery(Fields.TAGS, negatedTag);
+				final QueryBuilder negatedSearchQuery = QueryBuilders.termQuery(Fields.TAGS, negatedTag);
 				mainQuery.mustNot(negatedSearchQuery);
 			}
 		}
