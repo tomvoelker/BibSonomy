@@ -30,9 +30,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.search.update.SearchIndexState;
+import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Mapping;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.index.query.QueryBuilder;
 
 /**
  * Wrapper around an ElasticSearch Client. Different ways of obtaining a Client
@@ -87,7 +88,7 @@ public interface ESClient {
 	 * @param indexName
 	 * @return
 	 */
-	public SearchIndexState getSearchIndexStateForIndex(String indexName);
+	public SearchIndexSyncState getSearchIndexStateForIndex(String indexName);
 	
 	/**
 	 * @param indexName
@@ -128,4 +129,11 @@ public interface ESClient {
 	 * @param alias
 	 */
 	void deleteAlias(String indexName, String alias);
+
+	/**
+	 * @param indexName
+	 * @param query
+	 * @return
+	 */
+	long getDocumentCount(String indexName, QueryBuilder query);
 }

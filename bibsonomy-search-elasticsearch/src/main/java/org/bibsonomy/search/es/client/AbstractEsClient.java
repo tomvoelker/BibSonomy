@@ -39,7 +39,7 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.management.util.ElasticSearchUtils;
-import org.bibsonomy.search.update.SearchIndexState;
+import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Mapping;
 import org.bibsonomy.util.ValidationUtils;
 import org.elasticsearch.action.admin.indices.alias.IndicesAliasesRequestBuilder;
@@ -50,6 +50,8 @@ import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
+import org.elasticsearch.action.count.CountRequestBuilder;
+import org.elasticsearch.action.count.CountResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.index.IndexResponse;
@@ -59,6 +61,7 @@ import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.cluster.metadata.AliasMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
+import org.elasticsearch.index.query.QueryBuilder;
 
 /**
  * TODO: add documentation to this class
@@ -95,7 +98,7 @@ public abstract class AbstractEsClient implements ESClient {
 	}
 
 	@Override
-	public SearchIndexState getSearchIndexStateForIndex(String indexName) {
+	public SearchIndexSyncState getSearchIndexStateForIndex(String indexName) {
 		// wait for the yellow (or green) status to prevent
 		// NoShardAvailableActionException later
 		this.waitForReadyState();
@@ -189,6 +192,16 @@ public abstract class AbstractEsClient implements ESClient {
 			return activeindices.iterator().next().key;
 		}
 		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.es.ESClient#getDocumentCount(java.lang.String, org.elasticsearch.index.query.QueryBuilder)
+	 */
+	@Override
+	public long getDocumentCount(String indexName, QueryBuilder query) {
+		final CountRequestBuilder count = this.getClient().prepareCount(indexName);
+		final CountResponse response = count.setQuery(query).get();
+		return response.getCount();
 	}
 
 	@Override

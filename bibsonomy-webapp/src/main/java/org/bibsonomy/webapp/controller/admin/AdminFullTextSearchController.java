@@ -111,11 +111,12 @@ public class AdminFullTextSearchController implements MinimalisticController<Adm
 		}
 		
 		// get some infos about the search indices
-		
+		final Map<Class<? extends Resource>, List<SearchIndexInfo>> infoMap = command.getSearchIndexInfo();
 		for (final Entry<Class<? extends Resource>, ElasticSearchManager<? extends Resource>> managementEntry : this.managers.entrySet()) {
 			final ElasticSearchManager<? extends Resource> manager = managementEntry.getValue();
 			
 			final List<SearchIndexInfo> information = manager.getInfomationOfIndexForResource();
+			infoMap.put(managementEntry.getKey(), information);
 		}
 		
 		return Views.ADMIN_FULL_TEXT_SEARCH;

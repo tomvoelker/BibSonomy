@@ -26,60 +26,33 @@
  */
 package org.bibsonomy.search.model;
 
+import org.bibsonomy.search.update.SearchIndexSyncState;
+
 /**
- * TODO: add documentation to this class
+ * infos about a search index
  *
- * @author 
+ * @author ?
  */
 public class SearchIndexInfo {
+	/** The id of the index represented by this object */
+	private String id;
 	
-	/**
-	 * The path for this index
-	 */
-	private String basePath;
+	private SearchIndexState state;
 	
-	private boolean generatingIndex;
-	private int indexGenerationProgress;
-	private boolean isEnabled;
-	private boolean isActive;
-	private String errorMassage;
-
-	private String processInfo;
+	private SearchIndexSyncState syncState;
 	
-	/**
-	 * statistics
-	 */
+	/** statistics */
 	private SearchIndexStatistics statistics;
-
-	/**
-	 * @return the basePath
-	 */
-	public String getBasePath() {
-		return basePath;
-	}
-
-	/**
-	 * @param basePath the basePath to set
-	 */
-	public void setBasePath(String basePath) {
-		this.basePath = basePath;
-	}
-
-	/**
-	 * The id of the index represented by this object
-	 */
-	private int id;
 	
-	
-	
+	private int indexGenerationProgress;
+
 	/** 
 	 * indicates if the index is in sync with the DB
 	 */
 	private boolean correct;
-	
 
 	/**
-	 * @return 
+	 * @return correct
 	 */
 	public boolean isCorrect() {
 		return correct;
@@ -91,47 +64,46 @@ public class SearchIndexInfo {
 	public void setCorrect(boolean correct) {
 		this.correct = correct;
 	}
-
-	/**
-	 * @return the isActive
-	 */
-	public boolean isActive() {
-		return isActive;
-	}
-
-	/**
-	 * @param isActive the isActive to set
-	 */
-	public void setActive(boolean isActive) {
-		this.isActive = isActive;
-	}
-
 	/**
 	 * @return the id
 	 */
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
-	}
-	
-	/**
-	 * @param isEnabled the isEnabled to set
-	 */
-	public void setEnabled(final boolean isEnabled) {
-		this.isEnabled = isEnabled;
 	}
 
 	/**
-	 * @return the isEnabled
+	 * @return the state
 	 */
-	public boolean isEnabled() {
-		return isEnabled;
+	public SearchIndexState getState() {
+		return this.state;
+	}
+
+	/**
+	 * @param state the state to set
+	 */
+	public void setState(SearchIndexState state) {
+		this.state = state;
+	}
+
+	/**
+	 * @return the statistics
+	 */
+	public SearchIndexStatistics getStatistics() {
+		return this.statistics;
+	}
+
+	/**
+	 * @param statistics the statistics to set
+	 */
+	public void setStatistics(SearchIndexStatistics statistics) {
+		this.statistics = statistics;
 	}
 
 	/**
@@ -143,65 +115,23 @@ public class SearchIndexInfo {
 	}
 
 	/**
+	 * @return the syncState
+	 */
+	public SearchIndexSyncState getSyncState() {
+		return this.syncState;
+	}
+
+	/**
+	 * @param syncState the syncState to set
+	 */
+	public void setSyncState(SearchIndexSyncState syncState) {
+		this.syncState = syncState;
+	}
+
+	/**
 	 * @return the progress of the index-generation
 	 */
 	public int getIndexGenerationProgress() {
 		return indexGenerationProgress;
 	}
-	
-	/**
-	 * @return the statistics
-	 */
-	public SearchIndexStatistics getIndexStatistics() {
-		return this.statistics;
-	}
-
-	/**
-	 * @param statistics the statistics to set
-	 */
-	public void setIndexStatistics(final SearchIndexStatistics statistics) {
-		this.statistics = statistics;
-	}
-    /**
-     * @param generatingIndex isGeneratingIndex
-     */
-	public void setGeneratingIndex(final boolean generatingIndex) {
-		this.generatingIndex = generatingIndex;
-	}
-	
-	/**
-	 * @return isGeneratingIndex
-	 */
-	public boolean isGeneratingIndex() {
-		return generatingIndex;
-	}
-
-	/**
-	 * @return the errorMassage
-	 */
-	public String getErrorMassage() {
-		return this.errorMassage;
-	}
-
-	/**
-	 * @param errorMassge the errorMassage to set
-	 */
-	public void setErrorMassage(String errorMassage) {
-		this.errorMassage = errorMassage;
-	}
-
-	/**
-	 * @param string
-	 */
-	public void setProcessInfo(String processInfo) {
-		this.processInfo = processInfo;
-	}
-	
-	/**
-	 * @return the processInfo
-	 */
-	public String getProcessInfo() {
-		return this.processInfo;
-	}
-
 }

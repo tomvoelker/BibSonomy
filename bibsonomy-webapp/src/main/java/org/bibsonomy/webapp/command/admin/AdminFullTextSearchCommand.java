@@ -26,10 +26,12 @@
  */
 package org.bibsonomy.webapp.command.admin;
 
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.search.model.SearchIndexInfo;
 import org.bibsonomy.webapp.command.BaseCommand;
 
 
@@ -52,16 +54,8 @@ public class AdminFullTextSearchCommand extends BaseCommand {
 	/** the string response for the admin */
 	private String adminResponse = "";
 	
+	private final Map<Class<? extends Resource>, List<SearchIndexInfo>> searchIndexInfo = new HashMap<>();
 	
-	
-	
-	private final List<LuceneResourceIndicesInfoContainer> indicesInfos = new LinkedList<LuceneResourceIndicesInfoContainer>();
-	
-	// TODO: more generic (map<Resource.class, ContainerInfo>)
-	private final List<LuceneResourceIndicesInfoContainer> esIndicesInfosBibtex = new LinkedList<LuceneResourceIndicesInfoContainer>();
-	private final List<LuceneResourceIndicesInfoContainer> esIndicesInfosBookmark = new LinkedList<LuceneResourceIndicesInfoContainer>();
-	private final List<LuceneResourceIndicesInfoContainer> esIndicesInfosGoldStandard = new LinkedList<LuceneResourceIndicesInfoContainer>();
-
 	/**
 	 * @return the action
 	 */
@@ -89,14 +83,7 @@ public class AdminFullTextSearchCommand extends BaseCommand {
 	public void setAction(final String action) {
 		this.action = action;
 	}
-
-	/**
-	 * @return the list of indices
-	 */
-	public List<LuceneResourceIndicesInfoContainer> getIndicesInfos() {
-		return indicesInfos;
-	}
-
+	
 	/**
 	 * @param adminResponse
 	 */
@@ -126,23 +113,9 @@ public class AdminFullTextSearchCommand extends BaseCommand {
 	}
 
 	/**
-	 * @return the esIndicesInfosBibtex
+	 * @return the searchIndexInfo
 	 */
-	public List<LuceneResourceIndicesInfoContainer> getEsIndicesInfosBibtex() {
-		return this.esIndicesInfosBibtex;
-	}
-
-	/**
-	 * @return the esIndicesInfosBookmark
-	 */
-	public List<LuceneResourceIndicesInfoContainer> getEsIndicesInfosBookmark() {
-		return this.esIndicesInfosBookmark;
-	}
-
-	/**
-	 * @return the esIndicesInfosGoldStandard
-	 */
-	public List<LuceneResourceIndicesInfoContainer> getEsIndicesInfosGoldStandard() {
-		return this.esIndicesInfosGoldStandard;
+	public Map<Class<? extends Resource>, List<SearchIndexInfo>> getSearchIndexInfo() {
+		return this.searchIndexInfo;
 	}
 }

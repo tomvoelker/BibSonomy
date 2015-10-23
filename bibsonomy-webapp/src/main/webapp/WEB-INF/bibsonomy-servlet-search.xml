@@ -22,4 +22,9 @@
 	
 	<!-- FIXME: replace with correct search index -->
 	<alias name="elasticSearchPublicationSearch" alias="goldStandardPublicationSearch" />
+	
+	<util:map id="elasticSearchManagers">
+		<entry key-ref="bookmarkClass" value-ref="elasticSearchBookmarkManager" />
+		<entry key-ref="publicationClass" value-ref="elasticSearchPublicationManager" />
+	</util:map>
 </beans>

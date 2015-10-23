@@ -1,36 +1,23 @@
 package org.bibsonomy.search.model;
 
-import java.util.Date;
-
 /**
- *
+ * 
  * @author dzo
  */
 public class SearchIndexStatistics {
-
-	private Date newestRecordDate;
-	private long lastTasId;
+	private long numberOfDocuments;
 
 	/**
-	 * @return the newestRecordDate
+	 * @return the numberOfDocuments
 	 */
-	public Date getNewestRecordDate() {
-		return this.newestRecordDate;
+	public long getNumberOfDocuments() {
+		return this.numberOfDocuments;
 	}
 
 	/**
-	 * @param newestRecordDate the newestRecordDate to set
+	 * @param numberOfDocuments the numberOfDocuments to set
 	 */
-	public void setNewestRecordDate(final Date newestRecordDate) {
-		this.newestRecordDate = newestRecordDate;
+	public void setNumberOfDocuments(long numberOfDocuments) {
+		this.numberOfDocuments = numberOfDocuments;
 	}
-
-	public long getLastTasId() {
-		return this.lastTasId;
-	}
-
-	public void setLastTasId(long lastTasId) {
-		this.lastTasId = lastTasId;
-	}
-	
 }

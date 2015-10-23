@@ -70,7 +70,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.search.SearchPost;
 import org.bibsonomy.search.update.IndexUpdater;
-import org.bibsonomy.search.update.SearchIndexState;
+import org.bibsonomy.search.update.SearchIndexSyncState;
 
 /**
  * abstract base class for managing lucene resource indices
@@ -126,7 +126,7 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	private int indexId;
 	
 	/** keeps track of the newest log_date and tas_id during last index update */
-	private SearchIndexState state;
+	private SearchIndexSyncState state;
 
 	private Class<R> resourceClass;
 	
@@ -348,7 +348,7 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	 */
 	public void setLastLogDate(final Date lastLogDate) {
 		if (this.state == null) {
-			this.state = new SearchIndexState();
+			this.state = new SearchIndexSyncState();
 		}
 		this.state.setLast_log_date(lastLogDate);
 	}
@@ -393,7 +393,7 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	 */
 	public void setLastTasId(final Integer lastTasId) {
 		if (this.state == null) {
-			this.state = new SearchIndexState();
+			this.state = new SearchIndexSyncState();
 		}
 		this.state.setLast_tas_id(lastTasId);
 	}
@@ -927,7 +927,7 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	 * @see org.bibsonomy.es.IndexUpdater#setSystemInformation(java.lang.Integer, java.util.Date)
 	 */
 	@Override
-	public void setSystemInformation(SearchIndexState state) {
+	public void setSystemInformation(SearchIndexSyncState state) {
 		this.state = state;
 	}
 	
@@ -1019,9 +1019,9 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	 * @see org.bibsonomy.es.IndexUpdater#getUpdaterState()
 	 */
 	@Override
-	public SearchIndexState getUpdaterState() {
+	public SearchIndexSyncState getUpdaterState() {
 		if (state == null) {
-			state = new SearchIndexState();
+			state = new SearchIndexSyncState();
 		}
 		final Integer lastTasId = this.getLastTasId();
 		// keeps track of the newest log_date during last index update

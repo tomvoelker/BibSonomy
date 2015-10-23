@@ -10,7 +10,7 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.ResourcePersonRelationLogStub;
 import org.bibsonomy.model.User;
 import org.bibsonomy.search.SearchPost;
-import org.bibsonomy.search.update.SearchIndexState;
+import org.bibsonomy.search.update.SearchIndexSyncState;
 
 /**
  * interface encapsulating database access for lucene
@@ -127,5 +127,5 @@ public interface SearchDBInterface<R extends Resource> {
 	/**
 	 * @return
 	 */
-	public SearchIndexState getDbState();
+	public SearchIndexSyncState getDbState();
 }

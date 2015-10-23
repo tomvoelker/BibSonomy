@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.net.URI;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,11 +28,14 @@ import org.bibsonomy.search.es.management.util.ElasticSearchUtils;
 import org.bibsonomy.search.exceptions.IndexAlreadyGeneratingException;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.model.SearchIndexInfo;
-import org.bibsonomy.search.update.SearchIndexState;
+import org.bibsonomy.search.model.SearchIndexState;
+import org.bibsonomy.search.model.SearchIndexStatistics;
+import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.util.Sets;
 import org.elasticsearch.action.count.CountRequestBuilder;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.indices.IndexMissingException;
 
 /**
  * TODO: extract interface
@@ -117,8 +121,8 @@ public class ElasticSearchManager<R extends Resource> {
 		try {
 			this.updateLock.acquire();
 			
-			final String localActiveAlias = ElasticSearchUtils.getLocalAliasForResource(this.tools.getResourceType(), this.systemURI, true);
-			final String localInactiveAlias = ElasticSearchUtils.getLocalAliasForResource(this.tools.getResourceType(), this.systemURI, false);
+			final String localActiveAlias = getActiveLocalAlias();
+			final String localInactiveAlias = getInactiveLocalAlias();
 			final String activeIndexName = this.client.getIndexNameForAlias(localActiveAlias);
 			final String inactiveIndexName = this.client.getIndexNameForAlias(localInactiveAlias);
 			
@@ -146,8 +150,34 @@ public class ElasticSearchManager<R extends Resource> {
 	 * @return informations about the indices managed by this manager
 	 */
 	public List<SearchIndexInfo> getInfomationOfIndexForResource() {
-		// TODO Auto-generated method stub
-		return null;
+		final List<SearchIndexInfo> infos = new LinkedList<>();
+		
+		final String localActiveAlias = this.getActiveLocalAlias();
+		final SearchIndexInfo searchIndexInfo = getIndexInfoForIndex(localActiveAlias, SearchIndexState.ACTIVE);
+		infos.add(searchIndexInfo);
+		
+		final String localInactiveAlias = this.getInactiveLocalAlias();
+		final SearchIndexInfo searchIndexInfoInactive = getIndexInfoForIndex(localInactiveAlias, SearchIndexState.INACTIVE);
+		infos.add(searchIndexInfoInactive);
+		
+		return infos;
+	}
+
+	/**
+	 * @param indexName
+	 * @param state 
+	 * @return
+	 */
+	private SearchIndexInfo getIndexInfoForIndex(final String indexName, SearchIndexState state) {
+		final SearchIndexInfo searchIndexInfo = new SearchIndexInfo();
+		searchIndexInfo.setState(state);
+		searchIndexInfo.setId(this.client.getIndexNameForAlias(indexName));
+		searchIndexInfo.setSyncState(this.client.getSearchIndexStateForIndex(indexName));
+		final SearchIndexStatistics statistics = new SearchIndexStatistics();
+		final long count = this.client.getDocumentCount(indexName, null);
+		statistics.setNumberOfDocuments(count);
+		searchIndexInfo.setStatistics(statistics);
+		return searchIndexInfo;
 	}
 
 	/**
@@ -159,9 +189,9 @@ public class ElasticSearchManager<R extends Resource> {
 		}
 		
 		try {
-			final String localInactiveAlias = ElasticSearchUtils.getLocalAliasForResource(this.tools.getResourceType(), this.systemURI, false);
-			final SearchIndexState oldState = this.client.getSearchIndexStateForIndex(localInactiveAlias);
-			final SearchIndexState targetState = this.inputLogic.getDbState();
+			final String localInactiveAlias = this.getInactiveLocalAlias();
+			final SearchIndexSyncState oldState = this.client.getSearchIndexStateForIndex(localInactiveAlias);
+			final SearchIndexSyncState targetState = this.inputLogic.getDbState();
 			
 			final int oldLastTasId = oldState.getLast_tas_id().intValue();
 			int newLastTasId = oldLastTasId;
@@ -205,7 +235,7 @@ public class ElasticSearchManager<R extends Resource> {
 			
 			// 4) update the index state
 			try {
-				SearchIndexState newState = new SearchIndexState(oldState);
+				SearchIndexSyncState newState = new SearchIndexSyncState(oldState);
 				newState.setLast_log_date(targetState.getLast_log_date());
 				newState.setLast_tas_id(Integer.valueOf(newLastTasId));
 				newState.setLastPersonChangeId(targetState.getLastPersonChangeId());
@@ -223,6 +253,8 @@ public class ElasticSearchManager<R extends Resource> {
 			}
 			
 			this.switchActiveAndInactiveIndex();
+		} catch (final IndexMissingException e) {
+			log.error("Can not update index. No inactive index available.");
 		} finally {
 			this.updateLock.release();
 		}
@@ -232,9 +264,8 @@ public class ElasticSearchManager<R extends Resource> {
 	 * switch active and inactive index
 	 */
 	private void switchActiveAndInactiveIndex() {
-		
-		final String localActiveAlias = ElasticSearchUtils.getLocalAliasForResource(this.tools.getResourceType(), this.systemURI, true);
-		final String localInactiveAlias = ElasticSearchUtils.getLocalAliasForResource(this.tools.getResourceType(), this.systemURI, false);
+		final String localActiveAlias = this.getActiveLocalAlias();
+		final String localInactiveAlias = this.getInactiveLocalAlias();
 		final String activeIndexName = this.client.getIndexNameForAlias(localActiveAlias);
 		final String inactiveIndexName = this.client.getIndexNameForAlias(localInactiveAlias);
 		
@@ -252,12 +283,26 @@ public class ElasticSearchManager<R extends Resource> {
 		// update the aliases (atomic, see elastic search docu)
 		this.client.updateAliases(aliasesToAdd, aliasesToRemove);
 	}
+	
+	/**
+	 * @return
+	 */
+	private String getInactiveLocalAlias() {
+		return ElasticSearchUtils.getLocalAliasForResource(this.tools.getResourceType(), this.systemURI, false);
+	}
+
+	/**
+	 * @return
+	 */
+	private String getActiveLocalAlias() {
+		return ElasticSearchUtils.getLocalAliasForResource(this.tools.getResourceType(), this.systemURI, true);
+	}
 
 	/**
 	 * @param indexName
 	 * @param oldState
 	 */
-	private void updateIndexState(String indexName, SearchIndexState state) {
+	private void updateIndexState(String indexName, SearchIndexSyncState state) {
 		final Map<String, Object> values = ElasticSearchUtils.serializeSearchIndexState(state);
 		
 		this.client.insertNewDocument(indexName, ESConstants.SYSTEM_INFO_INDEX_TYPE, ESConstants.SYSTEM_INFO_INDEX_TYPE, values);
@@ -286,7 +331,7 @@ public class ElasticSearchManager<R extends Resource> {
 	 * @param targetState
 	 * @param indexName
 	 */
-	protected void updateResourceSpecificProperties(final String indexName, final SearchIndexState oldState, SearchIndexState targetState) {
+	protected void updateResourceSpecificProperties(final String indexName, final SearchIndexSyncState oldState, SearchIndexSyncState targetState) {
 		// noop
 	}
 	

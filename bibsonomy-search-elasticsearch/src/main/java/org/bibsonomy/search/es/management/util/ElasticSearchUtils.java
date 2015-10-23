@@ -12,7 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.search.es.ESConstants;
-import org.bibsonomy.search.update.SearchIndexState;
+import org.bibsonomy.search.update.SearchIndexSyncState;
 
 /**
  * util methods for managing the index
@@ -122,7 +122,7 @@ public final class ElasticSearchUtils {
 	 * @param state
 	 * @return
 	 */
-	public static Map<String, Object> serializeSearchIndexState(SearchIndexState state) {
+	public static Map<String, Object> serializeSearchIndexState(SearchIndexSyncState state) {
 		final Map<String, Object> values = new HashMap<>();
 		values.put(LAST_TAS_KEY, state.getLast_tas_id());
 		values.put(LAST_LOG_DATE_KEY, Long.valueOf(state.getLast_log_date().getTime()));
@@ -134,8 +134,8 @@ public final class ElasticSearchUtils {
 	 * @param source
 	 * @return the search index state
 	 */
-	public static SearchIndexState deserializeSearchIndexState(Map<String, Object> source) {
-		final SearchIndexState searchIndexState = new SearchIndexState();
+	public static SearchIndexSyncState deserializeSearchIndexState(Map<String, Object> source) {
+		final SearchIndexSyncState searchIndexState = new SearchIndexSyncState();
 		searchIndexState.setLast_tas_id((Integer) source.get(LAST_TAS_KEY));
 		final Long dateAsTime = (Long) source.get(LAST_LOG_DATE_KEY);
 		searchIndexState.setLast_log_date(new Date(dateAsTime.longValue()));

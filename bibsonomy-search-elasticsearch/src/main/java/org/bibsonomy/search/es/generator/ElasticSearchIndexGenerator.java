@@ -17,7 +17,7 @@ import org.bibsonomy.search.es.management.ElasticSearchIndex;
 import org.bibsonomy.search.es.management.ElasticSearchIndexTools;
 import org.bibsonomy.search.es.management.util.ElasticSearchUtils;
 import org.bibsonomy.search.management.database.SearchDBInterface;
-import org.bibsonomy.search.update.SearchIndexState;
+import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Mapping;
 
 /**
@@ -78,7 +78,7 @@ public class ElasticSearchIndexGenerator<R extends Resource> {
 		log.info("Number of post entries: " + this.numberOfPosts);
 
 		// initialize variables
-		final SearchIndexState newState = this.inputLogic.getDbState();
+		final SearchIndexSyncState newState = this.inputLogic.getDbState();
 
 		if (newState.getLast_log_date() == null) {
 			newState.setLast_log_date(new Date(System.currentTimeMillis() - 1000));
@@ -126,7 +126,7 @@ public class ElasticSearchIndexGenerator<R extends Resource> {
 	/**
 	 * @param newState
 	 */
-	private void writeMetaInfo(SearchIndexState newState) {
+	private void writeMetaInfo(SearchIndexSyncState newState) {
 		final String indexName = this.index.getIndexName();
 		final Map<String, Object> values = ElasticSearchUtils.serializeSearchIndexState(newState);
 		

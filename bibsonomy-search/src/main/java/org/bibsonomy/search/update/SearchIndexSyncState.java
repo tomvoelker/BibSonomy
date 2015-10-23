@@ -26,7 +26,6 @@
  */
 package org.bibsonomy.search.update;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import org.apache.commons.lang.ObjectUtils;
@@ -36,8 +35,7 @@ import org.apache.commons.lang.ObjectUtils;
  *
  * @author lutful
  */
-public class SearchIndexState implements Serializable {
-	private static final long serialVersionUID = 1398951571372358877L;
+public class SearchIndexSyncState {
 	
 	// TODO: rename attribute to lastTASId
 	private Integer last_tas_id;
@@ -48,13 +46,13 @@ public class SearchIndexState implements Serializable {
 	/**
 	 * default constructor
 	 */
-	public SearchIndexState() {
+	public SearchIndexSyncState() {
 	}
 	
 	/**
 	 * @param state
 	 */
-	public SearchIndexState(SearchIndexState state) {
+	public SearchIndexSyncState(SearchIndexSyncState state) {
 		this.last_log_date = state.last_log_date;
 		this.last_tas_id = state.last_tas_id;
 		this.lastPersonChangeId = state.lastPersonChangeId;
@@ -109,11 +107,11 @@ public class SearchIndexState implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof SearchIndexState)) {
+		if (!(obj instanceof SearchIndexSyncState)) {
 			return false;
 		}
 		
-		final SearchIndexState otherState = (SearchIndexState)obj;
+		final SearchIndexSyncState otherState = (SearchIndexSyncState)obj;
 		if (!ObjectUtils.equals(last_log_date, otherState.last_log_date)) {
 			return false;
 		}

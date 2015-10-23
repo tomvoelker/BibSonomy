@@ -17,7 +17,7 @@ import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.search.es.index.PublicationConverter;
 import org.bibsonomy.search.es.index.ResourceConverter;
 import org.bibsonomy.search.management.database.SearchDBInterface;
-import org.bibsonomy.search.update.SearchIndexState;
+import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.util.ValidationUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
@@ -45,14 +45,13 @@ public class ElasticSearchPublicationManager<P extends BibTex> extends ElasticSe
 	 */
 	public ElasticSearchPublicationManager(ESClient client, URI systemURI, SearchDBInterface<P> inputLogic, ElasticSearchIndexTools<P> tools) {
 		super(client, systemURI, inputLogic, tools);
-		// TODO Auto-generated constructor stub
 	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.search.es.management.ElasticSearchManager#updateResourceSpecificProperties(java.lang.String, org.bibsonomy.search.update.SearchIndexState, org.bibsonomy.search.update.SearchIndexState)
 	 */
 	@Override
-	protected void updateResourceSpecificProperties(String indexName, SearchIndexState oldState, SearchIndexState targetState) {
+	protected void updateResourceSpecificProperties(String indexName, SearchIndexSyncState oldState, SearchIndexSyncState targetState) {
 		final LRUMap updatedInterhashes = new LRUMap(UPDATED_INTERHASHES_CACHE_SIZE);
 		applyChangesInPubPersonRelationsToIndex(indexName, oldState, targetState, updatedInterhashes);
 		applyPersonChangesToIndex(indexName, oldState, targetState, updatedInterhashes);
@@ -64,11 +63,10 @@ public class ElasticSearchPublicationManager<P extends BibTex> extends ElasticSe
 	 * @param updatedInterhashes
 	 * @param indexUpdaters
 	 */
-	private void applyPersonChangesToIndex(String indexName, SearchIndexState oldState, SearchIndexState targetState, LRUMap updatedInterhashes) {
+	private void applyPersonChangesToIndex(String indexName, SearchIndexSyncState oldState, SearchIndexSyncState targetState, LRUMap updatedInterhashes) {
 		for (long minPersonChangeId = oldState.getLastPersonChangeId() + 1; minPersonChangeId < targetState.getLastPersonChangeId(); minPersonChangeId = Math.min(targetState.getLastPersonChangeId(), minPersonChangeId + SQL_BLOCKSIZE)) {
 			final List<PersonName> personMainNameChanges = this.inputLogic.getPersonMainNamesByChangeIdRange(minPersonChangeId, minPersonChangeId + SQL_BLOCKSIZE);
 			for (PersonName name : personMainNameChanges) {
-				// TODO: remove logic parameter
 				final String personId = name.getPersonId();
 				updateIndexForPersonWithId(indexName, updatedInterhashes, personId);
 			}
@@ -133,7 +131,7 @@ public class ElasticSearchPublicationManager<P extends BibTex> extends ElasticSe
 			.setRefresh(true).execute().actionGet();
 	}
 
-	private void applyChangesInPubPersonRelationsToIndex(final String indexName, SearchIndexState oldState, SearchIndexState targetState, final LRUMap updatedInterhashes) {
+	private void applyChangesInPubPersonRelationsToIndex(final String indexName, SearchIndexSyncState oldState, SearchIndexSyncState targetState, final LRUMap updatedInterhashes) {
 		for (long minPersonChangeId = oldState.getLastPersonChangeId() + 1; minPersonChangeId < targetState.getLastPersonChangeId(); minPersonChangeId += SQL_BLOCKSIZE) {
 			final List<ResourcePersonRelationLogStub> relChanges = this.inputLogic.getPubPersonRelationsByChangeIdRange(minPersonChangeId, minPersonChangeId + SQL_BLOCKSIZE);
 			if (log.isDebugEnabled() || ValidationUtils.present(relChanges)) {

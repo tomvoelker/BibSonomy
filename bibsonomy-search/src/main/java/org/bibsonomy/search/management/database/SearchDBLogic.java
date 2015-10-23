@@ -47,7 +47,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.search.SearchPost;
 import org.bibsonomy.search.management.database.manager.PersonLuceneDatabaseManager;
 import org.bibsonomy.search.management.database.params.LuceneParam;
-import org.bibsonomy.search.update.SearchIndexState;
+import org.bibsonomy.search.update.SearchIndexSyncState;
 
 /**
  * class for accessing the bibsonomy database 
@@ -321,8 +321,8 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getDbState()
 	 */
 	@Override
-	public SearchIndexState getDbState() {
-		final SearchIndexState newState = new SearchIndexState();
+	public SearchIndexSyncState getDbState() {
+		final SearchIndexSyncState newState = new SearchIndexSyncState();
 		newState.setLast_tas_id(this.getLastTasId());
 		newState.setLast_log_date(this.getLastLogDate());
 		newState.setLastPersonChangeId(this.getLastPersonChangeId());
