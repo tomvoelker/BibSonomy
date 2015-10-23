@@ -142,7 +142,9 @@ public class ElasticSearchManager<R extends Resource> {
 			
 			this.client.updateAliases(aliasesToAdd, aliasesToRemove);
 			
-			this.client.deleteIndex(inactiveIndexName);
+			if (present(inactiveIndexName)) {
+				this.client.deleteIndex(inactiveIndexName);
+			}
 		} catch (InterruptedException e) {
 			log.error("can't acquire lock to update aliases", e);
 		} finally {

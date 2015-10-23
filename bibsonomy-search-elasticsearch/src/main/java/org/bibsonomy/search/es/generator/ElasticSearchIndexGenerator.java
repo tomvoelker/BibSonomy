@@ -99,7 +99,6 @@ public class ElasticSearchIndexGenerator<R extends Resource> {
 
 			// cycle through all posts of currently read block
 			for (final SearchPost<R> post : postList) {
-				
 				post.setLastLogDate(newState.getLast_log_date());
 				if (post.getLastTasId() == null) {
 					post.setLastTasId(newState.getLast_tas_id());
