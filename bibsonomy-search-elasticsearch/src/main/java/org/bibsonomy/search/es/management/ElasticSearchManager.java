@@ -254,7 +254,7 @@ public class ElasticSearchManager<R extends Resource> {
 			
 			this.switchActiveAndInactiveIndex();
 		} catch (final IndexMissingException e) {
-			log.error("Can not update index. No inactive index available.");
+			log.error("Can't update " + this.tools.getResourceTypeAsString() + " index. No inactive index available.");
 		} finally {
 			this.updateLock.release();
 		}
