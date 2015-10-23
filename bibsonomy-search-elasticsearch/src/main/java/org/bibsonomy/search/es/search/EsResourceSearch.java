@@ -151,7 +151,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @return returns the list of tags for the tag cloud
 	 */
 	public List<Tag> getTags(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexkey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
-		final QueryBuilder query = this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, null, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags);
+		final QueryBuilder query = this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags);
 		final Map<Tag, Integer> tagCounter = new HashMap<Tag, Integer>();
 
 		try {
