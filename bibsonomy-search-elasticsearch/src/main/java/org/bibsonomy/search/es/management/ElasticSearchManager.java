@@ -59,6 +59,7 @@ public class ElasticSearchManager<R extends Resource> {
 	private final Semaphore updateLock = new Semaphore(1);
 	
 	private final Semaphore generatorLock = new Semaphore(1);
+	private ElasticSearchIndexGenerator<R> currentGenerator;
 	private final ExecutorService executorService = Executors.newFixedThreadPool(1);
 	
 	/** access to the main database */
@@ -101,11 +102,13 @@ public class ElasticSearchManager<R extends Resource> {
 			@Override
 			public Void call() throws Exception {
 				try {
+					ElasticSearchManager.this.currentGenerator = generator;
 					generator.generateIndex();
 					ElasticSearchManager.this.activateNewIndex(newIndex);
 				} catch (Exception e) {
 					log.error("error while generating index", e);
 				} finally {
+					ElasticSearchManager.this.currentGenerator = null;
 					ElasticSearchManager.this.generatorLock.release();
 				}
 				
@@ -159,7 +162,7 @@ public class ElasticSearchManager<R extends Resource> {
 		final List<SearchIndexInfo> infos = new LinkedList<>();
 		try {
 			final String localActiveAlias = this.getActiveLocalAlias();
-			final SearchIndexInfo searchIndexInfo = getIndexInfoForIndex(localActiveAlias, SearchIndexState.ACTIVE);
+			final SearchIndexInfo searchIndexInfo = getIndexInfoForIndex(localActiveAlias, SearchIndexState.ACTIVE, true);
 			infos.add(searchIndexInfo);
 		} catch (IndexMissingException e) {
 			// ignore
@@ -167,11 +170,25 @@ public class ElasticSearchManager<R extends Resource> {
 		
 		try {
 			final String localInactiveAlias = this.getInactiveLocalAlias();
-			final SearchIndexInfo searchIndexInfoInactive = getIndexInfoForIndex(localInactiveAlias, SearchIndexState.INACTIVE);
+			final SearchIndexInfo searchIndexInfoInactive = getIndexInfoForIndex(localInactiveAlias, SearchIndexState.INACTIVE, true);
 			infos.add(searchIndexInfoInactive);
 		} catch (IndexMissingException e) {
 			// ignore
 		}
+		
+		if (this.currentGenerator != null) {
+			try {
+				final String indexName = this.currentGenerator.getIndex().getIndexName();
+				final SearchIndexInfo searchIndexInfoGeneratingIndex = getIndexInfoForIndex(indexName, SearchIndexState.GENERATING, false);
+				searchIndexInfoGeneratingIndex.setIndexGenerationProgress(this.currentGenerator.getProgress());
+				searchIndexInfoGeneratingIndex.setId(indexName);
+				infos.add(searchIndexInfoGeneratingIndex);
+			} catch (IndexMissingException e) {
+				// ignore
+			}
+		}
+		
+		// TODO: include indices that could not be generated (dead bodies)
 		
 		return infos;
 	}
@@ -179,13 +196,18 @@ public class ElasticSearchManager<R extends Resource> {
 	/**
 	 * @param indexName
 	 * @param state 
+	 * @param loadSyncState 
 	 * @return
 	 */
-	private SearchIndexInfo getIndexInfoForIndex(final String indexName, SearchIndexState state) {
+	private SearchIndexInfo getIndexInfoForIndex(final String indexName, SearchIndexState state, boolean loadSyncState) {
 		final SearchIndexInfo searchIndexInfo = new SearchIndexInfo();
 		searchIndexInfo.setState(state);
 		searchIndexInfo.setId(this.client.getIndexNameForAlias(indexName));
-		searchIndexInfo.setSyncState(this.client.getSearchIndexStateForIndex(indexName));
+		
+		if (loadSyncState) {
+			searchIndexInfo.setSyncState(this.client.getSearchIndexStateForIndex(indexName));
+		}
+		
 		final SearchIndexStatistics statistics = new SearchIndexStatistics();
 		final long count = this.client.getDocumentCount(indexName, this.tools.getResourceTypeAsString(), null);
 		statistics.setNumberOfDocuments(count);

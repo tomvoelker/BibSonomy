@@ -200,4 +200,18 @@ public class ElasticSearchIndexGenerator<R extends Resource> {
 		this.client.deleteAlias(this.index.getIndexName(), ElasticSearchUtils.getTempAliasForResource(this.tools.getResourceType()));
 	}
 
+	/**
+	 * @return the index
+	 */
+	public ElasticSearchIndex<R> getIndex() {
+		return this.index;
+	}
+
+	/**
+	 * @return the progress
+	 */
+	public double getProgress() {
+		return this.writtenPosts / (double) this.numberOfPosts;
+	}
+
 }

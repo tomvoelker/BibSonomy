@@ -44,7 +44,7 @@ public class SearchIndexInfo {
 	/** statistics */
 	private SearchIndexStatistics statistics;
 	
-	private int indexGenerationProgress;
+	private double indexGenerationProgress;
 
 	/** 
 	 * indicates if the index is in sync with the DB
@@ -110,7 +110,7 @@ public class SearchIndexInfo {
 	 * @param indexGenerationProgress
 	 *            the progress of the index-generation
 	 */
-	public void setIndexGenerationProgress(final int indexGenerationProgress) {
+	public void setIndexGenerationProgress(final double indexGenerationProgress) {
 		this.indexGenerationProgress = indexGenerationProgress;
 	}
 
@@ -131,7 +131,7 @@ public class SearchIndexInfo {
 	/**
 	 * @return the progress of the index-generation
 	 */
-	public int getIndexGenerationProgress() {
+	public double getIndexGenerationProgress() {
 		return indexGenerationProgress;
 	}
 }

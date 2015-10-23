@@ -113,7 +113,7 @@ public abstract class AbstractEsClient implements ESClient {
 		
 		// ensure that there is only one index state stored in the index
 		long hitsInIndex = searchResponse.getHits().totalHits();
-		if (hitsInIndex > 1) {
+		if (hitsInIndex != 1) {
 			throw new IllegalStateException(hitsInIndex + " systeminfos for index " + indexName);
 		}
 		

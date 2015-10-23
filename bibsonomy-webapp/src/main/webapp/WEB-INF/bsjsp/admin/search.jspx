@@ -54,8 +54,8 @@
 			
 			<c:forEach items="${command.searchIndexInfo}" var="searchIndexInfoEntry">
 				<c:set var="searchIndexInfos" value="${searchIndexInfoEntry.value}" />
-				<c:set var="resourcType" value="${searchIndexInfoEntry.key}" />
-				<h3><c:out value="${resourcType} Indices" /></h3>
+				<c:set var="resourceType" value="${searchIndexInfoEntry.key}" />
+				<h3><c:out value="${resourceType} Indices" /></h3>
 				<c:set var="searchIndexInfosSize" value="${fn:length(searchIndexInfos)}" />
 				<c:choose>
 					<c:when test="${searchIndexInfosSize > 0 }">
@@ -84,7 +84,7 @@
 										
 										<c:otherwise>
 											<td colspan="4">
-												Progress
+												<bs:progress progress="${searchIndexInfo.indexGenerationProgress * 100}" showProgressLabel="${true}" />
 											</td>
 										</c:otherwise>
 									</c:choose>
@@ -92,13 +92,11 @@
 									<th><!-- keep me --></th>
 								</tr>
 							</c:forEach>
-							
-							
 						</table>
 						<c:if test="${searchIndexInfosSize lt 2}">
 							<bs:alert style="warning">
 								<jsp:attribute name="alertBody">
-									TODO
+									There is only one index. Please generate another one.
 								</jsp:attribute>
 							</bs:alert>
 						</c:if>
@@ -114,10 +112,11 @@
 					</c:otherwise>
 				</c:choose>
 				<form method="post">
-					<input type="hidden" name="resource" value="${resourcType}" />
+					<input type="hidden" name="resource" value="${resourceType}" />
 					<input type="hidden" name="action" value="generateIndex" />
-					<bsform:button size="defaultSize" style="defaultStyle" value="Generate new index" type="submits"/>
+					<bsform:button size="defaultSize" style="defaultStyle" value="Generate new ${resourceType} index" type="submits"/>
 				</form>
+				<br />
 			</c:forEach>
 		</jsp:attribute>
 	</layout:layout>
