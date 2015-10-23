@@ -55,20 +55,22 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.search.SearchPost;
+import org.bibsonomy.search.testutils.SearchSpringContextWrapper;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
+ * tests for the {@link SearchDBLogic}
  * 
  * @author fei
  */
 public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 
-	private static final String LUCENE_MAGIC_AUTHOR = "luceneAuthor";
-	private static final String LUCENE_MAGIC_TAG    = "luceneTag";
-	private static final String LUCENE_MAGIC_EDITOR = "luceneEditor";
-	private static final String LUCENE_MAGIC_TITLE  = "luceneTitle";
+	private static final String SEARCH_MAGIC_AUTHOR = "searchAuthor";
+	private static final String SEARCH_MAGIC_TAG = "searchTag";
+	private static final String SEARCH_MAGIC_EDITOR = "searchEditor";
+	private static final String SEARCH_MAGIC_TITLE = "searchTitle";
 
 	/** constant for querying for all posts which have been deleted since the last index update */
 	private static final long QUERY_TIME_OFFSET_MS = 60 * 1000;
@@ -77,10 +79,10 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 	private static BibTexDatabaseManager bibTexDb;
 
 	/** bookmark database interface */
-	private static SearchDBLogic<Bookmark> luceneBookmarkLogic;
+	private static SearchDBLogic<Bookmark> searchBookmarkLogic;
 
 	/** bibtex database interface */
-	private static SearchDBLogic<BibTex> luceneBibTexLogic;
+	private static SearchDBLogic<BibTex> searchBibTexLogic;
 
 	/**
 	 * Initializes the test database.
@@ -91,11 +93,14 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 		bibTexDb = BibTexDatabaseManager.getInstance();
 	}
 
+	/**
+	 * inits the search db logics
+	 */
 	@SuppressWarnings("unchecked")
 	@BeforeClass
-	public static void setUpLucene() {
-		luceneBookmarkLogic = (SearchDBLogic<Bookmark>) LuceneSpringContextWrapper.getBeanFactory().getBean("luceneBookmarkLogic");
-		luceneBibTexLogic = (SearchDBLogic<BibTex>) LuceneSpringContextWrapper.getBeanFactory().getBean("lucenePublicationLogic");
+	public static void setUpSearch() {
+		searchBookmarkLogic = (SearchDBLogic<Bookmark>) SearchSpringContextWrapper.getBeanFactory().getBean("bookmarkSearchDBLogic");
+		searchBibTexLogic = (SearchDBLogic<BibTex>) SearchSpringContextWrapper.getBeanFactory().getBean("publicationSearchDBLogic");
 	}
 
 	/**
@@ -108,16 +113,16 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 		final int groupId = -1;
 		final List<Integer> groups = new ArrayList<Integer>();
 
-		List<SearchPost<BibTex>> posts = luceneBibTexLogic.getPostsForUser(requestedUserName, 10, 0);
+		List<SearchPost<BibTex>> posts = searchBibTexLogic.getPostsForUser(requestedUserName, 10, 0);
 		List<Post<BibTex>> postsRef = bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, null, 10, 0, null, this.dbSession);
 		assertEquals(postsRef.size(), posts.size());
 
-		posts = luceneBibTexLogic.getPostsForUser(requestedUserName, 10, 0);
+		posts = searchBibTexLogic.getPostsForUser(requestedUserName, 10, 0);
 		postsRef = bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, null, 10, 0, null, this.dbSession);
 		assertEquals(postsRef.size(), posts.size()); 
 
 		requestedUserName = "testuser2";
-		posts = luceneBibTexLogic.getPostsForUser(requestedUserName, 10, 0);
+		posts = searchBibTexLogic.getPostsForUser(requestedUserName, 10, 0);
 		postsRef = bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, null, 10, 0, null, this.dbSession);
 		assertEquals(postsRef.size(), posts.size());
 	}
@@ -134,7 +139,7 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 		//--------------------------------------------------------------------
 		// TEST 1: insert special posts into test database and search for it
 		//--------------------------------------------------------------------
-		final Integer lastTasId = luceneBibTexLogic.getLastTasId();
+		final Integer lastTasId = searchBibTexLogic.getLastTasId();
 		for (int i = 0; i < 5; i++) {
 			// store test posts in database
 			final Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
@@ -143,7 +148,7 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 		}
 
 		// retrieve posts
-		final List<? extends Post<BibTex>> posts = luceneBibTexLogic.getNewPosts(lastTasId);
+		final List<? extends Post<BibTex>> posts = searchBibTexLogic.getNewPosts(lastTasId);
 
 		assertEquals(refPosts.size(), posts.size());
 
@@ -182,7 +187,7 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 			bibTexDb.deletePost(bibtexPost.getUser().getName(), bibtexPost.getResource().getIntraHash(), this.dbSession);
 		}
 		// retrieve posts
-		final List<Integer> posts = luceneBibTexLogic.getContentIdsToDelete(new Date(fromDate-QUERY_TIME_OFFSET_MS));
+		final List<Integer> posts = searchBibTexLogic.getContentIdsToDelete(new Date(fromDate-QUERY_TIME_OFFSET_MS));
 
 		assertTrue(refPosts.size() <= posts.size());
 	}
@@ -200,19 +205,19 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 		final Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
 		bibTexDb.createPost(bibtexPost, this.dbSession);
 
-		Date postDate = luceneBibTexLogic.getNewestRecordDateFromTas();
+		Date postDate = searchBibTexLogic.getNewestRecordDateFromTas();
 		// compare modulo milliseconds 
 		assertEquals(bibtexPost.getDate().getTime() - (bibtexPost.getDate().getTime() % 100000), postDate.getTime()-(postDate.getTime() % 100000));
 
 		final Post<Bookmark> bookmarkPost = this.generateBookmarkDatabaseManagerTestPost();
 		bookmarkDb.createPost(bookmarkPost, this.dbSession);
 
-		postDate = luceneBookmarkLogic.getNewestRecordDateFromTas();
+		postDate = searchBookmarkLogic.getNewestRecordDateFromTas();
 		assertEquals(bookmarkPost.getDate().getTime() - (bookmarkPost.getDate().getTime() % 100000), postDate.getTime()-(postDate.getTime() % 100000));
 	}
 
 	/**
-	 * tests confluence of lucene's and bibsonomy's database post queries 
+	 * tests confluence of search's and bibsonomy's database post queries 
 	 */
 	@Test
 	public void getBookmarkUserPosts() {
@@ -221,21 +226,21 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 		final int groupId = -1;
 		final List<Integer> groups = new ArrayList<Integer>();
 
-		List<LucenePost<Bookmark>> posts;    
+		List<SearchPost<Bookmark>> posts;
 		List<Post<Bookmark>> postsRef;
 
-		posts    = luceneBookmarkLogic.getPostsForUser(requestedUserName, 10, 0);
+		posts = searchBookmarkLogic.getPostsForUser(requestedUserName, 10, 0);
 		postsRef = bookmarkDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, null, 10, 0, null, this.dbSession);
 		assertEquals(postsRef.size(), posts.size());
 
 		requestedUserName = "testuser2";
-		posts    = luceneBookmarkLogic.getPostsForUser(requestedUserName, 10, 0);
+		posts = searchBookmarkLogic.getPostsForUser(requestedUserName, 10, 0);
 		postsRef = bookmarkDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, null, 10, 0, null, this.dbSession);  
 		assertEquals(postsRef.size(), posts.size());
 	}
 
 	/**
-	 * tests confluence of lucene's and bibsonomy's database post queries 
+	 * tests confluence of search's and bibsonomy's database post queries 
 	 */
 	@Test
 	public void getBookmarkNewPosts() {
@@ -243,7 +248,7 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
-	 * tests confluence of lucene's and bibsonomy's database post queries 
+	 * tests confluence of search's and bibsonomy's database post queries 
 	 */
 	@Test
 	public void getBibTexNewPosts() {
@@ -273,7 +278,7 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 		tag.setName("tag2");
 		post.getTags().add(tag);
 		tag = new Tag();
-		tag.setName(LUCENE_MAGIC_TAG);
+		tag.setName(SEARCH_MAGIC_TAG);
 		post.getTags().add(tag);
 
 		post.setContentId(null); // will be set in storePost()
@@ -290,12 +295,12 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 		CommonModelUtils.setBeanPropertiesOn(publication);
 		publication.setCount(0);		
 		publication.setEntrytype("inproceedings");
-		publication.setAuthor(PersonNameUtils.discoverPersonNames("MegaMan and Lucene GigaWoman " + LUCENE_MAGIC_AUTHOR));
-		publication.setEditor(PersonNameUtils.discoverPersonNames("Peter Silie " + LUCENE_MAGIC_EDITOR));
+		publication.setAuthor(PersonNameUtils.discoverPersonNames("MegaMan and Lucene GigaWoman " + SEARCH_MAGIC_AUTHOR));
+		publication.setEditor(PersonNameUtils.discoverPersonNames("Peter Silie " + SEARCH_MAGIC_EDITOR));
 		publication.setTitle("bibtex insertpost test");
 
 		String title, year, journal, booktitle, volume, number = null;
-		title = "title "+ (Math.round(Math.random()*Integer.MAX_VALUE))+" "+LUCENE_MAGIC_TITLE;
+		title = "title "+ (Math.round(Math.random()*Integer.MAX_VALUE))+" "+SEARCH_MAGIC_TITLE;
 		year = "test year";
 		journal = "test journal";
 		booktitle = "test booktitle";
@@ -347,7 +352,7 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 
 		final Bookmark bookmark = new Bookmark();
 		bookmark.setCount(0);
-		bookmark.setTitle("test" + (Math.round(Math.random() * Integer.MAX_VALUE)) + " " + LUCENE_MAGIC_TITLE);
+		bookmark.setTitle("test" + (Math.round(Math.random() * Integer.MAX_VALUE)) + " " + SEARCH_MAGIC_TITLE);
 		bookmark.setUrl("http://www.testurl.orgg");
 		bookmark.recalculateHashes();
 		resource = bookmark;
