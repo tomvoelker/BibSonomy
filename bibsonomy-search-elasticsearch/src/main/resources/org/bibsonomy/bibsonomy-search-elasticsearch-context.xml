@@ -67,7 +67,7 @@
 		<property name="infoLogic" ref="searchInfoLogic" />
 	</bean>
 	
-	<bean id="elasticSearchPublicationSearch" class="org.bibsonomy.search.es.search.EsResourceSearch">
+	<bean id="elasticSearchPublicationSearch" class="org.bibsonomy.search.es.search.ElasticSearchPublicationSearch">
 		<property name="manager" ref="elasticSearchPublicationManager" />
 		<property name="resourceConverter" ref="elasticSearchPublicationConverter" />
 		<property name="resourceType" ref="searchPublicationClass" />

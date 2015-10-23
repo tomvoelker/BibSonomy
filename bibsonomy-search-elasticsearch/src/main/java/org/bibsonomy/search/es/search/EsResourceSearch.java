@@ -151,7 +151,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @return returns the list of tags for the tag cloud
 	 */
 	public List<Tag> getTags(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexkey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
-		final QueryBuilder query = this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, org.bibsonomy.common.enums.SearchType.LOCAL, null, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags);
+		final QueryBuilder query = this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, null, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags);
 		final Map<Tag, Integer> tagCounter = new HashMap<Tag, Integer>();
 
 		try {
@@ -234,40 +234,40 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final org.bibsonomy.common.enums.SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) {
 		final ResultList<Post<R>> postList = new ResultList<Post<R>>();
 		try {
-				final QueryBuilder queryBuilder = this.buildQuery(userName,
-						requestedUserName, requestedGroupName,
-						requestedRelationNames, allowedGroups, searchType, searchTerms,
-						titleSearchTerms, authorSearchTerms, bibtexKey,
-						tagIndex, year, firstYear, lastYear, negatedTags);
-				final SearchRequestBuilder searchRequestBuilder = this.manager.prepareSearch();
-				searchRequestBuilder.setTypes(ResourceFactory.getResourceName(this.resourceType));
-				searchRequestBuilder.setSearchType(SearchType.DEFAULT);
-				searchRequestBuilder.setQuery(queryBuilder);
-			
-				if (order != Order.RANK) {
-					searchRequestBuilder.addSort(Fields.DATE, SortOrder.DESC);
+			final QueryBuilder queryBuilder = this.buildQuery(userName,
+					requestedUserName, requestedGroupName,
+					requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms,
+					authorSearchTerms, bibtexKey, tagIndex,
+					year, firstYear, lastYear, negatedTags);
+			final SearchRequestBuilder searchRequestBuilder = this.manager.prepareSearch();
+			searchRequestBuilder.setTypes(ResourceFactory.getResourceName(this.resourceType));
+			searchRequestBuilder.setSearchType(SearchType.DEFAULT);
+			searchRequestBuilder.setQuery(queryBuilder);
+		
+			if (order != Order.RANK) {
+				searchRequestBuilder.addSort(Fields.DATE, SortOrder.DESC);
+			}
+			searchRequestBuilder.setFrom(offset).setSize(limit).setExplain(true); // FIXME: remove explain
+
+			final SearchResponse response = searchRequestBuilder.execute().actionGet();
+
+			if (response != null) {
+				final SearchHits hits = response.getHits();
+				postList.setTotalCount((int) hits.getTotalHits());
+
+				log.debug("Current Search results for '" + searchTerms + "': " + response.getHits().getTotalHits());
+				for (final SearchHit hit : hits) {
+					final Post<R> post = this.resourceConverter.convert(hit.getSource());
+					
+					final CountRequestBuilder countBuilder = this.manager.prepareCount();
+					final R resource = post.getResource();
+					countBuilder.setQuery(QueryBuilders.termQuery(Fields.Resource.INTERHASH, resource.getInterHash()));
+					final CountResponse countResponse = countBuilder.execute().actionGet();
+					
+					resource.setCount((int) countResponse.getCount());
+					postList.add(post);
 				}
-				searchRequestBuilder.setFrom(offset).setSize(limit).setExplain(true); // FIXME: remove explain
-
-				final SearchResponse response = searchRequestBuilder.execute().actionGet();
-
-				if (response != null) {
-					final SearchHits hits = response.getHits();
-					postList.setTotalCount((int) hits.getTotalHits());
-
-					log.debug("Current Search results for '" + searchTerms + "': " + response.getHits().getTotalHits());
-					for (final SearchHit hit : hits) {
-						final Post<R> post = this.resourceConverter.convert(hit.getSource());
-						
-						final CountRequestBuilder countBuilder = this.manager.prepareCount();
-						final R resource = post.getResource();
-						countBuilder.setQuery(QueryBuilders.termQuery(Fields.Resource.INTERHASH, resource.getInterHash()));
-						final CountResponse countResponse = countBuilder.execute().actionGet();
-						
-						resource.setCount((int) countResponse.getCount());
-						postList.add(post);
-					}
-				}
+			}
 		} catch (final IndexMissingException e) {
 			log.error("no index found: " + e);
 		}
@@ -625,19 +625,6 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		return FilterBuilders.andFilter(filterBuilder, filter);
 	}
 
-
-	/**
-	 * @param boolQuery
-	 * @return
-	 */
-	/*
-	private BoolQueryBuilder addMustMatchYearIfYearPresent(BoolQueryBuilder boolQuery, String queryString) {
-		QueryBuilders.termQuery(name, value)
-		return null;
-	}
-	*/
-
-
 	private static int extractMinimumInvertedScore(final TreeMap<Integer, ResourcePersonRelation> invertedScoreToRpr) {
 		int minInvertedScore = -1;
 		for (Map.Entry<Integer, ResourcePersonRelation> e : invertedScoreToRpr.entrySet()) {
@@ -719,7 +706,6 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * 				expand the search in the post of users which are defined by the given 
 	 * 				relation names
 	 * @param allowedGroups 
-	 * @param searchType 
 	 * @param searchTerms
 	 * @param titleSearchTerms 
 	 * @param authorSearchTerms 
@@ -731,10 +717,10 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @param negatedTags
 	 * @return overall elasticsearch query
 	 */
-	protected QueryBuilder buildQuery(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, Collection<String> allowedGroups, org.bibsonomy.common.enums.SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final Collection<String> negatedTags) {
+	protected final QueryBuilder buildQuery(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final Collection<String> negatedTags) {
 		final BoolQueryBuilder mainQueryBuilder = QueryBuilders.boolQuery();
 		final BoolFilterBuilder mainFilterBuilder = FilterBuilders.boolFilter();
-
+		
 		// --------------------------------------------------------------------
 		// build the query
 		// --------------------------------------------------------------------
@@ -749,15 +735,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			mainQueryBuilder.must(titleSearchQuery);
 		}
 		
-		if (present(authorSearchTerms)) {
-			final QueryBuilder authorSearchQuery = QueryBuilders.termQuery(Fields.Publication.AUTHOR, authorSearchTerms);
-			mainQueryBuilder.must(authorSearchQuery);
-		}
-		
-		if (present(bibtexKey)) {
-			final QueryBuilder bibtexKeyQuery = QueryBuilders.termQuery(Fields.Publication.BIBTEXKEY, bibtexKey);
-			mainQueryBuilder.must(bibtexKeyQuery);
-		}
+		this.buildResourceSpecifiyQuery(mainQueryBuilder, userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexKey, year, firstYear, lastYear);
 		
 		// Add the requested tags
 		if (present(tagIndex)) {
@@ -795,11 +773,51 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			mainFilterBuilder.must(requestedUserFilter);
 		}
 		
+		this.buildResourceSpecifiyFilters(mainFilterBuilder, userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexKey, year, firstYear, lastYear);
+		
 		// all done
 		log.debug("Search query: '" + mainQueryBuilder.toString() + "' and filters: '" + mainFilterBuilder.toString() + "'");
 		return QueryBuilders.filteredQuery(mainQueryBuilder, mainFilterBuilder);
 	}
 	
+	/**
+	 * @param mainFilterBuilder
+	 * @param userName
+	 * @param requestedUserName
+	 * @param requestedGroupName
+	 * @param requestedRelationNames
+	 * @param allowedGroups
+	 * @param searchTerms
+	 * @param titleSearchTerms
+	 * @param authorSearchTerms
+	 * @param bibtexKey
+	 * @param year
+	 * @param firstYear
+	 * @param lastYear
+	 */
+	protected void buildResourceSpecifiyFilters(BoolFilterBuilder mainFilterBuilder, String userName, String requestedUserName, String requestedGroupName, List<String> requestedRelationNames, Collection<String> allowedGroups, String searchTerms, String titleSearchTerms, String authorSearchTerms, String bibtexKey, String year, String firstYear, String lastYear) {
+		// noop
+	}
+
+	/**
+	 * @param mainQueryBuilder
+	 * @param userName
+	 * @param requestedUserName
+	 * @param requestedGroupName
+	 * @param requestedRelationNames
+	 * @param allowedGroups
+	 * @param searchTerms
+	 * @param titleSearchTerms
+	 * @param authorSearchTerms
+	 * @param bibtexKey
+	 * @param year
+	 * @param firstYear
+	 * @param lastYear
+	 */
+	protected void buildResourceSpecifiyQuery(BoolQueryBuilder mainQueryBuilder, String userName, String requestedUserName, String requestedGroupName, List<String> requestedRelationNames, Collection<String> allowedGroups, String searchTerms, String titleSearchTerms, String authorSearchTerms, String bibtexKey, String year, String firstYear, String lastYear) {
+		// noop
+	}
+
 	/**
 	 * @param negatedTags
 	 * @return
