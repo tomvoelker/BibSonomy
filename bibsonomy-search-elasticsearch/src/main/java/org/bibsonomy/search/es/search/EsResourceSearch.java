@@ -764,6 +764,13 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		for (final String allowedGroup : allowedGroups){
 			groupFilter.should(FilterBuilders.termFilter(Fields.GROUPS, allowedGroup));
 		}
+		
+		if (present(userName)) {
+			final TermFilterBuilder privateGroupFilter = FilterBuilders.termFilter(Fields.GROUPS, GroupUtils.buildPrivateGroup().getName());
+			final TermFilterBuilder userFilter = FilterBuilders.termFilter(Fields.USER_NAME, userName);
+			groupFilter.should(FilterBuilders.andFilter(userFilter, privateGroupFilter));
+		}
+		
 		mainFilterBuilder.must(groupFilter);
 		
 		// post owned by user 
