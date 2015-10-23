@@ -80,7 +80,7 @@ public interface ResourceSearch<R extends Resource> {
 	 * @param userName
 	 * @param requestedUserName
 	 * @param requestedGroupName
-	 * @param requestedRelationNames
+	 * @param requestedRelationNames @Deprecated TODODZO: remove
 	 * @param allowedGroups
 	 * @param searchType 
 	 * @param searchTerms

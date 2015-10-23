@@ -740,7 +740,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		// --------------------------------------------------------------------
 		// the resulting main query
 		if (present(searchTerms)) {
-			final QueryBuilder queryBuilder = QueryBuilders.queryString(searchTerms);
+			final QueryBuilder queryBuilder = QueryBuilders.queryStringQuery(searchTerms);
 			mainQueryBuilder.must(queryBuilder);
 		}
 
@@ -760,12 +760,17 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		}
 		
 		// Add the requested tags
-		if (present(tagIndex) || present(negatedTags)) {
-			this.addTagQuerries(tagIndex, negatedTags, mainQueryBuilder);
+		if (present(tagIndex)) {
+			mainFilterBuilder.must(this.buildTagFilter(tagIndex));
 		}
-
+		
+		if (present(negatedTags)) {
+			mainFilterBuilder.must(this.buildNegatedTags(negatedTags));
+		}
+		
 		// restrict result to given group
 		if (present(requestedGroupName)) {
+			// by appending a filter for all members of the group
 			final BoolFilterBuilder groupMembersFilter = this.buildGroupMembersFilter(requestedGroupName);
 			if (groupMembersFilter != null) {
 				mainFilterBuilder.must(groupMembersFilter);
@@ -777,34 +782,65 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			allowedGroups = Collections.singleton(GroupUtils.buildPublicGroup().getName());
 		}
 		
-		if (allowedGroups != null) {
-			final BoolFilterBuilder groupFilter = FilterBuilders.boolFilter();
-			for (String allowedGroup:allowedGroups){
-				groupFilter.should(FilterBuilders.termFilter(Fields.GROUPS, allowedGroup));
-			}
-			mainFilterBuilder.must(groupFilter);
+		final BoolFilterBuilder groupFilter = FilterBuilders.boolFilter();
+		for (final String allowedGroup : allowedGroups){
+			groupFilter.should(FilterBuilders.termFilter(Fields.GROUPS, allowedGroup));
 		}
+		mainFilterBuilder.must(groupFilter);
 		
-		// --------------------------------------------------------------------
 		// post owned by user 
 		// Use this restriction iff there is no user relation
-		// --------------------------------------------------------------------
-		if (present(requestedUserName) && !present(requestedRelationNames)) {
-			QueryBuilder requesterUserSearchQuery = QueryBuilders.termQuery(Fields.USER_NAME, requestedUserName);
-			mainQueryBuilder.must(requesterUserSearchQuery);
-		}
-		// If there is at once one relation then restrict the results only 
-		// to the users in the given relations (inclduing posts of the logged in users)
-		else if (present(requestedRelationNames)) {
-			// for all relations: TODO TODODZO
+		if (present(requestedUserName)) {
+			final TermFilterBuilder requestedUserFilter = FilterBuilders.termFilter(Fields.USER_NAME, requestedUserName);
+			mainFilterBuilder.must(requestedUserFilter);
 		}
 		
 		// all done
-		log.debug("Search query: " + mainQueryBuilder.toString());
-		
+		log.debug("Search query: '" + mainQueryBuilder.toString() + "' and filters: '" + mainFilterBuilder.toString() + "'");
 		return QueryBuilders.filteredQuery(mainQueryBuilder, mainFilterBuilder);
 	}
 	
+	/**
+	 * @param negatedTags
+	 * @return
+	 */
+	private FilterBuilder buildNegatedTags(Collection<String> negatedTags) {
+		final BoolFilterBuilder tagFilter = FilterBuilders.boolFilter();
+		
+		for (final String negatedTag : negatedTags) {
+			final FilterBuilder negatedSearchQuery = FilterBuilders.termFilter(Fields.TAGS, negatedTag);
+			tagFilter.mustNot(negatedSearchQuery);
+		}
+		
+		return tagFilter;
+	}
+
+	/**
+	 * @param tagIndex
+	 * @return
+	 */
+	private FilterBuilder buildTagFilter(Collection<String> tagIndex) {
+		final BoolFilterBuilder tagsFilter = FilterBuilders.boolFilter();
+		for (final String tag : tagIndex) {
+			// is the tag string a concept name?
+			if (tag.startsWith(Tag.CONCEPT_PREFIX)) {
+				final String conceptTag = tag.substring(Tag.CONCEPT_PREFIX.length());
+				// get related tags:
+				final BoolFilterBuilder conceptTags = FilterBuilders.boolFilter();
+				// TODO: must the tag be included? TODODZO
+				final TermFilterBuilder termQuery = FilterBuilders.termFilter(Fields.TAGS, conceptTag);
+				conceptTags.must(termQuery);
+				for (final String subTagString : this.infoLogic.getSubTagsForConceptTag(conceptTag)) {
+					conceptTags.should(FilterBuilders.termFilter(Fields.TAGS, subTagString));
+				}
+				tagsFilter.must(conceptTags);
+			} else {
+				tagsFilter.must(FilterBuilders.termFilter(Fields.TAGS, tag));
+			}
+		}
+		return tagsFilter;
+	}
+
 	/**
 	 * @param requestedGroupName
 	 * @return 
@@ -821,39 +857,6 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			return groupMemberFilter;
 		}
 		return null;
-	}
-
-	private void addTagQuerries(final Collection<String> tagIndex, final Collection<String> negatedTags, final BoolQueryBuilder mainQuery) {
-		/*
-		 * Process normal tags
-		 */
-		if (present(tagIndex)) {
-			for (final String tag : tagIndex) {
-				// Is the tag string a concept name?
-				if (tag.startsWith(Tag.CONCEPT_PREFIX)) {
-					final String conceptTag = tag.substring(2);
-					// get related tags:
-					final BoolQueryBuilder conceptTags = new BoolQueryBuilder();
-					QueryBuilder termQuery = QueryBuilders.termQuery(Fields.TAGS, conceptTag);
-					conceptTags.must(termQuery);
-					for (final String t : this.infoLogic.getSubTagsForConceptTag(conceptTag)) {
-						conceptTags.should(QueryBuilders.termQuery(Fields.TAGS, t));
-					}
-					mainQuery.must(conceptTags);
-				} else {
-					mainQuery.must(QueryBuilders.termQuery(Fields.TAGS, tag));
-				}
-			}
-		}
-		/*
-		 * Process negated Tags
-		 */
-		if (present(negatedTags)) {
-			for (final String negatedTag : negatedTags) {
-				final QueryBuilder negatedSearchQuery = QueryBuilders.termQuery(Fields.TAGS, negatedTag);
-				mainQuery.mustNot(negatedSearchQuery);
-			}
-		}
 	}
 	
 	/**
