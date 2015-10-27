@@ -51,6 +51,42 @@ public class ElasticSearchManager<R extends Resource> {
 	public static final int SQL_BLOCKSIZE = 5000;
 	private static final long QUERY_TIME_OFFSET_MS = 0; // TODO: remove?
 	
+	/**
+	 * task for index generation
+	 * @author dzo
+	 */
+	private final class ElasticSearchIndexGenerationTask implements Callable<Void> {
+		private final ElasticSearchIndexGenerator<R> generator;
+		private final ElasticSearchIndex<R> newIndex;
+
+		/**
+		 * @param generator
+		 * @param newIndex
+		 */
+		private ElasticSearchIndexGenerationTask(ElasticSearchIndexGenerator<R> generator, ElasticSearchIndex<R> newIndex) {
+			this.generator = generator;
+			this.newIndex = newIndex;
+		}
+
+		/* (non-Javadoc)
+		 * @see java.util.concurrent.Callable#call()
+		 */
+		@Override
+		public Void call() throws Exception {
+			try {
+				ElasticSearchManager.this.currentGenerator = this.generator;
+				generator.generateIndex();
+				ElasticSearchManager.this.activateNewIndex(this.newIndex);
+			} catch (final Exception e) {
+				log.error("error while generating index", e);
+			} finally {
+				ElasticSearchManager.this.currentGenerator = null;
+				ElasticSearchManager.this.generatorLock.release();
+			}
+			
+			return null;
+		}
+	}
 	
 	protected ESClient client;
 	
@@ -87,6 +123,14 @@ public class ElasticSearchManager<R extends Resource> {
 	 * @throws IndexAlreadyGeneratingException
 	 */
 	public void generateIndex() throws IndexAlreadyGeneratingException {
+		generateIndex(true);
+	}
+
+	/**
+	 * @param async 
+	 * @throws IndexAlreadyGeneratingException
+	 */
+	protected void generateIndex(final boolean async) throws IndexAlreadyGeneratingException {
 		if (!this.generatorLock.tryAcquire()) {
 			throw new IndexAlreadyGeneratingException();
 		}
@@ -95,26 +139,17 @@ public class ElasticSearchManager<R extends Resource> {
 		
 		final ElasticSearchIndexGenerator<R> generator = new ElasticSearchIndexGenerator<>(newIndex, this.inputLogic, this.client, this.tools);
 		
-		this.executorService.submit(new Callable<Void>() {
-			/* (non-Javadoc)
-			 * @see java.util.concurrent.Callable#call()
-			 */
-			@Override
-			public Void call() throws Exception {
-				try {
-					ElasticSearchManager.this.currentGenerator = generator;
-					generator.generateIndex();
-					ElasticSearchManager.this.activateNewIndex(newIndex);
-				} catch (Exception e) {
-					log.error("error while generating index", e);
-				} finally {
-					ElasticSearchManager.this.currentGenerator = null;
-					ElasticSearchManager.this.generatorLock.release();
-				}
-				
-				return null;
+		final ElasticSearchIndexGenerationTask task = new ElasticSearchIndexGenerationTask(generator, newIndex);
+		if (async) {
+			this.executorService.submit(task);
+		} else {
+			try {
+				task.call();
+			} catch (Exception e) {
+				log.error("error while running synchronous generation task.", e);
+				throw new RuntimeException(e);
 			}
-		});
+		}
 	}
 
 	/**
@@ -432,10 +467,7 @@ public class ElasticSearchManager<R extends Resource> {
 	 * @param userName
 	 */
 	private void removeAllPostsOfUser(String indexName, String userName) {
-		this.client.getClient().prepareDeleteByQuery(indexName)
-		.setTypes(this.tools.getResourceTypeAsString())
-		.setQuery(QueryBuilders.termQuery(Fields.USER_NAME, userName))
-		.execute().actionGet();
+		this.client.deleteDocuments(indexName, this.tools.getResourceTypeAsString(), QueryBuilders.termQuery(Fields.USER_NAME, userName));
 	}
 	
 	/**
@@ -443,7 +475,7 @@ public class ElasticSearchManager<R extends Resource> {
 	 * 
 	 */
 	public CountRequestBuilder prepareCount() {
-		return this.client.getClient().prepareCount(this.getActiveIndexName());
+		return this.client.prepareCount(this.getActiveIndexName());
 	}
 	
 	/**
@@ -465,7 +497,7 @@ public class ElasticSearchManager<R extends Resource> {
 	 * @return
 	 */
 	protected SearchRequestBuilder prepareSearch(final String indexName) {
-		return this.client.getClient().prepareSearch(indexName);
+		return this.client.prepareSearch(indexName);
 	}
 	
 	public void shutdown() {

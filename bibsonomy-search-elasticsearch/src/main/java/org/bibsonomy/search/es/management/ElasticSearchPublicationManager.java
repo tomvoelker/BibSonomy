@@ -126,7 +126,7 @@ public class ElasticSearchPublicationManager<P extends BibTex> extends ElasticSe
 	}
 	
 	private void updatePostDocument(final String indexName, final Map<String, Object> jsonDocument, String indexIdStr) {
-		this.client.getClient().prepareUpdate(indexName, this.tools.getResourceTypeAsString(), indexIdStr)
+		this.client.prepareUpdate(indexName, this.tools.getResourceTypeAsString(), indexIdStr)
 			.setDoc(jsonDocument)
 			.setRefresh(true).execute().actionGet();
 	}

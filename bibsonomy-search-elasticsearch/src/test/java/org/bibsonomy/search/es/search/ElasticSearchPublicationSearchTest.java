@@ -24,7 +24,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.es;
+package org.bibsonomy.search.es.search;
 
 import java.util.List;
 
@@ -33,23 +33,26 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
+import org.bibsonomy.search.es.management.AbstractEsIndexTest;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * TODO: add documentation to this class
+ * tests for the {@link ElasticSearchPublicationSearch}
  *
  * @author jensi
  */
-public class ElasticSearchTest extends AbstractEsIndexTest {
+public class ElasticSearchPublicationSearchTest extends AbstractEsIndexTest {
 	
+	/**
+	 * TODO: rename method
+	 */
 	@Test
 	public void testSomething() {
 		List<ResourcePersonRelation> res;
 		PersonSuggestionQueryBuilder options = new PersonSuggestionQueryBuilder("Schorsche") {
 			@Override
 			public List<ResourcePersonRelation> doIt() {
-				// TODO Auto-generated method stub
 				return null;
 			}
 		}.withEntityPersons(true).withRelationType(PersonResourceRelationType.values());
@@ -60,6 +63,5 @@ public class ElasticSearchTest extends AbstractEsIndexTest {
 		Assert.assertEquals(res.get(0).getPerson().getPersonId(), "h.muller");
 		Assert.assertEquals(res.get(0).getPerson().getMainName(), new PersonName("Henner", "Schorsche"));
 		Assert.assertEquals(res.get(0).getPost().getResource().getTitle(), "Wurst aufs Brot");
-		
 	}
 }

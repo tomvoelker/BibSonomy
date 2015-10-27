@@ -32,7 +32,9 @@ import java.util.Set;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Mapping;
-import org.elasticsearch.client.Client;
+import org.elasticsearch.action.count.CountRequestBuilder;
+import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.update.UpdateRequestBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 
 /**
@@ -42,13 +44,6 @@ import org.elasticsearch.index.query.QueryBuilder;
  * @author lka
  */
 public interface ESClient {
-	/**
-	 * Get a reference to an ElasticSearch Client.
-	 * 
-	 * @return the Client.
-	 */
-	@Deprecated
-	Client getClient();
 
 	/**
 	 * if necessary wait for the index to be ready to work
@@ -136,4 +131,35 @@ public interface ESClient {
 	 * @return
 	 */
 	long getDocumentCount(String indexName, String type, QueryBuilder query);
+
+	/**
+	 * TODO: (re)move
+	 * @param indexName
+	 * @return
+	 */
+	public CountRequestBuilder prepareCount(String indexName);
+
+	/**
+	 * 
+	 * TODO: (re)move
+	 * @param indexName
+	 * @return
+	 */
+	public SearchRequestBuilder prepareSearch(String indexName);
+
+	/**
+	 * @param indexName
+	 * @param type
+	 * @param query
+	 */
+	public void deleteDocuments(String indexName, String type, QueryBuilder query);
+
+	/**
+	 * TODO: (re)move
+	 * @param indexName
+	 * @param type
+	 * @param id
+	 * @return
+	 */
+	public UpdateRequestBuilder prepareUpdate(String indexName, String type, String id);
 }

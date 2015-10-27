@@ -9,9 +9,14 @@
 	
 	<import resource="classpath:org/bibsonomy/bibsonomy-search-context.xml" />
 	
-	<bean id="esClient" class="org.bibsonomy.search.es.client.ESTransportClient" lazy-init="true" init-method="init" destroy-method="shutdown">
+	<!-- we use a transport client -->
+	<bean id="elasticSearchClient" class="org.bibsonomy.search.es.util.spring.ElasticSearchTransportClientFactoryBean">
 		<property name="esAddresses" value="${search.es.address}"/>
 		<property name="esClusterName" value="${search.es.cluster.name}"/>
+	</bean>
+	
+	<bean id="esClient" class="org.bibsonomy.search.es.client.ElasticSearchClient" destroy-method="shutdown">
+		<constructor-arg ref="elasticSearchClient" />
 	</bean>
 	
 	<bean id="elasticSearchBookmarkManager" class="org.bibsonomy.search.es.management.ElasticSearchManager" destroy-method="shutdown">
@@ -72,5 +77,11 @@
 		<property name="resourceConverter" ref="elasticSearchPublicationConverter" />
 		<property name="resourceType" ref="searchPublicationClass" />
 		<property name="infoLogic" ref="searchInfoLogic" />
+		<property name="genealogyUser" value="${genealogy.import.user}" />
 	</bean>
+	
+	<util:map id="elasticSearchManagers">
+		<entry key-ref="searchBookmarkClass" value-ref="elasticSearchBookmarkManager" />
+		<entry key-ref="searchPublicationClass" value-ref="elasticSearchPublicationManager" />
+	</util:map>
 </beans>

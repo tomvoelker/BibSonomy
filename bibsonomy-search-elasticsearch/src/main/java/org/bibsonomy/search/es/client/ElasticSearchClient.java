@@ -59,6 +59,8 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.action.update.UpdateRequestBuilder;
+import org.elasticsearch.client.Client;
 import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.cluster.metadata.AliasMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
@@ -69,27 +71,37 @@ import org.elasticsearch.index.query.QueryBuilder;
  *
  * @author jensi
  */
-public abstract class AbstractEsClient implements ESClient {
-	private static final Log log = LogFactory.getLog(AbstractEsClient.class);
+public class ElasticSearchClient implements ESClient {
+	private static final Log log = LogFactory.getLog(ElasticSearchClient.class);
+	
+	private final Client client;
+	
+	/**
+	 * @param client
+	 */
+	public ElasticSearchClient(Client client) {
+		super();
+		this.client = client;
+	}
 
 	/**
 	 * waits for the yellow (or green) status to prevent NoShardAvailableActionException later
 	 */
 	@Override
 	public void waitForReadyState() {
-		this.getClient().admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
+		this.client.admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
 	}
 
 	@Override
 	public boolean createIndex(String indexName, Set<Mapping<String>> mappings) {
-		final CreateIndexResponse createIndex = this.getClient().admin().indices().create(new CreateIndexRequest(indexName)).actionGet();
+		final CreateIndexResponse createIndex = this.client.admin().indices().create(new CreateIndexRequest(indexName)).actionGet();
 		if (!createIndex.isAcknowledged()) {
 			log.error("Error in creating Index");
 			return false;
 		}
 		
 		for (final Mapping<String> mapping : mappings) {
-			this.getClient().admin().indices().preparePutMapping(indexName).setType(mapping.getType()).setSource(mapping.getMappingInfo()).execute().actionGet();
+			this.client.admin().indices().preparePutMapping(indexName).setType(mapping.getType()).setSource(mapping.getMappingInfo()).execute().actionGet();
 		}
 		
 		// wait for the yellow (or green) status to prevent
@@ -104,7 +116,7 @@ public abstract class AbstractEsClient implements ESClient {
 		// NoShardAvailableActionException later
 		this.waitForReadyState();
 		
-		final SearchRequestBuilder searchRequestBuilder = this.getClient().prepareSearch(indexName);
+		final SearchRequestBuilder searchRequestBuilder = this.client.prepareSearch(indexName);
 		searchRequestBuilder.setTypes(ESConstants.SYSTEM_INFO_INDEX_TYPE);
 		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 		searchRequestBuilder.setFrom(0).setSize(1).setExplain(true); // FIXME: remove explain
@@ -122,31 +134,39 @@ public abstract class AbstractEsClient implements ESClient {
 
 	@Override
 	public boolean insertNewDocument(String indexName, String type, String id, Map<String, Object> jsonDocument) {
-		final IndexResponse indexResponse = this.getClient().prepareIndex(indexName, type, id).setSource(jsonDocument).setRefresh(true).get();
+		final IndexResponse indexResponse = this.client.prepareIndex(indexName, type, id).setSource(jsonDocument).setRefresh(true).get();
 		return ((indexResponse != null) && ValidationUtils.present(indexResponse.getId()));
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.es.ESClient#prepareUpdate(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public UpdateRequestBuilder prepareUpdate(String indexName, String type, String id) {
+		return this.client.prepareUpdate(indexName, type, id);
 	}
 
 	@Override
 	public boolean removeDocumentFromIndex(String indexName, String type, String indexID) {
-		final DeleteResponse deleteResponse = this.getClient().delete(new DeleteRequest(indexName, type, indexID)).actionGet();
+		final DeleteResponse deleteResponse = this.client.delete(new DeleteRequest(indexName, type, indexID)).actionGet();
 		return deleteResponse.getId() != null;
 	}
 
 	@Override
 	public boolean deleteIndex(String oldIndexName) {
-		final DeleteIndexResponse deleteResult = this.getClient().admin().indices().delete(new DeleteIndexRequest(oldIndexName)).actionGet();
+		final DeleteIndexResponse deleteResult = this.client.admin().indices().delete(new DeleteIndexRequest(oldIndexName)).actionGet();
 		return deleteResult.isAcknowledged();
 	}
 
 	@Override
 	public boolean existsIndexWithName(String indexName) {
-		final IndicesAdminClient indices = this.getClient().admin().indices();
+		final IndicesAdminClient indices = this.client.admin().indices();
 		return indices.exists(new IndicesExistsRequest(indexName)).actionGet().isExists();
 	}
 
 	@Override
 	public boolean createAlias(String indexName, String alias) {
-		final IndicesAliasesRequestBuilder prepareAliases = this.getClient().admin().indices().prepareAliases();
+		final IndicesAliasesRequestBuilder prepareAliases = this.client.admin().indices().prepareAliases();
 		
 		prepareAliases.addAlias(indexName, alias);
 		final IndicesAliasesResponse aliasReponse = prepareAliases.execute().actionGet();
@@ -159,7 +179,7 @@ public abstract class AbstractEsClient implements ESClient {
 
 	@Override
 	public boolean updateAliases(Set<Pair<String, String>> aliasesToAdd, Set<Pair<String, String>> aliasesToRemove) {
-		final IndicesAliasesRequestBuilder aliasesBuilder = this.getClient().admin().indices().prepareAliases();
+		final IndicesAliasesRequestBuilder aliasesBuilder = this.client.admin().indices().prepareAliases();
 		
 		if (present(aliasesToAdd)) {
 			for (Pair<String, String> aliasToAdd : aliasesToAdd) {
@@ -184,7 +204,7 @@ public abstract class AbstractEsClient implements ESClient {
 
 	@Override
 	public String getIndexNameForAlias(final String alias) {
-		final ImmutableOpenMap<String, List<AliasMetaData>> activeindices = this.getClient().admin().indices().getAliases(new GetAliasesRequest().aliases(alias)).actionGet().getAliases();
+		final ImmutableOpenMap<String, List<AliasMetaData>> activeindices = this.client.admin().indices().getAliases(new GetAliasesRequest().aliases(alias)).actionGet().getAliases();
 		if (!activeindices.isEmpty()) {
 			if (activeindices.size() > 1) {
 				throw new IllegalStateException("found more than one index for this system!");
@@ -201,17 +221,45 @@ public abstract class AbstractEsClient implements ESClient {
 	@Override
 	public long getDocumentCount(String indexName, String type, QueryBuilder query) {
 		if (query == null) {
-			final IndicesStatsResponse statResponse = this.getClient().admin().indices().prepareStats(indexName).setTypes(type).setStore(true).execute().actionGet();
+			final IndicesStatsResponse statResponse = this.client.admin().indices().prepareStats(indexName).setTypes(type).setStore(true).execute().actionGet();
 			return statResponse.getTotal().getDocs().getCount() - 1;
 		}
-		final CountRequestBuilder count = this.getClient().prepareCount(indexName);
+		final CountRequestBuilder count = this.client.prepareCount(indexName);
 		count.setTypes(type);
 		final CountResponse response = count.setQuery(query).get();
 		return response.getCount();
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.es.ESClient#deleteDocuments(java.lang.String, java.lang.String, org.elasticsearch.index.query.TermQueryBuilder)
+	 */
+	@Override
+	public void deleteDocuments(String indexName, String type, QueryBuilder query) {
+		this.client.prepareDeleteByQuery(indexName)
+		.setTypes(type)
+		.setQuery(query)
+		.execute().actionGet();
+		
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.es.ESClient#prepareCount(java.lang.String)
+	 */
+	@Override
+	public CountRequestBuilder prepareCount(String indexName) {
+		return this.client.prepareCount(indexName);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.es.ESClient#prepareSearch(java.lang.String)
+	 */
+	@Override
+	public SearchRequestBuilder prepareSearch(String indexName) {
+		return this.client.prepareSearch(indexName);
+	}
 
 	@Override
 	public void shutdown() {
-		this.getClient().close();
+		this.client.close();
 	}
 }

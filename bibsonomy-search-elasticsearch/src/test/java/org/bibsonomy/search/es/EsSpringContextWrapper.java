@@ -24,74 +24,26 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.es;
+package org.bibsonomy.search.es;
 
-import org.bibsonomy.search.es.client.AbstractEsClient;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.node.Node;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
- * TODO: add documentation to this class
+ * this class wraps a single application context for the elasticsearch module
  * 
- * @author jensi
+ * @author fei
+ * @author jil
  */
-public class ESTestClient extends AbstractEsClient implements AutoCloseable {
-
-	private Node node;
-	private Client client;
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.AutoCloseable#close()
-	 */
-	@Override
-	public void close() {
-		shutdown();
-	}
-
+public class EsSpringContextWrapper {
+	private static final String CONFIG_LOCATION = "ElasticSearchTestContext.xml";
 	
+	/** bean factory */
+	private static final ClassPathXmlApplicationContext CONTEXT = new ClassPathXmlApplicationContext(CONFIG_LOCATION);
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.es.ESClient#getClient()
+	/**
+	 * @return the context
 	 */
-	@Override
-	public Client getClient() {
-		return client;
+	public static ClassPathXmlApplicationContext getContext() {
+		return CONTEXT;
 	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.es.ESClient#getNode()
-	 */
-	@Override
-	public Node getNode() {
-		return node;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.es.ESClient#shutdown()
-	 */
-	@Override
-	public void shutdown() {
-		DeleteIndexRequest indexRequest = new DeleteIndexRequest("_all");
-		client.admin().indices().delete(indexRequest).actionGet();
-
-		client.close();
-		node.close();
-	}
-
-
-
-	public void setNode(Node node) {
-		this.node = node;
-	}
-
-
-
-	public void setClient(Client client) {
-		this.client = client;
-	}
-	
-	
 }

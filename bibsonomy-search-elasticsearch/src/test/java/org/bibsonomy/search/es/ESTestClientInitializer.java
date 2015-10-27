@@ -24,18 +24,12 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.es;
+package org.bibsonomy.search.es;
 
 import java.util.Map;
 
-import org.bibsonomy.lucene.index.manager.LuceneGoldStandardManager;
-import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
-import org.bibsonomy.lucene.util.LuceneSpringContextWrapper;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.search.es.update.SharedIndexUpdatePlugin;
+import org.bibsonomy.search.es.testutils.ESTestClient;
 import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.Node;
@@ -47,12 +41,9 @@ import org.elasticsearch.node.NodeBuilder;
  * @author jensi
  */
 public class ESTestClientInitializer {
-	private Map<Class<? extends Resource>, LuceneResourceManager<? extends Resource>>   luceneResourceManagers;
-	private Map<Class<? extends Resource>, SharedIndexUpdatePlugin<? extends Resource>> sharedIndexUpdatePlugins;
+	private Map<Class<? extends Resource>, LuceneResourceManager<? extends Resource>> luceneResourceManagers;
 	private ESTestClient esClient;
 	
-	
-
 	public Map<Class<? extends Resource>, LuceneResourceManager<? extends Resource>> getLuceneResourceManagers() {
 		return this.luceneResourceManagers;
 	}
@@ -69,8 +60,6 @@ public class ESTestClientInitializer {
 		this.sharedIndexUpdatePlugins = sharedIndexUpdatePlugins;
 	}
 	
-	
-	
 	public void init() {
 		startNode();
 		createIndex();
@@ -84,9 +73,6 @@ public class ESTestClientInitializer {
 	}
 	
 	private void createIndex() {
-		for (SharedIndexUpdatePlugin<? extends Resource> srPlugin : sharedIndexUpdatePlugins.values()) {
-			srPlugin.generateIndex(true);
-		}
 		// run updates in order to activate the indices
 		for (LuceneResourceManager<?> manager : luceneResourceManagers.values()) {
 			manager.updateAndReloadIndex();
