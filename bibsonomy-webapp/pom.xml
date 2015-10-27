@@ -163,7 +163,7 @@
 				<version>0.0.1-SNAPSHOT</version>
 				<configuration>
 					<messageSources>
-						<messageSource>file://${project.basedir}/src/main/resources/messages</messageSource>
+						<messageSource>file:///${project.basedir}/src/main/resources/messages</messageSource>
 					</messageSources>
 					<locales>
 						<locale>en</locale>
