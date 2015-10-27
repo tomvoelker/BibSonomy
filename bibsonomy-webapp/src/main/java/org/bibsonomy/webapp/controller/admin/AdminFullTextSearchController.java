@@ -69,48 +69,15 @@ public class AdminFullTextSearchController implements MinimalisticController<Adm
 		final RequestWrapperContext context = command.getContext();
 		final User loginUser = context.getLoginUser();
 
-		/* Check user role
-		 * If user is not logged in or not an admin: show error message */
+		/* 
+		 * check user role
+		 * If user is not logged in or not an admin: show error message
+		 */
 		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(loginUser.getRole())) {
 			throw new AccessDeniedException("please log in as admin");
 		}
 		
 		if (GENERATE_INDEX.equals(command.getAction())) {
-			/*if (command.getResource() == null) {
-				if ("elasticsearch".equals(command.getIndexType())) {
-					for (SharedIndexUpdatePlugin<? extends Resource> srPlugin : sharedIndexUpdatePlugins.values()) {
-						srPlugin.generateIndex(false);
-					}
-				} else {
-					command.setAdminResponse("unsupported indextype '" + command.getIndexType() + "'");
-				}
-			} else {
-				final Class<? extends Resource> cls = ResourceUtils.getResourceClassBySimpleName(command.getResource().replaceAll(" elasticsearch", ""));
-				final LuceneResourceManager<? extends Resource> mng = luceneResourceManagers.get(cls);
-				final SharedIndexUpdatePlugin<? extends Resource> esUpdater = sharedIndexUpdatePlugins.get(cls);
-				if (mng == null) {
-					command.setAdminResponse("Cannot build new index because there exists no manager for resource \"" + command.getResource() + "\".");
-				} else if (esUpdater == null) {
-					command.setAdminResponse("Cannot build new index because there exists no updater for resource \"" + command.getResource() + "\".");
-				} else {
-					if ("elasticsearch".equals(command.getIndexType())) {
-						esUpdater.generateIndex(false);
-					} else {
-						if (!mng.isGeneratingIndex()) {
-							if (GENERATE_INDEX.equals(command.getAction())) {
-								mng.generateIndex();
-							}
-							if (GENERATE_ONE_INDEX.equals(command.getAction())) {
-								mng.regenerateIndex(command.getId());
-							}
-						} else {
-							command.setAdminResponse("Already building lucene-index for resource \"" + command.getResource() + "\".");
-						}
-					}
-				}
-			}
-			*/
-			
 			final ElasticSearchManager<? extends Resource> mananger = this.managers.get(command.getResource());
 			
 			if (mananger == null) {
