@@ -1,6 +1,6 @@
 $(document).ready(function () {
 	var URI_PREFIX = "/resources/javascript/pdf.js/web/viewer.html?file=";
-	var PDFJS_FRAME_ID = "#pdfViewer";	
+	var PDFJS_FRAME_ID = "#pdfViewer";
 	
 	/*
 	$(".pdfFile").each(function(i, l) {
@@ -15,32 +15,31 @@ $(document).ready(function () {
 	
 	$('.edit-document-forms .bibtexpreviewimage').first().show();
 
-    /* DELETE BUTTON */
-    
-    $('.remove-btn').click(function(e){
-    	e.preventDefault();
-    	var url = this.getAttribute("href");
-    	var parent = this.parentNode.parentNode;
-    	var el = this;
-    	var ident = this.getAttribute('data-ident');
-    	$.ajax({
-    		url: url,
-    		dataType: "xml",
-    		success: function(data) {
-    			handleDeleteResponse({parent:parent, data: data, el: el, ident: ident});
-    		},
-    		error: function(data) {
-    			handleDeleteResponse({parent:parent, data: data, el: el});
-    		}
-    	});
-    	
-    	return false;
-    });
+	/* DELETE BUTTON */
+	$('.remove-btn').click(function(e){
+		e.preventDefault();
+		var url = this.getAttribute("href");
+		var parent = this.parentNode.parentNode;
+		var el = this;
+		var ident = this.getAttribute('data-ident');
+		$.ajax({
+			url: url,
+			dataType: "xml",
+			success: function(data) {
+				handleDeleteResponse({parent:parent, data: data, el: el, ident: ident});
+			},
+			error: function(data) {
+				handleDeleteResponse({parent:parent, data: data, el: el});
+			}
+		});
+		
+		return false;
+	});
 });
 
 function handleDeleteResponse(o) {
 	
-	if(o.data.getElementsByTagName("status")[0].innerHTML=="deleted" || o.data.getElementsByTagName("status")[0].innerHTML=="ok") { 
+	if (o.data.getElementsByTagName("status")[0].innerHTML=="deleted" || o.data.getElementsByTagName("status")[0].innerHTML=="ok") { 
 		
 		o.parent.parentNode.removeChild(o.parent); //remove edit form and buttons
 		$('#'+o.ident).remove(); //remove thumbnail
@@ -52,10 +51,10 @@ function handleDeleteResponse(o) {
 				trigger: 'manual',
 				delay: 0,
 				title: function() {
-					return getString("post.resource.remove.error.title");
+					return getString("post.resource.document.remove.error.title");
 				},
 				content: function() {
-					return getString("post.resource.remove.error");
+					return getString("post.resource.document.remove.error");
 				}
 		}).popover("show");
 	}
@@ -83,7 +82,7 @@ function updatePrivNote() {
 		data : parent.serialize(),
 		dataType: "text",
 		success : function(data, textStatus, jqXHR) {
-			privNoteCallback({stateClass:"has-success", parent:parent});	
+			privNoteCallback({stateClass:"has-success", parent:parent});
 		},
 		error : function(jqXHR, textStatus, errorThrown) {
 			privNoteCallback({stateClass:"has-error", parent:parent, error:errorThrown});

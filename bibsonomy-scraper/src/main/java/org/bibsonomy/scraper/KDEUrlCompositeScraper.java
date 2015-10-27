@@ -54,6 +54,7 @@ import org.bibsonomy.scraper.url.kde.casesjournal.CasesJournalScraper;
 import org.bibsonomy.scraper.url.kde.cell.CellScraper;
 import org.bibsonomy.scraper.url.kde.citeseer.CiteseerxScraper;
 import org.bibsonomy.scraper.url.kde.citeulike.CiteulikeScraper;
+import org.bibsonomy.scraper.url.kde.copac.CopacScraper;
 import org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper;
 import org.bibsonomy.scraper.url.kde.dblp.DBLPScraper;
 import org.bibsonomy.scraper.url.kde.degruyter.DeGruyterScraper;
@@ -272,6 +273,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new GenomeBiologyScraper());
 		addScraper(new APHAScraper());
 		addScraper(new CSHLPScraper());
+		addScraper(new CopacScraper());
 		//addScraper(new AkademiaiScraper()); error = 404
 	}
 

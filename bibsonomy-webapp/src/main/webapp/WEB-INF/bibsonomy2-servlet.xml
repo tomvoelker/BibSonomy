@@ -235,7 +235,7 @@
 	
 
 	<!-- to resolve messages -->
-	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+	<bean id="messageSource" class="org.bibsonomy.webapp.util.spring.i18n.ExposedResourceMessageBundleSource">
 		<!-- matches messages.properties, messages_de.properties, ... -->
 		<property name="basenames">
 			<list>

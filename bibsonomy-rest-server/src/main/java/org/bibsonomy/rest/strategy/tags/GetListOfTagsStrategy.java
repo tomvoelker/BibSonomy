@@ -84,7 +84,7 @@ public class GetListOfTagsStrategy extends AbstractGetListStrategy<List<Tag>> {
 		}
 		if (hash != null) {
 			sb.append("&").append(RESTConfig.RESOURCE_PARAM).append("=").append(hash);
-		}		
+		}
 	}
 
 	@Override
