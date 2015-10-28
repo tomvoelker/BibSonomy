@@ -15,7 +15,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.search.es.ESConstants.Fields;
-import org.bibsonomy.search.es.management.util.ElasticSearchUtils;
+import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 
 /**
  * TODO: add documentation to this class
@@ -124,7 +124,7 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 	 */
 	private static Date parseDate(Map<String, Object> source, String key) {
 		final String dateAsString = (String) source.get(key);
-		return ElasticSearchUtils.parseDate(dateAsString);
+		return ElasticsearchUtils.parseDate(dateAsString);
 	}
 
 	/**

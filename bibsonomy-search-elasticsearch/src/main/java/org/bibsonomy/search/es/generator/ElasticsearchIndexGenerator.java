@@ -13,9 +13,9 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.search.SearchPost;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants;
-import org.bibsonomy.search.es.management.ElasticSearchIndex;
-import org.bibsonomy.search.es.management.ElasticSearchIndexTools;
-import org.bibsonomy.search.es.management.util.ElasticSearchUtils;
+import org.bibsonomy.search.es.management.ElasticsearchIndex;
+import org.bibsonomy.search.es.management.ElasticsearchIndexTools;
+import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Mapping;
@@ -26,17 +26,17 @@ import org.bibsonomy.search.util.Mapping;
  * @author dzo
  * @param <R> 
  */
-public class ElasticSearchIndexGenerator<R extends Resource> {
-	private static final Log log = LogFactory.getLog(ElasticSearchIndexGenerator.class);
+public class ElasticsearchIndexGenerator<R extends Resource> {
+	private static final Log log = LogFactory.getLog(ElasticsearchIndexGenerator.class);
 	
 	
-	private final ElasticSearchIndex<R> index;
+	private final ElasticsearchIndex<R> index;
 	
 	private final SearchDBInterface<R> inputLogic;
 	
 	private final ESClient client;
 	
-	private final ElasticSearchIndexTools<R> tools;
+	private final ElasticsearchIndexTools<R> tools;
 
 	private int writtenPosts = 0;
 	private int numberOfPosts;
@@ -48,7 +48,7 @@ public class ElasticSearchIndexGenerator<R extends Resource> {
 	 * @param client
 	 * @param tools
 	 */
-	public ElasticSearchIndexGenerator(ElasticSearchIndex<R> index, SearchDBInterface<R> inputLogic, ESClient client, ElasticSearchIndexTools<R> tools) {
+	public ElasticsearchIndexGenerator(ElasticsearchIndex<R> index, SearchDBInterface<R> inputLogic, ESClient client, ElasticsearchIndexTools<R> tools) {
 		super();
 		this.index = index;
 		this.inputLogic = inputLogic;
@@ -126,7 +126,7 @@ public class ElasticSearchIndexGenerator<R extends Resource> {
 	 */
 	private void writeMetaInfo(SearchIndexSyncState newState) {
 		final String indexName = this.index.getIndexName();
-		final Map<String, Object> values = ElasticSearchUtils.serializeSearchIndexState(newState);
+		final Map<String, Object> values = ElasticsearchUtils.serializeSearchIndexState(newState);
 		
 		final boolean inserted = this.client.insertNewDocument(indexName, ESConstants.SYSTEM_INFO_INDEX_TYPE, ESConstants.SYSTEM_INFO_INDEX_TYPE, values);
 		if (!inserted) {
@@ -143,7 +143,7 @@ public class ElasticSearchIndexGenerator<R extends Resource> {
 		this.client.waitForReadyState();
 		final Map<String, Object> convertedPost = this.tools.getConverter().convert(post);
 		
-		final String indexId = ElasticSearchUtils.createElasticSearchId(post.getContentId().intValue());
+		final String indexId = ElasticsearchUtils.createElasticSearchId(post.getContentId().intValue());
 		this.insertPostDocument(convertedPost, indexId);
 	}
 	
@@ -188,7 +188,7 @@ public class ElasticSearchIndexGenerator<R extends Resource> {
 		}
 		
 		// FIXME: use system url TODODZO
-		this.client.createAlias(indexName, ElasticSearchUtils.getTempAliasForResource(this.tools.getResourceType()));
+		this.client.createAlias(indexName, ElasticsearchUtils.getTempAliasForResource(this.tools.getResourceType()));
 	}
 	
 	/**
@@ -196,13 +196,13 @@ public class ElasticSearchIndexGenerator<R extends Resource> {
 	 */
 	private void indexCreated() {
 		// FIXME: use system url TODODZO
-		this.client.deleteAlias(this.index.getIndexName(), ElasticSearchUtils.getTempAliasForResource(this.tools.getResourceType()));
+		this.client.deleteAlias(this.index.getIndexName(), ElasticsearchUtils.getTempAliasForResource(this.tools.getResourceType()));
 	}
 
 	/**
 	 * @return the index
 	 */
-	public ElasticSearchIndex<R> getIndex() {
+	public ElasticsearchIndex<R> getIndex() {
 		return this.index;
 	}
 

@@ -8,14 +8,14 @@ import org.bibsonomy.model.Resource;
  * @author dzo
  * @param <R> 
  */
-public class ElasticSearchIndex<R extends Resource> {
+public class ElasticsearchIndex<R extends Resource> {
 	
 	private final String indexName;
 	
 	/**
 	 * @param indexName
 	 */
-	public ElasticSearchIndex(final String indexName) {
+	public ElasticsearchIndex(final String indexName) {
 		this.indexName = indexName;
 	}
 

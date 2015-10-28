@@ -38,11 +38,11 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * tests for the {@link ElasticSearchPublicationSearch}
+ * tests for the {@link ElasticsearchPublicationSearch}
  *
  * @author jensi
  */
-public class ElasticSearchPublicationSearchTest extends AbstractEsIndexTest {
+public class ElasticsearchPublicationSearchTest extends AbstractEsIndexTest {
 	
 	/**
 	 * TODO: rename method

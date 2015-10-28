@@ -68,8 +68,8 @@ public abstract class AbstractEsIndexTest {
 	}
 	
 	private static void createIndices() throws IndexAlreadyGeneratingException {
-		final Map<Class<? extends Resource>, ElasticSearchManager<? extends Resource>> managers = getAllManagers();
-		for (ElasticSearchManager<? extends Resource> manager : managers.values()) {
+		final Map<Class<? extends Resource>, ElasticsearchManager<? extends Resource>> managers = getAllManagers();
+		for (ElasticsearchManager<? extends Resource> manager : managers.values()) {
 			manager.generateIndex(false);
 		}
 	}
@@ -114,8 +114,8 @@ public abstract class AbstractEsIndexTest {
 	}
 
 	private static void closeAllIndices() {
-		final Map<Class<? extends Resource>, ElasticSearchManager<? extends Resource>> managers = getAllManagers();
-		for (final ElasticSearchManager<?> lrm : managers.values()) {
+		final Map<Class<? extends Resource>, ElasticsearchManager<? extends Resource>> managers = getAllManagers();
+		for (final ElasticsearchManager<?> lrm : managers.values()) {
 			lrm.shutdown();
 		}
 	}
@@ -124,8 +124,8 @@ public abstract class AbstractEsIndexTest {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private static Map<Class<? extends Resource>, ElasticSearchManager<? extends Resource>> getAllManagers() {
+	private static Map<Class<? extends Resource>, ElasticsearchManager<? extends Resource>> getAllManagers() {
 		final BeanFactory bf = EsSpringContextWrapper.getContext();
-		return (Map<Class<? extends Resource>, ElasticSearchManager<? extends Resource>>) bf.getBean("elasticSearchManagers");
+		return (Map<Class<? extends Resource>, ElasticsearchManager<? extends Resource>>) bf.getBean("elasticsearchManagers");
 	}
 }

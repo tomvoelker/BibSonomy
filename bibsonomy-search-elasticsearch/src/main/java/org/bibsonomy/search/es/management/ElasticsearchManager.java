@@ -23,8 +23,8 @@ import org.bibsonomy.search.SearchPost;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.ESConstants.Fields;
-import org.bibsonomy.search.es.generator.ElasticSearchIndexGenerator;
-import org.bibsonomy.search.es.management.util.ElasticSearchUtils;
+import org.bibsonomy.search.es.generator.ElasticsearchIndexGenerator;
+import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.exceptions.IndexAlreadyGeneratingException;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.model.SearchIndexInfo;
@@ -44,8 +44,8 @@ import org.elasticsearch.indices.IndexMissingException;
  * @author dzo
  * @param <R> 
  */
-public class ElasticSearchManager<R extends Resource> {
-	private static final Log log = LogFactory.getLog(ElasticSearchManager.class);
+public class ElasticsearchManager<R extends Resource> {
+	private static final Log log = LogFactory.getLog(ElasticsearchManager.class);
 	
 	/** how many posts should be retrieved from the database */
 	public static final int SQL_BLOCKSIZE = 5000;
@@ -56,14 +56,14 @@ public class ElasticSearchManager<R extends Resource> {
 	 * @author dzo
 	 */
 	private final class ElasticSearchIndexGenerationTask implements Callable<Void> {
-		private final ElasticSearchIndexGenerator<R> generator;
-		private final ElasticSearchIndex<R> newIndex;
+		private final ElasticsearchIndexGenerator<R> generator;
+		private final ElasticsearchIndex<R> newIndex;
 
 		/**
 		 * @param generator
 		 * @param newIndex
 		 */
-		private ElasticSearchIndexGenerationTask(ElasticSearchIndexGenerator<R> generator, ElasticSearchIndex<R> newIndex) {
+		private ElasticSearchIndexGenerationTask(ElasticsearchIndexGenerator<R> generator, ElasticsearchIndex<R> newIndex) {
 			this.generator = generator;
 			this.newIndex = newIndex;
 		}
@@ -74,14 +74,14 @@ public class ElasticSearchManager<R extends Resource> {
 		@Override
 		public Void call() throws Exception {
 			try {
-				ElasticSearchManager.this.currentGenerator = this.generator;
+				ElasticsearchManager.this.currentGenerator = this.generator;
 				generator.generateIndex();
-				ElasticSearchManager.this.activateNewIndex(this.newIndex);
+				ElasticsearchManager.this.activateNewIndex(this.newIndex);
 			} catch (final Exception e) {
 				log.error("error while generating index", e);
 			} finally {
-				ElasticSearchManager.this.currentGenerator = null;
-				ElasticSearchManager.this.generatorLock.release();
+				ElasticsearchManager.this.currentGenerator = null;
+				ElasticsearchManager.this.generatorLock.release();
 			}
 			
 			return null;
@@ -97,14 +97,14 @@ public class ElasticSearchManager<R extends Resource> {
 	private final Semaphore updateLock = new Semaphore(1);
 	
 	private final Semaphore generatorLock = new Semaphore(1);
-	private ElasticSearchIndexGenerator<R> currentGenerator;
+	private ElasticsearchIndexGenerator<R> currentGenerator;
 	private final ExecutorService executorService = Executors.newFixedThreadPool(1);
 	
 	/** access to the main database */
 	protected final SearchDBInterface<R> inputLogic;
 	
 	/** mappers, converters, */
-	protected final ElasticSearchIndexTools<R> tools;
+	protected final ElasticsearchIndexTools<R> tools;
 	
 	/**
 	 * @param updateEnabled 
@@ -113,7 +113,7 @@ public class ElasticSearchManager<R extends Resource> {
 	 * @param inputLogic
 	 * @param tools
 	 */
-	public ElasticSearchManager(final boolean updateEnabled, ESClient client, URI systemURI, SearchDBInterface<R> inputLogic, ElasticSearchIndexTools<R> tools) {
+	public ElasticsearchManager(final boolean updateEnabled, ESClient client, URI systemURI, SearchDBInterface<R> inputLogic, ElasticsearchIndexTools<R> tools) {
 		super();
 		this.updateEnabled = updateEnabled;
 		this.client = client;
@@ -138,10 +138,10 @@ public class ElasticSearchManager<R extends Resource> {
 		if (!this.generatorLock.tryAcquire()) {
 			throw new IndexAlreadyGeneratingException();
 		}
-		final String newIndexName = ElasticSearchUtils.getIndexNameWithTime(this.systemURI, this.tools.getResourceType());
-		final ElasticSearchIndex<R> newIndex = new ElasticSearchIndex<>(newIndexName);
+		final String newIndexName = ElasticsearchUtils.getIndexNameWithTime(this.systemURI, this.tools.getResourceType());
+		final ElasticsearchIndex<R> newIndex = new ElasticsearchIndex<>(newIndexName);
 		
-		final ElasticSearchIndexGenerator<R> generator = new ElasticSearchIndexGenerator<>(newIndex, this.inputLogic, this.client, this.tools);
+		final ElasticsearchIndexGenerator<R> generator = new ElasticsearchIndexGenerator<>(newIndex, this.inputLogic, this.client, this.tools);
 		
 		final ElasticSearchIndexGenerationTask task = new ElasticSearchIndexGenerationTask(generator, newIndex);
 		if (async) {
@@ -159,7 +159,7 @@ public class ElasticSearchManager<R extends Resource> {
 	/**
 	 * @param newIndex
 	 */
-	protected void activateNewIndex(ElasticSearchIndex<R> newIndex) {
+	protected void activateNewIndex(ElasticsearchIndex<R> newIndex) {
 		try {
 			this.updateLock.acquire();
 			
@@ -367,14 +367,14 @@ public class ElasticSearchManager<R extends Resource> {
 	 * @return
 	 */
 	private String getInactiveLocalAlias() {
-		return ElasticSearchUtils.getLocalAliasForResource(this.tools.getResourceType(), this.systemURI, false);
+		return ElasticsearchUtils.getLocalAliasForResource(this.tools.getResourceType(), this.systemURI, false);
 	}
 
 	/**
 	 * @return
 	 */
 	private String getActiveLocalAlias() {
-		return ElasticSearchUtils.getLocalAliasForResource(this.tools.getResourceType(), this.systemURI, true);
+		return ElasticsearchUtils.getLocalAliasForResource(this.tools.getResourceType(), this.systemURI, true);
 	}
 
 	/**
@@ -382,7 +382,7 @@ public class ElasticSearchManager<R extends Resource> {
 	 * @param oldState
 	 */
 	private void updateIndexState(String indexName, SearchIndexSyncState state) {
-		final Map<String, Object> values = ElasticSearchUtils.serializeSearchIndexState(state);
+		final Map<String, Object> values = ElasticsearchUtils.serializeSearchIndexState(state);
 		
 		this.client.insertNewDocument(indexName, ESConstants.SYSTEM_INFO_INDEX_TYPE, ESConstants.SYSTEM_INFO_INDEX_TYPE, values);
 	}
@@ -392,7 +392,7 @@ public class ElasticSearchManager<R extends Resource> {
 	 */
 	private void insertPost(final String indexName, SearchPost<R> post) {
 		final Map<String, Object> convertedPost = this.tools.getConverter().convert(post);
-		final String id = ElasticSearchUtils.createElasticSearchId(post.getContentId().intValue());
+		final String id = ElasticsearchUtils.createElasticSearchId(post.getContentId().intValue());
 		this.client.insertNewDocument(indexName, this.tools.getResourceTypeAsString(), id, convertedPost);
 	}
 
@@ -400,7 +400,7 @@ public class ElasticSearchManager<R extends Resource> {
 	 * @param intValue
 	 */
 	private void deletePostWithContentId(final String indexName, int contentId) {
-		final String indexID = ElasticSearchUtils.createElasticSearchId(contentId);
+		final String indexID = ElasticsearchUtils.createElasticSearchId(contentId);
 		
 		this.client.removeDocumentFromIndex(indexName, this.tools.getResourceTypeAsString(), indexID);
 	}
@@ -498,7 +498,7 @@ public class ElasticSearchManager<R extends Resource> {
 	 * @return
 	 */
 	private String getActiveIndexName() {
-		return ElasticSearchUtils.getLocalAliasForResource(this.tools.getResourceType(), systemURI, true);
+		return ElasticsearchUtils.getLocalAliasForResource(this.tools.getResourceType(), systemURI, true);
 	}
 
 	/**

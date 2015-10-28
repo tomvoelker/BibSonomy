@@ -38,7 +38,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants;
-import org.bibsonomy.search.es.management.util.ElasticSearchUtils;
+import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Mapping;
 import org.bibsonomy.util.ValidationUtils;
@@ -71,15 +71,15 @@ import org.elasticsearch.index.query.QueryBuilder;
  *
  * @author jensi
  */
-public class ElasticSearchClient implements ESClient {
-	private static final Log log = LogFactory.getLog(ElasticSearchClient.class);
+public class ElasticsearchClient implements ESClient {
+	private static final Log log = LogFactory.getLog(ElasticsearchClient.class);
 	
 	private final Client client;
 	
 	/**
 	 * @param client
 	 */
-	public ElasticSearchClient(Client client) {
+	public ElasticsearchClient(Client client) {
 		super();
 		this.client = client;
 	}
@@ -129,7 +129,7 @@ public class ElasticSearchClient implements ESClient {
 			throw new IllegalStateException(hitsInIndex + " systeminfos for index " + indexName);
 		}
 		
-		return ElasticSearchUtils.deserializeSearchIndexState(searchResponse.getHits().iterator().next().getSource());
+		return ElasticsearchUtils.deserializeSearchIndexState(searchResponse.getHits().iterator().next().getSource());
 	}
 
 	@Override

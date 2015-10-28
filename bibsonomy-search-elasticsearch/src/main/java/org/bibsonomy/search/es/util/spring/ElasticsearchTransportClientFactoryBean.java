@@ -17,8 +17,8 @@ import org.springframework.beans.factory.FactoryBean;
  *
  * @author dzo
  */
-public class ElasticSearchTransportClientFactoryBean implements FactoryBean<Client> {
-	private static final Log log = LogFactory.getLog(ElasticSearchTransportClientFactoryBean.class);
+public class ElasticsearchTransportClientFactoryBean implements FactoryBean<Client> {
+	private static final Log log = LogFactory.getLog(ElasticsearchTransportClientFactoryBean.class);
 	
 	/**
 	 * Elasticsearch IP and port values, if we have multiple addresses, they

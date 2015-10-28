@@ -21,7 +21,7 @@ import org.elasticsearch.index.query.TermFilterBuilder;
  * @author dzo
  * @param <P> 
  */
-public class ElasticSearchPublicationSearch<P extends BibTex> extends EsResourceSearch<P> {
+public class ElasticsearchPublicationSearch<P extends BibTex> extends EsResourceSearch<P> {
 	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.search.es.search.EsResourceSearch#buildResourceSpecifiyQuery(org.elasticsearch.index.query.BoolQueryBuilder, java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)

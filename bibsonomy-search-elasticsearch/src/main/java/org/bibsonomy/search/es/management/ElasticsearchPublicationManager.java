@@ -32,8 +32,8 @@ import org.elasticsearch.search.SearchHit;
  * @author jensi
  * @param <P> 
  */
-public class ElasticSearchPublicationManager<P extends BibTex> extends ElasticSearchManager<P> {
-	private static final Log log = LogFactory.getLog(ElasticSearchPublicationManager.class);
+public class ElasticsearchPublicationManager<P extends BibTex> extends ElasticsearchManager<P> {
+	private static final Log log = LogFactory.getLog(ElasticsearchPublicationManager.class);
 	
 	private static final int UPDATED_INTERHASHES_CACHE_SIZE = 25000;
 
@@ -44,7 +44,7 @@ public class ElasticSearchPublicationManager<P extends BibTex> extends ElasticSe
 	 * @param inputLogic
 	 * @param tools
 	 */
-	public ElasticSearchPublicationManager(boolean updateEnabled, ESClient client, URI systemURI, SearchDBInterface<P> inputLogic, ElasticSearchIndexTools<P> tools) {
+	public ElasticsearchPublicationManager(boolean updateEnabled, ESClient client, URI systemURI, SearchDBInterface<P> inputLogic, ElasticsearchIndexTools<P> tools) {
 		super(updateEnabled, client, systemURI, inputLogic, tools);
 		// TODO Auto-generated constructor stub
 	}

@@ -11,7 +11,7 @@ import org.bibsonomy.search.es.index.ResourceMappingBuilder;
  * @author dzo
  * @param <R> 
  */
-public class ElasticSearchIndexTools<R extends Resource> {
+public class ElasticsearchIndexTools<R extends Resource> {
 	private final Class<R> resourceType;
 	
 	private final ResourceConverter<R> converter;
@@ -23,7 +23,7 @@ public class ElasticSearchIndexTools<R extends Resource> {
 	 * @param converter
 	 * @param mappingBuilder
 	 */
-	public ElasticSearchIndexTools(Class<R> resourceType, ResourceConverter<R> converter, ResourceMappingBuilder<R> mappingBuilder) {
+	public ElasticsearchIndexTools(Class<R> resourceType, ResourceConverter<R> converter, ResourceMappingBuilder<R> mappingBuilder) {
 		super();
 		this.resourceType = resourceType;
 		this.converter = converter;

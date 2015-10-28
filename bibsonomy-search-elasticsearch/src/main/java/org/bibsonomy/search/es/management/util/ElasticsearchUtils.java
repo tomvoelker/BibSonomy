@@ -19,10 +19,10 @@ import org.bibsonomy.search.update.SearchIndexSyncState;
  *
  * @author dzo
  */
-public final class ElasticSearchUtils {
-	private ElasticSearchUtils() {}
+public final class ElasticsearchUtils {
+	private ElasticsearchUtils() {}
 	
-	private static final Log log = LogFactory.getLog(ElasticSearchUtils.class);
+	private static final Log log = LogFactory.getLog(ElasticsearchUtils.class);
 	
 	
 	private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
@@ -57,9 +57,9 @@ public final class ElasticSearchUtils {
 	@Deprecated // TODO: use system uri as param
 	public static String getGlobalAliasForResource(final Class<? extends Resource> resourceType, final boolean isActiveIndex) {
 		if (isActiveIndex) {
-			return ElasticSearchUtils.ACTIVE_INDEX_ALIAS + "-" + ResourceFactory.getResourceName(resourceType).toLowerCase();
+			return ElasticsearchUtils.ACTIVE_INDEX_ALIAS + "-" + ResourceFactory.getResourceName(resourceType).toLowerCase();
 		}
-		return ElasticSearchUtils.INACTIVE_INDEX_ALIAS + "-" + ResourceFactory.getResourceName(resourceType).toLowerCase();
+		return ElasticsearchUtils.INACTIVE_INDEX_ALIAS + "-" + ResourceFactory.getResourceName(resourceType).toLowerCase();
 	}
 
 	/**
