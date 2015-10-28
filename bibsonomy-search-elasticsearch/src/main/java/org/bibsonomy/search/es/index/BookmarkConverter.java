@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.Map;
 
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.search.es.ESConstants.Fields;
 
 /**
  * {@link ResourceConverter} for {@link Bookmark}s
@@ -24,7 +25,7 @@ public class BookmarkConverter extends ResourceConverter<Bookmark> {
 	 */
 	@Override
 	protected void convertResource(Map<String, Object> jsonDocument, Bookmark resource) {
-		jsonDocument.put("url", resource.getUrl());
+		jsonDocument.put(Fields.Bookmark.URL, resource.getUrl());
 	}
 	
 	/* (non-Javadoc)
@@ -40,7 +41,6 @@ public class BookmarkConverter extends ResourceConverter<Bookmark> {
 	 */
 	@Override
 	protected void convertResourceInternal(Bookmark resource, Map<String, Object> source) {
-		// TODO Auto-generated method stub
-		
+		resource.setUrl((String) source.get(Fields.Bookmark.URL));
 	}
 }
