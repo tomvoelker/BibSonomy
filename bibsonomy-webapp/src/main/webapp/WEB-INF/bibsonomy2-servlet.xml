@@ -281,6 +281,9 @@
 		<entry key="application/marc:application/pica">
 			<bean class="org.bibsonomy.marc.MarcToBibTexReader"/>
 		</entry>
+		<entry key="text/bibtex">
+			<bean class="org.bibsonomy.bibtex.BibTeXToPublicationReader"/>
+		</entry>
 	</util:map>
 	
 	<bean id="bibtexReader" class="org.bibsonomy.model.util.CompositeBibtexReader">

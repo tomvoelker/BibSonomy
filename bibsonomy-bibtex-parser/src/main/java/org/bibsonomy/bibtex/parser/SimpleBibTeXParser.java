@@ -31,6 +31,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -143,10 +144,25 @@ public class SimpleBibTeXParser {
 	 * 
 	 * @throws IOException
 	 */
-	public BibTex parseBibTeX (final String bibtex) throws ParseException, IOException {
+	public BibTex parseBibTeX(final String bibtex) throws ParseException, IOException {
 		final List<BibTex> list = this.parseInternal(bibtex, true);
 		if (list.size() > 0)
 			return list.get(0);
+		return null;
+	}
+	
+	/**
+	 * Parses one BibTeX entry into a {@link BibTex} object.
+	 * @param reader the reader with the BibTeX entry as string
+	 * @return the parsed {@link BibTex} object.
+	 * @throws ParseException
+	 * @throws IOException
+	 */
+	public BibTex parseBibTeX(final Reader reader) throws ParseException, IOException {
+		List<BibTex> list = this.parseInternal(new BufferedReader(reader), true);
+		if (list.size() > 0) {
+			return list.get(0);
+		}
 		return null;
 	}
 
@@ -157,7 +173,7 @@ public class SimpleBibTeXParser {
 	 * @throws ParseException
 	 * @throws IOException
 	 */
-	public List<BibTex> parseBibTeXs (final String bibtex) throws ParseException, IOException { 
+	public List<BibTex> parseBibTeXs(final String bibtex) throws ParseException, IOException { 
 		return this.parseInternal(bibtex, false);
 	}
 
@@ -165,7 +181,7 @@ public class SimpleBibTeXParser {
 		return parseInternal(new BufferedReader(new StringReader(bibtex)), firstEntryOnly);
 	}
 	
-	public List<BibTex> parseInternal (final BufferedReader bibtex, final boolean firstEntryOnly) throws ParseException, IOException {
+	public List<BibTex> parseInternal(final BufferedReader bibtex, final boolean firstEntryOnly) throws ParseException, IOException {
 		final List<BibTex> result = new LinkedList<BibTex>();
 
 		final BibtexParser parser = new BibtexParser(!tryParseAll);
@@ -301,7 +317,6 @@ public class SimpleBibTeXParser {
 		/*
 		 * get set of all current fieldnames - like address, author etc. 
 		 */
-		@SuppressWarnings("unchecked")
 		final List<String> nonStandardFieldNames = new ArrayList<String>(entry.getFields().keySet());
 		/*
 		 * remove standard fields from list to retrieve nonstandard ones
@@ -376,7 +391,7 @@ public class SimpleBibTeXParser {
 		if (month instanceof BibtexMacroReference) {
 			bibtex.setMonth(((BibtexMacroReference) month).getKey());
 		} else if (month instanceof BibtexString) {
-			field = getValue(month); if (field != null) bibtex.setMonth(field);        
+			field = getValue(month); if (field != null) bibtex.setMonth(field);
 		}
 
 		/*
@@ -441,7 +456,7 @@ public class SimpleBibTeXParser {
 	 * @param fieldValue
 	 * @return The persons names concatenated with " and ".
 	 */
-	private List<PersonName> createPersonString (final BibtexAbstractValue fieldValue) {
+	private static List<PersonName> createPersonString (final BibtexAbstractValue fieldValue) {
 		if (present(fieldValue) && fieldValue instanceof BibtexPersonList) {
 
 			/*
@@ -457,7 +472,7 @@ public class SimpleBibTeXParser {
 			/*
 			 * build person names
 			 */
-			for (final BibtexPerson person:personList) {
+			for (final BibtexPerson person : personList) {
 				/*
 				 * next name
 				 */
@@ -474,7 +489,7 @@ public class SimpleBibTeXParser {
 	 * @param person
 	 * @return
 	 */
-	private PersonName createPersonName(final BibtexPerson person) {
+	private static PersonName createPersonName(final BibtexPerson person) {
 		/*
 		 * "others" has a special meaning in BibTeX (it's converted to "et al."),
 		 * so we must not ignore it! 

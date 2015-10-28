@@ -29,6 +29,7 @@ package org.bibsonomy.model.util;
 import java.util.Collection;
 import java.util.Map;
 
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.util.data.Data;
 
@@ -47,7 +48,7 @@ public class CompositeBibtexReader implements BibTexReader {
 	}
 	
 	@Override
-	public Collection<ImportResource> read(ImportResource importRes) {
+	public Collection<BibTex> read(ImportResource importRes) {
 		
 		final Data data = importRes.getData();
 		String type = data.getMimeType();
