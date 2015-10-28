@@ -31,7 +31,6 @@ public class BibTeXToPublicationReader implements BibTexReader {
 		final Data data = importRes.getData();
 		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
 		
-		
 		final List<BibTex> list = new LinkedList<>();
 		
 		try {
