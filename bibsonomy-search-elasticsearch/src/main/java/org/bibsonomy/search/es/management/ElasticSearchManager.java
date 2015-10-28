@@ -88,9 +88,11 @@ public class ElasticSearchManager<R extends Resource> {
 		}
 	}
 	
-	protected ESClient client;
+	private boolean updateEnabled;
 	
-	private URI systemURI;
+	protected final ESClient client;
+	
+	private final URI systemURI;
 	
 	private final Semaphore updateLock = new Semaphore(1);
 	
@@ -99,19 +101,21 @@ public class ElasticSearchManager<R extends Resource> {
 	private final ExecutorService executorService = Executors.newFixedThreadPool(1);
 	
 	/** access to the main database */
-	protected SearchDBInterface<R> inputLogic;
+	protected final SearchDBInterface<R> inputLogic;
 	
 	/** mappers, converters, */
-	protected ElasticSearchIndexTools<R> tools;
+	protected final ElasticSearchIndexTools<R> tools;
 	
 	/**
+	 * @param updateEnabled 
 	 * @param client
 	 * @param systemURI
 	 * @param inputLogic
 	 * @param tools
 	 */
-	public ElasticSearchManager(ESClient client, URI systemURI, SearchDBInterface<R> inputLogic, ElasticSearchIndexTools<R> tools) {
+	public ElasticSearchManager(final boolean updateEnabled, ESClient client, URI systemURI, SearchDBInterface<R> inputLogic, ElasticSearchIndexTools<R> tools) {
 		super();
+		this.updateEnabled = updateEnabled;
 		this.client = client;
 		this.systemURI = systemURI;
 		this.inputLogic = inputLogic;
@@ -254,6 +258,11 @@ public class ElasticSearchManager<R extends Resource> {
 	 * update the inactive index
 	 */
 	public void updateIndex() {
+		if (!this.updateEnabled) {
+			log.debug("skipping updating index, update disabled");
+			return;
+		}
+		
 		if (!this.updateLock.tryAcquire()) {
 			log.warn("Another update in progress. Skipping update.");
 		}

@@ -20,6 +20,7 @@
 	</bean>
 	
 	<bean id="elasticSearchBookmarkManager" class="org.bibsonomy.search.es.management.ElasticSearchManager" destroy-method="shutdown">
+		<constructor-arg value="${search.update.enabled}" />
 		<constructor-arg ref="esClient" />
 		<constructor-arg ref="systemURI" />
 		<constructor-arg ref="bookmarkSearchDBLogic" />
@@ -27,6 +28,7 @@
 	</bean>
 	
 	<bean id="elasticSearchPublicationManager" class="org.bibsonomy.search.es.management.ElasticSearchPublicationManager" destroy-method="shutdown">
+		<constructor-arg value="${search.update.enabled}" />
 		<constructor-arg ref="esClient" />
 		<constructor-arg ref="systemURI" />
 		<constructor-arg ref="publicationSearchDBLogic" />

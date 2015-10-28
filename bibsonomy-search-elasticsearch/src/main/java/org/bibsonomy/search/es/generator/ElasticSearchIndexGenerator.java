@@ -38,7 +38,6 @@ public class ElasticSearchIndexGenerator<R extends Resource> {
 	
 	private final ElasticSearchIndexTools<R> tools;
 
-
 	private int writtenPosts = 0;
 	private int numberOfPosts;
 	
