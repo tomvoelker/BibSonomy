@@ -56,9 +56,9 @@ public class MarcToBibTexReader implements BibTexReader {
 	private static final PicaPlusReader picaReader = new PicaPlusReader();
 	
 	@Override
-	public Collection<ImportResource> read(ImportResource importRes) {
+	public Collection<BibTex> read(ImportResource importRes) {
 		Data data = importRes.getData();
-		List<ImportResource> rVal = new ArrayList<ImportResource>();
+		final List<BibTex> rVal = new ArrayList<BibTex>();
 		
 		MarcReader reader;
 		Iterator<PicaRecord> picaRecords;
@@ -107,13 +107,11 @@ public class MarcToBibTexReader implements BibTexReader {
 			try {
 				ex.extraxtAndSetAttribute(b, er);
 			} catch (IllegalArgumentException e) {
-				//System.err.println(e.toString());
+				// TODO: log exception?
 			}
 			
 			b.setBibtexKey(BibTexUtils.generateBibtexKey(b));
 			rVal.add(b);
-
-			//System.out.println(r.toString());
 		}
 		return rVal;
 	}

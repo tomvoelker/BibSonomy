@@ -53,7 +53,7 @@ public class HashUtils {
 	 * @return the SHA-1 hash
 	 */
 	public static String getSHA1Hash(final byte[] data) {
-		return HashUtils.getHash(data, "SHA-1");	
+		return HashUtils.getHash(data, "SHA-1");
 	}
 
 	private static String getHash(final byte[] data, final String hashAlgorithm) {
@@ -64,7 +64,7 @@ public class HashUtils {
 			return toHexString(md.digest(data));
 		} catch (final NoSuchAlgorithmException e) {
 			return null;
-		}		
+		}
 	}
 	
 	/**

@@ -44,12 +44,12 @@ public abstract class AbstractCreateStrategy extends Strategy {
 	 */
 	public AbstractCreateStrategy(final Context context) {
 		super(context);
-		this.doc = context.getDocument();		
+		this.doc = context.getDocument();
 	}
 
 	@Override
 	public final void perform(final ByteArrayOutputStream outStream) throws InternServerException {
-		final String resourceID = this.create();	
+		final String resourceID = this.create();
 		render(this.writer, resourceID);
 	}
 
