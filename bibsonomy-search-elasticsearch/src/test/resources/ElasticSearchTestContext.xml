@@ -16,25 +16,17 @@
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
 	</bean>
 	
-	<bean id="esClient" class="org.bibsonomy.es.ESTestClient" lazy-init="true" />
-	
-	<bean id="esClientInitializer" class="org.bibsonomy.search.es.ESTestClientInitializer" lazy-init="true">
-		<property name="luceneResourceManagers" ref="allLuceneResourceManagers" />
-		<property name="sharedIndexUpdatePlugins" ref="allSharedIndexUpdatePlugins"/>
-		<property name="esClient" ref="esClient" />
-	</bean>
-	
 	<import resource="classpath:TestDatabaseBaseContext.xml"/>
 	<import resource="classpath:TestDatabaseContext.xml"/>
 	<import resource="classpath:SearchTestContext.xml" />
 	
-	<alias name="elasticSearchPublicationSearch" alias="personSearch" />
+	<alias name="elasticsearchPublicationSearch" alias="personSearch" />
 	
-	<alias name="elasticSearchBookmarkSearch" alias="bookmarkSearch" />
-	<alias name="elasticSearchPublicationSearch" alias="publicationSearch" />
+	<alias name="elasticsearchBookmarkSearch" alias="bookmarkSearch" />
+	<alias name="elasticsearchPublicationSearch" alias="publicationSearch" />
 	
 	<!-- FIXME: replace with correct search index -->
-	<alias name="elasticSearchPublicationSearch" alias="goldStandardPublicationSearch" />
+	<alias name="elasticsearchPublicationSearch" alias="goldStandardPublicationSearch" />
 	
 	<import resource="classpath:/org/bibsonomy/bibsonomy-search-elasticsearch-context.xml" />
 </beans>
