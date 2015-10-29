@@ -108,7 +108,6 @@
 								Did not found any indices. Please generate an index.
 							</jsp:attribute>
 						</bs:alert>
-						
 					</c:otherwise>
 				</c:choose>
 				<form method="post">
