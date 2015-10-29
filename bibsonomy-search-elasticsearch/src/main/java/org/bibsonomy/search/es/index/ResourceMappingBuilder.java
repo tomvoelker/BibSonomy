@@ -12,12 +12,18 @@ import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 
 /**
- * TODO: add documentation to this class
+ * abstract resource mapping builder
  *
  * @author dzo
  * @param <R> 
  */
 public abstract class ResourceMappingBuilder<R extends Resource> implements MappingBuilder<String> {
+
+	/** boost the field (search in _all field) */
+	protected static final String BOOST_FIELD = "boost";
+
+	/** include field in generated _all field ? */
+	protected static final String INCLUDE_IN_ALL_FIELD = "include_in_all";
 
 	/** type string */
 	protected static final String STRING_TYPE = "string";
@@ -42,12 +48,6 @@ public abstract class ResourceMappingBuilder<R extends Resource> implements Mapp
 	
 	/** field should not be indexed */
 	protected static final String NOT_INDEXED = "no";
-	
-	/** controls if the field is added to the _all field */
-	protected static final String INCLUDE_FIELD = "include_in_all";
-	
-	/** include the field in the _all field */
-	protected static final String INCLUDE = "yes";
 	
 	
 	private Class<R> resourceType;
@@ -75,10 +75,12 @@ public abstract class ResourceMappingBuilder<R extends Resource> implements Mapp
 								.startObject(ESConstants.Fields.Resource.INTRAHASH)
 									.field(TYPE_FIELD, STRING_TYPE)
 									.field(INDEX_FIELD, NOT_ANALYZED)
+									.field(INCLUDE_IN_ALL_FIELD, false)
 								.endObject()
 								.startObject(ESConstants.Fields.Resource.INTERHASH)
 									.field(TYPE_FIELD, STRING_TYPE)
 									.field(INDEX_FIELD, NOT_ANALYZED)
+									.field(INCLUDE_IN_ALL_FIELD, false)
 								.endObject()
 								.startObject(ESConstants.Fields.TAGS)
 									.field(TYPE_FIELD, STRING_TYPE)
@@ -86,23 +88,28 @@ public abstract class ResourceMappingBuilder<R extends Resource> implements Mapp
 								.startObject(ESConstants.Fields.GROUPS)
 									.field(TYPE_FIELD, STRING_TYPE)
 									.field(INDEX_FIELD, NOT_ANALYZED)
+									.field(INCLUDE_IN_ALL_FIELD, false)
 								.endObject()
 								.startObject(ESConstants.Fields.DATE)
 									.field(TYPE_FIELD, DATE_TYPE)
 									.field(INDEX_FIELD, NOT_INDEXED)
 									.field(FORMAT_FIELD, FORMAT_DATE_OPTIONAL_TIME)
+									.field(INCLUDE_IN_ALL_FIELD, false)
 								.endObject()
 								.startObject(ESConstants.Fields.CHANGE_DATE)
 									.field(TYPE_FIELD, DATE_TYPE)
 									.field(INDEX_FIELD, NOT_INDEXED)
 									.field(FORMAT_FIELD, FORMAT_DATE_OPTIONAL_TIME)
+									.field(INCLUDE_IN_ALL_FIELD, false)
 								.endObject()
 								.startObject(Fields.SYSTEM_URL)
 									.field(TYPE_FIELD, STRING_TYPE)
-									.field(INDEX_FIELD, NOT_ANALYZED) // TODO: change to no?
+									.field(INDEX_FIELD, NOT_ANALYZED)
+									.field(INCLUDE_IN_ALL_FIELD, false)
 								.endObject()
 								.startObject(ESConstants.Fields.Resource.TITLE)
 									.field(TYPE_FIELD, STRING_TYPE)
+									.field(BOOST_FIELD, 2)
 								.endObject();
 			
 			this.doResourceSpecificMapping(commonPostResourceFields);
@@ -123,7 +130,7 @@ public abstract class ResourceMappingBuilder<R extends Resource> implements Mapp
 
 	/**
 	 * @param builder
-	 * @throws IOException TODO
+	 * @throws IOException
 	 */
 	protected abstract void doResourceSpecificMapping(XContentBuilder builder) throws IOException;
 

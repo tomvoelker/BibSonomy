@@ -243,7 +243,6 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			searchRequestBuilder.setTypes(ResourceFactory.getResourceName(this.resourceType));
 			searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 			searchRequestBuilder.setQuery(queryBuilder);
-		
 			if (order != Order.RANK) {
 				searchRequestBuilder.addSort(Fields.DATE, SortOrder.DESC);
 			}

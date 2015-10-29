@@ -26,12 +26,72 @@
  */
 package org.bibsonomy.search.es;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map.Entry;
+
+import org.bibsonomy.util.tex.TexDecode;
+import org.elasticsearch.common.xcontent.XContentFactory;
+
 /**
- * The Class for elastic search engine constants.
+ * constants for elastic search engine
  * 
  * @author lutful
+ * @author dzo
  */
 public final class ESConstants {
+	
+	private static final String BRACKETS_CHAR_FILTER_NAME = "brackets";
+	private static final String CURLY_BRACKETS_CHAR_FILTER_NAME = "curly_brackets";
+	private static final String ASCII_FOLDING_PRESERVE_TOKEN_FILTER_NAME = "ascii_folding_preserve";
+	private static final String BIBTEX_MAPPING = "BibTeX_mapping";
+
+	/** settings of each created index */
+	public static final String SETTINGS;
+	
+	static {
+		try {
+			SETTINGS = XContentFactory.jsonBuilder()
+					.startObject()
+						.startObject("analysis")
+							.startObject("char_filter")
+								.startObject(BIBTEX_MAPPING)
+									.field("type", "mapping")
+									.field("mappings", getBibTeXDecodeMapping())
+								.endObject()
+								.startObject(CURLY_BRACKETS_CHAR_FILTER_NAME)
+									.field("type", "pattern_replace")
+									.field("pattern", TexDecode.CURLY_BRACKETS)
+									.field("replacement", "")
+								.endObject()
+								.startObject(BRACKETS_CHAR_FILTER_NAME)
+									.field("type", "pattern_replace")
+									.field("pattern", TexDecode.BRACKETS)
+									.field("replacement", "")
+								.endObject()
+							.endObject()
+							.startObject("filter")
+								.startObject(ASCII_FOLDING_PRESERVE_TOKEN_FILTER_NAME)
+									.field("type", "asciifolding")
+									.field("preserve_original", true)
+								.endObject()
+							.endObject()
+							.startObject("analyzer")
+								.startObject("default")
+									.field("type", "custom")
+									.field("char_filter", Arrays.asList(BIBTEX_MAPPING, BRACKETS_CHAR_FILTER_NAME, CURLY_BRACKETS_CHAR_FILTER_NAME))
+									.field("tokenizer", "standard")
+									.field("filter", Arrays.asList(ASCII_FOLDING_PRESERVE_TOKEN_FILTER_NAME, "lowercase", "snowball"))
+								.endObject()
+							.endObject()
+						.endObject()
+					.endObject().string();
+		} catch (final IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	/**
 	 * system url field name
@@ -157,5 +217,24 @@ public final class ESConstants {
 			public static final String URL = "url";
 			public static final String VOLUME = "volume";
 		}
+	}
+
+	/**
+	 * @return
+	 */
+	private static List<String> getBibTeXDecodeMapping() {
+		final List<String> decodingList = new LinkedList<>();
+		for (final Entry<String, String> decodeEntry : TexDecode.getTexMap().entrySet()) {
+			decodingList.add(escape(decodeEntry.getKey()) + "=>" + decodeEntry.getValue());
+		}
+		return decodingList;
+	}
+
+	/**
+	 * @param key
+	 * @return
+	 */
+	private static String escape(String string) {
+		return string.replaceAll("\\\\", "\\\\\\\\");
 	}
 }

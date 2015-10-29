@@ -44,7 +44,7 @@ public class TeXDecodeTest {
 		StringBuilder unclean = new StringBuilder();
 		StringBuilder clean = new StringBuilder();
 		
-		for(String s : TexDecode.getTexMap().keySet()) {
+		for (String s : TexDecode.getTexMap().keySet()) {
 			unclean.append(s);
 			clean.append(TexDecode.getTexMap().get(s));
 		}

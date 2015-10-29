@@ -64,6 +64,7 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.cluster.metadata.AliasMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
+import org.elasticsearch.common.settings.ImmutableSettings;
 import org.elasticsearch.index.query.QueryBuilder;
 
 /**
@@ -72,6 +73,7 @@ import org.elasticsearch.index.query.QueryBuilder;
  * @author jensi
  */
 public class ElasticsearchClient implements ESClient {
+	
 	private static final Log log = LogFactory.getLog(ElasticsearchClient.class);
 	
 	private final Client client;
@@ -94,7 +96,7 @@ public class ElasticsearchClient implements ESClient {
 
 	@Override
 	public boolean createIndex(String indexName, Set<Mapping<String>> mappings) {
-		final CreateIndexResponse createIndex = this.client.admin().indices().create(new CreateIndexRequest(indexName)).actionGet();
+		final CreateIndexResponse createIndex = this.client.admin().indices().create(new CreateIndexRequest(indexName, ImmutableSettings.builder().loadFromSource(ESConstants.SETTINGS).build())).actionGet();
 		if (!createIndex.isAcknowledged()) {
 			log.error("Error in creating Index");
 			return false;
@@ -104,16 +106,14 @@ public class ElasticsearchClient implements ESClient {
 			this.client.admin().indices().preparePutMapping(indexName).setType(mapping.getType()).setSource(mapping.getMappingInfo()).execute().actionGet();
 		}
 		
-		// wait for the yellow (or green) status to prevent
-		// NoShardAvailableActionException later
+		// wait for the yellow (or green) status to prevent NoShardAvailableActionException later
 		this.waitForReadyState();
 		return true;
 	}
 
 	@Override
 	public SearchIndexSyncState getSearchIndexStateForIndex(String indexName) {
-		// wait for the yellow (or green) status to prevent
-		// NoShardAvailableActionException later
+		// wait for the yellow (or green) status to prevent NoShardAvailableActionException later
 		this.waitForReadyState();
 		
 		final SearchRequestBuilder searchRequestBuilder = this.client.prepareSearch(indexName);

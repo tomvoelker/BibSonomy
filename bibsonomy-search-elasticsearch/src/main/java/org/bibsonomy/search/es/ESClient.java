@@ -38,8 +38,7 @@ import org.elasticsearch.action.update.UpdateRequestBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 
 /**
- * Wrapper around an ElasticSearch Client. Different ways of obtaining a Client
- * can be implemented in classes implementing this interface.
+ * Wrapper around an ElasticSearch Client.
  * 
  * @author lka
  */

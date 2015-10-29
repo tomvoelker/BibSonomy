@@ -22,14 +22,14 @@
 		SELECT count(*) 
 		FROM bookmark b 
 		WHERE b.group &gt;= 0
-	</select>   
+	</select>
 
 	<!-- get number of public bibtex posts -->
 	<select id="getBibTexCount" resultClass="integer">
 		SELECT count(*) 
 		FROM bibtex b
 		WHERE b.group &gt;= 0
-	</select>   
+	</select>
 	
 	<!-- get number of public goldstandard posts -->
 	<select id="getGoldStandardPublicationCount" resultClass="integer">
