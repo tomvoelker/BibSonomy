@@ -10,14 +10,14 @@
 	<!-- import the config from the elasticsearch search module -->
 	<import resource="classpath:org/bibsonomy/bibsonomy-search-elasticsearch-context.xml" />
 	
-	<alias name="elasticSearchBookmarkManager" alias="searchBookmarkManager" />
-	<alias name="elasticSearchPublicationManager" alias="searchPublicationManager" />
+	<alias name="elasticsearchBookmarkManager" alias="searchBookmarkManager" />
+	<alias name="elasticsearchPublicationManager" alias="searchPublicationManager" />
 	
-	<alias name="elasticSearchPublicationSearch" alias="personSearch" />
+	<alias name="elasticsearchPublicationSearch" alias="personSearch" />
 	
-	<alias name="elasticSearchBookmarkSearch" alias="bookmarkSearch" />
-	<alias name="elasticSearchPublicationSearch" alias="publicationSearch" />
+	<alias name="elasticsearchBookmarkSearch" alias="bookmarkSearch" />
+	<alias name="elasticsearchPublicationSearch" alias="publicationSearch" />
 	
 	<!-- FIXME: replace with correct search index -->
-	<alias name="elasticSearchPublicationSearch" alias="goldStandardPublicationSearch" />
+	<alias name="elasticsearchPublicationSearch" alias="goldStandardPublicationSearch" />
 </beans>
