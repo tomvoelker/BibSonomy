@@ -8,7 +8,7 @@
 	</parent>
 	<artifactId>bibsonomy-search-elasticsearch</artifactId>
 	<properties>
-		<es.version>1.7.2</es.version>
+		<es.version>2.0.0</es.version>
 	</properties>
 	<dependencies>
 		<dependency>

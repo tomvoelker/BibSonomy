@@ -79,17 +79,14 @@ import org.elasticsearch.action.count.CountResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
-import org.elasticsearch.index.query.BoolFilterBuilder;
+import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.FilterBuilder;
-import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.MatchQueryBuilder.Operator;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder.Type;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.TermFilterBuilder;
-import org.elasticsearch.indices.IndexMissingException;
+import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.SortOrder;
@@ -183,16 +180,16 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 							}
 							Integer oldCnt = tagCounter.get(tag);
 							if (!present(oldCnt)) {
-								oldCnt = 1;
+								oldCnt = Integer.valueOf(1);
 							} else {
-								oldCnt += 1;
+								oldCnt++;
 							}
 							tagCounter.put(tag, oldCnt);
 						}
 					}
 				}
 			}
-		} catch (final IndexMissingException e) {
+		} catch (final IndexNotFoundException e) {
 			log.error("IndexMissingException: " + e);
 		}
 		
@@ -200,8 +197,9 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		// extract all tags
 		for (final Map.Entry<Tag, Integer> entry : tagCounter.entrySet()) {
 			final Tag tag = entry.getKey();
-			tag.setUsercount(entry.getValue());
-			tag.setGlobalcount(entry.getValue()); // FIXME: we set user==global count
+			final int count = entry.getValue().intValue();
+			tag.setUsercount(count);
+			tag.setGlobalcount(count); // FIXME: we set user==global count
 			tags.add(tag);
 		}
 		
@@ -267,7 +265,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 					postList.add(post);
 				}
 			}
-		} catch (final IndexMissingException e) {
+		} catch (final IndexNotFoundException e) {
 			log.error("no index found: " + e);
 		}
 		return postList;
@@ -282,7 +280,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			// we use inverted scores such that the best results automatically appear first according to the ascending order of a sorted map
 			final SortedSet<Pair<Float, ResourcePersonRelation>> relSorter = iterativelyFetchSuggestions(null, options);
 			return extractResources(relSorter);
-		} catch (final IndexMissingException e) {
+		} catch (final IndexNotFoundException e) {
 			log.error("IndexMissingException: " + e);
 		}
 		return new ArrayList<>();
@@ -316,7 +314,6 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @param relSorter
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	private static List<Post<BibTex>> extractResources(SortedSet<Pair<Float, ResourcePersonRelation>> relSorter) {
 		final List<Post<BibTex>> rVal = new ArrayList<>();
 		for (Pair<Float, ResourcePersonRelation> scoreAndRel : relSorter) {
@@ -341,14 +338,14 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			}
 			final SortedSet<Pair<Float, ResourcePersonRelation>> relSorter = iterativelyFetchSuggestions(tokenizedQueryString, options);
 			return extractDistinctPersons(relSorter);
-		} catch (final IndexMissingException e) {
-			log.error("IndexMissingException: " + e);
+		} catch (final IndexNotFoundException e) {
+			log.error("index not found: " + e);
 		}
 		return new ArrayList<>();
 	}
 	
 	// TODO: the outcomment calls would be nice but would slow down the query
-	private QueryBuilder buildQuery(AbstractSuggestionQueryBuilder<?> options) {
+	private static QueryBuilder buildQuery(AbstractSuggestionQueryBuilder<?> options) {
 		final QueryBuilder queryBuilder = filterQuery( //
 				QueryBuilders.boolQuery() //
 						.must(
@@ -383,11 +380,12 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @param addShouldYearIfYearInQuery
 	 * @return
 	 */
-	private QueryBuilder filterQuery(QueryBuilder must, FilterBuilder filter) {
+	private static QueryBuilder filterQuery(QueryBuilder must, QueryBuilder filter) {
 		if (filter == null) {
 			return must;
 		}
-		return QueryBuilders.filteredQuery(must, filter);
+		
+		return QueryBuilders.boolQuery().must(must).filter(filter);
 	}
 
 	/**
@@ -542,18 +540,18 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		}
 	}
 
-	private Map<Integer, Person> getIndicesOfKnownPersons(final Post<BibTex> post, PersonResourceRelationType relType) {
+	private static Map<Integer, Person> getIndicesOfKnownPersons(final Post<BibTex> post, PersonResourceRelationType relType) {
 		Map<Integer, Person> allowedIndices;
 		allowedIndices = new HashMap<>();
 		for (ResourcePersonRelation rel : post.getResourcePersonRelations()) {
 			if ((rel.getPersonIndex() >= 0) && (rel.getRelationType() == relType)) {
-				allowedIndices.put(rel.getPersonIndex(), rel.getPerson());
+				allowedIndices.put(Integer.valueOf(rel.getPersonIndex()), rel.getPerson());
 			}
 		}
 		return allowedIndices;
 	}
 
-	private void addScoredPersonNames(List<PersonName> names, PersonResourceRelationType relationType, final Set<String> queryTerms, final Post<BibTex> post, final TreeMap<Integer, ResourcePersonRelation> invertedScoreToRpr, PersonSuggestionQueryBuilder options, Map<Integer, Person> allowedPersonsByIndex) {
+	private static void addScoredPersonNames(List<PersonName> names, PersonResourceRelationType relationType, final Set<String> queryTerms, final Post<BibTex> post, final TreeMap<Integer, ResourcePersonRelation> invertedScoreToRpr, PersonSuggestionQueryBuilder options, Map<Integer, Person> allowedPersonsByIndex) {
 		if (!present(names)) {
 			return;
 		}
@@ -567,7 +565,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			rpr.setRelationType(relationType);
 			
 			if (allowedPersonsByIndex != null) {
-				Person person = allowedPersonsByIndex.get(i);
+				final Person person = allowedPersonsByIndex.get(Integer.valueOf(i));
 				if (person == null) {
 					continue;
 				}
@@ -580,11 +578,11 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			if (rpr.getRelationType() == PersonResourceRelationType.AUTHOR) {
 				invertedScore *= 2;
 			}
-			invertedScoreToRpr.put(invertedScore, rpr);
+			invertedScoreToRpr.put(Integer.valueOf(invertedScore), rpr);
 		}
 	}
 
-	private int calculateInvertedPersonNameScore(final Set<String> queryTerms, PersonName mainName) {
+	private static int calculateInvertedPersonNameScore(final Set<String> queryTerms, PersonName mainName) {
 		int invertedScore = -1;
 		for (String token : new SimpleTokenizer(mainName.getFirstName())) {
 			if (!StringUtils.isBlank(token)) {
@@ -611,24 +609,25 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @param queryString
 	 * @return
 	 */
-	private static FilterBuilder addYearFilterIfYearInQuery(FilterBuilder filterBuilder, String queryString) {
+	private static QueryBuilder addYearFilterIfYearInQuery(QueryBuilder filterBuilder, String queryString) {
 		final Matcher m = YEAR_PATTERN.matcher(queryString);
 		if (!m.find()) {
 			return filterBuilder;
 		}
 		final String year = queryString.substring(m.start(), m.end());
-		final FilterBuilder filter = FilterBuilders.termFilter(Fields.Publication.YEAR, year);
+		final QueryBuilder filter = QueryBuilders.termQuery(Fields.Publication.YEAR, year);
 		if (filterBuilder == null) {
 			return filter;
 		}
-		return FilterBuilders.andFilter(filterBuilder, filter);
+		return QueryBuilders.boolQuery().must(filterBuilder).must(filter);
 	}
 
 	private static int extractMinimumInvertedScore(final TreeMap<Integer, ResourcePersonRelation> invertedScoreToRpr) {
 		int minInvertedScore = -1;
 		for (Map.Entry<Integer, ResourcePersonRelation> e : invertedScoreToRpr.entrySet()) {
-			if (minInvertedScore > e.getKey()) {
-				minInvertedScore = e.getKey();
+			final int key = e.getKey().intValue();
+			if (minInvertedScore > key) {
+				minInvertedScore = key;
 			}
 		}
 		return minInvertedScore;
@@ -649,7 +648,10 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		}
 		return rVal;
 	}
-
+	
+	/**
+	 * @param personSuggestionSize the person suggestion size
+	 */
 	public void setSuggestionSize(int personSuggestionSize) {
 		this.suggestionSize = personSuggestionSize;
 	}
@@ -718,7 +720,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 */
 	protected final QueryBuilder buildQuery(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final Collection<String> negatedTags) {
 		final BoolQueryBuilder mainQueryBuilder = QueryBuilders.boolQuery();
-		final BoolFilterBuilder mainFilterBuilder = FilterBuilders.boolFilter();
+		final BoolQueryBuilder mainFilterBuilder = QueryBuilders.boolQuery();
 		
 		// --------------------------------------------------------------------
 		// build the query
@@ -742,13 +744,13 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		}
 		
 		if (present(negatedTags)) {
-			mainFilterBuilder.must(this.buildNegatedTags(negatedTags));
+			mainFilterBuilder.must(buildNegatedTags(negatedTags));
 		}
 		
 		// restrict result to given group
 		if (present(requestedGroupName)) {
 			// by appending a filter for all members of the group
-			final BoolFilterBuilder groupMembersFilter = this.buildGroupMembersFilter(requestedGroupName);
+			final QueryBuilder groupMembersFilter = this.buildGroupMembersFilter(requestedGroupName);
 			if (groupMembersFilter != null) {
 				mainFilterBuilder.must(groupMembersFilter);
 			}
@@ -759,15 +761,15 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			allowedGroups = Collections.singleton(GroupUtils.buildPublicGroup().getName());
 		}
 		
-		final BoolFilterBuilder groupFilter = FilterBuilders.boolFilter();
+		final BoolQueryBuilder groupFilter = QueryBuilders.boolQuery();
 		for (final String allowedGroup : allowedGroups){
-			groupFilter.should(FilterBuilders.termFilter(Fields.GROUPS, allowedGroup));
+			groupFilter.should(QueryBuilders.termQuery(Fields.GROUPS, allowedGroup));
 		}
 		
 		if (present(userName)) {
-			final TermFilterBuilder privateGroupFilter = FilterBuilders.termFilter(Fields.GROUPS, GroupUtils.buildPrivateGroup().getName());
-			final TermFilterBuilder userFilter = FilterBuilders.termFilter(Fields.USER_NAME, userName);
-			groupFilter.should(FilterBuilders.andFilter(userFilter, privateGroupFilter));
+			final TermQueryBuilder privateGroupFilter = QueryBuilders.termQuery(Fields.GROUPS, GroupUtils.buildPrivateGroup().getName());
+			final TermQueryBuilder userFilter = QueryBuilders.termQuery(Fields.USER_NAME, userName);
+			groupFilter.should(QueryBuilders.boolQuery().must(userFilter).must(privateGroupFilter));
 		}
 		
 		mainFilterBuilder.must(groupFilter);
@@ -775,7 +777,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		// post owned by user 
 		// Use this restriction iff there is no user relation
 		if (present(requestedUserName)) {
-			final TermFilterBuilder requestedUserFilter = FilterBuilders.termFilter(Fields.USER_NAME, requestedUserName);
+			final QueryBuilder requestedUserFilter = QueryBuilders.termQuery(Fields.USER_NAME, requestedUserName);
 			mainFilterBuilder.must(requestedUserFilter);
 		}
 		
@@ -783,7 +785,9 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		
 		// all done
 		log.debug("Search query: '" + mainQueryBuilder.toString() + "' and filters: '" + mainFilterBuilder.toString() + "'");
-		return QueryBuilders.filteredQuery(mainQueryBuilder, mainFilterBuilder);
+		
+		
+		return QueryBuilders.boolQuery().must(mainQueryBuilder).filter(mainFilterBuilder);
 	}
 	
 	/**
@@ -801,7 +805,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @param firstYear
 	 * @param lastYear
 	 */
-	protected void buildResourceSpecifiyFilters(BoolFilterBuilder mainFilterBuilder, String userName, String requestedUserName, String requestedGroupName, List<String> requestedRelationNames, Collection<String> allowedGroups, String searchTerms, String titleSearchTerms, String authorSearchTerms, String bibtexKey, String year, String firstYear, String lastYear) {
+	protected void buildResourceSpecifiyFilters(BoolQueryBuilder mainFilterBuilder, String userName, String requestedUserName, String requestedGroupName, List<String> requestedRelationNames, Collection<String> allowedGroups, String searchTerms, String titleSearchTerms, String authorSearchTerms, String bibtexKey, String year, String firstYear, String lastYear) {
 		// noop
 	}
 
@@ -828,11 +832,11 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @param negatedTags
 	 * @return
 	 */
-	private FilterBuilder buildNegatedTags(Collection<String> negatedTags) {
-		final BoolFilterBuilder tagFilter = FilterBuilders.boolFilter();
+	private static QueryBuilder buildNegatedTags(Collection<String> negatedTags) {
+		final BoolQueryBuilder tagFilter = QueryBuilders.boolQuery();
 		
 		for (final String negatedTag : negatedTags) {
-			final FilterBuilder negatedSearchQuery = FilterBuilders.termFilter(Fields.TAGS, negatedTag);
+			final QueryBuilder negatedSearchQuery = QueryBuilders.termQuery(Fields.TAGS, negatedTag);
 			tagFilter.mustNot(negatedSearchQuery);
 		}
 		
@@ -843,23 +847,23 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @param tagIndex
 	 * @return
 	 */
-	private FilterBuilder buildTagFilter(Collection<String> tagIndex) {
-		final BoolFilterBuilder tagsFilter = FilterBuilders.boolFilter();
+	private QueryBuilder buildTagFilter(Collection<String> tagIndex) {
+		final BoolQueryBuilder tagsFilter = QueryBuilders.boolQuery();
 		for (final String tag : tagIndex) {
 			// is the tag string a concept name?
 			if (tag.startsWith(Tag.CONCEPT_PREFIX)) {
 				final String conceptTag = tag.substring(Tag.CONCEPT_PREFIX.length());
 				// get related tags:
-				final BoolFilterBuilder conceptTags = FilterBuilders.boolFilter();
+				final BoolQueryBuilder conceptTags = QueryBuilders.boolQuery();
 				// TODO: must the tag be included? TODODZO
-				final TermFilterBuilder termQuery = FilterBuilders.termFilter(Fields.TAGS, conceptTag);
+				final QueryBuilder termQuery = QueryBuilders.termQuery(Fields.TAGS, conceptTag);
 				conceptTags.must(termQuery);
 				for (final String subTagString : this.infoLogic.getSubTagsForConceptTag(conceptTag)) {
-					conceptTags.should(FilterBuilders.termFilter(Fields.TAGS, subTagString));
+					conceptTags.should(QueryBuilders.termQuery(Fields.TAGS, subTagString));
 				}
 				tagsFilter.must(conceptTags);
 			} else {
-				tagsFilter.must(FilterBuilders.termFilter(Fields.TAGS, tag));
+				tagsFilter.must(QueryBuilders.termQuery(Fields.TAGS, tag));
 			}
 		}
 		return tagsFilter;
@@ -869,12 +873,12 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @param requestedGroupName
 	 * @return 
 	 */
-	private BoolFilterBuilder buildGroupMembersFilter(String requestedGroupName) {
+	private QueryBuilder buildGroupMembersFilter(String requestedGroupName) {
 		final Collection<String> groupMembers = this.infoLogic.getGroupMembersByGroupName(requestedGroupName);
 		if (present(requestedGroupName) && present(groupMembers)) {
-			final BoolFilterBuilder groupMemberFilter = FilterBuilders.boolFilter();
+			final BoolQueryBuilder groupMemberFilter = QueryBuilders.boolQuery();
 			for (final String member : groupMembers) {
-				final TermFilterBuilder memberFilter = FilterBuilders.termFilter(Fields.USER_NAME, member);
+				final QueryBuilder memberFilter = QueryBuilders.termQuery(Fields.USER_NAME, member);
 				groupMemberFilter.should(memberFilter);
 			}
 			

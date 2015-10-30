@@ -34,8 +34,8 @@ import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.util.Sets;
 import org.elasticsearch.action.count.CountRequestBuilder;
 import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.indices.IndexMissingException;
 
 /**
  * TODO: extract interface
@@ -203,7 +203,7 @@ public class ElasticsearchManager<R extends Resource> {
 			final String localActiveAlias = this.getActiveLocalAlias();
 			final SearchIndexInfo searchIndexInfo = getIndexInfoForIndex(localActiveAlias, SearchIndexState.ACTIVE, true);
 			infos.add(searchIndexInfo);
-		} catch (IndexMissingException e) {
+		} catch (final IndexNotFoundException e) {
 			// ignore
 		}
 		
@@ -211,7 +211,7 @@ public class ElasticsearchManager<R extends Resource> {
 			final String localInactiveAlias = this.getInactiveLocalAlias();
 			final SearchIndexInfo searchIndexInfoInactive = getIndexInfoForIndex(localInactiveAlias, SearchIndexState.INACTIVE, true);
 			infos.add(searchIndexInfoInactive);
-		} catch (IndexMissingException e) {
+		} catch (final IndexNotFoundException e) {
 			// ignore
 		}
 		
@@ -222,7 +222,7 @@ public class ElasticsearchManager<R extends Resource> {
 				searchIndexInfoGeneratingIndex.setIndexGenerationProgress(this.currentGenerator.getProgress());
 				searchIndexInfoGeneratingIndex.setId(indexName);
 				infos.add(searchIndexInfoGeneratingIndex);
-			} catch (IndexMissingException e) {
+			} catch (final IndexNotFoundException e) {
 				// ignore
 			}
 		}
@@ -332,7 +332,7 @@ public class ElasticsearchManager<R extends Resource> {
 			}
 			
 			this.switchActiveAndInactiveIndex();
-		} catch (final IndexMissingException e) {
+		} catch (final IndexNotFoundException e) {
 			log.error("Can't update " + this.tools.getResourceTypeAsString() + " index. No inactive index available.");
 		} finally {
 			this.updateLock.release();

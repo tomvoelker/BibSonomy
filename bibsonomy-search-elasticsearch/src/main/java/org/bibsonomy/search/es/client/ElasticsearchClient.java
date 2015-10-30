@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -51,6 +52,7 @@ import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
 import org.elasticsearch.action.admin.indices.stats.IndicesStatsResponse;
+import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.count.CountRequestBuilder;
 import org.elasticsearch.action.count.CountResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
@@ -64,8 +66,10 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.cluster.metadata.AliasMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
-import org.elasticsearch.common.settings.ImmutableSettings;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.search.SearchHit;
 
 /**
  * TODO: add documentation to this class
@@ -96,7 +100,7 @@ public class ElasticsearchClient implements ESClient {
 
 	@Override
 	public boolean createIndex(String indexName, Set<Mapping<String>> mappings) {
-		final CreateIndexResponse createIndex = this.client.admin().indices().create(new CreateIndexRequest(indexName, ImmutableSettings.builder().loadFromSource(ESConstants.SETTINGS).build())).actionGet();
+		final CreateIndexResponse createIndex = this.client.admin().indices().create(new CreateIndexRequest(indexName, Settings.builder().loadFromSource(ESConstants.SETTINGS).build())).actionGet();
 		if (!createIndex.isAcknowledged()) {
 			log.error("Error in creating Index");
 			return false;
@@ -235,11 +239,36 @@ public class ElasticsearchClient implements ESClient {
 	 */
 	@Override
 	public void deleteDocuments(String indexName, String type, QueryBuilder query) {
-		this.client.prepareDeleteByQuery(indexName)
-		.setTypes(type)
-		.setQuery(query)
-		.execute().actionGet();
+		final SearchRequestBuilder searchRequest = this.client.prepareSearch(indexName);
+		searchRequest.setTypes(type);
+		searchRequest.setQuery(query);
+		searchRequest.setScroll(new TimeValue(3, TimeUnit.MINUTES));
+		searchRequest.setSize(200); // note: per shard!
+		searchRequest.setSearchType(SearchType.SCAN);
 		
+		final SearchResponse searchResponse = searchRequest.get();
+		final String scrollId = searchResponse.getScrollId();
+		
+		SearchResponse scrollResponse;
+		
+		while (true) {
+			scrollResponse = this.client.prepareSearchScroll(scrollId).get();
+			final SearchHit[] hits = scrollResponse.getHits().hits();
+			if (hits.length == 0) {
+				break;
+			}
+			
+			final BulkRequestBuilder bulkRequest = this.client.prepareBulk();
+			
+			for (final SearchHit hit : hits) {
+				bulkRequest.add(new DeleteRequest(indexName, type, hit.getId()));
+			}
+			
+			bulkRequest.get();
+		}
+		
+		// close the scroll
+		this.client.prepareClearScroll().setScrollIds(Collections.singletonList(scrollId)).get();
 	}
 	
 	/* (non-Javadoc)

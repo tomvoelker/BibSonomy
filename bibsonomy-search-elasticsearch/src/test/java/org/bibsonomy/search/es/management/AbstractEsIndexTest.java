@@ -35,7 +35,7 @@ import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.search.es.EsSpringContextWrapper;
 import org.bibsonomy.search.exceptions.IndexAlreadyGeneratingException;
-import org.elasticsearch.common.settings.ImmutableSettings;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
 import org.junit.AfterClass;
@@ -75,11 +75,10 @@ public abstract class AbstractEsIndexTest {
 	}
 
 	private static void startEmbeddedElasticsearchServer() {
-		ImmutableSettings.Builder elasticsearchSettings = ImmutableSettings.settingsBuilder()
-				// .put("http.enabled", "false")
+		final Settings.Builder elasticsearchSettings = Settings.settingsBuilder()
 				.put("http.port", 9223)
 				.put("transport.tcp.port", 9323)
-				.put("path.data", ELASTICSEARCH_DEFAULT_PATH);
+				.put("path.home", ELASTICSEARCH_DEFAULT_PATH);
 		
 		node = NodeBuilder.nodeBuilder().clusterName("bibsonomy-testcluster")
 				.settings(elasticsearchSettings.build()).node();
@@ -96,7 +95,7 @@ public abstract class AbstractEsIndexTest {
 	public static void afterClass() throws IOException {
 		closeAllIndices();
 		
-		node.stop();
+		node.close();
 		
 		deleteElasticSearchDataDir(ELASTICSEARCH_DEFAULT_PATH);
 	}

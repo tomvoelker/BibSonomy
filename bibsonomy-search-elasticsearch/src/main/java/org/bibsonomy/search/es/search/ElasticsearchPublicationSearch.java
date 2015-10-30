@@ -7,13 +7,11 @@ import java.util.List;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.search.es.ESConstants.Fields;
-import org.elasticsearch.index.query.BoolFilterBuilder;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.FilterBuilders;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.RangeFilterBuilder;
-import org.elasticsearch.index.query.TermFilterBuilder;
+import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.elasticsearch.index.query.TermQueryBuilder;
 
 /**
  * handles publication relevant search
@@ -45,18 +43,18 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends EsResource
 	 * @see org.bibsonomy.search.es.search.EsResourceSearch#buildResourceSpecifiyFilters(org.elasticsearch.index.query.BoolFilterBuilder, java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	protected void buildResourceSpecifiyFilters(BoolFilterBuilder mainFilterBuilder, String userName, String requestedUserName, String requestedGroupName, List<String> requestedRelationNames, Collection<String> allowedGroups, String searchTerms, String titleSearchTerms, String authorSearchTerms, String bibtexKey, String year, String firstYear, String lastYear) {
+	protected void buildResourceSpecifiyFilters(BoolQueryBuilder mainFilterBuilder, String userName, String requestedUserName, String requestedGroupName, List<String> requestedRelationNames, Collection<String> allowedGroups, String searchTerms, String titleSearchTerms, String authorSearchTerms, String bibtexKey, String year, String firstYear, String lastYear) {
 		super.buildResourceSpecifiyFilters(mainFilterBuilder, userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexKey, year, firstYear, lastYear);
 		
 		if (present(year)) {
-			final TermFilterBuilder yearQuery = FilterBuilders.termFilter(Fields.Publication.YEAR, year);
+			final TermQueryBuilder yearQuery = QueryBuilders.termQuery(Fields.Publication.YEAR, year);
 			mainFilterBuilder.must(yearQuery);
 		}
 		
 		final boolean presentLastYear = present(lastYear);
 		final boolean presentFirstYear = present(firstYear);
 		if (presentLastYear || presentFirstYear) {
-			final RangeFilterBuilder rangeFilter = FilterBuilders.rangeFilter(Fields.Publication.YEAR);
+			final RangeQueryBuilder rangeFilter = QueryBuilders.rangeQuery(Fields.Publication.YEAR);
 			if (presentFirstYear) {
 				rangeFilter.gte(Integer.parseInt(firstYear));
 			}

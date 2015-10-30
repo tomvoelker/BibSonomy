@@ -2,13 +2,15 @@ package org.bibsonomy.search.es.util.spring;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.net.InetSocketAddress;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.search.es.ESConstants;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.ImmutableSettings;
-import org.elasticsearch.common.settings.ImmutableSettings.Builder;
+import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.settings.Settings.Builder;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.springframework.beans.factory.FactoryBean;
 
@@ -41,9 +43,10 @@ public class ElasticsearchTransportClientFactoryBean implements FactoryBean<Clie
 			final String esHosts = this.esAddresses;
 			log.info("EsHostss value in Properties:" + esHosts);
 			// Setting cluster name of ES Server
-			final Builder settings = ImmutableSettings.settingsBuilder().put("cluster.name", this.esClusterName);
+			final Builder settings = Settings.settingsBuilder().put("cluster.name", this.esClusterName);
 			settings.put(ESConstants.SNIFF, true);
-			final TransportClient transportClient = new TransportClient(settings);
+			
+			final TransportClient transportClient = TransportClient.builder().settings(settings).build();
 			if (present(esHosts)) {
 				final String[] hosts = esHosts.split(",");
 				for (int i = 0; i < hosts.length; i++) {
@@ -55,7 +58,7 @@ public class ElasticsearchTransportClientFactoryBean implements FactoryBean<Clie
 						if (hostInfo.length > 1) {
 							ip = hostInfo[0];
 							port = Integer.parseInt(hostInfo[1]);
-							transportClient.addTransportAddress(new InetSocketTransportAddress(ip, port));
+							transportClient.addTransportAddress(new InetSocketTransportAddress(new InetSocketAddress(ip, port)));
 						}
 					}
 				}
