@@ -73,6 +73,15 @@ public interface ESClient {
 	boolean insertNewDocument(String indexName, String type, String id, Map<String, Object> jsonDocument);
 	
 	/**
+	 * 
+	 * @param indexName
+	 * @param type
+	 * @param jsonDocuments
+	 * @return
+	 */
+	boolean insertNewDocuments(String indexName, String type, Map<String, Map<String, Object>> jsonDocuments);
+	
+	/**
 	 * @param indexName
 	 * @return <code>true</code> if the index exists on the cluster
 	 */

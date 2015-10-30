@@ -31,6 +31,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -53,6 +54,7 @@ import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
 import org.elasticsearch.action.admin.indices.stats.IndicesStatsResponse;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
+import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.count.CountRequestBuilder;
 import org.elasticsearch.action.count.CountResponse;
 import org.elasticsearch.action.delete.DeleteRequest;
@@ -140,6 +142,18 @@ public class ElasticsearchClient implements ESClient {
 	public boolean insertNewDocument(String indexName, String type, String id, Map<String, Object> jsonDocument) {
 		final IndexResponse indexResponse = this.client.prepareIndex(indexName, type, id).setSource(jsonDocument).setRefresh(true).get();
 		return ((indexResponse != null) && ValidationUtils.present(indexResponse.getId()));
+	}
+	
+	@Override
+	public boolean insertNewDocuments(String indexName, String type, Map<String, Map<String, Object>> jsonDocuments) {
+		final BulkRequestBuilder bulk = this.client.prepareBulk();
+		
+		for (Entry<String, Map<String, Object>> entryDocument : jsonDocuments.entrySet()) {
+			bulk.add(this.client.prepareIndex(indexName, type, entryDocument.getKey()).setSource(entryDocument.getValue()));
+		}
+		
+		final BulkResponse bulkResponse = bulk.get();
+		return !bulkResponse.hasFailures();
 	}
 	
 	/* (non-Javadoc)

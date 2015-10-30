@@ -1,7 +1,10 @@
 package org.bibsonomy.search.es.generator;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +44,6 @@ public class ElasticsearchIndexGenerator<R extends Resource> {
 	private int writtenPosts = 0;
 	private int numberOfPosts;
 	
-	
 	/**
 	 * @param index
 	 * @param inputLogic
@@ -66,7 +68,7 @@ public class ElasticsearchIndexGenerator<R extends Resource> {
 	}
 	
 	/**
-	 * 
+	 * inserts the posts form the database into the index
 	 */
 	private void fillIndexWithPosts() {
 		log.info("Filling index with database post entries.");
@@ -95,7 +97,7 @@ public class ElasticsearchIndexGenerator<R extends Resource> {
 			postListSize = postList.size();
 			skip += postListSize;
 			log.info("Read " + skip + " entries.");
-
+			final Map<String, Map<String, Object>> docsToWrite = new HashMap<>();
 			// cycle through all posts of currently read block
 			for (final SearchPost<R> post : postList) {
 				post.setLastLogDate(newState.getLast_log_date());
@@ -108,10 +110,16 @@ public class ElasticsearchIndexGenerator<R extends Resource> {
 				}
 				
 				if (isNotSpammer(post)) {
-					this.addPostToIndex(post);
-					this.writtenPosts++;
+					final Map<String, Object> convertedPost = this.tools.getConverter().convert(post);
+					docsToWrite.put(ElasticsearchUtils.createElasticSearchId(post.getContentId().intValue()), convertedPost);
+				}
+				
+				if (docsToWrite.size() > SearchDBInterface.SQL_BLOCKSIZE / 2) {
+					this.clearQueue(docsToWrite);
 				}
 			}
+			
+			this.clearQueue(docsToWrite);
 
 			if (postListSize > 0) {
 				lastContenId = postList.get(postListSize - 1).getContentId().intValue();
@@ -119,6 +127,17 @@ public class ElasticsearchIndexGenerator<R extends Resource> {
 		} while (postListSize == SearchDBInterface.SQL_BLOCKSIZE);
 		
 		this.writeMetaInfo(newState);
+	}
+
+	/**
+	 * @param docsToWrite
+	 */
+	private void clearQueue(final Map<String, Map<String, Object>> docsToWrite) {
+		if (present(docsToWrite)) {
+			this.client.insertNewDocuments(this.index.getIndexName(), this.tools.getResourceTypeAsString(), docsToWrite);
+			this.writtenPosts += docsToWrite.size();
+			docsToWrite.clear();
+		}
 	}
 
 	/**
@@ -134,21 +153,6 @@ public class ElasticsearchIndexGenerator<R extends Resource> {
 		}
 		
 		log.info("updated systeminformation of index " + indexName + " to " + values);
-	}
-
-	/**
-	 * @param post
-	 */
-	private void addPostToIndex(SearchPost<R> post) {
-		this.client.waitForReadyState();
-		final Map<String, Object> convertedPost = this.tools.getConverter().convert(post);
-		
-		final String indexId = ElasticsearchUtils.createElasticSearchId(post.getContentId().intValue());
-		this.insertPostDocument(convertedPost, indexId);
-	}
-	
-	private void insertPostDocument(final Map<String, Object> jsonDocument, String indexIdStr) {
-		this.client.insertNewDocument(index.getIndexName(), this.tools.getResourceTypeAsString(), indexIdStr, jsonDocument);
 	}
 
 	/**
