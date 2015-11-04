@@ -47,9 +47,11 @@ public interface SearchDBInterface<R extends Resource> {
 	
 	/**
 	 * @param lastTasId
+	 * @param limit 
+	 * @param offset 
 	 * @return new posts to insert in the index
 	 */
-	public List<SearchPost<R>> getNewPosts(int lastTasId);
+	public List<SearchPost<R>> getNewPosts(int lastTasId, int limit, int offset);
 	
 	/**
 	 * @param fromDate

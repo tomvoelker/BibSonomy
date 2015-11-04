@@ -244,9 +244,11 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getNewPosts(java.lang.Integer)
 	 */
 	@Override
-	public List<SearchPost<R>> getNewPosts(final int lastTasId) {
+	public List<SearchPost<R>> getNewPosts(final int lastTasId, final int limit, final int offset) {
 		final LuceneParam param = new LuceneParam();
-		param.setLastTasId(lastTasId);
+		param.setLastTasId(Integer.valueOf(lastTasId));
+		param.setLimit(limit);
+		param.setOffset(offset);
 		
 		final DBSession session = this.openSession();
 		try {
@@ -256,7 +258,7 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 		}
 	}
 	
-	public String getResourceName() {
+	private String getResourceName() {
 		return this.resourceClass.getSimpleName();
 	}
 

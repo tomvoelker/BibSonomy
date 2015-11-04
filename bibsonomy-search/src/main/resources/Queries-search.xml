@@ -95,12 +95,17 @@
 		+-->
 	<select id="getBibTexPostsForTimeRange" parameterClass="luceneParam" resultMap="LuceneBibTexCommon.luceneBibtexPost">
 		SELECT <include refid ="luceneBibtexAttributes2"/>, t.tag_name, g.*, 1 AS count, b2.change_date, -1 AS rating, -1 AS number_of_ratings
-		FROM tas t
-	      JOIN bibtex b2 USING (content_id)
-	      JOIN groupids g ON (b2.group = g.group)
-		WHERE t.tas_id &gt; #lastTasId#
-		  AND b2.group &gt;= 0
-		ORDER BY b2.date DESC, b2.content_id DESC, t.tas_id DESC
+		FROM (
+			SELECT DISTINCT t.content_id
+			FROM tas t
+				WHERE t.tas_id &gt; #lastTasId#
+				AND t.group &gt;= 0
+				ORDER BY t.date DESC, t.content_id DESC, t.tas_id DESC
+				LIMIT #limit# OFFSET #offset#
+			) AS tt
+		JOIN bibtex b2 USING (content_id)
+		JOIN tas t USING (content_id)
+		JOIN groupids g ON (b2.group = g.group)
 	</select>
 	
 	<!--+ 

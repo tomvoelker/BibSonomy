@@ -288,16 +288,21 @@ public class ElasticsearchManager<R extends Resource> {
 			if (oldState.getLast_log_date() != null) {
 				final List<Integer> contentIdsToDelete = this.inputLogic.getContentIdsToDelete(new Date(oldState.getLast_log_date().getTime() - QUERY_TIME_OFFSET_MS));
 				
+				
+				final Set<String> idsToDelete = new HashSet<>();
 				for (final Integer contentId : contentIdsToDelete) {
-					this.deletePostWithContentId(localInactiveAlias, contentId.intValue());
+					final String indexID = ElasticsearchUtils.createElasticSearchId(contentId.intValue());
+					idsToDelete.add(indexID);
 				}
+				
+				this.client.deleteDocuments(localInactiveAlias, this.tools.getResourceTypeAsString(), idsToDelete);
 			}
 	
 			/*
 			 * 3) add new and updated posts to the index
 			 * FIXME: use steps TODODZO
 			 */
-			final List<SearchPost<R>> newPosts = this.inputLogic.getNewPosts(oldLastTasId);
+			final List<SearchPost<R>> newPosts = this.inputLogic.getNewPosts(oldLastTasId, Integer.MAX_VALUE, 0);
 			final int totalCountNewPosts = newPosts.size();
 			
 			log.debug("inserting new/updated posts into " + localInactiveAlias);
@@ -308,7 +313,7 @@ public class ElasticsearchManager<R extends Resource> {
 				newLastTasId = Math.max(post.getLastTasId().intValue(), newLastTasId);
 			}
 			
-			log.debug("inserted " + totalCountNewPosts + " new/updated posts");
+			log.debug("inserted " + totalCountNewPosts + " new/updated posts into " + localInactiveAlias);
 			
 			this.updateResourceSpecificProperties(localInactiveAlias, oldState, targetState);
 			

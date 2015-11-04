@@ -76,7 +76,7 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 	private static final long QUERY_TIME_OFFSET_MS = 60 * 1000;
 
 	private static BookmarkDatabaseManager bookmarkDb;
-	private static BibTexDatabaseManager bibTexDb;
+	private static BibTexDatabaseManager publicationDatabaseManager;
 
 	/** bookmark database interface */
 	private static SearchDBLogic<Bookmark> searchBookmarkLogic;
@@ -90,7 +90,7 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 	@BeforeClass
 	public static void initDatabaseManager() {
 		bookmarkDb = BookmarkDatabaseManager.getInstance();	
-		bibTexDb = BibTexDatabaseManager.getInstance();
+		publicationDatabaseManager = BibTexDatabaseManager.getInstance();
 	}
 
 	/**
@@ -114,16 +114,16 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 		final List<Integer> groups = new ArrayList<Integer>();
 
 		List<SearchPost<BibTex>> posts = searchBibTexLogic.getPostsForUser(requestedUserName, 10, 0);
-		List<Post<BibTex>> postsRef = bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, null, 10, 0, null, this.dbSession);
+		List<Post<BibTex>> postsRef = publicationDatabaseManager.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, null, 10, 0, null, this.dbSession);
 		assertEquals(postsRef.size(), posts.size());
 
 		posts = searchBibTexLogic.getPostsForUser(requestedUserName, 10, 0);
-		postsRef = bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, null, 10, 0, null, this.dbSession);
-		assertEquals(postsRef.size(), posts.size()); 
+		postsRef = publicationDatabaseManager.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, null, 10, 0, null, this.dbSession);
+		assertEquals(postsRef.size(), posts.size());
 
 		requestedUserName = "testuser2";
 		posts = searchBibTexLogic.getPostsForUser(requestedUserName, 10, 0);
-		postsRef = bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, null, 10, 0, null, this.dbSession);
+		postsRef = publicationDatabaseManager.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, null, 10, 0, null, this.dbSession);
 		assertEquals(postsRef.size(), posts.size());
 	}
 
@@ -142,23 +142,53 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 		final Integer lastTasId = searchBibTexLogic.getLastTasId();
 		for (int i = 0; i < 5; i++) {
 			// store test posts in database
-			final Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
+			final Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC, i);
 			refPosts.add(bibtexPost);
-			bibTexDb.createPost(bibtexPost, this.dbSession);
+			publicationDatabaseManager.createPost(bibtexPost, this.dbSession);
 		}
-
+		
 		// retrieve posts
-		final List<? extends Post<BibTex>> posts = searchBibTexLogic.getNewPosts(lastTasId);
+		final List<? extends Post<BibTex>> posts = searchBibTexLogic.getNewPosts(lastTasId.intValue(), Integer.MAX_VALUE, 0);
 
 		assertEquals(refPosts.size(), posts.size());
 
 		final Map<String,Boolean> testMap = new HashMap<String, Boolean>(); 
 		for (final Post<? extends Resource> post : posts) {
-			testMap.put(post.getResource().getTitle(), true);
+			testMap.put(post.getResource().getTitle(), Boolean.TRUE);
 		}
 		for (final Post<? extends Resource> post : refPosts) {
 			assertNotNull(testMap.get(post.getResource().getTitle()));
 		}
+	}
+	
+	/**
+	 * tests {@link SearchDBLogic#getNewPosts(int, int, int)}'s limit and offset
+	 * feature
+	 * 
+	 * @throws PersonListParserException
+	 */
+	@Test
+	public void testLimitOffset() throws PersonListParserException {
+		DatabasePluginRegistry.getInstance().clearPlugins();
+		DatabasePluginRegistry.getInstance().add(new BibTexExtraPlugin());
+		final List<Post<? extends Resource>> refPosts = new LinkedList<Post<? extends Resource>>();
+		//--------------------------------------------------------------------
+		// TEST 1: insert special posts into test database and search for it
+		//--------------------------------------------------------------------
+		final Integer lastTasId = searchBibTexLogic.getLastTasId();
+		for (int i = 0; i < 5; i++) {
+			// store test posts in database
+			final Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC, i);
+			refPosts.add(bibtexPost);
+			publicationDatabaseManager.createPost(bibtexPost, this.dbSession);
+		}
+		
+		final List<? extends Post<BibTex>> posts = searchBibTexLogic.getNewPosts(lastTasId.intValue(), 10, 4);
+		assertEquals(1, posts.size());
+		
+		final Post<BibTex> post = posts.get(0);
+		assertEquals(getTitleForId(0), post.getResource().getTitle());
+		assertEquals(3, post.getTags().size());
 	}
 
 	/**
@@ -180,11 +210,11 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 
 		for (int i = 0; i < 5; i++) {
 			// store test posts in database
-			final Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
+			final Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC, i);
 			refPosts.add(bibtexPost);
-			bibTexDb.createPost(bibtexPost, this.dbSession);
+			publicationDatabaseManager.createPost(bibtexPost, this.dbSession);
 			// delete test post
-			bibTexDb.deletePost(bibtexPost.getUser().getName(), bibtexPost.getResource().getIntraHash(), this.dbSession);
+			publicationDatabaseManager.deletePost(bibtexPost.getUser().getName(), bibtexPost.getResource().getIntraHash(), this.dbSession);
 		}
 		// retrieve posts
 		final List<Integer> posts = searchBibTexLogic.getContentIdsToDelete(new Date(fromDate-QUERY_TIME_OFFSET_MS));
@@ -202,8 +232,8 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 		// TEST 1: insert special post into test database and search for it
 		//--------------------------------------------------------------------
 		// store test post in database
-		final Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
-		bibTexDb.createPost(bibtexPost, this.dbSession);
+		final Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC, 100);
+		publicationDatabaseManager.createPost(bibtexPost, this.dbSession);
 
 		Date postDate = searchBibTexLogic.getNewestRecordDateFromTas();
 		// compare modulo milliseconds 
@@ -261,16 +291,14 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 	/**
 	 * generate a BibTex Post, can't call setBeanPropertiesOn() because private
 	 * so copy & paste the setBeanPropertiesOn() into this method
+	 * @param i 
 	 * @throws PersonListParserException 
 	 */
-	private Post <BibTex> generateBibTexDatabaseManagerTestPost(final GroupID groupID) throws PersonListParserException {
-
+	private static Post<BibTex> generateBibTexDatabaseManagerTestPost(final GroupID groupID, int i) throws PersonListParserException {
 		final Post<BibTex> post = new Post<BibTex>();
-
 		final Group group = new Group(groupID);
-
 		post.getGroups().add(group);
-
+		
 		Tag tag = new Tag();
 		tag.setName("tag1");
 		post.getTags().add(tag);
@@ -282,7 +310,7 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 		post.getTags().add(tag);
 
 		post.setContentId(null); // will be set in storePost()
-		post.setDescription("luceneTestPost");
+		post.setDescription("searchTestPost");
 		post.setDate(new Date(System.currentTimeMillis()));
 		final User user = new User();
 		CommonModelUtils.setBeanPropertiesOn(user);
@@ -293,30 +321,32 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 
 		final BibTex publication = new BibTex();
 		CommonModelUtils.setBeanPropertiesOn(publication);
-		publication.setCount(0);		
+		publication.setCount(0);
 		publication.setEntrytype("inproceedings");
 		publication.setAuthor(PersonNameUtils.discoverPersonNames("MegaMan and Lucene GigaWoman " + SEARCH_MAGIC_AUTHOR));
 		publication.setEditor(PersonNameUtils.discoverPersonNames("Peter Silie " + SEARCH_MAGIC_EDITOR));
-		publication.setTitle("bibtex insertpost test");
-
-		String title, year, journal, booktitle, volume, number = null;
-		title = "title "+ (Math.round(Math.random()*Integer.MAX_VALUE))+" "+SEARCH_MAGIC_TITLE;
-		year = "test year";
-		journal = "test journal";
-		booktitle = "test booktitle";
-		volume = "test volume";
-		number = "test number";
-		publication.setTitle(title);
-		publication.setYear(year);
-		publication.setJournal(journal);
-		publication.setBooktitle(booktitle);
-		publication.setVolume(volume);
-		publication.setNumber(number);
+		
+		// TODO: remove random
+		
+		publication.setTitle(getTitleForId(i));
+		publication.setYear("test year");
+		publication.setJournal("test journal");
+		publication.setBooktitle("test booktitle");
+		publication.setVolume("test volume");
+		publication.setNumber("test number");
 		publication.setScraperId(-1);
 		publication.setType("2");
 		publication.recalculateHashes();
 		post.setResource(publication);
 		return post;
+	}
+
+	/**
+	 * @param i
+	 * @return
+	 */
+	private static String getTitleForId(int id) {
+		return "title "+ String.valueOf(id) + " " + SEARCH_MAGIC_TITLE;
 	}
 
 	/**

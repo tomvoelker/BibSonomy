@@ -161,6 +161,14 @@ public interface ESClient {
 	 * @param query
 	 */
 	public void deleteDocuments(String indexName, String type, QueryBuilder query);
+	
+	/**
+	 * @param indexName
+	 * @param type
+	 * @param idsToDelete
+	 * @return 
+	 */
+	public boolean deleteDocuments(String indexName, String type, Set<String> idsToDelete);
 
 	/**
 	 * TODO: (re)move
