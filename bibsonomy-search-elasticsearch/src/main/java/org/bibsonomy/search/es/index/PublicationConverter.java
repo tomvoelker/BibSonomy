@@ -159,10 +159,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		final Map<String, String> parsedMiscField = resource.getMiscFields();
 		if (present(parsedMiscField)) {
 			for (final Entry<String, String> miscFieldEntry : parsedMiscField.entrySet()) {
-				String key = miscFieldEntry.getKey();
-				
-				// norm the key
-				key = key.toLowerCase();
+				String key = normKey(miscFieldEntry.getKey());
 				
 				// check if the key was already added before;
 				if (jsonDocument.containsKey(key) || Fields.SPECIAL_FIELDS.contains(key)) {
@@ -190,6 +187,16 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		jsonDocument.put(Publication.YEAR, resource.getYear());
 	}
 	
+	/**
+	 * @param key
+	 * @return
+	 */
+	private static String normKey(String key) {
+		// norm the key
+		key = key.toLowerCase();
+		return key.replaceAll("[^a-z0-9]", "");
+	}
+
 	/**
 	 * @param author
 	 * @return
