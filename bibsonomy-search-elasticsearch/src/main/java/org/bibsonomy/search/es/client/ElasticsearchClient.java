@@ -289,9 +289,12 @@ public class ElasticsearchClient implements ESClient {
 	 * @see org.bibsonomy.search.es.ESClient#deleteDocuments(java.lang.String, java.lang.String, java.util.Set)
 	 */
 	@Override
-	public boolean deleteDocuments(String indexName, String type, Set<String> idsToDelete) {
+	public boolean deleteDocuments(final String indexName, final String type, Set<String> idsToDelete) {
+		if (!present(idsToDelete)) {
+			return true;
+		}
 		final BulkRequestBuilder bulkRequest = this.client.prepareBulk();
-		for (String id : idsToDelete) {
+		for (final String id : idsToDelete) {
 			bulkRequest.add(new DeleteRequest(indexName, type, id));
 		}
 		
