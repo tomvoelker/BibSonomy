@@ -31,7 +31,9 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
+import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.tex.TexDecode;
 import org.elasticsearch.common.xcontent.XContentFactory;
 
@@ -150,6 +152,13 @@ public final class ESConstants {
 	public static final String TEMP_ON_PROCESS_INDEX_PREFIX = "TempIndexOnProcess";
 
 	public static interface Fields {
+		
+		/** private search content should be copied to this field */
+		public static final String PRIVATE_ALL_FIELD = "all_private";
+		
+		/** all special fields that can't be overridden by a misc field */
+		public static final Set<String> SPECIAL_FIELDS = Sets.asSet("_all", PRIVATE_ALL_FIELD);
+		
 		/** the content id of the post */
 		public static final String CONTENT_ID = "content_id";
 		/** the name of the user of the post */
@@ -168,8 +177,7 @@ public final class ESConstants {
 		public static final String DESCRIPTION = "description";
 		/** Ids of the associated authors, editors, supervisors, etc */
 		public static final String PERSON_ENTITY_IDS_FIELD_NAME = "personEntityIds";
-		/** private search content should be copied to this field */
-		public static final String PRIVATE_ALL_FIELD = "all_private";
+		
 		
 		public static interface Resource {
 			/** the title of the resource */

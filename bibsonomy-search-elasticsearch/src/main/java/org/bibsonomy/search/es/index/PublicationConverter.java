@@ -165,7 +165,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 				key = key.toLowerCase();
 				
 				// check if the key was already added before;
-				if (jsonDocument.containsKey(key)) {
+				if (jsonDocument.containsKey(key) || Fields.SPECIAL_FIELDS.contains(key)) {
 					key = "misc_" + key;
 				}
 				
