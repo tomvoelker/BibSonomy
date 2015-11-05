@@ -29,7 +29,7 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends EsResource
 		super.buildResourceSpecifiyQuery(mainQueryBuilder, userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexKey, year, firstYear, lastYear);
 		
 		if (present(authorSearchTerms)) {
-			final QueryBuilder authorSearchQuery = QueryBuilders.termQuery(Fields.Publication.AUTHOR, authorSearchTerms);
+			final QueryBuilder authorSearchQuery = QueryBuilders.matchQuery(Fields.Publication.AUTHOR, authorSearchTerms);
 			mainQueryBuilder.must(authorSearchQuery);
 		}
 		
