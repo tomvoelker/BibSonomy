@@ -139,7 +139,6 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 	public Map<String, Object> convert(final Post<R> post) {
 		final Map<String, Object> jsonDocument = new HashMap<>();
 		
-		// jsonDocument.put(Fields.CONTENT_ID, post.getContentId());
 		jsonDocument.put(Fields.DATE, post.getDate());
 		jsonDocument.put(Fields.CHANGE_DATE, post.getChangeDate());
 		

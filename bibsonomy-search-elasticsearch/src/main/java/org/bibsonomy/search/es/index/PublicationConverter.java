@@ -7,11 +7,13 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
@@ -140,7 +142,36 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		
 		jsonDocument.put(Fields.Publication.INSTITUTION, resource.getInstitution());
 		jsonDocument.put(Fields.Publication.JOURNAL, resource.getJournal());
+		
+		/*
+		 * insert misc field
+		 * parse it and insert all misc fields as separate fields in elasticsearch
+		 */
 		jsonDocument.put(Fields.Publication.MISC, resource.getMisc());
+		if (!resource.isMiscFieldParsed()) {
+			try {
+				resource.parseMiscField();
+			} catch (final InvalidModelException e) {
+				log.warn("parsing misc field failed", e);
+			}
+		}
+		
+		final Map<String, String> parsedMiscField = resource.getMiscFields();
+		if (present(parsedMiscField)) {
+			for (final Entry<String, String> miscFieldEntry : parsedMiscField.entrySet()) {
+				String key = miscFieldEntry.getKey();
+				
+				// norm the key
+				key = key.toLowerCase();
+				
+				// check if the key was already added before;
+				if (jsonDocument.containsKey(key)) {
+					key = "misc_" + key;
+				}
+				
+				jsonDocument.put(key, miscFieldEntry.getValue());
+			}
+		}
 		jsonDocument.put(Fields.Publication.MONTH, resource.getMonth());
 		jsonDocument.put(Fields.Publication.NOTE, resource.getNote());
 		jsonDocument.put(Fields.Publication.NUMBER, resource.getNumber());
@@ -178,7 +209,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	 */
 	@Override
 	protected void convertPostInternal(Post<BibTex> post, Map<String, Object> jsonDocument) {
-		jsonDocument.put(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, getNormalizedEntryType((Post<? extends BibTex>) post));
+		jsonDocument.put(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, getNormalizedEntryType(post));
 		
 		final List<ResourcePersonRelation> rels = post.getResourcePersonRelations();
 		this.updateDocumentWithPersonRelation(jsonDocument, rels);
@@ -298,7 +329,6 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 			return rels;
 		}
 		String[] parts = split(ids, " ");
-		
 		
 		final int personIndexCtr[] = new int[PersonResourceRelationType.values().length];
 		for (int i = 0; i+1 < parts.length; i += 2) {
