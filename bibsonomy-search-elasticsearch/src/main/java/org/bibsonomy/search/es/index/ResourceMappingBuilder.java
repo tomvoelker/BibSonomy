@@ -71,6 +71,7 @@ public abstract class ResourceMappingBuilder<R extends Resource> implements Mapp
 			XContentBuilder commonPostResourceFields = XContentFactory.jsonBuilder()
 					.startObject()
 						.startObject(documentType)
+							.field("date_detection", false)
 							.startObject("properties")
 								.startObject(ESConstants.Fields.Resource.INTRAHASH)
 									.field(TYPE_FIELD, STRING_TYPE)
