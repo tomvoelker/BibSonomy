@@ -12,6 +12,11 @@
 		<result property="lastLogDate"  column="log_date" javaType="date"/>
 	</resultMap>
 	
+	<sql id="commonSearchPublicationAttributes2">
+		<include refid="commonPublicationAttributes2WithoutPrivNote" />
+		b2.privnote
+	</sql>
+	
 	<sql id="luceneBibtexAttributes2">
 		<include refid="bibtexAttributes2"/>,
 		t.tas_id

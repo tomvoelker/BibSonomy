@@ -86,6 +86,7 @@ import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder.Type;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
@@ -728,7 +729,16 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		// the resulting main query
 		if (present(searchTerms)) {
 			final QueryBuilder queryBuilder = QueryBuilders.queryStringQuery(searchTerms);
-			mainQueryBuilder.must(queryBuilder);
+			
+			if (present(userName)) {
+				final TermQueryBuilder userFilter = QueryBuilders.termQuery(Fields.USER_NAME, userName);
+				final QueryStringQueryBuilder privateFieldSearchQuery = QueryBuilders.queryStringQuery(searchTerms).field(Fields.PRIVATE_ALL_FIELD);
+				final BoolQueryBuilder privateFieldQueryFiltered = QueryBuilders.boolQuery().must(privateFieldSearchQuery).filter(userFilter);
+				
+				mainQueryBuilder.must(QueryBuilders.boolQuery().should(queryBuilder).should(privateFieldQueryFiltered));
+			} else {
+				mainQueryBuilder.must(queryBuilder);
+			}
 		}
 
 		if (present(titleSearchTerms)) {

@@ -168,6 +168,8 @@ public final class ESConstants {
 		public static final String DESCRIPTION = "description";
 		/** Ids of the associated authors, editors, supervisors, etc */
 		public static final String PERSON_ENTITY_IDS_FIELD_NAME = "personEntityIds";
+		/** private search content should be copied to this field */
+		public static final String PRIVATE_ALL_FIELD = "all_private";
 		
 		public static interface Resource {
 			/** the title of the resource */

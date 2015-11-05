@@ -113,8 +113,12 @@ public class PublicationMappingBuilder extends ResourceMappingBuilder<BibTex> {
 			.endObject()
 			.startObject(Fields.Publication.PRIVNOTE)
 				.field(TYPE_FIELD, STRING_TYPE)
-				.field(INDEX_FIELD, NOT_ANALYZED)
+				.field(INCLUDE_IN_ALL_FIELD, false)
+				.field("copy_to", Fields.PRIVATE_ALL_FIELD)
 				.field("store", "false") // TODO: remove?
+			.endObject()
+			.startObject(Fields.PRIVATE_ALL_FIELD)
+				.field(TYPE_FIELD, STRING_TYPE)
 			.endObject()
 			.startObject(Fields.Publication.PUBLISHER)
 				.field(TYPE_FIELD, STRING_TYPE)

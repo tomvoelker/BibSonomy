@@ -84,14 +84,6 @@ public interface SearchDBInterface<R extends Resource> {
 	 * @return get post entries for index creation
 	 */
 	public List<SearchPost<R>> getPostEntries(int lastContentId, int max);
-	
-	/**
-	 * 
-	 * @param lastOffset the last offset (i.e. the number of posts indexed so far)
-	 * @param max size
-	 * @return post entries for index creation
-	 */
-	public List<SearchPost<R>> getPostEntriesOrderedByHash(int lastOffset, int max);
 
 	/**
 	 * @return

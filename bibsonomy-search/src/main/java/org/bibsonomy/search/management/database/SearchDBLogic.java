@@ -50,7 +50,7 @@ import org.bibsonomy.search.management.database.params.LuceneParam;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 
 /**
- * class for accessing the bibsonomy database 
+ * class for accessing the main database 
  * 
  * @author fei
  * @param <R> the resource the logic handles
@@ -216,24 +216,6 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 		final DBSession session = this.openSession();
 		try {
 			return this.queryForLucenePosts("get" + this.getResourceName() + "ForIndex", param, session);
-		} finally {
-			session.close();
-		}
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getPostEntriesOrderedByHash(java.lang.Integer, java.lang.Integer)
-	 */
-	@Override
-	public List<SearchPost<R>> getPostEntriesOrderedByHash(int lastOffset, int max) {
-		final LuceneParam param = new LuceneParam();
-		param.setLastOffset(lastOffset);
-		param.setLimit(max);
-		
-		final DBSession session = this.openSession();
-		try {
-			return this.queryForLucenePosts("get" + this.getResourceName() + "ForIndexOrderedByHash", param, session);
 		} finally {
 			session.close();
 		}
