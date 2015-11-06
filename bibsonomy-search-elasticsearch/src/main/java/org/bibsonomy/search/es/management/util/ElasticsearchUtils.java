@@ -1,8 +1,6 @@
 package org.bibsonomy.search.es.management.util;
 
 import java.net.URI;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +11,8 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 
 /**
  * util methods for managing the index
@@ -25,7 +25,7 @@ public final class ElasticsearchUtils {
 	private static final Log log = LogFactory.getLog(ElasticsearchUtils.class);
 	
 	
-	private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+	private static final DateTimeFormatter DATE_TIME_FORMAT = ISODateTimeFormat.dateOptionalTimeParser();
 	
 	private static final String LAST_PERSON_CHANGE_ID_KEY = "last_person_change_id";
 	private static final String LAST_LOG_DATE_KEY = "last_log_date";
@@ -149,11 +149,9 @@ public final class ElasticsearchUtils {
 	 * @return the date
 	 */
 	public static Date parseDate(String dateAsString) {
-		final SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-		
 		try {
-			return dateFormat.parse(dateAsString);
-		} catch (final ParseException e) {
+			return DATE_TIME_FORMAT.parseDateTime(dateAsString).toDate();
+		} catch (final IllegalArgumentException e) {
 			log.error("can't parse '" + dateAsString + "'.", e);
 		}
 		
