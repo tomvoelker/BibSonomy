@@ -45,9 +45,8 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 			post.setSystemUrl(systemUrl);
 		}
 		
-		// post.setContentId((Integer) source.get(Fields.CONTENT_ID)); TODODZO
 		post.setDate(parseDate(source, Fields.DATE));
-		post.setDate(parseDate(source, Fields.CHANGE_DATE));
+		post.setChangeDate(parseDate(source, Fields.CHANGE_DATE));
 		post.setUser(new User((String) source.get(Fields.USER_NAME)));
 		post.setDescription((String) source.get(Fields.DESCRIPTION));
 		
