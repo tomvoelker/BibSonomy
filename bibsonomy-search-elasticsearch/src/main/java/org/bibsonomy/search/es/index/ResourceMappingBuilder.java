@@ -40,8 +40,11 @@ public abstract class ResourceMappingBuilder<R extends Resource> implements Mapp
 	/** e.g the date format field */
 	protected static final String FORMAT_FIELD = "format";
 	
-	/** iso date format */
+	/** iso date format (optional time) */
 	protected static final String FORMAT_DATE_OPTIONAL_TIME = "dateOptionalTime";
+	
+	/** iso date format */
+	protected static final String DATE_TIME_FORMAT = "date_time";
 	
 	/** not analysed field */
 	protected static final String NOT_ANALYZED = "not_analyzed";
@@ -91,16 +94,19 @@ public abstract class ResourceMappingBuilder<R extends Resource> implements Mapp
 									.field(INDEX_FIELD, NOT_ANALYZED)
 									.field(INCLUDE_IN_ALL_FIELD, false)
 								.endObject()
+								/*
+								 * NOTE: we order our search requests by date
+								 * => this field must be analyzed by es 
+								 */
 								.startObject(ESConstants.Fields.DATE)
 									.field(TYPE_FIELD, DATE_TYPE)
-									.field(INDEX_FIELD, NOT_INDEXED)
-									.field(FORMAT_FIELD, FORMAT_DATE_OPTIONAL_TIME)
+									.field(FORMAT_FIELD, DATE_TIME_FORMAT)
 									.field(INCLUDE_IN_ALL_FIELD, false)
 								.endObject()
 								.startObject(ESConstants.Fields.CHANGE_DATE)
 									.field(TYPE_FIELD, DATE_TYPE)
 									.field(INDEX_FIELD, NOT_INDEXED)
-									.field(FORMAT_FIELD, FORMAT_DATE_OPTIONAL_TIME)
+									.field(FORMAT_FIELD, DATE_TIME_FORMAT)
 									.field(INCLUDE_IN_ALL_FIELD, false)
 								.endObject()
 								.startObject(Fields.SYSTEM_URL)

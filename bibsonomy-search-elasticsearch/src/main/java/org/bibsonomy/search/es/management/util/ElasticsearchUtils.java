@@ -25,7 +25,8 @@ public final class ElasticsearchUtils {
 	private static final Log log = LogFactory.getLog(ElasticsearchUtils.class);
 	
 	
-	private static final DateTimeFormatter DATE_TIME_FORMAT = ISODateTimeFormat.dateOptionalTimeParser();
+	private static final DateTimeFormatter DATE_OPTIONAL_TIME_FORMATTER = ISODateTimeFormat.dateOptionalTimeParser();
+	private static final DateTimeFormatter DATE_TIME_FORMATTER = ISODateTimeFormat.dateTime();
 	
 	private static final String LAST_PERSON_CHANGE_ID_KEY = "last_person_change_id";
 	private static final String LAST_LOG_DATE_KEY = "last_log_date";
@@ -143,6 +144,14 @@ public final class ElasticsearchUtils {
 		searchIndexState.setLastPersonChangeId(((Integer) source.get(LAST_PERSON_CHANGE_ID_KEY)).longValue());
 		return searchIndexState;
 	}
+	
+	/**
+	 * @param date 
+	 * @return the date as string
+	 */
+	public static String dateToString(final Date date) {
+		return DATE_TIME_FORMATTER.print(date.getTime());
+	}
 
 	/**
 	 * @param dateAsString
@@ -150,7 +159,7 @@ public final class ElasticsearchUtils {
 	 */
 	public static Date parseDate(String dateAsString) {
 		try {
-			return DATE_TIME_FORMAT.parseDateTime(dateAsString).toDate();
+			return DATE_OPTIONAL_TIME_FORMATTER.parseDateTime(dateAsString).toDate();
 		} catch (final IllegalArgumentException e) {
 			log.error("can't parse '" + dateAsString + "'.", e);
 		}
