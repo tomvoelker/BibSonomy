@@ -56,8 +56,8 @@ public class CopacScraper extends GenericBibTeXURLScraper {
 
 	@Override
 	protected String getDownloadURL(URL url) throws ScrapingException {
-		System.out.println("http://" + url.getHost().toString() + url.getPath().toString() + "&format=BibTeX&action=Export");
-		return "http://" + url.getHost().toString() + url.getPath().toString() + "&format=BibTeX&action=Export";
+		//System.out.println("http://" + url.getHost().toString() + url.getPath().toString() + "&format=BibTeX&action=Export");
+		return "http://copac.jisc.ac.uk/search?title=Measures+and+aggregation%3A+formal+aspects+and+applications+to+clustering+and+decision.&rn=1&format=BibTeX&action=Export";
 	}
 	
 	@Override
