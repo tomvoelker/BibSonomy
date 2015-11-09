@@ -57,7 +57,7 @@ public abstract class AbstractDataDownloadingTestCase {
 	private final MarcToBibTexReader reader = new MarcToBibTexReader();
 
 	protected BibTex get(final String hebisId) {
-		final Collection<ImportResource> bibs = reader.read(new ImportResource(downloadMarcWithPica(hebisId)));
+		final Collection<BibTex> bibs = reader.read(new ImportResource(downloadMarcWithPica(hebisId)));
 		assertEquals(1, bibs.size());
 		return bibs.iterator().next();
 	}

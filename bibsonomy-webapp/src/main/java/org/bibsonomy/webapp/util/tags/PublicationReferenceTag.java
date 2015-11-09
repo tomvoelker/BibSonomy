@@ -87,6 +87,7 @@ public class PublicationReferenceTag extends RequestContextAwareTag {
 				continue;
 			}
 			changed = true;
+			// FIXME: use org.bibsonomy.services.URLGenerator to build URL
 			StringBuilder url = new StringBuilder("<a class=\"postlink\"href=\"/");
 
 			url.append(getResourceString(matcher.group(RES_TYPE_GROUP_ID)));

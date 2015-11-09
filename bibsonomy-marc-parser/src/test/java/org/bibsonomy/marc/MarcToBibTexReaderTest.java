@@ -52,13 +52,14 @@ public class MarcToBibTexReaderTest extends AbstractDataDownloadingTestCase {
 	@Test
 	public void testSomething() {
 		MarcToBibTexReader reader = new MarcToBibTexReader();
-		Collection<ImportResource> bibs = reader.read(new ImportResource(new ClasspathResourceData("/hebis_data/HEB01711621X.marc", "application/marc")));
-		Collection<ImportResource> springerBibs = reader.read(new ImportResource(new ClasspathResourceData("/marc_files/part29.dat", "application/marc")));
+		Collection<BibTex> bibs = reader.read(new ImportResource(new ClasspathResourceData("/hebis_data/HEB01711621X.marc", "application/marc")));
+		Collection<BibTex> springerBibs = reader.read(new ImportResource(new ClasspathResourceData("/marc_files/part29.dat", "application/marc")));
 		
+		// TODO: add asserts
 		printStuff(bibs);
 	}
 
-	public void printStuff(Collection<ImportResource> bibs) {
+	public void printStuff(Collection<BibTex> bibs) {
 		for (BibTex b : bibs) {
 			printIt(b);
 		}
@@ -109,11 +110,11 @@ public class MarcToBibTexReaderTest extends AbstractDataDownloadingTestCase {
 	@Test
 	public void testHebisMarcPlusPica() {
 		MarcToBibTexReader reader = new MarcToBibTexReader();
-		Collection<ImportResource> bibs = new ArrayList<ImportResource>();
+		Collection<BibTex> bibs = new ArrayList<BibTex>();
 		Data dat;
 		for(int i = 0; i < RESOURCES_TO_TEST && i < RESOURCES.length; i++) {
 			dat = new DualDataWrapper(new ClasspathResourceData("/hebis_data/"+RESOURCES[i].split(":")[0], "application/marc"), new ClasspathResourceData("/hebis_data/"+RESOURCES[i].split(":")[1], "application/pica"));
-			for (ImportResource bib : reader.read(new ImportResource(dat))) {
+			for (BibTex bib : reader.read(new ImportResource(dat))) {
 				bib.setOpenURL(RESOURCES[i]);
 				bibs.add(bib);
 			}
@@ -125,8 +126,7 @@ public class MarcToBibTexReaderTest extends AbstractDataDownloadingTestCase {
 	@Test
 	public void testUmlauts() {
 		MarcToBibTexReader reader = new MarcToBibTexReader();
-		for (ImportResource bib : reader.read(new ImportResource(downloadMarcWithPica("HEB113338945")))) {
-			printIt(bib);
+		for (BibTex bib : reader.read(new ImportResource(downloadMarcWithPica("HEB113338945")))) {
 			assertEquals("Jörg", bib.getAuthor().get(0).getFirstName());
 			assertEquals("HEB113338945", bib.getMiscField("uniqueid"));
 		}
@@ -135,7 +135,7 @@ public class MarcToBibTexReaderTest extends AbstractDataDownloadingTestCase {
 	@Test
 	public void testUmlauts2() {
 		MarcToBibTexReader reader = new MarcToBibTexReader();
-		for (ImportResource bib : reader.read(new ImportResource(downloadMarcWithPica("HEB107697521")))) {
+		for (BibTex bib : reader.read(new ImportResource(downloadMarcWithPica("HEB107697521")))) {
 			printIt(bib);
 			assertTrue(bib.getTitle(), bib.getTitle().contains("Português"));
 			assertEquals("São Paulo", bib.getAddress());
@@ -146,7 +146,7 @@ public class MarcToBibTexReaderTest extends AbstractDataDownloadingTestCase {
 	@Test
 	public void testHebisIdR() {
 		MarcToBibTexReader reader = new MarcToBibTexReader();
-		for (ImportResource bib : reader.read(new ImportResource(downloadMarcWithPica("HEBr846866323")))) {
+		for (BibTex bib : reader.read(new ImportResource(downloadMarcWithPica("HEBr846866323")))) {
 			printIt(bib);
 			assertEquals("HEBr846866323", bib.getMiscField("uniqueid"));
 		}

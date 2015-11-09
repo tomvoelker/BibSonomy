@@ -97,6 +97,8 @@ public class CslModelConverter {
 		
 		typemap.put(BibTexUtils.ELECTRONIC, "webpage");
 		
+		typemap.put(BibTexUtils.PRESENTATION, "speech");
+		
 		typemap.put(BibTexUtils.MISC, "article");
 		
 		typemap.put(BibTexUtils.STANDARD, "legislation");

@@ -83,10 +83,10 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.managers.AdminDatabaseManager;
 import org.bibsonomy.database.managers.AuthorDatabaseManager;
-import org.bibsonomy.database.managers.ClipboardDatabaseManager;
 import org.bibsonomy.database.managers.BibTexDatabaseManager;
 import org.bibsonomy.database.managers.BibTexExtraDatabaseManager;
 import org.bibsonomy.database.managers.BookmarkDatabaseManager;
+import org.bibsonomy.database.managers.ClipboardDatabaseManager;
 import org.bibsonomy.database.managers.CrudableContent;
 import org.bibsonomy.database.managers.DocumentDatabaseManager;
 import org.bibsonomy.database.managers.GoldStandardBookmarkDatabaseManager;
@@ -1442,7 +1442,7 @@ public class DBLogic implements LogicInterface {
 	 * org.bibsonomy.model.logic.PostLogicInterface#createPosts(java.util.List)
 	 */
 	@Override
-	public List<String> createPosts(final List<Post<?>> posts) {
+	public List<String> createPosts(List<Post<?>> posts) {
 		// TODO: Which of these checks should result in a DatabaseException,
 		this.ensureLoggedIn();
 		/*
@@ -1454,7 +1454,7 @@ public class DBLogic implements LogicInterface {
 		}
 
 		// XXX: find other solution which does not use BibTex subclasses
-		this.replaceImportResources(posts);
+		posts = this.replaceImportResources(posts);
 
 		/*
 		 * insert posts TODO: more efficient implementation (transactions,
@@ -1491,25 +1491,30 @@ public class DBLogic implements LogicInterface {
 		return hashes;
 	}
 
-	private void replaceImportResources(final List<? extends Post<? extends Resource>> posts) {
+	private List<Post<?>> replaceImportResources(final List<? extends Post<? extends Resource>> posts) {
+		final List<Post<?>> replacedPosts = new LinkedList<>();
 		for (final Post<? extends Resource> post : posts) {
-			this.replaceImportResource(post);
+			replacedPosts.add(this.replaceImportResource(post));
 		}
+		
+		return replacedPosts;
 	}
 
-	protected <T extends Resource> void replaceImportResource(final Post<T> post) {
-		final T resource = post.getResource();
+	protected Post<?> replaceImportResource(final Post<?> post) {
+		final Resource resource = post.getResource();
 		if (resource instanceof ImportResource) {
-			@SuppressWarnings("unchecked")
-			// this is safe because PublicationImportResource is final, and the
-			// importer creates PublicationImportResources again.
-			final T parsedResource = (T) this.parsePublicationImportResource((ImportResource) resource);
-			post.setResource(parsedResource);
+			final BibTex parsedResource = this.parsePublicationImportResource((ImportResource) resource);
+			
+			final Post<BibTex> replacedPost = new Post<>(post, true);
+			replacedPost.setResource(parsedResource);
+			return replacedPost;
 		}
+		
+		return post;
 	}
 
-	private ImportResource parsePublicationImportResource(final ImportResource resource) {
-		final Collection<ImportResource> bibtexs = this.bibtexReader.read(resource);
+	private BibTex parsePublicationImportResource(final ImportResource resource) {
+		final Collection<BibTex> bibtexs = this.bibtexReader.read(resource);
 		if (!present(bibtexs)) {
 			throw new IllegalStateException("bibtexReader did not throw exception and returned empty result");
 		}
