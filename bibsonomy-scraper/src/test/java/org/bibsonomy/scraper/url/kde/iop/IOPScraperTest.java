@@ -55,4 +55,11 @@ public class IOPScraperTest {
 		UnitTestRunner.runSingleTest("url_178");
 	}
 	
+	/*
+	 * starts URL test with id url_297
+	 */
+	@Test
+	public void url3TestRun(){
+		UnitTestRunner.runSingleTest("url_297");
+	}
 }
