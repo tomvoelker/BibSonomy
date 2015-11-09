@@ -1831,4 +1831,10 @@
 		<BibFile>AAAIScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.aaai.AAAIScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_297">
+		<TestDescription>URL scraping test for the IOP scraper</TestDescription>
+		<URL>http://iopscience.iop.org/article/10.1088/1742-5468/2008/10/P10008/meta</URL>
+		<BibFile>IOPScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.iop.IOPScraper</Scraper>
+	</URLTest>
 </test:Tests>
