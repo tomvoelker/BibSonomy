@@ -78,7 +78,7 @@ public class AutoSync {
 			final User clientUser = this.adminLogic.getUserDetails(syncService.getUserName());
 
 			// check if user has run a sync in both-directions before, send notification mail
-			if (syncService.isFirstsync())
+			if (syncService.getInitialAutoSync())
 			{
 				if (calc.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
 					log.info("no initial sync in both-directions was done; send eMail to User");

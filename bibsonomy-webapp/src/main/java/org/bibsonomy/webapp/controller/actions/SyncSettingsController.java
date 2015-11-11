@@ -38,7 +38,6 @@ import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.controller.SettingsPageController;
-import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
@@ -48,9 +47,9 @@ import org.bibsonomy.webapp.validation.SyncSettingsValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 
 /**
- * @author wla
+ * @author wla, vhem
  */
-public class SyncSettingsController extends SettingsPageController implements MinimalisticController<SettingsViewCommand>, ValidationAwareController<SettingsViewCommand> {
+public class SyncSettingsController extends SettingsPageController implements ValidationAwareController<SettingsViewCommand> {
 	
 	@Override
 	public SettingsViewCommand instantiateCommand() {
@@ -93,11 +92,12 @@ public class SyncSettingsController extends SettingsPageController implements Mi
 			}
 		}
 		
+		final String loginUserName = loginUser.getName();
 		/*
 		 * Get the service whose form has been sent (i.e., that 
 		 * should be updated or deleted)
 		 */
-		final SyncService syncServer = getSyncServer(command.getSyncServer());
+		final SyncService syncServer = getSyncServer(command.getSyncServer(), loginUserName);
 
 		final HttpMethod httpMethod = this.requestLogic.getHttpMethod();
 		
@@ -113,21 +113,18 @@ public class SyncSettingsController extends SettingsPageController implements Mi
 			return view; 
 		}
 
-		
-		final String loginUserName = loginUser.getName();
-
 		switch (httpMethod) {
 		case POST:
 			final SyncService newSyncServer = command.getNewSyncServer();
 			this.logic.createSyncServer(loginUserName, newSyncServer);
 			// forward user to sync-page to perform an initial sync in BOTH directions first 
-			if (SyncUtils.checkFirstAutoSync(newSyncServer))
+			if (SyncUtils.checkInitialAutoSync(newSyncServer))
 				return new ExtendedRedirectView("/sync");
 			break;
 		case PUT:
 			this.logic.updateSyncServer(loginUserName, syncServer);
 			// forward user to sync-page to perform an initial sync in BOTH directions first 
-			if (SyncUtils.checkFirstAutoSync(syncServer))
+			if (SyncUtils.checkInitialAutoSync(syncServer))
 				return new ExtendedRedirectView("/sync");
 			break;
 		case DELETE:
@@ -147,9 +144,16 @@ public class SyncSettingsController extends SettingsPageController implements Mi
 	 * @param syncServices
 	 * @return
 	 */
-	private SyncService getSyncServer(final List<SyncService> syncServices) {
+	private SyncService getSyncServer(final List<SyncService> syncServices, final String userName) {
 		for (final SyncService syncService : syncServices) {
-			if (present(syncService.getService())) return syncService;
+			if (present(syncService.getService()))
+			{
+				// get initialAutoSync value for configured sync-server from database
+				List<SyncService> serviceDetails = this.logic.getSyncServiceSettings(userName, syncService.getService(), true);
+				if (present(serviceDetails)) syncService.setInitialAutoSync(serviceDetails.get(0).getInitialAutoSync());
+				
+				return syncService;
+			}
 		}
 		return null;
 	}
@@ -159,7 +163,7 @@ public class SyncSettingsController extends SettingsPageController implements Mi
 	 *  
 	 * @param syncServices
 	 */
-	private void replaceSyncService(final List<SyncService> syncServices, final SyncService syncService) {
+	private static void replaceSyncService(final List<SyncService> syncServices, final SyncService syncService) {
 		for (int i = 0; i < syncServices.size(); i++) {
 			final SyncService next = syncServices.get(i);
 			if (next.getService().equals(syncService.getService())) {

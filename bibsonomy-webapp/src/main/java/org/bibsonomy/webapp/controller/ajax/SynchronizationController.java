@@ -121,8 +121,8 @@ public class SynchronizationController extends AjaxController implements Minimal
 			 */
 			final Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan;
 			try {
-				// overwrite sync direction if first sync & auto sync
-				if (SyncUtils.checkFirstAutoSync(server)) {
+				// overwrite sync direction if initialAutoSync & auto-sync configured
+				if (SyncUtils.checkInitialAutoSync(server)) {
 					server.setDirection(SynchronizationDirection.BOTH);
 				}
 				syncPlan = client.getSyncPlan(logic, server);
@@ -172,9 +172,9 @@ public class SynchronizationController extends AjaxController implements Minimal
 				// synchronize
 				syncResult = client.synchronize(logic, server, syncPlan2);
 
-				// check servers firstSync and set the servers firstSync to false
-				if (SyncUtils.checkFirstAutoSync(server)) {
-					server.setFirstsync(false);
+				// check servers initialAutoSync and set the servers initialAutoSync to false
+				if (SyncUtils.checkInitialAutoSync(server)) {
+					server.setInitialAutoSync(false);
 					this.logic.updateSyncServer(loginUser.getName(), server);
 				}
 			} catch (final SynchronizationRunningException e) {

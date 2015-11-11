@@ -49,7 +49,7 @@ public class SyncService {
 	private Map<Class<? extends Resource>, Map<String, String>> plan;
 	private String sslDn;
 	private boolean autosync = false;
-	private boolean firstsync = true;
+	private boolean initialAutoSync = false;
 	private String userName;
 	
 	/**
@@ -263,18 +263,18 @@ public class SyncService {
 	}
 
 	/**
-	 * @return get firstsync
-	 * if there was a bidirectional sync before autosync
+	 * @return get initialAutoSync
+	 * true, if there was a bidirectional sync before auto-sync (required for auto-sync)
 	 */
-	public boolean isFirstsync() {
-		return this.firstsync;
+	public boolean getInitialAutoSync() {
+		return this.initialAutoSync;
 	}
 
 	/**
-	 * @param firstsync 
-	 * first bidirectional sync was successful
+	 * @param initialAutoSync 
+	 * set to true if first bidirectional sync was successful
 	 */
-	public void setFirstsync(boolean firstsync) {
-		this.firstsync = firstsync;
+	public void setInitialAutoSync(boolean initialAutoSync) {
+		this.initialAutoSync = initialAutoSync;
 	}
 }

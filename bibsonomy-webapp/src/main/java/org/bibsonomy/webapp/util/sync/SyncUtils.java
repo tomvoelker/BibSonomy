@@ -136,12 +136,12 @@ public class SyncUtils {
 	
 	/**
 	 * @param service
-	 * @return true if service isFirstSync && isAutosync  	
+	 * @return true, if service initialAutoSync & isAutosync  	
 	 */
-	public static boolean checkFirstAutoSync(SyncService service) {
+	public static boolean checkInitialAutoSync(SyncService service) {
 
 		if (present(service))
-			return (service.isFirstsync() && service.isAutosync());
+			return (service.getInitialAutoSync() && service.isAutosync());
 		
 		return false;
 		

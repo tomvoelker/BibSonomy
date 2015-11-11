@@ -16,7 +16,7 @@
 	</insert>
 
 	<select id="getSyncServices" resultMap="SynchronizationCommon.syncService" parameterClass="syncParam">
-		SELECT ss.name, ss.uri, ss.ssl_dn, ss.secure_api, NULL AS credentials, NULL AS direction, NULL AS content_type, NULL AS strategy, false AS autosync, false AS firstsync, NULL as user_name
+		SELECT ss.name, ss.uri, ss.ssl_dn, ss.secure_api, NULL AS credentials, NULL AS direction, NULL AS content_type, NULL AS strategy, false AS autosync, false AS initialautosync, NULL as user_name
 		FROM sync_services ss
 		WHERE ss.server = #server#
 		 <isNotEmpty property="sslDn" prepend="AND">
@@ -42,7 +42,7 @@
 	</select>
 
 	<select id="getSyncServers" resultMap="SynchronizationCommon.syncService" parameterClass="syncParam">
-		SELECT s.user_name, s.credentials, ss.name, ss.uri, ss.secure_api, ss.ssl_dn, s.content_type, s.direction, s.strategy, s.autosync, s.firstsync <isEmpty property="userName" prepend=", ">s.user_name</isEmpty>
+		SELECT s.user_name, s.credentials, ss.name, ss.uri, ss.secure_api, ss.ssl_dn, s.content_type, s.direction, s.strategy, s.autosync, s.initialautosync <isEmpty property="userName" prepend=", ">s.user_name</isEmpty>
 		  FROM sync s
 		    JOIN sync_services ss USING (service_id)
 		  WHERE ss.server = #server#
@@ -138,7 +138,7 @@
 		  	  s.content_type = #syncService.resourceType#,
 		  	  s.strategy = #syncService.strategy#,
 		  	  s.autosync = #syncService.autosync#,
-		  	  s.firstsync = #syncService.firstsync#
+		  	  s.initialautosync = #syncService.initialautosync#
 		  WHERE s.user_name = #userName#
 			AND ss.uri = #syncService.service#
 			AND ss.server = TRUE
