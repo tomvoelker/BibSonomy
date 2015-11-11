@@ -413,7 +413,14 @@ public class DBLogic implements LogicInterface {
 			 * statements silently fails. :-(
 			 */
 			log.debug("try to set syncdata as planned");
-			this.syncDBManager.insertSynchronizationData(userName, service, resourceType, new Date(), SynchronizationStatus.PLANNED, session);
+
+			final SyncService syncService = this.syncDBManager.getSyncServiceDetails(service, session);
+			if (present(syncService)) {
+				this.syncDBManager.insertSynchronizationData(userName, service, resourceType, new Date(), SynchronizationStatus.PLANNED, session);
+			} else {
+				log.error("no SyncService found with URI: " + service.toString());
+				throw new IllegalArgumentException("no SyncService found with URI: " + service.toString());
+			}
 
 			/*
 			 * get posts from server (=this machine)
