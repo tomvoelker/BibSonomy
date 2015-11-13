@@ -7,7 +7,7 @@
 						http://www.springframework.org/schema/util 
 						http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 						
-	<bean id="propertyConfigurerLucene" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	<bean id="propertyConfigurerElasticsearch" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
 				<value>classpath:elasticsearch-test.properties</value>

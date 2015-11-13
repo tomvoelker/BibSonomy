@@ -104,7 +104,7 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
-	 * tests confluence of lucene's and bibsonomy's database post queries 
+	 * tests confluence of search's and bibsonomy's database post queries 
 	 */
 	@Test
 	public void getBibtexUserPosts() {
@@ -323,7 +323,7 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 		CommonModelUtils.setBeanPropertiesOn(publication);
 		publication.setCount(0);
 		publication.setEntrytype("inproceedings");
-		publication.setAuthor(PersonNameUtils.discoverPersonNames("MegaMan and Lucene GigaWoman " + SEARCH_MAGIC_AUTHOR));
+		publication.setAuthor(PersonNameUtils.discoverPersonNames("MegaMan and Search GigaWoman " + SEARCH_MAGIC_AUTHOR));
 		publication.setEditor(PersonNameUtils.discoverPersonNames("Peter Silie " + SEARCH_MAGIC_EDITOR));
 		
 		// TODO: remove random

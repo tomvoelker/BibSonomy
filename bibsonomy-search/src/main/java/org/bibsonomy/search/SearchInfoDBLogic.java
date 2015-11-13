@@ -47,9 +47,8 @@ public class SearchInfoDBLogic extends AbstractDatabaseManager implements Search
 		return this.sessionFactory.getDatabaseSession();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.lucene.database.LuceneInfoLogic#getFriendsForUser(java.lang.String)
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.SearchInfoLogic#getFriendsForUser(java.lang.String)
 	 */
 	@Override
 	public Collection<String> getFriendsForUser(final String userName) {
@@ -67,7 +66,7 @@ public class SearchInfoDBLogic extends AbstractDatabaseManager implements Search
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.bibsonomy.lucene.database.LuceneInfoLogic#getGroupMembersByGroupName(java.lang.String)
+	 * @see org.bibsonomy.search.SearchInfoLogic#getGroupMembersByGroupName(java.lang.String)
 	 */
 	@Override
 	public List<String> getGroupMembersByGroupName(final String groupName) {

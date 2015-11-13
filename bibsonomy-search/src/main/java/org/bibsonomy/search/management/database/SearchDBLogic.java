@@ -45,7 +45,7 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.ResourcePersonRelationLogStub;
 import org.bibsonomy.model.User;
 import org.bibsonomy.search.SearchPost;
-import org.bibsonomy.search.management.database.manager.PersonLuceneDatabaseManager;
+import org.bibsonomy.search.management.database.manager.PersonSearchDatabaseManager;
 import org.bibsonomy.search.management.database.params.SearchParam;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 
@@ -60,7 +60,7 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 	private DBSessionFactory sessionFactory;
 	private final PersonDatabaseManager personDatabaseManager = PersonDatabaseManager.getInstance();
 	private final GeneralDatabaseManager generalDatabaseManager = GeneralDatabaseManager.getInstance();
-	private final PersonLuceneDatabaseManager personLuceneDatabaseManager = PersonLuceneDatabaseManager.getInstance();
+	private final PersonSearchDatabaseManager personSearchDatabaseManager = PersonSearchDatabaseManager.getInstance();
 	
 	protected DBSession openSession() {
 		return this.sessionFactory.getDatabaseSession();
@@ -87,7 +87,7 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 	}
 	
 	@SuppressWarnings("unchecked")
-	private List<SearchPost<R>> queryForLucenePosts(final String query, final Object param, final DBSession session) {
+	private List<SearchPost<R>> queryForSearchPosts(final String query, final Object param, final DBSession session) {
 		final List<SearchPost<R>> posts = (List<SearchPost<R>>) this.queryForList(query, param, session);
 		// FIXME: remove ugly instance of check!
 		if (BibTex.class.isAssignableFrom(this.resourceClass)) {
@@ -126,7 +126,7 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getPostsForUser(java.lang.String, java.lang.String, org.bibsonomy.common.enums.HashID, int, java.util.List, int, int)
+	 * @see org.bibsonomy.search.management.database.SearchDBInterface#getPostsForUser(java.lang.String, java.lang.String, org.bibsonomy.common.enums.HashID, int, java.util.List, int, int)
 	 */
 	@Override
 	public List<SearchPost<R>> getPostsForUser(final String userName, final int limit, final int offset) {
@@ -137,7 +137,7 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 		
 		final DBSession session = this.openSession();
 		try {
-			return this.queryForLucenePosts("get" + this.getResourceName() + "ForUser", param, session);
+			return this.queryForSearchPosts("get" + this.getResourceName() + "ForUser", param, session);
 		} finally {
 			session.close();
 		}
@@ -145,7 +145,7 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getNewestRecordDateFromTas()
+	 * @see org.bibsonomy.search.management.database.SearchDBInterface#getNewestRecordDateFromTas()
 	 */
 	@Override
 	public Date getNewestRecordDateFromTas() {
@@ -159,7 +159,7 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getContentIdsToDelete(java.util.Date)
+	 * @see org.bibsonomy.search.management.database.SearchDBInterface#getContentIdsToDelete(java.util.Date)
 	 */
 	@Override
 	public List<Integer> getContentIdsToDelete(final Date lastLogDate) {
@@ -173,7 +173,7 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getLastLogDate()
+	 * @see org.bibsonomy.search.management.database.SearchDBInterface#getLastLogDate()
 	 */
 	@Override
 	public Date getLastLogDate() {
@@ -191,7 +191,7 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getNumberOfPosts()
+	 * @see org.bibsonomy.search.management.database.SearchDBInterface#getNumberOfPosts()
 	 */
 	@Override
 	public int getNumberOfPosts() {
@@ -205,7 +205,7 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getPostEntries(java.lang.Integer, java.lang.Integer)
+	 * @see org.bibsonomy.search.management.database.SearchDBInterface#getPostEntries(java.lang.Integer, java.lang.Integer)
 	 */
 	@Override
 	public List<SearchPost<R>> getPostEntries(final int lastContentId, final int max) {
@@ -215,7 +215,7 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 		
 		final DBSession session = this.openSession();
 		try {
-			return this.queryForLucenePosts("get" + this.getResourceName() + "ForIndex", param, session);
+			return this.queryForSearchPosts("get" + this.getResourceName() + "ForIndex", param, session);
 		} finally {
 			session.close();
 		}
@@ -223,7 +223,7 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getNewPosts(java.lang.Integer)
+	 * @see org.bibsonomy.search.management.database.SearchDBInterface#getNewPosts(java.lang.Integer)
 	 */
 	@Override
 	public List<SearchPost<R>> getNewPosts(final int lastTasId, final int limit, final int offset) {
@@ -234,7 +234,7 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 		
 		final DBSession session = this.openSession();
 		try {
-			return this.queryForLucenePosts("get" + this.getResourceName() + "PostsForTimeRange", param, session);
+			return this.queryForSearchPosts("get" + this.getResourceName() + "PostsForTimeRange", param, session);
 		} finally {
 			session.close();
 		}
@@ -259,7 +259,7 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getLastPersonChangeId()
+	 * @see org.bibsonomy.search.management.database.SearchDBInterface#getLastPersonChangeId()
 	 */
 	@Override
 	public long getLastPersonChangeId() {
@@ -275,7 +275,7 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 	public List<ResourcePersonRelationLogStub> getPubPersonRelationsByChangeIdRange(long fromPersonChangeId, long toPersonChangeIdExclusive) {
 		final DBSession session = this.openSession();
 		try {
-			return personLuceneDatabaseManager.getPubPersonChangesByChangeIdRange(fromPersonChangeId, toPersonChangeIdExclusive, session);
+			return personSearchDatabaseManager.getPubPersonChangesByChangeIdRange(fromPersonChangeId, toPersonChangeIdExclusive, session);
 		} finally {
 			session.close();
 		}
@@ -285,7 +285,7 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 	public List<PersonName> getPersonMainNamesByChangeIdRange(long firstChangeId, long toPersonChangeIdExclusive) {
 		final DBSession session = this.openSession();
 		try {
-			return personLuceneDatabaseManager.getPersonMainNamesByChangeIdRange(firstChangeId, toPersonChangeIdExclusive, session);
+			return personSearchDatabaseManager.getPersonMainNamesByChangeIdRange(firstChangeId, toPersonChangeIdExclusive, session);
 		} finally {
 			session.close();
 		}
@@ -295,14 +295,14 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 	public List<Person> getPersonByChangeIdRange(long firstChangeId, long toPersonChangeIdExclusive) {
 		final DBSession session = this.openSession();
 		try {
-			return personLuceneDatabaseManager.getPersonByChangeIdRange(firstChangeId, toPersonChangeIdExclusive, session);
+			return personSearchDatabaseManager.getPersonByChangeIdRange(firstChangeId, toPersonChangeIdExclusive, session);
 		} finally {
 			session.close();
 		}
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getDbState()
+	 * @see org.bibsonomy.search.management.database.SearchDBInterface#getDbState()
 	 */
 	@Override
 	public SearchIndexSyncState getDbState() {

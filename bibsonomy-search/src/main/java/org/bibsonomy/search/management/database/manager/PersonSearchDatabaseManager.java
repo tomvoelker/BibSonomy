@@ -40,14 +40,14 @@ import org.bibsonomy.model.ResourcePersonRelationLogStub;
  *
  * @author jensi
  */
-public class PersonLuceneDatabaseManager  extends AbstractDatabaseManager {
-	private final static PersonLuceneDatabaseManager singleton = new PersonLuceneDatabaseManager();
+public class PersonSearchDatabaseManager  extends AbstractDatabaseManager {
+	private final static PersonSearchDatabaseManager singleton = new PersonSearchDatabaseManager();
 
-	public static PersonLuceneDatabaseManager getInstance() {
+	public static PersonSearchDatabaseManager getInstance() {
 		return singleton;
 	}
 	
-	private PersonLuceneDatabaseManager() {
+	private PersonSearchDatabaseManager() {
 	}
 
 	public List<ResourcePersonRelationLogStub> getPubPersonChangesByChangeIdRange(long fromPersonChangeId, long toPersonChangeIdExclusive, DBSession databaseSession) {

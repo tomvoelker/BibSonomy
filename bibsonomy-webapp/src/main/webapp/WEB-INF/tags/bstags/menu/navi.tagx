@@ -145,7 +145,7 @@
 					
 					<c:if test="${loginUser.role eq 'ADMIN' }">
 						<li class="dropdown ${activeTab eq 'admin' ? 'active' : ''}" data-touch="false">
-							<a href="${relativeUrlGenerator.getAdminUrlByName('')}" class="dropdown-toggle" data-toggle="dropdown">admin<b class="caret">&amp;nbsp;</b></a>
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">admin<b class="caret">&amp;nbsp;</b></a>
 							<ul class="dropdown-menu">
 								<li><a href="${relativeUrlGenerator.getAdminUrlByName('spam')}">users</a></li>
 								<li><a href="${relativeUrlGenerator.getAdminUrlByName('group')}">groups</a></li>

@@ -369,7 +369,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 //								.should(QueryBuilders.termQuery(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, NormalizedEntryTypes.bachelor_thesis.name()).boost(6)) //
 //								.should(QueryBuilders.termQuery(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, NormalizedEntryTypes.candidate_thesis.name()).boost(5)) //
 						) //
-						//.should(QueryBuilders.termQuery(LuceneFieldNames.USER_NAME, genealogyUser)) //
+						//.should(QueryBuilders.termQuery(ESConstants.Fields.USER_NAME, genealogyUser)) //
 						, addYearFilterIfYearInQuery( //
 								null, // termFilter(ESConstants.SYSTEM_URL_FIELD_NAME, systemUrl), //
 								options.getQuery()) //

@@ -29,7 +29,7 @@ package org.bibsonomy.search.management.database.params;
 import java.util.Date;
 
 /**
- * Class for lucene queries
+ * Class for search queries
  * 
  * @author Jens Illig
  */

@@ -47,7 +47,8 @@ import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 public interface ResourceSearch<R extends Resource> {
 
 	/**
-	 * search for posts using the ES / lucene index 
+	 * search for posts using a full text search index
+	 * 
 	 * @param userName
 	 * @param requestedUserName
 	 * @param requestedGroupName

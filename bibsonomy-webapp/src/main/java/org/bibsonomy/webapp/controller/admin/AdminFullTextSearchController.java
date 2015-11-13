@@ -48,8 +48,7 @@ import org.bibsonomy.webapp.view.Views;
 import org.springframework.security.access.AccessDeniedException;
 
 /**
- * Controller for lucene admin page
- * controller for /admin/generateSharedIndex page
+ * Controller for the full text search admin page
  * 
  * @author Sven Stefani
  * @author jensi

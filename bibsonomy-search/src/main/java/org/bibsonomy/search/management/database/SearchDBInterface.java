@@ -37,9 +37,11 @@ import org.bibsonomy.model.ResourcePersonRelationLogStub;
 import org.bibsonomy.model.User;
 import org.bibsonomy.search.SearchPost;
 import org.bibsonomy.search.update.SearchIndexSyncState;
+import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
- * interface encapsulating database access for lucene
+ * interface encapsulating database access for {@link ResourceSearch}
+ * implementations
  * 
  * @author fei
  * 
