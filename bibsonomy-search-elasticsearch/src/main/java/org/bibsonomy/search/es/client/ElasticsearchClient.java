@@ -286,6 +286,16 @@ public class ElasticsearchClient implements ESClient {
 	}
 	
 	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.es.ESClient#updateDocuments(java.lang.String, java.lang.String, java.util.Map)
+	 */
+	@Override
+	public boolean updateOrCreateDocuments(String indexName, String type, Map<String, Map<String, Object>> jsonDocuments) {
+		final Set<String> idsToDelete = jsonDocuments.keySet();
+		this.deleteDocuments(indexName, type, idsToDelete);
+		return this.insertNewDocuments(indexName, type, jsonDocuments);
+	}
+	
+	/* (non-Javadoc)
 	 * @see org.bibsonomy.search.es.ESClient#deleteDocuments(java.lang.String, java.lang.String, java.util.Set)
 	 */
 	@Override

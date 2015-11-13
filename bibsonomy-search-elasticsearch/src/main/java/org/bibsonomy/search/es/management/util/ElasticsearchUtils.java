@@ -49,21 +49,6 @@ public final class ElasticsearchUtils {
 	}
 
 	/**
-	 * returns the alias used commonly for all systems indexes of the resource 
-	 * 
-	 * @param resourceType
-	 * @param isActiveIndex
-	 * @return returns the alias name
-	 */
-	@Deprecated // TODO: use system uri as param
-	public static String getGlobalAliasForResource(final Class<? extends Resource> resourceType, final boolean isActiveIndex) {
-		if (isActiveIndex) {
-			return ElasticsearchUtils.ACTIVE_INDEX_ALIAS + "-" + ResourceFactory.getResourceName(resourceType).toLowerCase();
-		}
-		return ElasticsearchUtils.INACTIVE_INDEX_ALIAS + "-" + ResourceFactory.getResourceName(resourceType).toLowerCase();
-	}
-
-	/**
 	 * returns the index name based on the home url and resource type
 	 * Index Name: systemurl + ResourceType + Unix time stamp
 	 * @param systemHome
@@ -115,7 +100,6 @@ public final class ElasticsearchUtils {
 	 * @return the id for the elastic search index
 	 */
 	public static String createElasticSearchId(int contentId) {
-		// TODO: handle Systemhome? TODODZO return (((long) systemHome.hashCode()) << 32l) + contentId.longValue();
 		return String.valueOf(contentId);
 	}
 

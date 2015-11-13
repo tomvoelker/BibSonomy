@@ -126,7 +126,9 @@ public interface ESClient {
 	 * @return 
 	 */
 	boolean removeDocumentFromIndex(String indexName, String resourceTypeAsString, String indexID);
-
+	
+	boolean updateOrCreateDocuments(String indexName, String type, Map<String, Map<String, Object>> jsonDocuments);
+	
 	/**
 	 * @param indexName
 	 * @param alias

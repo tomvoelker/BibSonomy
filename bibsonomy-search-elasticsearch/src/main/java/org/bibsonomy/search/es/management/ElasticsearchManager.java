@@ -4,6 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URI;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -49,7 +50,7 @@ public class ElasticsearchManager<R extends Resource> {
 	
 	/** how many posts should be retrieved from the database */
 	public static final int SQL_BLOCKSIZE = 5000;
-	private static final long QUERY_TIME_OFFSET_MS = 0; // TODO: remove?
+	private static final long QUERY_TIME_OFFSET_MS = 1000;
 	
 	/**
 	 * task for index generation
@@ -300,17 +301,37 @@ public class ElasticsearchManager<R extends Resource> {
 	
 			/*
 			 * 3) add new and updated posts to the index
-			 * FIXME: use steps TODODZO
 			 */
-			final List<SearchPost<R>> newPosts = this.inputLogic.getNewPosts(oldLastTasId, Integer.MAX_VALUE, 0);
-			final int totalCountNewPosts = newPosts.size();
-			
 			log.debug("inserting new/updated posts into " + localInactiveAlias);
-			for (final SearchPost<R> post : newPosts) {
-				// just in case there is already a post with this id
-				this.deletePostWithContentId(localInactiveAlias, post.getContentId().intValue());
-				this.insertPost(localInactiveAlias, post);
-				newLastTasId = Math.max(post.getLastTasId().intValue(), newLastTasId);
+			final Map<String, Map<String, Object>> convertedPosts = new HashMap<>();
+			List<SearchPost<R>> newPosts;
+			int offset = 0;
+			int totalCountNewPosts = 0;
+			do {
+				newPosts = this.inputLogic.getNewPosts(oldLastTasId, SearchDBInterface.SQL_BLOCKSIZE, offset);
+				for (final SearchPost<R> post : newPosts) {
+					final Map<String, Object> convertedPost = this.tools.getConverter().convert(post);
+					
+					final String id = ElasticsearchUtils.createElasticSearchId(post.getContentId().intValue());
+					
+					convertedPosts.put(id, convertedPost);
+					newLastTasId = Math.max(post.getLastTasId().intValue(), newLastTasId);
+				}
+				
+				if (convertedPosts.size() >= SearchDBInterface.SQL_BLOCKSIZE / 2) {
+					/*
+					 * just in case there is already a post with this id we call
+					 * create or update
+					 */
+					this.clearQueue(localInactiveAlias, convertedPosts);
+				}
+				
+				totalCountNewPosts += newPosts.size();
+				offset += SearchDBInterface.SQL_BLOCKSIZE;
+			} while (newPosts.size() == SearchDBInterface.SQL_BLOCKSIZE);
+			
+			if (present(convertedPosts)) {
+				this.clearQueue(localInactiveAlias, convertedPosts);
 			}
 			
 			log.debug("inserted " + totalCountNewPosts + " new/updated posts into " + localInactiveAlias);
@@ -342,6 +363,15 @@ public class ElasticsearchManager<R extends Resource> {
 		} finally {
 			this.updateLock.release();
 		}
+	}
+
+	/**
+	 * @param localInactiveAlias
+	 * @param convertedPosts
+	 */
+	private void clearQueue(final String localInactiveAlias, final Map<String, Map<String, Object>> convertedPosts) {
+		this.client.updateOrCreateDocuments(localInactiveAlias, this.tools.getResourceTypeAsString(), convertedPosts);
+		convertedPosts.clear();
 	}
 	
 	/**
@@ -393,24 +423,6 @@ public class ElasticsearchManager<R extends Resource> {
 	}
 
 	/**
-	 * @param post
-	 */
-	private void insertPost(final String indexName, SearchPost<R> post) {
-		final Map<String, Object> convertedPost = this.tools.getConverter().convert(post);
-		final String id = ElasticsearchUtils.createElasticSearchId(post.getContentId().intValue());
-		this.client.insertNewDocument(indexName, this.tools.getResourceTypeAsString(), id, convertedPost);
-	}
-
-	/**
-	 * @param intValue
-	 */
-	private void deletePostWithContentId(final String indexName, int contentId) {
-		final String indexID = ElasticsearchUtils.createElasticSearchId(contentId);
-		
-		this.client.removeDocumentFromIndex(indexName, this.tools.getResourceTypeAsString(), indexID);
-	}
-
-	/**
 	 * @param oldState
 	 * @param targetState
 	 * @param indexName
@@ -431,7 +443,6 @@ public class ElasticsearchManager<R extends Resource> {
 	 */
 	protected void updatePredictions(final String indexName, final Date lastLogDate) {
 		// keeps track of the newest log_date during last index update
-		// final long lastLogDate = lastLogDate - QUERY_TIME_OFFSET_MS;
 		// get date of last index update
 		final Date fromDate = new Date(lastLogDate.getTime() - QUERY_TIME_OFFSET_MS);
 
@@ -441,6 +452,7 @@ public class ElasticsearchManager<R extends Resource> {
 		// - the first entry is the one to consider (ordered descending by date)
 		// we keep track of users which appear twice via this set
 		final Set<String> alreadyUpdated = new HashSet<String>();
+		final Map<String, Map<String, Object>> convertedPosts = new HashMap<>();
 		for (final User user : predictedUsers) {
 			final String userName = user.getName();
 			final boolean unknowUser = alreadyUpdated.add(userName);
@@ -452,36 +464,41 @@ public class ElasticsearchManager<R extends Resource> {
 				switch (user.getPrediction().intValue()) {
 				case 0:
 					log.debug("unflag non-spammer");
-					// FIXME: use batch size TODODZO
-					final List<SearchPost<R>> userPosts = this.inputLogic.getPostsForUser(userName, Integer.MAX_VALUE, 0);
 					
-					// insert new records into index
-					if (present(userPosts)) {
-						for (final SearchPost<R> post : userPosts) {
-							
-							this.deletePostWithContentId(indexName, post.getContentId().intValue());
-							this.insertPost(indexName, post); // FIXME: do we need the last log date?
-							// TODO: why? TODODZO: check
-							// updater.unFlagUser(userName);
+					int offset = 0;
+					List<SearchPost<R>> userPosts;
+					do {
+						userPosts = this.inputLogic.getPostsForUser(userName, SearchDBInterface.SQL_BLOCKSIZE, offset);
+						// insert new records into index
+						if (present(userPosts)) {
+							for (final SearchPost<R> post : userPosts) {
+								final Map<String, Object> convertedPost = this.tools.getConverter().convert(post);
+								final String id = ElasticsearchUtils.createElasticSearchId(post.getContentId().intValue());
+								
+								convertedPosts.put(id, convertedPost);
+								
+								if (convertedPosts.size() >= SearchDBInterface.SQL_BLOCKSIZE / 2) {
+									this.clearQueue(indexName, convertedPosts);
+								}
+							}
 						}
-					}
+						
+						offset += SearchDBInterface.SQL_BLOCKSIZE;
+					} while (userPosts.size() == SearchDBInterface.SQL_BLOCKSIZE);
 					break;
 				case 1:
 					log.debug("flag spammer");
 					// remove all docs of the user from the index!
-					this.removeAllPostsOfUser(indexName, userName);
+					this.client.deleteDocuments(indexName, this.tools.getResourceTypeAsString(), QueryBuilders.termQuery(Fields.USER_NAME, userName));
 					break;
 				}
 			}
 		}
-	}
-	
-	/**
-	 * @param indexName
-	 * @param userName
-	 */
-	private void removeAllPostsOfUser(String indexName, String userName) {
-		this.client.deleteDocuments(indexName, this.tools.getResourceTypeAsString(), QueryBuilders.termQuery(Fields.USER_NAME, userName));
+		
+		// clear the queue
+		if (present(convertedPosts)) {
+			this.clearQueue(indexName, convertedPosts);
+		}
 	}
 	
 	/**
@@ -514,6 +531,9 @@ public class ElasticsearchManager<R extends Resource> {
 		return this.client.prepareSearch(indexName);
 	}
 	
+	/**
+	 * shut downs the executor service
+	 */
 	public void shutdown() {
 		this.executorService.shutdownNow();
 	}
