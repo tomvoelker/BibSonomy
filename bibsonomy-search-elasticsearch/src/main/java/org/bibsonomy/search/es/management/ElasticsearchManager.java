@@ -319,10 +319,6 @@ public class ElasticsearchManager<R extends Resource> {
 				}
 				
 				if (convertedPosts.size() >= SearchDBInterface.SQL_BLOCKSIZE / 2) {
-					/*
-					 * just in case there is already a post with this id we call
-					 * create or update
-					 */
 					this.clearQueue(localInactiveAlias, convertedPosts);
 				}
 				
@@ -370,6 +366,9 @@ public class ElasticsearchManager<R extends Resource> {
 	 * @param convertedPosts
 	 */
 	private void clearQueue(final String localInactiveAlias, final Map<String, Map<String, Object>> convertedPosts) {
+		/*
+		 * maybe we are updating an updated post in es
+		 */
 		this.client.updateOrCreateDocuments(localInactiveAlias, this.tools.getResourceTypeAsString(), convertedPosts);
 		convertedPosts.clear();
 	}

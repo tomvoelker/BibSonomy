@@ -148,6 +148,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @param offset
 	 * @return returns the list of tags for the tag cloud
 	 */
+	@Override
 	public List<Tag> getTags(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexkey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
 		final QueryBuilder query = this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags);
 		final Map<Tag, Integer> tagCounter = new HashMap<Tag, Integer>();
@@ -656,43 +657,6 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	public void setSuggestionSize(int personSuggestionSize) {
 		this.suggestionSize = personSuggestionSize;
 	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPostsByBibtexKey(java.lang.String, java.util.Collection, org.bibsonomy.common.enums.SearchType, java.lang.String, java.util.Collection, java.util.List, org.bibsonomy.model.enums.Order, int, int)
-	 */
-	@Override
-	public List<Post<R>> getPostsByBibtexKey(String userName, Collection<String> allowedGroups, org.bibsonomy.common.enums.SearchType searchType, String bibtexKey, Collection<String> tagIndex, List<String> negatedTags, Order order, int limit, int offset) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.services.searcher.ResourceSearch#getTags(java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, org.bibsonomy.common.enums.SearchType, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, int, int)
-	 */
-	@Override
-	public List<Tag> getTags(String userName, String requestedUserName, String requestedGroupName, Collection<String> allowedGroups, String searchTerms, org.bibsonomy.common.enums.SearchType searchType, String titleSearchTerms, String authorSearchTerms, Collection<String> tagIndex, String year, String firstYear, String lastYear, List<String> negatedTags, int limit, int offset) {
-		// TODO Auto-generated method stub
-		return this.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, null, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.services.searcher.ResourceSearch#getTags(java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, int, int)
-	 */
-	@Override
-	public List<Tag> getTags(String userName, String requestedUserName, String requestedGroupName, Collection<String> allowedGroups, String searchTerms, String titleSearchTerms, String authorSearchTerms, Collection<String> tagIndex, String year, String firstYear, String lastYear, List<String> negatedTags, int limit, int offset) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPosts(java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, org.bibsonomy.common.enums.SearchType, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.model.enums.Order, int, int)
-	 */
-	@Override
-	public List<Post<R>> getPosts(String userName, String requestedUserName, String requestedGroupName, List<String> requestedRelationNames, Collection<String> allowedGroups, String searchTerms, String titleSearchTerms, String authorSearchTerms, String bibtexKey, Collection<String> tagIndex, String year, String firstYear, String lastYear, List<String> negatedTags, Order order, int limit, int offset) {
-		return getPosts(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, org.bibsonomy.common.enums.SearchType.LOCAL, searchTerms, titleSearchTerms, authorSearchTerms, bibtexKey, tagIndex, year, firstYear, lastYear, negatedTags, order, limit, offset);
-	}
-
 	
 	/**
 	 * build the overall elasticsearch query term

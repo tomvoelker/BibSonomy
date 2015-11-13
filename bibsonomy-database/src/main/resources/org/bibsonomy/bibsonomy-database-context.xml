@@ -25,9 +25,7 @@
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesWithDiscussions" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByParent" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexWithRepository" parent="publicationChainElement" />
-				<bean class="org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByKey" parent="publicationChainElement" >
-					<property name="resourceSearch" ref="publicationSearch"/>
-				</bean>
+				<bean class="org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByKey" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesForHomepage" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesPopular" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesForUser" parent="publicationChainElement" />
