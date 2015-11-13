@@ -828,4 +828,12 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	public List<Post<BibTex>> getPublicationSuggestions(PublicationSuggestionQueryBuilder options) {
 		throw new UnsupportedOperationException();
 	}
+
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.searcher.ResourceSearch#getTags(java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, int, int)
+	 */
+	List<Tag> getTags(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexkey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
+		return null;
+	}
 }

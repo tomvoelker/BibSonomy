@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
-<sqlMap namespace="LuceneBibTexCommon">
+<sqlMap namespace="SearchPublicationCommon">
 
-	<resultMap id="luceneBibtexPost" class="lucenePost" extends="BibTexCommon.bibtexPost">
+	<resultMap id="searchPublicationPost" class="searchPost" extends="BibTexCommon.bibtexPost">
 		<result property="lastTasId"    column="tas_id" />
 	</resultMap>
 
-	<resultMap id="luceneLogBibtexPost" class="lucenePost" extends="BibTexCommon.bibtexPost">
+	<resultMap id="searchLogPublicationPost" class="searchPost" extends="BibTexCommon.bibtexPost">
 		<result property="lastTasId"    column="tas_id" />
 		<result property="lastLogDate"  column="log_date" javaType="date"/>
 	</resultMap>
@@ -17,7 +17,7 @@
 		b2.privnote
 	</sql>
 	
-	<sql id="luceneBibtexAttributes2">
+	<sql id="searchPublicationAttributes2">
 		<include refid="bibtexAttributes2"/>,
 		t.tas_id
 	</sql>

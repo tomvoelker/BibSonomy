@@ -51,7 +51,7 @@ public interface ResourceSearch<R extends Resource> {
 	 * @param userName
 	 * @param requestedUserName
 	 * @param requestedGroupName
-	 * @param requestedRelationNames @Deprecated TODODZO: remove
+	 * @param requestedRelationNames @Deprecated TODO: (spheres) remove
 	 * @param allowedGroups
 	 * @param searchType 
 	 * @param searchTerms

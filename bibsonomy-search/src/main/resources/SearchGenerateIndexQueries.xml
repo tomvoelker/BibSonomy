@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
-<sqlMap namespace="Lucene">
+<sqlMap namespace="Search">
 	<!--+ 
 		| Queries.
 	 	+-->
@@ -54,7 +54,7 @@
 	</select>
 	
 	<!-- get users which where flagged as spammers/non-spammers since last index update --> 
-	<select id="getPredictionForTimeRange" parameterClass="date" resultMap="LuceneCommon.spamPrediction">
+	<select id="getPredictionForTimeRange" parameterClass="date" resultMap="SearchCommon.spamPrediction">
 		SELECT user_name, prediction, updated_at 
 			FROM prediction 
 			WHERE updated_at &gt;= #date# 
@@ -62,7 +62,7 @@
 	</select>
 	
 	<!-- get list of all non-spam bookmarks -->
-	<select id="getBookmarkForIndex" parameterClass="luceneParam" resultMap="LuceneBookmarkCommon.luceneBookmarkPost">
+	<select id="getBookmarkForIndex" parameterClass="searchParam" resultMap="SearchBookmarkCommon.searchBookmarkPost">
 		SELECT 
 			bb.*,
 			t.change_date,
@@ -87,7 +87,7 @@
 	</select>
 	
 	<!-- get list of all non-spam publication posts -->
-	<select id="getBibTexForIndex" parameterClass="luceneParam" resultMap="LuceneBibTexCommon.luceneBibtexPost">
+	<select id="getBibTexForIndex" parameterClass="searchParam" resultMap="SearchPublicationCommon.searchPublicationPost">
 		SELECT 
 			bb.*, 
 			t.tag_name,
@@ -107,8 +107,8 @@
 		LEFT JOIN groupids g ON (bb.group = g.group)
 	</select>
 	
-	<select id="getGoldStandardPublicationForIndex" resultMap="LuceneGoldStandardPublicationCommon.luceneGoldStandardPublicationPost">
-		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesLucene"/>, b.change_date, b.group, 'public' AS group_name, 1 AS count, b.content_id, -1 AS rating, -1 AS number_of_ratings
+	<select id="getGoldStandardPublicationForIndex" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost">
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearch"/>, b.change_date, b.group, 'public' AS group_name, 1 AS count, b.content_id, -1 AS rating, -1 AS number_of_ratings
 		FROM gold_standard b
 		WHERE b.content_id &gt; #lastContentId#
 			AND content_type = 2

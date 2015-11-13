@@ -30,10 +30,10 @@ import java.util.Date;
 
 /**
  * Class for lucene queries
- * TODO: rename TODODZO
+ * 
  * @author Jens Illig
  */
-public class LuceneParam {
+public class SearchParam {
 	
 	private String userName;
 	

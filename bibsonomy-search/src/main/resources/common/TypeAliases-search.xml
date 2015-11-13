@@ -4,12 +4,12 @@
 <!--
 	All aliases are collected here, because they must not exist twice (i.e. their names).
 -->
-<sqlMap namespace="TypeAliasesLucene">
+<sqlMap namespace="TypeAliasesSearch">
 
 	
-	<!-- lucene model types -->
-	<typeAlias alias="lucenePost"         type="org.bibsonomy.search.SearchPost" />
+	<!-- search model types -->
+	<typeAlias alias="searchPost"       type="org.bibsonomy.search.SearchPost" />
 	
 	<!-- Parameters -->
-	<typeAlias alias="luceneParam"      type="org.bibsonomy.search.management.database.params.LuceneParam" />
+	<typeAlias alias="searchParam"      type="org.bibsonomy.search.management.database.params.SearchParam" />
 </sqlMap>

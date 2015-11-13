@@ -46,7 +46,7 @@ import org.bibsonomy.model.ResourcePersonRelationLogStub;
 import org.bibsonomy.model.User;
 import org.bibsonomy.search.SearchPost;
 import org.bibsonomy.search.management.database.manager.PersonLuceneDatabaseManager;
-import org.bibsonomy.search.management.database.params.LuceneParam;
+import org.bibsonomy.search.management.database.params.SearchParam;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 
 /**
@@ -130,7 +130,7 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 	 */
 	@Override
 	public List<SearchPost<R>> getPostsForUser(final String userName, final int limit, final int offset) {
-		final LuceneParam param = new LuceneParam();
+		final SearchParam param = new SearchParam();
 		param.setUserName(userName);
 		param.setLimit(limit);
 		param.setOffset(offset);
@@ -209,7 +209,7 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 	 */
 	@Override
 	public List<SearchPost<R>> getPostEntries(final int lastContentId, final int max) {
-		final LuceneParam param = new LuceneParam();
+		final SearchParam param = new SearchParam();
 		param.setLastContentId(lastContentId);
 		param.setLimit(max);
 		
@@ -227,7 +227,7 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 	 */
 	@Override
 	public List<SearchPost<R>> getNewPosts(final int lastTasId, final int limit, final int offset) {
-		final LuceneParam param = new LuceneParam();
+		final SearchParam param = new SearchParam();
 		param.setLastTasId(Integer.valueOf(lastTasId));
 		param.setLimit(limit);
 		param.setOffset(offset);

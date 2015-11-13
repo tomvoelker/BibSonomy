@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
-<sqlMap namespace="Lucene">
+<sqlMap namespace="Search">
 
 	<select id="getGlobalConceptByName" parameterClass="string" resultClass="string">
 		SELECT DISTINCT(lower_lcase)
@@ -40,7 +40,7 @@
 	</select>
 
 	<!-- get list of all publications for given user -->
-	<select id="getBibTexForUser" resultMap="LuceneBibTexCommon.luceneLogBibtexPost" parameterClass="luceneParam">
+	<select id="getBibTexForUser" resultMap="SearchPublicationCommon.searchLogPublicationPost" parameterClass="searchParam">
 		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count, t.tas_id, b2.change_date AS log_date, b2.change_date, -1 AS rating, -1 AS number_of_ratings
 		FROM (SELECT t1.*, 1 AS count
 		      FROM bibtex t1
@@ -54,7 +54,7 @@
 	</select>
 	
 	<!-- get list of all bookmarks for given user -->
-	<select id="getBookmarkForUser" resultMap="LuceneBookmarkCommon.luceneLogBookmarkPost" parameterClass="luceneParam">
+	<select id="getBookmarkForUser" resultMap="SearchBookmarkCommon.searchLogBookmarkPost" parameterClass="searchParam">
 		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
 		       bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.user_name, t.tas_id, bb.change_date AS log_date, bb.change_date, -1 AS rating, -1 AS number_of_ratings
 		FROM (SELECT t1.content_id, t1.book_url_hash, t1.book_description AS title, t1.book_extended AS description, t1.date,
@@ -93,8 +93,8 @@
 		| Parameter: 
 		|    lastTasId 
 		+-->
-	<select id="getBibTexPostsForTimeRange" parameterClass="luceneParam" resultMap="LuceneBibTexCommon.luceneBibtexPost">
-		SELECT <include refid ="luceneBibtexAttributes2"/>, t.tag_name, g.*, 1 AS count, b2.change_date, -1 AS rating, -1 AS number_of_ratings
+	<select id="getBibTexPostsForTimeRange" parameterClass="searchParam" resultMap="SearchPublicationCommon.searchPublicationPost">
+		SELECT <include refid ="searchPublicationAttributes2"/>, t.tag_name, g.*, 1 AS count, b2.change_date, -1 AS rating, -1 AS number_of_ratings
 		FROM (
 			SELECT DISTINCT t.content_id
 			FROM tas t
@@ -113,7 +113,7 @@
 		| Parameter: 
 		|    lastTasId 
 		+-->
-	<select id="getBookmarkPostsForTimeRange" resultMap="LuceneBookmarkCommon.luceneBookmarkPost" parameterClass="luceneParam">
+	<select id="getBookmarkPostsForTimeRange" resultMap="SearchBookmarkCommon.searchBookmarkPost" parameterClass="searchParam">
 		SELECT <include refid="bookmarkPostAttributes"/>,
 			g.*,
 			t.tag_name, t.tas_id,
@@ -128,8 +128,8 @@
 		ORDER BY b.date DESC, b.content_id DESC, t.tas_id DESC
 	</select>
 	
-	<select id="getGoldStandardPublicationPostsForTimeRange" resultMap="LuceneGoldStandardPublicationCommon.luceneGoldStandardPublicationPost">
-		SELECT <include refid="allGoldStandardPublicationAttributesWithSimHashesLucene" />, b.change_date, b.group, 'public' AS group_name, 1 AS count, b.content_id, -1 AS rating, -1 AS number_of_ratings
+	<select id="getGoldStandardPublicationPostsForTimeRange" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost">
+		SELECT <include refid="allGoldStandardPublicationAttributesWithSimHashesSearch" />, b.change_date, b.group, 'public' AS group_name, 1 AS count, b.content_id, -1 AS rating, -1 AS number_of_ratings
 		FROM gold_standard b
 		WHERE b.content_type = 2
 			AND b.content_id &gt; #lastTasId#
