@@ -246,7 +246,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			if (order != Order.RANK) {
 				searchRequestBuilder.addSort(Fields.DATE, SortOrder.DESC);
 			}
-			searchRequestBuilder.setFrom(offset).setSize(limit).setExplain(true); // FIXME: remove explain
+			searchRequestBuilder.setFrom(offset).setSize(limit);
 
 			final SearchResponse response = searchRequestBuilder.execute().actionGet();
 
@@ -831,7 +831,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 				final BoolQueryBuilder conceptTags = QueryBuilders.boolQuery();
 				// TODO: must the tag be included? TODODZO
 				final QueryBuilder termQuery = QueryBuilders.termQuery(Fields.TAGS, conceptTag);
-				conceptTags.must(termQuery);
+				conceptTags.should(termQuery);
 				for (final String subTagString : this.infoLogic.getSubTagsForConceptTag(conceptTag)) {
 					conceptTags.should(QueryBuilders.termQuery(Fields.TAGS, subTagString));
 				}
