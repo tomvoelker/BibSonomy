@@ -59,6 +59,8 @@ public class GetAllPostsCount extends StatisticChainElement {
 	
 	@Override
 	protected boolean canHandle(StatisticsParam param) {
-		return GroupingEntity.ALL.equals(param.getGrouping()) && !present(param.getSystemTags());
+		return GroupingEntity.ALL.equals(param.getGrouping())
+				&& !present(param.getSystemTags())
+				&& !present(param.getTitle());
 	}
 }
