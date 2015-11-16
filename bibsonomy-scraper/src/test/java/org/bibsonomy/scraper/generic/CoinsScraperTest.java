@@ -65,7 +65,6 @@ public class CoinsScraperTest {
 		UnitTestRunner.runSingleTest("url_230");
 	}
 
-	
 	/**
 	 * starts URL test with id url_266
 	 */
@@ -74,4 +73,11 @@ public class CoinsScraperTest {
 		UnitTestRunner.runSingleTest("url_266");
 	}
 	
+	/**
+	 * starts URL test with id url_299
+	 */
+	@Test
+	public void url5TestRun(){
+		UnitTestRunner.runSingleTest("url_299");
+	}
 }
