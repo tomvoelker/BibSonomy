@@ -29,8 +29,8 @@
 		FROM sync s
 		  JOIN sync_services ss USING (service_id)
 		WHERE ss.server = TRUE
-          AND s.autosync = FALSE
-          AND s.direction NOT IN ('both');
+			AND s.autosync = TRUE
+			AND s.direction NOT IN ('both');
 	</select>
 	
 	<select id="getSyncClientsForUser" resultMap="SynchronizationCommon.syncServiceForUserDetails" parameterClass="syncParam">
