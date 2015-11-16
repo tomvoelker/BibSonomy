@@ -1837,4 +1837,10 @@
 		<BibFile>IOPScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.iop.IOPScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_298">
+		<TestDescription>DublinCoreScraper Test 5</TestDescription>
+		<URL>http://www.uel.br/revistas/uel/index.php/informacao/article/view/19996</URL>
+		<BibFile>DCScraperTest5.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.generic.DublinCoreScraper</Scraper>
+	</URLTest>
 </test:Tests>
