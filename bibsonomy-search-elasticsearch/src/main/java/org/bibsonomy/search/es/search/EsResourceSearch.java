@@ -706,7 +706,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		}
 
 		if (present(titleSearchTerms)) {
-			final QueryBuilder titleSearchQuery = QueryBuilders.termQuery(Fields.Resource.TITLE, titleSearchTerms);
+			final QueryBuilder titleSearchQuery = QueryBuilders.simpleQueryStringQuery(titleSearchTerms).field(Fields.Resource.TITLE);
 			mainQueryBuilder.must(titleSearchQuery);
 		}
 		
