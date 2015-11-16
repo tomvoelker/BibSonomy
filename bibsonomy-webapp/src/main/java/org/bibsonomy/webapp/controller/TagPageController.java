@@ -80,15 +80,6 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		// FIXME we can only retrieve 1000 tags here
 		this.handleTagsOnly(command, GroupingEntity.ALL, null, null, requTags, null, 1000, null);
 		
-		// get the information on tags and concepts needed for the sidebar
-		command.setConceptsOfAll(this.getConceptsForSidebar(command, GroupingEntity.ALL, null, requTags));
-		final String loginUser = command.getContext().getLoginUser().getName();
-		if (present(loginUser)) {
-			command.setConceptsOfLoginUser(this.getConceptsForSidebar(command, GroupingEntity.USER, loginUser, requTags));
-			// FIXME: TitleSystemTag changes the grouping to ALL
-			command.setPostCountForTagsForLoginUser(this.getPostCountForSidebar(GroupingEntity.USER, loginUser, requTags));
-		}
-		
 		// requested order
 		final Order order = command.getOrder();
 		int totalNumPosts = 1; 
@@ -120,6 +111,16 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		// html format - retrieve related tags and return HTML view
 		if ("html".equals(format)) {
 			command.setPageTitle("tag :: " + StringUtils.implodeStringCollection(requTags, " "));
+			
+			// get the information on tags and concepts needed for the sidebar
+			command.setConceptsOfAll(this.getConceptsForSidebar(command, GroupingEntity.ALL, null, requTags));
+			final String loginUser = command.getContext().getLoginUser().getName();
+			if (present(loginUser)) {
+				command.setConceptsOfLoginUser(this.getConceptsForSidebar(command, GroupingEntity.USER, loginUser, requTags));
+				// FIXME: TitleSystemTag changes the grouping to ALL
+				command.setPostCountForTagsForLoginUser(this.getPostCountForSidebar(GroupingEntity.USER, loginUser, requTags));
+			}
+			
 			if (tagCount > 0) {
 				this.setRelatedTags(command, Resource.class, GroupingEntity.ALL, null, null, requTags, command.getStartDate(), command.getEndDate(), order, 0, Parameters.NUM_RELATED_TAGS, null);
 			}
