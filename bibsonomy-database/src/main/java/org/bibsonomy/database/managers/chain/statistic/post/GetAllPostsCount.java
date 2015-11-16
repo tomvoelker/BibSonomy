@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.database.managers.chain.statistic.post;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
@@ -57,6 +59,6 @@ public class GetAllPostsCount extends StatisticChainElement {
 	
 	@Override
 	protected boolean canHandle(StatisticsParam param) {
-		return GroupingEntity.ALL.equals(param.getGrouping());
+		return GroupingEntity.ALL.equals(param.getGrouping()) && !present(param.getSystemTags());
 	}
 }
