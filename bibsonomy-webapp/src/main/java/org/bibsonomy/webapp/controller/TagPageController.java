@@ -85,6 +85,7 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		final String loginUser = command.getContext().getLoginUser().getName();
 		if (present(loginUser)) {
 			command.setConceptsOfLoginUser(this.getConceptsForSidebar(command, GroupingEntity.USER, loginUser, requTags));
+			// FIXME: TitleSystemTag changes the grouping to ALL
 			command.setPostCountForTagsForLoginUser(this.getPostCountForSidebar(GroupingEntity.USER, loginUser, requTags));
 		}
 		
