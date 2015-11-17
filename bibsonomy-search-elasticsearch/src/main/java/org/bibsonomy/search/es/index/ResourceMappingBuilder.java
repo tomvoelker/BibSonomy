@@ -100,6 +100,10 @@ public abstract class ResourceMappingBuilder<R extends Resource> implements Mapp
 			XContentBuilder commonPostResourceFields = XContentFactory.jsonBuilder()
 					.startObject()
 						.startObject(documentType)
+							/*
+							 * set the date detection to false: we load the misc
+							 * fields as field = value into es (=> dynamic mapping)
+							 */
 							.field("date_detection", false)
 							.startObject("properties")
 								.startObject(ESConstants.Fields.Resource.INTRAHASH)
