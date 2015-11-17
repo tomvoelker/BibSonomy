@@ -114,6 +114,7 @@ public abstract class ResourceMappingBuilder<R extends Resource> implements Mapp
 								.endObject()
 								.startObject(ESConstants.Fields.TAGS)
 									.field(TYPE_FIELD, STRING_TYPE)
+									.field(INDEX_FIELD, NOT_ANALYZED)
 								.endObject()
 								.startObject(ESConstants.Fields.GROUPS)
 									.field(TYPE_FIELD, STRING_TYPE)
