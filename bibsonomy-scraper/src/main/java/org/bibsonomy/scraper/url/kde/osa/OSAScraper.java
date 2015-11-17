@@ -146,7 +146,7 @@ public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
 		urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
 		//insert cookie
-		urlConn.setRequestProperty("Set_Cookie", cookie);
+		urlConn.setRequestProperty("Set-Cookie", cookie);
 
 		StringBuffer sbContent = new StringBuffer();
 
@@ -197,7 +197,7 @@ public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
 	@Override
 	public boolean scrapeReferences(ScrapingContext scrapingContext)throws ScrapingException {
 		try{
-			Matcher m = references_pattern.matcher(scrapingContext.getPageContent());
+			Matcher m = references_pattern.matcher(WebUtils.getContentAsString(scrapingContext.getUrl()));
 			if(m.find()){
 				scrapingContext.setReferences(m.group(1));
 				return true;
