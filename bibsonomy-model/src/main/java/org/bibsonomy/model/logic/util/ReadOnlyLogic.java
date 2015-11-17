@@ -1,3 +1,29 @@
+/**
+ * BibSonomy-Model - Java- and JAXB-Model.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.bibsonomy.model.logic.util;
 
 import java.net.InetAddress;
@@ -180,6 +206,38 @@ public class ReadOnlyLogic implements LogicInterface {
 	public List<DiscussionItem> getDiscussionSpace(String interHash) {
 		return this.logicinterface.getDiscussionSpace(interHash);
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getAutoSyncServer()
+	 */
+	@Override
+	public List<SyncService> getAutoSyncServer() {
+		return this.logicinterface.getAutoSyncServer();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncServiceDetails(java.net.URI)
+	 */
+	@Override
+	public SyncService getSyncServiceDetails(URI serviceURI) {
+		return this.logicinterface.getSyncServiceDetails(serviceURI);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncServices(boolean, java.lang.String)
+	 */
+	@Override
+	public List<SyncService> getSyncServices(boolean server, String sslDn) {
+		return this.logicinterface.getSyncServices(server, sslDn);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncServiceSettings(java.lang.String, java.net.URI, boolean)
+	 */
+	@Override
+	public List<SyncService> getSyncServiceSettings(String userName, URI service, boolean server) {
+		return this.logicinterface.getSyncServiceSettings(userName, service, server);
+	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.sync.SyncLogicInterface#createSyncService(org.bibsonomy.model.sync.SyncService, boolean)
@@ -195,14 +253,6 @@ public class ReadOnlyLogic implements LogicInterface {
 	@Override
 	public void deleteSyncService(URI service, boolean server) {
 		throwReadOnlyException();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncServices(boolean)
-	 */
-	@Override
-	public List<URI> getSyncServices(boolean server) {
-		return this.logicinterface.getSyncServices(server);
 	}
 
 	/* (non-Javadoc)
@@ -227,22 +277,6 @@ public class ReadOnlyLogic implements LogicInterface {
 	@Override
 	public void deleteSyncServer(String userName, URI service) {
 		throwReadOnlyException();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getSyncService(java.lang.String, java.net.URI, boolean)
-	 */
-	@Override
-	public List<SyncService> getSyncService(String userName, URI service, boolean server) {
-		return this.logicinterface.getSyncService(userName, service, server);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.model.sync.SyncLogicInterface#getAllSyncServices(boolean)
-	 */
-	@Override
-	public List<SyncService> getAllSyncServices(boolean server) {
-		return this.logicinterface.getAllSyncServices(server);
 	}
 
 	/* (non-Javadoc)
@@ -706,7 +740,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#createBasketItems(java.util.List)
 	 */
 	@Override
-	public int createBasketItems(List<Post<? extends Resource>> posts) {
+	public int createClipboardItems(List<Post<? extends Resource>> posts) {
 		throwReadOnlyException();
 		return 0;
 	}
@@ -715,7 +749,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#deleteBasketItems(java.util.List, boolean)
 	 */
 	@Override
-	public int deleteBasketItems(List<Post<? extends Resource>> posts, boolean clearBasket) {
+	public int deleteClipboardItems(List<Post<? extends Resource>> posts, boolean clearBasket) {
 		throwReadOnlyException();
 		return 0;
 	}

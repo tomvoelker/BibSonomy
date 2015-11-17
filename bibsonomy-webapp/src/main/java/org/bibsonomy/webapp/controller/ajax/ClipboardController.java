@@ -84,7 +84,7 @@ public class ClipboardController extends AjaxController implements ValidationAwa
 		
 		// if clear all is set, clear all
 		if ("clearAll".equals(action)) {
-			logic.deleteBasketItems(null, true);
+			logic.deleteClipboardItems(null, true);
 			return new ExtendedRedirectView(requestLogic.getReferer());
 		}
 		
@@ -99,9 +99,9 @@ public class ClipboardController extends AjaxController implements ValidationAwa
 		 * decide which method will be called
 		 */
 		if (action.startsWith("pick")){
-			clipboardSize = logic.createBasketItems(posts);
+			clipboardSize = logic.createClipboardItems(posts);
 		} else if (action.startsWith("unpick")){
-			clipboardSize = logic.deleteBasketItems(posts, false);
+			clipboardSize = logic.deleteClipboardItems(posts, false);
 		}
 		/*
 		 * set new clipboard size

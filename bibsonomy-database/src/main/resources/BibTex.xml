@@ -250,7 +250,7 @@
 		ORDER BY b.date DESC, b.content_id DESC
 	</select>	
 
-	<select id="getBibTexFromBasketForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+	<select id="getBibTexFromClipboardForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.change_date, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name, <include refid="reviewRatingsRows" />
 		FROM (SELECT content_id, date
 		      FROM collector

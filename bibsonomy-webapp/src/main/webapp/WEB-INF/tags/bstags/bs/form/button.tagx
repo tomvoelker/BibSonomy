@@ -8,7 +8,8 @@
 	<jsp:directive.tag description="Renders a bootstrap3 button." />
 	
 	
-	<jsp:directive.attribute type="java.lang.String" name="value" required="true" description="inscription of the button" />
+	<jsp:directive.attribute type="java.lang.String" name="value" required="false" description="inscription of the button" />
+	<jsp:directive.attribute type="java.lang.String" name="valueKey" required="false" description="inscription of the button" />
 	<jsp:directive.attribute type="java.lang.String" name="id" required="false" description="id of the button" />
 	<jsp:directive.attribute type="java.lang.String" name="href" required="false" description="title of the button" />
 	<jsp:directive.attribute type="java.lang.String" name="title" required="false" description="title of the button" />
@@ -30,6 +31,10 @@
 	
 	<jsp:directive.attribute name="onclick" type="java.lang.String" required="false" description="javascript code for execution" />
 	<jsp:directive.attribute name="tabindex" type="java.lang.Integer" required="false" description="" />
+	
+	<c:if test="${not empty valueKey}">
+		<fmt:message key="${valueKey}" var="value" />
+	</c:if>
 	
 	<c:if test="${empty type}">
 		<c:set var="type" value="button" />
@@ -58,7 +63,7 @@
 			<span class="button-text"><c:out value="${value}" /></span>
 		</c:if>
 		<c:if test="${gear}">
-			&amp;nbsp;<span class="glyphicon glyphicon-cog"><!-- KEEP ME --></span>&amp;nbsp;
+			&amp;nbsp;<span class="fa fa-gear"><!-- KEEP ME --></span>&amp;nbsp;
 			<span class="sr-only">edit</span> <!-- TODO: i18n for edit -->
 		</c:if>
 		<c:if test="${dropdown or dropup}">

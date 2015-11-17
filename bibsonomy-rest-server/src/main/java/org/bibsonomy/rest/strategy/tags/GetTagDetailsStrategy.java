@@ -57,7 +57,7 @@ public class GetTagDetailsStrategy extends Strategy {
 	public void perform(final ByteArrayOutputStream outStream) throws InternServerException {
 		if (this.tag == null) {
 			throw new NoSuchResourceException("The requested tag '" + this.tagName + "' does not exist.");
-		}		
+		}
 		// delegate to the renderer
 		this.getRenderer().serializeTag(writer, this.tag, new ViewModel());
 	}

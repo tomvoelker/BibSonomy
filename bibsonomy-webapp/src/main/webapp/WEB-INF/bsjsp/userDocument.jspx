@@ -56,7 +56,7 @@
 				usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" 
 				requestedUserName="${command.requestedUser}"
 				headingLink="${relativeUrlGenerator.getConceptsUrlByString(fn:escapeXml(command.requestedUser))}" 
-				headingLinkTitleKey="${tagRelationsTitle}"/>
+				headingTitleKey="${tagRelationsTitle}"/>
 
 			<sidebar:sidebarTagCloudItem requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
 

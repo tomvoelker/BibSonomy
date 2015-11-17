@@ -32,7 +32,7 @@
 	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
-		<version>3.3.0-SNAPSHOT</version>
+		<version>3.4.0-SNAPSHOT</version>
 	</parent>
 	<licenses>
 		<license>
@@ -54,7 +54,7 @@
 				<configuration>
 					<!-- otherwise the javascript/css files compressed by yuicompressor-maven-plugin 
 						are overwritten by this plugin -->
-					<warSourceExcludes>**/*.js,**/*.css</warSourceExcludes>
+					<warSourceExcludes>**/*.js,**/*.css,WEB-INF/tags/bstags/layout/parts/messages.tagx</warSourceExcludes>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -81,52 +81,15 @@
 					<disableOptimizations>true</disableOptimizations>
 					<!-- note: use the compressed javascript files in ${project.build.webapp.resourcedir} -->
 					<aggregations>
-						<aggregation>
-							<insertNewLine>true</insertNewLine>
-							<output>${project.build.webapp.resourcedir}/javascript/merged/global.js</output>
-							<includes>
-								<include>${project.build.webapp.resourcedir}/jquery/jquery.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/functions.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/actions/clipboard.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/fileUpload.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/jquery.fadebox.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/style.js</include>
-								<include>${project.build.webapp.resourcedir}/jquery/plugins/corner/jquery.corner.js</include>
-								<include>${project.build.webapp.resourcedir}/jquery/plugins/hoverIntent/jquery.hoverIntent.js</include>
-								<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/jquery-ui.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/ajaxUtils.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/userRelation.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/addToSpheres.js</include>
-							</includes>
-						</aggregation>
-						<aggregation>
-							<insertNewLine>true</insertNewLine>
-							<output>${project.build.webapp.resourcedir}/javascript/merged/discussion.js</output>
-							<includes>
-								<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.js</include>
-								<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/excanvas.js</include>
-								<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/jquery.flot.js</include>
-								<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/jquery.flot.stack.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/discussion/discussion.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/discussion/reviews.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/discussion/comments.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/discussion/csllinks.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/citeproc/csllocales.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/citeproc/xmldom.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/citeproc/citeproc.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/citeproc/cslstyles.js</include>
-							</includes>
-						</aggregation>
 						<!-- javascript files for bootstrap front-end -->
 						<aggregation>
 							<insertNewLine>true</insertNewLine>
 							<output>${project.build.webapp.resourcedir}/javascript/merged/bs/global.js</output>
 							<includes>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/jquery-2.1.1.js</include>
+								<include>${project.build.webapp.resourcedir}/jquery/jquery.js</include>
 								<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/jquery-ui.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap.js</include>
+								<include>${project.build.webapp.resourcedir}/bootstrap/js/bootstrap.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap-datepicker.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap-carousel.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap-tagsinput.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap-dialog.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/holder.js</include>
@@ -140,6 +103,7 @@
 								<include>${project.build.webapp.resourcedir}/javascript/bs/jquery.fadebox.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/userRelation.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/addToSpheres.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/logging.js</include>
 							</includes>
 						</aggregation>
 						<aggregation>
@@ -154,10 +118,10 @@
 								<include>${project.build.webapp.resourcedir}/javascript/bs/discussion/reviews.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/discussion/comments.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bs/discussion/csllinks.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/citeproc/csllocales.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/citeproc/xmldom.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/citeproc/citeproc.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/citeproc/cslstyles.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/citeproc/csllocales.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/citeproc/xmldom.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/citeproc/citeproc.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bs/citeproc/cslstyles.js</include>
 							</includes>
 						</aggregation>
 					</aggregations>
@@ -172,15 +136,46 @@
 					<outputDirectory>${project.build.directory}/${project.build.finalName}/resources/css</outputDirectory>
 					<compress>true</compress>
 					<includes>
-						<include>bootstrap.less</include>
 						<include>bootstrap-style.less</include>
-						<include>style.less</include>
 					</includes>
 				</configuration>
 				<executions>
 					<execution>
 						<goals>
 							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
+				<dependencies>
+					<!-- this is our version of less css java
+						which supports inline css -->
+					<dependency>
+						<groupId>org.lesscss</groupId>
+						<artifactId>lesscss</artifactId>
+						<version>1.7.0.1.2</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.bibsonomy</groupId>
+				<artifactId>javascript-i18n-messagesource-maven-plugin</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+				<configuration>
+					<messageSources>
+						<messageSource>file:///${project.basedir}/src/main/resources/messages</messageSource>
+					</messageSources>
+					<locales>
+						<locale>en</locale>
+						<locale>de</locale>
+						<locale>ru</locale>
+					</locales>
+					<outputFile>${project.build.directory}/${project.build.finalName}/WEB-INF/tags/bstags/layout/parts/messages.tagx</outputFile>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>compile</phase>
+						<goals>
+							<goal>buildMessageFiles</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -245,6 +240,25 @@
 										<versionRange>[1.1,)</versionRange>
 										<goals>
 											<goal>compress</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.bibsonomy</groupId>
+										<artifactId>
+											javascript-i18n-messagesource-maven-plugin
+										</artifactId>
+										<versionRange>
+											[0.0.1-SNAPSHOT,)
+										</versionRange>
+										<goals>
+											<goal>
+												buildMessageFiles
+											</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>

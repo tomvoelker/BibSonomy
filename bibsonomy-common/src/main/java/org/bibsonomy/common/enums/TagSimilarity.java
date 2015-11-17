@@ -30,7 +30,6 @@ package org.bibsonomy.common.enums;
  * Defines types of relatedness between tags
  * 
  * @author Dominik Benz
-
  */
 public enum TagSimilarity {
 	/** tag co-occurrence */

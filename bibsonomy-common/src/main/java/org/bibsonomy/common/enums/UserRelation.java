@@ -59,7 +59,9 @@ public enum UserRelation {
 	@Deprecated
 	OF_FOLLOWER(8),
 	/** relationships can also be established by a custom tag */
-	TAGGED(9);
+	TAGGED(9),
+	/** users tagged as spammers */
+	SPAMMER(10);
 	
 	/**
 	 * the relation ID. Mainly used in the table useruser_similarity.

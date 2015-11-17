@@ -41,8 +41,7 @@
 						</property>
 					</bean>
 				</entry>
-				
-        		<entry key="/ajax/cv">
+				<entry key="/ajax/cv">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="cvController" />
 						<property name="allowedFields">
@@ -126,6 +125,7 @@
 								<value>action</value>
 								<value>forward</value>
 								<value>relationTags</value>
+								<value>userRelation</value>
 								<value>ckey</value>
 							</list>
 						</property>
@@ -255,12 +255,11 @@
 	<bean id="generalAjaxController" class="org.bibsonomy.webapp.controller.ajax.GeneralAjaxController" scope="request" parent="ajaxController" />	
 	<bean id="editGoldstandardRelationController" class="org.bibsonomy.webapp.controller.ajax.EditGoldstandardRelationController" parent="ajaxController" scope="request" />
 	
-	<bean id="commentController" class="org.bibsonomy.webapp.controller.ajax.CommentAjaxController" parent="discussionItemAjaxController" scope="request" />	
+	<bean id="commentController" class="org.bibsonomy.webapp.controller.ajax.CommentAjaxController" parent="discussionItemAjaxController" scope="request" />
 	<bean id="reviewController" class="org.bibsonomy.webapp.controller.ajax.ReviewAjaxController" parent="discussionItemAjaxController" scope="request" />
 	
 	
 	<bean id="additionalURLController" class="org.bibsonomy.webapp.controller.ajax.AdditionalURLController" scope="request" parent="ajaxController" />
-	
 	
 	<bean id="cvController" class="org.bibsonomy.webapp.controller.ajax.AjaxCvController" scope="request" parent="ajaxController">
 		<property name="wikiRenderer" ref="wikiRenderer"/>
@@ -282,6 +281,7 @@
 		<property name="recommender"	ref="multiplexingTagRecommender" />
 		<!-- tag recommender used for spammer -->
 		<property name="spamTagRecommender" ref="jensRecommender"/>
+		<property name="rendererFactory" ref="rendererFactory" />
 	</bean>
 	
 	

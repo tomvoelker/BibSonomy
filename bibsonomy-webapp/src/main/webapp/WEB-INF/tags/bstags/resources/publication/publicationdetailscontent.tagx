@@ -97,14 +97,14 @@
 					
 						<c:if test="${isOwnEntry}">
 							<fmt:message var="deleteUrl" key="post.bibtex.remove"/>
-							<c:out value=" " /><a title="${deleteUrl}" style="cursor:pointer;" onclick="deleteUrl(this, '${escapedUrl}','${fn:escapeXml(publication.intraHash)}','${fn:escapeXml(command.context.ckey)}');return false;" ><span class="glyphicon glyphicon-remove"><!--  --></span></a>
+							<c:out value=" " /><a title="${deleteUrl}" style="cursor:pointer;" onclick="deleteUrl(this, '${escapedUrl}','${fn:escapeXml(publication.intraHash)}','${fn:escapeXml(command.context.ckey)}');return false;" ><span class="fa fa-times"><!--  --></span></a>
 						</c:if>
 					</li>
 				</c:forEach>
 				</ul>
 				<c:if test="${isOwnEntry}">
 					<fmt:message var="addAdditionalUrl" key="bibtex.actions.additional_url.add" />
-					<bs:linkButton href="#add-url-modal" size="xsmall" style="primary" icon="plus" text="${addAdditionalUrl}" dataToggle="model" />
+					<a type="button" class="btn btn-xs btn-primary" role="button" data-toggle="modal" href="#add-url-modal"><span class="fa fa-plus"><!-- KEEP ME --></span>&amp;nbsp;<c:out value="${addAdditionalUrl}" /></a>
 					
 					<fmt:message var="addAdditionalUrlTitle" key="bibtex.actions.additional_url.add.title" />
 					

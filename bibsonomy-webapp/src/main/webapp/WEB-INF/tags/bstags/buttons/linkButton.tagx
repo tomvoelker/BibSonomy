@@ -13,7 +13,7 @@
 	<a class="btn btn-primary btn-sm btn-block ${not empty disabled and disabled ? 'disabled' : '' }" href="${href}" title="${title}"> 
 		<c:choose>
 			<c:when test='${not empty image}'>
-				<span class="glyphicon ${image}"><!-- --></span>&amp;nbsp;<jsp:invoke fragment="text" />
+				<span class="fa ${image}"><!-- --></span>&amp;nbsp;<jsp:invoke fragment="text" />
 			</c:when> 
 			<c:otherwise>
 				<span><jsp:invoke fragment="text" /></span>

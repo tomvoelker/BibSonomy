@@ -61,7 +61,6 @@
 			</c:url>
 		</c:when>
 		<c:otherwise>
-			<c:set var="url" value="/edit${url}" />
 			<!-- user is not post's owner -->
 			<c:url var="url" value="/edit${url}">
 				<c:param name="hash" value="${post.resource.intraHash}" />

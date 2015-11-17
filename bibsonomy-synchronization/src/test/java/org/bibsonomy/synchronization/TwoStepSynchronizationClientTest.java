@@ -95,7 +95,7 @@ public class TwoStepSynchronizationClientTest extends AbstractSynchronizationCli
 		/*
 		 * check that synchronization is enabled
 		 */
-		final SyncService syncServer = clientLogic.getSyncService(clientUser.getName(), null, true).get(0);
+		final SyncService syncServer = clientLogic.getSyncServiceSettings(clientUser.getName(), null, true).get(0);
 		final URI syncServerUri = syncServer.getService();
 		assertEquals(SYNC_SERVER_URI, syncServerUri.toString());
 

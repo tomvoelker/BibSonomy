@@ -15,6 +15,7 @@
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"	
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar"
+	xmlns:adminUser="urn:jsptagdir:/WEB-INF/tags/bstags/admin/users"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -29,7 +30,7 @@
 					<c:set var="userUrl" value="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}?scope=${command.scope.name()}"/>
 				</c:when>
 				<c:otherwise>
-					<c:set var="pathMessageKey" value="navi.user"/>							
+					<c:set var="pathMessageKey" value="navi.user"/>
 					<c:set var="userUrl" value="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}"/>
 				</c:otherwise>
 			</c:choose>
@@ -48,9 +49,15 @@
 			</nav:breadcrumbs>
 		</jsp:attribute>
 		
+		
 		<jsp:attribute name="sidebar">
+			<c:set var="isAdmin" value="${command.context.loginUser.role == 'ADMIN'}" />
 			<sidebar:socializer command="${command}" />
-				
+			
+			<c:if test="${isAdmin}">
+				Spammer: <adminUser:spamActions user="${command.user}" />
+			</c:if>
+			
 			<!-- Did you know? -->
 			<c:if test="${	command.context.userLoggedIn and 
 							command.context.loginUser.name eq command.requestedUser and 
@@ -58,7 +65,7 @@
 							command.context.loginUser.settings.layoutSettings.simpleInterface}">
 				<bs:didYouKnow command="${command}"/>
 			</c:if>
-				
+			
 			<!-- link to discussed user page -->
 			<c:if test="${not command.context.userLoggedIn or command.context.loginUser.name ne command.requestedUser}">
 				<sidebar:sidebarItem textKey="post.resource.discussion.headline">
@@ -86,7 +93,7 @@
 				headingLink="${relativeUrlGenerator.getConceptsUrlByString(command.requestedUser)}"	
 				headingTitleKey="tagrelations.user.title"
 				scope="${command.scope.name()}"/>
-				
+			
 			<!-- display similar users -->
 			<sidebar:sidebarItem textKey="users.similar">
 				<jsp:attribute name="content">
@@ -97,10 +104,10 @@
 					<users:related cmd="${command.relatedUserCommand}" displayFollowLink="${false}" personalized="${true}" userSimilarity="${command.userSimilarity}"/>
 				</jsp:attribute>
 			</sidebar:sidebarItem>
-				
+			
 			<sidebar:sidebarTagCloudItem requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" scope="${command.scope.name()}"/>
-						
-			<c:if test="${command.context.loginUser.role == 'ADMIN' and not empty command.user}">
+			
+			<c:if test="${isAdmin}">
 				<sidebar:sidebarItem textKey="user.details">
 					<jsp:attribute name="content">
 						<user:details user="${command.user}"/>

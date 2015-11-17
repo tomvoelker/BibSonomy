@@ -41,6 +41,8 @@ public class NetworkRelationSystemTag extends UserRelationSystemTag {
 	 */
 	public static final String NAME = "network";
 	
+	public final static String BibSonomySpammerSystemTag = SystemTagsUtil.buildSystemTagString(NAME, "bibsonomy-spammer");// "sys:network:bibsonomy-spammer";  // 
+	
 	// FIXME: SystemTagsUtil and SystemTagFactory have a cyclic dependency which is triggered if included here
 	/** the system tag for representing BibSonomy's friendship relation (==trust network) */
 	public final static String BibSonomyFriendSystemTag = SystemTagsUtil.buildSystemTagString(NAME, "bibsonomy-friend");// "sys:network:bibsonomy-friend";  // 
