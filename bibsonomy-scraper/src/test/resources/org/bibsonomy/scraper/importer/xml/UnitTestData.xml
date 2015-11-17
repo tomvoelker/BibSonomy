@@ -1927,4 +1927,10 @@
 		<BibFile>CSHLPScraperUnitURLTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_312">
+		<TestDescription>scraping test for journal page from nrcresearchpress.com/ using APHAScraper</TestDescription>
+		<URL>http://www.nrcresearchpress.com/doi/abs/10.1139/o59-099</URL>
+		<BibFile>APHAScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.apha.APHAScraper</Scraper>
+	</URLTest>
 </test:Tests>

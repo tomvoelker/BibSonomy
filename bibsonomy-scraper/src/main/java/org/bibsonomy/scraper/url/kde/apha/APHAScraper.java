@@ -53,14 +53,19 @@ public class APHAScraper extends AbstractUrlScraper {
 	private static final String info = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
 
 	private static final Pattern DOI_PATTERN_FROM_URL = Pattern.compile("/abs/(.+?)$");
-	private static final String DOWNLOAD_URL = "http://ajph.aphapublications.org/action/downloadCitation";
 	private static final String AJPH_HOST = "ajph.aphapublications.org";
-
+	private static final String NRCRESEACHPRESS_HOST = "nrcresearchpress.com";
+	private static final String HTTP = "http://";
 	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern, Pattern>>();
 	static {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ AJPH_HOST), Pattern.compile("/doi/abs")));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ NRCRESEACHPRESS_HOST), Pattern.compile("/doi/abs")));
 	}
-
+	private static final List<Pattern> DOWNLOAD_URL = new LinkedList<Pattern>();
+	static {
+		DOWNLOAD_URL.add(Pattern.compile(HTTP + AJPH_HOST + "/action/downloadCitation"));
+		DOWNLOAD_URL.add(Pattern.compile(HTTP + NRCRESEACHPRESS_HOST + "/action/downloadCitation"));
+	}
 	private final RisToBibtexConverter ris = new RisToBibtexConverter();
 
 	@Override
@@ -83,11 +88,16 @@ public class APHAScraper extends AbstractUrlScraper {
 		if (doi != null && cookie != null) {
 			String risString = null;
 			try {
-				risString = WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL), doi);
+				if (sc.getUrl().toString().contains(AJPH_HOST)) {
+					risString = WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL.get(0).toString()), doi);
+				}
+				if (sc.getUrl().toString().contains(NRCRESEACHPRESS_HOST)) {
+					risString = WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL.get(1).toString()), doi);
+				}
 			} catch (MalformedURLException ex) {
 				throw new ScrapingFailureException("URL to scrape does not exist. It maybe malformed.");
 			} catch (IOException ex) {
-				throw new ScrapingFailureException("An unexpected IO error has occurred. Maybe APHA Publications is down.");
+				throw new ScrapingFailureException("An unexpected IO error has occurred. Maybe APHA or nrcresearchpress Publications is down.");
 			}
 
 			final String bibResult = ris.risToBibtex(risString);

@@ -38,7 +38,7 @@ import org.junit.experimental.categories.Category;
 public class APHAScraperTest {
 	
 	/**
-	 * starts URL test with id url_288
+	 * starts URL test with id url_288 for the host ajph.aphapublications.org/
 	 */
 	@Test
 	public void url1TestRun(){
@@ -46,10 +46,18 @@ public class APHAScraperTest {
 	}
 	
 	/**
-	 * starts URL test with id url_291
+	 * starts URL test with id url_291 for the host ajph.aphapublications.org/
 	 */
 	@Test
 	public void url2TestRun(){
 		UnitTestRunner.runSingleTest("url_291");
+	}
+	
+	/**
+	 * starts URL test with id url_312 for the host http://www.nrcresearchpress.com/
+	 */
+	@Test
+	public void url3TestRun(){
+		UnitTestRunner.runSingleTest("url_312");
 	}
 }
