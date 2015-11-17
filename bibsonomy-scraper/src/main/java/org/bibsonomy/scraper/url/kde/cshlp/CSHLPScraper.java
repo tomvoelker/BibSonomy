@@ -45,22 +45,44 @@ public class CSHLPScraper extends GenericBibTeXURLScraper {
 	private static final String SITE_URL = "http://cshperspectives.cshlp.org/";
 	private static final String info = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
 	private static final String CSHLP_HOST = "cshperspectives.cshlp.org";
+	private static final String JBC_HOST = "jbc.org";
+	private static final String CANCERRES_AACJOURNALS_HOST = "cancerres.aacrjournals.org";
+	private static final String JIMMUNOL_HOST = "jimmunol.org";
+	private static final String HTTP = "http://";
 	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern, Pattern>>();
 	static {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + CSHLP_HOST), Pattern.compile("/content/")));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + JBC_HOST), Pattern.compile("/content/")));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + CANCERRES_AACJOURNALS_HOST), Pattern.compile("/content/")));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + JIMMUNOL_HOST), Pattern.compile("/content/")));
 	}
-	
+	private static final List<Pattern> DOWNLOAD_URL = new LinkedList<Pattern>();
+	static {
+		DOWNLOAD_URL.add(Pattern.compile(HTTP + CSHLP_HOST + "/citmgr?type=bibtex&gca=cshperspect;"));
+		DOWNLOAD_URL.add(Pattern.compile(HTTP + JBC_HOST + "/citmgr?type=bibtex&gca=jbc;"));
+		DOWNLOAD_URL.add(Pattern.compile(HTTP + CANCERRES_AACJOURNALS_HOST + "/citmgr?type=bibtex&gca=canres;"));
+		DOWNLOAD_URL.add(Pattern.compile(HTTP + JIMMUNOL_HOST + "/citmgr?type=bibtex&gca=jimmunol;"));
+	}
 	private static final Pattern PATTERN_FROM_URL = Pattern.compile("/content/(.+?)\\.");
-	private static final Pattern DOWNLOAD_URL = Pattern.compile("http://cshperspectives.cshlp.org/citmgr?type=bibtex&gca=cshperspect;");
 
 	@Override
 	protected String getDownloadURL(URL url) throws ScrapingException {
 		String id = null;
-		
 		final Matcher m = PATTERN_FROM_URL.matcher(url.getPath());
 		if (m.find()) {
 			id = m.group(1);
-			return DOWNLOAD_URL.toString() + id;
+			if (url.getHost().contains(CSHLP_HOST)) {
+				return DOWNLOAD_URL.get(0).toString() + id;
+			}
+			else if (url.getHost().contains(JBC_HOST)) {
+				return DOWNLOAD_URL.get(1).toString() + id;
+			}
+			else if (url.getHost().contains(CANCERRES_AACJOURNALS_HOST)) {
+				return DOWNLOAD_URL.get(2).toString() + id;
+			}
+			else if (url.getHost().contains(JIMMUNOL_HOST)){
+				return DOWNLOAD_URL.get(3).toString() + id;
+			}
 		}
 		return url.toExternalForm();
 	}

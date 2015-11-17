@@ -1802,27 +1802,27 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.apha.APHAScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_292">
-		<TestDescription>scraping test for CSHLP Scraper</TestDescription>
+		<TestDescription>scraping test for cshperspectives.cshlp.org host using CSHLP Scraper</TestDescription>
 		<URL>http://cshperspectives.cshlp.org/content/3/3/a004994.short</URL>
 		<BibFile>CSHLPScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_293">
-		<TestDescription>scraping test for CSHLP Scraper</TestDescription>
-		<URL>http://cshperspectives.cshlp.org/content/7/9/a015719.abstract</URL>
-		<BibFile>CSHLPScraperUnitURLTest2.bib</BibFile>
+		<TestDescription>scraping test for cshperspectives.cshlp.org host using CSHLP Scraper</TestDescription>
+		<URL>http://cshperspectives.cshlp.org/content/3/3/a004994.abstract</URL>
+		<BibFile>CSHLPScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_294">
-		<TestDescription>scraping test for CSHLP Scraper</TestDescription>
-		<URL>http://cshperspectives.cshlp.org/content/7/7/a018770.full.pdf+html</URL>
-		<BibFile>CSHLPScraperUnitURLTest3.bib</BibFile>
+		<TestDescription>scraping test for cshperspectives.cshlp.org host using CSHLP Scraper</TestDescription>
+		<URL>http://cshperspectives.cshlp.org/content/3/3/a004994.full.pdf+html</URL>
+		<BibFile>CSHLPScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_295">
-		<TestDescription>scraping test for CSHLP Scraper</TestDescription>
-		<URL>http://cshperspectives.cshlp.org/content/7/9/a023358.full</URL>
-		<BibFile>CSHLPScraperUnitURLTest4.bib</BibFile>
+		<TestDescription>scraping test for cshperspectives.cshlp.org host using CSHLP Scraper</TestDescription>
+		<URL>http://cshperspectives.cshlp.org/content/3/3/a004994.full</URL>
+		<BibFile>CSHLPScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_296">
@@ -1854,5 +1854,77 @@
 		<URL>http://revista.ibict.br/ciinf/index.php/ciinf/article/view/2262/1879</URL>
 		<BibFile>CoinsScraperUnitURLTest5.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.generic.CoinsScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_300">
+		<TestDescription>scraping test for jbc.org host using CSHLP Scraper</TestDescription>
+		<URL>http://www.jbc.org/content/288/10/6904.abstract</URL>
+		<BibFile>CSHLPScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_301">
+		<TestDescription>scraping test for jbc.org host using CSHLP Scraper</TestDescription>
+		<URL>http://www.jbc.org/content/288/10/6904.short</URL>
+		<BibFile>CSHLPScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_302">
+		<TestDescription>scraping test for jbc.org host using CSHLP Scraper</TestDescription>
+		<URL>http://www.jbc.org/content/288/10/6904.full</URL>
+		<BibFile>CSHLPScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_303">
+		<TestDescription>scraping test for jbc.org host using CSHLP Scraper</TestDescription>
+		<URL>http://www.jbc.org/content/288/10/6904.full.pdf+html</URL>
+		<BibFile>CSHLPScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_304">
+		<TestDescription>scraping test for cancerres.aacrjournals.org host using CSHLP Scraper</TestDescription>
+		<URL>http://cancerres.aacrjournals.org/content/65/13/5628.abstract</URL>
+		<BibFile>CSHLPScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_305">
+		<TestDescription>scraping test for cancerres.aacrjournals.org host using CSHLP Scraper</TestDescription>
+		<URL>http://cancerres.aacrjournals.org/content/65/13/5628.short</URL>
+		<BibFile>CSHLPScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_306">
+		<TestDescription>scraping test for cancerres.aacrjournals.org host using CSHLP Scraper</TestDescription>
+		<URL>http://cancerres.aacrjournals.org/content/65/13/5628.full</URL>
+		<BibFile>CSHLPScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_307">
+		<TestDescription>scraping test for cancerres.aacrjournals.org host using CSHLP Scraper</TestDescription>
+		<URL>http://cancerres.aacrjournals.org/content/65/13/5628.full.pdf+html</URL>
+		<BibFile>CSHLPScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_308">
+		<TestDescription>scraping test for jimmunol.org host using CSHLP Scraper</TestDescription>
+		<URL>http://www.jimmunol.org/content/183/11/7569.abstract</URL>
+		<BibFile>CSHLPScraperUnitURLTest4.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_309">
+		<TestDescription>scraping test for jimmunol.org host using CSHLP Scraper</TestDescription>
+		<URL>http://www.jimmunol.org/content/183/11/7569.short</URL>
+		<BibFile>CSHLPScraperUnitURLTest4.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_310">
+		<TestDescription>scraping test for jimmunol.org host using CSHLP Scraper</TestDescription>
+		<URL>http://www.jimmunol.org/content/183/11/7569.full</URL>
+		<BibFile>CSHLPScraperUnitURLTest4.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_311">
+		<TestDescription>scraping test for jimmunol.org host using CSHLP Scraper</TestDescription>
+		<URL>http://www.jimmunol.org/content/183/11/7569.full.pdf+html</URL>
+		<BibFile>CSHLPScraperUnitURLTest4.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
 	</URLTest>
 </test:Tests>

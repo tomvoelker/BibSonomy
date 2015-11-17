@@ -33,6 +33,10 @@ import org.junit.experimental.categories.Category;
 
 /**
  * @author Mohammed Abed
+ * url_292, url_293, url_294, url_295 for the host: cshperspectives.cshlp.org
+ * url_300, url_301, url_302, url_303 for the host: jbc.org
+ * url_304, url_305, url_306, url_307 for the host: cancerres.aacrjournals.org
+ * url_308, url_309, url_310, url_311 for the host: jimmunol.org
  */
 @Category(RemoteTest.class)
 public class CSHLPScraperTest {
@@ -67,5 +71,101 @@ public class CSHLPScraperTest {
 	@Test
 	public void url4TestRun() {
 		UnitTestRunner.runSingleTest("url_295");
+	}
+	
+	/**
+	 * starts URL test with id url_300
+	 */
+	@Test
+	public void url5TestRun() {
+		UnitTestRunner.runSingleTest("url_300");
+	}
+	
+	/**
+	 * starts URL test with id url_301
+	 */
+	@Test
+	public void url6TestRun() {
+		UnitTestRunner.runSingleTest("url_301");
+	}
+	
+	/**
+	 * starts URL test with id url_302
+	 */
+	@Test
+	public void url7TestRun() {
+		UnitTestRunner.runSingleTest("url_302");
+	}
+	
+	/**
+	 * starts URL test with id url_303
+	 */
+	@Test
+	public void url8TestRun() {
+		UnitTestRunner.runSingleTest("url_303");
+	}
+	
+	/**
+	 * starts URL test with id url_304
+	 */
+	@Test
+	public void url9TestRun() {
+		UnitTestRunner.runSingleTest("url_304");
+	}
+	
+	/**
+	 * starts URL test with id url_305
+	 */
+	@Test
+	public void url10TestRun() {
+		UnitTestRunner.runSingleTest("url_305");
+	}
+	
+	/**
+	 * starts URL test with id url_306
+	 */
+	@Test
+	public void url11TestRun() {
+		UnitTestRunner.runSingleTest("url_306");
+	}
+	
+	/**
+	 * starts URL test with id url_307
+	 */
+	@Test
+	public void url12TestRun() {
+		UnitTestRunner.runSingleTest("url_307");
+	}
+	
+	/**
+	 * starts URL test with id url_308
+	 */
+	@Test
+	public void url13TestRun() {
+		UnitTestRunner.runSingleTest("url_308");
+	}
+	
+	/**
+	 * starts URL test with id url_309
+	 */
+	@Test
+	public void url14TestRun() {
+		UnitTestRunner.runSingleTest("url_309");
+	}
+	
+	/**
+	 * starts URL test with id url_310
+	 */
+	@Test
+	public void url15TestRun() {
+		UnitTestRunner.runSingleTest("url_310");
+	}
+	
+	/**
+	 * starts URL test with id url_311
+	 */
+	@Test
+	public void url16TestRun() {
+		UnitTestRunner.runSingleTest("url_311");
 	}
 }
