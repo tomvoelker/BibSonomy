@@ -572,7 +572,7 @@
 	</URLTest>
 	<URLTest id="url_93">
 		<TestDescription>OSA Scraper url test</TestDescription>
-		<URL>http://www.opticsinfobase.org/josaa/abstract.cfm?uri=josaa-25-5-1084</URL>
+		<URL>https://www.osapublishing.org/josaa/abstract.cfm?uri=josaa-25-5-1084</URL>
 		<BibFile>OSAScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.osa.OSAScraper</Scraper>
 	</URLTest>
