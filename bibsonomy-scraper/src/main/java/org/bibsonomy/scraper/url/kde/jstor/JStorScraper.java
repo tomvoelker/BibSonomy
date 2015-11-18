@@ -108,7 +108,7 @@ public class JStorScraper extends AbstractUrlScraper {
 				url = EXPORT_PAGE_URL + exportDOIFromUrl(url);
 			
 			if(!url.contains(EXPORT_PAGE_URL))
-				url = EXPORT_PAGE_URL + exportDOI(url);
+				url = EXPORT_PAGE_URL + exportDOIFromSourceCode(url);
 				
 			//get the page content or at least get the cookies
 			GetMethod getMethod = new GetMethod(url);
@@ -220,7 +220,7 @@ public class JStorScraper extends AbstractUrlScraper {
 		return null;
 	}
 	
-	private static String exportDOI(String url) throws ScrapingException {
+	private static String exportDOIFromSourceCode(String url) throws ScrapingException {
 		try {
 			final Matcher m = DOI.matcher(WebUtils.getContentAsString(url));
 			if(m.find()) {
