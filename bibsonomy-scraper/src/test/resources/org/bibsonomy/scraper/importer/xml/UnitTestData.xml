@@ -1933,4 +1933,10 @@
 		<BibFile>APHAScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.apha.APHAScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_313">
+		<TestDescription>JStor Scraper url test</TestDescription>
+		<URL>http://www.jstor.org/doi/abs/10.1086/505090</URL>
+		<BibFile>JStorScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.jstor.JStorScraper</Scraper>
+	</URLTest>
 </test:Tests>
