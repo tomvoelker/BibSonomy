@@ -1844,12 +1844,6 @@
 		<Scraper>org.bibsonomy.scraper.generic.DublinCoreScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_299">
-		<TestDescription>DLibScraper Test</TestDescription>
-		<URL>http://www.dlib.org/dlib/may08/monnich/05monnich.html</URL>
-		<BibFile>DLibScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.dlib.DLibScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_299">
 		<TestDescription>test for pages with coins</TestDescription>
 		<URL>http://revista.ibict.br/ciinf/index.php/ciinf/article/view/2262/1879</URL>
 		<BibFile>CoinsScraperUnitURLTest5.bib</BibFile>
