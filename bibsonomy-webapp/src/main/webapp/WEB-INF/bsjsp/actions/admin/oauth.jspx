@@ -51,64 +51,88 @@
 		<jsp:attribute name="content">
 			<div id="outerBox">
 				<h2><fmt:message key="admin.actions.oauth"/></h2>
+				<ul>
+					<li><a href="#consumer-list"><fmt:message key="admin.actions.consumer.list"/></a></li>
+					<li><a href="#register-consumer"><fmt:message key="admin.actions.consumer.register"/></a></li>
+				</ul>
+				<br /><br />
+				<h3 id="consumer-list"><fmt:message key="admin.actions.consumer.list"/></h3>
+				
+				<table class="table table-bordered table-striped" id="oauthConsumerList">
+					<thead>
+					<tr>
+						<th><fmt:message key="admin.oauth.consumer.serviceName"/></th>
+						<th><fmt:message key="admin.oauth.consumer.title"/></th>
+						<th><fmt:message key="admin.oauth.consumer.tokens"/></th>
+						<th><fmt:message key="admin.oauth.consumer.keyType"/></th>
 
+						<th><fmt:message key="admin.oauth.consumer.callbackUrl"/></th>
+						<th><fmt:message key="admin.oauth.consumer.gadgetUrl"/></th>
 
-				<div class="panel panel-default">
-					<!--+
-						| list all registered consumers
-						+-->
-					<div class="panel-heading"><strong><fmt:message key="admin.actions.consumer.list"/></strong></div>
-					<table class="table" id="oauthConsumerList">
-						<thead>
-						<tr>
-							<th><fmt:message key="admin.oauth.consumer.serviceName"/></th>
-							<th><fmt:message key="admin.oauth.consumer.title"/></th>
-							<th><fmt:message key="admin.oauth.consumer.key"/></th>
-							<th><fmt:message key="admin.oauth.consumer.keyType"/></th>
+						<th><fmt:message key="admin.oauth.consumer.summary"/></th>
+						<th><fmt:message key="admin.oauth.consumer.description"/></th>
+						<!--
+						<th><fmt:message key="admin.oauth.consumer.thumbnail"/></th>
+						<th><fmt:message key="admin.oauth.consumer.icon"/></th>
+						-->
+						<th><fmt:message key="admin.oauth.consumer.delete"/></th>
+					</tr>
+					</thead>
+					<tbody>
+					<c:forEach var="entry" items="${command.consumers}">
+						<tr class="consumerEntry">
+							<td>
+								<c:out value="${entry.serviceName}"/>
+								<c:if test="${entry.icon}">
+									<img src="${entry.icon}" style="width: 32px;" />
+								</c:if>
+							</td>
+							<td><c:out value="${entry.title}"/></td>
+							<td>
+								<table>
+									<tr>
+										<td>
+											<div class="form-group">
+												<label class="control-label">Consumer Key</label>
+												<div style="max-width: 200px; word-wrap:break-word;" class="form-control-static"><c:out value="${entry.consumerKey}" /></div>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<div class="form-group">
+												<label class="control-label">Consumer Secret</label>
+												<div style="max-width: 200px; word-wrap:break-word;" class="form-control-static"><c:out value="${entry.consumerSecret}"/></div>
+											</div>
+										</td>
+									</tr>
+								</table>
+							</td>
+							<td><c:out value="${entry.keyType}"/></td>
+							<td><c:out value="${entry.callbackUrl}"/></td>
+							<td><c:out value="${entry.gadgetUrl}"/></td>
 
-							<th><fmt:message key="admin.oauth.consumer.callbackUrl"/></th>
-							<th><fmt:message key="admin.oauth.consumer.gadgetUrl"/></th>
-
-							<th><fmt:message key="admin.oauth.consumer.summary"/></th>
-							<th><fmt:message key="admin.oauth.consumer.description"/></th>
+							<td><c:out value="${entry.summary}"/></td>
+							<td><c:out value="${entry.description}"/></td>
 							<!--
-							<th><fmt:message key="admin.oauth.consumer.thumbnail"/></th>
-							<th><fmt:message key="admin.oauth.consumer.icon"/></th>
+							<td>
+								<c:if test="${not empty entry.thumbnail}">
+									<a href="${entry.thumbnail}"><img src ="${entry.thumbnail}" /></a>
+								</c:if>
+							</td>
+							<td>
+								<c:if test="${not empty entry.icon}">
+									<a href="${entry.icon}"><img src ="${entry.icon}" /></a>
+								</c:if>
+							</td>
 							-->
-							<th><fmt:message key="admin.oauth.consumer.delete"/></th>
+							<fmt:message key="admin.oauth.consumer.delete" var="deleteTitle"/>
+							<td><a title="${deleteTitle}" onclick="deleteConsumer('${entry.consumerKey}')" href="#"><span class="fa fa-times"><!-- --></span></a></td>
 						</tr>
-						</thead>
-						<tbody>
-						<c:forEach var="entry" items="${command.consumers}">
-							<tr class="consumerEntry">
-								<td><c:out value="${entry.serviceName}"/></td>
-								<td><c:out value="${entry.title}"/></td>
-								<td><c:out value="${entry.consumerKey}"/></td>
-								<td><c:out value="${entry.keyType}"/></td>
-								<td><c:out value="${entry.callbackUrl}"/></td>
-								<td><c:out value="${entry.gadgetUrl}"/></td>
+					</c:forEach>
+					</tbody>
+				</table>
 
-								<td><c:out value="${entry.summary}"/></td>
-								<td><c:out value="${entry.description}"/></td>
-								<!--
-								<td>
-									<c:if test="${not empty entry.thumbnail}">
-										<a href="${entry.thumbnail}"><img src ="${entry.thumbnail}" /></a>
-									</c:if>
-								</td>
-								<td>
-									<c:if test="${not empty entry.icon}">
-										<a href="${entry.icon}"><img src ="${entry.icon}" /></a>
-									</c:if>
-								</td>
-								-->
-								<fmt:message key="admin.oauth.consumer.delete" var="deleteTitle"/>
-								<td><a title="${deleteTitle}" onclick="deleteConsumer('${entry.consumerKey}')" href="#"><span class="fa fa-times"><!-- --></span></a></td>
-							</tr>
-						</c:forEach>
-						</tbody>
-					</table>
-				</div>
 
         	    <!--+
         	    	| Delete Consumer (invisible)
@@ -122,7 +146,7 @@
 				<!--+
 					| register new consumer
 					+-->
-				<h3><fmt:message key="admin.actions.consumer.register"/></h3>
+				<h3 id="register-consumer"><fmt:message key="admin.actions.consumer.register"/></h3>
 				
         	    <form:form class="form-horizontal" action="${relativeUrlGenerator.getAdminUrlByName('oauth')}" method="POST">
 		        	<errors:global />
