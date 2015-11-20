@@ -44,6 +44,10 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
 
 /**
+ * This scraper supports download links from the following hosts
+ * 1. ajph.aphapublications.org
+ * 2. nrcresearchpress.com
+ *
  * @author Mohammed Abed
  */
 public class APHAScraper extends AbstractUrlScraper {

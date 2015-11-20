@@ -37,6 +37,12 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
 /**
+ * This scraper supports download links from the following hosts
+ * 1. cshperspectives.cshlp.org
+ * 2. jbc.org
+ * 3. cancerres.aacrjournals.org
+ * 4. jimmunol.org
+ * 
  * @author Mohammed Abed
  */
 public class CSHLPScraper extends GenericBibTeXURLScraper {
