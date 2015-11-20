@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -48,14 +47,18 @@ public class DBLPScraper extends GenericBibTeXURLScraper {
 	private static final String DBLP_HOST_NAME1  = "http://dblp.uni-trier.de";
 	private static final String SITE_URL  = DBLP_HOST_NAME1+"/";
 	private static final String info = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME)+".";
-
-	private static final String DBLP_HOST1  = "dblp.uni-trier.de";
+	private static String ALTERNATIVES = "/rec/(bibtex|xml|rdf|ris|html|bib1|bib2)/(.+)(\\.xml|\\.rdf|\\.ris|\\.bib)?";
+	private static final String DBLP_HOST1= "dblp.uni-trier.de";
 	private static final String DBLP_HOST2  = "search.mpi-inf.mpg.de";
+	private static final String DBLP_HOST3 = "dblp.dagstuhl.de";
+	private static final String DBLP_HOST4 = "dblp.org";
 	private static final String DBLP_PATH2  = "/dblp/";
 
 	private static final List<Pair<Pattern,Pattern>> patterns = Arrays.asList(
-		new Pair<Pattern, Pattern>(Pattern.compile(".*" + DBLP_HOST1), AbstractUrlScraper.EMPTY_PATTERN),
-		new Pair<Pattern, Pattern>(Pattern.compile(".*" + DBLP_HOST2), Pattern.compile(DBLP_PATH2 + ".*"))
+		new Pair<Pattern, Pattern>(Pattern.compile(".*" + DBLP_HOST1) , Pattern.compile(ALTERNATIVES)),
+		new Pair<Pattern, Pattern>(Pattern.compile(".*" + DBLP_HOST2), Pattern.compile(DBLP_PATH2 + ".*")),
+		new Pair<Pattern, Pattern>(Pattern.compile(".*" + DBLP_HOST3) , Pattern.compile(ALTERNATIVES)),
+		new Pair<Pattern, Pattern>(Pattern.compile(".*" + DBLP_HOST4) , Pattern.compile(ALTERNATIVES))
 	);
 	
 	@Override
@@ -88,9 +91,44 @@ public class DBLPScraper extends GenericBibTeXURLScraper {
 	 */
 	@Override
 	protected String getDownloadURL(URL url) throws ScrapingException {
-		return url.toString().replace("bibtex", "bib") + ".bib";
+		String newURL = url.toString();
+		String extesnion = getExtension(newURL);
+		String path = getPath(newURL);
+		if (extesnion != null) {
+			newURL = newURL.replace("." + extesnion, ".bib");
+			return newURL.replace("/" + extesnion, "/bib");
+		}
+		else if (path != null) {
+			return newURL.replace("/" + path, "/bib") + ".bib";
+		}
+		else {
+			return newURL;
+		}
 	}
 	
+	private String getPath(String url) {
+		if (url.contains("/html")) {
+			return "html";
+		}
+		else if (url.contains("/bibtex"))
+			return "bibtex";
+		else
+			return null;
+	}
+	
+	private String getExtension(String url) {
+		if (url.contains(".xml")) {
+			return "xml";
+		}
+		else if (url.contains(".rdf")) {
+			return "rdf";
+		}
+		else if (url.contains(".ris")) {
+			return "ris";
+		}
+		else
+			return null;
+	}
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
 	 */
