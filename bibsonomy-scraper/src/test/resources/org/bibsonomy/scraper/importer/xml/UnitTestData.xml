@@ -837,7 +837,7 @@
 	</URLTest>
 	<URLTest id="url_138">
 		<TestDescription>Url test for GoogleScholarScraper (Firefox plugin support)</TestDescription>
-		<URL>http://scholar.google.de/scholar.bib?q=info:zN5aQ90hwhYJ:scholar.google.com/&amp;output=citation&amp;hl=de&amp;as_sdt=0&amp;ct=citation&amp;cd=0</URL>
+		<URL>https://scholar.google.de/scholar.bib?q=info:zN5aQ90hwhYJ:scholar.google.com/&amp;output=citation&amp;hl=de&amp;as_sdt=0&amp;ct=citation&amp;cd=0</URL>
 		<BibFile>GoogleScholarScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.googlescholar.GoogleScholarScraper</Scraper>
 	</URLTest>
@@ -2034,5 +2034,11 @@
 		<URL>http://www.dblp.org/rec/rdf/conf/icassp/AlmeidaK14.rdf</URL>
 		<BibFile>DBLPScraperUnitTest6.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_331">
+		<TestDescription>Url test for GoogleScholarScraper (Firefox plugin support)</TestDescription>
+		<URL>https://scholar.google.com/citations?view_op=view_citation&amp;hl=en&amp;user=1t5awvEAAAAJ&amp;citation_for_view=1t5awvEAAAAJ:UeHWp8X0CEIC</URL>
+		<BibFile>GoogleScholarScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.googlescholar.GoogleScholarScraper</Scraper>
 	</URLTest>
 </test:Tests>
