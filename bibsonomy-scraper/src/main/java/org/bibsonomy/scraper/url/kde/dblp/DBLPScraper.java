@@ -40,9 +40,16 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
 /**
+ * This scraper can extract Data from the following hosts
+ * 1. dblp.uni-trier.de
+ * 2. search.mpi-inf.mpg.de
+ * 3. dblp.dagstuhl.de
+ * 4. dblp.org
+ * 
  * @author wbi
  */
 public class DBLPScraper extends GenericBibTeXURLScraper {
+	
 	private static final String SITE_NAME = "University of Trier Digital Bibliography & Library Project";
 	private static final String DBLP_HOST_NAME1  = "http://dblp.uni-trier.de";
 	private static final String SITE_URL  = DBLP_HOST_NAME1+"/";
