@@ -106,8 +106,8 @@
 	</URLTest>
 	<URLTest id="url_16">
 		<TestDescription>URL scraping test for the IOP scraper</TestDescription>
-		<URL>http://www.iop.org/EJ/abstract/1751-8121/40/27/F01</URL>
-		<BibFile>IOPScraperUnitURLTest.bib</BibFile>
+		<URL>http://iopscience.iop.org/article/10.1088/1742-5468/2008/10/P10008</URL>
+		<BibFile>IOPScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.iop.IOPScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_17">
@@ -1098,12 +1098,6 @@
 		<URL>http://prola.aps.org/abstract/PR/v149/i2/p674_1</URL>
 		<BibFile>ProlaScraperUnitURLTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.prola.ProlaScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_178">
-		<TestDescription>URL scraping test for the IOP scraper</TestDescription>
-		<URL>http://iopscience.iop.org/1751-8121/40/27/F01</URL>
-		<BibFile>IOPScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.iop.IOPScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_179">
 		<TestDescription>URL scraping test with publication from siencedirect</TestDescription>
