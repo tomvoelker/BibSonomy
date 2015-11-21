@@ -81,8 +81,7 @@ public class APHAScraper extends AbstractUrlScraper {
 		try {
 			cookie = WebUtils.getCookies(sc.getUrl());
 		} catch (final IOException ex) {
-			throw new InternalFailureException(
-					"An unexpected IO error has occurred. No Cookie has been generated.");
+			throw new InternalFailureException("An unexpected IO error has occurred. No Cookie has been generated.");
 		}
 
 		final Matcher m = DOI_PATTERN_FROM_URL.matcher(sc.getUrl().toString());

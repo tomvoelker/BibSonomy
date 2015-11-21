@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.copac;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,13 +34,16 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.WebUtils;
 
 /**
+ * this Scraper import data from the host http://copac.jisc.ac.uk
  * @author Mohammed Abed
  */
-public class CopacScraper extends GenericBibTeXURLScraper {
+public class CopacScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "Copac National, Academic and Specialist Library Catalogue";
 	private static final String SITE_URL = "http://copac.jisc.ac.uk/";
@@ -47,6 +51,7 @@ public class CopacScraper extends GenericBibTeXURLScraper {
 
 	private static final String COPAC_HOST = "http://copac.jisc.ac.uk/";
 	private static final String HOST = "jisc.ac.uk";
+	private static final String EXPORT_BIBTEX = "&format=BibTeX&action=Export";
 	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern, Pattern>>();
 	
 	static {
@@ -55,9 +60,23 @@ public class CopacScraper extends GenericBibTeXURLScraper {
 	}
 
 	@Override
-	protected String getDownloadURL(URL url) throws ScrapingException {
-		//System.out.println("http://" + url.getHost().toString() + url.getPath().toString() + "&format=BibTeX&action=Export");
-		return "http://copac.jisc.ac.uk/search?title=Measures+and+aggregation%3A+formal+aspects+and+applications+to+clustering+and+decision.&rn=1&format=BibTeX&action=Export";
+	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+		sc.setScraper(this);
+		String cookie = null;
+		try {
+			final String bibResult = WebUtils.getContentAsString(cookie, sc.getUrl().toString() + EXPORT_BIBTEX );
+			System.out.println(bibResult);
+		} catch (IOException e) {
+			throw new ScrapingFailureException("URL to scrape does not exist. It maybe malformed.");
+		} 
+		// System.out.println(sc.getUrl().toString() + EXPORT_BIBTEX);
+		return false;
+	}
+	
+	//@Override
+	protected String getDownloadURLTest(URL url) throws ScrapingException {
+		return SITE_URL + "/search?";
+		//return "http://copac.jisc.ac.uk/search?title=Measures+and+aggregation%3A+formal+aspects+and+applications+to+clustering+and+decision.&rn=1&format=BibTeX&action=Export";
 	}
 	
 	@Override
