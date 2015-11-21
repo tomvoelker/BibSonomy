@@ -111,6 +111,9 @@ public abstract class CitationManagerScraper extends AbstractUrlScraper {
 		// get link to download page
 		final Matcher downloadLinkMatcher = this.getDownloadLinkPattern().matcher(content);
 		if (downloadLinkMatcher.find()) { // add type=bibtex to the end of the link
+			if (downloadLinkMatcher.group(1).contains("bibtex")) {
+				return "http://" + url.getHost() + downloadLinkMatcher.group(1);
+			}
 			return "http://" + url.getHost() + downloadLinkMatcher.group(1) + "&type=bibtex";
 		}
 		

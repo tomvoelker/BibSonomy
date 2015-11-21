@@ -38,12 +38,13 @@ import org.bibsonomy.scraper.generic.CitationManagerScraper;
  */
 public class BiologistsScraper extends CitationManagerScraper {
 
+	// http://dev.biologists.org/highwire/citation/1142720/bibtex
 	private static final String SITE_NAME = "Development";
 	private static final String SITE_URL = "http://dev.biologists.org/";
 	private static final String INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME);
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = new ArrayList<Pair<Pattern,Pattern>>();
 	
-	private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("href=\"([^\"]++)\".*?citation manager");
+	private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("<li class=\"bibtext first\"><a href=\"([^\"]++)\"");
 	
 	static {
 		URL_PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "dev.biologists.org"), Pattern.compile("/content" + ".*")));
@@ -74,5 +75,4 @@ public class BiologistsScraper extends CitationManagerScraper {
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return URL_PATTERNS;
 	}
-
 }
