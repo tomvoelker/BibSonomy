@@ -61,7 +61,7 @@ public class IOPScraper extends AbstractUrlScraper {
 	/*
 	 * needed regular expressions to extract the publication id from the url
 	 */
-	private static final Pattern PUBLICATION_ID_PATTERN = Pattern.compile("^.*?article\\/(.*?)\\/(.*?)($|\\/meta)");
+	private static final Pattern PUBLICATION_ID_PATTERN = Pattern.compile("^.*?article\\/.*?\\/(.*?)($|\\/meta)");
 
 	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
 	static{
@@ -75,7 +75,7 @@ public class IOPScraper extends AbstractUrlScraper {
 		final Matcher publicationIdMatcher = PUBLICATION_ID_PATTERN.matcher(sc.getUrl().toString());
 		String pubId = "";
 		if(publicationIdMatcher.find())
-			pubId = publicationIdMatcher.group(2);
+			pubId = publicationIdMatcher.group(1);
 		
 		final String postArgs = "articleId=" + pubId +
 						  "&exportFormat=iopexport_bib" + 
