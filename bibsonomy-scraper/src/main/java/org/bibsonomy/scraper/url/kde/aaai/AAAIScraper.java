@@ -92,7 +92,7 @@ public class AAAIScraper extends AbstractUrlScraper {
 		downloadLink = downloadLink.replace(PAPER_VIEW_PATH_FRAGMENT, DOWNLOAD_PATH_FRAGMENT);
 		downloadLink = downloadLink.replace(ARTICLE_VIEW_PATH_FRAGMENT, DOWNLOAD_PATH_FRAGMENT);
 		downloadLink += PAPER_DOWNLOAD_PATH_SUFFIX;
-		
+	
 		//use BibtexScraper with download link
 		ScrapingContext bibContext;
 		try {
@@ -116,5 +116,4 @@ public class AAAIScraper extends AbstractUrlScraper {
 		}
 		return false;
 	}
-
 }
