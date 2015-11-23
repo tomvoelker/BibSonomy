@@ -49,7 +49,7 @@ public class SyncService {
 	private Map<Class<? extends Resource>, Map<String, String>> plan;
 	private String sslDn;
 	private boolean autosync = false;
-	private boolean initialAutoSync = false;
+	private boolean initialAutoSync = true;
 	private String userName;
 	
 	/**
@@ -264,7 +264,7 @@ public class SyncService {
 
 	/**
 	 * @return get initialAutoSync
-	 * true, if there was a bidirectional sync before auto-sync (required for auto-sync)
+	 * true, if there was NO bidirectional sync before auto-sync (required for auto-sync)
 	 */
 	public boolean getInitialAutoSync() {
 		return this.initialAutoSync;

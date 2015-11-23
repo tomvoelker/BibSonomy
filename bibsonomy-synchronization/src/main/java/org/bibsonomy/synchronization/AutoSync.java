@@ -31,6 +31,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Calendar;
 
 import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.logging.Log;
@@ -46,15 +47,12 @@ import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.util.MailUtils;
 
-
-import com.ibm.icu.util.Calendar;
-
 /**
  * @author wla
  */
 public class AutoSync {
 	private static final Log log = LogFactory.getLog(AutoSync.class);
-	private static Calendar calc = Calendar.getInstance(); 
+	private static Calendar calc;
 	private LogicInterface adminLogic;
 	private TwoStepSynchronizationClient syncClient;
 	private LogicInterfaceFactory userLogicFactory;
@@ -77,14 +75,16 @@ public class AutoSync {
 		for (final SyncService syncService : syncServices) {			
 			final User clientUser = this.adminLogic.getUserDetails(syncService.getUserName());
 
-			// check if user has run a sync in both-directions before, send notification mail
+			// check if user has run a sync in both-directions before; skip service and send sync-notification mail on Sunday otherwise
 			if (syncService.getInitialAutoSync())
 			{
+				calc = Calendar.getInstance(); 
 				if (calc.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
 					log.info("no initial sync in both-directions was done; send eMail to User");
 					mailUtils.sendSyncErrorMail(clientUser.getName(), clientUser.getEmail(), syncService.getName(), 
 							LocaleUtils.toLocale(clientUser.getSettings().getDefaultLanguage())); 
 				}
+				continue;
 			}
 			
 			final String userNameToSync = clientUser.getName();
@@ -138,6 +138,13 @@ public class AutoSync {
 	 */
 	public void setUserLogicFactory(final LogicInterfaceFactory userLogicFactory) {
 		this.userLogicFactory = userLogicFactory;
+	}
+
+	/**
+	 * @param mailUtils
+	 */
+	public void setMailUtils(final MailUtils mailUtils) {
+		this.mailUtils = mailUtils;
 	}
 
 }

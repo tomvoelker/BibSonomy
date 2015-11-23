@@ -172,7 +172,7 @@ public class SynchronizationController extends AjaxController implements Minimal
 				// synchronize
 				syncResult = client.synchronize(logic, server, syncPlan2);
 
-				// check servers initialAutoSync and set the servers initialAutoSync to false
+				// check servers initialAutoSync and set the servers initialAutoSync to false on successful synchronize
 				if (SyncUtils.checkInitialAutoSync(server)) {
 					server.setInitialAutoSync(false);
 					this.logic.updateSyncServer(loginUser.getName(), server);

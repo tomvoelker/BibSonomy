@@ -62,10 +62,14 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 	private static URI testURI;
 	private static URI bibsonomyURI;
 	private static URI deviceURI;
+	private static URI serverURI;
+	private static Properties credentialsSyncUser1;
+	private static Class<Bookmark> resourceType;
+	private static SynchronizationDirection direction;
+	private static ConflictResolutionStrategy strategy;
+	
+	private final static String syncUser1 = "syncuser1";
 
-	private final String syncUser1 = "syncuser1";
-	
-	
 	@BeforeClass
 	public static void setupManager() {
 		syncDBManager = SynchronizationDatabaseManager.getInstance();
@@ -73,6 +77,15 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 		testURI = TestUtils.createURI("http://www.test.de/");
 		bibsonomyURI = TestUtils.createURI("http://www.bibsonomy.org/");
 		deviceURI = TestUtils.createURI("client://android/123456789012?device=NexusOne");
+		serverURI = TestUtils.createURI("http://www.biblicious.org/");
+
+		credentialsSyncUser1 = new Properties();
+		credentialsSyncUser1.setProperty("name", syncUser1);
+		credentialsSyncUser1.setProperty("apiKey", "1546545646565");
+		
+		resourceType = Bookmark.class;
+		direction = SynchronizationDirection.SERVER_TO_CLIENT;
+		strategy = ConflictResolutionStrategy.SERVER_WINS;
 	}
 	
 	@Test
@@ -94,10 +107,36 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 		assertEquals(running, lastSyncDataAfterUpdate.getStatus());
 	}
 	
+	/**
+	 * test getSyncServices() statement
+	 */
 	@Test
 	public void testGetSyncClients() {
 		final List<SyncService> syncClients = syncDBManager.getSyncServiceSettings(syncUser1, null, false, this.dbSession);
-		syncClients.size();
+		assertEquals(2, syncClients.size());
+	}	
+	
+	/**
+	 * test getAutoSyncServer() statement
+	 */
+	@Test
+	public void testgetAutoSyncServer() {
+
+		// update sync-service testURI for SyncUser1 with auto-sync settings
+		SyncService autoSyncService = syncDBManager.getSyncServiceDetails(testURI, this.dbSession);
+		assertEquals(testURI, autoSyncService.getService());
+		autoSyncService.setServerUser(credentialsSyncUser1);
+		autoSyncService.setInitialAutoSync(false);
+		autoSyncService.setAutosync(true);
+		autoSyncService.setDirection(direction);
+		autoSyncService.setStrategy(strategy);
+		autoSyncService.setResourceType(resourceType);
+		syncDBManager.createSyncServerForUser(syncUser1, autoSyncService, this.dbSession);
+
+		// retrieve  auto-sync service from db
+		final List<SyncService> autoSyncServers = syncDBManager.getAutoSyncServer(this.dbSession);
+		assertEquals(1, autoSyncServers.size());
+		assertEquals(syncUser1, autoSyncServers.get(0).getUserName());
 	}
 
 	/**
@@ -105,12 +144,7 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 	 */
 	@Test
 	public void testSyncService() {		
-		final Properties credentialsSyncUser1 = new Properties();
-		credentialsSyncUser1.setProperty("name", syncUser1);
-		credentialsSyncUser1.setProperty("apiKey", "1546545646565");
-		final Class<Bookmark> resourceType = Bookmark.class;
-		final SynchronizationDirection direction = SynchronizationDirection.SERVER_TO_CLIENT;
-		final ConflictResolutionStrategy strategy = ConflictResolutionStrategy.SERVER_WINS;
+
 		
 		final SyncService service = new SyncService();
 		service.setService(testURI);

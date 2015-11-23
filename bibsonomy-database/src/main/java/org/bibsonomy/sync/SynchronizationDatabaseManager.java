@@ -301,7 +301,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	/**
-	 * @return List of synchronization servers for Auto synchronization ('autosync' or direction is not 'both')
+	 * @return List of synchronization servers for Auto synchronization ('autosync' and direction is not 'both')
 	 */
 	public List<SyncService> getAutoSyncServer(DBSession session) {
 		final SyncParam param = new SyncParam();
