@@ -273,7 +273,10 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new GenomeBiologyScraper());
 		addScraper(new APHAScraper());
 		addScraper(new CSHLPScraper());
-		addScraper(new CopacScraper());
+		/*
+		 * it still under development
+		 */
+		//addScraper(new CopacScraper());
 		//addScraper(new AkademiaiScraper()); error = 404
 	}
 
