@@ -22,7 +22,6 @@
 			or http://openid.net/get-an-openid/ and generate code dynamically -->
 		<ul class="list-inline">
 			<li><span><fmt:message key="login.openid.provider"/></span></li>
-			<li><login:login_openid_provider url="https://www.google.com/accounts/o8/id" name="Google" selectedTab="${selectedTab}"/></li>
 			<li><login:login_openid_provider url="http://me.yahoo.com/" name="Yahoo!" selectedTab="${selectedTab}" /></li>
 			<li><a class="otherProvider" data-provider="other" href="#">Other OpenID-Provider</a></li>
 		</ul>
