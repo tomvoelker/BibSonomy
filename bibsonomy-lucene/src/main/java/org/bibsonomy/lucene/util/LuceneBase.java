@@ -35,6 +35,7 @@ package org.bibsonomy.lucene.util;
  *  
  * @author fei
  */
+@Deprecated // TODO: remove Lucene
 public class LuceneBase {
 	/** TODO: improve documentation */
 	public static final String PARAM_RELEVANCE = "relevance";

@@ -287,14 +287,10 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 			final List<User> history = getClassifierHistory(param.getUserName(), session);
 
 			for (final User user : history) {
-
 				if (user.getConfidence() != null && user.getPrediction() != null) {
-
 					if (user.getAlgorithm().equals(param.getAlgorithm())) {
-
 						// FIXME: collect constants in appropriate class
 						if (Math.abs(param.getConfidence() - user.getConfidence()) < 0.0001) {
-
 							if (param.getPrediction().compareTo(user.getPrediction()) == 0) {
 								return false;
 							}

@@ -30,6 +30,7 @@ package org.bibsonomy.lucene.index;
  * 
  * @author fmi
  */
+@Deprecated // TODO: remove lucene
 public abstract class LuceneFieldNames {
 
 	// FIXME: configure these fieldnames via spring
