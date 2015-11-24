@@ -219,6 +219,15 @@ public class Record {
 	// Type
 	private String type;
 
+	
+	//ADDITIONAL FIELDS
+	private String pdf;
+	
+	private String slides;
+	
+	private String urn;
+
+
 	/**
 	 * @return the id
 	 */
@@ -987,5 +996,30 @@ public class Record {
 	 */
 	public void setType(String type) {
 		this.type = type;
+	}
+	
+	
+	public String getPdf() {
+		return pdf;
+	}
+
+	public void setPdf(String pdf) {
+		this.pdf = pdf;
+	}
+
+	public String getSlides() {
+		return slides;
+	}
+
+	public void setSlides(String slides) {
+		this.slides = slides;
+	}
+
+	public String getUrn() {
+		return urn;
+	}
+
+	public void setUrn(String urn) {
+		this.urn = urn;
 	}
 }
