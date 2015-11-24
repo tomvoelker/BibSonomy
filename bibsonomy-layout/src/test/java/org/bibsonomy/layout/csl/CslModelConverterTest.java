@@ -148,6 +148,47 @@ public class CslModelConverterTest {
 		return articlePost;
 	}
 	
+	private static Post<BibTex> generateAdditionalFieldsPost() {
+		
+		final Post<BibTex> additionalFieldsPost = new Post<BibTex>();
+		final List<PersonName> authors = new ArrayList<PersonName>();
+		authors.add(new PersonName("Jeffrey", "Dean"));
+		authors.add(new PersonName("Ghemawat", "Sanjay"));
+		
+		final BibTex article = new BibTex();
+		article.setAddress("New York, NY, USA");
+		article.setAuthor(authors);
+		article.setMisc("doi = {10.1145/1327452.1327492}," + System.getProperty("line.separator")
+				+ "pdf = {http://research.google.com/archive/mapreduce-osdi04.pdf}," + System.getProperty("line.separator")
+				+ "slides = {http://research.google.com/archive/mapreduce.html}," + System.getProperty("line.separator")
+				+ "urn = {urn:nbn:de:0290-opus-16749}," + System.getProperty("line.separator")
+				+ "issn = {0001-0782}");
+		//article.parseMiscField();
+		article.setEntrytype(BibTexUtils.ARTICLE);
+		article.setInterHash("b8a00982bf087c8543855897b7362a04");
+		article.setIntraHash("bff539224836d703c2d21141985fa1a3");
+		article.setJournal("Communications of the ACM");
+		article.setMonth("jan");
+		article.setNumber("1");
+		article.setPages("107--113");
+		article.setPublisher("ACM");
+		article.setTitle("MapReduce: simplified data processing on large clusters");
+		article.setUrl("http://doi.acm.org/10.1145/1327452.1327492");
+		article.setVolume("51");
+		article.setYear("2008");
+		
+		/*
+		article.addMiscField("pdf", "http://research.google.com/archive/mapreduce-osdi04.pdf");
+		article.addMiscField("slides", "http://research.google.com/archive/mapreduce.html");
+		article.addMiscField("urn", "urn:nbn:de:0290-opus-16749");
+		*/
+		
+		additionalFieldsPost.setResource(article);
+		additionalFieldsPost.setUser(new User("test"));
+		
+		return additionalFieldsPost;
+	}
+	
 	@Test
 	public void testConvertPostInproceedings() {
 		final Post<BibTex> inproceedingPost = generateInproceedings();
@@ -189,6 +230,16 @@ public class CslModelConverterTest {
 		final BibTex incollection = incollectionPost.getResource();
 		assertEquals(BibTexUtils.cleanBibTex(incollection.getTitle()), record.getTitle());
 		assertEquals(incollection.getChapter(), record.getChapter_number());
+	}
+	
+	@Test
+	public void testAdditionalFields() {
+		final Post<BibTex> post = generateAdditionalFieldsPost();
+		final Record record = CslModelConverter.convertPost(post);
+		final BibTex m = post.getResource();
+		assertEquals(BibTexUtils.cleanBibTex(m.getMiscField("pdf")), record.getPdf());
+		assertEquals(BibTexUtils.cleanBibTex(m.getMiscField("slides")), record.getSlides());
+		assertEquals(BibTexUtils.cleanBibTex(m.getMiscField("urn")), record.getUrn());
 	}
 
 }
