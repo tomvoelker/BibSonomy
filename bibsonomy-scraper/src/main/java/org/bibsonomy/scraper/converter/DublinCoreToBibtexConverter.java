@@ -35,7 +35,6 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.id.ISBNUtils;

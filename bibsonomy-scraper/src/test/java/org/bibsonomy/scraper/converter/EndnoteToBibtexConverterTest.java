@@ -67,4 +67,48 @@ public class EndnoteToBibtexConverterTest {
 		// test canHandle with BibTex
 		assertFalse(EndnoteToBibtexConverter.canHandle(expectedBibTeX));
 	}
+	
+	/**
+	 * Test Endnote to BibTeX Conversion
+	 * @throws IOException 
+	 */
+	@Test
+	public void testEndnoteToBibtex2() throws IOException {
+
+		final String endnote = TestUtils.readEntryFromFile(PATH_TO_FILES + "test2.endnote");
+
+		// test the canHandle heuristic
+		assertTrue(EndnoteToBibtexConverter.canHandle(endnote));
+
+		// test the conversion
+		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "test2_endnoteBibtex.bib");
+		final EndnoteToBibtexConverter e2bConverter = new EndnoteToBibtexConverter();
+		final String bibTeX = e2bConverter.endnoteToBibtex(endnote);
+		assertEquals(expectedBibTeX.trim(), bibTeX.trim());
+		
+		// test canHandle with BibTex
+		assertFalse(EndnoteToBibtexConverter.canHandle(expectedBibTeX));
+	}
+	
+	/**
+	 * Test Endnote to BibTeX Conversion
+	 * @throws IOException 
+	 */
+	@Test
+	public void testEndnoteToBibtex3() throws IOException {
+
+		final String endnote = TestUtils.readEntryFromFile(PATH_TO_FILES + "test3.endnote");
+
+		// test the canHandle heuristic
+		assertTrue(EndnoteToBibtexConverter.canHandle(endnote));
+
+		// test the conversion
+		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "test3_endnoteBibtex.bib");
+		final EndnoteToBibtexConverter e2bConverter = new EndnoteToBibtexConverter();
+		final String bibTeX = e2bConverter.endnoteToBibtex(endnote);
+		assertEquals(expectedBibTeX.trim(), bibTeX.trim());
+		
+		// test canHandle with BibTex
+		assertFalse(EndnoteToBibtexConverter.canHandle(expectedBibTeX));
+	}
 }
