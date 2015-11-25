@@ -47,7 +47,7 @@ import org.bibsonomy.util.WebUtils;
  * This scraper supports download links from the following hosts
  * 1. ajph.aphapublications.org
  * 2. nrcresearchpress.com
- *
+ * 3. emeraldinsight.com
  * @author Mohammed Abed
  */
 public class APHAScraper extends AbstractUrlScraper {
@@ -59,16 +59,20 @@ public class APHAScraper extends AbstractUrlScraper {
 	private static final Pattern DOI_PATTERN_FROM_URL = Pattern.compile("/abs/(.+?)$");
 	private static final String AJPH_HOST = "ajph.aphapublications.org";
 	private static final String NRCRESEACHPRESS_HOST = "nrcresearchpress.com";
+	private static final String EMERALDINSIGHT_HOST = "emeraldinsight.com";
 	private static final String HTTP = "http://";
 	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern, Pattern>>();
 	static {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ AJPH_HOST), Pattern.compile("/doi/abs")));
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ NRCRESEACHPRESS_HOST), Pattern.compile("/doi/abs")));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ EMERALDINSIGHT_HOST), Pattern.compile("/doi/abs")));
 	}
+	
 	private static final List<Pattern> DOWNLOAD_URL = new LinkedList<Pattern>();
 	static {
 		DOWNLOAD_URL.add(Pattern.compile(HTTP + AJPH_HOST + "/action/downloadCitation"));
 		DOWNLOAD_URL.add(Pattern.compile(HTTP + NRCRESEACHPRESS_HOST + "/action/downloadCitation"));
+		DOWNLOAD_URL.add(Pattern.compile(HTTP + EMERALDINSIGHT_HOST + "/action/downloadCitation"));
 	}
 	private final RisToBibtexConverter ris = new RisToBibtexConverter();
 
@@ -77,7 +81,7 @@ public class APHAScraper extends AbstractUrlScraper {
 		sc.setScraper(this);
 		String cookie = null;
 		String doi = null;
-
+				
 		try {
 			cookie = WebUtils.getCookies(sc.getUrl());
 		} catch (final IOException ex) {
@@ -89,13 +93,33 @@ public class APHAScraper extends AbstractUrlScraper {
 			doi = "doi=" + m.group(1);
 		}
 		if (doi != null && cookie != null) {
-			String risString = null;
+			String resultAsString = null;
 			try {
+				/*
+				 * the expected resultAsString is a RIS File: because this host support only RIS format
+				 */
 				if (sc.getUrl().toString().contains(AJPH_HOST)) {
-					risString = WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL.get(0).toString()), doi);
+					resultAsString = WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL.get(0).toString()), doi);
 				}
-				if (sc.getUrl().toString().contains(NRCRESEACHPRESS_HOST)) {
-					risString = WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL.get(1).toString()), doi);
+				/*
+				 * the expected resultAsString is a BibTex File
+				 */
+				else if (sc.getUrl().toString().contains(NRCRESEACHPRESS_HOST)) {
+					resultAsString = WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL.get(1).toString()), doi + "&format=bibtex");
+					if (resultAsString != null) {
+						sc.setBibtexResult(resultAsString);
+						return true;
+					}
+				}
+				/*
+				 * the expected resultAsString is a BibTex File
+				 */
+				else {
+					resultAsString = WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL.get(2).toString()), doi + "&format=bibtex");
+					if (resultAsString != null) {
+						sc.setBibtexResult(resultAsString);
+						return true;
+					}
 				}
 			} catch (MalformedURLException ex) {
 				throw new ScrapingFailureException("URL to scrape does not exist. It maybe malformed.");
@@ -103,7 +127,10 @@ public class APHAScraper extends AbstractUrlScraper {
 				throw new ScrapingFailureException("An unexpected IO error has occurred. Maybe APHA or nrcresearchpress Publications is down.");
 			}
 
-			final String bibResult = ris.risToBibtex(risString);
+			/*
+			 * if the host was from ajph.aphapublications.org, then we must convert the resultAsString to BibTex format
+			 */
+			final String bibResult = ris.risToBibtex(resultAsString);
 			if (bibResult != null) {
 				sc.setBibtexResult(bibResult);
 				return true;

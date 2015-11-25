@@ -1420,8 +1420,8 @@
 	<URLTest id="url_230">
 		<TestDescription>test for pages with emeraldinsight</TestDescription>
 		<URL>http://www.emeraldinsight.com/doi/abs/10.1108/S1876-0562%282004%290000004009</URL>
-		<BibFile>CoinsScraperUnitURLTest3.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.generic.CoinsScraper</Scraper>
+		<BibFile>APHAScraperUnitURLTest4.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.apha.APHAScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_231">
 		<TestDescription>test for nature.com</TestDescription>

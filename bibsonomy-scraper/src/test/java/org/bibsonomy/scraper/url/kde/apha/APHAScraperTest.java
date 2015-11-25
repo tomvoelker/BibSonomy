@@ -60,4 +60,12 @@ public class APHAScraperTest {
 	public void url3TestRun(){
 		UnitTestRunner.runSingleTest("url_312");
 	}
+	
+	/**
+	 * starts URL test with id url_230 for the host http://www.emeraldinsight.com/
+	 */
+	@Test
+	public void url4TestRun(){
+		UnitTestRunner.runSingleTest("url_230");
+	}
 }
