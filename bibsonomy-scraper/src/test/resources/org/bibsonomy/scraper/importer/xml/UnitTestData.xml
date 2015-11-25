@@ -1104,6 +1104,7 @@
 		<URL>http://www.mendeley.com/research/active-learning-overcome-sample-selection-bias-application-photometric-variable-star-classification/</URL>
 		<BibFile>CoinsScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.generic.CoinsScraper</Scraper>
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_179">
 		<TestDescription>URL scraping test with publication from siencedirect</TestDescription>
