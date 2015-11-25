@@ -83,6 +83,7 @@ public class ResourceUtils {
 	}
 	
 	@SuppressWarnings("unchecked")
+	@Deprecated // use ResourceFactory instead
 	public static Class<? extends Resource> getResourceClassBySimpleName(String resourceName) {
 		if (resourceName != null) {
 			Class<? extends Resource> rVal = byStringMap.get(resourceName.toUpperCase());

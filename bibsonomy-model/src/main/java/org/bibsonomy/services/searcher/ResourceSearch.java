@@ -47,40 +47,12 @@ import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 public interface ResourceSearch<R extends Resource> {
 
 	/**
-	 * search for posts using the lucene index
+	 * search for posts using a full text search index
 	 * 
 	 * @param userName
 	 * @param requestedUserName
 	 * @param requestedGroupName
-	 * @param requestedRelationNames
-	 * @param allowedGroups
-	 * @param searchTerms
-	 * @param titleSearchTerms
-	 * @param authorSearchTerms
-	 * @param bibtexKey 
-	 * @param tagIndex
-	 * @param year
-	 * @param firstYear
-	 * @param lastYear
-	 * @param negatedTags
-	 * @param order			the order to use (supported {@link Order#ADDED} and {@link Order#RANK}
-	 * @param limit
-	 * @param offset
-	 * @return a list of posts containing the search result
-	 */
-	public List<Post<R>> getPosts(
-			final String userName, final String requestedUserName, String requestedGroupName, 
-			final List<String> requestedRelationNames,
-			final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, 
-			final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset);
-	
-
-	/**
-	 * search for posts using the ES / lucene index 
-	 * @param userName
-	 * @param requestedUserName
-	 * @param requestedGroupName
-	 * @param requestedRelationNames
+	 * @param requestedRelationNames @Deprecated TODO: (spheres) remove
 	 * @param allowedGroups
 	 * @param searchType 
 	 * @param searchTerms
@@ -102,83 +74,33 @@ public interface ResourceSearch<R extends Resource> {
 			final List<String> requestedRelationNames,
 			final Collection<String> allowedGroups,final SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, 
 			final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset);
-	
-	
-	
-	/**
-	 * @param userName
-	 * @param allowedGroups
-	 * @param searchType
-	 * @param bibtexKey
-	 * @param tagIndex
-	 * @param negatedTags
-	 * @param order
-	 * @param limit
-	 * @param offset
-	 * @return  post for the requested BibTex key
-	 */
-	public List<Post<R>> getPostsByBibtexKey(
-			final String userName, final Collection<String> allowedGroups,final SearchType searchType, final String bibtexKey,
-			final Collection<String> tagIndex, final List<String> negatedTags, Order order, final int limit, final int offset);
-	
-	
-	/**
-	 * get tag cloud for given search query
-	 * 
-	 * @param userName
-	 * @param requestedUserName
-	 * @param requestedGroupName
-	 * @param allowedGroups
-	 * @param searchTerms
-	 * @param searchType 
-	 * @param titleSearchTerms
-	 * @param authorSearchTerms
-	 * @param tagIndex
-	 * @param year
-	 * @param firstYear
-	 * @param lastYear
-	 * @param negatedTags
-	 * @param limit
-	 * @param offset
-	 * @return the tag cloud for the given search
-	 */
-	public List<Tag> getTags(
-			final String userName, final String requestedUserName, String requestedGroupName, 
-			final Collection<String> allowedGroups,
-			final String searchTerms, final SearchType searchType, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex,
-			final String year, final String firstYear, final String lastYear, List<String> negatedTags, int limit, int offset);
-
-
-	/**
-	 * get tag cloud for given search query
-	 * 
-	 * @param userName
-	 * @param requestedUserName
-	 * @param requestedGroupName
-	 * @param allowedGroups
-	 * @param searchTerms
-	 * @param titleSearchTerms
-	 * @param authorSearchTerms
-	 * @param tagIndex
-	 * @param year
-	 * @param firstYear
-	 * @param lastYear
-	 * @param negatedTags
-	 * @param limit
-	 * @param offset
-	 * @return the tag cloud for the given search
-	 */
-	public List<Tag> getTags(
-		final String userName, final String requestedUserName, String requestedGroupName, 
-		final Collection<String> allowedGroups,
-		final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex,
-		final String year, final String firstYear, final String lastYear, List<String> negatedTags, int limit, int offset);
-
 
 	/**
 	 * @param options options about the search including the querystring
 	 * @return a ranked list of (more-or-less) matching publications. Each resource is contained in a post of some user.
 	 */
 	public List<Post<BibTex>> getPublicationSuggestions(PublicationSuggestionQueryBuilder options);
+
+	/**
+	 * get tag cloud for given search query
+	 * 
+	 * @param userName
+	 * @param requestedUserName
+	 * @param requestedGroupName
+	 * @param allowedGroups
+	 * @param searchTerms
+	 * @param titleSearchTerms
+	 * @param authorSearchTerms
+	 * @param bibtexkey 
+	 * @param tagIndex
+	 * @param year
+	 * @param firstYear
+	 * @param lastYear
+	 * @param negatedTags
+	 * @param limit
+	 * @param offset
+	 * @return the tag cloud for the given search
+	 */
+	public List<Tag> getTags(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexkey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset);
 
 }

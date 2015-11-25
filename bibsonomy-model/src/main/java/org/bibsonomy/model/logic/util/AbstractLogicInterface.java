@@ -587,7 +587,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 */
 	@Override
 	public String updateGroup(Group group, GroupUpdateOperation operation, GroupMembership membership) {
-		
+		this.doDefaultAction();
 		return null;
 	}
 

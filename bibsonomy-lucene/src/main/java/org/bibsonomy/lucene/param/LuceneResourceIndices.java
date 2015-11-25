@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Lucene - Fulltext search facility of BibSonomy
+ * BibSonomy - A blue social bookmark and publication sharing system.
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -28,6 +28,8 @@ package org.bibsonomy.lucene.param;
 
 import java.util.List;
 
+import org.bibsonomy.search.model.SearchIndexStatistics;
+
 
 /**
  * Bean for classifier settings
@@ -44,7 +46,7 @@ public class LuceneResourceIndices {
 	/**
 	 * statistics
 	 */
-	private LuceneIndexStatistics statistics;
+	private SearchIndexStatistics statistics;
 	
 	private boolean isEnabled;
 	
@@ -73,7 +75,7 @@ public class LuceneResourceIndices {
 	 * @param indexStatistics
 	 * 
 	 */
-	public void setIndexStatistics(final LuceneIndexStatistics indexStatistics){
+	public void setIndexStatistics(final SearchIndexStatistics indexStatistics){
 		this.statistics = indexStatistics;
 	}
 	
@@ -137,14 +139,14 @@ public class LuceneResourceIndices {
 	/**
 	 * @return the statistics
 	 */
-	public LuceneIndexStatistics getStatistics() {
+	public SearchIndexStatistics getStatistics() {
 		return this.statistics;
 	}
 
 	/**
 	 * @param statistics the statistics to set
 	 */
-	public void setStatistics(final LuceneIndexStatistics statistics) {
+	public void setStatistics(final SearchIndexStatistics statistics) {
 		this.statistics = statistics;
 	}
 }

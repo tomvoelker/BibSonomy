@@ -31,6 +31,7 @@ package org.bibsonomy.common.enums;
  *
  * @author lutful
  */
+@Deprecated // TODO: discuss
 public enum SearchType {
 
 	/**

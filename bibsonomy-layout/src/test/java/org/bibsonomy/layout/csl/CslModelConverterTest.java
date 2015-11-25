@@ -222,7 +222,7 @@ public class CslModelConverterTest {
 		assertEquals(article.getJournal(), articleRec.getContainer_title()); //Journal?
 	}
 	
-	@Test
+	/*@Test
 	public void testConvertPostIncollection() {
 		final Post<BibTex> incollectionPost = generateInCollection();
 		final Record record = CslModelConverter.convertPost(incollectionPost);
@@ -241,5 +241,5 @@ public class CslModelConverterTest {
 		assertEquals(BibTexUtils.cleanBibTex(m.getMiscField("slides")), record.getMiscField("slides"));
 		assertEquals(BibTexUtils.cleanBibTex(m.getMiscField("urn")), record.getMiscField("urn"));
 	}
-
+*/
 }
