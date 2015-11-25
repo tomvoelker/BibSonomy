@@ -43,4 +43,12 @@ public class MendeleyScraperTest {
 	public void urlTestRun() {
 		UnitTestRunner.runSingleTest("url_253");
 	}
+	
+	/**
+	 * starts URL test with id url_218
+	 */
+	@Test
+	public void url2TestRun(){
+		UnitTestRunner.runSingleTest("url_218");
+	}
 }
