@@ -1,0 +1,119 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/spheres"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"	
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
+	xmlns:adminUser="urn:jsptagdir:/WEB-INF/tags/admin/users"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<fmt:message var="headline" key="page.user.headline" />
+	
+	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" activeTab="${(command.requestedUser eq command.context.loginUser.name) ? 'my' : ''}" headline="${headline}${command.requestedUser}">
+		<jsp:attribute name="heading">
+			<c:choose>
+				<c:when test="${not empty command.scope and command.scope.name() ne 'LOCAL'}">
+					<c:set var="pathMessageKey" value="navi.federatedUser"/>
+					<c:set var="userUrl" value="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}?scope=${command.scope.name()}"/>
+				</c:when>
+				<c:otherwise>
+					<c:set var="pathMessageKey" value="navi.user"/>
+					<c:set var="userUrl" value="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}"/>
+				</c:otherwise>
+			</c:choose>
+			<parts:search scope="${command.scope}" pathMessageKey="${pathMessageKey}" formAction="${userUrl}" formInputName="tag"  requestedUser="${command.requestedUser}">
+				<jsp:attribute name="pathPart">
+					<a href="${userUrl}"><user:username username="${command.requestedUser}" scope="${command.scope.name()}"/></a> 
+				</jsp:attribute>
+			</parts:search>
+		</jsp:attribute>
+
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:usercrumb requestedUser="${command.requestedUser}" loginUser="${command.context.loginUser}" active="${true}" scope="${command.scope.name()}"/>
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+		
+		
+		<jsp:attribute name="sidebar">
+			<c:set var="isAdmin" value="${command.context.loginUser.role == 'ADMIN'}" />
+			<sidebar:socializer command="${command}" />
+			
+			<c:if test="${isAdmin}">
+				Spammer: <adminUser:spamActions user="${command.user}" />
+			</c:if>
+			
+			<!-- Did you know? -->
+			<c:if test="${	command.context.userLoggedIn and 
+							command.context.loginUser.name eq command.requestedUser and 
+							mtl:hasDidYouKnowMessage(command) and
+							command.context.loginUser.settings.layoutSettings.simpleInterface}">
+				<bs:didYouKnow command="${command}"/>
+			</c:if>
+			
+			<!-- link to discussed user page -->
+			<c:if test="${not command.context.userLoggedIn or command.context.loginUser.name ne command.requestedUser}">
+				<sidebar:sidebarItem textKey="post.resource.discussion.headline">
+					<jsp:attribute name="content">
+						<ul class="discussionSidebarContent sidebar_collapse_content">
+							<li>
+								<h5 class="discussion-headline sidebar-headline">
+										<fmt:message key="discussion.byUser.help" var="title">
+											<fmt:param value="${fn:escapeXml(command.requestedUser)}"/>
+										</fmt:message>
+								</h5>
+								<a href="${relativeUrlGenerator.prefix('discussed').getUserUrlByUserName(fn:escapeXml(command.requestedUser))}" title="${title}">
+									<fmt:message key="discussion.byUser"><fmt:param value="${fn:escapeXml(command.requestedUser)}"/></fmt:message>
+								</a>
+							</li>
+						</ul>
+					</jsp:attribute>
+				</sidebar:sidebarItem>
+			</c:if>
+			
+			<sidebar:conceptsItem 
+				cmd="${command.concepts}" 
+				usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" 
+				requestedUserName="${command.requestedUser}"
+				headingLink="${relativeUrlGenerator.getConceptsUrlByString(command.requestedUser)}"	
+				headingTitleKey="tagrelations.user.title"
+				scope="${command.scope.name()}"/>
+			
+			<!-- display similar users -->
+			<sidebar:sidebarItem textKey="users.similar">
+				<jsp:attribute name="content">
+					<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
+					<ul class="list-inline sidebar-setting-box clearfix">
+						<li>(<a href="${mtl:setParam(requPathAndQuery, 'userSimilarity', mtl:toggleUserSimilarity(command.userSimilarity)) }"><fmt:message key="more"/>...</a>)</li>
+					</ul>
+					<users:related cmd="${command.relatedUserCommand}" displayFollowLink="${false}" personalized="${true}" userSimilarity="${command.userSimilarity}"/>
+				</jsp:attribute>
+			</sidebar:sidebarItem>
+			
+			<sidebar:sidebarTagCloudItem requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" scope="${command.scope.name()}"/>
+			
+			<c:if test="${isAdmin}">
+				<sidebar:sidebarItem textKey="user.details">
+					<jsp:attribute name="content">
+						<user:details user="${command.user}"/>
+					</jsp:attribute>
+				</sidebar:sidebarItem>
+			</c:if>
+		</jsp:attribute>
+	</layout:resourceLayout>
+</jsp:root>

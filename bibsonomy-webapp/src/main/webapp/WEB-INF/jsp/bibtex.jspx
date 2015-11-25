@@ -1,0 +1,160 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:jspx="urn:jsptld:/WEB-INF/taglibs/jspx.tld"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
+	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+	<c:set var="goldstandardPresent" value="${not empty command.goldStandardPublications.list}" />
+	<c:set var="publication" value="${command.bibtex.list[0].resource}" />
+
+	<!-- FIXME: move into body element -->
+	<c:set var="isPublic" value="${false}"/>
+	<c:choose>
+		<c:when test="${goldstandardPresent}">
+			<c:set var="isPublic" value="${true }"/>
+		</c:when>
+		<c:otherwise>
+			<!-- quick fix for discussion page -->
+			<c:set var="discussionBox" value="${true}"/>
+			<c:forEach var="group" items="${command.bibtex.list[0].groups}">
+				<c:if test="${group.name eq 'public'}">
+					<c:set var="isPublic" value="${true}"/>
+				</c:if>
+			</c:forEach>
+		</c:otherwise>
+	</c:choose>
+
+	<c:if test="${goldstandardPresent}">
+		<c:set var="publication" value="${command.goldStandardPublications.list[0].resource}" />
+	</c:if>
+	<c:set var="title" value="${mtl:cleanBibtex(publication.title)}" />
+	<fmt:message key="post.resource.discussion.headline" var="discussionsTitle"/>
+	
+	<fmt:message key="navi.publication" var="pageTitle"/>
+	
+	<layout:resourceLayout pageTitle="${pageTitle} :: ${title}" 
+			command="${command}" 
+			requPath="${requPath}" 
+			disableResourcetypeSelection="${true}"
+			showPageOptions="${false}"
+			customBookmarksHeaderText="${discussionsTitle}"
+			minimizedContentWidth="${true}"
+			resource="${publication}"
+			discussionBox="${discussionBox}"
+			headline="${title}">
+		
+		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="${resdir}/javascript/merged/bs/discussion.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/bs/publication.js"><!-- keep me --></script>
+			<c:if test="${goldstandardPresent}">
+				<script type="text/javascript" src="${resdir}/javascript/bs/goldstandards.js"><!-- keep me --></script>
+			</c:if>
+			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.css" />
+		</jsp:attribute>
+		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<c:if test="${goldstandardPresent}">
+						<fmt:message key="actions.communityPost" var="communityPost"/>
+						<nav:crumb name="${communityPost}" />
+					</c:if>
+					<nav:crumb name="${mtl:shorten(title, 25)}" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+		
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.publication" formAction="/search" formInputName="search" formInputValue="${title}"/>
+		</jsp:attribute>
+		
+		<jsp:attribute name="content">
+			<!-- COMMUNITY POST -->
+			<input id="publicInput" name="publicInput" value="${isPublic}" type="hidden" />
+			<c:choose>
+				<c:when test="${empty command.goldStandardPublications.list}">
+						<c:set var="post" value="${command.bibtex.list[0]}" />
+						<c:url var="editGoldStandardLink" value="/editGoldStandardPublication">
+							<c:param name="hash" value="${post.resource.intraHash}" />
+							<c:param name="user" value="${post.user.name}" />
+							<c:param name="editBeforeSaving" value="true" />
+						</c:url>
+						
+						<h1 class="content-header"><c:out value="${pageTitle}" /></h1>
+						<div class="text-center">
+							<div class="lead">
+								<p><fmt:message key="actions.community_post.no" /></p> 
+							</div>
+							<bs:linkButton href="${editGoldStandardLink}" size="defaultSize" style="primary" textKey="actions.community_post.create" />
+							<hr />
+						</div>
+					<!-- invokes discussion forms -->
+					<c:if test="${not goldstandardPresent}">
+						<discussion:discussion loginUser="${command.context.loginUser}" resource="${publication}" discussionItems="${command.discussionItems}"  postUserName="${command.postOwner}"/>
+					</c:if>
+					<input type="hidden" id="gs_present" value="${goldstandardPresent}"/>
+				</c:when>
+			</c:choose>
+		</jsp:attribute>
+
+		<!--+
+		    | sidebar
+		 	+-->
+		<jsp:attribute name="sidebar">
+			<sidebar:sidebarTagCloudItem requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" />
+
+			<!-- related users -->
+			<c:if test="${not empty command.relatedUserCommand.relatedUsers}">
+				<sidebar:sidebarItem textKey="users">
+					<jsp:attribute name="content">
+						<ul class="tagcloud">
+							<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}">
+								<li class="${userclass}">
+									<a href="${relativeUrlGenerator.getPublicationUrlByInterHashAndUsername(publication.interHash, fn:escapeXml(user.name))}"><c:out value="${user.name}"/></a>
+									<c:out value=" "/>
+								</li>
+							</c:forEach>
+						</ul> 
+					</jsp:attribute>
+				</sidebar:sidebarItem>
+			</c:if>
+				
+			<!-- copy users -->
+			<resources:metaData command="${command}" />
+		</jsp:attribute>
+		
+		<!--+
+		    | infobox
+		 	+-->
+		<jsp:attribute name="infobox">
+			<parts:infobox>
+				<jsp:attribute name="infoTextBody">
+					<!-- short info about discussions -->
+					<fmt:message key="discussion.info"><fmt:param><fmt:message key="discussion.info.publication"></fmt:message></fmt:param></fmt:message>
+					
+					<!-- quick links on what you can do -->
+					<p><fmt:message key="discussion.info.examples"/></p>
+					<ul class="news">
+						<li><fmt:message key="discussion.info.publications"/></li>
+						<li><fmt:message key="discussion.info.bookmarks"/></li>
+					</ul>
+				</jsp:attribute>
+			</parts:infobox>
+		</jsp:attribute>
+	</layout:resourceLayout>
+</jsp:root>

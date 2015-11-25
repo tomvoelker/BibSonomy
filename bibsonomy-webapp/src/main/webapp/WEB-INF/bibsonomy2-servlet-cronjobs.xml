@@ -99,16 +99,16 @@
 		<property name="targetMethod" value="performAutoSync"/>
 		<property name="concurrent" value="false" />
 	</bean>
-<!-- 	<bean id="autoSyncCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">  -->
-<!-- 		<property name="cronExpression" value="0 51 23 * * ?" /> -->
-<!-- 		<property name="jobDetail" ref="autoSyncJob" />  -->
-<!-- 	</bean>  -->
-	
+	<bean id="autoSyncCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean"> 
+		<property name="cronExpression" value="0 51 23 * * ?" />
+		<property name="jobDetail" ref="autoSyncJob" /> 
+	</bean>
+	<!-- only for debugging 
 	<bean id="autoSyncCronTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
 		<property name="jobDetail" ref="autoSyncJob" />
 		<property name="startDelay" value="30000" />
 		<property name="repeatInterval" value="300000" />
-	</bean>
+	</bean> -->
 	
 	<!--+ 
 	 	|

@@ -1,0 +1,78 @@
+<?xml version="1.0" ?>  
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	<!-- TODO: title i18n -->
+	<layout:oneColumnLayout pageTitle="scraper info" requPath="${requPath}" loginUser="${command.context.loginUser}">
+    
+        <jsp:attribute name="headerExt">
+            <style type="text/css">
+               ul.scraperList > li {
+                 display: inline;
+                 font-size: 80%;
+               }
+               dl.scraperList > dt {
+                 margin-top: 1em;
+               }
+               ul.scraperList > li:after {
+                 content:" | ";
+               }
+               dl.scraperList > dt:before {
+                 content:"\2022\00a0";
+               }
+            </style>
+        </jsp:attribute>
+
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
+		</jsp:attribute>
+      
+		<jsp:attribute name="content">
+            <h1 class="content-header"><fmt:message key="scraper_info.link_header" /></h1>
+            <p>
+            	<fmt:message key="scraper_info.scraper_link_description">
+            		<fmt:param value="${properties['project.name']}" />
+            	</fmt:message>
+            </p>
+          
+            <ul class="scraper-list list-inline">
+            	<!-- FIXME: assumes that every Scraper has a SiteURL method
+            		 but only UrlScrapers have a siteURL method (what about the
+            		 generic ones) please change and remove the siteURL methods
+            		 from all generic scrapers -->
+	            <c:forEach var="scraper" items="${command.scraperList}">
+				<c:if test="${(scraper.supportedSiteURL) ne null and (scraper.supportedSiteName ne null)}">
+	            	<li><a href="${scraper.supportedSiteURL}">${scraper.supportedSiteName}</a></li>
+	            </c:if>
+            	</c:forEach>
+            </ul>
+
+            <fmt:message key="scraper_info.scraper_help_link" var="link"/>
+            <p>
+              <fmt:message key="scraper_info.scraper_detail_pre">
+                 <fmt:param>${link}</fmt:param>
+              </fmt:message>
+            </p>
+
+            <h2><fmt:message key="scraper_info.scraper_details_header"/></h2>          
+            <dl class="scraper-list">
+              <c:forEach var="scraper" items="${command.scraperList}">
+              	<c:if test="${(scraper.supportedSiteURL ne null) and (scraper.supportedSiteName ne null)}">
+              		<dt><a name="${scraper['class'].simpleName}">${scraper['class'].simpleName}</a>:</dt> 
+    				<dd style="margin: 0.1em 0 0.5em 0">${scraper.info}</dd>
+              	</c:if>
+              </c:forEach>
+            </dl>
+            <br /><br />
+		</jsp:attribute>
+	</layout:oneColumnLayout>
+</jsp:root>

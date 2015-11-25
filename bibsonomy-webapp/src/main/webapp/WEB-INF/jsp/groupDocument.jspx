@@ -1,0 +1,58 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	<fmt:message var="headline" key="page.groupDocument.headline" />
+	<layout:resourceLayout 
+		pageTitle="${command.pageTitle}" 
+		command="${command}" 
+		requPath="${requPath}" 
+		disableResourcetypeSelection="${true}"
+		minimizedContentWidth="${true}"
+		headline="${headline}">
+		
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.documents" formAction="${relativeUrlGenerator.getGroupUrlByGroupName(command.requestedGroup)}" formInputName="tag" formInputValue="${command.requestedTags}">
+				<jsp:attribute name="formExtra">
+					<input type="hidden" name="filter" value="JUST_PDF"/>
+				</jsp:attribute>
+				<jsp:attribute name="pathPart">
+					<a href="${relativeUrlGenerator.getGroupUrlByGroupName(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
+				</jsp:attribute>
+			</parts:search>	
+		</jsp:attribute>
+		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:groupcrumb requestedGroup="${command.group.name}" />
+					<c:if test="${command.filter eq 'JUST_PDF'}">
+						<nav:crumb nameKey="navi.documents" active="true" />
+					</c:if>
+					<c:if test="${command.filter eq 'DUPLICATES'}">
+						<nav:crumb nameKey="navi.duplicates" active="true" />
+					</c:if>
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+		
+		<jsp:attribute name="sidebar">
+			<parts:tagsAndConceptsForSidebar/>
+			<sidebar:sidebarTagCloudItem requPath="${requPath}" cmd="${command.tagcloud}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
+		</jsp:attribute>	
+
+	</layout:resourceLayout>
+</jsp:root>

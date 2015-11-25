@@ -1,0 +1,83 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.MultiResourceViewCommand" required="true"/>	
+	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="infobox" fragment="true" required="false"/>
+	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
+	<jsp:directive.attribute name="sidebar" fragment="true" required="true"/>	
+	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>	
+	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
+	
+	<layout:layout 
+		loginUser="${command.context.loginUser}" 
+		pageTitle="${pageTitle}" 
+		heading="${heading}" 
+		requestedUser="${command.requestedUser}" 
+		infobox="${infobox}" 
+		sidebar="${sidebar}" 
+		requPath="${requPath}" 
+		activeTab="${activeTab}"
+		minimizedContentWidth="${minimizedContentWidth}"
+		breadcrumbs="${breadcrumbs}">
+		
+		<jsp:attribute name="headerExt"/>
+
+		<!-- FIXME: layout assumes that always both entrytypes are displayed; adapt to ?resourceType=XY -->
+
+		<jsp:attribute name="headerContainer">
+			<div id="bookmarksheader" class="standard">
+				<h2 class="header standard"><fmt:message key="bookmarks" /></h2>
+			</div>
+			
+			<div id="publicationsheader" class="standard">
+				<h2 class="header standard"><fmt:message key="publications" /></h2>
+			</div>
+		</jsp:attribute>
+
+		<jsp:attribute name="content">
+			<div class="row">
+			
+				<!-- bookmark lists -->
+				<div class="col-md-6 bookmark-list">
+					<h3 class="list-headline"><fmt:message key="bookmarks" />${mtl:ch('nbsp')}</h3>
+					
+					<c:forEach var="bibtex" items="${command.listsBookmark}" varStatus="status">
+						<c:set var="extTitle">${command.listsBookmarkDescription[status.index]}<c:out value=" "/><fmt:message key="days"/></c:set>
+						<resources:simplebookmarks listView="${command.listsBookmark[status.index]}" loginUserName="${command.context.loginUser.name}" disablePagination="${true}">
+							<jsp:attribute name="extTitle">
+								<h4 class="list-sub-headline"><fmt:message key="within.last.days"><fmt:param value="${command.listsBookmarkDescription[status.index]}" /></fmt:message></h4>
+							</jsp:attribute>
+						</resources:simplebookmarks>
+					</c:forEach>
+				</div>
+				
+				<!-- publication lists -->
+				<div class="col-md-6 publication-list">
+					<h3 class="list-headline"><fmt:message key="publications" />${mtl:ch('nbsp')}</h3>
+					 
+					<c:forEach var="bibtex" items="${command.listsBookmark}" varStatus="status">
+						<c:set var="extTitle">${command.listsBibTeXDescription[status.index]}<c:out value=" "/><fmt:message key="days"/></c:set>
+						<resources:simplebibtexs listView="${command.listsBibTeX[status.index]}" loginUserName="${command.context.loginUser.name}" disablePagination="${true}">
+							<jsp:attribute name="extTitle">
+								<h4 class="list-sub-headline"><fmt:message key="within.last.days"><fmt:param value="${command.listsBibTeXDescription[status.index]}" /></fmt:message></h4>
+							</jsp:attribute>
+						</resources:simplebibtexs>
+					</c:forEach>
+				</div>
+				
+			</div>
+		</jsp:attribute>
+
+	</layout:layout>
+</jsp:root>

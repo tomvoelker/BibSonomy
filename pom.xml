@@ -3,7 +3,7 @@
 
     BibSonomy - A blue social bookmark and publication sharing system.
 
-    Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+    Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
                                   University of Kassel, Germany
                                   http://www.kde.cs.uni-kassel.de/
                               Data Mining and Information Retrieval Group,
@@ -381,7 +381,7 @@
 				<configuration>
 					<header>src/etc/header.txt</header>
 					<properties>
-						<year>${project.inceptionYear} - 2014</year>
+						<year>${project.inceptionYear} - 2015</year>
 						<description>
 							${project.name} - ${project.description}
 						</description>

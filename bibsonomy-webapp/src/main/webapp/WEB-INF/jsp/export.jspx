@@ -1,0 +1,266 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:export="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
+
+	<jsp:directive.page contentType="text/html; charset=UTF-8"
+		language="java" pageEncoding="UTF-8" session="true" />
+
+	<!--Note: requPath: the rewrite rule sets the url without export as requPath so we add export here again-->
+	<layout:paneLayout headerMessageKey="export.header"
+		headerLogoClass="publications" command="${command}"
+		pageTitle="${command.pageTitle}" requPath="export/${requPath}"
+		showPageOptions="${command.context.userLoggedIn}"
+		minimizedContentWidth="${true}">
+
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.export" />
+		</jsp:attribute>
+
+
+		<jsp:attribute name="headerExt">
+			<!-- start and setup the logic behind the export size radio buttons (setupPostExportSize in functions.js)-->
+			<script type="text/javascript">
+				<![CDATA[
+				$(function() {
+					setupPostExportSize();
+				});
+				]]>
+			</script>
+		</jsp:attribute> 
+		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:crumb name="export" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+		
+		<jsp:attribute name="content">
+			<c:set var="pathAndQueryString" value="${requPath}${requQueryString}" />
+		<div>
+		
+		<form class="form-horizontal" role="form" >
+			<div class="form-group" id="selectlink" onchange="generateExportPostLink(this.value)" size="1">
+				<label for="selectlink" class="col-sm-3 control-label"><fmt:message key="export.format" /></label>	
+				<export:formats />
+			</div>
+			<div class="form-group" id="exportOptions" method='POST'>
+				<label for="exportOptions" class="col-sm-3 control-label"><fmt:message key="posts" /></label>	
+				<div class="col-sm-9">
+					<div class="radio">
+						<label class="radio-inline">
+							<input type="radio" name="items" id="inlineRadio1" value="5"/> 5
+						</label>
+						<label class="radio-inline">
+							<input type="radio" name="items" id="inlineRadio2" value="10"/> 10
+						</label>
+						<label class="radio-inline">
+							<input type="radio" name="items" id="inlineRadio3" value="20"/> 20
+						</label>
+						<label class="radio-inline">
+							<input type="radio" name="items" id="inlineRadio4" value="100" checked="checked"/> 100
+						</label>
+						<label class="radio-inline">
+							<input type="radio" name="items" id="inlineRadio5" value="1000"/> 1000
+						</label>
+					</div>
+				</div>
+			</div>
+		</form>
+			<c:url var="currURL" value="/${pathAndQueryString}" />
+			<p>
+				<fmt:message key="export.info">
+					<fmt:param>
+						<a href="${fn:escapeXml(currURL)}">${fn:escapeXml(currURL)}</a>
+					</fmt:param>
+				</fmt:message>
+			</p>
+		</div>
+		
+		<hr />
+		
+		<table class="table table-striped" id="favoriteformats"
+				style="font-size: 85%;">
+			<caption>
+					<!-- TODO: i18n -->
+					<h3>Favorite layouts</h3>
+			</caption> 
+			<spring:eval var="abstractJabRefLayoutClass" expression="T(java.lang.Class).forName('org.bibsonomy.layout.jabref.AbstractJabRefLayout')" />
+			<c:forEach var="mapEntry" items="${command.layoutMap}">
+				<c:if test="${mapEntry.value.publicLayout and mapEntry.value.isFavorite}">
+					<tr>
+						<c:choose>
+							<!-- 
+							| JabRef layouts
+							 -->
+							<c:when test="${abstractJabRefLayoutClass.isInstance(mapEntry.value)}">
+								<c:url var="url" value="/layout/${mapEntry.value.name}/${pathAndQueryString}" />
+								<td>
+									<a class="btn btn-primary btn-sm export-link" href="${fn:escapeXml(url)}" >
+										<span class="fa fa-download" />
+									</a>
+								</td>
+								<td>
+									<c:out value="${mapEntry.value.extension}" />
+								</td> 
+								
+								<td>
+									<!-- JabRef layouts are marked by a star -->
+									<b><c:out value="${mapEntry.value.displayName}" /></b> * <br />
+									<c:out value="${mapEntry.value.description[locale.language]}" />
+								</td>
+							</c:when>
+							<!-- 
+							| Standard layouts
+							 -->
+							<c:otherwise>
+								<c:url var="url" value="/${mapEntry.value.name}/${pathAndQueryString}" />
+								<td>
+									<a class="btn btn-primary btn-sm export-link" href="${url}">
+										<span class="fa fa-external-link" />
+									</a>
+								</td>
+								
+								<td>
+									<c:out value="${mapEntry.value.extension}" />
+								</td> 
+								<td>
+									<b><c:out value="${mapEntry.value.displayName}" /></b> <br />
+									<c:out value="${mapEntry.value.description[locale.language]}" />
+								</td>
+							</c:otherwise>
+						</c:choose>	
+					</tr>
+				</c:if>
+			</c:forEach>
+		</table>
+		
+		<table class="table table-striped" id="formats"
+				style="font-size: 85%;">
+			<caption>
+					<h3>Layouts</h3>
+			</caption> 
+			
+			<!-- 
+				| Custom 
+				-->
+			
+			<!-- If the user has not defined a custom jabref layout 
+			the custom row is colored red and the description gives appropriate feedback -->
+			<c:set var="customLayout" value="${false}" />
+			<c:forEach var="mapEntry" items="${command.layoutMap}" >
+				<c:if test="${'custom' eq mapEntry.value.displayName}">
+					<tr>
+					<c:url var="url" value="/layout/custom/${pathAndQueryString}" />
+						<td>
+							<a class="btn btn-primary btn-sm export-link" href="${url}">
+								<span class="fa fa-download" />
+							</a>
+						</td>
+						<td>
+						</td>
+						<td>
+							<b><c:out value="${mapEntry.value.displayName}" /></b> <br />
+							<fmt:message key="export.custom.faq" />
+						</td>
+					</tr>
+					<c:set var="customLayout" value="${true}" />
+				</c:if>
+			</c:forEach>
+			<c:if test="${not customLayout}">
+				<tr class="danger">
+					<td>
+						<a class="btn btn-default btn-sm" disabled="disabled">
+	  						<span class="fa fa-download" />
+						</a>
+					</td>
+					<td>
+						<!-- keep me -->
+					</td> 
+					<td>
+						Custom <br />
+						<fmt:message key="export.custom.faq" />
+					</td>
+				</tr>
+			</c:if>
+
+			<c:forEach var="mapEntry" items="${command.layoutMap}">
+				<c:if test="${mapEntry.value.publicLayout and not mapEntry.value.isFavorite}">
+					<tr>
+						<c:choose>
+							<!-- 
+							| JabRef layouts
+							 -->
+							 <c:when test="${abstractJabRefLayoutClass.isInstance(mapEntry.value)}">
+								<c:url var="url" value="/layout/${mapEntry.value.name}/${pathAndQueryString}" />
+								<td>
+									<a href="${url}" class="btn btn-primary btn-sm export-link">
+										<span class="fa fa-download" />
+									</a>
+								</td>
+								<td>
+									<c:out value="${mapEntry.value.extension}" />
+								</td>
+								<td>
+									<!-- JabRef layouts are marked by stars -->
+									<b><c:out value="${mapEntry.value.displayName}" /></b> * <br />
+									<c:out value="${mapEntry.value.description[locale.language]}" />
+								</td>
+								
+							</c:when>
+							<!-- 
+							| Standard layouts
+							 -->
+							<c:otherwise>
+								<c:url var="url" value="/${mapEntry.value.name}/${pathAndQueryString}" />
+								<td>
+									<a class="btn btn-primary btn-sm export-link" href="${url}">
+										<span class="fa fa-external-link" />
+									</a>
+								</td>
+								<td>
+									<c:out value="${mapEntry.value.extension}" />
+								</td>
+								<td>
+									<b><c:out value="${mapEntry.value.displayName}" /></b> <br />
+									<c:out value="${mapEntry.value.description[locale.language]}" />
+								</td>
+							</c:otherwise>
+						</c:choose>	
+					</tr>
+				</c:if>
+			</c:forEach>
+		</table>
+		
+		<p>
+		  * <fmt:message key="export.jabref.explain">
+			<fmt:param value="${properties['project.name']}" />
+		  </fmt:message>
+		</p>
+		
+	</jsp:attribute>
+
+		<jsp:attribute name="pageOptions">
+		<ul>
+			<!-- TODO: use url generator -->
+			<li><a href="/settings?selTab=2#layout"><fmt:message
+							key="navi.uploadCustomLayout" />...</a></li>
+		</ul>
+
+	</jsp:attribute>
+
+	</layout:paneLayout>
+</jsp:root>
