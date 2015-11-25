@@ -100,8 +100,8 @@
 			FROM tas t
 				WHERE t.tas_id &gt; #lastTasId#
 				AND t.group &gt;= 0
-				ORDER BY t.date DESC, t.content_id DESC, t.tas_id DESC
-				LIMIT #limit# OFFSET #offset#
+			ORDER BY t.content_id ASC
+			LIMIT #limit# OFFSET #offset#
 			) AS tt
 		JOIN bibtex b2 USING (content_id)
 		JOIN tas t USING (content_id)
@@ -114,11 +114,7 @@
 		|    lastTasId 
 		+-->
 	<select id="getBookmarkPostsForTimeRange" resultMap="SearchBookmarkCommon.searchBookmarkPost" parameterClass="searchParam">
-		SELECT <include refid="bookmarkPostAttributes"/>,
-			g.*,
-			t.tag_name, t.tas_id,
-			u.book_url, u.book_url_ctr AS count,
-			-1 AS rating, -1 AS number_of_ratings
+		SELECT <include refid="bookmarkPostAttributes"/>, t.tag_name, g.*, t.tas_id, u.book_url, u.book_url_ctr AS count, -1 AS rating, -1 AS number_of_ratings
 		FROM tas t
 			JOIN bookmark b USING (content_id)
 			JOIN urls u USING (book_url_hash)
