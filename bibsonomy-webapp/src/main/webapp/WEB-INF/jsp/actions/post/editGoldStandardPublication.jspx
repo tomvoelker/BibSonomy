@@ -1,0 +1,53 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<layout:editGoldStandardPostLayout command="${command}" requPath="${requPath}" resourceType="GoldStandardPublication" minimizedContentWidth="${true}">
+		
+		<jsp:attribute name="generalInformation">
+			<editpub:required post="${command.post}" autocompletion="$(false)"/>
+		</jsp:attribute>
+
+		<jsp:attribute name="detailedInformation">
+			<editpub:details post="${command.post}" person="${command.person}" />
+		</jsp:attribute>
+
+		<jsp:attribute name="headerExtResource">
+			<script type="text/javascript" src="${resdir}/javascript/bs/editPublication.js"><!-- keep me --></script>
+		</jsp:attribute>
+		
+		<jsp:attribute name="postApproval">
+			<bsform:fieldset legendKey="goldStandard.edit.approval">
+
+				<jsp:attribute name="content">
+					<div class="form-group">
+						<div class="col-sm-offset-1 col-sm-9">
+							<div class="checkbox clearfix">
+								<label>
+									<input type="checkbox" class="help-popover"  tabindex="2" name="approved" id="approveCheckbox"/> <fmt:message key="goldStandard.edit.approveMsg"/>
+									<script type="text/javascript">
+										$(function() {
+											var check = ${command.approved};
+											$('input[name=approved]').prop('checked', check);
+										});
+									</script>
+									<div class="help-header hide"><fmt:message key="goldStandard.edit.approveMsg"/></div>
+									<div class="help-content hide"><fmt:message key="goldStandard.edit.approveMsg.help"/></div>
+								</label>
+							</div>
+						</div>
+					</div>
+				</jsp:attribute>
+			</bsform:fieldset>
+		</jsp:attribute>
+		
+	</layout:editGoldStandardPostLayout>
+
+</jsp:root>

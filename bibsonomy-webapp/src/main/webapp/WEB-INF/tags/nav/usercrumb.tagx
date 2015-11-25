@@ -1,0 +1,41 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="false" description="the requested user"/>
+	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true" description="the requested user"/>
+	<jsp:directive.attribute name="active" type="java.lang.Boolean" required="false" description="the requested user"/>
+	<jsp:directive.attribute name="scope" type="java.lang.String" required="false"/>
+
+	<c:if test="${empty active}">
+		<c:set var="active" value="${false}" />
+	</c:if>
+	<c:choose>
+		<c:when test="${not empty scope and scope ne 'LOCAL'}">
+			<c:set var="ownPage" value="false" />		
+		</c:when>
+		<c:otherwise>
+			<c:set var="ownPage" value="${command.context.userLoggedIn and ((requestedUser eq loginUser) or empty requestedUser)}" />		
+		</c:otherwise>
+	</c:choose>	
+	<c:choose>
+		<c:when test="${ownPage}">
+			<nav:myUserCrumb loginUser="${loginUser}" active="${active}" />
+		</c:when>
+		<c:otherwise>
+			<nav:crumb nameKey="navi.user" />
+			<c:set var="username"><user:username noLink="${true}" username="${requestedUser}" /></c:set>
+			<c:set var="userLink" value="" />
+			<c:if test="${not active}">
+				<c:set var="userLink" value="${relativeUrlGenerator.getUserUrlByUserName(requestedUser)}" />
+			</c:if>
+			<nav:crumb name="${username}" href="${userLink}" active="${active}"/>
+		</c:otherwise>
+	</c:choose>
+</jsp:root>

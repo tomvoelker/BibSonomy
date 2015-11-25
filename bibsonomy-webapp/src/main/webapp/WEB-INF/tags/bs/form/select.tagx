@@ -1,0 +1,126 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+	<jsp:directive.tag description="Render a form select field in bootstrap3 style." />
+
+	<jsp:directive.attribute name="path" type="java.lang.String" required="true" description="Path to property for data binding (e.g., post.resource.journal), labels, and the help message (.help is appended)"/>
+	<jsp:directive.attribute name="labelColSpan" type="java.lang.Integer" required="false" description="Column span width of the label. labelColSpan and inputColSpan must add up to 12" />
+	<jsp:directive.attribute name="inputColSpan" type="java.lang.Integer" required="false" description="Column span width of the input field. labelColSpan and inputColSpan must add up to 12" />
+	<jsp:directive.attribute name="required" type="java.lang.Boolean" required="false" description="Must the user fill out the form, i.e., is the content required (adds '*' before form and CSS class 'reqinput')?"/>
+	<jsp:directive.attribute name="noHelp" type="java.lang.Boolean" required="false" description="Shall the popover help be shown?"/>
+	
+	<jsp:directive.attribute name="labelText" type="java.lang.String" required="false" description="Alternativly to path, you can define directly a description for the label."/>
+	<jsp:directive.attribute name="labelKey" type="java.lang.String" required="false" description="Alternativly to path, you can define directly a message key for the label."/>
+	<jsp:directive.attribute name="helpText" type="java.lang.String" required="false" description="Alternativly to path.help, you can define the content for popover help"/>
+	<jsp:directive.attribute name="helpKey" type="java.lang.String" required="false" description="Alternativly to path.help, you can define the message key for popover help"/>
+	<jsp:directive.attribute name="small" type="java.lang.Boolean" required="false" description="Reduces the element width to 33 percent" />
+	
+	<!-- HTML attributes -->
+	<jsp:directive.attribute name="id" type="java.lang.String" required="false" description="Id for input field"/>
+	<jsp:directive.attribute name="tabindex" type="java.lang.Integer" required="false" description="tabindex for input field"/>
+	<jsp:directive.attribute name="name" type="java.lang.String" required="false" description="name attribute for input field"/>
+	<jsp:directive.attribute name="value" type="java.lang.String" required="false" description="value attribute for input field"/>
+	<jsp:directive.attribute name="size" type="java.lang.Integer" required="false" description="value attribute for input field"/>
+	<jsp:directive.attribute name="multiple" type="java.lang.Boolean" required="false" description="value attribute for input field"/>
+	
+	<jsp:directive.attribute name="items" type="java.lang.String[]" required="false" description="items for select field"/>
+	<jsp:directive.attribute name="itemLabels" type="java.lang.String[]" required="false" description="labels for items"/>
+	
+	<!-- HTML event handler -->
+	<jsp:directive.attribute name="onchange" type="java.lang.String" required="false" description="Javascript for onchange event" />
+
+
+
+	<!--+ 
+		| calculates grid colSpan of label and input field
+	 	+-->
+	<c:choose>
+		<c:when test="${ (empty labelColSpan and empty inputColSpan) or (inputColSpan gt 10) or (labelColSpan gt 6) }">
+			<c:set var="labelColSpan" value="2" />
+			<c:set var="inputColSpan" value="10" />
+		</c:when>
+		<c:when test="${empty labelColSpan and not empty inputColSpan}">
+			<c:set var="labelColSpan" value="${ 12 - inputColSpan }" />
+		</c:when>
+		<c:otherwise>
+			<c:set var="inputColSpan" value="${ 12 - labelColSpan }" />
+		</c:otherwise>
+	</c:choose>
+	
+	<c:if test="${empty labelText and empty labelKey}">
+		<fmt:message var="labelText" key="${path}" />
+	</c:if>
+	
+	<c:if test="${not empty labelKey}">
+		<fmt:message var="labelText" key="${labelKey}" />
+	</c:if>
+	
+	<c:if test="${empty helpText and empty helpKey}">
+		<fmt:message var="helpText" key="${path}.help" />
+	</c:if>
+	
+	<c:if test="${not empty helpKey}">
+		<fmt:message var="helpText" key="${helpKey}" />
+	</c:if>
+
+	<c:set var="helpPopover" value="" />
+	<c:if test="${empty noHelp or not noHelp}">
+		<c:set var="helpPopover" value="help-popover" />
+	</c:if>
+	
+	<c:if test="${not empty small and small}">
+		<c:set var="classSmallField" value="smallField" />
+	</c:if>
+
+	<c:if test="${empty id}">
+		<c:set var="id" value="${path}" />
+	</c:if>
+
+	<!-- errors -->
+	<c:set var="formErrors"><form:errors path="${path}" /></c:set>
+
+
+	<!--+
+		| bootstrap 3 form-group 
+		+-->
+	<div class="form-group${not empty formErrors ? ' has-error' : ''}">
+		
+		<bsform:errors path="${path}" colSpan="${inputColSpan}"/>
+		
+		<!--+
+			| followed by output label 
+			+-->
+		<label class="col-sm-${labelColSpan} control-label" for="${fn:escapeXml(id)}">
+			<c:out value="${labelText}" />
+		</label>
+
+		<div class="col-sm-${inputColSpan}">
+			<c:choose>
+				<c:when test="${ not empty itemLabels}">
+					<form:select multiple="${multiple ? 'multiple' : 'false'}" path="${path}" cssClass="form-control ${helpPopover} ${ small ? classSmallField : ''}" onchange="${onchange}" id="${id}"> 
+						<c:forEach items="${itemLabels}" var="optionLabel" varStatus="cnt">
+							<form:option value="${items[cnt.index]}"><c:out value="${optionLabel}" /></form:option>
+						</c:forEach>
+					</form:select>
+				</c:when>
+				
+				<c:otherwise>
+					<form:select multiple="${multiple ? 'multiple' : 'false'}" path="${path}" cssClass="form-control ${helpPopover} ${ small ? classSmallField : ''}" onchange="${onchange}" items="${items}" />
+				</c:otherwise>
+			</c:choose>
+			
+			<c:if test="${empty noHelp or not noHelp}">
+				<div class="help help-header hide"><c:out value="${labelText}" /></div>
+				<div class="help help-content hide">${helpText}</div>
+			</c:if>
+		</div>
+	</div>
+</jsp:root>

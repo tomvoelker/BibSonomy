@@ -1,0 +1,79 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+    xmlns:group="urn:jsptagdir:/WEB-INF/tags/resources/group"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"> 
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	<c:set var="group" value="${command.group}" />
+	<fmt:message var="headline" key="page.group.headline" />
+	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" activeTab="groups" headline="${headline}${command.group.name}">
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.group" formAction="${relativeUrlGenerator.getGroupUrlByGroupName(command.requestedGroup)}" formInputName="tag">
+				<jsp:attribute name="pathPart">
+					<a href="${relativeUrlGenerator.getGroupUrlByGroupName(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
+				</jsp:attribute>
+			</parts:search>	
+		</jsp:attribute>
+		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:groupcrumb requestedGroup="${command.requestedGroup}" active="${true}"/>
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+		
+		<jsp:attribute name="sidebar">
+			<c:choose>
+				<c:when test="${not empty group.name}">
+
+					<sidebar:groupDetailsItem group="${group}"/>
+					<sidebar:groupMembersItem group="${group}"/>
+				
+					<!-- link to discussed posts of the group -->
+					<sidebar:sidebarItem textKey="post.resource.discussion.headline">
+						<jsp:attribute name="content">
+							<ul class="discussionSidebarContent sidebar_collapse_content">
+								<li>
+									<fmt:message key="discussion.byGroup.help" var="title"><fmt:param value="${fn:escapeXml(command.group.name)}"/></fmt:message>
+									<a href="/discussed/group/${fn:escapeXml(command.group.name)}" title="${title}">
+										<fmt:message key="discussion.byGroup"><fmt:param value="${fn:escapeXml(command.group.name)}"/></fmt:message>
+									</a>
+								</li>
+							</ul>
+						</jsp:attribute>
+					</sidebar:sidebarItem>
+				
+					<sidebar:sidebarTagCloudItem requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="default" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
+				
+				</c:when>
+				<c:otherwise>
+
+					<sidebar:sidebarItem textKey="group.doesnotexist.header">
+						<jsp:attribute name="content">
+							<ul>
+								<li>
+									<fmt:message key="settings.addgroupdescription">
+										<fmt:param><a href="mailto:${properties['project.email']}">${properties['project.email']}</a></fmt:param>
+									</fmt:message>
+								</li>
+							</ul>
+						</jsp:attribute>
+					</sidebar:sidebarItem>
+
+				</c:otherwise>
+			</c:choose>
+		</jsp:attribute>
+	</layout:resourceLayout>
+</jsp:root>
