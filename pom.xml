@@ -3,7 +3,7 @@
 
     BibSonomy - A blue social bookmark and publication sharing system.
 
-    Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+    Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
                                   University of Kassel, Germany
                                   http://www.kde.cs.uni-kassel.de/
                               Data Mining and Information Retrieval Group,
@@ -237,7 +237,6 @@
 		<module>bibsonomy-importer</module>
 		<module>bibsonomy-layout</module>
 		<module>bibsonomy-logging</module>
-		<module>bibsonomy-lucene</module>
 		<module>bibsonomy-marc-parser</module>
 		<module>bibsonomy-model</module>
 		<module>bibsonomy-openaccess</module>
@@ -250,6 +249,8 @@
 		<module>bibsonomy-rest-server</module>
 		<module>bibsonomy-scraper</module>
 		<module>bibsonomy-scrapingservice</module>
+		<module>bibsonomy-search</module>
+		<module>bibsonomy-search-elasticsearch</module>
 		<module>bibsonomy-synchronization</module>
 		<module>bibsonomy-web-common</module>
 		<module>bibsonomy-webapp</module>
@@ -380,7 +381,7 @@
 				<configuration>
 					<header>src/etc/header.txt</header>
 					<properties>
-						<year>${project.inceptionYear} - 2014</year>
+						<year>${project.inceptionYear} - 2015</year>
 						<description>
 							${project.name} - ${project.description}
 						</description>
@@ -656,7 +657,18 @@
 			</dependency>
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
-				<artifactId>bibsonomy-lucene</artifactId>
+				<artifactId>bibsonomy-search</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bibsonomy</groupId>
+				<artifactId>bibsonomy-search</artifactId>
+				<version>${project.version}</version>
+				<type>test-jar</type>
+			</dependency>
+			<dependency>
+				<groupId>org.bibsonomy</groupId>
+				<artifactId>bibsonomy-search-elasticsearch</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -782,7 +794,7 @@
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-databind</artifactId>
-				<version>2.1.2</version>
+				<version>2.5.3</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

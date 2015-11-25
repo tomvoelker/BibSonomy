@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -34,8 +34,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A very basic executor (similar to {@link Executor})  that keeps track of scheduled and running tasks in a type-safe way and can be easily configured and shut
- * down from spring
+ * A very basic executor (similar to {@link Executor})  that keeps track of
+ * scheduled and running tasks in a type-safe way and can be easily
+ * configured and shut down from spring
  * 
  * @author jensi
  * @param <R>
@@ -90,19 +91,18 @@ public class SimpleBlockingThreadPoolExecutor<R extends Callable<?>> {
 	 *            been executed.
 	 */
 	public void scheduleTaskForExecution(final R task, boolean sync) {
-		
-			try {
-				final ExecutorService exec = getExecutor();
-				if (sync) {
-					exec.submit((Callable<?>) task).get();
-				} else {
-					exec.submit((Callable<?>) task);
-				}
-			} catch (InterruptedException e) {
-				Thread.interrupted();
-			} catch (ExecutionException e) {
-				throw new RuntimeException(e);
+		try {
+			final ExecutorService exec = getExecutor();
+			if (sync) {
+				exec.submit((Callable<?>) task).get();
+			} else {
+				exec.submit((Callable<?>) task);
 			}
+		} catch (InterruptedException e) {
+			Thread.interrupted();
+		} catch (ExecutionException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -159,5 +159,4 @@ public class SimpleBlockingThreadPoolExecutor<R extends Callable<?>> {
 	public void setSecondsBeforeClosingUnusedThreads(long secondsBeforeClosingUnusedThreads) {
 		this.secondsBeforeClosingUnusedThreads = secondsBeforeClosingUnusedThreads;
 	}
-	
 }

@@ -1,0 +1,112 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/resources/publication"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" description="The publication post that should be rendered."/>
+	<jsp:directive.attribute name="referer" type="java.lang.String" required="true" description="The referer to the scraped site"/>
+	
+	<c:set var="publication" value="${post.resource}"/>
+	<c:set var="isOwnEntry" value="${post.user.name eq command.context.loginUser.name}"/>
+	
+	<spring:theme code="javascript.openaccess" var="jsOpenAccess" text=""/>
+
+	<c:if test="${not empty jsOpenAccess}"> 
+		<script type="text/javascript" src="${jsOpenAccess}"><!--  --></script>
+	</c:if>
+	
+	<div itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
+	<div class="title">
+		<pub:title post="${post}">
+			<jsp:attribute name="bibActionButtons">
+				<div class="pull-right">
+					<buttons:actions post="${post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}" resourceType="bibtex"/>
+				</div>
+			</jsp:attribute>
+		</pub:title>
+	</div>
+	<div style="border-top: 1px #cbcbcb solid; clear:left">
+		<span> </span>
+	</div> <!-- border -->
+	
+	<c:choose>
+		<!--+
+			| 
+			| if own entry, render a two column layout to display documents on the right side
+			| 
+		   	+-->
+		<c:when test="${isOwnEntry or not empty publication.documents}">
+			<bs:twoColumns columnSizeLeft="8" columnSizeRight="4">
+				<jsp:attribute name="columnLeft">
+					<!-- PUBLICATION DETAILS -->
+					<pub:publicationdetailscontent post="${post}" referer="${referer}" />
+				</jsp:attribute>
+				
+				<jsp:attribute name="columnRight">
+					<div class="documents">
+						<!-- META DATA ABOUT ATTACHED DOCUMENTS  -->
+						<pub:doc post="${post}" />
+					</div>
+				</jsp:attribute>
+			</bs:twoColumns>
+		</c:when>
+		
+		<!--+
+			| 
+			| if not own entry, render a one column layout to display content details
+			| 
+		   	+-->	
+		<c:otherwise>
+			<div class="row">
+				<!-- PUBLICATION DETAILS -->
+				<div class="col-md-12">
+					<pub:publicationdetailscontent post="${post}" referer="${referer}" />
+				</div>
+			</div>
+		</c:otherwise>
+	</c:choose>
+
+	<div class="row">
+	
+		<div class="col-md-12">
+			<!--+ 
+			 	| selection of citation format 
+			 	+-->
+			<hr />
+		 	<h4 class="pub-details"><span class="fa fa-quote-right"><!--  --></span><c:out value=" "/><fmt:message key="publications.citations.headline" /></h4>
+			<pub:citation post="${post}"/>
+			
+			<!--+
+				| only shown on PUMA (transfer publication to OpenAccess repository) 
+				+-->
+			<c:if test="${not empty jsOpenAccess}"> <!-- is there any openaccess javascript code defined in theme*.properties? -->
+				<c:if test="${isOwnEntry and mtl:hasTagMyown(post)}"> <!-- only if publication is own one -->
+					<c:if test="${(properties['publication.reporting.mode'] eq 'ALL' or properties['publication.reporting.mode'] eq 'GROUP' and mtl:userIsGroup(command.context.loginUser))}"> <!-- only if publication is tagged with myown system tag -->	
+						<editpub:openaccess referer="${referer}" bibtex="${publication}"/>
+					</c:if>
+					<c:if test="${properties['publication.reporting.mode'] eq 'GROUP' and not mtl:userIsGroup(command.context.loginUser)}">
+						<c:forEach var="group" items="${command.context.loginUser.groups}">
+							<c:set var="reportingUrl" value="${group.publicationReportingSettings.externalReportingUrl}" />
+							<c:if test="${not mtl:hasReportedSystemTag(post.tags, group.name) and not empty reportingUrl}">
+								<h3 style="clear:both;"><a class="foldUnfold" href="#groupReporting"><img id="discussionImg" src="${resdir}/image/icon_collapse.png" border="0"/><c:out value=" "/><fmt:message key="group.reporting.headline"/></a></h3>
+								<fmt:message key="group.reporting" var="reportDesc">
+									<fmt:param value="${group.name}" />
+								</fmt:message>
+								<a href="${reportingUrl}?intraHash=${post.resource.intraHash}&amp;user=${post.user.name}&amp;referer=${properties['project.home']}${fn:escapeXml(requPath)}" title="${reportDesc}"><c:out value="${reportDesc} "/></a>
+							</c:if>
+						</c:forEach>
+					</c:if>
+				</c:if>
+			</c:if>
+		</div>
+	</div>
+	</div><!-- end of markup -->
+</jsp:root>

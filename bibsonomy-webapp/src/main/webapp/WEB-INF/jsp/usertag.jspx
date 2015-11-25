@@ -1,0 +1,63 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"> 
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	<fmt:message var="headline" key="page.usertag.headline">
+		<fmt:param>${command.requestedUser}</fmt:param>
+		<fmt:param>${command.requestedTags}</fmt:param>
+	</fmt:message>
+	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" headline="${headline}">
+	
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.user" formAction="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(command.requestedUser))}" formInputName="tag" formInputValue="${command.requestedTags}"	>
+				<jsp:attribute name="pathPart">
+					<a href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}"><c:out value='@${command.requestedUser}'/></a>
+				</jsp:attribute>
+			</parts:search>
+		</jsp:attribute>
+		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:usercrumb requestedUser="${command.requestedUser}" loginUser="${command.context.loginUser}" />
+					<nav:tagcrumb requestedTags="${command.requestedTags}" active="${true}"/>
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		
+		</jsp:attribute>
+		
+		<jsp:attribute name="sidebar">
+			<parts:tagsAndConceptsForSidebar />
+
+			<sidebar:relatedTagsItem requPath="${requPath}" cmd="${command.relatedTagCommand}" order="${command.order}"/>
+			
+			<sidebar:conceptsItem 
+				cmd="${command.concepts}" 
+				usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" 
+				requestedUserName="${command.requestedUser}"
+				headingTitleKey="tagrelations.user.title"
+				headingLink="${relativeUrlGenerator.getConceptsUrlByString(command.requestedUser)}"/>
+			
+			<sidebar:sidebarTagCloudItem 
+				requPath="${mtl:getLowerPath(requPath)}" 
+				cmd="${command.tagcloud}" 
+				tagboxMinfreqStyle="user" 
+				tagSizeMode="user"  
+				showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
+		</jsp:attribute>
+		
+	</layout:resourceLayout>
+
+</jsp:root>

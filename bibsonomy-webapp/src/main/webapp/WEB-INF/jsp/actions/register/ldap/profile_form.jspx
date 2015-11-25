@@ -1,0 +1,86 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+	<fmt:message key="navi.register" var="pageTitle" />
+	<layout:paneLayout command="${command}" pageTitle="${pageTitle}" requPath="${requPath}" headerMessageKey="register.ldap.step2">
+	
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.register"/>
+		</jsp:attribute>
+
+		<jsp:attribute name="content">
+
+			<form:form action="/registerLDAP" method="POST" cssClass="form-horizontal">
+				<errors:global />
+
+				<fieldset class="fsOuter">
+					<!-- FIXME: is this the right place for this description? -->
+					<fmt:message key="register.ldap.step2.description"/>
+					
+					<bsform:fieldset legendKey="register.ldap.required">
+						<jsp:attribute name="content">
+							<!-- TODO: maxlength 15 -->
+							<bsform:input path="registerUser.name" labelKey="navi.username" required="${true}" inputColSpan="8" labelColSpan="4" noHelp="${true}" />
+							
+							<bsform:input path="registerUser.email" labelKey="user.settings.email" required="${true}" inputColSpan="8" labelColSpan="4" noHelp="${true}" />
+							
+							<bsform:input path="registerUser.ldapId" labelKey="user.settings.ldapid" disabled="${true}" inputColSpan="8" labelColSpan="4" noHelp="${true}" />
+						</jsp:attribute>
+					</bsform:fieldset>
+
+					<bsform:fieldset legendKey="register.ldap.optional">
+						<jsp:attribute name="content">
+							<bsform:input path="registerUser.realname" labelKey="user.settings.realname" required="${true}" inputColSpan="8" labelColSpan="4" noHelp="${true}" />
+							
+							<!-- GENDER -->
+							<div class="form-group clearfix">
+								<form:label cssClass="col-sm-4 control-label" path="registerUser.gender"><fmt:message key="user.gender"/></form:label>
+								
+								<fmt:message var="male" key="settings.male"/>
+								<fmt:message var="female" key="settings.female"/>
+								<div class="col-sm-8">
+									<form:select cssClass="form-control" path="registerUser.gender">
+										<form:option label="${male}" value="m"/>
+										<form:option label="${female}" value="f"/>
+									</form:select>
+								</div>
+								
+								<div class="dissError"><form:errors path="registerUser.gender" /></div>
+							</div>
+							
+							<bsform:input path="registerUser.place" labelKey="user.place" required="${true}" inputColSpan="8" labelColSpan="4" noHelp="${true}" />
+							
+							<bsform:input path="registerUser.homepage" labelKey="user.settings.homepage" required="${true}" inputColSpan="8" labelColSpan="4" noHelp="${true}" />
+						</jsp:attribute>
+					</bsform:fieldset>
+
+					<input type="hidden" name="step" value="3" />
+					<input type="hidden" name="rememberMe" value="${command.rememberMe}" />
+					
+					<div class="form-group">
+						<div class="col-sm-offset-4 col-sm-3 col-md-3 col-lg-3">
+							<bsform:button type="submit" style="success" valueKey="register.send" size="defaultSize" />
+						</div>
+					</div>
+
+				</fieldset>
+			</form:form>
+		</jsp:attribute>
+		
+	</layout:paneLayout>
+	
+</jsp:root>

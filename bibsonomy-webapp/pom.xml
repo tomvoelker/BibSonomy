@@ -3,7 +3,7 @@
 
     BibSonomy-Webapp - The web application for BibSonomy.
 
-    Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+    Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
                                   University of Kassel, Germany
                                   http://www.kde.cs.uni-kassel.de/
                               Data Mining and Information Retrieval Group,
@@ -137,7 +137,6 @@
 					<compress>true</compress>
 					<includes>
 						<include>bootstrap-style.less</include>
-						<include>style.less</include>
 					</includes>
 				</configuration>
 				<executions>
@@ -163,7 +162,7 @@
 				<version>0.0.1-SNAPSHOT</version>
 				<configuration>
 					<messageSources>
-						<messageSource>file://${project.basedir}/src/main/resources/messages</messageSource>
+						<messageSource>file:///${project.basedir}/src/main/resources/messages</messageSource>
 					</messageSources>
 					<locales>
 						<locale>en</locale>
@@ -481,7 +480,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-lucene</artifactId>
+			<artifactId>bibsonomy-search-elasticsearch</artifactId>
 		</dependency>
 		<!-- *** beanutils 1.7.0 contain a memory leak *** we don't have a direct 
 			dependency to beanutils, but some lib needs it so we override here to the 
@@ -684,7 +683,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>12.0</version>
+			<version>18.0</version>
 		</dependency>
 		<dependency>
 			<groupId>joda-time</groupId>

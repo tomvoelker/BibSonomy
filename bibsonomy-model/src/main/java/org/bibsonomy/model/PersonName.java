@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -38,9 +38,6 @@ import java.util.Date;
  * @author Jens Illig
  */
 public class PersonName implements Serializable {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 4365762117878931642L;
 
 	/**
@@ -70,7 +67,7 @@ public class PersonName implements Serializable {
 	 * @param lastName 
 	 */
 	public PersonName(final String lastName) {
-		this.setLastName(lastName);
+		this.setLastName(lastName); 
 	}
 	
 	/**
@@ -79,7 +76,7 @@ public class PersonName implements Serializable {
 	 */
 	public PersonName(final String firstName, final String lastName) {
 		this.setFirstName(firstName);
-		this.setLastName(lastName);
+		this.setLastName(lastName);  
 	}
 	
 	/**

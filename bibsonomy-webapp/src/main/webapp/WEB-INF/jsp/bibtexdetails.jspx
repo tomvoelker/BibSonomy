@@ -1,0 +1,163 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:jspx="urn:jsptld:/WEB-INF/taglibs/jspx.tld"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+	xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:common="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
+	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication">
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	<!--+
+		| variables, messages
+		+-->
+	<c:set var="post" value="${command.bibtex.list[0]}" />
+	<c:set var="publication" value="${post.resource}" />
+	<c:set var="title" value="${mtl:cleanBibtex(publication.title)}" />
+	<c:set var="isOwnPost" value="${post.user.name eq command.context.loginUser.name}"/>
+	<fmt:message key="navi.publication" var="pageTitle" />
+	
+	<layout:paneLayout pageTitle="${pageTitle} :: ${title}" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}" showPageOptions="${true}">
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.publication" formAction="/search" formInputName="search" formInputValue="${title}"/>
+		</jsp:attribute>
+		
+		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="${resdir}/javascript/bs/publicationdetails.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/bs/publication.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/bs/additionalUrl.js"><!-- keep me --></script>
+		</jsp:attribute>
+		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:usercrumb requestedUser="${command.requestedUser}" loginUser="${command.context.loginUser}" />
+					<nav:crumb name="${mtl:shorten(title, 25)}" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+		
+		<!--+
+			| sidebar
+			+-->
+		<jsp:attribute name="sidebar">
+			<sidebar:sidebarItem textKey="bibtex.details.meta">
+				<jsp:attribute name="content">
+					<ul>
+						<li><fmt:message key="post.change_date" /> <rc:metaChangeDate post="${post}"/><br /></li>
+						<li><fmt:message key="post.date" /> <rc:metaDate post="${post}" withoutClock="${true}"/><br /></li>
+					</ul>
+				</jsp:attribute>
+			</sidebar:sidebarItem>
+
+			<c:set var="tagsString" value="${mtl:toTagString(post.tags)}" />
+			<!-- edit tags -->
+			<c:if test="${isOwnPost}">
+				<sidebar:sidebarItem textKey="navi.editTags">
+					<jsp:attribute name="content">
+						<form action="/batchEdit?action=2" method="POST" style="padding:0.8em;" class="sidebar_collapse_content">
+							<div class="input-group">
+								<input class="form-control input-sm rename-tags" type="text" name="newTags['${fn:escapeXml(publication.intraHash)}']" value="${fn:escapeXml(tagsString)}"/>
+								<fmt:message key="bibtex.actions.tags.update" var="updateTags"/>
+								<span class="input-group-btn">
+									<bsform:button style="defaultStyle" value="" size="small" type="submit" icon="pencil" className="rename-tags-btn" title="${updateTags}" srText="${updateTags}" />
+									<button class="btn btn-sm btn-default rename-tags-submit-btn" style="display: none;" title="${updateTags}" type="button"><span class="fa fa-check"><!-- KEEP ME --></span><span class="sr-only">OK</span></button>
+								</span>
+							</div>
+							<input type="hidden" name="oldTags['${fn:escapeXml(publication.intraHash)}']" value="${fn:escapeXml(tagsString)}"/>
+							<input type="hidden" name="posts['${fn:escapeXml(publication.intraHash)}']" value="true" checked="checked" />
+							<input type="hidden" name="referer" value="/bibtex/2${publication.intraHash}/${mtl:encodeURI(post.user.name)}"/>
+							<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
+							<input type="hidden" name="resourcetype" value="bibtex"/>
+							<input type="hidden" name="updateExistingPost" value="true"/>
+						</form>
+					</jsp:attribute>
+				</sidebar:sidebarItem>
+			</c:if>
+			<sidebar:sidebarItem textKey="community">
+				<jsp:attribute name="content">
+					<ul>
+						<c:if test="${fn:length(command.relatedUserCommand.relatedUsers) gt 1}">
+							<li>
+								<h5><fmt:message key="bibtex.details.related_users"/></h5>
+								<ul style="margin-left: 1em; list-style:disc;">
+									<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}">
+										<li class="${userclass}">
+											<user:username user="${user}" />
+										</li>
+									</c:forEach>
+								</ul>
+							</li>
+						</c:if>
+
+							
+						<!--+
+							| 
+							| tags
+							|
+							+-->
+						<li><h5><fmt:message key="tags"/>
+								<small style="font-size:80%;">
+									(<user:username user="${post.user}" />
+									<fmt:message key="tags.highlighted.by_user"/>)
+								</small>
+							</h5>
+							<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagSizeMode="detail" tagboxMinfreqStyle="none" highlightTags="${tagsString}"/>
+						</li>
+					</ul>
+				</jsp:attribute>
+			</sidebar:sidebarItem>
+			<!--+
+				| private note
+				+-->
+			<c:if test="${isOwnPost}">
+				<sidebar:sidebarItem textKey="post.resource.privnote">
+					<jsp:attribute name="content">
+						<div id="privnote">
+							<form method="post" id="note" role="form">
+								<div class="form-group">
+									<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
+									<input type="hidden" name="intraHash" value="${fn:escapeXml(publication.intraHash)}"/>
+									<input type="hidden" id="old-private-note" name="oldprivatenote" value="${fn:escapeXml(publication.privnote)}"/>
+									<input type="hidden" name="action" value="updatePrivateNote"/>
+									
+									<textarea class="form-control" id="private-note" name="privateNote" rows="5"><c:out value="${publication.privnote}"/></textarea>
+									
+								</div>
+								<div class="pull-right">
+									<fmt:message key="save" var="save" />
+									<bsform:button style="primary" value="${save}" size="xsmall" onclick="javascript: return updatePrivNote($(this))" id="makeP" />
+								</div>
+							</form>
+						</div>
+					</jsp:attribute>
+				</sidebar:sidebarItem>
+			</c:if>
+		</jsp:attribute>
+
+		<jsp:attribute name="content">
+			<resource:bibtexdetailsclean post="${post}" referer="${command.referer}" />
+		</jsp:attribute>
+		
+		<jsp:attribute name="customPageOptions">
+			<buttons:actions post="${post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}" resourceType="bibtex"/>
+		</jsp:attribute>
+		
+	</layout:paneLayout>
+
+</jsp:root>

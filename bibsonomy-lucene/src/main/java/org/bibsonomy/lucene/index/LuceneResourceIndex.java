@@ -1,7 +1,7 @@
 /**
- * BibSonomy-Lucene - Fulltext search facility of BibSonomy
+ * BibSonomy - A blue social bookmark and publication sharing system.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -61,17 +61,16 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.store.NoSuchDirectoryException;
 import org.apache.lucene.util.Version;
-import org.bibsonomy.es.IndexType;
-import org.bibsonomy.es.IndexUpdater;
-import org.bibsonomy.es.IndexUpdaterState;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.param.LuceneIndexStatistics;
-import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.param.comparator.DocumentCacheComparator;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.search.SearchPost;
+import org.bibsonomy.search.update.IndexUpdater;
+import org.bibsonomy.search.update.SearchIndexSyncState;
 
 /**
  * abstract base class for managing lucene resource indices
@@ -80,6 +79,7 @@ import org.bibsonomy.model.ResourcePersonRelation;
  *
  * @param <R> the resource of the index
  */
+@Deprecated // TODO: remove lucene
 public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> {
 	private static final Log log = LogFactory.getLog(LuceneResourceIndex.class);
 
@@ -89,7 +89,6 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	
 
 	/** gives read only access to the lucene index */
-	//private DirectoryReader indexReader;
 	private SearcherManager searcherManager;
 
 	/** gives write access to the lucene index */
@@ -127,7 +126,7 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	private int indexId;
 	
 	/** keeps track of the newest log_date and tas_id during last index update */
-	private IndexUpdaterState state;
+	private SearchIndexSyncState state;
 
 	private Class<R> resourceClass;
 	
@@ -349,7 +348,7 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	 */
 	public void setLastLogDate(final Date lastLogDate) {
 		if (this.state == null) {
-			this.state = new IndexUpdaterState();
+			this.state = new SearchIndexSyncState();
 		}
 		this.state.setLast_log_date(lastLogDate);
 	}
@@ -394,7 +393,7 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	 */
 	public void setLastTasId(final Integer lastTasId) {
 		if (this.state == null) {
-			this.state = new IndexUpdaterState();
+			this.state = new SearchIndexSyncState();
 		}
 		this.state.setLast_tas_id(lastTasId);
 	}
@@ -928,7 +927,7 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	 * @see org.bibsonomy.es.IndexUpdater#setSystemInformation(java.lang.Integer, java.util.Date)
 	 */
 	@Override
-	public void setSystemInformation(IndexUpdaterState state) {
+	public void setSystemInformation(SearchIndexSyncState state) {
 		this.state = state;
 	}
 	
@@ -946,11 +945,11 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	 * @see org.bibsonomy.es.IndexUpdater#insertDocument(org.bibsonomy.lucene.param.LucenePost, long)
 	 */
 	@Override
-	public void insertDocument(LucenePost<R> post, Date currentLogDate) {
+	public void insertDocument(SearchPost<R> post, Date currentLogDate) {
 		if (currentLogDate != null) {
 			post.setLastLogDate(currentLogDate);
 		}
-		final Document postDoc = (Document)this.resourceConverter.readPost(post, IndexType.LUCENE);
+		final Document postDoc = this.resourceConverter.readPost(post);
 		this.insertDocument(postDoc);
 	}
 
@@ -1020,9 +1019,9 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 	 * @see org.bibsonomy.es.IndexUpdater#getUpdaterState()
 	 */
 	@Override
-	public IndexUpdaterState getUpdaterState() {
+	public SearchIndexSyncState getUpdaterState() {
 		if (state == null) {
-			state = new IndexUpdaterState();
+			state = new SearchIndexSyncState();
 		}
 		final Integer lastTasId = this.getLastTasId();
 		// keeps track of the newest log_date during last index update
@@ -1030,7 +1029,7 @@ public class LuceneResourceIndex<R extends Resource> implements IndexUpdater<R> 
 		state.setLast_log_date(lastLogDate);
 		state.setLast_tas_id(lastTasId);
 		// lucene does not support person information. So we set last personChangeId to maximum to make the updater search for the empty set of changes greater than this change id (-1 is needed to prevent an overflow when searching for a newer id)
-		state.setLastPersonChangeId(Long.MAX_VALUE-1);
+		state.setLastPersonChangeId(Long.MAX_VALUE - 1);
 		return state;
 	}
 

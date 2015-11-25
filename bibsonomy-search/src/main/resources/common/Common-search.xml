@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SearchCommon">
+
+	<!-- spam prediction parameter -->	
+	<resultMap id="spamPrediction" class="user">
+		<result property="name"       column="user_name"  javaType="string" />
+		<result property="prediction" column="prediction" javaType="integer" />
+		<result property="updatedAt"  column="updated_at" javaType="date" />
+	</resultMap>
+</sqlMap>

@@ -1,0 +1,137 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/users"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
+	xmlns:spring="urn:http://www.springframework.org/tags"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+  	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs">
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<fmt:message key="navi.admin" var="adminPageTitle" />
+	
+	<layout:layout 
+		pageTitle="${adminPageTitle} :: Synchronization" 
+		loginUser="${command.context.loginUser}" 
+		requPath="${requPath}">
+		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:admin />
+					<nav:crumb nameKey="navi.admin.synchronization" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.admin">
+				<jsp:attribute name="pathPart">
+					<li>
+						:: <a rel="path_menu" href="${relativeUrlGenerator.getAdminUrlByName('sync')}">Synchronization</a>
+					</li>
+				</jsp:attribute>
+			</parts:search>
+		</jsp:attribute>
+		
+		<jsp:attribute name="content">
+			<fmt:message var="delete" key="delete"/>
+			<fmt:message var="addService" key="synchronization.addService" />
+			<fmt:message var="name" key="name" />
+			<fmt:message var="serviceURI" key="synchronization.service" />
+			<fmt:message var="sslDn" key="synchronization.sslDn" />
+			<fmt:message var="secureAPI" key="synchronization.secureAPI" />
+				
+			<!-- CLIENTS -->
+			
+			<h3 class="page-header">Clients</h3>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>name</th>
+						<th><c:out value="${serviceURI}"/></th>
+						<th><c:out value="${sslDn}"/></th>
+						<th>actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach var="service" items="${command.avlClients}">
+						<tr>
+							<td><c:out value="${service.name}"/><!-- keep me --></td>
+							<td><c:out value=" ${service.service}"/></td>
+							<td><c:out value=" ${service.sslDn}"/><!-- keep me --></td>
+							<td>
+								<a href="${relativeUrlGenerator.getAdminUrlByName('sync')}?action=deleteService&amp;service.service=${fn:escapeXml(service)}&amp;server=false">
+									<c:out value="${delete}" />
+								</a>
+							</td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+			<h4 class="page-header">add client</h4> 
+			<form:form class="form-horizontal" action="${relativeUrlGenerator.getAdminUrlByName('sync')}?action=createService" method="POST" id="clientForm">
+				<input type="hidden" value="false" name="server"/>
+				<div class="form-group"> 
+					
+					<bsform:input labelColSpan="4" inputColSpan="8" path="service.name" noHelp="true" labelKey="name"></bsform:input>
+					<bsform:input labelColSpan="4" inputColSpan="8" path="service.service" noHelp="true" labelKey="synchronization.service"></bsform:input>
+					<bsform:input labelColSpan="4" inputColSpan="8" path="service.sslDn" noHelp="true" labelKey="synchronization.sslDn"></bsform:input>
+				</div>
+				<div class="col-sm-offset-4 col-sm-8">
+					<input type="submit" class="btn btn-default btn-primary" value="${addService}"/>
+				</div>
+			</form:form>
+			
+			<h3 class="page-header">Servers</h3>
+			<table class="table table-striped">
+				<thead>
+				<tr>
+					<th>name</th>
+					<th><c:out value="${serviceURI}"/></th>
+					<th><c:out value="${secureAPI}"/></th>
+					<th>actions</th>
+				</tr>
+				</thead>
+				<tbody>
+					<c:forEach var="service" items="${command.avlServer}">
+						<tr>
+							<td><c:out value="${service.name}"/><!-- keep me --></td>
+							<td><c:out value=" ${service.service}"/></td>
+							<td><c:out value=" ${service.secureAPI}"/><!-- keep me --></td>
+							<td>
+								<a href="${relativeUrlGenerator.getAdminUrlByName('sync')}?action=deleteService&amp;service.service=${fn:escapeXml(service)}&amp;server=true">
+									<c:out value="${delete}" />
+								</a>
+							</td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+			<h4 class="page-header">add server</h4>
+			<!-- SERVERS -->
+			<form:form class="form-horizontal" action="${relativeUrlGenerator.getAdminUrlByName('sync')}?action=createService" method="POST" id="serverForm">
+				<div class="form-group"> 
+					
+					<bsform:input labelColSpan="4" inputColSpan="8" path="service.name" noHelp="true" labelKey="name"></bsform:input>
+					<bsform:input labelColSpan="4" inputColSpan="8" path="service.service" noHelp="true" labelKey="synchronization.service"></bsform:input>
+					<bsform:input labelColSpan="4" inputColSpan="8" path="service.secureAPI" noHelp="true" labelKey="synchronization.secureAPI"></bsform:input>
+				</div>
+				<div class="col-sm-offset-4 col-sm-8">
+					<input type="hidden" value="true" name="server"/>
+					<input type="submit" class="btn btn-default btn-primary" value="${addService}"/>
+				</div>
+			</form:form>
+		
+		</jsp:attribute>
+	</layout:layout>
+</jsp:root>

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -587,7 +587,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 */
 	@Override
 	public String updateGroup(Group group, GroupUpdateOperation operation, GroupMembership membership) {
-		
+		this.doDefaultAction();
 		return null;
 	}
 

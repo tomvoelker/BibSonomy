@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Layout - Layout engine for the webapp.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -69,7 +69,7 @@ public class CslModelConverter {
 	 * XXX: mapping is incomplete
 	 */
 	private static Map<String, String> typemap;
-
+	
 	static {
 		typemap = new HashMap<String, String>();
 		
@@ -97,12 +97,16 @@ public class CslModelConverter {
 		
 		typemap.put(BibTexUtils.ELECTRONIC, "webpage");
 		
+		typemap.put(BibTexUtils.PRESENTATION, "speech");
+		
 		typemap.put(BibTexUtils.MISC, "article");
 		
 		typemap.put(BibTexUtils.STANDARD, "legislation");
 		
 		typemap.put(BibTexUtils.UNPUBLISHED, "manuscript");
 		typemap.put(BibTexUtils.PREPRINT, "manuscript");
+		
+		
 	}
 
 	/**
@@ -283,7 +287,23 @@ public class CslModelConverter {
 		
 		rec.setDocuments(convertList(publication.getDocuments()));
 		
+		// CslModelConverter.appendMiscFields(rec, publication);
+		
 		return rec;
+	}
+
+	private static void appendMiscFields(Record rec, BibTex publication) {
+		Map<String, String> miscFields = publication.getMiscFields();
+		
+		if (miscFields == null) {
+			return;
+		}
+		
+		for (String key: miscFields.keySet()) {
+			
+			String value = miscFields.get(key);
+			rec.addMiscField(key, value);
+		}
 	}
 
 	private static List<DocumentCslWrapper> convertList(final List<Document> documents) {
@@ -373,7 +393,12 @@ public class CslModelConverter {
 				return arg1.replace("_", "-");
 			}
 		});
+		
 		return jsonConfig;
+	}
+	
+	private static String ucfirst(String string){
+		return string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase();
 	}
 
 }

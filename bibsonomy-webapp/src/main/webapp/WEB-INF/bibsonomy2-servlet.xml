@@ -254,7 +254,7 @@
 	<!-- default: JSPs -->
 	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
-		<property name="prefix" value="/WEB-INF/bsjsp/" /> 
+		<property name="prefix" value="/WEB-INF/jsp/" /> 
 		<property name="suffix" value=".jspx" />
 		<!-- expose the application context's beans to the view layer so that they can be accessed in all jsp's via ${beanName} -->
 		<property name="exposedContextBeanNames">
@@ -280,6 +280,9 @@
 		</entry>
 		<entry key="application/marc:application/pica">
 			<bean class="org.bibsonomy.marc.MarcToBibTexReader"/>
+		</entry>
+		<entry key="text/bibtex">
+			<bean class="org.bibsonomy.bibtex.BibTeXToPublicationReader"/>
 		</entry>
 	</util:map>
 	
@@ -1023,7 +1026,7 @@
 	<import resource="bibsonomy2-servlet-ajax.xml" />	
 	<import resource="bibsonomy2-servlet-admin.xml" />
 	<import resource="bibsonomy2-servlet-database.xml" />
-	<import resource="bibsonomy2-servlet-lucene.xml" />
+	<import resource="bibsonomy-servlet-search.xml" />
 	<import resource="bibsonomy2-servlet-security.xml" />
 	<import resource="bibsonomy2-servlet-opensocial.xml" />
 	<import resource="bibsonomy2-servlet-saml.xml" />
