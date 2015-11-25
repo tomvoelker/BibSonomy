@@ -27,7 +27,9 @@
 package org.bibsonomy.layout.csl.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Models an entry. See the file 'csl-variables' at
@@ -220,12 +222,8 @@ public class Record {
 	private String type;
 
 	
-	//ADDITIONAL FIELDS
-	private String pdf;
-	
-	private String slides;
-	
-	private String urn;
+	//MISC FIELDS
+	private Map<String, String> misc = new HashMap<String, String>();
 
 
 	/**
@@ -998,28 +996,19 @@ public class Record {
 		this.type = type;
 	}
 	
+	public Map<String, String> getMisc() {
+		return misc;
+	}
+
+	public void setMisc(Map<String, String> misc) {
+		this.misc = misc;
+	}
 	
-	public String getPdf() {
-		return pdf;
+	public void addMiscField(String key, String value) {
+		this.misc.put(key, value);
 	}
-
-	public void setPdf(String pdf) {
-		this.pdf = pdf;
-	}
-
-	public String getSlides() {
-		return slides;
-	}
-
-	public void setSlides(String slides) {
-		this.slides = slides;
-	}
-
-	public String getUrn() {
-		return urn;
-	}
-
-	public void setUrn(String urn) {
-		this.urn = urn;
+	
+	public String getMiscField(String key) {
+		return this.misc.get(key);
 	}
 }

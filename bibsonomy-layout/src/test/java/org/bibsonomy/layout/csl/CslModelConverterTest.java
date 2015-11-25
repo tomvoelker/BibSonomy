@@ -237,9 +237,9 @@ public class CslModelConverterTest {
 		final Post<BibTex> post = generateAdditionalFieldsPost();
 		final Record record = CslModelConverter.convertPost(post);
 		final BibTex m = post.getResource();
-		assertEquals(BibTexUtils.cleanBibTex(m.getMiscField("pdf")), record.getPdf());
-		assertEquals(BibTexUtils.cleanBibTex(m.getMiscField("slides")), record.getSlides());
-		assertEquals(BibTexUtils.cleanBibTex(m.getMiscField("urn")), record.getUrn());
+		assertEquals(BibTexUtils.cleanBibTex(m.getMiscField("pdf")), record.getMiscField("pdf"));
+		assertEquals(BibTexUtils.cleanBibTex(m.getMiscField("slides")), record.getMiscField("slides"));
+		assertEquals(BibTexUtils.cleanBibTex(m.getMiscField("urn")), record.getMiscField("urn"));
 	}
 
 }

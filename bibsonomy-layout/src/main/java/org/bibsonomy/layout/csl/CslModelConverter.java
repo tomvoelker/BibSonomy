@@ -28,9 +28,6 @@ package org.bibsonomy.layout.csl;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -72,12 +69,9 @@ public class CslModelConverter {
 	 * XXX: mapping is incomplete
 	 */
 	private static Map<String, String> typemap;
-
-	private static List<String> additionalFields;
 	
 	static {
 		typemap = new HashMap<String, String>();
-		additionalFields = new ArrayList<String>();
 		
 		typemap.put(BibTexUtils.ARTICLE, "article-journal");
 		
@@ -112,10 +106,6 @@ public class CslModelConverter {
 		typemap.put(BibTexUtils.UNPUBLISHED, "manuscript");
 		typemap.put(BibTexUtils.PREPRINT, "manuscript");
 		
-		
-		additionalFields.add("pdf");
-		additionalFields.add("slides");
-		additionalFields.add("urn");
 		
 	}
 
@@ -304,31 +294,15 @@ public class CslModelConverter {
 
 	private static void appendMiscFields(Record rec, BibTex publication) {
 		Map<String, String> miscFields = publication.getMiscFields();
-		for (String key : additionalFields) {
-			String value = miscFields.get(key);
+		
+		if (miscFields == null) {
+			return;
+		}
+		
+		for (String key: miscFields.keySet()) {
 			
-			if (present(value)) {
-				Method m = null;
-				try {
-					m = rec.getClass().getMethod("set" + CslModelConverter.ucfirst(key), String.class);
-					m.invoke(rec, value);
-				} catch (NoSuchMethodException e) {
-					
-					e.printStackTrace();
-				} catch (SecurityException e) {
-					
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					
-					e.printStackTrace();
-				} catch (IllegalArgumentException e) {
-					
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					
-					e.printStackTrace();
-				}
-			}
+			String value = miscFields.get(key);
+			rec.addMiscField(key, value);
 		}
 	}
 
