@@ -422,9 +422,9 @@ public final class RestServlet extends HttpServlet {
 		log.debug("checking available sync client against SSL_CLIENT_S_DN '" + sslClientSDn + "'.");
 		final List<SyncService> syncClient = logic.getSyncServices(false, sslClientSDn);
 
-		if (!syncClient.isEmpty()) {
-			log.debug("sync client:" + syncClient.get(0).getService() + " | "
-					+ "service ssl_s_dn:" + syncClient.get(0).getSslDn());
+		if (present(syncClient)) {
+			final SyncService syncService = syncClient.get(0);
+			log.debug("sync client:" + syncService.getService() + " | " + "service ssl_s_dn:" + syncService.getSslDn());
 
 			/*
 			 * service with requested ssl_client_s_dn found in available client list -> give user the sync-role
