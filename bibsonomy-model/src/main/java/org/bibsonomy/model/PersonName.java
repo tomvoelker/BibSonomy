@@ -71,7 +71,7 @@ public class PersonName implements Serializable {
 	 * @param lastName 
 	 */
 	public PersonName(final String lastName) {
-		this.setLastName(TexDecode.decode(lastName)); // DeTeXifying to avoid curly braces in Names if present in BibTeX
+		this.setLastName(lastName); 
 	}
 	
 	/**
@@ -79,8 +79,8 @@ public class PersonName implements Serializable {
 	 * @param lastName
 	 */
 	public PersonName(final String firstName, final String lastName) {
-		this.setFirstName(TexDecode.decode(firstName)); // DeTeXifying to avoid curly braces in Names if present in BibTeX
-		this.setLastName(TexDecode.decode(lastName));   // ...
+		this.setFirstName(firstName);
+		this.setLastName(lastName);  
 	}
 	
 	/**
