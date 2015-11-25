@@ -186,19 +186,26 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * @return all available synchronization services. if server <true> sync server
 	 * otherwise sync clients
 	 */
-	public List<URI> getSyncServices(final boolean server, final DBSession session) {
-		return this.queryForList("getSyncServices", server, URI.class, session);
+	public List<SyncService> getSyncServices(final boolean server, final String sslDn, final DBSession session) {
+		final SyncParam param = new SyncParam();
+		param.setServer(server);
+		param.setSslDn(sslDn);
+		
+		return this.queryForList("getSyncServices", param, SyncService.class, session);
 	}
 	
 	/**
+	 * @param sslDn 
+	 * @param serviceURI 
 	 * @param server
 	 * @param session
-	 * @return
+	 * @return get available SyncService via SSLDn / ServiceID - if SSLDn empty, ServiceID is selected
 	 */
-	public List<SyncService> getAllSyncServices(final boolean server, final DBSession session) {
+	public SyncService getSyncServiceDetails(final URI serviceURI, final DBSession session) {
 		final SyncParam param = new SyncParam();
-		param.setServer(server);
-		return this.queryForList("getAllSyncServices", param, SyncService.class, session);
+		param.setService(serviceURI);
+			
+		return this.queryForObject("getSyncServiceDetails", param, SyncService.class, session);
 	}
 
 	/**
@@ -280,7 +287,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return all synchronization server for user if user name is provided, for all users otherwise
 	 */
-	public List<SyncService> getSyncServices(final String userName, final URI service, final boolean server, final DBSession session) {
+	public List<SyncService> getSyncServiceSettings(final String userName, final URI service, final boolean server, final DBSession session) {
 		final SyncParam param = new SyncParam();
 		param.setUserName(userName);
 		param.setServer(server);
@@ -291,6 +298,15 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 		}
 		
 		return queryForList("getSyncServers", param, SyncService.class, session);
+	}
+	
+	/**
+	 * @return List of synchronization servers for Auto synchronization ('autosync' or direction is not 'both')
+	 */
+	public List<SyncService> getAutoSyncServer(DBSession session) {
+		final SyncParam param = new SyncParam();
+		
+		return queryForList("getAutoSyncServer", param, SyncService.class, session);
 	}
 
 	/**

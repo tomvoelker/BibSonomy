@@ -46,7 +46,7 @@ function flagSpammerEvaluator(name, rowId, disable, evaluator) {
 * name: name of the user
 * rowId: table row id 
 * disable:  if true row is removed else row is colorized red
-*/	
+*/
 function addSpammer(name, rowId, disable) {
 	if (name == null || name == "") {
 		addLogMessage("please specify a user");
@@ -193,13 +193,13 @@ function generateApiKey(name) {
 /* function interacts with server via ajax */
 function runAjax(parameter,action) {
 	var request = initRequest(); 
-	var url = "/admin/ajax?" + parameter;	   
+	var url = "/admin/ajax?" + parameter;
    	if (request) {
    		request.open('GET',url + "&action=" + action, true);
    		var handle = ajax_updateLog(request);
    		request.onreadystatechange = handle;
    		request.send(null);
-   	}    	
+   	}
 }
 
 /* handler function */

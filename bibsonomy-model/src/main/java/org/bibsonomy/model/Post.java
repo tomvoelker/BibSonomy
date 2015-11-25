@@ -114,7 +114,6 @@ public class Post<T extends Resource> implements Serializable {
 	 */
 	private String description;
 	
-	
 	/**
 	 * a ranking (used to sort a list of posts)
 	 */
@@ -148,6 +147,55 @@ public class Post<T extends Resource> implements Serializable {
 	private String copyFrom;
 	
 	private boolean approved = false;
+	
+	
+	/**
+	 * default constructor
+	 */
+	public Post() {
+		// noop
+	}
+	
+	/**
+	 * copies the post without the resource
+	 * 
+	 * @param post
+	 * @param withoutResource XXX: unused for distinguish between 
+	 */
+	public Post(final Post<?> post, final boolean withoutResource) {
+		if (!withoutResource) {
+			throw new IllegalArgumentException();
+		}
+		
+		this.systemUrl = post.getSystemUrl();
+		this.contentId = post.getContentId();
+		
+		this.resourcePersonRelations = post.getResourcePersonRelations();
+		
+		this.user = post.getUser();
+		this.groups = post.getGroups();
+		
+		this.tags = post.getTags();
+		this.hiddenSystemTags = post.getHiddenSystemTags();
+		this.visibleTags = post.getVisibleTags();
+		
+		
+		this.isInboxPost = post.isInboxPost();
+		this.picked = post.isPicked();
+		
+		this.date = post.getDate();
+		this.changeDate = post.getChangeDate();
+		
+		this.description = post.getDescription();
+		
+		this.ranking = post.getRanking();
+		
+		this.metaData = post.getMetaData();
+		this.repositorys = post.getRepositorys();
+		this.copyFrom = post.getCopyFrom();
+		this.approved = post.getApproved();
+	}
+	
 	/**
 	 * @return the repositories
 	 */

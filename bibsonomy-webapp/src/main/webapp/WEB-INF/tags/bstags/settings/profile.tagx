@@ -7,7 +7,6 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/bstags/layout/form"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
@@ -84,7 +83,7 @@
 						   	<fmt:formatDate value="${command.user.birthday}" pattern="yyyy-MM-dd" var="userBirthday" />
 						    <div class="input-group date" id="dp3" data-date="${empty userBirthday ? '1989-01-01' : userBirthday }" data-date-format="yyyy-mm-dd" data-date-viewmode="years">
 						      <input class="form-control" type="text" name="user.birthday" value="${userBirthday }"/>
-						      <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"><!--  --></i></span>
+						      <span class="input-group-addon"><i class="fa fa-calendar"><!--  --></i></span>
 						    </div>
 						  </div>
 						</div>

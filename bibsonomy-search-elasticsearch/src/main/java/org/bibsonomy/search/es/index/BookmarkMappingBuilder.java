@@ -1,0 +1,58 @@
+/**
+ * BibSonomy Search Elasticsearch - Elasticsearch full text search module.
+ *
+ * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.bibsonomy.search.es.index;
+
+import java.io.IOException;
+
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.search.es.ESConstants.Fields;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+
+/**
+ * mappping builder for indexed {@link Bookmark}s
+ *
+ * @author dzo
+ */
+public class BookmarkMappingBuilder extends ResourceMappingBuilder<Bookmark> {
+	
+	/**
+	 * @param resourceType
+	 */
+	public BookmarkMappingBuilder(Class<Bookmark> resourceType) {
+		super(resourceType);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.es.index.ResourceMapping#doResourceSpecificMapping(org.elasticsearch.common.xcontent.XContentBuilder)
+	 */
+	@Override
+	protected void doResourceSpecificMapping(XContentBuilder builder) throws IOException {
+		builder.startObject(Fields.Bookmark.URL)
+					.field(TYPE_FIELD, STRING_TYPE)
+				.endObject();
+	}
+}

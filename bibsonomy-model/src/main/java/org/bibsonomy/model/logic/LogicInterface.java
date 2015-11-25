@@ -539,6 +539,7 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * @param limit 
 	 * @author sts
 	 */
+	@Deprecated // use getUsers
 	public List<User> getClassifiedUsers(Classifier classifier, SpamStatus status, int limit);
 	
 	/**

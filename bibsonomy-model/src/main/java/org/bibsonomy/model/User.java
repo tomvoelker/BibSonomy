@@ -86,6 +86,11 @@ public class User implements Serializable {
 	 * Which role the user has in the system (e.g. admin, ...)
 	 */
 	private Role role;
+	
+	/**
+	 * a set of usernames, this user marked as spammers. 
+	 */
+	private Set<User> reportedSpammers;
 
 	
 	/* ****************************** profile ****************************** */ 
@@ -1022,8 +1027,8 @@ public class User implements Serializable {
 		return this.getGroupLevelPermissions().contains(groupLevelPermission);
 	}
 	
-	/*
-	 * Return all group level permissions this user has from any group he is a member of
+	/**
+	 * @return all group level permissions this user has from any group he is a member of
 	 */
 	public Set<GroupLevelPermission> getGroupLevelPermissions() {
 		Set<GroupLevelPermission> groupLevelPermissions = new HashSet<GroupLevelPermission>();
@@ -1032,5 +1037,18 @@ public class User implements Serializable {
 		}
 		return groupLevelPermissions;
 	}
-	
+
+	/**
+	 * @return the reportedSpammers
+	 */
+	public Set<User> getReportedSpammers() {
+		return this.reportedSpammers;
+	}
+
+	/**
+	 * @param reportedSpammers the reportedSpammers to set
+	 */
+	public void setReportedSpammers(Set<User> reportedSpammers) {
+		this.reportedSpammers = reportedSpammers;
+	}
 }

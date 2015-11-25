@@ -17,6 +17,7 @@
 	<typeAlias alias="wiki"               type="org.bibsonomy.model.Wiki" />
 	<typeAlias alias="user"               type="org.bibsonomy.model.User" />
 	<typeAlias alias="userSettings"       type="org.bibsonomy.model.UserSettings" />
+	<typeAlias alias="layoutSettings"     type="org.bibsonomy.model.user.settings.LayoutSettings" />
 	<typeAlias alias="group"              type="org.bibsonomy.model.Group" />
 	<typeAlias alias="groupMembership"    type="org.bibsonomy.model.GroupMembership" />
 	<typeAlias alias="publicationReportingSettings" type="org.bibsonomy.model.GroupPublicationReportingSettings" />

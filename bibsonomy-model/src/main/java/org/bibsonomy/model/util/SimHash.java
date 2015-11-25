@@ -160,12 +160,12 @@ public class SimHash {
 	 * @param publication the object whose hash is to be calculated
 	 * @return the calculated simHash1, which consideres: title, author/editor, year.
 	 */
-	public static String getSimHash1(final BibTex publication) {	
+	public static String getSimHash1(final BibTex publication) {
 		if (!present(StringUtils.removeNonNumbersOrLetters(PersonNameUtils.serializePersonNames(publication.getAuthor())))) {
 			// no author set --> take editor
 			return StringUtils.getMD5Hash(getNormalizedTitle(publication.getTitle()) + " " +
 					PersonNameUtils.getNormalizedPersons(publication.getEditor())            + " " +
-					getNormalizedYear(publication.getYear()));				
+					getNormalizedYear(publication.getYear()));
 		}
 		// author set
 		return StringUtils.getMD5Hash(getNormalizedTitle(publication.getTitle()) + " " + 

@@ -127,11 +127,6 @@ public enum Views implements View {
 	TAGPAGE("tag"),
 
 	/**
-	 * cluster page for browsing resources based on clusterings
-	 */
-	CLUSTERPAGE("browsing/cluster"),
-
-	/**
 	 * page for listing all relation tagged users
 	 */
 	SPHERELIST("spheres/sphereList"),
@@ -140,11 +135,6 @@ public enum Views implements View {
 	 * tagged friend page shows all users of the requested group and their posts
 	 */
 	SPHEREDETAILS("spheres/sphere"),
-
-	/**
-	 * topics page for browsing resources based on topics
-	 */
-	TOPICSPAGE("browsing/topics"),
 
 	/**
 	 * inbox page
@@ -348,9 +338,9 @@ public enum Views implements View {
 	 */
 	ADMIN_SPAM("actions/admin/spam"),
 	/**
-	 * lucene admin page
+	 * full text search admin page
 	 */
-	ADMIN_LUCENE("actions/admin/lucene"),
+	ADMIN_FULL_TEXT_SEARCH("admin/search"),
 	/**
 	 * recommender admin page
 	 */
@@ -683,11 +673,6 @@ public enum Views implements View {
 	 */
 	FOLLOWERS("followers"),
 
-	/**
-	 * 
-	 */
-	BOOTSTRAP_DEMO("bootstrapDemo"),
-
 	/*
 	 * Error pages
 	 */
@@ -737,11 +722,6 @@ public enum Views implements View {
 	 * bookmarks.
 	 */
 	RECOMMENDEDPAGE("recommended"),
-
-	/**
-	 * show bibsonomy3 demo
-	 */
-	BIBSONOMY3("bibsonomy3"),
 
 	/**
 	 * group request page

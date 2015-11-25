@@ -36,7 +36,7 @@
 		<result property="userName"     column="user_name"      javaType="string" />
 	</resultMap>
 	
-	<resultMap id="syncServiceDetails" class="syncService" extends="syncClient" groupBy="service">
+	<resultMap id="syncServiceForUserDetails" class="syncService" extends="syncClient" groupBy="service">
 		<result property="lastSyncData" resultMap="SynchronizationCommon.syncData"/>
 	</resultMap>
 	

@@ -30,6 +30,7 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.DBLogicUserInterfaceFactory;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.logic.util.ReadOnlyLogic;
 import org.springframework.beans.factory.FactoryBean;
 
 /**
@@ -47,6 +48,7 @@ public class AdminLogicFactoryBean extends DBLogicUserInterfaceFactory implement
 
 	private final User user;
 	private LogicInterface instance = null;
+	private boolean readOnly;
 	
 	/**
 	 * Creates a new instance of the AdminLogicFactoryBean.
@@ -60,7 +62,7 @@ public class AdminLogicFactoryBean extends DBLogicUserInterfaceFactory implement
 	@Override
 	public LogicInterface getObject() throws Exception {
 		if (instance == null) {
-			instance = this.getLogicAccess(user.getName(), "");
+			instance = ReadOnlyLogic.maskLogic(this.getLogicAccess(user.getName(), ""), this.readOnly);
 		}
 		return instance;
 	}
@@ -96,6 +98,11 @@ public class AdminLogicFactoryBean extends DBLogicUserInterfaceFactory implement
 	public String getAdminUserName() {
 		return this.user.getName();
 	}
-	
-	
+
+	/**
+	 * @param readOnly the readOnly to set
+	 */
+	public void setReadOnly(boolean readOnly) {
+		this.readOnly = readOnly;
+	}
 }

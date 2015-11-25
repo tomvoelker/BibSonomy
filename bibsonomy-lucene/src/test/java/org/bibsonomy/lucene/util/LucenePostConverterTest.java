@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Lucene - Fulltext search facility of BibSonomy
+ * BibSonomy - A blue social bookmark and publication sharing system.
  *
  * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -33,10 +33,8 @@ import java.util.Date;
 import org.apache.lucene.document.Document;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.es.IndexType;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
-import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -45,6 +43,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
+import org.bibsonomy.search.LucenePost;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.testutil.ModelUtils;
@@ -70,7 +69,7 @@ public class LucenePostConverterTest {
 	public void writeBookmarkPost() {
 		final LucenePost<Bookmark> refPost = generateBookmarkTestPost("testTitle", "testTag", "testUser", new Date(System.currentTimeMillis()), GroupID.PUBLIC);
 		
-		final Document doc = (Document) bookmarkConverter.readPost(refPost, IndexType.LUCENE);
+		final Document doc = (Document) bookmarkConverter.readPost(refPost);
 		
 		final Post<Bookmark> testPost = bookmarkConverter.writePost(doc); 
 
@@ -100,7 +99,7 @@ public class LucenePostConverterTest {
 	@Test
 	public void writeBibTexPost() throws PersonListParserException {
 		final LucenePost<BibTex> refPost = generateBibTexTestPost( "testTitle", "testTag", "testAuthor", "testUser", new Date(System.currentTimeMillis()), GroupID.PUBLIC);
-		final Document doc = (Document) bibTexConverter.readPost(refPost, IndexType.LUCENE);
+		final Document doc = (Document) bibTexConverter.readPost(refPost);
 		
 		final Post<BibTex> testPost = bibTexConverter.writePost(doc); 
 
@@ -134,7 +133,7 @@ public class LucenePostConverterTest {
 	public void bibTexPost() throws PersonListParserException {
 		final LucenePost<BibTex> testPost = generateBibTexTestPost("testTitle", "testTag", "testAuthor", "testUser", new Date(System.currentTimeMillis()), GroupID.PUBLIC);
 		
-		final Document postDoc = (Document) bibTexConverter.readPost(testPost, IndexType.LUCENE);
+		final Document postDoc = (Document) bibTexConverter.readPost(testPost);
 		
 		//--------------------------------------------------------------------
 		// compare some elements

@@ -71,6 +71,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	private static final Log log = LogFactory.getLog(UserDatabaseManager.class);
 	
 	private static final Tag BIBSONOMY_FRIEND_SYSTEM_TAG = new Tag(NetworkRelationSystemTag.BibSonomyFriendSystemTag);
+	private static final Tag BIBSONOMY_SPAMMER_SYSTEM_TAG = new Tag(NetworkRelationSystemTag.BibSonomySpammerSystemTag);
 	
 	private static final UserDatabaseManager singleton = new UserDatabaseManager();
 
@@ -211,13 +212,11 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForObject("getApiKeyForUser", username, String.class, session);
 	}
 
-	protected void update( final String query, final User user, final DBSession session )
-	{
+	protected void update( final String query, final User user, final DBSession session ) {
 		super.update(query, user, session);
 		
 		//TODO replace by switch
-		if ( query == "updateUser" || query == "updateUserProfile" )
-		{
+		if (query == "updateUser" || query == "updateUserProfile") {
 			final UploadedFile profilePicture = user.getProfilePicture();
 			
 			if ( !present(profilePicture) )
@@ -386,7 +385,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		}
 		user.setApiKey(UserUtils.generateApiKey());
 		
-		
+
 		/*
 		 * The spammer column in MySQL is defined as
 		 * 
@@ -936,20 +935,23 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 				 *  (sourceUser, targetUser)\in FOLLOWER_OF
 				 *  
 				 */
-			    if (present(tag)) {
-			        // labeling of user relations is only allowed for
-			        // friendship relations
-			        throw new UnsupportedRelationException();
-			    }
+				if (present(tag)) {
+					// labeling of user relations is only allowed for
+					// friendship relations
+					throw new UnsupportedRelationException();
+				}
 				break;
 			case OF_FRIEND:
 				if (present(tag)) {
-				    // restrict to users labeled with the given tag, if present
-				    param.setTag(new Tag(tag));
+					// restrict to users labeled with the given tag, if present
+					param.setTag(new Tag(tag));
 				} else {
 					param.setTag(BIBSONOMY_FRIEND_SYSTEM_TAG);
 				}
-		    	// TODO: should we introduce network_user_ids???
+				// TODO: should we introduce network_user_ids???
+				break;
+			case SPAMMER:
+				param.setTag(BIBSONOMY_SPAMMER_SYSTEM_TAG);
 				break;
 			default:
 				/* 
@@ -995,6 +997,12 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		        // friendship relations
 		        throw new UnsupportedRelationException();
 		    }
+			break;
+		case SPAMMER:
+			/*
+			 * get all users, that sourceUser has tagged as spammer
+			 */
+			param.setTag(BIBSONOMY_SPAMMER_SYSTEM_TAG);
 			break;
 		case OF_FRIEND:
 			/*

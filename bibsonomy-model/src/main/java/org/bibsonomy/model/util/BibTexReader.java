@@ -43,5 +43,5 @@ public interface BibTexReader {
 	 * @param importRes {@link ImportResource} to read from
 	 * @return {@link Collection} of read {@link BibTex}s
 	 */
-	public Collection<ImportResource> read(ImportResource importRes);
+	public Collection<BibTex> read(ImportResource importRes);
 }

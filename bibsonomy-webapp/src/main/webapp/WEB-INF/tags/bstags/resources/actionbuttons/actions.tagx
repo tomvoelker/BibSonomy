@@ -13,7 +13,7 @@
 	<jsp:directive.attribute name="disableResourceLinks" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
 
-	<c:set var="buttonClasses" value="btn btn-default btn-xs"/>
+	<c:set var="buttonClasses" value="btn btn-default btn-xs "/>
 	
 	<c:choose>
 		<c:when test="${not empty post.systemUrl }">
@@ -25,7 +25,6 @@
 	</c:choose>
 
 	<div class="edit-media-buttons btn-group btn-group-xs dropdown dropdown-align-right">
-
 		<!-- edit/delete -->
 		<c:choose>
 			<c:when test="${command.context.userLoggedIn and (loginUserName eq post.user.name) and not isRemotePost}">
@@ -85,6 +84,15 @@
 					userLoggedIn="${command.context.userLoggedIn}" 
 					resourceType="${resourceType}"
 					buttonClasses="${buttonClasses}"/>
+					
+				<c:if test="${command.context.userLoggedIn and post.user.name ne loginUserName}">
+					<li class="divider"><!--  --></li>
+					<buttons:reportUserMenuItem 
+						post="${post}"
+						userName="${post.user.name}" 
+						loginUser="${command.context.loginUser}"
+						buttonClasses="${buttonClasses}"/>
+				</c:if>
 
 				<c:if test="${resourceType eq 'bibtex'}">
 

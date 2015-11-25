@@ -24,7 +24,7 @@ $(document).ready(function() {
 	function addRoleHtml(resourcePersonRelationid, personFirstName, personLastName, personId, personUrl) {
 		var s = $("<span class='resourcePersonRelation_"+resourcePersonRelationid+"'></span");
 		var a = $("<a href='" + personUrl + "'> "+ personFirstName + " " + personLastName + " </a>");
-		var sss = $(" <span data-toggle='modal' data-target='#deleteRole' data-resourcePersonRelation-id='"+resourcePersonRelationid+"' style='color:darkred;cursor:pointer' href='#deleteRole' class='deleteRole glyphicon glyphicon-remove'>&#160;</span>");
+		var sss = $(" <span data-toggle='modal' data-target='#deleteRole' data-resourcePersonRelation-id='"+resourcePersonRelationid+"' style='color:darkred;cursor:pointer' href='#deleteRole' class='deleteRole fa fa-remove'>&#160;</span>");
 		
 		sss.on("click", function() {
 			deleteRole($(this));

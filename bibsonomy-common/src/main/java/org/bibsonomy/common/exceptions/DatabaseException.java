@@ -48,14 +48,22 @@ public class DatabaseException extends RuntimeException {
 	 * initiate map
 	 */
 	public DatabaseException() {
-		this.errorMessages = new HashMap<String, List<ErrorMessage>>();
+		this.errorMessages = new HashMap<>();
+	}
+	
+	/**
+	 * @param message
+	 */
+	public DatabaseException(String message) {
+		super(message);
+		this.errorMessages = new HashMap<>();
 	}
 	
 	/**
 	 * @param errorMessages
 	 */
 	public DatabaseException(final Map<String, List<ErrorMessage>> errorMessages) {
-		this.errorMessages = new HashMap<String, List<ErrorMessage>>(errorMessages);
+		this.errorMessages = new HashMap<>(errorMessages);
 	}
 	
 	/**
