@@ -26,7 +26,6 @@
  */
 package org.bibsonomy.model;
 
-import org.bibsonomy.util.tex.TexDecode;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.Serializable;
@@ -39,9 +38,6 @@ import java.util.Date;
  * @author Jens Illig
  */
 public class PersonName implements Serializable {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 4365762117878931642L;
 
 	/**
