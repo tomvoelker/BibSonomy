@@ -297,7 +297,7 @@ public class CslModelConverter {
 		
 		rec.setDocuments(convertList(publication.getDocuments()));
 		
-		CslModelConverter.appendMiscFields(rec, publication);
+		// CslModelConverter.appendMiscFields(rec, publication);
 		
 		return rec;
 	}

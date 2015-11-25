@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.model;
 
+import org.bibsonomy.util.tex.TexDecode;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.Serializable;
@@ -70,7 +71,7 @@ public class PersonName implements Serializable {
 	 * @param lastName 
 	 */
 	public PersonName(final String lastName) {
-		this.setLastName(lastName);
+		this.setLastName(lastName); 
 	}
 	
 	/**
@@ -79,7 +80,7 @@ public class PersonName implements Serializable {
 	 */
 	public PersonName(final String firstName, final String lastName) {
 		this.setFirstName(firstName);
-		this.setLastName(lastName);
+		this.setLastName(lastName);  
 	}
 	
 	/**
