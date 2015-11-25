@@ -89,7 +89,7 @@
 			<fmt:message key="disambiguation.noInfo" var="textNoFurtherInfo"/>
 			
 			<div class="page-header">
-				<h1><c:out value="${mtl:cleanBibtex(command.personName)}"/></h1>
+				<h2><c:out value="${mtl:cleanBibtex(command.personName)}"/></h2>
 			</div>
 		
 			<c:if test="${not empty command.post}">

@@ -351,6 +351,7 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 		if (!present(name)) {
 			return "";
 		}
+		
 		return UserValidator.USERNAME_DISALLOWED_CHARACTERS_PATTERN.matcher(name).replaceAll("").toLowerCase();
 	}
 

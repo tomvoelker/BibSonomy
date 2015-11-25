@@ -338,9 +338,9 @@ public enum Views implements View {
 	 */
 	ADMIN_SPAM("actions/admin/spam"),
 	/**
-	 * lucene admin page
+	 * full text search admin page
 	 */
-	ADMIN_LUCENE("actions/admin/lucene"),
+	ADMIN_FULL_TEXT_SEARCH("admin/search"),
 	/**
 	 * recommender admin page
 	 */

@@ -56,7 +56,7 @@ public class OAuthTestHandler extends AbstractHandler {
 	private static final String APP = "http://localhost:" + Integer.valueOf(PORT);
 
 	private static final String SECRET = "thisissecretissecure";
-	private static final String HOST = "http://localhost:8080/";
+	private static final String HOST = "http://localhost/";
 	private static final String KEY = "key";
 	
 	private static final OAuthAPIAccessor ACCESSOR = new OAuthAPIAccessor(HOST, KEY, SECRET, APP);
@@ -77,7 +77,7 @@ public class OAuthTestHandler extends AbstractHandler {
 				ACCESSOR.obtainAccessToken();
 			} catch (final Exception e) {
 				throw new ServletException(e);
-			}			
+			}
 		}
 		
 		// no access token => get one 

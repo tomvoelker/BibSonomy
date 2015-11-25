@@ -1026,7 +1026,7 @@
 	<import resource="bibsonomy2-servlet-ajax.xml" />	
 	<import resource="bibsonomy2-servlet-admin.xml" />
 	<import resource="bibsonomy2-servlet-database.xml" />
-	<import resource="bibsonomy2-servlet-lucene.xml" />
+	<import resource="bibsonomy-servlet-search.xml" />
 	<import resource="bibsonomy2-servlet-security.xml" />
 	<import resource="bibsonomy2-servlet-opensocial.xml" />
 	<import resource="bibsonomy2-servlet-saml.xml" />
