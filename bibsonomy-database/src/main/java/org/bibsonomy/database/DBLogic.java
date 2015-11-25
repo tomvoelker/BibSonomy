@@ -214,7 +214,7 @@ public class DBLogic implements LogicInterface {
 
 	private final SynchronizationDatabaseManager syncDBManager;
 
-	private final BibTexReader bibtexReader;
+	private final BibTexReader publicationReader;
 	private final User loginUser;
 
 	/**
@@ -226,7 +226,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	protected DBLogic(final User loginUser, final DBSessionFactory dbSessionFactory, final BibTexReader bibtexReader) {
 		this.loginUser = loginUser;
-		this.bibtexReader = bibtexReader;
+		this.publicationReader = bibtexReader;
 
 		this.allDatabaseManagers = new HashMap<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>>();
 		// publication db manager
@@ -1500,7 +1500,7 @@ public class DBLogic implements LogicInterface {
 		return replacedPosts;
 	}
 
-	protected Post<?> replaceImportResource(final Post<?> post) {
+	private Post<?> replaceImportResource(final Post<?> post) {
 		final Resource resource = post.getResource();
 		if (resource instanceof ImportResource) {
 			final BibTex parsedResource = this.parsePublicationImportResource((ImportResource) resource);
@@ -1514,11 +1514,11 @@ public class DBLogic implements LogicInterface {
 	}
 
 	private BibTex parsePublicationImportResource(final ImportResource resource) {
-		final Collection<BibTex> bibtexs = this.bibtexReader.read(resource);
-		if (!present(bibtexs)) {
+		final Collection<BibTex> publications = this.publicationReader.read(resource);
+		if (!present(publications)) {
 			throw new IllegalStateException("bibtexReader did not throw exception and returned empty result");
 		}
-		return bibtexs.iterator().next();
+		return publications.iterator().next();
 	}
 
 	/**
