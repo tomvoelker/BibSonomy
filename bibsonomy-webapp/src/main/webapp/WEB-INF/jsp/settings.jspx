@@ -28,7 +28,7 @@
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/cv_page.css" />
 			<script type="text/javascript" src="${resdir}/javascript/cv/handlers.js"><!--  --></script>
 			<script type="text/javascript" src="${resdir}/javascript/profile/handlers.js"><!-- --></script>
-			<script type="text/javascript" src="${resdir}/javascript/bs/settings.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/settings.js"><!-- keep me --></script>
 		</jsp:attribute>
 		
 		<jsp:attribute name="breadcrumbs">
