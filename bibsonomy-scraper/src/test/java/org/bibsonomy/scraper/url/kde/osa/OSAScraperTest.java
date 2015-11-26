@@ -52,9 +52,10 @@ public class OSAScraperTest {
 	public void urlTestRun(){
 		UnitTestRunner.runSingleTest("url_93");
 	}
+	
 	@Test
 	public void testReferences() throws Exception {
-		final ScrapingContext sc = new ScrapingContext(new URL("http://www.opticsinfobase.org/josaa/abstract.cfm?uri=josaa-25-5-1084"));
+		final ScrapingContext sc = new ScrapingContext(new URL("https://www.osapublishing.org/josaa/abstract.cfm?uri=josaa-25-5-1084"));
 		
 		OSAScraper osa = new OSAScraper();
 		

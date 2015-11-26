@@ -50,28 +50,10 @@ public class CoinsScraperTest {
 	}
 	
 	/**
-	 * starts URL test with id url_218
-	 */
-	@Test
-	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_218");
-	}
-	
-	/**
-	 * starts URL test with id url_230
+	 * starts URL test with id url_299
 	 */
 	@Test
 	public void url3TestRun(){
-		UnitTestRunner.runSingleTest("url_230");
+		UnitTestRunner.runSingleTest("url_299");
 	}
-
-	
-	/**
-	 * starts URL test with id url_266
-	 */
-	@Test
-	public void url4TestRun(){
-		UnitTestRunner.runSingleTest("url_266");
-	}
-	
 }

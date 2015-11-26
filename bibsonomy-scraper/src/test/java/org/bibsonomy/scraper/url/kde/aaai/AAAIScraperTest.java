@@ -44,11 +44,20 @@ public class AAAIScraperTest {
 	public void url1TestRun(){
 		UnitTestRunner.runSingleTest("url_237");
 	}
+	
 	/**
 	 * starts URL test with id url_240
 	 */
 	@Test
 	public void url2TestRun(){
 		UnitTestRunner.runSingleTest("url_240");
+	}
+	
+	/**
+	 * starts URL test with id url_296
+	 */
+	@Test
+	public void url3TestRun(){
+		UnitTestRunner.runSingleTest("url_296");
 	}
 }
