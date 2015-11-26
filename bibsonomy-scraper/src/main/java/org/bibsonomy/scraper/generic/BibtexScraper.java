@@ -30,6 +30,7 @@ import java.io.BufferedReader;
 import java.io.StringReader;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringEscapeUtils;
@@ -71,12 +72,13 @@ public class BibtexScraper implements Scraper {
 		if ((sc != null) && (sc.getUrl() != null)) {
 			final String result = parseBibTeX(sc.getPageContent());
 			if (result != null) {
-				//Matcher m = invalidChar.matcher(result);
-				//if (!m.find()) {
+				// TODO: reenabled matcher; was disabled without comment
+				Matcher m = invalidChar.matcher(result);
+				if (!m.find()) {
 					sc.setScraper(this);
 					sc.setBibtexResult(result);
 					return true;
-				//}
+				}
 			}
 		}
 		return false;
