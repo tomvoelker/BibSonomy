@@ -1,0 +1,157 @@
+<jsp:root version="2.0"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
+
+	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
+	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
+	<jsp:directive.attribute name="content" fragment="true" required="true"/>
+	<jsp:directive.attribute name="contentIntro" fragment="true" required="false" />
+	<jsp:directive.attribute name="headerExt" fragment="true" />
+	<jsp:directive.attribute name="infobox" fragment="true" required="false" />
+	<jsp:directive.attribute name="beforeMainContainer" fragment="true" required="false" />
+	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
+	<jsp:directive.attribute name="newsbar" fragment="true" required="false"/>
+	<jsp:directive.attribute name="headerContainer" fragment="true" required="false"/>
+	<!-- FIXME: footerContainer not used -->
+	<jsp:directive.attribute name="footerContainer" fragment="true" required="false"/>
+	<jsp:directive.attribute name="hideFooterContainer" type="java.lang.Boolean" required="false"/>
+	
+	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="noLoginBox" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="noSidebar" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
+	
+	
+	<c:set var="systemReadOnly" value="${properties['system.mode.readOnly']}" scope="request" />
+	<!--+
+		| 
+		| document starts here
+		|
+		+-->
+	<jsp:output omit-xml-declaration="true" />
+	<jsp:output doctype-root-element="HTML" doctype-system="about:legacy-compat" />
+	
+	<jsp:element name="html">
+		<jsp:body>
+			<parts:htmlHead headerExt="${headerExt}" loginUser="${loginUser}"
+			requestedUser="${requestedUser}"
+			requPath="${requPath}"
+			pageTitle="${pageTitle}"
+			personalized="${personalized}"
+			/>
+			<body>
+				<c:if test="${not empty beforeMainContainer}">
+					<jsp:invoke fragment="beforeMainContainer"/>
+				</c:if>
+				<div class="container header">
+					<div id="page-header" class="bib-header">
+						<div class="row">
+							<div class="col-md-6">
+								<!--+ 
+								 	| 
+								 	| logo and project name
+								 	|
+								 	+-->
+								<c:choose>
+									<c:when test="${properties['project.theme'] eq 'puma'}">
+										<bs:logoPuma />
+									</c:when>
+									<c:otherwise>
+										<bs:logo />
+									</c:otherwise>
+								</c:choose>
+							</div>
+							
+							<div class="col-md-6">
+								<div id="lang-switcher" class="pull-right">
+									<span>(&amp;nbsp;</span>
+									<c:forEach var="lang" items="${fn:split('en,de,ru',',')}" varStatus="status">
+										<a href="/${fn:escapeXml(mtl:setParam(requPathAndQuery, 'lang', lang))}">${lang}</a>
+										<c:if test="${not status.last}">
+											<span>&amp;nbsp;|&amp;nbsp;</span>
+										</c:if>
+									</c:forEach>
+									<span>&amp;nbsp;)</span>
+								</div>
+								
+								<!--+ 
+								 	|
+								 	| search
+								 	|
+								 	+-->
+								 <br style="clear: both;" />
+								 <p style="line-height: 9px; font-size:9px; padding:0;margin:0;">&amp;nbsp;<!-- KEEP ME --></p>
+								<jsp:invoke fragment="heading"/>
+							</div>
+						</div>
+					</div><!-- /#bib-header -->
+				</div>
+				
+				<menu:navi activeTab="${activeTab}" loginUser="${loginUser}" />
+				
+				<div class="container main">
+					<c:choose>
+						<c:when test="${noSidebar}">
+							
+							<!-- without sidebar -->
+							<!-- Breadcrumbs -->
+							<c:if test="${not empty breadcrumbs}">
+								<jsp:invoke fragment="breadcrumbs" />
+							</c:if>
+							<div id="intro">
+								<jsp:invoke fragment="contentIntro"/>
+							</div>
+							<jsp:invoke fragment="content"/>
+						</c:when>
+						<c:otherwise>
+							<!-- with sidebar -->
+							<div class="row">
+								<div class="col-md-9 col-sm-12 col-xs-12 content">
+									<c:if test="${not empty loginUser.name and systemReadOnly}">
+										<bs:alert style="warning">
+											<jsp:attribute name="alertBody">
+												<fontawsome:icon icon="exclamation-triangle" /><c:out value=" " />
+												<fmt:message key="system.readOnly.notice">
+													<fmt:param value="${properties['project.name']}" />
+												</fmt:message>
+											</jsp:attribute>
+										</bs:alert>
+									</c:if>
+									<!-- Breadcrumbs -->
+									<c:if test="${not empty breadcrumbs}">
+										<jsp:invoke fragment="breadcrumbs" />
+									</c:if>
+									<div class="wrapper">
+										<div id="intro">
+											<jsp:invoke fragment="contentIntro"/>
+										</div>
+										<jsp:invoke fragment="content"/>
+									</div>
+								</div>
+								<div class="col-md-3 hidden-xs hidden-sm sidebar" id="sidebar">
+									<parts:sidebar newsbar="${newsbar}" sidebar="${sidebar}" infobox="${infobox}"/>
+								</div>
+							</div><!-- /.row -->
+						</c:otherwise>
+					</c:choose>
+				</div> <!--  /.container -->
+				<div class="container footer">
+					<parts:footer />
+				</div>
+			</body>
+		</jsp:body>
+	</jsp:element>
+</jsp:root>
