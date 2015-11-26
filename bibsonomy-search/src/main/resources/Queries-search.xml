@@ -100,6 +100,7 @@
 			FROM tas t
 				WHERE t.tas_id &gt; #lastTasId#
 				AND t.group &gt;= 0
+				AND t.content_type = 2
 			ORDER BY t.content_id ASC
 			LIMIT #limit# OFFSET #offset#
 			) AS tt
