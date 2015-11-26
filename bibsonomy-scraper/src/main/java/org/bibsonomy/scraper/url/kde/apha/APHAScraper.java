@@ -38,7 +38,6 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
@@ -79,63 +78,61 @@ public class APHAScraper extends AbstractUrlScraper {
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
-		String cookie = null;
-		String doi = null;
-				
+		
 		try {
-			cookie = WebUtils.getCookies(sc.getUrl());
+			final String cookie = WebUtils.getCookies(sc.getUrl());
+			String doi = null;
+			final Matcher m = DOI_PATTERN_FROM_URL.matcher(sc.getUrl().toString());
+			if (m.find()) {
+				doi = "doi=" + m.group(1);
+			}
+			
+			if (doi != null && cookie != null) {
+				String resultAsString = null;
+				try {
+					/*
+					 * the expected resultAsString is a RIS File: because this host support only RIS format
+					 */
+					if (sc.getUrl().toString().contains(AJPH_HOST)) {
+						resultAsString = WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL.get(0).toString()), doi);
+					}
+					/*
+					 * the expected resultAsString is a BibTex File
+					 */
+					else if (sc.getUrl().toString().contains(NRCRESEACHPRESS_HOST)) {
+						resultAsString = WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL.get(1).toString()), doi + "&format=bibtex");
+						if (resultAsString != null) {
+							sc.setBibtexResult(resultAsString);
+							return true;
+						}
+					}
+					/*
+					 * the expected resultAsString is a BibTex File
+					 */
+					else {
+						resultAsString = WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL.get(2).toString()), doi + "&format=bibtex");
+						if (resultAsString != null) {
+							sc.setBibtexResult(resultAsString);
+							return true;
+						}
+					}
+				} catch (MalformedURLException ex) {
+					throw new ScrapingFailureException("URL to scrape does not exist. It maybe malformed.");
+				}
+
+				/*
+				 * if the host was from ajph.aphapublications.org, then we must convert the resultAsString to BibTex format
+				 */
+				final String bibResult = this.ris.risToBibtex(resultAsString);
+				if (bibResult != null) {
+					sc.setBibtexResult(bibResult);
+					return true;
+				}
+			}
 		} catch (final IOException ex) {
-			throw new InternalFailureException("An unexpected IO error has occurred. No Cookie has been generated.");
+			throw new ScrapingFailureException("An unexpected IO error has occurred. Maybe APHA or nrcresearchpress Publications is down.");
 		}
-
-		final Matcher m = DOI_PATTERN_FROM_URL.matcher(sc.getUrl().toString());
-		if (m.find()) {
-			doi = "doi=" + m.group(1);
-		}
-		if (doi != null && cookie != null) {
-			String resultAsString = null;
-			try {
-				/*
-				 * the expected resultAsString is a RIS File: because this host support only RIS format
-				 */
-				if (sc.getUrl().toString().contains(AJPH_HOST)) {
-					resultAsString = WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL.get(0).toString()), doi);
-				}
-				/*
-				 * the expected resultAsString is a BibTex File
-				 */
-				else if (sc.getUrl().toString().contains(NRCRESEACHPRESS_HOST)) {
-					resultAsString = WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL.get(1).toString()), doi + "&format=bibtex");
-					if (resultAsString != null) {
-						sc.setBibtexResult(resultAsString);
-						return true;
-					}
-				}
-				/*
-				 * the expected resultAsString is a BibTex File
-				 */
-				else {
-					resultAsString = WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL.get(2).toString()), doi + "&format=bibtex");
-					if (resultAsString != null) {
-						sc.setBibtexResult(resultAsString);
-						return true;
-					}
-				}
-			} catch (MalformedURLException ex) {
-				throw new ScrapingFailureException("URL to scrape does not exist. It maybe malformed.");
-			} catch (IOException ex) {
-				throw new ScrapingFailureException("An unexpected IO error has occurred. Maybe APHA or nrcresearchpress Publications is down.");
-			}
-
-			/*
-			 * if the host was from ajph.aphapublications.org, then we must convert the resultAsString to BibTex format
-			 */
-			final String bibResult = ris.risToBibtex(resultAsString);
-			if (bibResult != null) {
-				sc.setBibtexResult(bibResult);
-				return true;
-			}
-		}
+		
 		return false;
 	}
 

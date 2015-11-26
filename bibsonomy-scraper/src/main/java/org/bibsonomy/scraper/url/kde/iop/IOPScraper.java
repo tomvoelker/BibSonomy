@@ -74,24 +74,25 @@ public class IOPScraper extends AbstractUrlScraper {
 		sc.setScraper(this);
 		final Matcher publicationIdMatcher = PUBLICATION_ID_PATTERN.matcher(sc.getUrl().toString());
 		String pubId = "";
-		if(publicationIdMatcher.find())
+		if (publicationIdMatcher.find()) {
 			pubId = publicationIdMatcher.group(1);
+		}
+		// TODO: handle publ id not found
 		
 		final String postArgs = "articleId=" + pubId +
 						  "&exportFormat=iopexport_bib" + 
 						  "&exportType=abs" +
 						  "&navsubmit=Export+abstract";
-		String bibtex = "";
 		try {
-			bibtex = WebUtils.getPostContentAsString(new URL("http://" + NEW_IOP_HOST + "/export"), postArgs, StringUtils.CHARSET_UTF_8);
+			final String bibtex = WebUtils.getPostContentAsString(new URL("http://" + NEW_IOP_HOST + "/export"), postArgs, StringUtils.CHARSET_UTF_8);
+			if (bibtex != null) {
+				sc.setBibtexResult(bibtex.trim());
+				return true;
+			}
 		} catch (MalformedURLException ex) {
 			throw new ScrapingFailureException("URL to scrape does not exist. It maybe malformed.");
 		} catch (IOException ex) {
 			throw new ScrapingFailureException("An unexpected IO error has occurred. Maybe IOP is down.");
-		}
-		if (bibtex != null) {
-			sc.setBibtexResult(bibtex.trim());
-			return true;
 		}
 		return false;
 	}

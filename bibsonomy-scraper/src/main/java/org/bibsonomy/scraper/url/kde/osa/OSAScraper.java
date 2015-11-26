@@ -107,11 +107,6 @@ public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
 				throw new InternalFailureException("An unexpected IO error has occurred. No Cookie has been generated.");
 			}
 			bibResult = getContent(citUrl, cookie, id, "export_bibtex");
-			
-			// we use the method getPostContentAsString to refactor the method getContent in this class
-			//String rest = "articles=" + id + "&ArticleAction=export_bibtex";		
-			//bibResult = WebUtils.getPostContentAsString(cookie, citUrl, rest);
-			
 		} catch (MalformedURLException ex) {
 			throw new InternalFailureException(ex);
 		} catch (IOException ex) {
@@ -137,7 +132,7 @@ public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
 		/*
 		 * get BibTex-File from ACS
 		 */
-		HttpURLConnection urlConn = (HttpURLConnection) queryURL.openConnection();
+		final HttpURLConnection urlConn = WebUtils.createConnnection(queryURL);
 		urlConn.setAllowUserInteraction(false);
 		urlConn.setDoInput(true);
 		urlConn.setDoOutput(true);

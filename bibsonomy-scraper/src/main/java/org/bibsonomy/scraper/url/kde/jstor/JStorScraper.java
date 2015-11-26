@@ -104,12 +104,12 @@ public class JStorScraper extends AbstractUrlScraper {
 			
 			String url = sc.getUrl().toExternalForm();
 			
-			if (url.contains(JSTOR_DOI_ABS_PATH)) 
+			if (url.contains(JSTOR_DOI_ABS_PATH)) {
 				url = EXPORT_PAGE_URL + exportDOIFromUrl(url);
-			
-			if(!url.contains(EXPORT_PAGE_URL))
+			}
+			if(!url.contains(EXPORT_PAGE_URL)) {
 				url = EXPORT_PAGE_URL + exportDOIFromSourceCode(url);
-				
+			}
 			//get the page content or at least get the cookies
 			GetMethod getMethod = new GetMethod(url);
 			final String page = WebUtils.getContentAsString(client, getMethod);
@@ -145,7 +145,8 @@ public class JStorScraper extends AbstractUrlScraper {
 						if (!m.find()) {
 							throw new ScrapingException("Cannot continue. JStor Scraper must get updated");
 						}
-						exportPageLink = m.group(1).replace("&amp;", "&");				}
+						exportPageLink = m.group(1).replace("&amp;", "&");
+					}
 				}
 				
 				//is the export page link present?
@@ -212,7 +213,7 @@ public class JStorScraper extends AbstractUrlScraper {
 		return true;
 	}
 	
-	private static String exportDOIFromUrl(String url) throws ScrapingException {
+	private static String exportDOIFromUrl(String url) {
 		final Matcher m = DOIFROMABS.matcher(url);
 		if(m.find()) {
 			return m.group(1);

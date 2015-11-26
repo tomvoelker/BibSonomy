@@ -67,7 +67,9 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 	private static final String SITE_NAME = "ACM Digital Library";
 	private static final String SITE_URL = "http://portal.acm.org/";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
-
+	
+	private static final String CACM_DOMAIN = "cacm.acm.org";
+	
 	private static final List<Pair<Pattern,Pattern>> patterns = Arrays.asList(
 		new Pair<Pattern, Pattern>(
 			Pattern.compile(".*" + "[(portal)(dl)].acm.org"), 
@@ -79,7 +81,7 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 			),
 			
 		new Pair<Pattern, Pattern>(
-				Pattern.compile(".*" + "cacm.acm.org"),
+				Pattern.compile(".*" + CACM_DOMAIN),
 				Pattern.compile("/magazines/*")
 				),
 				
@@ -116,12 +118,12 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 				/*
 				 * for cacm journals: extract the id from the page content
 				 */
-				if (sc.getUrl().toString().contains("cacm.acm.org/magazines"))
-				{
+				// TODO: maybe a separate cacm scraper?
+				if (sc.getUrl().toString().contains(CACM_DOMAIN)) {
 					matcher = CACM_ID.matcher(sc.getPageContent());
-				}
-				else
+				} else {
 					matcher = DOI_URL_ID_PATTERN.matcher(sc.getUrl().toExternalForm());
+				}
 			} else {
 				matcher = URL_PARAM_ID_PATTERN.matcher(query);
 			}

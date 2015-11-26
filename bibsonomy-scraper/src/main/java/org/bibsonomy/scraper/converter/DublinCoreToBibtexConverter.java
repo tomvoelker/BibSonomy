@@ -41,13 +41,11 @@ import org.bibsonomy.util.id.ISBNUtils;
 
 /**
  * This converter tries to find and extract DublinCore metadata out of a
- * html forrmatted string.
+ * html formatted string.
  * 
  * @author Lukas
  */
 public class DublinCoreToBibtexConverter {
-
-
 	private static final String PREFERRED_LANGUAGE = "en";
 
 	private static final String BIBTEX_END_LINE = ",\n";
@@ -115,12 +113,11 @@ public class DublinCoreToBibtexConverter {
 			final String key = dataEntry.getKey();
 			if (key.equals("school") && !isPHDThesis || key.equals("institution") && isPHDThesis) {
 				continue;
-			} else {
-				// add bibtex key values pair to the bibtex string
-				bibtex.append(getBibTeXEntry(key, dataEntry.getValue()));
-				if (dataEntryInterator.hasNext()) {
-					bibtex.append(BIBTEX_END_LINE);
-				}
+			}
+			// add bibtex key values pair to the bibtex string
+			bibtex.append(getBibTeXEntry(key, dataEntry.getValue()));
+			if (dataEntryInterator.hasNext()) {
+				bibtex.append(BIBTEX_END_LINE);
 			}
 		}
 

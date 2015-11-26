@@ -58,14 +58,13 @@ public class GoogleScholarScraper extends GenericBibTeXURLScraper {
 	
 	@Override
 	protected String getDownloadURL(URL url) throws ScrapingException {
-		Matcher m = ID.matcher(url.toString());
-		String id = null;
+		final Matcher m = ID.matcher(url.toString());
 		if (m.find()) {
-			id = m.group(1);			
+			final String id = m.group(1);
+			return url.toString().replace("view_citation", "export_citations") + "&s=" + id + "&cit_fmt=0";
 		}
-		else
-			return url.toString();
-		return url.toString().replace("view_citation", "export_citations") + "&s=" + id + "&cit_fmt=0";
+		
+		return url.toString();
 	}
 
 	@Override

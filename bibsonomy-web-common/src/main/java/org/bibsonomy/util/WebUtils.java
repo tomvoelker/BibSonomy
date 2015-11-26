@@ -557,7 +557,7 @@ public class WebUtils {
 	 * @return the proper configured http connection for the url
 	 * @throws IOException
 	 */
-	protected static HttpURLConnection createConnnection(URL url) throws IOException {
+	public static HttpURLConnection createConnnection(URL url) throws IOException {
 		final HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
 		
 		// set the timeouts

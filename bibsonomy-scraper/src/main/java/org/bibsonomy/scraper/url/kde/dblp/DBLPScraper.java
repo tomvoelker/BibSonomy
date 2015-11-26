@@ -54,7 +54,7 @@ public class DBLPScraper extends GenericBibTeXURLScraper {
 	private static final String DBLP_HOST_NAME1  = "http://dblp.uni-trier.de";
 	private static final String SITE_URL  = DBLP_HOST_NAME1+"/";
 	private static final String info = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME)+".";
-	private static String ALTERNATIVES = "/rec/(bibtex|xml|rdf|ris|html|bib1|bib2)/(.+)(\\.xml|\\.rdf|\\.ris|\\.bib)?";
+	private static final Pattern ALTERNATIVES = Pattern.compile("/rec/(bibtex|xml|rdf|ris|html|bib1|bib2)/(.+)(\\.xml|\\.rdf|\\.ris|\\.bib)?");
 	private static final String DBLP_HOST1= "dblp.uni-trier.de";
 	private static final String DBLP_HOST2  = "search.mpi-inf.mpg.de";
 	private static final String DBLP_HOST3 = "dblp.dagstuhl.de";
@@ -62,10 +62,10 @@ public class DBLPScraper extends GenericBibTeXURLScraper {
 	private static final String DBLP_PATH2  = "/dblp/";
 
 	private static final List<Pair<Pattern,Pattern>> patterns = Arrays.asList(
-		new Pair<Pattern, Pattern>(Pattern.compile(".*" + DBLP_HOST1) , Pattern.compile(ALTERNATIVES)),
+		new Pair<Pattern, Pattern>(Pattern.compile(".*" + DBLP_HOST1) , ALTERNATIVES),
 		new Pair<Pattern, Pattern>(Pattern.compile(".*" + DBLP_HOST2), Pattern.compile(DBLP_PATH2 + ".*")),
-		new Pair<Pattern, Pattern>(Pattern.compile(".*" + DBLP_HOST3) , Pattern.compile(ALTERNATIVES)),
-		new Pair<Pattern, Pattern>(Pattern.compile(".*" + DBLP_HOST4) , Pattern.compile(ALTERNATIVES))
+		new Pair<Pattern, Pattern>(Pattern.compile(".*" + DBLP_HOST3) , ALTERNATIVES),
+		new Pair<Pattern, Pattern>(Pattern.compile(".*" + DBLP_HOST4) , ALTERNATIVES)
 	);
 	
 	@Override
@@ -98,6 +98,10 @@ public class DBLPScraper extends GenericBibTeXURLScraper {
 	 */
 	@Override
 	protected String getDownloadURL(URL url) throws ScrapingException {
+		/*
+		 * FIXME: can't we extract the id of the publication from the url
+		 * and then build the download url?
+		 */
 		String newURL = url.toString();
 		String extesnion = getExtension(newURL);
 		String path = getPath(newURL);
@@ -113,6 +117,7 @@ public class DBLPScraper extends GenericBibTeXURLScraper {
 		}
 	}
 	
+	// FIXME: what about bib1, bib2?
 	private String getPath(String url) {
 		if (url.contains("/html")) {
 			return "html";
@@ -122,6 +127,7 @@ public class DBLPScraper extends GenericBibTeXURLScraper {
 		else
 			return null;
 	}
+	
 	
 	private String getExtension(String url) {
 		if (url.contains(".xml")) {

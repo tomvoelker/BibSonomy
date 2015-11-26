@@ -33,8 +33,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
@@ -44,8 +42,7 @@ import org.bibsonomy.util.WebUtils;
  * @author hagen
  */
 public class BiologistsScraper extends GenericBibTeXURLScraper {
-
-	private static final Log log = LogFactory.getLog(BiologistsScraper.class);
+	
 	private static final String SITE_NAME = "Development";
 	private static final String SITE_URL = "http://dev.biologists.org";
 	private static final String INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME);
@@ -59,17 +56,14 @@ public class BiologistsScraper extends GenericBibTeXURLScraper {
 	}
 
 	@Override
-	protected String getDownloadURL(URL url) throws ScrapingException {
-		String bibTexId = "";
-		try {
-			Matcher m = DOWNLOAD_LINK_PATTERN.matcher(WebUtils.getContentAsString(url));
-			if (m.find()) {
-				bibTexId = m.group(1);
-			}
-		} catch (IOException e) {
-			log.error("error while getting id for " + url, e);
+	protected String getDownloadURL(URL url) throws ScrapingException, IOException {
+		final Matcher m = DOWNLOAD_LINK_PATTERN.matcher(WebUtils.getContentAsString(url));
+		if (m.find()) {
+			final String bibTexId = m.group(1);
+			return "http://" + url.getHost() + bibTexId;
 		}
-		return "http://" + url.getHost() + bibTexId;
+		
+		return null;
 	}
 	
 	@Override
