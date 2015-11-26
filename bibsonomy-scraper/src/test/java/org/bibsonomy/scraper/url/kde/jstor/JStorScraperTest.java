@@ -61,4 +61,12 @@ public class JStorScraperTest {
 	public void urlTest3Run(){
 		UnitTestRunner.runSingleTest("url_222");
 	}
+	
+	/**
+	 * starts URL test with id url_313
+	 */
+	@Test
+	public void urlTest4Run(){
+		UnitTestRunner.runSingleTest("url_313");
+	}
 }

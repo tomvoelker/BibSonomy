@@ -45,4 +45,12 @@ public class GoogleScholarScraperTest {
 	public void urlTestRun(){
 		UnitTestRunner.runSingleTest("url_138");
 	}
+	
+	/**
+	 * starts URL test with id url_138
+	 */
+	@Test
+	public void urlTestRun1(){
+		UnitTestRunner.runSingleTest("url_331");
+	}
 }

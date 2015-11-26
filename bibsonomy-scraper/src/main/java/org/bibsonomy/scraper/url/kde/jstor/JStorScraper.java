@@ -57,6 +57,7 @@ public class JStorScraper extends AbstractUrlScraper {
 	private static final String JSTOR_EXPORT_PATH = "/action/exportSingleCitation";
 	private static final String JSTOR_STABLE_PATH = "/stable/";
 	private static final String JSTOR_DISCOVER_PATH = "/discover/";
+	private static final String JSTOR_DOI_ABS_PATH = "/doi/abs/";
 	private static final String EXPORT_PAGE_URL = "https://www.jstor.org/action/exportSingleCitation?singleCitation=true&doi=";
 	
 	private static final Pattern PAGE_CONTENT_DOI_PATTERN = Pattern.compile("(?m)<div id=\"doi\" class=\"hide\">([^>]+?)<");
@@ -71,7 +72,8 @@ public class JStorScraper extends AbstractUrlScraper {
 
 	private static final Pattern SUBMIT_ACTION_PATTERN = Pattern.compile("href=\"javascript:submitActionInNewWindow[^']++'([^']++)");
 
-	private static final Pattern doi = Pattern.compile("<ul id=\"citation-tools-drop\" data-doi=\"(.*?)\"");
+	private static final Pattern DOI = Pattern.compile("<div id=\"page1\" data-doi=\"(.*?)\"");
+	private static final Pattern DOIFROMABS = Pattern.compile("/abs/(.+?)$");
 	
 	static {
 		final Pattern hostPattern = Pattern.compile(".*" + JSTOR_HOST);
@@ -79,6 +81,7 @@ public class JStorScraper extends AbstractUrlScraper {
 		patterns.add(new Pair<Pattern, Pattern>(hostPattern, Pattern.compile(JSTOR_EXPORT_PATH + ".*")));
 		patterns.add(new Pair<Pattern, Pattern>(hostPattern, Pattern.compile(JSTOR_STABLE_PATH + ".*")));
 		patterns.add(new Pair<Pattern, Pattern>(hostPattern, Pattern.compile(JSTOR_DISCOVER_PATH + ".*")));
+		patterns.add(new Pair<Pattern, Pattern>(hostPattern, Pattern.compile(JSTOR_DOI_ABS_PATH + ".*")));
 	}
 	
 	@Override
@@ -100,9 +103,13 @@ public class JStorScraper extends AbstractUrlScraper {
 			String downloadPage, submitAction;
 			
 			String url = sc.getUrl().toExternalForm();
-			if(!url.contains(EXPORT_PAGE_URL))
-				url = EXPORT_PAGE_URL + exportDOI(url);
 			
+			if (url.contains(JSTOR_DOI_ABS_PATH)) {
+				url = EXPORT_PAGE_URL + exportDOIFromUrl(url);
+			}
+			if(!url.contains(EXPORT_PAGE_URL)) {
+				url = EXPORT_PAGE_URL + exportDOIFromSourceCode(url);
+			}
 			//get the page content or at least get the cookies
 			GetMethod getMethod = new GetMethod(url);
 			final String page = WebUtils.getContentAsString(client, getMethod);
@@ -138,7 +145,8 @@ public class JStorScraper extends AbstractUrlScraper {
 						if (!m.find()) {
 							throw new ScrapingException("Cannot continue. JStor Scraper must get updated");
 						}
-						exportPageLink = m.group(1).replace("&amp;", "&");				}
+						exportPageLink = m.group(1).replace("&amp;", "&");
+					}
 				}
 				
 				//is the export page link present?
@@ -201,16 +209,22 @@ public class JStorScraper extends AbstractUrlScraper {
 		if (numberOfCit < 1) {
 			throw new ScrapingException("received " + numberOfCit + " citations");
 		}
-		
 		sc.setBibtexResult(bibtexResult);
 		return true;
 	}
 	
-	private static String exportDOI(String url) throws ScrapingException {
+	private static String exportDOIFromUrl(String url) {
+		final Matcher m = DOIFROMABS.matcher(url);
+		if(m.find()) {
+			return m.group(1);
+		}
+		return null;
+	}
+	
+	private static String exportDOIFromSourceCode(String url) throws ScrapingException {
 		try {
-			final Matcher m = doi.matcher(WebUtils.getContentAsString(url));
-			
-			if(m.find()){
+			final Matcher m = DOI.matcher(WebUtils.getContentAsString(url));
+			if(m.find()) {
 				return m.group(1);
 			}
 			} catch(IOException e) {
