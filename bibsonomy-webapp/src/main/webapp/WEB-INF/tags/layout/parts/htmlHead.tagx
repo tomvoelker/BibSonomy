@@ -76,7 +76,7 @@
 		 	| include it in the "aggregate" section of the yuicompressor-maven-plugin in the pom.xml.
 		 	+-->
 		 
-		<script type="text/javascript" src="${resdir}/javascript/merged/bs/global.js"><!-- keep me --></script>
+		<script type="text/javascript" src="${resdir}/javascript/merged/global.js"><!-- keep me --></script>
 		
 		<c:set var="requestedUserString" value='"${fn:escapeXml(requestedUser)}"' />
 		<script type="text/javascript">

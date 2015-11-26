@@ -112,9 +112,6 @@ public class Record {
 	// the secondary title for the cited item (book title for book chapters,
 	// journal title for articles, etc.).
 	private String container_title;
-
-	/** documents of this bibsonomy post. not official part of csl */
-	private List<DocumentCslWrapper> documents = new ArrayList<DocumentCslWrapper>();
 	
 	// doi identifier
 	private String DOI;
@@ -220,9 +217,11 @@ public class Record {
 
 	// Type
 	private String type;
-
 	
-	//MISC FIELDS
+	/** documents of a post. not official part of csl */
+	private List<DocumentCslWrapper> documents = new ArrayList<DocumentCslWrapper>();
+	
+	/** misc fields of a publication, not official part of csl */
 	private Map<String, String> misc = new HashMap<String, String>();
 
 
@@ -995,20 +994,18 @@ public class Record {
 	public void setType(String type) {
 		this.type = type;
 	}
-	
+
+	/**
+	 * @return the misc
+	 */
 	public Map<String, String> getMisc() {
-		return misc;
+		return this.misc;
 	}
 
+	/**
+	 * @param misc the misc to set
+	 */
 	public void setMisc(Map<String, String> misc) {
 		this.misc = misc;
-	}
-	
-	public void addMiscField(String key, String value) {
-		this.misc.put(key, value);
-	}
-	
-	public String getMiscField(String key) {
-		return this.misc.get(key);
 	}
 }
