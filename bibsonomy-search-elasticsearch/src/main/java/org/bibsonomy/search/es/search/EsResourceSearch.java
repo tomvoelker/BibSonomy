@@ -415,7 +415,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		searchRequestBuilder.setTypes(ResourceFactory.getResourceName(this.resourceType));
 		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 		searchRequestBuilder.setQuery(queryBuilder) //
-		.setMinScore((float)minPlainEsScore) //
+		.setMinScore((float) minPlainEsScore) //
 		.setFrom(offset).setSize(MAX_OFFSET / 10);
 		return searchRequestBuilder;
 	}
