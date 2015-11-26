@@ -49,14 +49,14 @@ public class ElasticsearchPublicationSearchTest extends AbstractEsIndexTest {
 	 */
 	@Test
 	public void testSomething() {
-		List<ResourcePersonRelation> res;
 		PersonSuggestionQueryBuilder options = new PersonSuggestionQueryBuilder("Schorsche") {
 			@Override
 			public List<ResourcePersonRelation> doIt() {
 				return null;
 			}
 		}.withEntityPersons(true).withRelationType(PersonResourceRelationType.values());
-		res = PersonDatabaseManager.getInstance().getPersonSuggestion(options);
+		
+		final List<ResourcePersonRelation> res = PersonDatabaseManager.getInstance().getPersonSuggestion(options);
 		Assert.assertTrue(res.size() > 0);
 		Assert.assertEquals(res.get(0).getRelationType(), PersonResourceRelationType.AUTHOR);
 		Assert.assertEquals(res.get(0).getPersonIndex(), 0);

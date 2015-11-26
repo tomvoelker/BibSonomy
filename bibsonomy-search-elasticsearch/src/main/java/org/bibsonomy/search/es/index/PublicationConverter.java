@@ -241,7 +241,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	 * @see org.bibsonomy.search.es.index.ResourceConverter#convertPostInternal(java.util.Map, org.bibsonomy.model.Post)
 	 */
 	@Override
-	protected void convertPostInternal(Post<BibTex> post, Map<String, Object> jsonDocument) {
+	protected void convertPostInternal(final Post<BibTex> post, final Map<String, Object> jsonDocument) {
 		jsonDocument.put(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, getNormalizedEntryType(post));
 		
 		final List<ResourcePersonRelation> rels = post.getResourcePersonRelations();
@@ -252,7 +252,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	 * @param jsonDocument
 	 * @param rels
 	 */
-	public void updateDocumentWithPersonRelation(Map<String, Object> jsonDocument, final List<ResourcePersonRelation> rels) {
+	public void updateDocumentWithPersonRelation(final Map<String, Object> jsonDocument, final List<ResourcePersonRelation> rels) {
 		jsonDocument.put(ESConstants.AUTHOR_ENTITY_NAMES_FIELD_NAME, serializeMainNames(rels, PersonResourceRelationType.AUTHOR));
 		jsonDocument.put(ESConstants.AUTHOR_ENTITY_IDS_FIELD_NAME, serializePersonIds(rels, PersonResourceRelationType.AUTHOR));
 		jsonDocument.put(ESConstants.PERSON_ENTITY_NAMES_FIELD_NAME, serializeMainNames(rels, null));

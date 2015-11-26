@@ -56,15 +56,19 @@ public abstract class AbstractEsIndexTest {
 	/**
 	 * inits:
 	 * 	(1) test database
-	 * 	(2) start embedded elastic search
+	 * 	(2) start embedded elasticsearch
 	 * 	(3) create indices from test database
 	 * @throws IndexAlreadyGeneratingException
+	 * @throws InterruptedException 
 	 */
 	@BeforeClass
-	public static void beforeClass() throws IndexAlreadyGeneratingException {
+	public static void beforeClass() throws IndexAlreadyGeneratingException, InterruptedException {
 		initTestDatabase();
 		startEmbeddedElasticsearchServer();
 		createIndices();
+		
+		// wait a little bit to get all systems ready TODO: remove?
+		Thread.sleep(1000);
 	}
 	
 	private static void createIndices() throws IndexAlreadyGeneratingException {
