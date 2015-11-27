@@ -80,7 +80,7 @@ public class DBLogicUserInterfaceFactory extends AbstractDBLogicInterfaceFactory
 		try {
 			final User loggedInUser = getLoggedInUserAccess(loginName, password, session);
 			if (present(loggedInUser.getName())) {
-				UserUtils.setGroupsByGroupIDs(loggedInUser, this.groupDb.getGroupIdsForUser(loggedInUser.getName(), session));
+				loggedInUser.setGroups(this.groupDb.getGroupsForUser(loggedInUser.getName(), true, session));
 			}
 			return loggedInUser;
 		} finally {
