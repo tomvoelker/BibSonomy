@@ -98,11 +98,11 @@ public class DisambiguationPageController extends SingleResourceListController i
 		final BibTex res = command.getPost().getResource();
 		final List<PersonName> personsTmp = res.getPersonNamesByRole(command.getRequestedRole());
 		final List<PersonName> persons;
-		// MacGyver-fix, in case there are multiple similar simhash1 caused by Author == Editor  
+		// MacGyver-fix, in case there are multiple similar simhash1 caused by author == editor  
 		if (personsTmp == null ){ 
-			final PersonResourceRelationType requestedRole = PersonResourceRelationType.valueOf("EDITOR");
+			final PersonResourceRelationType requestedRole = PersonResourceRelationType.EDITOR;
 			persons = res.getPersonNamesByRole(requestedRole);
-		}else{
+		} else {
 			persons = personsTmp;
 		}
 		
