@@ -32,7 +32,7 @@
 	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
-		<version>3.4.0-SNAPSHOT</version>
+		<version>3.4.0</version>
 	</parent>
 	<licenses>
 		<license>
