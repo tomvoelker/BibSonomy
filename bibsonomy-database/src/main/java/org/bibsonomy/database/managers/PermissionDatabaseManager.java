@@ -458,6 +458,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public boolean hasGroupRoleOrHigher(final User loginUser, final String groupName, final GroupRole minimumRole) {
 		for (final Group group : loginUser.getGroups()) {
+			//if (group.getName().equals(groupName)) {
 			if (group.getName().equals(groupName)) {
 				final GroupRole actualRole = GroupUtils.getGroupMembershipForUser(group, loginUser.getName(), true).getGroupRole();
 				if (present(actualRole)) {
