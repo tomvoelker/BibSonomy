@@ -56,9 +56,10 @@ public class LogicInterfaceHelperTest extends AbstractDatabaseTest {
 	@Test
 	public void buildParam() {
 		for (final Class<? extends GenericParam> paramClass : new Class[] { BookmarkParam.class, BibTexParam.class, TagParam.class, TagRelationParam.class, UserParam.class, GroupParam.class }) {
-			GenericParam param = LogicInterfaceHelper.buildParam(paramClass, null, "", null, "hash", null, 0, 10, null, null, "search-string", null, new User());
+			final String searchString = "search-string";
+			GenericParam param = LogicInterfaceHelper.buildParam(paramClass, null, "", null, "hash", null, 0, 10, null, null, searchString, null, new User());
 			assertEquals(paramClass, param.getClass());
-			assertEquals(" +search-string", param.getSearch());
+			assertEquals(searchString, param.getSearch());
 			assertEquals("hash", param.getHash());
 
 			param = LogicInterfaceHelper.buildParam(paramClass, null, "", null, "", null, 12, 10, null, null, null, null, new User());

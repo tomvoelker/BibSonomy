@@ -43,7 +43,7 @@ public class GetBookmarksByResourceSearch extends GetResourcesByResourceSearch<B
 	protected boolean canHandle(final BookmarkParam param) {
 		if (super.canHandle(param)) {
 			return true;
-		}		
+		}
 		return (present(param.getSearch()) || present(param.getTitle())); 
 	}
 }
