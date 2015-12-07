@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -27,6 +27,7 @@
 package org.bibsonomy.database.params;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.common.params.beans.TagIndex;
@@ -43,7 +44,7 @@ public class ParamTest {
 	 */
 	public void genericTest(final GenericParam param) {
 		assertEquals(0, param.getTagIndex().size());
-		assertEquals(false, param.isCaseSensitiveTagNames());
+		assertFalse(param.isCaseSensitiveTagNames());
 
 		for (final int i : new int[] { 1, 2, 3 }) {
 			param.addTagName("tag" + i);
@@ -58,8 +59,9 @@ public class ParamTest {
 			assertEquals(i + 2, tIdx.getIndex2());
 		}
 
-		param.setSearch("test1 test2");
-		assertEquals(" +test1 +test2", param.getSearch());
+		final String rawSearch = "test1 test2";
+		param.setSearch(rawSearch);
+		assertEquals(rawSearch, param.getSearch());
 	}
 
 	/**

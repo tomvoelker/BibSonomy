@@ -1,0 +1,70 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+	xmlns:export="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+	<!--+
+		|
+		| The title and complete metadata of the publication, shown in a tab
+		| with additional tabs to retrieve the metadata in a different format.
+		|
+		| NOTE: to get this working, the JavaScript code in bibtexdetails.js to
+		| initialize the TABs is required! Hence, if you re-use this tag file,
+		| ensure that either the JavaScript code is included here (and removed
+		| from bibtexdetails.js) or ensure that bibtexdetails.js is loaded. 
+		| 
+		+-->
+	<!-- TODO: (Bootstrap) remove! -->
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+
+	<div id="citation" class="tabs">
+		<!-- tab header -->
+		<ul class="tab">
+			<li class="citationHint">
+				<a href=""><fmt:message key="bibtex.citation_format_in"/>:</a>
+			</li>
+			<li>
+				<a class="firstTab" href="#citation_plain"><fmt:message key="bibtex.citation_format.plain" /></a>
+			</li>
+			<c:forEach var="citationStyle" items="${fn:split('harvardhtml,chicago,apa_html,din1505',',')}">
+				<li><a data-formatUrl="/layout/${citationStyle}/bibtex/2${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}?formatEmbedded=true" href="#citation_${citationStyle}"><fmt:message key="bibtex.citation_format.${citationStyle}" /></a></li>
+			</c:forEach>
+			<li><a href="#citation_bibtex">BibTeX</a></li>
+			<li><a href="#citation_endnote">EndNote</a></li>
+			<li>
+				<a href="#citation_all"><fmt:message key="bibtex.all_exports" /></a>
+			</li>
+		</ul>
+		<div class="tab_content">
+			<!-- tab content -->
+			<div id="citation_plain">
+				<!--+
+					| title of the publication 
+					+-->
+				<h3 style="margin-top: 0;">
+					<a href="${relativeUrlGenerator.getCommunityPublicationUrlByInterHash(post.resource.interHash)}"><c:out value="${mtl:cleanBibtex(post.resource.title)}" /></a>
+				</h3>
+				<bib:desc publication="${post.resource}"/>
+			</div>
+			<c:forEach var="citationStyle" items="${fn:split('harvardhtml,chicago,apa_html,din1505',',')}">
+				<div>
+					<a id="citation_${citationStyle}"><!-- keep --></a>
+				</div>
+			</c:forEach>
+			<div id="citation_bibtex">
+				<textarea style="width:100%;font-size:80%;border:none;" rows="15"><export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="${true}" generatedBibtexKeys="${false}"/></textarea>
+			</div>
+			<div id="citation_endnote">
+				<textarea style="width:100%;font-size:80%;border:none;" rows="15"><export:endnote post="${post}" escapeXml="${true}" /></textarea>
+			</div>
+			<div id="citation_all">
+					<!--   -->
+			</div>
+		</div>
+	</div>
+
+</jsp:root>

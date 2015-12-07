@@ -1,0 +1,137 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:form="http://www.springframework.org/tags/bstags/form"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+	xmlns:export="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+	xmlns:pub2="urn:jsptagdir:/WEB-INF/tags/resources/publication"
+	xmlns:gpub="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication"
+	xmlns:ref="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication/references"
+	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion"
+	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:goldpub="urn:jsptagdir:/WEB-INF/tags/resources/publication"
+	xmlns:goldstandardpublication="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication"
+	xmlns:common="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
+	>
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+	<!-- TODO unused -->
+	<jsp:directive.attribute name="otherPosts" type="java.util.List" required="true"/>
+	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
+	<jsp:useBean id="mockReference" class="org.bibsonomy.model.BibTex" />
+	
+	
+	<fmt:message key="goldStandard.approved.title" var="approved"/>
+	<c:set var="goldstandard" value="${post.resource}" />
+	<!-- determine the publication type for schema.org markup -->
+	<c:set var="itemType" value="http://schema.org/ScholarlyArticle"/>
+	<c:if test="${not empty goldstandard.entrytype and ('book' eq goldstandard.entrytype)}">
+		<c:set var="itemType" value="http://schema.org/Book"/>
+	</c:if>
+	<div id="goldstandard">
+		<h1 class="content-header"><fmt:message key="community.page"/></h1>
+		<div class="title">
+			<div class="media">
+				<!-- 
+				<span class="pull-left">
+					<span style="font-size: 64px;" class="fa fa-user">&amp;nbsp;</span>
+				</span>
+				-->
+				<div class="media-body" id="titletext">
+					<div class="pull-right"><buttons:communityPostActions post="${post}" resourceType="bibtex"/></div>
+					<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(goldstandard.title)}" />
+					<c:if test="${post.approved}">
+						<a  title="${fn:escapeXml(approved)}">
+							<span class="fa fa-check-circle" style="margin-left:6px;"><!--  --></span>
+						</a>
+					</c:if>
+					</h1>
+					<p><bib:desc publication="${post.resource}"/></p>
+				</div>
+			</div>
+		</div>
+		<div style="border-top: 1px #cccccc solid;">
+			<!--  -->
+		</div> <!-- border -->
+		<!--+
+			| abstract
+			+-->
+		<c:if test="${not empty goldstandard['abstract']}"> 
+			<h4 class="pub-details"><span class="fa fa-align-justify"><!--  --></span><c:out value=" " /><fmt:message key="publications.abstract.headline"/></h4>
+			<div id="abstract" class="show-more">
+				<span class="contentContainer"><c:out value="${mtl:cleanBibtex(goldstandard['abstract'])}" /></span>
+			</div>
+		</c:if>
+		<c:choose>
+			<c:when test="${not((not empty goldstandard.url and !mtl:isLinkToDocument(goldstandard.url)) or (not empty goldstandard.miscFields['doi']) or not empty goldstandard.documents or mtl:isLinkToDocument(goldstandard.url))}">
+					<!-- If there are neither links nor documents -->
+					<!-- <fmt:message key="goldstandard.resource.info.noLinks"/> -->
+			</c:when>
+			<c:otherwise>
+				<h4 class="pub-details"><span class="fa fa-link"><!--  --></span><c:out value=" " />Links</h4>
+				<c:if test="${(not empty goldstandard.url and !mtl:isLinkToDocument(goldstandard.url)) or (not empty goldstandard.miscFields['doi'])}">
+					<div id="gold_resources_links">
+						<ul>
+							<c:if test="${not empty goldstandard.miscFields['doi']}">
+								<fmt:message key="bibtex.actions.doi" var="urlTitle"/>
+								<c:set var="doi" value="${mtl:extractDOI(goldstandard.miscFields['doi'])}"/>
+								<li><c:out value="${urlTitle}: " /><a href="http://dx.doi.org/${mtl:encodeURI(doi)}" title="${urlTitle}"><c:out value="${doi}" /></a></li>
+							</c:if>
+							<c:if test="${not empty goldstandard.url and !mtl:isLinkToDocument(goldstandard.url)}">
+								<li><span class="gold_info"><a href="${fn:escapeXml(goldstandard.url)}">${fn:escapeXml(goldstandard.url)}</a></span></li>
+							</c:if>
+						</ul>
+					</div>
+				</c:if>
+			
+				<c:if test="${not empty goldstandard.documents or mtl:isLinkToDocument(goldstandard.url)}">
+					<div id="gold_resources_pdf">
+						<ul>
+							<c:if test="${mtl:isLinkToDocument(goldstandard.url)}">
+								<li>
+									<fmt:message var="downloadPrivDocTitle" key="bibtex.actions.private_document.download"/>
+									<a href="${goldstandard.url}" title="${downloadPrivDocTitle}"> 
+						  				<img alt="${downloadPrivDocTitle}" src="${resdir}/image/document-txt-blue.png" style="float: left; margin-right: 10px;"/>
+						  				<c:out value="${goldstandard.url}" />											
+									</a>
+								</li>
+							</c:if>
+						</ul>
+					</div>
+				</c:if>
+			</c:otherwise>
+		</c:choose>
+					
+					
+		<common:relatedUsers userList="${command.relatedUserCommand.relatedUsers}"/>
+		
+		<h4 class="pub-details"><span class="fa fa-quote-right"><!--  --></span><c:out value=" "/><fmt:message key="publications.citations.headline" /></h4>
+		
+		<!-- citation box -->
+		<pub2:citation post="${post}" isCommunityPost="${true}" />
+		
+		<!--+
+			| discussion and rating
+			+-->
+		<h4 class="pub-details">
+			<span class="fa fa-comments"><!--  --></span><c:out value=" " />
+			<fmt:message key="publications.discussion.headline"/>
+		</h4>
+		
+		<!-- Aggregated RatingInfo -->
+		<review:reviewRatingsInfo resource="${post.resource}" />
+
+		<!-- Publication reference link -->
+		<discussion:linkBox resource="${post.resource}"/>
+		
+		<!-- discussion -->
+		<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName=""/>
+	</div>
+</jsp:root>

@@ -1,0 +1,52 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:jsp="http://java.sun.com/JSP/Page">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="showUserSaves" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="showTagsLabel" type="java.lang.Boolean" required="false"/>
+
+	<!-- META DATA (posting date, owner, groups, tags, number of other posts) -->
+	<!--+ 
+	 	| FIXME: user name, tags, etc. for community posts not given -
+	 	| therefore display of metadata disabled. We could/should show here
+	 	| meta information about the community post, e.g., last change date,
+	 	| revision number, etc.
+	 	+-->
+
+		<!-- DATE, OWNER, GROUPS, USERSAVES -->
+		<c:if test="${not empty post.user.name}">
+			<div class="ptime pull-left"><rc:metaDate post="${post}"/></div>
+			<div class="puser pull-left">&amp;nbsp;<rc:metaUsername post="${post}" /></div>
+ 			<div class="pgroup pull-left">&amp;nbsp;<rc:metaGroups post="${post}" loginUserName="${loginUserName}" /></div>
+			<c:if test="${showUserSaves}">
+				<rc:otherpeople post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
+			</c:if>
+			<br class="clearfix" />
+		</c:if>
+
+ 		<!-- TAGS -->
+		<div class="ptags"> 
+			<rc:metaTags post="${post}" showTagsLabel="${showTagsLabel}"/>
+			<!-- NOT STILL EDITING TAGS IN POST LISTS -->
+			<!-- 
+			<c:choose>
+				<c:when test="${not empty loginUserName and loginUserName eq post.user.name}">
+					<fmt:message key="post.actions.edit.tags.title" var="editTags"/>
+ 					<span class="editTags" href="" title="${editTags}"> </span>
+				</c:when>
+				<c:otherwise>
+					<fmt:message key="post.actions.edit.tags.inactive" var="editTags"/>
+ 					<span class="ieditTags" href="" title="${editTags}"> </span>
+				</c:otherwise>
+			</c:choose>
+			 -->
+		</div>
+
+</jsp:root>

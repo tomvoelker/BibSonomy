@@ -1,7 +1,7 @@
 /**
- * BibSonomy-Lucene - Fulltext search facility of BibSonomy
+ * BibSonomy - A blue social bookmark and publication sharing system.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -31,11 +31,11 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
-import org.bibsonomy.es.AbstractEsIndexTest;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.index.manager.LuceneGoldStandardManager;
 import org.bibsonomy.lucene.util.LuceneSpringContextWrapper;
 import org.bibsonomy.model.GoldStandardPublication;
+import org.bibsonomy.search.es.AbstractEsIndexTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

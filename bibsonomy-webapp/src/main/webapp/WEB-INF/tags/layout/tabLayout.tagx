@@ -1,0 +1,66 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.TabsCommandInterface" required="true"/>
+	<jsp:directive.attribute name="topcontent" fragment="true" required="false"/>
+	<jsp:directive.attribute name="tabcontent" fragment="true" required="true"/>
+	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="headerExt" fragment="true" required="false"/>
+	
+	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
+	<jsp:directive.attribute name="headerLogoClass" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="headerMessageKey" type="java.lang.String" required="true"/>
+	
+	<jsp:directive.attribute name="infobox" fragment="true" required="false"/>
+	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
+	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
+	
+	<layout:layout 
+		loginUser="${command.context.loginUser}" 
+		pageTitle="${pageTitle}" 
+		heading="${heading}" 
+		infobox="${infobox}" 
+		sidebar="${sidebar}" 
+		requPath="${requPath}" 
+		headerExt="${headerExt}" 
+		activeTab="${activeTab}" 
+		hideFooterContainer="${true}"
+		minimizedContentWidth="${minimizedContentWidth}"
+		breadcrumbs="${breadcrumbs}">
+		
+		<jsp:attribute name="content">
+			
+			<c:if test="${not empty pageTitle}">
+				<h1 class="content-header"><c:out value="${pageTitle}" /></h1>
+			</c:if>
+			
+			<!-- Top Content if available -->
+			<c:if test="${not empty topcontent}">
+				<jsp:invoke fragment="topcontent"/>
+			</c:if>	
+			
+			<!-- Tabs -->
+			<parts:tabheader tabView="${command}" tabURL="${command.tabURL}"/>
+			
+			<br />
+			
+			<div class="tab-content">
+				<c:if test="${not empty tabcontent}">
+					<jsp:invoke fragment="tabcontent"/>
+				</c:if>	
+			</div>
+
+		</jsp:attribute>
+	</layout:layout>
+	
+</jsp:root>

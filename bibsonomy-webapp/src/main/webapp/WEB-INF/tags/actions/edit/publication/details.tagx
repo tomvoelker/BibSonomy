@@ -1,0 +1,62 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:form="http://www.springframework.org/tags/form">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+	<jsp:directive.attribute name="person" type="org.bibsonomy.model.Person" required="false"/>
+	
+	<a name="detailedInformation"><!--  --></a>
+	<bsform:fieldset legendKey="post.resource.fields.detailed">
+		<jsp:attribute name="legendExt">
+	      <span class="small"><small>(<a id="collapse" data-show-all="true"><fmt:message key="post.resource.fields.detailed.show.all"/></a>)</small></span>
+	   	</jsp:attribute>
+        
+        <jsp:attribute name="content">
+        	
+        	<bsform:input labelColSpan="3" path="post.resource.booktitle"/>
+        	<bsform:input labelColSpan="3" path="post.resource.journal"/>
+        	<bsform:input labelColSpan="3" path="post.resource.volume" small="${true}"/>
+        	<bsform:input labelColSpan="3" path="post.resource.number" small="${true}"/>
+        	<bsform:input labelColSpan="3" path="post.resource.pages" small="${true}"/>
+        	<bsform:input labelColSpan="3" path="post.resource.month" small="${true}"/>
+        	<bsform:input labelColSpan="3" path="post.resource.day" small="${true}"/>
+        	<bsform:input labelColSpan="3" path="post.resource.publisher"/>
+        	<bsform:input labelColSpan="3" path="post.resource.address"/>
+        	<bsform:input labelColSpan="3" path="post.resource.edition" small="${true}"/>
+        	<bsform:input labelColSpan="3" path="post.resource.chapter" small="${true}"/>
+        	<bsform:input labelColSpan="3" path="post.resource.url"/>
+        	<bsform:input labelColSpan="3" path="post.resource.key" small="${true}"/>
+        	<bsform:input labelColSpan="3" path="post.resource.type"/>
+        	<bsform:input labelColSpan="3" path="post.resource.howpublished"/>
+        	<bsform:input labelColSpan="3" path="post.resource.institution"/>
+        	<bsform:input labelColSpan="3" path="post.resource.organization"/>
+			<c:if test="${(person == null) or ((post.resource.entrytype ne 'phdthesis') and (post.resource.entrytype ne 'masterthesis'))}">
+				<bsform:input labelColSpan="3" path="post.resource.school"/>
+			</c:if>
+			<bsform:input labelColSpan="3" path="post.resource.series"/>
+			<bsform:input labelColSpan="3" path="post.resource.crossref"/>	
+			<bsform:textarea labelColSpan="3" path="post.resource.misc"/>
+			<bsform:textarea labelColSpan="3" path="post.resource.abstract"/>
+
+        </jsp:attribute>
+     </bsform:fieldset>
+     
+     <a name="comments"><!--  --></a>
+     <bsform:fieldset legendKey="post.resource.fields.comments" >
+	     <jsp:attribute name="content">
+         
+            <bsform:textarea labelColSpan="3" path="post.description"/>
+			<bsform:textarea labelColSpan="3" path="post.resource.privnote"/>
+            <bsform:input labelColSpan="3" path="post.resource.annote"/>
+            <bsform:input labelColSpan="3" path="post.resource.note"/>
+
+    	</jsp:attribute>
+	</bsform:fieldset>
+</jsp:root>
