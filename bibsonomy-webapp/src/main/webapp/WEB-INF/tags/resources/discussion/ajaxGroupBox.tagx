@@ -5,7 +5,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts">
-	<script type="text/javascript" src="/resources/javascript/bs/AjaxGroupBox.js"><!-- keep me --></script>
+	<script type="text/javascript" src="${resdir}/javascript/AjaxGroupBox.js"><!-- keep me --></script>
 	
 	<jsp:useBean id="publicGroup" class="org.bibsonomy.model.Group">
 		<jsp:setProperty name="publicGroup" property="name" value="public"/>
