@@ -135,7 +135,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		}
 	}
 
-	private void handleScraper(final COMMAND command, final String url, String selection) {
+	protected void handleScraper(final COMMAND command, final String url, String selection) {
 		/*
 		 * We have a URL set which means we shall scrape!
 		 * 
