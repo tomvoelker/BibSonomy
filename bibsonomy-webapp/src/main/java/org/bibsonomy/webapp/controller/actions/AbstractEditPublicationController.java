@@ -72,7 +72,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 
 	private static final String SESSION_ATTRIBUTE_SCRAPER_METADATA = "scraperMetaData";
 
-	private Scraper scraper;
+	protected Scraper scraper;
 
 	@Override
 	protected View getPostView() {

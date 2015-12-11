@@ -60,6 +60,8 @@ import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.TagUtils;
+import org.bibsonomy.scraper.Scraper;
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UrlCompositeScraper;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
@@ -160,7 +162,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		final String selection = command.getSelection();
 		final boolean hasSelection = present(selection);
 		final boolean hasFile = present(command.getFile());
-		boolean hasURL = true;
+		boolean hasURL = false;
 		/*
 		 * check for valid ckey
 		 */
@@ -193,18 +195,32 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 * that
 			 */
 			log.debug("user has filled selection");
-			final String[] selectionInLines = selection.split("\n");
-			UrlCompositeScraper urlCompositeScraper = new UrlCompositeScraper();
+			
+			/*
+			 * check whether every line is a URL
+			 * AND can be interpreted by the scraper
+			 */
+			final String[] selectionInLines = selection.split("\n");			
 			for (String possibleURL : selectionInLines) {
 				try {
-					if (!urlCompositeScraper.supportsUrl(new URL(possibleURL))) {
-						// Nothing
+					ScrapingContext sc = new ScrapingContext(new URL(possibleURL));
+					if (super.scraper.supportsScrapingContext(sc)){
+						hasURL = true;
 					}
 				} catch (MalformedURLException e) {
+					/*
+					 * at least one line is no URL.
+					 * "hasURL" is "false"
+					 * no line will be interpreted as a URL
+					 */
 					hasURL = false;
 					break;
 				}
+				
 			}
+			/*
+			 * if not handle the field as a snippet
+			 */
 			if (!hasURL) {
 				snippet = this.publicationImporter.handleSelection(selection);
 			}
@@ -267,6 +283,12 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * FIXME: why aren't commas, etc. removed?
 		 */
 		List<Post<BibTex>> posts = null;
+		
+		/*
+		 * if every line is a URL we will now scrap the data to every URL independently and feed it back
+		 * 
+		 */
+		
 		String createdSnippet = "";
 		if (hasURL) {
 			posts = new LinkedList<Post<BibTex>>();
