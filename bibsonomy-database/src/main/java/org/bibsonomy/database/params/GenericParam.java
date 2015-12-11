@@ -190,9 +190,6 @@ public abstract class GenericParam {
 	/* search type */
 	private SearchType searchType;
 
-	/* not modified search parameter */
-	private String rawSearch;
-
 	/** This is the current user. */
 	private String userName;
 	private String description;
@@ -446,23 +443,13 @@ public abstract class GenericParam {
 	}
 
 	/**
-	 * @return the rawSearch
-	 */
-	public String getRawSearch() {
-		return this.rawSearch;
-	}
-
-	/**
 	 * sets the rawsearch to search and prepares the search param for the
 	 * database query
 	 * 
 	 * @param search the search to set
 	 */
 	public void setSearch(final String search) {
-		if (search != null) {
-			this.rawSearch = search;
-			this.search = search.replaceAll("([\\s]|^)([\\S&&[^-]])", " +$2");
-		}
+		this.search = search;
 	}
 
 	/**

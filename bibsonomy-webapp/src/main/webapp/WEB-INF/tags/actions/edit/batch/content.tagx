@@ -44,7 +44,7 @@
 
 	<jsp:directive.attribute name="shortPostDescription" fragment="true" required="true" description="A one line description of a post" />
 	
-	<script type="text/javascript" src="/resources/javascript/bs/batchEdit.js"><!-- keep me --></script>
+	<script type="text/javascript" src="${resdir}/javascript/batchEdit.js"><!-- keep me --></script>
 
 	<!--=======================-->
 	<!-- VARIABLEN DEKLARATION -->
