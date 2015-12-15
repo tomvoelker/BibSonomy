@@ -148,7 +148,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 			final List<String> editorsList = (List<String>) rawEditorField;
 			final String editorsString = org.bibsonomy.util.StringUtils.implodeStringCollection(editorsList, PersonNameUtils.PERSON_NAME_DELIMITER);
 			personNameSetter.setPersonNames(publication, PersonNameUtils.discoverPersonNamesIgnoreExceptions(editorsString));
-		} else {
+		} else if (rawEditorField != null) {
 			log.warn(fieldName + " field was '" + rawEditorField + "' of type '" + rawEditorField.getClass().getName() + "'");
 		}
 	}
