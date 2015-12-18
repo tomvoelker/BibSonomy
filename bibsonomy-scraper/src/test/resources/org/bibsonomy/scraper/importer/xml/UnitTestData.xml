@@ -2035,4 +2035,16 @@
 		<BibFile>GoogleScholarScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.googlescholar.GoogleScholarScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_332">
+		<TestDescription>Url test for RWTHAachen University</TestDescription>
+		<URL>http://publications.rwth-aachen.de/record/444986</URL>
+		<BibFile>RWTHAachenScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.RWTH.RWTHAachenScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_333">
+		<TestDescription>test for pages with coins</TestDescription>
+		<URL>http://katalogplus.ub.uni-bielefeld.de/cgi-bin/new_titel.cgi?katkey=2014704&amp;art=f&amp;kat1=freitext&amp;kat2=ti&amp;kat3=aup&amp;op1=AND&amp;op2=AND&amp;var1=clustering&amp;var2=&amp;var3=&amp;vr=1&amp;pagesize=10&amp;sprache=GER&amp;bestand=lok&amp;sess=4f5e41e8d8e96721f5500fd05eed192a</URL>
+		<BibFile>CoinsScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.generic.CoinsScraper</Scraper>
+	</URLTest>
 </test:Tests>
