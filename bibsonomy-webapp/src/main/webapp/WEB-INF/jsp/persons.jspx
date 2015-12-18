@@ -25,8 +25,8 @@
 		</jsp:attribute>
 
 		<jsp:attribute name="headerExt">
-			<script type="text/javascript" src="/resources/javascript/bs/animatescroll.js"><!-- --></script>
-			<script type="text/javascript" src="/resources/javascript/bs/animate-scroll-affix.js"><!-- --></script>
+			<script type="text/javascript" src="/resources/javascript/animatescroll.js"><!-- --></script>
+			<script type="text/javascript" src="/resources/javascript/animate-scroll-affix.js"><!-- --></script>
 
 			<script type='text/javascript' src='/resources/typeahead.js/js/typeahead.bundle.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/personAutocomplete.js'><!-- keep me --></script>
