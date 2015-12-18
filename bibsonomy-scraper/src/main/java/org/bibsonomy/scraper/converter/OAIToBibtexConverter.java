@@ -37,7 +37,6 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 /**
  * Converter for OAI to BibTeX
