@@ -38,6 +38,6 @@ public abstract class GenericRISURLScraper extends AbstractGenericFormatURLScrap
 	
 	@Override
 	protected final String convert(String downloadResult) {
-		return RIS2BIB.risToBibtex(downloadResult);
+		return RIS2BIB.toBibtex(downloadResult);
 	}
 }

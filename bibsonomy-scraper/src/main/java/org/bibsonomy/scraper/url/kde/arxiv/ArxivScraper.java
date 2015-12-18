@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.converter.OAIConverter;
+import org.bibsonomy.scraper.converter.OAIToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
@@ -91,7 +91,8 @@ public class ArxivScraper extends AbstractUrlScraper {
 					// download oai_dc reference
 					final String reference = WebUtils.getContentAsString(exportURL);
 					
-					String bibtex = OAIConverter.convert(reference);
+					OAIToBibtexConverter converter = new OAIToBibtexConverter();
+					String bibtex = converter.toBibtex(reference);
 					
 					
 					// add arxiv citation to note

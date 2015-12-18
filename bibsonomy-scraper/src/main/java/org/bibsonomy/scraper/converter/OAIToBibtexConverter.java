@@ -43,7 +43,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  * Converter for OAI to BibTeX
  * @author tst
  */
-public class OAIConverter {
+public class OAIToBibtexConverter implements BibtexConverter{
 
 	private static final Pattern PATTERN_TITLE = Pattern.compile("<dc:title>([^<]*)<");
 	private static final Pattern PATTERN_CREATOR = Pattern.compile("<dc:creator>([^<]*)<");
@@ -57,9 +57,9 @@ public class OAIConverter {
 	 * convert a oai2 refernce into bibtex
 	 * @param reference 
 	 * @return The resultign BibTeX string.
-	 * @throws ScrapingException
 	 */
-	public static String convert(String reference) throws ScrapingException{
+	@Override
+	public String toBibtex(String reference) {
 
 		/*
 		 * title

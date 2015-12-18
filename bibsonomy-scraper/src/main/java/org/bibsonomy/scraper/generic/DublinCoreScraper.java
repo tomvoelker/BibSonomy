@@ -96,7 +96,8 @@ public class DublinCoreScraper implements Scraper {
 		final String page = scrapingContext.getPageContent();
 		if (present(page)) {
 			// try to extract Dublin Core metadata 
-			 String result = DublinCoreToBibtexConverter.getBibTeX(page);
+			DublinCoreToBibtexConverter converter = new DublinCoreToBibtexConverter();
+			 String result = converter.toBibtex(page);
 			/*
 			 * We are not greedy, since many pages contain Dublin Core but often 
 			 * not enough: if we would return true for all of them, we would 

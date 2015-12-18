@@ -123,7 +123,7 @@ public class APHAScraper extends AbstractUrlScraper {
 				/*
 				 * if the host was from ajph.aphapublications.org, then we must convert the resultAsString to BibTex format
 				 */
-				final String bibResult = this.ris.risToBibtex(resultAsString);
+				final String bibResult = this.ris.toBibtex(resultAsString);
 				if (bibResult != null) {
 					sc.setBibtexResult(bibResult);
 					return true;

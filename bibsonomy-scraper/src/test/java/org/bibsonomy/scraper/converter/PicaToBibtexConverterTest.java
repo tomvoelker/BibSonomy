@@ -90,8 +90,8 @@ public class PicaToBibtexConverterTest {
 		final String xml = TestUtils.readEntryFromFile(PATH_TO_FILES + fileName + ".xml");
 		final String bib = TestUtils.readEntryFromFile(PATH_TO_FILES + fileName + ".bib");
 		
-		final PicaToBibtexConverter pica = new PicaToBibtexConverter(xml, "xml", url);
+		final PicaToBibtexConverter pica = new PicaToBibtexConverter("xml", url);
 		
-		assertEquals(bib.trim(), pica.getBibResult().trim());
+		assertEquals(bib.trim(), pica.toBibtex(xml).trim());
 	}
 }

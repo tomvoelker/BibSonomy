@@ -111,7 +111,7 @@ public class AkademiaiScraper extends AbstractUrlScraper {
 		final String ris_url = RIS_URL + id + "&mode=ris";
 		try {
 			final String content = WebUtils.getContentAsString(ris_url, WebUtils.getCookies(url));
-			final String bibtex = new RisToBibtexConverter().risToBibtex(content);
+			final String bibtex = new RisToBibtexConverter().toBibtex(content);
 
 			if (present(bibtex)) {
 				sc.setBibtexResult(bibtex);

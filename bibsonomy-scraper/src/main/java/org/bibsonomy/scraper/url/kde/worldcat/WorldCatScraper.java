@@ -149,7 +149,7 @@ public class WorldCatScraper extends AbstractUrlScraper {
 		} else {
 			ris = ris.replaceFirst("ER\\s{2}-\\s[\\n.]*\\z", "UR  - " + replacementURL + "\nER  - ");
 		}
-		String bibtex = converter.risToBibtex(ris);
+		String bibtex = converter.toBibtex(ris);
 		return BibTexUtils.addFieldIfNotContained(bibtex, "isbn", isbn);
 	}
 	
@@ -244,7 +244,7 @@ public class WorldCatScraper extends AbstractUrlScraper {
 		/*
 		 * convert RIS to BibTeX
 		 */
-		final String bibtex = converter.risToBibtex(ris);
+		final String bibtex = converter.toBibtex(ris);
 		
 		/*
 		 * add URL
