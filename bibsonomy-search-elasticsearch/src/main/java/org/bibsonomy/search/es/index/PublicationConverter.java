@@ -142,14 +142,14 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	 * @param source
 	 */
 	private static void setPersonNames(final String fieldName, final PersonNameSetter personNameSetter, BibTex publication, Map<String, Object> source) {
-		final Object rawEditorField = source.get(fieldName);
-		if (rawEditorField instanceof List) {
+		final Object rawPersonNamesFieldValue = source.get(fieldName);
+		if (rawPersonNamesFieldValue instanceof List) {
 			@SuppressWarnings("unchecked")
-			final List<String> editorsList = (List<String>) rawEditorField;
-			final String editorsString = org.bibsonomy.util.StringUtils.implodeStringCollection(editorsList, PersonNameUtils.PERSON_NAME_DELIMITER);
-			personNameSetter.setPersonNames(publication, PersonNameUtils.discoverPersonNamesIgnoreExceptions(editorsString));
-		} else if (rawEditorField != null) {
-			log.warn(fieldName + " field was '" + rawEditorField + "' of type '" + rawEditorField.getClass().getName() + "'");
+			final List<String> personNamesList = (List<String>) rawPersonNamesFieldValue;
+			final String personNamesString = org.bibsonomy.util.StringUtils.implodeStringCollection(personNamesList, PersonNameUtils.PERSON_NAME_DELIMITER);
+			personNameSetter.setPersonNames(publication, PersonNameUtils.discoverPersonNamesIgnoreExceptions(personNamesString));
+		} else if (rawPersonNamesFieldValue != null) {
+			log.warn(fieldName + " field was '" + rawPersonNamesFieldValue + "' of type '" + rawPersonNamesFieldValue.getClass().getName() + "'");
 		}
 	}
 
