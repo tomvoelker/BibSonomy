@@ -138,10 +138,11 @@
 			</script>
 			<noscript>
 				<p>
-					<c:url var="statImgUrl" value="http://${statisticsUrl}">
+					<!-- FIXME: support https -->
+					<c:url var="statImgUrl" value="http://${statisticsUrl}/piwik.php">
 						<c:param name="idsite" value="${siteid}" />
 					</c:url>
-					<img src="http://stats.bibsonomy.org/piwik.php?idsite=1" style="border:0" alt="" />
+					<img src="${statImgUrl}" style="border:0" alt="" />
 				</p>
 			</noscript>
 		</c:if>
