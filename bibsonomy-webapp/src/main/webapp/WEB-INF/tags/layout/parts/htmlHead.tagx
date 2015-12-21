@@ -118,13 +118,33 @@
 			| Piwik
 			|
 			+--> 
-		<!-- TODO: Discuss where to store the piwik id and address 
-			+ current: in theme files the whole piwik code is stored
-			+ should (probably): code here/some js + id in config file
-			+-->
-		<spring:theme code="javascriptcode.piwik" var="piwikJS" text=""/> 
-		<c:if test="${not empty piwikJS}">
-			<c:out escapeXml="false" value="${piwikJS}" />
+		<c:set var="statisticsUrl" value="${properties['project.statistics.service.url']}" />
+		<c:if test="${not empty statisticsUrl}">
+			<c:set var="siteid" value="${properties['project.statisitics.siteid']}" />
+			<script type="text/javascript">
+				<![CDATA[
+					var pkBaseURL = (("https:" == document.location.protocol) ? "https://${statisticsUrl}" : "http://${statisticsUrl}");
+					document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+				]]>
+			</script>
+			<script type="text/javascript">
+				<![CDATA[
+					try {
+						var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", ${siteid});
+						piwikTracker.trackPageView();
+						piwikTracker.enableLinkTracking();
+					} catch( err ) {}
+				]]>
+			</script>
+			<noscript>
+				<p>
+					<!-- FIXME: support https -->
+					<c:url var="statImgUrl" value="http://${statisticsUrl}/piwik.php">
+						<c:param name="idsite" value="${siteid}" />
+					</c:url>
+					<img src="${statImgUrl}" style="border:0" alt="" />
+				</p>
+			</noscript>
 		</c:if>
 		<!-- End Piwik Tracking Code --> 
 	
