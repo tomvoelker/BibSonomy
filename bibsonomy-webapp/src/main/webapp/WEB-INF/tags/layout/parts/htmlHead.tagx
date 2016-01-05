@@ -22,12 +22,6 @@
 	<!-- TODO: extract into separate JSP file? -->
 	<c:set var="resdir" scope="application" value="/resources" />
 	
-	<!--+
-		| setting theme variables
-		+-->
-	<!-- 	<spring:theme code="stylesheet.additional.print" var="additionalPrintCSS" text="" /> -->
-	<spring:theme code="javascript.additional" var="additionalJS" text="" />
-	
 	<!--+ 
 		| To have the locale available on all pages we set the scope to "request".
 		| see http://stackoverflow.com/questions/333729/how-do-i-access-locale-from-a-jsp 
@@ -109,6 +103,7 @@
 			<script type="text/javascript" src="${resdir}/javascript/admin/spammer.js"><!-- keep me --></script>
 		</c:if>
 		
+		<spring:theme code="javascript.additional" var="additionalJS" text="" />
 		<c:if test="${not empty additionalJS}">
 			<script type="text/javascript" src="${additionalJS}"><!-- keep me --></script>
 		</c:if>
@@ -159,6 +154,7 @@
 		<title>${properties['project.name']} <c:if test="${not empty pageTitle}"> :: <c:out value="${pageTitle}"/></c:if></title>
 		<jsp:invoke fragment="headerExt"/>
 		<!-- FIXME: readd print style -->
+<!-- 		<spring:theme code="stylesheet.additional.print" var="additionalPrintCSS" text="" /> -->
 <!-- 		<c:if test="${not empty additionalPrintCSS}"> -->
 <!-- 			<link rel="stylesheet" type="text/css" media="print" href="${additionalPrintCSS}" /> -->
 <!-- 		</c:if> -->
