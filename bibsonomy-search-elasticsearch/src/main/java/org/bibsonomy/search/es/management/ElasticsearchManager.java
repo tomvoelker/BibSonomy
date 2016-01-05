@@ -292,6 +292,7 @@ public class ElasticsearchManager<R extends Resource> {
 		
 		if (!this.updateLock.tryAcquire()) {
 			log.warn("Another update in progress. Skipping update.");
+			return;
 		}
 		
 		try {
@@ -419,8 +420,31 @@ public class ElasticsearchManager<R extends Resource> {
 			new Pair<>(inactiveIndexName, localInactiveAlias)
 		);
 		
+		log.debug("switching index (current state I=" + inactiveIndexName + ", A=" + activeIndexName);
 		// update the aliases (atomic, see elastic search docu)
 		this.client.updateAliases(aliasesToAdd, aliasesToRemove);
+	}
+	
+	/**
+	 * @param indexName
+	 */
+	public void deleteIndex(final String indexName) {
+		if (!this.updateLock.tryAcquire()) {
+			throw new IllegalStateException("You cannot delete indices while update is in progress.");
+		}
+		
+		try {
+			// check if index is the current active one
+			final String currentActiveIndexName = this.client.getIndexNameForAlias(this.getActiveLocalAlias());
+			final String inactiveIndex = this.client.getIndexNameForAlias(this.getInactiveLocalAlias());
+			if (currentActiveIndexName.equals(indexName) && present(inactiveIndex)) {
+				this.switchActiveAndInactiveIndex();
+			}
+			
+			this.client.deleteIndex(indexName);
+		} finally {
+			this.updateLock.release();
+		}
 	}
 	
 	/**
@@ -531,21 +555,14 @@ public class ElasticsearchManager<R extends Resource> {
 	 * 
 	 */
 	public CountRequestBuilder prepareCount() {
-		return this.client.prepareCount(this.getActiveIndexName());
+		return this.client.prepareCount(this.getActiveLocalAlias());
 	}
 	
 	/**
 	 * @return
 	 */
 	public SearchRequestBuilder prepareSearch() {
-		return prepareSearch(this.getActiveIndexName());
-	}
-
-	/**
-	 * @return
-	 */
-	private String getActiveIndexName() {
-		return ElasticsearchUtils.getLocalAliasForResource(this.tools.getResourceType(), systemURI, true);
+		return prepareSearch(this.getActiveLocalAlias());
 	}
 
 	/**

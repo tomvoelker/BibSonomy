@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.webapp.controller.admin;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -40,6 +42,7 @@ import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.exceptions.IndexAlreadyGeneratingException;
 import org.bibsonomy.search.model.SearchIndexInfo;
 import org.bibsonomy.webapp.command.admin.AdminFullTextSearchCommand;
+import org.bibsonomy.webapp.command.admin.AdminFullTextSearchCommand.AdminFullTextAction;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
@@ -56,8 +59,6 @@ import org.springframework.security.access.AccessDeniedException;
  */
 public class AdminFullTextSearchController implements MinimalisticController<AdminFullTextSearchCommand> {
 	private static final Log log = LogFactory.getLog(AdminFullTextSearchController.class);
-	
-	private static final String GENERATE_INDEX = "generateIndex";
 	
 	private Map<Class<? extends Resource>, ElasticsearchManager<? extends Resource>> managers;
 	
@@ -76,18 +77,27 @@ public class AdminFullTextSearchController implements MinimalisticController<Adm
 			throw new AccessDeniedException("please log in as admin");
 		}
 		
-		if (GENERATE_INDEX.equals(command.getAction())) {
-			final ElasticsearchManager<? extends Resource> mananger = this.managers.get(command.getResource());
-			
+		final AdminFullTextAction action = command.getAction();
+		if (present(action)) {
+			final Class<? extends Resource> resource = command.getResource();
+			final ElasticsearchManager<? extends Resource> mananger = this.managers.get(resource);
 			if (mananger == null) {
-				throw new IllegalArgumentException(""); // TODO: nice error handling
-			}
-			try {
-				mananger.generateIndex();
-			} catch (IndexAlreadyGeneratingException e) {
-				throw new IllegalStateException(e);
+				throw new IllegalArgumentException("cannot find manager for resource " + resource);
 			}
 			
+			switch (action) {
+			case GENERATE_INDEX:
+				try {
+					mananger.generateIndex();
+				} catch (final IndexAlreadyGeneratingException e) {
+					throw new IllegalStateException(e);
+				}
+				break;
+			case DELETE_INDEX:
+				final String indexId = command.getId();
+				mananger.deleteIndex(indexId);
+				break;
+			}
 			return new ExtendedRedirectView("/admin/fulltextsearch");
 		}
 		

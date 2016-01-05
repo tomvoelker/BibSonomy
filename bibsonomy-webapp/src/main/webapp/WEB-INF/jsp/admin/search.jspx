@@ -14,7 +14,7 @@
 	xmlns:spring="urn:http://www.springframework.org/tags"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:es="urn:jsptagdir:/WEB-INF/tags/admin/elasticsearch">
+	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
@@ -35,16 +35,9 @@
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
-
-		<jsp:attribute name="heading">
-			<!-- TODO: remove -->
-		</jsp:attribute>
 		
 		<jsp:attribute name="content">
 			<h2>Elasticsearch Indices</h2>
-			<c:if test="${not empty command.adminResponse}">
-				<div class="adminResponse"><c:out value="${command.adminResponse}"/></div>
-			</c:if>
 			
 			<c:forEach items="${command.searchIndexInfo}" var="searchIndexInfoEntry">
 				<c:set var="searchIndexInfos" value="${searchIndexInfoEntry.value}" />
@@ -62,7 +55,7 @@
 								<th>last tas id</th>
 								<th>last log date</th>
 								<th>last person id</th>
-								<th><!-- keep me --></th>
+								<th>actions</th>
 							</tr>
 							<c:forEach var="searchIndexInfo" items="${searchIndexInfos}">
 								<tr>
@@ -76,10 +69,18 @@
 											<td><c:out value="${searchIndexInfo.syncState.last_tas_id}" /></td>
 											<td><c:out value="${searchIndexInfo.syncState.last_log_date}" /></td>
 											<td><c:out value="${searchIndexInfo.syncState.lastPersonChangeId}" /></td>
+											<td>
+												<form class="popover-confirm">
+													<input type="hidden" name="resource" value="${resourceType}" />
+													<input type="hidden" name="action" value="delete_index" />
+													<input type="hidden" name="id" value="${searchIndexInfo.id}"/>
+													<button data-toggle="popover" data-placement="left" role="button" data-content="&lt;button class='btn btn-danger btn-xs confirm'>delete &lt;/button>" class="btn btn-danger btn-xs" title="Are you sure?"><fontawsome:icon icon="trash" /></button>
+												</form>
+											</td>
 										</c:when>
 										
 										<c:otherwise>
-											<td colspan="4">
+											<td colspan="6">
 												<bs:progress progress="${searchIndexInfo.indexGenerationProgress * 100}" showProgressLabel="${true}" />
 											</td>
 										</c:otherwise>
@@ -108,7 +109,7 @@
 				</c:choose>
 				<form method="post">
 					<input type="hidden" name="resource" value="${resourceType}" />
-					<input type="hidden" name="action" value="generateIndex" />
+					<input type="hidden" name="action" value="generate_index" />
 					<bsform:button size="defaultSize" style="defaultStyle" value="Generate new ${resourceType} index" type="submits"/>
 				</form>
 				<br />

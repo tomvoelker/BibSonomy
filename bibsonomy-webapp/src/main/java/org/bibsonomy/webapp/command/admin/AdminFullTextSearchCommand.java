@@ -42,60 +42,55 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * @author bsc
  */
 public class AdminFullTextSearchCommand extends BaseCommand {
+	
+	/**
+	 * all actions for a full text index
+	 * @author dzo
+	 */
+	public enum AdminFullTextAction {
+		/** generate index */
+		GENERATE_INDEX,
+		/** delete index */
+		DELETE_INDEX;
+	}
+	
 	/** specific action for admin page */
-	private String action;
+	private AdminFullTextAction action;
 	
 	/** the specific index id for the indexd to be updated **/
-	private int id;
+	private String id;
 	
 	/** the resource class to handle */
 	private Class<? extends Resource> resource;
-	
-	/** the string response for the admin */
-	private String adminResponse = "";
 	
 	private final Map<String, List<SearchIndexInfo>> searchIndexInfo = new HashMap<>();
 	
 	/**
 	 * @return the action
 	 */
-	public String getAction() {
+	public AdminFullTextAction getAction() {
 		return this.action;
 	}
 
 	/**
 	 * @return the id
 	 */
-	public int getId() {
+	public String getId() {
 		return this.id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
 	/**
 	 * @param action the action to set
 	 */
-	public void setAction(final String action) {
+	public void setAction(final AdminFullTextAction action) {
 		this.action = action;
-	}
-	
-	/**
-	 * @param adminResponse
-	 */
-	public void setAdminResponse(final String adminResponse) {
-		this.adminResponse = adminResponse;
-	}
-
-	/**
-	 * @return the admin response
-	 */
-	public String getAdminResponse() {
-		return adminResponse;
 	}
 	
 	/**
