@@ -77,7 +77,7 @@ public class PublicationMappingBuilder extends ResourceMappingBuilder<BibTex> {
 			.endObject()
 			.startObject(Fields.Publication.BIBTEXKEY)
 				.field(TYPE_FIELD, STRING_TYPE)
-				.field(INDEX_FIELD, NOT_INDEXED)
+				.field(INDEX_FIELD, NOT_ANALYZED)
 			.endObject()
 			.startObject(Fields.Publication.BOOKTITLE)
 				.field(TYPE_FIELD, STRING_TYPE)
