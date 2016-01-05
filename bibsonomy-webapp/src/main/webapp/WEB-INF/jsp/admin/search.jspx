@@ -57,6 +57,7 @@
 							<tr>
 								<th>Index Name</th>
 								<th>State</th>
+								<th>Version</th>
 								<th># Docs</th>
 								<th>last tas id</th>
 								<th>last log date</th>
@@ -70,6 +71,7 @@
 									
 									<c:choose>
 										<c:when test="${searchIndexInfo.state != 'GENERATING' }">
+											<td><c:out value="${searchIndexInfo.syncState.mappingVersion}" /></td>
 											<td><c:out value="${searchIndexInfo.statistics.numberOfDocuments}" /></td>
 											<td><c:out value="${searchIndexInfo.syncState.last_tas_id}" /></td>
 											<td><c:out value="${searchIndexInfo.syncState.last_log_date}" /></td>

@@ -57,6 +57,7 @@ public final class ElasticsearchUtils {
 	private static final String LAST_PERSON_CHANGE_ID_KEY = "last_person_change_id";
 	private static final String LAST_LOG_DATE_KEY = "last_log_date";
 	private static final String LAST_TAS_KEY = "last_tas_id";
+	private static final String MAPPING_VERSION = "mapping_version";
 	
 	/** Alias for the inactive index */
 	private static final String INACTIVE_INDEX_ALIAS = "inactiveIndex";
@@ -131,13 +132,14 @@ public final class ElasticsearchUtils {
 
 	/**
 	 * @param state
-	 * @return
+	 * @return the serialized index state
 	 */
 	public static Map<String, Object> serializeSearchIndexState(SearchIndexSyncState state) {
 		final Map<String, Object> values = new HashMap<>();
 		values.put(LAST_TAS_KEY, state.getLast_tas_id());
 		values.put(LAST_LOG_DATE_KEY, Long.valueOf(state.getLast_log_date().getTime()));
 		values.put(LAST_PERSON_CHANGE_ID_KEY, Long.valueOf(state.getLastPersonChangeId()));
+		values.put(MAPPING_VERSION, state.getMappingVersion());
 		return values;
 	}
 
@@ -150,6 +152,13 @@ public final class ElasticsearchUtils {
 		searchIndexState.setLast_tas_id((Integer) source.get(LAST_TAS_KEY));
 		final Long dateAsTime = (Long) source.get(LAST_LOG_DATE_KEY);
 		searchIndexState.setLast_log_date(new Date(dateAsTime.longValue()));
+		
+		// mapping version
+		String mappingVersion = (String) source.get(MAPPING_VERSION);
+		if (mappingVersion == null) {
+			mappingVersion = "unknown";
+		}
+		searchIndexState.setMappingVersion(mappingVersion);
 		
 		searchIndexState.setLastPersonChangeId(((Integer) source.get(LAST_PERSON_CHANGE_ID_KEY)).longValue());
 		return searchIndexState;
