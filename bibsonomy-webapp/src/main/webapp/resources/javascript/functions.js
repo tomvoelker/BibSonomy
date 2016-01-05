@@ -900,21 +900,6 @@ function addListOptions() {
 })(jQuery);
 
 /**
- * For mobile layout: add edit links to toolbar
- * 
- * @return
- */
-function appendToToolbar() {
-	$("#toolbar").append(
-			'<div id="post-toggle">' +
-			'<a id="post-method-isbn" class="active">' + getString("post_bibtex.doi_isbn.isbn") + '</a>' +
-			'<a id="post-method-manual">' + getString("post_bibtex.manual.title") + '</a>' +
-			'<div style="clear:both; height:0;">&nbsp;</div>' + 
-			'</div>'
-	);
-}
-
-/**
  * create one-string representation of a list of strings
  * 
  * @param data
