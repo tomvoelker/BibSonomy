@@ -46,17 +46,20 @@
 				<c:set var="searchIndexInfosSize" value="${fn:length(searchIndexInfos)}" />
 				<c:choose>
 					<c:when test="${searchIndexInfosSize > 0 }">
-						<table class="table">
-							<tr>
-								<th>Index Name</th>
-								<th>State</th>
-								<th>Version</th>
-								<th># Docs</th>
-								<th>last tas id</th>
-								<th>last log date</th>
-								<th>last person id</th>
-								<th>actions</th>
-							</tr>
+						<table class="table table-condensed">
+							<thead>
+								<tr>
+									<th>Index Name</th>
+									<th>State</th>
+									<th>Version</th>
+									<th># Docs</th>
+									<th>Last tas id</th>
+									<th>Last log date</th>
+									<th>Last p. id</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody>
 							<c:forEach var="searchIndexInfo" items="${searchIndexInfos}">
 								<tr>
 									<td><c:out value="${searchIndexInfo.id}" /></td>
@@ -70,12 +73,20 @@
 											<td><c:out value="${searchIndexInfo.syncState.last_log_date}" /></td>
 											<td><c:out value="${searchIndexInfo.syncState.lastPersonChangeId}" /></td>
 											<td>
-												<form class="popover-confirm">
-													<input type="hidden" name="resource" value="${resourceType}" />
-													<input type="hidden" name="action" value="delete_index" />
-													<input type="hidden" name="id" value="${searchIndexInfo.id}"/>
-													<button data-toggle="popover" data-placement="left" role="button" data-content="&lt;button class='btn btn-danger btn-xs confirm'>delete &lt;/button>" class="btn btn-danger btn-xs" title="Are you sure?"><fontawsome:icon icon="trash" /></button>
-												</form>
+												<div class="btn-group">
+													<form class="popover-confirm form-inline">
+														<input type="hidden" name="resource" value="${resourceType}" />
+														<input type="hidden" name="action" value="regenerate_index" />
+														<input type="hidden" name="id" value="${searchIndexInfo.id}"/>
+														<button data-toggle="popover" data-placement="bottom" role="button" data-content="&lt;button class='btn btn-info btn-xs confirm'>regenerate&lt;/button>" class="btn btn-default btn-xs"><fontawsome:icon icon="refresh" /></button>
+													</form>
+													<form class="popover-confirm form-inline">
+														<input type="hidden" name="resource" value="${resourceType}" />
+														<input type="hidden" name="action" value="delete_index" />
+														<input type="hidden" name="id" value="${searchIndexInfo.id}"/>
+														<button data-toggle="popover" data-placement="bottom" role="button" data-content="&lt;button class='btn btn-danger btn-xs confirm'>delete&lt;/button>" class="btn btn-danger btn-xs"><fontawsome:icon icon="trash" /></button>
+													</form>
+												</div>
 											</td>
 										</c:when>
 										
@@ -89,6 +100,7 @@
 									<th><!-- keep me --></th>
 								</tr>
 							</c:forEach>
+							</tbody>
 						</table>
 						<c:if test="${searchIndexInfosSize lt 2}">
 							<bs:alert style="warning">

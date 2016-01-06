@@ -48,6 +48,8 @@ public class AdminFullTextSearchCommand extends BaseCommand {
 	 * @author dzo
 	 */
 	public enum AdminFullTextAction {
+		/** regenerate an index = generate new and delete the specified index */
+		REGENERATE_INDEX,
 		/** generate index */
 		GENERATE_INDEX,
 		/** delete index */

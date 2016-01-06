@@ -29,6 +29,7 @@ package org.bibsonomy.search.es.management;
 import org.bibsonomy.model.Resource;
 
 /**
+ * TODO: useless? => remove
  * class representing a ElasticSearch index
  *
  * @author dzo

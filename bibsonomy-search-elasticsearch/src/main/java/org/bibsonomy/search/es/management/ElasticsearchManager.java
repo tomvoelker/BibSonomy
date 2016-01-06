@@ -78,11 +78,7 @@ public class ElasticsearchManager<R extends Resource> {
 	public static final int SQL_BLOCKSIZE = 5000;
 	private static final long QUERY_TIME_OFFSET_MS = 1000;
 	
-	/**
-	 * task for index generation
-	 * @author dzo
-	 */
-	private final class ElasticSearchIndexGenerationTask implements Callable<Void> {
+	private abstract class AbstractSearchIndexGenerationTask implements Callable<Void> {
 		private final ElasticsearchIndexGenerator<R> generator;
 		private final ElasticsearchIndex<R> newIndex;
 
@@ -90,20 +86,20 @@ public class ElasticsearchManager<R extends Resource> {
 		 * @param generator
 		 * @param newIndex
 		 */
-		private ElasticSearchIndexGenerationTask(ElasticsearchIndexGenerator<R> generator, ElasticsearchIndex<R> newIndex) {
+		private AbstractSearchIndexGenerationTask(ElasticsearchIndexGenerator<R> generator, ElasticsearchIndex<R> newIndex) {
 			this.generator = generator;
 			this.newIndex = newIndex;
 		}
-
+		
 		/* (non-Javadoc)
 		 * @see java.util.concurrent.Callable#call()
 		 */
 		@Override
-		public Void call() throws Exception {
+		public final Void call() throws Exception {
 			try {
 				ElasticsearchManager.this.currentGenerator = this.generator;
-				generator.generateIndex();
-				ElasticsearchManager.this.activateNewIndex(this.newIndex);
+				this.generator.generateIndex();
+				this.indexGenerated(this.newIndex);
 			} catch (final Exception e) {
 				log.error("error while generating index", e);
 			} finally {
@@ -113,10 +109,65 @@ public class ElasticsearchManager<R extends Resource> {
 			
 			return null;
 		}
+
+		/**
+		 * @param generatedIndex
+		 */
+		protected abstract void indexGenerated(ElasticsearchIndex<R> generatedIndex);
 	}
 	
+	/**
+	 * task for index regeneration
+	 * @author dzo
+	 */
+	private final class ElasticSearchIndexRegenerationTask extends AbstractSearchIndexGenerationTask {
+		private String toRegenerateIndexName;
+
+		/**
+		 * @param generator
+		 * @param newIndex
+		 * @param toRegenerateIndexName
+		 */
+		private ElasticSearchIndexRegenerationTask(ElasticsearchIndexGenerator<R> generator, ElasticsearchIndex<R> newIndex, final String toRegenerateIndexName) {
+			super(generator, newIndex);
+			this.toRegenerateIndexName = toRegenerateIndexName;
+		}
+		
+		/* (non-Javadoc)
+		 * @see org.bibsonomy.search.es.management.ElasticsearchManager.ElasticSearchIndexGenerationTask#indexGenerated(org.bibsonomy.search.es.management.ElasticsearchIndex)
+		 */
+		@Override
+		protected void indexGenerated(ElasticsearchIndex<R> generatedIndex) {
+			ElasticsearchManager.this.activateNewIndex(generatedIndex, this.toRegenerateIndexName);
+		}
+	}
+	
+	/**
+	 * task for index generation
+	 * @author dzo
+	 */
+	private class ElasticSearchIndexGenerationTask extends AbstractSearchIndexGenerationTask {
+		/**
+		 * @param generator
+		 * @param newIndex
+		 */
+		private ElasticSearchIndexGenerationTask(ElasticsearchIndexGenerator<R> generator, ElasticsearchIndex<R> newIndex) {
+			super(generator, newIndex);
+		}
+
+		/* (non-Javadoc)
+		 * @see org.bibsonomy.search.es.management.ElasticsearchManager.AbstractSearchIndexGenerationTask#indexGenerated(org.bibsonomy.search.es.management.ElasticsearchIndex)
+		 */
+		@Override
+		protected void indexGenerated(final ElasticsearchIndex<R> generatedIndex) {
+			ElasticsearchManager.this.activateNewIndex(generatedIndex, null);
+		}
+	}
+	
+	/** iff <code>true</code> the update of the index is disabled */
 	private boolean updateEnabled;
 	
+	/** the client to use for all interaction with elasticsearch */
 	protected final ESClient client;
 	
 	private final URI systemURI;
@@ -182,37 +233,73 @@ public class ElasticsearchManager<R extends Resource> {
 			}
 		}
 	}
-
+	
 	/**
-	 * @param newIndex
+	 * @param indexNameToReplace
+	 * @throws IndexAlreadyGeneratingException 
 	 */
-	protected void activateNewIndex(ElasticsearchIndex<R> newIndex) {
+	public void regenerateIndex(final String indexNameToReplace) throws IndexAlreadyGeneratingException {
+		if (!this.generatorLock.tryAcquire()) {
+			throw new IndexAlreadyGeneratingException();
+		}
+		
+		final String newIndexName = ElasticsearchUtils.getIndexNameWithTime(this.systemURI, this.tools.getResourceType());
+		final ElasticsearchIndex<R> newIndex = new ElasticsearchIndex<>(newIndexName);
+		
+		final ElasticsearchIndexGenerator<R> generator = new ElasticsearchIndexGenerator<>(newIndex, this.inputLogic, this.client, this.tools);
+		
+		final ElasticSearchIndexRegenerationTask task = new ElasticSearchIndexRegenerationTask(generator, newIndex, indexNameToReplace);
+		this.executorService.submit(task);
+	}
+	
+	/**
+	 * @param 	newIndex
+	 * @param 	indexToDelete which index should be deleted;
+	 * 			<code>null</code> iff no preference
+	 */
+	protected void activateNewIndex(ElasticsearchIndex<R> newIndex, String indexToDelete) {
 		try {
 			this.updateLock.acquire();
 			
-			final String localActiveAlias = getActiveLocalAlias();
-			final String localInactiveAlias = getInactiveLocalAlias();
+			/*
+			 * change alias:
+			 * 1. new index will be the new active index
+			 * 2. old active index will be the new inactive index
+			 * 3. if present the inactive or indexToDelete index will be deleted
+			 */
+			final String localActiveAlias = this.getActiveLocalAlias();
+			final String localInactiveAlias = this.getInactiveLocalAlias();
 			final String activeIndexName = this.client.getIndexNameForAlias(localActiveAlias);
 			final String inactiveIndexName = this.client.getIndexNameForAlias(localInactiveAlias);
+			// set the preferedIndexToDelete to the inactive one iff no index specified
+			if (!present(indexToDelete)) {
+				indexToDelete = inactiveIndexName;
+			}
 			
 			final Set<Pair<String, String>> aliasesToAdd = new HashSet<>();
 			aliasesToAdd.add(new Pair<>(newIndex.getIndexName(), localActiveAlias));
-			if (present(activeIndexName)) {
-				aliasesToAdd.add(new Pair<>(activeIndexName, localInactiveAlias));
-			}
 			
 			final Set<Pair<String, String>> aliasesToRemove = new HashSet<>();
+			// only set the alias if the index should not be deleted
+			final boolean peferedDeletedActiveIndex = present(activeIndexName) && activeIndexName.equals(indexToDelete);
 			if (present(activeIndexName)) {
+				// remove active alias from the current active index
 				aliasesToRemove.add(new Pair<>(activeIndexName, localActiveAlias));
+				// we use the index as inactive index if we do not want to delete it
+				if (!peferedDeletedActiveIndex) {
+					aliasesToAdd.add(new Pair<>(activeIndexName, localInactiveAlias));
+				}
 			}
-			if (present(inactiveIndexName)) {
+			
+			// only remove the alias if the other index should be deleted
+			if (present(inactiveIndexName) && !peferedDeletedActiveIndex) {
 				aliasesToRemove.add(new Pair<>(inactiveIndexName, localInactiveAlias));
 			}
 			
 			this.client.updateAliases(aliasesToAdd, aliasesToRemove);
 			
-			if (present(inactiveIndexName)) {
-				this.client.deleteIndex(inactiveIndexName);
+			if (present(indexToDelete)) {
+				this.client.deleteIndex(indexToDelete);
 			}
 		} catch (InterruptedException e) {
 			log.error("can't acquire lock to update aliases", e);

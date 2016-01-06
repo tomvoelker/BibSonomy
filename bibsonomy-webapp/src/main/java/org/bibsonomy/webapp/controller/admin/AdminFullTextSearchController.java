@@ -84,8 +84,15 @@ public class AdminFullTextSearchController implements MinimalisticController<Adm
 			if (mananger == null) {
 				throw new IllegalArgumentException("cannot find manager for resource " + resource);
 			}
-			
+			final String indexId = command.getId();
 			switch (action) {
+			case REGENERATE_INDEX:
+				try {
+					mananger.regenerateIndex(indexId);
+				} catch (final IndexAlreadyGeneratingException e) {
+					throw new IllegalStateException(e);
+				}
+				break;
 			case GENERATE_INDEX:
 				try {
 					mananger.generateIndex();
@@ -94,7 +101,6 @@ public class AdminFullTextSearchController implements MinimalisticController<Adm
 				}
 				break;
 			case DELETE_INDEX:
-				final String indexId = command.getId();
 				mananger.deleteIndex(indexId);
 				break;
 			}
