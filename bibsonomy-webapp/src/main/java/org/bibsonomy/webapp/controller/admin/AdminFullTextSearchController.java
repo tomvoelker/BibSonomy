@@ -38,8 +38,8 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.factories.ResourceFactory;
-import org.bibsonomy.search.es.management.ElasticsearchManager;
 import org.bibsonomy.search.exceptions.IndexAlreadyGeneratingException;
+import org.bibsonomy.search.management.SearchIndexManager;
 import org.bibsonomy.search.model.SearchIndexInfo;
 import org.bibsonomy.webapp.command.admin.AdminFullTextSearchCommand;
 import org.bibsonomy.webapp.command.admin.AdminFullTextSearchCommand.AdminFullTextAction;
@@ -60,7 +60,7 @@ import org.springframework.security.access.AccessDeniedException;
 public class AdminFullTextSearchController implements MinimalisticController<AdminFullTextSearchCommand> {
 	private static final Log log = LogFactory.getLog(AdminFullTextSearchController.class);
 	
-	private Map<Class<? extends Resource>, ElasticsearchManager<? extends Resource>> managers;
+	private Map<Class<? extends Resource>, SearchIndexManager<? extends Resource>> managers;
 	
 	@Override
 	public View workOn(final AdminFullTextSearchCommand command) {
@@ -80,7 +80,7 @@ public class AdminFullTextSearchController implements MinimalisticController<Adm
 		final AdminFullTextAction action = command.getAction();
 		if (present(action)) {
 			final Class<? extends Resource> resource = command.getResource();
-			final ElasticsearchManager<? extends Resource> mananger = this.managers.get(resource);
+			final SearchIndexManager<? extends Resource> mananger = this.managers.get(resource);
 			if (mananger == null) {
 				throw new IllegalArgumentException("cannot find manager for resource " + resource);
 			}
@@ -109,8 +109,8 @@ public class AdminFullTextSearchController implements MinimalisticController<Adm
 		
 		// get some infos about the search indices
 		final Map<String, List<SearchIndexInfo>> infoMap = command.getSearchIndexInfo();
-		for (final Entry<Class<? extends Resource>, ElasticsearchManager<? extends Resource>> managementEntry : this.managers.entrySet()) {
-			final ElasticsearchManager<? extends Resource> manager = managementEntry.getValue();
+		for (final Entry<Class<? extends Resource>, SearchIndexManager<? extends Resource>> managementEntry : this.managers.entrySet()) {
+			final SearchIndexManager<? extends Resource> manager = managementEntry.getValue();
 			
 			final List<SearchIndexInfo> information = manager.getIndexInformations();
 			infoMap.put(ResourceFactory.getResourceName(managementEntry.getKey()), information);
@@ -127,7 +127,7 @@ public class AdminFullTextSearchController implements MinimalisticController<Adm
 	/**
 	 * @param managers the managers to set
 	 */
-	public void setManagers(Map<Class<? extends Resource>, ElasticsearchManager<? extends Resource>> managers) {
+	public void setManagers(Map<Class<? extends Resource>, SearchIndexManager<? extends Resource>> managers) {
 		this.managers = managers;
 	}
 }

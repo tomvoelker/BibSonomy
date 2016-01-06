@@ -53,6 +53,7 @@ import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.search.es.generator.ElasticsearchIndexGenerator;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.exceptions.IndexAlreadyGeneratingException;
+import org.bibsonomy.search.management.SearchIndexManager;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.model.SearchIndexInfo;
 import org.bibsonomy.search.model.SearchIndexState;
@@ -65,13 +66,12 @@ import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.index.query.QueryBuilders;
 
 /**
- * TODO: extract interface
- * manager for elastic search
+ * manager for Elasticsearch
  *
  * @author dzo
  * @param <R> 
  */
-public class ElasticsearchManager<R extends Resource> {
+public class ElasticsearchManager<R extends Resource> implements SearchIndexManager<R> {
 	private static final Log log = LogFactory.getLog(ElasticsearchManager.class);
 	
 	/** how many posts should be retrieved from the database */
@@ -204,6 +204,7 @@ public class ElasticsearchManager<R extends Resource> {
 	 * generates a new index for the resource
 	 * @throws IndexAlreadyGeneratingException
 	 */
+	@Override
 	public void generateIndex() throws IndexAlreadyGeneratingException {
 		generateIndex(true);
 	}
@@ -238,6 +239,7 @@ public class ElasticsearchManager<R extends Resource> {
 	 * @param indexNameToReplace
 	 * @throws IndexAlreadyGeneratingException 
 	 */
+	@Override
 	public void regenerateIndex(final String indexNameToReplace) throws IndexAlreadyGeneratingException {
 		if (!this.generatorLock.tryAcquire()) {
 			throw new IndexAlreadyGeneratingException();
@@ -311,6 +313,7 @@ public class ElasticsearchManager<R extends Resource> {
 	/**
 	 * @return informations about the indices managed by this manager
 	 */
+	@Override
 	public List<SearchIndexInfo> getIndexInformations() {
 		final List<SearchIndexInfo> infos = new LinkedList<>();
 		try {
@@ -371,6 +374,7 @@ public class ElasticsearchManager<R extends Resource> {
 	/**
 	 * update the inactive index
 	 */
+	@Override
 	public void updateIndex() {
 		if (!this.updateEnabled) {
 			log.debug("skipping updating index, update disabled");
@@ -515,6 +519,7 @@ public class ElasticsearchManager<R extends Resource> {
 	/**
 	 * @param indexName
 	 */
+	@Override
 	public void deleteIndex(final String indexName) {
 		if (!this.updateLock.tryAcquire()) {
 			throw new IllegalStateException("You cannot delete indices while update is in progress.");
@@ -638,7 +643,7 @@ public class ElasticsearchManager<R extends Resource> {
 	}
 	
 	/**
-	 * @return 
+	 * @return the count request builder
 	 * 
 	 */
 	public CountRequestBuilder prepareCount() {
@@ -646,7 +651,7 @@ public class ElasticsearchManager<R extends Resource> {
 	}
 	
 	/**
-	 * @return
+	 * @return the search request builder
 	 */
 	public SearchRequestBuilder prepareSearch() {
 		return prepareSearch(this.getActiveLocalAlias());
@@ -654,7 +659,7 @@ public class ElasticsearchManager<R extends Resource> {
 
 	/**
 	 * @param indexName
-	 * @return
+	 * @return the prepared search builder
 	 */
 	protected SearchRequestBuilder prepareSearch(final String indexName) {
 		return this.client.prepareSearch(indexName);
