@@ -13,6 +13,7 @@ import org.bibsonomy.search.model.SearchIndexInfo;
  * @param <R> 
  */
 public interface SearchIndexManager<R extends Resource> {
+	
 	/**
 	 * delete the specified index
 	 * @param indexName
@@ -35,6 +36,11 @@ public interface SearchIndexManager<R extends Resource> {
 	 * @throws IndexAlreadyGeneratingException
 	 */
 	public void regenerateIndex(final String indexName) throws IndexAlreadyGeneratingException;
+	
+	/**
+	 * regenerate all indices
+	 */
+	public void regenerateAllIndices();
 	
 	/**
 	 * 

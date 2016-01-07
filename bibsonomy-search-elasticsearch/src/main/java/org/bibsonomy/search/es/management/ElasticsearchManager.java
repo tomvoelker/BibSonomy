@@ -223,6 +223,14 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 		final ElasticsearchIndexGenerator<R> generator = new ElasticsearchIndexGenerator<>(newIndex, this.inputLogic, this.client, this.tools);
 		
 		final ElasticSearchIndexGenerationTask task = new ElasticSearchIndexGenerationTask(generator, newIndex);
+		this.executeTask(async, task);
+	}
+
+	/**
+	 * @param async
+	 * @param task
+	 */
+	private void executeTask(final boolean async, final AbstractSearchIndexGenerationTask task) {
 		if (async) {
 			this.executorService.submit(task);
 		} else {
@@ -241,6 +249,15 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 	 */
 	@Override
 	public void regenerateIndex(final String indexNameToReplace) throws IndexAlreadyGeneratingException {
+		regenerateIndex(indexNameToReplace, true);
+	}
+	
+	/**
+	 * @param indexNameToReplace
+	 * @param async
+	 * @throws IndexAlreadyGeneratingException
+	 */
+	protected void regenerateIndex(final String indexNameToReplace, final boolean async) throws IndexAlreadyGeneratingException {
 		if (!this.generatorLock.tryAcquire()) {
 			throw new IndexAlreadyGeneratingException();
 		}
@@ -251,7 +268,39 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 		final ElasticsearchIndexGenerator<R> generator = new ElasticsearchIndexGenerator<>(newIndex, this.inputLogic, this.client, this.tools);
 		
 		final ElasticSearchIndexRegenerationTask task = new ElasticSearchIndexRegenerationTask(generator, newIndex, indexNameToReplace);
-		this.executorService.submit(task);
+		this.executeTask(async, task);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.management.SearchIndexManager#regenerateAllIndices()
+	 */
+	@Override
+	public void regenerateAllIndices() {
+		try {
+			final String activeIndex = this.client.getIndexNameForAlias(this.getActiveLocalAlias());
+			if (present(activeIndex)) {
+				this.regenerateIndex(activeIndex, false);
+			} else {
+				this.generateIndex(false);
+			}
+			final String currentActiveIndex = this.client.getIndexNameForAlias(this.getActiveLocalAlias());
+			final String currentInactiveIndex = this.client.getIndexNameForAlias(this.getInactiveLocalAlias());
+			
+			final String secondIndexToRegenerate;
+			if (present(activeIndex) && !activeIndex.equals(currentActiveIndex)) {
+				secondIndexToRegenerate = currentActiveIndex;
+			} else {
+				secondIndexToRegenerate = currentInactiveIndex;
+			}
+			
+			if (present(secondIndexToRegenerate)) {
+				this.regenerateIndex(secondIndexToRegenerate, false);
+			} else {
+				this.generateIndex(false);
+			}
+		} catch (final IndexAlreadyGeneratingException e) {
+			log.error("error ", e);
+		}
 	}
 	
 	/**
