@@ -187,7 +187,7 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 		assertEquals(1, posts.size());
 		
 		final Post<BibTex> post = posts.get(0);
-		assertEquals(getTitleForId(0), post.getResource().getTitle());
+		assertEquals(getTitleForId(4), post.getResource().getTitle());
 		assertEquals(3, post.getTags().size());
 	}
 

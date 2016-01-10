@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Database - Database for BibSonomy.
+ * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
  * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -24,33 +24,47 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.database.managers.chain.user.get;
+package org.bibsonomy.util;
 
-import static org.bibsonomy.util.ValidationUtils.present;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
-import java.util.List;
-
-import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.managers.chain.user.UserChainElement;
-import org.bibsonomy.database.params.UserParam;
-import org.bibsonomy.model.User;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
- * Get users by Search-String
- * 
- * @author bsc
+ * some basic utils
+ *
+ * @author dzo
  */
-public class GetUsersBySearch extends UserChainElement {
-
-	@Override
-	protected List<User> handle(final UserParam param, final DBSession session) {
-		return this.userDB.getUsersBySearch(param.getSearch(), param.getLimit(), session);
-	}
-
-	@Override
-	protected boolean canHandle(final UserParam param) {
-		return (GroupingEntity.USER.equals(param.getGrouping()) &&
-				present(param.getSearch()));
+public final class BasicUtils {
+	private static final Log log = LogFactory.getLog(BasicUtils.class);
+	
+	private BasicUtils() {}
+	
+	private static final String PROPERTIES_FILE_NAME = "org/bibsonomy/common/bibsonomy-common.properties";
+	private static final String PROPERTIES_VERSION_KEY = "version";
+	
+	/** the version of the system */
+	public static final String VERSION;
+	
+	static {
+		String version = "unknown";
+		/*
+		 * load version of client from properties file
+		 */
+		try {
+			final Properties properties = new Properties();
+			
+			final InputStream stream = BasicUtils.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE_NAME);
+			properties.load(stream);
+			stream.close();
+			
+			version = properties.getProperty(PROPERTIES_VERSION_KEY);
+		} catch (final IOException ex) {
+			log.error("could not load version", ex);
+		}
+		VERSION = version;
 	}
 }

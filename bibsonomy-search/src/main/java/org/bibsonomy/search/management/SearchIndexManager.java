@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Database - Database for BibSonomy.
+ * BibSonomy Search - Helper classes for search modules.
  *
  * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -24,33 +24,54 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.database.managers.chain.user.get;
-
-import static org.bibsonomy.util.ValidationUtils.present;
+package org.bibsonomy.search.management;
 
 import java.util.List;
 
-import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.managers.chain.user.UserChainElement;
-import org.bibsonomy.database.params.UserParam;
-import org.bibsonomy.model.User;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.search.exceptions.IndexAlreadyGeneratingException;
+import org.bibsonomy.search.model.SearchIndexInfo;
 
 /**
- * Get users by Search-String
+ * general interface for all search index manager
  * 
- * @author bsc
+ * @author dzo
+ * @param <R> 
  */
-public class GetUsersBySearch extends UserChainElement {
+public interface SearchIndexManager<R extends Resource> {
+	
+	/**
+	 * delete the specified index
+	 * @param indexName
+	 */
+	public void deleteIndex(final String indexName);
+	
+	/**
+	 * update the index
+	 */
+	public void updateIndex();
+	
+	/**
+	 * @return index information about all managed search indices
+	 */
+	public List<SearchIndexInfo> getIndexInformations();
+	
+	/**
+	 * regenerate the specified index
+	 * @param indexName
+	 * @throws IndexAlreadyGeneratingException
+	 */
+	public void regenerateIndex(final String indexName) throws IndexAlreadyGeneratingException;
+	
+	/**
+	 * regenerate all indices
+	 */
+	public void regenerateAllIndices();
+	
+	/**
+	 * 
+	 * @throws IndexAlreadyGeneratingException
+	 */
+	public void generateIndex() throws IndexAlreadyGeneratingException;
 
-	@Override
-	protected List<User> handle(final UserParam param, final DBSession session) {
-		return this.userDB.getUsersBySearch(param.getSearch(), param.getLimit(), session);
-	}
-
-	@Override
-	protected boolean canHandle(final UserParam param) {
-		return (GroupingEntity.USER.equals(param.getGrouping()) &&
-				present(param.getSearch()));
-	}
 }
