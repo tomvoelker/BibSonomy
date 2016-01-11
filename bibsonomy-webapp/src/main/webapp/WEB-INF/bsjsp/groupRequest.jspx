@@ -59,8 +59,7 @@
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
-		
-		
+				
 		<!--+
 		 	| content
 		 	+-->
@@ -89,12 +88,19 @@
 							<bsform:textarea labelKey="settings.group.description" path="group.description" rows="2" labelColSpan="3" inputColSpan="9" />
 							<bsform:textarea labelText="${reason}" path="group.groupRequest.reason" rows="2" labelColSpan="3" inputColSpan="9" />
 	
+							<c:if test="${loginUser.role eq 'ADMIN' }">
+								<!--<bsform:input labelKey="settings.group.name" path="group.groupRequest.userName" labelColSpan="3" inputColSpan="9" />-->
+								<bsform:input labelKey="group.groupRequest.adminName" path="group.groupRequest.userName" labelColSpan="3" inputColSpan="9" helpKey="group.groupRequest.adminName.helptext" autocomplete="true" id="designatedAdmin" />
+								<script type="text/javascript" src="${resdir}/javascript/requestGroupAutocomplete.js"><!-- keep me --></script> 
+							</c:if>
+	
 							<bsform:captcha labelColSpan="3" inputColSpan="9" />
 	
 							<div class="col-sm-offset-3" >
 								<bsform:button style="primary" size="defaultSize" value="${requestGroup}" type="submit" />
 							</div>
 						</form:form>
+						
 					</jsp:attribute>
 				</bsform:fieldset>
 			</c:if>

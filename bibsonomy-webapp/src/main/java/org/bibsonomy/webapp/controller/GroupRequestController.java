@@ -36,9 +36,11 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupCreationMode;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.webapp.command.GroupRequestCommand;
 import org.bibsonomy.webapp.controller.actions.UserRegistrationController;
@@ -140,23 +142,47 @@ public class GroupRequestController implements
 			command.setCaptchaHTML(this.captcha.createCaptchaHtml(this.requestLogic.getLocale()));
 			return Views.GROUPREQUEST;
 		}
+		
+		// a simple flag to detect a admin created group
+		boolean adminAddedGroup = false;
+		User adminAddedGroupUser = null;
+		
+		// check if given user by admin exists
+		if(Role.ADMIN.equals(loginUser.getRole())) {
+			if(present(requestedGroup.getGroupRequest().getUserName())) {				
+				adminAddedGroupUser = logic.getUserDetails(requestedGroup.getGroupRequest().getUserName());
+				if(!UserUtils.isExistingUser(adminAddedGroupUser)) {
+					this.errors.reject("requestGroup.userNotExistError");
+					this.errors.reject("requestGroup.userNotExistError", new Object[]{requestedGroup.getGroupRequest().getUserName()},
+							"There's no user with the name {0}.");
+					return Views.ERROR;
+				}
+				this.setGroupCreationMode(GroupCreationMode.AUTOMATIC);
+				adminAddedGroup = true;
+			} else {
+				requestedGroup.getGroupRequest().setUserName(loginUser.getName());							
+			}
+		} else {
+			requestedGroup.getGroupRequest().setUserName(loginUser.getName());			
+		}
 
-		requestedGroup.getGroupRequest().setUserName(loginUser.getName());
 		this.logic.createGroup(requestedGroup);
 
 		switch (this.groupCreationMode) {
 		case AUTOMATIC:
-			this.adminLogic.updateGroup(requestedGroup,
-					GroupUpdateOperation.ACTIVATE, null);
-			this.mailer.sendGroupActivationNotification(requestedGroup,
-					loginUser, this.requestLogic.getLocale());
-			command.setMessage("success.group.activation",
-					Collections.singletonList(groupName));
+			this.adminLogic.updateGroup(requestedGroup, GroupUpdateOperation.ACTIVATE, null);
+			
+			if(adminAddedGroup) {
+				this.mailer.sendGroupActivationNotification(requestedGroup, adminAddedGroupUser, this.requestLogic.getLocale());				
+			} else {
+				this.mailer.sendGroupActivationNotification(requestedGroup, loginUser, this.requestLogic.getLocale());
+			}
+			
+			command.setMessage("success.group.activation", Collections.singletonList(groupName));
 			break;
 		case REQUESTEDBASED:
 			this.mailer.sendGroupRequest(requestedGroup);
-			command.setMessage("success.groupRequest.sent",
-					Collections.singletonList(groupName));
+			command.setMessage("success.groupRequest.sent", Collections.singletonList(groupName));
 			break;
 		default:
 			break;

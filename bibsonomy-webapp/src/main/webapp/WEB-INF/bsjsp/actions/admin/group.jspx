@@ -72,66 +72,6 @@
 			</div>
 			</c:if>
 
-			<bsform:fieldset legendKey="admin.actions.group">
-					
-				<jsp:attribute name="content">
-					<form:form name="addgroup" action="${relativeUrlGenerator.getAdminUrlByName('group')}" method="POST" cssClass="form-horizontal" >
-						<input type="hidden" value="CREATE" name="action" />
-						
-						
-						<bsform:input path="group.name" helpKey="settings.group.addUser.help" autocomplete="true" labelColSpan="3" inputColSpan="9" />
-						
-						<bsform:input path="group.groupRequest.userName" helpKey="settings.group.addUser.help" autocomplete="true" labelColSpan="3" inputColSpan="9" id="designatedAdmin" />
-						
-						<bsform:textarea path="group.groupRequest.reason" labelColSpan="3" inputColSpan="9" />
-						
-						<!-- member list -->
-						<div class="form-group">
-							<form:label cssClass="col-sm-3 control-label" path="group.privlevel">
-								<fmt:message key="settings.group.memberList" />
-							</form:label>
-
-							<div class="col-sm-9">
-								<form:select cssClass="form-control help-popover" path="group.privlevel" multiple="false">
-									<form:option value="PUBLIC"><fmt:message key="settings.public" /></form:option>
-									<form:option value="HIDDEN"><fmt:message key="settings.private" /></form:option>
-									<form:option value="MEMBERS"><fmt:message key="settings.publicForMembers" /></form:option>
-								</form:select>
-								<div class="help help-header hide"><fmt:message key="settings.group.memberList" /></div>
-								<div class="help help-content hide"><fmt:message key="settings.group.memberList.help" /></div>
-							</div>
-						</div> <!-- /.form-group -->
-
-						<!-- shared documents -->
-						<div class="form-group">
-							<form:label cssClass="col-sm-3 control-label" path="group.sharedDocuments">
-								<fmt:message key="settings.group.sharedDocuments" />
-							</form:label>
-
-							<div class="col-sm-9">
-								<form:select cssClass="form-control help-popover" path="group.sharedDocuments">
-									<form:option value="0"><fmt:message key="settings.disabled" /></form:option>
-									<form:option value="1"><fmt:message key="settings.enabled" /></form:option>
-								</form:select>
-
-								<div class="help help-header hide"><fmt:message key="settings.group.sharedDocuments" /></div>
-								<div class="help help-content hide"><p><fmt:message key="settings.group.sharedDocuments.help" /></p></div>
-							</div>
-						</div> <!-- /.form-group -->
-						
-						<!-- submit button -->
-						<div class="form-group">
-							<div class="col-sm-offset-3 col-sm-9">
-								<fmt:message var="updatesettings" key="settings.updatesettings" />
-								<bsform:button type="submit" style="primary" size="defaultSize" value="${updatesettings}" />
-							</div>
-						</div> <!-- /.form-group -->
-						
-						
-					</form:form>
-				</jsp:attribute>
-			</bsform:fieldset>
-
 			<bsform:fieldset legendKey="settings.group.permissionHeading">
 				<jsp:attribute name="content">
 					
@@ -235,31 +175,6 @@
 			<!--  autocomplete user info box -->
 			<script type="text/javascript">
 			<![CDATA[
-				$(function () {
-					addAutocomplete("#designatedAdmin", '2');
-				});
-
-			function addAutocomplete(id, type) {
-				$(id).autocomplete({
-					source: function (request, response) {
-						return $.ajax({
-							url: "../ajax/usersearch",
-									data: {search:request.term, limit:10, showSpammers: false },
-									async: false,
-									success: function (data) {
-									var names = new Array();
-											$.each(data.items, function(index, item) {names.push(item.name); });
-											response($.map(names, function(item) {
-												return {
-													label: item,
-														value: item
-												}
-											}));
-									}
-						});
-					}
-				});
-			}
 			
 			function fetchGroupPermissions(id) {
 				groupname=$(id)[0].value

@@ -42,6 +42,8 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.model.util.UserUtils;
+import org.bibsonomy.util.ExceptionUtils;
 import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.webapp.command.admin.AdminGroupViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -167,7 +169,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		if (logic.getGroups(false, 0, Integer.MAX_VALUE).contains(group)
 				|| logic.getGroups(true, 0, Integer.MAX_VALUE).contains(group)) {
 			return "Group already exists!";
-		}
+		}		
 		
 		// Create the group ...
 		logic.createGroup(group);

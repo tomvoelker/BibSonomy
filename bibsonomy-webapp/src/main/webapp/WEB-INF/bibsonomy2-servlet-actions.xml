@@ -647,6 +647,7 @@
 								<value>group.name</value>
 								<value>group.description</value>
 								<value>group.groupRequest.reason</value>
+								<value>group.groupRequest.userName</value>
 								<!-- for recaptcha -->
 								<value>recaptcha_response_field</value>
 								<value>recaptcha_challenge_field</value>
