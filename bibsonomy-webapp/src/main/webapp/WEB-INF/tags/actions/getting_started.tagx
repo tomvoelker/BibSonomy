@@ -151,8 +151,8 @@
 										</fmt:message>
 									</div>
 									<div class="col-sm-6">
-										<img class="img-thumbnail img-responsive"
-											src="/resources/image/gettingStarted-collaborate.png" />
+										<img class="img-thumbnail img-responsive" 
+											src="/resources/image/gettingStarted-collaborate-${properties['project.theme']}.png" />									
 									</div>
 								</div>
 							</div>
@@ -175,7 +175,7 @@
 									</div>
 									<div class="col-sm-6">
 										<img class="img-thumbnail img-responsive"
-											src="/resources/image/gettingStarted-discover.png" />
+											src="/resources/image/gettingStarted-discover-${properties['project.theme']}.png" />
 									</div>
 								</div>
 							</div>
