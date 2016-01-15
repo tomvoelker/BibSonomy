@@ -1321,3 +1321,20 @@ ul#urlList {
 	border: 1px solid #777777;
 }
 
+.btn-group > form {
+	display: inline;
+}
+
+.btn-group > form + form {
+	margin-left: -1px;
+}
+
+.btn-group > form:first-child > .btn {
+	margin-left: 0;
+	.border-right-radius(0);
+}
+
+.btn-group > form:last-child > .btn {
+	margin-right: 0;
+	.border-left-radius(0);
+}

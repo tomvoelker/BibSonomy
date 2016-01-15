@@ -6,6 +6,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form">
 
     <!-- 
@@ -17,8 +18,14 @@
      -->
 
 	<jsp:directive.attribute name="groups" type="java.util.List" required="true"/>
-
+			
 			<div class="form-group">
+				
+					
+				<label class="col-sm-2 control-label">
+					<fmt:message key="post.resource.groups"/>
+				</label>
+				
 				<label class="col-sm-2 control-label" for="${fn:escapeXml(id)}">
 					<fmt:message key="post.resource.viewablefor" />
 				</label>
@@ -42,6 +49,19 @@
 			       			</div>
 		       			</div>
 		       			<div class="col-sm-8">
+		       			<c:set var="formErrors"><form:errors path="groups" /></c:set>
+	
+					<div class="form-group${not empty formErrors ? ' has-error' : ''}">
+						<c:if test="${not empty formErrors}">
+							<div class="col-sm-offset-2 col-sm-10">
+								<bs:feedback style="danger" size="defaultSize" >
+									<jsp:attribute name="feedbackBody">
+									<form:errors path="groups" />
+									</jsp:attribute>
+								</bs:feedback>
+							</div>
+						</c:if>
+					</div>
 		       				<form:select class="initiallyHidden form-control" multiple="false" path="groups" size="5" id="post.groups.other2" tabindex="2">
 		            			<form:option label="friends" value="friends"/>
 		              			<form:options items="${groups}" itemValue="name" itemLabel="name"/>

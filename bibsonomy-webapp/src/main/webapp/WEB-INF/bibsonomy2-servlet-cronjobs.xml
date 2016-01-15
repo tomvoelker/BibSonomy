@@ -56,7 +56,7 @@
 	
 	<bean id="searchGenerateBookmarkIndexJob" class="org.bibsonomy.webapp.util.spring.scheduling.DeactivatableMethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="searchBookmarkManager" />
-		<property name="targetMethod" value="generateIndex" />
+		<property name="targetMethod" value="regenerateAllIndices" />
 		<property name="concurrent" value="false" />
 		<property name="enabled" value="${cron.fulltextsearch.regenerate.enabled.bookmark}" />
 	</bean>
@@ -68,7 +68,7 @@
 	
 	<bean id="searchGeneratePublicationIndexJob" class="org.bibsonomy.webapp.util.spring.scheduling.DeactivatableMethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="searchPublicationManager" />
-		<property name="targetMethod" value="generateIndex" />
+		<property name="targetMethod" value="regenerateAllIndices" />
 		<property name="concurrent" value="false" />
 		<property name="enabled" value="${cron.fulltextsearch.regenerate.enabled.publication}" />
 	</bean>

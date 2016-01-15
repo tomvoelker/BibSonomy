@@ -1,5 +1,5 @@
 /**
- * BibSonomy Search Elasticsearch - Elasticsearch full text search module.
+ * BibSonomy Search - Helper classes for search modules.
  *
  * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -24,32 +24,54 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.search.es.management;
+package org.bibsonomy.search.management;
+
+import java.util.List;
 
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.search.exceptions.IndexAlreadyGeneratingException;
+import org.bibsonomy.search.model.SearchIndexInfo;
 
 /**
- * TODO: useless? => remove
- * class representing a ElasticSearch index
- *
+ * general interface for all search index manager
+ * 
  * @author dzo
  * @param <R> 
  */
-public class ElasticsearchIndex<R extends Resource> {
-	
-	private final String indexName;
+public interface SearchIndexManager<R extends Resource> {
 	
 	/**
+	 * delete the specified index
 	 * @param indexName
 	 */
-	public ElasticsearchIndex(final String indexName) {
-		this.indexName = indexName;
-	}
-
+	public void deleteIndex(final String indexName);
+	
 	/**
-	 * @return the indexName
+	 * update the index
 	 */
-	public String getIndexName() {
-		return this.indexName;
-	}
+	public void updateIndex();
+	
+	/**
+	 * @return index information about all managed search indices
+	 */
+	public List<SearchIndexInfo> getIndexInformations();
+	
+	/**
+	 * regenerate the specified index
+	 * @param indexName
+	 * @throws IndexAlreadyGeneratingException
+	 */
+	public void regenerateIndex(final String indexName) throws IndexAlreadyGeneratingException;
+	
+	/**
+	 * regenerate all indices
+	 */
+	public void regenerateAllIndices();
+	
+	/**
+	 * 
+	 * @throws IndexAlreadyGeneratingException
+	 */
+	public void generateIndex() throws IndexAlreadyGeneratingException;
+
 }

@@ -1,5 +1,5 @@
 /**
- * BibSonomy Search Elasticsearch - Elasticsearch full text search module.
+ * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
  * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -24,32 +24,47 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.search.es.management;
+package org.bibsonomy.util;
 
-import org.bibsonomy.model.Resource;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
- * TODO: useless? => remove
- * class representing a ElasticSearch index
+ * some basic utils
  *
  * @author dzo
- * @param <R> 
  */
-public class ElasticsearchIndex<R extends Resource> {
+public final class BasicUtils {
+	private static final Log log = LogFactory.getLog(BasicUtils.class);
 	
-	private final String indexName;
+	private BasicUtils() {}
 	
-	/**
-	 * @param indexName
-	 */
-	public ElasticsearchIndex(final String indexName) {
-		this.indexName = indexName;
-	}
-
-	/**
-	 * @return the indexName
-	 */
-	public String getIndexName() {
-		return this.indexName;
+	private static final String PROPERTIES_FILE_NAME = "org/bibsonomy/common/bibsonomy-common.properties";
+	private static final String PROPERTIES_VERSION_KEY = "version";
+	
+	/** the version of the system */
+	public static final String VERSION;
+	
+	static {
+		String version = "unknown";
+		/*
+		 * load version of client from properties file
+		 */
+		try {
+			final Properties properties = new Properties();
+			
+			final InputStream stream = BasicUtils.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE_NAME);
+			properties.load(stream);
+			stream.close();
+			
+			version = properties.getProperty(PROPERTIES_VERSION_KEY);
+		} catch (final IOException ex) {
+			log.error("could not load version", ex);
+		}
+		VERSION = version;
 	}
 }

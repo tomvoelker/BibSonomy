@@ -14,7 +14,6 @@
     	the form for snippet posting on /postPublication
      -->
 	
-	
 
 	<form:form cssClass="form-horizontal" method="post" action="/import/publications">
 		
@@ -26,9 +25,9 @@
 				<input type="hidden" name="ckey" value="${ckey}" />
 				<input type="hidden" name="personId" value="${command.personId}" /> 
 				<input type="hidden" name="personRole" value="${command.personRole}"/>
-				
 				<bsform:textarea labelColSpan="2" inputColSpan="10" path="selection" id="selection" />
-				<div class="form-group">
+				<div class="form-group">				
+									
 					<label class="col-sm-2 control-label" for="${fn:escapeXml(id)}">
 						<fmt:message key="post.resource.viewablefor" />
 					</label>
