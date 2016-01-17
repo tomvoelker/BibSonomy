@@ -54,15 +54,6 @@
 			/>
 
 			<body>
-				<!-- 
-				<div id="logo" class="${boxStyle}" style="margin-top: 50px; margin-bottom: 50px;">									
-					<h1><a href="${relativeUrlGenerator.getProjectHome()}"><img src="/resources/image/bibsonomy-logo.png" title="BibSonomy" /></a></h1>
-					<small class="slogan"><fmt:message key="system.desc"/></small>
-					<c:if test="${not empty headerMessageKey}">
-						<h2><fmt:message key="${headerMessageKey}" /></h2>
-					</c:if>		
-				</div>
-				-->
 				<div class="single-container ${boxStyle}">
 					<div class="row">
 						<div class="col-sm-10" style="padding-left: 0;">
@@ -78,16 +69,7 @@
 							</c:choose>
 						</div>
 						<div class="col-sm-2" style="padding-right: 0; padding-top: 20px;">
-							<div id="lang-switcher" class="pull-right">
-								<span>(&amp;nbsp;</span>
-									<c:forEach var="lang" items="${fn:split('en,de,ru',',')}" varStatus="status">
-										<a href="/${fn:escapeXml(mtl:setParam(requPathAndQuery, 'lang', lang))}">${lang}</a>
-										<c:if test="${not status.last}">
-											<span>&amp;nbsp;|&amp;nbsp;</span>
-										</c:if>
-									</c:forEach>
-								<span>&amp;nbsp;)</span>
-							</div>
+							<parts:languageSwitcher requPathAndQuery="${requPathAndQuery}" />
 						</div>
 					</div>
 					
@@ -115,8 +97,6 @@
 						<p>&amp;nbsp;</p>
 					</div>
 				</div> <!--  /.container -->
-				
-
 			</body>
 		</jsp:body>
 	</jsp:element>
