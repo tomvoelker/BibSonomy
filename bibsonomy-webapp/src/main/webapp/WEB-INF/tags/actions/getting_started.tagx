@@ -24,8 +24,8 @@
 		</jsp:attribute>
 
 		<jsp:attribute name="headerExt">
-			<script type="text/javascript" src="/resources/javascript/animatescroll.js"><!-- --></script>
-			<script type="text/javascript" src="/resources/javascript/animate-scroll-affix.js"><!-- --></script>
+			<script type="text/javascript" src="${resdir}/javascript/animatescroll.js"><!-- --></script>
+			<script type="text/javascript" src="${resdir}/javascript/animate-scroll-affix.js"><!-- --></script>
 		</jsp:attribute>
 		
 		<!-- TODO: (Bootstrap) breadcrumbs

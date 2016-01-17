@@ -54,7 +54,7 @@
 				<configuration>
 					<!-- otherwise the javascript/css files compressed by yuicompressor-maven-plugin 
 						are overwritten by this plugin -->
-					<warSourceExcludes>**/*.js,**/*.css,WEB-INF/tags/bstags/layout/parts/messages.tagx</warSourceExcludes>
+					<warSourceExcludes>**/*.js,**/*.css,WEB-INF/tags/layout/parts/messages.tagx</warSourceExcludes>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -169,7 +169,7 @@
 						<locale>de</locale>
 						<locale>ru</locale>
 					</locales>
-					<outputFile>${project.build.directory}/${project.build.finalName}/WEB-INF/tags/bstags/layout/parts/messages.tagx</outputFile>
+					<outputFile>${project.build.directory}/${project.build.finalName}/WEB-INF/tags/layout/parts/messages.tagx</outputFile>
 				</configuration>
 				<executions>
 					<execution>

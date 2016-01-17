@@ -55,7 +55,7 @@
 			<sidebar:socializer command="${command}" />
 			
 			<c:if test="${isAdmin}">
-				Spammer: <adminUser:spamActions user="${command.user}" />
+				spammer: <adminUser:spamActions user="${command.user}" />
 			</c:if>
 			
 			<!-- Did you know? -->

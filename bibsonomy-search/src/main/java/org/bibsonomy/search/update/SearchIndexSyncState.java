@@ -42,6 +42,7 @@ public class SearchIndexSyncState {
 	// TODO: rename attribute to lastLogDate
 	private Date last_log_date;
 	private long lastPersonChangeId;
+	private String mappingVersion;
 
 	/**
 	 * default constructor
@@ -56,6 +57,7 @@ public class SearchIndexSyncState {
 		this.last_log_date = state.last_log_date;
 		this.last_tas_id = state.last_tas_id;
 		this.lastPersonChangeId = state.lastPersonChangeId;
+		this.mappingVersion = state.mappingVersion;
 	}
 	
 	/**
@@ -85,15 +87,35 @@ public class SearchIndexSyncState {
 	public void setLast_tas_id(Integer last_tas_id) {
 		this.last_tas_id = last_tas_id;
 	}
-
+	
+	/**
+	 * @return the lastPersonChangeId
+	 */
 	public long getLastPersonChangeId() {
 		return this.lastPersonChangeId;
 	}
 
+	/**
+	 * @param lastPersonChangeId the lastPersonChangeId to set
+	 */
 	public void setLastPersonChangeId(long lastPersonChangeId) {
 		this.lastPersonChangeId = lastPersonChangeId;
 	}
-	
+
+	/**
+	 * @return the mappingVersion
+	 */
+	public String getMappingVersion() {
+		return this.mappingVersion;
+	}
+
+	/**
+	 * @param mappingVersion the mappingVersion to set
+	 */
+	public void setMappingVersion(String mappingVersion) {
+		this.mappingVersion = mappingVersion;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */

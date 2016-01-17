@@ -1,5 +1,5 @@
 /**
- * BibSonomy Search Elasticsearch - Elasticsearch full text search module.
+ * BibSonomy Search - Helper classes for search modules.
  *
  * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -24,32 +24,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.search.es.management;
-
-import org.bibsonomy.model.Resource;
+package org.bibsonomy.search;
 
 /**
- * TODO: useless? => remove
- * class representing a ElasticSearch index
- *
+ * exception indicating that the user entered an invalid search query
+ * 
  * @author dzo
- * @param <R> 
  */
-public class ElasticsearchIndex<R extends Resource> {
-	
-	private final String indexName;
-	
-	/**
-	 * @param indexName
-	 */
-	public ElasticsearchIndex(final String indexName) {
-		this.indexName = indexName;
-	}
-
-	/**
-	 * @return the indexName
-	 */
-	public String getIndexName() {
-		return this.indexName;
-	}
+public class InvalidSearchRequestException extends RuntimeException {
+	private static final long serialVersionUID = -431648472171377762L;
 }

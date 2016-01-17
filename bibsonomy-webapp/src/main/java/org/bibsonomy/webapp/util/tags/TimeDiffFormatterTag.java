@@ -40,6 +40,9 @@ import org.springframework.web.servlet.tags.RequestContextAwareTag;
 /**
  * A JSP tag that prints the formatted time difference between two dates.
  * 
+ * Please note: We need the empty value for "time.postfix". Thus: always enable
+ * "Keep properties with empty values" in your ResourceBundleEditor settings!
+ * 
  * @author rja
  */
 public class TimeDiffFormatterTag extends RequestContextAwareTag {
@@ -83,8 +86,6 @@ public class TimeDiffFormatterTag extends RequestContextAwareTag {
 	 * Formats the difference between the given date and the current date using
 	 * the locale. Only the largest part of the time difference is returned.
 	 * 
-	 * FIXME: I18N missing
-	 * 
 	 * If one of the dates is not given, "" is returned.
 	 * 
 	 * @param startDate
@@ -94,7 +95,6 @@ public class TimeDiffFormatterTag extends RequestContextAwareTag {
 	 * @return The formatted time difference. 
 	 */
 	protected static String formatTimeDiff(final Date startDate, final Date endDate, final Locale locale, final MessageSource messageSource) {
-
 		if (!present(startDate) || !present(endDate)) return "";
 		/*
 		 * based on http://stackoverflow.com/questions/635935/how-can-i-calculate-a-time-span-in-java-and-format-the-output
@@ -106,90 +106,69 @@ public class TimeDiffFormatterTag extends RequestContextAwareTag {
 		 */
 		long diffInSeconds = (endDateTime - startDate.getTime()) / 1000;
 		final long sec = (diffInSeconds >= 60 ? diffInSeconds % 60 : diffInSeconds);
-		final long min = (diffInSeconds = (diffInSeconds / 60)) >= 60 ? diffInSeconds % 60 : diffInSeconds;
-		final long hrs = (diffInSeconds = (diffInSeconds / 60)) >= 24 ? diffInSeconds % 24 : diffInSeconds;
-		final long days = (diffInSeconds = (diffInSeconds / 24)) >= 30 ? diffInSeconds % 30 : diffInSeconds;
-		final long months = (diffInSeconds = (diffInSeconds / 30)) >= 12 ? diffInSeconds % 12 : diffInSeconds;
-		final long years = (diffInSeconds = (diffInSeconds / 12));
-
+		long min = (diffInSeconds = (diffInSeconds / 60)) >= 60 ? diffInSeconds % 60 : diffInSeconds;
+		long hrs = (diffInSeconds = (diffInSeconds / 60)) >= 24 ? diffInSeconds % 24 : diffInSeconds;
+		long days = (diffInSeconds = (diffInSeconds / 24)) >= 30 ? diffInSeconds % 30 : diffInSeconds;
+		long months = (diffInSeconds = (diffInSeconds / 30)) >= 12 ? diffInSeconds % 12 : diffInSeconds;
+		long years = (diffInSeconds = (diffInSeconds / 12));
+		final boolean justNow = years == 0 && months == 0 && days == 0 && hrs == 0 && min == 0;
+		
+		if (justNow) {
+			return getMessage("justnow", null, locale, messageSource);
+		}
 		/*
 		 * holds the resulting message key
 		 */
 		final StringBuilder sb = new StringBuilder(getMessage("prefix", null, locale, messageSource));
 		if (years > 0) {
+			if (months >= 12 / 2) {
+				years++;
+			}
 			if (years == 1) {
 				sb.append(getMessage("a_year", null, locale, messageSource)); // "a year"
 			} else {
-				sb.append(getMessage("x_years", years, locale, messageSource)); // years + " years"
-			}
-			if (years <= 6 && months > 0) {
-				sb.append(" ").append(getMessage("and", null, locale, messageSource)).append(" "); // " and "
-				if (months == 1) {
-					sb.append(getMessage("a_month", null, locale, messageSource)); // "a month"
-				} else {
-					sb.append(getMessage("x_months", months, locale, messageSource)); // months + " months"
-				}
+				sb.append(getMessage("x_years", Long.valueOf(years), locale, messageSource)); // years + " years"
 			}
 		} else if (months > 0) {
+			if (days >= 30 / 2) {
+				months++;
+			}
 			if (months == 1) {
 				sb.append(getMessage("a_month", null, locale, messageSource)); // "a month"
 			} else {
-				sb.append(getMessage("x_months", months, locale, messageSource)); // months + " months"
-			}
-			if (months <= 6 && days > 0) {
-				sb.append(" ").append(getMessage("and", null, locale, messageSource)).append(" "); // " and "
-				if (days == 1) {
-					sb.append(getMessage("a_day", null, locale, messageSource)); // "a day"
-				} else {
-					sb.append(getMessage("x_days", days, locale, messageSource)); // days + " days"
-				}
+				sb.append(getMessage("x_months", Long.valueOf(months), locale, messageSource)); // months + " months"
 			}
 		} else if (days > 0) {
+			if (hrs >= 24 / 2) {
+				days++;
+			}
 			if (days == 1) {
 				sb.append(getMessage("a_day", null, locale, messageSource)); // "a day"
 			} else {
-				sb.append(getMessage("x_days", days, locale, messageSource)); // days + " days"
-			}
-			if (days <= 3 && hrs > 0) {		
-				sb.append(" ").append(getMessage("and", null, locale, messageSource)).append(" "); // " and "
-				if (hrs == 1) {
-					sb.append(getMessage("an_hour", null, locale, messageSource)); // "an hour"
-				} else {
-					sb.append(getMessage("x_hours", hrs, locale, messageSource)); // hrs + " hours"
-				}
+				sb.append(getMessage("x_days", Long.valueOf(days), locale, messageSource)); // days + " days"
 			}
 		} else if (hrs > 0) {
+			if (min >= 60 / 2) {
+				hrs++;
+			}
 			if (hrs == 1) {
 				sb.append(getMessage("an_hour", null, locale, messageSource)); // "an hour"
 			} else {
-				sb.append(getMessage("x_hours", hrs, locale, messageSource)); // hrs + " hours"
-			}
-			if (min > 1) {
-				sb.append(" ").append(getMessage("and", null, locale, messageSource)).append(" "); // " and "
-				sb.append(getMessage("x_minutes", min, locale, messageSource)); // min + " minutes"
+				sb.append(getMessage("x_hours", Long.valueOf(hrs), locale, messageSource)); // hrs + " hours"
 			}
 		} else if (min > 0) {
+			if (sec >= 60 / 2) {
+				min++;
+			}
 			if (min == 1) {
 				sb.append(getMessage("a_minute", null, locale, messageSource)); // "a minute"
 			} else {
-				sb.append(getMessage("x_minutes", min, locale, messageSource)); // min + " minutes"
-			}
-			if (sec > 1) {
-				sb.append(" ").append(getMessage("and", null, locale, messageSource)).append(" "); // " and "
-				sb.append(getMessage("x_seconds", sec, locale, messageSource)); // sec + " seconds"
-			}
-		} else {
-			if (sec <= 1) {
-				sb.append(getMessage("about_a_second", null, locale, messageSource)); // "about a second"
-			} else {
-				sb.append(getMessage("about_x_seconds", sec, locale, messageSource)); // "about " + sec + " seconds"
+				sb.append(getMessage("x_minutes", Long.valueOf(min), locale, messageSource)); // min + " minutes"
 			}
 		}
-
+		
 		sb.append(getMessage("postfix", null, locale, messageSource)); // " ago"
-
-
-		return sb.toString(); 
+		return sb.toString();
 	}
 	
 	/**

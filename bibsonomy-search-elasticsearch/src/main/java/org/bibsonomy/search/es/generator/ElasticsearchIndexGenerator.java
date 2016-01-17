@@ -48,6 +48,7 @@ import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Mapping;
+import org.bibsonomy.util.BasicUtils;
 
 /**
  * TODO: add documentation to this class
@@ -106,7 +107,7 @@ public class ElasticsearchIndexGenerator<R extends Resource> {
 
 		// initialize variables
 		final SearchIndexSyncState newState = this.inputLogic.getDbState();
-
+		newState.setMappingVersion(BasicUtils.VERSION);
 		if (newState.getLast_log_date() == null) {
 			newState.setLast_log_date(new Date(System.currentTimeMillis() - 1000));
 		}

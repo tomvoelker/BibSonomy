@@ -60,11 +60,6 @@ public class TimeDiffFormatterTagTest {
 	/**
 	 * This date gave some strange results.
 	 * 
-	 * Last time the reason was that someone with a mis-configured 
-	 * ResourceBundleEditor comitted a messages_de.properties where the empty
-	 * value "time.postfix" was removed. Thus: always enable "Keep properties 
-	 * with empty values" in your ResourceBundleEditor settings!
-	 * 
 	 * @throws ParseException
 	 */
 	@Test
@@ -76,8 +71,7 @@ public class TimeDiffFormatterTagTest {
 		ms.setBasename("messages");
 		
 		final String formatTimeDiff = TimeDiffFormatterTag.formatTimeDiff(startDate, endDate, new Locale("de"), ms);
-//		System.out.println(formatTimeDiff);
-		assertEquals("vor 6 Jahren und 2 Monaten", formatTimeDiff);
+		assertEquals("vor 6 Jahren", formatTimeDiff);
 	}
 	
 	@Test
@@ -94,7 +88,7 @@ public class TimeDiffFormatterTagTest {
 	@Test
 	@Ignore
 	public void testGetDateDiffSecondsEn() {
-		checkTimeDiff(10, "about 10 seconds ago", EN);
+		checkTimeDiff(10, "just now", EN);
 	}
 	
 	@Test
@@ -129,19 +123,13 @@ public class TimeDiffFormatterTagTest {
 	@Ignore
 	public void testGetDateDiffYearsEn() {
 		checkTimeDiff(60 * 60 * 24 * 30 * 12, "a year ago", EN);
-		checkTimeDiff(60 * 60 * 24 * 30 * 13, "a year and a month ago", EN);
+		checkTimeDiff(60 * 60 * 24 * 30 * 13, "a year ago", EN);
 		checkTimeDiff(60 * 60 * 24 * 30 * 12 * 7, "7 years ago", EN);
 	}
 	
-	/**
-	 * ignored, because weird things happen on Hudson:
-	 * 
-	 * expected:<vor [10 Sekunden]> but was:<vor [about 10 seconds]>
-	 */
 	@Test
-	@Ignore
 	public void testGetDateDiffSecondsDe() {
-		checkTimeDiff(10, "vor 10 Sekunden", DE);
+		checkTimeDiff(10, "gerade eben", DE);
 	}
 	
 	@Test
@@ -153,7 +141,8 @@ public class TimeDiffFormatterTagTest {
 	@Test
 	public void testGetDateDiffHoursDe() {
 		checkTimeDiff(60 * 60, "vor einer Stunde", DE);
-		checkTimeDiff(60 * 60 + 20 * 60, "vor einer Stunde und 20 Minuten", DE);
+		checkTimeDiff(60 * 60 + 20 * 60, "vor einer Stunde", DE);
+		checkTimeDiff(60 * 60 + 30 * 60, "vor 2 Stunden", DE);
 	}
 	
 	@Test
@@ -166,14 +155,15 @@ public class TimeDiffFormatterTagTest {
 	@Test
 	public void testGetDateDiffMonthsDe() {
 		checkTimeDiff(60 * 60 * 24 * 30, "vor einem Monat", DE);
-		checkTimeDiff(60 * 60 * 24 * 30 + 60 * 60 * 24 * 7, "vor einem Monat und 7 Tagen", DE);
+		checkTimeDiff(60 * 60 * 24 * 30 + 60 * 60 * 24 * 7, "vor einem Monat", DE);
 		checkTimeDiff(60 * 60 * 24 * 7 * 30, "vor 7 Monaten", DE);
 	}
 	
 	@Test
 	public void testGetDateDiffYearsDe() {
 		checkTimeDiff(60 * 60 * 24 * 30 * 12, "vor einem Jahr", DE);
-		checkTimeDiff(60 * 60 * 24 * 30 * 13, "vor einem Jahr und einem Monat", DE);
+		checkTimeDiff(60 * 60 * 24 * 30 * 13, "vor einem Jahr", DE);
+		checkTimeDiff(60 * 60 * 24 * 30 * 18, "vor 2 Jahren", DE);
 		checkTimeDiff(60 * 60 * 24 * 30 * 12 * 7, "vor 7 Jahren", DE);
 	}
 
@@ -186,7 +176,6 @@ public class TimeDiffFormatterTagTest {
 		ms.setBasename("messages");
 		
 		final String formatTimeDiff = TimeDiffFormatterTag.formatTimeDiff(startDate, endDate, new Locale(lang), ms);
-//		System.out.println(formatTimeDiff);
 		assertEquals(expected, formatTimeDiff);
 	}
 
