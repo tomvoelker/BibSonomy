@@ -32,14 +32,14 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * Scraper URL tests #16 for IOPScraper
+ * Scraper URL tests #16, #297 for IOPScraper
  * @author tst
  *
  */
 @Category(RemoteTest.class)
 public class IOPScraperTest {
 	
-	/**
+	/*
 	 * starts URL test with id url_16
 	 */
 	@Test
@@ -47,12 +47,11 @@ public class IOPScraperTest {
 		UnitTestRunner.runSingleTest("url_16");
 	}
 	
-	/**
-	 * starts URL test with id url_178
+	/*
+	 * starts URL test with id url_297
 	 */
 	@Test
-	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_178");
+	public void url1TestRun(){
+		UnitTestRunner.runSingleTest("url_297");
 	}
-	
 }

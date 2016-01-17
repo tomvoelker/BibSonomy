@@ -342,6 +342,32 @@ function switchNavi(scope, element) {
 $(function() {
 	$('a.delete-toggle').hover(deleteToggleShowDeleteInfo);
 	$('a.delete-toggle').mouseleave(deleteToggleShowDefaultInfo);
+	
+	$('body').on('click', function (e) {
+		$('[data-toggle="popover"]').each(function () {
+			// the 'is' for buttons that trigger popups
+			// the 'has' for icons within a button that triggers a popup
+			if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+				$(this).popover('hide');
+			}
+		});
+	});
+	
+	$('form.popover-confirm > *[data-toggle="popover"]').on('shown.bs.popover', function () {
+		$('.popover-content > .confirm').click(function() {
+			var form = $(this).parents('form.popover-confirm');
+			form.data("confirmed", "yes");
+			form.submit();
+			return false;
+		});
+	});
+	$('form.popover-confirm').submit(function() {
+		var confirmed = $(this).data("confirmed");
+		if (confirmed !== "yes") {
+			return false;
+		}
+	});
+	
 	$('[data-toggle="tooltip"]').tooltip();
 });
 

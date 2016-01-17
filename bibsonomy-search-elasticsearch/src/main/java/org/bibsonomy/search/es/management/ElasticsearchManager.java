@@ -53,6 +53,7 @@ import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.search.es.generator.ElasticsearchIndexGenerator;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.exceptions.IndexAlreadyGeneratingException;
+import org.bibsonomy.search.management.SearchIndexManager;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.model.SearchIndexInfo;
 import org.bibsonomy.search.model.SearchIndexState;
@@ -65,24 +66,19 @@ import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.index.query.QueryBuilders;
 
 /**
- * TODO: extract interface
- * manager for elastic search
+ * manager for Elasticsearch
  *
  * @author dzo
  * @param <R> 
  */
-public class ElasticsearchManager<R extends Resource> {
+public class ElasticsearchManager<R extends Resource> implements SearchIndexManager<R> {
 	private static final Log log = LogFactory.getLog(ElasticsearchManager.class);
 	
 	/** how many posts should be retrieved from the database */
 	public static final int SQL_BLOCKSIZE = 5000;
 	private static final long QUERY_TIME_OFFSET_MS = 1000;
 	
-	/**
-	 * task for index generation
-	 * @author dzo
-	 */
-	private final class ElasticSearchIndexGenerationTask implements Callable<Void> {
+	private abstract class AbstractSearchIndexGenerationTask implements Callable<Void> {
 		private final ElasticsearchIndexGenerator<R> generator;
 		private final ElasticsearchIndex<R> newIndex;
 
@@ -90,20 +86,20 @@ public class ElasticsearchManager<R extends Resource> {
 		 * @param generator
 		 * @param newIndex
 		 */
-		private ElasticSearchIndexGenerationTask(ElasticsearchIndexGenerator<R> generator, ElasticsearchIndex<R> newIndex) {
+		private AbstractSearchIndexGenerationTask(ElasticsearchIndexGenerator<R> generator, ElasticsearchIndex<R> newIndex) {
 			this.generator = generator;
 			this.newIndex = newIndex;
 		}
-
+		
 		/* (non-Javadoc)
 		 * @see java.util.concurrent.Callable#call()
 		 */
 		@Override
-		public Void call() throws Exception {
+		public final Void call() throws Exception {
 			try {
 				ElasticsearchManager.this.currentGenerator = this.generator;
-				generator.generateIndex();
-				ElasticsearchManager.this.activateNewIndex(this.newIndex);
+				this.generator.generateIndex();
+				this.indexGenerated(this.newIndex);
 			} catch (final Exception e) {
 				log.error("error while generating index", e);
 			} finally {
@@ -113,10 +109,65 @@ public class ElasticsearchManager<R extends Resource> {
 			
 			return null;
 		}
+
+		/**
+		 * @param generatedIndex
+		 */
+		protected abstract void indexGenerated(ElasticsearchIndex<R> generatedIndex);
 	}
 	
+	/**
+	 * task for index regeneration
+	 * @author dzo
+	 */
+	private final class ElasticSearchIndexRegenerationTask extends AbstractSearchIndexGenerationTask {
+		private String toRegenerateIndexName;
+
+		/**
+		 * @param generator
+		 * @param newIndex
+		 * @param toRegenerateIndexName
+		 */
+		private ElasticSearchIndexRegenerationTask(ElasticsearchIndexGenerator<R> generator, ElasticsearchIndex<R> newIndex, final String toRegenerateIndexName) {
+			super(generator, newIndex);
+			this.toRegenerateIndexName = toRegenerateIndexName;
+		}
+		
+		/* (non-Javadoc)
+		 * @see org.bibsonomy.search.es.management.ElasticsearchManager.ElasticSearchIndexGenerationTask#indexGenerated(org.bibsonomy.search.es.management.ElasticsearchIndex)
+		 */
+		@Override
+		protected void indexGenerated(ElasticsearchIndex<R> generatedIndex) {
+			ElasticsearchManager.this.activateNewIndex(generatedIndex, this.toRegenerateIndexName);
+		}
+	}
+	
+	/**
+	 * task for index generation
+	 * @author dzo
+	 */
+	private class ElasticSearchIndexGenerationTask extends AbstractSearchIndexGenerationTask {
+		/**
+		 * @param generator
+		 * @param newIndex
+		 */
+		private ElasticSearchIndexGenerationTask(ElasticsearchIndexGenerator<R> generator, ElasticsearchIndex<R> newIndex) {
+			super(generator, newIndex);
+		}
+
+		/* (non-Javadoc)
+		 * @see org.bibsonomy.search.es.management.ElasticsearchManager.AbstractSearchIndexGenerationTask#indexGenerated(org.bibsonomy.search.es.management.ElasticsearchIndex)
+		 */
+		@Override
+		protected void indexGenerated(final ElasticsearchIndex<R> generatedIndex) {
+			ElasticsearchManager.this.activateNewIndex(generatedIndex, null);
+		}
+	}
+	
+	/** iff <code>true</code> the update of the index is disabled */
 	private boolean updateEnabled;
 	
+	/** the client to use for all interaction with elasticsearch */
 	protected final ESClient client;
 	
 	private final URI systemURI;
@@ -153,6 +204,7 @@ public class ElasticsearchManager<R extends Resource> {
 	 * generates a new index for the resource
 	 * @throws IndexAlreadyGeneratingException
 	 */
+	@Override
 	public void generateIndex() throws IndexAlreadyGeneratingException {
 		generateIndex(true);
 	}
@@ -171,6 +223,14 @@ public class ElasticsearchManager<R extends Resource> {
 		final ElasticsearchIndexGenerator<R> generator = new ElasticsearchIndexGenerator<>(newIndex, this.inputLogic, this.client, this.tools);
 		
 		final ElasticSearchIndexGenerationTask task = new ElasticSearchIndexGenerationTask(generator, newIndex);
+		this.executeTask(async, task);
+	}
+
+	/**
+	 * @param async
+	 * @param task
+	 */
+	private void executeTask(final boolean async, final AbstractSearchIndexGenerationTask task) {
 		if (async) {
 			this.executorService.submit(task);
 		} else {
@@ -182,37 +242,115 @@ public class ElasticsearchManager<R extends Resource> {
 			}
 		}
 	}
-
+	
 	/**
-	 * @param newIndex
+	 * @param indexNameToReplace
+	 * @throws IndexAlreadyGeneratingException 
 	 */
-	protected void activateNewIndex(ElasticsearchIndex<R> newIndex) {
+	@Override
+	public void regenerateIndex(final String indexNameToReplace) throws IndexAlreadyGeneratingException {
+		regenerateIndex(indexNameToReplace, true);
+	}
+	
+	/**
+	 * @param indexNameToReplace
+	 * @param async
+	 * @throws IndexAlreadyGeneratingException
+	 */
+	protected void regenerateIndex(final String indexNameToReplace, final boolean async) throws IndexAlreadyGeneratingException {
+		if (!this.generatorLock.tryAcquire()) {
+			throw new IndexAlreadyGeneratingException();
+		}
+		
+		final String newIndexName = ElasticsearchUtils.getIndexNameWithTime(this.systemURI, this.tools.getResourceType());
+		final ElasticsearchIndex<R> newIndex = new ElasticsearchIndex<>(newIndexName);
+		
+		final ElasticsearchIndexGenerator<R> generator = new ElasticsearchIndexGenerator<>(newIndex, this.inputLogic, this.client, this.tools);
+		
+		final ElasticSearchIndexRegenerationTask task = new ElasticSearchIndexRegenerationTask(generator, newIndex, indexNameToReplace);
+		this.executeTask(async, task);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.management.SearchIndexManager#regenerateAllIndices()
+	 */
+	@Override
+	public void regenerateAllIndices() {
+		try {
+			final String activeIndex = this.client.getIndexNameForAlias(this.getActiveLocalAlias());
+			if (present(activeIndex)) {
+				this.regenerateIndex(activeIndex, false);
+			} else {
+				this.generateIndex(false);
+			}
+			final String currentActiveIndex = this.client.getIndexNameForAlias(this.getActiveLocalAlias());
+			final String currentInactiveIndex = this.client.getIndexNameForAlias(this.getInactiveLocalAlias());
+			
+			final String secondIndexToRegenerate;
+			if (present(activeIndex) && !activeIndex.equals(currentActiveIndex)) {
+				secondIndexToRegenerate = currentActiveIndex;
+			} else {
+				secondIndexToRegenerate = currentInactiveIndex;
+			}
+			
+			if (present(secondIndexToRegenerate)) {
+				this.regenerateIndex(secondIndexToRegenerate, false);
+			} else {
+				this.generateIndex(false);
+			}
+		} catch (final IndexAlreadyGeneratingException e) {
+			log.error("error ", e);
+		}
+	}
+	
+	/**
+	 * @param 	newIndex
+	 * @param 	indexToDelete which index should be deleted;
+	 * 			<code>null</code> iff no preference
+	 */
+	protected void activateNewIndex(ElasticsearchIndex<R> newIndex, String indexToDelete) {
 		try {
 			this.updateLock.acquire();
 			
-			final String localActiveAlias = getActiveLocalAlias();
-			final String localInactiveAlias = getInactiveLocalAlias();
+			/*
+			 * change alias:
+			 * 1. new index will be the new active index
+			 * 2. old active index will be the new inactive index
+			 * 3. if present the inactive or indexToDelete index will be deleted
+			 */
+			final String localActiveAlias = this.getActiveLocalAlias();
+			final String localInactiveAlias = this.getInactiveLocalAlias();
 			final String activeIndexName = this.client.getIndexNameForAlias(localActiveAlias);
 			final String inactiveIndexName = this.client.getIndexNameForAlias(localInactiveAlias);
+			// set the preferedIndexToDelete to the inactive one iff no index specified
+			if (!present(indexToDelete)) {
+				indexToDelete = inactiveIndexName;
+			}
 			
 			final Set<Pair<String, String>> aliasesToAdd = new HashSet<>();
 			aliasesToAdd.add(new Pair<>(newIndex.getIndexName(), localActiveAlias));
-			if (present(activeIndexName)) {
-				aliasesToAdd.add(new Pair<>(activeIndexName, localInactiveAlias));
-			}
 			
 			final Set<Pair<String, String>> aliasesToRemove = new HashSet<>();
+			// only set the alias if the index should not be deleted
+			final boolean peferedDeletedActiveIndex = present(activeIndexName) && activeIndexName.equals(indexToDelete);
 			if (present(activeIndexName)) {
+				// remove active alias from the current active index
 				aliasesToRemove.add(new Pair<>(activeIndexName, localActiveAlias));
+				// we use the index as inactive index if we do not want to delete it
+				if (!peferedDeletedActiveIndex) {
+					aliasesToAdd.add(new Pair<>(activeIndexName, localInactiveAlias));
+				}
 			}
-			if (present(inactiveIndexName)) {
+			
+			// only remove the alias if the other index should be deleted
+			if (present(inactiveIndexName) && !peferedDeletedActiveIndex) {
 				aliasesToRemove.add(new Pair<>(inactiveIndexName, localInactiveAlias));
 			}
 			
 			this.client.updateAliases(aliasesToAdd, aliasesToRemove);
 			
-			if (present(inactiveIndexName)) {
-				this.client.deleteIndex(inactiveIndexName);
+			if (present(indexToDelete)) {
+				this.client.deleteIndex(indexToDelete);
 			}
 		} catch (InterruptedException e) {
 			log.error("can't acquire lock to update aliases", e);
@@ -224,6 +362,7 @@ public class ElasticsearchManager<R extends Resource> {
 	/**
 	 * @return informations about the indices managed by this manager
 	 */
+	@Override
 	public List<SearchIndexInfo> getIndexInformations() {
 		final List<SearchIndexInfo> infos = new LinkedList<>();
 		try {
@@ -284,6 +423,7 @@ public class ElasticsearchManager<R extends Resource> {
 	/**
 	 * update the inactive index
 	 */
+	@Override
 	public void updateIndex() {
 		if (!this.updateEnabled) {
 			log.debug("skipping updating index, update disabled");
@@ -292,6 +432,7 @@ public class ElasticsearchManager<R extends Resource> {
 		
 		if (!this.updateLock.tryAcquire()) {
 			log.warn("Another update in progress. Skipping update.");
+			return;
 		}
 		
 		try {
@@ -419,8 +560,32 @@ public class ElasticsearchManager<R extends Resource> {
 			new Pair<>(inactiveIndexName, localInactiveAlias)
 		);
 		
+		log.debug("switching index (current state I=" + inactiveIndexName + ", A=" + activeIndexName);
 		// update the aliases (atomic, see elastic search docu)
 		this.client.updateAliases(aliasesToAdd, aliasesToRemove);
+	}
+	
+	/**
+	 * @param indexName
+	 */
+	@Override
+	public void deleteIndex(final String indexName) {
+		if (!this.updateLock.tryAcquire()) {
+			throw new IllegalStateException("You cannot delete indices while update is in progress.");
+		}
+		
+		try {
+			// check if index is the current active one
+			final String currentActiveIndexName = this.client.getIndexNameForAlias(this.getActiveLocalAlias());
+			final String inactiveIndex = this.client.getIndexNameForAlias(this.getInactiveLocalAlias());
+			if (currentActiveIndexName.equals(indexName) && present(inactiveIndex)) {
+				this.switchActiveAndInactiveIndex();
+			}
+			
+			this.client.deleteIndex(indexName);
+		} finally {
+			this.updateLock.release();
+		}
 	}
 	
 	/**
@@ -527,30 +692,23 @@ public class ElasticsearchManager<R extends Resource> {
 	}
 	
 	/**
-	 * @return 
+	 * @return the count request builder
 	 * 
 	 */
 	public CountRequestBuilder prepareCount() {
-		return this.client.prepareCount(this.getActiveIndexName());
+		return this.client.prepareCount(this.getActiveLocalAlias());
 	}
 	
 	/**
-	 * @return
+	 * @return the search request builder
 	 */
 	public SearchRequestBuilder prepareSearch() {
-		return prepareSearch(this.getActiveIndexName());
-	}
-
-	/**
-	 * @return
-	 */
-	private String getActiveIndexName() {
-		return ElasticsearchUtils.getLocalAliasForResource(this.tools.getResourceType(), systemURI, true);
+		return prepareSearch(this.getActiveLocalAlias());
 	}
 
 	/**
 	 * @param indexName
-	 * @return
+	 * @return the prepared search builder
 	 */
 	protected SearchRequestBuilder prepareSearch(final String indexName) {
 		return this.client.prepareSearch(indexName);

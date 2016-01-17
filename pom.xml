@@ -34,7 +34,7 @@
 	<groupId>org.bibsonomy</groupId>
 	<artifactId>bibsonomy</artifactId>
 	<packaging>pom</packaging>
-	<version>3.4.0-SNAPSHOT</version>
+	<version>3.5.0-SNAPSHOT</version>
 	<description>
 		A blue social bookmark and publication sharing system.
 	</description>
@@ -256,7 +256,6 @@
 		<module>bibsonomy-webapp</module>
 		<module>bibsonomy-wiki</module>
 		<module>bibsonomy-recommender-connector</module>
-		<module>bibsonomy-suggestionservice</module>
 	</modules>
 	<build>
 		<pluginManagement>

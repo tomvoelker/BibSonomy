@@ -36,8 +36,6 @@ public class SearchViewCommand extends TagResourceViewCommand {
 	
 	/** String to search for */
 	private String requestedSearch = "";
-	
-
 
 	/**
 	 * sets the requested search string

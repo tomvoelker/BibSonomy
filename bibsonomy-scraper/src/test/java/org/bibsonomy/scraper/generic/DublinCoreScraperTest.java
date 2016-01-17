@@ -54,4 +54,8 @@ public class DublinCoreScraperTest {
 	public void testDCScraper4() {
 		UnitTestRunner.runSingleTest("url_270");
 	}
+	@Test
+	public void testDCScraper5() {
+		UnitTestRunner.runSingleTest("url_298");
+	}
 }

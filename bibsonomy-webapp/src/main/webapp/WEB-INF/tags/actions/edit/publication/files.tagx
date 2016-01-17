@@ -17,7 +17,7 @@
 		
 		<jsp:attribute name="content">
 			<fmt:message var="delete" key="post.bibtex.delete"/>
-			<script type="text/javascript" src="${resdir}/javascript/bs/jquery.documentuploader.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/jquery.documentuploader.js"><!-- keep me --></script>
 			
 			<!--+ 
 			 	|

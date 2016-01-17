@@ -38,9 +38,9 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="headerExt">
-			<script type="text/javascript" src="${resdir}/javascript/bs/publicationdetails.js"><!-- keep me --></script>
-			<script type="text/javascript" src="${resdir}/javascript/bs/publication.js"><!-- keep me --></script>
-			<script type="text/javascript" src="${resdir}/javascript/bs/additionalUrl.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/publicationdetails.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/publication.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/additionalUrl.js"><!-- keep me --></script>
 		</jsp:attribute>
 		
 		<jsp:attribute name="breadcrumbs">

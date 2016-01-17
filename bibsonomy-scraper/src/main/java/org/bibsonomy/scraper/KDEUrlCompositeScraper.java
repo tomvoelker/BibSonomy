@@ -38,6 +38,7 @@ import org.bibsonomy.scraper.url.kde.ams.AmsScraper;
 import org.bibsonomy.scraper.url.kde.annualreviews.AnnualreviewsScraper;
 import org.bibsonomy.scraper.url.kde.anthrosource.AnthroSourceScraper;
 import org.bibsonomy.scraper.url.kde.apa.APAScraper;
+import org.bibsonomy.scraper.url.kde.apha.APHAScraper;
 import org.bibsonomy.scraper.url.kde.aps.ApsScraper;
 import org.bibsonomy.scraper.url.kde.arxiv.ArxivScraper;
 import org.bibsonomy.scraper.url.kde.asm.AsmScraper;
@@ -53,6 +54,8 @@ import org.bibsonomy.scraper.url.kde.casesjournal.CasesJournalScraper;
 import org.bibsonomy.scraper.url.kde.cell.CellScraper;
 import org.bibsonomy.scraper.url.kde.citeseer.CiteseerxScraper;
 import org.bibsonomy.scraper.url.kde.citeulike.CiteulikeScraper;
+import org.bibsonomy.scraper.url.kde.copac.CopacScraper;
+import org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper;
 import org.bibsonomy.scraper.url.kde.dblp.DBLPScraper;
 import org.bibsonomy.scraper.url.kde.degruyter.DeGruyterScraper;
 import org.bibsonomy.scraper.url.kde.dlib.DLibScraper;
@@ -225,7 +228,11 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		 */
 		//addScraper(new ScientificcommonsScraper());
 		addScraper(new CellScraper());
-		addScraper(new WebOfKnowledgeScraper());
+		/*
+		 * the scraper and the related information in the xml file are disabled because the version of the website 
+		 * is session-based and hence, the scraping does not work.
+		 */
+		//addScraper(new WebOfKnowledgeScraper());
 		addScraper(new CasesJournalScraper());
 		addScraper(new ElsevierhealthScraper());
 		addScraper(new AandAScraper());
@@ -264,6 +271,12 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new WorldScientificScraper());
 		addScraper(new NowPublishersScraper());
 		addScraper(new GenomeBiologyScraper());
+		addScraper(new APHAScraper());
+		addScraper(new CSHLPScraper());
+		/*
+		 * it still under development
+		 */
+		//addScraper(new CopacScraper());
 		//addScraper(new AkademiaiScraper()); error = 404
 	}
 

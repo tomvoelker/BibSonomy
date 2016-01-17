@@ -56,21 +56,25 @@ public abstract class AbstractEsIndexTest {
 	/**
 	 * inits:
 	 * 	(1) test database
-	 * 	(2) start embedded elastic search
+	 * 	(2) start embedded elasticsearch
 	 * 	(3) create indices from test database
 	 * @throws IndexAlreadyGeneratingException
+	 * @throws InterruptedException 
 	 */
 	@BeforeClass
-	public static void beforeClass() throws IndexAlreadyGeneratingException {
+	public static void beforeClass() throws InterruptedException {
 		initTestDatabase();
 		startEmbeddedElasticsearchServer();
 		createIndices();
+		
+		// wait a little bit to get all systems ready TODO: remove?
+		Thread.sleep(1000);
 	}
 	
-	private static void createIndices() throws IndexAlreadyGeneratingException {
+	private static void createIndices() {
 		final Map<Class<? extends Resource>, ElasticsearchManager<? extends Resource>> managers = getAllManagers();
 		for (ElasticsearchManager<? extends Resource> manager : managers.values()) {
-			manager.generateIndex(false);
+			manager.regenerateAllIndices();
 		}
 	}
 

@@ -69,9 +69,9 @@
 			+ HTML header extension
 			+ -->
 		<jsp:attribute name="headerExt">
-			<script type="text/javascript" src="${resdir}/javascript/merged/bs/discussion.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/merged/discussion.js"><!-- keep me --></script>
 			<c:if test="${goldstandardPresent}">
-				<script type="text/javascript" src="${resdir}/javascript/bs/goldstandards.js"><!-- keep me --></script>
+				<script type="text/javascript" src="${resdir}/javascript/goldstandards.js"><!-- keep me --></script>
 			</c:if>
 			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.css" />
 		</jsp:attribute>

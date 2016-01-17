@@ -14,7 +14,7 @@
 	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
-	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
+	<jsp:directive.attribute name="heading" fragment="true" required="false"/>
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>
 	<jsp:directive.attribute name="contentIntro" fragment="true" required="false" />
 	<jsp:directive.attribute name="headerExt" fragment="true" />
@@ -90,8 +90,8 @@
 								 	| search
 								 	|
 								 	+-->
-								 <br style="clear: both;" />
-								 <p style="line-height: 9px; font-size:9px; padding:0;margin:0;">&amp;nbsp;<!-- KEEP ME --></p>
+								<br style="clear: both;" />
+								<p style="line-height: 9px; font-size:9px; padding:0;margin:0;">&amp;nbsp;<!-- KEEP ME --></p>
 								<jsp:invoke fragment="heading"/>
 							</div>
 						</div>

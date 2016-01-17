@@ -65,6 +65,7 @@ import org.bibsonomy.model.logic.querybuilder.AbstractSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.search.InvalidSearchRequestException;
 import org.bibsonomy.search.SearchInfoLogic;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.ESConstants.Fields;
@@ -76,6 +77,7 @@ import org.bibsonomy.services.searcher.PersonSearch;
 import org.bibsonomy.services.searcher.ResourceSearch;
 import org.elasticsearch.action.count.CountRequestBuilder;
 import org.elasticsearch.action.count.CountResponse;
+import org.elasticsearch.action.search.SearchPhaseExecutionException;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -193,6 +195,9 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			}
 		} catch (final IndexNotFoundException e) {
 			log.error("IndexMissingException: " + e);
+		} catch (final SearchPhaseExecutionException e) {
+			log.info("parsing search query failed", e);
+			throw new InvalidSearchRequestException();
 		}
 		
 		final List<Tag> tags = new LinkedList<Tag>();
@@ -269,6 +274,9 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			}
 		} catch (final IndexNotFoundException e) {
 			log.error("no index found: " + e);
+		} catch (final SearchPhaseExecutionException e) {
+			log.info("parsing query failed.", e);
+			throw new InvalidSearchRequestException();
 		}
 		return postList;
 	}
@@ -415,7 +423,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		searchRequestBuilder.setTypes(ResourceFactory.getResourceName(this.resourceType));
 		searchRequestBuilder.setSearchType(SearchType.DEFAULT);
 		searchRequestBuilder.setQuery(queryBuilder) //
-		.setMinScore((float)minPlainEsScore) //
+		.setMinScore((float) minPlainEsScore) //
 		.setFrom(offset).setSize(MAX_OFFSET / 10);
 		return searchRequestBuilder;
 	}

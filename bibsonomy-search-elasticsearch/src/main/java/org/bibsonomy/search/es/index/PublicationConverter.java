@@ -65,6 +65,24 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	private static final String PERSON_DELIMITER = " & ";
 	private static final String NAME_PART_DELIMITER = " ; ";
 	
+	static interface PersonNameSetter {
+		public void setPersonNames(final BibTex publication, final List<PersonName> personNames);
+	}
+	
+	private static final PersonNameSetter AUTHOR_NAME_SETTER = new PersonNameSetter() {
+		@Override
+		public void setPersonNames(BibTex publication, List<PersonName> personNames) {
+			publication.setAuthor(personNames);
+		}
+	};
+	
+	private static final PersonNameSetter EDITOR_NAME_SETTER = new PersonNameSetter() {
+		@Override
+		public void setPersonNames(BibTex publication, List<PersonName> personNames) {
+			publication.setEditor(personNames);
+		}
+	};
+	
 	/**
 	 * @param systemURI
 	 */
@@ -96,15 +114,8 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		publication.setDay((String) source.get(Fields.Publication.DAY));
 		publication.setEdition((String) source.get(Fields.Publication.EDITION));
 		
-		@SuppressWarnings("unchecked")
-		final List<String> editorsList = (List<String>) source.get(Fields.Publication.EDITOR);
-		final String editorsString = org.bibsonomy.util.StringUtils.implodeStringCollection(editorsList, PersonNameUtils.PERSON_NAME_DELIMITER);
-		publication.setEditor(PersonNameUtils.discoverPersonNamesIgnoreExceptions(editorsString));
-		
-		@SuppressWarnings("unchecked")
-		final List<String> authorsList = (List<String>) source.get(Fields.Publication.AUTHOR);
-		final String authorsString = org.bibsonomy.util.StringUtils.implodeStringCollection(authorsList, PersonNameUtils.PERSON_NAME_DELIMITER);
-		publication.setAuthor(PersonNameUtils.discoverPersonNamesIgnoreExceptions(authorsString));
+		setPersonNames(Fields.Publication.EDITOR, EDITOR_NAME_SETTER, publication, source);
+		setPersonNames(Fields.Publication.AUTHOR, AUTHOR_NAME_SETTER, publication, source);
 		
 		publication.setEntrytype((String) source.get(Publication.ENTRY_TYPE));
 		publication.setHowpublished((String) source.get(Publication.HOWPUBLISHED));
@@ -124,6 +135,22 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		publication.setUrl((String) source.get(Publication.URL));
 		publication.setVolume((String) source.get(Publication.VOLUME));
 		publication.setYear((String) source.get(Publication.YEAR));
+	}
+
+	/**
+	 * @param publication
+	 * @param source
+	 */
+	private static void setPersonNames(final String fieldName, final PersonNameSetter personNameSetter, BibTex publication, Map<String, Object> source) {
+		final Object rawPersonNamesFieldValue = source.get(fieldName);
+		if (rawPersonNamesFieldValue instanceof List) {
+			@SuppressWarnings("unchecked")
+			final List<String> personNamesList = (List<String>) rawPersonNamesFieldValue;
+			final String personNamesString = org.bibsonomy.util.StringUtils.implodeStringCollection(personNamesList, PersonNameUtils.PERSON_NAME_DELIMITER);
+			personNameSetter.setPersonNames(publication, PersonNameUtils.discoverPersonNamesIgnoreExceptions(personNamesString));
+		} else if (rawPersonNamesFieldValue != null) {
+			log.warn(fieldName + " field was '" + rawPersonNamesFieldValue + "' of type '" + rawPersonNamesFieldValue.getClass().getName() + "'");
+		}
 	}
 
 	/* (non-Javadoc)
@@ -241,7 +268,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	 * @see org.bibsonomy.search.es.index.ResourceConverter#convertPostInternal(java.util.Map, org.bibsonomy.model.Post)
 	 */
 	@Override
-	protected void convertPostInternal(Post<BibTex> post, Map<String, Object> jsonDocument) {
+	protected void convertPostInternal(final Post<BibTex> post, final Map<String, Object> jsonDocument) {
 		jsonDocument.put(ESConstants.NORMALIZED_ENTRY_TYPE_FIELD_NAME, getNormalizedEntryType(post));
 		
 		final List<ResourcePersonRelation> rels = post.getResourcePersonRelations();
@@ -252,7 +279,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	 * @param jsonDocument
 	 * @param rels
 	 */
-	public void updateDocumentWithPersonRelation(Map<String, Object> jsonDocument, final List<ResourcePersonRelation> rels) {
+	public void updateDocumentWithPersonRelation(final Map<String, Object> jsonDocument, final List<ResourcePersonRelation> rels) {
 		jsonDocument.put(ESConstants.AUTHOR_ENTITY_NAMES_FIELD_NAME, serializeMainNames(rels, PersonResourceRelationType.AUTHOR));
 		jsonDocument.put(ESConstants.AUTHOR_ENTITY_IDS_FIELD_NAME, serializePersonIds(rels, PersonResourceRelationType.AUTHOR));
 		jsonDocument.put(ESConstants.PERSON_ENTITY_NAMES_FIELD_NAME, serializeMainNames(rels, null));

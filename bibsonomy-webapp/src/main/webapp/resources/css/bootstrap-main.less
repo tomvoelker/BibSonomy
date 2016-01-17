@@ -120,6 +120,7 @@ ul.dropdown-menu.list-options > li > span {
 #logo {
 	font-family: Arial, 'sans-serif';
 	margin-top: 30px;
+	color: @main-color;
 }
 
 #logo h1,
@@ -815,7 +816,7 @@ span.entrytype {
 	margin-top: 22px;
 }
 
-span.article				{background-position: 0 0;	  width: 58px; height:53px; margin-left: 3px; margin-top: 14px;}
+span.article				{background-position: 0 0;      width: 58px; height:53px; margin-left: 3px; margin-top: 14px;}
 span.book					{background-position:-4px -54px;  width: 55px; height:46px; margin-left: 0; margin-top: 16px;}
 span.booklet				{background-position:-2px -101px; height:65px;			margin-top: 6px; }
 span.conference				{background-position:-2px -167px; height:44px;}
@@ -824,7 +825,7 @@ span.inbook					{background-position:-2px -258px; width: 55px; height:60px; marg
 span.incollection			{background-position:-5px -319px; height:60px; width: 56px; margin-top: 8px;}
 span.inproceedings			{background-position:-2px -380px; height:49px; margin-left: 9px; margin-top: 14px;}
 span.manual					{background-position:-2px -430px; height:46px;}
-span.mastersthesis			{background-position:0 -477px;	height:64px;}
+span.mastersthesis			{background-position:0 -477px;    height:64px;}
 span.misc					{background-position:0 -542px;	  height:49px; margin-left: 10px; margin-top: 14px; }
 span.patent					{background-position:0 -592px;width:43px;height:55px; 	  margin-left: 6px; margin-top: 11px;}
 span.pdf					{background-position:0 -648px;width:59px;height:30px;}
@@ -1353,6 +1354,24 @@ ul#urlList {
 .label-disabled {
 	color: #777777;
 	border: 1px solid #777777;
+}
+
+.btn-group > form {
+	display: inline;
+}
+
+.btn-group > form + form {
+	margin-left: -1px;
+}
+
+.btn-group > form:first-child > .btn {
+	margin-left: 0;
+	.border-right-radius(0);
+}
+
+.btn-group > form:last-child > .btn {
+	margin-right: 0;
+	.border-left-radius(0);
 }
 
 /** fixes for rating plugin */

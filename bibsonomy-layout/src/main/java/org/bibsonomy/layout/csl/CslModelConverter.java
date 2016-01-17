@@ -287,23 +287,9 @@ public class CslModelConverter {
 		
 		rec.setDocuments(convertList(publication.getDocuments()));
 		
-		// CslModelConverter.appendMiscFields(rec, publication);
+		rec.setMisc(publication.getMiscFields());
 		
 		return rec;
-	}
-
-	private static void appendMiscFields(Record rec, BibTex publication) {
-		Map<String, String> miscFields = publication.getMiscFields();
-		
-		if (miscFields == null) {
-			return;
-		}
-		
-		for (String key: miscFields.keySet()) {
-			
-			String value = miscFields.get(key);
-			rec.addMiscField(key, value);
-		}
 	}
 
 	private static List<DocumentCslWrapper> convertList(final List<Document> documents) {
