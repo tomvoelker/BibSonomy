@@ -120,7 +120,8 @@
 							</fmt:param>
 						</fmt:message>
 						${mtl:ch('nbsp')}
-						<!-- <c:choose>
+						<!-- TODO: discuss follower
+							<c:choose>
 							<c:when test="${command.followerOfUser}">
 								<span id="removeLink">
 									<a style="cursor: pointer;" 
