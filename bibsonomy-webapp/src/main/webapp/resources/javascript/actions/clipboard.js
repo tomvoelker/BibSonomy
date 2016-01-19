@@ -80,7 +80,7 @@ function updateClipboard (element, param) {
 		/*
 		 * update the number of clipboard items
 		 */
-		$("#clipboard-counter").html(data);
+		$("#clipboard-counter").show().html(data);
 		updateCounter();
 	}
 	});
