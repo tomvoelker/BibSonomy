@@ -120,7 +120,8 @@
 							</fmt:param>
 						</fmt:message>
 						${mtl:ch('nbsp')}
-						<c:choose>
+						<!-- TODO: discuss follower
+							<c:choose>
 							<c:when test="${command.followerOfUser}">
 								<span id="removeLink">
 									<a style="cursor: pointer;" 
@@ -150,7 +151,7 @@
 									   <fmt:message key="follow.link.text.followLong"/></a>
 								</span>
 							</c:otherwise>
-						</c:choose>
+						</c:choose> -->
 					</jsp:attribute>
 				</parts:infobox>
 			</c:if>
