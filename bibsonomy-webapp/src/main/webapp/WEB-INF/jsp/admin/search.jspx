@@ -1,0 +1,131 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/users"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="urn:http://www.springframework.org/tags"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
+
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<fmt:message key="navi.admin" var="pageTitle" />
+	
+	<layout:layout 
+		pageTitle="full text search" 
+		loginUser="${command.context.loginUser}" 
+		requPath="${requPath}"
+		minimizedContentWidth="${true}"
+		noSidebar="${true}">
+		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:admin />
+					<nav:crumb nameKey="navi.admin.fulltextsearch" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+		
+		<jsp:attribute name="content">
+			<h2>Elasticsearch Indices</h2>
+			
+			<c:forEach items="${command.searchIndexInfo}" var="searchIndexInfoEntry">
+				<c:set var="searchIndexInfos" value="${searchIndexInfoEntry.value}" />
+				<c:set var="resourceType" value="${searchIndexInfoEntry.key}" />
+				<h3><c:out value="${resourceType} Indices" /></h3>
+				<c:set var="searchIndexInfosSize" value="${fn:length(searchIndexInfos)}" />
+				<c:choose>
+					<c:when test="${searchIndexInfosSize > 0 }">
+						<table class="table table-condensed">
+							<thead>
+								<tr>
+									<th>Index Name</th>
+									<th>State</th>
+									<th>Version</th>
+									<th># Docs</th>
+									<th>Last tas id</th>
+									<th>Last log date</th>
+									<th>Last p. id</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+							<c:forEach var="searchIndexInfo" items="${searchIndexInfos}">
+								<tr>
+									<td><c:out value="${searchIndexInfo.id}" /></td>
+									<td><c:out value="${searchIndexInfo.state}" /></td>
+									
+									<c:choose>
+										<c:when test="${searchIndexInfo.state != 'GENERATING' }">
+											<td><c:out value="${searchIndexInfo.syncState.mappingVersion}" /></td>
+											<td><c:out value="${searchIndexInfo.statistics.numberOfDocuments}" /></td>
+											<td><c:out value="${searchIndexInfo.syncState.last_tas_id}" /></td>
+											<td><c:out value="${searchIndexInfo.syncState.last_log_date}" /></td>
+											<td><c:out value="${searchIndexInfo.syncState.lastPersonChangeId}" /></td>
+											<td>
+												<div class="btn-group">
+													<form class="popover-confirm form-inline">
+														<input type="hidden" name="resource" value="${resourceType}" />
+														<input type="hidden" name="action" value="regenerate_index" />
+														<input type="hidden" name="id" value="${searchIndexInfo.id}"/>
+														<button data-toggle="popover" data-placement="bottom" role="button" data-content="&lt;button class='btn btn-info btn-xs confirm'>regenerate&lt;/button>" class="btn btn-default btn-xs"><fontawsome:icon icon="refresh" /></button>
+													</form>
+													<form class="popover-confirm form-inline">
+														<input type="hidden" name="resource" value="${resourceType}" />
+														<input type="hidden" name="action" value="delete_index" />
+														<input type="hidden" name="id" value="${searchIndexInfo.id}"/>
+														<button data-toggle="popover" data-placement="bottom" role="button" data-content="&lt;button class='btn btn-danger btn-xs confirm'>delete&lt;/button>" class="btn btn-danger btn-xs"><fontawsome:icon icon="trash" /></button>
+													</form>
+												</div>
+											</td>
+										</c:when>
+										
+										<c:otherwise>
+											<td colspan="6">
+												<bs:progress progress="${searchIndexInfo.indexGenerationProgress * 100}" showProgressLabel="${true}" />
+											</td>
+										</c:otherwise>
+									</c:choose>
+									
+									<th><!-- keep me --></th>
+								</tr>
+							</c:forEach>
+							</tbody>
+						</table>
+						<c:if test="${searchIndexInfosSize lt 2}">
+							<bs:alert style="warning">
+								<jsp:attribute name="alertBody">
+									There is only one index. Please generate another one.
+								</jsp:attribute>
+							</bs:alert>
+						</c:if>
+					</c:when>
+					
+					<c:otherwise>
+						<bs:alert style="warning">
+							<jsp:attribute name="alertBody">
+								Did not found any indices. Please generate an index.
+							</jsp:attribute>
+						</bs:alert>
+					</c:otherwise>
+				</c:choose>
+				<form method="post">
+					<input type="hidden" name="resource" value="${resourceType}" />
+					<input type="hidden" name="action" value="generate_index" />
+					<bsform:button size="defaultSize" style="defaultStyle" value="Generate new ${resourceType} index" type="submits"/>
+				</form>
+				<br />
+			</c:forEach>
+		</jsp:attribute>
+	</layout:layout>
+</jsp:root>

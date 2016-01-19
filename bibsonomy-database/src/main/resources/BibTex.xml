@@ -116,7 +116,7 @@
 		SELECT <include refid="allBibtexAttributesWithSimHashes"/>,t.change_date, t.tag_name, h.ctr AS count, g.group, g.group_name, <include refid="allDocumentAttributes"/>, <include refid="reviewRatingsRows" />
 		FROM bibtex b <include refid="reviewRatingsJoinPublication" />, tas t, groupids g, bibhash h,
 			(SELECT t1.content_id
-				FROM <include refid="tagFromQuery"/>			
+				FROM <include refid="tagFromQuery"/>
 				WHERE <include refid="tagWhereQuery"/>
 					<include refid="restrictToGroups"/>
 					AND t1.content_type = #contentType#

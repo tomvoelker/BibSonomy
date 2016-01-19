@@ -15,7 +15,7 @@ $(document).ready(function() {
 				$("#btnUnlink").show();
 				$("#btnLink").removeClass("btn-success");
 				$("#btnLink").addClass("btn-default");
-			},2000); 
+			},2000);
 		});
 	});
 	

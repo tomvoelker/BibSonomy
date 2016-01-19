@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -80,7 +80,7 @@ public class DBLogicUserInterfaceFactory extends AbstractDBLogicInterfaceFactory
 		try {
 			final User loggedInUser = getLoggedInUserAccess(loginName, password, session);
 			if (present(loggedInUser.getName())) {
-				UserUtils.setGroupsByGroupIDs(loggedInUser, this.groupDb.getGroupIdsForUser(loggedInUser.getName(), session));
+				loggedInUser.setGroups(this.groupDb.getGroupsForUser(loggedInUser.getName(), true, session));
 			}
 			return loggedInUser;
 		} finally {

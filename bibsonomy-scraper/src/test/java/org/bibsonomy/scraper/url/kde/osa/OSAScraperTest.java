@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -52,9 +52,10 @@ public class OSAScraperTest {
 	public void urlTestRun(){
 		UnitTestRunner.runSingleTest("url_93");
 	}
+	
 	@Test
 	public void testReferences() throws Exception {
-		final ScrapingContext sc = new ScrapingContext(new URL("http://www.opticsinfobase.org/josaa/abstract.cfm?uri=josaa-25-5-1084"));
+		final ScrapingContext sc = new ScrapingContext(new URL("https://www.osapublishing.org/josaa/abstract.cfm?uri=josaa-25-5-1084"));
 		
 		OSAScraper osa = new OSAScraper();
 		

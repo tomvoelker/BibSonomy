@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/util
+						http://www.springframework.org/schema/util/spring-util.xsd">
+	
+	<import resource="classpath:org/bibsonomy/bibsonomy-search-context.xml" />
+	
+	<!-- we use a transport client -->
+	<bean id="elasticsearchClient" class="org.bibsonomy.search.es.util.spring.ElasticsearchTransportClientFactoryBean">
+		<property name="esAddresses" value="${search.es.address}"/>
+		<property name="esClusterName" value="${search.es.cluster.name}"/>
+	</bean>
+	
+	<bean id="esClient" class="org.bibsonomy.search.es.client.ElasticsearchClient" destroy-method="shutdown">
+		<constructor-arg ref="elasticsearchClient" />
+	</bean>
+	
+	<bean id="elasticsearchBookmarkManager" class="org.bibsonomy.search.es.management.ElasticsearchManager" destroy-method="shutdown">
+		<constructor-arg value="${search.update.enabled}" />
+		<constructor-arg ref="esClient" />
+		<constructor-arg ref="systemURI" />
+		<constructor-arg ref="bookmarkSearchDBLogic" />
+		<constructor-arg ref="elasticsearchBookmarkTools" />
+	</bean>
+	
+	<bean id="elasticsearchPublicationManager" class="org.bibsonomy.search.es.management.ElasticsearchPublicationManager" destroy-method="shutdown">
+		<constructor-arg value="${search.update.enabled}" />
+		<constructor-arg ref="esClient" />
+		<constructor-arg ref="systemURI" />
+		<constructor-arg ref="publicationSearchDBLogic" />
+		<constructor-arg ref="elasticsearchPublicationTools" />
+	</bean>
+	
+	<bean id="systemURI" class="java.net.URI">
+		<constructor-arg value="${project.home}" />
+	</bean>
+	
+	<bean id="elasticsearchBookmarkMappingBuilder" class="org.bibsonomy.search.es.index.BookmarkMappingBuilder">
+		<constructor-arg ref="searchBookmarkClass" />
+	</bean>
+	
+	<bean id="elasticsearchPublicationMappingBuilder" class="org.bibsonomy.search.es.index.PublicationMappingBuilder">
+		<constructor-arg ref="searchPublicationClass" />
+	</bean>
+	
+	<bean id="elasticsearchResourceConverter" class="org.bibsonomy.search.es.index.ResourceConverter" abstract="true">
+		<constructor-arg ref="systemURI" />
+	</bean>
+	
+	<bean id="elasticsearchBookmarkConverter" class="org.bibsonomy.search.es.index.BookmarkConverter" parent="elasticsearchResourceConverter"/>
+	
+	<bean id="elasticsearchPublicationConverter" class="org.bibsonomy.search.es.index.PublicationConverter" parent="elasticsearchResourceConverter"/>
+	
+	<bean id="elasticsearchBookmarkTools" class="org.bibsonomy.search.es.management.ElasticsearchIndexTools">
+		<constructor-arg ref="searchBookmarkClass" />
+		<constructor-arg ref="elasticsearchBookmarkConverter" />
+		<constructor-arg ref="elasticsearchBookmarkMappingBuilder" />
+	</bean>
+	
+	<bean id="elasticsearchPublicationTools" class="org.bibsonomy.search.es.management.ElasticsearchIndexTools">
+		<constructor-arg ref="searchPublicationClass" />
+		<constructor-arg ref="elasticsearchPublicationConverter" />
+		<constructor-arg ref="elasticsearchPublicationMappingBuilder" />
+	</bean>
+	
+	<bean id="elasticsearchBookmarkSearch" class="org.bibsonomy.search.es.search.EsResourceSearch">
+		<property name="manager" ref="elasticsearchBookmarkManager" />
+		<property name="resourceConverter" ref="elasticsearchBookmarkConverter" />
+		<property name="resourceType" ref="searchBookmarkClass" />
+		<property name="infoLogic" ref="searchInfoLogic" />
+	</bean>
+	
+	<bean id="elasticsearchPublicationSearch" class="org.bibsonomy.search.es.search.ElasticsearchPublicationSearch">
+		<property name="manager" ref="elasticsearchPublicationManager" />
+		<property name="resourceConverter" ref="elasticsearchPublicationConverter" />
+		<property name="resourceType" ref="searchPublicationClass" />
+		<property name="infoLogic" ref="searchInfoLogic" />
+		<property name="genealogyUser" value="${genealogy.import.user}" />
+	</bean>
+	
+	<util:map id="elasticsearchManagers">
+		<entry key-ref="searchBookmarkClass" value-ref="elasticsearchBookmarkManager" />
+		<entry key-ref="searchPublicationClass" value-ref="elasticsearchPublicationManager" />
+	</util:map>
+</beans>

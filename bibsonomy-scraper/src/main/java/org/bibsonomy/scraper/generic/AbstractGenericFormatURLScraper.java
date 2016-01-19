@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -46,14 +46,14 @@ import org.bibsonomy.util.WebUtils;
  */
 public abstract class AbstractGenericFormatURLScraper extends AbstractUrlScraper {
 	
-	protected abstract String getDownloadURL(final URL url) throws ScrapingException;
+	protected abstract String getDownloadURL(final URL url) throws ScrapingException, IOException;
 	
 	@Override
 	protected final boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
 		scrapingContext.setScraper(this);
 		try {
 			final URL url = scrapingContext.getUrl();
-			final String downloadURL = getDownloadURL(url);
+			final String downloadURL = this.getDownloadURL(url);
 			if (downloadURL == null) {
 				throw new ScrapingFailureException("can't get download url for " + url);
 			}
