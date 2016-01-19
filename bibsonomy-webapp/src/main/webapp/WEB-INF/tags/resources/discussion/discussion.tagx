@@ -32,9 +32,6 @@
 	
 	<div class="discussion-all">
 		<!-- TODO: use spring security tags -->
-		
-
-
 		<c:if test="${not fn:contains(resource['class'].simpleName, 'Bookmark') and resource.entrytype=='preprint' and empty resource.discussionItems}">
 			<p class="help-block">
 				<fmt:message key="post.resource.preprint.hint" />
@@ -43,29 +40,11 @@
 	
 		<!-- The input forms -->
 		<div id="discussion" data-interhash="${resource.interHash}">
-			<discussionItem:discussionItems discussionItems="${discussionItems}" loginUser="${loginUser}" resource="${resource}" />
+			<discussionItem:subDiscussionItems discussionItems="${discussionItems}" loginUser="${loginUser}" resource="${resource}" />
 			
 			<!-- TODO: use spring security tags -->
 			<c:if test="${command.context.userLoggedIn}">
-				<h4 class="pub-details">
-					<span class="fa fa-comment-o"><!--  --></span>
-					<c:out value=" " />
-					<fmt:message key="post.resource.comment.actions.create" />
-				</h4>
-				<div id="createReview" class="createReview">
-					<review:reviewForm resource="${resource}" userName="${loginUser.name}" postUserName="${postUserName}"/>
-					<!-- TODO: add tips for reviewing a resource !-->
-				</div>
-				<!-- review and comment forms !-->
-				<div id="createComment" class="hidden">
-					<review:reviewForm resource="${resource}" userName="${loginUser.name}" postUserName="${postUserName}" type="comment"/>
-					<!-- TODO: add tips for reviewing a resource !--> 
-				</div>
-				<!-- review and comment forms !-->
-				<div id="createCommentInstance" class="hidden">
-					<review:reviewForm resource="${resource}" userName="${loginUser.name}" postUserName="${postUserName}" type="comment"/>
-					<!-- TODO: add tips for reviewing a resource !--> 
-				</div>
+				<review:simpleReviewForm resource="${resource}" userName="${loginUser.name}"/>
 			</c:if>
 		</div>
 

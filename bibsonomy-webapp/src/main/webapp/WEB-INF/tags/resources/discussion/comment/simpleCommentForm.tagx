@@ -1,0 +1,15 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/resources/discussion/discussionItem">
+	
+	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
+	<jsp:directive.attribute name="userName" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="parentItem" type="org.bibsonomy.model.DiscussionItem" required="false" />
+	
+	<discussionItem:simpleDiscussionForm postUserName="TODO" userName="${userName}" action="create" resource="${resource}" discussionItemClass="comment" parentItem="${parentItem}" />
+	
+</jsp:root>

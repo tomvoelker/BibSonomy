@@ -9,62 +9,57 @@
 	
 	<c:set var="discussionItemClass" value="${fn:toLowerCase(discussionItem['class'].simpleName)}" />
 	
-	<div class="pull-right">
-	
-		<div class="btn-group btn-group-sm edit-media-buttons">
+	<div class="btn-group btn-group-xs edit-media-buttons">
+		
+		<!-- reply links  -->
+		<c:if test="${command.context.userLoggedIn and not disableReply}">
 			
-			<!-- reply links  -->
-			<c:if test="${command.context.userLoggedIn and not disableReply}">
-				
-					<fmt:message key="post.resource.comment.actions.reply.title" var="title"/>
-					<fmt:message key="post.resource.comment.actions.reply" var="reply"/>
-					<a href="#reply" class="btn btn-default reply" title="${title}">
-						<span class="fa fa-reply"><!--  --><c:out value=" " /></span>
-					</a>
-				
-			</c:if>
-			<c:set var="subDiscussionItemsSize" value="${fn:length(discussionItem.subDiscussionItems)}" />
-			
-			<!-- number of replies and toggle link -->
-			<fmt:message key="post.resource.discussion.replies.hide.title" var="title"/>
-			<c:choose>
-				<c:when test="${subDiscussionItemsSize > 0}">
-					
-						<a  href="#" class="btn btn-default toggleReplies" title="${title}">
-							<!-- <fmt:message key="post.resource.discussion.replies.hide" /> -->
-							<span class="fa fa-comments-o"><!--  --></span>
-						</a>
-					
-				</c:when>
-
-			</c:choose>
-			
-			<!-- edit and delete link -->
-			<!-- TODO: use spring security tag lib -->
-			<c:set var="own" value="${command.context.loginUser.name eq discussionItem.user.name}" />
-			<c:if test="${command.context.userLoggedIn and own}">
-				<fmt:message key="post.resource.${discussionItemClass}.actions.edit.title" var="title"/>
-				<fmt:message key="post.resource.${discussionItemClass}.actions.delete.title" var="title"/>
-				<fmt:message key="post.resource.${discussionItemClass}.actions.delete" var="delete"/>
-				
-				<a href="#edit${discussionItemClass}" class="btn btn-default ${discussionItemClass}EditLink editLink" title="${title}">
-					<span class="fa fa-pencil"><!--  --></span>
-				
+				<fmt:message key="post.resource.comment.actions.reply.title" var="title"/>
+				<fmt:message key="post.resource.comment.actions.reply" var="reply"/>
+				<a href="#reply" class="btn btn-default reply" title="${title}">
+					<span class="fa fa-reply"><!--  --><c:out value=" " /></span>
 				</a>
 			
-				<a href="#delete${discussionItemClass}" class="btn btn-default ${discussionItemClass}DeleteLink deleteLink" title="${title}">
-					<span class="fa fa-times"><!--  --></span>
+		</c:if>
+		<c:set var="subDiscussionItemsSize" value="${fn:length(discussionItem.subDiscussionItems)}" />
+		
+		<!-- number of replies and toggle link -->
+		<fmt:message key="post.resource.discussion.replies.hide.title" var="title"/>
+		<c:choose>
+			<c:when test="${subDiscussionItemsSize > 0}">
+				<a  href="#" class="btn btn-default toggleReplies" title="${title}">
+					<span class="fa fa-comments-o"><!--  --></span><c:out value=" " />
+					<span class="badge"><c:out value="${subDiscussionItemsSize}" /></span>
 				</a>
+			</c:when>
 
-			</c:if>
-	
-			<!-- TODO: admin actions for mark as spammer -->
-
-		</div>
-				<span class="deleteInfo hidden">
-					<img src="${resdir}/image/ajax_loader.gif" alt="loading" />
-					<fmt:message key="post.resource.${discussionItemClass}.action.delete" />
-				</span>
+		</c:choose>
 	</div>
-	<p class="clearfix"><!--  --></p>
+		<!-- edit and delete link -->
+		<!-- TODO: use spring security tag lib -->
+	<c:set var="own" value="${command.context.loginUser.name eq discussionItem.user.name}" />
+	<c:if test="${command.context.userLoggedIn and own}">
+		<div class="btn-group btn-group-xs edit-media-buttons">
+			<fmt:message key="post.resource.${discussionItemClass}.actions.edit.title" var="title"/>
+			<fmt:message key="post.resource.${discussionItemClass}.actions.delete.title" var="title"/>
+			<fmt:message key="post.resource.${discussionItemClass}.actions.delete" var="delete"/>
+			
+			<a href="#edit${discussionItemClass}" class="btn btn-default ${discussionItemClass}EditLink editLink" title="${title}">
+				<span class="fa fa-pencil"><!--  --></span>
+			
+			</a>
+		
+			<a href="#delete${discussionItemClass}" class="btn btn-default ${discussionItemClass}DeleteLink deleteLink" title="${title}">
+				<span class="fa fa-times"><!--  --></span>
+			</a>
+		</div>
+	</c:if>
+	
+	<!-- TODO: admin actions for mark as spammer -->
+
+	
+	<span class="deleteInfo hidden">
+		<img src="${resdir}/image/ajax_loader.gif" alt="loading" />
+		<fmt:message key="post.resource.${discussionItemClass}.action.delete" />
+	</span>
 </jsp:root>

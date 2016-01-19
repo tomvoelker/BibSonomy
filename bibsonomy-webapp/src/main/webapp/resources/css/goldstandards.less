@@ -1,53 +1,69 @@
+#goldstandard {
+	h1 {
+		font-size: 100%;
+		
+		.publication-description {
+			font-size: 75%;
+			display: block;
+			margin-top: 0.4em;
+		}
+	}
+	
+	.tagcloud {
+		text-align: center;
+		.tag {
+			display: inline-block;
+			padding: 2px 5px 3px;
+			margin: 0.8em;
+			background-color: @main-color;
+			font-weight: 700;
+			line-height: 1;
+			color: white;
+			text-align: center;
+			white-space: nowrap;
+			vertical-align: baseline;
+			border-radius: .25em;
+		}
+		
+		.tagtiny {
+			font-size: 50%;
+		}
+		
+		.tagnormal {
+			font-size: 75%
+		}
+		
+		.taglarge {
+			font-size: 100%;
+		}
+		
+		.taghuge {
+			font-size: 125%;
+			padding: 8px;
+		}
+	}
+	
+	.citation-box {
+		margin-bottom: 50px;
+	}
+}
+
 .community-info {
 	margin-left: 15px;
 	padding: 2px;
 	
-}
-
-.community-info.warning {
-	background-color: @alert-warning-bg;
+	&.warning {
+		background-color: @alert-warning-bg;
+	}
 }
 
 #linksresources, #related-publications-references {
 	margin-top: 0.5em;
 }
 
-h1 .publication-description {
-	font-size: 75%;
-	display: block;
-	margin-top: 0.4em;
-}
-
-.tagcloud {
-	text-align: center;
-	.tag {
-		display: inline;
-		padding: .2em .6em .3em;
-		margin: 0.8em;
-		background-color: @main-color;
-		font-weight: 700;
-		line-height: 1;
-		color: white;
-		text-align: center;
-		white-space: nowrap;
-		vertical-align: baseline;
-		border-radius: .25em;
-	}
-	
-	.tagtiny {
-		font-size: 50%;
-	}
-	
-	.tagnormal {
-		font-size: 75%
-	}
-	
-	.taglarge {
-		font-size: 100%;
-	}
-	
-	.taghuge {
-		font-size: 125%;
-		line-height: 2;
+#linksresources {
+	margin-top: 15px;
+	dt, dd {
+		padding-bottom: 3px;
 	}
 }

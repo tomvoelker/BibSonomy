@@ -18,38 +18,9 @@ $(function() {
 	
 	// init all selectable stars
 	initStars();
-	
-	$(REVIEW_UPDATE_FORM_SELECTOR).hide();
-	
-	// hide graph and info
-	if ($('#noReviewInfo').length > 0) {
-		$(RATING_AVG_DIV_SELECTOR).hide();
-		$('#ratingDistribution').hide();
-	}
-	
-	$(CREATE_REVIEW_LINKS_SELECTOR).click(showReviewForm);
-	
-	// create review form
-	$(REVIEW_CREATE_FORM_SELECTOR).submit(createReview);
-	
-	$(REVIEW_UPDATE_FORM_SELECTOR).submit(updateReview);
-	
-	// delete link for own review
-	$(REVIEW_OWN_SELECTOR).find(REVIEW_DELETE_LINK_SELECTOR).click(deleteReview);
-	
-	// show edit form for own review
-	$(REVIEW_OWN_SELECTOR).find(REVIEW_EDIT_LINK_SELECTOR).click(showUpdateReviewForm);
 });
 
-function showUpdateReviewForm() {
-	removeAllOtherDiscussionForms();
-	var reviewForm = $(REVIEW_UPDATE_FORM_SELECTOR);
-	var reviewRating = reviewForm.find(".reviewRating");
 
-	reviewForm.toggle('slow').find(".descriptiveLabel").bind("click", updateRatingCounter).removeClass("descriptiveLabel").autosize({}).bind("focus", showMenu).trigger("focus");
-	reviewRating.prev().find(".ratingToggleCheckbox")[0].disabled=true;
-	updateRatingCounter(reviewRating.stars("select", parseFloat(getOwnReviewRating())));
-}
 
 function initStars() {
 	$('.reviewrating').stars({
@@ -63,33 +34,6 @@ function getReviewCount() {
 
 function getAvg() {
 	return Number($(RATING_AVG_SELECTOR).text().replace(',', '.'));
-}
-
-function setAvg(value) {
-	value = value.toFixed(2);
-	$(RATING_AVG_SELECTOR).text(value);
-	var starWidth = getStarsWidth(value);
-	$('#review_info_rating .stars-on-1').css('width', starWidth); // TODO
-	$(PUBLICATION_LIST_SELECTOR + ' .stars-on-0\.75').css('width', starWidth);
-	$(BOOKMARK_LIST_SELECTOR + ' .stars-on-0\.75').css('width', starWidth);
-}
-
-function showReviewForm() {
-	removeAllOtherDiscussionForms();
-	showDiscussion();
-	
-	$(REVIEW_CREATE_FORM_SELECTOR).parent().show();
-	return true;
-}
-
-function setReviewCount(value) {
-	var title = getString("post.resource.review.review");
-	if (value > 1) {
-		title = getString("post.resource.review.reviews");
-	}
-	
-	$('#review_info_rating span[property=ratingCount]').text(value);
-	$('#review_info_rating span[property=ratingCount]').next('span').text(title);
 }
 
 function updateRatingCounter(element) {

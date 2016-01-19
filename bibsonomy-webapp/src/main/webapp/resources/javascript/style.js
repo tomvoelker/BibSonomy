@@ -368,6 +368,8 @@ $(function() {
 		}
 	});
 	
+	autosize($('textarea[data-autosize]'));
+	
 	$('[data-toggle="tooltip"]').tooltip();
 });
 

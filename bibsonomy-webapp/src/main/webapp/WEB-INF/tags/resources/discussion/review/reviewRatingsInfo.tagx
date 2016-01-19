@@ -3,25 +3,32 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
-	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review">
+	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
+	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
 
 	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
 	
 	<!-- contains schemo.org markup -->
 	<div id="review_info_rating" itemprop="aggregateRating" itemscope="itemscope" itemtype="http://schema.org/AggregateRating">
+		
 		<c:if test="${empty resource.numberOfRatings or resource.numberOfRatings &lt; 1 }">
 			<!-- TODO: change message keys when renaming BibTex class to Publication -->
-			<div id="noReviewInfo"><fmt:message key="post.resource.review.${fn:toLowerCase(resource['class'].simpleName)}.noReview" /></div>
+			<div class="row">
+				<div class="col-md-6 col-md-offset-3">
+					<fontawsome:icon icon="info" /><c:out value=" " />
+					<fmt:message key="post.resource.review.${fn:toLowerCase(resource['class'].simpleName)}.noReview" />
+				</div>
+			</div>
 		</c:if>
-		
+		<br />
 		<div class="row">
-			<div class="col-md-6">
+			<div class="col-md-6 text-center">
 				<fmt:message key="post.resource.review.info.ratingDistribution" />
 				<canvas id="rating-distribution" width="315" height="60">
 					<!-- ploted by JavaScript -->
 				</canvas>
 			</div>
-			<div class="col-md-6" id="ratingAvg">
+			<div class="col-md-6 text-center" id="ratingAvg">
 				<fmt:message key="post.resource.review.info.ratingAvg" />
 				
 				<input id="averageRating" type="number" min="0" max="5" step="0.1" />

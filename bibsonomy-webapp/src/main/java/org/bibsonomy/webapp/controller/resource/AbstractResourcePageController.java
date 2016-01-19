@@ -50,6 +50,7 @@ import org.bibsonomy.webapp.command.resource.ResourcePageCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListControllerWithTags;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
@@ -141,7 +142,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 		 * If an intra hash was queried, we later must overwrite it with the 
 		 * inter hash.
 		 */
-		String goldHash = shortHash; 
+		String goldHash = shortHash;
 		
 		/*
 		 * retrieve and set the requested resource(s)
@@ -209,7 +210,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 		final List<PostMetaData> metaData = null; // this.logic.getPostMetaData(HashID.INTER_HASH, goldHash, null, null);
 		if (present(metaData)) {
 			// try to create the copy users map
-			command.setCopyUsersMap(this.createCopyUserMap(metaData));
+			command.setCopyUsersMap(createCopyUserMap(metaData));
 		}
 	
 		/*
@@ -270,15 +271,19 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 			/*
 			 * Add additional data for HTML view, e.g., tags, other user's posts, ...
 			 */
-			if (GroupingEntity.USER.equals(groupingEntity) || present(goldStandard)) {
-				/*
-				 * fetch posts of all users with the given hash, add users to related
-				 * users list
-				 */
-				final List<Post<R>> allPosts = this.logic.getPosts(this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null,SearchType.LOCAL, null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
-				for (final Post<R> post : allPosts) {
-					command.getRelatedUserCommand().getRelatedUsers().add(post.getUser());
+			/*
+			 * fetch posts of all users with the given hash, add users to related
+			 * users list
+			 */
+			final RequestWrapperContext context = command.getContext();
+			final User loggedinUser = context.getLoginUser();
+			final List<Post<R>> allPosts = this.logic.getPosts(this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null, SearchType.LOCAL, null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
+			for (final Post<R> post : allPosts) {
+				final User user = post.getUser();
+				if (user.equals(loggedinUser)) {
+					command.setPostOfLoggedInUser(post);
 				}
+				command.getRelatedUserCommand().getRelatedUsers().add(user);
 			}
 			
 			/*

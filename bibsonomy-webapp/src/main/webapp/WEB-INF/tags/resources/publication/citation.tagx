@@ -69,13 +69,12 @@
 			</c:forEach>
 			<div class="tab-pane" id="citation_bibtex">
 				<textarea style="width:100%;font-size:80%;border:none;" rows="15">
-				<!-- the definition of 'itemprop=citation's not exactly what we need!  -->
-					<span itemprop="citation"><export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="${true}" generatedBibtexKeys="${false}"/></span>
+					<export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="${true}" generatedBibtexKeys="${false}"/>
 				</textarea>
 			</div>
 			<div class="tab-pane" id="citation_endnote">
-				<textarea style="width:100%;font-size:80%;border:none;" rows="15">
-					<span itemprop="citation"><export:endnote post="${post}" escapeXml="${true}" /></span>
+				<textarea style="width:100%;font-size:80%;border:none;" rows="15" readonly="readonly">
+					<export:endnote post="${post}" escapeXml="${true}" />
 				</textarea>
 			</div>
 			<div class="tab-pane" id="citation_all">

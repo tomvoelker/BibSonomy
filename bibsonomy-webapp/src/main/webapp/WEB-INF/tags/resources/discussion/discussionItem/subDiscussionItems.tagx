@@ -7,11 +7,21 @@
 	xmlns:comment="urn:jsptagdir:/WEB-INF/tags/resources/discussion/comment"
 	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/resources/discussion/discussionItem">
 	
-	<jsp:directive.attribute name="discussionItems" type="java.util.List" required="true" />
+	<jsp:directive.attribute name="discussionItems" type="java.util.List" required="false" />
+	<jsp:directive.attribute name="parentItem" type="org.bibsonomy.model.DiscussionItem" required="false" />
 	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true" />
+	<jsp:directive.attribute name="hidden" type="java.lang.Boolean" required="false" />
 	
+	<c:if test="${not empty hidden and hidden}">
+		<c:set var="style" value="display: none;" />
+	</c:if>
 	
+	<c:if test="${empty discussionItems}">
+		<c:set var="discussionItems" value="${parentItem.subDiscussionItems}" />
+	</c:if>
+	
+	<ul class="media-list subdiscussion" style="${style}">
 	<c:if test="${not empty discussionItems}">
 		<c:forEach var="discussionItem" items="${discussionItems}">
 			<c:set var="clazz" value="${fn:toLowerCase(discussionItem['class'].simpleName)}" />
@@ -24,21 +34,21 @@
 					<c:choose>
 						<!-- check if user has reviewed this resource -->
 						<c:when test="${discussionItem.user.name eq command.context.loginUser.name}">
-							<div id="ownReview" class="${clazz} media">
+							<li id="ownReview" class="${clazz} media">
 								<review:review review="${discussionItem}" resource="${resource}" loginUser="${loginUser}" />
-							</div>
+							</li>
 						</c:when>
 						<c:otherwise>
-							<div class="${clazz} media">
+							<li class="${clazz} media">
 								<review:review review="${discussionItem}" resource="${resource}" loginUser="${loginUser}" />
-							</div>
+							</li>
 						</c:otherwise>
 					</c:choose>
 				</c:when>
 				<c:when test="${'Comment' eq discussionItem['class'].simpleName}">
-					<div class="${clazz} media">
+					<li class="${clazz} media">
 						<comment:comment comment="${discussionItem}" loginUser="${loginUser}" resource="${resource}" />
-					</div>
+					</li>
 				</c:when>
 				<c:when test="${discussionItem['class'].simpleName eq 'DiscussionItem'}">
 					<div class="${clazz} media">
@@ -55,5 +65,8 @@
 			</c:choose>
 		</c:forEach>
 	</c:if>
-	
+		<li class="form">
+			<comment:simpleCommentForm userName="TODO" resource="${resource}" parentItem="${parentItem}" />
+		</li>
+	</ul>
 </jsp:root>

@@ -1,0 +1,106 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion">
+
+	<jsp:directive.attribute name="discussionItem" type="org.bibsonomy.model.DiscussionItem" required="false" />
+	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
+	<jsp:directive.attribute name="action" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="discussionItemClass" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="additionalInputs" fragment="true" required="false" />
+	<jsp:directive.attribute name="additionalMenuItems" fragment="true" required="false" />
+	<jsp:directive.attribute name="userName" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="postUserName" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="rows" type="java.lang.Integer" required="false" />
+	<jsp:directive.attribute name="parentItem" type="org.bibsonomy.model.DiscussionItem" required="false" />
+
+	<form action="/ajax/${discussionItemClass}s" method="post" class="simple-comment-form ${action}${discussionItemClass}">
+		<c:if test="${not empty discussionItem}">
+			<input type="hidden" value="PUT" name="_method" />
+		</c:if>
+		<input name="ckey" value="${command.context.ckey}" type="hidden" />
+		<input name="hash" value="${resource.interHash}" type="hidden" />
+		<input name="postUserName" value="${postUserName}" type="hidden" />
+		<input name="intraHash" value="${command.intraHash}" type="hidden" />
+
+		<c:if test="${not empty discussionItem.hash}">
+			<input name="discussionItem.hash" value="${discussionItem.hash}" type="hidden" />
+		</c:if>
+		
+		<c:if test="${not empty parentItem}">
+			<input name="discussionItem.parentHash" value="${parentItem.hash}" type="hidden" />
+		</c:if>
+		
+		<c:if test="${not empty additionalInputs}">
+			<jsp:invoke fragment="additionalInputs" />
+		</c:if>
+		<input name="abstractGrouping" value="public" tabindex="2" type="hidden" />
+		<input name="groups" value="" type="hidden" />
+		
+		<div class="row">
+			<div class="col-md-1">
+				<img src="${relativeUrlGenerator.getUserPictureUrlByUsername(command.context.loginUser.name)}" alt="userPicture" class="media-object simple-user-pic"/>
+			</div>
+			<div class="col-md-11">
+				<c:if test="${empty rows}">
+					<c:set var="rows" value="1" />
+				</c:if>
+				<c:if test="${empty discussionItem}">
+					<fmt:message var="placeholder" key="post.resource.${discussionItemClass}.placeholder"/>
+				</c:if>
+				
+				<textarea placeholder="${placeholder}" class="form-control reqinput" rows="${rows}" name="discussionItem.text" data-autosize="autosize">
+					<c:if test="${not empty discussionItem}">
+						<c:out value="${discussionItem.text}" />
+					</c:if>
+				</textarea>
+			</div>
+		</div>
+		<hr />
+		<div class="row">
+			<div class="col-md-2 col-md-offset-5">
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" /> <fmt:message key="post.resource.discussionItem.anonymous" />
+					</label>
+				</div>
+			</div>
+			<div class="col-md-5">
+				<div class="btn-toolbar pull-right" role="toolbar">
+					<div class="btn-group group-selector">
+						<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<span class="group"><fontawsome:icon icon="globe" /> public</span><c:out value=" " /><span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu">
+							<li class="checked">
+								<a href="#" data-abstract-grouping="public"><fontawsome:icon icon="globe" fixedWidth="${true}"/> public</a>
+							</li>
+							<li>
+								<a href="#" data-abstract-grouping="private"><fontawsome:icon icon="lock" fixedWidth="${true}"/> private</a>
+							</li>
+							<li>
+								<a href="#" data-abstract-grouping="friends"><fontawsome:icon icon="users" fixedWidth="${true}"/> friends</a>
+							</li>
+							<li role="separator" class="divider"></li>
+							<c:forEach var="group" items="${command.context.loginUser.groups}">
+								<li>
+									<a href="#" data-abstract-grouping="other" data-group="${group.name}"><fontawsome:icon icon="users" fixedWidth="${true}"/><c:out value=" ${group.name}"/></a>
+								</li>
+							</c:forEach>
+						</ul>
+					</div>
+					<div class="btn-group">
+						<button type="submit" class="btn btn-primary btn-xs"><fmt:message key="post.resource.${discussionItemClass}.create"/></button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</form>
+
+</jsp:root>

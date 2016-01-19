@@ -26,7 +26,7 @@
 		
 		<jsp:attribute name="headerExt">
 			<c:if test="${properties['project.theme'] eq 'puma'}">
-				<script type="text/javascript" src="/resources_puma/javascript/tools.js">&#160;</script>
+				<script type="text/javascript" src="/resources_puma/javascript/tools.js"><!-- keep me --></script>
 			</c:if>
 			
 			<script type="text/javascript">

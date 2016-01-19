@@ -24,6 +24,7 @@
 	>
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+	<jsp:directive.attribute name="postOfLoggedInUser" type="org.bibsonomy.model.Post" required="false"/>
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
 	
 	<c:set var="goldstandard" value="${post.resource}" />
@@ -40,18 +41,20 @@
 		<div class="col-md-11 col-md-offset-1">
 			<buttons:communityPostActions post="${post}" resourceType="bibtex" communityPostExists="${isRealGoldstandard}"/>
 			<c:choose>
-				<c:when test="${mtl:contains(command.relatedUserCommand.relatedUsers, loginUser)}">
+				<c:when test="${not empty postOfLoggedInUser}">
 					<span class="community-info warning">
 						<fontawsome:icon icon="warning" /><c:out value=" " />
 						<!-- TODO -->
 						You are currently viewing the community post. If you want to view or edit 
-						the publication in your collection, follow <a href="${relativeUrlGenerator.getPublicationUrlByIntraHashAndUsername('TODO',loginUser.name)}">this link</a>.
+						the publication in your collection, follow <a href="${relativeUrlGenerator.getPostUrl(postOfLoggedInUser)}">this link</a>.
 					</span>
 				</c:when>
 				<c:otherwise>
-					<span class="community-info">
-						<bs:linkButton href="${relativeUrlGenerator.getCopyUrlOfPost(post) }" size="small" style="success" icon="copy" text="Copy this publication into your collection" />
-					</span>
+					<c:if test="${command.context.userLoggedIn}">
+						<span class="community-info">
+							<bs:linkButton href="${relativeUrlGenerator.getCopyUrlOfPost(post) }" size="small" style="success" icon="copy" text="Copy this publication into your collection" />
+						</span>
+					</c:if>
 				</c:otherwise>
 			</c:choose>
 		</div>
@@ -75,10 +78,11 @@
 				+-->
 			<c:if test="${not empty goldstandard['abstract']}">
 				<div id="abstract">
-					<h4 class="pub-details">
-						<!--<fontawsome:icon icon="align-justify" /><c:out value=" " />-->
+					<!-- 
+					<h2 class="pub-details">
 						<fmt:message key="publications.abstract.headline"/>
-					</h4>
+					</h2>
+					 -->
 					<div class="show-more" itemprop="description">
 						<span class="contentContainer"><c:out value="${mtl:cleanBibtex(goldstandard['abstract'])}" /></span>
 					</div>
@@ -88,45 +92,47 @@
 			<!-- 
 				| resources
 				-->
-			<!-- <h4 class="pub-headline" >
-				<fontawsome:icon icon="link" /><c:out value=" " />
-				<fmt:message key="publications.resource.headline" />
-			</h4> -->
-			<dl class="dl-horizontal" id="linksresources">
-				<c:set var="isLinkToDocument" value="${mtl:isLinkToDocument(goldstandard.url)}" />
-				<c:choose>
-					<c:when test="${isLinkToDocument}">
-						<dt>Document</dt> <!-- TODO: i18n -->
-					</c:when>
-					<c:otherwise>
-						<dt>URL</dt>
-					</c:otherwise>
-				</c:choose>
-				<dd>
-					<a href="${fn:escapeXml(goldstandard.url)}">
-						<c:if test="${isLinkToDocument}">
-							<fontawsome:icon icon="file-pdf-o" /><c:out value=" " />
-						</c:if>
-						<c:out value="${goldstandard.url}" />
-					</a>
-				</dd>
-				<c:set var="doi" value="${mtl:extractDOI(goldstandard.miscFields['doi'])}" />
-				<c:if test="${not empty doi}">
-					<dt>DOI</dt>
-					<dd>
-						<a href="http://dx.doi.org/${mtl:encodeURI(doi)}" title="${urlTitle}"><c:out value="${doi}" /></a>
-					</dd>
-				</c:if>
-			</dl>
+			<div id="linksresources">
+				<h2 class="pub-headline" >
+					<fmt:message key="publications.resource.headline" />
+				</h2>
+				<dl class="dl-horizontal">
+					<c:set var="isLinkToDocument" value="${mtl:isLinkToDocument(goldstandard.url)}" />
+					<c:if test="${not empty goldstandard.url}">
+						<c:choose>
+							<c:when test="${isLinkToDocument}">
+								<dt>Document</dt> <!-- TODO: i18n -->
+							</c:when>
+							<c:otherwise>
+								<dt>URL</dt>
+							</c:otherwise>
+						</c:choose>
+						<dd>
+							<a href="${fn:escapeXml(goldstandard.url)}">
+								<c:if test="${isLinkToDocument}">
+									<fontawsome:icon icon="file-pdf-o" /><c:out value=" " />
+								</c:if>
+								<c:out value="${goldstandard.url}" />
+							</a>
+						</dd>
+					</c:if>
+					<c:set var="doi" value="${mtl:extractDOI(goldstandard.miscFields['doi'])}" />
+					<c:if test="${not empty doi}">
+						<dt>DOI</dt>
+						<dd>
+							<a href="http://dx.doi.org/${mtl:encodeURI(doi)}" title="${urlTitle}"><c:out value="${doi}" /></a>
+						</dd>
+					</c:if>
+				</dl>
+			</div>
+			<!-- users that have this resource in their collection -->
 			
-			<!-- users that have this resouce in their collection -->
 			<common:relatedUsers userList="${command.relatedUserCommand.relatedUsers}"/>
 			
 			<!-- tags -->
-			<h4 class="pub-details" id="tags">
-				<!--<fontawsome:icon icon="tags" /><c:out value=" " />-->
+			<h2 class="pub-details" id="tags">
 				Tags
-			</h4>
+			</h2>
 			<div class="tagcloud">
 				<c:forEach var="tag" items="${command.tagcloud.tags }">
 					<span class="tag ${mtl:getTagSize(tag.usercount, command.tagcloud.maxTagCount)}"><c:out value="${tag.name }" /></span>
@@ -134,10 +140,9 @@
 			</div>
 			
 			<c:if test="${hasRelatedPublications}">
-				<h4 class="pub-details" id="related-publications">
-					<!--<fontawsome:icon icon="quote-right" />-->
-					Related Publications
-				</h4>
+				<h2 class="pub-details" id="related-publications">
+					Related Publications <!-- TODO: i18n -->
+				</h2>
 				<div class="btn-group">
 					<bs:linkButton additionalClass="active" href="#related-publications-references" size="defaultSize" style="defaultStyle" text="publications referenced by this publication" />
 					<bs:linkButton href="#related-publications-citing" size="defaultSize" style="defaultStyle" text="publications citing this publications" />
@@ -156,10 +161,9 @@
 				| discussion and rating
 				+-->
 			<div id="discussion-section">
-				<h4 class="pub-details">
-					<fontawsome:icon icon="comments" /><c:out value=" " />
+				<h2 class="pub-details">
 					<fmt:message key="publications.discussion.headline"/>
-				</h4>
+				</h2>
 				<!-- Aggregated RatingInfo -->
 				<review:reviewRatingsInfo resource="${post.resource}" />
 		
@@ -170,14 +174,14 @@
 				<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName=""/>
 			</div>
 			<!-- citation box -->
-			<h4 class="pub-details" id="export">
+			<h2 class="pub-details" id="export">
 				<!--<fontawsome:icon icon="share-square-o" /><c:out value=" "/>-->
 				<fmt:message key="publications.citations.headline" />
-			</h4>
+			</h2>
 			<pub2:citation post="${post}" isCommunityPost="${true}" />
 		</div>
 		
-		<div class="col-md-3" id="sidebar-nav">
+		<div class="col-md-3 hidden-xs" id="sidebar-nav">
 			<nav class="sidebar-nav" data-spy="affix" data-offset-top="275">
 				<ul class="nav">
 					<li>
@@ -205,7 +209,7 @@
 						</li>
 					</c:if>
 					<li>
-						<a href="#discussion-section"><fmt:message key="discussion"/></a>
+						<a href="#discussion-section"><fmt:message key="publications.discussion.headline"/></a>
 					</li>
 					<li>
 						<a href="#export"><fmt:message key="publications.citations.headline" /></a>

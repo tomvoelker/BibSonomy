@@ -34,8 +34,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.json.JSONObject;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -66,6 +64,8 @@ import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
+import net.sf.json.JSONObject;
+
 /**
  * @author dzo
  * @param <D> 
@@ -83,6 +83,10 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 		return commentCommand;
 	}
 	
+	/**
+	 * inits the discussion item 
+	 * @return the new discussion item
+	 */
 	protected abstract D initDiscussionItem();
 
 	@Override
