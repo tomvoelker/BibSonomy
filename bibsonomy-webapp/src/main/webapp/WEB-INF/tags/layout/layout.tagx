@@ -76,16 +76,7 @@
 							</div>
 							
 							<div class="col-md-6">
-								<div id="lang-switcher" class="pull-right">
-									<span>(&amp;nbsp;</span>
-									<c:forEach var="lang" items="${fn:split('en,de,ru',',')}" varStatus="status">
-										<a href="/${fn:escapeXml(mtl:setParam(requPathAndQuery, 'lang', lang))}">${lang}</a>
-										<c:if test="${not status.last}">
-											<span>&amp;nbsp;|&amp;nbsp;</span>
-										</c:if>
-									</c:forEach>
-									<span>&amp;nbsp;)</span>
-								</div>
+								<parts:languageSwitcher requPathAndQuery="${requPathAndQuery}" />
 								
 								<!--+ 
 								 	|
