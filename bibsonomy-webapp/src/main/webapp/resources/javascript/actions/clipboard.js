@@ -39,7 +39,7 @@ function pickUnpickPublication(element) {
 	 * pick/unpick publication
 	 */
 	var params = unescapeAmp($(element).attr("href")).replace(/^.*?\?/, "");
-	return updateClipboard(params);
+	return updateClipboard(element, params);
 }
 
 
@@ -50,7 +50,7 @@ function pickUnpickPublication(element) {
  * @param param
  * @return
  */
-function updateClipboard (param) {
+function updateClipboard (element, param) {
 	var isUnpick = param.search(/action=unpick/) != -1;
 	if (isUnpick && !confirmDeleteByUser("clipboardpost")) {
 		return false;
@@ -62,17 +62,26 @@ function updateClipboard (param) {
 		data : param,
 		dataType : "text",
 		success: function(data) {
+		
+		/*
+		 * special case for the /clipboard page
+		 * remove the post from the resource list and update the post count
+		 */
+		if (location.pathname.startsWith("/clipboard") && isUnpick) {
+			var post = $(element).parents('li.post');
+			post.slideUp(400, function() {
+				post.remove();
+			});
+			var postCountBadge = $('h3.list-headline .badge');
+			var postCount = parseInt(postCountBadge.text());
+			postCountBadge.text(postCount - 1);
+		}
+		
 		/*
 		 * update the number of clipboard items
 		 */
-		if (location.pathname.startsWith("/clipboard") && !isUnpick) {
-			// special case for the /clipboard page
-			window.location.reload();
-		} else {
-			//$("#pickctr").empty().append(data);
-			$("#clipboard-counter").html(data);
-			updateCounter();
-		}
+		$("#clipboard-counter").html(data);
+		updateCounter();
 	}
 	});
 	return false;
