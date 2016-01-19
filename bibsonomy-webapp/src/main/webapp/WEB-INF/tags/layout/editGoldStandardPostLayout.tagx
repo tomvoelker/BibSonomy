@@ -231,7 +231,9 @@
  								<a class="list-group-item" onclick="javascript: activateAffixEntry(this)" href="#groups"><fmt:message key="post.resource.groups"/></a>
  							</c:if>
  							<c:if test="${not empty detailedInformation}">
-	 							<a class="list-group-item" onclick="javascript: activateAffixEntry(this)" href="#uploadedFiles"><fmt:message key="post.bibtex.files" /></a>
+	 							<c:if test="${resourceType ne 'GoldStandardPublication'}">
+	 								<a class="list-group-item" onclick="javascript: activateAffixEntry(this)" href="#uploadedFiles"><fmt:message key="post.bibtex.files" /></a>
+	 							</c:if>
  								<a class="list-group-item" onclick="javascript: activateAffixEntry(this)" href="#detailedInformation"><fmt:message key="post.resource.fields.detailed"/></a>
  								<a class="list-group-item" onclick="javascript: activateAffixEntry(this)" href="#comments"><fmt:message key="post.resource.fields.comments"/></a>
  							</c:if>
