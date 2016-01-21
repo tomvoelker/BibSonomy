@@ -329,5 +329,52 @@
 	
 	<bean id="samlAuthTool" class="org.bibsonomy.webapp.util.spring.security.saml.SamlAuthenticationTool" scope="singleton"/>
 	
-	<import resource="bibsonomy-servlet-saml-extra.xml" />
+	<!-- IDP Metadata configuration - paths to metadata of IDPs in circle of trust is here -->
+	<!-- Do no forget to call iniitalize method on providers -->
+	<bean id="metadata" class="org.springframework.security.saml.metadata.CachingMetadataManager">
+		<constructor-arg>
+			<list>
+				<ref bean="metadataProvider"/>
+			</list>
+		</constructor-arg>
+		<property name="defaultIDP" value="${auth.saml.defaultIdp}" />
+	</bean>
+	
+	<alias name="${auth.saml.metadata.provider}" alias="metadataProvider" />
+	
+	<bean id="filesystemMetadataProvider" class="org.opensaml.saml2.metadata.provider.FilesystemMetadataProvider">
+		<constructor-arg>
+			<value type="java.io.File">${auth.saml.idp.1.metadata.file}</value>
+		</constructor-arg>
+		<property name="parserPool" ref="parserPool" />
+	</bean>
+	
+	<bean id="httpMetadataProvider" class="org.springframework.security.saml.metadata.ExtendedMetadataDelegate">
+		<constructor-arg>
+			<bean class="org.opensaml.saml2.metadata.provider.HTTPMetadataProvider">
+				<constructor-arg>
+					<value type="java.lang.String">${auth.saml.idp.1.metadata.url}</value>
+				</constructor-arg>
+				<constructor-arg>
+					<value type="int">5000</value>
+				</constructor-arg>
+				<property name="parserPool" ref="parserPool" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg>
+			<bean class="org.springframework.security.saml.metadata.ExtendedMetadata"></bean>
+		</constructor-arg>
+		<property name="metadataTrustCheck" value="false" />
+	</bean>
+	
+	<bean id="samlAttributeExtractor" class="org.bibsonomy.webapp.util.spring.security.userattributemapping.SamlUserAttributeMapping">
+		<property name="samlToUserPropertiesMap">
+			<bean class="org.bibsonomy.webapp.util.spring.factorybeans.JsonToMapFactoryBean">
+				<constructor-arg>
+					<value>${auth.saml.attr.map}</value>
+				</constructor-arg>
+			</bean>
+		</property>
+		<property name="useridAttributeName" value="${auth.saml.attr.userId}"/>
+	</bean>
 </beans>
