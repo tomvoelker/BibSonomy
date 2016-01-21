@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -103,7 +103,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 	}
 
 	@Override
-	protected void preparePost(final EditPostCommand<BibTex> command, final Post<BibTex> post) {
+	protected void preparePost(final COMMAND command, final Post<BibTex> post) {
 		super.preparePost(command, post);
 
 		/*

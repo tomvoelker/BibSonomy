@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -53,15 +53,24 @@ import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.PersonIdType;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.PostLogicInterface;
+import org.bibsonomy.model.logic.exception.LogicException;
+import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
@@ -629,7 +638,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @param command
 	 * @param post
 	 */
-	protected void preparePost(final EditPostCommand<RESOURCE> command, final Post<RESOURCE> post) {
+	protected void preparePost(final COMMAND command, final Post<RESOURCE> post) {
 		try {
 			/*
 			 * we use addAll here because there might already be system tags in
@@ -656,7 +665,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * 
 	 * @param command
 	 */
-	protected void validatePost(final EditPostCommand<RESOURCE> command) {
+	protected void validatePost(final COMMAND command) {
 		ValidationUtils.invokeValidator(this.getValidator(), command, this.errors);
 	}
 
@@ -807,6 +816,14 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		if (present(command.getSaveAndRate())) {
 			final String ratingUrl = this.urlGenerator.getCommunityRatingUrl(post);
 			return new ExtendedRedirectView(ratingUrl);
+			}
+		/**
+		 * if the user is adding a new thesis to a person's page, he should be redirected to that person's page
+		 * */
+		if (present(command.getPost().getResourcePersonRelations())){
+			ResourcePersonRelation resourcePersonRelation = post.getResourcePersonRelations().get(post.getResourcePersonRelations().size()-1);
+			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(resourcePersonRelation.getPerson().getPersonId()));
+			
 		}
 		return this.finalRedirect(loginUserName, post, command.getReferer());
 	}
@@ -838,7 +855,12 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		if (present(this.pingback) && !loginUser.isSpammer() && GroupUtils.isPublicGroup(post.getGroups())) {
 			this.pingback.sendPingback(post);
 		}
+
 	}
+
+
+
+
 
 	/**
 	 * Populates the command with the given post. Ensures, that fields which
@@ -848,7 +870,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @param command
 	 * @param post
 	 */
-	protected void populateCommandWithPost(final EditPostCommand<RESOURCE> command, final Post<RESOURCE> post) {
+	protected void populateCommandWithPost(final COMMAND command, final Post<RESOURCE> post) {
 		/*
 		 * put post into command
 		 */
@@ -965,7 +987,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @param command
 	 * @return <code>true</code> iff user already owns resource
 	 */
-	protected boolean setDiffPost(final EditPostCommand<RESOURCE> command) {
+	protected boolean setDiffPost(final COMMAND command) {
 		final RequestWrapperContext context = command.getContext();
 		final Post<RESOURCE> post = command.getPost();
 		final String loginUserName = context.getLoginUser().getName();

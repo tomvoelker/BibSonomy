@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -84,7 +84,7 @@ public class RecommendedPostsPageController extends SingleResourceListController
 		// no sorting, recommender gives sorted results
 		command.setSortPage(null);
 		
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			listCommand.setStart(0);

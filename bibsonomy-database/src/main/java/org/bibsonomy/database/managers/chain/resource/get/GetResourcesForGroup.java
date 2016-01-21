@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -70,10 +70,10 @@ public class GetResourcesForGroup<R extends Resource, P extends ResourceParam<R>
 		final Group group = this.groupDb.getGroupByName(param.getRequestedGroupName(), session);
 		if (!present(group) || (group.getGroupId() == GroupID.INVALID.getId()) || GroupID.isSpecialGroupId(group.getGroupId())) {
 			log.debug("group '" + param.getRequestedGroupName() + "' not found or special group");
-			return new ArrayList<Post<R>>();
+			return new ArrayList<Post<R>>();			
 		}
-
-		return this.databaseManager.getPostsForGroup(group.getGroupId(), param.getGroups(), param.getUserName(), HashID.getSimHash(param.getSimHash()), param.getPostAccess(), param.getFilters(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
+		
+		return this.databaseManager.getPostsForGroup(group.getGroupId(), param.getGroups(), param.getSearchType(), param.getUserName(), HashID.getSimHash(param.getSimHash()), param.getPostAccess(), param.getFilters(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
 	}
 
 }

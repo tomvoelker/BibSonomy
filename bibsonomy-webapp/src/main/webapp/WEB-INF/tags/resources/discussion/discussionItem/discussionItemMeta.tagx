@@ -10,9 +10,10 @@
 		<fmt:message key="post.resource.comment.on"/><c:out value=" "/><fmt:formatDate type="date" timeStyle="medium" dateStyle="medium" value="${discussionItem.date}"/>
 	</span>
 	<c:if test="${not empty discussionItem.changeDate}">
+	        <c:out value=" "/>
 		<span class="changeDate">
-			<fmt:message key="post.resource.comment.updatedOn" />
-			<c:out value=" "/><fmt:formatDate type="date" timeStyle="medium" dateStyle="medium" value="${discussionItem.changeDate}"/>
+		        (<fmt:message key="post.resource.comment.updatedOn" />
+			<c:out value=" "/><fmt:formatDate type="date" timeStyle="medium" dateStyle="medium" value="${discussionItem.changeDate}"/>)
 		</span>
 	</c:if>
 	<span class="groups">
@@ -33,7 +34,7 @@
 						<fmt:message key="post.groups.private" /> <!-- TODO: look for message key -->
 					</c:when>
 					<c:otherwise>
-						<a href="${relativeUrlGenerator.getGroupUrlByGroupName(fn:escapeXml(group.name))}"><c:out value="${group.name}" /></a>
+						<a href="/group/${fn:escapeXml(group.name)}"><c:out value="${group.name}" /></a>
 					</c:otherwise>
 				</c:choose>
 			</c:if>	

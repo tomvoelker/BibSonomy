@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -179,8 +179,8 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	private List<SyncService> syncServer;
 	private SyncService newSyncServer;
 	
-	private List<URI> availableSyncClients;
-	private List<URI> availableSyncServers;
+	private List<SyncService> availableSyncClients;
+	private List<SyncService> availableSyncServers;
 	
 	/** 
 	 * this field contains the username of the user, who should be added/removed to/from the group.
@@ -597,14 +597,14 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	/**
 	 * @param availableSyncServers the avlSyncServer to set
 	 */
-	public void setAvailableSyncServers(List<URI> availableSyncServers) {
+	public void setAvailableSyncServers(List<SyncService> availableSyncServers) {
 		this.availableSyncServers = availableSyncServers;
 	}
 
 	/**
 	 * @return the avlSyncServer
 	 */
-	public List<URI> getAvailableSyncServers() {
+	public List<SyncService> getAvailableSyncServers() {
 		return availableSyncServers;
 	}
 
@@ -625,14 +625,14 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	/**
 	 * @return The available synchronization clients.
 	 */
-	public List<URI> getAvailableSyncClients() {
+	public List<SyncService> getAvailableSyncClients() {
 		return this.availableSyncClients;
 	}
 
 	/**
 	 * @param availableSyncClients
 	 */
-	public void setAvailableSyncClients(final List<URI> availableSyncClients) {
+	public void setAvailableSyncClients(final List<SyncService> availableSyncClients) {
 		this.availableSyncClients = availableSyncClients;
 	}
 	

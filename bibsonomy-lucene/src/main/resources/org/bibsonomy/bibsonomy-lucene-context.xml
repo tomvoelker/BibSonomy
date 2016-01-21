@@ -1,4 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    BibSonomy - A blue social bookmark and publication sharing system.
+
+    Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+                                  University of Kassel, Germany
+                                  http://www.kde.cs.uni-kassel.de/
+                              Data Mining and Information Retrieval Group,
+                                  University of Würzburg, Germany
+                                  http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+                              L3S Research Center,
+                                  Leibniz University Hannover, Germany
+                                  http://www.l3s.de/
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
@@ -21,25 +49,82 @@
 		<constructor-arg value="org.bibsonomy.model.GoldStandardPublication" />
 	</bean>
 
+	<bean id="esIndexManager" class="org.bibsonomy.es.ESIndexManager" lazy-init="true">
+		<constructor-arg ref="esClient"/>
+		<constructor-arg value="${es.project.home}"/>
+		<!-- <constructor-arg value="${project.home}"/> -->
+	</bean>
+	
+	<bean id="luceneBookmarkUpdateTrigger" class="org.bibsonomy.index.IndexUpdateTrigger">
+		<constructor-arg ref="luceneBookmarkManager" />
+	</bean>
+	
+	<bean id="lucenePublicationUpdateTrigger" class="org.bibsonomy.index.IndexUpdateTrigger">
+		<constructor-arg ref="lucenePublicationManager" />
+	</bean>
+	
+	<bean id="luceneGoldStandardPublicationUpdateTrigger" class="org.bibsonomy.index.IndexUpdateTrigger">
+		<constructor-arg ref="luceneGoldStandardPublicationManager" />
+	</bean>
+	
+	<bean id="indexGeneratorThreadPool" class="org.bibsonomy.util.SimpleBlockingThreadPoolExecutor" lazy-init="true" destroy-method="shutdownNow">
+		<constructor-arg value="indexGenerator"/>
+	</bean>
 
-	<bean id="realSharedIndexUpdatePlugin" class="org.bibsonomy.es.SharedIndexUpdatePlugin" lazy-init="true">
+	<bean id="realSharedIndexUpdatePlugin" class="org.bibsonomy.search.es.updater.SharedIndexUpdatePlugin" lazy-init="true" abstract="true">
 		<constructor-arg ref="esClient"/>
 		<constructor-arg value="${project.home}"/>
-		<constructor-arg ref="lucenePublicationConverter"/>
+		<property name="generatorThreadPool" ref="indexGeneratorThreadPool" />
 	</bean>
-	<bean id="sharedIndexUpdatePlugin" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
+	
+	<bean id="realSharedIndexUpdatePluginForPublications" lazy-init="true" parent="realSharedIndexUpdatePlugin">
+		<property name="dbLogic" ref="lucenePublicationLogic"/>
+		<property name="resourceConverter" ref="lucenePublicationConverter"/>
+		<property name="resourceType" value="BibTex"/>
+	</bean>
+	<bean id="sharedIndexUpdatePluginForPublications" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
 		<property name="condition" ref="esClusterNamePresent" />
-		<lookup-method name="produceSucessBean" bean="realSharedIndexUpdatePlugin" />
+		<lookup-method name="produceSucessBean" bean="realSharedIndexUpdatePluginForPublications" />
 	</bean>
+	
+	<bean id="realSharedIndexUpdatePluginForBookmarks" lazy-init="true" parent="realSharedIndexUpdatePlugin">
+		<property name="dbLogic" ref="luceneBookmarkLogic"/>
+		<property name="resourceConverter" ref="luceneBookmarkConverter"/>
+		<property name="resourceType" value="Bookmark"/>
+	</bean>
+	<bean id="sharedIndexUpdatePluginForBookmarks" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
+		<property name="condition" ref="esClusterNamePresent" />
+		<lookup-method name="produceSucessBean" bean="realSharedIndexUpdatePluginForBookmarks" />
+	</bean>
+	
+	<bean id="realSharedIndexUpdatePluginForGoldStandardPublications" lazy-init="true" parent="realSharedIndexUpdatePlugin">
+		<property name="dbLogic" ref="luceneGoldStandardPublicationLogic"/>
+		<property name="resourceConverter" ref="luceneGoldStandardPublicationConverter"/>
+		<property name="resourceType" value="GoldStandardPublication"/>
+	</bean>
+	<bean id="sharedIndexUpdatePluginForGoldStandardPublications" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
+		<property name="condition" ref="esClusterNamePresent" />
+		<lookup-method name="produceSucessBean" bean="realSharedIndexUpdatePluginForGoldStandardPublications" />
+	</bean>
+	
+	<util:map id="allSharedIndexUpdatePlugins" key-type="java.lang.Class">
+		<entry key-ref="luceneBookmarkClass" value-ref="sharedIndexUpdatePluginForBookmarks" />
+		<entry key-ref="lucenePublicationClass" value-ref="sharedIndexUpdatePluginForPublications" />
+		<entry key-ref="luceneGoldStandardPublicationClass" value-ref="sharedIndexUpdatePluginForGoldStandardPublications" />
+	</util:map>
 	
 	<bean id="realEsPublicationSearch" lazy-init="true" parent="abstractEsResourceSearch">
 		<property name="resourceType" value="BibTex"/>
+		<property name="systemUrl" value="${es.project.home}"/>
 		<property name="resourceConverter" ref="lucenePublicationConverter" />
 	</bean>
 	<bean id="esPublicationSearch" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
 		<property name="condition" ref="esClusterNamePresent" />
 		<lookup-method name="produceSucessBean"  bean="realEsPublicationSearch" />
 	</bean>
+	
+	<alias name="esPublicationSearch" alias="personSearch"/>
+	<alias name="esPublicationSearch" alias="publicationSearch"/>
 	
 	<bean id="realEsBookmarkSearch" lazy-init="true" parent="abstractEsResourceSearch">
 		<property name="resourceType" value="Bookmark"/>
@@ -63,21 +148,12 @@
 		<property name="value" value="${es.cluster.name}" />
 	</bean>
 
-	
-
-
-	<!-- <bean id= "esClient" class= "org.bibsonomy.es.ESNodeClient"/> -->
-
-	<bean id="esClient" class="org.bibsonomy.es.ESTransportClient" lazy-init="true" init-method="init">
-		<property name="esAddresses" value="${es.address}"/>
-		<property name="esClusterName" value="${es.cluster.name}"/>
-	</bean>
 
 	<bean id="abstractEsResourceSearch" class="org.bibsonomy.es.EsResourceSearch" abstract="true">
-		<property name="esClient" ref="esClient"/>
+		<property name="esIndexManager" ref="esIndexManager"/>
+		<property name="dbLogic" ref="luceneInfoDBLogic" />
+		<property name="genealogyUser" value="${genealogy.import.user}"/>
 	</bean>
-
-
 
 	<!--+ | lucene post converter + -->
 	<!-- abstract converter -->
@@ -214,11 +290,6 @@
         + -->
 	<bean id="luceneResourceManager" class="org.bibsonomy.lucene.index.manager.LuceneResourceManager" abstract="true">
 		<property name="luceneUpdaterEnabled" value="${lucene.enableUpdater}" />
-		<property name="plugins">
-			<list>
-				<ref bean="sharedIndexUpdatePlugin" />
-			</list>
-		</property>
 	</bean>
 
 	<bean id="lucenePublicationManager" class="org.bibsonomy.lucene.index.manager.LuceneResourceManager" init-method="init" parent="luceneResourceManager">
@@ -226,6 +297,11 @@
 		<property name="dbLogic" ref="lucenePublicationLogic" />
 		<property name="searcher" ref="lucenePublicationSearch" />
 		<property name="resourceConverter" ref="lucenePublicationConverter" />
+		<property name="plugins">
+			<list>
+				<ref bean="sharedIndexUpdatePluginForPublications" />
+			</list>
+		</property>
 	</bean>
 
 	<bean id="luceneBookmarkManager" class="org.bibsonomy.lucene.index.manager.LuceneResourceManager" init-method="init" parent="luceneResourceManager">
@@ -233,6 +309,11 @@
 		<property name="dbLogic" ref="luceneBookmarkLogic" />
 		<property name="searcher" ref="luceneBookmarkSearch" />
 		<property name="resourceConverter" ref="luceneBookmarkConverter" />
+		<property name="plugins">
+			<list>
+				<ref bean="sharedIndexUpdatePluginForBookmarks" />
+			</list>
+		</property>
 	</bean>
 
 	<bean id="luceneGoldStandardPublicationManager" class="org.bibsonomy.lucene.index.manager.LuceneGoldStandardManager" init-method="init" parent="luceneResourceManager">
@@ -240,6 +321,11 @@
 		<property name="dbLogic" ref="luceneGoldStandardPublicationLogic" />
 		<property name="searcher" ref="luceneGoldStandardPublicationSearch" />
 		<property name="resourceConverter" ref="luceneGoldStandardPublicationConverter" />
+		<property name="plugins">
+			<list>
+				<ref bean="sharedIndexUpdatePluginForGoldStandardPublications" />
+			</list>
+		</property>
 	</bean>
 
 	<util:map id="allLuceneResourceManagers" key-type="java.lang.Class">

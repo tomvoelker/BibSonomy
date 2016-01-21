@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Web-Common - Common things for web
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -557,7 +557,7 @@ public class WebUtils {
 	 * @return the proper configured http connection for the url
 	 * @throws IOException
 	 */
-	protected static HttpURLConnection createConnnection(URL url) throws IOException {
+	public static HttpURLConnection createConnnection(URL url) throws IOException {
 		final HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
 		
 		// set the timeouts

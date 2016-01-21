@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -115,10 +115,15 @@ public class ActionValidationFilter implements Filter {
 			 * requests we must otherwise send the ckey.
 			 */
 			String requestCredential = request.getParameter(REQUEST_PARAM_CREDENTIAL);
+			
+			boolean valid = storedCredential.equals(requestCredential);
+			if (!valid && log.isDebugEnabled()) {
+				log.debug("requested ckey not valid: Expected '" + storedCredential + "' but was '" + requestCredential + "' for '" + ((HttpServletRequest) request).getRequestURI() + "'");
+			}
 			/*
 			 * check and propagate correctness 
 			 */
-			request.setAttribute(REQUEST_ATTRIB_VALID_CREDENTIAL, storedCredential.equals(requestCredential));
+			request.setAttribute(REQUEST_ATTRIB_VALID_CREDENTIAL, valid);
 			
 		}
 

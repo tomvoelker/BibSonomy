@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -41,7 +41,7 @@ import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.database.managers.chain.Chain;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByResourceSearch;
-import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexFromBasketForUser;
+import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexFromClipboardForUser;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptForGroup;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptForUser;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByFollowedUsers;
@@ -357,17 +357,17 @@ public class BibTexChainTest extends AbstractDatabaseManagerTest {
 		assertEquals(GetBibtexByResourceSearch.class, bibtexChain.getChainElement(this.bibtexParam).getClass());
 	}
 	/**
-	 * tests getBibtexFromBasketForUser
+	 * tests getBibtexFromClipboardForUser
 	 */
 	@Test
-	public void getBibtexFromBasketForUser() {
+	public void getBibtexFromClipboardForUser() {
 		this.bibtexParam.setGrouping(GroupingEntity.CLIPBOARD);
 		this.bibtexParam.setUserName("testuser1");
 		this.bibtexParam.setBibtexKey(null);
 		this.bibtexParam.setHash(null);
 		this.bibtexParam.setSearch(null);
 		this.bibtexParam.setTagIndex(null);
-		assertEquals(GetBibtexFromBasketForUser.class, bibtexChain.getChainElement(this.bibtexParam).getClass());
+		assertEquals(GetBibtexFromClipboardForUser.class, bibtexChain.getChainElement(this.bibtexParam).getClass());
 	}
 	
 	/**

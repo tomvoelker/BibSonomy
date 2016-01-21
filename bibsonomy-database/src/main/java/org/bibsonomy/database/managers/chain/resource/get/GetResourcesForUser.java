@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -65,7 +65,7 @@ public class GetResourcesForUser<R extends Resource, P extends ResourceParam<R>>
 
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
-		return this.databaseManager.getPostsForUser(param.getUserName(), param.getRequestedUserName(), HashID.getSimHash(param.getSimHash()), param.getGroupId(), param.getGroups(), param.getPostAccess(), param.getFilters(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
+		return this.databaseManager.getPostsForUser(param.getUserName(), param.getRequestedUserName(), param.getSearchType(), HashID.getSimHash(param.getSimHash()), param.getGroupId(), param.getGroups(), param.getPostAccess(), param.getFilters(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
 	}
 
 }

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -60,11 +60,10 @@ public interface SyncLogicInterface {
 	/**
 	 * 
 	 * @param server switch between server and clients
+	 * @param sslDn TODO
 	 * @return List of allowed synchronization services
-	 * 
-	 * FIXME: duplicate of {@link #getAllSyncServices(boolean)}
 	 */
-	public List<URI> getSyncServices(final boolean server);
+	public List<SyncService> getSyncServices(final boolean server, String sslDn);
 	
 	/* ********************************************************************
 	 * create, read, update, delete sync services - user dependent
@@ -101,18 +100,19 @@ public interface SyncLogicInterface {
 	 * @param server - if <code>true</code>, sync servers are returned. Otherwise clients.
 	 * @return List of synchronization servers for given user 
 	 */
-	public List<SyncService> getSyncService(final String userName, final URI service, final boolean server);
-	
+	public List<SyncService> getSyncServiceSettings(final String userName, final URI service, final boolean server);
 	
 	/**
-	 * returns all on this system available server (or clients) on 
-	 * @param server
-	 * @return A list of all available sync services.
-	 * 
-	 * FIXME: duplicate of {@link #getSyncServices(boolean)}
-	 * 
+	 * @return List of synchronization servers for Auto synchronization ('autosync' or direction is not 'both')
 	 */
-	public List<SyncService> getAllSyncServices(final boolean server);
+	public List<SyncService> getAutoSyncServer();
+	
+	/**
+	 *  
+	 * @param serviceURI 
+	 * @return SyncService by SSLDn / ServiceURI - if SSLDn is empty, ServiceURI is selected 
+	 */
+	public SyncService getSyncServiceDetails(final URI serviceURI);
 	
 	/* ********************************************************************
 	 * get sync posts/plans, update delete, get sync data

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -33,19 +33,18 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
-import net.sf.json.JSONSerializer;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.layout.csl.CslModelConverter;
 import org.bibsonomy.layout.csl.model.Record;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.renderer.AbstractPostExportRenderer;
 import org.bibsonomy.rest.renderer.RenderingFormat;
+
+import net.sf.json.JSONSerializer;
 
 /**
  * @author wla
@@ -75,7 +74,7 @@ public class CSLRenderer extends AbstractPostExportRenderer {
 			writer.append(BEGIN);
 			while (iter.hasNext()) {
 				final Post<? extends Resource> post = iter.next();
-				writer.append("\"" + ((BibTex) post.getResource()).getIntraHash() + post.getUser().getName() + "\":");
+				writer.append("\"" + post.getResource().getIntraHash() + post.getUser().getName() + "\":");
 				serializePost(writer, post, viewModel);
 				if (iter.hasNext()) {
 					writer.append(DELIMITER);

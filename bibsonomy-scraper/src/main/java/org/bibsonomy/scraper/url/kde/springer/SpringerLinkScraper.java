@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -76,7 +76,7 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 	private static final Pattern EXPORT_LINK_PATTERN = Pattern.compile("href=\"(/export-citation/[^\"]++)\"");
 	private static final Pattern BIBTEX_LINK_PATTERN = Pattern.compile("class=\"bib\"[^>]*?href=\"([^\"]++)\"");
 	
-	private static final Pattern ABSTRACT_PATTERN_FOR_PAGE = Pattern.compile("(?ms)<div class=\"abstract-content formatted\" itemprop=\"description\">.*?<p class=\"a-plus-plus\">([^<]*+)");
+	private static final Pattern ABSTRACT_PATTERN_FOR_PAGE = Pattern.compile("(?ms)<div class=\"abstract-content formatted\" itemprop=\"description\">.*?<p xmlns=\"http://www.w3.org/1999/xhtml\" class=\"Para.*?\">([^<]*+)");
 	
 	private static final String SPRINGER_CITATION_HOST_COM = "springerlink.com";
 	private static final String SPRINGER_CITATION_HOST_DE = "springerlink.de";

@@ -1,22 +1,13 @@
 <?xml version="1.0" ?>
 <jsp:root version="2.0" 
 	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
-    xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
-    xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
-	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
-	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
-	xmlns:export="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
-	xmlns:output="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar">
 	
 	<!--
 		This is the standard CV Page for all users. You can NOT edit the CV on this page.
@@ -35,69 +26,51 @@
 		showPageOptions="${command.context.userLoggedIn and command.context.loginUser.name eq command.requestedUser}"
 		minimizedContentWidth="${true}">
 		
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
+		</jsp:attribute>
+		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<c:choose>
+						<c:when test="${command.isGroup}">
+							<!-- please note the requestedUser is the requestedGroup -->
+							<nav:groupcrumb requestedGroup="${command.requestedUser}" />
+						</c:when>
+						<c:otherwise>
+							<nav:usercrumb loginUser="${command.context.loginUser}" requestedUser="${command.requestedUser}"/>
+						</c:otherwise>
+					</c:choose>
+					<nav:crumb name="${cvPageTitle}" active="true"/>
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+		
 		<jsp:attribute name="sidebar">
-		 	<ul>
-		 		<!--+
-					| only for logged in users: followers, friends, groups, etc.
-					| and not on his own cv page
-			 		-->
-				<c:if test="${command.context.userLoggedIn and not ownCVPage}">
-					<li>
-						<users:socializer 
-							loginUser="${command.context.loginUser}" 
-							requestedUser="${command.requestedUser}" 
-							isOfFriendUser="${command.ofFriendUser}" 
-							isFriendOfUser="${command.friendOfUser}" 
-							isFollowerOfUser="${command.followerOfUser}" />
-					</li>
-				</c:if>
+	 		<!--+
+				| only for logged in users: followers, friends, groups, etc.
+				| and not on his own cv page
+		 		-->
+			<c:if test="${command.context.userLoggedIn and not ownCVPage and not command.isGroup}">
+				<sidebar:socializer command="${command}" />
+			</c:if>
 			
-    	 		<!-- display tags -->
-				<li>
-					<span class="sidebar_h">
-						<fmt:message key="tags"/> 
-					</span>
-					<!-- Diese Tagcloud vielleicht auch fuer User in den Lebenslauf einsetzbar gestalten?! -->
-					<tags:cloud
-						requPath="user/${command.requestedUser}"
+    	 	<sidebar:sidebarTagCloudItem 
+    	 				requPath="user/${command.requestedUser}"
 						cmd="${command.tagcloud}"
 						tagboxMinfreqStyle="user"
 						tagSizeMode="user"
 						showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
-						
-				</li>
 				
-<!-- 				<li>
-					<span class="sidebar_h">
-						<fmt:message key="cv.info.title" /> 
-					</span>
-					
-					<fmt:message key="cv.info.desc" />
-				</li> -->
-			</ul>
 		</jsp:attribute>
 
 		<!--+
     	 	| html header extension: page specific stylesheet
     	 	-->
 		<jsp:attribute name="headerExt">
-			<link rel="stylesheet" type="text/css" href="${resdir}/css/spheres.css" />
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/cv_page.css" />
-			<script type="text/javascript" src="${resdir}/javascript/cv/handlers.js"><!--  --></script>
 			
-	    	<!-- TODO: refator duplicate code -->
-			<!--+
-				| sphere dialog menu -> only for logged in users: friends, groups, etc.
-			 	+-->
-			<c:if test="${command.context.userLoggedIn and not ownCVPage}">
-				<!-- Javascript for the sphere dialog menu -->
-				<script>
-					$(function() {
-						// TODO: refactor function: parameters requestedUser ckey are available as global constants in javascript by default!
-						generateSphereDialog("${fn:escapeXml(command.requestedUser)}", "${ckey}", "linkButton", true, 0, "position2");
-					});
-				</script>
-			</c:if>
 	    </jsp:attribute>
 
 		<!--+
@@ -117,7 +90,7 @@
     	 	| page options
     	 	+-->
     	<jsp:attribute name="pageOptions">
-    		<a href="/settings?selTab=0"><fmt:message key="cv.editSettings" /></a><BR />
+    		<a href="/settings?selTab=0"><fmt:message key="cv.editSettings" /></a><br />
     		<a href="/settings?selTab=5"><fmt:message key="cv.editCV" /></a>
     	</jsp:attribute>
 		
@@ -125,9 +98,21 @@
 			| page content 
 			+-->
 		<jsp:attribute name="content">
+			<h1 class="content-header"> 
+				Curriculum Vitae <c:out value=" " />
+				<c:if test="${command.context.userLoggedIn and ownCVPage}">
+					<div class="btn-group" style="margin-bottom: 2px;">
+						<button data-toggle="dropdown" class="btn btn-xs btn-default dropdown-toggle"><span class="fa fa-cog"><!--  --></span>&amp;nbsp;<span class="caret"><!--  --></span></button>
+						<ul class="dropdown-menu">
+							<li><a href="/settings?selTab=0"><fmt:message key="cv.editSettings" /></a></li>
+		    				<li><a href="/settings?selTab=5"><fmt:message key="cv.editCV" /></a></li>
+						</ul>
+					</div>
+				</c:if>
+			</h1>
 			<div>
 				<!-- In wikiArea steht der gesamte Text drin. Inklusive Ueberschriften! -->
-				<div id="wikiArea">
+				<div>
 					<c:choose>
 						<c:when test="${not empty command.wikiText}">
 							<c:out value="${command.renderedWikiText}" escapeXml="false" />

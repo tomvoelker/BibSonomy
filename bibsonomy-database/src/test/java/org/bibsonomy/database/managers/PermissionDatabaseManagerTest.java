@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -43,10 +43,10 @@ import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.testutil.ParamUtils;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -70,9 +70,10 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void checkStartEnd() {
 		// ok
+		final User notLoggedInUser = new User();
 		for (int i = 0; i <= 1000; i++) {
 			try {
-				permissionDb.checkStartEnd(new User(), 0, i, "test");
+				permissionDb.checkStartEnd(notLoggedInUser, GroupingEntity.ALL, 0, i, "test");
 			} catch (final AccessDeniedException ignore) {
 				fail("no exception expected");
 			}
@@ -80,18 +81,48 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// not ok
 		for (int i = 1001; i < 10000; i++) {
 			try {
-				permissionDb.checkStartEnd(new User(), 0, i, "test");
+				permissionDb.checkStartEnd(notLoggedInUser, GroupingEntity.ALL, 0, i, "test");
 				fail("expected exception");
 			} catch (final AccessDeniedException ignore) {
 				// ignore
 			}
 		}
+		
 		// OK 
 		final User admin = new User();
 		admin.setRole(Role.ADMIN);
-		for (int i = 1001; i < 10000; i++) {
+		for (int i = PostLogicInterface.MAX_QUERY_SIZE + 1; i < 10000; i++) {
 			try {
-				permissionDb.checkStartEnd(admin, 0, i, "test");
+				permissionDb.checkStartEnd(admin, GroupingEntity.ALL, 0, i, "test");
+			} catch (final AccessDeniedException ignore) {
+				fail("no exception expected");
+			}
+		}
+		
+		// OK
+		for (int i = 0; i < PostLogicInterface.MAX_RECENT_POSTS; i+= PostLogicInterface.MAX_QUERY_SIZE) {
+			try {
+				permissionDb.checkStartEnd(notLoggedInUser, GroupingEntity.ALL, i, i + 1, "test");
+			} catch (final AccessDeniedException ignore) {
+				fail("no exception expected");
+			}
+		}
+		
+		// not ok
+		for (int i = PostLogicInterface.MAX_RECENT_POSTS; i < PostLogicInterface.MAX_RECENT_POSTS * 2; i+= PostLogicInterface.MAX_QUERY_SIZE) {
+			try {
+				permissionDb.checkStartEnd(notLoggedInUser, GroupingEntity.ALL, i, i + PostLogicInterface.MAX_QUERY_SIZE / 2, "test");
+				fail("expected exception");
+			} catch (final AccessDeniedException ignore) {
+				// ignored
+			}
+		}
+		
+		// but ok for admin
+		
+		for (int i = PostLogicInterface.MAX_RECENT_POSTS; i < PostLogicInterface.MAX_RECENT_POSTS * 2; i+= PostLogicInterface.MAX_QUERY_SIZE) {
+			try {
+				permissionDb.checkStartEnd(admin, GroupingEntity.ALL, i, i + PostLogicInterface.MAX_QUERY_SIZE / 2, "test");
 			} catch (final AccessDeniedException ignore) {
 				fail("no exception expected");
 			}
@@ -130,15 +161,6 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		} catch (final AccessDeniedException ignore) {
 			// ignore
 		}
-	}
-
-	/**
-	 * tests isAllowedToAccessPostsDocuments
-	 */
-	@Ignore
-	@Test
-	public void isAllowedToAccessPostsDocuments() {
-		// TODO: implement test
 	}
 
 	/**

@@ -146,6 +146,7 @@
 		<property name="adminUserName" value="admin"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 		<property name="bibtexReader" ref="bibtexReader"/>
+		<property name="readOnly" value="${system.mode.readOnly}" />
 	</bean>
 
 	<!-- provides access to the database for all controllers -->
@@ -153,22 +154,32 @@
 		<property name="user" ref="loginUser"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 		<property name="bibtexReader" ref="bibtexReader"/>
+		<property name="readOnly" value="${system.mode.readOnly}" />
 	</bean>
 	<bean id="notLoggedInUserLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.LogicFactoryBean">
 		<property name="user" ref="notLoggedInUser"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 		<property name="bibtexReader" ref="bibtexReader"/>
+		<property name="readOnly" value="${system.mode.readOnly}" />
 	</bean>
 	<bean id="notLoggedInUser" class="org.bibsonomy.model.User"/>
 	
 	<bean id="qrCodeRenderer" class="org.bibsonomy.util.QRCodeRenderer" scope="singleton">
-		<property name="projectHome" value="${project.home}" />
+		<property name="projectHome" ref="projectHome" />
 	</bean>
-		
+	
+	<bean id="projectName" class="java.lang.String">
+		<constructor-arg value="${project.name}" />
+	</bean>
+	
+	<bean id="projectHome" class="java.lang.String">
+		<constructor-arg value="${project.home}" />
+	</bean>
+	
 	<!-- handles sending of mails  -->
 	<bean id="mailUtils" class="org.bibsonomy.util.MailUtils" scope="singleton">
-		<property name="projectHome" value="${project.home}" />
-		<property name="projectName" value="${project.name}" />
+		<property name="projectHome" ref="projectHome" />
+		<property name="projectName" ref="projectName" />
 		<property name="projectBlog" value="${project.blog}" />
 		<property name="projectEmail" value="${project.email}" />
 		<property name="projectRegistrationFromAddress" value="${project.registrationFromAddress}" />
@@ -201,7 +212,7 @@
 	<bean id="relativeUrlGenerator" class="org.bibsonomy.services.URLGenerator" scope="prototype"/>
 	
 	<bean id="absoluteUrlGenerator" class="org.bibsonomy.services.URLGenerator" scope="prototype">
-		<property name="projectHome" value="${project.home}" />
+		<property name="projectHome" ref="projectHome" />
 	</bean>
 	
 	<bean id="vuFindUrlGenerator" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
@@ -215,7 +226,7 @@
 	</bean>
 	
 	<bean id="realVuFindUrlGenerator" class="org.bibsonomy.webapp.view.urlbuilder.VuFindURLGenerator" lazy-init="true">
-		<property name="projectHome" value="${project.home}" />
+		<property name="projectHome" ref="projectHome" />
 		<property name="vuFindUrlPrefix" value="${export.bibtex.vufind.marc.biburl}" />
 		<property name="ebscoVuFindUrlPrefix" value="${export.bibtex.vufind.ebsco.biburl}" />
 		<property name="vuFindUrlMiscFieldName" value="hdsurl" />
@@ -224,7 +235,7 @@
 	
 
 	<!-- to resolve messages -->
-	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+	<bean id="messageSource" class="org.bibsonomy.webapp.util.spring.i18n.ExposedResourceMessageBundleSource">
 		<!-- matches messages.properties, messages_de.properties, ... -->
 		<property name="basenames">
 			<list>
@@ -232,8 +243,6 @@
 				<value>classpath:/custom/messages</value>
 				<value>classpath:/projects/${project.name}_messages</value>
 				<value>classpath:/themes/${project.theme}_messages</value>
-				<!-- TODO: (Bootstrap) remove when old layout is removed -->
-				<value>classpath:/old_layout_messages</value>
 				<value>classpath:/messages</value>
 			</list>
 		</property>
@@ -243,45 +252,19 @@
 
 	<!--  #################### view resolver #################### -->
 	<!-- default: JSPs -->
-	<bean id="viewResolver" class="org.bibsonomy.webapp.util.spring.servlet.LayoutSwitchingViewResolver">
-		<property name="resolverMap">
-			<map>
-				<entry key="BOOTSTRAP">
-					<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-						<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
-						<property name="prefix" value="/WEB-INF/bsjsp/" /> 
-						<property name="suffix" value=".jspx" />
-						<!-- expose the application context's beans to the view layer so that they can be accessed in all jsp's via ${beanName} -->
-						<property name="exposedContextBeanNames">
-							<list>
-								<value>authConfig</value>
-								<value>properties</value>
-								<value>relativeUrlGenerator</value>
-								<value>absoluteUrlGenerator</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
-				
-				<entry key="CLASSIC">
-					<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-						<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
-						<property name="prefix" value="/WEB-INF/jsp/" /> 
-						<property name="suffix" value=".jspx" />
-						<!-- expose the application context's beans to the view layer so that they can be accessed in all jsp's via ${beanName} -->
-						<property name="exposedContextBeanNames">
-							<list>
-								<value>authConfig</value>
-								<value>properties</value>
-								<value>relativeUrlGenerator</value>
-								<value>absoluteUrlGenerator</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
-			</map>
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/jsp/" /> 
+		<property name="suffix" value=".jspx" />
+		<!-- expose the application context's beans to the view layer so that they can be accessed in all jsp's via ${beanName} -->
+		<property name="exposedContextBeanNames">
+			<list>
+				<value>authConfig</value>
+				<value>properties</value>
+				<value>relativeUrlGenerator</value>
+				<value>absoluteUrlGenerator</value>
+			</list>
 		</property>
-	
 	</bean>
 	
 	<!-- used to resolve non-JSP views, e.g., JabRef's layout views -->
@@ -291,18 +274,17 @@
 	
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
 
-			<util:map id="bibtexReaders">
-				<entry key="application/marc">
-					<bean class="org.bibsonomy.marc.MarcToBibTexReader"/>
-				</entry>
-				<!-- 
-				<entry key="application/pica">
-				</entry>
-				 -->
-				<entry key="application/marc:application/pica">
-					<bean class="org.bibsonomy.marc.MarcToBibTexReader"/>
-				</entry>
-			</util:map>
+	<util:map id="bibtexReaders">
+		<entry key="application/marc">
+			<bean class="org.bibsonomy.marc.MarcToBibTexReader"/>
+		</entry>
+		<entry key="application/marc:application/pica">
+			<bean class="org.bibsonomy.marc.MarcToBibTexReader"/>
+		</entry>
+		<entry key="text/bibtex">
+			<bean class="org.bibsonomy.bibtex.BibTeXToPublicationReader"/>
+		</entry>
+	</util:map>
 	
 	<bean id="bibtexReader" class="org.bibsonomy.model.util.CompositeBibtexReader">
 		<constructor-arg ref="bibtexReaders"/>
@@ -324,6 +306,57 @@
 				<entry key="/homepage">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="homepageController"/>
+					</bean>
+				</entry>
+				<entry key="/person">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="personPageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>requestedPersonId</value>
+								<value>requestedPersonName</value>
+								<value>requestedAction</value>
+								<value>requestedHash</value>
+								<value>requestedUser</value>
+								<value>requestedRole</value>
+								<value>requestedIndex</value>
+								<value>formAction</value>
+								<value>formPersonRoles</value>
+								<value>formPersonRole</value>
+								<value>formPersonId</value>
+								<value>formInterHash</value>
+								<value>formIntraHash</value>
+								<value>formResourceHash</value>
+								<value>formUser</value>
+								<value>formThatsMe</value>
+								<value>formOrcid</value>
+								<value>formPersonNameId</value>
+								<value>formFirstName</value>
+								<value>formMiddleName</value>
+								<value>formLastName</value>
+								<value>formSelectedName</value>
+								<value>formAcademicDegree</value>
+								<value>formThesisId</value>
+								<value>formResourcePersonRelationId</value>
+								<value>formPersonIndex</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/persondisambiguation">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="disambiguationPageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>requestedAuthorName</value>
+								<value>requestedAction</value>
+								<value>requestedHash</value>
+								<value>requestedUser</value>
+								<value>requestedRole</value>
+								<value>requestedPersonId</value>
+								<value>requestedIndex</value>
+							</list>
+						</property>
 					</bean>
 				</entry>
 				<entry key="/recommended">
@@ -646,12 +679,6 @@
 						<property name="controllerBeanName" value="friendsOverviewController"/>
 					</bean>
 				</entry>
-				<!-- TODO: (bootstrap) remove -->
-				<entry key="/bootstrapDemo">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="bootstrapDemoController"/>
-					</bean>
-				</entry>
 				<entry key="/errors/403">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="error403PageController"/>
@@ -677,10 +704,9 @@
 						<property name="controllerBeanName" value="error503PageController"/>
 					</bean>
 				</entry>
-				<!-- TODO: (bootstrap) remove -->
-				<entry key="/bibsonomy3">
+				<entry key="/persons">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="bibsonomyPreview"/>
+						<property name="controllerBeanName" value="personIntroPageController"/>
 					</bean>
 				</entry>
 			</map>
@@ -708,6 +734,18 @@
 		<property name="supportedResources" ref="allResources"/>
 		<property name="newsGroup" value="${news.group}"/>
 		<property name="newsTag" value="${news.tag}"/>
+	</bean>
+	
+	<bean id="personPageController" class="org.bibsonomy.webapp.controller.PersonPageController" scope="request" parent="multiResourceListControllerWithTags">
+		<property name="supportedResources" ref="allResources"/>
+		<property name="requestLogic" ref="requestLogic"/>
+		<property name="personRoleRenderer" ref="personRoleRenderer"/>
+	</bean>
+	
+	<bean id="disambiguationPageController" class="org.bibsonomy.webapp.controller.DisambiguationPageController" scope="request" parent="multiResourceListControllerWithTags">
+		<property name="supportedResources" ref="allResources"/>
+		<property name="requestLogic" ref="requestLogic"/>
+		<property name="personRoleRenderer" ref="personRoleRenderer"/>
 	</bean>
 	
 	<bean id="relationsController" class="org.bibsonomy.webapp.controller.RelationsController" scope="request">
@@ -944,8 +982,8 @@
 
 	
 	<!--  #################### static views #################### -->
-	<bean id="bootstrapDemoController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
-		<property name="view" value="BOOTSTRAP_DEMO"/>
+	<bean id="personIntroPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="PERSON_INTRO"/>
 	</bean>
 	<bean id="buttonPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="BUTTONS"/>
@@ -968,14 +1006,15 @@
 	<bean id="error503PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="ERROR503"/>
 	</bean>
-	<!-- TOOD: remove -->
-	<bean id="bibsonomyPreview" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
-		<property name="view" value="BIBSONOMY3"/>
-	</bean>
 	
 	<bean id="contextPathFilter" class="org.bibsonomy.webapp.filters.ContextPathFilter">
-		<property name="projectHomeUrl" value="${project.home}"/>
+		<property name="projectHomeUrl" ref="projectHome"/>
 	</bean>
+	
+	<bean id="personRoleRenderer" class="org.bibsonomy.services.person.PersonRoleRenderer">
+		<constructor-arg ref="messageSource"/>
+	</bean>
+	
 	
 	<!--  #################### imports #################### -->
 	<import resource="classpath:org/bibsonomy/bibsonomy-model-context.xml" />
@@ -987,7 +1026,7 @@
 	<import resource="bibsonomy2-servlet-ajax.xml" />	
 	<import resource="bibsonomy2-servlet-admin.xml" />
 	<import resource="bibsonomy2-servlet-database.xml" />
-	<import resource="bibsonomy2-servlet-lucene.xml" />
+	<import resource="bibsonomy-servlet-search.xml" />
 	<import resource="bibsonomy2-servlet-security.xml" />
 	<import resource="bibsonomy2-servlet-opensocial.xml" />
 	<import resource="bibsonomy2-servlet-saml.xml" />

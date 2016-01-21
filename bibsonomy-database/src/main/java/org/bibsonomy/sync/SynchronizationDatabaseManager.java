@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -86,7 +86,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 			final SyncParam param = new SyncParam();
 			param.setSyncService(service);
 			param.setServer(server);
-			param.setServiceId(generalDb.getNewId(ConstantID.IDS_SYNC_SERVICE, session));
+			param.setServiceId(this.generalDb.getNewId(ConstantID.IDS_SYNC_SERVICE, session).intValue());
 			session.insert("insertSyncService", param);
 			session.commitTransaction();
 		} finally {
@@ -182,23 +182,30 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * 
 	 * @param server 
+	 * @param sslDn 
 	 * @param session
 	 * @return all available synchronization services. if server <true> sync server
 	 * otherwise sync clients
 	 */
-	public List<URI> getSyncServices(final boolean server, final DBSession session) {
-		return this.queryForList("getSyncServices", server, URI.class, session);
+	public List<SyncService> getSyncServices(final boolean server, final String sslDn, final DBSession session) {
+		final SyncParam param = new SyncParam();
+		param.setServer(server);
+		param.setSslDn(sslDn);
+		
+		return this.queryForList("getSyncServices", param, SyncService.class, session);
 	}
 	
 	/**
+	 * @param serviceURI 
 	 * @param server
 	 * @param session
-	 * @return
+	 * @return get available SyncService via SSLDn / ServiceID - if SSLDn empty, ServiceID is selected
 	 */
-	public List<SyncService> getAllSyncServices(final boolean server, final DBSession session) {
+	public SyncService getSyncServiceDetails(final URI serviceURI, final DBSession session) {
 		final SyncParam param = new SyncParam();
-		param.setServer(server);
-		return this.queryForList("getAllSyncServices", param, SyncService.class, session);
+		param.setService(serviceURI);
+			
+		return this.queryForObject("getSyncServiceDetails", param, SyncService.class, session);
 	}
 
 	/**
@@ -228,7 +235,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * @param lastSyncDate
 	 * @param status
 	 * @param info 
-	 * @return
+	 * @return the sync param for the parameters
 	 */
 	protected SyncParam createParam(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date lastSyncDate, final SynchronizationStatus status, final String info) {
 		final SyncParam param = new SyncParam();
@@ -280,7 +287,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return all synchronization server for user if user name is provided, for all users otherwise
 	 */
-	public List<SyncService> getSyncServices(final String userName, final URI service, final boolean server, final DBSession session) {
+	public List<SyncService> getSyncServiceSettings(final String userName, final URI service, final boolean server, final DBSession session) {
 		final SyncParam param = new SyncParam();
 		param.setUserName(userName);
 		param.setServer(server);
@@ -291,6 +298,16 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 		}
 		
 		return queryForList("getSyncServers", param, SyncService.class, session);
+	}
+	
+	/**
+	 * @param session 
+	 * @return List of synchronization servers for Auto synchronization ('autosync' or direction is not 'both')
+	 */
+	public List<SyncService> getAutoSyncServer(DBSession session) {
+		final SyncParam param = new SyncParam();
+		
+		return queryForList("getAutoSyncServer", param, SyncService.class, session);
 	}
 
 	/**
@@ -496,7 +513,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * @param conflictResolutionStrategy
 	 * @param direction
 	 */
-	private void resolveConflict(final SynchronizationPost clientPost, final SynchronizationPost serverPost, final ConflictResolutionStrategy conflictResolutionStrategy, final SynchronizationDirection direction) {
+	private static void resolveConflict(final SynchronizationPost clientPost, final SynchronizationPost serverPost, final ConflictResolutionStrategy conflictResolutionStrategy, final SynchronizationDirection direction) {
 		switch (conflictResolutionStrategy) {
 		case CLIENT_WINS:
 			if (!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction)) {

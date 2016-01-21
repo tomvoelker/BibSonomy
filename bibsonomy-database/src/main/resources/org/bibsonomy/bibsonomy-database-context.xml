@@ -42,7 +42,7 @@
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByFriends" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByFollowedUsers" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptForGroup" parent="publicationChainElement" />
-				<bean class="org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexFromBasketForUser" parent="publicationChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexFromClipboardForUser" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesFromInbox" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByTaggedUserRelation" parent="publicationChainElement" />
 			</list>
@@ -241,14 +241,15 @@
 	</bean>
 	
 	<bean id="bookmarkDatabaseManager" class="org.bibsonomy.database.managers.BookmarkDatabaseManager" factory-method="getInstance" parent="postDatabaseManager">
-		<property name="resourceSearch" ref="luceneBookmarkSearch" />
+		<property name="resourceSearch" ref="bookmarkSearch" />
 		<property name="chain" ref="bookmarkChain" />
 	</bean>
 	
 	<bean id="publicationDatabaseManager" class="org.bibsonomy.database.managers.BibTexDatabaseManager" factory-method="getInstance" parent="postDatabaseManager">
-		<property name="resourceSearch" ref="lucenePublicationSearch" />
+		<property name="resourceSearch" ref="publicationSearch" />
 		<property name="chain" ref="publicationChain" />
 		<property name="fileLogic" ref="fileLogic" />
+		<property name="publicationSearch" ref="publicationSearch" />
 	</bean>
 	
 	<bean id="tagRelationDatabaseManager" class="org.bibsonomy.database.managers.TagRelationDatabaseManager" factory-method="getInstance">
@@ -256,8 +257,8 @@
 	</bean>
 	
 	<bean id="tagDatabaseManager" class="org.bibsonomy.database.managers.TagDatabaseManager" factory-method="getInstance">
-		<property name="bookmarkSearch" ref="luceneBookmarkSearch" />
-		<property name="publicationSearch" ref="lucenePublicationSearch" />
+		<property name="bookmarkSearch" ref="bookmarkSearch" />
+		<property name="publicationSearch" ref="publicationSearch" />
 		<property name="chain" ref="tagChain" />
 	</bean>
 	
@@ -266,7 +267,7 @@
 	</bean>
 	
 	<bean id="goldStandardPublicationDatabaseManager" class="org.bibsonomy.database.managers.GoldStandardPublicationDatabaseManager" factory-method="getInstance">
-		<property name="search" ref="luceneGoldStandardPublicationSearch" />
+		<property name="search" ref="goldStandardPublicationSearch" />
 		<property name="chain" ref="goldStandardPublicationChain" />
 	</bean>	
 
@@ -294,6 +295,10 @@
 	
 	<bean id="abstractGoldStandardBookmarkChainElement" class="org.bibsonomy.database.managers.chain.goldstandard.get.GoldStandardChainElement" abstract="true">
 		<property name="databaseManager" ref="goldStandardBookmarkDatabaseMananger" />
+	</bean>
+	
+	<bean id="personDatabaseManager" class="org.bibsonomy.database.managers.PersonDatabaseManager" factory-method="getInstance">
+		<property name="personSearch" ref="personSearch" />
 	</bean>
 	
 	<bean id="mainDataSource" class="${database.datasource.class}" parent="basicDataSource">

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -52,6 +52,8 @@ import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.common.exceptions.InvalidModelException;
+import org.bibsonomy.common.exceptions.ReadOnlyDatabaseException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -263,29 +265,31 @@ public final class RestServlet extends HttpServlet {
 
 			cachingStream.writeTo(response.getOutputStream());
 		} catch (final AuthenticationException e) {
-			log.warn(e.getMessage());
+			log.info(e.getMessage());
 			response.setHeader("WWW-Authenticate", "Basic realm=\"" + this.additionalInfos.get(PROJECT_NAME_KEY) + "WebService\"");
 			sendError(request, response, HttpURLConnection.HTTP_UNAUTHORIZED, e.getMessage());
 		} catch (final InternServerException e) {
 			log.error(e.getMessage());
 			sendError(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 		} catch (final NoSuchResourceException e) {
-			log.error(e.getMessage());
+			log.info(e.getMessage());
 			sendError(request, response, HttpServletResponse.SC_NOT_FOUND, e.getMessage());
-		} catch (final BadRequestOrResponseException e) {
-			log.error(e.getMessage(), e);
+		} catch (final BadRequestOrResponseException | InvalidModelException e) {
+			log.info(e.getMessage(), e);
 			sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
 		} catch (final AccessDeniedException e) {
-			log.error(e.getMessage());
+			log.info(e.getMessage());
 			sendError(request, response, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		} catch (final ResourceMovedException e) {
-			log.error(e.getMessage());
+			log.info(e.getMessage());
 			/*
 			 * sending new location
 			 * TODO: add date using
 			 */
 			response.setHeader("Location", urlRenderer.createHrefForResource(e.getUserName(), e.getNewIntraHash()));
 			sendError(request, response, HttpServletResponse.SC_MOVED_PERMANENTLY, e.getMessage());
+		} catch (final ReadOnlyDatabaseException e) {
+			sendError(request, response, HttpServletResponse.SC_SERVICE_UNAVAILABLE, e.getMessage());
 		} catch (final DatabaseException e) {
 			final StringBuilder returnMessage = new StringBuilder("");
 			for (final String hash : e.getErrorMessages().keySet()) {
@@ -302,7 +306,7 @@ public final class RestServlet extends HttpServlet {
 			// the user has not specified the resource type
 			sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
 		} catch (final Exception e) {
-			log.error(e, e);
+			log.error(e.getMessage(), e);
 			// well, lets fetch each and every error...
 			sendError(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 		}
@@ -393,7 +397,7 @@ public final class RestServlet extends HttpServlet {
 	}
 
 	/**
-	 * Checks the SSL headers for configured sync clients.
+	 * Checks the SSL headers for configured sync client
 	 * 
 	 * @param request
 	 * @param logic
@@ -413,24 +417,21 @@ public final class RestServlet extends HttpServlet {
 		}
 
 		/*
-		 * get all available sync clients
+		 * get syncClient from SSLDn
 		 */
-		log.debug("checking list of available sync clients against SSL_CLIENT_S_DN '" + sslClientSDn + "'.");
-		final List<SyncService> syncClients = logic.getAllSyncServices(false);
-		for (final SyncService syncClient : syncClients) {
-			if (log.isDebugEnabled()) {
-				log.debug("sync client:" + syncClient.getService() + " | service ssl_s_dn:" + syncClient.getSslDn());
-			}
-			if (sslClientSDn.equals(syncClient.getSslDn())) {
-				/*
-				 * FIXME: check, that request URI contains service URI
-				 * 
-				 * service with requested ssl_client_s_dn found in available client list -> give user the sync-role
-				 */
-				log.debug("setting user role to SYNC");
-				logic.getAuthenticatedUser().setRole(Role.SYNC);
-				return;
-			}
+		log.debug("checking available sync client against SSL_CLIENT_S_DN '" + sslClientSDn + "'.");
+		final List<SyncService> syncClient = logic.getSyncServices(false, sslClientSDn);
+
+		if (present(syncClient)) {
+			final SyncService syncService = syncClient.get(0);
+			log.debug("sync client:" + syncService.getService() + " | " + "service ssl_s_dn:" + syncService.getSslDn());
+
+			/*
+			 * service with requested ssl_client_s_dn found in available client list -> give user the sync-role
+			 */
+			log.debug("setting user role to SYNC");
+			logic.getAuthenticatedUser().setRole(Role.SYNC);
+			return;
 		}
 	}
 

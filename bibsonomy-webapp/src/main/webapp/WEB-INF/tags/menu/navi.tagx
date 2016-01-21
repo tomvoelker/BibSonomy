@@ -4,6 +4,7 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
@@ -11,120 +12,303 @@
 	
 	<c:set var="loginUserName" value="${loginUser.name}" />
 	
-	<ul>
-		<!--+ 
-			| Home
-			+-->
-		<li class="${activeTab eq 'home' ? 'active' : ''}"><a href="${relativeUrlGenerator.getProjectHome()}"><fmt:message key="navi.home"/></a></li>
-		<!--+ 
-		 	| myProjectName
-		 	+-->
-		<c:if test="${not empty loginUserName}">
-			<li class="pulldown ${activeTab eq 'my' ? 'active' : ''}" id="mySystem" data-touch="false">
-				<a href="${relativeUrlGenerator.getUserUrlByUserName(loginUserName)}"><fmt:message key="navi.my"/>${properties['project.name']}</a>
-				<ul>
-					<li><a href="${relativeUrlGenerator.getUserUrlByUserName(loginUserName)}"><fmt:message key="navi.posts"/></a></li>
-<!-- 					<li><a href="/recommended"><fmt:message key="navi.recommendedPosts"/></a></li> -->
-					<c:if test="${not command.context.loginUser.settings.layoutSettings.simpleInterface}">
-						<li><a href="${relativeUrlGenerator.getViewablePrivateUrl()}"><fmt:message key="navi.privatePosts"/></a></li>
-						<li><a href="${relativeUrlGenerator.getViewableFriendsUrl()}"><fmt:message key="navi.friendsPosts"/></a></li>
-						<li><a href="${relativeUrlGenerator.getUserUrlByUserName(loginUserName)}?filter=JUST_PDF"><fmt:message key="navi.pdfs"/></a></li>
-+						<li><a href="${relativeUrlGenerator.getUserUrlByUserName(loginUserName)}?filter=DUPLICATES"><fmt:message key="navi.duplicates"/></a></li>
-					</c:if>
-					<li class="separator">${mtl:ch('nbsp')}</li>
-					
-					<li><a href="/discussed/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.discussedPosts"/></a></li>
-					<li><a href="${relativeUrlGenerator.getBasketUrl()}"><fmt:message key="navi.basket"/></a></li>
-					<li><a href="/inbox"><fmt:message key="navi.inbox"/></a></li>
-					<li class="separator">${mtl:ch('nbsp')}</li>
-					
-					<li><a href="/spheres"><fmt:message key="navi.spheres"/></a></li>
-					<c:if test="${not command.context.loginUser.settings.layoutSettings.simpleInterface}">
-						<li><a href="/friends"><fmt:message key="navi.friends"/></a></li>
-						<li><a href="${relativeUrlGenerator.getFollowersUrl()}"><fmt:message key="navi.followees"/></a></li>
-						<li class="separator">${mtl:ch('nbsp')}</li>
-					</c:if>
-					
-					<li><a href="${relativeUrlGenerator.getConceptsUrlByString(loginUserName)}"><fmt:message key="navi.relations"/></a></li>
-					<c:if test="${not command.context.loginUser.settings.layoutSettings.simpleInterface}">
-						<li><a href="/cv/user/${mtl:encodeURI(loginUserName)}"><fmt:message key="navi.cv"/></a></li>
-						<li><a href="${relativeUrlGenerator.getMySearchUrl()}"><fmt:message key="navi.browse"/></a></li>
-						<li><a href="${relativeUrlGenerator.getPublicationsAsBibtexUrlByUserName(loginUserName)}?items=1000"><fmt:message key="navi.bibtex"/></a></li>
-						<li class="separator">${mtl:ch('nbsp')}</li>
-					</c:if>
-					<li><a href="/settings"><fmt:message key="navi.settings"/></a></li>
-				</ul>
-			</li>
-			<!--+
-				| post a post
-				+-->
-			<li class="pulldown ${activeTab eq 'post' ? 'active' : ''}" id="addPost">
-				<span><fmt:message key="navi.postPost"/></span>
-				<ul>
-					<li><a href="/postBookmark"><fmt:message key="navi.postBookmark"/></a></li>
-					<li><a href="/postPublication"><fmt:message key="navi.postPublication"/></a></li>
-				</ul>
-			</li>
-		</c:if>
-		<!--+
-			| groups
-			+-->
-		<c:choose>
-			<c:when test="${not empty loginUser.groups}">
-				<li class="pulldown ${activeTab eq 'groups' ? 'active' : ''}">
-					<span><fmt:message key="navi.groups"/></span>
-					<table>
-						<tr>
-							<td colspan="6"><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="navi.groups.all"/></a></td>
-						</tr>
-						<c:forEach var="grp" items="${loginUser.groups}">
-							<tr>
-								<td><a href="${relativeUrlGenerator.getGroupUrlByGroupName(grp.name)}"><c:out value='${grp.name}'/></a></td>								
-								<td><a href="${relativeUrlGenerator.getRelevantForUrlByGroupName(grp.name)}"><fmt:message key="navi.relevantFor"/></a></td>
-								<td><a href="${relativeUrlGenerator.getViewableUrlByGroupName(grp.name)}"><fmt:message key="navi.viewable"/></a></td>
-								<td>
-									<c:if test="${grp.sharedDocuments}">
-										<a href="${relativeUrlGenerator.getGroupUrlByGroupName(grp.name)}?filter=JUST_PDF">
-											<fmt:message key="navi.groups" /><fmt:message key="navi.pdfs" />
+	<nav class="navbar navbar-bibsonomy" role="banner" id="navigation">
+		<div class="container navi noborder">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle btn btn-default navbar-btn" data-toggle="collapse" data-target="#bs-navbar-collapse">
+					<span class="sr-only"><fmt:message key="navi.navigation.toggle"/></span>
+					<span class="icon-bar"><!--  --></span>
+					<span class="icon-bar"><!--  --></span>
+					<span class="icon-bar"><!--  --></span>
+				</button>
+			</div>
+			<div class="collapse navbar-collapse" id="bs-navbar-collapse">
+				<ul class="nav navbar-nav">
+					<li class="${activeTab eq 'home' ? 'active' : ''}"><a href="${relativeUrlGenerator.getProjectHome()}"><fmt:message key="navi.home"/></a></li>
+					<!--+ 
+				 		| myProjectName
+				 		+-->
+					<c:if test="${not empty loginUserName}">
+						<li class="dropdown ${activeTab eq 'my' ? 'active' : ''}">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.my"/>${properties['project.name']}<b class="caret">&amp;nbsp;</b></a>
+							<ul class="dropdown-menu">
+								<li><a href="${relativeUrlGenerator.getUserUrlByUserName(loginUserName)}"><fmt:message key="navi.myPosts"/></a></li>
+								<c:if test="${not loginUser.settings.layoutSettings.simpleInterface}">
+									<li><a href="${relativeUrlGenerator.getViewablePrivateUrl()}"><fmt:message key="navi.privatePosts"/></a></li>
+									<li><a href="${relativeUrlGenerator.getViewableFriendsUrl()}"><fmt:message key="navi.friendsPosts"/></a></li>
+									<li><a href="${relativeUrlGenerator.getUserUrlByUserName(loginUserName)}?filter=JUST_PDF"><fmt:message key="navi.pdfs"/></a></li>
+									<li><a href="${relativeUrlGenerator.getUserUrlByUserName(loginUserName)}?filter=DUPLICATES"><fmt:message key="navi.duplicates"/></a></li>
+									<li> 
+										<fmt:message var="concepts" key="navi.concepts" />
+										<a href="${relativeUrlGenerator.getConceptsUrlByString(loginUserName)}" title="${concepts}">
+											<fmt:message key="navi.concepts" />
 										</a>
+									</li>
+								</c:if>
+								<li><a href="${relativeUrlGenerator.prefix('discussed').getUserUrlByUserName(loginUserName)}"><fmt:message key="navi.discussedPosts"/></a></li>
+								
+								<c:if test="${not loginUser.settings.layoutSettings.simpleInterface}">
+									<li class="divider"><!-- KEEP ME --></li>
+									<li><a href="/cv/user/${fn:escapeXml(loginUserName)}"><fmt:message key="navi.cv"/></a></li>
+									<li><a href="${relativeUrlGenerator.getMySearchUrl()}"><fmt:message key="navi.browse"/></a></li>
+									<li><a href="${relativeUrlGenerator.prefix('bib').getUserUrlByUserName(loginUserName)}?items=1000"><fmt:message key="navi.bibtex"/></a></li>
+								</c:if>
+							</ul>
+						</li>
+						<!--+
+							| post a post
+							+-->
+						<li class="dropdown ${activeTab eq 'post' ? 'active' : ''} ${systemReadOnly ? 'disabled' : ''}">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.postPost"/><b class="caret">&amp;nbsp;</b></a>
+							<ul class="dropdown-menu">
+								<li class="${systemReadOnly ? 'disabled' : ''}"><a href="/postBookmark"><fmt:message key="navi.postBookmark"/></a></li>
+								<li class="${systemReadOnly ? 'disabled' : ''}"><a href="/postPublication"><fmt:message key="navi.postPublication"/></a></li>
+							</ul>
+							
+						</li>
+					</c:if>
+					<!--+
+						| groups
+						+-->
+					<c:choose>
+						<c:when test="${not empty loginUser.groups}">
+							<li class="dropdown ${activeTab eq 'groups' ? 'active' : ''}">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.groups"/><b class="caret">&amp;nbsp;</b></a>
+								<ul class="dropdown-menu">
+									<li><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="navi.groups.all"/></a></li>
+									<li class="divider"><!-- keep me --></li>
+									<c:forEach var="grp" items="${loginUser.groups}">
+										<c:set var="role" value="${grp.getGroupMembershipForUser(loginUser).groupRole}" />
+										<c:if test="${role eq 'ADMINISTRATOR' or role eq 'MODERATOR' or role eq 'USER'}">
+											<li class="dropdown-submenu">
+												<a href="#" class="dropdown-toggle" data-toggle="dropdown"><c:out value="${grp.name}"/></a>
+												<ul class="dropdown-menu">
+													<li><a href="${relativeUrlGenerator.getGroupUrlByGroupName(grp.name)}"><fmt:message key="navi.posts" /></a></li>
+													<li><a href="${relativeUrlGenerator.getRelevantForUrlByGroupName(grp.name)}"><fmt:message key="navi.relevantFor"/></a></li>
+													<li><a href="${relativeUrlGenerator.getViewableUrlByGroupName(grp.name)}"><fmt:message key="navi.viewable"/></a></li>
+													<li>
+														<c:if test="${grp.sharedDocuments}">
+															<a href="${relativeUrlGenerator.getGroupUrlByGroupName(grp.name)}?filter=JUST_PDF"><fmt:message key="navi.pdfs" /></a>
+														</c:if>
+													</li>
+													<li><a href="${relativeUrlGenerator.prefix('discussed').getGroupUrlByGroupName(grp.name)}"><fmt:message key="navi.discussedPosts"/></a></li>
+													<li class="divider"><!-- keep me --></li>
+													<li><a href="${relativeUrlGenerator.prefix('settings').getGroupUrlByGroupName(grp.name)}"><fmt:message key="navi.group.settings" /></a></li>
+												</ul>
+											</li>
+										</c:if>
+									</c:forEach>
+									<c:if test="${!loginUser.spammer}">
+										<li class="divider"><!-- keep me --></li>
+										<li><a href="/grouprequest"><fmt:message key="navi.group.groupRequest" /></a></li>
 									</c:if>
-								</td>
-								<td><a href="/discussed/group/${mtl:encodeURI(grp.name)}"><fmt:message key="navi.discussedPosts"/></a></td>
-							</tr>
-						</c:forEach>
-					</table>
-				</li>
-			</c:when>
-			<c:otherwise>
-				<li class="${activeTab eq 'groups' ? 'active' : ''}"><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="navi.groups"/></a></li>
-			</c:otherwise>
-		</c:choose>
-		<!--+
-			| popular
-			+-->
-		<li class="pulldown ${activeTab eq 'popular' ? 'active' : ''}" id="popular">
-			<span><fmt:message key="navi.popular" /></span>
-			<ul>
-				<li><a href="/popular"><fmt:message key="navi.posts"/></a></li>
-				<li><a href="/tags"><fmt:message key="navi.tags"/></a></li>
-				<li><a href="/authors"><fmt:message key="navi.authors"/></a></li>
-				<li><a href="/concepts"><fmt:message key="navi.relations"/></a></li>
-				<li><a href="/discussed"><fmt:message key="navi.discussions"/></a></li>
-			</ul>
-		</li>
-		
-		<c:if test="${loginUser.role eq 'ADMIN' }">
-			<li class="pulldown ${activeTab eq 'admin' ? 'active' : ''}" id="systemAdmin" data-touch="false">
-				<span>admin</span>
-				<ul>
-					<li><a href="${relativeUrlGenerator.getAdminUrlByName('spam')}">spam</a></li>
-					<li><a href="${relativeUrlGenerator.getAdminUrlByName('group')}">groups</a></li>
-					<li><a href="${relativeUrlGenerator.getAdminUrlByName('lucene')}">full text search</a></li>
-					<li><a href="${relativeUrlGenerator.getAdminUrlByName('recommender')}">recommenders</a></li>
-					<li><a href="${relativeUrlGenerator.getAdminUrlByName('oauth')}">OAuth consumers</a></li>
-					<li><a href="${relativeUrlGenerator.getAdminUrlByName('sync')}">synchronization</a></li>
+								</ul>
+							</li>
+						</c:when>
+						<c:otherwise>
+							<c:choose>		
+								<c:when test="${not empty loginUserName}">
+									<li class="dropdown ${activeTab eq 'groups' ? 'active' : ''}">
+										<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.groups"/><b class="caret">&amp;nbsp;</b></a>
+										<ul class="dropdown-menu">
+											<li><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="navi.groups.all"/></a></li>
+											<c:if test="${!loginUser.spammer}">
+												<li class="divider"><!-- keep me --></li>
+												<li><a href="/grouprequest"><fmt:message key="navi.group.groupRequest" /></a></li>
+											</c:if>
+										</ul>
+									</li>
+								</c:when>
+								<c:otherwise>
+									<li class="${activeTab eq 'groups' ? 'active' : ''}"><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="navi.groups"/></a></li>
+								</c:otherwise>
+							</c:choose>		
+						</c:otherwise>
+					</c:choose>
+					
+					<!--+
+						| popular
+						+-->
+					<li class="dropdown ${activeTab eq 'popular' ? 'active' : ''}">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.popular" /><b class="caret">&amp;nbsp;</b></a>
+						<ul class="dropdown-menu">
+							<li><a href="/popular"><fmt:message key="navi.posts"/></a></li>
+							<li><a href="/tags"><fmt:message key="navi.tags"/></a></li>
+							<li><a href="/authors"><fmt:message key="navi.authors"/></a></li>
+							<li><a href="/concepts"><fmt:message key="navi.relations"/></a></li>
+							<li><a href="/discussed"><fmt:message key="navi.discussions"/></a></li>
+						</ul>
+					</li>
+					
+					<li class="${activeTab eq 'persons' ? 'active' : ''}"><a href="${relativeUrlGenerator.getPersonsUrl()}"><fmt:message key="navi.persons"/></a></li>
+					
+					<c:if test="${loginUser.role eq 'ADMIN' }">
+						<li class="dropdown ${activeTab eq 'admin' ? 'active' : ''}" data-touch="false">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">admin<b class="caret">&amp;nbsp;</b></a>
+							<ul class="dropdown-menu">
+								<li><a href="${relativeUrlGenerator.getAdminUrlByName('spam')}">users</a></li>
+								<li><a href="${relativeUrlGenerator.getAdminUrlByName('group')}">groups</a></li>
+								<li><a href="${relativeUrlGenerator.getAdminUrlByName('fulltextsearch')}">full text search</a></li>
+								<li><a href="${relativeUrlGenerator.getAdminUrlByName('recommender')}">recommenders</a></li>
+								<li><a href="${relativeUrlGenerator.getAdminUrlByName('oauth')}">OAuth consumers</a></li>
+								<li><a href="${relativeUrlGenerator.getAdminUrlByName('sync')}">synchronization</a></li>
+								<li><a href="${relativeUrlGenerator.getAdminUrlByName('statistics')}">statistics</a></li>
+							</ul>
+						</li>
+					</c:if>
 				</ul>
-			</li>
-		</c:if>
-	</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<c:if test="${not empty loginUserName}" >
+						<li><user:username user="${loginUser}" /></li>
+					</c:if>
+					<li class="dropdown ${activeTab eq 'myprofile' ? 'active' : ''}">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+							<span class="fa fa-user"><!-- KEEP ME --></span>
+							<c:if test="${(loginUser.inbox.numPosts + loginUser.clipboard.numPosts) == 0}">
+								<c:set var="counterStyle" value="display: none;" />
+							</c:if>
+							<b class="navi-info">
+								<span id="inbox-clipboard-counter" style="${counterStyle}"><c:out value="${(loginUser.inbox.numPosts + loginUser.clipboard.numPosts)}"/></span>
+							</b>
+							<b class="caret">&amp;nbsp;</b></a>
+						<ul class="dropdown-menu items-with-icons">
+	
+							<!--  WHEN USER IS LOGGED IN -->
+							<c:choose>
+								<c:when test="${not empty loginUserName}">
+									
+									<li>
+										<fmt:message var="titleInbox" key="navi.inbox" />
+										<a href="/inbox" title="${titleInbox}">
+											<span class="fa fa-inbox"><!-- KEEP ME --></span>
+											<fmt:message key="navi.inbox" />
+											<span id="inbox-counter" style="position: absolute; right: 10px;" class="badge"><c:out value="${loginUser.inbox.numPosts}"/></span>
+										</a>
+									</li>
+									<li>
+										<fmt:message var="titleClipboard" key="navi.clipboard"/>
+										<a href="/clipboard" title="${titleClipboard}"><!-- empty -->
+											<span class="fa fa-folder-open"><!--  --></span>
+											<fmt:message key="navi.clipboard" />
+											<span id="clipboard-counter" style="position: absolute; right: 10px;" class="badge"><c:out value="${loginUser.clipboard.numPosts}"/></span>
+										</a>
+									</li>
+									<li>
+										<fmt:message var="friends" key="navi.friends" />
+										<a href="/friendsoverview" title="friends">
+											<span class="fa fa-user"><!--  --></span>
+											<fmt:message key="navi.friends"/>
+										</a>
+									</li>
+									<li> 
+										<fmt:message var="editTags" key="navi.editTags" />
+										<a href="/editTags" title="${editTags}">
+											<span class="fa fa-tag"><!-- KEEP ME --></span>
+											<fmt:message key="navi.editTags" />
+										</a>
+									</li>
+									
+									<!-- settings -->
+									<li>
+										<a href="/settings">
+											<span class="fa fa-cogs"><!-- KEEP ME --></span>
+											<fmt:message key="navi.settings"/>
+										</a>
+									</li>
+									
+									<!-- divider -->
+									<li class="divider"><!-- KEEP ME --></li>
+	
+									<li>
+										<fmt:message var="titleBlog" key="navi.blog" />
+										<a href="${properties['project.blog']}" title="${titleBlog}">
+											<span class="fa fa-book"><!-- KEEP ME --></span>
+											<fmt:message key="navi.blog" />
+										</a>
+									</li>
+									<li>
+										<fmt:message var="titleHelp" key="navi.help"/>
+										<fmt:message key="navi.helpUrl" var="helpLangUrl" />
+										<a href="${helpLangUrl}" title="${titleHelp}">
+											<span class="fa fa-question-circle"><!-- KEEP ME --></span>
+											<fmt:message key="navi.help" />
+										</a>
+									</li>
+									
+									<!-- divider -->
+									<li class="divider"><!--  --></li>
+									<li>
+										<a href="/logout">
+											<span class="fa fa-power-off"><!-- KEEP ME --></span>
+											<fmt:message key="navi.logout"/>
+										</a>
+									</li>
+								</c:when>
+								
+								<!--  WHEN USER IS NOT LOGGED IN -->
+								<c:otherwise>
+									<li>
+										<a href="${properties['project.blog']}" title="${titleBlog}">
+											<span class="fa fa-book"><!-- KEEP ME --></span>
+											<fmt:message key="navi.blog" />
+										</a>
+									</li>
+									<li>
+										<fmt:message key="navi.helpUrl" var="helpLangUrl" />
+										<a href="${helpLangUrl}" title="${titleHelp}">
+											<span class="fa fa-question-circle"><!-- KEEP ME --></span>
+											<fmt:message key="navi.help" />
+										</a>
+									</li>
+									<li class="divider"><!--  --></li>
+									<c:choose>
+										<c:when test="${mtl:contains(authConfig, mtl:convertToEnum('org.bibsonomy.common.enums.AuthMethod', 'SAML'))}">
+											<li>
+												<a href="/login_saml">
+													<span class="fa fa-sign-in"><!-- KEEP ME --></span>
+													<fmt:message key="navi.login" />
+												</a>
+											</li>
+											<li>
+												<a href="/login_saml?rememberMe=true">
+													<span class="fa fa-sign-in"><!-- KEEP ME --></span>
+													<fmt:message key="navi.login.permanent" />
+												</a>
+											</li>
+											<li>
+												<a href="/login?selTab=1">
+													<span class="fa fa-sign-in"><!-- KEEP ME --></span>
+													<fmt:message key="navi.login.group" />
+												</a>
+											</li>
+											
+										</c:when>
+										<c:otherwise>
+											<li>
+												<a href="${relativeUrlGenerator.getLoginUrl()}">
+													<span class="fa fa-sign-in"><!-- KEEP ME --></span>
+													<fmt:message key="navi.login" />
+												</a>
+											</li>
+										</c:otherwise>
+									</c:choose>
+									
+									<c:if test="${mtl:contains(authConfig, mtl:convertToEnum('org.bibsonomy.common.enums.AuthMethod', 'INTERNAL')) and not properties['auth.register.disabled'] eq 'true'}">
+										<li> 
+											<a href="${relativeUrlGenerator.getRegisterUrl()}">
+												<span class="fa fa-pencil-square-o"><!-- KEEP ME --></span>
+												<fmt:message key="navi.register" />
+											</a>
+										</li>
+									</c:if>
+									
+								</c:otherwise>
+							</c:choose>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
 </jsp:root>

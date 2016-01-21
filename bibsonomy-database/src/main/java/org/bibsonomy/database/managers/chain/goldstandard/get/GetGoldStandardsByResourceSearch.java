@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -52,7 +52,7 @@ public class GetGoldStandardsByResourceSearch<RR extends Resource, R extends Res
 			// FIXME: should probably not be null, but was null for goldstandardbookmarks (test via http://localhost:8080/api/posts?resourcetype=goldstandardbookmark&sortPage=TITLE&sortOrder=ASC ) which might be at the wrong chain element here? 
 			throw new UnsupportedResourceTypeException();
 		}
-		return search.getPosts(param.getUserName(), param.getRequestedUserName(), param.getRequestedGroupName(), null, param.getGroupNames(), param.getSearchType(), param.getSearch(), param.getTitle(), param.getAuthor(), null, null, null, null, null, param.getOrder(), param.getLimit(), param.getOffset());
+		return search.getPosts(param.getUserName(), param.getRequestedUserName(), param.getRequestedGroupName(), null, param.getGroupNames(), param.getSearchType(), param.getSearch(), param.getTitle(), param.getAuthor(), null, null, null, null, null, null, param.getOrder(), param.getLimit(), param.getOffset());
 	}
 
 	@Override

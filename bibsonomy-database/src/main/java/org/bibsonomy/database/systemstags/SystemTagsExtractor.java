@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -185,7 +185,7 @@ public class SystemTagsExtractor {
 	}
 	
 	/**
-	 * removes all hidden System Tags if the loginUser ist not he posts owner
+	 * removes all hidden System Tags if the loginUser is not the post's owner
 	 * @param post
 	 * @param loginUserName
 	 */

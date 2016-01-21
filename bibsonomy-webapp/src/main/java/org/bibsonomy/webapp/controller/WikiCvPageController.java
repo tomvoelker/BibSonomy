@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -66,7 +66,7 @@ public class WikiCvPageController extends ResourceListController implements Mini
 		final String requestedUser = command.getRequestedUser();
 		final User requestedUserWithDetails = this.logic.getUserDetails(requestedUser);
 		
-		// prevent showing cv pages of deleted and not existing users
+		// prevent showing cv pages of deleted and not existiing users
 		if (!present(requestedUserWithDetails.getName())) {
 			throw new ObjectNotFoundException(requestedUser);
 		}

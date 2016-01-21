@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Search">
+	<!--+ 
+		| Queries.
+	 	+-->
+	 <!-- get number of tag assignments -->
+	<select id="getLastTasId" resultClass="integer">
+		SELECT MAX(tas_id)
+		FROM tas
+	</select>   
+	
+	<!-- used by the gold standard index instead of getLastTasId -->
+	<!-- TODO: rename query? -->
+	<select id="getLastContentId" resultClass="integer">
+		SELECT MAX(content_id)
+		FROM gold_standard WHERE content_type = 2
+	</select>
+
+	<!-- get number of public bookmark posts -->
+	<select id="getBookmarkCount" resultClass="integer">
+		SELECT count(*) 
+		FROM bookmark b 
+		WHERE b.group &gt;= 0
+	</select>
+
+	<!-- get number of public bibtex posts -->
+	<select id="getBibTexCount" resultClass="integer">
+		SELECT count(*) 
+		FROM bibtex b
+		WHERE b.group &gt;= 0
+	</select>
+	
+	<!-- get number of public goldstandard posts -->
+	<select id="getGoldStandardPublicationCount" resultClass="integer">
+		SELECT count(*) 
+		FROM gold_standard b 
+		WHERE b.content_type = 2
+	</select>
+	 
+	<!-- get last log_date from resource tables -->
+	<select id="getLastLogBibTex" resultClass="date">
+		SELECT MAX(log_date)
+		FROM log_bibtex
+	</select>
+
+	<select id="getLastLogBookmark" resultClass="date">
+		SELECT MAX(log_date)
+		FROM log_bookmark
+	</select>
+	
+	<select id="getLastLogGoldStandardPublication" resultClass="date">
+		SELECT MAX(log_date) FROM log_gold_standard l WHERE l.content_type = 2 
+	</select>
+	
+	<!-- get users which where flagged as spammers/non-spammers since last index update --> 
+	<select id="getPredictionForTimeRange" parameterClass="date" resultMap="SearchCommon.spamPrediction">
+		SELECT user_name, prediction, updated_at 
+			FROM prediction 
+			WHERE updated_at &gt;= #date# 
+			ORDER BY updated_at DESC
+	</select>
+	
+	<!-- get list of all non-spam bookmarks -->
+	<select id="getBookmarkForIndex" parameterClass="searchParam" resultMap="SearchBookmarkCommon.searchBookmarkPost">
+		SELECT 
+			bb.*,
+			t.change_date,
+			t.tag_name,
+			g.*,
+			u.book_url, u.book_url_ctr AS count,
+			t.tas_id,
+			-1 AS rating, -1 AS number_of_ratings
+		FROM 
+		( 
+			SELECT <include refid ="bookmarkAttributesNoChangeDate"/>, b.group
+			FROM bookmark b 
+			JOIN urls u USING (book_url_hash)
+				WHERE b.group &gt;= 0
+					AND b.content_id &gt; #lastContentId#
+			ORDER BY b.content_id ASC
+			LIMIT #limit#
+		) AS bb
+		LEFT JOIN tas t USING (content_id)
+		LEFT JOIN groupids g ON (bb.group = g.group)
+		LEFT JOIN urls u ON (u.book_url_hash = bb.intraHash)
+	</select>
+	
+	<!-- get list of all non-spam publication posts -->
+	<select id="getBibTexForIndex" parameterClass="searchParam" resultMap="SearchPublicationCommon.searchPublicationPost">
+		SELECT 
+			bb.*, 
+			t.tag_name,
+			g.*,
+			t.tas_id,
+			-1 AS rating, -1 AS number_of_ratings
+		FROM 
+		( 
+		  SELECT <include refid ="commonSearchPublicationAttributes2"/>, b2.group, 1 AS count, b2.scraperid, b2.change_date
+		  FROM bibtex b2
+		  WHERE b2.group &gt;= 0
+			  AND b2.content_id &gt; #lastContentId#
+		  ORDER BY b2.content_id ASC
+		  LIMIT #limit#
+		) AS bb
+		LEFT JOIN tas t USING (content_id)
+		LEFT JOIN groupids g ON (bb.group = g.group)
+	</select>
+	
+	<select id="getGoldStandardPublicationForIndex" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost">
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashesSearch"/>, b.change_date, b.group, 'public' AS group_name, 1 AS count, b.content_id, -1 AS rating, -1 AS number_of_ratings
+		FROM gold_standard b
+		WHERE b.content_id &gt; #lastContentId#
+			AND content_type = 2
+		ORDER BY b.content_id ASC
+		LIMIT #limit#
+	</select>
+</sqlMap>

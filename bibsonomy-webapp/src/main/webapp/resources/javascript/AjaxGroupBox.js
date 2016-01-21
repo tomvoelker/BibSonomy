@@ -8,14 +8,14 @@ var OTHER_GROUPING = 'other';
 var FRIENDS_GROUP_NAME = 'friends';
 
 
-$(function() {	
+$(document).ready(function () {	
 	
 	// TODO: move and use in post edit views
-	$(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
-	 
+	$(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).change(onAbstractGroupingClick);
 	$.each($('.abstractGroupingGroup'), function(index, box) {
 		toggleGroupBox(box);
 	});
+	
 });
 
 
@@ -23,31 +23,17 @@ $(function() {
 
 // TODO: move and use in post edit views
 function onAbstractGroupingClick() {
-	toggleGroupBox($(this).parent());
+	toggleGroupBox($(this));
 }
 
 // TODO: move and use in post edit views
-function toggleGroupBox(radioButtonGroup) {
+function toggleGroupBox(radioButton) {
 	// find the checked abstract grouping
-	var selectedAbstractGrouping = $(radioButtonGroup).children('input:checked');
-	
-	// find otherGroupsBox of the abstract grouping
-	var otherBox = $(radioButtonGroup).siblings(OTHER_GROUPING_CLASS_SELECTOR);
-	
-	// disable groups select if private or public is checked or enable
-	// if other is checked
-	if (!selectedAbstractGrouping.hasClass('otherGroups')) {
-		
-		/*var Options = otherBox.options;
-		  //  var elements = document.getElementById("ddBusinessCategory").options;
-
-		for(var i = 0; i < Options.length; i++){
-		     Options[i].selected = false;
-		 }*/
-		//otherBox.attr('selected', false);
-		otherBox.attr('disabled', 'disabled');
+	var selectedAbstractGrouping = $(radioButton).val();
+	if(selectedAbstractGrouping!='other'){
+		$(radioButton).parents('div').next().find('select[name=groups]').attr('disabled', 'disabled');
 	} else {
-		otherBox.removeAttr('disabled');
+		$(radioButton).parents('div').next().find('select[name=groups]').removeAttr('disabled');
 	}
 }
 function clearSelected(element){

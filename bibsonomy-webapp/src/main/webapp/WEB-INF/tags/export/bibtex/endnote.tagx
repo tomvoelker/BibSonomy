@@ -13,7 +13,7 @@
 	<jsp:directive.attribute name="escapeXml" type="java.lang.Boolean" required="true"/>
 	
 <c:choose>
-<c:when test="${escapeXml == true}">${fn:escapeXml(mtl:toEndnoteString(post, false))}</c:when>
+<c:when test="${escapeXml}">${fn:escapeXml(mtl:toEndnoteString(post, false))}</c:when>
 <c:otherwise>${mtl:toEndnoteString(pos, false)}</c:otherwise>
 </c:choose>
 

@@ -1,20 +1,15 @@
-<jsp:root version="2.0" 
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
 	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/resources/publication"
-	xmlns:form="http://www.springframework.org/tags/form"
-	xmlns:export="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
-	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
-	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
-	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication"
-	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
-	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion">
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" description="The publication post that should be rendered."/>
 	<jsp:directive.attribute name="referer" type="java.lang.String" required="true" description="The referer to the scraped site"/>
@@ -22,295 +17,71 @@
 	<c:set var="publication" value="${post.resource}"/>
 	<c:set var="isOwnEntry" value="${post.user.name eq command.context.loginUser.name}"/>
 	
-	<spring:eval var="interHashId" expression="T(org.bibsonomy.common.enums.HashID).INTER_HASH.id" />
 	<spring:theme code="javascript.openaccess" var="jsOpenAccess" text=""/>
 
 	<c:if test="${not empty jsOpenAccess}"> 
 		<script type="text/javascript" src="${jsOpenAccess}"><!--  --></script>
 	</c:if>
 	
-	<!-- TODO: remove inline CSS! -->
-	<script type="text/javascript" src="${resdir}/javascript/publicationdetails.js"><!-- keep me --></script>
-	<div id="icons" style="display:none">
-		<img id="icon_expand" alt="" src="${resdir}/image/icon_expand.png"/>
-		<img id="icon_collapse" alt="" src="${resdir}/image/icon_collapse.png"/>
+	<div class="title">
+		<pub:title post="${post}">
+			<jsp:attribute name="bibActionButtons">
+				<div class="pull-right">
+					<buttons:actions post="${post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}" resourceType="bibtex"/>
+				</div>
+			</jsp:attribute>
+		</pub:title>
 	</div>
+	<div style="border-top: 1px #cbcbcb solid; clear:left">
+		<span> </span>
+	</div> <!-- border -->
 	
-	<div style="float:left; width:97%; margin-left:10px; margin-top:0px; padding-bottom:13px;">
-
-		<div class="title" style="float: left;">
-			<pub:title post="${post}" />
-		</div>
-		<div style="border-top: 1px #cbcbcb solid; clear:left">
-			<span> </span>
-		</div> <!-- border -->
-		
-		<div class="subcolumns" style="border-bottom: 1px #cbcbcb solid;">
-		
-			<div class="c66l">
-				<div class="subcl">
-					<div style="padding-left: 0.5em;">
-						<!--+
-							| abstract 
-							+-->
+	<c:choose>
+		<!--+
+			| 
+			| if own entry, render a two column layout to display documents on the right side
+			| 
+		   	+-->
+		<c:when test="${isOwnEntry or not empty publication.documents}">
+			<bs:twoColumns columnSizeLeft="8" columnSizeRight="4">
+				<jsp:attribute name="columnLeft">
+					<!-- PUBLICATION DETAILS -->
+					<pub:publicationdetailscontent post="${post}" referer="${referer}" />
+				</jsp:attribute>
 				
-						<c:if test="${not empty publication['abstract']}"> 
-							<h4 style="clear:both;"><fmt:message key="publications.abstract.headline"/></h4>
-							<div id="abstract" class="more">
-								<c:out value="${post.resource['abstract']}" />
-							</div>
-						</c:if>
-						
-						<!--+
-							| description
-							+-->		
-						<c:if test="${not empty post.description}">
-							<h4 style="clear:both;"><fmt:message key="post.resource.description.cap"/></h4>
-							<div id="desc"><c:out value="${post.description}" /></div>
-						</c:if>
-						
-							
-						<!--+
-							|
-							| resources (URLs/PDF/etc.)
-							|
-							+-->
-						<!--+<h3><a class="foldUnfold" href="#resources"><img id="resourcesImg" src="${resdir}/image/icon_collapse.png" border="0"/><c:out value=" "/><fmt:message key="bibtex.resources"/></a></h3>+-->
-						<h4><fmt:message key="publications.resource.headline" /></h4>
-						<div id="resources" style="font-size: 90%;">
-							<table class="td-top">
-								<!--+
-									| DOI
-									+-->
-								<c:if test="${not empty publication.miscFields['doi']}">
-									<tr>
-										<td><fmt:message key="bibtex.actions.doi"/>:</td>
-										<td><a href="http://dx.doi.org/${mtl:encodeURI(mtl:extractDOI(publication.miscFields['doi']))}"><c:out value="${mtl:extractDOI(publication.miscFields['doi'])}"/></a></td>
-									</tr>
-								</c:if>
-								<!--+
-									| URL
-									+-->
-								<c:if test="${not empty publication.url}">
-									<tr>
-										<td><fmt:message key="bibtex.url"/>:</td>
-										<td><a href="${fn:escapeXml(publication.url)}"><c:out value="${publication.url}"/></a></td>
-									</tr>
-								</c:if>
-								<!--+
-									| additional URLs
-									+-->
-								<c:if test="${not empty publication.extraUrls or isOwnEntry}">
-									<tr>
-										<td>
-											<script type="text/javascript" src="${resdir}/javascript/additionalUrl.js"><!--  --></script>
-											<fmt:message key="bibtex.additional_urls"/>:
-										</td>
-										<td>
-											<!-- display extra URLs -->
-											<div id="urlList" class="allAddUrls">
-											<c:forEach items="${publication.extraUrls}" var="url">
-												<c:set var="escapedUrl" value="${fn:escapeXml(url.url)}" />
-												<div id="${escapedUrl}">
-												<a href="${escapedUrl}"><c:out value="${url.text}"/></a>
-												<c:if test="${isOwnEntry}">
-													<c:out value=" ("/>
-													<a href="#" onclick="deleteUrl(this, '${escapedUrl}','${fn:escapeXml(publication.intraHash)}','${fn:escapeXml(command.context.ckey)}');return false;" ><fmt:message key="post.bibtex.delete"/></a>
-													<c:out value=")"/><br/>
-												</c:if>
-												</div>
-											</c:forEach>
-											</div>
-											<form method="post" action="/ajax/additionalURLs" id="f_addURL" class="initiallyHidden">
-												<fmt:message key="bibtex.url"/><c:out value=":"/>
-												<input type="text" name="url"/><br />
-												<fmt:message key="text"/><c:out value=":"/>
-												<input type="text" name="text"/>
-												<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
-												<input type="hidden" name="hash" value="${fn:escapeXml(publication.intraHash)}"/>
-												<input type="hidden" name="action" value="addUrl" id="submitAddUrl"/>
-												<input class="postUrl" type="button" value="addURL" id="addURLButton"/>
-											</form>
-				
-											<!--  add url -->
-											<c:if test="${isOwnEntry}">
-												<fmt:message var="addAdditionalUrlTitle" key="bibtex.actions.additional_url.add.title" />
-												<a class="addUrl" title="${addAdditionalUrlTitle}" href="javascript:addUrlForm()" id="l_addURL"><fmt:message key="bibtex.actions.additional_url.add"/></a>
-											</c:if>
-				
-										</td>
-									</tr>
-								</c:if>
-								
-								<!--+
-									| OpenURL 
-									+-->
-								<c:if test="${not empty command.context.loginUser.openURL}">
-									<tr>
-										<fmt:message var="openurlTitle" key="bibtex.actions.openurl.title" />
-										<td><fmt:message key="bibtex.actions.openurl"/>:</td>
-										<td>
-											<a href="${fn:escapeXml(command.context.loginUser.openURL)}?${fn:escapeXml(publication.openURL)}" title="${openurlTitle}">
-												<c:out value="${command.context.loginUser.openURL}"/>?<c:out value="${mtl:shorten(publication.openURL, 30)}"/>
-											</a>
-										</td>
-									</tr>
-								</c:if>
-	
-								<!--+
-									| BibTeX key
-									+-->
-								<tr>
-									<td><fmt:message key="post.resource.bibtexKey"/>:</td>
-									<td><a href="${relativeUrlGenerator.getPublicationUrlByBibTexKeyAndUserName(publication.bibtexKey, post.user.name)}"><c:out value="${publication.bibtexKey}"/></a></td>
-								</tr>
-								
-								<!--+ 
-								 	| internal link
-								 	+-->
-								<tr>
-									<td>
-										<fmt:message key="discussion.resourceLink.title"/><c:out value=": "/>
-										<buttons:help message="discussion.resourceLink.help" cssStyle="float:none"/>
-									</td>
-									<td>
-										
-										<!-- TODO: use urlgenerator? -->
-										<c:set var="linkText" value="[[publication/${interHashId}${publication.interHash}/${mtl:encodeURI(post.user.name)}]]" />
-										<input id="linkBox" type="text" onclick="javascript:$(this).focus().select()" value="${linkText}" size="${fn:length(linkText)}" style="font-size:90%; border:0px;"/>
-									</td>
-								</tr>
-								
-						<!--+ 
-				 			|
-				 			| dropdown menu from which you can pick an external literature site and try to find the publication there
-				 			|
-				 			+-->
-								<!-- the string you would usually enter in google scholar, world cat etc. -->
-								<c:set var="externalQueryString"
-									value="${fn:escapeXml(mtl:cleanBibtex(publication.title))}"></c:set>
-
-							
-								<!-- build the urls -->
-								<c:url var="googleScholarPostUrl"
-									value="http://scholar.google.com/scholar">
-									<c:param name="hl" value="${locale}" />
-									<c:param name="q" value="${externalQueryString}" />
-								</c:url>
-
-								<c:url var="microsoftAcademicUrl"
-									value="http://academic.research.microsoft.com/Search">
-									<c:param name="query" value="${externalQueryString}" />
-								</c:url>
-
-								<c:url var="worldCatUrl" value="http://www.worldcat.org/search">
-									<c:param name="qt" value="worldcat_org_all" />
-									<c:param name="q" value="${externalQueryString}" />
-								</c:url>
-								
-								<c:url var="baseSearchUrl" value="http://www.base-search.net/Search/Results">
-									<c:param name="lookfor" value="${externalQueryString }" />
-									<c:param name="type" value="tit" />
-									<c:param name="ling" value="1" />
-									<c:param name="refid" value="dcbasde" />
-								</c:url>
-								
-								<!-- Go message -->
-								<fmt:message key="resources.searchExternal.go" var="goMsg" />
-
-								<!-- build the dropdown menu -->
-								<tr>
-									<td><fmt:message key="resources.searchExternal.dropDownLabel" />:</td>
-									<td><select name="dropDownExternal"
-										id="dropDownExternal" style="font-size: 8pt">
-											<option selected="selected">---<fmt:message key="resources.searchExternal.dropDownTitle" />---</option>
-											<option value="${googleScholarPostUrl}">Google
-												Scholar</option>
-											<option value="${microsoftAcademicUrl}">Microsoft
-												Academic Search</option>
-											<option value="${worldCatUrl}">WorldCat</option>
-											<option value="${baseSearchUrl}">BASE</option>
-									</select></td>
-									<td><input type="button" value="${goMsg}" onclick="javascript: return loadSelectedPage()" /></td>
-								</tr>
-							</table>
-						</div>
-						
-						<!--+
-							| discussion and rating
-							+-->
-	
-						<pub:discussionrating post="${post}" otherPostsUrlPrefix="/bibtex/${interHashId}"/>
-						
-						<!--+
-							| tag list
-							+-->
-						<!-- TODO: i18n? -->
-						<h4 style="clear:both;">Tags</h4>
-						<c:set var="tags" value="${post.tags}"/>
-						<c:if test="${not isOwnEntry}">
-							<c:set var="tags" value="${post.visibleTags}" />
-						</c:if>
-						<div class="taglist" style="clear:both; margin-top: 1em;">
-							<ul>
-							<c:forEach var="tag" items="${tags}" varStatus="status">
-								<!-- TODO: remove nobr and replace with CSS, it is deprecated! -->
-								<li style="display:list-item;"><span class="tagitem_rightborder"><a class="tagitem" href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, tag.name)}" rel="nofollow" title=""><nobr><c:out value="${tag.name}"/></nobr></a></span></li>
-							</c:forEach>
-							</ul>
-						</div>
+				<jsp:attribute name="columnRight">
+					<div class="documents">
+						<!-- META DATA ABOUT ATTACHED DOCUMENTS  -->
+						<pub:doc post="${post}" />
 					</div>
-				</div>
-			</div>
-			<div class="c33r">
-				<div class="subcr">
-					<!--+
-						| documents
-						+-->
-					<c:if test="${not empty publication.documents or isOwnEntry}">
-						<div class="documents">
-							<!-- FIXME: add isOwnEntry as tag attribute; do we need to pass the hole post to this tag? -->
-							<pub:doc post="${post}" />
-						</div>
-					</c:if>
-				</div>
-			</div>
-			
-			
-			<div class="clearfix"><!-- keep me --></div>
-			<ul class="pubmetainfo">
-				<li><fmt:message key="post.change_date" /> <rc:metaChangeDate post="${post}"/>.</li>
-				<li><fmt:message key="post.date" /> <rc:metaDate post="${post}"/>.</li>
-			</ul>
-		</div> <!-- /.subcolumns -->
-
-		<div>
+				</jsp:attribute>
+			</bs:twoColumns>
+		</c:when>
 		
+		<!--+
+			| 
+			| if not own entry, render a one column layout to display content details
+			| 
+		   	+-->	
+		<c:otherwise>
+			<div class="row">
+				<!-- PUBLICATION DETAILS -->
+				<div class="col-md-12">
+					<pub:publicationdetailscontent post="${post}" referer="${referer}" />
+				</div>
+			</div>
+		</c:otherwise>
+	</c:choose>
+
+	<div class="row">
+	
+		<div class="col-md-12">
 			<!--+ 
 			 	| selection of citation format 
 			 	+-->
-			<h4 style="clear:both;"><fmt:message key="publications.citations.headline" /></h4>
-			<div style="/*float:left;clear:right;*/width:100%">
-				<pub:citation post="${post}"/>
-			</div>
-			
-			<!--+
-				| private note
-				+-->
-			<c:if test="${isOwnEntry}">
-				<h4><fmt:message key="post.resource.privnote"/></h4>
-				<div id="privnote">
-					<form method="post" id="note">
-						<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
-						<input type="hidden" name="intraHash" value="${fn:escapeXml(publication.intraHash)}"/>
-						<input type="hidden" name="oldprivatenote" value="${fn:escapeXml(publication.privnote)}"/>
-						<input type="hidden" name="action" value="updatePrivateNote"/>
-						<textarea style="width:82%;" name="privateNote" rows="5"><c:out value="${publication.privnote}"/></textarea>
-						<fmt:message key="save" var="save" />
-						<input style="float:right;" type="submit" value="${save}" id="makeP" onclick="javascript: return updatePrivNote($(this))"/>    
-					</form>
-				</div>
-			</c:if>
+			<hr />
+		 	<h4 class="pub-details"><span class="fa fa-quote-right"><!--  --></span><c:out value=" "/><fmt:message key="publications.citations.headline" /></h4>
+			<pub:citation post="${post}"/>
 			
 			<!--+
 				| only shown on PUMA (transfer publication to OpenAccess repository) 
@@ -328,7 +99,7 @@
 								<fmt:message key="group.reporting" var="reportDesc">
 									<fmt:param value="${group.name}" />
 								</fmt:message>
-								<a href="${reportingUrl}?intraHash=${post.resource.intraHash}&amp;user=${post.user.name}&amp;referer=${relativeUrlGenerator.getProjectHome()}${fn:escapeXml(requPath)}" title="${reportDesc}"><c:out value="${reportDesc} "/></a>
+								<a href="${reportingUrl}?intraHash=${post.resource.intraHash}&amp;user=${post.user.name}&amp;referer=${properties['project.home']}${fn:escapeXml(requPath)}" title="${reportDesc}"><c:out value="${reportDesc} "/></a>
 							</c:if>
 						</c:forEach>
 					</c:if>
@@ -336,5 +107,4 @@
 			</c:if>
 		</div>
 	</div>
-	<div style="clear:both">&amp;nbsp;</div>
 </jsp:root>

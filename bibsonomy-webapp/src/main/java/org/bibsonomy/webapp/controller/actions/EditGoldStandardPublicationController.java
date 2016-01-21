@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -37,6 +37,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.util.ObjectUtils;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.GoldStandardPostValidator;
 import org.bibsonomy.webapp.validation.PostValidator;
@@ -142,6 +143,14 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 	protected PostValidator<BibTex> getValidator() {
 		return new GoldStandardPostValidator<BibTex>();
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#canEditPost(org.bibsonomy.webapp.util.RequestWrapperContext)
+	 */
+	@Override
+	protected boolean canEditPost(final RequestWrapperContext context) {
+		return super.canEditPost(context) && !context.getLoginUser().isSpammer();
+	}
 
 	@Override
 	protected void setRecommendationFeedback(final TagRecommendationEntity post, final int postID) {
@@ -149,7 +158,7 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 	}
 
 	@Override
-	protected void preparePost(final EditPostCommand<BibTex> command, final Post<BibTex> post) {
+	protected void preparePost(final PostPublicationCommand command, final Post<BibTex> post) {
 		super.preparePost(command, post);
 		post.setApproved(command.isApproved());
 	}

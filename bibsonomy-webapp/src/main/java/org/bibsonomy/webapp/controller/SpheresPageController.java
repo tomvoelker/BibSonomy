@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -143,7 +143,7 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 		}
 		
 		// set all resourcetypes for the given sphere
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
 			this.setList(command, resourceType, GroupingEntity.FRIEND, loginUser.getName(), queryTags, null, null, null, Order.ADDED, command.getStartDate(), command.getEndDate(), entriesPerPage);
@@ -264,6 +264,5 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 			return Views.SPHERELIST;
 		}
 		return Views.getViewByFormat(format);
-	}	
-
+	}
 }

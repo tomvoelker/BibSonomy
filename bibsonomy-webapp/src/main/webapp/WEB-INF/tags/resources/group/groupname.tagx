@@ -7,6 +7,7 @@
 	
 	<jsp:directive.attribute name="group" type="org.bibsonomy.model.Group" required="true" />
 	<jsp:directive.attribute name="noLink" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="showRealname" type="java.lang.Boolean" required="false" />
 	
 	<c:set var="groupname" value="${group.name}" />
 	
@@ -14,13 +15,19 @@
 	<c:if test="${empty noLink}">
 		<c:set var="noLink" value="${false}" />
 	</c:if>
+	<c:if test="${empty showRealname}">
+		<c:set var="showRealname" value="${false}" />
+	</c:if>
+	
 	<c:choose>
 		<c:when test="${not noLink}">
-			<a href="${relativeUrlGenerator.getGroupUrlByGroupName(groupname)}"><c:out value="#${group.realname}" /></a>
+			<a href="${relativeUrlGenerator.getGroupUrlByGroupName(groupname)}"><c:out value="${group.name}" /></a>
 		</c:when>
 		<c:otherwise>
-			<c:out value="#${group.realname}" />
+			<c:out value="${group.name}" />
 		</c:otherwise>
 	</c:choose>
-	
+	<c:if test="${showRealname and not empty group.realname}">
+		&amp;nbsp;(<c:out value="${group.realname}" />)
+	</c:if>
 </jsp:root>

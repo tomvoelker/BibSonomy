@@ -39,7 +39,7 @@ var PUBLIC_POST_SELECTOR = 'input#publicInput';
 
 var pub = true;
 
-$(function() {	
+$(function() {
 	// remove all create review links if user already reviewed resource
 	if ($(REVIEW_OWN_SELECTOR).length > 0) {
 		// user has reviewed this resource hide all create review forms
@@ -51,16 +51,11 @@ $(function() {
 		});
 	}
 	
-	$(DISCUSSION_TOGGLE_LINK_SELECTOR).click(function() {
-		$(REVIEW_INFO_SELECTOR).toggle('slow');
-		$(DISCUSSION_SELECTOR).toggle('slow', updateDiscussionToggleLink);
-		return false;
-	});
-	
 	// TODO: move and use in post edit views
 	$(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
 	 
 	$.each($('.abstractGroupingGroup'), function(index, box) {
+		
 		toggleGroupBox(box);
 	});
 	var publicValue = $(PUBLIC_POST_SELECTOR).val();
@@ -71,7 +66,18 @@ $(function() {
 	if (!pub) {
 		alert(getString('post.resource.discusssion.warning.goldstandard'));
 	}
-
+	$('.toggleReplies').click(function(event) {
+		event.preventDefault();
+		var replies = $(this).parent().parent().parent().children('.media');
+		
+		$(replies).each(function(){
+			if( $(this).hasClass('hidden') ) {
+				$(this).removeClass('hidden');
+			} else {
+				$(this).addClass('hidden');
+			}
+		});
+	});
 });
 
 function showAppendixForm(o) {
@@ -120,14 +126,14 @@ $(document).ready(function() {
 	$('.descriptiveLabel').each(function() {
 		$(this).descrInputLabel({});
 	});
-	$('.textAreaAutoresize').each(function() {
-		$(this).autosize({}).focus(showMenu);
+	$('.reviewTextBox').children().first("textarea").each(function() {
+		$(this).autosize().focus(showMenu);
 	});
 	$('.reviewrating').stars({split:2});
 });
 
 function setUpLinkbox(o) {
-	o.textArea = o.bgFrame.parents('.fsOuter').children('.textBoxContainer').find(".textAreaAutoresize");
+	o.textArea = o.bgFrame.parents('.fsOuter').children('.textBoxContainer').find("textarea");
 	o.textArea.css({"z-index":5,"position":"relative"});
 	o.ctrlsContainer.find('input').trigger("focus");
 	o.menuItem.css("position","");
@@ -171,8 +177,9 @@ function createStandaloneReply(parent) {
 		form.append($('<input />').attr('name', 'discussionItem.parentHash').attr('type', 'hidden').attr('value', parentHash));
 		
 		// bind some actions (submit, group switch)
-		form.submit(createComment);
+		form.submit(createComment).parent().removeClass("hidden");
 		form.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
+		form.find("textarea").focus(showMenu);
 		addAutocompletionToLinkBox(form);
 }
 
@@ -216,17 +223,18 @@ function addReviewActions() {
 
 // TODO: move and use in post edit views
 function onAbstractGroupingClick() {
-	toggleGroupBox($(this).parent());
+	toggleGroupBox($(this).parent().parent().parent().parent());
 }
 
 // TODO: move and use in post edit views
 function toggleGroupBox(radioButtonGroup) {
+	
 	// find the checked abstract grouping
-	var selectedAbstractGrouping = $(radioButtonGroup).children('input:checked');
-	
+	var selectedAbstractGrouping = $(radioButtonGroup).find('input:checked');
+
 	// find otherGroupsBox of the abstract grouping
-	var otherBox = $(radioButtonGroup).siblings(OTHER_GROUPING_CLASS_SELECTOR);
-	
+	var otherBox = $(radioButtonGroup).find('.otherGroupsBox');
+
 	// disable groups select if private or public is checked or enable
 	// if other is checked
 	if (!selectedAbstractGrouping.hasClass('otherGroups')) {
@@ -442,83 +450,7 @@ function parseLinks(reviewText) {
 }
 
 
-//functions for redesigned page  
-$(function(){
-	var hash = window.location.hash;
-	var gsPresent = ($("#gs_present").val()=="true");
-	if(hash=="#discussionbox" && !gsPresent) {
-		$("#hideableContent").hide();
-		$("#imgExpandDiscussion").hide();
-		$("#imgCollapseDiscussion").show();
-		
-		$("#textExpandDiscussion").hide();
-		$("#textCollapseDiscussion").show();
-		
-		
-		$(".imgCollapse").each(function(){
-			if($(this).attr("id") == "imgCollapseContent") {
-				$(this).hide();
-			}
-		});
-		
-		$(".imgExpand").each(function(){
-			if($(this).attr("id") == "imgExpandContent") {
-				$(this).show();
-			}
-		});
-		
-		//Fix to redefine the Sidebar height
-		$('#sidebar').height($('#postcontainer').height() + 11);
-		
-	} else if (!gsPresent){
-		$("div#discussion").hide();
-		$("#imgExpandDiscussion").show();
-		$("#imgCollapseDiscussion").hide();
-		$("#textExpandDiscussion").show();
-		$("#textCollapseDiscussion").hide();
-		$("#imgExpandContent").hide();
-		$("#imgCollapseContent").show();
-		
-		//Fix to redefine the Sidebar height
-		$('#sidebar').height($('#postcontainer').height() + 11);
-
-	}
-});
-
-
 $(document).ready(function() {
-	
-	numberOfBookmarkLists = $(".bookmarksContainer").size(); // every id bookmarks_* must have a class bookmarksContainer
-	numberOfPublicationLists = $(".publicationsContainer").size(); // every id publications_* must have a class publicationsContainer
-
-	if (numberOfBookmarkLists != 0) {
-		$("#bookmarks_"+(numberOfBookmarkLists-1)).height("auto");
-	}
-	
-	if (numberOfBookmarkLists != 0) {
-		$("#publications_"+(numberOfPublicationLists-1)).height("auto");
-	}
-
-	$("a.foldUnfold").click(function(){
-		$('#sidebar').height("auto");
-		$(".posts, .wide").height("auto");
-
-		var selector = $(this).attr("href");
-		var resource = $(selector);
-		if(resource.is(":visible")) {
-			resource.hide();
-			$(this).find(".imgCollapse").hide();
-			$(this).find(".imgExpand").show();
-			return false;
-		}
-		resource.show();
-		$(this).find(".imgCollapse").show();
-		$(this).find(".imgExpand").hide();
-		
-		//Fix to redefine the Sidebar height
-		$('#sidebar').height($('#postcontainer').height() + 11);
-		return false;
-	});
 	
 	initCSLSugestions($("input.referenceAutocompletion"));
 

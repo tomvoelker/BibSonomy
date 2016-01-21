@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -77,11 +77,11 @@ public class UsersHandler implements ContextHandler {
 			// /users
 			return createUserListStrategy(context, httpMethod);
 		case 1:
-			userName = normailzeAndCheckUserName(context, urlTokens);
+			userName = normalizeAndCheckUserName(context, urlTokens);
 			// /users/[username]
 			return createUserStrategy(context, httpMethod, userName);
 		case 2:
-			userName = normailzeAndCheckUserName(context, urlTokens);
+			userName = normalizeAndCheckUserName(context, urlTokens);
 			req = urlTokens.next();
 
 			// /users/[username]/posts
@@ -104,7 +104,7 @@ public class UsersHandler implements ContextHandler {
 			}
 			break;
 		case 3:
-			userName = normailzeAndCheckUserName(context, urlTokens);
+			userName = normalizeAndCheckUserName(context, urlTokens);
 			req = urlTokens.next();
 
 			// /users/[username]/posts/[resourceHash]
@@ -130,7 +130,7 @@ public class UsersHandler implements ContextHandler {
 			break;
 		case 4:
 			// /users/[username]/posts/[resourcehash]/documents
-			userName = normailzeAndCheckUserName(context, urlTokens);
+			userName = normalizeAndCheckUserName(context, urlTokens);
 			if (RESTConfig.POSTS_URL.equalsIgnoreCase(urlTokens.next())) {
 				final String resourceHash = urlTokens.next();
 
@@ -141,7 +141,7 @@ public class UsersHandler implements ContextHandler {
 			break;
 		case 5:
 			// /users/[username]/posts/[resourcehash]/documents/[filename]
-			userName = normailzeAndCheckUserName(context, urlTokens);
+			userName = normalizeAndCheckUserName(context, urlTokens);
 			if (RESTConfig.POSTS_URL.equalsIgnoreCase(urlTokens.next())) {
 				final String resourceHash = urlTokens.next();
 
@@ -160,7 +160,7 @@ public class UsersHandler implements ContextHandler {
 	 * @param urlTokens
 	 * @return the normalized username @see {@link RESTUtils#normalizeUser(String, Context)}
 	 */
-	protected String normailzeAndCheckUserName(final Context context, final URLDecodingPathTokenizer urlTokens) {
+	protected String normalizeAndCheckUserName(final Context context, final URLDecodingPathTokenizer urlTokens) {
 		final String userName = RESTUtils.normalizeUser(urlTokens.next(), context);
 		if (!present(userName)) {
 			throw new BadRequestOrResponseException("username not specified");

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-MARC-Parser - Marc Parser for BibSonomy
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -41,8 +41,9 @@ public class HebisIdExtractor implements AttributeExtractor{
 	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 		String ppn = null;
 		if (src instanceof ExtendedMarcWithPicaRecord) {
-			ppn = ((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("003@", "$0", null);
-			String s = ((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("002@", "$0");
+			final ExtendedMarcWithPicaRecord extendedMarcPicaRecord = (ExtendedMarcWithPicaRecord) src;
+			ppn = extendedMarcPicaRecord.getFirstPicaFieldValue("003@", "$0", null);
+			String s = extendedMarcPicaRecord.getFirstPicaFieldValue("002@", "$0");
 			// preliminary solution for retro
 			if ((s != null) && (s.indexOf("r") == 0)) {
 				ppn = "r" + ppn;

@@ -4,16 +4,16 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
 	<jsp:directive.attribute name="key" type="java.lang.String" required="true"/>
-    <jsp:directive.attribute name="count" type="java.lang.Integer" required="true"/>
+	<jsp:directive.attribute name="count" type="java.lang.Integer" required="true"/>
 
-  	<c:choose>
-  		<c:when test="${count==1}">
-  			<fmt:message key="${key}.singular"/>
+	<c:choose>
+		<c:when test="${count==1}">
+			<fmt:message key="${key}.singular"/>
 		</c:when>
 		<c:otherwise>
-  			<fmt:message key="${key}">
-  				<fmt:param value="${count}"/>
-  			</fmt:message>
+			<fmt:message key="${key}">
+				<fmt:param value="${count}"/>
+			</fmt:message>
 		</c:otherwise>
 	</c:choose>	
 </jsp:root>

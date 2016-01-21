@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -83,13 +83,18 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * Checks whether the requested start- / end-values are OK
 	 * 
 	 * @param loginUser
+	 * @param groupingEntity
 	 * @param start
 	 * @param end
 	 * @param itemType
 	 */
-	public void checkStartEnd(final User loginUser, final int start, final int end, final String itemType) {
+	public void checkStartEnd(final User loginUser, final GroupingEntity groupingEntity, final int start, final int end, final String itemType) {
 		if (!this.isAdmin(loginUser) && ((end - start) > PostLogicInterface.MAX_QUERY_SIZE)) {
-			throw new AccessDeniedException("You are not authorized to retrieve more than " + PostLogicInterface.MAX_QUERY_SIZE + " " + itemType + " items at a time.");
+			throw new AccessDeniedException("You are not authorized to retrieve more than " + PostLogicInterface.MAX_QUERY_SIZE + " " + itemType + " at a time.");
+		}
+		
+		if (!this.isAdmin(loginUser) && GroupingEntity.ALL.equals(groupingEntity) && (start > PostLogicInterface.MAX_RECENT_POSTS || end > PostLogicInterface.MAX_RECENT_POSTS)) {
+			throw new AccessDeniedException("You are only authorized to retrieve the latest " + PostLogicInterface.MAX_RECENT_POSTS + " " + itemType);
 		}
 	}
 
@@ -510,6 +515,9 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 			}
 			if (UserUtils.isDBLPUser(targetUser)) {
 				throw new ValidationException("error.relationship_with_dblp");
+			}
+			if (UserUtils.isSpecialUser(targetUser)) {
+				throw new ValidationException("error.relationship_with_special_user");
 			}
 			if (loginUser.isSpammer()) {
 				throw new ValidationException("error.relationship_from_spammer");

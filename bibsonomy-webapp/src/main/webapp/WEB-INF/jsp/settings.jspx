@@ -13,53 +13,57 @@
 	xmlns:settings="urn:jsptagdir:/WEB-INF/tags/settings"
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/spheres"	
-	xmlns:spring="http://www.springframework.org/tags">
-
+	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/spheres"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
+	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
 	<fmt:message key="navi.settings" var="settingsPageTitle"/>
 	
-	<layout:tabLayout pageTitle="${settingsPageTitle}" headerMessageKey="navi.settings" headerLogoClass="settings" command="${command}" requPath="${requPath}" activeTab="my" minimizedContentWidth="${true}">		
+	<layout:tabLayout pageTitle="${settingsPageTitle}" headerMessageKey="navi.settings" headerLogoClass="settings" command="${command}" requPath="${requPath}" activeTab="myprofile" minimizedContentWidth="${true}">
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/cv_page.css" />
 			<script type="text/javascript" src="${resdir}/javascript/cv/handlers.js"><!--  --></script>
 			<script type="text/javascript" src="${resdir}/javascript/profile/handlers.js"><!-- --></script>
+			<script type="text/javascript" src="${resdir}/javascript/settings.js"><!-- keep me --></script>
 		</jsp:attribute>
+		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:account />
+					<nav:crumb nameKey="navi.settings" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+		
 		<!--+
 			| page content
-			+-->	
+			+-->
 		<jsp:attribute name="tabcontent">
 			<!-- display potential errors -->
-			<errors:global errors="${errors}"/>	
-			<c:choose>
-				<c:when test="${command.selTab == 0}">
-					<settings:profile command="${command}"/>
-				</c:when>
-				<c:when test="${command.selTab == 1}">
-					<settings:settings command="${command}"/>
-				</c:when>
-				<c:when test="${command.selTab == 2}">
-					<settings:import command="${command}"/>
-				</c:when>
-				<c:when test="${command.selTab == 3}">
-					<settings:group command="${command}"/>
-				</c:when>
-				<c:when test="${command.selTab == 4 and not command.user.spammer}">
-					<settings:sync command="${command}"/>
-				</c:when>
-				<c:when test="${command.selTab == 5}">
-					<settings:cv command="${command}"/>
-				</c:when>
-				<c:when test="${command.selTab == 6}">
-					<settings:oauth command="${command}"/>
-				</c:when>
-			</c:choose>
+			<errors:global />
 			
+			<settings:profile command="${command}"/>
+			
+			<settings:settings command="${command}"/>
+			
+			<settings:import command="${command}"/>
+			
+			<settings:cv command="${command}"/>
+			
+			<settings:oauth command="${command}"/>
+			
+			<settings:sync command="${command}"/>
+			
+			<settings:group command="${command}"/>
 		</jsp:attribute>
 		
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.settings"/>
+			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
 		</jsp:attribute>
 	
 		<!--+
@@ -76,92 +80,94 @@
 				</c:when>
 			</c:choose>
 		</jsp:attribute>
-	
+		
 		<!--+
 			| sidebar
 			+-->
 		<jsp:attribute name="sidebar">
-			<ul>
-				<!-- loginUser.groups -->
-				<li>
-					<span class="sidebar_h "><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="groups"/></a></span>
-					<ul class="sidebar_collapse_content">
-					<c:forEach var="group" items="${command.context.loginUser.groups}">
-						<li>
-						<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}"><c:out value='${group.name}'/>&amp;nbsp;</a> 
-							<c:if test="${group.sharedDocuments}">
-								<c:choose>
-									<c:when test="${not group.getGroupMembershipForUser(command.context.loginUser.name).userSharedDocuments}">
-										<fmt:message var="shareDocumentsTitle" key="groups.actions.shareDocuments.title"></fmt:message>
-										<a class="action" 
-											href="/ajax/handleGroupShare?requestedGroup=${fn:escapeXml(group.name)}&amp;action=shareDocuments&amp;ckey=${ckey}&amp;forward=settings"
-											title="${shareDocumentsTitle}">
-											<fmt:message key="groups.actions.shareDocuments"/>
-										</a>
-									</c:when>
-									<c:otherwise>
-										<fmt:message var="unshareDocumentsTitle" key="groups.actions.unshareDocuments.title"></fmt:message>
-											<a class="action" 
-												href="/ajax/handleGroupShare?requestedGroup=${fn:escapeXml(group.name)}&amp;action=unshareDocuments&amp;ckey=${ckey}&amp;forward=settings"
-												title="${unshareDocumentsTitle}">
-												<fmt:message key="groups.actions.unshareDocuments"/>
-											</a>
-									</c:otherwise>
-								</c:choose>
+			<!-- loginUser.friends -->
+			<sidebar:sidebarItem textKey="friends.friendof">
+				<jsp:attribute name="content">
+					<span class="user-friends">
+						<ul>
+							<c:forEach var="user" items="${command.userFriends}" begin="0" end="4">
+								<li><a href="${relativeUrlGenerator.getFriendUrlByUserName(user.name)}"><user:username user="${user}" noLink="${true}" /></a><c:out value=" "/></li>
+							</c:forEach>
+							<c:if test="${fn:length(command.userFriends) gt 4}">
+								<li class="more-link-item"><a class="more" onclick="$('.user-friends #user-friends-list-more').show();$(this).parent().hide();"><fmt:message key="more" />...</a></li>
 							</c:if>
-						</li>
-					</c:forEach>
-					</ul>
-				</li>
+						</ul>
+					
+						<c:if test="${fn:length(command.userFriends) gt 4}">
+							<div id="user-friends-list-more" style="display:none;">
+								<ul>
+									<c:forEach var="user" items="${command.userFriends}" begin="5">
+										<li><a href="${relativeUrlGenerator.getFriendUrlByUserName(user.name)}"><user:username user="${user}" noLink="${true}" /></a><c:out value=" "/></li>
+									</c:forEach>
+									<li><a class="less" onclick="$('.user-friends #user-friends-list-more').hide();$('.user-friends .more-link-item').show();"><fmt:message key="less" />...</a></li>
+								</ul>
+							</div>
+						</c:if>
+					</span>
+				</jsp:attribute>
+			</sidebar:sidebarItem>
 
-				<!-- loginUser.friends -->
+			<sidebar:sidebarItem textKey="friends.yourfriends">
+				<jsp:attribute name="content">
+					<span class="friends-of-user">
+						<ul>
+							<!-- FIXME: remove copy paste code, create a tagx file and pass begin and end to it or just render all items and
+								use a javascript script to do the more/less thing -->
+							<c:forEach var="user" items="${command.friendsOfUser}" begin="0" end="4">
+								<li>
+									<user:username user="${user}" />
+									<fmt:message var="deleteFriendTitle" key="friends.actions.delete.title"><fmt:param value="${fn:escapeXml(user.name)}"/></fmt:message>
+									&amp;nbsp;
+									<a class="action" href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(user.name)}&amp;action=removeFriend&amp;ckey=${ckey}&amp;forward=settings" title="${deleteFriendTitle}">
+										<fmt:message key="friends.actions.delete"/>
+									</a>
+								</li>
+							</c:forEach>
+							<c:if test="${fn:length(command.friendsOfUser) gt 4}">
+								<li class="more-link-item"><a class="more" onclick="$('.friends-of-user #friends-of-user-list-more').show();$(this).parent().hide();"><fmt:message key="more" />...</a></li>
+							</c:if>
+						</ul>
+						<c:if test="${fn:length(command.friendsOfUser) gt 4}">
+							<div id="friends-of-user-list-more" style="display:none;">
+								<ul>
+									<c:forEach var="user" items="${command.friendsOfUser}" begin="5">
+										<li>
+											<user:username user="${user}" />
+											<fmt:message var="deleteFriendTitle" key="friends.actions.delete.title"><fmt:param value="${fn:escapeXml(user.name)}"/></fmt:message>
+											&amp;nbsp;
+											<a class="action" href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(user.name)}&amp;action=removeFriend&amp;ckey=${ckey}&amp;forward=settings" title="${deleteFriendTitle}">
+												<fmt:message key="friends.actions.delete"/>
+											</a>
+										</li>
+									</c:forEach>
+									<li><a class="less" onclick="$('.friends-of-user #friends-of-user-list-more').hide();$('.friends-of-user .more-link-item').show();"><fmt:message key="less" />...</a></li>
+								</ul>
+							</div>
+						</c:if>
+					</span>
+				</jsp:attribute>
+			</sidebar:sidebarItem>
+				<!--  add a friend  
 				<li>
-					<span class="sidebar_h"><fmt:message key="friends.friendof"/></span> 
-					<ul class="tagcloud sidebar_collapse_content">
-              			<c:forEach var="user" items="${command.userFriends}">
-                			<li><a href="${relativeUrlGenerator.getFriendUrlByUserName(user.name)}"><c:out value="${user.name}"/></a><c:out value=" "/></li>
-              			</c:forEach>
-            		</ul>
-          		</li>
-
-		          <li><span class="sidebar_h"><fmt:message key="friends.yourfriends"/></span>
-		            <ul class="sidebar_collapse_content">
-		              <c:forEach var="user" items="${command.friendsOfUser}">
-		                <li>
-		                  <a href="${relativeUrlGenerator.getUserUrlByUserName(user.name)}"><c:out value='${user.name}'/>&amp;nbsp;</a> 
-			                <fmt:message var="deleteFriendTitle" key="friends.actions.delete.title"><fmt:param value="${fn:escapeXml(user.name)}"/></fmt:message>
-		                  <a
-		    	             class="action" 
-		    	             href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(user.name)}&amp;action=removeFriend&amp;ckey=${ckey}&amp;forward=settings"
-		    	             title="${deleteFriendTitle}">
-		    		        <fmt:message key="friends.actions.delete"/>
-		                  </a>
-		                </li>
-		              </c:forEach>
-		            </ul>
-		          </li>
-		          
-				<!-- list all spheres -->
-				<li>
-					<fmt:message key="spheres.sidebar.title" var="spheresCloudTitle" />
-					<spheres:spheresCloud title="${spheresCloudTitle}"><!-- keep me! --></spheres:spheresCloud>
+					<h4 class="sidebar"><fmt:message key="friends.addfriend"/></h4>
+					
+					<form class="sidebar_collapse_content" name="friends" method="POST" onsubmit="return submitUsername($('#laddfriend'));">
+						<label for="laddfriend"><fmt:message key="user"/> </label><c:out value=" "/>
+						<input type="text" size="20" name="requestedUserName" id="laddfriend"/><c:out value=" "/>
+						<input type="hidden" value="addFriend" name="action"/>
+						<input type="hidden" value="settings" name="forward"/>
+						<input type="hidden" value="${ckey}" name="ckey"/>
+						<fmt:message var="addFriend" key="friends.button.add"/>
+						<input type="submit" name="submit" value="${addFriend}"/>
+					</form>
 				</li>
 				
-				<!--  add a friend  -->
-				<li>
-					<span class="sidebar_h"><fmt:message key="friends.addfriend"/></span>
-					
-		            <form class="sidebar_collapse_content" name="friends" method="POST" onsubmit="return submitUsername($('#laddfriend'));">
-		              <label for="laddfriend"><fmt:message key="user"/> </label><c:out value=" "/>
-		              <input type="text" size="20" name="requestedUserName" id="laddfriend"/><c:out value=" "/>
-		              <input type="hidden" value="addFriend" name="action"/>
-		              <input type="hidden" value="settings" name="forward"/>
-		              <input type="hidden" value="${ckey}" name="ckey"/>
-		              <fmt:message var="addFriend" key="friends.button.add"/>
-		              <input type="submit" name="submit" value="${addFriend}"/>
-		            </form>
-				</li>
-			</ul>
+				-->
 		</jsp:attribute>
 	</layout:tabLayout>
 </jsp:root>

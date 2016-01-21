@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -41,6 +41,7 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.Filter;
+import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
@@ -188,9 +189,6 @@ public abstract class GenericParam {
 
 	/* search type */
 	private SearchType searchType;
-
-	/* not modified search parameter */
-	private String rawSearch;
 
 	/** This is the current user. */
 	private String userName;
@@ -445,23 +443,13 @@ public abstract class GenericParam {
 	}
 
 	/**
-	 * @return the rawSearch
-	 */
-	public String getRawSearch() {
-		return this.rawSearch;
-	}
-
-	/**
 	 * sets the rawsearch to search and prepares the search param for the
 	 * database query
 	 * 
 	 * @param search the search to set
 	 */
 	public void setSearch(final String search) {
-		if (search != null) {
-			this.rawSearch = search;
-			this.search = search.replaceAll("([\\s]|^)([\\S&&[^-]])", " +$2");
-		}
+		this.search = search;
 	}
 
 	/**
@@ -1173,6 +1161,15 @@ public abstract class GenericParam {
 	 */
 	public Set<Filter> getFilters() {
 		return this.filters;
+	}
+	
+	/**
+	 * XXX: ibatis knows no contains?
+	 * @return <code>true</code> iff filters contains a
+	 * {@link FilterEntity#POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER} filter
+	 */
+	public boolean isDiscussionUnclassifiedFilterContained() {
+		return present(this.filters) && this.filters.contains(FilterEntity.POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER);
 	}
 	
 	/**

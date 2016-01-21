@@ -1,7 +1,7 @@
 /**
- * BibSonomy-Lucene - Fulltext search facility of BibSonomy
+ * BibSonomy - A blue social bookmark and publication sharing system.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -109,7 +109,7 @@ public class TestNegatedTagsQuery extends AbstractDatabaseManagerTest {
 
 	private ResultList<Post<BibTex>> query(final LuceneResourceSearch<BibTex> lsr, final List<String> testTags, final List<String> negatedTags) {
 		ResultList<Post<BibTex>> resList;
-		resList = (ResultList<Post<BibTex>>) lsr.getPosts(null, null, null, null, Collections.singletonList("public"),SearchType.LOCAL, null, null, null, testTags, null, null, null, negatedTags, null, 100, 0);
+		resList = (ResultList<Post<BibTex>>) lsr.getPosts(null, null, null, null, Collections.singletonList("public"),SearchType.LOCAL, null, null, null, null, testTags, null, null, null, negatedTags, null, 100, 0);
 		return resList;
 	}
 

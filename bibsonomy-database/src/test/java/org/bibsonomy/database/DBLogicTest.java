@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -44,8 +44,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import junit.framework.Assert;
-
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
@@ -83,6 +81,8 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import junit.framework.Assert;
+
 /**
  * @author Jens Illig
  */
@@ -119,8 +119,7 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		return userDb.getUserNamesByGroupId(groupId, dbSession);
 	}
 	
-	
-	protected LogicInterface getDbLogic() {		
+	protected LogicInterface getDbLogic() {
 		return this.getDbLogic(TEST_USER_NAME);
 	}
 

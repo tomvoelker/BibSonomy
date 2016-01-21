@@ -13,7 +13,7 @@
 	<!--+
 		+ actions concerning different sorting criteria
 		+-->	
-	<fmt:message key="post.meta.sort.criterion"/>:${mtl:ch('nbsp')}
+	<fmt:message key="post.meta.sort.criterion"/>:${mtl:ch('nbsp')}(
 	<!-- date / default sorting -->
 	<c:choose>
 		<c:when test="${sortPage eq 'none' or sortPage eq 'date'}">
@@ -22,7 +22,7 @@
 		<c:otherwise>
 			<a href="${mtl:setParam(escapedRequestPathAndQuery, 'sortPage', 'date')}"><fmt:message key="sort.date"/></a>
 		</c:otherwise>
-	</c:choose>,${mtl:ch('nbsp')}
+	</c:choose>${mtl:ch('nbsp')}|${mtl:ch('nbsp')}
 	<!-- title -->
 	<c:choose>
 		<c:when test="${sortPage eq 'title'}">
@@ -31,7 +31,7 @@
 		<c:otherwise>
 			<a href="${mtl:setParam(escapedRequestPathAndQuery, 'sortPage', 'title')}"><fmt:message key="post.resource.title"/></a>
 		</c:otherwise>
-	</c:choose><c:if test="${isBibtex}">,${mtl:ch('nbsp')}	<!--  UGLY formatting, but we have to do so, oterwise we'll get an extra blank :( -->
+	</c:choose><c:if test="${isBibtex}">${mtl:ch('nbsp')}|${mtl:ch('nbsp')}	<!--  UGLY formatting, but we have to do so, otherwise we'll get an extra blank :( -->
 		<c:choose>
 			<c:when test="${sortPage eq 'author'}">
 				<span class="italic"><fmt:message key="post.resource.author"/></span>
@@ -39,7 +39,7 @@
 			<c:otherwise>
 				<a href="${mtl:setParam(escapedRequestPathAndQuery, 'sortPage', 'author')}"><fmt:message key="post.resource.author"/></a>
 			</c:otherwise>
-		</c:choose>,${mtl:ch('nbsp')}
+		</c:choose>${mtl:ch('nbsp')}|${mtl:ch('nbsp')}
 		<c:choose>
 			<c:when test="${sortPage eq 'year'}">
 				<span class="italic"><fmt:message key="post.resource.year"/></span>
@@ -49,5 +49,5 @@
 			</c:otherwise>
 		</c:choose>
 	</c:if>
-
+	)
 </jsp:root>

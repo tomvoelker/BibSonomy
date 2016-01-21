@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Recommendation-Connector - Connector for the recommender framework for tag and resource recommendation
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -52,13 +52,11 @@ public class RecommenderDatabaseManagerImpl extends AbstractDatabaseManager impl
 	@Override
 	public Object processInsertQuery(final String query, final Object param) {
 		final DBSession session = factory.getDatabaseSession();
-		Object result = null;
 		try {
-			result = this.insert(query, param, session);
+			return this.insert(query, param, session);
 		} finally {
 			session.close();
 		}
-		return result;
 	}
 
 	/*
@@ -68,13 +66,11 @@ public class RecommenderDatabaseManagerImpl extends AbstractDatabaseManager impl
 	@Override
 	public <T> T processQueryForObject(final Class<T> objectClass, final String query, final Object param) {
 		final DBSession session = factory.getDatabaseSession();
-		T result = null;
 		try {
-			result = this.queryForObject(query, param, objectClass, session);
+			return this.queryForObject(query, param, objectClass, session);
 		} finally {
 			session.close();
 		}
-		return result;
 	}
 
 	/*
@@ -84,13 +80,11 @@ public class RecommenderDatabaseManagerImpl extends AbstractDatabaseManager impl
 	@Override
 	public <T> List<T> processQueryForList(final Class<T> objectClass, final String query, final Object param) {
 		final DBSession session = factory.getDatabaseSession();
-		List<T> result = null;
 		try {
-			result = this.queryForList(query, param, objectClass, session);
+			return this.queryForList(query, param, objectClass, session);
 		} finally {
 			session.close();
 		}
-		return result;
 	}
 
 	/*

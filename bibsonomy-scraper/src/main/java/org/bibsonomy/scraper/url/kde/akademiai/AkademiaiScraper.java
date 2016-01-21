@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,13 +26,14 @@
  */
 package org.bibsonomy.scraper.url.kde.akademiai;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,7 +43,6 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.util.WebUtils;
-import org.bibsonomy.util.ValidationUtils;
 
 /**
  *
@@ -103,7 +103,7 @@ public class AkademiaiScraper extends AbstractUrlScraper {
 		return null;
 	}
 	@Override
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 
 		final URL url = sc.getUrl();
@@ -113,12 +113,12 @@ public class AkademiaiScraper extends AbstractUrlScraper {
 			final String content = WebUtils.getContentAsString(ris_url, WebUtils.getCookies(url));
 			final String bibtex = new RisToBibtexConverter().risToBibtex(content);
 
-			if (ValidationUtils.present(bibtex)) {
+			if (present(bibtex)) {
 				sc.setBibtexResult(bibtex);
 				return true;
 			}
 
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			log.error("Requested page could not downloaded ", e);
 		}
 

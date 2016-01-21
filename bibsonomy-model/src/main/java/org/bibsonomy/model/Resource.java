@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -180,7 +180,7 @@ public abstract class Resource implements Serializable, Rateable {
 	 * @param rating the rating to set
 	 */
 	@Override
-	public void setRating(final double rating) {
+	public void setRating(final Double rating) {
 		this.rating = rating;
 	}
 	
@@ -196,7 +196,7 @@ public abstract class Resource implements Serializable, Rateable {
 	 * @param numberOfRatings the numberOfRatings to set
 	 */
 	@Override
-	public void setNumberOfRatings(final int numberOfRatings) {
+	public void setNumberOfRatings(final Integer numberOfRatings) {
 		this.numberOfRatings = numberOfRatings;
 	}
 

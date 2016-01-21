@@ -4,26 +4,26 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
 	xmlns:export="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
-    xmlns:pub="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
-    xmlns:gpub="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication"
-    xmlns:ref="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication/references"
-    xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion"
-    xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
+	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+	xmlns:gpub="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:ref="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication/references"
+	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion"
+	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:goldpub="urn:jsptagdir:/WEB-INF/tags/resources/publication"
-	>
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	<jsp:directive.attribute name="otherPosts" type="java.util.List" required="true"/>
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
 	<jsp:useBean id="mockReference" class="org.bibsonomy.model.BibTex" />
 	
-	<spring:eval var="interHashId" expression="T(org.bibsonomy.common.enums.HashID).INTER_HASH.id" />
 	
 	<c:set var="goldstandard" value="${post.resource}" />
 	<!-- determine the publication type for schema.org markup -->
@@ -31,9 +31,11 @@
 	<c:if test="${not empty goldstandard.entrytype and ('book' eq goldstandard.entrytype)}">
 		<c:set var="itemType" value="http://schema.org/Book"/>
 	</c:if>
-
+	
+	<spring:eval var="interHashId" expression="T(org.bibsonomy.common.enums.HashID).INTER_HASH.id" />
+	
 	<ul id="gold_menu">
-		<gpub:actions post="${post}" />
+		<buttons:communityPostActions post="${post}" resourceType="bibtex"/>
 	</ul>
 	<div id="fullscreen" itemscope="itemscope" itemtype="${itemType}">
 		
@@ -88,8 +90,8 @@
 										<li>
 											<fmt:message var="downloadPrivDocTitle" key="bibtex.actions.private_document.download"/>
 											<a href="${goldstandard.url}" title="${downloadPrivDocTitle}"> 
-								  				<img alt="${downloadPrivDocTitle}" src="${resdir}/image/document-txt-blue.png" style="float: left; margin-right: 10px;"/>
-								  				<c:out value="${goldstandard.url}" />											
+												<img alt="${downloadPrivDocTitle}" src="${resdir}/image/document-txt-blue.png" style="float: left; margin-right: 10px;"/>
+												<c:out value="${goldstandard.url}" />
 											</a>
 										</li>
 									</c:if>
@@ -106,7 +108,7 @@
 				<div class="taglist" style="clear:both; margin-top: 1em;">
 					<ul>
 						<c:forEach var="tag" items="${command.tagcloud.tags}">
-							<li style="display:list-item;"><span class="tagitem_rightborder"><a class="tagitem" href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, tag.name)}" rel="nofollow" title=""><nobr><c:out value="${tag.name}"/></nobr></a></span></li>
+							<li style="display:list-item;"><span class="tagitem_rightborder"><a class="tagitem" href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}" rel="nofollow" title=""><nobr><c:out value="${tag.name}"/></nobr></a></span></li>
 						</c:forEach>
 					</ul>
 					<br style="clear:left" />
@@ -122,43 +124,45 @@
 						<c:when test="${fn:length(command.relatedUserCommand.relatedUsers) lt 8}">
 							<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}">
 								<div class="ownerAvatar" >
-									<span>@${fn:escapeXml(user.name)}</span>
-									<a class="profilepic" href="${relativeUrlGenerator.getPublicationUrlByInterHashAndUsername(publication.interHash, fn:escapeXml(user.name))}" title="@${fn:escapeXml(user.name)}">
-										<img alt="@${fn:escapeXml(user.name)}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(fn:escapeXml(user.name))}" />
+									<c:set var="relatedUsername"><user:username noLink="${true}" user="${user}" /></c:set>
+									<span>${relatedUsername}</span>
+									<!-- TODO: use url generator -->
+									<a class="profilepic" href="/bibtex/${interHashId}${publication.interHash}/${fn:escapeXml(user.name)}" title="${fn:escapeXml(relatedUsername)}">
+										<img alt="${fn:escapeXml(relatedUsername)}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(fn:escapeXml(user.name))}" />
 									</a>
 								</div>
 								<c:out value=" "/>
-								
 							</c:forEach>
 						</c:when>
 						<c:otherwise>
-							
-							
-								<div class="lessUser">
-									<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}" begin="0" end="6" varStatus="count">
-										<div class="ownerAvatar">
-											<span>@${fn:escapeXml(user.name)}</span>
-											<a class="profilepic" href="${relativeUrlGenerator.getPublicationUrlByInterHashAndUsername(publication.interHash, fn:escapeXml(user.name))}" title="@${fn:escapeXml(user.name)}">
-												<img alt="@${fn:escapeXml(user.name)}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(fn:escapeXml(user.name))}" />
-											</a>
-										</div>
-									</c:forEach>
-									
-								</div>
-								<div class="moreUser" style="display: none;">
-								
-									<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}" begin="7" varStatus="count">
-										<div class="ownerAvatar">
-											<span>@${fn:escapeXml(user.name)}</span>
-											<a class="profilepic" href="${relativeUrlGenerator.getPublicationUrlByInterHashAndUsername(publication.interHash, fn:escapeXml(user.name))}" title="@${fn:escapeXml(user.name)}">
-												<img alt="@${fn:escapeXml(user.name)}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(fn:escapeXml(user.name))}" />
-											</a>
-										</div>
-									</c:forEach>
-								</div>
-								<div style="float: left; padding-top: 56px;">
-									<a href="#" id="showMoreUser"><c:out value="${fn:length(command.relatedUserCommand.relatedUsers)-7} " /> <span>more</span></a>
-								</div>
+							<div class="lessUser">
+								<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}" begin="0" end="6" varStatus="count">
+									<div class="ownerAvatar">
+									<!-- TODO: (bootstrap) introduce tagx file -->
+										<c:set var="username"><user:username noLink="${true}" user="${user}" /></c:set>
+										<span>${username}</span>
+										<!-- TODO: use url generator -->
+										<a class="profilepic" href="/bibtex/${interHashId}${publication.interHash}/${fn:escapeXml(user.name)}" title="${fn:escapeXml(username)}">
+											<img alt="${fn:escapeXml(username)}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(fn:escapeXml(user.name))}" />
+										</a>
+									</div>
+								</c:forEach>
+							</div>
+							<div class="moreUser" style="display: none;">
+								<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}" begin="7" varStatus="count">
+									<div class="ownerAvatar">
+										<c:set var="username"><user:username noLink="${true}" user="${user}" /></c:set>
+										<span>${username}</span>
+										<!-- TODO: use url generator -->
+										<a class="profilepic" href="/bibtex/${interHashId}${publication.interHash}/${fn:escapeXml(user.name)}" title="${fn:escapeXml(username)}">
+											<img alt="${username}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(fn:escapeXml(user.name))}" />
+										</a>
+									</div>
+								</c:forEach>
+							</div>
+							<div style="float: left; padding-top: 56px;">
+								<a href="#" id="showMoreUser"><c:out value="${fn:length(command.relatedUserCommand.relatedUsers)-7} " /> <span>more</span></a>
+							</div>
 						</c:otherwise>
 					</c:choose>
 					<br style="clear:left" /><br />
@@ -170,12 +174,10 @@
 				<gpub:discussionrating post="${post}" otherPostsUrlPrefix="/bibtex/${interHashId}"/>
 				
 				<br /><br />
-				<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}" postUserName=""/>
+				<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName=""/>
 				
 				<!-- discussion -->
 				<!-- this is a goldstandard page => postUserName is the goldstandard user "" -->
-				
-				
 			</div>
 		</div>
 	</div>

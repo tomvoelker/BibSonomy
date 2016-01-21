@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -34,5 +34,5 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public abstract class AbstractDatabaseTest {
 
-	public static final ApplicationContext testDatabaseContext = new ClassPathXmlApplicationContext("TestDatabaseContext.xml");
+	public static final ApplicationContext testDatabaseContext = new ClassPathXmlApplicationContext("TestDatabaseMainContext.xml");
 }

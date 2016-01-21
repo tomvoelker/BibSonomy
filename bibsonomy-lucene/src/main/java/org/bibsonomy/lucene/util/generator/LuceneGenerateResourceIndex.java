@@ -1,7 +1,7 @@
 /**
- * BibSonomy-Lucene - Fulltext search facility of BibSonomy
+ * BibSonomy - A blue social bookmark and publication sharing system.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -28,8 +28,6 @@ package org.bibsonomy.lucene.util.generator;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,10 +41,11 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.store.NoSuchDirectoryException;
 import org.apache.lucene.util.Version;
-import org.bibsonomy.es.IndexType;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
-import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.search.SearchPost;
+import org.bibsonomy.search.generator.AbstractIndexGenerator;
+import org.bibsonomy.search.update.SearchIndexSyncState;
 
 /**
  * reads data from database and builds lucene index for all resource entries
@@ -57,6 +56,7 @@ import org.bibsonomy.model.Resource;
  * @param <R>
  *            the resource of the index to generate
  */
+@Deprecated // TODO: remove lucene
 public class LuceneGenerateResourceIndex<R extends Resource> extends AbstractIndexGenerator<R> {
 
 	private static final Log log = LogFactory.getLog(LuceneGenerateResourceIndex.class);
@@ -172,95 +172,15 @@ public class LuceneGenerateResourceIndex<R extends Resource> extends AbstractInd
 	}
 
 	@Override
-	protected void addPostToIndex(final LucenePost<R> post) {
+	protected void addPostToIndex(final SearchPost<R> post) {
 		// create index document from post model
-		final Document doc = (Document) this.resourceIndex.getResourceConverter().readPost(post, IndexType.LUCENE);
+		final Document doc = (Document) this.resourceIndex.getResourceConverter().readPost(post);
 		try {
 			this.indexWriter.addDocument(doc);
 			this.importedPost(post);
 		} catch (final IOException e) {
 			log.error("error while inserting post " + post.getUser().getName() + "/" + post.getResource().getIntraHash(), e);
 		}
-	}
-
-
-	/**
-	 * creates index of resource entries and adds FolkRanks to posts
-	 * (experimental purpose)
-	 * 
-	 * @throws CorruptIndexException
-	 * @throws IOException
-	 */
-	protected void createIndexFromDatabaseWithFolkRanks() throws CorruptIndexException, IOException {
-		log.info("Filling index with database post entries.");
-		// TODO: reenable multi threaded index generation
-		// TODO: don't load all posts into RAM
-
-		// number of post entries to calculate progress
-		// FIXME: the number of posts is wrong
-		this.numberOfPosts = this.dbLogic.getNumberOfPosts();
-		log.info("Number of post entries: " + this.numberOfPosts);
-
-		// initialize variables
-		//final Integer lastTasId = this.dbLogic.getLastTasId();
-		Date lastLogDate = this.dbLogic.getLastLogDate();
-
-		if (lastLogDate == null) {
-			lastLogDate = new Date(System.currentTimeMillis() - 1000);
-		}
-
-		log.info("Start writing data to lucene index (with duplicate detection)");
-
-		// read block wise all posts
-		List<LucenePost<R>> postList = null;
-		int skip = 0;
-		// int lastContenId = -1;
-		int lastOffset = 0;
-		int postListSize = 0;
-		do {
-			postList = this.dbLogic.getPostEntriesOrderedByHash(lastOffset, SQL_BLOCKSIZE);
-			postListSize = postList.size();
-			skip += postListSize;
-			log.info("Read " + skip + " entries.");
-
-			// cycle through all posts of currently read block
-			for (final LucenePost<R> post : postList) {
-				post.setLastLogDate(lastLogDate);
-				//post.setLastTasId(lastTasId);
-				// executor.execute(new Runnable() {
-
-				// FIXME had to remove Thread creation because reading FolkRank
-				// values is not thread safe.
-				// @Override
-				// public void run() {
-				if (LuceneGenerateResourceIndex.this.isNotSpammer(post)) {
-					// create index document from post model
-					final Document doc = (Document) this.resourceIndex.getResourceConverter().readPost(post, IndexType.LUCENE);
-
-					try {
-						LuceneGenerateResourceIndex.this.indexWriter.addDocument(doc);
-						LuceneGenerateResourceIndex.this.importedPost(post);
-					} catch (final IOException e) {
-						log.error("error while inserting post " + post.getUser().getName() + "/" + post.getResource().getIntraHash(), e);
-					}
-				}
-				// }
-				// });
-			}
-
-			if (postListSize > 0) {
-				// lastContenId = postList.get(postListSize - 1).getContentId();
-				lastOffset += postListSize;
-			}
-		} while (postListSize == SQL_BLOCKSIZE);
-
-		// close resource indexWriter
-		log.info("closing index " + this.resourceIndex);
-		this.indexWriter.close();
-
-		// all done
-		// log.info("(" + i + " indexed entries, " + is +
-		// " not indexed spam entries)");
 	}
 
 	/**
@@ -282,7 +202,7 @@ public class LuceneGenerateResourceIndex<R extends Resource> extends AbstractInd
 	 * @see org.bibsonomy.lucene.util.generator.AbstractIndexGenerator#writeMetaInfo(java.lang.Integer, java.util.Date)
 	 */
 	@Override
-	protected void writeMetaInfo(Integer lastTasId, Date lastLogDate) throws IOException {
+	protected void writeMetaInfo(SearchIndexSyncState state) throws IOException {
 		// lucene does not store meta-info in the index - it retrieves it directly from all the entries
 	}
 

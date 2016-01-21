@@ -51,7 +51,11 @@ INSERT INTO `bibhash` (`hash`, `ctr`, `type`) VALUES
 ('11db3d75b9e07960658984f9b012d6d7', 1, 2),
 ('08cdf0d0dcce9d07fd8d41ac6267cadf', 1, 2),
 ('564c7c31f6a34e5dc3a1b0c17fe68c13', 1, 1),
-('b77ddd8087ad8856d77c740c8dc2864a', 1, 2);
+('b77ddd8087ad8856d77c740c8dc2864a', 1, 2),
+('0b539e248a02e3edcfe591c64346c7a0',1,1),
+('3dc3dbb9d263a95a53b7134718b2b7f2',1,1),
+('d63038ea59383b94bb52fc4a9b76d1f5',1,2),
+('dd8930d9b1db11a87305923e069b77b6',1,2);
 
 
 -- 
@@ -66,7 +70,15 @@ INSERT INTO `bibtex` (`content_id`, `journal`, `volume`, `chapter`, `edition`, `
 (14, 'test journal',            'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle',            'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'test bibtexKey', 2, '1815-12-10 00:00:00', 'testuser2',   'http://friend.bibtex.url.com',  '2', 'test description', 'test annote', 'test note', 'test page',  'test bKey', 'test number', 'test crossref', 'test misc', 'test bibtexAbstract', '36a19ee7b7923b062a99a6065fe07792', 'e2fb0763068b21639c3e36101f64aefe', 'b71d5283dc7f4f59f306810e73e9bc9a', '', 'test entrytype', 'test friend title',  'test author',  'test editor', 'test year', 'test privnote', -1, '2008-05-19 14:34:29', 0),
 (20, 'test journal',            'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle',            'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'test bibtexKey', 0, '2009-10-08 14:35:01', 'testuser3',   'http://friend.bibtex.url.com',  '2', 'test description', 'test annote', 'test note', 'test page',  'test bKey', 'test number', 'test crossref', 'test misc', 'test bibtexAbstract', '36a19ee7b7923b062a99a6065fe07792', 'e2fb0763068b21639c3e36101f64aefe', '891518b4900cd1832d77a0c8ae20dd14', '', 'inproceedings1', 'test friend title',  'test author',  'test editor', 'test year', 'test privnote', -1, '2009-10-08 14:35:01', 0),
 (100, NULL, '216', NULL, NULL, 'nov', NULL, 'Proceedings of the OWLED*06 Workshop on OWL: Experiences and Directions', NULL, NULL, NULL, NULL, NULL, NULL, 'CEUR-WS.org', 'elsenbroich2006abductive', 0, '2011-08-08 09:24:38', 'jaeschke', 'http://www.cs.man.ac.uk/~okutz/case-for-abduction.pdf', NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, '  issn = {1613-0073}', 'We argue for the usefulness of abductive reasoning in the context of ontologies. We discuss several applicaton scenarios in which various forms of abduction would be useful, introduce corresponding abductive reasoning tasks, give examples, and begin to develop the formal apparatus needed to employ abductive inference in expressive description logics.', '598347d95a3ef39a3987a39b40708f79', 'a5936835f9eeab91eb09d84948306178', '15a1bdcbff44431651957f45097dc4f4', '', 'inproceedings', 'A case for abductive reasoning over ontologies', 'Corinna Elsenbroich and Oliver Kutz and Ulrike Sattler', 'Bernardo Cuenca Grau and Pascal Hitzler and Conor Shankey and Evan Wallace', '2006', NULL, 0, '2011-08-08 09:24:38', 0),
-(201, NULL, '216', NULL, NULL, 'nov', NULL, 'Proceedings of the OWLED*06 Workshop on OWL: Experiences and Directions', NULL, NULL, NULL, NULL, NULL, NULL, 'CEUR-WS.org', 'elsenbroich2006abductive', -2147483648, '2011-08-08 09:24:38', 'testspammer', 'http://www.cs.man.ac.uk/~okutz/case-for-abduction.pdf', NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, '  issn = {1613-0073}', 'We argue for the usefulness of abductive reasoning in the context of ontologies. We discuss several applicaton scenarios in which various forms of abduction would be useful, introduce corresponding abductive reasoning tasks, give examples, and begin to develop the formal apparatus needed to employ abductive inference in expressive description logics.', '598347d95a3ef39a3987a39b40708f79', 'a5936835f9eeab91eb09d84948306178', '15a1bdcbff44431651957f45097dc4f4', '', 'inproceedings', 'A case for abductive reasoning over ontologies', 'Corinna Elsenbroich and Oliver Kutz and Ulrike Sattler', 'Bernardo Cuenca Grau and Pascal Hitzler and Conor Shankey and Evan Wallace', '2006', NULL, 0, '2011-08-08 09:24:38', 0);
+(201, NULL, '216', NULL, NULL, 'nov', NULL, 'Proceedings of the OWLED*06 Workshop on OWL: Experiences and Directions', NULL, NULL, NULL, NULL, NULL, NULL, 'CEUR-WS.org', 'elsenbroich2006abductive', -2147483648, '2011-08-08 09:24:38', 'testspammer', 'http://www.cs.man.ac.uk/~okutz/case-for-abduction.pdf', NULL, '', NULL, NULL, NULL, NULL, NULL, NULL, '  issn = {1613-0073}', 'We argue for the usefulness of abductive reasoning in the context of ontologies. We discuss several applicaton scenarios in which various forms of abduction would be useful, introduce corresponding abductive reasoning tasks, give examples, and begin to develop the formal apparatus needed to employ abductive inference in expressive description logics.', '598347d95a3ef39a3987a39b40708f79', 'a5936835f9eeab91eb09d84948306178', '15a1bdcbff44431651957f45097dc4f4', '', 'inproceedings', 'A case for abductive reasoning over ontologies', 'Corinna Elsenbroich and Oliver Kutz and Ulrike Sattler', 'Bernardo Cuenca Grau and Pascal Hitzler and Conor Shankey and Evan Wallace', '2006', NULL, 0, '2011-08-08 09:24:38', 0),
+(1073741826,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'Uni Sonstewo',NULL,'muller1948anderes',0,'2015-07-06 14:19:30','testuserP',NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,'790d334c23e27b2e4c9f20b4bc87ab4b','3dc3dbb9d263a95a53b7134718b2b7f2','dd8930d9b1db11a87305923e069b77b6','','phdthesis','Was anderes','Müller, Heinrich Georg',NULL,'1948',NULL,0,'2015-07-06 12:19:30',0),
+(1073741827,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'University of Nowhere',NULL,'muller2004wurst',0,'2015-07-06 14:15:12','testuserP',NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,'9132de6d174bcfd8018d0b299642f12d','0b539e248a02e3edcfe591c64346c7a0','d63038ea59383b94bb52fc4a9b76d1f5','','phdthesis','Wurst aufs Brot','Müller, Heinrich Georg',NULL,'2004',NULL,0,'2015-07-06 12:21:34',0);
+-- TODO add
+-- hotho diss
+-- hotho paper
+-- dummy master thesis by some other hotho
+-- dynamically add hotho habil nad test its preference
+
 
 -- 
 -- Data for repository tests
@@ -85,8 +97,8 @@ INSERT INTO `repository` (`inter_hash`, `intra_hash`, `user_name`, `repository_n
 --
 -- FIXME: testuser4 missing
 
-INSERT INTO `user` (`user_name`,`user_email`,`user_password`,`user_homepage`,`user_realname`,`spammer`,`openurl`,`reg_date`,`ip_address`,`id`,`tmp_password`,`tmp_request_date`,`tagbox_style`,`tagbox_sort`,`tagbox_minfreq`,`tagbox_max_count`,`is_max_count`,`tagbox_tooltip`,`list_itemcount`,`spammer_suggest`,`birthday`,`gender`,`profession`,`institution`, `interests`,`hobbies`,`place`,`profilegroup`,`api_key`,`updated_by`,`updated_at`,`role`,`lang`,`to_classify`,`log_level`) VALUES 
-('syncServer',   'testuser1@bibsonomy.org',   'cc03e747a6afbbcbf8be7668acfebee5', 'http://www.bibsonomy.org/user/testuser1',   'Test User 1',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1, NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1, '15cb586b630cc343cd60684807bf4785', 'wla','1815-12-10 00:00:00', 4,  'en', 0, 1);
+INSERT INTO `user` (`user_name`,`user_email`,`user_password`,`user_homepage`,`user_realname`,`spammer`,`openurl`,`reg_date`,`ip_address`,`id`,`tmp_password`,`tmp_request_date`,`tagbox_style`,`tagbox_sort`,`tagbox_minfreq`,`tagbox_max_count`,`is_max_count`,`tagbox_tooltip`,`list_itemcount`,`spammer_suggest`,`birthday`,`gender`,`profession`,`institution`, `interests`,`hobbies`,`place`,`profilegroup`,`api_key`,`updated_by`,`updated_at`,`role`,`lang`,`to_classify`,`log_level`, `simple_interface`) VALUES 
+('syncServer',   'testuser1@bibsonomy.org',   'cc03e747a6afbbcbf8be7668acfebee5', 'http://www.bibsonomy.org/user/testuser1',   'Test User 1',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1, NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1, '15cb586b630cc343cd60684807bf4785', 'wla','1815-12-10 00:00:00', 4,  'en', 0, 1, 3);
 
 -- bibtex posts
 INSERT INTO `bibtex` (`content_id`, `user_name`, `simhash1`, `simhash2`, `change_date`, `date`) VALUES
@@ -277,8 +289,8 @@ INSERT INTO `group_memberships` VALUES
 -- 
 
 INSERT INTO `ids` VALUES 
-(0,  1073741824, 'content_id'),
-(1,  1073741824, 'tas id'),
+(0,  1073741827, 'content_id'),
+(1,  1073741830, 'tas id'),
 (2,  21,  'relation id'),
 (3,  0,  'question id'),
 (4,  1,  'cycle id'),
@@ -287,8 +299,8 @@ INSERT INTO `ids` VALUES
 (12, 28, 'grouptas id'),
 (14, 3,  'message_id'),
 (15, 4, 'comment_id'),
-(16, 1, 'sync_service_id');
-
+(16, 1, 'sync_service_id'),
+(17, 7, 'person_change_id');
 
 
 --
@@ -363,6 +375,7 @@ INSERT INTO log_bibtex (`content_id`, `new_content_id`, `current_content_id`, `l
 -- Data for table `log_tas`
 -- 
 
+INSERT INTO `log_tas` VALUES (1073741825,'phd',1073741825,2,'2015-07-06 14:15:12','2015-07-06 14:15:12','2015-07-06 12:21:34'),(1073741826,'test',1073741825,2,'2015-07-06 14:15:12','2015-07-06 14:15:12','2015-07-06 12:21:34');
 
 
 
@@ -450,7 +463,11 @@ INSERT INTO `tags` (`tag_id`, `tag_name`, `tag_stem`, `tag_ctr`, `tag_ctr_public
 (19, 'friendbibtex',  '', 1, 1, 0),
 (20, 'amazon',  	  '', 1, 1, 0),
 (21, 'tomcat',        '', 1, 1, 0),
-(22, 'weltmeisterschaft', '', 1, 1, 0);
+(22, 'weltmeisterschaft', '', 1, 1, 0),
+(21052613,'phd','',1,0,0),
+(21052614,'test','',1,0,0),
+(21052615,'andere','',1,0,0),
+(21052616,'person','',1,0,0);
 
 
 
@@ -518,7 +535,7 @@ INSERT INTO `tas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `content_typ
 (9, 'freemail',       'freemail',       5, 1, 'testuser3',   '1815-12-10 00:00:00', 0, '2008-01-18 10:24:14'),
 (10, 'suchmaschine',  'suchmaschine',   5, 1, 'testuser3',   '1815-12-10 00:00:00', 0, '2008-01-18 10:24:14'),
 (11, 'uni',           'uni',            6, 1, 'testuser2',   '1815-12-10 00:00:00', 0, '2008-01-18 11:30:05'),
-(12, 'kassel',        'kassel',         6, 1, 'testuser2',   '0000-00-00 00:00:00', 0, '2008-01-18 11:30:05'),
+(12, 'kassel',        'kassel',         6, 1, 'testuser2',   '1815-12-10 00:00:00', 0, '2008-01-18 11:30:05'),
 (13, 'finetune',      'finetune',       7, 1, 'testuser1',   '1815-12-10 00:00:00', 4, '2008-01-21 13:22:09'),
 (14, 'radio',         'radio',          7, 1, 'testuser1',   '1815-12-10 00:00:00', 4, '2008-01-21 13:22:20'),
 (15, 'apple',         'apple',          8, 1, 'testuser1',   '1815-12-10 00:00:00', 4, '2008-01-21 13:20:37'),
@@ -549,7 +566,11 @@ INSERT INTO `tas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `content_typ
 (40, 'synchronization', 'synchronization', 115, 1, 'syncuser1', '2010-01-12 15:28:00', 0, '2010-11-01 18:44:00' ),
 (41, 'synchronization', 'synchronization', 116, 1, 'syncuser1', '2011-03-18 11:55:00', 0, '2011-03-18 11:55:00' ),
 (42, 'tag', 'tag', 100, 2, 'jaeschke', '2011-08-08 09:24:38', 0, '2011-08-08 09:24:38' ),
-(43, 'spam', 'spam', 201, 2, 'testspammer', '2011-08-08 09:24:38', -2147483648, '2011-08-08 09:24:38' );
+(43, 'spam', 'spam', 201, 2, 'testspammer', '2011-08-08 09:24:38', -2147483648, '2011-08-08 09:24:38' ),
+(1073741827,'andere','andere',1073741826,2,'testuserP','2015-07-06 14:19:30',0,'2015-07-06 12:19:30'),
+(1073741828,'person','person',1073741826,2,'testuserP','2015-07-06 14:19:30',0,'2015-07-06 12:19:30'),
+(1073741829,'phd','phd',1073741827,2,'testuserP','2015-07-06 14:15:12',0,'2015-07-06 12:21:34'),
+(1073741830,'test','test',1073741827,2,'testuserP','2015-07-06 14:15:12',0,'2015-07-06 12:21:34');
 
 
 -- 
@@ -594,21 +615,22 @@ INSERT INTO `urls` (`book_url_hash`, `book_url`, `book_url_ctr`) VALUES
 -- 
 -- Data for table `user` 
 --
-INSERT INTO `user` (`user_name`,`user_email`,`user_password`,`user_password_salt`,`user_homepage`,`user_realname`,`spammer`,`openurl`,`reg_date`,`ip_address`,`id`,`tmp_password`,`tmp_request_date`,`tagbox_style`,`tagbox_sort`,`tagbox_minfreq`,`tagbox_max_count`,`is_max_count`,`tagbox_tooltip`,`list_itemcount`,`spammer_suggest`,`birthday`,`gender`,`profession`,`institution`, `interests`,`hobbies`,`place`,`profilegroup`,`api_key`,`updated_by`,`updated_at`,`role`,`lang`,`to_classify`,`log_level`) VALUES 
+INSERT INTO `user` (`user_name`,`user_email`,`user_password`,`user_password_salt`,`user_homepage`,`user_realname`,`spammer`,`openurl`,`reg_date`,`ip_address`,`id`,`tmp_password`,`tmp_request_date`,`tagbox_style`,`tagbox_sort`,`tagbox_minfreq`,`tagbox_max_count`,`is_max_count`,`tagbox_tooltip`,`list_itemcount`,`spammer_suggest`,`birthday`,`gender`,`profession`,`institution`, `interests`,`hobbies`,`place`,`profilegroup`,`api_key`,`updated_by`,`updated_at`,`role`,`lang`,`to_classify`,`log_level`, `simple_interface`) VALUES 
 -- user_name     user_email                   user_password                      salt user_homepage                                user_realname   spammer   openurl                       reg_date               ip_address id    tmp_password tmp_request_date tagbox_style tagbox_sort tagbox_minfreq tagbox_max_count is_max_count tagbox_tooltip list_itemcount  spammer_suggest birthday gender profession institution interests hobbies place               profilegroup api_key                             updated_by updated_at             role lang to_classify log_level
-('testgroup1',  'testgroup1@bibsonomy.org',  'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/group/testgroup1', 'Test Group 1', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1),
-('testgroup2',  'testgroup2@bibsonomy.org',  'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/group/testgroup2', 'Test Group 2', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1),
-('testgroup3',  'testgroup3@bibsonomy.org',  'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/group/testgroup3', 'Test Group 3', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1),
-('testgroup4',  'testgroup4@bibsonomy.org',  'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/group/testgroup4', 'Test Group 4', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1),
-('testspammer', 'testspammer@bibsonomy.org', 'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/',                 'Test Spammer', 1, 'http://sfxserv.rug.ac.be:8888/rug', '2007-02-02 02:02:02', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1),
-('testspammer2', 'testspammer@bibsonomy.org', 'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/',                 'Test Spammer', 1, 'http://sfxserv.rug.ac.be:8888/rug', '2007-02-02 02:02:02', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00', 0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1),
-('testuser1',   'testuser1@bibsonomy.org',   'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/user/testuser1',   'Test User 1',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '11111111111111111111111111111111', 'rja',     '1815-12-10 00:00:00', 0,  'en', 0, 1),
-('testuser2',   'testuser2@bibsonomy.org',   'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/user/testuser2',   'Test User 2',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '22222222222222222222222222222222', 'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1),
-('testuser3',   'testuser3@bibsonomy.org',   'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/user/testuser3',   'Test User 3',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '33333333333333333333333333333333', 'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 0),
-('testuser4',   'testuser4@bibsonomy.org',   'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/user/testuser4',   'Test User 4',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '33333333333333333333333333334333', 'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 0),
-('testlimited', 'testlimited@bibsonomy.org', 'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/user/testlimited', 'Limited Test User',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2013-02-18 12:00:00', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                  1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '33333333333333333333333333334333', 'jil',     '1815-12-10 00:00:00', 5,  'en', 0, 0),
-('testrequestuser1', 'testrequestuser1@bibsonomy.org', 'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/user/testrequestuser1', 'Request Test User',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2013-02-18 12:00:00', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                   1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '33333333333333333333333333344333', 'jil',     '1815-12-10 00:00:00', 6,  'en', 0, 0),
-('testrequestuser2', 'testrequestuser2@bibsonomy.org', 'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/user/testrequestuser2', 'Request Test User',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2013-02-18 12:00:00', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                   1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '33333333333333333333333333444333', 'jil',     '1815-12-10 00:00:00', 6,  'en', 0, 0);
+('testgroup1',  'testgroup1@bibsonomy.org',  'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/group/testgroup1', 'Test Group 1', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
+('testgroup2',  'testgroup2@bibsonomy.org',  'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/group/testgroup2', 'Test Group 2', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
+('testgroup3',  'testgroup3@bibsonomy.org',  'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/group/testgroup3', 'Test Group 3', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
+('testgroup4',  'testgroup4@bibsonomy.org',  'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/group/testgroup4', 'Test Group 4', 0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
+('testspammer', 'testspammer@bibsonomy.org', 'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/',                 'Test Spammer', 1, 'http://sfxserv.rug.ac.be:8888/rug', '2007-02-02 02:02:02', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
+('testspammer2', 'testspammer@bibsonomy.org', 'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/',                 'Test Spammer', 1, 'http://sfxserv.rug.ac.be:8888/rug', '2007-02-02 02:02:02', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00', 0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           NULL,                               'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
+('testuser1',   'testuser1@bibsonomy.org',   'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/user/testuser1',   'Test User 1',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '11111111111111111111111111111111', 'rja',     '1815-12-10 00:00:00', 0,  'en', 0, 1, 3),
+('testuser2',   'testuser2@bibsonomy.org',   'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/user/testuser2',   'Test User 2',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '22222222222222222222222222222222', 'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1, 3),
+('testuser3',   'testuser3@bibsonomy.org',   'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/user/testuser3',   'Test User 3',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '33333333333333333333333333333333', 'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 0, 3),
+('testuser4',   'testuser4@bibsonomy.org',   'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/user/testuser4',   'Test User 4',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '33333333333333333333333333334333', 'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 0, 3),
+('testlimited', 'testlimited@bibsonomy.org', 'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/user/testlimited', 'Limited Test User',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2013-02-18 12:00:00', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                  1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '33333333333333333333333333334333', 'jil',     '1815-12-10 00:00:00', 5,  'en', 0, 0, 3),
+('testrequestuser1', 'testrequestuser1@bibsonomy.org', 'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/user/testrequestuser1', 'Request Test User',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2013-02-18 12:00:00', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                   1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '33333333333333333333333333344333', 'jil',     '1815-12-10 00:00:00', 6,  'en', 0, 0, 3),
+('testrequestuser2', 'testrequestuser2@bibsonomy.org', 'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/user/testrequestuser2', 'Request Test User',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2013-02-18 12:00:00', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                   1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '33333333333333333333333333444333', 'jil',     '1815-12-10 00:00:00', 6,  'en', 0, 0, 3),
+('testuserP',   'testuserP@bibsonomy.org',   'e08a7c49d96c2b475656cc8fe18cee8e', '', 'http://www.bibsonomy.org/user/testuserP',   'Test User P',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-institution', 'test-interests', 'test-hobbies', 'test-place', 1,           '11111111111111111111111111111111', 'jil',     '1815-12-10 00:00:00', 0,  'en', 0, 1, 3);
 
 --
 -- Data for table `user_wiki`
@@ -692,7 +714,7 @@ INSERT INTO `grouptas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `conten
 (9, 'freemail',       'freemail',       5, 1, 'testuser3',   '1815-12-10 00:00:00', 2, '2008-01-18 10:24:14'),
 (10, 'suchmaschine',  'suchmaschine',   5, 1, 'testuser3',   '1815-12-10 00:00:00', 2, '2008-01-18 10:24:14'),
 (11, 'uni',           'uni',            6, 1, 'testuser2',   '1815-12-10 00:00:00', 3, '2008-01-18 11:30:05'),
-(12, 'kassel',        'kassel',         6, 1, 'testuser2',   '0000-00-00 00:00:00', 3, '2008-01-18 11:30:05'),
+(12, 'kassel',        'kassel',         6, 1, 'testuser2',   '1815-12-10 00:00:00', 3, '2008-01-18 11:30:05'),
 (13, 'finetune',      'finetune',       7, 1, 'testuser1',   '1815-12-10 00:00:00', 4, '2008-01-21 13:22:09'),
 (14, 'radio',         'radio',          7, 1, 'testuser1',   '1815-12-10 00:00:00', 4, '2008-01-21 13:22:20'),
 (15, 'apple',         'apple',          8, 1, 'testuser1',   '1815-12-10 00:00:00', 4, '2008-01-21 13:20:37'),
@@ -707,4 +729,13 @@ INSERT INTO `grouptas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `conten
 (24, 'testbibtex',    'testbibtex',    12, 2, 'testuser1',   '1815-12-10 00:00:00', 3, '2008-03-20 20:35:21');
 
 
+INSERT INTO `person` (`person_change_id`, `person_id`, `academic_degree`, `user_name`, `post_ctr`, `orcid`, `dnb_person_id`, `gender`, `log_changed_at`, `log_changed_by`) VALUES
+(5,'h.muller','',NULL,0,'',NULL,NULL,NULL,NULL);
 
+
+INSERT INTO `person_name` VALUES
+(6,'Heinrich Georg','Müller','h.muller',0,'2015-07-06 14:23:05','testuserP'),
+(7,'Henner','Schorsche','h.muller',1,'2015-07-06 14:23:05','testuserP');
+
+INSERT INTO `pub_person` VALUES
+(3,'0b539e248a02e3edcfe591c64346c7a0','d63038ea59383b94bb52fc4a9b76d1f5','Maut',0,'h.muller',0,'2015-07-06 14:19:55','testuserP',0);

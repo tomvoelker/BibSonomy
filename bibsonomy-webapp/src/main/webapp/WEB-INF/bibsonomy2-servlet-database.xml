@@ -17,7 +17,7 @@
 	<bean id="reportInformationService" class="org.bibsonomy.services.information.ReportingMailInformationService">
 		<property name="messageSource" ref="messageSource" />
 		<property name="logic" ref="adminLogic" />
-		<property name="projectHome" value="${project.home}" />
+		<property name="projectHome" ref="projectHome" />
 		<property name="mailer" ref="mailUtils" />
 		<property name="subjectKey" value="group.reporting.mail.subject" />
 		<property name="fromAddress" value="${project.email}" />
@@ -49,5 +49,6 @@
 		<property name="user" ref="loginUser"/>
 		<property name="dbSessionFactory" ref="slaveDbSessionFactory"/>
 		<property name="bibtexReader" ref="bibtexReader"/>
+		<property name="readOnly" value="true" /> <!-- don't write to slaves -->
 	</bean>
 </beans>

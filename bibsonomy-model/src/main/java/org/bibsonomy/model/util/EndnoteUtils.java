@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -113,7 +113,7 @@ public class EndnoteUtils {
 	 * @throws IOException
 	 */
 	public static void append(final Appendable a, final Post<BibTex> post, final boolean skipDummyValues) throws IOException {
-		if (skipDummyValues == false) {
+		if (!skipDummyValues) {
 			appendInternal(a, post);
 			return;
 		}
@@ -212,7 +212,7 @@ public class EndnoteUtils {
 		try {
 			EndnoteUtils.append(sw, post, skipDummyValues);
 		} catch (IOException ex) {
-			// newver happens
+			// never happens
 		}
 		return sw.toString();
 	}

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Clipboard">
+
+	<select id="getNumClipboardEntries" resultClass="Integer" parameterClass="String">
+		SELECT count(user_name) AS count 
+		FROM collector 
+		WHERE user_name = #userName#
+	</select>
+	
+	<select id="getClipboardCount" resultClass="int">
+		SELECT count(*) AS ctr FROM collector
+	</select>
+	
+	<select id="getClipboardHistoryCount" resultClass="int">
+		SELECT count(*) AS ctr FROM log_collector
+	</select>
+	
+	<insert id="createClipboardItem" parameterClass="clipboardParam">
+		INSERT IGNORE INTO collector (user_name, content_id) 
+		VALUES (#userName#, #contentId#)
+	</insert>
+	
+	<update id="updateClipboardItems" parameterClass="clipboardParam">
+		UPDATE collector 
+		SET content_id = #newContentId#
+		WHERE content_id = #contentId#
+	</update>
+	
+	<delete id="deleteClipboardItems" parameterClass="clipboardParam">
+		DELETE FROM collector
+		WHERE content_id = #contentId#
+	</delete>
+	
+	<delete id="deleteClipboardItem" parameterClass="clipboardParam">
+		DELETE FROM collector
+		WHERE content_id = #contentId#
+			AND user_name = #userName#
+	</delete>
+	
+	<delete id="deleteAllItems" parameterClass="String">
+		DELETE FROM collector
+		WHERE user_name = #userName#
+	</delete>
+</sqlMap>

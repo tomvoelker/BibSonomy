@@ -1,15 +1,14 @@
-<jsp:root version="2.0" 
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:jsp="http://java.sun.com/JSP/Page">
-	
+
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<!-- Decide wether or not to display "Tags: " before listing all tags -->
-	<jsp:directive.attribute name="showTagsLabel" type="java.lang.Boolean" required="false"/>
-	
+	<jsp:directive.attribute name="showTagsLabel" type="java.lang.Boolean" required="false" />
+
 	<c:choose>
 		<c:when test="${not empty post.systemUrl }">
 			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
@@ -18,60 +17,86 @@
 			<c:set var ="isRemotePost" value="false"/>
 		</c:otherwise>
 	</c:choose>
+
+	<span style="margin-top: 2px;" class="fa fa-tag pull-left">
+		<!--  -->
+	</span>
+	<c:out value=" " />
+
 	<!--+
 		| Display all tags of a post. 
 		| If there are hidden systemtags (that are visible for the logginUser) display the small icon. 
 		| Afterwards all tags.
-		+ -->	
+		+ -->
 
 	<!-- HIDDEN SYSTEM TAGS -->
-	<c:if test="${not empty post.hiddenSystemTags}">
-		<fmt:message var="systemTagsTitle" key="tag.systemTag.hidden.title"/>
-		<div class="extend hiddenSystemTag">
-			<img class="" alt="systemTagsTitle" src="${resdir}/image/cog_wheel.png"/>
-			<div>
-				<c:forEach var="systag" items="${post.hiddenSystemTags}">
-					<c:choose>
-						<c:when test="${isRemotePost}">
-							<a href="${relativeUrlGenerator.getUserUrlByUserNameTagNameAndSysUrl(post.user.name, systag.name, post.systemUrl)}"><c:out value="${systag.name}"/></a>					
-						</c:when>
-						<c:otherwise>
-							<a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, systag.name)}"><c:out value="${systag.name}"/></a>
-						</c:otherwise>
-					</c:choose>
-					<c:out value=" "/>
-				</c:forEach>
+	
+	<fmt:message var="systemTagsTitle" key="tag.systemTag.hidden.title" />
+	<div class="extend hiddenSystemTag pull-left">
+		
+		<a id="system-tags-link-${post.resource.intraHash}${post.user.name}" href="#" class="system-tags-link" style="${empty post.hiddenSystemTags ? 'display: none;' : ''}">
+			<span class="fa fa-asterisk"><!-- KEEP ME --></span>
+		</a>&amp;nbsp;
+		
+		<div class="popover popover-dismiss system-tags hide" id="system-tags-${post.resource.intraHash}${post.user.name}">
+			<div class="help popover-title">
+				<!--  -->
+			</div>
+			<div class="help popover-content popover-dismissible" href="#">
+				<button style="margin-top: -3px;" type="button" class="close" onclick="javascript:$(this).parent().parent().prev().popover('hide');">
+					&amp;nbsp;
+					<span aria-hidden="true">&amp;times;</span>
+					<span class="sr-only">Close</span>
+				</button>
+				
+				<div style="margin-right: 15px;">
+					<ul class="tags list-inline">
+						<c:forEach var="systag" items="${post.hiddenSystemTags}">
+							<li>
+								<span class="label label-warning">
+									<c:choose>
+										<c:when test="${isRemotePost}">
+											<a href="${relativeUrlGenerator.getUserUrlByUserNameTagNameAndSysUrl(post.user.name, systag.name, post.systemUrl)}">
+												<c:out value="${systag.name}" />
+											</a>
+										</c:when>
+										<c:otherwise>
+											<a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, systag.name)}">
+												<c:out value="${systag.name}" />
+											</a>
+										</c:otherwise>
+									</c:choose>
+								</span>
+							</li>
+						</c:forEach>
+					</ul>
+				</div>
 			</div>
 		</div>
-	</c:if>
+	</div>
+	
 
 	<!-- ALL REGULAR TAGS -->
 	<!-- FIXME: Remove this, as soon as we have a "real" post preview instead of only full lines of tags and meta data -->
-	<c:if test="${not empty post.visibleTags}">
-		<c:if test="${showTagsLabel}">
-			<fmt:message key="tags"/><c:out value=": "/>
-		</c:if>
-		<div class="extend">
-			<ul class="tags">
-				<c:forEach var="tag" items="${post.visibleTags}">
-					<li>
-						<c:choose>
-							<c:when test="${isRemotePost}">
-								<a href="${relativeUrlGenerator.getUserUrlByUserNameTagNameAndSysUrl(post.user.name, tag.name, post.systemUrl)}"><c:out value="${tag.name}"/></a>
-							</c:when>
-							<c:otherwise>
-								<a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, tag.name)}"><c:out value="${tag.name}"/></a>
-							</c:otherwise>
-						</c:choose>		
-					</li>
-				</c:forEach>
-			</ul>
-<!-- 				<div>
-					<c:forEach var="tag" items="${post.visibleTags}">
-						<a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, tag.name)}"><c:out value="${tag.name} "/></a><c:out value=" "/>
-					</c:forEach>
-				</div> -->
-		</div>
+	<c:if test="${showTagsLabel}">
+		<fmt:message key="tags" />
+		<c:out value=": " />
 	</c:if>
-	
+
+	<c:forEach var="tag" items="${post.visibleTags}">
+		<span class="label label-grey">
+			<c:choose>
+				<c:when test="${isRemotePost}">
+					<a href="${relativeUrlGenerator.getUserUrlByUserNameTagNameAndSysUrl(post.user.name, tag.name, post.systemUrl)}">
+						<c:out value="${tag.name}" />
+					</a>
+				</c:when>
+				<c:otherwise>
+					<a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, tag.name)}"><c:out
+						value="${tag.name}" /></a>
+				</c:otherwise>
+			</c:choose>
+		</span>
+		<c:out value=" " />
+	</c:forEach>
 </jsp:root>

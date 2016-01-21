@@ -9,18 +9,32 @@ var getPos = null;
 var setPos = null;
 var getSetPos = 0;
 
-
+var constants = {
+		RESPONSE_TIMEOUT: 5000
+}
 
 $(function() {
+	initView();
 	$('a.confirmdelete').click(function() {
 		var messageKey = $(this).data('type');
 		return confirmDeleteByUser(messageKey);
+	});
+	/*
+	 * adds a click event handler for the search scope form option entries
+	 */
+	$('#scopeDomain').children().each(function(i, el){
+		$(el.childNodes[0]).click(function(e){
+			e.preventDefault();
+			$("#scope").val($(this).data("domain"));
+			$('#searchForm').attr('action','/redirect').submit();
+		});
+		
 	});
 });
 
 function confirmDeleteByUser(messageKey) {
 	// get confirmation
-	if (confirmDelete) {
+	if (userSettings.confirmDelete) {
 		var message = getString("delete.confirm." + messageKey);
 		message += "\n" + getString("delete.confirm");
 		return confirm(message);
@@ -29,16 +43,13 @@ function confirmDeleteByUser(messageKey) {
 }
 
 /**
- * This method is called on document.ready. Thus, methods that should 
- * be called ON EVERY page should be added here.
- * 
- * @param tagbox_style
- * @param tagbox_sort
- * @param tagbox_minfreq
+ * This method is called on document.ready.
  * @return
  */
-function init(tagbox_style, tagbox_sort, tagbox_minfreq) {
-	
+function initView() {
+	var tagbox_style = userSettings.tagbox.style;
+	var tagbox_sort = userSettings.tagbox.sort;
+	var tagbox_minfreq = userSettings.tagbox.minfreq;
 	/*
 	 * assign functions for cursor position; FIXME: why here?
 	 */
@@ -85,7 +96,7 @@ function init(tagbox_style, tagbox_sort, tagbox_minfreq) {
 	/*
 	 * initialize the sidebar (basically adds the [-] togglers)
 	 */
-	init_sidebar();
+	//init_sidebar();
 
 	/* *************************************************************************
 	 * scope: post lists
@@ -102,14 +113,14 @@ function init(tagbox_style, tagbox_sort, tagbox_minfreq) {
 	 * in-place tag edit for posts
 	 */
 	$(".editTags").click(editTags);
-	
-	$('.extend').hoverIntent(function(event) {
-		var infoBox = $('div', this);
-		infoBox.show("fade", {}, 500);
-	}, function(event){
-		var infoBox = $('div', this);
-		infoBox.hide("fade", {}, 500);
-	});
+	if($('.extend').hoverIntent!== undefined)
+		$('.extend').hoverIntent(function(event) {
+			var infoBox = $('div', this);
+			infoBox.show("fade", {}, 500);
+		}, function(event){
+			var infoBox = $('div', this);
+			infoBox.hide("fade", {}, 500);
+		});
 }
 
 /**
@@ -142,7 +153,7 @@ function processISBN(text) {
 }
 
 /**
- * Adds read entry from reader app to the basket or to post it automatically.
+ * Adds read entry from reader app to the clipboard or to post it automatically.
  * Entry is only added if it has a pick link. Afterwards the pick link is clicked.
  * Entry is pulled via ajax one more time to get the actual entry with unpick link.
  * 
@@ -224,14 +235,11 @@ function processQRCode(text) {
  * @return
  */
 function renderPosts(query, list) {
-	
 	$.ajax({
 		url : "/posts" + query,
 		dataType : "html",
 		success : function(data) {
-			
 			$(list).append($(data));
-							
 			/*
 			 * FIXME: does this really always work? 
 			 * What about posts that have already been prepared?
@@ -296,35 +304,6 @@ function updatePosts(query, seconds) {
  */
 function fadePostIn(post) {
 	post.fadeIn("slow").parents("ul.posts").find("li.post:last").fadeOut("slow").remove();
-}
-
-
-/**
- * Adds [-] buttons to sidebar elements to toggle visibility of each element. 
- * 
- * @return
- */
-function init_sidebar() {
-	$("#sidebar li .sidebar_h").each(function(index,item){
-		var span;
-		if ($(item).hasClass("initially_collapsed")) {
-			span = $("<span class='toggler'><img src='/resources/image/icon_expand.png'/></span>");
-		} else { 
-			span = $("<span class='toggler'><img src='/resources/image/icon_collapse.png'/></span>");
-		}
-		
-		span.click(function(){
-			fadeNextList(item);
-		});
-		$(this).prepend(span); 
-	});
-
-}
-
-function fadeNextList(target) {
-	$(target).nextAll(".sidebar_collapse_content").toggle("slow", function(){
-		$(target).find(".toggler img").attr("src", "/resources/image/icon_" + ($(this).css('display') == 'none' ? "expand" : "collapse") + ".png");
-	});
 }
 
 /** 
@@ -779,8 +758,8 @@ function addBibtexExportOptions() {
 	/*
 	 * add and show export options when hovering over the link
 	 */
-	var elm = $("#bibtexListExport"); 
-	if(elm===undefined) return;
+	var elm = $("#bibtexListExport");
+	if(elm!=null && elm !== undefined && elm.hoverIntent !== undefined)
 	elm.hoverIntent(function() {
 		/*
 		 * anchor element where to put the options
@@ -825,7 +804,7 @@ function addBibtexExportOptions() {
 
 /**
  * adds javascript to the list headers to create a dropdown menu with
- * list action options (export, basket, sort, ...)
+ * list action options (export, clipboard, sort, ...)
  */
 function addListOptions() {
 	
@@ -916,23 +895,9 @@ function addListOptions() {
 					});
 				}		
 		);
+		return this;
 	};
 })(jQuery);
-
-/**
- * For mobile layout: add edit links to toolbar
- * 
- * @return
- */
-function appendToToolbar() {
-	$("#toolbar").append(
-			'<div id="post-toggle">' +
-			'<a id="post-method-isbn" class="active">' + getString("post_bibtex.doi_isbn.isbn") + '</a>' +
-			'<a id="post-method-manual">' + getString("post_bibtex.manual.title") + '</a>' +
-			'<div style="clear:both; height:0;">&nbsp;</div>' + 
-			'</div>'
-	);
-}
 
 /**
  * create one-string representation of a list of strings
@@ -995,7 +960,12 @@ this.imagePreview = function(){
 		 * build preview image URL by fetching URL from small preview pic
 		 * (insde the current <a href...></a>) and replacing the preview param
 		 */
-		var largePreviewImgUrl = $(this).children("img.pre_pic").first().attr("src").replace("preview\=SMALL", "preview=LARGE");		
+		var url = $(this).children("img.pre_pic").first().attr("src");
+		
+		if(url===undefined) return;
+
+		var largePreviewImgUrl = url.replace("preview\=SMALL", "preview=LARGE");		
+		
 		$("body").append("<p id='preview'><img src='" + largePreviewImgUrl + "'/>"+ c +"</p>");
 		$("#preview")
 		.css("top", (e.pageY + (e.pageY < window.innerHeight/2 ? 0 : -yOff)) + "px")
@@ -1540,24 +1510,25 @@ function setupPostExportSize() {
 	    }
 	}
 	
-	var links = $("dt").children();
+	var links = $(".export-link");
 	
-	//append to all links '?items=5' - exportPostSize initiated with '5'
+	// append to all links '?items=5' - exportPostSize initiated with '5'
 	$.each(links, function(index, value) {
-		//get the elements of all links [<a..] without the ones with a star '*' [they reference only to jabref on the page - #jabref]
-		if(value.href.indexOf("#jabref") == -1) {
+		// get the elements of all links [<a..] 
+		var linkHref = $(value).attr('href');
 			
-			//Contains the href any other parameters? Distinguish this cases.
-			if(value.href.indexOf("?") != -1) {
-				if(value.href.indexOf("items=") != -1) {
-					value.href = value.href.replace(/\items=\d*/g, "items=" + exportPostSize);
-				} else {
-					value.href = value.href + '&items=' + exportPostSize;
-				}
+		// contains the href any other parameters? Distinguish this cases.
+		if (linkHref.indexOf("?") != -1) {
+			if (linkHref.indexOf("items=") != -1) {
+				linkHref = linkHref.replace(/\items=\d*/g, "items=" + exportPostSize);
 			} else {
-				value.href = value.href + "?items=" + exportPostSize;
+				linkHref = linkHref + '&items=' + exportPostSize;
 			}
+		} else {
+			linkHref = linkHref + "?items=" + exportPostSize;
 		}
+		
+		$(value).attr('href', linkHref);
 	});
 	
 	//A click on a radio button replaces in any link the old value X '?items=X' with the new value Y '?items=Y'
@@ -1613,4 +1584,20 @@ function generateExportPostLink(value) {
 	} else {
 		self.location = value;
 	}
-};		
+};
+
+
+/*
+ * update the counter at the navigation bar to reflect the amount of picked publications and unread messages
+ */
+function updateCounter() {
+	var clipboardNum = $("#clipboard-counter");
+	var inboxNum = $("#inbox-counter");
+	var counter = $("#inbox-clipboard-counter");
+	if (counter.length != 0) {
+		var totalCount = 0;
+		totalCount += clipboardNum.length == 0 ? 0 : parseInt(clipboardNum.text());
+		totalCount += inboxNum.length == 0 ? 0 : parseInt(inboxNum.text());
+		counter.show().text(totalCount);
+	}
+}

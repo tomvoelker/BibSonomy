@@ -5,23 +5,22 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:swrc="http://swrc.ontoware.org/ontology#"
 	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-    xmlns:owl="http://www.w3.org/2002/07/owl#"
+	xmlns:owl="http://www.w3.org/2002/07/owl#"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 
-    <c:if test="${!empty post.resource.url}">
-      <owl:sameAs rdf:resource="${fn:escapeXml(mtl:cleanUrl(post.resource.url))}" />
-    </c:if>
-    
+	<c:if test="${!empty post.resource.url}">
+		<owl:sameAs rdf:resource="${fn:escapeXml(mtl:cleanUrl(post.resource.url))}" />
+	</c:if>
 
-    <c:if test="${!empty post.date}">
-      <swrc:date>
-        <c:out value="${post.date}" />
-      </swrc:date>
-    </c:if>
+	<c:if test="${!empty post.date}">
+		<swrc:date>
+			<c:out value="${post.date}" />
+		</swrc:date>
+	</c:if>
 
-    <c:if test ="${!empty post.resource.address}">
+	<c:if test ="${!empty post.resource.address}">
 		<swrc:address>
 			<c:out value="${post.resource.address}"/>
 		</swrc:address>
@@ -169,30 +168,29 @@
 	
 	<c:if test="${!empty post.resource.miscFields}">
 		<c:forEach var="misc" items="${post.resource.miscFields}">
-		  <swrc:hasExtraField>
-		    <swrc:Field swrc:key="${fn:escapeXml(misc.key)}" swrc:value="${fn:escapeXml(misc.value)}"/>
-		  </swrc:hasExtraField>
+			<swrc:hasExtraField>
+				<swrc:Field swrc:key="${fn:escapeXml(misc.key)}" swrc:value="${fn:escapeXml(misc.value)}"/>
+			</swrc:hasExtraField>
 		</c:forEach>
 	</c:if>
 
 	<c:if test="${!empty post.resource.author}">
 		<swrc:author>
-		  <rdf:Seq>
-		  <c:forEach var="person" varStatus="status" items="${post.resource.author}">
-		    <![CDATA[<rdf:_${status.index + 1}><swrc:Person swrc:name="${fn:escapeXml(person.firstName)}${' '}${fn:escapeXml(person.lastName)}"/></rdf:_${status.index + 1}>]]>
-		  </c:forEach>
-		  </rdf:Seq>
+			<rdf:Seq>
+				<c:forEach var="person" varStatus="status" items="${post.resource.author}">
+					<![CDATA[<rdf:_${status.index + 1}><swrc:Person swrc:name="${fn:escapeXml(person.firstName)}${' '}${fn:escapeXml(person.lastName)}"/></rdf:_${status.index + 1}>]]>
+				</c:forEach>
+			</rdf:Seq>
 		</swrc:author>
 	</c:if>
 
 	<c:if test="${!empty post.resource.editor}">
 		<swrc:editor>
-		  <rdf:Seq>
-		  <c:forEach var="person" varStatus="status" items="${post.resource.editor}">
-		     <![CDATA[<rdf:_${status.index + 1}><swrc:Person swrc:name="${fn:escapeXml(person.firstName)}${' '}${fn:escapeXml(person.lastName)}"/></rdf:_${status.index + 1}>]]>
-		  </c:forEach>
-		  </rdf:Seq>
-		</swrc:editor>	
+			<rdf:Seq>
+				<c:forEach var="person" varStatus="status" items="${post.resource.editor}">
+					<![CDATA[<rdf:_${status.index + 1}><swrc:Person swrc:name="${fn:escapeXml(person.firstName)}${' '}${fn:escapeXml(person.lastName)}"/></rdf:_${status.index + 1}>]]>
+				</c:forEach>
+			</rdf:Seq>
+		</swrc:editor>
 	</c:if>
-	
 </jsp:root>

@@ -22,10 +22,10 @@ DROP TABLE IF EXISTS `sync_data`;
 CREATE TABLE `sync_data`(
   `service_id` int(10) unsigned NOT NULL,
   `user_name` varchar(30) NOT NULL default '',
-  `content_type` tinyint(1) unsigned default NULL,
+  `content_type` tinyint(1) unsigned NOT NULL default 0,
   `last_sync_date` datetime NOT NULL default '1815-12-10 00:00:00',
   `status` varchar(8) NOT NULL,
-  `device_id` varchar(32) default '',
+  `device_id` varchar(32) NOT NULL default '',
   `device_info` varchar(255) default NULL,
   `info` varchar(255) default NULL,
    PRIMARY KEY  (`service_id`, `user_name`, `content_type`, `last_sync_date`, `device_id`)
@@ -1076,8 +1076,8 @@ SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 CREATE TABLE `pending_group_memberships` (
 	`user_name` VARCHAR(30) NOT NULL DEFAULT '',
-	`group` INT(10) NULL DEFAULT '0',
-	`defaultgroup` INT(10) NULL DEFAULT '0',
+	`group` INT(10) NOT NULL DEFAULT '-1',
+	`defaultgroup` INT(10) NULL DEFAULT '-1',
 	`start_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	`group_role` INT(10) NOT NULL DEFAULT '2',
 	`user_shared_documents` TINYINT(1) NULL DEFAULT '0',
@@ -1580,7 +1580,7 @@ CREATE TABLE `useruser_similarity` (
   `u1` varchar(255) NOT NULL default '',
   `u2` varchar(255) NOT NULL default '',
   `sim` float default NULL,
-  `measure_id` tinyint(4) default NULL,
+  `measure_id` tinyint(4) NOT NULL default 0,
   PRIMARY KEY  (`u1`,`u2`, `measure_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
@@ -1596,7 +1596,7 @@ CREATE TABLE `useruser_similarity2` (
   `u1` varchar(255) NOT NULL default '',
   `u2` varchar(255) NOT NULL default '',
   `sim` float default NULL,
-  `measure_id` tinyint(4) default NULL,
+  `measure_id` tinyint(4) NOT NULL default 0,
   PRIMARY KEY  (`u1`,`u2`, `measure_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
@@ -1717,13 +1717,97 @@ DROP TABLE IF EXISTS `group_level_permission`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 CREATE TABLE `group_level_permission` (
-  `group` int(10) DEFAULT NULL,
-  `permission` tinyint(1) DEFAULT NULL,
+  `group` int(10) NOT NULL DEFAULT -1,
+  `permission` tinyint(1) NOT NULL DEFAULT -1,
    `granted_by` VARCHAR(30) NOT NULL,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`group`, permission)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+--- PERSON stuff
+
+CREATE TABLE `person` (
+  `person_change_id` int(10) unsigned NOT NULL unique COMMENT 'sequential number shared among all person tables. Ensures the order of changes and helps updating separate search indexes like elasticsearch.',
+  `person_id` varchar(64) NOT NULL,
+  `academic_degree` varchar(64) DEFAULT NULL,
+  `user_name` varchar(30) DEFAULT NULL,
+  `post_ctr` int(11) DEFAULT NULL,
+  `orcid` char(16) DEFAULT NULL,
+  `dnb_person_id` char(16) DEFAULT NULL,
+  `gender` char(1) DEFAULT NULL,
+  `log_changed_at` datetime DEFAULT NULL,
+  `log_changed_by` varchar(30) DEFAULT NULL,
+  PRIMARY KEY (`person_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `log_person` (
+  `person_change_id` int(10) unsigned NOT NULL unique COMMENT 'sequential number shared among all person tables. Ensures the order of changes and helps updating separate search indexes like elasticsearch.',
+  `id` int(10) unsigned NOT NULL,
+  `person_id` varchar(64) NOT NULL,
+  `academic_degree` varchar(64) DEFAULT NULL,
+  `user_name` varchar(30) DEFAULT NULL,
+  `orcid` char(16) DEFAULT NULL,
+  `dnb_person_id` char(16) DEFAULT NULL,
+  `gender` char(1) DEFAULT NULL,
+  `log_changed_at` datetime DEFAULT NULL,
+  `log_changed_by` varchar(30) DEFAULT NULL,
+  `deleted` tinyint(4) NOT NULL DEFAULT 0 COMMENT 'set to 1 for delete actions',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `pub_person` (
+  `person_change_id` int(10) unsigned NOT NULL COMMENT 'sequential number shared among all person tables. Ensures the order of changes and helps updating separate search indexes like elasticsearch.',
+  `simhash1` char(32) DEFAULT NULL COMMENT '(interHash)',
+  `simhash2` char(32) DEFAULT NULL COMMENT '(intraHash)',
+  `relator_code` char(4) DEFAULT NULL COMMENT 'marc21 relator code (prefix M + 3 marc21 chars) - see http://www.loc.gov/marc/relators/relacode.html. Particulary relevant are:\n Mths=Thesis advisor,\n Mrev=Reviewer,\n Moth=Other,\n Maut=Author.\nIn addition, we use\n Bmnm=main name (only one tuple with this value per person_id) - usually marks the current real name (with hashes set to null)',
+  `person_index` tinyint(4) NOT NULL COMMENT 'tuple refers to the nth author/editor as appearing in the bibtex fields (n=author_index).',
+  `person_id` varchar(64) NOT NULL,
+  `qualifying` tinyint(4) DEFAULT NULL COMMENT 'set to\n0 for any publication\n1 for the first work associated to some newly created person entity\n2 for a person without a publication\n10 for a bachelor thesis @mastersthesis or @phdthesis with (lowercase) type field containing “bachelor”\n20 for master thesis @mastersthesis with or without, or @phdthesis with (lowercase) type field containing “master”\n30 for phdthesis\none single tuple per person id (the one with the highest value by the scoring above) is increased by +50. Whenever an entry is added or removed this is updated.',
+  `log_changed_at` datetime DEFAULT NULL,
+  `log_changed_by` varchar(30) DEFAULT NULL COMMENT 'user_name of the user, who changed the association last',
+  `deleted` tinyint(4) NOT NULL DEFAULT 0 COMMENT 'set to 1 for tuples keeping track of explicitly falsified associations, otherwise 0',
+  PRIMARY KEY (`person_change_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `log_pub_person` (
+  `person_change_id` int(10) unsigned NOT NULL COMMENT 'sequential number shared among all person tables. Ensures the order of changes and helps updating separate search indexes like elasticsearch.',
+  `simhash1` char(32) DEFAULT NULL COMMENT '(interHash)',
+  `simhash2` char(32) DEFAULT NULL COMMENT '(intraHash)',
+  `relator_code` char(4) DEFAULT NULL COMMENT 'marc21 relator code (prefix M + 3 marc21 chars) - see http://www.loc.gov/marc/relators/relacode.html. Particulary relevant are:\n Mths=Thesis advisor,\n Mrev=Reviewer,\n Moth=Other,\n Maut=Author.\nIn addition, we use\n Bmnm=main name (only one tuple with this value per person_id) - usually marks the current real name (with hashes set to null)',
+  `person_index` tinyint(4) NOT NULL COMMENT 'tuple refers to the nth author/editor as appearing in the bibtex fields (n=author_index).',
+  `person_id` varchar(64) NOT NULL,
+  `qualifying` tinyint(4) DEFAULT NULL COMMENT 'set to\n0 for any publication\n1 for the first work associated to some newly created person entity\n2 for a person without a publication\n10 for a bachelor thesis @mastersthesis or @phdthesis with (lowercase) type field containing “bachelor”\n20 for master thesis @mastersthesis with or without, or @phdthesis with (lowercase) type field containing “master”\n30 for phdthesis\none single tuple per person id (the one with the highest value by the scoring above) is increased by +50. Whenever an entry is added or removed this is updated.',
+  `log_changed_at` datetime DEFAULT NULL,
+  `log_changed_by` varchar(30) DEFAULT NULL COMMENT 'user_name of the user, who changed the association last',
+  `deleted` tinyint(4) NOT NULL COMMENT 'set to 1 for tuples keeping track of explicitly falsified associations, otherwise 0',
+  PRIMARY KEY (`person_change_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `person_name` (
+  `person_change_id` int(10) unsigned NOT NULL COMMENT 'sequential number shared among all person tables. Ensures the order of changes and helps updating separate search indexes like elasticsearch.',
+  `first_name` varchar(45) DEFAULT NULL,
+  `last_name` varchar(45) NOT NULL,
+  `person_id` varchar(64) NOT NULL,
+  `is_main` tinyint(1) DEFAULT '0',
+  `log_changed_at` datetime DEFAULT NULL,
+  `log_changed_by` varchar(30) DEFAULT NULL COMMENT 'user_name of the user, who changed the tuple last',
+  PRIMARY KEY (`person_change_id`),
+  CONSTRAINT `person_name.person_id` FOREIGN KEY (`person_id`) REFERENCES `person` (`person_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `log_person_name` (
+  `person_change_id` int(10) unsigned NOT NULL COMMENT 'sequential number shared among all person tables. Ensures the order of changes and helps updating separate search indexes like elasticsearch.',
+  `first_name` varchar(45) DEFAULT NULL,
+  `last_name` varchar(45) NOT NULL,
+  `person_id` varchar(64) NOT NULL,
+  `is_main` tinyint(1) DEFAULT '0',
+  `log_changed_at` datetime DEFAULT NULL,
+  `log_changed_by` varchar(30) DEFAULT NULL COMMENT 'user_name of the user, who changed the tuple last',
+  PRIMARY KEY (`person_change_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

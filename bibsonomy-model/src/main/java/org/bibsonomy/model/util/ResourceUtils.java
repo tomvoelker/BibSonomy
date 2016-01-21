@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -28,6 +28,7 @@ package org.bibsonomy.model.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.BibTex;
@@ -48,6 +49,7 @@ public class ResourceUtils {
 		byStringMap.put("BOOKMARK", Bookmark.class);
 		byStringMap.put("BIBTEX", BibTex.class);
 		byStringMap.put("ALL", Resource.class);
+		// TODO: shouldn't there be goldstandard-Resources too? - I dont want to break stuff relying on this
 		for (final Map.Entry<String, Class<? extends Resource>> entry : byStringMap.entrySet()) {
 			toStringMap.put(entry.getValue(), entry.getKey());
 		}
@@ -78,5 +80,24 @@ public class ResourceUtils {
 			return new Class[]{Bookmark.class, BibTex.class};
 		}
 		return new Class[]{requiredType};
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Deprecated // use ResourceFactory instead
+	public static Class<? extends Resource> getResourceClassBySimpleName(String resourceName) {
+		if (resourceName != null) {
+			Class<? extends Resource> rVal = byStringMap.get(resourceName.toUpperCase());
+			if (rVal != null) {
+				return rVal;
+			}
+			try {
+				Class<?> cls = Class.forName(BibTex.class.getPackage().getName() + "." + resourceName);
+				if (Resource.class.isAssignableFrom(cls)) {
+					return (Class<? extends Resource>) cls;
+				}
+			} catch (ClassNotFoundException e) {
+			}
+		}
+		throw new NoSuchElementException(resourceName);
 	}
 }

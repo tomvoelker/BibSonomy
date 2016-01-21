@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -30,9 +30,9 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Collections;
 import java.util.List;
+
 import org.bibsonomy.common.enums.GroupCreationMode;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
-
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
@@ -125,7 +125,6 @@ public class GroupRequestController implements ValidationAwareController<GroupRe
 				break;
 			case REQUESTEDBASED:
 				this.mailer.sendGroupRequest(requestedGroup);
-
 				command.setMessage("success.groupRequest.sent", Collections.singletonList(groupName));
 				break;
 			default:

@@ -1,7 +1,7 @@
 /**
- * BibSonomy-Lucene - Fulltext search facility of BibSonomy
+ * BibSonomy - A blue social bookmark and publication sharing system.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -30,7 +30,6 @@ import static org.bibsonomy.lucene.util.LuceneBase.CFG_LUCENE_FIELD_SPECIFIER;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -63,8 +62,6 @@ import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.Version;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.SearchType;
-import org.bibsonomy.es.EsResourceSearch;
-import org.bibsonomy.lucene.database.LuceneInfoLogic;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.index.LuceneSession;
@@ -72,11 +69,14 @@ import org.bibsonomy.lucene.index.LuceneSessionOperation;
 import org.bibsonomy.lucene.index.converter.LuceneResourceConverter;
 import org.bibsonomy.lucene.param.QuerySortContainer;
 import org.bibsonomy.lucene.search.collector.TagCountCollector;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
+import org.bibsonomy.search.SearchInfoLogic;
 import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
@@ -95,7 +95,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 * logic interface for retrieving data from bibsonomy (friends, groups
 	 * members)
 	 */
-	private LuceneInfoLogic dbLogic;
+	private SearchInfoLogic dbLogic;
 	
 	/** default field analyzer */
 	private Analyzer analyzer;
@@ -108,8 +108,6 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 
 	/** the index the searcher is currently using */
 	private LuceneResourceIndex<R> index;
-	
-	private EsResourceSearch<R> sharedResourceSearch;
 
 	/**
 	 * config values
@@ -123,6 +121,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	public LuceneResourceSearch() {
 		this.defaultSearchTermJunctor = Operator.AND;
 	}
+	
 
 	/*
 	 * (non-Javadoc)
@@ -135,12 +134,30 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 * java.lang.String, int, int)
 	 */
 	@Override
-	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) {
+	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) {
+		if (present(bibtexKey)) {
+			throw new UnsupportedOperationException("bibtexKey search only available via elasticsearch");
+		}
+		
 		// build query
 		final QuerySortContainer query = this.buildQuery(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, order);
 		// perform search query
 		return this.searchLucene(query, limit, offset);
 	}
+
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPostsByBibtexKey(java.lang.String, java.util.Collection, org.bibsonomy.common.enums.SearchType, java.lang.String, java.util.Collection, java.util.List, org.bibsonomy.model.enums.Order, int, int)
+	 */
+	@Override
+	@Deprecated // TODO: remove
+	public List<Post<R>> getPostsByBibtexKey(String userName,
+			Collection<String> allowedGroups, SearchType searchType,
+			String bibtexKey, Collection<String> tagIndex,
+			List<String> negatedTags, Order order, int limit, int offset) {
+		return null;
+	}
+
 	
 	/*
 	 * (non-Javadoc)
@@ -546,13 +563,14 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		if (present(requestedUserName) && !present(requestedRelationNames)) {
 			mainQuery.add(new TermQuery(new Term(LuceneFieldNames.USER, requestedUserName)), Occur.MUST);
 		}
+		// Note: we do not support spheres anymore
 		// If there is at once one relation then restrict the results only 
 		// to the users in the given relations (inclduing posts of the logged in users)
-		else if (present(requestedRelationNames)) {
-			// for all relations: 
-			final BooleanQuery relationsQuery = this.buildUserRelationQuery(userName, requestedRelationNames);	
-			mainQuery.add(relationsQuery, Occur.MUST);
-		}
+//		else if (present(requestedRelationNames)) {
+//			// for all relations: 
+//			final BooleanQuery relationsQuery = this.buildUserRelationQuery(userName, requestedRelationNames);	
+//			mainQuery.add(relationsQuery, Occur.MUST);
+//		}
 
 		// --------------------------------------------------------------------
 		// build final query
@@ -578,20 +596,21 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 		qf.setTagCountCollector(new TagCountCollector());
 		return qf;
 	}
-
-	private BooleanQuery buildUserRelationQuery(final String userName, final List<String> requestedRelationNames) {
-		final BooleanQuery relationsQuery = new BooleanQuery();
-		for (final String relation: requestedRelationNames) {
-			// Get all users in this relation:
-			final Collection<String> userInRelation = this.dbLogic.getUsersByUserRelation(userName, relation);
-			final BooleanQuery userInRelationQuery = new BooleanQuery();
-			for (final String user: userInRelation) {
-				userInRelationQuery.add(new TermQuery(new Term(LuceneFieldNames.USER, user)), Occur.SHOULD);
-			}
-			relationsQuery.add(userInRelationQuery, Occur.MUST);
-		}
-		return relationsQuery;
-	}
+	
+	// XXX: we do not support spheres anymore
+//	private BooleanQuery buildUserRelationQuery(final String userName, final List<String> requestedRelationNames) {
+//		final BooleanQuery relationsQuery = new BooleanQuery();
+//		for (final String relation: requestedRelationNames) {
+//			// Get all users in this relation:
+//			final Collection<String> userInRelation = this.dbLogic.getUsersByUserRelation(userName, relation);
+//			final BooleanQuery userInRelationQuery = new BooleanQuery();
+//			for (final String user: userInRelation) {
+//				userInRelationQuery.add(new TermQuery(new Term(LuceneFieldNames.USER, user)), Occur.SHOULD);
+//			}
+//			relationsQuery.add(userInRelationQuery, Occur.MUST);
+//		}
+//		return relationsQuery;
+//	}
 
 	private void addTagQuerries(final Collection<String> tagIndex, final Collection<String> negatedTags, final BooleanQuery mainQuery) {
 		/*
@@ -723,7 +742,7 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 * @param dbLogic
 	 *            the dbLogic to set
 	 */
-	public void setDbLogic(final LuceneInfoLogic dbLogic) {
+	public void setDbLogic(final SearchInfoLogic dbLogic) {
 		this.dbLogic = dbLogic;
 	}
 
@@ -779,40 +798,42 @@ public class LuceneResourceSearch<R extends Resource> implements ResourceSearch<
 	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPosts(java.lang.String, java.lang.String, java.lang.String, java.util.List, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.model.enums.Order, int, int)
 	 */
 	@Override
-	public List<Post<R>> getPosts(String userName,String requestedUserName, String requestedGroupName,List<String> requestedRelationNames,	Collection<String> allowedGroups,SearchType searchType,String searchTerms,String titleSearchTerms, String authorSearchTerms,
+	@Deprecated
+	public List<Post<R>> getPosts(String userName,String requestedUserName, String requestedGroupName,List<String> requestedRelationNames,	Collection<String> allowedGroups, SearchType searchType, String searchTerms, String titleSearchTerms, String authorSearchTerms, String bibtexKeySearch, 
 			Collection<String> tagIndex, String year, String firstYear,
 			String lastYear, List<String> negatedTags, Order order, int limit,
 			int offset) {
-		if ((this.sharedResourceSearch != null) && (searchType == SearchType.FEDERATED)) {
-			// searchResource.setINDEX_TYPE(resourceType);
-			// searchResource.setResourceConverter(this.resourceConverter);
-			try {
-				List<Post<R>> posts = this.sharedResourceSearch.fullTextSearch(searchTerms, order, limit, offset);
-				return posts;
-			} catch (IOException e) {
-				log.error("Failed to search post from shared resource", e);
-			}
-
-			return null;
-		} else if (searchType == SearchType.LOCAL) {
-			return this.getPosts(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, order, limit, offset);
-		}
-		log.warn("unsupported searchType '" + searchType + "'");
-		return new ArrayList<>();
+		return this.getPosts(userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexKeySearch, tagIndex, year, firstYear, lastYear, negatedTags, order, limit, offset);
 	}
-
-	/**
-	 * @return sharedResourceSearch
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.searcher.ResourceSearch#getTags(java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, org.bibsonomy.common.enums.SearchType, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, int, int)
 	 */
-	public EsResourceSearch<R> getSharedResourceSearch() {
-		return this.sharedResourceSearch;
+	@Deprecated
+	@Override
+	public List<Tag> getTags(String userName, String requestedUserName,
+			String requestedGroupName, Collection<String> allowedGroups,
+			String searchTerms, SearchType searchType, String titleSearchTerms,
+			String authorSearchTerms, Collection<String> tagIndex, String year,
+			String firstYear, String lastYear, List<String> negatedTags,
+			int limit, int offset) {
+		
+		return this.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
 	}
-
-	/**
-	 * @param sharedResourceSearch
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.searcher.ResourceSearch#getPublicationSuggestions(org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder)
 	 */
-	public void setSharedResourceSearch(EsResourceSearch<R> sharedResourceSearch) {
-		this.sharedResourceSearch = sharedResourceSearch;
+	@Override
+	public List<Post<BibTex>> getPublicationSuggestions(PublicationSuggestionQueryBuilder options) {
+		throw new UnsupportedOperationException();
 	}
 
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.searcher.ResourceSearch#getTags(java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.Collection, java.lang.String, java.lang.String, java.lang.String, java.util.List, int, int)
+	 */
+	List<Tag> getTags(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexkey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
+		return null;
+	}
 }
