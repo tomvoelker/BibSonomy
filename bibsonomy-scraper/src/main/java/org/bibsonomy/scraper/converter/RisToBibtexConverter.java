@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -44,55 +44,6 @@ import org.bibsonomy.util.id.ISBNUtils;
  *
  */
 public class RisToBibtexConverter {
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		String bsp2 = "Content-type: text/application/x-research-info-systems\n\n"+
-		"TY  - JOUR\n"+
-		"AU  - Gosse, Philippe\n"+
-		"TI  - Regression of Left Ventricular Hypertrophy: Should We Echo Echo[quest]\n"+
-		"JA  - Am J Hypertens\n"+
-		"PY  - 2008/03/18/print\n"+
-		"VL  - 21\n"+
-		"IS  - 4\n"+
-		"SP  - 373\n"+
-		"EP  - 373\n"+
-		"PB  - American Journal of Hypertension, Ltd.\n"+
-		"SN  - 0895-7061\n"+
-		"UR  - http://dx.doi.org/10.1038/ajh.2008.9\n"+
-		"ER  - \n";
-		String bsp = "TY  - BOOK\n"+
-		"JF  - Lecture Notes in Computer Science : Engineering Self-Organising Systems\n"+
-		"T1  - T-Man: Gossip-Based Overlay Topology Management\n"+
-		"SP  - 1\n"+
-		"EP  - 15\n"+
-		"PY  - 2006///\n"+
-		"UR  - http://dx.doi.org/10.1007/11734697_1\n"+
-		"M3  - 10.1007/11734697_1\n"+
-		"AU  - M�rk Jelasity\n"+
-		"AU  - Ozalp Babaoglu\n"+
-		"ER  -\n";
-		String bsp3 = "TY  - BOOK\n" +
-		"DB  - /z-wcorg/\n" +
-		"DP  - http://worldcat.org\n" +
-		"ID  - 503308127\n" +
-		"LA  - English\n" +
-		"T1  - Gramsci, language, and translation\n" +
-		"A1  - Ives, Peter,\n" +
-		"A1  - Lacorte, Rocco,\n" +
-		"PB  - Lexington Books\n" +
-		"CY  - Lanham, Md.\n" +
-		"Y1  - 2010///\n" +
-		"SN  - 9780739118597  9780739118603  0739118595  0739118609  9780739147856  0739147854\n" +
-		"ER  - \n";
-
-		System.out.println(new RisToBibtexConverter().risToBibtex(bsp));
-		System.out.println(new RisToBibtexConverter().risToBibtex(bsp2));
-		System.out.println(new RisToBibtexConverter().risToBibtex(bsp3));
-	}
-
 
 	/**
 	 * String array that maps from month number to month string label

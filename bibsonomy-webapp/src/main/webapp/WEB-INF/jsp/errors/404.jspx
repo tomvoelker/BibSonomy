@@ -8,14 +8,20 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<layout:paneLayout pageTitle="${command.pageTitle} error 404" headerMessageKey="error.404" command="${command}" requPath="${requPath}">
+	<layout:oneColumnLayout loginUser="${command.context.loginUser}" pageTitle="" requPath="${requPath}">
 	
-	<jsp:attribute name="heading">
-		<parts:search pathMessageKey="error"/>
-	</jsp:attribute>
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="error"/>
+		</jsp:attribute>
+		
+		<jsp:attribute name="content">
+			<div class="text-center">
+				<h1><fmt:message key="error.404.header" /></h1>
+				<p class="lead"><fmt:message key="error.404" /></p>
+				
+				<img src="/resources/image/404.jpg" />
+			</div>
+		</jsp:attribute>
 	
-	<jsp:attribute name="content">
-	</jsp:attribute>
-	
-	</layout:paneLayout>
+	</layout:oneColumnLayout>
 </jsp:root>

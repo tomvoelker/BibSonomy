@@ -6,6 +6,10 @@ function unpickAll() {
 	return pickUnpickAll("unpick");
 }
 
+function unescapeAmp(string) {
+	return string.replace(/&amp;/g, "&");
+}
+
 /**
  * Pick or unpick all publications from the current post list.
  * 
@@ -21,7 +25,7 @@ function pickUnpickAll(pickUnpick) {
 		}
 	}
 	);
-	return updateBasket("action=" + pickUnpick + "&hash=" + encodeURIComponent(param));
+	return updateClipboard("action=" + pickUnpick + "&hash=" + unescapeAmp(encodeURIComponent(param)));
 }
 
 /**
@@ -34,8 +38,8 @@ function pickUnpickPublication(element) {
 	/*
 	 * pick/unpick publication
 	 */
-	var params = $(element).attr("href").replace(/^.*?\?/, "");
-	return updateBasket(params);
+	var params = unescapeAmp($(element).attr("href")).replace(/^.*?\?/, "");
+	return updateClipboard(element, params);
 }
 
 
@@ -46,7 +50,7 @@ function pickUnpickPublication(element) {
  * @param param
  * @return
  */
-function updateBasket (param) {
+function updateClipboard (element, param) {
 	var isUnpick = param.search(/action=unpick/) != -1;
 	if (isUnpick && !confirmDeleteByUser("clipboardpost")) {
 		return false;
@@ -58,16 +62,46 @@ function updateBasket (param) {
 		data : param,
 		dataType : "text",
 		success: function(data) {
+		
+		/*
+		 * special case for the /clipboard page
+		 * remove the post from the resource list and update the post count
+		 */
+		if (location.pathname.startsWith("/clipboard") && isUnpick) {
+			var post = $(element).parents('li.post');
+			post.slideUp(400, function() {
+				post.remove();
+			});
+			var postCountBadge = $('h3.list-headline .badge');
+			var postCount = parseInt(postCountBadge.text());
+			postCountBadge.text(postCount - 1);
+		}
+		
 		/*
 		 * update the number of clipboard items
 		 */
-		if (location.pathname.startsWith("/clipboard") && !isUnpick) {
-			// special case for the /clipboard page
-			window.location.reload();
-		} else {
-			$("#pickctr").empty().append(data);
-		}
+		$("#clipboard-counter").show().html(data);
+		updateCounter();
 	}
+	});
+	return false;
+}
+
+// TODO: maybe wrong place ?
+function reportUser(a, userName){
+	$.ajax({
+		type: 'POST',
+		url: $(a).attr("href")+ "?ckey=" + ckey,
+		data: 'requestedUserName=' + userName + '&userRelation=SPAMMER&action=addRelation',
+		dataType: 'text',
+		success: function(data) {
+			$('a.report-spammer-link ').each(function(index, link) {
+				if ($(link).data('username') == userName) {
+					$(link).parent().append($("<span class=\"ilitem\"></span>").text(getString("user.reported")));
+					$(link).remove();
+				}
+			});
+		}
 	});
 	return false;
 }

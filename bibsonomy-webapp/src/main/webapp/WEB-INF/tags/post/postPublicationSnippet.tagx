@@ -6,41 +6,70 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
-	xmlns:form="http://www.springframework.org/tags/form">
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion">
 
     <!-- 
     	the form for snippet posting on /postPublication
      -->
-	<h2><fmt:message key="post_bibtex.pub_snippet.heading" /></h2>
-	<p class="smalltext"><fmt:message key="post_bibtex.pub_snippet.description" /></p>
+	
+	
 
-	<form:form method="post" action="/import/publications">
-		<div id="fsform">
-			<fieldset class="fsOuter">
+	<form:form cssClass="form-horizontal" method="post" action="/import/publications">
+		
+		<bsform:fieldset legendKey="post_bibtex.pub_snippet.heading">
+			<jsp:attribute name="content">
+				<p><fmt:message key="post_bibtex.pub_snippet.description" /></p>
+			
 				<input type="hidden" name="selTab" value="1" />
 				<input type="hidden" name="ckey" value="${ckey}" />
-				<div class="fsRow">
-					<form:label path="selection" cssClass="fsLabel"><fmt:message key="post_bibtex.pub_snippet.snippet" />*</form:label>
-					<form:textarea path="selection" cssClass="fsInput" rows="10"/>
+				<input type="hidden" name="personId" value="${command.personId}" /> 
+				<input type="hidden" name="personRole" value="${command.personRole}"/>
+				
+				<bsform:textarea labelColSpan="2" inputColSpan="10" path="selection" id="selection" />
+				<div class="form-group">
+					<label class="col-sm-2 control-label" for="${fn:escapeXml(id)}">
+						<fmt:message key="post.resource.viewablefor" />
+					</label>
+					<div class="col-sm-10">
+						<div class="row">
+	 						<div class="col-sm-6">
+								<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}" />
+							</div>
+						</div>
+					</div>
 				</div>
+			</jsp:attribute>
+		
+		</bsform:fieldset>
+			
+
+		<bsform:fieldset legendKey="post_bibtex.upload.options">
+			<jsp:attribute name="content">			
 				
-				<div class="fsLabel"><!--  --></div>
-				<post:groupBox groups="${command.context.loginUser.groups}"/>
+					<bsform:checkbox inputColSpan="10" path="editBeforeImport" labelKey="import.edit_before_import" helpKey="import.edit_before_import.help" />
+					<bsform:checkbox inputColSpan="10" path="overwrite"  labelKey="import.overwrite2" helpKey="import.overwritten"/>
+					
+					<!--+
+						|
+						| Dirty hack because spring form's option tag cannot find their parent select field, when invokes in jsp fragment.
+						| 
+						+-->
+					
+				 	<c:set var="labels">' ' (<fmt:message key="delimiters.whitespace"/>)|, (<fmt:message key="delimiters.comma"/>)|; (<fmt:message key="delimiters.semicolon"/>)</c:set>
+				   	<bsform:select id="delimiter-0" path="delimiter" items="${fn:split(' |,|;','|')}" itemLabels="${fn:split(labels, '|')}" />
 				
-				<div class="fsRow">
-					<fmt:message var="post_button" key="post_bibtex.button_label_post" />
-					<input type="submit" class="fsFormSubmit" name="submit" value="${post_button}" />
+				    <bsform:input id="whitespace-0" path="whitespace" labelKey="post_bibtex.upload.option.whitespace_substitute" helpKey="post_bibtex.upload.option.whitespace_substitute_help" small="${true}" />
+				
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-10">
+						<fmt:message var="post_button" key="post_bibtex.button_label_post" />
+						<bsform:button type="submit" style="primary" size="defaultSize" value="${post_button}" />
+					</div>
 				</div>
-				
-				<!-- 
-					options (overwrite, charset, tag separator, etc.)
-				 -->
-				<fieldset class="fsInner">
-					<legend><fmt:message key="post_bibtex.upload.options" /></legend>
-					<post:postPublicationOptions/>
-				</fieldset>
-			</fieldset>
-		</div>    
+			</jsp:attribute>
+		</bsform:fieldset>
     </form:form>
 
 </jsp:root>

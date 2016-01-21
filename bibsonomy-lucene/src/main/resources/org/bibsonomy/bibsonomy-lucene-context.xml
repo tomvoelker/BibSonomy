@@ -1,4 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    BibSonomy - A blue social bookmark and publication sharing system.
+
+    Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+                                  University of Kassel, Germany
+                                  http://www.kde.cs.uni-kassel.de/
+                              Data Mining and Information Retrieval Group,
+                                  University of Würzburg, Germany
+                                  http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+                              L3S Research Center,
+                                  Leibniz University Hannover, Germany
+                                  http://www.l3s.de/
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
@@ -27,11 +55,23 @@
 		<!-- <constructor-arg value="${project.home}"/> -->
 	</bean>
 	
+	<bean id="luceneBookmarkUpdateTrigger" class="org.bibsonomy.index.IndexUpdateTrigger">
+		<constructor-arg ref="luceneBookmarkManager" />
+	</bean>
+	
+	<bean id="lucenePublicationUpdateTrigger" class="org.bibsonomy.index.IndexUpdateTrigger">
+		<constructor-arg ref="lucenePublicationManager" />
+	</bean>
+	
+	<bean id="luceneGoldStandardPublicationUpdateTrigger" class="org.bibsonomy.index.IndexUpdateTrigger">
+		<constructor-arg ref="luceneGoldStandardPublicationManager" />
+	</bean>
+	
 	<bean id="indexGeneratorThreadPool" class="org.bibsonomy.util.SimpleBlockingThreadPoolExecutor" lazy-init="true" destroy-method="shutdownNow">
 		<constructor-arg value="indexGenerator"/>
 	</bean>
 
-	<bean id="realSharedIndexUpdatePlugin" class="org.bibsonomy.es.SharedIndexUpdatePlugin" lazy-init="true" abstract="true">
+	<bean id="realSharedIndexUpdatePlugin" class="org.bibsonomy.search.es.updater.SharedIndexUpdatePlugin" lazy-init="true" abstract="true">
 		<constructor-arg ref="esClient"/>
 		<constructor-arg value="${project.home}"/>
 		<property name="generatorThreadPool" ref="indexGeneratorThreadPool" />

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -30,7 +30,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -68,7 +67,9 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 	private static final String SITE_NAME = "ACM Digital Library";
 	private static final String SITE_URL = "http://portal.acm.org/";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
-
+	
+	private static final String CACM_DOMAIN = "cacm.acm.org";
+	
 	private static final List<Pair<Pattern,Pattern>> patterns = Arrays.asList(
 		new Pair<Pattern, Pattern>(
 			Pattern.compile(".*" + "[(portal)(dl)].acm.org"), 
@@ -78,12 +79,17 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 				Pattern.compile(".*" + "queue.acm.org"), 
 				Pattern.compile("/detail.cfm.*")
 			),
+			
+		new Pair<Pattern, Pattern>(
+				Pattern.compile(".*" + CACM_DOMAIN),
+				Pattern.compile("/magazines/*")
+				),
+				
 		new Pair<Pattern, Pattern>(
 				Pattern.compile(".*" + "doi.acm.org"),
 				EMPTY_PATTERN
 		)
 	);
-	
 	
 	private static final String BROKEN_END = new String("},\n}");
 	//get the publication's id, take the part behind the dot if present
@@ -91,14 +97,17 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 	private static final Pattern DOI_URL_ID_PATTERN = Pattern.compile("/(\\d+(?:\\.(\\d+))?)");
 	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<div style=\"display:inline\">(\\s*<p>\\s*)?((?s).+?)(\\s*<\\/p>\\s*)?<\\/div>", Pattern.MULTILINE);
 	
+	// to get publication id for CACM
+	private static final Pattern CACM_ID = Pattern.compile("<a href=(.*?)/citation.cfm\\?id=.*?\\.(.*?)&amp\\;coll=portal");
+	
 	/** remove tags in abstract */
 	private static final String CLEANUP_ABSTRACT = "<[\\da-zA-Z\\s]*>|<\\s*/\\s*[\\da-zA-Z\\s]*>|\\r\\n|\\n";
 	
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
+		
 		try {
-
 			/*
 			 * extract the id from the URL
 			 */
@@ -106,12 +115,21 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 			final String query = sc.getUrl().getQuery();
 			final Matcher matcher;
 			if (query == null) {
-				matcher = DOI_URL_ID_PATTERN.matcher(sc.getUrl().toExternalForm());
+				/*
+				 * for cacm journals: extract the id from the page content
+				 */
+				// TODO: maybe a separate cacm scraper?
+				if (sc.getUrl().toString().contains(CACM_DOMAIN)) {
+					matcher = CACM_ID.matcher(sc.getPageContent());
+				} else {
+					matcher = DOI_URL_ID_PATTERN.matcher(sc.getUrl().toExternalForm());
+				}
 			} else {
 				matcher = URL_PARAM_ID_PATTERN.matcher(query);
 			}
 			
-			if (matcher == null) return false;
+			if (matcher == null) 
+				return false;
 			
 			/*
 			 * if present take the id behind the dot
@@ -122,7 +140,7 @@ public class ACMBasicScraper extends AbstractUrlScraper implements ReferencesScr
 			} else {
 				return false;
 			}
-			
+		
 			//pretty good idea to use an own client, since the session in the common client can become invalid
 			final HttpClient client = WebUtils.getHttpClient();
 			

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -43,5 +43,5 @@ public interface BibTexReader {
 	 * @param importRes {@link ImportResource} to read from
 	 * @return {@link Collection} of read {@link BibTex}s
 	 */
-	public Collection<ImportResource> read(ImportResource importRes);
+	public Collection<BibTex> read(ImportResource importRes);
 }

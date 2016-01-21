@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -408,7 +408,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 				/*
 				 * get a scraper id
 				 */
-				final int id = this.generalDb.getNewId(ConstantID.IDS_SCRAPER_METADATA, session);
+				final int id = this.generalDb.getNewId(ConstantID.IDS_SCRAPER_METADATA, session).intValue();
 				/*
 				 * store id in metadata
 				 */

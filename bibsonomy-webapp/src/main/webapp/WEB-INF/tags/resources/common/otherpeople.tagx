@@ -13,7 +13,7 @@
 	<c:if test="${not empty post.resource.interHash and post.resource.count > 0}">
 			<c:url var="otherPeopleUrl" value="${otherPostsUrlPrefix}${post.resource.interHash}" />
 			<buttons:singularPluralMsgVar var="title" key="post.meta.postsInSystem" count="${post.resource.count}"/>
-			<a class="usersaves" href="${otherPeopleUrl}" title="${title}"><span>${post.resource.count}</span></a>
+			<a href="${otherPeopleUrl}" title="${title}" class="numpostsbadge pull-right"><span class="badge">${post.resource.count}</span></a>
 	</c:if>
 	
 	

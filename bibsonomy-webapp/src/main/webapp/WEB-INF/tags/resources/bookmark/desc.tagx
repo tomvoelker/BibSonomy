@@ -7,9 +7,12 @@
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	
-	<c:if test="${not empty post.description}">
-   		<c:out value="${post.description} "/>&#183;
-   	</c:if>
-	<a rel="nofollow" href="${fn:escapeXml(post.resource.url)}" data-versiondate="${mtl:formatDateW3CDTF(post.date)}"><c:out value="${post.resource.url}"/></a>
-	
+	<c:choose>
+		<c:when test="${not empty post.description}">
+	   		<c:out value="${post.description}"/>
+	   	</c:when>
+		<c:otherwise>
+			<a rel="nofollow" href="${fn:escapeXml(post.resource.url)}" data-versiondate="${mtl:formatDateW3CDTF(post.date)}"><c:out value="${post.resource.url}"/></a>
+		</c:otherwise>
+	</c:choose>
 </jsp:root>

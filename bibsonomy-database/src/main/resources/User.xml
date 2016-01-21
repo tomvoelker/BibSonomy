@@ -12,7 +12,7 @@
 	<select id="getUsersBySearch" resultMap="Common.user" parameterClass="userParam">
 		SELECT <include refid="commonUserAttributes"/>, NULL as ldapUserId, NULL as openID
 		  FROM user
-		  WHERE user_name LIKE CONCAT(#rawSearch#, '%')
+		  WHERE user_name LIKE CONCAT(#search#, '%')
 		  LIMIT #limit#
 	</select>
 	
@@ -20,7 +20,7 @@
 		SELECT <include refid="commonUserAttributes"/>, activation_code, NULL as ldapUserId, NULL as openID
 		  FROM pendingUser 
 		  WHERE spammer = 0 
-		    AND activation_code = #rawSearch#
+		    AND activation_code = #search#
 		  LIMIT #limit# OFFSET #offset#
 	</select>
 
@@ -264,6 +264,11 @@
 		SELECT f_user_name AS user_name, tag_name FROM friends WHERE user_name = #userName# <include refid="matchTaggedRelation"/>
 	</select>
 	
+	<!-- get all users, which user has tagged as spammers -->
+	<select id="getRelation_SPAMMER" resultMap="UserCommon.userWithTags" parameterClass="userParam">
+		SELECT f_user_name AS user_name, tag_name FROM friends WHERE user_name = #userName# <include refid="matchTaggedRelation"/>
+	</select>
+	
 	<!-- get all users, that follow the user (user, u)\in OF_FOLLOWER-->
 	<select id="getRelation_OF_FOLLOWER" resultMap="Common.user"	parameterClass="userParam">
 		SELECT user_name FROM followers WHERE f_user_name = #userName#
@@ -285,6 +290,11 @@
 
 	<!-- insert (userName, requestedUserName) into OF_FRIEND-->
 	<insert id="insertRelation_OF_FRIEND" parameterClass="userParam">
+		INSERT IGNORE INTO friends (user_name, f_user_name, tag_name, friendship_date) VALUES (#userName#,#requestedUserName#,#tag.name#, NOW())
+	</insert>
+
+	<!-- insert (userName, requestedUserName) into SPAMMER-->
+	<insert id="insertRelation_SPAMMER" parameterClass="userParam">
 		INSERT IGNORE INTO friends (user_name, f_user_name, tag_name, friendship_date) VALUES (#userName#,#requestedUserName#,#tag.name#, NOW())
 	</insert>
 	

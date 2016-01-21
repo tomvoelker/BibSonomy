@@ -16,6 +16,7 @@
 			<c:choose>
 				<c:when test="${not empty post.systemUrl }">
 					<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
+					<c:set var="systemUrl" value="${fn:substringBefore(post.systemUrl,'/') }"/>
 				</c:when>
 				<c:otherwise>
 					<c:set var ="isRemotePost" value="false"/>
@@ -26,6 +27,11 @@
 			<c:set var ="isRemotePost" value="false"/>
 		</c:otherwise>
 	</c:choose>
+	<c:set var="urlGenerator" value="${relativeUrlGenerator}" />
+	<c:if test="${useAbsoluteURL}">
+		<c:set var="urlGenerator" value="${absoluteUrlGenerator}" />
+	</c:if>
+	
 	<!-- initialize with empty list -->
 	<c:set var="personList" value=""/>
 	<!-- determine personType for schema.org markup -->
@@ -34,10 +40,12 @@
 		<c:when test="${not empty publication.author}">
 			<c:set var="personList" value="${publication.author}"/>
 			<c:set var="authorEditor" value="author"/>
+			<c:set var="authorEditorUppper" value="AUTHOR"/>
 		</c:when>
 		<c:when test="${not empty publication.editor}">
 			<c:set var="personList" value="${publication.editor}"/>
 			<c:set var="authorEditor" value="editor"/>
+			<c:set var="authorEditorUppper" value="EDITOR"/>
 		</c:when>
 	</c:choose>
 	
@@ -53,56 +61,31 @@
 			<c:if test="${loopStatus.last and not loopStatus.first}">
 				<c:out value=" "/><fmt:message key="and"/><c:out value=" "/>
 			</c:if>
+			
+			<!-- FIXME: urls should be build correctly for remote posts. urls should be built using urlgenerator methods -->
+			<c:url var='pubAuthorUrl' value='${urlGenerator.getDisambiguationUrl(publication.interHash, authorEditorUppper, loopStatus.index)}'/>
 			<c:choose>
 				<c:when test="${isRemotePost}">
-					<c:choose>
-						<c:when test="${useAbsoluteUrl}">
-							<a href="${absoluteUrlGenerator.getAuthorUrlByNameAndSysUrl(person.lastName, post.systemUrl)}" itemprop="name">
-								<c:out value="${personName}"/>
-							</a>
-						</c:when>
-						<c:otherwise>
-							<a href="${relativeUrlGenerator.getAuthorUrlByNameAndSysUrl(person.lastName, post.systemUrl)}" itemprop="name">
-								<c:out value="${personName}"/>
-							</a>
-						</c:otherwise>
-					</c:choose>
+					<a href="${urlGenerator.getAuthorUrlByNameAndSysUrl(person.lastName, post.systemUrl)}"><c:out value="${personName}" /></a>	
 				</c:when>
 				<c:otherwise>
 					<c:choose>
 						<c:when test="${schemaOrgMarkUp}">
 							<span itemprop="${authorEditor}" itemscope="itemscope" itemtype="http://schema.org/Person">
-								<c:choose>
-									<c:when test="${useAbsoluteUrl}">
-										<a href="${absoluteUrlGenerator.getAuthorUrlByName(person.lastName)}" itemprop="name">
-											<c:out value="${personName}"/>
-										</a>
-									</c:when>
-									<c:otherwise>
-										<a href="${relativeUrlGenerator.getAuthorUrlByName(person.lastName)}" itemprop="name">
-											<c:out value="${personName}"/>
-										</a>
-									</c:otherwise>
-								</c:choose>
+								<a href="${pubAuthorUrl}" itemprop="name">
+									<c:out value="${personName}"/>
+								</a>
 							</span>
 						</c:when>
 						<c:otherwise>
-						 	<c:choose>
-									<c:when test="${useAbsoluteUrl}">
-										<a href="${absoluteUrlGenerator.getAuthorUrlByName(person.lastName)}" itemprop="name">
-											<c:out value="${personName}"/>
-										</a>
-									</c:when>
-									<c:otherwise>
-										<a href="${relativeUrlGenerator.getAuthorUrlByName(person.lastName)}" itemprop="name">
-											<c:out value="${personName}"/>
-										</a>
-									</c:otherwise>
-								</c:choose>
+						 	<a href="${pubAuthorUrl}">
+								<c:out value="${personName}"/>
+						 	</a>
 						</c:otherwise>
 					</c:choose>
 				</c:otherwise>
 			</c:choose>
+		
 			
 			<!-- append separator "," -->
 			<c:if test="${not loopStatus.last}"><c:out value=", "/></c:if>

@@ -9,111 +9,40 @@ var documentUploadSuccessIcon = "/resources/image/document-txt-blue.png";
  * add handler to delete, add and rename documents
  */
 $(function() {
+	// TODO: move somewhere else
+	$.getScript('/resources/jquery/plugins/form/jquery.form.js');
+	
 	var documentUploadTitle = getString("bibtex.actions.private_document.upload.title");
 	$(".deleteDocument").click(deleteLinkClicked);
 	$(".addDocument").click(addDocument).attr("title", documentUploadTitle);
-	$(".renameDoc").click(renameClicked);
-});
-
-/**
- * rename has been clicked, show rename form and trigger rename
- */
-function renameClicked() {
-	/*
-	 * load jQuery form plugin which is needed for ajaxSubmit()
-	 * 
-	 * FIXME: ensure that script is loaded before user can do something
-	 */
-	$.getScript('/resources/jquery/plugins/form/jquery.form.js');
-	/*
-	 * when upload form already exists, remove it 
-	 */
-	if ($("#upForm").length) $("#upForm").remove();
-	
-	var currentName;
-	if ($("#renameForm").length) {
-		var temp = $("#showName").text().split(" ");
-		$.each(temp, function(index, item) {
-			if(item.indexOf(".") >= 0) {
-				currentName = item.substring(0, item.length-1);
-			}
+	$(".rename-btn").each(function(i, el) {
+		
+		var inputGroup = $(this).closest(".input-group");
+		var inputGroupButtons = $(this).parent(".input-group-btn");
+		var form = inputGroupButtons.closest("form");
+		var renameInput = inputGroup.children(".renameDocInput");
+		var renameButton = $(this);
+		var deleteForm = inputGroupButtons.children(".remove-btn");
+		
+		var o = {
+				renameButton:renameButton,
+				form:form,
+				deleteForm:deleteForm,
+				renameInput:renameInput
+		};
+		
+		renameButton.click(function(e) {
+			renameFile(o);
 		});
-	}
-	
-	/*
-	 * remove rename form if it already exists 
-	 */
-	if ($("#renameForm").length) $("#renameForm").remove();
-	/*
-	 * remove text of renamelabel on editPublication-pages if it's still set
-	 */
-	if(!($("#showName").text() === "")) {
-		$("#showName").text("");
-	}
-
-	/*
-	 * build rename form
-	 */
-	var name = $(this).data('filename');
-	
-	/*
-	 * the same rename button was clicked twice, so hide the rename form and do nothing 
-	 */
-	if (currentName && currentName == name) {
-		return false;
-	}
-	
-	/*
-	 * on the edit publication page a label is already available,
-	 *  on the default view-publication page it's not
-	 */
-	if($("#showName").length) {
-		$("#showName").text(getString("post.bibtex.renameTitle") +" " +name);
-		var renameForm = "<form id='renameForm' action='" + $(this).attr('href') + "' method='POST' enctype='multipart/form-data' autocomplete='off'>" + 
-		 "<input id='renameFormTxt' type='text' name='newFileName' value='" +name.replace(/'/g, "&apos;") +"'/>" +
-				" <input id='renameBtn' type='button' value='"+ getString("post.bibtex.btnRename") +"' /></form> ";
-	} else {
-		var renameForm = "<form id='renameForm' action='" + $(this).attr('href') + "' method='POST' enctype='multipart/form-data' autocomplete='off'>" + 
-		"<p id='showName'>" +getString("post.bibtex.renameTitle") +" " +name +":</p> <input id='renameFormTxt' type='text' name='newFileName' value='" +name.replace(/'/g, "&apos;") +"' />" +
-				" <input id='renameBtn' type='button' value='"+ getString("post.bibtex.btnRename") +"' /></form> ";
-	}
-
-	/*
-	 * append form
-	 */
-	var inputDiv = $("#inputDiv");
-	if (inputDiv.length) {
-		/*
-		 * on /bibtex/... pages
-		 */
-		inputDiv.append($(renameForm));
-	} else {
-		/*
-		 * on other pages 
-		 * 
-		 * this = a
-		 * parent = headline DIV
-		 */ 
-		$(this).parent().append($(renameForm));
-	}
-
-	/*
-	 * attach handler that is called when the user selected a file
-	 * Click handler
-	 */
-	$("#renameBtn").click(renameSelected);
-	/*
-	 * handler for presses enter button 
-	 */
-	$("#renameFormTxt").keypress(function(event) {
-		if(event.which == 13) {
-			renameSelected();
+		
+		form.submit(function(e) {
+			e.preventDefault();
+			renameFile(o);
 			return false;
-		}
+		});
 	});
-
-	return false;
-}
+	
+});
 
 function checkConsistency(oldSuffix, newSuffix) {
 	/*
@@ -164,12 +93,13 @@ function checkConsistency(oldSuffix, newSuffix) {
 /**
  * renames a document
  */
-function renameSelected() {
+function renameSelected(button) {
 	/*
 	 * get the documents type to check wether
 	 * the new ending is equals the old
 	 */
-	var temp = $("#showName").text().split(" ");
+	var entry = $(button).closest(".input-group").children(".renameDocInput").addClass("current-form");
+	var temp = entry.val().split(" ");
 	var type;
 	$.each(temp, function(index, item) {
 		if(item.indexOf(".") >= 0) {
@@ -178,8 +108,7 @@ function renameSelected() {
 		}
 	});
 	
-	var renameForm = $("#renameForm");
-	var fileName = $("#renameFormTxt").val(); //get value of the rename field
+	var fileName = entry.data("filename"); //get value of the rename field
 	var newFileType = fileName.split(".");
 	var length = newFileType.length;
 	newFileType = newFileType[newFileType.length-1];
@@ -194,6 +123,11 @@ function renameSelected() {
 	
 	//check wether a file with this name already exists
 	$(".documentFileName").each(function() {
+		if($(this).hasClass("current-form")) {
+			$(this).removeClass("current-form")
+			return;
+		}
+		
 		var name = $.trim($(this).text());
 		if (name == fileName) {
 			fileExist = true;
@@ -203,16 +137,19 @@ function renameSelected() {
 	//file already exists
 	if (fileExist) {
 		alert(getString("post.bibtex.fileExists"));
-		$(renameForm).remove();
 		return;
 	}
 	
-	renameForm.val(decodeURI(renameForm.val()).replace(/&/g, "%26"));
+	entry.val(decodeURI(entry.val()).replace(/&/g, "%26"));
 	
 	//do an ajaxsubmit of the renameForm
-	$(renameForm).ajaxSubmit({
+	$("#renameBtn").ajaxSubmit({
 		dataType: "xml",
-		success: renameRequestSuccessful
+		success: function(data) {
+			$(button).addClass("btn-success");
+			renameRequestSuccessful(data);
+		}
+	
 	});
 }
 
@@ -231,8 +168,7 @@ function deleteLinkClicked () {
 			alert($("reason", data).text());
 		} else {
 			var test = $(button).next(".documentFileName").text();
-			alert($("response", data).text());
-			$(button).parent("li").remove();
+			$(button).closest("li").remove();
 		}
 	}, "xml");
 	return false;
@@ -317,7 +253,9 @@ function fileSelected(obj) {
 	}
 	$(upForm).ajaxSubmit({
 		dataType: "xml",
-		success: uploadRequestSuccessful	
+		success: function(data){
+			uploadRequestSuccessful(data);
+		}
 	});
 	
 	/*
@@ -349,78 +287,113 @@ function uploadRequestSuccessful(data) {
 		alert($("reason", data).text());
 		return;
 	}
+	
 	if (status == "ok") {
 		var fileHash  = $("filehash", data).text();
 		var intrahash = $("intrahash", data).text();
 		var fileName  = $("filename", data).text();
 		
+		var copyData = $("#file-upload-placeholder").clone();
+		copyData.attr("id", "");
 		var encodedFileName = encodeURIComponent(fileName).replace(/%20/g, '+');
+		var inputGroup = copyData.find(".input-group").filter(":first");
+		var inputGroupButtons = copyData.find(".input-group-btn").filter(":first");
 
 		var documentUri = "/documents/" + intrahash + "/" + encodeURIComponent(currUser) + "/" + encodeURIComponent(encodedFileName);
 		var documentHelp = getString("bibtex.actions.private_document.download");
-		//var documentImg = "<img src='" + documentUploadSuccessIcon +"' style='float: left;'/>";
 		
 		var documentQRMessage = getString("qrcode.actions.download");
 		var params = [projectName];
 		var documentQRHelp = getString("qrcode.info.embedderInfoMessage", params);
-		
-		
+		var form = inputGroup.parent();
+		var downloadForm = inputGroupButtons.children(".download-btn").filter(":first").data("filename", encodedFileName).attr("href", documentUri + "?qrcode=false").attr("title", documentHelp);
+		var qrForm = inputGroupButtons.children(".qrcode-btn").data("filename", encodedFileName).data("filename", encodedFileName).attr("href", documentUri + "?qrcode=true").attr("title", documentHelp);
+		var renameInput = inputGroup.children(".renameDocInput").val(fileName).data("filename", fileName);
+		var renameButton = inputGroupButtons.children(".rename-btn");
+		var deleteForm = inputGroupButtons.children(".remove-btn").attr("href", "/ajax/documents?intraHash=" + intrahash + "&fileName="+ encodedFileName + "&ckey=" + ckey + "&temp=false&action=delete").attr("title", getString("delete")).data("filename", fileName);
+		var imgPreview = inputGroup.children(".pre_pic").attr("src", documentUri + "?preview=SMALL").attr("alt", fileName);
 		
 		/*
 		 * on /bibtex pages we have a list where we add links to the files
 		 */
-		var filesUl = $("#files");
+		var filesUl = $(".edit-document-forms").filter(":first");
 
 		/*
 		 * file extension for qr code embedding
 		 */
 		var suffix = ".pdf";
+		var o = {
+				renameButton:renameButton,
+				form:form,
+				deleteForm:deleteForm,
+				renameInput:renameInput
+		};
+		form.attr("action", form.attr("action").replace("FILENAME_PLACEHOLDER", fileName));
 		
-		if (filesUl.length) {
+		if (!filesUl.length) {
+			//if(documentImg!==undefined) upA.children().first().replaceWith($(documentImg));
+		}
 			
-			var inner = "";
 			
-			var aQrCode    = "<a class='documentFileName preview' href='" + documentUri + "?qrcode=true'" + " title='" + documentHelp + "'>";
-			var aNoQrCode  = "<a class='documentFileName preview' href='" + documentUri + "?qrcode=false'" + " title='" + documentHelp + "'>";
-			var imgPreview = "<img style='display:none;' class='pre_pic' src='" + documentUri + "?preview=SMALL' alt='" + fileName + "' />";
-			var aDel       = "<a class='deleteDocument' href='/ajax/documents?intraHash=" + intrahash + "&fileName="+ encodedFileName + "&ckey=" + ckey + "&temp=false&action=delete'></a>";
-			var aRename = "<a class='renameDoc' href='/ajax/documents?ckey="+ckey+"&temp=false&intraHash=" + intrahash + "&fileName="+
-			encodedFileName +"&action=rename' data-filename='" + encodedFileName +"'></a>";
 			/*
 			 * check if file ends with '.pdf'
-			 */			
-			if (fileName.toLowerCase().indexOf(suffix, fileName.length - suffix.length) != -1) {
-				inner = aQrCode + imgPreview + fileName + "</a> ( " + aNoQrCode + imgPreview + documentQRMessage + "</a>" + 
-				"<div class='help' style='float:none'> <b class='smalltext' style=''>?</b><div>" + documentQRHelp + "</div></div>" +
-				") " + aDel +aRename;
-			} else {
-				inner = aNoQrCode + imgPreview + fileName + "</a> " + aDel +aRename;
-			}
+			 */
+		if (fileName.toLowerCase().indexOf(suffix, fileName.length - suffix.length) == -1) qrForm.hide();
 			
-			filesUl.find("li:last-child").before("<li>" + inner + "</li>");
-			$(".deleteDocument").click(deleteLinkClicked);
 			/*
 			 * find the new added document(it's always the element at index n-1 in filesUl)
 			 * and add listener
 			 */
-			filesUl.find("li").eq(filesUl.find("li").length-2).find(".renameDoc").click(renameClicked);
-		} else {
-			/*
-			 * change document link
-			 */
-			var upA = upParent.children(".addDocument").first();
-			upA.attr("href", documentUri);
-			upA.attr("class", "preview");
-			upA.attr("title", documentHelp);
-			upA.unbind('click');
-			upA.children().first().replaceWith($(documentImg));
-		}
+		filesUl.find(".bibtexpreviewimage").after(copyData);
+		
+		renameButton.click(function(e){
+			renameFile(o);
+		});
+		
+		form.submit(function(e) {
+			e.preventDefault();
+			renameFile(o);
+			return false;
+		});
+		deleteForm.click(deleteLinkClicked);
+		copyData.show();
 		
 		return;
 	}
 }
 
+function renameFile(o) {
+	var regExp = /\.[a-zA-Z0-9]*$/;
+	var oldFilename = o.deleteForm.data("filename");
+	var oldSuffix = o.deleteForm.data("filename").match(regExp)[0];
+	var newSuffix = o.renameInput.val().match(regExp)[0];
+	oldSuffix = (oldSuffix != null? oldSuffix.substr(1, oldSuffix.length-1):"");
+	newSuffix = (newSuffix != null? newSuffix.substr(1, newSuffix.length-1):"");
+	
+	if(!checkConsistency(oldSuffix, newSuffix)) return;
+	
+	o.form.ajaxSubmit({
+		dataType: "xml",
+		success: function(data) {
+			var inputGrp = o.renameInput.parent();
+			
+			o.renameButton.addClass("btn-success");
+			//inputGrp.attr("title", $("response", data).text());
+			o.form.attr("action", o.form.attr("action").replace(oldFilename, o.renameInput.val()));
+			o.deleteForm.attr("href", o.deleteForm.data("filename", o.renameInput.val()).attr("href").replace(oldFilename, o.deleteForm.data("filename")));
 
+			renameRequestSuccessful(data);
+			//inputGrp.tooltip({trigger:"manual"}).tooltip("show");
+
+			setTimeout(function() {
+			  o.renameButton.removeClass("btn-success");
+			  //inputGrp.tooltip("destroy");
+			}, constants.RESPONSE_TIMEOUT);
+			
+		}
+	
+	});
+}
 /**
  * handles the answer of the rename request
  * @param data
@@ -443,8 +416,7 @@ function renameRequestSuccessful(data) {
 	 */
 	var oldName = $("oldName", data).text();
 	var newName = $("newName", data).text();
-	var response = $("response", data).text();
-	
+
 	/*
 	 * find and update all links, containing old filenames
 	 */
@@ -484,11 +456,6 @@ function renameRequestSuccessful(data) {
 	toRename.text(newName);
 	toRename.append(children);
 	toRename.siblings().filter('a:last').data('filename', newName);
-	
-	/*
-	 * print status 
-	 */
-	alert(response);
 	
 	return;
 }

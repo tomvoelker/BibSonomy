@@ -5,64 +5,35 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/layout/form"
+	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
 	xmlns:form="http://www.springframework.org/tags/form">
 
-    <jsp:directive.attribute name="tags" type="java.lang.String" required="true"/>
-    <jsp:directive.attribute name="recommendedTags" type="java.util.Set" required="true"/>
-    <jsp:directive.attribute name="containsComma" type="java.lang.Boolean" required="true"/>
+	<jsp:directive.attribute name="tags" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="recommendedTags" type="java.util.Set" required="true"/>
+	<jsp:directive.attribute name="containsComma" type="java.lang.Boolean" required="true"/>
 
-	<bform:fieldset maximized="true" legendKey="post.resource.tags.describe">
-		<jsp:attribute name="content">
-			<div class="fsRow">
-		        <span class="fsLabel"> (<fmt:message key="post.resource.spaceseparated"/>) *</span>
-	    	    <form:input cssClass="tagInput reqinput" id="inpf_tags" autocomplete="off" path="tags" onclick="setActiveInputField(this.id); enableHandler();" onfocus="setActiveInputField(this.id); enableHandler()" onblur="disableHandler()" tabindex="1" />
-	        
-	        	<!-- name="tags"  -->
-				<div class="dissError"><form:errors path="tags" /></div>
+	<jsp:directive.attribute name="labelColSpan" type="java.lang.Integer" required="false" description="Column span width of the label. labelColSpan and inputColSpan must add up to 12" />
+	<jsp:directive.attribute name="inputColSpan" type="java.lang.Integer" required="false" description="Column span width of the input field. labelColSpan and inputColSpan must add up to 12" />
 	
-	        	<!-- allow user to confirm tags containing comma or semicolon -->
-	        	<c:if test="${containsComma}">
-	          		<div>
-		        	    <form:checkbox path="acceptComma"/><form:label path="acceptComma"><fmt:message key="post.resource.tags.comma"/></form:label>
-	    	      	</div>
-	        	</c:if>
-			</div>    
-            
-	        <!--+
-    	        | show recommendations
-        	    +-->
-			<div class="fsRow">
-			  	<div class="fsLabel"><fmt:message key="post.resource.recommendation"/></div>
-          
-    	      	<!-- we assign post's id to div's class for accessing clicklog data -->
-			  	<div id="recommendedTags" class="recommended ${command.postID}">
-		    		<div class="fsWaitingText" style="font-weight: normal; color: #666;"><fmt:message key="post.resource.waitingForTags"/></div>
-		      		<!-- This comment is needed, otherwise this will result in a self-closing element -->
-		  		</div>
-      
-          		<a id="fsReloadLink" href="#">
-            		<fmt:message var="reloadTags" key="post.resource.reloadRecommendation"/>
-            		<img id="fsReloadButton" src="${resdir}/image/button_reload-inactive.png" alt="${reloadTags}" title="${reloadTags}"/>
-          		</a>
-			</div>
-    
-            <!--+
-            	| show copied tags if available
-            	+-->
-    		<c:if test="${not empty command.copytags}">
-      			<div class="fsRow">
-               		<div class="fsLabel">
-         				<fmt:message key="post.resource.copytags" />
-               		</div>
-         			<ul id="copiedTags">
-          				<c:forEach var="tag" items="${command.copytags}">
-          					<li><c:out value="${tag.name} "/></li>
-          				</c:forEach>
-        			</ul>
-     			</div>
-    		</c:if>
-
+	<c:choose>
+		<c:when test="${ (empty labelColSpan and empty inputColSpan) or (inputColSpan gt 10) or (labelColSpan gt 6) }">
+			<c:set var="labelColSpan" value="3" />
+			<c:set var="inputColSpan" value="10" />
+		</c:when>
+		<c:when test="${empty labelColSpan and not empty inputColSpan}">
+			<c:set var="labelColSpan" value="${ 12 - inputColSpan }" />
+		</c:when>
+		<c:otherwise>
+			<c:set var="inputColSpan" value="${ 12 - labelColSpan }" />
+		</c:otherwise>
+	</c:choose>
+	
+	<a name="tags"><!-- keep me --></a>
+	<bsform:fieldset legendKey="post.resource.tags.describe">
+		<jsp:attribute name="content">
+			<post:tagform path="tags" containsComma="${command.containsComma}" labelColSpan="${labelColSpan}" inputColSpan="${inputColSpan}" tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>
 		</jsp:attribute>
-	</bform:fieldset>
+	</bsform:fieldset>
 </jsp:root>

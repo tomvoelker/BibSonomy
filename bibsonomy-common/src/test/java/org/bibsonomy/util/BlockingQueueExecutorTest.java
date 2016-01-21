@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -74,6 +74,7 @@ public class BlockingQueueExecutorTest {
 		Assert.assertEquals(true, doneContainer[0]);
 		Assert.assertEquals(0, executor.getWaitingTasks().size());
 		Assert.assertEquals(0, executor.getRunningTasks().size());
+		executor.shutdownNow();
 	}
 	
 	/**

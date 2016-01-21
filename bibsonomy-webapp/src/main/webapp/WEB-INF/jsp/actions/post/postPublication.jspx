@@ -8,143 +8,152 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
-    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:bsbibcomp="urn:jsptagdir:/WEB-INF/tags/bs/bibcomponents"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:batch="urn:jsptagdir:/WEB-INF/tags/actions/edit/batch"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex">
-    
-    <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />	
-	<fmt:message key="post_bibtex.heading" var="msgPostPublication"/>
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors">
 	
-	<layout:tabLayout 
-		command="${command}" 
-		pageTitle="${msgPostPublication}" 
-		headerMessageKey="navi.postPublication" 
-		headerLogoClass="publications" 
-		requPath="${requPath}" 
-		activeTab="post"
-		minimizedContentWidth="${true}">
-			 
-		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.postPublication"/>
-		</jsp:attribute>
-			
-		<jsp:attribute name="headerExt">
-            <script type="text/javascript" src="${resdir}/javascript/editPost.js"><!-- keep me --></script>
-            <script type="text/javascript" src="${resdir}/javascript/editPublication.js"><!-- keep me --></script>
-	    </jsp:attribute>
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />	
+	<fmt:message key="post_bibtex.heading" var="msgPostPublication"/>
 
-	    
-	    
-		<jsp:attribute name="tabcontent">
-      <c:set var="post" value="${command.post}"/>
-		<div style="float: left;width:97%;margin-left:10px; padding-bottom: 13px;">
-			<c:choose>
-				<c:when test="${command.selTab == 0}">
-					<!-- 
-						manual posting
-					 -->
-					 <post:postPublicationManual post="${command.post}"/>
-				</c:when>
-
-				<c:when test="${command.selTab == 1}">
-					<!-- 
-						a snippet of BibTeX / EndNote
-					 -->
-					<post:postPublicationSnippet/>
-				</c:when>
-
-				<c:when test="${command.selTab == 2}">
-					<!-- 
-						upload a file with BibTeX / EndNote
-					 -->
-					<post:postPublicationUpload/>
-				</c:when>
-
-				<c:when test="${command.selTab == 3}">
-					<!-- 
-						given an ISSN/ISBN/DOI ...
-					 -->
-					<post:postPublicationID/>
-				</c:when>
-				
-				<c:when test="${command.selTab == 4}">
-					<!-- 
-						automatically by scanned codes (ISBN/QR)
-					 -->
-					<post:postPublicationScan/>
-				</c:when>
-			</c:choose>
-			
-			<!-- 
-				error handling, etc.
-				TODO: we should show line parsing errors in a custom form and not using the global error output.
-				(Nevertheless, we very probably need the global error tag for other errors.) 
-			 -->
-			<errors:global errors="${errors}" />
+	
+	<layout:layout 
+		loginUser="${command.context.loginUser}" 
+		pageTitle="${pageTitle}" 
+		sidebar="${sidebar}" 
+		requPath="${requPath}">
+		<jsp:attribute name="content">
+			<h1 class="content-heading"><fmt:message key="navi.postPublication"/></h1>
 		
-			<c:if test="${not empty command.bibtex and not empty command.bibtex.list}">
+			<errors:global />
+		
+			<c:set var="post" value="${command.post}"/>
+			
+						
+			<ul class="nav nav-tabs">
+				<li class="${command.selTab == 0 ? 'active' : ''}"><a href="?selTab=0#selTab0" data-toggle="tab"><fmt:message key="post_bibtex.manual.title" /></a></li>
+				<li class="${command.selTab == 1 ? 'active' : ''}"><a href="?selTab=1#selTab1" data-toggle="tab"><fmt:message key="post_bibtex.pub_snippet.snippet"/></a></li>
+				<li class="${command.selTab == 2 ? 'active' : ''}"><a href="?selTab=2#selTab2" data-toggle="tab"><fmt:message key="post_bibtex.upload.title" /></a></li>
+				<li class="${command.selTab == 3 ? 'active' : ''}"><a href="?selTab=3#selTab3" data-toggle="tab"><fmt:message key="post_bibtex.doi_isbn.title" /></a></li>
+				<li class="${command.selTab == 4 ? 'active' : ''}"><a href="?selTab=4#selTab4" data-toggle="tab"><fmt:message key="post_bibtex.scan.title" /></a></li>
+			</ul>
+			<br />
+			<div id="citation-styles" class="tab-content">
+				<div class="tab-pane ${command.selTab == 0 ? 'active' : ''}" id="selTab0">
+					<!-- manual posting -->
+					<div id="suggestionBox" style="position:absolute; display:none;"><!--  --></div>
+					<form:form cssClass="form-horizontal" id="postForm" action="/editPublication" method="post">
+						<fieldset>
+							<legend><fmt:message key="post_bibtex.manual.heading"/></legend>
+							<p><fmt:message key="post_bibtex.manual.description" /></p>	
+							
+						
+							<input type="hidden" name="selTab" value="0" />
+							<input type="hidden" name="ckey" value="${ckey}"/>
+							<c:if test="${command.person != null}">
+								<input type="hidden" name="personId" value="${command.person.personId}"/>
+							</c:if>
+							<input type="hidden" name="personRole" value="${command.personRole}"/>
+							
+							<editpub:required post="${post}" autocompletion="${true}" hideBibTeXKey="${true}" personIndex="${command.personIndex}" person="${command.person}" />
+							
+							<div class="form-group">
+ 								<div class="col-sm-offset-3 col-sm-9">
+ 									<fmt:message var="post_button" key="post_bibtex.button_label_post" />
+									<bsform:button size="defaultSize" type="submit" style="primary" value="${post_button}"/>
+								</div>
+							</div>
+						</fieldset>
+					</form:form>
+				</div>
+				<div class="postpublicationoptions tab-pane ${command.selTab == 1 ? 'active' : ''}" id="selTab1">
+					<post:postPublicationSnippet/>
+				</div>
+				<div class="postpublicationoptions tab-pane ${command.selTab == 2 ? 'active' : ''}" id="selTab2">
+					<post:postPublicationUpload/>
+				</div>
+					<!-- JavaScript for Snippet  and Upload options -->
+					<script type="text/javascript">
+						//<mtl:cdata>
+						<![CDATA[
+							$(function() {
+								$('.postpublicationoptions #whitespace-0, .postpublicationoptions #whitespace-1').attr('disabled', 1);
+								//document.getElementById("whitespace").disabled = select.options[select.options.selectedIndex].value == " ";
+								$('.postpublicationoptions select').change(function(){
+									var id = $(this).attr('id');
+									var no = id.substring(id.length-1);
+									$('.postpublicationoptions #whitespace-'+no).attr('disabled', $(this).val() == " ");
+								});
+								
+							});
+						]]> 
+						//</mtl:cdata>
+					</script>   
+				
+				<div class="tab-pane ${command.selTab == 3 ? 'active' : ''}" id="selTab3">
+					<post:postPublicationID/>
+				</div>
+				<div class="tab-pane ${command.selTab == 4 ? 'active' : ''}" id="selTab4">
+					<post:postPublicationScan/>
+				</div>
+				
+		    </div>
+		    
+    		<c:if test="${not empty command.bibtex and not empty command.bibtex.list}">
 				<div style="margin-top:2em">
 					<a onclick="toggleImage('toggleParsedPostViewButton', '${resdir}/image/nice_box_arrow_right.png', '${resdir}/image/nice_box_arrow.png', 'parsedPostView')"><img id="toggleParsedPostViewButton" style="float:left; height:10pt; padding:5pt" src="${resdir}/image/nice_box_arrow.png" alt=""/><h3><fmt:message key="import.error.parse_or_incomplete_bibtex"/></h3></a>
 				</div>
 
 				<div id="parsedPostView">
-						<p class="smalltext" style="margin-top:1em; margin-bottom:1em">
-							<fmt:message key="import.error.parse_or_incomplete_bibtex.description">
-								<fmt:param value="${properties['project.name']}" />
-							</fmt:message>
-						</p>
-						<fieldset class="fsOuter">
-								<batch:content	resourceType="bibtex"
-					        					listView="${command.bibtex}" 
-					        					otherPostsUrlPrefix="bla" 
-					        					listViewStartParamName="bibtex.start"
-		      									directEdit="${false}"
-		      									overwrite="${command.overwrite}"
-		      									updateExistingPost="${command.updateExistingPost}" >
-				        					 		
-									<jsp:attribute name="shortPostDescription">
-										<bib:shortDescription post="${post}"/>
-									</jsp:attribute>
-									
-									<jsp:attribute name="title">  
-										<bib:title post="${post}"/>
-									</jsp:attribute>
-										
-						   			<jsp:attribute name="desc">
-						   				<bib:desc publication="${post.resource}"/>
-						   			</jsp:attribute>
-						      		
-						      		<jsp:attribute name="documents"> 
-						      			<bib:documents post="${post}"/>
-						      		</jsp:attribute>
-						      		
-						      		<jsp:attribute name="actions">
-						      			<actions post="${post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}"/>
-						      		</jsp:attribute>
-					        </batch:content>
-				        </fieldset>
-					</div> 
-				</c:if>            
-			</div>	
+					<p class="smalltext" style="margin-top:1em; margin-bottom:1em">
+						<fmt:message key="import.error.parse_or_incomplete_bibtex.description">
+							<fmt:param value="${properties['project.name']}" />
+						</fmt:message>
+					</p>
+					<fieldset>
+						<batch:content	resourceType="bibtex"
+			        					listView="${command.bibtex}" 
+			        					otherPostsUrlPrefix="bla" 
+			        					listViewStartParamName="bibtex.start"
+			        					postsErrorMessages="${command.postsErrorList}"
+			        					directEdit="${false}"
+										overwrite="${command.overwrite}"
+										updateExistingPost="${command.updateExistingPost}" >
+							<jsp:attribute name="shortPostDescription">
+								<bib:shortDescription post="${post}"/>
+							</jsp:attribute>
+				        </batch:content>
+			        </fieldset>
+				</div> 
+			</c:if>
+					
+			<br /><br />
 		</jsp:attribute>
 		
-		 		
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.postPublication" />
+		</jsp:attribute>
+
+			
     	<!--+
 			| infobox
 			+-->
 		<jsp:attribute name="infobox">
 			<parts:infobox>
 				<jsp:attribute name="infoTextBody">
-					<buttons:addonHint resourceType='publication'/>
+					<bs:didYouKnow command="${command}"></bs:didYouKnow>
 				</jsp:attribute>
 			</parts:infobox>
          </jsp:attribute>
-         		
-	</layout:tabLayout>
+        
+	</layout:layout>
 	
 </jsp:root>

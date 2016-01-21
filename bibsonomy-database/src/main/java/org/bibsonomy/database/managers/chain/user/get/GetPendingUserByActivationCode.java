@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.database.managers.chain.user.get;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -41,13 +43,13 @@ import org.bibsonomy.model.User;
  */
 public class GetPendingUserByActivationCode extends UserChainElement {
 
-    @Override
-    protected List<User> handle(final UserParam param, final DBSession session) {
-        return this.userDB.getPendingUserByActivationCode(param.getRawSearch(), param.getOffset(), param.getLimit(), session);
-    }
+	@Override
+	protected List<User> handle(final UserParam param, final DBSession session) {
+		return this.userDB.getPendingUserByActivationCode(param.getSearch(), param.getOffset(), param.getLimit(), session);
+	}
 
-    @Override
-    protected boolean canHandle(final UserParam param) {
-        return (GroupingEntity.PENDING.equals(param.getGrouping()) && param.getRawSearch() != null);
-    }
+	@Override
+	protected boolean canHandle(final UserParam param) {
+		return (GroupingEntity.PENDING.equals(param.getGrouping()) && present(param.getSearch()));
+	}
 }

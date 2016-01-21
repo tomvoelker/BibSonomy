@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -165,8 +165,8 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		applicationContext.getBean("responseLogic", ResponseLogic.class).setResponse(response); // hack but thats springs fault
 		
 		log.debug("Processing " + request.getRequestURI() + "?" + request.getQueryString() + " from " + requestLogic.getInetAddress());
-		if ((presenceCondition!= null) && (presenceCondition.eval() == false)) {
-			 throw new NoSuchRequestHandlingMethodException(request);
+		if (presenceCondition != null && !presenceCondition.eval()) {
+			throw new NoSuchRequestHandlingMethodException(request);
 		}
 		
 		final MinimalisticController<T> controller = (MinimalisticController<T>) applicationContext.getBean(controllerBeanName);

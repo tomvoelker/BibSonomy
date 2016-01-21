@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -74,9 +74,9 @@ public class URLGeneratorTest {
 	}
 	
 	@Test
-	public void testGetBasketUrl() throws Exception{
+	public void testGetClipboardUrl() throws Exception{
 		final String expected = projectHome + "clipboard";
-		assertEquals(expected, ug.getBasketUrl());
+		assertEquals(expected, ug.getClipboardUrl());
 	}
 	
 	@Test
@@ -405,12 +405,12 @@ public class URLGeneratorTest {
 	@Test
 	public void testMatch() {
 		assertTrue(ug.matchesPage(projectHome + "inbox", URLGenerator.Page.INBOX));
-		assertTrue(ug.matchesPage(projectHome + "clipboard", URLGenerator.Page.BASKET));
-		assertTrue(ug.matchesPage(projectHome + "clipboard?start=0", URLGenerator.Page.BASKET));
+		assertTrue(ug.matchesPage(projectHome + "clipboard", URLGenerator.Page.CLIPBOARD));
+		assertTrue(ug.matchesPage(projectHome + "clipboard?start=0", URLGenerator.Page.CLIPBOARD));
 		
 		assertFalse(ug.matchesPage(projectHome + "clipboard", URLGenerator.Page.INBOX));
-		assertFalse(ug.matchesPage(projectHome + "foo/clipboard", URLGenerator.Page.BASKET));
-		assertFalse(ug.matchesPage("/clipboard", URLGenerator.Page.BASKET));
+		assertFalse(ug.matchesPage(projectHome + "foo/clipboard", URLGenerator.Page.CLIPBOARD));
+		assertFalse(ug.matchesPage("/clipboard", URLGenerator.Page.CLIPBOARD));
 	}
 
 	@Test

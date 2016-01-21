@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -33,9 +33,11 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.Role;
@@ -252,6 +254,24 @@ public class UserUtils {
 	}	
 
 	/**
+	 * helper function to extract the usernames from a list of user objects into
+	 * a set.
+	 * 
+	 * @param users
+	 * @return
+	 */
+	public static Set<String> getHashSetOfUsernames(List<User> users) {
+		if (!present(users)) {
+			return null;
+		}
+		final Set<String> result = new HashSet<String>();
+		for (final User u : users) {
+			result.add(u.getName());
+		}
+		return result;
+	}
+
+	/**
 	 * Check whether the user is a group by comparing his name with the names
 	 * of all groups he belongs to. If a group exists with the user's name, the
 	 * user is a group.
@@ -280,7 +300,8 @@ public class UserUtils {
 	}
 	
 	
-	/** Update a user:
+	/**
+	 * Update a user:
 	 * In the existingUser all fields, that are set in updatedUser will be overwritten
 	 * Warning: UserSettings are not Updated!
 	 * @param existingUser = the user before the update
@@ -301,7 +322,7 @@ public class UserUtils {
 		existingUser.setApiKey(!present(updatedUser.getApiKey()) ? existingUser.getApiKey()	: updatedUser.getApiKey());
 		existingUser.setBirthday(!present(updatedUser.getBirthday()) ? existingUser.getBirthday() : updatedUser.getBirthday());
 		existingUser.setGender(!present(updatedUser.getGender()) ? existingUser.getGender() : updatedUser.getGender());
-		existingUser.setUseExternalPicture(!present(updatedUser.isUseExternalPicture()) ? existingUser.isUseExternalPicture() : updatedUser.isUseExternalPicture());
+		existingUser.setUseExternalPicture(updatedUser.isUseExternalPicture());
 		existingUser.setHobbies(!present(updatedUser.getHobbies()) ? existingUser.getHobbies() : updatedUser.getHobbies());
 		existingUser.setInterests(!present(updatedUser.getInterests()) ? existingUser.getInterests() : updatedUser.getInterests());
 		existingUser.setIPAddress(!present(updatedUser.getIPAddress()) ? existingUser.getIPAddress() : updatedUser.getIPAddress());
@@ -364,7 +385,7 @@ public class UserUtils {
 		if (present(user.getRealname())) {
 			return user.getRealname();
 		} 
-		return (atPrefix? "@" :"") + user.getName(); 
+		return (atPrefix? "@" :"") + user.getName();
 	
 	}
 
@@ -394,5 +415,4 @@ public class UserUtils {
 		}
 		return TAGS_OF_SPECIAL_USERS.get(requestedUserName);
 	}
-	
 }

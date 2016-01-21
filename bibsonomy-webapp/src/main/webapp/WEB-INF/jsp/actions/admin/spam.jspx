@@ -9,24 +9,47 @@
 	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
 	xmlns:spring="urn:http://www.springframework.org/tags"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
-	<jsp:directive.page contentType="text/html; charset=UTF-8"
-		language="java" pageEncoding="UTF-8" session="true" />
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<c:set var="settingsCommand" value="${command.settingsCommand}" />
 	<c:set var="statisticsCommand" value="${command.statisticsCommand}" />
 
-	<layout:tabLayout pageTitle="${command.pageTitle}" command="${command}"	requPath="${requPath}" headerMessageKey="navi.admin_spam">
+	<layout:oneColumnLayout 
+		pageTitle="${command.pageTitle}"
+		loginUser="${command.context.loginUser}"
+		requPath="${requPath}" 
+		headerMessageKey="navi.admin_spam">
+
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:admin />
+					<nav:crumb nameKey="navi.admin.spam" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
 
 		<jsp:attribute name="headerExt">
-			<link rel="stylesheet" type="text/css"
-				href="${resdir}/css/spammer.css" />
-			<link rel="stylesheet" type="text/css"
-				href="${resdir}/css/admin.css" />
+			<style type="text/css" >
+				.ajax_tooltip_content {
+					background: #eee;
+					border: 1px solid #ccc;
+				}
+			
+			</style>
+			
+			<!--include spammer scripts -->
+			<script type="text/javascript" src="${resdir}/javascript/admin/spammer.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/admin/ajax-dynamic-content.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/admin/ajax.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/admin/ajax-tooltip.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/admin/marksame.js"><!-- keep me --></script>
 		</jsp:attribute>
-		
+
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.admin">
 				<jsp:attribute name="pathPart">
@@ -36,56 +59,82 @@
 				</jsp:attribute>
 			</parts:search>
 		</jsp:attribute>
-	
-		<jsp:attribute name="topcontent">
+
+		<jsp:attribute name="content">
+			<h1 class="content-heading">Users <a class="btn btn-default pull-right" title="killSpammer" href="javascript:location.href='/admin/spam?action=flag_spammer&amp;aclUserInfo='+encodeURIComponent(location.href.replace(/.*\\//, ''))" onclick="return false;">SpammerKillerButton</a></h1>
 			<!-- Get information about a specific user -->
-			<div class="userInfoBox">
-			<h2><fmt:message key="admin.actions.user"/></h2>
+			<div class="row">
+				<div class="col-md-4">
+					<form:form cssClass="form-inline" name="userinfo" role="form" action="${relativeUrlGenerator.getAdminUrlByName('spam')}">
+						<div class="form-group">
+							<form:label  path="aclUserInfo">User name</form:label>
+							<form:input class="form-control" path="aclUserInfo" />
+						</div>
+						<button class="btn btn-default" type="submit">submit</button>
+					</form:form>
+				</div>
+				<div class="col-md-4 col-md-offset-4">
+					<parts:logbox initialValue="no log messages" />
+				</div>
+			</div>
 			
-			<table>	
-				<form:form name="userinfo" action="${relativeUrlGenerator.getAdminUrlByName('spam')}">
-				<tr>
-				<td width="180px"><form:label path="aclUserInfo">User name</form:label></td>
-				<td width="220px"><form:input path="aclUserInfo" /></td>
-				<td><input class="adminBtn" type="submit" /></td>
-				</tr>
-				</form:form>
-	
-				<c:if test="${not empty command.user}">
-				<tr>	
-				<table class="userInfoTable">
-				<tr>
-						<th><fmt:message key="admin.userinfo.Spam"/></th>
-						<th><fmt:message key="admin.userinfo.Username"/></th>
-						<th><fmt:message key="admin.userinfo.Name"/></th>
-						<th><fmt:message key="admin.userinfo.IP"/></th>
-						<th><fmt:message key="admin.userinfo.EMail"/></th>
-						<th><fmt:message key="admin.userinfo.Regdate"/></th>
-						<th><fmt:message key="admin.userinfo.UpdatedBy"/></th>
-						<th><fmt:message key="admin.userinfo.UpdatedAt"/></th>
-				</tr>
+			<c:if test="${not empty command.user}">
+				<table class="table table-condensed userInfoTable ">
+					<tr>
+						<th><fmt:message key="admin.userinfo.Spam" /></th>
+						<th><fmt:message key="admin.userinfo.Username" /></th>
+						<th><fmt:message key="admin.userinfo.Name" /></th>
+						<th><fmt:message key="admin.userinfo.IP" /></th>
+						<th><fmt:message key="admin.userinfo.EMail" /></th>
+						<th><fmt:message key="admin.userinfo.Regdate" /></th>  	
+						<th><fmt:message key="admin.userinfo.UpdatedBy" /></th>
+						<th><fmt:message key="admin.userinfo.UpdatedAt" /></th>
+					</tr>
 				
-				<!-- Row number is set negative, so that row is not removed 
-				 when flagging and unflagging the specific user  
-				-->
-				<tags:userInfo spamUser="${command.user}" rowNumber='-1'
+					<!-- Row number is set negative, so that row is not removed 
+					 	 when flagging and unflagging the specific user  
+					-->
+					<tags:userInfo spamUser="${command.user}" rowNumber='-1'
 						moveFromTabSpammer="false" moveFromTabNSpammer="false"
 						moveFromTabUncertain="false" selTab="userInformation" />
-				</table><br/>
-				</tr>
-				</c:if>
-			</table>
-		</div>
-		</jsp:attribute>
-	
-		<jsp:attribute name="tabcontent">
-			<!--include spammer scripts -->
-			<script type="text/javascript" src="${resdir}/javascript/admin/spammer.js"><!-- keep me --></script>
-			<script type="text/javascript" src="${resdir}/javascript/admin/ajax-dynamic-content.js"><!-- keep me --></script>
-			<script type="text/javascript" src="${resdir}/javascript/admin/ajax.js"><!-- keep me --></script>
-			<script type="text/javascript" src="${resdir}/javascript/admin/ajax-tooltip.js"><!-- keep me --></script>
-			<script type="text/javascript" src="${resdir}/javascript/admin/marksame.js"><!-- keep me --></script>
+				</table>
+			</c:if>
 			
+			<br />
+			<c:if test="${not empty command.tabs}">
+
+				<!--  
+					if no URL given, initialize to empty string 
+					(TODO: isn't this done automatically?) 
+				-->
+				<c:if test="${empty command.tabURL}">
+					<c:set var="tabURL" value=""/>
+				</c:if>
+		
+				<ul class="nav nav-pills">
+					<c:forEach var="tab" items="${command.tabs}">
+						<fmt:message key="${tab.title}" var="tabTitle"/>
+						<c:if test="${not empty tabTitle}">
+							<c:choose>
+								<!-- this tab is selected/active -->
+								<c:when test="${command.selTab eq tab.id}">
+									<li class="active">
+										<a href="${command.tabURL}?selTab=${tab.id}"><c:out value="${tabTitle}" /></a>
+									</li>
+								</c:when>
+								<c:otherwise>
+									<li>
+										<a href="${command.tabURL}?selTab=${tab.id}"><c:out value="${tabTitle}" /></a>
+									</li>
+								</c:otherwise>
+							</c:choose>
+						</c:if>
+					</c:forEach>
+				</ul>
+			</c:if>
+			
+			<div class="row">
+				<div class="col-sm-12">
 			<!--check which tab command to include -->
 			<c:if test="${not empty command.content}">
 				
@@ -95,348 +144,338 @@
 				<c:when test="${command.selTab &lt; 9}">
 				
 				<div>(show 
-				<a href="?limit=100&amp;selTab=${command.selTab}">100</a> -
-				<a href="?limit=500&amp;selTab=${command.selTab}">500</a> -
-				<a href="?limit=1000&amp;selTab=${command.selTab}">1000</a> entries)
+					<a href="?limit=100&amp;selTab=${command.selTab}">100</a> -
+					<a href="?limit=500&amp;selTab=${command.selTab}">500</a> -
+					<a href="?limit=1000&amp;selTab=${command.selTab}">1000</a> entries)
 				</div>
-			
-				<table id="spammers" class="spammertable">
+  			
+				<table id="spammers" class="table table-condensed table-striped spammertable" style="font-size: 11px;">
 					
-					<tr>
-						<th>Spam?</th>
+				    <tr>
+				    	<th>Spammer?</th>
 						<th>Username</th>
 						<th>Name</th>
 						<th>IP</th>
 						<th>E-Mail</th>
 						<th>Regdate</th>
-						<c:choose>
-						
-						<!--  extra parameters for classifier results -->
-						<c:when test="${command.selTab &gt; 3}">
-						<th>Algorithm</th>
-						<th>Mode</th>
-						<th>Confidence</th>
-						</c:when>
-						<c:otherwise>
-						<th>By</th>
-						</c:otherwise>
-						</c:choose>
-						<th>Updated</th>
+				   		
+				   		<c:choose>
+				   		
+					   		<!--  extra parameters for classifier results -->
+					   		<c:when test="${command.selTab &gt; 3}">
+						    	<th>Algorithm</th>
+						    	<th>Mode</th>
+						    	<th><abbr title="Confidence">Conf.</abbr></th>
+				    		</c:when>
+				    		
+				    		<c:otherwise>
+				    			<th>By</th>
+			    			</c:otherwise>
+				    	</c:choose>
+				    	
+				    	<th>Updated</th>
 					</tr>
-					
-					<!-- create list of users -->
+
+				    <!-- create list of users -->
 					<c:forEach var="user" items="${command.content}" varStatus="status">
 					
-					<c:choose>
-						<c:when test="${command.selTab &lt; 4}">	
-					  <c:set var="selTabEvaluation" value="userInformation" />
-					  </c:when>
-					  	<c:otherwise>
-					  		 <c:set var="selTabEvaluation" value="classifier" />
-					  	</c:otherwise>
-					</c:choose>
+						<c:choose>
+							<c:when test="${command.selTab &lt; 4}">	
+					  			<c:set var="selTabEvaluation" value="userInformation" />
+					  		</c:when>
+					  		<c:otherwise>
+					  			<c:set var="selTabEvaluation" value="classifier" />
+							</c:otherwise>
+						</c:choose>
 					
 						<c:choose>
-					
-		<!-- TODO: ausgliedern -->
-		<c:when test="${command.selTab == 0}">
-			<c:set var="Unflag" value="false" />
-			<c:set var="Uncertain" value="false" />
-			<c:set var="Flag" value="false" />
-		</c:when>
-		<c:otherwise>
-			<c:choose>
-				<c:when test="${command.selTab == 1 or command.selTab == 3}">
-					<c:choose>
-						<c:when test="${user.spammer == true}">
-							<c:set var="Unflag" value="true" />
-							<c:set var="Uncertain" value="true" />
-							<c:set var="Flag" value="false" />
-						</c:when>
-						<c:otherwise>
-							<c:set var="Unflag" value="false" />
-							<c:set var="Uncertain" value="true" />
-							<c:set var="Flag" value="true" />
-						</c:otherwise>
-					</c:choose>
-				</c:when>
-				<c:otherwise>
-					<c:choose>
-						<c:when test="${command.selTab == 2}">
-							<c:set var="Unflag" value="true" />
-							<c:set var="Uncertain" value="false" />
-							<c:set var="Flag" value="true" />
-						</c:when>
-						<c:otherwise>
-							<c:choose>
-								<c:when test="${command.selTab == 8}">
-									<c:set var="Unflag" value="false" />
-									<c:set var="Uncertain" value="false" />
-									<c:set var="Flag" value="false" />
-								</c:when>
-								<c:otherwise>
-									<c:set var="Unflag" value="true" />
-									<c:set var="Uncertain" value="true" />
-									<c:set var="Flag" value="true" />
-									
-								</c:otherwise>
-							</c:choose>
-						</c:otherwise>
-					</c:choose>
-				</c:otherwise>
-			</c:choose>
-		</c:otherwise>
-	</c:choose>
+							<!-- TODO: ausgliedern -->
+							<c:when test="${command.selTab == 0}">
+								<c:set var="Unflag" value="false" />
+								<c:set var="Uncertain" value="false" />
+								<c:set var="Flag" value="false" />
+							</c:when>
+							<c:otherwise>
+								<c:choose>
+									<c:when test="${command.selTab == 1 or command.selTab == 3}">
+										<c:choose>
+											<c:when test="${user.spammer}">
+												<c:set var="Unflag" value="true" />
+												<c:set var="Uncertain" value="true" />
+												<c:set var="Flag" value="false" />
+											</c:when>
+											<c:otherwise>
+												<c:set var="Unflag" value="false" />
+												<c:set var="Uncertain" value="true" />
+												<c:set var="Flag" value="true" />
+											</c:otherwise>
+										</c:choose>
+									</c:when>
+									<c:otherwise>
+										<c:choose>
+											<c:when test="${command.selTab == 2}">
+												<c:set var="Unflag" value="true" />
+												<c:set var="Uncertain" value="false" />
+												<c:set var="Flag" value="true" />
+											</c:when>
+											<c:otherwise>
+												<c:choose>
+													<c:when test="${command.selTab == 8}">
+														<c:set var="Unflag" value="false" />
+														<c:set var="Uncertain" value="false" />
+														<c:set var="Flag" value="false" />
+													</c:when>
+													<c:otherwise>
+														<c:set var="Unflag" value="true" />
+														<c:set var="Uncertain" value="true" />
+														<c:set var="Flag" value="true" />
+										
+													</c:otherwise>
+												</c:choose>
+											</c:otherwise>
+										</c:choose>
+									</c:otherwise>
+								</c:choose>
+							</c:otherwise>
+						</c:choose>
 	
-					  <c:set var="userIndex" value="${status.index+1}" />
-					  <c:set var="nextUser" value="${command.content[userIndex].name}" />
+						<c:set var="userIndex" value="${status.index + 1}" />
+						<c:set var="nextUser" value="${command.content[userIndex].name}" />
 				
-					  <tags:userInfo spamUser="${user}" rowNumber="${status.count}"
+					  	<tags:userInfo spamUser="${user}" rowNumber="${status.count}"
 									moveFromTabSpammer="${Flag}" moveFromTabNSpammer="${Unflag}"
 									moveFromTabUncertain="${Uncertain}"
 									selTab="${selTabEvaluation}" nextUser="${nextUser}" />
 					
 				    </c:forEach>
 				</table>
-				</c:when>
+			</c:when>
 				
-				<!-- evaluation tab -->
-				<c:otherwise>
-				<table id="spammers" class="spammertable">
-			    <tr style="font-size: 120%">
-			    	<th>Username</th>
-								<th>Admin</th>
-								<th>Spammer</th>
-								<th>Algorithm</th>
-								<th>Prediction</th>
-								<th>Confidence</th>
-								<th></th>
-			    </tr>
+			<!-- evaluation tab -->
+			<c:otherwise>
+				<table id="spammers" class="table table-condensed table-striped spammertable">
+			    	<tr>
+			    		<th>Username</th>
+						<th>Admin</th>
+						<th>Spammer</th>
+						<th>Algorithm</th>
+						<th>Prediction</th>
+						<th>Confidence</th>
+						<th></th>
+			    	</tr>
 				
 				<c:forEach var="user" items="${command.content}" varStatus="status">
-				<tr>
-					<td>
-					    <!-- show info boxes of users -->
-						<c:url value="${relativeUrlGenerator.getUserUrlByUserName(user.name)}" var="userUrl">
-							<c:param name="filter" value="ADMIN_SPAM_POSTS"></c:param>
-						</c:url>
-						<a href="${userUrl}"><c:out value="${user.name}" /></a>
-						<a
+					<tr>
+						<td>
+						    <!-- show info boxes of users -->
+							<c:url value="${relativeUrlGenerator.getUserUrlByUserName(user.name)}" var="userUrl">
+								<c:param name="filter" value="ADMIN_SPAM_POSTS"></c:param>
+							</c:url>
+							<a href="${userUrl}"><c:out value="${user.name}" /></a>
+							<a
 										onclick="javascript:ajax_showTooltip('ajax?action=latest_posts&amp;userName=${user.name}',this);return false;"
-										style="cursor: pointer" title="show latest posts"><img
-										src="${resdir}/image/info.png" /></a>
-				        <a
+										style="cursor: pointer" title="show latest posts">
+										<span class="fa fa-info"><!--  --></span></a>
+						        <a
 										onclick="javascript:ajax_showTooltip('ajax?action=prediction_history&amp;userName=${user.name}',this);return false;"
-										style="cursor: pointer" title="show latest user predictions"><img
-										src="${resdir}/image/history.png" /></a>
-				  	</td>
-				    <td><c:out value="${user.updatedBy}" /></td>
-					<td><c:out value="${user.spammer}" /></td>
-					<td><c:out value="${user.algorithm}" /></td>
-					<td><c:out value="${mtl:predictionString(user.prediction)}" /></td>	
-					<td><c:out value="${fn:substring(user.confidence, 0,5)}" /></td>
-					<c:choose>
-						<c:when test="${user.prediction == 8}">
-							<td class="uncertainUser"></td>
-						</c:when>
-						<c:otherwise>
-						<c:choose>
-						<c:when test="${user.spammer == mtl:isSpammer(user.prediction)}">
-							<td style="background: green"></td>
-						</c:when>
-						<c:otherwise>
-							<td style="background: red"></td>
-						</c:otherwise>
-						</c:choose>
-						</c:otherwise>
-					</c:choose>
-				</tr>
-				</c:forEach>
+										style="cursor: pointer" title="show latest user predictions"><span class="fa fa-question-sign"><!--  --></span></a>
+						  	</td>
+						    <td><c:out value="${user.updatedBy}" /></td>	
+							<td><c:out value="${user.spammer}" /></td>
+							<td><c:out value="${user.algorithm}" /></td>	
+							<td><c:out value="${mtl:predictionString(user.prediction)}" /></td>	
+							<td><c:out value="${fn:substring(user.confidence, 0,5)}" /></td>
+							<c:choose>
+								<c:when test="${user.prediction == 8}">
+									<td class="uncertainUser"></td>
+								</c:when>
+								<c:otherwise>
+								<c:choose>
+								<c:when test="${user.spammer == mtl:isSpammer(user.prediction)}">
+									<td style="background: green"></td>
+								</c:when>
+								<c:otherwise>
+									<td style="background: red"></td>
+								</c:otherwise>
+								</c:choose>
+								</c:otherwise>
+							</c:choose>
+						</tr>
+					</c:forEach>
 				</table>
-				</c:otherwise>
-				</c:choose>
-			</c:if>
-			
-			<script type="text/javascript"> 
-			<![CDATA[ 
-				ms_init("spammers", 4);
+			</c:otherwise>
+		</c:choose>
+	</c:if>
+		<script type="text/javascript">
+			<![CDATA[
+			ms_init("spammers", 4);
 			]]>
-			</script>
-		
-		</jsp:attribute>
-		
-	
-	
-
-		<jsp:attribute name="sidebar">
-		<ul>			
-			<span class="sidebar_h">logging</span>	
-			<parts:logbox initialValue="no log messages" />
-			<br />
+		</script>
+			</div>
 			
-			<span class="sidebar_h"><fmt:message key="navi.settings" /></span>
-			<form:form>			
-			<table class="stattable">
-				<tr>
-					<td>mode:</td>
-					<td>
-						<form:select path="settingsCommand.modeOptions" id="mode" size="1"
-							multiple="false">
-						<c:forEach var="entry" items="${settingsCommand.modeOptions}">
-							<form:option id="${entry.value}" value="${entry.value}"
-									label="${entry.key}" />
-						</c:forEach>					
-						</form:select>				
-					</td>
-					<td><input type="button" value="los"
-							onclick="javascript:updateSettings('mode', document.getElementById('mode').value)" /></td>
-				</tr>
-				<tr>
-	
-				<!-- options which algorithm to select -->
-					<td>algorithm:</td>
-					<td>
-						<form:select path="settingsCommand.algorithm" id="algorithm"
-							size="1" multiple="false">
-							<c:forEach var="entry"
-								items="${settingsCommand.algorithmOptions}">
-								 <form:option value="${entry.value}" label="${entry.key}" />
-							</c:forEach>
-						</form:select>
+			<div class="col-sm-3">
 				
-					</td>
-					<td><input type="button" value="los"
-							onclick="javascript:updateSettings('algorithm', document.getElementById('algorithm').value)" /></td>
-				</tr>
-				<tr>
-					<td>training period:</td>
-					<td><form:input path="settingsCommand.trainingPeriod"
-							id="training_period" size="7" /> sec</td>
-					<td><input type="button" value="los"
-							onclick="javascript:updateSettings('training_period', document.getElementById('training_period').value)" /></td>
-				</tr>
-				<tr>
-					<td>classify period:</td>
-					<td><form:input path="settingsCommand.classifyPeriod"
-							id="classify_period" size="7" /> sec</td>
-					<td><input type="button" value="los"
-							onclick="javascript:updateSettings('classify_period', document.getElementById('classify_period').value)" /></td>
-				</tr>
-				<tr>
-					<td>probability limit:</td>
-					<td><form:input path="settingsCommand.probabilityLimit"
-							id="probability_limit" size="7" /></td>
-					<td><input type="button" value="los"
-							onclick="javascript:updateSettings('probability_limit', document.getElementById('probability_limit').value)" /></td>
-				</tr>
-			
-				<!-- whitelist update -->
-				<tr>
-					<td>Whitelist update:</td>
-				<td><form:input path="settingsCommand.whitelistExp"
-							id="whitelist_exp" size="7" /></td>
-					<td><input type="button" value="los"
-							onclick="javascript:updateSettings('whitelist_exp', document.getElementById('whitelist_exp').value)" /></td>
-				</tr>
-				<!-- set costs for classification -->
-				<tr>
-					<td>Costs:</td>
-				<td><form:input path="settingsCommand.classificationCosts"
-							id="classify_cost" size="7" /></td>
-					<td><input type="button" value="los"
-							onclick="javascript:updateSettings('classify_cost', document.getElementById('classify_cost').value)" /></td>
-				</tr>
-			</table>
-			</form:form>	
-			<br />
-			
-			<!-- sidebar with specific counts only on classifier (sure) tabs -->
-			<c:if test="${command.selTab == 4 or command.selTab == 7}">
-			
-			<span class="sidebar_h"><fmt:message key="statistic" /></span>
-			<table class="stattable">
-				<tr class="counts">
-					<th>Activities in the last</th>
-					<th>7 days</th>
-					<th>24 h</th>
-					<th>12 h</th>
-				</tr>
-				<tr>
-					<th>Admin</th>
-					<th></th>
-					<th></th>
-					<th></th>
-				</tr>
-					
-				<tr>
-					<td>Spammers</td>
-					<c:forEach items="${statisticsCommand.numAdminSpammer}"
-							var="counts">
-					<td><c:out value="${counts.value}" /></td>
-					</c:forEach>			
-				</tr>
-				<tr>
-					<td>No Spammers</td>
-					<c:forEach items="${statisticsCommand.numAdminNoSpammer}"
-							var="counts">
-					<td><c:out value="${counts.value}" /></td>
-					</c:forEach>	
-				</tr>
-				<tr>
-					<th>Classifier</th>
-					<th></th>
-					<th></th>
-					<th></th>
-				</tr>
 				
-				<tr>
-					<td>Spammers</td>
-					<c:forEach items="${statisticsCommand.numClassifierSpammer}"
-							var="counts">
-					<td><c:out value="${counts.value}" /></td>
-					</c:forEach>	
-				</tr>
-				<tr>
-					<td>Spammers unsure</td>
-					<c:forEach items="${statisticsCommand.numClassifierSpammerUnsure}"
-							var="counts">
-					<td><c:out value="${counts.value}" /></td>
-					</c:forEach>
-				</tr>
-				<tr>
-					<td>No Spammers unsure</td>
-					<c:forEach
-							items="${statisticsCommand.numClassifierNoSpammerUnsure}"
-							var="counts">
-					<td><c:out value="${counts.value}" /></td>
-					</c:forEach>
-				</tr>
-				<tr>
-					<td>No Spammers</td>
-					<c:forEach items="${statisticsCommand.numClassifierNoSpammer}"
-							var="counts">
-					<td><c:out value="${counts.value}" /></td>
-					</c:forEach>
-				</tr>	
-			</table>
-			</c:if>
-			
-			
-			<script type="text/javascript">
-				/** hack for preselect options in combobox */
-				function preselect() {
-					var mode = "${settingsCommand.mode}";
-					var algorithm = "${settingsCommand.algorithm}";				
+				
+				<!-- sidebar with specific counts only on classifier (sure) tabs -->
+				<c:if test="${command.selTab == 4 or command.selTab == 7}">
+				
+				<h4 class="sidebar_h"><fmt:message key="statistic" /></h4>
+				<table class="stattable">
+					<tr class="counts">
+						<th>Activities in the last</th>
+						<th>7 days</th>
+						<th>24 h</th>
+						<th>12 h</th>
+					</tr>
+					<tr>
+						<th>Admin</th>
+						<th></th>
+						<th></th>
+						<th></th>
+					</tr>
+						
+					<tr>
+						<td>Spammers</td>
+						<c:forEach items="${statisticsCommand.numAdminSpammer}"
+									var="counts">
+						<td><c:out value="${counts.value}" /></td>
+						</c:forEach>			
+					</tr>
+					<tr>
+						<td>No Spammers</td>
+						<c:forEach items="${statisticsCommand.numAdminNoSpammer}"
+									var="counts">
+						<td><c:out value="${counts.value}" /></td>
+						</c:forEach>	
+					</tr>
+					<tr>
+						<th>Classifier</th>
+						<th></th>
+						<th></th>
+						<th></th>
+					</tr>
 					
-					document.getElementById(mode).selected = true;
-					document.getElementById(algorithm).selected = true;
-					
-				}
-				preselect();
-			</script>	
+					<tr>
+						<td>Spammers</td>
+						<c:forEach items="${statisticsCommand.numClassifierSpammer}"
+									var="counts">
+						<td><c:out value="${counts.value}" /></td>
+						</c:forEach>	
+					</tr>
+					<tr>
+						<td>Spammers unsure</td>
+						<c:forEach items="${statisticsCommand.numClassifierSpammerUnsure}"
+									var="counts">
+						<td><c:out value="${counts.value}" /></td>
+						</c:forEach>
+					</tr>
+					<tr>
+						<td>No Spammers unsure</td>
+						<c:forEach
+									items="${statisticsCommand.numClassifierNoSpammerUnsure}"
+									var="counts">
+						<td><c:out value="${counts.value}" /></td>
+						</c:forEach>
+					</tr>
+					<tr>
+						<td>No Spammers</td>
+						<c:forEach items="${statisticsCommand.numClassifierNoSpammer}"
+									var="counts">
+						<td><c:out value="${counts.value}" /></td>
+						</c:forEach>
+					</tr>
+				</table>
+				</c:if>
 			
-		</ul>									
+			
+				<script type="text/javascript">
+					/** hack for preselect options in combobox */
+					function preselect() {
+						var mode = "${settingsCommand.mode}";
+						var algorithm = "${settingsCommand.algorithm}";
+	
+						document.getElementById(mode).selected = true;
+						document.getElementById(algorithm).selected = true;
+	
+					}
+					preselect();
+				</script>
+			</div>
+		</div>
+		<form:form>
+					<table class="stattable">
+						<tr>
+							<td>mode:</td>
+							<td>
+								<form:select path="settingsCommand.modeOptions" id="mode" size="1"
+											multiple="false">
+								<c:forEach var="entry" items="${settingsCommand.modeOptions}">
+									<form:option id="${entry.value}" value="${entry.value}"
+													label="${entry.key}" />
+								</c:forEach>
+								</form:select>
+							</td>
+							<td><input type="button" value="los"
+										onclick="javascript:updateSettings('mode', document.getElementById('mode').value)" /></td>
+						</tr>
+						<tr>
+			
+						<!-- options which algorithm to select -->
+							<td>algorithm:</td>
+							<td>
+								<form:select path="settingsCommand.algorithm" id="algorithm"
+											size="1" multiple="false">
+									<c:forEach var="entry"
+												items="${settingsCommand.algorithmOptions}">
+										 <form:option value="${entry.value}" label="${entry.key}" />
+									</c:forEach>
+								</form:select>
+						
+							</td>
+							<td><input type="button" value="los"
+										onclick="javascript:updateSettings('algorithm', document.getElementById('algorithm').value)" /></td>
+						</tr>
+						<tr>
+							<td>training period:</td>
+							<td><form:input path="settingsCommand.trainingPeriod"
+											id="training_period" size="7" /> sec</td>
+							<td><input type="button" value="los"
+										onclick="javascript:updateSettings('training_period', document.getElementById('training_period').value)" /></td>
+						</tr>
+						<tr>
+							<td>classify period:</td>
+							<td><form:input path="settingsCommand.classifyPeriod"
+											id="classify_period" size="7" /> sec</td>
+							<td><input type="button" value="los"
+										onclick="javascript:updateSettings('classify_period', document.getElementById('classify_period').value)" /></td>
+						</tr>
+						<tr>
+							<td>probability limit:</td>
+							<td><form:input path="settingsCommand.probabilityLimit"
+											id="probability_limit" size="7" /></td>
+							<td><input type="button" value="los"
+										onclick="javascript:updateSettings('probability_limit', document.getElementById('probability_limit').value)" /></td>
+						</tr>
+					
+						<!-- whitelist update -->
+						<tr>
+							<td>Whitelist update:</td>
+						<td><form:input path="settingsCommand.whitelistExp"
+											id="whitelist_exp" size="7" /></td>
+							<td><input type="button" value="los"
+										onclick="javascript:updateSettings('whitelist_exp', document.getElementById('whitelist_exp').value)" /></td>
+						</tr>
+						<!-- set costs for classification -->
+						<tr>
+							<td>Costs:</td>
+						<td><form:input path="settingsCommand.classificationCosts"
+											id="classify_cost" size="7" /></td>
+							<td><input type="button" value="los"
+										onclick="javascript:updateSettings('classify_cost', document.getElementById('classify_cost').value)" /></td>
+						</tr>
+					</table>
+				</form:form>	
 		</jsp:attribute>
-			
-	</layout:tabLayout>
+	</layout:oneColumnLayout>
 </jsp:root>

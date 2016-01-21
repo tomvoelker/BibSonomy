@@ -1,7 +1,7 @@
 /**
  * BibSonomy-MARC-Parser - Marc Parser for BibSonomy
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -57,7 +57,7 @@ public abstract class AbstractDataDownloadingTestCase {
 	private final MarcToBibTexReader reader = new MarcToBibTexReader();
 
 	protected BibTex get(final String hebisId) {
-		final Collection<ImportResource> bibs = reader.read(new ImportResource(downloadMarcWithPica(hebisId)));
+		final Collection<BibTex> bibs = reader.read(new ImportResource(downloadMarcWithPica(hebisId)));
 		assertEquals(1, bibs.size());
 		return bibs.iterator().next();
 	}

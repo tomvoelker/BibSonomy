@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Layout - Layout engine for the webapp.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -27,7 +27,9 @@
 package org.bibsonomy.layout.csl.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Models an entry. See the file 'csl-variables' at
@@ -110,9 +112,6 @@ public class Record {
 	// the secondary title for the cited item (book title for book chapters,
 	// journal title for articles, etc.).
 	private String container_title;
-
-	/** documents of this bibsonomy post. not official part of csl */
-	private List<DocumentCslWrapper> documents = new ArrayList<DocumentCslWrapper>();
 	
 	// doi identifier
 	private String DOI;
@@ -218,6 +217,13 @@ public class Record {
 
 	// Type
 	private String type;
+	
+	/** documents of a post. not official part of csl */
+	private List<DocumentCslWrapper> documents = new ArrayList<DocumentCslWrapper>();
+	
+	/** misc fields of a publication, not official part of csl */
+	private Map<String, String> misc = new HashMap<String, String>();
+
 
 	/**
 	 * @return the id
@@ -987,5 +993,19 @@ public class Record {
 	 */
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	/**
+	 * @return the misc
+	 */
+	public Map<String, String> getMisc() {
+		return this.misc;
+	}
+
+	/**
+	 * @param misc the misc to set
+	 */
+	public void setMisc(Map<String, String> misc) {
+		this.misc = misc;
 	}
 }

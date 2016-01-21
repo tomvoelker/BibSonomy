@@ -8,12 +8,16 @@
 	<jsp:directive.attribute name="image" fragment="false" required="false" />
 	<jsp:directive.attribute name="name" fragment="false" required="false" />
 	<jsp:directive.attribute name="text" fragment="true" required="true" />
+	<jsp:directive.attribute name="disabled" fragment="false" required="false" />
 
-	<a class="linkButton" name="${name}" href="${href}" title="${title}" onclick="${onclick}"> 
-		<c:if test='${image != null}'>
-			<img style="margin-right: -3px" src="${image}" />
-		</c:if> 
-		
-		<span><jsp:invoke fragment="text" /></span>
+	<a class="btn btn-primary btn-sm btn-block ${not empty disabled and disabled ? 'disabled' : '' }" href="${href}" title="${title}"> 
+		<c:choose>
+			<c:when test='${not empty image}'>
+				<span class="fa ${image}"><!-- --></span>&amp;nbsp;<jsp:invoke fragment="text" />
+			</c:when> 
+			<c:otherwise>
+				<span><jsp:invoke fragment="text" /></span>
+			</c:otherwise>
+		</c:choose>
 	</a>
 </jsp:root>

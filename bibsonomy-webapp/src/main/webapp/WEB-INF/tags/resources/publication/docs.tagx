@@ -27,7 +27,7 @@
 			  		<li>Keine Dokumente vorhanden</li>
 			  		<c:if test="${isOwnEntry}">
 					<li style="list-style-image: url(${resdir}/image/document-txt-light.png)">
-						<a class="addDocument" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}">
+						<a class="img-thumbnail addDocument" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}">
 							<fmt:message key="bibtex.actions.additionalFiles"/>
 						</a>
 						<div id="inputDiv">
@@ -47,7 +47,7 @@
 											<!-- <img src="${resdir}/image/document-txt-blue.png" style="float:left;"/> -->
 										<div class="bibtexpreviewimage">
 											<!-- preview picture of first document -->
-											<a class="publication preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(publication.documents[0].fileName)}" title="${fn:escapeXml(publication.documents[0].fileName)}">
+											<a class="img-thumbnail publication preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(publication.documents[0].fileName)}" title="${fn:escapeXml(publication.documents[0].fileName)}">
 												<img class="pre_pic" style="width: 110px;" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(publication.documents[0].fileName)}?preview=MEDIUM" alt="${fn:escapeXml(publication.documents[0].fileName)}?preview=MEDIUM"/>
 											</a><br />
 											<div class="preview_meta">
@@ -92,7 +92,7 @@
 												
 												<c:out value=""/>
 												
-												<buttons:help cssStyle="float:none">
+												<buttons:help> <!-- cssStyle="float:none"> -->
 													<jsp:attribute name="helpText">
 														<fmt:message key="qrcode.info.embedderInfoMessage">
 															<fmt:param>${properties['project.name']}</fmt:param>
@@ -106,7 +106,7 @@
 
 									</c:when>
 									<c:otherwise>
-										<a class="documentFileName preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false" title="${fn:escapeXml(document.fileName)}">
+										<a class="img-thumbnail documentFileName preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false" title="${fn:escapeXml(document.fileName)}">
 											<!-- <img src="${resdir}/image/document-txt-blue.png" style="float:left;"/> -->
 											<img style="display:none;" class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=SMALL" alt="${fn:escapeXml(document.fileName)}"/>
 											

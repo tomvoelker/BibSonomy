@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -740,7 +740,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#createBasketItems(java.util.List)
 	 */
 	@Override
-	public int createBasketItems(List<Post<? extends Resource>> posts) {
+	public int createClipboardItems(List<Post<? extends Resource>> posts) {
 		throwReadOnlyException();
 		return 0;
 	}
@@ -749,7 +749,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#deleteBasketItems(java.util.List, boolean)
 	 */
 	@Override
-	public int deleteBasketItems(List<Post<? extends Resource>> posts, boolean clearBasket) {
+	public int deleteClipboardItems(List<Post<? extends Resource>> posts, boolean clearBasket) {
 		throwReadOnlyException();
 		return 0;
 	}

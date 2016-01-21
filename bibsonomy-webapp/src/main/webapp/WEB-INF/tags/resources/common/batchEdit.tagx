@@ -3,6 +3,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
 	<jsp:directive.attribute name="requPathAndQuery" type="java.lang.String" required="true" />
@@ -10,17 +11,17 @@
 	<jsp:directive.attribute name="isBookmark" type="java.lang.Boolean" required="true" />
 	
 	<!--+
+		+ TODO: use urlgenerator
 		+ batch edit
 		+ requPathAndQuery already contains "/"
 		+-->	
- 	<c:if test="${isPublication}">
+	<c:if test="${isPublication}">
 		<c:url var="editUrl"   value="/beditbib${requPathAndQuery}" />
 	</c:if>
 	<c:if test="${isBookmark}">
 		<c:url var="editUrl" value="/bediturl${requPathAndQuery}"/>
 	</c:if>
-	<fmt:message var="editPageTags" key="post.meta.edit.title"/>
-<!--  	<a href="${fn:escapeXml(editUrl)}" title="${editPageTags}"><fmt:message key="post.meta.batch_edit"/>...</a>-->
-	<fmt:message key="batchedit.unsupported"/>
-
+	
+	<bs:linkButton block="${true}" style="defaultStyle" href="${editUrl}" size="xsmall" textKey="post.meta.batch_edit" titleKey="post.meta.edit.title" icon="pencil" />
+	
 </jsp:root>

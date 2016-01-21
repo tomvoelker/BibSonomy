@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,7 +26,9 @@
  */
 package org.bibsonomy.util.tex;
 
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
@@ -51,11 +53,13 @@ public class TexDecode {
 	 * because when we build the regex from it, the "longest" macros need to be
 	 * present at the beginning of the regex.
 	 */
-	private static TreeMap<String, String> texMap = new TreeMap<String, String>(new StringLengthComp());
+	private static Map<String, String> texMap = new TreeMap<String, String>(new StringLengthComp());
 	/** regex patterns */
 	private static Pattern texRegexpPattern;
-	private static final String CURLY_BRACKETS = "[{}]*";
-	private static final String BRACKETS = "[\\[\\]]*";
+	/** curly brackets regex pattern */
+	public static final String CURLY_BRACKETS = "[{}]*";
+	/** brackets regex pattern */
+	public static final String BRACKETS = "[\\[\\]]*";
 
 	/**
 	 * helper comparator to sort strings by their length
@@ -113,10 +117,10 @@ public class TexDecode {
 	/**
 	 * Getter for the texMap
 	 * 
-	 * @return HashMap of TeX->Unicode representation
+	 * @return Map of TeX->Unicode representation
 	 */
-	protected static TreeMap<String, String> getTexMap() {
-		return texMap;
+	public static Map<String, String> getTexMap() {
+		return Collections.unmodifiableMap(texMap);
 	}
 
 	/**

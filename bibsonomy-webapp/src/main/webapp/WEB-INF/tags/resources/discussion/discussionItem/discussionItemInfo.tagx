@@ -29,7 +29,7 @@
 						<c:when test="${anonymous}">
 							<c:choose>
 								<c:when test="${ownDiscussionItem}">
-									<span><fmt:message key="post.resource.discussionItem.anonymous"/><c:out value=" ("/><a href="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(discussionItem.user.name))}"><fmt:message key="post.resource.discussionItem.you"/></a><c:out value=")"/></span>
+									<span><fmt:message key="post.resource.discussionItem.anonymous"/><c:out value=" ("/><a href="/user/${fn:escapeXml(discussionItem.user.name)}"><fmt:message key="post.resource.discussionItem.you"/></a><c:out value=")"/></span>
 								</c:when>
 								<c:otherwise>
 									<span><fmt:message key="post.resource.discussionItem.anonymous" /></span>
@@ -37,7 +37,7 @@
 							</c:choose>
 						</c:when>
 						<c:otherwise>
-							<a href="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(discussionItem.user.name))}" itemprop="name"><c:out value="${discussionItem.user.name}" /></a>
+							<a href="/user/${fn:escapeXml(discussionItem.user.name)}" itemprop="name">@<c:out value="${discussionItem.user.name}" /></a>
 						</c:otherwise>
 					</c:choose>
 				</span>
@@ -48,7 +48,7 @@
 						<c:when test="${anonymous}">
 							<c:choose>
 								<c:when test="${ownDiscussionItem}">
-									<span><fmt:message key="post.resource.discussionItem.anonymous"/><c:out value=" ("/><a href="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(discussionItem.user.name)) }"><fmt:message key="post.resource.discussionItem.you"/></a><c:out value=")"/></span>
+									<span><fmt:message key="post.resource.discussionItem.anonymous"/><c:out value=" ("/><a href="/user/${fn:escapeXml(discussionItem.user.name)}"><fmt:message key="post.resource.discussionItem.you"/></a><c:out value=")"/></span>
 								</c:when>
 								<c:otherwise>
 									<span><fmt:message key="post.resource.discussionItem.anonymous" /></span>
@@ -56,7 +56,7 @@
 							</c:choose>
 						</c:when>
 						<c:otherwise>
-							<a href="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(discussionItem.user.name)) }"><c:out value="${discussionItem.user.name}" /></a>
+							<a href="/user/${fn:escapeXml(discussionItem.user.name)}"><c:out value="${discussionItem.user.name}" /></a>
 						</c:otherwise>
 					</c:choose>
 				</span>

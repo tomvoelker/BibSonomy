@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -78,7 +78,7 @@ public class URLGenerator {
 		/**
 		 * all posts I have picked
 		 */
-		BASKET("clipboard");
+		CLIPBOARD("clipboard");
 
 		private final String path;
 
@@ -134,6 +134,7 @@ public class URLGenerator {
 	private static final String VIEWABLE_PRIVATE_SUFFIX = "private";
 	private static final String VIEWABLE_PUBLIC_SUFFIX = "public";
 	private static final String HISTORY_PREFIX = "history";
+	private static final String USER_RELATION = "handleUserRelation";
 
 	private static final String PUBLICATION_INTRA_HASH_ID = String.valueOf(HashID.INTRA_HASH.getId());
 	private static final String PUBLICATION_INTER_HASH_ID = String.valueOf(HashID.INTER_HASH.getId());
@@ -272,12 +273,12 @@ public class URLGenerator {
 	}
 
 	/**
-	 * Constructs a URL for the basket page, i.e. /basket
+	 * Constructs a URL for the clipboard page, i.e. /clipboard
 	 * 
-	 * @return URL pointing to the basket page.
+	 * @return URL pointing to the clipboard page.
 	 */
-	public String getBasketUrl() {
-		String url = this.projectHome + prefix + Page.BASKET.getPath();
+	public String getClipboardUrl() {
+		String url = this.projectHome + prefix + Page.CLIPBOARD.getPath();
 		return this.getUrl(url);
 	}
 
@@ -1390,6 +1391,17 @@ public class URLGenerator {
 			final String systemUrl) {
 		String url = systemUrl + prefix + USER_PREFIX + "/"
 				+ UrlUtils.safeURIEncode(userName);
+		return this.getUrl(url);
+	}
+
+	/**
+	 * Constructs the URL for the report as spammer url
+	 * 
+	 * @param userName
+	 * @return The URL for the user's page for the system
+	 */
+	public String getUserRelationEditUrl() {
+		String url = this.projectHome + prefix + "ajax/"+ USER_RELATION;
 		return this.getUrl(url);
 	}
 

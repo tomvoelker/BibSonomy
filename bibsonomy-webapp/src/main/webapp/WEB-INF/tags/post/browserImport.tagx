@@ -5,41 +5,73 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
-	xmlns:form="http://www.springframework.org/tags/form">
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs">
 	
 	<!-- This tag can be used to support the bookmark import from a browser bookmark export file -->
-	<fmt:message var="privateMsg" key="post.resource.private"/>
-	<fmt:message var="publicMsg" key="post.resource.public"/>
+	<fmt:message var="isPrivate" key="post.resource.private"/>
+	<fmt:message var="isPublic" key="post.resource.public"/>
 	<fmt:message var="valueButton" key="settings.import.button"/>
 	
-	<h2><fmt:message key="settings.browser.header"/></h2>
-	<form:form id="settingImportForm" action="/import/browser?ckey=${ckey}" method="post" enctype="multipart/form-data">
-		<fieldset class="fsInner">
-			<div class="fsRow">
-				<form:label cssClass="fsLabel" path="file"><fmt:message key="settings.browser.fileselect"/></form:label>
-				<buttons:help message="settings.browser.fileselect.help"/>
-				<input type="file" name="file" class="fsInput fsSmall"/>
+	<!-- import your bookmarks from your browser -->
+	<form:form class="form-horizontal" action="/import/browser?ckey=${ckey}" method="post" enctype="multipart/form-data">
+		<fieldset>
+			<legend><fmt:message key="settings.browser.header" /></legend>
+			<!-- select your file -->
+			<div class="form-group">
+				<form:label cssClass="col-sm-3 control-label" path="file">
+					<fmt:message key="settings.browser.fileselect"/>
+				</form:label>
+				<div class="col-sm-9">
+					<input type="file" name="file" id="file" />
+					<p class="help-block"><fmt:message key="settings.browser.fileselect.help"/></p>
+				</div>
+			</div>
+			
+			<!-- viewable for -->
+			<div class="form-group">
+				<form:label cssClass="col-sm-3 control-label" path="group">
+					<fmt:message key="settings.browser.viewable"/>
+				</form:label>
+				
+				<fmt:message var="yes" key="settings.yes" />
+				<fmt:message var="no" key="settings.no" />
+				
+				<div class="col-sm-9">
+					<form:select cssClass="form-control help-popover" path="group" id="group" >
+						<form:option label="${isPublic}" value="public"/>
+						<form:option label="${isPrivate}" value="private"/>
+					</form:select >
+					
+					<div class="help help-header hide"><fmt:message key="settings.browser.viewable"/></div>
+					<div class="help help-content hide">
+						<p><fmt:message key="settings.browser.viewable.help"/></p>
+					</div>
+				</div>
+				
+			</div>
+			
+			<!-- overwrite -->	
+			<div class="form-group">
+				<div class="col-sm-offset-3 col-sm-9">
+					<label>
+						<form:checkbox path="overwrite" id="overwriteBox" />&amp;nbsp;
+						<fmt:message key="settings.overwrite"/>
+					</label>
+					<p class="help-block"> <fmt:message key="settings.overwrite.help.browser"/> </p>
+				</div>
+			</div>
+			
+			<!-- import button -->
+			<div class="form-group">
+				<div class="col-sm-offset-3 col-sm-9">
+					<bsform:button type="submit" style="primary" size="defaultSize" value="${valueButton}" />
+				</div>
 			</div>
 
-			<div class="fsRow">
-				<form:label cssClass="fsLabel" path="group"><fmt:message key="settings.browser.viewable"/></form:label>
-				<buttons:help message="settings.browser.viewable.help"/>
-					<form:select path="group" id="viewablebox" cssClass="fsInput fsSmall">
-					<form:option label="${publicMsg}" value="public"/>
-					<form:option label="${privateMsg}" value="private"/>
-				</form:select>
-			</div>
-
-			<div class="fsRow">	
-				<form:label cssClass="fsLabel" path="overwrite"><fmt:message key="settings.overwrite"/></form:label>
-				<buttons:help message="settings.overwrite.help.browser"/>
-					<form:checkbox path="overwrite" id="overwriteBox" cssClass="fsInput fsSmall"/>
-			</div>
-
-			<div class="fsRow">	
-				<input type="submit" value="${valueButton}" />
-				<input id="importType" name="importType" type="hidden" value="browser"/>
-			</div>
+			<input id="importType" name="importType" type="hidden" value="browser"/>
+			
 		</fieldset>
 	</form:form>
 </jsp:root>

@@ -23,18 +23,18 @@
 		
 		<jsp:attribute name="content">
 			<!-- display potential errors -->
-			<errors:global errors="${errors}"/>
+			<errors:global />
 			
 			<!-- in case of existing errors, look into the importType and redraw the 
 				 respective form 
 				 TODO: Handle browser import simply by error-Messages on the main page? -->
 			<c:choose>
 				<c:when test="${empty command.importType or (command.importType eq 'browser' and command.totalCount == 0)}">
-					<post:browserImport/>
+					<post:browserImport />
 				</c:when>
 				<c:otherwise>
 					<!-- make some output about the import results -->
-					<post:importResults command="${command}"/>
+					<post:importResults command="${command}" />
 				</c:otherwise>
 			</c:choose>
 		</jsp:attribute>

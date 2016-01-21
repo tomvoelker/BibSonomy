@@ -1,132 +1,73 @@
 //methods for editPublication page
 //setup jQuery to update recommender with form data
-var tagRecoOptions = { 
-		dataType: "application/json",
-		url:  '/ajax/getPublicationRecommendedTags?',
-		success: function showResponse(responseText, statusText) { 
-	        handleRecommendedTags(JSON.parse(responseText));
-        } 
-}; 
 
-var hide = true;
+var tagRecoOptions = {
+		type: "POST",
+		url: '/ajax/getPublicationRecommendedTags',
+		data: $('#postForm').serialize(),
+		dataType: "json",
+		success : function showResponse(responseText, statusText) {
+			handleRecommendedTags(responseText);
+		}
+	}; 
+
 var getFriends = null;
-var fields = new Array(	"booktitle","journal","volume","number","pages",
-		"publisher","address","month","day","edition",
-		"chapter","key","type","annote","note",
+var fields = ["booktitle","journal","volume","number","pages","publisher","address",
+        "month","day","edition","chapter","key","type","annote","note",
 		"howpublished","institution","organization",
-		"school","series","crossref","misc");
+		"school","series","crossref","misc"];
 
-/* returns required and optional fields for given publication type*/ 
-function getRequiredFieldsForType(type) {
-	switch(type) {
-	case "article":	
-		return new Array("journal","volume","number","pages","month","note"); break;
-	case "book": 
-		return new Array("publisher","volume","number","series","address","edition","month","note"); break;
-	case "booklet": 
-		return new Array("howpublished","address","month","note"); break;
-	case "inbook": 
-		return new Array("chapter","pages","publisher","volume","number","series","type","address","edition","month","note"); break;
-	case "incollection": 
-		return new Array("publisher","booktitle","volume","number","series","type","chapter","pages","address","edition","month","note"); break;
-	case "inproceedings": 
-		return new Array("publisher","booktitle","volume","number","series","pages","address","month","organization","note"); break;
-	case "manual": 
-		return new Array("organization","address","edition","month","note"); break;
-	case "mastersthesis": 
-		return new Array("school","type","address","month","note"); break;
-	case "misc": 
-		return new Array("howpublished","month","note"); break;
-	case "phdthesis": 
-		return new Array("school","address","type","month","note"); break;
-	case "proceedings": 
-		return new Array("publisher","volume","number","series","address","month","organization","note"); break;
-	case "techreport": 
-		return new Array("institution","number","type","address","month","note"); break;
-	case "unpublished": 
-		return new Array("month","note"); break;
-	default:		
-		return fields; break;
-	}
-}	
+var requiredForType = {
+        "article":["journal","volume","number","pages","month","note"],
+        "book":["publisher","volume","number","series","address","edition","month","note"],
+        "booklet":["howpublished","address","month","note"],
+        "inbook":["chapter","pages","publisher","volume","number","series","type","address","edition","month","note"],
+        "incollection":["publisher","booktitle","volume","number","series","type","chapter","pages","address","edition","month","note"],
+        "inproceedings":["publisher","booktitle","volume","number","series","pages","address","month","organization","note"],
+        "manual":["organization","address","edition","month","note"],
+        "masterthesis":["school","type","address","month","note"],
+        "misc":["howpublished","month","note"],
+        "phdthesis":["school","address","type","month","note"],
+        "proceedings":["publisher","volume","number","series","address","month","organization","note"],
+        "techreport":["institution","number","type","address","month","note"],
+        "unpublished":["month","note"]
+}
 
 /* update view when user selects another type of publication in list */
-function changeView() {	
-	if (hide == false)
-		return;
+function changeView(showAll) {	
 	
-	var requiredFields = getRequiredFieldsForType(document.getElementById('post.resource.entrytype').value);
-
-	/*
-	 * are all entries empty?
-	 * remove this for new tab layout
-	 */
-	var allEntriesEmpty = true;
+	var requiredFields = requiredForType[document.getElementById('post.resource.entrytype').value];
+	var message = getString('post.resource.fields.detailed.show.all');
+	var noRequiredFields = (requiredFields === undefined); 
+	var collpase = document.getElementById('collapse');
+	
+	if(showAll || noRequiredFields) {
+		requiredFields = fields;
+		if(noRequiredFields)
+			$(collapse).parent().addClass("hidden");
+		else {
+			message = getString('post.resource.fields.detailed.show.required');
+			$(collapse).parent().removeClass("hidden");
+		}
+	} else {
+		$(collapse).parent().removeClass("hidden");
+	}
+	
+	collapse.firstChild.nodeValue = message;
 	
 	for (var i=0; i<fields.length; i++) {
 		
-		/*
-		 * value of field
-		 * remove this for new tab layout
-		 */
-		var fieldValue = document.getElementById("post.resource." + fields[i]).value;
-		
-		showHideElement(fields[i], in_array(requiredFields,fields[i]) ? '' : 'none');
-		
-		/*
-		 * look for entry values
-		 * remove this for new tab layout
-		 */
-		if(in_array(requiredFields,fields[i]) && fieldValue != '') {
-			allEntriesEmpty = false;
-		}
-	}
-		
-	/*
-	 * if all entries are empty click uncollapse
-	 * remove this for new tab layout
-	 */
-	if(allEntriesEmpty) {
-		
-		var detailsString = getString("post.resource.fields.detailed");
-		
-		var legend = $('legend').filter(function(index) {
-			return $(this).text().indexOf(detailsString) >= 0;
-		});
-		
-		if(legend.parent().hasClass("fsHidden")) {
-			$("img", legend).click();
+		var field = $("#post\\.resource\\." + fields[i]);
+		var parent = field.closest(".form-group");
+		if(showAll || in_array(requiredFields,fields[i])) {
+			parent.show();
+		} else {
+			if (!field.val()) { //fix: don't hide not empty fields
+				parent.hide();
+			}
 		}
 	}
 }	
-
-/* toggle to show elements */
-function showAll() {
-	hide = false;
-	document.getElementById('collapse').firstChild.nodeValue = getString('post.resource.fields.detailed.show.required');
-	document.getElementById('collapse').href = 'javascript:hideElements();';
-	for (i=0; i<fields.length; i++) {
-		showHideElement(fields[i], '');			
-	}		
-}
-
-/* toggle to hide elements */
-function hideElements() {
-	hide = true;
-	document.getElementById('collapse').firstChild.nodeValue = getString('post.resource.fields.detailed.show.all');
-	document.getElementById('collapse').href = 'javascript:showAll();';
-	changeView();
-}	
-
-function showHideElement(id, display) {
-	// get input field			
-	var field = document.getElementById("post.resource." + id);			
-
-	if (field.value == '') {
-		// must find closest parent node with class 'fsRow'
-		$(field).closest(".fsRow").css('display', display);
-	}
-}
 
 /* checks if element is member of given array */
 function in_array(array, element) {    	
@@ -208,10 +149,31 @@ function getFirstRelevantWord(title) {
 	return "";
 }
 
+function toggleView() {
+	 
+	var collapse = $("#collapse");
+	var showAll = collapse.data("showAll");
+	collapse.data("showAll", !showAll);
+	changeView(collapse.data("showAll"));
+}
+
+function activateAffixEntry (el) {
+	$(el).addClass("active").siblings().each(function(h, g){
+			$(g).removeClass("active");
+	});
+}
+
 $(function() {
+	$("#post\\.resource\\.entrytype").change(function(e) {
+		changeView($("#collapse").data("showAll"));	
+	});
 	
+	$("#collapse").click(function(e){
+		toggleView();
+	});
 	// load only, when extended fields are available                                                                                              
-	if (document.getElementById("post.resource.publisher")) changeView();
+	//if (document.getElementById("post.resource.publisher")) toggleView();
+	toggleView();
 	
 	var hash = $("#post\\.resource\\.interHash").val();
 	if(hash == -1 || hash == undefined)
@@ -326,7 +288,17 @@ function buildGoodPostSuggestion(json) {
 			 */
 			if (!suggestions.length || fieldVal === undefined || (suggestions.length == 1 
 			&& g == ((name.length)?name.replace(u, ""):fieldVal.replace(u, "")))) continue;
-			inputField.addClass("fsInputReco"); // show the user that suggestions are available
+			
+			inputField.tooltip({
+				trigger : 'focus',
+				placement : 'top',
+				title: getString('post.resource.suggestion.hint')
+			}).tooltip('show');
+			
+			inputField.after('<span class="autocompletion fa fa-caret-down form-control-feedback"><!-- --></span>');
+			inputField.popover('destroy');  //remove popover help
+			
+			
 			/* we have a bijective mapping therefore (f:suggestion->occurrence) we sort our indices by descending order */
 			var indices = sortIndices(occurrences);
 			/* occurrences are sorted and aligned to the corresponding suggestions */

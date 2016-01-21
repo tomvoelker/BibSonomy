@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -165,7 +165,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals("testuser1", user.getName());
 		assertEquals("http://www.bibsonomy.org/user/testuser1", user.getHomepage().toString());
 		assertEquals("11111111111111111111111111111111", user.getApiKey());
-		assertNotNull(user.getBasket());
+		assertNotNull(user.getClipboard());
 		assertEquals(Role.ADMIN, user.getRole());
 	}
 
@@ -205,7 +205,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final User user = userDb.getUserDetails(RANDOM_TESTUSER, this.dbSession);
 		newUser.setActivationCode(null);
 		
-		CommonModelUtils.assertPropertyEquality(newUser, user, Integer.MAX_VALUE, null, new String[] { "apiKey", "IPAddress", "basket", "gender", "interests", "hobbies", "profession", "institution", "openURL", "place", "spammer", "settings", "toClassify", "updatedBy", "reminderPassword", "registrationDate", "reminderPasswordRequestDate", "updatedAt", "profilePicture" });
+		CommonModelUtils.assertPropertyEquality(newUser, user, Integer.MAX_VALUE, null, new String[] { "apiKey", "IPAddress", "clipboard", "gender", "interests", "hobbies", "profession", "institution", "openURL", "place", "spammer", "settings", "toClassify", "updatedBy", "reminderPassword", "registrationDate", "reminderPasswordRequestDate", "updatedAt", "profilePicture" });
 	}
 
 	/**

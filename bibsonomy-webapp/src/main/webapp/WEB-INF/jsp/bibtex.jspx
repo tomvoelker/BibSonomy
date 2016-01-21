@@ -12,10 +12,13 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources/common"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	
+
 	<c:set var="goldstandardPresent" value="${not empty command.goldStandardPublications.list}" />
 	<c:set var="publication" value="${command.bibtex.list[0].resource}" />
 
@@ -35,7 +38,6 @@
 			</c:forEach>
 		</c:otherwise>
 	</c:choose>
-	<input id="publicInput" name="publicInput" value="${isPublic}" type="hidden" />
 
 	<c:if test="${goldstandardPresent}">
 		<c:set var="publication" value="${command.goldStandardPublications.list[0].resource}" />
@@ -53,69 +55,87 @@
 			customBookmarksHeaderText="${discussionsTitle}"
 			minimizedContentWidth="${true}"
 			resource="${publication}"
-			discussionBox="${discussionBox}">
-		
-		<jsp:attribute name="content">
-			<!-- COMMUNITY POST -->
-			<c:if test="${empty command.goldStandardPublications.list}">
-				<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
-					<c:set var="post" value="${command.bibtex.list[0]}" />
-					<c:url var="editGoldStandardLink" value="/editGoldStandardPublication">
-						<c:param name="hash" value="${post.resource.intraHash}" />
-						<c:param name="user" value="${post.user.name}" />
-						<c:param name="editBeforeSaving" value="true" />
-					</c:url>
-					
-					<fmt:message key="bibtex.actions.community_post.create" var="goldTitle" />
-					<div class="info-box">
-						<p><fmt:message key="bibtex.actions.community_post.no" /></p> 
-						<p><a class="button" href="${editGoldStandardLink}">${goldTitle}</a></p>
-					</div>
-					
-				</c:if>
-			</c:if>
-		</jsp:attribute>
-		
-		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.publication" formAction="/search" formInputName="search" formInputValue="${title}"/>
-		</jsp:attribute>
+			discussionBox="${discussionBox}"
+			headline="${title}">
 		
 		<jsp:attribute name="headerExt">
 			<script type="text/javascript" src="${resdir}/javascript/merged/discussion.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/publication.js"><!-- keep me --></script>
 			<c:if test="${goldstandardPresent}">
 				<script type="text/javascript" src="${resdir}/javascript/goldstandards.js"><!-- keep me --></script>
 			</c:if>
 			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.css" />
 		</jsp:attribute>
 		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<c:if test="${goldstandardPresent}">
+						<fmt:message key="actions.communityPost" var="communityPost"/>
+						<nav:crumb name="${communityPost}" />
+					</c:if>
+					<nav:crumb name="${mtl:shorten(title, 25)}" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+		
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.publication" formAction="/search" formInputName="search" formInputValue="${title}"/>
+		</jsp:attribute>
+		
+		<jsp:attribute name="content">
+			<!-- COMMUNITY POST -->
+			<input id="publicInput" name="publicInput" value="${isPublic}" type="hidden" />
+			<c:choose>
+				<c:when test="${empty command.goldStandardPublications.list}">
+						<c:set var="post" value="${command.bibtex.list[0]}" />
+						<c:url var="editGoldStandardLink" value="/editGoldStandardPublication">
+							<c:param name="hash" value="${post.resource.intraHash}" />
+							<c:param name="user" value="${post.user.name}" />
+							<c:param name="editBeforeSaving" value="true" />
+						</c:url>
+						
+						<h1 class="content-header"><c:out value="${pageTitle}" /></h1>
+						<div class="text-center">
+							<div class="lead">
+								<p><fmt:message key="actions.community_post.no" /></p> 
+							</div>
+							<bs:linkButton href="${editGoldStandardLink}" size="defaultSize" style="primary" textKey="actions.community_post.create" />
+							<hr />
+						</div>
+					<!-- invokes discussion forms -->
+					<c:if test="${not goldstandardPresent}">
+						<discussion:discussion loginUser="${command.context.loginUser}" resource="${publication}" discussionItems="${command.discussionItems}"  postUserName="${command.postOwner}"/>
+					</c:if>
+					<input type="hidden" id="gs_present" value="${goldstandardPresent}"/>
+				</c:when>
+			</c:choose>
+		</jsp:attribute>
+
 		<!--+
 		    | sidebar
 		 	+-->
 		<jsp:attribute name="sidebar">
-			<ul>
-				<!-- display tags -->
-				<li>
-					<span class="sidebar_h"><fmt:message key="tags" /></span>
-					<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" />
-				</li>
-				<!-- related users -->
-				<c:if test="${not empty command.relatedUserCommand.relatedUsers}">
-					<li>
-						<span class="sidebar_h"><fmt:message key="users"/></span>
+			<sidebar:sidebarTagCloudItem requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" />
+
+			<!-- related users -->
+			<c:if test="${not empty command.relatedUserCommand.relatedUsers}">
+				<sidebar:sidebarItem textKey="users">
+					<jsp:attribute name="content">
 						<ul class="tagcloud">
 							<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}">
 								<li class="${userclass}">
-									<a href="${relativeUrlGenerator.getPublicationUrlByInterHashAndUsername(post.resource.interHash, fn:escapeXml(user.name))}"><c:out value="${user.name}"/></a>
+									<a href="${relativeUrlGenerator.getPublicationUrlByInterHashAndUsername(publication.interHash, fn:escapeXml(user.name))}"><c:out value="${user.name}"/></a>
 									<c:out value=" "/>
 								</li>
 							</c:forEach>
 						</ul> 
-					</li>
-				</c:if>
+					</jsp:attribute>
+				</sidebar:sidebarItem>
+			</c:if>
 				
-				<!-- copy users -->
-				<resources:metaData command="${command}" />
-			</ul>
+			<!-- copy users -->
+			<resources:metaData command="${command}" />
 		</jsp:attribute>
 		
 		<!--+
@@ -136,19 +156,5 @@
 				</jsp:attribute>
 			</parts:infobox>
 		</jsp:attribute>
-
-		<!--+
-			| discussion
-		 	+-->
-		<jsp:attribute name="discussion">
-			<c:if test="${not goldstandardPresent}">
-				<div id="fscontent" style="margin-top: 10px;">
-					<discussion:singleResourceDiscussionLayout resource="${publication}" discussionItems="${command.discussionItems}"  postUserName="${command.postOwner}"/>
-				</div>
-			</c:if>
-			<input type="hidden" id="gs_present" value="${goldstandardPresent}"/>
-		</jsp:attribute>
-		
 	</layout:resourceLayout>
-
 </jsp:root>
