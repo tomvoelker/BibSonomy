@@ -165,11 +165,12 @@
 					<li class="dropdown ${activeTab eq 'myprofile' ? 'active' : ''}">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 							<span class="fa fa-user"><!-- KEEP ME --></span>
-							<c:if test="${(loginUser.inbox.numPosts + loginUser.clipboard.numPosts) gt 0}">
-								<b class="navi-info">
-									<span id="inbox-clipboard-counter"><c:out value="${(loginUser.inbox.numPosts + loginUser.clipboard.numPosts)}"/></span>
-								</b>
+							<c:if test="${(loginUser.inbox.numPosts + loginUser.clipboard.numPosts) == 0}">
+								<c:set var="counterStyle" value="display: none;" />
 							</c:if>
+							<b class="navi-info">
+								<span id="inbox-clipboard-counter" style="${counterStyle}"><c:out value="${(loginUser.inbox.numPosts + loginUser.clipboard.numPosts)}"/></span>
+							</b>
 							<b class="caret">&amp;nbsp;</b></a>
 						<ul class="dropdown-menu items-with-icons">
 	
@@ -181,11 +182,8 @@
 										<fmt:message var="titleInbox" key="navi.inbox" />
 										<a href="/inbox" title="${titleInbox}">
 											<span class="fa fa-inbox"><!-- KEEP ME --></span>
-
 											<fmt:message key="navi.inbox" />
-											<c:if test="${loginUser.inbox.numPosts gt 0}">
-												<span id="inbox-counter" style="position: absolute; right: 10px;" class="badge"><c:out value="${loginUser.inbox.numPosts}"/></span>
-											</c:if>
+											<span id="inbox-counter" style="position: absolute; right: 10px;" class="badge"><c:out value="${loginUser.inbox.numPosts}"/></span>
 										</a>
 									</li>
 									<li>
@@ -193,9 +191,7 @@
 										<a href="/clipboard" title="${titleClipboard}"><!-- empty -->
 											<span class="fa fa-folder-open"><!--  --></span>
 											<fmt:message key="navi.clipboard" />
-											<c:if test="${loginUser.clipboard.numPosts gt 0}">
-												<span id="clipboard-counter" style="position: absolute; right: 10px;" class="badge"><c:out value="${loginUser.clipboard.numPosts}"/></span>
-											</c:if>
+											<span id="clipboard-counter" style="position: absolute; right: 10px;" class="badge"><c:out value="${loginUser.clipboard.numPosts}"/></span>
 										</a>
 									</li>
 									<li>

@@ -84,7 +84,6 @@ public class PersonNameParser {
 	 * @return
 	 */
 	private static PersonName getPersonName(final String first, final String preLast, final String last, final String lineage, final boolean others) {
-//		System.out.println("f=" + first + ",pL=" + preLast + ",l=" + last + ",lin=" + lineage + ",o=" + others);
 		if (others) return new PersonName("", "others");
 		final PersonName personName = new PersonName();
 		/*

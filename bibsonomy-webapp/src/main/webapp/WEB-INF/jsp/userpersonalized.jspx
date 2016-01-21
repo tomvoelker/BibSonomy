@@ -15,7 +15,8 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	<fmt:message var="headline" key="page.userpersonalized.headline" />
-	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" activeTab="${(command.requestedUser eq command.context.loginUser.name) ? 'my' : ''}" headline="${headline}">
+	
+	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="personalized/${requPath}" activeTab="${(command.requestedUser eq command.context.loginUser.name) ? 'my' : ''}" headline="${headline}">
 	
 		<!-- include javascript -->
 		<jsp:attribute name="headerExt">
@@ -120,7 +121,8 @@
 							</fmt:param>
 						</fmt:message>
 						${mtl:ch('nbsp')}
-						<c:choose>
+						<!-- TODO: discuss follower
+							<c:choose>
 							<c:when test="${command.followerOfUser}">
 								<span id="removeLink">
 									<a style="cursor: pointer;" 
@@ -150,7 +152,7 @@
 									   <fmt:message key="follow.link.text.followLong"/></a>
 								</span>
 							</c:otherwise>
-						</c:choose>
+						</c:choose> -->
 					</jsp:attribute>
 				</parts:infobox>
 			</c:if>

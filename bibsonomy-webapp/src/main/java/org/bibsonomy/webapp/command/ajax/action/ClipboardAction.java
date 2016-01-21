@@ -24,42 +24,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.webapp.command.ajax;
-
-import org.bibsonomy.webapp.command.ajax.action.ClipboardAction;
+package org.bibsonomy.webapp.command.ajax.action;
 
 /**
- * @author Christian Kramer
+ * action for the clipboard
+ *
+ * @author dzo
  */
-public class ClipboardManagerCommand extends AjaxCommand<ClipboardAction> {
-	private String hash;
-	private String user;
-
-	/**
-	 * @return String
-	 */
-	public String getUser() {
-		return this.user;
-	}
-
-	/**
-	 * @param user
-	 */
-	public void setUser(final String user) {
-		this.user = user;
-	}
-
-	/**
-	 * @return String
-	 */
-	public String getHash() {
-		return this.hash;
-	}
-
-	/**
-	 * @param hash
-	 */
-	public void setHash(final String hash) {
-		this.hash = hash;
-	}
+public enum ClipboardAction {
+	
+	/** unpick all posts */
+	CLEARALL,
+	
+	/** pick post */
+	PICK,
+	
+	/** unpick post */
+	UNPICK;
 }

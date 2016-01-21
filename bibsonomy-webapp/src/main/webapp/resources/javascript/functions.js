@@ -1584,16 +1584,20 @@ function generateExportPostLink(value) {
 	} else {
 		self.location = value;
 	}
-};		
+};
 
 
 /*
  * update the counter at the navigation bar to reflect the amount of picked publications and unread messages
  */
 function updateCounter() {
-	var clipboardNum = document.getElementById("clipboard-counter");
-	var inboxNum = document.getElementById("inbox-counter");
-	var counter = document.getElementById("inbox-clipboard-counter");
-	if(counter!=null)
-		counter.innerHTML = (clipboardNum==null?0:parseInt(clipboardNum.innerHTML))+(inboxNum==null?0:parseInt(inboxNum.innerHTML));
+	var clipboardNum = $("#clipboard-counter");
+	var inboxNum = $("#inbox-counter");
+	var counter = $("#inbox-clipboard-counter");
+	if (counter.length != 0) {
+		var totalCount = 0;
+		totalCount += clipboardNum.length == 0 ? 0 : parseInt(clipboardNum.text());
+		totalCount += inboxNum.length == 0 ? 0 : parseInt(inboxNum.text());
+		counter.show().text(totalCount);
+	}
 }

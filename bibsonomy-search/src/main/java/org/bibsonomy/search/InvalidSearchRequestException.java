@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Webapp - The web application for BibSonomy.
+ * BibSonomy Search - Helper classes for search modules.
  *
  * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -12,54 +12,25 @@
  *                               http://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.webapp.command.ajax;
-
-import org.bibsonomy.webapp.command.ajax.action.ClipboardAction;
+package org.bibsonomy.search;
 
 /**
- * @author Christian Kramer
+ * exception indicating that the user entered an invalid search query
+ * 
+ * @author dzo
  */
-public class ClipboardManagerCommand extends AjaxCommand<ClipboardAction> {
-	private String hash;
-	private String user;
-
-	/**
-	 * @return String
-	 */
-	public String getUser() {
-		return this.user;
-	}
-
-	/**
-	 * @param user
-	 */
-	public void setUser(final String user) {
-		this.user = user;
-	}
-
-	/**
-	 * @return String
-	 */
-	public String getHash() {
-		return this.hash;
-	}
-
-	/**
-	 * @param hash
-	 */
-	public void setHash(final String hash) {
-		this.hash = hash;
-	}
+public class InvalidSearchRequestException extends RuntimeException {
+	private static final long serialVersionUID = -431648472171377762L;
 }

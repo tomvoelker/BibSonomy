@@ -118,23 +118,21 @@
 			<c:set var="siteid" value="${properties['project.statisitics.siteid']}" />
 			<script type="text/javascript">
 				<![CDATA[
-					var pkBaseURL = (("https:" == document.location.protocol) ? "https://${statisticsUrl}" : "http://${statisticsUrl}");
-					document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
-				]]>
-			</script>
-			<script type="text/javascript">
-				<![CDATA[
-					try {
-						var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", ${siteid});
-						piwikTracker.trackPageView();
-						piwikTracker.enableLinkTracking();
-					} catch( err ) {}
+					var _paq = _paq || [];
+					_paq.push(['trackPageView']);
+					_paq.push(['enableLinkTracking']);
+					(function() {
+						var u="//${statisticsUrl}";
+						_paq.push(['setTrackerUrl', u+'piwik.php']);
+						_paq.push(['setSiteId', ${siteid}]);
+						var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+						g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+					})();
 				]]>
 			</script>
 			<noscript>
 				<p>
-					<!-- FIXME: support https -->
-					<c:url var="statImgUrl" value="http://${statisticsUrl}/piwik.php">
+					<c:url var="statImgUrl" value="//${statisticsUrl}/piwik.php">
 						<c:param name="idsite" value="${siteid}" />
 					</c:url>
 					<img src="${statImgUrl}" style="border:0" alt="" />
