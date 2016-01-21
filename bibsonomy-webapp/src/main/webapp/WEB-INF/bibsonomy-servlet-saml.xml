@@ -329,5 +329,5 @@
 	
 	<bean id="samlAuthTool" class="org.bibsonomy.webapp.util.spring.security.saml.SamlAuthenticationTool" scope="singleton"/>
 	
-	<import resource="bibsonomy2-servlet-saml-extra.xml" />
+	<import resource="bibsonomy-servlet-saml-extra.xml" />
 </beans>
