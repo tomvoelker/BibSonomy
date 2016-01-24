@@ -107,7 +107,7 @@
 							</li>
 						</c:when>
 						<c:otherwise>
-							<c:choose>		
+							<c:choose>
 								<c:when test="${not empty loginUserName}">
 									<li class="dropdown ${activeTab eq 'groups' ? 'active' : ''}">
 										<a href="#" class="dropdown-toggle" data-toggle="dropdown"><fmt:message key="navi.groups"/><b class="caret">&amp;nbsp;</b></a>
@@ -123,7 +123,7 @@
 								<c:otherwise>
 									<li class="${activeTab eq 'groups' ? 'active' : ''}"><a href="${relativeUrlGenerator.getGroupsUrl()}"><fmt:message key="navi.groups"/></a></li>
 								</c:otherwise>
-							</c:choose>		
+							</c:choose>
 						</c:otherwise>
 					</c:choose>
 					
@@ -183,7 +183,10 @@
 										<a href="/inbox" title="${titleInbox}">
 											<span class="fa fa-inbox"><!-- KEEP ME --></span>
 											<fmt:message key="navi.inbox" />
-											<span id="inbox-counter" style="position: absolute; right: 10px;" class="badge"><c:out value="${loginUser.inbox.numPosts}"/></span>
+											<c:if test="${loginUser.inbox.numPosts == 0}">
+												<c:set var="inboxCounterStyle" value="display: none;" />
+											</c:if>
+											<span id="inbox-counter" style="position: absolute; right: 10px; ${inboxCounterStyle}" class="badge"><c:out value="${loginUser.inbox.numPosts}"/></span>
 										</a>
 									</li>
 									<li>
@@ -191,7 +194,10 @@
 										<a href="/clipboard" title="${titleClipboard}"><!-- empty -->
 											<span class="fa fa-folder-open"><!--  --></span>
 											<fmt:message key="navi.clipboard" />
-											<span id="clipboard-counter" style="position: absolute; right: 10px;" class="badge"><c:out value="${loginUser.clipboard.numPosts}"/></span>
+											<c:if test="${loginUser.clipboard.numPosts == 0}">
+												<c:set var="clipboardCounterStyle" value="display: none;" />
+											</c:if>
+											<span id="clipboard-counter" style="position: absolute; right: 10px; ${clipboardCounterStyle}" class="badge"><c:out value="${loginUser.clipboard.numPosts}"/></span>
 										</a>
 									</li>
 									<li>

@@ -285,9 +285,16 @@
 		<set type="parameter" name="tagcloud.minFreq">%1</set>
 		<to>/$1</to>
 	</rule>
-
-
-
+	<rule>
+		<name>?g-recaptcha-response</name>
+		<note>
+			Rewrite the g-recaptcha-response request param
+		</note>
+		<condition type="parameter" name="g-recaptcha-response">(.+)</condition>
+		<from>^/+(.*)$</from>
+		<set type="parameter" name="recaptcha_response_field">%1</set>
+		<to>/$1</to>
+	</rule>
 
 	<!-- ############## general pages ############### -->
 

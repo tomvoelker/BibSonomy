@@ -219,11 +219,9 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	}
 
 	
-	@SuppressWarnings("unchecked")
-	// XXX: java generics :(
+	@SuppressWarnings("unchecked") // XXX: java generics :(
 	protected P getInsertParam(final Post<R> post) {
 		final P insert = this.createNewParam();
-
 
 		insert.setResource((RR) post.getResource());
 		insert.setDescription(post.getDescription());
@@ -324,7 +322,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 		return this.deletePost(resourceHash, false, session);
 	}
 	
-	protected boolean deletePost(final String resourceHash, final boolean update, final DBSession session) {		
+	protected boolean deletePost(final String resourceHash, final boolean update, final DBSession session) {
 		session.beginTransaction();
 		try {
 			final Post<R> post = this.getGoldStandardPostByHash(resourceHash, session);
