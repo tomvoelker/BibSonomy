@@ -1048,6 +1048,15 @@
 		<property name="recaptchaServer" value="${recaptcha.recaptchaServer}"/>
 		<property name="includeNoscript" value="false" />
 	</bean>
+	
+	<!--  recaptcha2 bean -->
+	<bean id="reCaptcha2" class="org.bibsonomy.webapp.util.captcha.ReCaptcha2">
+		<property name="privateKey" value="${recaptcha.privateKey}"/>
+		<property name="publicKey" value="${recaptcha.publicKey}"/>
+		<property name="recaptchaServer" value="${recaptcha.recaptchaServer}"/>
+		<property name="includeNoscript" value="false" />
+	</bean>
+	
 	<!-- for testing -->
 	<bean id="mockCaptcha" class="org.bibsonomy.webapp.util.captcha.MockCaptcha" />
 	<!--+
