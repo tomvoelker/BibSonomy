@@ -55,7 +55,7 @@ public class HTMLCharsAntiScript implements LayoutFormatter {
 			c = field.charAt(i);
 			if (c == '&') {
 				sb.append(HTML_AMP);
-				if (incommand) {
+				if (incommand && (i == field.length() - 1) || Character.isWhitespace(field.charAt(i + 1))) {
 					incommand = false;
 				}
 			} else if (c == NEW_LINE) {
