@@ -1606,6 +1606,7 @@
 		<URL>http://publications.rwth-aachen.de/record/211871</URL>
 		<BibFile>DCScraperTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.generic.DublinCoreScraper</Scraper>
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_261">
 		<TestDescription>DublinCoreScraper Test 2</TestDescription>
