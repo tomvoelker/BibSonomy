@@ -84,7 +84,7 @@
 	</c:if>
 
 	<c:forEach var="tag" items="${post.visibleTags}">
-		<span class="label label-grey">
+		<span class="label label-grey label-tag">
 			<c:choose>
 				<c:when test="${isRemotePost}">
 					<a href="${relativeUrlGenerator.getUserUrlByUserNameTagNameAndSysUrl(post.user.name, tag.name, post.systemUrl)}">
@@ -92,11 +92,11 @@
 					</a>
 				</c:when>
 				<c:otherwise>
-					<a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, tag.name)}"><c:out
-						value="${tag.name}" /></a>
+					<a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, tag.name)}">
+						<c:out value="${tag.name}" />
+					</a>
 				</c:otherwise>
 			</c:choose>
 		</span>
-		<c:out value=" " />
 	</c:forEach>
 </jsp:root>
