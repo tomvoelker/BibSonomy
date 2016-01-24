@@ -68,6 +68,11 @@
 			<artifactId>joda-time</artifactId>
 			<version>2.3</version>
 		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-web-common</artifactId>
+			<type>test-jar</type>
+		</dependency>
 	</dependencies>
 	<!-- TODO: deploy wiki to biblicious and remove the repository -->
 	<repositories>

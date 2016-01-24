@@ -7,9 +7,7 @@
 
 \begin{title}
 	<span class="entry_title">
-		<a href="/bibtex/2\intraHash/\username">
-			\format[HTMLCharsAntiScript]{\title}
-		</a>.
+		<a href="/bibtex/2\intraHash/\username">\format[HTMLCharsAntiScript]{\title}</a>.
 	</span>
 \end{title}
 

@@ -34,6 +34,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Layout;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.wiki.tags.AbstractTag;
 import org.bibsonomy.wiki.tags.group.GroupImageTag;
@@ -101,6 +102,7 @@ public class CVWikiModel extends AbstractWikiModel {
 	private MessageSource messageSource;
 
 	private LayoutRenderer<Layout> layoutRenderer;
+	private URLGenerator urlGenerator;
 
 	/**
 	 * Default Constructor
@@ -229,6 +231,20 @@ public class CVWikiModel extends AbstractWikiModel {
 	 */
 	public void setMessageSource(MessageSource messageSource) {
 		this.messageSource = messageSource;
+	}
+
+	/**
+	 * @return the urlGenerator
+	 */
+	public URLGenerator getUrlGenerator() {
+		return this.urlGenerator;
+	}
+
+	/**
+	 * @param urlGenerator the urlGenerator to set
+	 */
+	public void setUrlGenerator(URLGenerator urlGenerator) {
+		this.urlGenerator = urlGenerator;
 	}
 
 }
