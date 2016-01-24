@@ -97,7 +97,7 @@ public class BookmarkListTag extends SharedTag {
 		renderedHTML.append("<ul id='bookmarklist' class='bookmarkList'>");
 
 		for (final Post<Bookmark> post : posts) {
-			renderedHTML.append("<div style='margin:1.2em;' class='entry'><li><span class='entry_title'>");
+			renderedHTML.append("<div class='entry'><li><span class='entry_title'>");
 			renderedHTML.append("<a href='" + post.getResource().getUrl()
 					+ "' rel='nofollow'>" + post.getResource().getTitle()
 					+ "</a>");

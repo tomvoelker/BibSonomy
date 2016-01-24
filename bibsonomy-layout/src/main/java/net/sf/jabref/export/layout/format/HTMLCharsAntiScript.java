@@ -27,6 +27,7 @@
 package net.sf.jabref.export.layout.format;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+
 import net.sf.jabref.GlobalsSuper;
 import net.sf.jabref.export.layout.LayoutFormatter;
 
@@ -44,8 +45,6 @@ public class HTMLCharsAntiScript implements LayoutFormatter {
 	@Override
 	public String format(String field) {
 		int i;
-		field = field.replaceAll("\\\\&", HTML_AMP);
-
 		final StringBuilder sb = new StringBuilder();
 		StringBuilder currentCommand = null;
 
@@ -56,6 +55,9 @@ public class HTMLCharsAntiScript implements LayoutFormatter {
 			c = field.charAt(i);
 			if (c == '&') {
 				sb.append(HTML_AMP);
+				if (incommand && (i == field.length() - 1) || Character.isWhitespace(field.charAt(i + 1))) {
+					incommand = false;
+				}
 			} else if (c == NEW_LINE) {
 				final int nextCharIndex = i + 1;
 				boolean beginPara = false;
