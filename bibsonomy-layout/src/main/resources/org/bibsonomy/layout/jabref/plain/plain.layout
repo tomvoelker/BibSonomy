@@ -1,5 +1,4 @@
-<div style="margin:1.2em;">
-
+<div class="publication">
 \begin{author}
 	<span class="entry_author">
 		\format[HTMLCharsAntiScript]{\author}.
