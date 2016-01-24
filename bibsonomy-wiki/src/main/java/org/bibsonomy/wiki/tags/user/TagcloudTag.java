@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -200,7 +201,7 @@ public class TagcloudTag extends UserTag {
 		final String link = this.urlGenerator.getUserUrlByUserNameAndTagName(this.requestedUser.getName(), tagName);
 		final int tagCount = tag.getUsercount();
 		final int fontSize = TagViewUtils.computeTagFontsize(Integer.valueOf(tagCount), Integer.valueOf(tagMinFrequency), Integer.valueOf(tagMaxFrequency), "user").intValue();
-		return "<a href='" + link + "' title='" + tagCount + " posts' style='font-size:" + fontSize + "%' >" + tagName + "</a>";
+		return "<a href='" + link + "' title='" + tagCount + " posts' style='font-size:" + fontSize + "%' >" + StringEscapeUtils.escapeHtml(tagName) + "</a>";
 	}
 
 	/**
