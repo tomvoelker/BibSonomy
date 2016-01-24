@@ -78,8 +78,6 @@
 		<security:custom-filter after="EXCEPTION_TRANSLATION_FILTER" ref="exceptionTranslationFilter" />
 		<!-- fetches application url for saml metadata generation -->
 		<security:custom-filter before="FIRST" ref="samlMetadataGeneratorFilter"/>
-		<!-- We need this to rename the returned parameter g-recaptcha-response to a Java-friendly name. -->
-		<security:custom-filter after="FIRST" ref="recaptchaResponseFilter" />
 		
 		<security:custom-filter after="LAST" ref="limitedUserFilter" />
 
@@ -88,8 +86,6 @@
 			org.bibsonomy.webapp.config.AuthenticationFilterConfigurator
 		 -->
 	</security:http>
-	
-	<bean id="recaptchaResponseFilter" class="org.bibsonomy.webapp.filters.RecaptchaResponseFilter" />
 	
 	<bean id="limitedUserFilter" class="org.bibsonomy.webapp.filters.LimitedUserFilter">
 		<property name="allowedPathPrefixes">

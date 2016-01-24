@@ -1053,9 +1053,12 @@
 	<bean id="reCaptcha2" class="org.bibsonomy.webapp.util.captcha.ReCaptcha2">
 		<property name="privateKey" value="${recaptcha.privateKey}"/>
 		<property name="publicKey" value="${recaptcha.publicKey}"/>
-		<property name="recaptchaServer" value="${recaptcha.recaptchaServer}"/>
+		<property name="recaptchaServer" value="${recaptcha2.server}"/>
 		<property name="includeNoscript" value="false" />
+		<property name="client" ref="reCaptcha2Client" />
 	</bean>
+	
+	<bean id="reCaptcha2Client" class="org.apache.http.impl.client.HttpClients" destroy-method="close" factory-method="createDefault" />
 	
 	<!-- for testing -->
 	<bean id="mockCaptcha" class="org.bibsonomy.webapp.util.captcha.MockCaptcha" />

@@ -1,7 +1,7 @@
 package org.bibsonomy.webapp.util.captcha;
 
 /**
- * TODO: add documentation to this class
+ * class for representing a recaptcha2 response
  *
  * @author niebler
  */

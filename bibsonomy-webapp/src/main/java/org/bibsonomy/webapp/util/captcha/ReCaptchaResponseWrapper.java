@@ -51,5 +51,4 @@ public class ReCaptchaResponseWrapper implements CaptchaResponse {
 	public boolean isValid() {
 		return response.isValid();
 	}
-
 }
