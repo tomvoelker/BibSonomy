@@ -27,6 +27,7 @@
 								<value>registerUser.password</value>
 								<value>registerUser.homepage</value>
 								<value>registerUser.realname</value>
+								<value>registerUser.registrationLog</value>
 								<value>passwordCheck</value>
 								<!-- for admins which want to register a new user -->
 								<value>ckey</value>

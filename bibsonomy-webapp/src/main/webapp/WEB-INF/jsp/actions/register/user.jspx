@@ -20,6 +20,10 @@
 	<fmt:message key="navi.register" var="pageTitle" />
 	
 	<layout:singleContainerLayout requPath="${requPath}" command="${command}" pageTitle="${pageTitle}" loginUser="${command.context.loginUser}" smallBox="${true}">
+		<jsp:attribute name="headerExt">
+			<script type='text/javascript' src="${resdir}/javascript/actions/eventLogger.js"><!-- keep me --></script>
+			
+	    </jsp:attribute>
 		<jsp:attribute name="content">
 		
 			<h1 class="text-center">
@@ -109,6 +113,8 @@
 				</div>
 			</div>
 			<br />
+			<script type='text/javascript' src="${resdir}/javascript/actions/addEventLoggerToRegister.js"><!-- keep me --></script>
+			
 		</jsp:attribute>
 	</layout:singleContainerLayout>
 </jsp:root>
