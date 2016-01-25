@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -458,7 +458,6 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public boolean hasGroupRoleOrHigher(final User loginUser, final String groupName, final GroupRole minimumRole) {
 		for (final Group group : loginUser.getGroups()) {
-			//if (group.getName().equals(groupName)) {
 			if (group.getName().equals(groupName)) {
 				final GroupRole actualRole = GroupUtils.getGroupMembershipForUser(group, loginUser.getName(), true).getGroupRole();
 				if (present(actualRole)) {

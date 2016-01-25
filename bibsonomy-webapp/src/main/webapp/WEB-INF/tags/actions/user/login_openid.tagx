@@ -1,0 +1,74 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" 
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:login="urn:jsptagdir:/WEB-INF/tags/actions/user">
+
+	<jsp:directive.tag language="java" pageEncoding="UTF-8" display-name="OpenID Login Form" description="Renders the login form for OpenID login." />
+	
+	<jsp:directive.attribute name="selectedTab" type="java.lang.Integer" required="false"/>
+	
+	
+	<br /><br />
+	<fieldset>
+		<!-- TODO: (Bootstrap) i18n -->
+		<legend>Sign with another provider</legend>
+		<!-- TODO: Create list of privders according to
+			http://stackoverflow.com/questions/1116743/where-can-i-find-a-list-of-openid-provider-urls
+			or http://openid.net/get-an-openid/ and generate code dynamically -->
+		<ul class="list-inline">
+			<li><span><fmt:message key="login.openid.provider"/></span></li>
+			<li><login:login_openid_provider url="http://me.yahoo.com/" name="Yahoo!" selectedTab="${selectedTab}" /></li>
+			<li><a class="otherProvider" data-provider="other" href="#">Other OpenID-Provider</a></li>
+		</ul>
+
+		<div class="openIDmanual" style="display: none;">
+			<form class="form-horizontal" action="/login_openid" id="openIDForm" method="POST">
+				<input type="hidden" name="selTab" value="${selectedTab}"></input>
+				<div class="form-group">
+					<label class="control-label col-sm-3">
+						<fmt:message key="login.method.openid" />
+					</label>
+					<div class="col-sm-9">
+						<input class="form-control" type="text" placeholder="OpenID" name="openID" id="openID" noHelp="true" />
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<div class="col-sm-offset-3 col-sm-9">
+						<div class="checkbox">
+							<label>
+								<input type="checkbox" name="rememberMe" id="rememberMe" /><c:out value=" " />
+								<fmt:message key="login.rememberMe" />
+							</label>
+						</div>
+					</div>
+				</div>
+				
+				<div class="form-group">
+					<fmt:message key="navi.login" var="submit" />
+					<div class="col-sm-offset-3 col-sm-3 col-md-3 col-lg-3">
+						<bsform:button type="submit" style="success" value="${submit}" size="defaultSize" />
+					</div>
+				</div>
+			</form>
+		</div>
+		
+		<script type="text/javascript">
+			<![CDATA[
+				$(function() {
+					$(".otherProvider").click(function() {
+						$(".openIDmanual").toggle();
+						return false;
+					});
+				});
+			]]>
+		</script>
+	</fieldset>
+
+	<hr />
+</jsp:root>

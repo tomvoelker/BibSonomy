@@ -3,7 +3,7 @@
 
     BibSonomy-Webapp - The web application for BibSonomy.
 
-    Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+    Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
                                   University of Kassel, Germany
                                   http://www.kde.cs.uni-kassel.de/
                               Data Mining and Information Retrieval Group,
@@ -32,7 +32,7 @@
 	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
-		<version>3.4.0-SNAPSHOT</version>
+		<version>3.5.0-SNAPSHOT</version>
 	</parent>
 	<licenses>
 		<license>
@@ -54,7 +54,7 @@
 				<configuration>
 					<!-- otherwise the javascript/css files compressed by yuicompressor-maven-plugin 
 						are overwritten by this plugin -->
-					<warSourceExcludes>**/*.js,**/*.css,WEB-INF/tags/bstags/layout/parts/messages.tagx</warSourceExcludes>
+					<warSourceExcludes>**/*.js,**/*.css,WEB-INF/tags/layout/parts/messages.tagx</warSourceExcludes>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -84,44 +84,44 @@
 						<!-- javascript files for bootstrap front-end -->
 						<aggregation>
 							<insertNewLine>true</insertNewLine>
-							<output>${project.build.webapp.resourcedir}/javascript/merged/bs/global.js</output>
+							<output>${project.build.webapp.resourcedir}/javascript/merged/global.js</output>
 							<includes>
 								<include>${project.build.webapp.resourcedir}/jquery/jquery.js</include>
 								<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/jquery-ui.js</include>
 								<include>${project.build.webapp.resourcedir}/bootstrap/js/bootstrap.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap-datepicker.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap-tagsinput.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap-dialog.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/holder.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/custom.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/friendoverview.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/functions.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/actions/clipboard.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/ajaxUtils.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/fileUpload.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/style.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/jquery.fadebox.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/userRelation.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/addToSpheres.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bootstrap-datepicker.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bootstrap-tagsinput.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bootstrap-dialog.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/holder.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/custom.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/friendoverview.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/functions.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/actions/clipboard.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/ajaxUtils.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/fileUpload.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/style.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/jquery.fadebox.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/userRelation.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/addToSpheres.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/logging.js</include>
 							</includes>
 						</aggregation>
 						<aggregation>
 							<insertNewLine>true</insertNewLine>
-							<output>${project.build.webapp.resourcedir}/javascript/merged/bs/discussion.js</output>
+							<output>${project.build.webapp.resourcedir}/javascript/merged/discussion.js</output>
 							<includes>
 								<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.js</include>
 								<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/excanvas.js</include>
 								<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/jquery.flot.js</include>
 								<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/jquery.flot.stack.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/discussion/discussion.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/discussion/reviews.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/discussion/comments.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/discussion/csllinks.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/citeproc/csllocales.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/citeproc/xmldom.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/citeproc/citeproc.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/citeproc/cslstyles.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/discussion/discussion.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/discussion/reviews.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/discussion/comments.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/discussion/csllinks.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/citeproc/csllocales.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/citeproc/xmldom.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/citeproc/citeproc.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/citeproc/cslstyles.js</include>
 							</includes>
 						</aggregation>
 					</aggregations>
@@ -137,7 +137,6 @@
 					<compress>true</compress>
 					<includes>
 						<include>bootstrap-style.less</include>
-						<include>style.less</include>
 					</includes>
 				</configuration>
 				<executions>
@@ -170,7 +169,7 @@
 						<locale>de</locale>
 						<locale>ru</locale>
 					</locales>
-					<outputFile>${project.build.directory}/${project.build.finalName}/WEB-INF/tags/bstags/layout/parts/messages.tagx</outputFile>
+					<outputFile>${project.build.directory}/${project.build.finalName}/WEB-INF/tags/layout/parts/messages.tagx</outputFile>
 				</configuration>
 				<executions>
 					<execution>
@@ -481,7 +480,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-lucene</artifactId>
+			<artifactId>bibsonomy-search-elasticsearch</artifactId>
 		</dependency>
 		<!-- *** beanutils 1.7.0 contain a memory leak *** we don't have a direct 
 			dependency to beanutils, but some lib needs it so we override here to the 
@@ -684,7 +683,7 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>12.0</version>
+			<version>18.0</version>
 		</dependency>
 		<dependency>
 			<groupId>joda-time</groupId>

@@ -1,7 +1,7 @@
 /**
  * BibSonomy CV Wiki - Wiki for user and group CVs
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -39,7 +39,6 @@ import org.bibsonomy.wiki.tags.AbstractTag;
 import org.bibsonomy.wiki.tags.group.GroupDescriptionTag;
 import org.bibsonomy.wiki.tags.group.GroupImageTag;
 import org.bibsonomy.wiki.tags.group.MembersTag;
-//import org.bibsonomy.wiki.tags.shared.DesignTag;
 import org.bibsonomy.wiki.tags.shared.HomepageTag;
 import org.bibsonomy.wiki.tags.shared.ImageTag;
 import org.bibsonomy.wiki.tags.shared.NameTag;

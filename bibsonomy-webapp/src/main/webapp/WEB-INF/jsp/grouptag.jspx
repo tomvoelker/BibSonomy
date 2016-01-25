@@ -1,0 +1,78 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:group="urn:jsptagdir:/WEB-INF/tags/resources/group"
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
+	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons">
+	 
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	<fmt:message var="headline" key="page.grouptag.headline">
+		<fmt:param>${command.requestedGroup}</fmt:param>
+		<fmt:param>${command.requestedTags}</fmt:param>
+	</fmt:message>
+	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" activeTab="groups" headline="${headline}">
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.group" formAction="${relativeUrlGenerator.getGroupUrlByGroupName(command.requestedGroup)}" formInputName="tag" formInputValue="${command.requestedTags}">
+				<jsp:attribute name="pathPart">
+					<a href="${relativeUrlGenerator.getGroupUrlByGroupName(command.requestedGroup)}">
+						<span class="fa fa-group"><!--  --></span><c:out value=" " /><c:out value='${command.requestedGroup}'/>
+					</a>
+				</jsp:attribute>
+			</parts:search>
+		</jsp:attribute>
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:groupcrumb requestedGroup="${command.requestedGroup}" />
+					<nav:tagcrumb requestedTags="${command.requestedTags}" active="${true}"/>
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+		
+		<jsp:attribute name="sidebar">
+			<c:set var="groupName" value="${command.group.name}" />
+			<c:if test="${not empty groupName}">
+				<sidebar:sidebarItem>
+					<jsp:attribute name="text">
+						<c:out value="${groupName}"/>
+					</jsp:attribute> 
+					<jsp:attribute name="content">
+						<group:groupcv group="${command.group}"/>
+						
+						<!-- link to join group -->
+						<c:if test="${command.context.userLoggedIn}">
+							<c:choose>
+								<c:when test="${mtl:contains(command.context.loginUser.groups, command.group)}">
+									<!-- FIXME: add link to leave group, if user is already member -->
+								</c:when>
+								<c:otherwise>
+									<c:out value=" "/>
+								   	<a class="btn btn-default btn-primary" href="/joinGroup?group=${fn:escapeXml(groupName)}">
+										<fmt:message key="joinGroup"/>
+									</a>
+								</c:otherwise>
+							</c:choose>
+						</c:if>
+					</jsp:attribute>
+				</sidebar:sidebarItem>
+			</c:if>
+
+			<parts:tagsAndConceptsForSidebar/>
+
+			<sidebar:relatedTagsItem requPath="${requPath}" cmd="${command.relatedTagCommand}"/>
+					
+			<sidebar:sidebarTagCloudItem requPath="${mtl:getLowerPath(requPath)}" cmd="${command.tagcloud}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" tagboxMinfreqStyle="default"/>
+
+		</jsp:attribute>
+	</layout:resourceLayout>
+</jsp:root>

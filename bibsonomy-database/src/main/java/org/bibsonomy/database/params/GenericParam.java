@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -189,9 +189,6 @@ public abstract class GenericParam {
 
 	/* search type */
 	private SearchType searchType;
-
-	/* not modified search parameter */
-	private String rawSearch;
 
 	/** This is the current user. */
 	private String userName;
@@ -446,23 +443,13 @@ public abstract class GenericParam {
 	}
 
 	/**
-	 * @return the rawSearch
-	 */
-	public String getRawSearch() {
-		return this.rawSearch;
-	}
-
-	/**
 	 * sets the rawsearch to search and prepares the search param for the
 	 * database query
 	 * 
 	 * @param search the search to set
 	 */
 	public void setSearch(final String search) {
-		if (search != null) {
-			this.rawSearch = search;
-			this.search = search.replaceAll("([\\s]|^)([\\S&&[^-]])", " +$2");
-		}
+		this.search = search;
 	}
 
 	/**

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -169,7 +169,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		if (logic.getGroups(false, 0, Integer.MAX_VALUE).contains(group)
 				|| logic.getGroups(true, 0, Integer.MAX_VALUE).contains(group)) {
 			return "Group already exists!";
-		}		
+		}
 		
 		// Create the group ...
 		logic.createGroup(group);

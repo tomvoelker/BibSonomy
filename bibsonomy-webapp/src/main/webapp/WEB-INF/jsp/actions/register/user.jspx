@@ -1,0 +1,120 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/actions/user"
+	>
+
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+	<fmt:message key="navi.register" var="pageTitle" />
+	
+	<layout:singleContainerLayout requPath="${requPath}" command="${command}" pageTitle="${pageTitle}" loginUser="${command.context.loginUser}" smallBox="${true}">
+		<jsp:attribute name="content">
+		
+			<h1 class="text-center">
+				<fmt:message key="register.heading1">
+					<fmt:param value="${properties['project.name']}"></fmt:param>
+				</fmt:message>
+			</h1>
+			<div class="lead text-center">
+				<p>
+					<fmt:message key="register.description">
+						<fmt:param value="${properties['project.name']}"></fmt:param>
+					</fmt:message>
+				</p>
+			</div>
+			
+			
+			<ul class="nav nav-tabs" role="tablist">
+				<li class="active"><a href="#local" role="tab" data-toggle="tab"><fmt:message key="login.method.internal" /></a></li>
+				<li><a href="#openid" role="tab" data-toggle="tab"><fmt:message key="login.method.openid"/></a></li>
+			</ul>
+			
+			<div class="tab-content">
+				<br />
+				<div class="tab-pane active" id="local">
+					<form:form action="/register" method="POST" class="form-horizontal">
+						<errors:global />
+		
+						<bsform:fieldset legendKey="register.personal">
+							<jsp:attribute name="content">
+								<bsform:input labelColSpan="3" path="registerUser.name" labelKey="navi.username" placeholderLikeLabel="true" inputGroupSymbol="@" noHelp="true" />
+								
+								<bsform:password labelColSpan="3" path="registerUser.password" labelKey="navi.password" placeholderLikeLabel="true" inputGroupFaIcon="fa-key" noHelp="true" />
+								
+								<bsform:password labelColSpan="3" path="passwordCheck" labelKey="user.settings.passwordCheck" placeholderLikeLabel="true" inputGroupFaIcon="fa-key" noHelp="true" />
+								
+								<bsform:input labelColSpan="3" path="registerUser.email" labelKey="user.settings.email" placeholderLikeLabel="true" inputGroupFaIcon="fa-envelope" noHelp="true" />
+								
+								<hr />
+								
+								<bsform:input labelColSpan="3" path="registerUser.homepage" labelKey="user.settings.homepage" placeholderLikeLabel="true" inputGroupFaIcon="fa-globe" noHelp="true" />
+								
+								<bsform:input labelColSpan="3" path="registerUser.realname" labelKey="user.settings.realname" placeholderLikeLabel="true" inputGroupFaIcon="fa-user" noHelp="true" /> 
+							</jsp:attribute>
+						</bsform:fieldset>
+						
+						<c:set var="legendKey" value="register.captchaAndPrivacy" />
+						
+						<c:if test="${empty command.captchaHTML}">
+							<c:set var="legendKey" value="register.privacy" />
+						</c:if>
+						
+						<bsform:fieldset legendKey="${legendKey}">
+							<jsp:attribute name="content">
+								<bsform:captcha labelColSpan="3" inputColSpan="9" />
+								
+								<c:set var="formErrors"><form:errors path="acceptPrivacy"/></c:set>
+								<div class="form-group${not empty formErrors ? ' has-error' : ''}">
+									<c:if test="${not empty formErrors}">
+										<div class="col-sm-offset-3 col-sm-9">
+											<bs:feedback style="danger" size="defaultSize" >
+												<jsp:attribute name="feedbackBody">
+													<form:errors path="acceptPrivacy" />
+												</jsp:attribute>
+											</bs:feedback>
+										</div>
+									</c:if>
+									<div class="col-sm-offset-3 col-sm-9">
+										<div class="checkbox">
+											<label>
+												<input type="checkbox" name="acceptPrivacy" id="acceptPrivacy" value="yes" />
+												<fmt:message key="register.acceptPrivacy">
+													<fmt:param value="${properties['project.name']}" />
+												</fmt:message>
+											</label>
+										</div>
+									</div>
+								</div>
+								<br />
+								<div class="form-group">
+									<div class="col-sm-offset-3 col-sm-9">
+										<fmt:message key="register.send" var="submit" />
+										<bsform:button type="submit" style="success" size="defaultSize" value="${submit}" />
+									</div>
+								</div>
+								
+							</jsp:attribute>
+						</bsform:fieldset>
+						
+					</form:form>
+				</div>
+				<div class="tab-pane" id="openid">
+					<user:login_openid/>
+				</div>
+			</div>
+			<br />
+		</jsp:attribute>
+	</layout:singleContainerLayout>
+</jsp:root>

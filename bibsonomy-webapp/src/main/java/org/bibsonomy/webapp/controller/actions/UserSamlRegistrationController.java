@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -82,7 +82,7 @@ public class UserSamlRegistrationController extends AbstractUserIDRegistrationCo
 		SamlRemoteUserId authRId = attributeExtractor.getRemoteUserId(VuFindUserInitController.getSamlCreds());
 		org.bibsonomy.util.ValidationUtils.assertNotNull(authRId);
 		for (RemoteUserId rId : userToBeRegistered.getRemoteUserIds()) {
-			if (rId.equals(authRId) == false) {
+			if (!rId.equals(authRId)) {
 				errors.rejectValue("samlId", "error.registration.samlId.missmatch");
 				break;
 			}

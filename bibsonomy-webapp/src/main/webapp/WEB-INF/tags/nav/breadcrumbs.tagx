@@ -1,0 +1,17 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+	<jsp:directive.attribute name="crumbs" fragment="true" required="true" description="Crumb items "/>
+	
+	<ol class="breadcrumb">
+		<li><a href="${relativeUrlGenerator.getProjectHome()}"><span class="fa fa-home"><!--  --></span></a></li>
+		<jsp:invoke fragment="crumbs" />
+	</ol>
+	
+</jsp:root>

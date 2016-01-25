@@ -6,9 +6,8 @@
 	
 	<!-- dummies for lucene index -->
 	<bean id="dummySearch" class="org.bibsonomy.testutil.DummyResourceSearch" />
-	<alias name="dummySearch" alias="luceneBookmarkSearch" />
-	<alias name="dummySearch" alias="lucenePublicationSearch" />
-	<alias name="dummySearch" alias="luceneGoldStandardPublicationSearch" />
+	<alias name="dummySearch" alias="bookmarkSearch" />
+	<alias name="dummySearch" alias="goldStandardPublicationSearch" />
 	<alias name="dummySearch" alias="publicationSearch" />
 	
 	<bean id="personSearch" class="org.bibsonomy.testutil.DummyPersonSearch" />

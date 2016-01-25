@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -195,9 +195,7 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		// insert the request
 		final GroupMembership gms = new GroupMembership(loginUser, GroupRole.USER, command.isUserSharedDocuments());
 		this.logic.updateGroup(group, GroupUpdateOperation.ADD_REQUESTED, gms);
-		//gms.setUserSharedDocuments(command.isUserSharedDocuments());
-		//this.logic.updateGroup(group, GroupUpdateOperation.UPDATE_USER_SHARED_DOCUMENTS, gms);
-		
+
 		command.setMessage("success.joinGroupRequest.sent", Collections.singletonList(groupName));
 		return Views.SUCCESS;
 	}

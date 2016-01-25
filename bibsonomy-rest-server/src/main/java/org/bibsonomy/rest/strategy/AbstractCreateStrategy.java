@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -44,12 +44,12 @@ public abstract class AbstractCreateStrategy extends Strategy {
 	 */
 	public AbstractCreateStrategy(final Context context) {
 		super(context);
-		this.doc = context.getDocument();		
+		this.doc = context.getDocument();
 	}
 
 	@Override
 	public final void perform(final ByteArrayOutputStream outStream) throws InternServerException {
-		final String resourceID = this.create();	
+		final String resourceID = this.create();
 		render(this.writer, resourceID);
 	}
 

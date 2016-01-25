@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -87,6 +87,7 @@ public class PublicationReferenceTag extends RequestContextAwareTag {
 				continue;
 			}
 			changed = true;
+			// FIXME: use org.bibsonomy.services.URLGenerator to build URL
 			StringBuilder url = new StringBuilder("<a class=\"postlink\"href=\"/");
 
 			url.append(getResourceString(matcher.group(RES_TYPE_GROUP_ID)));

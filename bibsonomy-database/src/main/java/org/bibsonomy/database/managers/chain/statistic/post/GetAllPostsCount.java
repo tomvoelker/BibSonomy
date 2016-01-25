@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -25,6 +25,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.bibsonomy.database.managers.chain.statistic.post;
+
+import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.common.DBSession;
@@ -57,6 +59,8 @@ public class GetAllPostsCount extends StatisticChainElement {
 	
 	@Override
 	protected boolean canHandle(StatisticsParam param) {
-		return GroupingEntity.ALL.equals(param.getGrouping());
+		return GroupingEntity.ALL.equals(param.getGrouping())
+				&& !present(param.getSystemTags())
+				&& !present(param.getTitle());
 	}
 }

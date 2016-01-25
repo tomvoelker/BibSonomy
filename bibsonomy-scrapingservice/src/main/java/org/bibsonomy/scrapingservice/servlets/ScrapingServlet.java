@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scrapingservice - Stand-alone web application for web page scrapers (see bibsonomy-scraper)
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -57,6 +57,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.UrlRenderer;
+import org.bibsonomy.rest.renderer.impl.json.JSONRenderer;
 import org.bibsonomy.rest.renderer.impl.xml.XMLRenderer;
 import org.bibsonomy.scraper.KDEScraperFactory;
 import org.bibsonomy.scraper.KDEUrlCompositeScraper;
@@ -82,7 +83,6 @@ import bibtex.parser.ParseException;
  */
 public class ScrapingServlet extends HttpServlet {
 	
-	
 	private static final String APPLICATION_RDF_XML_MIME_TYPE = "application/rdf+xml";
 	private static final long serialVersionUID = -5145534846771334947L;
 	private static final Log log = LogFactory.getLog(ScrapingServlet.class);
@@ -98,10 +98,13 @@ public class ScrapingServlet extends HttpServlet {
 	private static final String APPLICATION_XML_MIME_TYPE = RenderingFormat.APP_XML.getMimeType();
 
 	private static final User XML_DUMMY_USER = new User("scrapingService");
+	private static final UrlRenderer URL_RENDERER = new UrlRenderer("");
+	
 	private static final XMLRenderer XML_RENDERER;
+	private static final JSONRenderer JSON_RENDERER = new JSONRenderer(URL_RENDERER);
 	
 	static {
-		XML_RENDERER = new XMLRenderer(new UrlRenderer(""));
+		XML_RENDERER = new XMLRenderer(URL_RENDERER);
 		XML_RENDERER.init();
 	}
 	
@@ -181,19 +184,27 @@ public class ScrapingServlet extends HttpServlet {
 						/*
 						 * parse post
 						 */
-						final Post<? extends Resource> post = new PostBibTeXParser().parseBibTeXPost(bibtexString);
-						post.getResource().recalculateHashes();
-						post.setUser(XML_DUMMY_USER);
-						final Set<Tag> tags = post.getTags();
-						if (!present(tags)) {
-							post.getTags().add(TagUtils.getEmptyTag());
-						}
+						final Post<? extends Resource> post = convertBibTeXToPost(bibtexString);
 						
 						/*
 						 * serialize to xml
 						 * TODO: use EscapingPrintWriter?
 						 */
 						XML_RENDERER.serializePost(new BufferedWriter(new OutputStreamWriter(response.getOutputStream(), RESPONSE_ENCODING)), post, null);
+						return;
+					} else if (FORMAT_JSON.equals(format)) {
+						response.setContentType(APPLICATION_JSON_MIME_TYPE);
+						response.setCharacterEncoding(RESPONSE_ENCODING);
+						
+						/*
+						 * parse post
+						 */
+						final Post<? extends Resource> post = convertBibTeXToPost(bibtexString);
+						
+						/*
+						 * serialize to json
+						 */
+						JSON_RENDERER.serializePost(new BufferedWriter(new OutputStreamWriter(response.getOutputStream(), RESPONSE_ENCODING)), post, null);
 						return;
 					}
 				} else {
@@ -277,6 +288,23 @@ public class ScrapingServlet extends HttpServlet {
 		}
 
 		this.getServletConfig().getServletContext().getRequestDispatcher("/index.jsp").forward(request, response);
+	}
+
+	/**
+	 * @param bibtexString
+	 * @return
+	 * @throws ParseException
+	 * @throws IOException
+	 */
+	private static Post<? extends Resource> convertBibTeXToPost(final String bibtexString) throws ParseException, IOException {
+		final Post<? extends Resource> post = new PostBibTeXParser().parseBibTeXPost(bibtexString);
+		post.getResource().recalculateHashes();
+		post.setUser(XML_DUMMY_USER);
+		final Set<Tag> tags = post.getTags();
+		if (!present(tags)) {
+			post.getTags().add(TagUtils.getEmptyTag());
+		}
+		return post;
 	}
 
 	private static URL convertToUrl(final String urlString) throws MalformedURLException {

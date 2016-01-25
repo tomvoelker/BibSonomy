@@ -1,0 +1,261 @@
+<jsp:root version="2.0"
+		  xmlns="http://www.w3.org/1999/xhtml"
+		  xmlns:jsp="http://java.sun.com/JSP/Page"
+		  xmlns:c="http://java.sun.com/jsp/jstl/core"
+		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+		  xmlns:form="http://www.springframework.org/tags/form"
+		  xmlns:spring="http://www.springframework.org/tags"
+		  xmlns:bform="urn:jsptagdir:/WEB-INF/tags/layout/form"
+		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+		  xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+		  xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+		  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons">
+
+	<jsp:directive.attribute name="command"  type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
+	
+	<c:set var="updateProfileUrl" value="/updateGroupProfile" />
+	<c:set var="foafUrl" value="${relativeUrlGenerator.prefix('foaf').getGroupUrlByGroupName(command.group.name)}" />
+	<c:set var="cvUrl"   value="${relativeUrlGenerator.prefix('cv').getGroupUrlByGroupName(command.group.name)}" />
+
+	<!-- ############################################# profile tab ############################################# -->
+	<c:set var="user" value="${command.user}" />
+
+	<div id="selTab0" class="tab-pane ${(command.selTab eq 0) ? 'active' : ''}">
+
+		<fieldset class="fsOuter">
+
+			<form:form cssClass="form-horizontal" name="account" method="post" action="/updateGroup?ckey=${ckey}" enctype="multipart/form-data">
+				<input type="hidden" name="groupname" value="${command.group.name}"/>
+				<input type="hidden" name="operation" value="update_settings" />
+
+				<bsform:fieldset legendKey="navi.groupsettings">
+					<jsp:attribute name="content">
+						<p>
+							<fmt:message key="settings.group.profileInfo">
+								<fmt:param value="${cvUrl}"/>
+							</fmt:message>
+						</p>
+					</jsp:attribute>
+				</bsform:fieldset>
+
+				<bsform:fieldset legendKey="post.resource.fields.general">
+					<jsp:attribute name="content">
+						<!-- USER NAME -->
+						<bsform:input path="group.name" labelColSpan="3" inputColSpan="9" noHelp="true" disabled="true" />
+
+						<!-- REAL NAME -->
+						<div class="form-group">
+							<form:label cssClass="col-sm-3 control-label" path="realname">
+								<fmt:message key="settings.group.realname" />
+							</form:label>
+
+							<div class="col-sm-9">
+								<form:input path="realname" cssClass="form-control" />
+								<div class="help help-header hide"><fmt:message key="settings.group.realname" /></div>
+								<div class="help help-content hide"><fmt:message key="settings.group.realname.help" /></div>
+							</div>
+						</div>
+					</jsp:attribute>
+				</bsform:fieldset>
+
+				<!--+ 
+					| Contact (email, homepage, OpenURL)
+					+-->
+				<bsform:fieldset legendKey="settings.contact">
+					<jsp:attribute name="content">
+					
+					<!-- TODO: Use mail from admin or something -->
+<!--					<bsform:input path="user.email" required="true" labelColSpan="3" inputColSpan="9" />  -->
+						<div class="form-group">
+							<form:label cssClass="col-sm-3 control-label" path="homepage">
+								<fmt:message key="settings.group.homepage" />
+							</form:label>
+
+							<div class="col-sm-9">
+								<form:input path="homepage" cssClass="form-control" />
+								<div class="help help-header hide"><fmt:message key="settings.group.homepage" /></div>
+								<div class="help help-content hide"><fmt:message key="settings.group.homepage.help" /></div>
+							</div>
+						</div>
+
+						<bsform:textarea id="description" path="description" labelColSpan="3" inputColSpan="9">
+							<jsp:attribute name="helpText">
+								<fmt:message key="settings.group.description.help" />
+							</jsp:attribute>
+						</bsform:textarea>
+						
+					</jsp:attribute>
+				</bsform:fieldset>
+
+				<!-- Basic Group Settings -->
+				<bsform:fieldset legendKey="settings.group.settings">
+					<jsp:attribute name="content">
+
+						<div class="form-group">
+							<form:label cssClass="col-sm-3 control-label" path="privlevel">
+								<fmt:message key="settings.group.memberList" />
+							</form:label>
+
+							<div class="col-sm-9">
+								<form:select cssClass="form-control help-popover" path="privlevel">
+									<form:option value="0"><fmt:message key="settings.public" /></form:option>
+									<form:option value="1"><fmt:message key="settings.private" /></form:option>
+									<form:option value="2"><fmt:message key="settings.publicForMembers" /></form:option>
+								</form:select>
+								<div class="help help-header hide"><fmt:message key="settings.group.memberList" /></div>
+								<div class="help help-content hide"><fmt:message key="settings.group.memberList.help" /></div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<form:label cssClass="col-sm-3 control-label" path="sharedDocuments">
+								<fmt:message key="settings.group.sharedDocuments" />
+							</form:label>
+
+							<div class="col-sm-9">
+								<form:select cssClass="form-control help-popover" path="sharedDocuments">
+									<form:option value="0"><fmt:message key="settings.disabled" /></form:option>
+									<form:option value="1"><fmt:message key="settings.enabled" /></form:option>
+								</form:select>
+
+								<div class="help help-header hide"><fmt:message key="settings.group.sharedDocuments" /></div>
+								<div class="help help-content hide"><p><fmt:message key="settings.group.sharedDocuments.help" /></p></div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<form:label cssClass="col-sm-3 control-label" path="allowJoin">
+								<fmt:message key="settings.group.allowJoin" />
+							</form:label>
+
+							<div class="col-sm-9">
+								<form:select cssClass="form-control help-popover" path="allowJoin">
+									<form:option value="0"><fmt:message key="settings.disabled" /></form:option>
+									<form:option value="1"><fmt:message key="settings.enabled" /></form:option>
+								</form:select>
+
+								<div class="help help-header hide"><fmt:message key="settings.group.allowJoin" /></div>
+								<div class="help help-content hide"><p><fmt:message key="settings.group.allowJoin.help" /></p></div>
+							</div>
+						</div>
+						
+					</jsp:attribute>
+				</bsform:fieldset>
+
+
+				<!-- group reporting settings -->
+				<c:if test="${properties['publication.reporting.mode'] eq 'GROUP'}">
+					<bsform:fieldset legendKey="settings.group.reporting">
+						<jsp:attribute name="content">
+							<input type="hidden" name="groupName" value="${group.name}"/>
+							<input type="hidden" name="operation" value="update_group_reporting_settings" />
+							<bsform:fieldset legendKey="settings.group.reporting.mail">
+								<jsp:attribute name="content">
+									<bsform:input path="group.publicationReportingSettings.reportingMailAddress" noHelp="${true}" />
+									<bsform:textarea path="group.publicationReportingSettings.reportingMailTemplate" noHelp="${true}" rows="10" />
+								</jsp:attribute>
+							</bsform:fieldset>
+
+							<bsform:fieldset legendKey="settings.group.reporting.address">
+								<jsp:attribute name="content">
+									<bsform:input path="group.publicationReportingSettings.externalReportingUrl" noHelp="${true}" />
+								</jsp:attribute>
+							</bsform:fieldset>
+							<bsform:button size="defaultSize" style="success" value="settings.group.reporting.update" />
+						</jsp:attribute>
+					</bsform:fieldset>
+				</c:if>
+				
+				
+				<!-- API key -->
+				<fieldset>
+					<legend>API</legend>
+					<!-- show API key -->
+					<c:choose>
+						<c:when test="${command.context.loginUser.apiKey eq null}">
+							<p>
+								<fmt:message key="settings.apisupport"><fmt:param><a href="/help/doc/api.html">API</a></fmt:param></fmt:message>
+							</p> 
+						</c:when>
+						<c:otherwise>
+						
+							<div class="form-group">
+								<label class="col-sm-3 control-label"><fmt:message key="settings.yourapikey"/></label>
+								<div class="col-sm-9">
+									<p class="form-control-static"><tt><c:out value="${command.context.loginUser.apiKey}" /></tt></p>
+								</div>
+								<div class="col-sm-offset-3 col-sm-9">
+									<p class="help-block">
+										<fmt:message key="settings.questionsregardingapi">
+											<fmt:param>
+												<span style="white-space: pre-wrap;"><a href="/help/doc/api.html"><fmt:message key="settings.apidoc"/></a></span>
+											</fmt:param>
+											<fmt:param>
+												<!--
+													TODO: make this configurable 
+									 			-->
+												<span style="white-space: nowrap;"><parts:email address="api-support@bibsonomy.org"/></span>
+											</fmt:param>
+										</fmt:message>
+									</p>
+								</div>
+							</div>
+						</c:otherwise>
+					</c:choose>
+				</fieldset>				
+				
+				<bsform:fieldset legendKey="settings.group.picture.header">
+					<jsp:attribute name="content">
+					
+						<!-- current picture -->
+						<div class ="form-group clearfix">
+							<form:label cssClass="col-sm-3 control-label" path="file"><fmt:message key="settings.picture.current"/></form:label>
+							<div class="col-sm-9">
+								<a title="${mtl:encodeURI(user.name)}" href="/user/${mtl:encodeURI(user.name)}" class="img-thumbnail img-responsive">
+									<img class="user-avatar" src="${relativeUrlGenerator.getUserPictureUrlByUsername(user.name)}" />
+									<span><user:username user="${user}" noLink="${true}"/></span>
+								</a>
+							</div>
+						</div>
+						
+						<!-- New Picture + delete picture -->
+						<div class="form-group clearfix">
+
+							<form:label cssClass="col-sm-3 control-label" path="pictureFile">
+								<fmt:message key="settings.picture.file" />
+							</form:label>
+
+							<div class="col-sm-9">
+								<input type="file" name="pictureFile" id="pictureFile" path="pictureFile"/>
+								<p class="help-block"><fmt:message key="settings.picture.help"/></p>
+							</div>
+	
+							<!-- Delete picture -->
+							<div class="col-sm-offset-3 col-sm-9">
+								<div class="checkbox">
+									<label>
+										<input name="deletePicture" type="checkbox"/> <fmt:message key="settings.picture.delete"/>
+									</label>
+								</div>
+								<p class="help-block"> <fmt:message key="settings.picture.delete.help"/> </p>
+							</div>
+							
+						</div>	
+					</jsp:attribute>
+				</bsform:fieldset>
+				
+				<br />
+				<div class="col-sm-offset-3 col-sm-9">
+					<fmt:message var="submitButton" key="settings.saveChanges" />
+					<bsform:button type="submit" style="primary" size="defaultSize" value="${submitButton}" />
+				</div>
+				<p class="clearfix"><br /></p>
+				
+			</form:form>
+		</fieldset>
+	</div>
+</jsp:root>

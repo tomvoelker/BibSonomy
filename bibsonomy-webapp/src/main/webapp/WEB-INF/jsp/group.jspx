@@ -11,17 +11,18 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-
-	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" activeTab="groups">
+	<c:set var="group" value="${command.group}" />
+	<fmt:message var="headline" key="page.group.headline" />
+	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" activeTab="groups" headline="${headline}${command.group.name}">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.group" formAction="${relativeUrlGenerator.getGroupUrlByGroupName(command.requestedGroup)}" formInputName="tag">
 				<jsp:attribute name="pathPart">
-					<li>
-						:: <a href="${relativeUrlGenerator.getGroupUrlByGroupName(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
-					</li>
+					<a href="${relativeUrlGenerator.getGroupUrlByGroupName(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
 				</jsp:attribute>
 				<jsp:attribute name="afterInput">
 					<group:groupname group="${command.group}"/>
@@ -30,42 +31,24 @@
 			</parts:search>	
 		</jsp:attribute>
 			
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:groupcrumb requestedGroup="${command.requestedGroup}" active="${true}"/>
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-		<ul>
-			<!-- link to join group -->
-			<c:if test="${command.context.userLoggedIn}">
 				<c:choose>
-					<c:when test="${mtl:contains(command.context.loginUser.groups, command.group)}">
-						<!-- FIXME: add link to leave group, if user is already member -->
-					</c:when>
-					<c:otherwise>
-						<c:if test="${!command.context.loginUser.spammer}">
-							<li style="padding: 5px;">
-								<fmt:message var="joinGroup" key="navi.join">
-									<fmt:param>${fn:escapeXml(command.group.name)}</fmt:param>
-								</fmt:message>
-								<button:linkButton
-									title="${joinGroup}"
-									href="/joinGroup?group=${fn:escapeXml(command.group.name)}"
-									image="${resdir}/image/starblue_unselected.png"
-								>
-									<jsp:attribute name="text">
-										<fmt:message key="joinGroup"/>
-									</jsp:attribute>
-								</button:linkButton>
-							</li>
-						</c:if>
-					</c:otherwise>
-				</c:choose>
-			</c:if>
+				<c:when test="${not empty group.name}">
 					
-			<!-- group members -->
-			<rc:members group="${command.group}" />
+					<sidebar:groupDetailsItem group="${group}"/>
+					<sidebar:groupMembersItem group="${group}"/>
 			
 			<!-- link to discussed posts of the group -->
-			<li>
-				<span class="sidebar_h"><fmt:message key="post.resource.discussion.headline"/></span>
+					<sidebar:sidebarItem textKey="post.resource.discussion.headline">
+						<jsp:attribute name="content">
 				<ul class="discussionSidebarContent sidebar_collapse_content">
 					<li>
 						<fmt:message key="discussion.byGroup.help" var="title"><fmt:param value="${fn:escapeXml(command.group.name)}"/></fmt:message>
@@ -74,14 +57,28 @@
 						</a>
 					</li>
 				</ul>
-			</li>
+						</jsp:attribute>
+					</sidebar:sidebarItem>
+				
+					<sidebar:sidebarTagCloudItem requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="default" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
+				
+				</c:when>
+				<c:otherwise>
 			
-			<!-- tags -->
+					<sidebar:sidebarItem textKey="group.doesnotexist.header">
+						<jsp:attribute name="content">
+							<ul>
 			<li>
-				<span class="sidebar_h"><fmt:message key="tags"/></span>
-				<tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="default" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
+									<fmt:message key="settings.addgroupdescription">
+										<fmt:param><a href="mailto:${properties['project.email']}">${properties['project.email']}</a></fmt:param>
+									</fmt:message>
 			</li>
 		</ul>
+		</jsp:attribute>
+					</sidebar:sidebarItem>
+
+				</c:otherwise>
+			</c:choose>
 		</jsp:attribute>
 	</layout:resourceLayout>
 
