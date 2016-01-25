@@ -28,10 +28,8 @@ package org.bibsonomy.services;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.SearchType;
@@ -1412,8 +1410,7 @@ public class URLGenerator {
 	 * @param tagName
 	 * @return The URL for the user's page with all posts tagged with tagName
 	 */
-	public String getUserUrlByUserNameAndTagName(final String userName,
-			final String tagName) {
+	public String getUserUrlByUserNameAndTagName(final String userName, final String tagName) {
 		return this.getUserUrlByUserNameTagNameAndSysUrl(userName, tagName, this.projectHome);
 	}
 

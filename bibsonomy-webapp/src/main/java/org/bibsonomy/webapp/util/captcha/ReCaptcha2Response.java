@@ -26,29 +26,39 @@
  */
 package org.bibsonomy.webapp.util.captcha;
 
-import net.tanesha.recaptcha.ReCaptchaResponse;
-
-/** Wrapper around {@link ReCaptchaResponse}
- * @author rja
+/**
+ * class for representing a recaptcha2 response
+ *
+ * @author niebler
  */
-public class ReCaptchaResponseWrapper implements CaptchaResponse {
+public class ReCaptcha2Response implements CaptchaResponse {
 	
-	private final ReCaptchaResponse response;
+	private final boolean isValid;
+	private final String errorMessage;
 	
 	/**
-	 * @param response A response from a ReCaptchaImplementation.
+	 * @param isValid
+	 * @param errorMessage
 	 */
-	public ReCaptchaResponseWrapper(final ReCaptchaResponse response) {
-		this.response = response;
+	public ReCaptcha2Response(boolean isValid, String errorMessage) {
+		this.isValid = isValid;
+		this.errorMessage = errorMessage;
 	}
 
-	@Override
-	public String getErrorMessage() {
-		return response.getErrorMessage();
-	}
-
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.util.captcha.CaptchaResponse#isValid()
+	 */
 	@Override
 	public boolean isValid() {
-		return response.isValid();
+		return this.isValid;
 	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.util.captcha.CaptchaResponse#getErrorMessage()
+	 */
+	@Override
+	public String getErrorMessage() {
+		return this.errorMessage;
+	}
+
 }

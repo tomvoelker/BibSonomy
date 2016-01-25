@@ -59,7 +59,7 @@
     				| display buddies
     				+-->
 			<sidebar:sidebarItem>
-				<jsp:attribute name="text">
+				<jsp:attribute name="text" >
     				<fmt:message key="spheres.sphere.members">
 						<fmt:param value="${fn:escapeXml(command.sphereName)}"/>
 					</fmt:message>

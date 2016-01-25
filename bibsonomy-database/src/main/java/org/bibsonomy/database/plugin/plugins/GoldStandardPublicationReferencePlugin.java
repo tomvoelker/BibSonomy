@@ -43,8 +43,8 @@ public class GoldStandardPublicationReferencePlugin extends AbstractDatabasePlug
 		param.setHash(interhash);
 		param.setRefHash(interhash);
 		
-		this.delete("deleteReferencesGoldStandardPublication", param, session);				
-		this.delete("deleteGoldStandardPublicationReferences", param, session);
+		this.delete("deleteRelationsGoldStandardPublication", param, session);
+		this.delete("deleteGoldStandardPublicationRelations", param, session);
 	}
 	
 	@Override
@@ -54,8 +54,8 @@ public class GoldStandardPublicationReferencePlugin extends AbstractDatabasePlug
 		param.setNewId(newInterhash);
 		param.setOldId(interhash);
 		
-		this.update("updateGoldStandardPublicationReference", param, session);
-		this.update("updateReferenceGoldStandardPublication", param, session);
+		this.update("updateGoldStandardPublicationRelations", param, session);
+		this.update("updateRelationsGoldStandardPublication", param, session);
 		
 		/*
 		 * move discussion with the gold standard

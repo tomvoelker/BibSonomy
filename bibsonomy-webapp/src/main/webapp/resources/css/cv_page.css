@@ -13,16 +13,24 @@
 }
 
 .hand {
-	cursor: pointer;	
+	cursor: pointer;
+}
+
+#cv-tags .tagcloud li a {
+	margin: 0.3em;
+	display: inline-block;
+}
+
+#publications div.publication {
+	padding-bottom: 0.5em;
+}
+
+#publications div.publication:last-of-type {
+	padding-bottom: 0em;
 }
 
 input[type=button] {
 	margin: 0.2em;
-} 
-
-.mw-headline {
-	margin: 5px 0px 10px 5px;
-	border-bottom: solid #eee 2px;
 }
 
 .secondTD {

@@ -135,6 +135,7 @@
 		<property name="logic" ref="logic"/>
 		<property name="layoutRenderer" ref="jabrefLayoutRenderer" />
 		<property name="messageSource" ref="messageSource"/>
+		<property name="urlGenerator" ref="relativeUrlGenerator" />
 	</bean>
 	
 	<!-- 
