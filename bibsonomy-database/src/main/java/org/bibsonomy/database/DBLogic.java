@@ -1490,11 +1490,16 @@ public class DBLogic implements LogicInterface {
 					throw new AccessDeniedException("You are not allowed to decline this request/invitation");
 				}
 				if (GroupRole.INVITED.equals(currentMembership.getGroupRole())) {
-					this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, requestedUserName);
-				} else {
-					this.permissionDBManager.ensureIsAdminOrHasGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.ADMINISTRATOR);
+					if (this.permissionDBManager.isAdminOrSelf(this.loginUser, requestedUserName) || this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(loginUser, group.getName(), GroupRole.ADMINISTRATOR)) {
+						this.groupDBManager.removePendingMembership(group.getName(), requestedUserName, session);
+					} 
+					
+				} else if (GroupRole.REQUESTED.equals(currentMembership.getGroupRole())) {
+					if (this.permissionDBManager.isAdminOrSelf(this.loginUser, requestedUserName) || this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(loginUser, group.getName(), GroupRole.ADMINISTRATOR)) {
+						this.groupDBManager.removePendingMembership(group.getName(), requestedUserName, session);
+					} 
 				}
-				this.groupDBManager.removePendingMembership(group.getName(), requestedUserName, session);
+				
 				break;
 
 			case UPDATE_PERMISSIONS:

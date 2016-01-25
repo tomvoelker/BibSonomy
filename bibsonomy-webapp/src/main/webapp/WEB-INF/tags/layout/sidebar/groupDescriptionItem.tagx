@@ -2,9 +2,9 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:group="urn:jsptagdir:/WEB-INF/tags/bstags/resources/group"
+	xmlns:group="urn:jsptagdir:/WEB-INF/tags/resources/group"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar">
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar">
 
 
 	<jsp:directive.attribute name="group" required="true"
