@@ -38,6 +38,7 @@ import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupRequest;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.UserUtils;
@@ -62,11 +63,8 @@ import org.springframework.validation.Errors;
 /**
  * @author Mario Holtmueller
  */
-public class GroupRequestController implements
-		ValidationAwareController<GroupRequestCommand>, ErrorAware,
-		RequestAware {
-	private static final Log log = LogFactory
-			.getLog(UserRegistrationController.class);
+public class GroupRequestController implements ValidationAwareController<GroupRequestCommand>, ErrorAware, RequestAware {
+	private static final Log log = LogFactory.getLog(UserRegistrationController.class);
 
 	private Errors errors = null;
 	private LogicInterface logic;
@@ -87,7 +85,7 @@ public class GroupRequestController implements
 		/*
 		 * user has to be logged in to see this page
 		 */
-		if (!command.getContext().isUserLoggedIn()) {
+		if (!context.isUserLoggedIn()) {
 			throw new AccessDeniedNoticeException("please log in", "error.general.login");
 		}
 
@@ -104,38 +102,25 @@ public class GroupRequestController implements
 		if (!context.isValidCkey()) {
 			this.errors.reject("error.field.valid.ckey");
 		}
-
+		
 		/*
-		 * check captacha; an error is added if it fails.
+		 * check captcha; an error is added if it fails.
 		 */
-		if (this.errors.hasErrors()) {
-			command.setCaptchaHTML(this.captcha
-					.createCaptchaHtml(this.requestLogic.getLocale()));
-			return Views.GROUPREQUEST;
-		}
-
-		CaptchaUtil.checkCaptcha(this.captcha, this.errors, log,
-				command.getRecaptcha_challenge_field(),
-				command.getRecaptcha_response_field(),
-				this.requestLogic.getHostInetAddress());
-
-		if (this.errors.hasErrors()) {
-			command.setCaptchaHTML(this.captcha
-					.createCaptchaHtml(this.requestLogic.getLocale()));
-			return Views.GROUPREQUEST;
-		}
-
+		CaptchaUtil.checkCaptcha(this.captcha, this.errors, log, command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), this.requestLogic.getHostInetAddress());
+		
 		final Group requestedGroup = command.getGroup();
 
 		/*
 		 * check if group name already exists
 		 */
 		final String groupName = requestedGroup.getName();
-		// we use the admin logic to get all users even deleted ones
-		final List<User> pendingUserList = this.adminLogic.getUsers(null, GroupingEntity.PENDING, groupName, null, null, null, null, null, 0, 1);
-		if (this.adminLogic.getUserDetails(groupName).getName() != null || present(pendingUserList)) {
-			// group name still exists, another one is required
-			this.errors.rejectValue("group.name", "error.field.duplicate.group.name");
+		if (!this.errors.hasErrors()) {
+			// we use the admin logic to get all users even deleted ones
+			final List<User> pendingUserList = this.adminLogic.getUsers(null, GroupingEntity.PENDING, groupName, null, null, null, null, null, 0, 1);
+			if (this.adminLogic.getUserDetails(groupName).getName() != null || present(pendingUserList)) {
+				// group name still exists, another one is required
+				this.errors.rejectValue("group.name", "error.field.duplicate.group.name");
+			}
 		}
 
 		if (this.errors.hasErrors()) {
@@ -143,51 +128,44 @@ public class GroupRequestController implements
 			return Views.GROUPREQUEST;
 		}
 		
-		// a simple flag to detect a admin created group
-		boolean adminAddedGroup = false;
-		User adminAddedGroupUser = null;
+		final User groupAdmin;
 		
-		// check if given user by admin exists
-		if(Role.ADMIN.equals(loginUser.getRole())) {
-			if(present(requestedGroup.getGroupRequest().getUserName())) {				
-				adminAddedGroupUser = logic.getUserDetails(requestedGroup.getGroupRequest().getUserName());
-				if(!UserUtils.isExistingUser(adminAddedGroupUser)) {
-					this.errors.reject("requestGroup.userNotExistError");
-					this.errors.reject("requestGroup.userNotExistError", new Object[]{requestedGroup.getGroupRequest().getUserName()},
-							"There's no user with the name {0}.");
+		// check if group was requested by an admin and she/he specified a group admin
+		final GroupRequest groupRequest = requestedGroup.getGroupRequest();
+		final boolean loggedInUserIsAdmin = Role.ADMIN.equals(loginUser.getRole());
+		if (loggedInUserIsAdmin) {
+			final String groupAdminName = groupRequest.getUserName();
+			if (present(groupAdminName)) {
+				groupAdmin = this.logic.getUserDetails(groupAdminName);
+				if (!UserUtils.isExistingUser(groupAdmin)) {
+					this.errors.reject("requestGroup.userNotExistError", new Object[]{groupAdmin}, "There's no user with the name {0}.");
 					return Views.ERROR;
 				}
-				this.setGroupCreationMode(GroupCreationMode.AUTOMATIC);
-				adminAddedGroup = true;
 			} else {
-				requestedGroup.getGroupRequest().setUserName(loginUser.getName());							
+				groupAdmin = loginUser;
 			}
 		} else {
-			requestedGroup.getGroupRequest().setUserName(loginUser.getName());			
+			groupAdmin = loginUser;
 		}
-
+		/*
+		 * prepare the group request object
+		 */
+		groupRequest.setUserName(groupAdmin.getName());
+		final boolean activateGroup = loggedInUserIsAdmin || GroupCreationMode.AUTOMATIC.equals(this.groupCreationMode);
+		if (activateGroup) {
+			groupRequest.setReason("");
+		}
+		
 		this.logic.createGroup(requestedGroup);
-
-		switch (this.groupCreationMode) {
-		case AUTOMATIC:
+		
+		if (activateGroup) {
 			this.adminLogic.updateGroup(requestedGroup, GroupUpdateOperation.ACTIVATE, null);
-			
-			if(adminAddedGroup) {
-				this.mailer.sendGroupActivationNotification(requestedGroup, adminAddedGroupUser, this.requestLogic.getLocale());				
-			} else {
-				this.mailer.sendGroupActivationNotification(requestedGroup, loginUser, this.requestLogic.getLocale());
-			}
-			
-			command.setMessage("success.group.activation", Collections.singletonList(groupName));
-			break;
-		case REQUESTEDBASED:
+			this.mailer.sendGroupActivationNotification(requestedGroup, groupAdmin, this.requestLogic.getLocale());
+			command.setMessage("success.group.created", Collections.singletonList(groupName));
+		} else {
 			this.mailer.sendGroupRequest(requestedGroup);
 			command.setMessage("success.groupRequest.sent", Collections.singletonList(groupName));
-			break;
-		default:
-			break;
 		}
-
 		return Views.SUCCESS;
 	}
 
@@ -242,7 +220,7 @@ public class GroupRequestController implements
 
 	@Override
 	public Validator<GroupRequestCommand> getValidator() {
-		return new GroupRequestValidator();
+		return new GroupRequestValidator(this.groupCreationMode);
 	}
 
 	/**
