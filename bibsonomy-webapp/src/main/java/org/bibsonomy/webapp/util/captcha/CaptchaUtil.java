@@ -33,36 +33,30 @@ import org.springframework.validation.ValidationUtils;
 
 /**
  * Methods to handle captchas.
- *
+ * 
  * @author rja
  */
 public class CaptchaUtil {
 
 	/**
-	 * Checks the captcha. If the response from the user does not match the
-	 * captcha, an error is added.
-	 *
-	 * @param captcha
-	 * @param errors
-	 * @param log
-	 * @param challenge
-	 * @param response
-	 * @param hostInetAddress
-	 *            - the address of the client
-	 * @throws InternServerException
-	 *             - if checking the captcha was not possible due to an
-	 *             exception. This could be caused by a non-reachable
-	 *             captcha-server.
+	 * Checks the captcha. If the response from the user does not match the captcha,
+	 * an error is added. 
+	 * 
+	 * @param captcha 
+	 * @param errors 
+	 * @param log 
+	 * @param challenge 
+	 * @param response 
+	 * @param hostInetAddress - the address of the client
+	 * @throws InternServerException - if checking the captcha was not possible due to 
+	 * an exception. This could be caused by a non-rechable captcha-server. 
 	 */
-	public static void checkCaptcha(final Captcha captcha, final Errors errors,
-			final Log log, final String challenge, final String response,
-			final String hostInetAddress) throws InternServerException {
+	public static void checkCaptcha(final Captcha captcha, final Errors errors, final Log log, final String challenge, final String response, final String hostInetAddress) throws InternServerException {
 		/*
 		 * check captcha response
 		 */
 		try {
-			final CaptchaResponse res = captcha.checkAnswer(challenge,
-					response, hostInetAddress);
+			final CaptchaResponse res = captcha.checkAnswer(challenge, response, hostInetAddress);
 
 			if (!res.isValid()) {
 				/*
@@ -71,22 +65,18 @@ public class CaptchaUtil {
 				/*
 				 * check, that challenge response is given
 				 */
-				ValidationUtils.rejectIfEmptyOrWhitespace(errors,
-						"recaptcha_response_field", "error.field.required");
-				errors.rejectValue("recaptcha_response_field",
-						"error.field.valid.captcha",
-						"The provided security token is invalid.");
+				ValidationUtils.rejectIfEmptyOrWhitespace(errors, "recaptcha_response_field", "error.field.required");
+				errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha", "The provided security token is invalid.");
 			} else if (res.getErrorMessage() != null) {
 				/*
 				 * valid response, but still an error
 				 */
-				log.warn("Could not validate captcha response: "
-						+ res.getErrorMessage());
+				log.warn("Could not validate captcha response: " + res.getErrorMessage());
 			}
 		} catch (final Exception e) {
 			log.fatal("Could not validate captcha response.", e);
 			throw new InternServerException("error.captcha");
 		}
 	}
-
+	
 }
