@@ -30,6 +30,7 @@ import org.bibsonomy.wiki.tags.GroupTag;
 
 /**
  * renders the group description of the group
+ * 
  * @author mho
  */
 public class GroupDescriptionTag extends GroupTag {
@@ -44,9 +45,7 @@ public class GroupDescriptionTag extends GroupTag {
 
 	@Override
 	protected String renderGroupTag() {
-		final StringBuilder renderedHTML = new StringBuilder();
-		renderedHTML.append(this.renderString(this.requestedGroup.getDescription()));
-		return renderedHTML.toString();
+		return this.renderString(this.requestedGroup.getDescription());
 	}
 
 }

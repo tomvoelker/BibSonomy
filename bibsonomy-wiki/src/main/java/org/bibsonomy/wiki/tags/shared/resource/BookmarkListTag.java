@@ -82,9 +82,8 @@ public class BookmarkListTag extends SharedTag {
  			tags = tagAttributes.get(REQUESTED_TAGS);
  		}
  		
+ 		List<Post<Bookmark>> posts = this.logic.getPosts(Bookmark.class, this.getGroupingEntity(), this.getRequestedName(), Arrays.asList(tags.split(" ")), null, null, SearchType.LOCAL, null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
  		// TODO: Remove duplicates, if rendered for group
- 		List<Post<Bookmark>> posts = this.logic.getPosts(Bookmark.class, this.getGroupingEntity(), this.getRequestedName(), Arrays.asList(tags.split(" ")), null, null,SearchType.LOCAL, null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
- 		
 		if (tagAttributes.get(LIMIT) != null) {
 			try {
 				posts = posts.subList(0, Integer.parseInt(tagAttributes.get(LIMIT)));
@@ -98,14 +97,12 @@ public class BookmarkListTag extends SharedTag {
 
 		for (final Post<Bookmark> post : posts) {
 			renderedHTML.append("<div class='entry'><li><span class='entry_title'>");
-			renderedHTML.append("<a href='" + post.getResource().getUrl()
-					+ "' rel='nofollow'>" + post.getResource().getTitle()
+			renderedHTML.append("<a href='" + post.getResource().getUrl() + "' rel='nofollow'>" + post.getResource().getTitle()
 					+ "</a>");
 			renderedHTML.append("</span>");
 
 			final String description = post.getDescription();
 			if (present(description)) {
-				// TODO: i18n [show details]
 				renderedHTML.append(" <a class='hand' onclick='return toggleDetails(this)' >"
 								+ this.messageSource.getMessage(
 										"cv.options.show_details",
@@ -117,7 +114,7 @@ public class BookmarkListTag extends SharedTag {
 		}
 
 		renderedHTML.append("</ul>");
-		renderedHTML.append("</div >");
+		renderedHTML.append("</div>");
 		return renderedHTML.toString();
 	}
 }
