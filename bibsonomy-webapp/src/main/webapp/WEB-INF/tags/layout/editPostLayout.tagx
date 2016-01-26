@@ -46,13 +46,17 @@
 			<a name="groups"><!--  --></a>
 			<bsform:fieldset legendKey="post.resource.groups.describe">
 				<jsp:attribute name="content">
-					<post:groupBox groups="${command.context.loginUser.groups}" />
-					<c:if test="${not empty command.context.loginUser.groups}">
-						<post:relevantForBox groups="${command.context.loginUser.groups}" />
-					</c:if>
+					<post:groupBox groups="${command.context.loginUser.groups}" labelColSpan="3"/>
 				</jsp:attribute>
 			</bsform:fieldset>
 			
+			<c:if test="${not empty command.context.loginUser.groups}">
+				<bsform:fieldset legendKey="post.resource.groups.options">
+					<jsp:attribute name="content">
+						<post:relevantForBox groups="${command.context.loginUser.groups}" />
+					</jsp:attribute>
+				</bsform:fieldset>
+			</c:if>
 			<!-- tag sets -->
 			<post:tagSets groups="${command.context.loginUser.groups}" />
 		</jsp:attribute>
