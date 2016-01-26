@@ -41,7 +41,7 @@
 				<!-- Pending invites for the user -->
 				<c:set var="showPendingInvites" value="${false}" />
 				<c:set var="showPendingRequests" value="${false}" />
-				<c:set var="showPendingGroupRequests" value="${false}" />
+				<c:set var="showPendingGroupRequests" value="${not empty command.pendingRequestedgroups}" />
 				<c:forEach items="${command.user.pendingGroups}" var="group" varStatus="status">
 					<c:forEach items="${group.memberships}" var="membership">
 						<c:if test="${membership.groupRole eq 'INVITED' }">
@@ -52,9 +52,6 @@
 						</c:if>
 					</c:forEach>
 				</c:forEach>
-				<c:if test="${not empty command.pendingRequestedgroups}">
-					<c:set var="showPendingGroupRequests" value="${true}" />
-				</c:if>
 
 				<c:if test="${showPendingInvites}">
 					<bsform:fieldset legendKey="settings.group.pendingInvites.headline">
