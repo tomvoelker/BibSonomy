@@ -117,13 +117,13 @@
 							<c:forEach var="entry" items="${command.pendingGroups}">
 								<tr>
 									<td>
-										<a href="${relativeUrlGenerator.getGroupUrlByGroupName(entry.name)}">
-											<c:out value="${entry.name}"/>
-										</a>
+										<c:out value="${entry.name}"/>
 									</td>
 									<!-- show request user name -->
 									<td>
-										<c:out value="${entry.groupRequest.userName}"/>
+										<a href="${relativeUrlGenerator.getUserUrlByUserName(entry.name)}">
+											<c:out value="${entry.groupRequest.userName}"/>
+										</a>
 									</td>
 									<!-- show request reason -->
 									<td>
