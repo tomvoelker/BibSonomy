@@ -66,6 +66,7 @@ public enum GroupUpdateOperation {
 	ADD_INVITED,
 	
 	/** Add an invited user, that is marked as spammer */
+	// FIXME: spammers can not be member of groups TODO_GROUPS
 	ADD_INVITED_SPAMMER,
 
 	/** Remove an invited user */

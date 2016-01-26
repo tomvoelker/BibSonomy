@@ -3057,8 +3057,6 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public void updateWiki(final String userName, final Wiki wiki) {
-		//this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
-
 		if (!this.permissionDBManager.isAdminOrSelf(this.loginUser, userName)) {
 			// if we are here then the user is not the logged in one which means it is a group user
 			if (!this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, userName, GroupRole.MODERATOR)) {
