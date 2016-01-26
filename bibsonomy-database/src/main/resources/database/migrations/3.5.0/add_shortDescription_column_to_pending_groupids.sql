@@ -1,1 +1,0 @@
-ALTER TABLE `pending_groupids` ADD `shortDescription` TEXT NULL AFTER `allow_join`;

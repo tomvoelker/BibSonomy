@@ -1,1 +1,0 @@
-ALTER TABLE `groupids` ADD `shortDescription` TEXT NULL AFTER `allow_join`;
