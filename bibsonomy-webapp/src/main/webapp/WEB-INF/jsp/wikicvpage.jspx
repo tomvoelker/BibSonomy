@@ -48,7 +48,7 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-	 		<!--+
+			<!--+
 				| only for logged in users: followers, friends, groups, etc.
 				| and not on his own cv page
 		 		-->
@@ -56,8 +56,8 @@
 				<sidebar:socializer command="${command}" />
 			</c:if>
 			
-    	 	<sidebar:sidebarTagCloudItem 
-    	 				requPath="user/${command.requestedUser}"
+			<sidebar:sidebarTagCloudItem 
+						requPath="user/${command.requestedUser}"
 						cmd="${command.tagcloud}"
 						tagboxMinfreqStyle="user"
 						tagSizeMode="user"
@@ -66,16 +66,16 @@
 		</jsp:attribute>
 
 		<!--+
-    	 	| html header extension: page specific stylesheet
-    	 	-->
+		 	| html header extension: page specific stylesheet
+		 	-->
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/cv_page.css" />
-			
-	    </jsp:attribute>
+			<script type="text/javascript" src="${resdir}/javascript/cv/handlers.js"><!-- keep me --></script>
+		</jsp:attribute>
 
 		<!--+
-    	 	| heading
-    	 	+-->
+		 	| heading
+		 	+-->
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.cv">
 				<jsp:attribute name="pathPart">
@@ -84,15 +84,15 @@
 					</li>
 				</jsp:attribute>
 			</parts:search>	
-    	</jsp:attribute>
-    	
+		</jsp:attribute>
+		
 		<!--+
-    	 	| page options
-    	 	+-->
-    	<jsp:attribute name="pageOptions">
-    		<a href="/settings?selTab=0"><fmt:message key="cv.editSettings" /></a><br />
-    		<a href="/settings?selTab=5"><fmt:message key="cv.editCV" /></a>
-    	</jsp:attribute>
+		 	| page options
+		 	+-->
+		<jsp:attribute name="pageOptions">
+			<a href="/settings?selTab=0"><fmt:message key="cv.editSettings" /></a><br />
+			<a href="/settings?selTab=5"><fmt:message key="cv.editCV" /></a>
+		</jsp:attribute>
 		
 		<!--+
 			| page content 
@@ -105,7 +105,7 @@
 						<button data-toggle="dropdown" class="btn btn-xs btn-default dropdown-toggle"><span class="fa fa-cog"><!--  --></span>&amp;nbsp;<span class="caret"><!--  --></span></button>
 						<ul class="dropdown-menu">
 							<li><a href="/settings?selTab=0"><fmt:message key="cv.editSettings" /></a></li>
-		    				<li><a href="/settings?selTab=5"><fmt:message key="cv.editCV" /></a></li>
+							<li><a href="/settings?selTab=5"><fmt:message key="cv.editCV" /></a></li>
 						</ul>
 					</div>
 				</c:if>
@@ -135,6 +135,5 @@
 				</div>
 			</div>
 		</jsp:attribute>
-</layout:paneLayout>
-	
+	</layout:paneLayout>
 </jsp:root>

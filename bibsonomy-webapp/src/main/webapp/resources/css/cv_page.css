@@ -1,5 +1,6 @@
 .bookmarkList {
-	list-style-type: disc;
+	list-style-type: none;
+	padding-left: 0px;
 }
 
 .helpList {
@@ -12,8 +13,9 @@
 	display: none;
 }
 
-.hand {
+a.cv-bookmark-details {
 	cursor: pointer;
+	margin-left: 4px;
 }
 
 #cv-tags .tagcloud li a {
@@ -21,11 +23,11 @@
 	display: inline-block;
 }
 
-#publications div.publication {
+ul#bookmarklist li, #publications div.publication {
 	padding-bottom: 0.5em;
 }
 
-#publications div.publication:last-of-type {
+#publications div.publication:last-of-type, .bookmarkList li:last-of-type {
 	padding-bottom: 0em;
 }
 
@@ -45,46 +47,35 @@ input[type=button] {
 }
 
 #wikiArea p, dl {
-    padding-left: 1.2em;
+	padding-left: 1.2em;
 }
-
-.align {
-	margin-left: 25px;
-}	
 
 .entry {
-font-size:14px;
-line-height:14px;
-text-decoration:none;
-}
-.entry_title {
-font-weight: bold;
-color:#478080;
-}
-.entry_author {
+	font-size:14px;
+	line-height:14px;
+	text-decoration:none;
 }
 
+.entry_title {
+	font-weight: bold;
+}
 .entry_journal, .entry_booktitle {
-font-style: italic;
-color:#478080;
+	font-style: italic;
+	color:#478080;
 }
 
 .imageContainer {
-max-width: 200px;
-text-align: center;
-display:inline-block;
-margin: 5px 5px 5px 5px;
+	max-width: 200px;
+	text-align: center;
+	display:inline-block;
+	margin: 5px 5px 5px 5px;
 }
 
 .groupImage {
-max-width: auto;
-text-align: center;
-margin: 0 auto;
-text-align:center;
-}
-
-.success {
-/*	background-color: LightGreen; */
+	max-width: auto;
+	text-align: center;
+	margin: 0 auto;
+	text-align:center;
 }
 
 .error {
@@ -93,4 +84,3 @@ text-align:center;
 	display: inline-block;
 	padding: 5px;
 }
-

@@ -140,9 +140,7 @@ public class TagcloudTag extends UserTag {
 		}
 		
 		renderedHTML.append("<div id='cv-tags'>");
-		if (tags.isEmpty()) {
-			// TODO: message
-		} else {
+		if (!tags.isEmpty()) {
 			final int tagMinFrequency = getMinFreqFromTaglist(tags);
 			final int tagMaxFrequency = getMaxFreqFromTaglist(tags);
 			
