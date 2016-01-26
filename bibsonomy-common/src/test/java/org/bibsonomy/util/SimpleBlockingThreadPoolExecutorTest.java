@@ -33,13 +33,12 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * TODO: add documentation to this class
+ * tests for {@link SimpleBlockingThreadPoolExecutor}
  *
  * @author jensi
  */
-public class BlockingQueueExecutorTest {
+public class SimpleBlockingThreadPoolExecutorTest {
 	private static final int SLEEP_MILLIS = 50;
-	
 	
 	@Test
 	public void testWaitingTaskQueue() throws InterruptedException {
@@ -145,7 +144,6 @@ public class BlockingQueueExecutorTest {
 		Assert.assertTrue((submissionTimes[3] - submissionTimes[2]) < SLEEP_MILLIS * 1100 * 1000);
 		assertBlockingOfTaskSubmission(submissionTimes);
 		executor.shutdownNow();
-		
 	}
 
 
@@ -159,6 +157,6 @@ public class BlockingQueueExecutorTest {
 	private void assertBlockingOfTaskSubmission(final long[] submissionTimes) {
 		// one task in execution, one in the queue so submission should block after the second submission
 		Assert.assertTrue((submissionTimes[1] - submissionTimes[0]) < (submissionTimes[2] - submissionTimes[1]));
-//		Assert.assertTrue((submissionTimes[2] - submissionTimes[1]) > SLEEP_MILLIS * 1000 * 1000);
+		Assert.assertTrue((submissionTimes[2] - submissionTimes[1]) > SLEEP_MILLIS * 1000 * 1000);
 	}
 }
