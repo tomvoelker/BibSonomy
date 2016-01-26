@@ -66,7 +66,7 @@ import org.springframework.validation.Errors;
 public class GroupRequestController implements ValidationAwareController<GroupRequestCommand>, ErrorAware, RequestAware {
 	private static final Log log = LogFactory.getLog(UserRegistrationController.class);
 
-	private Errors errors = null;
+	private Errors errors;
 	private LogicInterface logic;
 	private LogicInterface adminLogic;
 	private MailUtils mailer;
