@@ -199,7 +199,19 @@ public class TagcloudTag extends UserTag {
 		final String link = this.urlGenerator.getUserUrlByUserNameAndTagName(this.requestedUser.getName(), tagName);
 		final int tagCount = tag.getUsercount();
 		final int fontSize = TagViewUtils.computeTagFontsize(Integer.valueOf(tagCount), Integer.valueOf(tagMinFrequency), Integer.valueOf(tagMaxFrequency), "user").intValue();
-		return "<a href='" + link + "' title='" + tagCount + " posts' style='font-size:" + fontSize + "%' >" + StringEscapeUtils.escapeHtml(tagName) + "</a>";
+		final String postString = this.getPostStringByTagCount(tagCount);
+		return "<a href='" + link + "' title='" + tagCount + " " + postString + "' style='font-size:" + fontSize + "%' >" + StringEscapeUtils.escapeHtml(tagName) + "</a>";
+	}
+
+	/**
+	 * @param tagCount
+	 * @return
+	 */
+	private String getPostStringByTagCount(int tagCount) {
+		if (tagCount == 1) {
+			return this.messageSource.getMessage("post", null, this.locale);
+		}
+		return this.messageSource.getMessage("posts", null, this.locale);
 	}
 
 	/**
