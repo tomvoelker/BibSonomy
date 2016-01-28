@@ -85,7 +85,7 @@
 			spammer = #spammer#,
 			role = #role#, 
 			updated_by = #updatedBy#, 
-			updated_at = #updatedAt#
+			updated_at = #updatedAt#,
 			reg_log = #registrationLog#
 			<isNotNull property="reminderPassword">,tmp_password = #reminderPassword#, tmp_request_date = #reminderPasswordRequestDate#</isNotNull>		
 		WHERE user_name=#name#
