@@ -176,7 +176,7 @@
 					<legend>API</legend>
 					<!-- show API key -->
 					<c:choose>
-						<c:when test="${command.context.loginUser.apiKey eq null}">
+						<c:when test="${command.user.apiKey eq null}">
 							<p>
 								<fmt:message key="settings.apisupport"><fmt:param><a href="/help/doc/api.html">API</a></fmt:param></fmt:message>
 							</p> 
@@ -186,7 +186,7 @@
 							<div class="form-group">
 								<label class="col-sm-3 control-label"><fmt:message key="settings.yourapikey"/></label>
 								<div class="col-sm-9">
-									<p class="form-control-static"><tt><c:out value="${command.context.loginUser.apiKey}" /></tt></p>
+									<p class="form-control-static"><tt><c:out value="${command.user.apiKey}" /></tt></p>
 								</div>
 								<div class="col-sm-offset-3 col-sm-9">
 									<p class="help-block">
