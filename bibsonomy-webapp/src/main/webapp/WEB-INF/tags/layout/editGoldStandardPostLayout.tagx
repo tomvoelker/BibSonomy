@@ -230,6 +230,9 @@
  								<a class="list-group-item" onclick="javascript: activateAffixEntry(this)" href="#tags"><fmt:message key="post.resource.tags"/></a>
  								<a class="list-group-item" onclick="javascript: activateAffixEntry(this)" href="#groups"><fmt:message key="post.resource.groups"/></a>
  							</c:if>
+ 							<c:if test="${not empty command.context.loginUser.groups and not fn:startsWith(resourceType, 'GoldStandard')}">
+ 								<a class="list-group-item" onclick="javascript: activateAffixEntry(this)" href="#group-options"><fmt:message key="post.resource.groups.options"/></a>
+ 							</c:if>
  							<c:if test="${not empty detailedInformation}">
 	 							<c:if test="${resourceType ne 'GoldStandardPublication'}">
 	 								<a class="list-group-item" onclick="javascript: activateAffixEntry(this)" href="#uploadedFiles"><fmt:message key="post.bibtex.files" /></a>

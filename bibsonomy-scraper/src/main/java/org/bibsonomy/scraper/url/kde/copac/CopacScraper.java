@@ -62,14 +62,15 @@ public class CopacScraper extends AbstractUrlScraper {
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
-		String cookie = null;
 		try {
-			final String bibResult = WebUtils.getContentAsString(cookie, sc.getUrl().toString() + EXPORT_BIBTEX );
+			String cookie = WebUtils.getCookies(sc.getUrl());		 
+			System.out.println(cookie);
+			final String bibResult = WebUtils.getContentAsString(sc.getUrl().toString() + EXPORT_BIBTEX );
 			System.out.println(bibResult);
 		} catch (IOException e) {
 			throw new ScrapingFailureException("URL to scrape does not exist. It maybe malformed.");
 		} 
-		// System.out.println(sc.getUrl().toString() + EXPORT_BIBTEX);
+		System.out.println(sc.getUrl().toString() + EXPORT_BIBTEX);
 		return false;
 	}
 	

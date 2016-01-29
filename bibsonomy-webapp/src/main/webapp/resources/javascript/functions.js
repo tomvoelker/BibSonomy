@@ -93,10 +93,6 @@ function initView() {
 	$(tagbox).each(function(index, item) {
 		init_tagbox(item, tagbox_style, tagbox_sort, tagbox_minfreq);
 	});
-	/*
-	 * initialize the sidebar (basically adds the [-] togglers)
-	 */
-	//init_sidebar();
 
 	/* *************************************************************************
 	 * scope: post lists

@@ -8,81 +8,84 @@
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form">
 
-    <!-- 
-    
+	<!-- 
         Shows form fields to choose group(s) the post should be viewable for.
         Consists of three radio buttons: public, private, other
         and a select box which contains the group "friends" plus other possible groups.     
     
      -->
-
+	
 	<jsp:directive.attribute name="groups" type="java.util.List" required="true"/>
+	<jsp:directive.attribute name="labelColSpan" type="java.lang.Integer" required="false"/>
+	
+	<c:if test="${empty labelColSpan}">
+		<c:set var="labelColSpan" value="2" />
+	</c:if>
 
-			<div class="form-group">
-				<label class="col-sm-2 control-label" for="${fn:escapeXml(id)}">
-					<fmt:message key="post.resource.viewablefor" />
-				</label>
-				<div class="col-sm-10">
-					<div class="row">
-						<div class="col-sm-4">
-							<div class="radio">
-								<label>
-									<form:radiobutton cssClass="radio-viewable-group" path="abstractGrouping" value="public" tabindex="2" /> <fmt:message key="post.resource.public"/>
-								</label>
-							</div>
-							<div class="radio">
-								<label>
-		       						<form:radiobutton cssClass="radio-viewable-group" path="abstractGrouping" value="private" tabindex="2" /> <fmt:message key="post.resource.private"/>
-		       					</label>
-		       				</div>
-		       				<div class="radio">
-			       				<label>
-			       					<form:radiobutton cssClass="radio-viewable-group" path="abstractGrouping" value="other" tabindex="2" id="post.groups.other" /> <fmt:message key="post.resource.other"/>
-			       				</label>
-			       			</div>
-		       			</div>
-		       			<div class="col-sm-8">
-		       				<form:select class="initiallyHidden form-control" multiple="false" path="groups" size="5" id="post.groups.other2" tabindex="2">
-		            			<form:option label="friends" value="friends"/>
-		              			<form:options items="${groups}" itemValue="name" itemLabel="name"/>
-		            		</form:select>
-		       			</div>
-		   			</div>
-		   			<p class="help-block"><form:errors path="post.groups" /><!-- This comment is needed, otherwise this will result in an self-closing element --></p>
+	<div class="form-group">
+		<label class="col-sm-${labelColSpan} control-label" for="${fn:escapeXml(id)}">
+			<fmt:message key="post.resource.viewablefor" />
+		</label>
+		<div class="col-sm-${12 - labelColSpan}">
+			<div class="row">
+				<div class="col-sm-4">
+					<div class="radio">
+						<label>
+							<form:radiobutton cssClass="radio-viewable-group" path="abstractGrouping" value="public" tabindex="2" /> <fmt:message key="post.resource.public"/>
+						</label>
+					</div>
+					<div class="radio">
+						<label>
+							<form:radiobutton cssClass="radio-viewable-group" path="abstractGrouping" value="private" tabindex="2" /> <fmt:message key="post.resource.private"/>
+						</label>
+					</div>
+					<div class="radio">
+						<label>
+							<form:radiobutton cssClass="radio-viewable-group" path="abstractGrouping" value="other" tabindex="2" id="post.groups.other" /> <fmt:message key="post.resource.other"/>
+						</label>
+					</div>
+				</div>
+				<div class="col-sm-8">
+					<form:select class="initiallyHidden form-control" multiple="false" path="groups" size="4" id="post.groups.other2" tabindex="2">
+						<form:option label="friends" value="friends"/>
+						<form:options items="${groups}" itemValue="name" itemLabel="name"/>
+					</form:select>
 				</div>
 			</div>
-			
-			<script type="text/javascript">
-			<![CDATA[
-			/* 	
-				this script controls the visibility of the group select field.
-				if the 'other' radio button is checked or hovered show the select field, otherwise hide it
-			*/
-			  var selectOther = document.getElementById("post.groups.other2");
-			  var radiobuttonOther = document.getElementById("post.groups.other");
-			  var siblings = $(radiobuttonOther).parent().parent().siblings().find("input:radio");
-		      
-			  var hideSelectBox = function(el) {
-				  if(el.id=="post.groups.other" && el.checked) {
-					  $(selectOther).show();
-				  } else {
-					  $(selectOther).find("option").attr("selected", false);
-					  $(selectOther).hide();
-				  }
-			  };
-		
-			  var callback = function(e) {
-				  selectOther.disabled = !radiobuttonOther.checked;
-				  hideSelectBox(e.target);
-			  };
-			  
-			  $(document).ready(function() {
-		    	  $(radiobuttonOther).click(callback);
-		    	  $(siblings[0]).click(callback);
-		    	  $(siblings[1]).click(callback);
-		    	  hideSelectBox(radiobuttonOther);
-				});
-			]]>
-			</script>
+			<p class="help-block"><form:errors path="post.groups" /><!-- This comment is needed, otherwise this will result in an self-closing element --></p>
+		</div>
+	</div>
+	
+	<script type="text/javascript">
+	<![CDATA[
+	/* 	
+		this script controls the visibility of the group select field.
+		if the 'other' radio button is checked or hovered show the select field, otherwise hide it
+	*/
+	  var selectOther = document.getElementById("post.groups.other2");
+	  var radiobuttonOther = document.getElementById("post.groups.other");
+	  var siblings = $(radiobuttonOther).parent().parent().siblings().find("input:radio");
+      
+	  var hideSelectBox = function(el) {
+		  if(el.id=="post.groups.other" && el.checked) {
+			  $(selectOther).show();
+		  } else {
+			  $(selectOther).find("option").attr("selected", false);
+			  $(selectOther).hide();
+		  }
+	  };
 
+	  var callback = function(e) {
+		  selectOther.disabled = !radiobuttonOther.checked;
+		  hideSelectBox(e.target);
+	  };
+	  
+	  $(document).ready(function() {
+    	  $(radiobuttonOther).click(callback);
+    	  $(siblings[0]).click(callback);
+    	  $(siblings[1]).click(callback);
+    	  hideSelectBox(radiobuttonOther);
+		});
+	]]>
+	</script>
 </jsp:root>
