@@ -138,6 +138,7 @@
 	<filter-mapping>
 		<filter-name>UrlRewriteFilter</filter-name>
 		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
 	</filter-mapping>
 
 	<!-- spring main servlet -->

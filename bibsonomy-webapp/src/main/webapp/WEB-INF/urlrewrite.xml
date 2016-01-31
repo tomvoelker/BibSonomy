@@ -2,7 +2,11 @@
 <!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 3.2//EN"
         "http://tuckey.org/res/dtds/urlrewrite3.2.dtd">
 
-<urlrewrite>
+<!--
+	decode-using = "null" else every encoded slash will be decoded to / which
+	breaks some rules
+-->
+<urlrewrite decode-using="null">
 
 	<!-- TODO: why do we need this rule? -->
 	<rule>
@@ -880,33 +884,18 @@
 	 
 	 
 <!-- ############## search pages ############### -->
-
-	<!--+ 
-	    | KEEP ME
-	    | FIXME: The following 2 rules for search are currently disabled.
-	    | They are related to trouble with particular characters in search queries.
-	    | However to enable restricting search queries using tags they should in fact be used after such troubles have been fixed.
-	    | Related to issue #2439
-	    	    
+	
 	<rule>
 		<name>/search/SEARCH/TAG</name>
 		<from>^/+search/+([^/]+?)/(.+)$</from>
-		<set type="parameter" name="requestedSearch">$1</set>
+		<set type="parameter" name="requestedSearch">${unescape:$1}</set>
 		<set type="parameter" name="requestedTags">$2</set>
 		<to last="true">/search</to>
 	</rule>
 	<rule>
 		<name>/search/SEARCH</name>
 		<from>^/+search/+([^/]+)$</from>
-		<set type="parameter" name="requestedSearch">$1</set>
-		<to last="true">/search</to>
-	</rule>
-	KEEP ME -->
-
-	<rule>
-		<name>/search/SEARCH</name>
-		<from>^/+search/(.+)$</from>
-		<set type="parameter" name="requestedSearch">$1</set>
+		<set type="parameter" name="requestedSearch">${unescape:$1}</set>
 		<to last="true">/search</to>
 	</rule>
 	<!-- redirect for search formular on /search/SEARCHTERM page -->
@@ -917,7 +906,6 @@
 		<to type="redirect" last="true">/search/${escape:%1}</to>
 	</rule>
 	
-
 	<!-- ############## /concepts ############### -->
 	
 	<!--+ 
