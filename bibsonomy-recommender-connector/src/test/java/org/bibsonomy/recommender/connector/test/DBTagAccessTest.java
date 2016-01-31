@@ -65,7 +65,7 @@ import recommender.impl.multiplexer.MultiplexingRecommender;
  */
 public class DBTagAccessTest {
 	private static DBLogic<TagRecommendationEntity, RecommendedTag> dbLogic;
-	private static TestDatabaseLoader TEST_DB_LOADER = new TestDatabaseLoader("recommender-db-schema.sql");
+	protected static TestDatabaseLoader TEST_DB_LOADER = new TestDatabaseLoader("recommender-db-schema.sql");
 	
 	@BeforeClass
 	public static void setUp() {

@@ -51,6 +51,7 @@ import org.bibsonomy.recommender.connector.testutil.SelectCounter;
 import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -75,7 +76,7 @@ import recommender.impl.tags.simple.DummyTagRecommender;
  * @author fei
  */
 public class MultiplexingRecommenderTest {
-
+	
 	private static final int NROFRECOS = 10;
 	private static final int MSTOWAIT = 1000;
 	private static final int RECOMMENDATIONS_TO_CALCULATE = 4;
@@ -87,6 +88,12 @@ public class MultiplexingRecommenderTest {
 	public static void setUp() {
 		dbTagLogic = RecommenderTestContext.getBeanFactory().getBean("tagRecommenderLogic", DBLogConfigBibSonomy.class);
 		dbItemLogic = RecommenderTestContext.getBeanFactory().getBean("bibtexRecommenderLogic", DBLogConfigItemAccess.class);
+	}
+	
+	@Before
+	public void initTestDatabase() {
+		DBTagAccessTest.TEST_DB_LOADER.load("recommender-test.properties", "recommender.tag");
+		DBItemAccessTest.TEST_DB_LOADER.load("recommender-test.properties", "recommender.item");
 	}
 
 	/**
