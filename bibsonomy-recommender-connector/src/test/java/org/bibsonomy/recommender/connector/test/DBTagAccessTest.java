@@ -44,6 +44,8 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.recommender.connector.database.DBLogConfigBibSonomy;
 import org.bibsonomy.recommender.connector.model.PostWrapper;
 import org.bibsonomy.recommender.connector.testutil.RecommenderTestContext;
+import org.bibsonomy.testutil.TestDatabaseLoader;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -62,12 +64,17 @@ import recommender.impl.multiplexer.MultiplexingRecommender;
  * @author fei
  */
 public class DBTagAccessTest {
-
 	private static DBLogic<TagRecommendationEntity, RecommendedTag> dbLogic;
+	private static TestDatabaseLoader TEST_DB_LOADER = new TestDatabaseLoader("recommender-db-schema.sql");
 	
 	@BeforeClass
 	public static void setUp() {
 		dbLogic = RecommenderTestContext.getBeanFactory().getBean("tagRecommenderLogic", DBLogConfigBibSonomy.class);
+	}
+	
+	@Before
+	public void initTestDatabase() {
+		TEST_DB_LOADER.load("recommender-test.properties", "recommender.tag");
 	}
 	
 	/**

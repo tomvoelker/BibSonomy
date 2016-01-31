@@ -62,6 +62,11 @@
 			<artifactId>bibsonomy-database-common</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-database-common</artifactId>
+			<type>test-jar</type>
+		</dependency>
+		<dependency>
 			<groupId>de.uni-kassel.cs</groupId>
 			<artifactId>recommender-impl</artifactId>
 			<version>1.0.0</version>
