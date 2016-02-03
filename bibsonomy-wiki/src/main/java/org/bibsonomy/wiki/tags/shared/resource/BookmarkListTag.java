@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -93,24 +94,23 @@ public class BookmarkListTag extends SharedTag {
 			}
 		}
 
-		renderedHTML.append("<div class='align' id='bookmarks'>");
+		renderedHTML.append("<div id='bookmarks'>");
 		renderedHTML.append("<ul id='bookmarklist' class='bookmarkList'>");
 
 		for (final Post<Bookmark> post : posts) {
-			renderedHTML.append("<div style='margin:1.2em;' class='entry'><li><span class='entry_title'>");
-			renderedHTML.append("<a href='" + post.getResource().getUrl()
-					+ "' rel='nofollow'>" + post.getResource().getTitle()
-					+ "</a>");
+			renderedHTML.append("<div class='entry'><li><span class='entry_title'>");
+			renderedHTML.append("<a href='");
+			renderedHTML.append(StringEscapeUtils.escapeXml(post.getResource().getUrl()));
+			renderedHTML.append("' rel='nofollow'>");
+			renderedHTML.append(StringEscapeUtils.escapeHtml(post.getResource().getTitle()));
+			renderedHTML.append("</a>");
 			renderedHTML.append("</span>");
 
 			final String description = post.getDescription();
 			if (present(description)) {
-				// TODO: i18n [show details]
-				renderedHTML.append(" <a class='hand' onclick='return toggleDetails(this)' >"
-								+ this.messageSource.getMessage(
-										"cv.options.show_details",
-										new Object[] { this.getName() },
-										this.locale) + " </a>");
+				renderedHTML.append("<a class='cv-bookmark-details' onclick='return toggleDetails(this)'>");
+				renderedHTML.append(this.messageSource.getMessage("cv.options.show_details", new Object[] { this.getName() }, this.locale));
+				renderedHTML.append("</a>");
 				renderedHTML.append("<p class='details'>" + description + "</p>");
 			}
 			renderedHTML.append("</li></div>");

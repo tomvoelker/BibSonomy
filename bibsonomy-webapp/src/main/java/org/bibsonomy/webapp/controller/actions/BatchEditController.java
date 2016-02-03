@@ -753,7 +753,6 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 * @param loginUserName
 	 * @return
 	 */
-
 	private View getFinalRedirect(final String referer, final String loginUserName) {
 		String redirectUrl = referer;
 		/*

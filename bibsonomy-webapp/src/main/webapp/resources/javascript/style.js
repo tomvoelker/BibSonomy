@@ -35,8 +35,6 @@ function init_tagbox(tagbox, show, sort, minfreq) {
 	
 	changeTagBox(tagbox, styleList, style_show[show]);
 	changeTagBox(tagbox, styleList, style_sort[sort]);
-
-	//tagbox.parentNode.insertBefore(styleList.get(0), tagbox); // XXX: refactor to jQuery
 	
 	styleList.insertAfter($('.tagcloud-headline'));
 }

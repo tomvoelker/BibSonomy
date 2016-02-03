@@ -32,13 +32,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.params.ClipboardParam;
 import org.bibsonomy.database.params.BibTexExtraParam;
+import org.bibsonomy.database.params.ClipboardParam;
 import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.InboxParam;
 import org.bibsonomy.database.params.UserParam;
-import org.bibsonomy.database.plugin.plugins.ClipboardPlugin;
 import org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin;
+import org.bibsonomy.database.plugin.plugins.ClipboardPlugin;
 import org.bibsonomy.database.plugin.plugins.DiscussionPlugin;
 import org.bibsonomy.database.plugin.plugins.GoldStandardPublicationReferencePlugin;
 import org.bibsonomy.database.plugin.plugins.Logging;
@@ -152,7 +152,7 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	public void onGoldStandardDelete(final String interhash, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
 			plugin.onGoldStandardDelete(interhash, session);
-		}	
+		}
 	}
 
 	@Override

@@ -52,6 +52,6 @@ public class HTMLCharsAntiScriptTest {
 	@Test
 	public void testAmp() {
 		assertEquals("&amp;", FORMATTER.format("&"));
-		assertEquals("&amp;", FORMATTER.format("\\\\&"));
+		assertEquals("&amp;", FORMATTER.format("\\&"));
 	}
 }

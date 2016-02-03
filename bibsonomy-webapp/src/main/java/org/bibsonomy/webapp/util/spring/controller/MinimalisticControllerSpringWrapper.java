@@ -327,5 +327,5 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 	 */
 	public void setPresenceCondition(Condition presenceCondition) {
 		this.presenceCondition = presenceCondition;
-	}	
+	}
 }
