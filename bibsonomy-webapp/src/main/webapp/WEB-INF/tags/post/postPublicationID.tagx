@@ -24,15 +24,12 @@
 			<br />
 			<input type="hidden" name="selTab" value="3" />
 			<input type="hidden" name="ckey" value="${ckey}"/>
-
-			<fmt:message var="labelISBN" key="post_bibtex.doi_isbn.isbn" />
-			<bsform:input path="selection" labelText="${labelISBN}" noHelp="${true}"/>
-					      
-			<fmt:message var="labelISSN" key="post_bibtex.doi_isbn.issn" />
-			<bsform:input path="selection" labelText="${labelISSN}" noHelp="${true}"/>
-				
-			<fmt:message var="labelDOI" key="bibtex.actions.doi" />
-			<bsform:input path="selection" labelText="${labelDOI}" noHelp="${true}"/>
+			
+			<bsform:input path="selection" labelKey="post_bibtex.doi_isbn.isbn" noHelp="${true}"/>
+			
+			<bsform:input path="selection" labelKey="post_bibtex.doi_isbn.issn" noHelp="${true}"/>
+			
+			<bsform:input path="selection" labelKey="bibtex.actions.doi" noHelp="${true}"/>
 
 			<div class="form-group">
 				<div class="col-sm-offset-2 col-sm-10">
