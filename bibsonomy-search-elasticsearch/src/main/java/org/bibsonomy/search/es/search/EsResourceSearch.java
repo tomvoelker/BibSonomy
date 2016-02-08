@@ -413,7 +413,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			}
 		}
 		if (options.isWithNonEntityPersons()) {
-			builder.field(Fields.Publication.AUTHOR, 2.7f);
+			builder.field(Fields.Publication.AUTHORS + "." + Fields.Publication.PERSON_NAME, 2.7f);
 		}
 		return builder;
 	}
