@@ -762,7 +762,7 @@
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
-	<layout name="gesis">
+	<layout name="gesis" public="false">
 		<displayName>GESIS RTF</displayName>
 		<description xml:lang="en">
 			This exports the publication list in Rich Text Format which
