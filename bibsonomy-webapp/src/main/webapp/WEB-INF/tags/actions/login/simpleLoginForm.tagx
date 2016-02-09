@@ -7,6 +7,8 @@
 	
 	<jsp:directive.attribute name="authMethod" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="additionalContent" fragment="true" required="false"  />
+	<jsp:directive.attribute name="index" type="java.lang.Integer" required="false"  />
+	
 	<form action="/login_${authMethod}" id="form_${authMethod}" method="POST" cssClass="form-horizontal">
 		<div class="form-group">
 			<fmt:message var="usernameLabel" key="navi.username" />
@@ -24,7 +26,9 @@
 		</div>
 		<input type="hidden" value="on" name="rememberMe" />
 		<input type="hidden" name="referer" value="/${requPath}" />
-		<input type="hidden" name="selTab" value="${authMethodLoopState.index}"></input>
+		<c:if test="${not empty index}">
+			<input type="hidden" name="selTab" value="${index}"></input>
+		</c:if>
 		<div class="row">
 			<div class="col-sm-8">
 				<jsp:invoke fragment="additionalContent" />
