@@ -46,6 +46,7 @@ import org.bibsonomy.search.es.management.ElasticsearchIndex;
 import org.bibsonomy.search.es.management.ElasticsearchIndexTools;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.management.database.SearchDBInterface;
+import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.search.util.Mapping;
 import org.bibsonomy.util.BasicUtils;
@@ -218,16 +219,15 @@ public class ElasticsearchIndexGenerator<R extends Resource> {
 			throw new RuntimeException("can not create index '" + indexName + "'"); // TODO: use specific exception
 		}
 		
-		// FIXME: use system url TODODZO
-		this.client.createAlias(indexName, ElasticsearchUtils.getTempAliasForResource(this.tools.getResourceType()));
+		this.client.createAlias(indexName, ElasticsearchUtils.getLocalAliasForResource(this.tools.getResourceType(), this.tools.getSystemURI(), SearchIndexState.GENERATING));
 	}
 	
 	/**
 	 * 
 	 */
 	private void indexCreated() {
-		// FIXME: use system url TODODZO
-		this.client.deleteAlias(this.index.getIndexName(), ElasticsearchUtils.getTempAliasForResource(this.tools.getResourceType()));
+		this.client.deleteAlias(this.index.getIndexName(), ElasticsearchUtils.getLocalAliasForResource(this.tools.getResourceType(), this.tools.getSystemURI(), SearchIndexState.GENERATING));
+		this.client.createAlias(this.index.getIndexName(), ElasticsearchUtils.getLocalAliasForResource(this.tools.getResourceType(), this.tools.getSystemURI(), SearchIndexState.STANDBY));
 	}
 
 	/**

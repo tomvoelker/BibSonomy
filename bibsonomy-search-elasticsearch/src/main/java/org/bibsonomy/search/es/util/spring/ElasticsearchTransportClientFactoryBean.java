@@ -32,7 +32,6 @@ import java.net.InetSocketAddress;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.search.es.ESConstants;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
@@ -47,6 +46,9 @@ import org.springframework.beans.factory.FactoryBean;
  */
 public class ElasticsearchTransportClientFactoryBean implements FactoryBean<Client> {
 	private static final Log log = LogFactory.getLog(ElasticsearchTransportClientFactoryBean.class);
+	
+	/** Elasticsearch client SNIFF property.*/
+	private static final String SNIFF = "client.transport.sniff";
 	
 	/**
 	 * Elasticsearch IP and port values, if we have multiple addresses, they
@@ -70,7 +72,7 @@ public class ElasticsearchTransportClientFactoryBean implements FactoryBean<Clie
 			log.info("EsHostss value in Properties:" + esHosts);
 			// Setting cluster name of ES Server
 			final Builder settings = Settings.settingsBuilder().put("cluster.name", this.esClusterName);
-			settings.put(ESConstants.SNIFF, true);
+			settings.put(ElasticsearchTransportClientFactoryBean.SNIFF, true);
 			
 			final TransportClient transportClient = TransportClient.builder().settings(settings).build();
 			if (present(esHosts)) {

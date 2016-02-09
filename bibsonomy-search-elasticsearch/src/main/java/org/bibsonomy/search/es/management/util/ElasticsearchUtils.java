@@ -36,6 +36,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.search.es.ESConstants;
+import org.bibsonomy.search.model.SearchIndexState;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
@@ -65,15 +66,8 @@ public final class ElasticsearchUtils {
 	/** Alias for the active index */
 	private static final String ACTIVE_INDEX_ALIAS = "activeIndex";
 
-	/**
-	 * returns the temporary alias used commonly for all newly built indices which are still in build
-	 * 
-	 * @param resourceType
-	 * @return returns temporary the alias name
-	 */
-	public static String getTempAliasForResource(final Class<? extends Resource> resourceType) {
-		return ESConstants.TEMP_INDEX_PREFIX + "-" + ResourceFactory.getResourceName(resourceType).toLowerCase();
-	}
+
+	private static final String STANDBY_INDEX_ALIAS = "standbyIndex";
 
 	/**
 	 * returns the index name based on the home url and resource type
@@ -93,15 +87,29 @@ public final class ElasticsearchUtils {
 	 * 
 	 * @param resourceType
 	 * @param systemHome 
-	 * @param isActiveIndex
+	 * @param state
 	 * @return returns the alias name
 	 */
-	public static String getLocalAliasForResource(final Class<? extends Resource> resourceType, final URI systemHome, final boolean isActiveIndex) {
-		if (isActiveIndex) {
-			return ACTIVE_INDEX_ALIAS + "-" + getIndexName(systemHome, resourceType);
+	public static String getLocalAliasForResource(final Class<? extends Resource> resourceType, final URI systemHome, final SearchIndexState state) {
+		final String prefix;
+		switch (state) {
+		case ACTIVE:
+			prefix = ACTIVE_INDEX_ALIAS;
+			break;
+		case INACTIVE:
+			prefix = INACTIVE_INDEX_ALIAS;
+			break;
+		case STANDBY:
+			prefix = STANDBY_INDEX_ALIAS;
+			break;
+		case GENERATING:
+			prefix = ESConstants.TEMP_INDEX_PREFIX;
+			break;
+		default:
+			throw new IllegalArgumentException(state + " not supported");
 		}
 		
-		return INACTIVE_INDEX_ALIAS + "-" + getIndexName(systemHome, resourceType);
+		return prefix + "-" + getIndexName(systemHome, resourceType);
 	}
 
 	/**
