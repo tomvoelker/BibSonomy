@@ -56,22 +56,18 @@ public class ReCaptcha2 implements Captcha {
 	private static final String ERROR_CODES_FIELD = "error-codes";
 	private static final String SUCCESS_FIELD = "success";
 	
-	
-	// FIXME: check for timeouts (request, response)
 	private CloseableHttpClient client;
 	
 	private String privateKey;
 	private String publicKey;
 	private String recaptchaServer;
-	private boolean includeNoscript; // TODO: support noscript by default; remove param
 	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.webapp.util.captcha.Captcha#createCaptchaHtml(java.util.Locale)
 	 */
 	@Override
 	public String createCaptchaHtml(final Locale locale) {
-		// FIXME: support locale; see https://developers.google.com/recaptcha/docs/language
-		return "<script src='https://www.google.com/recaptcha/api.js'></script>" + 
+		return "<script src='https://www.google.com/recaptcha/api.js?hl=" + locale.getLanguage() + "'></script>" + 
 				"<div class=\"g-recaptcha\" data-sitekey=\"" + this.publicKey +  "\"></div>";
 	}
 
@@ -109,7 +105,6 @@ public class ReCaptcha2 implements Captcha {
 			log.debug("success: " + success);
 			log.debug("error-codes: " + errorCodes);
 			
-			// TODO: Parse Error Codes and post corresponding messages.
 			return new ReCaptcha2Response(success, errorCodes);
 		} catch (final UnsupportedEncodingException e) {
 			return new ReCaptcha2Response(false, "Unsupported Encoding! Did not send a request.");
@@ -122,13 +117,6 @@ public class ReCaptcha2 implements Captcha {
 		} catch (final org.json.simple.parser.ParseException e) {
 			return new ReCaptcha2Response(false, "Could not parse JSON: " + e.getStackTrace());
 		}
-	}
-	
-	/**
-	 * @param includeNoscript the includeNoscript to set
-	 */
-	public void setIncludeNoscript(boolean includeNoscript) {
-		this.includeNoscript = includeNoscript;
 	}
 	
 	/**
