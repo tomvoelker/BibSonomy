@@ -42,7 +42,25 @@ public class ReCaptcha2Response implements CaptchaResponse {
 	 */
 	public ReCaptcha2Response(boolean isValid, String errorMessage) {
 		this.isValid = isValid;
-		this.errorMessage = errorMessage;
+		String errorBuilder = "";
+		if (errorMessage != null) {
+			if (errorMessage.contains("missing-input-secret")) {
+				errorBuilder = "The secret parameter is missing. ";
+			}
+			if (errorMessage.contains("invalid-input-secret")) {
+				errorBuilder = "The secret parameter is invalid or malformed. ";
+			}
+			if (errorMessage.contains("missing-input-response")) {
+				errorBuilder = "The response parameter is missing. ";
+			}
+			if (errorMessage.contains("invalid-input-response")) {
+				errorBuilder = "The response parameter is invalid or malformed. ";
+			}
+			errorBuilder = errorBuilder.trim();
+		} else {
+			errorBuilder = null;
+		}
+		this.errorMessage = errorBuilder;
 	}
 
 	/* (non-Javadoc)

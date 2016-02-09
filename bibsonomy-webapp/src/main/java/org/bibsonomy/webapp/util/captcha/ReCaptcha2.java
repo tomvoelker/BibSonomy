@@ -56,8 +56,6 @@ public class ReCaptcha2 implements Captcha {
 	private static final String ERROR_CODES_FIELD = "error-codes";
 	private static final String SUCCESS_FIELD = "success";
 	
-	
-	// FIXME: check for timeouts (request, response)
 	private CloseableHttpClient client;
 	
 	private String privateKey;
@@ -69,7 +67,6 @@ public class ReCaptcha2 implements Captcha {
 	 */
 	@Override
 	public String createCaptchaHtml(final Locale locale) {
-		// FIXME: support locale; see https://developers.google.com/recaptcha/docs/language
 		return "<script src='https://www.google.com/recaptcha/api.js?hl=" + locale.getLanguage() + "'></script>" + 
 				"<div class=\"g-recaptcha\" data-sitekey=\"" + this.publicKey +  "\"></div>";
 	}
@@ -108,7 +105,6 @@ public class ReCaptcha2 implements Captcha {
 			log.debug("success: " + success);
 			log.debug("error-codes: " + errorCodes);
 			
-			// TODO: Parse Error Codes and post corresponding messages.
 			return new ReCaptcha2Response(success, errorCodes);
 		} catch (final UnsupportedEncodingException e) {
 			return new ReCaptcha2Response(false, "Unsupported Encoding! Did not send a request.");
