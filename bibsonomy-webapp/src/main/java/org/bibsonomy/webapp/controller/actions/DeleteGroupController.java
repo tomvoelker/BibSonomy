@@ -32,26 +32,19 @@ import java.util.Collections;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.jasper.tagplugins.jstl.core.ForEach;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.webapp.command.GroupSettingsPageCommand;
-import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.controller.GroupSettingsPageController;
-import org.bibsonomy.webapp.controller.SettingsPageController;
-import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.ErrorAware;
-import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.DeleteGroupValidator;
-import org.bibsonomy.webapp.validation.DeleteUserValidator;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
@@ -74,17 +67,19 @@ public class DeleteGroupController extends GroupSettingsPageController implement
 		 */
 		if (!context.isUserLoggedIn()) {
 			throw new AccessDeniedException("please log in");
-		} 
+		}
+		
+		// TODO: why we have to set the loggedin user? TODO_GROUPS
 		
 		command.setUser(context.getLoginUser());
-						
-		final User loginUser = command.getContext().getLoginUser();
+		
+		final User loginUser = context.getLoginUser();
 		command.setLoggedinUser(loginUser);
 		
 		// group exists?
 		final Group group = this.logic.getGroupDetails(command.getGroupname());
 		if (!present(group)) {
-			throw new AccessDeniedException("The requested group does not exist.");
+			throw new IllegalStateException("The requested group does not exist.");
 		}
 		command.setGroup(group);
 		command.setRequestedGroup(group.getName());
@@ -99,60 +94,33 @@ public class DeleteGroupController extends GroupSettingsPageController implement
 		
 		// the last user must be an administrator of the group 
 		final GroupRole roleOfLoggedinUser = groupMembership.getGroupRole();
-		if (roleOfLoggedinUser != GroupRole.ADMINISTRATOR) {
+		if (!GroupRole.ADMINISTRATOR.equals(roleOfLoggedinUser)) {
 			throw new AccessDeniedException("You are not allowed to view this page");
 		}
-				
+		
 		// size must be bigger than 2 because the membership object contains also the group user
-		if(group.getMemberships().size() > 2) {
-			throw new AccessDeniedException("The group can't be deleted, it's not empty");
+		if (group.getMemberships().size() > 2) {
+			throw new IllegalStateException("The group can't be deleted, it's not empty");
 		}
 		
+		/*
+		 * check the ckey
+		 */
+		if (!context.isValidCkey()) {
+			errors.reject("error.field.valid.ckey");
+		}
 		/*
 		 * go back to the group settings page and display errors from command field
 		 * validation
 		 */
 		if (errors.hasErrors()) {
-			return Views.GROUPSETTINGSPAGE;
-		}
-		
-		final String groupName = group.getName();
-		/*
-		 * check the ckey
-		 */
-		if (context.isValidCkey()){
-			log.debug("User is logged in, ckey is valid ... check the security answer");
-			
-			/*
-			 * check the security input …
-			 */
-			if ("yes".equalsIgnoreCase(command.getDelete())) {
-				/*
-				 * all fine -> delete the group
-				 */
-				
-				log.debug("answer is correct - deleting group: " + groupName);
-				try {
-					logic.deleteGroup(groupName);
-				} catch (final UnsupportedOperationException ex) {
-					// needed?
-				}
-			} else {
-				/*
-				 * … else add an error
-				 */
-				errors.reject("error.group.secure.answer");
-			}
-		} else {
-			errors.reject("error.field.valid.ckey");
-		}
-		
-
-		if (errors.hasErrors()){
 			return super.workOn(command);
 		}
 		
-		//return new ExtendedRedirectView("/");
+		final String groupName = group.getName();
+		log.debug("User is logged in, ckey is valid, deleting group " + groupName);
+		this.logic.deleteGroup(groupName);
+		
 		command.setMessage("success.groupDelete", Collections.singletonList(groupName));
 		return Views.SUCCESS;
 	}

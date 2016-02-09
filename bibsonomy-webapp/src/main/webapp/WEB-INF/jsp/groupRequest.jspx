@@ -19,14 +19,19 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
 	<fmt:message key="navi.groups" var="pageTitle" />
+	<fmt:message key="navi.groups" var="groups" />
+	
+	<c:set var="loginUser" value="${command.context.loginUser}" />
+	<c:set var="isAdmin" value="${loginUser.role eq 'ADMIN' }" />
 	<c:set var="groupCreationMode" value="${properties['project.groupcreationmode']}" />
+	<c:set var="isAutoGroupCreationMode" value="${fn:toLowerCase(groupCreationMode) eq 'automatic'}" />
+	<c:set var="creationMode" value="${isAutoGroupCreationMode or isAdmin}" />
 	<c:choose>
-		<c:when test="${fn:toLowerCase(groupCreationMode) eq 'automatic'}">
+		<c:when test="${creationMode}">
 			<fmt:message key="settings.group.reqGroup.automatic" var="heading" />
 			<fmt:message key="settings.group.reqGroup.automatic.description" var="description" />
 			<fmt:message key="settings.group.reqGroup.automatic.reason" var="reason" />
 			<fmt:message key="settings.group.reqGroup.automatic.button" var="requestGroup" />
-			<fmt:message key="navi.groups" var="groups" />
 			<fmt:message key="navi.automatic.groupRequest" var="groupRequest" />
 		</c:when>
 		<c:otherwise>
@@ -34,7 +39,6 @@
 			<fmt:message key="settings.group.reqGroup.description" var="description" />
 			<fmt:message key="settings.group.reqGroup.reason" var="reason" />
 			<fmt:message key="settings.group.reqGroup.button" var="requestGroup" />
-			<fmt:message key="navi.groups" var="groups" />
 			<fmt:message key="navi.groupRequest" var="groupRequest" />
 		</c:otherwise>
 	</c:choose>
@@ -59,7 +63,7 @@
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
-				
+		
 		<!--+
 		 	| content
 		 	+-->
@@ -75,34 +79,28 @@
 					<c:out value="${description}" />
 				</jsp:attribute>
 			</bs:alert>
-
-			<c:set var="loginUser" value="${command.context.loginUser}" />
+			
 			<c:if test="${!loginUser.spammer}">
 				<!-- Request a new group -->
-				<bsform:fieldset legendKey="description">
-					<jsp:attribute name="content">
-						<form:form method="post" action="/grouprequest" cssClass="form-horizontal">
-							<input type="hidden" name="ckey" value="${ckey}"/>
-							
-							<bsform:input labelKey="settings.group.name" path="group.name" labelColSpan="3" inputColSpan="9" />
-							<bsform:textarea labelKey="settings.group.description" path="group.description" rows="2" labelColSpan="3" inputColSpan="9" />
-							<bsform:textarea labelText="${reason}" path="group.groupRequest.reason" rows="2" labelColSpan="3" inputColSpan="9" />
-	
-							<c:if test="${loginUser.role eq 'ADMIN' }">
-								<!--<bsform:input labelKey="settings.group.name" path="group.groupRequest.userName" labelColSpan="3" inputColSpan="9" />-->
-								<bsform:input labelKey="group.groupRequest.adminName" path="group.groupRequest.userName" labelColSpan="3" inputColSpan="9" helpKey="group.groupRequest.adminName.helptext" autocomplete="true" id="designatedAdmin" />
-								<script type="text/javascript" src="${resdir}/javascript/requestGroupAutocomplete.js"><!-- keep me --></script> 
-							</c:if>
-	
-							<bsform:captcha labelColSpan="3" inputColSpan="9" />
-	
-							<div class="col-sm-offset-3" >
-								<bsform:button style="primary" size="defaultSize" value="${requestGroup}" type="submit" />
-							</div>
-						</form:form>
-						
-					</jsp:attribute>
-				</bsform:fieldset>
+				<form:form method="post" action="/grouprequest" cssClass="form-horizontal">
+					<input type="hidden" name="ckey" value="${ckey}"/>
+					
+					<bsform:input labelKey="settings.group.name" path="group.name" labelColSpan="3" inputColSpan="9" />
+					<bsform:textarea labelKey="settings.group.description" path="group.description" rows="2" labelColSpan="3" inputColSpan="9" />
+					<c:if test="${not creationMode}">
+						<bsform:textarea labelText="${reason}" path="group.groupRequest.reason" rows="2" labelColSpan="3" inputColSpan="9" />
+					</c:if>
+					<c:if test="${isAdmin}">
+						<bsform:input labelKey="group.groupRequest.adminName" path="group.groupRequest.userName" labelColSpan="3" inputColSpan="9" helpKey="group.groupRequest.adminName.helptext" autocomplete="true" id="designatedAdmin" />
+						<script type="text/javascript" src="${resdir}/javascript/requestGroupAutocomplete.js"><!-- keep me --></script> 
+					</c:if>
+					
+					<bsform:captcha labelColSpan="3" inputColSpan="9" />
+					
+					<div class="col-sm-offset-3" >
+						<bsform:button style="primary" size="defaultSize" value="${requestGroup}" type="submit" />
+					</div>
+				</form:form>
 			</c:if>
 		</jsp:attribute>
 	</layout:paneLayout>

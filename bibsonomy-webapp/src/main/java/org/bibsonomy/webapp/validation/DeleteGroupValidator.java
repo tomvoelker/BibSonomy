@@ -27,7 +27,6 @@
 package org.bibsonomy.webapp.validation;
 
 import org.bibsonomy.webapp.command.GroupSettingsPageCommand;
-import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.util.Validator;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
@@ -37,6 +36,7 @@ import org.springframework.validation.ValidationUtils;
  * @author Mario Holtmüller
  */
 public class DeleteGroupValidator implements Validator<GroupSettingsPageCommand>{
+	private static final String DELETE_FIELD = "delete";
 
 	@Override
 	public boolean supports(final Class<?> clazz) {
@@ -44,12 +44,17 @@ public class DeleteGroupValidator implements Validator<GroupSettingsPageCommand>
 	}
 
 	@Override
-	public void validate(Object arg0, Errors errors) {
+	public void validate(final Object commandObject, final Errors errors) {
 		// if command is null fail
-		Assert.notNull(arg0);
+		Assert.notNull(commandObject);
+		
+		final GroupSettingsPageCommand command = (GroupSettingsPageCommand) commandObject;
 		
 		// if the delete security string is empty throw an error
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "delete", "error.field.required");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, DELETE_FIELD, "error.field.required");
+		if (!errors.hasFieldErrors(DELETE_FIELD) && !"yes".equalsIgnoreCase(command.getDelete())) {
+			errors.reject("error.group.secure.answer");
+		}
 	}
 
 }

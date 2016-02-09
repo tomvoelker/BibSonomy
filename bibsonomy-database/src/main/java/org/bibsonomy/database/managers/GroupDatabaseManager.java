@@ -38,7 +38,6 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.GroupRole;
@@ -82,10 +81,12 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	private UserDatabaseManager userDb;
+	private AdminDatabaseManager adminDatabaseManager;
 	private final DatabasePluginRegistry plugins;
 
 	private GroupDatabaseManager() {
 		this.plugins = DatabasePluginRegistry.getInstance();
+		this.adminDatabaseManager = AdminDatabaseManager.getInstance();
 	}
 
 	/**
@@ -711,8 +712,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		
 		if (group == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist");
-			throw new RuntimeException(); // never happens but calms down
-			// eclipse
+			throw new RuntimeException(); // never happens but calms down eclipse TODO: remove?
 		}
 
 		final Integer groupId = Integer.valueOf(group.getGroupId());
@@ -720,12 +720,11 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		this.delete("removeAllUserFromGroup", groupId, session);
 		
 		// get the group user and flag him as spammer
-		User groupUser = this.userDb.getUserDetails(groupname, session);
+		final User groupUser = this.userDb.getUserDetails(groupname, session);
 		groupUser.setToClassify(0);
 		groupUser.setAlgorithm("group_user");
 		groupUser.setSpammer(true);
-		AdminDatabaseManager adminDBManager = AdminDatabaseManager.getInstance();
-		adminDBManager.flagSpammer(groupUser, AdminDatabaseManager.DELETED_UPDATED_BY, session);
+		this.adminDatabaseManager.flagSpammer(groupUser, AdminDatabaseManager.DELETED_UPDATED_BY, session);
 	}
 
 	/**
@@ -945,16 +944,15 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		if (!present(groupToUpdate)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "During updateGroupSettings: The parameter groupToUpdate was null. (required argument)");
 		}
-
+		// TODO: groupid, allowJoin always not null TODO_GROUPS
 		if (!(present(groupToUpdate.getGroupId()) && present(groupToUpdate.getPrivlevel()) && present(groupToUpdate.isSharedDocuments()) && present(groupToUpdate.isAllowJoin()))) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "During updateGroupSettings: Incomplete group information: group ID, privlevel, shared documents and allowJoin are required.");
 		}
+		// TODO: Logging!
+		
 		/*
 		 * store the bean
 		 */
-
-		// TODO: Logging!
-
 		this.update("updateGroupSettings", groupToUpdate, session);
 	}
 

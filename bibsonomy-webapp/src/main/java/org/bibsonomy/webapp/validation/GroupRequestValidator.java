@@ -26,7 +26,10 @@
  */
 package org.bibsonomy.webapp.validation;
 
+import org.bibsonomy.common.enums.GroupCreationMode;
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.GroupRequestCommand;
 import org.bibsonomy.webapp.util.Validator;
 import org.springframework.util.Assert;
@@ -40,6 +43,15 @@ import org.springframework.validation.ValidationUtils;
  * @author dzo
  */
 public class GroupRequestValidator implements Validator<GroupRequestCommand> {
+	
+	private final GroupCreationMode groupCreationMode;
+	
+	/**
+	 * @param groupCreationMode
+	 */
+	public GroupRequestValidator(GroupCreationMode groupCreationMode) {
+		this.groupCreationMode = groupCreationMode;
+	}
 
 	@Override
 	public boolean supports(Class<?> clazz) {
@@ -60,9 +72,12 @@ public class GroupRequestValidator implements Validator<GroupRequestCommand> {
 		 */
 		ValidationUtils.invokeValidator(new GroupValidator(), group, errors);
 		
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", ERROR_FIELD_REQUIRED_KEY);
+		final User loggedinUser = command.getContext().getLoginUser();
+		if (!Role.ADMIN.equals(loggedinUser.getRole()) && !GroupCreationMode.AUTOMATIC.equals(this.groupCreationMode)) {
+			ValidationUtils.rejectIfEmptyOrWhitespace(errors, "groupRequest.reason", ERROR_FIELD_REQUIRED_KEY);
+		}
 		
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "groupRequest.reason", ERROR_FIELD_REQUIRED_KEY);
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", ERROR_FIELD_REQUIRED_KEY);
 		
 		errors.popNestedPath();
 	}

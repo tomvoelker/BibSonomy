@@ -223,24 +223,20 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 				 */
 				
 				final List<Group> loginUserNameGroups = context.getLoginUser().getGroups();
-				List<Group> sharedGroups =  new LinkedList<Group>();
-
+				final List<Group> sharedGroups =  new LinkedList<Group>();
+				
 				for (Group g : loginUserNameGroups) {
-					// only add a group if the member list is visible
+					// only add a group if the member list is visible TODO: why? TODO_GROUPS
 					if (g.getPrivlevel() == Privlevel.PUBLIC || g.getPrivlevel() == Privlevel.MEMBERS) {
-						Group groupDetails = logic.getGroupDetails(g.getName());
-						for (GroupMembership m : groupDetails.getMemberships()) {
+						final Group groupDetails = this.logic.getGroupDetails(g.getName());
+						for (final GroupMembership m : groupDetails.getMemberships()) {
 							if (m.getUser().equals(requestedUser)) {
 								sharedGroups.add(g);
 							}
 						}
 					}
 				}
-				if (sharedGroups.isEmpty()) {
-					sharedGroups = null;
-				}
 				command.setSharedGroups(sharedGroups);
-				
 			}
 			
 			this.endTiming();

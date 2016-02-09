@@ -40,10 +40,8 @@ import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.UserUtils;
-import org.bibsonomy.model.util.file.UploadedFile;
 import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.util.MailUtils;
-import org.bibsonomy.util.file.ServerDeletedFile;
 import org.bibsonomy.util.file.ServerUploadedFile;
 import org.bibsonomy.webapp.command.GroupSettingsPageCommand;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
@@ -352,8 +350,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 			try {
 				fileLogic.saveProfilePictureForUser(groupUserToUpdate.getName(), new ServerUploadedFile(file));
 			} catch (final Exception ex) {
-				// TODO Auto-generated catch block
-				ex.printStackTrace();
+				log.error("error while writing group picture", ex);
 			}
 		}
 		else if (command.getDeletePicture()) {
@@ -394,8 +391,8 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 	@Override
 	public boolean isValidationRequired(final GroupSettingsPageCommand command) {
 		// FIXME: why?
-		return command.getContext().getLoginUser().isSpammer()
-				&& (command.getContext().getLoginUser().getToClassify() == 0);
+		final User loginUser = command.getContext().getLoginUser();
+		return loginUser.isSpammer() && (loginUser.getToClassify() == 0);
 	}
 
 	@Override

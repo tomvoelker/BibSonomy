@@ -120,9 +120,9 @@
 					</ul>
 				</jsp:attribute>
 			</sidebar:sidebarItem>
-				
+			
 			<sidebar:sidebarTagCloudItem requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" scope="${command.scope.name()}"/>
-						
+			
 			<c:if test="${isAdmin}">
 				<sidebar:sidebarItem textKey="user.details">
 					<jsp:attribute name="content">

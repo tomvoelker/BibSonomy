@@ -94,6 +94,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
@@ -426,8 +427,11 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	/**
 	 * runs the test defined by {@link #deleteGroup(String)} with a certain
 	 * argument. TODO: Implement this!
+	 * 
+	 * TODO: re-enable test as soon as rest server supports deleting groups
 	 */
-	// @Test
+	@Ignore
+	@Test
 	public void deleteGroupTest() {
 		this.deleteGroup("hurzelGroupName");
 	}
