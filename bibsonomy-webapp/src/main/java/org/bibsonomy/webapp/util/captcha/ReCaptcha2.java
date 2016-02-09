@@ -63,7 +63,6 @@ public class ReCaptcha2 implements Captcha {
 	private String privateKey;
 	private String publicKey;
 	private String recaptchaServer;
-	private boolean includeNoscript; // TODO: support noscript by default; remove param
 	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.webapp.util.captcha.Captcha#createCaptchaHtml(java.util.Locale)
@@ -71,7 +70,7 @@ public class ReCaptcha2 implements Captcha {
 	@Override
 	public String createCaptchaHtml(final Locale locale) {
 		// FIXME: support locale; see https://developers.google.com/recaptcha/docs/language
-		return "<script src='https://www.google.com/recaptcha/api.js'></script>" + 
+		return "<script src='https://www.google.com/recaptcha/api.js?hl=" + locale.getLanguage() + "'></script>" + 
 				"<div class=\"g-recaptcha\" data-sitekey=\"" + this.publicKey +  "\"></div>";
 	}
 
@@ -122,13 +121,6 @@ public class ReCaptcha2 implements Captcha {
 		} catch (final org.json.simple.parser.ParseException e) {
 			return new ReCaptcha2Response(false, "Could not parse JSON: " + e.getStackTrace());
 		}
-	}
-	
-	/**
-	 * @param includeNoscript the includeNoscript to set
-	 */
-	public void setIncludeNoscript(boolean includeNoscript) {
-		this.includeNoscript = includeNoscript;
 	}
 	
 	/**
