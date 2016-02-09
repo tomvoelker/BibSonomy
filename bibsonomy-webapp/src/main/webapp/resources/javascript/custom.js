@@ -252,7 +252,10 @@ $(function() {
 						getString("list.show"));
 				$('.publicationsContainer').slideToggle();
 			});
-
+	
+	$('#loginModal').on('shown.bs.modal', function (e) {
+		$('#loginModal').find('input:first').focus();
+	})
 });
 
 function viewForTag(tag, label) {

@@ -39,19 +39,17 @@
 				<errors:global />
 				<bsform:fieldset legendKey="register.saml.required">
 					<jsp:attribute name="content">
-
-						
 						<!--  SAML PROVIDER ID -->
 						<c:set var="formErrorsProviderId"><form:errors path="samlId.identityProviderId" /></c:set>
 						<div class="form-group ${not empty formErrorsProviderId ? ' has-error' : ''}">
-							<!-- errors -->
-							<bsform:errors path="samlId.identityProviderId" colSpan="8" />
-							
 							<label class="control-label col-sm-4"><fmt:message key="user.settings.saml.identityProviderId"/></label>
 						
 							<div class="col-sm-8">
 								<form:errors cssClass="errmsg" path="samlId.identityProviderId" />
 								<p class="form-control-static"><tt><c:out value="${command.samlId.identityProviderId}"/></tt></p>
+								
+								<!-- errors -->
+								<bsform:errors path="samlId.identityProviderId" />
 							</div>
 						</div>
 						
@@ -80,16 +78,14 @@
 						
 						<c:set var="formErrorsGender"><form:errors path="samlId.identityProviderId" /></c:set>
 						<div class="form-group ${not empty formErrorsGender ? ' has-error' : ''}">
-							<bsform:errors path="registerUser.gender" colSpan="8" />
-							
 							<form:label cssClass="control-label col-sm-4" path="registerUser.gender" ><fmt:message key="navi.gender"/></form:label>
-							
 							<div class="col-sm-8">
-								
 								<form:select path="registerUser.gender" cssClass="form-control">
 									<form:option value="F" label="female" />
 									<form:option value="M" label="male" />
 								</form:select>
+								
+								<bsform:errors path="registerUser.gender" />
 							</div>
 						</div>
 
@@ -113,7 +109,6 @@
 			<br />
 			<br />
 			<hr />
-			
 		</jsp:attribute>
 	</layout:singleContainerLayout>
 </jsp:root>

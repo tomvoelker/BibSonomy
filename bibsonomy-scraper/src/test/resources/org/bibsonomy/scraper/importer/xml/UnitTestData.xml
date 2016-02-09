@@ -1606,7 +1606,6 @@
 		<URL>http://publications.rwth-aachen.de/record/211871</URL>
 		<BibFile>DCScraperTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.generic.DublinCoreScraper</Scraper>
-		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_261">
 		<TestDescription>DublinCoreScraper Test 2</TestDescription>
@@ -2071,5 +2070,11 @@
 		<URL>http://www.google.com/patents/DE102009031804A1?cl=en&amp;hl=de</URL>
 		<BibFile>GooglePatentScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.googlepatent.GooglePatentScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_332">
+		<TestDescription>Test for worldcat with correct authors</TestDescription>
+		<URL>http://www.worldcat.org/oclc/254138269</URL>
+		<BibFile>WorldCatScraperUnitURLTest4.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper</Scraper>
 	</URLTest>
 </test:Tests>

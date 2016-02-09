@@ -60,6 +60,14 @@ public class TestDatabaseLoader {
 	private final List<String> insertStatements;
 	
 	private final List<String> tableNames;
+	
+	/**
+	 * loads the sql schema from the script
+	 * @param schemaFile
+	 */
+	public TestDatabaseLoader(final String schemaFile) {
+		this(schemaFile, (String[]) null);
+	}
 
 	/**
 	 * Loads the SQL statements from the script.

@@ -92,9 +92,6 @@
 		| bootstrap 3 form-group 
 		+-->
 	<div class="form-group${not empty formErrors ? ' has-error' : ''}">
-		
-		<bsform:errors path="${path}" colSpan="${inputColSpan}"/>
-		
 		<!--+
 			| followed by output label 
 			+-->
@@ -121,6 +118,8 @@
 				<div class="help help-header hide"><c:out value="${labelText}" /></div>
 				<div class="help help-content hide">${helpText}</div>
 			</c:if>
+			
+			<bsform:errors path="${path}" />
 		</div>
 	</div>
 </jsp:root>

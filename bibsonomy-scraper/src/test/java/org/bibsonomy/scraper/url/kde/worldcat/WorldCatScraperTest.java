@@ -72,6 +72,14 @@ public class WorldCatScraperTest {
 	}
 	
 	/**
+	 * starts URL test with id url_332
+	 */
+	@Test
+	public void url4TestRun(){
+		UnitTestRunner.runSingleTest("url_332");
+	}
+	
+	/**
 	 * test getting URL 
 	 */
 	@Test
@@ -95,6 +103,4 @@ public class WorldCatScraperTest {
 			Assert.fail(ex.getMessage());
 		}
 	}
-	
-	
 }

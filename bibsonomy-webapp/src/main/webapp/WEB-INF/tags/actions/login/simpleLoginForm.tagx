@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" 
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	
+	<jsp:directive.attribute name="authMethod" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="additionalContent" fragment="true" required="false"  />
+	<form action="/login_${authMethod}" id="form_${authMethod}" method="POST" cssClass="form-horizontal">
+		<div class="form-group">
+			<fmt:message var="usernameLabel" key="navi.username" />
+			<div class="input-group">
+				<span class="input-group-addon">@</span>
+				<input type="text" name="username" class="form-control input-lg" placeholder="${usernameLabel}"/>
+			</div>
+		</div>
+		<div class="form-group">
+			<fmt:message var="passwordLabel" key="navi.password" />
+			<div class="input-group">
+				<span class="input-group-addon"><fontawesome:icon icon="key" /></span>
+				<input type="password" name="password" class="form-control input-lg" placeholder="${passwordLabel}"/>
+			</div>
+		</div>
+		<input type="hidden" value="on" name="rememberMe" />
+		<input type="hidden" name="referer" value="/${requPath}" />
+		<input type="hidden" name="selTab" value="${authMethodLoopState.index}"></input>
+		<div class="row">
+			<div class="col-sm-8">
+				<jsp:invoke fragment="additionalContent" />
+			</div>
+			<div class="col-sm-4 text-right">
+				<button type="submit" class="btn btn-primary"><fmt:message key="navi.login" /></button>
+			</div>
+		</div>
+	</form>
+</jsp:root>

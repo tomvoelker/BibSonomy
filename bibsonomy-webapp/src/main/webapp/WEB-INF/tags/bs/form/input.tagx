@@ -115,8 +115,6 @@
 		+-->
 	<div class="form-group${not empty formErrors ? ' has-error' : ''}">
 		
-		<bsform:errors path="${path}" colSpan="${inputColSpan}" />
-		
 		<!--+
 			| followed by output label 
 			+-->
@@ -171,8 +169,8 @@
 					</c:if>
 				</c:otherwise>
 			</c:choose>
-
 			<jsp:invoke fragment="appendix" />
+			<bsform:errors path="${path}" />
 		</div>
 	</div>
 </jsp:root>

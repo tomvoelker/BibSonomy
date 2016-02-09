@@ -27,13 +27,14 @@
 	<c:if test="${not empty command.captchaHTML}">
 		<!-- errors -->
 		<c:set var="formErrors"><form:errors path="recaptcha_response_field" /></c:set>
-		
 		<div class="form-group${not empty formErrors ? ' has-error' : ''}">
-			<bsform:errors path="recaptcha_response_field" colSpan="${inputColSpan}" />
+			
 			
 			<form:label cssClass="control-label col-sm-${labelColSpan}" path="recaptcha_response_field" ><fmt:message key="captcha"/></form:label>
 			<div class="col-sm-${inputColSpan}">
 				${command.captchaHTML}
+				
+				<bsform:errors path="recaptcha_response_field" />
 			</div>
 		</div>
 	</c:if>
