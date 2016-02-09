@@ -2054,4 +2054,22 @@
 		<BibFile>IOPScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.iop.IOPScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_335">
+		<TestDescription>URL scraping test for the scielo scraper</TestDescription>
+		<URL>http://www.scielo.br/scielo.php?script=sci_arttext&amp;pid=S0066-782X2001001200008</URL>
+		<BibFile>SCIELOScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.scielo.SCIELOScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_336">
+		<TestDescription>URL scraping test for the scielo scraper</TestDescription>
+		<URL>http://www.google.com/patents/DE102009031804A1?cl=de</URL>
+		<BibFile>GooglePatentScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.googlepatent.GooglePatentScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_337">
+		<TestDescription>URL scraping test for the scielo scraper</TestDescription>
+		<URL>http://www.google.com/patents/DE102009031804A1?cl=en&amp;hl=de</URL>
+		<BibFile>GooglePatentScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.googlepatent.GooglePatentScraper</Scraper>
+	</URLTest>
 </test:Tests>

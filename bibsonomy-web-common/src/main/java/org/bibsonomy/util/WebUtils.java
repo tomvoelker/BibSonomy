@@ -552,6 +552,23 @@ public class WebUtils {
 		return buildCookieString(cookies);
 	}
 	
+	public static String getSpecialCookies(final URL url) throws IOException {
+		
+		final GetMethod getMethod = new GetMethod(url.toString());
+        int executeMethod = CLIENT.executeMethod(getMethod);
+        getMethod.getResponseHeaders("Set-Cookie");
+        final HttpURLConnection urlConn = createConnnection(url);
+        urlConn.setAllowUserInteraction(false);
+		urlConn.setDoInput(true);
+		urlConn.setDoOutput(false);
+		
+		urlConn.connect();
+		
+		final List<String> cookies = urlConn.getHeaderFields().get("Set-Cookie");
+		urlConn.disconnect();
+		
+		return buildCookieString(cookies);
+	}
 	/**
 	 * @param url the url
 	 * @return the proper configured http connection for the url
