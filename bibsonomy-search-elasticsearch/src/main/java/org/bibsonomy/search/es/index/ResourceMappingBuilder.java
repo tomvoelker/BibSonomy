@@ -45,6 +45,9 @@ import org.elasticsearch.common.xcontent.XContentFactory;
  */
 public abstract class ResourceMappingBuilder<R extends Resource> implements MappingBuilder<String> {
 
+	/** properties field key */
+	protected static final String PROPERTIES = "properties";
+
 	/** boost the field (search in _all field) */
 	protected static final String BOOST_FIELD = "boost";
 
@@ -53,6 +56,9 @@ public abstract class ResourceMappingBuilder<R extends Resource> implements Mapp
 
 	/** type string */
 	protected static final String STRING_TYPE = "string";
+	
+	/** type nested */
+	protected static final String NESTED_TYPE = "nested";
 	
 	/** date type */
 	protected static final String DATE_TYPE = "date";
@@ -105,7 +111,7 @@ public abstract class ResourceMappingBuilder<R extends Resource> implements Mapp
 							 * fields as field = value into es (=> dynamic mapping)
 							 */
 							.field("date_detection", false)
-							.startObject("properties")
+							.startObject(PROPERTIES)
 								.startObject(ESConstants.Fields.Resource.INTRAHASH)
 									.field(TYPE_FIELD, STRING_TYPE)
 									.field(INDEX_FIELD, NOT_ANALYZED)

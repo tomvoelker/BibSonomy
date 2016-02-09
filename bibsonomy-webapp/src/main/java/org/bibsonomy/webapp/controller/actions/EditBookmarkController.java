@@ -113,7 +113,7 @@ public class EditBookmarkController extends EditPostController<Bookmark, EditBoo
 	@Override
 	protected String getHttpsReferrer(final EditBookmarkCommand command) {
 		final String url = command.getPost().getResource().getUrl();
-		if (UrlUtils.isHTTPs(url)) {
+		if (UrlUtils.isHTTPS(url)) {
 			return url;
 		}
 		return null;

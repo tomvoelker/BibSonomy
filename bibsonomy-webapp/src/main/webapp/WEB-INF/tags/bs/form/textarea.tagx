@@ -89,9 +89,6 @@
 		| bootstrap 3 form-group 
 		+-->
 	<div class="form-group${not empty formErrors ? ' has-error' : ''}">
-		
-		<bsform:errors path="${path}" colSpan="${inputColSpan}" />
-	
 		<!--+
 			| followed by output label 
 			+-->
@@ -117,6 +114,8 @@
 			
 			<!-- followed by appendix for recommendations or additional content -->
 			<jsp:invoke fragment="appendix" />
+			
+			<bsform:errors path="${path}" />
 		</div> <!-- /.col-sm-x -->
 	</div> <!-- /.form-grpup -->
 </jsp:root>

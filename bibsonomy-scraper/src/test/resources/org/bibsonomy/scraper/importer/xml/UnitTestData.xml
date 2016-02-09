@@ -2035,4 +2035,10 @@
 		<BibFile>GoogleScholarScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.googlescholar.GoogleScholarScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_332">
+		<TestDescription>Test for worldcat with correct authors</TestDescription>
+		<URL>http://www.worldcat.org/oclc/254138269</URL>
+		<BibFile>WorldCatScraperUnitURLTest4.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper</Scraper>
+	</URLTest>
 </test:Tests>

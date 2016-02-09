@@ -312,7 +312,7 @@ public class UrlUtils {
 	 * @param url
 	 * @return <code>true</code> if the url is a https url
 	 */
-	public static boolean isHTTPs(final String url) {
+	public static boolean isHTTPS(final String url) {
 		return present(url) && url.startsWith(HTTPS_SCHEMA);
 	}
 }
