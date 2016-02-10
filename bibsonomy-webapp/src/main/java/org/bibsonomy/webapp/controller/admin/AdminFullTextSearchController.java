@@ -100,6 +100,9 @@ public class AdminFullTextSearchController implements MinimalisticController<Adm
 					throw new IllegalStateException(e);
 				}
 				break;
+			case ENABLE_INDEX:
+				mananger.enableIndex(indexId);
+				break;
 			case DELETE_INDEX:
 				mananger.deleteIndex(indexId);
 				break;

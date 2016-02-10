@@ -29,6 +29,7 @@ package org.bibsonomy.search.es.client;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -72,6 +73,8 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
+
+import com.carrotsearch.hppc.cursors.ObjectObjectCursor;
 
 /**
  * TODO: add documentation to this class
@@ -222,15 +225,28 @@ public class ElasticsearchClient implements ESClient {
 
 	@Override
 	public String getIndexNameForAlias(final String alias) {
-		final ImmutableOpenMap<String, List<AliasMetaData>> activeindices = this.client.admin().indices().getAliases(new GetAliasesRequest().aliases(alias)).actionGet().getAliases();
+		final List<String> activeindices = getIndexNamesForAlias(alias);
 		if (!activeindices.isEmpty()) {
 			if (activeindices.size() > 1) {
 				throw new IllegalStateException("found more than one index for this system!");
 			}
 			
-			return activeindices.iterator().next().key;
+			return activeindices.iterator().next();
 		}
 		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.es.ESClient#getIndexNamesForAlias(java.lang.String)
+	 */
+	@Override
+	public List<String> getIndexNamesForAlias(String aliasName) {
+		final ImmutableOpenMap<String, List<AliasMetaData>> activeindices = this.client.admin().indices().getAliases(new GetAliasesRequest().aliases(aliasName)).actionGet().getAliases();
+		final List<String> indexNames = new LinkedList<>();
+		for (ObjectObjectCursor<String, List<AliasMetaData>> objectObjectCursor : activeindices) {
+			indexNames.add(objectObjectCursor.key);
+		}
+		return indexNames;
 	}
 	
 	/* (non-Javadoc)

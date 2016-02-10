@@ -53,7 +53,9 @@ public class AdminFullTextSearchCommand extends BaseCommand {
 		/** generate index */
 		GENERATE_INDEX,
 		/** delete index */
-		DELETE_INDEX;
+		DELETE_INDEX,
+		/** enables an index */
+		ENABLE_INDEX;
 	}
 	
 	/** specific action for admin page */

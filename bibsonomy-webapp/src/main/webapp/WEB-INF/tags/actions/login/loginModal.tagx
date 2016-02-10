@@ -28,7 +28,7 @@
 							</p>
 						</c:if>
 						<c:if test="${authMethod == 'INTERNAL'}">
-							<login:simpleLoginForm authMethod="${authMethodName}">
+							<login:simpleLoginForm authMethod="${authMethodName}" index="${authMethodLoopState.index}">
 								<jsp:attribute name="additionalContent">
 									<p><a href="/reminder"><small><fmt:message key="login.lostPassword_1" /></small></a></p>
 								</jsp:attribute>
@@ -38,7 +38,7 @@
 							<user:login_openid selectedTab="${authMethodLoopState.index}" compact="${true}"/>
 						</c:if>
 						<c:if test="${authMethod == 'LDAP'}">
-							<login:simpleLoginForm authMethod="${authMethodName}" />
+							<login:simpleLoginForm authMethod="${authMethodName}" index="${authMethodLoopState.index}" />
 						</c:if>
 						<c:if test="${authMethod == 'SAML'}">
 							<a href="/login_saml?rememberMe=true" class="btn btn-primary">
