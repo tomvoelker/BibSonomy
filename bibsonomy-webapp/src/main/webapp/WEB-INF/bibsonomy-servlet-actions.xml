@@ -1058,18 +1058,15 @@
 		<property name="client" ref="reCaptcha2Client" />
 	</bean>
 	
-	<bean id="requestConfigBuilder" class="org.apache.http.client.config.RequestConfig"
-	    factory-method="custom">
-	    <property name="socketTimeout" value="${database.main.maxWait}" /> 
-	    <property name="connectTimeout" value="${database.main.maxWait}" /> 
+	<!-- configure the http client for communication with the recaptcha service -->
+	<bean id="requestConfigBuilder" class="org.apache.http.client.config.RequestConfig" factory-method="custom">
+		<property name="socketTimeout" value="2000" /> 
+		<property name="connectTimeout" value="2000" /> 
 	</bean>
-	
 	<bean id="requestConfig" factory-bean="requestConfigBuilder" factory-method="build" />
-	
 	<bean id="httpClientBuilder" class="org.apache.http.impl.client.HttpClientBuilder" factory-method="create">
-	    <property name="defaultRequestConfig" ref="requestConfig" />
+		<property name="defaultRequestConfig" ref="requestConfig" />
 	</bean>
-	
 	<bean id="reCaptcha2Client" factory-bean="httpClientBuilder" factory-method="build" destroy-method="close" />
 	
 	<!-- for testing -->
