@@ -114,6 +114,8 @@
 			<p>
 				<fmt:message key="system.offeredBy">
 					<fmt:param>${properties['project.name']}</fmt:param>
+					<fmt:param>${properties['project.provider']}</fmt:param>
+					<fmt:param>${properties['project.provider.url']}</fmt:param>
 				</fmt:message>
 			</p>
 		</div>
