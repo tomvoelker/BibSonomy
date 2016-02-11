@@ -1055,7 +1055,6 @@
 		<property name="privateKey" value="${recaptcha.privateKey}"/>
 		<property name="publicKey" value="${recaptcha.publicKey}"/>
 		<property name="recaptchaServer" value="${recaptcha2.server}"/>
-		<property name="includeNoscript" value="false" />
 		<property name="client" ref="reCaptcha2Client" />
 	</bean>
 	

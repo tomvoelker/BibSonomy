@@ -61,21 +61,20 @@ public class ReCaptcha2 implements Captcha {
 	private String privateKey;
 	private String publicKey;
 	private String recaptchaServer;
-	private boolean includeNoscript;
 	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.webapp.util.captcha.Captcha#createCaptchaHtml(java.util.Locale)
 	 */
 	@Override
 	public String createCaptchaHtml(final Locale locale) {
-		String captchaHtml = "<script src='https://www.google.com/recaptcha/api.js?hl=" + locale.getLanguage() + "'></script>" + 
-				"<div class=\"g-recaptcha\" data-sitekey=\"" + this.publicKey +  "\"></div>";
-		if (this.includeNoscript) {
-			captchaHtml += "<noscript>"
+		final String language = locale.getLanguage();
+		return "<script src='https://www.google.com/recaptcha/api.js?hl=" + language + "'></script>" + 
+				"<div class=\"g-recaptcha\" data-sitekey=\"" + this.publicKey +  "\"></div>"
+					+ "<noscript>"
 					+ "<div style=\"width: 302px; height: 422px;\">"
 					+ "<div style=\"width: 302px; height: 422px; position: relative;\">"
 					+ "<div style=\"width: 302px; height: 422px; position: absolute;\">"
-					+ "<iframe src=\"https://www.google.com/recaptcha/api/fallback?hl=" + locale.getLanguage() + "&k=" + this.publicKey + "\""
+					+ "<iframe src=\"https://www.google.com/recaptcha/api/fallback?hl=" + language + "&k=" + this.publicKey + "\""
 					+ "frameborder=\"0\" scrolling=\"no\""
 					+ "style=\"width: 302px; height:422px; border-style: none;\">"
 					+ "</iframe>"
@@ -92,8 +91,6 @@ public class ReCaptcha2 implements Captcha {
 					+ "</div>"
 					+ "</div>"
 					+ "</noscript>";
-		}
-		return captchaHtml;
 	}
 
 	/* (non-Javadoc)
@@ -173,19 +170,5 @@ public class ReCaptcha2 implements Captcha {
 	 */
 	public void setClient(CloseableHttpClient client) {
 		this.client = client;
-	}
-
-	/**
-	 * @return the includeNoscript
-	 */
-	public boolean isIncludeNoscript() {
-		return this.includeNoscript;
-	}
-
-	/**
-	 * @param includeNoscript the includeNoscript to set
-	 */
-	public void setIncludeNoscript(boolean includeNoscript) {
-		this.includeNoscript = includeNoscript;
 	}
 }
