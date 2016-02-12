@@ -2071,7 +2071,7 @@
 		<BibFile>GooglePatentScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.googlepatent.GooglePatentScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_332">
+	<URLTest id="url_338">
 		<TestDescription>Test for worldcat with correct authors</TestDescription>
 		<URL>http://www.worldcat.org/oclc/254138269</URL>
 		<BibFile>WorldCatScraperUnitURLTest4.bib</BibFile>
