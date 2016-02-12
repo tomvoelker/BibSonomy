@@ -164,6 +164,19 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 			throw new IllegalArgumentException("the user '" + username + "'does not exist");
 		}
 		
+		/*
+		 * check if the user is a member of a group
+		 * 
+		 * We can't use a global (i.e., class attribute) manager, since the 
+		 * GroupDatabaseManager contains a UserDatabaseManager and thus we 
+		 * have a circular dependency in the constructors.
+		 */
+		final GroupDatabaseManager groupDBManager = GroupDatabaseManager.getInstance();
+		
+		if (groupDBManager.getGroupsForUser(username, true, session).size() > 0) {
+			throw new IllegalStateException("the user '" + username + "'cannot be flagged as spammer, because he is member of at least one group.");
+		}
+		
 		final AdminParam param = new AdminParam();
 
 		param.setUserName(username);
@@ -266,11 +279,6 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		for (final String table : TABLE_NAMES) {
 			param.setGroupIdTable(table);
 			this.update("updateGroupIds", param, session);
-		}
-		
-		// remove the spammer from all groups he is in
-		if(param.isSpammer()) {
-			this.update("removeSpammerFromGroups", param, session);
 		}
 	}
 
