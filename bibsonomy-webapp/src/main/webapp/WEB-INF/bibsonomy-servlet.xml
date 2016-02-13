@@ -1035,6 +1035,5 @@
 	<import resource="bibsonomy-servlet-cronjobs.xml" />
 	<import resource="bibsonomy-servlet-synchronization.xml" />
 	<import resource="bibsonomy-servlet-logging.xml" />
-	<import resource="bibsonomy-servlet-bibsonomy.xml" />
 	<import resource="bibsonomy-servlet-puma.xml" />
 </beans>

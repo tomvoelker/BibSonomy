@@ -17,10 +17,10 @@
 	<c:set var="publication" value="${post.resource}"/>
 	<c:set var="isOwnEntry" value="${post.user.name eq command.context.loginUser.name}"/>
 	
-	<spring:theme code="javascript.openaccess" var="jsOpenAccess" text=""/>
+	<c:set var="openAccessEnabled" value="${properties['publication.reporting.enabled'] eq 'true'}" />
 
-	<c:if test="${not empty jsOpenAccess}"> 
-		<script type="text/javascript" src="${jsOpenAccess}"><!--  --></script>
+	<c:if test="${openAccessEnabled}"> 
+		<script type="text/javascript" src="/resources_puma/javascript/openaccess.js"><!--  --></script>
 	</c:if>
 	
 	<div class="title">
@@ -76,17 +76,10 @@
 	<div class="row">
 	
 		<div class="col-md-12">
-			<!--+ 
-			 	| selection of citation format 
-			 	+-->
-			<hr />
-		 	<h4 class="pub-details"><span class="fa fa-quote-right"><!--  --></span><c:out value=" "/><fmt:message key="publications.citations.headline" /></h4>
-			<pub:citation post="${post}"/>
-			
 			<!--+
 				| only shown on PUMA (transfer publication to OpenAccess repository) 
 				+-->
-			<c:if test="${not empty jsOpenAccess}"> <!-- is there any openaccess javascript code defined in theme*.properties? -->
+			<c:if test="${openAccessEnabled}"> <!-- is there any openaccess javascript code defined in theme*.properties? -->
 				<c:if test="${isOwnEntry and mtl:hasTagMyown(post)}"> <!-- only if publication is own one -->
 					<c:if test="${(properties['publication.reporting.mode'] eq 'ALL' or properties['publication.reporting.mode'] eq 'GROUP' and mtl:userIsGroup(command.context.loginUser))}"> <!-- only if publication is tagged with myown system tag -->	
 						<editpub:openaccess referer="${referer}" bibtex="${publication}"/>
@@ -105,6 +98,12 @@
 					</c:if>
 				</c:if>
 			</c:if>
+			<!--+ 
+			 	| selection of citation format 
+			 	+-->
+			<hr />
+		 	<h4 class="pub-details"><span class="fa fa-quote-right"><!--  --></span><c:out value=" "/><fmt:message key="publications.citations.headline" /></h4>
+			<pub:citation post="${post}"/>
 		</div>
 	</div>
 </jsp:root>

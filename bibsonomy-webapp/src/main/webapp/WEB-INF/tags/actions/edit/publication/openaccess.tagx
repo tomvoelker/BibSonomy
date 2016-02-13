@@ -28,169 +28,87 @@
 	 	| additional JavaScript code for Open Access (DSpace) integration.
 	 	|
 	 	+-->
-	<spring:theme code="javascript.openaccess" var="jsOpenAccess" text=""/>
-	<c:if test="${not empty jsOpenAccess}">
-	
+	<c:if test="${properties['publication.reporting.enabled'] eq 'true'}">
 		<c:if test="${not empty referer}">
-			<a id="referer" class="refererButton" href="${referer}" > <fmt:message key="post.resource.openaccess.button.referer"/></a>
+			<a class="btn btn-default" href="${referer}"><fmt:message key="post.resource.openaccess.button.referer"/></a>
 		</c:if>
 		
 		<div style="clear:both;" id="oaRepositorySentInfo"><!-- used for puma--> </div>	
 		<h4 class="pub-details"><span class="fa fa-paper-plane"><!--  --></span><c:out value=" " /><fmt:message key="post.resource.openaccess.headline"/></h4>
-
+		<div class="oadescription">
+			<p><fmt:message key="post.resource.openaccess.description"/></p>
+		</div>
 		<form class="form-horizontal">
 			<fieldset>
 				<div id="openAccessContainer">
 
 				<div id="openAccessMetaDataContainer">
-					<div class="oadescription"><p><fmt:message key="post.resource.openaccess.description"/></p></div>
-	
-								<legend><fmt:message key="post.resource.openaccess.additionalfields.headline"/></legend>
-								
-								<div class="oadescription"><p><fmt:message key="post.resource.openaccess.additionalfields.description"/></p></div>
-								
-								<!-- if entrytype == phdthesis -->
-								<c:if test="${bibtex.entrytype=='phdthesis' || bibtex.entrytype=='mastersthesis'}">
-									
-									<div class="form-group">
-										<label class="col-sm-3 control-label" for="post.resource.openaccess.additionalfields.institution"><fmt:message key="post.resource.openaccess.additionalfields.institution"/></label>
-										<div class="col-sm-9">
-											<input type="text" value="" class="form-control help-popover" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.institution" id="post.resource.openaccess.additionalfields.institution"/>
-											<div class="help help-header hide"><!--  --></div>
-											<div class="help help-content hide"><fmt:message key="post.resource.openaccess.additionalfields.institution.help"/></div>
-										</div>
-									</div>
-									
-									<!-- 
-									<div class="fsRow">
-										<label class="fsLabel" for="post.resource.openaccess.additionalfields.institution"><fmt:message key="post.resource.openaccess.additionalfields.institution"/>*</label>
-										<div class="help" style="">
-											<b class="smalltext" style="">?</b>
-											<div><fmt:message key="post.resource.openaccess.additionalfields.institution.help"/></div>
-										</div>
-										<input type="text" value="" class="fsInput reqinput" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.institution" id="post.resource.openaccess.additionalfields.institution"/>
-										<div class="dissError"> </div>
-									</div>
-									-->
-			
-									<div class="form-group">
-										<label class="col-sm-3 control-label" for="post.resource.openaccess.additionalfields.referee"><fmt:message key="post.resource.openaccess.additionalfields.referee"/></label>
-										<div class="col-sm-9">
-											<input type="text" value="" class="form-control help-popover" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.referee" id="post.resource.openaccess.additionalfields.phdreferee"/>
-											<div class="help help-header hide"><!--  --></div>
-											<div class="help help-content hide"><fmt:message key="post.resource.openaccess.additionalfields.referee.help"/></div>
-										</div>
-									</div>
-									
-									<!-- 
-									<div class="fsRow">
-										<label class="fsLabel" for="post.resource.openaccess.additionalfields.referee">1. <fmt:message key="post.resource.openaccess.additionalfields.referee"/>* </label>
-										<div class="help" style="">
-											<b class="smalltext" style="">?</b>
-											<div><fmt:message key="post.resource.openaccess.additionalfields.referee.help"/></div>
-										</div>
-										<input type="text" value="" class="fsInput reqinput" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.referee" id="post.resource.openaccess.additionalfields.phdreferee"/>
-										<div class="dissError"> </div>
-									</div>
-									-->
-															
-									<div class="form-group">
-										<label class="col-sm-3 control-label" for="post.resource.openaccess.additionalfields.referee2"><fmt:message key="post.resource.openaccess.additionalfields.referee"/></label>
-										<div class="col-sm-9">
-											<input type="text" value="" class="form-control help-popover"  name="post.resource.openaccess.additionalfields.referee2" id="post.resource.openaccess.additionalfields.phdreferee2"/>
-											<div class="help help-header hide"><!--  --></div>
-											<div class="help help-content hide"><fmt:message key="post.resource.openaccess.additionalfields.referee.help"/></div>
-										</div>
-									</div>
-									
-									<!-- 
-									<div class="fsRow">
-										<label class="fsLabel" for="post.resource.openaccess.additionalfields.referee2">2. <fmt:message key="post.resource.openaccess.additionalfields.referee"/>* </label>
-										<div class="help" style="">
-											<b class="smalltext" style="">?</b>
-											<div><fmt:message key="post.resource.openaccess.additionalfields.referee.help"/></div>
-										</div>
-										<input type="text" value="" class="fsInput reqinput"  name="post.resource.openaccess.additionalfields.referee2" id="post.resource.openaccess.additionalfields.phdreferee2"/>
-										<div class="dissError"> </div>
-									</div>
-									-->
-									
-									
-									<div class="form-group">
-										<label class="col-sm-3 control-label" for="post.resource.openaccess.additionalfields.phdoralexam"><fmt:message key="post.resource.openaccess.additionalfields.phdoralexam"/></label>
-										<div class="col-sm-9">
-											<input type="text" value="" class="form-control help-popover" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.phdoralexam" id="post.resource.openaccess.additionalfields.phdoralexam"/>
-											<div class="help help-header hide"><!--  --></div>
-											<div class="help help-content hide"><fmt:message key="post.resource.openaccess.additionalfields.phdoralexam.help"/></div>
-										</div>
-									</div>
-									
-									<!-- 
-									<div class="fsRow">
-										<label class="fsLabel" for="post.resource.openaccess.additionalfields.phdoralexam"><fmt:message key="post.resource.openaccess.additionalfields.phdoralexam"/>* </label>
-										<div class="help" style="">
-											<b class="smalltext" style="">?</b>
-											<div><fmt:message key="post.resource.openaccess.additionalfields.phdoralexam.help"/></div>
-										</div>
-										<input type="text" value="" class="fsInput reqinput" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.phdoralexam" id="post.resource.openaccess.additionalfields.phdoralexam"/>
-										<div class="dissError"> </div>
-									</div>
-									-->
-								</c:if>
-								<!-- /if entrytype == phdthesis -->
-			
-							
-									<div class="form-group">
-										<label class="col-sm-3 control-label" for="post.resource.openaccess.additionalfields.sponsor"><fmt:message key="post.resource.openaccess.additionalfields.sponsor"/></label>
-										<div class="col-sm-9">
-											<input type="text" value="" class="form-control help-popover" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.sponsor" id="post.resource.openaccess.additionalfields.sponsor"/>
-											<div class="help help-header hide"><!--  --></div>
-											<div class="help help-content hide"><fmt:message key="post.resource.openaccess.additionalfields.sponsor.help"/></div>
-										</div>
-									</div>
-									<!-- 
-									<div class="fsRow">
-										<label class="fsLabel" for="post.resource.openaccess.additionalfields.sponsor"><fmt:message key="post.resource.openaccess.additionalfields.sponsor"/></label>
-										<div class="help" style="">
-											<b class="smalltext" style="">?</b>
-											<div><fmt:message key="post.resource.openaccess.additionalfields.sponsor.help"/></div>
-										</div>
-										<input type="text" value="" class="fsInput" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.sponsor" id="post.resource.openaccess.additionalfields.sponsor"/>
-										<div class="dissError"> </div>
-									</div>
-									-->
-									
-									<div class="form-group">
-										<label class="col-sm-3 control-label" for="post.resource.openaccess.additionalfields.additionaltitle"><fmt:message key="post.resource.openaccess.additionalfields.additionaltitle"/></label>
-										<div class="col-sm-9">
-											<input type="text" value="" class="control-label help-popover" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.additionaltitle" id="post.resource.openaccess.additionalfields.additionaltitle"/>
-											<div class="help help-header hide"><!--  --></div>
-											<div class="help help-content hide"><fmt:message key="post.resource.openaccess.additionalfields.additionaltitle.help"/></div>
-										</div>
-									</div>
-									<!-- 
-									<div class="fsRow">
-										<label class="fsLabel" for="post.resource.openaccess.additionalfields.additionaltitle"><fmt:message key="post.resource.openaccess.additionalfields.additionaltitle"/></label>
-										<div class="help" style="">
-											<b class="smalltext" style="">?</b>
-											<div><fmt:message key="post.resource.openaccess.additionalfields.additionaltitle.help"/></div>
-										</div>
-										<input type="text" value="" class="fsInput" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.additionaltitle" id="post.resource.openaccess.additionalfields.additionaltitle"/>
-										<div class="dissError"> </div>
-									</div>
-									-->
-									<div id="sendMetadataMarker">&amp;deg;</div>
+					<legend><fmt:message key="post.resource.openaccess.additionalfields.headline"/></legend>
+					
+					<div class="oadescription"><p><fmt:message key="post.resource.openaccess.additionalfields.description"/></p></div>
+					
+					<!-- if entrytype == phdthesis -->
+					<c:if test="${bibtex.entrytype=='phdthesis' || bibtex.entrytype=='mastersthesis'}">
+						
+						<div class="form-group">
+							<label class="col-sm-3 control-label" for="post.resource.openaccess.additionalfields.institution"><fmt:message key="post.resource.openaccess.additionalfields.institution"/></label>
+							<div class="col-sm-9">
+								<input type="text" value="" class="form-control help-popover" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.institution" id="post.resource.openaccess.additionalfields.institution"/>
+								<div class="help help-header hide"><!--  --></div>
+								<div class="help help-content hide"><fmt:message key="post.resource.openaccess.additionalfields.institution.help"/></div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label" for="post.resource.openaccess.additionalfields.referee"><fmt:message key="post.resource.openaccess.additionalfields.referee"/></label>
+							<div class="col-sm-9">
+								<input type="text" value="" class="form-control help-popover" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.referee" id="post.resource.openaccess.additionalfields.phdreferee"/>
+								<div class="help help-header hide"><!--  --></div>
+								<div class="help help-content hide"><fmt:message key="post.resource.openaccess.additionalfields.referee.help"/></div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label" for="post.resource.openaccess.additionalfields.referee2"><fmt:message key="post.resource.openaccess.additionalfields.referee"/></label>
+							<div class="col-sm-9">
+								<input type="text" value="" class="form-control help-popover"  name="post.resource.openaccess.additionalfields.referee2" id="post.resource.openaccess.additionalfields.phdreferee2"/>
+								<div class="help help-header hide"><!--  --></div>
+								<div class="help help-content hide"><fmt:message key="post.resource.openaccess.additionalfields.referee.help"/></div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label" for="post.resource.openaccess.additionalfields.phdoralexam"><fmt:message key="post.resource.openaccess.additionalfields.phdoralexam"/></label>
+							<div class="col-sm-9">
+								<input type="text" value="" class="form-control help-popover" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.phdoralexam" id="post.resource.openaccess.additionalfields.phdoralexam"/>
+								<div class="help help-header hide"><!--  --></div>
+								<div class="help help-content hide"><fmt:message key="post.resource.openaccess.additionalfields.phdoralexam.help"/></div>
+							</div>
+						</div>
+					</c:if> <!-- /if entrytype == phdthesis -->
+					<div class="form-group">
+						<label class="col-sm-3 control-label" for="post.resource.openaccess.additionalfields.sponsor"><fmt:message key="post.resource.openaccess.additionalfields.sponsor"/></label>
+						<div class="col-sm-9">
+							<input type="text" value="" class="form-control help-popover" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.sponsor" id="post.resource.openaccess.additionalfields.sponsor"/>
+							<div class="help help-header hide"><!--  --></div>
+							<div class="help help-content hide"><fmt:message key="post.resource.openaccess.additionalfields.sponsor.help"/></div>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label class="col-sm-3 control-label" for="post.resource.openaccess.additionalfields.additionaltitle"><fmt:message key="post.resource.openaccess.additionalfields.additionaltitle"/></label>
+						<div class="col-sm-9">
+							<input type="text" value="" class="form-control help-popover" onchange="setMetadataChanged(true)" onkeyup="setMetadataChanged(true)" name="post.resource.openaccess.additionalfields.additionaltitle" id="post.resource.openaccess.additionalfields.additionaltitle"/>
+							<div class="help help-header hide"><!--  --></div>
+							<div class="help help-content hide"><fmt:message key="post.resource.openaccess.additionalfields.additionaltitle.help"/></div>
+						</div>
+					</div>
+					<div id="sendMetadataMarker">&amp;deg;</div>
 									
 					<!--						<div id="saveMetadataButtonContainer">-->
 					<!--							<a id="saveMetadataButton" href="javascript:sendAdditionalMetadataFields()"><fmt:message key="post.resource.openaccess.additionalfields.save"/></a>-->
 					<!--						</div>-->
 					
-									<input type="hidden" name="hash" id="openAccessCurrentPublicationHash" value="${fn:escapeXml(bibtex.intraHash)}"/>
-									<input type="hidden" name="hash" id="openAccessCurrentPublicationInterHash" value="${fn:escapeXml(bibtex.interHash)}"/>
-							
-						
-								
-						</div>
+						<input type="hidden" name="hash" id="openAccessCurrentPublicationHash" value="${fn:escapeXml(bibtex.intraHash)}"/>
+						<input type="hidden" name="hash" id="openAccessCurrentPublicationInterHash" value="${fn:escapeXml(bibtex.interHash)}"/>
+					</div>
 					<div id="pumaAddon" class="clearboth" ><!-- used for puma--> </div>
 			
 					<div class="form-group" id="openAccessClassificationContainer">
@@ -257,7 +175,7 @@
 							</c:if>
 							
 							<div id="oasherparomeo"><fmt:message key="post.resource.openaccess.noinfoavailable"/></div>
-		
+							
 							<div id="oasherparomeocolordescription">
 								<fmt:message key="post.resource.openaccess.sherparomeo.color.description.intro"/>  
 								<ul>
@@ -270,7 +188,7 @@
 						</div>
 					</div>
 					</c:if>
-				
+					
 					<div class="form-group" id="authorcontract">
 						<div class="col-sm-offset-3 col-sm-9">
 							<div class="checkbox">
@@ -281,13 +199,13 @@
 							</div>
 						</div>
 					</div>
-	
+					
 					<div id="oaRepositorySent"><!-- used for puma--> </div>
-		
+					
 					<div class="form-group" id="oaSubmitContainer" >
 						<div class="col-sm-offset-3 col-sm-9" id="pumaSword">
 							<fmt:message key="post.resource.openaccess.button.sendtorepository" var="oaButtonSendtorepository"/>
-							<input id="oasendtorepositorybutton" type="button" class="ajaxButton oadisabledsend2repositorybutton btn btn-primary" onclick="sentPublicationToRepository('oasendtorepositorybutton','${bibtex.intraHash}')" value="${oaButtonSendtorepository}"/>
+							<input id="oasendtorepositorybutton" type="button" class="ajaxButton oadisabledsend2repositorybutton btn btn-primary" onclick="sentPublicationToRepository('oasendtorepositorybutton','${bibtex.intraHash}')" value="${oaButtonSendtorepository}" disabled="disabled"/>
 						</div>
 					</div>
 				</div>
