@@ -205,8 +205,13 @@
 	<bean id="themeResolver" class="org.springframework.web.servlet.theme.FixedThemeResolver">
 		<property name="defaultThemeName" value="${project.theme}" />
 	</bean>
-	    
+	
 	<bean id="themeSource" class="org.springframework.ui.context.support.ResourceBundleThemeSource">
+		<property name="basenamePrefix" value="custom/theme_" />
+		<property name="parentThemeSource" ref="themeSourceDefaults" />
+	</bean>
+	
+	<bean id="themeSourceDefaults" class="org.springframework.ui.context.support.ResourceBundleThemeSource">
 		<property name="basenamePrefix" value="theme_"/>
 	</bean>
 	
