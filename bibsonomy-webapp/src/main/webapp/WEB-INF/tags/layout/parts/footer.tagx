@@ -97,7 +97,7 @@
 					<dd><span class="fa fa-twitter"><!--  --></span>&amp;nbsp;<a href="http://twitter.com/${twitter}"><fmt:message key="footer.social.twitter"/></a></dd>
 				</c:if>
 				
-				<c:set var="googleCommunity" value="${properties['project.social.googlepluscommunity']}" />
+				<c:set var="googleCommunity" value="${properties['project.social.google-plus']}" />
 				<c:if test="${not empty googleCommunity}">
 					<dd><span class="fa fa-google-plus"><!--  --></span>&amp;nbsp;<a href="https://plus.google.com/communities/${googleCommunity}"><fmt:message key="footer.social.google"/></a></dd>
 				</c:if>
@@ -114,6 +114,8 @@
 			<p>
 				<fmt:message key="system.offeredBy">
 					<fmt:param>${properties['project.name']}</fmt:param>
+					<fmt:param>${properties['project.provider']}</fmt:param>
+					<fmt:param>${properties['project.provider.url']}</fmt:param>
 				</fmt:message>
 			</p>
 		</div>

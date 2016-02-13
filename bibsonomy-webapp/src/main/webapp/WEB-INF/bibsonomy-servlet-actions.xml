@@ -1055,11 +1055,19 @@
 		<property name="privateKey" value="${recaptcha.privateKey}"/>
 		<property name="publicKey" value="${recaptcha.publicKey}"/>
 		<property name="recaptchaServer" value="${recaptcha2.server}"/>
-		<property name="includeNoscript" value="false" />
 		<property name="client" ref="reCaptcha2Client" />
 	</bean>
 	
-	<bean id="reCaptcha2Client" class="org.apache.http.impl.client.HttpClients" destroy-method="close" factory-method="createDefault" />
+	<!-- configure the http client for communication with the recaptcha service -->
+	<bean id="requestConfigBuilder" class="org.apache.http.client.config.RequestConfig" factory-method="custom">
+		<property name="socketTimeout" value="2000" /> 
+		<property name="connectTimeout" value="2000" /> 
+	</bean>
+	<bean id="requestConfig" factory-bean="requestConfigBuilder" factory-method="build" />
+	<bean id="httpClientBuilder" class="org.apache.http.impl.client.HttpClientBuilder" factory-method="create">
+		<property name="defaultRequestConfig" ref="requestConfig" />
+	</bean>
+	<bean id="reCaptcha2Client" factory-bean="httpClientBuilder" factory-method="build" destroy-method="close" />
 	
 	<!-- for testing -->
 	<bean id="mockCaptcha" class="org.bibsonomy.webapp.util.captcha.MockCaptcha" />

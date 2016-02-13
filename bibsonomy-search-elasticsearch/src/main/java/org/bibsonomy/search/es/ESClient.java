@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.search.es;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -62,24 +63,30 @@ public interface ESClient {
 	 * @throws IllegalStateException if an alias has multiple indices
 	 */
 	public String getIndexNameForAlias(String alias);
+	
+	/**
+	 * @param aliasName
+	 * @return a list of index names
+	 */
+	public List<String> getIndexNamesForAlias(String aliasName);
 
 	/**
 	 * @param indexName
 	 * @param type
 	 * @param id
 	 * @param jsonDocument
-	 * @return 
+	 * @return <code>true</code> iff the document was inserted successfully
 	 */
-	boolean insertNewDocument(String indexName, String type, String id, Map<String, Object> jsonDocument);
+	public boolean insertNewDocument(String indexName, String type, String id, Map<String, Object> jsonDocument);
 	
 	/**
 	 * 
 	 * @param indexName
 	 * @param type
 	 * @param jsonDocuments
-	 * @return
+	 * @return <code>true</code> iff all documents were inserted successfully
 	 */
-	boolean insertNewDocuments(String indexName, String type, Map<String, Map<String, Object>> jsonDocuments);
+	public boolean insertNewDocuments(String indexName, String type, Map<String, Map<String, Object>> jsonDocuments);
 	
 	/**
 	 * @param indexName
@@ -180,4 +187,6 @@ public interface ESClient {
 	 * @return
 	 */
 	public UpdateRequestBuilder prepareUpdate(String indexName, String type, String id);
+
+	
 }

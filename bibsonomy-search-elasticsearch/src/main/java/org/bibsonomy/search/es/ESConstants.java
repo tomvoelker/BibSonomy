@@ -96,34 +96,9 @@ public final class ESConstants {
 	}
 
 	/**
-	 * system url field name
-	 */
-	public static final String SYSTEMURL_FIELD = "systemUrl";
-
-	/**
 	 * BATCH size to fetch results
 	 */
 	public static final int BATCHSIZE = 30000;
-
-	/**
-	 * Path of Elasticsearch configuration file.
-	 */
-	public static final String PATH_CONF = "path.conf";
-
-	/**
-	 * Path of names.txt file.
-	 */
-	public static final String NAMES_TXT = "/org.bibsonomy.es/";
-
-	/**
-	 * Elasticsearch client SNIFF property.
-	 */
-	public static final String SNIFF = "client.transport.sniff";
-
-	/**
-	 * Elasticsearch Node name
-	 */
-	public static final String ES_NODE_NAME = "bibsonomy_client";
 
 	/**
 	 * Index type for the system information
@@ -146,10 +121,6 @@ public final class ESConstants {
 	 * prefix for temporary index
 	 */
 	public static final String TEMP_INDEX_PREFIX = "TempIndex";
-	/**
-	 * prefix for temporary index
-	 */
-	public static final String TEMP_ON_PROCESS_INDEX_PREFIX = "TempIndexOnProcess";
 
 	public static interface Fields {
 		
