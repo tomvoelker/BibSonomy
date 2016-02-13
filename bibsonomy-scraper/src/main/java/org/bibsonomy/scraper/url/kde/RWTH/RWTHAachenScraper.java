@@ -36,11 +36,13 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
 
 /**
- * this scraper supports download links from the host rwth-aachen.de 
- * @Author Mohammed Abed
+ * this scraper supports download links from the host rwth-aachen.de
+ * 
+ * @author Mohammed Abed
  */
 public class RWTHAachenScraper extends AbstractUrlScraper {
 
@@ -59,23 +61,21 @@ public class RWTHAachenScraper extends AbstractUrlScraper {
 	
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		
-		String content = null;
 		try {
-			content = WebUtils.getContentAsString(sc.getUrl() + DOWNLOAD_BIBTEX_FORMAT);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}	
-		Matcher m = PATTERN_TO_PICK_BIBTEX_FROM_PAGE_CONTENT.matcher(content);
-		String bibtexresult = null;
-		if (m.find()) {
-			bibtexresult = m.group(1);
-			sc.setBibtexResult(bibtexresult);
-			return true;
+			final String content = WebUtils.getContentAsString(sc.getUrl() + DOWNLOAD_BIBTEX_FORMAT);
+			final Matcher m = PATTERN_TO_PICK_BIBTEX_FROM_PAGE_CONTENT.matcher(content);
+			if (m.find()) {
+				final String bibtexresult = m.group(1);
+				sc.setBibtexResult(bibtexresult);
+				return true;
+			}
+		} catch (final IOException e) {
+			throw new ScrapingFailureException(e);
 		}
-		return false;	
-	}
 		
+		return false;
+	}
+	
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;

@@ -40,6 +40,8 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
 
 /**
+ * TODO: check status of this scraper
+ * 
  * this Scraper import data from the host http://copac.jisc.ac.uk
  * @author Mohammed Abed
  */
@@ -63,7 +65,7 @@ public class CopacScraper extends AbstractUrlScraper {
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 		try {
-			String cookie = WebUtils.getCookies(sc.getUrl());		 
+			String cookie = WebUtils.getCookies(sc.getUrl());
 			System.out.println(cookie);
 			final String bibResult = WebUtils.getContentAsString(sc.getUrl().toString() + EXPORT_BIBTEX );
 			System.out.println(bibResult);

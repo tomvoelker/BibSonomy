@@ -533,7 +533,6 @@ public class WebUtils {
 	 * Returns the cookies returned by the server on accessing the URL. 
 	 * The format of the returned cookies is as
 	 * 
-	 * 
 	 * @param url
 	 * @return The cookies as string, build by {@link #buildCookieString(List)}.
 	 * @throws IOException
@@ -552,22 +551,19 @@ public class WebUtils {
 		return buildCookieString(cookies);
 	}
 	
+	/**
+	 * FIXME: document the difference between this method and {@link #getCookies(URL)}
+	 * 
+	 * @param url
+	 * @return the cookies
+	 * @throws IOException
+	 */
 	public static String getSpecialCookies(final URL url) throws IOException {
-		
 		final GetMethod getMethod = new GetMethod(url.toString());
-        int executeMethod = CLIENT.executeMethod(getMethod);
-        getMethod.getResponseHeaders("Set-Cookie");
-        final HttpURLConnection urlConn = createConnnection(url);
-        urlConn.setAllowUserInteraction(false);
-		urlConn.setDoInput(true);
-		urlConn.setDoOutput(false);
+		CLIENT.executeMethod(getMethod);
+		getMethod.getResponseHeaders("Set-Cookie");
 		
-		urlConn.connect();
-		
-		final List<String> cookies = urlConn.getHeaderFields().get("Set-Cookie");
-		urlConn.disconnect();
-		
-		return buildCookieString(cookies);
+		return getCookies(url);
 	}
 	/**
 	 * @param url the url

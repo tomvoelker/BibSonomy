@@ -71,6 +71,8 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  * @author Lukas
  */
 public class DublinCoreScraper implements Scraper {
+	/** dublin to bibtex converter */
+	private static final DublinCoreToBibtexConverter DUBLIN_CORE_CONVERTER = new DublinCoreToBibtexConverter();
 	//scraper informations
 	private static final String SITE_NAME = "DublinCoreScraper";
 	private static final String SITE_URL = "http://dublincore.org/";
@@ -92,12 +94,12 @@ public class DublinCoreScraper implements Scraper {
 		if (!present(scrapingContext.getUrl())) {
 			return false;
 		}
+		
 		// get the page content to find the dublin core data
 		final String page = scrapingContext.getPageContent();
 		if (present(page)) {
 			// try to extract Dublin Core metadata 
-			DublinCoreToBibtexConverter converter = new DublinCoreToBibtexConverter();
-			 String result = converter.toBibtex(page);
+			String result = DUBLIN_CORE_CONVERTER.toBibtex(page);
 			/*
 			 * We are not greedy, since many pages contain Dublin Core but often 
 			 * not enough: if we would return true for all of them, we would 
@@ -107,7 +109,7 @@ public class DublinCoreScraper implements Scraper {
 				// set scraper found
 				scrapingContext.setScraper(this);
 				
-				//add url
+				// add url
 				result = BibTexUtils.addFieldIfNotContained(result, "url", scrapingContext.getUrl().toString());
 				// get bibtex information out of the DC metatags in the page
 				scrapingContext.setBibtexResult(result);
