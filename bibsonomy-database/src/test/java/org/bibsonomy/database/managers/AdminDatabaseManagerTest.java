@@ -38,6 +38,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.ClassifierMode;
 import org.bibsonomy.common.enums.ClassifierSettings;
+import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.database.managers.discussion.DiscussionDatabaseManager;
@@ -46,11 +47,14 @@ import org.bibsonomy.database.managers.discussion.ReviewDatabaseManager;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandardPublication;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupRequest;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Review;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.testutil.TestDatabaseManager;
+import org.bibsonomy.util.Sets;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -262,6 +266,43 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		adminDb.flagSpammer(spammer, "admin", this.dbSession);
 		
 		assertEquals(0.0, testDatabaseManager.getReviewRatingsArithmeticMean(newHash), 0);
+		
+		
+		/*
+		 * now unflag testuser1 again
+		 */
+		user.setSpammer(false);
+		adminDb.flagSpammer(user, "admin", "off", this.dbSession);
+		
+		/*
+		 * check if the user is member of a group, so he can't be flagged
+
+		 * We can't use a global (i.e., class attribute) manager, since the 
+		 * GroupDatabaseManager contains a UserDatabaseManager and thus we 
+		 * have a circular dependency in the constructors.
+		 */
+		final GroupDatabaseManager groupDBManager = GroupDatabaseManager.getInstance();
+		final Group newGroup = new Group();
+		final String groupName = "testgroupnew";
+		newGroup.setName(groupName.toUpperCase());
+		final GroupRequest groupRequest = new GroupRequest();
+		final String requestedUser = "testrequestuser1";
+		groupRequest.setUserName(requestedUser);
+		groupRequest.setReason("testrequestreason1");
+		newGroup.setGroupRequest(groupRequest);
+
+		groupDBManager.createGroup(newGroup, this.dbSession);
+		groupDBManager.activateGroup(newGroup.getName(), this.dbSession);
+
+		// add the user to the group
+		groupDBManager.addPendingMembership(groupName, user.getName(), false, GroupRole.INVITED, this.dbSession);
+		groupDBManager.addUserToGroup(groupName, user.getName(), false, GroupRole.USER, this.dbSession);
+		
+		spammer.setSpammer(true);
+		// this should throw an exception now
+		adminDb.flagSpammer(spammer, "admin", this.dbSession);
+		assertTrue(!userDatabaseManager.getUserDetails("testspammer", this.dbSession).isSpammer());
+		
 	}
 	
 	/**
