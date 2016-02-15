@@ -54,7 +54,7 @@ import org.bibsonomy.model.Review;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.testutil.TestDatabaseManager;
-import org.bibsonomy.util.Sets;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -63,7 +63,7 @@ import org.junit.Test;
  * @author Stefan Stützer
  */
 public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
-	
+
 	private static AdminDatabaseManager adminDb;
 	private static BookmarkDatabaseManager bookmarkDb;
 	private static BibTexDatabaseManager publicationDb;
@@ -71,7 +71,8 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	private static TestDatabaseManager testDatabaseManager;
 	private static ReviewDatabaseManager reviewDatabaseManager;
 	private static UserDatabaseManager userDatabaseManager;
-	
+	private static GroupDatabaseManager groupDatabaseManager;
+
 	/**
 	 * sets up required managers
 	 */
@@ -84,6 +85,7 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		testDatabaseManager = new TestDatabaseManager();
 		reviewDatabaseManager = ReviewDatabaseManager.getInstance();
 		userDatabaseManager = UserDatabaseManager.getInstance();
+		groupDatabaseManager = GroupDatabaseManager.getInstance();
 	}
 
 	/**
@@ -179,7 +181,7 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final String result = adminDb.flagSpammer(user, "classifier", "off", this.dbSession);
 		assertEquals(user.getName(), result);
 	}
-	
+
 	/**
 	 * flags and unflags an user as spammer
 	 */
@@ -188,22 +190,32 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final User user = new User();
 		final String userName = "testuser1";
 		user.setName(userName);
-		
+
 		final List<Integer> visibleGroupsUser2 = Collections.singletonList(PUBLIC_GROUP_ID);
 		final String loginUserName2 = "testuser2";
 		List<Post<Bookmark>> publicBookmarkUserPosts = bookmarkDb.getPostsForUser(loginUserName2, userName, HashID.INTRA_HASH, PUBLIC_GROUP_ID, visibleGroupsUser2, null, null, 10, 0, null, this.dbSession);
 		List<Post<BibTex>> publicPublicationUserPosts = publicationDb.getPostsForUser(loginUserName2, userName, HashID.INTRA_HASH, PUBLIC_GROUP_ID, visibleGroupsUser2, null, null, 10, 0, null, this.dbSession);
 		assertEquals(1, publicPublicationUserPosts.size());
 		assertEquals(1, publicBookmarkUserPosts.size());
-		
+
 		user.setSpammer(true);
 		user.setToClassify(0);
 		user.setPrediction(1);
 		user.setConfidence(1.0);
 		user.setMode("D");
 		user.setAlgorithm("test");
-		adminDb.flagSpammer(user, "not-classifier", "off", this.dbSession);
-		
+
+		final List<Group> userGroups = groupDatabaseManager.getGroupsForUser(userName, true, this.dbSession);
+		try {
+			adminDb.flagSpammer(user, "not-classifier", "off", this.dbSession);
+			Assert.fail("User cannot be marked as spammer since he is member of at least one group.");
+		} catch (final IllegalStateException ex) {
+			for (final Group group : userGroups) {
+				groupDatabaseManager.removeUserFromGroup(group.getName(), userName, this.dbSession);
+			}
+			adminDb.flagSpammer(user, "not-classifier", "off", this.dbSession);
+		}
+
 		/*
 		 * after the user is marked as spammer testuser2 shouldn't see any posts of testuser1
 		 */
@@ -211,40 +223,44 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		publicPublicationUserPosts = publicationDb.getPostsForUser(loginUserName2, userName, HashID.INTRA_HASH, PUBLIC_GROUP_ID, visibleGroupsUser2, null, null, 10, 0, null, this.dbSession);
 		assertEquals(0, publicPublicationUserPosts.size());
 		assertEquals(0, publicBookmarkUserPosts.size());
-		
+
 		// TODO: user should see his own posts
-		
+
 		// TODO: check tas and grouptas table
-		
+
 		/*
 		 * check if discussion items are invisible to non-spammers
 		 */
 		assertEquals(0, discussionDatabaseManager.getDiscussionSpaceForResource(DiscussionDatabaseManagerTest.HASH_WITH_RATING, loginUserName2, visibleGroupsUser2, this.dbSession).size());
-		
+
 		/*
 		 * check if the review ratings cache was updated
 		 */
 		assertEquals(0, testDatabaseManager.getReviewRatingsArithmeticMean(DiscussionDatabaseManagerTest.HASH_WITH_RATING), 0);
-		
+
 		/*
 		 * now unflag testuser1 again
 		 */
 		user.setSpammer(false);
 		adminDb.flagSpammer(user, "admin", "off", this.dbSession);
-		
+		for (final Group group : userGroups) {
+			groupDatabaseManager.addPendingMembership(group.getName(), userName, true, GroupRole.INVITED, this.dbSession);
+			groupDatabaseManager.addUserToGroup(group.getName(), userName, true, GroupRole.USER, this.dbSession);
+		}
+
 		publicBookmarkUserPosts = bookmarkDb.getPostsForUser(loginUserName2, userName, HashID.INTRA_HASH, PUBLIC_GROUP_ID, visibleGroupsUser2, null, null, 10, 0, null, this.dbSession);
 		publicPublicationUserPosts = publicationDb.getPostsForUser(loginUserName2, userName, HashID.INTRA_HASH, PUBLIC_GROUP_ID, visibleGroupsUser2, null, null, 10, 0, null, this.dbSession);
 		assertEquals(1, publicPublicationUserPosts.size());
 		assertEquals(1, publicBookmarkUserPosts.size());
-		
+
 		// TODO: check tas and grouptas table
 		assertEquals(2, discussionDatabaseManager.getDiscussionSpaceForResource(DiscussionDatabaseManagerTest.HASH_WITH_RATING, loginUserName2, visibleGroupsUser2, this.dbSession).size());
-		
+
 		/*
 		 * check if the review ratings cache was updated
 		 */
 		assertEquals(4.0, testDatabaseManager.getReviewRatingsArithmeticMean(DiscussionDatabaseManagerTest.HASH_WITH_RATING), 0);
-		
+
 		final float rating = 3.5f;
 		final String newHash = "thisisastrangehash";
 		final Review review = new Review();
@@ -255,56 +271,50 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		review.setGroups(Collections.singleton(GroupUtils.buildPublicSpamGroup()));
 		assertTrue(reviewDatabaseManager.createDiscussionItemForResource(newHash, review, this.dbSession));
 		assertEquals(0.0, testDatabaseManager.getReviewRatingsArithmeticMean(newHash), 0);
-		
+
 		spammer.setSpammer(false);
 		spammer.setAlgorithm("admin");
 		adminDb.flagSpammer(spammer, "admin", this.dbSession);
-		
+
 		assertEquals(rating, testDatabaseManager.getReviewRatingsArithmeticMean(newHash), 0);
-		
+
 		spammer.setSpammer(true);
 		adminDb.flagSpammer(spammer, "admin", this.dbSession);
-		
+
 		assertEquals(0.0, testDatabaseManager.getReviewRatingsArithmeticMean(newHash), 0);
-		
-		
-		/*
-		 * now unflag testuser1 again
-		 */
-		user.setSpammer(false);
-		adminDb.flagSpammer(user, "admin", "off", this.dbSession);
-		
+
+
 		/*
 		 * check if the user is member of a group, so he can't be flagged
 
-		 * We can't use a global (i.e., class attribute) manager, since the 
-		 * GroupDatabaseManager contains a UserDatabaseManager and thus we 
+		 * We can't use a global (i.e., class attribute) manager, since the
+		 * GroupDatabaseManager contains a UserDatabaseManager and thus we
 		 * have a circular dependency in the constructors.
 		 */
-		final GroupDatabaseManager groupDBManager = GroupDatabaseManager.getInstance();
 		final Group newGroup = new Group();
 		final String groupName = "testgroupnew";
 		newGroup.setName(groupName.toUpperCase());
 		final GroupRequest groupRequest = new GroupRequest();
-		final String requestedUser = "testrequestuser1";
+		final String requestedUser = user.getName();
 		groupRequest.setUserName(requestedUser);
 		groupRequest.setReason("testrequestreason1");
 		newGroup.setGroupRequest(groupRequest);
 
-		groupDBManager.createGroup(newGroup, this.dbSession);
-		groupDBManager.activateGroup(newGroup.getName(), this.dbSession);
+		groupDatabaseManager.createGroup(newGroup, this.dbSession);
+		groupDatabaseManager.activateGroup(newGroup.getName(), this.dbSession);
 
-		// add the user to the group
-		groupDBManager.addPendingMembership(groupName, user.getName(), false, GroupRole.INVITED, this.dbSession);
-		groupDBManager.addUserToGroup(groupName, user.getName(), false, GroupRole.USER, this.dbSession);
-		
-		spammer.setSpammer(true);
+		user.setSpammer(true);
 		// this should throw an exception now
-		adminDb.flagSpammer(spammer, "admin", this.dbSession);
-		assertTrue(!userDatabaseManager.getUserDetails("testspammer", this.dbSession).isSpammer());
-		
+		try {
+			adminDb.flagSpammer(user, "admin", this.dbSession);
+			Assert.fail("User was flagged as spammer while being member of a group.");
+		} catch (final IllegalStateException ex) {
+			assertTrue(!userDatabaseManager.getUserDetails(user.getName(), this.dbSession).isSpammer());
+		}
+
+
 	}
-	
+
 	/**
 	 * tests populating given user object with spam flags
 	 */
@@ -322,17 +332,17 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		user.setAlgorithm("testlogging");
 		// flag spammer (flagging does not change: user is no spammer)
 		adminDb.flagSpammer(user, "fei", "off", this.dbSession);
-		
+
 		// remove spam informations
 		user.setSpammer(null);
 		user.setToClassify(null);
 		user.setPrediction(null);
 		user.setConfidence(null);
 		user.setMode(null);
-		
+
 		// populate user with spam informations
 		final User userRead = adminDb.getClassifierUserDetails(user, this.dbSession);
-		
+
 		// assure, that spam data is read but no other informations lost
 		assertEquals(user, userRead);
 		assertEquals("testMail@nomail.com", user.getEmail());
