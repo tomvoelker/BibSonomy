@@ -95,7 +95,7 @@
 	<bean id="openAccessController" class="de.unikassel.puma.webapp.controller.ajax.OpenAccessController" scope="request" parent="ajaxController" />	
 	
 	<bean id="swordServiceController" class="de.unikassel.puma.webapp.controller.ajax.SwordServiceController" scope="request" parent="ajaxController">
-		<property name="swordService" ref="swordService_puma"/>	
+		<property name="swordService" ref="swordService"/>	
 		<property name="messageSource" ref="messageSource"/>
 		<property name="mode" value="${publication.reporting.mode}" />
 	</bean>
@@ -113,7 +113,7 @@
 		| NullFactoryBeanin bibsonomy2-servlet-bibsonomy.xml).
 		|
 	 	+-->
-	<bean id="swordConfig_puma" class="de.unikassel.puma.openaccess.sword.SwordConfig">
+	<bean id="swordConfig" class="de.unikassel.puma.openaccess.sword.SwordConfig">
 		<property name="dirTemp" value="${sword.dirTemp}"/>
 		<property name="httpServer" value="${sword.httpServer}"/>
 		<property name="httpPort" value="${sword.httpPort}"/>
@@ -129,13 +129,10 @@
 		<property name="bibtexReader" ref="bibtexReader"/>
 	</bean>
 
-	<bean id="swordService_puma" class="de.unikassel.puma.openaccess.sword.SwordService">
-		<property name="repositoryConfig" ref="swordConfig_puma"/>
+	<bean id="realSwordService" class="de.unikassel.puma.openaccess.sword.SwordService">
+		<property name="repositoryConfig" ref="swordConfig"/>
 		<property name="projectDocumentPath" value="${project.document.path}"/>
 		<property name="urlRenderer" ref="restUrlRenderer"/>
 		<property name="logicInterfaceFactory" ref="apiLogicFactory" />
 	</bean>
-
-
 </beans>
-

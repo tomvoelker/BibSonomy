@@ -24,37 +24,34 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.webapp.util.spring.factorybeans;
-
-import org.bibsonomy.webapp.util.spring.condition.Condition;
-import org.springframework.beans.factory.FactoryBean;
+package org.bibsonomy.webapp.util.spring.condition;
 
 /**
- * {@link FactoryBean} that checks whether a {@link Condition}. If so, it
- * returns the bean produced by {@link #produceSucessBean()} and the one produced by {@link #produceFailureBean()} otherwise.
- * The abstract methods are injected by spring. 
- * 
- * @author jensi
- * @param <T>  type of the object to be instantiated
+ * a condition that checks for value is equal
+ *
+ * @author dzo
+ * @param <T> 
  */
-public abstract class ConditionedFactoryBean<T> extends ConditionedPropertyCreationBean<T> implements FactoryBean<T> {
-	@Override
-	public Class<?> getObjectType() {
-		return null;
+public class EqualCondition<T> implements Condition {
+	
+	private T value;
+	private T expected;
+	
+	/**
+	 * @param value
+	 * @param expected
+	 */
+	public EqualCondition(T value, T expected) {
+		super();
+		this.value = value;
+		this.expected = expected;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.util.spring.condition.Condition#eval()
+	 */
 	@Override
-	public T getObject() throws Exception {
-		return getConditionedProperty();
-	}
-
-	@Override
-	public boolean isSingleton() {
-		return true;
-	}
-
-	@Override
-	protected T produceFailureBean() {
-		return null;
+	public boolean eval() {
+		return value != null && value.equals(expected);
 	}
 }
