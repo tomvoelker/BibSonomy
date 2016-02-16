@@ -47,6 +47,7 @@ import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.person.PersonRoleRenderer;
 import org.bibsonomy.util.spring.security.AuthenticationUtils;
 import org.bibsonomy.webapp.command.PersonPageCommand;
+import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
@@ -71,6 +72,10 @@ public class PersonPageController extends SingleResourceListController implement
 	@Override
 	public View workOn(final PersonPageCommand command) {
 		final RequestWrapperContext context = command.getContext();
+		System.out.println(command.getRequestedPersonId());
+		if(command.getRequestedPersonId() == null){
+			throw new MalformedURLSchemeException("The person page was requested without a person in the request.");
+		}
 		
 		if (!context.isValidCkey()) {
 			errors.reject("error.field.valid.ckey");
