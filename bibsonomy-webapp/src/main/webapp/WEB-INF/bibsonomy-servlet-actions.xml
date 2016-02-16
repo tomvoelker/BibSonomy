@@ -808,6 +808,23 @@
 		<property name="swordService" ref="swordService"/>
 	</bean>
 	
+	<bean id="swordService" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
+		<property name="condition">
+			<bean id="samlActivatedCondition" class="org.bibsonomy.webapp.util.spring.condition.EvalOnceCondition">
+				<property name="delegate">
+					<bean class="org.bibsonomy.webapp.util.spring.condition.EqualCondition">
+						<constructor-arg value="${publication.reporting.enabled}" />
+						<constructor-arg value="true" />
+					</bean>
+				</property>
+			</bean>
+		</property>
+		<lookup-method name="produceSucessBean" bean="realSwordService"/>
+		<lookup-method name="produceFailureBean" bean="swordServiceDisabled"/>
+	</bean>
+	
+	<bean id="swordServiceDisabled" class="org.bibsonomy.webapp.util.spring.factorybeans.NullFactoryBean"/>
+	
 	<bean id="editGoldStandardBookmarkController" class="org.bibsonomy.webapp.controller.actions.EditGoldStandardBookmarkController" scope="request" parent="editPostController" />
 	
 	<bean id="editGoldStandardPublicationController" class="org.bibsonomy.webapp.controller.actions.EditGoldStandardPublicationController" scope="request" parent="editPostController">
