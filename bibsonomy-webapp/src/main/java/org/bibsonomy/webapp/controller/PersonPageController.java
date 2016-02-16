@@ -72,9 +72,6 @@ public class PersonPageController extends SingleResourceListController implement
 	@Override
 	public View workOn(final PersonPageCommand command) {
 		final RequestWrapperContext context = command.getContext();
-		if(command.getRequestedPersonId() == null){
-			throw new MalformedURLSchemeException("The person page was requested without a person in the request.");
-		}
 		
 		if (!context.isValidCkey()) {
 			errors.reject("error.field.valid.ckey");
@@ -99,7 +96,12 @@ public class PersonPageController extends SingleResourceListController implement
 			}
 		} else if (present(command.getRequestedPersonId())) {
 			return this.showAction(command);
+		} 
+		if (command.getRequestedPersonId() == null){
+			throw new MalformedURLSchemeException("The person page was requested without a person in the request.");
 		}
+		// the following statement cannot be reached, and seems useless anyway, since in this case no formAction was present and not PersonId. 
+		// Remove when sure. 
 		return indexAction();
 	}
 
