@@ -33,21 +33,36 @@
 				<dd><a href="/buttons"><fmt:message key="footer.buttons"/></a></dd>
 				<dd><a href="${helpLangUrl}/Main"><fmt:message key="help"/></a></dd>
 				
-				
-				<dt><fmt:message key="footer.developer"/></dt>
-			
-				<dd><span class="fa fa-bitbucket"><!--  --></span><c:out value=" " /><a href="http://bibsonomy.bitbucket.org/"><fmt:message key="footer.overview"/></a></dd>
-				<dd><span class="fa fa-puzzle-piece"><!--  --></span><c:out value=" " /><a href="http://bitbucket.org/bibsonomy/bibsonomy/wiki/documentation/api/REST%20API"><fmt:message key="settings.apidoc"/></a></dd>
+				<fmt:message key="footer.developer" var="developerFooter"/>
+				<c:if test="${not empty developerFooter}">
+					<dt><c:out value="${developerFooter}" /></dt>
+					
+					<dd><span class="fa fa-bitbucket"><!--  --></span><c:out value=" " /><a href="http://bibsonomy.bitbucket.org/"><fmt:message key="footer.overview"/></a></dd>
+					<dd><span class="fa fa-puzzle-piece"><!--  --></span><c:out value=" " /><a href="http://bitbucket.org/bibsonomy/bibsonomy/wiki/documentation/api/REST%20API"><fmt:message key="settings.apidoc"/></a></dd>
+				</c:if>
 			</dl>
 			
 			<dl class="col-md-3 col-sm-6">
 				<dt><fmt:message key="footer.privacyContact"/></dt>
 				
-				<dd><a href="${helpLangUrl}/contact"><fmt:message key="navi.about"/></a></dd>
-				<dd><fmt:message key="system.termsOfUse"/></dd>
-				<dd><fmt:message key="footer.cookies"/></dd>
-				<dd><a href="http://bitbucket.org/bibsonomy/bibsonomy/issues"><fmt:message key="issues"/></a></dd>
-				<dd><a href="https://bitbucket.org/bibsonomy/bibsonomy/wiki"><fmt:message key="footer.wiki"><fmt:param value="${properties['project.name']}"/></fmt:message></a></dd>
+				<dd><fmt:message key="navi.about"/></dd>
+				<dd>
+					<fmt:message key="system.termsOfUse"/>
+				</dd>
+				<dd>
+					<fmt:message key="footer.cookies"/>
+				</dd>
+				<dd>
+					<fmt:message key="issues"/>
+				</dd>
+				<fmt:message key="footer.wiki" var="wikiFooter">
+					<fmt:param value="${properties['project.name']}"/>
+				</fmt:message>
+				<c:if test="${not empty wikiFooter}">
+					<dd>
+						<c:out value="${wikiFooter}" escapeXml="false" />
+					</dd>
+				</c:if>
 			</dl>
 			
 			<dl class="col-md-3 col-sm-6">
@@ -64,13 +79,33 @@
 			<dl class="col-md-3 col-sm-6">
 				<dt><fmt:message key="footer.about"/>&amp;nbsp;<c:out value="${properties['project.name']}" /></dt>
 				
-				<dd><a href="${helpLangUrl}/Team"><fmt:message key="footer.team"/></a></dd>
-				<dd><a href="${properties['project.blog']}"><fmt:message key="blog"/></a></dd>
-				<dd><a href="https://mail.cs.uni-kassel.de/mailman/listinfo/bibsonomy-discuss"><fmt:message key="footer.mailingList"/></a></dd>
+				<dd><fmt:message key="footer.team"/></dd>
+				
+				<c:set var="blogUrl" value="${properties['project.blog']}" />
+				<c:if test="${not empty blogUrl}">
+					<dd><a href="${blogUrl}"><fmt:message key="blog"/></a></dd>
+				</c:if>
+				
+				<fmt:message key="footer.mailingList" var="footerMailingList" />
+				<c:if test="${not empty footerMailingList}">
+					<dd><a href="https://mail.cs.uni-kassel.de/mailman/listinfo/bibsonomy-discuss"><c:out value="${footerMailingList}" /></a></dd>
+				</c:if>
 				
 				<dt><fmt:message key="footer.socialMedia"/></dt>
-				<dd><span class="fa fa-twitter"><!--  --></span>&amp;nbsp;<a href="http://twitter.com/bibsonomyCrew"><fmt:message key="footer.twitter"/></a></dd>
-				<dd><span class="fa fa-google-plus"><!--  --></span>&amp;nbsp;<a href="https://plus.google.com/communities/102073418538419220890"><fmt:message key="footer.google"/></a></dd>
+				<c:set var="twitter" value="${properties['project.social.twitter']}" />
+				<c:if test="${not empty twitter}">
+					<dd><span class="fa fa-twitter"><!--  --></span>&amp;nbsp;<a href="http://twitter.com/${twitter}"><fmt:message key="footer.social.twitter"/></a></dd>
+				</c:if>
+				
+				<c:set var="googleCommunity" value="${properties['project.social.google-plus']}" />
+				<c:if test="${not empty googleCommunity}">
+					<dd><span class="fa fa-google-plus"><!--  --></span>&amp;nbsp;<a href="https://plus.google.com/communities/${googleCommunity}"><fmt:message key="footer.social.google"/></a></dd>
+				</c:if>
+				
+				<c:set var="facebook" value="${properties['project.social.facebook']}" />
+				<c:if test="${not empty facebook}">
+					<dd><span class="fa fa-facebook"><!--  --></span>&amp;nbsp;<a href="https://facebook.com/${facebook}"><fmt:message key="footer.social.facebook"/></a></dd>
+				</c:if>
 			</dl>
 		</nav>
 
@@ -79,6 +114,8 @@
 			<p>
 				<fmt:message key="system.offeredBy">
 					<fmt:param>${properties['project.name']}</fmt:param>
+					<fmt:param>${properties['project.provider']}</fmt:param>
+					<fmt:param>${properties['project.provider.url']}</fmt:param>
 				</fmt:message>
 			</p>
 		</div>

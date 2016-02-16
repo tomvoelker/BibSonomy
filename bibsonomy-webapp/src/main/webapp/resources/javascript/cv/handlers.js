@@ -157,7 +157,15 @@ function clearCVTextField(){
  * @param {Object} element
  */
 function toggleDetails(self){
-    var details = $(self).next();
-    details.toggle();
-    return false;
+	var details = $(self).next();
+	details.toggle();
+	var linkText;
+	if (details.is(':visible')) {
+		linkText = getString('cv.options.hide_details');
+	} else {
+		linkText = getString('cv.options.show_details');
+	}
+	
+	$(self).text(linkText);
+	return false;
 }
