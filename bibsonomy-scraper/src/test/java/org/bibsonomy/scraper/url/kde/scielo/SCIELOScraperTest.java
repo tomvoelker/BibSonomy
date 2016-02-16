@@ -1,7 +1,7 @@
 /**
- * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
+ * BibSonomy-Web-Common - Common things for web
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -12,19 +12,19 @@
  *                               http://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.scraper.url.kde.iop;
+package org.bibsonomy.scraper.url.kde.scielo;
 
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
@@ -32,34 +32,16 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * Scraper URL tests #16, #297 for IOPScraper
- * @author tst
- *
+ * @author Mohammed Abed
  */
 @Category(RemoteTest.class)
-public class IOPScraperTest {
-	
-	/*
-	 * starts URL test with id url_16
-	 */
-	@Test
-	public void urlTestRun(){
-		UnitTestRunner.runSingleTest("url_16");
-	}
-	
-	/*
-	 * starts URL test with id url_297
+
+public class SCIELOScraperTest {
+	/**
+	 * starts URL test with id url_335
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_297");
-	}
-	
-	/*
-	 * starts URL test with id url_334
-	 */
-	@Test
-	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_334");
+		UnitTestRunner.runSingleTest("url_335");
 	}
 }

@@ -111,7 +111,7 @@ public class PubMedScraper extends AbstractUrlScraper {
 					HttpURL risURL = new HttpURL(new HttpURL(method.getURI().getURI()), risLinkMatcher.group(1));
 					RisToBibtexConverter c = new RisToBibtexConverter();
 					String ris = WebUtils.getContentAsString(client, risURL);
-					bibtexresult = c.risToBibtex(ris);
+					bibtexresult = c.toBibtex(ris);
 				} else {
 					
 					Matcher ma = PMIDPATTERN.matcher(pageContent);
