@@ -72,7 +72,6 @@ public class PersonPageController extends SingleResourceListController implement
 	@Override
 	public View workOn(final PersonPageCommand command) {
 		final RequestWrapperContext context = command.getContext();
-		System.out.println(command.getRequestedPersonId());
 		if(command.getRequestedPersonId() == null){
 			throw new MalformedURLSchemeException("The person page was requested without a person in the request.");
 		}
