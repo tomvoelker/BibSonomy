@@ -26,7 +26,6 @@
  */
 package org.bibsonomy.rest.strategy.groups;
 
-
 import java.io.ByteArrayOutputStream;
 
 import org.bibsonomy.common.exceptions.InternServerException;
@@ -59,9 +58,11 @@ public class GetGroupStrategy extends Strategy {
 		if (group == null) {
 			throw new NoSuchResourceException("The requested group '" + this.groupName + "' does not exist.");
 		}
-		this.getRenderer().serializeGroup(writer, group, new ViewModel());
+		// FIXME: What does this do?
+		this.getRenderer().serializeGroup(this.writer, group, new ViewModel());
 	}
 
+	@Deprecated
 	@Override
 	public String getContentType() {
 		return "group";

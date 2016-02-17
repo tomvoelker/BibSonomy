@@ -73,6 +73,7 @@
 								<value>ckey</value>
 								<value>group</value>
 								<value>reason</value>
+								<value>userSharedDocuments</value>
 								<value>deniedUser</value>
 								<value>joinRequest</value>
 								<!-- for recaptcha -->
@@ -618,11 +619,15 @@
 								<value>privlevel</value>
 								<value>realname</value>
 								<value>sharedDocuments</value>
+								<value>allowJoin</value>
+								<value>description</value>
 								<value>groupname</value>
 								<value>username</value>
 								<value>homepage</value>
 								<value>operation</value>
 								<value>groupRole</value>
+								<value>pictureFile</value>
+								<value>deletePicture</value>
 								<value>group.name</value>
 								<value>group.realname</value>
 								<value>group.description</value>
@@ -643,6 +648,35 @@
 								<value>group.name</value>
 								<value>group.description</value>
 								<value>group.groupRequest.reason</value>
+								<value>group.groupRequest.userName</value>
+								<!-- for recaptcha -->
+								<value>recaptcha_response_field</value>
+								<value>recaptcha_challenge_field</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<!-- delete group request -->
+				<entry key="/deletegrouprequest">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="deleteGroupRequestController"/>
+						<property name="allowedFields">
+							<list>
+								<value>ckey</value>
+								<value>groupName</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<!--  delete group -->
+				<entry key="/actions/deleteGroup">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="deleteGroupController"/>
+						<property name="allowedFields">
+							<list>
+								<value>delete</value>
+								<value>selTab</value>
+								<value>groupname</value>
 							</list>
 						</property>
 					</bean>
@@ -1131,6 +1165,7 @@
 	<!-- Handles the settings update of a group -->
 	<bean id="updateGroupController" class="org.bibsonomy.webapp.controller.actions.UpdateGroupController" scope="request">
 		<property name="logic" ref="logic" />
+		<property name="fileLogic" ref="fileLogic" />
 		<property name="requestLogic" ref="requestLogic" />
 		<!-- to send registration mails -->
 		<property name="mailUtils" ref="mailUtils"/>
@@ -1144,8 +1179,16 @@
 		<property name="adminLogic" ref ="adminLogic" />
 		<property name="mailer" ref="mailUtils" />
 		<property name="requestLogic" ref="requestLogic" />
+		<!-- To check registration for human beings ... -->
+		<property name="captcha" ref="captcha"></property>	
 		<property name="groupCreationMode" value="${project.groupcreationmode}" />
 	</bean>
+	
+	<!-- delete group request -->
+	<bean id="deleteGroupRequestController" class="org.bibsonomy.webapp.controller.actions.DeleteGroupRequestController" scope="request" parent="settingsPageController" />
+	
+	<!-- Handles delete group process  -->
+	<bean id="deleteGroupController" class="org.bibsonomy.webapp.controller.actions.DeleteGroupController" scope="request" parent="groupSettingsPageController" />
 	
 	<!-- Handles the profile update of a user -->
 	<bean id="updateUserController" class="org.bibsonomy.webapp.controller.actions.UpdateUserController" scope="request" parent="settingsPageController" />

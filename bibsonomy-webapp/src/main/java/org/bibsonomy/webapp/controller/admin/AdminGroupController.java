@@ -53,12 +53,14 @@ import org.springframework.security.access.AccessDeniedException;
 /**
  * Controller for group admin page
  * 
+ * TODO: Make ErrorAware for proper error messages
+ * TODO: update the allowed fields of this controller TODO_GROUPS
+ * 
  * @author bsc
  */
-// TODO: Needs loads of polishing
-// TODO: Make ErrorAware for proper error messages
 public class AdminGroupController implements MinimalisticController<AdminGroupViewCommand> {
 	private static final Log log = LogFactory.getLog(AdminGroupController.class);
+	
 	private LogicInterface logic;
 	private MailUtils mailUtils;
 
@@ -68,21 +70,22 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		final User loginUser = context.getLoginUser();
 		command.setPermissionsUpdated(false);
 		
-		/* Check user role
-		 * If user is not logged in or not an admin: show error message */
+		/*
+		 * check user role
+		 * If user is not logged in or not an admin: show error message
+		 */
 		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(loginUser.getRole())) {
 			throw new AccessDeniedException("please log in as admin");
 		}
 
 		/* Check for and perform the specified action */
 		final AdminGroupOperation action = command.getAction();
-		User requestingUser;
-		if(!present(action)) {
-			log.debug("No action specified.");
-		} else {
+		if (present(action)) {
 			Group group = command.getGroup();
+			User requestingUser;
 			switch(action) {
 				case ACCEPT:
+					// TODO: extend getGroupDetails to retrieve pending groups TODO_GROUPS; see DECLINE
 					for (Group g : logic.getGroups(true, 0, Integer.MAX_VALUE)) {
 						if (g.getName().equals(group.getName())) {
 							group = g;
@@ -104,9 +107,28 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 					}
 					break;
 				case DECLINE:
+					for (Group g : logic.getGroups(true, 0, Integer.MAX_VALUE)) {
+						if (g.getName().equals(group.getName())) {
+							group = g;
+							break;
+						}
+					}
+					
+					final String groupName = group.getName();
+					requestingUser = this.logic.getUserDetails(group.getGroupRequest().getUserName());
+					
+					// delete the group
 					log.debug("grouprequest for group \"" + group.getName() + "\" declined");
 					this.logic.updateGroup(group, GroupUpdateOperation.DELETE, null);
-					// TODO: send mail
+					
+					// send mail
+					String declineMessage = command.getDeclineMessage();
+					if (!present(declineMessage)) {
+						declineMessage = "";
+					}
+					if (present(requestingUser.getEmail())) {
+						this.mailUtils.sendGroupDeclineNotification(groupName, declineMessage, requestingUser, LocaleUtils.toLocale(requestingUser.getSettings().getDefaultLanguage()));
+					}
 					break;
 				case FETCH_GROUP_SETTINGS:
 					setGroupOrMarkNonExistent(command);
@@ -120,12 +142,10 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 				default:
 					break;
 			}
-				
 		}
 		
 		// load the pending groups
-		command.setPendingGroups(logic.getGroups(true, 0, Integer.MAX_VALUE));
-	
+		command.setPendingGroups(this.logic.getGroups(true, 0, Integer.MAX_VALUE));
 		return Views.ADMIN_GROUP;
 	}
 
@@ -134,6 +154,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 	 * TODO: Proper Error messages.
 	 * @param command
 	 */
+	@Deprecated // TODO: remove TODO_GROUPS
 	private String createGroup(final Group group) {
 		/*
 		 * Check if group-name is empty
@@ -163,6 +184,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 	 * TODO: Find out when this is used.
 	 * 
 	 */
+	@Deprecated // TODO: remove TODO_GROUPS
 	private void updateGroup(final AdminGroupViewCommand command) {
 		final Group dbGroup = getGroupOrMarkNonExistent(command);
 		if (present(dbGroup)) {
@@ -232,6 +254,9 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		this.logic = logic;
 	}
 
+	/**
+	 * @param mailUtils the mailUtils to set
+	 */
 	public void setMailUtils(MailUtils mailUtils) {
 		this.mailUtils = mailUtils;
 	}

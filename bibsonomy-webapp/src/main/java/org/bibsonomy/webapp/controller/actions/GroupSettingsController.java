@@ -39,6 +39,7 @@ import org.bibsonomy.model.GroupPublicationReportingSettings;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.UserUtils;
+import org.bibsonomy.model.util.file.UploadedFile;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.controller.SearchPageController;
 import org.bibsonomy.webapp.controller.SettingsPageController;
@@ -128,8 +129,6 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 			return returnSettingsView(command, groupToUpdate, groupName);
 		}
 		
-		// TODO: (group) remove?!
-
 		// update the bean
 		groupToUpdate.setPrivlevel(priv);
 		groupToUpdate.setSharedDocuments(sharedDocs);
