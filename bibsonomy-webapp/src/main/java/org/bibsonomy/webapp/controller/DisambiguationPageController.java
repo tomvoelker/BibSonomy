@@ -56,8 +56,6 @@ import org.bibsonomy.webapp.view.Views;
  * @author Christian Pfeiffer, Tom Hanika
  */
 public class DisambiguationPageController extends SingleResourceListController implements MinimalisticController<DisambiguationPageCommand> {
-	//private static final Log log = LogFactory.getLog(DisambiguationPageController.class);
-	
 	/**
 	 * put into the session to tell the personPageController that the person has just been created
 	 */
