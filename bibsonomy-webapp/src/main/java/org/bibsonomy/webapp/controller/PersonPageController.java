@@ -336,8 +336,7 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @return
 	 */
 	private View showAction(PersonPageCommand command) {
-		
-		for(PersonResourceRelationType prr : PersonResourceRelationType.values()) {
+		for (PersonResourceRelationType prr : PersonResourceRelationType.values()) {
 			command.getAvailableRoles().add(prr);
 		}
 		
