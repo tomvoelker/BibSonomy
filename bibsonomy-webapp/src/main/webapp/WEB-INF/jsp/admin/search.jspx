@@ -14,7 +14,7 @@
 	xmlns:spring="urn:http://www.springframework.org/tags"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:es="urn:jsptagdir:/WEB-INF/tags/admin/elasticsearch">
+	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
@@ -35,16 +35,9 @@
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
-
-		<jsp:attribute name="heading">
-			<!-- TODO: remove -->
-		</jsp:attribute>
 		
 		<jsp:attribute name="content">
 			<h2>Elasticsearch Indices</h2>
-			<c:if test="${not empty command.adminResponse}">
-				<div class="adminResponse"><c:out value="${command.adminResponse}"/></div>
-			</c:if>
 			
 			<c:forEach items="${command.searchIndexInfo}" var="searchIndexInfoEntry">
 				<c:set var="searchIndexInfos" value="${searchIndexInfoEntry.value}" />
@@ -53,16 +46,20 @@
 				<c:set var="searchIndexInfosSize" value="${fn:length(searchIndexInfos)}" />
 				<c:choose>
 					<c:when test="${searchIndexInfosSize > 0 }">
-						<table class="table">
-							<tr>
-								<th>Index Name</th>
-								<th>State</th>
-								<th># Docs</th>
-								<th>last tas id</th>
-								<th>last log date</th>
-								<th>last person id</th>
-								<th><!-- keep me --></th>
-							</tr>
+						<table class="table table-condensed">
+							<thead>
+								<tr>
+									<th>Index Name</th>
+									<th>State</th>
+									<th>Version</th>
+									<th># Docs</th>
+									<th>Last tas id</th>
+									<th>Last log date</th>
+									<th>Last p. id</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody>
 							<c:forEach var="searchIndexInfo" items="${searchIndexInfos}">
 								<tr>
 									<td><c:out value="${searchIndexInfo.id}" /></td>
@@ -70,14 +67,39 @@
 									
 									<c:choose>
 										<c:when test="${searchIndexInfo.state != 'GENERATING' }">
+											<td><c:out value="${searchIndexInfo.syncState.mappingVersion}" /></td>
 											<td><c:out value="${searchIndexInfo.statistics.numberOfDocuments}" /></td>
 											<td><c:out value="${searchIndexInfo.syncState.last_tas_id}" /></td>
 											<td><c:out value="${searchIndexInfo.syncState.last_log_date}" /></td>
 											<td><c:out value="${searchIndexInfo.syncState.lastPersonChangeId}" /></td>
+											<td>
+												<div class="btn-group">
+													<c:if test="${searchIndexInfo.state eq 'STANDBY'}">
+														<form class="form-inline">
+															<input type="hidden" name="resource" value="${resourceType}" />
+															<input type="hidden" name="action" value="ENABLE_INDEX" />
+															<input type="hidden" name="id" value="${searchIndexInfo.id}"/>
+															<button class="btn btn-default btn-xs"><fontawsome:icon icon="check" /></button>
+														</form>
+													</c:if>
+													<form class="popover-confirm form-inline">
+														<input type="hidden" name="resource" value="${resourceType}" />
+														<input type="hidden" name="action" value="regenerate_index" />
+														<input type="hidden" name="id" value="${searchIndexInfo.id}"/>
+														<button data-toggle="popover" data-placement="bottom" role="button" data-content="&lt;button class='btn btn-info btn-xs confirm'>regenerate&lt;/button>" class="btn btn-default btn-xs"><fontawsome:icon icon="refresh" /></button>
+													</form>
+													<form class="popover-confirm form-inline">
+														<input type="hidden" name="resource" value="${resourceType}" />
+														<input type="hidden" name="action" value="delete_index" />
+														<input type="hidden" name="id" value="${searchIndexInfo.id}"/>
+														<button data-toggle="popover" data-placement="bottom" role="button" data-content="&lt;button class='btn btn-danger btn-xs confirm'>delete&lt;/button>" class="btn btn-danger btn-xs"><fontawsome:icon icon="trash" /></button>
+													</form>
+												</div>
+											</td>
 										</c:when>
 										
 										<c:otherwise>
-											<td colspan="4">
+											<td colspan="6">
 												<bs:progress progress="${searchIndexInfo.indexGenerationProgress * 100}" showProgressLabel="${true}" />
 											</td>
 										</c:otherwise>
@@ -86,6 +108,7 @@
 									<th><!-- keep me --></th>
 								</tr>
 							</c:forEach>
+							</tbody>
 						</table>
 						<c:if test="${searchIndexInfosSize lt 2}">
 							<bs:alert style="warning">
@@ -106,7 +129,7 @@
 				</c:choose>
 				<form method="post">
 					<input type="hidden" name="resource" value="${resourceType}" />
-					<input type="hidden" name="action" value="generateIndex" />
+					<input type="hidden" name="action" value="generate_index" />
 					<bsform:button size="defaultSize" style="defaultStyle" value="Generate new ${resourceType} index" type="submits"/>
 				</form>
 				<br />

@@ -64,8 +64,6 @@
 					<div class="fsSuggestion" id="suggestion.description"><!-- KEEP ME --></div>
 				</jsp:attribute>
 			</bsform:textarea>
-
-			<post:tagSets groups="${command.context.loginUser.groups}"/>
 			
 		</jsp:attribute>
 		

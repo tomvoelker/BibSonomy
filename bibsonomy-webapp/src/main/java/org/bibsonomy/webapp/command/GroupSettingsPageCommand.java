@@ -33,6 +33,7 @@ import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.User;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
@@ -44,6 +45,7 @@ public class GroupSettingsPageCommand extends TabsCommand<Object> {
 	// tabs
 	public final static int GROUP_SETTINGS = 0;
 	public final static int MEMBER_LIST_IDX = 1;
+	public final static int DELETE_GROUP = 3;
 	public final static int CV_IDX = 2;
 
 	// general attributes
@@ -52,6 +54,7 @@ public class GroupSettingsPageCommand extends TabsCommand<Object> {
 	private User loggedinUser;
 	private String requestedGroup;
 	private boolean userSharedDocuments;
+
 	private GroupRole groupRole;
 	private GroupMembership groupMembership;
 
@@ -68,7 +71,8 @@ public class GroupSettingsPageCommand extends TabsCommand<Object> {
 	private int privlevel;
 	// TODO: boolean type
 	private int sharedDocuments;
-
+	private int allowJoin;
+	
 	// specific settings for the group user
 	private CommonsMultipartFile file;
 
@@ -82,7 +86,21 @@ public class GroupSettingsPageCommand extends TabsCommand<Object> {
 	// tmp error message from URL
 	private String errorMessage;
 
+	/**
+	 * delete the group yes or no
+	 */
+	private String delete = null;
+	
+	/**
+	 * new profile picture file to upload
+	 */
+	private MultipartFile pictureFile;
 
+	/**
+	 * flag to indicate whether a prior uploaded picture file shall be deleted
+	 */
+	private boolean deletePicture;
+	
 	/**
 	 * TODO: remove after setting the default value of selTab to null
 	 */
@@ -144,6 +162,14 @@ public class GroupSettingsPageCommand extends TabsCommand<Object> {
 
 	public void setSharedDocuments(int sharedDocuments) {
 		this.sharedDocuments = sharedDocuments;
+	}
+	
+	public int getAllowJoin() {
+		return this.allowJoin;
+	}
+
+	public void setAllowJoin(int allowJoin) {
+		this.allowJoin = allowJoin;
 	}
 
 	public GroupMembership getGroupMembership() {
@@ -242,4 +268,51 @@ public class GroupSettingsPageCommand extends TabsCommand<Object> {
 		this.errorMessage = errormessage;
 	}
 	
+	public String getDelete() {
+		return this.delete;
+	}
+
+	public void setDelete(String delete) {
+		this.delete = delete;
+	}
+
+	/**
+	 * Returns picture file to upload.
+	 * @return picture file as MultipartFile
+	 */
+	public MultipartFile getPictureFile() {
+		return this.pictureFile;
+	}
+
+	/**
+	 * Sets picture file to upload.
+	 * @param pictureFile : picture file as MultipartFile
+	 */
+	public void setPictureFile(MultipartFile pictureFile) {
+		this.pictureFile = pictureFile;
+	}
+
+	/**
+	 * Checks whether a prior uploaded picture file shall be deleted.
+	 * @return flag as boolean
+	 */
+	public boolean isDeletePicture() {
+		return this.deletePicture;
+	}
+	
+	/**
+	 * Checks whether a prior uploaded picture file shall be deleted.
+	 * @return flag as boolean
+	 */
+	public boolean getDeletePicture() {
+		return this.deletePicture;
+	}
+
+	/**
+	 * Sets whether a prior uploaded picture file shall be deleted.
+	 * @param deletePicture flag as boolean
+	 */
+	public void setDeletePicture(boolean deletePicture) {
+		this.deletePicture = deletePicture;
+	}
 }

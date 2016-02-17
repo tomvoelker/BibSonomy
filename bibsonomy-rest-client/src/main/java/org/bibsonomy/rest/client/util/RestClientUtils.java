@@ -28,30 +28,21 @@ package org.bibsonomy.rest.client.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.params.HttpClientParams;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.utils.HeaderUtils;
+import org.bibsonomy.util.BasicUtils;
 import org.bibsonomy.util.StringUtils;
 
 /**
  * @author dzo
  */
 public class RestClientUtils {
-	private static final Log log = LogFactory.getLog(RestClientUtils.class);
 	
 	/** the content charset used by the rest client */
 	public static final String CONTENT_CHARSET = StringUtils.CHARSET_UTF_8;
-	
-	private static final String PROPERTIES_FILE_NAME = "bibsonomy-rest-client.properties";
-	private static final String PROPERTIES_VERSION_KEY = "version";
 	
 	private static final HttpClient CLIENT = new HttpClient();
 	
@@ -63,28 +54,12 @@ public class RestClientUtils {
 	}
 
 	static {
-		String clientVersion = "unknown";
-		/*
-		 * load version of client from properties file
-		 */
-		try {
-			final Properties properties = new Properties();
-			
-			final InputStream stream = RestClientUtils.class.getClassLoader().getResourceAsStream(PROPERTIES_FILE_NAME);
-			properties.load(stream);
-			stream.close();
-			
-			clientVersion = properties.getProperty(PROPERTIES_VERSION_KEY);
-		} catch (final IOException ex) {
-			log.error("could not load version", ex);
-		}
-		
 		/*
 		 * config http client for requests
 		 */
 		final HttpClientParams httpClientParams = new HttpClientParams();
 		final DefaultHttpMethodRetryHandler defaultHttpMethodRetryHandler = new DefaultHttpMethodRetryHandler(0, false);
-		httpClientParams.setParameter(HeaderUtils.HEADER_USER_AGENT, RESTConfig.API_USER_AGENT + "_" + clientVersion);
+		httpClientParams.setParameter(HeaderUtils.HEADER_USER_AGENT, RESTConfig.API_USER_AGENT + "_" + BasicUtils.VERSION);
 		httpClientParams.setParameter(HttpClientParams.RETRY_HANDLER, defaultHttpMethodRetryHandler);
 		httpClientParams.setParameter(HttpClientParams.HTTP_CONTENT_CHARSET, RestClientUtils.CONTENT_CHARSET);
 		httpClientParams.setAuthenticationPreemptive(true);

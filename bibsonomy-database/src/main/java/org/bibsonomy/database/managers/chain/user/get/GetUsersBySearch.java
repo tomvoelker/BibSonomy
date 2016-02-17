@@ -45,13 +45,12 @@ public class GetUsersBySearch extends UserChainElement {
 
 	@Override
 	protected List<User> handle(final UserParam param, final DBSession session) {
-		return this.userDB.getUsersBySearch(param.getRawSearch(), param.getLimit(), session);
+		return this.userDB.getUsersBySearch(param.getSearch(), param.getLimit(), session);
 	}
 
 	@Override
 	protected boolean canHandle(final UserParam param) {
 		return (GroupingEntity.USER.equals(param.getGrouping()) &&
-				present(param.getSearch()) &&
-				present(param.getLimit()));
+				present(param.getSearch()));
 	}
 }

@@ -14,6 +14,7 @@
 	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/spheres"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"	
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:group="urn:jsptagdir:/WEB-INF/tags/resources/group"
 	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
 	xmlns:adminUser="urn:jsptagdir:/WEB-INF/tags/admin/users"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
@@ -55,7 +56,7 @@
 			<sidebar:socializer command="${command}" />
 			
 			<c:if test="${isAdmin}">
-				Spammer: <adminUser:spamActions user="${command.user}" />
+				spammer: <adminUser:spamActions user="${command.user}" />
 			</c:if>
 			
 			<!-- Did you know? -->
@@ -102,6 +103,21 @@
 						<li>(<a href="${mtl:setParam(requPathAndQuery, 'userSimilarity', mtl:toggleUserSimilarity(command.userSimilarity)) }"><fmt:message key="more"/>...</a>)</li>
 					</ul>
 					<users:related cmd="${command.relatedUserCommand}" displayFollowLink="${false}" personalized="${true}" userSimilarity="${command.userSimilarity}"/>
+				</jsp:attribute>
+			</sidebar:sidebarItem>
+				
+			<!-- display groups that the users share -->
+			<sidebar:sidebarItem textKey="user.sharedGroups">
+				<jsp:attribute name="content">
+					<ul class="list-inline sidebar-setting-box clearfix">
+						<c:forEach var="group" items="${command.sharedGroups}">
+							<li>
+								<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}">
+									<group:groupname group="${group}" noLink="${false}" showRealname="${false}"/>
+								</a>
+							</li>
+						</c:forEach>
+					</ul>
 				</jsp:attribute>
 			</sidebar:sidebarItem>
 			

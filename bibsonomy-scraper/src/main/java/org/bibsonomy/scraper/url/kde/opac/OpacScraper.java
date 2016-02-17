@@ -62,9 +62,9 @@ public class OpacScraper extends AbstractUrlScraper {
 
 		try {
 			// create a converter and start converting :)
-			final PicaToBibtexConverter converter = new PicaToBibtexConverter(sc.getPageContent(), "xml", sc.getUrl().toString());
+			final PicaToBibtexConverter converter = new PicaToBibtexConverter("xml", sc.getUrl().toString());
 
-			final String bibResult = converter.getBibResult();
+			final String bibResult = converter.toBibtex(sc.getPageContent());
 
 			if(bibResult != null){
 				sc.setBibtexResult(bibResult);

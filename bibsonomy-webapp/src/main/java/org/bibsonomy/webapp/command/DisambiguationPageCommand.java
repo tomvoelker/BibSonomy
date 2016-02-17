@@ -40,7 +40,8 @@ import org.bibsonomy.services.person.PersonRoleRenderer;
  * @author Christian Pfeiffer
  */
 public class DisambiguationPageCommand extends UserResourceViewCommand {
-
+	
+	@Deprecated // Use a Java JSPTag
 	private PersonRoleRenderer personRoleRenderer;
 	private String requestedAction;
 	private String requestedHash;
@@ -170,11 +171,13 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	public List<ResourcePersonRelation> getPersonSuggestions() {
 		return this.personSuggestions;
 	}
-
+	
+	@Deprecated
 	public PersonRoleRenderer getPersonRoleRenderer() {
 		return this.personRoleRenderer;
 	}
-
+	
+	@Deprecated
 	public void setPersonRoleRenderer(PersonRoleRenderer personRoleRenderer) {
 		this.personRoleRenderer = personRoleRenderer;
 	}

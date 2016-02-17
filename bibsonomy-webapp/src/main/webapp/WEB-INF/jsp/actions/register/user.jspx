@@ -71,7 +71,13 @@
 							</jsp:attribute>
 						</bsform:fieldset>
 						
-						<bsform:fieldset legendKey="register.captchaAndPrivacy">
+						<c:set var="legendKey" value="register.captchaAndPrivacy" />
+						
+						<c:if test="${empty command.captchaHTML}">
+							<c:set var="legendKey" value="register.privacy" />
+						</c:if>
+						
+						<bsform:fieldset legendKey="${legendKey}">
 							<jsp:attribute name="content">
 								<bsform:captcha labelColSpan="3" inputColSpan="9" />
 								

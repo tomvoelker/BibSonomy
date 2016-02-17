@@ -108,6 +108,12 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 			return Views.ERROR;
 		}
 
+		if (!group.isAllowJoin()) {
+			// the group does not allow join requests
+			errors.reject("joinGroup.joinRequestDisabled");
+			return Views.ERROR;
+		}
+		
 		final String reason = command.getReason();
 		final String deniedUserName = command.getDeniedUser();
 		
@@ -187,8 +193,9 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		}
 		
 		// insert the request
-		this.logic.updateGroup(group, GroupUpdateOperation.ADD_REQUESTED, new GroupMembership(loginUser, GroupRole.USER, false));
-		
+		final GroupMembership gms = new GroupMembership(loginUser, GroupRole.USER, command.isUserSharedDocuments());
+		this.logic.updateGroup(group, GroupUpdateOperation.ADD_REQUESTED, gms);
+
 		command.setMessage("success.joinGroupRequest.sent", Collections.singletonList(groupName));
 		return Views.SUCCESS;
 	}

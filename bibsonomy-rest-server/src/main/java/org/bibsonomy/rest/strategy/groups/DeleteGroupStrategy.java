@@ -47,8 +47,7 @@ public class DeleteGroupStrategy extends AbstractDeleteStrategy {
 
 	@Override
 	protected boolean delete() throws InternServerException {
-		this.getLogic().deleteGroup(this.groupName);
-		// no exceptions at this point - assume success
-		return true;
+		//this.getLogic().deleteGroup(this.groupName);
+		throw new UnsupportedOperationException("The method is not yet implemented in REST service.");
 	}
 }

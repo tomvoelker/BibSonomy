@@ -11,52 +11,76 @@
 	<jsp:directive.tag language="java" pageEncoding="UTF-8" display-name="OpenID Login Form" description="Renders the login form for OpenID login." />
 	
 	<jsp:directive.attribute name="selectedTab" type="java.lang.Integer" required="false"/>
-	
-	
+	<jsp:directive.attribute name="compact" type="java.lang.Boolean" required="false"/>
+	<c:if test="${empty compact}">
+		<c:set var="compact" value="${false}" />
+	</c:if>
+	<c:if test="${not compact}">
 	<br /><br />
+	</c:if>
 	<fieldset>
-		<!-- TODO: (Bootstrap) i18n -->
-		<legend>Sign with another provider</legend>
+		<c:if test="${not compact}">
+			<!-- TODO: (Bootstrap) i18n -->
+			<legend>Sign with another provider</legend>
+		</c:if>
+		
 		<!-- TODO: Create list of privders according to
 			http://stackoverflow.com/questions/1116743/where-can-i-find-a-list-of-openid-provider-urls
 			or http://openid.net/get-an-openid/ and generate code dynamically -->
 		<ul class="list-inline">
-			<li><span><fmt:message key="login.openid.provider"/></span></li>
-			<li><login:login_openid_provider url="http://me.yahoo.com/" name="Yahoo!" selectedTab="${selectedTab}" /></li>
-			<li><a class="otherProvider" data-provider="other" href="#">Other OpenID-Provider</a></li>
+			<c:if test="${not compact}">
+				<li><span><fmt:message key="login.openid.provider"/></span></li>
+			</c:if>
+			<li><login:login_openid_provider icon="yahoo" url="http://me.yahoo.com/" name="Yahoo!" selectedTab="${selectedTab}" /></li>
+			<!-- TODO: i18n TODO_BOOTSTRAP-->
+			<li><a class="otherProvider btn btn-default" data-provider="other" href="#">Other OpenID-Provider</a></li>
 		</ul>
 
-		<div class="openIDmanual" style="display: none;">
-			<form class="form-horizontal" action="/login_openid" id="openIDForm" method="POST">
-				<input type="hidden" name="selTab" value="${selectedTab}"></input>
-				<div class="form-group">
+	
+		<form class="form-horizontal openIDmanual" action="/login_openid" id="openIDForm" method="POST" style="display: none;">
+			<input type="hidden" name="selTab" value="${selectedTab}"></input>
+			<div class="form-group">
+				<c:set var="colspan" value="12" />
+				<c:set var="inputClass" value="input-lg" />
+				<c:if test="${not compact}">
 					<label class="control-label col-sm-3">
 						<fmt:message key="login.method.openid" />
 					</label>
-					<div class="col-sm-9">
-						<input class="form-control" type="text" placeholder="OpenID" name="openID" id="openID" noHelp="true" />
-					</div>
+					<c:set var="colspan" value="9" />
+					<c:set var="inputClass" value="" />
+				</c:if>
+				<div class="col-sm-${colspan}">
+					<input class="form-control ${inputClass}" type="text" placeholder="OpenID" name="openID" id="openID" noHelp="true" />
 				</div>
-				
-				<div class="form-group">
-					<div class="col-sm-offset-3 col-sm-9">
-						<div class="checkbox">
-							<label>
-								<input type="checkbox" name="rememberMe" id="rememberMe" /><c:out value=" " />
-								<fmt:message key="login.rememberMe" />
-							</label>
+			</div>
+			
+			<c:choose>
+				<c:when test="${compact}">
+					<input type="hidden" name="rememberMe" value="on" />
+				</c:when>
+				<c:otherwise>
+					<div class="form-group">
+						<div class="col-sm-offset-3 col-sm-9">
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" name="rememberMe" id="rememberMe" /><c:out value=" " />
+									<fmt:message key="login.rememberMe" />
+								</label>
+							</div>
 						</div>
 					</div>
-				</div>
-				
-				<div class="form-group">
+				</c:otherwise>
+			</c:choose>
+			<c:if test="${compact}">
+				<c:set var="additionalClassSubmitGroup" value="text-right" />
+			</c:if>
+			<div class="row">
+				<div class="col-sm-12 ${additionalClassSubmitGroup}">
 					<fmt:message key="navi.login" var="submit" />
-					<div class="col-sm-offset-3 col-sm-3 col-md-3 col-lg-3">
-						<bsform:button type="submit" style="success" value="${submit}" size="defaultSize" />
-					</div>
+					<bsform:button type="submit" style="primary" value="${submit}" size="defaultSize" />
 				</div>
-			</form>
-		</div>
+			</div>
+		</form>
 		
 		<script type="text/javascript">
 			<![CDATA[
@@ -69,6 +93,7 @@
 			]]>
 		</script>
 	</fieldset>
-
-	<hr />
+	<c:if test="${not compact}">
+		<hr />
+	</c:if>
 </jsp:root>

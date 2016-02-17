@@ -33,9 +33,7 @@ import java.util.List;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Group;
-import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.ajax.AjaxCvCommand;
@@ -93,7 +91,7 @@ public class AjaxCvController extends AjaxController implements MinimalisticCont
 		final String renderOptions = command.getRenderOptions();
 		final String authUser = this.logic.getAuthenticatedUser().getName();
 		final String wikiText = command.getWikiText();
-		final Group requestedGroup = this.logic.getGroupDetails(authUser);
+		final Group requestedGroup = getRequestedGroup(command.getContext().getLoginUser().getGroups(), command.getRequestedGroup());
 		
 		final LogicInterface interfaceToUse;
 		
@@ -125,10 +123,14 @@ public class AjaxCvController extends AjaxController implements MinimalisticCont
 
 			final Wiki wiki = new Wiki();
 			wiki.setWikiText(wikiText);
-			/*
-			 * TODO: add support for group members to edit group cv page, restrict only to moderators
-			 */
-			this.logic.updateWiki(authUser, wiki);
+			
+			if (present(requestedGroup)) {
+				// TODO: why do we need the group details here? TODO_GROUPS
+				final Group group = this.logic.getGroupDetails(command.getRequestedGroup());
+				this.logic.updateWiki(group.getName(), wiki);
+			} else {
+				this.logic.updateWiki(authUser, wiki);
+			}
 		}
 		
 		/*
@@ -227,4 +229,14 @@ public class AjaxCvController extends AjaxController implements MinimalisticCont
 		this.notLoggedInUserLogic = notLoggedInUserLogic;
 	}
 
+	private Group getRequestedGroup(List<Group> groups, String requestedGroup) {
+		if (present(requestedGroup)) {
+			for (Group g : groups) {
+				if (g.getName().equals(requestedGroup)) {
+					return this.logic.getGroupDetails(g.getName());
+				}
+			}
+		}
+		return null;
+	}
 }

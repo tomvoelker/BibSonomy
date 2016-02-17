@@ -1,0 +1,15 @@
+\begin{author}
+\format[Authors(LastFirst,Fullname,sep=; ,LastSep= and ,EtAl= et al.,10,9),HTMLChars]{\author} \end{author}
+\begin{editor}
+\format[Authors(LastFirst,Fullname,sep=; ,LastSep= and ,10,9),HTMLChars]{\editor} (eds.) \end{editor}
+\begin{year}(\format[RTFChars]{\year}): \end{year}
+{"\format[RTFChars]{\title}"}{. 
+\begin{edition}\edition edition. \end{edition}
+\begin{series}{\\i \format[RTFChars]{\series} \end{series}}
+\begin{volume}vol. \format[RTFChars]{\volume}. \end{volume}
+\begin{number}no. \format[RTFChars]{\number}. \end{number}
+\begin{address}\address\end{address}
+\begin{publisher}: \publisher\end{publisher}
+\begin{editor}\end{editor}}
+\begin{note}. \format[RTFChars]{\note}\end{note}
+\\par\\par

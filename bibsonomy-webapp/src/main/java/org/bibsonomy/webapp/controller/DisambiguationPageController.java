@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.webapp.controller;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -51,18 +53,16 @@ import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 
 /**
- * @author Christian Pfeiffer
+ * @author Christian Pfeiffer, Tom Hanika
  */
 public class DisambiguationPageController extends SingleResourceListController implements MinimalisticController<DisambiguationPageCommand> {
-	//private static final Log log = LogFactory.getLog(DisambiguationPageController.class);
-	
 	/**
 	 * put into the session to tell the personPageController that the person has just been created
 	 */
 	public static final String ACTION_KEY_CREATE_AND_LINK_PERSON = "createAndLinkPerson";
 	public static final String ACTION_KEY_LINK_PERSON = "linkPerson";
 	
-	protected RequestLogic requestLogic;
+	private RequestLogic requestLogic;
 	private PersonRoleRenderer personRoleRenderer;
 	
 	@Override
@@ -74,6 +74,9 @@ public class DisambiguationPageController extends SingleResourceListController i
 	
 	@Override
 	public View workOn(final DisambiguationPageCommand command) {
+		if (command.getRequestedHash()== null) {
+			throw new ObjectNotFoundException(command.getRequestedHash());
+		}
 		final List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, command.getRequestedHash(), null, null, null, null, null, null, 0, 100);
 		if (!ValidationUtils.present(posts)) {
 			throw new ObjectNotFoundException(command.getRequestedHash());
@@ -89,21 +92,22 @@ public class DisambiguationPageController extends SingleResourceListController i
 	}
 
 	private View disambiguateAction(final DisambiguationPageCommand command) {
-		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations().byInterhash(command.getPost().getResource().getInterHash()).byRelationType(command.getRequestedRole()).byAuthorIndex(command.getRequestedIndex()).getIt();		
+		final PersonResourceRelationType requestedRole = command.getRequestedRole();
+		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations().byInterhash(command.getPost().getResource().getInterHash()).byRelationType(requestedRole).byAuthorIndex(command.getRequestedIndex()).getIt();		
 		if (matchingRelations.size() > 0 ) {
 			// FIXME: cache urlgenerator
 			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(matchingRelations.get(0).getPerson().getPersonId()));	
 		}
 		
 		final BibTex res = command.getPost().getResource();
-		final List<PersonName> personsTmp = res.getPersonNamesByRole(command.getRequestedRole());
-		final List<PersonName> persons;
-		// MacGyver-fix, in case there are multiple similar simhash1 caused by Author == Editor  
-		if (personsTmp == null ){ 
-			final PersonResourceRelationType requestedRole = PersonResourceRelationType.valueOf("EDITOR");
-			persons = res.getPersonNamesByRole(requestedRole);
-		}else{
-			persons = personsTmp;
+		List<PersonName> persons = res.getPersonNamesByRole(requestedRole);
+		// MacGyver-fix, in case there are multiple similar simhash1 caused by author == editor  
+		if (persons == null ){
+			persons = getPersonsByFallBack(res, requestedRole);
+		}
+		
+		if (!present(persons)) {
+			throw new ObjectNotFoundException(requestedRole + " for " + res.getInterHash());
 		}
 		
 		final PersonName requestedName = persons.get(command.getRequestedIndex());
@@ -117,6 +121,22 @@ public class DisambiguationPageController extends SingleResourceListController i
 	}
 	
 	
+	/**
+	 * @param res
+	 * @param requestedRole
+	 * @return
+	 */
+	private static List<PersonName> getPersonsByFallBack(BibTex res, PersonResourceRelationType requestedRole) {
+		switch (requestedRole) {
+		case AUTHOR:
+			return res.getPersonNamesByRole(PersonResourceRelationType.EDITOR);
+		case EDITOR:
+			return res.getPersonNamesByRole(PersonResourceRelationType.AUTHOR);
+		default:
+			return null;
+		}
+	}
+
 	/**
 	 * creates a new person, links te resource and redirects to the new person page
 	 * @param command

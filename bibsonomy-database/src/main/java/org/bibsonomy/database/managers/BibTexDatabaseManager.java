@@ -408,7 +408,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 				/*
 				 * get a scraper id
 				 */
-				final int id = this.generalDb.getNewId(ConstantID.IDS_SCRAPER_METADATA, session);
+				final int id = this.generalDb.getNewId(ConstantID.IDS_SCRAPER_METADATA, session).intValue();
 				/*
 				 * store id in metadata
 				 */

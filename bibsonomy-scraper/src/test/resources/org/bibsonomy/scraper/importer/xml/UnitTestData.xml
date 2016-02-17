@@ -2035,4 +2035,46 @@
 		<BibFile>GoogleScholarScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.googlescholar.GoogleScholarScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_332">
+		<TestDescription>Url test for RWTHAachen University</TestDescription>
+		<URL>http://publications.rwth-aachen.de/record/444986</URL>
+		<BibFile>RWTHAachenScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.RWTH.RWTHAachenScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_333">
+		<TestDescription>test for pages with coins</TestDescription>
+		<URL>http://katalogplus.ub.uni-bielefeld.de/cgi-bin/new_titel.cgi?katkey=2014704&amp;art=f&amp;kat1=freitext&amp;kat2=ti&amp;kat3=aup&amp;op1=AND&amp;op2=AND&amp;var1=clustering&amp;var2=&amp;var3=&amp;vr=1&amp;pagesize=10&amp;sprache=GER&amp;bestand=lok&amp;sess=4f5e41e8d8e96721f5500fd05eed192a</URL>
+		<BibFile>CoinsScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.generic.CoinsScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_334">
+		<TestDescription>URL scraping test for the IOP scraper</TestDescription>
+		<URL>http://iopscience.iop.org/article/10.1088/1751-8113/49/2/025303/meta</URL>
+		<BibFile>IOPScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.iop.IOPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_335">
+		<TestDescription>URL scraping test for the scielo scraper</TestDescription>
+		<URL>http://www.scielo.br/scielo.php?script=sci_arttext&amp;pid=S0066-782X2001001200008</URL>
+		<BibFile>SCIELOScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.scielo.SCIELOScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_336">
+		<TestDescription>URL scraping test for the scielo scraper</TestDescription>
+		<URL>http://www.google.com/patents/DE102009031804A1?cl=de</URL>
+		<BibFile>GooglePatentScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.googlepatent.GooglePatentScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_337">
+		<TestDescription>URL scraping test for the scielo scraper</TestDescription>
+		<URL>http://www.google.com/patents/DE102009031804A1?cl=en&amp;hl=de</URL>
+		<BibFile>GooglePatentScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.googlepatent.GooglePatentScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_338">
+		<TestDescription>Test for worldcat with correct authors</TestDescription>
+		<URL>http://www.worldcat.org/oclc/254138269</URL>
+		<BibFile>WorldCatScraperUnitURLTest4.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper</Scraper>
+	</URLTest>
 </test:Tests>

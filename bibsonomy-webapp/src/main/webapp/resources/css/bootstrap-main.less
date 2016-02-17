@@ -81,7 +81,7 @@ ul.dropdown-menu.list-options > li > span {
 }
 
 .container.header {
-	background: #FFFFFF;
+	background: @header-background-color;
 	border-top: none;
 	border-bottom: none;
 	margin-top: 30px;
@@ -116,6 +116,7 @@ ul.dropdown-menu.list-options > li > span {
 #logo {
 	font-family: Arial, 'sans-serif';
 	margin-top: 30px;
+	color: @main-color;
 }
 
 #logo h1,
@@ -454,12 +455,16 @@ p.url {
 	-webkit-line-clamp: 1;
 	-webkit-box-orient: vertical;
 	font-size: 110%;
+	
+	.label {
+		font-weight: 500;
+		display: inline-block;
+	}
+	
+	.label-tag {
+		margin-right: 4px;
+	}
 }
-
-.ptags .label {
-	font-weight: 500;
-}
-
 .pmeta {
 	font-size: 12px;
 }
@@ -989,6 +994,17 @@ fieldset {
 	line-height: 120%;
 }
 
+.jumbotron {
+	hr {
+		border-top: 1px solid #ddd;
+		margin-top: -5px;
+	}
+	
+	hr.homelogo {
+		margin-top: -17px;
+	}
+}
+
 .container.footer hr {
 	box-sizing: border-box;
 	box-shadow: #FFF 0px 1px 1px 0px;
@@ -1304,6 +1320,33 @@ ul#urlList {
 	padding-left: 0;
 }
 
+#loginModal {
+	top: 20%;
+	outline: none;
+	
+	.modal-header {
+		border: none;
+		padding-bottom: 0px;
+	}
+	
+	p.authHelp {
+		font-size: 100%;
+		color: #333333;
+	}
+	
+	.modal-dialog {
+		width: 450px;
+	}
+	
+	fieldset {
+		margin: 0px;
+	}
+	
+	form a {
+		font-size: 90%;
+	}
+}
+
 #suggestionBox {
 	position:absolute;
 	display:none;
@@ -1320,3 +1363,34 @@ ul#urlList {
 	border: 1px solid #777777;
 }
 
+/******* cv image styles **********/
+.group-cv-image {
+	width:auto !important; 
+	height:auto !important;
+}
+
+.group-cv-image-name {
+	width: auto !important;
+}
+/******* admin groups **********/
+.groupDeclineRow {
+	display: none;
+}
+
+.btn-group > form {
+	display: inline;
+}
+
+.btn-group > form + form {
+	margin-left: -1px;
+}
+
+.btn-group > form:first-child > .btn {
+	margin-left: 0;
+	.border-right-radius(0);
+}
+
+.btn-group > form:last-child > .btn {
+	margin-right: 0;
+	.border-left-radius(0);
+}

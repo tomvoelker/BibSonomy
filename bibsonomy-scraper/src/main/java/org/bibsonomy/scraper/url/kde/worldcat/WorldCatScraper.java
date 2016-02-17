@@ -52,7 +52,6 @@ import org.bibsonomy.util.id.ISBNUtils;
  * @author tst
  */
 public class WorldCatScraper extends AbstractUrlScraper {
-
 	private static final String SITE_NAME = "Worldcat";
 	private static final String SITE_URL = "http://www.worldcat.org/";
 	private static final String INFO = "Scraper for publications from " + href(SITE_URL, SITE_NAME) + ".";
@@ -68,11 +67,8 @@ public class WorldCatScraper extends AbstractUrlScraper {
 	//for preprocessing of Worldcat RIS
 	private static final String KEY_VALUE_SEPARATOR = "  - ";
 	private static final String LINE_DELIMITER = "\n";
+	private static final Pattern AUTHOR_CORRECT_PATTERN = Pattern.compile("^[^,]+, [^,]+$");
 	private static final Pattern AUTHOR_EXTRACTOR_PATTERN = Pattern.compile("([^,]+, [^,]+),");
-	
-	public String getInfo() {
-		return INFO;
-	}
 
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
@@ -149,11 +145,12 @@ public class WorldCatScraper extends AbstractUrlScraper {
 		} else {
 			ris = ris.replaceFirst("ER\\s{2}-\\s[\\n.]*\\z", "UR  - " + replacementURL + "\nER  - ");
 		}
-		String bibtex = converter.risToBibtex(ris);
+		String bibtex = converter.toBibtex(ris);
 		return BibTexUtils.addFieldIfNotContained(bibtex, "isbn", isbn);
 	}
 	
 	/**
+	 * TODO: document what we fix here
 	 * temporary fix for and RIS export error of Worldcat, which exports data not fitting to the
 	 * RIS standart
 	 * 
@@ -169,30 +166,28 @@ public class WorldCatScraper extends AbstractUrlScraper {
 		//get all entries
 		final String[] entries = ris.split(LINE_DELIMITER);
 		
-		StringBuilder correctRIS = new StringBuilder();
-		String key = "";
-		String value = "";
+		final StringBuilder correctRIS = new StringBuilder();
 		
-		for(String entry : entries) {
-			key = entry.split(KEY_VALUE_SEPARATOR)[0].trim();
+		for (final String entry : entries) {
+			final String key = entry.split(KEY_VALUE_SEPARATOR)[0].trim();
 			
-			//check wether the field is the main author's one
-			if(key.equals("A1") || key.equals("AU")) {
+			// check whether the field is the main author's one
+			if (key.equals("A1") || key.equals("AU")) {
+				final String value = entry.split(KEY_VALUE_SEPARATOR)[1];
 				
-				value = entry.split(KEY_VALUE_SEPARATOR)[1];
-				Matcher authorExtractor = AUTHOR_EXTRACTOR_PATTERN.matcher(value);
-				
-				//is the ris not well formatted?
-				while(authorExtractor.find()) {
-					String author = authorExtractor.group(1);
-					//final String[] authors = value.split(",,");
-					//create a field for each author, like defined in the ris specification
-					//for(int authorCounter = 0; authorCounter < authors.length; authorCounter++) {
+				final Matcher correctAuthor = AUTHOR_CORRECT_PATTERN.matcher(value);
+				if (correctAuthor.matches()) {
+					correctRIS.append("A1" + KEY_VALUE_SEPARATOR + value + LINE_DELIMITER);
+				} else {
+					final Matcher authorExtractor = AUTHOR_EXTRACTOR_PATTERN.matcher(value);
+					
+					//is the ris not well formatted?
+					while (authorExtractor.find()) {
+						final String author = authorExtractor.group(1);
 						if (present(author)) {
 							correctRIS.append("A1" + KEY_VALUE_SEPARATOR + author.trim() + LINE_DELIMITER);
-						//}
+						}
 					}
-					
 				}
 			}
 			//not an author field -> keep it
@@ -205,36 +200,33 @@ public class WorldCatScraper extends AbstractUrlScraper {
 	}
 
 	private static String getRIS(final URL publPageURL, final boolean search) throws IOException, ScrapingException {
-		String publPageContent = WebUtils.getContentAsString(publPageURL);
+		final String publPageContent = WebUtils.getContentAsString(publPageURL);
 		final Matcher matcherFirstSearchResult = PATTERN_GET_FIRST_SEARCH_RESULT.matcher(publPageContent);
 		
 		final URL publUrl;
-		if (matcherFirstSearchResult.find())
+		if (matcherFirstSearchResult.find()) {
 			publUrl = new URL(publPageURL.getProtocol() + "://" + publPageURL.getHost() + matcherFirstSearchResult.group(1));
-		//search not successful
-		else if (search && publPageContent.contains("div class=\"error-results\" id=\"div-results-none\"")) {
+		// search not successful
+		} else if (search && publPageContent.contains("div class=\"error-results\" id=\"div-results-none\"")) {
 			throw new ScrapingException("Content not available.");
-		} else
+		} else {
 			publUrl = publPageURL;
-		
+		}
 		
 		String exportUrl = publUrl.getProtocol() + "://" + publUrl.getHost() + publUrl.getPath() + "?page=endnote&client=worldcat.org-detailed_record";
 		/*
 		 * append query
 		 */
-		if (search)
-			exportUrl += "&" + publUrl.getQuery();  
-
+		if (search) {
+			exportUrl += "&" + publUrl.getQuery();
+		}
 		
-		String ris = WebUtils.getContentAsString(new URL(exportUrl));
-
+		final String ris = WebUtils.getContentAsString(new URL(exportUrl));
 		if (!ris.startsWith("TY")) {
 			return null;
 		}
-
-		ris = preprocessWorldcatRIS(ris);
 		
-		return ris;
+		return preprocessWorldcatRIS(ris);
 	}
 	
 	private static String getBibtex(final URL publPageURL, final boolean search) throws IOException, ScrapingException {
@@ -244,23 +236,30 @@ public class WorldCatScraper extends AbstractUrlScraper {
 		/*
 		 * convert RIS to BibTeX
 		 */
-		final String bibtex = converter.risToBibtex(ris);
+		final String bibtex = converter.toBibtex(ris);
 		
 		/*
 		 * add URL
 		 */
 		return BibTexUtils.addFieldIfNotContained(bibtex, "url", publPageURL.toString());
 	}
+	
+	@Override
+	public String getInfo() {
+		return INFO;
+	}
 
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
-
+	
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
-
+	
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}

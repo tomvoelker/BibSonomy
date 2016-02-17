@@ -14,7 +14,7 @@
 	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
-	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
+	<jsp:directive.attribute name="heading" fragment="true" required="false"/>
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>
 	<jsp:directive.attribute name="contentIntro" fragment="true" required="false" />
 	<jsp:directive.attribute name="headerExt" fragment="true" />
@@ -76,24 +76,15 @@
 							</div>
 							
 							<div class="col-md-6">
-								<div id="lang-switcher" class="pull-right">
-									<span>(&amp;nbsp;</span>
-									<c:forEach var="lang" items="${fn:split('en,de,ru',',')}" varStatus="status">
-										<a href="/${fn:escapeXml(mtl:setParam(requPathAndQuery, 'lang', lang))}">${lang}</a>
-										<c:if test="${not status.last}">
-											<span>&amp;nbsp;|&amp;nbsp;</span>
-										</c:if>
-									</c:forEach>
-									<span>&amp;nbsp;)</span>
-								</div>
+								<parts:languageSwitcher requPathAndQuery="${requPathAndQuery}" />
 								
 								<!--+ 
 								 	|
 								 	| search
 								 	|
 								 	+-->
-								 <br style="clear: both;" />
-								 <p style="line-height: 9px; font-size:9px; padding:0;margin:0;">&amp;nbsp;<!-- KEEP ME --></p>
+								<br style="clear: both;" />
+								<p style="line-height: 9px; font-size:9px; padding:0;margin:0;">&amp;nbsp;<!-- KEEP ME --></p>
 								<jsp:invoke fragment="heading"/>
 							</div>
 						</div>

@@ -30,6 +30,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -65,6 +67,24 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	private static final String PERSON_DELIMITER = " & ";
 	private static final String NAME_PART_DELIMITER = " ; ";
 	
+	static interface PersonNameSetter {
+		public void setPersonNames(final BibTex publication, final List<PersonName> personNames);
+	}
+	
+	private static final PersonNameSetter AUTHOR_NAME_SETTER = new PersonNameSetter() {
+		@Override
+		public void setPersonNames(BibTex publication, List<PersonName> personNames) {
+			publication.setAuthor(personNames);
+		}
+	};
+	
+	private static final PersonNameSetter EDITOR_NAME_SETTER = new PersonNameSetter() {
+		@Override
+		public void setPersonNames(BibTex publication, List<PersonName> personNames) {
+			publication.setEditor(personNames);
+		}
+	};
+	
 	/**
 	 * @param systemURI
 	 */
@@ -96,15 +116,8 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		publication.setDay((String) source.get(Fields.Publication.DAY));
 		publication.setEdition((String) source.get(Fields.Publication.EDITION));
 		
-		@SuppressWarnings("unchecked")
-		final List<String> editorsList = (List<String>) source.get(Fields.Publication.EDITOR);
-		final String editorsString = org.bibsonomy.util.StringUtils.implodeStringCollection(editorsList, PersonNameUtils.PERSON_NAME_DELIMITER);
-		publication.setEditor(PersonNameUtils.discoverPersonNamesIgnoreExceptions(editorsString));
-		
-		@SuppressWarnings("unchecked")
-		final List<String> authorsList = (List<String>) source.get(Fields.Publication.AUTHOR);
-		final String authorsString = org.bibsonomy.util.StringUtils.implodeStringCollection(authorsList, PersonNameUtils.PERSON_NAME_DELIMITER);
-		publication.setAuthor(PersonNameUtils.discoverPersonNamesIgnoreExceptions(authorsString));
+		setPersonNames(Fields.Publication.EDITORS, Fields.Publication.EDITOR, EDITOR_NAME_SETTER, publication, source);
+		setPersonNames(Fields.Publication.AUTHORS, Fields.Publication.AUTHOR, AUTHOR_NAME_SETTER, publication, source);
 		
 		publication.setEntrytype((String) source.get(Publication.ENTRY_TYPE));
 		publication.setHowpublished((String) source.get(Publication.HOWPUBLISHED));
@@ -124,6 +137,41 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		publication.setUrl((String) source.get(Publication.URL));
 		publication.setVolume((String) source.get(Publication.VOLUME));
 		publication.setYear((String) source.get(Publication.YEAR));
+	}
+
+	/**
+	 * @param publication
+	 * @param source
+	 */
+	private static void setPersonNames(final String fieldName, @Deprecated final String fallbackFieldName, final PersonNameSetter personNameSetter, BibTex publication, Map<String, Object> source) {
+		final Object rawPersonNamesFieldValue = source.get(fieldName);
+		if (rawPersonNamesFieldValue == null) {
+			// TODO: remove fallback raw field with 3.6
+			final Object fallbackRawFieldValue = source.get(fallbackFieldName);
+			if (fallbackRawFieldValue instanceof List) {
+				@SuppressWarnings("unchecked")
+				final List<String> personNamesList = (List<String>) rawPersonNamesFieldValue;
+				final String personNamesString = org.bibsonomy.util.StringUtils.implodeStringCollection(personNamesList, PersonNameUtils.PERSON_NAME_DELIMITER);
+				personNameSetter.setPersonNames(publication, PersonNameUtils.discoverPersonNamesIgnoreExceptions(personNamesString));
+			} else if (fallbackRawFieldValue != null) {
+				log.warn(fieldName + " field was '" + fallbackRawFieldValue + "' of type '" + fallbackRawFieldValue.getClass().getName() + "'");
+			}
+		} else if (rawPersonNamesFieldValue instanceof List) {
+			@SuppressWarnings("unchecked")
+			final List<Map<String, String>> personNamesList = (List<Map<String, String>>) rawPersonNamesFieldValue;
+			final StringBuilder personNameStringBuilder = new StringBuilder();
+			
+			final Iterator<Map<String, String>> personNameIterator = personNamesList.iterator();
+			while (personNameIterator.hasNext()) {
+				final Map<String, String> embeddedObject = personNameIterator.next();
+				final String personname = embeddedObject.get(Fields.Publication.PERSON_NAME);
+				personNameStringBuilder.append(personname);
+				if (personNameIterator.hasNext()) {
+					personNameStringBuilder.append(PersonNameUtils.PERSON_NAME_DELIMITER);
+				}
+			}
+			personNameSetter.setPersonNames(publication, PersonNameUtils.discoverPersonNamesIgnoreExceptions(personNameStringBuilder.toString()));
+		}
 	}
 
 	/* (non-Javadoc)
@@ -155,12 +203,12 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		
 		final List<PersonName> editors = resource.getEditor();
 		if (present(editors)) {
-			jsonDocument.put(Fields.Publication.EDITOR, convertPersonNames(editors));
+			jsonDocument.put(Fields.Publication.EDITORS, convertPersonNames(editors));
 		}
 		
 		final List<PersonName> authors = resource.getAuthor();
 		if (present(authors)) {
-			jsonDocument.put(Fields.Publication.AUTHOR, convertPersonNames(authors));
+			jsonDocument.put(Fields.Publication.AUTHORS, convertPersonNames(authors));
 		}
 		
 		jsonDocument.put(Publication.ENTRY_TYPE, resource.getEntrytype());
@@ -227,11 +275,11 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	 * @param author
 	 * @return
 	 */
-	private static List<String> convertPersonNames(List<PersonName> persons) {
-		final List<String> serializedPersonNames = new LinkedList<>();
+	private static List<Map<String, String>> convertPersonNames(List<PersonName> persons) {
+		final List<Map<String, String>> serializedPersonNames = new LinkedList<>();
 		
 		for (final PersonName person : persons) {
-			serializedPersonNames.add(PersonNameUtils.serializePersonName(person));
+			serializedPersonNames.add(Collections.singletonMap(Publication.PERSON_NAME, PersonNameUtils.serializePersonName(person)));
 		}
 		
 		return serializedPersonNames;
