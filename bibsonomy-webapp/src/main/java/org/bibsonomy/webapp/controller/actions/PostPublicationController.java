@@ -122,11 +122,11 @@ public class PostPublicationController extends AbstractEditPublicationController
 	@Override
 	public View workOn(final PostPublicationCommand command) {
 		log.debug("workOn started");
-
+		
 		this.initializeDidYouKnowMessageCommand(command);
-
 		final RequestWrapperContext context = command.getContext();
-
+		
+		final BibTex publication = command.getPost().getResource();
 		/*
 		 * only users which are logged in might post -> send them to
 		 * login page
@@ -144,7 +144,6 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * We furthermore need to check the title, because the title cannot be empty
 		 * either and sometimes we like to preselect a certain entrytype.
 		 */
-		final BibTex publication = command.getPost().getResource();
 		if (present(publication.getEntrytype()) && present(publication.getTitle())) {
 			log.debug("user has manually entered post data -> forwarding to edit post controller");
 			return super.workOn(command);
