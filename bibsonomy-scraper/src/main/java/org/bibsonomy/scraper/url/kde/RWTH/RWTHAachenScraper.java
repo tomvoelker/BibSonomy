@@ -24,84 +24,75 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.scraper.url.kde.akademiai;
+package org.bibsonomy.scraper.url.kde.RWTH;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericRISURLScraper;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.WebUtils;
 
 /**
- *
- * @author Haile
+ * this scraper supports download links from the host rwth-aachen.de
+ * 
+ * @author Mohammed Abed
  */
-public class AkademiaiScraper extends GenericRISURLScraper {
+public class RWTHAachenScraper extends AbstractUrlScraper {
 
-	private static final String SITE_NAME = "Akademiai Kiado";
-	private static final String SITE_URL = "http://www.akademiai.com/home/main.mpx";
-	private static final String INFO =  "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
+	private static final String SITE_NAME = "RWTH Aachen University";
+	private static final String SITE_URL = "www.rwth-aachen.de";
+	private static final String INFO = "Scraper for references from " + href(SITE_URL, SITE_NAME)+".";
+	private static final String RWTH_HOST = "publications.rwth-aachen.de";
+	private static final String DOWNLOAD_BIBTEX_FORMAT = "/export/hx?ln=de";
+	private static final Pattern PATTERN_TO_PICK_BIBTEX_FROM_PAGE_CONTENT = Pattern.compile("<pre>(.+?)</pre>", Pattern.DOTALL);
 
-	private static final String RIS_URL  = "http://www.akademiai.com/export.mpx?code=";
-	private static final Pattern URL_PATTERN = Pattern.compile(".*/content/(.*?)/");
+	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
 
-	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "akademiai.com"), AbstractUrlScraper.EMPTY_PATTERN));
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.UrlScraper#getSupportedSiteName()
-	 */
+	static {
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ RWTH_HOST), Pattern.compile("/record/")));
+	}
+	
+	@Override
+	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+		try {
+			final String content = WebUtils.getContentAsString(sc.getUrl() + DOWNLOAD_BIBTEX_FORMAT);
+			final Matcher m = PATTERN_TO_PICK_BIBTEX_FROM_PAGE_CONTENT.matcher(content);
+			if (m.find()) {
+				final String bibtexresult = m.group(1);
+				sc.setBibtexResult(bibtexresult);
+				return true;
+			}
+		} catch (final IOException e) {
+			throw new ScrapingFailureException(e);
+		}
+		
+		return false;
+	}
+	
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.UrlScraper#getSupportedSiteURL()
-	 */
 	@Override
 	public String getSupportedSiteURL() {
-		return SITE_URL;
+		return SITE_URL; 
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.Scraper#getInfo()
-	 */
 	@Override
 	public String getInfo() {
 		return INFO;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.AbstractUrlScraper#getUrlPatterns()
-	 */
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
-		return PATTERNS;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL)
-	 */
-	@Override
-	protected String getDownloadURL(URL url) throws ScrapingException, IOException {
-		final Matcher m = URL_PATTERN.matcher(url.toString());
-		if (m.find()) {
-			return RIS_URL + m.group(1) + "&mode=ris";
-		}
-		return null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#retrieveCookiesFromSite()
-	 */
-	@Override
-	protected boolean retrieveCookiesFromSite() {
-		return true;
+		return patterns;
 	}
 }

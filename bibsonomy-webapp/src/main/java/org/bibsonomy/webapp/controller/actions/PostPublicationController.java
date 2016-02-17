@@ -49,6 +49,7 @@ import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.DuplicatePostInSnippetErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
+import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
@@ -643,10 +644,13 @@ public class PostPublicationController extends AbstractEditPublicationController
 
 		final String userName = post.getUser().getName();
 		final String intraHash = post.getResource().getIntraHash();
-
-		if (!isOverwrite && present(this.logic.getPostDetails(intraHash, userName))) {
-			return true;
+		boolean postExisted = false;
+		try {
+			postExisted = present(this.logic.getPostDetails(intraHash, userName));
+		} catch (final ResourceMovedException ex) {
+			log.debug("Object was moved");
 		}
-		return false;
+
+		return !isOverwrite && postExisted;
 	}
 }

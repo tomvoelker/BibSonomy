@@ -24,84 +24,64 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.scraper.url.kde.akademiai;
+package org.bibsonomy.scraper.url.kde.scielo;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericRISURLScraper;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
 /**
- *
- * @author Haile
+ * @author Mohammed Abed
  */
-public class AkademiaiScraper extends GenericRISURLScraper {
+public class SCIELOScraper extends GenericBibTeXURLScraper {
 
-	private static final String SITE_NAME = "Akademiai Kiado";
-	private static final String SITE_URL = "http://www.akademiai.com/home/main.mpx";
-	private static final String INFO =  "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
+	private static final String SITE_NAME = "SciELO Scientific Electronic Library Online";
+	private static final String SITE_URL = "http://www.scielo.br/";
+	private static final String info = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
+	private static final String SCIELO_HOST = "scielo.br";
+	private static final String SCIELO_MAX_HOST = "scielo.org.mx";
+	private static final Pattern URL_PATTERN = Pattern.compile("(.*)pid=(.*)$");
+	private static final String DOWNLOADLINK = "/scielo.php?download&format=BibTex&pid=";
+	private static final String HTTP = "http://";
+	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern, Pattern>>();
+	static {
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ SCIELO_HOST), Pattern.compile("/scielo.php")));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ SCIELO_MAX_HOST), Pattern.compile("/scielo.php")));
+	}
 
-	private static final String RIS_URL  = "http://www.akademiai.com/export.mpx?code=";
-	private static final Pattern URL_PATTERN = Pattern.compile(".*/content/(.*?)/");
-
-	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "akademiai.com"), AbstractUrlScraper.EMPTY_PATTERN));
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.UrlScraper#getSupportedSiteName()
-	 */
+	@Override
+	protected String getDownloadURL(URL url) throws ScrapingException, IOException {
+		final Matcher m = URL_PATTERN.matcher(url.toString());
+		if (m.find()) {
+			return HTTP + url.getHost() + DOWNLOADLINK + m.group(2);
+		}
+		return null;
+	}
+	
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.UrlScraper#getSupportedSiteURL()
-	 */
 	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.Scraper#getInfo()
-	 */
 	@Override
 	public String getInfo() {
-		return INFO;
+		return info;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.AbstractUrlScraper#getUrlPatterns()
-	 */
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
-		return PATTERNS;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL)
-	 */
-	@Override
-	protected String getDownloadURL(URL url) throws ScrapingException, IOException {
-		final Matcher m = URL_PATTERN.matcher(url.toString());
-		if (m.find()) {
-			return RIS_URL + m.group(1) + "&mode=ris";
-		}
-		return null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#retrieveCookiesFromSite()
-	 */
-	@Override
-	protected boolean retrieveCookiesFromSite() {
-		return true;
+		return patterns;
 	}
 }

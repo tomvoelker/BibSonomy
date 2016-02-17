@@ -53,11 +53,9 @@ import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 
 /**
- * @author Christian Pfeiffer
+ * @author Christian Pfeiffer, Tom Hanika
  */
 public class DisambiguationPageController extends SingleResourceListController implements MinimalisticController<DisambiguationPageCommand> {
-	//private static final Log log = LogFactory.getLog(DisambiguationPageController.class);
-	
 	/**
 	 * put into the session to tell the personPageController that the person has just been created
 	 */
@@ -76,6 +74,9 @@ public class DisambiguationPageController extends SingleResourceListController i
 	
 	@Override
 	public View workOn(final DisambiguationPageCommand command) {
+		if (command.getRequestedHash()== null) {
+			throw new ObjectNotFoundException(command.getRequestedHash());
+		}
 		final List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, command.getRequestedHash(), null, null, null, null, null, null, 0, 100);
 		if (!ValidationUtils.present(posts)) {
 			throw new ObjectNotFoundException(command.getRequestedHash());

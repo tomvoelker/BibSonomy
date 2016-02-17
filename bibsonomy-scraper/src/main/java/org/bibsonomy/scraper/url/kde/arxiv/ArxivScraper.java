@@ -35,7 +35,7 @@ import java.util.regex.Pattern;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.converter.OAIConverter;
+import org.bibsonomy.scraper.converter.OAIToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
@@ -48,7 +48,8 @@ import org.bibsonomy.util.WebUtils;
  * @author rja
  */
 public class ArxivScraper extends AbstractUrlScraper {
-	
+	/** OAI to bibtex converter */
+	private static final OAIToBibtexConverter OAI_CONVERTER = new OAIToBibtexConverter();
 	private static final String SITE_NAME = "arXiv";
 	private static final String SITE_URL = "http://arxiv.org/";
 	private static final String info = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
@@ -91,11 +92,10 @@ public class ArxivScraper extends AbstractUrlScraper {
 					// download oai_dc reference
 					final String reference = WebUtils.getContentAsString(exportURL);
 					
-					String bibtex = OAIConverter.convert(reference);
-					
+					String bibtex = OAI_CONVERTER.toBibtex(reference);
 					
 					// add arxiv citation to note
-					if(bibtex.contains("note = {")) {
+					if (bibtex.contains("note = {")) {
 						bibtex = bibtex.replace("note = {", "note = {cite arxiv:" + id + "\n");
 					// if note not exist
 					} else {

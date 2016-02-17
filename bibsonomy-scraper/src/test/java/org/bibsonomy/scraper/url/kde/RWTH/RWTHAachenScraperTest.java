@@ -24,38 +24,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.scraper.converter;
+package org.bibsonomy.scraper.url.kde.RWTH;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.IOException;
-
-import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.testutil.TestUtils;
+import org.bibsonomy.scraper.UnitTestRunner;
+import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
- * @author rja
+ *
+ * @author Mohamemd Abed
+ *
  */
-public class OAIConverterTest {
+@Category(RemoteTest.class)
+public class RWTHAachenScraperTest {
 
-	private static final String PATH_TO_FILES = "org/bibsonomy/scraper/converter/";
-	
+	/**
+	 * starts URL test with id url_332
+	 */
 	@Test
-	public void testConvert1() throws Exception {
-		this.testFile("arxiv1");
-	}
-
-	@Test
-	public void testConvert2() throws Exception {
-		this.testFile("arxiv2");
-	}
-	
-
-	private void testFile(final String fileName) throws IOException, ScrapingException {
-		final String xml = TestUtils.readEntryFromFile(OAIConverterTest.PATH_TO_FILES + fileName + ".xml");
-		final String bib = TestUtils.readEntryFromFile(OAIConverterTest.PATH_TO_FILES + fileName + ".bib");
-		OAIToBibtexConverter converter = new OAIToBibtexConverter();
-		assertEquals(bib.trim(), converter.toBibtex(xml).trim());
+	public void url1TestRun() {
+		UnitTestRunner.runSingleTest("url_332");
 	}
 }

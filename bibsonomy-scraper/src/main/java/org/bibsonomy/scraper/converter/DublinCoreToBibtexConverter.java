@@ -45,7 +45,7 @@ import org.bibsonomy.util.id.ISBNUtils;
  * 
  * @author Lukas
  */
-public class DublinCoreToBibtexConverter {
+public class DublinCoreToBibtexConverter implements BibtexConverter {
 	private static final String PREFERRED_LANGUAGE = "en";
 
 	private static final String BIBTEX_END_LINE = ",\n";
@@ -70,7 +70,8 @@ public class DublinCoreToBibtexConverter {
 	 * @return a BibTeX formatted string with the extracted information
 	 * 
 	 */
-	public static String getBibTeX(final String dublinCore) {
+	@Override
+	public String toBibtex(final String dublinCore) {
 		// get all DC values
 		final Map<String, String> data = extractData(dublinCore);
 

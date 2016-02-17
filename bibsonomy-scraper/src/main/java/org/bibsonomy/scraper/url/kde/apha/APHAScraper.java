@@ -50,7 +50,6 @@ import org.bibsonomy.util.WebUtils;
  * @author Mohammed Abed
  */
 public class APHAScraper extends AbstractUrlScraper {
-
 	private static final String SITE_NAME = "American Journal of PUBLIC HEALTH";
 	private static final String SITE_URL = "http://ajph.aphapublications.org/";
 	private static final String info = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
@@ -73,14 +72,15 @@ public class APHAScraper extends AbstractUrlScraper {
 		DOWNLOAD_URL.add(Pattern.compile(HTTP + NRCRESEACHPRESS_HOST + "/action/downloadCitation"));
 		DOWNLOAD_URL.add(Pattern.compile(HTTP + EMERALDINSIGHT_HOST + "/action/downloadCitation"));
 	}
+	
 	private final RisToBibtexConverter ris = new RisToBibtexConverter();
 
 	@Override
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 		
 		try {
-			final String cookie = WebUtils.getCookies(sc.getUrl());
+			final String cookie = WebUtils.getSpecialCookies(sc.getUrl());
 			String doi = null;
 			final Matcher m = DOI_PATTERN_FROM_URL.matcher(sc.getUrl().toString());
 			if (m.find()) {
@@ -88,45 +88,25 @@ public class APHAScraper extends AbstractUrlScraper {
 			}
 			
 			if (doi != null && cookie != null) {
-				String resultAsString = null;
 				try {
-					/*
-					 * the expected resultAsString is a RIS File: because this host support only RIS format
-					 */
+					final String resultAsString;
 					if (sc.getUrl().toString().contains(AJPH_HOST)) {
-						resultAsString = WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL.get(0).toString()), doi);
-					}
-					/*
-					 * the expected resultAsString is a BibTex File
-					 */
-					else if (sc.getUrl().toString().contains(NRCRESEACHPRESS_HOST)) {
+						/*
+						 * the expected resultAsString is a RIS File: because this host support only RIS format
+						 */
+						resultAsString = this.ris.toBibtex(WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL.get(0).toString()), doi));
+					} else if (sc.getUrl().toString().contains(NRCRESEACHPRESS_HOST)) {
 						resultAsString = WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL.get(1).toString()), doi + "&format=bibtex");
-						if (resultAsString != null) {
-							sc.setBibtexResult(resultAsString);
-							return true;
-						}
-					}
-					/*
-					 * the expected resultAsString is a BibTex File
-					 */
-					else {
+					} else {
 						resultAsString = WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL.get(2).toString()), doi + "&format=bibtex");
-						if (resultAsString != null) {
-							sc.setBibtexResult(resultAsString);
-							return true;
-						}
 					}
-				} catch (MalformedURLException ex) {
+					
+					if (resultAsString != null) {
+						sc.setBibtexResult(resultAsString);
+						return true;
+					}
+				} catch (final MalformedURLException ex) {
 					throw new ScrapingFailureException("URL to scrape does not exist. It maybe malformed.");
-				}
-
-				/*
-				 * if the host was from ajph.aphapublications.org, then we must convert the resultAsString to BibTex format
-				 */
-				final String bibResult = this.ris.risToBibtex(resultAsString);
-				if (bibResult != null) {
-					sc.setBibtexResult(bibResult);
-					return true;
 				}
 			}
 		} catch (final IOException ex) {
