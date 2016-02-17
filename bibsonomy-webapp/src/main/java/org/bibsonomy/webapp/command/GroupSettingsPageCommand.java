@@ -101,7 +101,6 @@ public class GroupSettingsPageCommand extends TabsCommand<Object> {
 	 */
 	private boolean deletePicture;
 	
-	
 	/**
 	 * TODO: remove after setting the default value of selTab to null
 	 */

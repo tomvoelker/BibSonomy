@@ -89,7 +89,7 @@ public class DeleteGroupRequestController extends SettingsPageController {
 		 */
 		final User loginUser = command.getContext().getLoginUser();
 		command.setUser(loginUser);
-
+		// FIXME getGroupByName
 		Group group = null;
 		for (Group g : logic.getGroups(true, 0, Integer.MAX_VALUE)) {
 			if (g.getName().equals(command.getGroupName())) {

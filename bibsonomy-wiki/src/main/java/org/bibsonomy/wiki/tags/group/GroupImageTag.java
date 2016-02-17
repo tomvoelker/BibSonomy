@@ -43,6 +43,7 @@ public class GroupImageTag extends GroupTag {
 	}
 
 	private String renderImage(final String userName) {
+		// TODO: use urlgenerator
 		return "<img class='user-avatar img-responsive group-cv-image' title='" + userName + "' src='/picture/user/" + userName + "' />";
 	}
 	

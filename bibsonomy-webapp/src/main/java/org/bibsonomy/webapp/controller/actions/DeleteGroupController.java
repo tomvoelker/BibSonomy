@@ -70,7 +70,6 @@ public class DeleteGroupController extends GroupSettingsPageController implement
 		}
 		
 		// TODO: why we have to set the loggedin user? TODO_GROUPS
-		
 		command.setUser(context.getLoginUser());
 		
 		final User loginUser = context.getLoginUser();
@@ -97,7 +96,7 @@ public class DeleteGroupController extends GroupSettingsPageController implement
 		if (!GroupRole.ADMINISTRATOR.equals(roleOfLoggedinUser)) {
 			throw new AccessDeniedException("You are not allowed to view this page");
 		}
-		
+		// FIXME: see DBLogic
 		// size must be bigger than 2 because the membership object contains also the group user
 		if (group.getMemberships().size() > 2) {
 			throw new IllegalStateException("The group can't be deleted, it's not empty");

@@ -245,7 +245,7 @@ public class TagcloudTag extends UserTag {
 	 * @param tags a list of a user's tags
 	 * @return the frequency
 	 */
-	private static int getMinFreqFromTaglist(List<Tag> tags){
+	private static int getMinFreqFromTaglist(List<Tag> tags) {
 		int minFreq = Integer.MAX_VALUE;
 		for (final Tag tag : tags) {
 			minFreq = Math.min(minFreq, tag.getUsercount());
@@ -258,7 +258,7 @@ public class TagcloudTag extends UserTag {
 	 * @param tags a list of a user's tags
 	 * @return the frequency
 	 */
-	private static int getMaxFreqFromTaglist(List<Tag> tags){
+	private static int getMaxFreqFromTaglist(List<Tag> tags) {
 		int maxFreq = Integer.MIN_VALUE;
 		for (final Tag tag : tags) {
 			maxFreq = Math.max(maxFreq, tag.getUsercount());

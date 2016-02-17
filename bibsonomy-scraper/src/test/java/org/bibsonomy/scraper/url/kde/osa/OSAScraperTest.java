@@ -54,10 +54,8 @@ public class OSAScraperTest {
 		UnitTestRunner.runSingleTest("url_93");
 	}
 	
-	@Ignore
-	/*
-	 * because we need to login in the journal to be able to scrape the references
-	 */
+	@Ignore // because we need to login in the journal to be able to scrape the references
+	@Test
 	public void testReferences() throws Exception {
 		final ScrapingContext sc = new ScrapingContext(new URL("https://www.osapublishing.org/josaa/abstract.cfm?uri=josaa-25-5-1084"));
 		

@@ -225,7 +225,7 @@ public class ElasticsearchClient implements ESClient {
 
 	@Override
 	public String getIndexNameForAlias(final String alias) {
-		final List<String> activeindices = getIndexNamesForAlias(alias);
+		final List<String> activeindices = this.getIndexNamesForAlias(alias);
 		if (!activeindices.isEmpty()) {
 			if (activeindices.size() > 1) {
 				throw new IllegalStateException("found more than one index for this system!");
@@ -243,7 +243,7 @@ public class ElasticsearchClient implements ESClient {
 	public List<String> getIndexNamesForAlias(String aliasName) {
 		final ImmutableOpenMap<String, List<AliasMetaData>> activeindices = this.client.admin().indices().getAliases(new GetAliasesRequest().aliases(aliasName)).actionGet().getAliases();
 		final List<String> indexNames = new LinkedList<>();
-		for (ObjectObjectCursor<String, List<AliasMetaData>> objectObjectCursor : activeindices) {
+		for (final ObjectObjectCursor<String, List<AliasMetaData>> objectObjectCursor : activeindices) {
 			indexNames.add(objectObjectCursor.key);
 		}
 		return indexNames;

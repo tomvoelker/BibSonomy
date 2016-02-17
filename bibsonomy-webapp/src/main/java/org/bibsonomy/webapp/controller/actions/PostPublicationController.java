@@ -132,7 +132,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * login page
 		 */
 		if (!context.isUserLoggedIn()) {
-			throw new AccessDeniedNoticeException("please log in", LOGIN_NOTICE + BibTex.class.getSimpleName().toLowerCase());
+			throw new AccessDeniedNoticeException("please log in", LOGIN_NOTICE + publication.getClass().getSimpleName().toLowerCase());
 		}
 
 		/*
@@ -329,8 +329,8 @@ public class PostPublicationController extends AbstractEditPublicationController
 				if (!present(post.getTags())) {
 					post.setTags(Collections.singleton(TagUtils.getImportedTag()));
 				}
-				/* set visibility of this post for the groups, the user specified
-
+				/*
+				 * set visibility of this post for the groups, the user specified
 				 */
 				GroupingCommandUtils.initGroups(command, post.getGroups());
 				/*

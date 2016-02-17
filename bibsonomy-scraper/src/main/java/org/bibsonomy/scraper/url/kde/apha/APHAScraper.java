@@ -106,11 +106,11 @@ public class APHAScraper extends AbstractUrlScraper {
 						return true;
 					}
 				} catch (final MalformedURLException ex) {
-					throw new ScrapingFailureException("URL to scrape does not exist. It maybe malformed.");
+					throw new ScrapingFailureException("URL to scrape does not exist. It may be malformed.");
 				}
 			}
 		} catch (final IOException ex) {
-			throw new ScrapingFailureException("An unexpected IO error has occurred. Maybe APHA or nrcresearchpress Publications is down.");
+			throw new ScrapingFailureException("An unexpected IO error has occurred. Maybe APHA or NRC Researchpress is down.");
 		}
 		
 		return false;

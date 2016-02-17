@@ -126,8 +126,8 @@ public class AjaxCvController extends AjaxController implements MinimalisticCont
 			
 			if (present(requestedGroup)) {
 				// TODO: why do we need the group details here? TODO_GROUPS
-				final Group g = this.logic.getGroupDetails(command.getRequestedGroup());
-				this.logic.updateWiki(g.getName(), wiki);
+				final Group group = this.logic.getGroupDetails(command.getRequestedGroup());
+				this.logic.updateWiki(group.getName(), wiki);
 			} else {
 				this.logic.updateWiki(authUser, wiki);
 			}

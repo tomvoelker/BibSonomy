@@ -137,7 +137,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	private static final Log log = LogFactory.getLog(LogicInterfaceProxyTest.class);
 	
 	private static final String LOGIN_USER_NAME = LogicInterfaceProxyTest.class.getSimpleName().toLowerCase();
-	private static final String API_KEY = "A P I  K e y";
+	private static final String API_KEY = "A P I äöü K e y";
 	private static Server server;
 	private static String apiUrl;
 	private static LogicInterfaceFactory clientLogicFactory;

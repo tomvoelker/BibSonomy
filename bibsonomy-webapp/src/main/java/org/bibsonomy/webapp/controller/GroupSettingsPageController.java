@@ -150,9 +150,8 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 		} else {
 			wikiText = "";
 		}
-
-		//this.wikiRenderer.setRequestedUser(groupUser); // FME: not thread-safe!
-		this.wikiRenderer.setRequestedGroup(group); // FME: not thread-safe!
+		
+		this.wikiRenderer.setRequestedGroup(group);
 		command.setRenderedWikiText(this.wikiRenderer.render(wikiText));
 		command.setWikiText(wikiText);
 	}
