@@ -36,7 +36,6 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.common.enums.TagsType;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
@@ -218,25 +217,24 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 						break;
 					}
 				}
-				/*
-				 * TODO: we need an adminLogic to access the requested user's groups ...
-				 */
 				
-				final List<Group> loginUserNameGroups = context.getLoginUser().getGroups();
-				final List<Group> sharedGroups =  new LinkedList<Group>();
-				
-				for (Group g : loginUserNameGroups) {
-					// only add a group if the member list is visible TODO: why? TODO_GROUPS
-					if (g.getPrivlevel() == Privlevel.PUBLIC || g.getPrivlevel() == Privlevel.MEMBERS) {
-						final Group groupDetails = this.logic.getGroupDetails(g.getName());
-						for (final GroupMembership m : groupDetails.getMemberships()) {
-							if (m.getUser().equals(requestedUser)) {
-								sharedGroups.add(g);
+				if (!loginUserName.equals(groupingName)) {
+					/*
+					 * calc common groups
+					 */
+					final List<Group> loginUserNameGroups = context.getLoginUser().getGroups();
+					final List<Group> sharedGroups =  new LinkedList<Group>();
+					
+					for (final Group group : loginUserNameGroups) {
+						final Group groupDetails = this.logic.getGroupDetails(group.getName());
+						for (final GroupMembership membership : groupDetails.getMemberships()) {
+							if (membership.getUser().equals(requestedUser)) {
+								sharedGroups.add(group);
 							}
 						}
 					}
+					command.setSharedGroups(sharedGroups);
 				}
-				command.setSharedGroups(sharedGroups);
 			}
 			
 			this.endTiming();
