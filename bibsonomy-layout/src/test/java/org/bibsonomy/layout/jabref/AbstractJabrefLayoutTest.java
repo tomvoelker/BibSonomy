@@ -182,14 +182,13 @@ public abstract class AbstractJabrefLayoutTest {
 	}
 	
 	private String extractEntryType() {
-		//Remove Extension
-		String fileName = FilenameUtils.removeExtension(this.layoutTest.getName());
-		String[] fileNameParts = fileName.split(LAYOUT_ENTRYTYPE_SPLIT + entryTypeSplitSuffix);
-		String entryType = "other";
+		// remove extension
+		final String fileName = FilenameUtils.removeExtension(this.layoutTest.getName());
+		final String[] fileNameParts = fileName.split(LAYOUT_ENTRYTYPE_SPLIT + entryTypeSplitSuffix);
 		if (fileNameParts.length > 1) {
-			entryType = fileNameParts[1];
+			return fileNameParts[1];
 		}
-		return entryType;
+		return "";
 	}
 	
 	protected static final FilenameFilter isResultLayout = new FilenameFilter() {
