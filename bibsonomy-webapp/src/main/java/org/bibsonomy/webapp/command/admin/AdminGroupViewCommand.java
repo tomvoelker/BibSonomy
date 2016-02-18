@@ -28,6 +28,7 @@ package org.bibsonomy.webapp.command.admin;
 
 import java.util.LinkedList;
 import java.util.List;
+
 import org.bibsonomy.common.enums.AdminGroupOperation;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.webapp.command.BaseCommand;
@@ -51,7 +52,7 @@ public class AdminGroupViewCommand extends BaseCommand {
 	@Deprecated
 	// TODO a more general field should be Set<GroupLevelPermission>
 	private boolean communityPostInspectionPermission;
-	private boolean permissionsUpdated;
+	private boolean permissionsUpdated = false;
 	/**
 	 * list of pending groups
 	 */
