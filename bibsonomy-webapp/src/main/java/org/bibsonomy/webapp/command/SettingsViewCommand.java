@@ -817,7 +817,6 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		return this.pendingRequestedgroups;
 	}
 
-
 	/**
 	 * @param pendingRequestedgroups the pendingRequestedgroups to set
 	 */

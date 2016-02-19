@@ -58,8 +58,8 @@ public class ReCaptcha2 implements Captcha {
 	
 	private CloseableHttpClient client;
 	
-	private String privateKey;
-	private String publicKey;
+	private String secretKey;
+	private String siteKey;
 	private String recaptchaServer;
 	
 	/* (non-Javadoc)
@@ -69,12 +69,12 @@ public class ReCaptcha2 implements Captcha {
 	public String createCaptchaHtml(final Locale locale) {
 		final String language = locale.getLanguage();
 		return "<script src='https://www.google.com/recaptcha/api.js?hl=" + language + "'></script>" + 
-				"<div class=\"g-recaptcha\" data-sitekey=\"" + this.publicKey +  "\"></div>"
+				"<div class=\"g-recaptcha\" data-sitekey=\"" + this.siteKey +  "\"></div>"
 					+ "<noscript>"
 					+ "<div style=\"width: 302px; height: 422px;\">"
 					+ "<div style=\"width: 302px; height: 422px; position: relative;\">"
 					+ "<div style=\"width: 302px; height: 422px; position: absolute;\">"
-					+ "<iframe src=\"https://www.google.com/recaptcha/api/fallback?hl=" + language + "&k=" + this.publicKey + "\""
+					+ "<iframe src=\"https://www.google.com/recaptcha/api/fallback?hl=" + language + "&k=" + this.siteKey + "\""
 					+ "frameborder=\"0\" scrolling=\"no\""
 					+ "style=\"width: 302px; height:422px; border-style: none;\">"
 					+ "</iframe>"
@@ -103,7 +103,7 @@ public class ReCaptcha2 implements Captcha {
 		
 		try {
 			final List<BasicNameValuePair> entity = Arrays.asList(
-				new BasicNameValuePair("secret", this.privateKey),
+				new BasicNameValuePair("secret", this.secretKey),
 				new BasicNameValuePair("response", response),
 				new BasicNameValuePair("remoteip", remoteHostInetAddress));
 			
@@ -142,21 +142,19 @@ public class ReCaptcha2 implements Captcha {
 	}
 	
 	/**
-	 * 
-	 * @param privateKey
+	 * @param secretKey the secretKey to set
 	 */
-	public void setPrivateKey(String privateKey) {
-		this.privateKey = privateKey;
+	public void setSecretKey(String secretKey) {
+		this.secretKey = secretKey;
 	}
-	
+
 	/**
-	 * 
-	 * @param publicKey
+	 * @param siteKey the siteKey to set
 	 */
-	public void setPublicKey(String publicKey) {
-		this.publicKey = publicKey;
+	public void setSiteKey(String siteKey) {
+		this.siteKey = siteKey;
 	}
-	
+
 	/**
 	 * 
 	 * @param recaptchaServer

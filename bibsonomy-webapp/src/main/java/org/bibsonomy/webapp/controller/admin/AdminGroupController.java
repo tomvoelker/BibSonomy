@@ -54,7 +54,6 @@ import org.springframework.security.access.AccessDeniedException;
  * Controller for group admin page
  * 
  * TODO: Make ErrorAware for proper error messages
- * TODO: update the allowed fields of this controller TODO_GROUPS
  * 
  * @author bsc
  */
@@ -68,7 +67,6 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 	public View workOn(final AdminGroupViewCommand command) {
 		final RequestWrapperContext context = command.getContext();
 		final User loginUser = context.getLoginUser();
-		command.setPermissionsUpdated(false);
 		
 		/*
 		 * check user role
@@ -95,13 +93,6 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 					
 					requestingUser = this.logic.getUserDetails(group.getGroupRequest().getUserName());
 					this.logic.updateGroup(group, GroupUpdateOperation.ACTIVATE, null);
-					if (present(requestingUser.getEmail())) {
-						this.mailUtils.sendGroupActivationNotification(group, requestingUser, LocaleUtils.toLocale(requestingUser.getSettings().getDefaultLanguage()));
-					}
-					break;
-				case CREATE:
-					command.setAdminResponse(createGroup(group));
-					requestingUser = this.logic.getUserDetails(group.getGroupRequest().getUserName());
 					if (present(requestingUser.getEmail())) {
 						this.mailUtils.sendGroupActivationNotification(group, requestingUser, LocaleUtils.toLocale(requestingUser.getSettings().getDefaultLanguage()));
 					}
@@ -133,9 +124,6 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 				case FETCH_GROUP_SETTINGS:
 					setGroupOrMarkNonExistent(command);
 					break;
-				case UPDATE:
-					updateGroup(command);
-					break;
 				case UPDATE_PERMISSIONS:
 					this.updateGroupPermissions(command);
 					break;
@@ -148,55 +136,6 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		command.setPendingGroups(this.logic.getGroups(true, 0, Integer.MAX_VALUE));
 		return Views.ADMIN_GROUP;
 	}
-
-	/**
-	 * Create a new group
-	 * TODO: Proper Error messages.
-	 * @param command
-	 */
-	@Deprecated // TODO: remove TODO_GROUPS
-	private String createGroup(final Group group) {
-		/*
-		 * Check if group-name is empty
-		 */
-		final String groupName = group.getName();
-		if (!present(groupName)) {
-			return "Group-creation failed: Group-name is empty!";
-		}
-		/*
-		 * check database for existing group or pending group
-		 */
-		if (logic.getGroups(false, 0, Integer.MAX_VALUE).contains(group)
-				|| logic.getGroups(true, 0, Integer.MAX_VALUE).contains(group)) {
-			return "Group already exists!";
-		}
-		
-		// Create the group ...
-		logic.createGroup(group);
-		// ... and activate it
-		logic.updateGroup(group, GroupUpdateOperation.ACTIVATE, null);
-		return "Successfully created new group " + group.getName() + "!";
-	}
-
-	/**
-	 * Update the settings of a group.
-	 * 
-	 * TODO: Find out when this is used.
-	 * 
-	 */
-	@Deprecated // TODO: remove TODO_GROUPS
-	private void updateGroup(final AdminGroupViewCommand command) {
-		final Group dbGroup = getGroupOrMarkNonExistent(command);
-		if (present(dbGroup)) {
-			Group commandGroup = command.getGroup();
-			dbGroup.setPrivlevel(commandGroup.getPrivlevel());
-			dbGroup.setSharedDocuments(commandGroup.isSharedDocuments());
-
-			logic.updateGroup(dbGroup, GroupUpdateOperation.UPDATE_SETTINGS, null);
-			command.setAdminResponse("Group updated successfully!");
-		}
-	}
-
 	
 	/**
 	 * TODO: Documentation.

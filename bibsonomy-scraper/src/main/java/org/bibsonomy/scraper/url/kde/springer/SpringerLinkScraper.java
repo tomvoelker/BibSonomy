@@ -53,10 +53,10 @@ import org.bibsonomy.util.id.ISBNUtils;
 
 
 
-/** Scraper für SpringerLink.
+/**
+ * Scraper für SpringerLink.
  * 
  * @author rja
- *
  */
 public class SpringerLinkScraper extends AbstractUrlScraper {
 	private static final String SITE_NAME = "SpringerLink";
@@ -157,14 +157,15 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 			}
 			
 			//alternatively look for isbn and use WorldCatScraper
-			else {
-				String isbn = ISBNUtils.extractISBN(page);
-				if (present(isbn)) {
-					String bibtex = WorldCatScraper.getBibtexByISBNAndReplaceURL(isbn, sc.getUrl().toString());
-					if (!present(bibtex)) return false;
-					sc.setBibtexResult(bibtex);
-					return true;
+			
+			final String isbn = ISBNUtils.extractISBN(page);
+			if (present(isbn)) {
+				final String bibtex = WorldCatScraper.getBibtexByISBNAndReplaceURL(isbn, sc.getUrl().toString());
+				if (!present(bibtex)) {
+					return false;
 				}
+				sc.setBibtexResult(bibtex);
+				return true;
 			}
 		} catch (IOException e) {
 			throw new ScrapingException(e);
@@ -299,7 +300,8 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 		
 		return s3;
 	}
-
+	
+	@Override
 	public String getInfo() {
 		return INFO;
 	}
@@ -308,11 +310,13 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
-
+	
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
-
+	
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}

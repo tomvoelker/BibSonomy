@@ -1471,7 +1471,7 @@ public class DBLogic implements LogicInterface {
 			case ADD_INVITED_SPAMMER:
 				this.permissionDBManager.ensureIsAdminOrHasGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.MODERATOR);
 				this.groupDBManager.addPendingMembership(group.getName(), requestedUserName, userSharedDocuments, GroupRole.INVITED, session);
-				log.info("The user <"+this.loginUser.getName()+"> invited a spammer to the group <"+group.getName()+">");
+				log.info("The user '"+this.loginUser.getName()+"' invited a spammer to the group '"+group.getName()+"'.");
 				break;
 
 			case ADD_REQUESTED:
@@ -3388,7 +3388,7 @@ public class DBLogic implements LogicInterface {
 	private void createOrUpdatePerson(final Person person, final DBSession session) {
 		this.ensureLoggedInAndNoSpammer();
 		if (person.getUser() != null) {
-			if (person.getUser().equals(this.loginUser.getName()) == false) {
+			if (!person.getUser().equals(this.loginUser.getName())) {
 				throw new AccessDeniedException();
 			}
 			if (present(person.getPersonId())) {

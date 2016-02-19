@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -89,7 +89,7 @@ public class DeleteGroupRequestController extends SettingsPageController {
 		 */
 		final User loginUser = command.getContext().getLoginUser();
 		command.setUser(loginUser);
-
+		// FIXME getGroupByName
 		Group group = null;
 		for (Group g : logic.getGroups(true, 0, Integer.MAX_VALUE)) {
 			if (g.getName().equals(command.getGroupName())) {

@@ -59,7 +59,7 @@ public abstract class AbstractGenericFormatURLScraper extends AbstractUrlScraper
 			}
 			
 			final String cookies;
-			if (retrieveCookiesFromSite()) {
+			if (this.retrieveCookiesFromSite()) {
 				cookies = WebUtils.getCookies(url);
 			} else {
 				cookies = null;

@@ -350,7 +350,7 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 				this.generateIndex(false, true);
 			}
 		} catch (final IndexAlreadyGeneratingException e) {
-			log.error("error ", e);
+			log.error("error while regeneration all indices", e);
 		}
 	}
 	
@@ -384,20 +384,20 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 			
 			final Set<Pair<String, String>> aliasesToRemove = new HashSet<>();
 			// remove the standby alias
-			aliasesToRemove.add(new Pair<>(newIndexName, ElasticsearchUtils.getLocalAliasForResource(this.tools.getResourceType(), this.tools.getSystemURI(), SearchIndexState.STANDBY)));
+			aliasesToRemove.add(new Pair<>(newIndexName, this.getAliasNameForState(SearchIndexState.STANDBY)));
 			// only set the alias if the index should not be deleted
-			final boolean peferedDeletedActiveIndex = present(activeIndexName) && activeIndexName.equals(indexToDelete);
+			final boolean preferedDeletedActiveIndex = present(activeIndexName) && activeIndexName.equals(indexToDelete);
 			if (present(activeIndexName)) {
 				// remove active alias from the current active index
 				aliasesToRemove.add(new Pair<>(activeIndexName, localActiveAlias));
 				// we use the index as inactive index if we do not want to delete it
-				if (!peferedDeletedActiveIndex) {
+				if (!preferedDeletedActiveIndex) {
 					aliasesToAdd.add(new Pair<>(activeIndexName, localInactiveAlias));
 				}
 			}
 			
 			// only remove the alias if the other index should be deleted
-			if (present(inactiveIndexName) && !peferedDeletedActiveIndex) {
+			if (present(inactiveIndexName) && !preferedDeletedActiveIndex) {
 				aliasesToRemove.add(new Pair<>(inactiveIndexName, localInactiveAlias));
 			}
 			
@@ -463,7 +463,7 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 	 * 
 	 */
 	private List<String> getAllStandByIndices() {
-		return this.client.getIndexNamesForAlias(ElasticsearchUtils.getLocalAliasForResource(this.tools.getResourceType(), this.tools.getSystemURI(), SearchIndexState.STANDBY));
+		return this.client.getIndexNamesForAlias(this.getAliasNameForState(SearchIndexState.STANDBY));
 	}
 
 	/**
