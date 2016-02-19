@@ -229,7 +229,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 				 */
 				final Privlevel priv = Privlevel.getPrivlevel(command.getPrivlevel());
 				final boolean sharedDocs = command.getSharedDocuments() == 1;
-				final boolean allowJoin = command.getAllowJoin() == 1;
+				final boolean allowJoin = command.getAllowJoin();
 				final String realname = command.getRealname();
 				final URL homepage = command.getHomepage();
 				final String description = command.getDescription();
