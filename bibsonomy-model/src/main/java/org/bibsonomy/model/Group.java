@@ -249,10 +249,6 @@ public class Group implements Serializable {
 	public boolean isAllowJoin() {
 		return this.allowJoin;
 	}
-	
-	public boolean getAllowJoin() {
-		return this.allowJoin;
-	}
 
 	/**
 	 * @param allowJoin
