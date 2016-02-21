@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.webapp.util.captcha;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
@@ -42,6 +44,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -119,15 +122,13 @@ public class ReCaptcha2 implements Captcha {
 			log.debug(responseObject.toString());
 			
 			final boolean success = Boolean.parseBoolean(responseObject.get(SUCCESS_FIELD).toString());
-			String errorCodes = null;
-			if (responseObject.containsKey(ERROR_CODES_FIELD)) {
-				errorCodes = responseObject.get(ERROR_CODES_FIELD).toString();
-			}
+			final List<String> errorCodes = getErrorCodes(responseObject);
+			
 			httpResponse.close();
 			log.debug("success: " + success);
 			log.debug("error-codes: " + errorCodes);
 			
-			return new ReCaptcha2Response(success, errorCodes);
+			return new ReCaptcha2Response(success, extractErrorMessage(errorCodes));
 		} catch (final UnsupportedEncodingException e) {
 			return new ReCaptcha2Response(false, "Unsupported Encoding! Did not send a request.");
 		} catch (final HttpException e) {
@@ -141,6 +142,51 @@ public class ReCaptcha2 implements Captcha {
 		}
 	}
 	
+	/**
+	 * @param responseObject
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private static List<String> getErrorCodes(JSONObject responseObject) {
+		if (responseObject.containsKey(ERROR_CODES_FIELD)) {
+			return (JSONArray) responseObject.get(ERROR_CODES_FIELD);
+		}
+		
+		return null;
+	}
+
+	/**
+	 * @param errorCodes
+	 * @return
+	 */
+	private static String extractErrorMessage(List<String> errorCodes) {
+		if (!present(errorCodes)) {
+			return null;
+		}
+		
+		final StringBuilder errorMessageBuilder = new StringBuilder();
+		for (String errorCode : errorCodes) {
+			switch (errorCode) {
+			case "missing-input-secret":
+				errorMessageBuilder.append("The secret parameter is missing. ");
+				break;
+			case "invalid-input-secret":
+				errorMessageBuilder.append("The secret parameter is invalid or malformed. ");
+				break;
+			case "missing-input-response":
+				errorMessageBuilder.append("The response parameter is missing. ");
+				break;
+			case "invalid-input-response":
+				errorMessageBuilder.append("The response parameter is invalid or malformed. ");
+				break;
+			default:
+				break;
+			}
+		}
+		
+		return errorMessageBuilder.toString().trim();
+	}
+
 	/**
 	 * @param secretKey the secretKey to set
 	 */
