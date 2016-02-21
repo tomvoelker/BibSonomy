@@ -34,8 +34,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
-import net.tanesha.recaptcha.ReCaptcha;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.AuthMethod;

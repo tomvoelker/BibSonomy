@@ -71,7 +71,7 @@ public class GroupSettingsPageCommand extends TabsCommand<Object> {
 	private int privlevel;
 	// TODO: boolean type
 	private int sharedDocuments;
-	private int allowJoin;
+	private boolean allowJoin;
 	
 	// specific settings for the group user
 	private CommonsMultipartFile file;
@@ -164,11 +164,11 @@ public class GroupSettingsPageCommand extends TabsCommand<Object> {
 		this.sharedDocuments = sharedDocuments;
 	}
 	
-	public int getAllowJoin() {
+	public boolean getAllowJoin() {
 		return this.allowJoin;
 	}
 
-	public void setAllowJoin(int allowJoin) {
+	public void setAllowJoin(boolean allowJoin) {
 		this.allowJoin = allowJoin;
 	}
 

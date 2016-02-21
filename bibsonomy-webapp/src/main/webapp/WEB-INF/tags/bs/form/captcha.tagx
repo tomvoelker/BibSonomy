@@ -16,10 +16,10 @@
 			<c:set var="inputColSpan" value="10" />
 		</c:when>
 		<c:when test="${empty labelColSpan and not empty inputColSpan}">
-			<c:set var="labelColSpan" value="${ 12 - inputColSpan }" />
+			<c:set var="labelColSpan" value="${12 - inputColSpan}" />
 		</c:when>
 		<c:otherwise>
-			<c:set var="inputColSpan" value="${ 12 - labelColSpan }" />
+			<c:set var="inputColSpan" value="${12 - labelColSpa }" />
 		</c:otherwise>
 	</c:choose>
 	
@@ -28,8 +28,6 @@
 		<!-- errors -->
 		<c:set var="formErrors"><form:errors path="recaptcha_response_field" /></c:set>
 		<div class="form-group${not empty formErrors ? ' has-error' : ''}">
-			
-			
 			<form:label cssClass="control-label col-sm-${labelColSpan}" path="recaptcha_response_field" ><fmt:message key="captcha"/></form:label>
 			<div class="col-sm-${inputColSpan}">
 				${command.captchaHTML}
