@@ -24,10 +24,6 @@
 				<jsp:attribute name="pathPart">
 					<a href="${relativeUrlGenerator.getGroupUrlByGroupName(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a>
 				</jsp:attribute>
-				<jsp:attribute name="afterInput">
-					<group:groupname group="${command.group}"/>
-					<group:groupcv group="${command.group}"/>
-				</jsp:attribute>
 			</parts:search>	
 		</jsp:attribute>
 			
