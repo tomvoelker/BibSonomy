@@ -532,4 +532,13 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		return foundTestGroup3;
 	}
 
+	@Test
+	public void testGetGroupRequestByGroupNameAndUser() throws Exception {
+		final Group group = groupDb.getGroupRequestByGroupNameAndUser("testpendinggroup1", "testrequestuser1", this.dbSession);
+		assertNotNull(group);
+		
+		final Group groupForOtherUser = groupDb.getGroupRequestByGroupNameAndUser("testpendinggroup1", "testrequestuser2", this.dbSession);
+		assertNull(groupForOtherUser);
+	}
+
 }

@@ -30,6 +30,14 @@
 		LIMIT #limit# OFFSET #offset#
 	</select>
 	
+	<select id="getGroupRequestByGroupNAmeAndUser" resultMap="GroupCommon.group" parameterClass="groupParam">
+		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, <include refid="requestColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage
+		FROM pending_groupids i 
+		  JOIN pendingUser u ON (i.group_name = u.user_name)
+		WHERE group_name = #requestedGroupName#
+			AND request_user_name = #userName#
+	</select>
+	
 	<select id="getRequestedPendingGroupsForUser" resultMap="GroupCommon.group" parameterClass="groupParam">
 		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, <include refid="requestColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage
 		FROM pending_groupids i 

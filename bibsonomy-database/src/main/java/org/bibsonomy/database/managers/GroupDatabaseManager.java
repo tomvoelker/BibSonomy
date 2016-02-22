@@ -1026,4 +1026,17 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	private Group getGroupWithGroupLevelPermissions(final Group group, final DBSession session) {
 		return this.queryForObject("getGroupWithPermissions", group.getName(), Group.class, session);
 	}
+
+	/**
+	 * @param groupName
+	 * @param name
+	 * @param session
+	 * @return the group
+	 */
+	public Group getGroupRequestByGroupNameAndUser(String groupName, String name, DBSession session) {
+		final GroupParam groupParam = new GroupParam();
+		groupParam.setUserName(name);
+		groupParam.setRequestedGroupName(groupName);
+		return this.queryForObject("getGroupRequestByGroupNAmeAndUser", groupParam, Group.class, session);
+	}
 }
