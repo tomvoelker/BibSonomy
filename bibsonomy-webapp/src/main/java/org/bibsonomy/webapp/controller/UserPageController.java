@@ -105,7 +105,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		/*
 		 * extract filter
 		 */
-		final boolean publicationFilter = this.isPublicationFilter(command.getFilter());
+		final boolean publicationFilter = isPublicationFilter(command.getFilter());
 		if (publicationFilter) {
 			this.supportedResources.remove(Bookmark.class);
 		}
@@ -264,7 +264,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		return Views.getViewByFormat(format);
 	}
 
-	private boolean isPublicationFilter(final FilterEntity filter) {
+	private static boolean isPublicationFilter(final FilterEntity filter) {
 		return FilterEntity.JUST_PDF.equals(filter) || FilterEntity.DUPLICATES.equals(filter);
 	}
 
