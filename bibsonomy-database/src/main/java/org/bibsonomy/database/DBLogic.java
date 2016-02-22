@@ -1066,53 +1066,36 @@ public class DBLogic implements LogicInterface {
 		this.ensureLoggedIn();
 		// only group admins are allowed to delete the group
 		this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, groupName, GroupRole.ADMINISTRATOR);
-
-
-		// make sure that the group exists
-		// TODO: remove call to deprecated method TODO_GROUPS
-		final Group group = this.groupDBManager.getGroupByName(groupName, session);
-
-		if (group == null) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupName + "') doesn't exist");
-			throw new RuntimeException(); // never happens but calms down eclipse
-		}
-		
-		// FIXME: does this check work for old groups (there is only one user) TODO_GROUPS
-		// ensure that the group has no members except the admin. size > 2 because the group user is also part of the membership list.
-		if (group.getMemberships().size() > 2) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupName + "') has more than one member");
-		}
-		
-		// all the posts/discussions of the group admin need to be edited as well before deleting the group
-		for (final GroupMembership t : group.getMemberships()) {
-			// as the group can only consist of the group admin and the group user at this point, this check should be enough
-			// if groups can be deleted without removing all members before this must be adapted!
-			if (t.getGroupRole() == GroupRole.ADMINISTRATOR) {
-				// get the id of the group
-				// FIXME: duplicate code see updateGroup TODO_GROUPS
-				final int groupId = group.getGroupId();
-				final String adminUserName = t.getUser().getName();
-				
-				// set all tas shared with the group to private (groupID 1)
-				this.tagDBManager.updateTasInGroupFromLeavingUser(adminUserName, groupId, session);
-				
-				/*
-				 * update the visibility of the post that are "assigned" to
-				 * the group
-				 * XXX: a loop over all resource database managers that
-				 * allow groups
-				 */
-				this.publicationDBManager.updatePostsInGroupFromLeavingUser(adminUserName, groupId, session);
-				this.bookmarkDBManager.updatePostsInGroupFromLeavingUser(adminUserName, groupId, session);
-				
-				// set all discussions in the group to private (groupID 1)
-				this.discussionDatabaseManager.updateDiscussionsInGroupFromLeavingUser(adminUserName, groupId, session);
-			}
-		}
-		
 		try {
+			session.beginTransaction();
+			// make sure that the group exists
+			// TODO: remove call to deprecated method TODO_GROUPS
+			final Group group = this.groupDBManager.getGroupByName(groupName, session);
+	
+			if (group == null) {
+				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupName + "') doesn't exist");
+				throw new RuntimeException(); // never happens but calms down eclipse
+			}
+			
+			// FIXME: does this check work for old groups (there is only one user) TODO_GROUPS
+			// ensure that the group has no members except the admin. size > 2 because the group user is also part of the membership list.
+			if (group.getMemberships().size() > 2) {
+				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupName + "') has more than one member");
+			}
+			
+			// all the posts/discussions of the group admin need to be edited as well before deleting the group
+			for (final GroupMembership t : group.getMemberships()) {
+				// as the group can only consist of the group admin and the group user at this point, this check should be enough
+				// if groups can be deleted without removing all members before this must be adapted!
+				if (GroupRole.ADMINISTRATOR.equals(t.getGroupRole())) {
+					this.removeUserFromGroup(group, t.getUser().getName(), session);
+				}
+			}
+			
 			this.groupDBManager.deleteGroup(groupName, session);
+			session.commitTransaction();
 		} finally {
+			session.endTransaction();
 			session.close();
 		}
 	}
@@ -1421,26 +1404,8 @@ public class DBLogic implements LogicInterface {
 						throw new IllegalArgumentException("Group has only this admin left, cannot remove this user.");
 					}
 				}
-
-				this.groupDBManager.removeUserFromGroup(group.getName(), requestedUserName, session);
-
-				// get the id of the group
-				final int groupId = group.getGroupId();
-
-				// set all tas shared with the group to private (groupID 1)
-				this.tagDBManager.updateTasInGroupFromLeavingUser(requestedUserName, groupId, session);
-
-				/*
-				 * update the visibility of the post that are "assigned" to
-				 * the group
-				 * XXX: a loop over all resource database managers that
-				 * allow groups
-				 */
-				this.publicationDBManager.updatePostsInGroupFromLeavingUser(requestedUserName, groupId, session);
-				this.bookmarkDBManager.updatePostsInGroupFromLeavingUser(requestedUserName, groupId, session);
-
-				// set all discussions in the group to private (groupID 1)
-				this.discussionDatabaseManager.updateDiscussionsInGroupFromLeavingUser(requestedUserName, groupId, session);
+				
+				this.removeUserFromGroup(group, requestedUserName, session);
 				break;
 			case UPDATE_USER_SHARED_DOCUMENTS:
 				this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, requestedUserName);
@@ -1488,7 +1453,6 @@ public class DBLogic implements LogicInterface {
 						this.groupDBManager.removePendingMembership(group.getName(), requestedUserName, session);
 					}
 				}
-
 				break;
 			case UPDATE_PERMISSIONS:
 				this.permissionDBManager.ensureAdminAccess(this.loginUser);
@@ -1497,13 +1461,41 @@ public class DBLogic implements LogicInterface {
 			default:
 				throw new UnsupportedOperationException("The requested method is not yet implemented.");
 			}
-
 			session.commitTransaction();
 			session.endTransaction();
 		} finally {
 			session.close();
 		}
 		return groupName;
+	}
+
+	/**
+	 * @param group
+	 * @param userName
+	 * @param session
+	 */
+	private void removeUserFromGroup(final Group group, final String userName, final DBSession session) {
+		this.groupDBManager.removeUserFromGroup(group.getName(), userName, session);
+		
+		// get the id of the group
+		final int groupId = group.getGroupId();
+		
+		// set all tas shared with the group to private (groupID 1)
+		this.tagDBManager.updateTasInGroupFromLeavingUser(userName, groupId, session);
+		
+		// FIXME: handle group tas?
+		
+		/*
+		 * update the visibility of the post that are "assigned" to
+		 * the group
+		 * XXX: a loop over all resource database managers that
+		 * allow groups
+		 */
+		this.publicationDBManager.updatePostsInGroupFromLeavingUser(userName, groupId, session);
+		this.bookmarkDBManager.updatePostsInGroupFromLeavingUser(userName, groupId, session);
+
+		// set all discussions in the group to private (groupID 1)
+		this.discussionDatabaseManager.updateDiscussionsInGroupFromLeavingUser(userName, groupId, session);
 	}
 
 	/*
