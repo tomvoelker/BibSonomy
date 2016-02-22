@@ -1089,6 +1089,7 @@ public class DBLogic implements LogicInterface {
 				// as the group can only consist of the group admin and the group user at this point, this check should be enough
 				// if groups can be deleted without removing all members before this must be adapted!
 				if (GroupRole.ADMINISTRATOR.equals(t.getGroupRole())) {
+					// FIXME: why not called for group user FIXME_RELEASE
 					this.updateUserItemsForLeavingGroup(group, t.getUser().getName(), session);
 				}
 			}
