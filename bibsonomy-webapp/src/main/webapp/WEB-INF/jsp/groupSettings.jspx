@@ -45,7 +45,7 @@
 					<nav:crumb nameKey="navi.settings" active="true" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
-		</jsp:attribute>	
+		</jsp:attribute>
 
 		<jsp:attribute name="tabcontent">
 			<!-- display potential errors -->

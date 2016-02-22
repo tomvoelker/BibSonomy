@@ -55,6 +55,7 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.validation.GroupValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
+import org.bibsonomy.webapp.view.ExtendedRedirectViewWithAttributes;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -77,6 +78,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 
 	private RequestLogic requestLogic;
 	private MailUtils mailUtils;
+	private String projectMail;
 	
 	/**
 	 * the file logic to use
@@ -142,11 +144,10 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 								// since now only one user can be invited to a
 								// group at once
 								if (invitedUser.isSpammer()) {
-									this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_INVITED_SPAMMER, ms);
-									//this.mailUtils.sendGroupInvite(groupToUpdate.getName(), loginUser, invitedUser, this.requestLogic.getLocale());																		
+									this.errors.rejectValue("username", "group.member.invite.spammer", new Object[] { username, this.projectMail }, "You cannot add user \"" + username + "\" to this group. The user is currently marked as spammer please contact the system administrator.");
 								} else {
 									this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_INVITED, ms);
-									this.mailUtils.sendGroupInvite(groupToUpdate.getName(), loginUser, invitedUser, this.requestLogic.getLocale());									
+									this.mailUtils.sendGroupInvite(groupToUpdate.getName(), loginUser, invitedUser, this.requestLogic.getLocale());
 								}
 							} catch (final Exception ex) {
 								log.error("error while inviting user '" + username + "' to group '" + groupToUpdate + "'", ex);
@@ -337,7 +338,9 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 			settingsPage += divider + "errorMessage=" + tmpErrorCode;
 		}
 		
-		return new ExtendedRedirectView(settingsPage);
+		final ExtendedRedirectViewWithAttributes extendedRedirectViewWithAttributes = new ExtendedRedirectViewWithAttributes(settingsPage);
+		extendedRedirectViewWithAttributes.addAttribute(ExtendedRedirectViewWithAttributes.ERRORS_KEY, this.errors);
+		return extendedRedirectViewWithAttributes;
 	}
 
 	private void updateGroupPicture(final User groupUserToUpdate, GroupSettingsPageCommand command) {
@@ -348,13 +351,12 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 		 */
 		if (present(file) && file.getSize() > 0) {
 			try {
-				fileLogic.saveProfilePictureForUser(groupUserToUpdate.getName(), new ServerUploadedFile(file));
+				this.fileLogic.saveProfilePictureForUser(groupUserToUpdate.getName(), new ServerUploadedFile(file));
 			} catch (final Exception ex) {
 				log.error("error while writing group picture", ex);
 			}
-		}
-		else if (command.getDeletePicture()) {
-			fileLogic.deleteProfilePictureForUser(groupUserToUpdate.getName());
+		} else if (command.getDeletePicture()) {
+			this.fileLogic.deleteProfilePictureForUser(groupUserToUpdate.getName());
 		}
 	}
 	
@@ -368,12 +370,25 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 		this.errors = errors;
 	}
 
-	public void setLogic(final LogicInterface logic) {
+	/**
+	 * @param logic the logic to set
+	 */
+	public void setLogic(LogicInterface logic) {
 		this.logic = logic;
 	}
 
-	public void setMailUtils(final MailUtils mailUtils) {
+	/**
+	 * @param mailUtils the mailUtils to set
+	 */
+	public void setMailUtils(MailUtils mailUtils) {
 		this.mailUtils = mailUtils;
+	}
+
+	/**
+	 * @param projectMail the projectMail to set
+	 */
+	public void setProjectMail(String projectMail) {
+		this.projectMail = projectMail;
 	}
 
 	/**

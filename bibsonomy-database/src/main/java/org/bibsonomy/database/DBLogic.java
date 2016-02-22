@@ -1468,12 +1468,6 @@ public class DBLogic implements LogicInterface {
 				this.groupDBManager.addPendingMembership(group.getName(), requestedUserName, userSharedDocuments, GroupRole.INVITED, session);
 				break;
 
-			case ADD_INVITED_SPAMMER:
-				this.permissionDBManager.ensureIsAdminOrHasGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.MODERATOR);
-				this.groupDBManager.addPendingMembership(group.getName(), requestedUserName, userSharedDocuments, GroupRole.INVITED, session);
-				log.info("The user '"+this.loginUser.getName()+"' invited a spammer to the group '"+group.getName()+"'.");
-				break;
-
 			case ADD_REQUESTED:
 				// TODO: check for banned users in this group
 				// check if the group allows join requests
@@ -1483,9 +1477,8 @@ public class DBLogic implements LogicInterface {
 				this.groupDBManager.addPendingMembership(group.getName(), requestedUserName, userSharedDocuments, GroupRole.REQUESTED, session);
 				break;
 
-				// TODO: Refactor to one GroupUpdateOperation
+			// TODO: Refactor to one GroupUpdateOperation
 			case REMOVE_INVITED:
-
 			case DECLINE_JOIN_REQUEST:
 				final GroupMembership currentMembership = this.groupDBManager.getPendingMembershipForUserAndGroup(requestedUserName, group.getName(), session);
 

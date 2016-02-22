@@ -10,6 +10,7 @@
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:oldbs="urn:jsptagdir:/WEB-INF/tags/bs"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
@@ -37,7 +38,15 @@
 							<jsp:attribute name="content">
 								<fmt:message var="revuser" key="settings.group.remInvite.button"/>
 								<fmt:message var="revuserTitle" key="settings.group.remInvite.button.title"/>
-								
+								<c:set var="path" value="command.username" />
+								<c:set var="formErrors"><form:errors path="${path}" /></c:set>
+								<c:if test="${not empty formErrors}">
+									<oldbs:alert style="danger">
+										<jsp:attribute name="alertBody">
+											<bsform:errors path="${path}" />
+										</jsp:attribute>
+									</oldbs:alert>
+								</c:if>
 								<table class="table table-striped table-condensed">
 									<c:if test="${hasPendingInvites}">
 										<c:forEach items="${group.pendingMemberships}" var="member">

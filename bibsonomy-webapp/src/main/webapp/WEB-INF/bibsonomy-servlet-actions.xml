@@ -1161,6 +1161,7 @@
 		<property name="requestLogic" ref="requestLogic" />
 		<!-- to send registration mails -->
 		<property name="mailUtils" ref="mailUtils"/>
+		<property name="projectMail" value="${project.email}" />
 		<!-- to get the mail address for the users -->
 		<property name="adminLogic" ref ="adminLogic" />
 	</bean>
