@@ -144,7 +144,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 								// since now only one user can be invited to a
 								// group at once
 								if (invitedUser.isSpammer()) {
-									this.errors.rejectValue("username", "group.member.invite.spammer", new Object[] { username, this.projectMail }, "You cannot add user \"" + username + "\" to this group. The user is currently marked as spammer please contact the system administrator.");
+									this.errors.rejectValue("username", "group.member.invite.spammer", new Object[] { username, this.projectMail }, "You cannot invite user \"" + username + "\" to this group. The user is currently marked as spammer. Please contact the system administrator.");
 								} else {
 									this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_INVITED, ms);
 									this.mailUtils.sendGroupInvite(groupToUpdate.getName(), loginUser, invitedUser, this.requestLogic.getLocale());
