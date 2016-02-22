@@ -56,13 +56,14 @@ import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeEx
 import org.bibsonomy.webapp.validation.GroupValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.ExtendedRedirectViewWithAttributes;
+import org.bibsonomy.webapp.view.Views;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * TODO: add documentation
+ * controller for updating a group
  * 
  * @author tni
  */
@@ -116,12 +117,12 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 		Group groupToUpdate = null;
 		// since before requesting a group, it must not exist, we cannot check
 		// for it, either.
-		groupToUpdate = this.logic.getGroupDetails(command.getGroupname());
+		groupToUpdate = this.logic.getGroupDetails(command.getGroupname(), false);
 		
 		if (groupToUpdate == null) {
 			this.errors.rejectValue("groupname", "settings.group.error.nonExistingGroup", new Object[] { command.getGroupname() },
 					"The group {0} does not exist.");
-			return new ExtendedRedirectView(SETTINGS_GROUP_TAB_REDIRECT);
+			return Views.ERROR;
 		}
 
 		final GroupUpdateOperation operation = command.getOperation();

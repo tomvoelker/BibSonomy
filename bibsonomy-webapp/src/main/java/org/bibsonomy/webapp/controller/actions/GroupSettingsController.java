@@ -39,7 +39,6 @@ import org.bibsonomy.model.GroupPublicationReportingSettings;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.UserUtils;
-import org.bibsonomy.model.util.file.UploadedFile;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.controller.SearchPageController;
 import org.bibsonomy.webapp.controller.SettingsPageController;
@@ -47,7 +46,6 @@ import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
@@ -116,7 +114,7 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 		final boolean sharedDocs = command.getSharedDocuments() == 1;
 		
 		// the group to update
-		final Group groupToUpdate = this.logic.getGroupDetails(loginUser.getName());
+		final Group groupToUpdate = this.logic.getGroupDetails(loginUser.getName(), false);
 		if (!present(groupToUpdate)) {
 			throw new AccessDeniedException("please login as group");
 		}

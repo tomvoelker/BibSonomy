@@ -83,13 +83,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 			User requestingUser;
 			switch(action) {
 				case ACCEPT:
-					// TODO: extend getGroupDetails to retrieve pending groups TODO_GROUPS; see DECLINE
-					for (Group g : logic.getGroups(true, 0, Integer.MAX_VALUE)) {
-						if (g.getName().equals(group.getName())) {
-							group = g;
-							break;
-						}
-					}
+					group = this.logic.getGroupDetails(group.getName(), true);
 					
 					requestingUser = this.logic.getUserDetails(group.getGroupRequest().getUserName());
 					this.logic.updateGroup(group, GroupUpdateOperation.ACTIVATE, null);
@@ -98,14 +92,9 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 					}
 					break;
 				case DECLINE:
-					for (Group g : logic.getGroups(true, 0, Integer.MAX_VALUE)) {
-						if (g.getName().equals(group.getName())) {
-							group = g;
-							break;
-						}
-					}
-					
 					final String groupName = group.getName();
+					group = this.logic.getGroupDetails(groupName, true);
+					
 					requestingUser = this.logic.getUserDetails(group.getGroupRequest().getUserName());
 					
 					// delete the group
@@ -133,7 +122,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		}
 		
 		// load the pending groups
-		command.setPendingGroups(this.logic.getGroups(true, 0, Integer.MAX_VALUE));
+		command.setPendingGroups(this.logic.getGroups(true, null, 0, Integer.MAX_VALUE));
 		return Views.ADMIN_GROUP;
 	}
 	
@@ -173,7 +162,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 	 * TODO: Documentation.
 	 */
 	private Group getGroupOrMarkNonExistent(final AdminGroupViewCommand command) {
-		final Group dbGroup = logic.getGroupDetails(command.getGroup().getName());
+		final Group dbGroup = logic.getGroupDetails(command.getGroup().getName(), false);
 
 		if (!GroupUtils.isValidGroup(dbGroup)) {
 			command.setAdminResponse("The group \"" + command.getGroup().getName() + "\" does not exist.");

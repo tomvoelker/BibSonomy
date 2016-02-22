@@ -470,7 +470,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#getGroups(boolean, int, int)
 	 */
 	@Override
-	public List<Group> getGroups(boolean pending, int start, int end) {
+	public List<Group> getGroups(boolean pending, String userName, int start, int end) {
 		this.doDefaultAction();
 		return null;
 	}
@@ -479,7 +479,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#getGroupDetails(java.lang.String)
 	 */
 	@Override
-	public Group getGroupDetails(String groupName) {
+	public Group getGroupDetails(String groupName, final boolean pending) {
 		this.doDefaultAction();
 		return null;
 	}

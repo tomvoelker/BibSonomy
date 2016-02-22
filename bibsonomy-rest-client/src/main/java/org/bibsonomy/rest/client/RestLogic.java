@@ -217,12 +217,12 @@ public class RestLogic extends AbstractLogicInterface {
 	}
 
 	@Override
-	public Group getGroupDetails(final String groupName) {
+	public Group getGroupDetails(final String groupName, final boolean pending) {
 		return execute(new GetGroupDetailsQuery(groupName));
 	}
 
 	@Override
-	public List<Group> getGroups(boolean pending, final int start, final int end) {
+	public List<Group> getGroups(boolean pending, String userName, final int start, final int end) {
 		if (pending) {
 			throw new UnsupportedOperationException("quering for pending groups not supported");
 		}

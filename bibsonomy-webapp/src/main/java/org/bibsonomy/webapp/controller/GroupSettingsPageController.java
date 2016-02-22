@@ -36,7 +36,6 @@ import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.webapp.command.GroupSettingsPageCommand;
-import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -75,7 +74,7 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 		
 		final User loginUser = command.getContext().getLoginUser();
 		command.setLoggedinUser(loginUser);
-		final Group group = this.logic.getGroupDetails(requestedGroup);
+		final Group group = this.logic.getGroupDetails(requestedGroup, false);
 		if (!present(group)) {
 			throw new AccessDeniedException("You are not a member of this group.");
 		}

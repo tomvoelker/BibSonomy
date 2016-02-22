@@ -862,22 +862,16 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#getGroups(int, int)
 	 */
 	@Override
-	public List<Group> getGroups(final boolean pending, final int start, final int end) {
+	public List<Group> getGroups(final boolean pending, String userName, final int start, final int end) {
 		final DBSession session = this.openSession();
 		try {
 			if (pending) {
-				//this.permissionDBManager.ensureAdminAccess(this.loginUser);
-				//return this.groupDBManager.getPendingGroups(start, end, session);
-
-				if (present(this.loginUser.getName()) && this.permissionDBManager.isAdmin(this.loginUser)) {
-					return this.groupDBManager.getPendingGroups(start, end, session);
+				if (present(userName)) {
+					this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
+					return this.groupDBManager.getPendingGroups(userName, start, end, session);
 				}
-				else if (present(this.loginUser.getName())) {
-					return this.groupDBManager.getRequestedPendingGroupsForUser(start, end, this.loginUser.getName(), session);
-				}
-				else {
-					throw new AccessDeniedException();
-				}
+				this.permissionDBManager.ensureAdminAccess(this.loginUser);
+				return this.groupDBManager.getPendingGroups(null, start, end, session);
 			}
 			return this.groupDBManager.getAllGroups(start, end, session);
 		} finally {
@@ -923,9 +917,19 @@ public class DBLogic implements LogicInterface {
 	 * )
 	 */
 	@Override
-	public Group getGroupDetails(final String groupName) {
+	public Group getGroupDetails(final String groupName, final boolean pending) {
 		final DBSession session = this.openSession();
 		try {
+			if (pending) {
+				final String requestingUser;
+				if (this.permissionDBManager.isAdmin(this.loginUser)) {
+					requestingUser = null;
+				} else {
+					requestingUser = this.loginUser.getName();
+				}
+				return this.groupDBManager.getPendingGroup(groupName, requestingUser, session);
+			}
+			
 			final Group myGroup = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, true, session);
 			if (!GroupUtils.isValidGroup(myGroup)) {
 				return null;
@@ -1444,7 +1448,7 @@ public class DBLogic implements LogicInterface {
 				break;
 
 			case DELETE_GROUP_REQUEST:
-				final Group requestedGroup = this.groupDBManager.getGroupRequestByGroupNameAndUser(groupName, this.loginUser.getName(), session);
+				final Group requestedGroup = this.groupDBManager.getPendingGroup(groupName, this.loginUser.getName(), session);
 				if (!present(requestedGroup)) {
 					throw new AccessDeniedException("You can only delete group requests of groups you have requested.");
 				}
@@ -1797,7 +1801,7 @@ public class DBLogic implements LogicInterface {
 			/*
 			 * group admins can change settings of their group
 			 */
-			final Group group = this.getGroupDetails(username);
+			final Group group = this.getGroupDetails(username, false);
 			if (GroupUtils.isValidGroup(group)) {
 				this.permissionDBManager.ensureIsAdminOrHasGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.ADMINISTRATOR);
 			} else {

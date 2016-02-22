@@ -226,7 +226,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 					final List<Group> sharedGroups =  new LinkedList<Group>();
 					
 					for (final Group group : loginUserNameGroups) {
-						final Group groupDetails = this.logic.getGroupDetails(group.getName());
+						final Group groupDetails = this.logic.getGroupDetails(group.getName(), false);
 						/*
 						 * this check is only neccessary for admins which are
 						 * members of the {public,friends}_spam groups
