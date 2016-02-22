@@ -227,9 +227,16 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 					
 					for (final Group group : loginUserNameGroups) {
 						final Group groupDetails = this.logic.getGroupDetails(group.getName());
-						for (final GroupMembership membership : groupDetails.getMemberships()) {
-							if (membership.getUser().equals(requestedUser)) {
-								sharedGroups.add(group);
+						/*
+						 * this check is only neccessary for admins which are
+						 * members of the {public,friends}_spam groups
+						 * for *_spam groups the logic retuns null
+						 */
+						if (present(groupDetails)) {
+							for (final GroupMembership membership : groupDetails.getMemberships()) {
+								if (membership.getUser().equals(requestedUser)) {
+									sharedGroups.add(group);
+								}
 							}
 						}
 					}
