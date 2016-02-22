@@ -55,10 +55,6 @@ public enum GroupUpdateOperation {
 	/** Activate the pending group */
 	ACTIVATE,
 
-	/** deletes the pending group **/
-	@Deprecated
-	DELETE,
-
 	/** Adds a join request */
 	ADD_REQUESTED,
 

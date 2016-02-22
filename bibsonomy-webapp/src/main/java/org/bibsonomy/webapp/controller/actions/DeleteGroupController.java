@@ -118,7 +118,7 @@ public class DeleteGroupController extends GroupSettingsPageController implement
 		
 		final String groupName = group.getName();
 		log.debug("User is logged in, ckey is valid, deleting group " + groupName);
-		this.logic.deleteGroup(groupName);
+		this.logic.deleteGroup(groupName, false);
 		
 		command.setMessage("success.groupDelete", Collections.singletonList(groupName));
 		return Views.SUCCESS;

@@ -1044,12 +1044,29 @@ public class DBLogic implements LogicInterface {
 	 * org.bibsonomy.model.logic.LogicInterface#deleteGroup(java.lang.String)
 	 */
 	@Override
-	public void deleteGroup(final String groupName) {
+	public void deleteGroup(final String groupName, boolean pending) {
+		final DBSession session = this.openSession();
+		if (pending) {
+			try {
+				session.beginTransaction();
+				this.permissionDBManager.ensureAdminAccess(this.loginUser);
+				final Group pendingGroup = this.groupDBManager.getPendingGroup(groupName, null, session);
+				if (!present(pendingGroup)) {
+					throw new IllegalStateException("group '" + groupName + "' does not exist");
+				}
+				this.groupDBManager.deletePendingGroup(groupName, session);
+				session.commitTransaction();
+				return;
+			} finally {
+				session.endTransaction();
+				session.close();
+			}
+		}
+		
 		this.ensureLoggedIn();
 		// only group admins are allowed to delete the group
 		this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, groupName, GroupRole.ADMINISTRATOR);
 
-		final DBSession session = this.openSession();
 
 		// make sure that the group exists
 		// TODO: remove call to deprecated method TODO_GROUPS
@@ -1322,7 +1339,7 @@ public class DBLogic implements LogicInterface {
 			// check the groups existence and retrieve the current group
 			final Group group = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, false, session);
 			// TODO: When implementing DELETE, alter this check!
-			if (!GroupUtils.isValidGroup(group) && !(GroupUpdateOperation.ACTIVATE.equals(operation) || GroupUpdateOperation.DELETE.equals(operation) || GroupUpdateOperation.DELETE_GROUP_REQUEST.equals(operation))) {
+			if (!GroupUtils.isValidGroup(group) && !(GroupUpdateOperation.ACTIVATE.equals(operation) || GroupUpdateOperation.DELETE_GROUP_REQUEST.equals(operation))) {
 				throw new IllegalArgumentException("Group does not exist");
 			}
 			final GroupMembership currentGroupMembership = group.getGroupMembershipForUser(requestedUserName);
@@ -1438,15 +1455,6 @@ public class DBLogic implements LogicInterface {
 				// Use paramGroup since group is unretrievable from the database.
 				this.groupDBManager.activateGroup(groupName, session);
 				break;
-			case DELETE: // TODO: use deleteGroup
-				this.permissionDBManager.ensureAdminAccess(this.loginUser);
-				// this must be paramGroup, since "DELETE" is only called for
-				// the admin interface to decline a group request.
-				// TODO: Resolve this in a better way.
-				// tni: What exactly is "this"?
-				this.groupDBManager.deletePendingGroup(groupName, session);
-				break;
-
 			case DELETE_GROUP_REQUEST:
 				final Group requestedGroup = this.groupDBManager.getPendingGroup(groupName, this.loginUser.getName(), session);
 				if (!present(requestedGroup)) {

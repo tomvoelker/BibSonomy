@@ -190,7 +190,7 @@ public class RestLogic extends AbstractLogicInterface {
 	}
 
 	@Override
-	public void deleteGroup(final String groupName) {
+	public void deleteGroup(final String groupName, boolean pending) {
 		execute(new DeleteGroupQuery(groupName));
 	}
 

@@ -98,8 +98,8 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 					requestingUser = this.logic.getUserDetails(group.getGroupRequest().getUserName());
 					
 					// delete the group
-					log.debug("grouprequest for group \"" + group.getName() + "\" declined");
-					this.logic.updateGroup(group, GroupUpdateOperation.DELETE, null);
+					log.debug("grouprequest for group \"" + groupName + "\" declined");
+					this.logic.deleteGroup(groupName, true);
 					
 					// send mail
 					String declineMessage = command.getDeclineMessage();

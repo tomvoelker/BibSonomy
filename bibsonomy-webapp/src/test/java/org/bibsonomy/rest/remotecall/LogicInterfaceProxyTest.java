@@ -425,7 +425,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	}
 
 	/**
-	 * runs the test defined by {@link #deleteGroup(String)} with a certain
+	 * runs the test defined by {@link #deleteGroup(String, boolean)} with a certain
 	 * argument. TODO: Implement this!
 	 * 
 	 * TODO: re-enable test as soon as rest server supports deleting groups
@@ -433,14 +433,14 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	@Ignore
 	@Test
 	public void deleteGroupTest() {
-		this.deleteGroup("hurzelGroupName");
+		this.deleteGroup("hurzelGroupName", false);
 	}
 	
 	@Override
-	public void deleteGroup(final String groupName) {
-		this.serverLogic.deleteGroup(groupName);
+	public void deleteGroup(final String groupName, boolean pending) {
+		this.serverLogic.deleteGroup(groupName, false);
 		EasyMock.replay(this.serverLogic);
-		this.clientLogic.deleteGroup(groupName);
+		this.clientLogic.deleteGroup(groupName, false);
 		EasyMock.verify(this.serverLogic);
 		assertLogin();
 	}

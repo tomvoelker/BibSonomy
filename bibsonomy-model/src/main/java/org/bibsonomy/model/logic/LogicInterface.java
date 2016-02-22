@@ -325,8 +325,9 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * Removes the given group.
 	 * 
 	 * @param groupName the group to delete
+	 * @param pending the given group is pending
 	 */
-	public void deleteGroup(String groupName);
+	public void deleteGroup(String groupName, boolean pending);
 
 	/**
 	 * Adds a user to the database.
