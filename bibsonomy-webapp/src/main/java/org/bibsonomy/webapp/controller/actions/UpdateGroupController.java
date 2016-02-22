@@ -182,7 +182,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 						log.error("error while adding user '" + username + "' to group '" + groupToUpdate + "'", ex);
 						// if a user can't be added to a group, this exception
 						// is thrown
-						this.errors.rejectValue("username", "settings.group.error.addUserToGroupFailed", new Object[] { username, groupToUpdate },
+						this.errors.rejectValue("username", "settings.group.error.addUserToGroupFailed", new Object[] { username, groupToUpdate.getName() },
 								"The user {0} couldn't be added to the group {1}.");
 					}
 				}
@@ -340,6 +340,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 		
 		final ExtendedRedirectViewWithAttributes extendedRedirectViewWithAttributes = new ExtendedRedirectViewWithAttributes(settingsPage);
 		extendedRedirectViewWithAttributes.addAttribute(ExtendedRedirectViewWithAttributes.ERRORS_KEY, this.errors);
+		extendedRedirectViewWithAttributes.addAttribute("lastOperation", operation);
 		return extendedRedirectViewWithAttributes;
 	}
 
