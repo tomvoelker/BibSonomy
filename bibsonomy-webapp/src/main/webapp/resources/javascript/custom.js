@@ -85,7 +85,39 @@ $(function() {
 				moreLink.hide();
 			}
 		} //if (contentContainer)
-
+	});
+	var defaultMaxItemsInMoreList = 4;
+	var defaultMoreIcon = 'fa-caret-right';
+	var defaultLessIcon = 'fa-caret-up';
+	$('.more-list').each(function() {
+		var maxItemsInMoreList = defaultMaxItemsInMoreList;
+		var subItems = $(this).find("> li");
+		if (subItems.length > maxItemsInMoreList) {
+			var moreLessLink = $('<li class="more-link-item"></li>');
+			subItems.slice(maxItemsInMoreList).hide();
+			var link = $('<a class="more"><span class="fa fa-caret-right"></span><span class="desc">' + getString("more") + '...</span></a>');
+			link.click(function() {
+				var icon = $(this).find('.fa');
+				var descText;
+				var classToRemove;
+				var classToAdd;
+				if (icon.hasClass(defaultMoreIcon)) {
+					classToAdd = defaultLessIcon;
+					classToRemove = defaultMoreIcon;
+					descText = getString("less");
+					$(this).parent().parent().find('li').show();
+				} else {
+					classToAdd = defaultMoreIcon;
+					classToRemove = defaultLessIcon;
+					descText = getString("more");
+					$(this).parent().parent().find('li:not(.more-link-item)').slice(maxItemsInMoreList).hide();
+				}
+				icon.removeClass(classToRemove).addClass(classToAdd);
+				$(this).find('.desc').text(descText + "...");
+			});
+			moreLessLink.append(link);
+			$(this).append(moreLessLink);
+		}
 	});
 
 	/**

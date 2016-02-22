@@ -11,30 +11,15 @@
 	<c:if test="${not empty memberships}">
 		<sidebar:sidebarItem textKey="members">
 			<jsp:attribute name="content">
-				<ul id="group-members">
-					<c:forEach var="membership" items="${memberships}" begin="0" end="4">
+				<ul id="group-members" class="more-list">
+					<c:forEach var="membership" items="${memberships}">
 						<c:if test="${membership.user.name ne group.name}">
 							<li>
 								<user:username user="${membership.user}" />
 							</li>
 						</c:if>
 					</c:forEach>
-					<c:if test="${fn:length(memberships) gt 4}">
-						<li class="more-link-item"><a class="more" onclick="$('#group-member-list-more').show();$(this).parent().hide();"><fmt:message key="more" />...</a></li>
-					</c:if>
 				</ul>
-				<div id="group-member-list-more" style="display:none;">
-					<ul>
-						<c:forEach var="membership" items="${memberships}" begin="5">
-							<c:if test="${membership.user.name ne group.name}">
-								<li>
-									<user:username user="${membership.user}" />
-								</li>
-							</c:if>
-						</c:forEach>
-						<li><a class="less" onclick="$('#group-member-list-more').hide();$('.group-members .more-link-item').show();"><fmt:message key="less" />...</a></li>
-					</ul>
-				</div>
 			</jsp:attribute>
 		</sidebar:sidebarItem>
 	</c:if>
