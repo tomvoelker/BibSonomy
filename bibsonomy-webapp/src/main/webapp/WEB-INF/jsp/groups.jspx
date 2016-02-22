@@ -133,7 +133,7 @@
 											<c:when test="${mtl:contains(command.context.loginUser.pendingGroups, group)}">
 												<a class="btn btn-default btn-sm">pending</a>
 											</c:when>
-											<c:when test="${group.allowJoin}">
+											<c:when test="${group.allowJoin and not command.context.loginUser.spammer}">
 												<c:url var="joinLink" value="/joinGroup">
 													<c:param name="group" value="${group.name}" />
 												</c:url>
