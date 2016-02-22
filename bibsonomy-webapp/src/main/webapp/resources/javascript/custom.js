@@ -45,21 +45,23 @@ $(function() {
 	/**
 	 * publication details abstract and description more link
 	 */
-	maxChar = 350;
+	var defaultMaxChars = 350;
     	dots = "&hellip;";
 	moretext = "";
 	lesstext = "";
 
 	$('.show-more').each(function() {
-
+		var maxChar = defaultMaxChars;
 		var moreLink = $(document.createElement("a"));
 		var contentContainer = $(this).children(".contentContainer")[0];
 
 		if (contentContainer) {
-
+			if ($(this).attr('data-max-chars')) {
+				maxChar = parseInt($(this).data('max-chars'));
+			}
 			moreLink.data("text", contentContainer.innerHTML)
 					.html("(" + getString("more") + ")")
-					.addClass("moreLink")
+					.addClass("moreLink").addClass($(this).data('extra-class'))
 					.click(function(event) {
 						event.preventDefault();
 						var contentContainer = $(this.parentNode).children(".contentContainer")[0];
@@ -74,12 +76,12 @@ $(function() {
 									.removeClass("show-more")
 									.addClass("show-less");
 						}
-						shortenContent(contentContainer, moreLink.data("text"));
+						shortenContent(contentContainer, moreLink.data("text"), maxChar);
 						return false;
 					});
 
 			this.appendChild(moreLink[0]);
-			if (!shortenContent(contentContainer, moreLink.data("text"))) {
+			if (!shortenContent(contentContainer, moreLink.data("text"), maxChar)) {
 				moreLink.hide();
 			}
 		} //if (contentContainer)
@@ -206,7 +208,7 @@ $(function() {
 
 	$(window).resize(sidebarAdjustments);
 
-	function shortenContent(el, text) {
+	function shortenContent(el, text, maxChar) {
 		var shortened = false;
 		if (el.innerHTML.length > maxChar + dots.length) {
 			text = text.substr(0, maxChar) + dots;

@@ -598,14 +598,6 @@ div#sidebar {
 	padding-right: 30px;
 	margin-left: 15px;
 	border-left: 1px @border-color solid;
-} 
-
-.sidebar h4 {
-
-}
-
-#sidebar {
-
 }
 
 #sidebar ul {
@@ -618,6 +610,19 @@ div#sidebar {
 .similar-users-headline,
 .concepts-headline {
 /* 	float: left; */
+}
+
+.sidebar {
+	.groupDescription {
+		margin-top: 5px;
+	}
+	.memberSettings {
+		margin-top: 20px;
+	}
+	
+	.img-group span {
+		padding-left: 4px;
+	}
 }
 
 .sidebar-setting-box {
@@ -1184,7 +1189,7 @@ h1.content-header, h1.content-heading {
 	height: 28px;
 }
 
-.main h3, .main .sidebar h4 {
+.main h3 {
 	font-size: 18px;
 	line-height: 28px;
 	height: 28px;
@@ -1202,6 +1207,8 @@ h1.content-header, h1.content-heading {
 
 .main .sidebar h4 {
 	border-bottom: 1px solid @border-color;
+	height: auto;
+	padding-bottom: 2px;
 }
 
 .jumbotron h2 {
