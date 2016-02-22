@@ -1070,6 +1070,7 @@ public class DBLogic implements LogicInterface {
 			session.beginTransaction();
 			// make sure that the group exists
 			// TODO: remove call to deprecated method TODO_GROUPS
+			// TODO: method also called later by deleteGroup
 			final Group group = this.groupDBManager.getGroupByName(groupName, session);
 	
 			if (group == null) {
@@ -1088,7 +1089,7 @@ public class DBLogic implements LogicInterface {
 				// as the group can only consist of the group admin and the group user at this point, this check should be enough
 				// if groups can be deleted without removing all members before this must be adapted!
 				if (GroupRole.ADMINISTRATOR.equals(t.getGroupRole())) {
-					this.removeUserFromGroup(group, t.getUser().getName(), session);
+					this.updateUserItemsForLeavingGroup(group, t.getUser().getName(), session);
 				}
 			}
 			
@@ -1405,7 +1406,8 @@ public class DBLogic implements LogicInterface {
 					}
 				}
 				
-				this.removeUserFromGroup(group, requestedUserName, session);
+				this.groupDBManager.removeUserFromGroup(group.getName(), requestedUserName, session);
+				this.updateUserItemsForLeavingGroup(group, requestedUserName, session);
 				break;
 			case UPDATE_USER_SHARED_DOCUMENTS:
 				this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, requestedUserName);
@@ -1474,9 +1476,7 @@ public class DBLogic implements LogicInterface {
 	 * @param userName
 	 * @param session
 	 */
-	private void removeUserFromGroup(final Group group, final String userName, final DBSession session) {
-		this.groupDBManager.removeUserFromGroup(group.getName(), userName, session);
-		
+	private void updateUserItemsForLeavingGroup(final Group group, final String userName, final DBSession session) {
 		// get the id of the group
 		final int groupId = group.getGroupId();
 		

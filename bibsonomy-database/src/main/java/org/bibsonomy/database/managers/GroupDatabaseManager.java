@@ -608,8 +608,8 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		// make sure that the group exists
 		if (groupname == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Pending Group ('" + groupname + "') doesn't exist");
-			throw new RuntimeException();
 		}
+		
 		this.userDb.deletePendingUser(groupname, session);
 		this.delete("deletePendingGroup", groupname, session);
 	}
@@ -708,6 +708,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 		final Integer groupId = Integer.valueOf(group.getGroupId());
 		this.delete("deleteGroup", groupId, session);
+		// FIXME: remove
 		this.delete("removeAllUserFromGroup", groupId, session);
 		
 		// get the group user and flag him as spammer
