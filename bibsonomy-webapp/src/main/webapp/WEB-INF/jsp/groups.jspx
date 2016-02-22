@@ -133,12 +133,12 @@
 											<c:when test="${mtl:contains(command.context.loginUser.pendingGroups, group)}">
 												<a class="btn btn-default btn-sm">pending</a>
 											</c:when>
-											<c:otherwise>
+											<c:when test="${group.allowJoin}">
 												<c:url var="joinLink" value="/joinGroup">
 													<c:param name="group" value="${group.name}" />
 												</c:url>
-												<a href="${joinLink}" class="btn btn-primary btn-sm ${systemReadOnly ? 'disabled' : ''}"><span class="fa fa-plus"><!-- keep me --></span><c:out value=" " /><fmt:message key="joinGroup.short"/></a>	
-											</c:otherwise>
+												<a href="${joinLink}" class="btn btn-primary btn-sm ${systemReadOnly ? 'disabled' : ''}"><span class="fa fa-plus"><!-- keep me --></span><c:out value=" " /><fmt:message key="joinGroup.short"/></a>
+											</c:when>
 										</c:choose>
 									</c:otherwise>
 								</c:choose>
