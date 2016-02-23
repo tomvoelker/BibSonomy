@@ -47,6 +47,7 @@ import org.bibsonomy.webapp.command.admin.AdminGroupViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.security.access.AccessDeniedException;
 
@@ -90,7 +91,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 					if (present(requestingUser.getEmail())) {
 						this.mailUtils.sendGroupActivationNotification(group, requestingUser, LocaleUtils.toLocale(requestingUser.getSettings().getDefaultLanguage()));
 					}
-					break;
+					return new ExtendedRedirectView("/admin/group");
 				case DECLINE:
 					final String groupName = group.getName();
 					group = this.logic.getGroupDetails(groupName, true);
@@ -109,7 +110,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 					if (present(requestingUser.getEmail())) {
 						this.mailUtils.sendGroupDeclineNotification(groupName, declineMessage, requestingUser, LocaleUtils.toLocale(requestingUser.getSettings().getDefaultLanguage()));
 					}
-					break;
+					return new ExtendedRedirectView("/admin/group");
 				case FETCH_GROUP_SETTINGS:
 					setGroupOrMarkNonExistent(command);
 					break;
