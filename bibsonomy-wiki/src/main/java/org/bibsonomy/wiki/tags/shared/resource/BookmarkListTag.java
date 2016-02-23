@@ -84,9 +84,9 @@ public class BookmarkListTag extends SharedTag {
  		}
  		
  		// TODO: Remove duplicates, if rendered for group
- 		List<Post<Bookmark>> posts = this.logic.getPosts(Bookmark.class, this.getGroupingEntity(), this.getRequestedName(), Arrays.asList(tags.split(" ")), null, null,SearchType.LOCAL, null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
-		
-		if (tagAttributes.get(LIMIT) != null) {
+ 		List<Post<Bookmark>> posts = this.logic.getPosts(Bookmark.class, this.getGroupingEntity(), this.getRequestedName(), Arrays.asList(tags.split(" ")), null, null, SearchType.LOCAL, null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
+
+ 		if (tagAttributes.get(LIMIT) != null) {
 			try {
 				posts = posts.subList(0, Integer.parseInt(tagAttributes.get(LIMIT)));
 			} catch (final Exception e) {
@@ -117,7 +117,7 @@ public class BookmarkListTag extends SharedTag {
 		}
 
 		renderedHTML.append("</ul>");
-		renderedHTML.append("</div >");
+		renderedHTML.append("</div>");
 		return renderedHTML.toString();
 	}
 }

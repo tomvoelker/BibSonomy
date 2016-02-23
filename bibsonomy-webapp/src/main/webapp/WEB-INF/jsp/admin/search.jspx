@@ -74,6 +74,14 @@
 											<td><c:out value="${searchIndexInfo.syncState.lastPersonChangeId}" /></td>
 											<td>
 												<div class="btn-group">
+													<c:if test="${searchIndexInfo.state eq 'STANDBY'}">
+														<form class="form-inline">
+															<input type="hidden" name="resource" value="${resourceType}" />
+															<input type="hidden" name="action" value="ENABLE_INDEX" />
+															<input type="hidden" name="id" value="${searchIndexInfo.id}"/>
+															<button class="btn btn-default btn-xs"><fontawsome:icon icon="check" /></button>
+														</form>
+													</c:if>
 													<form class="popover-confirm form-inline">
 														<input type="hidden" name="resource" value="${resourceType}" />
 														<input type="hidden" name="action" value="regenerate_index" />

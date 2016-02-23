@@ -994,6 +994,17 @@ fieldset {
 	line-height: 120%;
 }
 
+.jumbotron {
+	hr {
+		border-top: 1px solid #ddd;
+		margin-top: -5px;
+	}
+	
+	hr.homelogo {
+		margin-top: -17px;
+	}
+}
+
 .container.footer hr {
 	box-sizing: border-box;
 	box-shadow: #FFF 0px 1px 1px 0px;
@@ -1309,6 +1320,33 @@ ul#urlList {
 	padding-left: 0;
 }
 
+#loginModal {
+	top: 20%;
+	outline: none;
+	
+	.modal-header {
+		border: none;
+		padding-bottom: 0px;
+	}
+	
+	p.authHelp {
+		font-size: 100%;
+		color: #333333;
+	}
+	
+	.modal-dialog {
+		width: 450px;
+	}
+	
+	fieldset {
+		margin: 0px;
+	}
+	
+	form a {
+		font-size: 90%;
+	}
+}
+
 #suggestionBox {
 	position:absolute;
 	display:none;
@@ -1323,6 +1361,20 @@ ul#urlList {
 .label-disabled {
 	color: #777777;
 	border: 1px solid #777777;
+}
+
+/******* cv image styles **********/
+.group-cv-image {
+	width:auto !important; 
+	height:auto !important;
+}
+
+.group-cv-image-name {
+	width: auto !important;
+}
+/******* admin groups **********/
+.groupDeclineRow {
+	display: none;
 }
 
 .btn-group > form {

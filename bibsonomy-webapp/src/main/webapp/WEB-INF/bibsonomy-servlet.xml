@@ -205,8 +205,13 @@
 	<bean id="themeResolver" class="org.springframework.web.servlet.theme.FixedThemeResolver">
 		<property name="defaultThemeName" value="${project.theme}" />
 	</bean>
-	    
+	
 	<bean id="themeSource" class="org.springframework.ui.context.support.ResourceBundleThemeSource">
+		<property name="basenamePrefix" value="custom/theme_" />
+		<property name="parentThemeSource" ref="themeSourceDefaults" />
+	</bean>
+	
+	<bean id="themeSourceDefaults" class="org.springframework.ui.context.support.ResourceBundleThemeSource">
 		<property name="basenamePrefix" value="theme_"/>
 	</bean>
 	
@@ -394,6 +399,7 @@
 								<value>selTab</value>
 								<value>requestedGroup</value>
 								<value>errorMessage</value>
+								<value>delete</value>
 							</list>
 						</property>
 					</bean>
@@ -773,6 +779,7 @@
 	
 	<bean id="groupSettingsPageController" class="org.bibsonomy.webapp.controller.GroupSettingsPageController" scope="request">
 		<property name="logic" ref ="logic" />
+		<property name="wikiRenderer" ref="wikiRenderer" />
 	</bean>
 
 	<bean id="userPageController" class="org.bibsonomy.webapp.controller.UserPageController" scope="request" parent="multiResourceListControllerWithTags">
@@ -1035,6 +1042,5 @@
 	<import resource="bibsonomy-servlet-cronjobs.xml" />
 	<import resource="bibsonomy-servlet-synchronization.xml" />
 	<import resource="bibsonomy-servlet-logging.xml" />
-	<import resource="bibsonomy-servlet-bibsonomy.xml" />
 	<import resource="bibsonomy-servlet-puma.xml" />
 </beans>

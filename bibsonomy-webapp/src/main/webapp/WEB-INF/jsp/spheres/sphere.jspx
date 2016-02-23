@@ -65,9 +65,9 @@
 					</fmt:message>
 				</jsp:attribute>
 				<jsp:attribute name="content">
-	    			<ul class="sphere_users sidebar_collapse_content">
-	   					<c:forEach items="${command.relatedUsers}" var="item" varStatus="loop">
-	   						<spheres:userLink user="${item}"/>
+					<ul class="sphere_users sidebar_collapse_content">
+						<c:forEach items="${command.relatedUsers}" var="item" varStatus="loop">
+							<spheres:userLink user="${item}"/>
 				    	</c:forEach>
 			    	</ul>
 				</jsp:attribute>

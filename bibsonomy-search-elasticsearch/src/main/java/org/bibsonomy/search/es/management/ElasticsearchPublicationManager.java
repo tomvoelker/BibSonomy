@@ -26,7 +26,6 @@
  */
 package org.bibsonomy.search.es.management;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
@@ -70,9 +69,8 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 	 * @param inputLogic
 	 * @param tools
 	 */
-	public ElasticsearchPublicationManager(boolean updateEnabled, ESClient client, URI systemURI, SearchDBInterface<P> inputLogic, ElasticsearchIndexTools<P> tools) {
-		super(updateEnabled, client, systemURI, inputLogic, tools);
-		// TODO Auto-generated constructor stub
+	public ElasticsearchPublicationManager(boolean updateEnabled, ESClient client, SearchDBInterface<P> inputLogic, ElasticsearchIndexTools<P> tools) {
+		super(updateEnabled, client, inputLogic, tools);
 	}
 
 	/* (non-Javadoc)

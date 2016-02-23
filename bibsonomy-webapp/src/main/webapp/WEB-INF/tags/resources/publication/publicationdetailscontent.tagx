@@ -25,10 +25,9 @@
 	<c:set var="publication" value="${post.resource}"/>
 	<c:set var="isOwnEntry" value="${post.user.name eq command.context.loginUser.name}"/>
 	
-	<spring:theme code="javascript.openaccess" var="jsOpenAccess" text=""/>
-	
-	<c:if test="${not empty jsOpenAccess}"> 
-		<script type="text/javascript" src="${jsOpenAccess}"><!-- keep me --></script>
+	<c:set var="openAccessEnabled" value="${properties['publication.reporting.enabled'] eq 'true'}" />
+	<c:if test="${openAccessEnabled}"> 
+		<script type="text/javascript" src="/resources_puma/javascript/openaccess.js"><!-- keep me --></script>
 	</c:if>
 	
 	<spring:eval var="interHashId" expression="T(org.bibsonomy.common.enums.HashID).INTER_HASH.id" />

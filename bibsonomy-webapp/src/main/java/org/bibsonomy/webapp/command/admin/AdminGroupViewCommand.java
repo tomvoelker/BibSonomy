@@ -46,6 +46,8 @@ public class AdminGroupViewCommand extends BaseCommand {
 	private String adminResponse;
 	private Group group;
 	
+	private String declineMessage;
+	
 	@Deprecated
 	// TODO a more general field should be Set<GroupLevelPermission>
 	private boolean communityPostInspectionPermission;
@@ -134,4 +136,19 @@ public class AdminGroupViewCommand extends BaseCommand {
 	public void setPermissionsUpdated(boolean permissionsUpdated) {
 		this.permissionsUpdated = permissionsUpdated;
 	}
+	
+	/**
+	 * @return the declineMessage
+	 */
+	public String getDeclineMessage() {
+		return this.declineMessage;
+	}
+
+	/**
+	 * @param declineMessage the declineMessage to set
+	 */
+	public void setDeclineMessage(String declineMessage) {
+		this.declineMessage = declineMessage;
+	}
+	
 }

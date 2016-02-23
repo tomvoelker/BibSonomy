@@ -49,45 +49,45 @@ import org.bibsonomy.model.User;
  * Provides functionalities which are typically only available to admins. This
  * might include flagging a user as spammer, setting the status of an
  * InetAddress (IP) and other things.
- * 
+ *
  * @author Robert Jäschke
  * @author Stefan Stützer
  * @author Beate Krause
- * 
+ *
  */
 public class AdminDatabaseManager extends AbstractDatabaseManager {
 	private static final Log log = LogFactory.getLog(AdminDatabaseManager.class);
-	
+
 	private final static AdminDatabaseManager singleton = new AdminDatabaseManager();
-	
+
 	/** used by the user manager to flag a deleted user as spammer */
 	public static final String DELETED_UPDATED_BY = "on_delete";
-	
+
 	/**
 	 * Holds the names of the tables where group ids must be updated, when a
 	 * user is flagged as spammer or deleted.
 	 */
 	private static final List<String> TABLE_NAMES = Arrays.asList(DatabaseSchemaInformation.PUBLICATION_TABLE,
-																	DatabaseSchemaInformation.BOOKMARK_TABLE,
-																	DatabaseSchemaInformation.TAG_TABLE,
-																	DatabaseSchemaInformation.GROUP_TAG_TABLE,
-																	DatabaseSchemaInformation.DISCUSSION_TABLE);
-	
+			DatabaseSchemaInformation.BOOKMARK_TABLE,
+			DatabaseSchemaInformation.TAG_TABLE,
+			DatabaseSchemaInformation.GROUP_TAG_TABLE,
+			DatabaseSchemaInformation.DISCUSSION_TABLE);
+
 	private UserDatabaseManager userDatabaseManager;
-	
+
 	/**
 	 * @return a singleton instance of this AdminDatabaseManager
 	 */
 	public static AdminDatabaseManager getInstance() {
 		return singleton;
 	}
-	
+
 	private AdminDatabaseManager() {
 	}
 
 	/**
 	 * Returns an InetAddressStatus.
-	 * 
+	 *
 	 * @param address
 	 * @param session
 	 * @return InetAddressStatus
@@ -99,7 +99,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Adds an InetAddressStatus.
-	 * 
+	 *
 	 * @param address
 	 * @param status
 	 * @param session
@@ -113,7 +113,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Deletes an InetAddressStatus.
-	 * 
+	 *
 	 * @param address
 	 * @param session
 	 */
@@ -123,7 +123,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Flags or unflags a user as a spammer
-	 * 
+	 *
 	 * @param user
 	 *            the user to flag
 	 * @param updatedBy
@@ -138,7 +138,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Flags or unflags a user as a spammer
-	 * 
+	 *
 	 * @param user
 	 *            the user to flag
 	 * @param updatedBy
@@ -154,7 +154,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		/*
 		 * check if the user exists, but not when deleting a user
 		 */
-		
+
 		final User userDetails = this.userDatabaseManager.getUserDetails(username, session);
 		/*
 		 *  don't check the role, maybe not all posts of a deleted user was
@@ -163,7 +163,20 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		if (!present(userDetails.getName())) {
 			throw new IllegalArgumentException("the user '" + username + "'does not exist");
 		}
-		
+
+		/*
+		 * check if the user is a member of a group
+		 *
+		 * We can't use a global (i.e., class attribute) manager, since the
+		 * GroupDatabaseManager contains a UserDatabaseManager and thus we
+		 * have a circular dependency in the constructors.
+		 */
+		final GroupDatabaseManager groupDBManager = GroupDatabaseManager.getInstance();
+
+		if (groupDBManager.getGroupsForUser(username, true, session).size() > 0) {
+			throw new IllegalStateException("the user '" + username + "'cannot be flagged as spammer, because he is member of at least one group.");
+		}
+
 		final AdminParam param = new AdminParam();
 
 		param.setUserName(username);
@@ -198,24 +211,24 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		session.beginTransaction();
 		/*
 		 * What's the outcome when this method is called by deleteUser()?
-		 * When method deleteUser() calls flag spammer, the deleted user is treated as a spammer. 
+		 * When method deleteUser() calls flag spammer, the deleted user is treated as a spammer.
 		 * Consequence: It is flagged as a spammer in the user table, and the groups are set to spammer groups.
 		 */
-		final boolean predictionChange = checkPredictionChange(param, session);
+		final boolean predictionChange = this.checkPredictionChange(param, session);
 
 		try {
 			/*
-			 * on_delete (calling method deleteUser()) 
-			 * admins (from BibSonomy Admin Interface) 
+			 * on_delete (calling method deleteUser())
+			 * admins (from BibSonomy Admin Interface)
 			 * consequence: users are flagged as spammers, groups updated
 			 */
 			if (!"classifier".equals(updatedBy)) {
 				this.flagSpammer(session, param);
-			/*
-			 * spam framework (classifier) flags user as spammer
-			 * an update only takes place when the user has not been updated
-			 * before by the classifier with the same prediction and confidence
-			 */
+				/*
+				 * spam framework (classifier) flags user as spammer
+				 * an update only takes place when the user has not been updated
+				 * before by the classifier with the same prediction and confidence
+				 */
 			} else if ("off".equals(testMode)) {
 				// gets user data to check if to_classify is still set to 1
 				final List<User> userData = this.queryForList("getClassifierUserBeforeUpdate", param, User.class, session);
@@ -239,11 +252,11 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 				this.insert("logCurrentPrediction", param, session);
 
 			}
-			
+
 			/*
 			 * set session counter to 0, so that transaction will be
 			 * commited in session wrapper
-			 */ 
+			 */
 			session.commitTransaction();
 		} catch (final Exception ex) {
 			log.error(ex.getMessage(), ex);
@@ -258,10 +271,10 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	private void flagSpammer(final DBSession session, final AdminParam param) {
 		// flag spammer
 		this.update("flagSpammer", param, session);
-		
+
 		// update cache
 		this.update("updateReviewRatingsCache", param, session);
-		
+
 		// update the group ids in all essential tables
 		for (final String table : TABLE_NAMES) {
 			param.setGroupIdTable(table);
@@ -272,10 +285,10 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * checks if the last prediction of the classifier or admin is the same as
 	 * the current one
-	 * 
+	 *
 	 * @param param
 	 * @param session
-	 * 
+	 *
 	 * @return <code>true</code>, if prediction and confidence change
 	 * 		   <code>false</code> if values are the same
 	 */
@@ -284,7 +297,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 			// check if prediction and confidence values changed, only update if
 			// they changed
 
-			final List<User> history = getClassifierHistory(param.getUserName(), session);
+			final List<User> history = this.getClassifierHistory(param.getUserName(), session);
 
 			for (final User user : history) {
 				if (user.getConfidence() != null && user.getPrediction() != null) {
@@ -301,14 +314,14 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 				}
 			}
 		}
-		
+
 		return true;
 	}
 
 	/**
 	 * Returns all users that are classified to the specified state by the given
 	 * classifier
-	 * 
+	 *
 	 * @param classifier
 	 *            something that classfied the user
 	 * @param status
@@ -332,13 +345,13 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 			param.setPrediction(status.getId());
 			return this.queryForList("getClassifiedUsers", param, User.class, session);
 		}
-		
+
 		return null;
 	}
 
 	/**
 	 * Retrieves the setting value for the specified setting
-	 * 
+	 *
 	 * @param settingsKey
 	 *            the setting
 	 * @param session
@@ -351,7 +364,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Updates a setting value
-	 * 
+	 *
 	 * @param key
 	 *            setting
 	 * @param value
@@ -361,12 +374,12 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void updateClassifierSettings(final ClassifierSettings key, final String value, final DBSession session) {
 		final AdminParam param = new AdminParam();
-		
+
 		// set values for settings update
 		param.setKey(key.toString());
 		param.setValue(value);
-		
-		// if classifier update is concerned with a whitelist update, 
+
+		// if classifier update is concerned with a whitelist update,
 		// handle separately
 		if (ClassifierSettings.WHITELIST_EXP.equals(key)){
 			this.insert("insertClassifierWhitelist", param, session);
@@ -375,19 +388,19 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 			this.update("updateClassifierSettings", param, session);
 		}
 	}
-	
+
 	public int getNumberOfClassifedUsersByAdmin(final SpamStatus status, final Date startDate, final DBSession session) {
 		final AdminParam param = buildAdminParam(status, startDate);
 		final Integer count = this.queryForObject("getAdminClassifiedUsersCount", param, Integer.class, session);
 		return count == null ? 0 : count.intValue();
 	}
-	
+
 	public int getNumberOfClassifedUsersByClassifier(final SpamStatus status, final Date startDate, final DBSession session) {
 		final AdminParam param = buildAdminParam(status, startDate);
 		final Integer count = this.queryForObject("getClassifiedUsersCount", param, Integer.class, session);
 		return count == null ? 0 : count.intValue();
 	}
-	
+
 	private static AdminParam buildAdminParam(final SpamStatus status, final Date startDate) {
 		final AdminParam param = new AdminParam();
 		param.setStartDate(startDate);
@@ -397,7 +410,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Returns the history of classifier predictions
-	 * 
+	 *
 	 * @param userName
 	 *            the username
 	 * @param session
@@ -410,10 +423,10 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Stores classifier's meta information in given user object
-	 * 
+	 *
 	 * @param user
 	 *            the user object
-	 * @param session 
+	 * @param session
 	 * @return TODO
 	 */
 	public User getClassifierUserDetails(final User user, final DBSession session) {
@@ -423,9 +436,9 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Retrieves a comparison of classification results of admins and the
 	 * automatic classifier
-	 * 
+	 *
 	 * @param interval - the time period of classifications
-	 * @param limit - the number of users to return 
+	 * @param limit - the number of users to return
 	 * @param session - the database session
 	 * @return Userlist with spammer flag of admin and prediction of classifier
 	 */
@@ -440,7 +453,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * @param userDatabaseManager the userDatabaseManager to set
 	 */
-	public void setUserDatabaseManager(UserDatabaseManager userDatabaseManager) {
+	public void setUserDatabaseManager(final UserDatabaseManager userDatabaseManager) {
 		this.userDatabaseManager = userDatabaseManager;
 	}
 }

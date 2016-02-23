@@ -71,7 +71,7 @@ public class MendeleyScraper extends AbstractUrlScraper{
 				this.log.error("can't parse publication");
 				return false; 
 			}
-			final String strCitation = this.cslConverter.cslToBibtex(match.group(1));
+			final String strCitation = this.cslConverter.toBibtex(match.group(1));
 			if (present(strCitation)) {
 				scrapingContext.setBibtexResult(strCitation);
 				return true;

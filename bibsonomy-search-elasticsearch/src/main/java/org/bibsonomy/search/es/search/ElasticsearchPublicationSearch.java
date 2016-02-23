@@ -35,6 +35,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.search.es.ESConstants.Fields;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder.Operator;
+import org.elasticsearch.index.query.NestedQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.RangeQueryBuilder;
@@ -56,8 +57,9 @@ public class ElasticsearchPublicationSearch<P extends BibTex> extends EsResource
 		super.buildResourceSpecifiyQuery(mainQueryBuilder, userName, requestedUserName, requestedGroupName, requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexKey, year, firstYear, lastYear);
 		
 		if (present(authorSearchTerms)) {
-			final QueryBuilder authorSearchQuery = QueryBuilders.matchQuery(Fields.Publication.AUTHOR, authorSearchTerms).operator(Operator.AND);
-			mainQueryBuilder.must(authorSearchQuery);
+			final QueryBuilder authorSearchQuery = QueryBuilders.matchQuery(Fields.Publication.AUTHORS + "." + Fields.Publication.PERSON_NAME, authorSearchTerms).operator(Operator.AND);
+			final NestedQueryBuilder nestedQuery = QueryBuilders.nestedQuery(Fields.Publication.AUTHORS, authorSearchQuery);
+			mainQueryBuilder.must(nestedQuery);
 		}
 		
 		if (present(bibtexKey)) {

@@ -43,7 +43,7 @@ import org.bibsonomy.util.id.ISBNUtils;
  * @author aho
  *
  */
-public class RisToBibtexConverter {
+public class RisToBibtexConverter implements BibtexConverter{
 
 	/**
 	 * String array that maps from month number to month string label
@@ -56,7 +56,8 @@ public class RisToBibtexConverter {
 	 * @param Ris
 	 * @return The resulting BibTeX string.
 	 */
-	public String risToBibtex(String Ris) {
+	@Override
+	public String toBibtex(String Ris) {
 		/**
 		 * Parse the entries in the source, and return a List of BibtexEntry
 		 * objects.
