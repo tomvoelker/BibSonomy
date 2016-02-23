@@ -55,7 +55,7 @@ import org.springframework.validation.Errors;
  * 
  * @author ema
  */
-@Deprecated // as of 29.12.2014
+@Deprecated // TODO_GROUPS as of 29.12.2014
 public class GroupSettingsController implements MinimalisticController<SettingsViewCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(SearchPageController.class);
 
