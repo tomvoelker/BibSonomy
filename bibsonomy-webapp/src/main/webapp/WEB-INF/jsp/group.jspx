@@ -6,7 +6,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
-    xmlns:group="urn:jsptagdir:/WEB-INF/tags/resources/group"
+	xmlns:group="urn:jsptagdir:/WEB-INF/tags/resources/group"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons"
@@ -40,7 +40,7 @@
 				<c:when test="${not empty group.name}">
 					<sidebar:groupDetailsItem group="${group}"/>
 					<sidebar:groupMembersItem group="${group}"/>
-			
+					
 					<!-- link to discussed posts of the group -->
 					<sidebar:sidebarItem textKey="post.resource.discussion.headline">
 						<jsp:attribute name="content">
@@ -54,7 +54,7 @@
 							</ul>
 						</jsp:attribute>
 					</sidebar:sidebarItem>
-				
+					
 					<sidebar:sidebarTagCloudItem requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="default" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
 				</c:when>
 				<c:otherwise>
@@ -62,8 +62,10 @@
 						<jsp:attribute name="content">
 							<ul>
 								<li>
-									<fmt:message key="settings.addgroupdescription">
-										<fmt:param><a href="mailto:${properties['project.email']}">${properties['project.email']}</a></fmt:param>
+									<fmt:message var="linkText" key="settings.group.requestGroup.link"/>
+									<fmt:message key="settings.group.requestGroup.description">
+										<fmt:param value="/grouprequest"/>
+										<fmt:param value="${linkText}"/>
 									</fmt:message>
 								</li>
 							</ul>
