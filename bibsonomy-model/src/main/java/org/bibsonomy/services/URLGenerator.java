@@ -853,9 +853,12 @@ public class URLGenerator {
 		return this.getUrl(url);
 	}
 
-	public String getGroupSettingsUrlByGroupName(final String groupName) {
+	public String getGroupSettingsUrlByGroupName(final String groupName, Integer selectedTab) {
 		String url = this.projectHome + prefix + "settings" + "/"
 				+ GROUP_PREFIX + "/" + UrlUtils.safeURIEncode(groupName);
+		if (present(selectedTab)) {
+			url += "?selTab=" + selectedTab.intValue();
+		}
 		return this.getUrl(url);
 	}
 

@@ -212,6 +212,7 @@
 	
 	<bean id="adminDatabaseManager" class="org.bibsonomy.database.managers.AdminDatabaseManager" factory-method="getInstance">
 		<property name="userDatabaseManager" ref="userDatabaseManager" />
+		<property name="groupDatabaseManager" ref="groupDatabaseManager" />
 	</bean>
 	
 	<bean id="statisticsDatabaseManager" class="org.bibsonomy.database.managers.StatisticsDatabaseManager" factory-method="getInstance">

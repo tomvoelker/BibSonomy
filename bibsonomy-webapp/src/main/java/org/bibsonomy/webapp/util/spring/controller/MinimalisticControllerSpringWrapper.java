@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.webapp.util.spring.controller;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,15 +55,18 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.condition.Condition;
 import org.bibsonomy.webapp.util.spring.security.exceptions.ServiceUnavailableException;
 import org.bibsonomy.webapp.util.spring.security.exceptions.SpecialAuthMethodRequiredException;
+import org.bibsonomy.webapp.view.ExtendedRedirectViewWithAttributes;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.validation.BindException;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.BaseCommandController;
 import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 /**
  * Instances of this class wrap MinimalisticController and adapt them
@@ -208,10 +213,21 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		}
 		
 		/*
+		 * flash attributes on redirect
+		 */
+		final Map<String, ?> flashAttributes = RequestContextUtils.getInputFlashMap(request);
+		
+		/*
 		 * bind request attributes to command
 		 */
 		final ServletRequestDataBinder binder = bindAndValidate(request, command);
 		final BindException errors = new BindException(binder.getBindingResult());
+		
+		if (present(flashAttributes) && flashAttributes.containsKey(ExtendedRedirectViewWithAttributes.ERRORS_KEY)) {
+			final Errors flashErrors = (Errors) flashAttributes.get(ExtendedRedirectViewWithAttributes.ERRORS_KEY);
+			errors.addAllErrors(flashErrors);
+		}
+		
 		if (controller instanceof ErrorAware) {
 			((ErrorAware)controller).setErrors(errors);
 		}
@@ -281,6 +297,11 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		 * put errors into model 
 		 */
 		model.putAll(errors.getModel());
+		
+		
+		if (present(flashAttributes)) {
+			model.put("flashAttributes", flashAttributes);
+		}
 		
 		log.debug("Returning model and view for " + request.getRequestURI() + "?" + request.getQueryString() + " from " + requestLogic.getInetAddress());
 		

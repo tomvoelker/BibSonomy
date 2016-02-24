@@ -139,7 +139,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 			return;
 		}
 		final LogicInterface groupDBLogic = this.getGroupDbLogic();
-		if (!present(groupDBLogic.getGroupDetails(groupName))) {
+		if (!present(groupDBLogic.getGroupDetails(groupName, false))) {
 			return;
 		}
 		
@@ -243,7 +243,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 		/*
 		 *  Check if the group exists and whether it owns the post already
 		 */
-		if (!present(groupDBLogic.getGroupDetails(groupName))) {
+		if (!present(groupDBLogic.getGroupDetails(groupName, false))) {
 			/*
 			 *  We decided to ignore errors in systemTags. Thus the user
 			 *  is free use any tag. XXX: The drawback: If it is the user's

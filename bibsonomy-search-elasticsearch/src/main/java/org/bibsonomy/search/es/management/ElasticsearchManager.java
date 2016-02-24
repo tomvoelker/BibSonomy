@@ -459,8 +459,7 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 	}
 
 	/**
-	 * @return 
-	 * 
+	 * @return all standby index names
 	 */
 	private List<String> getAllStandByIndices() {
 		return this.client.getIndexNamesForAlias(this.getAliasNameForState(SearchIndexState.STANDBY));
@@ -567,7 +566,7 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 				newLastTasId = Math.max(post.getLastTasId().intValue(), newLastTasId);
 			}
 			
-			if (convertedPosts.size() >= SearchDBInterface.SQL_BLOCKSIZE / 2) {
+			if (convertedPosts.size() >= ESConstants.BULK_INSERT_SIZE) {
 				this.clearQueue(indexName, convertedPosts);
 			}
 			

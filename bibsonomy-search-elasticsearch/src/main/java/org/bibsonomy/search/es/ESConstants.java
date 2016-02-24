@@ -94,12 +94,7 @@ public final class ESConstants {
 			throw new RuntimeException(e);
 		}
 	}
-
-	/**
-	 * BATCH size to fetch results
-	 */
-	public static final int BATCHSIZE = 30000;
-
+	
 	/**
 	 * Index type for the system information
 	 */
@@ -121,7 +116,10 @@ public final class ESConstants {
 	 * prefix for temporary index
 	 */
 	public static final String TEMP_INDEX_PREFIX = "TempIndex";
-
+	
+	/** the max number of docs per bulk insert */
+	public static final int BULK_INSERT_SIZE = 5000;
+	
 	public static interface Fields {
 		
 		/** private search content should be copied to this field */

@@ -44,8 +44,8 @@ import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedExceptio
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.person.PersonRoleRenderer;
-import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.DisambiguationPageCommand;
+import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.View;
@@ -74,11 +74,12 @@ public class DisambiguationPageController extends SingleResourceListController i
 	
 	@Override
 	public View workOn(final DisambiguationPageCommand command) {
-		if (command.getRequestedHash()== null) {
+		if (command.getRequestedHash() == null) {
 			throw new ObjectNotFoundException(command.getRequestedHash());
 		}
+		
 		final List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, command.getRequestedHash(), null, null, null, null, null, null, 0, 100);
-		if (!ValidationUtils.present(posts)) {
+		if (!present(posts)) {
 			throw new ObjectNotFoundException(command.getRequestedHash());
 		}
 		command.setPost(posts.get(0));
@@ -88,15 +89,21 @@ public class DisambiguationPageController extends SingleResourceListController i
 			return linkAction(command);
 		}
 		
+		if (!present(command.getRequestedIndex())) {
+			throw new MalformedURLSchemeException("error.disambiguation.without_index");
+		}
+		
 		return disambiguateAction(command);
 	}
 
 	private View disambiguateAction(final DisambiguationPageCommand command) {
 		final PersonResourceRelationType requestedRole = command.getRequestedRole();
-		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations().byInterhash(command.getPost().getResource().getInterHash()).byRelationType(requestedRole).byAuthorIndex(command.getRequestedIndex()).getIt();		
+		final int requestedIndex = command.getRequestedIndex().intValue();
+		
+		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations().byInterhash(command.getPost().getResource().getInterHash()).byRelationType(requestedRole).byAuthorIndex(requestedIndex).getIt();
 		if (matchingRelations.size() > 0 ) {
 			// FIXME: cache urlgenerator
-			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(matchingRelations.get(0).getPerson().getPersonId()));	
+			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(matchingRelations.get(0).getPerson().getPersonId()));
 		}
 		
 		final BibTex res = command.getPost().getResource();
@@ -106,11 +113,11 @@ public class DisambiguationPageController extends SingleResourceListController i
 			persons = getPersonsByFallBack(res, requestedRole);
 		}
 		
-		if (!present(persons)) {
+		if (!present(persons) || requestedIndex < 0 || requestedIndex >= persons.size()) {
 			throw new ObjectNotFoundException(requestedRole + " for " + res.getInterHash());
 		}
 		
-		final PersonName requestedName = persons.get(command.getRequestedIndex());
+		final PersonName requestedName = persons.get(requestedIndex);
 		command.setPersonName(requestedName);
 		
 		String name = requestedName.toString();
@@ -119,7 +126,6 @@ public class DisambiguationPageController extends SingleResourceListController i
 		
 		return Views.DISAMBIGUATION;
 	}
-	
 	
 	/**
 	 * @param res
@@ -171,18 +177,18 @@ public class DisambiguationPageController extends SingleResourceListController i
 		resourcePersonRelation.setPerson(person);
 		resourcePersonRelation.setPost(command.getPost());
 		resourcePersonRelation.setRelationType(command.getRequestedRole());
-		resourcePersonRelation.setPersonIndex(command.getRequestedIndex());
+		resourcePersonRelation.setPersonIndex(command.getRequestedIndex().intValue());
 		this.logic.addResourceRelation(resourcePersonRelation);
 	}
 
 	private static PersonName getMainPersonName(DisambiguationPageCommand command) {
 		final BibTex bibtex = command.getPost().getResource();
 		final List<PersonName> publicationNames = bibtex.getPersonNamesByRole(command.getRequestedRole());
-		final int i = command.getRequestedIndex();
-		if ((publicationNames == null) || (publicationNames.size() <= i)) {
+		final int personIndex = command.getRequestedIndex().intValue();
+		if ((publicationNames == null) || (publicationNames.size() <= personIndex)) {
 			throw new IllegalArgumentException();
 		}
-		final PersonName mainName = publicationNames.get(i);
+		final PersonName mainName = publicationNames.get(personIndex);
 		return mainName;
 	}
 	

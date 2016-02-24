@@ -55,18 +55,11 @@ public enum GroupUpdateOperation {
 	/** Activate the pending group */
 	ACTIVATE,
 
-	/** deletes the pending group **/
-	@Deprecated
-	DELETE,
-
 	/** Adds a join request */
 	ADD_REQUESTED,
 
 	/** Add an invited user */
 	ADD_INVITED,
-	
-	/** Add an invited user, that is marked as spammer */
-	ADD_INVITED_SPAMMER,
 
 	/** Remove an invited user */
 	REMOVE_INVITED,

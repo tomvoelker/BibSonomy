@@ -387,16 +387,16 @@ public class ReadOnlyLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#getGroups(boolean, int, int)
 	 */
 	@Override
-	public List<Group> getGroups(boolean pending, int start, int end) {
-		return this.logicinterface.getGroups(pending, start, end);
+	public List<Group> getGroups(boolean pending, String userName, int start, int end) {
+		return this.logicinterface.getGroups(pending, null, start, end);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getGroupDetails(java.lang.String)
 	 */
 	@Override
-	public Group getGroupDetails(String groupName) {
-		return this.logicinterface.getGroupDetails(groupName);
+	public Group getGroupDetails(String groupName, final boolean pending) {
+		return this.logicinterface.getGroupDetails(groupName, pending);
 	}
 
 	/* (non-Javadoc)
@@ -453,7 +453,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#deleteGroup(java.lang.String)
 	 */
 	@Override
-	public void deleteGroup(String groupName) {
+	public void deleteGroup(String groupName, boolean pending) {
 		throwReadOnlyException();
 	}
 
