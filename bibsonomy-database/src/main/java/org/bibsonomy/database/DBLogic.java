@@ -1,4 +1,5 @@
 /**
+ * BibSonomy-Database - Database for BibSonomy.
  *
  * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
