@@ -77,7 +77,7 @@
 			<!-- list all spheres -->
 			<sidebar:sidebarItem textKey="spheres.sphere.list.title">
 				<jsp:attribute name="content">
-					<spheres:spheresCloud title="${spheresCloudTitle}"><!-- keep me! --></spheres:spheresCloud>
+					<spheres:spheresCloud />
 				</jsp:attribute>
 			</sidebar:sidebarItem>
 			
