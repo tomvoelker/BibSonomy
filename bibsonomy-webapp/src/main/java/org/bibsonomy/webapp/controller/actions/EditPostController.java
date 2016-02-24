@@ -1031,7 +1031,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		final List<Group> groupsWithTagSets = new ArrayList<Group>();
 		for (final Group group : usersGroups) {
 			if (group.getName() != null) {
-				groupsWithTagSets.add(this.logic.getGroupDetails(group.getName()));
+				groupsWithTagSets.add(this.logic.getGroupDetails(group.getName(), false));
 			}
 		}
 		loginUser.setGroups(groupsWithTagSets);

@@ -19,14 +19,5 @@
    	<fmt:message key="group.cv.title" var="cvtitle">
    		<fmt:param value="${group.name}"/>
    	</fmt:message>
-   	<!-- 
-   	<button:linkButton title="${cvtitle}" href="/cv/group/${fn:escapeXml(group.name)}" image="${resdir}/image/cv.png">
-		<jsp:attribute name="text">
-			<fmt:message key="navi.cv.abbrev"/>
-		</jsp:attribute>
-	</button:linkButton>	
-   	-->
-   		<a class="btn btn-default btn-primary" href="/cv/group/${fn:escapeXml(group.name)}"><span class="fa fa-group"><!--  --></span><c:out value=" "/><fmt:message key="navi.cv.abbrev"/></a>
-      
-	
+	<a class="btn btn-default btn-primary" href="/cv/group/${fn:escapeXml(group.name)}"><span class="fa fa-group"><!--  --></span><c:out value=" "/><fmt:message key="navi.cv.abbrev"/></a>
 </jsp:root>

@@ -38,6 +38,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.ajax.ClipboardManagerCommand;
+import org.bibsonomy.webapp.command.ajax.action.ClipboardAction;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
@@ -61,7 +62,7 @@ public class ClipboardController extends AjaxController implements ValidationAwa
 	}
 
 	@Override
-	public View workOn(ClipboardManagerCommand command) {
+	public View workOn(final ClipboardManagerCommand command) {
 		log.debug(this.getClass().getSimpleName());
 		
 		// user has to be logged in
@@ -76,14 +77,18 @@ public class ClipboardController extends AjaxController implements ValidationAwa
 		if (!command.getContext().isValidCkey()) {
 			errors.reject("error.field.valid.ckey");
 		}
-		final String action = command.getAction();
+		final ClipboardAction action = command.getAction();
+		
+		if (!present(action)) {
+			errors.reject("error.action.required");
+		}
 		
 		if (errors.hasErrors()) {
 			return Views.ERROR;
 		}
 		
 		// if clear all is set, clear all
-		if ("clearAll".equals(action)) {
+		if (ClipboardAction.CLEARALL.equals(action)) {
 			logic.deleteClipboardItems(null, true);
 			return new ExtendedRedirectView(requestLogic.getReferer());
 		}
@@ -98,11 +103,17 @@ public class ClipboardController extends AjaxController implements ValidationAwa
 		/*
 		 * decide which method will be called
 		 */
-		if (action.startsWith("pick")){
+		switch (action) {
+		case PICK:
 			clipboardSize = logic.createClipboardItems(posts);
-		} else if (action.startsWith("unpick")){
+			break;
+		case UNPICK:
 			clipboardSize = logic.deleteClipboardItems(posts, false);
+			break;
+		default:
+			break;
 		}
+		
 		/*
 		 * set new clipboard size
 		 */
@@ -172,7 +183,7 @@ public class ClipboardController extends AjaxController implements ValidationAwa
 	 * @see org.bibsonomy.webapp.util.ValidationAwareController#isValidationRequired(org.bibsonomy.webapp.command.ContextCommand)
 	 */
 	@Override
-	public boolean isValidationRequired(ClipboardManagerCommand command) {
+	public boolean isValidationRequired(final ClipboardManagerCommand command) {
 		return true;
 	}
 

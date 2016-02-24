@@ -37,7 +37,7 @@
 					<nav:crumb nameKey="navi.settings" active="true" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
-		</jsp:attribute>	
+		</jsp:attribute>
 
 		<jsp:attribute name="tabcontent">
 			<!-- display potential errors -->
@@ -45,10 +45,11 @@
 			
 			<groupsettings:profile command="${command}" />
 			
+			<groupsettings:cv command="${command}" />
+			
 			<groupsettings:userlists group="${group}" />
 			
-<!-- TODO: Adapt AjaxCvController to CV modification by other users (e.g. admin - - > group) -->
-<!--			<settings:cv command="${command}" isGroup="${true}"/> -->
+			<!--<groupsettings:delete group="${group}" />-->
 		</jsp:attribute>
 
 	</layout:tabLayout>

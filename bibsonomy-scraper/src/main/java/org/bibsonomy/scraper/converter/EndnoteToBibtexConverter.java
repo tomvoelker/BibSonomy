@@ -48,7 +48,7 @@ import org.bibsonomy.util.StringUtils;
  * 
  * @author rja
  */
-public class EndnoteToBibtexConverter {
+public class EndnoteToBibtexConverter implements BibtexConverter {
 
 	private static final Log log = LogFactory.getLog(EndnoteToBibtexConverter.class);
 
@@ -96,7 +96,7 @@ public class EndnoteToBibtexConverter {
 	 */
 	public String endnoteToBibtexString(final BufferedReader in) throws ConversionException {
 		try {
-			return endnoteToBibtex(StringUtils.getStringFromReader(in));
+			return toBibtex(StringUtils.getStringFromReader(in));
 		} catch (final IOException e) {
 			throw new ConversionException("Could not convert from EndNote to BibTeX.");
 		}
@@ -108,7 +108,8 @@ public class EndnoteToBibtexConverter {
 	 * @param endnote
 	 * @return A string of BibTeX entries.
 	 */ 
-	public String endnoteToBibtex(final String endnote) {
+	@Override
+	public String toBibtex(final String endnote) {
 		final StringBuffer result = new StringBuffer();
 
 		// split the endnote entry by 2 blank lines

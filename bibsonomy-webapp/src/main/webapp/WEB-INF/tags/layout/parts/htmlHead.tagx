@@ -151,11 +151,5 @@
 		<link rel="alternate" type="application/rss+xml"  title="${properties['project.name']} Blog - RSS"  href="http://blog.bibsonomy.org/feeds/posts/default?alt=rss" />
 		<title><c:if test="${not empty pageTitle}"><c:out value="${pageTitle}"/> | </c:if>${properties['project.name']}</title>
 		<jsp:invoke fragment="headerExt"/>
-		<!-- FIXME: readd print style -->
-<!-- 		<spring:theme code="stylesheet.additional.print" var="additionalPrintCSS" text="" /> -->
-<!-- 		<c:if test="${not empty additionalPrintCSS}"> -->
-<!-- 			<link rel="stylesheet" type="text/css" media="print" href="${additionalPrintCSS}" /> -->
-<!-- 		</c:if> -->
-		
 	</head>
 </jsp:root>

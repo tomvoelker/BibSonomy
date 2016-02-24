@@ -9,27 +9,28 @@
 	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true" />
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>
-	
+
 	<c:set var="discussionItemUserName" value="${discussionItem.user.name}" />
-	
+
 	<c:set var="ownDiscussionItem" value="${loginUser.name eq discussionItemUserName}" />
 	<c:set var="anonymous" value="${discussionItem.anonymous}" />
-	
+
 	<c:set var="clazz" value="${fn:toLowerCase(discussionItem['class'].simpleName)}" />
 	
 	<c:set var="displayUserName"><user:username noLink="${true}" username="${discussionItemUserName}"/></c:set>
 	
 	<div class="media-left">
-		<a href="${relativeUrlGenerator.getUserUrlByUserName(discussionItemUserName)}" class="media-left" title="${displayUserName}">
-			<c:choose>
-				<c:when test="${anonymous}">
-					<img src="${resdir}/image/anonymous.png" alt="anonymous" class="media-object commentPicture" />
-				</c:when>
-				<c:otherwise>
+		<c:choose>
+			<c:when test="${anonymous}">
+				<img src="${resdir}/image/anonymous.png" alt="anonymous" class="media-object commentPicture" />
+			</c:when>
+			<c:otherwise>
+				<a href="/user/${fn:escapeXml(discussionItemUserName)}" class="thumbnail img-thumbnail pull-left" title="${displayUserName}">
 					<img src="/picture/user/${fn:escapeXml(discussionItemUserName)}" alt="userPicture" class="media-object commentPicture"/>
-				</c:otherwise>
-			</c:choose>
-		</a>
+					<span><c:out value="${displayUserName}" /></span>
+				</a>
+			</c:otherwise>
+		</c:choose>
 	</div>
 	<div class="media-body">
 		<c:set var="itemtype" value="http://schema.org/Review"/>

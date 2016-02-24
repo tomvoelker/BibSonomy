@@ -49,7 +49,7 @@ public class CslToBibtexConverterTest {
 		// test the conversion
 		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "csltobibtextest1.bib").trim();
 		final CslToBibtexConverter cslToBibtexConverter = new CslToBibtexConverter();
-		final String bibTeX = cslToBibtexConverter.cslToBibtex(csl);
+		final String bibTeX = cslToBibtexConverter.toBibtex(csl);
 		assertEquals (expectedBibTeX, bibTeX);
 	}
 }

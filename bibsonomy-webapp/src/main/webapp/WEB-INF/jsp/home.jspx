@@ -10,6 +10,7 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:posts="urn:jsptagdir:/WEB-INF/tags/resources"
 	xmlns:home="urn:jsptagdir:/WEB-INF/tags/home"
+	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
@@ -25,10 +26,6 @@
 			hideFooterContainer="${true}">
 		
 		<jsp:attribute name="headerExt">
-			<c:if test="${properties['project.theme'] eq 'puma'}">
-				<script type="text/javascript" src="/resources_puma/javascript/tools.js"><!-- keep me --></script>
-			</c:if>
-			
 			<script type="text/javascript">
 				$(function() {
 					$('.post-popover').popover(
@@ -53,12 +50,13 @@
 		
 		<jsp:attribute name="content">
 			<c:if test="${not command.context.userLoggedIn and (empty errors or errors.errorCount == 0)}">
+				<spring:theme code="layout.home.header" var="homeHeader" text=""/>
 				<c:choose>
-					<c:when test="${properties['project.theme'] eq 'puma'}">
-						<home:pumahome command="${command}" />
+					<c:when test="${homeHeader eq 'simple'}">
+						<home:bibhome command="${command}" />
 					</c:when>
 					<c:otherwise>
-						<home:bibhome command="${command}" />
+						<home:pumahome command="${command}" />
 					</c:otherwise>
 				</c:choose>
 			</c:if>

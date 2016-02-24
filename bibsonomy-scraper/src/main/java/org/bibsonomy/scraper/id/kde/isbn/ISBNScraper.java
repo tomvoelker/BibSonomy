@@ -83,7 +83,6 @@ public class ISBNScraper implements Scraper {
 				} catch (final IOException ex) {
 					throw new InternalFailureException(ex);
 				}
-
 			} else if (present(issn)){
 				try {
 					String bibtex = WorldCatScraper.getBibtexByISSN(issn+ADV_PARAM);
@@ -92,16 +91,14 @@ public class ISBNScraper implements Scraper {
 						sc.setBibtexResult(bibtex);
 						sc.setScraper(this);
 						return true;
-					} else {
-						bibtex = WorldCatScraper.getBibtexByISSN(issn);
-						if (present(bibtex)){
-							sc.setBibtexResult(bibtex);
-							sc.setScraper(this);
-							return true;
-						} else {
-							throw new ScrapingFailureException("bibtex download from worldcat");
-						}
 					}
+					bibtex = WorldCatScraper.getBibtexByISSN(issn);
+					if (present(bibtex)){
+						sc.setBibtexResult(bibtex);
+						sc.setScraper(this);
+						return true;
+					}
+					throw new ScrapingFailureException("bibtex download from worldcat");
 				} catch (final IOException ex) {
 					throw new InternalFailureException(ex);
 				}

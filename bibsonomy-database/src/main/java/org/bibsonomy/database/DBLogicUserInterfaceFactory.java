@@ -30,33 +30,31 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.UserDatabaseManager;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.util.UserUtils;
 
 /**
  * This class produces DBLogic instances with user authentication
- * 
+ *
  * @author Jens Illig
  */
 public class DBLogicUserInterfaceFactory extends AbstractDBLogicInterfaceFactory {
 
 	protected final UserDatabaseManager userDBManager = UserDatabaseManager.getInstance();
 	protected final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
-	
+
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.bibsonomy.model.logic.LogicInterfaceFactory#getLogicAccess(java.lang.String,
 	 *      java.lang.String)
 	 */
 	@Override
 	public LogicInterface getLogicAccess(final String loginName, final String password) {
 		if (loginName != null) {
-			final User loggedInUser = getLoggedInUser(loginName, password);
+			final User loggedInUser = this.getLoggedInUser(loginName, password);
 			if (loggedInUser.getName() != null) {
 				return new DBLogic(loggedInUser, this.getDbSessionFactory(), this.bibtexReader);
 			}
@@ -65,20 +63,20 @@ public class DBLogicUserInterfaceFactory extends AbstractDBLogicInterfaceFactory
 		// guest access
 		return new DBLogic(new User(), this.getDbSessionFactory(), this.bibtexReader);
 	}
-	
+
 	/**
 	 * Returns a user object containing the details of the user, if he is logged
 	 * in correctly. If not, the returned user object is empty and it's user
 	 * name NULL.
-	 * 
+	 *
 	 * @param loginName
 	 * @param password
 	 * @return user object with details of the logged in user
 	 */
 	protected User getLoggedInUser(final String loginName, final String password) {
-		final DBSession session = openSession();
+		final DBSession session = this.openSession();
 		try {
-			final User loggedInUser = getLoggedInUserAccess(loginName, password, session);
+			final User loggedInUser = this.getLoggedInUserAccess(loginName, password, session);
 			if (present(loggedInUser.getName())) {
 				loggedInUser.setGroups(this.groupDb.getGroupsForUser(loggedInUser.getName(), true, session));
 			}
@@ -87,7 +85,7 @@ public class DBLogicUserInterfaceFactory extends AbstractDBLogicInterfaceFactory
 			session.close();
 		}
 	}
-	
+
 	/**
 	 * Calls the correct validation method on the {@link UserDatabaseManager}.
 	 * @param loginName

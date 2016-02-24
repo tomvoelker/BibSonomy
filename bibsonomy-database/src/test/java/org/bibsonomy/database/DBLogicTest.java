@@ -81,7 +81,6 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import junit.framework.Assert;
 
 /**
  * @author Jens Illig
@@ -947,8 +946,8 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		String hash = createPosts.get(0);
 		
 		final Post<? extends Resource> savedPost = dbl.getPostDetails(hash, userName);
-		Assert.assertEquals(1, savedPost.getGroups().size());
-		Assert.assertTrue(savedPost.getGroups().contains(expectedGroup));
+		assertEquals(1, savedPost.getGroups().size());
+		assertTrue(savedPost.getGroups().contains(expectedGroup));
 		
 		dbl.deletePosts(userName, Collections.singletonList(hash));
 	}

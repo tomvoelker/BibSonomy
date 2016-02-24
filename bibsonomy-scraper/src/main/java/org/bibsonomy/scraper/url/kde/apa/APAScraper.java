@@ -150,7 +150,7 @@ public class APAScraper extends AbstractUrlScraper {
 		//Convert RIS to BibTeX
 		if (!present(ris)) throw new ScrapingException("Could not download citation");
 		final RisToBibtexConverter converter = new RisToBibtexConverter();
-		final String bibtex = converter.risToBibtex(ris);
+		final String bibtex = converter.toBibtex(ris);
 		if (!present(bibtex)) throw new ScrapingException("Something went wrong while converting RIS to BibTeX");
 		scrapingContext.setBibtexResult(bibtex);
 		

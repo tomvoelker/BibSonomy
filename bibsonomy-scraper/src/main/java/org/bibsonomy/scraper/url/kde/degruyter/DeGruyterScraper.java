@@ -68,7 +68,7 @@ public class DeGruyterScraper extends AbstractUrlScraper {
 		try {
 			final String inRIS = getCitationInRIS(url.toString());
 			final RisToBibtexConverter con = new RisToBibtexConverter();
-			final String bibtex = con.risToBibtex(inRIS);
+			final String bibtex = con.toBibtex(inRIS);
 			
 			if (present(bibtex)) {
 				scrapingContext.setBibtexResult(bibtex);

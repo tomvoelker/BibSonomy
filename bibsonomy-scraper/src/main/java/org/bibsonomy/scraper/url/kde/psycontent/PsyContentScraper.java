@@ -104,7 +104,7 @@ public class PsyContentScraper extends AbstractUrlScraper implements ReferencesS
 
 				//convert the ris file to bibtex
 				String bibtex = null;
-				bibtex = (new RisToBibtexConverter()).risToBibtex(risFile);
+				bibtex = (new RisToBibtexConverter()).toBibtex(risFile);
 
 				if(bibtex != null) {
 					sc.setBibtexResult(bibtex);

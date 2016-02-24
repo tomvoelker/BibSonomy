@@ -874,9 +874,12 @@ public class URLGenerator {
 		return this.getUrl(url);
 	}
 
-	public String getGroupSettingsUrlByGroupName(final String groupName) {
+	public String getGroupSettingsUrlByGroupName(final String groupName, Integer selectedTab) {
 		String url = this.projectHome + prefix + "settings" + "/"
 				+ GROUP_PREFIX + "/" + UrlUtils.safeURIEncode(groupName);
+		if (present(selectedTab)) {
+			url += "?selTab=" + selectedTab.intValue();
+		}
 		return this.getUrl(url);
 	}
 
@@ -1431,8 +1434,7 @@ public class URLGenerator {
 	 * @param tagName
 	 * @return The URL for the user's page with all posts tagged with tagName
 	 */
-	public String getUserUrlByUserNameAndTagName(final String userName,
-			final String tagName) {
+	public String getUserUrlByUserNameAndTagName(final String userName, final String tagName) {
 		return this.getUserUrlByUserNameTagNameAndSysUrl(userName, tagName, this.projectHome);
 	}
 

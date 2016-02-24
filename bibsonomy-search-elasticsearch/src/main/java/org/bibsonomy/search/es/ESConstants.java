@@ -94,37 +94,7 @@ public final class ESConstants {
 			throw new RuntimeException(e);
 		}
 	}
-
-	/**
-	 * system url field name
-	 */
-	public static final String SYSTEMURL_FIELD = "systemUrl";
-
-	/**
-	 * BATCH size to fetch results
-	 */
-	public static final int BATCHSIZE = 30000;
-
-	/**
-	 * Path of Elasticsearch configuration file.
-	 */
-	public static final String PATH_CONF = "path.conf";
-
-	/**
-	 * Path of names.txt file.
-	 */
-	public static final String NAMES_TXT = "/org.bibsonomy.es/";
-
-	/**
-	 * Elasticsearch client SNIFF property.
-	 */
-	public static final String SNIFF = "client.transport.sniff";
-
-	/**
-	 * Elasticsearch Node name
-	 */
-	public static final String ES_NODE_NAME = "bibsonomy_client";
-
+	
 	/**
 	 * Index type for the system information
 	 */
@@ -146,11 +116,10 @@ public final class ESConstants {
 	 * prefix for temporary index
 	 */
 	public static final String TEMP_INDEX_PREFIX = "TempIndex";
-	/**
-	 * prefix for temporary index
-	 */
-	public static final String TEMP_ON_PROCESS_INDEX_PREFIX = "TempIndexOnProcess";
-
+	
+	/** the max number of docs per bulk insert */
+	public static final int BULK_INSERT_SIZE = 5000;
+	
 	public static interface Fields {
 		
 		/** private search content should be copied to this field */
@@ -194,7 +163,14 @@ public final class ESConstants {
 		}
 		
 		public static interface Publication {
+			@Deprecated // TODO: remove with 3.6
 			public static final String AUTHOR = "author";
+			public static final String AUTHORS = "authors";
+			@Deprecated // TODO: remove with 3.6
+			public static final String EDITOR = "editor";
+			public static final String EDITORS = "editors";
+			public static final String PERSON_NAME = "name";
+			
 			public static final String SCHOOL = "school";
 			/** the publication's year */
 			public static final String YEAR = "year";
@@ -210,7 +186,6 @@ public final class ESConstants {
 			public static final String CROSSREF = "crossref";
 			public static final String DAY = "day";
 			public static final String EDITION = "edition";
-			public static final String EDITOR = "editor";
 			public static final String HOWPUBLISHED = "howPublished";
 			public static final String INSTITUTION = "institution";
 			public static final String JOURNAL = "journal";

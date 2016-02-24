@@ -82,7 +82,7 @@ public class UserSamlRegistrationController extends AbstractUserIDRegistrationCo
 		SamlRemoteUserId authRId = attributeExtractor.getRemoteUserId(VuFindUserInitController.getSamlCreds());
 		org.bibsonomy.util.ValidationUtils.assertNotNull(authRId);
 		for (RemoteUserId rId : userToBeRegistered.getRemoteUserIds()) {
-			if (rId.equals(authRId) == false) {
+			if (!rId.equals(authRId)) {
 				errors.rejectValue("samlId", "error.registration.samlId.missmatch");
 				break;
 			}

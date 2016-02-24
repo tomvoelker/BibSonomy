@@ -113,7 +113,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void getPendingGroups() {
-		final List<Group> pendingGroups = groupDb.getPendingGroups(0, 100, this.dbSession);
+		final List<Group> pendingGroups = groupDb.getPendingGroups(null, 0, 100, this.dbSession);
 		assertEquals(2, pendingGroups.size());
 
 		for (final Group group : pendingGroups) {
@@ -124,9 +124,9 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		}
 
 		// make sure that limit and offset work
-		assertEquals(1, groupDb.getPendingGroups(0, 1, this.dbSession).size());
-		assertEquals(1, groupDb.getPendingGroups(1, 2, this.dbSession).size());
-		assertEquals(2, groupDb.getPendingGroups(0, 3, this.dbSession).size());
+		assertEquals(1, groupDb.getPendingGroups(null, 0, 1, this.dbSession).size());
+		assertEquals(1, groupDb.getPendingGroups(null, 1, 2, this.dbSession).size());
+		assertEquals(2, groupDb.getPendingGroups(null, 0, 3, this.dbSession).size());
 	}
 
 	/**
@@ -335,11 +335,20 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(3, group.getMemberships().size());
 		// add user
 		final String userToAdd = "testuser3";
-		groupDb.addPendingMembership(testGroup, userToAdd, GroupRole.INVITED, this.dbSession);
-		groupDb.addUserToGroup(testGroup, userToAdd, GroupRole.USER, this.dbSession);
+		final boolean userSharedDocuments = false;
+		
+		groupDb.addPendingMembership(testGroup, userToAdd, userSharedDocuments, GroupRole.INVITED, this.dbSession);
+		groupDb.addUserToGroup(testGroup, userToAdd, userSharedDocuments, GroupRole.USER, this.dbSession);
 		group = groupDb.getGroupMembers(userToAdd, testGroup, false, this.dbSession);
 		assertEquals(3 + 1, group.getMemberships().size());
 
+		// test userSharedDocuments
+		for(GroupMembership ms : group.getMemberships()) {
+			if(ms.getUser().getName() == userToAdd) {
+				assertEquals(ms.isUserSharedDocuments(), userSharedDocuments);
+			}
+		}
+		
 		groupDb.removeUserFromGroup(testGroup, userToAdd, this.dbSession);
 		group = groupDb.getGroupMembers(userToAdd, testGroup, false, this.dbSession);
 		assertEquals(3, group.getMemberships().size());
@@ -347,7 +356,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		for (final String groupname : new String[] { "", " ", null, ParamUtils.NOGROUP_NAME }) {
 			for (final String username : new String[] { "", " ", null, "testuser1", ParamUtils.NOUSER_NAME }) {
 				try {
-					groupDb.addUserToGroup(groupname, username, GroupRole.USER, this.dbSession);
+					groupDb.addUserToGroup(groupname, username, userSharedDocuments, GroupRole.USER, this.dbSession);
 					fail("Should throw an exception");
 				} catch (final RuntimeException ignored) {
 					// ignore
@@ -358,7 +367,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// can't add user to a group he's already a member of
 		for (final String username : new String[] { "testuser1", "testuser2" }) {
 			try {
-				groupDb.addUserToGroup(testGroup.toUpperCase(), username, GroupRole.USER, this.dbSession);
+				groupDb.addUserToGroup(testGroup.toUpperCase(), username, userSharedDocuments, GroupRole.USER, this.dbSession);
 				fail("Should throw an exception");
 			} catch (final RuntimeException ignored) {
 				// ignore
@@ -367,7 +376,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		// spammers can't be members of groups!
 		try {
-			groupDb.addUserToGroup(testGroup, "testspammer", GroupRole.USER, this.dbSession);
+			groupDb.addUserToGroup(testGroup, "testspammer", userSharedDocuments, GroupRole.USER, this.dbSession);
 			fail("Should throw an exception");
 		} catch (final RuntimeException ignored) {
 			// ignore
@@ -448,7 +457,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void activateGroup() {
-		final Group group = groupDb.getPendingGroups(0, Integer.MAX_VALUE, this.dbSession).get(0);
+		final Group group = groupDb.getPendingGroups(null, 0, Integer.MAX_VALUE, this.dbSession).get(0);
 		groupDb.activateGroup(group.getName(), this.dbSession);
 		final Group testgroup = groupDb.getGroupByName(group.getName(), this.dbSession);
 		assertEquals("testpendinggroup1", testgroup.getName());
@@ -521,6 +530,15 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			}
 		}
 		return foundTestGroup3;
+	}
+
+	@Test
+	public void testGetPendingGroup() throws Exception {
+		final Group group = groupDb.getPendingGroup("testpendinggroup1", "testrequestuser1", this.dbSession);
+		assertNotNull(group);
+		
+		final Group groupForOtherUser = groupDb.getPendingGroup("testpendinggroup1", "testrequestuser2", this.dbSession);
+		assertNull(groupForOtherUser);
 	}
 
 }

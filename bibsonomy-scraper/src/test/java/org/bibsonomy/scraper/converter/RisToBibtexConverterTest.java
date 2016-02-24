@@ -56,7 +56,7 @@ public class RisToBibtexConverterTest {
 		// test the conversion
 		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "test1_risBibtex.bib");
 		final RisToBibtexConverter ris2bConverter = new RisToBibtexConverter();
-		final String bibTeX = ris2bConverter.risToBibtex(ris);
+		final String bibTeX = ris2bConverter.toBibtex(ris);
 		assertEquals (expectedBibTeX, bibTeX);
 	}
 	
@@ -74,7 +74,7 @@ public class RisToBibtexConverterTest {
 		// test the conversion
 		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "WorldCat_53972111.bib");
 		final RisToBibtexConverter ris2bConverter = new RisToBibtexConverter();
-		final String bibTeX = ris2bConverter.risToBibtex(ris);
+		final String bibTeX = ris2bConverter.toBibtex(ris);
 		assertEquals (expectedBibTeX, bibTeX);
 	}
 	
@@ -92,7 +92,7 @@ public class RisToBibtexConverterTest {
 		// test the conversion
 		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "2008JD010287.bib");
 		final RisToBibtexConverter ris2bConverter = new RisToBibtexConverter();
-		final String bibTeX = ris2bConverter.risToBibtex(ris);
+		final String bibTeX = ris2bConverter.toBibtex(ris);
 
 		assertEquals(expectedBibTeX, bibTeX);
 		
@@ -110,7 +110,7 @@ public class RisToBibtexConverterTest {
 		// test the conversion
 		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "ristest2.bib");
 		final RisToBibtexConverter ris2bConverter = new RisToBibtexConverter();
-		final String bibTeX = ris2bConverter.risToBibtex(ris);
+		final String bibTeX = ris2bConverter.toBibtex(ris);
 
 		assertEquals(expectedBibTeX, bibTeX);
 		
@@ -128,7 +128,7 @@ public class RisToBibtexConverterTest {
 		// test the conversion
 		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "ristest3.bib");
 		final RisToBibtexConverter ris2bConverter = new RisToBibtexConverter();
-		final String bibTeX = ris2bConverter.risToBibtex(ris);
+		final String bibTeX = ris2bConverter.toBibtex(ris);
 
 		assertEquals(expectedBibTeX, bibTeX);
 		
@@ -146,7 +146,7 @@ public class RisToBibtexConverterTest {
 		// test the conversion
 		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "ristest4.bib");
 		final RisToBibtexConverter ris2bConverter = new RisToBibtexConverter();
-		final String bibTeX = ris2bConverter.risToBibtex(ris);
+		final String bibTeX = ris2bConverter.toBibtex(ris);
 
 		assertEquals(expectedBibTeX, bibTeX);
 		

@@ -46,7 +46,6 @@ import org.bibsonomy.model.logic.exception.LogicException;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.util.UrlUtils;
-import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.command.actions.EditPublicationCommand;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
@@ -68,7 +67,6 @@ import de.unikassel.puma.openaccess.sword.SwordService;
  * @author rja
  */
 public class EditPublicationController extends AbstractEditPublicationController<EditPublicationCommand> {
-	
 	private static final Log log = LogFactory.getLog(EditPublicationController.class);
 
 	private SwordService swordService = null;
@@ -86,9 +84,9 @@ public class EditPublicationController extends AbstractEditPublicationController
 		 * publication, we forward him to the SWORD service to allow the user to upload the
 		 * publication.
 		 */
-		if (present(swordService) && SystemTagsUtil.containsSystemTag(post.getTags(), MyOwnSystemTag.NAME)) {
+		if (present(this.swordService) && SystemTagsUtil.containsSystemTag(post.getTags(), MyOwnSystemTag.NAME)) {
 			String ref = UrlUtils.safeURIEncode(referer);
-			String publicationUrl = urlGenerator.getPublicationUrlByIntraHashAndUsername(post.getResource().getIntraHash(), userName);
+			String publicationUrl = this.urlGenerator.getPublicationUrlByIntraHashAndUsername(post.getResource().getIntraHash(), userName);
 			return new ExtendedRedirectView(publicationUrl + "?referer=" + ref);
 		}
 		
@@ -101,7 +99,7 @@ public class EditPublicationController extends AbstractEditPublicationController
 	@Override
 	protected String getHttpsReferrer(EditPublicationCommand command) {
 		final String url = command.getUrl();
-		if (UrlUtils.isHTTPs(url)) {
+		if (UrlUtils.isHTTPS(url)) {
 			return url;
 		}
 		

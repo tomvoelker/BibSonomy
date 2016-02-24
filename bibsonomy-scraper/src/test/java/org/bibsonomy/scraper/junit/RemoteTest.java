@@ -33,5 +33,5 @@ package org.bibsonomy.scraper.junit;
  * @author rja
  */
 public interface RemoteTest {
-
+	// noop
 }
