@@ -57,7 +57,7 @@ public class ReportingMailInformationService extends MailInformationService {
 	}
 
 	private Group getGroup(String username) {
-		Group groupDetails = this.logic.getGroupDetails(username);
+		Group groupDetails = this.logic.getGroupDetails(username, false);
 		if (!present(groupDetails)) {
 			throw new IllegalStateException(this.getClass().getSimpleName() + " can only be used in system tags interacting with groups");
 		}

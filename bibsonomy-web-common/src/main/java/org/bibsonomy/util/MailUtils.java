@@ -160,7 +160,7 @@ public class MailUtils {
 				UrlUtils.safeURIEncode(loginUser.getName()).toLowerCase(),
 				projectName.toLowerCase(),
 				projectEmail,
-				absoluteURLGenerator.getGroupSettingsUrlByGroupName(groupName)+"?selTab=1#selTab1"
+				absoluteURLGenerator.getGroupSettingsUrlByGroupName(groupName, Integer.valueOf(1))
 		};
 		
 		/*
@@ -233,7 +233,7 @@ public class MailUtils {
 			UserUtils.getNiceUserName(requestingUser, true),
 			group.getName(),
 			absoluteURLGenerator.getGroupUrlByGroupName(group.getName()),
-			absoluteURLGenerator.getGroupSettingsUrlByGroupName(group.getName()),
+			absoluteURLGenerator.getGroupSettingsUrlByGroupName(group.getName(), null),
 			projectHome,
 			projectEmail
 		};

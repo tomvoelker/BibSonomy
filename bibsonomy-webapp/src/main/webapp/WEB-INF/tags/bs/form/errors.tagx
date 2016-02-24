@@ -13,7 +13,7 @@
 	<c:set var="formErrors"><form:errors path="${path}" /></c:set>
 	<c:if test="${not empty formErrors}">
 		<span class="help-block">
-			<form:errors path="${path}" />
+			<form:errors path="${path}" htmlEscape="false"/>
 		</span>
 	</c:if>
 </jsp:root>

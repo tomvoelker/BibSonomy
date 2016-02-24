@@ -43,6 +43,7 @@ import org.bibsonomy.wiki.tags.group.MembersTag;
 import org.bibsonomy.wiki.tags.shared.HomepageTag;
 import org.bibsonomy.wiki.tags.shared.ImageTag;
 import org.bibsonomy.wiki.tags.shared.NameTag;
+import org.bibsonomy.wiki.tags.shared.TagcloudTag;
 import org.bibsonomy.wiki.tags.shared.resource.BookmarkListTag;
 import org.bibsonomy.wiki.tags.shared.resource.PublicationListTag;
 import org.bibsonomy.wiki.tags.user.BirthdayTag;
@@ -52,7 +53,6 @@ import org.bibsonomy.wiki.tags.user.InterestsTag;
 import org.bibsonomy.wiki.tags.user.LocationTag;
 import org.bibsonomy.wiki.tags.user.ProfessionTag;
 import org.bibsonomy.wiki.tags.user.RegDateTag;
-import org.bibsonomy.wiki.tags.user.TagcloudTag;
 import org.springframework.context.MessageSource;
 
 import info.bliki.htmlcleaner.BaseToken;

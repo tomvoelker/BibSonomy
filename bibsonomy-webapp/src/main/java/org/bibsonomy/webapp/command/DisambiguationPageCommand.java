@@ -46,7 +46,7 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	private String requestedAction;
 	private String requestedHash;
 	private PersonResourceRelationType requestedRole;
-	private int requestedIndex;
+	private Integer requestedIndex;
 	
 	private String requestedPersonId;
 	
@@ -142,14 +142,14 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	/**
 	 * @return the requestedIndex
 	 */
-	public int getRequestedIndex() {
+	public Integer getRequestedIndex() {
 		return this.requestedIndex;
 	}
 
 	/**
 	 * @param requestedIndex the requestedIndex to set
 	 */
-	public void setRequestedIndex(int requestedIndex) {
+	public void setRequestedIndex(final Integer requestedIndex) {
 		this.requestedIndex = requestedIndex;
 	}
 
