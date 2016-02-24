@@ -28,12 +28,6 @@
 			<script type="text/javascript" src="${resdir}/javascript/cv/handlers.js"><!--  --></script>
 			<script type="text/javascript" src="${resdir}/javascript/profile/handlers.js"><!-- --></script>
 			<script type="text/javascript" src="${resdir}/javascript/settings.js"><!-- keep me --></script>
-			<style type="text/css">
-				.bootstrap-table .fixed-table-container {border: none;} 
-				.bootstrap-table .fixed-table-container .table-no-bordered th {border: none;} 
-				.bootstrap-table .fixed-table-container .table-no-bordered td {border: none;} 
-			
-			</style>
 		</jsp:attribute>
 
 		<jsp:attribute name="breadcrumbs">
