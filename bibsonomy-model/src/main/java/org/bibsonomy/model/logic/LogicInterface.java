@@ -171,20 +171,22 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	/**
 	 * Returns all groups of the system.
 	 * @param pending
+	 * @param userName if pending equals <code>true</code> restrict pending groups to this user
 	 * @param start
 	 * @param end
-	 * 
 	 * @return a set of groups, an empty set else
 	 */
-	public List<Group> getGroups(boolean pending, int start, int end);
+	public List<Group> getGroups(boolean pending, String userName, int start, int end);
 	
 	/**
 	 * Returns details of one group.
 	 * 
 	 * @param groupName
+	 * @param pending	<code>true</code> iff you want to get group details of
+	 * 					a pending group
 	 * @return the group's details, null else
 	 */
-	public Group getGroupDetails(String groupName);
+	public Group getGroupDetails(String groupName, boolean pending);
 
 	/** 
 	 * Returns a list of tags which can be filtered.
@@ -323,8 +325,9 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * Removes the given group.
 	 * 
 	 * @param groupName the group to delete
+	 * @param pending the given group is pending
 	 */
-	public void deleteGroup(String groupName);
+	public void deleteGroup(String groupName, boolean pending);
 
 	/**
 	 * Adds a user to the database.

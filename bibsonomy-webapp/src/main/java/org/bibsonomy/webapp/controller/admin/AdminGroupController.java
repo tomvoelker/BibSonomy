@@ -47,6 +47,7 @@ import org.bibsonomy.webapp.command.admin.AdminGroupViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.security.access.AccessDeniedException;
 
@@ -83,34 +84,23 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 			User requestingUser;
 			switch(action) {
 				case ACCEPT:
-					// TODO: extend getGroupDetails to retrieve pending groups TODO_GROUPS; see DECLINE
-					for (Group g : logic.getGroups(true, 0, Integer.MAX_VALUE)) {
-						if (g.getName().equals(group.getName())) {
-							group = g;
-							break;
-						}
-					}
+					group = this.logic.getGroupDetails(group.getName(), true);
 					
 					requestingUser = this.logic.getUserDetails(group.getGroupRequest().getUserName());
 					this.logic.updateGroup(group, GroupUpdateOperation.ACTIVATE, null);
 					if (present(requestingUser.getEmail())) {
 						this.mailUtils.sendGroupActivationNotification(group, requestingUser, LocaleUtils.toLocale(requestingUser.getSettings().getDefaultLanguage()));
 					}
-					break;
+					return new ExtendedRedirectView("/admin/group");
 				case DECLINE:
-					for (Group g : logic.getGroups(true, 0, Integer.MAX_VALUE)) {
-						if (g.getName().equals(group.getName())) {
-							group = g;
-							break;
-						}
-					}
-					
 					final String groupName = group.getName();
+					group = this.logic.getGroupDetails(groupName, true);
+					
 					requestingUser = this.logic.getUserDetails(group.getGroupRequest().getUserName());
 					
 					// delete the group
-					log.debug("grouprequest for group \"" + group.getName() + "\" declined");
-					this.logic.updateGroup(group, GroupUpdateOperation.DELETE, null);
+					log.debug("grouprequest for group \"" + groupName + "\" declined");
+					this.logic.deleteGroup(groupName, true);
 					
 					// send mail
 					String declineMessage = command.getDeclineMessage();
@@ -120,7 +110,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 					if (present(requestingUser.getEmail())) {
 						this.mailUtils.sendGroupDeclineNotification(groupName, declineMessage, requestingUser, LocaleUtils.toLocale(requestingUser.getSettings().getDefaultLanguage()));
 					}
-					break;
+					return new ExtendedRedirectView("/admin/group");
 				case FETCH_GROUP_SETTINGS:
 					setGroupOrMarkNonExistent(command);
 					break;
@@ -133,7 +123,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		}
 		
 		// load the pending groups
-		command.setPendingGroups(this.logic.getGroups(true, 0, Integer.MAX_VALUE));
+		command.setPendingGroups(this.logic.getGroups(true, null, 0, Integer.MAX_VALUE));
 		return Views.ADMIN_GROUP;
 	}
 	
@@ -173,7 +163,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 	 * TODO: Documentation.
 	 */
 	private Group getGroupOrMarkNonExistent(final AdminGroupViewCommand command) {
-		final Group dbGroup = logic.getGroupDetails(command.getGroup().getName());
+		final Group dbGroup = logic.getGroupDetails(command.getGroup().getName(), false);
 
 		if (!GroupUtils.isValidGroup(dbGroup)) {
 			command.setAdminResponse("The group \"" + command.getGroup().getName() + "\" does not exist.");

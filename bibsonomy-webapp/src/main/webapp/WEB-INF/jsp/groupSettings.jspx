@@ -28,14 +28,6 @@
 			<script type="text/javascript" src="${resdir}/javascript/cv/handlers.js"><!--  --></script>
 			<script type="text/javascript" src="${resdir}/javascript/profile/handlers.js"><!-- --></script>
 			<script type="text/javascript" src="${resdir}/javascript/settings.js"><!-- keep me --></script>
-			<script type="text/javascript" src="${resdir}/javascript/bs/bootstrap-table.min.js"><!-- keep me --></script>
-			<link rel="stylesheet" type="text/css" href="${resdir}/css/bootstrap-table.min.css" />
-			<style type="text/css">
-				.bootstrap-table .fixed-table-container {border: none;} 
-				.bootstrap-table .fixed-table-container .table-no-bordered th {border: none;} 
-				.bootstrap-table .fixed-table-container .table-no-bordered td {border: none;} 
-			
-			</style>
 		</jsp:attribute>
 
 		<jsp:attribute name="breadcrumbs">
@@ -45,7 +37,7 @@
 					<nav:crumb nameKey="navi.settings" active="true" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
-		</jsp:attribute>	
+		</jsp:attribute>
 
 		<jsp:attribute name="tabcontent">
 			<!-- display potential errors -->
@@ -57,10 +49,7 @@
 			
 			<groupsettings:userlists group="${group}" />
 			
-			<groupsettings:delete group="${group}" />
-			
-<!-- TODO: Adapt AjaxCvController to CV modification by other users (e.g. admin - - > group) -->
-<!--			<settings:cv command="${command}" isGroup="${true}"/> -->
+			<!--<groupsettings:delete group="${group}" />-->
 		</jsp:attribute>
 
 	</layout:tabLayout>

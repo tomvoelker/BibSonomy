@@ -53,7 +53,6 @@ import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
-import org.elasticsearch.action.admin.indices.stats.IndicesStatsResponse;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.count.CountRequestBuilder;
@@ -72,6 +71,7 @@ import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 
 import com.carrotsearch.hppc.cursors.ObjectObjectCursor;
@@ -255,8 +255,7 @@ public class ElasticsearchClient implements ESClient {
 	@Override
 	public long getDocumentCount(String indexName, String type, QueryBuilder query) {
 		if (query == null) {
-			final IndicesStatsResponse statResponse = this.client.admin().indices().prepareStats(indexName).setTypes(type).setStore(true).execute().actionGet();
-			return statResponse.getTotal().getDocs().getCount() - 1;
+			query = QueryBuilders.matchAllQuery();
 		}
 		final CountRequestBuilder count = this.client.prepareCount(indexName);
 		count.setTypes(type);

@@ -105,7 +105,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		/*
 		 * extract filter
 		 */
-		final boolean publicationFilter = this.isPublicationFilter(command.getFilter());
+		final boolean publicationFilter = isPublicationFilter(command.getFilter());
 		if (publicationFilter) {
 			this.supportedResources.remove(Bookmark.class);
 		}
@@ -226,10 +226,17 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 					final List<Group> sharedGroups =  new LinkedList<Group>();
 					
 					for (final Group group : loginUserNameGroups) {
-						final Group groupDetails = this.logic.getGroupDetails(group.getName());
-						for (final GroupMembership membership : groupDetails.getMemberships()) {
-							if (membership.getUser().equals(requestedUser)) {
-								sharedGroups.add(group);
+						final Group groupDetails = this.logic.getGroupDetails(group.getName(), false);
+						/*
+						 * this check is only neccessary for admins which are
+						 * members of the {public,friends}_spam groups
+						 * for *_spam groups the logic retuns null
+						 */
+						if (present(groupDetails)) {
+							for (final GroupMembership membership : groupDetails.getMemberships()) {
+								if (membership.getUser().equals(requestedUser)) {
+									sharedGroups.add(group);
+								}
 							}
 						}
 					}
@@ -257,7 +264,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		return Views.getViewByFormat(format);
 	}
 
-	private boolean isPublicationFilter(final FilterEntity filter) {
+	private static boolean isPublicationFilter(final FilterEntity filter) {
 		return FilterEntity.JUST_PDF.equals(filter) || FilterEntity.DUPLICATES.equals(filter);
 	}
 

@@ -19,10 +19,9 @@
 			<c:set var="labelColSpan" value="${12 - inputColSpan}" />
 		</c:when>
 		<c:otherwise>
-			<c:set var="inputColSpan" value="${12 - labelColSpa }" />
+			<c:set var="inputColSpan" value="${12 - labelColSpan}" />
 		</c:otherwise>
 	</c:choose>
-	
 	<!-- if no captcha html present mockcaptcha is used and we do not need to output the captcha -->
 	<c:if test="${not empty command.captchaHTML}">
 		<!-- errors -->

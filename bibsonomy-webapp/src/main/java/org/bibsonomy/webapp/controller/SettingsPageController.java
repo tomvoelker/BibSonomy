@@ -131,7 +131,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		/*
 		 * Get pending requested groups
 		 */
-		command.setPendingRequestedgroups(logic.getGroups(true, 0, Integer.MAX_VALUE));
+		command.setPendingRequestedgroups(this.logic.getGroups(true, loginUser.getName(), 0, Integer.MAX_VALUE));
 		
 		if (!present(selectedTab) || selectedTab.intValue() < SettingsViewCommand.MY_PROFILE_IDX || selectedTab.intValue() > SettingsViewCommand.OAUTH_IDX) {
 			this.errors.reject("error.settings.tab");
@@ -312,16 +312,18 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		try {
 			final User loginUser = command.getContext().getLoginUser();
 			final String requestedUser = loginUser.getName();
-			final Group requestedGroup = this.logic.getGroupDetails(requestedUser);
+			final Group requestedGroup = this.logic.getGroupDetails(requestedUser, false);
 			/*
 			 * check if the group is present. If it should be a user. If its no
 			 * user the we will catch the exception and return an error message
 			 * to the user s
 			 */
 			if (present(requestedGroup)) {
-				this.handleGroupCV(requestedGroup, command);
+				command.setIsGroup(true);
+				this.handleCV(command, null, requestedGroup);
 			} else {
-				this.handleUserCV(loginUser, command);
+				command.setUser(loginUser);
+				this.handleCV(command, loginUser, null);
 			}
 		} catch (final RuntimeException e) {
 			// If the name does not fit to anything a runtime exception is
@@ -333,17 +335,20 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	}
 
 	/**
-	 * Handles the group cv page request
-	 * 
-	 * @param reqGroup
+	 * Handles the cv page request
 	 * @param command
+	 * @param reqGroup
 	 */
-	private void handleGroupCV(final Group requestedGroup, final SettingsViewCommand command) {
-		final String groupName = requestedGroup.getName();
-		command.setIsGroup(true);
-
+	private void handleCV(final SettingsViewCommand command, final User requestedUser, final Group requestedGroup) {
+		final String wikiUserName;
+		if (present(requestedGroup)) {
+			wikiUserName = requestedGroup.getName();
+		} else {
+			wikiUserName = requestedUser.getName();
+		}
+		
 		// TODO: Implement date selection on the editing page
-		final Wiki wiki = this.logic.getWiki(groupName, null);
+		final Wiki wiki = this.logic.getWiki(wikiUserName, null);
 		final String wikiText;
 
 		if (present(wiki)) {
@@ -356,36 +361,6 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		 * set the group to render
 		 */
 		this.wikiRenderer.setRequestedGroup(requestedGroup);
-		command.setRenderedWikiText(this.wikiRenderer.render(wikiText));
-		command.setWikiText(wikiText);
-	}
-
-	/**
-	 * Handles the user cv page request
-	 * 
-	 * @param reqUser
-	 * @param command
-	 */
-	private void handleUserCV(final User requestedUser, final SettingsViewCommand command) {
-		command.setUser(requestedUser);
-		final String userName = requestedUser.getName();
-
-		/*
-		 * convert the wiki syntax
-		 */
-		// TODO: Implement date selection on the editing page
-		final Wiki wiki = this.logic.getWiki(userName, null);
-		final String wikiText;
-
-		if (present(wiki)) {
-			wikiText = wiki.getWikiText();
-		} else {
-			wikiText = "";
-		}
-
-		/*
-		 * set the user to render
-		 */
 		this.wikiRenderer.setRequestedUser(requestedUser);
 		command.setRenderedWikiText(this.wikiRenderer.render(wikiText));
 		command.setWikiText(wikiText);

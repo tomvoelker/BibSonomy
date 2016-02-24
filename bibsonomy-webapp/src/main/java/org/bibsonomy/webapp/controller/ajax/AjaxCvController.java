@@ -28,8 +28,6 @@ package org.bibsonomy.webapp.controller.ajax;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.List;
-
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -91,7 +89,7 @@ public class AjaxCvController extends AjaxController implements MinimalisticCont
 		final String renderOptions = command.getRenderOptions();
 		final String authUser = this.logic.getAuthenticatedUser().getName();
 		final String wikiText = command.getWikiText();
-		final Group requestedGroup = getRequestedGroup(command.getContext().getLoginUser().getGroups(), command.getRequestedGroup());
+		final String requestedGroup = command.getRequestedGroup();
 		
 		final LogicInterface interfaceToUse;
 		
@@ -108,7 +106,8 @@ public class AjaxCvController extends AjaxController implements MinimalisticCont
 		 * Determine if the requested page is a group cv or a user cv
 		 */
 		if (present(requestedGroup)) {
-			this.wikiRenderer.setRequestedGroup(requestedGroup);
+			final Group group = interfaceToUse.getGroupDetails(requestedGroup, false);
+			this.wikiRenderer.setRequestedGroup(group);
 		} else {
 			this.wikiRenderer.setRequestedUser(interfaceToUse.getUserDetails(authUser));
 		}
@@ -125,7 +124,7 @@ public class AjaxCvController extends AjaxController implements MinimalisticCont
 			wiki.setWikiText(wikiText);
 			
 			if (present(requestedGroup)) {
-				this.logic.updateWiki(command.getRequestedGroup(), wiki);
+				this.logic.updateWiki(requestedGroup, wiki);
 			} else {
 				this.logic.updateWiki(authUser, wiki);
 			}
@@ -193,7 +192,7 @@ public class AjaxCvController extends AjaxController implements MinimalisticCont
 	 * 
 	 * @return XML success string.
 	 */
-	private String generateXMLSuccessString(final AjaxCvCommand command, final String wikiText, final String renderedWikiText) {
+	private static String generateXMLSuccessString(final AjaxCvCommand command, final String wikiText, final String renderedWikiText) {
 		return "<root><status>ok</status><ckey>"
 				+ command.getContext().getCkey() + "</ckey><wikitext>"
 				+ StringEscapeUtils.escapeXml(wikiText)
@@ -225,16 +224,5 @@ public class AjaxCvController extends AjaxController implements MinimalisticCont
 	 */
 	public void setNotLoggedInUserLogic(final LogicInterface notLoggedInUserLogic) {
 		this.notLoggedInUserLogic = notLoggedInUserLogic;
-	}
-
-	private Group getRequestedGroup(List<Group> groups, String requestedGroup) {
-		if (present(requestedGroup)) {
-			for (Group g : groups) {
-				if (g.getName().equals(requestedGroup)) {
-					return this.logic.getGroupDetails(g.getName());
-				}
-			}
-		}
-		return null;
 	}
 }

@@ -147,7 +147,7 @@
 										
 										<fmt:message var="decLabelText" key="admin.actions.group.decline.reason">
 											<fmt:param value="${fn:escapeXml(entry.name)}" />
-										</fmt:message>										
+										</fmt:message>
 									
 										<form:form name="declineGroupRequest" action="/admin/group?action=DECLINE&amp;group.name=${fn:escapeXml(entry.name)}" method="POST" cssClass="form-horizontal" >
 											<bsform:textarea noHelp="true" labelText="${decLabelText}" path="declineMessage" labelColSpan="3" inputColSpan="9" />
@@ -159,7 +159,7 @@
 													<bsform:button type="reset" style="primary" size="defaultSize" className="btn-danger declineGroupCancel" value="${cancelMsg}" />
 												</div>
 											</div>
-										</form:form>					
+										</form:form>
 									</td>
 								</tr>
 								

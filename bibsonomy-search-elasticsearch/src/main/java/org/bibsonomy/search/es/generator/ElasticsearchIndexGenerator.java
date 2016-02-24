@@ -142,7 +142,7 @@ public class ElasticsearchIndexGenerator<R extends Resource> {
 					docsToWrite.put(ElasticsearchUtils.createElasticSearchId(post.getContentId().intValue()), convertedPost);
 				}
 				
-				if (docsToWrite.size() > SearchDBInterface.SQL_BLOCKSIZE / 2) {
+				if (docsToWrite.size() > ESConstants.BULK_INSERT_SIZE) {
 					this.clearQueue(docsToWrite);
 				}
 			}
@@ -212,7 +212,7 @@ public class ElasticsearchIndexGenerator<R extends Resource> {
 		
 		
 		final Mapping<String> mapping = this.tools.getMappingBuilder().getMapping();
-		log.info("index not existing - generating a new one with mapping");
+		log.info("index not existing - generating a new one ('" + indexName + "')");
 		
 		final boolean created = this.client.createIndex(indexName, Collections.singleton(mapping));
 		if (!created) {

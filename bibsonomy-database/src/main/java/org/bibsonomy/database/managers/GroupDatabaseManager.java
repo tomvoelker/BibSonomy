@@ -104,33 +104,19 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Returns pending groups.
-	 * 
+	 * @param userName TODO
 	 * @param start
 	 * @param end
 	 * @param session
+	 * 
 	 * @return list of all pending groups
 	 */
-	public List<Group> getPendingGroups(final int start, final int end, final DBSession session) {
-		final GroupParam param = new GroupParam();
-		param.setOffset(start);
-		param.setLimit(end);
-		return this.queryForList("getPendingGroups", param, Group.class, session);
-	}
-		
-	/**
-	 * Returns a list of all requested pending groups of a user
-	 * @param start
-	 * @param end
-	 * @param userName
-	 * @param session
-	 * @return list of all pending requested groups of a user
-	 */
-	public List<Group> getRequestedPendingGroupsForUser(final int start, final int end, final String userName, final DBSession session) {
+	public List<Group> getPendingGroups(String userName, final int start, final int end, final DBSession session) {
 		final GroupParam param = new GroupParam();
 		param.setUserName(userName);
 		param.setOffset(start);
 		param.setLimit(end);
-		return this.queryForList("getRequestedPendingGroupsForUser", param, Group.class, session);
+		return this.queryForList("getPendingGroups", param, Group.class, session);
 	}
 
 	/**
@@ -495,7 +481,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void activateGroup(final String groupName, final DBSession session) {
 		// get the group
-		final Group group = this.getPendingGroup(groupName, session);
+		final Group group = this.getPendingGroup(groupName, null, session);
 		
 		if (!present(group)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group " + groupName + " is no pending group.");
@@ -530,16 +516,21 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * Returns a specific pending group
 	 * 
 	 * @param groupname
+	 * @param requestingUser 
 	 * @param session
 	 * @return Returns a {@link Group} object if the group exists otherwise
 	 *         null.
 	 */
-	public Group getPendingGroup(final String groupname, final DBSession session) {
+	public Group getPendingGroup(final String groupname, String requestingUser, final DBSession session) {
 		if (!present(groupname)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Pending-Groupname isn't present");
 		}
 		final String normedGroupName = this.getNormedGroupName(groupname);
-		return this.queryForObject("getPendingGroup", normedGroupName, Group.class, session);
+		
+		final GroupParam groupParam = new GroupParam();
+		groupParam.setUserName(requestingUser);
+		groupParam.setRequestedGroupName(normedGroupName);
+		return this.queryForObject("getPendingGroup", groupParam, Group.class, session);
 	}
 
 	/**
@@ -564,7 +555,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		 */
 		final User existingGroupUser = this.userDb.getUserDetails(normedGroupName, session);
 		final List<User> pendingUserList = this.userDb.getPendingUserByUsername(normedGroupName, 0, Integer.MAX_VALUE, session);
-		final Group existingPendingGroup = this.getPendingGroup(normedGroupName, session);
+		final Group existingPendingGroup = this.getPendingGroup(normedGroupName, null, session);
 
 		if (present(existingGroupUser.getName()) || present(pendingUserList) || present(existingPendingGroup)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "There is a user with this name - cannot create the group.");
@@ -617,8 +608,8 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		// make sure that the group exists
 		if (groupname == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Pending Group ('" + groupname + "') doesn't exist");
-			throw new RuntimeException();
 		}
+		
 		this.userDb.deletePendingUser(groupname, session);
 		this.delete("deletePendingGroup", groupname, session);
 	}
@@ -717,6 +708,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 		final Integer groupId = Integer.valueOf(group.getGroupId());
 		this.delete("deleteGroup", groupId, session);
+		// FIXME: remove
 		this.delete("removeAllUserFromGroup", groupId, session);
 		
 		// get the group user and flag him as spammer
