@@ -1077,10 +1077,9 @@ public class DBLogic implements LogicInterface {
 //				throw new RuntimeException(); // never happens but calms down eclipse
 //			}
 //			
-//			// FIXME: does this check work for old groups (there is only one user) TODO_GROUPS
-//			// ensure that the group has no members except the admin. size > 2 because the group user is also part of the membership list.
-//			if (group.getMemberships().size() > 2) {
-//				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupName + "') has more than one member");
+//			// ensure that the group has no members except the admin. size > 2 because the group user is also part of the membership list or > 1 to cover old groups
+//			if (group.getMemberships().size() > 2 || (group.getMemberships().size() > 1 && (group.getMemberships().get(0).getGroupRole() != GroupRole.DUMMY && group.getMemberships().get(1).getGroupRole() != GroupRole.DUMMY))) {
+//				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + group.getName() + "') has at least one member beside the administrator.");
 //			}
 //			
 //			// all the posts/discussions of the group admin need to be edited as well before deleting the group
