@@ -144,8 +144,8 @@
 	</delete>
 
 	<insert id="activateGroup" parameterClass="string">
-		INSERT INTO groupids (`group_name`, `group`, `privlevel`, `sharedDocuments`)
-		SELECT `group_name`, `group`, `privlevel`, `sharedDocuments`
+		INSERT INTO groupids (`group_name`, `group`, `privlevel`, `sharedDocuments`, `shortDescription`)
+		SELECT `group_name`, `group`, `privlevel`, `sharedDocuments`, `shortDescription`
 		FROM pending_groupids 
 		WHERE pending_groupids.group_name = #name#
 	</insert>
