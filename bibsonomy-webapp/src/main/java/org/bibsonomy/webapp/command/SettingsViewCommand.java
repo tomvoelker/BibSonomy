@@ -224,7 +224,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public SettingsViewCommand() {
 		this.addTab(MY_PROFILE_IDX, "navi.myprofile");
 		this.addTab(SETTINGS_IDX, "navi.settings");
-		this.addTab(IMPORTS_IDX, "navi.imports");	
+		this.addTab(IMPORTS_IDX, "settings.jabRef.layoutfile");	
 		this.addTab(CV_IDX, "navi.cvedit");
 		this.addTab(OAUTH_IDX, "navi.oauth.consumers");
 		this.addTab(GROUP_IDX, "navi.groups");
