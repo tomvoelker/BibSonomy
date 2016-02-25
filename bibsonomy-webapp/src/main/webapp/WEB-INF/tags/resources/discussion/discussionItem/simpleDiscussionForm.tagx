@@ -78,13 +78,13 @@
 						</button>
 						<ul class="dropdown-menu">
 							<li class="checked">
-								<a href="#" data-abstract-grouping="public"><fontawsome:icon icon="globe" fixedWidth="${true}"/> public</a>
+								<a href="#" data-group="" data-abstract-grouping="public"><fontawsome:icon icon="globe" fixedWidth="${true}"/> public</a>
 							</li>
 							<li>
-								<a href="#" data-abstract-grouping="private"><fontawsome:icon icon="lock" fixedWidth="${true}"/> private</a>
+								<a href="#" data-group="" data-abstract-grouping="private"><fontawsome:icon icon="lock" fixedWidth="${true}"/> private</a>
 							</li>
 							<li>
-								<a href="#" data-abstract-grouping="friends"><fontawsome:icon icon="users" fixedWidth="${true}"/> friends</a>
+								<a href="#" data-group="" data-abstract-grouping="friends"><fontawsome:icon icon="users" fixedWidth="${true}"/> friends</a>
 							</li>
 							<li role="separator" class="divider"></li>
 							<c:forEach var="group" items="${command.context.loginUser.groups}">

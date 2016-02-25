@@ -25,10 +25,10 @@
 			<div class="review text" itemprop="reviewBody">
 				<mtl:publicationReference text="${fn:escapeXml(review.text)}" />
 			</div>
-			
+			<!-- TODODZO: remove -->
 			<c:if test="${ownReview}">
 				<!-- This form is only displayed where a goldstandard post exists. Therefore the postUserName ist the goldStandardPostUserName "" -->
-				<review:reviewForm review="${review}" resource="${resource}" userName="${loginUser.name}" postUserName=""/>
+				
 			</c:if>
 		</jsp:attribute>
 	</discussionItem:discussionItem>

@@ -33,13 +33,14 @@ $(function() {
 	});
 	
 	$('.deleteLink').click(function() {
-		if (userSettings.confirmDelete) {
-			// TODO
+		var type = $(this).data("type");
+		if (!confirmDeleteByUser(type)) {
+			return false;
 		}
 		var interhash = $('#discussion').data('interhash');
 		var hash = $(this).parents('.media-body').find('.info').first().data('discussion-item-hash');
 		$.ajax({
-			url: '/a'
+			url: '/ajax/' + type + "s"
 		});
 		alert(interhash)
 		alert(hash)
@@ -55,5 +56,16 @@ $(function() {
 		}
 		
 		subdiscussionList.find('> li.form textarea').focus();
+	});
+	
+	if ($('li.review').length > 0) {
+		$('.createreview').hide();
+	}
+	
+	$('.createcomment').submit(function() {
+		var data = $(this).serialize();
+		
+		alert(data);
+		return false;
 	});
 });
