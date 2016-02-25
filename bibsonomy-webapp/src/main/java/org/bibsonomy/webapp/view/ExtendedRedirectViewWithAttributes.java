@@ -24,31 +24,36 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.webapp.util.captcha;
+package org.bibsonomy.webapp.view;
 
-import net.tanesha.recaptcha.ReCaptchaResponse;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
-/** Wrapper around {@link ReCaptchaResponse}
- * @author rja
+/**
+ * a redirect view that can keep attributes
+ *
+ * @author dzo
  */
-public class ReCaptchaResponseWrapper implements CaptchaResponse {
+public class ExtendedRedirectViewWithAttributes extends ExtendedRedirectView {
 	
-	private final ReCaptchaResponse response;
+	/** to transfer errors while redirect */
+	public static final String ERRORS_KEY = "errors";
 	
 	/**
-	 * @param response A response from a ReCaptchaImplementation.
+	 * @param redirectURI
 	 */
-	public ReCaptchaResponseWrapper(final ReCaptchaResponse response) {
-		this.response = response;
+	public ExtendedRedirectViewWithAttributes(String redirectURI) {
+		super(redirectURI);
 	}
-
-	@Override
-	public String getErrorMessage() {
-		return response.getErrorMessage();
-	}
-
-	@Override
-	public boolean isValid() {
-		return response.isValid();
+	
+	/**
+	 * adds an attribute to the redirect view
+	 * @param key
+	 * @param value
+	 */
+	public void addAttribute(final String key, final Object value) {
+		final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+		RequestContextUtils.getOutputFlashMap(requestAttributes.getRequest()).put(key, value);
 	}
 }

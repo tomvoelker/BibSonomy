@@ -33,9 +33,6 @@ package org.bibsonomy.common.enums;
 public enum AdminGroupOperation {
 	
 	FETCH_GROUP_SETTINGS,
-	UPDATE,
-	@Deprecated // TODO: remove TODO_GROUPS
-	CREATE,  
 	// TODO: rename to ACCEPT_GROUP TODO_GROUPS
 	ACCEPT,
 	// TODO: rename to DECLINE_GROUP TODO_GROUPS

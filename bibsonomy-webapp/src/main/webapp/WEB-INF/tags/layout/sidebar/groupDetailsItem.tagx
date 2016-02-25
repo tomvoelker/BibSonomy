@@ -2,51 +2,39 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:group="urn:jsptagdir:/WEB-INF/tags/resources/group"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar">
-
-
 	<jsp:directive.attribute name="group" required="true" type="org.bibsonomy.model.Group"/>
 	
-	<sidebar:sidebarItem>
-		<jsp:attribute name="text">${group.name}</jsp:attribute>
-			<jsp:attribute name="content">
-				<c:if test="${not empty group.realname}">
-					<div>
-						<c:out value="${group.realname}"/>
-					</div>
-				</c:if>
-				<div class="row">
-					<div class="col-md-6">
-						<group:groupthumbnail group="${group}" noname="${false}" />
-					</div>
-					<div class="col-md-6">
+	<c:set var="textToUser" value="${group.name}" />
+	<c:if test="${not empty group.realname}">
+		<c:set var="textToUser" value="${group.realname}" />
+	</c:if>
+	<sidebar:sidebarItem outLink="${group.homepage}">
+		<jsp:attribute name="text"><c:out value="${textToUser}" /></jsp:attribute>
+		<jsp:attribute name="content">
+			<div class="row">
+				<div class="col-md-5">
+					<group:groupthumbnail group="${group}" noname="${false}" />
+				</div>
+				<div class="col-md-7 text-right">
 					<group:groupcv group="${group}" />
-					<c:choose>
-						<c:when test="${mtl:contains(command.context.loginUser.groups, group)}">
-							<!-- TODO: use url generator -->
-							<a href="/settings/group/${group.name}" class="btn btn-success btn-sm"><span class="fa fa-check"><!-- keep me --></span><c:out value=" "/><span class="infotext"><fmt:message key="group.memberOf" /></span></a>
-							<a href="/updateGroup?operation=REMOVE_MEMBER&amp;groupname=${group.name}&amp;username=${command.context.loginUser.name}&amp;ckey=${ckey}" class="btn btn-danger btn-sm"><span class="fa fa-times"><!-- keep me --></span><c:out value=" "/><span class="infotext"><fmt:message key="group.leave" /></span></a>
-						</c:when>
-						<c:otherwise>
-							<c:choose>
-								<c:when test="${mtl:contains(command.context.loginUser.pendingGroups, group)}">
-									<a class="btn btn-default btn-sm">pending</a>
-								</c:when>
-								<c:otherwise>
-									<c:if test="${!command.context.loginUser.spammer}">
-										<c:url var="joinLink" value="/joinGroup">
-											<c:param name="group" value="${group.name}" />
-										</c:url>
-										<a href="${joinLink}" class="btn btn-primary btn-sm"><span class="fa fa-plus"><!-- keep me --></span><c:out value=" " /><fmt:message key="joinGroup.short"/></a>	
-									</c:if>
-								</c:otherwise>
-							</c:choose>
-						</c:otherwise>
-					</c:choose>
+					<div class="memberSettings">
+						<group:actions group="${group}" showSettingsLabel="${false}" buttonSize="btn-xs" />
+					</div>
 				</div>
 			</div>
+			<c:if test="${not empty group.description}">
+				<div class="row groupDescription">
+					<div class="col-md-12 show-more" data-max-chars="150" data-extra-class="small">
+						<span class="small contentContainer">
+							<c:out value="${group.description}" />
+						</span>
+					</div>
+				</div>
+			</c:if>
 		</jsp:attribute>
 	</sidebar:sidebarItem>
 </jsp:root>

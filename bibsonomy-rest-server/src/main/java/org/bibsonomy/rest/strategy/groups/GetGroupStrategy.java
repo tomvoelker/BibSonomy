@@ -54,7 +54,7 @@ public class GetGroupStrategy extends Strategy {
 	@Override
 	public void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException {
 		// delegate to the renderer
-		final Group group = this.getLogic().getGroupDetails(this.groupName);
+		final Group group = this.getLogic().getGroupDetails(this.groupName, false);
 		if (group == null) {
 			throw new NoSuchResourceException("The requested group '" + this.groupName + "' does not exist.");
 		}

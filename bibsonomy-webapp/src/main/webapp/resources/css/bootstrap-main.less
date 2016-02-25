@@ -598,14 +598,6 @@ div#sidebar {
 	padding-right: 30px;
 	margin-left: 15px;
 	border-left: 1px @border-color solid;
-} 
-
-.sidebar h4 {
-
-}
-
-#sidebar {
-
 }
 
 #sidebar ul {
@@ -618,6 +610,23 @@ div#sidebar {
 .similar-users-headline,
 .concepts-headline {
 /* 	float: left; */
+}
+
+.sidebar {
+	.groupDescription {
+		margin-top: 5px;
+	}
+	.memberSettings {
+		margin-top: 20px;
+	}
+	
+	.img-group span {
+		padding-left: 4px;
+	}
+}
+
+.more-list span.desc {
+	padding-left: 3px;
 }
 
 .sidebar-setting-box {
@@ -860,6 +869,10 @@ h4.pub-details {
 }
 #resources table td {
 	padding: 5px 5px 5px 0;
+}
+
+table a.img-thumbnail {
+	margin-right: 10px;
 }
 
 /* Abstract */
@@ -1180,7 +1193,7 @@ h1.content-header, h1.content-heading {
 	height: 28px;
 }
 
-.main h3, .main .sidebar h4 {
+.main h3 {
 	font-size: 18px;
 	line-height: 28px;
 	height: 28px;
@@ -1198,6 +1211,8 @@ h1.content-header, h1.content-heading {
 
 .main .sidebar h4 {
 	border-bottom: 1px solid @border-color;
+	height: auto;
+	padding-bottom: 2px;
 }
 
 .jumbotron h2 {

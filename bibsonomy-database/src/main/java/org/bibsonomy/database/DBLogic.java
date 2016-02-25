@@ -862,22 +862,16 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#getGroups(int, int)
 	 */
 	@Override
-	public List<Group> getGroups(final boolean pending, final int start, final int end) {
+	public List<Group> getGroups(final boolean pending, String userName, final int start, final int end) {
 		final DBSession session = this.openSession();
 		try {
 			if (pending) {
-				//this.permissionDBManager.ensureAdminAccess(this.loginUser);
-				//return this.groupDBManager.getPendingGroups(start, end, session);
-
-				if (present(this.loginUser.getName()) && this.permissionDBManager.isAdmin(this.loginUser)) {
-					return this.groupDBManager.getPendingGroups(start, end, session);
+				if (present(userName)) {
+					this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
+					return this.groupDBManager.getPendingGroups(userName, start, end, session);
 				}
-				else if (present(this.loginUser.getName())) {
-					return this.groupDBManager.getRequestedPendingGroupsForUser(start, end, this.loginUser.getName(), session);
-				}
-				else {
-					throw new AccessDeniedException();
-				}
+				this.permissionDBManager.ensureAdminAccess(this.loginUser);
+				return this.groupDBManager.getPendingGroups(null, start, end, session);
 			}
 			return this.groupDBManager.getAllGroups(start, end, session);
 		} finally {
@@ -923,9 +917,19 @@ public class DBLogic implements LogicInterface {
 	 * )
 	 */
 	@Override
-	public Group getGroupDetails(final String groupName) {
+	public Group getGroupDetails(final String groupName, final boolean pending) {
 		final DBSession session = this.openSession();
 		try {
+			if (pending) {
+				final String requestingUser;
+				if (this.permissionDBManager.isAdmin(this.loginUser)) {
+					requestingUser = null;
+				} else {
+					requestingUser = this.loginUser.getName();
+				}
+				return this.groupDBManager.getPendingGroup(groupName, requestingUser, session);
+			}
+			
 			final Group myGroup = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, true, session);
 			if (!GroupUtils.isValidGroup(myGroup)) {
 				return null;
@@ -1040,60 +1044,62 @@ public class DBLogic implements LogicInterface {
 	 * org.bibsonomy.model.logic.LogicInterface#deleteGroup(java.lang.String)
 	 */
 	@Override
-	public void deleteGroup(final String groupName) {
-		this.ensureLoggedIn();
-		// only group admins are allowed to delete the group
-		this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, groupName, GroupRole.ADMINISTRATOR);
-
+	public void deleteGroup(final String groupName, boolean pending) {
 		final DBSession session = this.openSession();
-
-		// make sure that the group exists
-		// TODO: remove call to deprecated method TODO_GROUPS
-		final Group group = this.groupDBManager.getGroupByName(groupName, session);
-
-		if (group == null) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupName + "') doesn't exist");
-			throw new RuntimeException(); // never happens but calms down eclipse
-		}
-		
-		// FIXME: does this check work for old groups (there is only one user) TODO_GROUPS
-		// ensure that the group has no members except the admin. size > 2 because the group user is also part of the membership list.
-		if (group.getMemberships().size() > 2) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupName + "') has more than one member");
-		}
-		
-		// all the posts/discussions of the group admin need to be edited as well before deleting the group
-		for (final GroupMembership t : group.getMemberships()) {
-			// as the group can only consist of the group admin and the group user at this point, this check should be enough
-			// if groups can be deleted without removing all members before this must be adapted!
-			if (t.getGroupRole() == GroupRole.ADMINISTRATOR) {
-				// get the id of the group
-				// FIXME: duplicate code see updateGroup TODO_GROUPS
-				final int groupId = group.getGroupId();
-				final String adminUserName = t.getUser().getName();
-				
-				// set all tas shared with the group to private (groupID 1)
-				this.tagDBManager.updateTasInGroupFromLeavingUser(adminUserName, groupId, session);
-				
-				/*
-				 * update the visibility of the post that are "assigned" to
-				 * the group
-				 * XXX: a loop over all resource database managers that
-				 * allow groups
-				 */
-				this.publicationDBManager.updatePostsInGroupFromLeavingUser(adminUserName, groupId, session);
-				this.bookmarkDBManager.updatePostsInGroupFromLeavingUser(adminUserName, groupId, session);
-				
-				// set all discussions in the group to private (groupID 1)
-				this.discussionDatabaseManager.updateDiscussionsInGroupFromLeavingUser(adminUserName, groupId, session);
+		if (pending) {
+			try {
+				session.beginTransaction();
+				this.permissionDBManager.ensureAdminAccess(this.loginUser);
+				final Group pendingGroup = this.groupDBManager.getPendingGroup(groupName, null, session);
+				if (!present(pendingGroup)) {
+					throw new IllegalStateException("group '" + groupName + "' does not exist");
+				}
+				this.groupDBManager.deletePendingGroup(groupName, session);
+				session.commitTransaction();
+				return;
+			} finally {
+				session.endTransaction();
+				session.close();
 			}
 		}
-		
-		try {
-			this.groupDBManager.deleteGroup(groupName, session);
-		} finally {
-			session.close();
-		}
+		throw new UnsupportedOperationException("not yet implemented");
+//		this.ensureLoggedIn();
+//		// only group admins are allowed to delete the group
+//		this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, groupName, GroupRole.ADMINISTRATOR);
+//		try {
+//			session.beginTransaction();
+//			// make sure that the group exists
+//			// TODO: remove call to deprecated method TODO_GROUPS
+//			// TODO: method also called later by deleteGroup
+//			final Group group = this.groupDBManager.getGroupByName(groupName, session);
+//	
+//			if (group == null) {
+//				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupName + "') doesn't exist");
+//				throw new RuntimeException(); // never happens but calms down eclipse
+//			}
+//			
+//			// FIXME: does this check work for old groups (there is only one user) TODO_GROUPS
+//			// ensure that the group has no members except the admin. size > 2 because the group user is also part of the membership list.
+//			if (group.getMemberships().size() > 2) {
+//				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupName + "') has more than one member");
+//			}
+//			
+//			// all the posts/discussions of the group admin need to be edited as well before deleting the group
+//			for (final GroupMembership t : group.getMemberships()) {
+//				// as the group can only consist of the group admin and the group user at this point, this check should be enough
+//				// if groups can be deleted without removing all members before this must be adapted!
+//				if (GroupRole.ADMINISTRATOR.equals(t.getGroupRole())) {
+//					// FIXME: why not called for group user FIXME_RELEASE
+//					this.updateUserItemsForLeavingGroup(group, t.getUser().getName(), session);
+//				}
+//			}
+//			
+//			this.groupDBManager.deleteGroup(groupName, session);
+//			session.commitTransaction();
+//		} finally {
+//			session.endTransaction();
+//			session.close();
+//		}
 	}
 
 	/*
@@ -1294,7 +1300,8 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public String updateGroup(final Group paramGroup, final GroupUpdateOperation operation, final GroupMembership membership) {
-		if (!present(paramGroup) || !present(paramGroup.getName())) {
+		final String groupName = paramGroup.getName();
+		if (!present(paramGroup) || !present(groupName)) {
 			throw new ValidationException("No group name given.");
 		}
 
@@ -1315,9 +1322,9 @@ public class DBLogic implements LogicInterface {
 			session.beginTransaction();
 
 			// check the groups existence and retrieve the current group
-			final Group group = this.groupDBManager.getGroupMembers(this.loginUser.getName(), paramGroup.getName(), false, session);
+			final Group group = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, false, session);
 			// TODO: When implementing DELETE, alter this check!
-			if (!GroupUtils.isValidGroup(group) && !(GroupUpdateOperation.ACTIVATE.equals(operation) || GroupUpdateOperation.DELETE.equals(operation) || GroupUpdateOperation.DELETE_GROUP_REQUEST.equals(operation))) {
+			if (!GroupUtils.isValidGroup(group) && !(GroupUpdateOperation.ACTIVATE.equals(operation) || GroupUpdateOperation.DELETE_GROUP_REQUEST.equals(operation))) {
 				throw new IllegalArgumentException("Group does not exist");
 			}
 			final GroupMembership currentGroupMembership = group.getGroupMembershipForUser(requestedUserName);
@@ -1330,7 +1337,6 @@ public class DBLogic implements LogicInterface {
 				this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.ADMINISTRATOR);
 				this.groupDBManager.updateGroupSettings(paramGroup, session);
 				break;
-
 			case UPDATE_GROUPROLE:
 
 				if (!present(currentGroupMembership)) {
@@ -1352,7 +1358,6 @@ public class DBLogic implements LogicInterface {
 
 				this.groupDBManager.updateGroupRole(this.loginUser, group.getName(), requestedUserName, requestedGroupRole, session);
 				break;
-
 			case ADD_MEMBER:
 				// we need to query the groupMembership, since the group object
 				// might not contain the memberships if the loginUser is not
@@ -1384,7 +1389,6 @@ public class DBLogic implements LogicInterface {
 					throw new AccessDeniedException("Can't add this member to the group");
 				}
 				break;
-
 			case REMOVE_MEMBER:
 				// Check for correct role that can remove the user
 				if (!present(currentGroupMembership)) {
@@ -1402,26 +1406,9 @@ public class DBLogic implements LogicInterface {
 						throw new IllegalArgumentException("Group has only this admin left, cannot remove this user.");
 					}
 				}
-
+				
 				this.groupDBManager.removeUserFromGroup(group.getName(), requestedUserName, session);
-
-				// get the id of the group
-				final int groupId = group.getGroupId();
-
-				// set all tas shared with the group to private (groupID 1)
-				this.tagDBManager.updateTasInGroupFromLeavingUser(requestedUserName, groupId, session);
-
-				/*
-				 * update the visibility of the post that are "assigned" to
-				 * the group
-				 * XXX: a loop over all resource database managers that
-				 * allow groups
-				 */
-				this.publicationDBManager.updatePostsInGroupFromLeavingUser(requestedUserName, groupId, session);
-				this.bookmarkDBManager.updatePostsInGroupFromLeavingUser(requestedUserName, groupId, session);
-
-				// set all discussions in the group to private (groupID 1)
-				this.discussionDatabaseManager.updateDiscussionsInGroupFromLeavingUser(requestedUserName, groupId, session);
+				this.updateUserItemsForLeavingGroup(group, requestedUserName, session);
 				break;
 			case UPDATE_USER_SHARED_DOCUMENTS:
 				this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, requestedUserName);
@@ -1431,49 +1418,23 @@ public class DBLogic implements LogicInterface {
 				this.permissionDBManager.ensureIsAdminOrHasGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.ADMINISTRATOR);
 				this.groupDBManager.updateGroupPublicationReportingSettings(paramGroup, session);
 				break;
-
 			case ACTIVATE:
 				this.permissionDBManager.ensureAdminAccess(this.loginUser);
 				// Use paramGroup since group is unretrievable from the database.
-				this.groupDBManager.activateGroup(paramGroup.getName(), session);
+				this.groupDBManager.activateGroup(groupName, session);
 				break;
-
-			case DELETE: // TODO: use deleteGroup
-				this.permissionDBManager.ensureAdminAccess(this.loginUser);
-				// this must be paramGroup, since "DELETE" is only called for
-				// the admin interface to decline a group request.
-				// TODO: Resolve this in a better way.
-				// tni: What exactly is "this"?
-				this.groupDBManager.deletePendingGroup(paramGroup.getName(), session);
-				break;
-
 			case DELETE_GROUP_REQUEST:
-				Group tmpGroup = null;
-				for (final Group g : this.getGroups(true, 0, Integer.MAX_VALUE)) {
-					if (g.getName().equals(paramGroup.getName())) {
-						tmpGroup = g;
-						break;
-					}
-				}
-
-				if (!present(tmpGroup)) {
+				final Group requestedGroup = this.groupDBManager.getPendingGroup(groupName, this.loginUser.getName(), session);
+				if (!present(requestedGroup)) {
 					throw new AccessDeniedException("You can only delete group requests of groups you have requested.");
 				}
-
-				this.groupDBManager.deletePendingGroup(paramGroup.getName(), session);
+				
+				this.groupDBManager.deletePendingGroup(groupName, session);
 				break;
-
 			case ADD_INVITED:
 				this.permissionDBManager.ensureIsAdminOrHasGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.MODERATOR);
 				this.groupDBManager.addPendingMembership(group.getName(), requestedUserName, userSharedDocuments, GroupRole.INVITED, session);
 				break;
-
-			case ADD_INVITED_SPAMMER:
-				this.permissionDBManager.ensureIsAdminOrHasGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.MODERATOR);
-				this.groupDBManager.addPendingMembership(group.getName(), requestedUserName, userSharedDocuments, GroupRole.INVITED, session);
-				log.info("The user '"+this.loginUser.getName()+"' invited a spammer to the group '"+group.getName()+"'.");
-				break;
-
 			case ADD_REQUESTED:
 				// TODO: check for banned users in this group
 				// check if the group allows join requests
@@ -1482,10 +1443,8 @@ public class DBLogic implements LogicInterface {
 				}
 				this.groupDBManager.addPendingMembership(group.getName(), requestedUserName, userSharedDocuments, GroupRole.REQUESTED, session);
 				break;
-
-				// TODO: Refactor to one GroupUpdateOperation
+			// TODO: Refactor to one GroupUpdateOperation
 			case REMOVE_INVITED:
-
 			case DECLINE_JOIN_REQUEST:
 				final GroupMembership currentMembership = this.groupDBManager.getPendingMembershipForUserAndGroup(requestedUserName, group.getName(), session);
 
@@ -1497,9 +1456,7 @@ public class DBLogic implements LogicInterface {
 						this.groupDBManager.removePendingMembership(group.getName(), requestedUserName, session);
 					}
 				}
-
 				break;
-
 			case UPDATE_PERMISSIONS:
 				this.permissionDBManager.ensureAdminAccess(this.loginUser);
 				this.groupDBManager.updateGroupLevelPermissions(this.loginUser.getName(), paramGroup, session);
@@ -1507,13 +1464,39 @@ public class DBLogic implements LogicInterface {
 			default:
 				throw new UnsupportedOperationException("The requested method is not yet implemented.");
 			}
-
 			session.commitTransaction();
 			session.endTransaction();
 		} finally {
 			session.close();
 		}
-		return paramGroup.getName();
+		return groupName;
+	}
+
+	/**
+	 * @param group
+	 * @param userName
+	 * @param session
+	 */
+	private void updateUserItemsForLeavingGroup(final Group group, final String userName, final DBSession session) {
+		// get the id of the group
+		final int groupId = group.getGroupId();
+		
+		// set all tas shared with the group to private (groupID 1)
+		this.tagDBManager.updateTasInGroupFromLeavingUser(userName, groupId, session);
+		
+		// FIXME: handle group tas?
+		
+		/*
+		 * update the visibility of the post that are "assigned" to
+		 * the group
+		 * XXX: a loop over all resource database managers that
+		 * allow groups
+		 */
+		this.publicationDBManager.updatePostsInGroupFromLeavingUser(userName, groupId, session);
+		this.bookmarkDBManager.updatePostsInGroupFromLeavingUser(userName, groupId, session);
+
+		// set all discussions in the group to private (groupID 1)
+		this.discussionDatabaseManager.updateDiscussionsInGroupFromLeavingUser(userName, groupId, session);
 	}
 
 	/*
@@ -1819,7 +1802,7 @@ public class DBLogic implements LogicInterface {
 			/*
 			 * group admins can change settings of their group
 			 */
-			final Group group = this.getGroupDetails(username);
+			final Group group = this.getGroupDetails(username, false);
 			if (GroupUtils.isValidGroup(group)) {
 				this.permissionDBManager.ensureIsAdminOrHasGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.ADMINISTRATOR);
 			} else {

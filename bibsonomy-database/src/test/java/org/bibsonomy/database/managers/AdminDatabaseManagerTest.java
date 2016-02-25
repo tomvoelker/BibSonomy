@@ -271,48 +271,44 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		review.setGroups(Collections.singleton(GroupUtils.buildPublicSpamGroup()));
 		assertTrue(reviewDatabaseManager.createDiscussionItemForResource(newHash, review, this.dbSession));
 		assertEquals(0.0, testDatabaseManager.getReviewRatingsArithmeticMean(newHash), 0);
-
+		
 		spammer.setSpammer(false);
 		spammer.setAlgorithm("admin");
 		adminDb.flagSpammer(spammer, "admin", this.dbSession);
-
+		
 		assertEquals(rating, testDatabaseManager.getReviewRatingsArithmeticMean(newHash), 0);
-
+		
 		spammer.setSpammer(true);
 		adminDb.flagSpammer(spammer, "admin", this.dbSession);
-
+		
 		assertEquals(0.0, testDatabaseManager.getReviewRatingsArithmeticMean(newHash), 0);
-
-
-		/*
-		 * check if the user is member of a group, so he can't be flagged
-
-		 * We can't use a global (i.e., class attribute) manager, since the
-		 * GroupDatabaseManager contains a UserDatabaseManager and thus we
-		 * have a circular dependency in the constructors.
-		 */
+	}
+	
+	@Test
+	public void markUserMemberOfGroupsAsSpammer() {
+		final User user = new User();
+		final String userName = "testuser1";
+		user.setName(userName);
 		final Group newGroup = new Group();
 		final String groupName = "testgroupnew";
 		newGroup.setName(groupName.toUpperCase());
 		final GroupRequest groupRequest = new GroupRequest();
-		final String requestedUser = user.getName();
-		groupRequest.setUserName(requestedUser);
+		groupRequest.setUserName(userName);
 		groupRequest.setReason("testrequestreason1");
 		newGroup.setGroupRequest(groupRequest);
-
+		
 		groupDatabaseManager.createGroup(newGroup, this.dbSession);
 		groupDatabaseManager.activateGroup(newGroup.getName(), this.dbSession);
-
-		user.setSpammer(true);
-		// this should throw an exception now
+		
+		user.setSpammer(Boolean.TRUE);
+		
 		try {
 			adminDb.flagSpammer(user, "admin", this.dbSession);
+			// this should throw an exception
 			Assert.fail("User was flagged as spammer while being member of a group.");
 		} catch (final IllegalStateException ex) {
 			assertTrue(!userDatabaseManager.getUserDetails(user.getName(), this.dbSession).isSpammer());
 		}
-
-
 	}
 
 	/**
@@ -324,7 +320,7 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		user.setName("testspammer2");
 		user.setEmail("testMail@nomail.com");
 		user.setHobbies("spamming, flaming");
-		user.setSpammer(true);
+		user.setSpammer(Boolean.TRUE);
 		user.setToClassify(1);
 		user.setPrediction(1);
 		user.setConfidence(0.2);

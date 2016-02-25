@@ -165,7 +165,7 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 	private void fetchgroupForPermissions(final AdminAjaxCommand cmd) {
 		String groupName = cmd.getGroupname();
 		if (present(groupName)) {
-			Group group = logic.getGroupDetails(groupName);
+			Group group = logic.getGroupDetails(groupName, false);
 			if (present(group) && GroupID.INVALID.getId()!=group.getGroupId()) {
 				cmd.setGroupLevelPermissions(group.getGroupLevelPermissions());
 			}

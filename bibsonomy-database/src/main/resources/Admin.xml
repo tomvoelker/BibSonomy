@@ -164,11 +164,4 @@
 			number_of_ratings = number_of_ratings + 1
 		</isEqual>
 	</update>
-	
-	
-	<delete id="removeSpammerFromGroups" parameterClass="adminParam">
-		DELETE FROM group_memberships
-		WHERE user_name = #userName#
-	</delete>
-	
 </sqlMap>

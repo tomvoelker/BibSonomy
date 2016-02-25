@@ -76,7 +76,7 @@ public class DeleteGroupController extends GroupSettingsPageController implement
 		command.setLoggedinUser(loginUser);
 		
 		// group exists?
-		final Group group = this.logic.getGroupDetails(command.getGroupname());
+		final Group group = this.logic.getGroupDetails(command.getGroupname(), false);
 		if (!present(group)) {
 			throw new IllegalStateException("The requested group does not exist.");
 		}
@@ -118,7 +118,7 @@ public class DeleteGroupController extends GroupSettingsPageController implement
 		
 		final String groupName = group.getName();
 		log.debug("User is logged in, ckey is valid, deleting group " + groupName);
-		this.logic.deleteGroup(groupName);
+		this.logic.deleteGroup(groupName, false);
 		
 		command.setMessage("success.groupDelete", Collections.singletonList(groupName));
 		return Views.SUCCESS;

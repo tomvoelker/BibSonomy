@@ -27,6 +27,7 @@
 package org.bibsonomy.scraper;
 
 import org.bibsonomy.scraper.url.kde.Econstor.EconstorScraper;
+import org.bibsonomy.scraper.url.kde.RWTH.RWTHAachenScraper;
 import org.bibsonomy.scraper.url.kde.aaai.AAAIScraper;
 import org.bibsonomy.scraper.url.kde.aanda.AandAScraper;
 import org.bibsonomy.scraper.url.kde.acl.AclScraper;
@@ -54,7 +55,6 @@ import org.bibsonomy.scraper.url.kde.casesjournal.CasesJournalScraper;
 import org.bibsonomy.scraper.url.kde.cell.CellScraper;
 import org.bibsonomy.scraper.url.kde.citeseer.CiteseerxScraper;
 import org.bibsonomy.scraper.url.kde.citeulike.CiteulikeScraper;
-import org.bibsonomy.scraper.url.kde.copac.CopacScraper;
 import org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper;
 import org.bibsonomy.scraper.url.kde.dblp.DBLPScraper;
 import org.bibsonomy.scraper.url.kde.degruyter.DeGruyterScraper;
@@ -66,6 +66,7 @@ import org.bibsonomy.scraper.url.kde.faseb.FASEBJournalScraper;
 import org.bibsonomy.scraper.url.kde.firstmonday.FirstMondayScraper;
 import org.bibsonomy.scraper.url.kde.genome.GenomeBiologyScraper;
 import org.bibsonomy.scraper.url.kde.googlebooks.GoogleBooksScraper;
+import org.bibsonomy.scraper.url.kde.googlepatent.GooglePatentScraper;
 import org.bibsonomy.scraper.url.kde.googlescholar.GoogleScholarScraper;
 import org.bibsonomy.scraper.url.kde.hematologylibrary.HematologyLibraryScraper;
 import org.bibsonomy.scraper.url.kde.hindawi.HindawiScraper;
@@ -118,6 +119,7 @@ import org.bibsonomy.scraper.url.kde.pubmedcentral.PubMedCentralScraper;
 import org.bibsonomy.scraper.url.kde.rsc.RSCScraper;
 import org.bibsonomy.scraper.url.kde.rsoc.RSOCScraper;
 import org.bibsonomy.scraper.url.kde.sage.SageJournalScraper;
+import org.bibsonomy.scraper.url.kde.scielo.SCIELOScraper;
 import org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper;
 import org.bibsonomy.scraper.url.kde.sciencemag.ScienceMagScraper;
 import org.bibsonomy.scraper.url.kde.scopus.ScopusScraper;
@@ -129,7 +131,6 @@ import org.bibsonomy.scraper.url.kde.stanford.StanfordInfoLabScraper;
 import org.bibsonomy.scraper.url.kde.taylorAndFrancis.TaylorAndFrancisScraper;
 import org.bibsonomy.scraper.url.kde.thelancet.TheLancetScraper;
 import org.bibsonomy.scraper.url.kde.usenix.UsenixScraper;
-import org.bibsonomy.scraper.url.kde.webofknowledge.WebOfKnowledgeScraper;
 import org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper;
 import org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper;
 import org.bibsonomy.scraper.url.kde.worldscientific.WorldScientificScraper;
@@ -221,6 +222,8 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new BibliographyScraper());
 		addScraper(new WormbaseScraper());
 		addScraper(new GoogleScholarScraper());
+		addScraper(new GooglePatentScraper());
+		addScraper(new SCIELOScraper());
 		addScraper(new DLibScraper());
 		/*
 		 *Scientificcommons is reachable but shows default web page (apache)
@@ -273,6 +276,8 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new GenomeBiologyScraper());
 		addScraper(new APHAScraper());
 		addScraper(new CSHLPScraper());
+		addScraper(new RWTHAachenScraper());
+		
 		/*
 		 * it still under development
 		 */

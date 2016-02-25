@@ -1091,26 +1091,18 @@
 		<!-- authentication config -->
 		<property name="authConfig" ref="authConfig"/>
 	</bean>
-
+	
 	<!-- Handles password change process of a user -->
 	<bean id="changePasswordController" class="org.bibsonomy.webapp.controller.actions.ChangePasswordController" scope="request" parent="settingsPageController">
 		<property name="cookieLogic" ref="cookieLogic" />
 		<property name="rememberMeServices" ref="internalRememberMeServices" />
 		<property name="authConfig" ref="authConfig"/>
 	</bean>
-
-	<!-- Captcha bean -->
-	<bean id="reCaptcha" class="org.bibsonomy.webapp.util.captcha.ReCaptchaWrapper">
-		<property name="privateKey" value="${recaptcha.privateKey}"/>
-		<property name="publicKey" value="${recaptcha.publicKey}"/>
-		<property name="recaptchaServer" value="${recaptcha.recaptchaServer}"/>
-		<property name="includeNoscript" value="false" />
-	</bean>
 	
 	<!--  recaptcha2 bean -->
 	<bean id="reCaptcha2" class="org.bibsonomy.webapp.util.captcha.ReCaptcha2">
-		<property name="privateKey" value="${recaptcha.privateKey}"/>
-		<property name="publicKey" value="${recaptcha.publicKey}"/>
+		<property name="secretKey" value="${recaptcha2.secretKey}"/>
+		<property name="siteKey" value="${recaptcha2.siteKey}"/>
 		<property name="recaptchaServer" value="${recaptcha2.server}"/>
 		<property name="client" ref="reCaptcha2Client" />
 	</bean>
@@ -1175,6 +1167,7 @@
 		<property name="requestLogic" ref="requestLogic" />
 		<!-- to send registration mails -->
 		<property name="mailUtils" ref="mailUtils"/>
+		<property name="projectMail" value="${project.email}" />
 		<!-- to get the mail address for the users -->
 		<property name="adminLogic" ref ="adminLogic" />
 	</bean>

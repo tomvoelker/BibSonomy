@@ -384,7 +384,7 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 			
 			final Set<Pair<String, String>> aliasesToRemove = new HashSet<>();
 			// remove the standby alias
-			aliasesToRemove.add(new Pair<>(newIndexName, ElasticsearchUtils.getLocalAliasForResource(this.tools.getResourceType(), this.tools.getSystemURI(), SearchIndexState.STANDBY)));
+			aliasesToRemove.add(new Pair<>(newIndexName, this.getAliasNameForState(SearchIndexState.STANDBY)));
 			// only set the alias if the index should not be deleted
 			final boolean preferedDeletedActiveIndex = present(activeIndexName) && activeIndexName.equals(indexToDelete);
 			if (present(activeIndexName)) {
@@ -459,11 +459,10 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 	}
 
 	/**
-	 * @return 
-	 * 
+	 * @return all standby index names
 	 */
 	private List<String> getAllStandByIndices() {
-		return this.client.getIndexNamesForAlias(ElasticsearchUtils.getLocalAliasForResource(this.tools.getResourceType(), this.tools.getSystemURI(), SearchIndexState.STANDBY));
+		return this.client.getIndexNamesForAlias(this.getAliasNameForState(SearchIndexState.STANDBY));
 	}
 
 	/**
@@ -567,7 +566,7 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 				newLastTasId = Math.max(post.getLastTasId().intValue(), newLastTasId);
 			}
 			
-			if (convertedPosts.size() >= SearchDBInterface.SQL_BLOCKSIZE / 2) {
+			if (convertedPosts.size() >= ESConstants.BULK_INSERT_SIZE) {
 				this.clearQueue(indexName, convertedPosts);
 			}
 			
