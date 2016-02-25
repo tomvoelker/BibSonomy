@@ -258,6 +258,12 @@
 					</bean>
 				</entry>
 				
+				<entry key="/import">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="importController" />
+					</bean>
+				</entry>
+				
 				<!-- 
 				   | /import/delicious
 				   | /import/browser
@@ -1192,6 +1198,9 @@
 	
 	<!-- Handles the profile update of a user -->
 	<bean id="updateUserController" class="org.bibsonomy.webapp.controller.actions.UpdateUserController" scope="request" parent="settingsPageController" />
+	
+	<!-- Handles imports -->
+	<bean id="importController" class="org.bibsonomy.webapp.controller.actions.ImportController" scope="request" />
 	
 	<!-- Handles bookmark imports -->
 	<bean id="bookmarkImportController" class="org.bibsonomy.webapp.controller.actions.ImportBookmarksController" scope="request">

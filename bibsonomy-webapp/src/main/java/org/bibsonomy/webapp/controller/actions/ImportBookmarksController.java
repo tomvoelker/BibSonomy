@@ -120,11 +120,11 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 			 * FIXME: correct URL?
 			 * FIXME: don't do this on first call of form!
 			 */
-			return Views.IMPORT;
+			return Views.IMPORT_BOOKMARKS;
 		}
 
 		if (errors.hasErrors()) {
-			return Views.IMPORT;
+			return Views.IMPORT_BOOKMARKS;
 		}
 
 		List<Post<Bookmark>> posts = new LinkedList<Post<Bookmark>>();
@@ -192,7 +192,7 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 			command.setTotalCount(relations.size());
 		}
 
-		return Views.IMPORT;
+		return Views.IMPORT_BOOKMARKS;
 	}
 
 	/**

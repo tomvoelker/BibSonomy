@@ -461,7 +461,12 @@ public enum Views implements View {
 	/**
 	 * import view
 	 */
-	IMPORT("actions/post/import"),
+	IMPORT("import"),
+	
+	/**
+	 * import bookmarks view
+	 */
+	IMPORT_BOOKMARKS("actions/post/import"),
 
 	/**
 	 * facebook friends import view
