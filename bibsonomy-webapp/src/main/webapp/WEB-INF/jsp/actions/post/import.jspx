@@ -32,6 +32,10 @@
 				<c:when test="${empty command.importType or (command.importType eq 'browser' and command.totalCount == 0)}">
 					<post:browserImport />
 				</c:when>
+				<c:when test="${command.importType eq 'general'}">
+					<post:browserImport />
+					<post:deliciousImport />
+				</c:when>
 				<c:otherwise>
 					<!-- make some output about the import results -->
 					<post:importResults command="${command}" />
