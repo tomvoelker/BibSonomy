@@ -109,30 +109,33 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 		}
 
 		final User loginUser = context.getLoginUser();
+		
+		final String importType = command.getImportType();
+		final boolean isDelicous = importType.equals("delicous");
+		final boolean isBrowser = importType.equals("browser");
 
 		/*
 		 * check credentials to fight CSRF attacks 
 		 * 
 		 */
-		if (!context.isValidCkey()) {
+		if (!context.isValidCkey() && (isDelicous || (isBrowser && command.getTotalCount() > 0))) {
 			errors.reject("error.field.valid.ckey");
 			/*
 			 * FIXME: correct URL?
 			 * FIXME: don't do this on first call of form!
 			 */
-			return Views.IMPORT_BOOKMARKS;
+			return Views.IMPORT;
 		}
 
 		if (errors.hasErrors()) {
-			return Views.IMPORT_BOOKMARKS;
+			return Views.IMPORT;
 		}
 
 		List<Post<Bookmark>> posts = new LinkedList<Post<Bookmark>>();
 		List<Tag> relations = new LinkedList<Tag>();
 		
-		final String importType = command.getImportType();
 		try {
-			if ("delicious".equals(importType)) {
+			if (isDelicous) {
 				/*
 				 * TODO: we want to have checkboxes, not radio buttons!
 				 */
@@ -151,7 +154,7 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 					relations = relationImporter.getRelations();
 				} 
 
-			} else if ("browser".equals(importType)) {
+			} else if (isBrowser) {
 				/*
 				 * import posts/relations from Firefox, Safari, Opera, Chrome
 				 */
@@ -192,7 +195,7 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 			command.setTotalCount(relations.size());
 		}
 
-		return Views.IMPORT_BOOKMARKS;
+		return Views.IMPORT;
 	}
 
 	/**
