@@ -41,23 +41,32 @@ import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
  */
 public class ClipboardPlugin extends AbstractDatabasePlugin {
 	
+	private ClipboardDatabaseManager clipboardDatabaseManager;
+
 	@Override
 	public void onPublicationDelete(final int contentId, final DBSession session) {
-		ClipboardDatabaseManager.getInstance().deleteItems(contentId, session);
+		this.clipboardDatabaseManager.deleteItems(contentId, session);
 	}
 	
 	@Override
 	public void onBookmarkDelete(final int contentId, final DBSession session) {
-		ClipboardDatabaseManager.getInstance().deleteItems(contentId, session);
+		this.clipboardDatabaseManager.deleteItems(contentId, session);
 	}
 	
 	@Override
 	public void onPublicationUpdate(final int newContentId, final int contentId, final DBSession session) {
-		ClipboardDatabaseManager.getInstance().updateItems(newContentId, contentId, session);
+		this.clipboardDatabaseManager.updateItems(newContentId, contentId, session);
 	}
 	
 	@Override
 	public void onBookmarkUpdate(final int newContentId, final int contentId, final DBSession session){
-		ClipboardDatabaseManager.getInstance().updateItems(newContentId, contentId, session);
+		this.clipboardDatabaseManager.updateItems(newContentId, contentId, session);
+	}
+
+	/**
+	 * @param clipboardDatabaseManager the clipboardDatabaseManager to set
+	 */
+	public void setClipboardDatabaseManager(ClipboardDatabaseManager clipboardDatabaseManager) {
+		this.clipboardDatabaseManager = clipboardDatabaseManager;
 	}
 }
