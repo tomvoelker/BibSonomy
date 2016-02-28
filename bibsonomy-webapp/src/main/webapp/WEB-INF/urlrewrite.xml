@@ -168,7 +168,7 @@
 		<name>/layout/</name>
 		<from>^/+layout/+(.+?)/+(.*)$</from>
 		<set type="parameter" name="format">layout</set>
-		<set type="parameter" name="layout">$1</set>
+		<set type="parameter" name="layout">${unescapePath:$1}</set>
 		<to>/$2</to>
 	</rule>
 	<!-- json export of our jabref layouts -->
@@ -228,8 +228,7 @@
 		<from>^/+(.+)$</from>
 		<set name="requPath">$1</set>
 	</rule>
-
-
+	
 	<!-- ############## quick tag editing ############### -->
 	<!-- page where user can edit all tags in a batch -->
 	<rule>
@@ -987,14 +986,6 @@
 		<from>^/+activate/+([0-9a-fA-F]{32}).*</from>
 		<set type="parameter" name="activationCode">${unescapePath:$1}</set>
 		<to last="true">/activate</to>
-	</rule>
-	
-	<!-- ############## new actions - testing! ############### -->
-	<rule><!-- /actions/admin/group/GROUPNAME -->
-		<name>/actions/admin/group/GROUP</name>
-		<from>^/+actions/+admin/+group/+([^/]+)$</from>
-		<set type="parameter" name="requestedGroup">$1</set>
-		<to last="true">/actions/admin/group</to>
 	</rule>
 	
 	<!-- ############## old pages - can be removed when never accessed ############### -->
