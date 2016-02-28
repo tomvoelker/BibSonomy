@@ -59,7 +59,6 @@ import org.bibsonomy.webapp.view.Views;
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 
 /**
@@ -208,7 +207,7 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		 * check if user acknowledged the deletion of his OpenID access
 		 */
 		if (present(existingUser.getOpenID())){
-			if(!command.isAcknowledgeOpenIDDeletion()){
+			if (!command.isAcknowledgeOpenIDDeletion()) {
 				errors.rejectValue("acknowledgeOpenIDDeletion", "error.field.value.acknowledge");
 			}
 			if (errors.hasErrors()) {
@@ -217,7 +216,7 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 			}
 			this.adminLogic.updateUser(user, UserUpdateOperation.DELETE_OPENID);
 		}
-			
+		
 		/*
 		 * create the random pw and set it to the user object
 		 */
@@ -278,21 +277,15 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 	 */
 	@Required
 	public void setAdminLogic(final LogicInterface adminLogic) {
-		Assert.notNull(adminLogic, "The provided logic interface must not be null.");
 		this.adminLogic = adminLogic;
-		/*
-		 * Check, if logic has admin access.
-		 */
-		Assert.isTrue(Role.ADMIN.equals(this.adminLogic.getAuthenticatedUser().getRole()), "The provided logic interface must have admin access.");
 	}
-
 
 	/**
 	 * Creates the random string
 	 * 
 	 * @return String
 	 */
-	private String getRandomString() {
+	private static String getRandomString() {
 		final Random rand = new Random();
 		final byte[] bytes = new byte[8];
 		rand.nextBytes(bytes);
@@ -342,5 +335,4 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 	public void setAuthConfig(final List<AuthMethod> authConfig) {
 		this.authConfig = authConfig;
 	}
-	
 }
