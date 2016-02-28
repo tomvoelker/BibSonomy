@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.webapp.util.captcha;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
@@ -42,6 +44,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -56,23 +59,41 @@ public class ReCaptcha2 implements Captcha {
 	private static final String ERROR_CODES_FIELD = "error-codes";
 	private static final String SUCCESS_FIELD = "success";
 	
-	
-	// FIXME: check for timeouts (request, response)
 	private CloseableHttpClient client;
 	
-	private String privateKey;
-	private String publicKey;
+	private String secretKey;
+	private String siteKey;
 	private String recaptchaServer;
-	private boolean includeNoscript; // TODO: support noscript by default; remove param
 	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.webapp.util.captcha.Captcha#createCaptchaHtml(java.util.Locale)
 	 */
 	@Override
 	public String createCaptchaHtml(final Locale locale) {
-		// FIXME: support locale; see https://developers.google.com/recaptcha/docs/language
-		return "<script src='https://www.google.com/recaptcha/api.js'></script>" + 
-				"<div class=\"g-recaptcha\" data-sitekey=\"" + this.publicKey +  "\"></div>";
+		final String language = locale.getLanguage();
+		return "<script src='https://www.google.com/recaptcha/api.js?hl=" + language + "'></script>" + 
+				"<div class=\"g-recaptcha\" data-sitekey=\"" + this.siteKey +  "\"></div>"
+					+ "<noscript>"
+					+ "<div style=\"width: 302px; height: 422px;\">"
+					+ "<div style=\"width: 302px; height: 422px; position: relative;\">"
+					+ "<div style=\"width: 302px; height: 422px; position: absolute;\">"
+					+ "<iframe src=\"https://www.google.com/recaptcha/api/fallback?hl=" + language + "&k=" + this.siteKey + "\""
+					+ "frameborder=\"0\" scrolling=\"no\""
+					+ "style=\"width: 302px; height:422px; border-style: none;\">"
+					+ "</iframe>"
+					+ "</div>"
+					+ "<div style=\"width: 300px; height: 60px; border-style: none;"
+					+ "bottom: 12px; left: 25px; margin: 0px; padding: 0px; right: 25px;"
+					+ "background: #f9f9f9; border: 1px solid #c1c1c1; border-radius: 3px;\">"
+					+ "<textarea id=\"g-recaptcha-response\" name=\"g-recaptcha-response\""
+					+ "class=\"g-recaptcha-response\""
+					+ "style=\"width: 250px; height: 40px; border: 1px solid #c1c1c1;"
+					+ "margin: 10px 25px; padding: 0px; resize: none;\" >"
+					+ "</textarea>"
+					+ "</div>"
+					+ "</div>"
+					+ "</div>"
+					+ "</noscript>";
 	}
 
 	/* (non-Javadoc)
@@ -85,7 +106,7 @@ public class ReCaptcha2 implements Captcha {
 		
 		try {
 			final List<BasicNameValuePair> entity = Arrays.asList(
-				new BasicNameValuePair("secret", this.privateKey),
+				new BasicNameValuePair("secret", this.secretKey),
 				new BasicNameValuePair("response", response),
 				new BasicNameValuePair("remoteip", remoteHostInetAddress));
 			
@@ -101,16 +122,13 @@ public class ReCaptcha2 implements Captcha {
 			log.debug(responseObject.toString());
 			
 			final boolean success = Boolean.parseBoolean(responseObject.get(SUCCESS_FIELD).toString());
-			String errorCodes = null;
-			if (responseObject.containsKey(ERROR_CODES_FIELD)) {
-				errorCodes = responseObject.get(ERROR_CODES_FIELD).toString();
-			}
+			final List<String> errorCodes = getErrorCodes(responseObject);
+			
 			httpResponse.close();
 			log.debug("success: " + success);
 			log.debug("error-codes: " + errorCodes);
 			
-			// TODO: Parse Error Codes and post corresponding messages.
-			return new ReCaptcha2Response(success, errorCodes);
+			return new ReCaptcha2Response(success, extractErrorMessage(errorCodes));
 		} catch (final UnsupportedEncodingException e) {
 			return new ReCaptcha2Response(false, "Unsupported Encoding! Did not send a request.");
 		} catch (final HttpException e) {
@@ -125,28 +143,64 @@ public class ReCaptcha2 implements Captcha {
 	}
 	
 	/**
-	 * @param includeNoscript the includeNoscript to set
+	 * @param responseObject
+	 * @return
 	 */
-	public void setIncludeNoscript(boolean includeNoscript) {
-		this.includeNoscript = includeNoscript;
+	@SuppressWarnings("unchecked")
+	private static List<String> getErrorCodes(JSONObject responseObject) {
+		if (responseObject.containsKey(ERROR_CODES_FIELD)) {
+			return (JSONArray) responseObject.get(ERROR_CODES_FIELD);
+		}
+		
+		return null;
 	}
-	
+
 	/**
-	 * 
-	 * @param privateKey
+	 * @param errorCodes
+	 * @return
 	 */
-	public void setPrivateKey(String privateKey) {
-		this.privateKey = privateKey;
+	private static String extractErrorMessage(List<String> errorCodes) {
+		if (!present(errorCodes)) {
+			return null;
+		}
+		
+		final StringBuilder errorMessageBuilder = new StringBuilder();
+		for (String errorCode : errorCodes) {
+			switch (errorCode) {
+			case "missing-input-secret":
+				errorMessageBuilder.append("The secret parameter is missing. ");
+				break;
+			case "invalid-input-secret":
+				errorMessageBuilder.append("The secret parameter is invalid or malformed. ");
+				break;
+			case "missing-input-response":
+				errorMessageBuilder.append("The response parameter is missing. ");
+				break;
+			case "invalid-input-response":
+				errorMessageBuilder.append("The response parameter is invalid or malformed. ");
+				break;
+			default:
+				break;
+			}
+		}
+		
+		return errorMessageBuilder.toString().trim();
 	}
-	
+
 	/**
-	 * 
-	 * @param publicKey
+	 * @param secretKey the secretKey to set
 	 */
-	public void setPublicKey(String publicKey) {
-		this.publicKey = publicKey;
+	public void setSecretKey(String secretKey) {
+		this.secretKey = secretKey;
 	}
-	
+
+	/**
+	 * @param siteKey the siteKey to set
+	 */
+	public void setSiteKey(String siteKey) {
+		this.siteKey = siteKey;
+	}
+
 	/**
 	 * 
 	 * @param recaptchaServer

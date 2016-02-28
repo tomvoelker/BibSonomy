@@ -55,7 +55,7 @@ public class OAIConverterTest {
 	private void testFile(final String fileName) throws IOException, ScrapingException {
 		final String xml = TestUtils.readEntryFromFile(OAIConverterTest.PATH_TO_FILES + fileName + ".xml");
 		final String bib = TestUtils.readEntryFromFile(OAIConverterTest.PATH_TO_FILES + fileName + ".bib");
-		
-		assertEquals(bib.trim(), OAIConverter.convert(xml).trim());
+		OAIToBibtexConverter converter = new OAIToBibtexConverter();
+		assertEquals(bib.trim(), converter.toBibtex(xml).trim());
 	}
 }

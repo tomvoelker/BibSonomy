@@ -230,6 +230,10 @@ public class User implements Serializable {
 	 */ 
 	private String mode;
 	
+	/**
+	 * The logged interaction at registration form
+	 */
+	private String registrationLog;
 	
 	/* ****************************** account management ****************************** */
 	
@@ -1049,5 +1053,19 @@ public class User implements Serializable {
 	 */
 	public void setReportedSpammers(Set<User> reportedSpammers) {
 		this.reportedSpammers = reportedSpammers;
+	}
+
+	/**
+	 * @return the logged interaction at registration form
+	 */
+	public String getRegistrationLog() {
+		return this.registrationLog;
+	}
+
+	/**
+	 * @param registrationLog the logged interaction at registration form to set
+	 */
+	public void setRegistrationLog(String registrationLog) {
+		this.registrationLog = registrationLog;
 	}
 }

@@ -41,7 +41,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 /**
  * @author C. Kramer
  */
-public class PicaToBibtexConverter {
+public class PicaToBibtexConverter implements BibtexConverter {
 	private static final Log log = LogFactory.getLog(PicaToBibtexConverter.class);
 	
 	private final static Pattern PATTERN_LONGTITLE = Pattern.compile("(?s)<LONGTITLE.*?>(.*)</LONGTITLE>");
@@ -51,6 +51,11 @@ public class PicaToBibtexConverter {
 	private final PicaRecord pica;
 	private final String url;
 	
+	@Override
+	public String toBibtex(final String sc) {
+		parseContent(sc);
+		return PicaParser.getBibRes(this.pica, this.url);
+	}
 	/**
 	 * Convert the pica content to the pica object structure
 	 * 
@@ -58,11 +63,9 @@ public class PicaToBibtexConverter {
 	 * @param type
 	 * @param url
 	 */
-	public PicaToBibtexConverter(final String sc, final String type, final String url){
+	public PicaToBibtexConverter(final String type, final String url){
 		this.pica = new PicaRecord();
 		this.url = url;
-		
-		parseContent(sc);
 	}
 	
 	/**
@@ -133,12 +136,5 @@ public class PicaToBibtexConverter {
 	 */
 	public PicaRecord getActualPicaRecord(){
 		return this.pica;
-	}
-	
-	/**
-	 * @return BibTeX string
-	 */
-	public String getBibResult() {
-		return PicaParser.getBibRes(this.pica, this.url);
 	}
 }

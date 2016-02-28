@@ -41,6 +41,6 @@ public abstract class GenericEndnoteURLScraper extends AbstractGenericFormatURLS
 	protected final String convert(String downloadResult) {
 		// TODO: thread save?
 		final EndnoteToBibtexConverter converter = new EndnoteToBibtexConverter();
-		return converter.endnoteToBibtex(downloadResult);
+		return converter.toBibtex(downloadResult);
 	}
 }

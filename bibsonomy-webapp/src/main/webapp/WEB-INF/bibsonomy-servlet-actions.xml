@@ -27,6 +27,7 @@
 								<value>registerUser.password</value>
 								<value>registerUser.homepage</value>
 								<value>registerUser.realname</value>
+								<value>registerUser.registrationLog</value>
 								<value>passwordCheck</value>
 								<!-- for admins which want to register a new user -->
 								<value>ckey</value>
@@ -72,6 +73,7 @@
 								<value>ckey</value>
 								<value>group</value>
 								<value>reason</value>
+								<value>userSharedDocuments</value>
 								<value>deniedUser</value>
 								<value>joinRequest</value>
 								<!-- for recaptcha -->
@@ -617,11 +619,15 @@
 								<value>privlevel</value>
 								<value>realname</value>
 								<value>sharedDocuments</value>
+								<value>allowJoin</value>
+								<value>description</value>
 								<value>groupname</value>
 								<value>username</value>
 								<value>homepage</value>
 								<value>operation</value>
 								<value>groupRole</value>
+								<value>pictureFile</value>
+								<value>deletePicture</value>
 								<value>group.name</value>
 								<value>group.realname</value>
 								<value>group.description</value>
@@ -642,6 +648,35 @@
 								<value>group.name</value>
 								<value>group.description</value>
 								<value>group.groupRequest.reason</value>
+								<value>group.groupRequest.userName</value>
+								<!-- for recaptcha -->
+								<value>recaptcha_response_field</value>
+								<value>recaptcha_challenge_field</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<!-- delete group request -->
+				<entry key="/deletegrouprequest">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="deleteGroupRequestController"/>
+						<property name="allowedFields">
+							<list>
+								<value>ckey</value>
+								<value>groupName</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<!--  delete group -->
+				<entry key="/actions/deleteGroup">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="deleteGroupController"/>
+						<property name="allowedFields">
+							<list>
+								<value>delete</value>
+								<value>selTab</value>
+								<value>groupname</value>
 							</list>
 						</property>
 					</bean>
@@ -806,6 +841,23 @@
 		<property name="scraper" ref="kdeScraperChain"/>
 		<property name="swordService" ref="swordService"/>
 	</bean>
+	
+	<bean id="swordService" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
+		<property name="condition">
+			<bean id="samlActivatedCondition" class="org.bibsonomy.webapp.util.spring.condition.EvalOnceCondition">
+				<property name="delegate">
+					<bean class="org.bibsonomy.webapp.util.spring.condition.EqualCondition">
+						<constructor-arg value="${publication.reporting.enabled}" />
+						<constructor-arg value="true" />
+					</bean>
+				</property>
+			</bean>
+		</property>
+		<lookup-method name="produceSucessBean" bean="realSwordService"/>
+		<lookup-method name="produceFailureBean" bean="swordServiceDisabled"/>
+	</bean>
+	
+	<bean id="swordServiceDisabled" class="org.bibsonomy.webapp.util.spring.factorybeans.NullFactoryBean"/>
 	
 	<bean id="editGoldStandardBookmarkController" class="org.bibsonomy.webapp.controller.actions.EditGoldStandardBookmarkController" scope="request" parent="editPostController" />
 	
@@ -1033,32 +1085,32 @@
 		<!-- authentication config -->
 		<property name="authConfig" ref="authConfig"/>
 	</bean>
-
+	
 	<!-- Handles password change process of a user -->
 	<bean id="changePasswordController" class="org.bibsonomy.webapp.controller.actions.ChangePasswordController" scope="request" parent="settingsPageController">
 		<property name="cookieLogic" ref="cookieLogic" />
 		<property name="rememberMeServices" ref="internalRememberMeServices" />
 		<property name="authConfig" ref="authConfig"/>
 	</bean>
-
-	<!-- Captcha bean -->
-	<bean id="reCaptcha" class="org.bibsonomy.webapp.util.captcha.ReCaptchaWrapper">
-		<property name="privateKey" value="${recaptcha.privateKey}"/>
-		<property name="publicKey" value="${recaptcha.publicKey}"/>
-		<property name="recaptchaServer" value="${recaptcha.recaptchaServer}"/>
-		<property name="includeNoscript" value="false" />
-	</bean>
 	
 	<!--  recaptcha2 bean -->
 	<bean id="reCaptcha2" class="org.bibsonomy.webapp.util.captcha.ReCaptcha2">
-		<property name="privateKey" value="${recaptcha.privateKey}"/>
-		<property name="publicKey" value="${recaptcha.publicKey}"/>
+		<property name="secretKey" value="${recaptcha2.secretKey}"/>
+		<property name="siteKey" value="${recaptcha2.siteKey}"/>
 		<property name="recaptchaServer" value="${recaptcha2.server}"/>
-		<property name="includeNoscript" value="false" />
 		<property name="client" ref="reCaptcha2Client" />
 	</bean>
 	
-	<bean id="reCaptcha2Client" class="org.apache.http.impl.client.HttpClients" destroy-method="close" factory-method="createDefault" />
+	<!-- configure the http client for communication with the recaptcha service -->
+	<bean id="requestConfigBuilder" class="org.apache.http.client.config.RequestConfig" factory-method="custom">
+		<property name="socketTimeout" value="2000" /> 
+		<property name="connectTimeout" value="2000" /> 
+	</bean>
+	<bean id="requestConfig" factory-bean="requestConfigBuilder" factory-method="build" />
+	<bean id="httpClientBuilder" class="org.apache.http.impl.client.HttpClientBuilder" factory-method="create">
+		<property name="defaultRequestConfig" ref="requestConfig" />
+	</bean>
+	<bean id="reCaptcha2Client" factory-bean="httpClientBuilder" factory-method="build" destroy-method="close" />
 	
 	<!-- for testing -->
 	<bean id="mockCaptcha" class="org.bibsonomy.webapp.util.captcha.MockCaptcha" />
@@ -1105,9 +1157,11 @@
 	<!-- Handles the settings update of a group -->
 	<bean id="updateGroupController" class="org.bibsonomy.webapp.controller.actions.UpdateGroupController" scope="request">
 		<property name="logic" ref="logic" />
+		<property name="fileLogic" ref="fileLogic" />
 		<property name="requestLogic" ref="requestLogic" />
 		<!-- to send registration mails -->
 		<property name="mailUtils" ref="mailUtils"/>
+		<property name="projectMail" value="${project.email}" />
 		<!-- to get the mail address for the users -->
 		<property name="adminLogic" ref ="adminLogic" />
 	</bean>
@@ -1118,8 +1172,16 @@
 		<property name="adminLogic" ref ="adminLogic" />
 		<property name="mailer" ref="mailUtils" />
 		<property name="requestLogic" ref="requestLogic" />
+		<!-- To check registration for human beings ... -->
+		<property name="captcha" ref="captcha"></property>	
 		<property name="groupCreationMode" value="${project.groupcreationmode}" />
 	</bean>
+	
+	<!-- delete group request -->
+	<bean id="deleteGroupRequestController" class="org.bibsonomy.webapp.controller.actions.DeleteGroupRequestController" scope="request" parent="settingsPageController" />
+	
+	<!-- Handles delete group process  -->
+	<bean id="deleteGroupController" class="org.bibsonomy.webapp.controller.actions.DeleteGroupController" scope="request" parent="groupSettingsPageController" />
 	
 	<!-- Handles the profile update of a user -->
 	<bean id="updateUserController" class="org.bibsonomy.webapp.controller.actions.UpdateUserController" scope="request" parent="settingsPageController" />

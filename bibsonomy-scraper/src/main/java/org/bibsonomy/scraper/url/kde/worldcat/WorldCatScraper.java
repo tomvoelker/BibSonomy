@@ -67,7 +67,7 @@ public class WorldCatScraper extends AbstractUrlScraper {
 	//for preprocessing of Worldcat RIS
 	private static final String KEY_VALUE_SEPARATOR = "  - ";
 	private static final String LINE_DELIMITER = "\n";
-	private static final Pattern AUTHOR_CORRECT_PATTERN = Pattern.compile("^[^,]+, [^,]+$");
+	private static final Pattern AUTHOR_CORRECT_PATTERN = Pattern.compile("^[^,]+(, [^,]+)?$");
 	private static final Pattern AUTHOR_EXTRACTOR_PATTERN = Pattern.compile("([^,]+, [^,]+),");
 
 	@Override
@@ -80,8 +80,8 @@ public class WorldCatScraper extends AbstractUrlScraper {
 			if (present(bibtex)) {
 				sc.setBibtexResult(bibtex);
 				return true;
-			} else
-				throw new ScrapingFailureException("getting bibtex failed");
+			}
+			throw new ScrapingFailureException("getting bibtex failed");
 		} catch (IOException ex) {
 			throw new InternalFailureException(ex);
 		}
@@ -145,7 +145,7 @@ public class WorldCatScraper extends AbstractUrlScraper {
 		} else {
 			ris = ris.replaceFirst("ER\\s{2}-\\s[\\n.]*\\z", "UR  - " + replacementURL + "\nER  - ");
 		}
-		String bibtex = converter.risToBibtex(ris);
+		String bibtex = converter.toBibtex(ris);
 		return BibTexUtils.addFieldIfNotContained(bibtex, "isbn", isbn);
 	}
 	
@@ -190,7 +190,7 @@ public class WorldCatScraper extends AbstractUrlScraper {
 					}
 				}
 			}
-			//not an author field -> keep it
+			// not an author field -> keep it
 			else {
 				correctRIS.append(entry + LINE_DELIMITER);
 			}
@@ -236,7 +236,7 @@ public class WorldCatScraper extends AbstractUrlScraper {
 		/*
 		 * convert RIS to BibTeX
 		 */
-		final String bibtex = converter.risToBibtex(ris);
+		final String bibtex = converter.toBibtex(ris);
 		
 		/*
 		 * add URL

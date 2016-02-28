@@ -81,7 +81,7 @@ ul.dropdown-menu.list-options > li > span {
 }
 
 .container.header {
-	background: #FFFFFF;
+	background: @header-background-color;
 	border-top: none;
 	border-bottom: none;
 	margin-top: 30px;
@@ -598,14 +598,6 @@ div#sidebar {
 	padding-right: 30px;
 	margin-left: 15px;
 	border-left: 1px @border-color solid;
-} 
-
-.sidebar h4 {
-
-}
-
-#sidebar {
-
 }
 
 #sidebar ul {
@@ -618,6 +610,23 @@ div#sidebar {
 .similar-users-headline,
 .concepts-headline {
 /* 	float: left; */
+}
+
+.sidebar {
+	.groupDescription {
+		margin-top: 5px;
+	}
+	.memberSettings {
+		margin-top: 20px;
+	}
+	
+	.img-group span {
+		padding-left: 4px;
+	}
+}
+
+.more-list span.desc {
+	padding-left: 3px;
 }
 
 .sidebar-setting-box {
@@ -862,6 +871,10 @@ h4.pub-details {
 	padding: 5px 5px 5px 0;
 }
 
+table a.img-thumbnail {
+	margin-right: 10px;
+}
+
 /* Abstract */
 .morecontent {
 	display:none;
@@ -992,6 +1005,17 @@ fieldset {
 	color: #333;
 	font-weight: normal;
 	line-height: 120%;
+}
+
+.jumbotron {
+	hr {
+		border-top: 1px solid #ddd;
+		margin-top: -5px;
+	}
+	
+	hr.homelogo {
+		margin-top: -17px;
+	}
 }
 
 .container.footer hr {
@@ -1169,7 +1193,7 @@ h1.content-header, h1.content-heading {
 	height: 28px;
 }
 
-.main h3, .main .sidebar h4 {
+.main h3 {
 	font-size: 18px;
 	line-height: 28px;
 	height: 28px;
@@ -1187,6 +1211,8 @@ h1.content-header, h1.content-heading {
 
 .main .sidebar h4 {
 	border-bottom: 1px solid @border-color;
+	height: auto;
+	padding-bottom: 2px;
 }
 
 .jumbotron h2 {
@@ -1309,6 +1335,33 @@ ul#urlList {
 	padding-left: 0;
 }
 
+#loginModal {
+	top: 20%;
+	outline: none;
+	
+	.modal-header {
+		border: none;
+		padding-bottom: 0px;
+	}
+	
+	p.authHelp {
+		font-size: 100%;
+		color: #333333;
+	}
+	
+	.modal-dialog {
+		width: 450px;
+	}
+	
+	fieldset {
+		margin: 0px;
+	}
+	
+	form a {
+		font-size: 90%;
+	}
+}
+
 #suggestionBox {
 	position:absolute;
 	display:none;
@@ -1323,6 +1376,20 @@ ul#urlList {
 .label-disabled {
 	color: #777777;
 	border: 1px solid #777777;
+}
+
+/******* cv image styles **********/
+.group-cv-image {
+	width:auto !important; 
+	height:auto !important;
+}
+
+.group-cv-image-name {
+	width: auto !important;
+}
+/******* admin groups **********/
+.groupDeclineRow {
+	display: none;
 }
 
 .btn-group > form {

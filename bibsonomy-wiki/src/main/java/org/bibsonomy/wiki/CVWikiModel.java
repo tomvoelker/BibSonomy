@@ -37,11 +37,13 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.wiki.tags.AbstractTag;
+import org.bibsonomy.wiki.tags.group.GroupDescriptionTag;
 import org.bibsonomy.wiki.tags.group.GroupImageTag;
 import org.bibsonomy.wiki.tags.group.MembersTag;
 import org.bibsonomy.wiki.tags.shared.HomepageTag;
 import org.bibsonomy.wiki.tags.shared.ImageTag;
 import org.bibsonomy.wiki.tags.shared.NameTag;
+import org.bibsonomy.wiki.tags.shared.TagcloudTag;
 import org.bibsonomy.wiki.tags.shared.resource.BookmarkListTag;
 import org.bibsonomy.wiki.tags.shared.resource.PublicationListTag;
 import org.bibsonomy.wiki.tags.user.BirthdayTag;
@@ -51,7 +53,6 @@ import org.bibsonomy.wiki.tags.user.InterestsTag;
 import org.bibsonomy.wiki.tags.user.LocationTag;
 import org.bibsonomy.wiki.tags.user.ProfessionTag;
 import org.bibsonomy.wiki.tags.user.RegDateTag;
-import org.bibsonomy.wiki.tags.user.TagcloudTag;
 import org.springframework.context.MessageSource;
 
 import info.bliki.htmlcleaner.BaseToken;
@@ -82,6 +83,7 @@ public class CVWikiModel extends AbstractWikiModel {
 		/* Group Tags */
 		register(new MembersTag());
 		register(new GroupImageTag());
+		register(new GroupDescriptionTag());
 		
 		/* Shared Tags */
 		register(new HomepageTag());

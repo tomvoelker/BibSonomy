@@ -108,60 +108,61 @@
 			<div class="clearfix">&#160;</div>
 			
 			<div class="clearfix">
-				<h2><fmt:message key="disambiguation.pleaseChooseMsg"><fmt:param value="${mtl:cleanBibtex(command.personName)}"/></fmt:message></h2>
-				<p><fmt:message key="disambiguation.listExplanation"/></p>
-					<c:choose>
-						<c:when test="${fn:length(command.personSuggestions) gt 0}">
-							<div class="list-group">
-								<c:forEach var='rel' items="${command.personSuggestions}">
-									<div class="list-group-item">
-										<c:choose>
-											<c:when test="${not empty command.context.loginUser.name}">
-												<c:set var="dataToggle" value="modal"/>
-												<c:set var="href" value="#linkPerson"/>
-												<c:set var="dataTarget" value="#linkPerson"/>
-											</c:when>
-											<c:otherwise>
-												<c:set var="dataToggle" value=""/>
-												<c:set var="href" value="${absoluteUrlGenerator.getPersonUrl(rel.person.personId)}"/>
-												<c:set var="dataTarget" value=""/>
-											</c:otherwise>
-										</c:choose>
-										<a class='btnLinkPerson' data-toggle="${dataToggle}" data-target="${dataTarget}" href="${href}" data-person-url="${absoluteUrlGenerator.getPersonUrl(rel.person.personId)}" data-person-id="${fn:escapeXml(rel.person.personId)}" >
-											${command.personRoleRenderer.getExtendedPersonName(rel, request.locale, true)}
-										</a>
-									</div>
-								</c:forEach>
-								<c:if test="${not empty command.context.loginUser.name}">
-									<div class="list-group-item">
-										<a class='btnLinkPerson' data-toggle="modal" data-target="#otherPerson" href="#otherPerson"><span class="authorName">${textOtherPerson}</span></a>
-									</div>
-								</c:if>
-							</div>
-						</c:when>
-						<c:otherwise>
-							<bsold:alert style="info">
-								<jsp:attribute name="alertBody">
-									<div>
-										<fmt:message key="disambiguation.notFound">
-											<fmt:param value="${command.personName}" />
-										</fmt:message>
-									</div>
-								</jsp:attribute>
-							</bsold:alert>
-							
-							<bs:linkButton style="primary" href="#otherPerson" size="defaultSize" dataToggle="modal" dataTarget="#otherPerson">
-								<jsp:attribute name="content">
-									<span class="authorName">
-										<fmt:message key="disambiguation.newPerson">
-											<fmt:param value="${command.personName}" />
-										</fmt:message>
-									</span>
-								</jsp:attribute>
-							</bs:linkButton>
-						</c:otherwise>
-					</c:choose>
-			</div>
+				<c:if test="${not empty command.context.loginUser.name}">
+					<h2><fmt:message key="disambiguation.pleaseChooseMsg"><fmt:param value="${mtl:cleanBibtex(command.personName)}"/></fmt:message></h2>
+					<p><fmt:message key="disambiguation.listExplanation"/></p>
+						<c:choose>
+							<c:when test="${fn:length(command.personSuggestions) gt 0}">
+								<div class="list-group">
+									<c:forEach var='rel' items="${command.personSuggestions}">
+										<div class="list-group-item">
+											<c:choose>
+												<c:when test="${not empty command.context.loginUser.name}">
+													<c:set var="dataToggle" value="modal"/>
+													<c:set var="href" value="#linkPerson"/>
+													<c:set var="dataTarget" value="#linkPerson"/>
+												</c:when>
+												<c:otherwise>
+													<c:set var="dataToggle" value=""/>
+													<c:set var="href" value="${absoluteUrlGenerator.getPersonUrl(rel.person.personId)}"/>
+													<c:set var="dataTarget" value=""/>
+												</c:otherwise>
+											</c:choose>
+											<a class='btnLinkPerson' data-toggle="${dataToggle}" data-target="${dataTarget}" href="${href}" data-person-url="${absoluteUrlGenerator.getPersonUrl(rel.person.personId)}" data-person-id="${fn:escapeXml(rel.person.personId)}" >
+												${command.personRoleRenderer.getExtendedPersonName(rel, request.locale, true)}
+											</a>
+										</div>
+									</c:forEach>
+									<c:if test="${not empty command.context.loginUser.name}">
+										<div class="list-group-item">
+											<a class='btnLinkPerson' data-toggle="modal" data-target="#otherPerson" href="#otherPerson"><span class="authorName">${textOtherPerson}</span></a>
+										</div>
+									</c:if>
+								</div>
+							</c:when>
+							<c:otherwise>
+								<bsold:alert style="info">
+									<jsp:attribute name="alertBody">
+										<div>
+											<fmt:message key="disambiguation.notFound">
+												<fmt:param value="${command.personName}" />
+											</fmt:message>
+										</div>
+									</jsp:attribute>
+								</bsold:alert>
+								<bs:linkButton style="primary" href="#otherPerson" size="defaultSize" dataToggle="modal" dataTarget="#otherPerson">
+									<jsp:attribute name="content">
+										<span class="authorName">
+											<fmt:message key="disambiguation.newPerson">
+												<fmt:param value="${command.personName}" />
+											</fmt:message>
+										</span>
+									</jsp:attribute>
+								</bs:linkButton>
+							</c:otherwise>
+						</c:choose>
+					</c:if>
+				</div>
 		</jsp:attribute>
 	
 	</layout:paneLayout>

@@ -12,13 +12,9 @@
 	</select>
 
 	<select id="getTagByName" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
-		SELECT t1.tag_name, count(t1.tag_name) as tag_ctr
-		FROM <include refid="tagFromQuery"/>
-		WHERE <include refid="tagWhereQuery"/> AND
-			  (t1.user_name=#requestedUserName# OR
-			  t1.group=0)
-		GROUP BY t1.tag_name
-		LIMIT #limit# OFFSET #offset#
+		SELECT gt.tag_name, gt.tag_ctr_public as tag_ctr
+		FROM tags gt
+		WHERE gt.tag_name = <iterate property="tagIndex">#tagIndex[].tagName#</iterate>
 	</select>
 
 	<select id="getTagByCount" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
@@ -132,22 +128,18 @@
 
 
 	<select id="getSubtagsOfTag" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
-		SELECT t1.tag_name, count(distinct(t1.tas_id)) as tag_ctr 
-		FROM tas t1, tagtagrelations TTR 
+		SELECT gt.tag_name, gt.tag_ctr_public as tag_ctr
+		FROM tags gt, tagtagrelations TTR 
 		WHERE TTR.upper = <iterate property="tagIndex">#tagIndex[].tagName#</iterate> AND 
-                TTR.lower = t1.tag_name AND
-                (t1.group=0 OR t1.user_name = #requestedUserName#)
-		GROUP BY t1.tag_name
+			TTR.lower = gt.tag_name 
 		LIMIT #limit# OFFSET #offset#
 	</select>
 
 	<select id="getSupertagsOfTag" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
-		SELECT t1.tag_name, count(distinct(t1.tas_id)) as tag_ctr 
-		FROM tas t1, tagtagrelations TTR 
+		SELECT gt.tag_name, gt.tag_ctr_public as tag_ctr
+		FROM tags gt, tagtagrelations TTR 
 		WHERE TTR.lower = <iterate property="tagIndex">#tagIndex[].tagName#</iterate> AND 
-                TTR.upper = t1.tag_name AND
-                (t1.group=0 OR t1.user_name = #requestedUserName#)
-		GROUP BY t1.tag_name
+			TTR.upper = gt.tag_name
 		LIMIT #limit# OFFSET #offset#
 	</select>
 	

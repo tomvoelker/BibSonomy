@@ -61,7 +61,7 @@ public class EndnoteToBibtexConverterTest {
 		// test the conversion
 		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "test1_endnoteBibtex.bib");
 		final EndnoteToBibtexConverter e2bConverter = new EndnoteToBibtexConverter();
-		final String bibTeX = e2bConverter.endnoteToBibtex(endnote);
+		final String bibTeX = e2bConverter.toBibtex(endnote);
 		assertEquals(expectedBibTeX.trim(), bibTeX.trim());
 		
 		// test canHandle with BibTex
@@ -83,7 +83,7 @@ public class EndnoteToBibtexConverterTest {
 		// test the conversion
 		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "test2_endnoteBibtex.bib");
 		final EndnoteToBibtexConverter e2bConverter = new EndnoteToBibtexConverter();
-		final String bibTeX = e2bConverter.endnoteToBibtex(endnote);
+		final String bibTeX = e2bConverter.toBibtex(endnote);
 		assertEquals(expectedBibTeX.trim(), bibTeX.trim());
 		
 		// test canHandle with BibTex
@@ -105,7 +105,7 @@ public class EndnoteToBibtexConverterTest {
 		// test the conversion
 		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "test3_endnoteBibtex.bib");
 		final EndnoteToBibtexConverter e2bConverter = new EndnoteToBibtexConverter();
-		final String bibTeX = e2bConverter.endnoteToBibtex(endnote);
+		final String bibTeX = e2bConverter.toBibtex(endnote);
 		assertEquals(expectedBibTeX.trim(), bibTeX.trim());
 		
 		// test canHandle with BibTex

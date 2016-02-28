@@ -762,6 +762,24 @@
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
+<!-- 	<layout name="gesis" public="false"> -->
+<!-- 		<displayName>GESIS RTF</displayName> -->
+<!-- 		<description xml:lang="en"> -->
+<!-- 			This exports the publication list in Rich Text Format which -->
+<!-- 			can be used by word processors like OpenOffice or Microsoft -->
+<!-- 			Word. It is formatted according to the GESIS bibliography -->
+<!-- 			style guidelines. -->
+<!-- 		</description> -->
+<!-- 		<description xml:lang="de"> -->
+<!-- 			Export der Publikationsliste in das Rich Text Format, das von  -->
+<!-- 			Textverarbeitungsprogrammen wie OpenOffice oder Microsoft verwendet wird.  -->
+<!-- 			Die Ausgabe wird entsprechend den GESIS-Bibliographie-Richtlinien formatiert.  -->
+<!-- 		</description> -->
+<!-- 		<directory>gesis</directory> -->
+<!-- 		<baseFileName>gesis</baseFileName> -->
+<!-- 		<mimeType>text/rtf</mimeType> -->
+<!-- 		<extension>.rtf</extension> -->
+<!-- 	</layout> -->
 	<selfrenderingLayout name="msofficexml" class="org.bibsonomy.layout.jabref.self.MSOfficeXMLLayout">
 		<displayName>MSOffice XML</displayName>
 		<description xml:lang="en">

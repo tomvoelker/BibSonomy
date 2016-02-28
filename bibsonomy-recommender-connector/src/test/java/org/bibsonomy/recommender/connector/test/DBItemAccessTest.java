@@ -66,7 +66,7 @@ import recommender.impl.multiplexer.MultiplexingRecommender;
  */
 public class DBItemAccessTest {
 	private static DBLogic<ItemRecommendationEntity, RecommendedItem> dbLogic;
-	private static TestDatabaseLoader TEST_DB_LOADER = new TestDatabaseLoader("recommender_schema.sql");
+	protected static TestDatabaseLoader TEST_DB_LOADER = new TestDatabaseLoader("recommender_schema.sql");
 	
 	@BeforeClass
 	public static void setUp() {

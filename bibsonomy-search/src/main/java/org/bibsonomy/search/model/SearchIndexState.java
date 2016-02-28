@@ -39,5 +39,8 @@ public enum SearchIndexState {
 	INACTIVE,
 	
 	/** the index is currently generating */
-	GENERATING;
+	GENERATING,
+	
+	/** not used but generated */
+	STANDBY;
 }

@@ -115,11 +115,16 @@
 	</filter-mapping>
 
 	<filter>
-		<filter-name>NoCacheFilter</filter-name>
-		<filter-class>org.bibsonomy.webapp.filters.NoCacheFilter</filter-class>
+		<filter-name>CacheFilter</filter-name>
+		<filter-class>org.bibsonomy.webapp.filters.CacheFilter</filter-class>
+		<init-param>
+			<description>The pattern defines, which files can be cached.</description>
+			<param-name>cachePattern</param-name>
+			<param-value>^/(resources|resources_puma)/.*</param-value>
+		</init-param>
 	</filter>
 	<filter-mapping>
-		<filter-name>NoCacheFilter</filter-name>
+		<filter-name>CacheFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 

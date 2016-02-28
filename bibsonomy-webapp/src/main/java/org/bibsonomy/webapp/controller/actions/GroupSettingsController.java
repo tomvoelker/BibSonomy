@@ -46,7 +46,6 @@ import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
@@ -56,7 +55,7 @@ import org.springframework.validation.Errors;
  * 
  * @author ema
  */
-@Deprecated // as of 29.12.2014
+@Deprecated // TODO_GROUPS as of 29.12.2014
 public class GroupSettingsController implements MinimalisticController<SettingsViewCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(SearchPageController.class);
 
@@ -115,7 +114,7 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 		final boolean sharedDocs = command.getSharedDocuments() == 1;
 		
 		// the group to update
-		final Group groupToUpdate = this.logic.getGroupDetails(loginUser.getName());
+		final Group groupToUpdate = this.logic.getGroupDetails(loginUser.getName(), false);
 		if (!present(groupToUpdate)) {
 			throw new AccessDeniedException("please login as group");
 		}
@@ -128,8 +127,6 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 			return returnSettingsView(command, groupToUpdate, groupName);
 		}
 		
-		// TODO: (group) remove?!
-
 		// update the bean
 		groupToUpdate.setPrivlevel(priv);
 		groupToUpdate.setSharedDocuments(sharedDocs);
