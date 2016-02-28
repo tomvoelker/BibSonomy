@@ -59,6 +59,11 @@ public interface PersonLogicInterface {
 	
 	public Person getPersonById(PersonIdType idType, String id);
 	
+	/**
+	 * FIXME: remove database id
+	 * removes a person name from a specific person
+	 * @param personNameId
+	 */
 	public void removePersonName(Integer personNameId);
 
 	/**
