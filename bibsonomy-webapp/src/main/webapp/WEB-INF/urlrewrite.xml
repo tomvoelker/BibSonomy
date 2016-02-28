@@ -162,12 +162,6 @@
 		<set type="parameter" name="format">posts</set>
 		<to>/$1</to>
 	</rule>
-	<rule>
-		<name>/linkcloud</name>
-		<from>^/+linkcloud/+(.*)$</from>
-		<set name="requPath">$1</set>
-		<to last="true">/linkcloud</to>
-	</rule>
 	
 	<!-- ****** JabRef Layouts *****  -->
 	<rule>
