@@ -455,7 +455,7 @@
 		<dependency>
 			<groupId>org.tuckey</groupId>
 			<artifactId>urlrewritefilter</artifactId>
-			<version>4.0.3</version>
+			<version>4.0.4</version>
 			<!-- embedded tomcat requires servlet-api 3 (which has a different artifact-id) -->
 			<exclusions>
 				<exclusion>
