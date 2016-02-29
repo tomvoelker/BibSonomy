@@ -128,18 +128,18 @@
 
 
 	<select id="getSubtagsOfTag" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
-		SELECT tg.tag_name, gt.tag_ctr_public as tag_ctr
-		FROM tags tg, tagtagrelations TTR 
+		SELECT gt.tag_name, gt.tag_ctr_public as tag_ctr
+		FROM tags gt, tagtagrelations TTR 
 		WHERE TTR.upper = <iterate property="tagIndex">#tagIndex[].tagName#</iterate> AND 
-			TTR.lower = tg.tag_name 
+			TTR.lower = gt.tag_name 
 		LIMIT #limit# OFFSET #offset#
 	</select>
 
 	<select id="getSupertagsOfTag" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
-		SELECT tg.tag_name, gt.tag_ctr_public as tag_ctr
-		FROM tags tg, tagtagrelations TTR 
+		SELECT gt.tag_name, gt.tag_ctr_public as tag_ctr
+		FROM tags gt, tagtagrelations TTR 
 		WHERE TTR.lower = <iterate property="tagIndex">#tagIndex[].tagName#</iterate> AND 
-			TTR.upper = tg.tag_name
+			TTR.upper = gt.tag_name
 		LIMIT #limit# OFFSET #offset#
 	</select>
 	

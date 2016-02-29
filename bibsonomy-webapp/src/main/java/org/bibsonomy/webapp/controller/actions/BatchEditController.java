@@ -756,17 +756,6 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	private View getFinalRedirect(final String referer, final String loginUserName) {
 		String redirectUrl = referer;
 		/*
-		 * if (ValidationUtils.present(referer)) {
-		 * 
-		 * final Matcher prefixMatcher =
-		 * BATCH_EDIT_URL_PATTERN.matcher(referer);
-		 * if (prefixMatcher.find()) {
-		 * redirectUrl = prefixMatcher.replaceFirst("");
-		 * redirectUrl = prefixMatcher.toString();
-		 * }
-		 * }
-		 */
-		/*
 		 * if no URL is given, we redirect to the user's page
 		 */
 		if (!ValidationUtils.present(redirectUrl)) {
@@ -774,22 +763,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		}
 		return new ExtendedRedirectView(redirectUrl);
 	}
-
-	/*
-	 * private View getFinalRedirect(final boolean isPub, final String
-	 * loginUserName) {
-	 * String redirectUrl = "referer";
-	 * if (isPub) {
-	 * redirectUrl = UrlUtils.safeURIEncode("beditbib/" + "user/" +
-	 * loginUserName); // TODO: should be done by the URLGenerator
-	 * }
-	 * else{
-	 * redirectUrl = UrlUtils.safeURIEncode("bediturl/" + "user/" +
-	 * loginUserName); // TODO: should be done by the URLGenerator
-	 * }
-	 * return new ExtendedRedirectView(redirectUrl);
-	 * }
-	 */
+	
 	@Override
 	public Errors getErrors() {
 		return this.errors;

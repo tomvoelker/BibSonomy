@@ -67,7 +67,7 @@ public class WorldCatScraper extends AbstractUrlScraper {
 	//for preprocessing of Worldcat RIS
 	private static final String KEY_VALUE_SEPARATOR = "  - ";
 	private static final String LINE_DELIMITER = "\n";
-	private static final Pattern AUTHOR_CORRECT_PATTERN = Pattern.compile("^[^,]+, [^,]+$");
+	private static final Pattern AUTHOR_CORRECT_PATTERN = Pattern.compile("^[^,]+(, [^,]+)?$");
 	private static final Pattern AUTHOR_EXTRACTOR_PATTERN = Pattern.compile("([^,]+, [^,]+),");
 
 	@Override
@@ -80,8 +80,8 @@ public class WorldCatScraper extends AbstractUrlScraper {
 			if (present(bibtex)) {
 				sc.setBibtexResult(bibtex);
 				return true;
-			} else
-				throw new ScrapingFailureException("getting bibtex failed");
+			}
+			throw new ScrapingFailureException("getting bibtex failed");
 		} catch (IOException ex) {
 			throw new InternalFailureException(ex);
 		}
@@ -190,7 +190,7 @@ public class WorldCatScraper extends AbstractUrlScraper {
 					}
 				}
 			}
-			//not an author field -> keep it
+			// not an author field -> keep it
 			else {
 				correctRIS.append(entry + LINE_DELIMITER);
 			}

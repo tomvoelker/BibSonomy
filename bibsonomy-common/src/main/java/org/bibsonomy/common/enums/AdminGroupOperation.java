@@ -32,11 +32,11 @@ package org.bibsonomy.common.enums;
  */
 public enum AdminGroupOperation {
 	
-	FETCH_GROUP_SETTINGS,				// = "fetchGroupSettings"; 
-	UPDATE,  // = "updateGroup";  
-	CREATE,         // = "createGroup";  
-	ACCEPT,         // = "acceptGroup"; 
-	DECLINE,        //  = "declineGroup";
-	UPDATE_PERMISSIONS; // = "updatePermissions";
+	FETCH_GROUP_SETTINGS,
+	// TODO: rename to ACCEPT_GROUP TODO_GROUPS
+	ACCEPT,
+	// TODO: rename to DECLINE_GROUP TODO_GROUPS
+	DECLINE,
+	UPDATE_PERMISSIONS;
 
 }

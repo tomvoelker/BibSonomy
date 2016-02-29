@@ -116,7 +116,7 @@
 		#password#, #passwordSalt#, #apiKey#, #openURL#,
 		<isNotNull property="reminderPassword">#reminderPassword#,#reminderPasswordRequestDate#,</isNotNull>
 		<isNull property="reminderPassword">NULL,DEFAULT(tmp_request_date),</isNull>
-		#role#, #IPAddress#, #registrationDate#, #spammer#, #updatedBy#, #updatedAt#, #toClassify#, #registrationLog#, 
+		#role#, #IPAddress#, #registrationDate#, #spammer#, #updatedBy#, #updatedAt#, #toClassify#, LEFT(#registrationLog#, 1000000)
 		#email#, #homepage#, #birthday#, #gender#, #hobbies#, #interests#, #place#, #profession#, #institution#, #useExternalPicture#,
 		#settings.tagboxStyle#, #settings.tagboxSort#, #settings.tagboxMinfreq#, #settings.tagboxTooltip#, #settings.listItemcount#, 
 		<isNotNull property="settings.defaultLanguage">#settings.defaultLanguage#,</isNotNull>

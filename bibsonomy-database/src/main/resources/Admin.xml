@@ -164,5 +164,4 @@
 			number_of_ratings = number_of_ratings + 1
 		</isEqual>
 	</update>
-	
 </sqlMap>

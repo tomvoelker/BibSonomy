@@ -187,6 +187,5 @@ public interface ESClient {
 	 * @return
 	 */
 	public UpdateRequestBuilder prepareUpdate(String indexName, String type, String id);
-
 	
 }

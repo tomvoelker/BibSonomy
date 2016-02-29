@@ -28,6 +28,7 @@ package org.bibsonomy.webapp.command.admin;
 
 import java.util.LinkedList;
 import java.util.List;
+
 import org.bibsonomy.common.enums.AdminGroupOperation;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.webapp.command.BaseCommand;
@@ -46,10 +47,12 @@ public class AdminGroupViewCommand extends BaseCommand {
 	private String adminResponse;
 	private Group group;
 	
+	private String declineMessage;
+	
 	@Deprecated
 	// TODO a more general field should be Set<GroupLevelPermission>
 	private boolean communityPostInspectionPermission;
-	private boolean permissionsUpdated;
+	private boolean permissionsUpdated = false;
 	/**
 	 * list of pending groups
 	 */
@@ -134,4 +137,19 @@ public class AdminGroupViewCommand extends BaseCommand {
 	public void setPermissionsUpdated(boolean permissionsUpdated) {
 		this.permissionsUpdated = permissionsUpdated;
 	}
+	
+	/**
+	 * @return the declineMessage
+	 */
+	public String getDeclineMessage() {
+		return this.declineMessage;
+	}
+
+	/**
+	 * @param declineMessage the declineMessage to set
+	 */
+	public void setDeclineMessage(String declineMessage) {
+		this.declineMessage = declineMessage;
+	}
+	
 }

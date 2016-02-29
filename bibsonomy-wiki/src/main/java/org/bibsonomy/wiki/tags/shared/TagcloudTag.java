@@ -24,7 +24,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.wiki.tags.user;
+package org.bibsonomy.wiki.tags.shared;
 
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -36,15 +36,15 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.webapp.util.TagViewUtils;
-import org.bibsonomy.wiki.tags.UserTag;
+import org.bibsonomy.wiki.tags.SharedTag;
 
 
 /**
@@ -52,8 +52,11 @@ import org.bibsonomy.wiki.tags.UserTag;
  * Usage: <tags />
  *
  */
-public class TagcloudTag extends UserTag {
+public class TagcloudTag extends SharedTag {
 	
+	/** if nothing set use the defaults */
+	private static final UserSettings DEFAULT_SETTINGS = new UserSettings();
+
 	private static final String TAG_NAME = "tags";
 	
 	private static final String TAGSTYLE = "style";
@@ -89,7 +92,7 @@ public class TagcloudTag extends UserTag {
 	}
 	
 	@Override
-	protected String renderUserTag() {
+	protected String renderSharedTag() {
 		final StringBuilder renderedHTML = new StringBuilder();
 		final Map<String, String> tagAttributes = this.getAttributes();
 		
@@ -98,7 +101,7 @@ public class TagcloudTag extends UserTag {
 		 * 0 = alph, 1 = freq
 		 */
 		if (!tagAttributes.containsKey(ORDER)) {
-			int tagsortInt = this.requestedUser.getSettings().getTagboxSort();
+			int tagsortInt = DEFAULT_SETTINGS.getTagboxSort();
 			if (tagsortInt == 0){
 				tagAttributes.put(ORDER, ORDER_ALPHA);
 			} else {
@@ -106,7 +109,7 @@ public class TagcloudTag extends UserTag {
 			}
 		}
 		
-		final String requestedName = this.requestedUser.getName();
+		final String requestedName = this.getRequestedName();
 		int tagMax = 20000;
 		
 		final Class<? extends Resource> resourceType = getResourceClass(tagAttributes.get(TYPE));
@@ -118,14 +121,14 @@ public class TagcloudTag extends UserTag {
 		} else {
 			requestedTags = null;
 		}
-		final List<Tag> tags = this.logic.getTags(resourceType, GroupingEntity.USER, requestedName, requestedTags, null, null, null, null, order, null, null, 0, tagMax);
+		final List<Tag> tags = this.logic.getTags(resourceType, this.getGroupingEntity(), requestedName, requestedTags, null, null, null, null, order, null, null, 0, tagMax);
 		
 		final int minfreqValue;
 		if (!tagAttributes.containsKey(MINFREQ)) {
 			/*
 			 * no value for minfreq --> see user settings
 			 */
-			minfreqValue = this.requestedUser.getSettings().getTagboxMinfreq();
+			minfreqValue = DEFAULT_SETTINGS.getTagboxMinfreq();
 		} else {
 			final String minfreqValueString = tagAttributes.get(MINFREQ);
 			minfreqValue = Integer.parseInt(minfreqValueString);
@@ -151,7 +154,7 @@ public class TagcloudTag extends UserTag {
 			if (tagAttributes.containsKey(TAGSTYLE)) {
 				tagstyle = tagAttributes.get(TAGSTYLE);
 			} else {
-				int tagstyleInt = this.requestedUser.getSettings().getTagboxStyle();
+				int tagstyleInt = DEFAULT_SETTINGS.getTagboxStyle();
 				if (tagstyleInt == 0) {
 					tagstyle = TAGSTYLE_TAGCLOUD;
 				} else {
@@ -187,8 +190,7 @@ public class TagcloudTag extends UserTag {
 		renderedHTML.append("</div>");
 		return renderedHTML.toString();
 	}
-	
-	
+
 	/**
 	 * @param tag
 	 * @param tagMinFrequency 
@@ -196,7 +198,12 @@ public class TagcloudTag extends UserTag {
 	 */
 	private String renderSingleTag(Tag tag, int tagMinFrequency, int tagMaxFrequency) {
 		final String tagName = tag.getName();
-		final String link = this.urlGenerator.getUserUrlByUserNameAndTagName(this.requestedUser.getName(), tagName);
+		final String link;
+		if (present(this.requestedGroup)) {
+			link = this.urlGenerator.getGroupUrlByGroupNameAndTagName(this.requestedGroup.getName(), tagName);
+		} else {
+			link = this.urlGenerator.getUserUrlByUserNameAndTagName(this.requestedUser.getName(), tagName);
+		}
 		final int tagCount = tag.getUsercount();
 		final int fontSize = TagViewUtils.computeTagFontsize(Integer.valueOf(tagCount), Integer.valueOf(tagMinFrequency), Integer.valueOf(tagMaxFrequency), "user").intValue();
 		final String postString = this.getPostStringByTagCount(tagCount);
@@ -245,7 +252,7 @@ public class TagcloudTag extends UserTag {
 	 * @param tags a list of a user's tags
 	 * @return the frequency
 	 */
-	private static int getMinFreqFromTaglist(List<Tag> tags){
+	private static int getMinFreqFromTaglist(List<Tag> tags) {
 		int minFreq = Integer.MAX_VALUE;
 		for (final Tag tag : tags) {
 			minFreq = Math.min(minFreq, tag.getUsercount());
@@ -258,7 +265,7 @@ public class TagcloudTag extends UserTag {
 	 * @param tags a list of a user's tags
 	 * @return the frequency
 	 */
-	private static int getMaxFreqFromTaglist(List<Tag> tags){
+	private static int getMaxFreqFromTaglist(List<Tag> tags) {
 		int maxFreq = Integer.MIN_VALUE;
 		for (final Tag tag : tags) {
 			maxFreq = Math.max(maxFreq, tag.getUsercount());

@@ -1,0 +1,59 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+	xmlns:jsp="http://java.sun.com/JSP/Page">
+
+	<!--+
+		|
+		| show link to CV page
+		|
+		+-->
+	<jsp:directive.attribute name="group" type="org.bibsonomy.model.Group" required="true" />
+	<jsp:directive.attribute name="showSettingsLabel" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="buttonSize" type="java.lang.String" required="false" />
+	
+	<c:if test="${empty showSettingsLabel}">
+		<c:set var="showSettingsLabel" value="${true}" />
+	</c:if>
+	
+	<c:if test="${empty buttonSize}">
+		<c:set var="buttonSize" value="btn-sm" />
+	</c:if>
+	
+	<c:choose>
+		<c:when test="${mtl:contains(command.context.loginUser.groups, group)}">
+			<!-- TODO: use url generator -->
+			<div class="btn-group">
+				<fmt:message var="groupLeaveMessage" key="group.leave" />
+				<fmt:message var="memberOfMessage" key="group.memberOf" />
+				<a data-delete-text="${groupLeaveMessage}" data-default-text="${memberOfMessage}" href="/updateGroup?operation=REMOVE_MEMBER&amp;groupname=${group.name}&amp;username=${command.context.loginUser.name}&amp;ckey=${ckey}" class="btn btn-success ${buttonSize} delete-toggle ${systemReadOnly ? 'disabled' : ''}">
+					<fontawesome:icon icon="check" /><c:out value=" "/><span class="infotext"><c:out value="${memberOfMessage}"/></span>
+				</a>
+				<a href="/settings/group/${group.name}" class="btn btn-default ${buttonSize}">
+					<fontawesome:icon icon="cogs" /><c:out value=" "/>
+					<c:if test="${showSettingsLabel}">
+						<span class="infotext"><fmt:message key="group.settings" /></span>
+					</c:if>
+				</a>
+			</div>
+		</c:when>
+		<c:otherwise>
+			<c:choose>
+				<c:when test="${mtl:contains(command.context.loginUser.pendingGroups, group)}">
+					<a class="btn btn-default ${buttonSize}">pending</a>
+				</c:when>
+				<c:when test="${group.allowJoin and not command.context.loginUser.spammer}">
+					<c:url var="joinLink" value="/joinGroup">
+						<c:param name="group" value="${group.name}" />
+					</c:url>
+					<a href="${joinLink}" class="btn btn-primary ${buttonSize} ${systemReadOnly ? 'disabled' : ''}"><span class="fa fa-plus"><!-- keep me --></span><c:out value=" " /><fmt:message key="joinGroup.short"/></a>
+				</c:when>
+			</c:choose>
+		</c:otherwise>
+	</c:choose>
+</jsp:root>

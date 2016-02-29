@@ -24,31 +24,37 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.webapp.util.captcha;
+package org.bibsonomy.webapp.validation;
 
-import net.tanesha.recaptcha.ReCaptchaResponse;
+import org.bibsonomy.webapp.command.GroupSettingsPageCommand;
+import org.bibsonomy.webapp.util.Validator;
+import org.springframework.util.Assert;
+import org.springframework.validation.Errors;
+import org.springframework.validation.ValidationUtils;
 
-/** Wrapper around {@link ReCaptchaResponse}
- * @author rja
+/**
+ * @author Mario Holtmüller
  */
-public class ReCaptchaResponseWrapper implements CaptchaResponse {
-	
-	private final ReCaptchaResponse response;
-	
-	/**
-	 * @param response A response from a ReCaptchaImplementation.
-	 */
-	public ReCaptchaResponseWrapper(final ReCaptchaResponse response) {
-		this.response = response;
+public class DeleteGroupValidator implements Validator<GroupSettingsPageCommand>{
+	private static final String DELETE_FIELD = "delete";
+
+	@Override
+	public boolean supports(final Class<?> clazz) {
+		return GroupSettingsPageCommand.class.equals(clazz);
 	}
 
 	@Override
-	public String getErrorMessage() {
-		return response.getErrorMessage();
+	public void validate(final Object commandObject, final Errors errors) {
+		// if command is null fail
+		Assert.notNull(commandObject);
+		
+		final GroupSettingsPageCommand command = (GroupSettingsPageCommand) commandObject;
+		
+		// if the delete security string is empty throw an error
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, DELETE_FIELD, "error.field.required");
+		if (!errors.hasFieldErrors(DELETE_FIELD) && !"yes".equalsIgnoreCase(command.getDelete())) {
+			errors.reject("error.group.secure.answer");
+		}
 	}
 
-	@Override
-	public boolean isValid() {
-		return response.isValid();
-	}
 }
