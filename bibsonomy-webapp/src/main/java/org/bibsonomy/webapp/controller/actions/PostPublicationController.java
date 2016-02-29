@@ -49,6 +49,7 @@ import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.DuplicatePostInSnippetErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
+import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
@@ -72,18 +73,13 @@ import org.springframework.validation.ValidationUtils;
 import bibtex.parser.ParseException;
 
 /**
- * 
+ *
  * @author ema
  * @author rja
  */
 public class PostPublicationController extends AbstractEditPublicationController<PostPublicationCommand> {
 	private static final Log log = LogFactory.getLog(PostPublicationController.class);
 
-	/**
-	 * if the user tries to import more than MAXCOUNT_ERRORHANDLING posts AND an error exists 
-	 * in one or more of the posts, the correct posts will be saved no matter what.
-	 */
-	private static final Integer MAXCOUNT_ERRORHANDLING = 1000;
 	/**
 	 * The session dictionary name for temporarily stored publications.
 	 * Will be used when PostPublicationCommand.editBeforeImport is true.
@@ -115,19 +111,19 @@ public class PostPublicationController extends AbstractEditPublicationController
 
 	/**
 	 * Handles posting of several posts, e.g., parsed from a BibTeX file.
-	 * 
+	 *
 	 * TODO: We need to integrate a mechanism into the view to show warnings for
-	 * posts we could import (currently, only errors are shown and then those 
-	 * posts are also not imported).  
-	 * 
-	 * 
+	 * posts we could import (currently, only errors are shown and then those
+	 * posts are also not imported).
+	 *
+	 *
 	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#workOn(org.bibsonomy.webapp.command.actions.EditPostCommand)
 	 */
 	@Override
 	public View workOn(final PostPublicationCommand command) {
 		log.debug("workOn started");
 
-		initializeDidYouKnowMessageCommand(command);
+		this.initializeDidYouKnowMessageCommand(command);
 
 		final RequestWrapperContext context = command.getContext();
 
@@ -135,20 +131,20 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * only users which are logged in might post -> send them to
 		 * login page
 		 */
-		final BibTex publication = command.getPost().getResource();
 		if (!context.isUserLoggedIn()) {
-			throw new AccessDeniedNoticeException("please log in", LOGIN_NOTICE + publication.getClass().getSimpleName().toLowerCase());
+			throw new AccessDeniedNoticeException("please log in", LOGIN_NOTICE + BibTex.class.getSimpleName().toLowerCase());
 		}
 
 		/*
-		 * If the user entered the post data manually, the EditPublicationController 
+		 * If the user entered the post data manually, the EditPublicationController
 		 * will handle the remaining work.
-		 * 
+		 *
 		 * To find out, if the data was entered manually, a good heuristic is to
 		 * check if an entrytype is given, because that field can't be empty.
-		 * We furthermore need to check the title, because the title cannot be empty 
+		 * We furthermore need to check the title, because the title cannot be empty
 		 * either and sometimes we like to preselect a certain entrytype.
 		 */
+		final BibTex publication = command.getPost().getResource();
 		if (present(publication.getEntrytype()) && present(publication.getTitle())) {
 			log.debug("user has manually entered post data -> forwarding to edit post controller");
 			return super.workOn(command);
@@ -161,10 +157,10 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * check for valid ckey
 		 */
 		if ((hasFile || hasSelection) && !context.isValidCkey()) {
-			errors.reject("error.field.valid.ckey");
+			this.errors.reject("error.field.valid.ckey");
 			return Views.ERROR;
 		}
-		
+
 		if (command.getPerson() != null) {
 			if (present(command.getPerson().getPersonId())) {
 				final Person person = this.logic.getPersonById(PersonIdType.BIBSONOMY_ID, command.getPersonId());
@@ -206,12 +202,12 @@ public class PostPublicationController extends AbstractEditPublicationController
 			if (command.getPerson() != null) {
 				final PersonName mainName = command.getPerson().getMainName();
 				if (mainName != null) {
-					List<PersonName> authorNames = new ArrayList<>();
+					final List<PersonName> authorNames = new ArrayList<>();
 					authorNames.add(mainName);
 					publication.setAuthor(authorNames);
 				}
 			}
-			
+
 			return Views.POST_PUBLICATION;
 		}
 
@@ -221,14 +217,13 @@ public class PostPublicationController extends AbstractEditPublicationController
 		}
 
 		/*
-		 * Either a file or a snippet was given,
-		 * it's content is now stored in snippet
-		 * -> check if valid
+		 * Either a file or a snippet was given, its content is now stored in
+		 * snippet -> check if valid
 		 */
-		if (errors.hasErrors()) {
+		if (this.errors.hasErrors()) {
 			log.debug("errors found, returning to view");
 			if (log.isDebugEnabled()) {
-				log.debug(errors);
+				log.debug(this.errors);
 			}
 			return Views.POST_PUBLICATION;
 		}
@@ -264,7 +259,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 
 		/*
 		 * The errors we have collected until now should be fixed before we proceed.
-		 * 
+		 *
 		 * (We did not collect errors due to individual broken BibTeX lines, yet!)
 		 */
 		if (this.errors.hasErrors()) {
@@ -274,7 +269,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		/*
 		 * turn parse exceptions into error messages ...
 		 */
-		handleParseExceptions(parser.getCaughtExceptions());
+		this.handleParseExceptions(parser.getCaughtExceptions());
 
 		if (!this.errors.hasErrors() && !present(posts)) {
 			/*
@@ -287,25 +282,25 @@ public class PostPublicationController extends AbstractEditPublicationController
 		/* case:
 		 * 	1) we are redirected to this page from a person page, and
 		 * 	2) a new thesis wants to be added
-		 * 
+		 *
 		 * only one thesis can be added each time (by snippet).
 		 ***/
 		if (command.getPerson() != null) {
-			if ((posts != null) && (posts.size() > 1)) {
+			if (posts != null && posts.size() > 1) {
 				this.errors.reject("error.add_new_thesis", "Only ONE new thesis is allowed to be added!");
 				return Views.POST_PUBLICATION;
 			}
 		}
-	
+
 		/*
-		 * If exactly one post has been extracted, and there were no parse exceptions, 
+		 * If exactly one post has been extracted, and there were no parse exceptions,
 		 * the edit post controller can handle the remaining work.
 		 */
-		if ((posts != null) && (posts.size() == 1) && !this.errors.hasErrors()) {
+		if (posts != null && posts.size() == 1 && !this.errors.hasErrors()) {
 			final Post<BibTex> post = posts.get(0);
 			if (present(post)) {
 				/*
-				 * Delete the selection, otherwise the AbstractEditPublicationControllers 
+				 * Delete the selection, otherwise the AbstractEditPublicationControllers
 				 * workOnCommand() method would try to scrape it.
 				 */
 				command.setSelection(null);
@@ -322,7 +317,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 
 		/*
 		 * Complete the posts with missing information:
-		 * 
+		 *
 		 * add additional information from the form to the
 		 * post (description, groups)... present in both upload tabs
 		 */
@@ -331,22 +326,21 @@ public class PostPublicationController extends AbstractEditPublicationController
 		if  (posts != null) {
 			for (final Post<BibTex> post : posts) {
 				post.setUser(context.getLoginUser());
-				post.setDescription(command.getDescription());
 				if (!present(post.getTags())) {
 					post.setTags(Collections.singleton(TagUtils.getImportedTag()));
 				}
-				 /* set visibility of this post for the groups, the user specified
-	
+				/* set visibility of this post for the groups, the user specified
+
 				 */
 				GroupingCommandUtils.initGroups(command, post.getGroups());
 				/*
 				 * hashes have to be set, in order to call the validator
 				 */
 				post.getResource().recalculateHashes();
-	
+
 				/*
 				 * user may import n bibtexes which m>1 of them are the same.
-				 * 
+				 *
 				 * Since similar bibtexes have similar intrahashes, we find duplicate bibtexes
 				 * by comparing intrahashes, and then add an error to not_unique bibtexes.
 				 */
@@ -354,7 +348,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 					unique_hashes.add(post.getResource().getIntraHash());
 				} else {
 					errorMessage = new DuplicatePostInSnippetErrorMessage("BibTex", post.getResource().getIntraHash());
-					List<ErrorMessage> errorList = new ArrayList<ErrorMessage>();
+					final List<ErrorMessage> errorList = new ArrayList<ErrorMessage>();
 					errorList.add(errorMessage);
 					command.getPostsErrorList().put(post.getResource().getIntraHash(), errorList);
 				}
@@ -370,8 +364,8 @@ public class PostPublicationController extends AbstractEditPublicationController
 		/*
 		 * FIXME: rename the "bibtex" attribute of the command (hint: we try
 		 * to avoid the name "bibtex" wherever possible)
-		 * (hint: errors.pushNestedPath("bibtex"); in the PostPublicationCommandValidator 
-		 * then has to be adapted, too. As does the code in the JSPs, of course.) 
+		 * (hint: errors.pushNestedPath("bibtex"); in the PostPublicationCommandValidator
+		 * then has to be adapted, too. As does the code in the JSPs, of course.)
 		 */
 		command.setBibtex(postListCommand);
 
@@ -387,7 +381,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		final Map<Post<BibTex>, Integer> postsToStore = this.getPostsWithNoValidationErrors(posts, command.getPostsErrorList(),command.isOverwrite());
 
 		if (log.isDebugEnabled()) {
-			log.debug("will try to store " + postsToStore.size() + " of " + ((posts != null) ? Integer.toString(posts.size()) : "null") + " posts in database");
+			log.debug("will try to store " + postsToStore.size() + " of " + (posts != null ? Integer.toString(posts.size()) : "null") + " posts in database");
 		}
 		final List<Post<?>> validPosts = new LinkedList<Post<?>>(postsToStore.keySet());
 
@@ -412,17 +406,17 @@ public class PostPublicationController extends AbstractEditPublicationController
 
 		/*
 		 * If there are errors now or not - we return to the post
-		 * publication view to let the user edit his/her posts. 
+		 * publication view to let the user edit his/her posts.
 		 */
 		return Views.POST_PUBLICATION;
 	}
 
 	/**
-	 * Checks each post for validation errors and returns only those posts, 
+	 * Checks each post for validation errors and returns only those posts,
 	 * that don't have any errors. The posts are returned in a hashmap, where
 	 * each post points to its position in the original list such that we can
 	 * later add errors (from the database) at the correct position.
-	 * 
+	 *
 	 * @param posts
 	 * @return
 	 */
@@ -444,12 +438,12 @@ public class PostPublicationController extends AbstractEditPublicationController
 
 			/*
 			 * check if this post is already stored in DB
-			 * 
+			 *
 			 * We have already checked if this publication is in the snippet more than one time
 			 * or not.
 			 * (if yes, postErrorMessages.size() >= 1)
 			 */
-			if (present(postErrorMessages) && postErrorMessages.size() > 1) { 
+			if (present(postErrorMessages) && postErrorMessages.size() > 1) {
 				isAlreadyInSnippet = true;
 			} else {
 				if (present(postErrorMessages) && postErrorMessages.size()==1){
@@ -470,7 +464,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 				/*
 				 * post has no field errors & is not duplicate--> try to store
 				 * it in database
-				 * 
+				 *
 				 * We also remember the original position of the post to
 				 * add error messages later.
 				 */
@@ -483,7 +477,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 	/**
 	 * Extracts the parse exceptions and adds the line numbers with errors
 	 * to the errors object.
-	 * 
+	 *
 	 * @param parseExceptions
 	 */
 	private void handleParseExceptions(final ParseException[] parseExceptions) {
@@ -512,15 +506,15 @@ public class PostPublicationController extends AbstractEditPublicationController
 
 	/**
 	 * Tries to save the posts in the database.
-	 * 
+	 *
 	 * If posts already exist in the database and <code>overwrite</code> is
 	 * <code>true</code>,
 	 * those posts are overwritten (otherwise they produce an error).
 	 * Posts that have errors will be rejected in any case.
-	 * 
+	 *
 	 * FIXME: the error handling here is almost identical to that
 	 * in {@link BatchEditController#storePosts}
-	 * 
+	 *
 	 * @param postsToStore
 	 * @param overwrite - posts which already exist are overwritten, if
 	 *        <code>true</code>
@@ -650,10 +644,13 @@ public class PostPublicationController extends AbstractEditPublicationController
 
 		final String userName = post.getUser().getName();
 		final String intraHash = post.getResource().getIntraHash();
-
-		if (!isOverwrite && present(this.logic.getPostDetails(intraHash, userName))) {
-			return true;
+		boolean postExisted = false;
+		try {
+			postExisted = present(this.logic.getPostDetails(intraHash, userName));
+		} catch (final ResourceMovedException ex) {
+			log.debug("Object was moved");
 		}
-		return false;
+
+		return !isOverwrite && postExisted;
 	}
 }

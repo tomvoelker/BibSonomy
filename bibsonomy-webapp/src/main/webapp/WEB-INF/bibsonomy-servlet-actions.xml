@@ -808,6 +808,23 @@
 		<property name="swordService" ref="swordService"/>
 	</bean>
 	
+	<bean id="swordService" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
+		<property name="condition">
+			<bean id="samlActivatedCondition" class="org.bibsonomy.webapp.util.spring.condition.EvalOnceCondition">
+				<property name="delegate">
+					<bean class="org.bibsonomy.webapp.util.spring.condition.EqualCondition">
+						<constructor-arg value="${publication.reporting.enabled}" />
+						<constructor-arg value="true" />
+					</bean>
+				</property>
+			</bean>
+		</property>
+		<lookup-method name="produceSucessBean" bean="realSwordService"/>
+		<lookup-method name="produceFailureBean" bean="swordServiceDisabled"/>
+	</bean>
+	
+	<bean id="swordServiceDisabled" class="org.bibsonomy.webapp.util.spring.factorybeans.NullFactoryBean"/>
+	
 	<bean id="editGoldStandardBookmarkController" class="org.bibsonomy.webapp.controller.actions.EditGoldStandardBookmarkController" scope="request" parent="editPostController" />
 	
 	<bean id="editGoldStandardPublicationController" class="org.bibsonomy.webapp.controller.actions.EditGoldStandardPublicationController" scope="request" parent="editPostController">
@@ -1055,11 +1072,19 @@
 		<property name="privateKey" value="${recaptcha.privateKey}"/>
 		<property name="publicKey" value="${recaptcha.publicKey}"/>
 		<property name="recaptchaServer" value="${recaptcha2.server}"/>
-		<property name="includeNoscript" value="false" />
 		<property name="client" ref="reCaptcha2Client" />
 	</bean>
 	
-	<bean id="reCaptcha2Client" class="org.apache.http.impl.client.HttpClients" destroy-method="close" factory-method="createDefault" />
+	<!-- configure the http client for communication with the recaptcha service -->
+	<bean id="requestConfigBuilder" class="org.apache.http.client.config.RequestConfig" factory-method="custom">
+		<property name="socketTimeout" value="2000" /> 
+		<property name="connectTimeout" value="2000" /> 
+	</bean>
+	<bean id="requestConfig" factory-bean="requestConfigBuilder" factory-method="build" />
+	<bean id="httpClientBuilder" class="org.apache.http.impl.client.HttpClientBuilder" factory-method="create">
+		<property name="defaultRequestConfig" ref="requestConfig" />
+	</bean>
+	<bean id="reCaptcha2Client" factory-bean="httpClientBuilder" factory-method="build" destroy-method="close" />
 	
 	<!-- for testing -->
 	<bean id="mockCaptcha" class="org.bibsonomy.webapp.util.captcha.MockCaptcha" />

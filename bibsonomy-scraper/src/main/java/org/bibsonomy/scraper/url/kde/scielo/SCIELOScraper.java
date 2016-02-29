@@ -58,7 +58,6 @@ public class SCIELOScraper extends GenericBibTeXURLScraper {
 
 	@Override
 	protected String getDownloadURL(URL url) throws ScrapingException, IOException {
-		
 		final Matcher m = URL_PATTERN.matcher(url.toString());
 		if (m.find()) {
 			return HTTP + url.getHost() + DOWNLOADLINK + m.group(2);

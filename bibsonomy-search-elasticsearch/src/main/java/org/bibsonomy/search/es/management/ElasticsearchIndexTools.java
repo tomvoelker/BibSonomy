@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.search.es.management;
 
+import java.net.URI;
+
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.search.es.index.ResourceConverter;
@@ -42,17 +44,21 @@ public class ElasticsearchIndexTools<R extends Resource> {
 	
 	private final ResourceConverter<R> converter;
 	
+	private final URI systemURI;
+	
 	private final ResourceMappingBuilder<R> mappingBuilder;
 
 	/**
 	 * @param resourceType
 	 * @param converter
+	 * @param systemURI
 	 * @param mappingBuilder
 	 */
-	public ElasticsearchIndexTools(Class<R> resourceType, ResourceConverter<R> converter, ResourceMappingBuilder<R> mappingBuilder) {
+	public ElasticsearchIndexTools(Class<R> resourceType, ResourceConverter<R> converter, URI systemURI, ResourceMappingBuilder<R> mappingBuilder) {
 		super();
 		this.resourceType = resourceType;
 		this.converter = converter;
+		this.systemURI = systemURI;
 		this.mappingBuilder = mappingBuilder;
 	}
 
@@ -82,5 +88,12 @@ public class ElasticsearchIndexTools<R extends Resource> {
 	 */
 	public ResourceMappingBuilder<R> getMappingBuilder() {
 		return this.mappingBuilder;
+	}
+
+	/**
+	 * @return the systemURI
+	 */
+	public URI getSystemURI() {
+		return this.systemURI;
 	}
 }

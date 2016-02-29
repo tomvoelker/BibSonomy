@@ -26,7 +26,6 @@
  */
 package org.bibsonomy.scraper.url.kde.googlescholar;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,7 +35,6 @@ import java.util.regex.Pattern;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
-import org.bibsonomy.util.WebUtils;
 
 /**
  * This scraper supports download links from the GoogleSonomy Firefox plugin.
@@ -60,7 +58,7 @@ public class GoogleScholarScraper extends GenericBibTeXURLScraper {
 	
 	@Override
 	protected String getDownloadURL(URL url) throws ScrapingException {
-		
+		/* 
 		if (true) { //citation_for_view=(.+?)$
 			final Pattern IDFORGOOGLE = Pattern.compile("(.+?)scisig(.+?)$", Pattern.DOTALL);
 			Matcher m = null;
@@ -75,7 +73,7 @@ public class GoogleScholarScraper extends GenericBibTeXURLScraper {
 				System.out.println("ssss" + id);
 				//return url.toString().replace("view_citation", "export_citations") + "&s=" + id + "&cit_fmt=0";
 			}
-		}
+		}*/
 		
 		final Matcher m = ID.matcher(url.toString());
 		if (m.find()) {

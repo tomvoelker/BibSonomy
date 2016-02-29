@@ -93,13 +93,14 @@ public class WebUtils {
 	 * carefully.
 	 */
 	private static final int MAX_CONTENT_LENGTH = 1 * 1024 * 1024;
-	
+
 	/**
 	 * according to http://hc.apache.org/httpclient-3.x/threading.html
 	 * HttpClient is thread safe and we can use one instance for several requests.
 	 */
 	private static final MultiThreadedHttpConnectionManager connectionManager =	new MultiThreadedHttpConnectionManager();
 	private static final HttpClient CLIENT = getHttpClient();
+
 	
 	/**
 	 * This method returns an instance of the HttpClient and should only be used
@@ -139,8 +140,6 @@ public class WebUtils {
 		final HttpURLConnection urlConn = createConnnection(url);
 		urlConn.setAllowUserInteraction(false);
 		urlConn.setDoInput(true);
-		urlConn.setFollowRedirects(true);
-		
 		urlConn.setDoOutput(true);
 		urlConn.setRequestMethod("POST");
 		urlConn.setRequestProperty(CONTENT_TYPE_HEADER_NAME, "application/x-www-form-urlencoded");
@@ -534,7 +533,6 @@ public class WebUtils {
 	 * Returns the cookies returned by the server on accessing the URL. 
 	 * The format of the returned cookies is as
 	 * 
-	 * 
 	 * @param url
 	 * @return The cookies as string, build by {@link #buildCookieString(List)}.
 	 * @throws IOException
@@ -544,27 +542,28 @@ public class WebUtils {
 		urlConn.setAllowUserInteraction(false);
 		urlConn.setDoInput(true);
 		urlConn.setDoOutput(false);
-  
+
 		urlConn.connect();
 
 		final List<String> cookies = urlConn.getHeaderFields().get("Set-Cookie");
-		
 		urlConn.disconnect();
 		
 		return buildCookieString(cookies);
 	}
 	
-	public static String getLongCookies(final URL url) throws IOException {
-		
-		List<String> cookies = new ArrayList<String>();
-		
+	/**
+	 * FIXME: document the difference between this method and {@link #getCookies(URL)}
+	 * 
+	 * @param url
+	 * @return the cookies
+	 * @throws IOException
+	 */
+	public static String getSpecialCookies(final URL url) throws IOException {
 		final GetMethod getMethod = new GetMethod(url.toString());
-        int executeMethod = CLIENT.executeMethod(getMethod);
-        Header[] responseHeaders = getMethod.getResponseHeaders("Set-Cookie");
-        for (int i = 0; i < responseHeaders.length; i++) {
-        	cookies.add(responseHeaders[i].getValue().toString());
-		}
-		return buildCookieString(cookies);
+		CLIENT.executeMethod(getMethod);
+		getMethod.getResponseHeaders("Set-Cookie");
+		
+		return getCookies(url);
 	}
 	/**
 	 * @param url the url

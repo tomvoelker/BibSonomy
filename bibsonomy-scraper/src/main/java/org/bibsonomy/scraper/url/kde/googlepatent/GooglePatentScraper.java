@@ -44,7 +44,7 @@ import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 public class GooglePatentScraper extends GenericBibTeXURLScraper {
 	private static final String SITE_NAME = "Google Patente";
 	private static final String SITE_URL = "http://www.google.com/patents";
-	private static final String info = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
+	private static final String INFO = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
 	private static final String GOOGLE_PATENT_HOST = "google.com";
 	private static final Pattern URL_PATTERN = Pattern.compile("(.*)?\\?(.*)$");
 	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern, Pattern>>();
@@ -54,10 +54,9 @@ public class GooglePatentScraper extends GenericBibTeXURLScraper {
 
 	@Override
 	protected String getDownloadURL(URL url) throws ScrapingException, IOException {
-				
 		final Matcher m = URL_PATTERN.matcher(url.toString());
 		if (m.find()) {
-			return m.group(1) + ".bibtex" + "?" +m.group(2);
+			return m.group(1) + ".bibtex" + "?" + m.group(2);
 		} 
 		throw new ScrapingFailureException("failure getting bibtex url for " + url);
 	}
@@ -74,7 +73,7 @@ public class GooglePatentScraper extends GenericBibTeXURLScraper {
 
 	@Override
 	public String getInfo() {
-		return info;
+		return INFO;
 	}
 
 	@Override

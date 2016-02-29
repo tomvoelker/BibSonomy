@@ -26,7 +26,10 @@
  */
 package org.bibsonomy.webapp.filters;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -37,8 +40,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import filters.ActionValidationFilter;
-
 /**
  * Filter sets everything in the response what could make clients
  * not cache it.
@@ -46,23 +47,43 @@ import filters.ActionValidationFilter;
  * @author Jens Illig
  * @author rja
  */
-public class NoCacheFilter implements Filter {
+public class CacheFilter implements Filter {
+	
+	private static final int CACHE_TIME = 15 * 60; // 15 minutes
+	
+	private static final String PRAGMA_HEADER_KEY = "Pragma";
+	private static final String CACHE_CONTROL_HEADER_KEY = "Cache-Control";
+	
+	private Pattern cachePattern = Pattern.compile("^/(resources)/.*");
 	
 	@Override
 	public void destroy() {
+		// noop
 	}
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-		
 		final HttpServletRequest httpRequest = (HttpServletRequest)request;
+		final String requestURI = httpRequest.getRequestURI();
+		final String protocol = request.getProtocol();
+		final boolean isHttp11 = "HTTP/1.1".equals(protocol);
+		final HttpServletResponse httpResponse = (HttpServletResponse) response;
+		
 		/*
-		 * ignore resource files (CSS, JPEG/PNG, JavaScript) ... 
+		 * handle resource files (CSS, JPEG/PNG, JavaScript) ... 
 		 */
-		if (httpRequest.getServletPath().startsWith(ActionValidationFilter.STATIC_RESOURCES)) {
+		if (present(requestURI) && this.cachePattern.matcher(requestURI).matches()) {
+			/*
+			 * cache resources for CACHE_TIME
+			 */
+			if (!isHttp11) {
+				httpResponse.setHeader(PRAGMA_HEADER_KEY, "cache");
+			} else {
+				httpResponse.setHeader(CACHE_CONTROL_HEADER_KEY, "max-age=" + CACHE_TIME);
+			}
 			filterChain.doFilter(request, response);
 			return;
-		} 
+		}
 		
 		/*
 		 * FIXME: workaround for IE6 bug 
@@ -78,17 +99,22 @@ public class NoCacheFilter implements Filter {
 				return;
 			}
 		}
-			
-		final HttpServletResponse httpResponse = (HttpServletResponse) response;
-		httpResponse.setHeader("Pragma","no-cache");
-		httpResponse.setHeader("Cache-Control","no-cache");
+		
+		if (!isHttp11) {
+			httpResponse.setHeader(PRAGMA_HEADER_KEY, "no-cache");
+		} else {
+			httpResponse.setHeader(CACHE_CONTROL_HEADER_KEY, "no-cache");
+		}
 		httpResponse.setDateHeader("Expires",-1);
 		httpResponse.setDateHeader("Last-Modified",0);
-	    filterChain.doFilter(request, response);
+		filterChain.doFilter(request, response);
 	}
 
 	@Override
-	public void init(FilterConfig arg0) throws ServletException {
+	public void init(FilterConfig filterConfig) throws ServletException {
+		final String initParameterExcludePatterns = filterConfig.getInitParameter("cachePattern");
+		if (present(initParameterExcludePatterns)) {
+			this.cachePattern = Pattern.compile(initParameterExcludePatterns);
+		}
 	}
-
 }

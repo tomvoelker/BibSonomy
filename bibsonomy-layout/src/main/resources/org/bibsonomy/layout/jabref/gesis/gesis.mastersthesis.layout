@@ -1,0 +1,10 @@
+\begin{author}
+\format[Authors(LastFirst,Fullname,sep=; ,LastSep= and ,EtAl= et al.,10,9),HTMLChars]{\author} \end{author}
+\begin{year}(\format[RTFChars]{\year}): \end{year}
+{"\format[RTFChars]{\title}"}{. 
+\begin{school}\format[RTFChars]{\school}, \end{school}Thesis
+\begin{address}. \address\end{address}
+\begin{publisher}: \publisher\end{publisher}. 
+\begin{note}\format[RTFChars]{\note}\end{note}
+\begin{editor}\end{editor}}
+\\par\\par
