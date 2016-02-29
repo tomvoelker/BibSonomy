@@ -552,18 +552,20 @@ public class WebUtils {
 	}
 	
 	/**
-	 * FIXME: document the difference between this method and {@link #getCookies(URL)}
 	 * 
 	 * @param url
 	 * @return the cookies
 	 * @throws IOException
 	 */
-	public static String getSpecialCookies(final URL url) throws IOException {
+	public static String getLongCookies(final URL url) throws IOException {
+		List<String> cookies = new ArrayList<String>();
 		final GetMethod getMethod = new GetMethod(url.toString());
-		CLIENT.executeMethod(getMethod);
-		getMethod.getResponseHeaders("Set-Cookie");
-		
-		return getCookies(url);
+        int executeMethod = CLIENT.executeMethod(getMethod);
+        Header[] responseHeaders = getMethod.getResponseHeaders("Set-Cookie");
+        for (int i = 0; i < responseHeaders.length; i++) {
+        	cookies.add(responseHeaders[i].getValue().toString());
+		}
+		return buildCookieString(cookies);
 	}
 	/**
 	 * @param url the url
