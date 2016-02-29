@@ -80,8 +80,7 @@ public class APHAScraper extends AbstractUrlScraper {
 		sc.setScraper(this);
 		
 		try {
-			//final String cookie = WebUtils.getCookies(sc.getUrl());
-			final String cookie = WebUtils.getSpecialCookies(sc.getUrl());
+			final String cookie = WebUtils.getLongCookies(sc.getUrl());
 			String doi = null;
 			final Matcher m = DOI_PATTERN_FROM_URL.matcher(sc.getUrl().toString());
 			if (m.find()) {
@@ -102,6 +101,7 @@ public class APHAScraper extends AbstractUrlScraper {
 					 */
 					else if (sc.getUrl().toString().contains(NRCRESEACHPRESS_HOST)) {
 						resultAsString = WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL.get(1).toString()), doi + "&format=bibtex");
+						System.out.println(resultAsString);
 						if (resultAsString != null) {
 							sc.setBibtexResult(resultAsString);
 							return true;

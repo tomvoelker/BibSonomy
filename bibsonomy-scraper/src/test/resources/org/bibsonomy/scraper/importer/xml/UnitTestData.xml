@@ -870,6 +870,7 @@
 		<URL>http://www.springerlink.de/content/k82w1317j2u6w546/?p=d0fc272f4d7a4654864797b3773c2909&amp;pi=0</URL>
 		<BibFile>SpringerLinkScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_143">
 		<TestDescription>test for springerlink with docid in url query</TestDescription>
@@ -878,7 +879,7 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
 		<!-- could not find "export citation" link on Springer page, thus, no export 
 			available -->
-		<Enabled>false</Enabled>
+		<Enabled>true</Enabled>
 	</URLTest>
 	<URLTest id="url_144">
 		<TestDescription>test for cell scraper</TestDescription>
@@ -1128,7 +1129,7 @@
 	</URLTest>
 	<URLTest id="url_183">
 		<TestDescription>test for springerlink</TestDescription>
-		<URL>http://www.springerlink.com/content/2378340668527U35</URL>
+		<URL>http://link.springer.com/article/10.1007%2Fs13222-010-0004-8</URL>
 		<BibFile>SpringerLinkScraperUnitURLTest5.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
 	</URLTest>
@@ -2036,6 +2037,12 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.googlescholar.GoogleScholarScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_332">
+		<TestDescription>Test for worldcat with correct authors</TestDescription>
+		<URL>http://www.worldcat.org/oclc/254138269</URL>
+		<BibFile>WorldCatScraperUnitURLTest4.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_332">
 		<TestDescription>Url test for RWTHAachen University</TestDescription>
 		<URL>http://publications.rwth-aachen.de/record/444986</URL>
 		<BibFile>RWTHAachenScraperUnitURLTest1.bib</BibFile>
@@ -2071,10 +2078,10 @@
 		<BibFile>GooglePatentScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.googlepatent.GooglePatentScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_332">
-		<TestDescription>Test for worldcat with correct authors</TestDescription>
-		<URL>http://www.worldcat.org/oclc/254138269</URL>
-		<BibFile>WorldCatScraperUnitURLTest4.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper</Scraper>
+	<URLTest id="url_338">
+		<TestDescription>URL scraping test for the Redalyc scraper</TestDescription>
+		<URL>http://www.redalyc.org/articulo.oa?id=46434569</URL>
+		<BibFile>RedalycScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.redalyc.RedalycScraper</Scraper>
 	</URLTest>
 </test:Tests>
