@@ -45,21 +45,23 @@ $(function() {
 	/**
 	 * publication details abstract and description more link
 	 */
-	maxChar = 350;
+	var defaultMaxChars = 350;
     	dots = "&hellip;";
 	moretext = "";
 	lesstext = "";
 
 	$('.show-more').each(function() {
-
+		var maxChar = defaultMaxChars;
 		var moreLink = $(document.createElement("a"));
 		var contentContainer = $(this).children(".contentContainer")[0];
 
 		if (contentContainer) {
-
+			if ($(this).attr('data-max-chars')) {
+				maxChar = parseInt($(this).data('max-chars'));
+			}
 			moreLink.data("text", contentContainer.innerHTML)
 					.html("(" + getString("more") + ")")
-					.addClass("moreLink")
+					.addClass("moreLink").addClass($(this).data('extra-class'))
 					.click(function(event) {
 						event.preventDefault();
 						var contentContainer = $(this.parentNode).children(".contentContainer")[0];
@@ -74,16 +76,48 @@ $(function() {
 									.removeClass("show-more")
 									.addClass("show-less");
 						}
-						shortenContent(contentContainer, moreLink.data("text"));
+						shortenContent(contentContainer, moreLink.data("text"), maxChar);
 						return false;
 					});
 
 			this.appendChild(moreLink[0]);
-			if (!shortenContent(contentContainer, moreLink.data("text"))) {
+			if (!shortenContent(contentContainer, moreLink.data("text"), maxChar)) {
 				moreLink.hide();
 			}
 		} //if (contentContainer)
-
+	});
+	var defaultMaxItemsInMoreList = 4;
+	var defaultMoreIcon = 'fa-caret-right';
+	var defaultLessIcon = 'fa-caret-up';
+	$('.more-list').each(function() {
+		var maxItemsInMoreList = defaultMaxItemsInMoreList;
+		var subItems = $(this).find("> li");
+		if (subItems.length > maxItemsInMoreList) {
+			var moreLessLink = $('<li class="more-link-item"></li>');
+			subItems.slice(maxItemsInMoreList).hide();
+			var link = $('<a class="more"><span class="fa fa-caret-right"></span><span class="desc">' + getString("more") + '...</span></a>');
+			link.click(function() {
+				var icon = $(this).find('.fa');
+				var descText;
+				var classToRemove;
+				var classToAdd;
+				if (icon.hasClass(defaultMoreIcon)) {
+					classToAdd = defaultLessIcon;
+					classToRemove = defaultMoreIcon;
+					descText = getString("less");
+					$(this).parent().parent().find('li').show();
+				} else {
+					classToAdd = defaultMoreIcon;
+					classToRemove = defaultLessIcon;
+					descText = getString("more");
+					$(this).parent().parent().find('li:not(.more-link-item)').slice(maxItemsInMoreList).hide();
+				}
+				icon.removeClass(classToRemove).addClass(classToAdd);
+				$(this).find('.desc').text(descText + "...");
+			});
+			moreLessLink.append(link);
+			$(this).append(moreLessLink);
+		}
 	});
 
 	/**
@@ -145,45 +179,43 @@ $(function() {
 		$.ajax({
 			url : url,
 			type : 'POST',
-			data : data,
-			
-		}).done(function(result) { //on success
-			
-			// remove tags
+			data : data
+		}).done(function(result) {
+			// remove old tags and old system tags
 			$('#list-item-' + resourceHash + ' .ptags span.label').remove();
-			
-			// remove system tags
 			$('#list-item-' + resourceHash + ' .hiddenSystemTag ul.tags li').remove();
 			
 			// append current tags
-			$(tags).each(function(i, v) {
-				if(!isSystemTag(v)) {
-					var item = '<span class="label label-grey"><a href="/user/' + encodeURIComponent(currUser) + '/' + encodeURIComponent(tags[i]) + '">' + tags[i] + '</a></span> ';
-					$('#list-item-' + resourceHash + ' .ptags').append(item);
+			$(tags).each(function(i, tag) {
+				if (!isSystemTag(tag)) {
+					var tagView = viewForTag(tag, "grey");
+					var tagContainer = $('#list-item-' + resourceHash + ' .ptags');
+					tagContainer.append(tagView);
 				} else {
-					
-					var item = '<li><span class="label label-warning"><a href="/user/' + encodeURIComponent(currUser) + '/' + encodeURIComponent(tags[i]) + '">' + tags[i] + '</a></span></li>';
-					$('#list-item-' + resourceHash + ' .hiddenSystemTag ul.tags').append(item);
-					$('#system-tags-link-' + resourceHash).show();
+					var tagView = viewForTag(tag, "warning");
+					var tagListItem = $('<li></li>');
+					tagListItem.append(tagView);
+					$('#list-item-' + resourceHash + ' .hiddenSystemTag ul.tags').append(tagListItem);
 				}
 			});
 			
-			
+			// if there are no systags, hide systag button
 			var systags = $('#list-item-' + resourceHash + ' .hiddenSystemTag ul.tags li');
-			//if there are no systags, hide systag button
-			if($(systags).size() <= 0) {
+			if ($(systags).size() <= 0) {
 				$('#system-tags-link-' + resourceHash).hide();
+			} else {
+				$('#system-tags-link-' + resourceHash).show();
 			}
 			
-			//success message
+			// success message
 			$(responseMsg).append('<div class="alert alert-success" role="alert">' + getString('edittags.update.success') + '</div>');
 			$(submitButton).removeAttr("disabled");
-		}).fail(function(result) { //on fail
-			//fail message
+		}).fail(function(result) {
+			// fail message
 			$(responseMsg).append('<div class="alert alert-danger" role="alert">' + getString('edittags.update.error') + '</div>');
 			$(submitButton).removeAttr("disabled");
 		});
-			
+		
 		return false;
 	});
 
@@ -208,7 +240,7 @@ $(function() {
 
 	$(window).resize(sidebarAdjustments);
 
-	function shortenContent(el, text) {
+	function shortenContent(el, text, maxChar) {
 		var shortened = false;
 		if (el.innerHTML.length > maxChar + dots.length) {
 			text = text.substr(0, maxChar) + dots;
@@ -254,8 +286,21 @@ $(function() {
 						getString("list.show"));
 				$('.publicationsContainer').slideToggle();
 			});
-
+	
+	$('#loginModal').on('shown.bs.modal', function (e) {
+		$('#loginModal').find('input:first').focus();
+	})
 });
+
+function viewForTag(tag, label) {
+	var item = $('<span class="label label-tag"></span>');
+	item.addClass('label-' + label);
+	var link = $('<a></a>');
+	link.attr('href', '/user/' + encodeURIComponent(currUser) + '/' + encodeURIComponent(tag));
+	link.text(tag);
+	item.append(link);
+	return item;
+}
 
 function dummyDownHandler(e) {
 	var event = e || window.event;

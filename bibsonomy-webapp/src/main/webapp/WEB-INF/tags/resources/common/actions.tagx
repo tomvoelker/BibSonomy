@@ -86,9 +86,10 @@
 			<span>
 				<h5><span class="fa fa-sort-amount-asc"><!--  --></span>&amp;nbsp;<fmt:message key="post.meta.sort"/></h5>
 				<rc:sortCriterion requPathAndQuery="${requPathAndQuery}" sortPage="${sortPage}"/><br />
-				<rc:sortOrder requPathAndQuery="${requPathAndQuery}" sortPageOrder="${sortPageOrder}"/>	
+				<rc:sortOrder requPathAndQuery="${requPathAndQuery}" sortPageOrder="${sortPageOrder}"/>
 				<c:if test="${isPublication}">
-					<a href="/help_en/Sorting%2Bpublications"><fmt:message key="post.meta.advanced"/>...</a>
+					<fmt:message var="helpLink" key="post.meta.helplink"/>
+					<a href="${helpLink}"><fmt:message key="post.meta.advanced"/>...</a>
 				</c:if>
 			</span>
 		</li>

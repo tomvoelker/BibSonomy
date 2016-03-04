@@ -74,4 +74,9 @@ public interface SearchIndexManager<R extends Resource> {
 	 */
 	public void generateIndex() throws IndexAlreadyGeneratingException;
 
+	/**
+	 * @param indexId
+	 */
+	public void enableIndex(String indexId);
+
 }

@@ -59,15 +59,15 @@
     				| display buddies
     				+-->
 			<sidebar:sidebarItem>
-				<jsp:attribute name="text"/>
+				<jsp:attribute name="text" >
     				<fmt:message key="spheres.sphere.members">
 						<fmt:param value="${fn:escapeXml(command.sphereName)}"/>
 					</fmt:message>
-				</sidebar:sidebarItem>
+				</jsp:attribute>
 				<jsp:attribute name="content">
-	    			<ul class="sphere_users sidebar_collapse_content">
-	   					<c:forEach items="${command.relatedUsers}" var="item" varStatus="loop">
-	   						<spheres:userLink user="${item}"/>
+					<ul class="sphere_users sidebar_collapse_content">
+						<c:forEach items="${command.relatedUsers}" var="item" varStatus="loop">
+							<spheres:userLink user="${item}"/>
 				    	</c:forEach>
 			    	</ul>
 				</jsp:attribute>
@@ -77,7 +77,7 @@
 			<!-- list all spheres -->
 			<sidebar:sidebarItem textKey="spheres.sphere.list.title">
 				<jsp:attribute name="content">
-					<spheres:spheresCloud title="${spheresCloudTitle}"><!-- keep me! --></spheres:spheresCloud>
+					<spheres:spheresCloud />
 				</jsp:attribute>
 			</sidebar:sidebarItem>
 			

@@ -49,8 +49,6 @@
 	<c:set var="formErrors"><form:errors path="${path}" /></c:set>
 	
 	<div class="form-group${not empty formErrors ? ' has-error' : ''}">
-		<bsform:errors path="${path}" colSpan="${inputColSpan}" />
-		
 		<div class="col-sm-offset-${12-inputColSpan} col-sm-${inputColSpan}">
 			<c:set var="classValue" value="${not empty noHelp or not noHelp ? 'help-popover' : ''}"/>
 			<c:if test="${not empty classAtt}">
@@ -84,6 +82,7 @@
 					<c:if test="${empty noHelp or not noHelp}">
 						<div class="help-content hide">${helpText}</div>
 					</c:if>
+					<bsform:errors path="${path}" />
 				</label>
 			</div>
 		</div>

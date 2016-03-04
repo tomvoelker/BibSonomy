@@ -40,7 +40,7 @@
 				<c:otherwise>
 					<c:out value="${itemHeading}"/>
 				</c:otherwise>
-			</c:choose>			
+			</c:choose>
 			<c:if test="${not empty outLink}">
 				<c:out value=" " />
 				<small>

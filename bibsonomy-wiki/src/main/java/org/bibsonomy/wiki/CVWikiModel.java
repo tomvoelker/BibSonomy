@@ -34,13 +34,16 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Layout;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.wiki.tags.AbstractTag;
+import org.bibsonomy.wiki.tags.group.GroupDescriptionTag;
 import org.bibsonomy.wiki.tags.group.GroupImageTag;
 import org.bibsonomy.wiki.tags.group.MembersTag;
 import org.bibsonomy.wiki.tags.shared.HomepageTag;
 import org.bibsonomy.wiki.tags.shared.ImageTag;
 import org.bibsonomy.wiki.tags.shared.NameTag;
+import org.bibsonomy.wiki.tags.shared.TagcloudTag;
 import org.bibsonomy.wiki.tags.shared.resource.BookmarkListTag;
 import org.bibsonomy.wiki.tags.shared.resource.PublicationListTag;
 import org.bibsonomy.wiki.tags.user.BirthdayTag;
@@ -75,10 +78,12 @@ public class CVWikiModel extends AbstractWikiModel {
 		register(new InterestsTag());
 		register(new HobbyTag());
 		register(new ProfessionTag());
+		register(new TagcloudTag());
 		
 		/* Group Tags */
 		register(new MembersTag());
 		register(new GroupImageTag());
+		register(new GroupDescriptionTag());
 		
 		/* Shared Tags */
 		register(new HomepageTag());
@@ -99,6 +104,7 @@ public class CVWikiModel extends AbstractWikiModel {
 	private MessageSource messageSource;
 
 	private LayoutRenderer<Layout> layoutRenderer;
+	private URLGenerator urlGenerator;
 
 	/**
 	 * Default Constructor
@@ -227,6 +233,20 @@ public class CVWikiModel extends AbstractWikiModel {
 	 */
 	public void setMessageSource(MessageSource messageSource) {
 		this.messageSource = messageSource;
+	}
+
+	/**
+	 * @return the urlGenerator
+	 */
+	public URLGenerator getUrlGenerator() {
+		return this.urlGenerator;
+	}
+
+	/**
+	 * @param urlGenerator the urlGenerator to set
+	 */
+	public void setUrlGenerator(URLGenerator urlGenerator) {
+		this.urlGenerator = urlGenerator;
 	}
 
 }

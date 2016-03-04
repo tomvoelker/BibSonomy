@@ -54,17 +54,13 @@
 									<!--  <span data-toggle='modal' data-target="#editRole" data-resource-title="${post.resource.title}" data-person-name="${relation.personName.firstName} ${relation.personName.lastName}" data-relation-simhash1="${relation.simhash1}" data-relation-simhash2='${relation.simhash2}' data-person-role="${role}" style='color:orange;cursor:pointer' href="#editRole" class='editRole fa fa-pencil'>&#160;</span> -->
 									<c:if test="${not empty loginUserName and not loginUser.spammer}">
 										<!-- TODO: use tagx file -->
-										<button class="btn btn-default btn-xs ${systemReadOnly ? 'disabled' : '' }">
-											<span data-toggle='modal' data-target="#deleteRole" data-resourcePersonRelation-id='${relation.personRelChangeId}' style='color:darkred;cursor:pointer' href="#deleteRole" class='deleteRole'><fontawsome:icon icon="times" /></span>
-										</button>
+											<span data-toggle='modal' data-target="#deleteRole" data-resourcePersonRelation-id='${relation.personRelChangeId}' style='color:darkred;cursor:pointer' href="#deleteRole" class='deleteRole'><button class="btn btn-default btn-xs ${systemReadOnly ? 'disabled' : '' }"><fontawsome:icon icon="times" /></button></span>
 									</c:if>
 								</span>
 							</c:if>
 						</c:forEach>
 						<c:if test="${not empty loginUserName and not loginUser.spammer}">
-							<button class="btn btn-default btn-xs ${systemReadOnly ? 'disabled' : '' }">
-								<span data-toggle='modal' data-target="#addRole" data-relation-pubowner="${post.user.name}" data-resourceTitle="${post.resource.title}" data-relation-simhash1="${post.resource.interHash}" data-relation-simhash2='${post.resource.intraHash}' data-person-role="${role}" style='color:green;cursor:pointer' href="#addRole" class='addRole'><fontawsome:icon icon="plus" /></span>
-							</button>
+								<span data-toggle='modal' data-target="#addRole" data-relation-pubowner="${post.user.name}" data-resourceTitle="${post.resource.title}" data-relation-simhash1="${post.resource.interHash}" data-relation-simhash2='${post.resource.intraHash}' data-person-role="${role}" href="#addRole" class='addRole'><button class="btn btn-default btn-xs  ${systemReadOnly ? 'disabled' : '' }" ><fontawsome:icon icon="plus" /></button></span>
 						</c:if> 
 					</li>
 				</c:forEach>

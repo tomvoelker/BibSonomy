@@ -28,6 +28,7 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -40,6 +41,8 @@ import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
@@ -102,7 +105,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		/*
 		 * extract filter
 		 */
-		final boolean publicationFilter = this.isPublicationFilter(command.getFilter());
+		final boolean publicationFilter = isPublicationFilter(command.getFilter());
 		if (publicationFilter) {
 			this.supportedResources.remove(Bookmark.class);
 		}
@@ -214,9 +217,31 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 						break;
 					}
 				}
-				/*
-				 * TODO: we need an adminLogic to access the requested user's groups ...
-				 */
+				
+				if (!loginUserName.equals(groupingName)) {
+					/*
+					 * calc common groups
+					 */
+					final List<Group> loginUserNameGroups = context.getLoginUser().getGroups();
+					final List<Group> sharedGroups =  new LinkedList<Group>();
+					
+					for (final Group group : loginUserNameGroups) {
+						final Group groupDetails = this.logic.getGroupDetails(group.getName(), false);
+						/*
+						 * this check is only neccessary for admins which are
+						 * members of the {public,friends}_spam groups
+						 * for *_spam groups the logic retuns null
+						 */
+						if (present(groupDetails)) {
+							for (final GroupMembership membership : groupDetails.getMemberships()) {
+								if (membership.getUser().equals(requestedUser)) {
+									sharedGroups.add(group);
+								}
+							}
+						}
+					}
+					command.setSharedGroups(sharedGroups);
+				}
 			}
 			
 			this.endTiming();
@@ -239,7 +264,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		return Views.getViewByFormat(format);
 	}
 
-	private boolean isPublicationFilter(final FilterEntity filter) {
+	private static boolean isPublicationFilter(final FilterEntity filter) {
 		return FilterEntity.JUST_PDF.equals(filter) || FilterEntity.DUPLICATES.equals(filter);
 	}
 

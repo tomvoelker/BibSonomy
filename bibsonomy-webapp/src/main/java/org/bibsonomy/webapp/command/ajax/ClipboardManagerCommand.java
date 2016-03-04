@@ -26,14 +26,14 @@
  */
 package org.bibsonomy.webapp.command.ajax;
 
+import org.bibsonomy.webapp.command.ajax.action.ClipboardAction;
 
 /**
  * @author Christian Kramer
  */
-public class ClipboardManagerCommand extends AjaxCommand<String> {
+public class ClipboardManagerCommand extends AjaxCommand<ClipboardAction> {
 	private String hash;
 	private String user;
-
 
 	/**
 	 * @return String

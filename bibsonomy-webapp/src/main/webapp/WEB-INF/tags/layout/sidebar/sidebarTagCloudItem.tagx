@@ -28,6 +28,4 @@
 			<tags:cloud requPath="${requPath}" cmd="${cmd}" tagboxMinfreqStyle="${tagboxMinfreqStyle}" showTooltips="${showTooltips}" tagSizeMode="${tagSizeMode}" scope="${scope}"/>
 		</jsp:attribute>
 	</sidebar:sidebarItem>
-	
-	
 </jsp:root>

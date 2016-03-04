@@ -21,16 +21,6 @@
 	<c:set var="formErrors"><form:errors path="${path}" /></c:set>
 	
 	<div class="form-group${not empty formErrors ? ' has-error' : ''}">
-		<c:if test="${not empty formErrors}">
-			<div class="col-sm-offset-${labelColSpan} col-sm-${inputColSpan}">
-				<bs:feedback style="danger" size="defaultSize" >
-					<jsp:attribute name="feedbackBody">
-						<form:errors path="tags" />
-					</jsp:attribute>
-				</bs:feedback>
-			</div>
-		</c:if>
-		
 		<label class="col-sm-${labelColSpan} control-label">
 			<fmt:message key="post.resource.tags"/>
 		</label>
@@ -44,6 +34,7 @@
 			<p class="help-block">
 				<fmt:message key="post.resource.spaceseparated" />
 			</p>
+			<bsform:errors path="tags" />
 		</div>
 		<c:if test="${containsComma}">
 			<div class="checkbox col-sm-offset-${labelColSpan} col-sm-${inputColSpan}">

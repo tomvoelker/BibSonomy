@@ -1,0 +1,9 @@
+\begin{author}
+\format[Authors(LastFirst,Fullname,sep=; ,LastSep= and ,EtAl= et al.,10,9),HTMLChars]{\author} \end{author}
+\begin{year}(\format[RTFChars]{\year}): \end{year}
+"\format[RTFChars]{\title}". In: {\\i \format[RTFChars]{\journal}}
+\begin{volume} \format[RTFChars]{\volume}\end{volume}
+\begin{number} (\format[RTFChars]{\number})\end{number}
+\begin{pages}: \format[RTFChars]{\pages}\end{pages}
+\begin{note}. \format[RTFChars]{\note}\end{note}
+\\par\\par

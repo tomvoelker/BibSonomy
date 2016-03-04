@@ -157,10 +157,10 @@ public class PublicationImporter {
 	public String handleSelection(final String selection) {
 		// FIXME: at this point we must first convert to bibtex!
 		if (EndnoteToBibtexConverter.canHandle(selection)) {
-			return this.endnoteToBibtexConverter.endnoteToBibtex(selection);
+			return this.endnoteToBibtexConverter.toBibtex(selection);
 		}
 		if (RisToBibtexConverter.canHandle(selection)) {
-			return new RisToBibtexConverter().risToBibtex(selection);
+			return new RisToBibtexConverter().toBibtex(selection);
 		}
 		/*
 		 * should be BibTeX

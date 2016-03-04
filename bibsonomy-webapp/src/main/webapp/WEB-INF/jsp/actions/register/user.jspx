@@ -20,6 +20,10 @@
 	<fmt:message key="navi.register" var="pageTitle" />
 	
 	<layout:singleContainerLayout requPath="${requPath}" command="${command}" pageTitle="${pageTitle}" loginUser="${command.context.loginUser}" smallBox="${true}">
+		<jsp:attribute name="headerExt">
+			<script type='text/javascript' src="${resdir}/javascript/actions/eventLogger.js"><!-- keep me --></script>
+			
+	    </jsp:attribute>
 		<jsp:attribute name="content">
 		
 			<h1 class="text-center">
@@ -57,6 +61,8 @@
 								
 								<bsform:input labelColSpan="3" path="registerUser.email" labelKey="user.settings.email" placeholderLikeLabel="true" inputGroupFaIcon="fa-envelope" noHelp="true" />
 								
+								<form:hidden path="registerUser.registrationLog" />
+								
 								<hr />
 								
 								<bsform:input labelColSpan="3" path="registerUser.homepage" labelKey="user.settings.homepage" placeholderLikeLabel="true" inputGroupFaIcon="fa-globe" noHelp="true" />
@@ -65,7 +71,13 @@
 							</jsp:attribute>
 						</bsform:fieldset>
 						
-						<bsform:fieldset legendKey="register.captchaAndPrivacy">
+						<c:set var="legendKey" value="register.captchaAndPrivacy" />
+						
+						<c:if test="${empty command.captchaHTML}">
+							<c:set var="legendKey" value="register.privacy" />
+						</c:if>
+						
+						<bsform:fieldset legendKey="${legendKey}">
 							<jsp:attribute name="content">
 								<bsform:captcha labelColSpan="3" inputColSpan="9" />
 								
@@ -109,6 +121,8 @@
 				</div>
 			</div>
 			<br />
+			<script type='text/javascript' src="${resdir}/javascript/actions/addEventLoggerToRegister.js"><!-- keep me --></script>
+			
 		</jsp:attribute>
 	</layout:singleContainerLayout>
 </jsp:root>

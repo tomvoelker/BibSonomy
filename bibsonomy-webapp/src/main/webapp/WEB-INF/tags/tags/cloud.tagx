@@ -19,7 +19,6 @@
 	<jsp:directive.attribute name="suppressTitle" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="scope" type="java.lang.String" required="false"/>
 	
-
 <div class="sidebar_collapse_content">
 
 	<!-- tagcloud styles: 0 cloud, 1 list (see org.bibsonomy.common.enums.TagCloudStyle) -->
@@ -67,14 +66,14 @@
 			<!-- determine tag css depending on its frequency -->
 			<c:if test="${tag.usercount == 1}">
 				<fmt:message var="posts" key="post" /> <!-- singular -->
-			</c:if>	
+			</c:if>
 			
 			<c:set var="tagclass" value="${mtl:getTagSize(tag.usercount, maxTagFrequency)}" />
 			
 			<!-- display the tag -->
 			<c:if test="${tag.usercount >= cmd.minFreq or tagboxMinfreqStyle == 'none'}">
 				<li class="${tagclass}">
-					<jspx:element name="a">					
+					<jspx:element name="a">
 						<c:choose>
 							<c:when test="${not empty scope and scope ne 'LOCAL'}">
 								<jspx:attribute name="href">/${fn:escapeXml(mtl:getPath(requPath))}/${fn:escapeXml(tag.name)}?scope=${scope}</jspx:attribute>
@@ -88,7 +87,7 @@
 							<jspx:attribute name="style">font-size:${mtl:computeTagFontsize(tag.usercount, minTagFrequency, maxTagFrequency, tagSizeMode)}%</jspx:attribute>
 						</c:if>
 						<c:set var="tagNameWithSpaces" value="${' '}${tag.name}${' '}"/>
-						<c:if test="${not empty highlightTags and fn:contains(highlightTags,tagNameWithSpaces)}">
+						<c:if test="${not empty highlightTags and fn:contains(highlightTags, tagNameWithSpaces)}">
 							<jspx:attribute name="style">border-bottom:1px dotted black;</jspx:attribute>
 						</c:if>
 						<c:if test="${showTooltips}">

@@ -534,6 +534,8 @@ CREATE TABLE `groupids` (
   `group` int(10) NOT NULL default '0',
   `privlevel` tinyint(3) unsigned default '1',
   `sharedDocuments` tinyint(1) default '0',
+  `allow_join` TINYINT(1) NULL DEFAULT '1',
+  `shortDescription` TEXT NULL,
   `publ_reporting_mail` varchar(255) DEFAULT NULL,
   `publ_reporting_mail_template` text,
   `publ_reporting_external_url` varchar(255) DEFAULT NULL,
@@ -1060,6 +1062,8 @@ CREATE TABLE `pending_groupids` (
   `group` int(10) NOT NULL default '0',
   `privlevel` tinyint(3) unsigned default '1',
   `sharedDocuments` tinyint(1) default '0',
+  `allow_join` TINYINT(1) NULL DEFAULT '1',
+  `shortDescription` TEXT NULL,
   `publ_reporting_mail` varchar(255) DEFAULT NULL,
   `publ_reporting_mail_template` text,
   `publ_reporting_external_url` varchar(255) DEFAULT NULL,
@@ -1135,6 +1139,7 @@ CREATE TABLE `pendingUser` (
   `show_bookmark` tinyint(1) default '1',
   `show_bibtex` tinyint(1) default '1',
   `useExternalPicture` tinyint(1) DEFAULT '0',
+  `reg_log` TEXT NULL DEFAULT NULL,
   UNIQUE (`activation_code`),
   PRIMARY KEY  (`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1537,6 +1542,7 @@ CREATE TABLE `user` (
   `show_bookmark` tinyint(1) default '1',
   `show_bibtex` tinyint(1) default '1',
   `useExternalPicture` tinyint(1) DEFAULT '0',
+  `reg_log` TEXT NULL DEFAULT NULL,
   PRIMARY KEY  (`user_name`),
   UNIQUE KEY `user_id` (`id`),
   KEY `spammer_to_classify_user_name_idx` (`spammer`,`to_classify`,`user_name`)

@@ -118,23 +118,21 @@
 			<c:set var="siteid" value="${properties['project.statisitics.siteid']}" />
 			<script type="text/javascript">
 				<![CDATA[
-					var pkBaseURL = (("https:" == document.location.protocol) ? "https://${statisticsUrl}" : "http://${statisticsUrl}");
-					document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
-				]]>
-			</script>
-			<script type="text/javascript">
-				<![CDATA[
-					try {
-						var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", ${siteid});
-						piwikTracker.trackPageView();
-						piwikTracker.enableLinkTracking();
-					} catch( err ) {}
+					var _paq = _paq || [];
+					_paq.push(['trackPageView']);
+					_paq.push(['enableLinkTracking']);
+					(function() {
+						var u="//${statisticsUrl}";
+						_paq.push(['setTrackerUrl', u+'piwik.php']);
+						_paq.push(['setSiteId', ${siteid}]);
+						var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+						g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+					})();
 				]]>
 			</script>
 			<noscript>
 				<p>
-					<!-- FIXME: support https -->
-					<c:url var="statImgUrl" value="http://${statisticsUrl}/piwik.php">
+					<c:url var="statImgUrl" value="//${statisticsUrl}/piwik.php">
 						<c:param name="idsite" value="${siteid}" />
 					</c:url>
 					<img src="${statImgUrl}" style="border:0" alt="" />
@@ -153,11 +151,5 @@
 		<link rel="alternate" type="application/rss+xml"  title="${properties['project.name']} Blog - RSS"  href="http://blog.bibsonomy.org/feeds/posts/default?alt=rss" />
 		<title>${properties['project.name']} <c:if test="${not empty pageTitle}"> :: <c:out value="${pageTitle}"/></c:if></title>
 		<jsp:invoke fragment="headerExt"/>
-		<!-- FIXME: readd print style -->
-<!-- 		<spring:theme code="stylesheet.additional.print" var="additionalPrintCSS" text="" /> -->
-<!-- 		<c:if test="${not empty additionalPrintCSS}"> -->
-<!-- 			<link rel="stylesheet" type="text/css" media="print" href="${additionalPrintCSS}" /> -->
-<!-- 		</c:if> -->
-		
 	</head>
 </jsp:root>

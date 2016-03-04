@@ -59,10 +59,10 @@ public abstract class MultiResourceListController extends ResourceListController
 	 */
 	@SuppressWarnings("unchecked")
 	protected void postProcessAndSortList(final MultiResourceViewCommand cmd, Class<? extends Resource> resourceType) {
-		for (ListCommand<?> listCommand: cmd.getListCommand(resourceType)) {
+		for (final ListCommand<?> listCommand: cmd.getListCommand(resourceType)) {
 			if (resourceType == BibTex.class) {
 				// TODO: how can we do this in a clean way without SuppressWarnings?
-				postProcessAndSortList(cmd, (List<Post<BibTex>>) listCommand.getList());	
+				postProcessAndSortList(cmd, (List<Post<BibTex>>) listCommand.getList());
 			}
 		}
 	}

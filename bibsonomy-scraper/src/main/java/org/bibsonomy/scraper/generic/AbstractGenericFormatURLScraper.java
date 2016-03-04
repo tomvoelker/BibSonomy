@@ -57,7 +57,15 @@ public abstract class AbstractGenericFormatURLScraper extends AbstractUrlScraper
 			if (downloadURL == null) {
 				throw new ScrapingFailureException("can't get download url for " + url);
 			}
-			final String downloadResult = WebUtils.getContentAsString(downloadURL);
+			
+			final String cookies;
+			if (this.retrieveCookiesFromSite()) {
+				cookies = WebUtils.getCookies(url);
+			} else {
+				cookies = null;
+			}
+			
+			final String downloadResult = WebUtils.getContentAsString(downloadURL, cookies);
 			
 			String bibtex = this.convert(downloadResult);
 			
@@ -69,6 +77,10 @@ public abstract class AbstractGenericFormatURLScraper extends AbstractUrlScraper
 		} catch (final IOException e) {
 			throw new ScrapingException(e);
 		}
+		return false;
+	}
+	
+	protected boolean retrieveCookiesFromSite() {
 		return false;
 	}
 	
