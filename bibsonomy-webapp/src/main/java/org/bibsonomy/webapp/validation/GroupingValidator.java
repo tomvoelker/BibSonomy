@@ -72,10 +72,7 @@ public class GroupingValidator implements Validator<GroupingCommand> {
 				 * "other" selected, but no group chosen
 				 * TODO: more detailed error messages for different errors
 				 */
-				
 				errors.rejectValue("groups", "error.field.valid.groups");
-				
-				
 			} else if (groups.size() > 1) {
 				/*
 				 * TODO: allow multiple groups
