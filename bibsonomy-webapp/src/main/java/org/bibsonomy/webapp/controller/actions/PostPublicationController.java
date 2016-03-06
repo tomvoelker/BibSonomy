@@ -29,8 +29,6 @@ package org.bibsonomy.webapp.controller.actions;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -58,12 +56,9 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.PersonIdType;
-import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.TagUtils;
-import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.UrlCompositeScraper;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
 import org.bibsonomy.webapp.util.GroupingCommandUtils;
@@ -157,7 +152,6 @@ public class PostPublicationController extends AbstractEditPublicationController
 		final String selection = command.getSelection();
 		final boolean hasSelection = present(selection);
 		final boolean hasFile = present(command.getFile());
-		boolean hasURL = false;
 		/*
 		 * check for valid ckey
 		 */
@@ -194,29 +188,31 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 * check whether every line is a URL
 			 * AND can be interpreted by the scraper
 			 */
-			final String[] selectionInLines = selection.split("\n");			
-			for (String possibleURL : selectionInLines) {
-				try {
-					ScrapingContext sc = new ScrapingContext(new URL(possibleURL));
-					if (super.scraper.supportsScrapingContext(sc)){
-						hasURL = true;
+			final String[] selectionInLines = selection.split("\n");
+			final StringBuilder urlSnippet = new StringBuilder();
+			snippet = urlSnippet.toString();
+			boolean hasURL = false;
+			for (final String possibleURL : selectionInLines) {
+				if (present(possibleURL)) {
+					final ScrapingContext scrapingContext = this.buildScrapingContext(possibleURL, null, true);
+					if (!present(scrapingContext)) {
+						continue;
 					}
-				} catch (MalformedURLException e) {
-					/*
-					 * at least one line is no URL.
-					 * "hasURL" is "false"
-					 * no line will be interpreted as a URL
-					 */
-					hasURL = false;
-					break;
+					hasURL = true;
+					final boolean success = this.scrape(scrapingContext);
+					if (success) {
+						urlSnippet.append(scrapingContext.getBibtexResult());
+						urlSnippet.append("\n");
+					}
 				}
-				
 			}
 			/*
 			 * if not handle the field as a snippet
 			 */
 			if (!hasURL) {
 				snippet = this.publicationImporter.handleSelection(selection);
+			} else {
+				snippet = urlSnippet.toString().trim();
 			}
 
 		} else if (hasFile) {
@@ -278,36 +274,18 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * FIXME: why aren't commas, etc. removed?
 		 */
 		List<Post<BibTex>> posts = null;
-		
-		/*
-		 * if every line is a URL we will now scrap the data to every URL independently and feed it back
-		 * 
-		 */
-		
-		String createdSnippet = "";
-		if (hasURL) {
-			posts = new LinkedList<Post<BibTex>>();
-			String[] selectionInLines = selection.split("\n");
-			for (String urlString : selectionInLines) {
-				command.setUrl(urlString);
-				super.handleScraper(command, urlString, selection);
-				createdSnippet += BibTexUtils.toBibtexString(command.getPost()) + "\n";
-			}
-		}
 		try {
 			/*
 			 * Parse the BibTeX snippet
 			 */
-			if (hasURL) {
-				posts = parser.parseBibTeXPosts(createdSnippet);
-			} else {
-				posts = parser.parseBibTeXPosts(snippet);
-			}
+			
+			posts = parser.parseBibTeXPosts(snippet);
 		} catch (final ParseException ex) {
 			this.errors.reject("error.upload.failed.parse", ex.getMessage());
 		} catch (final IOException ex) {
 			this.errors.reject("error.upload.failed.parse", ex.getMessage());
 		}
+		
 		PublicationValidator.handleParserWarnings(this.errors, parser, snippet, null);
 
 		/*
