@@ -52,6 +52,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 
 	private String tags;
 
+	private boolean myOwn;
 	/** TODO: add documentation */
 	private Post<RESOURCE> diffPost;
 
@@ -124,6 +125,20 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	private int compareVersion;
 	private List<String> differentEntryKeys;
 	
+	/**
+	 * @return the myown
+	 */
+	public boolean isMyOwn() {
+		return this.myOwn;
+	}
+
+	/**
+	 * @param myown the myown to set
+	 */
+	public void setMyOwn(boolean myown) {
+		this.myOwn = myown;
+	}
+
 	/**
 	 * @return saveAndRate
 	 */

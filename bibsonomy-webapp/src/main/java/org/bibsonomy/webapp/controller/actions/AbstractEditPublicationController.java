@@ -37,6 +37,7 @@ import java.util.List;
 import org.bibsonomy.bibtex.parser.PostBibTeXParser;
 import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
 import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Post;
@@ -95,7 +96,19 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		 */
 		final String url = command.getUrl();
 		final String selection = command.getSelection();
-
+		
+		final String tags = command.getTags();
+		if (command.isMyOwn()) {
+			if (!present(tags)) {
+				command.setTags(MyOwnSystemTag.NAME);
+			} else if(tags.contains(MyOwnSystemTag.NAME)) {
+				//nothing
+			} else {
+				command.setTags(tags + " " + MyOwnSystemTag.NAME);
+			}
+			command.setEditBeforeSaving(true);
+		}
+		
 		if ((present(url) || present(selection))) {
 			this.handleScraper(command, url, selection);
 		}
