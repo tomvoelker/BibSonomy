@@ -30,7 +30,7 @@
 	<c:set var="goldstandard" value="${post.resource}" />
 	
 	<c:set var="isRealGoldstandard" value="${goldstandard['class'].simpleName eq 'GoldStandardPublication' }" />
-	<c:set var="hasRelatedPublication" value="${isRealGoldstandard and not empty goldstandard.references}" />
+	<c:set var="hasRelatedPublication" value="${isRealGoldstandard and not empty goldstandard.references or not empty goldstandard.referencedBy}" />
 	
 	<!-- determine the publication type for schema.org markup -->
 	<c:set var="itemType" value="http://schema.org/ScholarlyArticle"/>
@@ -139,13 +139,33 @@
 				</c:forEach>
 			</div>
 			
-			<c:if test="${hasRelatedPublications}">
+			
+				
+			
+			
+			
+			<c:if test="${hasRelatedPublication}">
 				<h2 class="pub-details" id="related-publications">
 					Related Publications <!-- TODO: i18n -->
 				</h2>
 				<div class="btn-group">
-					<bs:linkButton additionalClass="active" href="#related-publications-references" size="defaultSize" style="defaultStyle" text="publications referenced by this publication" />
-					<bs:linkButton href="#related-publications-citing" size="defaultSize" style="defaultStyle" text="publications citing this publications" />
+					<bs:linkButton additionalClass="active" href="#related-publications" size="defaultSize" style="defaultStyle" onclick="refs(this)" text="publications referenced by this publication"/>
+					<bs:linkButton href="#related-publications" size="defaultSize" style="defaultStyle" onclick="cites(this)" text="publications citing this publication"/>
+					
+					<script>
+						function cites(){
+							$("#related-publications-references").hide();
+							$("#related-publications-citing").show();
+						};
+						function refs(){
+							$("#related-publications-citing").hide();
+							$("#related-publications-references").show();
+						};
+						$(".btn-group > .btn").click(function(){
+						    $(this).addClass("active").siblings().removeClass("active");
+						});
+					</script>
+				
 				</div>
 				<ul id="related-publications-references">
 					<c:forEach var="reference" items="${goldstandard.references}">
@@ -155,8 +175,16 @@
 						</li>
 					</c:forEach>
 				</ul>
+				<ul id="related-publications-citing" style="display:none">
+					<c:forEach var="reference" items="${goldstandard.referencedBy}">
+						<li>
+							<strong><a href="${relativeUrlGenerator.getPublicationUrlByInterHash(reference.interHash)}"><c:out value="${mtl:cleanBibtex(reference.title)}" /></a></strong>
+							<bib:desc publication="${reference}"/>
+						</li>
+					</c:forEach>
+				</ul>
 			</c:if>
-			
+					
 			<!--+
 				| discussion and rating
 				+-->
@@ -203,7 +231,7 @@
 						<!-- TODO: i18n? -->
 						<a href="#tags">Tags</a>
 					</li>
-					<c:if test="${hasRelatedPublications}">
+					<c:if test="${hasRelatedPublication}">
 						<li>
 							<a href="#related-publications">Related Publications</a> <!-- TODO: i18n -->
 						</li>

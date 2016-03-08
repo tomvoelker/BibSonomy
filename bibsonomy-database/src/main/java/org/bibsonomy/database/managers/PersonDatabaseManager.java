@@ -214,7 +214,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			databaseSession.commitTransaction();
 		} finally {
 			databaseSession.endTransaction();
-		}	
+		}
 	}
 
 	// TODO: write testcase for this method and test whether groupBy of OR-mapping works as expected 

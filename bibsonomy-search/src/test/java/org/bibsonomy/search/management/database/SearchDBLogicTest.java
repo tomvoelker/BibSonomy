@@ -133,8 +133,8 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void retrieveRecordsFromDatabase() throws PersonListParserException {
-		DatabasePluginRegistry.getInstance().clearPlugins();
-		DatabasePluginRegistry.getInstance().add(new BibTexExtraPlugin());
+		DatabasePluginRegistry.getInstance().removeAllPlugins();
+		DatabasePluginRegistry.getInstance().addPlugin(new BibTexExtraPlugin());
 		final List<Post<? extends Resource>> refPosts = new LinkedList<Post<? extends Resource>>();
 		//--------------------------------------------------------------------
 		// TEST 1: insert special posts into test database and search for it
@@ -169,8 +169,8 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void testLimitOffset() throws PersonListParserException {
-		DatabasePluginRegistry.getInstance().clearPlugins();
-		DatabasePluginRegistry.getInstance().add(new BibTexExtraPlugin());
+		DatabasePluginRegistry.getInstance().removeAllPlugins();
+		DatabasePluginRegistry.getInstance().addPlugin(new BibTexExtraPlugin());
 		final List<Post<? extends Resource>> refPosts = new LinkedList<Post<? extends Resource>>();
 		//--------------------------------------------------------------------
 		// TEST 1: insert special posts into test database and search for it

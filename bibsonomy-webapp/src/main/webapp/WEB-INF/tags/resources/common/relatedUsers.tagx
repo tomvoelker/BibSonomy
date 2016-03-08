@@ -40,7 +40,7 @@
 			</ul>
 		</c:when>
 		<c:otherwise>
-			<fmt:message key="goldstnadard.resource.relatedUsers.nohint" />
+			<fmt:message key="goldstandard.resource.relatedUsers.nohint" />
 		</c:otherwise>
 	</c:choose>
 	
