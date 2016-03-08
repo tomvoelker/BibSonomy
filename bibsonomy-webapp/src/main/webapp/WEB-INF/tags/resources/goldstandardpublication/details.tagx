@@ -138,12 +138,7 @@
 					<span class="tag ${mtl:getTagSize(tag.usercount, command.tagcloud.maxTagCount)}"><c:out value="${tag.name }" /></span>
 				</c:forEach>
 			</div>
-			
-			
-				
-			
-			
-			
+					
 			<c:if test="${hasRelatedPublication}">
 				<h2 class="pub-details" id="related-publications">
 					Related Publications <!-- TODO: i18n -->
