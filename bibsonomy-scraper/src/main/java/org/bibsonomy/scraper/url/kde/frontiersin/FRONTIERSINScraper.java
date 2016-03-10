@@ -32,6 +32,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
@@ -43,6 +46,7 @@ import org.bibsonomy.util.WebUtils;
  */
 public class FRONTIERSINScraper extends GenericBibTeXURLScraper {
 
+	private static final Log log = LogFactory.getLog(FRONTIERSINScraper.class);
 	private static final String SITE_NAME = "Cold Spting Harbor Perspetives in Biology";
 	private static final String SITE_URL = "http://cshperspectives.cshlp.org/";
 	private static final String info = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
@@ -65,7 +69,7 @@ public class FRONTIERSINScraper extends GenericBibTeXURLScraper {
 				downloadURL = downloadURL.replaceAll("amp;", "");
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.debug("page conteent could not be found", e);
 		}
 		return downloadURL;
 	}
