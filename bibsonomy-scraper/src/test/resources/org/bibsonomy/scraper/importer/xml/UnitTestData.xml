@@ -878,7 +878,7 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
 		<!-- could not find "export citation" link on Springer page, thus, no export 
 			available -->
-		<Enabled>false</Enabled>
+		<Enabled>true</Enabled>
 	</URLTest>
 	<URLTest id="url_144">
 		<TestDescription>test for cell scraper</TestDescription>
@@ -2076,5 +2076,17 @@
 		<URL>http://www.worldcat.org/oclc/254138269</URL>
 		<BibFile>WorldCatScraperUnitURLTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_339">
+		<TestDescription>Test for worldcat with correct authors</TestDescription>
+		<URL>http://www.redalyc.org/articulo.oa?id=46434569</URL>
+		<BibFile>RedalycScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.redalyc.RedalycScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_340">
+		<TestDescription>URL scraping test for the frontiersen scraper</TestDescription>
+		<URL>http://journal.frontiersin.org/article/10.3389/fphys.2016.00071/full</URL>
+		<BibFile>FRONTIERSINScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.frontiersin.FRONTIERSINScraper</Scraper>
 	</URLTest>
 </test:Tests>
