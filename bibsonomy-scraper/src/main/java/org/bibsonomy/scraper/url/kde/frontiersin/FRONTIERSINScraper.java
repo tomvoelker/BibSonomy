@@ -69,7 +69,7 @@ public class FRONTIERSINScraper extends GenericBibTeXURLScraper {
 				downloadURL = downloadURL.replaceAll("amp;", "");
 			}
 		} catch (IOException e) {
-			log.debug("page conteent could not be found", e);
+			log.warn("page conteent could not be found", e);
 		}
 		return downloadURL;
 	}
