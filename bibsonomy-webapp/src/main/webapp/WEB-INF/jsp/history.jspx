@@ -314,14 +314,11 @@
 															</div>
 														</c:when>
 													</c:choose>
-													<c:forEach var="diffEntry" items="${diffArrayPre}">
-														<div class="checkbox">
-															<input type="checkbox" class="invisible"/> 
-															<strong><fmt:message key="post.resource.${diffEntry.key}"/></strong>
-															<c:out value=": "/>
-															${diffEntry.value}
-															<br/>
-														</div>
+													<c:forEach var="diffEntry" items="${diffArrayPre}">									
+														<dl>
+  															<dt><strong><fmt:message key="post.resource.${diffEntry.key}"/></strong></dt>
+ 															<dd>${diffEntry.value}</dd>
+														</dl>
 													</c:forEach>
 									
 												</td>
