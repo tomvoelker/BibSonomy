@@ -384,6 +384,6 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 	 * 
 	 */
 	public void reset() {
-		this.plugins = this.defaultPlugins;
+		this.plugins = new LinkedList<>(this.defaultPlugins);
 	}
 }

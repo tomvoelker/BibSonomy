@@ -101,7 +101,7 @@ public class PersonPostConnectorPlugin extends AbstractDatabasePlugin {
 			resourcePersonRelation.setPersonIndex(foundPersons.iterator().next().intValue());
 			this.personDatabaseManager.addResourceRelation(resourcePersonRelation, session);
 		} else if (foundPersons.size() != 0) {
-			log.warn("found more than one author that could be the person " + post.getResource().getInterHash() + " " + PersonNameUtils.serializePersonNames(personNames));
+			log.warn("found more than one " + relationType.toString().toLowerCase() + " that could be the person " + post.getResource().getInterHash() + " " + PersonNameUtils.serializePersonNames(personNames));
 		}
 	}
 

@@ -13,8 +13,8 @@
 <br/>
 <a href="" target="_blank"> [Volltext] </a>&nbsp;
 <a href="" target="_blank"> [Kurzfassung] </a>&nbsp;
-<a onclick="toggleBibtex('testuser testuseruser', '', 'http://www.bibsonomy.orgbibtex/2null/testuser+testuseruser?format=bibtex'); return false;" href="http://www.bibsonomy.orgbibtex/2null/testuser+testuseruser?format=bibtex">[BibTeX]</a>&nbsp;
-<a onclick="toggleBibtex2('testuser testuseruser', '', 'http://www.bibsonomy.orgbibtex/2null/testuser+testuseruser?format=endnote'); return false;" href="http://www.bibsonomy.orgbibtex/2null/testuser+testuseruser?format=endnote">[Endnote]</a>&nbsp;
+<a onclick="toggleBibtex('testuser testuseruser', '', 'http://www.bibsonomy.orgbibtex/2null/testuser%20testuseruser?format=bibtex'); return false;" href="http://www.bibsonomy.orgbibtex/2null/testuser%20testuseruser?format=bibtex">[BibTeX]</a>&nbsp;
+<a onclick="toggleBibtex2('testuser testuseruser', '', 'http://www.bibsonomy.orgbibtex/2null/testuser%20testuseruser?format=endnote'); return false;" href="http://www.bibsonomy.orgbibtex/2null/testuser%20testuseruser?format=endnote">[Endnote]</a>&nbsp;
 <div id="abs_testuser testuseruser" style="display:none;border:1px dotted grey;">
 &lt;xxx&gt;AbstractTest&lt;/xxx&gt;
 </div>
