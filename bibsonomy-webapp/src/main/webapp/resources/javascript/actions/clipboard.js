@@ -18,14 +18,25 @@ function unescapeAmp(string) {
  */
 function pickUnpickAll(pickUnpick) {
 	var param  = "";
-	$("#publications_0 ul.posts li.post div.ptitle a").each(function(index) {
+//	$("#publications_0 ul.posts li.post div.ptitle a").each(function(index) {
+//		var href = $(this).attr("href");
+//		if (!href.match(/^.*\/documents[\/?].*/)){
+//			param += href.replace(/^.*bibtex./, "") + " ";
+//		}
+//	}
+//	);
+	
+	$('.ptitle a').each(function(){
 		var href = $(this).attr("href");
 		if (!href.match(/^.*\/documents[\/?].*/)){
 			param += href.replace(/^.*bibtex./, "") + " ";
 		}
-	}
-	);
-	return updateClipboard("action=" + pickUnpick + "&hash=" + unescapeAmp(encodeURIComponent(param)));
+		updateClipboard($(this), "action=" + pickUnpick + "&hash=" + unescapeAmp(encodeURIComponent(href.replace(/^.*bibtex./, ""))));
+	});
+	
+	
+//	return updateClipboard(null, "action=" + pickUnpick + "&hash=" + unescapeAmp(encodeURIComponent(param)));
+	return false;
 }
 
 /**
