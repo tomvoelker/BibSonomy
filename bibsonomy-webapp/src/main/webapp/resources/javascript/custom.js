@@ -253,17 +253,16 @@ $(function() {
 
 	$('.community-page-user-list li a.show-less').click(function(event) {
 		event.preventDefault();
-		$(this).parent().parent().find('.show').each(function() {
-			$(this).removeClass('show').addClass('hidden');
+		$(this).parent().parent().find('.shown').each(function() {
+			$(this).removeClass('shown').addClass('hidden');
 		});
 	});
 
 	$('.community-page-user-list li a.show-more').click(function(event) {
 		event.preventDefault();
 		$(this).parent().parent().find('.hidden').each(function() {
-			$(this).removeClass('hidden').addClass('show');
+			$(this).removeClass('hidden').addClass('shown');
 		});
-
 	});
 
 	/** MOBILE FUNCTIONS * */

@@ -35,13 +35,13 @@
 				</c:forEach>
 				<c:if test="${fn:length(userList) gt 6}">
 					<li class="hidden"><a class="show-less" href="#">show less</a></li>
-					<li class="show"><a class="show-more" href="#">show all</a></li>
+					<li class="shown"><a class="show-more" href="#">show all</a></li>
 				</c:if>
 			</ul>
 		</c:when>
 		<c:otherwise>
-			<fmt:message key="goldstnadard.resource.relatedUsers.nohint" />
+			<fmt:message key="goldstandard.resource.relatedUsers.nohint" />
 		</c:otherwise>
 	</c:choose>
-	
+
 </jsp:root>
