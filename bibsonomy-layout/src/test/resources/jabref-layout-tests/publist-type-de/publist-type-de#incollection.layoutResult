@@ -11,8 +11,8 @@ Dominik Benz, Folke Eisterlehner, Andreas Hotho, Robert Jäschke, Beate Krause u
 <br/>
 
 <a href="http://portal.acm.org/citation.cfm?doid=1557914.1557969#">[doi]</a>&nbsp;
-<a onclick="toggleAbstract('wiglaf droste', ''); return false;" href="http://www.bibsonomy.orgbibtex/2null/wiglaf+droste?format=bibtex">[Kurzfassung]</a>&nbsp;
-<a onclick="toggleBibtex('wiglaf droste', '', 'http://www.bibsonomy.orgbibtex/2null/wiglaf+droste?format=bibtex'); return false;" href="http://www.bibsonomy.orgbibtex/2null/wiglaf+droste?format=bibtex">[BibTeX]</a>&nbsp;
+<a onclick="toggleAbstract('wiglaf droste', ''); return false;" href="http://www.bibsonomy.orgbibtex/2null/wiglaf%20droste?format=bibtex">[Kurzfassung]</a>&nbsp;
+<a onclick="toggleBibtex('wiglaf droste', '', 'http://www.bibsonomy.orgbibtex/2null/wiglaf%20droste?format=bibtex'); return false;" href="http://www.bibsonomy.orgbibtex/2null/wiglaf%20droste?format=bibtex">[BibTeX]</a>&nbsp;
 <div id="abs_wiglaf droste" style="display:none;border:1px dotted grey;">
 In this demo we present BibSonomy, a social bookmark and publication sharing system.
 </div>

@@ -45,7 +45,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.command.actions.EditPublicationCommand;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.PostValidator;
@@ -72,7 +71,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 
 	private static final String SESSION_ATTRIBUTE_SCRAPER_METADATA = "scraperMetaData";
 
-	private Scraper scraper;
+	protected Scraper scraper;
 
 	@Override
 	protected View getPostView() {
@@ -134,8 +133,14 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 			publication.getDocuments().add(document);
 		}
 	}
-
-	private void handleScraper(final COMMAND command, final String url, String selection) {
+	
+	/**
+	 * @param url
+	 * @param selection
+	 * @param ignoreError TODO
+	 * @return the scraping context for the url and selection
+	 */
+	protected ScrapingContext buildScrapingContext(final String url, String selection, boolean ignoreError) {
 		/*
 		 * We have a URL set which means we shall scrape!
 		 * 
@@ -144,92 +149,107 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		if (selection == null) {
 			selection = "";
 		}
-
+		
 		/*
 		 * Create context for scraping
 		 */
-		ScrapingContext scrapingContext;
 		try {
-			scrapingContext = new ScrapingContext(url == null ? null : new URL(url), selection);
+			return new ScrapingContext(url == null ? null : new URL(url), selection);
 		} catch (final MalformedURLException ex) {
 			/*
 			 * wrong url format
 			 */
-			this.getErrors().reject("error.scrape.failed", new Object[] { url, ex.getMessage() }, "Could not scrape the URL {0}.\nMessage was: {1}");
-			return;
+			if (!ignoreError) {
+				this.getErrors().reject("error.scrape.failed", new Object[] { url, ex.getMessage() }, "Could not scrape the URL {0}.\nMessage was: {1}");
+			}
+			return null;
 		}
-
+	}
+	
+	/**
+	 * try to scrape the publication
+	 * @param context
+	 * @return <code>true</code> iff publication could be scraped
+	 */
+	protected boolean scrape(final ScrapingContext context) {
 		/*
-		 * --> scrape the website and parse bibtex
+		 * --> scrape the website
 		 */
 		try {
-			/*
-			 * scrape bibtex
-			 * NOTE: if the given URL is null, we probably have to scrape a
-			 * selection (e.g., ISBN) - therefore, we insert a null URL
-			 */
-			final boolean isSuccess = this.scraper.scrape(scrapingContext);
-			final String scrapedBibtex = scrapingContext.getBibtexResult();
-			if (isSuccess && present(scrapedBibtex)) {
-				/*
-				 * When the parser is thread-safe (it currently is not!), we can
-				 * use the same instance for each invocation.
-				 * TODO: why don't we use the PostBibTeXParser? (There must be
-				 * reasons for not using it! E.g., probably because otherwise
-				 * tags are taken from the post and then no edit form appears.)
-				 */
-				try {
-					final SimpleBibTeXParser parser = new SimpleBibTeXParser();
-					final BibTex parsedBibTex = parser.parseBibTeX(scrapedBibtex);
-
-					/*
-					 * check if a bibtex was scraped
-					 */
-					if (present(parsedBibTex)) {
-						/*
-						 * save result
-						 */
-						command.getPost().setResource(parsedBibTex);
-						/*
-						 * store scraping context and scraping metadata
-						 */
-						this.handleScraperMetadata(command, scrapingContext);
-					} else {
-						/*
-						 * the parser did not return any result ...
-						 */
-						this.getErrors().reject("error.scrape.nothing", new Object[] { scrapedBibtex, scrapingContext.getUrl() }, "The BibTeX\n\n{0}\n\nwe scraped from {1} could not be parsed.");
-					}
-				} catch (final IOException ex) {
-					/*
-					 * exception while parsing bibtex
-					 */
-					this.getErrors().reject("error.parse.bibtex.failed", new Object[] { scrapedBibtex, ex.getMessage() }, "Error parsing BibTeX:\n\n{0}\n\nMessage was: {1}");
-				} catch (final ParseException ex) {
-					/*
-					 * exception while parsing bibtex; inform user and show him
-					 * the scraped bibtex
-					 */
-					this.getErrors().reject("error.parse.bibtex.failed", new Object[] { scrapedBibtex, ex.getMessage() }, "Error parsing BibTeX:\n\n{0}\n\nMessage was: {1}");
-				}
-			} // if (isSuccess && present(scrapedBibtex))
-			else {
-				/*
-				 * We could not scrape the given URL, i.e., the URL is either
-				 * not
-				 * supported (no scraper) or the scrape did not manage to
-				 * extract
-				 * something.
-				 * FIXME: in this case we should probably show the
-				 * boxes/import_publication_hints.jsp
-				 */
-				this.getErrors().reject("error.scrape.nothing", new Object[] { scrapingContext.getUrl() }, "The URL {0} is not supported by one of our scrapers.");
-			}
+			return this.scraper.scrape(context);
 		} catch (final ScrapingException ex) {
 			/*
 			 * scraping failed no bibtex scraped
 			 */
-			this.getErrors().reject("error.scrape.failed", new Object[] { scrapingContext.getUrl(), ex.getMessage() }, "Could not scrape the URL {0}.\nMessage was: {1}");
+			this.getErrors().reject("error.scrape.failed", new Object[] { context.getUrl(), ex.getMessage() }, "Could not scrape the URL {0}.\nMessage was: {1}");
+		}
+		return false;
+	}
+
+	private void handleScraper(final COMMAND command, final String url, String selection) {
+		final ScrapingContext scrapingContext = this.buildScrapingContext(url, selection, false);
+		if (scrapingContext == null) {
+			return;
+		}
+		/*
+		 * --> scrape the website and parse bibtex
+		 */
+		boolean success = this.scrape(scrapingContext);
+		
+		final String scrapedBibTeX = scrapingContext.getBibtexResult();
+		if (success && present(scrapedBibTeX)) {
+			/*
+			 * When the parser is thread-safe (it currently is not!), we can
+			 * use the same instance for each invocation.
+			 * TODO: why don't we use the PostBibTeXParser? (There must be
+			 * reasons for not using it! E.g., probably because otherwise
+			 * tags are taken from the post and then no edit form appears.)
+			 */
+			try {
+				final SimpleBibTeXParser parser = new SimpleBibTeXParser();
+				final BibTex parsedBibTex = parser.parseBibTeX(scrapedBibTeX);
+
+				/*
+				 * check if a bibtex was scraped
+				 */
+				if (present(parsedBibTex)) {
+					/*
+					 * save result
+					 */
+					command.getPost().setResource(parsedBibTex);
+					/*
+					 * store scraping context and scraping metadata
+					 */
+					this.handleScraperMetadata(command, scrapingContext);
+				} else {
+					/*
+					 * the parser did not return any result ...
+					 */
+					this.getErrors().reject("error.scrape.nothing", new Object[] { scrapedBibTeX, scrapingContext.getUrl() }, "The BibTeX\n\n{0}\n\nwe scraped from {1} could not be parsed.");
+				}
+			} catch (final IOException ex) {
+				/*
+				 * exception while parsing bibtex
+				 */
+				this.getErrors().reject("error.parse.bibtex.failed", new Object[] { scrapedBibTeX, ex.getMessage() }, "Error parsing BibTeX:\n\n{0}\n\nMessage was: {1}");
+			} catch (final ParseException ex) {
+				/*
+				 * exception while parsing bibtex; inform user and show him
+				 * the scraped bibtex
+				 */
+				this.getErrors().reject("error.parse.bibtex.failed", new Object[] { scrapedBibTeX, ex.getMessage() }, "Error parsing BibTeX:\n\n{0}\n\nMessage was: {1}");
+			}
+		} else {
+			/*
+			 * We could not scrape the given URL, i.e., the URL is either
+			 * not
+			 * supported (no scraper) or the scrape did not manage to
+			 * extract
+			 * something.
+			 * FIXME: in this case we should probably show the
+			 * boxes/import_publication_hints.jsp
+			 */
+			this.getErrors().reject("error.scrape.nothing", new Object[] { scrapingContext.getUrl() }, "The URL {0} is not supported by one of our scrapers.");
 		}
 	}
 
