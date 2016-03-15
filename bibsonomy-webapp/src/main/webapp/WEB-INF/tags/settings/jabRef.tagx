@@ -17,13 +17,7 @@
 	<!--   ############################################# import tab ############################################# -->
 
 	<div id="selTab2" class="tab-pane ${(command.selTab eq 2) ? 'active' : ''}">
-		<fieldset>
-			<!-- browser import -->
-			<post:browserImport />
-			
-			<!-- delicious import -->
-			<post:deliciousImport />
-			
+		<fieldset>			
 			<!-- JabRef layout file -->
 			<!-- handle layout file -->
 			<c:set var="userName" value="${command.context.loginUser.name}" />
