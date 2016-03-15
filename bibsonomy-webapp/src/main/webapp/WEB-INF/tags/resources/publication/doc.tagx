@@ -8,6 +8,7 @@
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
 	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 	xmlns:form="http://www.springframework.org/tags/form">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" description="The publication post which documents should be showed."/>	
@@ -86,6 +87,7 @@
 											<a class="img-thumbnail publication preview pdfFile" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}" title="${fn:escapeXml(document.fileName)}">
 												<img class="img-responsive pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(document.fileName)}"/>
 											</a>
+											<a href="#" class="doc-magnify"><fontawesome:icon icon="search-plus" /></a>
 										</div>
 									</c:when>
 									<c:otherwise>
