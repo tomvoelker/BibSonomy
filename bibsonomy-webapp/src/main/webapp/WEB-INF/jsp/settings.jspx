@@ -51,7 +51,7 @@
 			
 			<settings:settings command="${command}"/>
 			
-			<settings:import command="${command}"/>
+			<settings:jabRef command="${command}"/>
 			
 			<settings:cv command="${command}"/>
 			
