@@ -29,10 +29,10 @@
 				 respective form 
 				 TODO: Handle browser import simply by error-Messages on the main page? -->
 			<c:choose>
-				<c:when test="${empty command.importType or (command.importType eq 'browser' and command.totalCount == 0)}">
+				<c:when test="${command.importType eq 'browser' and command.totalCount == 0}">
 					<post:browserImport />
 				</c:when>
-				<c:when test="${command.importType eq 'general'}">
+				<c:when test="${empty command.importType}">
 					<post:browserImport />
 					<post:deliciousImport />
 				</c:when>

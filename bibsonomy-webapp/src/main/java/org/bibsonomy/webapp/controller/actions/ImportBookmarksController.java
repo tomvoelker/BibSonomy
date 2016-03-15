@@ -111,8 +111,8 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 		final User loginUser = context.getLoginUser();
 		
 		final String importType = command.getImportType();
-		final boolean isDelicous = importType.equals("delicous");
-		final boolean isBrowser = importType.equals("browser");
+		final boolean isDelicous = "delicous".equals(importType);
+		final boolean isBrowser = "browser".equals(importType);
 
 		/*
 		 * check credentials to fight CSRF attacks 

@@ -968,12 +968,6 @@
 
 	<!-- ############## actions ############### -->
 	<rule>
-		<name>/import</name>
-		<from>^/import$</from>
-		<set type="parameter" name="importType">general</set>
-		<to last="true">/import/bookmarks</to>
-	</rule>
-	<rule>
 		<name>/import/delicious</name>
 		<from>^/import/delicious$</from>
 		<set type="parameter" name="importType">delicious</set>
