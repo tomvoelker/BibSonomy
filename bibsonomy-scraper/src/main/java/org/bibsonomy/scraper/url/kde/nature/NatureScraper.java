@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -160,7 +160,7 @@ public class NatureScraper extends AbstractUrlScraper implements ReferencesScrap
 		try {
 			final String bibtexUrl = findBibtexUrl(sc.getUrl());
 			if (ValidationUtils.present(bibtexUrl)) {
-				sc.setBibtexResult(BibTexUtils.addFieldIfNotContained(ris.risToBibtex(WebUtils.getContentAsString(bibtexUrl)),"abstract",abstractParser(sc.getUrl())));
+				sc.setBibtexResult(BibTexUtils.addFieldIfNotContained(ris.toBibtex(WebUtils.getContentAsString(bibtexUrl)),"abstract",abstractParser(sc.getUrl())));
 			} else {
 				sc.setBibtexResult(constructBibtexFromHtmlMeta(sc));	
 			}

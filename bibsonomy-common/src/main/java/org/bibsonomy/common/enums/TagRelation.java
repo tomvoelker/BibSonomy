@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -29,8 +29,6 @@ package org.bibsonomy.common.enums;
 /**
  * Enum for the different tag relations.
  * 
- * TODO: Think about combining it with TagSimilarity.
- * 
  * @author niebler
  */
 public enum TagRelation {
@@ -45,8 +43,13 @@ public enum TagRelation {
 	 * @return the requested relation or null if no match was found.
 	 */
 	public static TagRelation getRelationByString(String string) {
-		if (string.equalsIgnoreCase("related")) return TagRelation.RELATED;
-		else if (string.equalsIgnoreCase("similar")) return TagRelation.SIMILAR;
-		else return null;
+		if (string.equalsIgnoreCase("related")) {
+			return TagRelation.RELATED;
+		}
+		if (string.equalsIgnoreCase("similar")) {
+			return TagRelation.SIMILAR;
+		}
+		
+		return null;
 	}
 }

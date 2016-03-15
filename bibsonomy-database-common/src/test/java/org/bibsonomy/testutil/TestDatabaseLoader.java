@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database-Common - Helper classes for database interaction
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -60,6 +60,14 @@ public class TestDatabaseLoader {
 	private final List<String> insertStatements;
 	
 	private final List<String> tableNames;
+	
+	/**
+	 * loads the sql schema from the script
+	 * @param schemaFile
+	 */
+	public TestDatabaseLoader(final String schemaFile) {
+		this(schemaFile, (String[]) null);
+	}
 
 	/**
 	 * Loads the SQL statements from the script.

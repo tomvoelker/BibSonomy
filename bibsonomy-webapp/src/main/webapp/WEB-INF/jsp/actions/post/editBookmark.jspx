@@ -1,0 +1,72 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
+	xmlns:editBook="urn:jsptagdir:/WEB-INF/tags/actions/edit/bookmark"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs">
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+	<layout:editPostLayout 
+		requPath="${requPath}" 
+		command="${command}" 
+		detailedInformation="${detailedInformation}"
+		resourceType="Bookmark"
+		activeTab="post"
+		minimizedContentWidth="${true}"
+		>
+
+		<jsp:attribute name="generalInformation">
+		
+			<!--+
+				| INPUT FIELDS URL, title, description 
+				+-->
+			
+			<!-- URL -->
+			<bsform:input labelColSpan="3" inputColSpan="9" placeholder="http://" labelText="URL" path="post.resource.url" required="${true}" noHelp="${true}">
+				<jsp:attribute name="appendix">
+					<!-- publication found -->
+					<div class="hide">
+						<span class="publication-found-title"><fmt:message key="post.meta.recommended"/>: <fmt:message key="post.meta.save_as_publication"/></span>
+						<div class="publication-found-content">
+							<div id="publication-found-form-placeholder">
+								<p><fmt:message key="post.resource.bookmark_a_publication2"/></p>
+								<button class="btn btn-primary btn-xs" type="submit" name="submit"><fmt:message key="post.meta.save_as_publication" /></button>
+								<c:out value=" "/><!-- space between buttons -->
+								<button type="button" class="btn btn-default btn-xs" onclick="$('#post\\.resource\\.url').popover('hide');"><fmt:message key="box.close" /></button>
+							</div>
+						</div>
+					</div>
+				</jsp:attribute>
+			</bsform:input>
+			
+			<!-- TITLE -->
+			<fmt:message key="post.resource.title" var="title"/>
+			
+			<bsform:input labelColSpan="3" inputColSpan="9" placeholder="${title}" path="post.resource.title" required="${true}" noHelp="${true}">
+				<jsp:attribute name="appendix">
+					<div class="fsSuggestion" id="suggestion.resource.title"><!-- KEEP ME --></div>
+				</jsp:attribute>
+			</bsform:input>
+			
+			<!-- DESC -->
+			<bsform:textarea labelColSpan="3" inputColSpan="9" path="post.description" labelText="Description">
+				<jsp:attribute name="appendix">
+					<div class="fsSuggestion" id="suggestion.description"><!-- KEEP ME --></div>
+				</jsp:attribute>
+			</bsform:textarea>
+			
+		</jsp:attribute>
+		
+	</layout:editPostLayout>
+
+</jsp:root>

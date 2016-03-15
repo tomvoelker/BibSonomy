@@ -1,0 +1,224 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/users"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form">
+
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<fmt:message key="navi.admin" var="adminPageTitle" />
+	
+	<layout:paneLayout
+			pageTitle="${adminPageTitle} :: OAuth"
+			requPath="${requPath}"
+			headerMessageKey="gettingStarted.headline"
+			command="${command}"
+			noSidebar="${true}">
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:admin />
+					<nav:crumb nameKey="navi.admin.oauth" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.admin">
+				<jsp:attribute name="pathPart">
+					<li>
+						:: <a rel="path_menu" href="${relativeUrlGenerator.getAdminUrlByName('oauth')}">OAuth</a>
+					</li>
+				</jsp:attribute>
+			</parts:search>
+
+		</jsp:attribute>
+		
+		<jsp:attribute name="headerExt">
+
+		</jsp:attribute>
+				
+		<jsp:attribute name="content">
+			<div id="outerBox">
+				<h2><fmt:message key="admin.actions.oauth"/></h2>
+				<ul>
+					<li><a href="#consumer-list"><fmt:message key="admin.actions.consumer.list"/></a></li>
+					<li><a href="#register-consumer"><fmt:message key="admin.actions.consumer.register"/></a></li>
+				</ul>
+				<br /><br />
+				<h3 id="consumer-list"><fmt:message key="admin.actions.consumer.list"/></h3>
+				
+				<table class="table table-bordered table-striped" id="oauthConsumerList">
+					<thead>
+					<tr>
+						<th><fmt:message key="admin.oauth.consumer.serviceName"/></th>
+						<th><fmt:message key="admin.oauth.consumer.title"/></th>
+						<th><fmt:message key="admin.oauth.consumer.tokens"/></th>
+						<th><fmt:message key="admin.oauth.consumer.keyType"/></th>
+
+						<th><fmt:message key="admin.oauth.consumer.callbackUrl"/></th>
+						<th><fmt:message key="admin.oauth.consumer.gadgetUrl"/></th>
+
+						<th><fmt:message key="admin.oauth.consumer.summary"/></th>
+						<th><fmt:message key="admin.oauth.consumer.description"/></th>
+						<!--
+						<th><fmt:message key="admin.oauth.consumer.thumbnail"/></th>
+						<th><fmt:message key="admin.oauth.consumer.icon"/></th>
+						-->
+						<th><fmt:message key="admin.oauth.consumer.delete"/></th>
+					</tr>
+					</thead>
+					<tbody>
+					<c:forEach var="entry" items="${command.consumers}">
+						<tr class="consumerEntry">
+							<td>
+								<c:out value="${entry.serviceName}"/>
+								<c:if test="${entry.icon}">
+									<img src="${entry.icon}" style="width: 32px;" />
+								</c:if>
+							</td>
+							<td><c:out value="${entry.title}"/></td>
+							<td>
+								<table>
+									<tr>
+										<td>
+											<div class="form-group">
+												<label class="control-label">Consumer Key</label>
+												<div style="max-width: 200px; word-wrap:break-word;" class="form-control-static"><c:out value="${entry.consumerKey}" /></div>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<div class="form-group">
+												<label class="control-label">Consumer Secret</label>
+												<div style="max-width: 200px; word-wrap:break-word;" class="form-control-static"><c:out value="${entry.consumerSecret}"/></div>
+											</div>
+										</td>
+									</tr>
+								</table>
+							</td>
+							<td><c:out value="${entry.keyType}"/></td>
+							<td><c:out value="${entry.callbackUrl}"/></td>
+							<td><c:out value="${entry.gadgetUrl}"/></td>
+
+							<td><c:out value="${entry.summary}"/></td>
+							<td><c:out value="${entry.description}"/></td>
+							<!--
+							<td>
+								<c:if test="${not empty entry.thumbnail}">
+									<a href="${entry.thumbnail}"><img src ="${entry.thumbnail}" /></a>
+								</c:if>
+							</td>
+							<td>
+								<c:if test="${not empty entry.icon}">
+									<a href="${entry.icon}"><img src ="${entry.icon}" /></a>
+								</c:if>
+							</td>
+							-->
+							<fmt:message key="admin.oauth.consumer.delete" var="deleteTitle"/>
+							<td><a title="${deleteTitle}" onclick="deleteConsumer('${entry.consumerKey}')" href="#"><span class="fa fa-times"><!-- --></span></a></td>
+						</tr>
+					</c:forEach>
+					</tbody>
+				</table>
+
+
+        	    <!--+
+        	    	| Delete Consumer (invisible)
+        	    	+--> 
+		    	<form action="${relativeUrlGenerator.getAdminUrlByName('oauth')}" id="deleteConsumerForm" method="post">
+             		<input type="hidden" name="adminAction" value="Remove" />
+		    		<input type="hidden" name="consumerInfo.consumerKey" id="consumerKey" />
+		    	</form>
+        	    
+        	    
+				<!--+
+					| register new consumer
+					+-->
+				<h3 id="register-consumer"><fmt:message key="admin.actions.consumer.register"/></h3>
+				
+        	    <form:form class="form-horizontal" action="${relativeUrlGenerator.getAdminUrlByName('oauth')}" method="POST">
+		        	<errors:global />
+					<bsform:fieldset legendKey="admin.oauth.consumer.details">
+						<jsp:attribute name="content">
+
+							<errors:global />
+
+							<bsform:input path="consumerInfo.consumerKey" labelKey="admin.oauth.consumer.key" inputColSpan="9" labelColSpan="3"/>
+
+							<bsform:textarea path="consumerInfo.consumerSecret" labelKey="admin.oauth.consumer.secret" inputColSpan="9" labelColSpan="3"/>
+
+							<bsform:input path="consumerInfo.serviceName" labelKey="admin.oauth.consumer.serviceName" inputColSpan="9" labelColSpan="3"/>
+
+							<div class="form-group">
+								<label for="consumerInfo.keyType" class="col-sm-3 control-label"><fmt:message key="admin.oauth.consumer.keyType"/></label>
+								<div class="col-sm-9">
+									<form:select id="consumerInfo.keyType" cssClass="form-control" path="consumerInfo.keyType">
+										<c:forEach var="entry" items="${command.keyTypes}">
+											<form:option value="${entry}" label="${entry}" />
+										</c:forEach>
+									</form:select>
+								</div>
+							</div>
+
+							<bsform:input path="consumerInfo.callbackUrl" labelKey="admin.oauth.consumer.callbackUrl" inputColSpan="9" labelColSpan="3"/>
+
+							<bsform:input path="consumerInfo.gadgetUrl" labelKey="admin.oauth.consumer.gadgetUrl" inputColSpan="9" labelColSpan="3" />
+
+							<bsform:input path="consumerInfo.title" labelKey="admin.oauth.consumer.title" inputColSpan="9" labelColSpan="3" />
+
+							<bsform:input path="consumerInfo.summary" labelKey="admin.oauth.consumer.summary" inputColSpan="9" labelColSpan="3" />
+
+							<bsform:input path="consumerInfo.description" labelKey="admin.oauth.consumer.description" inputColSpan="9" labelColSpan="3" />
+
+							<bsform:input path="consumerInfo.thumbnail" labelKey="admin.oauth.consumer.thumbnail" inputColSpan="9" labelColSpan="3" />
+
+							<bsform:input path="consumerInfo.icon" labelKey="admin.oauth.consumer.icon" inputColSpan="9" labelColSpan="3" />
+
+							<!-- hidden fields -->
+							<input type="hidden" name="adminAction" value="Register"/>
+							<input type="hidden" name="ckey" value="${command.context.ckey}"/>
+
+							<!-- submit button -->
+							<div class="form-group">
+								<div class="col-sm-offset-3 col-sm-9">
+									<fmt:message key="register.send" var="submit" />
+									<bsform:button size="defaultSize" style="primary" value="${submit}" type="submit" />
+								</div>
+							</div>
+						</jsp:attribute>
+
+					</bsform:fieldset>
+            	</form:form>
+
+			</div>
+			<br />
+			<br />
+			<script type="text/javascript">
+
+             //<![CDATA[
+                // Ensure consumer is to be removed and delete it.
+        		function deleteConsumer(consumerKey) {
+        			var box = window.confirm(getString('admin.oauth.consumer.ensure_delete'));
+        			if (box) { 
+        				document.getElementById("consumerKey").value = consumerKey;
+        				document.getElementById("deleteConsumerForm").submit();
+        			}
+        		} 
+             //]]>
+          </script>
+			
+		</jsp:attribute>
+	</layout:paneLayout>
+</jsp:root>

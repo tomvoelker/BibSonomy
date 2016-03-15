@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Client - The REST-client.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -190,7 +190,7 @@ public class RestLogic extends AbstractLogicInterface {
 	}
 
 	@Override
-	public void deleteGroup(final String groupName) {
+	public void deleteGroup(final String groupName, boolean pending) {
 		execute(new DeleteGroupQuery(groupName));
 	}
 
@@ -217,12 +217,12 @@ public class RestLogic extends AbstractLogicInterface {
 	}
 
 	@Override
-	public Group getGroupDetails(final String groupName) {
+	public Group getGroupDetails(final String groupName, final boolean pending) {
 		return execute(new GetGroupDetailsQuery(groupName));
 	}
 
 	@Override
-	public List<Group> getGroups(boolean pending, final int start, final int end) {
+	public List<Group> getGroups(boolean pending, String userName, final int start, final int end) {
 		if (pending) {
 			throw new UnsupportedOperationException("quering for pending groups not supported");
 		}
@@ -455,7 +455,7 @@ public class RestLogic extends AbstractLogicInterface {
 	}
 
 	@Override
-	public int createBasketItems(final List<Post<? extends Resource>> posts) {
+	public int createClipboardItems(final List<Post<? extends Resource>> posts) {
 		final PickPostQuery query = new PickPostQuery();
 		query.setUserName(posts.get(0).getUser().getName());
 		query.setResourceHash(posts.get(0).getResource().getIntraHash());
@@ -463,7 +463,7 @@ public class RestLogic extends AbstractLogicInterface {
 	}
 
 	@Override
-	public int deleteBasketItems(final List<Post<? extends Resource>> posts, final boolean clearAll) {
+	public int deleteClipboardItems(final List<Post<? extends Resource>> posts, final boolean clearAll) {
 		final UnpickClipboardQuery query = new UnpickClipboardQuery();
 		query.setClearAll(clearAll);
 

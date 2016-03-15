@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -171,20 +171,22 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	/**
 	 * Returns all groups of the system.
 	 * @param pending
+	 * @param userName if pending equals <code>true</code> restrict pending groups to this user
 	 * @param start
 	 * @param end
-	 * 
 	 * @return a set of groups, an empty set else
 	 */
-	public List<Group> getGroups(boolean pending, int start, int end);
+	public List<Group> getGroups(boolean pending, String userName, int start, int end);
 	
 	/**
 	 * Returns details of one group.
 	 * 
 	 * @param groupName
+	 * @param pending	<code>true</code> iff you want to get group details of
+	 * 					a pending group
 	 * @return the group's details, null else
 	 */
-	public Group getGroupDetails(String groupName);
+	public Group getGroupDetails(String groupName, boolean pending);
 
 	/** 
 	 * Returns a list of tags which can be filtered.
@@ -323,8 +325,9 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	 * Removes the given group.
 	 * 
 	 * @param groupName the group to delete
+	 * @param pending the given group is pending
 	 */
-	public void deleteGroup(String groupName);
+	public void deleteGroup(String groupName, boolean pending);
 
 	/**
 	 * Adds a user to the database.
@@ -708,24 +711,24 @@ public interface LogicInterface extends PersonLogicInterface, PostLogicInterface
 	
 	/**
 	 * TODO: rename to createClipboardItems
-	 * Create basket items
+	 * Create clipboard items
 	 * 
-	 * @param posts - list of posts which should be added to the basket
-	 * @return size of basket
+	 * @param posts - list of posts which should be added to the clipboard
+	 * @return size of clipboard
 	 */
-	public int createBasketItems(List<Post<? extends Resource>> posts);
+	public int createClipboardItems(List<Post<? extends Resource>> posts);
 	
 	/**
 	 * TODO: rename to deleteClipboardItems
-	 * Delete basket items 
+	 * Delete clipboard items 
 	 * 
-	 * @param posts - list of posts which should be deleted from the basket
-	 * @param clearBasket - this should be true if the whole basket should be dropped, in all other cases false. It's necessary because 
-	 * 		you have to differ if you want to delete some posts or all. This parameter is true if you call the "Remove all from Basket"-link
-	 * 		on the new basket page.
-	 * @return size of basket
+	 * @param posts - list of posts which should be deleted from the clipboard
+	 * @param clearClipboard - this should be true if the whole clipboard should be dropped, in all other cases false. It's necessary because 
+	 * 		you have to differ if you want to delete some posts or all. This parameter is true if you call the "Remove all from Clipboard"-link
+	 * 		on the new clipboard page.
+	 * @return size of clipboard
 	 */
-	public int deleteBasketItems(List<Post<? extends Resource>> posts, boolean clearBasket);
+	public int deleteClipboardItems(List<Post<? extends Resource>> posts, boolean clearClipboard);
 	
 	/**
 	 * Delete Messages from the inbox by resourceHash sender and receiver

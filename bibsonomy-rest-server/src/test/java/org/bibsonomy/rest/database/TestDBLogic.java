@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -136,14 +136,14 @@ public class TestDBLogic extends AbstractLogicInterface {
 	}
 
 	@Override
-	public List<Group> getGroups(boolean pending, final int start, final int end) {
+	public List<Group> getGroups(boolean pending, String userName, final int start, final int end) {
 		final List<Group> groups = new LinkedList<Group>();
 		groups.addAll(this.dbGroups.values());
 		return groups;
 	}
 
 	@Override
-	public Group getGroupDetails(final String groupName) {
+	public Group getGroupDetails(final String groupName, final boolean pending) {
 		return this.dbGroups.get(groupName);
 	}
 

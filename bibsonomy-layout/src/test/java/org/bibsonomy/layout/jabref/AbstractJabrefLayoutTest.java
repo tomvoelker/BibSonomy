@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Layout - Layout engine for the webapp.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -40,16 +40,12 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.testutil.TestUtils;
-import org.junit.Test;
 
 public abstract class AbstractJabrefLayoutTest {
 	
 	protected File layoutTest;
 	protected String layoutName;
 	protected String entryType;
-	
-	protected String renderedLayout;
-	protected String resultLayout;
 	
 	protected static Set<String> testedLayouts;
 	
@@ -102,27 +98,22 @@ public abstract class AbstractJabrefLayoutTest {
 		return layoutTests;
 	}
 	
-	@Test
-	public abstract void testRender() throws Exception;
-	
 	protected void testRender(List<Post<BibTex>> testCasePost) throws Exception{
 		final AbstractJabRefLayout layout = RENDERER.getLayout(this.layoutName, "foo");
-		renderedLayout = RENDERER.renderLayout(layout, testCasePost, false).toString();
-		resultLayout = TestUtils.readEntryFromFile(layoutTest).trim();
+		String renderedLayout = RENDERER.renderLayout(layout, testCasePost, false).toString();
+		String resultLayout = TestUtils.readEntryFromFile(layoutTest).trim();
 
 		// format JUnit output
-		String printedEntryType = entryType;
-		if (entryType.equals("")) {
-			printedEntryType = "NA";
-		}
-
-		//Prepare Layouts - Remove varying lines etc.
-		this.prepareTest();
+		final String printedEntryType = entryType.equals("") ? "NA" : entryType;
+		
+		// prepare Layouts - Remove varying lines etc.
+		renderedLayout = prepareTest(renderedLayout, this.layoutName);
+		resultLayout = prepareTest(resultLayout, this.layoutName);
 		assertEquals("layout: " + layoutName + ", testfile: " + layoutTest + ", entrytype: " + printedEntryType, resultLayout, renderedLayout);
 	}
 	
-	protected void prepareTest() {
-		//FIXME - use an EnumType for Layouts
+	private static String prepareTest(String renderedLayout, final String layoutName) {
+		// FIXME: use an EnumType for Layouts
 		StringBuilder sb;
 		int index;
 
@@ -152,15 +143,9 @@ public abstract class AbstractJabrefLayoutTest {
 			/*
 			 * Deletes Lines containing a current timestamp ("Created by ... TIME")
 			 */
-			sb = new StringBuilder(resultLayout);
-			index = sb.indexOf("<small>Created by");
-			int index2 = sb.lastIndexOf("</small>");
-			sb.delete(index, index2);
-			resultLayout = sb.toString();
-
 			sb = new StringBuilder(renderedLayout);
 			index = sb.indexOf("<small>Created by");
-			index2 = sb.lastIndexOf("</small>");
+			int index2 = sb.lastIndexOf("</small>");
 			sb.delete(index, index2);
 			renderedLayout = sb.toString();
 		}
@@ -193,17 +178,17 @@ public abstract class AbstractJabrefLayoutTest {
 		
 		
 		renderedLayout = renderedLayout.replaceAll("\\r", "").trim();
+		return renderedLayout;
 	}
 	
 	private String extractEntryType() {
-		//Remove Extension
-		String fileName = FilenameUtils.removeExtension(this.layoutTest.getName());
-		String[] fileNameParts = fileName.split(LAYOUT_ENTRYTYPE_SPLIT + entryTypeSplitSuffix);
-		String entryType = "";
+		// remove extension
+		final String fileName = FilenameUtils.removeExtension(this.layoutTest.getName());
+		final String[] fileNameParts = fileName.split(LAYOUT_ENTRYTYPE_SPLIT + entryTypeSplitSuffix);
 		if (fileNameParts.length > 1) {
-			entryType = fileNameParts[1];
+			return fileNameParts[1];
 		}
-		return entryType;
+		return "";
 	}
 	
 	protected static final FilenameFilter isResultLayout = new FilenameFilter() {

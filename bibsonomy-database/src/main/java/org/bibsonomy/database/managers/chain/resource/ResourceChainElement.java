@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -33,7 +33,6 @@ import org.bibsonomy.database.managers.chain.ChainElement;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
  * 
@@ -45,19 +44,11 @@ import org.bibsonomy.services.searcher.ResourceSearch;
 public abstract class ResourceChainElement<R extends Resource, P extends ResourceParam<R>> extends ChainElement<List<Post<R>>, P> {
 	
 	protected PostDatabaseManager<R, P> databaseManager;
-	/** instance of the lucene searcher */
-	protected ResourceSearch<R> resourceSearch;	
+	
 	/**
 	 * @param databaseManager the databaseManager to set
 	 */
 	public void setDatabaseManager(final PostDatabaseManager<R, P> databaseManager) {
 		this.databaseManager = databaseManager;
-	}
-
-	/**
-	 * @param resourceSearch the resourceSearch to set
-	 */
-	public void setResourceSearch(ResourceSearch<R> resourceSearch) {
-		this.resourceSearch = resourceSearch;
 	}
 }

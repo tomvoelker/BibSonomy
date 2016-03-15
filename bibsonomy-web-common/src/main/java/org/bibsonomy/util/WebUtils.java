@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Web-Common - Common things for web
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -533,7 +533,6 @@ public class WebUtils {
 	 * Returns the cookies returned by the server on accessing the URL. 
 	 * The format of the returned cookies is as
 	 * 
-	 * 
 	 * @param url
 	 * @return The cookies as string, build by {@link #buildCookieString(List)}.
 	 * @throws IOException
@@ -553,11 +552,25 @@ public class WebUtils {
 	}
 	
 	/**
+	 * FIXME: document the difference between this method and {@link #getCookies(URL)}
+	 * 
+	 * @param url
+	 * @return the cookies
+	 * @throws IOException
+	 */
+	public static String getSpecialCookies(final URL url) throws IOException {
+		final GetMethod getMethod = new GetMethod(url.toString());
+		CLIENT.executeMethod(getMethod);
+		getMethod.getResponseHeaders("Set-Cookie");
+		
+		return getCookies(url);
+	}
+	/**
 	 * @param url the url
 	 * @return the proper configured http connection for the url
 	 * @throws IOException
 	 */
-	protected static HttpURLConnection createConnnection(URL url) throws IOException {
+	public static HttpURLConnection createConnnection(URL url) throws IOException {
 		final HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
 		
 		// set the timeouts

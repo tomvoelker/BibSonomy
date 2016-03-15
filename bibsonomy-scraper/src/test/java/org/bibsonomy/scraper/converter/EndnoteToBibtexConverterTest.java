@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -61,7 +61,51 @@ public class EndnoteToBibtexConverterTest {
 		// test the conversion
 		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "test1_endnoteBibtex.bib");
 		final EndnoteToBibtexConverter e2bConverter = new EndnoteToBibtexConverter();
-		final String bibTeX = e2bConverter.endnoteToBibtex(endnote);
+		final String bibTeX = e2bConverter.toBibtex(endnote);
+		assertEquals(expectedBibTeX.trim(), bibTeX.trim());
+		
+		// test canHandle with BibTex
+		assertFalse(EndnoteToBibtexConverter.canHandle(expectedBibTeX));
+	}
+	
+	/**
+	 * Test Endnote to BibTeX Conversion
+	 * @throws IOException 
+	 */
+	@Test
+	public void testEndnoteToBibtex2() throws IOException {
+
+		final String endnote = TestUtils.readEntryFromFile(PATH_TO_FILES + "test2.endnote");
+
+		// test the canHandle heuristic
+		assertTrue(EndnoteToBibtexConverter.canHandle(endnote));
+
+		// test the conversion
+		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "test2_endnoteBibtex.bib");
+		final EndnoteToBibtexConverter e2bConverter = new EndnoteToBibtexConverter();
+		final String bibTeX = e2bConverter.toBibtex(endnote);
+		assertEquals(expectedBibTeX.trim(), bibTeX.trim());
+		
+		// test canHandle with BibTex
+		assertFalse(EndnoteToBibtexConverter.canHandle(expectedBibTeX));
+	}
+	
+	/**
+	 * Test Endnote to BibTeX Conversion
+	 * @throws IOException 
+	 */
+	@Test
+	public void testEndnoteToBibtex3() throws IOException {
+
+		final String endnote = TestUtils.readEntryFromFile(PATH_TO_FILES + "test3.endnote");
+
+		// test the canHandle heuristic
+		assertTrue(EndnoteToBibtexConverter.canHandle(endnote));
+
+		// test the conversion
+		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "test3_endnoteBibtex.bib");
+		final EndnoteToBibtexConverter e2bConverter = new EndnoteToBibtexConverter();
+		final String bibTeX = e2bConverter.toBibtex(endnote);
 		assertEquals(expectedBibTeX.trim(), bibTeX.trim());
 		
 		// test canHandle with BibTex

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -47,6 +47,7 @@ import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.person.PersonRoleRenderer;
 import org.bibsonomy.util.spring.security.AuthenticationUtils;
 import org.bibsonomy.webapp.command.PersonPageCommand;
+import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
@@ -71,12 +72,15 @@ public class PersonPageController extends SingleResourceListController implement
 	@Override
 	public View workOn(final PersonPageCommand command) {
 		final RequestWrapperContext context = command.getContext();
+		final String formAction = command.getFormAction();
+		if (!present(formAction) && !present(command.getRequestedPersonId())){
+			throw new MalformedURLSchemeException("The person page was requested without a person in the request.");
+		}
 		
 		if (!context.isValidCkey()) {
 			errors.reject("error.field.valid.ckey");
 		}
 		
-		final String formAction = command.getFormAction();
 		if (present(formAction)) {
 			switch(formAction) {
 				case "update": return this.updateAction(command);
@@ -96,6 +100,9 @@ public class PersonPageController extends SingleResourceListController implement
 		} else if (present(command.getRequestedPersonId())) {
 			return this.showAction(command);
 		}
+		
+		// the following statement cannot be reached, and seems useless anyway, since in this case no formAction was present and not PersonId. 
+		// Remove when sure. 
 		return indexAction();
 	}
 
@@ -260,15 +267,13 @@ public class PersonPageController extends SingleResourceListController implement
 			}
 		}
 		
-		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(command.getPerson().getPersonId()));	
+		return new ExtendedRedirectView(new URLGenerator().getPersonUrl(command.getPerson().getPersonId()));
 	}
 	
-	@SuppressWarnings("boxing")
 	private View deleteRoleAction(PersonPageCommand command) {
-
-		this.logic.removeResourceRelation(Integer.valueOf(command.getFormResourcePersonRelationId()));
-				
-		return Views.AJAX_TEXT;	
+		this.logic.removeResourceRelation(Integer.valueOf(command.getFormResourcePersonRelationId()).intValue());
+		
+		return Views.AJAX_TEXT;
 	}
 
 	/**
@@ -330,8 +335,7 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @return
 	 */
 	private View showAction(PersonPageCommand command) {
-		
-		for(PersonResourceRelationType prr : PersonResourceRelationType.values()) {
+		for (PersonResourceRelationType prr : PersonResourceRelationType.values()) {
 			command.getAvailableRoles().add(prr);
 		}
 		

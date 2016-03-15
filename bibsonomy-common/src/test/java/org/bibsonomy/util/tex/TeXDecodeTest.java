@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -44,7 +44,7 @@ public class TeXDecodeTest {
 		StringBuilder unclean = new StringBuilder();
 		StringBuilder clean = new StringBuilder();
 		
-		for(String s : TexDecode.getTexMap().keySet()) {
+		for (String s : TexDecode.getTexMap().keySet()) {
 			unclean.append(s);
 			clean.append(TexDecode.getTexMap().get(s));
 		}

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -50,28 +50,18 @@ public class CoinsScraperTest {
 	}
 	
 	/**
-	 * starts URL test with id url_218
-	 */
-	@Test
-	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_218");
-	}
-	
-	/**
-	 * starts URL test with id url_230
+	 * starts URL test with id url_299
 	 */
 	@Test
 	public void url3TestRun(){
-		UnitTestRunner.runSingleTest("url_230");
+		UnitTestRunner.runSingleTest("url_299");
 	}
-
 	
 	/**
-	 * starts URL test with id url_266
+	 * starts URL test with id url_333
 	 */
 	@Test
 	public void url4TestRun(){
-		UnitTestRunner.runSingleTest("url_266");
+		UnitTestRunner.runSingleTest("url_333");
 	}
-	
 }

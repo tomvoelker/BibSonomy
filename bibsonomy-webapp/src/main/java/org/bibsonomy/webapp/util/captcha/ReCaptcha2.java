@@ -1,0 +1,218 @@
+/**
+ * BibSonomy-Webapp - The web application for BibSonomy.
+ *
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ *                               University of Kassel, Germany
+ *                               http://www.kde.cs.uni-kassel.de/
+ *                           Data Mining and Information Retrieval Group,
+ *                               University of Würzburg, Germany
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *                           L3S Research Center,
+ *                               Leibniz University Hannover, Germany
+ *                               http://www.l3s.de/
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.bibsonomy.webapp.util.captcha;
+
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.http.ParseException;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
+/**
+ * ReCaptcha2 implementation
+ *
+ * @author niebler
+ */
+public class ReCaptcha2 implements Captcha {
+	private static final Log log = LogFactory.getLog(ReCaptcha2.class);
+
+	private static final String ERROR_CODES_FIELD = "error-codes";
+	private static final String SUCCESS_FIELD = "success";
+	
+	private CloseableHttpClient client;
+	
+	private String secretKey;
+	private String siteKey;
+	private String recaptchaServer;
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.util.captcha.Captcha#createCaptchaHtml(java.util.Locale)
+	 */
+	@Override
+	public String createCaptchaHtml(final Locale locale) {
+		final String language = locale.getLanguage();
+		return "<script src='https://www.google.com/recaptcha/api.js?hl=" + language + "'></script>" + 
+				"<div class=\"g-recaptcha\" data-sitekey=\"" + this.siteKey +  "\"></div>"
+					+ "<noscript>"
+					+ "<div style=\"width: 302px; height: 422px;\">"
+					+ "<div style=\"width: 302px; height: 422px; position: relative;\">"
+					+ "<div style=\"width: 302px; height: 422px; position: absolute;\">"
+					+ "<iframe src=\"https://www.google.com/recaptcha/api/fallback?hl=" + language + "&k=" + this.siteKey + "\""
+					+ "frameborder=\"0\" scrolling=\"no\""
+					+ "style=\"width: 302px; height:422px; border-style: none;\">"
+					+ "</iframe>"
+					+ "</div>"
+					+ "<div style=\"width: 300px; height: 60px; border-style: none;"
+					+ "bottom: 12px; left: 25px; margin: 0px; padding: 0px; right: 25px;"
+					+ "background: #f9f9f9; border: 1px solid #c1c1c1; border-radius: 3px;\">"
+					+ "<textarea id=\"g-recaptcha-response\" name=\"g-recaptcha-response\""
+					+ "class=\"g-recaptcha-response\""
+					+ "style=\"width: 250px; height: 40px; border: 1px solid #c1c1c1;"
+					+ "margin: 10px 25px; padding: 0px; resize: none;\" >"
+					+ "</textarea>"
+					+ "</div>"
+					+ "</div>"
+					+ "</div>"
+					+ "</noscript>";
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.util.captcha.Captcha#checkAnswer(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	@Override
+	public CaptchaResponse checkAnswer(final String challenge, final String response, final String remoteHostInetAddress) {
+		log.debug("Received response: " + response);
+		log.debug("Received remoteHostInetAddress: " + remoteHostInetAddress);
+		
+		try {
+			final List<BasicNameValuePair> entity = Arrays.asList(
+				new BasicNameValuePair("secret", this.secretKey),
+				new BasicNameValuePair("response", response),
+				new BasicNameValuePair("remoteip", remoteHostInetAddress));
+			
+			final HttpPost post = new HttpPost(this.recaptchaServer);
+			post.setEntity(new UrlEncodedFormEntity(entity));
+			
+			final CloseableHttpResponse httpResponse = this.client.execute(post);
+			final String reCaptchaResponse = EntityUtils.toString(httpResponse.getEntity());
+			log.debug("Received reCaptcha response: " + reCaptchaResponse);
+			
+			final JSONParser parser = new JSONParser();
+			final JSONObject responseObject = (JSONObject) parser.parse(reCaptchaResponse);
+			log.debug(responseObject.toString());
+			
+			final boolean success = Boolean.parseBoolean(responseObject.get(SUCCESS_FIELD).toString());
+			final List<String> errorCodes = getErrorCodes(responseObject);
+			
+			httpResponse.close();
+			log.debug("success: " + success);
+			log.debug("error-codes: " + errorCodes);
+			
+			return new ReCaptcha2Response(success, extractErrorMessage(errorCodes));
+		} catch (final UnsupportedEncodingException e) {
+			return new ReCaptcha2Response(false, "Unsupported Encoding! Did not send a request.");
+		} catch (final HttpException e) {
+			return new ReCaptcha2Response(false, "HttpException: " + e.getStackTrace());
+		} catch (final IOException e) {
+			return new ReCaptcha2Response(false, "IOException: " + e.getStackTrace());
+		} catch (final ParseException e) {
+			return new ReCaptcha2Response(false, "Could not parse response: " + e.getStackTrace());
+		} catch (final org.json.simple.parser.ParseException e) {
+			return new ReCaptcha2Response(false, "Could not parse JSON: " + e.getStackTrace());
+		}
+	}
+	
+	/**
+	 * @param responseObject
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private static List<String> getErrorCodes(JSONObject responseObject) {
+		if (responseObject.containsKey(ERROR_CODES_FIELD)) {
+			return (JSONArray) responseObject.get(ERROR_CODES_FIELD);
+		}
+		
+		return null;
+	}
+
+	/**
+	 * @param errorCodes
+	 * @return
+	 */
+	private static String extractErrorMessage(List<String> errorCodes) {
+		if (!present(errorCodes)) {
+			return null;
+		}
+		
+		final StringBuilder errorMessageBuilder = new StringBuilder();
+		for (String errorCode : errorCodes) {
+			switch (errorCode) {
+			case "missing-input-secret":
+				errorMessageBuilder.append("The secret parameter is missing. ");
+				break;
+			case "invalid-input-secret":
+				errorMessageBuilder.append("The secret parameter is invalid or malformed. ");
+				break;
+			case "missing-input-response":
+				errorMessageBuilder.append("The response parameter is missing. ");
+				break;
+			case "invalid-input-response":
+				errorMessageBuilder.append("The response parameter is invalid or malformed. ");
+				break;
+			default:
+				break;
+			}
+		}
+		
+		return errorMessageBuilder.toString().trim();
+	}
+
+	/**
+	 * @param secretKey the secretKey to set
+	 */
+	public void setSecretKey(String secretKey) {
+		this.secretKey = secretKey;
+	}
+
+	/**
+	 * @param siteKey the siteKey to set
+	 */
+	public void setSiteKey(String siteKey) {
+		this.siteKey = siteKey;
+	}
+
+	/**
+	 * 
+	 * @param recaptchaServer
+	 */
+	public void setRecaptchaServer(String recaptchaServer) {
+		this.recaptchaServer = recaptchaServer;
+	}
+
+	/**
+	 * @param client the client to set
+	 */
+	public void setClient(CloseableHttpClient client) {
+		this.client = client;
+	}
+}

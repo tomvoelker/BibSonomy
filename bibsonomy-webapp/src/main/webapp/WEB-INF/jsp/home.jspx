@@ -1,0 +1,86 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:posts="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:home="urn:jsptagdir:/WEB-INF/tags/home"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	<!-- TODO: fix headline -->
+	<layout:resourceLayout pageTitle="${command.pageTitle}" 
+			command="${command}" 
+			requPath="${requPath}" 
+			disableListNavigation="${true}"
+			activeTab="home"
+			showPageOptions="${true}"
+			headline="${command.pageTitle}"
+			hideFooterContainer="${true}">
+		
+		<jsp:attribute name="headerExt">
+			<script type="text/javascript">
+				$(function() {
+					$('.post-popover').popover(
+						{
+							html : true,
+							trigger : "hover",
+							container : 'body',
+							placement : 'top',
+							title : function() {
+								console.log("#popover-head-" + $(this).attr('data-ident'));
+								return $("#popover-head-" + $(this).attr('data-ident')).html();
+							},
+							content : function() {
+								console.log("#popover-head-" + $(this).attr('data-ident'));
+								return $("#popover-content-" + $(this).attr('data-ident')).html();
+							}
+						}
+					);
+				});
+			</script>
+		</jsp:attribute>
+		
+		<jsp:attribute name="content">
+			<c:if test="${not command.context.userLoggedIn and (empty errors or errors.errorCount == 0)}">
+				<spring:theme code="layout.home.header" var="homeHeader" text=""/>
+				<c:choose>
+					<c:when test="${homeHeader eq 'simple'}">
+						<home:bibhome command="${command}" />
+					</c:when>
+					<c:otherwise>
+						<home:pumahome command="${command}" />
+					</c:otherwise>
+				</c:choose>
+			</c:if>
+		</jsp:attribute>
+		
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
+		</jsp:attribute>
+
+		<jsp:attribute name="newsbar">
+			<c:if test="${not empty command.news}">
+				<!-- news box ( = latest blog posts) -->
+				<ul class="newsbox">
+					<li>
+						<h4 class="sidebar"><fmt:message key="navi.news"/></h4>
+						<posts:tinybookmarks posts="${command.news}" cssClass="news"/>
+					</li>
+				</ul>
+			</c:if>
+		</jsp:attribute>
+		
+		<jsp:attribute name="sidebar">
+			<sidebar:sidebarTagCloudItem textKey="busytags" requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" tagSizeMode="home"/>
+		</jsp:attribute>
+
+	</layout:resourceLayout>
+</jsp:root>

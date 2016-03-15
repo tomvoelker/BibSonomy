@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -121,6 +121,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	private Group group;
 	
 	private List<Group> groups = new ArrayList<>();
+	private List<Group> pendingRequestedgroups = new ArrayList<>();
 	// the group to update
 	private String groupName;
 	
@@ -807,6 +808,20 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	public void setGroups(List<Group> groups) {
 		this.groups = groups;
+	}
+	
+	/**
+	 * @return the pendingRequestedgroups
+	 */
+	public List<Group> getPendingRequestedgroups() {
+		return this.pendingRequestedgroups;
+	}
+
+	/**
+	 * @param pendingRequestedgroups the pendingRequestedgroups to set
+	 */
+	public void setPendingRequestedgroups(List<Group> pendingRequestedgroups) {
+		this.pendingRequestedgroups = pendingRequestedgroups;
 	}
 
 	/**

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -714,6 +714,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param titleSearchTerms
 	 * @param authorSearchTerms
 	 * @param tagIndex
+	 * @param bibtexkey 
 	 * @param year
 	 * @param firstYear
 	 * @param lastYear
@@ -725,13 +726,14 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	public List<Tag> getTagsByResourceSearch(
 			final String userName, final String requestedUserName, final String requestedGroupName,
 			final Collection<String> allowedGroups, final SearchType searchType, final String searchTerms,final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex,
-			final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
+			String bibtexkey, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
 
 		if (present(this.publicationSearch) && present(this.bookmarkSearch)) {
+			
 			final List<Tag> bookmarkTags =
-					this.bookmarkSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, searchType, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
+					this.bookmarkSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
 			final List<Tag> publicationTags =
-					this.publicationSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, searchType, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
+					this.publicationSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
 			final List<Tag> retVal = TagUtils.mergeTagLists(bookmarkTags, publicationTags, Order.POPULAR, Order.POPULAR, limit);
 			return retVal;
 		}

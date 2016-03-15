@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -47,7 +47,6 @@ import org.bibsonomy.recommender.connector.utilities.RecommendationUtilities;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.RenderingFormat;
-import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.webapp.command.ajax.AjaxRecommenderCommand;
 import org.bibsonomy.webapp.util.GroupingCommandUtils;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -65,8 +64,6 @@ import recommender.core.interfaces.model.TagRecommendationEntity;
  *       As in the post*controller, the post-command has to be filled -
  *       at least with grouping information, as private posts shouldn't
  *       be sent to remotely installed recommender
- * TODO: controller could use the JSONRenderer to return recommandations as
- * 		JSON and not XML
  *       
  * @param <R>
  *  
@@ -83,6 +80,8 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 	 * from the spam detection framework 
 	 */
 	private LogicInterface adminLogic;
+	
+	private RendererFactory rendererFactory;
 	
 	/** default recommender for serving spammers */
 	private Recommender<TagRecommendationEntity, recommender.impl.model.RecommendedTag> spamTagRecommender;
@@ -128,10 +127,10 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 		GroupingCommandUtils.initGroups(command, command.getPost().getGroups());
 		
 		// set postID for recommender
-		command.getPost().setContentId(command.getPostID());
+		command.getPost().setContentId(Integer.valueOf(command.getPostID()));
 
 		if ((dbUser.isSpammer()) && (((dbUser.getPrediction() == null) && (dbUser.getAlgorithm() == null)) ||
-					(dbUser.getPrediction().equals(1) || dbUser.getAlgorithm().equals(USERSPAMALGORITHM)))  ) {
+					(dbUser.getPrediction().equals(Integer.valueOf(1)) || dbUser.getAlgorithm().equals(USERSPAMALGORITHM)))  ) {
 			// the user is a spammer
 			log.debug("Filtering out recommendation request from spammer");
 			if (this.spamTagRecommender != null)	{
@@ -184,8 +183,7 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 	//------------------------------------------------------------------------
 	private void processRecommendedTags(final AjaxRecommenderCommand<R> command, final SortedSet<RecommendedTag> tags) {
 		command.setRecommendedTags(tags);
-		// TODO: renderer is thread safe? => constant
-		final Renderer renderer = new RendererFactory(new UrlRenderer("/api/")).getRenderer(RenderingFormat.JSON);
+		final Renderer renderer = this.rendererFactory.getRenderer(RenderingFormat.JSON);
 		final StringWriter sw = new StringWriter(100);
 		renderer.serializeRecommendedTags(sw, command.getRecommendedTags());
 		command.setResponseString(sw.toString());
@@ -213,4 +211,10 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 		this.spamTagRecommender = spamTagRecommender;
 	}
 
+	/**
+	 * @param rendererFactory the rendererFactory to set
+	 */
+	public void setRendererFactory(RendererFactory rendererFactory) {
+		this.rendererFactory = rendererFactory;
+	}
 }

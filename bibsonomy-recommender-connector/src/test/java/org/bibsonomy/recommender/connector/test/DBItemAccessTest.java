@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Recommendation-Connector - Connector for the recommender framework for tag and resource recommendation
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -43,6 +43,8 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.recommender.connector.model.RecommendationPost;
 import org.bibsonomy.recommender.connector.model.UserWrapper;
 import org.bibsonomy.recommender.connector.testutil.RecommenderTestContext;
+import org.bibsonomy.testutil.TestDatabaseLoader;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -63,13 +65,18 @@ import recommender.impl.multiplexer.MultiplexingRecommender;
  *
  */
 public class DBItemAccessTest {
-	
-private static DBLogic<ItemRecommendationEntity, RecommendedItem> dbLogic;
+	private static DBLogic<ItemRecommendationEntity, RecommendedItem> dbLogic;
+	protected static TestDatabaseLoader TEST_DB_LOADER = new TestDatabaseLoader("recommender_schema.sql");
 	
 	@BeforeClass
 	public static void setUp() {
 		// bibtexRecommenderLogic is representational for all items in this case
 		dbLogic = RecommenderTestContext.getBeanFactory().getBean("bibtexRecommenderLogic", DBLogConfigItemAccess.class);
+	}
+	
+	@Before
+	public void initTestDatabase() {
+		TEST_DB_LOADER.load("recommender-test.properties", "recommender.item");
 	}
 	
 	/**

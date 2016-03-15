@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -470,7 +470,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#getGroups(boolean, int, int)
 	 */
 	@Override
-	public List<Group> getGroups(boolean pending, int start, int end) {
+	public List<Group> getGroups(boolean pending, String userName, int start, int end) {
 		this.doDefaultAction();
 		return null;
 	}
@@ -479,7 +479,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#getGroupDetails(java.lang.String)
 	 */
 	@Override
-	public Group getGroupDetails(String groupName) {
+	public Group getGroupDetails(String groupName, final boolean pending) {
 		this.doDefaultAction();
 		return null;
 	}
@@ -551,7 +551,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#deleteGroup(java.lang.String)
 	 */
 	@Override
-	public void deleteGroup(String groupName) {
+	public void deleteGroup(String groupName, boolean pending) {
 		this.doDefaultAction();
 	}
 
@@ -587,7 +587,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 */
 	@Override
 	public String updateGroup(Group group, GroupUpdateOperation operation, GroupMembership membership) {
-		
+		this.doDefaultAction();
 		return null;
 	}
 
@@ -854,7 +854,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#createBasketItems(java.util.List)
 	 */
 	@Override
-	public int createBasketItems(List<Post<? extends Resource>> posts) {
+	public int createClipboardItems(List<Post<? extends Resource>> posts) {
 		this.doDefaultAction();
 		return 0;
 	}
@@ -863,7 +863,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#deleteBasketItems(java.util.List, boolean)
 	 */
 	@Override
-	public int deleteBasketItems(List<Post<? extends Resource>> posts, boolean clearBasket) {
+	public int deleteClipboardItems(List<Post<? extends Resource>> posts, boolean clearBasket) {
 		this.doDefaultAction();
 		return 0;
 	}

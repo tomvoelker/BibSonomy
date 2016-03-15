@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -35,8 +35,8 @@ import org.bibsonomy.rest.strategy.posts.GetNewPostsStrategy;
 import org.bibsonomy.rest.strategy.posts.GetPopularPostsStrategy;
 import org.bibsonomy.rest.strategy.posts.community.PostCommunityPostStrategy;
 import org.bibsonomy.rest.strategy.posts.community.PutCommunityPostStrategy;
-import org.bibsonomy.rest.strategy.posts.community.references.DeleteRelationsStrategy;
-import org.bibsonomy.rest.strategy.posts.community.references.PostRelationsStrategy;
+import org.bibsonomy.rest.strategy.posts.community.relations.DeleteRelationsStrategy;
+import org.bibsonomy.rest.strategy.posts.community.relations.PostRelationsStrategy;
 import org.bibsonomy.rest.strategy.users.DeletePostStrategy;
 import org.bibsonomy.rest.strategy.users.GetPostDetailsStrategy;
 import org.bibsonomy.rest.util.URLDecodingPathTokenizer;

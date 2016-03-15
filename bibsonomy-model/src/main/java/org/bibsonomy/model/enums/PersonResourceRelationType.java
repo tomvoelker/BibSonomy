@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -39,32 +39,26 @@ import org.bibsonomy.model.Resource;
  * @author jil
  */
 public enum PersonResourceRelationType {
-	/**
-	 * doctor vater
-	 */
+	
+	/** doctor vater */
 	DOCTOR_VATER("Bdtv"),
-	/**
-	 * first reviewer of thesis
-	 */
+	
+	/** first reviewer of thesis */
 	FIRST_REVIEWER("B1st"),
-	/**
-	 * reviewer of a thesis
-	 */
+	
+	/** reviewer of a thesis */
 	REVIEWER("Mrev"),
 	
-	/**
-	 * thesis advisor
-	 */
+	/** thesis advisor */
 	ADVISOR("Mths"),
-	/**
-	 * Author
-	 */
+	
+	/** Author */
 	AUTHOR("Maut"),
+	
 	/** editor */
 	EDITOR("Medt"),
-	/**
-	 * some non-specific relation influence
-	 */
+	
+	/** some non-specific relation influence */
 	OTHER("Moth");
 	
 	private final String relatorCode;
@@ -87,6 +81,10 @@ public enum PersonResourceRelationType {
 		return this.relatorCode;
 	}
 	
+	/**
+	 * @param relatorCode
+	 * @return the {@link PersonResourceRelationType}
+	 */
 	public static PersonResourceRelationType getByRelatorCode(String relatorCode) {
 		final PersonResourceRelationType rVal = byRelatorCode.get(relatorCode);
 		if (rVal == null) {

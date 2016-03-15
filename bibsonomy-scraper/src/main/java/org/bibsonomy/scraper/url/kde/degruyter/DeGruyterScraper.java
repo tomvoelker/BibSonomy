@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -68,7 +68,7 @@ public class DeGruyterScraper extends AbstractUrlScraper {
 		try {
 			final String inRIS = getCitationInRIS(url.toString());
 			final RisToBibtexConverter con = new RisToBibtexConverter();
-			final String bibtex = con.risToBibtex(inRIS);
+			final String bibtex = con.toBibtex(inRIS);
 			
 			if (present(bibtex)) {
 				scrapingContext.setBibtexResult(bibtex);

@@ -32,6 +32,9 @@
 var LOGGING_SERVICE = "/logging";
 
 function log_register_events() {
+	if (!userSettings.logging) {
+		return;
+	}
 	if (document.addEventListener) { // Mozilla, Safari,...
 		try {
 			document.addEventListener ("click", log_sendRequest, false);
@@ -278,4 +281,7 @@ function log_sendRequest(e) {
 		http_request.send(senddata);
 	}
 }
-log_register_events();
+
+$(function(){
+	log_register_events();
+});

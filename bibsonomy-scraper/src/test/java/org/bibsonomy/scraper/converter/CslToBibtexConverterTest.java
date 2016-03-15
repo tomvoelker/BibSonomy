@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -49,7 +49,7 @@ public class CslToBibtexConverterTest {
 		// test the conversion
 		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "csltobibtextest1.bib").trim();
 		final CslToBibtexConverter cslToBibtexConverter = new CslToBibtexConverter();
-		final String bibTeX = cslToBibtexConverter.cslToBibtex(csl);
+		final String bibTeX = cslToBibtexConverter.toBibtex(csl);
 		assertEquals (expectedBibTeX, bibTeX);
 	}
 }

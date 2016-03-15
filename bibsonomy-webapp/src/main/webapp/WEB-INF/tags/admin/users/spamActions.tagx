@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<jsp:directive.attribute type="org.bibsonomy.model.User" name="user" required="true" description="user"/>
+	
+	
+	<c:set var="isSpammer" value="${user.spammer}" />
+	<c:set var="isUnsure" value="${user.prediction == 9}" />
+	
+	<div class="btn-group">
+		<button onclick="javascript:unflagUser('${user.name}', this);" class="btn btn-sm ${not isSpammer and not isUnsure ? 'btn-success' : 'btn-default' }" title="no spammer">no</button>
+		<button onclick="javascript:flagUncertainUser('${user.name}', this)" class="btn btn-sm ${isUnsure ? 'btn-warning' : 'btn-default'}" title="unsure">?</button>
+		<button onclick="javascript:flagUser('${user.name}', this)" class="btn btn-sm ${isSpammer and not isUnsure ? 'btn-danger' : 'btn-default' }" title="flagged as spammer">yes</button>
+	</div>
+
+	<!-- show link to access the filtered posts of the user -->
+	<c:if test="${isSpammer}">
+	  <a href="?filter=ADMIN_SPAM_POSTS" title="show the filtered posts of the user">posts</a>
+	</c:if>
+		
+</jsp:root>

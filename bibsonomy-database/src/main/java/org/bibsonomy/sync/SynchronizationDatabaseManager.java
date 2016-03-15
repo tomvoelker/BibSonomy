@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -86,7 +86,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 			final SyncParam param = new SyncParam();
 			param.setSyncService(service);
 			param.setServer(server);
-			param.setServiceId(generalDb.getNewId(ConstantID.IDS_SYNC_SERVICE, session));
+			param.setServiceId(this.generalDb.getNewId(ConstantID.IDS_SYNC_SERVICE, session).intValue());
 			session.insert("insertSyncService", param);
 			session.commitTransaction();
 		} finally {
@@ -182,6 +182,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * 
 	 * @param server 
+	 * @param sslDn 
 	 * @param session
 	 * @return all available synchronization services. if server <true> sync server
 	 * otherwise sync clients
@@ -195,7 +196,6 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	/**
-	 * @param sslDn 
 	 * @param serviceURI 
 	 * @param server
 	 * @param session
@@ -235,7 +235,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * @param lastSyncDate
 	 * @param status
 	 * @param info 
-	 * @return
+	 * @return the sync param for the parameters
 	 */
 	protected SyncParam createParam(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date lastSyncDate, final SynchronizationStatus status, final String info) {
 		final SyncParam param = new SyncParam();
@@ -301,6 +301,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	/**
+	 * @param session 
 	 * @return List of synchronization servers for Auto synchronization ('autosync' and direction is not 'both')
 	 */
 	public List<SyncService> getAutoSyncServer(DBSession session) {
@@ -512,7 +513,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * @param conflictResolutionStrategy
 	 * @param direction
 	 */
-	private void resolveConflict(final SynchronizationPost clientPost, final SynchronizationPost serverPost, final ConflictResolutionStrategy conflictResolutionStrategy, final SynchronizationDirection direction) {
+	private static void resolveConflict(final SynchronizationPost clientPost, final SynchronizationPost serverPost, final ConflictResolutionStrategy conflictResolutionStrategy, final SynchronizationDirection direction) {
 		switch (conflictResolutionStrategy) {
 		case CLIENT_WINS:
 			if (!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction)) {

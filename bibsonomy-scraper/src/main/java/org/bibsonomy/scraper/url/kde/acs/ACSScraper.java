@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,11 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.acs;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,6 +39,7 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wbi
@@ -104,8 +101,8 @@ public class ACSScraper extends AbstractUrlScraper {
 			}
 			
 			if (doi != null){
-				final String cookie = getCookie(citationURL);
-				bibResult = getACSContent(new URL(ACS_HOST_NAME + ACS_BIBTEX_PATH + ACS_BIBTEX_PARAMS + doi), cookie);
+				final String cookie = WebUtils.getCookies(citationURL);
+				bibResult = WebUtils.getPostContentAsString(cookie, new URL(ACS_HOST_NAME + ACS_BIBTEX_PATH + ACS_BIBTEX_PARAMS + doi), doi);
 			}
 			
 		} catch (IOException ex) {
@@ -120,85 +117,6 @@ public class ACSScraper extends AbstractUrlScraper {
 		throw new ScrapingFailureException("getting bibtex failed");
 	}
 
-	/** FIXME: refactor
-	 * @param abstractUrl
-	 * @return
-	 * @throws IOException
-	 */
-	private String getCookie(URL abstractUrl) throws IOException{
-		/*
-		 * receive cookie from springer
-		 */
-		HttpURLConnection urlConn = null;
-
-		urlConn = (HttpURLConnection) abstractUrl.openConnection();
-
-		urlConn.setAllowUserInteraction(false);
-		urlConn.setDoInput(true);
-		urlConn.setDoOutput(false);
-		urlConn.setUseCaches(false);
-
-		/*
-		 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
-		 * pages require it to download content.
-		 */
-		urlConn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)");
-
-		urlConn.connect();
-		/*
-		 * extract cookie from connection
-		 */
-		List<String> cookieContent = urlConn.getHeaderFields().get("Set-Cookie");
-		//extract sessionID and store in cookie
-
-		String cookie = "I2KBRCK=1;";
-		//TODO
-		if(cookieContent != null){
-			for (String crumb : cookieContent) {
-				if(cookie.equals(""))
-					cookie = crumb;
-				else
-					cookie = cookie + ";" + crumb;
-			}
-		}
-		urlConn.disconnect();
-
-		return cookie;
-	}
-
-	/** FIXME: refactor
-	 * @param queryURL
-	 * @param cookie
-	 * @return
-	 * @throws IOException
-	 */
-	private String getACSContent(URL queryURL, String cookie) throws IOException {
-		/*
-		 * get BibTex-File from ACS
-		 */
-		HttpURLConnection urlConn = (HttpURLConnection) queryURL.openConnection();
-		urlConn.setAllowUserInteraction(false);
-		urlConn.setDoInput(true);
-		urlConn.setDoOutput(false);
-		urlConn.setUseCaches(false);
-		/*
-		 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
-		 * pages require it to download content.
-		 */
-		urlConn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)");
-		//insert cookie
-		urlConn.setRequestProperty("Cookie", cookie);
-		urlConn.connect();
-		StringWriter out = new StringWriter();
-		InputStream in = new BufferedInputStream(urlConn.getInputStream());
-		int b;
-		while ((b = in.read()) >= 0) {
-			out.write(b);
-		}
-		urlConn.disconnect();
-		return out.toString();
-	}
-
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
@@ -207,12 +125,11 @@ public class ACSScraper extends AbstractUrlScraper {
 	
 	@Override
 	public String getSupportedSiteName() {
-		return "ACS Publication";
+		return SITE_URL;
 	}
 
 	@Override
 	public String getSupportedSiteURL() {
 		return ACS_HOST_NAME;
 	}
-
 }

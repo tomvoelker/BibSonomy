@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -32,14 +32,14 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * Scraper URL tests #16 for IOPScraper
+ * Scraper URL tests #16, #297 for IOPScraper
  * @author tst
  *
  */
 @Category(RemoteTest.class)
 public class IOPScraperTest {
 	
-	/**
+	/*
 	 * starts URL test with id url_16
 	 */
 	@Test
@@ -47,12 +47,19 @@ public class IOPScraperTest {
 		UnitTestRunner.runSingleTest("url_16");
 	}
 	
-	/**
-	 * starts URL test with id url_178
+	/*
+	 * starts URL test with id url_297
+	 */
+	@Test
+	public void url1TestRun(){
+		UnitTestRunner.runSingleTest("url_297");
+	}
+	
+	/*
+	 * starts URL test with id url_334
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_178");
+		UnitTestRunner.runSingleTest("url_334");
 	}
-	
 }

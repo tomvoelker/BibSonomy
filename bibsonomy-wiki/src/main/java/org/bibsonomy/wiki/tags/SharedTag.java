@@ -1,7 +1,7 @@
 /**
  * BibSonomy CV Wiki - Wiki for user and group CVs
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -27,9 +27,10 @@
 package org.bibsonomy.wiki.tags;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-import info.bliki.htmlcleaner.Utils;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+
+import info.bliki.htmlcleaner.Utils;
 
 /**
  * Used for rending tags which are available for both users and groups, i.e. shared tags.
@@ -48,12 +49,10 @@ public abstract class SharedTag extends AbstractTag {
 	public SharedTag(final String name) {
 		super(name);
 	}
-	
 
 	@Override
 	protected String renderSafe() {
 		return this.renderSharedTag();
-
 	}
 	
 	/**
@@ -67,8 +66,6 @@ public abstract class SharedTag extends AbstractTag {
 		// If the group is "null" then its a user (obviously)
 		return this.requestedGroup != null ? GroupingEntity.GROUP : GroupingEntity.USER;
 	}
-	
-	
 	
 	/**
 	 * Return the realname of the requested user / group.
@@ -84,7 +81,7 @@ public abstract class SharedTag extends AbstractTag {
 		case GROUP:
 			return Utils.escapeXmlChars( present(this.requestedGroup.getRealname()) ? this.requestedGroup.getRealname() : this.requestedGroup.getName() );
 		default: 
-			return EMPTY_NAME;	
+			return EMPTY_NAME;
 		}
 	}
 	
@@ -99,7 +96,7 @@ public abstract class SharedTag extends AbstractTag {
 		case GROUP:
 			return Utils.escapeXmlChars(this.requestedGroup.getName());
 		default: 
-			return EMPTY_NAME;	
+			return EMPTY_NAME;
 		}
 	}
 

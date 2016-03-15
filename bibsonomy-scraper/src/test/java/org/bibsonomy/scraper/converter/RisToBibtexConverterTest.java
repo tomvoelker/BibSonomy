@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -56,7 +56,7 @@ public class RisToBibtexConverterTest {
 		// test the conversion
 		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "test1_risBibtex.bib");
 		final RisToBibtexConverter ris2bConverter = new RisToBibtexConverter();
-		final String bibTeX = ris2bConverter.risToBibtex(ris);
+		final String bibTeX = ris2bConverter.toBibtex(ris);
 		assertEquals (expectedBibTeX, bibTeX);
 	}
 	
@@ -74,7 +74,7 @@ public class RisToBibtexConverterTest {
 		// test the conversion
 		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "WorldCat_53972111.bib");
 		final RisToBibtexConverter ris2bConverter = new RisToBibtexConverter();
-		final String bibTeX = ris2bConverter.risToBibtex(ris);
+		final String bibTeX = ris2bConverter.toBibtex(ris);
 		assertEquals (expectedBibTeX, bibTeX);
 	}
 	
@@ -92,7 +92,61 @@ public class RisToBibtexConverterTest {
 		// test the conversion
 		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "2008JD010287.bib");
 		final RisToBibtexConverter ris2bConverter = new RisToBibtexConverter();
-		final String bibTeX = ris2bConverter.risToBibtex(ris);
+		final String bibTeX = ris2bConverter.toBibtex(ris);
+
+		assertEquals(expectedBibTeX, bibTeX);
+		
+		// test canHandle
+		assertFalse(RisToBibtexConverter.canHandle(expectedBibTeX));
+	}
+	
+	@Test
+	public void testRisToBibtex2_2() throws Exception {
+		final String ris = TestUtils.readEntryFromFile(PATH_TO_FILES + "ristest2.ris");
+
+		// test the canHandle heuristic
+		assertTrue(RisToBibtexConverter.canHandle(ris));
+
+		// test the conversion
+		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "ristest2.bib");
+		final RisToBibtexConverter ris2bConverter = new RisToBibtexConverter();
+		final String bibTeX = ris2bConverter.toBibtex(ris);
+
+		assertEquals(expectedBibTeX, bibTeX);
+		
+		// test canHandle
+		assertFalse(RisToBibtexConverter.canHandle(expectedBibTeX));
+	}
+	
+	@Test
+	public void testRisToBibtex3() throws Exception {
+		final String ris = TestUtils.readEntryFromFile(PATH_TO_FILES + "ristest3.ris");
+
+		// test the canHandle heuristic
+		assertTrue(RisToBibtexConverter.canHandle(ris));
+
+		// test the conversion
+		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "ristest3.bib");
+		final RisToBibtexConverter ris2bConverter = new RisToBibtexConverter();
+		final String bibTeX = ris2bConverter.toBibtex(ris);
+
+		assertEquals(expectedBibTeX, bibTeX);
+		
+		// test canHandle
+		assertFalse(RisToBibtexConverter.canHandle(expectedBibTeX));
+	}
+	
+	@Test
+	public void testRisToBibtex4() throws Exception {
+		final String ris = TestUtils.readEntryFromFile(PATH_TO_FILES + "ristest4.ris");
+
+		// test the canHandle heuristic
+		assertTrue(RisToBibtexConverter.canHandle(ris));
+
+		// test the conversion
+		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "ristest4.bib");
+		final RisToBibtexConverter ris2bConverter = new RisToBibtexConverter();
+		final String bibTeX = ris2bConverter.toBibtex(ris);
 
 		assertEquals(expectedBibTeX, bibTeX);
 		

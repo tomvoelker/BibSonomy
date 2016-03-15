@@ -12,7 +12,7 @@
 	<select id="getUsersBySearch" resultMap="Common.user" parameterClass="userParam">
 		SELECT <include refid="commonUserAttributes"/>, NULL as ldapUserId, NULL as openID
 		  FROM user
-		  WHERE user_name LIKE CONCAT(#rawSearch#, '%')
+		  WHERE user_name LIKE CONCAT(#search#, '%')
 		  LIMIT #limit#
 	</select>
 	
@@ -20,7 +20,7 @@
 		SELECT <include refid="commonUserAttributes"/>, activation_code, NULL as ldapUserId, NULL as openID
 		  FROM pendingUser 
 		  WHERE spammer = 0 
-		    AND activation_code = #rawSearch#
+		    AND activation_code = #search#
 		  LIMIT #limit# OFFSET #offset#
 	</select>
 
@@ -62,12 +62,12 @@
 
 	<insert id="insertPendingUser" parameterClass="user">
 		INSERT INTO pendingUser (<include refid="allUserAttributes"/>, activation_code)
-  		  VALUES (<include refid="insertUserAttributes"/>, #activationCode#)
+			VALUES (<include refid="insertUserAttributes"/>, #activationCode#)
 	</insert>
 	
 	<insert id="insertUser" parameterClass="user">
 		INSERT INTO user (<include refid="allUserAttributes"/>)
-  		  VALUES (<include refid="insertUserAttributes"/>)
+			VALUES (<include refid="insertUserAttributes"/>)
 	</insert>
 	
 	<!--+ 
@@ -85,7 +85,8 @@
 			spammer = #spammer#,
 			role = #role#, 
 			updated_by = #updatedBy#, 
-			updated_at = #updatedAt#
+			updated_at = #updatedAt#,
+			reg_log = #registrationLog#
 			<isNotNull property="reminderPassword">,tmp_password = #reminderPassword#, tmp_request_date = #reminderPasswordRequestDate#</isNotNull>		
 		WHERE user_name=#name#
 	</update>
