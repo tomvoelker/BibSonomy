@@ -50,7 +50,7 @@
 			        			</c:when>
 			        			<c:otherwise>
 			        				<c:out value="${command.beginName} "/>
-			        				<a class="action" href="/import/jabref?hash=${command.beginHash}&amp;action=delete&amp;ckey=${mtl:encodeURI(ckey)}">delete</a>
+			        				<a class="action" href="/import/jabref?hash=${command.beginHash}&amp;action=delete&amp;ckey=${mtl:encodePathSegment(ckey)}">delete</a>
 			        			</c:otherwise>
 			      			</c:choose>
 							<p class="help-block"><fmt:message key="settings.jabRef.begin.help"/></p>
@@ -72,7 +72,7 @@
 			        			</c:when>
 			        			<c:otherwise>
 			        				<c:out value="${command.itemName} "/>
-	    		    				<a class="action" href="/import/jabref?hash=${command.itemHash}&amp;action=delete&amp;ckey=${mtl:encodeURI(ckey)}">delete</a>
+	    		    				<a class="action" href="/import/jabref?hash=${command.itemHash}&amp;action=delete&amp;ckey=${mtl:encodePathSegment(ckey)}">delete</a>
 	        					</c:otherwise>
 			      			</c:choose>
 							<p class="help-block"><fmt:message key="settings.jabRef.item.help"/></p>
@@ -92,7 +92,7 @@
 			        			</c:when>
 			        			<c:otherwise>
 			        				<c:out value="${command.endName} "/>
-			        				<a class="action" href="/import/jabref?hash=${command.endHash}&amp;action=delete&amp;ckey=${mtl:encodeURI(ckey)}">delete</a>
+			        				<a class="action" href="/import/jabref?hash=${command.endHash}&amp;action=delete&amp;ckey=${mtl:encodePathSegment(ckey)}">delete</a>
 			        			</c:otherwise>
 							</c:choose>
 							<p class="help-block"><fmt:message key="settings.jabRef.end.help"/></p>

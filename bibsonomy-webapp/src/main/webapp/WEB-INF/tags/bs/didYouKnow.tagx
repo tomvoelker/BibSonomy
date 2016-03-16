@@ -10,7 +10,7 @@
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.DidYouKnowMessageCommand" required="true"/>
 
 	<c:if test="${mtl:hasDidYouKnowMessage(command)}">
-		<div class="alert alert-${command.didYouKnowMessage.alertType}">
+		<div class="did-you-know alert alert-${command.didYouKnowMessage.alertType}">
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&amp;times;</button>
 			<sidebar:sidebarItem textKey="didyouknow">
 				<jsp:attribute name="content">
