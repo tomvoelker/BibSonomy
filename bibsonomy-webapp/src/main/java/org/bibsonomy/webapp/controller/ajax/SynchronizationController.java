@@ -36,8 +36,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.sf.json.JSONObject;
-
+import org.bibsonomy.common.enums.SyncSettingsUpdateOperation;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.SynchronizationRunningException;
 import org.bibsonomy.model.Resource;
@@ -61,6 +60,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
 
 import com.ibm.icu.text.DateFormat;
+
+import net.sf.json.JSONObject;
 
 /**
  * @author wla
@@ -122,7 +123,7 @@ public class SynchronizationController extends AjaxController implements Minimal
 			final Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan;
 			try {
 				// overwrite sync direction if initialAutoSync & auto-sync configured
-				if (SyncUtils.checkInitialAutoSync(server)) {
+				if (SyncUtils.syncServiceRequiresInitialSync(server)) {
 					server.setDirection(SynchronizationDirection.BOTH);
 				}
 				syncPlan = client.getSyncPlan(logic, server);
@@ -172,10 +173,10 @@ public class SynchronizationController extends AjaxController implements Minimal
 				// synchronize
 				syncResult = client.synchronize(logic, server, syncPlan2);
 
-				// check servers initialAutoSync and set the servers initialAutoSync to false on successful synchronize
-				if (SyncUtils.checkInitialAutoSync(server)) {
-					server.setInitialAutoSync(false);
-					this.logic.updateSyncServer(loginUser.getName(), server);
+				// check servers initialAutoSync and set the servers alreadySyncedOnce to true on successful synchronize
+				if (SyncUtils.syncServiceRequiresInitialSync(server)) {
+					server.setAlreadySyncedOnce(true);
+					this.logic.updateSyncServer(loginUser.getName(), server, SyncSettingsUpdateOperation.ALL);
 				}
 			} catch (final SynchronizationRunningException e) {
 				errors.reject("error.synchronization.running");

@@ -381,7 +381,7 @@ public class MailUtils {
 		 */
 		final String[] recipient = {userEmail};
 		try {
-			sendPlainMail(recipient,  messageSubject, messageBody, projectRegistrationFromAddress);
+			this.sendHTMLMail(recipient,  messageSubject, messageBody, projectRegistrationFromAddress);
 			return true;
 		} catch (final MessagingException e) {
 			log.fatal("Could not send reminder mail: " + e.getMessage());

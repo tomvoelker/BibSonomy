@@ -49,7 +49,7 @@ public class SyncService {
 	private Map<Class<? extends Resource>, Map<String, String>> plan;
 	private String sslDn;
 	private boolean autosync = false;
-	private boolean initialAutoSync = true;
+	private boolean alreadySyncedOnce = false;
 	private String userName;
 	
 	/**
@@ -226,6 +226,20 @@ public class SyncService {
 		this.userName = userName;
 	}
 
+	/**
+	 * @return the alreadySyncedOnce
+	 */
+	public boolean isAlreadySyncedOnce() {
+		return this.alreadySyncedOnce;
+	}
+
+	/**
+	 * @param alreadySyncedOnce the alreadySyncedOnce to set
+	 */
+	public void setAlreadySyncedOnce(boolean alreadySyncedOnce) {
+		this.alreadySyncedOnce = alreadySyncedOnce;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -260,21 +274,5 @@ public class SyncService {
 			return false;
 		}
 		return true;
-	}
-
-	/**
-	 * @return get initialAutoSync
-	 * true, if there was NO bidirectional sync before auto-sync (required for auto-sync)
-	 */
-	public boolean getInitialAutoSync() {
-		return this.initialAutoSync;
-	}
-
-	/**
-	 * @param initialAutoSync 
-	 * set to true if first bidirectional sync was successful
-	 */
-	public void setInitialAutoSync(boolean initialAutoSync) {
-		this.initialAutoSync = initialAutoSync;
 	}
 }

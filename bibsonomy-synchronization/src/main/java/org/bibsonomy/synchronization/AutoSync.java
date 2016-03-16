@@ -28,10 +28,10 @@ package org.bibsonomy.synchronization;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Calendar;
 
 import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.logging.Log;
@@ -52,7 +52,7 @@ import org.bibsonomy.util.MailUtils;
  */
 public class AutoSync {
 	private static final Log log = LogFactory.getLog(AutoSync.class);
-	private static Calendar calc;
+	
 	private LogicInterface adminLogic;
 	private TwoStepSynchronizationClient syncClient;
 	private LogicInterfaceFactory userLogicFactory;
@@ -69,19 +69,17 @@ public class AutoSync {
 			log.info("snyc client not available");
 			return;
 		}
-		
+		final Calendar calendar = Calendar.getInstance();
 		// get configured AutoSync-Servers
 		final List<SyncService> syncServices = this.adminLogic.getAutoSyncServer();
-		for (final SyncService syncService : syncServices) {			
+		for (final SyncService syncService : syncServices) {
 			final User clientUser = this.adminLogic.getUserDetails(syncService.getUserName());
 
 			// check if user has run a sync in both-directions before; skip service and send sync-notification mail on Sunday otherwise
-			if (syncService.getInitialAutoSync())
-			{
-				calc = Calendar.getInstance(); 
-				if (calc.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+			if (!syncService.isAlreadySyncedOnce()) {
+				if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
 					log.info("no initial sync in both-directions was done; send eMail to User");
-					mailUtils.sendSyncErrorMail(clientUser.getName(), clientUser.getEmail(), syncService.getName(), 
+					this.mailUtils.sendSyncErrorMail(clientUser.getName(), clientUser.getEmail(), syncService.getName(), 
 							LocaleUtils.toLocale(clientUser.getSettings().getDefaultLanguage())); 
 				}
 				continue;

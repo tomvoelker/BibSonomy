@@ -32,6 +32,7 @@ import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bibsonomy.common.enums.SyncSettingsUpdateOperation;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.sync.SyncService;
@@ -45,6 +46,7 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.sync.SyncUtils;
 import org.bibsonomy.webapp.validation.SyncSettingsValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
+import org.bibsonomy.webapp.view.ExtendedRedirectViewWithAttributes;
 
 /**
  * @author wla, vhem
@@ -63,7 +65,6 @@ public class SyncSettingsController extends SettingsPageController implements Va
 	 */
 	@Override
 	public View workOn(final SettingsViewCommand command) {
-		
 		final RequestWrapperContext context = command.getContext();
 		
 		/*
@@ -109,8 +110,8 @@ public class SyncSettingsController extends SettingsPageController implements Va
 			 */
 			if (HttpMethod.PUT.equals(httpMethod)) {
 				replaceSyncService(command.getSyncServer(), syncServer);
-			} 
-			return view; 
+			}
+			return view;
 		}
 
 		switch (httpMethod) {
@@ -118,14 +119,16 @@ public class SyncSettingsController extends SettingsPageController implements Va
 			final SyncService newSyncServer = command.getNewSyncServer();
 			this.logic.createSyncServer(loginUserName, newSyncServer);
 			// forward user to sync-page to perform an initial sync in BOTH directions first 
-			if (SyncUtils.checkInitialAutoSync(newSyncServer))
-				return new ExtendedRedirectView("/sync");
+			if (SyncUtils.syncServiceRequiresInitialSync(newSyncServer)) {
+				return firstSyncView();
+			}
 			break;
 		case PUT:
-			this.logic.updateSyncServer(loginUserName, syncServer);
+			this.logic.updateSyncServer(loginUserName, syncServer, SyncSettingsUpdateOperation.SETTINGS);
 			// forward user to sync-page to perform an initial sync in BOTH directions first 
-			if (SyncUtils.checkInitialAutoSync(syncServer))
-				return new ExtendedRedirectView("/sync");
+			if (SyncUtils.syncServiceRequiresInitialSync(syncServer)) {
+				return firstSyncView();
+			}
 			break;
 		case DELETE:
 			this.logic.deleteSyncServer(loginUserName, syncServer.getService());
@@ -137,6 +140,15 @@ public class SyncSettingsController extends SettingsPageController implements Va
 
 		return new ExtendedRedirectView("/settings?selTab=" + SettingsViewCommand.SYNC_IDX);
 	}
+
+	/**
+	 * @return
+	 */
+	private static ExtendedRedirectViewWithAttributes firstSyncView() {
+		final ExtendedRedirectViewWithAttributes view = new ExtendedRedirectViewWithAttributes("/sync");
+		view.addAttribute("message", "sync.auto.firstsync.required");
+		return view;
+	}
 	
 	/**
 	 * Finds the sync service in the list whose update/create form was send. 
@@ -146,11 +158,12 @@ public class SyncSettingsController extends SettingsPageController implements Va
 	 */
 	private SyncService getSyncServer(final List<SyncService> syncServices, final String userName) {
 		for (final SyncService syncService : syncServices) {
-			if (present(syncService.getService()))
-			{
+			if (present(syncService.getService())) {
 				// get initialAutoSync value for configured sync-server from database
 				List<SyncService> serviceDetails = this.logic.getSyncServiceSettings(userName, syncService.getService(), true);
-				if (present(serviceDetails)) syncService.setInitialAutoSync(serviceDetails.get(0).getInitialAutoSync());
+				if (present(serviceDetails)) {
+					syncService.setAlreadySyncedOnce(serviceDetails.get(0).isAlreadySyncedOnce());
+				}
 				
 				return syncService;
 			}

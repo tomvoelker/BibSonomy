@@ -114,19 +114,18 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 	public void testGetSyncClients() {
 		final List<SyncService> syncClients = syncDBManager.getSyncServiceSettings(syncUser1, null, false, this.dbSession);
 		assertEquals(2, syncClients.size());
-	}	
+	}
 	
 	/**
 	 * test getAutoSyncServer() statement
 	 */
 	@Test
 	public void testgetAutoSyncServer() {
-
 		// update sync-service testURI for SyncUser1 with auto-sync settings
 		SyncService autoSyncService = syncDBManager.getSyncServiceDetails(testURI, this.dbSession);
 		assertEquals(testURI, autoSyncService.getService());
 		autoSyncService.setServerUser(credentialsSyncUser1);
-		autoSyncService.setInitialAutoSync(false);
+		autoSyncService.setAlreadySyncedOnce(false);
 		autoSyncService.setAutosync(true);
 		autoSyncService.setDirection(direction);
 		autoSyncService.setStrategy(strategy);
@@ -143,9 +142,7 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 	 * test for all access to the table `sync`
 	 */
 	@Test
-	public void testSyncService() {		
-
-		
+	public void testSyncService() {
 		final SyncService service = new SyncService();
 		service.setService(testURI);
 		service.setServerUser(credentialsSyncUser1);
@@ -172,7 +169,7 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 		service.setServerUser(credentialsSyncUser2);
 		service.setStrategy(strategy2);
 		service.setResourceType(resourceType2);
-		syncDBManager.updateSyncServerForUser(syncUser1, service, dbSession);
+		syncDBManager.updateSyncServerForUser(syncUser1, service, null, dbSession);
 		
 		services = syncDBManager.getSyncServiceSettings(syncUser1, null, true, dbSession);
 		assertTrue(services.contains(service));
