@@ -17,25 +17,28 @@ function unescapeAmp(string) {
  * @return
  */
 function pickUnpickAll(pickUnpick) {
-	var param  = "";
-//	$("#publications_0 ul.posts li.post div.ptitle a").each(function(index) {
-//		var href = $(this).attr("href");
-//		if (!href.match(/^.*\/documents[\/?].*/)){
-//			param += href.replace(/^.*bibtex./, "") + " ";
-//		}
-//	}
-//	);
 	
-	$('.ptitle a').each(function(){
+	
+	var checkForPermission = true;
+	
+	$('.pickUnpickPostBtn').each(function(){
+		var param  = "";
 		var href = $(this).attr("href");
-		if (!href.match(/^.*\/documents[\/?].*/)){
-			param += href.replace(/^.*bibtex./, "") + " ";
+		param = unescapeAmp(href.replace(/^.*?\?/, ""));
+		param = unescapeAmp(param.replace(/pick|unpick/,pickUnpick));
+		
+		//ask Permission if necessary
+		var isUnpick = param.search(/action=unpick/) != -1;
+		if (checkForPermission && isUnpick && !confirmDeleteByUser("clipboardpost")) {
+			return false;
+		} else {
+			//only ask for Permission ONCE
+			checkForPermission = false;
 		}
-		updateClipboard($(this), "action=" + pickUnpick + "&hash=" + unescapeAmp(encodeURIComponent(href.replace(/^.*bibtex./, ""))));
+		
+		
+		updateClipboard(null, param);
 	});
-	
-	
-//	return updateClipboard(null, "action=" + pickUnpick + "&hash=" + unescapeAmp(encodeURIComponent(param)));
 	return false;
 }
 
@@ -50,6 +53,14 @@ function pickUnpickPublication(element) {
 	 * pick/unpick publication
 	 */
 	var params = unescapeAmp($(element).attr("href")).replace(/^.*?\?/, "");
+	
+	//ask Permission if necessary
+	var isUnpick = params.search(/action=unpick/) != -1;
+	if (isUnpick && !confirmDeleteByUser("clipboardpost")) {
+		return false;
+	}
+	
+	
 	return updateClipboard(element, params);
 }
 
@@ -63,9 +74,6 @@ function pickUnpickPublication(element) {
  */
 function updateClipboard (element, param) {
 	var isUnpick = param.search(/action=unpick/) != -1;
-	if (isUnpick && !confirmDeleteByUser("clipboardpost")) {
-		return false;
-	}
 	
 	$.ajax({
 		type: 'POST',
