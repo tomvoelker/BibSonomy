@@ -22,10 +22,10 @@
 					<li>
 						<c:choose>
 							<c:when test="${not empty command.scope.name() and command.scope.name() ne 'LOCAL'}">
-								<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/${mtl:encodeURI(command.requestedTags)}?scope=${command.scope.name()}">${fn:escapeXml(command.requestedTags)}</a>
+								<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/${mtl:encodePathSegment(command.requestedTags)}?scope=${command.scope.name()}">${fn:escapeXml(command.requestedTags)}</a>
 							</c:when>
 							<c:otherwise>
-								<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>		
+								<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/${mtl:encodePathSegment(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>		
 							</c:otherwise>
 						</c:choose>
 						<c:out value=" "/>
@@ -53,10 +53,10 @@
 					<li>
 						<c:choose>
 							<c:when test="${not empty command.scope.name() and command.scope.name() ne 'LOCAL'}">
-								<a href="/user/${fn:escapeXml(command.requestedUser)}/${mtl:encodeURI(command.requestedTags)}?scope=${command.scope.name()}">${fn:escapeXml(command.requestedTags)}</a>
+								<a href="/user/${fn:escapeXml(command.requestedUser)}/${mtl:encodePathSegment(command.requestedTags)}?scope=${command.scope.name()}">${fn:escapeXml(command.requestedTags)}</a>
 							</c:when>
 							<c:otherwise>
-								<a href="/user/${fn:escapeXml(command.requestedUser)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>							
+								<a href="/user/${fn:escapeXml(command.requestedUser)}/${mtl:encodePathSegment(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>							
 							</c:otherwise>
 						</c:choose>
 						<c:out value=" "/>
@@ -84,10 +84,10 @@
 					<li>
 						<c:choose>
 							<c:when test="${not empty command.scope.name() and command.scope.name() ne 'LOCAL'}">
-								<a href="/group/${fn:escapeXml(command.requestedGroup)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+								<a href="/group/${fn:escapeXml(command.requestedGroup)}/${mtl:encodePathSegment(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
  							</c:when>
  							<c:otherwise>
-								<a href="/group/${fn:escapeXml(command.requestedGroup)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a> 							
+								<a href="/group/${fn:escapeXml(command.requestedGroup)}/${mtl:encodePathSegment(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a> 							
  							</c:otherwise>
  						</c:choose>
 						<c:out value=" "/>
@@ -113,7 +113,7 @@
 				<!-- link to global tag-page (if a user has ALL of the requestedTags as tags) -->
   				<c:if test="${command.postCountForTagsForAll > 0}"> 
 					<li> 
-						<a href="/tag/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+						<a href="/tag/${mtl:encodePathSegment(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 						<c:out value=" "/>
 						<fmt:message key="tag.asTagFromAll"/>
 						<!-- if user is logged in, he benefits of seeing the postCount -->
@@ -152,7 +152,7 @@
 								<c:forEach var="subtag" items="${conceptVar.subTags}"> ${fn:escapeXml(subtag.name)} <c:out value=" "/></c:forEach>
 							</c:set>
 							<a title="${conceptTitle}" 
-								href="/concept/user/${fn:escapeXml(command.context.loginUser.name)}/${mtl:encodeURI(conceptVar.name)}">
+								href="/concept/user/${fn:escapeXml(command.context.loginUser.name)}/${mtl:encodePathSegment(conceptVar.name)}">
 								<c:out value="${conceptVar.name}"/>
 							</a>
 							<c:out value=" "/>
@@ -163,7 +163,7 @@
 					</c:forEach>
 					<c:if test="${requTagsListLength > 1}" >
 						<li>
-							<a href="/concept/user/${fn:escapeXml(command.context.loginUser.name)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+							<a href="/concept/user/${fn:escapeXml(command.context.loginUser.name)}/${mtl:encodePathSegment(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 							<c:out value=" "/>
 							<fmt:message key="tag.asConceptFrom"/>
 							<c:out value=" "/>
@@ -183,7 +183,7 @@
 								<c:forEach var="subtag" items="${conceptVar.subTags}"> ${fn:escapeXml(subtag.name)} <c:out value=" "/></c:forEach>
 							</c:set>
 							<a title="${conceptTitle}" 
-								href="/concept/user/${fn:escapeXml(command.requestedUser)}/${mtl:encodeURI(conceptVar.name)}">
+								href="/concept/user/${fn:escapeXml(command.requestedUser)}/${mtl:encodePathSegment(conceptVar.name)}">
 								<c:out value="${conceptVar.name}"/>
 							</a>
 							<c:out value=" "/>
@@ -194,7 +194,7 @@
 					</c:forEach>
 					<c:if test="${requTagsListLength > 1}" >
 						<li>
-							<a href="/concept/user/${fn:escapeXml(command.requestedUser)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+							<a href="/concept/user/${fn:escapeXml(command.requestedUser)}/${mtl:encodePathSegment(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 							<c:out value=" "/>
 							<fmt:message key="tag.asConceptFrom"/>
 							<c:out value=" "/>
@@ -214,7 +214,7 @@
 								<c:forEach var="subtag" items="${conceptVar.subTags}"> ${fn:escapeXml(subtag.name)} <c:out value=" "/></c:forEach>
 							</c:set>
 							<a title="${conceptTitle}" 
-								href="/concept/group/${fn:escapeXml(command.requestedGroup)}/${mtl:encodeURI(conceptVar.name)}">
+								href="/concept/group/${fn:escapeXml(command.requestedGroup)}/${mtl:encodePathSegment(conceptVar.name)}">
 								<c:out value="${conceptVar.name}"/>
 							</a>
 							<c:out value=" "/>
@@ -225,7 +225,7 @@
 					</c:forEach>
 					<c:if test="${requTagsListLength > 1}" >
 						<li>
-							<a href="/concept/user/${fn:escapeXml(command.requestedGroup)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+							<a href="/concept/user/${fn:escapeXml(command.requestedGroup)}/${mtl:encodePathSegment(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 							<c:out value=" "/>
 							<fmt:message key="tag.asConceptFromGroup"/>
 							<c:out value=" "/>
@@ -245,7 +245,7 @@
 								<c:forEach var="subtag" items="${conceptVar.subTags}"> ${fn:escapeXml(subtag.name)} <c:out value=" "/></c:forEach>
 							</c:set>
 							<a 	title="${conceptTitle}" 
-								href="/concept/tag/${mtl:encodeURI(conceptVar.name)}">
+								href="/concept/tag/${mtl:encodePathSegment(conceptVar.name)}">
 								<c:out value="${fn:escapeXml(conceptVar.name)}"/>
 							</a>
 							<c:out value=" "/>
@@ -254,7 +254,7 @@
 					</c:forEach>
 					<c:if test="${requTagsListLength > 1}" >
 						<li>
-							<a href="/concept/tag/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+							<a href="/concept/tag/${mtl:encodePathSegment(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 							<c:out value=" "/>
 							<fmt:message key="tag.asConceptFromAll"/>
 						</li>

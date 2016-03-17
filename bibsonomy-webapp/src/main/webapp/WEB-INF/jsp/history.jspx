@@ -314,15 +314,12 @@
 															</div>
 														</c:when>
 													</c:choose>
-													<c:forEach var="diffEntry" items="${diffArrayPre}">
-														<div class="checkbox">
-															<input type="checkbox" class="invisible"/> 
-															<strong><fmt:message key="post.resource.${diffEntry.key}"/></strong>
-															<c:out value=": "/>
-															${diffEntry.value}
-															<br/>
-														</div>
-													</c:forEach>
+													<dl class="dl-horizontal">
+														<c:forEach var="diffEntry" items="${diffArrayPre}">
+  															<dt><input type="checkbox" class="invisible"/> <fmt:message key="post.resource.${diffEntry.key}"/></dt>
+ 															<dd>${diffEntry.value}</dd>
+														</c:forEach>
+													</dl>
 									
 												</td>
 												<!-- comparison to the current version -->
@@ -333,21 +330,20 @@
 															<fmt:message key="history.currentVersion" />
 														</div>
 													</c:if>	
-													<c:forEach var="diffEntry" items="${diffArrayCurr}">
-														<div class="checkbox">			
-															<input type="checkbox" id="CurrEntryCheckbox" class="invisible" checked="checked"/>
-															<strong><fmt:message key="post.resource.${diffEntry.key}"/></strong>
-															<c:out value=": "/>
-															${diffEntry.value}
-															<br/>
-														</div>
-								
-														<div>
-															<!-- the following two variables are used in .js file -->
-															<input type="hidden" name="diffEntryKey" value="${diffEntry.key}"/>
-															<input type="hidden" name="compareVersion" value="${fieldlength-index}"/>
-														</div>
-													</c:forEach>
+													<dl class="dl-horizontal">
+														<c:forEach var="diffEntry" items="${diffArrayCurr}">
+															<dt>
+																<input type="checkbox" id="CurrEntryCheckbox" class="invisible" checked="checked"/><c:out value=" "/>
+																<fmt:message key="post.resource.${diffEntry.key}"/>
+															</dt>
+															<dd>${diffEntry.value}</dd>
+															<div>
+																<!-- the following two variables are used in .js file -->
+																<input type="hidden" name="diffEntryKey" value="${diffEntry.key}"/>
+																<input type="hidden" name="compareVersion" value="${fieldlength-index}"/>
+															</div>
+														</c:forEach>
+													</dl>
 													<!-- restore confirm (alert) question -->
 													<div id="restore_alert_btn" class="invisible hidden">
 														<div class="alert col-sm-10 alert-warning" style="margin-bottom:0px;padding:6px 12px;" role="alert">
