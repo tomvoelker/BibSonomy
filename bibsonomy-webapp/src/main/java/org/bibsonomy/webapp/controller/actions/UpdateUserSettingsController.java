@@ -131,6 +131,8 @@ public class UpdateUserSettingsController extends SettingsPageController {
 		userSettings.setTagboxTooltip(commandSettings.getTagboxTooltip());
 		
 		userSettings.setShowCitationBibtex(commandSettings.isShowCitationBibtex());
+		userSettings.setShowCitationEndnote(commandSettings.isShowCitationEndnote());
+		
 		userSettings.setShowBookmark(commandSettings.isShowBookmark());
 		userSettings.setShowBibtex(commandSettings.isShowBibtex());
 		
