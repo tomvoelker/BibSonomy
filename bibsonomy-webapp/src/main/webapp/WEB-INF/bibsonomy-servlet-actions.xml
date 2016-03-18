@@ -573,6 +573,8 @@
 								<value>user.settings.showBookmark</value>
 								<value>user.settings.showBibtex</value>
 								<value>user.settings.layoutSettings.simpleInterface</value>
+								<value>user.settings.showCitationBibtex</value>
+								<value>user.settings.showCitationEndnote</value>
 							</list>
 						</property>
 					</bean>

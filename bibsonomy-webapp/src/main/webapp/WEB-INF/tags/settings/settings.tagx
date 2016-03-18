@@ -177,7 +177,29 @@
 					<div class="dissError">
 						<form:errors path="user.settings.listItemcount" />
 					</div>
-
+					
+					<!-- Citation style export settings -->
+					<!-- internationalize -->
+					<div class="form-group">					
+						<form:label cssClass="col-sm-3 control-label" path="user.settings.showCitationBibtex">
+							show citation styles
+						</form:label>
+					
+						<div class="col-sm-3">
+							<label>
+								<form:checkbox path="user.settings.showCitationBibtex"/>&amp;nbsp;
+								show Bibtex
+							</label>
+						</div>
+						<div class="col-sm-5">
+							<label>
+								<form:checkbox path="user.settings.showCitationEndnote"/>&amp;nbsp;
+								show Endnote
+							</label>
+						</div>
+						<div class="dissError"><form:errors path="user.settings.showCitationBibtex"/></div>
+					</div>
+					
 					
 					<!-- displayed resources -->
 					<!-- new -->
@@ -186,7 +208,7 @@
 							<fmt:message key="settings.resource.resourceToShow"/>
 						</form:label>
 						
-						<div class="col-sm-4">
+						<div class="col-sm-3">
 							<label>
 								<form:checkbox path="user.settings.showBookmark" />&amp;nbsp;
 								<fmt:message key="settings.bookmark"/>

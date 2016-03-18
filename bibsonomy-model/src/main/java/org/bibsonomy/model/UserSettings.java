@@ -78,7 +78,11 @@ public class UserSettings implements Serializable {
 	 * number of list items per page; how many posts to show in post lists
 	 */
 	private int listItemcount = 20;
-
+	
+	private boolean showCitationBibtex = true;
+	private boolean showCitationEndnote = true;
+	
+	
 	private boolean showBookmark = true;
 	
 	// TODO: rename to showPublication
@@ -332,5 +336,33 @@ public class UserSettings implements Serializable {
 	 */
 	public void setLayoutSettings(final LayoutSettings layoutSettings) {
 		this.layoutSettings = layoutSettings;
+	}
+
+	/**
+	 * @return the showCitationBibtex
+	 */
+	public boolean isShowCitationBibtex() {
+		return this.showCitationBibtex;
+	}
+
+	/**
+	 * @param showCitationBibtex the showCitationBibtex to set
+	 */
+	public void setShowCitationBibtex(boolean showCitationBibtex) {
+		this.showCitationBibtex = showCitationBibtex;
+	}
+
+	/**
+	 * @return the showCitationEndnote
+	 */
+	public boolean isShowCitationEndnote() {
+		return this.showCitationEndnote;
+	}
+
+	/**
+	 * @param showCitationEndnote the showCitationEndnote to set
+	 */
+	public void setShowCitationEndnote(boolean showCitationEndnote) {
+		this.showCitationEndnote = showCitationEndnote;
 	}
 }
