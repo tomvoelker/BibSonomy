@@ -1524,19 +1524,3 @@ function generateExportPostLink(value) {
 		self.location = value;
 	}
 };
-
-
-/*
- * update the counter at the navigation bar to reflect the amount of picked publications and unread messages
- */
-function updateCounter() {
-	var clipboardNum = $("#clipboard-counter");
-	var inboxNum = $("#inbox-counter");
-	var counter = $("#inbox-clipboard-counter");
-	if (counter.length != 0) {
-		var totalCount = 0;
-		totalCount += clipboardNum.length == 0 ? 0 : parseInt(clipboardNum.text());
-		totalCount += inboxNum.length == 0 ? 0 : parseInt(inboxNum.text());
-		counter.show().text(totalCount);
-	}
-}
