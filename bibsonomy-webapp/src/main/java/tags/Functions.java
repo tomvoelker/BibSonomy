@@ -191,25 +191,14 @@ public class Functions {
 	}
 
 	/**
-	 * wrapper for {@link UrlUtils#safeURIDecode(String)}
-	 * 
-	 * @param uri
-	 *        a URI string
-	 * @return the decoded URI string
-	 */
-	public static String decodeURI(final String uri) {
-		return UrlUtils.safeURIDecode(uri);
-	}
-
-	/**
-	 * wrapper for {@link UrlUtils#safeURIEncode(String)}
+	 * wrapper for {@link UrlUtils#encodePathSegment(String)}
 	 * 
 	 * @param uri
 	 *        a URI string
 	 * @return the encoded URI string
 	 */
-	public static String encodeURI(final String uri) {
-		return UrlUtils.safeURIEncode(uri);
+	public static String encodePathSegment(final String uri) {
+		return UrlUtils.encodePathSegment(uri);
 	}
 
 	/**

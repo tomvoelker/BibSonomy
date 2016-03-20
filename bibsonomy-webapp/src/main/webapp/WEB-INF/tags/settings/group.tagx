@@ -75,8 +75,8 @@
 												</div>
 
 												<div class="col-xs-3">
-													<bs:linkButton style="success" title="${accinviteTitle}" text="${accinvite}" block="${true}" href="/updateGroup?operation=add_member&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}" size="small" />
-													<bs:linkButton style="danger" title="${revuserTitle}" href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}" size="small" text="${revuser}"/>
+													<bs:linkButton style="success" title="${accinviteTitle}" text="${accinvite}" block="${true}" href="/updateGroup?operation=add_member&amp;groupname=${mtl:encodePathSegment(group.name)}&amp;username=${mtl:encodePathSegment(command.user.name)}&amp;ckey=${ckey}" size="small" />
+													<bs:linkButton style="danger" title="${revuserTitle}" href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodePathSegment(group.name)}&amp;username=${mtl:encodePathSegment(command.user.name)}&amp;ckey=${ckey}" size="small" text="${revuser}"/>
 												</div>
 											</div>
 										</dd>
@@ -104,7 +104,7 @@
 											</div>
 
 											<div class="col-xs-3">
-												<bs:linkButton title="${revuserTitle}" text="${revuser}" block="${true}" href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(command.user.name)}&amp;ckey=${ckey}" size="small" style="defaultStyle" />
+												<bs:linkButton title="${revuserTitle}" text="${revuser}" block="${true}" href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodePathSegment(group.name)}&amp;username=${mtl:encodePathSegment(command.user.name)}&amp;ckey=${ckey}" size="small" style="defaultStyle" />
 											</div>
 										</div>
 									</dd>
@@ -134,7 +134,7 @@
 										</div>
 	
 										<div class="col-xs-3">
-											<a class="btn btn-default btn-block btn-sm" href="/deletegrouprequest?groupName=${mtl:encodeURI(group.name)}&amp;ckey=${ckey}" title="${revuserTitle}">${revuser}</a>
+											<a class="btn btn-default btn-block btn-sm" href="/deletegrouprequest?groupName=${mtl:encodePathSegment(group.name)}&amp;ckey=${ckey}" title="${revuserTitle}">${revuser}</a>
 										</div>
 									</div>
 								</dd>

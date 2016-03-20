@@ -30,7 +30,7 @@
        | Since they also dont have several other properties, we dont show those.
        +-->
 
-	<li class="media post ${additionalItemClasses}" id="list-item-${post.resource.intraHash}${post.user.name}">
+	<li data-intrahash="2${post.resource.intraHash}" data-user="${fn:escapeXml(post.user.name)}" class="media post ${additionalItemClasses}" id="list-item-${post.resource.intraHash}${post.user.name}">
 		<div class="clearline">&#160;</div>
 		<h4 class="media-heading" data-ident="${post.resource.intraHash}">
 			<div>
