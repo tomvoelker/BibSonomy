@@ -97,16 +97,16 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		final String url = command.getUrl();
 		final String selection = command.getSelection();
 		
-		final String tags = command.getTags();
 		if (command.isMyOwn()) {
+			final String tags = command.getTags();
 			if (!present(tags)) {
 				command.setTags(MyOwnSystemTag.NAME);
-			} else if(tags.contains(MyOwnSystemTag.NAME)) {
-				//nothing
-			} else {
-				command.setTags(tags + " " + MyOwnSystemTag.NAME);
+				/*
+				 * set this flag to true because empty tags are the only error
+				 * that prevents the EditPostController from saving a post
+				 */
+				command.setEditBeforeSaving(true);
 			}
-			command.setEditBeforeSaving(true);
 		}
 		
 		if ((present(url) || present(selection))) {

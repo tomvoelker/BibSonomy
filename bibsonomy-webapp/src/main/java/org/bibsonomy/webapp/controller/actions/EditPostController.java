@@ -170,6 +170,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	@Override
 	public View workOn(final COMMAND command) {
 		final RequestWrapperContext context = command.getContext();
+		
 		/*
 		 * only users which are logged in might post -> send them to login page
 		 */
@@ -184,6 +185,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * classes can now execute their workOn code
 		 */
 		this.workOnCommand(command, loginUser);
+		
 		/*
 		 * If the user is a spammer, we check the captcha
 		 */
