@@ -54,6 +54,10 @@ import org.springframework.validation.Errors;
 public class ClipboardController extends AjaxController implements ValidationAwareController<ClipboardManagerCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(ClipboardController.class);
 	
+	/** the user hash split */
+	public static final String HASH_USER_SPLIT = "/";
+	
+	
 	private Errors errors;
 
 	@Override
@@ -144,7 +148,7 @@ public class ClipboardController extends AjaxController implements ValidationAwa
 				/*
 				 * split string i.e. 1717560e1867fcb75197fe8689e1cc0d/daill
 				 */
-				final String[] hashAndOwner = s.split("/");
+				final String[] hashAndOwner = s.split(HASH_USER_SPLIT);
 				posts.add(createPost(hashAndOwner[0].substring(1, hashAndOwner[0].length()), hashAndOwner[1]));
 			}
 		} else {
