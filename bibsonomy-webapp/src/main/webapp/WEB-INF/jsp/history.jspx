@@ -7,20 +7,14 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-
 	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
 	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/resources/publication"
 	xmlns:bm="urn:jsptagdir:/WEB-INF/tags/resources/bookmark"
-	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
-	
->
-
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-
-	
 	<layout:paneLayout 
 		requPath="${requPath}" 
 		command="${command}"
@@ -314,21 +308,10 @@
 															</div>
 														</c:when>
 													</c:choose>
-													<dl class="dl-horizontal">
-														<style>
-														dt {
-														float: left;
-														clear: left;
-														width: 100px;
-														text-align: right;
-														}
-														dt:after {
-														content: ":";
-														}
-														</style>
+													<dl class="dl-horizontal dl-history">
 														<c:forEach var="diffEntry" items="${diffArrayPre}">
-  															<dt><input type="checkbox" class="invisible"/><fmt:message key="post.resource.${diffEntry.key}"/></dt>
- 															<dd><input type="checkbox" class="invisible"/>${diffEntry.value}</dd>
+															<dt><fmt:message key="post.resource.${diffEntry.key}"/></dt>
+															<dd>${diffEntry.value}</dd>
 														</c:forEach>
 													</dl>
 									
@@ -341,7 +324,7 @@
 															<fmt:message key="history.currentVersion" />
 														</div>
 													</c:if>	
-													<dl class="dl-horizontal">
+													<dl class="dl-horizontal dl-history">
 														<c:forEach var="diffEntry" items="${diffArrayCurr}">
 															<dt>
 																<input type="checkbox" id="CurrEntryCheckbox" class="invisible" checked="checked"/><c:out value=" "/>
