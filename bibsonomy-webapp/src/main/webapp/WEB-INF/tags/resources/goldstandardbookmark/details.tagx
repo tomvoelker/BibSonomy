@@ -15,12 +15,13 @@
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
+	<jsp:directive.attribute name="postOfLoggedInUser" type="org.bibsonomy.model.Post" required="false"/>
 	
 	<fmt:message key="goldStandard.approved.title" var="approved"/>
 	<c:set var="goldstandard" value="${post.resource}" />
+	<c:set var="isRealGoldstandard" value="${goldstandard['class'].simpleName eq 'GoldStandardBookmark' }" />
 	
-	<!-- FIXME: correct communitypostExists -->
-	<goldstandard:actionHeader post="${post}" communityPostExists="${true}" resourceType="bookmark" loginUser="${loginUser}" postOfLoggedInUser="${null}" />
+	<goldstandard:actionHeader showEditOnly="${true}" post="${post}" communityPostExists="${isRealGoldstandard}" resourceType="bookmark" loginUser="${loginUser}" postOfLoggedInUser="${postOfLoggedInUser}" />
 	
 	<!-- determine the publication type for schema.org markup -->
 	<c:set var="itemType" value="http://schema.org/WebPage"/>
@@ -83,15 +84,13 @@
 				<ul class="nav">
 					<li>
 						<!-- TODO: i18n? -->
-						<a href="#info">General Information</a>
+						<a href="#info"><fmt:message key="community.generalinformation" /></a>
 					</li>
 					<li>
-						<!-- FIXME: i18n -->
-						<a href="#users"><span class="capitalize"><fmt:message key="users"/></span></a>
-					</li>
-					<li>
-						<!-- TODO: i18n? -->
 						<a href="#tags">Tags</a>
+					</li>
+					<li>
+						<a href="#users"><span class="capitalize"><fmt:message key="users"/></span></a>
 					</li>
 					<li>
 						<a href="#discussion-section"><fmt:message key="publications.discussion.headline"/></a>

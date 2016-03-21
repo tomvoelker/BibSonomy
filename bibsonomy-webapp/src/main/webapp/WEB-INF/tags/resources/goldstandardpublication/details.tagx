@@ -38,7 +38,7 @@
 		<c:set var="itemType" value="http://schema.org/Book"/>
 	</c:if>
 	
-	<goldstandard:actionHeader post="${post}" postOfLoggedInUser="${postOfLoggedInUser}" communityPostExists="${isRealGoldstandard}" resourceType="bibtex" loginUser="${loginUser}" />
+	<goldstandard:actionHeader post="${post}" showEditOnly="${false}" postOfLoggedInUser="${postOfLoggedInUser}" communityPostExists="${isRealGoldstandard}" resourceType="bibtex" loginUser="${loginUser}" />
 	
 	<!-- TODODZO itemScope = itemType? -->
 	<div id="goldstandard" itemtype="${itemType}" itemscope="itemscope" class="row">

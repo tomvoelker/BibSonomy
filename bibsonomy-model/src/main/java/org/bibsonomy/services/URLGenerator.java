@@ -473,13 +473,26 @@ public class URLGenerator {
 	
 	/**
 	 * @param post
+	 * @return edit url for the post
+	 */
+	public String getEditUrlOfPost(final Post<? extends Resource> post) {
+		final UrlBuilder urlBuilder = new UrlBuilder(this.projectHome);
+		final Resource resource = post.getResource();
+		urlBuilder.addPathElement(this.prefix).addPathElement(getEditUrlByResourceClass(resource.getClass()));
+		urlBuilder.addParameter("intraHashToUpdate", resource.getIntraHash());
+		
+		return this.getUrl(urlBuilder.asString());
+	}
+	
+	/**
+	 * @param post
 	 * @return the copy url for the community post
 	 */
 	public String getCopyUrlOfPost(final Post<? extends Resource> post) {
 		final UrlBuilder urlBuilder = new UrlBuilder(this.projectHome);
 		final Resource resource = post.getResource();
 		final Class<? extends Resource> superiorResourceClass = ResourceFactory.findSuperiorResourceClass(resource);
-		urlBuilder.addPathElement(this.prefix).addPathElement("edit" + StringUtils.capitalizeWord(ResourceFactory.getResourceName(superiorResourceClass)));
+		urlBuilder.addPathElement(this.prefix).addPathElement(getEditUrlByResourceClass(superiorResourceClass));
 		if (ResourceFactory.isCommunityResource(resource)) {
 			urlBuilder.addParameter("hash", resource.getInterHash());
 		} else {
@@ -488,6 +501,14 @@ public class URLGenerator {
 		}
 		
 		return this.getUrl(urlBuilder.asString());
+	}
+
+	/**
+	 * @param resourceClass
+	 * @return
+	 */
+	private static String getEditUrlByResourceClass(final Class<? extends Resource> resourceClass) {
+		return "edit" + StringUtils.capitalizeWord(ResourceFactory.getResourceName(resourceClass));
 	}
 	
 	/**

@@ -14,6 +14,7 @@
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
 	<jsp:directive.attribute name="communityPostExists" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="showEditOnly" type="java.lang.Boolean" required="true"/>
 	
 	<div class="row">
 		<div class="col-md-11 col-md-offset-1">
@@ -23,8 +24,16 @@
 					<span class="community-info warning">
 						<fontawsome:icon icon="warning" /><c:out value=" " />
 						<!-- TODO: i18n-->
-						You are currently viewing the community post. If you want to view or edit 
-						the publication in your collection, follow <a href="${relativeUrlGenerator.getPostUrl(postOfLoggedInUser)}">this link</a>.
+						<fmt:message key="community.warning.view" /><c:out value=" " />
+						<c:choose>
+							<c:when test="${showEditOnly}">
+								<a href="${relativeUrlGenerator.getEditUrlOfPost(postOfLoggedInUser)}"><fmt:message key="community.warning.edit" /></a>
+							</c:when>
+							<c:otherwise>
+								If you want to view or edit 
+								the publication in your collection, follow <a href="${relativeUrlGenerator.getPostUrl(postOfLoggedInUser)}">this link</a>.
+							</c:otherwise>
+						</c:choose>
 					</span>
 				</c:when>
 				<c:otherwise>

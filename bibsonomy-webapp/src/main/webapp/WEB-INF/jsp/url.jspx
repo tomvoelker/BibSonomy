@@ -120,7 +120,7 @@
 			+ content heading
 			+-->
 		<jsp:attribute name="content">
-			<goldstandardbookmark:details post="${post}" loginUser="${command.context.loginUser}" />
+			<goldstandardbookmark:details post="${post}" loginUser="${command.context.loginUser}" postOfLoggedInUser="${command.postOfLoggedInUser}"/>
 			<!-- COMMUNITY POST -->
 			<!--<input id="publicInput" name="publicInput" value="${isPublic}" type="hidden" />
 			<c:if test="${not goldstandardPresent}">
