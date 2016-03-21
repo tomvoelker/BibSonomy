@@ -162,7 +162,7 @@
 				+-->
 			<dt><fmt:message key="post.resource.bibtexKey"/>:</dt>
 			<dd>
-				<a href="/bibtexkey/${mtl:encodeURI(publication.bibtexKey)}/${mtl:encodeURI(post.user.name)}"><c:out value="${publication.bibtexKey}"/></a>
+				<a href="/bibtexkey/${mtl:encodePathSegment(publication.bibtexKey)}/${mtl:encodePathSegment(post.user.name)}"><c:out value="${publication.bibtexKey}"/></a>
 			</dd>
 			
 			<!--+ 
@@ -171,7 +171,7 @@
 			<dt><fmt:message key="discussion.resourceLink.title"/><c:out value=": "/></dt>
 			<dd>
 				<fmt:message var="helpText" key="discussion.resourceLink.help"/>
-				<c:set var="linkText" value="[[publication/${interHashId}${publication.interHash}/${mtl:encodeURI(post.user.name)}]]" />
+				<c:set var="linkText" value="[[publication/${interHashId}${publication.interHash}/${mtl:encodePathSegment(post.user.name)}]]" />
 				<bsform:copyInput id="resource-link" value="${linkText}" onclick="$(this).focus().select();" helpText="${helpText}" noHelp="${false}" />
 			</dd>
 			
@@ -244,7 +244,7 @@
 			<ul class="list-inline">
 			<c:forEach var="tag" items="${tags}" varStatus="status">
 				<!-- TODO: remove nobr and replace with CSS, it is deprecated! -->
-				<li><span class="label label-primary"><a href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}" rel="nofollow" title=""><nobr><span itemprop="keywords"><c:out value="${tag.name}"/></span></nobr></a></span></li>
+				<li><span class="label label-primary"><a href="/user/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(tag.name)}" rel="nofollow" title=""><nobr><span itemprop="keywords"><c:out value="${tag.name}"/></span></nobr></a></span></li>
 			</c:forEach>
 			</ul>
 		</div>

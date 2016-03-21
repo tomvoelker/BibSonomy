@@ -15,7 +15,7 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<c:set var="requestedAuthorEncoded" value="${mtl:encodeURI(command.requestedAuthor)}" />
+	<c:set var="requestedAuthorEncoded" value="${mtl:encodePathSegment(command.requestedAuthor)}" />
 	<fmt:message key="navi.author" var="authorPageTitle" />
 	<layout:resourceLayout
 		pageTitle="${authorPageTitle} :: ${command.requestedAuthor} :: ${command.requestedTags}"

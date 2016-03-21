@@ -120,7 +120,7 @@
 					<c:if test="${not empty doi}">
 						<dt>DOI</dt>
 						<dd>
-							<a href="http://dx.doi.org/${mtl:encodeURI(doi)}" title="${urlTitle}"><c:out value="${doi}" /></a>
+							<a href="http://dx.doi.org/${mtl:encodePathSegment(doi)}" title="${urlTitle}"><c:out value="${doi}" /></a>
 						</dd>
 					</c:if>
 				</dl>

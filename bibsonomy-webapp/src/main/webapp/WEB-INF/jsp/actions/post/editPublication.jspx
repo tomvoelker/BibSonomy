@@ -25,11 +25,9 @@
 	-->
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-
+	
 	<layout:editPostLayout command="${command}" requPath="${requPath}" resourceType="Publication" activeTab="post">
-
 		<jsp:attribute name="generalInformation">
-			
 			<c:if test="${not empty command.scrapingContext}">
 				<c:if test="${not empty command.scrapingContext.selectedText}">
 					<div class="form-group">

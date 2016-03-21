@@ -69,7 +69,7 @@
 							</div>
 							<!-- remove -->
 							<div class="form-group">
-								<bs:linkButton style="primary" href="/ajax/pickUnpickPost?action=clearAll&amp;ckey=${mtl:encodeURI(command.context.ckey)}" size="defaultSize" block="${true}" textKey="clipboard.removeAll" titleKey="clipboard.removeAllVerbose" />
+								<bs:linkButton style="primary" href="/ajax/pickUnpickPost?action=clearAll&amp;ckey=${mtl:encodePathSegment(command.context.ckey)}" size="defaultSize" block="${true}" textKey="clipboard.removeAll" titleKey="clipboard.removeAllVerbose" />
 							</div>
 						</li>
 					</ul>
