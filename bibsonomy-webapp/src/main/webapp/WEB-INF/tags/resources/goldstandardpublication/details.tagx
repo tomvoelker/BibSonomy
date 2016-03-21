@@ -115,46 +115,33 @@
 			<common:relatedUsers userList="${command.relatedUserCommand.relatedUsers}"/>
 			
 			<c:if test="${hasRelatedPublication}">
-				<h2 class="pub-details" id="related-publications">
-					Related Publications <!-- TODO: i18n -->
-				</h2>
-				<div class="btn-group">
-					<bs:linkButton additionalClass="active" href="#related-publications" size="defaultSize" style="defaultStyle" onclick="refs(this)" text="publications referenced by this publication"/>
-					<bs:linkButton href="#related-publications" size="defaultSize" style="defaultStyle" onclick="cites(this)" text="publications citing this publication"/>
-					
-					<script>
-						function cites(){
-							$("#related-publications-references").hide();
-							$("#related-publications-citing").show();
-						};
-						function refs(){
-							$("#related-publications-citing").hide();
-							$("#related-publications-references").show();
-						};
-						$(".btn-group > .btn").click(function(){
-						    $(this).addClass("active").siblings().removeClass("active");
-						});
-					</script>
-				
+				<div id="related-publications">
+					<h2 class="pub-details">
+						Related Publications <!-- TODO: i18n -->
+					</h2>
+					<div class="btn-group">
+						<bs:linkButton additionalClass="active" href="#related-publications" size="small" style="defaultStyle" text="publications referenced by this publication" />
+						<bs:linkButton href="#related-publications" size="small" style="defaultStyle" text="publications citing this publication"/>
+					</div>
+					<ul id="related-publications-references">
+						<c:forEach var="reference" items="${goldstandard.references}">
+							<li>
+								<strong><a href="${relativeUrlGenerator.getPublicationUrlByInterHash(reference.interHash)}"><c:out value="${mtl:cleanBibtex(reference.title)}" /></a></strong>
+								<bib:desc publication="${reference}"/>
+							</li>
+						</c:forEach>
+					</ul>
+					<ul id="related-publications-citing" style="display:none">
+						<c:forEach var="reference" items="${goldstandard.referencedBy}">
+							<li>
+								<strong><a href="${relativeUrlGenerator.getPublicationUrlByInterHash(reference.interHash)}"><c:out value="${mtl:cleanBibtex(reference.title)}" /></a></strong>
+								<bib:desc publication="${reference}"/>
+							</li>
+						</c:forEach>
+					</ul>
 				</div>
-				<ul id="related-publications-references">
-					<c:forEach var="reference" items="${goldstandard.references}">
-						<li>
-							<strong><a href="${relativeUrlGenerator.getPublicationUrlByInterHash(reference.interHash)}"><c:out value="${mtl:cleanBibtex(reference.title)}" /></a></strong>
-							<bib:desc publication="${reference}"/>
-						</li>
-					</c:forEach>
-				</ul>
-				<ul id="related-publications-citing" style="display:none">
-					<c:forEach var="reference" items="${goldstandard.referencedBy}">
-						<li>
-							<strong><a href="${relativeUrlGenerator.getPublicationUrlByInterHash(reference.interHash)}"><c:out value="${mtl:cleanBibtex(reference.title)}" /></a></strong>
-							<bib:desc publication="${reference}"/>
-						</li>
-					</c:forEach>
-				</ul>
 			</c:if>
-					
+			
 			<!--+
 				| discussion and rating
 				+-->
@@ -183,7 +170,7 @@
 			<nav class="sidebar-nav" data-spy="affix" data-offset-top="275">
 				<ul class="nav">
 					<li>
-						<a href="#info">General Information</a>
+						<a href="#info"><fmt:message key="community.generalinformation" /></a>
 					</li>
 					<c:if test="${not empty goldstandard['abstract']}"> 
 						<li>
@@ -194,12 +181,10 @@
 						<a href="#linksresources"><fmt:message key="publications.resource.headline" /></a>
 					</li>
 					<li>
-						<!-- FIXME: i18n -->
-						<a href="#users"><span class="capitalize"><fmt:message key="users"/></span></a>
+						<a href="#tags">Tags</a>
 					</li>
 					<li>
-						<!-- TODO: i18n? -->
-						<a href="#tags">Tags</a>
+						<a href="#users"><span class="capitalize"><fmt:message key="users"/></span></a>
 					</li>
 					<c:if test="${hasRelatedPublication}">
 						<li>

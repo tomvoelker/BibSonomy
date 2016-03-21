@@ -83,7 +83,6 @@
 			<nav class="sidebar-nav" data-spy="affix" data-offset-top="275">
 				<ul class="nav">
 					<li>
-						<!-- TODO: i18n? -->
 						<a href="#info"><fmt:message key="community.generalinformation" /></a>
 					</li>
 					<li>

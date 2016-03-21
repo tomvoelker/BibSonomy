@@ -1,9 +1,18 @@
 /**
  * for deleting and adding references
  */
-
 var FADE_DURATION = 1000;
 var GOLD_REFERENCE_URL = '/ajax/goldstandards/references';
+
+$(function() {
+	$("#related-publications .btn-group > .btn").click(function() {
+		var uls = $("#related-publications ul");
+		uls.hide();
+		uls.eq($(this).index()).show();
+		$(this).addClass("active").siblings().removeClass("active");
+		return false;
+	});
+});
 
 function editReferences() {
 	// TODO replace menu text
