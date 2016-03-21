@@ -124,7 +124,7 @@
 							<c:when test="${not empty post.resource.miscFields['doi']}">
 								<li>
 									<fmt:message key="bibtex.actions.doi" var="urlTitle"/>
-									<a class="litem" href="http://dx.doi.org/${mtl:encodeURI(mtl:extractDOI(post.resource.miscFields['doi']))}" title="${urlTitle}"><fmt:message key="bibtex.actions.doi"/></a>
+									<a class="litem" href="http://dx.doi.org/${mtl:encodePathSegment(mtl:extractDOI(post.resource.miscFields['doi']))}" title="${urlTitle}"><fmt:message key="bibtex.actions.doi"/></a>
 								</li>
 							</c:when>
 							<c:otherwise>

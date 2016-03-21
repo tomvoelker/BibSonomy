@@ -30,6 +30,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.webapp.command.ajax.ClipboardManagerCommand;
 import org.bibsonomy.webapp.command.ajax.action.ClipboardAction;
+import org.bibsonomy.webapp.controller.ajax.ClipboardController;
 import org.bibsonomy.webapp.util.Validator;
 import org.springframework.validation.Errors;
 
@@ -61,14 +62,16 @@ public class ClipboardValidator implements Validator<ClipboardManagerCommand>{
 		
 		// only validate user and hash iff the action is not clear all
 		if (!ClipboardAction.CLEARALL.equals(action)) {
-			final String user = command.getUser();
-			if (!present(user)) {
-				errors.rejectValue("user", "error.user.valid");
-			}
-			
 			final String hash = command.getHash();
 			if (!present(hash)) {
 				errors.rejectValue("hash", "error.hash.valid");
+			} else {
+				if (!hash.contains(ClipboardController.HASH_USER_SPLIT)) {
+					final String user = command.getUser();
+					if (!present(user)) {
+						errors.rejectValue("user", "error.user.valid");
+					}
+				}
 			}
 		}
 	}
