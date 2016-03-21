@@ -68,7 +68,7 @@
 			<c:if test="${hasTags}">
 				<c:set var="requPathToUse" value="${mtl:getLowerPath(requPath)}" />
 			</c:if>
-			<sidebar:sidebarTagCloudItem requPath="${requPathToUse}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" hideLinks="${true}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" scope="${command.scope.name()}"/>
+			<sidebar:sidebarTagCloudItem requPath="${requPathToUse}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" scope="${command.scope.name()}"/>
 		</jsp:attribute>
 	
 	</layout:resourceLayout>

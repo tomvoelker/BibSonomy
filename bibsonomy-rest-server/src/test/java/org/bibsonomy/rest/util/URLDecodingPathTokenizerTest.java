@@ -30,7 +30,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -67,7 +66,6 @@ public class URLDecodingPathTokenizerTest {
 	 * tests {@link URLDecodingPathTokenizer#next()} with + in the url
 	 */
 	@Test
-	@Ignore // TODO: @see #1934
 	public void plus() {
 		final URLDecodingPathTokenizer tokenizer = new URLDecodingPathTokenizer("2009_Science_Discher_GF+ForceInfluenceOnSC.pdf", "/");
 		assertEquals("2009_Science_Discher_GF+ForceInfluenceOnSC.pdf", tokenizer.next());

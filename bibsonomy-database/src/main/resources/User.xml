@@ -62,12 +62,12 @@
 
 	<insert id="insertPendingUser" parameterClass="user">
 		INSERT INTO pendingUser (<include refid="allUserAttributes"/>, activation_code)
-  		  VALUES (<include refid="insertUserAttributes"/>, #activationCode#)
+			VALUES (<include refid="insertUserAttributes"/>, #activationCode#)
 	</insert>
 	
 	<insert id="insertUser" parameterClass="user">
 		INSERT INTO user (<include refid="allUserAttributes"/>)
-  		  VALUES (<include refid="insertUserAttributes"/>)
+			VALUES (<include refid="insertUserAttributes"/>)
 	</insert>
 	
 	<!--+ 

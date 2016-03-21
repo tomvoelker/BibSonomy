@@ -29,10 +29,10 @@ package org.bibsonomy.database.plugin.plugins;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
-import org.bibsonomy.database.params.ClipboardParam;
 import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
+import org.bibsonomy.database.params.ClipboardParam;
 import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.GoldStandardReferenceParam;
 import org.bibsonomy.database.params.GroupParam;
@@ -64,8 +64,6 @@ import org.bibsonomy.model.enums.GoldStandardRelation;
 public class Logging extends AbstractDatabasePlugin {
 
 	private final GeneralDatabaseManager generalManager;
-
-
 	/**
 	 * 
 	 */

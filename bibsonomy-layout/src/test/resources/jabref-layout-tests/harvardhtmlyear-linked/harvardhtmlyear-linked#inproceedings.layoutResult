@@ -16,8 +16,8 @@ Ciro Cattuto; Giancarlo Ruffo &amp; Filippo Menczer, ed.,
 <br/>
 
 
-<a onclick="toggleBibtex('wiglaf droste', '', 'http://www.bibsonomy.orgbibtex/2null/wiglaf+droste?format=bibtex'); return false;" href="http://www.bibsonomy.orgbibtex/2null/wiglaf+droste?format=bibtex">[BibTeX]</a>&nbsp;
-<a onclick="toggleBibtex2('wiglaf droste', '', 'http://www.bibsonomy.orgbibtex/2null/wiglaf+droste?format=endnote'); return false;" href="http://www.bibsonomy.orgbibtex/2null/wiglaf+droste?format=endnote">[Endnote]</a>&nbsp;
+<a onclick="toggleBibtex('wiglaf droste', '', 'http://www.bibsonomy.orgbibtex/2null/wiglaf%20droste?format=bibtex'); return false;" href="http://www.bibsonomy.orgbibtex/2null/wiglaf%20droste?format=bibtex">[BibTeX]</a>&nbsp;
+<a onclick="toggleBibtex2('wiglaf droste', '', 'http://www.bibsonomy.orgbibtex/2null/wiglaf%20droste?format=endnote'); return false;" href="http://www.bibsonomy.orgbibtex/2null/wiglaf%20droste?format=endnote">[Endnote]</a>&nbsp;
 <div id="abs_wiglaf droste" style="display:none;border:1px dotted grey;">
 In this demo we present BibSonomy, a social bookmark and publication sharing system.
 </div>

@@ -6,8 +6,8 @@ PhD thesis, &lt;xxx&gt;TestState&lt;/xxx&gt;, &lt;xxx&gt;TestCountry&lt;/xxx&gt;
 &lt;xxx&gt;TestUser TestUserUser&lt;/xxx&gt; and &lt;xxx&gt;TestUser FriendOne&lt;/xxx&gt;.
 <br/>
 <a href="&lt;xxx&gt;http://www.test.de&lt;/xxx&gt;">[doi]</a>&nbsp;
-<a onclick="toggleAbstract('testuser testuseruser', ''); return false;" href="http://www.bibsonomy.orgbibtex/2null/testuser+testuseruser?format=bibtex">[abstract]</a>&nbsp;
-<a onclick="toggleBibtex('testuser testuseruser', '', 'http://www.bibsonomy.orgbibtex/2null/testuser+testuseruser?format=bibtex'); return false;" href="http://www.bibsonomy.orgbibtex/2null/testuser+testuseruser?format=bibtex">[BibTeX]</a>&nbsp;
+<a onclick="toggleAbstract('testuser testuseruser', ''); return false;" href="http://www.bibsonomy.orgbibtex/2null/testuser%20testuseruser?format=bibtex">[abstract]</a>&nbsp;
+<a onclick="toggleBibtex('testuser testuseruser', '', 'http://www.bibsonomy.orgbibtex/2null/testuser%20testuseruser?format=bibtex'); return false;" href="http://www.bibsonomy.orgbibtex/2null/testuser%20testuseruser?format=bibtex">[BibTeX]</a>&nbsp;
 <div id="abs_testuser testuseruser" style="display:none;border:1px dotted grey;">
 &lt;xxx&gt;AbstractTest&lt;/xxx&gt;
 </div>

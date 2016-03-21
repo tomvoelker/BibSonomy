@@ -32,8 +32,12 @@ package org.bibsonomy.model.enums;
  * @author jensi
  */
 public enum PersonIdType {
+	// TODO: remove bibsonomy from enum name TODO_PERSONS
 	BIBSONOMY_ID,
+	// TODO: remove bibsonomy from enum name TODO_PERSONS
 	BIBSONOMY_USER,
+	/** dnb id */
 	DNB_ID,
+	/** ORCID id */
 	ORCID
 }
