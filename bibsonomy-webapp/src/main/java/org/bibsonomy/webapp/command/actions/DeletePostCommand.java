@@ -38,7 +38,7 @@ public class DeletePostCommand extends BaseCommand implements Serializable{
 	
 	private String resourceHash;
 	
-	private String user;
+	private String owner;
 
 	/**
 	 * @return resourceHash
@@ -55,19 +55,16 @@ public class DeletePostCommand extends BaseCommand implements Serializable{
 	}
 
 	/**
-	 * @return the user
+	 * @return the owner
 	 */
-	public String getUser() {
-		return this.user;
+	public String getOwner() {
+		return this.owner;
 	}
 
 	/**
-	 * @param user
+	 * @param owner
 	 */
-	public void setUser(String user) {
-		this.user = user;
+	public void setOwner(String owner) {
+		this.owner = owner;
 	}
-
-	
-	
 }

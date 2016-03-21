@@ -61,7 +61,7 @@ public class DeletePostController implements MinimalisticController<DeletePostCo
 
 	@Override
 	public View workOn(DeletePostCommand command) {
-		RequestWrapperContext context = command.getContext();
+		final RequestWrapperContext context = command.getContext();
 		
 		/*
 		 * user has to be logged in to delete himself
@@ -74,13 +74,13 @@ public class DeletePostController implements MinimalisticController<DeletePostCo
 		 * check the ckey
 		 */
 		final String resourceHash = command.getResourceHash();
-		final String loginUserName = command.getUser();
+		final String owner = command.getOwner();
 		if (context.isValidCkey() && !errors.hasErrors()){
 			log.debug("User is logged in, ckey is valid");
 			
 			try {
 				// delete the post
-				logic.deletePosts(loginUserName, Collections.singletonList(resourceHash));
+				logic.deletePosts(owner, Collections.singletonList(resourceHash));
 			} catch (IllegalStateException e) {
 				errors.reject("error.post.notfound", new Object[]{resourceHash}, " The resource with ID [" + resourceHash + "] does not exist and could hence not be deleted.");
 			}
@@ -88,7 +88,6 @@ public class DeletePostController implements MinimalisticController<DeletePostCo
 			errors.reject("error.field.valid.ckey");
 		}
 		
-
 		/*
 		 * if there are errors, show them
 		 */
@@ -97,12 +96,12 @@ public class DeletePostController implements MinimalisticController<DeletePostCo
 		}
 		
 		/*
-		 * Redirect to the user page when the user is coming from the page of 
+		 * redirect to the user page when the user is coming from the page of 
 		 * the resource.
 		 */
 		final String referer = requestLogic.getReferer();
-		if (urlGenerator.matchesResourcePage(referer, loginUserName, resourceHash)) {
-			return new ExtendedRedirectView(urlGenerator.getUserUrlByUserName(loginUserName));
+		if (urlGenerator.matchesResourcePage(referer, owner, resourceHash)) {
+			return new ExtendedRedirectView(urlGenerator.getUserUrlByUserName(owner));
 		}
 		
 		/*
@@ -125,7 +124,7 @@ public class DeletePostController implements MinimalisticController<DeletePostCo
 	public Errors getErrors() {
 		return this.errors;
 	}
-
+	
 	/**
 	 * @param errors
 	 */
@@ -134,20 +133,19 @@ public class DeletePostController implements MinimalisticController<DeletePostCo
 		this.errors = errors;
 	}
 	
-	
 	/**
 	 * @param requestLogic
 	 */
 	public void setRequestLogic(final RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
-
+	
 	/**
 	 * @param urlGenerator
 	 */
 	@Required
 	public void setUrlGenerator(URLGenerator urlGenerator) {
 		this.urlGenerator = urlGenerator;
-	}	
+	}
 
 }
