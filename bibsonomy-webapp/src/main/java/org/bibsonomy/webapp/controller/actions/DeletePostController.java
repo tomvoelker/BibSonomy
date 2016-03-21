@@ -74,7 +74,7 @@ public class DeletePostController implements MinimalisticController<DeletePostCo
 		 * check the ckey
 		 */
 		final String resourceHash = command.getResourceHash();
-		final String loginUserName = context.getLoginUser().getName();
+		final String loginUserName = command.getUser();
 		if (context.isValidCkey() && !errors.hasErrors()){
 			log.debug("User is logged in, ckey is valid");
 			

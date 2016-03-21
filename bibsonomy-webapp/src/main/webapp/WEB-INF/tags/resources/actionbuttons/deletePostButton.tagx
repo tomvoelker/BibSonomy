@@ -6,6 +6,7 @@
 	>
 
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true" />
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="userLoggedIn" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" />
@@ -22,7 +23,7 @@
 	
 	<c:set var="disabled" value="${false}" />
 	<c:choose>
-		<c:when test="${not userLoggedIn or loginUserName ne post.user.name or isRemotePost}">
+		<c:when test="${not userLoggedIn or isRemotePost or (loginUserName ne post.user.name and post.user.name eq null and loginUser.role ne 'ADMIN')}">
 			<fmt:message key="${resourceType}.actions.delete.inactive" var="deleteTitle"/>
 			<c:set var="disabled" value="${true}" />
 		</c:when>
@@ -38,7 +39,17 @@
 	<c:set var="buttonClasses" value="${buttonClasses}${disabled ? ' disabled' : ''}" />
 	
 	<c:url var="deleteUrl" value="/deletePost">
-		<c:param name="resourceHash" value="${post.resource.intraHash}" />
+		<c:choose>
+			<!-- Community post -->
+			<c:when test="${post.user.name eq null}">
+				<c:param name="resourceHash" value="${post.resource.interHash}" />
+			</c:when>
+			<!-- Normal post -->
+			<c:otherwise>
+				<c:param name="resourceHash" value="${post.resource.intraHash}" />
+				<c:param name="user" value="${loginUserName}" />
+			</c:otherwise>
+		</c:choose>
 		<c:param name="ckey" value="${ckey}" />
 	</c:url>
 	<a class="${buttonClasses} confirmdelete" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" data-type="post">

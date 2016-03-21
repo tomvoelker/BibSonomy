@@ -37,6 +37,8 @@ public class DeletePostCommand extends BaseCommand implements Serializable{
 	private static final long serialVersionUID = -6623936347565283765L;
 	
 	private String resourceHash;
+	
+	private String user;
 
 	/**
 	 * @return resourceHash
@@ -50,6 +52,20 @@ public class DeletePostCommand extends BaseCommand implements Serializable{
 	 */
 	public void setResourceHash(final String resourceHash) {
 		this.resourceHash = resourceHash;
+	}
+
+	/**
+	 * @return the user
+	 */
+	public String getUser() {
+		return this.user;
+	}
+
+	/**
+	 * @param user
+	 */
+	public void setUser(String user) {
+		this.user = user;
 	}
 
 	

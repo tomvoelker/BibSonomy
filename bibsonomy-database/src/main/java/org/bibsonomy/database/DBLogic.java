@@ -1115,7 +1115,7 @@ public class DBLogic implements LogicInterface {
 		 * check permissions
 		 */
 		this.ensureLoggedIn();
-		this.permissionDBManager.ensureWriteAccess(this.loginUser, userName);
+		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
 		/*
 		 * to store hashes of missing resources
 		 */
@@ -1123,7 +1123,7 @@ public class DBLogic implements LogicInterface {
 
 		final DBSession session = this.openSession();
 		try {
-			final String lowerCaseUserName = userName.toLowerCase();
+			final String lowerCaseUserName = present(userName) ? userName.toLowerCase() : null;
 			for (final String resourceHash : resourceHashes) {
 				/*
 				 * delete one resource

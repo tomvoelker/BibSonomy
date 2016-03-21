@@ -53,6 +53,7 @@
 			<c:otherwise>
 				<buttons:deletePostButton 
 					post ="${post}" 
+					loginUser="${command.context.loginUser}"
 					loginUserName="${loginUserName}" 
 					userLoggedIn="${command.context.userLoggedIn}" 
 					resourceType="${resourceType}"
