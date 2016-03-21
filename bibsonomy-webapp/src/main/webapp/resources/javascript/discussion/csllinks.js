@@ -125,7 +125,7 @@ function parsePublicationResult(data, postLinkData) {
 	var bibliographyEntry = citeproc.makeBibliography();
 
 	postLinkData.setCitation(renderedCitation[0][1]);
-	postLinkData.setReference($("" + bibliographyEntry[1]));
+	postLinkData.setReference($("" + bibliographyEntry[1][0]));
 }
 
 function constructId(data, id) {

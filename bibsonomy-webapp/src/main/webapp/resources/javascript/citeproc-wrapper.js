@@ -19,7 +19,8 @@ $(function() {
 				};
 				var renderedCitation = citeproc.appendCitationCluster(citation);
 				var bibliographyEntry = citeproc.makeBibliography();
-				container.append(bibliographyEntry[1]);
+				var output = bibliographyEntry[1][0];
+				container.append(output);
 			}
 		}
 	});
