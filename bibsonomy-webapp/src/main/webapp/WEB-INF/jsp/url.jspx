@@ -12,7 +12,9 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:goldstandardbookmark="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardbookmark"
 	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -22,12 +24,17 @@
 		+ -->
 	<c:set var="goldstandardPresent" value="${not empty command.goldStandardBookmarks.list}" />
 	<c:set var="bookmark" value="${command.bookmark.list[0].resource}" />
-
-	<c:if test="${goldstandardPresent}">
-		<c:set var="post" value="${command.goldStandardBookmarks.list[0]}" />
-		<c:set var="bookmark" value="${post.resource}" />
-	</c:if>
+	<c:choose>
+		<c:when test="${goldstandardPresent}">
+			<c:set var="post" value="${command.goldStandardBookmarks.list[0]}" />
+		</c:when>
+		<c:otherwise>
+			<c:set var="post" value="${command.bookmark.list[0]}" />
+		</c:otherwise>
+	</c:choose>
 	
+	<c:set var="bookmark" value="${post.resource}" />
+	<c:set var="title" value="${bookmark.title}" />
 	<!-- FIXME: invalid html: move into body tag -->
 	<c:set var="isPublic" value="${false}"/>
 	<c:choose>
@@ -49,14 +56,10 @@
 	<!--+
 		+ main layout
 		+ -->
-	<layout:resourceLayout pageTitle="url :: ${bookmark.title}" 
-		command="${command}" 
-		requPath="${requPath}" 
-		disableResourcetypeSelection="${true}"
-		showPageOptions="${false}"
-		resource="${bookmark}"
-		discussionBox="${true}"
-		headline="${headline}${bookmark.title}">
+	<layout:layout pageTitle="${title}" 
+		requPath="${requPath}"
+		loginUser="${command.context.loginUser}"
+		noSidebar="${true}">
 		
 		<!--+
 			+ page heading
@@ -78,12 +81,14 @@
 
 		<!--+
 			+ sidebar
+			TODODZO: remove
 			+ -->
 		<jsp:attribute name="sidebar">
 			<sidebar:sidebarTagCloudItem requPath="tag" cmd="${command.tagcloud}"/>
 			<resource:metaData command="${command}" />
 		</jsp:attribute>
 		
+		<!-- TODODZO: remove -->
 		<jsp:attribute name="infobox">
 			<parts:infobox>
 				<jsp:attribute name="infoTextBody">
@@ -101,12 +106,23 @@
 			</parts:infobox>
 		</jsp:attribute>
 		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<fmt:message key="actions.communityPost" var="communityPost"/>
+					<nav:crumb name="${communityPost}" />
+					<nav:crumb name="${mtl:shorten(title, 150)}" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+		
 		<!--+
 			+ content heading
 			+-->
 		<jsp:attribute name="content">
+			<goldstandardbookmark:details post="${post}" loginUser="${command.context.loginUser}" />
 			<!-- COMMUNITY POST -->
-			<input id="publicInput" name="publicInput" value="${isPublic}" type="hidden" />
+			<!--<input id="publicInput" name="publicInput" value="${isPublic}" type="hidden" />
 			<c:if test="${not goldstandardPresent}">
 				<c:set var="post" value="${command.bookmark.list[0]}" />
 
@@ -126,16 +142,14 @@
 					</c:if>
 					<hr />
 				</div>
-				
+				-->
 				<!-- invokes discussion forms -->
-				<c:if test="${not goldstandardPresent}">
+			<!--	<c:if test="${not goldstandardPresent}">
 					<discussion:discussion loginUser="${command.context.loginUser}" resource="${bookmark}" discussionItems="${command.discussionItems}"  postUserName="${command.postOwner}"/>
 				</c:if>
 				
 				<input type="hidden" id="gs_present" value="${goldstandardPresent}"/>
-			</c:if>
+			</c:if>-->
 		</jsp:attribute>
-		
-		
-	</layout:resourceLayout>
+	</layout:layout>
 </jsp:root>

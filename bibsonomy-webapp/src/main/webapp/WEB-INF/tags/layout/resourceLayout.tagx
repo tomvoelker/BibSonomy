@@ -115,8 +115,7 @@
 
 				<!-- if a community post is present show the community post, not the list of posts -->
 				<c:when test="${not empty command.goldStandardBookmarks.list}">
-					TODO
-					<!--<goldstandardbookmark:details post="${command.goldStandardBookmarks.list[0]}" loginUser="${command.context.loginUser}"/>-->
+					<goldstandardbookmark:details post="${command.goldStandardBookmarks.list[0]}" loginUser="${command.context.loginUser}"/>
 				</c:when>
 				
 				<c:otherwise>

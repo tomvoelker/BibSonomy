@@ -3,57 +3,101 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:book="urn:jsptagdir:/WEB-INF/tags/resources/bookmark"
 	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion"
 	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:goldstandardbookmark="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardbookmark"
 	xmlns:common="urn:jsptagdir:/WEB-INF/tags/resources/common"
-	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
-	>
+	xmlns:goldstandard="urn:jsptagdir:/WEB-INF/tags/resources/goldstandard"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
 	
 	<fmt:message key="goldStandard.approved.title" var="approved"/>
 	<c:set var="goldstandard" value="${post.resource}" />
+	
+	<!-- FIXME: correct communitypostExists -->
+	<goldstandard:actionHeader post="${post}" communityPostExists="${true}" resourceType="bookmark" loginUser="${loginUser}" postOfLoggedInUser="${null}" />
+	
 	<!-- determine the publication type for schema.org markup -->
 	<c:set var="itemType" value="http://schema.org/WebPage"/>
-	<div id="goldstandard">
-		<h1 class="content-header"><fmt:message key="community.page"/></h1>
-		<div class="title">
-			<div class="media">
-				<div class="media-body" id="titletext">
-					<div class="pull-right"><buttons:communityPostActions post="${post}" resourceType="bookmark"/></div>
-					<h1 class="media-heading" id="pubtitle"><c:out value="${goldstandard.title}" />
-						<c:if test="${post.approved}">
-							<a  title="${fn:escapeXml(approved)}">
-								<span class="fa fa-check-circle" style="margin-left:6px;"><!--  --></span>
-							</a>
-						</c:if>	
-					</h1>
-					<p><book:desc post="${post}"/></p>
-				</div>
+	<div id="goldstandard" class="row">
+		<div class="col-md-7 col-md-offset-1">
+			<div class="content-header">
+				<h1>
+					<a href="${fn:escapeXml(goldstandard.url)}" ref="nofollow">
+						<c:out value="${goldstandard.title}" />
+					</a>
+					<c:if test="${post.approved}">
+						<small>
+							<fmt:message key="goldStandard.approved.title" var="approved"/>
+							<span class="fa fa-check-circle community-approved" data-toggle="tooltip" data-placement="bottom" title="${fn:escapeXml(approved)}" style="margin-left:6px;"><!-- keep me --></span>
+						</small>
+					</c:if>
+				</h1>
 			</div>
+			
+			<c:set var="description" value="${post.description}" />
+			<c:if test="${not empty description}">
+				<div class="meta">
+					${mtl:markdownToHtml(description)}
+				</div>
+			</c:if>
+			
+			<c:set var="imgUrl" value="${properties['project.img']}" />
+			<c:if test="${not empty imgUrl}">
+				<div class="preview row">
+					<div class="col-md-12 text-center">
+						<a href="${fn:escapeXml(goldstandard.url)}" rel="nofollow"><img src="${imgUrl}/preview/bookmark/${goldstandard.intraHash}?preview=LARGE" /></a>
+					</div>
+				</div>
+			</c:if>
+			
+			<!-- tags -->
+			<goldstandard:tags tagCloudCommand="${command.tagcloud}" />
+			
+			<!-- users -->
+			<common:relatedUsers userList="${command.relatedUserCommand.relatedUsers}"/>
+	
+			<!--+
+				| discussion and rating
+				+-->
+			<h2 class="pub-details">
+				<fmt:message key="publications.discussion.headline"/>
+			</h2>
+			
+			<!-- Aggregated RatingInfo -->
+			<review:reviewRatingsInfo resource="${post.resource}" />
+	
+			<!-- Publication reference link -->
+			<discussion:linkBox resource="${post.resource}"/>
+			
+			<!-- discussion -->
+			<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName=""/>
 		</div>
-
-		<common:relatedUsers userList="${command.relatedUserCommand.relatedUsers}"/>
-
-		<!--+
-			| discussion and rating
-			+-->
-		<h4 class="pub-details">
-			<span class="fa fa-comments"><!--  --></span><c:out value=" " />
-			<fmt:message key="publications.discussion.headline"/>
-		</h4>
-		
-		<!-- Aggregated RatingInfo -->
-		<review:reviewRatingsInfo resource="${post.resource}" />
-
-		<!-- Publication reference link -->
-		<discussion:linkBox resource="${post.resource}"/>
-		
-		<!-- discussion -->
-		<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName=""/>
+		<div class="col-md-3 hidden-xs" id="sidebar-nav">
+			<nav class="sidebar-nav" data-spy="affix" data-offset-top="275">
+				<ul class="nav">
+					<li>
+						<!-- TODO: i18n? -->
+						<a href="#info">General Information</a>
+					</li>
+					<li>
+						<!-- FIXME: i18n -->
+						<a href="#users"><span class="capitalize"><fmt:message key="users"/></span></a>
+					</li>
+					<li>
+						<!-- TODO: i18n? -->
+						<a href="#tags">Tags</a>
+					</li>
+					<li>
+						<a href="#discussion-section"><fmt:message key="publications.discussion.headline"/></a>
+					</li>
+				</ul>
+			</nav>
+		</div>
 	</div>
 </jsp:root>

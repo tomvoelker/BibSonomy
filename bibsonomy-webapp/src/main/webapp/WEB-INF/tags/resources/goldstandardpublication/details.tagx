@@ -18,10 +18,10 @@
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
 	xmlns:goldpub="urn:jsptagdir:/WEB-INF/tags/resources/publication"
 	xmlns:goldstandardpublication="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication"
+	xmlns:goldstandard="urn:jsptagdir:/WEB-INF/tags/resources/goldstandard"
 	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 	xmlns:common="urn:jsptagdir:/WEB-INF/tags/resources/common"
-	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
-	>
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	<jsp:directive.attribute name="postOfLoggedInUser" type="org.bibsonomy.model.Post" required="false"/>
@@ -30,35 +30,17 @@
 	<c:set var="goldstandard" value="${post.resource}" />
 	
 	<c:set var="isRealGoldstandard" value="${goldstandard['class'].simpleName eq 'GoldStandardPublication' }" />
-	<c:set var="hasRelatedPublication" value="${isRealGoldstandard and not empty goldstandard.references or not empty goldstandard.referencedBy}" />
+	<c:set var="hasRelatedPublication" value="${isRealGoldstandard and (not empty goldstandard.references or not empty goldstandard.referencedBy)}" />
 	
 	<!-- determine the publication type for schema.org markup -->
 	<c:set var="itemType" value="http://schema.org/ScholarlyArticle"/>
 	<c:if test="${not empty goldstandard.entrytype and ('book' eq goldstandard.entrytype)}">
 		<c:set var="itemType" value="http://schema.org/Book"/>
 	</c:if>
-	<div class="row">
-		<div class="col-md-11 col-md-offset-1">
-			<buttons:communityPostActions post="${post}" resourceType="bibtex" communityPostExists="${isRealGoldstandard}"/>
-			<c:choose>
-				<c:when test="${not empty postOfLoggedInUser}">
-					<span class="community-info warning">
-						<fontawsome:icon icon="warning" /><c:out value=" " />
-						<!-- TODO -->
-						You are currently viewing the community post. If you want to view or edit 
-						the publication in your collection, follow <a href="${relativeUrlGenerator.getPostUrl(postOfLoggedInUser)}">this link</a>.
-					</span>
-				</c:when>
-				<c:otherwise>
-					<c:if test="${command.context.userLoggedIn}">
-						<span class="community-info">
-							<bs:linkButton href="${relativeUrlGenerator.getCopyUrlOfPost(post) }" size="small" style="success" icon="copy" text="Copy this publication into your collection" />
-						</span>
-					</c:if>
-				</c:otherwise>
-			</c:choose>
-		</div>
-	</div>
+	
+	<goldstandard:actionHeader post="${post}" postOfLoggedInUser="${postOfLoggedInUser}" communityPostExists="${isRealGoldstandard}" resourceType="bibtex" loginUser="${loginUser}" />
+	
+	<!-- TODODZO itemScope = itemType? -->
 	<div id="goldstandard" itemtype="${itemType}" itemscope="itemscope" class="row">
 		<div class="col-md-7 col-md-offset-1">
 			<div class="content-header" id="info">
@@ -125,20 +107,13 @@
 					</c:if>
 				</dl>
 			</div>
-			<!-- users that have this resource in their collection -->
-			
-			<common:relatedUsers userList="${command.relatedUserCommand.relatedUsers}"/>
 			
 			<!-- tags -->
-			<h2 class="pub-details" id="tags">
-				Tags
-			</h2>
-			<div class="tagcloud">
-				<c:forEach var="tag" items="${command.tagcloud.tags }">
-					<span class="tag ${mtl:getTagSize(tag.usercount, command.tagcloud.maxTagCount)}"><c:out value="${tag.name }" /></span>
-				</c:forEach>
-			</div>
-					
+			<goldstandard:tags tagCloudCommand="${command.tagcloud}" />
+			
+			<!-- users that have this resource in their collection -->
+			<common:relatedUsers userList="${command.relatedUserCommand.relatedUsers}"/>
+			
 			<c:if test="${hasRelatedPublication}">
 				<h2 class="pub-details" id="related-publications">
 					Related Publications <!-- TODO: i18n -->
