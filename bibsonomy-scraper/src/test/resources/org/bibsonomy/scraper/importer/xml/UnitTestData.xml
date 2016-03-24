@@ -2089,4 +2089,10 @@
 		<BibFile>FRONTIERSINScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.frontiersin.FRONTIERSINScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_341">
+		<TestDescription>scraping test for journal page from plos.org</TestDescription>
+		<URL>http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0089052</URL>
+		<BibFile>PlosScraperUnitURLTest11.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
+	</URLTest>
 </test:Tests>
