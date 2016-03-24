@@ -2049,8 +2049,8 @@
 	</URLTest>
 	<URLTest id="url_334">
 		<TestDescription>URL scraping test for the IOP scraper</TestDescription>
-		<URL>http://iopscience.iop.org/article/10.1088/1751-8113/49/2/025303/meta</URL>
-		<BibFile>IOPScraperUnitURLTest1.bib</BibFile>
+		<URL>http://iopscience.iop.org/article/10.1088/2041-8205/730/1/L11</URL>
+		<BibFile>IOPScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.iop.IOPScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_335">
