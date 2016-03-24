@@ -166,9 +166,11 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		}
 
 		/*
+		 * users with groups can't be flagged as spammers
 		 * check if the user is a member of a group
 		 */
-		if (this.groupDatabaseManager.getGroupsForUser(username, true, session).size() > 0) {
+		final boolean isSpammer = user.isSpammer();
+		if (isSpammer && this.groupDatabaseManager.getGroupsForUser(username, true, session).size() > 0) {
 			throw new IllegalStateException("the user '" + username + "'cannot be flagged as spammer, because he is member of at least one group.");
 		}
 
@@ -184,7 +186,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 			/*
 			 * map boolean to int
 			 */
-			if (user.isSpammer()) {
+			if (isSpammer) {
 				user.setPrediction(SpamStatus.SPAMMER.getId());
 			} else {
 				user.setPrediction(SpamStatus.NO_SPAMMER.getId());

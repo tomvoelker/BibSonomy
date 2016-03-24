@@ -74,7 +74,7 @@
 									<c:if test="${not empty goldstandard.miscFields['doi']}">
 										<fmt:message key="bibtex.actions.doi" var="urlTitle"/>
 										<c:set var="doi" value="${mtl:extractDOI(goldstandard.miscFields['doi'])}"/>
-										<li><c:out value="${urlTitle}: " /><a href="http://dx.doi.org/${mtl:encodeURI(doi)}" title="${urlTitle}"><c:out value="${doi}" /></a></li>
+										<li><c:out value="${urlTitle}: " /><a href="http://dx.doi.org/${mtl:encodePathSegment(doi)}" title="${urlTitle}"><c:out value="${doi}" /></a></li>
 									</c:if>
 									<c:if test="${not empty goldstandard.url and !mtl:isLinkToDocument(goldstandard.url)}">
 										<li><span class="gold_info"><a href="${fn:escapeXml(goldstandard.url)}">${fn:escapeXml(goldstandard.url)}</a></span></li>
@@ -108,7 +108,7 @@
 				<div class="taglist" style="clear:both; margin-top: 1em;">
 					<ul>
 						<c:forEach var="tag" items="${command.tagcloud.tags}">
-							<li style="display:list-item;"><span class="tagitem_rightborder"><a class="tagitem" href="/user/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(tag.name)}" rel="nofollow" title=""><nobr><c:out value="${tag.name}"/></nobr></a></span></li>
+							<li style="display:list-item;"><span class="tagitem_rightborder"><a class="tagitem" href="/user/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(tag.name)}" rel="nofollow" title=""><nobr><c:out value="${tag.name}"/></nobr></a></span></li>
 						</c:forEach>
 					</ul>
 					<br style="clear:left" />

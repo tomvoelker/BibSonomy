@@ -1,9 +1,9 @@
 function pickAll() {
-	return pickUnpickAll("pick");
+	return pickUnpickAll(false);
 }
 
 function unpickAll() {
-	return pickUnpickAll("unpick");
+	return pickUnpickAll(true);
 }
 
 function unescapeAmp(string) {
@@ -16,16 +16,24 @@ function unescapeAmp(string) {
  * @param pickUnpick
  * @return
  */
-function pickUnpickAll(pickUnpick) {
-	var param  = "";
-	$("#publications_0 ul.posts li.post div.ptitle a").each(function(index) {
-		var href = $(this).attr("href");
-		if (!href.match(/^.*\/documents[\/?].*/)){
-			param += href.replace(/^.*bibtex./, "") + " ";
-		}
+function pickUnpickAll(unpick) {
+	var postsUI = $('#publications_0 ul.posts>li');
+	var allPosts = "";
+	postsUI.each(function() {
+		var hash = $(this).data("intrahash");
+		var user = $(this).data("user");
+		var id = hash + "/" + user;
+		
+		allPosts += id + " ";
+	});
+	
+	if (unpick && !confirmDeleteByUser("clipboardpost")) {
+		return false;
 	}
-	);
-	return updateClipboard("action=" + pickUnpick + "&hash=" + unescapeAmp(encodeURIComponent(param)));
+	
+	var param = 'action=' + (unpick ? 'unpick' : 'pick') + '&hash=' + escape(allPosts);
+	updateClipboard(null, param);
+	return false;
 }
 
 /**
@@ -39,10 +47,15 @@ function pickUnpickPublication(element) {
 	 * pick/unpick publication
 	 */
 	var params = unescapeAmp($(element).attr("href")).replace(/^.*?\?/, "");
+	
+	// ask before deleting the pick
+	var isUnpick = params.search(/action=unpick/) != -1;
+	if (isUnpick && !confirmDeleteByUser("clipboardpost")) {
+		return false;
+	}
+	
 	return updateClipboard(element, params);
 }
-
-
 
 /**
  * picks/unpicks publications in AJAX style
@@ -50,12 +63,8 @@ function pickUnpickPublication(element) {
  * @param param
  * @return
  */
-function updateClipboard (element, param) {
+function updateClipboard(element, param) {
 	var isUnpick = param.search(/action=unpick/) != -1;
-	if (isUnpick && !confirmDeleteByUser("clipboardpost")) {
-		return false;
-	}
-	
 	$.ajax({
 		type: 'POST',
 		url: "/ajax/pickUnpickPost?ckey=" + ckey,
@@ -85,6 +94,28 @@ function updateClipboard (element, param) {
 	}
 	});
 	return false;
+}
+
+/*
+ * update the counter at the navigation bar to reflect the amount of picked publications and unread messages
+ */
+function updateCounter() {
+	var clipboardNum = $("#clipboard-counter");
+	var inboxNum = $("#inbox-counter");
+	var counter = $("#inbox-clipboard-counter");
+	if (counter.length != 0) {
+		var totalCount = 0;
+		var clipboardCount = clipboardNum.length == 0 ? 0 : parseInt(clipboardNum.text());
+		if (clipboardCount == 0) {
+			clipboardNum.hide();
+		}
+		totalCount += clipboardCount;
+		totalCount += inboxNum.length == 0 ? 0 : parseInt(inboxNum.text());
+		counter.show().text(totalCount);
+		if (totalCount == 0) {
+			counter.hide();
+		}
+	}
 }
 
 // TODO: maybe wrong place ?
