@@ -48,6 +48,7 @@ import org.bibsonomy.webapp.validation.DeleteGroupValidator;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
+import org.bibsonomy.util.ExceptionUtils;
 
 /**
  * @author Mario Holtmüller

@@ -1045,6 +1045,7 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public void deleteGroup(final String groupName, boolean pending) {
 		final DBSession session = this.openSession();
+		
 		if (pending) {
 			try {
 				session.beginTransaction();
@@ -1061,43 +1062,43 @@ public class DBLogic implements LogicInterface {
 				session.close();
 			}
 		}
-		throw new UnsupportedOperationException("not yet implemented");
-//		this.ensureLoggedIn();
-//		// only group admins are allowed to delete the group
-//		this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, groupName, GroupRole.ADMINISTRATOR);
-//		try {
-//			session.beginTransaction();
-//			// make sure that the group exists
-//			// TODO: remove call to deprecated method TODO_GROUPS
-//			// TODO: method also called later by deleteGroup
-//			final Group group = this.groupDBManager.getGroupByName(groupName, session);
-//	
-//			if (group == null) {
-//				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupName + "') doesn't exist");
-//				throw new RuntimeException(); // never happens but calms down eclipse
-//			}
-//			
-//			// ensure that the group has no members except the admin. size > 2 because the group user is also part of the membership list or > 1 to cover old groups
-//			if (group.getMemberships().size() > 2 || (group.getMemberships().size() > 1 && (group.getMemberships().get(0).getGroupRole() != GroupRole.DUMMY && group.getMemberships().get(1).getGroupRole() != GroupRole.DUMMY))) {
-//				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + group.getName() + "') has at least one member beside the administrator.");
-//			}
-//			
-//			// all the posts/discussions of the group admin need to be edited as well before deleting the group
-//			for (final GroupMembership t : group.getMemberships()) {
-//				// as the group can only consist of the group admin and the group user at this point, this check should be enough
-//				// if groups can be deleted without removing all members before this must be adapted!
-//				if (GroupRole.ADMINISTRATOR.equals(t.getGroupRole())) {
-//					// FIXME: why not called for group user FIXME_RELEASE
-//					this.updateUserItemsForLeavingGroup(group, t.getUser().getName(), session);
-//				}
-//			}
-//			
-//			this.groupDBManager.deleteGroup(groupName, session);
-//			session.commitTransaction();
-//		} finally {
-//			session.endTransaction();
-//			session.close();
-//		}
+
+		this.ensureLoggedIn();
+		// only group admins are allowed to delete the group
+		this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, groupName, GroupRole.ADMINISTRATOR);
+		try {
+			session.beginTransaction();
+			// make sure that the group exists
+			// TODO: remove call to deprecated method TODO_GROUPS
+			// TODO: method also called later by deleteGroup
+			final Group group = this.groupDBManager.getGroupByName(groupName, session);
+	
+			if (group == null) {
+				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupName + "') doesn't exist");
+				throw new RuntimeException(); // never happens but calms down eclipse
+			}
+			
+			// ensure that the group has no members except the admin. size > 2 because the group user is also part of the membership list or > 1 to cover old groups
+			if (group.getMemberships().size() > 2 || (group.getMemberships().size() > 1 && (group.getMemberships().get(0).getGroupRole() != GroupRole.DUMMY && group.getMemberships().get(1).getGroupRole() != GroupRole.DUMMY))) {
+				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + group.getName() + "') has at least one member beside the administrator.");
+			}
+			
+			// all the posts/discussions of the group admin need to be edited as well before deleting the group
+			for (final GroupMembership t : group.getMemberships()) {
+				// as the group can only consist of the group admin and the group user at this point, this check should be enough
+				// if groups can be deleted without removing all members before this must be adapted!
+				if (GroupRole.ADMINISTRATOR.equals(t.getGroupRole())) {
+					// FIXME: why not called for group user FIXME_RELEASE
+					this.updateUserItemsForLeavingGroup(group, t.getUser().getName(), session);
+				}
+			}
+			
+			this.groupDBManager.deleteGroup(groupName, session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+			session.close();
+		}
 	}
 
 	/*
