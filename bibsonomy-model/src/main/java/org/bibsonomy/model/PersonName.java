@@ -40,10 +40,7 @@ import java.util.Date;
 public class PersonName implements Serializable {
 	private static final long serialVersionUID = 4365762117878931642L;
 
-	/**
-	 * delimiter between the parts of a person's name in the "Last, First" format.
-	 * 
-	 */
+	/** delimiter between the parts of a person's name in the "Last, First" format. */
 	public static final String LAST_FIRST_DELIMITER = ",";
 
 	private int personNameChangeId;

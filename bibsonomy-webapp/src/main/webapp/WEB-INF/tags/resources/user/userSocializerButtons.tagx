@@ -46,7 +46,7 @@
 			
 
 				<c:if test="${mtl:contains(loginUserFriends, user)}">
-					<li><a href="/friend/${mtl:encodeURI(user.name)}"><fmt:message key="friendoverview.offriend.usershared" /></a></li>
+					<li><a href="/friend/${mtl:encodePathSegment(user.name)}"><fmt:message key="friendoverview.offriend.usershared" /></a></li>
 				</c:if>
 				<!-- show posts of requested user in a personalized view -->
 				<fmt:message key="personalized.info" var="personalized"/>

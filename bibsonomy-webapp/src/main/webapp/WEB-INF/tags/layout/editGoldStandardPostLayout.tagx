@@ -62,7 +62,7 @@
 				| JAVASCRIPT FOR TAG RECOMMENDATION
 				+-->
 			<script type="text/javascript">
-			   var userName = "${mtl:encodeURI(command.context.loginUser.name)}";
+			   var userName = "${mtl:encodePathSegment(command.context.loginUser.name)}";
 			   //<mtl:cdata>
 			   <![CDATA[
 			      $(function(){
@@ -242,8 +242,8 @@
  							</c:if>
 						</div>
 						<div class="btn-group">
-							<a class="btn btn-primary btn-sm save-post-item" onclick="javascript: activateAffixEntry(this); $('#save-post-button').trigger('click');" href="#save-post-button"><fmt:message key="save"/></a>
-							<a class="btn btn-primary btn-sm save-rate-post-item" onclick="javascript: activateAffixEntry(this); $('#save-post-button').trigger('click');" href="#save-rate-post-button"><fmt:message key="save.and.rate" /></a>
+							<a class="btn btn-primary btn-sm save-post-item" onclick="javascript: activateAffixEntry(this); $('#save-post-button').trigger('click');"><fmt:message key="save"/></a>
+							<a class="btn btn-primary btn-sm save-rate-post-item" onclick="javascript: activateAffixEntry(this); $('#save-post-button').trigger('click');"><fmt:message key="save.and.rate" /></a>
 						</div>
 					</div>
 				</div>

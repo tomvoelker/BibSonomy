@@ -49,7 +49,7 @@
 		<c:param name="action" value="${pickUnpick}"/>
 	</c:url>
 	
-	<a class="${buttonClasses}" onclick="return pickUnpickPublication(this);" title="${pickUnpickTitle}" href="${fn:escapeXml(pickUnpick_url)}">
+	<a class="pickUnpickPostBtn ${buttonClasses}" onclick="return pickUnpickPublication(this);" title="${pickUnpickTitle}" href="${fn:escapeXml(pickUnpick_url)}">
 		<span class="fa fa-clipboard"><!--  --></span>
 		<span class="sr-only"><fmt:message key="bibtex.actions.${pickUnpick}.title"/></span>
 	</a>

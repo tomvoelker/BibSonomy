@@ -37,7 +37,7 @@
 						<fmt:message key="settings.profileInfo">
 							<fmt:param><a href="${relativeUrlGenerator.prefix('foaf').getUserUrl(user)}">/foaf/user/<c:out value="${user.name}"/></a></fmt:param>
 							<fmt:param><fmt:message key="settings.profileViewableFor"/></fmt:param>
-							<fmt:param value="/cv/user/${mtl:encodeURI(user.name)}"/>
+							<fmt:param value="/cv/user/${mtl:encodePathSegment(user.name)}"/>
 						</fmt:message>
 					</p>
 				</fieldset>
@@ -143,7 +143,7 @@
 							<div class ="form-group clearfix">
 								<form:label cssClass="col-sm-3 control-label" path="file"><fmt:message key="settings.picture.current"/></form:label>
 								<div class="col-sm-9">
-									<a title="${mtl:encodeURI(user.name)}" href="/user/${mtl:encodeURI(user.name)}" class="img-thumbnail img-responsive">
+									<a title="${mtl:encodePathSegment(user.name)}" href="/user/${mtl:encodePathSegment(user.name)}" class="img-thumbnail img-responsive">
 										<img class="user-avatar" src="${relativeUrlGenerator.getUserPictureUrlByUsername(user.name)}" />
 										<span><user:username user="${user}" noLink="${true}"/></span>
 									</a>

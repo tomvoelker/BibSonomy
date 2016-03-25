@@ -30,7 +30,7 @@
 	
 		<!-- Post has Documents: Show small preview, large preview (class preview) on mouseover and download on click -->
 		<c:when test="${not empty post.resource.documents and not isRemotePost}">
-			<a class="preview publication thumbnail" href="${relativeUrlGenerator.getDocumentUrlByIntraHashUserNameAndFileName(post.resource.intraHash, post.user.name, post.resource.documents[0].fileName)}" title="${fn:escapeXml(post.resource.documents[0].fileName)}"> 
+			<a class="publication thumbnail" href="${relativeUrlGenerator.getDocumentUrlByIntraHashUserNameAndFileName(post.resource.intraHash, post.user.name, post.resource.documents[0].fileName)}" title="${fn:escapeXml(post.resource.documents[0].fileName)}"> 
 				<img class="pre_pic img-responsive" src="${relativeUrlGenerator.getDocumentUrlByIntraHashUserNameAndFileName(post.resource.intraHash, post.user.name, post.resource.documents[0].fileName)}?preview=SMALL" alt="${altPreview}"/>
 			</a>
 		</c:when>
@@ -52,7 +52,7 @@
 			<!--+
 				| post has no documents => show entrytype + if user logged in link for upload
 				+-->
-			<a href="${bibUrlTemplate}" title="${fn:escapeXml(bibTitle)}" class="preview bibtex thumbnail">
+			<a href="${bibUrlTemplate}" title="${fn:escapeXml(bibTitle)}" class="bibtex thumbnail">
 				<span class="entrytype ${post.resource.entrytype}"><!-- Keep ME--></span>
 			</a>
 			<!-- 

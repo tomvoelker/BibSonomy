@@ -56,7 +56,16 @@
 				it is displayed later only via c:out, which escapes XML chars 
 				anyway. 
 			 -->
-			<c:set var="personName" value="${mtl:cleanBibtex(person.firstName)} ${mtl:cleanBibtex(person.lastName)}" />
+			<c:set var="firstName" value="${person.firstName}" />
+			<c:set var="lastName" value="${person.lastName}" />
+			<c:choose>
+				<c:when test="${not empty firstName and not empty lastName}">
+					<c:set var="personName" value="${fn:substring(person.firstName, 0, 1)}. ${lastName}" />
+				</c:when>
+				<c:otherwise>
+					<c:set var="personName" value="${lastName}" />
+				</c:otherwise>
+			</c:choose>
 			
 			<c:if test="${loopStatus.last and not loopStatus.first}">
 				<c:out value=" "/><fmt:message key="and"/><c:out value=" "/>

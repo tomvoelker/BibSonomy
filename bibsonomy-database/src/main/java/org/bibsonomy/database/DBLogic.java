@@ -1,4 +1,5 @@
 /**
+ * BibSonomy-Database - Database for BibSonomy.
  *
  * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -30,7 +31,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -62,8 +62,6 @@ import org.bibsonomy.common.enums.PostAccess;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SearchType;
-import org.bibsonomy.common.enums.SortKey;
-import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
@@ -136,8 +134,6 @@ import org.bibsonomy.model.Review;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
-import org.bibsonomy.model.comparators.BibTexPostComparator;
-import org.bibsonomy.model.comparators.ResourcePersonRelationByPostComparator;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
@@ -177,8 +173,6 @@ import org.bibsonomy.util.ValidationUtils;
  */
 public class DBLogic implements LogicInterface {
 	private static final Log log = LogFactory.getLog(DBLogic.class);
-	private static final Comparator<ResourcePersonRelation> resourcePersonRelationComparator = new ResourcePersonRelationByPostComparator(new BibTexPostComparator(Arrays.asList(SortKey.YEAR, SortKey.AUTHOR), Arrays.asList(SortOrder.DESC, SortOrder.ASC)));
-
 	/*
 	 * help maps for post managers and discussion managers
 	 */
@@ -1114,7 +1108,14 @@ public class DBLogic implements LogicInterface {
 		 * check permissions
 		 */
 		this.ensureLoggedIn();
-		this.permissionDBManager.ensureWriteAccess(this.loginUser, userName);
+		/*
+		 * TODO: we do not know anything about the hashes (do they belong to bookmarks,
+		 * and/or publication, community post)
+		 * so the only way to check if the user is allowed to delete the post
+		 * is to check if he/she is an admin or self, for group editing we need to know
+		 * which resource is behind the resource hash
+		 */
+		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
 		/*
 		 * to store hashes of missing resources
 		 */
@@ -1122,7 +1123,7 @@ public class DBLogic implements LogicInterface {
 
 		final DBSession session = this.openSession();
 		try {
-			final String lowerCaseUserName = userName.toLowerCase();
+			final String lowerCaseUserName = present(userName) ? userName.toLowerCase() : null;
 			for (final String resourceHash : resourceHashes) {
 				/*
 				 * delete one resource

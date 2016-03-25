@@ -63,14 +63,6 @@
             		</ul>
           		</jsp:attribute>
 			</sidebar:sidebarItem>
-          
-			<!-- list all spheres -->
-			<sidebar:sidebarItem textKey="spheres.sidebar.title">
-				<jsp:attribute name="content">
-					<spheres:spheresCloud title="${spheresCloudTitle}"/>
-				</jsp:attribute>
-			</sidebar:sidebarItem>
-				
           	<!--  add a friend  -->
 			<sidebar:sidebarItem textKey="friends.addfriend">
 				<jsp:attribute name="content">
