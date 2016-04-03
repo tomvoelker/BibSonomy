@@ -107,10 +107,8 @@ public class AmazonScraper extends AbstractUrlScraper {
 			final String isbn;
 			if (m.find()) {
 				isbn = m.group(1);
-				System.out.println("1 " + isbn);
 			} else {
 				isbn = ISBNUtils.extractISBN(sc.getPageContent());
-				System.out.println("2 " + isbn);
 			}
 			
 			if (!present(isbn)) {

@@ -2077,12 +2077,7 @@
 		<BibFile>WorldCatScraperUnitURLTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_339">
-		<TestDescription>Test for worldcat with correct authors</TestDescription>
-		<URL>http://www.redalyc.org/articulo.oa?id=46434569</URL>
-		<BibFile>RedalycScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.redalyc.RedalycScraper</Scraper>
-	</URLTest>
+
 	<URLTest id="url_340">
 		<TestDescription>URL scraping test for the frontiersen scraper</TestDescription>
 		<URL>http://journal.frontiersin.org/article/10.3389/fphys.2016.00071/full</URL>
