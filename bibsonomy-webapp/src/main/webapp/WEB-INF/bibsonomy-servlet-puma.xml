@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd
+	                    http://www.springframework.org/schema/util 
+	                    http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+	<!--+ 
+		|
+		| PUMA-specific bean configuration
+		| 
+		| FIXME: 
+		| I tried to import this file conditionally depending on the value of 
+		| ${project.theme}. The following methods did not work:
+		|
+		| 1.) <import resource="bibsonomy2-servlet-${project.theme}.xml"/>
+		|     because the imports are handled before the ContextParamConfigurer
+		|     bean is instantiated.
+		| 2.) <bean class="org.springframework.web.context.support.XmlWebApplicationContext">
+		|     	<constructor-arg value="/WEB-INF/bibsonomy2-servlet-${project.theme}.xml"/>
+		|	  </bean>
+		|     because the loaded beans are not merged to the web application
+		|	  context.
+		|
+		| Since both methods do not work, I just added both files - 
+		| bibsonomy2-servlet-bibsonomy.xml and bibsonomy2-servlet-puma.xml.
+		| 
+		| This means, all beans here are actually instantiated (unfortunately!).
+		| At one point I circumvented the creation of a very PUMA-specific bean:
+		| Since in BibSonomy we don't want to have the SwordService activated for
+		| the EditPublicationController, I aliased it using an <alias> definiton
+		| that is theme-aware.
+		|
+	 	+-->
+
+
+	<!--+ 
+	 	|
+	 	| PUMA-specific URL maps 
+	 	|
+	 	+-->
+	<bean id="pumaUrlMapping" parent="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="urlMap">
+			<map merge="true">
+				<entry key="/ajax/checkOpenAccess">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="openAccessController" />
+						<property name="allowedFields">
+							<list>
+								<value>publisher</value>
+								<value>jTitle</value>
+								<value>qType</value>
+								<value>action</value>
+								<value>interhash</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/ajax/classificatePublication">
+					<bean id="publicationClassificationControllerBean" parent="controllerBase">
+						<property name="controllerBeanName" value="publicationClassificationController" />
+						<property name="allowedFields">
+							<list>
+								<value>classificationName</value>
+								<value>id</value>
+								<value>action</value>
+								<value>hash</value>
+								<value>key</value>
+								<value>value</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/ajax/swordService">
+					<bean id="swordServiceControllerBean" parent="controllerBase">
+						<property name="controllerBeanName" value="swordServiceController" />
+						<property name="allowedFields">
+							<list>
+								<value>resourceHash</value>
+<!--								<value>id</value>-->
+							</list>
+						</property>
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	
+	<!--+ 
+		|
+		| PUMA-specific beans
+		|
+	 	+-->
+	<bean id="openAccessController" class="de.unikassel.puma.webapp.controller.ajax.OpenAccessController" scope="request" parent="ajaxController" />	
+	
+	<bean id="swordServiceController" class="de.unikassel.puma.webapp.controller.ajax.SwordServiceController" scope="request" parent="ajaxController">
+		<property name="swordService" ref="swordService"/>	
+		<property name="messageSource" ref="messageSource"/>
+		<property name="mode" value="${publication.reporting.mode}" />
+	</bean>
+	
+	<bean id="publicationClassificationController" class="de.unikassel.puma.webapp.controller.ajax.PublicationClassificationController" scope="request" parent="ajaxController" >	
+		<property name="classificator" ref="classificator"/>
+	</bean>
+	<bean id="classificator" class="de.unikassel.puma.openaccess.classification.PublicationClassificatorSingleton" scope="singleton">
+		<property name="classificationFilePath" value="${sword.classifications.path}"/>
+	</bean>
+
+	<!--+ 
+		|
+		| PUMA-specific beans that must also be provided for BibSonomy (using
+		| NullFactoryBeanin bibsonomy2-servlet-bibsonomy.xml).
+		|
+	 	+-->
+	<bean id="swordConfig" class="de.unikassel.puma.openaccess.sword.SwordConfig">
+		<property name="dirTemp" value="${sword.dirTemp}"/>
+		<property name="httpServer" value="${sword.httpServer}"/>
+		<property name="httpPort" value="${sword.httpPort}"/>
+		<property name="httpUserAgent" value="${sword.httpUserAgent}"/>
+		<property name="authUsername" value="${sword.authUsername}"/>
+		<property name="authPassword" value="${sword.authPassword}"/>
+		<property name="httpServicedocumentUrl" value="${sword.httpServicedocumentUrl}"/>
+		<property name="httpDepositUrl" value="${sword.httpDepositUrl}"/>
+	</bean>
+	
+	<bean id="apiLogicFactory" class="org.bibsonomy.database.DBLogicApiInterfaceFactory">
+		<property name="dbSessionFactory" ref="dbSessionFactory" />
+		<property name="bibtexReader" ref="bibtexReader"/>
+	</bean>
+
+	<bean id="realSwordService" class="de.unikassel.puma.openaccess.sword.SwordService">
+		<property name="repositoryConfig" ref="swordConfig"/>
+		<property name="projectDocumentPath" value="${project.document.path}"/>
+		<property name="urlRenderer" ref="restUrlRenderer"/>
+		<property name="logicInterfaceFactory" ref="apiLogicFactory" />
+	</bean>
+</beans>

@@ -5,35 +5,32 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-    xmlns:group="urn:jsptagdir:/WEB-INF/tags/resources/group"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+	xmlns:group="urn:jsptagdir:/WEB-INF/tags/resources/group"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<layout:paneLayout 
-		command="${command}" 
-		pageTitle="${command.pageTitle}"  
-		requPath="${requPath}" 
-		headerMessageKey="success"
-		minimizedContentWidth="${true}">
-  
+	<layout:paneLayout command="${command}" pageTitle="${command.pageTitle}" requPath="${requPath}" headerMessageKey="success" minimizedContentWidth="${true}">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="success"/>
-    	</jsp:attribute>
-       
-        <jsp:attribute name="content">
-           	<fmt:message key="${command.messageKey}">
-				 <c:if test="${not empty command.messageParams}">
-	    			<c:forEach var="p" items="${command.messageParams}">
-   		       			<fmt:param value="${fn:escapeXml(p)}" />
-       		   		</c:forEach>
-  				</c:if>  	
-           	</fmt:message>
-      </jsp:attribute>
-      
+		</jsp:attribute>
+		
+		<jsp:attribute name="content">
+			<bs:alert style="success">
+				<jsp:attribute name="alertBody">
+					<fmt:message key="${command.messageKey}">
+					<c:if test="${not empty command.messageParams}">
+						<c:forEach var="paramValue" items="${command.messageParams}">
+							<fmt:param value="${fn:escapeXml(paramValue)}" />
+						</c:forEach>
+					</c:if>
+					</fmt:message>
+				</jsp:attribute>
+			</bs:alert>
+		</jsp:attribute>
 	</layout:paneLayout>
-
 </jsp:root>

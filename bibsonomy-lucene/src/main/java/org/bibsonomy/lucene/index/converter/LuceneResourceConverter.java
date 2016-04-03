@@ -1,7 +1,7 @@
 /**
- * BibSonomy-Lucene - Fulltext search facility of BibSonomy
+ * BibSonomy - A blue social bookmark and publication sharing system.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -36,7 +36,6 @@ import static org.bibsonomy.lucene.util.LuceneBase.CFG_TYPEHANDLER;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -46,17 +45,20 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
-import org.bibsonomy.es.IndexType;
 import org.bibsonomy.lucene.index.LuceneFieldNames;
-import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.param.typehandler.LuceneTypeHandler;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.factories.ResourceFactory;
+import org.bibsonomy.search.SearchPost;
+import org.bibsonomy.util.GetProvider;
 import org.bibsonomy.util.tex.TexDecode;
 
 /**
+ * FIXME: split into lucene resource converter and elasticsearch resource
+ * converter
+ * 
  * class for converting bibsonomy post model objects to lucene documents
  * 
  * @author fei
@@ -80,28 +82,7 @@ public class LuceneResourceConverter<R extends Resource> {
 	 * @return the post representation of the lucene document
 	 */
 	public Post<R> writePost(final Document doc) {
-		// initialize 
-		final Post<R> post = this.createEmptyPost();
-
-		// cycle though all properties and set the properties
-		for (final String propertyName : postPropertyMap.keySet()) {
-			// get lucene index properties
-			final String fieldName = this.getFieldName(propertyName);
-			final String propertyStr = doc.get(fieldName); 
-			if (!present(propertyStr)) {
-				continue;
-			}
-
-			final Object propertyValue = this.getPropertyValue(propertyName, propertyStr);			
-			try {
-				PropertyUtils.setNestedProperty(post, propertyName, propertyValue);
-			} catch (final Exception e) {
-				log.error("Error setting property " + propertyName + " to " + propertyValue.toString(), e);
-			}
-		}
-		
-		// all done.
-		return post;
+		return writePost(new LuceneDocumentGetProvider(doc));
 	}
 
 	private Object getPropertyValue(final String propertyName, final String propertyStr) {
@@ -118,24 +99,16 @@ public class LuceneResourceConverter<R extends Resource> {
 	 * read property values from given object as defined in given propertyMap
 	 * 
 	 * @param post
-	 * @param searchType 
 	 * @return the lucene document representation of the post
 	 */
-	@SuppressWarnings("null")
-	public Object readPost(final Post<R> post, final IndexType searchType) {
-		Document luceneDocument = null;
-		Map<String, Object> jsonDocument = null;
+	public Document readPost(final Post<R> post) {
+		Document luceneDocument = new Document();
 		
 		// all fields are concatenated for full text search
 		final StringBuilder fulltextField = new StringBuilder();
 		// all private fields are concatenated for full text search
 		final StringBuilder privateField = new StringBuilder();
 		
-		if (searchType == IndexType.ELASTICSEARCH) {
-			jsonDocument = new HashMap<String, Object>();
-		} else {
-			luceneDocument = new Document();
-		}
 		/*
 		 * cycle though all properties and store the corresponding
 		 * values in the content hash map
@@ -146,38 +119,36 @@ public class LuceneResourceConverter<R extends Resource> {
 			 */
 			final String propertyValue = this.extractPropertyValue(post, propertyName);
 			
+			if (LuceneFieldNames.LAST_LOG_DATE.equals(propertyName)) {
+				try {
+					Long.parseLong(propertyValue);
+				} catch (NumberFormatException e) {
+					throw new IllegalArgumentException(e);
+				}
+			}
 			/*
 			 * get index, store and name of lucene field
 			 */
 			final Index fieldIndex = this.getFieldIndexForProperty(propertyName);
 			final Store fieldStore = this.getFieldStoreForProperty(propertyName);
 			final String fieldName = this.getFieldName(propertyName);
-			if (searchType == IndexType.ELASTICSEARCH) {
-				if (!isPrivateProperty(propertyName)) {
-					jsonDocument.put(fieldName, propertyValue);
-				}
-			} else {
-				// add field to the lucene document
-				luceneDocument.add(new Field(fieldName, propertyValue, fieldStore, fieldIndex));
 			
-				// TODO: only add non default values to these fields
-				if (present(propertyValue)) {
-					// add term to full text search field, if configured accordingly 
-					if (this.isFulltextProperty(propertyName)) {
-						fulltextField.append(CFG_LIST_DELIMITER);
-						fulltextField.append(propertyValue);
-					}
-					// add term to private full text search field, if configured accordingly 
-					if (this.isPrivateProperty(propertyName)) {
-						privateField.append(CFG_LIST_DELIMITER);
-						privateField.append(propertyValue);
-					}
+			// add field to the lucene document
+			luceneDocument.add(new Field(fieldName, propertyValue, fieldStore, fieldIndex));
+		
+			// TODO: only add non default values to these fields
+			if (present(propertyValue)) {
+				// add term to full text search field, if configured accordingly 
+				if (this.isFulltextProperty(propertyName)) {
+					fulltextField.append(CFG_LIST_DELIMITER);
+					fulltextField.append(propertyValue);
+				}
+				// add term to private full text search field, if configured accordingly 
+				if (this.isPrivateProperty(propertyName)) {
+					privateField.append(CFG_LIST_DELIMITER);
+					privateField.append(propertyValue);
 				}
 			}
-		}
-		
-		if (searchType == IndexType.ELASTICSEARCH) {
-			return jsonDocument;
 		}
 		// store merged field
 		luceneDocument.add(new Field(LuceneFieldNames.MERGED_FIELDS, decodeTeX(fulltextField.toString()), Field.Store.NO, Field.Index.ANALYZED));
@@ -185,7 +156,7 @@ public class LuceneResourceConverter<R extends Resource> {
 		// store private field
 		luceneDocument.add(new Field(LuceneFieldNames.PRIVATE_FIELDS, decodeTeX(privateField.toString()), Field.Store.YES, Field.Index.ANALYZED));
 		
-		// all done.
+		// all done
 		return luceneDocument;
 	}
 	
@@ -259,7 +230,7 @@ public class LuceneResourceConverter<R extends Resource> {
 	 * @param input
 	 * @return
 	 */
-	private String decodeTeX(final String input) {
+	private static String decodeTeX(final String input) {
 		try {
 			return TexDecode.decode(input);
 		} catch (final IllegalStateException e) {
@@ -268,10 +239,10 @@ public class LuceneResourceConverter<R extends Resource> {
 		}
 	}
 	
-	private Post<R> createEmptyPost() {
+	private SearchPost<R> createEmptyPost() {
 		final R resource = this.resourceFactory.<R>createResource(this.resourceClass);
 		final User user = new User();
-		final Post<R> post = new LucenePost<R>();
+		final SearchPost<R> post = new SearchPost<R>();
 		post.setResource(resource);
 		post.setUser(user);
 		post.getResource().recalculateHashes();
@@ -300,31 +271,27 @@ public class LuceneResourceConverter<R extends Resource> {
 	}
 
 	/**
-	 * @param result The result from elasticsearch search query
+	 * @param result the lucene document
 	 * @return Posts converted from Map
 	 */
-	public Post<R> writePost(Map<String, Object> result) {
+	public Post<R> writePost(GetProvider<String, Object> result) {
 		// initialize 
-		final Post<R> post = this.createEmptyPost();
-				
+		final SearchPost<R> post = this.createEmptyPost();
+		
 		// cycle though all properties and set the properties
 		for (final String propertyName : postPropertyMap.keySet()) {
 			// get index properties
 			final String fieldName = this.getFieldName(propertyName);
-			final String propertyStr = (String) result.get(fieldName); 
+			final String propertyStr = (String) result.get(fieldName);
 			if (!present(propertyStr)) {
 				continue;
-				}
-			final Object propertyValue = this.getPropertyValue(propertyName, propertyStr);			
+			}
+			final Object propertyValue = this.getPropertyValue(propertyName, propertyStr);
 			try {
 				PropertyUtils.setNestedProperty(post, propertyName, propertyValue);
-				} catch (final Exception e) {
-					log.error("Error setting property " + propertyName + " to " + propertyValue.toString(), e);
-				}
-		}
-		if(result.get("systemUrl")!=null){
-			String systemUrl = result.get("systemUrl").toString();
-			post.setSystemUrl(systemUrl);		
+			} catch (final Exception e) {
+				log.error("Error setting property " + propertyName + " to " + propertyValue.toString(), e);
+			}
 		}
 		return post;
 	}

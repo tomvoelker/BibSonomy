@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -170,11 +170,11 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 		if (!documentOwner.equals(userName)) {
 			return getXmlRenameError("post.bibtex.wrongUser", null, command.getFileID(), null, locale); 
 		}
-	
+		document.setFileName(newName);
 		/*
 		 * rename document in database
 		 */
-		logic.updateDocument(document, intraHash, newName);
+		logic.updateDocument(userName, intraHash, fileName, document);
 		
 		
 		final String response = messageSource.getMessage("bibtex.actions.filerenamed", new Object[] {StringEscapeUtils.escapeXml(fileName), StringEscapeUtils.escapeXml(newName)}, locale);

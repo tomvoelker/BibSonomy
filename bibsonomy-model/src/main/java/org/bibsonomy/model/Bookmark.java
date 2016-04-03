@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -39,7 +39,7 @@ public class Bookmark extends Resource {
 	
 	/**
 	 * An {@link URL} pointing to some website.
-	 * FIXME: Use URL instead of String
+	 * FIXME: Use URI instead of String
 	 */
 	private String url;
 

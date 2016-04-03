@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -59,7 +59,7 @@ public class ClipboardPageController extends SingleResourceListController implem
 		final GroupingEntity groupingEntity = GroupingEntity.CLIPBOARD;
 
 		// retrieve and set the requested resource lists
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
 			this.setList(command, resourceType, groupingEntity, loginUserName, null, null, null, null, null, null, null, entriesPerPage);
@@ -74,7 +74,7 @@ public class ClipboardPageController extends SingleResourceListController implem
 			}
 
 			// the number of items in this user's clipboard has already been fetched
-			command.getListCommand(resourceType).setTotalCount(command.getContext().getLoginUser().getBasket().getNumPosts());
+			command.getListCommand(resourceType).setTotalCount(command.getContext().getLoginUser().getClipboard().getNumPosts());
 		}	
 
 		this.endTiming();

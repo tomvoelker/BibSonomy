@@ -9,7 +9,8 @@ INSERT INTO `ids` VALUES
 	(12,0,'grouptas id'),
 	(14,0,'message_id'),
 	(15,0,'discussion_id'),
-	(16,0,'synchronization_id');
+	(16,0,'synchronization_id'),
+	(17, 0, 'person_change_id');
 
 INSERT INTO `groupids` (`group_name`, `group`, `privlevel`, `sharedDocuments`) VALUES
 	('public', -2147483648,1,0),

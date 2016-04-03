@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -28,6 +28,7 @@ package org.bibsonomy.scraper.url.kde.langev;
 
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -42,6 +43,7 @@ public class LangevScraperTest {
 	 * starts URL test with id url_86
 	 */
 	@Test
+	@Ignore  // * this scraper is now disabled because the website http://www.isrl.uiuc.edu/ is no more availabl
 	public void urlTestRun1(){
 		UnitTestRunner.runSingleTest("url_86");
 	}
@@ -50,6 +52,7 @@ public class LangevScraperTest {
 	 * starts URL test with id url_87
 	 */
 	@Test
+	@Ignore // * this scraper is now disabled because the website http://www.isrl.uiuc.edu/ is no more availabl
 	public void urlTestRun2(){
 		UnitTestRunner.runSingleTest("url_87");
 	}

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SearchType;
@@ -38,6 +39,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.util.Sets;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.MultiResourceViewCommand;
 
@@ -57,10 +59,10 @@ public abstract class MultiResourceListController extends ResourceListController
 	 */
 	@SuppressWarnings("unchecked")
 	protected void postProcessAndSortList(final MultiResourceViewCommand cmd, Class<? extends Resource> resourceType) {
-		for (ListCommand<?> listCommand: cmd.getListCommand(resourceType)) {
+		for (final ListCommand<?> listCommand: cmd.getListCommand(resourceType)) {
 			if (resourceType == BibTex.class) {
 				// TODO: how can we do this in a clean way without SuppressWarnings?
-				postProcessAndSortList(cmd, (List<Post<BibTex>>) listCommand.getList());	
+				postProcessAndSortList(cmd, (List<Post<BibTex>>) listCommand.getList());
 			}
 		}
 	}
@@ -86,7 +88,7 @@ public abstract class MultiResourceListController extends ResourceListController
 		final ListCommand<Post<T>> listCommand = new ListCommand<Post<T>>(cmd);
 		// retrieve posts		
 		log.debug("getPosts " + resourceType + " " + groupingEntity + " " + groupingName + " " + listCommand.getStart() + " " + itemsPerPage + " " + filter);
-		listCommand.setList(this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, search,SearchType.LOCAL, filter, order, null, null, listCommand.getStart(), listCommand.getStart() + itemsPerPage) );
+		listCommand.setList(this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, search, SearchType.LOCAL, Sets.<Filter>asSet(filter), order, null, null, listCommand.getStart(), listCommand.getStart() + itemsPerPage) );
 		cmd.getListCommand(resourceType).add(listCommand);
 
 		// list settings

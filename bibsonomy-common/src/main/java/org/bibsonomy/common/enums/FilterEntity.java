@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -31,7 +31,7 @@ package org.bibsonomy.common.enums;
  * 
  * @author Stefan Stützer
  */
-public enum FilterEntity {
+public enum FilterEntity implements Filter {
 
 	/**
 	 * Use this when you ONLY want to retrieve resources with a PDF
@@ -45,8 +45,13 @@ public enum FilterEntity {
 	DUPLICATES,
 	
 	/**
-	 * Filter to retrieve posts for spammers
-	 * This can be only used by admins
+	 * only unique items
+	 */
+	UNIQUE,
+	
+	/**
+	 * Filter to retrieve posts of spammers
+	 * This can only be used by admins
 	 */
 	ADMIN_SPAM_POSTS,
 	
@@ -80,8 +85,13 @@ public enum FilterEntity {
 	 */
 	POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER,
 	
+	/** the user only wants his layout files 
+	  * TODO: maybe this filter entity enum is the wrong location for this filter
+	  */
+	LAYOUT_DOCUMENTS,
+	
 	/**
-	 * Returns all (old and current) versions of a post
+	 * Returns all versions of something
 	 */
-	POSTS_HISTORY;
+	HISTORY;
 }

@@ -1,0 +1,21 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+
+	<jsp:directive.attribute name="text" fragment="true" required="false" />
+	<jsp:directive.attribute name="textKey" type="java.lang.String" required="false" />
+	
+	<!-- TODO: remove and replace with sidebarItem -->
+	
+	<h4 class="sidebar">
+		<c:choose>
+			<c:when test="${not empty textKey}">
+				<fmt:message key="${textKey}" />
+			</c:when>
+			<c:otherwise>
+				<jsp:invoke fragment="text" />
+			</c:otherwise>
+		</c:choose>
+	</h4>
+</jsp:root>

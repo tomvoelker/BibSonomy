@@ -1,0 +1,78 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	>
+
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+	<jsp:directive.attribute name="userLoggedIn" type="java.lang.Boolean" required="true" />
+	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="buttonClasses" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="enforceCommunityPost" type="java.lang.Boolean" required="false"/>
+
+	<c:choose>
+		<c:when test="${not empty post.systemUrl }">
+			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
+		</c:when>
+		<c:otherwise>
+			<c:set var ="isRemotePost" value="false"/>
+		</c:otherwise>
+	</c:choose>
+
+	<!-- TODO: use the urlGenerator for this -->
+	<c:set var="url" value="Publication"/>
+	<c:if test="${resourceType eq 'bookmark'}">
+		<c:set var="url" value="Bookmark"/>
+	</c:if>
+	<c:set var="copyTitle" value="" />
+	
+	<c:choose>
+		<c:when test="${isRemotePost and resourceType ne 'bookmark'}">
+			<c:url var="url" value="/BibtexHandler">
+				<c:param name="requTask" value="upload"/>
+				<c:param name="url" value="${relativeUrlGenerator.getPublicationUrlByIntraHashUsernameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}"/>
+				<c:param name="description" value="${post.description}"/>
+				<c:param name="selection"/>
+				<c:param name="referer" value="${mtl:cleanUrl(post.resource.url)}"/>
+			</c:url>
+		</c:when>
+		<c:when test="${isRemotePost and resourceType eq 'bookmark'}">
+			<c:url var="url" value="/ShowBookmarkEntry">
+				<c:param name="url" value="${mtl:cleanUrl(post.resource.url)}"/>
+				<c:param name="description" value="${post.description}"/>
+				<c:param name="extended"/>
+				<c:param name="referer" value="${mtl:cleanUrl(post.resource.url)}"/>
+			</c:url>
+			<a class="${buttonClasses}" href="${url}" title="${copyTitle}">
+				<span class="fa fa-copy"><!--  --></span>
+				<span class="sr-only"><fmt:message key="post.actions.copy"/></span>
+			</a>
+		</c:when>
+		<c:when test="${systemReadOnly}">
+			<c:set var="buttonClasses" value="${buttonClasses} disabled" />
+			<fmt:message var="copyTitle" key="system.readOnly.info" />
+		</c:when>
+		<c:when test="${enforceCommunityPost or empty post.user.name}">
+			<!-- community-post -->
+			<fmt:message key="post.actions.copy.title" var="copyTitle"/>
+			<c:url var="url" value="/edit${url}">
+				<c:param name="hash" value="${post.resource.interHash}"/>
+			</c:url>
+		</c:when>
+		<c:otherwise>
+			<!-- user is not post's owner -->
+			<c:url var="url" value="/edit${url}">
+				<c:param name="hash" value="${post.resource.intraHash}" />
+				<c:param name="user" value="${post.user.name}" />
+				<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
+			</c:url>
+			<fmt:message key="${resourceType}.actions.copy.title" var="copyTitle"/>
+		</c:otherwise>
+	</c:choose>
+	
+	<a class="${buttonClasses}" href="${url}" title="${copyTitle}">
+		<span class="fa fa-copy"><!--  --></span>
+		<span class="sr-only"><fmt:message key="post.actions.copy"/></span>
+	</a>
+</jsp:root>

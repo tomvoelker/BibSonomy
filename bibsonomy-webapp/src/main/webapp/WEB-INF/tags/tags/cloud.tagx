@@ -17,7 +17,8 @@
 	<jsp:directive.attribute name="highlightTags" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="showTooltips" type="java.lang.Integer" required="false"/>
 	<jsp:directive.attribute name="suppressTitle" type="java.lang.Boolean" required="false"/>
-
+	<jsp:directive.attribute name="scope" type="java.lang.String" required="false"/>
+	
 <div class="sidebar_collapse_content">
 
 	<!-- tagcloud styles: 0 cloud, 1 list (see org.bibsonomy.common.enums.TagCloudStyle) -->
@@ -39,7 +40,7 @@
 	<c:if test="${not empty highlightTags}">
 		<c:set var="highlightTags" value="${' '}${highlightTags}${' '}"/>
 	</c:if>
-			
+	
 	<!-- display of tag tooltips is disabled by default -->
 	<c:set var="showTooltips" value="${not (empty showTooltips or showTooltips == 0)}"/>
 
@@ -48,7 +49,6 @@
 		<script type="text/javascript">tagbox_minfreq_style = '${tagboxMinfreqStyle}';</script>
 	</c:if>
 	
-
 	<ul class="${style} tagbox">
 		<c:choose>
 			<c:when test="${tagSizeMode eq 'user'}">
@@ -66,7 +66,7 @@
 			<!-- determine tag css depending on its frequency -->
 			<c:if test="${tag.usercount == 1}">
 				<fmt:message var="posts" key="post" /> <!-- singular -->
-			</c:if>	
+			</c:if>
 			
 			<c:set var="tagclass" value="${mtl:getTagSize(tag.usercount, maxTagFrequency)}" />
 			
@@ -74,13 +74,20 @@
 			<c:if test="${tag.usercount >= cmd.minFreq or tagboxMinfreqStyle == 'none'}">
 				<li class="${tagclass}">
 					<jspx:element name="a">
-						<jspx:attribute name="href">/${fn:escapeXml(mtl:getPath(requPath))}/${fn:escapeXml(tag.name)}</jspx:attribute>
+						<c:choose>
+							<c:when test="${not empty scope and scope ne 'LOCAL'}">
+								<jspx:attribute name="href">/${fn:escapeXml(mtl:getPath(requPath))}/${fn:escapeXml(tag.name)}?scope=${scope}</jspx:attribute>
+							</c:when>
+							<c:otherwise>
+								<jspx:attribute name="href">/${fn:escapeXml(mtl:getPath(requPath))}/${fn:escapeXml(tag.name)}</jspx:attribute>
+							</c:otherwise>
+						</c:choose>
 						<jspx:attribute name="title"><c:if test="${empty suppressTitle or suppressTitle == false }">${tag.usercount}<c:out value=" "/>${posts}</c:if></jspx:attribute>
 						<c:if test="${not (tagSizeMode eq 'detail')}">
 							<jspx:attribute name="style">font-size:${mtl:computeTagFontsize(tag.usercount, minTagFrequency, maxTagFrequency, tagSizeMode)}%</jspx:attribute>
 						</c:if>
 						<c:set var="tagNameWithSpaces" value="${' '}${tag.name}${' '}"/>
-						<c:if test="${not empty highlightTags and fn:contains(highlightTags,tagNameWithSpaces)}">
+						<c:if test="${not empty highlightTags and fn:contains(highlightTags, tagNameWithSpaces)}">
 							<jspx:attribute name="style">border-bottom:1px dotted black;</jspx:attribute>
 						</c:if>
 						<c:if test="${showTooltips}">

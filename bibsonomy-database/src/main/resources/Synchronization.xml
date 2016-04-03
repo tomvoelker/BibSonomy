@@ -3,11 +3,11 @@
 
 <sqlMap namespace="Synchronization">
 
-	<select id="getSyncServices" resultClass="uri" parameterClass="boolean">
-		SELECT ss.uri
-		  FROM sync_services ss
-		  WHERE ss.server = #server#
-		  ORDER BY ss.uri
+	<select id="getSyncServiceDetails" resultMap="SynchronizationCommon.syncService" parameterClass="syncParam">
+		SELECT ss.name, ss.uri, ss.ssl_dn, ss.secure_api, NULL AS credentials, NULL AS direction, NULL AS content_type, NULL AS strategy, false AS autosync, NULL as user_name
+		FROM sync_services ss
+		WHERE ss.uri = #service#
+		LIMIT 1
 	</select>
 	
 	<insert id="insertSyncService" parameterClass="syncParam">
@@ -15,13 +15,25 @@
 		  VALUES (#serviceId#, #syncService.service#, #syncService.name#, #server#, #syncService.sslDn#, #syncService.secureAPI#)
 	</insert>
 
-	<select id="getAllSyncServices" resultMap="SynchronizationCommon.syncService" parameterClass="syncParam">
+	<select id="getSyncServices" resultMap="SynchronizationCommon.syncService" parameterClass="syncParam">
 		SELECT ss.name, ss.uri, ss.ssl_dn, ss.secure_api, NULL AS credentials, NULL AS direction, NULL AS content_type, NULL AS strategy, false AS autosync, NULL as user_name
 		FROM sync_services ss
-		WHERE server = #server#
+		WHERE ss.server = #server#
+		 <isNotEmpty property="sslDn" prepend="AND">
+		 	ss.ssl_dn = #sslDn#
+		 </isNotEmpty>
 	</select>
 	
-	<select id="getSyncClientsForUser" resultMap="SynchronizationCommon.syncServiceDetails" parameterClass="syncParam">
+	<select id="getAutoSyncServer" resultMap="SynchronizationCommon.syncService" parameterClass="syncParam">
+		SELECT s.user_name, s.credentials, ss.name, ss.uri, ss.secure_api, ss.ssl_dn, s.content_type, s.direction, s.strategy, s.autosync 
+		FROM sync s
+		  JOIN sync_services ss USING (service_id)
+		WHERE ss.server = TRUE
+			AND s.autosync = TRUE
+			AND s.direction != 'both';
+	</select>
+	
+	<select id="getSyncClientsForUser" resultMap="SynchronizationCommon.syncServiceForUserDetails" parameterClass="syncParam">
 		SELECT ss.service_id, ss.name, <include refid="syncDataColumns"/>
 		FROM sync_services ss JOIN sync_data sd USING(service_id)
 			WHERE ss.server = FALSE

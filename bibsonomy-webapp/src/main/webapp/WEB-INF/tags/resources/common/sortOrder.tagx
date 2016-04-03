@@ -12,7 +12,7 @@
 	<!--+
 		+ actions concerning different sorting orders
 		+-->	
-	<fmt:message key="post.meta.sort.order"/>:${mtl:ch('nbsp')}
+	<fmt:message key="post.meta.sort.order"/>:${mtl:ch('nbsp')}(
 	<c:choose>
 		<c:when test="${sortPageOrder eq 'asc'}">
 			<span class="italic"><fmt:message key="post.meta.sort.order.ascending"/></span>
@@ -20,7 +20,7 @@
 		<c:otherwise>
 			<a href="${mtl:setParam(escapedRequestPathAndQuery, 'sortPageOrder', 'asc')}"><fmt:message key="post.meta.sort.order.ascending"/></a>
 		</c:otherwise>
-	</c:choose>,${mtl:ch('nbsp')}
+	</c:choose>${mtl:ch('nbsp')}|${mtl:ch('nbsp')}
 	<c:choose>
 		<c:when test="${sortPageOrder eq 'desc'}">
 			<span class="italic"><fmt:message key="post.meta.sort.order.descending"/></span>
@@ -29,5 +29,5 @@
 			<a href="${mtl:setParam(escapedRequestPathAndQuery, 'sortPageOrder', 'desc')}"><fmt:message key="post.meta.sort.order.descending"/></a>
 		</c:otherwise>
 	</c:choose>
-
+	)
 </jsp:root>

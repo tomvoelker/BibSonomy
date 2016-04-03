@@ -2,7 +2,7 @@
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
 <sqlMap namespace="BibTexCommon">
-	<resultMap id="bibtex_common" class="bibtex" extends="Common.resource">
+	<resultMap id="bibtex_common_without_privnote" class="bibtex" extends="Common.resource">
 		<result property="address"        column="address"        javaType="string" />
 		<result property="annote"         column="annote"         javaType="string" />
 		<result property="booktitle"      column="booktitle"      javaType="string" />
@@ -28,11 +28,14 @@
 		<result property="bibtexKey"      column="bibtexKey"      javaType="string" />
 		<result property="misc"           column="misc"           javaType="string" />
 		<result property="abstract"       column="bibtexAbstract" javaType="string" />
-		<result property="privnote"       column="privnote" 	  javaType="string" />
 		<result property="author"         column="author"         javaType="personNameList" />
 		<result property="editor"         column="editor"         javaType="personNameList" />
 		<result property="year"           column="year"           javaType="string" />
 		<result property="entrytype"      column="entrytype"      javaType="string" />
+	</resultMap>
+
+	<resultMap id="bibtex_common" class="bibtex" extends="bibtex_common_without_privnote">
+		<result property="privnote"       column="privnote"       javaType="string" />
 	</resultMap>
 	
 	<resultMap id="bibtex" class="bibtex" extends="bibtex_common">
@@ -41,7 +44,7 @@
 	
 	<resultMap id="bibtexWithDocuments" class="bibtex" extends="bibtex_common">
 		<result property="documents"      resultMap="DocumentCommon.document" />
-	</resultMap>	
+	</resultMap>
 
 	<resultMap id="bibtexPost" class="post" extends="Common.posts">
 		<result property="resource" resultMap="BibTexCommon.bibtex" />
@@ -49,7 +52,7 @@
 
 	<resultMap id="bibtexPostWithDocuments" class="post" extends="Common.posts">
 		<result property="resource"   resultMap="BibTexCommon.bibtexWithDocuments" />
-	</resultMap>	
+	</resultMap>
 	
 	<resultMap id="bibtexPostWithRepositorys" class="post" extends="bibtexPost" >
 		<result property="repositorys"	resultMap="RepositoryCommon.repository"/>
@@ -75,14 +78,18 @@
 		<include refid="allBibtexAttributes"/>,
 		<include refid="bibtexSimHashes"/>
 	</sql>
-
-	<sql id="commonBibtexAttributes2">
+	
+	<sql id="commonPublicationAttributes2WithoutPrivNote">
 		b2.address, b2.annote, b2.booktitle, b2.chapter, b2.crossref, b2.edition, b2.howpublished,
 		b2.institution, b2.journal, b2.bkey, b2.month, b2.note, b2.number, b2.organization, b2.pages, b2.publisher,
 		b2.school, b2.series, b2.type, b2.volume, b2.day, b2.url, b2.content_id, b2.description, b2.bibtexKey,
 		b2.misc, b2.bibtexAbstract, b2.user_name, b2.date, b2.title, b2.author, b2.editor, b2.year, b2.entrytype,
-		IF(#userName# = b2.user_name, b2.privnote, NULL) AS privnote,
-		<include refid="bibtexSimHashes2"/>
+		<include refid="bibtexSimHashes2"/>,
+	</sql>
+
+	<sql id="commonBibtexAttributes2">
+		<include refid="commonPublicationAttributes2WithoutPrivNote" />
+		IF(#userName# = b2.user_name, b2.privnote, NULL) AS privnote
 	</sql>
 
 	<sql id="bibtexAttributes2">

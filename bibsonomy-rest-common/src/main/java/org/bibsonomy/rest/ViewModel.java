@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Common - Common things for the REST-client and server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -99,11 +99,10 @@ public class ViewModel {
 	}
 
 	/**
-	 * @param newOrderName
-	 *            The Name of the new Order to set
+	 * @param order the order
 	 */
-	public void setOrder(String newOrderName) {
-		if (newOrderName != null) this.order = Order.getOrderByName(newOrderName);
+	public void setOrder(final Order order) {
+		this.order = order;
 	}
 
 	/**

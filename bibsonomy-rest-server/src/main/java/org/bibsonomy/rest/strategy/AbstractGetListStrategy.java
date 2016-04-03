@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,11 +26,14 @@
  */
 package org.bibsonomy.rest.strategy;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.ByteArrayOutputStream;
 import java.io.Writer;
 import java.util.List;
 
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -50,7 +53,18 @@ public abstract class AbstractGetListStrategy<L extends List<?>> extends Strateg
 		this.view = new ViewModel();
 		this.view.setStartValue(context.getIntAttribute(RESTConfig.START_PARAM, 0));
 		this.view.setEndValue(context.getIntAttribute(RESTConfig.END_PARAM, 20));
-		this.view.setOrder(context.getStringAttribute(RESTConfig.ORDER_PARAM, null));
+		
+		try {
+			final String orderAsString = context.getStringAttribute(RESTConfig.ORDER_PARAM, null);
+			if (present(orderAsString)) {
+				final Order order = Order.getOrderByName(orderAsString);
+				this.view.setOrder(order);
+			}
+		} catch (final IllegalArgumentException e) {
+			// the client send a wrong query param throw correct exception
+			throw new BadRequestOrResponseException(e);
+		}
+		
 		if (view.getStartValue() > view.getEndValue()) {
 			throw new BadRequestOrResponseException("start must be less than or equal end");
 		}

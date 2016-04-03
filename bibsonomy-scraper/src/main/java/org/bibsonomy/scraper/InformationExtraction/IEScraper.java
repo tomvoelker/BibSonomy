@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -34,7 +34,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -64,28 +64,31 @@ public class IEScraper implements Scraper {
 	 */
 	@Override
 	public boolean scrape(final ScrapingContext sc) throws ScrapingException {
-		//FIXME: ScrapingContext.getSelectedText returns the selected text within the browser in ISO and not UTF-8 format
-		//we need to convert this, because the mallet function removes erroneous signs, that get created
-		//when formatting a UTF-8 String in ISO format.
-		//A proper fix would be to make the getSelectedText function return UTF-8 only.
+		/*
+		 * FIXME: ScrapingContext.getSelectedText returns the selected text
+		 * within the browser in ISO and not UTF-8 format we need to convert
+		 * this, because the mallet function removes erroneous signs, that get
+		 * created when formatting a UTF-8 String in ISO format. A proper fix
+		 * would be to make the getSelectedText function return UTF-8 only.
+		 */
 		final String selectedText = StringUtils.convertString(sc.getSelectedText(), "ISO-8859-1", StringUtils.CHARSET_UTF_8);
 		
 		/*
 		 * don't scrape, if there is nothing selected
 		 */
-		if ((selectedText == null) || selectedText.trim().equals("")) {
+		if (!present(selectedText)) {
 			return false;
 		}
 
 		try {
-			final HashMap<String, String> map = new BibExtraction().extraction(selectedText);
+			final Map<String, String> map = new BibExtraction().extraction(selectedText);
 
 			if (map != null) {
 
 				/*
 				 * build Bibtex String from map
 				 */
-				final StringBuffer bibtex = this.getBibtex(map);
+				final StringBuffer bibtex = getBibtex(map);
 				/*
 				 * add url to bibtex entry
 				 */
@@ -133,11 +136,11 @@ public class IEScraper implements Scraper {
 	 * @param map
 	 * @return
 	 */
-	private StringBuffer getBibtex(final HashMap<String, String> map) {
+	private static StringBuffer getBibtex(final Map<String, String> map) {
 		/*
 		 * extract year (needed already here for bibtex key)
 		 */
-		map.put("year", this.getYearFromDate(map.get("date")));
+		map.put("year", getYearFromDate(map.get("date")));
 		/*
 		 * generate bibtex key
 		 */
@@ -163,7 +166,7 @@ public class IEScraper implements Scraper {
 				 * clean person lists
 				 */
 				if ("author".equals(key) || "editor".equals(key)) {
-					value = this.cleanPerson(value);
+					value = cleanPerson(value);
 				}
 				bib.append(key + " = {" + value + "},\n");
 			}
@@ -184,7 +187,7 @@ public class IEScraper implements Scraper {
 	 * @param date
 	 * @return
 	 */
-	private String getYearFromDate(final String date) {
+	private static String getYearFromDate(final String date) {
 		if (date != null) {
 			/*
 			 * look for YYYY, extract and append it
@@ -196,25 +199,12 @@ public class IEScraper implements Scraper {
 		}
 		return null;
 	}
-
-	/** Returns a self description of this scraper.
-	 * 
-	 */
-	@Override
-	public String getInfo() {
-		return "IEScraper: Extraction of bibliographic references by information extraction. Author: Thomas Steuber";
-	}
-
-	@Override
-	public Collection<Scraper> getScraper() {
-		return Collections.<Scraper>singletonList(this);
-	}
-
+	
 	/** Cleans a String containing person names.
 	 * @param person
 	 * @return
 	 */
-	private String cleanPerson(final String person) {
+	private static String cleanPerson(final String person) {
 		// not modify references with " and " 
 		if (person.contains(" and ")) {
 			return person;
@@ -229,6 +219,19 @@ public class IEScraper implements Scraper {
 		}
 
 		return person;
+	}
+
+	/** Returns a self description of this scraper.
+	 * 
+	 */
+	@Override
+	public String getInfo() {
+		return "IEScraper: Extraction of bibliographic references by information extraction. Author: Thomas Steuber";
+	}
+
+	@Override
+	public Collection<Scraper> getScraper() {
+		return Collections.<Scraper>singletonList(this);
 	}
 
 	@Override

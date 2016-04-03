@@ -1,7 +1,7 @@
 /**
  * BibSonomy-OpenSocial - Implementation of the Opensocial specification and OAuth Security Handling
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -31,8 +31,8 @@ import java.util.List;
 import net.oauth.OAuthServiceProvider;
 
 import org.apache.shindig.auth.SecurityToken;
-import org.apache.shindig.gadgets.oauth.OAuthRequestException;
 import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret.KeyType;
+import org.apache.shindig.gadgets.oauth.OAuthRequestException;
 import org.apache.shindig.gadgets.oauth.OAuthStore.ConsumerInfo;
 import org.apache.shindig.gadgets.oauth.OAuthStore.TokenInfo;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
@@ -65,7 +65,8 @@ public interface OAuthLogic {
 	 * @param securityToken
 	 * @param serviceName
 	 * @param provider
-	 * @return
+	 * @return the consumer info
+	 * @throws OAuthRequestException 
 	 */
 	public ConsumerInfo readAuthentication(SecurityToken securityToken, String serviceName, OAuthServiceProvider provider) throws OAuthRequestException;
 
@@ -74,28 +75,31 @@ public interface OAuthLogic {
 	//------------------------------------------------------------------------
 	/**
 	 * builds and stores an according gadget
+	 * @param securityToken 
+	 * @param consumerInfo 
+	 * @param serviceName 
+	 * @param tokenName 
+	 * @param tokenInfo 
+	 * @return TODO
 	 */
 	public TokenInfo createToken(SecurityToken securityToken, ConsumerInfo consumerInfo, String serviceName, String tokenName, TokenInfo tokenInfo);
 	
 	/**
 	 * read security token from database 
-	 *  
-	 * @param gadgetUrl
-	 * @param server
-	 * @param ownerId
-	 * @param viewerId
-	 * @return
+	 * @param securityToken 
+	 * @param consumerInfo 
+	 * @param serviceName 
+	 * @param tokenName 
+	 * @return TODO
 	 */
 	public TokenInfo readToken(SecurityToken securityToken, ConsumerInfo consumerInfo, String serviceName, String tokenName);
 	
 	/**
 	 * delete security token from database 
-	 *  
-	 * @param gadgetUrl
-	 * @param server
-	 * @param ownerId
-	 * @param viewerId
-	 * @return
+	 * @param securityToken 
+	 * @param consumerInfo 
+	 * @param serviceName 
+	 * @param tokenName 
 	 */
 	public void deleteToken(SecurityToken securityToken, ConsumerInfo consumerInfo, String serviceName, String tokenName);
 	
@@ -105,8 +109,7 @@ public interface OAuthLogic {
 	/**
 	 * read OAuth consumer information from database
 	 * 
-	 * @param consumerKey
-	 * @return
+	 * @param consumerInfo
 	 */
 	public void createConsumer(OAuthConsumerInfo consumerInfo);
 	
@@ -114,7 +117,7 @@ public interface OAuthLogic {
 	 * read OAuth consumer information from database
 	 * 
 	 * @param consumerKey
-	 * @return
+	 * @return TODO
 	 */
 	public OAuthConsumerInfo readConsumer(String consumerKey);
 
@@ -143,13 +146,14 @@ public interface OAuthLogic {
 	 * read an OAuth token 
 	 * 
 	 * @param oauthToken
+	 * @return TODO
 	 */
 	public OAuthEntry readProviderToken(String oauthToken);
 	
 	/**
-	 *  remove an OauthAccess using the AccessToken and Username to query
-	 *  
-	 *  @param odelete
+	 * remove an OauthAccess using the AccessToken and Username to query
+	 * @param userName 
+	 * @param accessToken 
 	 */
 	public void removeSpecificAccessToken(String userName, String accessToken);
 	
@@ -171,5 +175,4 @@ public interface OAuthLogic {
 	 * @return list which is never null but may be immutable
 	 */
 	public List<OAuthUserInfo> getOAuthUserApplication(String username);
-	
 }

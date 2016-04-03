@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -27,47 +27,46 @@
 package org.bibsonomy.scraper.url.kde.dblp;
 
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.Scraper;
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
 /**
+ * This scraper can extract Data from the following hosts
+ * 1. dblp.uni-trier.de
+ * 2. search.mpi-inf.mpg.de
+ * 3. dblp.dagstuhl.de
+ * 4. dblp.org
+ * 
  * @author wbi
  */
 public class DBLPScraper extends GenericBibTeXURLScraper {
+	
 	private static final String SITE_NAME = "University of Trier Digital Bibliography & Library Project";
 	private static final String DBLP_HOST_NAME1  = "http://dblp.uni-trier.de";
 	private static final String SITE_URL  = DBLP_HOST_NAME1+"/";
 	private static final String info = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME)+".";
-
-	private static final String DBLP_HOST1  = "dblp.uni-trier.de";
-	private static final String DBLP_HOST_NAME2  = "http://search.mpi-inf.mpg.de/dblp/";
+	private static final Pattern ALTERNATIVES = Pattern.compile("/rec/(bibtex|xml|rdf|ris|html|bib1|bib2)/(.+)(\\.xml|\\.rdf|\\.ris|\\.bib)?");
+	private static final String DBLP_HOST1= "dblp.uni-trier.de";
 	private static final String DBLP_HOST2  = "search.mpi-inf.mpg.de";
+	private static final String DBLP_HOST3 = "dblp.dagstuhl.de";
+	private static final String DBLP_HOST4 = "dblp.org";
 	private static final String DBLP_PATH2  = "/dblp/";
 
-	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
-
-	static {
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + DBLP_HOST1), AbstractUrlScraper.EMPTY_PATTERN));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + DBLP_HOST2), Pattern.compile(DBLP_PATH2 + ".*")));
-	}
-	
-	/*
-	 * These are no mirrors, they just link to above hosts
-	 */
-	/*
-	private static final String DBLP_HOST_NAME3  = "http://www.sigmod.org/dblp/";
-	private static final String DBLP_HOST_NAME4  = "http://www.vldb.org/dblp/";
-	private static final String DBLP_HOST_NAME5  = "http://sunsite.informatik.rwth-aachen.de/dblp/";
-	 */
+	private static final List<Pair<Pattern,Pattern>> patterns = Arrays.asList(
+		new Pair<Pattern, Pattern>(Pattern.compile(".*" + DBLP_HOST1) , ALTERNATIVES),
+		new Pair<Pattern, Pattern>(Pattern.compile(".*" + DBLP_HOST2), Pattern.compile(DBLP_PATH2 + ".*")),
+		new Pair<Pattern, Pattern>(Pattern.compile(".*" + DBLP_HOST3) , ALTERNATIVES),
+		new Pair<Pattern, Pattern>(Pattern.compile(".*" + DBLP_HOST4) , ALTERNATIVES)
+	);
 	
 	@Override
 	public String getInfo() {
@@ -99,11 +98,55 @@ public class DBLPScraper extends GenericBibTeXURLScraper {
 	 */
 	@Override
 	protected String getDownloadURL(URL url) throws ScrapingException {
-		return url.toString().replace("bibtex", "bib") + ".bib";
+		/*
+		 * FIXME: can't we extract the id of the publication from the url
+		 * and then build the download url?
+		 */
+		String newURL = url.toString();
+		String extesnion = getExtension(newURL);
+		String path = getPath(newURL);
+		if (extesnion != null) {
+			newURL = newURL.replace("." + extesnion, ".bib");
+			return newURL.replace("/" + extesnion, "/bib");
+		}
+		else if (path != null) {
+			return newURL.replace("/" + path, "/bib") + ".bib";
+		}
+		else {
+			return newURL;
+		}
 	}
 	
+	// FIXME: what about bib1, bib2?
+	private String getPath(String url) {
+		if (url.contains("/html")) {
+			return "html";
+		}
+		else if (url.contains("/bibtex"))
+			return "bibtex";
+		else
+			return null;
+	}
+	
+	
+	private String getExtension(String url) {
+		if (url.contains(".xml")) {
+			return "xml";
+		}
+		else if (url.contains(".rdf")) {
+			return "rdf";
+		}
+		else if (url.contains(".ris")) {
+			return "ris";
+		}
+		else
+			return null;
+	}
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
+	 */
 	@Override
-	protected String convert(String downloadResult) {
-		return downloadResult.replaceAll("timesta.*\\n", "");
+	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
+		return bibtex.replaceAll("timesta.*\\n", "");
 	}
 }

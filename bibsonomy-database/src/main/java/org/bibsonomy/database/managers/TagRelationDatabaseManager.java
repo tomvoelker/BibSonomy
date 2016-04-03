@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -329,6 +329,24 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 		this.update("updateLowerTagRelations", param, session);
 		this.update("deleteEqualConcepts", param, session);
 		this.update("deleteOldConcepts", param, session);
+	}
+	
+	/**
+	 * @param session
+	 * @return the number of concepts
+	 */
+	public int getGlobalConceptCount(DBSession session) {
+		final Integer count = this.queryForObject("getGlobalConceptCount", Integer.class, session);
+		return saveConvertToint(count);
+	}
+
+	/**
+	 * @param session
+	 * @return the number of concepts in the log table
+	 */
+	public int getGlobalConceptHistoryCount(DBSession session) {
+		final Integer count = this.queryForObject("getGlobalConceptHistoryCount", Integer.class, session);
+		return saveConvertToint(count);
 	}
 
 	/**

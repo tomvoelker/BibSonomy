@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -37,6 +37,8 @@ public class DeletePostCommand extends BaseCommand implements Serializable{
 	private static final long serialVersionUID = -6623936347565283765L;
 	
 	private String resourceHash;
+	
+	private String owner;
 
 	/**
 	 * @return resourceHash
@@ -52,6 +54,17 @@ public class DeletePostCommand extends BaseCommand implements Serializable{
 		this.resourceHash = resourceHash;
 	}
 
-	
-	
+	/**
+	 * @return the owner
+	 */
+	public String getOwner() {
+		return this.owner;
+	}
+
+	/**
+	 * @param owner
+	 */
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
 }

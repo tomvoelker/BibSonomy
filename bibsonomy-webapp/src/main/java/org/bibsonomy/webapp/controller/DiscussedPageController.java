@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -30,9 +30,11 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.util.Sets;
 import org.bibsonomy.webapp.command.DiscussedViewCommand;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -74,13 +76,16 @@ public class DiscussedPageController extends SingleResourceListControllerWithTag
 			groupingName = null;
 		}
 		
-		
-		// if filter is set to POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER alle posts of both users, positive classified users and not classified users, will be retrieved.
-		// add to url: ?filter==POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER
+		/* 
+		 * if filter is set to POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER all posts
+		 * of both users, positive classified users and not classified users,
+		 * will be retrieved.
+		 * add to url: ?filter==POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER
+		 */
 		final FilterEntity filter = present(command.getFilter()) ? command.getFilter() : FilterEntity.POSTS_WITH_DISCUSSIONS;
 		
 		// retrieve and set the requested resource lists, along with total counts
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
 			
@@ -90,11 +95,11 @@ public class DiscussedPageController extends SingleResourceListControllerWithTag
 			/*
 			 * set the post counts
 			 */
-			this.setTotalCount(command, resourceType, groupingEntity, groupingName, null, null, null, filter, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
+			this.setTotalCount(command, resourceType, groupingEntity, groupingName, null, null, null, filter, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 		}
 
 		// get discussion statistics
-		command.setDiscussionsStatistic(this.logic.getPostStatistics(Resource.class, groupingEntity, groupingName, null, null, null, FilterEntity.POSTS_WITH_DISCUSSIONS, null, null, command.getStartDate(), command.getEndDate(), 0, 0));
+		command.setDiscussionsStatistic(this.logic.getPostStatistics(Resource.class, groupingEntity, groupingName, null, null, null, Sets.<Filter>asSet(FilterEntity.POSTS_WITH_DISCUSSIONS), null, command.getStartDate(), command.getEndDate(), 0, 0));
 		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {

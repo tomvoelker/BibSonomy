@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -50,6 +50,12 @@ public class BibTexListTitleHoverFormatter {
 	private ResourceBundle rb;
 	
 	private BibTexListTitleHoverFormatter(final BibTex publication, final Locale locale) {
+		if (publication == null) {
+			throw new IllegalArgumentException("publication can't be null!");
+		}
+		if (locale == null) {
+			throw new IllegalArgumentException("locale can't be null!");
+		}
 		this.publication = publication;
 		this.locale = locale;
 		this.output = new StringBuilder();
@@ -68,11 +74,11 @@ public class BibTexListTitleHoverFormatter {
 	 * @param locale
 	 * @return String
 	 */
-	public static String renderHover(final Post post, final Locale locale) {
+	public static String renderHover(final Post<?> post, final Locale locale) {
 		
 		final BibTex publication = (BibTex)post.getResource();
 		
-		BibTexListTitleHoverFormatter renderer = new BibTexListTitleHoverFormatter(publication,locale);
+		BibTexListTitleHoverFormatter renderer = new BibTexListTitleHoverFormatter(publication, locale);
 		
 		renderer.title().add(LB);
 		
@@ -114,7 +120,6 @@ public class BibTexListTitleHoverFormatter {
 			renderer.howpublished().year(true).note();
 		}
 		return renderer.getOutput();
-		
 	}
 	
 	private BibTexListTitleHoverFormatter add(String s) {
@@ -282,5 +287,6 @@ public class BibTexListTitleHoverFormatter {
 	private String getOutput() {
 		return output.toString();
 	}
+	
 	
 }

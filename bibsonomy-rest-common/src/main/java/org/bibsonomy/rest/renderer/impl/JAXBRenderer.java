@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Common - Common things for the REST-client and server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -54,10 +54,12 @@ import org.xml.sax.SAXParseException;
 /**
  * @author dzo
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * 
  */
 public abstract class JAXBRenderer extends AbstractRenderer {
 	private static final Log log = LogFactory.getLog(JAXBRenderer.class);
+	
+	/** the context to use; thread safe; and cached for performance reasons */
+	protected JAXBContext context;
 	
 	/**
 	 * method for handling a {@link JAXBException}
@@ -121,17 +123,8 @@ public abstract class JAXBRenderer extends AbstractRenderer {
 		// first: check the reader 
 		this.checkReader(reader);
 		try {
-			// initialize JAXB context. We provide the classloader here because we experienced that under
-			// certain circumstances (e.g. when used within JabRef as a JPF-Plugin), the wrong classloader is
-			// used which has the following exception as consequence:
-			//
-			//   javax.xml.bind.JAXBException: "org.bibsonomy.rest.renderer.xml" doesnt contain ObjectFactory.class or jaxb.index
-			//
-			// (see also http://ws.apache.org/jaxme/apidocs/javax/xml/bind/JAXBContext.html)
-			final JAXBContext jc = this.getJAXBContext();
-			
 			// create an Unmarshaller
-			final Unmarshaller u = jc.createUnmarshaller();
+			final Unmarshaller u = this.context.createUnmarshaller();
 			
 			// set schema to validate input documents
 			if (this.validateXMLInput) {
@@ -167,14 +160,11 @@ public abstract class JAXBRenderer extends AbstractRenderer {
 	@Override
 	protected void serialize(final Writer writer, final BibsonomyXML xmlDoc) throws InternServerException {
 		try {
-			// initialize context for java xml bindings
-			final JAXBContext jc = this.getJAXBContext();
-
 			// buildup document model
 			final JAXBElement<BibsonomyXML> webserviceElement = new ObjectFactory().createBibsonomy(xmlDoc);
 
 			// create a marshaller
-			final Marshaller marshaller = jc.createMarshaller();
+			final Marshaller marshaller = this.context.createMarshaller();
 			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 			
 			/*
@@ -200,8 +190,19 @@ public abstract class JAXBRenderer extends AbstractRenderer {
 		marshaller.marshal(webserviceElement, writer);
 	}
 
-	protected abstract JAXBContext getJAXBContext() throws JAXBException;
+	protected abstract JAXBContext initJAXBContext() throws JAXBException;
 	
+	
+	/**
+	 * inits the renderer by setting up the {@link JAXBContext}
+	 */
+	public void init() {
+		try {
+			this.context = this.initJAXBContext();
+		} catch (JAXBException e) {
+			handleJAXBException(e);
+		}
+	}
 
 	/**
 	 * @param validateXMLInput the validateXMLInput to set

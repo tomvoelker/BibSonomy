@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -28,15 +28,16 @@ package org.bibsonomy.model.logic;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
-import org.bibsonomy.common.enums.FilterEntity;
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.SearchType;
-import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
@@ -61,39 +62,9 @@ public interface PostLogicInterface {
 	 */
 	public static final int MAX_QUERY_SIZE = 1000;
 	
-	/**  
-	 * retrieves a filterable list of posts. This method exists for compatibility reasons. It does not support cross-system searches.
-	 * 
-	 * @param <T> resource type to be shown.
-	 * @param resourceType resource type to be shown.
-	 * @param grouping
-	 *            grouping tells whom posts are to be shown: the posts of a
-	 *            user, of a group or of the viewables.
-	 * @param groupingName
-	 *            name of the grouping. if grouping is user, then its the
-	 *            username. if grouping is set to {@link GroupingEntity#ALL},
-	 *            then its an empty string!
-	 * @param tags
-	 *            a set of tags. remember to parse special tags like
-	 *            ->[tagname], -->[tagname] and <->[tagname]. see documentation.
-	 *            if the parameter is not used, its an empty list
-	 * @param hash
-	 *            hash value of a resource, if one would like to get a list of
-	 *            all posts belonging to a given resource. if unused, its empty
-	 *            but not null.
-	 * @param search - free text search
-	 * @param filter - filter for the retrieved posts
-	 * @param order - a flag indicating the way of sorting
-	 * @param startDate - if given, only posts that have been created after (inclusive) startDate are returned  
-	 * @param endDate - if given, only posts that have been created before (inclusive) endDate are returned 
-	 * @param start - inclusive start index of the view window
-	 * @param end - exclusive end index of the view window
-	 * @return A filtered list of posts. may be empty but not null
-	 * @deprecated use {@link #getPosts(Class, GroupingEntity, String, List, String, String, SearchType, FilterEntity, Order, Date, Date, int, int)}
-	 */
-	@Deprecated
-	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, FilterEntity filter, Order order, Date startDate, Date endDate, int start, int end);
-
+	/** the maximum number of the most recent posts (global)  */
+	public static final int MAX_RECENT_POSTS = 100000;
+	
 	/**  
 	 * retrieves a filterable list of posts.
 	 * 
@@ -116,16 +87,16 @@ public interface PostLogicInterface {
 	 *            but not null.
 	 * @param search - free text search
 	 * @param searchType - whether to search locally or using an index shared by several systems
-	 * @param filter - filter for the retrieved posts
+	 * @param filters - filter for the retrieved posts
 	 * @param order - a flag indicating the way of sorting
 	 * @param startDate - if given, only posts that have been created after (inclusive) startDate are returned  
 	 * @param endDate - if given, only posts that have been created before (inclusive) endDate are returned 
 	 * @param start - inclusive start index of the view window
 	 * @param end - exclusive end index of the view window
 	 * @return A filtered list of posts. may be empty but not null
-	 * @since 3.0.1
+	 * @since 3.1
 	 */
-	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, FilterEntity filter, Order order, Date startDate, Date endDate, int start, int end);
+	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end);
 	
 	/**
 	 * Returns details to a post. A post is uniquely identified by a hash of the
@@ -198,8 +169,8 @@ public interface PostLogicInterface {
 	 *            all posts belonging to a given resource. if unused, its empty
 	 *            but not null.
 	 * @param search free text search
-	 * @param filter filter for the retrieved posts
-	 * @param constraint - a possible constraint on the statistics
+	 * @param filters the filters for the retrieved posts
+	 * @param constraints - a possible constraint on the statistics
 	 * @param order a flag indicating the way of sorting
 	 * @param startDate - if given, only posts that have been created after (inclusive) startDate are regarded  
 	 * @param endDate - if given, only posts that have been created before (inclusive) endDate are regarded
@@ -207,5 +178,11 @@ public interface PostLogicInterface {
 	 * @param end exclusive end index of the view window
 	 * @return a filtered list of posts. may be empty but not null
 	 */
-	public Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, FilterEntity filter, StatisticsConstraint constraint, Order order, Date startDate, Date endDate, int start, int end);
+	public Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end);
+
+	/**
+	 * @param queryString a query string which may be an arbitrary combination of tokens from title, author, year and school fields
+	 * @return a ranked list of publication posts matching the query. Only one post of the same {@link Resource} is contained in the list
+	 */
+	public List<Post<BibTex>> getPublicationSuggestion(String queryString);
 }

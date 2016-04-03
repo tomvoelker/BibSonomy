@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -47,7 +47,7 @@ public enum ClassifierSettings {
 	/** classify interval in seconds */
 	CLASSIFY_PERIOD,
 
-	/** probability to seperate sure from unsure classifications */
+	/** probability to separate sure from unsure classifications */
 	PROBABILITY_LIMIT,
 
 	/** TODO remove, testing mode will not effect user table */
@@ -56,7 +56,7 @@ public enum ClassifierSettings {
 	/** last classification date to track changes in user profiles */
 	LASTCLASSIFICATION,
 	
-	/** last classification date to track changes in user profiles */
+	/** classify cost for cost sensitive classifiers */
 	CLASSIFY_COST,
 	
 	/** expression to add to whitelist */

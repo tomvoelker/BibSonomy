@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -124,10 +124,10 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 		GroupingCommandUtils.initGroups(command, command.getPost().getGroups());
 		
 		// set postID for recommender
-		command.getPost().setContentId(command.getPostID());
+		command.getPost().setContentId(Integer.valueOf(command.getPostID()));
 
 		if ((dbUser.isSpammer()) && (((dbUser.getPrediction() == null) && (dbUser.getAlgorithm() == null)) ||
-					(dbUser.getPrediction().equals(1) || dbUser.getAlgorithm().equals(USERSPAMALGORITHM)))  ) {
+					(dbUser.getPrediction().equals(Integer.valueOf(1)) || dbUser.getAlgorithm().equals(USERSPAMALGORITHM)))  ) {
 			// the user is a spammer
 			log.debug("Filtering out recommendation request from spammer");
 			if (this.spamTagRecommender != null)	{
@@ -180,7 +180,6 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 	//------------------------------------------------------------------------
 	private void processRecommendedTags(final AjaxRecommenderCommand<R> command, final SortedSet<RecommendedTag> tags) {
 		command.setRecommendedTags(tags);
-		// TODO: renderer is thread safe? => constant
 		final StringWriter sw = new StringWriter(100);
 		this.recommendationRenderer.serializeRecommendationResultList(sw, command.getRecommendedTags());
 		command.setResponseString(sw.toString());
@@ -196,8 +195,7 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 	/**
 	 * @param recommendationRenderer the recommendationRenderer to set
 	 */
-	public void setRecommendationRenderer(
-			RecommendationRenderer<Post<? extends Resource>, RecommendedTag> recommendationRenderer) {
+	public void setRecommendationRenderer(RecommendationRenderer<Post<? extends Resource>, RecommendedTag> recommendationRenderer) {
 		this.recommendationRenderer = recommendationRenderer;
 	}
 
@@ -212,8 +210,7 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 	/**
 	 * @param recommender the recommender to set
 	 */
-	public void setRecommender(
-			RecommendationService<Post<? extends Resource>, RecommendedTag> recommender) {
+	public void setRecommender(RecommendationService<Post<? extends Resource>, RecommendedTag> recommender) {
 		this.recommender = recommender;
 	}
 }

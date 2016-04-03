@@ -1,9 +1,13 @@
 function pickAll() {
-	return pickUnpickAll("pick");
+	return pickUnpickAll(false);
 }
 
 function unpickAll() {
-	return pickUnpickAll("unpick");
+	return pickUnpickAll(true);
+}
+
+function unescapeAmp(string) {
+	return string.replace(/&amp;/g, "&");
 }
 
 /**
@@ -12,16 +16,24 @@ function unpickAll() {
  * @param pickUnpick
  * @return
  */
-function pickUnpickAll(pickUnpick) {
-	var param  = "";
-	$("#publications_0 ul.posts li.post div.ptitle a").each(function(index) {
-		var href = $(this).attr("href");
-		if (!href.match(/^.*\/documents[\/?].*/)){
-			param += href.replace(/^.*bibtex./, "") + " ";
-		}
+function pickUnpickAll(unpick) {
+	var postsUI = $('#publications_0 ul.posts>li');
+	var allPosts = "";
+	postsUI.each(function() {
+		var hash = $(this).data("intrahash");
+		var user = $(this).data("user");
+		var id = hash + "/" + user;
+		
+		allPosts += id + " ";
+	});
+	
+	if (unpick && !confirmDeleteByUser("clipboardpost")) {
+		return false;
 	}
-	);
-	return updateBasket("action=" + pickUnpick + "&hash=" + encodeURIComponent(param));
+	
+	var param = 'action=' + (unpick ? 'unpick' : 'pick') + '&hash=' + escape(allPosts);
+	updateClipboard(null, param);
+	return false;
 }
 
 /**
@@ -34,11 +46,16 @@ function pickUnpickPublication(element) {
 	/*
 	 * pick/unpick publication
 	 */
-	var params = $(element).attr("href").replace(/^.*?\?/, "");
-	return updateBasket(params);
+	var params = unescapeAmp($(element).attr("href")).replace(/^.*?\?/, "");
+	
+	// ask before deleting the pick
+	var isUnpick = params.search(/action=unpick/) != -1;
+	if (isUnpick && !confirmDeleteByUser("clipboardpost")) {
+		return false;
+	}
+	
+	return updateClipboard(element, params);
 }
-
-
 
 /**
  * picks/unpicks publications in AJAX style
@@ -46,28 +63,76 @@ function pickUnpickPublication(element) {
  * @param param
  * @return
  */
-function updateBasket (param) {
+function updateClipboard(element, param) {
 	var isUnpick = param.search(/action=unpick/) != -1;
-	if (isUnpick && !confirmDeleteByUser("clipboardpost")) {
-		return false;
-	}
-	
 	$.ajax({
 		type: 'POST',
 		url: "/ajax/pickUnpickPost?ckey=" + ckey,
 		data : param,
 		dataType : "text",
 		success: function(data) {
+		
+		/*
+		 * special case for the /clipboard page
+		 * remove the post from the resource list and update the post count
+		 */
+		if (location.pathname.startsWith("/clipboard") && isUnpick) {
+			var post = $(element).parents('li.post');
+			post.slideUp(400, function() {
+				post.remove();
+			});
+			var postCountBadge = $('h3.list-headline .badge');
+			var postCount = parseInt(postCountBadge.text());
+			postCountBadge.text(postCount - 1);
+		}
+		
 		/*
 		 * update the number of clipboard items
 		 */
-		if (location.pathname.startsWith("/clipboard") && !isUnpick) {
-			// special case for the /clipboard page
-			window.location.reload();
-		} else {
-			$("#pickctr").empty().append(data);
+		$("#clipboard-counter").show().html(data);
+		updateCounter();
+	}
+	});
+	return false;
+}
+
+/*
+ * update the counter at the navigation bar to reflect the amount of picked publications and unread messages
+ */
+function updateCounter() {
+	var clipboardNum = $("#clipboard-counter");
+	var inboxNum = $("#inbox-counter");
+	var counter = $("#inbox-clipboard-counter");
+	if (counter.length != 0) {
+		var totalCount = 0;
+		var clipboardCount = clipboardNum.length == 0 ? 0 : parseInt(clipboardNum.text());
+		if (clipboardCount == 0) {
+			clipboardNum.hide();
+		}
+		totalCount += clipboardCount;
+		totalCount += inboxNum.length == 0 ? 0 : parseInt(inboxNum.text());
+		counter.show().text(totalCount);
+		if (totalCount == 0) {
+			counter.hide();
 		}
 	}
+}
+
+// TODO: maybe wrong place ?
+function reportUser(a, userName){
+	$.ajax({
+		type: 'POST',
+		url: $(a).attr("href")+ "?ckey=" + ckey,
+		data: 'requestedUserName=' + userName + '&userRelation=SPAMMER&action=addRelation',
+		dataType: 'text',
+		success: function(data) {
+			$('a.report-spammer-link ').each(function(index, link) {
+				if ($(link).data('username') == userName) {
+					$(link).parent().append($("<span class=\"ilitem\"></span>").text(getString("user.reported")));
+					$(link).remove();
+				}
+			});
+		}
 	});
 	return false;
 }

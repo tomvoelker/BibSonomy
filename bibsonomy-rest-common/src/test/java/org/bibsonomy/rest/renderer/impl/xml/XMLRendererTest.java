@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Common - Common things for the REST-client and server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -36,7 +36,11 @@ import org.custommonkey.xmlunit.XMLAssert;
  */
 public class XMLRendererTest extends AbstractRendererTest {
 	
-	private final static XMLRenderer RENDERER = new XMLRenderer(new UrlRenderer("http://www.bibsonomy.org/api/"));
+	private final static XMLRenderer RENDERER;
+	static {
+		RENDERER = new XMLRenderer(new UrlRenderer("http://www.bibsonomy.org/api/"));
+		RENDERER.init();
+	}
 
 	@Override
 	public void compare(final String expected, final String actual) throws Exception {

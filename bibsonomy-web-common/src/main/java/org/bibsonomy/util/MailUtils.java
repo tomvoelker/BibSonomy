@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Web-Common - Common things for web
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -42,6 +42,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupRequest;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.springframework.context.MessageSource;
 
@@ -153,12 +154,13 @@ public class MailUtils {
 				groupName,
 				loginUser.getName(),
 				reason,
-				this.absoluteURLGenerator.getGroupSettingsUrlByGroupName(groupName),
+				projectHome,
 				// TODO: why toLowerCase?
 				UrlUtils.safeURIEncode(groupName).toLowerCase(),
 				UrlUtils.safeURIEncode(loginUser.getName()).toLowerCase(),
 				projectName.toLowerCase(),
-				projectEmail
+				projectEmail,
+				absoluteURLGenerator.getGroupSettingsUrlByGroupName(groupName, Integer.valueOf(1))
 		};
 		
 		/*
@@ -166,7 +168,7 @@ public class MailUtils {
 		 */
 		final String messageBody    = messageSource.getMessage("mail.joinGroupRequest.body", messagesParameters, locale);
 		final String messageSubject = messageSource.getMessage("mail.joinGroupRequest.subject", messagesParameters, locale);
-
+		
 		/*
 		 * send an e-Mail to the group (from our registration Adress)
 		 */
@@ -205,7 +207,7 @@ public class MailUtils {
 		 */
 		final String messageBody = messageSource.getMessage("mail.joinGroupRequest.denied.body", messagesParameters, locale);
 		final String messageSubject = messageSource.getMessage("mail.joinGroupRequest.denied.subject", messagesParameters, locale);
-
+	
 		/*
 		 * set the recipients
 		 */
@@ -228,10 +230,10 @@ public class MailUtils {
 	 */
 	public boolean sendGroupActivationNotification(final Group group, User requestingUser, final Locale locale) {
 		final Object[] messagesParameters = new Object[] {
-			requestingUser.getName(),
+			UserUtils.getNiceUserName(requestingUser, true),
 			group.getName(),
 			absoluteURLGenerator.getGroupUrlByGroupName(group.getName()),
-			absoluteURLGenerator.getGroupSettingsUrlByGroupName(group.getName()),
+			absoluteURLGenerator.getGroupSettingsUrlByGroupName(group.getName(), null),
 			projectHome,
 			projectEmail
 		};
@@ -255,6 +257,40 @@ public class MailUtils {
 	}
 	
 	/**
+	 * 
+	 * @param group
+	 * @param requestingUser
+	 * @param locale
+	 * @return 
+	 */
+	public boolean sendGroupDeclineNotification(final String groupName, final String declineMessage, User requestingUser, final Locale locale) {
+		final Object[] messagesParameters = new Object[] {
+				requestingUser.getName(),
+				groupName,
+				declineMessage,
+				projectHome,
+				projectEmail
+		};
+		
+		/*
+		 * Format the message "mail.groupInvite.body" with the given parameters.
+		 */
+		final String messageBody    = messageSource.getMessage("mail.group.decline.body", messagesParameters, locale);
+		final String messageSubject = messageSource.getMessage("mail.group.decline.subject", messagesParameters, locale);
+		
+		/*
+		 * send an e-Mail to the group (from our registration Adress)
+		 */
+		try {
+			sendPlainMail(new String[] {requestingUser.getEmail()},  messageSubject, messageBody, projectEmail);
+			return true;
+		} catch (final MessagingException e) {
+			log.fatal("Could not send group decline notification mail: " + e.getMessage());
+		}
+		return false;
+	}
+	
+	/**
 	 * sends a group invite mail to the invited user
 	 * 
 	 * @param groupName
@@ -268,12 +304,14 @@ public class MailUtils {
 				invitedUser.getName(),
 				loginUser.getName(),
 				groupName,
-				absoluteURLGenerator.getSettingsUrlWithSelectedTab(3),
+				//absoluteURLGenerator.getSettingsUrlWithSelectedTab(3),
+				projectHome,
 				// TODO: why toLowerCase?
 				UrlUtils.safeURIEncode(groupName).toLowerCase(),
 				UrlUtils.safeURIEncode(loginUser.getName()).toLowerCase(),
 				projectName.toLowerCase(),
-				projectEmail
+				projectEmail,
+				absoluteURLGenerator.getSettingsUrlWithSelectedTab(3)
 		};
 		
 		/*

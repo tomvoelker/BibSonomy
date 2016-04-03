@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Synchronization - Handles user synchronization between BibSonomy authorities
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -241,7 +241,7 @@ public abstract class AbstractSynchronizationClientTest extends AbstractDatabase
 			/*
 			 * check that synchronization is enabled
 			 */
-			assertEquals(SYNC_SERVER_URI, this.clientLogic.getSyncService(this.clientUser.getName(), null, true).get(0).getService().toString());
+			assertEquals(SYNC_SERVER_URI, this.clientLogic.getSyncServiceSettings(this.clientUser.getName(), null, true).get(0).getService().toString());
 		}
 	}
 	

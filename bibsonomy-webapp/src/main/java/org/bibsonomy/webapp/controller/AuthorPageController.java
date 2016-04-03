@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -33,6 +33,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.database.systemstags.SystemTagsExtractor;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.search.AuthorSystemTag;
@@ -96,14 +97,17 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		requTags.add(sysAuthor);
 		sysTags.add(sysAuthor);
 		
+		//sets the search type
+		final SearchType searchType = command.getScope();
+		
 		// handle case when only tags are requested
 		this.handleTagsOnly(command, groupingEntity, null, null, requTags, null, 1000, null);
 		
 		int totalNumPosts = 0;
 		// retrieve and set the requested resource lists
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(format, command.getResourcetype())) {
+		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
-			this.setList(command, resourceType, groupingEntity, null, requTags, null, null, null, null, command.getStartDate(), command.getEndDate(), listCommand.getEntriesPerPage());
+			this.setList(command, resourceType, groupingEntity, null, requTags, null, null, searchType, null, null, command.getStartDate(), command.getEndDate(), listCommand.getEntriesPerPage());
 			
 			this.postProcessAndSortList(command, resourceType);
 			totalNumPosts += listCommand.getTotalCount();
@@ -113,7 +117,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		if ("html".equals(format)) {
 			// only fetch tags if they were not already fetched by handleTagsOnly
 			if (command.getTagstype() == null) {
-				this.setTags(command, BibTex.class, groupingEntity, null, null, sysTags, null, 1000, null);
+				this.setTags(command, BibTex.class, groupingEntity, null, null, sysTags, null, 1000, null, searchType);
 			}
 			this.endTiming();
 			if (hasTags) {

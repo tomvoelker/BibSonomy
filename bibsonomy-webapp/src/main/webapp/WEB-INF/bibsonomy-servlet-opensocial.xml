@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd
+	                    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+
+
+	<!--  #################### url mapping #################### -->
+	<!--+
+		| url mapping for OpenSocial requests
+		+-->
+	<bean id="opensocialUrlMapping" parent="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="urlMap">
+			<map merge="true">
+				<entry key="/oauth/requestToken">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="oAuthRequestTokenController" />
+					</bean>
+				</entry>
+				<entry key="/oauth/accessToken">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="oAuthAccessTokenController" />
+					</bean>
+				</entry>
+				<entry key="/oauth/authorize">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="oAuthAuthorizeController" />
+						<property name="allowedFields">	
+							<list>
+								<value>authorizeAction</value>
+								<value>responseString</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	
+	<!-- database interface for accessing token information -->	
+	<bean id="oauthDataStore" class="org.bibsonomy.opensocial.oauth.database.BibSonomyOAuthDataStore">
+		<constructor-arg value="/oauth/" />
+		<property name="authLogic" ref="oAuthLogic" />
+	</bean>
+	
+	<!-- TODO: application-context.xml in opensocial also defines an oauthLogicFactory -->
+	
+	<bean id="oauthLogicFactory" class="org.bibsonomy.database.ReadOnlyAwareShindigDBLogicUserInterfaceFactory">
+		<constructor-arg>
+			<bean class="org.bibsonomy.database.ShindigDBLogicUserInterfaceFactory">
+				<property name="dbSessionFactory" ref="dbSessionFactory" />
+				<property name="bibtexReader" ref="bibtexReader"/>
+			</bean>
+		</constructor-arg>
+		<constructor-arg value="${system.mode.readOnly}" />
+	</bean>
+	
+	<bean id="oauthRequestValidator" class="org.bibsonomy.opensocial.oauth.OAuthRequestValidator">
+		<property name="store" ref="oauthDataStore" />
+	</bean>	
+
+	<!--  #################### controller #################### -->
+	
+	<bean id="oAuthSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation" value="classpath:SqlMapConfig_OpenSocial.xml" />
+		<property name="dataSource" ref="oAuthDataSource" />
+		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
+	</bean>
+	
+	<bean id="oAuthDataSource" class="org.apache.tomcat.dbcp.dbcp.BasicDataSource" parent="basicDataSource">
+		<property name="driverClassName" value="${database.opensocial.driverClassName}" />
+		<property name="url" value="${database.opensocial.url}" />
+		<property name="username" value="${database.opensocial.username}" />
+		<property name="password" value="${database.opensocial.password}" />
+		<property name="maxIdle" value="${database.opensocial.maxIdle}" />
+		<property name="maxActive" value="${database.opensocial.maxActive}" />
+		<property name="maxWait" value="${database.opensocial.maxWait}" />
+		<property name="removeAbandoned" value="${database.opensocial.removeAbandoned}" />
+		<property name="removeAbandonedTimeout" value="${database.opensocial.removeAbandonedTimeout}" />
+	</bean>
+
+	<bean id="oAuthLogic" class="org.bibsonomy.opensocial.oauth.database.IbatisOAuthLogic">
+		<property name="sqlMap" ref="oAuthSqlMapClient" />
+	</bean>
+	
+	<bean id="oAuthController" class="org.bibsonomy.webapp.controller.opensocial.OAuthProtocolController" abstract="true">
+		<property name="dataStore" ref="oauthDataStore"/>
+		<property name="requestLogic" ref="requestLogic"/>
+		<property name="responseLogic" ref="responseLogic"/>
+		<property name="projectHome" ref="projectHome" />
+	</bean>
+	
+	<bean id="oAuthAccessTokenController" class="org.bibsonomy.webapp.controller.opensocial.OAuthAccessTokenController" scope="request" parent="oAuthController" />
+	
+	<bean id="oAuthRequestTokenController" class="org.bibsonomy.webapp.controller.opensocial.OAuthRequestTokenController" scope="request" parent="oAuthController" />
+	
+	<bean id="oAuthAuthorizeController" class="org.bibsonomy.webapp.controller.opensocial.OAuthAuthorizeTokenController" scope="request" parent="oAuthController" />
+	
+</beans>

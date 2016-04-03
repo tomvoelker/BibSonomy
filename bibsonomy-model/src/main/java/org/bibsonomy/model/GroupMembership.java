@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,7 +26,10 @@
  */
 package org.bibsonomy.model;
 
+import java.util.Date;
+
 import org.bibsonomy.common.enums.GroupRole;
+import org.bibsonomy.model.util.data.Data;
 
 /**
  * Represents a membership of a user in a specific group and the role she
@@ -39,7 +42,8 @@ public class GroupMembership {
 	private User user;
 	private GroupRole groupRole;
 	private boolean userSharedDocuments;
-	
+	private Date joinDate;
+
 	/**
 	 * default constructor
 	 */
@@ -99,6 +103,20 @@ public class GroupMembership {
 	 */
 	public void setUserSharedDocuments(boolean userSharedDocuments) {
 		this.userSharedDocuments = userSharedDocuments;
+	}
+	
+	/**
+	 * @return the joinDate
+	 */
+	public Date getJoinDate() {
+		return this.joinDate;
+	}
+
+	/**
+	 * @param joinDate the joinDate to set
+	 */
+	public void setJoinDate(Date joinDate) {
+		this.joinDate = joinDate;
 	}
 	
 	/**

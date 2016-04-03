@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Client - The REST-client.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -46,7 +46,7 @@ import org.bibsonomy.rest.utils.HeaderUtils;
  */
 public abstract class HttpWorker<M extends HttpMethod> {
 	/** the logger for all workers */
-	protected static final Log LOGGER = LogFactory.getLog(HttpWorker.class.getName());
+	protected static final Log LOGGER = LogFactory.getLog(HttpWorker.class);
 	
 	private final HttpClient httpClient;
 	/** the http result code of the worker */
@@ -100,7 +100,7 @@ public abstract class HttpWorker<M extends HttpMethod> {
 		//
 		// handle OAuth requests
 		// 
-		if (this.accessor!=null) {
+		if (this.accessor != null) {
 			return accessor.perform(url, requestBody, method, this.renderingFormat);
 		}
 		
@@ -112,10 +112,14 @@ public abstract class HttpWorker<M extends HttpMethod> {
 		method.addRequestHeader(HeaderUtils.HEADER_AUTHORIZATION, HeaderUtils.encodeForAuthorization(this.username, this.apiKey));
 		method.setDoAuthentication(true);
 		// add accept and content type header
-		method.addRequestHeader("Accept", this.renderingFormat.getMimeType());
-		method.addRequestHeader("Content-Type", this.renderingFormat.getMimeType());
+		final String mimeType = this.renderingFormat.getMimeType();
+		method.addRequestHeader("Accept", mimeType);
+		method.addRequestHeader("Content-Type", mimeType);
 		
 		try {
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("calling " + url + " with '" + requestBody + "'");
+			}
 			this.httpResult = getHttpClient().executeMethod(method);
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("HTTP result: " + this.httpResult);

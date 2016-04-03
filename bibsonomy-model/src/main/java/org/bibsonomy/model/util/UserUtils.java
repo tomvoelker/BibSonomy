@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -31,12 +31,18 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.net.URL;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.util.HashUtils;
@@ -50,7 +56,37 @@ public class UserUtils {
 	
 	/** the name of the dblp user */
 	public static final String DBLP_USER_NAME = "dblp";
+	
+	/** the name of the genealogy user (import from dnb) */
+	public static final String GENEALOGY_USER = "genealogie";
+	
+	/** a set of special users */
+	public static final List<String> USER_NAMES_OF_SPECIAL_USERS = Arrays.asList(DBLP_USER_NAME, GENEALOGY_USER);
+	
+	private static final Map<String, List<Tag>> TAGS_OF_SPECIAL_USERS;
+	
+	static {
+		TAGS_OF_SPECIAL_USERS = new HashMap<>();
+		TAGS_OF_SPECIAL_USERS.put(DBLP_USER_NAME, createFrequentTags(DBLP_USER_NAME));
+		TAGS_OF_SPECIAL_USERS.put(GENEALOGY_USER, createFrequentTags("dnb"));
+	}
 
+	private static List<Tag> createFrequentTags(final String... tagNames) {
+		final List<Tag> tags = new ArrayList<Tag>();
+		for (String tagName : tagNames) {
+			tags.add(createFrequentTag(tagName));
+		}
+		return tags;
+	}
+	
+	private static Tag createFrequentTag(final String tagName) {
+		final Tag tag = new Tag();
+		tag.setName(tagName);
+		tag.setGlobalcount(1000000);
+		tag.setUsercount(1000000);
+		return tag;
+	}
+	
 	/** the length of the password salt */
 	private static final int SALT_LENGTH = 16;
 
@@ -218,6 +254,24 @@ public class UserUtils {
 	}	
 
 	/**
+	 * helper function to extract the usernames from a list of user objects into
+	 * a set.
+	 * 
+	 * @param users
+	 * @return
+	 */
+	public static Set<String> getHashSetOfUsernames(List<User> users) {
+		if (!present(users)) {
+			return null;
+		}
+		final Set<String> result = new HashSet<String>();
+		for (final User u : users) {
+			result.add(u.getName());
+		}
+		return result;
+	}
+
+	/**
 	 * Check whether the user is a group by comparing his name with the names
 	 * of all groups he belongs to. If a group exists with the user's name, the
 	 * user is a group.
@@ -246,7 +300,8 @@ public class UserUtils {
 	}
 	
 	
-	/** Update a user:
+	/**
+	 * Update a user:
 	 * In the existingUser all fields, that are set in updatedUser will be overwritten
 	 * Warning: UserSettings are not Updated!
 	 * @param existingUser = the user before the update
@@ -267,7 +322,7 @@ public class UserUtils {
 		existingUser.setApiKey(!present(updatedUser.getApiKey()) ? existingUser.getApiKey()	: updatedUser.getApiKey());
 		existingUser.setBirthday(!present(updatedUser.getBirthday()) ? existingUser.getBirthday() : updatedUser.getBirthday());
 		existingUser.setGender(!present(updatedUser.getGender()) ? existingUser.getGender() : updatedUser.getGender());
-		existingUser.setUseExternalPicture(!present(updatedUser.getUseExternalPicture()) ? existingUser.getUseExternalPicture() : updatedUser.getUseExternalPicture());
+		existingUser.setUseExternalPicture(updatedUser.isUseExternalPicture());
 		existingUser.setHobbies(!present(updatedUser.getHobbies()) ? existingUser.getHobbies() : updatedUser.getHobbies());
 		existingUser.setInterests(!present(updatedUser.getInterests()) ? existingUser.getInterests() : updatedUser.getInterests());
 		existingUser.setIPAddress(!present(updatedUser.getIPAddress()) ? existingUser.getIPAddress() : updatedUser.getIPAddress());
@@ -318,5 +373,46 @@ public class UserUtils {
 		user.setEmail(""); // XXX: email can't be null (db schema)
 		user.setRole(Role.GROUPUSER);
 		return user;
+	}
+	
+	/**
+	 * Return the user's name in a nice format to be used e.g. in emails. If the user has a non-empty real name, that will be returned, otherwise the username.
+	 * @param user
+	 * @param atPrefix - in cases where the username is returned the at-prefix can be prepended: e.g. @sdo vs. sdo
+	 * @return
+	 */
+	public static String getNiceUserName(final User user, final boolean atPrefix) {
+		if (present(user.getRealname())) {
+			return user.getRealname();
+		} 
+		return (atPrefix? "@" :"") + user.getName();
+	
+	}
+
+	/**
+	 * @param user
+	 * @return true iff there the given user is a special user (usually those with too many posts to handle)
+	 */
+	public static boolean isSpecialUser(User user) {
+		return present(user) && isSpecialUser(user.getName());
+	}
+
+	/**
+	 * @param userName
+	 * @return true iff there the given user is a special user (usually those with too many posts to handle)
+	 */
+	public static boolean isSpecialUser(String userName) {
+		return present(userName) && USER_NAMES_OF_SPECIAL_USERS.contains(userName);
+	}
+
+	/**
+	 * @param requestedUserName
+	 * @return tags used as a replacement for the tag list of the given special user (querying for the real tag list would be too slow)
+	 */
+	public static List<Tag> getTagsOfSpecialUser(String requestedUserName) {
+		if (requestedUserName == null) {
+			return null;
+		}
+		return TAGS_OF_SPECIAL_USERS.get(requestedUserName);
 	}
 }

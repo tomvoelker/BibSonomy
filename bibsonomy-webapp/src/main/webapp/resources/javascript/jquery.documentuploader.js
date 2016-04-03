@@ -21,7 +21,7 @@ var errorData = new errorBoxData("#upload");
 			counter++;
 			//for chrome, ie and opera
 			fileName = fileName.replace("C:\\fakepath\\", "");
-
+			
 
 			// check already added files for duplicates
 			$(".upform").each(function () {

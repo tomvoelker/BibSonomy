@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -61,7 +61,7 @@ public class LogicInterfaceFactoryTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getLogicAccessUser() {
 		for (final String username : new String[] { "testuser1", "testuser2", "testuser3" }) {
-			assertNotNull(userFactory.getLogicAccess(username, StringUtils.getMD5Hash("test123")));
+			assertNotNull(userFactory.getLogicAccess(username, StringUtils.getMD5Hash(StringUtils.getMD5Hash("test123")))); // note: salt is ''
 			this.assertNoLogin(userFactory, username);
 		}
 	}

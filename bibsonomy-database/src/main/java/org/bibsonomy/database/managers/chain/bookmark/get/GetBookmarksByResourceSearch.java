@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -43,7 +43,7 @@ public class GetBookmarksByResourceSearch extends GetResourcesByResourceSearch<B
 	protected boolean canHandle(final BookmarkParam param) {
 		if (super.canHandle(param)) {
 			return true;
-		}		
+		}
 		return (present(param.getSearch()) || present(param.getTitle())); 
 	}
 }

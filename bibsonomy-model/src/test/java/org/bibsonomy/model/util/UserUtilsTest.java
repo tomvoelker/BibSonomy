@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -175,5 +175,14 @@ public class UserUtilsTest {
 		assertTrue(UserUtils.isExistingUser(user));
 		
 		assertFalse(UserUtils.isExistingUser(null));
+	}
+
+	@Test
+	public void testGetNiceUserName() throws Exception {
+		User user = new User("testuser");
+		assertEquals("testuser",UserUtils.getNiceUserName(user, false));
+		assertEquals("@testuser",UserUtils.getNiceUserName(user, true));
+		user.setRealname("William T. Riker");
+		assertEquals("William T. Riker",UserUtils.getNiceUserName(user, true));
 	}
 }

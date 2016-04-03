@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -53,6 +53,9 @@ public class MDPIScraperTest {
 		UnitTestRunner.runSingleTest("url_275");
 	}
 	
+	/**
+	 * @throws Exception
+	 */
 	@Test
 	public void testCitedBy() throws Exception{
 		final ScrapingContext sc = new ScrapingContext(new URL("http://www.mdpi.com/2072-4292/5/10/5122"));
@@ -62,7 +65,7 @@ public class MDPIScraperTest {
 		final String cby = sc.getCitedBy();
 		assertNotNull(cby);
 		assertTrue(cby.length() > 100);
-		assertEquals("<em>Citations registered in CrossRef as of 24 November 2014. The citation count might be different from".trim(), cby.substring(0, 103).trim());
+		assertEquals("<em>Citations registered in CrossRef as of".trim(), cby.substring(0, 42).trim());
 		assertTrue(cby.contains("Zhang, L."));
 	}
 }

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -139,22 +139,15 @@ public class PictureController implements MinimalisticController<PictureCommand>
 	 * @return
 	 */
 	private View downloadPicture(final PictureCommand command) {
-
 		final String requestedUserName = command.getRequestedUser();
-
-		final User requestedUser = this.logic.getUserDetails(requestedUserName);
-
-		PictureHandler handler;
-
+		User requestedUser = this.logic.getUserDetails(requestedUserName);
 		// test if user's profile picture is visible
-		if (this.isPictureVisible(requestedUser, command.getLoginUser())) {
-			handler = this.pictureHandlerFactory.getPictureHandler(requestedUser, command);
-		} else {
+		if (!this.isPictureVisible(requestedUser, command.getLoginUser())) {
 			// elsewise handle request like a request for default user
-			final User user = this.logic.getUserDetails("");
-			handler = this.pictureHandlerFactory.getPictureHandler(user, command);
+			requestedUser = this.logic.getUserDetails("");
 		}
-		return handler.getProfilePictureView();
+		final PictureHandler handler = this.pictureHandlerFactory.getPictureHandler(requestedUser);
+		return handler.getProfilePictureView(requestedUser, command);
 	}
 
 	/**

@@ -1,7 +1,7 @@
 /**
- * BibSonomy-Lucene - Fulltext search facility of BibSonomy
+ * BibSonomy - A blue social bookmark and publication sharing system.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,36 +26,25 @@
  */
 package org.bibsonomy.lucene.search;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
+
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
-import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.SearchType;
-import org.bibsonomy.database.AbstractDatabaseTest;
-import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
-import org.bibsonomy.database.managers.GoldStandardPublicationDatabaseManager;
-import org.bibsonomy.database.params.BibtexExtendedParam;
-import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.testutil.TestDatabaseLoader;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
-import org.bibsonomy.lucene.index.manager.LuceneGoldStandardManager;
 import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
 import org.bibsonomy.lucene.util.LuceneSpringContextWrapper;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
 
 public class TestNegatedTagsQuery extends AbstractDatabaseManagerTest {
 
@@ -122,7 +111,7 @@ public class TestNegatedTagsQuery extends AbstractDatabaseManagerTest {
 
 	private ResultList<Post<BibTex>> query(final LuceneResourceSearch<BibTex> lsr, final List<String> testTags, final List<String> negatedTags) {
 		ResultList<Post<BibTex>> resList;
-		resList = (ResultList<Post<BibTex>>) lsr.getPosts(null, null, null, null, Collections.singletonList("public"),SearchType.LOCAL, null, null, null, testTags, null, null, null, negatedTags, null, 100, 0);
+		resList = (ResultList<Post<BibTex>>) lsr.getPosts(null, null, null, null, Collections.singletonList("public"),SearchType.LOCAL, null, null, null, null, testTags, null, null, null, negatedTags, null, 100, 0);
 		return resList;
 	}
 

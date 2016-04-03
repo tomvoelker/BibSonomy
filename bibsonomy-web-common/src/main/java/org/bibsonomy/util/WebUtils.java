@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Web-Common - Common things for web
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -69,10 +69,10 @@ public class WebUtils {
 	private static final int MAX_REDIRECT_COUNT = 10;
 	
 	/** the connection timeout */
-	protected static final int CONNECTION_TIMEOUT = 30 * 1000;
+	private static final int CONNECTION_TIMEOUT = 30 * 1000;
 	
 	/** the read timeout */
-	protected static final int READ_TIMEOUT = 30 * 1000;
+	private static final int READ_TIMEOUT = 30 * 1000;
 
 	/** The user agent used for all requests with {@link HttpURLConnection}. */
 	private static final String USER_AGENT_PROPERTY_VALUE = "BibSonomy/2.0.32 (Linux x86_64; en) Gecko/20120714 Iceweasel/3.5.16 (like Firefox/3.5.16)";
@@ -137,20 +137,12 @@ public class WebUtils {
 	 * @Deprecated
 	 */
 	public static String getPostContentAsString(final URL url, final String postContent, final String charset, final String cookie) throws IOException {
-		final HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+		final HttpURLConnection urlConn = createConnnection(url);
 		urlConn.setAllowUserInteraction(false);
 		urlConn.setDoInput(true);
 		urlConn.setDoOutput(true);
-		urlConn.setUseCaches(false);
 		urlConn.setRequestMethod("POST");
 		urlConn.setRequestProperty(CONTENT_TYPE_HEADER_NAME, "application/x-www-form-urlencoded");
-
-
-		/*
-		 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
-		 * pages require it to download content.
-		 */
-		urlConn.setRequestProperty(USER_AGENT_HEADER_NAME, USER_AGENT_PROPERTY_VALUE);
 
 		if (cookie != null) {
 			urlConn.setRequestProperty(COOKIE_HEADER_NAME, cookie);
@@ -271,17 +263,11 @@ public class WebUtils {
 	 */
 	public static String getContentAsString(final URL inputURL, final String cookie) throws IOException {
 		try {
-			final HttpURLConnection urlConn = (HttpURLConnection) inputURL.openConnection();
+			final HttpURLConnection urlConn = createConnnection(inputURL);
 			urlConn.setAllowUserInteraction(false);
 			urlConn.setDoInput(true);
 			urlConn.setDoOutput(false);
-			urlConn.setUseCaches(false);
-
-			/*
-			 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
-			 * pages require it to download content.
-			 */
-			urlConn.setRequestProperty(USER_AGENT_HEADER_NAME, USER_AGENT_PROPERTY_VALUE);
+			
 			if (cookie != null) {
 				urlConn.setRequestProperty(COOKIE_HEADER_NAME, cookie);
 			}
@@ -547,20 +533,15 @@ public class WebUtils {
 	 * Returns the cookies returned by the server on accessing the URL. 
 	 * The format of the returned cookies is as
 	 * 
-	 * 
 	 * @param url
 	 * @return The cookies as string, build by {@link #buildCookieString(List)}.
 	 * @throws IOException
 	 */
 	public static String getCookies(final URL url) throws IOException {
-		final HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
-
+		final HttpURLConnection urlConn = createConnnection(url);
 		urlConn.setAllowUserInteraction(false);
 		urlConn.setDoInput(true);
 		urlConn.setDoOutput(false);
-		urlConn.setUseCaches(false);
-
-		urlConn.setRequestProperty(USER_AGENT_HEADER_NAME, USER_AGENT_PROPERTY_VALUE);
 
 		urlConn.connect();
 
@@ -570,6 +551,41 @@ public class WebUtils {
 		return buildCookieString(cookies);
 	}
 	
+	/**
+	 * FIXME: document the difference between this method and {@link #getCookies(URL)}
+	 * 
+	 * @param url
+	 * @return the cookies
+	 * @throws IOException
+	 */
+	public static String getSpecialCookies(final URL url) throws IOException {
+		final GetMethod getMethod = new GetMethod(url.toString());
+		CLIENT.executeMethod(getMethod);
+		getMethod.getResponseHeaders("Set-Cookie");
+		
+		return getCookies(url);
+	}
+	/**
+	 * @param url the url
+	 * @return the proper configured http connection for the url
+	 * @throws IOException
+	 */
+	public static HttpURLConnection createConnnection(URL url) throws IOException {
+		final HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+		
+		// set the timeouts
+		urlConn.setReadTimeout(READ_TIMEOUT);
+		urlConn.setConnectTimeout(CONNECTION_TIMEOUT);
+		urlConn.setUseCaches(false);
+		
+		/*
+		 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
+		 * pages require it to download content.
+		 */
+		urlConn.setRequestProperty(USER_AGENT_HEADER_NAME, USER_AGENT_PROPERTY_VALUE);
+		return urlConn;
+	}
+
 	/**
 	 * Builds a cookie string as used in the HTTP header.
 	 * 

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -168,7 +168,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 		/*
 		 * FIXME: rename the variables in this method. Most names are no longer
-		 * suitable and refer to the older version where this controler only
+		 * suitable and refer to the older version where this controller only
 		 * could handle tag updates. E.g. postsToNormalize, the tagMaps etc.
 		 */
 		final RequestWrapperContext context = command.getContext();
@@ -457,12 +457,10 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			if (ValidationUtils.present(postsToUpdateViewable)) {
 				this.updatePosts(postsToUpdateViewable, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_VIEWABLE, loginUserName);
 			}
-		}
-		else {// if import
+		} else {// if import
 			if (updatePosts) {
 				this.updatePosts(postsToCombiUpdate, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_ALL, loginUserName);
-			}
-			else {
+			} else {
 				/*
 				 * FIXME:What happens to those posts that should have been
 				 * stored but have not been selected for the post update
@@ -755,20 +753,8 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 * @param loginUserName
 	 * @return
 	 */
-
 	private View getFinalRedirect(final String referer, final String loginUserName) {
 		String redirectUrl = referer;
-		/*
-		 * if (ValidationUtils.present(referer)) {
-		 * 
-		 * final Matcher prefixMatcher =
-		 * BATCH_EDIT_URL_PATTERN.matcher(referer);
-		 * if (prefixMatcher.find()) {
-		 * redirectUrl = prefixMatcher.replaceFirst("");
-		 * redirectUrl = prefixMatcher.toString();
-		 * }
-		 * }
-		 */
 		/*
 		 * if no URL is given, we redirect to the user's page
 		 */
@@ -777,22 +763,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		}
 		return new ExtendedRedirectView(redirectUrl);
 	}
-
-	/*
-	 * private View getFinalRedirect(final boolean isPub, final String
-	 * loginUserName) {
-	 * String redirectUrl = "referer";
-	 * if (isPub) {
-	 * redirectUrl = UrlUtils.safeURIEncode("beditbib/" + "user/" +
-	 * loginUserName); // TODO: should be done by the URLGenerator
-	 * }
-	 * else{
-	 * redirectUrl = UrlUtils.safeURIEncode("bediturl/" + "user/" +
-	 * loginUserName); // TODO: should be done by the URLGenerator
-	 * }
-	 * return new ExtendedRedirectView(redirectUrl);
-	 * }
-	 */
+	
 	@Override
 	public Errors getErrors() {
 		return this.errors;

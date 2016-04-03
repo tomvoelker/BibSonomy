@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -39,6 +39,8 @@ import java.util.Set;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.bibsonomy.common.enums.ConceptStatus;
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -188,9 +190,6 @@ public abstract class GenericParam {
 	/* search type */
 	private SearchType searchType;
 
-	/* not modified search parameter */
-	private String rawSearch;
-
 	/** This is the current user. */
 	private String userName;
 	private String description;
@@ -228,8 +227,9 @@ public abstract class GenericParam {
 
 	private Order order;
 	private GroupingEntity grouping;
-	private FilterEntity filter;
-
+	private Set<Filter> filters;
+	private ConceptStatus conceptStatus;
+	
 	/** which parts of the posts can the logged in user access */
 	private PostAccess postAccess = PostAccess.POST_ONLY;
 
@@ -443,23 +443,13 @@ public abstract class GenericParam {
 	}
 
 	/**
-	 * @return the rawSearch
-	 */
-	public String getRawSearch() {
-		return this.rawSearch;
-	}
-
-	/**
 	 * sets the rawsearch to search and prepares the search param for the
 	 * database query
 	 * 
 	 * @param search the search to set
 	 */
 	public void setSearch(final String search) {
-		if (search != null) {
-			this.rawSearch = search;
-			this.search = search.replaceAll("([\\s]|^)([\\S&&[^-]])", " +$2");
-		}
+		this.search = search;
 	}
 
 	/**
@@ -912,20 +902,6 @@ public abstract class GenericParam {
 	}
 
 	/**
-	 * @return the filter
-	 */
-	public FilterEntity getFilter() {
-		return this.filter;
-	}
-
-	/**
-	 * @param filter the filter to set
-	 */
-	public void setFilter(final FilterEntity filter) {
-		this.filter = filter;
-	}
-
-	/**
 	 * @return the numSimpleConcepts
 	 */
 	public int getNumSimpleConcepts() {
@@ -1178,5 +1154,53 @@ public abstract class GenericParam {
 	 */
 	public void setSearchType(final SearchType searchType) {
 		this.searchType = searchType;
+	}
+
+	/**
+	 * @return the filters
+	 */
+	public Set<Filter> getFilters() {
+		return this.filters;
+	}
+	
+	/**
+	 * XXX: ibatis knows no contains?
+	 * @return <code>true</code> iff filters contains a
+	 * {@link FilterEntity#POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER} filter
+	 */
+	public boolean isDiscussionUnclassifiedFilterContained() {
+		return present(this.filters) && this.filters.contains(FilterEntity.POSTS_WITH_DISCUSSIONS_UNCLASSIFIED_USER);
+	}
+	
+	/**
+	 * XXX: for ibatis
+	 * @return the filters as list
+	 */
+	public List<Filter> getFiltersAsList() {
+		if (!present(this.filters)) {
+			return Collections.emptyList();
+		}
+		return new ArrayList<Filter>(this.filters);
+	}
+
+	/**
+	 * @param filters the filters to set
+	 */
+	public void setFilters(Set<Filter> filters) {
+		this.filters = filters;
+	}
+
+	/**
+	 * @return the conceptStatus
+	 */
+	public ConceptStatus getConceptStatus() {
+		return this.conceptStatus;
+	}
+
+	/**
+	 * @param conceptStatus the conceptStatus to set
+	 */
+	public void setConceptStatus(ConceptStatus conceptStatus) {
+		this.conceptStatus = conceptStatus;
 	}
 }

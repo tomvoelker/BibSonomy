@@ -3,7 +3,7 @@
 
     BibSonomy-Webapp - The web application for BibSonomy.
 
-    Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+    Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
                                   University of Kassel, Germany
                                   http://www.kde.cs.uni-kassel.de/
                               Data Mining and Information Retrieval Group,
@@ -32,7 +32,7 @@
 	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
-		<version>3.2.0-SNAPSHOT</version>
+		<version>3.6.0-SNAPSHOT</version>
 	</parent>
 	<licenses>
 		<license>
@@ -49,23 +49,12 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<!-- the surefire plugin does strange things with the classpath,
-					to run the webapp in the tests we need to use the forkmode never-->
-				<configuration>
-					<forkMode>never</forkMode>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.1.1</version>
 				<configuration>
-					<!-- 
-						otherwise the javascript/css files compressed by
-						yuicompressor-maven-plugin are overwritten by this plugin 
-					-->
-					<warSourceExcludes>**/*.js,**/*.css</warSourceExcludes>
+					<!-- otherwise the javascript/css files compressed by yuicompressor-maven-plugin 
+						are overwritten by this plugin -->
+					<warSourceExcludes>**/*.js,**/*.css,WEB-INF/tags/layout/parts/messages.tagx</warSourceExcludes>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -92,22 +81,29 @@
 					<disableOptimizations>true</disableOptimizations>
 					<!-- note: use the compressed javascript files in ${project.build.webapp.resourcedir} -->
 					<aggregations>
+						<!-- javascript files for bootstrap front-end -->
 						<aggregation>
 							<insertNewLine>true</insertNewLine>
 							<output>${project.build.webapp.resourcedir}/javascript/merged/global.js</output>
 							<includes>
 								<include>${project.build.webapp.resourcedir}/jquery/jquery.js</include>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/jquery-ui.js</include>
+								<include>${project.build.webapp.resourcedir}/bootstrap/js/bootstrap.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bootstrap-datepicker.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bootstrap-tagsinput.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bootstrap-dialog.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/holder.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/custom.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/friendoverview.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/functions.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/actions/clipboard.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/fileUpload.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/jquery.fadebox.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/style.js</include>
-								<include>${project.build.webapp.resourcedir}/jquery/plugins/corner/jquery.corner.js</include>
-								<include>${project.build.webapp.resourcedir}/jquery/plugins/hoverIntent/jquery.hoverIntent.js</include>
-								<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/jquery-ui.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/ajaxUtils.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/fileUpload.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/style.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/jquery.fadebox.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/userRelation.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/addToSpheres.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/logging.js</include>
 							</includes>
 						</aggregation>
 						<aggregation>
@@ -128,49 +124,6 @@
 								<include>${project.build.webapp.resourcedir}/javascript/citeproc/cslstyles.js</include>
 							</includes>
 						</aggregation>
-						<!-- javascript files for bootstrap front-end -->
-						<aggregation>
-							<insertNewLine>true</insertNewLine>
-							<output>${project.build.webapp.resourcedir}/javascript/merged/bs/global.js</output>
-							<includes>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/jquery-2.1.1.js</include>
-								<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/jquery-ui.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap-datepicker.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap-carousel.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap-tagsinput.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/bootstrap-dialog.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/holder.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/custom.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/friendoverview.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/functions.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/actions/clipboard.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/ajaxUtils.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/fileUpload.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/style.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/jquery.fadebox.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/userRelation.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/addToSpheres.js</include>
-							</includes>
-						</aggregation>
-						<aggregation>
-							<insertNewLine>true</insertNewLine>
-							<output>${project.build.webapp.resourcedir}/javascript/merged/bs/discussion.js</output>
-							<includes>
-								<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.js</include>
-								<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/excanvas.js</include>
-								<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/jquery.flot.js</include>
-								<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/jquery.flot.stack.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/discussion/discussion.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/discussion/reviews.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/discussion/comments.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bs/discussion/csllinks.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/citeproc/csllocales.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/citeproc/xmldom.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/citeproc/citeproc.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/citeproc/cslstyles.js</include>
-							</includes>
-						</aggregation>
 					</aggregations>
 				</configuration>
 			</plugin>
@@ -183,9 +136,7 @@
 					<outputDirectory>${project.build.directory}/${project.build.finalName}/resources/css</outputDirectory>
 					<compress>true</compress>
 					<includes>
-						<include>bootstrap.less</include>
 						<include>bootstrap-style.less</include>
-						<include>style.less</include>
 					</includes>
 				</configuration>
 				<executions>
@@ -195,6 +146,46 @@
 						</goals>
 					</execution>
 				</executions>
+				<dependencies>
+					<!-- this is our version of less css java
+						which supports inline css -->
+					<dependency>
+						<groupId>org.lesscss</groupId>
+						<artifactId>lesscss</artifactId>
+						<version>1.7.0.1.2</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.bibsonomy</groupId>
+				<artifactId>javascript-i18n-messagesource-maven-plugin</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+				<configuration>
+					<messageSources>
+						<messageSource>file:///${project.basedir}/src/main/resources/messages</messageSource>
+					</messageSources>
+					<locales>
+						<locale>en</locale>
+						<locale>de</locale>
+						<locale>ru</locale>
+					</locales>
+					<outputFile>${project.build.directory}/${project.build.finalName}/WEB-INF/tags/layout/parts/messages.tagx</outputFile>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>compile</phase>
+						<goals>
+							<goal>buildMessageFiles</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<excludedGroups>org.bibsonomy.webapp.WebappTest</excludedGroups>
+				</configuration>
 			</plugin>
 		</plugins>
 		<resources>
@@ -206,14 +197,22 @@
 		<testResources>
 			<testResource>
 				<directory>src/test/resources</directory>
+				<excludes>
+					<exclude>**/*.properties</exclude>
+				</excludes>
 			</testResource>
 			<testResource>
-				<directory>src/main/webapp</directory>
+				<directory>src/test/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/*.properties</include>
+				</includes>
 			</testResource>
 		</testResources>
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
@@ -241,6 +240,25 @@
 										<versionRange>[1.1,)</versionRange>
 										<goals>
 											<goal>compress</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.bibsonomy</groupId>
+										<artifactId>
+											javascript-i18n-messagesource-maven-plugin
+										</artifactId>
+										<versionRange>
+											[0.0.1-SNAPSHOT,)
+										</versionRange>
+										<goals>
+											<goal>
+												buildMessageFiles
+											</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>
@@ -335,7 +353,7 @@
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-opensocial</artifactId>
 			<exclusions>
-				<!-- not compatible with selenium --> 
+				<!-- not compatible with selenium -->
 				<exclusion>
 					<groupId>org.apache.tomcat</groupId>
 					<artifactId>el-api</artifactId>
@@ -382,7 +400,7 @@
 			<artifactId>commons-logging</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<!-- the api version is only a commons-logging jar with some extras-->
+		<!-- the api version is only a commons-logging jar with some extras -->
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging-api</artifactId>
@@ -398,6 +416,11 @@
 			<artifactId>commons-httpclient</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.3.3</version>
+		</dependency>
+		<dependency>
 			<groupId>dom4j</groupId>
 			<artifactId>dom4j</artifactId>
 			<exclusions>
@@ -405,7 +428,8 @@
 					<artifactId>pull-parser</artifactId>
 					<groupId>pull-parser</groupId>
 				</exclusion>
-				<!-- xmlParserAPIs is an old jar file name from xerces (cf http://stackoverflow.com/questions/11677572/dealing-with-xerces-hell-in-java-maven ) -->
+				<!-- xmlParserAPIs is an old jar file name from xerces (cf http://stackoverflow.com/questions/11677572/dealing-with-xerces-hell-in-java-maven 
+					) -->
 				<exclusion>
 					<artifactId>xmlParserAPIs</artifactId>
 					<groupId>xerces</groupId>
@@ -423,11 +447,6 @@
 			<version>1.1</version>
 		</dependency>
 		<dependency>
-			<groupId>net.tanesha.recaptcha4j</groupId>
-			<artifactId>recaptcha4j</artifactId>
-			<version>0.0.7</version>
-		</dependency>
-		<dependency>
 			<groupId>org.mockejb</groupId>
 			<artifactId>mockejb</artifactId>
 			<version>0.6-beta2</version>
@@ -436,7 +455,7 @@
 		<dependency>
 			<groupId>org.tuckey</groupId>
 			<artifactId>urlrewritefilter</artifactId>
-			<version>3.2.0_jaeschke</version>
+			<version>4.0.4</version>
 			<!-- embedded tomcat requires servlet-api 3 (which has a different artifact-id) -->
 			<exclusions>
 				<exclusion>
@@ -456,13 +475,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-lucene</artifactId>
+			<artifactId>bibsonomy-search-elasticsearch</artifactId>
 		</dependency>
-		<!--
-			*** beanutils 1.7.0 contain a memory leak *** we don't have a direct
-			dependency to beanutils, but some lib needs it so we override here to
-			the leak-free version 1.8.0
-		-->
+		<!-- *** beanutils 1.7.0 contain a memory leak *** we don't have a direct 
+			dependency to beanutils, but some lib needs it so we override here to the 
+			leak-free version 1.8.0 -->
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
@@ -530,10 +547,9 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!-- the current 0.9.6 version that is included by spring-security-openid
-			caches requests too long; 0.9.7 fixed the problem 
-			TODO: as soon as spring-security-openid updates the openid4java library
-			we can remove this dependency "override"-->
+		<!-- the current 0.9.6 version that is included by spring-security-openid 
+			caches requests too long; 0.9.7 fixed the problem TODO: as soon as spring-security-openid 
+			updates the openid4java library we can remove this dependency "override" -->
 		<dependency>
 			<groupId>org.openid4java</groupId>
 			<artifactId>openid4java</artifactId>
@@ -599,6 +615,12 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-dbcp</artifactId>
+			<version>${tomcat.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-logging-juli</artifactId>
 			<version>${tomcat.version}</version>
@@ -630,7 +652,13 @@
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
 			<artifactId>selenium-java</artifactId>
-			<version>2.24.1</version>
+			<version>2.45.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<artifactId>xml-apis</artifactId>
+			<groupId>xml-apis</groupId>
+			<version>1.4.01</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- http unit needs a newer version of these dependencies -->
@@ -640,11 +668,17 @@
 			<artifactId>commons-lang</artifactId>
 			<version>2.4</version>
 		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.nekohtml</groupId>
+			<artifactId>nekohtml</artifactId>
+			<version>1.9.21</version>
+		</dependency>
+		
 		<!-- TODO: shinding not compatible with newer version -->
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>12.0</version>
+			<version>18.0</version>
 		</dependency>
 		<dependency>
 			<groupId>joda-time</groupId>
@@ -660,13 +694,36 @@
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.6.3</version>
+		</dependency>
 	</dependencies>
 	<properties>
 		<wtpversion>1.5</wtpversion>
 		<project.build.webapp.resourcedir>${project.build.directory}/${project.build.finalName}/resources</project.build.webapp.resourcedir>
-		<tomcat.version>7.0.29</tomcat.version>
-		<!-- We need to wrap the maven.build.timestamp property as it is not used for filtering, cf. http://stackoverflow.com/questions/13228472/how-to-acces-maven-build-timestamp-for-resource-filtering -->
+		<tomcat.version>7.0.55</tomcat.version>
+		<!-- We need to wrap the maven.build.timestamp property as it is not used 
+			for filtering, cf. http://stackoverflow.com/questions/13228472/how-to-acces-maven-build-timestamp-for-resource-filtering -->
 		<build.timestamp>${maven.build.timestamp}</build.timestamp>
 		<maven.build.timestamp.format>HH:mm dd.MM.yyyy</maven.build.timestamp.format>
 	</properties>
+	<profiles>
+		<profile>
+			<id>webappTests</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<!-- use standard config don't exclude RemoteTests -->
+						<configuration combine.self="override">
+							<groups>org.bibsonomy.webapp.WebappTest</groups>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

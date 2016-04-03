@@ -106,8 +106,8 @@
 	</URLTest>
 	<URLTest id="url_16">
 		<TestDescription>URL scraping test for the IOP scraper</TestDescription>
-		<URL>http://www.iop.org/EJ/abstract/1751-8121/40/27/F01</URL>
-		<BibFile>IOPScraperUnitURLTest.bib</BibFile>
+		<URL>http://iopscience.iop.org/article/10.1088/1742-5468/2008/10/P10008</URL>
+		<BibFile>IOPScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.iop.IOPScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_17">
@@ -115,7 +115,8 @@
 		<URL>http://www.l3s.de/web/page25g.do?kcond12g.att1=782</URL>
 		<BibFile>L3SScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.l3s.L3SScraper</Scraper>
-		<!-- New L3S web site layout not supported; publication lists on web site not in correct format, yet -->
+		<!-- New L3S web site layout not supported; publication lists on web site 
+			not in correct format, yet -->
 		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_18">
@@ -295,7 +296,7 @@
 		<URL>http://www.nature.com/ajh/journal/v21/n4/abs/ajh20089a.html</URL>
 		<BibFile>NatureScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.nature.NatureScraper</Scraper>
-		<!--redirected to another service-->
+		<!--redirected to another service -->
 		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_46">
@@ -508,13 +509,13 @@
 		<URL>http://usenix.org/publications/library/proceedings/ec96/geer.html</URL>
 		<BibFile>UsenixScraperUnitURLTest8.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.usenix.UsenixScraper</Scraper>
-	</URLTest>	
+	</URLTest>
 	<URLTest id="url_84">
 		<TestDescription>URL test for proceeding page from usenix.org with old layout</TestDescription>
 		<URL>http://usenix.org/publications/library/proceedings/mob95/raja.html</URL>
 		<BibFile>UsenixScraperUnitURLTest9.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.usenix.UsenixScraper</Scraper>
-	</URLTest>	
+	</URLTest>
 	<URLTest id="url_85">
 		<TestDescription>URL test for proceeding page from usenix.org with old layout</TestDescription>
 		<URL>http://usenix.org/publications/library/proceedings/sd96/wilkes.html</URL>
@@ -526,12 +527,18 @@
 		<URL>http://www.isrl.uiuc.edu/~amag/langev/paper/mitchener07middleEnglish.html</URL>
 		<BibFile>LangevScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.langev.LangevScraper</Scraper>
+		<!-- disabled because the website http://www.isrl.uiuc.edu/ is no more 
+			available -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_87">
 		<TestDescription>Langev Url test 2</TestDescription>
 		<URL>http://www.isrl.uiuc.edu/~amag/langev/paper/arbib06mirrorSystemEditedBook.html</URL>
 		<BibFile>LangevScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.langev.LangevScraper</Scraper>
+		<!-- disabled because the website http://www.isrl.uiuc.edu/ is no more 
+			available -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_88">
 		<TestDescription>Liebert Url test 1</TestDescription>
@@ -565,7 +572,7 @@
 	</URLTest>
 	<URLTest id="url_93">
 		<TestDescription>OSA Scraper url test</TestDescription>
-		<URL>http://www.opticsinfobase.org/josaa/abstract.cfm?uri=josaa-25-5-1084</URL>
+		<URL>https://www.osapublishing.org/josaa/abstract.cfm?uri=josaa-25-5-1084</URL>
 		<BibFile>OSAScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.osa.OSAScraper</Scraper>
 	</URLTest>
@@ -574,6 +581,8 @@
 		<URL>http://psycontent.metapress.com/content/wlr0r32161j4j150/?p=077ed4c087c541f8a7a3d80dc02f4290&amp;pi=0</URL>
 		<BibFile>PsyContentScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.psycontent.PsyContentScraper</Scraper>
+		<!-- 404 -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_95">
 		<TestDescription>PsyContent Scraper url test 2</TestDescription>
@@ -606,7 +615,6 @@
 		<URL>http://www.eric.ed.gov/ERICWebPortal/Home.portal?_nfpb=true&amp;ERICExtSearch_SearchValue_0=star&amp;searchtype=keyword&amp;ERICExtSearch_SearchType_0=kw&amp;_pageLabel=RecordDetails&amp;objectId=0900019b802f2e44&amp;accno=EJ786532&amp;_nfls=false</URL>
 		<BibFile>EricScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.eric.EricScraper</Scraper>
-		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_100">
 		<TestDescription>iwaponline Scraper url test</TestDescription>
@@ -820,7 +828,6 @@
 		<URL>http://eric.ed.gov/ERICWebPortal/custom/portlets/recordDetails/detailmini.jsp?_nfpb=true&amp;_&amp;ERICExtSearch_SearchValue_0=EJ523959&amp;ERICExtSearch_SearchType_0=no&amp;accno=EJ523959</URL>
 		<BibFile>EricScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.eric.EricScraper</Scraper>
-		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_137">
 		<TestDescription>Scraping test for IEEE computer society scraper (new url schema)</TestDescription>
@@ -830,7 +837,7 @@
 	</URLTest>
 	<URLTest id="url_138">
 		<TestDescription>Url test for GoogleScholarScraper (Firefox plugin support)</TestDescription>
-		<URL>http://scholar.google.de/scholar.bib?q=info:zN5aQ90hwhYJ:scholar.google.com/&amp;output=citation&amp;hl=de&amp;as_sdt=0&amp;ct=citation&amp;cd=0</URL>
+		<URL>https://scholar.google.de/scholar.bib?q=info:zN5aQ90hwhYJ:scholar.google.com/&amp;output=citation&amp;hl=de&amp;as_sdt=0&amp;ct=citation&amp;cd=0</URL>
 		<BibFile>GoogleScholarScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.googlescholar.GoogleScholarScraper</Scraper>
 	</URLTest>
@@ -869,13 +876,13 @@
 		<URL>http://www.springerlink.com/link.asp?id=w425794t7433</URL>
 		<BibFile>SpringerLinkScraperUnitURLTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
-		<!-- could not find "export citation" link on Springer page, thus, no
-		export available -->
+		<!-- could not find "export citation" link on Springer page, thus, no export 
+			available -->
 		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_144">
 		<TestDescription>test for cell scraper</TestDescription>
-		<URL>http://www.cell.com/abstract/S0092-8674(09)00271-2</URL>
+		<URL>http://www.cell.com/cell/abstract/S0092-8674(09)00271-2</URL>
 		<BibFile>CellScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.cell.CellScraper</Scraper>
 	</URLTest>
@@ -886,10 +893,10 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.cell.CellScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_146">
-		<TestDescription>test for AGU scraper</TestDescription>
-		<URL>http://www.agu.org/books/ar/v071/</URL>
-		<BibFile>AGUScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.agu.AGUScraper</Scraper>
+		<TestDescription>URL scraping test with a citation page from intersience wiley</TestDescription>
+		<URL>http://onlinelibrary.wiley.com/book/10.1029/AR071</URL>
+		<BibFile>WileyIntersienceScraperUnitURLTest5.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_147">
 		<TestDescription>eprint url test</TestDescription>
@@ -1014,7 +1021,7 @@
 		<BibFile>SSRNScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ssrn.SSRNScraper</Scraper>
 		<Enabled>true</Enabled>
-	</URLTest>	
+	</URLTest>
 	<URLTest id="url_166">
 		<TestDescription>Test for ISBN amazon scraper</TestDescription>
 		<URL></URL>
@@ -1091,19 +1098,14 @@
 		<URL>http://prola.aps.org/abstract/PR/v149/i2/p674_1</URL>
 		<BibFile>ProlaScraperUnitURLTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.prola.ProlaScraper</Scraper>
-	</URLTest>	
-	<URLTest id="url_178">
-		<TestDescription>URL scraping test for the IOP scraper</TestDescription>
-		<URL>http://iopscience.iop.org/1751-8121/40/27/F01</URL>
-		<BibFile>IOPScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.iop.IOPScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_179">
 		<TestDescription>URL scraping test with publication from siencedirect</TestDescription>
 		<URL>http://www.sciencedirect.com/science?_ob=ArticleURL&amp;_udi=B6TFN-3YYMK95-X&amp;_user=4861060&amp;_coverDate=03%2F31%2F2000&amp;_rdoc=1&amp;_fmt=high&amp;_orig=search&amp;_sort=d&amp;_docanchor=&amp;view=c&amp;_acct=C000065416&amp;_version=1&amp;_urlVersion=0&amp;_userid=4861060&amp;md5=97f0b3ba3f66fa8a5d57a5b48b0beb8c</URL>
 		<BibFile>ScienceDirectScraperUnitURLTest5.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper</Scraper>
-		<Enabled>true</Enabled>
+		<!-- URL is incorrect -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_180">
 		<TestDescription>DBLP scraping test (html page)</TestDescription>
@@ -1113,13 +1115,13 @@
 	</URLTest>
 	<URLTest id="url_181">
 		<TestDescription>A and A scraping test</TestDescription>
-		<URL>http://www.aanda.org/index.php?option=article&amp;access=doi&amp;doi=10.1051/0004-6361:20053694</URL>
+		<URL>http://www.aanda.org/articles/aa/abs/2006/01/aa3694-05/aa3694-05.html</URL>
 		<BibFile>AandAScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.aanda.AandAScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_182">
 		<TestDescription>A and A scraping test</TestDescription>
-		<URL>http://www.aanda.org/index.php?option=article&amp;access=doi&amp;doi=10.1051/0004-6361/201014294</URL>
+		<URL>http://www.aanda.org/articles/aa/abs/2010/05/aa14294-10/aa14294-10.html</URL>
 		<BibFile>AandAScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.aanda.AandAScraper</Scraper>
 		<AdditionalInfo>wait until AandA changed their output</AdditionalInfo>
@@ -1141,6 +1143,8 @@
 		<URL>http://www.sciencedirect.com/science?_ob=ArticleURL&amp;_udi=B758F-4YXK4HW-1&amp;_user=616166&amp;_coverDate=07%2F31%2F2010&amp;_rdoc=1&amp;_fmt=high&amp;_orig=search&amp;_sort=d&amp;_docanchor=&amp;view=c&amp;_acct=C000032339&amp;_version=1&amp;_urlVersion=0&amp;_userid=616166&amp;md5=f5c400363dcb6cc7cfddf6c637c3484c</URL>
 		<BibFile>ScienceDirectScraperUnitURLTest6.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper</Scraper>
+		<!-- URL is incorrect -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_186">
 		<TestDescription>acm url test</TestDescription>
@@ -1162,7 +1166,7 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper</Scraper>
 		<Enabled>true</Enabled>
 		<AdditionalInfo>Sometimes scraping won't work. Dunno why</AdditionalInfo>
-	</URLTest>	
+	</URLTest>
 	<URLTest id="url_190">
 		<TestDescription>test for PNASScraper</TestDescription>
 		<URL>http://www.pnas.org/content/106/52/22480.abstract</URL>
@@ -1312,7 +1316,7 @@
 	</URLTest>
 	<URLTest id="url_213">
 		<TestDescription>URL test for http://ajrccm.atsjournals.org/</TestDescription>
-		<URL>http://www.atsjournals.org/doi/abs/10.1164/rccm.201106-1094OC</URL> 
+		<URL>http://www.atsjournals.org/doi/abs/10.1164/rccm.201106-1094OC</URL>
 		<BibFile>ATSScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ats.ATSScraper</Scraper>
 	</URLTest>
@@ -1343,8 +1347,8 @@
 	<URLTest id="url_218">
 		<TestDescription>test for pages with coins (multiple authors)</TestDescription>
 		<URL>http://www.mendeley.com/research/active-learning-overcome-sample-selection-bias-application-photometric-variable-star-classification/</URL>
-		<BibFile>CoinsScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.generic.CoinsScraper</Scraper>
+		<BibFile>MendeleyScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.mendeley.MendeleyScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_219">
 		<TestDescription>test for http://jis.sagepub.com/</TestDescription>
@@ -1394,7 +1398,7 @@
 		<BibFile>FASEBJournalScraperUnitTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.faseb.FASEBJournalScraper</Scraper>
 	</URLTest>
-		<URLTest id="url_227">
+	<URLTest id="url_227">
 		<TestDescription>FASEB Journal Scraper test</TestDescription>
 		<URL>http://www.fasebj.org/content/15/14/2565.abstract</URL>
 		<BibFile>FASEBJournalScraperUnitTest3.bib</BibFile>
@@ -1405,7 +1409,7 @@
 		<URL>http://www.annualreviews.org/doi/full/10.1146/annurev-bioeng-071811-150124</URL>
 		<BibFile>AnnualreviewsScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.annualreviews.AnnualreviewsScraper</Scraper>
-	</URLTest>	
+	</URLTest>
 	<URLTest id="url_229">
 		<TestDescription>test for ScienceMagScraper</TestDescription>
 		<URL>http://www.sciencemag.org/content/276/5317/1425.full</URL>
@@ -1415,9 +1419,9 @@
 	</URLTest>
 	<URLTest id="url_230">
 		<TestDescription>test for pages with emeraldinsight</TestDescription>
-		<URL>http://www.emeraldinsight.com/books.htm?chapterid=1838910&amp;show=pdf</URL>
-		<BibFile>CoinsScraperUnitURLTest3.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.generic.CoinsScraper</Scraper>
+		<URL>http://www.emeraldinsight.com/doi/abs/10.1108/S1876-0562%282004%290000004009</URL>
+		<BibFile>APHAScraperUnitURLTest4.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.apha.APHAScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_231">
 		<TestDescription>test for nature.com</TestDescription>
@@ -1598,7 +1602,7 @@
 	</URLTest>
 	<URLTest id="url_260">
 		<TestDescription>DublinCoreScraper Test 1</TestDescription>
-		<!--  <URL>http://darwin.bth.rwth-aachen.de/opus3/volltexte/2013/4533/</URL> -->
+		<!-- <URL>http://darwin.bth.rwth-aachen.de/opus3/volltexte/2013/4533/</URL> -->
 		<URL>http://publications.rwth-aachen.de/record/211871</URL>
 		<BibFile>DCScraperTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.generic.DublinCoreScraper</Scraper>
@@ -1728,11 +1732,355 @@
 		<URL>http://www.akademiai.com/content/y5t2lbg5nn3hxa0y/</URL>
 		<BibFile>AkademiaiScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.akademiai.AkademiaiScraper</Scraper>
+		<!-- 404 -->
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_282">
 		<TestDescription>test for nature.com</TestDescription>
 		<URL>http://www.nature.com/news/images-of-the-month-october-2014-1.16228</URL>
 		<BibFile>NatureScraperUnitURLTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.nature.NatureScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_283">
+		<TestDescription>Scraping test for IEEE computer society scraper PDF</TestDescription>
+		<URL>http://www.computer.org/csdl/mags/co/2001/02/r2026.pdf</URL>
+		<BibFile>IEEEComputerSocietyScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_284">
+		<TestDescription>scraping test for journal page from plos.org</TestDescription>
+		<URL>http://www.plosone.org/article/info%3Adoi%2F10.1371%2Fjournal.pone.0114825</URL>
+		<BibFile>PlosScraperUnitURLTest10.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_285">
+		<TestDescription>scraping test for journal page from nowpublishers.com</TestDescription>
+		<URL>http://www.nowpublishers.com/article/Details/INR-043</URL>
+		<BibFile>NowPublishersScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.nowpublishers.NowPublishersScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_286">
+		<TestDescription>scraping test for journal page from nowpublishers.com</TestDescription>
+		<URL>http://www.nowpublishers.com/article/Details/INR-012</URL>
+		<BibFile>NowPublishersScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.nowpublishers.NowPublishersScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_287">
+		<TestDescription>scraping test for journal page from genomebiology.com</TestDescription>
+		<URL>http://www.genomebiology.com/2014/15/7/424</URL>
+		<BibFile>GenomeBiologyScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.genome.GenomeBiologyScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_288">
+		<TestDescription>scraping test for journal page from ajph.aphapublications.org/</TestDescription>
+		<URL>http://ajph.aphapublications.org/doi/abs/10.2105/AJPH.2009.160184</URL>
+		<BibFile>APHAScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.apha.APHAScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_289">
+		<TestDescription>scraping test for ACAM page from acm.org/</TestDescription>
+		<URL>http://cacm.acm.org/magazines/2015/8/189841-understanding-the-us-domestic-computer-science-phd-pipeline/fulltext</URL>
+		<BibFile>ACMBasicScraperUnitURLTest9.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_290">
+		<TestDescription>scraping test for Copac Scraper</TestDescription>
+		<URL>http://copac.jisc.ac.uk/search?title=Measures%20and%20aggregation%3A%20formal%20aspects%20and%20applications%20to%20clustering%20and%20decision.&amp;rn=1</URL>
+		<BibFile>CopacScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.copac.CopacScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_291">
+		<TestDescription>scraping test for journal page from ajph.aphapublications.org/</TestDescription>
+		<URL>http://ajph.aphapublications.org/doi/abs/10.2105/AJPH.2009.181958</URL>
+		<BibFile>APHAScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.apha.APHAScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_292">
+		<TestDescription>scraping test for cshperspectives.cshlp.org host using CSHLP Scraper</TestDescription>
+		<URL>http://cshperspectives.cshlp.org/content/3/3/a004994.short</URL>
+		<BibFile>CSHLPScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_293">
+		<TestDescription>scraping test for cshperspectives.cshlp.org host using CSHLP Scraper</TestDescription>
+		<URL>http://cshperspectives.cshlp.org/content/3/3/a004994.abstract</URL>
+		<BibFile>CSHLPScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_294">
+		<TestDescription>scraping test for cshperspectives.cshlp.org host using CSHLP Scraper</TestDescription>
+		<URL>http://cshperspectives.cshlp.org/content/3/3/a004994.full.pdf+html</URL>
+		<BibFile>CSHLPScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_295">
+		<TestDescription>scraping test for cshperspectives.cshlp.org host using CSHLP Scraper</TestDescription>
+		<URL>http://cshperspectives.cshlp.org/content/3/3/a004994.full</URL>
+		<BibFile>CSHLPScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_296">
+		<TestDescription>URL scraping test with publication from AAAI</TestDescription>
+		<URL>http://www.aaai.org/ocs/index.php/IAAI/IAAI14/paper/view/8607</URL>
+		<BibFile>AAAIScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.aaai.AAAIScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_297">
+		<TestDescription>URL scraping test for the IOP scraper</TestDescription>
+		<URL>http://iopscience.iop.org/article/10.1088/1742-5468/2008/10/P10008/meta</URL>
+		<BibFile>IOPScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.iop.IOPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_298">
+		<TestDescription>DublinCoreScraper Test 5</TestDescription>
+		<URL>http://www.uel.br/revistas/uel/index.php/informacao/article/view/19996</URL>
+		<BibFile>DCScraperTest5.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.generic.DublinCoreScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_299">
+		<TestDescription>test for pages with coins</TestDescription>
+		<URL>http://revista.ibict.br/ciinf/index.php/ciinf/article/view/2262/1879</URL>
+		<BibFile>CoinsScraperUnitURLTest5.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.generic.CoinsScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_300">
+		<TestDescription>scraping test for jbc.org host using CSHLP Scraper</TestDescription>
+		<URL>http://www.jbc.org/content/288/10/6904.abstract</URL>
+		<BibFile>CSHLPScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_301">
+		<TestDescription>scraping test for jbc.org host using CSHLP Scraper</TestDescription>
+		<URL>http://www.jbc.org/content/288/10/6904.short</URL>
+		<BibFile>CSHLPScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_302">
+		<TestDescription>scraping test for jbc.org host using CSHLP Scraper</TestDescription>
+		<URL>http://www.jbc.org/content/288/10/6904.full</URL>
+		<BibFile>CSHLPScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_303">
+		<TestDescription>scraping test for jbc.org host using CSHLP Scraper</TestDescription>
+		<URL>http://www.jbc.org/content/288/10/6904.full.pdf+html</URL>
+		<BibFile>CSHLPScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_304">
+		<TestDescription>scraping test for cancerres.aacrjournals.org host using CSHLP Scraper</TestDescription>
+		<URL>http://cancerres.aacrjournals.org/content/65/13/5628.abstract</URL>
+		<BibFile>CSHLPScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_305">
+		<TestDescription>scraping test for cancerres.aacrjournals.org host using CSHLP Scraper</TestDescription>
+		<URL>http://cancerres.aacrjournals.org/content/65/13/5628.short</URL>
+		<BibFile>CSHLPScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_306">
+		<TestDescription>scraping test for cancerres.aacrjournals.org host using CSHLP Scraper</TestDescription>
+		<URL>http://cancerres.aacrjournals.org/content/65/13/5628.full</URL>
+		<BibFile>CSHLPScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_307">
+		<TestDescription>scraping test for cancerres.aacrjournals.org host using CSHLP Scraper</TestDescription>
+		<URL>http://cancerres.aacrjournals.org/content/65/13/5628.full.pdf+html</URL>
+		<BibFile>CSHLPScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_308">
+		<TestDescription>scraping test for jimmunol.org host using CSHLP Scraper</TestDescription>
+		<URL>http://www.jimmunol.org/content/183/11/7569.abstract</URL>
+		<BibFile>CSHLPScraperUnitURLTest4.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_309">
+		<TestDescription>scraping test for jimmunol.org host using CSHLP Scraper</TestDescription>
+		<URL>http://www.jimmunol.org/content/183/11/7569.short</URL>
+		<BibFile>CSHLPScraperUnitURLTest4.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_310">
+		<TestDescription>scraping test for jimmunol.org host using CSHLP Scraper</TestDescription>
+		<URL>http://www.jimmunol.org/content/183/11/7569.full</URL>
+		<BibFile>CSHLPScraperUnitURLTest4.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_311">
+		<TestDescription>scraping test for jimmunol.org host using CSHLP Scraper</TestDescription>
+		<URL>http://www.jimmunol.org/content/183/11/7569.full.pdf+html</URL>
+		<BibFile>CSHLPScraperUnitURLTest4.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_312">
+		<TestDescription>scraping test for journal page from nrcresearchpress.com/ using APHAScraper</TestDescription>
+		<URL>http://www.nrcresearchpress.com/doi/abs/10.1139/o59-099</URL>
+		<BibFile>APHAScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.apha.APHAScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_313">
+		<TestDescription>JStor Scraper url test</TestDescription>
+		<URL>http://www.jstor.org/doi/abs/10.1086/505090</URL>
+		<BibFile>JStorScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.jstor.JStorScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_314">
+		<TestDescription>DBLP scraping test (html page)</TestDescription>
+		<URL>http://dblp.uni-trier.de/rec/bibtex/books/sp/stdesign14/AtzmuellerBHKM0SSS14</URL>
+		<BibFile>DBLPScraperUnitTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_315">
+		<TestDescription>DBLP scraping test (html page)</TestDescription>
+		<URL>http://dblp.uni-trier.de/rec/xml/books/sp/stdesign14/AtzmuellerBHKM0SSS14.xml</URL>
+		<BibFile>DBLPScraperUnitTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_316">
+		<TestDescription>DBLP scraping test (html page)</TestDescription>
+		<URL>http://dblp.uni-trier.de/rec/rdf/books/sp/stdesign14/AtzmuellerBHKM0SSS14.rdf</URL>
+		<BibFile>DBLPScraperUnitTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_317">
+		<TestDescription>DBLP scraping test (html page)</TestDescription>
+		<URL>http://dblp.uni-trier.de/rec/ris/books/sp/stdesign14/AtzmuellerBHKM0SSS14.ris</URL>
+		<BibFile>DBLPScraperUnitTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_318">
+		<TestDescription>DBLP scraping test (html page)</TestDescription>
+		<URL>http://dblp.uni-trier.de/rec/bib1/conf/gi/HothoJSS06.bib</URL>
+		<BibFile>DBLPScraperUnitTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_319">
+		<TestDescription>DBLP scraping test (html page)</TestDescription>
+		<URL>http://dblp.uni-trier.de/rec/bib2/conf/gi/HothoJSS06.bib</URL>
+		<BibFile>DBLPScraperUnitTest4.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_320">
+		<TestDescription>DBLP scraping test (html page)</TestDescription>
+		<URL>http://dblp.uni-trier.de/rec/html/books/sp/stdesign14/AtzmuellerBHKM0SSS14</URL>
+		<BibFile>DBLPScraperUnitTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_321">
+		<TestDescription>DBLP scraping test (html page)</TestDescription>
+		<URL>http://dblp.dagstuhl.de/rec/html/journals/logcom/BelohlavekV11</URL>
+		<BibFile>DBLPScraperUnitTest5.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_322">
+		<TestDescription>DBLP scraping test (html page)</TestDescription>
+		<URL>http://dblp.dagstuhl.de/rec/bibtex/journals/logcom/BelohlavekV11</URL>
+		<BibFile>DBLPScraperUnitTest5.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_323">
+		<TestDescription>DBLP scraping test (html page)</TestDescription>
+		<URL>http://dblp.dagstuhl.de/rec/xml/journals/logcom/BelohlavekV11.xml</URL>
+		<BibFile>DBLPScraperUnitTest5.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_324">
+		<TestDescription>DBLP scraping test (html page)</TestDescription>
+		<URL>http://dblp.dagstuhl.de/rec/ris/journals/logcom/BelohlavekV11.ris</URL>
+		<BibFile>DBLPScraperUnitTest5.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_325">
+		<TestDescription>DBLP scraping test (html page)</TestDescription>
+		<URL>http://dblp.dagstuhl.de/rec/rdf/journals/logcom/BelohlavekV11.rdf</URL>
+		<BibFile>DBLPScraperUnitTest5.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_326">
+		<TestDescription>DBLP scraping test (html page)</TestDescription>
+		<URL>http://www.dblp.org/rec/html/conf/icassp/AlmeidaK14</URL>
+		<BibFile>DBLPScraperUnitTest6.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_327">
+		<TestDescription>DBLP scraping test (html page)</TestDescription>
+		<URL>http://www.dblp.org/rec/bibtex/conf/icassp/AlmeidaK14</URL>
+		<BibFile>DBLPScraperUnitTest6.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_328">
+		<TestDescription>DBLP scraping test (html page)</TestDescription>
+		<URL>http://www.dblp.org/rec/xml/conf/icassp/AlmeidaK14.xml</URL>
+		<BibFile>DBLPScraperUnitTest6.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_329">
+		<TestDescription>DBLP scraping test (html page)</TestDescription>
+		<URL>http://www.dblp.org/rec/ris/conf/icassp/AlmeidaK14.ris</URL>
+		<BibFile>DBLPScraperUnitTest6.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_330">
+		<TestDescription>DBLP scraping test (html page)</TestDescription>
+		<URL>http://www.dblp.org/rec/rdf/conf/icassp/AlmeidaK14.rdf</URL>
+		<BibFile>DBLPScraperUnitTest6.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_331">
+		<TestDescription>Url test for GoogleScholarScraper (Firefox plugin support)</TestDescription>
+		<URL>https://scholar.google.com/citations?view_op=view_citation&amp;hl=en&amp;user=1t5awvEAAAAJ&amp;citation_for_view=1t5awvEAAAAJ:UeHWp8X0CEIC</URL>
+		<BibFile>GoogleScholarScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.googlescholar.GoogleScholarScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_332">
+		<TestDescription>Url test for RWTHAachen University</TestDescription>
+		<URL>http://publications.rwth-aachen.de/record/444986</URL>
+		<BibFile>RWTHAachenScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.RWTH.RWTHAachenScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_333">
+		<TestDescription>test for pages with coins</TestDescription>
+		<URL>http://katalogplus.ub.uni-bielefeld.de/cgi-bin/new_titel.cgi?katkey=2014704&amp;art=f&amp;kat1=freitext&amp;kat2=ti&amp;kat3=aup&amp;op1=AND&amp;op2=AND&amp;var1=clustering&amp;var2=&amp;var3=&amp;vr=1&amp;pagesize=10&amp;sprache=GER&amp;bestand=lok&amp;sess=4f5e41e8d8e96721f5500fd05eed192a</URL>
+		<BibFile>CoinsScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.generic.CoinsScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_334">
+		<TestDescription>URL scraping test for the IOP scraper</TestDescription>
+		<URL>http://iopscience.iop.org/article/10.1088/1751-8113/49/2/025303/meta</URL>
+		<BibFile>IOPScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.iop.IOPScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_335">
+		<TestDescription>URL scraping test for the scielo scraper</TestDescription>
+		<URL>http://www.scielo.br/scielo.php?script=sci_arttext&amp;pid=S0066-782X2001001200008</URL>
+		<BibFile>SCIELOScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.scielo.SCIELOScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_336">
+		<TestDescription>URL scraping test for the scielo scraper</TestDescription>
+		<URL>http://www.google.com/patents/DE102009031804A1?cl=de</URL>
+		<BibFile>GooglePatentScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.googlepatent.GooglePatentScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_337">
+		<TestDescription>URL scraping test for the scielo scraper</TestDescription>
+		<URL>http://www.google.com/patents/DE102009031804A1?cl=en&amp;hl=de</URL>
+		<BibFile>GooglePatentScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.googlepatent.GooglePatentScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_338">
+		<TestDescription>Test for worldcat with correct authors</TestDescription>
+		<URL>http://www.worldcat.org/oclc/254138269</URL>
+		<BibFile>WorldCatScraperUnitURLTest4.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_339">
+		<TestDescription>URL scraping test with arxiv publications (PDF file)</TestDescription>
+		<URL>http://arxiv.org/pdf/0805.2045.pdf</URL>
+		<BibFile>ArxivScraperUnitURLTest4.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.arxiv.ArxivScraper</Scraper>
 	</URLTest>
 </test:Tests>

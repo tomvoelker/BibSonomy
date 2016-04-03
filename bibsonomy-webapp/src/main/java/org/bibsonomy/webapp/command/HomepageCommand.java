@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -32,20 +32,17 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 
 /**
- * 
- * Fills the home page
+ * fills the home page
  * 
  * @author Robert
  */
 public class HomepageCommand extends SimpleResourceViewCommand{
 	
-	/**
-	 * Fills the news box in the sidebar
-	 */
+	/** fills the news box in the sidebar */
 	private List<Post<Bookmark>> news;
 
 	/**
-	 * @return The latest news posts.
+	 * @return the latest news posts.
 	 */
 	public List<Post<Bookmark>> getNews() {
 		return this.news;
@@ -57,6 +54,4 @@ public class HomepageCommand extends SimpleResourceViewCommand{
 	public void setNews(List<Post<Bookmark>> news) {
 		this.news = news;
 	}
-	
-	
 }

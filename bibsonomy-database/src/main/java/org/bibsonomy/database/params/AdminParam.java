@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -72,6 +72,8 @@ public class AdminParam {
 
 	/** The group id after flagging */
 	private int newGroupId;
+	
+	private Date startDate;
 
 	/** The time of the update */
 	private Date updatedAt;
@@ -235,6 +237,20 @@ public class AdminParam {
 	 */
 	public void setNewGroupId(int newGroupId) {
 		this.newGroupId = newGroupId;
+	}
+
+	/**
+	 * @return the startDate
+	 */
+	public Date getStartDate() {
+		return this.startDate;
+	}
+
+	/**
+	 * @param startDate the startDate to set
+	 */
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
 	}
 
 	/**

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -74,7 +74,7 @@ public class GetResourcesViewable<R extends Resource, P extends ResourceParam<R>
 		}
 
 		if (present(param.getTagIndex())) {
-			return this.databaseManager.getPostsViewableByTag(param.getRequestedGroupName(), param.getUserName(), param.getTagIndex(), groupId, param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
+			return this.databaseManager.getPostsViewableByTag(param.getRequestedGroupName(), param.getUserName(), param.getTagIndex(), groupId, param.getFilters(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
 		}
 
 		return this.databaseManager.getPostsViewable(param.getRequestedGroupName(), param.getUserName(), groupId, HashID.getSimHash(param.getSimHash()), param.getLimit(), param.getOffset(), param.getSystemTags(), session);

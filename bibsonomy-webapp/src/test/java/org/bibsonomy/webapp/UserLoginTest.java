@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,41 +26,53 @@
  */
 package org.bibsonomy.webapp;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 /**
  * @author dzo
  */
-@Ignore // TODO: reactivate it
+@Category(WebappTest.class)
 public class UserLoginTest extends WebappTest {
 
 	private static final String INTERNAL_COOKIE_NAME = "db_user";
 
-	public UserLoginTest(final Class<WebDriver> webDriverClass) {
-		super(webDriverClass);
+	public UserLoginTest(final WebDriver webDriver) {
+		super(webDriver);
 	}
 	
 	@Test
 	public void quickLoginInternal() {
-		// open homepage
-		this.selenium.open("/");
+		// open login page
+		// TODO: use urlgenerator
+		this.webDriver.get(BASE_URL + "login");
 
 		// type username in field
-		this.selenium.type("id=un", "testuser1");
-		// click hack field for password
-		this.selenium.click("id=pw_form_copy");
+		final WebElement usernamefield = this.webDriver.findElement(By.id("username"));
+		usernamefield.clear();
+		final String username = "testuser1";
+		usernamefield.sendKeys(username);
 		// type password
-		this.selenium.type("id=pw", "test123");
+		final WebElement passwordField = this.webDriver.findElement(By.id("password"));
+		passwordField.clear();
+		passwordField.sendKeys("test123");
+		// remember me button
+		final WebElement rememberMe = this.webDriver.findElement(By.id("rememberMe1"));
+		rememberMe.click();
+		
 		// click login
-		this.selenium.click("css=input[type=\"image\"]");
-		this.selenium.waitForPageToLoad("3000");
-	
-		assertTrue(this.selenium.isTextPresent("logged in as"));
-		// ensure quick login sets cookie
-		assertTrue(this.selenium.isCookiePresent(INTERNAL_COOKIE_NAME));
+		final WebElement loginButton = this.webDriver.findElement(By.cssSelector("button.btn.btn-success"));
+		loginButton.click();
+		
+		assertEquals(BASE_URL, this.webDriver.getCurrentUrl());
+		
+		// check if cookie set
+		assertTrue(this.webDriver.manage().getCookieNamed(INTERNAL_COOKIE_NAME) != null);
 	}
 }

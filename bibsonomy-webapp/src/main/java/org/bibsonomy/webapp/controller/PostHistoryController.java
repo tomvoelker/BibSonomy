@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -76,7 +76,7 @@ public class PostHistoryController<R extends Resource> extends SingleResourceLis
 
 		}
 
-		this.setList(command, resourceClass, groupingEntity, requUser, null, longHash, null, FilterEntity.POSTS_HISTORY, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceClass).getEntriesPerPage());
+		this.setList(command, resourceClass, groupingEntity, requUser, null, longHash, null, FilterEntity.HISTORY, null, command.getStartDate(), command.getEndDate(), command.getListCommand(resourceClass).getEntriesPerPage());
 		this.postProcessAndSortList(command, resourceClass);
 		if (!present(command.getListCommand(resourceClass).getList())) {
 			return Views.ERROR;

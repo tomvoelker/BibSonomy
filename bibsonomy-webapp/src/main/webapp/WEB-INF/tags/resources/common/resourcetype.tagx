@@ -15,7 +15,7 @@
 	
 	<!--+
 		+ select resource type
-		+-->	
+		+-->
 	<fmt:message key="post.meta.display"/>:
 	<c:choose>
 		<c:when test="${showPublication and showBookmark }">

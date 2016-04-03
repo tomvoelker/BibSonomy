@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -55,6 +55,7 @@ import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.DiscussionItem;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -63,6 +64,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.EndnoteUtils;
+import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.model.util.UserUtils;
@@ -77,6 +79,7 @@ import org.bibsonomy.util.XmlUtils;
 import org.bibsonomy.util.id.DOIUtils;
 import org.bibsonomy.web.spring.converter.StringToEnumConverter;
 import org.bibsonomy.webapp.command.BaseCommand;
+import org.bibsonomy.webapp.util.TagViewUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -113,18 +116,7 @@ public class Functions {
 
 	private static final DateTimeFormatter MEMENTO_FORMAT = DateTimeFormat.forPattern("yyyyMMddHHmm");
 
-	/*
-	 * used by computeTagFontSize.
-	 * 
-	 * - scalingFactor: Controls difference between smallest and largest tag
-	 * (size of largest: 90 -> 200% font size; 40 -> ~170%; 20 -> ~150%; all for
-	 * offset = 10) - offset: controls size of smallest tag ( 10 -> 100%) -
-	 * default: default tag size returned in case of an error during computation
-	 */
-	private static final int TAGCLOUD_SIZE_SCALING_FACTOR = 45;
-	private static final int TAGCLOUD_SIZE_OFFSET = 10;
-	private static final int TAGCLOUD_SIZE_DEFAULT = 100;
-
+	
 	// load special characters
 	static {
 		try {
@@ -199,25 +191,14 @@ public class Functions {
 	}
 
 	/**
-	 * wrapper for {@link UrlUtils#safeURIDecode(String)}
-	 * 
-	 * @param uri
-	 *        a URI string
-	 * @return the decoded URI string
-	 */
-	public static String decodeURI(final String uri) {
-		return UrlUtils.safeURIDecode(uri);
-	}
-
-	/**
-	 * wrapper for {@link UrlUtils#safeURIEncode(String)}
+	 * wrapper for {@link UrlUtils#encodePathSegment(String)}
 	 * 
 	 * @param uri
 	 *        a URI string
 	 * @return the encoded URI string
 	 */
-	public static String encodeURI(final String uri) {
-		return UrlUtils.safeURIEncode(uri);
+	public static String encodePathSegment(final String uri) {
+		return UrlUtils.encodePathSegment(uri);
 	}
 
 	/**
@@ -313,37 +294,16 @@ public class Functions {
 	}
 
 	/**
-	 * Computes font size for given tag frequency and maximum tag frequency
-	 * inside tag cloud.
+	 * @see TagViewUtils#computeTagFontsize(Integer, Integer, Integer, String)
 	 * 
-	 * This is used as attribute font-size=X%. We expect 0 < tagMinFrequency <=
-	 * tagFrequency <= tagMaxFrequency. We return a value between 200 and 300 if
-	 * tagsizemode=popular, and between 100 and 200 otherwise.
-	 * 
-	 * @param tagFrequency
-	 *        - the frequency of the tag
-	 * @param tagMinFrequency
-	 *        - the minimum frequency within the tag cloud
-	 * @param tagMaxFrequency
-	 *        - the maximum frequency within the tag cloud
-	 * @param tagSizeMode
-	 *        - which kind of tag cloud is to be done (the one for the
-	 *        popular tags page vs. standard)
+	 * @param tagFrequency 
+	 * @param tagMinFrequency 
+	 * @param tagMaxFrequency 
+	 * @param tagSizeMode 
 	 * @return font size for the tag cloud with the given parameters
 	 */
 	public static Integer computeTagFontsize(final Integer tagFrequency, final Integer tagMinFrequency, final Integer tagMaxFrequency, final String tagSizeMode) {
-		try {
-			Double size = ((tagFrequency.doubleValue() - tagMinFrequency) / (tagMaxFrequency - tagMinFrequency)) * TAGCLOUD_SIZE_SCALING_FACTOR;
-			if ("popular".equals(tagSizeMode)) {
-				size *= 10;
-			}
-			size += TAGCLOUD_SIZE_OFFSET;
-			size = Math.log10(size);
-			size *= 100;
-			return size.intValue() == 0 ? TAGCLOUD_SIZE_DEFAULT : size.intValue();
-		} catch (final Exception ex) {
-			return TAGCLOUD_SIZE_DEFAULT;
-		}
+		return TagViewUtils.computeTagFontsize(tagFrequency, tagMinFrequency, tagMaxFrequency, tagSizeMode);
 	}
 
 	/**
@@ -499,15 +459,41 @@ public class Functions {
 	 * @param diffMap
 	 */
 	public static void diffEntriesPost(final Post<? extends Resource> newPost, final Post<? extends Resource> oldPost, final Map<String, String> diffMap) {
-
 		final Resource newResource = newPost.getResource();
 		final Resource oldResource = oldPost.getResource();
 
 		diffStringEntry(diffMap, "title", newResource.getTitle(), oldResource.getTitle());
 		diffStringEntry(diffMap, "description", newPost.getDescription(), oldPost.getDescription());
+		
 		if (!newPost.getTags().equals(oldPost.getTags())) {
 			diffMap.put("tags", compareTagSets(newPost.getTags(), oldPost.getTags()));
 		}
+		if (!newPost.getGroups().equals(oldPost.getGroups())) {
+			diffMap.put("groups", diffGroupSetEntry(newPost.getGroups(), oldPost.getGroups()));
+		}
+	}
+	
+	/**
+	 * TODO: how are groups sorted?
+	 * 
+	 * @param groups1
+	 * @param groups2
+	 */
+	private static String diffGroupSetEntry(Set<Group> groups1, Set<Group> groups2) {
+		final StringBuilder newSetAsString = new StringBuilder();
+		final StringBuilder oldSetAsString = new StringBuilder();
+		
+		for (Group group : groups1) {
+			newSetAsString.append(group.getName());
+			newSetAsString.append(" ");
+		}
+		
+		for (Group group : groups2) {
+			oldSetAsString.append(group.getName());
+			oldSetAsString.append(" ");
+		}
+		
+		return compareString(newSetAsString.toString().trim(), oldSetAsString.toString().trim());
 	}
 
 	private static String compareTagSets(final Set<Tag> newTags, final Set<Tag> oldTags) {
@@ -551,16 +537,13 @@ public class Functions {
 	public static String customized_diff_prettyHtml(final LinkedList<Diff> diffs) {
 		final StringBuilder html = new StringBuilder();
 		for (final Diff aDiff : diffs) {
-			final String text = aDiff.text.replace("&", "&amp;").replace("<", "&lt;")
-					.replace(">", "&gt;").replace("\n", "&para;<br>");
+			final String text = aDiff.text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\n", "&para;<br>");
 			switch (aDiff.operation) {
 			case INSERT:
-				html.append("<span style=\"background:#e6ffe6;\">").append(text)
-						.append("</span>");
+				html.append("<span style=\"background:#e6ffe6;\">").append(text).append("</span>");
 				break;
 			case DELETE:
-				html.append("<del style=\"background:#ffe6e6;\">").append(text)
-						.append("</del>");
+				html.append("<del style=\"background:#ffe6e6;\">").append(text).append("</del>");
 				break;
 			case EQUAL:
 				html.append("<span>").append(text).append("</span>");
@@ -658,7 +641,7 @@ public class Functions {
 	}
 
 	/**
-	 * returns the css Class for a given tag
+	 * @see TagViewUtils#getTagSize(Integer, Integer)
 	 * 
 	 * @param tagCount
 	 *        the count aof the current Tag
@@ -667,26 +650,7 @@ public class Functions {
 	 * @return the css class for the tag
 	 */
 	public static String getTagSize(final Integer tagCount, final Integer maxTagCount) {
-		/*
-		 * catch incorrect values
-		 */
-		if ((tagCount == 0) || (maxTagCount == 0)) {
-			return "tagtiny";
-		}
-
-		final int percentage = ((tagCount * 100) / maxTagCount);
-
-		if (percentage < 25) {
-			return "tagtiny";
-		} else if ((percentage >= 25) && (percentage < 50)) {
-			return "tagnormal";
-		} else if ((percentage >= 50) && (percentage < 75)) {
-			return "taglarge";
-		} else if (percentage >= 75) {
-			return "taghuge";
-		}
-
-		return "";
+		return TagViewUtils.getTagSize(tagCount, maxTagCount);
 	}
 
 	/**
@@ -1088,6 +1052,10 @@ public class Functions {
 	// TODO: (bootstrap) remove and use not empty check
 	public static Boolean hasDidYouKnowMessage(final BaseCommand command) {
 		return (command.getDidYouKnowMessage() != null);
+	}
+
+	public static Boolean isRegularGroup(final Group group) {
+		return GroupUtils.isValidGroup(group) && !GroupUtils.isExclusiveGroup(group);
 	}
 
 }

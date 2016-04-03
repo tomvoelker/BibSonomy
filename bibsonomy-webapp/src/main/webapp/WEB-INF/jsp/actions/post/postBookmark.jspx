@@ -8,18 +8,21 @@
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:form="http://www.springframework.org/tags/form"> 
 	
-<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<fmt:message key="navi.postBookmark" var="postBookmarkPageTitle"/>
 
-	<layout:paneLayout 
-		pageTitle="${postBookmarkPageTitle}" 
-		headerMessageKey="post_bookmark.heading" 
-		headerLogoClass="bookmarks" 
-		command="${command}" 
-		requPath="${requPath}" 
+	<layout:paneLayout
+		pageTitle="${postBookmarkPageTitle}"
+		headerMessageKey="post_bookmark.heading"
+		headerLogoClass="bookmarks"
+		command="${command}"
+		requPath="${requPath}"
 		activeTab="post"
 		minimizedContentWidth="${true}">
 
@@ -28,25 +31,35 @@
 		</jsp:attribute>
 	
 		<jsp:attribute name="content">
-			<p><fmt:message key="post_bookmark.description" /></p>
-				
-			<form method="POST" action="/editBookmark">
-				<label for="url"><fmt:message key="post.resource.url" /></label> 
-				<input class="input" type="text" name="url" id="url" size="60" value="http://" />
-				<fmt:message key="post.resource.post" var="post_bookmark" />
-				<input type="submit" name="submit" value="${post_bookmark}" />
-			</form>
+		
+			<fmt:message key="post_bookmark.description" var="desc" scope="request"/>
+			
+			<form:form cssClass="form-horizontal" role="form" method="POST" action="/editBookmark">
+				<fieldset>
+					<legend><c:out value="${postBookmarkPageTitle}" /></legend>
+					
+					<p><c:out value="${desc}" /></p>
+					<bsform:input id="url" labelColSpan="2" inputColSpan="10" placeholder="http://" path="post.resource.url" required="${true}" helpKey="post_bookmark.heading" />
+					<div class="form-group">
+						<div class="col-md-offset-2 col-md-10">
+							<fmt:message key="post.resource.post" var="post_bookmark" scope="request"/>
+							<button type="submit" class="btn btn-primary">${post_bookmark}</button>
+						</div>
+					</div>
+				</fieldset>
+			</form:form>
+
 		</jsp:attribute>
 		
 		
 
-	<!--+
+		<!--+
 			| infobox
 			+-->
 		<jsp:attribute name="infobox">
 			<parts:infobox>
 				<jsp:attribute name="infoTextBody">
-					<buttons:addonHint resourceType='bookmark'/>
+					<bs:didYouKnow command="${command}" />
 				</jsp:attribute>
 			</parts:infobox>
 		</jsp:attribute>

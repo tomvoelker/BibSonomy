@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -30,10 +30,9 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.database.AbstractDatabaseTest;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
-import org.bibsonomy.database.plugin.DatabasePlugin;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
-import org.bibsonomy.database.testutil.TestDatabaseLoader;
 import org.bibsonomy.testutil.DatabasePluginMock;
+import org.bibsonomy.testutil.TestDatabaseLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -55,7 +54,7 @@ public abstract class AbstractDatabaseManagerTest extends AbstractDatabaseTest {
 	/** Holds the database schema (script is at /src/main/resources) */
 	private static final String SCHEMA_FILENAME = "bibsonomy-db-schema.sql";
 	/** Holds the test data (script is found at /src/test/resources) */
-	private static final String DATA_FILENAME   = "database/insert-test-data.sql";
+	private static final String DATA_FILENAME = "database/insert-test-data.sql";
 	
 	/** holds the database helper class */
 	public static final TestDatabaseLoader LOADER = new TestDatabaseLoader(SCHEMA_FILENAME, DATA_FILENAME);
@@ -91,17 +90,20 @@ public abstract class AbstractDatabaseManagerTest extends AbstractDatabaseTest {
 	 */
 	@Before
 	public final void setUp() {
-		LOADER.load(DATABASE_CONFIG_FILE, DATABASE_ID);
+		LOADER.load(this.getDatabaseConfigFile(), DATABASE_ID);
 		this.dbSession = dbSessionFactory.getDatabaseSession();
 		
 		// load plugins (some tests are removing plugins from the plugin registry
 		this.pluginMock = new DatabasePluginMock();
-		pluginRegistry.clearPlugins();
-		
-		pluginRegistry.add(this.pluginMock);
-		for (final DatabasePlugin plugin : DatabasePluginRegistry.getDefaultPlugins()) {
-			pluginRegistry.add(plugin);
-		}
+		pluginRegistry.reset();
+		pluginRegistry.addPlugin(this.pluginMock);
+	}
+
+	/**
+	 * @return the database config file to use
+	 */
+	protected String getDatabaseConfigFile() {
+		return DATABASE_CONFIG_FILE;
 	}
 
 	/**

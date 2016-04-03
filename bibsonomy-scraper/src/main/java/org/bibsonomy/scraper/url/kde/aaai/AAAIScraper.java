@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -88,10 +88,11 @@ public class AAAIScraper extends AbstractUrlScraper {
 		
 		//build download link
 		String downloadLink = scrapingContext.getUrl().toExternalForm();
+		
 		downloadLink = downloadLink.replace(PAPER_VIEW_PATH_FRAGMENT, DOWNLOAD_PATH_FRAGMENT);
 		downloadLink = downloadLink.replace(ARTICLE_VIEW_PATH_FRAGMENT, DOWNLOAD_PATH_FRAGMENT);
 		downloadLink += PAPER_DOWNLOAD_PATH_SUFFIX;
-		
+	
 		//use BibtexScraper with download link
 		ScrapingContext bibContext;
 		try {
@@ -101,7 +102,6 @@ public class AAAIScraper extends AbstractUrlScraper {
 		}
 		if (new BibtexScraper().scrape(bibContext)) {
 			String bibtexResult = bibContext.getBibtexResult();
-			
 			//replace conference field key by booktitle
 			if (!bibtexResult.contains("booktitle")) {
 				bibtexResult = bibtexResult.replaceAll("conference\\*?=", "booktitle=");
@@ -116,5 +116,4 @@ public class AAAIScraper extends AbstractUrlScraper {
 		}
 		return false;
 	}
-
 }

@@ -8,15 +8,15 @@
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:user="urn:jsptagdir:/WEB-INF/tags/actions/user"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
 	<fmt:message key="navi.oauth.authorization" var="oAuthTitle" />
 	
-	<layout:paneLayout command="${command}" pageTitle="${oAuthTitle}" requPath="${requPath}" headerMessageKey="navi.oauth.denial">
+	<layout:paneLayout command="${command}" pageTitle="${oAuthTitle}" requPath="${requPath}" headerMessageKey="navi.oauth.authorization">
 
 		<!--+
 			| page specific styling
@@ -36,43 +36,38 @@
 				.oauthDescription {
 					font-style: italic;
 				}
-			</style>			
-  		</jsp:attribute>
+			</style>
+		</jsp:attribute>
 
 		<!--+
 			| heading 
 			+-->
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.oauth.denial" />
-    	</jsp:attribute>
-
-
-         
+			<parts:search pathMessageKey="navi.oauth.authorization" />
+		</jsp:attribute>
+		
 		<!--+
 			| content
 			+-->
-		<jsp:attribute name="content">				
-				
-				<div class="oauthMeta">
+		<jsp:attribute name="content">
+			<bs:alert style="info">
+				<jsp:attribute name="alertBody">
+					<p>
 					<fmt:message key="oauth.denial.info">
 						<fmt:param value="${command.appTitle}" />
 						<fmt:param value="${properties['project.name']}" />
 					</fmt:message>
+					</p>
 					<br/>
-					<br/>
-					<form class="oauthActions" name="authZForm" action="${command.callBackUrl}" method="POST">
-						<c:set var="returnMsg">
-							<fmt:message key="oauth.denial.return">
-								<fmt:param value="${command.appTitle}" />
-							</fmt:message>
-						</c:set>
-						<input type="submit" name="goBack" value="${returnMsg}"><!-- keep me --></input>
-					</form>
-				</div>
-				<div style="clear: both;"><!-- keep me --></div>
-				
-      	</jsp:attribute>
-      	
-      	
+					<p>
+					<a href="${command.callBackUrl}" class="btn btn-sm btn-primary" name="goBack" >
+						<fmt:message key="oauth.denial.return">
+							<fmt:param value="${command.appTitle}" />
+						</fmt:message>
+					</a>
+					</p>
+				</jsp:attribute>
+			</bs:alert>
+		</jsp:attribute>
 	</layout:paneLayout>
 </jsp:root>

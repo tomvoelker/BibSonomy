@@ -11,18 +11,17 @@
 
 	<div class="fsRow">
 		
-	    <style type="text/css">
+		<style type="text/css">
 			select { width:22%; }
 		</style>
 			
 		<div id="classifications" /> 
 		
 		<script type="text/javascript">
-		    $(function() {
+			$(function() {
 				initClassifications('classifications');
-		    });
+			});
 		</script>
-			
+		
 	</div>
-			
 </jsp:root>

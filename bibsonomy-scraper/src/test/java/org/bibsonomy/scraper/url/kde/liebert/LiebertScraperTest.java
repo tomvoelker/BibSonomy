@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -68,6 +68,9 @@ public class LiebertScraperTest {
 	public void url3TestRun(){
 		UnitTestRunner.runSingleTest("url_248");
 	}
+	/**
+	 * @throws Exception
+	 */
 	@Test
 	public void testCitedby() throws Exception {
 		final ScrapingContext sc = new ScrapingContext(new URL("http://www.liebertonline.com/doi/abs/10.1089/152308604773934350"));
@@ -83,7 +86,7 @@ public class LiebertScraperTest {
 		
 		assertTrue(cby.length() > 100);
 		
-		assertEquals("<div class=\"citedByEntry\"><div class=\"art_title\">RGD-conjugated triarylmethyl radical as probe".trim(), cby.substring(0, 95).trim());
+		assertEquals("<div class=\"citedByEntry\"><div class=\"art_title\">Synthesis, Characterization, and Nanoencapsula".trim(), cby.substring(0, 95).trim());
 		
 		assertTrue(cby.contains("Benoît Driesschaert"));
 	}

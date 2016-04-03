@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,10 +26,11 @@
  */
 package org.bibsonomy.scraper.id.kde.isbn;
 
+import static org.junit.Assert.assertTrue;
+
 import org.bibsonomy.scraper.ReachabilityTestRunner;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -57,6 +58,7 @@ public class ISBNScraperTest {
 	}
 	
 	/**
+	 * XXX: endnote export for this publication is broken
 	 * starts URL test with id url_170
 	 */
 	@Test
@@ -79,7 +81,6 @@ public class ISBNScraperTest {
 	public void testSupportsScrapingContext() {
 		final ISBNScraper scraper = new ISBNScraper();
 		
-		Assert.assertTrue(scraper.supportsScrapingContext(ReachabilityTestRunner.ISBN_SCRAPER_TEST_CONTEXT));
-		
+		assertTrue(scraper.supportsScrapingContext(ReachabilityTestRunner.ISBN_SCRAPER_TEST_CONTEXT));
 	}
 }

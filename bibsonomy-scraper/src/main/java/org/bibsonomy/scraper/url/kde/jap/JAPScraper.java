@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -52,7 +52,7 @@ public class JAPScraper extends GenericRISURLScraper implements ReferencesScrape
 	private static final String SITE_URL = "http://jap.physiology.org/";
 	private static final String INFO = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
 
-	private static final Pattern RIS_URL = Pattern.compile("<li class=\"ris\"><a href=\"(.*)\">RIS</a></li>");
+	private static final Pattern RIS_URL = Pattern.compile("<li class=\"ris\"><a href=\"(.+?)\".*?>RIS</a></li>");
 	
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "jap.physiology.org"), AbstractUrlScraper.EMPTY_PATTERN));
 	private static final Pattern REFERENCES_PATTERN = Pattern.compile("(?s)<h2>REFERENCES</h2>(.*)<span class=\"highwire-journal-article-marker-end\"></span>");
@@ -84,8 +84,9 @@ public class JAPScraper extends GenericRISURLScraper implements ReferencesScrape
 	protected String getDownloadURL(URL url) throws ScrapingException {
 		try {
 			final Matcher m = RIS_URL.matcher(WebUtils.getContentAsString(url.toString()));
-			if (m.find())
+			if (m.find()) {
 				return "http://" + url.getHost().toString() + m.group(1);
+			}
 		} catch (IOException e) {
 			log.error("Download link not found", e);
 		}

@@ -5,85 +5,99 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:spring="http://www.springframework.org/tags"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs">
 	
     <fmt:message var="selectCode" key="buttons.select_code"/>
     <spring:theme code="image.snippet.bookmarkit" var="imageBookmarkIt" />
-	<c:set var="imageBookmarkIt" value="${relativeUrlGenerator.getProjectHome()}${imageBookmarkIt}" />
+	<c:set var="imageBookmarkIt" value="${properties['project.home']}${imageBookmarkIt}" />
     
 	<form name="select_all">
-		<table width="100%" border="0" cellspacing="0" cellpadding="5">
-			<tr>
-				<td>
-					<div align="center">
-						<strong><fmt:message key="buttons.javascript_code"/>:</strong>
-					</div>
-				</td>
+	
+		<div class="row">
 
-				<td>
-					<div align="center">
-						<strong><fmt:message key="buttons.javascript_appear"/>: </strong>
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td width="70%" style="text-align:center">
-					<textarea name="text_area1" rows="10" style="width: 100%">
-						<![CDATA[
-<!-- post bookmark link code -->
-<script type="text/javascript">    	
-   var url=encodeURIComponent(document.location.href);
-   var title=encodeURIComponent(document.title);
-   document.write("<a href=\"${relativeUrlGenerator.getProjectHome()}ShowBookmarkEntry?url="+url+ "&amp;description="+title +"\" rel=\"nofollow\" title=\"Bookmark this page to ${properties['project.name']}.\">Bookmark to ${properties['project.name']}!</a>");
-</script>
-]]>
-					</textarea>
-					<input type="button" value="${selectCode}" onClick="javascript:this.form.text_area1.focus();this.form.text_area1.select();"/>
-				</td>
-				<td width="30%">
-					<div align="center">
-						<script type="text/javascript">
-							<![CDATA[
-							         var url=encodeURIComponent(document.location.href);
-							         var title=encodeURIComponent(document.title);
-							         document.write("<a href=\"${relativeUrlGenerator.getProjectHome()}ShowBookmarkEntry?url="+url+ "&amp;description="+title +"\" rel=\"nofollow\" title=\"Bookmark this page to ${properties['project.name']}.\">Bookmark to ${properties['project.name']}!</a>");
-							]]>
-						</script>
-					</div>
-				</td>
-			</tr>
-			
-			<tr>
-				<td>
-					<div align="center">
-						<strong><fmt:message key="buttons.javascript_code_image"/>:</strong>
-					</div>
-				</td>
+			<!-- Heading Code 1 -->
+			<div class="col-md-8">
+				<div class="form-group">
+					<label class="col-sm-4 control-label" for="text-area1"><fmt:message key="buttons.javascript_code"/>:</label>
 				
-				<td>
-					<div align="center">
-						<strong><fmt:message key="buttons.javascript_appear"/>: </strong>
+					<div class="col-sm-8">
+						<!-- Code 1 -->
+						<textarea id="text-area1" class="form-control" name="text_area1" rows="5">
+							<![CDATA[<!-- post bookmark link code --><script type="text/javascript">var url=encodeURIComponent(document.location.href);var title=encodeURIComponent(document.title);document.write("<a href=\"${properties['project.home']}ShowBookmarkEntry?url="+url+ "&amp;description="+title +"\" rel=\"nofollow\" title=\"Bookmark this page to ${properties['project.name']}.\">Bookmark to ${properties['project.name']}!</a>");</script>]]>
+						</textarea>
 					</div>
-				</td>
-			</tr>
-			
-			<tr>
-				<td style="text-align:center">
-					<textarea name="text_area2" rows="10" style="width: 100%">
-<![CDATA[
-<!-- post bookmark link code -->
-<script type="text/javascript">
-   var url=encodeURIComponent(document.location.href);
-   var title=encodeURIComponent(document.title);
-   document.write("<a href=\"${properties['project.home']}ShowBookmarkEntry?url="+url+ "&amp;description="+title +"\" rel=\"nofollow\" title=\"Bookmark this page to ${properties['project.name']}.\"><img src=\"${imageBookmarkIt}\"></a>");	
-</script>
-]]>
+				</div>
+				<div class="form-group">				
+					<div class="col-sm-offset-4 col-sm-8">
+						<br />
+					<!-- Button of code 1 -->
+		       			<button
+		       				type="button"
+		       				class="btn btn-success"
+		       				onClick="javascript:this.form.text_area1.focus();this.form.text_area1.select();">
+		       				
+		       				<fmt:message key="buttons.select_code"/>
+		       				
+		       			</button>
+		     		</div>
+		     	</div>
+			</div>
+		
+			<!-- Heading appearance 1 -->
+			<div class="col-md-4">
+				<strong><fmt:message key="buttons.javascript_appear"/>: </strong><br />
+					<script type="text/javascript">
+						<![CDATA[
+						         var url=encodeURIComponent(document.location.href);
+						         var title=encodeURIComponent(document.title);
+						         document.write("<a href=\"${properties['project.home']}ShowBookmarkEntry?url="+url+ "&amp;description="+title +"\" rel=\"nofollow\" title=\"Bookmark this page to ${properties['project.name']}.\">Bookmark to ${properties['project.name']}!</a>");
+
+						         ]]>
+					</script>
+			</div>
+
+		</div>
+		<hr class="featurette"/>
+		<div class="row">
+
+			<!-- Heading code 2 -->
+			<div class="col-md-8">
+				<div class="form-group">
+					<label for="text-area2" class="col-sm-4"><fmt:message key="buttons.javascript_code_image"/>:</label>
 					
-					</textarea>
-					<input type="button" value="${selectCode}" onClick="javascript:this.form.text_area2.focus();this.form.text_area2.select();"/>
-				</td>
-				<td>
-					<div align="center">
+					<div class="col-sm-8">
+						<!-- code 2 -->
+						<textarea class="form-control" id="text-area2" name="text_area2" rows="10" style="width: 100%">
+							<![CDATA[<!-- post bookmark link code --><script type="text/javascript">var url=encodeURIComponent(document.location.href);var title=encodeURIComponent(document.title);document.write("<a href=\"${properties['project.home']}ShowBookmarkEntry?url="+url+ "&amp;description="+title +"\" rel=\"nofollow\" title=\"Bookmark this page to ${properties['project.name']}.\"><img src=\"${imageBookmarkIt}\"></a>");</script>]]>
+						</textarea>
+					</div>
+				</div>
+			
+				<div class="form-group">
+					<div class="col-sm-offset-4 col-sm-8">
+						<br />
+						<!-- Button of code 2 -->
+						<button
+		       				type="button"
+		       				class="btn btn-success"
+		       				onClick="javascript:this.form.text_area2.focus();this.form.text_area2.select();">
+		       				
+		       				<fmt:message key="buttons.select_code"/>
+		       				
+		       			</button>
+		       		</div>
+				</div>
+			</div>
+			
+			<!-- Heading appearance 2 -->
+			<div class="col-md-4">
+				<strong><fmt:message key="buttons.javascript_appear"/>: </strong>
+				
+					
+					<!-- Code Appearance 2 -->
+					<div>
 						<script type="text/javascript">
 							<![CDATA[
 							         var url=encodeURIComponent(document.location.href);
@@ -92,8 +106,9 @@
 							]]>
 						</script>
 					</div>
-				</td>
-			</tr>
-		</table>
-	</form>    
+			</div>
+		</div>
+		
+	</form>
+	  
 </jsp:root>

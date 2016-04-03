@@ -9,56 +9,62 @@
 	
 	<c:set var="discussionItemClass" value="${fn:toLowerCase(discussionItem['class'].simpleName)}" />
 	
-	<ul class="discussionitemMenu">
+	<div class="pull-right">
 	
-	<!-- reply links  -->
-	<c:if test="${command.context.userLoggedIn and not disableReply}">
-		<li>
-			<fmt:message key="post.resource.comment.actions.reply.title" var="title"/>
-			<a href="#reply" class="reply" title="${title}">
-				<fmt:message key="post.resource.comment.actions.reply" />
-			</a>
-		</li>
-	</c:if>
-	<c:set var="subDiscussionItemsSize" value="${fn:length(discussionItem.subDiscussionItems)}" />
-	
-	<!-- number of replies and toggle link -->
-	<fmt:message key="post.resource.discussion.replies.hide.title" var="title"/>
-	<c:choose>
-		<c:when test="${subDiscussionItemsSize > 0}">
-			<li class="replies">
-				<a href="#toggleReplies" class="toggleReplies" title="${title}">
-					<fmt:message key="post.resource.discussion.replies.hide" />
+		<div class="btn-group btn-group-sm edit-media-buttons">
+			
+			<!-- reply links  -->
+			<c:if test="${command.context.userLoggedIn and not disableReply}">
+				
+					<fmt:message key="post.resource.comment.actions.reply.title" var="title"/>
+					<fmt:message key="post.resource.comment.actions.reply" var="reply"/>
+					<a href="#reply" class="btn btn-default reply" title="${title}">
+						<span class="fa fa-reply"><!--  --><c:out value=" " /></span>
+					</a>
+				
+			</c:if>
+			<c:set var="subDiscussionItemsSize" value="${fn:length(discussionItem.subDiscussionItems)}" />
+			
+			<!-- number of replies and toggle link -->
+			<fmt:message key="post.resource.discussion.replies.hide.title" var="title"/>
+			<c:choose>
+				<c:when test="${subDiscussionItemsSize > 0}">
+					
+						<a  href="#" class="btn btn-default toggleReplies" title="${title}">
+							<!-- <fmt:message key="post.resource.discussion.replies.hide" /> -->
+							<span class="fa fa-comments-o"><!--  --></span>
+						</a>
+					
+				</c:when>
+
+			</c:choose>
+			
+			<!-- edit and delete link -->
+			<!-- TODO: use spring security tag lib -->
+			<c:set var="own" value="${command.context.loginUser.name eq discussionItem.user.name}" />
+			<c:if test="${command.context.userLoggedIn and own}">
+				<fmt:message key="post.resource.${discussionItemClass}.actions.edit.title" var="title"/>
+				<fmt:message key="post.resource.${discussionItemClass}.actions.delete.title" var="title"/>
+				<fmt:message key="post.resource.${discussionItemClass}.actions.delete" var="delete"/>
+				
+				<a href="#edit${discussionItemClass}" class="btn btn-default ${discussionItemClass}EditLink editLink" title="${title}">
+					<span class="fa fa-pencil"><!--  --></span>
+				
 				</a>
-			</li>
-		</c:when>
-		<c:otherwise>
-			<li style="display:none;">
-				<a href="#toggleReplies" class="toggleReplies">
-					<fmt:message key="post.resource.discussion.replies.hide" />
+			
+				<a href="#delete${discussionItemClass}" class="btn btn-default ${discussionItemClass}DeleteLink deleteLink" title="${title}">
+					<span class="fa fa-times"><!--  --></span>
 				</a>
-			</li>
-		</c:otherwise>
-	</c:choose>
+
+			</c:if>
 	
-	<!-- edit and delete link -->
-	<!-- TODO: use spring security tag lib -->
-	<c:set var="own" value="${command.context.loginUser.name eq discussionItem.user.name}" />
-	<c:if test="${command.context.userLoggedIn and own}">
-		<fmt:message key="post.resource.${discussionItemClass}.actions.edit.title" var="title"/>
-		<li><a href="#edit${discussionItemClass}" class="${discussionItemClass}EditLink editLink" title="${title}"><fmt:message key="post.resource.${discussionItemClass}.actions.edit" /></a></li>
-		<li>
-			<span class="deleteInfo initiallyHidden">
-				<img src="${resdir}/image/ajax_loader.gif" alt="loading" />
-				<fmt:message key="post.resource.${discussionItemClass}.action.delete" />
-			</span>
-			<fmt:message key="post.resource.${discussionItemClass}.actions.delete.title" var="title"/>
-			<a href="#delete${discussionItemClass}" class="${discussionItemClass}DeleteLink deleteLink" title="${title}">
-				<fmt:message key="post.resource.${discussionItemClass}.actions.delete" />
-			</a>
-		</li>
-	</c:if>
-	
-	<!-- TODO: admin actions for mark as spammer -->
-	</ul>
+			<!-- TODO: admin actions for mark as spammer -->
+
+		</div>
+				<span class="deleteInfo hidden">
+					<img src="${resdir}/image/ajax_loader.gif" alt="loading" />
+					<fmt:message key="post.resource.${discussionItemClass}.action.delete" />
+				</span>
+	</div>
+	<p class="clearfix"><!--  --></p>
 </jsp:root>

@@ -1,4 +1,7 @@
 /**
+ * FIXME: remove all oldschool ajax handlers
+ */
+/**
 * Inits an XMLHTTPRequest Obejct
 */
 function initRequest(){
@@ -11,7 +14,7 @@ function initRequest(){
       	}
       	if( req.overrideMimeType ) {
           	req.overrideMimeType("text/xml");
-       }        	
+       }
    	} catch(e){
    	   	return false;
    	}
@@ -28,7 +31,7 @@ function flagSpammerEvaluator(name, rowId, disable, evaluator) {
 	}
 	
 	/* colorize */
-	if (rowId != null && disable=='false') {			
+	if (rowId != null && disable=='false') {
 		document.getElementById(rowId).className="spammer";
 	} else {
 		document.getElementById(rowId).style.display = "none";
@@ -43,14 +46,14 @@ function flagSpammerEvaluator(name, rowId, disable, evaluator) {
 * name: name of the user
 * rowId: table row id 
 * disable:  if true row is removed else row is colorized red
-*/	
-function addSpammer(name, rowId, disable) {		
+*/
+function addSpammer(name, rowId, disable) {
 	if (name == null || name == "") {
 		addLogMessage("please specify a user");
 		return;
 	}
 	/* colorize */
-	if (rowId != null && disable=='false') {			
+	if (rowId != null && disable=='false') {
 		document.getElementById(rowId).className="spammer";
 	} else {
 		document.getElementById(rowId).style.display = "none";
@@ -63,7 +66,7 @@ function addSpammer(name, rowId, disable) {
 
 function addSpammerInline(name) {
 	/* remove items of this user from current view */
-	var elements = document.getElementsByName(name);	
+	var elements = document.getElementsByName(name);
 	for (i = 0; i < elements.length; i++) {
 		elements[i].parentNode.parentNode.style.display='none';
 	}
@@ -72,20 +75,46 @@ function addSpammerInline(name) {
 	
 }
 
+function flagUncertainUser(userName, button) {
+	doflagUser("MARK_UNCERTAINUSER", userName, button, function() {
+		$(button).addClass("btn-warning").removeClass("btn-default");
+	});
+}
+
+function unflagUser(userName, button) {
+	doflagUser("UNFLAG_SPAMMER", userName, button, function() {
+		$(button).addClass("btn-success").removeClass("btn-default");
+	});
+}
+
+function flagUser(userName, button) {
+	doflagUser("FLAG_SPAMMER", userName, button, function() {
+		$(button).addClass("btn-danger").removeClass("btn-default");
+	});
+}
+
+function doflagUser(actionString, userName, button, completionHandler) {
+	$.post('/admin/ajax', { action: actionString, ckey : ckey, userName : userName}, 
+		function(returnedData) {
+			$(button).parent(".btn-group").find("button").removeClass("btn-danger btn-success btn-warning").addClass('btn-default');
+			completionHandler();
+	});
+}
+
 /**
 * unflags a user as spammer
 * name: name of the user
 * rowId: table row id 
 * disable:  if true row is removed else row is colorized white
 */	
-function unflagSpammer(name, rowId, disable) {		
+function unflagSpammer(name, rowId, disable) {
 	if (name == null || name == "") {
 		addLogMessage("please specify a user");
 		return;
 	}
 	
 	/* colorize row */
-	if (rowId != null && disable=='false') {			
+	if (rowId != null && disable=='false') {
 		document.getElementById(rowId).className="spamflag";
 	} else {
 		document.getElementById(rowId).style.display = "none"; 
@@ -101,17 +130,17 @@ function unflagSpammer(name, rowId, disable) {
 * rowId: table row id 
 * disable:  if true row is removed else row is colorized white
 */	
-function unflagSpammerEvaluator(name, rowId, disable, evaluator) {		
+function unflagSpammerEvaluator(name, rowId, disable, evaluator) {
 	if (name == null || name == "") {
 		addLogMessage("please specify a user");
 		return;
 	}
 	
 	/* colorize row */
-	if (rowId != null && disable=='false') {			
+	if (rowId != null && disable=='false') {
 		document.getElementById(rowId).className="nonspammer";
 	} else {
-		document.getElementById(rowId).style.display = "none"; 
+		document.getElementById(rowId).style.display = "none";
 	}
 	
 	/* mark spammer in db via AJAX*/
@@ -124,14 +153,14 @@ function unflagSpammerEvaluator(name, rowId, disable, evaluator) {
 * rowId: table row id 
 * disable:  if true row is removed else row is colorized white
 */	
-function markUncertainUser(name, rowId, disable) {		
+function markUncertainUser(name, rowId, disable) {
 	if (name == null || name == "") {
 		addLogMessage("please specify a user");
 		return;
 	}
 	
 	/* colorize row */
-	if (rowId != null && disable=='false') {			
+	if (rowId != null && disable=='false') {
 		document.getElementById(rowId).className="uncertainUser";
 	} else {
 		document.getElementById(rowId).style.display = "none"; 
@@ -164,20 +193,20 @@ function generateApiKey(name) {
 /* function interacts with server via ajax */
 function runAjax(parameter,action) {
 	var request = initRequest(); 
-	var url = "/admin/ajax?" + parameter;	   
-   	if (request) {    	   		
-   		request.open('GET',url + "&action=" + action,true);	
-   		var handle = ajax_updateLog(request); 	   		
+	var url = "/admin/ajax?" + parameter;
+   	if (request) {
+   		request.open('GET',url + "&action=" + action, true);
+   		var handle = ajax_updateLog(request);
    		request.onreadystatechange = handle;
-   		request.send(null);		   		
-   	}    	
+   		request.send(null);
+   	}
 }
 
 /* handler function */
-function ajax_updateLog(request) {   			
-	return function() {			
-		if (4 == request.readyState) {    	
-	    	addLogMessage(request.responseText);	    			    	   
+function ajax_updateLog(request) {
+	return function() {
+		if (4 == request.readyState) {
+	    	addLogMessage(request.responseText);
 	    }
 	}
 }
@@ -193,7 +222,13 @@ function addLogMessage(msg) {
 }	
 
 /* resets input fields */
-function clearFields() {		
+function clearFields() {
 	document.getElementsByName("user")[0].value = "";
 	document.getElementsByName("user")[1].value = "";
-}	
+}
+
+$(function () {
+	$('[data-toggle="popover"]').popover({
+		html:true
+	});
+});

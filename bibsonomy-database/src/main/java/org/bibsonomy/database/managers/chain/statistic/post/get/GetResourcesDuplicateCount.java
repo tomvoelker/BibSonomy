@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -35,6 +35,7 @@ import org.bibsonomy.database.managers.chain.statistic.StatisticChainElement;
 import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.statistics.Statistics;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author Stefan Stützer
@@ -52,7 +53,7 @@ public class GetResourcesDuplicateCount extends StatisticChainElement {
 
 	@Override
 	protected boolean canHandle(StatisticsParam param) {
-		return 	param.getGrouping() == GroupingEntity.USER &&
-				param.getFilter() == FilterEntity.DUPLICATES;
+		return param.getGrouping() == GroupingEntity.USER &&
+				ValidationUtils.safeContains(param.getFilters(), FilterEntity.DUPLICATES);
 	}
 }

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -33,6 +33,7 @@ import java.util.List;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SearchType;
@@ -40,6 +41,7 @@ import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.logic.PostLogicInterface;
+import org.bibsonomy.util.Sets;
 import org.bibsonomy.webapp.controller.ajax.AjaxController;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -77,11 +79,11 @@ public class OpenAccessController extends AjaxController implements Minimalistic
 		if (present(action)) {
 			if (GET_SENT_REPOSITORIES.equals(action)) {
 				// TODO: adapt limit to get all posts
-				final List<Post<BibTex>> posts = logic.getPosts(BibTex.class, GroupingEntity.USER, command.getContext().getLoginUser().getName(), null, command.getInterhash(), null,SearchType.LOCAL , FilterEntity.POSTS_WITH_REPOSITORY, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
+				final List<Post<BibTex>> posts = logic.getPosts(BibTex.class, GroupingEntity.USER, command.getContext().getLoginUser().getName(), null, command.getInterhash(), null, SearchType.LOCAL, Sets.<Filter>asSet(FilterEntity.POSTS_WITH_REPOSITORY), null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
 
 				// TODO: implement this
 				/*
-				 * Schleife über alle Posts
+				 * Schleife Ã¼ber alle Posts
 				 * nimm Repository-Speicher-Datum und User
 				 * schreibe JSON-Output mit Datum und Flag ob selbst versendet oder durch wen anderes
 				 * 

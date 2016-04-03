@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -113,7 +113,15 @@ public class ValidationUtils {
 		}
 		return false;
 	}
-
+	
+	/**
+	 * @param collection
+	 * @param entry
+	 * @return <code>true</code> if the collection contains the entry
+	 */
+	public static <E> boolean safeContains(final Collection<E> collection, final E entry) {
+		return present(collection) && collection.contains(entry);
+	}
 
 	/**
 	 * @param obj object to be tested
@@ -123,6 +131,5 @@ public class ValidationUtils {
 		if (obj == null) {
 			throw new IllegalStateException("should not be null");
 		}
-		
 	}
 }

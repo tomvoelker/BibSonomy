@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -160,31 +160,47 @@ public class RedirectController implements MinimalisticController<RedirectComman
 			 * special handling, when requUser is given - this is for /author pages only
 			 */
 			log.debug("requUser given - handling /author");
-			return "/author/" + UrlUtils.safeURIEncode(search) + "?requUser=" + UrlUtils.safeURIEncode(requUser);
+			return "/author/" + UrlUtils.encodePathSegment(search) + "?requUser=" + UrlUtils.safeURIEncode(requUser);
 		}
 		if (scope.startsWith("user:")) {
 			/*
 			 * special handling, when scope is "user:USERNAME", this is search restricted to the given user name
 			 */
 			log.debug("scope is user:");
-			return "/search/" + UrlUtils.safeURIEncode(search + " " + scope);
+			return "/search/" + UrlUtils.encodePathSegment(search + " " + scope);
 		}
 		if (scope.startsWith("group:")) {
 			/*
 			 * special handling, when scope is "group:GROUPNAME", this is search restricted to the given group name
 			 */
 			log.debug("scope is group:");
-			return "/search/" + UrlUtils.safeURIEncode(search + " " + scope);
+			return "/search/" + UrlUtils.encodePathSegment(search + " " + scope);
 		}
 		if (scope.equals("federated")) {
 			log.debug("scope is federated");
-			return "/search/" + UrlUtils.safeURIEncode(search) + "?scope=FEDERATED";
+			return "/search/" + UrlUtils.encodePathSegment(search) + "?scope=FEDERATED";
+		}
+		if (scope.equals("federated_author")) {
+			log.debug("scope is federated author");
+			return "/author/" + UrlUtils.encodePathSegment(search) + "?scope=FEDERATED_AUTHOR";
+		}
+		if (scope.equals("federated_tag")) {
+			log.debug("scope is federated tag");
+			return "/tag/" + UrlUtils.encodePathSegment(search) + "?scope=FEDERATED";
+		}
+		if (scope.equals("federated_user")) {
+			log.debug("scope is federated user");
+			return "/user/" + UrlUtils.encodePathSegment(search) + "?scope=FEDERATED";
+		}
+		if (scope.equals("federated_bibtexkey")) {
+			log.debug("scope is federated group");
+			return "/bibtexkey/"+ UrlUtils.encodePathSegment(search) + "?scope=FEDERATED";
 		}
 		/*
 		 * all other pages simply go to /scope/search
 		 */
 		log.debug("generic handling of /scope/search");
-		return "/" + scope + "/" + UrlUtils.safeURIEncode(search);
+		return "/" + scope + "/" + UrlUtils.encodePathSegment(search);
 
 
 	}
@@ -208,7 +224,7 @@ public class RedirectController implements MinimalisticController<RedirectComman
 		/*
 		 * redirects for /my* pages
 		 */
-		final String encodedLoggedinUserName = UrlUtils.safeURIEncode(loginUserName);
+		final String encodedLoggedinUserName = UrlUtils.encodePathSegment(loginUserName);
 		if ("myRelations".equals(myPage)) {
 			return "/relations/" + encodedLoggedinUserName;
 		}

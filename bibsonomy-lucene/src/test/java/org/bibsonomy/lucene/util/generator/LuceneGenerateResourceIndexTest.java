@@ -1,7 +1,7 @@
 /**
- * BibSonomy-Lucene - Fulltext search facility of BibSonomy
+ * BibSonomy - A blue social bookmark and publication sharing system.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -35,6 +35,7 @@ import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.index.manager.LuceneGoldStandardManager;
 import org.bibsonomy.lucene.util.LuceneSpringContextWrapper;
 import org.bibsonomy.model.GoldStandardPublication;
+import org.bibsonomy.search.es.AbstractEsIndexTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -50,7 +51,7 @@ public class LuceneGenerateResourceIndexTest {
 	@BeforeClass
 	public static void initLucene() throws Exception {
 		manager = (LuceneGoldStandardManager<GoldStandardPublication>) LuceneSpringContextWrapper.getBeanFactory().getBean("luceneGoldStandardPublicationManager");
-		
+
 		// initialize test database
 		AbstractDatabaseManagerTest.LOADER.load(AbstractDatabaseManagerTest.DATABASE_CONFIG_FILE, AbstractDatabaseManagerTest.DATABASE_ID);
 		
@@ -68,14 +69,14 @@ public class LuceneGenerateResourceIndexTest {
 	@Test
 	public void generateIndex() throws Exception {
 		manager.generateIndex(false, 1);
-
 		assertEquals(2, manager.getStatistics().getNumDocs());
 	}
 	
 	@AfterClass
 	public static void resetIndex() {
 		for (final LuceneResourceIndex<GoldStandardPublication> index : manager.getResourceIndeces()) {
-    		index.reset();
+			index.reset();
 		}
+		AbstractEsIndexTest.closeAllLuceneIndices(LuceneSpringContextWrapper.getBeanFactory());
 	}
 }

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Web-Common - Common things for web
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -46,5 +46,5 @@ public class StringToEnumConverterFactory<E extends Enum<E>> implements Converte
 	@Override
 	public <T extends Enum<E>> Converter<String, T> getConverter(final Class<T> targetType) {
 		return new StringToEnumConverter(targetType);
-	}	
+	}
 }

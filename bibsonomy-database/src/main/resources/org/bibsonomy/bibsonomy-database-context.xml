@@ -9,6 +9,7 @@
 	
 	
 	<import resource="classpath:org/bibsonomy/bibsonomy-model-context.xml"/>
+	<import resource="classpath:org/bibsonomy/bibsonomy-database-common-context.xml" />
 	<!-- import system tag context -->
 	<import resource="classpath:org/bibsonomy/bibsonomy-systemtags-context.xml"/>
 
@@ -41,7 +42,7 @@
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByFriends" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByFollowedUsers" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptForGroup" parent="publicationChainElement" />
-				<bean class="org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexFromBasketForUser" parent="publicationChainElement" />
+				<bean class="org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexFromClipboardForUser" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesFromInbox" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByTaggedUserRelation" parent="publicationChainElement" />
 			</list>
@@ -158,6 +159,11 @@
 				<bean class="org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesPopularDaysCount" />
 				<bean class="org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForHashCount" />
 				<bean class="org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForUserInboxCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.post.GetClipboardPostsCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.post.GetClipboardPostsHistoryCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.post.GetAllPostsInHistoryCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.post.GetUniqueResourcesCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.post.GetAllPostsCount" />
 				<bean class="org.bibsonomy.database.managers.chain.statistic.post.get.DefaultCatchAllCount" />
 			</list>
 		</property>
@@ -167,7 +173,35 @@
 	<bean id="tagStatisticChain" class="org.bibsonomy.database.managers.chain.Chain">
 		<property name="elements">
 			<list>
+				<bean class="org.bibsonomy.database.managers.chain.statistic.tag.GetGlobalTagCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.tag.GetGlobalTasCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.tag.GetGlobalConceptCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.tag.GetGlobalConceptHistoryCount" />
 				<bean class="org.bibsonomy.database.managers.chain.statistic.tag.get.GetRelationCountByUser" />
+			</list>
+		</property>
+	</bean>
+	
+	<!-- user statistic chain -->
+	<bean id="userStatisticsChain" class="org.bibsonomy.database.managers.chain.Chain">
+		<property name="elements">
+			<list>
+				<bean class="org.bibsonomy.database.managers.chain.statistic.user.GetUserClassifiedByClassifierCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.user.GetUserClassifiedByAdminCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.user.GetActiveUserCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.user.GetFriendHistoryCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.user.GetGroupMembershipHistoryCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.user.GetAllUserCount" />
+			</list>
+		</property>
+	</bean>
+	
+	<!-- document statistic chain -->
+	<bean id="documentStatisticsChain" class="org.bibsonomy.database.managers.chain.Chain">
+		<property name="elements">
+			<list>
+				<bean class="org.bibsonomy.database.managers.chain.statistic.document.GetGlobalLayoutDocumentCount" />
+				<bean class="org.bibsonomy.database.managers.chain.statistic.document.GetGlobalDocumentCount" />
 			</list>
 		</property>
 	</bean>
@@ -178,11 +212,14 @@
 	
 	<bean id="adminDatabaseManager" class="org.bibsonomy.database.managers.AdminDatabaseManager" factory-method="getInstance">
 		<property name="userDatabaseManager" ref="userDatabaseManager" />
+		<property name="groupDatabaseManager" ref="groupDatabaseManager" />
 	</bean>
 	
 	<bean id="statisticsDatabaseManager" class="org.bibsonomy.database.managers.StatisticsDatabaseManager" factory-method="getInstance">
 		<property name="postChain" ref="postStatisticChain" />
 		<property name="tagChain" ref="tagStatisticChain" />
+		<property name="userChain" ref="userStatisticsChain" />
+		<property name="documentChain" ref="documentStatisticsChain" />
 	</bean>
 		
 	<bean id="discussionDatabaseManager" class="org.bibsonomy.database.managers.discussion.DiscussionDatabaseManager" factory-method="getInstance">
@@ -205,14 +242,15 @@
 	</bean>
 	
 	<bean id="bookmarkDatabaseManager" class="org.bibsonomy.database.managers.BookmarkDatabaseManager" factory-method="getInstance" parent="postDatabaseManager">
-		<property name="resourceSearch" ref="luceneBookmarkSearch" />
+		<property name="resourceSearch" ref="bookmarkSearch" />
 		<property name="chain" ref="bookmarkChain" />
 	</bean>
 	
 	<bean id="publicationDatabaseManager" class="org.bibsonomy.database.managers.BibTexDatabaseManager" factory-method="getInstance" parent="postDatabaseManager">
-		<property name="resourceSearch" ref="lucenePublicationSearch" />
+		<property name="resourceSearch" ref="publicationSearch" />
 		<property name="chain" ref="publicationChain" />
 		<property name="fileLogic" ref="fileLogic" />
+		<property name="publicationSearch" ref="publicationSearch" />
 	</bean>
 	
 	<bean id="tagRelationDatabaseManager" class="org.bibsonomy.database.managers.TagRelationDatabaseManager" factory-method="getInstance">
@@ -220,8 +258,8 @@
 	</bean>
 	
 	<bean id="tagDatabaseManager" class="org.bibsonomy.database.managers.TagDatabaseManager" factory-method="getInstance">
-		<property name="bookmarkSearch" ref="luceneBookmarkSearch" />
-		<property name="publicationSearch" ref="lucenePublicationSearch" />
+		<property name="bookmarkSearch" ref="bookmarkSearch" />
+		<property name="publicationSearch" ref="publicationSearch" />
 		<property name="chain" ref="tagChain" />
 	</bean>
 	
@@ -230,7 +268,7 @@
 	</bean>
 	
 	<bean id="goldStandardPublicationDatabaseManager" class="org.bibsonomy.database.managers.GoldStandardPublicationDatabaseManager" factory-method="getInstance">
-		<property name="search" ref="luceneGoldStandardPublicationSearch" />
+		<property name="search" ref="goldStandardPublicationSearch" />
 		<property name="chain" ref="goldStandardPublicationChain" />
 	</bean>	
 
@@ -248,7 +286,6 @@
 			<list>
 				<bean class="org.bibsonomy.database.managers.chain.resource.get.GetResourcesByParent" parent="publicationChainElement" />
 				<bean class="org.bibsonomy.database.managers.chain.goldstandard.get.GetGoldStandardsByResourceSearch" parent="abstractGoldStandardPublicationChainElement" />
-				
 			</list>
 		</property>
 	</bean>
@@ -261,14 +298,49 @@
 		<property name="databaseManager" ref="goldStandardBookmarkDatabaseMananger" />
 	</bean>
 	
+	<bean id="personDatabaseManager" class="org.bibsonomy.database.managers.PersonDatabaseManager" factory-method="getInstance">
+		<property name="personSearch" ref="personSearch" />
+	</bean>
+	
+	<bean id="clipboardDatabaseManager" class="org.bibsonomy.database.managers.ClipboardDatabaseManager" factory-method="getInstance" />
+	
+	<bean id="databasePluginManager" class="org.bibsonomy.database.plugin.DatabasePluginRegistry" factory-method="getInstance">
+		<property name="defaultPlugins">
+			<list>
+				<bean class="org.bibsonomy.database.plugin.plugins.Logging" />
+				<bean class="org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin" />
+				<bean class="org.bibsonomy.database.plugin.plugins.ClipboardPlugin">
+					<property name="clipboardDatabaseManager" ref="clipboardDatabaseManager" />
+				</bean>
+				<bean class="org.bibsonomy.database.plugin.plugins.DiscussionPlugin" />
+				<bean class="org.bibsonomy.database.plugin.plugins.GoldStandardPublicationReferencePlugin" />
+				<bean class="org.bibsonomy.database.plugin.plugins.MetaDataPlugin" />
+				<bean class="org.bibsonomy.database.plugin.plugins.PersonPostConnectorPlugin">
+					<property name="personDatabaseManager" ref="personDatabaseManager" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="mainDataSource" class="${database.datasource.class}" parent="basicDataSource">
+		<property name="driverClassName" value="${database.main.driverClassName}" />
+		<property name="url" value="${database.main.url}" />
+		<property name="username" value="${database.main.username}" />
+		<property name="password" value="${database.main.password}" />
+		<property name="maxIdle" value="${database.main.maxIdle}" />
+		<property name="maxActive" value="${database.main.maxActive}" />
+		<property name="maxWait" value="${database.main.maxWait}" />
+		<property name="removeAbandoned" value="${database.main.removeAbandoned}" />
+		<property name="removeAbandonedTimeout" value="${database.main.removeAbandonedTimeout}" />
+	</bean>
+	
 	<bean id="mainSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
-        <property name="configLocation" value="classpath:SqlMapConfig.xml" />
-        <!-- defined in webapp module using jndi -->
-        <property name="dataSource" ref="mainDataSource" />
-        <property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
-    </bean>
-    
-    <!-- holdes schema informations from the database -->
+		<property name="configLocation" value="classpath:SqlMapConfig.xml" />
+		<property name="dataSource" ref="mainDataSource" />
+		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
+	</bean>
+	
+	<!-- holdes schema informations from the database -->
 	<bean id="dbSchemaInformation" class="org.bibsonomy.database.util.DatabaseSchemaInformation" init-method="init">
 		<property name="client" ref="mainSqlMapClient" />
 	</bean>
@@ -276,5 +348,5 @@
 	<bean id="dbSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
 		<property name="client" ref="mainSqlMapClient" />
 	</bean>
-    
+	
 </beans>

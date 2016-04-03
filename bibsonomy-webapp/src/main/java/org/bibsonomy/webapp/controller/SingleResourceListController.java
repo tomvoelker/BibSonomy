@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -32,7 +32,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -86,11 +85,10 @@ public abstract class SingleResourceListController extends ResourceListControlle
 
 	/** 
 	 * returns the number of posts tagged with all of requTags by groupingName. 
-	 * 
 	 */
 	protected int getPostCountForSidebar(final GroupingEntity groupingEntity, final String groupingName, final List<String> requTags) {
-		return this.logic.getPostStatistics(BibTex.class, groupingEntity, groupingName, requTags, null, null, FilterEntity.UNFILTERED, null, Order.ADDED, null, null, 0, 999).getCount()
-				+ this.logic.getPostStatistics(Bookmark.class, groupingEntity, groupingName, requTags, null, null, FilterEntity.UNFILTERED, null, Order.ADDED, null, null, 0, 999).getCount();
+		return this.logic.getPostStatistics(BibTex.class, groupingEntity, groupingName, requTags, null, null, null, Order.ADDED, null, null, 0, 999).getCount()
+				+ this.logic.getPostStatistics(Bookmark.class, groupingEntity, groupingName, requTags, null, null, null, Order.ADDED, null, null, 0, 999).getCount();
 	}
 
 }

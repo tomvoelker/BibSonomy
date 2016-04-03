@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -27,14 +27,18 @@
 package org.bibsonomy.database.plugin;
 
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.params.BasketParam;
+import org.bibsonomy.database.params.ClipboardParam;
 import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.InboxParam;
 import org.bibsonomy.database.params.UserParam;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.DiscussionItem;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 
 /**
@@ -57,7 +61,7 @@ public interface DatabasePlugin {
 	 * @param post
 	 * @param session
 	 */
-	public void onPublicationInsert(Post<? extends Resource> post, DBSession session);
+	public void onPublicationInsert(Post<? extends BibTex> post, DBSession session);
 
 	/**
 	 * Called when a publication is deleted.
@@ -239,21 +243,21 @@ public interface DatabasePlugin {
 	public void onDeleteFriendship(final UserParam param, final DBSession session);
 	
 	/**
-	 * Called when a basket item will be deleted
+	 * Called when a clipboard item will be deleted
 	 * 
 	 * @param param
 	 * @param session
 	 */
-	public void onDeleteBasketItem(final BasketParam param, final DBSession session);
+	public void onDeleteClipboardItem(final ClipboardParam param, final DBSession session);
 	
 	/**
-	 * Called when all basket items will be deleted
+	 * Called when all clipboard items will be deleted
 	 * 
 	 * @param userName 
 	 * @param session 
 	 * 
 	 */
-	public void onDeleteAllBasketItems(final String userName, final DBSession session);
+	public void onDeleteAllClipboardItems(final String userName, final DBSession session);
 	
 	/**
 	 * called when a comment was updated
@@ -315,5 +319,46 @@ public interface DatabasePlugin {
 	 * @author MarcelM
 	 */
 	public void onBibTexExtraDelete(final BibTexExtraParam deletedBibTexExtraParam, final DBSession session);
+	
+	/**
+	 * called when a personName will be deleted
+	 * @param personName should be set to the old personNameChangeId and the new modifiedBy and modifiedBy values
+	 * @param session
+	 */
+	public void onPersonNameDelete(final PersonName personName, final DBSession session);
+	
+	/**
+	 * called when a person will be updated
+	 * @param personId
+	 * @param session
+	 */
+	public void onPersonUpdate(final String personId, final DBSession session);
+	
+	/**
+	 * called when a person will be updated by username change
+	 * @param userName
+	 * @param session
+	 */
+	public void onPersonUpdateByUserName(final String userName, final DBSession session);
+	
+	/**
+	 * called when a person will be deleted
+	 * @param person should be set to the old personId and the new modifiedBy and modifiedBy values
+	 * @param session
+	 */
+	public void onPersonDelete(final Person person, final DBSession session);
+	
+	/**
+	 * called when a pubPerson will be deleted
+	 * @param rel the relation to be deleted updated with the deleting user and the date of the deletion
+	 * @param session
+	 */
+	public void onPubPersonDelete(final ResourcePersonRelation rel, final DBSession session);
+
+	/**
+	 * @param personChangeId
+	 * @param session
+	 */
+	public void onPersonNameUpdate(Integer personChangeId, DBSession session);
 
 }

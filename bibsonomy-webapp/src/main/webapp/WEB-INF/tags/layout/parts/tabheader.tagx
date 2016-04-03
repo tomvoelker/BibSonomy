@@ -24,21 +24,25 @@
 			<c:set var="tabURL" value=""/>
 		</c:if>
 
-		<ul class="tab">
+		<ul class="nav nav-tabs">
 			<c:forEach var="tab" items="${tabView.tabs}">
 				<fmt:message key="${tab.title}" var="tabTitle"/>
 				<c:if test="${not empty tabTitle}">
 					<c:choose>
 						<!-- this tab is selected/active -->
 						<c:when test="${tabView.selTab eq tab.id}">
-							<li class="selected"><a href="${tabURL}?selTab=${tab.id}"><c:out value="${tabTitle}"/></a></li>			
+							<li class="active">
+								<a data-toggle="tab" href="${tabURL}?selTab=${tab.id}#selTab${tab.id}"><c:out value="${tabTitle}" /></a>
+							</li>
 						</c:when>
 						<c:otherwise>
-							<li><a href="${tabURL}?selTab=${tab.id}"><c:out value="${tabTitle}"/></a></li>							
+							<li>
+								<a data-toggle="tab" href="${tabURL}?selTab=${tab.id}#selTab${tab.id}"><c:out value="${tabTitle}" /></a>
+							</li>
 						</c:otherwise>
 					</c:choose>
-				</c:if>		
+				</c:if>
 			</c:forEach>
-		</ul>	
+		</ul>
 	</c:if>
-</jsp:root>				
+</jsp:root>

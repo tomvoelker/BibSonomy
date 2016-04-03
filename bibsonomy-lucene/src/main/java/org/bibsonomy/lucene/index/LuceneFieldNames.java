@@ -1,7 +1,7 @@
 /**
- * BibSonomy-Lucene - Fulltext search facility of BibSonomy
+ * BibSonomy - A blue social bookmark and publication sharing system.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -30,6 +30,7 @@ package org.bibsonomy.lucene.index;
  * 
  * @author fmi
  */
+@Deprecated // TODO: remove lucene
 public abstract class LuceneFieldNames {
 
 	// FIXME: configure these fieldnames via spring
@@ -49,4 +50,6 @@ public abstract class LuceneFieldNames {
 	public static final String LAST_LOG_DATE = "last_log_date";
 	public static final String USER_NAME     = "user_name";
 	public static final String CONTENT_ID    = "content_id";
+	public static final String SCHOOL        = "school";
+	public static final String BIBTEXKEY 	 = "bibtexKey";
 }

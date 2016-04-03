@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database-Common - Helper classes for database interaction
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -79,6 +79,8 @@ public enum ConstantID {
 	IDS_DISCUSSION_ITEM_ID(15),
 	/** id of a syncronization service */
 	IDS_SYNC_SERVICE(16),
+	/** id of a syncronization service */
+	PERSON_CHANGE_ID(17),
 	
 	/* other ids (not related to SQL tables! */
 	/** marks that no special content type has yet been assigned */

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -34,6 +34,7 @@ import java.lang.reflect.Field;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 import org.bibsonomy.database.plugin.DatabasePlugin;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.junit.Test;
@@ -101,7 +102,7 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 	}
 
 	@Override
-	public void onPublicationInsert(final Post<? extends Resource> post, final DBSession session) {
+	public void onPublicationInsert(final Post<? extends BibTex> post, final DBSession session) {
 		this.onBibTexInsert = true;
 	}
 

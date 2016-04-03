@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -55,7 +55,8 @@ import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 
 /**
- * FIXME: URLs having a protocol with >2 slashes may result into errors. (e.g. "file:///c|/")
+ * FIXME: URLs having a protocol with >2 slashes may result into errors. (e.g.
+ * "file:///c|/")
  * FIXME: URLs having spaces may result into errors. (e.g. "http://a a")
  * AdditionalURLController which extends AjaxController and implements
  * MinimalisticController
@@ -68,17 +69,16 @@ public class AdditionalURLController extends AjaxController implements ErrorAwar
 
 	private static final Log log = LogFactory.getLog(AdditionalURLController.class);
 	private Errors errors;
-	
+
 	@Override
 	public AjaxURLCommand instantiateCommand() {
 		return new AjaxURLCommand();
 	}
 
 	/**
-	 *
 	 * 
-	 * @see
-	 * org.bibsonomy.webapp.util.MinimalisticController#workOn(org.bibsonomy.webapp.command.ContextCommand)
+	 * 
+	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(org.bibsonomy.webapp.command.ContextCommand)
 	 */
 	@Override
 	public View workOn(final AjaxURLCommand command) {
@@ -92,21 +92,21 @@ public class AdditionalURLController extends AjaxController implements ErrorAwar
 		 * Check whether user is logged in
 		 */
 		if (!command.getContext().isUserLoggedIn()) {
-			return handleError("error.general.login");
+			return this.handleError("error.general.login");
 		}
 
 		/*
 		 * check if the ckey is valid
 		 */
 		if (!command.getContext().isValidCkey()) {
-			return handleError("error.field.valid.ckey");
+			return this.handleError("error.field.valid.ckey");
 		}
 
 		/*
 		 * Check if the given url-text is not empty while ADDING a URL
 		 */
-		if (!present(command.getText()) && HttpMethod.POST.equals(requestLogic.getHttpMethod())) {
-			return handleError("error.url.emptyName");
+		if (!present(command.getText()) && HttpMethod.POST.equals(this.requestLogic.getHttpMethod())) {
+			return this.handleError("error.url.emptyName");
 		}
 
 		/*
@@ -114,28 +114,28 @@ public class AdditionalURLController extends AjaxController implements ErrorAwar
 		 * FIXME: not necessary, already done in validator.
 		 * Put all validation into validator and check with
 		 * if (errors.hasErrors()) {
-		 *   return Views.AJAX_ERRORS;
+		 * return Views.AJAX_ERRORS;
 		 * }
 		 */
 		if (!present(command.getUrl())) {
-			return handleError("error.url.emptyUrl");
+			return this.handleError("error.url.emptyUrl");
 		}
 
 		/*
 		 * Check if the url is valid
 		 */
-		if(!UrlUtils.isValid(command.getUrl())) {
-			return handleError("error.field.valid.url");
+		if (!UrlUtils.isValid(command.getUrl())) {
+			return this.handleError("error.field.valid.url");
 		}
-		
+
 		URL url;
 		final String cleanedUrl = UrlUtils.cleanUrl(command.getUrl());
 		try {
 			url = new URL(cleanedUrl);
 		} catch (final MalformedURLException e) {
-			return handleError("error.field.valid.url");
+			return this.handleError("error.field.valid.url");
 		} catch (final Exception e) {
-			return handleError("error.url.general");
+			return this.handleError("error.url.general");
 		}
 		// -- End Validating the request --
 
@@ -146,14 +146,14 @@ public class AdditionalURLController extends AjaxController implements ErrorAwar
 		try {
 			switch (this.requestLogic.getHttpMethod()) {
 			case POST:
-				return addURL(command, url);
+				return this.addURL(command, url);
 			case GET:
-				return deleteURL(command, url);
+				return this.deleteURL(command, url);
 			default:
-				return handleError("error.405");
+				return this.handleError("error.405");
 			}
 		} catch (final ValidationException ex) {
-			return handleError("error.405");
+			return this.handleError("error.405");
 		}
 	}
 
@@ -168,8 +168,14 @@ public class AdditionalURLController extends AjaxController implements ErrorAwar
 
 		log.debug("Adding URL: " + command.getUrl() + " to database. User: " + command.getContext().getLoginUser().getName());
 
-		final Post<? extends Resource> post = logic.getPostDetails(command.getHash(), logic.getAuthenticatedUser().getName());
+		final Post<? extends Resource> post = this.logic.getPostDetails(command.getHash(), this.logic.getAuthenticatedUser().getName());
+
 		final BibTex resource = ((BibTex) post.getResource());
+		for (final BibTexExtra extra : resource.getExtraUrls()) {
+			if (extra.getUrl().equals(url)) {
+				return this.handleError("error.url.exists");
+			}
+		}
 		final BibTexExtra bibTexExtra = new BibTexExtra();
 		bibTexExtra.setUrl(url);
 		bibTexExtra.setText(command.getText());
@@ -179,13 +185,13 @@ public class AdditionalURLController extends AjaxController implements ErrorAwar
 		final List<Post<? extends Resource>> postList = Collections.<Post<? extends Resource>> singletonList(post);
 
 		try {
-			logic.updatePosts(postList, PostUpdateOperation.UPDATE_URLS_ADD);
+			this.logic.updatePosts(postList, PostUpdateOperation.UPDATE_URLS_ADD);
 		} catch (final DatabaseException e) {
-			return handleError("error.url.exists");
+			return this.handleError("error.url.exists");
 		} catch (final Exception e) {
-			return handleError("database.exception.unspecified");
+			return this.handleError("database.exception.unspecified");
 		}
-		command.setResponseString(getXmlSucceeded(command, url));
+		command.setResponseString(this.getXmlSucceeded(command, url));
 		return Views.AJAX_XML;
 	}
 
@@ -200,7 +206,7 @@ public class AdditionalURLController extends AjaxController implements ErrorAwar
 
 		log.debug("Deleting URL: " + command.getUrl() + " from database. User: " + command.getContext().getLoginUser().getName());
 
-		final Post<? extends Resource> post = logic.getPostDetails(command.getHash(), logic.getAuthenticatedUser().getName());
+		final Post<? extends Resource> post = this.logic.getPostDetails(command.getHash(), this.logic.getAuthenticatedUser().getName());
 
 		final BibTex resource = ((BibTex) post.getResource());
 		final BibTexExtra bibTexExtra = new BibTexExtra();
@@ -211,11 +217,11 @@ public class AdditionalURLController extends AjaxController implements ErrorAwar
 		final List<Post<? extends Resource>> postList = Collections.<Post<? extends Resource>> singletonList(post);
 
 		try {
-			logic.updatePosts(postList, PostUpdateOperation.UPDATE_URLS_DELETE);
+			this.logic.updatePosts(postList, PostUpdateOperation.UPDATE_URLS_DELETE);
 		} catch (final Exception e) {
-			return handleError("database.exception.unspecified");
+			return this.handleError("database.exception.unspecified");
 		}
-		command.setResponseString(getXmlSucceeded(command, url));
+		command.setResponseString(this.getXmlSucceeded(command, url));
 		return Views.AJAX_XML;
 	}
 
@@ -227,13 +233,13 @@ public class AdditionalURLController extends AjaxController implements ErrorAwar
 	private String getXmlSucceeded(final AjaxURLCommand command, final URL url) {
 		return "<root><status>ok</status><ckey>" + command.getContext().getCkey() + "</ckey><hash>" + command.getHash() + "</hash><url>" + url.toExternalForm() + "</url><text>" + Functions.escapeXml(command.getText()) + "</text></root>";
 	}
-	
+
 	/*
 	 * Method to handle Errors based on urlError enum.
 	 */
 	private View handleError(final String messageKey) {
 		log.debug("An error occured: " + messageKey);
-		errors.reject(messageKey);
+		this.errors.reject(messageKey);
 		return Views.AJAX_ERRORS;
 	}
 
@@ -246,7 +252,7 @@ public class AdditionalURLController extends AjaxController implements ErrorAwar
 
 	@Override
 	public Errors getErrors() {
-		return errors;
+		return this.errors;
 	}
 
 	@Override

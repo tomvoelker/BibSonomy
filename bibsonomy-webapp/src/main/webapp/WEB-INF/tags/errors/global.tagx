@@ -4,31 +4,30 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-    xmlns:spring="http://www.springframework.org/tags"
-    xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
-    <jsp:directive.attribute name="errors"  type="org.springframework.validation.Errors" required="true"/>
-    <jsp:directive.attribute name="cssClass"  type="java.lang.String" required="false" description="The CSS class for the div the errors are written to"/>
+	<jsp:directive.attribute name="cssClass"  type="java.lang.String" required="false" description="The CSS class for the div the errors are written to"/>
+	<jsp:directive.attribute name="dismissible" type="java.lang.Boolean" required="false" description="alert dismissible"/>
 
-	<!-- this tag is necessary, otherwise errors is empty!  -->
-	<spring:hasBindErrors name="command">
-
+	<spring:hasBindErrors name="command"> <!-- this tag is necessary, otherwise errors is empty!  -->
 		<c:if test="${not empty errors.globalErrors}">
-			<div class="errorcontainer">
-				<h3><fmt:message key="error"/></h3>
-
-				<fmt:message key="error.report"/>${mtl:ch('nbsp')}:${mtl:ch('nbsp')}<parts:email address="${properties['project.email']}" subject="[${command.context.loginUser.name}] error on /${fn:escapeXml(requPath)}" body="${fn:escapeXml(errors.globalErrors)}"/>
-
-				<c:forEach var="error" items="${errors.globalErrors}">
-					<c:if test="${empty cssClass}"><c:set var="cssClass" value="error"/></c:if>
-						<pre class="${cssClass}">
-							<spring:message code="${error.code}" text="${error.defaultMessage}" arguments="${error.arguments}" htmlEscape="true"/>
-						</pre>
+			<bs:alert style="danger" dismissable="${empty dismissible ? true : dismissible}">
+				<jsp:attribute name="alertBody">
+					<h4><fmt:message key="error.msg"/><c:out value=" " /><small><fmt:message key="error.report"/>:${mtl:ch('nbsp')}<parts:email address="${properties['project.email']}" subject="[${command.context.loginUser.name}] error on /${fn:escapeXml(requPath)}" body="${fn:escapeXml(errors.globalErrors)}"/></small></h4>
+					<c:forEach var="error" items="${errors.globalErrors}">
+					<c:if test="${empty cssClass}">
+						<c:set var="cssClass" value="error"/>
+					</c:if>
+					
+					<pre class="${cssClass}" style="margin-top: 1.5em;">
+						<spring:message code="${error.code}" text="${error.defaultMessage}" arguments="${error.arguments}" htmlEscape="true"/>
+					</pre>
 				</c:forEach>
-			</div>
+				</jsp:attribute>
+			</bs:alert>
 		</c:if>
-
 	</spring:hasBindErrors>
-
 </jsp:root>

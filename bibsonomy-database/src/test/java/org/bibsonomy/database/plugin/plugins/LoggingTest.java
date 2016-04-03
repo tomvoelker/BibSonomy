@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -85,15 +85,6 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 		publicationDb = BibTexDatabaseManager.getInstance();
 		tagRelDb = TagRelationDatabaseManager.getInstance();
 		testDb = new TestDatabaseManager();
-	}
-
-	/**
-	 * tests whether we can add this plugin to the registry
-	 */
-	@Test
-	public void addLoggingPlugin() {
-		pluginRegistry.clearPlugins();
-		pluginRegistry.add(new Logging());
 	}
 
 	/**

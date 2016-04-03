@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -28,12 +28,16 @@ package org.bibsonomy.webapp.controller.admin;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Date;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SpamStatus;
+import org.bibsonomy.common.enums.StatisticsUnit;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -41,6 +45,7 @@ import org.bibsonomy.webapp.command.admin.AdminStatisticsCommand;
 import org.bibsonomy.webapp.command.admin.AdminViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
+import org.bibsonomy.webapp.util.StatisticsUnitUtils;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.security.access.AccessDeniedException;
@@ -78,8 +83,9 @@ public class SpamPageController implements MinimalisticController<AdminViewComma
 		 * only compute counts for specific tabs to save 
 		 * processing time for frequently used tabs
 		 */
-		if (command.getSelTab() == AdminViewCommand.CLASSIFIER_NOSPAMMER_INDEX
-				|| command.getSelTab() == AdminViewCommand.CLASSIFIER_SPAMMER_INDEX) {
+		final Integer selectedTab = command.getSelTab();
+		if (selectedTab == AdminViewCommand.CLASSIFIER_NOSPAMMER_INDEX
+				|| selectedTab == AdminViewCommand.CLASSIFIER_SPAMMER_INDEX) {
 			this.setStatistics(command);
 		}
 
@@ -124,12 +130,13 @@ public class SpamPageController implements MinimalisticController<AdminViewComma
 		final AdminStatisticsCommand command = cmd.getStatisticsCommand();
 
 		for (final int interval : cmd.getInterval()) {
-			command.setNumAdminSpammer(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.ADMIN, SpamStatus.SPAMMER, interval));
-			command.setNumAdminNoSpammer(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.ADMIN, SpamStatus.NO_SPAMMER, interval));
-			command.setNumClassifierSpammer(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.SPAMMER, interval));
-			command.setNumClassifierSpammerUnsure(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.SPAMMER_NOT_SURE, interval));
-			command.setNumClassifierNoSpammerUnsure(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.NO_SPAMMER_NOT_SURE, interval));
-			command.setNumClassifierNoSpammer(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.NO_SPAMMER, interval));
+			final Date startDate = StatisticsUnitUtils.convertToStartDate(interval, StatisticsUnit.HOUR);
+			command.setNumAdminSpammer(Long.valueOf(interval), this.logic.getUserStatistics(GroupingEntity.ALL, null, Classifier.ADMIN, SpamStatus.SPAMMER, startDate, null).getCount());
+			command.setNumAdminNoSpammer(Long.valueOf(interval), this.logic.getUserStatistics(GroupingEntity.ALL, null, Classifier.ADMIN, SpamStatus.NO_SPAMMER, startDate, null).getCount());
+			command.setNumClassifierSpammer(Long.valueOf(interval), this.logic.getUserStatistics(GroupingEntity.ALL, null, Classifier.CLASSIFIER, SpamStatus.SPAMMER, startDate, null).getCount());
+			command.setNumClassifierSpammerUnsure(Long.valueOf(interval), this.logic.getUserStatistics(GroupingEntity.ALL, null, Classifier.CLASSIFIER, SpamStatus.SPAMMER_NOT_SURE, startDate, null).getCount());
+			command.setNumClassifierNoSpammerUnsure(Long.valueOf(interval), this.logic.getUserStatistics(GroupingEntity.ALL, null, Classifier.CLASSIFIER, SpamStatus.NO_SPAMMER_NOT_SURE, startDate, null).getCount());
+			command.setNumClassifierNoSpammer(Long.valueOf(interval), this.logic.getUserStatistics(GroupingEntity.ALL, null, Classifier.CLASSIFIER, SpamStatus.NO_SPAMMER, startDate, null).getCount());
 		}
 	}
 

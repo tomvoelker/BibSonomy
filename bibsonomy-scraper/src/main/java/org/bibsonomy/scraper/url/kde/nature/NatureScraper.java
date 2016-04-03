@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -48,6 +48,7 @@ import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
 
 /**
@@ -56,7 +57,7 @@ import org.bibsonomy.util.WebUtils;
  */
 public class NatureScraper extends AbstractUrlScraper implements ReferencesScraper {
 	private static final Log log = LogFactory.getLog(NatureScraper.class);
-	
+
 	private static final String SITE_URL = "http://www.nature.com/";
 	private static final String SITE_NAME = "Nature";
 
@@ -72,7 +73,7 @@ public class NatureScraper extends AbstractUrlScraper implements ReferencesScrap
 	/** name from download link */
 	private static final String CITATION_DOWNLOAD_LINK_NAME = ">Export citation<";
 	private static final String CITATION_DOWNLOAD_LINK_NAME2 = ">Citation<";
-	
+
 	private static final Pattern author = Pattern.compile("<meta name=\"citation_authors\" content=\"(.*?)\"/>");
 	private static final Pattern journal = Pattern.compile("<meta name=\"citation_journal_title\" content=\"(.*?)\"/>");
 	private static final Pattern doi = Pattern.compile("<meta name=\"citation_doi\" content=\"doi:(.*?)\"/>");
@@ -85,6 +86,10 @@ public class NatureScraper extends AbstractUrlScraper implements ReferencesScrap
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("(?s)Abstract.*\\s+<p>(.*)</p>\\s+<div class=\"article-keywords inline-list cleared\">");
 	private static final Pattern REFERENCES_PATTERN = Pattern.compile("<a href=\"(.*)\">Download references</a>");
+	
+	
+	private final RisToBibtexConverter ris = new RisToBibtexConverter();
+	
 	/** get INFO */
 	@Override
 	public String getInfo() {
@@ -152,42 +157,42 @@ public class NatureScraper extends AbstractUrlScraper implements ReferencesScrap
 	 */
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-	    try {
-		final String bibtexUrl = findBibtexUrl(sc.getUrl());
-		if (bibtexUrl != null) {
-		    final RisToBibtexConverter ris = new RisToBibtexConverter();
-		    sc.setBibtexResult(BibTexUtils.addFieldIfNotContained(ris.risToBibtex(WebUtils.getContentAsString(bibtexUrl)),"abstract",abstractParser(sc.getUrl())));
-		    return true;
+		try {
+			final String bibtexUrl = findBibtexUrl(sc.getUrl());
+			if (ValidationUtils.present(bibtexUrl)) {
+				sc.setBibtexResult(BibTexUtils.addFieldIfNotContained(ris.toBibtex(WebUtils.getContentAsString(bibtexUrl)),"abstract",abstractParser(sc.getUrl())));
+			} else {
+				sc.setBibtexResult(constructBibtexFromHtmlMeta(sc));	
+			}
+			sc.setScraper(this);
+			return true;
+		} catch (final IOException e) {
+			throw new ScrapingException(e);
+		} catch (final ParseException pe) {
+			throw new ScrapingException(pe);
 		}
-		sc.setBibtexResult(constructBibtexFromHtmlMeta(sc));
-		return true;
-	    } catch (final IOException e) {
-		throw new ScrapingException(e);
-	    } catch (final ParseException pe) {
-		throw new ScrapingException(pe);
-	    }
 	}
-    
-    private String findBibtexUrl(final URL url) throws IOException {
-	// get publication page
-	final String publicationPage = getPageContent(url);
-	// extract download citation link
-	final Matcher linkMatcher = linkPattern.matcher(publicationPage);
-	while (linkMatcher.find()) {
-	    final String link = linkMatcher.group();
-	    // check if link is download link
-	    if (link.contains(CITATION_DOWNLOAD_LINK_NAME) || link.contains(CITATION_DOWNLOAD_LINK_NAME2)) {
-		// get href attribute
-		final Matcher hrefMatcher = hrefPattern.matcher(link);
-		if (hrefMatcher.find()) {
-		    final String href = hrefMatcher.group();
-		    // download citation (as RIS)
-		    return  "http://" + url.getHost() + "/" + href.substring(6, href.length() - 1);
-		} 
-	    }
+
+	private String findBibtexUrl(final URL url) throws IOException {
+		// get publication page
+		final String publicationPage = getPageContent(url);
+		// extract download citation link
+		final Matcher linkMatcher = linkPattern.matcher(publicationPage);
+		while (linkMatcher.find()) {
+			final String link = linkMatcher.group();
+			// check if link is download link
+			if (link.contains(CITATION_DOWNLOAD_LINK_NAME) || link.contains(CITATION_DOWNLOAD_LINK_NAME2)) {
+				// get href attribute
+				final Matcher hrefMatcher = hrefPattern.matcher(link);
+				if (hrefMatcher.find()) {
+					final String href = hrefMatcher.group();
+					// download citation (as RIS)
+					return  "http://" + url.getHost() + "/" + href.substring(6, href.length() - 1);
+				} 
+			}
+		}
+		return null;
 	}
-	return null;
-    }
 
 	private String constructBibtexFromHtmlMeta(final ScrapingContext sc) throws IOException, ParseException {
 		final URL url = sc.getUrl();
@@ -200,37 +205,37 @@ public class NatureScraper extends AbstractUrlScraper implements ReferencesScrap
 		final Matcher m_author = author.matcher(content);
 		if (m_author.find())
 			bibtex.append("author = {" + m_author.group(1).trim().replaceAll("[;]*$", "").replace(";", " and ") + "},\n"); 
-		
+
 		// add journal
 		final Matcher m_journal = journal.matcher(content);
 		if (m_journal.find())
 			bibtex.append("journal = {" + m_journal.group(1) + "},\n");
-		
+
 		// add doi
 		final Matcher m_doi = doi.matcher(content);
 		if (m_doi.find())
 			bibtex.append("doi = {" + m_doi.group(1) + "},\n");
-		
+
 		// add title
 		final Matcher m_title = title.matcher(content);
 		if (m_title.find())
 			bibtex.append("title = {" + m_title.group(1) + "},\n");
-		
+
 		// add pages
 		final Matcher m_pages = pages.matcher(content);
 		if (m_pages.find())
 			bibtex.append("pages = {" + m_pages.group(1) + "},\n");
-		
+
 		// add date
 		final Matcher m_date = date.matcher(content);
 		if (m_date.find()) {
 			try {
-			final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			final Date parse = sdf.parse(m_date.group(1));
-	
-			bibtex.append("year = " + new SimpleDateFormat("yyyy").format(parse) + ",\n");
-			bibtex.append("month = " + new SimpleDateFormat("MMM").format(parse).toLowerCase() + ",\n");
-			
+				final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				final Date parse = sdf.parse(m_date.group(1));
+
+				bibtex.append("year = " + new SimpleDateFormat("yyyy").format(parse) + ",\n");
+				bibtex.append("month = " + new SimpleDateFormat("MMM").format(parse).toLowerCase() + ",\n");
+
 			} catch(ParseException pe) {
 				try {
 					throw new ScrapingException(pe);
@@ -239,19 +244,19 @@ public class NatureScraper extends AbstractUrlScraper implements ReferencesScrap
 				}
 			}
 		}
-		
+
 		// add volume
 		final Matcher m_volume = volume.matcher(content);
 		if (m_volume.find())
 			bibtex.append("volume = {" + m_volume.group(1) + "},\n");
-		
+
 		// add number
 		final Matcher m_number = number.matcher(content);
 		if (m_number.find())
 			bibtex.append("number = {" + m_number.group(1) + "}\n");
-		
+
 		bibtex.append("}");
-		
+
 		return bibtex.toString();
 	}
 
@@ -267,7 +272,7 @@ public class NatureScraper extends AbstractUrlScraper implements ReferencesScrap
 				return true;
 			}
 		} catch (IOException e) {
-			log.error("References is not available " + sc.getUrl(), e);
+			log.error("References are not available for " + sc.getUrl(), e);
 		}
 		return false;
 	}

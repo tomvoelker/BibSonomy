@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -31,7 +31,6 @@ import java.util.Locale;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.UserUpdateOperation;
-import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.PostLogicInterface;
@@ -40,7 +39,6 @@ import org.bibsonomy.webapp.controller.SettingsPageController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 /**
@@ -48,13 +46,6 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
  */
 public class UpdateUserSettingsController extends SettingsPageController {
 	private static final Log log = LogFactory.getLog(UpdateUserSettingsController.class);
-		
-	@Override
-	public SettingsViewCommand instantiateCommand() {
-		final SettingsViewCommand command = new SettingsViewCommand();
-		command.setUser(new User());
-		return command;
-	}
 
 	@Override
 	public View workOn(final SettingsViewCommand command) {		
@@ -97,11 +88,6 @@ public class UpdateUserSettingsController extends SettingsPageController {
 			 * changes the layout of tag and post for a user
 			 */
 			updateLayoutTagPost(command, user);
-		} else if ("switchLayout".equals(action)) {
-			// TODO: (bootstrap) remove complete if statement
-			user.getSettings().getLayoutSettings().setViewLayout(command.getUser().getSettings().getLayoutSettings().getViewLayout());
-			this.logic.updateUser(user, UserUpdateOperation.UPDATE_SETTINGS);
-			return new ExtendedRedirectView("/");
 		} else {
 			errors.reject("error.invalid_parameter");
 		}
@@ -147,7 +133,6 @@ public class UpdateUserSettingsController extends SettingsPageController {
 		userSettings.setShowBibtex(commandSettings.isShowBibtex());
 		
 		userSettings.getLayoutSettings().setSimpleInterface(commandSettings.getLayoutSettings().isSimpleInterface());
-		userSettings.getLayoutSettings().setViewLayout(commandSettings.getLayoutSettings().getViewLayout());
 		
 		userSettings.setIsMaxCount(commandSettings.getIsMaxCount());
 		if (userSettings.getIsMaxCount()) {

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Client - The REST-client.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -43,36 +43,37 @@ import org.bibsonomy.rest.exceptions.ErrorPerformingRequestException;
  * @author dzo
  */
 public class ChangeDocumentNameQuery extends AbstractQuery<String> {
+	private String username;
 	private String resourceHash;
-	private String newFileName;
+	private String fileName; /* the old one */
 	
-	private Document oldDocument;
+	private Document document; /* the new document */
 
 	/**
 	 * 
+	 * @param username 
 	 * @param resourceHash
 	 * @param newFileName
 	 * @param oldDocument
 	 */
-	public ChangeDocumentNameQuery(String resourceHash, String newFileName, Document oldDocument) {
-		if (!present(newFileName)) throw new IllegalArgumentException("no new name given");
+	public ChangeDocumentNameQuery(final String username, String resourceHash, String fileName, Document document) {
+		if (!present(fileName)) throw new IllegalArgumentException("no new name given");
 		if (!present(resourceHash)) throw new IllegalArgumentException("no resourceHash given");
-		if (!present(oldDocument) || !present(oldDocument.getFileName())) throw new IllegalStateException("no old document name given");
-		if (!present(oldDocument.getUserName())) throw new IllegalStateException("no user name given");
+		
+		if (!present(document) || !present(document.getFileName())) throw new IllegalStateException("no old document name given");
+		if (!present(document.getUserName())) throw new IllegalStateException("no user name given");
 		this.resourceHash = resourceHash;
-		this.newFileName = newFileName;
-		this.oldDocument = oldDocument;
+
+		this.fileName = fileName;
+		this.document = document;
 	}
 
 	@Override
 	protected void doExecute() throws ErrorPerformingRequestException {
-		final Document newDocument = new Document();
-		newDocument.setFileName(this.newFileName);
-		
 		final StringWriter sw = new StringWriter(100);
-		this.getRenderer().serializeDocument(sw, newDocument);
+		this.getRenderer().serializeDocument(sw, document);
 		
-		final String url = this.getUrlRenderer().createHrefForResourceDocument(oldDocument.getUserName(), this.resourceHash, this.oldDocument.getFileName());
+		final String url = this.getUrlRenderer().createHrefForResourceDocument(this.username, this.resourceHash, this.fileName);
 		this.downloadedDocument = this.performRequest(HttpMethod.PUT, url, sw.toString());
 	}
 	

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -32,10 +32,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * Scraper URL tests #99 #136 for EricScraper
- * 
- * TODO: All tests of {@link EricScraper} are ignored due to partial governmental shutdown in the USA.
- * Enabled tests in xml configuration, when http://www.eric.ed.gov is reachable again.
+ * Scraper URL tests #99, #136 for EricScraper
  * 
  * @author tst
  */

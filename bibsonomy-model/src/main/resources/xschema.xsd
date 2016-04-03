@@ -107,6 +107,7 @@
 		<xsd:attribute name="algorithm" type="xsd:string" />
 		<xsd:attribute name="toClassify" type="xsd:positiveInteger" />
 		<xsd:attribute name="classifierMode" type="xsd:string" />
+		<xsd:attribute name="registrationLog" type="xsd:string" />
 
 		<!-- link to details page -->
 		<xsd:attribute name="href" type="xsd:anyURI" />

@@ -11,24 +11,23 @@
 	<jsp:directive.attribute name="newsbar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="infobox" fragment="true" required="false"/>
 
-	<div id="sidebar">
+	<!--+
+	 	| display info box
+	 	+-->
+	<c:if test="${not empty infobox}">
+		<jsp:invoke fragment="infobox" />
+	</c:if>
+	
+	<c:if test="${not empty newsbar}">
+		<jsp:invoke fragment="newsbar" />
+	</c:if>
 
-		<!--+
-		 	| display info box
-		 	+-->
-		<c:if test="${not empty infobox}">
-			<jsp:invoke fragment="infobox" />
-		</c:if>
-		
-		<c:if test="${not empty newsbar}">
-			<jsp:invoke fragment="newsbar" />
-		</c:if>
-
-		<c:if test="${not empty sidebar}">
-			<div id="sidebox">
+	<c:if test="${not empty sidebar}">
+		<div id="sidebox">
+			<ul>
 				<jsp:invoke fragment="sidebar" />
-			</div>
-		</c:if>
-	</div>
+			</ul>
+		</div>
+	</c:if>
 
 </jsp:root>

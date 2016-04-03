@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -82,10 +82,9 @@ public class UpdateUserController extends SettingsPageController implements Vali
 			this.errors.reject("error.field.valid.ckey");
 		}
 		
-		//return 
 		super.workOn(command);
 		// FIXME: redirect removes error messages
-		return new ExtendedRedirectView("settings");
+		return new ExtendedRedirectView("/settings");
 	}
 
 	/**
@@ -107,7 +106,7 @@ public class UpdateUserController extends SettingsPageController implements Vali
 		loginUser.setHobbies(commandUser.getHobbies());
 		loginUser.setPlace(commandUser.getPlace());
 		
-		loginUser.setUseExternalPicture(commandUser.getUseExternalPicture());
+		loginUser.setUseExternalPicture(commandUser.isUseExternalPicture());
 		
 		updateUserPicture( loginUser, command );
 

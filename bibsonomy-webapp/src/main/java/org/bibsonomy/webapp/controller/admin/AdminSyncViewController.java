@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -83,8 +83,8 @@ public class AdminSyncViewController implements MinimalisticController<AdminSync
 		/*
 		 * get services and clients from db
 		 */
-		command.setAvlClients(this.logic.getAllSyncServices(false));
-		command.setAvlServer(this.logic.getAllSyncServices(true));
+		command.setAvlClients(this.logic.getSyncServices(false, null));
+		command.setAvlServer(this.logic.getSyncServices(true, null));
 		
 		return Views.ADMIN_SYNC;
 	}

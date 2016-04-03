@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -34,6 +34,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 import org.bibsonomy.util.WebUtils;
@@ -86,11 +87,16 @@ public class RSOCScraper extends GenericBibTeXURLScraper {
 		}
 		return null;
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
+	 */
 	@Override
-	protected String convert(String downloadResult) {
-		final String firstLine = downloadResult.split("\n")[0].trim();
-		if(firstLine.split("\\{").length == 1)
-			return downloadResult.replace(firstLine, firstLine + "nokey,");
-		return downloadResult;
+	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
+		final String firstLine = bibtex.split("\n")[0].trim();
+		if (firstLine.split("\\{").length == 1) {
+			return bibtex.replace(firstLine, firstLine + "nokey,");
+		}
+		return bibtex;
 	}
 }

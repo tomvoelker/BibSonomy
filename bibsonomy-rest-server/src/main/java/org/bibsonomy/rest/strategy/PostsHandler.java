@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,8 +26,6 @@
  */
 package org.bibsonomy.rest.strategy;
 
-import java.util.StringTokenizer;
-
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.enums.HttpMethod;
@@ -37,10 +35,11 @@ import org.bibsonomy.rest.strategy.posts.GetNewPostsStrategy;
 import org.bibsonomy.rest.strategy.posts.GetPopularPostsStrategy;
 import org.bibsonomy.rest.strategy.posts.community.PostCommunityPostStrategy;
 import org.bibsonomy.rest.strategy.posts.community.PutCommunityPostStrategy;
-import org.bibsonomy.rest.strategy.posts.community.references.DeleteRelationsStrategy;
-import org.bibsonomy.rest.strategy.posts.community.references.PostRelationsStrategy;
+import org.bibsonomy.rest.strategy.posts.community.relations.DeleteRelationsStrategy;
+import org.bibsonomy.rest.strategy.posts.community.relations.PostRelationsStrategy;
 import org.bibsonomy.rest.strategy.users.DeletePostStrategy;
 import org.bibsonomy.rest.strategy.users.GetPostDetailsStrategy;
+import org.bibsonomy.rest.util.URLDecodingPathTokenizer;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -48,8 +47,8 @@ import org.bibsonomy.rest.strategy.users.GetPostDetailsStrategy;
 public class PostsHandler implements ContextHandler {
 
 	@Override
-	public Strategy createStrategy(final Context context, final StringTokenizer urlTokens, final HttpMethod httpMethod) {
-		switch (urlTokens.countTokens()) {
+	public Strategy createStrategy(final Context context, final URLDecodingPathTokenizer urlTokens, final HttpMethod httpMethod) {
+		switch (urlTokens.countRemainingTokens()) {
 		case 0:
 			// /posts
 			if (HttpMethod.GET == httpMethod) {
@@ -57,7 +56,7 @@ public class PostsHandler implements ContextHandler {
 			}
 			break;
 		case 1: {
-				final String path = urlTokens.nextToken();
+				final String path = urlTokens.next();
 				
 				switch(httpMethod) {
 				case GET:
@@ -81,7 +80,7 @@ public class PostsHandler implements ContextHandler {
 				break;
 			}
 		case 2: {
-				final String path = urlTokens.nextToken();
+				final String path = urlTokens.next();
 				final String loggedInUserName = context.getLogic().getAuthenticatedUser().getName();
 			
 				// /posts/community/[hash]
@@ -89,7 +88,7 @@ public class PostsHandler implements ContextHandler {
 					break;
 				}
 				
-				final String resourceHash = urlTokens.nextToken();
+				final String resourceHash = urlTokens.next();
 				switch (httpMethod) {
 					case GET:
 						return new GetPostDetailsStrategy(context, "", resourceHash); // gold standards have no owners
@@ -104,10 +103,10 @@ public class PostsHandler implements ContextHandler {
 			}
 		case 3: {
 				// /posts/community/[hash]/reference/ or /posts/community/[hash]/part_of/
-				final String path = urlTokens.nextToken();
-				final String hash = urlTokens.nextToken();
+				final String path = urlTokens.next();
+				final String hash = urlTokens.next();
 				
-				final String relationString = urlTokens.nextToken();
+				final String relationString = urlTokens.next();
 				if (!RESTConfig.COMMUNITY_SUB_PATH.equalsIgnoreCase(path)) {
 					break;
 				}

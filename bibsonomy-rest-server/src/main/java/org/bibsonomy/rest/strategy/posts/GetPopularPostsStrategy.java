@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -57,6 +57,6 @@ public class GetPopularPostsStrategy extends AbstractListOfPostsStrategy {
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
 		// TODO: support other search types
-		return this.getLogic().getPosts(resourceType, grouping, groupingValue, this.tags, null, search, SearchType.LOCAL, null,  Order.POPULAR, null, null, this.getView().getStartValue(), this.getView().getEndValue());
+		return this.getLogic().getPosts(resourceType, grouping, groupingValue, this.tags, null, search, SearchType.LOCAL, null, Order.POPULAR, null, null, this.getView().getStartValue(), this.getView().getEndValue());
 	}
 }

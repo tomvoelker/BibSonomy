@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -41,6 +41,7 @@ import org.apache.commons.logging.LogFactory;
 public class Debug extends TagSupport {
 	private static final Log log = LogFactory.getLog(Debug.class);
 	private static final long serialVersionUID = 868854563296030689L;
+	
 	private String message;
 
 	/**

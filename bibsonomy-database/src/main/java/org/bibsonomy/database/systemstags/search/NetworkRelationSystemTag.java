@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -40,6 +40,8 @@ public class NetworkRelationSystemTag extends UserRelationSystemTag {
 	 * the name of the network system tag
 	 */
 	public static final String NAME = "network";
+	
+	public final static String BibSonomySpammerSystemTag = SystemTagsUtil.buildSystemTagString(NAME, "bibsonomy-spammer");// "sys:network:bibsonomy-spammer";  // 
 	
 	// FIXME: SystemTagsUtil and SystemTagFactory have a cyclic dependency which is triggered if included here
 	/** the system tag for representing BibSonomy's friendship relation (==trust network) */

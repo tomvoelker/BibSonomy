@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -78,6 +78,18 @@ public class RESTUtilsTest {
 
 		format = RESTUtils.getRenderingFormatForRequest(Collections.singletonMap("format", new String[] { "csl" }), "", "");
 		assertEquals(RenderingFormat.CSL, format);
+		
+		format = RESTUtils.getRenderingFormatForRequest(Collections.singletonMap("format", new String[] { "bibtex" }), "", "");
+		assertEquals(RenderingFormat.BIBTEX, format);
+		
+		format = RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), RenderingFormat.BIBTEX.getMimeType(), "");
+		assertEquals(RenderingFormat.BIBTEX, format);
+		
+		format = RESTUtils.getRenderingFormatForRequest(Collections.singletonMap("format", new String[] { "endnote" }), "", "");
+		assertEquals(RenderingFormat.ENDNOTE, format);
+		
+		format = RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), RenderingFormat.ENDNOTE.getMimeType(), "");
+		assertEquals(RenderingFormat.ENDNOTE, format);
 	}
 
 	/**

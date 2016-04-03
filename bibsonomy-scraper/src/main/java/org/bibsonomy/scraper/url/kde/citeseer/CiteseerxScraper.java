@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -71,60 +71,59 @@ public class CiteseerxScraper extends AbstractUrlScraper {
 
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
-			sc.setScraper(this);
+		sc.setScraper(this);
+		
+		try {
+			// test if url is valid
+			WebUtils.getContentAsString(sc.getUrl().toString());
+		} catch (IOException e) {
+			// if not, try to solve the known citeseerx problem
+			String url = sc.getUrl().toString();
+			final Matcher m = brokenUrlFixPattern.matcher(url);
 			
-			try {
-				// test if url is valid
-				WebUtils.getContentAsString(sc.getUrl().toString());
-			} catch (IOException e) {
-				// if not, try to solve the known citeseerx problem
-				String url = sc.getUrl().toString();
-				final Matcher m = brokenUrlFixPattern.matcher(url);
-				
-				if (m.matches()) {
-					url = url.replace("summary", "summary?doi=");
-					try {
-						sc.setUrl(new URL(url));
-					} catch (MalformedURLException ex) {
-						throw new ScrapingException("Couldn't build new URL");
-					}
+			if (m.matches()) {
+				url = url.replace("summary", "summary?doi=");
+				try {
+					sc.setUrl(new URL(url));
+				} catch (MalformedURLException ex) {
+					throw new ScrapingException("Couldn't build new URL");
 				}
 			}
-
-			// check for selected bibtex snippet
-			if(present(sc.getSelectedText())){
-				sc.setBibtexResult(sc.getSelectedText());
-				sc.setScraper(this);
-				return true;
+		}
+		
+		// TODO: why do we need this check?
+		// check for selected bibtex snippet
+		if (present(sc.getSelectedText())) {
+			sc.setBibtexResult(sc.getSelectedText());
+			sc.setScraper(this);
+			return true;
+		}
+		
+		// no snippet selected
+		String page = sc.getPageContent();
+		
+		// search BibTeXsnippet in html
+		final Matcher matcher = bibtexPattern.matcher(page);
+		
+		if (matcher.find()) {
+			String bibtex = matcher.group(1).replace("<br/>", "\n").replace("&nbsp;", " ").replace(",,", ",");
+			
+			/*
+			 * search abstract 
+			 */
+			final Matcher abstractMatcher = abstractPattern.matcher(page);
+			if (abstractMatcher.find()) {
+				bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "abstract", abstractMatcher.group(1));
 			}
 			
-			// no snippet selected
-			String page = sc.getPageContent();
+			// append url
+			bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
 			
-			// search BibTeXsnippet in html
-			final Matcher matcher = bibtexPattern.matcher(page);
-			
-			if (matcher.find()) {
-				String bibtex = matcher.group(1).replace("<br/>", "\n").replace("&nbsp;", " ").replace(",,", ",");
-				
-				/*
-				 * search abstract 
-				 */
-				final Matcher abstractMatcher = abstractPattern.matcher(page);
-				if (abstractMatcher.find()) {
-					bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "abstract", abstractMatcher.group(1));
-				} 
-				
-				// append url
-				bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
-				
-				
-				
-				sc.setBibtexResult(bibtex);
-				return true;
-
-			}else
-				throw new PageNotSupportedException("no bibtex snippet available");
+			sc.setBibtexResult(bibtex);
+			return true;
+		}
+		
+		throw new PageNotSupportedException("no bibtex snippet available");
 	}
 	
 	@Override

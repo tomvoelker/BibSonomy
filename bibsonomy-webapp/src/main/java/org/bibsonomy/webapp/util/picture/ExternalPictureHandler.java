@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -45,34 +45,23 @@ import org.springframework.http.HttpStatus;
  * @author cut
  * @see PictureHandler
  */
-public abstract class ExternalPictureHandler extends AbstractPictureHandler
-{
-
-	/**
-	 * Creates a new {@link ExternalPictureHandler} instance with target user and command.
-	 * 
-	 * @param user - requested user
-	 * @param command - actual picture command
-	 */
-	public ExternalPictureHandler ( User user, PictureCommand command )
-	{
-		super(user, command);
-		// TODO Auto-generated constructor stub
-	}
-
+public abstract class ExternalPictureHandler implements PictureHandler {
+	
 	/**
 	 * Returns URL to profile picture file.</br>
 	 * 
-	 * @param userAddress - address (e.g. mail) identifiing requested user
+	 * @param requestedUser - the requested user
 	 * @param fileExtension - requested file extension as {@code .xxx} or empty string
 	 * @return URL to picture file
 	 */
-	protected abstract URL getPictureURL ( String userAddress, String fileExtension );
+	protected abstract URL getPictureURL ( User requestedUser, String fileExtension );
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.util.picture.PictureHandler#getProfilePictureView(org.bibsonomy.model.User, org.bibsonomy.webapp.command.actions.PictureCommand)
+	 */
 	@Override
-	public View getProfilePictureView ()
-	{	
-		URL pictureURL = getPictureURL( requestedUser.getEmail(), ".jpg" );
+	public View getProfilePictureView(User requestedUser, PictureCommand command) {
+		final URL pictureURL = getPictureURL( requestedUser, ".jpg" );
 		
 		ExtendedRedirectView resultV = new ExtendedRedirectView( (present(pictureURL))? pictureURL.toString() : "" );
 		resultV.setContentType( "image/jpg" );

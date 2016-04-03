@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -39,7 +39,7 @@ public class ContextPathFilterTest {
 
 	@Test
 	public void testStripContextPath() {
-		final ContextPathFilter.ContextPathFreeRequest req = new ContextPathFilter.ContextPathFreeRequest(new MockHttpServletRequest());
+		final ContextPathFilter.ContextPathFreeRequest req = new ContextPathFilter.ContextPathFreeRequest(new MockHttpServletRequest(), "http://www.bibsonomy.org/");
 		
 		assertEquals("/login", stripContextPath(req, "/bibsonomy-webapp/login", "/bibsonomy-webapp"));
 		assertEquals("/login", stripContextPath(req, "/login", ""));
@@ -49,7 +49,7 @@ public class ContextPathFilterTest {
 	
 	@Test
 	public void testStripContextPath2() {
-	final ContextPathFilter.ContextPathFreeRequest req = new ContextPathFilter.ContextPathFreeRequest(new MockHttpServletRequest());
+	final ContextPathFilter.ContextPathFreeRequest req = new ContextPathFilter.ContextPathFreeRequest(new MockHttpServletRequest(), "http://www.bibsonomy.org/");
 		
 		assertEquals("/login", req.stripContextPath("/bibsonomy-webapp/login", "/bibsonomy-webapp"));
 		assertEquals("/login", req.stripContextPath("/login", ""));

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,9 +26,8 @@
  */
 package org.bibsonomy.rest.strategy;
 
-import java.util.StringTokenizer;
-
 import org.bibsonomy.rest.enums.HttpMethod;
+import org.bibsonomy.rest.util.URLDecodingPathTokenizer;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -43,5 +42,5 @@ public interface ContextHandler {
 	 * @param httpMethod
 	 * @return TODO
 	 */
-	public Strategy createStrategy(Context context, StringTokenizer urlTokens, HttpMethod httpMethod);
+	public Strategy createStrategy(Context context, URLDecodingPathTokenizer urlTokens, HttpMethod httpMethod);
 }

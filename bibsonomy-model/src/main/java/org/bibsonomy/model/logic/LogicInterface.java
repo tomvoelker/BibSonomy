@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -30,15 +30,18 @@ import java.net.InetAddress;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.ConceptUpdateOperation;
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
@@ -57,6 +60,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.statistics.Statistics;
 import org.bibsonomy.model.sync.SyncLogicInterface;
 import org.bibsonomy.model.user.remote.RemoteUserId;
 
@@ -80,7 +84,7 @@ import org.bibsonomy.model.user.remote.RemoteUserId;
  * @author Jens Illig <illig@innofinity.de>
  * @author Christian Kramer
  */
-public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogicInterface, DiscussionLogicInterface, SyncLogicInterface {
+public interface LogicInterface extends PersonLogicInterface, PostLogicInterface, GoldStandardPostLogicInterface, DiscussionLogicInterface, SyncLogicInterface {
 
 	/**
 	 * @return the name of the authenticated user
@@ -112,7 +116,19 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @return list of user
 	 */
 	public List<User> getUsers (Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, UserRelation relation, String search, int start, int end);	
-
+	
+	/**
+	 * @param grouping TODO
+	 * @param filters TODO
+	 * @param classifier 
+	 * @param status 
+	 * @param startDate
+	 * @param endDate
+	 * @param constraints 
+	 * @return statistic informations about the users
+	 */
+	public Statistics getUserStatistics(GroupingEntity grouping, Set<Filter> filters, final Classifier classifier, final SpamStatus status, Date startDate, Date endDate);
+	
 	/**
 	 * Returns details about a specified user
 	 * 
@@ -126,8 +142,6 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 */
 	public User getUserDetails(String userName);
 	
-	
-
 	/**
 	 * @param userName
 	 * @return WikiVersions
@@ -157,20 +171,22 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	/**
 	 * Returns all groups of the system.
 	 * @param pending
+	 * @param userName if pending equals <code>true</code> restrict pending groups to this user
 	 * @param start
 	 * @param end
-	 * 
 	 * @return a set of groups, an empty set else
 	 */
-	public List<Group> getGroups(boolean pending, int start, int end);
+	public List<Group> getGroups(boolean pending, String userName, int start, int end);
 	
 	/**
 	 * Returns details of one group.
 	 * 
 	 * @param groupName
+	 * @param pending	<code>true</code> iff you want to get group details of
+	 * 					a pending group
 	 * @return the group's details, null else
 	 */
-	public Group getGroupDetails(String groupName);
+	public Group getGroupDetails(String groupName, boolean pending);
 
 	/** 
 	 * Returns a list of tags which can be filtered.
@@ -199,6 +215,35 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @return a set of tags, an empty list else
 	 */
 	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, String regex, TagSimilarity relation, Order order, Date startDate, Date endDate, int start, int end);
+
+	/** 
+	 * Returns a list of tags which can be filtered.
+	 * @param resourceType
+	 * 			  a resourceType (i.e. {@link BibTex} or {@link Bookmark}) to get tags
+	 *  		  only from a bookmark or a publication entry
+	 * @param grouping
+	 *            grouping tells whom tags are to be shown: the tags of a user,
+	 *            of a group or of the viewables.
+	 * @param groupingName
+	 *            name of the grouping. if grouping is user, then its the
+	 *            username. if grouping is set to {@link GroupingEntity#ALL},
+	 *            then its an empty string!
+	 * @param tags
+	 * @param hash
+				  a resource hash (publication or bookmark)
+	 * @param search - search string
+	 * @param searchType the search type
+	 * @param regex
+	 *            a regular expression used to filter the tagnames
+	 * @param relation TODO
+	 * @param order 
+	 * @param startDate - if given, only tags of posts that have been created after (inclusive) startDate are returned  
+	 * @param endDate - if given, only tags of posts that have been created before (inclusive) endDate are returned 
+	 * @param start
+	 * @param end
+	 * @return a set of tags, an empty list else
+	 */
+	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, SearchType searchType, String regex, TagSimilarity relation, Order order, Date startDate, Date endDate, int start, int end);
 
 	/**  
 	 * retrieves a filterable list of authors.
@@ -280,8 +325,9 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * Removes the given group.
 	 * 
 	 * @param groupName the group to delete
+	 * @param pending the given group is pending
 	 */
-	public void deleteGroup(String groupName);
+	public void deleteGroup(String groupName, boolean pending);
 
 	/**
 	 * Adds a user to the database.
@@ -359,6 +405,18 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @throws AccessDeniedException if user is not allowed to access the requested document
 	 */
 	public Document getDocument(String userName, String resourceHash, String fileName);
+	
+	/**
+	 * Get statistics about document(s)
+	 * @param groupingEntity
+	 * @param grouping
+	 * @param filters
+	 * @param constraints
+	 * @param startDate
+	 * @param endDate
+	 * @return the stats
+	 */
+	public Statistics getDocumentStatistics(final GroupingEntity groupingEntity, final String grouping, final Set<Filter> filters, final Date startDate, final Date endDate);
 
 	/**
 	 * Deletes an existing document. If the resourceHash is given, the document
@@ -375,13 +433,13 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * Renames an existing document to the given new name. 
 	 * The resourceHash is to find the corresponding
 	 * resource if existing. 
-	 * 
-	 * @param document - the document to rename
+	 * @param userName TODO
 	 * @param resourceHash - the resourceHash of the document
-	 * @param newName - the document's new name
+	 * @param documentName TODO
+	 * @param document - the document to rename
 	 * 	 
 	 */
-	public void updateDocument(Document document, String resourceHash, String newName);
+	public void updateDocument(String userName, String resourceHash, String documentName, Document document);
 	
 	/**
 	 * Adds an InetAddress (IP) with the given status to the list of addresses.
@@ -472,6 +530,9 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	public void deleteRelation(String upper, String lower, GroupingEntity grouping, String groupingName);
 
 	/**
+	 * TODO: can we merge this with the {@link #getUsers(Class, GroupingEntity, String, List, String, Order, UserRelation, String, int, int)}
+	 * method?
+	 * 
 	 * Returns all users that are classified to the specified state by
 	 * the given classifier 
 	 * 
@@ -481,17 +542,8 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @param limit 
 	 * @author sts
 	 */
+	@Deprecated // use getUsers
 	public List<User> getClassifiedUsers(Classifier classifier, SpamStatus status, int limit);
-
-	/**
-	 * Returns number of classfied user 
-	 * 
-	 * @param classifier the classifier
-	 * @param status the status classifed
-	 * @param interval 
-	 * @return count of users
-	 */
-	public int getClassifiedUserCount(Classifier classifier, SpamStatus status, int interval);
 	
 	/**
 	 * Returns the value of the specified classifier setting
@@ -613,13 +665,15 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @param tags
 	 * @param regex
 	 * @param status
-	 * @param startDate TODO
-	 * @param endDate TODO
+	 * @param filters
+	 * @param contraints the statistic contraint
+	 * @param startDate
+	 * @param endDate
 	 * @param start
 	 * @param end
 	 * @return the number of relations from a user
 	 */
-	public int getTagStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String regex, ConceptStatus status, Date startDate, Date endDate, int start, int end);
+	public int getTagStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String regex, ConceptStatus status, Set<Filter> filters, Date startDate, Date endDate, int start, int end);
 
 	/** 
 	 * We return all Users that are in (the) relation with the sourceUser
@@ -657,24 +711,24 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	
 	/**
 	 * TODO: rename to createClipboardItems
-	 * Create basket items
+	 * Create clipboard items
 	 * 
-	 * @param posts - list of posts which should be added to the basket
-	 * @return size of basket
+	 * @param posts - list of posts which should be added to the clipboard
+	 * @return size of clipboard
 	 */
-	public int createBasketItems(List<Post<? extends Resource>> posts);
+	public int createClipboardItems(List<Post<? extends Resource>> posts);
 	
 	/**
 	 * TODO: rename to deleteClipboardItems
-	 * Delete basket items 
+	 * Delete clipboard items 
 	 * 
-	 * @param posts - list of posts which should be deleted from the basket
-	 * @param clearBasket - this should be true if the whole basket should be dropped, in all other cases false. It's necessary because 
-	 * 		you have to differ if you want to delete some posts or all. This parameter is true if you call the "Remove all from Basket"-link
-	 * 		on the new basket page.
-	 * @return size of basket
+	 * @param posts - list of posts which should be deleted from the clipboard
+	 * @param clearClipboard - this should be true if the whole clipboard should be dropped, in all other cases false. It's necessary because 
+	 * 		you have to differ if you want to delete some posts or all. This parameter is true if you call the "Remove all from Clipboard"-link
+	 * 		on the new clipboard page.
+	 * @return size of clipboard
 	 */
-	public int deleteBasketItems(List<Post<? extends Resource>> posts, boolean clearBasket);
+	public int deleteClipboardItems(List<Post<? extends Resource>> posts, boolean clearClipboard);
 	
 	/**
 	 * Delete Messages from the inbox by resourceHash sender and receiver
@@ -683,4 +737,15 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * @return the new size of the inbox
 	 */
 	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox);
+
+	/**
+	 * @param personId
+	 */
+	public void linkUser(String personId);
+
+	/**
+	 * @param username
+	 */
+	public void unlinkUser(String username);
+
 }

@@ -1,4 +1,4 @@
 <p>
-\format[HTMLChars,AntiScriptInjection,AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer]{\author} (\format[AntiScriptInjection]{\year}), 
-'\format[HTMLChars,AntiScriptInjection]{\title}'\begin{school}, PhD thesis, \format[AntiScriptInjection]{\school}\end{school}.
+\format[AuthorLastFirst,AuthorAbbreviator,AuthorAndsReplacer,HTMLCharsAntiScript]{\author} (\format[AntiScriptInjection]{\year}), 
+'\format[HTMLCharsAntiScript]{\title}'\begin{school}, PhD thesis, \format[AntiScriptInjection]{\school}\end{school}.
 </p>

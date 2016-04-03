@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -30,7 +30,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.Writer;
 import java.util.Arrays;
-import java.util.Date;
 
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
@@ -78,11 +77,6 @@ public class PostPostStrategy extends AbstractCreateStrategy {
 	@Override
 	protected String create() throws InternServerException, BadRequestOrResponseException {
 		final Post<? extends Resource> post = this.parsePost();
-		/*
-		 * set postingdate to current time (i.e., users cannot create posts with their
-		 * own (eventually faked) date
-		 */
-		post.setDate(new Date());
 		try {
 			return this.getLogic().createPosts(Arrays.<Post<?>>asList(post)).get(0);
 		} catch (final DatabaseException de) {

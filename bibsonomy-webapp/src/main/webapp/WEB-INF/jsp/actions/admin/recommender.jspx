@@ -3,20 +3,29 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/users"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
-	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:admin="urn:jsptagdir:/WEB-INF/tags/bstags/actions/admin"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
 	xmlns:form="http://www.springframework.org/tags/form"
-	xmlns:spring="urn:http://www.springframework.org/tags"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
-	<jsp:directive.page contentType="text/html; charset=UTF-8"
-		language="java" pageEncoding="UTF-8" session="true" />
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
-	<layout:layout pageTitle="${command.pageTitle}" loginUser="${command.context.loginUser}" requPath="">
-	
+	<layout:layout pageTitle="admin :: recommender" loginUser="${command.context.loginUser}" requPath="">
+		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:admin />
+					<nav:crumb nameKey="navi.admin.recommender" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.admin">
 				<jsp:attribute name="pathPart">
@@ -28,7 +37,75 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="content">
-			<h1>Switch to Bootstrap to edit recommenders</h1>
+			<fmt:message key="submit" var="submitBtn" />
+			
+			<c:if test="${not empty command.adminResponse}">
+				<bs:alert style="success" dismissable="${true}">
+					<jsp:attribute name="alertBody">
+						<c:out value="${command.adminResponse}"/>
+					</jsp:attribute>
+				</bs:alert>
+			</c:if>
+			
+			<!-- name of current tab -->
+			<h1 class="content-heading">Recommenders</h1>
+			
+			<form:form name="latencyCalculation" action="/admin/recommender" cssClass="form-inline">
+				<div class="form-group">
+					<div class="input-group">
+						<div class="input-group-addon">
+							<fmt:message key="admin.recommender.latencyvalues"/>
+						</div>
+						<input class="form-control" type="text" id="queriesPerLatency" name="queriesPerLatency" value="${command.queriesPerLatency}" />
+					</div>
+				</div>
+				<div class="form-group">
+					<button type="submit" class="btn btn-default">${submitBtn}</button>
+				</div>
+			</form:form>
+			
+			<c:forEach items="${command.recommenderOverviewMap}" var="entry">
+				<fmt:message key="${entry.key.name}.header" var="simpleRecommenderResultName"/>
+				<h2><c:out value="${simpleRecommenderResultName}" /></h2>
+				<p class="form-control-static pull-right"><a type="button" class="btn btn-xs btn-default" role="button" data-toggle="modal" href="#add-${entry.key.simpleName}"><span class="glyphicon glyphicon-plus"><!-- KEEP ME --></span></a></p>
+				<bs:modal id="add-${entry.key.simpleName}" modalTitle="${simpleRecommenderResultName} - add recommender">
+					<jsp:attribute name="modalBody">
+						<form role="form" method="POST" class="form-horizontal">
+							<div class="form-group">
+								<label for="newrecurl" class="col-sm-3 control-label">URL</label>
+								<div class="col-sm-9">
+									<input class="form-control" type="text" id="newrecurl" name="newrecurl"/>
+								</div>
+							</div>
+							
+							<div class="form-group">
+								<label for="trusted" class="col-sm-3 control-label">trusted</label>
+								
+								<div class="col-sm-9">
+									<select class="form-control" id="trusted" name="trusted">
+										<option value="false">No</option>
+										<option value="true">Yes</option>
+									</select>
+								</div>
+							</div>
+							
+							<!-- hidden fields -->
+							<input type="hidden" name="ckey" value="${command.context.ckey}"/>
+							<input type="hidden" name="recommendationResultClass" value="${entry.key.name}" />
+							<input type="hidden" name="action" value="addRecommender"/>
+							<!-- submit -->
+							<div class="col-sm-offset-3 col-sm-9">
+								<bsform:button style="primary" type="submit" size="defaultSize" value="add recommender" />
+							</div>
+						</form>
+					</jsp:attribute>
+					<jsp:attribute name="modalFooter">
+						
+					</jsp:attribute>
+				</bs:modal>
+				
+				<admin:recommenderOverview recommenderInfos="${entry.value}" recommender="${entry.key}" />
+			</c:forEach>
 		</jsp:attribute>
 	</layout:layout>
 </jsp:root>

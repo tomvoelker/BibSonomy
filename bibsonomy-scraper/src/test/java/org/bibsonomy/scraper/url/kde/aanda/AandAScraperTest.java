@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -60,7 +60,7 @@ public class AandAScraperTest {
 	}
 	@Test
 	public void testReferences() throws Exception{
-		final ScrapingContext sc = new ScrapingContext(new URL("http://www.aanda.org/index.php?option=article&amp;access=doi&amp;doi=10.1051/0004-6361/201014294"));
+		final ScrapingContext sc = new ScrapingContext(new URL("http://www.aanda.org/articles/aa/abs/2010/05/aa14294-10/aa14294-10.html"));
 		
 		AandAScraper aas = new AandAScraper();
 		
@@ -72,10 +72,8 @@ public class AandAScraperTest {
 		
 		assertNotNull(reference);
 		
-		assertTrue(reference.length() > 100);
-		
-		assertEquals("<li>\n\t\t\t<a name=\"BH98\"></a>Balbus, S. A., &amp; Hawley, J. F. 1998, Rev. Mod.".trim(), reference.substring(0, 85).trim());
-		
+		assertTrue(reference.length() > 100);		
+		assertEquals("<li>\n"+"                "+"<a name=\"BH98\"></a>Balbus, S. A., &amp; Hawley, J. F. 1998, Rev. Mod.".trim(), reference.substring(0, 119).trim());
 		assertTrue(reference.contains("Balbus, S. A."));
 	}
 }

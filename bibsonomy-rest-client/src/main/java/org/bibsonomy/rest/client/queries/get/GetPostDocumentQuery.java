@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Client - The REST-client.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -77,7 +77,7 @@ public class GetPostDocumentQuery extends AbstractQuery<Document> {
 		
 		// create the file
 		try {
-			this.document.setFile(fileFactory.getFileForResourceDocument(username, resourceHash, fileName)); 
+			this.document.setFile(fileFactory.getFileForResourceDocument(username, resourceHash, fileName));
 			this.fileExists = !this.document.getFile().createNewFile();
 		} catch (final IOException ex) {
 			throw new IllegalArgumentException("could not create new file " + this.document.getFile().getAbsolutePath());

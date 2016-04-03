@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -60,6 +60,9 @@ public class ProjectmuseScraperTest {
 	public void url2TestRun(){
 		UnitTestRunner.runSingleTest("url_114");
 	}
+	/**
+	 * @throws Exception
+	 */
 	@Test
 	public void testReferences() throws Exception{
 		final ScrapingContext sc = new ScrapingContext(new URL("http://muse.jhu.edu/journals/social_science_history/v029/29.4mcnay.html"));

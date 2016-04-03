@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -29,12 +29,15 @@ package org.bibsonomy.database.managers;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostAccess;
@@ -54,8 +57,10 @@ import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ScraperMetadata;
 import org.bibsonomy.model.extra.BibTexExtra;
+import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.model.util.file.FileSystemFile;
 import org.bibsonomy.services.filesystem.FileLogic;
+import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
  * Used to create, read, update and delete BibTexs from the database.
@@ -75,6 +80,8 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	private static final BibTexDatabaseManager singleton = new BibTexDatabaseManager();
 
 	private static final HashID[] hashRange = HashID.getAllHashIDs();
+	
+	private ResourceSearch<BibTex> publicationSearch;
 
 	/**
 	 * @return BibTexDatabaseManager
@@ -148,20 +155,26 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		}
 
 		// document retrieval
-		final FilterEntity filter = param.getFilter();
-		if (present(filter)) {
-			switch (filter) {
-			case JUST_PDF:
+		final Set<Filter> filters = param.getFilters();
+		if (present(filters)) {
+			// TODO: support multiple filters
+			if (filters.contains(FilterEntity.JUST_PDF)) {
 				// retrieve only entries with a document attached
 				return this.postList("getJustBibTexForUserWithPDF", param, session);
-			case DUPLICATES:
+			}
+			
+			if (filters.contains(FilterEntity.DUPLICATES)) {
 				// retrieve duplicate entries
 				return this.getPostsDuplicate(param.getRequestedUserName(), param.getGroups(), HashID.getSimHash(param.getSimHash()), session, null);
-			case POSTS_WITH_DISCUSSIONS:
+			}
+			
+			if (filters.contains(FilterEntity.POSTS_WITH_DISCUSSIONS)) {
 				// posts with discussions
 				return this.postList("getBibTexWithDiscussions", param, session);
-			default:
-				throw new IllegalArgumentException("Filter " + filter.name() + " not supported");
+			}
+			
+			if (!(filters.contains(FilterEntity.ADMIN_SPAM_POSTS) && (filters.size() == 1))) {
+				throw new IllegalArgumentException("Filters " + filters + " not supported");
 			}
 		}
 
@@ -188,14 +201,13 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		}
 
 		// if user wants to retrieve documents
-		final FilterEntity filter = param.getFilter();
-		if (present(filter)) {
-			switch (filter) {
-			case JUST_PDF:
+		final Set<Filter> filters = param.getFilters();
+		if (present(filters)) {
+			if (filters.contains(FilterEntity.JUST_PDF)) {
 				return this.postList("getJustBibTexByTagNamesForUserWithPDF", param, session);
-			default:
-				throw new IllegalArgumentException("Filter " + filter.name() + " not supported");
 			}
+			
+			throw new IllegalArgumentException("Filters " + filters + " not supported");
 		}
 
 		// posts including documents
@@ -220,14 +232,13 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		/*
 		 * first check for filter
 		 */
-		final FilterEntity filter = param.getFilter();
-		if (present(filter)) {
-			switch (filter) {
-			case JUST_PDF:
+		final Set<Filter> filters = param.getFilters();
+		if (present(filters)) {
+			if (filters.contains(FilterEntity.JUST_PDF)) {
 				return this.postList("getJustBibTexForGroupByTagWithPDF", param, session);
-			default:
-				throw new IllegalArgumentException("Filter " + filter.name() + " not supported");
 			}
+			
+			throw new IllegalArgumentException("Filters " + filters + " not supported");
 		}
 
 		/*
@@ -249,15 +260,14 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		}
 
 		// document retrieval
-		final FilterEntity filter = param.getFilter();
-		if (present(filter)) {
-			switch (filter) {
-			case JUST_PDF:
+		final Set<Filter> filters = param.getFilters();
+		if (present(filters)) {
+			if (filters.contains(FilterEntity.JUST_PDF)) {
 				// just entries with document attached
 				return this.postList("getJustBibTexForGroupWithPDF", param, session);
-			default:
-				throw new IllegalArgumentException("Filter " + filter.name() + " not supported");
 			}
+			
+			throw new IllegalArgumentException("Filters " + filters + " not supported");
 		}
 
 		// posts including documents
@@ -398,7 +408,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 				/*
 				 * get a scraper id
 				 */
-				final int id = this.generalDb.getNewId(ConstantID.IDS_SCRAPER_METADATA, session);
+				final int id = this.generalDb.getNewId(ConstantID.IDS_SCRAPER_METADATA, session).intValue();
 				/*
 				 * store id in metadata
 				 */
@@ -670,5 +680,23 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 */
 	public void setFileLogic(final FileLogic fileLogic) {
 		this.fileLogic = fileLogic;
+	}
+
+	/**
+	 * @param options 
+	 * @param queryString
+	 * @param options 
+	 * @return
+	 */
+	public List<Post<BibTex>> getPublicationSuggestion(PublicationSuggestionQueryBuilder options) {
+		if (this.publicationSearch != null) {
+			return this.publicationSearch.getPublicationSuggestions(options);
+		}
+		log.warn("no publicationSearch available for publication suggestions");
+		return new ArrayList<>();
+	}
+
+	public void setPublicationSearch(ResourceSearch<BibTex> publicationSearch) {
+		this.publicationSearch = publicationSearch;
 	}
 }

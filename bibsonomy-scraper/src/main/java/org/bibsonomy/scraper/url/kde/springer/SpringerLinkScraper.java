@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -53,10 +53,10 @@ import org.bibsonomy.util.id.ISBNUtils;
 
 
 
-/** Scraper für SpringerLink.
+/**
+ * Scraper für SpringerLink.
  * 
  * @author rja
- *
  */
 public class SpringerLinkScraper extends AbstractUrlScraper {
 	private static final String SITE_NAME = "SpringerLink";
@@ -76,7 +76,7 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 	private static final Pattern EXPORT_LINK_PATTERN = Pattern.compile("href=\"(/export-citation/[^\"]++)\"");
 	private static final Pattern BIBTEX_LINK_PATTERN = Pattern.compile("class=\"bib\"[^>]*?href=\"([^\"]++)\"");
 	
-	private static final Pattern ABSTRACT_PATTERN_FOR_PAGE = Pattern.compile("(?ms)<div class=\"abstract-content formatted\" itemprop=\"description\">.*?<p class=\"a-plus-plus\">([^<]*+)");
+	private static final Pattern ABSTRACT_PATTERN_FOR_PAGE = Pattern.compile("(?ms)<div class=\"abstract-content formatted\" itemprop=\"description\">.*?<p xmlns=\"http://www.w3.org/1999/xhtml\" class=\"Para.*?\">([^<]*+)");
 	
 	private static final String SPRINGER_CITATION_HOST_COM = "springerlink.com";
 	private static final String SPRINGER_CITATION_HOST_DE = "springerlink.de";
@@ -157,14 +157,15 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 			}
 			
 			//alternatively look for isbn and use WorldCatScraper
-			else {
-				String isbn = ISBNUtils.extractISBN(page);
-				if (present(isbn)) {
-					String bibtex = WorldCatScraper.getBibtexByISBNAndReplaceURL(isbn, sc.getUrl().toString());
-					if (!present(bibtex)) return false;
-					sc.setBibtexResult(bibtex);
-					return true;
+			
+			final String isbn = ISBNUtils.extractISBN(page);
+			if (present(isbn)) {
+				final String bibtex = WorldCatScraper.getBibtexByISBNAndReplaceURL(isbn, sc.getUrl().toString());
+				if (!present(bibtex)) {
+					return false;
 				}
+				sc.setBibtexResult(bibtex);
+				return true;
 			}
 		} catch (IOException e) {
 			throw new ScrapingException(e);
@@ -299,7 +300,8 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 		
 		return s3;
 	}
-
+	
+	@Override
 	public String getInfo() {
 		return INFO;
 	}
@@ -308,11 +310,13 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
-
+	
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
-
+	
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}

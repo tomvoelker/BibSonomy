@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -95,6 +95,11 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	 * each intrahash(post) is maped to a list of errors. Erroneous posts cannot be edited later*/
 	private Map<String, List<ErrorMessage>> postsErrorList;
 
+	/**
+	 * For multiple posts
+	 */
+	private ListCommand<Post<BibTex>> posts = new ListCommand<Post<BibTex>>(this);
+	
 	/**
 	 * constructor
 	 * inits the tabs and sets their titles
@@ -338,11 +343,6 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	}
 
 	/**
-	 * For multiple posts
-	 */
-	private ListCommand<Post<BibTex>> posts = new ListCommand<Post<BibTex>>(this);
-
-	/**
 	 * @return The list of publication posts.
 	 */
 	@Override
@@ -430,6 +430,5 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	public void setPostsErrorList(Map<String, List<ErrorMessage>> postsErrorList) {
 		this.postsErrorList = postsErrorList;
 	}
-
 	
 }

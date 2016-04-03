@@ -1,80 +1,222 @@
 <jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
-		  xmlns:jsp="http://java.sun.com/JSP/Page"
-		  xmlns:c="http://java.sun.com/jsp/jstl/core"
-		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-		  xmlns:form="http://www.springframework.org/tags/form"
-		  xmlns:bform="urn:jsptagdir:/WEB-INF/tags/layout/form"
-		  xmlns:spring="http://www.springframework.org/tags"
-		  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
-		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:group="urn:jsptagdir:/WEB-INF/tags/resources/group"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true" />
+
+	<c:set var="showDeny" value="${not empty param.user and not empty param.requGroup and param.requGroup eq user.name}" />
+	<c:set var="user" value="${command.user}" />
 	<c:set var="loginUser" value="${command.context.loginUser}" />
 
-	<div id="selTab5" class="tab-pane ${(command.selTab eq 5) ? 'active' : ''}">
-		<c:choose>
-			<!-- check if user is logged in with wrong account -->
-			<c:when test="${empty param.user or empty param.requGroup or param.requGroup eq user.name}">
+	<div id="selTab3" class="tab-pane ${(command.selTab eq 3) ? 'active' : ''}">
 
-				<!-- show per user group sharing options -->
-				<h2>
-					<fmt:message key="settings.group.sharedDocuments" />
-				</h2>
-				<div id="groups" class="fsOuter">
-					<ul>
-						<c:forEach var="group" items="${command.user.groups}">
-							<c:set var="groupMembership" value="${group.getGroupMembershipForUser(loginUser)}" />
-							<c:if test="${groupMembership.groupRole ne 'DUMMY'}">
-								<form:form class="groupShareSettings" method="POST" action="/ajax/handleGroupShare">
-									<li><a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}"><c:out value="${group.name}" />&amp;nbsp;</a>
-										<c:choose>
-										<c:when test="${group.sharedDocuments}">
-											<input type="hidden" name="requestedGroup" value="${fn:escapeXml(group.name)}" />
-											<input type="hidden" name="ckey" value="${ckey}" />
-											<input type="hidden" name="forward" value="settings?selTab=3" />
-											<c:choose>
-												<c:when test="${groupMembership.userSharedDocuments}">
-													<fmt:message var="buttonTitle" key="groups.actions.unshareDocuments.title"></fmt:message>
-													<fmt:message var="buttonValue" key="groups.actions.unshareDocuments"></fmt:message>
-														<input type="hidden" name="action" value="unshareDocuments" />
-												</c:when>
-												<c:otherwise>
-													<fmt:message var="buttonTitle" key="groups.actions.shareDocuments.title"></fmt:message>
-													<fmt:message var="buttonValue" key="groups.actions.shareDocuments"></fmt:message>
-														<input type="hidden" name="action" value="shareDocuments" />
-												</c:otherwise>
-											</c:choose>
-											<input type="submit" title="${buttonTitle}" value="${buttonValue}" />
-										</c:when>
-										<c:otherwise>
-											<fmt:message key="settings.groups.documentsharing.disabled" />
-										</c:otherwise>
-										</c:choose>
-									</li>
-								</form:form>
-							</c:if>
-						</c:forEach>
-					</ul>
-				</div>
+		<fieldset class="fsOuter">
+			<c:if test="${!loginUser.spammer}">
+			
+				<!-- Request a new group -->
+				
+				<fmt:message var="linkText" key="settings.group.requestGroup.link"/>
+				<bsform:fieldset legendKey="navi.group.groupRequest">
+					<jsp:attribute name="content">
+						<p>
+							<fmt:message key="settings.group.requestGroup.description">
+								<fmt:param value="/grouprequest"/>
+								<fmt:param value="${linkText}"/>
+							</fmt:message>
+						</p>
+					</jsp:attribute>
+				</bsform:fieldset>
+				
+				<!-- Pending invites for the user -->
+				<c:set var="showPendingInvites" value="${false}" />
+				<c:set var="showPendingRequests" value="${false}" />
+				<c:set var="showPendingGroupRequests" value="${not empty command.pendingRequestedgroups}" />
+				<c:forEach items="${command.user.pendingGroups}" var="group" varStatus="status">
+					<c:forEach items="${group.memberships}" var="membership">
+						<c:if test="${membership.groupRole eq 'INVITED' }">
+							<c:set var="showPendingInvites" value="${true}" />
+						</c:if>
+						<c:if test="${membership.groupRole eq 'REQUESTED' }">
+							<c:set var="showPendingRequests" value="${true}" />
+						</c:if>
+					</c:forEach>
+				</c:forEach>
 
-				<c:if test="${command.hasOwnGroup}">
-					<h2><fmt:message key="group.manage.header" /></h2>
-					
-					<div class="fsOuter">
-						<fmt:message key="group.manage.unsupported" />
-					</div>
+				<c:if test="${showPendingInvites}">
+					<bsform:fieldset legendKey="settings.group.pendingInvites.headline">
+						<jsp:attribute name="content">
+							<fmt:message var="accinvite" key="settings.group.accInvite.button" />
+							<fmt:message var="revuser" key="settings.group.remInvite.button"/>
+							<fmt:message var="revuserTitle" key="settings.group.remInvite.button.title"/>
+							<fmt:message var="accinviteTitle" key="settings.group.accInvite.button.title"/>
+
+							<c:forEach items="${command.user.pendingGroups}" var="group">
+								<c:if test="${group.getGroupMembershipForUser(loginUser).groupRole eq 'INVITED' }">
+									<dl class="dl-horizontal dt-thumbnail-items group-list">
+										<dt>
+											<group:groupthumbnail group="${group}" noname="${true}" size="16" />
+										</dt>
+
+										<dd>
+											<div class="row">
+												<div class="col-xs-9">
+													<group:groupinfo group="${group}" />
+												</div>
+
+												<div class="col-xs-3">
+													<bs:linkButton style="success" title="${accinviteTitle}" text="${accinvite}" block="${true}" href="/updateGroup?operation=add_member&amp;groupname=${mtl:encodePathSegment(group.name)}&amp;username=${mtl:encodePathSegment(command.user.name)}&amp;ckey=${ckey}" size="small" />
+													<bs:linkButton style="danger" title="${revuserTitle}" href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodePathSegment(group.name)}&amp;username=${mtl:encodePathSegment(command.user.name)}&amp;ckey=${ckey}" size="small" text="${revuser}"/>
+												</div>
+											</div>
+										</dd>
+									</dl>
+								</c:if>
+							</c:forEach>
+						</jsp:attribute>
+					</bsform:fieldset>
 				</c:if>
-			</c:when>
-			<c:otherwise>
-				<!-- show per user group  -->
-				<div id="groups" class="highlightBox">
-					<fmt:message key="settings.group.login">
-						<fmt:param value="${fn:escapeXml(param.requGroup)}" />
-					</fmt:message>
-				</div>
-			</c:otherwise>
-		</c:choose>
+				<c:if test="${showPendingRequests}">
+					<bsform:fieldset legendKey="settings.group.pendingRequests">
+						<jsp:attribute name="content">
+							<fmt:message var="revuser" key="settings.group.removeRequest"/>
+							<fmt:message var="revuserTitle" key="settings.group.removeRequest.title"/>
+							<dl class="dl-horizontal dt-thumbnail-items group-list">
+							<c:forEach items="${command.user.pendingGroups}" var="group">
+								<c:if test="${group.getGroupMembershipForUser(loginUser).groupRole eq 'REQUESTED' }">
+									<dt>
+										<group:groupthumbnail group="${group}" noname="${true}" size="16" />
+									</dt>
+									<dd>
+										<div class="row">
+											<div class="col-xs-9">
+												<group:groupinfo group="${group}" />
+											</div>
+
+											<div class="col-xs-3">
+												<bs:linkButton title="${revuserTitle}" text="${revuser}" block="${true}" href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodePathSegment(group.name)}&amp;username=${mtl:encodePathSegment(command.user.name)}&amp;ckey=${ckey}" size="small" style="defaultStyle" />
+											</div>
+										</div>
+									</dd>
+								</c:if>
+							</c:forEach>
+							</dl>
+						</jsp:attribute>
+					</bsform:fieldset>
+				</c:if>
+			</c:if>
+			
+			<!-- pending group creation requests -->
+			<c:if test="${showPendingGroupRequests}">
+				<bsform:fieldset legendKey="settings.group.pendingRequests">
+					<jsp:attribute name="content">
+						<fmt:message var="revuser" key="settings.group.removeGroupRequest"/>
+						<fmt:message var="revuserTitle" key="settings.group.removeGroupRequest.title"/>
+						<dl class="dl-horizontal dt-thumbnail-items group-list">
+							<c:forEach items="${command.pendingRequestedgroups}" var="group">
+								<dt>
+									<group:groupthumbnail group="${group}" noname="${true}" size="16" />
+								</dt>
+								<dd>
+									<div class="row">
+										<div class="col-xs-9">
+											<c:out value="${group.name}"/>
+										</div>
+	
+										<div class="col-xs-3">
+											<a class="btn btn-default btn-block btn-sm" href="/deletegrouprequest?groupName=${mtl:encodePathSegment(group.name)}&amp;ckey=${ckey}" title="${revuserTitle}">${revuser}</a>
+										</div>
+									</div>
+								</dd>
+							</c:forEach>
+						</dl>
+					</jsp:attribute>
+				</bsform:fieldset>
+			</c:if>		
+
+			<bsform:fieldset legendKey="settings.groups">
+				<jsp:attribute name="content">
+					<c:forEach var="group" items="${command.user.groups}" >
+						<c:if test="${group.getGroupMembershipForUser(loginUser).groupRole ne 'DUMMY'}">
+							<c:set var="userMemberOfGroups" value="${true}" />
+						</c:if>
+					</c:forEach>
+					
+					<c:choose>
+						<c:when test="${not userMemberOfGroups}">
+							<fmt:message key="settings.group.noGroups" />
+						</c:when>
+						<c:otherwise>
+							<dl class="dl-horizontal dt-thumbnail-items group-list">
+								<c:forEach var="group" items="${command.user.groups}">
+									<c:set var="groupMembership" value="${group.getGroupMembershipForUser(loginUser)}" />
+									<c:if test="${groupMembership.groupRole ne 'DUMMY'}">
+										<form:form cssClass="form-horizontal" class="groupShareSettings"  method="POST" action="/ajax/handleGroupShare">
+											<dt>
+												<group:groupthumbnail group="${group}" noname="${true}" size="16"  />
+											</dt>
+											
+											<dd>
+												<div class="row">
+													<div class="col-xs-9">
+														<group:groupinfo group="${group}" />
+													</div>
+													
+													<div class="col-xs-3">
+														<c:choose>
+															<c:when test="${group.sharedDocuments}">
+																<input type="hidden" name="requestedGroup" value="${fn:escapeXml(group.name)}" />
+																<input type="hidden" name="ckey" value="${command.context.ckey}" />
+																<input type="hidden" name="forward" value="settings?selTab=3" />
+																<c:choose>
+																	<c:when test="${groupMembership.userSharedDocuments}">
+																		<fmt:message var="buttonTitle" key="settings.groups.documentsharing.shared.title" />
+																		<fmt:message var="buttonValue" key="settings.groups.documentsharing.shared" />
+																		<input type="hidden" name="action" value="unshareDocuments" />
+																		<bsform:button style="success" size="defaultSize" type="submit" className="btn-block groupUnshare" value="${buttonValue}" icon="check" />
+																	</c:when>
+																	<c:otherwise>
+																		<fmt:message var="buttonTitle" key="settings.groups.actions.shareDocuments.title" />
+																		<fmt:message var="buttonValue" key="settings.groups.actions.shareDocuments" />
+																		<input type="hidden" name="action" value="shareDocuments" />
+																		<bsform:button style="defaultStyle" size="defaultSize" type="submit" value="${buttonValue}" className="btn-block" />
+																	</c:otherwise>
+																</c:choose>
+															</c:when>
+															<c:otherwise>
+																<fmt:message var="disabled" key="settings.groups.documentsharing.disabled" />
+																<bsform:button style="defaultStyle" size="defaultSize" type="button" value="${disabled}" className="disabled btn-block" />
+															</c:otherwise>
+														</c:choose>
+														<c:url var="joinLink" value="/joinGroup">
+															<c:param name="group" value="${group.name}" />
+														</c:url>
+														<a href="${relativeUrlGenerator.prefix('settings').getGroupUrlByGroupName(group.name)}" class="btn btn-default btn-block btn-sm"><fmt:message key="settings.group.editSettings"/></a>	
+													</div>
+												</div>
+											</dd>
+										</form:form>
+									</c:if>
+								</c:forEach>
+							</dl>
+						</c:otherwise>
+					</c:choose>
+				</jsp:attribute>
+			</bsform:fieldset>
+		</fieldset>
+		
+	
+<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
+
 	</div>
 </jsp:root>

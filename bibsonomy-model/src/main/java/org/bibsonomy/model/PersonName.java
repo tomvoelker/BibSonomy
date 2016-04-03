@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -29,6 +29,7 @@ package org.bibsonomy.model;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.Serializable;
+import java.util.Date;
 
 
 /**
@@ -37,35 +38,42 @@ import java.io.Serializable;
  * @author Jens Illig
  */
 public class PersonName implements Serializable {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 4365762117878931642L;
 
-	/**
-	 * delimiter between the parts of a person's name in the "Last, First" format.
-	 * 
-	 */
+	/** delimiter between the parts of a person's name in the "Last, First" format. */
 	public static final String LAST_FIRST_DELIMITER = ",";
 
+	private int personNameChangeId;
 	private String firstName;
 	private String lastName;
-
+	private String personId;
+	private boolean isMain;
+	private Person person;
+	private String changedBy;
+	private Date changedAt;
+	
 	/**
-	 * Default constructor
+	 * default bean constructor
 	 */
 	public PersonName() {
-		// nothing to do
+		
 	}
 	
 	/**
 	 * Sets name and extracts first and last name.
-	 * @param firstName 
 	 * @param lastName 
+	 */
+	public PersonName(final String lastName) {
+		this.setLastName(lastName); 
+	}
+	
+	/**
+	 * @param firstName
+	 * @param lastName
 	 */
 	public PersonName(final String firstName, final String lastName) {
 		this.setFirstName(firstName);
-		this.setLastName(lastName);
+		this.setLastName(lastName);  
 	}
 	
 	/**
@@ -100,6 +108,13 @@ public class PersonName implements Serializable {
 	public String toString() {
 		return this.lastName + LAST_FIRST_DELIMITER + (present(this.firstName)? " " + this.firstName : "");
 	}
+	
+	/**
+	 * @return serialized form
+	 */
+	public String serialize() {
+		return this.lastName + LAST_FIRST_DELIMITER + (present(this.firstName)? this.firstName : "");
+	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -108,6 +123,10 @@ public class PersonName implements Serializable {
 			return equal(this.firstName, other.firstName) && equal(this.lastName, other.lastName);
 		}
 		return super.equals(obj);
+	}
+	
+	public boolean equalsWithDetails(PersonName obj) {
+		return equals(obj) && (this.isMain == obj.isMain);
 	}
 	
 	private static boolean equal(final String a, final String b) {
@@ -129,6 +148,78 @@ public class PersonName implements Serializable {
 			return this.lastName.hashCode();
 		}
 		return super.hashCode();
+	}
+
+	/**
+	 * @return the id
+	 */
+	public int getPersonNameChangeId() {
+		return this.personNameChangeId;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setPersonNameChangeId(int id) {
+		this.personNameChangeId = id;
+	}
+
+	/**
+	 * @return the personId
+	 */
+	public String getPersonId() {
+		return this.personId;
+	}
+
+	/**
+	 * @param personId the personId to set
+	 */
+	public void setPersonId(String personId) {
+		this.personId = personId;
+	}
+
+	/**
+	 * @return the isMain
+	 */
+	public boolean isMain() {
+		return this.isMain;
+	}
+
+	/**
+	 * @param isMain the isMain to set
+	 */
+	public void setMain(boolean isMain) {
+		this.isMain = isMain;
+	}
+	
+	/**
+	 * @return the person
+	 */
+	public Person getPerson() {
+		return this.person;
+	}
+
+	/**
+	 * @param person the person to set
+	 */
+	public void setPerson(Person person) {
+		this.person = person;
+	}
+
+	public String getChangedBy() {
+		return this.changedBy;
+	}
+
+	public void setChangedBy(String changedBy) {
+		this.changedBy = changedBy;
+	}
+
+	public Date getChangedAt() {
+		return this.changedAt;
+	}
+
+	public void setChangedAt(Date changedAt) {
+		this.changedAt = changedAt;
 	}
 
 }

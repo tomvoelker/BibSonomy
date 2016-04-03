@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -29,6 +29,7 @@ package org.bibsonomy.webapp.controller.resource;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -160,7 +161,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 			 * retrieve total count with given hash 
 			 * (only for /<RESOURCE>/HASH)
 			 */
-			this.setTotalCount(command, this.getResourceClass(), groupingEntity, requUser, null, longHash, null, null, null, null, startDate, endDate, entriesPerPage);
+			this.setTotalCount(command, this.getResourceClass(), groupingEntity, requUser, null, longHash, null, null, null, startDate, endDate, entriesPerPage);
 		} else if (GroupingEntity.USER.equals(groupingEntity)) {
 			/*
 			 * Complete the post details for the first post of a given user 
@@ -201,7 +202,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 			 * store the post in the command's list (and replace the original 
 			 * list of post)
 			 */
-			command.getListCommand(this.getResourceClass()).setList(Collections.singletonList(post));
+			command.getListCommand(this.getResourceClass()).setList(Arrays.asList(post));
 		}
 		
 		// TODO: fix privacy issue
@@ -238,7 +239,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 		 */
 		if (present(goldStandard)) {
 			firstResource = goldStandard.getResource();
-			command.getListCommand(this.getGoldStandardClass()).setList(Collections.singletonList(goldStandard));
+			command.getListCommand(this.getGoldStandardClass()).setList(Arrays.asList(goldStandard));
 		} else {
 			final List<Post<R>> resourceList = command.getListCommand(this.getResourceClass()).getList();
 			if (!present(resourceList)) {
@@ -297,7 +298,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 				 */
 				final Date startDate = command.getStartDate();
 				final Date endDate = command.getEndDate();
-				this.setTotalCount(command, this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null, null, null, null, startDate, endDate, 1000);
+				this.setTotalCount(command, this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null, null, null, startDate, endDate, 1000);
 				firstResource.setCount(command.getListCommand(this.getResourceClass()).getTotalCount());
 
 				/*

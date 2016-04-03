@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -32,6 +32,7 @@ import java.util.Map;
 
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.InvalidModelException;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.SimHash;
@@ -765,5 +766,20 @@ public class BibTex extends Resource {
 		}
 	}
 
+	/**
+	 * @param role
+	 * @return
+	 */
+	public List<PersonName> getPersonNamesByRole(PersonResourceRelationType role) {
+		final List<PersonName> publicationNames;
+		if (role == PersonResourceRelationType.AUTHOR) {
+			publicationNames = getAuthor();
+		} else if (role == PersonResourceRelationType.EDITOR) {
+			publicationNames = getEditor();
+		} else {
+			publicationNames = null;
+		}
+		return publicationNames;
+	}
 
 }

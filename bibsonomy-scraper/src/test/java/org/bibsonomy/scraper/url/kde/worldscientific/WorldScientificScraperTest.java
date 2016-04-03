@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -63,7 +63,7 @@ public class WorldScientificScraperTest {
 		assertNotNull(cby);
 		assertTrue(cby.length() > 100);
 		
-		assertEquals("<span class=\"hlFld-ContribAuthor\"><a class=\"entryAuthor\" href=\"/action/doSearch".trim(), cby.substring(0, 79).trim());
+		assertEquals("<span class=\"hlFld-ContribAuthor\"><a class=\"entryAuthor\" href=\"/author/LIU%2C+R".trim(), cby.substring(0, 79).trim());
 		
 		assertTrue(cby.contains("XIANYONG FANG"));
 	}

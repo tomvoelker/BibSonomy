@@ -1,7 +1,5 @@
 // general functions for all resource types
 
-
-
 /*
  * tag recommendation variables (!?)
  */
@@ -28,7 +26,7 @@ $(function() {
 		$(this).click(copytag).removeAttr("href").css("cursor", "pointer");
 	});
 	//only add this listener one time
-	$("#fsReloadButton").click(reloadRecommendation);
+	$("#recommendationReloadButton").click(reloadRecommendation);
 });
 
 
@@ -50,8 +48,6 @@ function initTagAutocompletion(tagbox) {
 	initTagAutocompletionForSendTag(tagbox);
 }
 
-  
-
 function enableHandler() {
 	document.onkeydown = document.onkeypress = document.onkeyup = handler;
 }
@@ -69,7 +65,7 @@ function Suggestion(tagname, wighting)	{
 	this.wighting = wighting;
 }
 
-function disHandler(event) {	}
+function disHandler(event) {}
 
 function handler(event) {
 	var inputValue = document.getElementById(activeField ? activeField : "inpf_tags").value;
@@ -216,36 +212,34 @@ function handler(event) {
  * @return
  */
 function handleRecommendedTags(json) {
+	var tagSuggestions = [];
 	
-		var tagSuggestions = [];
+	// lookup and clear target node
+	var tagField = $("#recommendedTags");
 	
-		// lookup and clear target node
-		var tagField = $("#recommendedTags");
-		
-		// clear previous recommendations
-		tagField.empty();
-		
-		jQuery.each(json.recommendations, function(key, value) {
-				var tagName = value.name;
-				var newTag = $("<li tabindex='1'>" + tagName + " </li>");
-				newTag.click(copytag);
-				tagField.append(newTag);
-				var suggestion = new Object;
-				suggestion.label = tagName;
-				suggestion.score = value.score;
-				suggestion.confidence = value.confidence;
-				tagSuggestions.push(suggestion);
-			});
+	// clear previous recommendations
+	tagField.empty();
 	
-		// add recommended tags to suggestions
-		populateSuggestionsFromRecommendations(tagSuggestions);
+	jQuery.each(json.recommendations, function(key, value) {
+		var tagName = value.name;
+		var newTag = $("<li tabindex='1'>" + tagName + " </li>");
+		newTag.click(copytag);
+		tagField.append(newTag);
+		var suggestion = new Object;
+		suggestion.label = tagName;
+		suggestion.score = value.score;
+		suggestion.confidence = value.confidence;
+		tagSuggestions.push(suggestion);
+	});
 	
-		// unlock the reload button
-		$("#fsReloadButton").attr("src","/resources/image/button_reload.png");
-		reloadRecommendationsLock = true;
+	// add recommended tags to suggestions
+	populateSuggestionsFromRecommendations(tagSuggestions);
+	
+	// unlock the reload button
+	$("#recommendationReloadButton").removeClass("disabled");
+	
+	reloadRecommendationsLock = true;
 }
-
-
 
 /**
  * Append recommended tags to list of potential tag suggestions.
@@ -870,12 +864,11 @@ function getRelations(input) {
  */
 function reloadRecommendation() {
 	//if the button is not locked send AJAX request
-	if(reloadRecommendationsLock) {
-		//lock the reload button
+	if (reloadRecommendationsLock) {
+		// lock the reload button
 		reloadRecommendationsLock = false;
-	    $("#fsReloadLink").click("");
-	    $("#fsReloadButton").attr("src","/resources/image/button_reload-inactive.png");
-	    $('#postForm').ajaxSubmit(tagRecoOptions); 
+		$("#recommendationReloadButton").addClass("disabled");
+		$('#postForm').ajaxSubmit(tagRecoOptions);
 	}
 	return false; // prevent default action
 }
@@ -893,7 +886,6 @@ function showTagSets(select) {
 		$("#field_" + $(this).val()).css("display", $(this).get(0).selected ? '' : 'none');
 	});
 }
-
 
 
 /**

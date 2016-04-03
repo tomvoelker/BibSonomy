@@ -1,7 +1,7 @@
 /**
  * BibSonomy CV Wiki - Wiki for user and group CVs
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,15 +26,6 @@
  */
 package org.bibsonomy.wiki;
 
-import info.bliki.htmlcleaner.BaseToken;
-import info.bliki.wiki.filter.WikipediaParser;
-import info.bliki.wiki.model.AbstractWikiModel;
-import info.bliki.wiki.model.Configuration;
-import info.bliki.wiki.model.ITableOfContent;
-import info.bliki.wiki.namespaces.INamespace;
-import info.bliki.wiki.tags.WPTag;
-import info.bliki.wiki.tags.util.TagStack;
-
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Set;
@@ -43,14 +34,16 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Layout;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.wiki.tags.AbstractTag;
+import org.bibsonomy.wiki.tags.group.GroupDescriptionTag;
 import org.bibsonomy.wiki.tags.group.GroupImageTag;
 import org.bibsonomy.wiki.tags.group.MembersTag;
-import org.bibsonomy.wiki.tags.shared.DesignTag;
 import org.bibsonomy.wiki.tags.shared.HomepageTag;
 import org.bibsonomy.wiki.tags.shared.ImageTag;
 import org.bibsonomy.wiki.tags.shared.NameTag;
+import org.bibsonomy.wiki.tags.shared.TagcloudTag;
 import org.bibsonomy.wiki.tags.shared.resource.BookmarkListTag;
 import org.bibsonomy.wiki.tags.shared.resource.PublicationListTag;
 import org.bibsonomy.wiki.tags.user.BirthdayTag;
@@ -61,6 +54,15 @@ import org.bibsonomy.wiki.tags.user.LocationTag;
 import org.bibsonomy.wiki.tags.user.ProfessionTag;
 import org.bibsonomy.wiki.tags.user.RegDateTag;
 import org.springframework.context.MessageSource;
+
+import info.bliki.htmlcleaner.BaseToken;
+import info.bliki.wiki.filter.WikipediaParser;
+import info.bliki.wiki.model.AbstractWikiModel;
+import info.bliki.wiki.model.Configuration;
+import info.bliki.wiki.model.ITableOfContent;
+import info.bliki.wiki.namespaces.INamespace;
+import info.bliki.wiki.tags.WPTag;
+import info.bliki.wiki.tags.util.TagStack;
 
 /**
  * @author philipp
@@ -76,10 +78,12 @@ public class CVWikiModel extends AbstractWikiModel {
 		register(new InterestsTag());
 		register(new HobbyTag());
 		register(new ProfessionTag());
+		register(new TagcloudTag());
 		
 		/* Group Tags */
 		register(new MembersTag());
 		register(new GroupImageTag());
+		register(new GroupDescriptionTag());
 		
 		/* Shared Tags */
 		register(new HomepageTag());
@@ -88,8 +92,6 @@ public class CVWikiModel extends AbstractWikiModel {
 		register(new RegDateTag());
 		register(new BookmarkListTag());
 		register(new PublicationListTag());
-		register(new DesignTag());
-		
 	}
 
 	private static void register(final AbstractTag tag) {
@@ -102,6 +104,7 @@ public class CVWikiModel extends AbstractWikiModel {
 	private MessageSource messageSource;
 
 	private LayoutRenderer<Layout> layoutRenderer;
+	private URLGenerator urlGenerator;
 
 	/**
 	 * Default Constructor
@@ -230,6 +233,20 @@ public class CVWikiModel extends AbstractWikiModel {
 	 */
 	public void setMessageSource(MessageSource messageSource) {
 		this.messageSource = messageSource;
+	}
+
+	/**
+	 * @return the urlGenerator
+	 */
+	public URLGenerator getUrlGenerator() {
+		return this.urlGenerator;
+	}
+
+	/**
+	 * @param urlGenerator the urlGenerator to set
+	 */
+	public void setUrlGenerator(URLGenerator urlGenerator) {
+		this.urlGenerator = urlGenerator;
 	}
 
 }

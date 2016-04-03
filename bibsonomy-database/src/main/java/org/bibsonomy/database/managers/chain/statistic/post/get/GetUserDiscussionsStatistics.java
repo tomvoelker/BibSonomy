@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -37,6 +37,7 @@ import org.bibsonomy.database.managers.chain.statistic.StatisticChainElement;
 import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.statistics.Statistics;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * Gets count of resources in the inbox of a user
@@ -50,7 +51,7 @@ public class GetUserDiscussionsStatistics extends StatisticChainElement {
 			final Group group = this.groupDb.getGroupByName(param.getRequestedGroupName(), session);
 			if (!present(group) || group.getGroupId() == GroupID.INVALID.getId() || GroupID.isSpecialGroupId(group.getGroupId())) {
 				log.debug("group '" + param.getRequestedGroupName() + "' not found or special group");
-				return new Statistics(0);			
+				return new Statistics(0);
 			}
 			param.setGroupId(group.getGroupId());
 			return this.db.getUserDiscussionsStatisticsForGroup(param, session);
@@ -62,7 +63,7 @@ public class GetUserDiscussionsStatistics extends StatisticChainElement {
 	@Override
 	protected boolean canHandle(StatisticsParam param) {
 		return 	( 
-					FilterEntity.POSTS_WITH_DISCUSSIONS.equals(param.getFilter()) &&
+					ValidationUtils.safeContains(param.getFilters(), FilterEntity.POSTS_WITH_DISCUSSIONS) &&
 					ConstantID.ALL_CONTENT_TYPE.equals(param.getContentTypeConstant())
 				);
 	}

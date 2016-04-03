@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -44,7 +44,7 @@ import org.bibsonomy.model.Resource;
 public abstract class ResourceChainElement<R extends Resource, P extends ResourceParam<R>> extends ChainElement<List<Post<R>>, P> {
 	
 	protected PostDatabaseManager<R, P> databaseManager;
-
+	
 	/**
 	 * @param databaseManager the databaseManager to set
 	 */

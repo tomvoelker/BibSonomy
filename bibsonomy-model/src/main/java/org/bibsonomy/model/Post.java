@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -65,6 +65,8 @@ public class Post<T extends Resource> implements Serializable {
 	 * TODO: Is this field really part of the model?
 	 */
 	private Integer contentId;
+	
+	private List<ResourcePersonRelation> resourcePersonRelations;
 
 	/**
 	 * This post belongs to this {@link User}.
@@ -111,7 +113,6 @@ public class Post<T extends Resource> implements Serializable {
 	 */
 	private String description;
 	
-	
 	/**
 	 * a ranking (used to sort a list of posts)
 	 */
@@ -145,6 +146,55 @@ public class Post<T extends Resource> implements Serializable {
 	private String copyFrom;
 	
 	private boolean approved = false;
+	
+	
+	/**
+	 * default constructor
+	 */
+	public Post() {
+		// noop
+	}
+	
+	/**
+	 * copies the post without the resource
+	 * 
+	 * @param post
+	 * @param withoutResource XXX: unused for distinguish between 
+	 */
+	public Post(final Post<?> post, final boolean withoutResource) {
+		if (!withoutResource) {
+			throw new IllegalArgumentException();
+		}
+		
+		this.systemUrl = post.getSystemUrl();
+		this.contentId = post.getContentId();
+		
+		this.resourcePersonRelations = post.getResourcePersonRelations();
+		
+		this.user = post.getUser();
+		this.groups = post.getGroups();
+		
+		this.tags = post.getTags();
+		this.hiddenSystemTags = post.getHiddenSystemTags();
+		this.visibleTags = post.getVisibleTags();
+		
+		
+		this.isInboxPost = post.isInboxPost();
+		this.picked = post.isPicked();
+		
+		this.date = post.getDate();
+		this.changeDate = post.getChangeDate();
+		
+		this.description = post.getDescription();
+		
+		this.ranking = post.getRanking();
+		
+		this.metaData = post.getMetaData();
+		this.repositorys = post.getRepositorys();
+		this.copyFrom = post.getCopyFrom();
+		this.approved = post.getApproved();
+	}
+	
 	/**
 	 * @return the repositories
 	 */
@@ -457,6 +507,20 @@ public class Post<T extends Resource> implements Serializable {
 	 */
 	public void setApproved(boolean approved) {
 		this.approved = approved;
+	}
+
+	/**
+	 * @return the resourcePersonRelations
+	 */
+	public List<ResourcePersonRelation> getResourcePersonRelations() {
+		return this.resourcePersonRelations;
+	}
+
+	/**
+	 * @param resourcePersonRelations the resourcePersonRelations to set
+	 */
+	public void setResourcePersonRelations(List<ResourcePersonRelation> resourcePersonRelations) {
+		this.resourcePersonRelations = resourcePersonRelations;
 	}
 	
 	/**

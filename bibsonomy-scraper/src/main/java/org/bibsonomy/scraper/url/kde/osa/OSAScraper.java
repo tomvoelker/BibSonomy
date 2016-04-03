@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -58,16 +58,11 @@ public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
 	private static final Log log = LogFactory.getLog(OSAScraper.class);
 	
 	private static final String SITE_NAME = "Optical Society of America";
-	private static final String OSA_HOST_NAME  = "http://www.opticsinfobase.org";
-	private static final String SITE_URL  = OSA_HOST_NAME+"/";
+	private static final String SITE_URL  = "https://www.osapublishing.org/";
 	private static final String info = "This Scraper parses a publication from the " + href(SITE_URL, SITE_NAME)+".";
-
-	private static final String OSA_HOST  = "opticsinfobase.org";
-	
-
+	private static final String OSA_HOST  = "osapublishing.org";
+	private static final String HTTP = "https://www.";
 	private static final String OSA_BIBTEX_DOWNLOAD_PATH = "/custom_tags/IB_Download_Citations.cfm";
-
-	private static final Pattern actionsPattern = Pattern.compile("<select name=\"(actions[^\"]*)\"");
 	
 	private static final Pattern inputPattern = Pattern.compile("<input\\b[^>]*>");
 	private static final Pattern valuePattern = Pattern.compile("value=\"[^\"]*\"");
@@ -101,17 +96,17 @@ public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
 				}
 			}
 		}
-
-		String actions = null;
-		Matcher actionsMatcher = actionsPattern.matcher(sc.getPageContent());
-		if(actionsMatcher.find())
-			actions = actionsMatcher.group(1);
-
+		
 		String bibResult = null;
-
 		try {
-			URL citUrl = new URL(OSA_HOST_NAME + OSA_BIBTEX_DOWNLOAD_PATH);
-			bibResult = getContent(citUrl, getCookies(sc.getUrl()), id, actions);
+			URL citUrl = new URL(HTTP + OSA_HOST + OSA_BIBTEX_DOWNLOAD_PATH);
+			String cookie = null;
+			try {
+				cookie = WebUtils.getCookies(sc.getUrl());
+			} catch (final IOException ex) {
+				throw new InternalFailureException("An unexpected IO error has occurred. No Cookie has been generated.");
+			}
+			bibResult = getContent(citUrl, cookie, id, "export_bibtex");
 		} catch (MalformedURLException ex) {
 			throw new InternalFailureException(ex);
 		} catch (IOException ex) {
@@ -137,7 +132,7 @@ public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
 		/*
 		 * get BibTex-File from ACS
 		 */
-		HttpURLConnection urlConn = (HttpURLConnection) queryURL.openConnection();
+		final HttpURLConnection urlConn = WebUtils.createConnnection(queryURL);
 		urlConn.setAllowUserInteraction(false);
 		urlConn.setDoInput(true);
 		urlConn.setDoOutput(true);
@@ -150,15 +145,13 @@ public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
 
 		StringBuffer sbContent = new StringBuffer();
 
-		sbContent.append("Articles=");
+		sbContent.append("articles=");
 		sbContent.append(UrlUtils.safeURIEncode(id) + "&");
 		sbContent.append("ArticleAction=");
-		sbContent.append(UrlUtils.safeURIEncode("save_bibtex2") + "&");
-		sbContent.append(actions + "=");
-		sbContent.append(UrlUtils.safeURIEncode("save_bibtex2"));
-
+		sbContent.append(UrlUtils.safeURIEncode(actions));
+		
 		urlConn.setRequestProperty("Content-Length", String.valueOf(sbContent.length()));
-
+				
 		DataOutputStream stream = new DataOutputStream(urlConn.getOutputStream());
 
 		stream.writeBytes(sbContent.toString());
@@ -176,43 +169,6 @@ public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
 		urlConn.disconnect();
 
 		return out.toString();
-	}
-
-	/**
-	 * FIXME: refactor
-	 * @param queryURL
-	 * @return
-	 * @throws IOException
-	 */
-	private static String getCookies(URL queryURL) throws IOException {
-		final HttpURLConnection urlConn = (HttpURLConnection) queryURL.openConnection();
-
-		urlConn.setAllowUserInteraction(false);
-		urlConn.setDoInput(true);
-		urlConn.setDoOutput(false);
-		urlConn.setUseCaches(false);
-
-		/*
-		 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
-		 * pages require it to download content.
-		 */
-		urlConn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)");
-
-		urlConn.connect();
-		/*
-		 * extract cookie from connection
-		 */
-		final List<String> cookies = urlConn.getHeaderFields().get("Set-Cookie");
-
-		final StringBuffer cookieString = new StringBuffer();
-
-		for (final String cookie : cookies) {
-			cookieString.append(cookie.substring(0, cookie.indexOf(";") + 1) + " ");
-		}
-
-		urlConn.disconnect();
-
-		return cookieString.toString();
 	}
 
 	@Override
@@ -246,6 +202,4 @@ public class OSAScraper extends AbstractUrlScraper implements ReferencesScraper{
 		}
 		return false;
 	}
-
-
 }

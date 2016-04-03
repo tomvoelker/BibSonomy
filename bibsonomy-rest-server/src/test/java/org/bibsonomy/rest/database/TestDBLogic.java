@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,11 +26,8 @@
  */
 package org.bibsonomy.rest.database;
 
-import java.net.InetAddress;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -41,28 +38,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.bibsonomy.common.enums.Classifier;
-import org.bibsonomy.common.enums.ClassifierSettings;
-import org.bibsonomy.common.enums.ConceptStatus;
-import org.bibsonomy.common.enums.ConceptUpdateOperation;
-import org.bibsonomy.common.enums.FilterEntity;
-import org.bibsonomy.common.enums.GroupUpdateOperation;
+import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.HashID;
-import org.bibsonomy.common.enums.InetAddressStatus;
-import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.SearchType;
-import org.bibsonomy.common.enums.SpamStatus;
-import org.bibsonomy.common.enums.StatisticsConstraint;
-import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
-import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.DiscussionItem;
-import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.PersonName;
@@ -70,20 +53,10 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.Wiki;
-import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
-import org.bibsonomy.model.metadata.PostMetaData;
+import org.bibsonomy.model.logic.util.AbstractLogicInterface;
 import org.bibsonomy.model.statistics.Statistics;
-import org.bibsonomy.model.sync.ConflictResolutionStrategy;
-import org.bibsonomy.model.sync.SyncService;
-import org.bibsonomy.model.sync.SynchronizationData;
-import org.bibsonomy.model.sync.SynchronizationDirection;
-import org.bibsonomy.model.sync.SynchronizationPost;
-import org.bibsonomy.model.sync.SynchronizationStatus;
-import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.junit.Ignore;
 
 /**
@@ -104,7 +77,7 @@ import org.junit.Ignore;
  * @author Jens Illig
  */
 @Ignore
-public class TestDBLogic implements LogicInterface {	
+public class TestDBLogic extends AbstractLogicInterface {
 	
 	private final User loginUser;
 
@@ -163,14 +136,14 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	@Override
-	public List<Group> getGroups(boolean pending, final int start, final int end) {
+	public List<Group> getGroups(boolean pending, String userName, final int start, final int end) {
 		final List<Group> groups = new LinkedList<Group>();
 		groups.addAll(this.dbGroups.values());
 		return groups;
 	}
 
 	@Override
-	public Group getGroupDetails(final String groupName) {
+	public Group getGroupDetails(final String groupName, final boolean pending) {
 		return this.dbGroups.get(groupName);
 	}
 
@@ -179,6 +152,14 @@ public class TestDBLogic implements LogicInterface {
 	 */
 	@Override
 	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags_, final String hash, final String search, final String regex, final TagSimilarity relation, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+		return this.getTags(resourceType, grouping, groupingName, tags_, hash, search, SearchType.LOCAL, regex, relation, order, startDate, endDate, start, end);
+	}
+
+	/**
+	 * note: the regex is currently not considered
+	 */
+	@Override
+	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags_, final String hash, final String search, final SearchType searchType,final String regex, final TagSimilarity relation, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		final List<Tag> tags = new LinkedList<Tag>();
 
 		switch (grouping) {
@@ -210,18 +191,12 @@ public class TestDBLogic implements LogicInterface {
 	public Tag getTagDetails(final String tagName) {
 		return this.dbTags.get(tagName);
 	}
-	
-	@SuppressWarnings("deprecation")
-	@Override
-	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
-		return getPosts(resourceType, grouping, groupingName, tags, hash, search, SearchType.LOCAL, filter, order, startDate, endDate, start, end);
-	}
 
 	/** note: popular and added are not considered 
 	 * @param startDate TODO
 	 * @param endDate TODO*/
 	@Override
-	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final FilterEntity filter, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final SearchType searchType, final Set<Filter> filters, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
 		final List<Post<? extends Resource>> posts = new LinkedList<Post<? extends Resource>>();
 		// do grouping stuff
 		switch (grouping) {
@@ -628,9 +603,6 @@ public class TestDBLogic implements LogicInterface {
 		final BibTex publicationDemo = new BibTex();
 		publicationDemo.setAuthor(Arrays.asList(new PersonName("Albert", "Einstein"), new PersonName("Leonardo", "da Vinci")));
 		publicationDemo.setEditor(Arrays.asList(new PersonName("Luke", "Skywalker"), new PersonName(null, "Yoda")));
-//		FIXME: change in Sept.
-//		publicationDemo.setAuthor("Einstein, Albert and da Vinci, Leonardo");
-//		publicationDemo.setEditor("Skywalker, Luke and Yoda");
 		publicationDemo.setTitle("Die Weltformel");
 		publicationDemo.setType("Paper");
 		publicationDemo.setYear("2006");
@@ -657,7 +629,7 @@ public class TestDBLogic implements LogicInterface {
 		publicationDemo2.setType("Paper");
 		publicationDemo2.setYear("2000");
 		publicationDemo2.setEntrytype("article");
-		publicationDemo2.setBibtexKey("fielding2000architectural");		
+		publicationDemo2.setBibtexKey("fielding2000architectural");
 		publicationDemo2.recalculateHashes();
 		this.dbResources.put(publicationDemo2.getIntraHash(), publicationDemo2);
 
@@ -722,25 +694,7 @@ public class TestDBLogic implements LogicInterface {
 		post_16.getTags().add(wwwTag);
 		wwwTag.getPosts().add(post_16);
 	}
-
-
-	@Override
-	public void deleteGroup(final String groupName) {
-	}
-
-	@Override
-	public void deletePosts(final String userName, final List<String> resourceHashes) {
-	}
-
-	@Override
-	public void deleteUser(final String userName) {
-	}
-
-	@Override
-	public String createGroup(final Group group) {
-		return null;
-	}
-
+	
 	@Override
 	public String createUser(final User user) {
 		this.dbUsers.put(user.getName(), user);
@@ -753,101 +707,12 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	@Override
-	public String updateGroup(final Group group, final GroupUpdateOperation operation, GroupMembership ms) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public String updateUser(final User user, final UserUpdateOperation operation) {
-		this.dbUsers.put(user.getName(), user);
-		return null;
-	}
-
-	@Override
-	public List<String> createPosts(final List<Post<?>> posts) {
-		return null;
-	}
-
-	@Override
-	public List<String> updatePosts(final List<Post<?>> posts, final PostUpdateOperation operation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String createDocument(final Document doc, final String resourceHash) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Document getDocument(final String userName, final String fileHash) {
-		// TODO Auto-generated method stub
-		return null;
+		final String username = user.getName();
+		this.dbUsers.put(username, user);
+		return username;
 	}
 	
-	@Override
-	public Document getDocument(final String userName, final String resourceHash, final String fileName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void deleteDocument(final Document document, final String resourceHash) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void createInetAddressStatus(final InetAddress address, final InetAddressStatus status) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void deleteInetAdressStatus(final InetAddress address) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public InetAddressStatus getInetAddressStatus(final InetAddress address) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Tag> getConcepts(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final ConceptStatus status, final int start, final int end) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String createConcept(final Tag concept, final GroupingEntity grouping, final String groupingName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String updateConcept(final Tag concept, final GroupingEntity grouping, final String groupingName, final ConceptUpdateOperation operation) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void deleteConcept(final String concept, final GroupingEntity grouping, final String groupingName) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void deleteRelation(final String upper, final String lower, final GroupingEntity grouping, final String groupingName) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public Tag getConceptDetails(final String conceptName, final GroupingEntity grouping, final String groupingName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	@Override
 	public List<User> getUsers(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final UserRelation relation, final String search, final int start, final int end) {
 		final List<User> users = new LinkedList<User>();
@@ -862,275 +727,11 @@ public class TestDBLogic implements LogicInterface {
 				}
 			}
 		}
-		return users;		
-
+		return users;
 	}
 
 	@Override
-	public String getClassifierSettings(final ClassifierSettings key) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void updateClassifierSettings(final ClassifierSettings key, final String value) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public int getClassifiedUserCount(final Classifier classifier, final SpamStatus status, final int interval) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public List<User> getClassifiedUsers(final Classifier classifier, final SpamStatus status, final int limit) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<User> getClassifierHistory(final String userName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<User> getClassifierComparison(final int interval, final int limit) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Statistics getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final String search, final FilterEntity filter, final StatisticsConstraint constraint, final Order order, final Date startDate, final Date endDate, final int start, final int end) {
-		// TODO Auto-generated method stub
+	public Statistics getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, String search, Set<Filter> filters, Order order, Date startDate, Date endDate, int start, int end) {
 		return new Statistics(0);
-	}
-
-	@Override
-	public String getOpenIDUser(final String openID) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public int updateTags(final User user, final List<Tag> tagsToReplace, final List<Tag> replacementTags, final boolean updateRelations) {
-		return 0;
-	}
-
-	@Override
-	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String regex, final ConceptStatus status, final Date startDate, final Date endDate, final int start, final int end) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public List<Author> getAuthors(final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public List<User> getUserRelationship(final String sourceUser, final UserRelation relation, final String tag) {
-		// TODO Auto-generated method stub
-		return new ArrayList<User>();
-	}
-
-	@Override
-	public void deleteUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation, final String tag) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void createUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation, final String tag) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public int createBasketItems(final List<Post<? extends Resource>> posts) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int deleteBasketItems(final List<Post<? extends Resource>> posts, final boolean clearAll) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox) {
-		return 0;
-	}
-
-	@Override
-	public String getUsernameByLdapUserId(final String userId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void createRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation) {
-		// TODO Auto-generated method stub	
-	}
-
-	@Override
-	public void deleteRelations(final String postHash, final Set<String> references, final GoldStandardRelation relation) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public List<Date> getWikiVersions(final String userName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Wiki getWiki(final String userName, final Date date) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void createWiki(final String userName, final Wiki wiki) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void updateWiki(final String userName, final Wiki wiki) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void createExtendedField(final Class<? extends Resource> resourceType, final String userName, final String intraHash, final String key, final String value) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void deleteExtendedField(final Class<? extends Resource> resourceType, final String userName, final String intraHash, final String key, final String value) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public Map<String, List<String>> getExtendedFields(final Class<? extends Resource> resourceType, final String userName, final String intraHash, final String key) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void createDiscussionItem(final String interHash, final String username, final DiscussionItem comment) {
-		// TODO Auto-generated method stub
-	}
-	
-	@Override
-	public void deleteDiscussionItem(final String username, final String interHash, final String commentHash) {
-		// TODO Auto-generated method stub
-	}
-	
-	@Override
-	public List<DiscussionItem> getDiscussionSpace(final String interHash) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public void updateDiscussionItem(final String username, final String interHash, final DiscussionItem discussionItem) {
-		// TODO Auto-generated method stub		
-	}
-
-
-	@Override
-	public void createSyncService(final SyncService service, final boolean server) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void deleteSyncService(final URI service, final boolean server) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public List<URI> getSyncServices(final boolean server) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public void createSyncServer(final String userName, final SyncService server) {
-		// TODO Auto-generated method stub	
-	}
-	
-	@Override
-	public void updateSyncServer(final String userName, final SyncService server) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void deleteSyncServer(final String userName, final URI service) {
-		// TODO Auto-generated method stub	
-	}
-
-	@Override
-	public List<SyncService> getSyncService(final String userName, final URI service, final boolean server) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<SynchronizationPost> getSyncPosts(final String userName, final Class<? extends Resource> resourceType) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void updateSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate, final SynchronizationStatus status, final String info, Date newDate) {
-		// TODO Auto-generated method stub	
-	}
-
-	@Override
-	public void deleteSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date syncDate) {
-		// TODO Auto-generated method stub		
-	}
-
-	@Override
-	public SynchronizationData getLastSyncData(final String userName, final URI service, final Class<? extends Resource> resourceType) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<SynchronizationPost> getSyncPlan(final String userName, final URI service, final Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public List<SyncService> getAllSyncServices(final boolean server) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public String getUsernameByRemoteUserId(final RemoteUserId remoteUserId) {
-		return null;
-	}
-
-	@Override
-	public List<Tag> getTagRelation(final int start, final int end, final TagRelation relation, final List<String> tagNames) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public void updateDocument(final Document document, final String resourceHash, final String newName) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public List<PostMetaData> getPostMetaData(final HashID hashType, final String resourceHash, final String userName, final String metaDataPluginKey) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

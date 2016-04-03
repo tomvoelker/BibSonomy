@@ -1,45 +1,7 @@
-/**
- * BibSonomy Color Theme: 
- * https://kuler.adobe.com/BibSonomy-color-theme-3814695
- */
+/** BOOTSTRAP FILE */
+@import "../bootstrap/less/bootstrap.less";
 
-@import "../bootstrap/less/variables.less";
-
-@main-color: #006699;
-
-@main-color-light: #428BCA;
-
-@primary-color: @main-color;
-
-@link-color: @main-color;
-
-@font-color: #333333;
-
-@sidebar-color: #9EC4D9;
-
-@background-color: #EDEDED;
-
-@border-color: #cbcbcb;
-
-@menu-link-color: #EFEFEF;
-
-@light-element-color: @border-color;
-
-@light-element-hover-color: #777;
-
-@light-grey: #DFDFDF;
-
-@light-border-color: #DDDDDD;
-
-@sidebar-color: #f7efed;
-
-@sidebar-background-image-url: url("/resources/image/bg-sidebar.png");
-
-@container-navi-border: #005588;
-
-
-/** SMALL FONT SIZE */
-@small-font-size: 12px;
+@import "bootstrap-color.less";
 
 /** currently not used */
 @import "bootstrap-tagsinput.less";
@@ -50,8 +12,9 @@
 /** MULTI LINE ELLIPSIS */
 @import "multiline-ellipsis.less";
 
-/** FONT VARIABLES OF FONT AWESOME */ 
-@import "../fonts/font-awesome/less/variables.less";
+/** FONT AWESOME */
+@import "../fonts/font-awesome/less/font-awesome.less";
+@fa-font-path: "/resources/fonts/font-awesome/fonts";
 
 /** MAIN BOOTSTRAP LAYOUT */
 @import "bootstrap-main.less";
@@ -59,8 +22,19 @@
 /** BOOTSTRAP DISCUSSION LAYOUT */
 @import "bootstrap-discussion.less";
 
+/** TODO: remove jquery ui? */
+@import (inline) "../jquery/plugins/ui/jquery-ui.css";
+
 /** Batchedit page info Box on mouseover*/
-@import "BatchEdit.css";
+@import "BatchEdit.less";
+
+/** Mobile Menu Layout */
+@import "MobileMenu.less";
+
+/** author (person-entity) pages */
+@import "bootstrap-authors.less";
+
+@import "history.less";
 
 /** styles for admin pages */
 @import "bootstrap-admin.less";

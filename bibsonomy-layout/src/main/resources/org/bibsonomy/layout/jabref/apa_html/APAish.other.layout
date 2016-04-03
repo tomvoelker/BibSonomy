@@ -1,11 +1,11 @@
 \begin{author}
-\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLChars,AntiScriptInjection]{\author}\end{author}\begin{year}
+\format[AuthorLastFirstAbbrCommas,AuthorAndsReplacer,HTMLCharsAntiScript]{\author}\end{author}\begin{year}
  (\format[AntiScriptInjection]{\year})\end{year}.
 \begin{title}
-<i>\format[HTMLChars,AntiScriptInjection]{\title}</i>.
+<i>\format[HTMLCharsAntiScript]{\title}</i>.
 \end{title}
 \begin{description}
-\format[HTMLChars,AntiScriptInjection]{\description}.
+\format[HTMLCharsAntiScript]{\description}.
 \end{description}
 <br/>
 <br/>

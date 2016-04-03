@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -29,6 +29,8 @@ package org.bibsonomy.webapp.command.actions;
 import java.net.URL;
 
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.scraper.ScrapingContext;
 
 /**
@@ -54,6 +56,19 @@ public class EditPublicationCommand extends EditPostCommand<BibTex> {
 	 * The metadata from scraping
 	 */
 	private ScrapingContext scrapingContext;
+	
+	private boolean myOwn;
+
+	/**
+	 * author index (starting at 0)  
+	 */
+	private Integer personIndex;
+
+	/** {@link Person} which is to be associated with the new publication. This may be a person without a personId if a new person is to be created */
+	private Person person;
+	
+	/** the role of the person given by {@link #person} */
+	private PersonResourceRelationType personRole = PersonResourceRelationType.AUTHOR;
 	
 	/**
 	 * @return the url
@@ -120,5 +135,65 @@ public class EditPublicationCommand extends EditPostCommand<BibTex> {
 	public void setScrapingContext(final ScrapingContext scrapingContext) {
 		this.scrapingContext = scrapingContext;
 	}
-}
+	
+	/**
+	 * @return the myown
+	 */
+	public boolean isMyOwn() {
+		return this.myOwn;
+	}
+
+	/**
+	 * @param myown the myown to set
+	 */
+	public void setMyOwn(boolean myown) {
+		this.myOwn = myown;
+	}
+	
+	/**
+	 * @return the personId
+	 */
+	public String getPersonId() {
+		if (this.person == null) {
+			return null;
+		}
+		return this.person.getPersonId();
+	}
+
+	/**
+	 * @param personId the personId to set
+	 */
+	public void setPersonId(String personId) {
+		if (this.person == null) {
+			this.person = new Person();
+		}
+		this.person.setPersonId(personId);
+	}
+
+	public Integer getPersonIndex() {
+		return this.personIndex;
+	}
+
+	public void setPersonIndex(Integer personIndex) {
+		this.personIndex = personIndex;
+	}
+
+	/**
+	 * @param person
+	 */
+	public void setPerson(Person person) {
+		this.person = person;
+	}
+
+	public Person getPerson() {
+		return this.person;
+	}
+
+	public PersonResourceRelationType getPersonRole() {
+		return this.personRole;
+	}
+
+	public void setPersonRole(PersonResourceRelationType personRole) {
+		this.personRole = personRole;
+	}}
 

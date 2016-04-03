@@ -7,8 +7,11 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+	<jsp:directive.attribute name="withoutClock" type="java.lang.Boolean" required="false"  />
 
-
+	<c:if test="${not withoutClock}">
+		<span class="fa fa-clock-o"><!--  --></span>
+	</c:if>
 	<c:out value=" "/>
 	<fmt:timeZone value="${command.context.loginUser.settings.timeZone}">
 	

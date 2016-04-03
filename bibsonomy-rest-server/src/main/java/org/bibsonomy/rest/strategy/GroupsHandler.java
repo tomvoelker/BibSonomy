@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,8 +26,6 @@
  */
 package org.bibsonomy.rest.strategy;
 
-import java.util.StringTokenizer;
-
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.RESTUtils;
 import org.bibsonomy.rest.enums.HttpMethod;
@@ -41,6 +39,7 @@ import org.bibsonomy.rest.strategy.groups.GetListOfGroupsStrategy;
 import org.bibsonomy.rest.strategy.groups.GetUserListOfGroupStrategy;
 import org.bibsonomy.rest.strategy.groups.RemoveUserFromGroupStrategy;
 import org.bibsonomy.rest.strategy.groups.UpdateGroupDetailsStrategy;
+import org.bibsonomy.rest.util.URLDecodingPathTokenizer;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -48,8 +47,8 @@ import org.bibsonomy.rest.strategy.groups.UpdateGroupDetailsStrategy;
 public class GroupsHandler implements ContextHandler {
 
 	@Override
-	public Strategy createStrategy(final Context context, final StringTokenizer urlTokens, final HttpMethod httpMethod) {
-		final int numTokensLeft = urlTokens.countTokens();
+	public Strategy createStrategy(final Context context, final URLDecodingPathTokenizer urlTokens, final HttpMethod httpMethod) {
+		final int numTokensLeft = urlTokens.countRemainingTokens();
 		final String groupName;
 
 		switch (numTokensLeft) {
@@ -58,19 +57,19 @@ public class GroupsHandler implements ContextHandler {
 			return createGroupListStrategy(context, httpMethod);
 		case 1:
 			// /groups/[groupname]
-			return createGroupStrategy(context, httpMethod, urlTokens.nextToken());
+			return createGroupStrategy(context, httpMethod, urlTokens.next());
 		case 2:
-			groupName = urlTokens.nextToken();
-			if (RESTConfig.USERS_URL.equalsIgnoreCase(urlTokens.nextToken())) {
+			groupName = urlTokens.next();
+			if (RESTConfig.USERS_URL.equalsIgnoreCase(urlTokens.next())) {
 				// /groups/[groupname]/users
 				return createUserPostsStrategy(context, httpMethod, groupName);
 			}
 			break;
 		case 3:
 			// /groups/[groupname]/users/[username]
-			groupName = urlTokens.nextToken();
-			if (RESTConfig.USERS_URL.equalsIgnoreCase(urlTokens.nextToken())) {
-				final String username = RESTUtils.normalizeUser(urlTokens.nextToken(), context);
+			groupName = urlTokens.next();
+			if (RESTConfig.USERS_URL.equalsIgnoreCase(urlTokens.next())) {
+				final String username = RESTUtils.normalizeUser(urlTokens.next(), context);
 				if (HttpMethod.DELETE == httpMethod) {
 					return new RemoveUserFromGroupStrategy(context, groupName, username);
 				}

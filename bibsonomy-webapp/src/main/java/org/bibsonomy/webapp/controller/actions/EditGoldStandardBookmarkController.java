@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -38,6 +38,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.util.ObjectUtils;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.GoldStandardPostValidator;
 import org.bibsonomy.webapp.validation.PostValidator;
@@ -130,7 +131,7 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
 	}
 
 	@Override
-	protected void preparePost(final EditPostCommand<Bookmark> command, final Post<Bookmark> post) {
+	protected void preparePost(final EditBookmarkCommand command, final Post<Bookmark> post) {
 		super.preparePost(command, post);
 		post.setApproved(command.isApproved());
 	}
@@ -151,8 +152,13 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#setRecommendationFeedback(org.bibsonomy.model.Post, int)
+	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#canEditPost(org.bibsonomy.webapp.util.RequestWrapperContext)
 	 */
+	@Override
+	protected boolean canEditPost(final RequestWrapperContext context) {
+		return super.canEditPost(context) && !context.getLoginUser().isSpammer();
+	}
+
 	@Override
 	protected void setRecommendationFeedback(User loggedinUser, Post<? extends Resource> entity, int postID) {
 		// noop gold standards have no tags

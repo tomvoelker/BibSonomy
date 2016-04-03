@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Layout - Layout engine for the webapp.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,21 +26,21 @@
  */
 package net.sf.jabref.export.layout.format;
 
-import org.apache.commons.lang.StringUtils;
-
 import net.sf.jabref.export.layout.LayoutFormatter;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * if argument contains " and ", this returns "s" otherwise "". this is useful for eds./ed. 
- * XXX: replace with IfPlural in later JabRef Versions
+ * TODO: replace with IfPlural in later JabRef Versions
  * 
  * @author Jens Illig
  */
 public class PluralS implements LayoutFormatter{
 	
 	@Override
-	public String format(String arg0) {
-		if (StringUtils.contains(arg0, " and ")) {
+	public String format(String field) {
+		if (StringUtils.contains(field, " and ")) {
 			return "s";
 		}
 		return "";

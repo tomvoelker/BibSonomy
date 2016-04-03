@@ -1,7 +1,7 @@
 /**
  * BibSonomy-OpenAccess - Check Open Access Policies for Publications
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -99,9 +99,14 @@ public class MetsBibTexMLGenerator {
 	public void setUser(final User user) {
 		this.user = user;
 	}
-
+	
+	/**
+	 * default renderer
+	 * @param urlRenderer
+	 */
 	public MetsBibTexMLGenerator(final UrlRenderer urlRenderer) {
 		this.xmlRenderer = new METSRenderer(urlRenderer);
+		this.xmlRenderer.init();
 		this.post = new PumaData<BibTex>();
 	}
 

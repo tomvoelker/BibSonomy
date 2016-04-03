@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -55,7 +55,7 @@ public class IEEEComputerSocietyScraper extends GenericBibTeXURLScraper {
 	private static final String HOST_OLD= "csdl2.computer.org";
 	private static final String HOST_NEW = "computer.org";
 	
-	private static final Pattern abstractPattern = Pattern.compile("<meta property=\"og:description\" content=\"(.*?)\" />");
+	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<meta property=\"og:description\" content=\"(.*?)\" />");
 	
 	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
 	
@@ -88,18 +88,22 @@ public class IEEEComputerSocietyScraper extends GenericBibTeXURLScraper {
 	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL)
 	 */
 	@Override
-	protected String getDownloadURL(URL url) throws ScrapingException {
-		return  url.toString().replaceAll("-.*", "-reference.bib");
+	protected String getDownloadURL(final URL url) throws ScrapingException {
+		final String urlString = url.toString();
+		if (urlString.endsWith(".pdf")) {
+			return  urlString.replaceAll(".pdf", "-reference.bib");
+		}
+		return  urlString.replaceAll("-.*", "-reference.bib");
 	}
 	
 	@Override
 	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
 		try {
-			final Matcher m = abstractPattern.matcher(WebUtils.getContentAsString(scrapingContext.getUrl().toString()));
+			final Matcher m = ABSTRACT_PATTERN.matcher(WebUtils.getContentAsString(scrapingContext.getUrl().toString()));
 			if (m.find())
 				return BibTexUtils.addFieldIfNotContained(bibtex, "abstract", m.group(1));
 		} catch(IOException e) {
-			log.debug("Abstract is not found" + e.getMessage());
+			log.debug("abstract could not be found", e);
 		}
 		return bibtex;
 	}

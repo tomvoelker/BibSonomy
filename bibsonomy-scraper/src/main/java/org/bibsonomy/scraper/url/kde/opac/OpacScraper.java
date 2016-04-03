@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -48,35 +48,32 @@ public class OpacScraper extends AbstractUrlScraper {
 	private static final String info = "This scraper parses a publication page from " + href(SITE_URL , SITE_NAME);
 
 	/**
-	 * TODO: This Scraper match only on URL's with es specific query value in path and queries. The current patterns don't work.
+	 * TODO: this scraper match only on URL's with es specific query value in path and queries. The current patterns don't work.
 	 */
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(HOST_NAME + ".*"), Pattern.compile(".*(/PPN.|TRM=[0-9]+)*")));
 	
 	@Override
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		//log.fatal("Opac");
-		//log.fatal(sc.getUrl().toString());
-		//Pattern.matches("^http.*?+/CHARSET=UTF-8/PRS=PP/PPN\\?PPN=[0-9X]+$", sc.getUrl().toString())
-		//sc.getUrl().toString().startsWith(OPAC_URL)
+	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 
 		try {
 			// create a converter and start converting :)
-			final PicaToBibtexConverter converter = new PicaToBibtexConverter(sc.getPageContent(), "xml", sc.getUrl().toString());
+			final PicaToBibtexConverter converter = new PicaToBibtexConverter("xml", sc.getUrl().toString());
 
-			final String bibResult = converter.getBibResult();
+			final String bibResult = converter.toBibtex(sc.getPageContent());
 
-			if(bibResult != null){
+			if (bibResult != null) {
 				sc.setBibtexResult(bibResult);
 				return true;
-			}else
-				throw new ScrapingFailureException("getting bibtex failed");
-
-		} catch (Exception e){
+			}
+			
+			throw new ScrapingFailureException("getting bibtex failed");
+		} catch (final ScrapingException e){
 			throw new InternalFailureException(e);
 		}
 	}
-
+	
+	@Override
 	public String getInfo() {
 		return info;
 	}
@@ -85,11 +82,13 @@ public class OpacScraper extends AbstractUrlScraper {
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
-
+	
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
-
+	
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}

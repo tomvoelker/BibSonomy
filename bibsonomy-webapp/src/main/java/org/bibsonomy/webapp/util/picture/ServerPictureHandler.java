@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -43,28 +43,15 @@ import org.bibsonomy.webapp.view.Views;
  * 
  * @author cut
  */
-public class ServerPictureHandler extends AbstractPictureHandler
-{
-
-	/**
-	 * Creates a new {@link ServerPictureHandler} instance with target user and command.
-	 * 
-	 * @param user - requested user
-	 * @param command - actual picture command
-	 */
-	public ServerPictureHandler ( User user, PictureCommand command )
-	{
-		super(user, command);
-	}
+public class ServerPictureHandler implements PictureHandler {
 
 	@Override
-	public View getProfilePictureView ()
-	{
-		UploadedFile profilePicture = requestedUser.getProfilePicture();
+	public View getProfilePictureView (final User requestedUser, final PictureCommand command) {
+		final UploadedFile profilePicture = requestedUser.getProfilePicture();
 		
-		pictureCommand.setPathToFile( profilePicture.getAbsolutePath() );
-		pictureCommand.setContentType( FileUtil.getContentType(profilePicture.getFileName()) );
-		pictureCommand.setFilename( requestedUser.getName() + ProfilePictureLogic.FILE_EXTENSION );
+		command.setPathToFile( profilePicture.getAbsolutePath() );
+		command.setContentType( FileUtil.getContentType(profilePicture.getFileName()) );
+		command.setFilename( requestedUser.getName() + ProfilePictureLogic.FILE_EXTENSION );
 		
 		return Views.DOWNLOAD_FILE;
 	}

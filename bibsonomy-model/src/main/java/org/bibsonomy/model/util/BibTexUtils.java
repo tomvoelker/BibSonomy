@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -191,6 +191,9 @@ public class BibTexUtils {
 	
 	/** PHD thesis */
 	public static final String PHD_THESIS = "phdthesis";
+	
+	/** any thesis */
+	public static final String THESIS = "thesis";
 	
 	/** unpublished work */
 	public static final String UNPUBLISHED = "unpublished";
@@ -487,7 +490,7 @@ public class BibTexUtils {
 		if (present(bib.getEditor())) {
 			values.put(BIBTEX_EDITOR_FIELD, addBibTeXBrackets(PersonNameUtils.serializePersonNames(bib.getEditor(), lastFirstNames)));
 		}
-				
+		
 		/*
 		 * process miscFields map, if present
 		 */

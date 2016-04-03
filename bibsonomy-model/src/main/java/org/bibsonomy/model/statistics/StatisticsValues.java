@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -33,11 +33,8 @@ import java.util.List;
  * @author sven
  */
 
-public class StatisticsValues extends Statistics{
-
-	
+public class StatisticsValues extends Statistics {
 	private List<Statistics> values;
-
 
 	/**
 	 * @return the list of values
@@ -52,6 +49,4 @@ public class StatisticsValues extends Statistics{
 	public void setValues(List<Statistics> values) {
 		this.values = values;
 	}
-
-
 }

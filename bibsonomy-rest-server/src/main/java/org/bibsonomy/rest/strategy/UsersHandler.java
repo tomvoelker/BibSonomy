@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -28,8 +28,6 @@ package org.bibsonomy.rest.strategy;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.StringTokenizer;
-
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.RESTUtils;
 import org.bibsonomy.rest.enums.HttpMethod;
@@ -54,12 +52,13 @@ import org.bibsonomy.rest.strategy.users.GetUserStrategy;
 import org.bibsonomy.rest.strategy.users.PostPostDocumentStrategy;
 import org.bibsonomy.rest.strategy.users.PostPostStrategy;
 import org.bibsonomy.rest.strategy.users.PostRelatedusersForUserStrategy;
-import org.bibsonomy.rest.strategy.users.PutUpdateDocumentStrategy;
 import org.bibsonomy.rest.strategy.users.PostUserConceptStrategy;
 import org.bibsonomy.rest.strategy.users.PostUserStrategy;
 import org.bibsonomy.rest.strategy.users.PutPostStrategy;
+import org.bibsonomy.rest.strategy.users.PutUpdateDocumentStrategy;
 import org.bibsonomy.rest.strategy.users.PutUserConceptStrategy;
 import org.bibsonomy.rest.strategy.users.PutUserStrategy;
+import org.bibsonomy.rest.util.URLDecodingPathTokenizer;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -68,8 +67,8 @@ import org.bibsonomy.rest.strategy.users.PutUserStrategy;
 public class UsersHandler implements ContextHandler {
 
 	@Override
-	public Strategy createStrategy(final Context context, final StringTokenizer urlTokens, final HttpMethod httpMethod) {
-		final int numTokensLeft = urlTokens.countTokens();
+	public Strategy createStrategy(final Context context, final URLDecodingPathTokenizer urlTokens, final HttpMethod httpMethod) {
+		final int numTokensLeft = urlTokens.countRemainingTokens();
 		final String userName;
 		final String req;
 
@@ -78,12 +77,12 @@ public class UsersHandler implements ContextHandler {
 			// /users
 			return createUserListStrategy(context, httpMethod);
 		case 1:
-			userName = RESTUtils.normalizeUser(urlTokens.nextToken(), context);
+			userName = normalizeAndCheckUserName(context, urlTokens);
 			// /users/[username]
 			return createUserStrategy(context, httpMethod, userName);
 		case 2:
-			userName = RESTUtils.normalizeUser(urlTokens.nextToken(), context);
-			req = urlTokens.nextToken();
+			userName = normalizeAndCheckUserName(context, urlTokens);
+			req = urlTokens.next();
 
 			// /users/[username]/posts
 			if (RESTConfig.POSTS_URL.equalsIgnoreCase(req)) {
@@ -105,55 +104,68 @@ public class UsersHandler implements ContextHandler {
 			}
 			break;
 		case 3:
-			userName = RESTUtils.normalizeUser(urlTokens.nextToken(), context);
-			req = urlTokens.nextToken();
+			userName = normalizeAndCheckUserName(context, urlTokens);
+			req = urlTokens.next();
 
 			// /users/[username]/posts/[resourceHash]
 			if (RESTConfig.POSTS_URL.equalsIgnoreCase(req)) {
-				final String resourceHash = urlTokens.nextToken();
+				final String resourceHash = urlTokens.next();
 				return createUserPostStrategy(context, httpMethod, userName, resourceHash);
 			}
 
 			// /users/[username]/concepts/[conceptName]
 			if (RESTConfig.CONCEPTS_URL.equalsIgnoreCase(req)) {
-				final String conceptName = urlTokens.nextToken();
+				final String conceptName = urlTokens.next();
 				return createUserConceptsStrategy(context, httpMethod, userName, conceptName);
 			}
 			// /users/[username]/friends/[tag]
 			if (RESTConfig.FRIENDS_SUB_PATH.equalsIgnoreCase(req)) {
-				final String tag = urlTokens.nextToken();
+				final String tag = urlTokens.next();
 				return createRelatedusersForUserStrategy(context, httpMethod, userName, req, tag);
 			}
 			if (RESTConfig.CLIPBOARD_SUBSTRING.equalsIgnoreCase(req)) {
-				final String resourceHash = urlTokens.nextToken();
+				final String resourceHash = urlTokens.next();
 				return createUserClipboardStrategy(context, httpMethod, userName, resourceHash);
 			}
 			break;
 		case 4:
 			// /users/[username]/posts/[resourcehash]/documents
-			userName = RESTUtils.normalizeUser(urlTokens.nextToken(), context);
-			if (RESTConfig.POSTS_URL.equalsIgnoreCase(urlTokens.nextToken())) {
-				final String resourceHash = urlTokens.nextToken();
+			userName = normalizeAndCheckUserName(context, urlTokens);
+			if (RESTConfig.POSTS_URL.equalsIgnoreCase(urlTokens.next())) {
+				final String resourceHash = urlTokens.next();
 
-				if (RESTConfig.DOCUMENTS_SUB_PATH.equalsIgnoreCase(urlTokens.nextToken())) {
+				if (RESTConfig.DOCUMENTS_SUB_PATH.equalsIgnoreCase(urlTokens.next())) {
 					return createDocumentPostStrategy(context, httpMethod, userName, resourceHash);
 				}
 			}
 			break;
 		case 5:
 			// /users/[username]/posts/[resourcehash]/documents/[filename]
-			userName = RESTUtils.normalizeUser(urlTokens.nextToken(), context);
-			if (RESTConfig.POSTS_URL.equalsIgnoreCase(urlTokens.nextToken())) {
-				final String resourceHash = urlTokens.nextToken();
+			userName = normalizeAndCheckUserName(context, urlTokens);
+			if (RESTConfig.POSTS_URL.equalsIgnoreCase(urlTokens.next())) {
+				final String resourceHash = urlTokens.next();
 
-				if (RESTConfig.DOCUMENTS_SUB_PATH.equalsIgnoreCase(urlTokens.nextToken())) {
-					final String filename = urlTokens.nextToken();
+				if (RESTConfig.DOCUMENTS_SUB_PATH.equalsIgnoreCase(urlTokens.next())) {
+					final String filename = urlTokens.next();
 					return createDocumentPostStrategy(context, httpMethod, userName, resourceHash, filename);
-                }
+				}
 			}
 			break;
 		}
 		throw new NoSuchResourceException("cannot process url (no strategy available) - please check url syntax ");
+	}
+
+	/**
+	 * @param context
+	 * @param urlTokens
+	 * @return the normalized username @see {@link RESTUtils#normalizeUser(String, Context)}
+	 */
+	protected String normalizeAndCheckUserName(final Context context, final URLDecodingPathTokenizer urlTokens) {
+		final String userName = RESTUtils.normalizeUser(urlTokens.next(), context);
+		if (!present(userName)) {
+			throw new BadRequestOrResponseException("username not specified");
+		}
+		return userName;
 	}
 
 	private static Strategy createUserListStrategy(final Context context, final HttpMethod httpMethod) {
