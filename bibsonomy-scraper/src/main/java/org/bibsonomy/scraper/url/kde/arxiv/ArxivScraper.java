@@ -55,63 +55,66 @@ public class ArxivScraper extends AbstractUrlScraper {
 	private static final String info = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
 	private static final String ARXIV_HOST = "arxiv.org";
 	
-	private static final Pattern patternID = Pattern.compile("(abs|pdf)/([^?]*)");
+	private static final Pattern PDF_SUFFIX_PATTERN = Pattern.compile("\\.pdf");
+	private static final Pattern patternID = Pattern.compile("(abs|pdf)/(.+)");
 	private static final Pattern patternVer = Pattern.compile("(.+?)v\\d+");
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(ARXIV_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
 	@Override
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		/*
-		 * TODO: do we need this check, do not the patterns ensure that
-		 * this scraper is only called on urls starting with ARXIV_HOST?
-		 */
-		if (sc.getUrl() != null && sc.getUrl().getHost().endsWith(ARXIV_HOST)) {
-			try {
-				sc.setScraper(this);
+	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
+		try {
+			sc.setScraper(this);
+			
+			final Matcher matcherID = patternID.matcher(sc.getUrl().toString());
+			if (matcherID.find()) {
+				final String id = matcherID.group(2);
 				
-				final Matcher matcherID = patternID.matcher(sc.getUrl().toString());
-				if (matcherID.find()) {
-					final String id = matcherID.group(2);
-					
-					/* 
-					 	OAI interface supports only the notion of an arXiv article and not access to individual versions.
-					  	If an id is with version(eg. 1304.7984v1), the version part has to be removed(eg. 1304.7984). 
-					*/
-					String vId = "";
-					
-					Matcher verID = patternVer.matcher(id);
-					if (verID.find()) {
-						vId = verID.group(1);
-					} else {
-						vId = id;
-					}
-					
-					// build url for oai_dc export
-					final String exportURL = "http://export.arxiv.org/oai2?verb=GetRecord&identifier=oai:arXiv.org:" + vId + "&metadataPrefix=oai_dc";
-					
-					// download oai_dc reference
-					final String reference = WebUtils.getContentAsString(exportURL);
-					
-					String bibtex = OAI_CONVERTER.toBibtex(reference);
-					
-					// add arxiv citation to note
-					if (bibtex.contains("note = {")) {
-						bibtex = bibtex.replace("note = {", "note = {cite arxiv:" + id + "\n");
-					// if note not exist
-					} else {
-						bibtex = bibtex.replaceFirst("},", "},\nnote = {cite arxiv:" + id + "},");
-					}
-					// set result
-					sc.setBibtexResult(bibtex);
-					return true;
+				/* 
+				 * OAI interface supports only the notion of an arXiv article and not access to individual versions.
+				 * If an id is with version(eg. 1304.7984v1), the version part has to be removed(eg. 1304.7984). 
+				*/
+				final String normedId = normId(id);
+				
+				// build url for oai_dc export
+				final String exportURL = "http://export.arxiv.org/oai2?verb=GetRecord&identifier=oai:arXiv.org:" + normedId + "&metadataPrefix=oai_dc";
+				
+				// download oai_dc reference
+				final String reference = WebUtils.getContentAsString(exportURL);
+				
+				String bibtex = OAI_CONVERTER.toBibtex(reference);
+				
+				// add arxiv citation to note
+				if (bibtex.contains("note = {")) {
+					bibtex = bibtex.replace("note = {", "note = {cite arxiv:" + normedId + "\n");
+				// if note not exist
+				} else {
+					bibtex = bibtex.replaceFirst("},", "},\nnote = {cite arxiv:" + normedId + "},");
 				}
-				
-				throw new ScrapingFailureException("no arxiv id found in URL");
-			} catch (IOException ex) {
-				throw new InternalFailureException(ex);
+				// set result
+				sc.setBibtexResult(bibtex);
+				return true;
 			}
+			
+			throw new ScrapingFailureException("no arxiv id found in URL");
+		} catch (final IOException ex) {
+			throw new InternalFailureException(ex);
 		}
-		return false;
+	}
+
+	/**
+	 * @param vId
+	 * @return
+	 */
+	private static String normId(final String id) {
+		final String vId;
+		final Matcher verID = patternVer.matcher(id);
+		if (verID.find()) {
+			vId = verID.group(1);
+		} else {
+			vId = id;
+		}
+		
+		return PDF_SUFFIX_PATTERN.matcher(vId).replaceAll("");
 	}
 
 	@Override
