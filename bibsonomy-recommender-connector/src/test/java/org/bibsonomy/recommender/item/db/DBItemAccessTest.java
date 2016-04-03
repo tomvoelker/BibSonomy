@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.bibsonomy.database.testutil.TestDatabaseLoader;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
@@ -19,6 +18,7 @@ import org.bibsonomy.recommender.connector.testutil.RecommenderTestContext;
 import org.bibsonomy.recommender.item.model.RecommendationUser;
 import org.bibsonomy.recommender.item.model.RecommendedPost;
 import org.bibsonomy.recommender.item.simple.DummyItemRecommender;
+import org.bibsonomy.testutil.TestDatabaseLoader;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -41,7 +41,7 @@ public class DBItemAccessTest {
 	public static void setUp() {
 		// bibtexRecommenderLogic is representational for all items in this case
 		dbLogic = RecommenderTestContext.getBeanFactory().getBean("bibtexRecommenderLogic", DBLogConfigItemAccess.class);
-		TestDatabaseLoader loader = new TestDatabaseLoader("database/recommender_schema.sql");
+		final TestDatabaseLoader loader = new TestDatabaseLoader("database/recommender_schema.sql");
 		loader.load("recommender-test.properties", "recommender.item");
 	}
 	

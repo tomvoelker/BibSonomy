@@ -3,14 +3,14 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:admin="urn:jsptagdir:/WEB-INF/tags/bstags/actions/admin"
-	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts"
+	xmlns:admin="urn:jsptagdir:/WEB-INF/tags/actions/admin"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:form="http://www.springframework.org/tags/form"
-	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/bstags/nav"
-	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bstags/bs"
-	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bstags/bs/form"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -67,7 +67,7 @@
 			<c:forEach items="${command.recommenderOverviewMap}" var="entry">
 				<fmt:message key="${entry.key.name}.header" var="simpleRecommenderResultName"/>
 				<h2><c:out value="${simpleRecommenderResultName}" /></h2>
-				<p class="form-control-static pull-right"><a type="button" class="btn btn-xs btn-default" role="button" data-toggle="modal" href="#add-${entry.key.simpleName}"><span class="glyphicon glyphicon-plus"><!-- KEEP ME --></span></a></p>
+				<p class="form-control-static pull-right"><a type="button" class="btn btn-xs btn-default" role="button" data-toggle="modal" href="#add-${entry.key.simpleName}"><span class="fa fa-plus"><!-- KEEP ME --></span></a></p>
 				<bs:modal id="add-${entry.key.simpleName}" modalTitle="${simpleRecommenderResultName} - add recommender">
 					<jsp:attribute name="modalBody">
 						<form role="form" method="POST" class="form-horizontal">

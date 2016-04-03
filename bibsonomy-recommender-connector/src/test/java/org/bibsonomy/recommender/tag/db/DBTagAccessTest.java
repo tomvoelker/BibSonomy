@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.bibsonomy.database.testutil.TestDatabaseLoader;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -21,6 +20,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.recommender.connector.testutil.RecommenderTestContext;
 import org.bibsonomy.recommender.tag.model.RecommendedTag;
 import org.bibsonomy.recommender.tag.testutil.DummyTagRecommender;
+import org.bibsonomy.testutil.TestDatabaseLoader;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -42,7 +42,7 @@ public class DBTagAccessTest {
 	@BeforeClass
 	public static void setUp() {
 		dbLogic = RecommenderTestContext.getBeanFactory().getBean("tagRecommenderLogic", DBLogConfigBibSonomy.class);
-		TestDatabaseLoader loader = new TestDatabaseLoader("recommender-db-schema.sql");
+		final TestDatabaseLoader loader = new TestDatabaseLoader("recommender-db-schema.sql");
 		loader.load("recommender-test.properties", "recommender.tag");
 	}
 	

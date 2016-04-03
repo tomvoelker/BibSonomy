@@ -36,7 +36,6 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.ObjectUtils;
-import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.GoldStandardPostValidator;
@@ -151,11 +150,12 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 		// noop gold standards have no tags
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.controller.actions.AbstractEditPublicationController#preparePost(org.bibsonomy.webapp.command.actions.EditPublicationCommand, org.bibsonomy.model.Post)
+	 */
 	@Override
-	protected void preparePost(final EditPostCommand<BibTex> command, final Post<BibTex> post) {
-
+	protected void preparePost(PostPublicationCommand command, Post<BibTex> post) {
 		super.preparePost(command, post);
 		post.setApproved(command.isApproved());
 	}
-
 }
