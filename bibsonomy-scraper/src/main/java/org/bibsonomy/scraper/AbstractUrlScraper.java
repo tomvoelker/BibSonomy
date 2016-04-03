@@ -62,7 +62,7 @@ public abstract class AbstractUrlScraper implements UrlScraper {
 	 */
 	@Override
 	public boolean supportsUrl(final URL url) {
-	    if (ValidationUtils.present(url)) {
+		if (ValidationUtils.present(url)) {
 			final List<Pair<Pattern, Pattern>> urlPatterns = this.getUrlPatterns();
 
 			/*
@@ -72,13 +72,13 @@ public abstract class AbstractUrlScraper implements UrlScraper {
 			 * first = null && second = true
 			 */
 			for (final Pair<Pattern, Pattern> tuple: urlPatterns){
-				final boolean match1 = (tuple.getFirst() == EMPTY_PATTERN) ||
-				tuple.getFirst().matcher(url.getHost()).find();
-
-				final boolean match2 = (tuple.getSecond() == EMPTY_PATTERN) || 
-				tuple.getSecond().matcher(url.getPath()).find();
-
-				if (match1 && match2) {
+				final Pattern hostPattern = tuple.getFirst();
+				final boolean hostMatch = (hostPattern == EMPTY_PATTERN) || hostPattern.matcher(url.getHost()).find();
+				
+				final Pattern pathPattern = tuple.getSecond();
+				final boolean pathMatch = (pathPattern == EMPTY_PATTERN) || pathPattern.matcher(url.getPath()).find();
+				
+				if (hostMatch && pathMatch) {
 					return true;
 				}
 			}
@@ -104,7 +104,7 @@ public abstract class AbstractUrlScraper implements UrlScraper {
 	 */
 	@Override
 	public boolean scrape(final ScrapingContext sc) throws ScrapingException {
-	    if (ValidationUtils.present(sc) && this.supportsScrapingContext(sc)) {
+		if (ValidationUtils.present(sc) && this.supportsScrapingContext(sc)) {
 			return this.scrapeInternal(sc);
 		}
 		return false;
