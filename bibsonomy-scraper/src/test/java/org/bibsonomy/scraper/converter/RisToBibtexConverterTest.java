@@ -61,6 +61,24 @@ public class RisToBibtexConverterTest {
 	}
 	
 	/**
+	 * Test RIS to BibTeX Conversion
+	 * @throws IOException 
+	 */
+	@Test
+	public void testRisToBibtex5() throws IOException {
+		final String ris = TestUtils.readEntryFromFile(PATH_TO_FILES + "test10.ris");
+
+		// test the canHandle heuristic
+		assertTrue(RisToBibtexConverter.canHandle(ris));
+
+		// test the conversion
+		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "test10_risBibtex.bib");
+		final RisToBibtexConverter ris2bConverter = new RisToBibtexConverter();
+		final String bibTeX = ris2bConverter.toBibtex(ris);
+		assertEquals (expectedBibTeX, bibTeX);
+	}
+	
+	/**
 	 * another RIS to BibTeX test
 	 * @throws IOException
 	 */
