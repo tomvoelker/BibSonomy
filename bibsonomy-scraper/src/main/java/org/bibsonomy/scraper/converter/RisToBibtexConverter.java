@@ -53,11 +53,11 @@ public class RisToBibtexConverter implements BibtexConverter{
 
 	/** Function is taken from JabRef importer
 	 * 
-	 * @param Ris
+	 * @param ris
 	 * @return The resulting BibTeX string.
 	 */
 	@Override
-	public String toBibtex(String Ris) {
+	public String toBibtex(String ris) {
 		/**
 		 * Parse the entries in the source, and return a List of BibtexEntry
 		 * objects.
@@ -67,7 +67,7 @@ public class RisToBibtexConverter implements BibtexConverter{
 		final SortedMap<String,String> bibtexMap = new TreeMap<String,String>();
 
 		// split the Strint into different entries
-		final String[] fields = Ris.split("\n");
+		final String[] fields = skipBOM(ris).split("\n");
 
 		// go through all entries
 		for (int j = 0; j < fields.length; j++) {
@@ -103,6 +103,7 @@ public class RisToBibtexConverter implements BibtexConverter{
 			if (entry.length() < 6)
 				continue;
 			else {
+				
 				final String key = entry.substring(0, 2);
 				String value = entry.substring(6).trim();
 				if (key.equals("TY")) {
@@ -316,6 +317,19 @@ public class RisToBibtexConverter implements BibtexConverter{
 		return bibtexString.toString();
 	}
 
+	/**
+	 * skip byte order mark
+	 * https://de.wikipedia.org/wiki/Byte_Order_Mark
+	 * @param s
+	 * 
+	 * @return the string without the utf-8 encoding 0xfeff
+	 */
+	public String skipBOM(final String s) {
+		if ((int) s.charAt(0) == 0xfeff) 
+			return s.substring(1);
+		return s;
+	}
+	
 	/**
 	 * returns true if the snippet contains only ris entries, false otherwise
 	 * WARNING: this is a heuristic!

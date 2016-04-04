@@ -2083,7 +2083,12 @@
 		<BibFile>WorldCatScraperUnitURLTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper</Scraper>
 	</URLTest>
-
+	<URLTest id="url_339">
+		<TestDescription>URL scraping test for the aha journals scraper</TestDescription>
+		<URL>http://circ.ahajournals.org/content/early/2015/11/08/CIRCULATIONAHA.115.019768.abstract</URL>
+		<BibFile>AhaJournalsScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.ahajournals.AhaJournalsScraper</Scraper>
+	</URLTest>
 	<URLTest id="url_340">
 		<TestDescription>URL scraping test for the frontiersen scraper</TestDescription>
 		<URL>http://journal.frontiersin.org/article/10.3389/fphys.2016.00071/full</URL>
@@ -2095,5 +2100,11 @@
 		<URL>http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0089052</URL>
 		<BibFile>PlosScraperUnitURLTest11.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_342"> 
+		<TestDescription>URL scraping test for the aha journals scraper</TestDescription>
+		<URL>http://circ.ahajournals.org/content/114/Suppl_18/II_864.2.abstract?sid=550d5036-8de5-4fbf-94c3-55c1df42f58f</URL>
+		<BibFile>AhaJournalsScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.ahajournals.AhaJournalsScraper</Scraper>
 	</URLTest>
 </test:Tests>
