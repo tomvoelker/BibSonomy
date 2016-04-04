@@ -2107,4 +2107,10 @@
 		<BibFile>AhaJournalsScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ahajournals.AhaJournalsScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_343"> 
+		<TestDescription>scrapign for BiomedCentra URL 3</TestDescription>
+		<URL>http://jbiomedsem.biomedcentral.com/articles/10.1186/2041-1480-1-S1-S6</URL>
+		<BibFile>BioMedCentralScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.biomed.BioMedCentralScraper</Scraper>
+	</URLTest>
 </test:Tests>

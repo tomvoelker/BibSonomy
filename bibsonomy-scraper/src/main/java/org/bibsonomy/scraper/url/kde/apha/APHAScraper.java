@@ -100,7 +100,6 @@ public class APHAScraper extends AbstractUrlScraper {
 					 */
 					else if (sc.getUrl().toString().contains(NRCRESEACHPRESS_HOST)) {
 						resultAsString = WebUtils.getPostContentAsString(cookie, new URL(DOWNLOAD_URL.get(1).toString()), doi + "&format=bibtex");
-						System.out.println(resultAsString);
 						if (resultAsString != null) {
 							sc.setBibtexResult(resultAsString);
 							return true;

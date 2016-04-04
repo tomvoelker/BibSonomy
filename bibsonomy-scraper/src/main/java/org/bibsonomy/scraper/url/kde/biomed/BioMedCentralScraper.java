@@ -31,6 +31,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
@@ -54,7 +55,12 @@ public class BioMedCentralScraper extends AbstractUrlScraper {
 	private static final String BIOMEDCENTRAL_HOST  = "biomedcentral.com";
 	private static final String BIOMEDCENTRAL_BIBTEX_PATH = "citation";
 	private static final String BIOMEDCENTRAL_BIBTEX_PARAMS = "format=bibtex&include=cit&direct=on&action=submit";
-
+	
+	private static final Pattern DOI_PATTERN_FROM_URL_FOR_SUBHOST_JBIOMEDSEM = Pattern.compile("/articles/(.+?)$");
+	//http://jbiomedsem.biomedcentral.com/articles/10.1186/2041-1480-1-S1-S6
+	//http://citation-needed.services.springer.com/v2/references/10.1186/2041-1480-1-S1-S6?format=bibtex&flavour=citation
+	private static final String FORMAT_BIBTEX_FLAVOUR_CITATION = "?format=bibtex&flavour=citation";
+	private static final String DOWNLOAD_URL_FOR_SUBHOST_JBIOMEDSEM = "http://citation-needed.services.springer.com/v2/references/";
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + BIOMEDCENTRAL_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
 	public String getInfo() {
@@ -63,9 +69,23 @@ public class BioMedCentralScraper extends AbstractUrlScraper {
 
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
-
+		
 		String url = sc.getUrl().toString();
 
+		/*
+		 * extract only from the host jbiomedsem.biomedcentral.com/
+		 */
+		if (url.contains("jbiomedsem")) {
+			Matcher m = DOI_PATTERN_FROM_URL_FOR_SUBHOST_JBIOMEDSEM.matcher(url);
+			if (m.find()) {
+				try {
+					final String bibtexResult = WebUtils.getContentAsString(new URL(DOWNLOAD_URL_FOR_SUBHOST_JBIOMEDSEM + m.group(1) + FORMAT_BIBTEX_FLAVOUR_CITATION));
+					sc.setBibtexResult(bibtexResult);
+					return true;
+				} catch (IOException ex) {
+				}
+			}
+		}
 		if(!(url.endsWith("/" + BIOMEDCENTRAL_BIBTEX_PATH + "/") || 
 				url.endsWith("/" + BIOMEDCENTRAL_BIBTEX_PATH) ||
 				url.endsWith(BIOMEDCENTRAL_BIBTEX_PATH))) {
