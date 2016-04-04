@@ -2077,12 +2077,6 @@
 		<BibFile>WorldCatScraperUnitURLTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_339">
-		<TestDescription>URL scraping test for the aha journals scraper</TestDescription>
-		<URL>http://circ.ahajournals.org/content/early/2015/11/08/CIRCULATIONAHA.115.019768.abstract</URL>
-		<BibFile>AhaJournalsScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.ahajournals.AhaJournalsScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_340">
 		<TestDescription>URL scraping test for the frontiersen scraper</TestDescription>
 		<URL>http://journal.frontiersin.org/article/10.3389/fphys.2016.00071/full</URL>
@@ -2106,5 +2100,11 @@
 		<URL>http://jbiomedsem.biomedcentral.com/articles/10.1186/2041-1480-1-S1-S6</URL>
 		<BibFile>BioMedCentralScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.biomed.BioMedCentralScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_344">
+		<TestDescription>URL scraping test for the aha journals scraper</TestDescription>
+		<URL>http://circ.ahajournals.org/content/early/2015/11/08/CIRCULATIONAHA.115.019768.abstract</URL>
+		<BibFile>AhaJournalsScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.ahajournals.AhaJournalsScraper</Scraper>
 	</URLTest>
 </test:Tests>

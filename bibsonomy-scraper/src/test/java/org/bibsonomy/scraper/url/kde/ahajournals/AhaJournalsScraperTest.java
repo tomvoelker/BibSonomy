@@ -42,7 +42,7 @@ public class AhaJournalsScraperTest {
 	 */
 	@Test
 	public void url1TestRun() {
-		UnitTestRunner.runSingleTest("url_339");
+		UnitTestRunner.runSingleTest("url_344");
 	}
 	
 	/**
