@@ -34,6 +34,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
@@ -109,11 +110,18 @@ public class ACSScraper extends AbstractUrlScraper {
 			throw new InternalFailureException(ex);
 		}
 
+		/*
+		 * clean the bibtex for better format
+		 */
 		if (bibResult != null) {
+			final Pattern URL_PATTERN_FOR_URL = Pattern.compile("URL = \\{ \n        (.*)\n    \n\\}");
+			Matcher m = URL_PATTERN_FOR_URL.matcher(bibResult);
+			if(m.find()) {
+				bibResult = bibResult.replaceAll(URL_PATTERN_FOR_URL.toString(), "URL = {" + m.group(1) + "}");
+			}
 			sc.setBibtexResult(bibResult);
 			return true;
 		}
-		
 		throw new ScrapingFailureException("getting bibtex failed");
 	}
 
