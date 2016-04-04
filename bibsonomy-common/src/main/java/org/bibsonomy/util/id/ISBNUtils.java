@@ -52,7 +52,6 @@ public class ISBNUtils {
 		if (snippet != null) {
 			final Matcher isbnMatcher = isbnPattern.matcher(cleanISBN(snippet));
 			if (isbnMatcher.find()) {
-				System.out.println("yaser");
 				return isbnMatcher.group(2);
 			}
 		}
