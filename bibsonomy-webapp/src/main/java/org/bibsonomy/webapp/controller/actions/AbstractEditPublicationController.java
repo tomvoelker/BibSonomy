@@ -37,6 +37,7 @@ import java.util.List;
 import org.bibsonomy.bibtex.parser.PostBibTeXParser;
 import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
 import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Post;
@@ -95,7 +96,19 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		 */
 		final String url = command.getUrl();
 		final String selection = command.getSelection();
-
+		
+		if (command.isMyOwn()) {
+			final String tags = command.getTags();
+			if (!present(tags)) {
+				command.setTags(MyOwnSystemTag.NAME);
+				/*
+				 * set this flag to true because empty tags are the only error
+				 * that prevents the EditPostController from saving a post
+				 */
+				command.setEditBeforeSaving(true);
+			}
+		}
+		
 		if ((present(url) || present(selection))) {
 			this.handleScraper(command, url, selection);
 		}

@@ -2077,4 +2077,10 @@
 		<BibFile>WorldCatScraperUnitURLTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_339">
+		<TestDescription>URL scraping test with arxiv publications (PDF file)</TestDescription>
+		<URL>http://arxiv.org/pdf/0805.2045.pdf</URL>
+		<BibFile>ArxivScraperUnitURLTest4.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.arxiv.ArxivScraper</Scraper>
+	</URLTest>
 </test:Tests>

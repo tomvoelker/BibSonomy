@@ -56,6 +56,8 @@ public class EditPublicationCommand extends EditPostCommand<BibTex> {
 	 * The metadata from scraping
 	 */
 	private ScrapingContext scrapingContext;
+	
+	private boolean myOwn;
 
 	/**
 	 * author index (starting at 0)  
@@ -132,6 +134,20 @@ public class EditPublicationCommand extends EditPostCommand<BibTex> {
 	 */
 	public void setScrapingContext(final ScrapingContext scrapingContext) {
 		this.scrapingContext = scrapingContext;
+	}
+	
+	/**
+	 * @return the myown
+	 */
+	public boolean isMyOwn() {
+		return this.myOwn;
+	}
+
+	/**
+	 * @param myown the myown to set
+	 */
+	public void setMyOwn(boolean myown) {
+		this.myOwn = myown;
 	}
 	
 	/**

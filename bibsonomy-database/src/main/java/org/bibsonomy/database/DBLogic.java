@@ -1116,7 +1116,14 @@ public class DBLogic implements LogicInterface {
 		 * check permissions
 		 */
 		this.ensureLoggedIn();
-		this.permissionDBManager.ensureWriteAccess(this.loginUser, userName);
+		/*
+		 * TODO: we do not know anything about the hashes (do they belong to bookmarks,
+		 * and/or publication, community post)
+		 * so the only way to check if the user is allowed to delete the post
+		 * is to check if he/she is an admin or self, for group editing we need to know
+		 * which resource is behind the resource hash
+		 */
+		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
 		/*
 		 * to store hashes of missing resources
 		 */
@@ -1124,7 +1131,7 @@ public class DBLogic implements LogicInterface {
 
 		final DBSession session = this.openSession();
 		try {
-			final String lowerCaseUserName = userName.toLowerCase();
+			final String lowerCaseUserName = present(userName) ? userName.toLowerCase() : null;
 			for (final String resourceHash : resourceHashes) {
 				/*
 				 * delete one resource

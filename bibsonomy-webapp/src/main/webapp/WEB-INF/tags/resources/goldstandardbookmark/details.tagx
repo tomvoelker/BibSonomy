@@ -25,7 +25,7 @@
 			<div class="media">
 				<div class="media-body" id="titletext">
 					<div class="pull-right"><buttons:communityPostActions post="${post}" resourceType="bookmark"/></div>
-					<h1 class="media-heading" id="pubtitle"><c:out value="${fn:escapeXml(goldstandard.title)}" />
+					<h1 class="media-heading" id="pubtitle"><c:out value="${goldstandard.title}" />
 						<c:if test="${post.approved}">
 							<a  title="${fn:escapeXml(approved)}">
 								<span class="fa fa-check-circle" style="margin-left:6px;"><!--  --></span>

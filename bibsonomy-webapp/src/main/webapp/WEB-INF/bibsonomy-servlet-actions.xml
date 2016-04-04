@@ -385,7 +385,8 @@
 								<value>post.resource.annote</value>
 								<value>post.resource.address</value>
 								<value>post.resource.key</value>
-		
+								
+								<value>myOwn</value>
 								<value>tags</value>
 								<value>url</value>
 								<value>description</value>
@@ -526,6 +527,7 @@
 							<list>
 								<value>resourceHash</value>
 								<value>ckey</value>
+								<value>owner</value>
 							</list>
 						</property>
 					</bean>
