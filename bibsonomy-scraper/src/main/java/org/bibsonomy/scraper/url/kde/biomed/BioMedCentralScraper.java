@@ -75,7 +75,7 @@ public class BioMedCentralScraper extends AbstractUrlScraper {
 		/*
 		 * extract only from the host jbiomedsem.biomedcentral.com/
 		 */
-		if (url.contains("jbiomedsem")) {
+		if ("jbiomedsem.biomedcentral.com".equals(sc.getUrl().getHost())) {
 			Matcher m = DOI_PATTERN_FROM_URL_FOR_SUBHOST_JBIOMEDSEM.matcher(url);
 			if (m.find()) {
 				try {
