@@ -600,13 +600,13 @@
 	</URLTest>
 	<URLTest id="url_97">
 		<TestDescription>JStor Scraper url test 1</TestDescription>
-		<URL>http://www.jstor.org/pss/4142852</URL>
+		<URL>http://www.jstor.org/stable/4142852</URL>
 		<BibFile>JStorScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.jstor.JStorScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_98">
 		<TestDescription>JStor Scraper url test</TestDescription>
-		<URL>https://www.jstor.org/action/exportSingleCitation?singleCitation=true&amp;doi=10.2307%2F20569359</URL>
+		<URL>http://www.jstor.org/stable/j.ctt7zv8mk?Search=yes&amp;resultItemClick=true&amp;searchText=clustering&amp;searchUri=%2Faction%2FdoBasicSearch%3FQuery%3Dclustering%26amp%3Bacc%3Doff%26amp%3Bwc%3Don%26amp%3Bfc%3Doff%26amp%3Bgroup%3Dnone</URL>
 		<BibFile>JStorScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.jstor.JStorScraper</Scraper>
 	</URLTest>
@@ -1376,8 +1376,8 @@
 	</URLTest>
 	<URLTest id="url_222">
 		<TestDescription>JStor Scraper url test 3</TestDescription>
-		<URL>http://www.jstor.org/stable/20569359</URL>
-		<BibFile>JStorScraperUnitURLTest1.bib</BibFile>
+		<URL>http://www.jstor.org/stable/20569359?seq=1#page_scan_tab_contents</URL>
+		<BibFile>JStorScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.jstor.JStorScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_223">
@@ -1927,12 +1927,6 @@
 		<BibFile>APHAScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.apha.APHAScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_313">
-		<TestDescription>JStor Scraper url test</TestDescription>
-		<URL>http://www.jstor.org/doi/abs/10.1086/505090</URL>
-		<BibFile>JStorScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.jstor.JStorScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_314">
 		<TestDescription>DBLP scraping test (html page)</TestDescription>
 		<URL>http://dblp.uni-trier.de/rec/bibtex/books/sp/stdesign14/AtzmuellerBHKM0SSS14</URL>
@@ -2101,13 +2095,13 @@
 		<BibFile>PlosScraperUnitURLTest11.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_342"> 
+	<URLTest id="url_342">
 		<TestDescription>URL scraping test for the aha journals scraper</TestDescription>
 		<URL>http://circ.ahajournals.org/content/114/Suppl_18/II_864.2.abstract?sid=550d5036-8de5-4fbf-94c3-55c1df42f58f</URL>
 		<BibFile>AhaJournalsScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ahajournals.AhaJournalsScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_343"> 
+	<URLTest id="url_343">
 		<TestDescription>scrapign for BiomedCentra URL 3</TestDescription>
 		<URL>http://jbiomedsem.biomedcentral.com/articles/10.1186/2041-1480-1-S1-S6</URL>
 		<BibFile>BioMedCentralScraperUnitURLTest2.bib</BibFile>
