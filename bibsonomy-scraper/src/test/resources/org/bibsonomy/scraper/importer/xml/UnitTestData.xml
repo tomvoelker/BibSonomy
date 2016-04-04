@@ -878,7 +878,7 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
 		<!-- could not find "export citation" link on Springer page, thus, no export 
 			available -->
-		<Enabled>true</Enabled>
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_144">
 		<TestDescription>test for cell scraper</TestDescription>
@@ -1098,6 +1098,12 @@
 		<URL>http://prola.aps.org/abstract/PR/v149/i2/p674_1</URL>
 		<BibFile>ProlaScraperUnitURLTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.prola.ProlaScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_178">
+		<TestDescription>Scraping for Karger wesite</TestDescription>
+		<URL>http://www.karger.com/Article/Abstract/317579</URL>
+		<BibFile>KargerScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.karger.KargerScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_179">
 		<TestDescription>URL scraping test with publication from siencedirect</TestDescription>

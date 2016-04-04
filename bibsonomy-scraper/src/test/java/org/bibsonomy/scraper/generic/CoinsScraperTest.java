@@ -51,8 +51,10 @@ public class CoinsScraperTest {
 	
 	/**
 	 * starts URL test with id url_299
+	 * this site does not exist 404 Not Found
 	 */
 	@Test
+	@Ignore
 	public void url3TestRun(){
 		UnitTestRunner.runSingleTest("url_299");
 	}

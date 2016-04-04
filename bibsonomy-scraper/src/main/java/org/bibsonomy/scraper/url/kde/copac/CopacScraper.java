@@ -65,10 +65,11 @@ public class CopacScraper extends AbstractUrlScraper {
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 		try {
-			String cookie = WebUtils.getCookies(sc.getUrl());
+			String cookie = WebUtils.getCookies(new URL(SITE_URL));
 			System.out.println(cookie);
-			final String bibResult = WebUtils.getContentAsString(sc.getUrl().toString() + EXPORT_BIBTEX );
-			System.out.println(bibResult);
+			System.out.println(sc.getUrl().toString() + EXPORT_BIBTEX);
+			// http://copac.jisc.ac.uk/search?title=Measures+and+aggregation%3A+formal+aspects+and+applications+to+clustering+and+decision.&rn=1&format=BibTeX&action=Export
+			final String bibResult = WebUtils.getContentAsString(new URL(SITE_URL) + "title=Measures%20and%20aggregation%3A%20formal%20aspects%20and%20applications%20to%20clustering%20and%20decision.&rn=1&format=BibTeX&action=Export");
 		} catch (IOException e) {
 			throw new ScrapingFailureException("URL to scrape does not exist. It maybe malformed.");
 		} 

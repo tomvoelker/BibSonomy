@@ -86,7 +86,6 @@ public class AandAScraper extends AbstractUrlScraper implements ReferencesScrape
 					sc.setBibtexResult(scForBibtexScraper.getBibtexResult());
 					return true;
 				}
-				
 			}
 		} catch (final IOException ex) {
 			throw new InternalFailureException(ex);

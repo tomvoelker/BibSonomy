@@ -98,13 +98,15 @@ public class AmazonScraper extends AbstractUrlScraper {
 	 */
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+		
+		
 		sc.setScraper(this);
 		
 		// try to extract isbn and use the worldcat scraper
 		try {
 			final String content = WebUtils.getContentAsString(sc.getUrl().toString());
 			final Matcher m = ISBN.matcher(content);
-			final String isbn;
+			 String isbn;
 			if (m.find()) {
 				isbn = m.group(1);
 			} else {
