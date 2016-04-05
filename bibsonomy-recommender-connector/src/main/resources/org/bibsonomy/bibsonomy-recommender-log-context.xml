@@ -21,18 +21,6 @@
 		<property name="removeAbandonedTimeout" value="${database.recommender.item.removeAbandonedTimeout}" />
 	</bean>
 	
-	<bean id="tagRecommenderDataSource" class="${database.datasource.class}" parent="basicDataSource">
-		<property name="url" value="${database.recommender.tag.url}" />
-		<property name="username" value="${database.recommender.tag.username}" />
-		<property name="password" value="${database.recommender.tag.password}" />
-		<property name="driverClassName" value="${database.recommender.tag.driverClassName}" />
-		<property name="maxIdle" value="${database.recommender.tag.maxIdle}" />
-		<property name="maxActive" value="${database.recommender.tag.maxActive}" />
-		<property name="maxWait" value="${database.recommender.tag.maxWait}" />
-		<property name="removeAbandoned" value="${database.recommender.tag.removeAbandoned}" />
-		<property name="removeAbandonedTimeout" value="${database.recommender.tag.removeAbandonedTimeout}" />
-	</bean>
-	
 	 <!-- +
 		 | itemrecommender datasource and mappings setup for logging and configuration
 		 + -->

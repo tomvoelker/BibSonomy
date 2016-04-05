@@ -24,4 +24,12 @@
 		<result property="first"  column="first"  javaType="string"/>
 		<result property="second" column="second" javaType="integer"/>
 	</resultMap>
+	
+	<sql id="content-id-join">
+		(SELECT p.content_id FROM (
+					SELECT content_id FROM bibtex WHERE user_name = #userName#
+						UNION
+					SELECT content_id FROM bookmark WHERE user_name = #userName#) AS p
+					ORDER BY content_id DESC LIMIT #range#) AS r
+	</sql>
 </sqlMap>

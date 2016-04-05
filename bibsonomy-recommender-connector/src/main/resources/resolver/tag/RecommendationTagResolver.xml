@@ -42,6 +42,23 @@
 		ORDER BY second DESC 
 		LIMIT #range#
 	</select>
+	
+	<select id="getTagsOfPreviousPostsForUser" parameterClass="getTagsForResParam" resultMap="RecommendationBibCommon.tagFrequency">
+		SELECT tag_lower as first, COUNT(tag_lower) as second
+		FROM tas t
+			JOIN <include refid="content-id-join"/>
+		USING(content_id)
+	</select>
+	
+	<!-- +
+		 | get number of tags used by a user 
+		 -->
+	<select id="getTagCountOfPreviousPostsForUser" parameterClass="getTagsForResParam" resultClass="integer">
+		SELECT COUNT(*)
+		FROM tas t
+			JOIN <include refid="content-id-join"/>
+		USING(content_id)
+	</select>
 		
 	<!-- +
 		 | Get number of tags used by a user

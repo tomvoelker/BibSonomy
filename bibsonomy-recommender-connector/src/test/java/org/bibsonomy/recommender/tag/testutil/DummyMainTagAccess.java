@@ -55,4 +55,22 @@ public class DummyMainTagAccess implements RecommenderMainTagAccess {
 		// do nothing
 		return null;
 	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tag.service.RecommenderMainTagAccess#getTagsOfPreviousPostsForUser(java.lang.Class, java.lang.String, int)
+	 */
+	@Override
+	public List<Pair<String, Integer>> getTagsOfPreviousPostsForUser(String username, int numberOfPreviousPosts) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tag.service.RecommenderMainTagAccess#getNumberOfTagsOfPreviousPostsForUser(java.lang.String, int)
+	 */
+	@Override
+	public int getNumberOfTagsOfPreviousPostsForUser(String username, int numberOfPreviousPosts) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
