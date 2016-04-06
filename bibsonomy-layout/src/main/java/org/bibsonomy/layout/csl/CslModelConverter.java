@@ -289,6 +289,8 @@ public class CslModelConverter {
 		
 		rec.setMisc(publication.getMiscFields());
 		
+		rec.setInterhash(publication.getInterHash());
+		
 		return rec;
 	}
 

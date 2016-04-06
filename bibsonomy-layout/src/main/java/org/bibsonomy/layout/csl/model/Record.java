@@ -141,6 +141,9 @@ public class Record {
 
 	// the issue number for the container publication
 	private String issue;
+	
+	// in case we want to filter duplicates on the client side we need this
+	private String interhash;
 
 	// For legislation and patents; scope of geographic relevance for a
 	// document.
@@ -1007,5 +1010,19 @@ public class Record {
 	 */
 	public void setMisc(Map<String, String> misc) {
 		this.misc = misc;
+	}
+
+	/**
+	 * @return the interhash
+	 */
+	public String getInterhash() {
+		return this.interhash;
+	}
+
+	/**
+	 * @param interhash the interhash to set
+	 */
+	public void setInterhash(String interhash) {
+		this.interhash = interhash;
 	}
 }
