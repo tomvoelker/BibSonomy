@@ -27,9 +27,24 @@
 	
 	<sql id="content-id-join">
 		(SELECT p.content_id FROM (
-					SELECT content_id FROM bibtex WHERE user_name = #userName#
-						UNION
-					SELECT content_id FROM bookmark WHERE user_name = #userName#) AS p
-					ORDER BY content_id DESC LIMIT #range#) AS r
+			SELECT content_id FROM bibtex
+			WHERE user_name = #userName#
+			<isNotNull prepend="AND" property="start" >
+				date > #start#
+			</isNotEmpty>
+			<isNotNull prepend="AND" property="end" >
+				date &lt; #end#
+			</isNotEmpty>
+				UNION
+			SELECT content_id FROM bookmark
+			WHERE user_name = #userName#
+			<isNotNull prepend="AND" property="start" >
+				date > #start#
+			</isNotEmpty>
+			<isNotNull prepend="AND" property="end" >
+				date &lt; #end#
+			</isNotEmpty>
+			) AS p
+			ORDER BY content_id DESC LIMIT #range#) AS r
 	</sql>
 </sqlMap>
