@@ -24,32 +24,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-package org.bibsonomy.scraper.url.kde.ahajournals;
+package org.bibsonomy.scraper.url.kde.cinii;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 
 /**
+ * 
  * @author Mohammed Abed
  */
-@Category(RemoteTest.class)
-public class AhaJournalsScraperTest {
+public class CiniiScraperTest {
 	/**
-	 * starts URL test with id url_334
+	 * starts URL test with id url_345
 	 */
 	@Test
 	public void url1TestRun() {
-		UnitTestRunner.runSingleTest("url_344");
-	}
-	
-	/**
-	 * starts URL test with id url_342
-	 */
-	@Test
-	public void url2TestRun() {
-		UnitTestRunner.runSingleTest("url_342");
+		UnitTestRunner.runSingleTest("url_345");
 	}
 }

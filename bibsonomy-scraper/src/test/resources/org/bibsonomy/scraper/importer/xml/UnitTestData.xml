@@ -2107,4 +2107,10 @@
 		<BibFile>AhaJournalsScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ahajournals.AhaJournalsScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_345">
+		<TestDescription>URL scraping test for the cinii articles scraper</TestDescription>
+		<URL>http://ci.nii.ac.jp/naid/110009888944</URL>
+		<BibFile>CiniiScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cinii.CiniiScraper</Scraper>
+	</URLTest>
 </test:Tests>
