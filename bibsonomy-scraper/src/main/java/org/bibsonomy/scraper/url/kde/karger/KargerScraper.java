@@ -57,7 +57,7 @@ public class KargerScraper extends GenericRISURLScraper {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
