@@ -62,6 +62,8 @@ public class TaylorAndFrancisScraper extends AbstractUrlScraper implements Refer
 	private static final String TANDF_BIBTEX_DOWNLOAD_PATH = "action/downloadCitation";
 	private static final String DOWNLOADFILENAME = "tandf_rajp2080_124";
 	
+	private final Pattern URL_PATTERN_FOR_URL = Pattern.compile("URL = \\{ \n        (.*)\n    \n\\}");
+	
 	private final static Pattern REF_PATTERN = Pattern.compile("(?s)<ul class=\"references\">(.*)</ul></div></div>");
 	private static PostMethod postContent(PostMethod method, String doi) {
 		method.addParameter("doi", doi);
@@ -104,13 +106,20 @@ public class TaylorAndFrancisScraper extends AbstractUrlScraper implements Refer
 			//post to receive the BibTeX file
 			final PostMethod method = new PostMethod(SITE_URL + TANDF_BIBTEX_DOWNLOAD_PATH);
 			final String doi = matcher.group().substring(1);
-			final String bibtexEntry = WebUtils.getPostContentAsString(client, postContent(method, doi));
+			String bibtexEntry = WebUtils.getPostContentAsString(client, postContent(method, doi));
 			if (present(bibtexEntry)) {
+				/*
+				* clean the bibtex for better format
+				*/
+				Matcher m = URL_PATTERN_FOR_URL.matcher(bibtexEntry);
+				if(m.find()) {
+					bibtexEntry = bibtexEntry.replaceAll(URL_PATTERN_FOR_URL.toString(), "URL = {" + m.group(1) + "}");
+				}
+
 				scrapingContext.setBibtexResult(bibtexEntry.trim());
 				return true;
-			} else {
-				throw new ScrapingFailureException("getting BibTeX failed");
 			}
+			throw new ScrapingFailureException("getting BibTeX failed");
 		} catch (IOException ex) {
 			throw new ScrapingException(ex);
 		}
