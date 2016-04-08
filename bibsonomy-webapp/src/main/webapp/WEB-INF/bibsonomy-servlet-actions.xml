@@ -575,8 +575,7 @@
 								<value>user.settings.showBookmark</value>
 								<value>user.settings.showBibtex</value>
 								<value>user.settings.layoutSettings.simpleInterface</value>
-								<value>user.settings.showCitationBibtex</value>
-								<value>user.settings.showCitationEndnote</value>
+								<value>user.settings.favourite_layouts</value>
 							</list>
 						</property>
 					</bean>

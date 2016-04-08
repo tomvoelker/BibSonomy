@@ -180,24 +180,25 @@
 					
 					<!-- Citation style export settings -->
 					<!-- internationalize -->
+					<!-- use form:checkboxes? -->
 					<div class="form-group">					
-						<form:label cssClass="col-sm-3 control-label" path="user.settings.showCitationBibtex">
+						<form:label cssClass="col-sm-3 control-label" path="user.settings.favourite_layouts">
 							show citation styles
 						</form:label>
 					
 						<div class="col-sm-3">
 							<label>
-								<form:checkbox path="user.settings.showCitationBibtex"/>&amp;nbsp;
-								show Bibtex
+								<form:checkbox path="user.settings.favourite_layouts" value="BibTeX"/>&amp;nbsp;
+								show BibTeX
 							</label>
 						</div>
 						<div class="col-sm-5">
 							<label>
-								<form:checkbox path="user.settings.showCitationEndnote"/>&amp;nbsp;
+								<form:checkbox path="user.settings.favourite_layouts" value="Endnote"/>&amp;nbsp;
 								show Endnote
 							</label>
 						</div>
-						<div class="dissError"><form:errors path="user.settings.showCitationBibtex"/></div>
+						<div class="dissError"><form:errors path="user.settings.favourite_layouts"/></div>
 					</div>
 					
 					
