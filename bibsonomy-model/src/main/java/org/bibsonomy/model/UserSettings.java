@@ -27,8 +27,10 @@
 package org.bibsonomy.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.TimeZone;
 
+import org.bibsonomy.common.enums.Favourite_layouts;
 import org.bibsonomy.common.enums.ProfilePrivlevel;
 import org.bibsonomy.common.enums.TagCloudSort;
 import org.bibsonomy.common.enums.TagCloudStyle;
@@ -79,9 +81,7 @@ public class UserSettings implements Serializable {
 	 */
 	private int listItemcount = 20;
 	
-	private boolean showCitationBibtex = true;
-	private boolean showCitationEndnote = true;
-	
+	private ArrayList<Favourite_layouts> favourite_layouts = new ArrayList<Favourite_layouts>();	
 	
 	private boolean showBookmark = true;
 	
@@ -339,30 +339,16 @@ public class UserSettings implements Serializable {
 	}
 
 	/**
-	 * @return the showCitationBibtex
+	 * @return the favourite_layouts
 	 */
-	public boolean isShowCitationBibtex() {
-		return this.showCitationBibtex;
+	public ArrayList<Favourite_layouts> getFavourite_layouts() {
+		return this.favourite_layouts;
 	}
 
 	/**
-	 * @param showCitationBibtex the showCitationBibtex to set
+	 * @param favourite_layouts the favourite_layouts to set
 	 */
-	public void setShowCitationBibtex(boolean showCitationBibtex) {
-		this.showCitationBibtex = showCitationBibtex;
-	}
-
-	/**
-	 * @return the showCitationEndnote
-	 */
-	public boolean isShowCitationEndnote() {
-		return this.showCitationEndnote;
-	}
-
-	/**
-	 * @param showCitationEndnote the showCitationEndnote to set
-	 */
-	public void setShowCitationEndnote(boolean showCitationEndnote) {
-		this.showCitationEndnote = showCitationEndnote;
+	public void setFavourite_layouts(ArrayList<Favourite_layouts> favourite_layouts) {
+		this.favourite_layouts = favourite_layouts;
 	}
 }
