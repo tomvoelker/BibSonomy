@@ -29,21 +29,21 @@
 		(SELECT p.content_id FROM (
 			SELECT content_id FROM bibtex
 			WHERE user_name = #userName#
-			<isNotNull prepend="AND" property="start" >
-				date > #start#
-			</isNotEmpty>
-			<isNotNull prepend="AND" property="end" >
-				date &lt; #end#
-			</isNotEmpty>
+			<isNotNull prepend="AND" property="startDate" >
+				date > #startDate#
+			</isNotNull>
+			<isNotNull prepend="AND" property="endDate" >
+				date &lt; #endDate#
+			</isNotNull>
 				UNION
 			SELECT content_id FROM bookmark
 			WHERE user_name = #userName#
-			<isNotNull prepend="AND" property="start" >
-				date > #start#
-			</isNotEmpty>
-			<isNotNull prepend="AND" property="end" >
-				date &lt; #end#
-			</isNotEmpty>
+			<isNotNull prepend="AND" property="startDate" >
+				date > #startDate#
+			</isNotNull>
+			<isNotNull prepend="AND" property="endDate" >
+				date &lt; #endDate#
+			</isNotNull>
 			) AS p
 			ORDER BY content_id DESC LIMIT #range#) AS r
 	</sql>
