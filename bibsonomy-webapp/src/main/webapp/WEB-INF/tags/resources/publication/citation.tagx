@@ -28,6 +28,12 @@
 	</c:if>
 	
 	<c:set var="citationStylesToShow" value="harvardhtml,chicago,apa_html,din1505" />
+	
+	<div>"${post.user.settings.showCitationBibtex}"</div>
+	
+	
+	
+	
 	<div class="citation-box">
 		<ul class="nav nav-tabs">
 			<c:forEach var="citationStyle" items="${fn:split(citationStylesToShow,',')}">

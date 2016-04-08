@@ -166,7 +166,7 @@
 			<div class="col-sm-offset-3 col-sm-9">
 				<div class="checkbox clearfix">
 					<label>
-						<input type="checkbox" class="help-popover" id="myownChkBox" tabindex="2" /> <fmt:message key="post.resource.myown"/>
+						<input name="myOwn" type="checkbox" class="help-popover" id="myownChkBox" tabindex="2" /> <fmt:message key="post.resource.myown"/>
 						<div class="help-header hide"><fmt:message key="post.resource.myown"/></div>
 						<div class="help-content hide"><fmt:message key="post.resource.myown.help"/></div>
 					</label>

@@ -108,9 +108,8 @@ public class TaylorAndFrancisScraper extends AbstractUrlScraper implements Refer
 			if (present(bibtexEntry)) {
 				scrapingContext.setBibtexResult(bibtexEntry.trim());
 				return true;
-			} else {
-				throw new ScrapingFailureException("getting BibTeX failed");
 			}
+			throw new ScrapingFailureException("getting BibTeX failed");
 		} catch (IOException ex) {
 			throw new ScrapingException(ex);
 		}
