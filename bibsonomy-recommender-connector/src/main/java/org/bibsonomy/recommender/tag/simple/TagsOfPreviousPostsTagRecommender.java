@@ -43,7 +43,7 @@ public class TagsOfPreviousPostsTagRecommender extends AbstractTagRecommender {
 	 */
 	@Override
 	public String getInfo() {
-		return "Recommender that users the last " + this.numberOfPreviousPosts ;
+		return "Recommender that recommends the tags of the " + this.numberOfPreviousPosts + " previous posts.";
 	}
 
 	/* (non-Javadoc)
