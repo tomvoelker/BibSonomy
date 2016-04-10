@@ -44,7 +44,7 @@ import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 
 /**
- * TODO: add documentation to this class
+ * abstract class to convert the model to the ES mapping
  *
  * @author dzo
  * @param <R> 
@@ -63,7 +63,6 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 	@SuppressWarnings("unchecked")
 	@Override
 	public Post<R> convert(final Map<String, Object> source) {
-		// TODO: implement me
 		final Post<R> post = new Post<>();
 		
 		if (source.containsKey(Fields.SYSTEM_URL)) {
@@ -144,10 +143,10 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 
 	/**
 	 * @param source
-	 * @param changeDate
-	 * @return
+	 * @param key
+	 * @return the date
 	 */
-	private static Date parseDate(Map<String, Object> source, String key) {
+	protected static Date parseDate(Map<String, Object> source, String key) {
 		final String dateAsString = (String) source.get(key);
 		return ElasticsearchUtils.parseDate(dateAsString);
 	}

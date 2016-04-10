@@ -31,6 +31,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,6 +44,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
@@ -53,6 +55,7 @@ import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.search.es.ESConstants.Fields.Publication;
+import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.util.ValidationUtils;
 
 /**
@@ -169,7 +172,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	 * @see org.bibsonomy.search.es.index.ResourceConverter#convertPostInternal(java.util.Map, org.bibsonomy.model.Post)
 	 */
 	@Override
-	protected void convertPostInternal(Map<String, Object> source, Post<BibTex> post) {
+	protected void convertPostInternal(final Map<String, Object> source, Post<BibTex> post) {
 		post.setResourcePersonRelations(readPersonRelationsFromIndex(source));
 		for (final ResourcePersonRelation rel : post.getResourcePersonRelations()) {
 			rel.setPost(post);
@@ -180,7 +183,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	 * @see org.bibsonomy.search.es.index.ResourceConverter#convertResource(java.util.Map, org.bibsonomy.model.Resource)
 	 */
 	@Override
-	protected void convertResource(Map<String, Object> jsonDocument, BibTex resource) {
+	protected void convertResource(final Map<String, Object> jsonDocument, BibTex resource) {
 		jsonDocument.put(Fields.Publication.ADDRESS, resource.getAddress());
 		jsonDocument.put(Fields.Publication.ANNOTE, resource.getAnnote());
 		jsonDocument.put(Fields.Publication.KEY, resource.getKey());
@@ -250,16 +253,38 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		jsonDocument.put(Fields.Publication.VOLUME, resource.getVolume());
 		
 		jsonDocument.put(Publication.YEAR, resource.getYear());
+		
+		jsonDocument.put(Publication.DOCUMENTS, convertDocuments(jsonDocument, resource.getDocuments()));
 	}
 	
+	/**
+	 * @param jsonDocument
+	 * @param documents
+	 */
+	private static List<Map<String, String>> convertDocuments(Map<String, Object> jsonDocument, List<Document> documents) {
+		final List<Map<String, String>> list = new LinkedList<>();
+		if (!present(documents)) {
+			return list;
+		}
+		
+		for (final Document document : documents) {
+			final Map<String, String> documentMap = new HashMap<>();
+			documentMap.put(Publication.Document.NAME, document.getFileName());
+			documentMap.put(Publication.Document.HASH, document.getFileHash());
+			documentMap.put(Publication.Document.CONTENT_HASH, document.getMd5hash());
+			documentMap.put(Publication.Document.DATE, ElasticsearchUtils.dateToString(document.getDate()));
+			list.add(documentMap);
+		}
+		
+		return list;
+	}
+
 	/**
 	 * @param key
 	 * @return
 	 */
 	private static String normKey(String key) {
-		// norm the key
-		key = key.toLowerCase();
-		return key.replaceAll("[^a-z0-9]", "");
+		return org.bibsonomy.util.StringUtils.removeNonNumbersOrLetters(key).toLowerCase();
 	}
 
 	/**

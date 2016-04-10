@@ -197,6 +197,15 @@ public final class ESConstants {
 			public static final String TYPE = "type";
 			public static final String URL = "url";
 			public static final String VOLUME = "volume";
+			public static final String DOCUMENTS = "documents";
+			
+			public static interface Document {
+				public static final String NAME = "name";
+				public static final String TEXT = "text";
+				public static final String HASH = "hash";
+				public static final String CONTENT_HASH = "content_hash";
+				public static final String DATE = "date";
+			}
 		}
 	}
 
