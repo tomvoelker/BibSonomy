@@ -254,9 +254,22 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 		newState.setLast_tas_id(this.getLastTasId());
 		newState.setLast_log_date(this.getLastLogDate());
 		newState.setLastPersonChangeId(this.getLastPersonChangeId());
+		newState.setLastDocumentDate(this.getLastDocumentDate());
 		return newState;
 	}
 	
+	/**
+	 * @return
+	 */
+	private Date getLastDocumentDate() {
+		final DBSession session = this.openSession();
+		try {
+			return this.queryForObject("getLastDocumentDate", Date.class, session);
+		} finally {
+			session.close();
+		}
+	}
+
 	/**
 	 * @return the last tas id
 	 */

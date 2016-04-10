@@ -8,13 +8,18 @@
 	<select id="getLastTasId" resultClass="integer">
 		SELECT MAX(tas_id)
 		FROM tas
-	</select>   
+	</select>
 	
 	<!-- used by the gold standard index instead of getLastTasId -->
 	<!-- TODO: rename query? -->
 	<select id="getLastContentId" resultClass="integer">
 		SELECT MAX(content_id)
 		FROM gold_standard WHERE content_type = 2
+	</select>
+	
+	<select id="getLastDocumentDate" resultClass="date">
+		SELECT MAX(date)
+		FROM document
 	</select>
 
 	<!-- get number of public bookmark posts -->
