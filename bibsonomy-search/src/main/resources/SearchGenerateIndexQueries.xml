@@ -98,6 +98,7 @@
 			t.tag_name,
 			g.*,
 			t.tas_id,
+			<include refid="allDocumentAttributes"/>,
 			-1 AS rating, -1 AS number_of_ratings
 		FROM 
 		( 
@@ -110,6 +111,7 @@
 		) AS bb
 		LEFT JOIN tas t USING (content_id)
 		LEFT JOIN groupids g ON (bb.group = g.group)
+		LEFT JOIN document d USING(content_id)
 	</select>
 	
 	<select id="getGoldStandardPublicationForIndex" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost">

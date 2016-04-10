@@ -3,11 +3,11 @@
 
 <sqlMap namespace="SearchPublicationCommon">
 
-	<resultMap id="searchPublicationPost" class="searchPost" extends="BibTexCommon.bibtexPost">
+	<resultMap id="searchPublicationPost" class="searchPost" extends="BibTexCommon.bibtexPostWithDocuments">
 		<result property="lastTasId"    column="tas_id" />
 	</resultMap>
 
-	<resultMap id="searchLogPublicationPost" class="searchPost" extends="BibTexCommon.bibtexPost">
+	<resultMap id="searchLogPublicationPost" class="searchPost" extends="BibTexCommon.bibtexPostWithDocuments">
 		<result property="lastTasId"    column="tas_id" />
 		<result property="lastLogDate"  column="log_date" javaType="date"/>
 	</resultMap>

@@ -4,16 +4,16 @@
 
 	<select id="getGlobalConceptByName" parameterClass="string" resultClass="string">
 		SELECT DISTINCT(lower_lcase)
-		  FROM tagtagrelations JOIN user u USING (user_name)
-		  WHERE upper_lcase = #conceptName#
+		FROM tagtagrelations JOIN user u USING (user_name)
+		WHERE upper_lcase = #conceptName#
 			AND u.spammer = 0
 	</select>
 	
 	<select id="getUsersByUserRelation" resultClass="string">
-	    SELECT f_user_name 
-	    	FROM bibsonomy.friends 
-	    	WHERE tag_name = #userRelation# 
-	    		AND user_name = #userName#;
+		SELECT f_user_name 
+		FROM bibsonomy.friends 
+		WHERE tag_name = #userRelation# 
+			AND user_name = #userName#;
 	</select>
 	
 	<!-- get given group's members -->
@@ -41,14 +41,15 @@
 
 	<!-- get list of all publications for given user -->
 	<select id="getBibTexForUser" resultMap="SearchPublicationCommon.searchLogPublicationPost" parameterClass="searchParam">
-		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count, t.tas_id, b2.change_date AS log_date, b2.change_date, -1 AS rating, -1 AS number_of_ratings
+		SELECT b2.content_id, <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count, t.tas_id, b2.change_date AS log_date, b2.change_date, <include refid="allDocumentAttributes"/>, -1 AS rating, -1 AS number_of_ratings
 		FROM (SELECT t1.*, 1 AS count
 		      FROM bibtex t1
 		      WHERE t1.user_name = #userName#
 		            AND t1.group &gt;= 0
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS b2
-		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id, groupids AS g
+		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id
+		LEFT OUTER JOIN document d ON b2.content_id = d.content_id, groupids AS g
 		WHERE b2.group = g.group
 		ORDER BY b2.date DESC, b2.content_id DESC, t.tas_id DESC
 	</select>
@@ -94,7 +95,7 @@
 		|    lastTasId 
 		+-->
 	<select id="getBibTexPostsForTimeRange" parameterClass="searchParam" resultMap="SearchPublicationCommon.searchPublicationPost">
-		SELECT <include refid ="searchPublicationAttributes2"/>, t.tag_name, g.*, 1 AS count, b2.change_date, -1 AS rating, -1 AS number_of_ratings
+		SELECT <include refid ="searchPublicationAttributes2"/>, t.tag_name, g.*, 1 AS count, b2.change_date, <include refid="allDocumentAttributes"/>, -1 AS rating, -1 AS number_of_ratings
 		FROM (
 			SELECT DISTINCT t.content_id
 			FROM tas t
@@ -107,6 +108,7 @@
 		JOIN bibtex b2 USING (content_id)
 		JOIN tas t USING (content_id)
 		JOIN groupids g ON (b2.group = g.group)
+		LEFT JOIN document d USING (content_id)
 	</select>
 	
 	<!--+ 

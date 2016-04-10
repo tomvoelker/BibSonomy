@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.search.management.database;
 
+import static org.bibsonomy.util.ValidationUtils.present;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -47,6 +48,7 @@ import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -115,6 +117,14 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 
 		List<SearchPost<BibTex>> posts = searchBibTexLogic.getPostsForUser(requestedUserName, 10, 0);
 		List<Post<BibTex>> postsRef = publicationDatabaseManager.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, null, 10, 0, null, this.dbSession);
+		int docCount = 0;
+		for (Post<BibTex> post : postsRef) {
+			final List<Document> documents = post.getResource().getDocuments();
+			if (present(documents)) {
+				docCount += documents.size();
+			}
+		}
+		assertEquals(2, docCount);
 		assertEquals(postsRef.size(), posts.size());
 
 		posts = searchBibTexLogic.getPostsForUser(requestedUserName, 10, 0);
@@ -389,5 +399,22 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 
 		post.setResource(resource);
 		return post;
+	}
+	
+	/**
+	 * tests {@link SearchDBLogic#getPostEntries(int, int)}
+	 * @throws Exception
+	 */
+	@Test
+	public void testGetPostEntries() throws Exception {
+		final List<SearchPost<BibTex>> posts = searchBibTexLogic.getPostEntries(0, 100);
+		assertEquals(14, posts.size());
+		// check for documents
+		for (final SearchPost<BibTex> searchPost : posts) {
+			final BibTex publication = searchPost.getResource();
+			if ("testuser1".equals(searchPost.getUser().getName()) && "b77ddd8087ad8856d77c740c8dc2864a".equals(publication.getIntraHash())) {
+				assertEquals(2, publication.getDocuments().size());
+			}
+		}
 	}
 }
