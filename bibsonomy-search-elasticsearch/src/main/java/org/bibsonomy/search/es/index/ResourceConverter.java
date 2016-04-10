@@ -62,7 +62,7 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Post<R> convert(final Map<String, Object> source) {
+	public Post<R> convert(final Map<String, Object> source, Set<String> allowdUsersForDoc) {
 		final Post<R> post = new Post<>();
 		
 		if (source.containsKey(Fields.SYSTEM_URL)) {
@@ -72,7 +72,9 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 		
 		post.setDate(parseDate(source, Fields.DATE));
 		post.setChangeDate(parseDate(source, Fields.CHANGE_DATE));
-		post.setUser(new User((String) source.get(Fields.USER_NAME)));
+		final String userName = (String) source.get(Fields.USER_NAME);
+		final boolean loadDocuments = allowdUsersForDoc.contains(userName);
+		post.setUser(new User(userName));
 		post.setDescription((String) source.get(Fields.DESCRIPTION));
 		
 		post.setGroups(convertToGroups((List<String>) source.get(Fields.GROUPS)));
@@ -87,7 +89,7 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 		resource.setIntraHash((String) source.get(Fields.Resource.INTRAHASH));
 		resource.setTitle((String) source.get(Fields.Resource.TITLE));
 		
-		this.convertResourceInternal(resource, source);
+		this.convertResourceInternal(resource, source, loadDocuments);
 		
 		post.setResource(resource);
 		return post;
@@ -119,8 +121,9 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 	/**
 	 * @param resource
 	 * @param source
+	 * @param loadDocuments 
 	 */
-	protected abstract void convertResourceInternal(R resource, Map<String, Object> source);
+	protected abstract void convertResourceInternal(R resource, Map<String, Object> source, boolean loadDocuments);
 
 	/**
 	 * @return a new instance of a resource

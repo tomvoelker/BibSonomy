@@ -258,10 +258,17 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			if (response != null) {
 				final SearchHits hits = response.getHits();
 				postList.setTotalCount((int) hits.getTotalHits());
-
+				
+				final Set<String> allowedUsers;
+				if (present(userName)) {
+					allowedUsers = this.infoLogic.getUserNamesThatShareDocumentsWithUser(userName);
+				} else {
+					allowedUsers = new HashSet<>();
+				}
+				
 				log.debug("Current Search results for '" + searchTerms + "': " + response.getHits().getTotalHits());
 				for (final SearchHit hit : hits) {
-					final Post<R> post = this.resourceConverter.convert(hit.getSource());
+					final Post<R> post = this.resourceConverter.convert(hit.getSource(), allowedUsers);
 					
 					final CountRequestBuilder countBuilder = this.manager.prepareCount();
 					final R resource = post.getResource();
@@ -458,13 +465,13 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 				// prefer posts og the genealogy user
 				if (this.genealogyUser.equals(userName)) {
 					// we prefer posts by the genealogy user
-					final Post<R> post = this.resourceConverter.convert(hit.getSource());
+					final Post<R> post = this.resourceConverter.convert(hit.getSource(), Collections.<String>emptySet());
 					exchangePost(relSorter, post);
 				}
 				// we have seen this interhash before -> skip
 				continue;
 			}
-			final Post<R> postTmp = this.resourceConverter.convert(hit.getSource());
+			final Post<R> postTmp = this.resourceConverter.convert(hit.getSource(), Collections.<String>emptySet());
 			if (!(postTmp.getResource() instanceof BibTex)) {
 				continue;
 			}

@@ -31,6 +31,6 @@ public class SearchInfoDBLogicTest {
 	@Test
 	public void testGetUserNamesThatShareDocumentsWithUser() {
 		final Set<String> users = LOGIC.getUserNamesThatShareDocumentsWithUser("testuser1");
-		assertEquals(0, users.size());
+		assertEquals(1, users.size());
 	}
 }

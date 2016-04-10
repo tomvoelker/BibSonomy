@@ -103,11 +103,12 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		return new BibTex();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.index.ResourceConverter#convertResourceInternal(org.bibsonomy.model.Resource, java.util.Map)
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.search.es.index.ResourceConverter#convertResourceInternal(org.bibsonomy.model.Resource, java.util.Map, boolean)
 	 */
 	@Override
-	protected void convertResourceInternal(BibTex publication, Map<String, Object> source) {
+	protected void convertResourceInternal(BibTex publication, Map<String, Object> source, final boolean loadDocuments) {
 		publication.setAddress((String) source.get(Fields.Publication.ADDRESS));
 		publication.setAnnote((String) source.get(Fields.Publication.ANNOTE));
 		publication.setKey((String) source.get(Fields.Publication.KEY));
@@ -140,6 +141,31 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		publication.setUrl((String) source.get(Publication.URL));
 		publication.setVolume((String) source.get(Publication.VOLUME));
 		publication.setYear((String) source.get(Publication.YEAR));
+		
+		if (loadDocuments) {
+			publication.setDocuments(convertDocuments(source.get(Publication.DOCUMENTS)));
+		}
+	}
+
+	/**
+	 * @param object
+	 * @return
+	 */
+	private static List<Document> convertDocuments(Object object) {
+		final LinkedList<Document> documents = new LinkedList<>();
+		if (object instanceof List) {
+			@SuppressWarnings("unchecked")
+			final List<Map<String, String>> docMaps = (List<Map<String, String>>) object;
+			for (Map<String, String> docMap : docMaps) {
+				final Document document = new Document();
+				document.setFileName(docMap.get(Publication.Document.NAME));
+				document.setFileHash(docMap.get(Publication.Document.HASH));
+				document.setMd5hash(docMap.get(Publication.Document.CONTENT_HASH));
+				document.setDate(ElasticsearchUtils.parseDate(docMap.get(Publication.Document.DATE)));
+				documents.add(document);
+			}
+		}
+		return documents;
 	}
 
 	/**

@@ -97,7 +97,9 @@ public class SearchInfoDBLogic extends AbstractDatabaseManager implements Search
 	public Set<String> getUserNamesThatShareDocumentsWithUser(String userName) {
 		final DBSession session = this.openSession();
 		try {
-			return new HashSet<String>(this.getUserNamesThatShareDocumentsAsList(userName, session));
+			final Set<String> users = new HashSet<String>(this.getUserNamesThatShareDocumentsAsList(userName, session));
+			users.add(userName);
+			return users;
 		} finally {
 			session.close();
 		}
