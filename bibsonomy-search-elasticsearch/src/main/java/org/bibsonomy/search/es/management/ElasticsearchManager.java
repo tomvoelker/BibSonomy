@@ -735,7 +735,7 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 				log.debug("updating spammer status for user " + userName);
 				switch (user.getPrediction().intValue()) {
 				case 0:
-					log.debug("unflag non-spammer");
+					log.debug("user " + userName + " flaged as non-spammer");
 					
 					int offset = 0;
 					List<SearchPost<R>> userPosts;
@@ -759,7 +759,7 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 					} while (userPosts.size() == SearchDBInterface.SQL_BLOCKSIZE);
 					break;
 				case 1:
-					log.debug("flag spammer");
+					log.debug("user " + userName + " flaged as spammer");
 					// remove all docs of the user from the index!
 					this.client.deleteDocuments(indexName, this.tools.getResourceTypeAsString(), QueryBuilders.termQuery(Fields.USER_NAME, userName));
 					break;
