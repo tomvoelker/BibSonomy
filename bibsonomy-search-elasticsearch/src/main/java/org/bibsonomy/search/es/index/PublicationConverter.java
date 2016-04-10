@@ -67,7 +67,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	private static final String PERSON_DELIMITER = " & ";
 	private static final String NAME_PART_DELIMITER = " ; ";
 	
-	static interface PersonNameSetter {
+	private static interface PersonNameSetter {
 		public void setPersonNames(final BibTex publication, final List<PersonName> personNames);
 	}
 	
@@ -116,8 +116,8 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		publication.setDay((String) source.get(Fields.Publication.DAY));
 		publication.setEdition((String) source.get(Fields.Publication.EDITION));
 		
-		setPersonNames(Fields.Publication.EDITORS, Fields.Publication.EDITOR, EDITOR_NAME_SETTER, publication, source);
-		setPersonNames(Fields.Publication.AUTHORS, Fields.Publication.AUTHOR, AUTHOR_NAME_SETTER, publication, source);
+		setPersonNames(Fields.Publication.EDITORS, EDITOR_NAME_SETTER, publication, source);
+		setPersonNames(Fields.Publication.AUTHORS, AUTHOR_NAME_SETTER, publication, source);
 		
 		publication.setEntrytype((String) source.get(Publication.ENTRY_TYPE));
 		publication.setHowpublished((String) source.get(Publication.HOWPUBLISHED));
@@ -143,20 +143,9 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	 * @param publication
 	 * @param source
 	 */
-	private static void setPersonNames(final String fieldName, @Deprecated final String fallbackFieldName, final PersonNameSetter personNameSetter, BibTex publication, Map<String, Object> source) {
+	private static void setPersonNames(final String fieldName, final PersonNameSetter personNameSetter, BibTex publication, Map<String, Object> source) {
 		final Object rawPersonNamesFieldValue = source.get(fieldName);
-		if (rawPersonNamesFieldValue == null) {
-			// TODO: remove fallback raw field with 3.6
-			final Object fallbackRawFieldValue = source.get(fallbackFieldName);
-			if (fallbackRawFieldValue instanceof List) {
-				@SuppressWarnings("unchecked")
-				final List<String> personNamesList = (List<String>) rawPersonNamesFieldValue;
-				final String personNamesString = org.bibsonomy.util.StringUtils.implodeStringCollection(personNamesList, PersonNameUtils.PERSON_NAME_DELIMITER);
-				personNameSetter.setPersonNames(publication, PersonNameUtils.discoverPersonNamesIgnoreExceptions(personNamesString));
-			} else if (fallbackRawFieldValue != null) {
-				log.warn(fieldName + " field was '" + fallbackRawFieldValue + "' of type '" + fallbackRawFieldValue.getClass().getName() + "'");
-			}
-		} else if (rawPersonNamesFieldValue instanceof List) {
+		if (rawPersonNamesFieldValue instanceof List) {
 			@SuppressWarnings("unchecked")
 			final List<Map<String, String>> personNamesList = (List<Map<String, String>>) rawPersonNamesFieldValue;
 			final StringBuilder personNameStringBuilder = new StringBuilder();
@@ -171,6 +160,8 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 				}
 			}
 			personNameSetter.setPersonNames(publication, PersonNameUtils.discoverPersonNamesIgnoreExceptions(personNameStringBuilder.toString()));
+		} else {
+			log.error("person name not a list; was " + (rawPersonNamesFieldValue != null ? rawPersonNamesFieldValue.getClass() : "null"));
 		}
 	}
 

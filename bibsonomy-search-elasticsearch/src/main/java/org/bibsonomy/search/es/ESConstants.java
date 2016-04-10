@@ -163,11 +163,7 @@ public final class ESConstants {
 		}
 		
 		public static interface Publication {
-			@Deprecated // TODO: remove with 3.6
-			public static final String AUTHOR = "author";
 			public static final String AUTHORS = "authors";
-			@Deprecated // TODO: remove with 3.6
-			public static final String EDITOR = "editor";
 			public static final String EDITORS = "editors";
 			public static final String PERSON_NAME = "name";
 			
