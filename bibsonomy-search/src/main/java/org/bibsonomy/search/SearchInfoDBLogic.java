@@ -30,7 +30,9 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
@@ -86,6 +88,29 @@ public class SearchInfoDBLogic extends AbstractDatabaseManager implements Search
 		} finally {
 			session.close();
 		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.SearchInfoLogic#getUserNamesThatShareDocumentsWithUser(java.lang.String)
+	 */
+	@Override
+	public Set<String> getUserNamesThatShareDocumentsWithUser(String userName) {
+		final DBSession session = this.openSession();
+		try {
+			return new HashSet<String>(this.getUserNamesThatShareDocumentsAsList(userName, session));
+		} finally {
+			session.close();
+		}
+	}
+
+	/**
+	 * @param userName
+	 * @param session
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private List<String> getUserNamesThatShareDocumentsAsList(String userName, final DBSession session) {
+		return (List<String>) this.queryForList("getDocumentUsers", userName, session);
 	}
 
 	/**

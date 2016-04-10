@@ -32,6 +32,15 @@
 		  AND tag_name  = "sys:network:bibsonomy-friend"
 		  <!-- TODO: find a place for globally define this as a property -->
 	</select>
+	
+	<select id="getDocumentUsers" resultClass="string" parameterClass="string">
+		SELECT DISTINCT other.user_name
+		FROM group_memberships gm
+			JOIN group_memberships other USING(`group`)
+		WHERE gm.user_name = #userName#
+			AND other.user_shared_documents
+			AND other.user_name != #userName#
+	</select>
 
 	<!-- get date of most recent tas entry  -->
 	<select id="getNewestRecordDateFromTas" resultClass="date">
