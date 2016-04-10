@@ -62,18 +62,11 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 	private final GeneralDatabaseManager generalDatabaseManager = GeneralDatabaseManager.getInstance();
 	private final PersonSearchDatabaseManager personSearchDatabaseManager = PersonSearchDatabaseManager.getInstance();
 	
+	/**
+	 * @return the session for the database
+	 */
 	protected DBSession openSession() {
 		return this.sessionFactory.getDatabaseSession();
-	}
-	
-	@Override
-	public Integer getLastTasId() {
-		final DBSession session = this.openSession();
-		try {
-			return this.queryForObject("getLastTasId", Integer.class, session);
-		} finally {
-			session.close();
-		}
 	}
 	
 	@Override
@@ -173,31 +166,13 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.bibsonomy.search.management.database.SearchDBInterface#getLastLogDate()
-	 */
-	@Override
-	public Date getLastLogDate() {
-		final DBSession session = this.openSession();
-		try {
-			final Date rVal = this.queryForObject("getLastLog" + this.getResourceName(), Date.class, session);
-			if (rVal != null) {
-				return rVal;
-			}
-			return new Date();
-		} finally {
-			session.close();
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
 	 * @see org.bibsonomy.search.management.database.SearchDBInterface#getNumberOfPosts()
 	 */
 	@Override
 	public int getNumberOfPosts() {
 		final DBSession session = this.openSession();
 		try {
-			return this.queryForObject("get" + this.getResourceName() + "Count", Integer.class, session);
+			return saveConvertToint(this.queryForObject("get" + this.getResourceName() + "Count", Integer.class, session));
 		} finally {
 			session.close();
 		}
@@ -235,37 +210,6 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 		final DBSession session = this.openSession();
 		try {
 			return this.queryForSearchPosts("get" + this.getResourceName() + "PostsForTimeRange", param, session);
-		} finally {
-			session.close();
-		}
-	}
-	
-	private String getResourceName() {
-		return this.resourceClass.getSimpleName();
-	}
-
-	/**
-	 * @param resourceClass the resourceClass to set
-	 */
-	public void setResourceClass(final Class<R> resourceClass) {
-		this.resourceClass = resourceClass;
-	}
-
-	/**
-	 * @param sessionFactory the sessionFactory to set
-	 */
-	public void setSessionFactory(final DBSessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.management.database.SearchDBInterface#getLastPersonChangeId()
-	 */
-	@Override
-	public long getLastPersonChangeId() {
-		final DBSession session = this.openSession();
-		try {
-			return this.generalDatabaseManager.getLastId(ConstantID.PERSON_CHANGE_ID, session).longValue();
 		} finally {
 			session.close();
 		}
@@ -311,5 +255,58 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 		newState.setLast_log_date(this.getLastLogDate());
 		newState.setLastPersonChangeId(this.getLastPersonChangeId());
 		return newState;
+	}
+	
+	/**
+	 * @return the last tas id
+	 */
+	protected Integer getLastTasId() {
+		final DBSession session = this.openSession();
+		try {
+			return this.queryForObject("getLastTasId", Integer.class, session);
+		} finally {
+			session.close();
+		}
+	}
+	
+	private Date getLastLogDate() {
+		final DBSession session = this.openSession();
+		try {
+			final Date rVal = this.queryForObject("getLastLog" + this.getResourceName(), Date.class, session);
+			if (rVal != null) {
+				return rVal;
+			}
+			return new Date();
+		} finally {
+			session.close();
+		}
+	}
+	
+	private long getLastPersonChangeId() {
+		final DBSession session = this.openSession();
+		try {
+			return this.generalDatabaseManager.getLastId(ConstantID.PERSON_CHANGE_ID, session).longValue();
+		} finally {
+			session.close();
+		}
+	}
+	
+
+	private String getResourceName() {
+		return this.resourceClass.getSimpleName();
+	}
+
+	/**
+	 * @param resourceClass the resourceClass to set
+	 */
+	public void setResourceClass(final Class<R> resourceClass) {
+		this.resourceClass = resourceClass;
+	}
+
+	/**
+	 * @param sessionFactory the sessionFactory to set
+	 */
+	public void setSessionFactory(final DBSessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 }

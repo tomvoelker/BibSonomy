@@ -91,15 +91,6 @@ public interface SearchDBInterface<R extends Resource> {
 	// methods for building the index
 	// TODO: maybe we should introduce a special class hierarchy
 	//------------------------------------------------------------------------
-	/** 
-	 * @return get newest tas_id from database 
-	 */
-	public Integer getLastTasId();
-
-	/** 
-	 * @return get latest log_date from database
-	 */
-	public Date getLastLogDate();
 	
 	/**
 	 * @return get number of posts
@@ -112,11 +103,6 @@ public interface SearchDBInterface<R extends Resource> {
 	 * @return get post entries for index creation
 	 */
 	public List<SearchPost<R>> getPostEntries(int lastContentId, int max);
-
-	/**
-	 * @return
-	 */
-	public long getLastPersonChangeId();
 
 	/**
 	 * @param fromPersonChangeId

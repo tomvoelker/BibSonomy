@@ -139,10 +139,10 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 		//--------------------------------------------------------------------
 		// TEST 1: insert special posts into test database and search for it
 		//--------------------------------------------------------------------
-		final Integer lastTasId = searchBibTexLogic.getLastTasId();
+		final Integer lastTasId = searchBibTexLogic.getDbState().getLast_tas_id();
 		for (int i = 0; i < 5; i++) {
 			// store test posts in database
-			final Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC, i);
+			final Post<BibTex> bibtexPost = generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC, i);
 			refPosts.add(bibtexPost);
 			publicationDatabaseManager.createPost(bibtexPost, this.dbSession);
 		}
@@ -175,10 +175,10 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 		//--------------------------------------------------------------------
 		// TEST 1: insert special posts into test database and search for it
 		//--------------------------------------------------------------------
-		final Integer lastTasId = searchBibTexLogic.getLastTasId();
+		final Integer lastTasId = searchBibTexLogic.getDbState().getLast_tas_id();
 		for (int i = 0; i < 5; i++) {
 			// store test posts in database
-			final Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC, i);
+			final Post<BibTex> bibtexPost = generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC, i);
 			refPosts.add(bibtexPost);
 			publicationDatabaseManager.createPost(bibtexPost, this.dbSession);
 		}
