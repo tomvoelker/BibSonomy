@@ -45,10 +45,10 @@ import org.junit.Test;
 public class ElasticsearchPublicationSearchTest extends AbstractEsIndexTest {
 	
 	/**
-	 * TODO: rename method
+	 * tests person suggestion
 	 */
 	@Test
-	public void testSomething() {
+	public void testPersonSuggestion() {
 		PersonSuggestionQueryBuilder options = new PersonSuggestionQueryBuilder("Schorsche") {
 			@Override
 			public List<ResourcePersonRelation> doIt() {
