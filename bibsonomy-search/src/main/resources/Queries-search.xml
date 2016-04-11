@@ -37,15 +37,11 @@
 		SELECT DISTINCT other.user_name
 		FROM group_memberships gm
 			JOIN group_memberships other USING(`group`)
+			JOIN groupids g USING(`group`)
 		WHERE gm.user_name = #userName#
 			AND other.user_shared_documents
+			AND g.sharedDocuments = 1
 			AND other.user_name != #userName#
-	</select>
-
-	<!-- get date of most recent tas entry  -->
-	<select id="getNewestRecordDateFromTas" resultClass="date">
-		SELECT MAX(change_date) as date
-		FROM tas 
 	</select>
 
 	<!-- get list of all publications for given user -->
@@ -61,6 +57,22 @@
 		LEFT OUTER JOIN document d ON b2.content_id = d.content_id, groupids AS g
 		WHERE b2.group = g.group
 		ORDER BY b2.date DESC, b2.content_id DESC, t.tas_id DESC
+	</select>
+	
+	<select id="getPostIdsForDocumentUpdate" resultMap="SearchPublicationCommon.searchLogDocumentPublicationPost">
+		SELECT b.content_id, b.title, <include refid="allDocumentAttributes"/>
+		FROM (SELECT content_id
+			FROM document
+			WHERE date &gt;= #first#
+				AND date &lt;= #second#
+			UNION
+			SELECT content_id
+			FROM log_document
+			WHERE log_date &gt;= #first#
+				AND log_date &lt;= #second#
+			) AS b2
+		JOIN document d USING(content_id)
+		JOIN bibtex b USING(content_id)
 	</select>
 	
 	<!-- get list of all bookmarks for given user -->

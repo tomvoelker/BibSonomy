@@ -12,6 +12,17 @@
 		<result property="lastLogDate"  column="log_date" javaType="date"/>
 	</resultMap>
 	
+	<resultMap id="searchLogDocumentPublicationPost" class="searchPost" groupBy="contentId">
+		<result property="contentId"    column="content_id"     javaType="int" />
+		<result property="resource"     resultMap="SearchPublicationCommon.bibtexWithDocuments" />
+	</resultMap>
+	
+	<resultMap id="bibtexWithDocuments" class="bibtex">
+		<!-- FIXME: title must be set, else the resource is null -->
+		<result property="title"        column="title"    javaType="string" />
+		<result property="documents"      resultMap="DocumentCommon.document" />
+	</resultMap>
+	
 	<sql id="commonSearchPublicationAttributes2">
 		<include refid="commonPublicationAttributes2WithoutPrivNote" />
 		b2.privnote

@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.ResourcePersonRelationLogStub;
@@ -59,11 +60,6 @@ public interface SearchDBInterface<R extends Resource> {
 	 * @return all posts for given user
 	 */
 	public List<SearchPost<R>> getPostsForUser(final String userName, final int limit, final int offset);
-
-	/**
-	 * @return get most recent post's date
-	 */
-	public Date getNewestRecordDateFromTas();
 	
 	/**
 	 * get list of content ids to delete from index with fromDate<date<=date
@@ -136,4 +132,11 @@ public interface SearchDBInterface<R extends Resource> {
 	 * @return
 	 */
 	public SearchIndexSyncState getDbState();
+
+	/**
+	 * @param lastDocumentDate
+	 * @param targetDocumentDate
+	 * @return a list of posts to update
+	 */
+	public List<Post<R>> getPostsForDocumentUpdate(Date lastDocumentDate, Date targetDocumentDate);
 }

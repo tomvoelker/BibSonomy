@@ -189,8 +189,8 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 				}
 			}
 			personNameSetter.setPersonNames(publication, PersonNameUtils.discoverPersonNamesIgnoreExceptions(personNameStringBuilder.toString()));
-		} else {
-			log.error("person name not a list; was " + (rawPersonNamesFieldValue != null ? rawPersonNamesFieldValue.getClass() : "null"));
+		} else if (rawPersonNamesFieldValue != null){
+			log.error("person name not a list; was " + rawPersonNamesFieldValue.getClass());
 		}
 	}
 
@@ -280,14 +280,15 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		
 		jsonDocument.put(Publication.YEAR, resource.getYear());
 		
-		jsonDocument.put(Publication.DOCUMENTS, convertDocuments(jsonDocument, resource.getDocuments()));
+		jsonDocument.put(Publication.DOCUMENTS, convertDocuments(resource.getDocuments()));
 	}
 	
 	/**
 	 * @param jsonDocument
 	 * @param documents
+	 * @return the converted documents
 	 */
-	private static List<Map<String, String>> convertDocuments(Map<String, Object> jsonDocument, List<Document> documents) {
+	public static List<Map<String, String>> convertDocuments(List<Document> documents) {
 		final List<Map<String, String>> list = new LinkedList<>();
 		if (!present(documents)) {
 			return list;

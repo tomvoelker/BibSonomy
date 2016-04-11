@@ -552,6 +552,7 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 		 */
 		log.debug("inserting new/updated posts into " + indexName);
 		final Map<String, Map<String, Object>> convertedPosts = new HashMap<>();
+		final Set<Integer> alreadySavedPosts = new HashSet<>();
 		List<SearchPost<R>> newPosts;
 		int offset = 0;
 		int totalCountNewPosts = 0;
@@ -560,8 +561,10 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 			for (final SearchPost<R> post : newPosts) {
 				final Map<String, Object> convertedPost = this.tools.getConverter().convert(post);
 				
-				final String id = ElasticsearchUtils.createElasticSearchId(post.getContentId().intValue());
+				final Integer contentId = post.getContentId();
+				alreadySavedPosts.add(contentId);
 				
+				final String id = ElasticsearchUtils.createElasticSearchId(contentId.intValue());
 				convertedPosts.put(id, convertedPost);
 				newLastTasId = Math.max(post.getLastTasId().intValue(), newLastTasId);
 			}
@@ -588,6 +591,7 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 			newState.setLast_log_date(targetState.getLast_log_date());
 			newState.setLast_tas_id(Integer.valueOf(newLastTasId));
 			newState.setLastPersonChangeId(targetState.getLastPersonChangeId());
+			newState.setLastDocumentDate(targetState.getLastDocumentDate());
 			this.updateIndexState(indexName, newState);
 		} catch (final RuntimeException e) {
 			this.updateIndexState(indexName, oldState);

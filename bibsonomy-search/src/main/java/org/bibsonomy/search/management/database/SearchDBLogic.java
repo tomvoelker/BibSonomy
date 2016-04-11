@@ -31,6 +31,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
@@ -40,6 +41,7 @@ import org.bibsonomy.database.managers.PersonDatabaseManager;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.ResourcePersonRelationLogStub;
@@ -135,20 +137,6 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 			session.close();
 		}
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.search.management.database.SearchDBInterface#getNewestRecordDateFromTas()
-	 */
-	@Override
-	public Date getNewestRecordDateFromTas() {
-		final DBSession session = this.openSession();
-		try {
-			return this.queryForObject("getNewestRecordDateFromTas", Date.class, session);
-		} finally {
-			session.close();
-		}
-	}
 	
 	/*
 	 * (non-Javadoc)
@@ -234,6 +222,20 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 			session.close();
 		}
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.management.database.SearchDBInterface#getPostsForDocumentUpdate(java.util.Date, java.util.Date)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Post<R>> getPostsForDocumentUpdate(Date lastDocumentDate, Date targetDocumentDate) {
+		final DBSession session = this.openSession();
+		try {
+			return (List<Post<R>>) this.queryForList("getPostIdsForDocumentUpdate", new Pair<>(lastDocumentDate, targetDocumentDate), session);
+		} finally {
+			session.close();
+		}
+	}
 
 	@Override
 	public List<Person> getPersonByChangeIdRange(long firstChangeId, long toPersonChangeIdExclusive) {
@@ -303,7 +305,6 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 			session.close();
 		}
 	}
-	
 
 	private String getResourceName() {
 		return this.resourceClass.getSimpleName();
