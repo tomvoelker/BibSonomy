@@ -86,7 +86,7 @@ public class PublicationMappingBuilder extends ResourceMappingBuilder<BibTex> {
 					.startObject(Fields.Publication.Document.TEXT)
 						.field(TYPE_FIELD, STRING_TYPE)
 						.field(INCLUDE_IN_ALL_FIELD, false)
-						.field(COPY_TO, Fields.PRIVATE_ALL_FIELD)
+						.array(COPY_TO, Fields.PRIVATE_ALL_FIELD, Fields.ALL_DOCS)
 					.endObject()
 					.startObject(Fields.Publication.Document.HASH)
 						.field(TYPE_FIELD, STRING_TYPE)

@@ -122,11 +122,14 @@ public final class ESConstants {
 	
 	public static interface Fields {
 		
+		/** field that contains all docs */
+		public static final String ALL_DOCS = "all_docs";
+
 		/** private search content should be copied to this field */
 		public static final String PRIVATE_ALL_FIELD = "all_private";
 		
 		/** all special fields that can't be overridden by a misc field */
-		public static final Set<String> SPECIAL_FIELDS = Sets.asSet("_all", PRIVATE_ALL_FIELD);
+		public static final Set<String> SPECIAL_FIELDS = Sets.asSet("_all", PRIVATE_ALL_FIELD, ALL_DOCS);
 		
 		/** the content id of the post */
 		public static final String CONTENT_ID = "content_id";
