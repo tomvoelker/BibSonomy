@@ -88,7 +88,7 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 		
 		// TODO: bulk update
 		for (final Post<P> postDocUpdate : postsForDocUpdate) {
-			final List<Map<String, String>> documents = PublicationConverter.convertDocuments(postDocUpdate.getResource().getDocuments());
+			final List<Map<String, String>> documents = this.getPublicationConverter().convertDocuments(postDocUpdate.getResource().getDocuments());
 			final String id = ElasticsearchUtils.createElasticSearchId(postDocUpdate.getContentId().intValue());
 			final UpdateRequestBuilder update = this.client.prepareUpdate(indexName, this.tools.getResourceTypeAsString(), id);
 			update.setDoc(Collections.singletonMap(Publication.DOCUMENTS, documents))

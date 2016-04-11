@@ -56,6 +56,7 @@ import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.search.es.ESConstants.Fields.Publication;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
+import org.bibsonomy.search.index.utils.FileContentExtractorService;
 import org.bibsonomy.util.ValidationUtils;
 
 /**
@@ -88,13 +89,17 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		}
 	};
 	
+	private FileContentExtractorService fileContentExtractorService;
+	
 	/**
 	 * @param systemURI
+	 * @param fileContentExtractorService 
 	 */
-	public PublicationConverter(URI systemURI) {
+	public PublicationConverter(URI systemURI, final FileContentExtractorService fileContentExtractorService) {
 		super(systemURI);
+		this.fileContentExtractorService = fileContentExtractorService;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.search.es.index.ResourceConverter#createNewResource()
 	 */
@@ -288,7 +293,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	 * @param documents
 	 * @return the converted documents
 	 */
-	public static List<Map<String, String>> convertDocuments(List<Document> documents) {
+	public List<Map<String, String>> convertDocuments(final List<Document> documents) {
 		final List<Map<String, String>> list = new LinkedList<>();
 		if (!present(documents)) {
 			return list;
@@ -299,6 +304,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 			documentMap.put(Publication.Document.NAME, document.getFileName());
 			documentMap.put(Publication.Document.HASH, document.getFileHash());
 			documentMap.put(Publication.Document.CONTENT_HASH, document.getMd5hash());
+			documentMap.put(Publication.Document.TEXT, this.fileContentExtractorService.extractContent(document));
 			documentMap.put(Publication.Document.DATE, ElasticsearchUtils.dateToString(document.getDate()));
 			list.add(documentMap);
 		}
