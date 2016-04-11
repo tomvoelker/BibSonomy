@@ -231,7 +231,7 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 	public List<Post<R>> getPostsForDocumentUpdate(Date lastDocumentDate, Date targetDocumentDate) {
 		final DBSession session = this.openSession();
 		try {
-			return (List<Post<R>>) this.queryForList("getPostIdsForDocumentUpdate", new Pair<>(lastDocumentDate, targetDocumentDate), session);
+			return (List<Post<R>>) this.queryForList("getPostsForDocumentUpdate", new Pair<>(lastDocumentDate, targetDocumentDate), session);
 		} finally {
 			session.close();
 		}

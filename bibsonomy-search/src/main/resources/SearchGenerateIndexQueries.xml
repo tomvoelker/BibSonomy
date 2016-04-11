@@ -19,7 +19,12 @@
 	
 	<select id="getLastDocumentDate" resultClass="date">
 		SELECT MAX(date)
-		FROM document
+		FROM (SELECT MAX(date) AS date
+			FROM document
+			UNION
+			SELECT MAX(log_date) AS date
+			FROM log_document
+		) AS doc
 	</select>
 
 	<!-- get number of public bookmark posts -->

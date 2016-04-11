@@ -59,7 +59,7 @@
 		ORDER BY b2.date DESC, b2.content_id DESC, t.tas_id DESC
 	</select>
 	
-	<select id="getPostIdsForDocumentUpdate" resultMap="SearchPublicationCommon.searchLogDocumentPublicationPost">
+	<select id="getPostsForDocumentUpdate" resultMap="SearchPublicationCommon.searchLogDocumentPublicationPost">
 		SELECT b.content_id, b.title, <include refid="allDocumentAttributes"/>
 		FROM (SELECT content_id
 			FROM document
@@ -71,7 +71,7 @@
 			WHERE log_date &gt;= #first#
 				AND log_date &lt;= #second#
 			) AS b2
-		JOIN document d USING(content_id)
+		LEFT JOIN document d USING(content_id)
 		JOIN bibtex b USING(content_id)
 	</select>
 	
