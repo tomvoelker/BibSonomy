@@ -21,7 +21,7 @@ public class PDFExtractor implements ContentExtractor {
 	 * @see org.bibsonomy.search.index.utils.ContentExtractor#supports(java.io.File)
 	 */
 	@Override
-	public boolean supports(String fileName) {
+	public boolean supports(final String fileName) {
 		final String extension = FilenameUtils.getExtension(fileName);
 		return "pdf".equalsIgnoreCase(extension);
 	}
@@ -30,7 +30,7 @@ public class PDFExtractor implements ContentExtractor {
 	 * @see org.bibsonomy.search.index.utils.ContentExtractor#extractContent(java.io.File)
 	 */
 	@Override
-	public String extractContent(File file) throws IOException {
+	public String extractContent(final File file) throws IOException {
 		final FileInputStream input = new FileInputStream(file);
 		final PdfReader pdfReader = new PdfReader(input);
 		final PdfReaderContentParser pdfParser = new PdfReaderContentParser(pdfReader);
@@ -39,7 +39,7 @@ public class PDFExtractor implements ContentExtractor {
 			final SimpleTextExtractionStrategy listener = new SimpleTextExtractionStrategy();
 			pdfParser.processContent(i, listener);
 			content.append(listener.getResultantText());
-			content.append("\n");
+			content.append(" ");
 		}
 		
 		input.close();
