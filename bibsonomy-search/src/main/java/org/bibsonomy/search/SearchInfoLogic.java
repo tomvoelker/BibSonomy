@@ -28,6 +28,7 @@ package org.bibsonomy.search;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 /**
  * used by the search to retrieve friends and group members
@@ -57,4 +58,10 @@ public interface SearchInfoLogic {
 	 * @return a list of sub tags
 	 */
 	public List<String> getSubTagsForConceptTag(String concept);
+	
+	/**
+	 * @param userName
+	 * @return a set of usernames, that share documents with the specified user
+	 */
+	public Set<String> getUserNamesThatShareDocumentsWithUser(String userName);
 }

@@ -21,7 +21,7 @@
 	<fmt:message key="navi.admin" var="pageTitle" />
 	
 	<layout:layout 
-		pageTitle="full text search" 
+		pageTitle="full text search"
 		loginUser="${command.context.loginUser}" 
 		requPath="${requPath}"
 		minimizedContentWidth="${true}"
@@ -55,6 +55,7 @@
 									<th># Docs</th>
 									<th>Last tas id</th>
 									<th>Last log date</th>
+									<th>Last Doc date</th>
 									<th>Last p. id</th>
 									<th>Actions</th>
 								</tr>
@@ -71,6 +72,7 @@
 											<td><c:out value="${searchIndexInfo.statistics.numberOfDocuments}" /></td>
 											<td><c:out value="${searchIndexInfo.syncState.last_tas_id}" /></td>
 											<td><c:out value="${searchIndexInfo.syncState.last_log_date}" /></td>
+											<td><c:out value="${searchIndexInfo.syncState.lastDocumentDate}" /></td>
 											<td><c:out value="${searchIndexInfo.syncState.lastPersonChangeId}" /></td>
 											<td>
 												<div class="btn-group">

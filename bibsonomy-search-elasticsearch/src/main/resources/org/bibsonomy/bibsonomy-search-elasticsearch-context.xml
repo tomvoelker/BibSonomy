@@ -51,7 +51,9 @@
 	
 	<bean id="elasticsearchBookmarkConverter" class="org.bibsonomy.search.es.index.BookmarkConverter" parent="elasticsearchResourceConverter"/>
 	
-	<bean id="elasticsearchPublicationConverter" class="org.bibsonomy.search.es.index.PublicationConverter" parent="elasticsearchResourceConverter"/>
+	<bean id="elasticsearchPublicationConverter" class="org.bibsonomy.search.es.index.PublicationConverter" parent="elasticsearchResourceConverter">
+		<constructor-arg ref="fileContentExtractorService" />
+	</bean>
 	
 	<bean id="elasticsearchBookmarkTools" class="org.bibsonomy.search.es.management.ElasticsearchIndexTools">
 		<constructor-arg ref="searchBookmarkClass" />
