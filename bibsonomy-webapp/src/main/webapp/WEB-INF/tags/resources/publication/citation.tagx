@@ -19,8 +19,7 @@
 		| 
 		+-->
 	
-	
-	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" /> 
 	<jsp:directive.attribute name="isCommunityPost" type="java.lang.Boolean" required="false" />
 	
 	<c:if test="${empty isCommunityPost}">
@@ -29,10 +28,8 @@
 	
 	<c:set var="citationStylesToShow" value="harvardhtml,chicago,apa_html,din1505" />
 	
-	<div>"${post.user.settings.showCitationBibtex}"</div>
-	
-	
-	
+	<c:set var="showBibTeX" value="${mtl:contains(command.context.loginUser.settings.favourite_layouts, mtl:convertToEnum('org.bibsonomy.common.enums.Favourite_layouts', 'BIBTEX'))}"/>
+	<c:set var="showEndNote" value="${mtl:contains(command.context.loginUser.settings.favourite_layouts, mtl:convertToEnum('org.bibsonomy.common.enums.Favourite_layouts', 'EndNote'))}"/>
 	
 	<div class="citation-box">
 		<ul class="nav nav-tabs">
@@ -53,8 +50,15 @@
 					</a>
 				</li>
 			</c:forEach>
+			
+			<c:if test="${showBibTeX}">
 			<li><a data-toggle="tab" href="#citation_bibtex">BibTeX</a></li>
+			</c:if>
+			
+			<c:if test="${showEndNote}">
 			<li><a data-toggle="tab" href="#citation_endnote">EndNote</a></li>
+			</c:if>
+			
 			<li>
 				<c:choose>
 					<c:when test="${isCommunityPost}">
@@ -73,16 +77,23 @@
 					<!-- keep -->
 				</div>
 			</c:forEach>
-			<div class="tab-pane" id="citation_bibtex">
-				<textarea style="width:100%;font-size:80%;border:none;" rows="15">
-					<export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="${true}" generatedBibtexKeys="${false}"/>
-				</textarea>
-			</div>
+			
+			<c:if test="${showBibTeX}">
+				<div class="tab-pane" id="citation_bibtex">
+					<textarea style="width:100%;font-size:80%;border:none;" rows="15">
+						<export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="${true}" generatedBibtexKeys="${false}"/>
+					</textarea>
+				</div>
+			</c:if>
+			
+			<c:if test="${showEndNote}">
 			<div class="tab-pane" id="citation_endnote">
 				<textarea style="width:100%;font-size:80%;border:none;" rows="15">
 					<export:endnote post="${post}" escapeXml="${true}" />
 				</textarea>
 			</div>
+			</c:if>
+			
 			<div class="tab-pane" id="citation_all">
 				<!-- keep -->
 			</div>

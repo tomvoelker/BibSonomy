@@ -20,6 +20,7 @@
 		+-->
 	<!-- TODO: (Bootstrap) remove! -->
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="false"/>
 
 	<div id="citation" class="tabs">
 		<!-- tab header -->
