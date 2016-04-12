@@ -188,13 +188,13 @@
 					
 						<div class="col-sm-3">
 							<label>
-								<form:checkbox path="user.settings.favourite_layouts" value="BibTeX"/>&amp;nbsp;
+								<form:checkbox path="user.settings.favourite_layouts" value="BIBTEX"/>&amp;nbsp;
 								show BibTeX
 							</label>
 						</div>
 						<div class="col-sm-5">
 							<label>
-								<form:checkbox path="user.settings.favourite_layouts" value="Endnote"/>&amp;nbsp;
+								<form:checkbox path="user.settings.favourite_layouts" value="ENDNOTE"/>&amp;nbsp;
 								show Endnote
 							</label>
 						</div>

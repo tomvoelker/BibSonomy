@@ -99,4 +99,6 @@
 	
 	<typeAlias alias="LayoutSettings"    type="org.bibsonomy.model.user.settings.LayoutSettings" />
 	
+	<typeAlias alias="Favourite_layouts"    type="java.util.ArrayList" />
+	
 </sqlMap>

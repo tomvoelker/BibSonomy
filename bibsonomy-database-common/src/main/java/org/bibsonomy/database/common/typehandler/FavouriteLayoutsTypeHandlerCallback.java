@@ -27,7 +27,11 @@ public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCall
 		if (parameter == null) {
 			setter.setString(null);
 		} else {
-			setter.setString(((ArrayList<Favourite_layouts>) parameter).toString());
+			String saveString = ((ArrayList<Favourite_layouts>) parameter).toString();	
+			saveString = saveString.replace('[', ' ');
+			saveString = saveString.replace(']', ' ');
+			saveString = saveString.trim();
+			setter.setString(saveString);
 		}
 	}
 
@@ -45,8 +49,6 @@ public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCall
 		String[] strInLines = str.split(",");
 
 		for (String string : strInLines) {
-			string = string.replace('[', ' ');
-			string = string.replace(']', ' ');
 			string = string.trim();
 			cleanedStr.add(string);
 		}

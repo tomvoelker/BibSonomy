@@ -6,5 +6,5 @@ package org.bibsonomy.common.enums;
  * @author pfister
  */
 public enum Favourite_layouts {
-	BibTeX, Endnote
+	BIBTEX, ENDNOTE
 }
