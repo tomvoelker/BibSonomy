@@ -115,7 +115,7 @@
 		
 		<!-- citation box -->
 		
-		<pub2:citation post="${post}" isCommunityPost="${true}" loginUser="${loginUser}"/>
+		<pub2:citation post="${post}" isCommunityPost="${true}"/>
 		
 		<!--+
 			| discussion and rating
