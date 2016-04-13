@@ -14,8 +14,8 @@
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
 	
 
-	<c:set var="showBibTeX" value="${mtl:contains(command.context.loginUser.settings.favourite_layouts, mtl:convertToEnum('org.bibsonomy.common.enums.Favourite_layouts', 'BIBTEX'))}"/>
-	<c:set var="showEndNote" value="${mtl:contains(command.context.loginUser.settings.favourite_layouts, mtl:convertToEnum('org.bibsonomy.common.enums.Favourite_layouts', 'EndNote'))}"/>
+	<c:set var="showBibTeX" value="${mtl:contains(command.context.loginUser.settings.favouriteLayouts, mtl:convertToEnum('org.bibsonomy.common.enums.FavouriteLayouts', 'BIBTEX'))}"/>
+	<c:set var="showEndNote" value="${mtl:contains(command.context.loginUser.settings.favouriteLayouts, mtl:convertToEnum('org.bibsonomy.common.enums.FavouriteLayouts', 'EndNote'))}"/>
 
 	<c:set var="buttonClasses" value="btn btn-default btn-xs "/>
 	

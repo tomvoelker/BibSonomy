@@ -3,7 +3,7 @@ package org.bibsonomy.database.common.typehandler;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import org.bibsonomy.common.enums.Favourite_layouts;
+import org.bibsonomy.common.enums.FavouriteLayouts;
 
 import com.ibatis.sqlmap.client.extensions.ParameterSetter;
 
@@ -27,7 +27,7 @@ public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCall
 		if (parameter == null) {
 			setter.setString(null);
 		} else {
-			String saveString = ((ArrayList<Favourite_layouts>) parameter).toString();	
+			String saveString = ((ArrayList<FavouriteLayouts>) parameter).toString();	
 			saveString = saveString.replace('[', ' ');
 			saveString = saveString.replace(']', ' ');
 			saveString = saveString.trim();
@@ -44,7 +44,7 @@ public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCall
 	 */
 	@Override
 	public Object valueOf(String str) {
-		ArrayList<Favourite_layouts> returner = new ArrayList<Favourite_layouts>();
+		ArrayList<FavouriteLayouts> returner = new ArrayList<FavouriteLayouts>();
 		ArrayList<String> cleanedStr = new ArrayList<String>();
 		String[] strInLines = str.split(",");
 
@@ -53,7 +53,7 @@ public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCall
 			cleanedStr.add(string);
 		}
 		for (String element : cleanedStr) {
-			returner.add(Enum.valueOf(Favourite_layouts.class, element));
+			returner.add(Enum.valueOf(FavouriteLayouts.class, element));
 		}
 		return returner;
 	}

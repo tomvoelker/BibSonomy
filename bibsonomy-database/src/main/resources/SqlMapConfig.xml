@@ -27,7 +27,7 @@
 	<typeHandler javaType="conflictStrategy"      callback="org.bibsonomy.database.common.typehandler.ConflictResolutionStrategyTypeHandlerCallback" />
 	<typeHandler javaType="personNameList"        callback="org.bibsonomy.database.common.typehandler.PersonNameTypeHandlerCallback" />
 	<typeHandler javaType="goldStandardRelation"  callback="org.bibsonomy.database.common.typehandler.GoldStandardRelationTypeHandlerCallback"/>
-	<typeHandler javaType="Favourite_layouts" 	  callback="org.bibsonomy.database.common.typehandler.FavouriteLayoutsTypeHandlerCallback"/>
+	<typeHandler javaType="FavouriteLayouts" 	  callback="org.bibsonomy.database.common.typehandler.FavouriteLayoutsTypeHandlerCallback"/>
 	<typeHandler javaType="personResourceRelationType"  callback="org.bibsonomy.database.common.typehandler.PersonResourceRelationTypeHandlerCallback" />	
 	
 	<sqlMap resource="common/Common.xml" />

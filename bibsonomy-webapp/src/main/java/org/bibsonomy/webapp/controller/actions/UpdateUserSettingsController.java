@@ -130,7 +130,7 @@ public class UpdateUserSettingsController extends SettingsPageController {
 		userSettings.setListItemcount(commandSettings.getListItemcount());
 		userSettings.setTagboxTooltip(commandSettings.getTagboxTooltip());
 		
-		userSettings.setFavourite_layouts(commandSettings.getFavourite_layouts());
+		userSettings.setFavouriteLayouts(commandSettings.getFavouriteLayouts());
 		
 		userSettings.setShowBookmark(commandSettings.isShowBookmark());
 		userSettings.setShowBibtex(commandSettings.isShowBibtex());

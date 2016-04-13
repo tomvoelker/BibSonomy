@@ -28,8 +28,8 @@
 	
 	<c:set var="citationStylesToShow" value="harvardhtml,chicago,apa_html,din1505" />
 	
-	<c:set var="showBibTeX" value="${mtl:contains(command.context.loginUser.settings.favourite_layouts, mtl:convertToEnum('org.bibsonomy.common.enums.Favourite_layouts', 'BIBTEX'))}"/>
-	<c:set var="showEndNote" value="${mtl:contains(command.context.loginUser.settings.favourite_layouts, mtl:convertToEnum('org.bibsonomy.common.enums.Favourite_layouts', 'EndNote'))}"/>
+	<c:set var="showBibTeX" value="${mtl:contains(command.context.loginUser.settings.favouriteLayouts, mtl:convertToEnum('org.bibsonomy.common.enums.FavouriteLayouts', 'BIBTEX'))}"/>
+	<c:set var="showEndNote" value="${mtl:contains(command.context.loginUser.settings.favouriteLayouts, mtl:convertToEnum('org.bibsonomy.common.enums.FavouriteLayouts', 'EndNote'))}"/>
 	
 	<div class="citation-box">
 		<ul class="nav nav-tabs">

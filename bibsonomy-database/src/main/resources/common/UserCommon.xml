@@ -75,7 +75,7 @@
 		<result property="profilePrivlevel" column="profilegroup"   	javaType="ProfilePrivlevel" />
 		<result property="showBookmark"   	column="show_bookmark"  	javaType="boolean" />
 		<result property="showBibtex"   	column="show_bibtex"  		javaType="boolean" />
-		<result property="favourite_layouts"  	column="favourite_layouts"  		javaType="arrayList" />
+		<result property="favouriteLayouts"  	column="favourite_layouts"  		javaType="arrayList" />
 		<result property="layoutSettings"   resultMap="UserCommon.layoutSettings" />
 	</resultMap>
 	
@@ -124,7 +124,7 @@
 		<isNull property="settings.defaultLanguage">DEFAULT(lang),</isNull> 
 		#settings.logLevel#, #settings.confirmDelete#, #settings.profilePrivlevel#, #settings.tagboxMaxCount#, #settings.isMaxCount#, 
 		#settings.showBookmark#, #settings.showBibtex#, #settings.layoutSettings.simpleInterface#
-		#settings.favourite_layouts#
+		#settings.favouriteLayouts#
 	</sql>
 
 	<sql id="updateUserProfileAttributes">
@@ -156,7 +156,7 @@
 		show_bookmark = #settings.showBookmark#,
 		show_bibtex = #settings.showBibtex#, 
 		simple_interface = #settings.layoutSettings.simpleInterface#,
-		favourite_layouts = #settings.favourite_layouts#
+		favourite_layouts = #settings.favouriteLayouts#
 	</sql>
 	
 	<!-- matches resources owned by group members which trust the currUser -->

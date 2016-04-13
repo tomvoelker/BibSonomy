@@ -30,7 +30,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.TimeZone;
 
-import org.bibsonomy.common.enums.Favourite_layouts;
+import org.bibsonomy.common.enums.FavouriteLayouts;
 import org.bibsonomy.common.enums.ProfilePrivlevel;
 import org.bibsonomy.common.enums.TagCloudSort;
 import org.bibsonomy.common.enums.TagCloudStyle;
@@ -81,7 +81,7 @@ public class UserSettings implements Serializable {
 	 */
 	private int listItemcount = 20;
 	
-	private ArrayList<Favourite_layouts> favourite_layouts = new ArrayList<Favourite_layouts>();	
+	private ArrayList<FavouriteLayouts> favouriteLayouts = new ArrayList<FavouriteLayouts>();	
 	
 	private boolean showBookmark = true;
 	
@@ -341,14 +341,14 @@ public class UserSettings implements Serializable {
 	/**
 	 * @return the favourite_layouts
 	 */
-	public ArrayList<Favourite_layouts> getFavourite_layouts() {
-		return this.favourite_layouts;
+	public ArrayList<FavouriteLayouts> getFavouriteLayouts() {
+		return this.favouriteLayouts;
 	}
 
 	/**
 	 * @param favourite_layouts the favourite_layouts to set
 	 */
-	public void setFavourite_layouts(ArrayList<Favourite_layouts> favourite_layouts) {
-		this.favourite_layouts = favourite_layouts;
+	public void setFavouriteLayouts(ArrayList<FavouriteLayouts> favourite_layouts) {
+		this.favouriteLayouts = favourite_layouts;
 	}
 }
