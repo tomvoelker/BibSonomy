@@ -39,10 +39,12 @@ import javax.servlet.http.HttpSession;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.TeerGrube;
 import org.bibsonomy.webapp.util.spring.security.exceptionmapper.UsernameNotFoundExceptionMapper;
+import org.bibsonomy.webapp.util.spring.security.exceptions.UseNotAllowedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
 /**
@@ -80,6 +82,7 @@ public class FailureHandler extends SimpleUrlAuthenticationFailureHandler {
 		/*
 		 * redirect to registration (LDAP and OpenID)
 		 */
+		final RedirectStrategy redirectStrategy = getRedirectStrategy();
 		if (exception instanceof UsernameNotFoundException) {
 			final UsernameNotFoundException unne = (UsernameNotFoundException) exception;
 			/*
@@ -87,7 +90,7 @@ public class FailureHandler extends SimpleUrlAuthenticationFailureHandler {
 			 * exception (LDAP/OpenID) and "converts" the user data to our 
 			 * user object.
 			 */
-			for (final UsernameNotFoundExceptionMapper mapper : usernameNotFoundExceptionMapper) {
+			for (final UsernameNotFoundExceptionMapper mapper : this.usernameNotFoundExceptionMapper) {
 				if (mapper.supports(unne)) {
 					/*
 					 * store user data and authentication in session
@@ -97,11 +100,17 @@ public class FailureHandler extends SimpleUrlAuthenticationFailureHandler {
 					/*
 					 * redirect to the correct registration page
 					 */
-					getRedirectStrategy().sendRedirect(request, response, mapper.getRedirectUrl());
+					redirectStrategy.sendRedirect(request, response, mapper.getRedirectUrl());
 					return;
 				}
 			}
 		}
+		
+		if (exception instanceof UseNotAllowedException) {
+			// TODO: use urlgenerator
+			redirectStrategy.sendRedirect(request, response, "/authentication/denied/usenotallowed");
+		}
+		
 		super.onAuthenticationFailure(request, response, exception);
 	}
 

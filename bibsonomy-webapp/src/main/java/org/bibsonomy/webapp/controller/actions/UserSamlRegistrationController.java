@@ -27,6 +27,7 @@
 package org.bibsonomy.webapp.controller.actions;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.user.remote.RemoteUserId;
@@ -54,7 +55,7 @@ import org.springframework.validation.Errors;
 public class UserSamlRegistrationController extends AbstractUserIDRegistrationController {
 	
 	private SamlUserAttributeMapping attributeExtractor;
-	
+	private List<String> requiredFields;
 	
 	@Override
 	protected String getLoginNotice() {
@@ -121,7 +122,7 @@ public class UserSamlRegistrationController extends AbstractUserIDRegistrationCo
 	
 	@Override
 	public Validator<UserIDRegistrationCommand> getValidator() {
-		return new UserSamlRegistrationValidator(new SamlAuthenticationTool(getRequestLogic(), Arrays.asList("step")), getRequestLogic());
+		return new UserSamlRegistrationValidator(new SamlAuthenticationTool(getRequestLogic(), Arrays.asList("step")), getRequestLogic(), this.requiredFields);
 	}
 
 	/**
@@ -129,6 +130,13 @@ public class UserSamlRegistrationController extends AbstractUserIDRegistrationCo
 	 */
 	public void setAttributeExtractor(SamlUserAttributeMapping attributeExtractor) {
 		this.attributeExtractor = attributeExtractor;
+	}
+
+	/**
+	 * @param requiredFields the requiredFields to set
+	 */
+	public void setRequiredFields(List<String> requiredFields) {
+		this.requiredFields = requiredFields;
 	}
 
 }

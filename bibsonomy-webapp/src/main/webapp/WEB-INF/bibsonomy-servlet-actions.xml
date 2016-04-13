@@ -990,6 +990,8 @@
 		<!-- After successful registration, the user is redirected to this page.  -->
 		<property name="successRedirect" value="/register_saml_success"/>
 		
+		<property name="requiredFields" value="${auth.register.saml.fields.required}" />
+		
 		<property name="attributeExtractor" ref="samlAttributeExtractor" />
 		<property name="authenticationManager" ref="samlAuthenticationManager"/>
 	</bean>
