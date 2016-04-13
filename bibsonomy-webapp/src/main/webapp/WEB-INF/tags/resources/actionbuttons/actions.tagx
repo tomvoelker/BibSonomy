@@ -13,7 +13,6 @@
 	<jsp:directive.attribute name="disableResourceLinks" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
 	
-
 	<c:set var="showBibTeX" value="${mtl:contains(command.context.loginUser.settings.favouriteLayouts, mtl:convertToEnum('org.bibsonomy.common.enums.FavouriteLayouts', 'BIBTEX'))}"/>
 	<c:set var="showEndNote" value="${mtl:contains(command.context.loginUser.settings.favouriteLayouts, mtl:convertToEnum('org.bibsonomy.common.enums.FavouriteLayouts', 'EndNote'))}"/>
 

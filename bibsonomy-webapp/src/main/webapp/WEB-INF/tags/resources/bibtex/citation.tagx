@@ -20,7 +20,9 @@
 		+-->
 	<!-- TODO: (Bootstrap) remove! -->
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
-	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="false"/>
+	
+	<c:set var="showBibTeX" value="${mtl:contains(command.context.loginUser.settings.favouriteLayouts, mtl:convertToEnum('org.bibsonomy.common.enums.FavouriteLayouts', 'BIBTEX'))}"/>
+	<c:set var="showEndNote" value="${mtl:contains(command.context.loginUser.settings.favouriteLayouts, mtl:convertToEnum('org.bibsonomy.common.enums.FavouriteLayouts', 'EndNote'))}"/>
 
 	<div id="citation" class="tabs">
 		<!-- tab header -->
@@ -56,12 +58,19 @@
 					<a id="citation_${citationStyle}"><!-- keep --></a>
 				</div>
 			</c:forEach>
-			<div id="citation_bibtex">
-				<textarea style="width:100%;font-size:80%;border:none;" rows="15"><export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="${true}" generatedBibtexKeys="${false}"/></textarea>
-			</div>
-			<div id="citation_endnote">
-				<textarea style="width:100%;font-size:80%;border:none;" rows="15"><export:endnote post="${post}" escapeXml="${true}" /></textarea>
-			</div>
+			
+			<c:if test="${showBibTeX}">
+				<div id="citation_bibtex">
+					<textarea style="width:100%;font-size:80%;border:none;" rows="15"><export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="${true}" generatedBibtexKeys="${false}"/></textarea>
+				</div>
+			</c:if>
+			
+			<c:if test="${showEndnote}">
+				<div id="citation_endnote">
+					<textarea style="width:100%;font-size:80%;border:none;" rows="15"><export:endnote post="${post}" escapeXml="${true}" /></textarea>
+				</div>
+			</c:if>
+			
 			<div id="citation_all">
 					<!--   -->
 			</div>
