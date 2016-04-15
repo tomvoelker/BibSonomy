@@ -116,18 +116,18 @@ public class SyncSettingsController extends SettingsPageController implements Va
 
 		switch (httpMethod) {
 		case POST:
-			final SyncService newSyncServer = command.getNewSyncServer();
+			final SyncService newSyncServer = command.getNewSyncServer();			
 			this.logic.createSyncServer(loginUserName, newSyncServer);
 			// forward user to sync-page to perform an initial sync in BOTH directions first 
 			if (SyncUtils.syncServiceRequiresInitialSync(newSyncServer)) {
-				return firstSyncView();
+				return new ExtendedRedirectView("/sync");
 			}
 			break;
 		case PUT:
 			this.logic.updateSyncServer(loginUserName, syncServer, SyncSettingsUpdateOperation.SETTINGS);
 			// forward user to sync-page to perform an initial sync in BOTH directions first 
 			if (SyncUtils.syncServiceRequiresInitialSync(syncServer)) {
-				return firstSyncView();
+				return new ExtendedRedirectView("/sync");
 			}
 			break;
 		case DELETE:
@@ -141,14 +141,15 @@ public class SyncSettingsController extends SettingsPageController implements Va
 		return new ExtendedRedirectView("/settings?selTab=" + SettingsViewCommand.SYNC_IDX);
 	}
 
-	/**
-	 * @return
-	 */
-	private static ExtendedRedirectViewWithAttributes firstSyncView() {
-		final ExtendedRedirectViewWithAttributes view = new ExtendedRedirectViewWithAttributes("/sync");
-		view.addAttribute("message", "sync.auto.firstsync.required");
-		return view;
-	}
+//	/**
+//	 * @param name of the sync server 
+//	 * @return 
+//	 */
+//	private static ExtendedRedirectViewWithAttributes firstSyncView(SyncService syncServer) {
+//		final ExtendedRedirectViewWithAttributes view = new ExtendedRedirectViewWithAttributes("/sync");
+//		view.addAttribute("showAutoSyncInfoForURI", syncServer.getService());
+//		return view;
+//	}
 	
 	/**
 	 * Finds the sync service in the list whose update/create form was send. 

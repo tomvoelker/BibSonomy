@@ -62,22 +62,22 @@
 			<fmt:message var="synchronizationRunning" key="synchronization.synchronizationRunning"/>
 			<fmt:message var="resetService" key="synchronization.server.reset" />
 
-			<!-- show message from SyncSettingsController -->
-			<c:if test="${flashAttributes.message eq 'sync.auto.firstsync.required'}">
-				<fmt:message var="initialSyncInfoMessage" key="${flashAttributes.message}"/>
-				<bs:alert style="info">
-					<jsp:attribute name="alertBody">
-						<c:out value="${initialSyncInfoMessage}"/>
-					</jsp:attribute>
-				</bs:alert>
-			</c:if>
-		
 			<!-- iterate over all services -->
 			<c:forEach var="service" items="${command.syncServer}" varStatus="status">
 				<form:form action="/ajax/synchronize" method="post" id="sync_${status.index}">
+					
+					<!-- show initial auto-sync message -->
+				 	<c:if test="${service.alreadySyncedOnce eq false}">
+						<fmt:message var="firstAutoSyncInfoMessage" key="sync.auto.firstsync.required"/>
+						<bs:alert style="info">
+							<jsp:attribute name="alertBody">
+								<c:out value="${firstAutoSyncInfoMessage}"/>
+							</jsp:attribute>
+						</bs:alert>
+					</c:if>
 
 					<h2><c:out value="${serviceName}: "/> <c:out value="${service.name}" /></h2>
-						
+
 					<fieldset class="fsOuter">
 						<p>
 							<fmt:message key="synchronization.explanation">
