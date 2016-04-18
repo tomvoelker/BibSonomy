@@ -1927,6 +1927,12 @@
 		<BibFile>APHAScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.apha.APHAScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_313">
+		<TestDescription>URL scraping test for the cinii cat inist</TestDescription>
+		<URL>http://cat.inist.fr/?aModele=afficheN&amp;cpsidt=3620772</URL>
+		<BibFile>CatInistScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.catinist.CatinistScraper</Scraper>
+	</URLTest>
 	<URLTest id="url_314">
 		<TestDescription>DBLP scraping test (html page)</TestDescription>
 		<URL>http://dblp.uni-trier.de/rec/bibtex/books/sp/stdesign14/AtzmuellerBHKM0SSS14</URL>
