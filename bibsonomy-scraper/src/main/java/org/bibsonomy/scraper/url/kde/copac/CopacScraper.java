@@ -61,7 +61,6 @@ public class CopacScraper extends GenericBibTeXURLScraper {
 
 	@Override
 	protected String getDownloadURL(URL url) throws ScrapingException, IOException {
-		System.out.println(url.toString() + EXPORT_BIBTEX);
 		return url.toString() + EXPORT_BIBTEX;
 	}
 	

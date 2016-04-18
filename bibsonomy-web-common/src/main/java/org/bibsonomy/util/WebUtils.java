@@ -653,6 +653,13 @@ public class WebUtils {
 					 */
 					charSet = charSet.substring(0, charsetEnding);
 				}
+				/*
+				 * reomove the "" from the charSet if it is contained
+				 */
+				
+				if (charSet.startsWith("\"")) {
+					charSet = charSet.replaceAll("\"", "");
+				}
 				return charSet.trim().toUpperCase();
 			} 
 		} 
