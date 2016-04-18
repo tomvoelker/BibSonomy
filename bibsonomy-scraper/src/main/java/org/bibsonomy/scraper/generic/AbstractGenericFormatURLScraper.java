@@ -30,6 +30,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -69,7 +71,15 @@ public abstract class AbstractGenericFormatURLScraper extends AbstractUrlScraper
 			
 			String bibtex = this.convert(downloadResult);
 			
+			/*
+			 * clean the bibtex for better format
+			 */
 			if (present(bibtex)) {
+				final Pattern URL_PATTERN_FOR_URL = Pattern.compile("URL = \\{ \n        (.*)\n    \n\\}");
+				Matcher m = URL_PATTERN_FOR_URL.matcher(bibtex);
+				if(m.find()) {
+					bibtex = bibtex.replaceAll(URL_PATTERN_FOR_URL.toString(), "URL = {" + m.group(1) + "}");
+				}
 				bibtex = postProcessScrapingResult(scrapingContext, bibtex);
 				scrapingContext.setBibtexResult(bibtex);
 				return true;

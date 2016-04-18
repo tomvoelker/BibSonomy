@@ -56,8 +56,7 @@ public class AmsScraper extends GenericBibTeXURLScraper implements CitedbyScrape
 	private static final String INFO = "For references from the "+href(SITE_URL, SITE_NAME)+".";
 	
 	private static final String FORMAT_BIBTEX = "&format=bibtex";
-
-
+	
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*journals.ametsoc.org"), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	private static final Pattern pattern = Pattern.compile("doi/\\w+/([^&]*)[&]?");
