@@ -17,6 +17,7 @@ $(function() {
 var engine = new Bloodhound({
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
+    highlight: true,
     local: [{
     	value: "BibTeX"
     }, {
@@ -37,7 +38,7 @@ $('.typeahead').typeahead(null, {
 
 
 $('#searchCitationAutocomplete').on('typeahead:select', function (e, datum) {
-	var toBeAppended = '<li class="list-group-item favouriteLayoutsListItem"><input type="hidden" name="user.settings.favouriteLayouts"  id="' + datum.value.toUpperCase() + '" value="' + datum.value.toUpperCase() + '"/><span class="btn btn-default badge label-danger delete-Style">Delete</span>' + datum.value + '</li>';
+	var toBeAppended = '<li class="list-group-item favouriteLayoutsListItem"><input type="hidden" name="user.settings.favouriteLayouts"  id="SIMPLE/' + datum.value.toUpperCase() + '" value="SIMPLE/' + datum.value.toUpperCase() + '"/><span class="btn btn-default badge label-danger delete-Style">Delete</span>' + datum.value + '</li>';
 	$('#favouriteLayoutsList').append(toBeAppended);
 	clearFavouriteLayoutsList();
 });
