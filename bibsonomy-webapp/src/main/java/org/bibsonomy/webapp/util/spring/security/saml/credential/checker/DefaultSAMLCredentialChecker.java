@@ -6,7 +6,7 @@ import org.springframework.security.saml.SAMLCredential;
  * default implementation for {@link SAMLCredentialChecker}
  * checks nothing
  *
- * @author dto
+ * @author dzo
  */
 public class DefaultSAMLCredentialChecker implements SAMLCredentialChecker {
 
