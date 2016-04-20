@@ -15,13 +15,12 @@ $(function() {
 
 //instantiate the bloodhound suggestion engine
 var engine = new Bloodhound({
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('d'),
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
-    highlight: true,
     local: [{
-        d: "BibTeX"
+    	value: "BibTeX"
     }, {
-        d: "Endnote"
+    	value: "Endnote"
     }]
 });
 
@@ -31,17 +30,46 @@ var engine = new Bloodhound({
 engine.initialize();
 
 $('.typeahead').typeahead(null, {
-    displayKey: 'd',
+    displayKey: 'value',
+    highlight: true,
     source: engine.ttAdapter()
 });
 
 
 $('#searchCitationAutocomplete').on('typeahead:select', function (e, datum) {
-	 alert(datum + "chosen");
-	$("#favouriteLayoutsList ul").append('<li class="list-group-item"><input type="hidden" name="user.settings.favouriteLayouts"  id="' + datum + '" value="' + datum + '" /><span class="btn btn-default badge label-danger delete-Style">Delete</span>' + datum + '</li>');
+	var toBeAppended = '<li class="list-group-item favouriteLayoutsListItem"><input type="hidden" name="user.settings.favouriteLayouts"  id="' + datum.value.toUpperCase() + '" value="' + datum.value.toUpperCase() + '"/><span class="btn btn-default badge label-danger delete-Style">Delete</span>' + datum.value + '</li>';
+	$('#favouriteLayoutsList').append(toBeAppended);
+	clearFavouriteLayoutsList();
+});
+
+
+$('#searchCitationAutocomplete').on('keydown', function(event) {
+    // Define tab key
+
+    if (event.which == 13) // if pressing enter
+    	var e = jQuery.Event("keydown");
+    	e.keyCode = e.which = 9; // 9 == tab //error message but still working??????
+    	event.preventDefault();
+        $('#searchCitationAutocomplete').trigger(e); // trigger "tab" key - which works as "enter"
 });
 
 $('.delete-Style').click(function(){
 	$(this).parent().remove();
+	
 });
+
+
+
+function clearFavouriteLayoutsList() { //removing duplicates
+	var seen = {};
+	$('.favouriteLayoutsListItem').each(function() {
+	    var txt = $(this).text();
+	    if (seen[txt])
+	        $(this).remove();
+	    else
+	        seen[txt] = true;
+	});
+}
+
+
 });

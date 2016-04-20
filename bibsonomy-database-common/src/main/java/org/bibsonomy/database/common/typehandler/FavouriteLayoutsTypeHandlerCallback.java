@@ -26,6 +26,8 @@ public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCall
 	public void setParameter(ParameterSetter setter, Object parameter) throws SQLException {
 		if (parameter == null) {
 			setter.setString(null);
+		} else if(((ArrayList<FavouriteLayouts>) parameter).isEmpty()) {
+			setter.setString(null);
 		} else {
 			String saveString = ((ArrayList<FavouriteLayouts>) parameter).toString();	
 			saveString = saveString.replace('[', ' ');
@@ -46,6 +48,11 @@ public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCall
 	public Object valueOf(String str) {
 		ArrayList<FavouriteLayouts> returner = new ArrayList<FavouriteLayouts>();
 		ArrayList<String> cleanedStr = new ArrayList<String>();
+		
+		if(str == null || str.trim().isEmpty()){
+			return returner;
+		}
+		
 		String[] strInLines = str.split(",");
 
 		for (String string : strInLines) {

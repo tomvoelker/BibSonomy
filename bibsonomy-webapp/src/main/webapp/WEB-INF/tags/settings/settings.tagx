@@ -223,7 +223,17 @@
 				
 										<ul class="list-group" id="favouriteLayoutsList">				
 											<c:forEach var="style" items="${command.context.loginUser.settings.favouriteLayouts}" varStatus="counter">
-												<li class="list-group-item"><input type="hidden" name="user.settings.favouriteLayouts"  id="${style}" value="${style}" /><span class="btn btn-default badge label-danger delete-Style">Delete</span>${style}</li>
+												<c:choose>
+    												<c:when test="${style == 'BIBTEX'}"> <!-- if -->
+       													<li class="list-group-item favouriteLayoutsListItem"><input type="hidden" name="user.settings.favouriteLayouts"  id="${style}" value="${style}" /><span class="btn btn-default badge label-danger delete-Style">Delete</span>BibTeX</li>
+   													</c:when>
+   													<c:when test="${style == 'ENDNOTE'}"> <!-- else if -->    
+   														<li class="list-group-item favouriteLayoutsListItem"><input type="hidden" name="user.settings.favouriteLayouts"  id="${style}" value="${style}" /><span class="btn btn-default badge label-danger delete-Style">Delete</span>Endnote</li>
+   													</c:when>
+   													<c:otherwise> <!-- else -->
+       													<li class="list-group-item favouriteLayoutsListItem"><input type="hidden" name="user.settings.favouriteLayouts"  id="${style}" value="${style}" /><span class="btn btn-default badge label-danger delete-Style">Delete</span>${style}</li>
+       												</c:otherwise>
+       											</c:choose>
 											</c:forEach>
 										</ul>
 									</div>
