@@ -38,9 +38,9 @@ public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCall
 			}
 			//removing the last ", "
 			toBeSet = toBeSet.trim();
-			toBeSet = toBeSet.substring(0, toBeSet.length());
+			toBeSet = toBeSet.substring(0, toBeSet.length()-1);
 			//
-			setter.setString(toBeSet);
+			setter.setString(toBeSet.toUpperCase());
 		}
 	}
 
@@ -68,7 +68,15 @@ public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCall
 		}
 		for (String element : cleanedStr) {
 			String sourceAndStyle[] = element.split("/");
-			returner.add(new FavouriteLayout(FavouriteLayoutSource.valueOf(sourceAndStyle[0]), sourceAndStyle[1]));
+			FavouriteLayout favl;
+			if(sourceAndStyle[1].compareToIgnoreCase("BibTeX")==0){
+				favl = new FavouriteLayout(FavouriteLayoutSource.valueOf(sourceAndStyle[0]), "BibTeX");
+			} else if(sourceAndStyle[1].compareToIgnoreCase("Endnote")==0){
+				favl = new FavouriteLayout(FavouriteLayoutSource.valueOf(sourceAndStyle[0]), "Endnote");
+			} else {
+				favl = new FavouriteLayout(FavouriteLayoutSource.valueOf(sourceAndStyle[0].toUpperCase()), sourceAndStyle[1]);
+			}
+			returner.add(favl);
 		}
 		return returner;
 	}

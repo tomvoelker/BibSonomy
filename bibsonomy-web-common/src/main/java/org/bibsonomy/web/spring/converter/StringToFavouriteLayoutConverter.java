@@ -16,14 +16,20 @@ public class StringToFavouriteLayoutConverter implements Converter<String, Favou
 	 * @see org.springframework.core.convert.converter.Converter#convert(java.lang.Object)
 	 */
 	@Override
-	public FavouriteLayout convert(String sourceandstyle) {		
-		String splitted[] = sourceandstyle.split("/");
-		if(splitted.length != 2){
-			throw new IllegalArgumentException("Foramt has to be source/style");
+	public FavouriteLayout convert(String value) {		
+		String sourceAndStyle[] = value.split("/");
+		if(sourceAndStyle.length != 2){
+			throw new IllegalArgumentException("Format has to be source/style");
 		}
-		FavouriteLayoutSource source = FavouriteLayoutSource.valueOf(sourceandstyle);
-		String style = splitted[2];
-		return new FavouriteLayout(source, style);
+		FavouriteLayout favl;
+		if(sourceAndStyle[1].compareToIgnoreCase("BibTeX")==0){
+			favl = new FavouriteLayout(FavouriteLayoutSource.valueOf(sourceAndStyle[0]), "BibTeX");
+		} else if(sourceAndStyle[1].compareToIgnoreCase("Endnote")==0){
+			favl = new FavouriteLayout(FavouriteLayoutSource.valueOf(sourceAndStyle[0]), "Endnote");
+		} else {
+			favl = new FavouriteLayout(FavouriteLayoutSource.valueOf(sourceAndStyle[0].toUpperCase()), sourceAndStyle[1]);
+		}
+		return favl;
 	}
 
 }

@@ -222,19 +222,9 @@
 									<div id="collapse1" class="panel-collapse collapse">
 				
 										<ul class="list-group" id="favouriteLayoutsList">				
-											<c:forEach var="style" items="${command.context.loginUser.settings.favouriteLayouts}" varStatus="counter">
-												<c:choose>
-    												<c:when test="${style == 'BIBTEX'}"> <!-- if -->
-       													<li class="list-group-item favouriteLayoutsListItem"><input type="hidden" name="user.settings.favouriteLayouts"  id="SIMPLE/${style}" value="SIMPLE/${style}" /><span class="btn btn-default badge label-danger delete-Style">Delete</span>BibTeX</li>
-   													</c:when>
-   													<c:when test="${style == 'ENDNOTE'}"> <!-- else if -->    
-   														<li class="list-group-item favouriteLayoutsListItem"><input type="hidden" name="user.settings.favouriteLayouts"  id="SIMPLE/${style}" value="SIMPLE/${style}" /><span class="btn btn-default badge label-danger delete-Style">Delete</span>Endnote</li>
-   													</c:when>
-   													<c:otherwise> <!-- else -->
-       													<li class="list-group-item favouriteLayoutsListItem"><input type="hidden" name="user.settings.favouriteLayouts"  id="JABREF/${style}" value="JABREF/${style}" /><span class="btn btn-default badge label-danger delete-Style">Delete</span>${style}</li>
-       												</c:otherwise>
-       											</c:choose>
-											</c:forEach>
+											<c:forEach var="favl" items="${command.context.loginUser.settings.favouriteLayouts}" varStatus="counter">
+												<li class="list-group-item favouriteLayoutsListItem"><input type="hidden" name="user.settings.favouriteLayouts"  id="${favl.source}/${favl.style}" value="${favl.source}/${favl.style}" /><span class="btn btn-default badge label-danger delete-Style">Delete</span>${favl.style}</li>
+       										</c:forEach>
 										</ul>
 									</div>
 								</div>
