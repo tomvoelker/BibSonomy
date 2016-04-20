@@ -11,37 +11,41 @@ $(function() {
 	});
 
 
+map = {};
+styles = [];
+     
+var data = '[{"source": "SIMPLE", "style": "BibTeX"},{"source": "SIMPLE", "style": "Endnote"}]';
+var jsonObj = $.parseJSON(data);
 
-
+$.each(jsonObj, function (i, favLay) {
+	//alert(favLay.style);
+	map[favLay.style] = favLay;
+	styles.push(favLay.style);
+	});
 //instantiate the bloodhound suggestion engine
 var engine = new Bloodhound({
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+    datumTokenizer: function (d) {return Bloodhound.tokenizers.whitespace(d.style);},
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     highlight: true,
-    local: [{
-    	value: "BibTeX"
-    }, {
-    	value: "Endnote"
-    }]
+    local: jsonObj
 });
-
 
 
 // initialize the bloodhound suggestion engine
 engine.initialize();
 
 $('.typeahead').typeahead(null, {
-    displayKey: 'value',
+    displayKey: 'style',
     highlight: true,
     source: engine.ttAdapter()
 });
 
 
-$('#searchCitationAutocomplete').on('typeahead:select', function (e, datum) {
-	var toBeAppended = '<li class="list-group-item favouriteLayoutsListItem"><input type="hidden" name="user.settings.favouriteLayouts"  id="SIMPLE/' + datum.value.toUpperCase() + '" value="SIMPLE/' + datum.value.toUpperCase() + '"/><span class="btn btn-default badge label-danger delete-Style">Delete</span>' + datum.value + '</li>';
-	$('#favouriteLayoutsList').append(toBeAppended);
-	clearFavouriteLayoutsList();
-});
+//$('#searchCitationAutocomplete').on('typeahead:select', function (e, datum) {
+//	var toBeAppended = '<li class="list-group-item favouriteLayoutsListItem"><input type="hidden" name="user.settings.favouriteLayouts"  id="SIMPLE/' + datum.value.toUpperCase() + '" value="SIMPLE/' + datum.value.toUpperCase() + '"/><span class="btn btn-default badge label-danger delete-Style">Delete</span>' + datum.value + '</li>';
+//	$('#favouriteLayoutsList').append(toBeAppended);
+//	clearFavouriteLayoutsList();
+//});
 
 
 $('#searchCitationAutocomplete').on('keydown', function(event) {
@@ -56,7 +60,6 @@ $('#searchCitationAutocomplete').on('keydown', function(event) {
 
 $('.delete-Style').click(function(){
 	$(this).parent().remove();
-	
 });
 
 
