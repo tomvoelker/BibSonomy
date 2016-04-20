@@ -2,7 +2,9 @@ package org.bibsonomy.database.common.typehandler;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
+import org.bibsonomy.model.enums.FavouriteLayoutSource;
 import org.bibsonomy.model.user.settings.FavouriteLayout;
 
 import com.ibatis.sqlmap.client.extensions.ParameterSetter;
@@ -29,11 +31,16 @@ public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCall
 		} else if(((ArrayList<FavouriteLayout>) parameter).isEmpty()) {
 			setter.setString(null);
 		} else {
-			String saveString = ((ArrayList<FavouriteLayout>) parameter).toString();	
-			saveString = saveString.replace('[', ' ');
-			saveString = saveString.replace(']', ' ');
-			saveString = saveString.trim();
-			setter.setString(saveString);
+			String toBeSet = "";
+			for (Iterator<FavouriteLayout> iterator = ((ArrayList<FavouriteLayout>) parameter).iterator(); iterator.hasNext();) {
+				FavouriteLayout fav = iterator.next();
+				toBeSet += fav.toString() + ", ";
+			}
+			//removing the last ", "
+			toBeSet = toBeSet.trim();
+			toBeSet = toBeSet.substring(0, toBeSet.length());
+			//
+			setter.setString(toBeSet);
 		}
 	}
 
@@ -60,7 +67,8 @@ public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCall
 			cleanedStr.add(string);
 		}
 		for (String element : cleanedStr) {
-			returner.add(Enum.valueOf(FavouriteLayout.class, element));
+			String sourceAndStyle[] = element.split("/");
+			returner.add(new FavouriteLayout(FavouriteLayoutSource.valueOf(sourceAndStyle[0]), sourceAndStyle[1]));
 		}
 		return returner;
 	}

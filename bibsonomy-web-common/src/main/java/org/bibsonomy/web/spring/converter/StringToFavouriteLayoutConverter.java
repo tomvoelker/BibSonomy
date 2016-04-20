@@ -23,7 +23,7 @@ public class StringToFavouriteLayoutConverter implements Converter<String, Favou
 		}
 		FavouriteLayoutSource source = FavouriteLayoutSource.valueOf(sourceandstyle);
 		String style = splitted[2];
-		return new FavouriteLayout(source,style);
+		return new FavouriteLayout(source, style);
 	}
 
 }
