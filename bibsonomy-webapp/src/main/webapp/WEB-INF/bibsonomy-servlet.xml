@@ -11,6 +11,10 @@
 	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
 		<property name="converters">
 			<list>
+				
+				<!-- strings to a single FavouriteLayout which then has to be placed in the user settings list -->
+				<bean class="org.bibsonomy.web.spring.converter.StringToFavouriteLayoutConverter" />
+				
 				<!-- strings to enums (a generic converter) -->
 				<bean class="org.bibsonomy.web.spring.converter.factories.StringToEnumConverterFactory"/>
 				
