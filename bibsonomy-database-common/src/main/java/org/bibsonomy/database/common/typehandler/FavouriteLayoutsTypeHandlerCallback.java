@@ -3,7 +3,7 @@ package org.bibsonomy.database.common.typehandler;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import org.bibsonomy.common.enums.FavouriteLayouts;
+import org.bibsonomy.model.user.settings.FavouriteLayout;
 
 import com.ibatis.sqlmap.client.extensions.ParameterSetter;
 
@@ -26,10 +26,10 @@ public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCall
 	public void setParameter(ParameterSetter setter, Object parameter) throws SQLException {
 		if (parameter == null) {
 			setter.setString(null);
-		} else if(((ArrayList<FavouriteLayouts>) parameter).isEmpty()) {
+		} else if(((ArrayList<FavouriteLayout>) parameter).isEmpty()) {
 			setter.setString(null);
 		} else {
-			String saveString = ((ArrayList<FavouriteLayouts>) parameter).toString();	
+			String saveString = ((ArrayList<FavouriteLayout>) parameter).toString();	
 			saveString = saveString.replace('[', ' ');
 			saveString = saveString.replace(']', ' ');
 			saveString = saveString.trim();
@@ -46,7 +46,7 @@ public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCall
 	 */
 	@Override
 	public Object valueOf(String str) {
-		ArrayList<FavouriteLayouts> returner = new ArrayList<FavouriteLayouts>();
+		ArrayList<FavouriteLayout> returner = new ArrayList<FavouriteLayout>();
 		ArrayList<String> cleanedStr = new ArrayList<String>();
 		
 		if(str == null || str.trim().isEmpty()){
@@ -60,7 +60,7 @@ public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCall
 			cleanedStr.add(string);
 		}
 		for (String element : cleanedStr) {
-			returner.add(Enum.valueOf(FavouriteLayouts.class, element));
+			returner.add(Enum.valueOf(FavouriteLayout.class, element));
 		}
 		return returner;
 	}
