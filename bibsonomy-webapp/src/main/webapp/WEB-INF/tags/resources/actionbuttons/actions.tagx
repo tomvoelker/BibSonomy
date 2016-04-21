@@ -169,17 +169,15 @@
 									</li>
 								</c:if>
 							</c:if>
-						</c:forEach>
-															
-						<!-- Jabref citations -->
-						<c:forEach items="${command.context.loginUser.settings.favouriteLayouts}" var="citation">
-        					<c:if test="${citation.source=='JABREF'}">
+							<c:if test="${citation.source=='JABREF'}">
         						<li>
-        							<a class="litem" href="${relativeUrlGenerator.getCitationUrlbyIntraHashUserName(citation, post.resource.intraHash, post.user.name)}?formatEmbedded=true" title="${citation.style}">${citation.style}</a>
+        							<a class="litem" href="${relativeUrlGenerator.getCitationUrlbyIntraHashUserName(citation, post.resource.intraHash, post.user.name)}?formatEmbedded=true" title="${citation.style}">
+        								${citation.style}
+        							</a>
         						</li>
         					</c:if>
-        				</c:forEach>
-						
+						</c:forEach>
+																			
 						
 						<!-- OPENURL -->
 						<c:if test="${command.context.userLoggedIn and not command.context.loginUser.settings.layoutSettings.simpleInterface}">
