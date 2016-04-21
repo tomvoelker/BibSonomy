@@ -2,6 +2,8 @@ package org.bibsonomy.database.common.typehandler;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 
 import org.bibsonomy.model.enums.FavouriteLayoutSource;
@@ -15,7 +17,14 @@ import com.ibatis.sqlmap.client.extensions.ParameterSetter;
  * @author pfister
  */
 public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCallback {
-
+	
+	
+	class favlsComparator implements Comparator<FavouriteLayout> {
+	    @Override
+	    public int compare(FavouriteLayout o1, FavouriteLayout o2) {
+	        return o1.getStyle().compareTo(o2.getStyle());
+	    }
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -26,13 +35,20 @@ public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCall
 	@SuppressWarnings("unchecked")
 	@Override
 	public void setParameter(ParameterSetter setter, Object parameter) throws SQLException {
+		
+		ArrayList<FavouriteLayout> favls = (ArrayList<FavouriteLayout>) parameter;
+		
 		if (parameter == null) {
 			setter.setString(null);
-		} else if(((ArrayList<FavouriteLayout>) parameter).isEmpty()) {
+		} else if(favls.isEmpty()) {
 			setter.setString(null);
 		} else {
 			String toBeSet = "";
-			for (Iterator<FavouriteLayout> iterator = ((ArrayList<FavouriteLayout>) parameter).iterator(); iterator.hasNext();) {
+			
+					
+			Collections.sort(favls, new favlsComparator());
+			
+			for (Iterator<FavouriteLayout> iterator = favls.iterator(); iterator.hasNext();) {
 				FavouriteLayout fav = iterator.next();
 				toBeSet += fav.toString() + ", ";
 			}
@@ -78,6 +94,7 @@ public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCall
 			}
 			returner.add(favl);
 		}
+		Collections.sort(returner, new favlsComparator());
 		return returner;
 	}
 }

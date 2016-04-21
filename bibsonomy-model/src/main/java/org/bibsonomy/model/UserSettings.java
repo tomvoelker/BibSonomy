@@ -346,9 +346,9 @@ public class UserSettings implements Serializable {
 	}
 
 	/**
-	 * @param favourite_layouts the favourite_layouts to set
+	 * @param favouriteLayouts the favourite_layouts to set
 	 */
-	public void setFavouriteLayouts(ArrayList<FavouriteLayout> favourite_layouts) {
-		this.favouriteLayouts = favourite_layouts;
+	public void setFavouriteLayouts(ArrayList<FavouriteLayout> favouriteLayouts) {
+		this.favouriteLayouts = favouriteLayouts;
 	}
 }
