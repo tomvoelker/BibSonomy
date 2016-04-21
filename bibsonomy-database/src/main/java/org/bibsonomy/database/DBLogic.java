@@ -923,7 +923,7 @@ public class DBLogic implements LogicInterface {
 				return this.groupDBManager.getPendingGroup(groupName, requestingUser, session);
 			}
 			
-			final Group myGroup = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, true, session);
+			final Group myGroup = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, true, this.permissionDBManager.isAdmin(this.loginUser), session);
 			if (!GroupUtils.isValidGroup(myGroup)) {
 				return null;
 			}
@@ -1322,7 +1322,7 @@ public class DBLogic implements LogicInterface {
 			session.beginTransaction();
 
 			// check the groups existence and retrieve the current group
-			final Group group = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, false, session);
+			final Group group = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, false, false, session);
 			// TODO: When implementing DELETE, alter this check!
 			if (!GroupUtils.isValidGroup(group) && !(GroupUpdateOperation.ACTIVATE.equals(operation) || GroupUpdateOperation.DELETE_GROUP_REQUEST.equals(operation))) {
 				throw new IllegalArgumentException("Group does not exist");

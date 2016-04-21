@@ -63,8 +63,9 @@ import org.springframework.validation.Errors;
  * 
  * 
  * @author rja
+ * @param <R> 
  */
-public abstract class AbstractUserIDRegistrationController implements ErrorAware, ValidationAwareController<UserIDRegistrationCommand>, RequestAware, CookieAware {
+public abstract class AbstractUserIDRegistrationController<R> implements ErrorAware, ValidationAwareController<UserIDRegistrationCommand>, RequestAware, CookieAware {
 	private static final Log log = LogFactory.getLog(AbstractUserIDRegistrationController.class);
 	
 	protected LogicInterface adminLogic;
@@ -149,7 +150,6 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 		
 		log.debug("step 3: complete registration");
 		
-		validate(this.errors, command, user);
 		/* 
 		 * if there are any errors in the form, we return back to fix them.
 		 */
@@ -201,17 +201,25 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 		 * delete user from session.
 		 */
 		this.requestLogic.setSessionAttribute(FailureHandler.USER_TO_BE_REGISTERED, null);
-
-		return logOn(user);
+		
+		final R additionalInfoFromSession = this.getAdditionalInfoFromSession();
+		return logOn(user, additionalInfoFromSession);
+	}
+	
+	@SuppressWarnings("unchecked")
+	private R getAdditionalInfoFromSession() {
+		final String sessionKey = this.getAddtionsInfoSessionKey();
+		if (present(sessionKey)) {
+			return (R) this.requestLogic.getSessionAttribute(sessionKey);
+		}
+		return null;
 	}
 
 	/**
-	 * subclasses can do additional validation here
-	 * @param errors error container to be filled with potential errors 
-	 * @param userToBeRegistered 
-	 * @param command 
+	 * @return the session key for additional info
 	 */
-	protected void validate(Errors errors, UserIDRegistrationCommand command, User userToBeRegistered) {
+	protected String getAddtionsInfoSessionKey() {
+		return null;
 	}
 
 	/**
@@ -220,20 +228,22 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 	 * @param user
 	 */
 	protected void setFixedValuesFromUser(UserIDRegistrationCommand command, User user) {
+		// noop
 	}
 
 	/**
 	 * log user into system and return success view
 	 * 
 	 * @param user
+	 * @param additionalInfoFromSession 
 	 * @return success view
 	 */
-	protected View logOn(final User user) {
+	private View logOn(final User user, final R additionalInfoFromSession) {
 		/*
 		 * log user into system
 		 * TODO: user correct? not registerUser? (maybe the user has changed his name)
 		 */
-		final Authentication authentication = this.getAuthentication(user);
+		final Authentication authentication = this.getAuthentication(user, additionalInfoFromSession);
 
 		final Authentication authenticated = this.authenticationManager.authenticate(authentication);
 		SecurityContextHolder.getContext().setAuthentication(authenticated);
@@ -265,9 +275,10 @@ public abstract class AbstractUserIDRegistrationController implements ErrorAware
 	 * Typically, a new {@link UsernamePasswordAuthenticationToken} is returned. 
 	 * 
 	 * @param user
-	 * @return
+	 * @param additionalInfoFromSession 
+	 * @return the authentication
 	 */
-	protected abstract Authentication getAuthentication(final User user);
+	protected abstract Authentication getAuthentication(final User user, R additionalInfoFromSession);
 	
 	/**
 	 * Before we store the user <code>registerUser</code> in the database, his

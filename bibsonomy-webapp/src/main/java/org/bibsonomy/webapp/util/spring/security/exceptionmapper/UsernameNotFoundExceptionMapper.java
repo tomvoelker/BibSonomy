@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.webapp.util.spring.security.exceptionmapper;
 
+import javax.servlet.http.HttpSession;
+
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.util.spring.security.exceptions.LdapUsernameNotFoundException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -55,6 +57,14 @@ public abstract class UsernameNotFoundExceptionMapper {
 	 * @return A user containing the information from the LDAP server.
 	 */
 	public abstract User mapToUser(final UsernameNotFoundException e);
+	
+	/**
+	 * @param session
+	 * @param e 
+	 */
+	public void writeAdditionAttributes(HttpSession session, UsernameNotFoundException e) {
+		// noop
+	}
 
 	/**
 	 * @return The URL to which the user shall be redirected if she/he needs to
@@ -73,6 +83,4 @@ public abstract class UsernameNotFoundExceptionMapper {
 	public void setRedirectUrl(String redirectUrl) {
 		this.redirectUrl = redirectUrl;
 	}
-
-	
 }
