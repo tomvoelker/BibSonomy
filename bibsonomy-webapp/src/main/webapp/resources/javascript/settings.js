@@ -59,7 +59,7 @@ $('.typeahead').typeahead({
 
 
 $('#searchCitationAutocomplete').on('typeahead:select', function (e, datum) {
-	var toBeAppended = '<li class="list-group-item favouriteLayoutsListItem"><input type="hidden" name="user.settings.favouriteLayouts"  id="'+ datum.source.toUpperCase() +'/' + datum.name.toUpperCase() + '" value="'+datum.source.toUpperCase()+'/' + datum.name.toUpperCase() + '"/><span class="btn btn-default badge label-danger delete-Style">Delete</span>' + datum.displayName + '</li>';
+	var toBeAppended = '<li class="list-group-item favouriteLayoutsListItem"><input type="hidden" name="user.settings.favouriteLayouts"  id="'+ datum.source.toUpperCase() +'/' + datum.name.toUpperCase() + '" value="'+datum.source.toUpperCase()+'/' + datum.name.toUpperCase() + '"/><span class="btn btn-default badge label-danger delete-Style">Delete</span>' + datum.name + '</li>';
 	$('#favouriteLayoutsList').append(toBeAppended);
 	clearFavouriteLayoutsList();
 });
