@@ -1035,6 +1035,11 @@ public class URLGenerator {
 	}
 	
 	
+	/**
+	 * @param favl
+	 * @param post
+	 * @return url
+	 */
 	public String getPostUrl(FavouriteLayout favl, final Post<? extends Resource> post) {
 		final Resource resource = post.getResource();
 		if (resource instanceof Bookmark) {

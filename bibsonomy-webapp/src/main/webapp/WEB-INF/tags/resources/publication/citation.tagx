@@ -81,7 +81,6 @@
 						</div>
         			</c:if>
         		</c:if>
-        		
         		<c:if test="${citation.source=='JABREF'}">
         			<div class="tab-pane" id="citation_${citation.style}">
 					<!-- keep -->

@@ -139,7 +139,7 @@
 						
 						<li class="divider"><!--  --></li>
 						
-						<!-- BibTeX or Endnote -->
+						<!-- BibTeX or Endnote or JABREF-->
 						<c:forEach items="${command.context.loginUser.settings.favouriteLayouts}" var="citation">
         					<c:if test="${citation.source=='SIMPLE'}">
         						<c:if test="${citation.style=='BibTeX'}">
