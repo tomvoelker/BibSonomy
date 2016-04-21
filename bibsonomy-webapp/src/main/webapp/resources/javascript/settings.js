@@ -13,12 +13,6 @@ $(function() {
 var localdata = '[{"source": "SIMPLE", "displayName": "BibTeX", "name":"BIBTEX"},{"source": "SIMPLE", "displayName": "Endnote", "name":"ENDNOTE"}]';
 var jsonObj = $.parseJSON(localdata);
 
-//alert(jsonObj);
-
-//var localdata2 = '{"source": "SIMPLE", "displayName": "TESTETSTEST"}';
-//var jsonObj2 = $.parseJSON(localdata2);
-//jsonObj.push(jsonObj2);
-
 
 $.get("/layoutinfo", function (data) {
     processResult(data);
@@ -26,6 +20,7 @@ $.get("/layoutinfo", function (data) {
 
 function processResult(data) {
 	for (var prop in data.layouts) {
+		
 //		alert("Key:" + prop);
 //		alert("Value:" + data.layouts[prop].displayName);
 		
@@ -45,7 +40,7 @@ var engine = new Bloodhound({
     datumTokenizer: function (d) {return Bloodhound.tokenizers.whitespace(d.displayName);},
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     //identify: function(obj) { return obj.name; },
-//    highlight: true,
+    //highlight: true,
     local: jsonObj,
 });
 

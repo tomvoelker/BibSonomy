@@ -45,6 +45,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.user.settings.FavouriteLayout;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.UrlBuilder;
 import org.bibsonomy.util.UrlUtils;
@@ -427,6 +428,23 @@ public class URLGenerator {
 		return this.getUrl(url);
 		
 	}
+	
+	/**
+	 * @param favl
+	 * @param intraHash
+	 * @param userName
+	 * @return returns citation link
+	 */
+	public String getCitationUrlbyIntraHashUserName(FavouriteLayout favl, final String intraHash, final String userName){
+		String url =  "/" + LAYOUT_PREFIX + "/" + favl.getStyle().toLowerCase() + "/" + PUBLICATION_PREFIX + "/" + PUBLICATION_INTRA_HASH_ID + intraHash;
+		if (present(userName)) {
+			url += "/" + UrlUtils.encodePathSegment(userName);
+		}
+		return this.getUrl(url);
+	}
+	
+	
+	
 	/**
 	 * Constructs a concepts URL for the given name.
 	 * 

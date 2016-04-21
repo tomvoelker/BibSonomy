@@ -179,35 +179,7 @@
 						<form:errors path="user.settings.listItemcount" />
 					</div>
 					
-					<!-- aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa -->
-					
-					<!-- Citation style export settings -->
-					<!-- internationalize -->
-					
-					<!-- 
-					<div class="form-group">					
-						<form:label cssClass="col-sm-3 control-label" path="user.settings.favouriteLayouts">
-							show citation styles
-						</form:label>
-					
-						<div class="col-sm-3">
-							<label>
-								<form:checkbox path="user.settings.favouriteLayouts" value="BIBTEX"/>&amp;nbsp;
-								show BibTeX
-							</label>
-						</div>
-						<div class="col-sm-5">
-							<label>
-								<form:checkbox path="user.settings.favouriteLayouts" value="ENDNOTE"/>&amp;nbsp;
-								show Endnote
-							</label>
-						</div>
-						<div class="dissError"><form:errors path="user.settings.favouriteLayouts"/></div>
-					</div>
-					 -->
-					<!-- aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa -->
-					
-									
+					<!-- favourite layouts to be shown-->						
 					<form:label cssClass="col-sm-3 control-label" path="user.settings.favouriteLayouts">
 							shown styles
 					</form:label>
@@ -237,10 +209,10 @@
 					</form:label>
 					
 					<div class="input-group col-sm-9" inputColSpan="8">
-						<input class='form-control typeahead' id='searchCitationAutocomplete' type='text' name='searchCitationAutocomplete' autocomplete="off" placeholder='Placeholder'/>
+						<input class='form-control typeahead' id='searchCitationAutocomplete' type='text' name='searchCitationAutocomplete' autocomplete="off" placeholder='Styles to be added'/>
 						
 					</div>
-					<!-- aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa -->
+				
 					
 					<!-- displayed resources -->
 					<!-- new -->

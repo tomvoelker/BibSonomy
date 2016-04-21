@@ -13,8 +13,6 @@
 	<jsp:directive.attribute name="disableResourceLinks" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
 	
-	<c:set var="showBibTeX" value="${mtl:contains(command.context.loginUser.settings.favouriteLayouts, mtl:convertToEnum('org.bibsonomy.common.enums.FavouriteLayouts', 'BIBTEX'))}"/>
-	<c:set var="showEndNote" value="${mtl:contains(command.context.loginUser.settings.favouriteLayouts, mtl:convertToEnum('org.bibsonomy.common.enums.FavouriteLayouts', 'EndNote'))}"/>
 
 	<c:set var="buttonClasses" value="btn btn-default btn-xs "/>
 	
@@ -140,48 +138,48 @@
 						</c:choose>
 						
 						<li class="divider"><!--  --></li>
-						<!-- BibTeX -->
-						<c:if test="${showBibTeX}">
-						<li>
-							<fmt:message key="bibtex.actions.bibtex.title" var="bibtexTitle" />
-							<c:choose>
-								<c:when test="${isRemotePost}">
-									<a class="litem" href="${relativeUrlGenerator.getBibtexExportUrlByIntraHashUserNameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}"><fmt:message key="bibtex.actions.bibtex"/></a>															
-								</c:when>
-								<c:otherwise>
-									<a class="litem" href="${relativeUrlGenerator.getBibtexExportUrlByIntraHashAndUserName(post.resource.intraHash, post.user.name)}" title="${bibtexTitle}"><fmt:message key="bibtex.actions.bibtex"/></a>
-								</c:otherwise>
-							</c:choose>
-						</li>
-						</c:if>
 						
-						<!-- ENDNOTE -->
-						<c:if test="${showEndNote}">
-						<li>
-							<fmt:message key="bibtex.actions.endnote.title" var="endnoteTitle" />
-							<c:choose>
-								<c:when test="${isRemotePost}">
-									<a class="litem" href="${relativeUrlGenerator.getEndnoteUrlByIntraHashUserNameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}?formatEmbedded=true" title="${endnoteTitle}"><fmt:message key="bibtex.actions.endnote"/></a>
-								</c:when>
-								<c:otherwise>
-									<a class="litem" href="${relativeUrlGenerator.getEndnoteUrlByIntraHashAndUserName(post.resource.intraHash, post.user.name)}?formatEmbedded=true" title="${endnoteTitle}"><fmt:message key="bibtex.actions.endnote"/></a>
-								</c:otherwise>
-							</c:choose>
-						</li>
-						</c:if>
-					
-						<!-- MS WORD Reference Manager -->
-						<li>
-							<fmt:message key="bibtex.actions.msword.title" var="mswordTitle" />
-							<c:choose>
-								<c:when test="${isRemotePost}">
-									<a class="litem" href="${relativeUrlGenerator.getMSWordUrlByIntraHashUserNameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}?formatEmbedded=true" title="${mswordTitle}"><fmt:message key="bibtex.actions.msword"/></a>
-								</c:when>
-								<c:otherwise>
-									<a class="litem" href="${relativeUrlGenerator.getMSWordUrlByIntraHashAndUserName(post.resource.intraHash, post.user.name)}?formatEmbedded=true" title="${mswordTitle}"><fmt:message key="bibtex.actions.msword"/></a>
-								</c:otherwise>
-							</c:choose>
-						</li>
+						<!-- BibTeX or Endnote -->
+						<c:forEach items="${command.context.loginUser.settings.favouriteLayouts}" var="citation">
+        					<c:if test="${citation.source=='SIMPLE'}">
+        						<c:if test="${citation.style=='BibTeX'}">
+									<li>
+										<fmt:message key="bibtex.actions.bibtex.title" var="bibtexTitle" />
+										<c:choose>
+											<c:when test="${isRemotePost}">
+												<a class="litem" href="${relativeUrlGenerator.getBibtexExportUrlByIntraHashUserNameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}"><fmt:message key="bibtex.actions.bibtex"/></a>															
+											</c:when>
+											<c:otherwise>
+												<a class="litem" href="${relativeUrlGenerator.getBibtexExportUrlByIntraHashAndUserName(post.resource.intraHash, post.user.name)}" title="${bibtexTitle}"><fmt:message key="bibtex.actions.bibtex"/></a>
+											</c:otherwise>
+										</c:choose>
+									</li>
+								</c:if>
+								<c:if test="${citation.style=='Endnote'}">
+									<li>
+										<fmt:message key="bibtex.actions.endnote.title" var="endnoteTitle" />
+										<c:choose>
+											<c:when test="${isRemotePost}">
+												<a class="litem" href="${relativeUrlGenerator.getEndnoteUrlByIntraHashUserNameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}?formatEmbedded=true" title="${endnoteTitle}"><fmt:message key="bibtex.actions.endnote"/></a>
+											</c:when>
+											<c:otherwise>
+												<a class="litem" href="${relativeUrlGenerator.getEndnoteUrlByIntraHashAndUserName(post.resource.intraHash, post.user.name)}?formatEmbedded=true" title="${endnoteTitle}"><fmt:message key="bibtex.actions.endnote"/></a>
+											</c:otherwise>
+										</c:choose>
+									</li>
+								</c:if>
+							</c:if>
+						</c:forEach>
+															
+						<!-- Jabref citations -->
+						<c:forEach items="${command.context.loginUser.settings.favouriteLayouts}" var="citation">
+        					<c:if test="${citation.source=='JABREF'}">
+        						<li>
+        							<a class="litem" href="${relativeUrlGenerator.getCitationUrlbyIntraHashUserName(citation, post.resource.intraHash, post.user.name)}?formatEmbedded=true" title="${citation.style}">${citation.style}</a>
+        						</li>
+        					</c:if>
+        				</c:forEach>
+						
 						
 						<!-- OPENURL -->
 						<c:if test="${command.context.userLoggedIn and not command.context.loginUser.settings.layoutSettings.simpleInterface}">
