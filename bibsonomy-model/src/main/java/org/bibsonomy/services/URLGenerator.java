@@ -1033,6 +1033,18 @@ public class URLGenerator {
 			throw new UnsupportedResourceTypeException();
 		}
 	}
+	
+	
+	public String getPostUrl(FavouriteLayout favl, final Post<? extends Resource> post) {
+		final Resource resource = post.getResource();
+		if (resource instanceof Bookmark) {
+			return "/layout/" + favl.getStyle().toLowerCase() + "/" + this.getBookmarkUrl(((Bookmark) resource), post.getUser());
+		} else if (resource instanceof BibTex) {
+			return "/layout/" + favl.getStyle().toLowerCase() + "/" + this.getPublicationUrl(((BibTex) resource), post.getUser());
+		} else {
+			throw new UnsupportedResourceTypeException();
+		}
+	}
 
 	/**
 	 * @return the projectHome
@@ -1239,6 +1251,7 @@ public class URLGenerator {
 			return this.getUrl(url + "/" + UrlUtils.encodePathSegment(userName));
 		return this.getUrl(url);
 	}
+		
 
 	/**
 	 * Constructs a URL for a publication specified by its post

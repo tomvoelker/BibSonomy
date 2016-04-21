@@ -43,16 +43,7 @@
         		
         		<c:if test="${citation.source=='JABREF'}">
         			<li>
-						<c:set var="prefix" value="layout/${citation.style}" />
-						<c:choose>
-							<c:when test="${isCommunityPost}">
-							<!-- TODO: use goldstandard not the first post -->
-								<c:set var="exportUrl" value="${relativeUrlGenerator.prefix(prefix).getCommunityPublicationUrlByInterHash(post.resource.interHash)}?formatEmbedded=true&amp;items=1" />
-							</c:when>
-							<c:otherwise>
-								<c:set var="exportUrl" value="${relativeUrlGenerator.prefix(prefix).getPublicationUrlByPost(post)}?formatEmbedded=true" />
-							</c:otherwise>
-						</c:choose>
+						<c:set var="exportUrl" value="${relativeUrlGenerator.getPostUrl(citation, post)}?formatEmbedded=true&amp;items=1" />
 						<a data-toggle="tab" href="#citation_${citation.style}" data-formatUrl="${exportUrl}">
 							${citation.style}
 						</a>
