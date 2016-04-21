@@ -236,6 +236,7 @@
 		<property name="authenticationManager" ref="samlAuthenticationManager" />
 		<property name="authenticationSuccessHandler" ref="successRedirectHandler" />
 		<property name="rememberMeServices" ref="internalRememberMeServices" />
+		<property name="authenticationFailureHandler" ref="failureHandler" />
 	</bean>
 
 	<!-- Processing filter for WebSSO Holder-of-Key profile -->

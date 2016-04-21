@@ -97,6 +97,8 @@ public class FailureHandler extends SimpleUrlAuthenticationFailureHandler {
 					 */
 					final HttpSession session = request.getSession(true);
 					session.setAttribute(USER_TO_BE_REGISTERED, mapper.mapToUser(unne));
+					mapper.writeAdditionAttributes(session, unne);
+					
 					/*
 					 * redirect to the correct registration page
 					 */
@@ -109,6 +111,7 @@ public class FailureHandler extends SimpleUrlAuthenticationFailureHandler {
 		if (exception instanceof UseNotAllowedException) {
 			// TODO: use urlgenerator
 			redirectStrategy.sendRedirect(request, response, "/authentication/denied/usenotallowed");
+			return;
 		}
 		
 		super.onAuthenticationFailure(request, response, exception);
