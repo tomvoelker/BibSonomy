@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/spheres"	
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	<!-- TODO: support embedding of the format -->
+	<html>
+		<head>
+			<script type="text/javascript" src="/resources/jquery/jquery.js"><!-- keep me --></script>
+			<script type="text/javascript; e4x=1" src="/resources/javascript/citeproc/xmle4x.js"><!-- keep me --></script> 
+			<script type="text/javascript" src="/resources/javascript/citeproc/xmldom.js"><!-- keep me --></script>
+			<script type="text/javascript" src="/resources/javascript/citeproc/csllocales.js"><!-- keep me --></script>
+			<script type="text/javascript" src="/resources/javascript/citeproc/cslstyles.js"><!-- keep me --></script>
+			<script type="text/javascript" src="/resources/javascript/citeproc/citeproc.js"><!-- keep me --></script>
+			<script type="text/javascript" src="/resources/javascript/citeproc-wrapper.js"><!-- keep me --></script>
+			<style type="text/css">
+				.csl-entry {
+					margin-bottom: 5px;
+				}
+			</style>
+		</head>
+		<body>
+			<div id="csl-container" data-url="/csl/${fn:escapeXml(requPath)}" data-style="${command.layout}">
+				<!-- rendered by javascript -->
+			</div>
+		</body>
+	</html>
+</jsp:root>
