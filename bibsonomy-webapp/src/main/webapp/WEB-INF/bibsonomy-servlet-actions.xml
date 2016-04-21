@@ -527,6 +527,7 @@
 							<list>
 								<value>resourceHash</value>
 								<value>ckey</value>
+								<value>owner</value>
 							</list>
 						</property>
 					</bean>

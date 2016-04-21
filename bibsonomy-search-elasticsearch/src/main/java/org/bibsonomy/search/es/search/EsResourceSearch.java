@@ -152,7 +152,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 */
 	@Override
 	public List<Tag> getTags(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexkey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
-		final QueryBuilder query = this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags);
+		final QueryBuilder query = this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, this.getUsersThatShareDocuments(userName), searchTerms, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags);
 		final Map<Tag, Integer> tagCounter = new HashMap<Tag, Integer>();
 
 		try {
@@ -239,11 +239,12 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	public ResultList<Post<R>> getPosts(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, final Collection<String> allowedGroups, final org.bibsonomy.common.enums.SearchType searchType, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, Order order, final int limit, final int offset) {
 		final ResultList<Post<R>> postList = new ResultList<Post<R>>();
 		try {
+			final Set<String> allowedUsers = getUsersThatShareDocuments(userName);
 			final QueryBuilder queryBuilder = this.buildQuery(userName,
 					requestedUserName, requestedGroupName,
-					requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms,
-					authorSearchTerms, bibtexKey, tagIndex,
-					year, firstYear, lastYear, negatedTags);
+					requestedRelationNames, allowedGroups, null, searchTerms,
+					titleSearchTerms, authorSearchTerms, bibtexKey,
+					tagIndex, year, firstYear, lastYear, negatedTags);
 			final SearchRequestBuilder searchRequestBuilder = this.manager.prepareSearch();
 			searchRequestBuilder.setTypes(ResourceFactory.getResourceName(this.resourceType));
 			searchRequestBuilder.setSearchType(SearchType.DEFAULT);
@@ -258,10 +259,11 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			if (response != null) {
 				final SearchHits hits = response.getHits();
 				postList.setTotalCount((int) hits.getTotalHits());
-
+				
+				
 				log.debug("Current Search results for '" + searchTerms + "': " + response.getHits().getTotalHits());
 				for (final SearchHit hit : hits) {
-					final Post<R> post = this.resourceConverter.convert(hit.getSource());
+					final Post<R> post = this.resourceConverter.convert(hit.getSource(), allowedUsers);
 					
 					final CountRequestBuilder countBuilder = this.manager.prepareCount();
 					final R resource = post.getResource();
@@ -279,6 +281,20 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			throw new InvalidSearchRequestException();
 		}
 		return postList;
+	}
+
+	/**
+	 * @param userName
+	 * @return
+	 */
+	private Set<String> getUsersThatShareDocuments(final String userName) {
+		final Set<String> allowedUsers;
+		if (present(userName)) {
+			allowedUsers = this.infoLogic.getUserNamesThatShareDocumentsWithUser(userName);
+		} else {
+			allowedUsers = new HashSet<>();
+		}
+		return allowedUsers;
 	}
 	
 	/* (non-Javadoc)
@@ -458,13 +474,13 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 				// prefer posts og the genealogy user
 				if (this.genealogyUser.equals(userName)) {
 					// we prefer posts by the genealogy user
-					final Post<R> post = this.resourceConverter.convert(hit.getSource());
+					final Post<R> post = this.resourceConverter.convert(hit.getSource(), Collections.<String>emptySet());
 					exchangePost(relSorter, post);
 				}
 				// we have seen this interhash before -> skip
 				continue;
 			}
-			final Post<R> postTmp = this.resourceConverter.convert(hit.getSource());
+			final Post<R> postTmp = this.resourceConverter.convert(hit.getSource(), Collections.<String>emptySet());
 			if (!(postTmp.getResource() instanceof BibTex)) {
 				continue;
 			}
@@ -680,6 +696,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * 				expand the search in the post of users which are defined by the given 
 	 * 				relation names
 	 * @param allowedGroups 
+	 * @param usersThatShareDocs all users that the logged in user is allowed to access
 	 * @param searchTerms
 	 * @param titleSearchTerms 
 	 * @param authorSearchTerms 
@@ -691,7 +708,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @param negatedTags
 	 * @return overall elasticsearch query
 	 */
-	protected final QueryBuilder buildQuery(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final Collection<String> negatedTags) {
+	protected final QueryBuilder buildQuery(final String userName, final String requestedUserName, final String requestedGroupName, final List<String> requestedRelationNames, Collection<String> allowedGroups, Set<String> usersThatShareDocs, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexKey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final Collection<String> negatedTags) {
 		final BoolQueryBuilder mainQueryBuilder = QueryBuilders.boolQuery();
 		final BoolQueryBuilder mainFilterBuilder = QueryBuilders.boolQuery();
 		
@@ -703,11 +720,22 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			final QueryBuilder queryBuilder = QueryBuilders.queryStringQuery(searchTerms);
 			
 			if (present(userName)) {
+				// private field
 				final TermQueryBuilder userFilter = QueryBuilders.termQuery(Fields.USER_NAME, userName);
 				final QueryStringQueryBuilder privateFieldSearchQuery = QueryBuilders.queryStringQuery(searchTerms).field(Fields.PRIVATE_ALL_FIELD);
 				final BoolQueryBuilder privateFieldQueryFiltered = QueryBuilders.boolQuery().must(privateFieldSearchQuery).filter(userFilter);
 				
-				mainQueryBuilder.must(QueryBuilders.boolQuery().should(queryBuilder).should(privateFieldQueryFiltered));
+				final BoolQueryBuilder query = QueryBuilders.boolQuery().should(queryBuilder).should(privateFieldQueryFiltered);
+				
+				if (present(usersThatShareDocs)) {
+					// document field
+					final QueryStringQueryBuilder docFieldSearchQuery = QueryBuilders.queryStringQuery(searchTerms).field(Fields.ALL_DOCS);
+					// restrict to users that share documents and to the visible posts (group)
+					final BoolQueryBuilder filterQuery = QueryBuilders.boolQuery().must(buildUserQuery(usersThatShareDocs)).must(buildGroupFilter(allowedGroups));
+					query.should(QueryBuilders.boolQuery().must(docFieldSearchQuery).filter(filterQuery));
+				}
+				
+				mainQueryBuilder.must(query);
 			} else {
 				mainQueryBuilder.must(queryBuilder);
 			}
@@ -743,10 +771,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			allowedGroups = Collections.singleton(GroupUtils.buildPublicGroup().getName());
 		}
 		
-		final BoolQueryBuilder groupFilter = QueryBuilders.boolQuery();
-		for (final String allowedGroup : allowedGroups){
-			groupFilter.should(QueryBuilders.termQuery(Fields.GROUPS, allowedGroup));
-		}
+		final BoolQueryBuilder groupFilter = buildGroupFilter(allowedGroups);
 		
 		if (present(userName)) {
 			final TermQueryBuilder privateGroupFilter = QueryBuilders.termQuery(Fields.GROUPS, GroupUtils.buildPrivateGroup().getName());
@@ -770,6 +795,30 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		
 		
 		return QueryBuilders.boolQuery().must(mainQueryBuilder).filter(mainFilterBuilder);
+	}
+
+	/**
+	 * @param usersThatShareDocs
+	 * @return
+	 */
+	private static BoolQueryBuilder buildUserQuery(Set<String> usersThatShareDocs) {
+		final BoolQueryBuilder groupFilter = QueryBuilders.boolQuery();
+		for (final String user : usersThatShareDocs){
+			groupFilter.should(QueryBuilders.termQuery(Fields.USER_NAME, user));
+		}
+		return groupFilter;
+	}
+
+	/**
+	 * @param allowedGroups
+	 * @return
+	 */
+	private static BoolQueryBuilder buildGroupFilter(Collection<String> allowedGroups) {
+		final BoolQueryBuilder groupFilter = QueryBuilders.boolQuery();
+		for (final String allowedGroup : allowedGroups){
+			groupFilter.should(QueryBuilders.termQuery(Fields.GROUPS, allowedGroup));
+		}
+		return groupFilter;
 	}
 	
 	/**
