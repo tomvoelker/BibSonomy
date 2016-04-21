@@ -24,7 +24,7 @@ function processResult(data) {
 //		alert("Key:" + prop);
 //		alert("Value:" + data.layouts[prop].displayName);
 		
-		var localdata2 = '{"source": "JABREF", "displayName": "' + data.layouts[prop].displayName + '", "name":"' + data.layouts[prop].name +'"}';
+		var localdata2 = '{"source": "JABREF", "displayName": "' + data.layouts[prop].displayName + '", "name":"' + data.layouts[prop].name.toUpperCase() +'"}';
 		var jsonObj2 = $.parseJSON(localdata2);
 		jsonObj.push(jsonObj2);
 	}
@@ -92,5 +92,5 @@ function clearFavouriteLayoutsList() { //removing duplicates
 	});
 }
 
-
+clearFavouriteLayoutsList();
 });
