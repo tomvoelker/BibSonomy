@@ -236,15 +236,6 @@ INSERT INTO `friends` VALUES
 (5, 'testuser1', 'testuser3', 'sys:relation:Bibsonomy-Follower', NULL, '1815-12-10 00:00:00'),
 (6, 'testuser2', 'testuser1', 'sys:relation:Bibsonomy-Follower', NULL, '1815-12-10 00:00:00');
 
--- 
--- Data for table `followers`
--- 
-
-INSERT INTO `followers` VALUES 
-(1, 'testuser1', 'testuser2', '1815-12-10 00:00:00'),
-(3, 'testuser1', 'testuser3', '1815-12-10 00:00:00'),
-(2, 'testuser2', 'testuser1', '1815-12-10 00:00:00');
-
 
 -- 
 -- Data for table `groupids`
