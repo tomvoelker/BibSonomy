@@ -16,6 +16,7 @@
 	<sqlMap resource="common/BookmarkCommon.xml" />
 	<sqlMap resource="common/BookmarkCommon-search.xml" />
 	<sqlMap resource="common/BibTexCommon.xml" />
+	<sqlMap resource="common/DocumentCommon.xml" />
 	<sqlMap resource="common/PublicationCommon-search.xml" />
 	<sqlMap resource="common/GoldStandardCommon.xml" />
 	<sqlMap resource="common/GoldStandardPublicationCommon-search.xml" />

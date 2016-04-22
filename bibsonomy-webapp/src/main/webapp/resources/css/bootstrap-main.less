@@ -522,50 +522,20 @@ p.url {
 	color: #999999;
 }
 
-.post .action .item, #resultlist .item, #pageOptions .item {
-	background-repeat: no-repeat;
-	background: url("/resources/image/post_actions.png");
-	display: block;
+.stars-off-0\.75 {
 	float: left;
-	margin-right: 4px;
+	position: relative;
+	width: 60px;
+}
+.stars-off-0\.75,.stars-on-0\.75 {
+	background: url("/resources/image/stars.gif") repeat-x scroll 0 -24px transparent;
+	height: 12px;
 }
 
-.renameDoc:hover{background-position:0px 17px;height:16px;width:16px;}
-.renameDoc{background:url("/resources/image/document-txt-rename.png");display:inline-block;height:16px;margin-left:4px;width:16px;background-position:0px 35px;}
-.deleteDocument{background-repeat:no-repeat;background:url("/resources/image/post_actions.png");margin-left:4px;display:inline-block;}
-.post .action .item,#resultlist .item,#pageOptions .item{background-repeat:no-repeat;background:url("/resources/image/post_actions.png");display:block;float:left;margin-right:4px;}
-.post .action .litem,#resultlist .litem,#pageOptions .litem{color:#000000;margin-right:4px;float:left;padding-top:1px;font-size:small;font-weight:bold;}
-.post .action .ilitem,#resultlist .ilitem,#pageOptions .ilitem{margin-right:4px;float:left;color:#aaaaaa;padding-top:1px;font-size:small;}
-.post .action .litem:hover,#resultlist .litem:hover,#pageOptions .litem:hover{color:#006699;}
-.post .action .unpick,#pageOptions .unpick{background-position:0 0;width:20px;height:18px;}
-.post .action .unpick:hover,#pageOptions .unpick:hover{background-position:0 -824px;width:20px;height:18px;}
-.post .action .iunpick,#pageOptions .iunpick{background-position:0 -905px;width:20px;height:18px;}
-.post .action .pick,#resultlist .pick,#pageOptions .pick{background-position:0 -1140px;width:20px;height:18px;}
-.post .action .pick:hover,#resultlist .pick:hover,#pageOptions .pick:hover{background-position:0 -866px;width:20px;height:18px;}
-.post .action .ipick,#resultlist .ipick,#pageOptions .ipick{background-position:0 -949px;width:20px;height:18px;}
-.post .action .copy,#pageOptions .copy{background-position:0 -1031px;width:15px;height:17px;}
-.post .action .copy:hover,#pageOptions .copy:hover{background-position:0 -43px;width:15px;height:17px;}
-.post .action .icopy,#pageOptions .icopy{background-position:0 -989px;width:15px;height:17px;}
-.post .action .edit,#pageOptions .edit{background-position:0 -161px;width:16px;height:16px;}
-.post .action .edit:hover,#pageOptions .edit:hover{background-position:0 -122px;width:16px;height:16px;}
-.post .action .iedit,#pageOptions .iedit{background-position:0 -83px;width:16px;height:16px;}
-.post .action .idelete,#pageOptions .idelete,.post .action .iremove,#pageOptions .iremove{background-position:0 -197px;width:13px;height:18px;}
-.post .action .delete:hover,#pageOptions .delete:hover,.post .action .remove:hover,#pageOptions .remove:hover,.deleteDocument:hover{background-position:0 -237px;width:13px;height:18px;}
-.post .action .delete,#pageOptions .delete,.post .action .remove,#pageOptions .remove,.deleteDocument{background-position:0 -275px;width:13px;height:18px;}
-.post .action .icommunity,#pageOptions .icommunity{background-position:0 -723px;width:19px;height:16px;}
-.post .action .community:hover,#pageOptions .community:hover{background-position:0 -754px;width:19px;height:16px;}
-.post .action .community,#pageOptions .community{background-position:0 -785px;width:19px;height:16px;}
-.post .action .ihistory,#pageOptions .ihistory{background-position:0 -1397px;width:15px;height:16px;}
-.post .action .history:hover,#pageOptions .history:hover{background-position:0 -1427px;width:15px;height:16px;}
-.post .action .history,#pageOptions .history{background-position:0 -1457px;width:15px;height:16px;}
-.post .action .communitypost,#pageOptions .communitypost{background-position:0 -1363px;width:18px;height:20px;}
-.post .action .communitypost:hover,.post .action .communitypost:focus,#pageOptions .communitypost:hover,#pageOptions .communitypost:focus{background-position:0 -1330px;width:18px;height:20px;}
-.post .action .report{background-position:0 -1172px;width:16px;height:16px;}
-.post .action .editqa{background-position:0 -1197px;width:20px;height:16px;}
-
-.stars-off-0\.75{float:left;position:relative;width:60px;}
-.stars-off-0\.75,.stars-on-0\.75{background:url("/resources/image/stars.gif") repeat-x scroll 0 -24px transparent;height:12px;}
-.stars-on-0\.75{background-position:0 -36px;position:absolute;}
+.stars-on-0\.75 {
+	background-position: 0 -36px;
+	position: absolute;
+}
 
 ul.tags {
 	height: 17px;
@@ -936,6 +906,20 @@ ul.edit-document-forms {
 
 ul.edit-document-forms li {
 	margin-bottom: 1em;
+}
+
+a.doc-magnify {
+	color: white;
+	padding: 5px;
+	font-size: 25px;
+	position: absolute;
+	right: 25px;
+	bottom: 95px;
+	border-radius: 25px;
+	width: 50px;
+	height: 48px;
+	background-color: rgba(0, 0, 0, 0.5);
+	text-align: center;
 }
 
 .small-box {
@@ -1361,7 +1345,7 @@ ul#urlList {
 	}
 	
 	.modal-dialog {
-		width: 450px;
+		max-width: 450px;
 	}
 	
 	fieldset {

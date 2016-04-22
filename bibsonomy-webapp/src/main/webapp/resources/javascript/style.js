@@ -365,6 +365,44 @@ $(function() {
 			return false;
 		}
 	});
+	
+	$('a.doc-magnify').click(function() {
+		var previewModal = $('#preview-modal');
+		var image = $(this).parent().find('img');
+		var imageUrl = image.attr('src');
+		var imageTitle = image.attr('alt');
+		if (previewModal.length == 0) {
+			var modalElement = $(
+				'<div class="modal fade" id="preview-modal" role="dialog">' +
+					'<div class="modal-dialog">' + 
+						'<div class="modal-content">' + 
+							'<div class="modal-header">' +
+								'<button type="button" class="close" data-dismiss="modal">&times;</button>' +
+								'<h4 id="preview-title"></h4>' + 
+							'</div>' + 
+							'<div class="modal-body">' + 
+								'<div class="text-center">' + 
+									'<img width="75%" src="" id="preview-image" />' +
+								'</div>' +
+							'</div>' +
+						'</div>' +
+					'</div>' +
+				'</div>');
+			$('body').append(modalElement);
+			previewModal = $('#preview-modal');
+		}
+		
+		$('#preview-image').attr('src', imageUrl);
+		$('#preview-title').text(imageTitle);
+		
+		var modal = previewModal.modal({
+			show: false
+		});
+		previewModal.modal('show');
+		// previewModal.modal('show');
+		
+		return false;
+	});
 });
 
 function deleteToggleShowDefaultInfo() {

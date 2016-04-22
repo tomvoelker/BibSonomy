@@ -13,6 +13,7 @@
 	<jsp:directive.attribute type="java.lang.String" name="id" required="false" description="id of the button" />
 	<jsp:directive.attribute type="java.lang.String" name="href" required="false" description="title of the button" />
 	<jsp:directive.attribute type="java.lang.String" name="title" required="false" description="title of the button" />
+	<jsp:directive.attribute type="java.lang.String" name="titleKey" required="false" description="key for the title of the button" />
 	<jsp:directive.attribute type="java.lang.String" name="srText" required="false" description="screen reader text" />
 	<jsp:directive.attribute name="block" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute type="org.bibsonomy.webapp.view.constants.BootstrapButtonStyle" name="style" required="true" description="Button Style Type" />
@@ -31,6 +32,10 @@
 	
 	<jsp:directive.attribute name="onclick" type="java.lang.String" required="false" description="javascript code for execution" />
 	<jsp:directive.attribute name="tabindex" type="java.lang.Integer" required="false" description="" />
+	
+	<c:if test="${not empty titleKey}">
+		<fmt:message key="${titleKey}" var="title" />
+	</c:if>
 	
 	<c:if test="${not empty valueKey}">
 		<fmt:message key="${valueKey}" var="value" />
@@ -52,7 +57,7 @@
 		<c:set var="className" value="${className}btn-block " />
 	</c:if>
 	
-	<button id="${id}" type="${fn:escapeXml(type)}" class="${className}btn ${fn:escapeXml(style.cssClassName)} ${fn:escapeXml(size.cssClassName)} ${dropdown ? 'dropdown-toggle':''} ${dropup ? 'dropup-toggle':''}" data-toggle="${fn:escapeXml(dataToggle)}" data-target="${fn:escapeXml(dataTarget)}" data-dismiss="${fn:escapeXml(dataDismiss)}" onclick="${fn:escapeXml(onclick)}">
+	<button title="${fn:escapeXml(title)}" id="${id}" type="${fn:escapeXml(type)}" class="${className}btn ${fn:escapeXml(style.cssClassName)} ${fn:escapeXml(size.cssClassName)} ${dropdown ? 'dropdown-toggle':''} ${dropup ? 'dropup-toggle':''}" data-toggle="${fn:escapeXml(dataToggle)}" data-target="${fn:escapeXml(dataTarget)}" data-dismiss="${fn:escapeXml(dataDismiss)}" onclick="${fn:escapeXml(onclick)}">
 		<c:if test="${not empty icon}">
 			<span class="fa fa-${icon}"><!-- keep me --></span><c:out value=" " />
 			<c:if test="${not empty srText}">

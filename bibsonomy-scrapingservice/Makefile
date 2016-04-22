@@ -56,5 +56,5 @@ slave_kassel: mvn_deploy
 slave_wuerzburg: mvn_deploy
 
 mvn_deploy:
-	${MAVEN} -Dtomcat-server=${DEPLOY_SERVER} -Dmaven.test.skip war:inplace tomcat:undeploy tomcat:deploy
+	${MAVEN} -Dtomcat-server=${DEPLOY_SERVER} -Dmaven.test.skip war:inplace tomcat7:redeploy
 

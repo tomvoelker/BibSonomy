@@ -50,7 +50,7 @@ public class SamlExceptionLogger implements SAMLLogger {
 
 	@Override
 	public void log(String operation, String result, SAMLMessageContext context, Exception e) {
-		if ((e != null) && (SAMLConstants.SUCCESS.equals(result) == false)) {
+		if ((e != null) && !SAMLConstants.SUCCESS.equals(result)) {
 			log.error("Exception during SAML operation '" + operation + "'", e);
 		}
 		regularSamlLogger.log(operation, result, context, e);
@@ -58,11 +58,10 @@ public class SamlExceptionLogger implements SAMLLogger {
 
 	@Override
 	public void log(String operation, String result, SAMLMessageContext context, Authentication a, Exception e) {
-		if ((e != null) && (SAMLConstants.SUCCESS.equals(result) == false)) {
+		if ((e != null) && !SAMLConstants.SUCCESS.equals(result)) {
 			log.error("Exception during SAML operation '" + operation + "'", e);
 		}
 		regularSamlLogger.log(operation, result, context, a, e);
-		
 	}
 
 	/**

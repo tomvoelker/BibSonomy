@@ -464,11 +464,6 @@ public enum Views implements View {
 	IMPORT("actions/post/import"),
 
 	/**
-	 * facebook friends import view
-	 */
-	FACEBOOK_IMPORT("actions/user/import/facebook"),
-
-	/**
 	 * Show a form to request a password reminder.
 	 */
 	PASSWORD_REMINDER("actions/user/passwordReminder"),
@@ -705,6 +700,9 @@ public enum Views implements View {
 	 * 503
 	 */
 	ERROR503("errors/503"),
+	
+	/** view for user that are not allowed to use this application */
+	USE_NOT_ALLOWED("errors/useNotAllowed"),
 
 	/**
 	 * PUMA, author agreement page, form filled in with publication data for

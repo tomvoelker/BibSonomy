@@ -82,7 +82,7 @@
 							<c:if test="${not empty goldstandard.miscFields['doi']}">
 								<fmt:message key="bibtex.actions.doi" var="urlTitle"/>
 								<c:set var="doi" value="${mtl:extractDOI(goldstandard.miscFields['doi'])}"/>
-								<li><c:out value="${urlTitle}: " /><a href="http://dx.doi.org/${mtl:encodeURI(doi)}" title="${urlTitle}"><c:out value="${doi}" /></a></li>
+								<li><c:out value="${urlTitle}: " /><a href="http://dx.doi.org/${mtl:encodePathSegment(doi)}" title="${urlTitle}"><c:out value="${doi}" /></a></li>
 							</c:if>
 							<c:if test="${not empty goldstandard.url and !mtl:isLinkToDocument(goldstandard.url)}">
 								<li><span class="gold_info"><a href="${fn:escapeXml(goldstandard.url)}">${fn:escapeXml(goldstandard.url)}</a></span></li>
@@ -98,8 +98,8 @@
 								<li>
 									<fmt:message var="downloadPrivDocTitle" key="bibtex.actions.private_document.download"/>
 									<a href="${goldstandard.url}" title="${downloadPrivDocTitle}"> 
-						  				<img alt="${downloadPrivDocTitle}" src="${resdir}/image/document-txt-blue.png" style="float: left; margin-right: 10px;"/>
-						  				<c:out value="${goldstandard.url}" />											
+										<img alt="${downloadPrivDocTitle}" src="${resdir}/image/document-txt-blue.png" style="float: left; margin-right: 10px;"/>
+										<c:out value="${goldstandard.url}" />
 									</a>
 								</li>
 							</c:if>
@@ -108,8 +108,7 @@
 				</c:if>
 			</c:otherwise>
 		</c:choose>
-					
-					
+		
 		<common:relatedUsers userList="${command.relatedUserCommand.relatedUsers}"/>
 		
 		<h4 class="pub-details"><span class="fa fa-quote-right"><!--  --></span><c:out value=" "/><fmt:message key="publications.citations.headline" /></h4>
