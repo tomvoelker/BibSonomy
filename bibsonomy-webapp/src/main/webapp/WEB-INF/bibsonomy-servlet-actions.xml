@@ -986,7 +986,7 @@
 		<!-- reCaptcha needs access to some HTTP headers, so we need the requestLogic -->
 		<property name="requestLogic" ref="requestLogic"/>
 		
-		<!-- to access cookies TODO: needed? -->
+		<!-- to access cookies -->
 		<property name="cookieLogic" ref="cookieLogic"/>
 		
 		<property name="registrationFormView" value="REGISTER_USER_SAML_FORM"/>
@@ -994,8 +994,10 @@
 		<!-- After successful registration, the user is redirected to this page.  -->
 		<property name="successRedirect" value="/register_saml_success"/>
 		
-		<property name="attributeExtractor" ref="samlAttributeExtractor" />
+		<property name="requiredFields" value="${auth.register.saml.fields.required}" />
+		
 		<property name="authenticationManager" ref="samlAuthenticationManager"/>
+		<property name="rememberMeServices" ref="internalRememberMeServices" />
 	</bean>
 	
 	<bean id="joinGroupController" class="org.bibsonomy.webapp.controller.actions.JoinGroupController" scope="request">

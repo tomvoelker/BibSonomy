@@ -715,6 +715,11 @@
 						<property name="controllerBeanName" value="error503PageController"/>
 					</bean>
 				</entry>
+				<entry key="/authentication/denied/usenotallowed">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="useNotAllowedPageController"/>
+					</bean>
+				</entry>
 				<entry key="/persons">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="personIntroPageController"/>
@@ -1018,7 +1023,9 @@
 	<bean id="error503PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="ERROR503"/>
 	</bean>
-	
+	<bean id="useNotAllowedPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="USE_NOT_ALLOWED"/>
+	</bean>
 	<bean id="contextPathFilter" class="org.bibsonomy.webapp.filters.ContextPathFilter">
 		<property name="projectHomeUrl" ref="projectHome"/>
 	</bean>
