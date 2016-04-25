@@ -34,7 +34,9 @@
 					<span class="sr-only"><fmt:message key="navi.navigation.toggle"/></span>
 					<span class="fa fa-user"><!-- KEEP ME --></span>
 				</button>
-			
+				<c:if test="${not empty loginUserName}">
+					<span class="navbar-toggle navbar-btn visible-xs"><user:username user="${loginUser}" /></span>
+				</c:if>
 			</div>
 			
 			<!--  hidden menu for user dropdown  -->
