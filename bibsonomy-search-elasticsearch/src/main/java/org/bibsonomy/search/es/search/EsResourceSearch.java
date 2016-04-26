@@ -153,6 +153,9 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	@Override
 	public List<Tag> getTags(final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final String bibtexkey, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
 		final QueryBuilder query = this.buildQuery(userName, requestedUserName, requestedGroupName, null, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags);
+		if (query == null) {
+			return new LinkedList<>();
+		}
 		final Map<Tag, Integer> tagCounter = new HashMap<Tag, Integer>();
 
 		try {
@@ -244,6 +247,9 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 					requestedRelationNames, allowedGroups, searchTerms, titleSearchTerms,
 					authorSearchTerms, bibtexKey, tagIndex,
 					year, firstYear, lastYear, negatedTags);
+			if (queryBuilder == null) {
+				return postList;
+			}
 			final SearchRequestBuilder searchRequestBuilder = this.manager.prepareSearch();
 			searchRequestBuilder.setTypes(ResourceFactory.getResourceName(this.resourceType));
 			searchRequestBuilder.setSearchType(SearchType.DEFAULT);
@@ -735,6 +741,8 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			final QueryBuilder groupMembersFilter = this.buildGroupMembersFilter(requestedGroupName);
 			if (groupMembersFilter != null) {
 				mainFilterBuilder.must(groupMembersFilter);
+			} else {
+				return null;
 			}
 		}
 		
