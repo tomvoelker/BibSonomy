@@ -171,13 +171,14 @@
 		<set type="parameter" name="layout">${unescapePath:$1}</set>
 		<to>/$2</to>
 	</rule>
+	
 	<rule>
 		<name>/csl-layout/</name>
 		<from>^/+csl-layout/+(.+?)/+(.*)$</from>
-		<set type="parameter" name="format">csl-layout</set>
-		<set type="parameter" name="layout">${unescapePath:$1}</set>
-		<to>/$2</to>
+		<set type="parameter" name="csl-style">/$1</set>
+		<set type="parameter" name="intrahash">/$2</set>
 	</rule>
+	
 	<!-- json export of our jabref layouts -->
 	<rule>
 		<name>/layoutinfo</name>

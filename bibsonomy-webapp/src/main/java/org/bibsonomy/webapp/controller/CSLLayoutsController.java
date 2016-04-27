@@ -25,6 +25,7 @@ public class CSLLayoutsController implements MinimalisticController<CSLLayoutCom
 	 */
 	@Override
 	public View workOn(CSLLayoutCommand command) {
-		return Views.CSL;
+		command.setDebug(command.getContext().getQueryString());
+		return Views.CSL_LAYOUT;
 	}
 }

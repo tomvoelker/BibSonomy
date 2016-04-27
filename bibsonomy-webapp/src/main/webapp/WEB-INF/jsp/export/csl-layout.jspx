@@ -37,6 +37,9 @@
 			<div id="csl-container" data-url="/csl/${fn:escapeXml(requPath)}" data-style="${command.layout}">
 				<!-- rendered by javascript -->
 			</div>
+			<div>
+				${command.debug}
+			</div>
 		</body>
 	</html>
 </jsp:root>

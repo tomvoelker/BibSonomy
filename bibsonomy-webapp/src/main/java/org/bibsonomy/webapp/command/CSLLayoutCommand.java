@@ -10,6 +10,20 @@ import org.bibsonomy.scraper.Scraper;
  * @author jp
  */
 public class CSLLayoutCommand extends ResourceViewCommand{
-	
+	String debug;
 
+	/**
+	 * @return the debug
+	 */
+	public String getDebug() {
+		return this.debug;
+	}
+
+	/**
+	 * @param debug the debug to set
+	 */
+	public void setDebug(String debug) {
+		this.debug = debug;
+	}
+	
 }

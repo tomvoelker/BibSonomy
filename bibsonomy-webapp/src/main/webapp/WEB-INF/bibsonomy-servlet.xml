@@ -465,6 +465,14 @@
 						<property name="controllerBeanName" value="exportPageController"/>
 					</bean>
 				</entry>
+				
+				<entry key="/csl-layout/">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="CSLLayoutsController"/> 
+					</bean>
+				</entry>
+				
+				
 				<entry key="/statistics">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="statisticsController"/>
@@ -901,6 +909,9 @@
 	<bean id="exportPageController" class="org.bibsonomy.webapp.controller.ExportPageController" scope="request">
 		<property name="layoutRenderer" ref="jabrefLayoutRenderer"/>
 		<property name="layouts" ref="standardLayouts" />
+	</bean>
+	
+	<bean id="CSLLayoutsController" class="org.bibsonomy.webapp.controller.CSLLayoutsController" scope="request"> 
 	</bean>
 	
 	<bean id="statisticsController" class="org.bibsonomy.webapp.controller.StatisticsController" scope="request">
