@@ -466,9 +466,15 @@
 					</bean>
 				</entry>
 				
-				<entry key="/csl-layout/">
+				<entry key="/csl-style">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="CSLLayoutsController"/> 
+						<property name="controllerBeanName" value="CSLStyleController"/> 
+						<property name="allowedFields">
+							<list>
+								<value>style</value>
+								<value>xml</value>
+							</list>
+						</property>
 					</bean>
 				</entry>
 				
@@ -911,7 +917,7 @@
 		<property name="layouts" ref="standardLayouts" />
 	</bean>
 	
-	<bean id="CSLLayoutsController" class="org.bibsonomy.webapp.controller.CSLLayoutsController" scope="request"> 
+	<bean id="CSLStyleController" class="org.bibsonomy.webapp.controller.CSLStyleController" scope="request"> 
 	</bean>
 	
 	<bean id="statisticsController" class="org.bibsonomy.webapp.controller.StatisticsController" scope="request">

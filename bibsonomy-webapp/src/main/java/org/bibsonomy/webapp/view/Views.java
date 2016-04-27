@@ -614,6 +614,11 @@ public enum Views implements View {
 	CSL_LAYOUT("export/csl-layout"),
 	
 	/**
+	 * csl style
+	 */
+	CSL_STYLE("csl-style"),
+	
+	/**
 	 * csl-compatible JSON output
 	 */
 	CSL("csl"),
