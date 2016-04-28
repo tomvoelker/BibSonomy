@@ -29,6 +29,7 @@ package org.bibsonomy.webapp.command.actions;
 import java.util.List;
 import java.util.Map;
 
+import org.bibsonomy.database.systemstags.SystemTagFactory;
 import org.bibsonomy.webapp.command.GroupingCommand;
 import org.bibsonomy.webapp.command.TagResourceViewCommand;
 
@@ -77,6 +78,8 @@ public class BatchEditCommand extends TagResourceViewCommand implements Grouping
 	private String abstractGrouping;
 
     private List<String> groups;
+    
+    private String systemTagsMap;
     
     /*
      * true means: we are in the batch edit page
@@ -243,5 +246,19 @@ public class BatchEditCommand extends TagResourceViewCommand implements Grouping
 	public void setAbstractGrouping(String abstractGrouping) {
 		this.abstractGrouping = abstractGrouping;
 		
+	}
+
+	/**
+	 * @return the systemTagsMap
+	 */
+	public String getSystemTagsMap() {
+		return this.systemTagsMap;
+	}
+
+	/**
+	 * @param systemTagsMap the systemTagsMap to set
+	 */
+	public void setSystemTagsMap(String systemTagsMap) {
+		this.systemTagsMap = systemTagsMap;
 	}
 }
