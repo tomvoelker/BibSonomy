@@ -43,7 +43,7 @@ public class RelatedUserCommand extends BaseCommand {
 	private Set<User> relatedUsers = new HashSet<User>();
 
 	/**
-	 * @return list of user
+	 * @return set of user
 	 */
 	public Set<User> getRelatedUsers() {
 		return this.relatedUsers;
