@@ -24,7 +24,6 @@
 			<script type="text/javascript; e4x=1" src="/resources/javascript/citeproc/xmle4x.js"><!-- keep me --></script> 
 			<script type="text/javascript" src="/resources/javascript/citeproc/xmldom.js"><!-- keep me --></script>
 			<script type="text/javascript" src="/resources/javascript/citeproc/csllocales.js"><!-- keep me --></script>
-			<script type="text/javascript" src="/resources/javascript/citeproc/cslstyles.js"><!-- keep me --></script>
 			<script type="text/javascript" src="/resources/javascript/citeproc/citeproc.js"><!-- keep me --></script>
 			<script type="text/javascript" src="/resources/javascript/citeproc-wrapper.js"><!-- keep me --></script>
 			<style type="text/css">
