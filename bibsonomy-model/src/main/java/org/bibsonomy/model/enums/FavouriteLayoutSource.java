@@ -6,5 +6,5 @@ package org.bibsonomy.model.enums;
  * @author jp
  */
 public enum FavouriteLayoutSource {
-	SIMPLE, JABREF
+	SIMPLE, JABREF, CSL
 }

@@ -3,7 +3,7 @@ use File::Find;
 
 my @styleFiles =();
 
-my $jsfile = "cslstyles.js";
+my $jsfile = "cslstyles.java";
 unlink($jsfile);
 
 find(sub { push(@styleFiles, $File::Find::name) if /\.csl$/ }, './styles');
@@ -16,15 +16,17 @@ foreach my $file (@styleFiles) {
     $varname = $file;
     $varname =~ s/.csl//;
     $varname =~ s/.*styles\///;
+	$varname = uc$varname;
+	$varname = $varname =~ s/-/_/gr;
     print "create style: ".$varname;
 	
 	foreach $_ (@input) {
         s/\"/\\\"/g;
         s/\n//g;
     }
-	print JSFILE "var $varname =\"";
+	print JSFILE "$varname(\"";
 	print JSFILE (@input);
-	print JSFILE "\";\n";
+	print JSFILE "\"),\n";
 	print "............done!\n";
 }
 close(JSFILE);

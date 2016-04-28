@@ -1,20 +1,21 @@
 $(function() {
 	var container = $('#csl-container');
 	var url = container.data('url');
-	
-	
 	var format = container.data('style');
+	
+	
 	$.ajax({
 		type: "get",
 	    url: "/csl-style/" + format,
 	    dataType: "xml",
 	    success: function(xmldata) {
+	    	
 	    	var serializer = new XMLSerializer(); 
 	    	var original = serializer.serializeToString(xmldata);
-	    	
 	    	var xml = $("<div/>").html(original).text();
 	    	xml = $.trim(xml);
 	    	
+	    	//xml is now a string with given style.csl as content
 	    	//alert(xml);
 	    	 
 	    	$.ajax({
