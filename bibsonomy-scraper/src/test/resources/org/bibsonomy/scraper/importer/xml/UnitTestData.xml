@@ -2149,4 +2149,10 @@
 		<BibFile>SpieDigitalLibraryScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.spiedigitallibrary.SpieDigitalLibraryScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_351">
+		<TestDescription>test for bio one website</TestDescription>
+		<URL>http://www.bioone.org/doi/abs/10.2113/gspalynol.32.1.1</URL>
+		<BibFile>BioOneScraperScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.bioone.BioOneScraper</Scraper>
+	</URLTest>
 </test:Tests>
