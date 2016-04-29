@@ -40,6 +40,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.enums.SyncSettingsUpdateOperation;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -172,7 +173,7 @@ public class ExtendedSyncClientTest extends AbstractSynchronizationClientTest {
 		
 		final SyncService service = createServerService(strategy, userCredentials, SynchronizationDirection.BOTH);
 		
-		clientLogic.updateSyncServer(clientLogic.getAuthenticatedUser().getName(), service);
+		clientLogic.updateSyncServer(clientLogic.getAuthenticatedUser().getName(), service, SyncSettingsUpdateOperation.SETTINGS);
 	}
 
 	private void changeLeftSyncAndCheck(final URI syncServer, final String leftHost, final User leftUser, final LogicInterface leftLogic, final String rightHost, final User rightUser, final LogicInterface rightLogic, final String deleteHash) {
