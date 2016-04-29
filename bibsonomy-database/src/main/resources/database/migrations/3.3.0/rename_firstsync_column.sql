@@ -1,1 +1,0 @@
-ALTER TABLE sync CHANGE firstsync initial_autosync TINYINT(1);

@@ -140,16 +140,6 @@ public class SyncSettingsController extends SettingsPageController implements Va
 
 		return new ExtendedRedirectView("/settings?selTab=" + SettingsViewCommand.SYNC_IDX);
 	}
-
-//	/**
-//	 * @param name of the sync server 
-//	 * @return 
-//	 */
-//	private static ExtendedRedirectViewWithAttributes firstSyncView(SyncService syncServer) {
-//		final ExtendedRedirectViewWithAttributes view = new ExtendedRedirectViewWithAttributes("/sync");
-//		view.addAttribute("showAutoSyncInfoForURI", syncServer.getService());
-//		return view;
-//	}
 	
 	/**
 	 * Finds the sync service in the list whose update/create form was send. 
