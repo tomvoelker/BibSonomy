@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Database - Database for BibSonomy.
+ * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
  * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -24,37 +24,18 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.database.systemstags.search;
-
-import org.bibsonomy.database.systemstags.SystemTagsUtil;
+package org.bibsonomy.common.enums;
 
 /**
- * System tag for representing relationships in social networking systems 
- * such as Facebook, BibSonomy, etc.  
+ * update operation for sync settings
  * 
- * @author fmi
+ * @author dzo
  */
-public class NetworkRelationSystemTag extends UserRelationSystemTag {
-
-	/** the name of the network system tag */
-	public static final String NAME = "network";
+public enum SyncSettingsUpdateOperation {
 	
-	/** the network system tag for reporting a user as spammer */
-	public final static String BibSonomySpammerSystemTag = SystemTagsUtil.buildSystemTagString(NAME, "bibsonomy-spammer");
+	/** all */
+	ALL,
 	
-	/** the system tag for representing BibSonomy's friendship relation (==trust network) */
-	public final static String BibSonomyFriendSystemTag = SystemTagsUtil.buildSystemTagString(NAME, "bibsonomy-friend");
-	
-	/** the system tag for representing BibSonomy's follower relation  */
-	public final static String FOLLOWER_SYSTEMTAG = SystemTagsUtil.buildSystemTagString(NAME, "bibsonomy-follower");
-	
-	@Override
-	public String getName() {
-		return NAME;
-	}
-
-	@Override
-	public NetworkRelationSystemTag newInstance() {
-		return new NetworkRelationSystemTag();
-	}
+	/** settings */
+	SETTINGS;
 }
