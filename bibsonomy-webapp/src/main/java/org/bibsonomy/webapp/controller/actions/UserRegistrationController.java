@@ -40,6 +40,7 @@ import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.UserUtils;
+import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.webapp.command.actions.UserRegistrationCommand;
 import org.bibsonomy.webapp.util.CookieAware;
@@ -219,9 +220,9 @@ public class UserRegistrationController implements ErrorAware, ValidationAwareCo
 		}
 
 		/*
-		 * return to form until validation passes
+		 * return to form if validation failed or request method not POST
 		 */
-		if (errors.hasErrors()) {
+		if (errors.hasErrors() || ! HttpMethod.POST.equals(requestLogic.getHttpMethod())) {
 			/*
 			 * Generate HTML to show captcha.
 			 */
@@ -295,14 +296,14 @@ public class UserRegistrationController implements ErrorAware, ValidationAwareCo
 		this.errors = errors;
 	}
 
-	/** Returns, if validation is required for the given command. On default,
-	 * for all incoming data validation is required.
+	/** Returns, if validation is required for the given command.
 	 * 
 	 * @see org.bibsonomy.webapp.util.ValidationAwareController#isValidationRequired(org.bibsonomy.webapp.command.ContextCommand)
 	 */
 	@Override
 	public boolean isValidationRequired(final UserRegistrationCommand command) {
-		return true; // TODO: When is validation really required?
+		// Validate only POST-Requests
+		return HttpMethod.POST.equals(requestLogic.getHttpMethod());
 	}
 
 	/** Checks the status of the given inetAddress in the DB
