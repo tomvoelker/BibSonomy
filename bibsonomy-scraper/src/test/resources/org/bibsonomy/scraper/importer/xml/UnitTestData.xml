@@ -2137,4 +2137,16 @@
 		<BibFile>ScientificScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.scientific.ScientificScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_349">
+		<TestDescription>test for scientific.net website</TestDescription>
+		<URL>http://www.scientific.net/AMR.225-226.1032</URL>
+		<BibFile>ScientificScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.scientific.ScientificScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_350">
+		<TestDescription>test for spie digital library website</TestDescription>
+		<URL>http://remotesensing.spiedigitallibrary.org/article.aspx?articleid=2099648</URL>
+		<BibFile>SpieDigitalLibraryScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.spiedigitallibrary.SpieDigitalLibraryScraper</Scraper>
+	</URLTest>
 </test:Tests>
