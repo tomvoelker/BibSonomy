@@ -24,48 +24,35 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.webapp.util.spring.security.userdetailsservice;
+package org.bibsonomy.webapp.util.spring.security.provider;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import org.bibsonomy.model.User;
-import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.util.spring.security.UserAdapter;
-import org.springframework.dao.DataAccessException;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.bibsonomy.webapp.util.spring.security.saml.credential.checker.SAMLCredentialChecker;
+import org.springframework.security.saml.SAMLAuthenticationProvider;
+import org.springframework.security.saml.SAMLCredential;
 
 /**
+ * {@link SAMLAuthenticationProvider} that prechecks saml credentials before
+ * loading the userdetails
+ *
  * @author dzo
  */
-public class DatabaseUserDetailsService implements UserDetailsService {
+public class SAMLRestrictedAuthenticationProvider extends SAMLAuthenticationProvider {
 	
-	protected LogicInterface adminLogic;
+	private SAMLCredentialChecker preSAMLChecker;
 	
-	/**
-	 * @param adminLogic the adminLogic to set
+	/* (non-Javadoc)
+	 * @see org.springframework.security.saml.SAMLAuthenticationProvider#getUserDetails(org.springframework.security.saml.SAMLCredential)
 	 */
-	public void setAdminLogic(LogicInterface adminLogic) {
-		this.adminLogic = adminLogic;
-	}
-	
 	@Override
-	public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException, DataAccessException {
-		final User user = this.getUserFromDatabase(username);
-		return new UserAdapter(user);
+	protected Object getUserDetails(SAMLCredential credential) {
+		this.preSAMLChecker.checkCredential(credential);
+		return super.getUserDetails(credential);
 	}
 
-	protected User getUserFromDatabase(String username) throws UsernameNotFoundException {
-		if (username == null) {
-			throw new UsernameNotFoundException("username was null");
-		}
-		
-		final User user = this.adminLogic.getUserDetails(username);
-		
-		if (!present(user.getName())) {
-			throw new UsernameNotFoundException("user with name " + username + " not found");
-		}
-		return user;
+	/**
+	 * @param preSAMLChecker the preSAMLChecker to set
+	 */
+	public void setPreSAMLChecker(SAMLCredentialChecker preSAMLChecker) {
+		this.preSAMLChecker = preSAMLChecker;
 	}
 }

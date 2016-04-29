@@ -179,19 +179,20 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Returns a group with all its members if the user is allowed to see them.
 	 * 
-	 * @param authUser
+	 * @param authUserName
 	 * @param groupname
-	 * @param getPermissions TODO
+	 * @param getPermissions <code>true</code> iff permissions should be loaded
+	 * @param adminAccess 
 	 * @param session
 	 * @return group
 	 */
-	public Group getGroupMembers(final String authUser, final String groupname, final boolean getPermissions, final DBSession session) {
+	public Group getGroupMembers(final String authUserName, final String groupname, final boolean getPermissions, boolean adminAccess, final DBSession session) {
 		log.debug("getGroupMembers " + groupname);
 		Group group;
 		if ("friends".equals(groupname)) {
 			group = GroupUtils.buildFriendsGroup();
 			final List<GroupMembership> mss = new LinkedList<>();
-			for (final User u : this.userDb.getUserRelation(authUser, UserRelation.OF_FRIEND, null, session)) {
+			for (final User u : this.userDb.getUserRelation(authUserName, UserRelation.OF_FRIEND, null, session)) {
 				mss.add(new GroupMembership(u, GroupRole.USER, false));
 			}
 			group.setMemberships(mss);
@@ -222,43 +223,49 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			group.setMemberships(Collections.<GroupMembership> emptyList());
 			return group;
 		}
-
+		
+		/*
+		 * update the membership list according to the privlevel settings
+		 * system admins can see all members by default
+		 */
 		final int groupId = group.getGroupId();
-		final Privlevel privlevel = this.getPrivlevelForGroup(groupId, session);
-		// remove members as necessary
-		switch (privlevel) {
-		case MEMBERS:
-			// if the user isn't a member of the group he can't see other
-			// members -> and we'll fall through to HIDDEN
-			if (isUserInGroup(authUser, group)) {
+		if (!adminAccess) {
+			final Privlevel privlevel = this.getPrivlevelForGroup(groupId, session);
+			// remove members as necessary
+			switch (privlevel) {
+			case MEMBERS:
+				// if the user isn't a member of the group he can't see other
+				// members -> and we'll fall through to HIDDEN
+				if (isUserInGroup(authUserName, group)) {
+					break;
+				}
+				//$FALL-THROUGH$
+			case HIDDEN:
+				// only a group admins or moderators may always see the group
+				// members
+				final GroupMembership groupMembershipForUser = this.getGroupMembershipForUser(authUserName, group, session);
+				
+				final List<GroupMembership> groupMemberships;
+				if (present(groupMembershipForUser)) {
+					if (groupMembershipForUser.getGroupRole().hasRole(GroupRole.MODERATOR)) {
+						// user is at least moderator, show all members of this group
+						groupMemberships = group.getMemberships();
+					} else {
+						// user is member of this group, let her see her membership
+						groupMemberships = Collections.singletonList(groupMembershipForUser);
+					}
+				} else {
+					// user is not a member of this group, so the list is hidden
+					groupMemberships = Collections.emptyList();
+				}
+				group.setMemberships(groupMemberships);
+				break;
+			case PUBLIC:
+				// ignore
 				break;
 			}
-			//$FALL-THROUGH$
-		case HIDDEN:
-			// only a group admins or moderators may always see the group
-			// members
-			final GroupMembership groupMembershipForUser = this.getGroupMembershipForUser(authUser, group, session);
-			
-			final List<GroupMembership> groupMemberships;
-			if (present(groupMembershipForUser)) {
-				if (groupMembershipForUser.getGroupRole().hasRole(GroupRole.MODERATOR)) {
-					// user is at least moderator, show all members of this group
-					groupMemberships = group.getMemberships();
-				} else {
-					// user is member of this group, let her see her membership
-					groupMemberships = Collections.singletonList(groupMembershipForUser);
-				}
-			} else {
-				// user is not a member of this group, so the list is hidden
-				groupMemberships = Collections.emptyList();
-			}
-			group.setMemberships(groupMemberships);
-			break;
-		case PUBLIC:
-			// ignore
-			break;
 		}
-
+		
 		return group;
 	}
 

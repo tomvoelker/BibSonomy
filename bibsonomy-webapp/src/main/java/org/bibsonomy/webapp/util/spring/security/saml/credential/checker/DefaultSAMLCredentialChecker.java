@@ -1,5 +1,5 @@
 /**
- * BibSonomy Search - Helper classes for search modules.
+ * BibSonomy-Webapp - The web application for BibSonomy.
  *
  * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -12,51 +12,36 @@
  *                               http://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
+ * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.search;
+package org.bibsonomy.webapp.util.spring.security.saml.credential.checker;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Set;
-
-import org.bibsonomy.search.testutils.SearchSpringContextWrapper;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.springframework.security.saml.SAMLCredential;
 
 /**
- * tests for {@link SearchInfoDBLogic}
+ * default implementation for {@link SAMLCredentialChecker}
+ * checks nothing
  *
  * @author dzo
  */
-public class SearchInfoDBLogicTest {
-	
-	private static SearchInfoDBLogic LOGIC;
-	
-	/**
-	 * retrieves the logic from the config
+public class DefaultSAMLCredentialChecker implements SAMLCredentialChecker {
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.util.spring.security.saml.credential.checker.SAMLCredentialChecker#checkCredential(org.springframework.security.saml.SAMLCredential)
 	 */
-	@BeforeClass
-	public static final void setLogic() {
-		LOGIC = SearchSpringContextWrapper.getBeanFactory().getBean(SearchInfoDBLogic.class);
+	@Override
+	public void checkCredential(SAMLCredential credential) {
+		// noop
 	}
-	
-	/**
-	 * tests {@link SearchInfoDBLogic#getUserNamesThatShareDocumentsWithUser(String)}
-	 */
-	@Test
-	public void testGetUserNamesThatShareDocumentsWithUser() {
-		final Set<String> users = LOGIC.getUserNamesThatShareDocumentsWithUser("testuser1");
-		assertEquals(1, users.size());
-	}
+
 }
