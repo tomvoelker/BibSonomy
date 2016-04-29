@@ -8,13 +8,23 @@
 	<select id="getLastTasId" resultClass="integer">
 		SELECT MAX(tas_id)
 		FROM tas
-	</select>   
+	</select>
 	
 	<!-- used by the gold standard index instead of getLastTasId -->
 	<!-- TODO: rename query? -->
 	<select id="getLastContentId" resultClass="integer">
 		SELECT MAX(content_id)
 		FROM gold_standard WHERE content_type = 2
+	</select>
+	
+	<select id="getLastDocumentDate" resultClass="date">
+		SELECT MAX(date)
+		FROM (SELECT MAX(date) AS date
+			FROM document
+			UNION
+			SELECT MAX(log_date) AS date
+			FROM log_document
+		) AS doc
 	</select>
 
 	<!-- get number of public bookmark posts -->
@@ -93,6 +103,7 @@
 			t.tag_name,
 			g.*,
 			t.tas_id,
+			<include refid="allDocumentAttributes"/>,
 			-1 AS rating, -1 AS number_of_ratings
 		FROM 
 		( 
@@ -105,6 +116,7 @@
 		) AS bb
 		LEFT JOIN tas t USING (content_id)
 		LEFT JOIN groupids g ON (bb.group = g.group)
+		LEFT JOIN document d USING(content_id)
 	</select>
 	
 	<select id="getGoldStandardPublicationForIndex" resultMap="SearchGoldStandardPublicationCommon.searchGoldStandardPublicationPost">

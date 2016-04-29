@@ -39,7 +39,8 @@ import org.springframework.security.saml.userdetails.SAMLUserDetailsService;
 /**
  * @author jensi
  */
-public class MappingUserDetailsService implements SAMLUserDetailsService {	
+public class MappingUserDetailsService implements SAMLUserDetailsService {
+	
 	/**
 	 * {@link UserDetailsService} property that knows how to load the {@link UserDetails}
 	 */
@@ -49,6 +50,7 @@ public class MappingUserDetailsService implements SAMLUserDetailsService {
 	
 	@Override
 	public UserDetails loadUserBySAML(SAMLCredential credential) throws UsernameNotFoundException {
+		
 		// TODO:
 		// map credentials to bibsonomy userid
 		// if no mapping present:

@@ -10,21 +10,13 @@
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:register="urn:jsptagdir:/WEB-INF/tags/actions/register"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<fmt:message key="navi.register" var="pageTitle" />
-
-	<!-- ################################################################################## --> 
-	<!-- 				!!!ATTENTION!!! - !!!ATTENTION!!! - !!!ATTENTION!!! 				-->
-	<!--  																					-->
-	<!-- 		This File is overlayed by puma-customized/bibsonomy-webapp-stuttgart	 	-->
-	<!-- 																					-->
-	<!-- 				!!!ATTENTION!!! - !!!ATTENTION!!! - !!!ATTENTION!!! 				-->
-	<!-- ################################################################################## --> 
-
 
 	<layout:singleContainerLayout requPath="${requPath}" command="${command}" pageTitle="${pageTitle}" smallBox="true">
 
@@ -64,51 +56,32 @@
 						</div>
 						
 						<!-- LOCAL USER NAME / ALIAS -->
-						<bsform:input path="registerUser.name"  labelColSpan="4" inputColSpan="8" labelKey="register.saml.registerUser.name" helpKey="register.saml.registerUser.name.help"/>
+						<bsform:input path="registerUser.name" labelColSpan="4" inputColSpan="8" labelKey="register.saml.registerUser.name" noHelp="${true}" inputGroupSymbol="@" />
 						
 						<!-- EMAIL ADDRESS -->
-						<bsform:input path="registerUser.email" labelColSpan="4" inputColSpan="8" labelKey="register.saml.registerUser.email" helpKey="register.saml.registerUser.email.help" />
+						<bsform:input path="registerUser.email" labelColSpan="4" inputColSpan="8" labelKey="register.saml.registerUser.email" inputGroupFaIcon="fa-envelope" noHelp="${true}" />
 						
+						<c:forEach var="field" items="${fn:split(properties['auth.register.saml.fields.required'], ',')}">
+							<register:field field="${field}" />
+						</c:forEach>
 					</jsp:attribute>
 				</bsform:fieldset>
-				
-				<bsform:fieldset  legendKey="register.saml.optional">
-					<jsp:attribute name="content">
-						<bsform:input path="registerUser.realname" labelColSpan="4" inputColSpan="8" labelKey="register.saml.registerUser.realname" />  
-						
-						<c:set var="formErrorsGender"><form:errors path="samlId.identityProviderId" /></c:set>
-						<div class="form-group ${not empty formErrorsGender ? ' has-error' : ''}">
-							<form:label cssClass="control-label col-sm-4" path="registerUser.gender" ><fmt:message key="navi.gender"/></form:label>
-							<div class="col-sm-8">
-								<form:select path="registerUser.gender" cssClass="form-control">
-									<form:option value="F" label="female" />
-									<form:option value="M" label="male" />
-								</form:select>
-								
-								<bsform:errors path="registerUser.gender" />
-							</div>
-						</div>
-
-						<bsform:input path="registerUser.place" labelColSpan="4" inputColSpan="8" labelKey="user.place" noHelp="true" />
-						<bsform:input path="registerUser.homepage" labelColSpan="4" inputColSpan="8" labelKey="user.settings.homepage" noHelp="true" />
-
-						<div class="form-group">
-							<div class="col-sm-offset-4 col-sm-8">
-								<button type="submit" class="btn btn-success"><fmt:message key="register.saml.registerUser.activate" /></button>
-							</div>
-						</div>
-
-					</jsp:attribute>
-				</bsform:fieldset>
-				
-				<!-- 
-				<input type="hidden" name="rememberMe" value="${command.rememberMe}" />
-				-->	
+				<c:set var="optionalFields" value="${properties['auth.register.saml.fields.optional']}" />
+				<c:if test="${not empty optionalFields}">
+					<bsform:fieldset  legendKey="register.saml.optional">
+						<jsp:attribute name="content">
+							<c:forEach var="field" items="${fn:split(optionalFields, ',')}">
+								<register:field field="${field}" />
+							</c:forEach>
+						</jsp:attribute>
+					</bsform:fieldset>
+				</c:if>
+				<div class="form-group">
+					<div class="col-sm-offset-4 col-sm-8">
+						<button type="submit" class="btn btn-success"><fmt:message key="register.saml.registerUser.activate" /></button>
+					</div>
+				</div>
 			</form:form>
-			
-			<br />
-			<br />
-			<hr />
 		</jsp:attribute>
 	</layout:singleContainerLayout>
 </jsp:root>

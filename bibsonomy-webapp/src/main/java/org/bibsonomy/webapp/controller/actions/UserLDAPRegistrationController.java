@@ -40,7 +40,7 @@ import org.springframework.security.core.Authentication;
  * @author Sven Stefani
  * @author rja
  */
-public class UserLDAPRegistrationController extends AbstractUserIDRegistrationController {
+public class UserLDAPRegistrationController extends AbstractUserIDRegistrationController<Void> {
 	
 	/**
 	 * Shall the LDAP ID be suggested as user name?
@@ -64,7 +64,7 @@ public class UserLDAPRegistrationController extends AbstractUserIDRegistrationCo
 	}
 
 	@Override
-	protected Authentication getAuthentication(User user) {
+	protected Authentication getAuthentication(final User user, final Void additionalInformation) {
 		return new UsernamePasswordAuthenticationToken(user.getLdapId(), user.getPassword());
 	}
 

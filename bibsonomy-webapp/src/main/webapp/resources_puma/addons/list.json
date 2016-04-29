@@ -150,6 +150,36 @@
 		"frameColor":"df430d"
 	},
 	{
+		"instanceName":"HS Darmstadt",
+		"instanceImageUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/puma_logo_large.png",
+		"instanceUrl":"http:\/\/puma-hda.hebis.de\/",
+		"homeButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/home_puma.png",
+		"bookmarkButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/bookmark_puma.png",
+		"publicationButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/publication_puma.png",
+		"homeButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/home_puma_chrome.png",
+		"bookmarkButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/bookmark_puma_chrome.png",
+		"publicationButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/publication_puma_chrome.png",
+		"active":true,
+		"popUpIcon":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/popupicon.png",
+		"color":"df430d",
+		"frameColor":"df430d"
+	},
+	{
+		"instanceName":"Frankfurt Uni. of Appl. Sciences",
+		"instanceImageUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/puma_logo_large.png",
+		"instanceUrl":"http:\/\/puma-fuas.hebis.de\/",
+		"homeButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/home_puma.png",
+		"bookmarkButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/bookmark_puma.png",
+		"publicationButtonImgUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/publication_puma.png",
+		"homeButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/home_puma_chrome.png",
+		"bookmarkButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/bookmark_puma_chrome.png",
+		"publicationButtonImgUrlChrome":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/publication_puma_chrome.png",
+		"active":true,
+		"popUpIcon":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/popupicon.png",
+		"color":"df430d",
+		"frameColor":"df430d"
+	},
+	{
 		"instanceName":"Marburg",
 		"instanceImageUrl":"http:\/\/www.bibsonomy.org\/resources_puma\/addons\/images\/puma_logo_large.png",
 		"instanceUrl":"http:\/\/puma-ubmr.hebis.de\/",

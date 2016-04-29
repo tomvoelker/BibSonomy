@@ -38,7 +38,6 @@ import java.io.Writer;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -50,7 +49,6 @@ import java.util.Set;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
-import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -411,15 +409,7 @@ public abstract class AbstractRendererTest {
 		
 		// empty list without start-/end-values 
 		final List<Tag> tags = new LinkedList<Tag>();
-		try {
-			this.getRenderer().serializeTags(sw, tags, null);
-			// TODO: remove?
-			// fail("exception should have been thrown: no start-/end-values given");
-		} catch (final InternServerException e) {
-		}
-		catch (final BadRequestOrResponseException e) {
-		}
-
+		
 		// empty list
 		final ViewModel vm = new ViewModel();
 		vm.setStartValue(0);
@@ -432,13 +422,8 @@ public abstract class AbstractRendererTest {
 		// with tags
 		sw = new StringWriter(100);
 		final Tag tag1 = new Tag();
-		tags.add(tag1);
-		try {
-			this.getRenderer().serializeTags(sw, tags, vm);
-			fail("exception should have been thrown: no tagname specified");
-		} catch (final InvalidModelException e) {
-		}
 		tag1.setName("foo");
+		tags.add(tag1);
 		sw = new StringWriter(100);
 		this.getRenderer().serializeTags(sw, tags, vm);
 		this.assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultTags2" + this.getFileExt());
@@ -459,11 +444,6 @@ public abstract class AbstractRendererTest {
 		// empty tag
 		final Writer sw = new StringWriter(100);
 		final Tag tag = new Tag();
-		try {
-			this.getRenderer().serializeTag(sw, tag, null);
-			fail("exception should have been thrown: no tagname specified");
-		} catch (final InvalidModelException e) {
-		}
 		tag.setName("foo");
 		this.getRenderer().serializeTag(sw, tag, null);
 		this.assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultTag" + this.getFileExt());
@@ -471,38 +451,23 @@ public abstract class AbstractRendererTest {
 
 	@Test
 	public void testSerializeUsers() throws Exception {
-		Writer sw = new StringWriter(100);
-
-		// empty user
+		final Writer sw = new StringWriter(100);
+		
 		final List<User> users = new LinkedList<User>();
-		try {
-			this.getRenderer().serializeUsers(sw, users, null);
-			// TODO: remove?
-			// fail("exception should have been thrown: no start-/end values specified");
-		} catch (final InternServerException e) {
-		}
-		catch (final BadRequestOrResponseException e) {			
-		}		
-
-		//
+		
 		final ViewModel vm = new ViewModel();
 		vm.setStartValue(20);
 		vm.setEndValue(30);
 		vm.setUrlToNextResources("http://www.bibsonomy.org/api/foo/bar");
+		
 		final User user1 = new User();
-		users.add(user1);
-		try {
-			this.getRenderer().serializeUsers(sw, users, null);
-			fail("exception should have been thrown: no username specified");
-		} catch (final InvalidModelException e) {
-		}
-
-		sw = new StringWriter(100);
 		user1.setName("testName");
 		user1.setEmail("mail@foo.bar");
 		user1.setHomepage(new URL("http://foo.bar.com"));
 		user1.setPassword("raboof");
 		user1.setRealname("Dr. FOO BaR");
+		users.add(user1);
+		
 		final User user2 = new User();
 		user2.setName("fooBar");
 		user2.getGroups().add(new Group("kde"));
@@ -516,11 +481,6 @@ public abstract class AbstractRendererTest {
 		// empty user
 		final Writer sw = new StringWriter(100);
 		final User user = new User();
-		try {
-			this.getRenderer().serializeUser(sw, user, null);
-			fail("exception should have been thrown: no username specified");
-		} catch (final InvalidModelException e) {
-		}
 		user.setName("foo");
 		this.getRenderer().serializeUser(sw, user, null);
 		this.assertWithFile(sw, this.getPathToTestFiles() + "ExampleResultUser" + this.getFileExt());
@@ -528,34 +488,18 @@ public abstract class AbstractRendererTest {
 
 	@Test
 	public void testSerializeGroups() throws Exception {
-		Writer sw = new StringWriter(100);
-
-		// empty group
-		final List<Group> groups = new LinkedList<Group>();		
-		try {
-			this.getRenderer().serializeGroups(sw, groups, null);
-		}
-		catch (final InternServerException ex) {			
-		}
-		catch (final BadRequestOrResponseException e) {			
-		}		
-
+		final Writer sw = new StringWriter(100);
+		final List<Group> groups = new LinkedList<Group>();
 		// empty group
 		final ViewModel vm = new ViewModel();
 		vm.setStartValue(20);
 		vm.setEndValue(30);
 		vm.setUrlToNextResources("http://www.bibsonomy.org/api/foo/bar");
+		
 		final Group group1 = new Group();
-		groups.add(group1);
-		try {
-			this.getRenderer().serializeGroups(sw, groups, null);
-			fail("exception should have been thrown: no groupname specified");
-		} catch (final InvalidModelException e) {
-		}
-
-		sw = new StringWriter(100);
 		group1.setName("testName");
 		group1.setDescription("foo bar ...");
+		groups.add(group1);
 		final Group group2 = new Group();
 		group2.setName("testName2");
 		groups.add(group2);
@@ -568,11 +512,6 @@ public abstract class AbstractRendererTest {
 		// empty group
 		final Writer sw = new StringWriter(100);
 		final Group group = new Group();
-		try {
-			this.getRenderer().serializeGroup(sw, group, null);
-			fail("exception should have been thrown: no groupname specified");
-		} catch (final InvalidModelException e) {
-		}
 		group.setName("foo");
 		group.setDescription("foo bar :)");
 		group.setHomepage(new URL("http://www.example.com/"));
@@ -583,22 +522,13 @@ public abstract class AbstractRendererTest {
 
 	@Test
 	public void testSerializePosts() throws Exception {
-		Writer sw = new StringWriter(100);
+		final Writer sw = new StringWriter(100);
 		final List<Post<? extends Resource>> posts = new LinkedList<Post<? extends Resource>>();
-		try {
-			this.getRenderer().serializePosts(sw, posts, null);
-			//fail ("Exception should have been trown: no start-/end-values specified");
-		}
-		catch (final InternServerException ex) {			
-		}
-		catch (final BadRequestOrResponseException e) {			
-		}		
-		
-		sw = new StringWriter(100);
 		final ViewModel vm = new ViewModel();
 		vm.setStartValue(0);
 		vm.setEndValue(10);
 		vm.setUrlToNextResources("www.bibsonomy.org/foo/bar");
+		
 		final Post<Resource> post = new Post<Resource>();
 		final User user = new User();
 		user.setName("foo");
@@ -632,34 +562,14 @@ public abstract class AbstractRendererTest {
 	public void testSerializePost() {
 		final Writer sw = new StringWriter(100);
 		final Post<Resource> post = new Post<Resource>();
-		try {
-			this.getRenderer().serializePost(sw, post, null);
-			fail("exception should have been thrown: no user specified");
-		} catch (final InternServerException e) {
-		}
 		final User user = new User();
 		user.setName("foo");
 		post.setUser(user);
-		try {
-			this.getRenderer().serializePost(sw, post, null);
-			fail("exception should have been thrown: no tags assigned");
-		} catch (final InternServerException e) {
-		}
 		final Tag tag = new Tag();
 		tag.setName("bar");
 		post.getTags().add(tag);
-		try {
-			this.getRenderer().serializePost(sw, post, null);
-			fail("exception should have been thrown: no ressource assigned");
-		} catch (final InternServerException e) {
-		}
 		final Bookmark bookmark = new Bookmark();
 		post.setResource(bookmark);
-		try {
-			this.getRenderer().serializePost(sw, post, null);
-			fail("exception should have been thrown: bookmark has no url assigned");
-		} catch (final InvalidModelException e) {
-		}
 		bookmark.setUrl("www.foobar.org");
 		bookmark.setTitle("bookmarktitle");
 		bookmark.setIntraHash("aabbcc");

@@ -91,8 +91,7 @@ public class DummyFileLogic implements FileLogic {
 
 	@Override
 	public File getFileForDocument(Document document) {
-		// TODO Auto-generated method stub
-		return null;
+		return new File(document.getFileHash());
 	}
 
 	@Override
