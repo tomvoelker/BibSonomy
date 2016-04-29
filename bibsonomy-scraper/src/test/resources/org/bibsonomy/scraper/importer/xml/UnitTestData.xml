@@ -2131,4 +2131,10 @@
 		<BibFile>OstiScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.osti.OstiScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_348">
+		<TestDescription>test for scientific.net website</TestDescription>
+		<URL>http://www.scientific.net/AMR.225-226.1032</URL>
+		<BibFile>ScientificScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.scientific.ScientificScraper</Scraper>
+	</URLTest>
 </test:Tests>
