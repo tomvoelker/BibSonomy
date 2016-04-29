@@ -33,6 +33,7 @@ import org.bibsonomy.scraper.url.kde.aanda.AandAScraper;
 import org.bibsonomy.scraper.url.kde.acl.AclScraper;
 import org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper;
 import org.bibsonomy.scraper.url.kde.acs.ACSScraper;
+import org.bibsonomy.scraper.url.kde.ahajournals.AhaJournalsScraper;
 import org.bibsonomy.scraper.url.kde.aip.AipScitationScraper;
 import org.bibsonomy.scraper.url.kde.amazon.AmazonScraper;
 import org.bibsonomy.scraper.url.kde.ams.AmsScraper;
@@ -53,8 +54,10 @@ import org.bibsonomy.scraper.url.kde.bmj.BMJScraper;
 import org.bibsonomy.scraper.url.kde.cambridge.CambridgeScraper;
 import org.bibsonomy.scraper.url.kde.casesjournal.CasesJournalScraper;
 import org.bibsonomy.scraper.url.kde.cell.CellScraper;
+import org.bibsonomy.scraper.url.kde.cinii.CiniiScraper;
 import org.bibsonomy.scraper.url.kde.citeseer.CiteseerxScraper;
 import org.bibsonomy.scraper.url.kde.citeulike.CiteulikeScraper;
+import org.bibsonomy.scraper.url.kde.copac.CopacScraper;
 import org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper;
 import org.bibsonomy.scraper.url.kde.dblp.DBLPScraper;
 import org.bibsonomy.scraper.url.kde.degruyter.DeGruyterScraper;
@@ -64,6 +67,7 @@ import org.bibsonomy.scraper.url.kde.elsevierhealth.ElsevierhealthScraper;
 import org.bibsonomy.scraper.url.kde.eric.EricScraper;
 import org.bibsonomy.scraper.url.kde.faseb.FASEBJournalScraper;
 import org.bibsonomy.scraper.url.kde.firstmonday.FirstMondayScraper;
+import org.bibsonomy.scraper.url.kde.frontiersin.FRONTIERSINScraper;
 import org.bibsonomy.scraper.url.kde.genome.GenomeBiologyScraper;
 import org.bibsonomy.scraper.url.kde.googlebooks.GoogleBooksScraper;
 import org.bibsonomy.scraper.url.kde.googlepatent.GooglePatentScraper;
@@ -87,6 +91,7 @@ import org.bibsonomy.scraper.url.kde.jneurosci.JNeurosciScraper;
 import org.bibsonomy.scraper.url.kde.journalogy.JournalogyScraper;
 import org.bibsonomy.scraper.url.kde.jstage.JStageScraper;
 import org.bibsonomy.scraper.url.kde.jstor.JStorScraper;
+import org.bibsonomy.scraper.url.kde.karger.KargerScraper;
 import org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper;
 import org.bibsonomy.scraper.url.kde.karlsruhe.BibliographyScraper;
 import org.bibsonomy.scraper.url.kde.karlsruhe.UBKAScraper;
@@ -107,6 +112,7 @@ import org.bibsonomy.scraper.url.kde.opac.OpacScraper;
 import org.bibsonomy.scraper.url.kde.openrepository.OpenrepositoryScraper;
 import org.bibsonomy.scraper.url.kde.openuniversity.OpenUniversityScraper;
 import org.bibsonomy.scraper.url.kde.osa.OSAScraper;
+import org.bibsonomy.scraper.url.kde.osti.OstiScraper;
 import org.bibsonomy.scraper.url.kde.oxfordjournals.OxfordJournalsScraper;
 import org.bibsonomy.scraper.url.kde.phcogres.PharmacognosyResearchScraper;
 import org.bibsonomy.scraper.url.kde.pion.PionScraper;
@@ -122,7 +128,9 @@ import org.bibsonomy.scraper.url.kde.sage.SageJournalScraper;
 import org.bibsonomy.scraper.url.kde.scielo.SCIELOScraper;
 import org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper;
 import org.bibsonomy.scraper.url.kde.sciencemag.ScienceMagScraper;
+import org.bibsonomy.scraper.url.kde.scientific.ScientificScraper;
 import org.bibsonomy.scraper.url.kde.scopus.ScopusScraper;
+import org.bibsonomy.scraper.url.kde.spiedigitallibrary.SpieDigitalLibraryScraper;
 import org.bibsonomy.scraper.url.kde.spires.SpiresScraper;
 import org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper;
 import org.bibsonomy.scraper.url.kde.springer.SpringerScraper;
@@ -277,11 +285,14 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new APHAScraper());
 		addScraper(new CSHLPScraper());
 		addScraper(new RWTHAachenScraper());
-		
-		/*
-		 * it still under development
-		 */
-		//addScraper(new CopacScraper());
+		addScraper(new OstiScraper());
+		addScraper(new ScientificScraper());
+		addScraper(new CopacScraper());
+		addScraper(new CiniiScraper());
+		addScraper(new AhaJournalsScraper());
+		addScraper(new KargerScraper());
+		addScraper(new FRONTIERSINScraper());
+		addScraper(new SpieDigitalLibraryScraper());
 		//addScraper(new AkademiaiScraper()); error = 404
 	}
 

@@ -38,7 +38,6 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
 /**
- * TODO: check status of this scraper
  * 
  * this Scraper import data from the host http://copac.jisc.ac.uk
  * @author Mohammed Abed

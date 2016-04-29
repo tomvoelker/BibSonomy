@@ -43,8 +43,8 @@ import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
  */
 public class ScientificScraper extends GenericBibTeXURLScraper {
 
-	private static final String SITE_NAME = "Cold Spting Harbor Perspetives in Biology";
-	private static final String SITE_URL = "http://cshperspectives.cshlp.org/";
+	private static final String SITE_NAME = "scientific";
+	private static final String SITE_URL = "http://www.scientific.net/";
 	private static final String INFO = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
 	private static final String SCIENTIFC_HOSTS = "scientific.net";
 
