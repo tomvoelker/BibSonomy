@@ -50,7 +50,7 @@
 		SELECT <include refid="allUserAttributes"/>, ldapUserId, openID
 		  FROM user 
 		    LEFT JOIN ldapUser USING (user_name)
-		    LEFT JOIN openIDUser USING (user_name)  
+		    LEFT JOIN openIDUser USING (user_name)
 		  WHERE user_name = #username#
 	</select>
 
@@ -228,7 +228,7 @@
 			AND w.item != #requestedUserName#
 			AND u.role != 3
 			<isNotNull property="userName">
-			AND w.item NOT IN (SELECT f_user_name FROM friends WHERE tag_name = 'sys:relation:Bibsonomy-Follower' AND user_name=#userName#)
+			AND w.item NOT IN (SELECT f_user_name FROM friends WHERE tag_name = #followerTag# AND user_name = #userName#)
 			</isNotNull> 
 		ORDER BY 2 DESC
 		LIMIT #limit#
@@ -244,8 +244,8 @@
 		AND u2 != #requestedUserName#
 		AND user1.role != 3
 		AND user2.role != 3
-		<isNotNull property="userName">		
-		AND u2 NOT IN (SELECT f_user_name FROM friends WHERE tag_name = 'sys:relation:Bibsonomy-Follower' AND user_name=#userName#)
+		<isNotNull property="userName">
+		AND u2 NOT IN (SELECT f_user_name FROM friends WHERE tag_name = #followerTag# AND user_name = #userName#)
 		</isNotNull>
 		ORDER by 2 DESC 
 		LIMIT #limit# OFFSET #offset#
@@ -272,12 +272,12 @@
 	
 	<!-- get all users, that follow the user (user, u)\in OF_FOLLOWER-->
 	<select id="getRelation_OF_FOLLOWER" resultMap="Common.user"	parameterClass="userParam">
-		SELECT user_name FROM friends WHERE tag_name = 'sys:relation:Bibsonomy-Follower' AND f_user_name = #userName#
+		SELECT user_name FROM friends WHERE tag_name = #followerTag# AND f_user_name = #userName#
 	</select>
 	
 	<!-- get all users u, which user follows (user, u)\in FOLLOWER_OF-->
 	<select id="getRelation_FOLLOWER_OF" resultMap="Common.user" parameterClass="userParam">
-		SELECT f_user_name AS user_name FROM friends WHERE tag_name = 'sys:relation:Bibsonomy-Follower' AND user_name = #userName#
+		SELECT f_user_name AS user_name FROM friends WHERE tag_name = #followerTag# AND user_name = #userName#
 	</select>
 	
 	<select id="getFriendHistoryCount" resultClass="int">
@@ -301,13 +301,11 @@
 	
 	<!-- delete (userName, requestedUserName) from FOLLOWER_OF-->
 	<delete id="deleteRelation_FOLLOWER_OF" parameterClass="userParam">
-		DELETE FROM friends WHERE tag_name = 'sys:relation:Bibsonomy-Follower' AND f_user_name = #requestedUserName# and user_name = #userName#
+		DELETE FROM friends WHERE tag_name = #followerTag# AND f_user_name = #requestedUserName# and user_name = #userName#
 	</delete>
 	
 	<!-- insert (userName, requestedUserName) into FOLLOWER_OF-->
 	<insert id="insertRelation_FOLLOWER_OF" parameterClass="userParam">
-		INSERT IGNORE INTO friends (user_name, f_user_name, friendship_date, tag_name) VALUES (#userName#,#requestedUserName#,NOW(),'sys:relation:Bibsonomy-Follower')
+		INSERT IGNORE INTO friends (user_name, f_user_name, friendship_date, tag_name) VALUES (#userName#, #requestedUserName#, NOW(), #followerTag#)
 	</insert>
-	
-
 </sqlMap>

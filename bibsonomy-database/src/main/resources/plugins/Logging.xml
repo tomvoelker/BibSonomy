@@ -123,7 +123,7 @@
 	<insert id="logFollowerDelete" parameterClass="userParam">
 		INSERT INTO log_friends (friends_id, user_name, f_user_name, tag_name, friendship_date)
 			SELECT friends_id, user_name, f_user_name, tag_name, friendship_date FROM friends
-			WHERE tag_name = 'sys:relation:Bibsonomy-Follower' AND user_name = #userName# AND f_user_name = #requestedUserName#
+			WHERE tag_name = #followerTag# AND user_name = #userName# AND f_user_name = #requestedUserName#
 	</insert>
 	
 	<insert id="logFriendDelete" parameterClass="userParam">
