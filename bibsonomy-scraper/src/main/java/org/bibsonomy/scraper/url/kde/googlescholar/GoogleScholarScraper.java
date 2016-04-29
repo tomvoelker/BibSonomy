@@ -58,29 +58,23 @@ public class GoogleScholarScraper extends GenericBibTeXURLScraper {
 	
 	@Override
 	protected String getDownloadURL(URL url) throws ScrapingException {
-		/* 
-		if (true) { //citation_for_view=(.+?)$
-			final Pattern IDFORGOOGLE = Pattern.compile("(.+?)scisig(.+?)$", Pattern.DOTALL);
-			Matcher m = null;
-			try {
-				System.out.println(WebUtils.getContentAsString(url));
-				m = IDFORGOOGLE.matcher(WebUtils.getContentAsString(url));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+
+		if (url.toString().contains(PATH1)) {
+			
+			final String SCISIG = "scisig=AAGBfm0AAAAAVyM_4zZSYmtLcmYUQYVlIWqH3eVqkNVH";
+			final Pattern DOWNLOADURL = Pattern.compile("(.+?)hl=");
+			final Matcher m = DOWNLOADURL.matcher(url.toString());
+				if (m.find()) {
+					return m.group(1) + SCISIG + "&scisf=4&hl=de";
+				}
+		}
+		else if (url.toString().contains(PATH2)) {
+			final Matcher m = ID.matcher(url.toString());
 			if (m.find()) {
 				final String id = m.group(1);
-				System.out.println("ssss" + id);
-				//return url.toString().replace("view_citation", "export_citations") + "&s=" + id + "&cit_fmt=0";
+				return url.toString().replace("view_citation", "export_citations") + "&s=" + id + "&cit_fmt=0";
 			}
-		}*/
-		
-		final Matcher m = ID.matcher(url.toString());
-		if (m.find()) {
-			final String id = m.group(1);
-			return url.toString().replace("view_citation", "export_citations") + "&s=" + id + "&cit_fmt=0";
 		}
-		
 		return url.toString();
 	}
 
