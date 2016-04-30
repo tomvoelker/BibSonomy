@@ -2155,4 +2155,16 @@
 		<BibFile>BioOneScraperScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.bioone.BioOneScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_352">
+		<TestDescription>test for UChicago Journals website</TestDescription>
+		<URL>http://www.journals.uchicago.edu/doi/abs/10.1086/685556</URL>
+		<BibFile>UChicagoScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.uchicago.UChicagoScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_353">
+		<TestDescription>test for UChicago Journals website</TestDescription>
+		<URL>http://www.journals.uchicago.edu/doi/full/10.1086/685557</URL>
+		<BibFile>UChicagoScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.uchicago.UChicagoScraper</Scraper>
+	</URLTest>
 </test:Tests>
