@@ -12,6 +12,9 @@ $(function() {
 		$(this).addClass("active").siblings().removeClass("active");
 		return false;
 	});
+	if ($('#related-publications-references>li:not(.info)').length == 0) {
+		$('#related-publications .btn-group > .btn:last').click();
+	}
 });
 
 function editReferences() {

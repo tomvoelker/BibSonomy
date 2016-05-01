@@ -130,6 +130,9 @@
 								<bib:desc publication="${reference}"/>
 							</li>
 						</c:forEach>
+						<c:if test="${empty goldstandard.references}">
+							<li class="info"><fmt:message key="publications.related.empty" /></li>
+						</c:if>
 					</ul>
 					<ul id="related-publications-citing" style="display:none">
 						<c:forEach var="reference" items="${goldstandard.referencedBy}">
@@ -138,6 +141,9 @@
 								<bib:desc publication="${reference}"/>
 							</li>
 						</c:forEach>
+						<c:if test="${empty goldstandard.referencedBy}">
+							<li class="info"><fmt:message key="publications.related.empty" /></li>
+						</c:if>
 					</ul>
 				</div>
 			</c:if>
