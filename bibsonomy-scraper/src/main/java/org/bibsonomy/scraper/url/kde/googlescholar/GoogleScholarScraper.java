@@ -42,8 +42,6 @@ import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
  * @author tst
  */
 public class GoogleScholarScraper extends GenericBibTeXURLScraper {
-	
-	
 	private static final String SITE_URL  = "http://scholar.google.com/";
 	private static final String SITE_NAME = "Google Scholar";
 	private static final String INFO = "Scrapes BibTex from " + href(SITE_URL, SITE_NAME) + ".";
