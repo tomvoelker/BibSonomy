@@ -18,11 +18,20 @@ $(function() {
 	
 	// init all selectable stars
 	initStars();
+	
+	
 });
 
 function initStars() {
-	$('.reviewrating').stars({
-		split: STEP_RATING
+	$('.reviewRating').rating({
+		min : 0,
+		max : 5,
+		step : 0.0001,
+		size : 'xs',
+		readonly : true,
+		showCaption : false,
+		glyphicon : false,
+		ratingClass : 'rating-fa'
 	});
 }
 

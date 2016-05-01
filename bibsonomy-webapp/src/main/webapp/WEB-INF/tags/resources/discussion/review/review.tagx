@@ -16,7 +16,7 @@
 	<discussionItem:discussionItem resource="${resource}" discussionItem="${review}" loginUser="${loginUser}">
 		<jsp:attribute name="content">
 			<div class="rating" data-rating="${review.rating}" itemscope="itemscope" itemtype="http://schema.org/Rating">
-				<review:reviewStars rating="${review.rating}"/>
+				<input type="number" class="reviewRating" value="${review.rating}"/>
 				<meta itemprop="ratingValue" content="${review.rating}" />
 				<meta itemprop="bestRating" content="5" />
 				<meta itemprop="worstRating" content="0" />
