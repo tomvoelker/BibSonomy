@@ -2185,4 +2185,10 @@
 		<BibFile>AappublicationsScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.aappublications.AappublicationsScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_357">
+		<TestDescription>URL scraping test for the thieme connect website</TestDescription>
+		<URL>https://www.thieme-connect.de/products/ejournals/abstract/10.1055/s-0035-1558406</URL>
+		<BibFile>ThiemeConnectScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.thiemeconnect.ThiemeConnectScraper</Scraper>
+	</URLTest>
 </test:Tests>
