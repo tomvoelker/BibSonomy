@@ -55,13 +55,13 @@ public class CatinistScraper extends AbstractUrlScraper {
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	@Override
-	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
+	protected boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {
 		String requestURL = null;
 		if (!scrapingContext.getUrl().toString().contains("exportN")) {
 			requestURL = scrapingContext.getUrl().toString().replace("afficheN", "exportN");
-		}
-		else
+		} else {
 			requestURL = scrapingContext.getUrl().toString();
+		}
 		Pattern p = Pattern.compile("cpsidt=(.*\\d+)");
 		Matcher m = p.matcher(scrapingContext.getUrl().toString());
 		if (m.find()) {
@@ -69,18 +69,18 @@ public class CatinistScraper extends AbstractUrlScraper {
 				final String endNote = WebUtils.getPostContentAsString(new URL(requestURL), "aExport=export_endnote&cPanier=exporter&cpsidt=" + m.group(1));
 				EndnoteToBibtexConverter converter = new EndnoteToBibtexConverter();
 				final String bibtexResult = cleanBibtex(converter.toBibtex(endNote));
-				if(bibtexResult != null) {
+				if (bibtexResult != null) {
 					scrapingContext.setBibtexResult(bibtexResult);
 					return true;
 				}
-			}catch (IOException e) {
+			} catch (final IOException e) {
 				log.error("error while scraping  " + requestURL, e);
 			}
 		}
 		return false;
 	}
 	
-	private String cleanBibtex(final String bibtex) {
+	private static String cleanBibtex(final String bibtex) {
 		String bibtexResult = bibtex.replace("#160", "");
 		return bibtexResult;
 	}

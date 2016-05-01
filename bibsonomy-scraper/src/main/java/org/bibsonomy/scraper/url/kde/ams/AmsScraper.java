@@ -105,7 +105,7 @@ public class AmsScraper extends GenericBibTeXURLScraper implements CitedbyScrape
 	
 	@Override
 	public String getDownloadURL(URL url) throws ScrapingException {
-		return "http://journals.ametsoc.org/action/downloadCitation?doi=" + doiExtracter(url) + "&include=cit" + FORMAT_BIBTEX;
+		return SITE_URL  + "/action/downloadCitation?doi=" + doiExtracter(url) + "&include=cit" + FORMAT_BIBTEX;
 	}
 
 	/* (non-Javadoc)
@@ -123,10 +123,10 @@ public class AmsScraper extends GenericBibTeXURLScraper implements CitedbyScrape
 	public boolean scrapeCitedby(ScrapingContext sc) throws ScrapingException {
 		try {
 			final Matcher m = CITEDBY.matcher(WebUtils.getContentAsString(sc.getUrl().toString().replaceAll("pdf|full", "abs")));
-			if(m.find()) {
+			if (m.find()) {
 				sc.setCitedBy(m.group(1));
 				return true;
-			}			
+			}
 		} catch(Exception e) {
 			log.error("error while getting cited by for " + sc.getUrl().toString(), e);
 		}
@@ -140,10 +140,10 @@ public class AmsScraper extends GenericBibTeXURLScraper implements CitedbyScrape
 	public boolean scrapeReferences(ScrapingContext sc) throws ScrapingException {
 		try {
 			final Matcher m = REFERENCERS.matcher(WebUtils.getContentAsString(sc.getUrl().toString().replaceAll("pdf|abs", "full")));
-			if(m.find()) {
+			if (m.find()) {
 				sc.setReferences(m.group(1));
 				return true;
-			}			
+			}
 		} catch(Exception e) {
 			log.error("error while getting references for " + sc.getUrl().toString(), e);
 		}

@@ -60,18 +60,17 @@ public class FRONTIERSINScraper extends GenericBibTeXURLScraper {
 	
 	@Override
 	protected String getDownloadURL(URL url) throws ScrapingException {
-		String downloadURL = null;
 		try {
 			final String pageContent = WebUtils.getContentAsString(url);
 			final Matcher m = PATTERN_FOR_BIBTEX_URL.matcher(pageContent); 
 			if (m.find()) {
-				downloadURL = m.group(1);
-				downloadURL = downloadURL.replaceAll("amp;", "");
+				final String downloadURL = m.group(1);
+				return downloadURL.replaceAll("amp;", "");
 			}
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			log.warn("page conteent could not be found", e);
 		}
-		return downloadURL;
+		return null;
 	}
 
 	@Override

@@ -106,7 +106,7 @@ public class AmazonScraper extends AbstractUrlScraper {
 		try {
 			final String content = WebUtils.getContentAsString(sc.getUrl().toString());
 			final Matcher m = ISBN.matcher(content);
-			 String isbn;
+			final String isbn;
 			if (m.find()) {
 				isbn = m.group(1);
 			} else {

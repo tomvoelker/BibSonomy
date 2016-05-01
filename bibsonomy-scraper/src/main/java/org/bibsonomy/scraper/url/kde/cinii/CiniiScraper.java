@@ -50,7 +50,7 @@ public class CiniiScraper extends GenericBibTeXURLScraper{
 	static {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + CINII_HOST), GenericBibTeXURLScraper.EMPTY_PATTERN));
 	}
-		
+	
 	@Override
 	protected String getDownloadURL(URL url) throws ScrapingException, IOException {
 		return url.toString() + ".en.bib";

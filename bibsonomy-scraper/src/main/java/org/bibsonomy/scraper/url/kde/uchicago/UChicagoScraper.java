@@ -74,7 +74,7 @@ public class UChicagoScraper extends AbstractUrlScraper {
 
 		// check if doi is in path
 		if (doi != null) {
-			bibtex = download(doi, sc);
+			bibtex = download(doi);
 		} else {
 
 			// get doi from query
@@ -85,7 +85,7 @@ public class UChicagoScraper extends AbstractUrlScraper {
 			}
 
 			if (doi != null) {
-				bibtex = download(doi, sc);
+				bibtex = download(doi);
 			} else {
 				throw new PageNotSupportedException("This page journals.uchicago.edu is not supported.");
 			}
@@ -116,7 +116,7 @@ public class UChicagoScraper extends AbstractUrlScraper {
 	 * @return reference as bibtex
 	 * @throws ScrapingException
 	 */
-	private String download(final String doi, final ScrapingContext sc) throws ScrapingException {
+	private static String download(final String doi) throws ScrapingException {
 		String bibtex = null;
 		final String downloadUrl = "http://" + CHICAGO_HOST + DOWNLOAD_PATH_AND_QUERY + doi;
 

@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -48,7 +49,7 @@ public class KargerScraper extends GenericRISURLScraper {
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "karger.com"), AbstractUrlScraper.EMPTY_PATTERN));
 	private static final String INITIAL_DOWNLOAD_URL = "http://www.karger.com/Article/CitationEndNote/";
 	private static final Pattern patternId = Pattern.compile("(.*)/Article/Abstract/(.*)");
-						
+	
 	@Override
 	protected String getDownloadURL(URL url) throws ScrapingException, IOException {
 		final Matcher m = patternId.matcher(url.toString());

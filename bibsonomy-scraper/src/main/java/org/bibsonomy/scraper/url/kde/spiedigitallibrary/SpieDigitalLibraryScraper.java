@@ -56,8 +56,7 @@ public class SpieDigitalLibraryScraper extends GenericBibTeXURLScraper{
 
 	@Override
 	protected String getDownloadURL(URL url) throws ScrapingException,IOException {
-
-		Matcher m = ID_PATERN_FROM_URL.matcher(url.toString());
+		final Matcher m = ID_PATERN_FROM_URL.matcher(url.toString());
 		if (m.find()) {
 			final String id = m.group(1);
 			return DOWNLOAD_URL + id;

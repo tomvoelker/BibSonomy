@@ -60,7 +60,7 @@ public class JStorScraper extends GenericBibTeXURLScraper {
 	@Override
 	protected String getDownloadURL(URL url) throws ScrapingException, IOException {
 		final String doi = exportDOIFromSourceCode(url.toString());
-		if(doi != null) {
+		if (doi != null) {
 			return DOWNLOAD_URL + doi;
 		}
 		return null;
@@ -69,12 +69,12 @@ public class JStorScraper extends GenericBibTeXURLScraper {
 	private static String exportDOIFromSourceCode(String url) throws ScrapingException {
 		try {
 			final Matcher m = DOI.matcher(WebUtils.getContentAsString(url));
-			if(m.find()) {
+			if (m.find()) {
 				return m.group(1);
 			}
-			} catch(IOException e) {
-				throw new ScrapingException("DOI not found");
-			}
+		} catch (final IOException e) {
+			throw new ScrapingException("DOI not found");
+		}
 		return null;
 	}
 
@@ -96,5 +96,5 @@ public class JStorScraper extends GenericBibTeXURLScraper {
 	@Override
 	public String getSupportedSiteURL() {
 		return JSTOR_HOST_NAME;
-	}	
+	}
 }

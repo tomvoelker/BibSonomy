@@ -56,26 +56,26 @@ public class AhaJournalsScraper extends GenericBibTeXURLScraper{
 	private static final String DOWNLOAD_URL = "http://circ.ahajournals.org/citmgr?type=bibtex&gca=circulationaha%3B";
 	
 	@Override
-	protected String getDownloadURL(URL url) throws ScrapingException, IOException {
-		
+	protected String getDownloadURL(final URL url) throws ScrapingException, IOException {
 		final String id = extractID(url);
-		if (id == null)
+		if (id == null) {
 			return null;
+		}
 		return DOWNLOAD_URL + id;
 	}
 	
-	private String extractID(URL url) {
-		Matcher m = PATTERN_FROM_URL_1.matcher(url.toString());
-		if(m.find()) {
+	private static String extractID(final URL url) {
+		final Matcher m = PATTERN_FROM_URL_1.matcher(url.toString());
+		if (m.find()) {
 			return m.group(1);
 		}
-		m = PATTERN_FROM_URL_2.matcher(url.toString());
-		if(m.find()) {
-			return m.group(1);
+		final Matcher pattern2Matcher = PATTERN_FROM_URL_2.matcher(url.toString());
+		if (pattern2Matcher.find()) {
+			return pattern2Matcher.group(1);
 		}
 		return null;
 	}
-		
+	
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
@@ -95,5 +95,4 @@ public class AhaJournalsScraper extends GenericBibTeXURLScraper{
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
-
 }

@@ -90,6 +90,9 @@ public abstract class AbstractGenericFormatURLScraper extends AbstractUrlScraper
 		return false;
 	}
 	
+	/**
+	 * @return iff the url should be called before 
+	 */
 	protected boolean retrieveCookiesFromSite() {
 		return false;
 	}
