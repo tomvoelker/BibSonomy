@@ -2167,4 +2167,10 @@
 		<BibFile>UChicagoScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.uchicago.UChicagoScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_354">
+		<TestDescription>URL scraping test for the cinii cat inist</TestDescription>
+		<URL>http://cat.inist.fr/?aModele=exportN&amp;cpsidt=3620772</URL>
+		<BibFile>CatInistScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.catinist.CatinistScraper</Scraper>
+	</URLTest>
 </test:Tests>
