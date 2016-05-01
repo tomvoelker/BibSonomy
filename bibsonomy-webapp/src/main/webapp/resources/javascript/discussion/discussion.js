@@ -80,16 +80,7 @@ $(function() {
 		return false;
 	});
 	
-	$('.reply').click(function() {
-		var discussionContainer = $(this).parents('.media-body').first();
-		var subdiscussionList = discussionContainer.find('ul.subdiscussion').first();
-		discussionContainer.find('.toggleReplies').first().addClass('active');
-		if (!subdiscussionList.is(':visible')) {
-			subdiscussionList.slideDown();
-		}
-		
-		subdiscussionList.find('> li.form textarea').focus();
-	});
+	$('.reply').click(showReplyForm);
 	
 	if ($('li.review').length > 0) {
 		$('.createreview').hide();
@@ -114,16 +105,50 @@ $(function() {
 	});
 	
 	$('.createcomment').submit(function() {
-		var data = $(this).serialize();
+		var form = $(this);
+		var data = form.serialize();
+		
 		$.ajax({
 			url: '/ajax/comments',
 			method: 'POST',
 			data: data,
 			success: function() {
-				alert("created");
+				var textfield = form.find('textarea[name=discussionItem\\.text]');
+				var text = textfield.val();
+				
+				var commentTemplate = $('#commentTemplate').clone();
+				form.parent().parent().prepend(commentTemplate);
+				commentTemplate.show();
+				commentTemplate.find('.reply').click(showReplyForm);
+				// set text
+				commentTemplate.find('div.text').text(text);
+				
+				$(window).scrollTo(commentTemplate, {
+					offset: -15,
+					onAfter: function() {
+								requestAnimationFrame(function() {
+									commentTemplate.effect("highlight", {}, 2500);
+									
+								});
+							}
+				});
+				// reset form
+				textfield.val('');
 			}
 		});
 		
 		return false;
 	});
 });
+
+
+function showReplyForm() {
+	var discussionContainer = $(this).parents('.media-body').first();
+	var subdiscussionList = discussionContainer.find('ul.subdiscussion').first();
+	discussionContainer.find('.toggleReplies').first().addClass('active');
+	if (!subdiscussionList.is(':visible')) {
+		subdiscussionList.slideDown();
+	}
+	
+	subdiscussionList.find('> li.form textarea').focus();	
+}

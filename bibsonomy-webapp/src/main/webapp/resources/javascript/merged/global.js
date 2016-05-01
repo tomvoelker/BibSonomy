@@ -16,6 +16,7 @@ function includeJavaScript(jsFile) {
 includeJavaScript("/resources/jquery/jquery.js");
 includeJavaScript("/resources/jquery/plugins/ui/jquery-ui.js");
 includeJavaScript("/resources/jquery/plugins/autosize/autosize.js");
+includeJavaScript("/resources/jquery/plugins/scrollTo/jquery.scrollTo.js");
 includeJavaScript("/resources/bootstrap/js/bootstrap.js");
 includeJavaScript("/resources/javascript/holder.js");
 includeJavaScript("/resources/javascript/bootstrap-dialog.js");

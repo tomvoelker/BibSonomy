@@ -89,6 +89,7 @@
 								<include>${project.build.webapp.resourcedir}/jquery/jquery.js</include>
 								<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/jquery-ui.js</include>
 								<include>${project.build.webapp.resourcedir}/jquery/plugins/autosize/autosize.js</include>
+								<include>${project.build.webapp.resourcedir}/jquery/plugins/scrollTo/jquery.scrollTo.js</include>
 								<include>${project.build.webapp.resourcedir}/bootstrap/js/bootstrap.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bootstrap-datepicker.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bootstrap-tagsinput.js</include>
