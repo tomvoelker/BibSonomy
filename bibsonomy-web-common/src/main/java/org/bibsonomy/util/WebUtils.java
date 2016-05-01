@@ -69,10 +69,10 @@ public class WebUtils {
 	private static final int MAX_REDIRECT_COUNT = 10;
 	
 	/** the connection timeout */
-	private static final int CONNECTION_TIMEOUT = 30 * 1000;
+	private static final int CONNECTION_TIMEOUT = 5 * 1000;
 	
 	/** the read timeout */
-	private static final int READ_TIMEOUT = 30 * 1000;
+	private static final int READ_TIMEOUT = 5 * 1000;
 
 	/** The user agent used for all requests with {@link HttpURLConnection}. */
 	private static final String USER_AGENT_PROPERTY_VALUE = "BibSonomy/2.0.32 (Linux x86_64; en) Gecko/20120714 Iceweasel/3.5.16 (like Firefox/3.5.16)";
