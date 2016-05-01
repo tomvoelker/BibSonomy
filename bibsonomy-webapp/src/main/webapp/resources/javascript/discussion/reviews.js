@@ -20,8 +20,6 @@ $(function() {
 	initStars();
 });
 
-
-
 function initStars() {
 	$('.reviewrating').stars({
 		split: STEP_RATING
@@ -95,7 +93,7 @@ function plotRatingDistribution() {
 		});
 	} else {
 		// get all ratings from all reviews
-		$('.discussionItems li').not('#newReview').find('.rating').each(function() {
+		$('li.review').not('#newReview').find('.rating').each(function() {
 			var key = parseFloat($(this).data("rating"));
 			if (ratings[key]) {
 				ratings[key] += 1;
