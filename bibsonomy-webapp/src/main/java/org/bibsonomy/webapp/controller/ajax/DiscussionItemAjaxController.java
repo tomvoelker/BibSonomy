@@ -119,7 +119,11 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 		 * don't call the validator
 		 */
 		if (HttpMethod.DELETE.equals(this.requestLogic.getHttpMethod())) {
+			if (this.errors.hasErrors()) {
+				return this.getErrorView();
+			}
 			this.logic.deleteDiscussionItem(userName, interHash, command.getDiscussionItem().getHash());
+			command.setResponseString("{}");
 			return Views.AJAX_JSON;
 		}
 		
@@ -276,15 +280,16 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 	private static boolean firstCommentInPreprint(final Post<? extends Resource> goldStandard, final String userName) {
 		final Resource res = goldStandard.getResource();
 		if (res.getClass().equals(BibTex.class)) {
-			if (((BibTex)res).getEntrytype().equals(PREPRINT)) {
+			if (((BibTex) res).getEntrytype().equals(PREPRINT)) {
 				for (final DiscussionItem item : res.getDiscussionItems()) {
 					if (item.getUser().getName().equals(userName)) {
 						return false;
 					}
 				}
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 	
 	@Override
