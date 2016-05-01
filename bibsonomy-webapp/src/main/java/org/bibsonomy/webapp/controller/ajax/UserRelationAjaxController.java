@@ -57,23 +57,20 @@ public class UserRelationAjaxController extends AjaxController implements Minima
 	private static final Log log = LogFactory.getLog(UserRelationAjaxController.class);
 	
 	private static final String ADD_FOLLOWER = "addFollower";
-
 	private static final String REMOVE_RELATION = "removeRelation";
-
-	private static final String ADD_RELATION = "addRelation";
-
-	private static final String REMOVE_FRIEND = "removeFriend";
-
+	private static final String ADD_RELATION = "addRelation";	
 	private static final String ADD_FRIEND = "addFriend";
-
+	private static final String REMOVE_FRIEND = "removeFriend";
 	private static final String REMOVE_FOLLOWER = "removeFollower";
 
-	private Errors errors;
 	
 	private static final int SPHERENAME_MAX_LENGTH = 64;
 	
 	/** We allow only a..z A..Z 0..9 - . _  */
 	private static final Pattern SPHERENAME_DISALLOWED_CHARACTERS_PATTERN = Pattern.compile("[^a-zA-Z0-9:\\.\\-_]");
+	
+	
+	private Errors errors;
 	
 	@Override
 	public UserRelationAjaxCommand instantiateCommand() {

@@ -59,7 +59,7 @@
 		</div>
 	</div>
 	
-	<bsform:checkbox path="autosync" labelKey="synchronization.autosync" helpKey="synchronization.help.autoSync" inputColSpan="8" />
+	<bsform:checkbox path="autosync" labelKey="synchronization.autosync" helpKey="synchronization.help.autoSync" inputColSpan="8" disabled="true"/>
 	
 	<script type="text/javascript">
 	$(function() {

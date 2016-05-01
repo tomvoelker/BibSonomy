@@ -56,6 +56,7 @@ public class PlosScraper extends GenericBibTeXURLScraper implements ReferencesSc
 	/*
 	 * ending of plos journal URLs
 	 */
+	private static final String PLOS_JOURNALS_HOST_ENDING = "journals.plos.org";
 	private static final String PLOS_BIOLOGY_HOST_ENDING = "plosbiology.org";
 	private static final String PLOS_MEDICINE_HOST_ENDING = "plosmedicine.org";
 	private static final String PLOS_COMPUTATIONAL_BIOLOGY_ENDING = "ploscompbiol.org";
@@ -70,9 +71,11 @@ public class PlosScraper extends GenericBibTeXURLScraper implements ReferencesSc
 	 * download url prefix
 	 */
 	private static final String PLOS_DOWNLOAD_URL_PREFIX = "/article/getBibTexCitation.action?articleURI=";
-
+	private static final String PLOS_DOWNLOAD_URL_PREFIX2 = "/plosone/article/citation/bibtex?";
 	private static final String PLOS_INFO_PATTERN_STRING = "(info:doi/.*/\\w+.\\w+.\\d+)";
+	private static final String PLOS_INFO_PATTERN_STRING2 = "(id=.*/\\w+.\\w+.\\d+)";
 	private static final Pattern PLOS_INFO_PATTERN = Pattern.compile(PLOS_INFO_PATTERN_STRING);
+	private static final Pattern PLOS_INFO_PATTERN2 = Pattern.compile(PLOS_INFO_PATTERN_STRING2);
 	private static final Pattern REFERENCES = Pattern.compile("(?s)<ol class=\"references\">(.*)</ol>");
 	/**
 	 * get INFO
@@ -83,7 +86,8 @@ public class PlosScraper extends GenericBibTeXURLScraper implements ReferencesSc
 	}
 
 	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
-	static {
+	static { 
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + PLOS_JOURNALS_HOST_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + PLOS_BIOLOGY_HOST_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + PLOS_MEDICINE_HOST_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + PLOS_COMPUTATIONAL_BIOLOGY_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
@@ -111,15 +115,22 @@ public class PlosScraper extends GenericBibTeXURLScraper implements ReferencesSc
 
 	@Override
 	public String getDownloadURL(URL url) throws ScrapingException {
+		
 		String decodedUrl = UrlUtils.safeURIDecode(url.toString());
-
-		final Matcher _m = PLOS_INFO_PATTERN.matcher(decodedUrl);
-
-		if (!_m.find()) return null;
-
+		Matcher _m = PLOS_INFO_PATTERN.matcher(decodedUrl);
+		if (!_m.find()) {
+			_m = PLOS_INFO_PATTERN2.matcher(decodedUrl);
+			if (!_m.find())
+				return null;
+		}
+				
 		final String info = _m.group(1);
+		
 		if (!ValidationUtils.present(info)) return null;
 
+		if (decodedUrl.contains(PLOS_JOURNALS_HOST_ENDING))
+			return HTTP + PLOS_JOURNALS_HOST_ENDING + PLOS_DOWNLOAD_URL_PREFIX2 + info;
+		
 		if (decodedUrl.contains(PLOS_BIOLOGY_HOST_ENDING)) 
 			return HTTP + PLOS_BIOLOGY_HOST_ENDING + PLOS_DOWNLOAD_URL_PREFIX + info;
 

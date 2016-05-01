@@ -33,6 +33,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Map;
 import java.util.Properties;
 
+import org.bibsonomy.common.enums.SyncSettingsUpdateOperation;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SyncService;
@@ -80,7 +81,7 @@ public class SyncClientTestDirectionBOTHTest extends AbstractSynchronizationClie
 		
 		final SyncService service = createServerService(STRATEGY, userCredentials, DIRECTION);
 		
-		clientLogic.updateSyncServer(clientLogic.getAuthenticatedUser().getName(), service);
+		clientLogic.updateSyncServer(clientLogic.getAuthenticatedUser().getName(), service, SyncSettingsUpdateOperation.SETTINGS);
 		setModifiedBookmarkKeys(MODIFIED_BOOKMARK_KEYS);
 		setModifiedPublicationKeys(MODIFIED_PUBLICATION_KEYS);
 		

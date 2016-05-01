@@ -55,4 +55,11 @@ public class BioMedCentralScraperTest {
 		UnitTestRunner.runSingleTest("url_62");
 	}
 	
+	/**
+	 * starts URL test with id url_343
+	 */
+	@Test
+	public void url3TestRun(){
+		UnitTestRunner.runSingleTest("url_343");
+	}
 }

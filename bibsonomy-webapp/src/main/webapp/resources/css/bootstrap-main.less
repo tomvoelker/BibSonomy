@@ -1242,10 +1242,21 @@ h1.content-header, h1.content-heading {
 
 button.removeFriend,
 button.addFriend {
-	margin-top: 0.5em;
+	margin: 0.5em 0;
+	display: block;
 }
 
 button.removeFriend {
+	width: 7em;
+}
+
+button.unfollow,
+button.follow {
+	margin: 0.5em 0;
+	display: block;
+}
+
+button.unfollow {
 	width: 7em;
 }
 
@@ -1369,7 +1380,7 @@ ul#urlList {
 	}
 	
 	.modal-dialog {
-		width: 450px;
+		max-width: 450px;
 	}
 	
 	fieldset {

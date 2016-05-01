@@ -30,6 +30,7 @@ import java.net.URI;
 import java.util.Date;
 import java.util.List;
 
+import org.bibsonomy.common.enums.SyncSettingsUpdateOperation;
 import org.bibsonomy.model.Resource;
 
 
@@ -80,8 +81,9 @@ public interface SyncLogicInterface {
 	 * 
 	 * @param userName
 	 * @param server
+	 * @param operation the operation
 	 */
-	public void updateSyncServer(final String userName, final SyncService server);
+	public void updateSyncServer(final String userName, final SyncService server, SyncSettingsUpdateOperation operation);
 	
 	/**
 	 * 

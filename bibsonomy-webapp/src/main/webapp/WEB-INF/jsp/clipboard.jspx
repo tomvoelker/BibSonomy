@@ -41,6 +41,7 @@
 		<jsp:attribute name="sidebar">
 			<sidebar:sidebarItem textKey="post_bibtex.scan.title">
 				<jsp:attribute name="content">
+					<p><fmt:message key="post_bibtex.scan.info" /></p>
 					<parts:qrcode infoMessageKey="qrcode.info.clipboard.readerInfoMessage" />
 				</jsp:attribute>
 			</sidebar:sidebarItem>
