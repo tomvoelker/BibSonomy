@@ -12,6 +12,7 @@
 	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true" />
 	<jsp:directive.attribute name="hidden" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="hideCommentsForm" type="java.lang.Boolean" required="false" />
 	
 	<c:if test="${not empty hidden and hidden}">
 		<c:set var="style" value="display: none;" />
@@ -19,6 +20,10 @@
 	
 	<c:if test="${empty discussionItems}">
 		<c:set var="discussionItems" value="${parentItem.subDiscussionItems}" />
+	</c:if>
+	
+	<c:if test="${empty hideCommentsForm}">
+		<c:set var="hideCommentsForm" value="${false}" />
 	</c:if>
 	
 	<ul class="media-list subdiscussion" style="${style}">
@@ -51,13 +56,22 @@
 					</li>
 				</c:when>
 				<c:when test="${discussionItem['class'].simpleName eq 'DiscussionItem'}">
-					<div class="${clazz} media">
-						<div class="deletedInfo">
-							<fmt:message key="post.resource.discussion.info" />
+					<li class="${clazz} media">
+						<div class="media-left">
+							<a class="thumbnail img-thumbnail pull-left">
+								<i class="fa fa-4x fa-user"><!-- keep me --></i>
+							</a>
 						</div>
-						<discussionItem:discussionItemActions discussionItem="${discussionItem}" disableReply="true" />
-						<discussionItem:subDiscussionItems discussionItems="${discussionItem.subDiscussionItems}" loginUser="${loginUser}" resource="${resource}" />
-					</div>
+						<div class="media-body">
+							<div class="alert alert-info">
+								<fmt:message key="post.resource.discussion.info" />
+							</div>
+							<div class="actions">
+								<discussionItem:discussionItemActions discussionItem="${discussionItem}" disableReply="true" />
+							</div>
+							<discussionItem:subDiscussionItems discussionItems="${discussionItem.subDiscussionItems}" loginUser="${loginUser}" resource="${resource}" hidden="${true}" hideCommentsForm="${true}"/>
+						</div>
+					</li>
 				</c:when>
 				<c:otherwise>
 					WARN: no view for ${discussionItem['class'].simpleName}
@@ -65,8 +79,10 @@
 			</c:choose>
 		</c:forEach>
 	</c:if>
-		<li class="form">
-			<comment:simpleCommentForm userName="TODO" resource="${resource}" parentItem="${parentItem}" />
-		</li>
+		<c:if test="${not hideCommentsForm}">
+			<li class="form">
+				<comment:simpleCommentForm userName="TODO" resource="${resource}" parentItem="${parentItem}" />
+			</li>
+		</c:if>
 	</ul>
 </jsp:root>

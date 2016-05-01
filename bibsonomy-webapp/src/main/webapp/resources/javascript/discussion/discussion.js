@@ -21,7 +21,7 @@ $(function() {
 	});
 	
 	$('.toggleReplies').click(function() {
-		var discussionContainer = $(this).parents('.media-body')
+		var discussionContainer = $(this).parents('.media-body').first();
 		var subdiscussionList = discussionContainer.find('ul.subdiscussion').first();
 		discussionContainer.find('.toggleReplies').first().toggleClass('active');
 		if (!subdiscussionList.is(':visible')) {
@@ -66,10 +66,11 @@ $(function() {
 					imageContainer.find('img').remove();
 					imageContainer.find('span').remove();
 					
-					imageContainer.append($('<i class="fa fa-user fa-3x"></i>'));
+					imageContainer.append($('<i class="fa fa-user fa-4x"></i>'));
 					var content = item.children('.media-body');
 					content.prepend($('<div class="alert alert-info">' + getString('post.resource.discussion.info') + '</div>'));
 					content.find('.actions:first>div.edit-media-buttons:last').remove();
+					content.find('.actions:first>div.edit-media-buttons>.reply').remove();
 					content.find('.details:first').remove();
 					content.find('.info:first').text('');
 				}
