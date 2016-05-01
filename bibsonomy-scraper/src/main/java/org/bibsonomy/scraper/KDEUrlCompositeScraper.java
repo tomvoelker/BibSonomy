@@ -30,6 +30,7 @@ import org.bibsonomy.scraper.url.kde.Econstor.EconstorScraper;
 import org.bibsonomy.scraper.url.kde.RWTH.RWTHAachenScraper;
 import org.bibsonomy.scraper.url.kde.aaai.AAAIScraper;
 import org.bibsonomy.scraper.url.kde.aanda.AandAScraper;
+import org.bibsonomy.scraper.url.kde.aappublications.AappublicationsScraper;
 import org.bibsonomy.scraper.url.kde.acl.AclScraper;
 import org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper;
 import org.bibsonomy.scraper.url.kde.acs.ACSScraper;
@@ -54,6 +55,7 @@ import org.bibsonomy.scraper.url.kde.bmj.BMJOpenScraper;
 import org.bibsonomy.scraper.url.kde.bmj.BMJScraper;
 import org.bibsonomy.scraper.url.kde.cambridge.CambridgeScraper;
 import org.bibsonomy.scraper.url.kde.casesjournal.CasesJournalScraper;
+import org.bibsonomy.scraper.url.kde.catinist.CatinistScraper;
 import org.bibsonomy.scraper.url.kde.cell.CellScraper;
 import org.bibsonomy.scraper.url.kde.cinii.CiniiScraper;
 import org.bibsonomy.scraper.url.kde.citeseer.CiteseerxScraper;
@@ -123,6 +125,7 @@ import org.bibsonomy.scraper.url.kde.prola.ProlaScraper;
 import org.bibsonomy.scraper.url.kde.psycontent.PsyContentScraper;
 import org.bibsonomy.scraper.url.kde.pubmed.PubMedScraper;
 import org.bibsonomy.scraper.url.kde.pubmedcentral.PubMedCentralScraper;
+import org.bibsonomy.scraper.url.kde.repec.RepecScraper;
 import org.bibsonomy.scraper.url.kde.rsc.RSCScraper;
 import org.bibsonomy.scraper.url.kde.rsoc.RSOCScraper;
 import org.bibsonomy.scraper.url.kde.sage.SageJournalScraper;
@@ -297,6 +300,9 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new SpieDigitalLibraryScraper());
 		addScraper(new BioOneScraper());
 		addScraper(new UChicagoScraper());
+		addScraper(new CatinistScraper());
+		addScraper(new RepecScraper());
+		addScraper(new AappublicationsScraper());
 		//addScraper(new AkademiaiScraper()); error = 404
 	}
 

@@ -2173,4 +2173,16 @@
 		<BibFile>CatInistScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.catinist.CatinistScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_355">
+		<TestDescription>URL scraping test for the repec website</TestDescription>
+		<URL>https://ideas.repec.org/p/pra/mprapa/40613.html</URL>
+		<BibFile>RepecScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.repec.RepecScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_356">
+		<TestDescription>URL scraping test for the aappublications website</TestDescription>
+		<URL>http://pediatrics.aappublications.org/content/136/5/e1186</URL>
+		<BibFile>AappublicationsScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.aappublications.AappublicationsScraper</Scraper>
+	</URLTest>
 </test:Tests>
