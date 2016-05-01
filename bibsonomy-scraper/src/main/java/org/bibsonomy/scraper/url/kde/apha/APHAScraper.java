@@ -79,7 +79,7 @@ public class APHAScraper extends AbstractUrlScraper {
 		sc.setScraper(this);
 		
 		try {
-			final String cookie = WebUtils.getLongCookies(sc.getUrl());
+			final String cookie = WebUtils.getCookies(sc.getUrl());
 			String doi = null;
 			final Matcher m = DOI_PATTERN_FROM_URL.matcher(sc.getUrl().toString());
 			if (m.find()) {

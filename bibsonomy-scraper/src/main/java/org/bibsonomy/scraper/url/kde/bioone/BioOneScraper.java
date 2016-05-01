@@ -64,7 +64,7 @@ public class BioOneScraper extends AbstractUrlScraper {
 		scrapingContext.setScraper(this);
 		
 		try {
-			final String cookie = WebUtils.getLongCookies(scrapingContext.getUrl());
+			final String cookie = WebUtils.getCookies(scrapingContext.getUrl());
 			String doi = null;
 			final Matcher m = DOI_PATTERN_FROM_URL.matcher(scrapingContext.getUrl().toString());
 			if (m.find()) {
