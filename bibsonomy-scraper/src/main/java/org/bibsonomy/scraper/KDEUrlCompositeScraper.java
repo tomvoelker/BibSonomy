@@ -86,6 +86,7 @@ import org.bibsonomy.scraper.url.kde.inspire.InspireScraper;
 import org.bibsonomy.scraper.url.kde.iop.IOPScraper;
 import org.bibsonomy.scraper.url.kde.iucr.IucrScraper;
 import org.bibsonomy.scraper.url.kde.iwap.IWAPonlineScraper;
+import org.bibsonomy.scraper.url.kde.jamanet.JamaNetScraper;
 import org.bibsonomy.scraper.url.kde.jap.JAPScraper;
 import org.bibsonomy.scraper.url.kde.jcb.JCBScraper;
 import org.bibsonomy.scraper.url.kde.jci.JCIScraper;
@@ -142,6 +143,7 @@ import org.bibsonomy.scraper.url.kde.ssrn.SSRNScraper;
 import org.bibsonomy.scraper.url.kde.stanford.StanfordInfoLabScraper;
 import org.bibsonomy.scraper.url.kde.taylorAndFrancis.TaylorAndFrancisScraper;
 import org.bibsonomy.scraper.url.kde.thelancet.TheLancetScraper;
+import org.bibsonomy.scraper.url.kde.thiemeconnect.ThiemeConnectScraper;
 import org.bibsonomy.scraper.url.kde.uchicago.UChicagoScraper;
 import org.bibsonomy.scraper.url.kde.usenix.UsenixScraper;
 import org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper;
@@ -303,6 +305,8 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new CatinistScraper());
 		addScraper(new RepecScraper());
 		addScraper(new AappublicationsScraper());
+		addScraper(new ThiemeConnectScraper());
+		addScraper(new JamaNetScraper());
 		//addScraper(new AkademiaiScraper()); error = 404
 	}
 
