@@ -10,7 +10,7 @@
 	
 	<c:set var="clazz" value="${fn:toLowerCase(discussionItem['class'].simpleName)}" />
 	
-	<span class="${clazz} info" data-username="${discussionItem.user.name}" data-discussion-item-hash="${discussionItem.hash}">
+	<span class="${clazz} info">
 		<c:out value=" " />
 		<discussionItem:discussionItemMeta discussionItem="${discussionItem}"/>
 	</span>

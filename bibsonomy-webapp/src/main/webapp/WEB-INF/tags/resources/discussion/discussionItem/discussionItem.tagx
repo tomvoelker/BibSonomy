@@ -39,7 +39,7 @@
 			<c:set var="itemtype" value="http://schema.org/UserComment"/>
 			<c:set var="itemprop" value="comment"/>
 		</c:if>
-		<div>
+		<div class="info" data-username="${discussionItem.user.name}" data-discussion-item-hash="${discussionItem.hash}">
 			<discussionItem:discussionItemOwner discussionItem="${discussionItem}" />
 			<discussionItem:discussionItemInfo discussionItem="${discussionItem}" anonymous="${anonymous}" ownDiscussionItem="${ownDiscussionItem}" />
 		</div>
