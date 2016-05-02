@@ -82,10 +82,10 @@ public class ServersideModelValidator extends StandardModelValidator {
 		try {
 			parsedBibTeX = new SimpleBibTeXParser().parseBibTeX(BibTexUtils.toBibtexString(publication));
 		} catch (ParseException ex) {
-			log.error(ex.getMessage());
+			log.error("error parsing publication " + publication.getIntraHash(), ex);
 			throw new ValidationException(BIBTEX_IS_INVALID_MSG + "Error while parsing BibTeX.");
 		} catch (final IOException ex) {
-			log.error(ex.getMessage());
+			log.error("error while checking publication " + publication.getIntraHash(), ex);
 			throw new ValidationException(BIBTEX_IS_INVALID_MSG + "I/O Error while parsing BibTeX.");
 		}
 		/*

@@ -43,10 +43,19 @@
 							<a href="/gettingStarted" class="btn btn-primary" role="button">
 								<span class="fa fa-thumb-tack"><!--	--></span>&amp;nbsp;<fmt:message key="system.about.bs.learnmore"/>
 							</a>&amp;nbsp;&amp;nbsp;&amp;nbsp;
-							<!-- login button -->
-							<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#loginModal">
-								<fontawesome:icon icon="sign-in" />&amp;nbsp;<fmt:message key="navi.login" />
-							</button>
+							
+							<c:set var="preferredLogin" value="${properties['auth.preferred.login']}" />
+							<c:choose>
+								<c:when test="${not empty preferredLogin}">
+									<a href="/login_${preferredLogin}?rememberMe=true" class="btn btn-primary" ><fontawesome:icon icon="sign-in" />&amp;nbsp;<fmt:message key="navi.login" /></a>
+								</c:when>
+								<c:otherwise>
+									<!-- login button -->
+									<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#loginModal">
+										<fontawesome:icon icon="sign-in" />&amp;nbsp;<fmt:message key="navi.login" />
+									</button>
+								</c:otherwise>
+							</c:choose>
 						</p>
 					</div>
 				</div>

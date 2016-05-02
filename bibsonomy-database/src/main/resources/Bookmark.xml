@@ -208,10 +208,11 @@
 		       b.book_extended AS description, b.date, u.book_url, u.book_url_ctr AS count, t.tag_name, g.group_name,
 		       t.user_name, b.`group`, t.change_date, <include refid="reviewRatingsRows" />
 	    FROM (SELECT b.*                               <!-- bookmarks from users of group which currUser may see -->
-	          FROM bookmark b, followers f
-	          WHERE f.user_name = #userName#           <!-- to see, which users are followed by currUser -->
-	                AND b.user_name = f.f_user_name    <!-- take alle rows, which are owned by users currUsers is following -->
-			       AND b.group IN 					   <!--  iterate over all groups the logged-in user may see -->
+	          FROM bookmark b, friends f
+	          WHERE f.tag_name = #followerTag#
+	          		AND f.user_name = #userName#           			<!-- to see, which users are followed by currUser -->
+	                AND b.user_name = f.f_user_name    				<!-- take alle rows, which are owned by users currUsers is following -->
+			        AND b.group IN 					   				<!--  iterate over all groups the logged-in user may see -->
 			       		(<iterate property="groups" conjunction=",">$groups[]$</iterate>)
 	   	      ORDER BY date DESC
        	      LIMIT #limit# OFFSET #offset#) AS b
@@ -221,7 +222,7 @@
 		WHERE t.group = g.group                                                  <!-- join groupname -->
 		    AND my.user_name IS NULL											<!--  exclude own posts (2) -->
 		ORDER BY b.date DESC, b.content_id DESC
-	</select>	
+	</select>
 
 	<!--  The query for logged-out users. We use getBookmarkByHashVisibleForLoginUser if the user is logged in -->
 	<select id="getBookmarkByHash" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">

@@ -3,13 +3,24 @@
 
 <sqlMap namespace="SearchPublicationCommon">
 
-	<resultMap id="searchPublicationPost" class="searchPost" extends="BibTexCommon.bibtexPost">
+	<resultMap id="searchPublicationPost" class="searchPost" extends="BibTexCommon.bibtexPostWithDocuments">
 		<result property="lastTasId"    column="tas_id" />
 	</resultMap>
 
-	<resultMap id="searchLogPublicationPost" class="searchPost" extends="BibTexCommon.bibtexPost">
+	<resultMap id="searchLogPublicationPost" class="searchPost" extends="BibTexCommon.bibtexPostWithDocuments">
 		<result property="lastTasId"    column="tas_id" />
 		<result property="lastLogDate"  column="log_date" javaType="date"/>
+	</resultMap>
+	
+	<resultMap id="searchLogDocumentPublicationPost" class="searchPost" groupBy="contentId">
+		<result property="contentId"    column="content_id"     javaType="int" />
+		<result property="resource"     resultMap="SearchPublicationCommon.bibtexWithDocuments" />
+	</resultMap>
+	
+	<resultMap id="bibtexWithDocuments" class="bibtex">
+		<!-- FIXME: title must be set, else the resource is null -->
+		<result property="title"        column="title"    javaType="string" />
+		<result property="documents"      resultMap="DocumentCommon.document" />
 	</resultMap>
 	
 	<sql id="commonSearchPublicationAttributes2">

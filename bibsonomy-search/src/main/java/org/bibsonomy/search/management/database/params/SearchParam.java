@@ -55,6 +55,8 @@ public class SearchParam {
 	
 	private Date lastDate;
 	
+	private Date lastDocumentDate;
+	
 	private String userRelation;
 
 	/**
@@ -181,5 +183,19 @@ public class SearchParam {
 	 */
 	public void setUserRelation(String userRelation) {
 		this.userRelation = userRelation;
+	}
+
+	/**
+	 * @return the lastDocumentDate
+	 */
+	public Date getLastDocumentDate() {
+		return this.lastDocumentDate;
+	}
+
+	/**
+	 * @param lastDocumentDate the lastDocumentDate to set
+	 */
+	public void setLastDocumentDate(Date lastDocumentDate) {
+		this.lastDocumentDate = lastDocumentDate;
 	}
 }

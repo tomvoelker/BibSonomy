@@ -42,14 +42,19 @@ import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
  * @author tst
  */
 public class GoogleScholarScraper extends GenericBibTeXURLScraper {
-	
 	private static final String SITE_URL  = "http://scholar.google.com/";
 	private static final String SITE_NAME = "Google Scholar";
 	private static final String INFO = "Scrapes BibTex from " + href(SITE_URL, SITE_NAME) + ".";
+	
 	private static final String HOST = "scholar.google.";
 	private static final String PATH1 = "/scholar.bib";
 	private static final String PATH2 = "/citations";
+	
+	/** FIXME: we can not use this id */
+	private static final String SCISIG = "scisig=AAGBfm0AAAAAVyM_4zZSYmtLcmYUQYVlIWqH3eVqkNVH";
+	
 	private static final Pattern ID = Pattern.compile("citation_for_view=(.+?)$");
+	private static final Pattern DOWNLOAD_URL = Pattern.compile("(.+?)hl=");
 	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern, Pattern>>();
 	static {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST + ".*"), Pattern.compile(PATH1 + ".*")));
@@ -57,30 +62,20 @@ public class GoogleScholarScraper extends GenericBibTeXURLScraper {
 	}
 	
 	@Override
-	protected String getDownloadURL(URL url) throws ScrapingException {
-		/* 
-		if (true) { //citation_for_view=(.+?)$
-			final Pattern IDFORGOOGLE = Pattern.compile("(.+?)scisig(.+?)$", Pattern.DOTALL);
-			Matcher m = null;
-			try {
-				System.out.println(WebUtils.getContentAsString(url));
-				m = IDFORGOOGLE.matcher(WebUtils.getContentAsString(url));
-			} catch (IOException e) {
-				e.printStackTrace();
+	protected String getDownloadURL(final URL url) throws ScrapingException {
+		final String path = url.getPath();
+		if (path.contains(PATH1)) {
+			final Matcher m = DOWNLOAD_URL.matcher(url.toString());
+			if (m.find()) {
+				return m.group(1) + SCISIG + "&scisf=4&hl=de";
 			}
+		} else if (path.contains(PATH2)) {
+			final Matcher m = ID.matcher(url.toString());
 			if (m.find()) {
 				final String id = m.group(1);
-				System.out.println("ssss" + id);
-				//return url.toString().replace("view_citation", "export_citations") + "&s=" + id + "&cit_fmt=0";
+				return url.toString().replace("view_citation", "export_citations") + "&s=" + id + "&cit_fmt=0";
 			}
-		}*/
-		
-		final Matcher m = ID.matcher(url.toString());
-		if (m.find()) {
-			final String id = m.group(1);
-			return url.toString().replace("view_citation", "export_citations") + "&s=" + id + "&cit_fmt=0";
 		}
-		
 		return url.toString();
 	}
 
