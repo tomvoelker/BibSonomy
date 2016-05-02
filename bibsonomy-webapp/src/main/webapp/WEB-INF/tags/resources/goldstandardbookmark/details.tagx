@@ -16,6 +16,7 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
 	<jsp:directive.attribute name="postOfLoggedInUser" type="org.bibsonomy.model.Post" required="false"/>
+	<jsp:directive.attribute name="postUserName" type="java.lang.String" required="true"/>
 	
 	<fmt:message key="goldStandard.approved.title" var="approved"/>
 	<c:set var="goldstandard" value="${post.resource}" />
@@ -77,7 +78,7 @@
 			<discussion:linkBox resource="${post.resource}"/>
 			
 			<!-- discussion -->
-			<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName=""/>
+			<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName="${postUserName}"/>
 		</div>
 		<div class="col-md-3 hidden-xs" id="sidebar-nav">
 			<nav class="sidebar-nav" data-spy="affix" data-offset-top="275">

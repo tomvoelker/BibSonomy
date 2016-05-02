@@ -106,73 +106,57 @@
 			+-->
 		<jsp:attribute name="content">
 			<jsp:invoke fragment="content" />
+			<!-- additional heading for content area -->
+			<c:if  test="${not empty contentHeading}">
+				<jsp:invoke fragment="contentHeading" />
+			</c:if>
 			
-			<c:choose>
-				<!-- if a community post is present show the community post, not the list of posts -->
-				<c:when test="${not empty command.goldStandardPublications.list}">
-					<goldstandardpublication:details post="${command.goldStandardPublications.list[0]}" loginUser="${command.context.loginUser}"/>
-				</c:when>
-
-				<!-- if a community post is present show the community post, not the list of posts -->
-				<c:when test="${not empty command.goldStandardBookmarks.list}">
-					<goldstandardbookmark:details post="${command.goldStandardBookmarks.list[0]}" loginUser="${command.context.loginUser}"/>
-				</c:when>
-				
-				<c:otherwise>
-				
-					<!-- additional heading for content area -->
-					<c:if  test="${not empty contentHeading}">
-						<jsp:invoke fragment="contentHeading" />
-					</c:if>
+			<c:set var="all" value="${mtl:containsResourceClass(command.resourcetype, 'all')}" />
+			<c:set var="bm" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark')}" />
+			<c:set var="pub" value="${mtl:containsResourceClass(command.resourcetype, 'publication')}" />
+			
+			
+			<!-- bibtex/bookmark lists -->
+			<div class="row">
+				<div class="${ (bm and pub) ? 'col-md-6' : ( (bm and not pub) ? 'col-md-12' : ((not bm) ? 'hide' : ''))} bookmark-list">
 					
-					<c:set var="all" value="${mtl:containsResourceClass(command.resourcetype, 'all')}" />
-					<c:set var="bm" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark')}" />
-					<c:set var="pub" value="${mtl:containsResourceClass(command.resourcetype, 'publication')}" />
+					<resources:bookmarks listView="${command.bookmark}" 
+						loginUserName="${command.context.loginUser.name}"
+						disableListNavigation="${disableListNavigation}"
+						requPath="${excapedRequestPath}" 
+						widthClassName="${bookmarksWidthClass}"
+						isClipboard="${isClipboard}"
+						showBookmark="${showBookmark}"
+						showPublication="${showPublication}">
 					
-					
-					<!-- bibtex/bookmark lists -->
-					<div class="row">
-						<div class="${ (bm and pub) ? 'col-md-6' : ( (bm and not pub) ? 'col-md-12' : ((not bm) ? 'hide' : ''))} bookmark-list">
-							
-							<resources:bookmarks listView="${command.bookmark}" 
-								loginUserName="${command.context.loginUser.name}"
-								disableListNavigation="${disableListNavigation}"
-								requPath="${excapedRequestPath}" 
-								widthClassName="${bookmarksWidthClass}"
-								isClipboard="${isClipboard}"
-								showBookmark="${showBookmark}"
-								showPublication="${showPublication}">
-							
-								<jsp:attribute name="addAsLastItem">
-									<c:if test="${not disableListNavigation}">
-										<div id="bookmarksfooter" class="${bookmarksWidthClass}">
-											<rc:nextprev listView="${command.bookmark}" listViewStartParamName="bookmark.start"/>
-										</div>
-									</c:if>
-								</jsp:attribute>
-							</resources:bookmarks>
-						</div>
-						<div class="${ (pub and bm) ? 'col-md-6' : ( (pub and not bm) ? 'col-md-12' : ((not pub) ? 'hide' : ''))} publication-list">
-							<resources:bibtexs listView="${command.bibtex}" 
-									loginUserName="${command.context.loginUser.name}" 
-									disableListNavigation="${disableListNavigation}" 
-									requPath="${excapedRequestPath}" 
-									widthClassName="${publicationsWidthClass}"
-									isClipboard="${isClipboard}"
-									showBookmark="${showBookmark}"
-									showPublication="${showPublication}">
-								<jsp:attribute name="addAsLastItem">
-									<c:if test="${not disableListNavigation}">
-										<div id="publicationsfooter" class="${publicationsWidthClass}">
-											<rc:nextprev listView="${command.bibtex}" listViewStartParamName="bibtex.start"/>
-										</div>
-									</c:if>
-								</jsp:attribute>
-							</resources:bibtexs>
-						</div>
-					</div>
-				</c:otherwise>
-			</c:choose>
+						<jsp:attribute name="addAsLastItem">
+							<c:if test="${not disableListNavigation}">
+								<div id="bookmarksfooter" class="${bookmarksWidthClass}">
+									<rc:nextprev listView="${command.bookmark}" listViewStartParamName="bookmark.start"/>
+								</div>
+							</c:if>
+						</jsp:attribute>
+					</resources:bookmarks>
+				</div>
+				<div class="${ (pub and bm) ? 'col-md-6' : ( (pub and not bm) ? 'col-md-12' : ((not pub) ? 'hide' : ''))} publication-list">
+					<resources:bibtexs listView="${command.bibtex}" 
+							loginUserName="${command.context.loginUser.name}" 
+							disableListNavigation="${disableListNavigation}" 
+							requPath="${excapedRequestPath}" 
+							widthClassName="${publicationsWidthClass}"
+							isClipboard="${isClipboard}"
+							showBookmark="${showBookmark}"
+							showPublication="${showPublication}">
+						<jsp:attribute name="addAsLastItem">
+							<c:if test="${not disableListNavigation}">
+								<div id="publicationsfooter" class="${publicationsWidthClass}">
+									<rc:nextprev listView="${command.bibtex}" listViewStartParamName="bibtex.start"/>
+								</div>
+							</c:if>
+						</jsp:attribute>
+					</resources:bibtexs>
+				</div>
+			</div>
 		</jsp:attribute>
 	</layout:layout>
 </jsp:root>

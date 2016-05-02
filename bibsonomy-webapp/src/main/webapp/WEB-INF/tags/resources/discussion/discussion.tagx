@@ -44,8 +44,7 @@
 			
 			<!-- TODO: use spring security tags -->
 			<c:if test="${command.context.userLoggedIn}">
-				<!-- FIXME: use real postusername TODODZO -->
-				<review:simpleReviewForm resource="${resource}" postUserName="TODO" userName="${loginUser.name}"/>
+				<review:simpleReviewForm resource="${resource}" postUserName="${postUserName}" userName="${loginUser.name}"/>
 			</c:if>
 		</div>
 
