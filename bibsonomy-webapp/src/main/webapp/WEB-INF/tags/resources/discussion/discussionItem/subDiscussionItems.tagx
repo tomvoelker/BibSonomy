@@ -13,6 +13,7 @@
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true" />
 	<jsp:directive.attribute name="hidden" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="hideCommentsForm" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="postUserName" type="java.lang.String" required="false" />
 	
 	<c:if test="${not empty hidden and hidden}">
 		<c:set var="style" value="display: none;" />
@@ -52,7 +53,7 @@
 				</c:when>
 				<c:when test="${'Comment' eq discussionItem['class'].simpleName}">
 					<li class="${clazz} media">
-						<comment:comment comment="${discussionItem}" loginUser="${loginUser}" resource="${resource}" />
+						<comment:comment comment="${discussionItem}" loginUser="${loginUser}" resource="${resource}" postUserName="${postUserName}"/>
 					</li>
 				</c:when>
 				<c:when test="${discussionItem['class'].simpleName eq 'DiscussionItem'}">
@@ -81,7 +82,7 @@
 	</c:if>
 		<c:if test="${not hideCommentsForm and not empty loginUser.name}">
 			<li class="form">
-				<comment:simpleCommentForm userName="" resource="${resource}" parentItem="${parentItem}" />
+				<comment:simpleCommentForm userName="" resource="${resource}" parentItem="${parentItem}" postUserName="${postUserName}" />
 			</li>
 		</c:if>
 	</ul>

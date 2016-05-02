@@ -32,6 +32,8 @@ $(function() {
 		return false;
 	});
 	
+	$('.editLink').click(editDiscussionItem);
+	
 	$('.deleteLink').click(deleteDiscussionItem);
 	
 	$('.reply').click(showReplyForm);
@@ -39,6 +41,27 @@ $(function() {
 	if ($('#discussion li.review').length > 0) {
 		$('.createreview').hide();
 	}
+	
+	$('.updatecomment').hide().submit(function() {
+		var form = $(this);
+		var data = form.serialize();
+		
+		$.ajax({
+			url: '/ajax/comments',
+			method: 'POST',
+			data: data,
+			success: function(data) {
+				
+				var textfield = form.find('textarea[name=discussionItem\\.text]');
+				var text = textfield.val();
+				
+				form.parent().find('.text:first').text(text);
+				
+				form.hide();
+			}
+		});
+		return false;
+	});
 	
 	$('.createreview').submit(createReview);
 	
@@ -52,6 +75,7 @@ function setupActions(container, text, hash) {
 	container.find('div.text').text(text);
 	container.find('div.info').data('discussion-item-hash', hash);
 	container.find('.createcomment').submit(createComment);
+	container.find('.editLink').click(editDiscussionItem);
 }
 
 function createReview() {
@@ -155,6 +179,9 @@ function createComment() {
 							});
 						}
 			});
+			var textarea = commentTemplate.find('form.updatecomment').find('textarea');
+			textarea.val(text);
+			autosize(textarea);
 			// reset form
 			textfield.val('');
 		}
@@ -231,6 +258,10 @@ function deleteDiscussionItem() {
 	});
 	
 	return false;
+}
+
+function editDiscussionItem() {
+	$(this).parents('div.actions').siblings('form').toggle();
 }
 
 function showReplyForm() {

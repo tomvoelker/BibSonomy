@@ -10,7 +10,7 @@
 	<jsp:directive.attribute name="userName" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="postUserName" type="java.lang.String" required="true" />
 	
-	<discussionItem:simpleDiscussionForm rows="3" postUserName="${postUserName}" userName="${userName}" action="create" resource="${resource}" discussionItemClass="review">
+	<discussionItem:simpleDiscussionForm rows="3" postUserName="${postUserName}" userName="${userName}" resource="${resource}" discussionItemClass="review">
 		<jsp:attribute name="additionalInputs">
 			<div class="row">
 				<div class="col-md-3">

@@ -10,7 +10,6 @@
 
 	<jsp:directive.attribute name="discussionItem" type="org.bibsonomy.model.DiscussionItem" required="false" />
 	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
-	<jsp:directive.attribute name="action" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="discussionItemClass" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="additionalInputs" fragment="true" required="false" />
 	<jsp:directive.attribute name="additionalMenuItems" fragment="true" required="false" />
@@ -18,7 +17,11 @@
 	<jsp:directive.attribute name="postUserName" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="rows" type="java.lang.Integer" required="false" />
 	<jsp:directive.attribute name="parentItem" type="org.bibsonomy.model.DiscussionItem" required="false" />
-
+	
+	<c:set var="action" value="create"/>
+	<c:if test="${not empty discussionItem}">
+		<c:set var="action" value="update" />
+	</c:if>
 	<form action="/ajax/${discussionItemClass}s" method="post" class="simple-comment-form ${action}${discussionItemClass}">
 		<c:if test="${not empty discussionItem}">
 			<input type="hidden" value="PUT" name="_method" />
@@ -28,7 +31,7 @@
 		<input name="postUserName" value="${postUserName}" type="hidden" />
 		<input name="intraHash" value="${command.intraHash}" type="hidden" />
 
-		<c:if test="${not empty discussionItem.hash}">
+		<c:if test="${not empty discussionItem}">
 			<input name="discussionItem.hash" value="${discussionItem.hash}" type="hidden" />
 		</c:if>
 		
@@ -40,10 +43,14 @@
 		<input name="groups" value="" type="hidden" />
 		
 		<div class="row">
-			<div class="col-md-1">
-				<img src="${relativeUrlGenerator.getUserPictureUrlByUsername(command.context.loginUser.name)}" alt="userPicture" class="media-object simple-user-pic"/>
-			</div>
-			<div class="col-md-11">
+			<c:set var="colspan" value="12" />
+			<c:if test="${empty discussionItem}">
+				<div class="col-md-1">
+					<img src="${relativeUrlGenerator.getUserPictureUrlByUsername(command.context.loginUser.name)}" alt="userPicture" class="media-object simple-user-pic"/>
+				</div>
+				<c:set var="colspan" value="11" />
+			</c:if>
+			<div class="col-md-${colspan}">
 				<c:if test="${empty rows}">
 					<c:set var="rows" value="1" />
 				</c:if>
@@ -94,7 +101,7 @@
 						</ul>
 					</div>
 					<div class="btn-group">
-						<button type="submit" class="btn btn-primary btn-xs"><fmt:message key="post.resource.${discussionItemClass}.create"/></button>
+						<button type="submit" class="btn btn-primary btn-xs"><fmt:message key="post.resource.${discussionItemClass}.${action}"/></button>
 					</div>
 				</div>
 			</div>

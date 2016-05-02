@@ -9,12 +9,18 @@
 	<jsp:directive.attribute name="comment" type="org.bibsonomy.model.Comment" required="true" />
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true" />
 	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
+	<jsp:directive.attribute name="postUserName" type="java.lang.String" required="true" />
 	
 	<discussionItem:discussionItem discussionItem="${comment}" loginUser="${loginUser}" resource="${resource}">
 		<jsp:attribute name="content">
 			<div class="comment text" itemprop="commentText">
 				<mtl:publicationReference text="${fn:escapeXml(comment.text)}" />
 			</div>
+		</jsp:attribute>
+		<jsp:attribute name="editor">
+			<c:if test="${comment.user.name eq loginUser.name }">
+				<comment:simpleCommentForm comment="${comment}" userName="${loginUser.name}" resource="${resource}" postUserName="${postUserName}"/>
+			</c:if>
 		</jsp:attribute>
 	</discussionItem:discussionItem>
 </jsp:root>

@@ -9,6 +9,7 @@
 	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true" />
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>
+	<jsp:directive.attribute name="editor" fragment="true" required="false"/>
 
 	<c:set var="discussionItemUserName" value="${discussionItem.user.name}" />
 
@@ -54,6 +55,10 @@
 				<span class="cite-header"><fmt:message key="discussion.bookmarkReferences" /></span>
 			</div>
 		</div>
+		
+		<c:if test="${not empty editor}">
+			<jsp:invoke fragment="editor"/>
+		</c:if>
 		
 		<div class="actions">
 			<discussionItem:discussionItemActions discussionItem="${discussionItem}" />
