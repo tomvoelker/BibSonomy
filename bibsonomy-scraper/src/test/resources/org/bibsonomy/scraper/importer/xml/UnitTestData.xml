@@ -2197,4 +2197,10 @@
 		<BibFile>JamaNetworkScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.jamanet.JamaNetScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_359">
+		<TestDescription>URL scraping test for the projecteuclid website</TestDescription>
+		<URL>http://projecteuclid.org/euclid.aoms/1177704711</URL>
+		<BibFile>ProjectEuclidScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.proeuclid.ProjectEuclidScraper</Scraper>
+	</URLTest>
 </test:Tests>

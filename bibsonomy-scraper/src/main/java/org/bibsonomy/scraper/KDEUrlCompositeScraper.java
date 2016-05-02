@@ -122,6 +122,7 @@ import org.bibsonomy.scraper.url.kde.phcogres.PharmacognosyResearchScraper;
 import org.bibsonomy.scraper.url.kde.pion.PionScraper;
 import org.bibsonomy.scraper.url.kde.plos.PlosScraper;
 import org.bibsonomy.scraper.url.kde.pnas.PNASScraper;
+import org.bibsonomy.scraper.url.kde.proeuclid.ProjectEuclidScraper;
 import org.bibsonomy.scraper.url.kde.prola.ProlaScraper;
 import org.bibsonomy.scraper.url.kde.psycontent.PsyContentScraper;
 import org.bibsonomy.scraper.url.kde.pubmed.PubMedScraper;
@@ -307,6 +308,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new AappublicationsScraper());
 		addScraper(new ThiemeConnectScraper());
 		addScraper(new JamaNetScraper());
+		addScraper(new ProjectEuclidScraper());
 		//addScraper(new AkademiaiScraper()); error = 404
 	}
 
