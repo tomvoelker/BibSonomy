@@ -32,53 +32,7 @@ $(function() {
 		return false;
 	});
 	
-	$('.deleteLink').click(function() {
-		var link = $(this);
-		var type = $(this).data("type");
-		if (!confirmDeleteByUser(type)) {
-			return false;
-		}
-		var interhash = $('#discussion').data('interhash');
-		var hash = $(this).parents('.media-body:first').find('.info').first().data('discussion-item-hash');
-		
-		$.ajax({
-			url: '/ajax/' + type + "s",
-			method: 'POST',
-			data:'hash=' + interhash + "&discussionItem.hash=" + hash + "&_method=delete&ckey=" + ckey,
-			success: function() {
-				var item = link.parents('li.media:first');
-				var replyButton = item.parent().siblings('.actions').find('.toggleReplies');
-				var badge = replyButton.find('.badge');
-				
-				var subCount = parseInt(badge.text());
-				if (subCount == 1) {
-					replyButton.remove();
-				} else {
-					badge.text(subCount - 1);
-				}
-				
-				var subItems = item.find('.subdiscussion:first>li.media').length;
-				if (subItems == 0) {
-					item.remove();
-				} else {
-					var left = item.children('.media-left:first');
-					var imageContainer = left.find('a.thumbnail');
-					imageContainer.find('img').remove();
-					imageContainer.find('span').remove();
-					
-					imageContainer.append($('<i class="fa fa-user fa-4x"></i>'));
-					var content = item.children('.media-body');
-					content.prepend($('<div class="alert alert-info">' + getString('post.resource.discussion.info') + '</div>'));
-					content.find('.actions:first>div.edit-media-buttons:last').remove();
-					content.find('.actions:first>div.edit-media-buttons>.reply').remove();
-					content.find('.details:first').remove();
-					content.find('.info:first').text('');
-				}
-			}
-		});
-		
-		return false;
-	});
+	$('.deleteLink').click(deleteDiscussionItem);
 	
 	$('.reply').click(showReplyForm);
 	
@@ -104,43 +58,94 @@ $(function() {
 		return false;
 	});
 	
-	$('.createcomment').submit(function() {
-		var form = $(this);
-		var data = form.serialize();
-		
-		$.ajax({
-			url: '/ajax/comments',
-			method: 'POST',
-			data: data,
-			success: function() {
-				var textfield = form.find('textarea[name=discussionItem\\.text]');
-				var text = textfield.val();
-				
-				var commentTemplate = $('#commentTemplate').clone();
-				form.parent().parent().prepend(commentTemplate);
-				commentTemplate.show();
-				commentTemplate.find('.reply').click(showReplyForm);
-				// set text
-				commentTemplate.find('div.text').text(text);
-				
-				$(window).scrollTo(commentTemplate, {
-					offset: -15,
-					onAfter: function() {
-								requestAnimationFrame(function() {
-									commentTemplate.effect("highlight", {}, 2500);
-									
-								});
-							}
-				});
-				// reset form
-				textfield.val('');
-			}
-		});
-		
-		return false;
-	});
+	$('.createcomment').submit(createComment);
 });
 
+function createComment() {
+	var form = $(this);
+	var data = form.serialize();
+	
+	$.ajax({
+		url: '/ajax/comments',
+		method: 'POST',
+		data: data,
+		success: function(data) {
+			var textfield = form.find('textarea[name=discussionItem\\.text]');
+			var text = textfield.val();
+			
+			var commentTemplate = $('#commentTemplate').clone();
+			form.parent().parent().prepend(commentTemplate);
+			commentTemplate.show();
+			commentTemplate.find('.reply').click(showReplyForm);
+			commentTemplate.find('.deleteLink').click(deleteDiscussionItem);
+			// set text
+			commentTemplate.find('div.text').text(text);
+			commentTemplate.find('div.info').data('discussion-item-hash', data.hash);
+			commentTemplate.find('.createcomment').submit(createComment);
+			$(window).scrollTo(commentTemplate, {
+				offset: -15,
+				onAfter: function() {
+							requestAnimationFrame(function() {
+								commentTemplate.effect("highlight", {}, 2500);
+								
+							});
+						}
+			});
+			// reset form
+			textfield.val('');
+		}
+	});
+	
+	return false;
+}
+
+function deleteDiscussionItem() {
+	var link = $(this);
+	var type = $(this).data("type");
+	if (!confirmDeleteByUser(type)) {
+		return false;
+	}
+	var interhash = $('#discussion').data('interhash');
+	var hash = $(this).parents('.media-body:first').find('.info').first().data('discussion-item-hash');
+	
+	$.ajax({
+		url: '/ajax/' + type + "s",
+		method: 'POST',
+		data:'hash=' + interhash + "&discussionItem.hash=" + hash + "&_method=delete&ckey=" + ckey,
+		success: function() {
+			var item = link.parents('li.media:first');
+			var replyButton = item.parent().siblings('.actions').find('.toggleReplies');
+			var badge = replyButton.find('.badge');
+			
+			var subCount = parseInt(badge.text());
+			if (subCount == 1) {
+				replyButton.remove();
+			} else {
+				badge.text(subCount - 1);
+			}
+			
+			var subItems = item.find('.subdiscussion:first>li.media').length;
+			if (subItems == 0) {
+				item.remove();
+			} else {
+				var left = item.children('.media-left:first');
+				var imageContainer = left.find('a.thumbnail');
+				imageContainer.find('img').remove();
+				imageContainer.find('span').remove();
+				
+				imageContainer.append($('<i class="fa fa-user fa-4x"></i>'));
+				var content = item.children('.media-body');
+				content.prepend($('<div class="alert alert-info">' + getString('post.resource.discussion.info') + '</div>'));
+				content.find('.actions:first>div.edit-media-buttons:last').remove();
+				content.find('.actions:first>div.edit-media-buttons>.reply').remove();
+				content.find('.details:first').remove();
+				content.find('.info:first').text('');
+			}
+		}
+	});
+	
+	return false;
+}
 
 function showReplyForm() {
 	var discussionContainer = $(this).parents('.media-body').first();
@@ -150,5 +155,5 @@ function showReplyForm() {
 		subdiscussionList.slideDown();
 	}
 	
-	subdiscussionList.find('> li.form textarea').focus();	
+	subdiscussionList.find('> li.form textarea').focus();
 }
