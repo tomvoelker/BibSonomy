@@ -123,6 +123,8 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	
 	private int compareVersion;
 	private List<String> differentEntryKeys;
+	
+	private String groupUser;
 
 	/**
 	 * @return saveAndRate
@@ -505,6 +507,20 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	 */
 	public void setApproved(boolean approved) {
 		this.approved = approved;
+	}
+	
+	/**
+	 * @return the groupUser
+	 */
+	public String getGroupUser() {
+		return this.groupUser;
+	}
+
+	/**
+	 * @param groupUser the groupUser to set
+	 */
+	public void setGroupUser(String groupUser) {
+		this.groupUser = groupUser;
 	}
 	
 }

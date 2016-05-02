@@ -43,6 +43,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.Filter;
 import org.bibsonomy.common.enums.FilterEntity;
+import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
@@ -55,6 +56,7 @@ import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
@@ -399,8 +401,19 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @return
 	 */
 	private View handleUpdatePost(final COMMAND command, final RequestWrapperContext context, final User loginUser, final Post<RESOURCE> post, final String intraHashToUpdate) {
-		final String loginUserName = loginUser.getName();
+		String loginUserName = loginUser.getName();
 
+		// editing of a group post - check if the user is in the group and has an appropriate role
+		if (present(command.getGroupUser())) {		
+			Group group = this.logic.getGroupDetails(command.getGroupUser(), false);
+			for (GroupMembership m : group.getMemberships()) {
+				if (m.getUser().getName().equals(loginUser.getName()) && (m.getGroupRole().equals(GroupRole.ADMINISTRATOR) || m.getGroupRole().equals(GroupRole.MODERATOR))) {					
+					loginUserName = command.getGroupUser();
+					break;
+				}
+			}
+		}
+		
 		/*
 		 * we're editing an existing post
 		 */

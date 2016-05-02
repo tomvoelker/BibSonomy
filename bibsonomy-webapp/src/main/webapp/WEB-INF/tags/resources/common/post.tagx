@@ -96,6 +96,8 @@
 			
 			<!-- EDIT TAGS MODAL POPUP-->
 			<c:if test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name)}">
+				
+				<fmt:message key="tag.addTag" var="addTag" />
 			
 				<div id="tag-modal-${post.resource.intraHash}${post.user.name}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 					<div class="modal-dialog">
