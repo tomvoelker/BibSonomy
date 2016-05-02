@@ -93,7 +93,7 @@ public class SyncClientTestDirectionBOTHTest extends AbstractSynchronizationClie
 			final SynchronizationData data = syncData.get(resourceType);
 			assertNotNull(data);
 			
-			assertEquals(RESULT_STRING, data.getInfo());		
+			assertEquals(RESULT_STRING, data.getInfo());
 			/*
 			 * compare posts on client and server
 			 */

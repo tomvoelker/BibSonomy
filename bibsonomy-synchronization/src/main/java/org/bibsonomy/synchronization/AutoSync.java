@@ -79,8 +79,7 @@ public class AutoSync {
 			if (!syncService.isAlreadySyncedOnce()) {
 				if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
 					log.info("no initial sync in both-directions was done; send eMail to User");
-					this.mailUtils.sendSyncErrorMail(clientUser.getName(), clientUser.getEmail(), syncService.getName(), 
-							LocaleUtils.toLocale(clientUser.getSettings().getDefaultLanguage())); 
+					this.mailUtils.sendSyncErrorMail(clientUser.getName(), clientUser.getEmail(), syncService.getName(), LocaleUtils.toLocale(clientUser.getSettings().getDefaultLanguage())); 
 				}
 				continue;
 			}

@@ -178,7 +178,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 		final SyncParam param = new SyncParam();
 		param.setUserName(userName);
 		param.setSyncService(service);
-		final SyncService syncServiceDetails = this.queryForObject("syncServiceClientForUser", param, SyncService.class, session);
+		final SyncService syncServiceDetails = this.queryForObject("syncServiceServerForUser", param, SyncService.class, session);
 		if (!present(syncServiceDetails)) {
 			throw new IllegalStateException(service.getService() + " settings for user " + userName + " not found");
 		}
