@@ -2203,4 +2203,34 @@
 		<BibFile>ProjectEuclidScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.proeuclid.ProjectEuclidScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_360">
+		<TestDescription>URL scraping test for the lccn loc gov website</TestDescription>
+		<URL>https://lccn.loc.gov/2005929872</URL>
+		<BibFile>LccnLocScraperScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.lccnloc.LccnLocScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_361">
+		<TestDescription>URL scraping test for the lccn loc gov website</TestDescription>
+		<URL>https://lccn.loc.gov/2005929872/dc</URL>
+		<BibFile>LccnLocScraperScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.lccnloc.LccnLocScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_362">
+		<TestDescription>URL scraping test for the lccn loc gov website</TestDescription>
+		<URL>https://lccn.loc.gov/95790943</URL>
+		<BibFile>LccnLocScraperScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.lccnloc.LccnLocScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_363">
+		<TestDescription>URL scraping test for the lccn loc gov website</TestDescription>
+		<URL>https://lccn.loc.gov/77368709/dc</URL>
+		<BibFile>LccnLocScraperScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.lccnloc.LccnLocScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_364">
+		<TestDescription>URL scraping test for the lccn loc gov website</TestDescription>
+		<URL>https://catalog.loc.gov/vwebv/holdingsInfo?searchId=6242&amp;recCount=25&amp;recPointer=1&amp;bibId=1781294</URL>
+		<BibFile>LccnLocScraperScraperUnitURLTest4.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.lccnloc.LccnLocScraper</Scraper>
+	</URLTest>
 </test:Tests>

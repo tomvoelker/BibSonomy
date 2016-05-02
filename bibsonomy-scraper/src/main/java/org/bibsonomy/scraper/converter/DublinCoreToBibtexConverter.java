@@ -28,6 +28,7 @@ package org.bibsonomy.scraper.converter;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -35,6 +36,16 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.w3c.dom.Node;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.CharacterData;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.xml.sax.InputSource;
 import org.apache.commons.lang.StringUtils;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.id.ISBNUtils;
@@ -59,7 +70,54 @@ public class DublinCoreToBibtexConverter implements BibtexConverter {
 	private static final Pattern EXTRACTION_PATTERN = Pattern.compile("(?im)<\\s*meta(?=[^>]*lang=\"([^\"]*)\")?(?=[^>]*content=\"([^\"]*)\")[^>]*name=\"[d|D][c|C].([^\"]*)\"[^>]*>");
 
 	// pattern to extract a year out of a string
-	private static final Pattern EXTRACT_YEAR = Pattern.compile("\\d\\d\\d\\d");
+	private static final Pattern EXTRACT_YEAR = Pattern.compile("\\d\\d\\d\\d");	
+	
+	/**
+	 * Searches for metadata in xml file, extracts
+	 * the data and converts it to a BibTeX formatted string.
+	 * 
+	 * @param xmlCitation a string
+	 * 
+	 * @return a BibTeX formatted string with the extracted information
+	 * 
+	 */
+	public String toBibtexFromXml(final String xmlCitation) throws Exception {
+
+		// get all xml values
+		final Map<String, String> data = extractDataFromXml(xmlCitation);
+		
+		// check if enough information is present
+		if (!present(data.get(TYPE_KEY)) || !present(data.get(AUTHOR_KEY)) || !present(data.get(TITLE_KEY))) {
+			return "";
+		}
+
+		final String entrytype = getEntrytype(data);
+		final StringBuilder bibtex = new StringBuilder("@");
+		
+		bibtex.append(entrytype);
+		bibtex.append("{");
+		final String bibtexKey = BibTexUtils.generateBibtexKey(data.get(AUTHOR_KEY), data.get("editor"), data.get("year"), data.get(TITLE_KEY));
+		bibtex.append(bibtexKey).append(BIBTEX_END_LINE);
+
+		final boolean isPHDThesis = BibTexUtils.PHD_THESIS.equals(entrytype);
+		final Iterator<Entry<String, String>> dataEntryInterator = data.entrySet().iterator();
+		while (dataEntryInterator.hasNext()) {
+			final Entry<String, String> dataEntry = dataEntryInterator.next();
+			
+			final String key = dataEntry.getKey();
+			if (key.equals("school") && !isPHDThesis || key.equals("institution") && isPHDThesis) {
+				continue;
+			}
+			// add bibtex key values pair to the bibtex string
+			bibtex.append(getBibTeXEntry(key, dataEntry.getValue()));
+			if (dataEntryInterator.hasNext()) {
+				bibtex.append(BIBTEX_END_LINE);
+			}
+		}
+		// close brackets
+		bibtex.append("\n}");
+		return bibtex.toString();
+	}
 	
 	/**
 	 * Searches for HTML Dublin Core metadata in an html formatted string, extracts
@@ -121,11 +179,160 @@ public class DublinCoreToBibtexConverter implements BibtexConverter {
 				bibtex.append(BIBTEX_END_LINE);
 			}
 		}
-
 		// close brackets
 		bibtex.append("\n}");
-
 		return bibtex.toString();
+	}
+
+	/**
+	 * this method return the value of the required node
+	 * 
+	 * @param element the element that contains the value
+	 * 
+	 * @return the value of the node
+	 */
+	private static String getCharacterDataFromElement(Element element) {
+	    Node child = element.getFirstChild();
+	    if (child instanceof CharacterData) {
+	      CharacterData cd = (CharacterData) child;
+	      return cd.getData();
+	    }
+	    return "";
+	}
+	
+	/**
+	 * parses the string to xml and returns a HashMap which maps the bibtex keys to
+	 * their values in the code
+	 * 
+	 * @param xmlCitation the string as xml format from the website
+	 * 
+	 * @return a map which maps bibtex key to their contained values
+	 */
+	private static Map<String, String> extractDataFromXml(final String xmlCitation) throws Exception{
+		
+		Map<String, String> data = new HashMap<String, String>();
+		DocumentBuilder db = null;
+		Document doc = null;
+		NodeList node = null;
+		Element line = null;
+		String value = "";
+		String lang = "";
+		db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		InputSource is = new InputSource();
+		is.setCharacterStream(new StringReader(xmlCitation));
+		doc = db.parse(is);
+		
+		/*
+		 * search the type of the citation
+		 */
+		node = doc.getElementsByTagName("type");
+	    line = (Element) node.item(0);
+	    value = getCharacterDataFromElement(line);
+	    addOrAppendField(TYPE_KEY, value, lang, data);
+	    
+	    /*
+		 * search the title of the citation
+		 */
+		node = doc.getElementsByTagName("title");
+	    line = (Element) node.item(0);
+	    value = getCharacterDataFromElement(line);
+	    addOrAppendField(TITLE_KEY, value, lang, data);
+	    
+	    /*
+		 * search the authors of the citation
+		 */
+		node = doc.getElementsByTagName("creator");
+		for (int i = 0; i < node.getLength(); i++) {
+			line = (Element) node.item(i);
+			value = getCharacterDataFromElement(line);
+			addOrAppendField(AUTHOR_KEY, value, lang, data);
+		}
+		
+		/*
+		 * search the authors of the citation
+		 */
+		node = doc.getElementsByTagName("description");
+		for (int i = 0; i < node.getLength(); i++) {
+			line = (Element) node.item(i);
+			value = getCharacterDataFromElement(line);
+			addOrAppendField("description", value, lang, data);
+		}
+		
+		/*
+		 * search the identifiers of the citation
+		 */
+		node = doc.getElementsByTagName("identifier");
+		for (int i = 0; i < node.getLength(); i++) {
+						
+			line = (Element) node.item(i);
+			value = getCharacterDataFromElement(line);
+			addOrAppendField(ID_KEY, value, lang, data);
+
+			/*
+			 * extracting the ISBN
+			 */
+			if (value.startsWith("URN:ISBN:")) {
+				
+				/*
+				 * ISBN 10 and ISBN 13
+				 */
+				final Pattern isbnPattern = Pattern.compile("([^0-9]|^)(978\\d{9}[\\dx]|979\\d{9}[\\dx]|\\d{9}[\\dx])([^0-9x]|$)", Pattern.CASE_INSENSITIVE);
+				final Matcher M_ISB10 = isbnPattern.matcher(value);
+				if(M_ISB10.find()) {
+					value = M_ISB10.group(2);
+					addOrAppendField("ISBN", value, lang, data);
+				}
+			}
+			
+			/*
+			 * extract url
+			 */
+			if(value.contains("http://")) {
+				final Pattern HTTP_PATTERN = Pattern.compile("https://.*(http://.*)$");
+				final Matcher M_HTTP_PATTERN = HTTP_PATTERN.matcher(value);
+				if(M_HTTP_PATTERN.find()) {
+					value = M_HTTP_PATTERN.group(1);
+					addOrAppendField("url", value, lang, data);
+				}
+			}
+		}
+	    
+	    /*
+		 * search the Date of the citation
+		 */
+		node = doc.getElementsByTagName("date");
+	    line = (Element) node.item(0);
+	    value = getCharacterDataFromElement(line);
+	    value = extractYear(value);
+	    addOrAppendField("year", value, lang, data);
+	    
+	    /*
+		 * search the publisher of the citation
+		 */
+		node = doc.getElementsByTagName("publisher");
+	    line = (Element) node.item(0);
+	    value = getCharacterDataFromElement(line);
+	    addOrAppendField("publisher", value, lang, data);
+	    
+	    /*
+		 * search the language of the citation
+		 */
+		node = doc.getElementsByTagName("language");
+	    line = (Element) node.item(0);
+	    value = getCharacterDataFromElement(line);
+	    addOrAppendField("language", value, lang, data);
+	    
+	    /*
+		 * search the subject of the citation
+		 */
+		node = doc.getElementsByTagName("subject");
+		for (int i = 0; i < node.getLength(); i++) {
+			
+			line = (Element) node.item(i);
+			value = getCharacterDataFromElement(line);
+			addOrAppendField("subject", value, lang, data);
+		}
+		return data;
 	}
 
 	/**
@@ -295,5 +502,4 @@ public class DublinCoreToBibtexConverter implements BibtexConverter {
 		 */
 		return BibTexUtils.MISC;
 	}
-
 }
