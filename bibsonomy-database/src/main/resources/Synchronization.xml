@@ -41,11 +41,11 @@
 		ORDER BY ss.`service_id`, device_id, last_sync_date DESC
 	</select>
 	
-	<select id="syncServiceClientForUser"  resultMap="SynchronizationCommon.syncServiceForUserDetails" parameterClass="syncParam">
-		SELECT ss.service_id, ss.name, <include refid="syncDataColumns"/>
-		FROM sync_services ss JOIN sync_data sd USING(service_id)
-			WHERE ss.server = FALSE
-			AND sd.user_name = #userName#
+	<select id="syncServiceServerForUser" resultMap="SynchronizationCommon.syncService" parameterClass="syncParam">
+		SELECT ss.service_id, ss.name, ss.uri, ss.secure_api, s.credentials, s.direction, s.content_type, s.strategy, ss.ssl_dn, s.autosync, s.already_synced_once, s.user_name
+		FROM sync_services ss JOIN sync s USING(service_id)
+			WHERE ss.server = TRUE
+			AND s.user_name = #userName#
 			AND ss.uri = #syncService.service#
 	</select>
 
