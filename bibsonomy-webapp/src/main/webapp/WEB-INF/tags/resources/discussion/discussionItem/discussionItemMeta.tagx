@@ -2,20 +2,27 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
 	
 	<jsp:directive.attribute name="discussionItem" type="org.bibsonomy.model.DiscussionItem" required="true" />
-	
-	<span class="date" itemprop="datePublished">
-		<fmt:message key="post.resource.comment.on"/><c:out value=" "/><fmt:formatDate type="date" timeStyle="medium" dateStyle="medium" value="${discussionItem.date}"/>
-	</span>
-	<c:if test="${not empty discussionItem.changeDate}">
-		<c:out value=" "/>
-		<span class="changeDate">
-			(<fmt:message key="post.resource.comment.updatedOn" />
-			<c:out value=" "/><fmt:formatDate type="date" timeStyle="medium" dateStyle="medium" value="${discussionItem.changeDate}"/>)
+	<fmt:timeZone value="${command.context.loginUser.settings.timeZone}">
+		<fmt:formatDate type="date" dateStyle="medium" value="${discussionItem.date}" var="createDate" />
+		<fmt:formatDate type="time" timeStyle="short" value="${discussionItem.date}" var="createTime" />
+		<span class="date" itemprop="datePublished" title="${createDate}, ${createTime}">
+			<mtl:formatTimeDiff startDate="${discussionItem.date}"/>
 		</span>
-	</c:if>
+	
+		<c:if test="${not empty discussionItem.changeDate}">
+			<fmt:formatDate type="date" dateStyle="medium" value="${discussionItem.changeDate}" var="changeDate" />
+			<fmt:formatDate type="time" timeStyle="short" value="${discussionItem.changeDate}" var="changeTime" />
+			<c:out value=" "/>
+			<span class="changeDate" title="${changeDate}, ${changeTime}">
+				(<fmt:message key="post.resource.comment.updatedOn" />
+				<mtl:formatTimeDiff startDate="${discussionItem.changeDate}"/>)
+			</span>
+		</c:if>
+	</fmt:timeZone>
 	<span class="groups">
 		<c:forEach var="group" items="${discussionItem.groups}" varStatus="status">
 			<c:if test="${not empty group.name and group.name ne 'public'}">
