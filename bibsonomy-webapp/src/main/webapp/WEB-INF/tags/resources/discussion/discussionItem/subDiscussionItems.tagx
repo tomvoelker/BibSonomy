@@ -79,9 +79,9 @@
 			</c:choose>
 		</c:forEach>
 	</c:if>
-		<c:if test="${not hideCommentsForm}">
+		<c:if test="${not hideCommentsForm and not empty loginUser.name}">
 			<li class="form">
-				<comment:simpleCommentForm userName="TODO" resource="${resource}" parentItem="${parentItem}" />
+				<comment:simpleCommentForm userName="" resource="${resource}" parentItem="${parentItem}" />
 			</li>
 		</c:if>
 	</ul>
