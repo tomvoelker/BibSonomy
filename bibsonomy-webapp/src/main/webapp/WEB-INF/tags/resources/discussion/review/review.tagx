@@ -27,7 +27,7 @@
 			</div>
 			<!-- TODODZO: remove -->
 			<c:if test="${ownReview}">
-				<!-- This form is only displayed where a goldstandard post exists. Therefore the postUserName ist the goldStandardPostUserName "" -->
+				<!-- This form is only displayed where a goldstandard post exists. Therefore the postUserName is the goldStandardPostUserName "" -->
 				
 			</c:if>
 		</jsp:attribute>

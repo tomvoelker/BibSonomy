@@ -44,7 +44,8 @@
 			
 			<!-- TODO: use spring security tags -->
 			<c:if test="${command.context.userLoggedIn}">
-				<review:simpleReviewForm resource="${resource}" userName="${loginUser.name}"/>
+				<!-- FIXME: use real postusername TODODZO -->
+				<review:simpleReviewForm resource="${resource}" postUserName="TODO" userName="${loginUser.name}"/>
 			</c:if>
 		</div>
 
@@ -59,7 +60,7 @@
 							<comment:comment comment="${newComment}" loginUser="${loginUser}" resource="${resource}" />
 						</li>
 						<!-- create li, div structure for new review -->
-						<li id="newReview">
+						<li id="reviewTemplate" class="media review">
 							<review:review review="${newReview}" resource="${resource}" loginUser="${loginUser}" />
 						</li>
 					</ul>

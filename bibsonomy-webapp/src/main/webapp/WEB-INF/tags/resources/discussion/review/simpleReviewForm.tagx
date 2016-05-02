@@ -8,9 +8,19 @@
 	
 	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
 	<jsp:directive.attribute name="userName" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="postUserName" type="java.lang.String" required="true" />
 	
-	<discussionItem:simpleDiscussionForm rows="3" postUserName="TODO" userName="${userName}" action="create" resource="${resource}" discussionItemClass="review">
-		
+	<discussionItem:simpleDiscussionForm rows="3" postUserName="${postUserName}" userName="${userName}" action="create" resource="${resource}" discussionItemClass="review">
+		<jsp:attribute name="additionalInputs">
+			<div class="row">
+				<div class="col-md-3">
+					<input type="number" class="newRating" name="discussionItem.rating" value="${review.rating}"/>
+				</div>
+				<div class="col-md-9">
+					<a href="#" class="btn-xs btn btn-default rating-reset"><fmt:message key="rating.reset" /></a>
+				</div>
+			</div>
+		</jsp:attribute>
 	</discussionItem:simpleDiscussionForm>
 	
 </jsp:root>

@@ -36,9 +36,6 @@
 			<input name="discussionItem.parentHash" value="${parentItem.hash}" type="hidden" />
 		</c:if>
 		
-		<c:if test="${not empty additionalInputs}">
-			<jsp:invoke fragment="additionalInputs" />
-		</c:if>
 		<input name="abstractGrouping" value="public" tabindex="2" type="hidden" />
 		<input name="groups" value="" type="hidden" />
 		
@@ -53,7 +50,9 @@
 				<c:if test="${empty discussionItem}">
 					<fmt:message var="placeholder" key="post.resource.${discussionItemClass}.placeholder"/>
 				</c:if>
-				
+				<c:if test="${not empty additionalInputs}">
+					<jsp:invoke fragment="additionalInputs" />
+				</c:if>
 				<textarea placeholder="${placeholder}" class="form-control reqinput" rows="${rows}" name="discussionItem.text" data-autosize="autosize">
 					<c:if test="${not empty discussionItem}">
 						<c:out value="${discussionItem.text}" />

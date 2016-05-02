@@ -19,11 +19,14 @@ $(function() {
 	// init all selectable stars
 	initStars();
 	
-	
+	$('a.rating-reset').click(function() {
+		$('.newRating').rating('update', 0);
+		return false;
+	});
 });
 
 function initStars() {
-	$('.reviewRating').rating({
+	$('#discussion .reviewRating').rating({
 		min : 0,
 		max : 5,
 		step : 0.0001,
@@ -31,6 +34,16 @@ function initStars() {
 		readonly : true,
 		showCaption : false,
 		glyphicon : false,
+		ratingClass : 'rating-fa'
+	});
+	
+	$('.newRating').rating({
+		size: 'xs',
+		showCaption : false,
+		glyphicon : false,
+		min: 0,
+		max: 5,
+		step: 0.5,
 		ratingClass : 'rating-fa'
 	});
 }
@@ -53,17 +66,6 @@ function updateRatingCounter(element) {
 
 function getOwnReviewRating() {
 	return Number($('#ownReview .rating').data('rating'));
-}
-
-function validateRating(starsWrapperId) {
-	var reviewRating = getRating(starsWrapperId);
-	if (reviewRating == 0) {
-		if (!confirm(getString("post.resource.review.rating0"))) {
-			return false;
-		}
-	}
-	
-	return true;
 }
 
 function plotRatingDistribution() {
@@ -102,7 +104,7 @@ function plotRatingDistribution() {
 		});
 	} else {
 		// get all ratings from all reviews
-		$('li.review').not('#newReview').find('.rating').each(function() {
+		$('#discussion li.review').not('#newReview').find('.rating').each(function() {
 			var key = parseFloat($(this).data("rating"));
 			if (ratings[key]) {
 				ratings[key] += 1;
@@ -149,115 +151,6 @@ function plotRatingDistribution() {
 	var myBarChart = new Chart(ctx).Bar(data, {
 		scaleShowLabels: false,
 	});
-}
-
-function createReview() {
-	// first unbind the form (no double submit while calling server)
-	var reviewForm = $(this);
-	reviewForm.unbind('submit');
-	
-	var reviewRatingInput = reviewForm.find(REVIEW_RATING_SELECTOR);
-	if (!validateRating(reviewRatingInput)) {
-		reviewForm.submit(createReview);
-		return false;
-	}
-	if (!hasGoldstandardCreationPermission()) {
-		// what does that do?
-		reviewForm.submit(createReview);
-		return false;
-	}
-	var spinner = reviewForm.find('.spinner');
-	spinner.show('slow');
-	
-	var reviewText = reviewForm.find(REVIEW_TEXTAREA_SELECTOR).val();
-	var anonymous = reviewForm.find(REVIEW_ANONYMOUS_SELECTOR).is(':checked');
-	var reviewRating = getRating(reviewRatingInput);
-	
-	var abstractGrouping = reviewForm.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR + ':checked').val();
-	var groups = reviewForm.find(OTHER_GROUPING_CLASS_SELECTOR).val();
-	
-	// TODO: allow multiple groups; remove the next five lines after this comment
-	if (groups == null) {
-		groups = new Array();
-	} else {
-		groups = new Array(groups);
-	}
-	
-	// call service
-	var reviewData = reviewForm.serialize();
-	$.ajax({
-		url:		REVIEWS_URL,
-		type:		"POST",
-		dataType:   "json",
-		data:		reviewData,
-		success:	function(response) {
-						var reload = (response.reload);
-						if(reload == "true") {
-							window.location.reload();
-						}
-						// display review
-						var reviewView = $('#newReview').remove();
-						
-						reviewView.attr("id", "ownReview");
-						updateReviewView(reviewView, reviewText, reviewRating, abstractGrouping, groups);
-						
-						// get root discussion item list
-						$(DISCUSSION_SELECTOR + ' .subdiscussionItems:first').prepend(reviewView);
-						
-						updateHash(reviewView, response.hash);
-						highlight(reviewView);
-						
-						/*
-						 * update update form
-						 */
-			 			var updateForm = $(REVIEW_UPDATE_FORM_SELECTOR);
-						updateForm.find(REVIEW_TEXTAREA_SELECTOR).text(reviewText);
-		     			updateForm.find(REVIEW_RATING_SELECTOR).stars({
-		     				split: STEP_RATING,
-		     			});
-		     			
-		     			updateForm.find(REVIEW_RATING_SELECTOR).stars("select", reviewRating.toFixed(1));
-						if (anonymous) {
-							reviewView.addClass(ANONYMOUS_CLASS);
-							updateForm.find(REVIEW_ANONYMOUS_SELECTOR).attr("checked", "checked");
-						}
-						
-						updateForm.submit(updateReview);
-						
-						// groups
-						populateFormWithGroups(updateForm, abstractGrouping, groups);
-						updateForm.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
-		     			/*
-		     			 * update and bind links
-		     			 */
-		     			removeReviewActions();
-		     			reviewView.find(REVIEW_EDIT_LINK_SELECTOR).click(showUpdateReviewForm);
-		     			reviewView.find(REVIEW_DELETE_LINK_SELECTOR).click(deleteReview);
-		     			reviewView.find(REPLY_SELECTOR).click(reply);
-		     			
-		     			/*
-		     			 * update rating view 
-		     			 */
-		     			var oldCount = getReviewCount();
-		     			var oldAvg = getAvg();
-		     			var newCount = oldCount + 1;
-		     			var newAvg = (oldAvg * oldCount + reviewRating) / newCount;
-		     			setReviewCount(newCount);
-		     			setAvg(newAvg);
-		     			plotRatingDistribution();
-		     			
-		     			$('#noReviewInfo').hide();
-		     			$('#ratingAvg').show('slow');
-		     			$('#ratingDistribution').show('slow');
-		     			scrollTo(REVIEW_OWN_ID);
-					},
-		error:		function(jqXHR, data, errorThrown) {
-						handleAjaxErrors(reviewForm, jQuery.parseJSON(jqXHR.responseText));
-						reviewForm.submit(updateReview);
-					},
-	});
-	
-	return false;
 }
 
 function updateReview() {
@@ -336,51 +229,6 @@ function updateReview() {
 	return false;
 }
 
-function deleteReview() {
-	if (!confirmDeleteByUser("review")) {
-		return false;
-	}
-	var deleteLink = $(this);
-	$(this).siblings('.deleteInfo').show();
-	
-	var hash = getInterHash();
-	var review = $(REVIEW_OWN_SELECTOR);
-	var reviewHash = review.find('.info').data(DISCUSSIONITEM_DATA_KEY);
-	
-	var oldReviewRating = getOwnReviewRating();
-	var revDelUrl = REVIEWS_URL + "?hash=" + hash + "&ckey=" + ckey + "&discussionItem.hash=" + reviewHash;
-	var success = function() {
-		// update overall count
-		var oldCount = getReviewCount();
-			var oldAvg = getAvg();
-			var newAvg = 0;
-			var newCount = oldCount - 1;
-			
-			if (newCount > 0) {
-				newAvg = (oldAvg * oldCount - oldReviewRating) / newCount;	 
-			}
-			
-			setReviewCount(oldCount - 1);
-			setAvg(newAvg);
-			plotRatingDistribution();
-			addReviewActions();
-			deleteLink.closest("li").remove();
-	};
-	
-	$.ajax({
-		url:		revDelUrl,
-		type:		"DELETE",
-		success:	function(msg) {
-			if(msg.statusText=="OK") deleteDiscussionItemView(review, success);
-		},
-		error: function(msg) {
-			if(msg.statusText=="OK") deleteDiscussionItemView(review, success);
-		}
-		// TODO: handle error
-	});
-	return false;
-}
-
 function updateReviewView(reviewView, text, rating, abstractGrouping, groups) {
 	var starWidth = getStarsWidth(rating);
 	var ratingView = reviewView.find('.rating');
@@ -397,43 +245,4 @@ function updateReviewView(reviewView, text, rating, abstractGrouping, groups) {
 function getRating(element) {
 	var stars = $(element).data("stars");
 	return parseFloat(stars.options.value);
-}
-
-function toggleRating(element) {
-	if(element.target) element = element.target;
-	var stars = $(element).parent().next('.reviewrating');
-	var parent = $(element).parents("fieldset");
-	var textBoxContainer = parent.find(".textBoxContainer");
-	var form;
-	var formParent;
-	var textBoxVal = (textBoxContainer.find(REVIEW_TEXTAREA_SELECTOR).val()==getString("post.resource.comment.actions.post")
-			||textBoxContainer.find(REVIEW_TEXTAREA_SELECTOR).val()==getString("post.resource.review.actions.post")?"":textBoxContainer.find(REVIEW_TEXTAREA_SELECTOR).val());
-	
-	removeAllOtherDiscussionForms();
-	
-	if(!element.checked) { 
-		form = $(COMMENT_CREATE_FORM);
-		var formParent = $(REVIEW_CREATE_FORM_SELECTOR)
-		var toggleCheckbox = form.find(".discussionControlsFrame").find(".ratingToggleCheckbox")[0];
-	
-		if(toggleCheckbox  != undefined && toggleCheckbox.disabled) {
-			$(toggleCheckbox).bind("click", toggleRating).removeAttr("disabled");
-			createStandaloneReply($("#createCommentInstance"));
-		}
-		element.checked = true;
-	}else{
-		form = $(REVIEW_CREATE_FORM_SELECTOR);
-		formParent = $(COMMENT_CREATE_FORM);
-		element.checked = false;
-	}
-	
-	
-	form.fadeIn().find(REVIEW_TEXTAREA_SELECTOR).trigger("focus").val(textBoxVal);
-	form.find(REVIEW_ANONYMOUS_SELECTOR)[0].checked = parent.find(REVIEW_ANONYMOUS_SELECTOR)[0].checked;
-	scrollTo(form.attr("id"));
-	formParent.hide();
-}
-
-function getStarsWidth(rating) {
-	return STAR_WIDTH * rating;
 }
