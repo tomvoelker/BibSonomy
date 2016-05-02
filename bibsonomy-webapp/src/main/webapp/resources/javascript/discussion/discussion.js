@@ -205,6 +205,28 @@ function deleteDiscussionItem() {
 				content.find('.details:first').remove();
 				content.find('.info:first').text('');
 			}
+			
+			if (item.hasClass('review')) {
+				var rating = parseFloat(item.find('div.rating').data('rating'));
+				// update review count and distribution
+				var currentReviewCount = getReviewCount();
+				var currentAvg = getAvg();
+				var ratingSum = currentAvg * currentReviewCount - rating;
+				
+				var reviewCount = currentReviewCount - 1;
+				var avg;
+				if (reviewCount != 0) {
+					avg = ratingSum / reviewCount;
+				} else {
+					avg = 0;
+				}
+				
+				$('#averageRating').rating('update', avg);
+				$('[property=ratingCount]').text(reviewCount);
+				$('[property=ratingAverage]').text(avg);
+				
+				plotRatingDistribution();
+			}
 		}
 	});
 	
