@@ -53,6 +53,7 @@ public class LccnLocScraper extends AbstractUrlScraper {
 	private static final String CATALOG_HOST = "catalog.loc.gov";
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = new LinkedList<Pair<Pattern, Pattern>>();
 	private static final XmlToBibtexConverter converter = new XmlToBibtexConverter();
+	private static final Pattern p = Pattern.compile("id=\"permalink\" href=\"(.*)\">");
 	static {
 		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + LCCN_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + CATALOG_HOST), AbstractUrlScraper.EMPTY_PATTERN));
@@ -67,7 +68,6 @@ public class LccnLocScraper extends AbstractUrlScraper {
 			 */
 			if (scrapingContext.getUrl().toString().contains("?searchId=")) {
 				final String pageContent = WebUtils.getContentAsString(scrapingContext.getUrl());
-				Pattern p = Pattern.compile("id=\"permalink\" href=\"(.*)\">");
 				Matcher m = p.matcher(pageContent);
 				if(m.find()) {
 					final String xml = WebUtils.getContentAsString(new URL(m.group(1).toString()) + "/dc");

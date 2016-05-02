@@ -2233,4 +2233,10 @@
 		<BibFile>LccnLocScraperScraperUnitURLTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.lccnloc.LccnLocScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_365">
+		<TestDescription>URL scraping test for the elsvier website</TestDescription>
+		<URL>http://www.elsevier.es/es-revista-journal-of-applied-research-and-81-articulo-extensions-to-k-medoids-with-balance-90391442</URL>
+		<BibFile>ElsevierScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.elsevier.ElsevierScraper</Scraper>
+	</URLTest>
 </test:Tests>

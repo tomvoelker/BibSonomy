@@ -72,6 +72,8 @@ public class DublinCoreToBibtexConverter implements BibtexConverter {
 	// pattern to extract a year out of a string
 	private static final Pattern EXTRACT_YEAR = Pattern.compile("\\d\\d\\d\\d");	
 	
+	private static final Pattern isbnPattern = Pattern.compile("([^0-9]|^)(978\\d{9}[\\dx]|979\\d{9}[\\dx]|\\d{9}[\\dx])([^0-9x]|$)", Pattern.CASE_INSENSITIVE);
+	private static final Pattern HTTP_PATTERN = Pattern.compile("https://.*(http://.*)$");
 	/**
 	 * Searches for metadata in xml file, extracts
 	 * the data and converts it to a BibTeX formatted string.
@@ -276,7 +278,6 @@ public class DublinCoreToBibtexConverter implements BibtexConverter {
 				/*
 				 * ISBN 10 and ISBN 13
 				 */
-				final Pattern isbnPattern = Pattern.compile("([^0-9]|^)(978\\d{9}[\\dx]|979\\d{9}[\\dx]|\\d{9}[\\dx])([^0-9x]|$)", Pattern.CASE_INSENSITIVE);
 				final Matcher M_ISB10 = isbnPattern.matcher(value);
 				if(M_ISB10.find()) {
 					value = M_ISB10.group(2);
@@ -288,7 +289,6 @@ public class DublinCoreToBibtexConverter implements BibtexConverter {
 			 * extract url
 			 */
 			if(value.contains("http://")) {
-				final Pattern HTTP_PATTERN = Pattern.compile("https://.*(http://.*)$");
 				final Matcher M_HTTP_PATTERN = HTTP_PATTERN.matcher(value);
 				if(M_HTTP_PATTERN.find()) {
 					value = M_HTTP_PATTERN.group(1);
