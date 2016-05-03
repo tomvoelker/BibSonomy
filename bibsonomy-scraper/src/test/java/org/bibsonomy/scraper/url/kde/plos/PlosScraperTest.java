@@ -149,6 +149,14 @@ public class PlosScraperTest {
 	}
 	
 	/**
+	 * starts URL test with id url_341
+	 */
+	@Test
+	public void urlTest13Run(){
+		UnitTestRunner.runSingleTest("url_341");
+	}
+	
+	/**
 	 * @throws Exception
 	 */
 	@Test

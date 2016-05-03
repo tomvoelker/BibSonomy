@@ -61,9 +61,9 @@ public class WorldScientificScraperTest {
 		assertTrue(ws.scrapeCitedby(sc));
 		final String cby = sc.getCitedBy();
 		assertNotNull(cby);
-		assertTrue(cby.length() > 100);
+		assertTrue(cby.length() > 100);  
 		
-		assertEquals("<span class=\"hlFld-ContribAuthor\"><a class=\"entryAuthor\" href=\"/author/LIU%2C+R".trim(), cby.substring(0, 79).trim());
+		assertEquals("<a class=\"entryAuthor search-link\" href=\"/author/Tagiew%2C+Rustam\"><span class=".trim(), cby.substring(0, 79).trim());
 		
 		assertTrue(cby.contains("XIANYONG FANG"));
 	}
@@ -79,7 +79,7 @@ public class WorldScientificScraperTest {
 		assertNotNull(references);
 		assertTrue(references.length() > 100);
 		
-		assertEquals("<li class=\"reference\"> R. Agrawal, Mining Newsgroups using networks arising from social behavior, <i>Proc".trim(), references.substring(0, 105).trim());
+		assertEquals("<li class=\"reference\"> R. Agrawal<i></i>, Mining Newsgroups using networks arising from social behavior,".trim(), references.substring(0, 105).trim());
 		
 		assertTrue(references.contains("A. D.   Baxevanis"));
 	}
