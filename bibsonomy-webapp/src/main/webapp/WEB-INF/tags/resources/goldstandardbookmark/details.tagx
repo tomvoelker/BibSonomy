@@ -17,6 +17,7 @@
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
 	<jsp:directive.attribute name="postOfLoggedInUser" type="org.bibsonomy.model.Post" required="false"/>
 	<jsp:directive.attribute name="postUserName" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="postIsPublic" type="java.lang.Boolean" required="true"/>
 	
 	<fmt:message key="goldStandard.approved.title" var="approved"/>
 	<c:set var="goldstandard" value="${post.resource}" />
@@ -28,7 +29,7 @@
 	<c:set var="itemType" value="http://schema.org/WebPage"/>
 	<div id="goldstandard" class="row">
 		<div class="col-md-7 col-md-offset-1">
-			<div class="content-header">
+			<div class="content-header" id="info">
 				<h1>
 					<a href="${fn:escapeXml(goldstandard.url)}" ref="nofollow">
 						<c:out value="${goldstandard.title}" />
@@ -74,11 +75,11 @@
 			<!-- Aggregated RatingInfo -->
 			<review:reviewRatingsInfo resource="${post.resource}" />
 	
-			<!-- Publication reference link -->
-			<discussion:linkBox resource="${post.resource}"/>
+			<!-- bookmark reference link -->
+			<!--<discussion:linkBox resource="${post.resource}"/>-->
 			
 			<!-- discussion -->
-			<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName="${postUserName}"/>
+			<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName="${postUserName}" postIsPublic="${postIsPublic}"/>
 		</div>
 		<div class="col-md-3 hidden-xs" id="sidebar-nav">
 			<nav class="sidebar-nav" data-spy="affix" data-offset-top="275">

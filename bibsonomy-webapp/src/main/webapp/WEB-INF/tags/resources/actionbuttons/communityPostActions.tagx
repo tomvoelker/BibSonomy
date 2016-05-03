@@ -37,7 +37,8 @@
 			<buttons:historyButton
 				post="${post}"
 				resourceType="${resourceType}"
-				buttonClasses="${buttonClasses}"/>
+				buttonClasses="${buttonClasses}"
+				enforceCommunityPost="${true}"/>
 
 		</div>
 	</c:if>

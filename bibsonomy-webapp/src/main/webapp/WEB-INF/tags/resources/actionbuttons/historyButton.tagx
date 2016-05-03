@@ -3,17 +3,25 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
-	>
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons">
 
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="buttonClasses" type="java.lang.String" required="true" />
-
-
-	<!-- TODO: We usually show the history in the drop-down menu. Here we introduce an own symbol and show a button. Discuss -->
+	<jsp:directive.attribute name="enforceCommunityPost" type="java.lang.Boolean" required="false"/>
+	
+	<c:choose>
+		<c:when test="${empty enforceCommunityPost or not enforceCommunityPost}">
+			<c:set var="url" value="${relativeUrlGenerator.getHistoryUrlForPost(post)}" />
+		</c:when>
+		<c:otherwise>
+			<c:set var="url" value="${relativeUrlGenerator.getHistoryURLByHashAndUserName(post.resource.intraHash, null, resourceType)}" />
+		</c:otherwise>
+	</c:choose>
+	
+	
 	<fmt:message key="${resourceType}.actions.posthistory.title" var="postHistoryTitle" />
-	<a class="${buttonClasses}" href="${relativeUrlGenerator.getHistoryUrlForPost(post)}" title="${postHistoryTitle}">
+	<a class="${buttonClasses}" href="${url}" title="${postHistoryTitle}">
 		<span class="fa fa-list-ol"><!--  --></span>
 	</a>
 </jsp:root>

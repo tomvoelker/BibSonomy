@@ -113,10 +113,8 @@
 							<insertNewLine>true</insertNewLine>
 							<output>${project.build.webapp.resourcedir}/javascript/merged/discussion.js</output>
 							<includes>
-								<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.js</include>
-								<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/excanvas.js</include>
-								<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/jquery.flot.js</include>
-								<include>${project.build.webapp.resourcedir}/jquery/plugins/flot/jquery.flot.stack.js</include>
+								<include>${project.build.webapp.resourcedir}/star-rating/star-rating.js</include>
+								<include>${project.build.webapp.resourcedir}/Chart.js/Chart.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/discussion/discussion.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/discussion/reviews.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/discussion/comments.js</include>

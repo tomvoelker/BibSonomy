@@ -38,14 +38,9 @@
 			noSidebar="${true}">
 		
 		<jsp:attribute name="headerExt">
-			<!-- TODO TODODZO: merge js files -->
 			<script type="text/javascript" src="${resdir}/javascript/merged/discussion.js"><!-- keep me --></script>
-			<script type="text/javascript" src="${resdir}/Chart.js/Chart.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/publication.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/goldstandards.js"><!-- keep me --></script>
-			<script type="text/javascript" src="${resdir}/star-rating/star-rating.js"><!-- keep me --></script>
-			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.css" />
-			<link rel="stylesheet" type="text/css" href="${resdir}/star-rating/star-rating.css" />
 		</jsp:attribute>
 		
 		<jsp:attribute name="breadcrumbs">

@@ -35,7 +35,7 @@
 	
 	<c:set var="bookmark" value="${post.resource}" />
 	<c:set var="title" value="${bookmark.title}" />
-	<!-- FIXME: invalid html: move into body tag -->
+	
 	<c:set var="isPublic" value="${false}"/>
 	<c:choose>
 		<c:when test="${goldstandardPresent}">
@@ -73,37 +73,7 @@
 			+ -->
 		<jsp:attribute name="headerExt">
 			<script type="text/javascript" src="${resdir}/javascript/merged/discussion.js"><!-- keep me --></script>
-			<c:if test="${goldstandardPresent}">
-				<script type="text/javascript" src="${resdir}/javascript/goldstandards.js"><!-- keep me --></script>
-			</c:if>
-			<link rel="stylesheet" type="text/css" href="${resdir}/jquery/plugins/ui/plugins/stars/jquery.ui.stars.css" />
-		</jsp:attribute>
-
-		<!--+
-			+ sidebar
-			TODODZO: remove
-			+ -->
-		<jsp:attribute name="sidebar">
-			<sidebar:sidebarTagCloudItem requPath="tag" cmd="${command.tagcloud}"/>
-			<resource:metaData command="${command}" />
-		</jsp:attribute>
-		
-		<!-- TODODZO: remove -->
-		<jsp:attribute name="infobox">
-			<parts:infobox>
-				<jsp:attribute name="infoTextBody">
-					<!-- short info about discussion -->
-					<fmt:message key="discussion.info"><fmt:param><fmt:message key="discussion.info.bookmark"></fmt:message></fmt:param></fmt:message>
-					
-					<!-- quick links on what you can do -->
-					
-					<p><fmt:message key="discussion.info.examples"/></p>
-					<ul class="news">
-						<li><fmt:message key="discussion.info.publications"/></li>
-						<li><fmt:message key="discussion.info.bookmarks"/></li>
-					</ul>
-				</jsp:attribute>
-			</parts:infobox>
+			<script type="text/javascript" src="${resdir}/javascript/goldstandards.js"><!-- keep me --></script>
 		</jsp:attribute>
 		
 		<jsp:attribute name="breadcrumbs">
@@ -120,7 +90,7 @@
 			+ content heading
 			+-->
 		<jsp:attribute name="content">
-			<goldstandardbookmark:details post="${post}" loginUser="${command.context.loginUser}" postOfLoggedInUser="${command.postOfLoggedInUser}" postUserName="${command.postOwner}"/>
+			<goldstandardbookmark:details post="${post}" loginUser="${command.context.loginUser}" postOfLoggedInUser="${command.postOfLoggedInUser}" postUserName="${command.postOwner}" postIsPublic="${isPublic}"/>
 		</jsp:attribute>
 	</layout:layout>
 </jsp:root>
