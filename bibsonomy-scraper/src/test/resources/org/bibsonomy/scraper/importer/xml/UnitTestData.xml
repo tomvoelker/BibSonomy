@@ -2245,4 +2245,16 @@
 		<BibFile>ElsevierScraper1UnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.elsevier.ElsevierScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_367">
+		<TestDescription>URL scraping test for the repec website</TestDescription>
+		<URL>https://ideas.repec.org/p/pra/mprapa/71036.html</URL>
+		<BibFile>RepecScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.repec.RepecScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_368">
+		<TestDescription>URL scraping test for the cyberleninka website (russian website)</TestDescription>
+		<URL>http://cyberleninka.ru/article/n/analiz-dannyh-slozhnyh-obektov-s-pomoschyu-modifitsirovannogo-algoritma-klasterizatsii</URL>
+		<BibFile>CyberleninkaScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cyberleninka.CyberleninkaScraper</Scraper>
+	</URLTest>
 </test:Tests>
