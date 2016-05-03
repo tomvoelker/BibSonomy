@@ -30,8 +30,9 @@
 								<a href="${relativeUrlGenerator.getEditUrlOfPost(postOfLoggedInUser)}"><fmt:message key="community.warning.edit" /></a>
 							</c:when>
 							<c:otherwise>
-								If you want to view or edit 
-								the publication in your collection, follow <a href="${relativeUrlGenerator.getPostUrl(postOfLoggedInUser)}">this link</a>.
+								<fmt:message key="community.warning.edit">
+									<fmt:param value="${relativeUrlGenerator.getPostUrl(postOfLoggedInUser)}" />
+								</fmt:message>
 							</c:otherwise>
 						</c:choose>
 					</span>
@@ -39,8 +40,7 @@
 				<c:otherwise>
 					<c:if test="${command.context.userLoggedIn}">
 						<span class="community-info">
-							<!-- TODO: i18n TODODZO-->
-							<bs:linkButton href="${relativeUrlGenerator.getCopyUrlOfPost(post) }" size="small" style="success" icon="copy" text="Copy this publication into your collection" />
+							<bs:linkButton href="${relativeUrlGenerator.getCopyUrlOfPost(post) }" size="small" style="success" icon="copy" textKey="${resourceType}.actions.copy.title" />
 						</span>
 					</c:if>
 				</c:otherwise>
