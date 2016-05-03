@@ -51,6 +51,10 @@ public class AappublicationsScraper extends AbstractUrlScraper{
 	private static final String HOST = "pediatrics.aappublications.org";
 	private static final String HTTP = "http://";
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = new LinkedList<Pair<Pattern, Pattern>>();
+	private static Pattern pattern = Pattern.compile("<li class=\"bibtext first\"><a href=\"(.*)\">BibTeX</a></li>");
+	private static final String regex = "@.*?(.*),";
+	private static final Pattern pattern2 = Pattern.compile(regex);
+
 	static {
 		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	}
@@ -61,13 +65,10 @@ public class AappublicationsScraper extends AbstractUrlScraper{
 		try {
 			final String cookie = WebUtils.getCookies(sc.getUrl());
 			final String pageContent = WebUtils.getContentAsString(sc.getUrl(), cookie);
-			Pattern p = Pattern.compile("<li class=\"bibtext first\"><a href=\"(.*)\">BibTeX</a></li>");
-			Matcher m = p.matcher(pageContent);
+			Matcher m = pattern.matcher(pageContent);
 			if(m.find()) {
 				String bibtexResult = WebUtils.getContentAsString(new URL(HTTP + HOST + m.group(1).toString()));
-				final String regex = "@.*?(.*),";
-				final Pattern p2 = Pattern.compile(regex);
-				final Matcher m2 = p2.matcher(bibtexResult);
+				final Matcher m2 = pattern2.matcher(bibtexResult);
 				if(m2.find()) {
 					final String Replacement = m2.group(1).replace(" ", "");
 					bibtexResult = bibtexResult.replaceAll(regex, "@" + Replacement.concat(","));
