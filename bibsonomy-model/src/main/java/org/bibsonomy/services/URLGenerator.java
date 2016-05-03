@@ -122,10 +122,9 @@ public class URLGenerator {
 	private static final String MYSEARCH_PREFIX = "mySearch";
 	private static final String PICTURE_PREFIX = "picture";
 	private static final String PERSON_PREFIX = "person";
-	private static final String PUBLICATION_PREFIX = "bibtex";
+	private static final String PUBLICATION_PREFIX = "publication";
 	private static final String RELEVANTFOR_PREFIX = "relevantfor";
 	private static final String SEARCH_PREFIX = "search";
-	private static final String SHARED_RESOURCE_SEARCH_PREFIX = "sharedResourceSearch";
 	private static final String SETTINGS_PREFIX = "settings";
 	private static final String TAG_PREFIX = "tag";
 	private static final String USER_PREFIX = "user";

@@ -1,4 +1,5 @@
 var REVIEW_INFO_SELECTOR = '#review_info_rating';
+var MAX_DISCUSSION_ITEMS = 5;
 
 $(function() {
 	$('.group-selector .dropdown-menu a').click(function() {
@@ -31,6 +32,31 @@ $(function() {
 		}
 		return false;
 	});
+	
+	var discussionItems = $('.subdiscussion:first>li');
+	if (discussionItems.length > MAX_DISCUSSION_ITEMS) {
+		
+		var items = $(discussionItems).slice(MAX_DISCUSSION_ITEMS - discussionItems.length);
+		var link = $('<a data-visible="false" href="#" class="btn btn-default btn-block">' + getString('discussion.show.older') + '</a>');
+		var listItem = $('<li class="moreless-discussion"></li>');
+		link.click(function() {
+			var visible = Boolean($(this).data('visible'));
+			var items = $('.subdiscussion:first>li:not(.moreless-discussion)').slice(5 - discussionItems.length);
+			var text;
+			if (!visible) {
+				items.show();
+				text = getString('discussion.show.less');
+			} else {
+				items.hide();
+				text = getString('discussion.show.older');
+			}
+			$(this).text(text);
+			$(this).data('visible', !visible);
+			return false;
+		});
+		$('.subdiscussion:first').append(listItem.append(link));
+		items.hide();
+	}
 	
 	$('.editLink').click(editDiscussionItem);
 	

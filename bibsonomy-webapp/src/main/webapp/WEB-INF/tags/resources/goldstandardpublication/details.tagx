@@ -27,6 +27,7 @@
 	<jsp:directive.attribute name="postOfLoggedInUser" type="org.bibsonomy.model.Post" required="false"/>
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
 	<jsp:directive.attribute name="postUserName" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="postIsPublic" type="java.lang.Boolean" required="true"/>
 	
 	<c:set var="goldstandard" value="${post.resource}" />
 	
@@ -163,7 +164,7 @@
 				<!-- TODO: discuss this feature: <discussion:linkBox resource="${post.resource}"/> TODODZO -->
 				
 				<!-- discussion -->
-				<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName="${postUserName}"/>
+				<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName="${postUserName}" postIsPublic="${postIsPublic}" />
 			</div>
 			<!-- citation box -->
 			<h2 class="pub-details" id="export">

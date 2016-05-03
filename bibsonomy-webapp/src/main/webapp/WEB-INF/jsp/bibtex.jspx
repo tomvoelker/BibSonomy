@@ -23,23 +23,6 @@
 	<c:set var="goldstandardPresent" value="${not empty command.goldStandardPublications.list}" />
 	<c:set var="publication" value="${command.bibtex.list[0].resource}" />
 
-	<!-- FIXME: move into body element -->
-	<c:set var="isPublic" value="${false}"/>
-	<c:choose>
-		<c:when test="${goldstandardPresent}">
-			<c:set var="isPublic" value="${true}"/>
-		</c:when>
-		<c:otherwise>
-			<!-- quick fix for discussion page -->
-			<c:set var="discussionBox" value="${true}"/>
-			<c:forEach var="group" items="${command.bibtex.list[0].groups}">
-				<c:if test="${group.name eq 'public'}">
-					<c:set var="isPublic" value="${true}"/>
-				</c:if>
-			</c:forEach>
-		</c:otherwise>
-	</c:choose>
-
 	<c:if test="${goldstandardPresent}">
 		<c:set var="publication" value="${command.goldStandardPublications.list[0].resource}" />
 	</c:if>
@@ -55,7 +38,7 @@
 			noSidebar="${true}">
 		
 		<jsp:attribute name="headerExt">
-			<!-- TODODZO: merge js files -->
+			<!-- TODO TODODZO: merge js files -->
 			<script type="text/javascript" src="${resdir}/javascript/merged/discussion.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/Chart.js/Chart.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/publication.js"><!-- keep me --></script>
@@ -81,41 +64,28 @@
 		
 		<jsp:attribute name="content">
 			<!-- COMMUNITY POST -->
-			<input id="publicInput" name="publicInput" value="${isPublic}" type="hidden" />
+			<c:set var="isPublic" value="${false}"/>
+			<c:choose>
+				<c:when test="${goldstandardPresent}">
+					<c:set var="isPublic" value="${true}"/>
+				</c:when>
+				<c:otherwise>
+					<!-- quick fix for discussion page -->
+					<c:set var="discussionBox" value="${true}"/>
+					<c:forEach var="group" items="${command.bibtex.list[0].groups}">
+						<c:if test="${group.name eq 'public'}">
+							<c:set var="isPublic" value="${true}"/>
+						</c:if>
+					</c:forEach>
+				</c:otherwise>
+			</c:choose>
 			
 			<c:set var="postToShow" value="${command.bibtex.list[0]}" />
 			<c:if test="${goldstandardPresent}">
 				<c:set var="postToShow" value="${command.goldStandardPublications.list[0]}" />
 			</c:if>
 			
-			<goldstandardpublication:details post="${postToShow}" postOfLoggedInUser="${command.postOfLoggedInUser}" loginUser="${command.context.loginUser}" postUserName="${command.postOwner}" postIsPublic=""/>
-		</jsp:attribute>
-		
-		<!--+
-			| TODODZO: remove
-		    | sidebar
-		 	+-->
-		<jsp:attribute name="sidebar">
-			<sidebar:sidebarTagCloudItem requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" />
-
-			<!-- related users -->
-			<c:if test="${not empty command.relatedUserCommand.relatedUsers}">
-				<sidebar:sidebarItem textKey="users">
-					<jsp:attribute name="content">
-						<ul class="tagcloud">
-							<c:forEach var="user" items="${command.relatedUserCommand.relatedUsers}">
-								<li class="${userclass}">
-									<a href="${relativeUrlGenerator.getPublicationUrlByInterHashAndUsername(publication.interHash, fn:escapeXml(user.name))}"><c:out value="${user.name}"/></a>
-									<c:out value=" "/>
-								</li>
-							</c:forEach>
-						</ul> 
-					</jsp:attribute>
-				</sidebar:sidebarItem>
-			</c:if>
-			
-			<!-- copy users -->
-			<resources:metaData command="${command}" />
+			<goldstandardpublication:details post="${postToShow}" postOfLoggedInUser="${command.postOfLoggedInUser}" loginUser="${command.context.loginUser}" postUserName="${command.postOwner}" postIsPublic="${isPublic}"/>
 		</jsp:attribute>
 	</layout:layout>
 </jsp:root>

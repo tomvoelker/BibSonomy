@@ -6,6 +6,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:comment="urn:jsptagdir:/WEB-INF/tags/resources/discussion/comment"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
 	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/resources/discussion/discussionItem"
 	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion">
 	
@@ -13,6 +14,7 @@
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
 	<jsp:directive.attribute name="discussionItems" type="java.util.List" required="false" />
 	<jsp:directive.attribute name="postUserName" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="postIsPublic" type="java.lang.Boolean" required="true"/>
 	
 	<!-- create new review / comment for create review / comment form -->
 	<jsp:useBean id="newDate" class="java.util.Date" />
@@ -31,6 +33,13 @@
 	</c:if>
 	
 	<div class="discussion-all">
+		<c:if test="${not postIsPublic}">
+			<bs:alert style="danger">
+				<jsp:attribute name="alertBody">
+					<fmt:message key="post.resource.discusssion.warning.goldstandard" />
+				</jsp:attribute>
+			</bs:alert>
+		</c:if>
 		<!-- TODO: use spring security tags -->
 		<c:if test="${not fn:contains(resource['class'].simpleName, 'Bookmark') and resource.entrytype=='preprint' and empty resource.discussionItems}">
 			<p class="help-block">
@@ -39,7 +48,7 @@
 		</c:if>
 	
 		<!-- The input forms -->
-		<div id="discussion" data-interhash="${resource.interHash}">
+		<div id="discussion" data-interhash="${resource.interHash}" data-public="${postIsPublic}">
 			<discussionItem:subDiscussionItems discussionItems="${discussionItems}" loginUser="${loginUser}" resource="${resource}" postUserName="${postUserName}" />
 			
 			<!-- TODO: use spring security tags -->
@@ -47,7 +56,7 @@
 				<review:simpleReviewForm resource="${resource}" postUserName="${postUserName}" userName="${loginUser.name}"/>
 			</c:if>
 		</div>
-
+		
 		<!-- TODO: use spring security tags -->
 		<c:choose>
 			<c:when test="${command.context.userLoggedIn}">
