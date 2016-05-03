@@ -41,15 +41,7 @@
         			</c:if>
         		</c:if>
         		
-        		<c:if test="${citation.source=='JABREF'}">
-        			<li>
-						<c:set var="exportUrl" value="${relativeUrlGenerator.getPostUrl(citation, post)}?formatEmbedded=true&amp;items=1" />
-						<a data-toggle="tab" href="#citation_${citation.style}" data-formatUrl="${exportUrl}">
-							${citation.style}
-						</a>
-					</li>
-        		</c:if>
-        		<c:if test="${citation.source=='CSL'}">
+        		<c:if test="${(citation.source=='JABREF') || (citation.source=='CSL')}">
         			<li>
 						<c:set var="exportUrl" value="${relativeUrlGenerator.getPostUrl(citation, post)}?formatEmbedded=true&amp;items=1" />
 						<a data-toggle="tab" href="#citation_${citation.style}" data-formatUrl="${exportUrl}">
@@ -89,12 +81,7 @@
 						</div>
         			</c:if>
         		</c:if>
-        		<c:if test="${citation.source=='JABREF'}">
-        			<div class="tab-pane" id="citation_${citation.style}">
-					<!-- keep -->
-					</div>
-        		</c:if>
-        		<c:if test="${citation.source=='CSL'}">
+        		<c:if test="${(citation.source=='JABREF') || (citation.source=='CSL')}">
         			<div class="tab-pane" id="citation_${citation.style}">
 					<!-- keep -->
 					</div>

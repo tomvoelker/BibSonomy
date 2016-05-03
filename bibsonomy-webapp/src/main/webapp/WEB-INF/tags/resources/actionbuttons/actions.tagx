@@ -169,9 +169,9 @@
 									</li>
 								</c:if>
 							</c:if>
-							<c:if test="${citation.source=='JABREF'}">
+							<c:if test="${(citation.source=='JABREF') || (citation.source=='CSL')}">
         						<li>
-        							<a class="litem" href="${relativeUrlGenerator.getCitationUrlbyIntraHashUserName(citation, post.resource.intraHash, post.user.name)}?formatEmbedded=true" title="${citation.style}">
+        							<a class="litem" href="${relativeUrlGenerator.getPostUrl(citation, post)}?formatEmbedded=true" title="${citation.style}">
         								${citation.style}
         							</a>
         						</li>

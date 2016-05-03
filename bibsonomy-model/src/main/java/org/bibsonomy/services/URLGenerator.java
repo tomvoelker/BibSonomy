@@ -43,6 +43,7 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.FavouriteLayoutSource;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.user.settings.FavouriteLayout;
@@ -1044,8 +1045,10 @@ public class URLGenerator {
 		final Resource resource = post.getResource();
 		if (resource instanceof Bookmark) {
 			return "/layout/" + favl.getStyle().toLowerCase() + "/" + this.getBookmarkUrl(((Bookmark) resource), post.getUser());
+		} else if (favl.getSource() == FavouriteLayoutSource.CSL){
+			return "/csl-layout/" + favl.getStyle().toUpperCase() + this.getPublicationUrl(((BibTex) resource), post.getUser());
 		} else if (resource instanceof BibTex) {
-			return "/layout/" + favl.getStyle().toLowerCase() + "/" + this.getPublicationUrl(((BibTex) resource), post.getUser());
+			return "/layout/" + favl.getStyle().toLowerCase() + this.getPublicationUrl(((BibTex) resource), post.getUser());
 		} else {
 			throw new UnsupportedResourceTypeException();
 		}

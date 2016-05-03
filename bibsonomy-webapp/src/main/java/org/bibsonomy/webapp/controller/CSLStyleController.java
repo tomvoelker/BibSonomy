@@ -26,7 +26,7 @@ public class CSLStyleController implements MinimalisticController<CSLStyleComman
 	 */
 	@Override
 	public View workOn(CSLStyleCommand command) {
-		CSLStyles Style = CSLStyles.valueOf(command.getStyle());
+		CSLStyles Style = CSLStyles.valueOf(command.getStyle().toUpperCase());
 		command.setXml(Style.getXML());
 		return Views.CSL_STYLE;
 	}

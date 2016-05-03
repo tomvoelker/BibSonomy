@@ -20,7 +20,7 @@ public class CSLStyleCommand extends ResourceViewCommand{
 	 * @param style the style to set
 	 */
 	public void setStyle(String style) {
-		this.style = style;
+		this.style = style.toUpperCase();
 	}
 
 	/**
