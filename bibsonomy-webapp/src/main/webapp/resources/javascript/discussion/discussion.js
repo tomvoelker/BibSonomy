@@ -64,7 +64,7 @@ $(function() {
 	
 	$('.reply').click(showReplyForm);
 	
-	if ($('#discussion li.review').length > 0) {
+	if ($('#discussion #ownReview').length > 0) {
 		$('.createreview').hide();
 	}
 	
