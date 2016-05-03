@@ -24,11 +24,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.scraper.url.kde.osti;
+package org.bibsonomy.scraper.url.kde.elsevier;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,75 +36,61 @@ import java.util.regex.Pattern;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
+import org.bibsonomy.util.WebUtils;
 
-/**
+/** 
  * @author Mohammed Abed
  */
-public class OstiScraper extends GenericBibTeXURLScraper {
+public class ElsevierScraper extends AbstractUrlScraper{
 	
-	private static final String SITE_NAME = "U.S. Departement of energy - Office of Scientific and technical information";
-	private static final String SITE_URL = "http://osti.gov";
+	private static final String SITE_NAME = "Elsevier";
+	private static final String SITE_URL = "http://www.elsevier.es";
+	private static final String HOST = "elsevier.es";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
-	
-	private static final Pattern PATTERN_GETTING_DOWNLOAD_PATH = Pattern.compile("(.*/\\d+)");
-	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "osti.gov"), AbstractUrlScraper.EMPTY_PATTERN));
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#retrieveCookiesFromSite()
-	 */
+	private static final Pattern DOWNLOAD_URL = Pattern.compile("<li class=\"rif\" ><a href='(.*)' class");
+	private static final RisToBibtexConverter converter = new RisToBibtexConverter();
+	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
+    static {
+    	patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
+    }
+        
 	@Override
-	protected boolean retrieveCookiesFromSite() {
-		return true;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL)
-	 */
-	@Override
-	protected String getDownloadURL(URL url) throws ScrapingException, IOException {
-		final Matcher m = PATTERN_GETTING_DOWNLOAD_PATH.matcher(url.toString());
-		if (m.find()) {
-			return m.group(1) + "/cite/bibtex";
+	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+		
+		try {
+			final String cookie = WebUtils.getCookies(sc.getUrl());
+			final String pageContent = WebUtils.getContentAsString(sc.getUrl(),cookie);
+			final Matcher m = DOWNLOAD_URL.matcher(pageContent);
+			if (m.find()){ 
+				final String ris = WebUtils.getContentAsString(new URL(SITE_URL + m.group(1)), cookie);
+				final String bibtexResult = converter.toBibtex(ris);
+				if(bibtexResult != null) {
+					sc.setBibtexResult(bibtexResult);
+					return true;
+				}
+			}
+		} catch (IOException e) {
+			throw new ScrapingException(e);
 		}
-		return null;
+		return false;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
-	 */
-	@Override
-	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
-		return removeHTML(bibtex);
-	}
-	
-	/*
-	 * clean the bibtex from html code
-	 */
-	private static String removeHTML(String bibtex) {
-		String bibtexResult = bibtex.replace("  <div class=\"csl-entry\"> ", "");
-		bibtexResult.replace("</div>", "");
-		return bibtexResult;
+	public String getInfo() {
+		return INFO;
 	}
 	
 	@Override
+	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
+		return patterns; 
+	}
+
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
-	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
-	}
-
-	@Override
-	public String getInfo() {
-		return INFO;
-	}
-
-	@Override
-	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
-		return PATTERNS;
 	}
 }

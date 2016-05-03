@@ -24,7 +24,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.scraper.url.kde.elsevierhealth;
+package org.bibsonomy.scraper.url.kde.elsevier;
 
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
@@ -32,19 +32,24 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * Scraper URL test #168 for Elsevierhealth Scraper  
- * @author ccl
- *
+ * @author Mohammed Abed
  */
 @Category(RemoteTest.class)
-public class ElsevierhealthScraperTest {
+public class ElsevierScraperTest {
 	
 	/**
-	 * starts URL test with id url_168
+	 * starts URL test with id url_365
 	 */
 	@Test
 	public void urlTestRun1(){
-		UnitTestRunner.runSingleTest("url_168");
+		UnitTestRunner.runSingleTest("url_365");
 	}
 	
+	/**
+	 * starts URL test with id url_366
+	 */
+	@Test
+	public void urlTestRun2(){
+		UnitTestRunner.runSingleTest("url_366");
+	}
 }
