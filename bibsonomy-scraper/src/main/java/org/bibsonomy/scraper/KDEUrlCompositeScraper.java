@@ -66,6 +66,7 @@ import org.bibsonomy.scraper.url.kde.dblp.DBLPScraper;
 import org.bibsonomy.scraper.url.kde.degruyter.DeGruyterScraper;
 import org.bibsonomy.scraper.url.kde.dlib.DLibScraper;
 import org.bibsonomy.scraper.url.kde.editlib.EditLibScraper;
+import org.bibsonomy.scraper.url.kde.elsevier.ElsevierScraper;
 import org.bibsonomy.scraper.url.kde.elsevierhealth.ElsevierhealthScraper;
 import org.bibsonomy.scraper.url.kde.eric.EricScraper;
 import org.bibsonomy.scraper.url.kde.faseb.FASEBJournalScraper;
@@ -99,6 +100,7 @@ import org.bibsonomy.scraper.url.kde.karger.KargerScraper;
 import org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper;
 import org.bibsonomy.scraper.url.kde.karlsruhe.BibliographyScraper;
 import org.bibsonomy.scraper.url.kde.karlsruhe.UBKAScraper;
+import org.bibsonomy.scraper.url.kde.lccnloc.LccnLocScraper;
 import org.bibsonomy.scraper.url.kde.librarything.LibrarythingScraper;
 import org.bibsonomy.scraper.url.kde.liebert.LiebertScraper;
 import org.bibsonomy.scraper.url.kde.mathscinet.MathSciNetScraper;
@@ -309,6 +311,8 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new ThiemeConnectScraper());
 		addScraper(new JamaNetScraper());
 		addScraper(new ProjectEuclidScraper());
+		addScraper(new LccnLocScraper());
+		addScraper(new ElsevierScraper());
 		//addScraper(new AkademiaiScraper()); error = 404
 	}
 

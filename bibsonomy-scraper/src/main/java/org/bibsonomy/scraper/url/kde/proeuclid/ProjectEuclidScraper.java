@@ -51,6 +51,7 @@ public class ProjectEuclidScraper extends AbstractUrlScraper{
 	private static final String HOST = "projecteuclid.org";
 	private static final String HTTP = "http://";
 	private static final String DOWNLOAD_URL = HTTP + HOST + "/export_citations";
+	private static final Pattern pattern = Pattern.compile(HOST + "/" + "(.*)$");
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = new LinkedList<Pair<Pattern, Pattern>>();
 	static {
 		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ HOST), AbstractUrlScraper.EMPTY_PATTERN));
@@ -58,12 +59,12 @@ public class ProjectEuclidScraper extends AbstractUrlScraper{
 	
 	@Override
 	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
-		final Pattern p = Pattern.compile(HOST + "/" + "(.*)$");
-		Matcher m = p.matcher(scrapingContext.getUrl().toString());
+		
+		Matcher m = pattern.matcher(scrapingContext.getUrl().toString());
 		if(m.find()) {
 			try {
 				final String postContent = URLEncoder.encode(m.group(1),"UTF-8");
-				String bibtexResult = WebUtils.getPostContentAsString(new URL(DOWNLOAD_URL), "&format=bibtex&delivery=browser&address=&h=" + postContent);
+				final String bibtexResult = WebUtils.getPostContentAsString(new URL(DOWNLOAD_URL), "&format=bibtex&delivery=browser&address=&h=" + postContent);
 				scrapingContext.setBibtexResult(bibtexResult);
 			} catch (IOException e) {
 				throw new ScrapingException(e);
