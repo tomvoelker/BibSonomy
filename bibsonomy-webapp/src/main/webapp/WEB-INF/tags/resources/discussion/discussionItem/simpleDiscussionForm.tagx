@@ -22,7 +22,7 @@
 	<c:if test="${not empty discussionItem}">
 		<c:set var="action" value="update" />
 	</c:if>
-	<form action="/ajax/${discussionItemClass}s" method="post" class="simple-comment-form ${action}${discussionItemClass}">
+	<form action="/ajax/${discussionItemClass}s" method="post" class="simple-${discussionItemClass}-form ${action}${discussionItemClass}">
 		<c:if test="${not empty discussionItem}">
 			<input type="hidden" value="PUT" name="_method" />
 		</c:if>

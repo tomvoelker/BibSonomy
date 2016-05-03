@@ -49,12 +49,12 @@
 	
 		<!-- The input forms -->
 		<div id="discussion" data-interhash="${resource.interHash}" data-public="${postIsPublic}">
-			<discussionItem:subDiscussionItems discussionItems="${discussionItems}" loginUser="${loginUser}" resource="${resource}" postUserName="${postUserName}" />
-			
 			<!-- TODO: use spring security tags -->
 			<c:if test="${command.context.userLoggedIn}">
 				<review:simpleReviewForm resource="${resource}" postUserName="${postUserName}" userName="${loginUser.name}"/>
 			</c:if>
+	
+			<discussionItem:subDiscussionItems discussionItems="${discussionItems}" loginUser="${loginUser}" resource="${resource}" postUserName="${postUserName}" />
 		</div>
 		
 		<!-- TODO: use spring security tags -->

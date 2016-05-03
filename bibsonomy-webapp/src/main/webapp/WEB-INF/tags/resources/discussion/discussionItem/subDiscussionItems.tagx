@@ -28,6 +28,13 @@
 	</c:if>
 	
 	<ul class="media-list subdiscussion" style="${style}">
+	<c:if test="${not hideCommentsForm and not empty loginUser.name}">
+		<li class="form">
+			<comment:simpleCommentForm userName="" resource="${resource}" parentItem="${parentItem}" postUserName="${postUserName}" />
+		</li>
+	</c:if>
+	
+	
 	<c:if test="${not empty discussionItems}">
 		<c:forEach var="discussionItem" items="${discussionItems}">
 			<c:set var="clazz" value="${fn:toLowerCase(discussionItem['class'].simpleName)}" />
@@ -80,10 +87,5 @@
 			</c:choose>
 		</c:forEach>
 	</c:if>
-		<c:if test="${not hideCommentsForm and not empty loginUser.name}">
-			<li class="form">
-				<comment:simpleCommentForm userName="" resource="${resource}" parentItem="${parentItem}" postUserName="${postUserName}" />
-			</li>
-		</c:if>
 	</ul>
 </jsp:root>

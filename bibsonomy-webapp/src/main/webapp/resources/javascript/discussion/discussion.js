@@ -54,7 +54,7 @@ $(function() {
 			$(this).data('visible', !visible);
 			return false;
 		});
-		$('.subdiscussion:first>li.form').before(listItem.append(link));
+		$('.subdiscussion:first>li:last').after(listItem.append(link));
 		items.hide();
 	}
 	
@@ -184,10 +184,10 @@ function createReview() {
 			
 			var reviewTemplate = $('#reviewTemplate').clone();
 			var text = form.find('textarea[name=discussionItem\\.text]').val();
-			form.parent().find('ul:first').prepend(reviewTemplate);
+			form.parent().find('ul.subdiscussion:first>li.form').after(reviewTemplate);
 			setupActions(reviewTemplate, text, data.hash);
 			reviewTemplate.show();
-			var ratingInput = reviewTemplate.find('input.reviewRating');
+			var ratingInput = reviewTemplate.find('input.reviewRating:first');
 			ratingInput.val(rating);
 			ratingInput.rating({
 				min : 0,
@@ -202,15 +202,6 @@ function createReview() {
 			
 			reviewTemplate.find('div.rating').data('rating', rating);
 			reviewTemplate.attr('id', 'ownReview');
-			$(window).scrollTo(reviewTemplate, {
-				offset: -15,
-				onAfter: function() {
-							requestAnimationFrame(function() {
-								reviewTemplate.effect("highlight", {}, 2500);
-								
-							});
-						}
-			});
 			
 			// update review count and distribution
 			var currentReviewCount = getReviewCount();
@@ -225,7 +216,7 @@ function createReview() {
 			$('[property=ratingAverage]').text(avg);
 			
 			plotRatingDistribution();
-			
+			reviewTemplate.effect("highlight", {}, 2500);
 			form.hide();
 		},
 		error:		function(jqXHR, data, errorThrown) {
@@ -247,24 +238,24 @@ function createComment() {
 			var textfield = form.find('textarea[name=discussionItem\\.text]');
 			var text = textfield.val();
 			
+			var parentHash = form.find('input[name=discussionItem\\.parentHash]');
+			
 			var commentTemplate = $('#commentTemplate').clone();
-			form.parent().parent().prepend(commentTemplate);
+			
+			if (parentHash.length > 0) {
+				form.parent().parent().append(commentTemplate);
+			} else {
+				form.parent().after(commentTemplate);
+			}
+			
 			commentTemplate.show();
 			setupActions(commentTemplate, text, data.hash);
 			
-			$(window).scrollTo(commentTemplate, {
-				offset: -15,
-				onAfter: function() {
-							requestAnimationFrame(function() {
-								commentTemplate.effect("highlight", {}, 2500);
-								
-							});
-						}
-			});
 			var textarea = commentTemplate.find('form.updatecomment').find('textarea');
 			textarea.val(text);
 			autosize(textarea);
 			// reset form
+			commentTemplate.effect("highlight", {}, 2500);
 			textfield.val('');
 		}
 	});
