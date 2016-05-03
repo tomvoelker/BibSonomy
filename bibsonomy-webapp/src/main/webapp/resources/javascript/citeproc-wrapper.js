@@ -3,7 +3,7 @@ $(function() {
 	var url = container.data('url');
 	var format = container.data('style');
 	
-	
+	//getting source XML
 	$.ajax({
 		type: "get",
 	    url: "/csl-style/" + format,
@@ -16,8 +16,12 @@ $(function() {
 	    	xml = $.trim(xml);
 	    	
 	    	//xml is now a string with given style.csl as content
+	    	
+	    	
 	    	//alert(xml);
 	    	 
+	    	
+	    	//building CSL based on XML
 	    	$.ajax({
 				url: url,
 				success: function(data) {
