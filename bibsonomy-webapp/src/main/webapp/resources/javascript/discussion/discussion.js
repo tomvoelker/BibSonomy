@@ -89,6 +89,62 @@ $(function() {
 		return false;
 	});
 	
+	$('.updatereview').hide().submit(function() {
+		var form = $(this);
+		var data = form.serialize();
+		
+		var item = form.parent();
+		var ratingDiv = item.find('div.rating');
+		var oldRating = ratingDiv.data('rating');
+		
+		var rating = form.find('input[name=discussionItem\\.rating]').val();
+		if (rating == 0) {
+			if (!confirm(getString("post.resource.review.rating0"))) {
+				return false;
+			}
+		}
+		
+		$.ajax({
+			url: '/ajax/reviews',
+			method: 'POST',
+			data: data,
+			success: function(data) {
+				var reload = (data.reload);
+				if (reload == "true") {
+					window.location.reload();
+					return;
+				}
+				
+				var text = form.find('textarea[name=discussionItem\\.text]').val();
+				item.find('.text:first').text(text);
+				
+				var ratingInput = item.find('input.reviewRating');
+				
+				ratingInput.rating('update', rating);
+				
+				ratingDiv.data('rating', rating);
+				
+				// update review count and distribution
+				var currentReviewCount = getReviewCount();
+				var currentAvg = getAvg();
+				var ratingSum = currentAvg * currentReviewCount;
+				ratingSum += rating - oldRating;
+				var avg = ratingSum / currentReviewCount;
+				$('#averageRating').rating('update', avg);
+				$('[property=ratingAverage]').text(avg);
+				
+				plotRatingDistribution();
+				
+				form.hide();
+			},
+			error:		function(jqXHR, data, errorThrown) {
+				handleAjaxErrors(reviewForm, jQuery.parseJSON(jqXHR.responseText));
+			},
+		});
+		
+		return false;
+	});
+	
 	$('.createreview').submit(createReview);
 	
 	$('.createcomment').submit(createComment);
@@ -287,7 +343,10 @@ function deleteDiscussionItem() {
 }
 
 function editDiscussionItem() {
-	$(this).parents('div.actions').siblings('form').toggle();
+	var form = $(this).parents('div.actions').siblings('form');
+	form.toggle();
+	var textarea = form.find('textarea');
+	textarea.putCursorAtEnd();
 }
 
 function showReplyForm() {

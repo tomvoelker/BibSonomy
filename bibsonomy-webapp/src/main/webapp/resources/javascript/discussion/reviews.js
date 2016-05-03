@@ -53,7 +53,8 @@ function getReviewCount() {
 }
 
 function getAvg() {
-	return Number($(RATING_AVG_SELECTOR).text().replace(',', '.'));
+	var avgText = $(RATING_AVG_SELECTOR).text().replace(',', '.');
+	return parseFloat(avgText);
 }
 
 function updateRatingCounter(element) {

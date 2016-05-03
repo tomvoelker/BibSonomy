@@ -41,12 +41,12 @@
 						<!-- check if user has reviewed this resource -->
 						<c:when test="${discussionItem.user.name eq command.context.loginUser.name}">
 							<li id="ownReview" class="${clazz} media">
-								<review:review review="${discussionItem}" resource="${resource}" loginUser="${loginUser}" />
+								<review:review review="${discussionItem}" resource="${resource}" loginUser="${loginUser}" postUserName="${postUserName}"/>
 							</li>
 						</c:when>
 						<c:otherwise>
 							<li class="${clazz} media">
-								<review:review review="${discussionItem}" resource="${resource}" loginUser="${loginUser}" />
+								<review:review review="${discussionItem}" resource="${resource}" loginUser="${loginUser}" postUserName="${postUserName}" />
 							</li>
 						</c:otherwise>
 					</c:choose>

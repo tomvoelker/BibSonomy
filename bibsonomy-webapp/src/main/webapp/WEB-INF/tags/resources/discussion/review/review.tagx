@@ -10,6 +10,7 @@
 	<jsp:directive.attribute name="review" type="org.bibsonomy.model.Review" required="true" />
 	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
+	<jsp:directive.attribute name="postUserName" type="java.lang.String" required="true"/>
 	
 	<c:set var="ownReview" value="${loginUser.name eq review.user.name }" />
 	
@@ -25,10 +26,10 @@
 			<div class="review text" itemprop="reviewBody">
 				<mtl:publicationReference text="${fn:escapeXml(review.text)}" />
 			</div>
-			<!-- TODODZO: remove -->
+		</jsp:attribute>
+		<jsp:attribute name="editor">
 			<c:if test="${ownReview}">
-				<!-- This form is only displayed where a goldstandard post exists. Therefore the postUserName is the goldStandardPostUserName "" -->
-				
+				<review:simpleReviewForm review="${review}" postUserName="${postUserName}" userName="${loginUser.name}" resource="${resource}" />
 			</c:if>
 		</jsp:attribute>
 	</discussionItem:discussionItem>

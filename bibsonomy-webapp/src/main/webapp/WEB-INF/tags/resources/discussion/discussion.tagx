@@ -69,7 +69,7 @@
 						</li>
 						<!-- create li, div structure for new review -->
 						<li id="reviewTemplate" class="media review">
-							<review:review review="${newReview}" resource="${resource}" loginUser="${loginUser}" />
+							<review:review review="${newReview}" resource="${resource}" loginUser="${loginUser}" postUserName="${postUserName}"/>
 						</li>
 					</ul>
 				</div>

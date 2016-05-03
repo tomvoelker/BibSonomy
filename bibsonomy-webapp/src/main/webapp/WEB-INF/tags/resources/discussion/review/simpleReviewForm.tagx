@@ -6,11 +6,12 @@
 	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/resources/discussion/discussionItem">
 	
+	<jsp:directive.attribute name="review" type="org.bibsonomy.model.Review" required="false" />
 	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
 	<jsp:directive.attribute name="userName" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="postUserName" type="java.lang.String" required="true" />
 	
-	<discussionItem:simpleDiscussionForm rows="3" postUserName="${postUserName}" userName="${userName}" resource="${resource}" discussionItemClass="review">
+	<discussionItem:simpleDiscussionForm rows="3" discussionItem="${review}" postUserName="${postUserName}" userName="${userName}" resource="${resource}" discussionItemClass="review">
 		<jsp:attribute name="additionalInputs">
 			<div class="row">
 				<div class="col-md-3">
