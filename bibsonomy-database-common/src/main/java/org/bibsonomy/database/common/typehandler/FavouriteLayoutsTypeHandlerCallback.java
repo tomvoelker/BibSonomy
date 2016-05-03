@@ -94,7 +94,7 @@ public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCall
 			}
 			returner.add(favl);
 		}
-		Collections.sort(returner, new favlsComparator());
+		//Collections.sort(returner, new favlsComparator());
 		return returner;
 	}
 }

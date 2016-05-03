@@ -22,8 +22,11 @@ foreach my $file (@styleFiles) {
     $varname = $file;
     $varname =~ s/.csl//;
     $varname =~ s/.*styles\///;
+	
 	$varnameuc = uc$varname;
 	$varnameuc = $varnameuc =~ s/-/_/gr;
+	
+	$varname = $varname =~ s/-/ /gr;
     print "create style: ".$varname;
 	
 	foreach $_ (@input) {
