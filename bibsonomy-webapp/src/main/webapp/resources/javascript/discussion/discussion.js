@@ -33,28 +33,28 @@ $(function() {
 		return false;
 	});
 	
-	var discussionItems = $('.subdiscussion:first>li');
+	var discussionItems = $('.subdiscussion:first>li:not(.form)');
 	if (discussionItems.length > MAX_DISCUSSION_ITEMS) {
 		
 		var items = $(discussionItems).slice(MAX_DISCUSSION_ITEMS - discussionItems.length);
-		var link = $('<a data-visible="false" href="#" class="btn btn-default btn-block">' + getString('discussion.show.older') + '</a>');
+		var link = $('<a data-visible="false" href="#" class="btn btn-default btn-block">' + getString('discussion.show.more') + '</a>');
 		var listItem = $('<li class="moreless-discussion"></li>');
 		link.click(function() {
 			var visible = Boolean($(this).data('visible'));
-			var items = $('.subdiscussion:first>li:not(.moreless-discussion)').slice(5 - discussionItems.length);
+			var items = $('.subdiscussion:first>li:not(.moreless-discussion):not(.form)').slice(5 - discussionItems.length);
 			var text;
 			if (!visible) {
 				items.show();
 				text = getString('discussion.show.less');
 			} else {
 				items.hide();
-				text = getString('discussion.show.older');
+				text = getString('discussion.show.more');
 			}
 			$(this).text(text);
 			$(this).data('visible', !visible);
 			return false;
 		});
-		$('.subdiscussion:first').append(listItem.append(link));
+		$('.subdiscussion:first>li.form').before(listItem.append(link));
 		items.hide();
 	}
 	
