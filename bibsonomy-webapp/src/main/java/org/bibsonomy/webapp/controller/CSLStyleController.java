@@ -1,6 +1,8 @@
 package org.bibsonomy.webapp.controller;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 
 import org.bibsonomy.common.enums.CSLStyles;
 import org.bibsonomy.webapp.command.CSLStyleCommand;
@@ -39,7 +41,11 @@ public class CSLStyleController implements MinimalisticController<CSLStyleComman
 
 		CSLStyles Style = null;
 		if (command.getStyle() == null || command.getStyle().isEmpty()) {
-			command.setXml(readStyles());
+			try {
+				command.setXml(readStyles());
+			} catch (IOException e) {
+				command.setXml("sumtin went holibly wlong");
+			}
 			return Views.CSL_STYLE; 
 		}
 		
@@ -54,14 +60,9 @@ public class CSLStyleController implements MinimalisticController<CSLStyleComman
 		command.setXml(Style.getXML());
 		return Views.CSL_STYLE;
 	}
-	private String readStyles(){
-		final String directory = "/bibsonomy-webapp/src/main/webapp/resources/styles";
-		File f = new File(directory);
-		if (f.exists()) {
-		   return "gefunden";
+	private String readStyles() throws IOException{
+		final String directory = "org/bibsonomy/layout/csl/academy-of-management-review.csl";
+		URL bla = this.getClass().getClassLoader().getResource(directory);
+		return bla.getPath();
 		}
-		//String basePath = new File("").getAbsolutePath();
-	    
-		return "nicht gefunden :(";
-	}
 }
