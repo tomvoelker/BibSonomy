@@ -8,7 +8,7 @@ package org.bibsonomy.webapp.command;
 public class CSLStyleCommand extends ResourceViewCommand{
 	private String xml;
 	private String style;
-
+	
 	/**
 	 * @return the style
 	 */
