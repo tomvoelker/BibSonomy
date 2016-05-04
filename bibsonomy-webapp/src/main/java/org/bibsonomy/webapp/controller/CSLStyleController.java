@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.controller;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URL;
 
@@ -60,9 +61,23 @@ public class CSLStyleController implements MinimalisticController<CSLStyleComman
 		command.setXml(Style.getXML());
 		return Views.CSL_STYLE;
 	}
+	
 	private String readStyles() throws IOException{
-		final String directory = "org/bibsonomy/layout/csl/academy-of-management-review.csl";
-		URL bla = this.getClass().getClassLoader().getResource(directory);
-		return bla.getPath();
+		final String directory = "org/bibsonomy/layout/csl/";
+		final String cslFolderDirec = this.getClass().getClassLoader().getResource(directory).getPath();
+		final File CSLFolder = new File(cslFolderDirec);
+		String returner = "";
+		
+		//only reading .csl files
+		FilenameFilter CSLFilter = new FilenameFilter(){
+			@Override
+			public boolean accept(File dir, String name) {
+		        return name.toLowerCase().endsWith(".csl");
+		    }
+		};
+		
+		for(File f : CSLFolder.listFiles(CSLFilter)){
+			
 		}
+	}
 }
