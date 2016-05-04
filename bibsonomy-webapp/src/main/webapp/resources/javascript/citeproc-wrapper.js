@@ -1,5 +1,5 @@
 $(function() {
-	var container = $('#csl-container');
+	var container = $('#csl-container-' + layoutToUse);
 	var url = container.data('url');
 	var format = container.data('style');
 	
@@ -22,6 +22,7 @@ $(function() {
 	    	 
 	    	
 	    	//building CSL based on XML
+	    	//kept this as is
 	    	$.ajax({
 				url: url,
 				success: function(data) {

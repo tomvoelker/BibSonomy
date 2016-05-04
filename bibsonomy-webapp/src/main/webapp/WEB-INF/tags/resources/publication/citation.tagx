@@ -83,7 +83,7 @@
         		</c:if>
         		<c:if test="${(citation.source=='JABREF') || (citation.source=='CSL')}">
         			<div class="tab-pane" id="citation_${citation.style}">
-					<!-- keep -->
+						<!-- keep me -->
 					</div>
         		</c:if>
         	</c:forEach>			
