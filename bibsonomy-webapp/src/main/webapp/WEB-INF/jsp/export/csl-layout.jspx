@@ -36,7 +36,7 @@
 		</head>
 		<body>
 			<div id="csl-container-${command.layout}" data-url="/csl/${fn:escapeXml(requPath)}" data-style="${command.layout}">
-				<!-- rendered by javascript -->
+				<!-- rendered by javascript / each div has unique ID-->
 			</div>
 		</body>
 	</html>

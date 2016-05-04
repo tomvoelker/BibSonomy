@@ -30,7 +30,9 @@
 	<div class="citation-box">
 		<ul class="nav nav-tabs">
 			<c:forEach items="${command.context.loginUser.settings.favouriteLayouts}" var="citation">
-        		<c:if test="${citation.source=='SIMPLE'}">
+        		<!-- checks whether the source is "simple" which gets a special treatment,
+        				or JABREF / CSL which will be assigned a source URL by generator-->
+          		<c:if test="${citation.source=='SIMPLE'}">
         			<c:if test="${citation.style=='BibTeX'}">
         				<li>
         				<a data-toggle="tab" href="#citation_BibTeX">BibTeX</a></li>
@@ -40,7 +42,6 @@
         				<a data-toggle="tab" href="#citation_Endnote">Endnote</a></li>
         			</c:if>
         		</c:if>
-        		
         		<c:if test="${(citation.source=='JABREF') || (citation.source=='CSL')}">
         			<li>
 						<c:set var="exportUrl" value="${relativeUrlGenerator.getPostUrl(citation, post)}?formatEmbedded=true&amp;items=1" />

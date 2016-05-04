@@ -139,7 +139,9 @@
 						
 						<li class="divider"><!--  --></li>
 						
-						<!-- BibTeX or Endnote or JABREF-->
+						<!-- BibTeX or Endnote or JABREF or CSL-->
+						<!-- checks whether the source is "simple" which gets a special treatment,
+        						or JABREF / CSL which will be assigned a source URL by generator-->
 						<c:forEach items="${command.context.loginUser.settings.favouriteLayouts}" var="citation">
         					<c:if test="${citation.source=='SIMPLE'}">
         						<c:if test="${citation.style=='BibTeX'}">
