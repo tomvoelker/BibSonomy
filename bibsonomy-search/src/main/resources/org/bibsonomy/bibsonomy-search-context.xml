@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/util
+						http://www.springframework.org/schema/util/spring-util.xsd">
+						
+	<bean id="searchBookmarkClass" class="java.lang.Class" factory-method="forName">
+		<constructor-arg value="org.bibsonomy.model.Bookmark" />
+	</bean>
+
+	<bean id="searchPublicationClass" class="java.lang.Class" factory-method="forName">
+		<constructor-arg value="org.bibsonomy.model.BibTex" />
+	</bean>
+
+	<bean id="searchGoldStandardPublicationClass" class="java.lang.Class" factory-method="forName">
+		<constructor-arg value="org.bibsonomy.model.GoldStandardPublication" />
+	</bean>
+	
+	<bean id="searchSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="dataSource" ref="searchDataSource" />
+		<property name="configLocation" value="classpath:SqlMapConfig_search.xml" />
+		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
+	</bean>
+
+	<bean id="searchSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
+		<property name="client" ref="searchSqlMapClient" />
+	</bean>
+
+	<bean id="searchDBLogic" class="org.bibsonomy.search.management.database.SearchDBLogic" abstract="true">
+		<property name="sessionFactory" ref="searchSessionFactory" />
+	</bean>
+	
+	<bean id="bookmarkSearchDBLogic" class="org.bibsonomy.search.management.database.SearchDBLogic" parent="searchDBLogic">
+		<property name="resourceClass" ref="searchBookmarkClass" />
+	</bean>
+	
+	<bean id="publicationSearchDBLogic" class="org.bibsonomy.search.management.database.SearchDBLogic" parent="searchDBLogic">
+		<property name="resourceClass" ref="searchPublicationClass" />
+	</bean>
+	
+	<bean id="searchGoldStandardPublicationLogic" class="org.bibsonomy.search.management.database.SearchGoldStandardLogic" parent="searchDBLogic">
+		<property name="resourceClass" ref="searchGoldStandardPublicationClass" />
+	</bean>
+	
+	<bean id="searchDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" parent="basicDataSource">
+		<property name="driverClassName" value="${database.search.driverClassName}" />
+		<property name="url" value="${database.search.url}" />
+		<property name="username" value="${database.search.username}" />
+		<property name="password" value="${database.search.password}" />
+		<property name="maxIdle" value="${database.search.maxIdle}" />
+		<property name="maxActive" value="${database.search.maxActive}" />
+		<property name="maxWait" value="${database.search.maxWait}" />
+		<property name="removeAbandoned" value="${database.search.removeAbandoned}" />
+		<property name="removeAbandonedTimeout" value="${database.search.removeAbandonedTimeout}" />
+	</bean>
+	
+	<bean id="searchInfoLogic" class="org.bibsonomy.search.SearchInfoDBLogic">
+		<property name="sessionFactory" ref="searchSessionFactory" />
+	</bean>
+	
+	<bean id="fileContentExtractorService" class="org.bibsonomy.search.index.utils.FileContentExtractorService">
+		<property name="extractors">
+			<list>
+				<bean class="org.bibsonomy.search.index.utils.extractor.PlainTextExtractor" />
+				<bean class="org.bibsonomy.search.index.utils.extractor.PDFExtractor" />
+			</list>
+		</property>
+		<property name="fileLogic" ref="fileLogic" />
+	</bean>
+</beans>

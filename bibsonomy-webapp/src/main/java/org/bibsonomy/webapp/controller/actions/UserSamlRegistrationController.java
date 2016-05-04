@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -27,6 +27,7 @@
 package org.bibsonomy.webapp.controller.actions;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.user.remote.RemoteUserId;
@@ -35,26 +36,21 @@ import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.webapp.command.actions.SamlUserIDRegistrationCommand;
 import org.bibsonomy.webapp.command.actions.UserIDRegistrationCommand;
 import org.bibsonomy.webapp.util.Validator;
-import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.authentication.SamlCredAuthToken;
+import org.bibsonomy.webapp.util.spring.security.exceptionmapper.SamlUsernameNotFoundExceptionMapper;
 import org.bibsonomy.webapp.util.spring.security.saml.SamlAuthenticationTool;
-import org.bibsonomy.webapp.util.spring.security.userattributemapping.SamlUserAttributeMapping;
 import org.bibsonomy.webapp.validation.UserSamlRegistrationValidator;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.saml.SAMLCredential;
-import org.springframework.validation.Errors;
 
 /**
  * This controller handles the registration of users via SAML (Shibboleth)
  * 
  * @author jensi
  */
-public class UserSamlRegistrationController extends AbstractUserIDRegistrationController {
+public class UserSamlRegistrationController extends AbstractUserIDRegistrationController<SAMLCredential> {
 	
-	private SamlUserAttributeMapping attributeExtractor;
-	
+	private List<String> requiredFields;
 	
 	@Override
 	protected String getLoginNotice() {
@@ -78,18 +74,6 @@ public class UserSamlRegistrationController extends AbstractUserIDRegistrationCo
 	}
 	
 	@Override
-	protected void validate(Errors errors, UserIDRegistrationCommand command, User userToBeRegistered) {
-		SamlRemoteUserId authRId = attributeExtractor.getRemoteUserId(VuFindUserInitController.getSamlCreds());
-		org.bibsonomy.util.ValidationUtils.assertNotNull(authRId);
-		for (RemoteUserId rId : userToBeRegistered.getRemoteUserIds()) {
-			if (rId.equals(authRId) == false) {
-				errors.rejectValue("samlId", "error.registration.samlId.missmatch");
-				break;
-			}
-		}
-	}
-	
-	@Override
 	protected void setAuthentication(User registerUser, User user) {
 		for (RemoteUserId remoteId : user.getRemoteUserIds()) {
 			registerUser.setRemoteUserId(remoteId);
@@ -100,35 +84,30 @@ public class UserSamlRegistrationController extends AbstractUserIDRegistrationCo
 		 */
 		registerUser.setPassword(UserUtils.generateRandomPassword());
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.controller.actions.AbstractUserIDRegistrationController#getAddtionsInfoSessionKey()
+	 */
+	@Override
+	protected String getAddtionsInfoSessionKey() {
+		return SamlUsernameNotFoundExceptionMapper.ATTRIBUTE_SAML_CREDS;
+	}
 
 	@Override
-	protected Authentication getAuthentication(User user) {
-		//TODO: put saml credentials in new authtokentype
-		//then create authenticationprovider who does something like (username maybe taken from samlcreds):
-		//	final UserDetails user = this.service.loadUserByUsername(username);
-		//	authentication = new SessionAuthenticationToken(user, user.getAuthorities());
-		
-		return null;
-	}
-	
-	@Override
-	protected View logOn(User user) {
-		final SAMLCredential creds = VuFindUserInitController.getSamlCreds();
-		final Authentication auth = getAuthenticationManager().authenticate(new SamlCredAuthToken(creds));
-		SecurityContextHolder.getContext().setAuthentication(auth);
-		return new ExtendedRedirectView("/register_saml_success");
+	protected Authentication getAuthentication(final User user, final SAMLCredential creds) {
+		return new SamlCredAuthToken(creds);
 	}
 	
 	@Override
 	public Validator<UserIDRegistrationCommand> getValidator() {
-		return new UserSamlRegistrationValidator(new SamlAuthenticationTool(getRequestLogic(), Arrays.asList("step")), getRequestLogic());
+		return new UserSamlRegistrationValidator(new SamlAuthenticationTool(getRequestLogic(), Arrays.asList("step")), getRequestLogic(), this.requiredFields);
 	}
 
 	/**
-	 * @param attributeExtractor the attributeExtractor to set
+	 * @param requiredFields the requiredFields to set
 	 */
-	public void setAttributeExtractor(SamlUserAttributeMapping attributeExtractor) {
-		this.attributeExtractor = attributeExtractor;
+	public void setRequiredFields(List<String> requiredFields) {
+		this.requiredFields = requiredFields;
 	}
 
 }

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -36,14 +36,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.sf.json.JSONObject;
-
+import org.bibsonomy.common.enums.SyncSettingsUpdateOperation;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.SynchronizationRunningException;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationData;
+import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
 import org.bibsonomy.model.sync.util.SynchronizationUtils;
@@ -60,6 +60,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
 
 import com.ibm.icu.text.DateFormat;
+
+import net.sf.json.JSONObject;
 
 /**
  * @author wla
@@ -120,6 +122,10 @@ public class SynchronizationController extends AjaxController implements Minimal
 			 */
 			final Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan;
 			try {
+				// overwrite sync direction if initialAutoSync & auto-sync configured
+				if (SyncUtils.syncServiceRequiresInitialSync(server)) {
+					server.setDirection(SynchronizationDirection.BOTH);
+				}
 				syncPlan = client.getSyncPlan(logic, server);
 			} catch (final SynchronizationRunningException e) {
 				errors.reject("error.synchronization.running");
@@ -160,17 +166,23 @@ public class SynchronizationController extends AjaxController implements Minimal
 			 * run sync plan
 			 */
 			final Map<Class<? extends Resource>, SynchronizationData> syncResult;
-			try {
+			try{
+				// remove sync plan from session
+				SyncUtils.setSyncPlan(serviceURI, null, requestLogic);
+
+				// synchronize
 				syncResult = client.synchronize(logic, server, syncPlan2);
+
+				// check servers initialAutoSync and set the servers alreadySyncedOnce to true on successful synchronize
+				if (SyncUtils.syncServiceRequiresInitialSync(server)) {
+					server.setAlreadySyncedOnce(true);
+					this.logic.updateSyncServer(loginUser.getName(), server, SyncSettingsUpdateOperation.ALL);
+				}
 			} catch (final SynchronizationRunningException e) {
 				errors.reject("error.synchronization.running");
 				return Views.AJAX_ERRORS;
 			}
-			/*
-			 * remove sync plan from session
-			 * FIXME: do this before synchronize()?
-			 */
-			SyncUtils.setSyncPlan(serviceURI, null, requestLogic);
+
 			/*
 			 * serialize result
 			 */

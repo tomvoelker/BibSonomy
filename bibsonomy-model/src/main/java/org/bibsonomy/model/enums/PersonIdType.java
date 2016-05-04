@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -32,8 +32,12 @@ package org.bibsonomy.model.enums;
  * @author jensi
  */
 public enum PersonIdType {
+	// TODO: remove bibsonomy from enum name TODO_PERSONS
 	BIBSONOMY_ID,
+	// TODO: remove bibsonomy from enum name TODO_PERSONS
 	BIBSONOMY_USER,
+	/** dnb id */
 	DNB_ID,
+	/** ORCID id */
 	ORCID
 }

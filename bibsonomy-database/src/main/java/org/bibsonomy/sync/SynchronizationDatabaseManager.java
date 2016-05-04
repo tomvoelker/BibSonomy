@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -36,6 +36,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.SyncSettingsUpdateOperation;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
@@ -86,7 +87,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 			final SyncParam param = new SyncParam();
 			param.setSyncService(service);
 			param.setServer(server);
-			param.setServiceId(generalDb.getNewId(ConstantID.IDS_SYNC_SERVICE, session));
+			param.setServiceId(this.generalDb.getNewId(ConstantID.IDS_SYNC_SERVICE, session).intValue());
 			session.insert("insertSyncService", param);
 			session.commitTransaction();
 		} finally {
@@ -169,19 +170,30 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * Updates the synchronization data for a user
 	 * @param userName
 	 * @param service
+	 * @param operation TODO
 	 * @param session
 	 * 
 	 */
-	public void updateSyncServerForUser(final String userName, final SyncService service, final DBSession session) {
+	public void updateSyncServerForUser(final String userName, final SyncService service, final SyncSettingsUpdateOperation operation, final DBSession session) {
 		final SyncParam param = new SyncParam();
 		param.setUserName(userName);
 		param.setSyncService(service);
+		final SyncService syncServiceDetails = this.queryForObject("syncServiceServerForUser", param, SyncService.class, session);
+		if (!present(syncServiceDetails)) {
+			throw new IllegalStateException(service.getService() + " settings for user " + userName + " not found");
+		}
+		if (!SyncSettingsUpdateOperation.ALL.equals(operation)) {
+			// set to the known value
+			service.setAlreadySyncedOnce(syncServiceDetails.isAlreadySyncedOnce());
+		}
+		
 		session.update("updateSyncServerForUser", param);
 	}
 
 	/**
 	 * 
 	 * @param server 
+	 * @param sslDn 
 	 * @param session
 	 * @return all available synchronization services. if server <true> sync server
 	 * otherwise sync clients
@@ -195,7 +207,6 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	/**
-	 * @param sslDn 
 	 * @param serviceURI 
 	 * @param server
 	 * @param session
@@ -204,7 +215,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	public SyncService getSyncServiceDetails(final URI serviceURI, final DBSession session) {
 		final SyncParam param = new SyncParam();
 		param.setService(serviceURI);
-			
+		
 		return this.queryForObject("getSyncServiceDetails", param, SyncService.class, session);
 	}
 
@@ -235,7 +246,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * @param lastSyncDate
 	 * @param status
 	 * @param info 
-	 * @return
+	 * @return the sync param for the parameters
 	 */
 	protected SyncParam createParam(final String userName, final URI service, final Class<? extends Resource> resourceType, final Date lastSyncDate, final SynchronizationStatus status, final String info) {
 		final SyncParam param = new SyncParam();
@@ -301,7 +312,8 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	/**
-	 * @return List of synchronization servers for Auto synchronization ('autosync' or direction is not 'both')
+	 * @param session 
+	 * @return List of synchronization servers for Auto synchronization ('autosync' and direction is not 'both')
 	 */
 	public List<SyncService> getAutoSyncServer(DBSession session) {
 		final SyncParam param = new SyncParam();
@@ -512,7 +524,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * @param conflictResolutionStrategy
 	 * @param direction
 	 */
-	private void resolveConflict(final SynchronizationPost clientPost, final SynchronizationPost serverPost, final ConflictResolutionStrategy conflictResolutionStrategy, final SynchronizationDirection direction) {
+	private static void resolveConflict(final SynchronizationPost clientPost, final SynchronizationPost serverPost, final ConflictResolutionStrategy conflictResolutionStrategy, final SynchronizationDirection direction) {
 		switch (conflictResolutionStrategy) {
 		case CLIENT_WINS:
 			if (!SynchronizationDirection.SERVER_TO_CLIENT.equals(direction)) {

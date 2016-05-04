@@ -9,8 +9,8 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.TabsCommandInterface" required="true"/>
-	<jsp:directive.attribute name="topcontent" fragment="true" required="false"/>			
-	<jsp:directive.attribute name="tabcontent" fragment="true" required="true"/>	
+	<jsp:directive.attribute name="topcontent" fragment="true" required="false"/>
+	<jsp:directive.attribute name="tabcontent" fragment="true" required="true"/>
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="headerExt" fragment="true" required="false"/>
@@ -22,10 +22,9 @@
 	<jsp:directive.attribute name="infobox" fragment="true" required="false"/>
 	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
-	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>	
+	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
 	
-				
-		
 	<layout:layout 
 		loginUser="${command.context.loginUser}" 
 		pageTitle="${pageTitle}" 
@@ -36,41 +35,32 @@
 		headerExt="${headerExt}" 
 		activeTab="${activeTab}" 
 		hideFooterContainer="${true}"
-		minimizedContentWidth="${minimizedContentWidth}">
-	
-	
-		<!--+
-			| page content header
-			+-->
-		<jsp:attribute name="headerContainer">
-			<parts:panelheader headerLogoClass="${not empty headerLogoClass ? 'image' : ''} ${headerLogoClass}">
-				<jsp:attribute name="headerContent">
-					<fmt:message key="${headerMessageKey}" />				
-				</jsp:attribute>
-			</parts:panelheader>
-		</jsp:attribute>
-	
-	
-	
+		minimizedContentWidth="${minimizedContentWidth}"
+		breadcrumbs="${breadcrumbs}">
+		
 		<jsp:attribute name="content">
-			<div id="fullscreen">
-				<div id="fscontent">
-				
-					<!-- Top Content if available -->
-					<c:if test="${not empty topcontent}">
-						<jsp:invoke fragment="topcontent"/>				
-					</c:if>	
-											
-					<!-- Tabs -->			
-					<parts:tabheader tabView="${command}" tabURL="${command.tabURL}"/>				
-					<div class="tab_content">					
-						<c:if test="${not empty tabcontent}">
-							<jsp:invoke fragment="tabcontent"/>				
-						</c:if>	
-					</div>
-				</div>				
+			
+			<c:if test="${not empty pageTitle}">
+				<h1 class="content-header"><c:out value="${pageTitle}" /></h1>
+			</c:if>
+			
+			<!-- Top Content if available -->
+			<c:if test="${not empty topcontent}">
+				<jsp:invoke fragment="topcontent"/>
+			</c:if>	
+			
+			<!-- Tabs -->
+			<parts:tabheader tabView="${command}" tabURL="${command.tabURL}"/>
+			
+			<br />
+			
+			<div class="tab-content">
+				<c:if test="${not empty tabcontent}">
+					<jsp:invoke fragment="tabcontent"/>
+				</c:if>	
 			</div>
-		</jsp:attribute>			
+
+		</jsp:attribute>
 	</layout:layout>
 	
 </jsp:root>

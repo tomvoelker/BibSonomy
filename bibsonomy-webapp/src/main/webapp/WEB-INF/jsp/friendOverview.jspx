@@ -1,0 +1,106 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:bootstrap="urn:jsptagdir:/WEB-INF/tags/bs"
+	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+	xmlns:friends="urn:jsptagdir:/WEB-INF/tags/friends"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"> 
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+	<fmt:message var="pageTitle" key="friendoverview.title" />
+	<layout:layout loginUser="${command.context.loginUser}" pageTitle="${pageTitle}" requPath="${requPath}" activeTab="myprofile">
+	
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
+		</jsp:attribute>
+		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:account />
+					<nav:crumb nameKey="navi.friends" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
+		
+		<jsp:attribute name="sidebar">
+			<bs:didYouKnow command="${command}"/>
+		</jsp:attribute>
+		
+		<jsp:attribute name="content">
+		
+			<h1 class="content-header"><fmt:message key="friendoverview.title" /></h1>
+		
+		
+			<ul class="nav nav-tabs" role="tablist" id="friendtabs">
+				<li class="active"><a href="#friendsoverview" data-toggle="tab"><fmt:message key="friendoverview.friends.title" /></a></li>
+				<li><a href="#offriendsoverview" data-toggle="tab"><fmt:message key="friendoverview.offriends.title" /></a></li>
+			</ul>
+			
+			<br />
+			
+			<div class="tab-content">
+				<div id="friendsoverview" class="tab-pane active">
+					<h2 class="content-header"><fmt:message key="friendoverview.friends.description" /></h2>
+					
+					<friends:addRemoveFriends friends="${command.ofFriends}" ofFriends="${command.ofFriends}" ckey="${command.context.ckey}"/>
+					
+					<!-- You have shared the following posts with your friends: -->
+					<div class="vspace">
+						<h2 class="content-header"><fmt:message key="friendoverview.friends.post.description" /></h2>
+					</div>
+					
+					<div class="row">
+						<!-- bookmark lists -->
+						<div class="col-md-6 bookmark-list">
+							<h3 class="list-headline"><fmt:message key="bookmarks" />${mtl:ch('nbsp')}</h3>
+							
+							<resources:simplebookmarks listView="${command.listsBookmark[0]}" loginUserName="${command.context.loginUser.name}" paginationParameter="bookmark[0].start" disablePagination="${false}"/>
+						</div>
+						<!-- publication lists -->
+						<div class="col-md-6 publication-list">
+							<h3 class="list-headline"><fmt:message key="publications" />${mtl:ch('nbsp')}</h3>
+							<resources:simplebibtexs listView="${command.listsBibTeX[0]}" loginUserName="${command.context.loginUser.name}" paginationParameter="bibtex[0].start" disablePagination="${false}" />
+						</div>
+					</div>
+				</div>
+				
+				<div id="offriendsoverview" class="tab-pane">
+					<h2 class="content-header"><fmt:message key="friendoverview.offriends.description" /></h2>
+					
+					<friends:addRemoveFriends friends="${command.friends}" ofFriends="${command.ofFriends}" ckey="${command.context.ckey}"/>
+					
+					<!-- They have shared the following resources with you: -->
+					<div class="vspace">
+						<h2 class="content-header"><fmt:message key="friendoverview.offriends.post.description" /></h2>
+					</div>
+					
+					<div class="row">
+						<!-- bookmark lists -->
+						<div class="col-md-6 bookmark-list">
+							<h3 class="list-headline"><fmt:message key="bookmarks" /></h3>
+							<resources:simplebookmarks listView="${command.listsBookmark[1]}" loginUserName="${command.context.loginUser.name}" paginationParameter="bookmark[1].start" disablePagination="${false}"/>
+						</div>
+						<!-- publication lists -->
+						<div class="col-md-6 publication-list">
+							<h3 class="list-headline"><fmt:message key="publications" /></h3>
+							<resources:simplebibtexs listView="${command.listsBibTeX[1]}" loginUserName="${command.context.loginUser.name}" paginationParameter="bibtex[1].start" disablePagination="${false}"/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</jsp:attribute>
+	</layout:layout>
+</jsp:root>

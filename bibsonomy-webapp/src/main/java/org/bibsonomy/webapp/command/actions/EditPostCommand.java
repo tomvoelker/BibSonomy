@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -51,7 +51,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	private Post<RESOURCE> post;
 
 	private String tags;
-
+	
 	/** TODO: add documentation */
 	private Post<RESOURCE> diffPost;
 
@@ -123,7 +123,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand impl
 	
 	private int compareVersion;
 	private List<String> differentEntryKeys;
-	
+
 	/**
 	 * @return saveAndRate
 	 */

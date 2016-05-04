@@ -21,13 +21,13 @@
 			<!-- <bm:title post="${post}"/> -->
 			<li>
 				<a class="bmtitle" href="${fn:escapeXml(post.resource.url)}"><c:out value="${post.resource.title}"/></a>
-				<c:if test="${not empty showDescription and showDescription == true and not empty post.description}">
+				<c:if test="${not empty showDescription and showDescription and not empty post.description}">
 					<span class="bmdesc">
 					<c:out value="${post.description}"/>
 					</span> 
 					<c:out value=" "/>
 				</c:if>
-				<c:if test="${empty showMeta or showMeta == true}">
+				<c:if test="${empty showMeta or showMeta}">
 					<span class="bmmeta">
 						<c:out value=" "/>
 						<fmt:message key="post.meta.taggedOn"/>

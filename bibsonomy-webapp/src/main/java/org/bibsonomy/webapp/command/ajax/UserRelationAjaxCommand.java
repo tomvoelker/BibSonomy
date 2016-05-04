@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -28,15 +28,19 @@ package org.bibsonomy.webapp.command.ajax;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.UserRelation;
+
 
 /**
  * @author Christian Kramer, Folke Mitzlaff
  */
-public class UserRelationAjaxCommand extends AjaxCommand {
+public class UserRelationAjaxCommand extends AjaxCommand<String> {
 	/**
 	 * name of the requested user
 	 */
 	private String requestedUserName;
+	
+	private UserRelation userRelation = UserRelation.OF_FRIEND;
 	
 	/**
 	 * list of requested relation names
@@ -70,5 +74,19 @@ public class UserRelationAjaxCommand extends AjaxCommand {
 	 */
 	public List<String> getRelationTags() {
 		return relationTags;
+	}
+
+	/**
+	 * @return the userRelation
+	 */
+	public UserRelation getUserRelation() {
+		return this.userRelation;
+	}
+
+	/**
+	 * @param userRelation the userRelation to set
+	 */
+	public void setUserRelation(UserRelation userRelation) {
+		this.userRelation = userRelation;
 	}
 }

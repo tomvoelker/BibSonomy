@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -50,7 +50,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	/** Indexes of defined tabs */
 	public final static int MY_PROFILE_IDX = 0;
 	public final static int SETTINGS_IDX = 1;
-	public final static int IMPORTS_IDX = 2;
+	public final static int JABREF_IDX = 2;
 	public final static int GROUP_IDX = 3;
 	public final static int SYNC_IDX = 4;
 	public final static int CV_IDX = 5;
@@ -121,6 +121,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	private Group group;
 	
 	private List<Group> groups = new ArrayList<>();
+	private List<Group> pendingRequestedgroups = new ArrayList<>();
 	// the group to update
 	private String groupName;
 	
@@ -223,7 +224,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public SettingsViewCommand() {
 		this.addTab(MY_PROFILE_IDX, "navi.myprofile");
 		this.addTab(SETTINGS_IDX, "navi.settings");
-		this.addTab(IMPORTS_IDX, "navi.imports");	
+		this.addTab(JABREF_IDX, "settings.jabRef.layoutfile");	
 		this.addTab(CV_IDX, "navi.cvedit");
 		this.addTab(OAUTH_IDX, "navi.oauth.consumers");
 		this.addTab(GROUP_IDX, "navi.groups");
@@ -807,6 +808,20 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	public void setGroups(List<Group> groups) {
 		this.groups = groups;
+	}
+	
+	/**
+	 * @return the pendingRequestedgroups
+	 */
+	public List<Group> getPendingRequestedgroups() {
+		return this.pendingRequestedgroups;
+	}
+
+	/**
+	 * @param pendingRequestedgroups the pendingRequestedgroups to set
+	 */
+	public void setPendingRequestedgroups(List<Group> pendingRequestedgroups) {
+		this.pendingRequestedgroups = pendingRequestedgroups;
 	}
 
 	/**

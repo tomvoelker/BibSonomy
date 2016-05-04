@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -30,10 +30,9 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.database.AbstractDatabaseTest;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
-import org.bibsonomy.database.plugin.DatabasePlugin;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
-import org.bibsonomy.testutil.TestDatabaseLoader;
 import org.bibsonomy.testutil.DatabasePluginMock;
+import org.bibsonomy.testutil.TestDatabaseLoader;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -96,12 +95,8 @@ public abstract class AbstractDatabaseManagerTest extends AbstractDatabaseTest {
 		
 		// load plugins (some tests are removing plugins from the plugin registry
 		this.pluginMock = new DatabasePluginMock();
-		pluginRegistry.clearPlugins();
-		
-		pluginRegistry.add(this.pluginMock);
-		for (final DatabasePlugin plugin : DatabasePluginRegistry.getDefaultPlugins()) {
-			pluginRegistry.add(plugin);
-		}
+		pluginRegistry.reset();
+		pluginRegistry.addPlugin(this.pluginMock);
 	}
 
 	/**

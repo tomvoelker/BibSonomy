@@ -8,7 +8,7 @@
 	xmlns:form="http://www.springframework.org/tags/form"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
 	xmlns:user="urn:jsptagdir:/WEB-INF/tags/actions/user"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
@@ -16,7 +16,7 @@
 	
 	<fmt:message key="navi.oauth.authorization" var="oAuthTitle" />
 	
-	<layout:paneLayout command="${command}" pageTitle="${oAuthTitle}" requPath="${requPath}" headerMessageKey="navi.oauth.authorization">
+	<layout:singleContainerLayout command="${command}" pageTitle="${oAuthTitle}" requPath="${requPath}" headerMessageKey="navi.oauth.authorization" smallBox="true">
 
 		<!--+
 			| page specific styling
@@ -36,67 +36,62 @@
 				.oauthDescription {
 					font-style: italic;
 				}
-			</style>			
-  		</jsp:attribute>
+			</style>
+		</jsp:attribute>
 
-		<!--+
-			| heading 
-			+-->
-		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.oauth.authorization" />
-    	</jsp:attribute>
-
-		<!--+
-			| infobox
-			+-->
-		<jsp:attribute name="infobox">
-			<parts:infobox>
-				<jsp:attribute name="infoTextBody">
-		    		<fmt:message key="oauth.authorization.explanation">
-						<fmt:param value="${properties['project.name']}"/>
-					</fmt:message>
-				</jsp:attribute>
-			</parts:infobox>
-         </jsp:attribute>
-         
 		<!--+
 			| content
 			+-->
 		<jsp:attribute name="content">
-				<p>
-					<fmt:message key="oauth.authorization.intro"/>
-				</p>
-
-				<c:if test="${not empty command.appIcon}">
-					<div class="oauthIcon">
-						<img src="${command.appIcon}"/>
-					</div>
-				</c:if>
+			<fmt:message key="oauth.authorization.intro">
+				<fmt:param value="${command.appTitle}"/>
+				<fmt:param value="${command.appDescription}"/>
+				<fmt:param value="${properties['project.name']}"/>
+			</fmt:message>
+			<br/><br/>
 				
-				<div class="oauthMeta">
-					<span class="oauthTitle"><c:out value="${command.appTitle}"/></span>
-					<br/><br/>
-					<span class="oauthDescription"><c:out value="${command.appDescription}" default=""/></span>
-					<br/><br/>
-					
-					<c:set var="denyButtonMsg">
-						<fmt:message key="oauth.authorization.button.deny" />
-					</c:set>
-					<c:set var="authorizeButtonMsg">
-						<fmt:message key="oauth.authorization.button.authorize" />
-					</c:set>
-					
-					<form class="oauthActions" name="authZForm" action="authorize" method="POST">
-						<input type="hidden" name="oauth_callback" value="${command.callBackUrl}"><!-- keep me --></input>
-						<input type="hidden" name="oauth_token" value="${command.entry.token}"><!-- keep me --></input>
-						<input type="submit" name="authorizeAction" value="Deny"><!-- keep me --></input>
-						<input type="submit" name="authorizeAction" value="Authorize"><!-- keep me --></input>
-					</form>
+			<c:if test="${not empty command.appIcon}">
+				<div class="oauthIcon">
+					<img src="${command.appIcon}"/>
 				</div>
-				<div style="clear: both;"><!-- keep me --></div>
+			</c:if>
+			
+			<div class="oauthMeta">
+				<span class="oauthTitle">
+					<fmt:message key="oauth.authorization.app">
+						<fmt:param value="${command.appTitle}"/>
+					</fmt:message>
+				</span>
+				<br/><br/>
 				
-      	</jsp:attribute>
-      	
-      	
-	</layout:paneLayout>
+				<c:set var="denyButtonMsg">
+					<fmt:message key="oauth.authorization.button.deny" />
+				</c:set>
+				<c:set var="authorizeButtonMsg">
+					<fmt:message key="oauth.authorization.button.authorize" />
+				</c:set>
+				
+				<form class="oauthActions" name="authZForm" action="authorize" method="POST">
+					<input type="hidden" name="oauth_callback" value="${command.callBackUrl}"/>
+					<input type="hidden" name="oauth_token" value="${command.entry.token}"/>
+					<input type="submit" class="btn btn-lg btn-danger" name="authorizeAction" value="${denyButtonMsg}"/>
+					<c:out value=" "/>
+					<input type="submit" class="btn btn-lg btn-success" name="authorizeAction" value="${authorizeButtonMsg}"/>
+				</form>
+			</div>
+			<br/>
+			
+			<div class="tab-content">
+				<bs:alert style="info">
+				<jsp:attribute name="alertBody">
+					<fmt:message key="oauth.authorization.explanation">
+						<fmt:param value="${properties['project.name']}"/>
+					</fmt:message>
+				</jsp:attribute>
+				</bs:alert>
+			</div>
+			
+			<div style="clear: both;"><!-- keep me --></div>
+		</jsp:attribute>
+	</layout:singleContainerLayout>
 </jsp:root>

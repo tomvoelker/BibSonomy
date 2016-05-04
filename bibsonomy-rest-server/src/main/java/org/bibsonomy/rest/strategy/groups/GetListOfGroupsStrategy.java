@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -62,7 +62,7 @@ public class GetListOfGroupsStrategy extends AbstractGetListStrategy<List<Group>
 
 	@Override
 	protected List<Group> getList() {
-		return this.getLogic().getGroups(false, getView().getStartValue(), getView().getEndValue());
+		return this.getLogic().getGroups(false, null, getView().getStartValue(), getView().getEndValue());
 	}
 
 	@Override

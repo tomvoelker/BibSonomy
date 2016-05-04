@@ -1,7 +1,7 @@
 /**
  * BibSonomy CV Wiki - Wiki for user and group CVs
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -27,11 +27,6 @@
 package org.bibsonomy.wiki.tags;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-import info.bliki.htmlcleaner.Utils;
-import info.bliki.wiki.filter.ITextConverter;
-import info.bliki.wiki.model.IWikiModel;
-import info.bliki.wiki.tags.HTMLTag;
-import info.bliki.wiki.tags.util.INoBodyParsingTag;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -42,9 +37,16 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Layout;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.wiki.CVWikiModel;
 import org.springframework.context.MessageSource;
+
+import info.bliki.htmlcleaner.Utils;
+import info.bliki.wiki.filter.ITextConverter;
+import info.bliki.wiki.model.IWikiModel;
+import info.bliki.wiki.tags.HTMLTag;
+import info.bliki.wiki.tags.util.INoBodyParsingTag;
 
 
 /**
@@ -59,6 +61,7 @@ public abstract class AbstractTag extends HTMLTag implements INoBodyParsingTag  
 	protected LayoutRenderer<Layout> layoutRenderer;
 	protected MessageSource messageSource;
 	protected Locale locale;
+	protected URLGenerator urlGenerator;
 	
 	/**
 	 * 
@@ -82,6 +85,7 @@ public abstract class AbstractTag extends HTMLTag implements INoBodyParsingTag  
 		this.requestedGroup = wiki.getRequestedGroup();
 		this.layoutRenderer = wiki.getLayoutRenderer();
 		this.messageSource = wiki.getMessageSource();
+		this.urlGenerator = wiki.getUrlGenerator();
 		this.locale = wiki.getLocale(); 
 		buf.append(this.render());
 	}

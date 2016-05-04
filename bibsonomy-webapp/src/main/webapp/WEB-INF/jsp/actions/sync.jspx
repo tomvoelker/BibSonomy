@@ -9,7 +9,8 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons">
+	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
@@ -40,14 +41,14 @@
 		<jsp:attribute name="infobox">
 			<parts:infobox>
 				<jsp:attribute name="infoTextBody">
-		  		<fmt:message key="synchronization.info" />
-		  		<ul>
-		  			<li><fmt:message key="synchronization.info.plan" /></li>
-		  			<li><fmt:message key="synchronization.info.reset" /></li>
-		  		</ul>
+				<fmt:message key="synchronization.info" />
+				<ul>
+					<li><fmt:message key="synchronization.info.plan" /></li>
+					<li><fmt:message key="synchronization.info.reset" /></li>
+				</ul>
 				</jsp:attribute>
 			</parts:infobox>
-         </jsp:attribute>
+		</jsp:attribute>
 		
 		<jsp:attribute name="content">
 			
@@ -60,166 +61,176 @@
 			<fmt:message var="publications" key="publications" />
 			<fmt:message var="synchronizationRunning" key="synchronization.synchronizationRunning"/>
 			<fmt:message var="resetService" key="synchronization.server.reset" />
-			
-				<!-- iterate over all services -->
-				<c:forEach var="service" items="${command.syncServer}" varStatus="status">
-					<form:form action="/ajax/synchronize" method="post" id="sync_${status.index}">
 
-						<h2><c:out value="${serviceName}: "/> <c:out value="${service.name}" /></h2>	
-									
-						<fieldset class="fsOuter">
-							<p>
-								<fmt:message key="synchronization.explanation">
-									<fmt:param><fmt:message key="resourceType.${service.resourceType.simpleName}.plural"/></fmt:param>
-									<fmt:param><fmt:message key="synchronization.direction.${fn:toLowerCase(service.direction)}.on_client"/></fmt:param>
-								</fmt:message>
-							</p>
+			<!-- iterate over all services -->
+			<c:forEach var="service" items="${command.syncServer}" varStatus="status">
+				<form:form action="/ajax/synchronize" method="post" id="sync_${status.index}">
+					
+					<!-- show initial auto-sync message -->
+				 	<c:if test="${service.alreadySyncedOnce eq false}">
+						<fmt:message var="firstAutoSyncInfoMessage" key="sync.auto.firstsync.required"/>
+						<bs:alert style="info">
+							<jsp:attribute name="alertBody">
+								<c:out value="${firstAutoSyncInfoMessage}"/>
+							</jsp:attribute>
+						</bs:alert>
+					</c:if>
 
-							<!-- check if all resource types have a sync plan (and show "sync" button only then) -->
-							<c:set var="syncButtonDisplay" value="${empty service.lastSyncData ? 'none' : 'inline'}"/>
+					<h2><c:out value="${serviceName}: "/> <c:out value="${service.name}" /></h2>
 
-							<!-- show last synchronization results -->
-							<fieldset class="fsInner">
-								<legend><c:out value="${syncResults}"/></legend>
+					<fieldset class="fsOuter">
+						<p>
+							<fmt:message key="synchronization.explanation">
+								<fmt:param><fmt:message key="resourceType.${service.resourceType.simpleName}.plural"/></fmt:param>
+								<fmt:param><fmt:message key="synchronization.direction.${fn:toLowerCase(service.direction)}.on_client"/></fmt:param>
+							</fmt:message>
+						</p>
+
+						<!-- check if all resource types have a sync plan (and show "sync" button only then) -->
+						<c:set var="syncButtonDisplay" value="${empty service.lastSyncData ? 'none' : 'inline'}"/>
+
+						<!-- show last synchronization results -->
+						<fieldset class="fsInner">
+							<legend><c:out value="${syncResults}"/></legend>
+						
+							<div class="syncData">
+							<c:forEach var="syncData" items="${service.lastSyncData}">
 							
-								<div class="syncData">
-								<c:forEach var="syncData" items="${service.lastSyncData}">
-								
-									<!-- enable sync button, if the resource type has a sync plan -->
-									<c:if test="${entry.value.status ne 'PLANNED'}">
-										<c:set var="syncButtonDisplay" value="none"/>
-									</c:if>
-								
-									<div class="fsRow resourceDiv">
-										<dl><dt>
-											<c:choose>
-												<c:when test="${syncData.resourceType.simpleName == 'BibTex'}">
-													<c:out value="${publications}"/>:
-												</c:when>
-												<c:otherwise>
-													<c:out value="${bookmarks}"/>:
-												</c:otherwise>
-											</c:choose>
-										</dt>
-										<dd>
-											<c:choose>
-												<c:when test="${syncData.status ne 'UNDONE'}">
-													<fmt:formatDate value="${syncData.lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" />
-													<fmt:message key="synchronization.result"/>
-													<fmt:message key="synchronization.result.${fn:toLowerCase(syncData.status)}"/>
-													<c:if test="${not empty syncData.info}"> 
-														<em><c:out value=" (${syncData.info})"/></em>
-													</c:if>
-												</c:when>
-												<c:otherwise>
-													<fmt:message key="synchronization.noresult"/>
-												</c:otherwise>
-											</c:choose>
-										</dd>
-										</dl>
-									</div>
-								</c:forEach>
-								</div>
-								<input type="submit" value="${resetService}" onclick="return confirmReset(this)" />
-							</fieldset>
-
-							<fieldset class="fsInner">
-								<div class="syncPlan">
-									<c:if test="${!empty service.plan }">
-										<dl>
-											<c:forEach var="resourceType" items="${service.plan}">								
-												<dt><fmt:message key="resourceType.${resourceType.key.simpleName}.plural"/></dt>
-												<dd><ul>
-													<c:forEach var="serv" items="${resourceType.value}">
-														<li>
-															<c:out value="${serv.value}"/>
-														</li>
-													</c:forEach>
-												</ul></dd>
-											</c:forEach>
-										</dl>
-									</c:if>
-								</div>
+								<!-- enable sync button, if the resource type has a sync plan -->
+								<c:if test="${entry.value.status ne 'PLANNED'}">
+									<c:set var="syncButtonDisplay" value="none"/>
+								</c:if>
 							
-								<legend><c:out value="${syncPlan}"/></legend>
-								
-								<input type="submit" class="syncPlanBtn" value="${getSyncPlan}" onclick="return getSyncPlan(this);"/>
-
-								<input type="submit" class="synchronizeBtn" value="${synchronize}" style="display:${syncButtonDisplay}" onclick="return doSync(this);"/>
-
-								<img src="${resdir}/image/ajax-loader-bar.gif" alt="${synchronizationRunning}" class="progressGif" style="display:none"/>
-							</fieldset>
-	
-							<input type="hidden" name="serviceName" value="${service.service}" />
-							<input type="hidden" name="ckey" value="${ckey}" />
-							<input type="hidden" name="_method" value="GET" />
-						</fieldset>
-					</form:form>
-				</c:forEach>
-				
-				<c:if test="${not empty command.syncClients }">
-					<!-- TODO: i18n -->
-					<h2><fmt:message key="synchronization.clients.header" /></h2>
-				
-					<p class="description"><fmt:message key="synchronization.clients.description" ><fmt:param value="${properties['project.name'] }"></fmt:param></fmt:message></p>
-					<ul>
-					<c:forEach var="syncClient" items="${command.syncClients }">
-						<c:set var="isClientOnly" value="${fn:startsWith(syncClient.service, 'client://') }" />
-						<li>
-							<h3>
-								<c:out value="${syncClient.name}" />
-							</h3>
-							
-							<ul class="foldList">
-								<c:set var="lastDeviceId" value="invalidId" />
-								<c:set var="dataSize" value="${fn:length(syncClient.lastSyncData) - 1}" />
-								
-								<!-- FIXME: very inefficient, but there is no way
-								     to continue or break a for loop with jspx :( -->
-								<c:forEach begin="0" end="${dataSize}" varStatus="status">
-									<c:set var="clientSyncData" value="${syncClient.lastSyncData[status.index]}" />
-									<c:set var="deviceId" value="${clientSyncData.deviceId}" />
-									
-									<c:if test="${empty lastDeviceId or lastDeviceId ne deviceId}">
-										<c:set var="customUrl" value="${not empty deviceId}" />
+								<div class="fsRow resourceDiv">
+									<dl><dt>
 										<c:choose>
-											<c:when test="${customUrl}">
-												<li>
-													<strong><c:out value="${clientSyncData.deviceInfo}" /></strong>
-													<form action="/ajax/synchronize" method="post" class="clientReset">
-														<input type="hidden" name="serviceName" value="${syncClient.service}/${deviceId}" />
-														<input type="hidden" name="ckey" value="${command.context.ckey}" />
-														<input type="submit" value="${resetService}" onclick="return confirmReset(this)" />
-													</form>
-													<ul class="foldList">
-														
-														<c:forEach var="secondData" items="${syncClient.lastSyncData}">
-															<c:set var="status" value="${fn:toLowerCase(secondData.status)}" />
-															<c:if test="${secondData.deviceId eq deviceId}">
-																<li class="sync-${status}">
-																	<fmt:message key="resourceType.${secondData.resourceType.simpleName}.plural"/> - <fmt:message key="synchronization.result.${status}"/> - <fmt:formatDate value="${secondData.lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" />
-																</li>
-															</c:if>
-														</c:forEach>
-													</ul>
-												</li>
+											<c:when test="${syncData.resourceType.simpleName == 'BibTex'}">
+												<c:out value="${publications}"/>:
 											</c:when>
-											
 											<c:otherwise>
-												<c:set var="status" value="${fn:toLowerCase(clientSyncData.status)}" />
-												<li class="${fn:toLowerCase(status)}">
-													<fmt:message key="resourceType.${clientSyncData.resourceType.simpleName}.plural"/> - <fmt:message key="synchronization.result.${status}"/> - <fmt:formatDate value="${clientSyncData.lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" />
-												</li>											
+												<c:out value="${bookmarks}"/>:
 											</c:otherwise>
 										</c:choose>
-										<c:set var="lastDeviceId" value="${deviceId}" />
-									</c:if>
-								</c:forEach>								
-							</ul>
-						</li>
-					</c:forEach>
-					</ul>
-				</c:if>
+									</dt>
+									<dd>
+										<c:choose>
+											<c:when test="${syncData.status ne 'UNDONE'}">
+												<fmt:formatDate value="${syncData.lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" />
+												<fmt:message key="synchronization.result"/>
+												<fmt:message key="synchronization.result.${fn:toLowerCase(syncData.status)}"/>
+												<c:if test="${not empty syncData.info}"> 
+													<em><c:out value=" (${syncData.info})"/></em>
+												</c:if>
+											</c:when>
+											<c:otherwise>
+												<fmt:message key="synchronization.noresult"/>
+											</c:otherwise>
+										</c:choose>
+									</dd>
+									</dl>
+								</div>
+							</c:forEach>
+							</div>
+							<input type="submit" class="btn btn-default btn-primary" value="${resetService}" onclick="return confirmReset(this)" />
+						</fieldset>
+
+						<fieldset class="fsInner">
+							<div class="syncPlan">
+								<c:if test="${!empty service.plan }">
+									<dl>
+										<c:forEach var="resourceType" items="${service.plan}">								
+											<dt><fmt:message key="resourceType.${resourceType.key.simpleName}.plural"/></dt>
+											<dd><ul>
+												<c:forEach var="serv" items="${resourceType.value}">
+													<li>
+														<c:out value="${serv.value}"/>
+													</li>
+												</c:forEach>
+											</ul></dd>
+										</c:forEach>
+									</dl>
+								</c:if>
+							</div>
+						
+							<legend><c:out value="${syncPlan}"/></legend>
+							
+							<div class="form-group">
+								<input type="submit" class="btn btn-default btn-primary" value="${getSyncPlan}" onclick="return getSyncPlan(this);"/>&amp;nbsp;
+								<input type="submit" class="btn btn-default btn-primary" value="${synchronize}" style="display:${syncButtonDisplay}" onclick="return doSync(this);"/>
+								<img src="${resdir}/image/ajax-loader-bar.gif" alt="${synchronizationRunning}" class="progressGif" style="display:none"/>
+							</div>
+						</fieldset>
+
+						<input type="hidden" name="serviceName" value="${service.service}" />
+						<input type="hidden" name="ckey" value="${ckey}" />
+						<input type="hidden" name="_method" value="GET" />
+					</fieldset>
+				</form:form>
+			</c:forEach>
+			
+			<c:if test="${not empty command.syncClients }">
+				<!-- TODO: i18n -->
+				<h2><fmt:message key="synchronization.clients.header" /></h2>
+			
+				<p class="description"><fmt:message key="synchronization.clients.description" ><fmt:param value="${properties['project.name'] }"></fmt:param></fmt:message></p>
+				<ul>
+				<c:forEach var="syncClient" items="${command.syncClients }">
+					<c:set var="isClientOnly" value="${fn:startsWith(syncClient.service, 'client://') }" />
+					<li>
+						<h3>
+							<c:out value="${syncClient.name}" /><!-- keep me -->
+						</h3>
+						
+						<ul class="foldList">
+							<c:set var="lastDeviceId" value="invalidId" />
+							<c:set var="dataSize" value="${fn:length(syncClient.lastSyncData) - 1}" />
+							
+							<!-- FIXME: very inefficient, but there is no way
+							     to continue or break a for loop with jspx :( -->
+							<c:forEach begin="0" end="${dataSize}" varStatus="status">
+								<c:set var="clientSyncData" value="${syncClient.lastSyncData[status.index]}" />
+								<c:set var="deviceId" value="${clientSyncData.deviceId}" />
+								
+								<c:if test="${empty lastDeviceId or lastDeviceId ne deviceId}">
+									<c:set var="customUrl" value="${not empty deviceId}" />
+									<c:choose>
+										<c:when test="${customUrl}">
+											<li>
+												<strong><c:out value="${clientSyncData.deviceInfo}" /></strong>
+												<form action="/ajax/synchronize" method="post" class="clientReset">
+													<input type="hidden" name="serviceName" value="${syncClient.service}/${deviceId}" />
+													<input type="hidden" name="ckey" value="${command.context.ckey}" />
+													<input type="submit" class="btn btn-default btn-primary" value="${resetService}" onclick="return confirmReset(this)" />
+												</form>
+												<ul class="foldList">
+													
+													<c:forEach var="secondData" items="${syncClient.lastSyncData}">
+														<c:set var="status" value="${fn:toLowerCase(secondData.status)}" />
+														<c:if test="${secondData.deviceId eq deviceId}">
+															<li class="sync-${status}">
+																<fmt:message key="resourceType.${secondData.resourceType.simpleName}.plural"/> - <fmt:message key="synchronization.result.${status}"/> - <fmt:formatDate value="${secondData.lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" />
+															</li>
+														</c:if>
+													</c:forEach>
+												</ul>
+											</li>
+										</c:when>
+										
+										<c:otherwise>
+											<c:set var="status" value="${fn:toLowerCase(clientSyncData.status)}" />
+											<li class="${fn:toLowerCase(status)}">
+												<fmt:message key="resourceType.${clientSyncData.resourceType.simpleName}.plural"/> - <fmt:message key="synchronization.result.${status}"/> - <fmt:formatDate value="${clientSyncData.lastSyncDate}" type="both" timeStyle="short" dateStyle="medium" />
+											</li>
+										</c:otherwise>
+									</c:choose>
+									<c:set var="lastDeviceId" value="${deviceId}" />
+								</c:if>
+							</c:forEach>
+						</ul>
+					</li>
+				</c:forEach>
+				</ul>
+			</c:if>
 
 		</jsp:attribute>
 	</layout:paneLayout>

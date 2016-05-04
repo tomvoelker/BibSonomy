@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -218,7 +218,7 @@ public class PersonNameUtils {
 	
 	/**
 	 * July 2010: added "orComma" since we now support the "Last, First" name format 
-	 * where we need the comma in {@link #normalizePerson(PersonName)} to extract the
+	 * where we need the comma in {@link #normalizedPersonString(PersonName)} to extract the
 	 * first and the last name.
 	 * 
 	 * @param persons 
@@ -233,7 +233,7 @@ public class PersonNameUtils {
 
 	/**
 	 * Normalizes a collection of persons by normalizing their names 
-	 * ({@link #normalizePerson(PersonName)}) and sorting them.
+	 * ({@link #normalizedPersonString(PersonName)}) and sorting them.
 	 *  
 	 * @param persons - a list of persons. 
 	 * @return A sorted set of normalized persons.
@@ -241,7 +241,7 @@ public class PersonNameUtils {
 	private static SortedSet<String> normalizePersonList(final Collection<PersonName> persons) {
 		final SortedSet<String> normalized = new TreeSet<String>();
 		for (final PersonName personName : persons) {
-			normalized.add(normalizePerson(personName));
+			normalized.add(normalizedPersonString(personName));
 		}
 		return normalized;
 	}
@@ -269,7 +269,7 @@ public class PersonNameUtils {
 	 * @param personName 
 	 * @return The normalized person name as string. 
 	 */
-	public static String normalizePerson(final PersonName personName) {
+	public static String normalizedPersonString(final PersonName personName) {
 		final String first = personName.getFirstName();
 		final String last  = personName.getLastName();
 		if (present(first) && !present(last)) {
@@ -278,7 +278,7 @@ public class PersonNameUtils {
 			 * since we put such names into the last name field.
 			 * 
 			 */
-			return StringUtils.removeNonNumbersOrLettersOrDotsOrCommaOrSpace(first).toLowerCase();
+			return normedFirst(first);
 		}
 		if (present(first) && present(last)) {
 			/*
@@ -296,6 +296,36 @@ public class PersonNameUtils {
 			return getLast(last);
 		}
 		return "";
+	}
+
+	/**
+	 * @param first
+	 * @return
+	 */
+	private static String normedFirst(final String first) {
+		return StringUtils.removeNonNumbersOrLettersOrDotsOrCommaOrSpace(first).toLowerCase();
+	}
+	
+	/**
+	 * @param personName
+	 * @return a normalized personName
+	 */
+	public static PersonName normalizePersonName(final PersonName personName) {
+		final String first = personName.getFirstName();
+		final String last  = personName.getLastName();
+		if (present(first) && !present(last)) {
+			return new PersonName(normedFirst(first), null);
+		}
+		
+		if (present(first) && present(last)) {
+			return new PersonName(getFirst(first), getLast(last));
+		}
+		
+		if (present(last)) {
+			return new PersonName(getLast(last));
+		}
+		
+		return new PersonName();
 	}
 
 	/**
@@ -329,12 +359,12 @@ public class PersonNameUtils {
 		final String trimmedLast = last.trim();
 		if (trimmedLast.startsWith("{") && trimmedLast.endsWith("}")) {
 			final List<PersonName> name = PersonNameUtils.discoverPersonNamesIgnoreExceptions(trimmedLast.substring(1, trimmedLast.length() - 1));
-			if (present(name)) return normalizePerson(name.get(0));
+			if (present(name)) return normalizedPersonString(name.get(0));
 		} 
 		/*
 		 * We remove all unusual characters.
 		 */
-		final String cleanedLast = StringUtils.removeNonNumbersOrLettersOrDotsOrCommaOrSpace(trimmedLast).toLowerCase().trim();
+		final String cleanedLast = normedFirst(trimmedLast).trim();
 		/*
 		 * If we find a space character, we take the last part of the name
 		 */
@@ -382,5 +412,53 @@ public class PersonNameUtils {
 		}
 		return val;
 	}
-	
+
+	/**
+	 * @param personName
+	 * @param persons
+	 * @param normPersonNames
+	 * @return <code>true</code> if personName is contained in persons
+	 */
+	public static boolean containsPerson(PersonName personName, List<PersonName> persons, boolean normPersonNames) {
+		if (normPersonNames) {
+			personName = normalizePersonName(personName);
+		}
+		if (present(persons)) {
+			for (PersonName personToCheck : persons) {
+				if (normPersonNames) {
+					personToCheck = normalizePersonName(personToCheck);
+				}
+				if (personToCheck.equals(personName)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * @param personName
+	 * @param personList
+	 * @return all position indices
+	 */
+	public static SortedSet<Integer> getPositionInPersonList(PersonName personName, List<PersonName> persons, boolean normPersonNames) {
+		final SortedSet<Integer> positions = new TreeSet<>();
+		if (normPersonNames) {
+			personName = normalizePersonName(personName);
+		}
+		if (present(persons)) {
+			int index = 0;
+			for (PersonName personToCheck : persons) {
+				if (normPersonNames) {
+					personToCheck = normalizePersonName(personToCheck);
+				}
+				if (personToCheck.equals(personName)) {
+					positions.add(Integer.valueOf(index));
+				}
+				
+				index++;
+			}
+		}
+		return positions;
+	}
 }

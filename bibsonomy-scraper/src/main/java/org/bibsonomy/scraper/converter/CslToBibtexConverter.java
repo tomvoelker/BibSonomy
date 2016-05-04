@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -24,9 +24,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/**
- * 
- */
 package org.bibsonomy.scraper.converter;
 
 import java.util.HashMap;
@@ -46,7 +43,7 @@ import net.sf.json.JSONSerializer;
 /**
  * @author Mohammed Abed
  */
-public class CslToBibtexConverter {
+public class CslToBibtexConverter implements BibtexConverter {
 
 	private final Map<String, Pair<String, String>> entryTypeMap = new HashMap<String, Pair<String, String>>();
 	// these fields are handled by mapField()
@@ -109,7 +106,8 @@ public class CslToBibtexConverter {
 	 * @param cslCitation
 	 * @return The resulting BibTeX string.
 	 */
-	public String cslToBibtex(final String cslCitation)  throws JSONException {
+	@Override
+	public String toBibtex(final String cslCitation)  throws JSONException {
 
 		final String jsonRead = cslCitation.replaceAll("\\/","/");
 
@@ -119,7 +117,6 @@ public class CslToBibtexConverter {
 		final Pair<String, String> entryTypeTitle = getEntryType(json.getString("type"));
 		final String entryType = entryTypeTitle.getFirst(); 
 		final String lblTitle = entryTypeTitle.getSecond();
-
 
 		final StringBuilder authors = getPersons(json, "authors");
 		final StringBuilder editors = getPersons(json, "editors");

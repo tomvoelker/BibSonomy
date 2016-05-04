@@ -10,94 +10,60 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:posts="urn:jsptagdir:/WEB-INF/tags/resources"
 	xmlns:home="urn:jsptagdir:/WEB-INF/tags/home"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-
+	<!-- TODO: fix headline -->
 	<layout:resourceLayout pageTitle="${command.pageTitle}" 
 			command="${command}" 
 			requPath="${requPath}" 
 			disableListNavigation="${true}"
-			disableSort="${true}" 
 			activeTab="home"
 			showPageOptions="${true}"
+			headline="${command.pageTitle}"
 			hideFooterContainer="${true}">
-			
+		
 		<jsp:attribute name="headerExt">
-			<c:if test="${properties['project.theme'] eq 'puma'}">
-				<script type="text/javascript" src="/resources_puma/javascript/tools.js">&#160;</script>
+			<script type="text/javascript">
+				$(function() {
+					$('.post-popover').popover(
+						{
+							html : true,
+							trigger : "hover",
+							container : 'body',
+							placement : 'top',
+							title : function() {
+								console.log("#popover-head-" + $(this).attr('data-ident'));
+								return $("#popover-head-" + $(this).attr('data-ident')).html();
+							},
+							content : function() {
+								console.log("#popover-head-" + $(this).attr('data-ident'));
+								return $("#popover-content-" + $(this).attr('data-ident')).html();
+							}
+						}
+					);
+				});
+			</script>
+		</jsp:attribute>
+		
+		<jsp:attribute name="content">
+			<c:if test="${not command.context.userLoggedIn and (empty errors or errors.errorCount == 0)}">
+				<spring:theme code="layout.home.header" var="homeHeader" text=""/>
+				<c:choose>
+					<c:when test="${homeHeader eq 'simple'}">
+						<home:bibhome command="${command}" />
+					</c:when>
+					<c:otherwise>
+						<home:pumahome command="${command}" />
+					</c:otherwise>
+				</c:choose>
 			</c:if>
 		</jsp:attribute>
-			
+		
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
-			
-<!-- 			<script type="text/javascript"> -->
-<!-- 				$(function(){updatePosts("/", 60);}); -->
-<!-- 			</script> -->
-		</jsp:attribute>
-	
-		<!-- show info text if user not logged in -->
-		<jsp:attribute name="beforeMainContainer">
-			<c:choose>
-				<c:when test="${not command.context.userLoggedIn and (empty errors or errors.errorCount == 0)}">
-					<c:choose>
-						<c:when test="${properties['project.theme'] eq 'puma'}">
-							<home:pumahome command="${command}" />
-						</c:when>
-						<c:otherwise>
-							<home:bibhome command="${command}" />
-						</c:otherwise>
-					</c:choose>
-				</c:when>
-				<c:when test="${command.context.userLoggedIn and properties['project.theme'] ne 'puma'}">
-					<div id="overlayInfobox">
-						<!-- FIXME: add theme! ??-->
-						<div class="close"><a onclick="$('#overlayInfobox').hide();"><fmt:message key="box.close"/></a></div>
-						<div class="content">
-							<!-- logo -->
-<!-- 							<img src="/resources/image/logo.png" alt="${fn:escapeXml(properties['project.name'])}"  
-	style="float:left; margin: 10px;" width="98" height="120"/> -->
-							
-							<!-- project name -->
-							<div style="color: #006699; font-size: 36px; line-height: 48px;">
-								<fmt:message key="system.bib3.switch">
-									<fmt:param>${properties['project.name']} 3</fmt:param>
-								</fmt:message>
-							</div>
-							
-							<!-- introduction -->
-							<div class="systemAbout">
-								<fmt:message key="system.bib3.about">
-									<fmt:param value="${properties['project.name']}"/>
-								</fmt:message>
-							</div>
-							
-							<!-- end of life remark -->
-							<div class="systemAbout">
-							  <b>
-							    <fmt:message key="system.bib3.switch.endoflife">
-							      <fmt:param value="${properties['project.name']}"/>
-							    </fmt:message>
-							  </b>
-							</div>
-
-							<!-- switch -->
-							<div class="systemRegister">
-								<h2>
-									<a href="/bibsonomy3">
-										<fmt:message key="system.bib3.switch.now">
-											<fmt:param>${properties['project.name']} 3</fmt:param>
-										</fmt:message>
-									</a>
-								</h2>
-							</div>
-							
-							<div class="systemInfoClear"> <!-- do not remove --></div>
-						</div>
-					</div>
-				</c:when>
-			</c:choose>
 		</jsp:attribute>
 
 		<jsp:attribute name="newsbar">
@@ -105,7 +71,7 @@
 				<!-- news box ( = latest blog posts) -->
 				<ul class="newsbox">
 					<li>
-						<span class="sidebar_hh"><fmt:message key="navi.news"/></span>
+						<h4 class="sidebar"><fmt:message key="navi.news"/></h4>
 						<posts:tinybookmarks posts="${command.news}" cssClass="news"/>
 					</li>
 				</ul>
@@ -113,14 +79,8 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-			<ul>
-				<li>
-					<span class="sidebar_h"><fmt:message key="busytags"/></span>
-					<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" tagSizeMode="home"/>
-				</li>
-			</ul>
+			<sidebar:sidebarTagCloudItem textKey="busytags" requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" tagSizeMode="home"/>
 		</jsp:attribute>
 
 	</layout:resourceLayout>
-
 </jsp:root>

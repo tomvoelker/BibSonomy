@@ -17,18 +17,6 @@
 	</tag>
 
 	<tag>
-		<name>encode2</name>
-		<tagclass>tags.Encode2</tagclass>
-		<bodycontent>empty</bodycontent>
-		<info>Encodes the given string TWO TIMES with URLEncoder</info>
-		<attribute>
-			<name>value</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-
-	<tag>
 		<name>debug</name>
 		<tagclass>tags.Debug</tagclass>
 		<bodycontent>empty</bodycontent>
@@ -39,7 +27,6 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
-
 
 	<tag>
 		<name>exists</name>
@@ -74,7 +61,7 @@
 			<name>maxlen</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
-		</attribute>		
+		</attribute>
 	</tag>
 	
 	<tag>
@@ -95,6 +82,23 @@
 		<attribute>
 			<name>posts</name>
 			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	
+	<tag>
+		<name>messageSourceKeys</name>
+		<info>stores all keys of the messagesource into the specified var</info>
+		<tagclass>org.bibsonomy.webapp.util.tags.MessageSourceKeysTag</tagclass>
+		<bodycontent>empty</bodycontent>
+		<attribute>
+			<name>locale</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>var</name>
+			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
@@ -160,15 +164,9 @@
 	</function>
 
 	<function>
-		<name>decodeURI</name>
+		<name>encodePathSegment</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String decodeURI (java.lang.String)</function-signature>
-	</function>
-
-	<function>
-		<name>encodeURI</name>
-		<function-class>tags.Functions</function-class>
-		<function-signature>String encodeURI (java.lang.String)</function-signature>
+		<function-signature>String encodePathSegment (java.lang.String)</function-signature>
 	</function>
 
 	<function>

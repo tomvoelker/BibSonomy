@@ -6,19 +6,21 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<fmt:message key="recommended.pagetitle" var="pageTitle"/>
-
+	<fmt:message var="headline" key="page.recommended.headline" />
 	<layout:resourceLayout pageTitle="${pageTitle}" 
 			command="${command}" 
 			requPath="${requPath}" 
 			disableListNavigation="${true}" 
 			activeTab="my"
 			showPageOptions="${true}"
-			hideFooterContainer="${true}">
+			hideFooterContainer="${true}"
+			headline="${headline}">
 			
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
@@ -30,12 +32,7 @@
 		
 		<!-- show tags of recommended resources, scaled by the count of appearance in the recommendations -->
 		<jsp:attribute name="sidebar">
-			<ul>
-				<li>
-					<span class="sidebar_h"><fmt:message key="tags.of_recommendations"/></span>
-					<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" tagSizeMode="user"/>
-				</li>
-			</ul>
+			<sidebar:sidebarTagCloudItem textKey="tags.of_recommendations" requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" tagSizeMode="user"/>
 		</jsp:attribute>
 
 	</layout:resourceLayout>

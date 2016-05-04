@@ -4,24 +4,35 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
 	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/resources/publication"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
-	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>	
-
-	<!--<c:set var="publication" value="${mtl:cleanBibtex(post.resource)}" />-->
-	<c:set var="bibTitle" value="${mtl:cleanBibtex(post.resource.title)}" />
-	<c:set var="year" value="${mtl:cleanBibtex(post.resource.year)}" />
-		
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	
-	<div id="ownerAvatar" >
-		<a class="profilepic" href="${relativeUrlGenerator.getUserUrlByUserName(post.user.name)}" title="@${mtl:encodeURI(post.user.name)}">
-			<span>@${fn:escapeXml(post.user.name)}</span>
-			<img alt="@${fn:escapeXml(post.user.name)}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(fn:escapeXml(post.user.name))}" class="commentPicture"/>
+	<!-- TODO: (bootstrap) rename to pubActionButttons -->
+	<jsp:directive.attribute name="bibActionButtons" fragment="true" required="false"/>
+
+	<c:set var="pubTitle" value="${mtl:cleanBibtex(post.resource.title)}" />
+	<c:set var="year" value="${mtl:cleanBibtex(post.resource.year)}" />
+	
+	
+	<div class="media">
+		<!-- TODO: (bootstrap) introduce tagx file for this -->
+		<c:set var="postUserName"><user:username noLink="${true}" user="${post.user}"/></c:set>
+		<a class="pull-left img-thumbnail img-responsive" href="/user/${mtl:encodePathSegment(post.user.name)}" title="${postUserName}">
+			<img alt="${postUserName}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(fn:escapeXml(post.user.name))}" class="user-avatar"/>
+			<span><c:out value="${postUserName}" /></span>
 		</a>
-	</div>
-	<div id="titletext">
-		<h1 id="pubtitle"><c:out value="${bibTitle}" /></h1>
-		<p style="margin-top: 0.5em;"><bib:desc publication="${post.resource}"/></p>
+
+		<div class="media-body" id="titletext">
+			<h1 class="media-heading" id="pubtitle">
+			
+				<jsp:invoke fragment="bibActionButtons" />
+				<c:out value="${pubTitle}" />
+			
+			</h1>
+			<p><bib:desc post="${post}" publication="${post.resource}"/></p>
+		</div>
 	</div>
 </jsp:root>

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -35,20 +35,17 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.id.ISBNUtils;
 
 /**
  * This converter tries to find and extract DublinCore metadata out of a
- * html forrmatted string.
+ * html formatted string.
  * 
  * @author Lukas
  */
-public class DublinCoreToBibtexConverter {
-
-
+public class DublinCoreToBibtexConverter implements BibtexConverter {
 	private static final String PREFERRED_LANGUAGE = "en";
 
 	private static final String BIBTEX_END_LINE = ",\n";
@@ -73,7 +70,8 @@ public class DublinCoreToBibtexConverter {
 	 * @return a BibTeX formatted string with the extracted information
 	 * 
 	 */
-	public static String getBibTeX(final String dublinCore) {
+	@Override
+	public String toBibtex(final String dublinCore) {
 		// get all DC values
 		final Map<String, String> data = extractData(dublinCore);
 
@@ -116,12 +114,11 @@ public class DublinCoreToBibtexConverter {
 			final String key = dataEntry.getKey();
 			if (key.equals("school") && !isPHDThesis || key.equals("institution") && isPHDThesis) {
 				continue;
-			} else {
-				// add bibtex key values pair to the bibtex string
-				bibtex.append(getBibTeXEntry(key, dataEntry.getValue()));
-				if (dataEntryInterator.hasNext()) {
-					bibtex.append(BIBTEX_END_LINE);
-				}
+			}
+			// add bibtex key values pair to the bibtex string
+			bibtex.append(getBibTeXEntry(key, dataEntry.getValue()));
+			if (dataEntryInterator.hasNext()) {
+				bibtex.append(BIBTEX_END_LINE);
 			}
 		}
 

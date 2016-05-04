@@ -14,15 +14,22 @@ function includeJavaScript(jsFile) {
 }
 
 includeJavaScript("/resources/jquery/jquery.js");
+includeJavaScript("/resources/jquery/plugins/ui/jquery-ui.js");
+includeJavaScript("/resources/bootstrap/js/bootstrap.js");
+includeJavaScript("/resources/javascript/holder.js");
+includeJavaScript("/resources/javascript/bootstrap-dialog.js");
+includeJavaScript("/resources/javascript/custom.js");
+includeJavaScript("/resources/javascript/bootstrap-datepicker.js");
+includeJavaScript("/resources/javascript/bootstrap-tagsinput.js");
+includeJavaScript("/resources/javascript/friendoverview.js");
 includeJavaScript("/resources/javascript/functions.js");
 includeJavaScript("/resources/javascript/actions/clipboard.js");
 includeJavaScript("/resources/javascript/ajaxUtils.js");
 includeJavaScript("/resources/javascript/fileUpload.js");
 includeJavaScript("/resources/javascript/style.js");
-includeJavaScript("/resources/jquery/plugins/corner/jquery.corner.js");
-includeJavaScript("/resources/jquery/plugins/hoverIntent/jquery.hoverIntent.js");
-includeJavaScript("/resources/jquery/plugins/ui/jquery-ui.js");
 includeJavaScript("/resources/javascript/jquery.fadebox.js");
 includeJavaScript("/resources/javascript/userRelation.js");
 includeJavaScript("/resources/javascript/addToSpheres.js");
-includeJavaScript("/resources/javascript/less/less.js"); /* not included in pom, only for development */
+includeJavaScript("/resources/javascript/logging.js");
+/* the following scripts are for development only */
+includeJavaScript("/resources/less/less.js");

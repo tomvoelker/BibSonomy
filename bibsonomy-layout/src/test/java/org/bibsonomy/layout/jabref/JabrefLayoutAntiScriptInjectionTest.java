@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Layout - Layout engine for the webapp.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -65,7 +65,6 @@ public class JabrefLayoutAntiScriptInjectionTest extends AbstractJabrefLayoutTes
 		return initTests(TESTEDLAYOUTS, TESTCASEFOLDERPATH, ENTRYTYPE_SPLITSUFFIX);
 	}
 	
-	@Override
 	@Test
 	public void testRender() throws Exception {
 		testRender(getPosts(this.entryType));

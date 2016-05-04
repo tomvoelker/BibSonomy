@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -118,7 +118,7 @@ import org.bibsonomy.util.ReflectionUtils;
  *  - getContentIdFor<RESOURCE>
  *  - getGroup<RESOURCE>CountByTag
  *  - getGroup<RESOURCE>Count
- *  - get<RESOURCE>FromBasketForUser
+ *  - get<RESOURCE>FromClipboardForUser
  *  - insert<RESOURCE>
  *  - insert<RESOURCE>update
  *  - update<RESOURCE>Hash
@@ -1214,8 +1214,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 	/**
 	 * This method prepares a query which retrieves all posts the user
-	 * has in his basket list. The result is shown on the page <em>/basket</em>.
-	 * Since every user can only see his <em>own</em> basket page, we use
+	 * has in his clipboard list. The result is shown on the page <em>/clipboard</em>.
+	 * Since every user can only see his <em>own</em> clipboard page, we use
 	 * userName as restriction for the user name and not
 	 * requestedUserName.
 	 * 
@@ -1225,11 +1225,11 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsFromBasketForUser(final String loginUser, final int limit, final int offset, final DBSession session) {
+	public List<Post<R>> getPostsFromClipboardForUser(final String loginUser, final int limit, final int offset, final DBSession session) {
 		final P param = this.createParam(loginUser, null, limit, offset);
 		param.setSimHash(HashID.INTER_HASH);
 
-		return this.postList("get" + this.resourceClassName + "FromBasketForUser", param, session);
+		return this.postList("get" + this.resourceClassName + "FromClipboardForUser", param, session);
 	}
 	
 	/** 

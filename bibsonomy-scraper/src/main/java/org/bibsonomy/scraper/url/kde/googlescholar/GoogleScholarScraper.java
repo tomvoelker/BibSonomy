@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,73 +26,60 @@
  */
 package org.bibsonomy.scraper.url.kde.googlescholar;
 
-import java.io.IOException;
-import java.util.Collections;
+import java.net.URL;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.model.util.BibTexUtils;
-import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
 /**
  * This scraper supports download links from the GoogleSonomy Firefox plugin.
  * 
  * @author tst
  */
-public class GoogleScholarScraper extends AbstractUrlScraper {
-	
+public class GoogleScholarScraper extends GenericBibTeXURLScraper {
 	private static final String SITE_URL  = "http://scholar.google.com/";
 	private static final String SITE_NAME = "Google Scholar";
-	private static final String INFO      = "Scrapes BibTeX from " + href(SITE_URL, SITE_NAME) + ".";
-
-	private static final String HOST = "scholar.google.";
-	private static final String PATH = "/scholar.bib";
+	private static final String INFO = "Scrapes BibTex from " + href(SITE_URL, SITE_NAME) + ".";
 	
-	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST + ".*"), Pattern.compile(PATH + ".*")));
+	private static final String HOST = "scholar.google.";
+	private static final String PATH1 = "/scholar.bib";
+	private static final String PATH2 = "/citations";
+	
+	/** FIXME: we can not use this id */
+	private static final String SCISIG = "scisig=AAGBfm0AAAAAVyM_4zZSYmtLcmYUQYVlIWqH3eVqkNVH";
+	
+	private static final Pattern ID = Pattern.compile("citation_for_view=(.+?)$");
+	private static final Pattern DOWNLOAD_URL = Pattern.compile("(.+?)hl=");
+	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern, Pattern>>();
+	static {
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST + ".*"), Pattern.compile(PATH1 + ".*")));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST + ".*"), Pattern.compile(PATH2 + ".*")));
+	}
 	
 	@Override
-	protected boolean scrapeInternal(final ScrapingContext sc)throws ScrapingException {
-		sc.setScraper(this);
-		
-		try {
-			// get cookie
-			String cookie = WebUtils.getCookies(sc.getUrl());
-			
-			if (cookie != null) {
-				// add :CF=4 to cookie value GSP=ID=
-				final int index = cookie.indexOf(";", cookie.indexOf("GSP=ID="));
-				cookie = cookie.substring(0, index) + ":CF=4" + cookie.substring(index);
-				
-				// download bibtex
-				String bibtex = WebUtils.getContentAsString(sc.getUrl().toString(), cookie);
-				
-				if(bibtex != null){
-					// append url
-					bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
-					
-					// add downloaded bibtex to result 
-					sc.setBibtexResult(bibtex);
-					return true;
-				}
-				
-				throw new ScrapingFailureException("bibtex download failed");
-				
+	protected String getDownloadURL(final URL url) throws ScrapingException {
+		final String path = url.getPath();
+		if (path.contains(PATH1)) {
+			final Matcher m = DOWNLOAD_URL.matcher(url.toString());
+			if (m.find()) {
+				return m.group(1) + SCISIG + "&scisf=4&hl=de";
 			}
-			
-			throw new ScrapingFailureException("Cannot get cookie");
-			
-		} catch (final IOException ex) {
-			throw new InternalFailureException(ex);
+		} else if (path.contains(PATH2)) {
+			final Matcher m = ID.matcher(url.toString());
+			if (m.find()) {
+				final String id = m.group(1);
+				return url.toString().replace("view_citation", "export_citations") + "&s=" + id + "&cit_fmt=0";
+			}
 		}
-		
+		return url.toString();
 	}
 
+	@Override
 	public String getInfo() {
 		return INFO;
 	}
@@ -102,12 +89,13 @@ public class GoogleScholarScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
-
+	
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
-	
 }

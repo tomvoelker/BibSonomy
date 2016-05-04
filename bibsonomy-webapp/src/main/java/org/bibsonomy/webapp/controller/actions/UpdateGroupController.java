@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -40,7 +40,9 @@ import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.UserUtils;
+import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.util.MailUtils;
+import org.bibsonomy.util.file.ServerUploadedFile;
 import org.bibsonomy.webapp.command.GroupSettingsPageCommand;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -53,12 +55,15 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.spring.security.exceptions.AccessDeniedNoticeException;
 import org.bibsonomy.webapp.validation.GroupValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
+import org.bibsonomy.webapp.view.ExtendedRedirectViewWithAttributes;
+import org.bibsonomy.webapp.view.Views;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
- * TODO: add documentation
+ * controller for updating a group
  * 
  * @author tni
  */
@@ -74,6 +79,12 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 
 	private RequestLogic requestLogic;
 	private MailUtils mailUtils;
+	private String projectMail;
+	
+	/**
+	 * the file logic to use
+	 */
+	private FileLogic fileLogic;
 
 	@Override
 	public GroupSettingsPageCommand instantiateCommand() {
@@ -106,12 +117,12 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 		Group groupToUpdate = null;
 		// since before requesting a group, it must not exist, we cannot check
 		// for it, either.
-		groupToUpdate = this.logic.getGroupDetails(command.getGroupname());
+		groupToUpdate = this.logic.getGroupDetails(command.getGroupname(), false);
 		
 		if (groupToUpdate == null) {
 			this.errors.rejectValue("groupname", "settings.group.error.nonExistingGroup", new Object[] { command.getGroupname() },
 					"The group {0} does not exist.");
-			return new ExtendedRedirectView(SETTINGS_GROUP_TAB_REDIRECT);
+			return Views.ERROR;
 		}
 
 		final GroupUpdateOperation operation = command.getOperation();
@@ -133,8 +144,12 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 							try {
 								// since now only one user can be invited to a
 								// group at once
-								this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_INVITED, ms);
-								this.mailUtils.sendGroupInvite(groupToUpdate.getName(), loginUser, invitedUser, this.requestLogic.getLocale());
+								if (invitedUser.isSpammer()) {
+									this.errors.rejectValue("username", "group.member.invite.spammer", new Object[] { username, this.projectMail }, "You cannot invite user \"" + username + "\" to this group. The user is currently marked as spammer. Please contact the system administrator.");
+								} else {
+									this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_INVITED, ms);
+									this.mailUtils.sendGroupInvite(groupToUpdate.getName(), loginUser, invitedUser, this.requestLogic.getLocale());
+								}
 							} catch (final Exception ex) {
 								log.error("error while inviting user '" + username + "' to group '" + groupToUpdate + "'", ex);
 								// if a user can't be added to a group, this
@@ -168,7 +183,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 						log.error("error while adding user '" + username + "' to group '" + groupToUpdate + "'", ex);
 						// if a user can't be added to a group, this exception
 						// is thrown
-						this.errors.rejectValue("username", "settings.group.error.addUserToGroupFailed", new Object[] { username, groupToUpdate },
+						this.errors.rejectValue("username", "settings.group.error.addUserToGroupFailed", new Object[] { username, groupToUpdate.getName() },
 								"The user {0} couldn't be added to the group {1}.");
 					}
 				}
@@ -216,17 +231,24 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 				 */
 				final Privlevel priv = Privlevel.getPrivlevel(command.getPrivlevel());
 				final boolean sharedDocs = command.getSharedDocuments() == 1;
+				final boolean allowJoin = command.getAllowJoin();
 				final String realname = command.getRealname();
 				final URL homepage = command.getHomepage();
+				final String description = command.getDescription();
 
 				final User groupUserToUpdate = this.logic.getUserDetails(groupToUpdate.getName());
 				groupUserToUpdate.setEmail("nomail"); // TODO: adapt to the
 														// notion that admins
 														// should receive mails.
+				// group picture
+				updateGroupPicture(groupUserToUpdate, command);
+				
 				// the group to update
 				try {
 					groupToUpdate.setPrivlevel(priv);
 					groupToUpdate.setSharedDocuments(sharedDocs);
+					groupToUpdate.setAllowJoin(allowJoin);
+					groupToUpdate.setDescription(description);
 
 					if (present(realname)) {
 						groupUserToUpdate.setRealname(realname);
@@ -317,9 +339,29 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 			settingsPage += divider + "errorMessage=" + tmpErrorCode;
 		}
 		
-		return new ExtendedRedirectView(settingsPage);
+		final ExtendedRedirectViewWithAttributes extendedRedirectViewWithAttributes = new ExtendedRedirectViewWithAttributes(settingsPage);
+		extendedRedirectViewWithAttributes.addAttribute(ExtendedRedirectViewWithAttributes.ERRORS_KEY, this.errors);
+		extendedRedirectViewWithAttributes.addAttribute("lastOperation", operation);
+		return extendedRedirectViewWithAttributes;
 	}
 
+	private void updateGroupPicture(final User groupUserToUpdate, GroupSettingsPageCommand command) {
+		final MultipartFile file = command.getPictureFile();
+		/*
+		 * If a picture file is given -> upload
+		 * Else, if delete requested -> delete 
+		 */
+		if (present(file) && file.getSize() > 0) {
+			try {
+				this.fileLogic.saveProfilePictureForUser(groupUserToUpdate.getName(), new ServerUploadedFile(file));
+			} catch (final Exception ex) {
+				log.error("error while writing group picture", ex);
+			}
+		} else if (command.getDeletePicture()) {
+			this.fileLogic.deleteProfilePictureForUser(groupUserToUpdate.getName());
+		}
+	}
+	
 	@Override
 	public Errors getErrors() {
 		return this.errors;
@@ -330,12 +372,25 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 		this.errors = errors;
 	}
 
-	public void setLogic(final LogicInterface logic) {
+	/**
+	 * @param logic the logic to set
+	 */
+	public void setLogic(LogicInterface logic) {
 		this.logic = logic;
 	}
 
-	public void setMailUtils(final MailUtils mailUtils) {
+	/**
+	 * @param mailUtils the mailUtils to set
+	 */
+	public void setMailUtils(MailUtils mailUtils) {
 		this.mailUtils = mailUtils;
+	}
+
+	/**
+	 * @param projectMail the projectMail to set
+	 */
+	public void setProjectMail(String projectMail) {
+		this.projectMail = projectMail;
 	}
 
 	/**
@@ -353,8 +408,8 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 	@Override
 	public boolean isValidationRequired(final GroupSettingsPageCommand command) {
 		// FIXME: why?
-		return command.getContext().getLoginUser().isSpammer()
-				&& (command.getContext().getLoginUser().getToClassify() == 0);
+		final User loginUser = command.getContext().getLoginUser();
+		return loginUser.isSpammer() && (loginUser.getToClassify() == 0);
 	}
 
 	@Override
@@ -374,6 +429,13 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 				ValidationUtils.invokeValidator(new GroupValidator(), command.getGroup(), errors);
 			}
 		};
+	}
+	
+	/**
+	 * @param fileLogic the fileLogic to set
+	 */
+	public void setFileLogic(FileLogic fileLogic) {
+		this.fileLogic = fileLogic;
 	}
 
 }

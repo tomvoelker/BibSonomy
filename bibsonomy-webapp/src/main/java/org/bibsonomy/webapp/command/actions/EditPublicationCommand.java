@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -56,6 +56,8 @@ public class EditPublicationCommand extends EditPostCommand<BibTex> {
 	 * The metadata from scraping
 	 */
 	private ScrapingContext scrapingContext;
+	
+	private boolean myOwn;
 
 	/**
 	 * author index (starting at 0)  
@@ -132,6 +134,20 @@ public class EditPublicationCommand extends EditPostCommand<BibTex> {
 	 */
 	public void setScrapingContext(final ScrapingContext scrapingContext) {
 		this.scrapingContext = scrapingContext;
+	}
+	
+	/**
+	 * @return the myown
+	 */
+	public boolean isMyOwn() {
+		return this.myOwn;
+	}
+
+	/**
+	 * @param myown the myown to set
+	 */
+	public void setMyOwn(boolean myown) {
+		this.myOwn = myown;
 	}
 	
 	/**

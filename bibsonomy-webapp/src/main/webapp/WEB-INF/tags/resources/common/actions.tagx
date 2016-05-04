@@ -21,103 +21,105 @@
 		+ heading, variables
 		+ -->
 	<c:if test="${resourceType eq 'bibtex'}">
-		<fmt:message key="bibtex.actions.heading"/>
+		<li><span style="white-space: nowrap;"><fmt:message key="bibtex.actions.heading"/></span></li>
 		<c:set var="isPublication" value="${true}"/>
 	</c:if>
 	<c:if test="${resourceType eq 'bookmark'}">
-		<fmt:message key="bookmark.actions.heading"/>
+		<li><span style="white-space: nowrap;"><fmt:message key="bookmark.actions.heading"/></span></li>
 		<c:set var="isBookmark" value="${true}"/>
 	</c:if>
 	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
 	
 	<!--+ 
-		+ export (RSS, BibTeX, XML, more...) 
-		+-->
-	<div class="listOptionHeading"><fmt:message key="navi.export"/>:</div>
-	<ul>
-		<li>
-			<rc:export requPathAndQuery="${requPathAndQuery}" isPublication="${isPublication}" isBookmark="${isBookmark}"/>
-		</li>
-	</ul>
-	
-	<!--+ 
-		+ placeholder for extended bibtex export options 
-		+-->
-	<c:if test="${isPublication}">
-		<div id="bibtexListExportOptions">${mtl:ch('nbsp')}</div>
-	</c:if>	
-	
-	<!--+ 
-		+ sort options
-		+-->
-	<c:if test="${not disableSort}">
-		<div class="listOptionHeading"><fmt:message key="post.meta.sort"/>:</div>
-		<ul>
-			<li>
-				<rc:sortCriterion requPathAndQuery="${requPathAndQuery}" sortPage="${sortPage}"/>
-			</li>
-			<li>
-				<rc:sortOrder requPathAndQuery="${requPathAndQuery}" sortPageOrder="${sortPageOrder}"/>	
-			</li>
-			<c:if test="${isPublication}">
-				<li>
-					<a href="/help_en/Sorting%2Bpublications"><fmt:message key="post.meta.advanced"/>...</a>
-				</li>
-			</c:if>
-		</ul>
-	</c:if>
-	
-	<!--+ 
-		+ basket actions (pick, unpick, clear basket) only for publications, and logged-in users
-		+-->
-	<c:if test="${command.context.userLoggedIn and isPublication}">
-		<div class="listOptionHeading"><fmt:message key="navi.basket"/>:</div>
-		<ul>	
-			<li>
-				<rc:clipboard isClipboard="${isClipboard}" />
-			</li>
-		</ul>
-	</c:if>
-	
-	<!--+
-		+ inbox actions 
-		+-->
-	<c:if test="${command.context.userLoggedIn and showInboxActions}">
-		<div class="listOptionHeading"><fmt:message key="navi.inbox"/>:</div>
-		<ul>
-			<li>
-				<rc:inbox />
-			</li>
-		</ul>
-	</c:if>
-	
-	<!--+ 
 		+ other options (batch edit, show/hide lists, entries per page)
 		+-->
-	<div class="listOptionHeading"><fmt:message key="post.meta.others"/>:</div>
-	<ul>
-		<!-- edit -->
-		<c:if test="${command.context.userLoggedIn}">
-			<li>
+	<c:if test="${command.context.userLoggedIn}">
+		<li>
+			<span>
+				<!-- edit -->
 				<rc:batchEdit isPublication="${isPublication}" isBookmark="${isBookmark}" requPathAndQuery="${requPathAndQuery}"/>
-			</li>
-		</c:if>
-		<!-- show / hide resource types -->
-		<c:if test="${not disableResourcetypeSelection}">
-			<li>
-				<rc:resourcetype requPathAndQuery="${requPathAndQuery}" showBookmark="${showBookmark}" showPublication="${showPublication}" isBookmark="${isBookmark}" isPublication="${isPublication}"/>
-			</li>
-		</c:if>	
-		<!--  entries per page -->
-		<c:if test="${not disableListNavigation}">
-			<li>		
+			</span>
+			
+		</li>
+		<li class="divider"><!--  --></li>
+	</c:if>
+	<!--+
+		+ 
+		+-->
+	<li>
+		<span>
+			<h5><span class="fa fa-filter"><!--  --></span>&amp;nbsp;<fmt:message key="post.meta.filter" /></h5>
+			<!-- show / hide resource types -->
+			<c:if test="${not disableResourcetypeSelection}">
+				<rc:resourcetype requPathAndQuery="${requPathAndQuery}" showBookmark="${showBookmark}" showPublication="${showPublication}" isBookmark="${isBookmark}" isPublication="${isPublication}"/><br />
+			</c:if>	
+			<!--  entries per page -->
+			<c:if test="${not disableListNavigation}">
+	
 				<c:if test="${isBookmark}">
 					<rc:itemcount entriesPerPage="${command.bookmark.entriesPerPage}" entryType="${command.bookmark.resourcetype}" titleKey="bookmarks" requPathAndQuery="${requPathAndQuery}"/>
 				</c:if>
 				<c:if test="${isPublication}">
 					<rc:itemcount entriesPerPage="${command.bibtex.entriesPerPage}" entryType="${command.bibtex.resourcetype}" titleKey="publications" requPathAndQuery="${requPathAndQuery}"/>
 				</c:if>
-			</li>
-		</c:if>
-	</ul>
+	
+			</c:if>
+		</span>
+	</li>
+	<li class="divider"><!--  --></li>
+	<!--+ 
+		+ export (RSS, BibTeX, XML, more...) 
+		+-->
+	<li>
+		<span>
+			<h5><span class="fa fa-share-square-o"><!--  --></span>&amp;nbsp;<fmt:message key="navi.export"/></h5>
+			<rc:export requPathAndQuery="${requPathAndQuery}" isPublication="${isPublication}" isBookmark="${isBookmark}"/>
+		</span>
+	</li>
+	
+	<!--+ 
+		+ sort options
+		+-->
+	<c:if test="${not disableSort}">
+		<li class="divider"><!--  --></li>
+		<li>
+			<span>
+				<h5><span class="fa fa-sort-amount-asc"><!--  --></span>&amp;nbsp;<fmt:message key="post.meta.sort"/></h5>
+				<rc:sortCriterion requPathAndQuery="${requPathAndQuery}" sortPage="${sortPage}"/><br />
+				<rc:sortOrder requPathAndQuery="${requPathAndQuery}" sortPageOrder="${sortPageOrder}"/>
+				<c:if test="${isPublication}">
+					<fmt:message var="helpLink" key="post.meta.helplink"/>
+					<a href="${helpLink}"><fmt:message key="post.meta.advanced"/>...</a>
+				</c:if>
+			</span>
+		</li>
+		
+	</c:if>
+	
+	<!--+ 
+		+ clipboard actions (pick, unpick, clear clipboard) only for publications, and logged-in users
+		+-->
+	<c:if test="${command.context.userLoggedIn and isPublication}">
+		<li class="divider"><!--  --></li>
+		<li>
+			<span>
+				<h5><span class="fa fa-clipboard"><!--  --></span>&amp;nbsp;<fmt:message key="navi.clipboard"/></h5>
+				<rc:clipboard isClipboard="${isClipboard}" />
+			</span>
+		</li>
+		
+	</c:if>
+	
+	<!--+
+		+ inbox actions 
+		+-->
+	<c:if test="${command.context.userLoggedIn and showInboxActions}">
+		<li class="divider"><!--  --></li>
+		<li>
+			<span>
+				<h5><span class="fa fa-inbox"><!--  --></span>&amp;nbsp;<fmt:message key="navi.inbox"/></h5>
+				<rc:inbox />
+			</span>
+		</li>
+	</c:if>
 </jsp:root>

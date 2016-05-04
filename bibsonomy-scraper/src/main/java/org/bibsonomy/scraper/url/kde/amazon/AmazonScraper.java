@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -98,6 +98,8 @@ public class AmazonScraper extends AbstractUrlScraper {
 	 */
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+		
+		
 		sc.setScraper(this);
 		
 		// try to extract isbn and use the worldcat scraper

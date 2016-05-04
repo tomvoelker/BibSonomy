@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -61,9 +61,9 @@ public class AandAScraper extends AbstractUrlScraper implements ReferencesScrape
 	private static final String downloadUrl = SITE_URL + "component/makeref/?task=output&type=bibtex&doi=";
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(hostPattern, AbstractUrlScraper.EMPTY_PATTERN));
 	
-	private static final Pattern pat_references = Pattern.compile("(?s)<ul style=\"list-style-type:\" class=\"references\">(.*)<div class=\"pr_annees\"></div>");
+	private static final Pattern pat_references = Pattern.compile("(?s)<ul class=\"references\">(.*)<div class=\"export-article\">");
 	private static final Pattern pat_references_1 = Pattern.compile("(?s)<HR><b>References(.*)</UL>");
-	private static final Pattern pat_link_ref = Pattern.compile("<a href=\"(.*)\">References</a></li>");
+	private static final Pattern pat_link_ref = Pattern.compile("<a href=\"(.*)\">References</a>");
 	
 	@Override
 	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
@@ -86,7 +86,6 @@ public class AandAScraper extends AbstractUrlScraper implements ReferencesScrape
 					sc.setBibtexResult(scForBibtexScraper.getBibtexResult());
 					return true;
 				}
-				
 			}
 		} catch (final IOException ex) {
 			throw new InternalFailureException(ex);

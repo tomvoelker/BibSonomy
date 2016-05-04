@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -30,6 +30,7 @@ import java.net.URI;
 import java.util.Date;
 import java.util.List;
 
+import org.bibsonomy.common.enums.SyncSettingsUpdateOperation;
 import org.bibsonomy.model.Resource;
 
 
@@ -80,8 +81,9 @@ public interface SyncLogicInterface {
 	 * 
 	 * @param userName
 	 * @param server
+	 * @param operation the operation
 	 */
-	public void updateSyncServer(final String userName, final SyncService server);
+	public void updateSyncServer(final String userName, final SyncService server, SyncSettingsUpdateOperation operation);
 	
 	/**
 	 * 

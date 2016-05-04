@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -31,7 +31,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.GroupResourceViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -110,7 +109,7 @@ public class ViewablePageController extends SingleResourceListControllerWithTags
 	 *            the name of the group
 	 */
 	private void setGroupDetails(final GroupResourceViewCommand cmd, String groupName) {
-		cmd.setGroup(this.logic.getGroupDetails(groupName));
+		cmd.setGroup(this.logic.getGroupDetails(groupName, false));
 	}
 
 	@Override

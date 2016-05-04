@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -56,7 +56,7 @@ public class EvaluatorUser extends User {
 	 */
 	public EvaluatorUser(final String name) {
 		super.setName(name); 
-		super.setBasket(new Basket());
+		super.setClipboard(new Clipboard());
 		super.setSettings(new UserSettings());
 		super.setRole(Role.ADMIN); // TODO: check, if this has any bad implications!
 	}

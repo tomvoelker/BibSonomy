@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -59,10 +59,10 @@ public abstract class MultiResourceListController extends ResourceListController
 	 */
 	@SuppressWarnings("unchecked")
 	protected void postProcessAndSortList(final MultiResourceViewCommand cmd, Class<? extends Resource> resourceType) {
-		for (ListCommand<?> listCommand: cmd.getListCommand(resourceType)) {
+		for (final ListCommand<?> listCommand: cmd.getListCommand(resourceType)) {
 			if (resourceType == BibTex.class) {
 				// TODO: how can we do this in a clean way without SuppressWarnings?
-				postProcessAndSortList(cmd, (List<Post<BibTex>>) listCommand.getList());	
+				postProcessAndSortList(cmd, (List<Post<BibTex>>) listCommand.getList());
 			}
 		}
 	}

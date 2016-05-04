@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -51,7 +51,6 @@ import org.bibsonomy.webapp.view.Views;
 /**
  * @author Christian Kramer
  */
-@Deprecated // TODO: remove followers (in favor of spheres)
 public class FollowersPageController extends SingleResourceListController implements MinimalisticController<FollowersViewCommand>{
 	private static final Log log = LogFactory.getLog(FollowersPageController.class);
 
@@ -102,14 +101,14 @@ public class FollowersPageController extends SingleResourceListController implem
 		// counts
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
-						
+			
 			final int origEntriesPerPage = listCommand.getEntriesPerPage();
 			final int origStart = listCommand.getStart();
 			listCommand.setStart(start);
 			this.setList(command, resourceType, groupingEntity, groupingName, null, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			listCommand.setEntriesPerPage(origEntriesPerPage);
 			listCommand.setStart(origStart);
-										
+			
 			// compute the ranking for each post in the list
 			RankingUtil.computeRanking(loginUserTags, targetUserTags, command.getListCommand(resourceType).getList(), command.getRanking().getMethodObj(), command.getRanking().getNormalize());
 
@@ -123,7 +122,7 @@ public class FollowersPageController extends SingleResourceListController implem
 			
 			// set total count
 			//this.setTotalCount(command, resourceType, groupingEntity, null, null, null, null, null, null, origEntriesPerPage, null);
-		}		
+		}
 		
 
 		// html format - retrieve tags and return HTML view

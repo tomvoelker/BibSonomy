@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -25,7 +25,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.bibsonomy.rest.strategy.groups;
-
 
 import java.io.ByteArrayOutputStream;
 
@@ -55,13 +54,15 @@ public class GetGroupStrategy extends Strategy {
 	@Override
 	public void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException {
 		// delegate to the renderer
-		final Group group = this.getLogic().getGroupDetails(this.groupName);
+		final Group group = this.getLogic().getGroupDetails(this.groupName, false);
 		if (group == null) {
 			throw new NoSuchResourceException("The requested group '" + this.groupName + "' does not exist.");
 		}
-		this.getRenderer().serializeGroup(writer, group, new ViewModel());
+		// FIXME: What does this do?
+		this.getRenderer().serializeGroup(this.writer, group, new ViewModel());
 	}
 
+	@Deprecated
 	@Override
 	public String getContentType() {
 		return "group";

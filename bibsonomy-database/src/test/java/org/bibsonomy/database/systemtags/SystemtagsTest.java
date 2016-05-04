@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -327,14 +327,14 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		final Group testGroup1 = this.createTestGroup("forgroup1");
 		final Group testGroup2 = this.createTestGroup("forgroup2");
 		
-		groupDb.addPendingMembership(testGroup1.getName(), testUser1.getName(), GroupRole.INVITED, this.dbSession);
-		groupDb.addPendingMembership(testGroup1.getName(), testUser2.getName(), GroupRole.REQUESTED, this.dbSession);
-		groupDb.addPendingMembership(testGroup2.getName(), testUser2.getName(), GroupRole.REQUESTED, this.dbSession);
+		groupDb.addPendingMembership(testGroup1.getName(), testUser1.getName(), false, GroupRole.INVITED, this.dbSession);
+		groupDb.addPendingMembership(testGroup1.getName(), testUser2.getName(), false, GroupRole.REQUESTED, this.dbSession);
+		groupDb.addPendingMembership(testGroup2.getName(), testUser2.getName(), false, GroupRole.REQUESTED, this.dbSession);
 
 		// add users to groups
-		groupDb.addUserToGroup("forgroup1", "forgroupuser1", GroupRole.USER, this.dbSession);
-		groupDb.addUserToGroup("forgroup1", "forgroupuser2", GroupRole.USER, this.dbSession);
-		groupDb.addUserToGroup("forgroup2", "forgroupuser2", GroupRole.USER, this.dbSession);
+		groupDb.addUserToGroup("forgroup1", "forgroupuser1", false, GroupRole.USER, this.dbSession);
+		groupDb.addUserToGroup("forgroup1", "forgroupuser2", false, GroupRole.USER, this.dbSession);
+		groupDb.addUserToGroup("forgroup2", "forgroupuser2", false, GroupRole.USER, this.dbSession);
 		
 		// update users
 		testUser1.setGroups(groupDb.getGroupsForUser(testUser1.getName(), this.dbSession));

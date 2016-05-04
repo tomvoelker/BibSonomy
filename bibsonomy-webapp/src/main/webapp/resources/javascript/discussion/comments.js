@@ -68,8 +68,8 @@ function reply() {
 		$(DISCUSSION_SELECTOR).prepend(clone);
 	}
 	showMenu({target:textBox});
-	textBox.descrInputLabel({});
-	clone.show();
+	textBox.descrInputLabel({}).autosize({});
+	clone.removeClass("hidden").show();
 	
 	addAutocompletionToLinkBox(form);
 
@@ -85,7 +85,7 @@ function showEditCommentForm() {
 	var clone = $('#createComment').clone();
 	clone.attr('id', EDIT_COMMENT_FORM_ID);
 	var form = clone.find('form');
-	clone.find(".descriptiveLabel").removeClass('descriptiveLabel').bind("focus", showMenu).trigger("focus");
+	clone.find(".descriptiveLabel").removeClass('descriptiveLabel').autosize().bind("focus", showMenu).trigger("focus");
 
 	// find values and set it in form		
 	// … groups
@@ -93,11 +93,9 @@ function showEditCommentForm() {
 	populateFormWithGroups(form, getAbstractGrouping(comment), getGroups(comment));
 	
 	// … text
-//	var commentText = comment.find('.text:first').text();
 	var ct = comment.find('.originalText').text();
 	var commentText = ct != "" ? ct : comment.find('.text:first').text();
 		
-	form.find('textarea').attr('value', commentText);
 	if (comment.hasClass(ANONYMOUS_CLASS)) {
 		form.find(ANONYMOUS_SELECTOR).attr('checked', 'checked');
 	}
@@ -123,8 +121,8 @@ function showEditCommentForm() {
 	
 	// append and show
 	comment.append(clone);
-	clone.show('slow');
-
+	clone.removeClass("hidden").show('slow');
+	form.find('textarea').val(commentText).focus();
 	addAutocompletionToLinkBox(form);
 	
 	scrollTo(EDIT_COMMENT_FORM_ID);
@@ -305,13 +303,18 @@ function deleteComment() {
 	var comment = deleteLink.parent().parent().parent();
 	
 	deleteLink.remove();
-	
+
 	$.ajax({
 		url: deleteUrl,
 		type: "DELETE",
-		success: function() {
+		success: function(msg) {
 			deleteDiscussionItemView(comment);
 		},
+		error: function(msg) {
+			if(msg.statusText=="OK") {
+				deleteDiscussionItemView(comment);
+			}
+		}
 		// TODO: handle error
 	});
 	return false;

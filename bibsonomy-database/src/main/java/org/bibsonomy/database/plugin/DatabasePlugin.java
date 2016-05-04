@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -27,11 +27,12 @@
 package org.bibsonomy.database.plugin;
 
 import org.bibsonomy.database.common.DBSession;
-import org.bibsonomy.database.params.BasketParam;
+import org.bibsonomy.database.params.ClipboardParam;
 import org.bibsonomy.database.params.BibTexExtraParam;
 import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.InboxParam;
 import org.bibsonomy.database.params.UserParam;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
@@ -60,7 +61,7 @@ public interface DatabasePlugin {
 	 * @param post
 	 * @param session
 	 */
-	public void onPublicationInsert(Post<? extends Resource> post, DBSession session);
+	public void onPublicationInsert(Post<? extends BibTex> post, DBSession session);
 
 	/**
 	 * Called when a publication is deleted.
@@ -242,21 +243,21 @@ public interface DatabasePlugin {
 	public void onDeleteFriendship(final UserParam param, final DBSession session);
 	
 	/**
-	 * Called when a basket item will be deleted
+	 * Called when a clipboard item will be deleted
 	 * 
 	 * @param param
 	 * @param session
 	 */
-	public void onDeleteBasketItem(final BasketParam param, final DBSession session);
+	public void onDeleteClipboardItem(final ClipboardParam param, final DBSession session);
 	
 	/**
-	 * Called when all basket items will be deleted
+	 * Called when all clipboard items will be deleted
 	 * 
 	 * @param userName 
 	 * @param session 
 	 * 
 	 */
-	public void onDeleteAllBasketItems(final String userName, final DBSession session);
+	public void onDeleteAllClipboardItems(final String userName, final DBSession session);
 	
 	/**
 	 * called when a comment was updated

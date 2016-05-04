@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -52,18 +52,21 @@ public class TaylorAndFrancisScraper extends AbstractUrlScraper implements Refer
 	private static final String SITE_NAME = "Taylor & Francis Online";
 	private static final String SITE_URL = "http://www.tandfonline.com/";
 	private static final String INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
-
-	private static final String TANDF_HOST_NAME = "tandfonline.com";
 	
+	private static final String TANDF_HOST_NAME = "tandfonline.com";
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + TANDF_HOST_NAME), AbstractUrlScraper.EMPTY_PATTERN));
 
 	private static final Pattern DOI_PATTERN = Pattern.compile("/10\\.1080/\\d++(\\.\\d++)*");
 	
-	private static final String TANDF_BIBTEX_DOWNLOAD_PATH = "action/downloadCitation";
+	private static final String TANDF_BIBTEX_DOWNLOAD_PATH = "/action/downloadCitation";
 	private static final String DOWNLOADFILENAME = "tandf_rajp2080_124";
 	
+	private static final Pattern URL_PATTERN_FOR_URL = Pattern.compile("URL = \\{ \n        (.*)\n    \n\\}");
+	private static final String HTTP = "http://";
+
 	private final static Pattern REF_PATTERN = Pattern.compile("(?s)<ul class=\"references\">(.*)</ul></div></div>");
-	private static PostMethod postContent(PostMethod method, String doi) {
+	
+	private static PostMethod setupPostMethod(PostMethod method, String doi) {
 		method.addParameter("doi", doi);
 		method.addParameter("downloadFileName", DOWNLOADFILENAME);
 		method.addParameter("format", "bibtex");
@@ -96,21 +99,32 @@ public class TaylorAndFrancisScraper extends AbstractUrlScraper implements Refer
 	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
 		scrapingContext.setScraper(this);
 		final Matcher matcher = DOI_PATTERN.matcher(scrapingContext.getUrl().toString());
-		if (!matcher.find()) throw new ScrapingException("URL pattern not supported yet");
+		if (!matcher.find()) {
+			throw new ScrapingException("URL pattern not supported yet");
+		}
+		
 		try {
 			final HttpClient client = WebUtils.getHttpClient();
 			//get the page to start the session
+			
+			// TODO: document why we request the page, cookies?
 			WebUtils.getContentAsString(client, scrapingContext.getUrl().toExternalForm());
 			//post to receive the BibTeX file
-			final PostMethod method = new PostMethod(SITE_URL + TANDF_BIBTEX_DOWNLOAD_PATH);
+			final PostMethod method = new PostMethod(HTTP + scrapingContext.getUrl().getHost().toString() + TANDF_BIBTEX_DOWNLOAD_PATH);
 			final String doi = matcher.group().substring(1);
-			final String bibtexEntry = WebUtils.getPostContentAsString(client, postContent(method, doi));
+			String bibtexEntry = WebUtils.getPostContentAsString(client, setupPostMethod(method, doi));
 			if (present(bibtexEntry)) {
+				/*
+				* clean the BibTeX for better format
+				*/
+				final Matcher m = URL_PATTERN_FOR_URL.matcher(bibtexEntry);
+				if (m.find()) {
+					bibtexEntry = bibtexEntry.replaceAll(URL_PATTERN_FOR_URL.toString(), "URL = {" + m.group(1) + "}");
+				}
 				scrapingContext.setBibtexResult(bibtexEntry.trim());
 				return true;
-			} else {
-				throw new ScrapingFailureException("getting BibTeX failed");
 			}
+			throw new ScrapingFailureException("getting BibTeX failed");
 		} catch (IOException ex) {
 			throw new ScrapingException(ex);
 		}

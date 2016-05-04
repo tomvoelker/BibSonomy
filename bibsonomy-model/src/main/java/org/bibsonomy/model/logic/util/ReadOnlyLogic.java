@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -46,6 +46,7 @@ import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SpamStatus;
+import org.bibsonomy.common.enums.SyncSettingsUpdateOperation;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
@@ -267,7 +268,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.sync.SyncLogicInterface#updateSyncServer(java.lang.String, org.bibsonomy.model.sync.SyncService)
 	 */
 	@Override
-	public void updateSyncServer(String userName, SyncService server) {
+	public void updateSyncServer(String userName, SyncService server, SyncSettingsUpdateOperation operation) {
 		throwReadOnlyException();
 	}
 
@@ -387,16 +388,16 @@ public class ReadOnlyLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#getGroups(boolean, int, int)
 	 */
 	@Override
-	public List<Group> getGroups(boolean pending, int start, int end) {
-		return this.logicinterface.getGroups(pending, start, end);
+	public List<Group> getGroups(boolean pending, String userName, int start, int end) {
+		return this.logicinterface.getGroups(pending, null, start, end);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getGroupDetails(java.lang.String)
 	 */
 	@Override
-	public Group getGroupDetails(String groupName) {
-		return this.logicinterface.getGroupDetails(groupName);
+	public Group getGroupDetails(String groupName, final boolean pending) {
+		return this.logicinterface.getGroupDetails(groupName, pending);
 	}
 
 	/* (non-Javadoc)
@@ -453,7 +454,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#deleteGroup(java.lang.String)
 	 */
 	@Override
-	public void deleteGroup(String groupName) {
+	public void deleteGroup(String groupName, boolean pending) {
 		throwReadOnlyException();
 	}
 
@@ -740,7 +741,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#createBasketItems(java.util.List)
 	 */
 	@Override
-	public int createBasketItems(List<Post<? extends Resource>> posts) {
+	public int createClipboardItems(List<Post<? extends Resource>> posts) {
 		throwReadOnlyException();
 		return 0;
 	}
@@ -749,7 +750,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#deleteBasketItems(java.util.List, boolean)
 	 */
 	@Override
-	public int deleteBasketItems(List<Post<? extends Resource>> posts, boolean clearBasket) {
+	public int deleteClipboardItems(List<Post<? extends Resource>> posts, boolean clearBasket) {
 		throwReadOnlyException();
 		return 0;
 	}

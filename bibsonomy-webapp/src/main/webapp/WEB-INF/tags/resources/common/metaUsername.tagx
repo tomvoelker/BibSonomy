@@ -3,32 +3,25 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
-	
-	<c:choose>
-		<c:when test="${not empty post.systemUrl }">
-			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
-		</c:when>
-		<c:otherwise>
-			<c:set var ="isRemotePost" value="false"/>
-		</c:otherwise>
-	</c:choose>
+
 	<!-- user name of a resource -->
 	<c:if test="${not isUserPage}">
 		<c:out value=" "/>
-		<fmt:message key="post.meta.taggedBy" />
-		<c:out value=" "/>
 		<c:choose>
-			<c:when test="${isRemotePost}">
-				<a href="${relativeUrlGenerator.getUserUrlByUserNameAndSysUrl(post.user.name, post.systemUrl) }"><c:out value="${post.user.name}" /></a>			
+			<c:when test="${empty post.user.name}">
+				<fmt:message key="post.meta.taggedBy.community" />
 			</c:when>
 			<c:otherwise>
-				<a href="${relativeUrlGenerator.getUserUrlByUserName(post.user.name) }"><c:out value="${post.user.name}" /></a>
+				<fmt:message key="post.meta.taggedBy" />
+				<c:out value=" "/>
+				<user:username user="${post.user}" post="${post}"/>
 			</c:otherwise>
 		</c:choose>
+		
 	</c:if>
 	
 	

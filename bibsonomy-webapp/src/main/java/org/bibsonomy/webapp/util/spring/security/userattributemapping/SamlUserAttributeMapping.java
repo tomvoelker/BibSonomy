@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,23 +26,17 @@
  */
 package org.bibsonomy.webapp.util.spring.security.userattributemapping;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.user.remote.SamlRemoteUserId;
-import org.bibsonomy.util.ValidationUtils;
+import org.bibsonomy.webapp.util.spring.security.saml.util.SAMLCredentialUtils;
 import org.opensaml.saml2.core.Assertion;
 import org.opensaml.saml2.core.Attribute;
 import org.opensaml.saml2.core.Issuer;
 import org.opensaml.saml2.core.NameID;
-import org.opensaml.xml.XMLObject;
-import org.opensaml.xml.schema.XSAny;
-import org.opensaml.xml.schema.XSString;
-import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.saml.SAMLCredential;
 
 /**
@@ -70,8 +64,8 @@ public class SamlUserAttributeMapping implements UserAttributeMapping<SAMLCreden
 		
 		// copy user attributes
 		for (Map.Entry<String, String> entry : samlToUserPropertiesMap.entrySet()) {
-			Attribute samlAttr = samlCred.getAttributeByName(entry.getKey());
-			Object samlValue = (samlAttr == null) ? null : getSingleStringValueFromAttribute(entry.getKey(), samlAttr);
+			final Attribute samlAttr = samlCred.getAttributeByName(entry.getKey());
+			Object samlValue = (samlAttr == null) ? null : SAMLCredentialUtils.getSingleStringValueFromAttribute(samlAttr);
 			try {
 				BeanUtils.setProperty(user, entry.getValue(), samlValue);
 			} catch (Exception ex) {
@@ -81,12 +75,12 @@ public class SamlUserAttributeMapping implements UserAttributeMapping<SAMLCreden
 		return remoteId;
 	}
 
-	protected void writeAttributeDebugLogs(SAMLCredential samlCred) {
+	private static void writeAttributeDebugLogs(SAMLCredential samlCred) {
 		if (log.isDebugEnabled()) {
 			StringBuilder sb = new StringBuilder();
 			for (Attribute a : samlCred.getAttributes()) {
 				sb.append(a.getName()).append(" or simply ").append(a.getFriendlyName()).append(" = ");
-				appendAttributesAsArrayString(sb, a.getAttributeValues());
+				SAMLCredentialUtils.appendAttributesAsArrayString(sb, a.getAttributeValues());
 				log.debug(sb.toString());
 				sb.setLength(0);
 			}
@@ -119,7 +113,7 @@ public class SamlUserAttributeMapping implements UserAttributeMapping<SAMLCreden
 	public String getUserId(SAMLCredential samlCred) {
 		writeAttributeDebugLogs(samlCred);
 		if (useridAttributeName != null) {
-			return getSingleStringValueAttribute(samlCred, useridAttributeName);
+			return SAMLCredentialUtils.getSingleStringValueAttribute(samlCred, useridAttributeName);
 		}
 		// does this work at all?
 		NameID nid = samlCred.getNameID();
@@ -127,61 +121,6 @@ public class SamlUserAttributeMapping implements UserAttributeMapping<SAMLCreden
 			return null;
 		}
 		return nid.getValue();
-	}
-
-	protected String getSingleStringValueAttribute(SAMLCredential samlCred, String attrName) {
-		Attribute attr = samlCred.getAttributeByName(attrName);
-		if (attr == null) {
-			throw new AuthenticationServiceException("no '" + attrName + "' attribute in saml response");
-		}
-		return getSingleStringValueFromAttribute(attrName, attr);
-	}
-
-	protected String getSingleStringValueFromAttribute(String attrName, Attribute attr) {
-		List<XMLObject> values = attr.getAttributeValues();
-		if (ValidationUtils.present(values) == false) {
-			throw new AuthenticationServiceException("no values for '" + attrName + "' attribute in saml response");
-		}
-		if (values.size() > 1) {
-			log.warn("more than one value for attribute '" + attrName + "' " + appendAttributesAsArrayString(new StringBuilder(), values));
-		}
-		String value = null;
-		for (XMLObject obj : values) {
-			value = xmlObjToString(obj);
-			break;
-		}
-		if (value == null) {
-			throw new AuthenticationServiceException("no usable values for '" + attrName + "' attribute in saml response");
-		}
-		
-		return value;
-	}
-
-	protected StringBuilder appendAttributesAsArrayString(StringBuilder sb, Collection<XMLObject> values) {
-		sb.append('[');
-		for (XMLObject obj : values) {
-			sb.append(xmlObjToString(obj)).append(", ");
-		}
-		if (values.size() > 0) {
-			sb.setLength(sb.length() - 2);
-		}
-		return sb.append("]");
-	}
-
-	/**
-	 * @param obj
-	 * @return a string version of the obj argument
-	 */
-	public static String xmlObjToString(XMLObject obj) {
-		String value;
-		if (obj instanceof XSString) {
-			value = ((XSString) obj).getValue();
-		} else if (obj instanceof XSAny) {
-			value = ((XSAny) obj).getTextContent();
-		} else {
-			value = obj.toString();
-		}
-		return value;
 	}
 
 	/**

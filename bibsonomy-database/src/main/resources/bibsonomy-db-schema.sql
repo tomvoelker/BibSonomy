@@ -22,10 +22,10 @@ DROP TABLE IF EXISTS `sync_data`;
 CREATE TABLE `sync_data`(
   `service_id` int(10) unsigned NOT NULL,
   `user_name` varchar(30) NOT NULL default '',
-  `content_type` tinyint(1) unsigned default NULL,
+  `content_type` tinyint(1) unsigned NOT NULL default 0,
   `last_sync_date` datetime NOT NULL default '1815-12-10 00:00:00',
   `status` varchar(8) NOT NULL,
-  `device_id` varchar(32) default '',
+  `device_id` varchar(32) NOT NULL default '',
   `device_info` varchar(255) default NULL,
   `info` varchar(255) default NULL,
    PRIMARY KEY  (`service_id`, `user_name`, `content_type`, `last_sync_date`, `device_id`)
@@ -40,6 +40,7 @@ CREATE TABLE `sync`(
   `direction` varchar(4) default 'both',
   `strategy` varchar(2) default 'lw',
   `autosync` boolean default false,
+  `already_synced_once` boolean default false, 
    PRIMARY KEY  (`service_id`, `user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -490,23 +491,6 @@ CREATE TABLE `friends` (
 SET character_set_client = @saved_cs_client;
 
 --
--- Table structure for table `followers`
---
-
-DROP TABLE IF EXISTS `followers`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `followers` (
-  `followers_id` int(11) NOT NULL auto_increment,
-  `user_name` varchar(30) NOT NULL default '',
-  `f_user_name` varchar(30) NOT NULL default '',
-  `fellowship_date` datetime NOT NULL default '1815-12-10 00:00:00',
-  PRIMARY KEY  (`followers_id`),
-  UNIQUE KEY `unique_followers` (`user_name`,`f_user_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
-SET character_set_client = @saved_cs_client;
-
---
 -- Table structure for table `group_tagsets`
 --
 
@@ -534,6 +518,8 @@ CREATE TABLE `groupids` (
   `group` int(10) NOT NULL default '0',
   `privlevel` tinyint(3) unsigned default '1',
   `sharedDocuments` tinyint(1) default '0',
+  `allow_join` TINYINT(1) NULL DEFAULT '1',
+  `shortDescription` TEXT NULL,
   `publ_reporting_mail` varchar(255) DEFAULT NULL,
   `publ_reporting_mail_template` text,
   `publ_reporting_external_url` varchar(255) DEFAULT NULL,
@@ -866,23 +852,6 @@ CREATE TABLE `log_friends` (
 SET character_set_client = @saved_cs_client;
 
 --
--- Table structure for table `log_followers`
---
-
-DROP TABLE IF EXISTS `log_followers`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `log_followers` (
-  `followers_id` int(11) NOT NULL auto_increment,
-  `user_name` varchar(30) NOT NULL default '',
-  `f_user_name` varchar(30) NOT NULL default '',
-  `fellowship_date` datetime NOT NULL default '1815-12-10 00:00:00',
-  `fellowship_end_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-  PRIMARY KEY  (`followers_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1565 DEFAULT CHARSET=utf8;
-SET character_set_client = @saved_cs_client;
-
---
 -- Table structure for table `log_group_memberships`
 --
 
@@ -1060,6 +1029,8 @@ CREATE TABLE `pending_groupids` (
   `group` int(10) NOT NULL default '0',
   `privlevel` tinyint(3) unsigned default '1',
   `sharedDocuments` tinyint(1) default '0',
+  `allow_join` TINYINT(1) NULL DEFAULT '1',
+  `shortDescription` TEXT NULL,
   `publ_reporting_mail` varchar(255) DEFAULT NULL,
   `publ_reporting_mail_template` text,
   `publ_reporting_external_url` varchar(255) DEFAULT NULL,
@@ -1076,8 +1047,8 @@ SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 CREATE TABLE `pending_group_memberships` (
 	`user_name` VARCHAR(30) NOT NULL DEFAULT '',
-	`group` INT(10) NULL DEFAULT '0',
-	`defaultgroup` INT(10) NULL DEFAULT '0',
+	`group` INT(10) NOT NULL DEFAULT '-1',
+	`defaultgroup` INT(10) NULL DEFAULT '-1',
 	`start_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	`group_role` INT(10) NOT NULL DEFAULT '2',
 	`user_shared_documents` TINYINT(1) NULL DEFAULT '0',
@@ -1135,6 +1106,7 @@ CREATE TABLE `pendingUser` (
   `show_bookmark` tinyint(1) default '1',
   `show_bibtex` tinyint(1) default '1',
   `useExternalPicture` tinyint(1) DEFAULT '0',
+  `reg_log` TEXT NULL DEFAULT NULL,
   UNIQUE (`activation_code`),
   PRIMARY KEY  (`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1537,6 +1509,7 @@ CREATE TABLE `user` (
   `show_bookmark` tinyint(1) default '1',
   `show_bibtex` tinyint(1) default '1',
   `useExternalPicture` tinyint(1) DEFAULT '0',
+  `reg_log` TEXT NULL DEFAULT NULL,
   PRIMARY KEY  (`user_name`),
   UNIQUE KEY `user_id` (`id`),
   KEY `spammer_to_classify_user_name_idx` (`spammer`,`to_classify`,`user_name`)
@@ -1580,7 +1553,7 @@ CREATE TABLE `useruser_similarity` (
   `u1` varchar(255) NOT NULL default '',
   `u2` varchar(255) NOT NULL default '',
   `sim` float default NULL,
-  `measure_id` tinyint(4) default NULL,
+  `measure_id` tinyint(4) NOT NULL default 0,
   PRIMARY KEY  (`u1`,`u2`, `measure_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
@@ -1596,7 +1569,7 @@ CREATE TABLE `useruser_similarity2` (
   `u1` varchar(255) NOT NULL default '',
   `u2` varchar(255) NOT NULL default '',
   `sim` float default NULL,
-  `measure_id` tinyint(4) default NULL,
+  `measure_id` tinyint(4) NOT NULL default 0,
   PRIMARY KEY  (`u1`,`u2`, `measure_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
@@ -1717,8 +1690,8 @@ DROP TABLE IF EXISTS `group_level_permission`;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 CREATE TABLE `group_level_permission` (
-  `group` int(10) DEFAULT NULL,
-  `permission` tinyint(1) DEFAULT NULL,
+  `group` int(10) NOT NULL DEFAULT -1,
+  `permission` tinyint(1) NOT NULL DEFAULT -1,
    `granted_by` VARCHAR(30) NOT NULL,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`group`, permission)

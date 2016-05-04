@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,11 +26,12 @@
  */
 package org.bibsonomy.webapp.command;
 
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Collection;
-
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.logic.exception.LogicException;
 
 /**
@@ -73,6 +74,11 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	public ConceptsCommand getConcepts() {
 		return this.concepts;
 	}
+	
+	/**
+	 * The groups that are shared by the requested and the loggedIn user
+	 */
+	private List<Group> sharedGroups = null;
 
 	/**
 	 * @param concepts the concepts to set
@@ -115,7 +121,7 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	 * Get boolean if user is following this user or if not
 	 * @return true if user already follows this user and false if not
 	 */
-	public boolean isFollowerOfUser() {
+	public boolean getIsFollowerOfUser() {
 		return this.isFollowerOfUser;
 	}
 
@@ -123,7 +129,7 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	 * Set if user is following this use or if not
 	 * @param isFollowerOfUser
 	 */
-	public void setFollowerOfUser(boolean isFollowerOfUser) {
+	public void setIsFollowerOfUser(boolean isFollowerOfUser) {
 		this.isFollowerOfUser = isFollowerOfUser;
 	}
 
@@ -156,9 +162,24 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	}
 
 	/**
+	 * @return a list of all groups that are shared between the loggedIn and the requested user
+	 */
+	public List<Group> getSharedGroups() {
+		return this.sharedGroups;
+	}
+
+	/**
+	 * @param sharedGroups the list of all groups that are shared between the loggedIn and the requested user
+	 */
+	public void setSharedGroups(List<Group> sharedGroups) {
+		this.sharedGroups = sharedGroups;
+	}
+	
+	/**
 	 * @return the logicExceptions
 	 */
 	public Collection<LogicException> getLogicExceptions() {
 		return this.logicExceptions;
 	}
+	
 }

@@ -1,0 +1,87 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+	xmlns:form="http://www.springframework.org/tags/form">
+
+	<jsp:directive.attribute name="tags" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="path" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="recommendedTags" type="java.util.Set" required="true"/>
+	<jsp:directive.attribute name="containsComma" type="java.lang.Boolean" required="true"/>
+
+	<jsp:directive.attribute name="labelColSpan" type="java.lang.Integer" required="false" description="Column span width of the label. labelColSpan and inputColSpan must add up to 12" />
+	<jsp:directive.attribute name="inputColSpan" type="java.lang.Integer" required="false" description="Column span width of the input field. labelColSpan and inputColSpan must add up to 12" />
+	
+	<c:set var="formErrors"><form:errors path="${path}" /></c:set>
+	
+	<div class="form-group${not empty formErrors ? ' has-error' : ''}">
+		<label class="col-sm-${labelColSpan} control-label">
+			<fmt:message key="post.resource.tags"/>
+		</label>
+
+		<div class="col-sm-${inputColSpan}">
+			<form:input cssClass="tagInput reqinput form-control help-popover" id="inpf_tags" autocomplete="off" path="tags" onclick="setActiveInputField(this.id); enableHandler();" onfocus="setActiveInputField(this.id); enableHandler()" onblur="disableHandler()" tabindex="1" />
+			<!-- name="tags"  -->
+			<!-- allow user to confirm tags containing comma or semicolon -->
+		</div>
+		<div class="col-sm-offset-${labelColSpan} col-sm-${inputColSpan}">
+			<p class="help-block">
+				<fmt:message key="post.resource.spaceseparated" />
+			</p>
+			<bsform:errors path="tags" />
+		</div>
+		<c:if test="${containsComma}">
+			<div class="checkbox col-sm-offset-${labelColSpan} col-sm-${inputColSpan}">
+				<form:label path="acceptComma">
+					<form:checkbox path="acceptComma"/>
+					<fmt:message key="post.resource.tags.comma"/>
+				</form:label>
+			</div>
+		</c:if>
+	</div>
+	
+	<!--+
+		| show recommendations
+		+-->
+	<div class="form-group">
+		<label class="col-sm-${labelColSpan} control-label">
+			<fmt:message key="post.resource.recommendation"/>
+		</label>
+		<div class="col-sm-${inputColSpan - 1}">
+			<ul id="recommendedTags" class="recommended ${command.postID} list-inline">
+				<div class="fsWaitingText"><fmt:message key="post.resource.waitingForTags"/></div>
+				<!-- This comment is needed, otherwise this will result in a self-closing element -->
+			</ul>
+		</div>
+		<div class="col-sm-1">
+			<fmt:message var="reloadTags" key="post.resource.reloadRecommendation"/>
+			<a id="recommendationReloadButton" href="#" class="btn btn-default btn-sm disabled" title="${reloadTags}">
+				<fontawesome:icon icon="refresh" />
+			</a>
+		</div>
+	</div>
+	
+	<!--+
+		| show copied tags if available
+		+-->
+	<c:if test="${not empty command.copytags}">
+		<div class="form-group">
+			<label class="col-sm-${labelColSpan} control-label">
+				<fmt:message key="post.resource.copytags" />
+			</label>
+			<div class="col-sm-${inputColSpan}">
+				<ul id="copiedTags" class="list-inline">
+					<c:forEach var="tag" items="${command.copytags}">
+						<li><c:out value="${tag.name} "/></li>
+					</c:forEach>
+				</ul>
+			</div>
+		</div>
+	</c:if>
+</jsp:root>

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -27,8 +27,6 @@
 package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -72,17 +70,19 @@ public class WikiCvPageController extends ResourceListController implements Mini
 		}
 		
 		try {
-			final Group requestedGroup = this.logic.getGroupDetails(requestedUser);
+			final Group requestedGroup = this.logic.getGroupDetails(requestedUser, false);
 			/*
 			 * Check if the group is present. If it should be a user. If its no
 			 * user the we will catch the exception and return an error message
 			 * to the user
 			 */
 			if (present(requestedGroup)) {
-				return handleGroupCV(requestedGroup, command);
+				command.setIsGroup(true);
+				return handleCV(command, null, requestedGroup);
 			}
 			
-			return handleUserCV(requestedUserWithDetails, command);
+			command.setUser(requestedUserWithDetails);
+			return handleCV(command, requestedUserWithDetails, null);
 		} catch (RuntimeException e) {
 			// If the name does not fit to anything a runtime exception is thrown while attempting to get the requestedUser
 			throw new MalformedURLSchemeException("Something went wrong! You are most likely looking for a non existant user/group.");
@@ -92,80 +92,56 @@ public class WikiCvPageController extends ResourceListController implements Mini
 	}
 
 	/**
-	 * Handles the group cv page request
-	 * 
-	 * @param reqGroup
+	 * Handles the cv page request
 	 * @param command
-	 * @return The group-cv-page view
+	 * @param requestedUser 
+	 * @param reqGroup
+	 * 
+	 * @return The cv-page view
 	 */
-	private View handleGroupCV(final Group requestedGroup, final CvPageViewCommand command) {
-		final String groupName = requestedGroup.getName();
-		command.setIsGroup(true);
-
-		this.setTags(command, Resource.class, GroupingEntity.GROUP, requestedGroup.getName(), null, command.getRequestedTagsList(), null, 1000, null);
+	private View handleCV(final CvPageViewCommand command, final User requestedUser, final Group requestedGroup) {
+		final String entityName;
+		final GroupingEntity groupingEntity;
+		if (present(requestedGroup)) {
+			entityName = requestedGroup.getName();
+			groupingEntity = GroupingEntity.GROUP;
+		} else {
+			entityName = requestedUser.getName();
+			groupingEntity = GroupingEntity.USER;
+		}
+		
+		this.setTags(command, Resource.class, groupingEntity, entityName, null, command.getRequestedTagsList(), null, 1000, null);
 		
 		// TODO: Implement date selection on the editing page
-		final Wiki wiki = this.logic.getWiki(groupName, null);
+		final Wiki wiki = this.logic.getWiki(entityName, null);
 		final String wikiText;
 
-		if (present(wiki)) {
+		boolean showCV = present(wiki);
+		
+		/*
+		 * hide cv page of spammers
+		 */
+		if (present(requestedUser)) {
+			final boolean isNoSpammer = !requestedUser.isSpammer();
+			final boolean isClassified = requestedUser.getToClassify() != null && requestedUser.getToClassify() != 1;
+			final boolean ownCVPage = requestedUser.equals(command.getContext().getLoginUser());
+			showCV &= (ownCVPage || isNoSpammer && isClassified);
+		}
+		if (showCV) {
 			wikiText = wiki.getWikiText();
 		} else {
 			wikiText = "";
 		}
 		
 		/*
-		 * set the group to render
+		 * set the group/user to render
 		 */
 		this.wikiRenderer.setRequestedGroup(requestedGroup);
-		command.setRenderedWikiText(this.wikiRenderer.render(wikiText));
-		command.setWikiText(wikiText);
-
-		return Views.WIKICVPAGE;
-	}
-
-	/**
-	 * Handles the user cv page request
-	 * 
-	 * @param reqUser
-	 * @param command
-	 * @return The user-cv-page view
-	 */
-	private View handleUserCV(final User requestedUser, final CvPageViewCommand command) {
-		command.setUser(requestedUser);
-		final String userName = requestedUser.getName();
-		this.setTags(command, Resource.class, GroupingEntity.USER, userName, null, command.getRequestedTagsList(), null, 1000, null);
-
-		/*
-		 * convert the wiki syntax
-		 */
-		// TODO: Implement date selection on the editing page
-		final Wiki wiki = this.logic.getWiki(userName, null);
-		final String wikiText;
-		
-		/*
-		 * only show cv wiki if the user is no spammer and classified by at least
-		 * one classifier as no spammer
-		 * always show own wiki to the loggedin user
-		 */
-		final boolean isNoSpammer = !requestedUser.isSpammer();
-		final boolean isClassified = requestedUser.getToClassify() != null && requestedUser.getToClassify() != 1;
-		final boolean ownCVPage = requestedUser.equals(command.getContext().getLoginUser());
-		if (present(wiki) && (ownCVPage || isNoSpammer && isClassified)) {
-			wikiText = wiki.getWikiText();
-		} else {
-			wikiText = "";
-		}
-		
-		/*
-		 * set the user to render
-		 */
 		this.wikiRenderer.setRequestedUser(requestedUser);
 		command.setRenderedWikiText(this.wikiRenderer.render(wikiText));
 		command.setWikiText(wikiText);
 
 		return Views.WIKICVPAGE;
-
 	}
 
 	/**
@@ -184,5 +160,4 @@ public class WikiCvPageController extends ResourceListController implements Mini
 	public void setWikiRenderer(CVWikiModel wikiRenderer) {
 		this.wikiRenderer = wikiRenderer;
 	}
-
 }

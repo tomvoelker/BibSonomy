@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -40,12 +40,13 @@ import org.bibsonomy.services.person.PersonRoleRenderer;
  * @author Christian Pfeiffer
  */
 public class DisambiguationPageCommand extends UserResourceViewCommand {
-
+	
+	@Deprecated // Use a Java JSPTag
 	private PersonRoleRenderer personRoleRenderer;
 	private String requestedAction;
 	private String requestedHash;
 	private PersonResourceRelationType requestedRole;
-	private int requestedIndex;
+	private Integer requestedIndex;
 	
 	private String requestedPersonId;
 	
@@ -141,14 +142,14 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	/**
 	 * @return the requestedIndex
 	 */
-	public int getRequestedIndex() {
+	public Integer getRequestedIndex() {
 		return this.requestedIndex;
 	}
 
 	/**
 	 * @param requestedIndex the requestedIndex to set
 	 */
-	public void setRequestedIndex(int requestedIndex) {
+	public void setRequestedIndex(final Integer requestedIndex) {
 		this.requestedIndex = requestedIndex;
 	}
 
@@ -170,11 +171,13 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	public List<ResourcePersonRelation> getPersonSuggestions() {
 		return this.personSuggestions;
 	}
-
+	
+	@Deprecated
 	public PersonRoleRenderer getPersonRoleRenderer() {
 		return this.personRoleRenderer;
 	}
-
+	
+	@Deprecated
 	public void setPersonRoleRenderer(PersonRoleRenderer personRoleRenderer) {
 		this.personRoleRenderer = personRoleRenderer;
 	}

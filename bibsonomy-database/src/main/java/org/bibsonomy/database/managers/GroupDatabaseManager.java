@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -81,10 +81,12 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	private UserDatabaseManager userDb;
+	private AdminDatabaseManager adminDatabaseManager;
 	private final DatabasePluginRegistry plugins;
 
 	private GroupDatabaseManager() {
 		this.plugins = DatabasePluginRegistry.getInstance();
+		this.adminDatabaseManager = AdminDatabaseManager.getInstance();
 	}
 
 	/**
@@ -102,14 +104,16 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Returns pending groups.
-	 * 
+	 * @param userName TODO
 	 * @param start
 	 * @param end
 	 * @param session
+	 * 
 	 * @return list of all pending groups
 	 */
-	public List<Group> getPendingGroups(final int start, final int end, final DBSession session) {
+	public List<Group> getPendingGroups(String userName, final int start, final int end, final DBSession session) {
 		final GroupParam param = new GroupParam();
+		param.setUserName(userName);
 		param.setOffset(start);
 		param.setLimit(end);
 		return this.queryForList("getPendingGroups", param, Group.class, session);
@@ -175,19 +179,20 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Returns a group with all its members if the user is allowed to see them.
 	 * 
-	 * @param authUser
+	 * @param authUserName
 	 * @param groupname
-	 * @param getPermissions TODO
+	 * @param getPermissions <code>true</code> iff permissions should be loaded
+	 * @param adminAccess 
 	 * @param session
 	 * @return group
 	 */
-	public Group getGroupMembers(final String authUser, final String groupname, final boolean getPermissions, final DBSession session) {
+	public Group getGroupMembers(final String authUserName, final String groupname, final boolean getPermissions, boolean adminAccess, final DBSession session) {
 		log.debug("getGroupMembers " + groupname);
 		Group group;
 		if ("friends".equals(groupname)) {
 			group = GroupUtils.buildFriendsGroup();
 			final List<GroupMembership> mss = new LinkedList<>();
-			for (final User u : this.userDb.getUserRelation(authUser, UserRelation.OF_FRIEND, null, session)) {
+			for (final User u : this.userDb.getUserRelation(authUserName, UserRelation.OF_FRIEND, null, session)) {
 				mss.add(new GroupMembership(u, GroupRole.USER, false));
 			}
 			group.setMemberships(mss);
@@ -218,43 +223,49 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			group.setMemberships(Collections.<GroupMembership> emptyList());
 			return group;
 		}
-
+		
+		/*
+		 * update the membership list according to the privlevel settings
+		 * system admins can see all members by default
+		 */
 		final int groupId = group.getGroupId();
-		final Privlevel privlevel = this.getPrivlevelForGroup(groupId, session);
-		// remove members as necessary
-		switch (privlevel) {
-		case MEMBERS:
-			// if the user isn't a member of the group he can't see other
-			// members -> and we'll fall through to HIDDEN
-			if (this.isUserInGroup(authUser, group)) {
+		if (!adminAccess) {
+			final Privlevel privlevel = this.getPrivlevelForGroup(groupId, session);
+			// remove members as necessary
+			switch (privlevel) {
+			case MEMBERS:
+				// if the user isn't a member of the group he can't see other
+				// members -> and we'll fall through to HIDDEN
+				if (isUserInGroup(authUserName, group)) {
+					break;
+				}
+				//$FALL-THROUGH$
+			case HIDDEN:
+				// only a group admins or moderators may always see the group
+				// members
+				final GroupMembership groupMembershipForUser = this.getGroupMembershipForUser(authUserName, group, session);
+				
+				final List<GroupMembership> groupMemberships;
+				if (present(groupMembershipForUser)) {
+					if (groupMembershipForUser.getGroupRole().hasRole(GroupRole.MODERATOR)) {
+						// user is at least moderator, show all members of this group
+						groupMemberships = group.getMemberships();
+					} else {
+						// user is member of this group, let her see her membership
+						groupMemberships = Collections.singletonList(groupMembershipForUser);
+					}
+				} else {
+					// user is not a member of this group, so the list is hidden
+					groupMemberships = Collections.emptyList();
+				}
+				group.setMemberships(groupMemberships);
+				break;
+			case PUBLIC:
+				// ignore
 				break;
 			}
-			//$FALL-THROUGH$
-		case HIDDEN:
-			// only a group admins or moderators may always see the group
-			// members
-			final GroupMembership groupMembershipForUser = this.getGroupMembershipForUser(authUser, group, session);
-			
-			final List<GroupMembership> groupMemberships;
-			if (present(groupMembershipForUser)) {
-				if (groupMembershipForUser.getGroupRole().hasRole(GroupRole.MODERATOR)) {
-					// user is at least moderator, show all members of this group
-					groupMemberships = group.getMemberships();
-				} else {
-					// user is member of this group, let her see her membership
-					groupMemberships = Collections.singletonList(groupMembershipForUser);
-				}
-			} else {
-				// user is not a member of this group, so the list is hidden
-				groupMemberships = Collections.emptyList();
-			}
-			group.setMemberships(groupMemberships);
-			break;
-		case PUBLIC:
-			// ignore
-			break;
 		}
-
+		
 		return group;
 	}
 
@@ -477,7 +488,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void activateGroup(final String groupName, final DBSession session) {
 		// get the group
-		final Group group = this.getPendingGroup(groupName, session);
+		final Group group = this.getPendingGroup(groupName, null, session);
 		
 		if (!present(group)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group " + groupName + " is no pending group.");
@@ -497,10 +508,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			this.deletePendingGroup(groupName, session);
 
 			// add the group user to the group
-			this.addUserToGroup(groupName, groupName, GroupRole.DUMMY, session);
+			this.addUserToGroup(groupName, groupName, false, GroupRole.DUMMY, session);
 
 			// add the requesting user to the group with level ADMINISTRATOR
-			this.addUserToGroup(groupName, groupRequest.getUserName(), GroupRole.ADMINISTRATOR, session);
+			this.addUserToGroup(groupName, groupRequest.getUserName(), false, GroupRole.ADMINISTRATOR, session);
 
 			session.commitTransaction();
 		} finally {
@@ -512,16 +523,21 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * Returns a specific pending group
 	 * 
 	 * @param groupname
+	 * @param requestingUser 
 	 * @param session
 	 * @return Returns a {@link Group} object if the group exists otherwise
 	 *         null.
 	 */
-	public Group getPendingGroup(final String groupname, final DBSession session) {
+	public Group getPendingGroup(final String groupname, String requestingUser, final DBSession session) {
 		if (!present(groupname)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Pending-Groupname isn't present");
 		}
 		final String normedGroupName = this.getNormedGroupName(groupname);
-		return this.queryForObject("getPendingGroup", normedGroupName, Group.class, session);
+		
+		final GroupParam groupParam = new GroupParam();
+		groupParam.setUserName(requestingUser);
+		groupParam.setRequestedGroupName(normedGroupName);
+		return this.queryForObject("getPendingGroup", groupParam, Group.class, session);
 	}
 
 	/**
@@ -546,7 +562,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		 */
 		final User existingGroupUser = this.userDb.getUserDetails(normedGroupName, session);
 		final List<User> pendingUserList = this.userDb.getPendingUserByUsername(normedGroupName, 0, Integer.MAX_VALUE, session);
-		final Group existingPendingGroup = this.getPendingGroup(normedGroupName, session);
+		final Group existingPendingGroup = this.getPendingGroup(normedGroupName, null, session);
 
 		if (present(existingGroupUser.getName()) || present(pendingUserList) || present(existingPendingGroup)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "There is a user with this name - cannot create the group.");
@@ -599,8 +615,8 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		// make sure that the group exists
 		if (groupname == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Pending Group ('" + groupname + "') doesn't exist");
-			throw new RuntimeException();
 		}
+		
 		this.userDb.deletePendingUser(groupname, session);
 		this.delete("deletePendingGroup", groupname, session);
 	}
@@ -691,15 +707,23 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	public void deleteGroup(final String groupname, final DBSession session) {
 		// make sure that the group exists
 		final Group group = this.getGroupByName(groupname, session);
+		
 		if (group == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist");
-			throw new RuntimeException(); // never happens but calms down
-											// eclipse
+			throw new RuntimeException(); // never happens but calms down eclipse TODO: remove?
 		}
 
 		final Integer groupId = Integer.valueOf(group.getGroupId());
 		this.delete("deleteGroup", groupId, session);
+		// FIXME: remove
 		this.delete("removeAllUserFromGroup", groupId, session);
+		
+		// get the group user and flag him as spammer
+		final User groupUser = this.userDb.getUserDetails(groupname, session);
+		groupUser.setToClassify(0);
+		groupUser.setAlgorithm("group_user");
+		groupUser.setSpammer(true);
+		this.adminDatabaseManager.flagSpammer(groupUser, AdminDatabaseManager.DELETED_UPDATED_BY, session);
 	}
 
 	/**
@@ -710,7 +734,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @param role
 	 * @param session
 	 */
-	public void addUserToGroup(final String groupname, final String username, final GroupRole role, final DBSession session) {
+	public void addUserToGroup(final String groupname, final String username, final boolean userSharedDocuments, final GroupRole role, final DBSession session) {
 		try {
 			session.beginTransaction();
 			// check if a user exists with that name
@@ -742,7 +766,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			 * TODO: shares documents setting must be changed if we allow users
 			 * to specify shared documents in the join request
 			 */
-			param.setMembership(new GroupMembership(user, role, false));
+			param.setMembership(new GroupMembership(user, role, userSharedDocuments));
 
 			this.insert("addUserToGroup", param, session);
 			session.commitTransaction();
@@ -857,7 +881,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForObject("getPendingMembershipsForGroup", groupname, Group.class, session);
 	}
 
-	public void addPendingMembership(final String groupname, final String username, final GroupRole pendingGroupRole, final DBSession session) {
+	public void addPendingMembership(final String groupname, final String username, final boolean userSharedDocuments, final GroupRole pendingGroupRole, final DBSession session) {
 		final Group group = this.getGroupByName(groupname, session);
 		if (group == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't remove join request/invite from nonexistent group");
@@ -879,7 +903,8 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 				final GroupMembership membership = new GroupMembership();
 				membership.setUser(new User(username));
 				membership.setGroupRole(pendingGroupRole);
-
+				membership.setUserSharedDocuments(userSharedDocuments);
+				
 				final GroupParam param = new GroupParam();
 				param.setMembership(membership);
 				param.setGroupId(group.getGroupId());
@@ -889,12 +914,12 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 				switch (pendingMembership.getGroupRole()) {
 				case INVITED:
 					if (GroupRole.REQUESTED.equals(pendingGroupRole)) {
-						this.addUserToGroup(groupname, username, GroupRole.USER, session);
+						this.addUserToGroup(groupname, username, pendingMembership.isUserSharedDocuments(), GroupRole.USER, session);
 					}
 					break;
 				case REQUESTED:
 					if (GroupRole.INVITED.equals(pendingGroupRole)) {
-						this.addUserToGroup(groupname, username, GroupRole.USER, session);
+						this.addUserToGroup(groupname, username, pendingMembership.isUserSharedDocuments(), GroupRole.USER, session);
 					}
 					break;
 				default:
@@ -918,16 +943,15 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		if (!present(groupToUpdate)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "During updateGroupSettings: The parameter groupToUpdate was null. (required argument)");
 		}
-
-		if (!(present(groupToUpdate.getGroupId()) && present(groupToUpdate.getPrivlevel()) && present(groupToUpdate.isSharedDocuments()))) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "During updateGroupSettings: Incomplete group information: group ID, privlevel and shared documents are required.");
+		// TODO: groupid, allowJoin always not null TODO_GROUPS
+		if (!(present(groupToUpdate.getGroupId()) && present(groupToUpdate.getPrivlevel()) && present(groupToUpdate.isSharedDocuments()) && present(groupToUpdate.isAllowJoin()))) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "During updateGroupSettings: Incomplete group information: group ID, privlevel, shared documents and allowJoin are required.");
 		}
+		// TODO: Logging!
+		
 		/*
 		 * store the bean
 		 */
-
-		// TODO: Logging!
-
 		this.update("updateGroupSettings", groupToUpdate, session);
 	}
 

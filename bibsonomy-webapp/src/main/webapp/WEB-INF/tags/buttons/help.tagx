@@ -1,40 +1,35 @@
 <!-- XXX: for a javascript solution have a look at version 1.20 -->
-<jsp:root version="2.0" 
-    xmlns:c="http://java.sun.com/jsp/jstl/core"
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
-	
-    <jsp:directive.attribute name="message" type="java.lang.String" required="false" description="The key for the message that should be shown."/>
-    <jsp:directive.attribute name="iconText" type="java.lang.String" required="false" description="The text of the icon."/>
-    <jsp:directive.attribute name="iconTextStyle" type="java.lang.String" required="false" description="The text's style."/>
-	<jsp:directive.attribute name="helpPage" type="java.lang.String" required="false" description="An optional help page that is linked under the question mark. The given name must exist in all languages of the help wiki."/>
-    <jsp:directive.attribute name="cssStyle" type="java.lang.String" required="false" description="style attribute for the div surrounding the help text"/>
-    <jsp:directive.attribute name="cssClass" type="java.lang.String" required="false" description="class  attribute for the div surrounding the help text"/>
 
-    <jsp:directive.attribute name="helpText" fragment="true" required="false" description="A JSP fragment which is inserted after the message."/>
+	<jsp:directive.attribute name="message" type="java.lang.String" required="false" description="The key for the message that should be shown." />
+	<jsp:directive.attribute name="iconTextStyle" type="java.lang.String" required="false" description="The text's style." />
+	<jsp:directive.attribute name="helpPage" type="java.lang.String" required="false" description="An optional help page that is linked under the question mark. The given name must exist in all languages of the help wiki." />
+	<jsp:directive.attribute name="helpText" fragment="true" required="false" description="A JSP fragment which is inserted after the message." />
 
-	<!-- "?" is the default symbol for help texts -->	
-	<c:if test="${empty iconText}">
-		<c:set var="iconText" value="?" />
-	</c:if>
-  
-	<div class="help ${cssClass}" style="${cssStyle}">
+	<div class="help-button" >
 		<!-- show help symbol, if given with underlying link to help page -->
-        <c:choose>
-          <c:when test="${not empty helpPage}">
-            <!-- the given path is relative to project.home/help -->
-            <a class="smalltext" style="${iconTextStyle}" href="${relativeUrlGenerator.getProjectHome()}help_${locale.language}${helpPage}"><c:out value="${iconText}"/></a>
-          </c:when>
-          <c:otherwise>
-              <span class="smalltext" style="${iconTextStyle}"><c:out value="${iconText}"/></span>
-          </c:otherwise>
-        </c:choose>
-		<div>
-			<c:if test="${not empty message}">
-				<fmt:message key="${message}"/>
-			</c:if> 
-			<jsp:invoke fragment="helpText"><!-- DON'T REMOVE ME --></jsp:invoke>
-		</div>
-	</div>	
+		<c:choose>
+			<c:when test="${not empty helpPage}">
+				<!-- the given path is relative to project.home/help -->
+				<a class="btn btn-default btn-sm" style="${iconTextStyle}" href="${properties['project.home']}help_${locale.language}${helpPage}">
+					<span class="fa fa-question-mark"><!--  --></span>	
+				</a>
+			</c:when>
+			<c:otherwise>
+				<button class="btn btn-default btn-sm help-popover">
+					<span class="fa fa-question"><!--  --></span>
+				</button>
+				<div class="help help-header hide"><!--  --></div>
+				<div class="help help-content hide">
+					<c:if test="${not empty message}">
+						<fmt:message key="${message}" />
+					</c:if>
+					<jsp:invoke fragment="helpText" />
+				</div>
+			</c:otherwise>
+		</c:choose>
+	</div>
 </jsp:root>

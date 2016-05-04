@@ -91,7 +91,7 @@
 		FROM group_memberships g WHERE g.user_name = #userName# AND g.group = #groupId#
 	</insert>
 	
-	<insert id="logBasketItemDelete" parameterClass="basketParam">
+	<insert id="logClipboardItemDelete" parameterClass="clipboardParam">
 		INSERT INTO log_collector (user_name, content_id, add_date)
 		SELECT c.user_name, c.content_id, c.date FROM collector c, bibtex b
 		WHERE c.content_id = b.content_id
@@ -99,7 +99,7 @@
 		AND b.user_name = #requestedUserName# AND c.user_name = #userName#
 	</insert>
 	
-	<insert id="logDeleteAllFromBasket" parameterClass="String">
+	<insert id="logDeleteAllFromClipboard" parameterClass="String">
 		INSERT INTO log_collector (user_name, content_id, add_date)
 		SELECT c.user_name, c.content_id, c.date 
 			FROM collector c
@@ -121,8 +121,9 @@
 	</insert>
 	
 	<insert id="logFollowerDelete" parameterClass="userParam">
-		INSERT INTO log_followers (followers_id, user_name, f_user_name, fellowship_date) 
-		(SELECT * FROM followers WHERE user_name = #userName# AND f_user_name = #requestedUserName#)
+		INSERT INTO log_friends (friends_id, user_name, f_user_name, tag_name, friendship_date)
+			SELECT friends_id, user_name, f_user_name, tag_name, friendship_date FROM friends
+			WHERE tag_name = #followerTag# AND user_name = #userName# AND f_user_name = #requestedUserName#
 	</insert>
 	
 	<insert id="logFriendDelete" parameterClass="userParam">

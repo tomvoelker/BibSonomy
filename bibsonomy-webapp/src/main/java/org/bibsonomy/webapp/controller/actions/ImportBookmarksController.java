@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -109,12 +109,16 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 		}
 
 		final User loginUser = context.getLoginUser();
+		
+		final String importType = command.getImportType();
+		final boolean isDelicous = "delicous".equals(importType);
+		final boolean isBrowser = "browser".equals(importType);
 
 		/*
 		 * check credentials to fight CSRF attacks 
 		 * 
 		 */
-		if (!context.isValidCkey()) {
+		if (!context.isValidCkey() && (isDelicous || (isBrowser && command.getTotalCount() > 0))) {
 			errors.reject("error.field.valid.ckey");
 			/*
 			 * FIXME: correct URL?
@@ -130,9 +134,8 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 		List<Post<Bookmark>> posts = new LinkedList<Post<Bookmark>>();
 		List<Tag> relations = new LinkedList<Tag>();
 		
-		final String importType = command.getImportType();
 		try {
-			if ("delicious".equals(importType)) {
+			if (isDelicous) {
 				/*
 				 * TODO: we want to have checkboxes, not radio buttons!
 				 */
@@ -151,7 +154,7 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 					relations = relationImporter.getRelations();
 				} 
 
-			} else if ("browser".equals(importType)) {
+			} else if (isBrowser) {
 				/*
 				 * import posts/relations from Firefox, Safari, Opera, Chrome
 				 */

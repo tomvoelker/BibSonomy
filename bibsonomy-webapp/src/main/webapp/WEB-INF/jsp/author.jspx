@@ -9,38 +9,52 @@
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<c:set var="requestedAuthorEncoded" value="${mtl:encodeURI(command.requestedAuthor)}" />
+	<c:set var="requestedAuthor" value="${command.requestedAuthor}" />
 	<fmt:message key="navi.author" var="authorPageTitle" />
-	<layout:resourceLayout 
-		pageTitle="${authorPageTitle} :: ${command.requestedAuthor}" 
-		command="${command}" 
-		requPath="${requPath}" 
-		disableResourcetypeSelection="${true}" 
-		minimizedContentWidth="${true}">
+	<c:set var="pageTitle" value="${authorPageTitle} :: ${requestedAuthor}" />
+	<layout:resourceLayout pageTitle="${pageTitle}" command="${command}" requPath="${requPath}" disableResourcetypeSelection="${true}" minimizedContentWidth="${true}" headline="${pageTitle}">
+		
+		<jsp:attribute name="breadcrumbs">
+			<nav:breadcrumbs>
+				<jsp:attribute name="crumbs">
+					<nav:authors />
+					<nav:crumb name="${requestedAuthor}" active="true" />
+				</jsp:attribute>
+			</nav:breadcrumbs>
+		</jsp:attribute>
 		
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.author" formAction="${relativeUrlGenerator.getAuthorUrlByName(requestedAuthorEncoded)}" formInputName="tag">
+			<c:choose>
+				<c:when test="${not empty command.scope and command.scope.name() ne 'LOCAL'}">
+					<c:choose>
+						<c:when test="${command.scope.name() eq 'FEDERATED_AUTHOR' }">
+							<c:set var="pathMessageKey" value="navi.federatedAuthor"/>
+							<c:set var="authorUrl" value="${relativeUrlGenerator.getAuthorUrlByName(requestedAuthor)}?scope=${command.scope.name()}"/>
+						</c:when>
+					</c:choose>
+				</c:when>
+				<c:otherwise>
+					<c:set var="pathMessageKey" value="navi.author"/>
+					<c:set var="authorUrl" value="${relativeUrlGenerator.getAuthorUrlByName(requestedAuthor)}"/>
+				</c:otherwise>
+			</c:choose>
+			<parts:search scope="${command.scope}" pathMessageKey="${pathMessageKey}" formAction="${authorUrl}" formInputName="tag">
 				<jsp:attribute name="pathPart">
-					<li>
-						:: <span itemscope="itemscope" itemtype="http://schema.org/Person">
-							<a href="${relativeUrlGenerator.getAuthorUrlByName(requestedAuthorEncoded)}" itemprop="name"><c:out value='${command.requestedAuthor}'/></a>
-						</span>
-					</li>
+					<span itemscope="itemscope" itemtype="http://schema.org/Person">
+						<a href="${authorUrl}" itemprop="name"><c:out value='${requestedAuthor}'/></a>
+					</span>
 				</jsp:attribute>
 			</parts:search>
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-			<ul>
-				<li>
-					<span class="sidebar_h"><fmt:message key="tags"/></span>
-					<tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
-				</li>
-			</ul>
+			<sidebar:sidebarTagCloudItem requPath="${requPath}" cmd="${command.tagcloud}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" scope="${command.scope.name()}"/>
 		</jsp:attribute>
 	</layout:resourceLayout>
 </jsp:root>

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.webapp.controller;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -42,8 +44,8 @@ import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedExceptio
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.person.PersonRoleRenderer;
-import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.DisambiguationPageCommand;
+import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.View;
@@ -51,18 +53,16 @@ import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 
 /**
- * @author Christian Pfeiffer
+ * @author Christian Pfeiffer, Tom Hanika
  */
 public class DisambiguationPageController extends SingleResourceListController implements MinimalisticController<DisambiguationPageCommand> {
-	//private static final Log log = LogFactory.getLog(DisambiguationPageController.class);
-	
 	/**
 	 * put into the session to tell the personPageController that the person has just been created
 	 */
 	public static final String ACTION_KEY_CREATE_AND_LINK_PERSON = "createAndLinkPerson";
 	public static final String ACTION_KEY_LINK_PERSON = "linkPerson";
 	
-	protected RequestLogic requestLogic;
+	private RequestLogic requestLogic;
 	private PersonRoleRenderer personRoleRenderer;
 	
 	@Override
@@ -74,8 +74,12 @@ public class DisambiguationPageController extends SingleResourceListController i
 	
 	@Override
 	public View workOn(final DisambiguationPageCommand command) {
+		if (command.getRequestedHash() == null) {
+			throw new ObjectNotFoundException(command.getRequestedHash());
+		}
+		
 		final List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, command.getRequestedHash(), null, null, null, null, null, null, 0, 100);
-		if (!ValidationUtils.present(posts)) {
+		if (!present(posts)) {
 			throw new ObjectNotFoundException(command.getRequestedHash());
 		}
 		command.setPost(posts.get(0));
@@ -85,19 +89,35 @@ public class DisambiguationPageController extends SingleResourceListController i
 			return linkAction(command);
 		}
 		
+		if (!present(command.getRequestedIndex())) {
+			throw new MalformedURLSchemeException("error.disambiguation.without_index");
+		}
+		
 		return disambiguateAction(command);
 	}
 
 	private View disambiguateAction(final DisambiguationPageCommand command) {
-		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations().byInterhash(command.getPost().getResource().getInterHash()).byRelationType(command.getRequestedRole()).byAuthorIndex(command.getRequestedIndex()).getIt();		
+		final PersonResourceRelationType requestedRole = command.getRequestedRole();
+		final int requestedIndex = command.getRequestedIndex().intValue();
+		
+		final List<ResourcePersonRelation> matchingRelations = this.logic.getResourceRelations().byInterhash(command.getPost().getResource().getInterHash()).byRelationType(requestedRole).byAuthorIndex(requestedIndex).getIt();
 		if (matchingRelations.size() > 0 ) {
-			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(matchingRelations.get(0).getPerson().getPersonId()));	
+			// FIXME: cache urlgenerator
+			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(matchingRelations.get(0).getPerson().getPersonId()));
 		}
 		
 		final BibTex res = command.getPost().getResource();
-		final List<PersonName> persons = res.getPersonNamesByRole(command.getRequestedRole());
+		List<PersonName> persons = res.getPersonNamesByRole(requestedRole);
+		// MacGyver-fix, in case there are multiple similar simhash1 caused by author == editor  
+		if (persons == null ){
+			persons = getPersonsByFallBack(res, requestedRole);
+		}
 		
-		final PersonName requestedName = persons.get(command.getRequestedIndex());
+		if (!present(persons) || requestedIndex < 0 || requestedIndex >= persons.size()) {
+			throw new ObjectNotFoundException(requestedRole + " for " + res.getInterHash());
+		}
+		
+		final PersonName requestedName = persons.get(requestedIndex);
 		command.setPersonName(requestedName);
 		
 		String name = requestedName.toString();
@@ -107,7 +127,22 @@ public class DisambiguationPageController extends SingleResourceListController i
 		return Views.DISAMBIGUATION;
 	}
 	
-	
+	/**
+	 * @param res
+	 * @param requestedRole
+	 * @return
+	 */
+	private static List<PersonName> getPersonsByFallBack(BibTex res, PersonResourceRelationType requestedRole) {
+		switch (requestedRole) {
+		case AUTHOR:
+			return res.getPersonNamesByRole(PersonResourceRelationType.EDITOR);
+		case EDITOR:
+			return res.getPersonNamesByRole(PersonResourceRelationType.AUTHOR);
+		default:
+			return null;
+		}
+	}
+
 	/**
 	 * creates a new person, links te resource and redirects to the new person page
 	 * @param command
@@ -142,18 +177,18 @@ public class DisambiguationPageController extends SingleResourceListController i
 		resourcePersonRelation.setPerson(person);
 		resourcePersonRelation.setPost(command.getPost());
 		resourcePersonRelation.setRelationType(command.getRequestedRole());
-		resourcePersonRelation.setPersonIndex(command.getRequestedIndex());
+		resourcePersonRelation.setPersonIndex(command.getRequestedIndex().intValue());
 		this.logic.addResourceRelation(resourcePersonRelation);
 	}
 
 	private static PersonName getMainPersonName(DisambiguationPageCommand command) {
 		final BibTex bibtex = command.getPost().getResource();
 		final List<PersonName> publicationNames = bibtex.getPersonNamesByRole(command.getRequestedRole());
-		final int i = command.getRequestedIndex();
-		if ((publicationNames == null) || (publicationNames.size() <= i)) {
+		final int personIndex = command.getRequestedIndex().intValue();
+		if ((publicationNames == null) || (publicationNames.size() <= personIndex)) {
 			throw new IllegalArgumentException();
 		}
-		final PersonName mainName = publicationNames.get(i);
+		final PersonName mainName = publicationNames.get(personIndex);
 		return mainName;
 	}
 	

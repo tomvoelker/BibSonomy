@@ -6,27 +6,27 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
-    xmlns:bm="urn:jsptagdir:/WEB-INF/tags/resources/bookmark"
+	xmlns:bm="urn:jsptagdir:/WEB-INF/tags/resources/bookmark"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-    xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
-    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">	 	
+	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.attribute name="errors" type="org.springframework.web.servlet.support.BindStatus" required="true" description="The errors (Spring's BindStatus) this tag shall show."/>
 	<jsp:directive.attribute name="fastEdit" type="java.lang.Boolean" required="false" description="Whether this errors are displayed during fastediting of tags or not."/>
 	
-	<buttons:help iconText="X" iconTextStyle="color:red; font-size:120%">
+	<buttons:help iconTextStyle="color:red; font-size:120%">
 		<jsp:attribute name="helpText">
 			<ul>
 				<c:forEach var="errorMessage" items="${status.errorMessages}">
 					<li class="info_bold">
 						<c:choose>
 							<!--  use a larger font during fast-edit -->
-							<c:when test="${not empty fastEdit and fastEdit == true}">
+							<c:when test="${not empty fastEdit and fastEdit}">
 								<span style="font-size:120%">${errorMessage}</span>
 							</c:when>
 							<c:otherwise>${errorMessage}</c:otherwise>
-						</c:choose>					
+						</c:choose>
 					</li>
 				</c:forEach>
 			</ul>

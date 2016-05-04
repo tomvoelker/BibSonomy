@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,9 +26,6 @@
  */
 package org.bibsonomy.model.logic;
 
-import java.util.Map;
-
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.ResourcePersonRelation;
@@ -46,6 +43,11 @@ public interface PersonLogicInterface {
 
 	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) throws ResourcePersonAlreadyAssignedException;
 
+	/**
+	 * FIXME: remove database id
+	 * removes a resource relation
+	 * @param resourceRelationId
+	 */
 	public void removeResourceRelation(int resourceRelationId);
 
 	/**
@@ -57,6 +59,11 @@ public interface PersonLogicInterface {
 	
 	public Person getPersonById(PersonIdType idType, String id);
 	
+	/**
+	 * FIXME: remove database id
+	 * removes a person name from a specific person
+	 * @param personNameId
+	 */
 	public void removePersonName(Integer personNameId);
 
 	/**
