@@ -59,6 +59,14 @@ public class ServerDocumentFileLogic extends AbstractServerFileLogic implements 
 		return file;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.filesystem.DocumentFileLogic#getContentCacheFileForDocument(org.bibsonomy.model.Document)
+	 */
+	@Override
+	public File getContentCacheFileForDocument(final Document document) {
+		return new File(this.getFilePath(document.getFileHash()) + "_content.cache");
+	}
+	
 	@Override
 	public File getPreviewFile(Document document, PreviewSize preview) {
 		final File file = new File(FileUtil.getUserDocumentPreviewPath(this.path, document.getFileHash(), document.getFileName(), preview));
