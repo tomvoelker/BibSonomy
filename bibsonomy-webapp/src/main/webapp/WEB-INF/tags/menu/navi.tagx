@@ -49,6 +49,7 @@
 									</li>
 								</c:if>
 								<li><a href="${relativeUrlGenerator.prefix('discussed').getUserUrlByUserName(loginUserName)}"><fmt:message key="navi.discussedPosts"/></a></li>
+								<li><a href="/followers"><fmt:message key="navi.followedPosts"/></a></li>
 								
 								<c:if test="${not loginUser.settings.layoutSettings.simpleInterface}">
 									<li class="divider"><!-- KEEP ME --></li>
