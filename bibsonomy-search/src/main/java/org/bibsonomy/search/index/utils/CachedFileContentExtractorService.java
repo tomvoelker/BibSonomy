@@ -44,6 +44,10 @@ public class CachedFileContentExtractorService implements FileContentExtractorSe
 	@Override
 	public String extractContent(final Document document) {
 		final File file = getCacheFile(document);
+		// XXX: not nice, currently for the tests TODO: fix
+		if (file == null) {
+			return null;
+		}
 		synchronized(this) {
 			if (file.exists()) {
 				try (final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StringUtils.DEFAULT_CHARSET));) {
