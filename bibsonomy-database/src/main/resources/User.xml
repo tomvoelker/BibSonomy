@@ -272,7 +272,10 @@
 	
 	<!-- get all users, that follow the user (user, u)\in OF_FOLLOWER-->
 	<select id="getRelation_OF_FOLLOWER" resultMap="Common.user"	parameterClass="userParam">
-		SELECT user_name FROM friends WHERE tag_name = #followerTag# AND f_user_name = #userName#
+		SELECT user_name
+		FROM friends
+		JOIN user USING (user_name)
+		WHERE tag_name = #followerTag# AND f_user_name = #userName# AND user.spammer = 0
 	</select>
 	
 	<!-- get all users u, which user follows (user, u)\in FOLLOWER_OF-->
