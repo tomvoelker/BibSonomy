@@ -36,6 +36,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.SyncSettingsUpdateOperation;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
@@ -169,13 +170,23 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	 * Updates the synchronization data for a user
 	 * @param userName
 	 * @param service
+	 * @param operation TODO
 	 * @param session
 	 * 
 	 */
-	public void updateSyncServerForUser(final String userName, final SyncService service, final DBSession session) {
+	public void updateSyncServerForUser(final String userName, final SyncService service, final SyncSettingsUpdateOperation operation, final DBSession session) {
 		final SyncParam param = new SyncParam();
 		param.setUserName(userName);
 		param.setSyncService(service);
+		final SyncService syncServiceDetails = this.queryForObject("syncServiceServerForUser", param, SyncService.class, session);
+		if (!present(syncServiceDetails)) {
+			throw new IllegalStateException(service.getService() + " settings for user " + userName + " not found");
+		}
+		if (!SyncSettingsUpdateOperation.ALL.equals(operation)) {
+			// set to the known value
+			service.setAlreadySyncedOnce(syncServiceDetails.isAlreadySyncedOnce());
+		}
+		
 		session.update("updateSyncServerForUser", param);
 	}
 
@@ -204,7 +215,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	public SyncService getSyncServiceDetails(final URI serviceURI, final DBSession session) {
 		final SyncParam param = new SyncParam();
 		param.setService(serviceURI);
-			
+		
 		return this.queryForObject("getSyncServiceDetails", param, SyncService.class, session);
 	}
 
@@ -302,7 +313,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	
 	/**
 	 * @param session 
-	 * @return List of synchronization servers for Auto synchronization ('autosync' or direction is not 'both')
+	 * @return List of synchronization servers for Auto synchronization ('autosync' and direction is not 'both')
 	 */
 	public List<SyncService> getAutoSyncServer(DBSession session) {
 		final SyncParam param = new SyncParam();

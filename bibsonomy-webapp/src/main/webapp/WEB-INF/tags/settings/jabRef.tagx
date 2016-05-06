@@ -1,0 +1,112 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs">
+	
+	<jsp:directive.attribute name="command"  type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
+	<!--   ############################################# import tab ############################################# -->
+
+	<div id="selTab2" class="tab-pane ${(command.selTab eq 2) ? 'active' : ''}">
+		<fieldset>			
+			<!-- JabRef layout file -->
+			<!-- handle layout file -->
+			<c:set var="userName" value="${command.context.loginUser.name}" />
+			<c:set var="actionJabRef" />
+			
+			<form:form cssClass="form-horizontal" id="settingImportForm" action="/import/jabref?action=create&amp;ckey=${ckey}" method="post" enctype="multipart/form-data">
+				<fieldset>
+					<!-- "JabRef layout file"-title -->
+					<!-- new -->
+					<legend><fmt:message key="settings.jabRef.layoutfile" /></legend>
+					<div class="form-group">
+						<div class="col-sm-offset-3 col-sm-9">
+							<fmt:message key="settings.jabRef.explain">
+								<fmt:param><a href="/layout/custom/user/${fn:escapeXml(userName)}"><c:out value="${properties['project.name']}"/></a></fmt:param>		
+							</fmt:message>
+						</div>
+					</div>
+					
+					<!-- begin.layout (optional) -->
+					<!-- new -->
+					<div class="form-group">
+
+						<label for="jabref-file-begin" class="col-sm-3 control-label"><fmt:message key="settings.jabRef.begin"/></label>
+						
+						<div class="col-sm-9">
+							<c:choose>
+			        			<c:when test="${empty command.beginName}">
+		        					<c:set var="actionJabRef" value="create"/>
+			        				<input id="jabref-file-begin" name="fileBegin" type="file" class="fsInput fsSmall"/>
+			        			</c:when>
+			        			<c:otherwise>
+			        				<c:out value="${command.beginName} "/>
+			        				<a class="action" href="/import/jabref?hash=${command.beginHash}&amp;action=delete&amp;ckey=${mtl:encodePathSegment(ckey)}">delete</a>
+			        			</c:otherwise>
+			      			</c:choose>
+							<p class="help-block"><fmt:message key="settings.jabRef.begin.help"/></p>
+						</div>
+					</div>
+					
+		      		<!-- item.layout -->
+					<div class="form-group">
+						
+						<label for="jabref-file-item" class="col-sm-3 control-label">
+							<fmt:message key="settings.jabRef.item"/>
+						</label>
+
+						<div class="col-sm-9">
+				      		<c:choose>
+			        			<c:when test="${empty command.itemName}">
+			        				<c:set var="actionJabRef" value="create"/>
+			        				<input id="jabref-file-item" name="fileItem" type="file" class="fsInput fsSmall"/>
+			        			</c:when>
+			        			<c:otherwise>
+			        				<c:out value="${command.itemName} "/>
+	    		    				<a class="action" href="/import/jabref?hash=${command.itemHash}&amp;action=delete&amp;ckey=${mtl:encodePathSegment(ckey)}">delete</a>
+	        					</c:otherwise>
+			      			</c:choose>
+							<p class="help-block"><fmt:message key="settings.jabRef.item.help"/></p>
+						</div>
+					</div>
+
+		      		<!-- end.layout (optional) -->
+					<div class="form-group">
+					
+						<label for="jabref-file-end" class="col-sm-3 control-label"><fmt:message key="settings.jabRef.end"/></label>
+
+						<div class="col-sm-9">
+							<c:choose>
+		        				<c:when test="${empty command.endName}">
+			        				<c:set var="actionJabRef" value="create"/>
+			        				<input id="jabref-file-end" name="fileEnd" type="file" class="fsInput fsSmall"/>
+			        			</c:when>
+			        			<c:otherwise>
+			        				<c:out value="${command.endName} "/>
+			        				<a class="action" href="/import/jabref?hash=${command.endHash}&amp;action=delete&amp;ckey=${mtl:encodePathSegment(ckey)}">delete</a>
+			        			</c:otherwise>
+							</c:choose>
+							<p class="help-block"><fmt:message key="settings.jabRef.end.help"/></p>
+						</div>
+						
+						<input name="action" type="hidden" value="${actionJabRef}"/> 
+						<input name="importType" type="hidden" value="jabref"/>
+						<fmt:message var="jabRefButton" key="settings.jabRef.button"/>
+						<div class="col-sm-offset-3 col-sm-9">
+							<bsform:button type="submit" style="primary" size="defaultSize" value="${jabRefButton}" />
+						</div>
+					</div>
+				</fieldset>
+			</form:form>
+		</fieldset>
+	</div>
+</jsp:root>

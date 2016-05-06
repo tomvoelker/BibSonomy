@@ -425,7 +425,7 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	}
 
 	/**
-	 * runs the test defined by {@link #deleteGroup(String)} with a certain
+	 * runs the test defined by {@link #deleteGroup(String, boolean)} with a certain
 	 * argument. TODO: Implement this!
 	 * 
 	 * TODO: re-enable test as soon as rest server supports deleting groups
@@ -433,14 +433,14 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	@Ignore
 	@Test
 	public void deleteGroupTest() {
-		this.deleteGroup("hurzelGroupName");
+		this.deleteGroup("hurzelGroupName", false);
 	}
 	
 	@Override
-	public void deleteGroup(final String groupName) {
-		this.serverLogic.deleteGroup(groupName);
+	public void deleteGroup(final String groupName, boolean pending) {
+		this.serverLogic.deleteGroup(groupName, false);
 		EasyMock.replay(this.serverLogic);
-		this.clientLogic.deleteGroup(groupName);
+		this.clientLogic.deleteGroup(groupName, false);
 		EasyMock.verify(this.serverLogic);
 		assertLogin();
 	}
@@ -490,11 +490,11 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	 */
 	@Test
 	public void getGroupDetailsTest() {
-		this.getGroupDetails("hurzelGroupName");
+		this.getGroupDetails("hurzelGroupName", false);
 	}
 	
 	@Override
-	public Group getGroupDetails(final String groupName) {
+	public Group getGroupDetails(final String groupName, final boolean pending) {
 		final Group returnedGroupExpectation = ModelUtils.getGroup();
 		
 		/*
@@ -514,9 +514,9 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 			groupMembership.setUser(u);
 			returnedGroupExpectation.getMemberships().add(groupMembership);
 		}
-		EasyMock.expect(this.serverLogic.getGroupDetails(groupName)).andReturn(returnedGroupExpectation);
+		EasyMock.expect(this.serverLogic.getGroupDetails(groupName, false)).andReturn(returnedGroupExpectation);
 		EasyMock.replay(this.serverLogic);
-		final Group returnedGroup = this.clientLogic.getGroupDetails(groupName);
+		final Group returnedGroup = this.clientLogic.getGroupDetails(groupName, false);
 
 		CommonModelUtils.assertPropertyEquality(returnedGroupExpectation, returnedGroup, 5, Pattern.compile(".*users.*\\.(" + COMMON_USER_PROPERTIES + ")|.*\\.date|.*\\.scraperId|.*\\.openURL|.*groupId|user.*"));
 		EasyMock.verify(this.serverLogic);
@@ -525,15 +525,15 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 	}
 	
 	/**
-	 * runs the test defined by {@link #getGroups(boolean, int, int)} with certain arguments
+	 * runs the test defined by {@link #getGroups(boolean, String, int, int)} with certain arguments
 	 */
 	@Test
 	public void getGroupsTest() {
-		this.getGroups(false, 64, 129);
+		this.getGroups(false, null, 64, 129);
 	}
 	
 	@Override
-	public List<Group> getGroups(final boolean pending, final int start, final int end) {
+	public List<Group> getGroups(final boolean pending, String userName, final int start, final int end) {
 		final List<Group> expectedList = new ArrayList<Group>();
 		expectedList.add(ModelUtils.getGroup());
 		expectedList.get(0).setName("Group1");
@@ -552,9 +552,9 @@ public class LogicInterfaceProxyTest extends AbstractLogicInterface {
 		 */
 		expectedList.get(1).setPrivlevel(null);
 		
-		EasyMock.expect(this.serverLogic.getGroups(false, start, end)).andReturn(expectedList);
+		EasyMock.expect(this.serverLogic.getGroups(false, null, start, end)).andReturn(expectedList);
 		EasyMock.replay(this.serverLogic);
-		final List<Group> returnedGroups = this.clientLogic.getGroups(false,start, end);
+		final List<Group> returnedGroups = this.clientLogic.getGroups(false,null, start, end);
 		CommonModelUtils.assertPropertyEquality(expectedList, returnedGroups, 3, Pattern.compile(".*\\.groupId"));
 		EasyMock.verify(this.serverLogic);
 		assertLogin();

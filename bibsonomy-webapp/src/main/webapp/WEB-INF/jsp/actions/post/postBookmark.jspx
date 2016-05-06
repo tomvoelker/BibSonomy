@@ -17,12 +17,12 @@
 
 	<fmt:message key="navi.postBookmark" var="postBookmarkPageTitle"/>
 
-	<layout:paneLayout 
-		pageTitle="${postBookmarkPageTitle}" 
-		headerMessageKey="post_bookmark.heading" 
-		headerLogoClass="bookmarks" 
-		command="${command}" 
-		requPath="${requPath}" 
+	<layout:paneLayout
+		pageTitle="${postBookmarkPageTitle}"
+		headerMessageKey="post_bookmark.heading"
+		headerLogoClass="bookmarks"
+		command="${command}"
+		requPath="${requPath}"
 		activeTab="post"
 		minimizedContentWidth="${true}">
 
@@ -33,19 +33,13 @@
 		<jsp:attribute name="content">
 		
 			<fmt:message key="post_bookmark.description" var="desc" scope="request"/>
-		 	
-		 	
+			
 			<form:form cssClass="form-horizontal" role="form" method="POST" action="/editBookmark">
 				<fieldset>
 					<legend><c:out value="${postBookmarkPageTitle}" /></legend>
 					
 					<p><c:out value="${desc}" /></p>
-					<bsform:input id="url" labelColSpan="2" inputColSpan="10" placeholder="http://" path="post.resource.url" required="${true}" helpKey="post_bookmark.heading">
-						<jsp:attribute name="appendix">
-							<!-- <p class="help-block"><fmt:message key="post_bookmark.heading" /></p> -->
-						</jsp:attribute>
-					</bsform:input>
-					
+					<bsform:input id="url" labelColSpan="2" inputColSpan="10" placeholder="http://" path="post.resource.url" required="${true}" helpKey="post_bookmark.heading" />
 					<div class="form-group">
 						<div class="col-md-offset-2 col-md-10">
 							<fmt:message key="post.resource.post" var="post_bookmark" scope="request"/>

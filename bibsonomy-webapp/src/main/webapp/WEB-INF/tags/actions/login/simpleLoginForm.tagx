@@ -8,8 +8,8 @@
 	<jsp:directive.attribute name="authMethod" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="additionalContent" fragment="true" required="false"  />
 	<jsp:directive.attribute name="index" type="java.lang.Integer" required="false"  />
-	
-	<form action="/login_${authMethod}" id="form_${authMethod}" method="POST" cssClass="form-horizontal">
+	<!-- TODO: use url generator -->
+	<form action="/login_${authMethod}" id="form_${authMethod}" method="POST" class="form">
 		<div class="form-group">
 			<fmt:message var="usernameLabel" key="navi.username" />
 			<div class="input-group">

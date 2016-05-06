@@ -36,7 +36,6 @@ import org.bibsonomy.model.Wiki;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.webapp.command.GroupSettingsPageCommand;
-import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -75,7 +74,7 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 		
 		final User loginUser = command.getContext().getLoginUser();
 		command.setLoggedinUser(loginUser);
-		final Group group = this.logic.getGroupDetails(requestedGroup);
+		final Group group = this.logic.getGroupDetails(requestedGroup, false);
 		if (!present(group)) {
 			throw new AccessDeniedException("You are not a member of this group.");
 		}
@@ -102,7 +101,7 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 				command.setDescription(group.getDescription());
 				command.setPrivlevel(group.getPrivlevel().getPrivlevel());
 				command.setSharedDocuments(group.isSharedDocuments() ? 1 : 0);
-				command.setAllowJoin(group.isAllowJoin() ? 1 : 0);
+				command.setAllowJoin(group.isAllowJoin());
 				command.setDescription(group.getDescription());
 			}
 			command.setUser(groupUser);
@@ -113,7 +112,7 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 			command.addTab(GroupSettingsPageCommand.GROUP_SETTINGS, "navi.groupsettings");
 			command.addTab(GroupSettingsPageCommand.MEMBER_LIST_IDX, "settings.group.memberList");
 			command.addTab(GroupSettingsPageCommand.CV_IDX, "navi.cvedit");
-			command.addTab(GroupSettingsPageCommand.DELETE_GROUP, "settings.group.disband");
+			// command.addTab(GroupSettingsPageCommand.DELETE_GROUP, "settings.group.disband"); // TODO_GROUPS: readd
 			
 			if (!selectedByUser) {
 				command.setSelTab(GroupSettingsPageCommand.GROUP_SETTINGS);

@@ -33,6 +33,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Map;
 import java.util.Properties;
 
+import org.bibsonomy.common.enums.SyncSettingsUpdateOperation;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SyncService;
@@ -78,11 +79,11 @@ public class SyncClientTestDirectionSTOCTest extends AbstractSynchronizationClie
 		userCredentials.setProperty("apiKey", serverUser.getApiKey());
 		
 		final SyncService service = createServerService(STRATEGY, userCredentials, DIRECTION);
-		clientLogic.updateSyncServer(clientLogic.getAuthenticatedUser().getName(), service);
+		this.clientLogic.updateSyncServer(clientLogic.getAuthenticatedUser().getName(), service, SyncSettingsUpdateOperation.SETTINGS);
 		setModifiedBookmarkKeys(MODIFIED_BOOKMARK_KEYS);
 		setModifiedPublicationKeys(MODIFIED_PUBLICATION_KEYS);
 		
-		final Map<Class<? extends Resource>, SynchronizationData> syncData = sync.synchronize(clientLogic, this.syncServer);
+		final Map<Class<? extends Resource>, SynchronizationData> syncData = sync.synchronize(this.clientLogic, this.syncServer);
 		
 		for (final Class<? extends Resource> resourceType : resourceTypes) {
 			assertTrue(syncData.containsKey(resourceType));
@@ -90,12 +91,12 @@ public class SyncClientTestDirectionSTOCTest extends AbstractSynchronizationClie
 			final SynchronizationData data = syncData.get(resourceType);
 			assertNotNull(data);
 			
-			assertEquals(RESULT_STRING, data.getInfo());		
+			assertEquals(RESULT_STRING, data.getInfo());
 			/*
 			 * compare posts on client and server
 			 */
-			final Map<String, SynchronizationPost> serverPosts = mapFromList(serverLogic.getSyncPosts(serverUser.getName(), resourceType));
-			final Map<String, SynchronizationPost> clientPosts = mapFromList(clientLogic.getSyncPosts(clientUser.getName(), resourceType));
+			final Map<String, SynchronizationPost> serverPosts = mapFromList(this.serverLogic.getSyncPosts(serverUser.getName(), resourceType));
+			final Map<String, SynchronizationPost> clientPosts = mapFromList(this.clientLogic.getSyncPosts(clientUser.getName(), resourceType));
 
 			assertEquals(5, serverPosts.size());
 			assertEquals(serverPosts.size(), clientPosts.size());
@@ -103,7 +104,6 @@ public class SyncClientTestDirectionSTOCTest extends AbstractSynchronizationClie
 			checkModifiedKeys(resourceType, serverPosts, "server");
 			checkKeys(resourceType, clientPosts, "client");
 		}
-		
 	}
 
 }

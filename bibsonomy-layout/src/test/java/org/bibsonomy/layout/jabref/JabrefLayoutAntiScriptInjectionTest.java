@@ -65,7 +65,6 @@ public class JabrefLayoutAntiScriptInjectionTest extends AbstractJabrefLayoutTes
 		return initTests(TESTEDLAYOUTS, TESTCASEFOLDERPATH, ENTRYTYPE_SPLITSUFFIX);
 	}
 	
-	@Override
 	@Test
 	public void testRender() throws Exception {
 		testRender(getPosts(this.entryType));

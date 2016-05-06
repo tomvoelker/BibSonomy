@@ -121,7 +121,7 @@
 				|
 				+-->
           <script type="text/javascript">
-             var userName = "${mtl:encodeURI(command.context.loginUser.name)}";
+             var userName = "${mtl:encodePathSegment(command.context.loginUser.name)}";
              //<mtl:cdata>
              <![CDATA[
                 $(function(){

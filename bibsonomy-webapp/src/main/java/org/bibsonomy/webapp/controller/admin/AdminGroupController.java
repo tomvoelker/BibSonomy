@@ -47,6 +47,7 @@ import org.bibsonomy.webapp.command.admin.AdminGroupViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.security.access.AccessDeniedException;
 
@@ -54,7 +55,6 @@ import org.springframework.security.access.AccessDeniedException;
  * Controller for group admin page
  * 
  * TODO: Make ErrorAware for proper error messages
- * TODO: update the allowed fields of this controller TODO_GROUPS
  * 
  * @author bsc
  */
@@ -68,7 +68,6 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 	public View workOn(final AdminGroupViewCommand command) {
 		final RequestWrapperContext context = command.getContext();
 		final User loginUser = context.getLoginUser();
-		command.setPermissionsUpdated(false);
 		
 		/*
 		 * check user role
@@ -85,41 +84,23 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 			User requestingUser;
 			switch(action) {
 				case ACCEPT:
-					// TODO: extend getGroupDetails to retrieve pending groups TODO_GROUPS; see DECLINE
-					for (Group g : logic.getGroups(true, 0, Integer.MAX_VALUE)) {
-						if (g.getName().equals(group.getName())) {
-							group = g;
-							break;
-						}
-					}
+					group = this.logic.getGroupDetails(group.getName(), true);
 					
 					requestingUser = this.logic.getUserDetails(group.getGroupRequest().getUserName());
 					this.logic.updateGroup(group, GroupUpdateOperation.ACTIVATE, null);
 					if (present(requestingUser.getEmail())) {
 						this.mailUtils.sendGroupActivationNotification(group, requestingUser, LocaleUtils.toLocale(requestingUser.getSettings().getDefaultLanguage()));
 					}
-					break;
-				case CREATE:
-					command.setAdminResponse(createGroup(group));
-					requestingUser = this.logic.getUserDetails(group.getGroupRequest().getUserName());
-					if (present(requestingUser.getEmail())) {
-						this.mailUtils.sendGroupActivationNotification(group, requestingUser, LocaleUtils.toLocale(requestingUser.getSettings().getDefaultLanguage()));
-					}
-					break;
+					return new ExtendedRedirectView("/admin/group");
 				case DECLINE:
-					for (Group g : logic.getGroups(true, 0, Integer.MAX_VALUE)) {
-						if (g.getName().equals(group.getName())) {
-							group = g;
-							break;
-						}
-					}
-					
 					final String groupName = group.getName();
+					group = this.logic.getGroupDetails(groupName, true);
+					
 					requestingUser = this.logic.getUserDetails(group.getGroupRequest().getUserName());
 					
 					// delete the group
-					log.debug("grouprequest for group \"" + group.getName() + "\" declined");
-					this.logic.updateGroup(group, GroupUpdateOperation.DELETE, null);
+					log.debug("grouprequest for group \"" + groupName + "\" declined");
+					this.logic.deleteGroup(groupName, true);
 					
 					// send mail
 					String declineMessage = command.getDeclineMessage();
@@ -129,12 +110,9 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 					if (present(requestingUser.getEmail())) {
 						this.mailUtils.sendGroupDeclineNotification(groupName, declineMessage, requestingUser, LocaleUtils.toLocale(requestingUser.getSettings().getDefaultLanguage()));
 					}
-					break;
+					return new ExtendedRedirectView("/admin/group");
 				case FETCH_GROUP_SETTINGS:
 					setGroupOrMarkNonExistent(command);
-					break;
-				case UPDATE:
-					updateGroup(command);
 					break;
 				case UPDATE_PERMISSIONS:
 					this.updateGroupPermissions(command);
@@ -145,58 +123,9 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		}
 		
 		// load the pending groups
-		command.setPendingGroups(this.logic.getGroups(true, 0, Integer.MAX_VALUE));
+		command.setPendingGroups(this.logic.getGroups(true, null, 0, Integer.MAX_VALUE));
 		return Views.ADMIN_GROUP;
 	}
-
-	/**
-	 * Create a new group
-	 * TODO: Proper Error messages.
-	 * @param command
-	 */
-	@Deprecated // TODO: remove TODO_GROUPS
-	private String createGroup(final Group group) {
-		/*
-		 * Check if group-name is empty
-		 */
-		final String groupName = group.getName();
-		if (!present(groupName)) {
-			return "Group-creation failed: Group-name is empty!";
-		}
-		/*
-		 * check database for existing group or pending group
-		 */
-		if (logic.getGroups(false, 0, Integer.MAX_VALUE).contains(group)
-				|| logic.getGroups(true, 0, Integer.MAX_VALUE).contains(group)) {
-			return "Group already exists!";
-		}
-		
-		// Create the group ...
-		logic.createGroup(group);
-		// ... and activate it
-		logic.updateGroup(group, GroupUpdateOperation.ACTIVATE, null);
-		return "Successfully created new group " + group.getName() + "!";
-	}
-
-	/**
-	 * Update the settings of a group.
-	 * 
-	 * TODO: Find out when this is used.
-	 * 
-	 */
-	@Deprecated // TODO: remove TODO_GROUPS
-	private void updateGroup(final AdminGroupViewCommand command) {
-		final Group dbGroup = getGroupOrMarkNonExistent(command);
-		if (present(dbGroup)) {
-			Group commandGroup = command.getGroup();
-			dbGroup.setPrivlevel(commandGroup.getPrivlevel());
-			dbGroup.setSharedDocuments(commandGroup.isSharedDocuments());
-
-			logic.updateGroup(dbGroup, GroupUpdateOperation.UPDATE_SETTINGS, null);
-			command.setAdminResponse("Group updated successfully!");
-		}
-	}
-
 	
 	/**
 	 * TODO: Documentation.
@@ -234,7 +163,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 	 * TODO: Documentation.
 	 */
 	private Group getGroupOrMarkNonExistent(final AdminGroupViewCommand command) {
-		final Group dbGroup = logic.getGroupDetails(command.getGroup().getName());
+		final Group dbGroup = logic.getGroupDetails(command.getGroup().getName(), false);
 
 		if (!GroupUtils.isValidGroup(dbGroup)) {
 			command.setAdminResponse("The group \"" + command.getGroup().getName() + "\" does not exist.");

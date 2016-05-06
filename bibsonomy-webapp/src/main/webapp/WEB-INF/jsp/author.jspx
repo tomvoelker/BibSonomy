@@ -15,16 +15,16 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<c:set var="requestedAuthorEncoded" value="${mtl:encodeURI(command.requestedAuthor)}" />
+	<c:set var="requestedAuthor" value="${command.requestedAuthor}" />
 	<fmt:message key="navi.author" var="authorPageTitle" />
-	<c:set var="pageTitle" value="${authorPageTitle} :: ${command.requestedAuthor}" />
+	<c:set var="pageTitle" value="${authorPageTitle} :: ${requestedAuthor}" />
 	<layout:resourceLayout pageTitle="${pageTitle}" command="${command}" requPath="${requPath}" disableResourcetypeSelection="${true}" minimizedContentWidth="${true}" headline="${pageTitle}">
 		
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
 					<nav:authors />
-					<nav:crumb name="${command.requestedAuthor}" active="true" />
+					<nav:crumb name="${requestedAuthor}" active="true" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
@@ -35,19 +35,19 @@
 					<c:choose>
 						<c:when test="${command.scope.name() eq 'FEDERATED_AUTHOR' }">
 							<c:set var="pathMessageKey" value="navi.federatedAuthor"/>
-							<c:set var="authorUrl" value="${relativeUrlGenerator.getAuthorUrlByName(requestedAuthorEncoded)}?scope=${command.scope.name()}"/>
+							<c:set var="authorUrl" value="${relativeUrlGenerator.getAuthorUrlByName(requestedAuthor)}?scope=${command.scope.name()}"/>
 						</c:when>
 					</c:choose>
 				</c:when>
 				<c:otherwise>
-					<c:set var="pathMessageKey" value="navi.author"/>							
-					<c:set var="authorUrl" value="${relativeUrlGenerator.getAuthorUrlByName(requestedAuthorEncoded)}"/>
+					<c:set var="pathMessageKey" value="navi.author"/>
+					<c:set var="authorUrl" value="${relativeUrlGenerator.getAuthorUrlByName(requestedAuthor)}"/>
 				</c:otherwise>
 			</c:choose>
 			<parts:search scope="${command.scope}" pathMessageKey="${pathMessageKey}" formAction="${authorUrl}" formInputName="tag">
 				<jsp:attribute name="pathPart">
 					<span itemscope="itemscope" itemtype="http://schema.org/Person">
-						<a href="${authorUrl}" itemprop="name"><c:out value='${command.requestedAuthor}'/></a>
+						<a href="${authorUrl}" itemprop="name"><c:out value='${requestedAuthor}'/></a>
 					</span>
 				</jsp:attribute>
 			</parts:search>

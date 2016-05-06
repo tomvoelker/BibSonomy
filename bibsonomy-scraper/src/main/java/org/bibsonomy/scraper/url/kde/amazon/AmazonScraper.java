@@ -98,6 +98,8 @@ public class AmazonScraper extends AbstractUrlScraper {
 	 */
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+		
+		
 		sc.setScraper(this);
 		
 		// try to extract isbn and use the worldcat scraper

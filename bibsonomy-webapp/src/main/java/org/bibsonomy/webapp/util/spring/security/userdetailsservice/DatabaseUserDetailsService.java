@@ -52,7 +52,7 @@ public class DatabaseUserDetailsService implements UserDetailsService {
 	
 	@Override
 	public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException, DataAccessException {
-		final User user = this.getUserFromDatabase(username);	
+		final User user = this.getUserFromDatabase(username);
 		return new UserAdapter(user);
 	}
 

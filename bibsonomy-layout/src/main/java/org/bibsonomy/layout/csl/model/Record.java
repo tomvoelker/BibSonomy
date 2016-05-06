@@ -218,13 +218,19 @@ public class Record {
 	// Type
 	private String type;
 	
+	/** in case we want to filter duplicates on the client side we need this */
+	private String interhash;
+	
+	private String intrahash;
+	
+	private String username;
+	
 	/** documents of a post. not official part of csl */
 	private List<DocumentCslWrapper> documents = new ArrayList<DocumentCslWrapper>();
 	
 	/** misc fields of a publication, not official part of csl */
 	private Map<String, String> misc = new HashMap<String, String>();
-
-
+	
 	/**
 	 * @return the id
 	 */
@@ -1007,5 +1013,47 @@ public class Record {
 	 */
 	public void setMisc(Map<String, String> misc) {
 		this.misc = misc;
+	}
+
+	/**
+	 * @return the interhash
+	 */
+	public String getInterhash() {
+		return this.interhash;
+	}
+
+	/**
+	 * @param interhash the interhash to set
+	 */
+	public void setInterhash(String interhash) {
+		this.interhash = interhash;
+	}
+
+	/**
+	 * @return the intrahash
+	 */
+	public String getIntrahash() {
+		return this.intrahash;
+	}
+
+	/**
+	 * @param intrahash the intrahash to set
+	 */
+	public void setIntrahash(String intrahash) {
+		this.intrahash = intrahash;
+	}
+
+	/**
+	 * @return the username
+	 */
+	public String getUsername() {
+		return this.username;
+	}
+
+	/**
+	 * @param username the username to set
+	 */
+	public void setUsername(String username) {
+		this.username = username;
 	}
 }

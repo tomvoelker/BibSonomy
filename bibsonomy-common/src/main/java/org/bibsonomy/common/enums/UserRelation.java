@@ -42,7 +42,7 @@ public enum UserRelation {
 	/** users related based on computation of tfidf similarity */
 	TFIDF(2),
 	/** users related based on folkrank computation */
-	FOLKRANK(3),	
+	FOLKRANK(3),
 
 	/** source user is friend of target user (i.e. u1 -> u2) i.e. source user is in target users friend list
 	 * DO NOT USE THIS IF NOT ABSOLUTELY NECESSARY, try using OF_FRIEND instead
@@ -53,10 +53,8 @@ public enum UserRelation {
 	/** source user is curious about the target user */
 	CURIOUS_ABOUT(6), 
 	/** source user follows target user */
-	@Deprecated
 	FOLLOWER_OF(7),
 	/** target user follows source user */
-	@Deprecated
 	OF_FOLLOWER(8),
 	/** relationships can also be established by a custom tag */
 	TAGGED(9),
@@ -95,7 +93,7 @@ public enum UserRelation {
 	public static UserRelation getUserRelationById(int id) {
 		switch (id) {
 			case 0: return UserRelation.JACCARD; 
-			case 1: return UserRelation.COSINE; 			
+			case 1: return UserRelation.COSINE;
 			case 2: return UserRelation.TFIDF; 
 			case 3: return UserRelation.FOLKRANK; 
 			case 4: return UserRelation.FRIEND_OF; 
@@ -104,7 +102,7 @@ public enum UserRelation {
 			case 7: return UserRelation.FOLLOWER_OF;
 			case 8: return UserRelation.OF_FOLLOWER;
 			default: return UserRelation.FOLKRANK; 
-		}		
+		}
 	}
 	
 	/**
@@ -124,6 +122,4 @@ public enum UserRelation {
 	public boolean isInternal() {
 		return !UserRelation.TAGGED.equals(this);
 	}
-	
-	
 }

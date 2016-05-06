@@ -68,7 +68,6 @@ public class JabrefLayoutRendererTest extends AbstractJabrefLayoutTest{
 		return initTests(TESTEDLAYOUTS, TESTCASEFOLDERPATH, ENTRYTYPE_SPLITSUFFIX);
 	}
 	
-	@Override
 	@Test
 	public void testRender() throws Exception {
 		testRender(getPosts(this.entryType));

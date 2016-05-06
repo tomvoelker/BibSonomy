@@ -74,6 +74,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 			DatabaseSchemaInformation.DISCUSSION_TABLE);
 
 	private UserDatabaseManager userDatabaseManager;
+	private GroupDatabaseManager groupDatabaseManager;
 
 	/**
 	 * @return a singleton instance of this AdminDatabaseManager
@@ -165,20 +166,15 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		}
 
 		/*
+		 * users with groups can't be flagged as spammers
 		 * check if the user is a member of a group
-		 *
-		 * We can't use a global (i.e., class attribute) manager, since the
-		 * GroupDatabaseManager contains a UserDatabaseManager and thus we
-		 * have a circular dependency in the constructors.
 		 */
-		final GroupDatabaseManager groupDBManager = GroupDatabaseManager.getInstance();
-
-		if (groupDBManager.getGroupsForUser(username, true, session).size() > 0) {
+		final boolean isSpammer = user.isSpammer();
+		if (isSpammer && this.groupDatabaseManager.getGroupsForUser(username, true, session).size() > 0) {
 			throw new IllegalStateException("the user '" + username + "'cannot be flagged as spammer, because he is member of at least one group.");
 		}
 
 		final AdminParam param = new AdminParam();
-
 		param.setUserName(username);
 		param.setSpammer(user.getSpammer());
 		param.setToClassify(user.getToClassify());
@@ -190,7 +186,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 			/*
 			 * map boolean to int
 			 */
-			if (user.isSpammer()) {
+			if (isSpammer) {
 				user.setPrediction(SpamStatus.SPAMMER.getId());
 			} else {
 				user.setPrediction(SpamStatus.NO_SPAMMER.getId());
@@ -455,5 +451,12 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void setUserDatabaseManager(final UserDatabaseManager userDatabaseManager) {
 		this.userDatabaseManager = userDatabaseManager;
+	}
+
+	/**
+	 * @param groupDatabaseManager the groupDatabaseManager to set
+	 */
+	public void setGroupDatabaseManager(final GroupDatabaseManager groupDatabaseManager) {
+		this.groupDatabaseManager = groupDatabaseManager;
 	}
 }

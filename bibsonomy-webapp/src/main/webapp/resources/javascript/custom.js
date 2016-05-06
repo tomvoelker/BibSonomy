@@ -45,21 +45,23 @@ $(function() {
 	/**
 	 * publication details abstract and description more link
 	 */
-	maxChar = 350;
+	var defaultMaxChars = 350;
     	dots = "&hellip;";
 	moretext = "";
 	lesstext = "";
 
 	$('.show-more').each(function() {
-
+		var maxChar = defaultMaxChars;
 		var moreLink = $(document.createElement("a"));
 		var contentContainer = $(this).children(".contentContainer")[0];
 
 		if (contentContainer) {
-
+			if ($(this).attr('data-max-chars')) {
+				maxChar = parseInt($(this).data('max-chars'));
+			}
 			moreLink.data("text", contentContainer.innerHTML)
 					.html("(" + getString("more") + ")")
-					.addClass("moreLink")
+					.addClass("moreLink").addClass($(this).data('extra-class'))
 					.click(function(event) {
 						event.preventDefault();
 						var contentContainer = $(this.parentNode).children(".contentContainer")[0];
@@ -74,16 +76,48 @@ $(function() {
 									.removeClass("show-more")
 									.addClass("show-less");
 						}
-						shortenContent(contentContainer, moreLink.data("text"));
+						shortenContent(contentContainer, moreLink.data("text"), maxChar);
 						return false;
 					});
 
 			this.appendChild(moreLink[0]);
-			if (!shortenContent(contentContainer, moreLink.data("text"))) {
+			if (!shortenContent(contentContainer, moreLink.data("text"), maxChar)) {
 				moreLink.hide();
 			}
 		} //if (contentContainer)
-
+	});
+	var defaultMaxItemsInMoreList = 4;
+	var defaultMoreIcon = 'fa-caret-right';
+	var defaultLessIcon = 'fa-caret-up';
+	$('.more-list').each(function() {
+		var maxItemsInMoreList = defaultMaxItemsInMoreList;
+		var subItems = $(this).find("> li");
+		if (subItems.length > maxItemsInMoreList) {
+			var moreLessLink = $('<li class="more-link-item"></li>');
+			subItems.slice(maxItemsInMoreList).hide();
+			var link = $('<a class="more"><span class="fa fa-caret-right"></span><span class="desc">' + getString("more") + '...</span></a>');
+			link.click(function() {
+				var icon = $(this).find('.fa');
+				var descText;
+				var classToRemove;
+				var classToAdd;
+				if (icon.hasClass(defaultMoreIcon)) {
+					classToAdd = defaultLessIcon;
+					classToRemove = defaultMoreIcon;
+					descText = getString("less");
+					$(this).parent().parent().find('li').show();
+				} else {
+					classToAdd = defaultMoreIcon;
+					classToRemove = defaultLessIcon;
+					descText = getString("more");
+					$(this).parent().parent().find('li:not(.more-link-item)').slice(maxItemsInMoreList).hide();
+				}
+				icon.removeClass(classToRemove).addClass(classToAdd);
+				$(this).find('.desc').text(descText + "...");
+			});
+			moreLessLink.append(link);
+			$(this).append(moreLessLink);
+		}
 	});
 
 	/**
@@ -209,7 +243,7 @@ $(function() {
 
 	$(window).resize(sidebarAdjustments);
 
-	function shortenContent(el, text) {
+	function shortenContent(el, text, maxChar) {
 		var shortened = false;
 		if (el.innerHTML.length > maxChar + dots.length) {
 			text = text.substr(0, maxChar) + dots;

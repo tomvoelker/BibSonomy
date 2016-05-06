@@ -15,28 +15,27 @@
 		ORDER BY i.group_name
 	</select>
 	
-	<select id="getPendingGroup" resultMap="GroupCommon.group" parameterClass="String">
-		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, <include refid="requestColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage
-		FROM pending_groupids i 
-		  JOIN pendingUser u ON (i.group_name = u.user_name)
-		WHERE i.group_name = #groupname#
-	</select>
-	
 	<select id="getPendingGroups" resultMap="GroupCommon.group" parameterClass="groupParam">
 		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, <include refid="requestColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage
 		FROM pending_groupids i 
 		  JOIN pendingUser u ON (i.group_name = u.user_name)
+		<dynamic prepend="WHERE">
+			<isNotNull prepend="AND" property="userName">
+				i.request_user_name = #userName# 
+			</isNotNull>
+		</dynamic>
 		ORDER BY i.group_name
 		LIMIT #limit# OFFSET #offset#
 	</select>
 	
-	<select id="getRequestedPendingGroupsForUser" resultMap="GroupCommon.group" parameterClass="groupParam">
+	<select id="getPendingGroup" resultMap="GroupCommon.group" parameterClass="groupParam">
 		SELECT i.group, i.group_name, i.privlevel, i.sharedDocuments, i.allow_join, i.shortDescription, <include refid="requestColumns" />, <include refid="reportingColumns" />, u.user_realname, u.user_homepage
 		FROM pending_groupids i 
 		  JOIN pendingUser u ON (i.group_name = u.user_name)
-		WHERE i.request_user_name = #userName# 
-		ORDER BY i.group_name
-		LIMIT #limit# OFFSET #offset#
+		WHERE group_name = #requestedGroupName#
+		<isNotEmpty prepend="AND" property="userName">
+			i.request_user_name = #userName#
+		</isNotEmpty>
 	</select>
 
 	<select id="getGroupWithMemberships" resultMap="GroupCommon.groupWithMembershipsAndReportings" parameterClass="string">
@@ -145,8 +144,8 @@
 	</delete>
 
 	<insert id="activateGroup" parameterClass="string">
-		INSERT INTO groupids (`group_name`, `group`, `privlevel`, `sharedDocuments`)
-		SELECT `group_name`, `group`, `privlevel`, `sharedDocuments`
+		INSERT INTO groupids (group_name, `group`, privlevel, sharedDocuments, shortDescription)
+		SELECT group_name, `group`, privlevel, sharedDocuments, shortDescription
 		FROM pending_groupids 
 		WHERE pending_groupids.group_name = #name#
 	</insert>
@@ -157,8 +156,8 @@
 	</delete>
 	
 	<insert id="insertPendingGroup" parameterClass="group">
-		INSERT INTO pending_groupids (group_name, `group`, privlevel, sharedDocuments, request_user_name, request_reason)
-		VALUES (#name#, #groupId#, #privlevel#, #sharedDocuments#, #groupRequest.userName#, #groupRequest.reason#)
+		INSERT INTO pending_groupids (group_name, `group`, privlevel, sharedDocuments, shortDescription, request_user_name, request_reason)
+		VALUES (#name#, #groupId#, #privlevel#, #sharedDocuments#, #description#, #groupRequest.userName#, #groupRequest.reason#)
 	</insert>
 
 	<delete id="deletePendingGroup" parameterClass="string">

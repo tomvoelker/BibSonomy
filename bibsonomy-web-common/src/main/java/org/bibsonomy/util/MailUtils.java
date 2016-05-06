@@ -160,7 +160,7 @@ public class MailUtils {
 				UrlUtils.safeURIEncode(loginUser.getName()).toLowerCase(),
 				projectName.toLowerCase(),
 				projectEmail,
-				absoluteURLGenerator.getGroupSettingsUrlByGroupName(groupName)+"?selTab=1#selTab1"
+				absoluteURLGenerator.getGroupSettingsUrlByGroupName(groupName, Integer.valueOf(1))
 		};
 		
 		/*
@@ -233,7 +233,7 @@ public class MailUtils {
 			UserUtils.getNiceUserName(requestingUser, true),
 			group.getName(),
 			absoluteURLGenerator.getGroupUrlByGroupName(group.getName()),
-			absoluteURLGenerator.getGroupSettingsUrlByGroupName(group.getName()),
+			absoluteURLGenerator.getGroupSettingsUrlByGroupName(group.getName(), null),
 			projectHome,
 			projectEmail
 		};
@@ -355,6 +355,33 @@ public class MailUtils {
 		final String[] recipient = {userEmail};
 		try {
 			sendPlainMail(recipient,  messageSubject, messageBody, projectRegistrationFromAddress);
+			return true;
+		} catch (final MessagingException e) {
+			log.fatal("Could not send reminder mail: " + e.getMessage());
+		}
+		return false;
+	}
+	
+	/**
+	 * Method to send an eMail notification regarding the auto-sync 
+	 * @param userName
+	 * @param userEmail
+	 * @param syncClientName
+	 * @param locale
+	 * @return true, if the mail could be send without errors
+	 */
+	public boolean sendSyncErrorMail(final String userName, final String userEmail, final String syncClientName, final Locale locale){
+		final Object[] messagesParameters = new Object[]{userName, projectName, projectHome, projectBlog, syncClientName};
+		
+		final String messageBody = messageSource.getMessage("mail.sync.body", messagesParameters, locale);
+		final String messageSubject = messageSource.getMessage("mail.sync.subject", messagesParameters, locale);
+		
+		/*
+		 * set the recipients
+		 */
+		final String[] recipient = {userEmail};
+		try {
+			this.sendHTMLMail(recipient,  messageSubject, messageBody, projectRegistrationFromAddress);
 			return true;
 		} catch (final MessagingException e) {
 			log.fatal("Could not send reminder mail: " + e.getMessage());
