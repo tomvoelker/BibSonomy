@@ -55,6 +55,14 @@ public class ServerFileLogic implements FileLogic {
 		return this.documentFileLogic.getFileForDocument(document);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.filesystem.DocumentFileLogic#getContentCacheFileForDocument(org.bibsonomy.model.Document)
+	 */
+	@Override
+	public File getContentCacheFileForDocument(Document document) {
+		return this.documentFileLogic.getContentCacheFileForDocument(document);
+	}
+	
 	@Override
 	public File getPreviewFile(Document document, PreviewSize preview) {
 		return this.documentFileLogic.getPreviewFile(document, preview);
