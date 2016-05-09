@@ -17,9 +17,6 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:x="http://java.sun.com/jsp/jstl/xml"> 
 	
-	<jsp:directive.page contentType="text/xml; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<body>
-    	${fn:escapeXml(command.xml)}
-    </body>
-	
-</jsp:root>
+	<jsp:directive.page contentType="text/text; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+    	${command.xml}
+	</jsp:root>

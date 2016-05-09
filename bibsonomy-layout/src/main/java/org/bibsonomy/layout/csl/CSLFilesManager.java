@@ -68,7 +68,7 @@ public class CSLFilesManager {
 			filename = filename.replaceAll(".CSL", "");
 			String displayname;
 			try {
-				displayname = nameToTitle(f.getName());
+				displayname = nameToTitle(filename);
 			} catch (ParserConfigurationException | SAXException | IOException e) {
 				return  "FAILED AT FILE:" + filename;
 			}
