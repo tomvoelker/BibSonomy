@@ -1,18 +1,13 @@
 package org.bibsonomy.webapp.controller;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.net.URL;
-
-import org.bibsonomy.common.enums.CSLStyles;
+import org.bibsonomy.layout.csl.CSLFilesManager;
 import org.bibsonomy.webapp.command.CSLStyleCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
 /**
- * TODO: add documentation to this class
+ * 
  *
  * @author jp
  */
@@ -38,46 +33,13 @@ public class CSLStyleController implements MinimalisticController<CSLStyleComman
 	 */
 	@Override
 	public View workOn(CSLStyleCommand command) {
-		// returns the XML for a given style which will be looked up in a enum
 
-		CSLStyles Style = null;
+		CSLFilesManager CSLFilesManager = new CSLFilesManager();
 		if (command.getStyle() == null || command.getStyle().isEmpty()) {
-			try {
-				command.setXml(readStyles());
-			} catch (IOException e) {
-				command.setXml("sumtin went holibly wlong");
-			}
+			command.setXml(CSLFilesManager.allToJson());
 			return Views.CSL_STYLE; 
 		}
-		
-		try {
-			Style = CSLStyles.valueOf(command.getStyle().toUpperCase());
-		} catch (java.lang.IllegalArgumentException iae) {
-			command.setXml("No such style available: " + command.getStyle());
-			return Views.CSL_STYLE;
-		}
-		
-		// leave layout as xml
-		command.setXml(Style.getXML());
+		command.setXml(CSLFilesManager.nameToXML(command.getStyle()));
 		return Views.CSL_STYLE;
-	}
-	
-	private String readStyles() throws IOException{
-		final String directory = "org/bibsonomy/layout/csl/";
-		final String cslFolderDirec = this.getClass().getClassLoader().getResource(directory).getPath();
-		final File CSLFolder = new File(cslFolderDirec);
-		String returner = "";
-		
-		//only reading .csl files
-		FilenameFilter CSLFilter = new FilenameFilter(){
-			@Override
-			public boolean accept(File dir, String name) {
-		        return name.toLowerCase().endsWith(".csl");
-		    }
-		};
-		
-		for(File f : CSLFolder.listFiles(CSLFilter)){
-			
-		}
 	}
 }
