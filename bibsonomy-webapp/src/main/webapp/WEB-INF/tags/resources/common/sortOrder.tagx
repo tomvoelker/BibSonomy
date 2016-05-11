@@ -7,8 +7,6 @@
 
 	<jsp:directive.attribute name="requPathAndQuery" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="sortPageOrder" type="java.lang.String" required="true" />
-	
-	<c:set var="escapedRequestPathAndQuery" value="${fn:escapeXml(requPathAndQuery)}" />
 	<!--+
 		+ actions concerning different sorting orders
 		+-->	
@@ -18,7 +16,7 @@
 			<span class="italic"><fmt:message key="post.meta.sort.order.ascending"/></span>
 		</c:when>
 		<c:otherwise>
-			<a href="${mtl:setParam(escapedRequestPathAndQuery, 'sortPageOrder', 'asc')}"><fmt:message key="post.meta.sort.order.ascending"/></a>
+			<a href="${mtl:setParam(requPathAndQuery, 'sortPageOrder', 'asc')}"><fmt:message key="post.meta.sort.order.ascending"/></a>
 		</c:otherwise>
 	</c:choose>${mtl:ch('nbsp')}|${mtl:ch('nbsp')}
 	<c:choose>
@@ -26,7 +24,7 @@
 			<span class="italic"><fmt:message key="post.meta.sort.order.descending"/></span>
 		</c:when>
 		<c:otherwise>
-			<a href="${mtl:setParam(escapedRequestPathAndQuery, 'sortPageOrder', 'desc')}"><fmt:message key="post.meta.sort.order.descending"/></a>
+			<a href="${mtl:setParam(requPathAndQuery, 'sortPageOrder', 'desc')}"><fmt:message key="post.meta.sort.order.descending"/></a>
 		</c:otherwise>
 	</c:choose>
 	)

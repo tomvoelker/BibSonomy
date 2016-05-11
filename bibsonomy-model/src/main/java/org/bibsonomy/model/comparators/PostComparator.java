@@ -150,7 +150,7 @@ public abstract class PostComparator implements Serializable {
 			comp = i2 - i1;
 		}
 		if (comp == 0) throw new SortKeyIsEqualException();
-		return (comp > 0 ? 1 : 0);
+		return (comp > 0 ? 1 : -1);
 	}
 	
 	/**
