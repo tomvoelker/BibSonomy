@@ -85,8 +85,6 @@ public class FollowersPageController extends SingleResourceListController implem
 		
 		// personalization settings
 		final int entriesPerPage = Parameters.NUM_RESOURCES_FOR_PERSONALIZED_RANKING;
-		command.setSortPage("ranking");
-		command.setSortPageOrder("desc");
 		command.setPersonalized(true);
 		command.setDuplicates(Duplicates.NO);
 		

@@ -49,7 +49,7 @@ public class ResourceViewCommand extends BaseCommand {
 	/** default value for sortPage */
 	public static final String DEFAULT_SORTPAGE = "none";
 	/** default value for sortPageOrder */
-	public static final String DEFAULT_SORTPAGEORDER = "asc";
+	public static final String DEFAULT_SORTPAGEORDER = "none";
 	
 	private TagCloudCommand tagcloud = new TagCloudCommand();
 	
