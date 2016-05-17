@@ -174,7 +174,7 @@
 					<!-- new -->
 					<fmt:message var="labelText" key="settings.tag.itemsPerPage" />
 					<fmt:message var="helpText" key="settings.tag.itemsPerPage.help"/>
-					<bsform:input path="user.settings.listItemcount" labelColSpan="3"  labelText="${labelText }" inputColSpan="9" helpText="${helpText }" />
+					<bsform:input path="user.settings.listItemcount" labelColSpan="3"  labelText="${labelText}" inputColSpan="9" helpText="${helpText }" />
 					<div class="dissError">
 						<form:errors path="user.settings.listItemcount" />
 					</div>
@@ -207,7 +207,7 @@
 					</form:label>
 					
 					<div class="input-group col-sm-9" inputColSpan="8">
-						<input class='form-control typeahead' id='searchCitationAutocomplete' type='text' name='searchCitationAutocomplete' autocomplete="off" placeholder='BibTeX, Endnote, Jabref, CSL ...'/>
+						<input class='form-control typeahead' id='searchCitationAutocomplete' type='text' name='searchCitationAutocomplete' autocomplete="off" placeholder='BibTeX, EndNote, CSL, JabRef...'/>
 					</div>
 				
 					

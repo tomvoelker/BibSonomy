@@ -20,6 +20,8 @@ $(function() {
 	
 	//getting external CSL for JABREF styles
 	$.get("/csl-style", function (data) {
+		data = $.trim(data);
+		data = $.parseJSON(data);
 		processResultCSL(data);
 	});
 	
@@ -51,7 +53,7 @@ $(function() {
 			//		alert("Value:" + data.layouts[prop].displayName);
 		
 			var CSLData = '{"source":"CSL","displayName":"' + data.layouts[prop].displayName + '","name":"' + data.layouts[prop].name.toUpperCase() +'"}';
-			var CSLObj = $.parseJSON(JabrefData);
+			var CSLObj = $.parseJSON(CSLData);
 			jsonObj.push(CSLObj);
 		}
 	
@@ -112,7 +114,7 @@ $(function() {
 	function clearFavouriteLayoutsList() { //removing duplicates
 		var seen = {};
 		$('.favouriteLayoutsListItem').each(function() {
-			var txt = $(this).text().toUpperCase();
+			var txt = $(this).text();
 			if (seen[txt])
 				$(this).remove();
 			else
