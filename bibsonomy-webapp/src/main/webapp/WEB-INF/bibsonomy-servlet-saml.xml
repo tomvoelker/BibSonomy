@@ -186,10 +186,11 @@
 	<bean id="metadataDisplayFilter" class="org.springframework.security.saml.metadata.MetadataDisplayFilter" />
 
 	<!-- SAML Authentication Provider responsible for validating of received SAML messages -->
-	<bean id="samlAuthenticationProvider" class="org.springframework.security.saml.SAMLAuthenticationProvider">
+	<bean id="samlAuthenticationProvider" class="org.bibsonomy.webapp.util.spring.security.provider.SAMLRestrictedAuthenticationProvider">
 		<!-- OPTIONAL property: can be used to store/load user data after login -->
 		<property name="userDetails" ref="samlUserDetails" />
 		<property name="forcePrincipalAsString" value="false" />
+		<property name="preSAMLChecker" ref="preSAMLChecker" />
 	</bean>
 	
 	<bean id="samlCredsAuthProvider" class="org.bibsonomy.webapp.util.spring.security.provider.SamlCredAuthProvider">
@@ -205,6 +206,17 @@
 		</property>
 		<property name="userDetailsService" ref="databaseUserService"/>
 		<property name="attributeExtractor" ref="samlAttributeExtractor" />
+	</bean>
+	
+	<alias name="${auth.saml.prechecker}" alias="preSAMLChecker" />
+	
+	<bean id="defaultSAMLPreChecker" class="org.bibsonomy.webapp.util.spring.security.saml.credential.checker.DefaultSAMLCredentialChecker" />
+	<bean id="requiredAttributesChecker" class="org.bibsonomy.webapp.util.spring.security.saml.credential.checker.RequiredAttributesChecker">
+		<property name="requiredAttributes">
+			<bean class="org.bibsonomy.webapp.util.spring.factorybeans.JsonToMapFactoryBean">
+				<constructor-arg value="${auth.saml.prechecker.requiredAttribures}" />
+			</bean>
+		</property>
 	</bean>
 	
 	<bean id="samlAuthenticationManager" class="org.springframework.security.authentication.ProviderManager">
@@ -224,6 +236,7 @@
 		<property name="authenticationManager" ref="samlAuthenticationManager" />
 		<property name="authenticationSuccessHandler" ref="successRedirectHandler" />
 		<property name="rememberMeServices" ref="internalRememberMeServices" />
+		<property name="authenticationFailureHandler" ref="failureHandler" />
 	</bean>
 
 	<!-- Processing filter for WebSSO Holder-of-Key profile -->

@@ -28,6 +28,8 @@ package org.bibsonomy.webapp.util.spring.security.exceptionmapper;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import javax.servlet.http.HttpSession;
+
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.util.spring.security.exceptions.SamlUsernameNotFoundException;
 import org.bibsonomy.webapp.util.spring.security.userattributemapping.UserAttributeMapping;
@@ -38,6 +40,10 @@ import org.springframework.security.saml.SAMLCredential;
  * @author jensi
  */
 public class SamlUsernameNotFoundExceptionMapper extends UsernameNotFoundExceptionMapper {
+	
+	/** creds for later authentication */
+	public static final String ATTRIBUTE_SAML_CREDS = "SAML_CREDS";
+	
 	
 	private UserAttributeMapping<SAMLCredential, ?> attributeExtractor;
 	
@@ -51,10 +57,22 @@ public class SamlUsernameNotFoundExceptionMapper extends UsernameNotFoundExcepti
 		final User user = new User();
 		if (e instanceof SamlUsernameNotFoundException) {
 			final SAMLCredential ctx = ((SamlUsernameNotFoundException) e).getSamlCreds();
-			attributeExtractor.populate(user, ctx);
+			this.attributeExtractor.populate(user, ctx);
 		}
 		user.setToClassify(0);
 		return user;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.webapp.util.spring.security.exceptionmapper.UsernameNotFoundExceptionMapper#writeAdditionAttributes(javax.servlet.http.HttpSession)
+	 */
+	@Override
+	public void writeAdditionAttributes(final HttpSession session, final UsernameNotFoundException e) {
+		if (e instanceof SamlUsernameNotFoundException) {
+			final SAMLCredential ctx = ((SamlUsernameNotFoundException) e).getSamlCreds();
+			session.setAttribute(ATTRIBUTE_SAML_CREDS, ctx);
+		}
 	}
 
 	/**

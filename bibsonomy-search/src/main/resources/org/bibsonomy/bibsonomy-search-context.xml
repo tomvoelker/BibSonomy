@@ -60,4 +60,20 @@
 	<bean id="searchInfoLogic" class="org.bibsonomy.search.SearchInfoDBLogic">
 		<property name="sessionFactory" ref="searchSessionFactory" />
 	</bean>
+	
+	<bean id="fileContentExtractorService" class="org.bibsonomy.search.index.utils.CachedFileContentExtractorService">
+		<constructor-arg>
+			<bean class="org.bibsonomy.search.index.utils.SimpleFileContentExtractorService">
+				<property name="extractors">
+					<list>
+						<bean class="org.bibsonomy.search.index.utils.extractor.PlainTextExtractor" />
+						<bean class="org.bibsonomy.search.index.utils.extractor.PDFExtractor" />
+					</list>
+				</property>
+				<property name="fileLogic" ref="fileLogic" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg ref="fileLogic" />
+	</bean>
+	
 </beans>

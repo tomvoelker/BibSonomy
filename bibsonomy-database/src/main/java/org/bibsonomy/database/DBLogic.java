@@ -63,6 +63,7 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SpamStatus;
+import org.bibsonomy.common.enums.SyncSettingsUpdateOperation;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
@@ -406,7 +407,14 @@ public class DBLogic implements LogicInterface {
 			 * statements silently fails. :-(
 			 */
 			log.debug("try to set syncdata as planned");
-			this.syncDBManager.insertSynchronizationData(userName, service, resourceType, new Date(), SynchronizationStatus.PLANNED, session);
+
+			final SyncService syncService = this.syncDBManager.getSyncServiceDetails(service, session);
+			if (present(syncService)) {
+				this.syncDBManager.insertSynchronizationData(userName, service, resourceType, new Date(), SynchronizationStatus.PLANNED, session);
+			} else {
+				log.error("no SyncService found with URI: " + service.toString());
+				throw new IllegalArgumentException("no SyncService found with URI: " + service.toString());
+			}
 
 			/*
 			 * get posts from server (=this machine)
@@ -519,11 +527,11 @@ public class DBLogic implements LogicInterface {
 	 * .String, java.net.URI, java.util.Properties)
 	 */
 	@Override
-	public void updateSyncServer(final String userName, final SyncService service) {
+	public void updateSyncServer(final String userName, final SyncService service, SyncSettingsUpdateOperation operation) {
 		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
 		final DBSession session = this.openSession();
 		try {
-			this.syncDBManager.updateSyncServerForUser(userName, service, session);
+			this.syncDBManager.updateSyncServerForUser(userName, service, operation, session);
 		} finally {
 			session.close();
 		}
@@ -923,7 +931,7 @@ public class DBLogic implements LogicInterface {
 				return this.groupDBManager.getPendingGroup(groupName, requestingUser, session);
 			}
 			
-			final Group myGroup = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, true, session);
+			final Group myGroup = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, true, this.permissionDBManager.isAdmin(this.loginUser), session);
 			if (!GroupUtils.isValidGroup(myGroup)) {
 				return null;
 			}
@@ -1322,7 +1330,7 @@ public class DBLogic implements LogicInterface {
 			session.beginTransaction();
 
 			// check the groups existence and retrieve the current group
-			final Group group = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, false, session);
+			final Group group = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, false, false, session);
 			// TODO: When implementing DELETE, alter this check!
 			if (!GroupUtils.isValidGroup(group) && !(GroupUpdateOperation.ACTIVATE.equals(operation) || GroupUpdateOperation.DELETE_GROUP_REQUEST.equals(operation))) {
 				throw new IllegalArgumentException("Group does not exist");

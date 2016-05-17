@@ -91,7 +91,14 @@ public class DummyFileLogic implements FileLogic {
 
 	@Override
 	public File getFileForDocument(Document document) {
-		// TODO Auto-generated method stub
+		return new File(document.getFileHash());
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.filesystem.DocumentFileLogic#getContentCacheFileForDocument(org.bibsonomy.model.Document)
+	 */
+	@Override
+	public File getContentCacheFileForDocument(Document document) {
 		return null;
 	}
 

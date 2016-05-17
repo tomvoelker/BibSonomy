@@ -40,6 +40,7 @@ CREATE TABLE `sync`(
   `direction` varchar(4) default 'both',
   `strategy` varchar(2) default 'lw',
   `autosync` boolean default false,
+  `already_synced_once` boolean default false, 
    PRIMARY KEY  (`service_id`, `user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -490,23 +491,6 @@ CREATE TABLE `friends` (
 SET character_set_client = @saved_cs_client;
 
 --
--- Table structure for table `followers`
---
-
-DROP TABLE IF EXISTS `followers`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `followers` (
-  `followers_id` int(11) NOT NULL auto_increment,
-  `user_name` varchar(30) NOT NULL default '',
-  `f_user_name` varchar(30) NOT NULL default '',
-  `fellowship_date` datetime NOT NULL default '1815-12-10 00:00:00',
-  PRIMARY KEY  (`followers_id`),
-  UNIQUE KEY `unique_followers` (`user_name`,`f_user_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
-SET character_set_client = @saved_cs_client;
-
---
 -- Table structure for table `group_tagsets`
 --
 
@@ -864,23 +848,6 @@ CREATE TABLE `log_friends` (
   `friendship_date` datetime NOT NULL default '1815-12-10 00:00:00',
   `friendship_end_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY  (`friends_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1565 DEFAULT CHARSET=utf8;
-SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `log_followers`
---
-
-DROP TABLE IF EXISTS `log_followers`;
-SET @saved_cs_client     = @@character_set_client;
-SET character_set_client = utf8;
-CREATE TABLE `log_followers` (
-  `followers_id` int(11) NOT NULL auto_increment,
-  `user_name` varchar(30) NOT NULL default '',
-  `f_user_name` varchar(30) NOT NULL default '',
-  `fellowship_date` datetime NOT NULL default '1815-12-10 00:00:00',
-  `fellowship_end_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-  PRIMARY KEY  (`followers_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1565 DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 

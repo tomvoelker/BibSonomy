@@ -179,7 +179,10 @@ public class GroupRequestController implements ValidationAwareController<GroupRe
 	@Override
 	public GroupRequestCommand instantiateCommand() {
 		final GroupRequestCommand command = new GroupRequestCommand();
-		command.setGroup(new Group());
+		final Group group = new Group();
+		// init the group request, we need this object for GroupCreationMode.AUTOMATIC
+		group.setGroupRequest(new GroupRequest());
+		command.setGroup(group);
 		return command;
 	}
 

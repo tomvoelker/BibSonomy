@@ -117,7 +117,7 @@ public final class RestServlet extends HttpServlet {
 
 	private UrlRenderer urlRenderer;
 	private RendererFactory rendererFactory;
-
+	
 	// store some infos about the specific request or the webservice (i.e.
 	// document path)
 	private final Map<String, String> additionalInfos = new HashMap<String, String>();
@@ -231,7 +231,7 @@ public final class RestServlet extends HttpServlet {
 			final UploadedFileAccessor uploadAccessor = new DualUploadedFileAccessor(request);
 
 			// choose rendering format (defaults to xml)
-			final RenderingFormat renderingFormat = RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HeaderUtils.HEADER_ACCEPT), getMainContentType(request));
+			final RenderingFormat renderingFormat = getRenderingFormatForError(request);
 
 			// create Context which selects the appropriate strategy for the
 			// requested API URL
@@ -366,7 +366,8 @@ public final class RestServlet extends HttpServlet {
 	 */
 	private void sendError(final HttpServletRequest request, final HttpServletResponse response, final int code, final String message) throws IOException {
 		// get renderer
-		final RenderingFormat mediaType = RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HeaderUtils.HEADER_ACCEPT), getMainContentType(request));
+		// FIXME: handle exception if accept != content rendering format
+		final RenderingFormat mediaType = getRenderingFormatForError(request);
 		final Renderer renderer = this.rendererFactory.getRenderer(mediaType);
 
 		// send error
@@ -380,6 +381,26 @@ public final class RestServlet extends HttpServlet {
 		writer.close();
 		response.setContentLength(cachingStream.size());
 		response.getOutputStream().print(cachingStream.toString(RESPONSE_ENCODING));
+	}
+
+	/**
+	 * @param request
+	 * @return the rendering format 
+	 */
+	protected static RenderingFormat getRenderingFormatForError(final HttpServletRequest request) {
+		try {
+			return RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HeaderUtils.HEADER_ACCEPT), getMainContentType(request));
+		} catch (final UnsupportedMediaTypeException e) {
+			// ignore unsupported media types
+			try {
+				// try only with url parameter and accept header
+				return RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HeaderUtils.HEADER_ACCEPT), null);
+			} catch (final UnsupportedMediaTypeException e2) {
+				// ignore the last time and just return the default rendering format
+			}
+		}
+		
+		return RESTUtils.DEFAULT_RENDERING_FORMAT;
 	}
 
 	/**

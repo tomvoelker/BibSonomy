@@ -46,6 +46,12 @@ public interface DocumentFileLogic {
 	public File getFileForDocument(Document document);
 	
 	/**
+	 * @param document
+	 * @return the cache file for the content of the document
+	 */
+	public File getContentCacheFileForDocument(Document document);
+	
+	/**
 	 * TODO: return only file path?
 	 * @param document
 	 * @param preview

@@ -69,10 +69,10 @@ public class WebUtils {
 	private static final int MAX_REDIRECT_COUNT = 10;
 	
 	/** the connection timeout */
-	private static final int CONNECTION_TIMEOUT = 30 * 1000;
+	private static final int CONNECTION_TIMEOUT = 5 * 1000;
 	
 	/** the read timeout */
-	private static final int READ_TIMEOUT = 30 * 1000;
+	private static final int READ_TIMEOUT = 5 * 1000;
 
 	/** The user agent used for all requests with {@link HttpURLConnection}. */
 	private static final String USER_AGENT_PROPERTY_VALUE = "BibSonomy/2.0.32 (Linux x86_64; en) Gecko/20120714 Iceweasel/3.5.16 (like Firefox/3.5.16)";
@@ -552,18 +552,20 @@ public class WebUtils {
 	}
 	
 	/**
-	 * FIXME: document the difference between this method and {@link #getCookies(URL)}
 	 * 
 	 * @param url
 	 * @return the cookies
 	 * @throws IOException
 	 */
-	public static String getSpecialCookies(final URL url) throws IOException {
+	public static String getLongCookies(final URL url) throws IOException {
+		List<String> cookies = new ArrayList<String>();
 		final GetMethod getMethod = new GetMethod(url.toString());
-		CLIENT.executeMethod(getMethod);
-		getMethod.getResponseHeaders("Set-Cookie");
-		
-		return getCookies(url);
+        int executeMethod = CLIENT.executeMethod(getMethod);
+        Header[] responseHeaders = getMethod.getResponseHeaders("Set-Cookie");
+        for (int i = 0; i < responseHeaders.length; i++) {
+        	cookies.add(responseHeaders[i].getValue().toString());
+		}
+		return buildCookieString(cookies);
 	}
 	/**
 	 * @param url the url
@@ -650,6 +652,13 @@ public class WebUtils {
 					 * utf-8; qs=1
 					 */
 					charSet = charSet.substring(0, charsetEnding);
+				}
+				/*
+				 * reomove the "" from the charSet if it is contained
+				 */
+				
+				if (charSet.startsWith("\"")) {
+					charSet = charSet.replaceAll("\"", "");
 				}
 				return charSet.trim().toUpperCase();
 			} 

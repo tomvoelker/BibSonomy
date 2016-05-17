@@ -35,7 +35,7 @@ import org.bibsonomy.model.GoldStandardPublication;
 public class SearchGoldStandardLogic extends SearchDBLogic<GoldStandardPublication> {
 	
 	@Override
-	public Integer getLastTasId() {
+	protected Integer getLastTasId() {
 		final DBSession session = this.openSession();
 		try {
 			return this.queryForObject("getLastContentId", Integer.class, session);

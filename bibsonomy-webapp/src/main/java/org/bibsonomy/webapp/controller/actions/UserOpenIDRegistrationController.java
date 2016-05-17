@@ -42,7 +42,7 @@ import org.springframework.security.openid.OpenIDAuthenticationToken;
  * @author Stefan Stützer
  * @author rja
  */
-public class UserOpenIDRegistrationController extends AbstractUserIDRegistrationController {
+public class UserOpenIDRegistrationController extends AbstractUserIDRegistrationController<Void> {
 
 	@Override
 	protected String getLoginNotice() {
@@ -60,7 +60,7 @@ public class UserOpenIDRegistrationController extends AbstractUserIDRegistration
 	}
 
 	@Override
-	protected Authentication getAuthentication(User user) {
+	protected Authentication getAuthentication(User user, final Void additionalInformation) {
 		return new OpenIDAuthenticationToken(new UserAdapter(user), new UserAdapter(user).getAuthorities(), user.getOpenID(), null);
 	}
 
