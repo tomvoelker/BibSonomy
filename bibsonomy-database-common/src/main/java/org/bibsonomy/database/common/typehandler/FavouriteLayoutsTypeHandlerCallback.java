@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 
 import org.bibsonomy.model.enums.FavouriteLayoutSource;
 import org.bibsonomy.model.user.settings.FavouriteLayout;
@@ -12,9 +13,9 @@ import org.bibsonomy.model.user.settings.FavouriteLayout;
 import com.ibatis.sqlmap.client.extensions.ParameterSetter;
 
 /**
- * TODO: add documentation to this class
  *
- * @author pfister
+ *
+ * @author jp
  */
 public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCallback {
 	
@@ -45,7 +46,9 @@ public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCall
 		} else {
 			String toBeSet = "";
 			
-					
+			//removing dupes O(n)
+			favls = new ArrayList<FavouriteLayout>(new LinkedHashSet<FavouriteLayout>(favls));
+			//sorting
 			Collections.sort(favls, new favlsComparator());
 			
 			for (Iterator<FavouriteLayout> iterator = favls.iterator(); iterator.hasNext();) {

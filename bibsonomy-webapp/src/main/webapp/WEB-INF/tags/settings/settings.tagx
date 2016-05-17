@@ -194,7 +194,7 @@
 							<div id="collapse1" class="panel-collapse collapse panel-body">
 								<ul class="list-group" id="favouriteLayoutsList">				
 									<c:forEach var="favl" items="${command.context.loginUser.settings.favouriteLayouts}" varStatus="counter">
-										<li class="list-group-item favouriteLayoutsListItem"><input type="hidden" name="user.settings.favouriteLayouts"  id="${favl.source}/${favl.style}" value="${favl.source}/${favl.style}" /><span class="btn btn-default badge label-danger delete-Style">Delete</span>${favl.style}</li>
+										<li class="list-group-item favouriteLayoutsListItem"><input type="hidden" name="user.settings.favouriteLayouts"  id="${favl.source}/${favl.style}" value="${favl.source}/${favl.style}" /><span class="btn btn-default badge label-danger delete-Style">Delete</span>${favl.displayName}</li>
        								</c:forEach>
 								</ul>
 							</div>

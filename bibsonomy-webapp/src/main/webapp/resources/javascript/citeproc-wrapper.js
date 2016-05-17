@@ -7,13 +7,11 @@ $(function() {
 	$.ajax({
 		type: "get",
 	    url: "/csl-style/" + format,
-	    dataType: "xml",
-	    success: function(xmldata) {
+	    dataType: "text",
+	    success: function(xml) {
 	    	//callback
-	    	var serializer = new XMLSerializer(); 
-	    	var original = serializer.serializeToString(xmldata);
-	    	var xml = $("<div/>").html(original).text();
 	    	xml = $.trim(xml);
+	    		    	
 	    	//xml is now a string with given style.csl as content
 	    	 
 	    	//building CSL based on XML

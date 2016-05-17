@@ -46,7 +46,7 @@
         			<li>
 						<c:set var="exportUrl" value="${relativeUrlGenerator.getPostUrl(citation, post)}?formatEmbedded=true&amp;items=1" />
 						<a data-toggle="tab" href="#citation_${citation.style}" data-formatUrl="${exportUrl}">
-							${citation.style}
+							${citation.displayName}
 						</a>
 					</li>
         		</c:if>

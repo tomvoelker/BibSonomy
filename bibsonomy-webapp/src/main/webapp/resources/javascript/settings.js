@@ -18,7 +18,7 @@ $(function() {
 	var jabref = false;
 	
 	
-	//getting external CSL for JABREF styles
+	//getting external JSON for CSL styles
 	$.get("/csl-style", function (data) {
 		data = $.trim(data);
 		data = $.parseJSON(data);
@@ -89,20 +89,15 @@ $(function() {
 
 
 	$('#searchCitationAutocomplete').on('typeahead:select', function (e, datum) {
-		var toBeAppended = '<li class="list-group-item favouriteLayoutsListItem"><input type="hidden" name="user.settings.favouriteLayouts"  id="'+ datum.source.toUpperCase() +'/' + datum.name.toUpperCase() + '" value="'+datum.source.toUpperCase()+'/' + datum.name.toUpperCase() + '"/><span class="btn btn-default badge label-danger delete-Style">Delete</span>' + datum.name + '</li>';
+		var toBeAppended = '<li class="list-group-item favouriteLayoutsListItem"><input type="hidden" name="user.settings.favouriteLayouts"  id="'+ datum.source.toUpperCase() +'/' + datum.name.toUpperCase() + '" value="'+datum.source.toUpperCase()+'/' + datum.name.toUpperCase() + '"/><span class="btn btn-default badge label-danger delete-Style">Delete</span>' + datum.displayName + '</li>';
 		$('#favouriteLayoutsList').append(toBeAppended);
 		clearFavouriteLayoutsList();
 	});
 
 	//catching presses of "enter", else the form would be submitted by each accidental press
 	$('#searchCitationAutocomplete').on('keydown', function(event) {
-		// Define tab key
-
 		if (event.which == 13) // if pressing enter
-			var e = jQuery.Event("keydown");
-    		e.keyCode = e.which = 9; // 9 == tab //error message but still working??????
-    		event.preventDefault();
-    		$('#searchCitationAutocomplete').trigger(e); // trigger "tab" key - which works as "enter"
+			event.preventDefault();
 	});
 
 	$('.delete-Style').click(function(){

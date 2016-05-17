@@ -173,8 +173,8 @@
 							</c:if>
 							<c:if test="${(citation.source=='JABREF') || (citation.source=='CSL')}">
         						<li>
-        							<a class="litem" href="${relativeUrlGenerator.getPostUrl(citation, post)}?formatEmbedded=true" title="${citation.style}">
-        								${citation.style}
+        							<a class="litem" href="${relativeUrlGenerator.getPostUrl(citation, post)}?formatEmbedded=true" title="${citation.displayName}">
+        								${citation.displayName}
         							</a>
         						</li>
         					</c:if>
