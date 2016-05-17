@@ -20,7 +20,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 /**
- * TODO: add documentation to this class
+ *
  *
  * @author jp
  */

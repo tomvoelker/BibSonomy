@@ -33,13 +33,12 @@ public class CSLStyleController implements MinimalisticController<CSLStyleComman
 	 */
 	@Override
 	public View workOn(CSLStyleCommand command) {
-
 		CSLFilesManager CSLFilesManager = new CSLFilesManager();
 		if (command.getStyle() == null || command.getStyle().isEmpty()) {
-			command.setXml(CSLFilesManager.allToJson());
+			command.setXml(CSLFilesManager.allToJson().trim());
 			return Views.CSL_STYLE; 
 		}
-		command.setXml(CSLFilesManager.nameToXML(command.getStyle()));
+		command.setXml(CSLFilesManager.nameToXML(command.getStyle()).trim());
 		return Views.CSL_STYLE;
 	}
 }
