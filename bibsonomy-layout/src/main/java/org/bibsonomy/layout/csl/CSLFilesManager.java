@@ -53,16 +53,17 @@ public class CSLFilesManager {
 		} catch (IOException e) {
 			return "Problem while reading: " + CSLFileName;	
 		}
-		String returner = "";
+		StringBuilder returner = new StringBuilder();
 		for (String line : content){
-			returner = returner + "\n" + line;
+			returner.append("\n" + line);
 		}
-		return returner;
+		return returner.toString();
 	}
 	
 	public String allToJson(){
 		//only reading .csl files
-		String jsonString = "{\"layouts\":[";
+		StringBuilder json = new StringBuilder();
+		json.append("{\"layouts\":[");
 		for(File f : CSLFolder.listFiles(CSLFilter)){
 			String filename = f.getName().trim().toUpperCase();
 			filename = filename.replaceAll(".CSL", "");
@@ -72,8 +73,9 @@ public class CSLFilesManager {
 			} catch (ParserConfigurationException | SAXException | IOException e) {
 				return  "FAILED AT FILE:" + filename;
 			}
-			jsonString = jsonString + "{\"source\":\"CSL\",\"name\":\"" + filename + "\",\"displayName\":\"" + displayname + "\"},";
+			json.append("{\"source\":\"CSL\",\"name\":\"" + filename + "\",\"displayName\":\"" + displayname + "\"},");
 		}
+		String jsonString = json.toString();
 		if(jsonString.endsWith(",")){
 			jsonString = jsonString.substring(0, jsonString.lastIndexOf(','));
 		}

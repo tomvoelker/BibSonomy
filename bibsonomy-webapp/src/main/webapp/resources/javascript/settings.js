@@ -11,7 +11,7 @@ $(function() {
 	});
     
 	//two "simple" styles in JSON
-	var simpleData = '[{"source": "SIMPLE", "displayName": "BibTeX", "name":"BIBTEX"},{"source": "SIMPLE", "displayName": "Endnote", "name":"ENDNOTE"}]';
+	var simpleData = '[{"source": "SIMPLE", "displayName": "BibTeX", "name":"BIBTEX"},{"source": "SIMPLE", "displayName": "EndNote", "name":"ENDNOTE"}]';
 	var jsonObj = $.parseJSON(simpleData);
 		
 	//getting external JSON for JABREF styles

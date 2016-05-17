@@ -87,8 +87,8 @@ public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCall
 			FavouriteLayout favl;
 			if(sourceAndStyle[1].compareToIgnoreCase("BibTeX")==0){
 				favl = new FavouriteLayout(FavouriteLayoutSource.valueOf(sourceAndStyle[0]), "BibTeX");
-			} else if(sourceAndStyle[1].compareToIgnoreCase("Endnote")==0){
-				favl = new FavouriteLayout(FavouriteLayoutSource.valueOf(sourceAndStyle[0]), "Endnote");
+			} else if(sourceAndStyle[1].compareToIgnoreCase("EndNote")==0){
+				favl = new FavouriteLayout(FavouriteLayoutSource.valueOf(sourceAndStyle[0]), "EndNote");
 			} else {
 				favl = new FavouriteLayout(FavouriteLayoutSource.valueOf(sourceAndStyle[0].toUpperCase()), sourceAndStyle[1]);
 			}
