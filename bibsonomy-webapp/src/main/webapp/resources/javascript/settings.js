@@ -13,18 +13,19 @@ $(function() {
 	//two "simple" styles in JSON
 	var simpleData = '[{"source": "SIMPLE", "displayName": "BibTeX", "name":"BIBTEX"},{"source": "SIMPLE", "displayName": "EndNote", "name":"ENDNOTE"}]';
 	var jsonObj = $.parseJSON(simpleData);
-		
+	
+	var csl = false;
+	var jabref = false;
+	
+	
+	//getting external CSL for JABREF styles
+	$.get("/csl-style", function (data) {
+		processResultCSL(data);
+	});
+	
 	//getting external JSON for JABREF styles
 	$.get("/layoutinfo", function (data) {
-
-		$.get("/csl-style", function (data) {
-		
-			processResultCSL(data);
-			
-		});
-		
 		processResultJabref(data);
-	
 	});
 
 	//adding JABREF to source array, which will be displayed on the twitter typeahead
@@ -38,6 +39,9 @@ $(function() {
 			var JabrefObj = $.parseJSON(JabrefData);
 			jsonObj.push(JabrefObj);
 		}
+		//everything fetched, good to go
+		jabref = true;
+		initializeBloodhound();
 	};
 	
 	function processResultCSL(data) {
@@ -52,30 +56,33 @@ $(function() {
 		}
 	
 		//everything fetched, good to go
+		csl = true;
 		initializeBloodhound();
 	};
 
 	//instantiate the bloodhound suggestion engine
-
 	function initializeBloodhound() {
-		var engine = new Bloodhound({
-			datumTokenizer: function (d) {return Bloodhound.tokenizers.whitespace(d.displayName);},
-			queryTokenizer: Bloodhound.tokenizers.whitespace,
-			local: jsonObj,
-		});
+		//only begin initializing if everything has been loaded
+		if(csl && jabref){
+			var engine = new Bloodhound({
+				datumTokenizer: function (d) {return Bloodhound.tokenizers.whitespace(d.displayName);},
+				queryTokenizer: Bloodhound.tokenizers.whitespace,
+				local: jsonObj
+			});
 
 
-		// initialize the bloodhound suggestion engine
-		engine.initialize();
+			// initialize the bloodhound suggestion engine
+			engine.initialize();
 
-		$('.typeahead').typeahead({
-			highlight: true,
-		    minLength: 1
-		},
-		{
-			displayKey: 'displayName',
-			source: engine.ttAdapter()
-		});
+			$('.typeahead').typeahead({
+				highlight: true,
+				minLength: 1
+			},
+			{
+				displayKey: 'displayName',
+				source: engine.ttAdapter()
+			});
+		}
 	};
 
 
