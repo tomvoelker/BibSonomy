@@ -71,7 +71,7 @@ public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCall
 	public Object valueOf(String str) {
 		ArrayList<FavouriteLayout> returner = new ArrayList<FavouriteLayout>();
 		ArrayList<String> cleanedStr = new ArrayList<String>();
-		
+
 		if(str == null || str.trim().isEmpty()){
 			return returner;
 		}

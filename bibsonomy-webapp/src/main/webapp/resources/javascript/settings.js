@@ -41,7 +41,6 @@ $(function() {
 	};
 	
 	function processResultCSL(data) {
-		alert (data);
 		for (var prop in data.layouts) {
 		
 			//		alert("Key:" + prop);
@@ -62,8 +61,6 @@ $(function() {
 		var engine = new Bloodhound({
 			datumTokenizer: function (d) {return Bloodhound.tokenizers.whitespace(d.displayName);},
 			queryTokenizer: Bloodhound.tokenizers.whitespace,
-			//identify: function(obj) { return obj.name; },
-			//highlight: true,
 			local: jsonObj,
 		});
 
@@ -72,10 +69,11 @@ $(function() {
 		engine.initialize();
 
 		$('.typeahead').typeahead({
-	
-			//	highlight: true,
+			highlight: true,
+		    minLength: 1
 		},
-		{   displayKey: 'displayName',
+		{
+			displayKey: 'displayName',
 			source: engine.ttAdapter()
 		});
 	};
