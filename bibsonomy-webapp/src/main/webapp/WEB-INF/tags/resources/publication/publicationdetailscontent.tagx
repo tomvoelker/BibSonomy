@@ -235,16 +235,17 @@
 		+-->
 	<!-- TODO: i18n? -->
 	<h4 class="pub-details"><span class="fa fa-tag"><!--  --></span><c:out value=" " />Tags</h4>
-	<c:set var="tags" value="${post.tags}"/>
-	<c:if test="${not isOwnEntry}">
-		<c:set var="tags" value="${post.visibleTags}" />
-	</c:if>
+
 	<div class="tag-list">
 		<ul class="list-inline">
-		<c:forEach var="tag" items="${tags}" varStatus="status">
-			<!-- TODO: remove nobr and replace with CSS, it is deprecated! -->
-			<li><span class="label label-primary"><a href="/user/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(tag.name)}" rel="nofollow" title=""><nobr><c:out value="${tag.name}"/></nobr></a></span></li>
+		<c:forEach var="tag" items="${post.visibleTags}" varStatus="status">
+			<li><span class="label label-primary"><a href="/user/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(tag.name)}" rel="nofollow" title=""> <c:out value="${tag.name}"/> </a></span></li>
 		</c:forEach>
+		<c:if test="${isOwnEntry}">
+			<c:forEach var="tag" items="${post.hiddenSystemTags}" varStatus="status">
+				<li><span class="label label-warning"><a href="/user/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(tag.name)}" rel="nofollow" title=""> <c:out value="${tag.name}"/></a></span></li>
+			</c:forEach>
+		</c:if>		
 		</ul>
 	</div>
-</jsp:root>
+</jsp:root> 	

@@ -126,7 +126,7 @@
 											</c:forEach>
 											<input type="hidden" name="ckey" value="${command.context.ckey }"/>
 											<input type="hidden" name="oldTags['${post.resource.intraHash}']" value="${fn:escapeXml(fn:trim(tagString))}" />
-											<input type="hidden" name="posts['${post.resource.intraHash}']" value="true" checked="checked" id="sysTags" data-system-tags="${command.allSystemTags}" />
+											<input type="hidden" name="posts['${post.resource.intraHash}']" value="true" checked="checked" /> 
 											<input class="edit-tagsinput form-control" name="newTags['${post.resource.intraHash}']" type="text" value="${fn:escapeXml(fn:trim(tagString))} ${systemTagElementStr}" />
 										</div>
 									</div>

@@ -123,32 +123,15 @@ $(function() {
 	/**
 	 * SYSTEM TAGS HANDLING
 	 */
-	// FIXME: this duplicates code from the context definition
-	// maybe the info should be returned by the controller, or extra info in the
-	// view
 	var isSystemTag = function(item) {
-//		var systemTags = [
-//			//TODO: check whether this list is complete.
-//			'sys:relevantfor:.+',
-//			'relevantfor:.+',
-//			'sent:.+',
-//			'myown',
-//			'unfiled',
-//			'jabref',
-//			'sys:hidden:.+',
-//			'hidden:.+',
-//			'sys:external:.+',
-//			'external',
-//			'sys:reported:.+',
-//			'reported:.+'
-//		];
+
+		// get system tags from layout.tagx
+		var systemTags = jQuery("#sysTags").data("systemTags").trim().split(" ");
 		
-		// get system tags from
-		var systemTags = jQuery("#sysTags").data("systemTags").split(",");
-		
-		for(var i = 0; i < systemTags.length; ++i) {
-			pattern = new RegExp(systemTags[i]);
-			if(!pattern.test(item)) {
+		for(var i = 0; i < systemTags.length; ++i) {			
+			pattern = new RegExp("(sys:|system:|)?" + systemTags[i] + ":.+");
+			
+			if(!pattern.test(item)){ // || !pattern2.test(item)) {
 				continue;
 			}
 			return true;

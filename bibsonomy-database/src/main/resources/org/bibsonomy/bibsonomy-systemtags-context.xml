@@ -13,6 +13,9 @@
 		<property name="executableSystemTagMap" ref="executableSystemTagSet"/>
 		<property name="searchSystemTagMap" ref="searchSystemTagSet"/>
 		<property name="markUpSystemTagMap" ref="markUpSystemTagSet"/>
+		<property name="executableSystemTagSet" ref="executableSystemTagSet"/>
+		<property name="searchSystemTagSet" ref="searchSystemTagSet"/>
+		<property name="markUpSystemTagSet" ref="markUpSystemTagSet"/>
 	</bean>
 
 <!--+

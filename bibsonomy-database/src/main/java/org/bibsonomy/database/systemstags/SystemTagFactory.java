@@ -29,6 +29,7 @@ package org.bibsonomy.database.systemstags;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -51,15 +52,18 @@ public class SystemTagFactory {
 		return singleton;
 	}
 
-
-	/** The map that contains all executable systemTags */
 	private Map<String, ExecutableSystemTag> executableSystemTagMap;
-
-	/** The set that contains all searchSystemTags */
 	private Map<String, SearchSystemTag> searchSystemTagMap;
+	private Map<String, MarkUpSystemTag> markUpSystemTagMap;
+	
+	/** The map that contains all executable systemTags */
+	private HashSet<ExecutableSystemTag> executableSystemTagSet;
 
 	/** The set that contains all searchSystemTags */
-	private Map<String, MarkUpSystemTag> markUpSystemTagMap;
+	private HashSet<SearchSystemTag> searchSystemTagSet;
+
+	/** The set that contains all searchSystemTags */
+	private HashSet<MarkUpSystemTag> markUpSystemTagSet;
 
 
 	/**
@@ -93,7 +97,7 @@ public class SystemTagFactory {
 	/**
 	 * Fills the MarkUpSystemTagMap with pairs:
 	 * SystemTagName -> instance of the corresponding SystemTag
-	 * @param searchSystemTags
+	 * @param markUpSystemTags 
 	 */
 	public void setMarkUpSystemTagMap (Set<MarkUpSystemTag> markUpSystemTags) {
 		if(!present(this.markUpSystemTagMap)) {
@@ -130,7 +134,7 @@ public class SystemTagFactory {
 	/**
 	 * Returns a new instance of the required systemTag
 	 * 
-	 * @param tagType = the tag describing the systemTag e. g. "user" or "days"
+	 * @param tagName = the tag describing the systemTag e. g. "user" or "days"
 	 * @return a search system tag
 	 */
 	public SearchSystemTag getSearchSystemTag(final String tagName) {
@@ -145,6 +149,11 @@ public class SystemTagFactory {
 		return null;
 	}
 
+	/**
+	 * Returns a new instance of the required systemTag
+	 * @param tagName
+	 * @return get MarkUp system tag
+	 */
 	public MarkUpSystemTag getMarkUpSystemTag(String tagName) {
 		final String tagType = SystemTagsUtil.extractType(tagName);
 		if (present(tagType)) {
@@ -180,10 +189,11 @@ public class SystemTagFactory {
 	/**
 	 * Determines whether a tag (given by name) is a systemTag
 	 * 
-	 * @param tagType
+	 * @param tagName
 	 * @return <code>true</code> iff it's a search system tag
 	 */
 	public boolean isSearchSystemTag(final String tagName) {
+		
 		final String tagType = SystemTagsUtil.extractType(tagName);
 		if (present(tagType)) {
 			final SearchSystemTag sysTag = this.searchSystemTagMap.get(tagType);
@@ -222,7 +232,7 @@ public class SystemTagFactory {
 	/**
 	 * returns all 
 	 * @param tag
-	 * @return the correct system tag repesentation of the tag
+	 * @return the correct system tag representation of the tag
 	 */
 	public SystemTag createSystemTag(final Tag tag) {
 		final String tagName = tag.getName();
@@ -240,4 +250,47 @@ public class SystemTagFactory {
 		}
 		return null;
 	}
+
+	/**
+	 * @return the markUpSystemTagSet
+	 */
+	public HashSet<MarkUpSystemTag> getMarkUpSystemTagSet() {
+		return this.markUpSystemTagSet;
+	}
+
+	/**
+	 * @param markUpSystemTagSet the markUpSystemTagSet to set
+	 */
+	public void setMarkUpSystemTagSet(HashSet<MarkUpSystemTag> markUpSystemTagSet) {
+		this.markUpSystemTagSet = markUpSystemTagSet;
+	}
+
+	/**
+	 * @return the searchSystemTagSet
+	 */
+	public HashSet<SearchSystemTag> getSearchSystemTagSet() {
+		return this.searchSystemTagSet;
+	}
+
+	/**
+	 * @param searchSystemTagSet the searchSystemTagSet to set
+	 */
+	public void setSearchSystemTagSet(HashSet<SearchSystemTag> searchSystemTagSet) {
+		this.searchSystemTagSet = searchSystemTagSet;
+	}
+
+	/**
+	 * @return the executableSystemTagSet
+	 */
+	public HashSet<ExecutableSystemTag> getExecutableSystemTagSet() {
+		return this.executableSystemTagSet;
+	}
+
+	/**
+	 * @param executableSystemTagSet the executableSystemTagSet to set
+	 */
+	public void setExecutableSystemTagSet(HashSet<ExecutableSystemTag> executableSystemTagSet) {
+		this.executableSystemTagSet = executableSystemTagSet;
+	}
+	
 }
