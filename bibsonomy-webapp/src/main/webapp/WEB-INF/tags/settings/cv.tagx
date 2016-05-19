@@ -38,25 +38,26 @@
 	<div id="selTab5" class="tab-pane ${(command.selTab eq 5) ? 'active' : ''}">
 
 		<fieldset id="fsOuter">
-
+		<div class="form-group">
 			<bsform:fieldset legendKey="cv.heading">
 				<jsp:attribute name="content">
 					<c:choose>
 						<c:when test="${isGroup}">
-							<fmt:message key="cv.admin.topic" >
+							<p><fmt:message key="cv.admin.topic" >
 								<fmt:param>/cv/group/${fn:escapeXml(command.group.name)}</fmt:param>
-							</fmt:message>
+							</fmt:message></p>
 						</c:when>
 
 						<c:otherwise>
-							<fmt:message key="cv.admin.topic" >
+							<p><fmt:message key="cv.admin.topic" >
 								<fmt:param>/cv/user/${fn:escapeXml(command.context.loginUser.name)}</fmt:param>
-							</fmt:message>
+							</fmt:message></p>
 						</c:otherwise>
 					</c:choose>
 				</jsp:attribute>
 			</bsform:fieldset>
-
+		</div>
+		<div class="form-group">
 			<bsform:fieldset legendKey="cv.admin.show">
 				<jsp:attribute name="content">
 					<form:form class="form-horizontal">
@@ -126,7 +127,7 @@
 					</form:form>
 				</jsp:attribute>
 			</bsform:fieldset>
-
+			</div>
 			<p class="clearfix"><!--  --></p>
 
 			<!--+
