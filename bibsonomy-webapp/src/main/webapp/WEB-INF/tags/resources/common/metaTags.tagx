@@ -49,7 +49,7 @@
 					<span class="sr-only">Close</span>
 				</button>
 				
-				<div style="margin-right: 15px;">
+				<div style="margin-right: 25px;">
 					<ul class="systemtags list-inline">
 						<c:forEach var="systag" items="${post.hiddenSystemTags}">
 							<li>

@@ -131,7 +131,7 @@ $(function() {
 		for(var i = 0; i < systemTags.length; ++i) {			
 			pattern = new RegExp("(sys:|system:|)?" + systemTags[i] + ":.+");
 			
-			if(!pattern.test(item)){ // || !pattern2.test(item)) {
+			if(!pattern.test(item)){
 				continue;
 			}
 			return true;
@@ -144,6 +144,7 @@ $(function() {
 		trimValue : true,
 		freeInput : true,
 		tagClass : function(item) {
+			if(item == "myown") return 'label label-warning';
 			return isSystemTag(item) ? 'label label-warning' : 'label label-primary';
 		},
 		delimiter : ' '
