@@ -51,6 +51,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.util.Sets;
 import org.bibsonomy.webapp.command.ajax.AdminAjaxCommand;
 import org.bibsonomy.webapp.controller.ajax.AjaxController;
@@ -98,7 +99,7 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 		/*
 		 * return to form until validation passes
 		 */
-		if (errors.hasErrors()) {
+		if (errors.hasErrors() || ! HttpMethod.POST.equals(this.requestLogic.getHttpMethod())) {
 			/*
 			 * Do not update database as some input fields contain errors
 			 */

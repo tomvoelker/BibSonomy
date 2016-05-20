@@ -42,6 +42,7 @@ import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.UserUtils;
+import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.util.HashUtils;
 import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.util.UrlUtils;
@@ -117,7 +118,7 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		 * If the user name is null, we get an exception on getUserDetails.
 		 * Hence, we send the user back to the form.
 		 */
-		if (errors.hasErrors()) {
+		if (errors.hasErrors() || ! HttpMethod.POST.equals(requestLogic.getHttpMethod())) {
 			/*
 			 * Generate HTML to show captcha.
 			 */

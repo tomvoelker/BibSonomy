@@ -36,6 +36,7 @@ import org.bibsonomy.common.enums.AuthMethod;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.UserUtils;
+import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.util.spring.security.UserAdapter;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.controller.SettingsPageController;
@@ -118,7 +119,7 @@ public class ChangePasswordController extends SettingsPageController implements 
 		 * go back to the settings page and display errors from command field
 		 * validation
 		 */
-		if (errors.hasErrors()) {
+		if (errors.hasErrors() || ! HttpMethod.POST.equals(requestLogic.getHttpMethod())) {
 			return super.workOn(command);
 		}
 

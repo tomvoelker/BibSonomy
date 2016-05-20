@@ -29,6 +29,7 @@ package org.bibsonomy.webapp.controller.actions;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.controller.SettingsPageController;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -65,7 +66,7 @@ public class DeleteUserController extends SettingsPageController implements Vali
 		 * go back to the settings page and display errors from command field
 		 * validation
 		 */
-		if (errors.hasErrors()) {
+		if (errors.hasErrors()  || ! HttpMethod.POST.equals(requestLogic.getHttpMethod())) {
 			return Views.SETTINGSPAGE;
 		}
 		

@@ -296,14 +296,14 @@ public class UserRegistrationController implements ErrorAware, ValidationAwareCo
 		this.errors = errors;
 	}
 
-	/** Returns, if validation is required for the given command.
+	/** Returns, if validation is required for the given command. On default,
+	 * for all incoming data validation is required.
 	 * 
 	 * @see org.bibsonomy.webapp.util.ValidationAwareController#isValidationRequired(org.bibsonomy.webapp.command.ContextCommand)
 	 */
 	@Override
 	public boolean isValidationRequired(final UserRegistrationCommand command) {
-		// Validate only POST-Requests
-		return HttpMethod.POST.equals(requestLogic.getHttpMethod());
+		return true; // TODO: When is validation really required?
 	}
 
 	/** Checks the status of the given inetAddress in the DB

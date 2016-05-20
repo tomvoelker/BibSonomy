@@ -35,6 +35,7 @@ import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.user.remote.RemoteUserId;
+import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.webapp.command.actions.UserIDRegistrationCommand;
 import org.bibsonomy.webapp.util.CookieAware;
 import org.bibsonomy.webapp.util.CookieLogic;
@@ -153,7 +154,7 @@ public abstract class AbstractUserIDRegistrationController<R> implements ErrorAw
 		/* 
 		 * if there are any errors in the form, we return back to fix them.
 		 */
-		if (this.errors.hasErrors()) {
+		if (this.errors.hasErrors() || ! HttpMethod.POST.equals(requestLogic.getHttpMethod())) {
 			log.info("an error occoured: " + this.errors.toString());
 			return this.registrationFormView;
 		}

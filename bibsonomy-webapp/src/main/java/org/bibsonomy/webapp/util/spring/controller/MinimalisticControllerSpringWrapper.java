@@ -148,6 +148,11 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 	@SuppressWarnings("unchecked")
 	@Override
 	protected boolean suppressValidation(final HttpServletRequest request, final Object command) {
+		// Validate only POST-Requests
+		if (! request.getMethod().equals("POST")) {
+			return true;
+		}
+		
 		final MinimalisticController<T> controller = (MinimalisticController<T>) request.getAttribute(CONTROLLER_ATTR_NAME);
 		if (controller instanceof ValidationAwareController<?>) {
 			return !((ValidationAwareController<T>) controller).isValidationRequired((T)command);
