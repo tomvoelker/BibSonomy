@@ -54,6 +54,11 @@
 			<artifactId>commons-logging</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
+		</dependency>
+		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-common</artifactId>
 		</dependency>
@@ -64,6 +69,10 @@
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-rest-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-web-common</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>

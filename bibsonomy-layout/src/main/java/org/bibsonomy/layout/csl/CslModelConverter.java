@@ -290,7 +290,9 @@ public class CslModelConverter {
 		rec.setMisc(publication.getMiscFields());
 		
 		rec.setInterhash(publication.getInterHash());
-		
+		rec.setIntrahash(publication.getIntraHash());
+		final User user = post.getUser();
+		rec.setUsername(user != null ? user.getName() : null);
 		return rec;
 	}
 

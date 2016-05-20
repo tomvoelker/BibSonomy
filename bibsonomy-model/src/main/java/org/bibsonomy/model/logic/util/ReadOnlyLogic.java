@@ -46,6 +46,7 @@ import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.enums.SpamStatus;
+import org.bibsonomy.common.enums.SyncSettingsUpdateOperation;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
@@ -267,7 +268,7 @@ public class ReadOnlyLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.sync.SyncLogicInterface#updateSyncServer(java.lang.String, org.bibsonomy.model.sync.SyncService)
 	 */
 	@Override
-	public void updateSyncServer(String userName, SyncService server) {
+	public void updateSyncServer(String userName, SyncService server, SyncSettingsUpdateOperation operation) {
 		throwReadOnlyException();
 	}
 

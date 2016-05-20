@@ -37,7 +37,7 @@ public class ISBNUtils {
 	 * pattern to match ISBN 10 and 13
 	 */
 	private static final Pattern isbnPattern = Pattern.compile("([^0-9]|^)(978\\d{9}[\\dx]|979\\d{9}[\\dx]|\\d{9}[\\dx])([^0-9x]|$)", Pattern.CASE_INSENSITIVE);
-
+																// 2100500767 // 032147404X
 	/*
 	 * pattern to match ISSN 8 and 13
 	 */
@@ -51,8 +51,9 @@ public class ISBNUtils {
 	public static String extractISBN(final String snippet){
 		if (snippet != null) {
 			final Matcher isbnMatcher = isbnPattern.matcher(cleanISBN(snippet));
-			if (isbnMatcher.find())
+			if (isbnMatcher.find()) {
 				return isbnMatcher.group(2);
+			}
 		}
 		return null;
 	}

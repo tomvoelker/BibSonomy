@@ -78,7 +78,7 @@ public class IOPScraper extends AbstractUrlScraper {
 			pubId = publicationIdMatcher.group(1);
 		}
 		// TODO: handle publ id not found
-		
+	
 		final String postArgs = "articleId=" + pubId +
 						  "&exportFormat=iopexport_bib" + 
 						  "&exportType=abs" +

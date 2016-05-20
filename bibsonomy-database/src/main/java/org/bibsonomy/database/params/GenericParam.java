@@ -604,8 +604,8 @@ public abstract class GenericParam {
 	 * 
 	 * @return BibSonomy's follower network system tag
 	 */
-	public String getBibSonomyFollowerTag() {
-		return NetworkRelationSystemTag.BibSonomyFollowerSystemTag;
+	public String getFollowerTag() {
+		return NetworkRelationSystemTag.FOLLOWER_SYSTEMTAG;
 	}
 
 	// TODO: what hash?, what for?, why in genericparam and not in
