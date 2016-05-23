@@ -19,7 +19,8 @@ import com.ibatis.sqlmap.client.extensions.ParameterSetter;
  */
 public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCallback {
 	
-	
+	//implements a simple comparator which compares the string represantation of two favLs
+	//the Strings are "source"/"style" and should therefore be unique
 	class favlsComparator implements Comparator<FavouriteLayout> {
 	    @Override
 	    public int compare(FavouriteLayout o1, FavouriteLayout o2) {
@@ -58,7 +59,8 @@ public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCall
 			//removing the last ", "
 			toBeSet = toBeSet.trim();
 			toBeSet = toBeSet.substring(0, toBeSet.length()-1);
-			//
+			//sets the DB String as '"source1"/"style1", "source2","style2"'
+			//ofc without the '"'
 			setter.setString(toBeSet.toUpperCase());
 		}
 	}
@@ -74,20 +76,33 @@ public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCall
 	public Object valueOf(String str) {
 		ArrayList<FavouriteLayout> returner = new ArrayList<FavouriteLayout>();
 		ArrayList<String> cleanedStr = new ArrayList<String>();
-
+		
+		//no null or empty strings
 		if(str == null || str.trim().isEmpty()){
 			return returner;
 		}
 		
+		//splitting at ","
+		//so for each index in strInLines there should be exactly one style
 		String[] strInLines = str.split(",");
-
+		
+		//bit of trimming
 		for (String string : strInLines) {
 			string = string.trim();
 			cleanedStr.add(string);
 		}
+		
+		//iterating for each style
 		for (String element : cleanedStr) {
+			//splitting at "/". Now sourceAndStyle[0] = source and sourceAndStyle[1] = style
 			String sourceAndStyle[] = element.split("/");
+			
+			if(sourceAndStyle.length != 2){
+				throw new IllegalArgumentException("Format has to be source/style");
+			}
+			
 			FavouriteLayout favl;
+			//setting the source and style
 			if(sourceAndStyle[1].compareToIgnoreCase("BibTeX")==0){
 				favl = new FavouriteLayout(FavouriteLayoutSource.valueOf(sourceAndStyle[0]), "BibTeX");
 			} else if(sourceAndStyle[1].compareToIgnoreCase("EndNote")==0){

@@ -184,6 +184,7 @@
 							shown styles
 					</form:label>
 					
+					<!-- shown style dropdown list including a nice and smooth animation -->
 					<div class="panel-group col-sm-9">
 						<div class="panel panel-info">
 							<div class="panel-heading">
@@ -193,6 +194,8 @@
 							</div>
 							<div id="collapse1" class="panel-collapse collapse panel-body">
 								<ul class="list-group" id="favouriteLayoutsList">				
+									<!-- ID has to be "source"/"id" for the StringToFavouriteLayoutConverter to read -->
+									<!-- don't forget to use displayName!!!!!!!! -->
 									<c:forEach var="favl" items="${command.context.loginUser.settings.favouriteLayouts}" varStatus="counter">
 										<li class="list-group-item favouriteLayoutsListItem"><input type="hidden" name="user.settings.favouriteLayouts"  id="${favl.source}/${favl.style}" value="${favl.source}/${favl.style}" /><span class="btn btn-default badge label-danger delete-Style">Delete</span>${favl.displayName}</li>
        								</c:forEach>
@@ -206,6 +209,7 @@
 							add styles
 					</form:label>
 					
+					<!-- typeahead -->
 					<div class="input-group col-sm-9" inputColSpan="8">
 						<input class='form-control typeahead' id='searchCitationAutocomplete' type='text' name='searchCitationAutocomplete' autocomplete="off" placeholder='BibTeX, EndNote, CSL, JabRef...'/>
 					</div>

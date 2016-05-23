@@ -13,10 +13,15 @@ public class FavouriteLayout {
 	String style;
 	String displayName;
 	
+	/**
+	 * @param source
+	 * @param style
+	 * 
+	 * creates a new Favourite Layout with source as source, STYLE as style and a Display Name
+	 */
 	public FavouriteLayout(FavouriteLayoutSource source, String style){
 		this.source = source;
 		this.style = style.toUpperCase();
-		//TODO working with Filemanagers
 		if(source == FavouriteLayoutSource.SIMPLE){
 			if(style.compareToIgnoreCase("BibTeX") == 0){
 				this.displayName = "BibTeX";
@@ -24,6 +29,7 @@ public class FavouriteLayout {
 				this.displayName = "EndNote";
 			}
 		} else {
+			//TODO working with Filemanagers
 			this.displayName = style.toLowerCase();
 		}
 		

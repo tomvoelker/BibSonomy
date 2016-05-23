@@ -16,7 +16,9 @@ public class StringToFavouriteLayoutConverter implements Converter<String, Favou
 	 * @see org.springframework.core.convert.converter.Converter#convert(java.lang.Object)
 	 */
 	@Override
-	public FavouriteLayout convert(String value) {		
+	public FavouriteLayout convert(String value) {
+		
+		//splitting at "/". Now sourceAndStyle[0] = source and sourceAndStyle[1] = style
 		String sourceAndStyle[] = value.split("/");
 		if(sourceAndStyle.length != 2){
 			throw new IllegalArgumentException("Format has to be source/style");
@@ -31,5 +33,5 @@ public class StringToFavouriteLayoutConverter implements Converter<String, Favou
 		}
 		return favl;
 	}
-
+	
 }

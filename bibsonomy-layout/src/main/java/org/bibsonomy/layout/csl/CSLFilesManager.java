@@ -31,11 +31,18 @@ public class CSLFilesManager {
 
 	final FilenameFilter CSLFilter = new FilenameFilter() {
 		@Override
+		/**
+		 * @return only allows .csl files
+		 */
 		public boolean accept(File dir, String name) {
 			return name.toLowerCase().endsWith(".csl");
 		}
 	};
-
+	
+	/**
+	 * @param CSLFileName
+	 * @return the .csl file with given name
+	 */
 	private File readStyle(final String CSLFileName) {
 		String searchFor = CSLFileName + ".csl";
 		for (File f : CSLFolder.listFiles(CSLFilter)) {
@@ -46,6 +53,10 @@ public class CSLFilesManager {
 		return null;
 	}
 
+	/**
+	 * @param CSLFileName
+	 * @return content of .csl file with given name
+	 */
 	public String nameToXML(String CSLFileName) {
 		final File CSLFile = readStyle(CSLFileName);
 		if (CSLFile == null || !CSLFile.exists()) {
@@ -65,6 +76,9 @@ public class CSLFilesManager {
 		return returner.toString();
 	}
 
+	/**
+	 * @return returns either a cached version of all .csl files or creates a new String in the format "layouts":[{"source":"CSL","name":"bla_bla","displayName":"Bla Bla"}]
+	 */
 	public String allToJson() {
 		//TODO: check. Files are being copied on server launch. so not 100% sure here. hard to check
 		if (cachedJSON != null && cachedJSON.exists() && cachedJSON.isFile()) {
@@ -136,6 +150,13 @@ public class CSLFilesManager {
 		return jsonString;
 	}
 
+	/**
+	 * @param CSLFileName
+	 * @return returns a display name to a given csl style, which will be loaded from <arg>.csl throws something if it didn't work
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 * @throws IOException
+	 */
 	public String nameToTitle(final String CSLFileName) throws ParserConfigurationException, SAXException, IOException {
 		final File CSLFile = readStyle(CSLFileName);
 		if (CSLFile == null || !CSLFile.exists()) {

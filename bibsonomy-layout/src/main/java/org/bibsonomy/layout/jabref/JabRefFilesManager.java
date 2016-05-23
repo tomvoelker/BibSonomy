@@ -31,6 +31,11 @@ public class JabRefFilesManager {
 	final String XMLFileDirec = this.getClass().getClassLoader().getResource(directory + "JabrefLayouts.xml").getPath();
 	final File XMLFile = new File(XMLFileDirec);
 
+	/**
+	 * @param JabrefID
+	 * @return returns a display name to a given Jabref style. Throws something if it didn't work
+	 * @throws IOException
+	 */
 	public String nameToTitle(final String JabrefID) throws IOException {
 		String title = null;
 		if (XMLFile == null || !XMLFile.exists()) {

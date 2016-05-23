@@ -10,16 +10,21 @@ $(function() {
 		$(this).children('.button-text').text(getString('groups.documentsharing.shared'));
 	});
     
-	//two "simple" styles in JSON
+	// a lot of typeahead configuration will follow
+	// --
+	
+	//firstly two "simple" styles in JSON
 	var simpleData = '[{"source": "SIMPLE", "displayName": "BibTeX", "name":"BIBTEX"},{"source": "SIMPLE", "displayName": "EndNote", "name":"ENDNOTE"}]';
 	var jsonObj = $.parseJSON(simpleData);
 	
+	//initializing what has already been loaded. Nothing.
 	var csl = false;
 	var jabref = false;
 	
 	
 	//getting external JSON for CSL styles
 	$.get("/csl-style", function (data) {
+		//safety first, safety always
 		data = $.trim(data);
 		data = $.parseJSON(data);
 		processResultCSL(data);
@@ -30,12 +35,9 @@ $(function() {
 		processResultJabref(data);
 	});
 
-	//adding JABREF to source array, which will be displayed on the twitter typeahead
+	//adding JABREF to the "simple" styles array, which will be displayed on the twitter typeahead
 	function processResultJabref(data) {
 		for (var prop in data.layouts) {
-		
-			//		alert("Key:" + prop);
-			//		alert("Value:" + data.layouts[prop].displayName);
 		
 			var JabrefData = '{"source": "JABREF", "displayName": "' + data.layouts[prop].displayName + '", "name":"' + data.layouts[prop].name.toUpperCase() +'"}';
 			var JabrefObj = $.parseJSON(JabrefData);
@@ -46,12 +48,9 @@ $(function() {
 		initializeBloodhound();
 	};
 	
+	//adding CSL to the "simple" styles array, which will be displayed on the twitter typeahead
 	function processResultCSL(data) {
-		for (var prop in data.layouts) {
-		
-			//		alert("Key:" + prop);
-			//		alert("Value:" + data.layouts[prop].displayName);
-		
+		for (var prop in data.layouts) {		
 			var CSLData = '{"source":"CSL","displayName":"' + data.layouts[prop].displayName + '","name":"' + data.layouts[prop].name.toUpperCase() +'"}';
 			var CSLObj = $.parseJSON(CSLData);
 			jsonObj.push(CSLObj);
@@ -63,12 +62,14 @@ $(function() {
 	};
 
 	//instantiate the bloodhound suggestion engine
+	//more or less standard procedure for typeahead
 	function initializeBloodhound() {
 		//only begin initializing if everything has been loaded
 		if(csl && jabref){
 			var engine = new Bloodhound({
 				datumTokenizer: function (d) {return Bloodhound.tokenizers.whitespace(d.displayName);},
 				queryTokenizer: Bloodhound.tokenizers.whitespace,
+				//using the created combination of "simple" layouts array, CSL and Jabref layouts
 				local: jsonObj
 			});
 
@@ -87,7 +88,9 @@ $(function() {
 		}
 	};
 
-
+	//triggers when something is selected in the typeahead
+	//adds a new list item to the list including a remove button and an input field with correct ID, source and displayName
+	//ID has to be "source"/"id" for the StringToFavouriteLayoutConverter to read
 	$('#searchCitationAutocomplete').on('typeahead:select', function (e, datum) {
 		var toBeAppended = '<li class="list-group-item favouriteLayoutsListItem"><input type="hidden" name="user.settings.favouriteLayouts"  id="'+ datum.source.toUpperCase() +'/' + datum.name.toUpperCase() + '" value="'+datum.source.toUpperCase()+'/' + datum.name.toUpperCase() + '"/><span class="btn btn-default badge label-danger delete-Style">Delete</span>' + datum.displayName + '</li>';
 		$('#favouriteLayoutsList').append(toBeAppended);
@@ -99,7 +102,8 @@ $(function() {
 		if (event.which == 13) // if pressing enter
 			event.preventDefault();
 	});
-
+	
+	//getting the "Delete" batch to work
 	$('.delete-Style').click(function(){
 		$(this).parent().remove();
 	});
@@ -116,6 +120,7 @@ $(function() {
 				seen[txt] = true;
 		});
 	}
-
+	
+	//clearing on page load so that dupes, which have been inserted by an uncarefully executed SQL command by an uncareful user can be fixed by the user
 	clearFavouriteLayoutsList();
 });

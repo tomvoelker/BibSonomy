@@ -1,21 +1,23 @@
 $(function() {
+	//if serveral of this scripts are embedded on another page this prevents the script from writing to the wrong div
 	var container = $('#csl-container-' + layoutToUse);
 	var url = container.data('url');
 	var format = container.data('style');
 	
-	//getting source XML for CSL from /csl-style/style
+	//getting source XML for CSL from /csl-style/"style"
 	$.ajax({
 		type: "get",
 	    url: "/csl-style/" + format,
 	    dataType: "text",
 	    success: function(xml) {
 	    	//callback
+	    	
 	    	xml = $.trim(xml);
 	    		    	
 	    	//xml is now a string with given style.csl as content
 	    	 
 	    	//building CSL based on XML
-	    	//kept this as is
+	    	//kept this as it was
 	    	$.ajax({
 				url: url,
 				success: function(data) {
