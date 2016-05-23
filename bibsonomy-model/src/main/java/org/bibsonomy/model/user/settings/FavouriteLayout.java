@@ -12,7 +12,6 @@ public class FavouriteLayout {
 	FavouriteLayoutSource source;
 	String style;
 	String displayName;
-	int blabla;
 	
 	public FavouriteLayout(FavouriteLayoutSource source, String style){
 		this.source = source;
