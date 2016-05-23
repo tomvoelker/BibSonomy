@@ -32,19 +32,24 @@
 			<c:forEach items="${command.context.loginUser.settings.favouriteLayouts}" var="citation">
         		<!-- checks whether the source is "simple" which gets a special treatment,
         				or JABREF / CSL which will be assigned a source URL by generator-->
+          		<!-- source and style always uppercase! -->
           		<c:if test="${citation.source=='SIMPLE'}">
-        			<c:if test="${citation.style=='BibTeX'}">
+        			<!-- source and style always uppercase! -->
+        			<c:if test="${citation.style=='BIBTEX'}">
         				<li>
         				<a data-toggle="tab" href="#citation_BibTeX">BibTeX</a></li>
 					</c:if>
-        			<c:if test="${citation.style=='Endnote'}">
+        			<!-- source and style always uppercase! -->
+        			<c:if test="${citation.style=='ENDNOTE'}">
         				<li>
-        				<a data-toggle="tab" href="#citation_Endnote">Endnote</a></li>
+        				<a data-toggle="tab" href="#citation_EndNote">Endnote</a></li>
         			</c:if>
         		</c:if>
+        		<!-- source and style always uppercase! -->
         		<c:if test="${(citation.source=='JABREF') || (citation.source=='CSL')}">
         			<li>
 						<c:set var="exportUrl" value="${relativeUrlGenerator.getPostUrl(citation, post)}?formatEmbedded=true&amp;items=1" />
+						<!-- don't forget to use displayName!!!!!!!! -->
 						<a data-toggle="tab" href="#citation_${citation.style}" data-formatUrl="${exportUrl}">
 							${citation.displayName}
 						</a>
@@ -66,22 +71,26 @@
 		
 		<div id="citation-styles" class="tab-content pub-citation-tab-content">
 			<c:forEach items="${command.context.loginUser.settings.favouriteLayouts}" var="citation">
+        		<!-- source and style always uppercase! -->
         		<c:if test="${citation.source=='SIMPLE'}">
-        			<c:if test="${citation.style=='BibTeX'}">
+        			<!-- source and style always uppercase! -->
+        			<c:if test="${citation.style=='BIBTEX'}">
         				<div class="tab-pane" id="citation_BibTeX">
 							<textarea style="width:100%;font-size:80%;border:none;" rows="15">
 								<export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="${true}" generatedBibtexKeys="${false}"/>
 							</textarea>
 						</div>
 					</c:if>
-        			<c:if test="${citation.style=='Endnote'}">
-        				<div class="tab-pane" id="citation_Endnote">
+        			<!-- source and style always uppercase! -->
+        			<c:if test="${citation.style=='ENDNOTE'}">
+        				<div class="tab-pane" id="citation_EndNote">
 							<textarea style="width:100%;font-size:80%;border:none;" rows="15">
 								<export:endnote post="${post}" escapeXml="${true}" />
 							</textarea>
 						</div>
         			</c:if>
         		</c:if>
+        		<!-- source and style always uppercase! -->
         		<c:if test="${(citation.source=='JABREF') || (citation.source=='CSL')}">
         			<div class="tab-pane" id="citation_${citation.style}">
 						<!-- keep me -->

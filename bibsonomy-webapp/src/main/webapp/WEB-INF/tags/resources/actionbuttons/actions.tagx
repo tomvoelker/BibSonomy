@@ -143,8 +143,10 @@
 						<!-- checks whether the source is "simple" which gets a special treatment,
         						or JABREF / CSL which will be assigned a source URL by generator-->
 						<c:forEach items="${command.context.loginUser.settings.favouriteLayouts}" var="citation">
+        					<!-- source and style always uppercase! -->
         					<c:if test="${citation.source=='SIMPLE'}">
-        						<c:if test="${citation.style=='BibTeX'}">
+        						<!-- source and style always uppercase! -->
+        						<c:if test="${citation.style=='BIBTEX'}">
 									<li>
 										<fmt:message key="bibtex.actions.bibtex.title" var="bibtexTitle" />
 										<c:choose>
@@ -157,7 +159,8 @@
 										</c:choose>
 									</li>
 								</c:if>
-								<c:if test="${citation.style=='Endnote'}">
+								<!-- source and style always uppercase! -->
+								<c:if test="${citation.style=='ENDNOTE'}">
 									<li>
 										<fmt:message key="bibtex.actions.endnote.title" var="endnoteTitle" />
 										<c:choose>
@@ -171,8 +174,10 @@
 									</li>
 								</c:if>
 							</c:if>
+							<!-- source and style always uppercase! -->
 							<c:if test="${(citation.source=='JABREF') || (citation.source=='CSL')}">
         						<li>
+        							<!-- don't forget to use displayName!!!!!!!! -->
         							<a class="litem" href="${relativeUrlGenerator.getPostUrl(citation, post)}?formatEmbedded=true" title="${citation.displayName}">
         								${citation.displayName}
         							</a>
