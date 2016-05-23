@@ -9,9 +9,9 @@ import org.bibsonomy.model.enums.FavouriteLayoutSource;
  * @author jp
  */
 public class FavouriteLayout {
-	FavouriteLayoutSource source;
-	String style;
-	String displayName;
+	private FavouriteLayoutSource source;
+	private String style;
+	private String displayName;
 	
 	/**
 	 * @param source
