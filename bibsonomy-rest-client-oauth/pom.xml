@@ -76,11 +76,4 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
-	<repositories>
-		<repository>
-			<id>oauth.googlecode.com</id>
-			<url>http://oauth.googlecode.com/svn/code/maven</url>
-		</repository>
-	</repositories>
 </project>
