@@ -33,7 +33,7 @@
 	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="noSidebar" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
-	
+
 	<c:set var="systemReadOnly" value="${properties['system.mode.readOnly']}" scope="request" />
 	<!--+
 		| 
@@ -43,21 +43,6 @@
 	<jsp:output omit-xml-declaration="true" />
 	<jsp:output doctype-root-element="HTML" doctype-system="about:legacy-compat" />
 
-	<!-- prepare hidden system tags for handling in custom.js -->
-	<c:set var="hiddenSystemTags" value=" " />
-	<c:forEach var="markUpSystemTags" items="${systemTagFactory.markUpSystemTagSet}">
-		<c:if test="${markUpSystemTags.toHide}">
-			<c:set var="hiddenSystemTags" value="${hiddenSystemTags} ${markUpSystemTags.name}" />
-		</c:if>
-	</c:forEach>
-
-	<c:forEach var="executableSystemTags" items="${systemTagFactory.executableSystemTagSet}">
-		<c:if test="${executableSystemTags.toHide}">
-			<c:set var="hiddenSystemTags" value="${hiddenSystemTags} ${executableSystemTags.name}" />
-		</c:if>
-	</c:forEach>
-	<div id="sysTags" data-system-tags="${hiddenSystemTags}" />
-	
 	<jsp:element name="html">
 		<jsp:body>
 			<parts:htmlHead headerExt="${headerExt}" loginUser="${loginUser}"

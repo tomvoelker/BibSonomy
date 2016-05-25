@@ -243,13 +243,19 @@
 			<c:set var="lblColor" value="primary" />
 			<c:if test="${tag.name eq 'myown'}"> <c:set var="lblColor" value="warning" /> </c:if>
 				<span class="label label-${lblColor}">
-					<a href="/user/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(tag.name)}" rel="nofollow" title=""> <c:out value="${tag.name}"/> </a>
+					<a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, tag.name)}" rel="nofollow" title=""> <c:out value="${tag.name}"/> </a>
 				</span>
 			</li>
 		</c:forEach>
 		<c:if test="${isOwnEntry}">
 			<c:forEach var="tag" items="${post.hiddenSystemTags}" varStatus="status">
-				<li><span class="label label-warning"><a href="/user/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(tag.name)}" rel="nofollow" title=""> <c:out value="${tag.name}"/></a></span></li>
+				<li> 
+					<span class="label label-warning">
+						<a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, tag.name)}" rel="nofollow" title="">
+							<c:out value="${tag.name}"/>
+						</a>
+					</span>
+				</li>
 			</c:forEach>
 		</c:if>		
 		</ul>

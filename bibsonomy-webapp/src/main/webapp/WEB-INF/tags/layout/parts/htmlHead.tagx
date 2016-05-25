@@ -32,6 +32,20 @@
 		+-->
 	<c:set var="requPathAndQuery" value="${requPath}${requQueryString}" scope="request" />
 
+	<!-- prepare hidden system tags for handling in custom.js --> 
+	<c:set var="hiddenSystemTags" value=" " />
+	<c:forEach var="markUpSystemTags" items="${systemTagFactory.markUpSystemTagSet}">
+		<c:if test="${markUpSystemTags.toHide}">
+			<c:set var="hiddenSystemTags" value="${hiddenSystemTags} ${markUpSystemTags.name}" />
+		</c:if>
+	</c:forEach>
+
+	<c:forEach var="executableSystemTags" items="${systemTagFactory.executableSystemTagSet}">
+		<c:if test="${executableSystemTags.toHide}">
+			<c:set var="hiddenSystemTags" value="${hiddenSystemTags} ${executableSystemTags.name}" />
+		</c:if>
+	</c:forEach>
+	
 	<!--+
 		|
 		| real content starts here
@@ -151,5 +165,6 @@
 		<link rel="alternate" type="application/rss+xml"  title="${properties['project.name']} Blog - RSS"  href="http://blog.bibsonomy.org/feeds/posts/default?alt=rss" />
 		<title>${properties['project.name']} <c:if test="${not empty pageTitle}"> :: <c:out value="${pageTitle}"/></c:if></title>
 		<jsp:invoke fragment="headerExt"/>
+		<div id="sysTags" data-system-tags="${hiddenSystemTags}" />
 	</head>
 </jsp:root>

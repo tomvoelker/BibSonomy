@@ -1034,7 +1034,6 @@
 	
 	<!--  #################### imports #################### -->
 	<import resource="classpath:org/bibsonomy/bibsonomy-model-context.xml" />
-	<import resource="classpath:org/bibsonomy/bibsonomy-systemtags-context.xml"/>
 	
 	<!-- webapp -->
 	<import resource="bibsonomy-servlet-fields.xml" />

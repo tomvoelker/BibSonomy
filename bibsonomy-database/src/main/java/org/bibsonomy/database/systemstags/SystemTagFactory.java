@@ -52,26 +52,21 @@ public class SystemTagFactory {
 		return singleton;
 	}
 
-	private Map<String, ExecutableSystemTag> executableSystemTagMap;
-	private Map<String, SearchSystemTag> searchSystemTagMap;
-	private Map<String, MarkUpSystemTag> markUpSystemTagMap;
-	
 	/** The map that contains all executable systemTags */
-	private HashSet<ExecutableSystemTag> executableSystemTagSet;
-
+	private Map<String, ExecutableSystemTag> executableSystemTagMap;
+	
 	/** The set that contains all searchSystemTags */
-	private HashSet<SearchSystemTag> searchSystemTagSet;
-
+	private Map<String, SearchSystemTag> searchSystemTagMap;
+	
 	/** The set that contains all searchSystemTags */
-	private HashSet<MarkUpSystemTag> markUpSystemTagSet;
-
+	private Map<String, MarkUpSystemTag> markUpSystemTagMap;
 
 	/**
 	 * Fills the ExecutableSystemTagMap with pairs:
 	 * SystemTagName -> instance of the corresponding SystemTag
 	 * @param executableSystemTags
 	 */
-	public void setExecutableSystemTagMap(Set<ExecutableSystemTag> executableSystemTags) {
+	public void setExecutableSystemTagMap(HashSet<ExecutableSystemTag> executableSystemTags) {
 		if(!present(this.executableSystemTagMap)) {
 			this.executableSystemTagMap = new HashMap<String, ExecutableSystemTag>();
 		}
@@ -81,11 +76,21 @@ public class SystemTagFactory {
 	}
 
 	/**
+	 * @return a Set containing all executable systemTags
+	 * 
+	 */
+	public HashSet<ExecutableSystemTag> getExecutableSystemTagMap(){
+	    if (present(this.executableSystemTagMap))
+	    	return new HashSet<ExecutableSystemTag>(this.executableSystemTagMap.values());
+		return null;
+	}
+
+	/**
 	 * Fills the SearchSystemTagMap with pairs:
 	 * SystemTagName -> instance of the corresponding SystemTag
 	 * @param searchSystemTags
 	 */
-	public void setSearchSystemTagMap (Set<SearchSystemTag> searchSystemTags) {
+	public void setSearchSystemTagMap (HashSet<SearchSystemTag> searchSystemTags) {
 		if(!present(this.searchSystemTagMap)) {
 			this.searchSystemTagMap = new HashMap<String, SearchSystemTag>();
 		}
@@ -95,11 +100,20 @@ public class SystemTagFactory {
 	}
 
 	/**
+	 * @return a Set containing all search systemTags
+	 */
+	public HashSet<SearchSystemTag> getSearchSystemTagMap(){
+	    if (present(this.searchSystemTagMap))
+	    	return new HashSet<SearchSystemTag>(this.searchSystemTagMap.values());
+		return null;
+	}
+	
+	/**
 	 * Fills the MarkUpSystemTagMap with pairs:
 	 * SystemTagName -> instance of the corresponding SystemTag
 	 * @param markUpSystemTags 
 	 */
-	public void setMarkUpSystemTagMap (Set<MarkUpSystemTag> markUpSystemTags) {
+	public void setMarkUpSystemTagMap (HashSet<MarkUpSystemTag> markUpSystemTags) {
 		if(!present(this.markUpSystemTagMap)) {
 			this.markUpSystemTagMap = new HashMap<String, MarkUpSystemTag>();
 		}
@@ -108,6 +122,14 @@ public class SystemTagFactory {
 		}
 	}
 
+	/**
+	 * @return a Set containing all markUp systemTags
+	 */
+	public HashSet<MarkUpSystemTag> getMarkUpSystemTagMap(){
+	    if (present(this.markUpSystemTagMap))
+	    	return new HashSet<MarkUpSystemTag>(this.markUpSystemTagMap.values());
+		return null;
+	}
 	
 	/**
 	 * Returns a new instance of the required systemTag
@@ -249,48 +271,5 @@ public class SystemTagFactory {
 			return search;
 		}
 		return null;
-	}
-
-	/**
-	 * @return the markUpSystemTagSet
-	 */
-	public HashSet<MarkUpSystemTag> getMarkUpSystemTagSet() {
-		return this.markUpSystemTagSet;
-	}
-
-	/**
-	 * @param markUpSystemTagSet the markUpSystemTagSet to set
-	 */
-	public void setMarkUpSystemTagSet(HashSet<MarkUpSystemTag> markUpSystemTagSet) {
-		this.markUpSystemTagSet = markUpSystemTagSet;
-	}
-
-	/**
-	 * @return the searchSystemTagSet
-	 */
-	public HashSet<SearchSystemTag> getSearchSystemTagSet() {
-		return this.searchSystemTagSet;
-	}
-
-	/**
-	 * @param searchSystemTagSet the searchSystemTagSet to set
-	 */
-	public void setSearchSystemTagSet(HashSet<SearchSystemTag> searchSystemTagSet) {
-		this.searchSystemTagSet = searchSystemTagSet;
-	}
-
-	/**
-	 * @return the executableSystemTagSet
-	 */
-	public HashSet<ExecutableSystemTag> getExecutableSystemTagSet() {
-		return this.executableSystemTagSet;
-	}
-
-	/**
-	 * @param executableSystemTagSet the executableSystemTagSet to set
-	 */
-	public void setExecutableSystemTagSet(HashSet<ExecutableSystemTag> executableSystemTagSet) {
-		this.executableSystemTagSet = executableSystemTagSet;
-	}
-	
+	}	
 }
