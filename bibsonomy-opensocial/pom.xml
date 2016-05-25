@@ -45,20 +45,6 @@
 			<url>http://www.gnu.org/licenses/lgpl.html</url>
 		</license>
 	</licenses>
-	
-	<repositories>
-		<repository>
-			<id>java.net.m2</id>
-			<url>http://download.java.net/maven/2</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>caja</id>
-			<url>http://google-caja.googlecode.com/svn/maven</url>
-		</repository>
-	</repositories>
 
 	<build>
 		<resources>

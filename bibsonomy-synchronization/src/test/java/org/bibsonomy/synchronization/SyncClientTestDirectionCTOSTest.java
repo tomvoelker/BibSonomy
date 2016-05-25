@@ -79,7 +79,7 @@ public class SyncClientTestDirectionCTOSTest extends AbstractSynchronizationClie
 		userCredentials.setProperty("apiKey", serverUser.getApiKey());
 		final SyncService service = createServerService(STRATEGY, userCredentials, DIRECTION);
 		
-		clientLogic.updateSyncServer(clientLogic.getAuthenticatedUser().getName(), service, SyncSettingsUpdateOperation.SETTINGS);
+		this.clientLogic.updateSyncServer(clientLogic.getAuthenticatedUser().getName(), service, SyncSettingsUpdateOperation.SETTINGS);
 		setModifiedBookmarkKeys(MODIFIED_BOOKMARK_KEYS);
 		setModifiedPublicationKeys(MODIFIED_PUBLICATION_KEYS);
 		

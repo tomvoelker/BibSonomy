@@ -169,7 +169,7 @@ public class StringUtils {
 
 		return buffer.toString();
 	}
-
+	
 	/**
 	 * Removes everything, but numbers.
 	 * 
