@@ -308,7 +308,7 @@
 					<c:choose>
 						<c:when test="${command.context.loginUser.apiKey eq null}">
 							<p>
-								<fmt:message key="settings.apisupport"><fmt:param><a href="/help/doc/api.html">API</a></fmt:param></fmt:message>
+								<fmt:message key="settings.apisupport"><fmt:param><a href="https://bitbucket.org/bibsonomy/bibsonomy/wiki/documentation/api/REST%20API">API</a></fmt:param></fmt:message>
 							</p> 
 						</c:when>
 						<c:otherwise>
@@ -322,7 +322,7 @@
 									<p class="help-block">
 										<fmt:message key="settings.questionsregardingapi">
 											<fmt:param>
-												<span style="white-space: pre-wrap;"><a href="/help/doc/api.html"><fmt:message key="settings.apidoc"/></a></span>
+												<span style="white-space: pre-wrap;"><a href="https://bitbucket.org/bibsonomy/bibsonomy/wiki/documentation/api/REST%20API"><fmt:message key="settings.apidoc"/></a></span>
 											</fmt:param>
 											<fmt:param>
 												<!-- TODO: make this configurable -->
