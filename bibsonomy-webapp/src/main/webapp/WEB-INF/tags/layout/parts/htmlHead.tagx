@@ -34,13 +34,13 @@
 
 	<!-- prepare hidden system tags for handling in custom.js --> 
 	<c:set var="hiddenSystemTags" value=" " />
-	<c:forEach var="markUpSystemTags" items="${systemTagFactory.markUpSystemTagSet}">
+	<c:forEach var="markUpSystemTags" items="${systemTagFactory.markUpSystemTagMap}">
 		<c:if test="${markUpSystemTags.toHide}">
 			<c:set var="hiddenSystemTags" value="${hiddenSystemTags} ${markUpSystemTags.name}" />
 		</c:if>
 	</c:forEach>
 
-	<c:forEach var="executableSystemTags" items="${systemTagFactory.executableSystemTagSet}">
+	<c:forEach var="executableSystemTags" items="${systemTagFactory.executableSystemTagMap}">
 		<c:if test="${executableSystemTags.toHide}">
 			<c:set var="hiddenSystemTags" value="${hiddenSystemTags} ${executableSystemTags.name}" />
 		</c:if>

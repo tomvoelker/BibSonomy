@@ -31,8 +31,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
-
 import org.bibsonomy.database.systemstags.executable.ExecutableSystemTag;
 import org.bibsonomy.database.systemstags.markup.MarkUpSystemTag;
 import org.bibsonomy.database.systemstags.search.SearchSystemTag;
@@ -80,9 +78,7 @@ public class SystemTagFactory {
 	 * 
 	 */
 	public HashSet<ExecutableSystemTag> getExecutableSystemTagMap(){
-	    if (present(this.executableSystemTagMap))
-	    	return new HashSet<ExecutableSystemTag>(this.executableSystemTagMap.values());
-		return null;
+    	return new HashSet<ExecutableSystemTag>(this.executableSystemTagMap.values());
 	}
 
 	/**
@@ -103,9 +99,7 @@ public class SystemTagFactory {
 	 * @return a Set containing all search systemTags
 	 */
 	public HashSet<SearchSystemTag> getSearchSystemTagMap(){
-	    if (present(this.searchSystemTagMap))
-	    	return new HashSet<SearchSystemTag>(this.searchSystemTagMap.values());
-		return null;
+    	return new HashSet<SearchSystemTag>(this.searchSystemTagMap.values());
 	}
 	
 	/**
@@ -126,9 +120,7 @@ public class SystemTagFactory {
 	 * @return a Set containing all markUp systemTags
 	 */
 	public HashSet<MarkUpSystemTag> getMarkUpSystemTagMap(){
-	    if (present(this.markUpSystemTagMap))
-	    	return new HashSet<MarkUpSystemTag>(this.markUpSystemTagMap.values());
-		return null;
+    	return new HashSet<MarkUpSystemTag>(this.markUpSystemTagMap.values());
 	}
 	
 	/**
