@@ -4,8 +4,6 @@ import org.bibsonomy.model.enums.FavouriteLayoutSource;
 
 
 /**
- * 
- *
  * @author jp
  */
 public class FavouriteLayout {
@@ -17,13 +15,13 @@ public class FavouriteLayout {
 	 * @param source
 	 * @param style
 	 * 
-	 * creates a new Favourite Layout with source as source, STYLE as style and a Display Name
+	 * creates a new favourite layout with source as source, STYLE as style and a display Name
 	 */
-	public FavouriteLayout(FavouriteLayoutSource source, String style){
+	public FavouriteLayout(FavouriteLayoutSource source, String style) {
 		this.source = source;
 		this.style = style.toUpperCase();
-		if(source == FavouriteLayoutSource.SIMPLE){
-			if(style.compareToIgnoreCase("BibTeX") == 0){
+		if (source == FavouriteLayoutSource.SIMPLE){
+			if (style.compareToIgnoreCase("BibTeX") == 0){
 				this.displayName = "BibTeX";
 			} else if(style.compareToIgnoreCase("EndNote") == 0){
 				this.displayName = "EndNote";
@@ -32,26 +30,29 @@ public class FavouriteLayout {
 			//TODO working with Filemanagers
 			this.displayName = style.toLowerCase();
 		}
-		
 	}
+	
 	/**
 	 * @return the source
 	 */
 	public FavouriteLayoutSource getSource() {
 		return this.source;
 	}
+	
 	/**
 	 * @return the displayName
 	 */
 	public String getDisplayName() {
 		return this.displayName;
 	}
+	
 	/**
 	 * @return the style
 	 */
 	public String getStyle() {
 		return this.style;
 	}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -63,6 +64,7 @@ public class FavouriteLayout {
 		result = prime * result + ((style == null) ? 0 : style.hashCode());
 		return result;
 	}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
@@ -83,11 +85,5 @@ public class FavouriteLayout {
 		} else if (!style.equals(other.style))
 			return false;
 		return true;
-	}
-	/**
-	 * @return DB-friendly String representation
-	 */
-	public String toString(){
-		return this.getSource() + "/" + this.getStyle();
 	}
 }
