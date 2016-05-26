@@ -48,6 +48,7 @@ import org.bibsonomy.webapp.validation.DeleteGroupValidator;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
+import org.bibsonomy.util.ExceptionUtils;
 
 /**
  * @author Mario Holtmüller
@@ -96,10 +97,10 @@ public class DeleteGroupController extends GroupSettingsPageController implement
 		if (!GroupRole.ADMINISTRATOR.equals(roleOfLoggedinUser)) {
 			throw new AccessDeniedException("You are not allowed to view this page");
 		}
-		// FIXME: see DBLogic
-		// size must be bigger than 2 because the membership object contains also the group user
-		if (group.getMemberships().size() > 2) {
-			throw new IllegalStateException("The group can't be deleted, it's not empty");
+		
+		// ensure that the group has no members except the admin. size > 2 because the group user is also part of the membership list or > 1 to cover old groups
+		if (group.getMemberships().size() > 2 || (group.getMemberships().size() > 1 && (group.getMemberships().get(0).getGroupRole() != GroupRole.DUMMY && group.getMemberships().get(1).getGroupRole() != GroupRole.DUMMY))) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + group.getName() + "') has at least one member beside the administrator.");
 		}
 		
 		/*
