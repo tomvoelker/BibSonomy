@@ -31,6 +31,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+
 import org.bibsonomy.database.systemstags.executable.ExecutableSystemTag;
 import org.bibsonomy.database.systemstags.markup.MarkUpSystemTag;
 import org.bibsonomy.database.systemstags.search.SearchSystemTag;
@@ -64,7 +66,7 @@ public class SystemTagFactory {
 	 * SystemTagName -> instance of the corresponding SystemTag
 	 * @param executableSystemTags
 	 */
-	public void setExecutableSystemTagMap(HashSet<ExecutableSystemTag> executableSystemTags) {
+	public void setExecutableSystemTags(final Set<ExecutableSystemTag> executableSystemTags) {
 		if(!present(this.executableSystemTagMap)) {
 			this.executableSystemTagMap = new HashMap<String, ExecutableSystemTag>();
 		}
@@ -77,8 +79,8 @@ public class SystemTagFactory {
 	 * @return a Set containing all executable systemTags
 	 * 
 	 */
-	public HashSet<ExecutableSystemTag> getExecutableSystemTagMap(){
-    	return new HashSet<ExecutableSystemTag>(this.executableSystemTagMap.values());
+	public Set<ExecutableSystemTag> getExecutableSystemTags(){
+		return new HashSet<ExecutableSystemTag>(this.executableSystemTagMap.values());
 	}
 
 	/**
@@ -86,8 +88,8 @@ public class SystemTagFactory {
 	 * SystemTagName -> instance of the corresponding SystemTag
 	 * @param searchSystemTags
 	 */
-	public void setSearchSystemTagMap (HashSet<SearchSystemTag> searchSystemTags) {
-		if(!present(this.searchSystemTagMap)) {
+	public void setSearchSystemTags(final Set<SearchSystemTag> searchSystemTags) {
+		if (!present(this.searchSystemTagMap)) {
 			this.searchSystemTagMap = new HashMap<String, SearchSystemTag>();
 		}
 		for (SearchSystemTag sysTag: searchSystemTags) {
@@ -98,8 +100,8 @@ public class SystemTagFactory {
 	/**
 	 * @return a Set containing all search systemTags
 	 */
-	public HashSet<SearchSystemTag> getSearchSystemTagMap(){
-    	return new HashSet<SearchSystemTag>(this.searchSystemTagMap.values());
+	public Set<SearchSystemTag> getSearchSystemTags(){
+		return new HashSet<SearchSystemTag>(this.searchSystemTagMap.values());
 	}
 	
 	/**
@@ -107,7 +109,7 @@ public class SystemTagFactory {
 	 * SystemTagName -> instance of the corresponding SystemTag
 	 * @param markUpSystemTags 
 	 */
-	public void setMarkUpSystemTagMap (HashSet<MarkUpSystemTag> markUpSystemTags) {
+	public void setMarkUpSystemTags(final Set<MarkUpSystemTag> markUpSystemTags) {
 		if(!present(this.markUpSystemTagMap)) {
 			this.markUpSystemTagMap = new HashMap<String, MarkUpSystemTag>();
 		}
@@ -119,8 +121,8 @@ public class SystemTagFactory {
 	/**
 	 * @return a Set containing all markUp systemTags
 	 */
-	public HashSet<MarkUpSystemTag> getMarkUpSystemTagMap(){
-    	return new HashSet<MarkUpSystemTag>(this.markUpSystemTagMap.values());
+	public Set<MarkUpSystemTag> getMarkUpSystemTags(){
+		return new HashSet<MarkUpSystemTag>(this.markUpSystemTagMap.values());
 	}
 	
 	/**
@@ -263,5 +265,5 @@ public class SystemTagFactory {
 			return search;
 		}
 		return null;
-	}	
+	}
 }

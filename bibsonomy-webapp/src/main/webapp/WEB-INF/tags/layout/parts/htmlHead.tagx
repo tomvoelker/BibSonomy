@@ -33,18 +33,15 @@
 	<c:set var="requPathAndQuery" value="${requPath}${requQueryString}" scope="request" />
 
 	<!-- prepare hidden system tags for handling in custom.js --> 
-	<c:set var="hiddenSystemTags" value=" " />
-	<c:forEach var="markUpSystemTags" items="${systemTagFactory.markUpSystemTagMap}">
-		<c:if test="${markUpSystemTags.toHide}">
-			<c:set var="hiddenSystemTags" value="${hiddenSystemTags} ${markUpSystemTags.name}" />
-		</c:if>
+	<c:set var="hiddenSystemTags" value="" />
+	<c:forEach var="markUpSystemTags" items="${systemTagFactory.markUpSystemTags}" varStatus="status">
+		<c:set var="hiddenSystemTags" value='${hiddenSystemTags} { name: "${markUpSystemTags.name}", toHide: ${markUpSystemTags.toHide}, hasArguments: ${markUpSystemTags.hasArguments()} },' />
 	</c:forEach>
-
-	<c:forEach var="executableSystemTags" items="${systemTagFactory.executableSystemTagMap}">
-		<c:if test="${executableSystemTags.toHide}">
-			<c:set var="hiddenSystemTags" value="${hiddenSystemTags} ${executableSystemTags.name}" />
-		</c:if>
+	<c:forEach var="executableSystemTags" items="${systemTagFactory.executableSystemTags}">
+		<c:set var="hiddenSystemTags" value='${hiddenSystemTags} { name: "${executableSystemTags.name}", toHide: ${executableSystemTags.toHide}, hasArguments: ${executableSystemTags.hasArguments()} },' />
 	</c:forEach>
+	<!--  remove last comma -->
+	<c:set var="hiddenSystemTags" value="${fn:substring(hiddenSystemTags, 0, fn:length(hiddenSystemTags) - 1 )}" />
 	
 	<!--+
 		|
@@ -102,6 +99,9 @@
 						"confirmDelete" : ${loginUser.settings.confirmDelete}
 					};
 					var requUser = ${(requestedUser ne '') ? requestedUserString : "null"};
+					var hiddenSystemTags = [
+						${hiddenSystemTags}
+					];
 				]]>
 		</script>
 		
@@ -165,6 +165,5 @@
 		<link rel="alternate" type="application/rss+xml"  title="${properties['project.name']} Blog - RSS"  href="http://blog.bibsonomy.org/feeds/posts/default?alt=rss" />
 		<title>${properties['project.name']} <c:if test="${not empty pageTitle}"> :: <c:out value="${pageTitle}"/></c:if></title>
 		<jsp:invoke fragment="headerExt"/>
-		<div id="sysTags" data-system-tags="${hiddenSystemTags}" />
 	</head>
 </jsp:root>

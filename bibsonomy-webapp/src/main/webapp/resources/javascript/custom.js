@@ -124,27 +124,37 @@ $(function() {
 	 * SYSTEM TAGS HANDLING
 	 */
 	var isSystemTag = function(item) {
-
-		// get system tags from layout.tagx
-		var systemTags = jQuery("#sysTags").data("systemTags").trim().split(" ");
-		
-		for(var i = 0; i < systemTags.length; ++i) {			
-			pattern = new RegExp("(sys:|system:|)?" + systemTags[i] + ":.+");
-			
-			if(!pattern.test(item)){
-				continue;
+		for (var i = 0; i < hiddenSystemTags.length; i++) {
+			var hiddenSystemTag = hiddenSystemTags[i];
+			var patternString = "(sys:|system:|)?" + hiddenSystemTags[i].name;
+			if (hiddenSystemTag.hasArguments) {
+				patternString += ":.+";
 			}
-			return true;
+			
+			var pattern = new RegExp(patternString);
+			if (pattern.test(item)) {
+				return true;
+			}
 		}
-		
+		return false;
 	};
+	var isHiddenSystemTag = function(item) {
+		for (var i = 0; i < hiddenSystemTags.length; i++) {
+			var hiddenSystemTag = hiddenSystemTags[i];
+			var pattern = new RegExp("(sys:|system:|)?" + hiddenSystemTag.name + ":.+");
+			
+			if (pattern.test(item) && hiddenSystemTag.toHide) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	$('.edit-tagsinput').tagsinput({
 		confirmKeys : [ 32, 13 ], // space and return
 		trimValue : true,
 		freeInput : true,
 		tagClass : function(item) {
-			if(item == "myown") return 'label label-warning';
 			return isSystemTag(item) ? 'label label-warning' : 'label label-primary';
 		},
 		delimiter : ' '
@@ -174,7 +184,7 @@ $(function() {
 
 			// append current tags
 			$(tags).each(function(i, tag) {
-				if (!isSystemTag(tag)) {
+				if (!isHiddenSystemTag(tag)) {
 					var tagView = viewForTag(tag, "grey");
 					var tagContainer = $('#list-item-' + resourceHash + ' .ptags');
 					tagContainer.append(tagView);
