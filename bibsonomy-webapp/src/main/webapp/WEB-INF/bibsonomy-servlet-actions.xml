@@ -296,6 +296,19 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/import/csl">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="importCSLLayout"/>
+						<property name="allowedFields">
+							<list>
+								<value>file</value>
+								<value>action</value>
+								<value>ckey</value>
+								<value>hash</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<entry key="/import/publications">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="postPublicationController"/>
@@ -1204,6 +1217,13 @@
 		<property name="fileLogic" ref="fileLogic" />
 		<property name="jabrefLayoutRenderer" ref="jabrefLayoutRenderer" />
 		<property name="validator" ref="jabRefLayoutValidator" />
+	</bean>
+	
+	<bean id="importCSLLayout" class="org.bibsonomy.webapp.controller.actions.CSLImportController" scope="request" parent="settingsPageController">
+		<property name="logic" ref="logic" />
+		<property name="fileLogic" ref="fileLogic" />
+		<!-- <property name="jabrefLayoutRenderer" ref="jabrefLayoutRenderer" />
+		<property name="validator" ref="jabRefLayoutValidator" /> -->
 	</bean>
 	
 	<bean id="jabRefLayoutValidator" class="org.bibsonomy.webapp.validation.JabRefImportValidator">

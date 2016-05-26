@@ -87,6 +87,7 @@ public class FavouriteLayout {
 	/**
 	 * @return DB-friendly String representation
 	 */
+	@Override
 	public String toString(){
 		return this.getSource() + "/" + this.getStyle();
 	}

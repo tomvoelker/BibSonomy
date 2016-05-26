@@ -33,7 +33,7 @@ import java.util.Collection;
  * combines all logics to one simple interface to implement
  * @author dzo
  */
-public interface FileLogic extends ProfilePictureLogic, TempFileLogic, JabRefFileLogic, DocumentFileLogic {
+public interface FileLogic extends ProfilePictureLogic, TempFileLogic, JabRefFileLogic, CSLFileLogic, DocumentFileLogic {
 
 	/** allowed browser bookmark export extensions */
 	public static final Collection<String> BROWSER_IMPORT_EXTENSIONS = Arrays.asList("html", "htm");

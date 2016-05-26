@@ -16,6 +16,6 @@
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:x="http://java.sun.com/jsp/jstl/xml"> 
-	<jsp:directive.page contentType="text/text; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	<jsp:directive.page contentType="text/text; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true"/>
 ${command.xml}
 </jsp:root>
