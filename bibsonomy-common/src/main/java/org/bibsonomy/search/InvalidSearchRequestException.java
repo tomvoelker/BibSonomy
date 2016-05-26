@@ -1,5 +1,5 @@
 /**
- * BibSonomy Search - Helper classes for search modules.
+ * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
  * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
