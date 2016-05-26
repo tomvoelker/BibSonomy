@@ -78,7 +78,7 @@
 		<c:if test="${not empty publicationUrl}">
 			<dt><fmt:message key="bibtex.url"/>:</dt>
 			<dd>
-				<a href="${fn:escapeXml(publicationUrl)}"><c:out value="${publicationUrl}"/></a>
+				<a href="${fn:escapeXml(publicationUrl)}" rel="nofollow"><c:out value="${publicationUrl}"/></a>
 			</dd>
 		</c:if>
 		
@@ -92,7 +92,7 @@
 				<c:forEach items="${publication.extraUrls}" var="url">
 					<li>
 						<c:set var="escapedUrl" value="${fn:escapeXml(url.url)}" />
-						<a href="${escapedUrl}"><c:out value="${url.text}"/></a>
+						<a href="${escapedUrl}" rel="nofollow"><c:out value="${url.text}"/></a>
 					
 						<c:if test="${isOwnEntry}">
 							<fmt:message var="deleteUrl" key="post.bibtex.remove"/>
@@ -150,7 +150,7 @@
 			<dt><fmt:message key="bibtex.actions.openurl"/>:</dt>
 			<dd>
 				<c:set var="publicationOpenURL" value="${publication.openURL}"/>
-				<a href="${fn:escapeXml(userOpenURL)}?${fn:escapeXml(publicationOpenURL)}" title="${openurlTitle}">
+				<a href="${fn:escapeXml(userOpenURL)}?${fn:escapeXml(publicationOpenURL)}" title="${openurlTitle}" rel="nofollow">
 					<c:out value="${userOpenURL}"/>?<c:out value="${mtl:shorten(publicationOpenURL, 30)}"/>
 				</a>
 			</dd>
@@ -242,8 +242,7 @@
 	<div class="tag-list">
 		<ul class="list-inline">
 		<c:forEach var="tag" items="${tags}" varStatus="status">
-			<!-- TODO: remove nobr and replace with CSS, it is deprecated! -->
-			<li><span class="label label-primary"><a href="/user/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(tag.name)}" rel="nofollow" title=""><nobr><c:out value="${tag.name}"/></nobr></a></span></li>
+			<li><span class="label label-primary" style="white-space:nowrap"><a href="/user/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(tag.name)}" rel="nofollow" title=""><c:out value="${tag.name}"/></a></span></li>
 		</c:forEach>
 		</ul>
 	</div>
