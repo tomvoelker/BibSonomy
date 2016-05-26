@@ -28,7 +28,6 @@ package org.bibsonomy.database.systemstags;
 
 /**
  * @author Andreas Koch
- * @version $Id$ 
  */
 public interface SystemTag extends Cloneable{
 	
@@ -41,6 +40,11 @@ public interface SystemTag extends Cloneable{
 	 * @param argument the argument to set
 	 */
 	public void setArgument(String argument);
+	
+	/**
+	 * @return <code>true</code> if the system tag has at least one argument
+	 */
+	public boolean hasArguments();
 	
 	/**
 	 * @return the name
