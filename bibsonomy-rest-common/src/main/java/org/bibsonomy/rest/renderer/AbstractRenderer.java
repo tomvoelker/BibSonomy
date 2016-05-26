@@ -309,7 +309,7 @@ public abstract class AbstractRenderer implements Renderer {
 			 * add extra URLs (if they exist)
 			 */
 			final List<BibTexExtra> extraUrls = publication.getExtraUrls();
-			if (ValidationUtils.present(extraUrls)) {
+			if (present(extraUrls)) {
 				final ExtraUrlsType xmlExtraUrls = new ExtraUrlsType();
 				xmlPublication.setExtraurls(xmlExtraUrls);
 				
