@@ -84,11 +84,4 @@ public class FavouriteLayout {
 			return false;
 		return true;
 	}
-	/**
-	 * @return DB-friendly String representation
-	 */
-	@Override
-	public String toString(){
-		return this.getSource() + "/" + this.getStyle();
-	}
 }
