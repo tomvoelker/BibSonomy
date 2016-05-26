@@ -3,7 +3,7 @@ package org.bibsonomy.services.filesystem;
 /**
  * TODO: add documentation to this class
  *
- * @author jan
+ * @author jp
  */
 public interface CSLFileLogic {
 

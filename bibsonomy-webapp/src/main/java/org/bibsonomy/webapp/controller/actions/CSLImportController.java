@@ -15,7 +15,7 @@ import org.springframework.security.access.AccessDeniedException;
 /**
  * TODO: add documentation to this class
  *
- * @author jan
+ * @author jp
  */
 
 

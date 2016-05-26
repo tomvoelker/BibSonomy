@@ -5,7 +5,7 @@ import org.bibsonomy.webapp.command.SettingsViewCommand;
 /**
  * TODO: add documentation to this class
  *
- * @author jan
+ * @author jp
  */
 public class CSLImportCommand extends SettingsViewCommand{
 
