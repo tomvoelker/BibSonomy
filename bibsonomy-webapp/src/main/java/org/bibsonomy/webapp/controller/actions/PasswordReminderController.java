@@ -118,7 +118,7 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		 * If the user name is null, we get an exception on getUserDetails.
 		 * Hence, we send the user back to the form.
 		 */
-		if (errors.hasErrors() || ! HttpMethod.POST.equals(requestLogic.getHttpMethod())) {
+		if (errors.hasErrors() || command.getContext().isFirstCall()) {
 			/*
 			 * Generate HTML to show captcha.
 			 */

@@ -51,6 +51,8 @@ public class RequestWrapperContext {
 
 	private HttpServletRequest request;
 	
+	private boolean firstCall;
+	
 	/** The request this wrapper provides access to.
 	 * 
 	 * @param request
@@ -112,6 +114,24 @@ public class RequestWrapperContext {
 	 */
 	public String getQueryString() {
 		return request.getQueryString();
+	}
+	
+	/**
+	 * Returns <code>true</code> if the command is called for the first time.
+	 * 
+	 * @return <code>true</code> if the command is called for the first time, <code>false</code> otherwise
+	 */
+	public boolean isFirstCall() {
+		return this.firstCall;
+	}
+
+	/**
+	 * Sets whether the command is called for the first time.
+	 * 
+	 * @param firstCall <code>true</code> if the command is called for the first time, <code>false</code> otherwise
+	 */
+	public void setFirstCall(boolean firstCall) {
+		this.firstCall = firstCall;
 	}
 	
 }

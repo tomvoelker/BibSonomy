@@ -154,7 +154,7 @@ public abstract class AbstractUserIDRegistrationController<R> implements ErrorAw
 		/* 
 		 * if there are any errors in the form, we return back to fix them.
 		 */
-		if (this.errors.hasErrors() || ! HttpMethod.POST.equals(requestLogic.getHttpMethod())) {
+		if (this.errors.hasErrors() || command.getContext().isFirstCall()) {
 			log.info("an error occoured: " + this.errors.toString());
 			return this.registrationFormView;
 		}

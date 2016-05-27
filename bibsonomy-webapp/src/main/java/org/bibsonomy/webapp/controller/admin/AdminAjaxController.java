@@ -99,7 +99,7 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 		/*
 		 * return to form until validation passes
 		 */
-		if (errors.hasErrors() || ! HttpMethod.POST.equals(this.requestLogic.getHttpMethod())) {
+		if (errors.hasErrors() || command.getContext().isFirstCall()) {
 			/*
 			 * Do not update database as some input fields contain errors
 			 */

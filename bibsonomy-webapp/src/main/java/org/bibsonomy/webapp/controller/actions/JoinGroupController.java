@@ -174,7 +174,7 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		 */
 		CaptchaUtil.checkCaptcha(this.captcha, this.errors, log, command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), this.requestLogic.getHostInetAddress());
 		
-		if (errors.hasErrors() || ! HttpMethod.POST.equals(requestLogic.getHttpMethod())) {
+		if (errors.hasErrors() || command.getContext().isFirstCall()) {
 			command.setCaptchaHTML(captcha.createCaptchaHtml(requestLogic.getLocale()));
 			return Views.JOIN_GROUP;
 		}

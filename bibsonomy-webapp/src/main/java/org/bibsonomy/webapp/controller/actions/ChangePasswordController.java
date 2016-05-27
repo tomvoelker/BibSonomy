@@ -119,7 +119,7 @@ public class ChangePasswordController extends SettingsPageController implements 
 		 * go back to the settings page and display errors from command field
 		 * validation
 		 */
-		if (errors.hasErrors() || ! HttpMethod.POST.equals(requestLogic.getHttpMethod())) {
+		if (errors.hasErrors() || command.getContext().isFirstCall()) {
 			return super.workOn(command);
 		}
 
