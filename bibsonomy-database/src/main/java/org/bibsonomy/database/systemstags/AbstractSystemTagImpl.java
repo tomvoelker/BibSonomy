@@ -50,4 +50,11 @@ public abstract class AbstractSystemTagImpl implements SystemTag {
 		return this.argument;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.systemstags.SystemTag#hasArguments()
+	 */
+	@Override
+	public boolean hasArguments() {
+		return true;
+	}
 }

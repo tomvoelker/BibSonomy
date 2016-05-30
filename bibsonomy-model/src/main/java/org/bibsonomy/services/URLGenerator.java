@@ -1416,7 +1416,15 @@ public class URLGenerator {
 	 * @return The URL for the user's page with all posts tagged with tagName
 	 */
 	public String getUserUrlByUserNameAndTagName(final String userName, final String tagName) {
-		return this.getUserUrlByUserNameTagNameAndSysUrl(userName, tagName, this.projectHome);
+		String url = this.projectHome
+				+ prefix
+				+ USER_PREFIX
+				+ "/"
+				+ UrlUtils.encodePathSegment(userName)
+				+ "/"
+				+ UrlUtils.encodePathSegment(tagName);
+		return this.getUrl(url);
+
 	}
 
 	/**
