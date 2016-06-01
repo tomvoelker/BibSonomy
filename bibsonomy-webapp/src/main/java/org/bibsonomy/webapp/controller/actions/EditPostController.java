@@ -215,7 +215,8 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		}
 
 		/*
-		 * this is the post we're working on for now ...
+		 * this is the post we're working on for now ... This needs a "canEdit"
+		 * check!!!
 		 */
 		final Post<RESOURCE> post = command.getPost();
 		final String intraHashToUpdate = command.getIntraHashToUpdate();
@@ -408,9 +409,13 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		// editing of a group post - check if the user is in the group and has an appropriate role
 		if (present(command.getGroupUser())) {
 			final Group group = this.logic.getGroupDetails(command.getGroupUser(), false);
-			final GroupMembership groupMembership = group.getGroupMembershipForUser(postOwnerName);
-			if (present(groupMembership) && (groupMembership.getGroupRole().equals(GroupRole.ADMINISTRATOR) || groupMembership.getGroupRole().equals(GroupRole.MODERATOR))) {
-				postOwnerName = command.getGroupUser();
+			if (present(group)) {
+				final GroupMembership groupMembership = group.getGroupMembershipForUser(postOwnerName);
+				if (present(groupMembership) && (groupMembership.getGroupRole().equals(GroupRole.ADMINISTRATOR) || groupMembership.getGroupRole().equals(GroupRole.MODERATOR))) {
+					postOwnerName = command.getGroupUser();
+				}
+			} else {
+				throw new AccessDeniedNoticeException("no rights to update this post", "You have no rights to update this post");
 			}
 		}
 

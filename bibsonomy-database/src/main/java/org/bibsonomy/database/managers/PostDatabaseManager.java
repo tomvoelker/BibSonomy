@@ -1455,6 +1455,9 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	@Override
 	public boolean updatePost(final Post<R> post, final String oldHash, final PostUpdateOperation operation, final DBSession session, final User loginUser) {
 		final String postOwner = post.getUser().getName();
+		if (loginUser == null) {
+			throw new IllegalArgumentException("no loggedin user");
+		}
 		String executingUser = loginUser.getName();
 
 		// If the post owner is a group where the executingUser is an moderator
