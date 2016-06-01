@@ -201,6 +201,9 @@
 								<input type="hidden" name="referer" value="${fn:escapeXml(command.referer)}"/>
 								<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
 								<form:hidden path="intraHashToUpdate" />
+								<c:if test="${not empty command.groupUser}">
+									<form:hidden path="groupUser" />
+								</c:if>
 								<div class="col-sm-offset-3 col-sm-9">
 									<fmt:message key="save" var="save" />
 									<fmt:message key="save.and.rate" var="saveAndRate" />

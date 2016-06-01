@@ -79,6 +79,7 @@
 			</div>
 			<div class="ptags">
 				<!-- Edit tags link -->
+				<!-- TODO: Enable tag edits for group admins/mods -->
 				<c:if test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name) and not isRemotePost }">
 					<fmt:message key="navi.editTags" var="editTags" />
 					<bs:linkButton icon="pencil" dataToggle="modal" dataTarget="#tag-modal-${post.resource.intraHash}${post.user.name}" title="${editTags}" href="#" size="xsmall" additionalClass="tags-edit-link"></bs:linkButton>
@@ -95,6 +96,7 @@
 			<div class="clearfix">&#160;</div>
 			
 			<!-- EDIT TAGS MODAL POPUP-->
+			<!-- TODO: Enable tag edits for group admins/mods -->
 			<c:if test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name)}">
 				
 				<fmt:message key="tag.addTag" var="addTag" />
