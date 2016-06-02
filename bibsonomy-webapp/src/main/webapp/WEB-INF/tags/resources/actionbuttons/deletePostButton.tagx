@@ -50,7 +50,7 @@
 			<!-- Normal post -->
 			<c:otherwise>
 				<c:param name="resourceHash" value="${post.resource.intraHash}" />
-				<c:param name="owner" value="${loginUserName}" />
+				<c:param name="owner" value="${post.user.name}" />
 			</c:otherwise>
 		</c:choose>
 		<c:param name="ckey" value="${ckey}" />

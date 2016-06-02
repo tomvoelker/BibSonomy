@@ -1117,14 +1117,10 @@ public class DBLogic implements LogicInterface {
 		 * check permissions
 		 */
 		this.ensureLoggedIn();
-		/*
-		 * TODO: we do not know anything about the hashes (do they belong to bookmarks,
-		 * and/or publication, community post)
-		 * so the only way to check if the user is allowed to delete the post
-		 * is to check if he/she is an admin or self, for group editing we need to know
-		 * which resource is behind the resource hash
-		 */
-		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
+
+		if (!this.permissionDBManager.hasGroupRoleOrHigher(this.loginUser, userName, GroupRole.MODERATOR)) {
+			this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
+		}
 		/*
 		 * to store hashes of missing resources
 		 */
