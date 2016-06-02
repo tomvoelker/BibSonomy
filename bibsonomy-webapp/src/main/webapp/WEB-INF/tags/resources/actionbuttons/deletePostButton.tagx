@@ -24,9 +24,25 @@
 		</c:otherwise>
 	</c:choose>
 	
+	<c:set var="editableByUser" value="${loginUserName eq post.user.name}" />
+	<c:forEach items="${loginUser.groups}" var="group">
+		<c:if test="${group.name eq post.user.name }">
+			<c:set var="ms" value="${group.getGroupMembershipForUser(loginUser.name) }" />
+			<c:if test="${not empty ms and (ms.groupRole eq 'MODERATOR' or ms.groupRole eq 'ADMINISTRATOR') }">
+				<c:set var="editableByUser" value="${true}" />
+			</c:if>
+		</c:if>
+	</c:forEach>
+	
 	<c:set var="disabled" value="${false}" />
 	<c:choose>
+		<!-- community post -->
 		<c:when test="${not userLoggedIn or isRemotePost or (loginUserName ne post.user.name and isCommunityPost and loginUser.role ne 'ADMIN')}">
+			<fmt:message key="${resourceType}.actions.delete.inactive" var="deleteTitle"/>
+			<c:set var="disabled" value="${true}" />
+		</c:when>
+		<!-- general -->
+		<c:when test="${not editableByUser}">
 			<fmt:message key="${resourceType}.actions.delete.inactive" var="deleteTitle"/>
 			<c:set var="disabled" value="${true}" />
 		</c:when>
