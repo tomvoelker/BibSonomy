@@ -286,7 +286,11 @@ public abstract class AbstractRenderer implements Renderer {
 			final BibtexType xmlPublication = new BibtexType();
 	
 			final String intraHash = publication.getIntraHash();
-			xmlPublication.setHref(this.urlRenderer.createHrefForResource(userName, intraHash));
+			
+			// new post do not have an intrahash => set no url
+			if (present(intraHash)) {
+				xmlPublication.setHref(this.urlRenderer.createHrefForResource(userName, intraHash));
+			}
 	
 			this.fillXmlPublicationDetails(publication, xmlPublication);
 	
