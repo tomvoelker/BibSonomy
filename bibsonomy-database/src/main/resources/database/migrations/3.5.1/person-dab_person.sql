@@ -1,0 +1,1 @@
+ALTER TABLE person MODIFY dnb_person_id char(18);
