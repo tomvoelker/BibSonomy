@@ -49,7 +49,7 @@
 			
 			<groupsettings:userlists group="${group}" />
 			
-			<!--<groupsettings:delete group="${group}" />-->
+			<groupsettings:delete group="${group}" />
 		</jsp:attribute>
 
 	</layout:tabLayout>

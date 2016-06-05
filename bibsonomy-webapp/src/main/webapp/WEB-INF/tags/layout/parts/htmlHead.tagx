@@ -32,6 +32,17 @@
 		+-->
 	<c:set var="requPathAndQuery" value="${requPath}${requQueryString}" scope="request" />
 
+	<!-- prepare hidden system tags for handling in custom.js --> 
+	<c:set var="hiddenSystemTags" value="" />
+	<c:forEach var="markUpSystemTags" items="${systemTagFactory.markUpSystemTags}" varStatus="status">
+		<c:set var="hiddenSystemTags" value='${hiddenSystemTags} { name: "${markUpSystemTags.name}", toHide: ${markUpSystemTags.toHide}, hasArguments: ${markUpSystemTags.hasArguments()} },' />
+	</c:forEach>
+	<c:forEach var="executableSystemTags" items="${systemTagFactory.executableSystemTags}">
+		<c:set var="hiddenSystemTags" value='${hiddenSystemTags} { name: "${executableSystemTags.name}", toHide: ${executableSystemTags.toHide}, hasArguments: ${executableSystemTags.hasArguments()} },' />
+	</c:forEach>
+	<!--  remove last comma -->
+	<c:set var="hiddenSystemTags" value="${fn:substring(hiddenSystemTags, 0, fn:length(hiddenSystemTags) - 1 )}" />
+	
 	<!--+
 		|
 		| real content starts here
@@ -88,6 +99,9 @@
 						"confirmDelete" : ${loginUser.settings.confirmDelete}
 					};
 					var requUser = ${(requestedUser ne '') ? requestedUserString : "null"};
+					var hiddenSystemTags = [
+						${hiddenSystemTags}
+					];
 				]]>
 		</script>
 		

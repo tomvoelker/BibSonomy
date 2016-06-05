@@ -31,8 +31,7 @@
 	<jsp:directive.attribute name="noLoginBox" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="noSidebar" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
-	
-	
+
 	<c:set var="systemReadOnly" value="${properties['system.mode.readOnly']}" scope="request" />
 	<!--+
 		| 
@@ -41,7 +40,7 @@
 		+-->
 	<jsp:output omit-xml-declaration="true" />
 	<jsp:output doctype-root-element="HTML" doctype-system="about:legacy-compat" />
-	
+
 	<jsp:element name="html">
 		<jsp:body>
 			<parts:htmlHead headerExt="${headerExt}" loginUser="${loginUser}"

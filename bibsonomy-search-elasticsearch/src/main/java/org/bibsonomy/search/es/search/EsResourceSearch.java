@@ -117,8 +117,8 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	private ResourceConverter<R> resourceConverter;
 
 	/**
-	 * logic interface for retrieving data from bibsonomy (friends, groups
-	 * members)
+	 * logic interface for retrieving data from the main database
+	 * (friends, groups members)
 	 */
 	private SearchInfoLogic infoLogic;
 	
