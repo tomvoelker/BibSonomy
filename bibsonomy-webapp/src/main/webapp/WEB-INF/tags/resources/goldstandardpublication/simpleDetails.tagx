@@ -15,8 +15,8 @@
 		<c:set var="itemType" value="http://schema.org/Book"/>
 	</c:if>
 	
-	<div id="${publication.interHash}" itemtype="${itemType}" itemscope="itemscope" itemprop="citation">
-		<strong><a href="${relativeUrlGenerator.getPublicationUrlByInterHash(publication.interHash)}" itemprop="headline"><c:out value="${mtl:cleanBibtex(publication.title)}" /></a></strong>
+	<div id="${publication.interHash}" itemtype="${itemType}" itemscope="itemscope" itemprop="citation" class="related">
+		<strong><a class="title" href="${relativeUrlGenerator.getPublicationUrlByInterHash(publication.interHash)}" itemprop="headline"><c:out value="${mtl:cleanBibtex(publication.title)}" /></a></strong>
 		<bib:desc publication="${publication}"/>
 	</div>
 </jsp:root>
