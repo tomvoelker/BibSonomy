@@ -33,18 +33,18 @@
 			</c:otherwise>
 		</c:choose>
 	</div>
-	<div class="media-body">
-		<c:set var="itemtype" value="http://schema.org/Review"/>
-		<c:set var="itemprop" value="review"/>
-		<c:if test="${clazz eq 'comment'}">
-			<c:set var="itemtype" value="http://schema.org/UserComment"/>
-			<c:set var="itemprop" value="comment"/>
-		</c:if>
+	<c:set var="itemtype" value="http://schema.org/Review"/>
+	<c:set var="itemprop" value="review"/>
+	<c:if test="${clazz eq 'comment'}">
+		<c:set var="itemtype" value="http://schema.org/Comment"/>
+		<c:set var="itemprop" value="comment"/>
+	</c:if>
+	<div class="media-body" itemprop="${itemprop}" itemscope="itemscope" itemtype="${itemtype}">
 		<div class="info" data-username="${discussionItem.user.name}" data-discussion-item-hash="${discussionItem.hash}">
 			<discussionItem:discussionItemOwner discussionItem="${discussionItem}" />
 			<discussionItem:discussionItemInfo discussionItem="${discussionItem}" anonymous="${anonymous}" ownDiscussionItem="${ownDiscussionItem}" />
 		</div>
-		<div class="${clazz} details"  itemprop="${itemprop}" itemscope="itemscope" itemtype="${itemtype}">
+		<div class="${clazz} details">
 			<jsp:invoke fragment="content"/>
 			<div class="citeBox" style="display:none" >
 				<!-- keep it -->

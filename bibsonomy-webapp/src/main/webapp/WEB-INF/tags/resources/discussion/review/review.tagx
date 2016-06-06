@@ -12,11 +12,11 @@
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
 	<jsp:directive.attribute name="postUserName" type="java.lang.String" required="true"/>
 	
-	<c:set var="ownReview" value="${loginUser.name eq review.user.name }" />
+	<c:set var="ownReview" value="${loginUser.name eq review.user.name}" />
 	
 	<discussionItem:discussionItem resource="${resource}" discussionItem="${review}" loginUser="${loginUser}">
 		<jsp:attribute name="content">
-			<div class="rating" data-rating="${review.rating}" itemscope="itemscope" itemtype="http://schema.org/Rating">
+			<div class="rating" data-rating="${review.rating}" itemprop="reviewRating" itemscope="itemscope" itemtype="http://schema.org/Rating">
 				<input type="number" class="reviewRating" value="${review.rating}"/>
 				<meta itemprop="ratingValue" content="${review.rating}" />
 				<meta itemprop="bestRating" content="5" />

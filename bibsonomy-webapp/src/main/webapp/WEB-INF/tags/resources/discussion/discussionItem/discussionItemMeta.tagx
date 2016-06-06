@@ -9,8 +9,9 @@
 	<fmt:timeZone value="${command.context.loginUser.settings.timeZone}">
 		<fmt:formatDate type="date" dateStyle="medium" value="${discussionItem.date}" var="createDate" />
 		<fmt:formatDate type="time" timeStyle="short" value="${discussionItem.date}" var="createTime" />
-		<span class="date" itemprop="datePublished" title="${createDate}, ${createTime}">
+		<span class="date" title="${createDate}, ${createTime}">
 			<mtl:formatTimeDiff startDate="${discussionItem.date}"/>
+			<meta itemprop="datePublished" content="${mtl:formatDateISO8601(discussionItem.date)}" />
 		</span>
 	
 		<c:if test="${not empty discussionItem.changeDate}">

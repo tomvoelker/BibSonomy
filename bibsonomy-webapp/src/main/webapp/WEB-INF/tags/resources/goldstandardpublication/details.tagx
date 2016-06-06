@@ -42,17 +42,16 @@
 	
 	<goldstandard:actionHeader post="${post}" showEditOnly="${false}" postOfLoggedInUser="${postOfLoggedInUser}" communityPostExists="${isRealGoldstandard}" resourceType="bibtex" loginUser="${loginUser}" />
 	
-	<!-- TODODZO itemScope = itemType? -->
-	<div id="goldstandard" itemtype="${itemType}" itemscope="itemscope" class="row">
-		<div class="col-md-7 col-md-offset-1">
+	<div id="goldstandard" class="row">
+		<div class="col-md-7 col-md-offset-1" itemtype="${itemType}" itemscope="itemscope" id="${goldstandard.interHash}">
 			<div class="content-header" id="info">
-				<h1 itemprop="headline"><c:out value="${mtl:cleanBibtex(goldstandard.title)}" />
+				<h1><span itemprop="headline"><c:out value="${mtl:cleanBibtex(goldstandard.title)}" /></span>
 					<small>
 						<c:if test="${post.approved}">
 							<fmt:message key="goldStandard.approved.title" var="approved"/>
 							<span class="fa fa-check-circle community-approved" data-toggle="tooltip" data-placement="bottom" title="${fn:escapeXml(approved)}" style="margin-left:6px;"><!-- keep me --></span>
 						</c:if>
-						<span class="publication-description"><bib:desc publication="${goldstandard}"/></span>
+						<span class="publication-description"><bib:desc publication="${goldstandard}" noSchemaMarkupContainer="${true}"/></span>
 					</small>
 				</h1>
 			</div>
@@ -128,8 +127,7 @@
 					<ul id="related-publications-references">
 						<c:forEach var="reference" items="${goldstandard.references}">
 							<li>
-								<strong><a href="${relativeUrlGenerator.getPublicationUrlByInterHash(reference.interHash)}"><c:out value="${mtl:cleanBibtex(reference.title)}" /></a></strong>
-								<bib:desc publication="${reference}"/>
+								<goldstandardpublication:simpleDetails publication="${reference}" />
 							</li>
 						</c:forEach>
 						<c:if test="${empty goldstandard.references}">
@@ -139,8 +137,7 @@
 					<ul id="related-publications-citing" style="display:none">
 						<c:forEach var="reference" items="${goldstandard.referencedBy}">
 							<li>
-								<strong><a href="${relativeUrlGenerator.getPublicationUrlByInterHash(reference.interHash)}"><c:out value="${mtl:cleanBibtex(reference.title)}" /></a></strong>
-								<bib:desc publication="${reference}"/>
+								<goldstandardpublication:simpleDetails publication="${reference}" />
 							</li>
 						</c:forEach>
 						<c:if test="${empty goldstandard.referencedBy}">
