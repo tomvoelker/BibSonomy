@@ -100,12 +100,13 @@ $(function() {
 		if (subItems.length > maxItemsInMoreList) {
 			var moreLessLink = $('<li class="more-link-item"></li>');
 			if (inline) {
+				defaultMoreIcon = 'fa-caret-down';
 				moreLessLink.addClass('more-link-item-inline');
 			}
 			var text = getString("more");
 			
 			subItems.slice(maxItemsInMoreList).hide();
-			var link = $('<a class="more"><span class="fa fa-caret-right"></span><span class="desc">' + text + '...</span></a>');
+			var link = $('<a class="more"><span class="fa ' + defaultMoreIcon + '"></span><span class="desc">' + text + ' ...</span></a>');
 			if (inline) {
 				link.addClass('btn btn-default btn-block');
 			}
@@ -126,7 +127,7 @@ $(function() {
 					$(this).parent().parent().find('li:not(.more-link-item)').slice(maxItemsInMoreList).hide();
 				}
 				icon.removeClass(classToRemove).addClass(classToAdd);
-				$(this).find('.desc').text(descText + "...");
+				$(this).find('.desc').text(descText + " ...");
 			});
 			moreLessLink.append(link);
 			$(this).append(moreLessLink);

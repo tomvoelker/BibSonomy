@@ -77,12 +77,21 @@ $(function() {
 			method: 'POST',
 			data: data,
 			success: function(data) {
-				
 				var textfield = form.find('textarea[name=discussionItem\\.text]');
 				var text = textfield.val();
-				
-				form.parent().find('.text:first').text(text);
-				
+				var commentUI = form.parent();
+				commentUI.find('.text:first').text(text);
+				var hash = data.hash;
+				var infoUI = commentUI.find('div.info:first');
+				// alert(hash);
+				infoUI.data('discussion-item-hash', hash);
+				var updateForm = commentUI.find('form.updatecomment:first');
+				var updateHashInput = updateForm.find('input[name=discussionItem\\.hash]');
+				updateHashInput.val(hash);
+				var commentForm = commentUI.find('form.createcomment:first');
+				var input = commentForm.find('input[name=discussionItem\\.parentHash]');
+				input.val(hash);
+				// alert(infoUI.data('discussion-item-hash'));
 				form.hide();
 			}
 		});
