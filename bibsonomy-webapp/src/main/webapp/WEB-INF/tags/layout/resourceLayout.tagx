@@ -4,6 +4,7 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:publication="urn:jsptagdir:/WEB-INF/tags/resources/publication"
 	xmlns:goldstandardpublication="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication"
 	xmlns:goldstandardbookmark="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardbookmark"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
@@ -13,6 +14,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.SimpleResourceViewCommand" required="true"/>	
+	
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
 	<!-- TODO: remove? unused! -->
@@ -31,7 +33,9 @@
 	<jsp:directive.attribute name="customPublicationsHeaderText" type="java.lang.String" required="false"/>
 	
 	<!-- quick fix for discussion page -->
+	<!-- TODO: remove -->
 	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="false" />
+	<!-- TODO: remove -->
 	<jsp:directive.attribute name="discussionBox" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="noSidebar" type="java.lang.Boolean" required="false"/>
 	
@@ -52,9 +56,6 @@
 		|
 		+-->
 	<fmt:message key="feeds.bookmark" var="bookmarkRssFeed"/>
-	<fmt:message key="feeds.publication" var="publicationRssFeed"/>
-	<fmt:message key="feeds.burst" var="burstRssFeed"/>
-	<fmt:message key="feeds.swrc" var="swrcFeed"/>
 	
 	<!--+
 		| which resource types to display (controlled via URL-param, format, user settings; see ResourceListController.getListsToInitialize)
@@ -86,15 +87,13 @@
 			+ HTML header extension
 			+ -->
 		<jsp:attribute name="headerExt">
-			
 			<c:if test="${showPublication}">
-				<link rel="alternate" type="application/rss+xml" title="${publicationRssFeed} /${excapedRequestPath}" href="/publrss/${excapedRequestPath}" />
-				<link rel="alternate" type="application/rss+xml" title="${burstRssFeed} /${excapedRequestPath}" href="/burst/${excapedRequestPath}" />
-				<link rel="alternate" type="application/rdf+xml" title="${swrcFeed} /${excapedRequestPath}" href="/swrc/${excapedRequestPath}" />
+				<publication:feeds path="/${fn:escapeXml(requPath)}" />
 			</c:if>
 			<c:if test="${showBookmark}">
 				<link rel="alternate" type="application/rss+xml" title="${bookmarkRssFeed} /${excapedRequestPath}" href="/rss/${excapedRequestPath}" />
 			</c:if>
+			
 			<!-- UnAPI service -->
 			<link rel="unapi-server" type="application/xml" title="unAPI" href="${properties['project.home']}unapi"/>
 

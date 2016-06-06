@@ -14,6 +14,7 @@
 	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
+	xmlns:publication="urn:jsptagdir:/WEB-INF/tags/resources/publication"
 	xmlns:goldstandardpublication="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication"
 	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
@@ -21,26 +22,23 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<c:set var="goldstandardPresent" value="${not empty command.goldStandardPublications.list}" />
-	<c:set var="publication" value="${command.bibtex.list[0].resource}" />
-
+	<c:set var="postToShow" value="${command.bibtex.list[0]}" />
 	<c:if test="${goldstandardPresent}">
-		<c:set var="publication" value="${command.goldStandardPublications.list[0].resource}" />
+		<c:set var="postToShow" value="${command.goldStandardPublications.list[0]}" />
 	</c:if>
+	
+	<c:set var="publication" value="${postToShow.resource}" />
 	<c:set var="title" value="${mtl:cleanBibtex(publication.title)}" />
-	<fmt:message key="post.resource.discussion.headline" var="discussionsTitle"/>
 	
 	<fmt:message key="navi.publication" var="pageTitle"/>
 	
-	<!-- FIXME: TODODZO rss feeds -->
-	<layout:layout pageTitle="${title}"
-			loginUser="${command.context.loginUser}"
-			requPath="${requPath}"
-			noSidebar="${true}">
+	<layout:layout pageTitle="${title}" loginUser="${command.context.loginUser}" requPath="${requPath}" noSidebar="${true}">
 		
 		<jsp:attribute name="headerExt">
 			<script type="text/javascript" src="${resdir}/javascript/merged/discussion.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/publication.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/goldstandards.js"><!-- keep me --></script>
+			<publication:feeds path="${relativeUrlGenerator.getCommunityPublicationUrlByInterHash(publication.interHash)}" />
 		</jsp:attribute>
 		
 		<jsp:attribute name="breadcrumbs">
@@ -74,11 +72,6 @@
 					</c:forEach>
 				</c:otherwise>
 			</c:choose>
-			
-			<c:set var="postToShow" value="${command.bibtex.list[0]}" />
-			<c:if test="${goldstandardPresent}">
-				<c:set var="postToShow" value="${command.goldStandardPublications.list[0]}" />
-			</c:if>
 			
 			<goldstandardpublication:details post="${postToShow}" postOfLoggedInUser="${command.postOfLoggedInUser}" loginUser="${command.context.loginUser}" postUserName="${command.postOwner}" postIsPublic="${isPublic}"/>
 		</jsp:attribute>
