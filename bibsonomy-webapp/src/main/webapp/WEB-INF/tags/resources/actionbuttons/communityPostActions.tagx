@@ -32,7 +32,6 @@
 					</c:otherwise>
 				</c:choose>
 			</c:if>
-				
 			
 			<buttons:historyButton
 				post="${post}"
