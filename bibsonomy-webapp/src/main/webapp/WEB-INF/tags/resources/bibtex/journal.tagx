@@ -5,13 +5,11 @@
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
-	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />	
+	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />
 	
 	<c:if test="${not empty publication.journal}">
-	<div itemscope="itemscope" itemtype="http://schema.org/ScholarlyArticle">
-		<span itemprop="isPartOf">
-			<em><c:out value="${mtl:cleanBibtex(publication.journal)}" /></em>
+		<span itemprop="isPartOf" itemscope="itemscope" itemtype="http://schema.org/Periodical">
+			 <span itemprop="name"><em><c:out value="${mtl:cleanBibtex(publication.journal)}" /></em></span>
 		</span>
-	</div>	
 	</c:if>	
 </jsp:root>

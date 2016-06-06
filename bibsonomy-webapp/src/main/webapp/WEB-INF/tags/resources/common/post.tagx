@@ -16,6 +16,7 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	<jsp:directive.attribute name="additionalItemClasses" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="itemtype" type="java.lang.String" required="true"/>
 
 	<jsp:directive.attribute name="title" fragment="true" required="true"/>
 	<jsp:directive.attribute name="desc" fragment="true" required="true"/>
@@ -27,16 +28,16 @@
    <!--+ 
        | TODO: Several tests (not empty post.user.name) are here to test for community posts. 
        | They never have a userName. 
-       | Since they also dont have several other properties, we dont show those.
+       | Since they also dont have several other properties, we don not show those.
        +-->
-
-	<li data-intrahash="2${post.resource.intraHash}" data-user="${fn:escapeXml(post.user.name)}" class="media post ${additionalItemClasses}" id="list-item-${post.resource.intraHash}${post.user.name}">
+	
+	<li data-intrahash="2${post.resource.intraHash}" itemtype="${itemtype}" itemscope="itemscope" data-user="${fn:escapeXml(post.user.name)}" class="media post ${additionalItemClasses}" id="list-item-${post.resource.intraHash}${post.user.name}">
 		<div class="clearline">&#160;</div>
 		<h4 class="media-heading" data-ident="${post.resource.intraHash}">
 			<div>
 			<div class="clearline">&#160;</div>
 			<rc:otherpeople post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" />
-			<span class="ptitle"><jsp:invoke fragment="title"/></span>
+			<span class="ptitle" itemprop="name"><jsp:invoke fragment="title"/></span>
 			<div class="clearline">&#160;</div>
 			</div>
 		</h4>
@@ -139,14 +140,12 @@
 							</div>
 							<!-- /.modal-content -->
 						</form>
-
 					</div>
 					<!-- /.modal-dialog -->
 				</div>
 				<!-- /.modal -->
 			</c:if>
 			<!-- / EDIT TAGS MODAL POPUP-->
-
 		</div>
 		<div class="clearline">&#160;</div>
 	</li>

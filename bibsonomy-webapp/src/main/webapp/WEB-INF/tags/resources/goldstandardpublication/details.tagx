@@ -45,7 +45,7 @@
 	<div id="goldstandard" class="row">
 		<div class="col-md-7 col-md-offset-1" itemtype="${itemType}" itemscope="itemscope" id="${goldstandard.interHash}">
 			<div class="content-header" id="info">
-				<h1><span itemprop="headline"><c:out value="${mtl:cleanBibtex(goldstandard.title)}" /></span>
+				<h1><span itemprop="name"><c:out value="${mtl:cleanBibtex(goldstandard.title)}" /></span>
 					<small>
 						<c:if test="${post.approved}">
 							<fmt:message key="goldStandard.approved.title" var="approved"/>
@@ -103,7 +103,7 @@
 					<c:if test="${not empty doi}">
 						<dt>DOI</dt>
 						<dd>
-							<a href="http://dx.doi.org/${mtl:encodePathSegment(doi)}" title="${urlTitle}"><c:out value="${doi}" /></a>
+							<a itemprop="sameAs" href="http://dx.doi.org/${mtl:encodePathSegment(doi)}" title="${urlTitle}"><c:out value="${doi}" /></a>
 						</dd>
 					</c:if>
 				</dl>
