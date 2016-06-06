@@ -15,7 +15,7 @@
 			<c:set var="url" value="${relativeUrlGenerator.getHistoryUrlForPost(post)}" />
 		</c:when>
 		<c:otherwise>
-			<c:set var="url" value="${relativeUrlGenerator.getHistoryURLByHashAndUserName(post.resource.intraHash, null, resourceType)}" />
+			<c:set var="url" value="${relativeUrlGenerator.getHistoryURLByHashAndUserName(post.resource.interHash, null, resourceType)}" />
 		</c:otherwise>
 	</c:choose>
 	

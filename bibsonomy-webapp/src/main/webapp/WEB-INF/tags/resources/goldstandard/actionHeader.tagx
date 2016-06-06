@@ -23,7 +23,6 @@
 				<c:when test="${not empty postOfLoggedInUser}">
 					<span class="community-info warning">
 						<fontawsome:icon icon="warning" /><c:out value=" " />
-						<!-- TODO: i18n TODODZO-->
 						<fmt:message key="community.warning.view" /><c:out value=" " />
 						<c:choose>
 							<c:when test="${showEditOnly}">
