@@ -13,7 +13,7 @@
 	</h2>
 	<div class="tagcloud">
 		<c:forEach var="tag" items="${tagCloudCommand.tags }">
-			<span class="tag ${mtl:getTagSize(tag.usercount, tagCloudCommand.maxTagCount)}"><c:out value="${tag.name }" /></span>
+			<span class="tag ${mtl:getTagSize(tag.usercount, tagCloudCommand.maxTagCount)}"><a href="${relativeUrlGenerator.getTagUrlByTagName(tag.name)}"><c:out value="${tag.name }" /></a></span>
 		</c:forEach>
 	</div>
 </jsp:root>
