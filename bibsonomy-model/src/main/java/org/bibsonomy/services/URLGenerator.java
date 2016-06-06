@@ -1725,7 +1725,7 @@ public class URLGenerator {
 		final String url = this.projectHome + PUBLICATION_PREFIX + "/"
 				+ PUBLICATION_INTER_HASH_ID + interHash + "?postOwner="
 				+ UrlUtils.encodePathSegment(userName) + "&amp;intraHash="
-				+ intraHash + "#discussionbox";
+				+ intraHash + "#discussionbox"; //FIXME: # are not working in redirects
 		return this.getUrl(url);
 	}
 

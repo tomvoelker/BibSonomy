@@ -35,8 +35,6 @@
 	<!-- quick fix for discussion page -->
 	<!-- TODO: remove -->
 	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="false" />
-	<!-- TODO: remove -->
-	<jsp:directive.attribute name="discussionBox" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="noSidebar" type="java.lang.Boolean" required="false"/>
 	
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>

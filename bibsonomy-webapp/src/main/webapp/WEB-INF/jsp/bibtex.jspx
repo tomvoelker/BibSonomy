@@ -6,17 +6,11 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
-	xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
-	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
 	xmlns:publication="urn:jsptagdir:/WEB-INF/tags/resources/publication"
 	xmlns:goldstandardpublication="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication"
-	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -56,15 +50,15 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="content">
-			<!-- COMMUNITY POST -->
 			<c:set var="isPublic" value="${false}"/>
 			<c:choose>
+				<!-- community post -->
 				<c:when test="${goldstandardPresent}">
 					<c:set var="isPublic" value="${true}"/>
 				</c:when>
+				<!-- or first item is public -->
 				<c:otherwise>
 					<!-- quick fix for discussion page -->
-					<c:set var="discussionBox" value="${true}"/>
 					<c:forEach var="group" items="${command.bibtex.list[0].groups}">
 						<c:if test="${group.name eq 'public'}">
 							<c:set var="isPublic" value="${true}"/>
