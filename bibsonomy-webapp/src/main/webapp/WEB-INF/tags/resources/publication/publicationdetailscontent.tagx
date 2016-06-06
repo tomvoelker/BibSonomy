@@ -236,17 +236,30 @@
 			+-->
 		<!-- TODO: i18n? -->
 		<h4 class="pub-details"><span class="fa fa-tag"><!--  --></span><c:out value=" " />Tags</h4>
-		<c:set var="tags" value="${post.tags}"/>
-		<c:if test="${not isOwnEntry}">
-			<c:set var="tags" value="${post.visibleTags}" />
-		</c:if>
 		<div class="tag-list">
-			<ul class="list-inline">
-			<c:forEach var="tag" items="${tags}" varStatus="status">
-				<!-- TODO: remove nobr and replace with CSS, it is deprecated! -->
-				<li><span class="label label-primary"><a href="/user/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(tag.name)}" rel="nofollow" title=""><nobr><span itemprop="keywords"><c:out value="${tag.name}"/></span></nobr></a></span></li>
+		<ul class="list-inline">
+		<c:forEach var="tag" items="${post.visibleTags}" varStatus="status">
+			<li>
+			<c:set var="lblColor" value="primary" />
+			<!-- TODO: remove special handling for myown -->
+			<c:if test="${tag.name eq 'myown'}"> <c:set var="lblColor" value="warning" /> </c:if>
+				<span class="label label-${lblColor}">
+					<a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, tag.name)}" rel="nofollow" title=""> <c:out value="${tag.name}"/> </a>
+				</span>
+			</li>
+		</c:forEach>
+		<c:if test="${isOwnEntry}">
+			<c:forEach var="tag" items="${post.hiddenSystemTags}" varStatus="status">
+				<li> 
+					<span class="label label-warning">
+						<a href="${relativeUrlGenerator.getUserUrlByUserNameAndTagName(post.user.name, tag.name)}" rel="nofollow" title="">
+							<c:out value="${tag.name}"/>
+						</a>
+					</span>
+				</li>
 			</c:forEach>
-			</ul>
-		</div>
+		</c:if>
+		</ul>
+	</div>
 	
 </jsp:root>

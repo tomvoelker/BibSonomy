@@ -11,32 +11,15 @@
 	
 	<c:choose>
 		<c:when test="${not empty userList}">
-			<ul class="list-inline community-page-user-list">
+			<ul class="list-inline community-page-user-list more-list" data-items="7" data-inline="true">
 				<c:forEach var="user" items="${userList}" varStatus="count">
-					<c:choose>
-						<c:when test="${count.index lt 6}">
-							<li>
-								<a title="@${fn:escapeXml(user.name)}" href="/user/${fn:escapeXml(user.name)}" class="thumbnail img-thumbnail img-responsive">
-									<img class="user-avatar" src="/picture/user/${fn:escapeXml(user.name)}" alt="@${fn:escapeXml(user.name)}" />
-									<span>@${fn:escapeXml(user.name)}</span>
-								</a>
-							</li>
-						</c:when>
-						<c:otherwise>
-							<li class="hidden">
-								<a title="@${fn:escapeXml(user.name)}" href="/user/${fn:escapeXml(user.name)}" class="thumbnail img-thumbnail img-responsive">
-									<img class="user-avatar" src="/picture/user/${fn:escapeXml(user.name)}" alt="@${fn:escapeXml(user.name)}" />
-									<span>@${fn:escapeXml(user.name)}</span>
-								</a>
-							</li>
-							
-						</c:otherwise>
-					</c:choose>
+					<li>
+						<a title="@${fn:escapeXml(user.name)}" href="/user/${fn:escapeXml(user.name)}" class="thumbnail img-thumbnail img-responsive">
+							<img class="user-avatar" src="/picture/user/${fn:escapeXml(user.name)}" alt="@${fn:escapeXml(user.name)}" />
+							<span>@${fn:escapeXml(user.name)}</span>
+						</a>
+					</li>
 				</c:forEach>
-				<c:if test="${fn:length(userList) gt 6}">
-					<li class="hidden"><a class="show-less" href="#">show less</a></li>
-					<li class="shown"><a class="show-more" href="#">show all</a></li>
-				</c:if>
 			</ul>
 		</c:when>
 		<c:otherwise>
