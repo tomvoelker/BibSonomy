@@ -13,13 +13,12 @@
 
 	<fmt:message key="recommended.pagetitle" var="pageTitle"/>
 	
-	<layout:resourceLayout pageTitle="${pageTitle}" 
-			command="${command}" 
-			requPath="${requPath}" 
-			disableListNavigation="${true}" 
+	<layout:resourceLayout pageTitle="${pageTitle}"
+			command="${command}"
+			requPath="${requPath}"
+			disableListNavigation="${true}"
 			activeTab="my"
-			showPageOptions="${true}"
-			hideFooterContainer="${true}">
+			showPageOptions="${true}">
 			
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>

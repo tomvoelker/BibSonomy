@@ -33,7 +33,6 @@
 		requPath="${requPath}" 
 		headerExt="${headerExt}" 
 		activeTab="${activeTab}" 
-		hideFooterContainer="${true}"
 		breadcrumbs="${breadcrumbs}">
 		
 		<jsp:attribute name="content">

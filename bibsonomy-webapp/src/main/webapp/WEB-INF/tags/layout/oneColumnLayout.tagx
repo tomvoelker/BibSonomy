@@ -24,12 +24,10 @@
 	<jsp:directive.attribute name="newsbar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="headerContainer" fragment="true" required="false"/>
 	<jsp:directive.attribute name="headerMessageKey" type="java.lang.String" required="false"/>
-	<!-- FIXME: footerContainer not used -->
-	<jsp:directive.attribute name="footerContainer" fragment="true" required="false"/>
+	
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="noLoginBox" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="hideFooterContainer" type="java.lang.Boolean" required="false"/>
 	
 	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
 	

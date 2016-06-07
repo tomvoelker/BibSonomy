@@ -22,28 +22,17 @@
 	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="newsbar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="headerContainer" fragment="true" required="false"/>
-	<!-- FIXME: footerContainer not used -->
-	<jsp:directive.attribute name="footerContainer" fragment="true" required="false"/>
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="noLoginBox" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="hideFooterContainer" type="java.lang.Boolean" required="false"/>
 	
 	
-	<!--+
-		| 
-		| document starts here
-		|
-		+-->
-		<layout:layout
+	<layout:layout
 		content="${content}"
 		heading="${heading}"
 		loginUser="${command.context.loginUser}"
 		pageTitle="${editPageTitle}" 
 		requPath="${requPath}" 
 		activeTab="${activeTab}"
-		noSidebar="${false}"
-		>
-		
-		</layout:layout>
+		noSidebar="${false}" />
 </jsp:root>
