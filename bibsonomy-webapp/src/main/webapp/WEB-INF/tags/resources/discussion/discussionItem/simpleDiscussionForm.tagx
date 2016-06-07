@@ -72,7 +72,15 @@
 			<div class="col-md-2 col-md-offset-5">
 				<div class="checkbox">
 					<label>
-						<input type="checkbox" /> <fmt:message key="post.resource.discussionItem.anonymous" />
+						<c:choose>
+							<c:when test="${discussionItem.anonymous}">
+								<input type="checkbox" checked="checked" name="discussionItem.anonymous"/>
+							</c:when>
+							<c:otherwise>
+								<input type="checkbox" name="discussionItem.anonymous"/>
+							</c:otherwise>
+						</c:choose>
+						 <fmt:message key="post.resource.discussionItem.anonymous" />
 					</label>
 				</div>
 			</div>
