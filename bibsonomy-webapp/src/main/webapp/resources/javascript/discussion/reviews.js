@@ -33,18 +33,20 @@ function initStars() {
 		size : 'xs',
 		readonly : true,
 		showCaption : false,
-		glyphicon : false,
-		ratingClass : 'rating-fa'
+		theme: 'krajee-fa',
+		filledStar: '<i class="fa fa-star"></i>',
+		emptyStar: '<i class="fa fa-star-o"></i>'
 	});
 	
 	$('.newRating').rating({
 		size: 'xs',
 		showCaption : false,
-		glyphicon : false,
 		min: 0,
 		max: 5,
 		step: 0.5,
-		ratingClass : 'rating-fa'
+		theme: 'krajee-fa',
+		filledStar: '<i class="fa fa-star"></i>',
+		emptyStar: '<i class="fa fa-star-o"></i>'
 	});
 }
 
@@ -77,8 +79,11 @@ function plotRatingDistribution() {
 		size : 'xs',
 		readonly : true,
 		showCaption : false,
-		glyphicon : false,
-		ratingClass : 'rating-fa'
+		filledStar: '<i class="fa fa-star"></i>',
+		emptyStar: '<i class="fa fa-star-o"></i>',
+		theme: 'krajee-fa',
+		filledStar: '<i class="fa fa-star"></i>',
+		emptyStar: '<i class="fa fa-star-o"></i>'
 	});
 	
 	var average = getAvg()
