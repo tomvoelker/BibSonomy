@@ -21,7 +21,7 @@
 		<fmt:param value="${fn:escapeXml(command.sphereName)}"/>
 	</fmt:message>
 	<fmt:message var="headline" key="page.sphere.headline" />
-	<layout:resourceLayout pageTitle="${pageTitle}" command="${command}" requPath="${requPath}" activeTab="${(not empty command.context.loginUser.name) ? 'my' : ''}" headline="${headline}${command.sphereName}">
+	<layout:resourceLayout pageTitle="${pageTitle}" command="${command}" requPath="${requPath}" activeTab="${(not empty command.context.loginUser.name) ? 'my' : ''}">
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/spheres.css" />
 		</jsp:attribute>

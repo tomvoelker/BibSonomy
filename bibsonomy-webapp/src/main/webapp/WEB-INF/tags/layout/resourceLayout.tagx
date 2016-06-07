@@ -17,8 +17,7 @@
 	
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
-	<!-- TODO: remove? unused! -->
-	<jsp:directive.attribute name="headline" type="java.lang.String" required="true"/>
+	
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableResourcetypeSelection" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="showInboxActions" type="java.lang.Boolean" required="false"/>
@@ -32,9 +31,6 @@
 	<jsp:directive.attribute name="customBookmarksHeaderText" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="customPublicationsHeaderText" type="java.lang.String" required="false"/>
 	
-	<!-- quick fix for discussion page -->
-	<!-- TODO: remove -->
-	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="false" />
 	<jsp:directive.attribute name="noSidebar" type="java.lang.Boolean" required="false"/>
 	
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>

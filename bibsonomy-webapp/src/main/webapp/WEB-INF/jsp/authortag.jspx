@@ -21,8 +21,7 @@
 		pageTitle="${authorPageTitle} :: ${requestedAuthor} :: ${command.requestedTags}"
 		command="${command}"
 		requPath="${requPath}"
-		disableResourcetypeSelection="${true}"
-		headline="">
+		disableResourcetypeSelection="${true}">
 		
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>

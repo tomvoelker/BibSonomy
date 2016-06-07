@@ -17,15 +17,14 @@
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<fmt:message var="headline" key="page.discussions.headline" />
+	
 	<fmt:message key="navi.discussedPosts" var="pageTitle" />
 	<layout:resourceLayout 
 		pageTitle="${pageTitle}" 
 		command="${command}" 
 		requPath="${requPath}"
 		showPageOptions="${false}"
-		activeTab="${(command.requestedUser eq command.context.loginUser.name) ? 'my' : ''}"
-		headline="${headline}${command.requestedUser}">
+		activeTab="${(command.requestedUser eq command.context.loginUser.name) ? 'my' : ''}">
 	
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.discussedPosts">

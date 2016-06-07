@@ -22,7 +22,6 @@
 			disableListNavigation="${true}"
 			activeTab="home"
 			showPageOptions="${true}"
-			headline="${command.pageTitle}"
 			hideFooterContainer="${true}">
 		
 		<jsp:attribute name="headerExt">

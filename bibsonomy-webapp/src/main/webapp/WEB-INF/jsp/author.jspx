@@ -18,7 +18,7 @@
 	<c:set var="requestedAuthor" value="${command.requestedAuthor}" />
 	<fmt:message key="navi.author" var="authorPageTitle" />
 	<c:set var="pageTitle" value="${authorPageTitle} :: ${requestedAuthor}" />
-	<layout:resourceLayout pageTitle="${pageTitle}" command="${command}" requPath="${requPath}" disableResourcetypeSelection="${true}" headline="${pageTitle}">
+	<layout:resourceLayout pageTitle="${pageTitle}" command="${command}" requPath="${requPath}" disableResourcetypeSelection="${true}">
 		
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>

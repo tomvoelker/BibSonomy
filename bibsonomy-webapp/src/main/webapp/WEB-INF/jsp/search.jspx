@@ -15,11 +15,9 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	<c:set var="hasTags" value="${not empty command.requestedTags}" />
 	<fmt:message var="pageTitle" key="navi.search" />
-	<fmt:message var="headline" key="page.search.headline" />
-	<layout:resourceLayout pageTitle="${pageTitle}" command="${command}" requPath="${requPath}" headline="${headline}${command.requestedSearch}">
+	<layout:resourceLayout pageTitle="${pageTitle}" command="${command}" requPath="${requPath}">
 	
 		<jsp:attribute name="heading">
-		
 			<c:choose>
 				<c:when test="${not empty command.scope and command.scope.name() ne 'LOCAL'}">
 					<c:set var="pathMessageKey" value="navi.${command.scope.name().toLowerCase()}"/>

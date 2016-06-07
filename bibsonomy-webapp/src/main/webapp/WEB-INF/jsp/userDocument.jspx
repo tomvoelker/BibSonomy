@@ -15,13 +15,11 @@
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<fmt:message var="headline" key="page.userDocument.headline" />
 	<layout:resourceLayout 
 		pageTitle="${command.pageTitle}" 
 		command="${command}" 
 		requPath="${requPath}" 
-		disableResourcetypeSelection="${true}"
-		headline="${headline}${command.requestedUser}">	
+		disableResourcetypeSelection="${true}">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.documents" formAction="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}" formInputName="tag" formInputValue="${command.requestedTags}">
 				<jsp:attribute name="formExtra">
