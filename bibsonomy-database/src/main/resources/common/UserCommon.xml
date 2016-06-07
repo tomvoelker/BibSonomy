@@ -75,7 +75,7 @@
 		<result property="profilePrivlevel" column="profilegroup"   	javaType="ProfilePrivlevel" />
 		<result property="showBookmark"   	column="show_bookmark"  	javaType="boolean" />
 		<result property="showBibtex"   	column="show_bibtex"  		javaType="boolean" />
-		<result property="favouriteLayouts"  	column="favourite_layouts"  		javaType="arrayList" />
+		<result property="favouriteLayouts"  	column="favourite_layouts"  		javaType="list" />
 		<result property="layoutSettings"   resultMap="UserCommon.layoutSettings" />
 	</resultMap>
 	
