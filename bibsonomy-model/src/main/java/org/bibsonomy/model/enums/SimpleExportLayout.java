@@ -2,7 +2,6 @@ package org.bibsonomy.model.enums;
 
 /**
  * representation for BibTeX / EndNote
- * TODO: check for duplicate
  * 
  * @author dzo
  */

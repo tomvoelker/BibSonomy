@@ -10,8 +10,6 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.bibsonomy.model.enums.FavouriteLayoutSource;
-import org.bibsonomy.model.enums.SimpleExportLayout;
 import org.bibsonomy.model.user.settings.FavouriteLayout;
 
 import com.ibatis.sqlmap.client.extensions.ParameterSetter;
@@ -108,14 +106,9 @@ public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCall
 			
 			final FavouriteLayout favouriteLayout;
 			//setting the source and style
+			final String source = sourceAndStyle[0];
 			final String style = sourceAndStyle[1];
-			if (SimpleExportLayout.BIBTEX.getDisplayName().equalsIgnoreCase(style)) {
-				favouriteLayout = new FavouriteLayout(FavouriteLayoutSource.valueOf(sourceAndStyle[0]), SimpleExportLayout.BIBTEX.getDisplayName());
-			} else if (SimpleExportLayout.ENDNOTE.getDisplayName().equalsIgnoreCase(style)) {
-				favouriteLayout = new FavouriteLayout(FavouriteLayoutSource.valueOf(sourceAndStyle[0]), SimpleExportLayout.ENDNOTE.getDisplayName());
-			} else {
-				favouriteLayout = new FavouriteLayout(FavouriteLayoutSource.valueOf(sourceAndStyle[0].toUpperCase()), style);
-			}
+			favouriteLayout = new FavouriteLayout(source,style);
 			favouriteLayouts.add(favouriteLayout);
 		}
 		

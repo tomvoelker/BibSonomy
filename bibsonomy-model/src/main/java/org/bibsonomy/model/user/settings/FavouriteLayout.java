@@ -1,6 +1,7 @@
 package org.bibsonomy.model.user.settings;
 
 import org.bibsonomy.model.enums.FavouriteLayoutSource;
+import org.bibsonomy.model.enums.SimpleExportLayout;
 
 
 /**
@@ -17,18 +18,15 @@ public class FavouriteLayout {
 	 * 
 	 * creates a new favourite layout with source as source, STYLE as style and a display Name
 	 */
-	public FavouriteLayout(FavouriteLayoutSource source, String style) {
-		this.source = source;
+	public FavouriteLayout(String source, String style) {
+		this.source = FavouriteLayoutSource.valueOf(source);
 		this.style = style.toUpperCase();
-		if (source == FavouriteLayoutSource.SIMPLE){
-			if (style.compareToIgnoreCase("BibTeX") == 0){
-				this.displayName = "BibTeX";
-			} else if(style.compareToIgnoreCase("EndNote") == 0){
-				this.displayName = "EndNote";
-			}
-		} else {
-			//TODO working with Filemanagers
-			this.displayName = style.toLowerCase();
+		//TODO working with Filemanagers
+		this.displayName = style.toLowerCase();
+		if (SimpleExportLayout.BIBTEX.getDisplayName().equalsIgnoreCase(style)) {
+			displayName = SimpleExportLayout.BIBTEX.getDisplayName();
+		} else if (SimpleExportLayout.ENDNOTE.getDisplayName().equalsIgnoreCase(style)) {
+			displayName = SimpleExportLayout.ENDNOTE.getDisplayName();
 		}
 	}
 	

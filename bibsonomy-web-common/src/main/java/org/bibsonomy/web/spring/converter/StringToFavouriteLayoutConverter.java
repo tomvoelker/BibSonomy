@@ -1,7 +1,6 @@
 package org.bibsonomy.web.spring.converter;
 
 
-import org.bibsonomy.model.enums.FavouriteLayoutSource;
 import org.bibsonomy.model.user.settings.FavouriteLayout;
 import org.springframework.core.convert.converter.Converter;
 
@@ -24,13 +23,7 @@ public class StringToFavouriteLayoutConverter implements Converter<String, Favou
 			throw new IllegalArgumentException("Format has to be source/style");
 		}
 		FavouriteLayout favl;
-		if(sourceAndStyle[1].compareToIgnoreCase("BibTeX")==0){
-			favl = new FavouriteLayout(FavouriteLayoutSource.valueOf(sourceAndStyle[0]), "BibTeX");
-		} else if(sourceAndStyle[1].compareToIgnoreCase("EndNote")==0){
-			favl = new FavouriteLayout(FavouriteLayoutSource.valueOf(sourceAndStyle[0]), "EndNote");
-		} else {
-			favl = new FavouriteLayout(FavouriteLayoutSource.valueOf(sourceAndStyle[0].toUpperCase()), sourceAndStyle[1]);
-		}
+		favl = new FavouriteLayout(sourceAndStyle[0], sourceAndStyle[1]);
 		return favl;
 	}
 	
