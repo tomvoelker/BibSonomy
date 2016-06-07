@@ -101,7 +101,7 @@ public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCall
 			// splitting at FAV_SEP. Now sourceAndStyle[0] = source and sourceAndStyle[1] = style
 			final String sourceAndStyle[] = favLayoutString.split(FAV_SEP);
 			if (sourceAndStyle.length != 2){
-				throw new IllegalArgumentException("Format has to be source/style");
+				throw new IllegalArgumentException("Format has to be 'source/style', but was: " + sourceAndStyle);
 			}
 			
 			final FavouriteLayout favouriteLayout;
