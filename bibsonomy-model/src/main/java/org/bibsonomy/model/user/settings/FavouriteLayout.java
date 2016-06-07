@@ -13,7 +13,7 @@ public class FavouriteLayout {
 	private String displayName;
 	
 	/**
-	 * @param source
+	 * @param source TODO: change type to {@link FavouriteLayoutSource}
 	 * @param style
 	 * 
 	 * creates a new favourite layout with source as source, STYLE as style and a display Name

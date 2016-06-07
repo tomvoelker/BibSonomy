@@ -28,7 +28,6 @@
 	<typeHandler javaType="personNameList"        callback="org.bibsonomy.database.common.typehandler.PersonNameTypeHandlerCallback" />
 	<typeHandler javaType="goldStandardRelation"  callback="org.bibsonomy.database.common.typehandler.GoldStandardRelationTypeHandlerCallback"/>
 	<typeHandler javaType="personResourceRelationType"  callback="org.bibsonomy.database.common.typehandler.PersonResourceRelationTypeHandlerCallback" />
-	<typeHandler javaType="FavouriteLayouts" 	  callback="org.bibsonomy.database.common.typehandler.FavouriteLayoutsTypeHandlerCallback"/>	
 	
 	<sqlMap resource="common/Common.xml" />
 	<sqlMap resource="common/BookmarkCommon.xml" />
