@@ -13,13 +13,22 @@ public class FavouriteLayout {
 	private String displayName;
 	
 	/**
-	 * @param source TODO: change type to {@link FavouriteLayoutSource}
+	 * @param source
 	 * @param style
 	 * 
 	 * creates a new favourite layout with source as source, STYLE as style and a display Name
 	 */
 	public FavouriteLayout(String source, String style) {
-		this.source = FavouriteLayoutSource.valueOf(source);
+		this(FavouriteLayoutSource.valueOf(source), style);
+	}
+	/**
+	 * @param source
+	 * @param style
+	 * 
+	 * creates a new favourite layout with source as source, STYLE as style and a display Name
+	 */
+	public FavouriteLayout(FavouriteLayoutSource source, String style) {
+		this.source = source;
 		this.style = style.toUpperCase();
 		//TODO working with Filemanagers
 		this.displayName = style.toLowerCase();
