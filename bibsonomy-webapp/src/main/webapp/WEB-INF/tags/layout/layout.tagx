@@ -17,10 +17,10 @@
 	<jsp:directive.attribute name="heading" fragment="true" required="false"/>
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>
 	<jsp:directive.attribute name="contentIntro" fragment="true" required="false" />
-	<jsp:directive.attribute name="headerExt" fragment="true" />
-	<jsp:directive.attribute name="infobox" fragment="true" required="false" />
-	<jsp:directive.attribute name="beforeMainContainer" fragment="true" required="false" />
 	
+	<jsp:directive.attribute name="headerExt" fragment="true" />
+	
+	<jsp:directive.attribute name="infobox" fragment="true" required="false" />
 	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="newsbar" fragment="true" required="false"/>
 	
@@ -47,9 +47,6 @@
 			personalized="${personalized}"
 			/>
 			<body data-spy="scroll" data-target="#sidebar-nav">
-				<c:if test="${not empty beforeMainContainer}">
-					<jsp:invoke fragment="beforeMainContainer"/>
-				</c:if>
 				<div class="container header">
 					<div id="page-header" class="bib-header">
 						<div class="row">
