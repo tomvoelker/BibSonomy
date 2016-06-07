@@ -27,7 +27,7 @@
 package org.bibsonomy.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.TimeZone;
 
 import org.bibsonomy.common.enums.ProfilePrivlevel;
@@ -81,7 +81,7 @@ public class UserSettings implements Serializable {
 	 */
 	private int listItemcount = 20;
 	
-	private ArrayList<FavouriteLayout> favouriteLayouts = new ArrayList<FavouriteLayout>();	
+	private LinkedList<FavouriteLayout> favouriteLayouts = new LinkedList<FavouriteLayout>();	
 	
 	private boolean showBookmark = true;
 	
@@ -341,14 +341,14 @@ public class UserSettings implements Serializable {
 	/**
 	 * @return the favourite_layouts
 	 */
-	public ArrayList<FavouriteLayout> getFavouriteLayouts() {
+	public LinkedList<FavouriteLayout> getFavouriteLayouts() {
 		return this.favouriteLayouts;
 	}
 
 	/**
 	 * @param favouriteLayouts the favourite_layouts to set
 	 */
-	public void setFavouriteLayouts(ArrayList<FavouriteLayout> favouriteLayouts) {
+	public void setFavouriteLayouts(LinkedList<FavouriteLayout> favouriteLayouts) {
 		this.favouriteLayouts = favouriteLayouts;
 	}
 }

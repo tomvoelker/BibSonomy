@@ -26,6 +26,8 @@ private static final Log log = LogFactory.getLog(ImportBookmarksController.class
 	private static final String DELETE = "delete";
 
 	private static final String CREATE = "create";
+
+	private FileLogic fileLogic;
 	
 	@Override
 	public View workOn(final SettingsViewCommand command) {
@@ -48,8 +50,7 @@ private static final Log log = LogFactory.getLog(ImportBookmarksController.class
 		if (!context.isValidCkey()) {
 			errors.reject("error.field.valid.ckey");
 			return Views.SETTINGSPAGE;
-		}
-		
+		}		
 		
 	}
 	@Override
