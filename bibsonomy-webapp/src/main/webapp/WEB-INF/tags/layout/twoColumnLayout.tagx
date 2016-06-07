@@ -18,7 +18,6 @@
 	
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="noLoginBox" type="java.lang.Boolean" required="false"/>
 	
 	<jsp:directive.attribute name="contentIntro" fragment="true" required="false"/>	
 	<jsp:directive.attribute name="leftContent" fragment="true" required="true"/>
