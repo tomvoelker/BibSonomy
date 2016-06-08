@@ -42,7 +42,7 @@
 					<fmt:message var="ratingTitle" key="post.resource.review.review" />
 				</c:if>
 				
-				(<span property="ratingAverage" itemprop="ratingValue"><c:out value="${roundedRating}" /></span>
+				<span property="ratingAverage" itemprop="ratingValue"><c:out value="${roundedRating}" /></span>
 				<c:out value=" " />
 				<fmt:message key="post.resource.review.ratings.of" />
 				<c:out value=" " />
@@ -51,7 +51,7 @@
 				<c:out value=" " />
 				<span>
 					<c:out value="${ratingTitle}" />
-				</span>)
+				</span>
 				<meta itemprop="worstRating" content="0.0"/>
 			</div>
 		</div>

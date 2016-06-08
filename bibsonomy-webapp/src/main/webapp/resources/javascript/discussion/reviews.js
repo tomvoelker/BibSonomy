@@ -98,14 +98,16 @@ function plotRatingDistribution() {
 	var rating_ticks = [];
 	var maxValue = 0;
 
-	if ($(".ratingDistributionData").length > 0) {
+	if ($("#ratingDistribution").length > 0) {
 		// get all ratings from hidden statistic tags
-		$('#ratingDistribution').find('.ratingDistributionData').each(function() {
-			var key = $(this).data("rating");
-			var value = $(this).data("count");
+		var distribution = $('#ratingDistribution').data('distribution');
+		
+		$.each(distribution, function(index, ratingStat) {
+			var key = ratingStat.rating;
+			var value = ratingStat.count;
 			ratings[key] = value;
-			if (value > maxValue) { 
-				maxValue = value; 
+			if (value > maxValue) {
+				maxValue = value;
 			}
 		});
 	} else {
