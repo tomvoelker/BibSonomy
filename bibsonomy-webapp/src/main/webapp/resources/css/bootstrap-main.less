@@ -1448,3 +1448,23 @@ ul#urlList {
 		cursor: default;
 	}
 }
+
+.score {
+	display: inline-block;
+	color: #ccc;
+	font-size: 15px;
+	position: relative;
+}
+
+.score::before, .score span::before{
+	content: "\2605\2605\2605\2605\2605";
+	display: block;
+}
+
+.score span {
+	color: gold;
+	position: absolute;
+	top: 0;
+	left: 0;
+	overflow: hidden;
+}
