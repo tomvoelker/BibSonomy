@@ -42,15 +42,16 @@
 		<input name="abstractGrouping" value="public" tabindex="2" type="hidden" />
 		<input name="groups" value="" type="hidden" />
 		
-		<div class="row">
+		<div class="media">
 			<c:set var="colspan" value="12" />
 			<c:if test="${empty discussionItem}">
-				<div class="col-md-1">
-					<img src="${relativeUrlGenerator.getUserPictureUrlByUsername(command.context.loginUser.name)}" alt="userPicture" class="media-object simple-user-pic"/>
+				<div class="media-left">
+					<a class="thumbnail img-thumbnail">
+						<img src="${relativeUrlGenerator.getUserPictureUrlByUsername(command.context.loginUser.name)}" alt="userPicture" class="media-object simple-user-pic"/>
+					</a>
 				</div>
-				<c:set var="colspan" value="11" />
 			</c:if>
-			<div class="col-md-${colspan}">
+			<div class="media-body">
 				<c:if test="${empty rows}">
 					<c:set var="rows" value="1" />
 				</c:if>
@@ -67,7 +68,6 @@
 				</textarea>
 			</div>
 		</div>
-		<hr />
 		<div class="row">
 			<div class="col-md-2 col-md-offset-5">
 				<div class="checkbox">

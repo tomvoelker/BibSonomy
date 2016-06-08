@@ -12,6 +12,6 @@
 	<jsp:directive.attribute name="parentItem" type="org.bibsonomy.model.DiscussionItem" required="false" />
 	<jsp:directive.attribute name="postUserName" type="java.lang.String" required="true" />
 	
-	<discussionItem:simpleDiscussionForm discussionItem="${comment}" postUserName="${postUserName}" userName="${userName}" resource="${resource}" discussionItemClass="comment" parentItem="${parentItem}" />
+	<discussionItem:simpleDiscussionForm discussionItem="${comment}" postUserName="${postUserName}" userName="${userName}" resource="${resource}" discussionItemClass="comment" parentItem="${parentItem}" rows="2"/>
 	
 </jsp:root>

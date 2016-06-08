@@ -22,13 +22,14 @@
 	
 	<div class="media-left">
 		<c:choose>
-			<c:when test="${anonymous}">
-				<img src="${resdir}/image/anonymous.png" alt="anonymous" class="media-object commentPicture" />
+			<c:when test="${anonymous and not ownDiscussionItem}">
+				<a class="thumbnail img-thumbnail">
+					<img src="${resdir}/image/anonymous.png" alt="anonymous" class="media-object commentPicture" />
+				</a>
 			</c:when>
 			<c:otherwise>
-				<a href="/user/${fn:escapeXml(discussionItemUserName)}" class="thumbnail img-thumbnail pull-left" title="${displayUserName}">
+				<a href="/user/${fn:escapeXml(discussionItemUserName)}" class="thumbnail img-thumbnail" title="${displayUserName}">
 					<img src="/picture/user/${fn:escapeXml(discussionItemUserName)}" alt="userPicture" class="media-object commentPicture"/>
-					<span><c:out value="${displayUserName}" /></span>
 				</a>
 			</c:otherwise>
 		</c:choose>
@@ -41,7 +42,7 @@
 	</c:if>
 	<div class="media-body" itemprop="${itemprop}" itemscope="itemscope" itemtype="${itemtype}">
 		<div class="info" data-username="${discussionItem.user.name}" data-discussion-item-hash="${discussionItem.hash}">
-			<discussionItem:discussionItemOwner discussionItem="${discussionItem}" />
+			<discussionItem:discussionItemOwner discussionItem="${discussionItem}" loginUser="${loginUser}"/>
 			<discussionItem:discussionItemInfo discussionItem="${discussionItem}" anonymous="${anonymous}" ownDiscussionItem="${ownDiscussionItem}" />
 		</div>
 		<div class="${clazz} details">

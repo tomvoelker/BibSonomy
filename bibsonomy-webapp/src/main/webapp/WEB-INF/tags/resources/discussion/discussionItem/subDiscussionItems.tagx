@@ -66,8 +66,8 @@
 				<c:when test="${discussionItem['class'].simpleName eq 'DiscussionItem'}">
 					<li class="${clazz} media">
 						<div class="media-left">
-							<a class="thumbnail img-thumbnail pull-left">
-								<i class="fa fa-4x fa-user"><!-- keep me --></i>
+							<a class="thumbnail img-thumbnail">
+								<i class="fa fa-3x fa-user"><!-- keep me --></i>
 							</a>
 						</div>
 						<div class="media-body">

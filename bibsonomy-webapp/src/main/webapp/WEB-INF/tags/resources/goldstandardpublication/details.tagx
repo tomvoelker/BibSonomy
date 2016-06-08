@@ -76,9 +76,6 @@
 				| resources
 				-->
 			<div id="linksresources">
-				<h2 class="pub-headline" >
-					<fmt:message key="publications.resource.headline" />
-				</h2>
 				<dl class="dl-horizontal">
 					<c:set var="isLinkToDocument" value="${mtl:isLinkToDocument(goldstandard.url)}" />
 					<c:if test="${not empty goldstandard.url}">
