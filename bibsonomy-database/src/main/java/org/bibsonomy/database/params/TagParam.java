@@ -40,7 +40,6 @@ import org.bibsonomy.model.Resource;
  * @author Christian Kramer
  */
 public class TagParam extends GenericParam {
-
 	// FIXME Probably a duplicate: previously newContentId from GenericParam was used
 	private int id;
 	// FIXME: don't know if it is the third variable with the same meaning, but
@@ -78,6 +77,8 @@ public class TagParam extends GenericParam {
 	 * Regular expression
 	 */
 	private String regex;
+	
+	private Class<? extends Resource> resourceType;
 
 	/**
 	 * @return the id
@@ -245,6 +246,20 @@ public class TagParam extends GenericParam {
 	 */
 	public void setRegex(String regex) {
 		this.regex = regex;
+	}
+
+	/**
+	 * @return the resourceType
+	 */
+	public Class<? extends Resource> getResourceType() {
+		return this.resourceType;
+	}
+
+	/**
+	 * @param resourceType the resourceType to set
+	 */
+	public void setResourceType(Class<? extends Resource> resourceType) {
+		this.resourceType = resourceType;
 	}
 
 }
