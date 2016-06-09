@@ -28,6 +28,7 @@ package org.bibsonomy.rest.client.queries.get;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import org.apache.commons.httpclient.HttpStatus;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.data.NoDataAccessor;
@@ -65,6 +66,9 @@ public final class GetPostDetailsQuery extends AbstractQuery<Post<? extends Reso
 
 	@Override
 	protected Post<? extends Resource> getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
+		if (this.getHttpStatusCode() == HttpStatus.SC_NOT_FOUND) {
+			return null;
+		}
 		return this.getRenderer().parsePost(this.downloadedDocument, NoDataAccessor.getInstance());
 	}
 
