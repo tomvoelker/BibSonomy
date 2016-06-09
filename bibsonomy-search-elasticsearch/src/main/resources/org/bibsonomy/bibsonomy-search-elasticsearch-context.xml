@@ -33,6 +33,13 @@
 		<constructor-arg ref="elasticsearchPublicationTools" />
 	</bean>
 	
+	<bean id="elasticsearchCommunityPublicationManager" class="org.bibsonomy.search.es.management.ElasticsearchManager" destroy-method="shutdown">
+		<constructor-arg value="${search.update.enabled}" />
+		<constructor-arg ref="esClient" />
+		<constructor-arg ref="goldStandardPublicationSearchDBLogic" />
+		<constructor-arg ref="elasticsearchCommunityPublicationTools" />
+	</bean>
+	
 	<bean id="systemURI" class="java.net.URI">
 		<constructor-arg value="${project.home}" />
 	</bean>
@@ -45,6 +52,10 @@
 		<constructor-arg ref="searchPublicationClass" />
 	</bean>
 	
+	<bean id="elasticsearchCommunityPublicationMappingBuilder" class="org.bibsonomy.search.es.index.PublicationMappingBuilder">
+		<constructor-arg ref="searchGoldStandardPublicationClass" />
+	</bean>
+	
 	<bean id="elasticsearchResourceConverter" class="org.bibsonomy.search.es.index.ResourceConverter" abstract="true">
 		<constructor-arg ref="systemURI" />
 	</bean>
@@ -54,6 +65,8 @@
 	<bean id="elasticsearchPublicationConverter" class="org.bibsonomy.search.es.index.PublicationConverter" parent="elasticsearchResourceConverter">
 		<constructor-arg ref="fileContentExtractorService" />
 	</bean>
+	
+	<bean id="elasticsearchCommunityPublicationConverter" class="org.bibsonomy.search.es.index.CommunityPublicationConverter" parent="elasticsearchResourceConverter" />
 	
 	<bean id="elasticsearchBookmarkTools" class="org.bibsonomy.search.es.management.ElasticsearchIndexTools">
 		<constructor-arg ref="searchBookmarkClass" />
@@ -67,6 +80,13 @@
 		<constructor-arg ref="elasticsearchPublicationConverter" />
 		<constructor-arg ref="systemURI" />
 		<constructor-arg ref="elasticsearchPublicationMappingBuilder" />
+	</bean>
+	
+	<bean id="elasticsearchCommunityPublicationTools" class="org.bibsonomy.search.es.management.ElasticsearchIndexTools">
+		<constructor-arg ref="searchGoldStandardPublicationClass" />
+		<constructor-arg ref="elasticsearchCommunityPublicationConverter" />
+		<constructor-arg ref="systemURI" />
+		<constructor-arg ref="elasticsearchCommunityPublicationMappingBuilder" />
 	</bean>
 	
 	<bean id="elasticsearchBookmarkSearch" class="org.bibsonomy.search.es.search.EsResourceSearch">
@@ -87,5 +107,6 @@
 	<util:map id="elasticsearchManagers">
 		<entry key-ref="searchBookmarkClass" value-ref="elasticsearchBookmarkManager" />
 		<entry key-ref="searchPublicationClass" value-ref="elasticsearchPublicationManager" />
+		<entry key-ref="searchGoldStandardPublicationClass" value-ref="elasticsearchCommunityPublicationManager" />
 	</util:map>
 </beans>

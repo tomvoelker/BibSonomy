@@ -39,10 +39,6 @@ import org.elasticsearch.common.xcontent.XContentBuilder;
  * @author dzo
  */
 public class PublicationMappingBuilder extends ResourceMappingBuilder<BibTex> {
-
-	/**
-	 * 
-	 */
 	private static final String COPY_TO = "copy_to";
 
 	/**

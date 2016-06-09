@@ -41,7 +41,7 @@
 		<property name="resourceClass" ref="searchPublicationClass" />
 	</bean>
 	
-	<bean id="searchGoldStandardPublicationLogic" class="org.bibsonomy.search.management.database.SearchGoldStandardLogic" parent="searchDBLogic">
+	<bean id="goldStandardPublicationSearchDBLogic" class="org.bibsonomy.search.management.database.SearchGoldStandardLogic" parent="searchDBLogic">
 		<property name="resourceClass" ref="searchGoldStandardPublicationClass" />
 	</bean>
 	
