@@ -8,13 +8,10 @@
 	xmlns:json="urn:jsptagdir:/WEB-INF/tags/export/json">
 
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
-	  <!-- bookmarks -->
+	  <!-- goldstandard bookmarks -->
 	  {  
-         "type" : "Bookmark",
-         "id"   : "${properties['project.home']}url/${post.resource.intraHash}/${mtl:quoteJSON(post.user.name)}",
-         "tags" : [
-            <c:forEach var="tag" varStatus="tagStatus" items="${post.tags}">"${mtl:quoteJSON(tag.name)}"<c:if test="${not tagStatus.last}">,</c:if></c:forEach>
-         ],
+         "type" : "GoldStandardBookmark",
+         "id"   : "${relativeUrlGenerator.getCommunityBookmarkUrlByInterHash(post.resource.interHash)}",
          <json:abstractBookmark post="${post}" />
       }
 </jsp:root>

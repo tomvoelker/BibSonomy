@@ -179,7 +179,7 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 		
 		jsonDocument.put(Fields.DESCRIPTION, post.getDescription());
 		
-		fillIndexDocument(post, jsonDocument);
+		fillIndexDocumentUser(post, jsonDocument);
 		
 		jsonDocument.put(Fields.GROUPS, convertGroups(post.getGroups()));
 		
@@ -195,7 +195,7 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 	 * @param post
 	 * @param jsonDocument
 	 */
-	protected void fillIndexDocument(final Post<R> post, final Map<String, Object> jsonDocument) {
+	protected void fillIndexDocumentUser(final Post<R> post, final Map<String, Object> jsonDocument) {
 		jsonDocument.put(Fields.USER_NAME, post.getUser().getName());
 	}
 

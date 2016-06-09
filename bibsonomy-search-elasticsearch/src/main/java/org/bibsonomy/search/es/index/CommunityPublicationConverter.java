@@ -53,7 +53,7 @@ public class CommunityPublicationConverter extends PublicationConverter {
 	 * @see org.bibsonomy.search.es.index.ResourceConverter#fillIndexDocument(org.bibsonomy.model.Post, java.util.Map)
 	 */
 	@Override
-	protected void fillIndexDocument(Post<BibTex> post, Map<String, Object> jsonDocument) {
+	protected void fillIndexDocumentUser(Post<BibTex> post, Map<String, Object> jsonDocument) {
 		// nothing to do
 	}
 }
