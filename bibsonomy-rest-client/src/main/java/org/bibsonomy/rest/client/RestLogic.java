@@ -294,7 +294,10 @@ public class RestLogic extends AbstractLogicInterface {
 		 */
 		final List<String> resourceHashes = new LinkedList<String>();
 		for (final Post<?> post : posts) {
-			resourceHashes.add(execute(new CreatePostQuery(this.authUser.getName(), post)));
+			final String hash = execute(new CreatePostQuery(this.authUser.getName(), post));
+			if (present(hash)) {
+				resourceHashes.add(hash);
+			}
 		}
 		return resourceHashes;
 	}
@@ -303,9 +306,9 @@ public class RestLogic extends AbstractLogicInterface {
 	public String createUser(final User user) {
 		return execute(new CreateUserQuery(user));
 	}
-
-	@Override
+	
 	// TODO: Establish new group concept in here.
+	@Override
 	public String updateGroup(final Group group, final GroupUpdateOperation operation, GroupMembership ms) {
 		final String groupName = group.getName();
 		switch (operation) {
