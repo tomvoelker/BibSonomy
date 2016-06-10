@@ -40,16 +40,15 @@
 	<c:set var="own" value="${command.context.loginUser.name eq discussionItem.user.name}" />
 	<c:if test="${command.context.userLoggedIn and own}">
 		<div class="btn-group btn-group-xs edit-media-buttons">
-			<fmt:message key="post.resource.${discussionItemClass}.actions.edit.title" var="title"/>
-			<fmt:message key="post.resource.${discussionItemClass}.actions.delete.title" var="title"/>
+			<fmt:message key="post.resource.${discussionItemClass}.actions.edit.title" var="editTitle"/>
+			<fmt:message key="post.resource.${discussionItemClass}.actions.delete.title" var="deleteTitle"/>
 			<fmt:message key="post.resource.${discussionItemClass}.actions.delete" var="delete"/>
 			
-			<a href="#edit${discussionItemClass}" class="btn btn-default ${discussionItemClass}EditLink editLink" title="${title}">
+			<a href="#edit${discussionItemClass}" class="btn btn-default ${discussionItemClass}EditLink editLink" title="${editTitle}">
 				<span class="fa fa-pencil"><!--  --></span>
-			
 			</a>
 		
-			<a data-type="${discussionItemClass}" href="#delete${discussionItemClass}" class="btn btn-default ${discussionItemClass}DeleteLink deleteLink" title="${title}">
+			<a data-type="${discussionItemClass}" href="#delete${discussionItemClass}" class="btn btn-default ${discussionItemClass}DeleteLink deleteLink" title="${deleteTitle}">
 				<span class="fa fa-times"><!--  --></span>
 			</a>
 		</div>
