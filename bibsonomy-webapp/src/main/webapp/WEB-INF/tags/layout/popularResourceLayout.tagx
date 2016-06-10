@@ -28,18 +28,6 @@
 		breadcrumbs="${breadcrumbs}">
 		
 		<jsp:attribute name="headerExt"/>
-
-		<!-- FIXME: layout assumes that always both entrytypes are displayed; adapt to ?resourceType=XY -->
-		
-		<jsp:attribute name="headerContainer">
-			<div id="bookmarksheader" class="standard">
-				<h2 class="header standard"><fmt:message key="bookmarks" /></h2>
-			</div>
-			
-			<div id="publicationsheader" class="standard">
-				<h2 class="header standard"><fmt:message key="publications" /></h2>
-			</div>
-		</jsp:attribute>
 		
 		<jsp:attribute name="content">
 			<div class="row">

@@ -45,27 +45,9 @@
 						<!-- TODO: use css selector for this and remove -->
 						<c:set var="additionalItemClasses" value="${loopStatus.index % 2 == 0 ? 'odd' : 'even'}"/>
 						
-						<!-- FIXME: not nice here-->
 						<c:set var="resourcetype" value="${listView.resourcetype}" />
-						<c:choose>
-							<c:when test="${resourcetype eq 'bibtex'}">
-								<c:choose>
-									<c:when test="${post.resource.entrytype eq 'book'}">
-										<c:set var="itemtype" value="http://schema.org/Book" />
-									</c:when>
-									<c:otherwise>
-										<c:set var="itemtype" value="http://schema.org/ScholarlyArticle" />
-									</c:otherwise>
-								</c:choose>
-							</c:when>
-							<c:otherwise>
-								<c:set var="itemtype" value="http://schema.org/WebSite" />
-							</c:otherwise>
-						</c:choose>
-						
-						
 						<!-- show one post -->
-						<rc:post post="${post}" resourceType="${listView.resourcetype}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}" additionalItemClasses="${additionalItemClasses}" itemtype="${itemtype}">
+						<rc:post post="${post}" resourceType="${resourcetype}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}" additionalItemClasses="${additionalItemClasses}">
 							<jsp:attribute name="title">    <jsp:invoke fragment="title"/>    </jsp:attribute>
 							<jsp:attribute name="actions">  <jsp:invoke fragment="actions"/>  </jsp:attribute>
 							<jsp:attribute name="desc">     <jsp:invoke fragment="desc"/>     </jsp:attribute>

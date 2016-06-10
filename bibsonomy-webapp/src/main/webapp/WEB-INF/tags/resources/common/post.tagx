@@ -16,7 +16,6 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	<jsp:directive.attribute name="additionalItemClasses" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
-	<jsp:directive.attribute name="itemtype" type="java.lang.String" required="true"/>
 
 	<jsp:directive.attribute name="title" fragment="true" required="true"/>
 	<jsp:directive.attribute name="desc" fragment="true" required="true"/>
@@ -24,7 +23,23 @@
 	<jsp:directive.attribute name="documents" fragment="true" required="true"/>
 
 	<c:set var="isRemotePost" value="${(not empty post.systemUrl) and (post.systemUrl ne properties['project.home'])}"/>
-
+	
+	<!-- FIXME: not nice here-->
+	<c:choose>
+		<c:when test="${resourcetype eq 'bibtex'}">
+			<c:choose>
+				<c:when test="${post.resource.entrytype eq 'book'}">
+					<c:set var="itemtype" value="http://schema.org/Book" />
+				</c:when>
+				<c:otherwise>
+					<c:set var="itemtype" value="http://schema.org/ScholarlyArticle" />
+				</c:otherwise>
+			</c:choose>
+		</c:when>
+		<c:otherwise>
+			<c:set var="itemtype" value="http://schema.org/WebSite" />
+		</c:otherwise>
+	</c:choose>
    <!--+ 
        | TODO: Several tests (not empty post.user.name) are here to test for community posts. 
        | They never have a userName. 

@@ -28,7 +28,6 @@
 	
 	<div class="bookbox">
 		<jsp:invoke fragment="extTitle"/>
-		
 		<c:choose>
 			<c:when test="${not empty listView.list}">
 					<!-- iterate over a list of resources and create the list -->
@@ -36,22 +35,22 @@
 				<ul class="posts media-list ${resourceType}">
 					<c:forEach var="post" items="${listView.list}">
 						<!-- show one post -->
-						<div itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
-							<rc:post post="${post}" resourceType="${resourceType}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}">
-								<jsp:attribute name="title">
-									<jsp:invoke fragment="title"/>
-								</jsp:attribute>
-								<jsp:attribute name="actions">
-									<jsp:invoke fragment="actions"/>
-								</jsp:attribute>
-								<jsp:attribute name="desc">
-									<jsp:invoke fragment="desc"/>
-								</jsp:attribute>
-								<jsp:attribute name="documents">
-									<jsp:invoke fragment="documents"/>
-								</jsp:attribute>
-							</rc:post>
-						</div>
+						<c:set var="resourcetype" value="${listView.resourcetype}" />
+						
+						<rc:post post="${post}" resourceType="${resourceType}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}">
+							<jsp:attribute name="title">
+								<jsp:invoke fragment="title"/>
+							</jsp:attribute>
+							<jsp:attribute name="actions">
+								<jsp:invoke fragment="actions"/>
+							</jsp:attribute>
+							<jsp:attribute name="desc">
+								<jsp:invoke fragment="desc"/>
+							</jsp:attribute>
+							<jsp:attribute name="documents">
+								<jsp:invoke fragment="documents"/>
+							</jsp:attribute>
+						</rc:post>
 					</c:forEach>
 					<c:if test="${!disablePagination}">
 						<rc:nextprev listView="${listView}" listViewStartParamName="${paginationParameter}" />

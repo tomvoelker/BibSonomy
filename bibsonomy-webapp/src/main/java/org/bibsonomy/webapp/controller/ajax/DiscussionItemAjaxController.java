@@ -200,7 +200,6 @@ public abstract class DiscussionItemAjaxController<D extends DiscussionItem> ext
 			 * then the postUserName contains the owner of the post to which the user wants to start a discussion.
 			 * We first retrieve a suitable post (originalPost) to create a goldstandard from 
 			 */
-			reloadPage = true;
 			log.debug("no gold standard found for intraHash " + interHash + ". Creating new gold standard");
 			Post<? extends Resource> originalPost = null;
 			

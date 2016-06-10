@@ -14,11 +14,9 @@
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
-	<fmt:message key="persons.intro.head.title" var="personIntroTitle">
-		<fmt:param value="${properties['project.name']}" />
-	</fmt:message>
+	<fmt:message key="persons.intro.head.title" var="personIntroTitle" />
 
-	<layout:paneLayout pageTitle="${personIntroTitle}" headerMessageKey="gettingStarted.headline" command="${command}" requPath="${requPath}" noSidebar="${true}">
+	<layout:paneLayout pageTitle="${personIntroTitle}" headerMessageKey="gettingStarted.headline" command="${command}" requPath="${requPath}" noSidebar="${true}" activeTab="persons">
 
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.persons" formAction="/search" formInputName="search"/>
