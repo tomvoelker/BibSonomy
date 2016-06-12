@@ -197,7 +197,7 @@
 									<!-- ID has to be "source"/"id" for the StringToFavouriteLayoutConverter to read -->
 									<!-- don't forget to use displayName!!!!!!!! -->
 									<c:forEach var="favl" items="${command.context.loginUser.settings.favouriteLayouts}" varStatus="counter">
-										<li class="list-group-item favouriteLayoutsListItem">
+										<li class="list-group-item favouriteLayoutsListItem" sourceAndStyle="${favl.source}/${favl.style}">
 											<input type="hidden" name="user.settings.favouriteLayouts" id="${favl.source}/${favl.style}" value="${favl.source}/${favl.style}"/>
 											<span class="btn btn-default badge label-danger delete-Style">Delete</span>
 											<span id="displayName:${favl.source}/${favl.style}" source="${favl.source}" style="${favl.style}">

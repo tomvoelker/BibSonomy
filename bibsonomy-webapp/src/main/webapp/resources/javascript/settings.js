@@ -98,7 +98,7 @@ $(function() {
 	//adds a new list item to the list including a remove button and an input field with correct ID, source and displayName
 	//ID has to be "source"/"id" for the StringToFavouriteLayoutConverter to read
 	$('#searchCitationAutocomplete').on('typeahead:select', function (e, datum) {
-		var toBeAppended = '<li class="list-group-item favouriteLayoutsListItem"><input type="hidden" name="user.settings.favouriteLayouts"  id="'+ datum.source.toUpperCase() +'/' + datum.name.toUpperCase() + '" value="'+datum.source.toUpperCase()+'/' + datum.name.toUpperCase() + '"/><span class="btn btn-default badge label-danger delete-Style">Delete</span>' + datum.displayName + '</li>';
+		var toBeAppended = '<li class="list-group-item favouriteLayoutsListItem" sourceAndStyle="' + datum.source.toUpperCase() + '/' + datum.name.toUpperCase() + '"><input type="hidden" name="user.settings.favouriteLayouts"  id="'+ datum.source.toUpperCase() + '/' + datum.name.toUpperCase() + '" value="'+datum.source.toUpperCase()+'/' + datum.name.toUpperCase() + '"/><span class="btn btn-default badge label-danger delete-Style">Delete</span>' + datum.displayName + '</li>';
 		$('#favouriteLayoutsList').append(toBeAppended);
 		clearFavouriteLayoutsList();
 	});
@@ -143,7 +143,7 @@ $(function() {
 	function clearFavouriteLayoutsList() { //removing duplicates
 		var seen = {};
 		$('.favouriteLayoutsListItem').each(function() {
-			var txt = $(this).text();
+			var txt = $(this).attr("sourceAndStyle");
 			if (seen[txt])
 				$(this).remove();
 			else
