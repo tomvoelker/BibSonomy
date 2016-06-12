@@ -45,6 +45,7 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.errors.MissingTagsErrorMessage;
+import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
@@ -704,6 +705,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * returns all tags assigned to posts which are matching the given query
+	 * @param resouceClass 
 	 * 
 	 * @param userName
 	 * @param requestedUserName
@@ -718,24 +720,29 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param year
 	 * @param firstYear
 	 * @param lastYear
-	 * @param negatedTags TODO
+	 * @param negatedTags
 	 * @param limit
 	 * @param offset
 	 * @return a list of tags
 	 */
-	public List<Tag> getTagsByResourceSearch(
-			final String userName, final String requestedUserName, final String requestedGroupName,
-			final Collection<String> allowedGroups, final SearchType searchType, final String searchTerms,final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex,
-			String bibtexkey, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
-
+	public List<Tag> getTagsByResourceSearch(final Class<? extends Resource> resouceClass, final String userName, final String requestedUserName, final String requestedGroupName, final Collection<String> allowedGroups, final SearchType searchType, final String searchTerms,final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, String bibtexkey, final String year, final String firstYear, final String lastYear, final List<String> negatedTags, final int limit, final int offset) {
 		if (present(this.publicationSearch) && present(this.bookmarkSearch)) {
+			if (Resource.class.equals(resouceClass)) {
+				final List<Tag> bookmarkTags = this.bookmarkSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
+				final List<Tag> publicationTags = this.publicationSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
+				final List<Tag> retVal = TagUtils.mergeTagLists(bookmarkTags, publicationTags, Order.POPULAR, Order.POPULAR, limit);
+				return retVal;
+			}
 			
-			final List<Tag> bookmarkTags =
-					this.bookmarkSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
-			final List<Tag> publicationTags =
-					this.publicationSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
-			final List<Tag> retVal = TagUtils.mergeTagLists(bookmarkTags, publicationTags, Order.POPULAR, Order.POPULAR, limit);
-			return retVal;
+			if (BibTex.class.equals(resouceClass)) {
+				return this.publicationSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
+			}
+			
+			if (Bookmark.class.equals(resouceClass)) {
+				return this.bookmarkSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, bibtexkey, tagIndex, year, firstYear, lastYear, negatedTags, limit, offset);
+			}
+			
+			throw new UnsupportedResourceTypeException();
 		}
 
 		log.error("no resource searcher is set");
