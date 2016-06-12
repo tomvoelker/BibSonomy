@@ -21,17 +21,23 @@ $(function() {
 	var csl = false;
 	var jabref = false;
 	
+	var cslData;
+	var jabRefData;
+	
 	
 	//getting external JSON for CSL styles
 	$.get("/csl-style", function (data) {
 		//safety first, safety always
 		data = $.trim(data);
 		data = $.parseJSON(data);
+		cslData = data;
 		processResultCSL(data);
+		setCSLDisplayName();
 	});
 	
 	//getting external JSON for JABREF styles
 	$.get("/layoutinfo", function (data) {
+		jabRefData = data;
 		processResultJabref(data);
 	});
 
@@ -108,7 +114,13 @@ $(function() {
 		$(this).parent().remove();
 	});
 
-
+	function setCSLDisplayName() {
+		$("[name='user.settings.favouriteLayouts']").each(function() {
+			alert($(this).text());
+		});
+	}
+	
+	
 
 	function clearFavouriteLayoutsList() { //removing duplicates
 		var seen = {};

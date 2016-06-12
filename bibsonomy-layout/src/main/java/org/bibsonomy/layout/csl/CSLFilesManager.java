@@ -44,7 +44,12 @@ public class CSLFilesManager {
 	 * @return the .csl file with given name
 	 */
 	private File readStyle(final String CSLFileName) {
-		String searchFor = CSLFileName + ".csl";
+		String searchFor;
+		if(!CSLFileName.endsWith(".csl")){
+			searchFor = CSLFileName + ".csl";
+		}else{
+			searchFor = CSLFileName;
+		}
 		for (File f : CSLFolder.listFiles(CSLFilter)) {
 			if ((f.getName().compareToIgnoreCase(searchFor)) == 0) {
 				return f;
