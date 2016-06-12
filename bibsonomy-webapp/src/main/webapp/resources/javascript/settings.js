@@ -138,8 +138,6 @@ $(function() {
 		});
 	}
 	
-	
-	//TODO: make the clean-up "id" based
 	function clearFavouriteLayoutsList() { //removing duplicates
 		var seen = {};
 		$('.favouriteLayoutsListItem').each(function() {
