@@ -39,12 +39,12 @@ $(function() {
 	$.get("/layoutinfo", function (data) {
 		jabRefData = data;
 		processResultJabref(data);
+		setJabRefDisplayName();
 	});
 
 	//adding JABREF to the "simple" styles array, which will be displayed on the twitter typeahead
 	function processResultJabref(data) {
 		for (var prop in data.layouts) {
-		
 			var JabrefData = '{"source": "JABREF", "displayName": "' + data.layouts[prop].displayName + '", "name":"' + data.layouts[prop].name.toUpperCase() +'"}';
 			var JabrefObj = $.parseJSON(JabrefData);
 			jsonObj.push(JabrefObj);
@@ -103,7 +103,7 @@ $(function() {
 		clearFavouriteLayoutsList();
 	});
 
-	//catching presses of "enter", else the form would be submitted by each accidental press
+	//catching presses of "enter", else the form would be submitted by each "accidental" press
 	$('#searchCitationAutocomplete').on('keydown', function(event) {
 		if (event.which == 13) // if pressing enter
 			event.preventDefault();
@@ -115,13 +115,31 @@ $(function() {
 	});
 
 	function setCSLDisplayName() {
-		$("[name='user.settings.favouriteLayouts']").each(function() {
-			alert($(this).text());
+		$("[id^='displayName:']").each(function() {
+			if($(this).attr("source").toUpperCase() == "CSL"){
+				for (var prop in cslData.layouts) {
+					if(cslData.layouts[prop].name.toUpperCase() == $(this).attr("style").toUpperCase()){
+						$(this).text(cslData.layouts[prop].displayName);
+					}
+				}
+			}
+		});
+	}
+	
+	function setJabRefDisplayName() {
+		$("[id^='displayName:']").each(function() {
+			if($(this).attr("source").toUpperCase() == "JABREF"){
+				for (var prop in jabRefData.layouts) {
+					if(jabRefData.layouts[prop].name.toUpperCase() == $(this).attr("style").toUpperCase()){
+						$(this).text(jabRefData.layouts[prop].displayName);
+					}
+				}
+			}
 		});
 	}
 	
 	
-
+	//TODO: make the clean-up "id" based
 	function clearFavouriteLayoutsList() { //removing duplicates
 		var seen = {};
 		$('.favouriteLayoutsListItem').each(function() {
@@ -133,6 +151,5 @@ $(function() {
 		});
 	}
 	
-	//clearing on page load so that dupes, which have been inserted by an uncarefully executed SQL command by an uncareful user can be fixed by the user
 	clearFavouriteLayoutsList();
 });
