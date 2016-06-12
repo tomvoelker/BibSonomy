@@ -113,7 +113,9 @@ $(function() {
 	$('.delete-Style').click(function(){
 		$(this).parent().remove();
 	});
-
+	
+	
+	//replaces the shown displayName of each style with its correct "displayName"
 	function setCSLDisplayName() {
 		$("[id^='displayName:']").each(function() {
 			if($(this).attr("source").toUpperCase() == "CSL"){
@@ -125,7 +127,7 @@ $(function() {
 			}
 		});
 	}
-	
+	//replaces the shown displayName of each style with its correct "displayName"
 	function setJabRefDisplayName() {
 		$("[id^='displayName:']").each(function() {
 			if($(this).attr("source").toUpperCase() == "JABREF"){
