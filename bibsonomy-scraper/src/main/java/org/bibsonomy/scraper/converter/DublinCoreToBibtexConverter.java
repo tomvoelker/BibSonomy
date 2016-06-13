@@ -134,7 +134,7 @@ public class DublinCoreToBibtexConverter implements BibtexConverter {
 	public String toBibtex(final String dublinCore) {
 		// get all DC values
 		final Map<String, String> data = extractData(dublinCore);
-
+		
 		// check if enough information is present
 		if (!present(data.get(TYPE_KEY)) || !present(data.get(AUTHOR_KEY)) || !present(data.get(TITLE_KEY))) {
 			return "";
@@ -385,7 +385,6 @@ public class DublinCoreToBibtexConverter implements BibtexConverter {
 				addOrAppendField("organization", value, lang, data);
 			}
 		}
-
 		return data;
 	}
 
@@ -398,9 +397,18 @@ public class DublinCoreToBibtexConverter implements BibtexConverter {
 	 * @param data the map itself
 	 */
 	private static void addOrAppendField(final String key, final String value, final String language,  final Map<String, String> data) {
+				
 		// insert new entry and overwrite existing (they should be in a different language)
-		if(present(language) && language.equalsIgnoreCase(PREFERRED_LANGUAGE) && present(value)) {
-			data.put(key, value);
+		if(present(language) && present(value)) {
+			if (key == "author" && data.get(key) != null) {
+				data.put(key, data.get(key) + " and " + value);
+			}
+			else if (key == "type" && data.get(key) != null) {
+				data.put(key, data.get(key) + ", " + value);
+			}
+			else {
+				data.put(key, value);
+			}
 			return;
 		} 
 		// add entry with lang different to english only, if no entry is set

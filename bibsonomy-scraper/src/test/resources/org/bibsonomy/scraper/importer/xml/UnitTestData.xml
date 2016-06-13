@@ -1556,8 +1556,7 @@
 	</URLTest>
 	<URLTest id="url_260">
 		<TestDescription>DublinCoreScraper Test 1</TestDescription>
-		<!-- <URL>http://darwin.bth.rwth-aachen.de/opus3/volltexte/2013/4533/</URL> -->
-		<URL>http://publications.rwth-aachen.de/record/211871</URL>
+		<URL>http://www.repo.uni-hannover.de/handle/123456789/287</URL>
 		<BibFile>DCScraperTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.generic.DublinCoreScraper</Scraper>
 	</URLTest>
