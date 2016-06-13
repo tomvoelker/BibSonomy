@@ -34,6 +34,7 @@
 			</nav:breadcrumbs>
 		</jsp:attribute>
 
+		<!-- TODO: is this present anywhere? Do we still need that? -->
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.admin">
 				<jsp:attribute name="pathPart">
@@ -55,7 +56,7 @@
 			<script src="${resdir}/jquery/plugins/ui/jquery-ui-i18n.js" type="text/javascript"><!--  --></script>
 			
 			<!-- declineGroup helper -->
-			<script src="${resdir}/javascript/admin/declineGroup.js" type="text/javascript"><!--  --></script>
+			<script src="${resdir}/javascript/admin/groups.js" type="text/javascript"><!--  --></script>
 		</jsp:attribute>
 
 		<jsp:attribute name="content">
@@ -114,6 +115,13 @@
 				<bsform:fieldset legendKey="admin.group.pending">
 					<jsp:attribute name="content">
 						<table class="table table-hover">
+							<tr>
+								<th>group name</th>
+								<th>requesting user</th>
+								<th>request reason</th>
+								<th>request date</th>
+								<th>&amp;nbsp;</th>
+							</tr>
 							<c:forEach var="entry" items="${command.pendingGroups}">
 								<tr>
 									<td>
@@ -121,7 +129,7 @@
 									</td>
 									<!-- show request user name -->
 									<td>
-										<a href="${relativeUrlGenerator.getUserUrlByUserName(entry.name)}">
+										<a href="${relativeUrlGenerator.getUserUrlByUserName(entry.groupRequest.userName)}">
 											<c:out value="${entry.groupRequest.userName}"/>
 										</a>
 									</td>
@@ -169,40 +177,6 @@
 				</bsform:fieldset>
 			</c:if>
 
-			<!-- TODO: Move this to JavaScript-File  -->
-			<!-- Have this working properly, like tag recommendation -->
-			<!--  autocomplete user info box -->
-			<script type="text/javascript">
-			<![CDATA[
-			
-			function fetchGroupPermissions(id) {
-				groupname=$(id)[0].value
-				$.ajax({
-					url: "../admin/ajax",
-							data: {groupname:groupname, action:'fetch_group_with_permissions'},
-							async: false,
-						    contentType: "application/json;charset=utf-8",
-						    dataType: "json",
-							success: function (data) {
-								if (data.hasOwnProperty("groupLevelPermissions")) {
-									for (var i=0; i< data.groupLevelPermissions.length; i++) {
-										permission = data.groupLevelPermissions[i];
-										var permissionCheckboxId="#".concat(permission);
-										var permissionCheckbox = $(permissionCheckboxId)[0];
-										if (permissionCheckbox) {
-											permissionCheckbox.checked=true;
-										}
-									}
-								}
-								var permissionCheckboxes=$(".permissionCheckbox");
-								for (var i=0; i<permissionCheckboxes.length; i++) {
-									permissionCheckboxes[i].disabled=false;
-								}
-							}
-				});
-			}
-			]]>
-			</script>
 		</jsp:attribute>
 	</layout:layout>
 </jsp:root>

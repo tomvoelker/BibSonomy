@@ -331,7 +331,7 @@ public class SystemTagsUtil {
 		}
 		final Matcher sysTagMatcher = SYS_TAG_PATTERN.matcher(tagName);
 		if (sysTagMatcher.lookingAt()) {
-			return sysTagMatcher.group(2).toLowerCase();
+ 			return sysTagMatcher.group(2).toLowerCase();
 		}
 
 		return tagName.toLowerCase();

@@ -29,6 +29,7 @@ package org.bibsonomy.database.systemstags;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -51,23 +52,21 @@ public class SystemTagFactory {
 		return singleton;
 	}
 
-
 	/** The map that contains all executable systemTags */
 	private Map<String, ExecutableSystemTag> executableSystemTagMap;
-
+	
 	/** The set that contains all searchSystemTags */
 	private Map<String, SearchSystemTag> searchSystemTagMap;
-
+	
 	/** The set that contains all searchSystemTags */
 	private Map<String, MarkUpSystemTag> markUpSystemTagMap;
-
 
 	/**
 	 * Fills the ExecutableSystemTagMap with pairs:
 	 * SystemTagName -> instance of the corresponding SystemTag
 	 * @param executableSystemTags
 	 */
-	public void setExecutableSystemTagMap(Set<ExecutableSystemTag> executableSystemTags) {
+	public void setExecutableSystemTags(final Set<ExecutableSystemTag> executableSystemTags) {
 		if(!present(this.executableSystemTagMap)) {
 			this.executableSystemTagMap = new HashMap<String, ExecutableSystemTag>();
 		}
@@ -77,12 +76,20 @@ public class SystemTagFactory {
 	}
 
 	/**
+	 * @return a Set containing all executable systemTags
+	 * 
+	 */
+	public Set<ExecutableSystemTag> getExecutableSystemTags(){
+		return new HashSet<ExecutableSystemTag>(this.executableSystemTagMap.values());
+	}
+
+	/**
 	 * Fills the SearchSystemTagMap with pairs:
 	 * SystemTagName -> instance of the corresponding SystemTag
 	 * @param searchSystemTags
 	 */
-	public void setSearchSystemTagMap (Set<SearchSystemTag> searchSystemTags) {
-		if(!present(this.searchSystemTagMap)) {
+	public void setSearchSystemTags(final Set<SearchSystemTag> searchSystemTags) {
+		if (!present(this.searchSystemTagMap)) {
 			this.searchSystemTagMap = new HashMap<String, SearchSystemTag>();
 		}
 		for (SearchSystemTag sysTag: searchSystemTags) {
@@ -91,11 +98,18 @@ public class SystemTagFactory {
 	}
 
 	/**
+	 * @return a Set containing all search systemTags
+	 */
+	public Set<SearchSystemTag> getSearchSystemTags(){
+		return new HashSet<SearchSystemTag>(this.searchSystemTagMap.values());
+	}
+	
+	/**
 	 * Fills the MarkUpSystemTagMap with pairs:
 	 * SystemTagName -> instance of the corresponding SystemTag
-	 * @param searchSystemTags
+	 * @param markUpSystemTags 
 	 */
-	public void setMarkUpSystemTagMap (Set<MarkUpSystemTag> markUpSystemTags) {
+	public void setMarkUpSystemTags(final Set<MarkUpSystemTag> markUpSystemTags) {
 		if(!present(this.markUpSystemTagMap)) {
 			this.markUpSystemTagMap = new HashMap<String, MarkUpSystemTag>();
 		}
@@ -104,6 +118,12 @@ public class SystemTagFactory {
 		}
 	}
 
+	/**
+	 * @return a Set containing all markUp systemTags
+	 */
+	public Set<MarkUpSystemTag> getMarkUpSystemTags(){
+		return new HashSet<MarkUpSystemTag>(this.markUpSystemTagMap.values());
+	}
 	
 	/**
 	 * Returns a new instance of the required systemTag
@@ -130,7 +150,7 @@ public class SystemTagFactory {
 	/**
 	 * Returns a new instance of the required systemTag
 	 * 
-	 * @param tagType = the tag describing the systemTag e. g. "user" or "days"
+	 * @param tagName = the tag describing the systemTag e. g. "user" or "days"
 	 * @return a search system tag
 	 */
 	public SearchSystemTag getSearchSystemTag(final String tagName) {
@@ -145,6 +165,11 @@ public class SystemTagFactory {
 		return null;
 	}
 
+	/**
+	 * Returns a new instance of the required systemTag
+	 * @param tagName
+	 * @return get MarkUp system tag
+	 */
 	public MarkUpSystemTag getMarkUpSystemTag(String tagName) {
 		final String tagType = SystemTagsUtil.extractType(tagName);
 		if (present(tagType)) {
@@ -180,10 +205,11 @@ public class SystemTagFactory {
 	/**
 	 * Determines whether a tag (given by name) is a systemTag
 	 * 
-	 * @param tagType
+	 * @param tagName
 	 * @return <code>true</code> iff it's a search system tag
 	 */
 	public boolean isSearchSystemTag(final String tagName) {
+		
 		final String tagType = SystemTagsUtil.extractType(tagName);
 		if (present(tagType)) {
 			final SearchSystemTag sysTag = this.searchSystemTagMap.get(tagType);
@@ -222,7 +248,7 @@ public class SystemTagFactory {
 	/**
 	 * returns all 
 	 * @param tag
-	 * @return the correct system tag repesentation of the tag
+	 * @return the correct system tag representation of the tag
 	 */
 	public SystemTag createSystemTag(final Tag tag) {
 		final String tagName = tag.getName();

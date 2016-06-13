@@ -78,8 +78,8 @@ public class GetListOfPostsStrategy extends AbstractListOfPostsStrategy {
 
 	protected <T extends Resource> List<Post<T>> getList(Class<T> resourceType) {
 		// TODO: support other searchtypes
-		return this.getLogic().getPosts(resourceType, grouping, groupingValue,
-				this.tags, this.hash, search, SearchType.LOCAL, null, order, null, null,
+		return this.getLogic().getPosts(resourceType, this.grouping, this.groupingValue,
+				this.tags, this.hash, this.search, SearchType.LOCAL, null, this.order, null, null,
 				getView().getStartValue(), getView().getEndValue());
 	}
 }

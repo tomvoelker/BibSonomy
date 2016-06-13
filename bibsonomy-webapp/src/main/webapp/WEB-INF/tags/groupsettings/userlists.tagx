@@ -146,6 +146,9 @@
 										<thead>
 											<tr>
 												<th class="col-md-3" data-field="name" data-sortable="true"><fmt:message key="navi.username" /></th>
+												<c:if test="${groupRole eq 'ADMINISTRATOR' and group.sharedDocuments}">
+													<th class="col-md-1"><fmt:message key="groups.documentsharing.shared" /></th>
+												</c:if>
 												<th class="col-md-5"><fmt:message key="groups.role" /></th>
 												<th class="col-md-2" data-field="joinDate" data-sortable="true"><fmt:message key="group.joinDate" /></th>
 												<c:if test="${groupRole eq 'ADMINISTRATOR'}">
@@ -172,6 +175,24 @@
 															</c:otherwise>
 														</c:choose>
 													</td>
+													
+													<!-- user sharing documents -->
+													<c:if test="${groupRole eq 'ADMINISTRATOR' and group.sharedDocuments}">
+														<td style="" class="col-md-1">
+															<c:choose>
+																<c:when test="${member.userSharedDocuments}">
+																	<span class="label label-success">
+																		<span class="fa fa-check"><!-- KEEP ME --></span>
+																	</span>
+																</c:when>	
+																<c:otherwise>
+																	<span class="label label-danger">
+																		<span class="fa fa-remove"><!-- KEEP ME --></span>
+																	</span>
+																</c:otherwise>												
+															</c:choose>
+														</td>
+													</c:if>
 													
 													<c:set var="canEdit" value="${groupRole eq 'ADMINISTRATOR' or groupRole eq 'MODERATOR'}" />
 													<td class="col-md-5">

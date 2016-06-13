@@ -47,24 +47,30 @@ public class CyberleninkaScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "Compare billion project of the Russian Federation Ministry of Culture and Public Initiative";
 	private static final String SITE_URL = "http://cyberleninka.ru/";
-	private static final String INFO = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
+	private static final String INFO = "This scraper parses a publication page of citations from "
+			+ href(SITE_URL, SITE_NAME) + ".";
 	private static final String HOST = "cyberleninka.ru";
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = new LinkedList<Pair<Pattern, Pattern>>();
 	private static final Pattern pattern = Pattern.compile(".*(n/).*");
 	static {
-		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
+		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST),
+				AbstractUrlScraper.EMPTY_PATTERN));
 	}
-		
+
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc)
 			throws ScrapingException {
 
 		final Matcher m = pattern.matcher(sc.getUrl().toString());
 		if (m.find()) {
-			final String downloadUrl = sc.getUrl().toString().replaceAll("/n/", "/") + "/cite.bib";
+			final String downloadUrl = sc.getUrl().toString()
+					.replaceAll("/n/", "/")
+					+ "/cite.bib";
 			try {
-				final String bibtex = WebUtils.getContentAsString(new URL(downloadUrl));
-				final String bibtexResult = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
+				final String bibtex = WebUtils.getContentAsString(new URL(
+						downloadUrl));
+				final String bibtexResult = BibTexUtils.addFieldIfNotContained(
+						bibtex, "url", sc.getUrl().toString());
 				sc.setBibtexResult(bibtexResult);
 				return true;
 			} catch (IOException e) {

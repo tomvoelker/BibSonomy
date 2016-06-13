@@ -42,6 +42,62 @@ import java.util.TreeSet;
  * @author dzo
  */
 public class MigrationHelper {
+	
+	private static final class Version implements Comparable<Version> {
+		private final int major;
+		private final int minor;
+		private final int patch;
+		
+		/**
+		 * @param major
+		 * @param minor
+		 * @param patch
+		 */
+		private Version(int major, int minor, int patch) {
+			super();
+			this.major = major;
+			this.minor = minor;
+			this.patch = patch;
+		}
+		
+		/* (non-Javadoc)
+		 * @see java.lang.Object#toString()
+		 */
+		@Override
+		public String toString() {
+			return this.major + "." + this.minor + "." + this.patch;
+		}
+		
+		/* (non-Javadoc)
+		 * @see java.lang.Comparable#compareTo(java.lang.Object)
+		 */
+		@Override
+		public int compareTo(Version o) {
+			final int majorDiff = this.major - o.major;
+			if (majorDiff != 0) {
+				return majorDiff;
+			}
+			final int minorDiff = this.minor - o.minor;
+			if (minorDiff != 0) {
+				return minorDiff;
+			}
+			
+			return this.patch - o.patch;
+		}
+
+		public static final Version parseVersion(final String versionString) {
+			final String[] versionParts = versionString.split("\\.");
+			if (versionParts.length != 3) {
+				throw new IllegalArgumentException("Version string " + versionString + " not valid (format: X.Y.Z)");
+			}
+			try {
+				return new Version(Integer.parseInt(versionParts[0]), Integer.parseInt(versionParts[1]), Integer.parseInt(versionParts[2]));
+			} catch (final NumberFormatException e) {
+				throw new IllegalArgumentException(e);
+			}
+		}
+	}
+	
 	/** the path to the migrations*/
 	private static final String MIGRATION_PATH = "database/migrations";
 	
@@ -55,14 +111,14 @@ public class MigrationHelper {
 			System.exit(1);
 		}
 		
-		final String sourceVersion;
-		final String targetVersion;
+		final Version sourceVersion;
+		final Version targetVersion;
 		if (args.length == 1) {
 			sourceVersion = null;
-			targetVersion = args[0];
+			targetVersion = Version.parseVersion(args[0]);
 		} else {
-			sourceVersion = args[0];
-			targetVersion = args[1];
+			sourceVersion = Version.parseVersion(args[0]);
+			targetVersion = Version.parseVersion(args[1]);
 		}
 		
 		System.out.println("generating migration file (" + sourceVersion + " -> " + targetVersion + ")");
@@ -77,11 +133,11 @@ public class MigrationHelper {
 	 * @throws URISyntaxException 
 	 * @throws IOException 
 	 */
-	public static String getMigration(String sourceVersion, String targetVersion) throws URISyntaxException, IOException {
+	public static String getMigration(Version sourceVersion, Version targetVersion) throws URISyntaxException, IOException {
 		final StringBuilder builder = new StringBuilder();
 		final URL resource = MigrationHelper.class.getClassLoader().getResource(MIGRATION_PATH);
 		final File file = new File(resource.toURI());
-		final TreeSet<String> versions = new TreeSet<>();
+		final TreeSet<Version> versions = new TreeSet<>();
 		for (final File subDir : file.listFiles(new FileFilter() {
 			
 			@Override
@@ -89,15 +145,16 @@ public class MigrationHelper {
 				return pathname.isDirectory();
 			}
 		})) {
-			versions.add(subDir.getName());
+			versions.add(Version.parseVersion(subDir.getName()));
 		}
 		
-		final SortedSet<String> versionsForMigration = versions.headSet(targetVersion, true).tailSet(sourceVersion);
+		final SortedSet<Version> versionsForMigration = versions.headSet(targetVersion, true).tailSet(sourceVersion);
 		
-		for (final String version : versionsForMigration) {
-			builder.append("-- " + version + "\n");
+		for (final Version version : versionsForMigration) {
+			String versionString = version.toString();
+			builder.append("-- " + versionString + "\n");
 			
-			final File versionFolder = new File(file, version);
+			final File versionFolder = new File(file, versionString);
 			
 			final File[] sqlFiles = versionFolder.listFiles(new FilenameFilter() {
 				

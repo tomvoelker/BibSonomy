@@ -46,7 +46,7 @@ import org.bibsonomy.util.StringUtils;
  */
 public class PlainTextExtractor implements ContentExtractor {
 	
-	private static final Set<String> SUPPORTED_EXTENSIONS = Sets.asSet("txt", "sql", "md", "csv", "pig", "xml", "json");
+	private static final Set<String> SUPPORTED_EXTENSIONS = Sets.asSet("txt", "sql", "md", "csv", "pig", "xml", "json", "tex");
 	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.search.index.utils.ContentExtractor#supports(java.io.File)
