@@ -315,7 +315,6 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new LccnLocScraper());
 		addScraper(new ElsevierScraper());
 		addScraper(new CyberleninkaScraper());
-		addScraper(new RepecScraper());
 		//addScraper(new AkademiaiScraper()); error = 404
 	}
 
