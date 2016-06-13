@@ -47,29 +47,18 @@ public class GoogleScholarScraper extends GenericBibTeXURLScraper {
 	private static final String INFO = "Scrapes BibTex from " + href(SITE_URL, SITE_NAME) + ".";
 	
 	private static final String HOST = "scholar.google.";
-	private static final String PATH1 = "/scholar.bib";
-	private static final String PATH2 = "/citations";
-	
-	/** FIXME: we can not use this id */
-	private static final String SCISIG = "scisig=AAGBfm0AAAAAVyM_4zZSYmtLcmYUQYVlIWqH3eVqkNVH";
+	private static final String PATH1 = "/citations";
 	
 	private static final Pattern ID = Pattern.compile("citation_for_view=(.+?)$");
-	private static final Pattern DOWNLOAD_URL = Pattern.compile("(.+?)hl=");
 	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern, Pattern>>();
 	static {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST + ".*"), Pattern.compile(PATH1 + ".*")));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST + ".*"), Pattern.compile(PATH2 + ".*")));
 	}
 	
 	@Override
 	protected String getDownloadURL(final URL url) throws ScrapingException {
 		final String path = url.getPath();
 		if (path.contains(PATH1)) {
-			final Matcher m = DOWNLOAD_URL.matcher(url.toString());
-			if (m.find()) {
-				return m.group(1) + SCISIG + "&scisf=4&hl=de";
-			}
-		} else if (path.contains(PATH2)) {
 			final Matcher m = ID.matcher(url.toString());
 			if (m.find()) {
 				final String id = m.group(1);
