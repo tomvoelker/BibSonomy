@@ -399,21 +399,8 @@ public class DublinCoreToBibtexConverter implements BibtexConverter {
 	private static void addOrAppendField(final String key, final String value, final String language,  final Map<String, String> data) {
 				
 		// insert new entry and overwrite existing (they should be in a different language)
-		if(present(language) && present(value)) {
-			if (key == "author" && data.get(key) != null) {
-				data.put(key, data.get(key) + " and " + value);
-			}
-			else if (key == "type" && data.get(key) != null) {
-				data.put(key, data.get(key) + ", " + value);
-			}
-			else {
-				data.put(key, value);
-			}
-			return;
-		} 
-		// add entry with lang different to english only, if no entry is set
-		else if(present(language) && !language.equalsIgnoreCase(PREFERRED_LANGUAGE) && present(data.get(key))) {
-			return;
+		if(present(language) && language.equalsIgnoreCase(PREFERRED_LANGUAGE) && present(value)) {
+			data.put(key, value);
 		}
 		// language not set
 		else if (present(value)) {
