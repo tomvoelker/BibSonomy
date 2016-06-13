@@ -197,7 +197,7 @@
 	</URLTest>
 	<URLTest id="url_30">
 		<TestDescription>URL scraping test with publication from springerlink</TestDescription>
-		<URL>http://springerlink.com/content/r8313654k80v7231/?p=73a60ef9936f4d92b2b6d147273e3f7d&amp;pi=4</URL>
+		<URL>http://link.springer.com/article/10.1140%2Fepje%2Fi2002-10160-7</URL>
 		<BibFile>SpringerLinkScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
 	</URLTest>
@@ -268,7 +268,7 @@
 	</URLTest>
 	<URLTest id="url_41">
 		<TestDescription>char-encoding test for SpringerLinkScraper</TestDescription>
-		<URL>http://www.springerlink.com/content/p871073356835258/</URL>
+		<URL>http://link.springer.com/chapter/10.1007%2F3-540-34416-0_27</URL>
 		<BibFile>SpringerLinkScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
 	</URLTest>
@@ -865,21 +865,6 @@
 		<!-- 400 Bad request -->
 		<Enabled>false</Enabled>
 	</URLTest>
-	<URLTest id="url_142">
-		<TestDescription>test for springerlink</TestDescription>
-		<URL>http://www.springerlink.de/content/k82w1317j2u6w546/?p=d0fc272f4d7a4654864797b3773c2909&amp;pi=0</URL>
-		<BibFile>SpringerLinkScraperUnitURLTest3.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_143">
-		<TestDescription>test for springerlink with docid in url query</TestDescription>
-		<URL>http://www.springerlink.com/link.asp?id=w425794t7433</URL>
-		<BibFile>SpringerLinkScraperUnitURLTest4.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
-		<!-- could not find "export citation" link on Springer page, thus, no export 
-			available -->
-		<Enabled>false</Enabled>
-	</URLTest>
 	<URLTest id="url_144">
 		<TestDescription>test for cell scraper</TestDescription>
 		<URL>http://www.cell.com/cell/abstract/S0092-8674(09)00271-2</URL>
@@ -1132,12 +1117,6 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.aanda.AandAScraper</Scraper>
 		<AdditionalInfo>wait until AandA changed their output</AdditionalInfo>
 	</URLTest>
-	<URLTest id="url_183">
-		<TestDescription>test for springerlink</TestDescription>
-		<URL>http://www.springerlink.com/content/2378340668527U35</URL>
-		<BibFile>SpringerLinkScraperUnitURLTest5.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_184">
 		<TestDescription>acm url test</TestDescription>
 		<URL>http://portal.acm.org/beta/citation.cfm?id=359859</URL>
@@ -1157,13 +1136,6 @@
 		<URL>http://portal.acm.org/citation.cfm?id=1082036.1082037&amp;coll=Portal&amp;dl=GUIDE&amp;CFID=88775871&amp;CFTOKEN=40392553#</URL>
 		<BibFile>ACMBasicScraperUnitURLTest6.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_187">
-		<TestDescription>test for springerlink</TestDescription>
-		<URL>http://springerlink.metapress.com/content/rwcpxjqvqukhr76y/?p=ff5ebc2d45ad4c7ea5496fac12f85a05&amp;pi=25</URL>
-		<BibFile>SpringerLinkScraperUnitURLTest6.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
-		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_189">
 		<TestDescription>URL scraping test with a citation page from intersience wiley</TestDescription>
@@ -1453,12 +1425,6 @@
 		<BibFile>BiologistsScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.biologists.BiologistsScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_235">
-		<TestDescription>URL scraping test with publication from springerlink</TestDescription>
-		<URL>http://link.springer.com/chapter/10.1007%2F3-540-44527-7_10?LI=true</URL>
-		<BibFile>SpringerLinkScraperUnitURLTest7.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_236">
 		<TestDescription>URL scraping test with publication from The Open University</TestDescription>
 		<URL>http://oro.open.ac.uk/19554/</URL>
@@ -1470,18 +1436,6 @@
 		<URL>http://www.aaai.org/ocs/index.php/ICWSM/ICWSM11/paper/view/3856</URL>
 		<BibFile>AAAIScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.aaai.AAAIScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_238">
-		<TestDescription>URL scraping test with publication from springerlink</TestDescription>
-		<URL>http://link.springer.com/article/10.1023%2FA%3A1008346807097?LI=true#page-1</URL>
-		<BibFile>SpringerLinkScraperUnitURLTest8.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_239">
-		<TestDescription>URL scraping test with book from springerlink</TestDescription>
-		<URL>http://link.springer.com/book/10.1007/978-0-387-85820-3/page/1</URL>
-		<BibFile>SpringerLinkScraperUnitURLTest9.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_240">
 		<TestDescription>URL scraping test with publication from AAAI</TestDescription>
