@@ -1111,6 +1111,12 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.aanda.AandAScraper</Scraper>
 		<AdditionalInfo>wait until AandA changed their output</AdditionalInfo>
 	</URLTest>
+	<URLTest id="url_183">
+		<TestDescription>test for springerlink</TestDescription>
+		<URL>http://link.springer.com/article/10.1007%2Fs13222-010-0004-8</URL>
+		<BibFile>SpringerLinkScraperUnitURLTest5.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
+	</URLTest>
 	<URLTest id="url_184">
 		<TestDescription>acm url test</TestDescription>
 		<URL>http://portal.acm.org/beta/citation.cfm?id=359859</URL>
@@ -1419,6 +1425,12 @@
 		<BibFile>BiologistsScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.biologists.BiologistsScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_235">
+		<TestDescription>URL scraping test with publication from springerlink</TestDescription>
+		<URL>http://link.springer.com/chapter/10.1007%2F3-540-44527-7_10?LI=true</URL>
+		<BibFile>SpringerLinkScraperUnitURLTest7.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
+	</URLTest>
 	<URLTest id="url_236">
 		<TestDescription>URL scraping test with publication from The Open University</TestDescription>
 		<URL>http://oro.open.ac.uk/19554/</URL>
@@ -1430,6 +1442,18 @@
 		<URL>http://www.aaai.org/ocs/index.php/ICWSM/ICWSM11/paper/view/3856</URL>
 		<BibFile>AAAIScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.aaai.AAAIScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_238">
+		<TestDescription>URL scraping test with publication from springerlink</TestDescription>
+		<URL>http://link.springer.com/article/10.1023%2FA%3A1008346807097?LI=true#page-1</URL>
+		<BibFile>SpringerLinkScraperUnitURLTest8.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_239">
+		<TestDescription>URL scraping test with book from springerlink</TestDescription>
+		<URL>http://link.springer.com/book/10.1007/978-0-387-85820-3/page/1</URL>
+		<BibFile>SpringerLinkScraperUnitURLTest9.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_240">
 		<TestDescription>URL scraping test with publication from AAAI</TestDescription>
