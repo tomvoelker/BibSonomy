@@ -100,7 +100,7 @@ public class OpenrepositoryScraper extends GenericRISURLScraper {
 	}
 	
 	@Override
-	public String getDownloadURL(URL url) {
+	public String getDownloadURL(URL url, String cookies) {
 		final String sturl = url.toString();
 		if (sturl.contains(SUPPORTED_HOST_OPENREPOSITORY)) {
 			return "http://www." + SUPPORTED_HOST_OPENREPOSITORY + "/references?format=refman&handle=" + getHandle(sturl);

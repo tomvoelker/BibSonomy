@@ -53,7 +53,7 @@ public class GooglePatentScraper extends GenericBibTeXURLScraper {
 	}
 
 	@Override
-	protected String getDownloadURL(URL url) throws ScrapingException, IOException {
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
 		final Matcher m = URL_PATTERN.matcher(url.toString());
 		if (m.find()) {
 			return m.group(1) + ".bibtex" + "?" + m.group(2);

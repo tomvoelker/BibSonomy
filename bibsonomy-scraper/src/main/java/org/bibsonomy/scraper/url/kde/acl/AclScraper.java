@@ -80,7 +80,7 @@ public class AclScraper extends GenericBibTeXURLScraper {
 	 * @see org.bibsonomy.scraper.generic.SimpleGenericURLScraper#getBibTeXURL(java.net.URL)
 	 */
 	@Override
-	public String getDownloadURL(URL url) throws ScrapingException {
+	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		String downloadUrl = url.toString();
 		// replace .pdf with .bib
 		downloadUrl = downloadUrl.substring(0, downloadUrl.length()-4) + ".bib";

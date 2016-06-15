@@ -74,7 +74,7 @@ public class EditLibScraper extends GenericBibTeXURLScraper {
 	}
 
 	@Override
-	public String getDownloadURL(URL url) throws ScrapingException {
+	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		String id = null;
 		String sturl = url.toString();
 		if(sturl.startsWith(EDITLIB_HOST_NAME + EDITLIB_ABSTRACT_PATH)) {

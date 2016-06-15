@@ -111,7 +111,7 @@ public class ATSScraper extends GenericRISURLScraper implements CitedbyScraper{
 	 * @see org.bibsonomy.scraper.generic.RISGenericURLScraper#getRISURL(java.net.URL)
 	 */
 	@Override
-	protected String getDownloadURL(URL url) {
+	protected String getDownloadURL(URL url, String cookies) {
 		final String id = extractId(url.toString());
 		return BIBTEX_URL + id;
 	}
