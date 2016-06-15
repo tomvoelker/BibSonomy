@@ -9,7 +9,7 @@ $(function() {
 		$(this).children('.fa').removeClass('fa-times').addClass('fa-check');
 		$(this).children('.button-text').text(getString('groups.documentsharing.shared'));
 	});
-    
+	
 	// a lot of typeahead configuration will follow
 	// --
 	
@@ -113,8 +113,14 @@ $(function() {
 	//ID has to be "source"/"id" for the StringToFavouriteLayoutConverter to read
 	$('#searchCitationAutocomplete').on('typeahead:select', function (e, datum) {
 		var toBeAppended = '<li class="list-group-item favouriteLayoutsListItem" sourceAndStyle="' + datum.source.toUpperCase() + '/' + datum.name.toUpperCase() + '"><input type="hidden" name="user.settings.favouriteLayouts"  id="'+ datum.source.toUpperCase() + '/' + datum.name.toUpperCase() + '" value="'+datum.source.toUpperCase()+'/' + datum.name.toUpperCase() + '"/><span class="btn btn-default badge label-danger delete-Style">Delete</span>' + datum.displayName + '</li>';
-		$('#favouriteLayoutsList').append(toBeAppended);
+		item = $('#favouriteLayoutsList').append(toBeAppended);
 		clearFavouriteLayoutsList();
+		var infoBox = $("#infoAlertBox");
+		infoBox.html("Style '<strong>" + datum.displayName + "</strong>' has been added to the list of displayed styles or was already present.");
+		infoBox.show(1000);
+		setTimeout(function(){
+			infoBox.hide(1000);
+	    }, 10000);
 	});
 
 	//catching presses of "enter", else the form would be submitted by each "accidental" press
@@ -128,7 +134,9 @@ $(function() {
 		$(this).parent().hide(1000, function(){
 			$(this).remove();
         });
-//		$(this).parent().remove();
+		
+		//not animated:
+		//$(this).parent().remove();
 	});
 		
 	function clearFavouriteLayoutsList() { //removing duplicates
