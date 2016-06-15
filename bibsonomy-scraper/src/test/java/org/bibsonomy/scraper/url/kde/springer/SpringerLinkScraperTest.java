@@ -1,12 +1,12 @@
 /**
- * BibSonomyScraper  Web page scrapers returning BibTeX for BibSonomy.
+ * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006  2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
- *                               http://www.kde.cs.unikassel.de/
+ *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uniwuerzburg.de/en/dmir/
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
  *                               http://www.l3s.de/
