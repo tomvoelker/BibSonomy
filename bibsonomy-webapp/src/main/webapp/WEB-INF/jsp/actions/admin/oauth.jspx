@@ -18,11 +18,12 @@
 	
 	<fmt:message key="navi.admin" var="adminPageTitle" />
 	
-	<layout:paneLayout
+	<layout:oneColumnLayout
 			pageTitle="${adminPageTitle} | OAuth"
 			requPath="${requPath}"
 			headerMessageKey="gettingStarted.headline"
 			command="${command}"
+			loginUser="${command.context.loggedinUser}"
 			noSidebar="${true}">
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
@@ -213,5 +214,5 @@
           </script>
 			
 		</jsp:attribute>
-	</layout:paneLayout>
+	</layout:oneColumnLayout>
 </jsp:root>

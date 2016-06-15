@@ -19,7 +19,7 @@
 	
 	<fmt:message key="navi.admin" var="adminPageTitle" />
 	
-	<layout:layout 
+	<layout:oneColumnLayout
 		pageTitle="${adminPageTitle} | Synchronization" 
 		loginUser="${command.context.loginUser}" 
 		requPath="${requPath}">
@@ -127,5 +127,5 @@
 			</form:form>
 		
 		</jsp:attribute>
-	</layout:layout>
+	</layout:oneColumnLayout>
 </jsp:root>
