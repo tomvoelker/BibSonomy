@@ -74,7 +74,7 @@ public class MorganClaypoolScraper extends GenericBibTeXURLScraper {
 	}
 
 	@Override
-	public String getDownloadURL(final URL url) throws ScrapingException {
+	public String getDownloadURL(final URL url, String cookies) throws ScrapingException {
 		final Matcher m = BIBTEX_DOI.matcher(url.toString());
 		if (m.find()) {
 			return "http://" + url.getHost().toString() + BIBTEX_PATH + m.group(1);

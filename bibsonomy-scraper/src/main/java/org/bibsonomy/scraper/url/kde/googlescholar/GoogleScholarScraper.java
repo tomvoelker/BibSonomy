@@ -56,7 +56,7 @@ public class GoogleScholarScraper extends GenericBibTeXURLScraper {
 	}
 	
 	@Override
-	protected String getDownloadURL(final URL url) throws ScrapingException {
+	protected String getDownloadURL(final URL url, String cookies) throws ScrapingException {
 		final String path = url.getPath();
 		if (path.contains(PATH1)) {
 			final Matcher m = ID.matcher(url.toString());

@@ -50,7 +50,7 @@ public class ThiemeConnectScraper extends GenericRISURLScraper {
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	@Override
-	protected String getDownloadURL(URL url) throws ScrapingException, IOException {
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
 		
 		String requestedURL = url.toString().replace("abstract", "ris");
 		requestedURL = requestedURL.concat("/BIB");

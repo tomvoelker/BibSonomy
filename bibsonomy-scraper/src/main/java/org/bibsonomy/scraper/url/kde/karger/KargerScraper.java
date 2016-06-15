@@ -51,7 +51,7 @@ public class KargerScraper extends GenericRISURLScraper {
 	private static final Pattern patternId = Pattern.compile("(.*)/Article/Abstract/(.*)");
 	
 	@Override
-	protected String getDownloadURL(URL url) throws ScrapingException, IOException {
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
 		final Matcher m = patternId.matcher(url.toString());
 		if(m.find()) {
 			return INITIAL_DOWNLOAD_URL + m.group(2);

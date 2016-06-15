@@ -96,7 +96,7 @@ public class StanfordInfoLabScraper extends GenericBibTeXURLScraper {
 	}*/
 
 	@Override
-	public String getDownloadURL(URL url) throws ScrapingException {
+	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		Matcher idMatcher = ID_PATTERN.matcher(url.toString());
 		if (idMatcher.find()){
 			return"http://ilpubs.stanford.edu:8090/cgi/export/" + idMatcher.group(1) + "/BibTeX/ilprints-eprint-1015.bib";

@@ -48,23 +48,24 @@ import org.bibsonomy.util.WebUtils;
  */
 public abstract class AbstractGenericFormatURLScraper extends AbstractUrlScraper {
 	
-	protected abstract String getDownloadURL(final URL url) throws ScrapingException, IOException;
+	protected abstract String getDownloadURL(final URL url, String cookies) throws ScrapingException, IOException;
 	
 	@Override
 	protected final boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
 		scrapingContext.setScraper(this);
 		try {
 			final URL url = scrapingContext.getUrl();
-			final String downloadURL = this.getDownloadURL(url);
-			if (downloadURL == null) {
-				throw new ScrapingFailureException("can't get download url for " + url);
-			}
 			
 			final String cookies;
 			if (this.retrieveCookiesFromSite()) {
 				cookies = WebUtils.getCookies(url);
 			} else {
 				cookies = null;
+			}
+			
+			final String downloadURL = this.getDownloadURL(url, cookies);
+			if (downloadURL == null) {
+				throw new ScrapingFailureException("can't get download url for " + url);
 			}
 			
 			final String downloadResult = WebUtils.getContentAsString(downloadURL, cookies);

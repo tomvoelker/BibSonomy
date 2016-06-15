@@ -74,7 +74,7 @@ public class NEJMScraper extends GenericBibTeXURLScraper {
 	}
 
 	@Override
-	public String getDownloadURL(URL url) throws ScrapingException {
+	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		final Matcher matcher = pattern.matcher(url.toString());
 		if (matcher.find()) {
 			final String doi = matcher.group(1).replace("%2F", "/");

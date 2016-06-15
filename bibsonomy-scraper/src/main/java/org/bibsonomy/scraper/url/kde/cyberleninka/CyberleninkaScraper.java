@@ -58,7 +58,7 @@ public class CyberleninkaScraper extends GenericBibTeXURLScraper {
 	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL)
 	 */
 	@Override
-	protected String getDownloadURL(URL url) throws ScrapingException, IOException {
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
 		final String urlAsString = url.toString();
 		final Matcher m = pattern.matcher(urlAsString);
 		if (m.find()) {

@@ -60,7 +60,7 @@ public class SpringerLinkScraper extends GenericBibTeXURLScraper {
 	}
 		
 	@Override
-	protected String getDownloadURL(URL url) throws ScrapingException, IOException {
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
 	
 		final Matcher m = ID_PATTERN.matcher(url.getPath());
 		String id = null;

@@ -35,48 +35,48 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.generic.GenericRISURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 /** 
  * @author Mohammed Abed
  */
-public class ElsevierScraper extends AbstractUrlScraper{
+public class ElsevierScraper extends GenericRISURLScraper {
 	
 	private static final String SITE_NAME = "Elsevier";
 	private static final String SITE_URL = "http://www.elsevier.es";
 	private static final String HOST = "elsevier.es";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 	private static final Pattern DOWNLOAD_URL = Pattern.compile("<li class=\"rif\" ><a href='(.*)' class");
-	private static final RisToBibtexConverter converter = new RisToBibtexConverter();
 	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
-    static {
-    	patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
-    }
-        
-	@Override
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		
-		try {
-			final String cookie = WebUtils.getCookies(sc.getUrl());
-			final String pageContent = WebUtils.getContentAsString(sc.getUrl(),cookie);
-			final Matcher m = DOWNLOAD_URL.matcher(pageContent);
-			if (m.find()){ 
-				final String ris = WebUtils.getContentAsString(new URL(SITE_URL + m.group(1)), cookie);
-				final String bibtexResult = converter.toBibtex(ris);
-				if(bibtexResult != null) {
-					sc.setBibtexResult(bibtexResult);
-					return true;
-				}
-			}
-		} catch (IOException e) {
-			throw new ScrapingException(e);
-		}
-		return false;
+	static {
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#retrieveCookiesFromSite()
+	 */
+	@Override
+	protected boolean retrieveCookiesFromSite() {
+		return true;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL)
+	 */
+	@Override
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
+		final String pageContent = WebUtils.getContentAsString(url, cookies);
+		final Matcher m = DOWNLOAD_URL.matcher(pageContent);
+		if (m.find()){ 
+			return SITE_URL + m.group(1);
+		}
+		
+		return null;
+	}
+	
+	@Override
 	public String getInfo() {
 		return INFO;
 	}
@@ -85,11 +85,13 @@ public class ElsevierScraper extends AbstractUrlScraper{
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns; 
 	}
-
+	
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
-
+	
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}

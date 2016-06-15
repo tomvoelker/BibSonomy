@@ -89,7 +89,7 @@ public class AkademiaiScraper extends GenericRISURLScraper {
 	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL)
 	 */
 	@Override
-	protected String getDownloadURL(URL url) throws ScrapingException, IOException {
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
 		final Matcher m = URL_PATTERN.matcher(url.toString());
 		if (m.find()) {
 			return RIS_URL + m.group(1) + "&mode=ris";

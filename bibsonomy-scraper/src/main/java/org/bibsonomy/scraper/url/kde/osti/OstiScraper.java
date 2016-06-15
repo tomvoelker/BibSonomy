@@ -63,7 +63,7 @@ public class OstiScraper extends GenericBibTeXURLScraper {
 	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL)
 	 */
 	@Override
-	protected String getDownloadURL(URL url) throws ScrapingException, IOException {
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
 		final Matcher m = PATTERN_GETTING_DOWNLOAD_PATH.matcher(url.toString());
 		if (m.find()) {
 			return m.group(1) + "/cite/bibtex";

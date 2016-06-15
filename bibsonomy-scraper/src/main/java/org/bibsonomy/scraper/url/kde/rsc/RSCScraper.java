@@ -100,7 +100,7 @@ public class RSCScraper extends GenericBibTeXURLScraper {
 	}
 
 	@Override
-	public String getDownloadURL(URL url) throws ScrapingException {
+	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		final String id = extractId(url.toString());
 		if (present(id)) {
 			return BIBTEX_URL + id;
