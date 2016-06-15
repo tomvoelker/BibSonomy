@@ -32,14 +32,12 @@ $(function() {
 		data = $.parseJSON(data);
 		cslData = data;
 		processResultCSL(data);
-		setCSLDisplayName();
 	});
 	
 	//getting external JSON for JABREF styles
 	$.get("/layoutinfo", function (data) {
 		jabRefData = data;
 		processResultJabref(data);
-		setJabRefDisplayName();
 	});
 
 	//adding JABREF to the "simple" styles array, which will be displayed on the twitter typeahead
@@ -48,6 +46,14 @@ $(function() {
 			var JabrefData = '{"source": "JABREF", "displayName": "' + data.layouts[prop].displayName + '", "name":"' + data.layouts[prop].name.toUpperCase() +'"}';
 			var JabrefObj = $.parseJSON(JabrefData);
 			jsonObj.push(JabrefObj);
+			//replaces the shown displayName of each style with its correct "displayName"
+			$("[id^='displayName:']").each(function() {
+				if($(this).attr("source").toUpperCase() == "JABREF"){
+					if(jabRefData.layouts[prop].name.toUpperCase() == $(this).attr("style").toUpperCase()){
+						$(this).text(jabRefData.layouts[prop].displayName);
+					}
+				}
+			});
 		}
 		//everything fetched, good to go
 		jabref = true;
@@ -60,6 +66,14 @@ $(function() {
 			var CSLData = '{"source":"CSL","displayName":"' + data.layouts[prop].displayName + '","name":"' + data.layouts[prop].name.toUpperCase() +'"}';
 			var CSLObj = $.parseJSON(CSLData);
 			jsonObj.push(CSLObj);
+			//replaces the shown displayName of each style with its correct "displayName"
+			$("[id^='displayName:']").each(function() {
+				if($(this).attr("source").toUpperCase() == "CSL"){
+					if(cslData.layouts[prop].name.toUpperCase() == $(this).attr("style").toUpperCase()){
+						$(this).text(cslData.layouts[prop].displayName);
+					}
+				}
+			});
 		}
 	
 		//everything fetched, good to go
@@ -113,33 +127,7 @@ $(function() {
 	$('.delete-Style').click(function(){
 		$(this).parent().remove();
 	});
-	
-	
-	//replaces the shown displayName of each style with its correct "displayName"
-	function setCSLDisplayName() {
-		$("[id^='displayName:']").each(function() {
-			if($(this).attr("source").toUpperCase() == "CSL"){
-				for (var prop in cslData.layouts) {
-					if(cslData.layouts[prop].name.toUpperCase() == $(this).attr("style").toUpperCase()){
-						$(this).text(cslData.layouts[prop].displayName);
-					}
-				}
-			}
-		});
-	}
-	//replaces the shown displayName of each style with its correct "displayName"
-	function setJabRefDisplayName() {
-		$("[id^='displayName:']").each(function() {
-			if($(this).attr("source").toUpperCase() == "JABREF"){
-				for (var prop in jabRefData.layouts) {
-					if(jabRefData.layouts[prop].name.toUpperCase() == $(this).attr("style").toUpperCase()){
-						$(this).text(jabRefData.layouts[prop].displayName);
-					}
-				}
-			}
-		});
-	}
-	
+		
 	function clearFavouriteLayoutsList() { //removing duplicates
 		var seen = {};
 		$('.favouriteLayoutsListItem').each(function() {
