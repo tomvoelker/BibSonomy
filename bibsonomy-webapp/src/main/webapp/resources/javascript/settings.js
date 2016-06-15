@@ -131,7 +131,7 @@ $(function() {
 	
 	//getting the "Delete" batch to work
 	$('.delete-Style').click(function(){
-		$(this).parent().hide(1000, function(){
+		$(this).parent().slideUp(1000, function(){
 			$(this).remove();
         });
 		

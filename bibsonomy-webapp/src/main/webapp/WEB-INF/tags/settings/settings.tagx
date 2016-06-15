@@ -195,7 +195,7 @@
 							<div id="collapse1" class="panel-collapse collapse panel-body">
 								<ul class="list-group" id="favouriteLayoutsList">				
 									<!-- ID has to be "source"/"id" for the StringToFavouriteLayoutConverter to read -->
-									<!-- don't forget to use displayName!!!!!!!! -->
+									<!-- don't forget to use displayName in the right places! -->
 									<c:forEach var="favl" items="${command.context.loginUser.settings.favouriteLayouts}" varStatus="counter">
 										<li class="list-group-item favouriteLayoutsListItem" sourceAndStyle="${favl.source}/${favl.style}">
 											<input type="hidden" name="user.settings.favouriteLayouts" id="${favl.source}/${favl.style}" value="${favl.source}/${favl.style}"/>
