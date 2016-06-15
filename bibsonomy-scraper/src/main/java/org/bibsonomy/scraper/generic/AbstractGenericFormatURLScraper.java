@@ -51,7 +51,7 @@ public abstract class AbstractGenericFormatURLScraper extends AbstractUrlScraper
 	protected abstract String getDownloadURL(final URL url) throws ScrapingException, IOException;
 	
 	@Override
-	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
+	protected final boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
 		scrapingContext.setScraper(this);
 		try {
 			final URL url = scrapingContext.getUrl();

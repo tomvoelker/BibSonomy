@@ -26,10 +26,10 @@
  */
 package org.bibsonomy.scraper.url.kde.cyberleninka;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.io.IOException;
 import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,46 +38,41 @@ import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
 /**
  * @author Mohammed Abed
  */
-public class CyberleninkaScraper extends AbstractUrlScraper {
-
+public class CyberleninkaScraper extends GenericBibTeXURLScraper {
 	private static final String SITE_NAME = "Compare billion project of the Russian Federation Ministry of Culture and Public Initiative";
 	private static final String SITE_URL = "http://cyberleninka.ru/";
-	private static final String INFO = "This scraper parses a publication page of citations from "
-			+ href(SITE_URL, SITE_NAME) + ".";
+	private static final String INFO = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
 	private static final String HOST = "cyberleninka.ru";
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = new LinkedList<Pair<Pattern, Pattern>>();
 	private static final Pattern pattern = Pattern.compile(".*(n/).*");
 	static {
-		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST),
-				AbstractUrlScraper.EMPTY_PATTERN));
+		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL)
+	 */
 	@Override
-	protected boolean scrapeInternal(ScrapingContext sc)
-			throws ScrapingException {
-
-		final Matcher m = pattern.matcher(sc.getUrl().toString());
+	protected String getDownloadURL(URL url) throws ScrapingException, IOException {
+		final String urlAsString = url.toString();
+		final Matcher m = pattern.matcher(urlAsString);
 		if (m.find()) {
-			final String downloadUrl = sc.getUrl().toString()
-					.replaceAll("/n/", "/")
-					+ "/cite.bib";
-			try {
-				final String bibtex = WebUtils.getContentAsString(new URL(
-						downloadUrl));
-				final String bibtexResult = BibTexUtils.addFieldIfNotContained(
-						bibtex, "url", sc.getUrl().toString());
-				sc.setBibtexResult(bibtexResult);
-				return true;
-			} catch (IOException e) {
-				throw new ScrapingException(e);
-			}
+			return urlAsString.replaceAll("/n/", "/") + "/cite.bib";
 		}
-		return false;
+		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
+	 */
+	@Override
+	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
+		return BibTexUtils.addFieldIfNotContained(bibtex, "url", scrapingContext.getUrl().toString());
 	}
 
 	@Override
