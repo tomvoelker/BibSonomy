@@ -74,7 +74,7 @@ public class ApsScraper extends GenericBibTeXURLScraper{
 	}
 
 	@Override
-	public String getDownloadURL(final URL url) throws ScrapingException {
+	public String getDownloadURL(final URL url, String cookies) throws ScrapingException {
 		try {
 			final Matcher m = BIBTEX_PATTERN.matcher(WebUtils.getContentAsString(url));
 			if (m.find()) {

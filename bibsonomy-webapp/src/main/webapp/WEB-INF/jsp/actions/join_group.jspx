@@ -81,21 +81,5 @@
 				<br />
 		</jsp:attribute>
 		
-		<!--+
-			| sidebar
-			+-->
-		<jsp:attribute name="sidebar">
-			<sidebar:sidebarItem textKey="groups">
-				<jsp:attribute name="content">
-					<!-- loginUser.groups -->
-					<ul class="sidebar_collapse_content">
-						<c:forEach var="group" items="${command.context.loginUser.groups}">
-							<li><a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}"><c:out value='${group.name}'/></a></li>
-						</c:forEach>
-					</ul>
-				</jsp:attribute>
-			</sidebar:sidebarItem>
-		</jsp:attribute>
-	
 	</layout:paneLayout>
 </jsp:root>

@@ -6,7 +6,7 @@
 	                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 	                    http://www.springframework.org/schema/util 
 	                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
-	                    
+
 	<!-- conversion service to convert strings to objects -->
 	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
 		<property name="converters">
@@ -269,6 +269,7 @@
 				<value>properties</value>
 				<value>relativeUrlGenerator</value>
 				<value>absoluteUrlGenerator</value>
+				<value>systemTagFactory</value>
 			</list>
 		</property>
 	</bean>
@@ -1050,4 +1051,5 @@
 	<import resource="bibsonomy-servlet-synchronization.xml" />
 	<import resource="bibsonomy-servlet-logging.xml" />
 	<import resource="bibsonomy-servlet-puma.xml" />
+	
 </beans>

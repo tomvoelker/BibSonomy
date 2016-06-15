@@ -53,6 +53,9 @@ public class CatinistScraper extends AbstractUrlScraper {
 	private final static String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 	private final static String HOST = "cat.inist.fr";
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
+	private static Pattern pattern = Pattern.compile("cpsidt=(.*\\d+)");
+	private static String PARAMETER = "aExport=export_endnote&cPanier=exporter&cpsidt=";
+	private static EndnoteToBibtexConverter converter = new EndnoteToBibtexConverter();
 	
 	@Override
 	protected boolean scrapeInternal(final ScrapingContext scrapingContext) throws ScrapingException {
@@ -62,12 +65,10 @@ public class CatinistScraper extends AbstractUrlScraper {
 		} else {
 			requestURL = scrapingContext.getUrl().toString();
 		}
-		Pattern p = Pattern.compile("cpsidt=(.*\\d+)");
-		Matcher m = p.matcher(scrapingContext.getUrl().toString());
+		Matcher m = pattern.matcher(scrapingContext.getUrl().toString());
 		if (m.find()) {
 			try {
-				final String endNote = WebUtils.getPostContentAsString(new URL(requestURL), "aExport=export_endnote&cPanier=exporter&cpsidt=" + m.group(1));
-				EndnoteToBibtexConverter converter = new EndnoteToBibtexConverter();
+				final String endNote = WebUtils.getPostContentAsString(new URL(requestURL), PARAMETER + m.group(1));
 				final String bibtexResult = cleanBibtex(converter.toBibtex(endNote));
 				if (bibtexResult != null) {
 					scrapingContext.setBibtexResult(bibtexResult);

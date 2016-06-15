@@ -156,7 +156,7 @@ public class WorldScientificScraper extends GenericBibTeXURLScraper implements C
 	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL)
 	 */
 	@Override
-	protected String getDownloadURL(URL url) throws ScrapingException {
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		String id = null;
 		String bibtex_url = "http://" + url.getHost() + "/action/downloadCitation?format=bibtex&doi=";
 

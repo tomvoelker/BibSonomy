@@ -10,20 +10,20 @@
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
 	xmlns:form="http://www.springframework.org/tags/form">
-	
+
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	<jsp:directive.attribute name="additionalItemClasses" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
-	
+
 	<jsp:directive.attribute name="title" fragment="true" required="true"/>
 	<jsp:directive.attribute name="desc" fragment="true" required="true"/>
 	<jsp:directive.attribute name="actions" fragment="true" required="true"/>
 	<jsp:directive.attribute name="documents" fragment="true" required="true"/>
-		
+
 	<c:set var="isRemotePost" value="${(not empty post.systemUrl) and (post.systemUrl ne properties['project.home'])}"/>
-	
+
    <!--+ 
        | TODO: Several tests (not empty post.user.name) are here to test for community posts. 
        | They never have a userName. 
@@ -40,7 +40,7 @@
 			<div class="clearline">&#160;</div>
 			</div>
 		</h4>
-		
+
 		<div class="hidden-xs hidden-md pull-left thumbnail-container">
 			<jsp:invoke fragment="documents"/>
 			<!-- IN MY COLLECTION: only display the in-my-collection-icon when the user is logged in -->
@@ -56,7 +56,7 @@
 				</c:otherwise>
 			</c:choose>
 			<div class="fa ${extraCssClass}"><!--  --></div>
-			
+
 			<c:forEach var="group" items="${post.groups}">
 				<c:if test="${!empty group.name and group.name ne 'public'}">
 					<c:choose>
@@ -93,10 +93,10 @@
 				<jsp:invoke fragment="actions"/>
 			</div>
 			<div class="clearfix">&#160;</div>
-			
+
 			<!-- EDIT TAGS MODAL POPUP-->
 			<c:if test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name)}">
-			
+
 				<div id="tag-modal-${post.resource.intraHash}${post.user.name}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 					<div class="modal-dialog">
 						<c:url var="batchEditUrl" value="/batchEdit">
@@ -106,7 +106,7 @@
 							<c:param name="action" value="2" />
 							<c:param name="updateExistingPost" value="true"/>
 						</c:url>
-						
+
 						<form data-resource-hash="${post.resource.intraHash}${post.user.name}" class="form-horizontal edit-tags-form" method="post" action="${batchEditUrl}">
 							<div class="modal-content">
 								<div class="modal-header">
@@ -127,10 +127,10 @@
 											<input type="hidden" name="ckey" value="${command.context.ckey }"/>
 											<input type="hidden" name="oldTags['${post.resource.intraHash}']" value="${fn:escapeXml(fn:trim(tagString))}" />
 											<input type="hidden" name="posts['${post.resource.intraHash}']" value="true" checked="checked" /> 
-											<input class="edit-tagsinput form-control" name="newTags['${post.resource.intraHash}']" type="text" value="${fn:escapeXml(fn:trim(tagString))}"/>
+											<input class="edit-tagsinput form-control" name="newTags['${post.resource.intraHash}']" type="text" value="${fn:escapeXml(fn:trim(tagString))} ${systemTagElementStr}" />
 										</div>
 									</div>
-									
+
 								</div>
 								<div class="modal-footer">
 									<button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="close" /></button>
@@ -139,14 +139,14 @@
 							</div>
 							<!-- /.modal-content -->
 						</form>
-						
+
 					</div>
 					<!-- /.modal-dialog -->
 				</div>
 				<!-- /.modal -->
 			</c:if>
 			<!-- / EDIT TAGS MODAL POPUP-->
-			
+
 		</div>
 		<div class="clearline">&#160;</div>
 	</li>

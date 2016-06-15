@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -43,6 +43,7 @@ import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
  * @author Mohammed Abed
  */
 public class OstiScraper extends GenericBibTeXURLScraper {
+	
 	private static final String SITE_NAME = "U.S. Departement of energy - Office of Scientific and technical information";
 	private static final String SITE_URL = "http://osti.gov";
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
@@ -62,7 +63,7 @@ public class OstiScraper extends GenericBibTeXURLScraper {
 	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL)
 	 */
 	@Override
-	protected String getDownloadURL(URL url) throws ScrapingException, IOException {
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
 		final Matcher m = PATTERN_GETTING_DOWNLOAD_PATH.matcher(url.toString());
 		if (m.find()) {
 			return m.group(1) + "/cite/bibtex";

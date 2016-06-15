@@ -55,5 +55,12 @@ public class MyOwnSystemTag extends AbstractSystemTagImpl implements MarkUpSyste
 	public boolean isInstance(final String tagName) {
 		return NAME.equals(tagName.toLowerCase());
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.systemstags.AbstractSystemTagImpl#hasArguments()
+	 */
+	@Override
+	public boolean hasArguments() {
+		return false;
+	}
 }

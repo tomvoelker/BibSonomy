@@ -981,6 +981,7 @@ public class DBLogic implements LogicInterface {
 				// need to switch from class to string to ensure legibility of
 				// Tags.xml
 				param.setContentTypeByClass(resourceType);
+				param.setResourceType(resourceType);
 				return this.tagDBManager.getTags(param, session);
 			}
 
@@ -1495,10 +1496,8 @@ public class DBLogic implements LogicInterface {
 		// FIXME: handle group tas?
 
 		/*
-		 * update the visibility of the post that are "assigned" to
-		 * the group
-		 * XXX: a loop over all resource database managers that
-		 * allow groups
+		 * update the visibility of the post that are "assigned" to the group
+		 * XXX: a loop over all resource database managers that allow groups
 		 */
 		this.publicationDBManager.updatePostsInGroupFromLeavingUser(userName, groupId, session);
 		this.bookmarkDBManager.updatePostsInGroupFromLeavingUser(userName, groupId, session);

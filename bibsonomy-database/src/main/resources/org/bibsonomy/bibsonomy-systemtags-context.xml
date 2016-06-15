@@ -10,9 +10,9 @@
 
 	<!-- factory for creating system tags -->
 	<bean id="systemTagFactory" class="org.bibsonomy.database.systemstags.SystemTagFactory" factory-method="getInstance">
-		<property name="executableSystemTagMap" ref="executableSystemTagSet"/>
-		<property name="searchSystemTagMap" ref="searchSystemTagSet"/>
-		<property name="markUpSystemTagMap" ref="markUpSystemTagSet"/>
+		<property name="executableSystemTags" ref="executableSystemTagSet"/>
+		<property name="searchSystemTags" ref="searchSystemTagSet"/>
+		<property name="markUpSystemTags" ref="markUpSystemTagSet"/>
 	</bean>
 
 <!--+
