@@ -32,7 +32,7 @@ public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCall
 		public int compare(FavouriteLayout o1, FavouriteLayout o2) {
 			int diff = o1.getStyle().compareTo(o2.getStyle());
 			if (diff == 0){
-				diff = o1.getSource().compareTo(o2.getSource());
+				diff = o1.getSource().toString().compareTo(o2.getSource().toString());
 			}
 			return diff;
 		}
@@ -114,7 +114,7 @@ public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCall
 			favouriteLayout = new FavouriteLayout(source,style);
 			favouriteLayouts.add(favouriteLayout);
 		}
-		
+		Collections.sort(favouriteLayouts, new favlsComparator());
 		return favouriteLayouts;
 	}
 }
