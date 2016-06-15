@@ -66,7 +66,7 @@ public class ViewablePageController extends SingleResourceListControllerWithTags
 		final List<String> requTags = command.getRequestedTagsList();
 		
 		// set title
-		command.setPageTitle("viewable :: " + groupingName); // TODO: i18n
+		command.setPageTitle(groupingName);
 		
 		// handle the case when only tags are requested
 		// TODO: max 1000 tags
