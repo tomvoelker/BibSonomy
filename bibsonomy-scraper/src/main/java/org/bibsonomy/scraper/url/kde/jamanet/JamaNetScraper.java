@@ -37,41 +37,43 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
 /**
- * @author Mohammed abed
+ * @author Mohammed Abed
  */
-public class JamaNetScraper extends AbstractUrlScraper {
+public class JamaNetScraper extends GenericBibTeXURLScraper {
 	
 	private static final String SITE_NAME = "The Journal of American Medical Association";
-	private static final String SITE_URL = "http://jama.jamanetwork.com/";
+	private static final String HOST = "jama.jamanetwork.com";
+	private static final String SITE_URL = "http://" + HOST + "/";
 	private static final String INFO = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME) + ".";
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = new LinkedList<Pair<Pattern, Pattern>>();
-	private static final String HOST = "jama.jamanetwork.com";
-	private static final String DOWNLOAD_URL = "http://jama.jamanetwork.com/downloadCitation.aspx?format=bibtex&articleid=";
+	private static final String DOWNLOAD_URL = SITE_URL + "downloadCitation.aspx?format=bibtex&articleid=";
 	private static final Pattern ID_PATERN_FROM_URL = Pattern.compile(".+?articleid=(.+)$");
 	static {
 		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL, java.lang.String)
+	 */
 	@Override
-	protected boolean scrapeInternal(ScrapingContext cs) throws ScrapingException {
-		
-		final Matcher m = ID_PATERN_FROM_URL.matcher(cs.getUrl().toString());
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
+		final Matcher m = ID_PATERN_FROM_URL.matcher(url.toString());
 		if (m.find()) {
 			final String id = m.group(1);
-			String bibtexResult = null;
-			try {
-				bibtexResult = WebUtils.getContentAsString(new URL(DOWNLOAD_URL + id));
-				bibtexResult = bibtexResult.replace(" + ", "");
-				cs.setBibtexResult(bibtexResult);
-				return true;
-			} catch (IOException e) {
-				throw new ScrapingException(e);
-			}
+			return DOWNLOAD_URL + id;
 		}
-		return false;
+		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#postProcessScrapingResult(org.bibsonomy.scraper.ScrapingContext, java.lang.String)
+	 */
+	@Override
+	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
+		return bibtex.replace(" + ", "");
 	}
 	
 	@Override
