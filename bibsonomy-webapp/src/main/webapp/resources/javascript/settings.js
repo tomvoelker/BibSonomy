@@ -117,10 +117,10 @@ $(function() {
 		clearFavouriteLayoutsList();
 		var infoBox = $("#infoAlertBox");
 		infoBox.html("Style '<strong>" + datum.displayName + "</strong>' has been added to the list of displayed styles or was already present.");
-		infoBox.show(1000);
+		infoBox.show(200);
 		setTimeout(function(){
 			infoBox.hide(1000);
-	    }, 10000);
+	    }, 5000);
 	});
 
 	//catching presses of "enter", else the form would be submitted by each "accidental" press
