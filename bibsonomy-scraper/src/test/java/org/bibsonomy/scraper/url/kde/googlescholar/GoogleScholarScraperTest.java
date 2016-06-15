@@ -37,14 +37,6 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class GoogleScholarScraperTest {
-
-	/**
-	 * starts URL test with id url_138
-	 */
-	@Test
-	public void urlTestRun(){
-		UnitTestRunner.runSingleTest("url_138");
-	}
 	
 	/**
 	 * starts URL test with id url_138

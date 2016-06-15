@@ -87,7 +87,7 @@ public class ScienceDirectScraper extends GenericBibTeXURLScraper {
 
 
 	@Override
-	public String getDownloadURL(URL url) throws ScrapingException {
+	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		String download_link = "";
 		try{
 			Matcher m = PATTERN_FORM.matcher(WebUtils.getContentAsString(url));

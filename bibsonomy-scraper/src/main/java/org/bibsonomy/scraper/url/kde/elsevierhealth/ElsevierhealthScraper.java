@@ -68,11 +68,9 @@ public class ElsevierhealthScraper extends AbstractUrlScraper {
 	
 	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
 
-	
     static {
     	patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + HOST), Pattern.compile(EXPORT_PAGE + WC)));
     }
-    
 
     @Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
