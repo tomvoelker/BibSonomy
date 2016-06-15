@@ -125,7 +125,10 @@ $(function() {
 	
 	//getting the "Delete" batch to work
 	$('.delete-Style').click(function(){
-		$(this).parent().remove();
+		$(this).parent().hide(1000, function(){
+			$(this).remove();
+        });
+//		$(this).parent().remove();
 	});
 		
 	function clearFavouriteLayoutsList() { //removing duplicates
