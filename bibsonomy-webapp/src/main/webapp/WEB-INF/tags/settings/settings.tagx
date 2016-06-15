@@ -189,7 +189,7 @@
 						<div class="panel panel-info">
 							<div class="panel-heading">
 								<h4 class="panel-title">
-									<a data-toggle="collapse" href="#collapse1">show styles</a>
+									<a data-toggle="collapse" href="#collapse1">show/hide styles</a>
 								</h4>
 							</div>
 							<div id="collapse1" class="panel-collapse collapse panel-body">

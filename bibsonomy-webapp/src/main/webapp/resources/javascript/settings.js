@@ -113,14 +113,12 @@ $(function() {
 	//ID has to be "source"/"id" for the StringToFavouriteLayoutConverter to read
 	$('#searchCitationAutocomplete').on('typeahead:select', function (e, datum) {
 		var toBeAppended = '<li class="list-group-item favouriteLayoutsListItem" sourceAndStyle="' + datum.source.toUpperCase() + '/' + datum.name.toUpperCase() + '"><input type="hidden" name="user.settings.favouriteLayouts"  id="'+ datum.source.toUpperCase() + '/' + datum.name.toUpperCase() + '" value="'+datum.source.toUpperCase()+'/' + datum.name.toUpperCase() + '"/><span class="btn btn-default badge label-danger delete-Style">Delete</span>' + datum.displayName + '</li>';
-		item = $('#favouriteLayoutsList').append(toBeAppended);
+		$('#favouriteLayoutsList').append(toBeAppended);
 		clearFavouriteLayoutsList();
 		var infoBox = $("#infoAlertBox");
+		infoBox.hide(100);
 		infoBox.html("Style '<strong>" + datum.displayName + "</strong>' has been added to the list of displayed styles or was already present.");
 		infoBox.show(200);
-		setTimeout(function(){
-			infoBox.hide(1000);
-	    }, 5000);
 	});
 
 	//catching presses of "enter", else the form would be submitted by each "accidental" press
@@ -131,7 +129,7 @@ $(function() {
 	
 	//getting the "Delete" batch to work
 	$('.delete-Style').click(function(){
-		$(this).parent().slideUp(1000, function(){
+		$(this).parent().slideUp(200, function(){
 			$(this).remove();
         });
 		
