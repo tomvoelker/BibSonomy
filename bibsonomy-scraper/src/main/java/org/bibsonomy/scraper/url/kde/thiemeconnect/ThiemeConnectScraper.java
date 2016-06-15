@@ -51,10 +51,8 @@ public class ThiemeConnectScraper extends GenericRISURLScraper {
 	
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
-		
-		String requestedURL = url.toString().replace("abstract", "ris");
-		requestedURL = requestedURL.concat("/BIB");
-		return requestedURL;
+		final String requestedURL = url.toString().replace("abstract", "ris");
+		return requestedURL.concat("/BIB");
 	}
 
 	@Override

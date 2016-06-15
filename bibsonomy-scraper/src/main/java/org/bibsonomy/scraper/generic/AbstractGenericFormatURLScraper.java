@@ -48,6 +48,13 @@ import org.bibsonomy.util.WebUtils;
  */
 public abstract class AbstractGenericFormatURLScraper extends AbstractUrlScraper {
 	
+	/**
+	 * @param url
+	 * @param cookies
+	 * @return the download url
+	 * @throws ScrapingException
+	 * @throws IOException
+	 */
 	protected abstract String getDownloadURL(final URL url, String cookies) throws ScrapingException, IOException;
 	
 	@Override

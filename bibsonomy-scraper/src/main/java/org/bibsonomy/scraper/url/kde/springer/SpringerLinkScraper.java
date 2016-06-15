@@ -44,12 +44,11 @@ import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
  * @author rja
  */
 public class SpringerLinkScraper extends GenericBibTeXURLScraper {
-	
 	private static final String SITE_NAME = "SpringerLink";
 	private static final String SITE_URL = "http://www.springerlink.com/";
 	private static final String INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
 	private static final Pattern ID_PATTERN = Pattern.compile("(article|chapter)/(.+?)(/|$)");
-		
+	
 	private static final String DOWNLOAD_URL = "http://citation-needed.services.springer.com/v2/references/";
 	private static final String DOWNLOAD_TYPE = "?format=bibtex&flavour=citation";
 	private static final String SPRINGER_CITATION_HOST = "link.springer.com";
@@ -61,14 +60,9 @@ public class SpringerLinkScraper extends GenericBibTeXURLScraper {
 		
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
-	
 		final Matcher m = ID_PATTERN.matcher(url.getPath());
-		String id = null;
 		if (m.find()) {
-			id = m.group(2);
-		}
-		
-		if (id != null) {
+			final String id = m.group(2);
 			return DOWNLOAD_URL + id + DOWNLOAD_TYPE;
 		}
 		return null;
