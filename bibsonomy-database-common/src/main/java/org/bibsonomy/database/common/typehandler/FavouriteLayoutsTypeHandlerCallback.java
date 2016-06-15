@@ -26,12 +26,15 @@ public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCall
 	/**
 	 * implements a simple comparator which compares the string representation of two favLs
 	 * the Strings are "source"/"style" and should therefore be unique
-	 * FIXME: currently just uses the style not the source
 	 */
 	private static final class favlsComparator implements Comparator<FavouriteLayout> {
 		@Override
 		public int compare(FavouriteLayout o1, FavouriteLayout o2) {
-			return o1.getStyle().compareTo(o2.getStyle());
+			int diff = o1.getStyle().compareTo(o2.getStyle());
+			if (diff == 0){
+				diff = o1.getSource().compareTo(o2.getSource());
+			}
+			return diff;
 		}
 	}
 	/*
