@@ -76,7 +76,7 @@ public class OpenUniversityScraper extends GenericBibTeXURLScraper {
 	}
 
 	@Override
-	public String getDownloadURL(URL url) throws ScrapingException {
+	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		Matcher m = ID_PATTERN.matcher(url.toExternalForm());
 		if (!m.find()) return null;
 		return DOWNLOAD_LINK_PREFIX + m.group(1) + DOWNLOAD_LINK_SUFFIX;

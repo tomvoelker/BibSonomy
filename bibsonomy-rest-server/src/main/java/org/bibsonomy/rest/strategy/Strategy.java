@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.rest.strategy;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Writer;
@@ -143,16 +145,16 @@ public abstract class Strategy {
 	 * @return The GroupingEntity; it defaults to ALL.
 	 */
 	protected GroupingEntity chooseGroupingEntity() {
-		if (this.context.getStringAttribute("user", null) != null) {
+		if (present(this.context.getStringAttribute("user", null))) {
 			return GroupingEntity.USER;
 		}
-		if (this.context.getStringAttribute("group", null) != null) {
+		if (present(this.context.getStringAttribute("group", null))) {
 			return GroupingEntity.GROUP;
 		}
-		if (this.context.getStringAttribute("viewable", null) != null) {
+		if (present(this.context.getStringAttribute("viewable", null))) {
 			return GroupingEntity.VIEWABLE;
 		}
-		if (this.context.getStringAttribute("friend", null) != null) {
+		if (present(this.context.getStringAttribute("friend", null))) {
 			return GroupingEntity.FRIEND;
 		}
 		return GroupingEntity.ALL;

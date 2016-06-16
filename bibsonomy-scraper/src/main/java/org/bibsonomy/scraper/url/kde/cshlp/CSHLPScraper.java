@@ -76,7 +76,7 @@ public class CSHLPScraper extends GenericBibTeXURLScraper {
 	}
 	
 	@Override
-	protected String getDownloadURL(URL url) throws ScrapingException {
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		// FIXME: remove if else chain :(
 		final Matcher m = PATTERN_FROM_URL.matcher(url.getPath());
 		if (m.find()) {

@@ -58,7 +58,7 @@ public class JStorScraper extends GenericBibTeXURLScraper {
 	}
 	
 	@Override
-	protected String getDownloadURL(URL url) throws ScrapingException, IOException {
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
 		final String doi = exportDOIFromSourceCode(url.toString());
 		if (doi != null) {
 			return DOWNLOAD_URL + doi;

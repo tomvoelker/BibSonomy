@@ -114,7 +114,7 @@ public class PlosScraper extends GenericBibTeXURLScraper implements ReferencesSc
 	}
 
 	@Override
-	public String getDownloadURL(URL url) throws ScrapingException {
+	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		
 		String decodedUrl = UrlUtils.safeURIDecode(url.toString());
 		Matcher _m = PLOS_INFO_PATTERN.matcher(decodedUrl);

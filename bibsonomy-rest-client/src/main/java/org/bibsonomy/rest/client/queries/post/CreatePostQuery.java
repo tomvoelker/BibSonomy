@@ -30,6 +30,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.StringWriter;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -47,6 +49,8 @@ import org.bibsonomy.util.StringUtils;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  */
 public final class CreatePostQuery extends AbstractQuery<String> {
+	private static final Log log = LogFactory.getLog(CreatePostQuery.class);
+	
 	private final Post<? extends Resource> post;
 	private final String username;
 
@@ -104,6 +108,8 @@ public final class CreatePostQuery extends AbstractQuery<String> {
 		if (this.isSuccess()) {
 			return this.getRenderer().parseResourceHash(this.downloadedDocument);
 		}
-		return this.getError();
+		
+		log.warn("failed to create post (" + this.getError() + ")");
+		return null;
 	}
 }

@@ -56,7 +56,7 @@ public class BiologistsScraper extends GenericBibTeXURLScraper {
 	}
 
 	@Override
-	protected String getDownloadURL(URL url) throws ScrapingException, IOException {
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
 		final Matcher m = DOWNLOAD_LINK_PATTERN.matcher(WebUtils.getContentAsString(url));
 		if (m.find()) {
 			final String bibTexId = m.group(1);

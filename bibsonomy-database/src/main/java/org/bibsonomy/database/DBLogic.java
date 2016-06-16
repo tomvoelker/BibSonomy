@@ -981,6 +981,7 @@ public class DBLogic implements LogicInterface {
 				// need to switch from class to string to ensure legibility of
 				// Tags.xml
 				param.setContentTypeByClass(resourceType);
+				param.setResourceType(resourceType);
 				return this.tagDBManager.getTags(param, session);
 			}
 

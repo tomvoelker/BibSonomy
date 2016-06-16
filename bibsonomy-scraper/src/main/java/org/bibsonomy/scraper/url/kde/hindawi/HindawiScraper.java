@@ -123,7 +123,7 @@ public class HindawiScraper extends GenericEndnoteURLScraper implements Referenc
 	 * @see org.bibsonomy.scraper.generic.SimpleGenericURLScraper#getBibTeXURL(java.net.URL)
 	 */
 	@Override
-	public String getDownloadURL(URL url) throws ScrapingException {
+	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		final String id = extractId(url.toString());
 		if (!present(id)) {
 			throw new ScrapingFailureException("can't extract publication id for " + url);
