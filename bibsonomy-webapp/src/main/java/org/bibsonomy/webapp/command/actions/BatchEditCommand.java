@@ -31,6 +31,7 @@ import java.util.Map;
 
 import org.bibsonomy.webapp.command.GroupingCommand;
 import org.bibsonomy.webapp.command.TagResourceViewCommand;
+import org.bibsonomy.webapp.util.PostChangeInfo;
 
 
 /**
@@ -40,68 +41,60 @@ import org.bibsonomy.webapp.command.TagResourceViewCommand;
 public class BatchEditCommand extends TagResourceViewCommand implements GroupingCommand {
 
 	/**
-	 * should publications be edited before they're stored? 
+	 * should publications be edited before they're stored?
 	 */
 	private boolean editBeforeImport = false;
 
 	/**
-	 * this flag determines, whether an existing post is being edited or a new post 
+	 * this flag determines, whether an existing post is being edited or a new post
 	 * should be added and edited**/
 	private boolean updateExistingPost;
 	/**
 	 * when batchedit is used after importing posts, this flag
-	 * stores if the user wants to overwrite existing posts 
+	 * stores if the user wants to overwrite existing posts
 	 */
 	private boolean overwrite;
 	/**
 	 * these tags will be added to all resources
 	 */
 	private String tags;
-	/** 
-	 * old tags of the resources; resource hashes as keys of the map and old tags as values
-	 */
-	private Map<String, String> oldTags;
-	/** 
-	 * newTags of the resources; resource hashes as keys of the map [hash = new tags], ...
-	 */
-	private Map<String, String> newTags;
 	/**
 	 * hashes of the resources which posts were selected (hash as key and "on" as value (checkbox))
 	 */
-	private Map<String, Boolean> posts;
+	private Map<String, PostChangeInfo> posts;
 	/**
 	 * actions to apply to post
 	 */
 	private List<Integer> action;
-	
+
 	private String abstractGrouping;
 
-    private List<String> groups;
-    
-    /*
-     * true means: we are in the batch edit page
-     * false means: we are in the snippet posting workflow
-     */
-    private boolean directEdit;
-    
-        
-    /**
-     * @return the groups
-     */
-    @Override
-    public List<String> getGroups() {
-        return this.groups;
-    }
+	private List<String> groups;
 
-    /**
-     * @param groups
-     *            the groups to set
-     */
-    @Override
-    public void setGroups(final List<String> groups) {
-        this.groups = groups;
-    }
-     	
+	/*
+	 * true means: we are in the batch edit page
+	 * false means: we are in the snippet posting workflow
+	 */
+	private boolean directEdit;
+
+
+	/**
+	 * @return the groups
+	 */
+	@Override
+	public List<String> getGroups() {
+		return this.groups;
+	}
+
+	/**
+	 * @param groups
+	 *            the groups to set
+	 */
+	@Override
+	public void setGroups(final List<String> groups) {
+		this.groups = groups;
+	}
+
 	/**
 	 * @return the tags
 	 */
@@ -117,44 +110,16 @@ public class BatchEditCommand extends TagResourceViewCommand implements Grouping
 	}
 
 	/**
-	 * @return the oldTags
-	 */
-	public Map<String, String> getOldTags() {
-		return this.oldTags;
-	}
-
-	/**
-	 * @param oldTags the oldTags to set
-	 */
-	public void setOldTags(final Map<String, String> oldTags) {
-		this.oldTags = oldTags;
-	}
-	
-	/**
-	 * @return the newTags
-	 */
-	public Map<String, String> getNewTags() {
-		return this.newTags;
-	}
-
-	/**
-	 * @param newTags the newTags to set
-	 */
-	public void setNewTags(final Map<String, String> newTags) {
-		this.newTags = newTags;
-	}
-
-	/**
 	 * @return the posts
 	 */
-	public Map<String, Boolean> getPosts() {
+	public Map<String, PostChangeInfo> getPosts() {
 		return this.posts;
 	}
 
 	/**
 	 * @param posts the posts to set
 	 */
-	public void setPosts(final Map<String, Boolean> posts) {
+	public void setPosts(final Map<String, PostChangeInfo> posts) {
 		this.posts = posts;
 	}
 
@@ -168,7 +133,7 @@ public class BatchEditCommand extends TagResourceViewCommand implements Grouping
 	/**
 	 * @param action the action to set
 	 */
-	public void setAction(List<Integer> action) {
+	public void setAction(final List<Integer> action) {
 		this.action = action;
 	}
 
@@ -210,7 +175,7 @@ public class BatchEditCommand extends TagResourceViewCommand implements Grouping
 	/**
 	 * @param directEdit the directEdit to set
 	 */
-	public void setDirectEdit(boolean directEdit) {
+	public void setDirectEdit(final boolean directEdit) {
 		this.directEdit = directEdit;
 	}
 
@@ -224,7 +189,7 @@ public class BatchEditCommand extends TagResourceViewCommand implements Grouping
 	/**
 	 * @param updateExistingPost the updateExistingPost to set
 	 */
-	public void setUpdateExistingPost(boolean updateExistingPost) {
+	public void setUpdateExistingPost(final boolean updateExistingPost) {
 		this.updateExistingPost = updateExistingPost;
 	}
 
@@ -240,8 +205,9 @@ public class BatchEditCommand extends TagResourceViewCommand implements Grouping
 	 * @see org.bibsonomy.webapp.command.GroupingCommand#setAbstractGrouping(java.lang.String)
 	 */
 	@Override
-	public void setAbstractGrouping(String abstractGrouping) {
+	public void setAbstractGrouping(final String abstractGrouping) {
 		this.abstractGrouping = abstractGrouping;
-		
+
 	}
+
 }

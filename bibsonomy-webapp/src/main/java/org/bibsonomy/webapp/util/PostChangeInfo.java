@@ -1,0 +1,93 @@
+package org.bibsonomy.webapp.util;
+
+/**
+ * Contains information about changed posts.
+ *
+ * @author niebler
+ */
+public class PostChangeInfo {
+
+	private String intraHash;
+	private String postOwner;
+
+	private boolean checked;
+
+	private String oldTags;
+	private String newTags;
+
+	/**
+	 * @return the intraHash
+	 */
+	public String getIntraHash() {
+		return this.intraHash;
+	}
+
+	/**
+	 * @param intraHash
+	 *            the intraHash to set
+	 */
+	public void setIntraHash(final String intraHash) {
+		this.intraHash = intraHash;
+	}
+
+	/**
+	 * @return the postOwner
+	 */
+	public String getPostOwner() {
+		return this.postOwner;
+	}
+
+	/**
+	 * @param postOwner
+	 *            the postOwner to set
+	 */
+	public void setPostOwner(final String postOwner) {
+		this.postOwner = postOwner;
+	}
+
+	/**
+	 * @return the marked
+	 */
+	public boolean isChecked() {
+		return this.checked;
+	}
+
+	/**
+	 * @param marked
+	 *            the marked to set
+	 */
+	public void setChecked(final boolean checked) {
+		this.checked = checked;
+	}
+
+	/**
+	 * @return the oldTags
+	 */
+	public String getOldTags() {
+		return this.oldTags;
+	}
+
+	/**
+	 * @param oldTags
+	 *            the oldTags to set
+	 */
+	public void setOldTags(final String oldTags) {
+		this.oldTags = oldTags;
+	}
+
+	/**
+	 * @return the newTags
+	 */
+	public String getNewTags() {
+		return this.newTags;
+	}
+
+	/**
+	 * @param newTags
+	 *            the newTags to set
+	 */
+	public void setNewTags(final String newTags) {
+		this.newTags = newTags;
+	}
+
+}

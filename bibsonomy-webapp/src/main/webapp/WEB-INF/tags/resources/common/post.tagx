@@ -23,6 +23,17 @@
 	<jsp:directive.attribute name="documents" fragment="true" required="true"/>
 		
 	<c:set var="isRemotePost" value="${(not empty post.systemUrl) and (post.systemUrl ne properties['project.home'])}"/>
+	<c:set var="editableByUser" value="${loginUserName eq post.user.name}" />
+	<c:set var="loginUser" value="${command.context.loginUser}" />
+	<c:forEach items="${loginUser.groups}" var="group">
+		<c:if test="${group.name eq post.user.name }">
+			<c:set var="ms" value="${group.getGroupMembershipForUser(loginUser.name) }" />
+			<c:if test="${not empty ms and (ms.groupRole eq 'MODERATOR' or ms.groupRole eq 'ADMINISTRATOR') }">
+				<c:set var="editableByUser" value="${true}" />
+			</c:if>
+		</c:if>
+	</c:forEach>
+	
 	
    <!--+ 
        | TODO: Several tests (not empty post.user.name) are here to test for community posts. 
@@ -80,7 +91,7 @@
 			<div class="ptags">
 				<!-- Edit tags link -->
 				<!-- TODO: Enable tag edits for group admins/mods -->
-				<c:if test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name) and not isRemotePost }">
+				<c:if test="${command.context.userLoggedIn and not empty post.user.name and editableByUser and not isRemotePost }">
 					<fmt:message key="navi.editTags" var="editTags" />
 					<bs:linkButton icon="pencil" dataToggle="modal" dataTarget="#tag-modal-${post.resource.intraHash}${post.user.name}" title="${editTags}" href="#" size="xsmall" additionalClass="tags-edit-link"></bs:linkButton>
 					&amp;nbsp;
@@ -97,7 +108,7 @@
 			
 			<!-- EDIT TAGS MODAL POPUP-->
 			<!-- TODO: Enable tag edits for group admins/mods -->
-			<c:if test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name)}">
+			<c:if test="${command.context.userLoggedIn and not empty post.user.name and editableByUser}">
 				
 				<fmt:message key="tag.addTag" var="addTag" />
 			
@@ -130,7 +141,7 @@
 											</c:forEach>
 											<input type="hidden" name="ckey" value="${command.context.ckey }"/>
 											<input type="hidden" name="oldTags['${post.resource.intraHash}']" value="${fn:escapeXml(fn:trim(tagString))}" />
-											<input type="hidden" name="posts['${post.resource.intraHash}']" value="true" checked="checked" /> 
+											<input type="hidden" name="posts['${post.resource.intraHash}_${post.user.name}']" value="true" checked="checked" /> 
 											<input class="edit-tagsinput form-control" name="newTags['${post.resource.intraHash}']" type="text" value="${fn:escapeXml(fn:trim(tagString))} ${systemTagElementStr}" />
 										</div>
 									</div>

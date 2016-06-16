@@ -1655,6 +1655,7 @@ public class DBLogic implements LogicInterface {
 			for (final Post<?> post : posts) {
 				try {
 					hashes.add(this.updatePost(post, operation, session));
+					// TODO: Log this operation.
 				} catch (final DatabaseException dbex) {
 					collectedException.addErrors(dbex);
 				} catch (final Exception ex) {

@@ -70,12 +70,6 @@
         </batch:content> 
       </jsp:attribute>
       
-      <jsp:attribute name="pageOptions">
-      	<ul>
-      		<li><a href="/editTags">WURST<fmt:message key="edittags.main.Header"/>...</a></li>
-      	</ul>
-      </jsp:attribute>
-
 	</layout:paneLayout>
 
 </jsp:root>
