@@ -130,7 +130,6 @@ import org.bibsonomy.scraper.url.kde.prola.ProlaScraper;
 import org.bibsonomy.scraper.url.kde.psycontent.PsyContentScraper;
 import org.bibsonomy.scraper.url.kde.pubmed.PubMedScraper;
 import org.bibsonomy.scraper.url.kde.pubmedcentral.PubMedCentralScraper;
-import org.bibsonomy.scraper.url.kde.repec.RepecScraper;
 import org.bibsonomy.scraper.url.kde.rsc.RSCScraper;
 import org.bibsonomy.scraper.url.kde.rsoc.RSOCScraper;
 import org.bibsonomy.scraper.url.kde.sage.SageJournalScraper;
@@ -307,7 +306,6 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new BioOneScraper());
 		addScraper(new UChicagoScraper());
 		addScraper(new CatinistScraper());
-		addScraper(new RepecScraper());
 		addScraper(new AappublicationsScraper());
 		addScraper(new ThiemeConnectScraper());
 		addScraper(new JamaNetScraper());
