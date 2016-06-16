@@ -104,7 +104,7 @@ public class AmsScraper extends GenericBibTeXURLScraper implements CitedbyScrape
 	}
 	
 	@Override
-	public String getDownloadURL(URL url) throws ScrapingException {
+	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		return SITE_URL  + "/action/downloadCitation?doi=" + doiExtracter(url) + "&include=cit" + FORMAT_BIBTEX;
 	}
 

@@ -306,6 +306,9 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new BioOneScraper());
 		addScraper(new UChicagoScraper());
 		addScraper(new CatinistScraper());
+
+		// FIXME: missing scraper
+		// addScraper(new RepecScraper());
 		addScraper(new AappublicationsScraper());
 		addScraper(new ThiemeConnectScraper());
 		addScraper(new JamaNetScraper());

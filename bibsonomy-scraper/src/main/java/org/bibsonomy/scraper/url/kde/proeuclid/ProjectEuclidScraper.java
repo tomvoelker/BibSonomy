@@ -43,7 +43,7 @@ import org.bibsonomy.util.WebUtils;
 /**
  * @author Mohammed Abed
  */
-public class ProjectEuclidScraper extends AbstractUrlScraper{
+public class ProjectEuclidScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "Astronomy and Astrophysics";
 	private static final String SITE_URL = "http://projecteuclid.org";
@@ -55,13 +55,12 @@ public class ProjectEuclidScraper extends AbstractUrlScraper{
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = new LinkedList<Pair<Pattern, Pattern>>();
 	static {
 		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ HOST), AbstractUrlScraper.EMPTY_PATTERN));
-	}	
+	}
 	
 	@Override
 	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
-		
-		Matcher m = pattern.matcher(scrapingContext.getUrl().toString());
-		if(m.find()) {
+		final Matcher m = pattern.matcher(scrapingContext.getUrl().toString());
+		if (m.find()) {
 			try {
 				final String postContent = URLEncoder.encode(m.group(1),"UTF-8");
 				final String bibtexResult = WebUtils.getPostContentAsString(new URL(DOWNLOAD_URL), "&format=bibtex&delivery=browser&address=&h=" + postContent);

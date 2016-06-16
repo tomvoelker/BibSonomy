@@ -53,7 +53,7 @@ public class ScientificScraper extends GenericBibTeXURLScraper {
 		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SCIENTIFC_HOSTS),  AbstractUrlScraper.EMPTY_PATTERN));
 	}
 	@Override
-	protected String getDownloadURL(URL url) throws ScrapingException, IOException {
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
 		return url.toString()+".bib";
 	}
 	

@@ -61,22 +61,21 @@ public class AappublicationsScraper extends AbstractUrlScraper{
 	
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		
 		try {
 			final String cookie = WebUtils.getCookies(sc.getUrl());
 			final String pageContent = WebUtils.getContentAsString(sc.getUrl(), cookie);
-			Matcher m = pattern.matcher(pageContent);
-			if(m.find()) {
+			final Matcher m = pattern.matcher(pageContent);
+			if (m.find()) {
 				String bibtexResult = WebUtils.getContentAsString(new URL(HTTP + HOST + m.group(1).toString()));
 				final Matcher m2 = pattern2.matcher(bibtexResult);
-				if(m2.find()) {
+				if (m2.find()) {
 					final String Replacement = m2.group(1).replace(" ", "");
 					bibtexResult = bibtexResult.replaceAll(regex, "@" + Replacement.concat(","));
 				}
 				sc.setBibtexResult(bibtexResult);
 				return true;
-			} else
-				return false;
+			}
+			return false;
 		} catch (IOException e) {
 			throw new ScrapingException(e);
 		}

@@ -104,7 +104,7 @@ public class JStageScraper extends GenericBibTeXURLScraper implements References
 	 * @see org.bibsonomy.scraper.generic.SimpleGenericURLScraper#getBibTeXURL(java.net.URL)
 	 */
 	@Override
-	public String getDownloadURL(URL url) throws ScrapingException {
+	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		final String[] bibPath = url.getPath().split("/");
 		try {
 			return "https://" + url.getHost() + "/AF06S010ShoshJkuDld?sryCd=" + bibPath[2] + "&noVol=" + bibPath[3] + "&noIssue=" + bibPath[4] + "&kijiCd=" + bibPath[5] + "&kijiLangKrke=en&kijiToolIdHkwtsh=AT0073";

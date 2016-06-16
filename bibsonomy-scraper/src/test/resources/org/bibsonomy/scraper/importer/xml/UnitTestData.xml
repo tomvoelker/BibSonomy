@@ -2144,12 +2144,13 @@
 		<BibFile>CatInistScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.catinist.CatinistScraper</Scraper>
 	</URLTest>
+	<!-- TODO: where is the scraper?
 	<URLTest id="url_355">
 		<TestDescription>URL scraping test for the repec website</TestDescription>
 		<URL>https://ideas.repec.org/p/pra/mprapa/40613.html</URL>
 		<BibFile>RepecScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.repec.RepecScraper</Scraper>
-	</URLTest>
+	</URLTest>-->
 	<URLTest id="url_356">
 		<TestDescription>URL scraping test for the aappublications website</TestDescription>
 		<URL>http://pediatrics.aappublications.org/content/136/5/e1186</URL>
@@ -2216,12 +2217,13 @@
 		<BibFile>ElsevierScraper1UnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.elsevier.ElsevierScraper</Scraper>
 	</URLTest>
+	<!-- TODO: reenable 
 	<URLTest id="url_367">
 		<TestDescription>URL scraping test for the repec website</TestDescription>
 		<URL>https://ideas.repec.org/p/pra/mprapa/71036.html</URL>
 		<BibFile>RepecScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.repec.RepecScraper</Scraper>
-	</URLTest>
+	</URLTest>-->
 	<URLTest id="url_368">
 		<TestDescription>URL scraping test for the cyberleninka website (russian website)</TestDescription>
 		<URL>http://cyberleninka.ru/article/n/analiz-dannyh-slozhnyh-obektov-s-pomoschyu-modifitsirovannogo-algoritma-klasterizatsii</URL>

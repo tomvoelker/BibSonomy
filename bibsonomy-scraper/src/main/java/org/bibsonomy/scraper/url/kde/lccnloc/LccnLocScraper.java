@@ -37,7 +37,7 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.converter.XmlToBibtexConverter;
+import org.bibsonomy.scraper.converter.XMLDublinCoreToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.util.WebUtils;
 
@@ -52,7 +52,7 @@ public class LccnLocScraper extends AbstractUrlScraper {
 	private static final String LCCN_HOST = "lccn.loc.gov";
 	private static final String CATALOG_HOST = "catalog.loc.gov";
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = new LinkedList<Pair<Pattern, Pattern>>();
-	private static final XmlToBibtexConverter converter = new XmlToBibtexConverter();
+	private static final XMLDublinCoreToBibtexConverter converter = new XMLDublinCoreToBibtexConverter();
 	private static final Pattern p = Pattern.compile("id=\"permalink\" href=\"(.*)\">");
 	static {
 		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + LCCN_HOST), AbstractUrlScraper.EMPTY_PATTERN));
