@@ -1695,10 +1695,9 @@ public class DBLogic implements LogicInterface {
 		PostUtils.setGroupIds(post, this.loginUser);
 
 		/*
-		 * XXX: this is a "hack" and will be replaced any time
-		 * If the operation is UPDATE_URLS then create/delete the url right here
-		 * and
-		 * return the intra hash.
+		 * XXX: this is a "hack" and will be replaced any time If the operation
+		 * is UPDATE_URLS then create/delete the url right here and return the
+		 * intra hash.
 		 */
 
 		if (PostUpdateOperation.UPDATE_URLS_ADD.equals(operation)) {
@@ -1721,11 +1720,13 @@ public class DBLogic implements LogicInterface {
 
 		/*
 		 * update post
+		 *
+		 * if we don't get an exception here, we assume the resource has been
+		 * successfully updated
 		 */
 		manager.updatePost(post, oldIntraHash, operation, session, this.loginUser);
+		manager.logUpdate(post, oldIntraHash, session, this.loginUser);
 
-		// if we don't get an exception here, we assume the resource has
-		// been successfully updated
 		return post.getResource().getIntraHash();
 	}
 

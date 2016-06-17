@@ -61,6 +61,7 @@ import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.common.enums.MetaDataPluginKey;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.Chain;
+import org.bibsonomy.database.params.PostChangeLogParam;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.params.metadata.PostParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
@@ -2109,4 +2110,30 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 */
 	protected abstract void onPostMassUpdate(String username, int groupId, DBSession session);
+
+	@Override
+	public boolean logUpdate(final Post<R> post, final String oldHash, final DBSession session, final User loginUser) {
+		final PostChangeLogParam param = new PostChangeLogParam();
+		param.setOldIntraHash(oldHash);
+		param.setNewIntraHash(post.getResource().getIntraHash());
+		param.setPostOwner(post.getUser().getName());
+		param.setPostEditor(loginUser.getName());
+		param.setDate(new Date());
+
+		this.insert("log" + this.resourceClassName + "PostUpdate", param, session);
+		return true;
+	}
+
+	@Override
+	public boolean logDelete(final String owner, final String oldHash, final DBSession session, final User loginUser) {
+		final PostChangeLogParam param = new PostChangeLogParam();
+		param.setOldIntraHash(oldHash);
+		param.setNewIntraHash("");
+		param.setPostOwner(owner);
+		param.setPostEditor(loginUser.getName());
+		param.setDate(new Date());
+
+		this.insert("log" + this.resourceClassName + "PostUpdate", param, session);
+		return true;
+	}
 }

@@ -223,4 +223,16 @@
 		SELECT person_change_id, person_id, academic_degree, user_name, orcid, #changeDate#, #changedBy#, 1 as deleted
 		FROM person WHERE person_id = #personId#
 	</insert>
+
+	<insert id="logBookmarkPostUpdate" parameterClass="postChangeLogParam">
+		INSERT INTO log_postchange VALUES (#postOwner#, #postEditor#, #oldIntraHash#, #newIntraHash#, 1, #date#)
+	</insert>
+	
+	<insert id="logBibTexPostUpdate" parameterClass="postChangeLogParam">
+		INSERT INTO log_postchange VALUES (#postOwner#, #postEditor#, #oldIntraHash#, #newIntraHash#, 2, #date#)
+	</insert>
+	
+	<insert id="logGoldStandardUpdate" parameterClass="postChangeLogParam">
+		INSERT INTO log_postchange VALUES (#postOwner#, #postEditor#, #oldIntraHash#, #newIntraHash#, 2, #date#)
+	</insert>
 </sqlMap>
