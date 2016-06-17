@@ -318,6 +318,13 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 				selTab = Integer.valueOf(GroupSettingsPageCommand.MEMBER_LIST_IDX);
 				break;
 			}
+			case REGENERATE_API_KEY: {
+				final User groupUser = this.logic.getUserDetails(groupToUpdate.getName());
+				this.logic.updateUser(groupUser, UserUpdateOperation.UPDATE_API);
+				log.debug("api key of groupuser" + groupUser.getName() + " has been changed successfully");
+				break;
+			}
+				
 			default:
 				this.errors.reject("error.invalid_parameter");
 				break;
