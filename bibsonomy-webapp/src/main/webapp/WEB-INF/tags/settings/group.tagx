@@ -79,7 +79,9 @@
 												</div>
 
 												<div class="col-xs-3">
-													<bs:linkButton additionalClass="btn-group-wrap-text" style="success" title="${accinviteAndShareTitle}" text="${accinviteAndShare}" block="${true}" href="/updateGroup?operation=add_member&amp;groupname=${mtl:encodePathSegment(group.name)}&amp;username=${mtl:encodePathSegment(command.user.name)}&amp;ckey=${ckey}&amp;userSharedDocuments=true" size="large" />
+													<c:if test="${group.sharedDocuments}">
+														<bs:linkButton additionalClass="btn-group-wrap-text" style="success" title="${accinviteAndShareTitle}" text="${accinviteAndShare}" block="${true}" href="/updateGroup?operation=add_member&amp;groupname=${mtl:encodePathSegment(group.name)}&amp;username=${mtl:encodePathSegment(command.user.name)}&amp;ckey=${ckey}&amp;userSharedDocuments=true" size="large" />
+													</c:if>	
 													<bs:linkButton style="success" title="${accinviteTitle}" text="${accinvite}" block="${true}" href="/updateGroup?operation=add_member&amp;groupname=${mtl:encodePathSegment(group.name)}&amp;username=${mtl:encodePathSegment(command.user.name)}&amp;ckey=${ckey}" size="small" />
 													<bs:linkButton additionalClass="btn-block" style="danger" title="${revuserTitle}" href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodePathSegment(group.name)}&amp;username=${mtl:encodePathSegment(command.user.name)}&amp;ckey=${ckey}" size="small" text="${revuser}"/>
 												</div>
