@@ -28,7 +28,7 @@
 				</c:if>
 				<div class="input-group">
 					<div class="input-group-addon">
-						<a href="#"  style="background-color: #eee;" class="dropdown-toggle" data-toggle="dropdown"><span class="search-scope"><fmt:message key="${pathMessageKey}"/></span>&amp;nbsp;<span class="caret"><!--  --></span></a>
+						<a href="#"  style="background-color: #eee;" class="dropdown-toggle" data-toggle="dropdown"><span class="search-scope"><fmt:message key="${pathMessageKey}"/></span><span class="caret"><!--  --></span></a>
 						<ul class="dropdown-menu" role="menu">
 							<li><a onclick="return switchNavi('tag', this);"><fmt:message key="navi.tag"/></a></li>
 							<li><a onclick="return switchNavi('user', this);"><fmt:message key="navi.user"/></a></li>
