@@ -274,7 +274,7 @@ public class RisToBibtexConverter implements BibtexConverter{
 			}
 		}
 		bibtexString.append("\n}\n");
-				
+						
 		return bibtexString.toString();
 	}
 

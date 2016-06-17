@@ -48,7 +48,7 @@ public class KargerScraper extends GenericRISURLScraper {
 	private static final String INFO = "Scraper for Journals from " + href(SITE_URL, SITE_NAME)+".";
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + "karger.com"), AbstractUrlScraper.EMPTY_PATTERN));
 	private static final String INITIAL_DOWNLOAD_URL = "http://www.karger.com/Article/CitationEndNote/";
-	private static final Pattern patternId = Pattern.compile("(.*)/Article/.*/(.*)");
+	private static final Pattern patternId = Pattern.compile("(.+?)/Article/.+/(.+)");
 
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {

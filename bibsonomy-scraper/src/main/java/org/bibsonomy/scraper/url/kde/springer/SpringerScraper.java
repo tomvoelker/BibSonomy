@@ -30,6 +30,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -43,44 +44,50 @@ import org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper;
 
 /**
  * Scraper for springer.com
+ * 
  * @author tst
  */
 public class SpringerScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "Springer";
 	private static final String SITE_URL = "http://www.springer.com/";
-	private static final String INFO = "Scraper for books from " + href(SITE_URL, SITE_NAME)+".";
-	
+	private static final String INFO = "Scraper for books from " + href(SITE_URL, SITE_NAME) + ".";
+
 	/**
 	 * Host
 	 */
 	private static final String HOST = "springer.com";
-	
-	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST + "$"), AbstractUrlScraper.EMPTY_PATTERN));
-	
+	private static final String SPRINGER_CITATION_HOST = "link.springer.com/book";
+
+	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern, Pattern>>();
+	static {
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SPRINGER_CITATION_HOST), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST + "$"), AbstractUrlScraper.EMPTY_PATTERN));
+	}
+
+	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+		sc.setScraper(this);
+
+		try {
+			final String url = sc.getUrl().toString();
+			final String isbn = url.substring(url.lastIndexOf("/") + 1);
+			final String bibtex = WorldCatScraper.getBibtexByISBN(isbn);
+
+			if (present(bibtex)) {
+				sc.setBibtexResult(bibtex);
+				return true;
+			} else
+				throw new ScrapingFailureException("getting bibtex failed");
+
+		} catch (IOException ex) {
+			throw new InternalFailureException(ex);
+		}
+	}
+
 	public String getInfo() {
 		return INFO;
 	}
 
-	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
-			sc.setScraper(this);
-			
-			try {
-				final String url = sc.getUrl().toString();
-				final String isbn = url.substring(url.lastIndexOf("/") + 1);
-				final String bibtex = WorldCatScraper.getBibtexByISBN(isbn);
-				
-				if(present(bibtex)){
-					sc.setBibtexResult(bibtex);
-					return true;
-				}else
-					throw new ScrapingFailureException("getting bibtex failed");
-
-			} catch (IOException ex) {
-				throw new InternalFailureException(ex);
-			}
-	}
-	
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
@@ -92,5 +99,4 @@ public class SpringerScraper extends AbstractUrlScraper {
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
-
 }

@@ -57,14 +57,6 @@ public class SpringerLinkScraperTest {
 	}
 
 	/**
-	 * starts URL test with id url_143
-	 */
-	@Test
-	public void url3TestRun() {
-		UnitTestRunner.runSingleTest("url_143");
-	}
-
-	/**
 	 * starts URL test with id url_183
 	 */
 	@Test
@@ -86,13 +78,5 @@ public class SpringerLinkScraperTest {
 	@Test
 	public void url6TestRun() {
 		UnitTestRunner.runSingleTest("url_238");
-	}
-
-	/**
-	 * starts URL test with id url_239
-	 */
-	@Test
-	public void url7TestRun() {
-		UnitTestRunner.runSingleTest("url_239");
 	}
 }
