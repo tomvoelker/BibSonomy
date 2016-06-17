@@ -140,9 +140,9 @@
 												<c:set var="tagString" value="${tagString} ${tag.name}" />
 											</c:forEach>
 											<input type="hidden" name="ckey" value="${command.context.ckey }"/>
-											<input type="hidden" name="oldTags['${post.resource.intraHash}']" value="${fn:escapeXml(fn:trim(tagString))}" />
-											<input type="hidden" name="posts['${post.resource.intraHash}_${post.user.name}']" value="true" checked="checked" /> 
-											<input class="edit-tagsinput form-control" name="newTags['${post.resource.intraHash}']" type="text" value="${fn:escapeXml(fn:trim(tagString))} ${systemTagElementStr}" />
+											<input type="hidden" name="posts['${post.resource.intraHash}_${post.user.name}'].oldTags" value="${fn:escapeXml(fn:trim(tagString))}" />
+											<input type="hidden" name="posts['${post.resource.intraHash}_${post.user.name}'].checked" value="true" checked="checked" /> 
+											<input class="edit-tagsinput form-control" name="posts['${post.resource.intraHash}_${post.user.name}'].newTags" type="text" value="${fn:escapeXml(fn:trim(tagString))} ${systemTagElementStr}" />
 										</div>
 									</div>
 									

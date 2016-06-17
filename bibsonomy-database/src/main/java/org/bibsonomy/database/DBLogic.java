@@ -1140,6 +1140,7 @@ public class DBLogic implements LogicInterface {
 				for (final CrudableContent<? extends Resource, ? extends GenericParam> man : this.allDatabaseManagers.values()) {
 					if (man.deletePost(lowerCaseUserName, resourceHash, session)) {
 						resourceFound = true;
+						man.logDelete(lowerCaseUserName, resourceHash, session, this.loginUser);
 						break;
 					}
 				}
