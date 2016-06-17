@@ -988,6 +988,20 @@
 		<to last="true">/activate</to>
 	</rule>
 	
+	<!-- ############## help ############### -->
+	<rule>
+		<name>/help/ Images</name>
+		<from>^/help/+(.*/)?([^/]*)((png)|(jpg)|(jpeg)|(gif)|(svg))</from>
+		<to last="true">/resources/image/help/$2$3</to>
+	</rule>
+	
+	<rule>
+		<name>/help/</name>
+		<from>^/help/+(.*)</from>
+		<set type="parameter" name="helpPage">${unescapePath:$1}</set>
+		<to last="true">/help</to>
+	</rule>
+	
 	<!-- ############## old pages - can be removed when never accessed ############### -->
 	<rule><!-- /faq to /help/faq -->
 		<name>/faq</name>
