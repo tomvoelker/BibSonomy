@@ -732,6 +732,8 @@
 		<value>compareVersion</value>
 		<value>differentEntryKeys</value>
 		
+		<value>groupUser</value>
+		
 		<value>approved</value>
 	</util:list>
 

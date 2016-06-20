@@ -109,7 +109,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 
 	private static final String TAGS_KEY = "tags";
 	protected static final String LOGIN_NOTICE = "login.notice.post.";
-
+	
 	private Recommender<TagRecommendationEntity, recommender.impl.model.RecommendedTag> recommender;
 	private Pingback pingback;
 	private Captcha captcha;
