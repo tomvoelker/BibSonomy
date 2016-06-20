@@ -1,12 +1,12 @@
 /**
- * BibSonomyScraper  Web page scrapers returning BibTeX for BibSonomy.
+ * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006  2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
- *                               http://www.kde.cs.unikassel.de/
+ *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
  *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uniwuerzburg.de/en/dmir/
+ *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
  *                               http://www.l3s.de/
@@ -57,14 +57,6 @@ public class SpringerLinkScraperTest {
 	}
 
 	/**
-	 * starts URL test with id url_143
-	 */
-	@Test
-	public void url3TestRun() {
-		UnitTestRunner.runSingleTest("url_143");
-	}
-
-	/**
 	 * starts URL test with id url_183
 	 */
 	@Test
@@ -86,13 +78,5 @@ public class SpringerLinkScraperTest {
 	@Test
 	public void url6TestRun() {
 		UnitTestRunner.runSingleTest("url_238");
-	}
-
-	/**
-	 * starts URL test with id url_239
-	 */
-	@Test
-	public void url7TestRun() {
-		UnitTestRunner.runSingleTest("url_239");
 	}
 }

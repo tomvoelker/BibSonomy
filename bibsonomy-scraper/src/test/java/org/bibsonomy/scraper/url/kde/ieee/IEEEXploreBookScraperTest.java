@@ -108,7 +108,7 @@ public class IEEEXploreBookScraperTest {
 		
 		assertTrue(reference.length() > 100);
 		
-		assertEquals("<li>".trim(), reference.substring(0, 50).trim());
+		assertEquals("".trim(), reference.substring(0, 50).trim());
 		
 		assertTrue(reference.contains("U. Bojars"));
 	}
