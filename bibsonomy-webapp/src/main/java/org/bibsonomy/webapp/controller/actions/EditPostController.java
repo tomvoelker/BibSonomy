@@ -87,6 +87,7 @@ import org.bibsonomy.webapp.validation.PostValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
@@ -220,9 +221,13 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 */
 		final Post<RESOURCE> post = command.getPost();
 		final String intraHashToUpdate = command.getIntraHashToUpdate();
-		User postOwner = loginUser;
-		if (present(command.getGroupUser()) && !command.getGroupUser().equals(loginUser.getName())) {
-			postOwner = this.logic.getUserDetails(command.getGroupUser());
+		final User postOwner;
+		final String groupUser = command.getGroupUser();
+		if (present(groupUser) && !groupUser.equals(loginUser.getName())) {
+			// FIXME: use admin logic, do we get all details necessary for the posting?
+			postOwner = this.logic.getUserDetails(groupUser);
+		} else {
+			postOwner = loginUser;
 		}
 
 		/*
@@ -233,7 +238,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 
 		if (present(intraHashToUpdate)) {
 			log.debug("intra hash to update found -> handling update of existing post");
-			return this.handleUpdatePost(command, context, postOwner, post, intraHashToUpdate);
+			return this.handleUpdatePost(command, context, postOwner, post, loginUser, intraHashToUpdate);
 		}
 
 		log.debug("no intra hash given -> new post");
@@ -400,25 +405,24 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @param context
 	 * @param postOwner
 	 * @param post
+	 * @param loginUser 
 	 * @param intraHashToUpdate
 	 * @return
 	 */
-	private View handleUpdatePost(final COMMAND command, final RequestWrapperContext context, final User postOwner, final Post<RESOURCE> post, final String intraHashToUpdate) {
-		String postOwnerName = postOwner.getName();
-
+	private View handleUpdatePost(final COMMAND command, final RequestWrapperContext context, final User postOwner, final Post<RESOURCE> post, final User loginUser, final String intraHashToUpdate) {
+		final String postOwnerName = postOwner.getName();
+		
 		// editing of a group post - check if the user is in the group and has an appropriate role
 		if (present(command.getGroupUser())) {
 			final Group group = this.logic.getGroupDetails(command.getGroupUser(), false);
 			if (present(group)) {
-				final GroupMembership groupMembership = group.getGroupMembershipForUser(postOwnerName);
-				if (present(groupMembership) && (groupMembership.getGroupRole().equals(GroupRole.ADMINISTRATOR) || groupMembership.getGroupRole().equals(GroupRole.MODERATOR))) {
-					postOwnerName = command.getGroupUser();
+				final GroupMembership groupMembership = group.getGroupMembershipForUser(loginUser.getName());
+				if (!(present(groupMembership) && (groupMembership.getGroupRole().equals(GroupRole.ADMINISTRATOR) || groupMembership.getGroupRole().equals(GroupRole.MODERATOR)))) {
+					throw new AccessDeniedException("You have no rights to update this post");
 				}
-			} else {
-				throw new AccessDeniedNoticeException("no rights to update this post", "You have no rights to update this post");
 			}
 		}
-
+		
 		/*
 		 * we're editing an existing post
 		 */
@@ -961,13 +965,15 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * sets user; inits post groups, relevant tags and recommender
 	 *
 	 * @param command
+	 * @param post 
+	 * @param postOwner 
 	 */
-	protected void initPost(final EditPostCommand<RESOURCE> command, final Post<RESOURCE> post, final User loginUser) {
+	protected void initPost(final EditPostCommand<RESOURCE> command, final Post<RESOURCE> post, final User postOwner) {
 		/*
 		 * set the user of the post to the loginUser (the recommender might need
 		 * the user name)
 		 */
-		post.setUser(loginUser);
+		post.setUser(postOwner);
 		/*
 		 * initialize groups
 		 */
