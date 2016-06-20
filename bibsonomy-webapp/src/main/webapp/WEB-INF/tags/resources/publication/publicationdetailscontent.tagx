@@ -234,7 +234,6 @@
 		<!--+
 			| tag list
 			+-->
-		<!-- TODO: i18n? -->
 		<h4 class="pub-details"><span class="fa fa-tag"><!--  --></span><c:out value=" " />Tags</h4>
 		<div class="tag-list">
 		<ul class="list-inline">
