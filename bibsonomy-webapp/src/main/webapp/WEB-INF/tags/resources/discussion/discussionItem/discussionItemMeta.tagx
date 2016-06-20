@@ -29,7 +29,6 @@
 			<c:if test="${not empty group.name and group.name ne 'public'}">
 				<c:if test="${status.first}">
 					<fmt:message key="post.resource.comment.groups" />
-					<c:out value=" " />
 				</c:if>
 				<c:if test="${not status.first}">
 					<c:out value=", "/>
