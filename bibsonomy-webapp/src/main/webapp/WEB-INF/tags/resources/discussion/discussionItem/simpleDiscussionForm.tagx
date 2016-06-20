@@ -39,8 +39,13 @@
 			<input name="discussionItem.parentHash" value="${parentItem.hash}" type="hidden" />
 		</c:if>
 		
-		<input name="abstractGrouping" value="public" tabindex="2" type="hidden" />
-		<input name="groups" value="" type="hidden" />
+		<c:set var="grouping" value="public" />
+		<c:if test="${not empty discussionItem.groups}">
+			<c:set var="grouping" value="other" />
+			<c:set var="groupName" value="${discussionItem.groups.iterator().next().name}" />
+		</c:if>
+		<input name="abstractGrouping" value="${grouping}" type="hidden" />
+		<input name="groups" value="${groupName}" type="hidden" />
 		
 		<div class="media">
 			<c:set var="colspan" value="12" />
@@ -88,21 +93,40 @@
 				<div class="btn-toolbar pull-right" role="toolbar">
 					<div class="btn-group group-selector">
 						<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							<span class="group"><fontawsome:icon icon="globe" /> public</span><c:out value=" " /><span class="caret"></span>
+							<span class="group">
+								<c:choose>
+									<c:when test="${grouping eq 'public'}">
+										<fontawsome:icon icon="globe" /><c:out value=" " /><fmt:message key="post.resource.public" />
+									</c:when>
+									<c:when test="${grouping eq 'private'}">
+										<fontawsome:icon icon="lock" /><c:out value=" " /><fmt:message key="post.resource.private" />
+									</c:when>
+									<c:when test="${grouping eq 'friends'}">
+										<fontawsome:icon icon="users" /><c:out value=" " /><fmt:message key="post.resource.friends" />
+									</c:when>
+									<c:otherwise>
+										<fontawsome:icon icon="users" /> <c:out value=" ${groupName}" />
+									</c:otherwise>
+								</c:choose>
+							</span><c:out value=" " /><span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu">
-							<li class="checked">
-								<a href="#" data-group="" data-abstract-grouping="public"><fontawsome:icon icon="globe" fixedWidth="${true}"/> public</a>
+							<c:set var="selected" value="${grouping eq 'public'}" />
+							<li class="${selected ? 'checked' : ''}">
+								<a href="#" data-group="" data-abstract-grouping="public"> <fontawsome:icon icon="globe" fixedWidth="${true}"/> <fmt:message key="post.resource.public" /></a>
 							</li>
-							<li>
-								<a href="#" data-group="" data-abstract-grouping="private"><fontawsome:icon icon="lock" fixedWidth="${true}"/> private</a>
+							<c:set var="selected" value="${grouping eq 'private'}" />
+							<li class="${selected ? 'checked' : ''}">
+								<a href="#" data-group="" data-abstract-grouping="private"><fontawsome:icon icon="lock" fixedWidth="${true}"/> <fmt:message key="post.resource.private" /></a>
 							</li>
-							<li>
-								<a href="#" data-group="" data-abstract-grouping="friends"><fontawsome:icon icon="users" fixedWidth="${true}"/> friends</a>
+							<c:set var="selected" value="${grouping eq 'friends'}" />
+							<li class="${selected ? 'checked' : ''}">
+								<a href="#" data-group="" data-abstract-grouping="friends"><fontawsome:icon icon="users" fixedWidth="${true}"/> <fmt:message key="post.resource.friends" /></a>
 							</li>
 							<li role="separator" class="divider"></li>
 							<c:forEach var="group" items="${command.context.loginUser.groups}">
-								<li>
+								<c:set var="selected" value="${groupName eq group.name}" />
+								<li class="${selected ? 'checked' : ''}">
 									<a href="#" data-abstract-grouping="other" data-group="${group.name}"><fontawsome:icon icon="users" fixedWidth="${true}"/><c:out value=" ${group.name}"/></a>
 								</li>
 							</c:forEach>
