@@ -84,7 +84,7 @@ public class AmazonScraper extends AbstractUrlScraper {
 	}
 
 	private static final Pattern ISBN = Pattern.compile("ISBN(-10:</b>)? (\\d+)");
-	//private static final Pattern ISBN = Pattern.compile("ISBN(-10:</b>)? ([^0-9]|^)(978\\d{9}[\\dx]|979\\d{9}[\\dx]|\\d{9}[\\dx])([^0-9x]|$)");
+
 	/**
 	 * INFO field of this scraper
 	 */

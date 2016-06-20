@@ -29,7 +29,6 @@ package org.bibsonomy.scraper.url.kde.springer;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -53,9 +52,7 @@ public class SpringerScraper extends AbstractUrlScraper {
 	private static final String SITE_URL = "http://www.springer.com/";
 	private static final String INFO = "Scraper for books from " + href(SITE_URL, SITE_NAME) + ".";
 
-	/**
-	 * Host
-	 */
+	/** Host */
 	private static final String HOST = "springer.com";
 	private static final String SPRINGER_CITATION_HOST = "link.springer.com/book";
 
@@ -64,7 +61,8 @@ public class SpringerScraper extends AbstractUrlScraper {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SPRINGER_CITATION_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST + "$"), AbstractUrlScraper.EMPTY_PATTERN));
 	}
-
+	
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 
@@ -76,26 +74,31 @@ public class SpringerScraper extends AbstractUrlScraper {
 			if (present(bibtex)) {
 				sc.setBibtexResult(bibtex);
 				return true;
-			} else
-				throw new ScrapingFailureException("getting bibtex failed");
+			}
+			
+			throw new ScrapingFailureException("getting bibtex failed");
 
 		} catch (IOException ex) {
 			throw new InternalFailureException(ex);
 		}
 	}
-
+	
+	@Override
 	public String getInfo() {
 		return INFO;
 	}
-
+	
+	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
-
+	
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
-
+	
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}

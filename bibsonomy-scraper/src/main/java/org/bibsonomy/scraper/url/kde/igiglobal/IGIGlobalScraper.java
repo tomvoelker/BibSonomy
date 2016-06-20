@@ -71,7 +71,7 @@ public class IGIGlobalScraper extends AbstractUrlScraper {
 			final String inRIS = getCitationInRIS(url.toString());
 			final RisToBibtexConverter con = new RisToBibtexConverter();
 			final String bibtex = con.toBibtex(inRIS);
-			System.out.println(inRIS);
+			
 			if (present(bibtex)) {
 				scrapingContext.setBibtexResult(bibtex);
 				return true;
