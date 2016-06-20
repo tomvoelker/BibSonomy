@@ -45,13 +45,14 @@
 	<div id="goldstandard" class="row">
 		<div class="col-md-7 col-md-offset-1" itemtype="${itemType}" itemscope="itemscope" id="${goldstandard.interHash}">
 			<div class="content-header" id="info">
-				<h1><span itemprop="name"><c:out value="${mtl:cleanBibtex(goldstandard.title)}" /></span>
-					<small>
+				<h1><div itemprop="name"><c:out value="${mtl:cleanBibtex(goldstandard.title)}" />
 						<c:if test="${post.approved}">
 							<fmt:message key="goldStandard.approved.title" var="approved"/>
-							<span class="fa fa-check-circle community-approved" data-toggle="tooltip" data-placement="bottom" title="${fn:escapeXml(approved)}" style="margin-left:6px;"><!-- keep me --></span>
+							<span class="fa fa-check-circle community-approved" data-toggle="tooltip" data-placement="bottom" title="${fn:escapeXml(approved)}"><!-- keep me --></span>
 						</c:if>
-						<span class="publication-description"><bib:desc publication="${goldstandard}" noSchemaMarkupContainer="${true}"/></span>
+					</div>
+					<small>
+						<span class="publication-description"><bib:desc publication="${goldstandard}" noSchemaMarkupContainer="${true}" linebreakAfterAuthors="${true}"/></span>
 					</small>
 				</h1>
 			</div>
