@@ -165,15 +165,15 @@
 				<a href="/bibtexkey/${mtl:encodePathSegment(publication.bibtexKey)}/${mtl:encodePathSegment(post.user.name)}"><c:out value="${publication.bibtexKey}"/></a>
 			</dd>
 			
-			<!--+ 
+			<!--+ TODO: disabled: only 2 users used this feature
 				| internal resource link
-				+-->
+				+
 			<dt><fmt:message key="discussion.resourceLink.title"/><c:out value=": "/></dt>
 			<dd>
 				<fmt:message var="helpText" key="discussion.resourceLink.help"/>
 				<c:set var="linkText" value="[[publication/${interHashId}${publication.interHash}/${mtl:encodePathSegment(post.user.name)}]]" />
 				<bsform:copyInput id="resource-link" value="${linkText}" onclick="$(this).focus().select();" helpText="${helpText}" noHelp="${false}" />
-			</dd>
+			</dd>-->
 			
 			<!--+ 
 				|
