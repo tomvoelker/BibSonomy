@@ -26,7 +26,7 @@
 	
 	<!-- FIXME: not nice here-->
 	<c:choose>
-		<c:when test="${resourcetype eq 'bibtex'}">
+		<c:when test="${resourceType eq 'bibtex'}">
 			<c:choose>
 				<c:when test="${post.resource.entrytype eq 'book'}">
 					<c:set var="itemtype" value="http://schema.org/Book" />
