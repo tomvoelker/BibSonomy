@@ -32,7 +32,6 @@ import org.bibsonomy.model.User;
  * @param <T> the class of the id
  * 
  * @author dzo
- * @version $Id$ 
  */
 public class LoggingParam<T> {
 	private T oldId;

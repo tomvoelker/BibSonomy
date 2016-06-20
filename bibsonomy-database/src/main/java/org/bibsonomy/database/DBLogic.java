@@ -1118,10 +1118,9 @@ public class DBLogic implements LogicInterface {
 		 * check permissions
 		 */
 		this.ensureLoggedIn();
-
-		if (!this.permissionDBManager.hasGroupRoleOrHigher(this.loginUser, userName, GroupRole.MODERATOR)) {
-			this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
-		}
+		
+		this.permissionDBManager.ensureIsAdminOrSelfOrHasGroupRoleOrHigher(this.loginUser, userName, GroupRole.MODERATOR);
+		
 		/*
 		 * to store hashes of missing resources
 		 */
@@ -1138,9 +1137,8 @@ public class DBLogic implements LogicInterface {
 				// TODO would be nice to know about the resourcetype or the
 				// instance behind this resourceHash
 				for (final CrudableContent<? extends Resource, ? extends GenericParam> man : this.allDatabaseManagers.values()) {
-					if (man.deletePost(lowerCaseUserName, resourceHash, session)) {
+					if (man.deletePost(lowerCaseUserName, resourceHash, null, session)) {
 						resourceFound = true;
-						man.logDelete(lowerCaseUserName, resourceHash, session, this.loginUser);
 						break;
 					}
 				}
@@ -1602,6 +1600,7 @@ public class DBLogic implements LogicInterface {
 		if (Role.SYNC.equals(this.loginUser.getRole())) {
 			validateGroupsForSynchronization(post);
 		}
+		
 		this.validateGroups(post.getUser(), post.getGroups(), session);
 
 		PostUtils.limitedUserModification(post, this.loginUser);
@@ -1610,7 +1609,7 @@ public class DBLogic implements LogicInterface {
 		 */
 		PostUtils.setGroupIds(post, this.loginUser);
 
-		manager.createPost(post, session);
+		manager.createPost(post, this.loginUser, session);
 
 		// if we don't get an exception here, we assume the resource has
 		// been successfully created
@@ -1657,7 +1656,6 @@ public class DBLogic implements LogicInterface {
 			for (final Post<?> post : posts) {
 				try {
 					hashes.add(this.updatePost(post, operation, session));
-					// TODO: Log this operation.
 				} catch (final DatabaseException dbex) {
 					collectedException.addErrors(dbex);
 				} catch (final Exception ex) {
@@ -1725,8 +1723,7 @@ public class DBLogic implements LogicInterface {
 		 * if we don't get an exception here, we assume the resource has been
 		 * successfully updated
 		 */
-		manager.updatePost(post, oldIntraHash, operation, session, this.loginUser);
-		manager.logUpdate(post, oldIntraHash, session, this.loginUser);
+		manager.updatePost(post, oldIntraHash, this.loginUser, operation, session);
 
 		return post.getResource().getIntraHash();
 	}

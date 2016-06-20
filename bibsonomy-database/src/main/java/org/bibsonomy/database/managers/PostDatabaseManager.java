@@ -1362,7 +1362,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * .model.Post, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	public boolean createPost(final Post<R> post, final DBSession session) {
+	public boolean createPost(final Post<R> post, User loggedinUser, final DBSession session) {
 		session.beginTransaction();
 		try {
 			this.checkPost(post, session);
@@ -1454,7 +1454,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	public boolean updatePost(final Post<R> post, final String oldHash, final PostUpdateOperation operation, final DBSession session, final User loginUser) {
+	public boolean updatePost(final Post<R> post, final String oldHash, final User loginUser, final PostUpdateOperation operation, final DBSession session) {
 		final String postOwner = post.getUser().getName();
 		if (loginUser == null) {
 			throw new IllegalArgumentException("no loggedin user");
@@ -1605,9 +1605,9 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 * now execute the postupdate operation
 			 */
 			if (present(operation)) {
-				this.workOnOperation(post, oldPost, operation, session);
+				this.workOnOperation(post, oldPost, loginUser, operation, session);
 			} else {
-				this.performUpdateAll(post, oldPost, session);
+				this.performUpdateAll(post, oldPost, null, session);
 			}
 			/*
 			 * systemTags perform after Update
@@ -1615,6 +1615,9 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			for (final ExecutableSystemTag systemTag: executableSystemTags) {
 				systemTag.performAfterUpdate(post, oldPost, operation, session);
 			}
+			
+			this.logUpdate(post, oldHash, loginUser, session);
+			
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -1622,12 +1625,12 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		return true;
 	}
 
-	protected void workOnOperation(final Post<R> post, final Post<R> oldPost, final PostUpdateOperation operation, final DBSession session) {
+	protected void workOnOperation(final Post<R> post, final Post<R> oldPost, User loggedinUser, final PostUpdateOperation operation, final DBSession session) {
 		switch (operation) {
 		case UPDATE_TAGS:
 			this.performUpdateOnlyTags(post, oldPost, session);
 			break;
-			/**
+			/*
 			 * The two following updates will not be logged in database.
 			 * So, they are temporarily commented. Instead of them update_all is
 			 * called.
@@ -1644,7 +1647,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			/*
 			 * as default update all parts of a post
 			 */
-			this.performUpdateAll(post, oldPost, session);
+			this.performUpdateAll(post, oldPost, loggedinUser, session);
 		}
 	}
 
@@ -1653,7 +1656,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		this.validator.validateFieldLength(resource, resource.getIntraHash(), session);
 	}
 
-	private void performUpdateAll(final Post<R> post, final Post<R> oldPost, final DBSession session) {
+	private void performUpdateAll(final Post<R> post, final Post<R> oldPost, User loggedinUser, final DBSession session) {
 		session.beginTransaction();
 		try {
 			/*
@@ -1674,7 +1677,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			/*
 			 * delete old post
 			 */
-			this.deletePost(oldPost, true, session);
+			this.deletePost(oldPost, true, loggedinUser, session);
 
 			/*
 			 * insert new post
@@ -1931,7 +1934,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * String, java.lang.String, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	public boolean deletePost(final String userName, final String resourceHash, final DBSession session) {
+	public boolean deletePost(final String userName, final String resourceHash, User loggedinUser, final DBSession session) {
 		Post<R> post = null;
 		try {
 			post = this.getPostDetails(userName, resourceHash, userName, new ArrayList<Integer>(), session);
@@ -1946,7 +1949,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			return false;
 		}
 
-		return this.deletePost(post, false, session);
+		return this.deletePost(post, false, loggedinUser, session);
 	}
 
 	/**
@@ -1958,7 +1961,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return <code>true</code> iff the post was deleted successfully
 	 */
-	private boolean deletePost(final Post<? extends R> post, final boolean update, final DBSession session) {
+	private boolean deletePost(final Post<? extends R> post, final boolean update, final User loggedInUser, final DBSession session) {
 		session.beginTransaction();
 		try {
 			final String userName = post.getUser().getName();
@@ -1981,7 +1984,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			this.insertOrUpdatePostHash(param, true, session);
 
 			this.delete("delete" + this.resourceClassName, param, session);
-
+			this.logDelete(userName, resourceHash, loggedInUser, session);
 			session.commitTransaction();
 
 		} finally {
@@ -2111,8 +2114,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 */
 	protected abstract void onPostMassUpdate(String username, int groupId, DBSession session);
 
-	@Override
-	public boolean logUpdate(final Post<R> post, final String oldHash, final DBSession session, final User loginUser) {
+	private boolean logUpdate(final Post<R> post, final String oldHash, final User loginUser, final DBSession session) {
 		final PostChangeLogParam param = new PostChangeLogParam();
 		param.setOldIntraHash(oldHash);
 		param.setNewIntraHash(post.getResource().getIntraHash());
@@ -2123,9 +2125,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		this.insert("log" + this.resourceClassName + "PostUpdate", param, session);
 		return true;
 	}
-
-	@Override
-	public boolean logDelete(final String owner, final String oldHash, final DBSession session, final User loginUser) {
+	
+	private boolean logDelete(final String owner, final String oldHash, final User loginUser, final DBSession session) {
 		final PostChangeLogParam param = new PostChangeLogParam();
 		param.setOldIntraHash(oldHash);
 		param.setNewIntraHash("");

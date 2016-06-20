@@ -29,7 +29,6 @@ package org.bibsonomy.database.managers;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -47,7 +46,6 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.managers.chain.Chain;
 import org.bibsonomy.database.params.GoldStandardReferenceParam;
-import org.bibsonomy.database.params.PostChangeLogParam;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.model.GoldStandard;
@@ -187,7 +185,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	}
 
 	@Override
-	public boolean createPost(final Post<R> post, final DBSession session) {
+	public boolean createPost(final Post<R> post, User loggedinUser, final DBSession session) {
 		session.beginTransaction();
 		try {
 			final String resourceHash = post.getResource().getInterHash();
@@ -240,7 +238,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	protected abstract P createNewParam();
 
 	@Override
-	public boolean updatePost(final Post<R> post, final String oldHash, final PostUpdateOperation operation, final DBSession session, final User loginUser) {
+	public boolean updatePost(final Post<R> post, final String oldHash, final User loginUser, final PostUpdateOperation operation, final DBSession session) {
 		session.beginTransaction();
 		try {
 
@@ -317,7 +315,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	}
 
 	@Override
-	public boolean deletePost(final String userName, final String resourceHash, final DBSession session) {
+	public boolean deletePost(final String userName, final String resourceHash, User loggedinUser, final DBSession session) {
 		if (present(userName)) {
 			return false;
 		}
@@ -457,30 +455,4 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	 * @param session
 	 */
 	protected abstract void onGoldStandardRelationDelete(final String userName, final String interHash, final String interHashRef, final GoldStandardRelation interHashRelation, final DBSession session);
-
-	@Override
-	public boolean logUpdate(final Post<R> post, final String oldHash, final DBSession session, final User loginUser) {
-		final PostChangeLogParam param = new PostChangeLogParam();
-		param.setOldIntraHash(oldHash);
-		param.setNewIntraHash(post.getResource().getIntraHash());
-		param.setPostOwner(post.getUser().getName());
-		param.setPostEditor(loginUser.getName());
-		param.setDate(new Date());
-
-		this.insert("logGoldStandardUpdate", param, session);
-		return true;
-	}
-
-	@Override
-	public boolean logDelete(final String owner, final String oldHash, final DBSession session, final User loginUser) {
-		final PostChangeLogParam param = new PostChangeLogParam();
-		param.setOldIntraHash(oldHash);
-		param.setNewIntraHash("");
-		param.setPostOwner(owner);
-		param.setPostEditor(loginUser.getName());
-		param.setDate(new Date());
-
-		this.insert("logGoldStandardUpdate", param, session);
-		return true;
-	}
 }

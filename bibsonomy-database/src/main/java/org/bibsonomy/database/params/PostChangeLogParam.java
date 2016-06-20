@@ -7,6 +7,7 @@ import java.util.Date;
  *
  * @author niebler
  */
+@Deprecated // use LoggingParam
 public class PostChangeLogParam {
 
 	private String oldIntraHash;

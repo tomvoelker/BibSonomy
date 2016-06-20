@@ -79,52 +79,31 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	 *
 	 * @param userName
 	 * @param resourceHash
+	 * @param loggedinUser
 	 * @param session
-	 *
-	 * @return true, if entry existed and was deleted
+	 * @return <code>true</code>, if entry existed and was deleted
 	 */
-	public boolean deletePost(String userName, String resourceHash, DBSession session);
+	public boolean deletePost(String userName, String resourceHash, User loggedinUser, DBSession session);
 
 	/**
 	 * create
 	 *
 	 * @param post
+	 * @param loggedinUser
 	 * @param session
 	 * @return true if entry was created
 	 */
-	public boolean createPost(Post<T> post, DBSession session);
+	public boolean createPost(Post<T> post, User loggedinUser, DBSession session);
 
 	/**
 	 * update
 	 *
 	 * @param post
 	 * @param oldHash
+	 * @param loginUser
 	 * @param operation
 	 * @param session
-	 * @param loginUser
 	 * @return <code>true</code> iff update was successful
 	 */
-	public boolean updatePost(Post<T> post, String oldHash, PostUpdateOperation operation, DBSession session, User loginUser);
-
-	/**
-	 * log update
-	 *
-	 * @param post
-	 * @param oldHash
-	 * @param session
-	 * @param loginUser
-	 * @return <code>true</code> iff log was successful
-	 */
-	public boolean logUpdate(Post<T> post, String oldHash, DBSession session, User loginUser);
-
-	/**
-	 * log update
-	 *
-	 * @param owner
-	 * @param hash
-	 * @param session
-	 * @param loginUser
-	 * @return <code>true</code> iff log was successful
-	 */
-	public boolean logDelete(String owner, String hash, DBSession session, User loginUser);
+	public boolean updatePost(Post<T> post, String oldHash, User loginUser, PostUpdateOperation operation, DBSession session);
 }

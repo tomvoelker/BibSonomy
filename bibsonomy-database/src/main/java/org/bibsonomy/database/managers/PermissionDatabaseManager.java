@@ -113,11 +113,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 			}
 		} else {
 			// delegate write access check
-			if (!post.getUser().getName().equals(loginUser.getName())) {
-				this.ensureGroupRoleOrHigher(loginUser, post.getUser().getName(), GroupRole.MODERATOR);
-			} else {
-				this.ensureIsAdminOrSelf(loginUser, post.getUser().getName());
-			}
+			this.ensureIsAdminOrSelfOrHasGroupRoleOrHigher(loginUser, post.getUser().getName(), GroupRole.MODERATOR);
 		}
 	}
 
@@ -430,6 +426,16 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	public boolean isAdminOrHasGroupRoleOrHigher(final User loginUser, final String groupName, final GroupRole minimumRole) {
 		return this.isAdmin(loginUser) || this.hasGroupRoleOrHigher(loginUser, groupName, minimumRole);
 	}
+	
+	/**
+	 * @param loginUser
+	 * @param userName
+	 * @param role
+	 * @return
+	 */
+	private boolean isAdminOrSelfOrHasGroupRoleOrHigher(User loginUser, String userName, GroupRole role) {
+		return this.isAdminOrSelf(loginUser, userName) || this.hasGroupRoleOrHigher(loginUser, userName, role);
+	}
 
 	/**
 	 * Check whether the user is system admin or has a groupRole larger than the
@@ -442,6 +448,17 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void ensureIsAdminOrHasGroupRoleOrHigher(final User loginUser, final String groupName, final GroupRole minimumRole) {
 		if (!this.isAdminOrHasGroupRoleOrHigher(loginUser, groupName, minimumRole)) {
+			throw new AccessDeniedException();
+		}
+	}
+	
+	/**
+	 * @param loginUser
+	 * @param userName
+	 * @param role
+	 */
+	public void ensureIsAdminOrSelfOrHasGroupRoleOrHigher(User loginUser, String userName, GroupRole role) {
+		if (!this.isAdminOrSelfOrHasGroupRoleOrHigher(loginUser, userName, role)) {
 			throw new AccessDeniedException();
 		}
 	}
