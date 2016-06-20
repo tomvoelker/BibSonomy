@@ -324,7 +324,6 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 				log.debug("api key of groupuser" + groupUser.getName() + " has been changed successfully");
 				break;
 			}
-				
 			default:
 				this.errors.reject("error.invalid_parameter");
 				break;
