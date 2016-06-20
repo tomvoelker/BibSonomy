@@ -116,11 +116,11 @@
 			<c:if test="${hasRelatedPublication}">
 				<div id="related-publications">
 					<h2 class="pub-details">
-						Related Publications <!-- TODO: i18n -->
+						<fmt:message key="publications.related.headline" />
 					</h2>
 					<div class="btn-group">
-						<bs:linkButton additionalClass="active" href="#related-publications" size="small" style="defaultStyle" text="publications referenced by this publication" />
-						<bs:linkButton href="#related-publications" size="small" style="defaultStyle" text="publications citing this publication"/>
+						<bs:linkButton additionalClass="active" href="#related-publications" size="small" style="defaultStyle" textKey="publications.related.referenced" />
+						<bs:linkButton href="#related-publications" size="small" style="defaultStyle" textKey="publications.related.citing"/>
 					</div>
 					<ul id="related-publications-references">
 						<c:forEach var="reference" items="${goldstandard.references}">
