@@ -48,9 +48,9 @@ public class JStorScraper extends GenericBibTeXURLScraper {
 	private static final String JSTOR_HOST  = "jstor.org";
 	private static final String JSTOR_HOST_NAME  = "http://www.jstor.org";
 	private static final String JSTOR_STABLE_PATH = "/stable/";
-	private static final String DOWNLOAD_URL = "http://www.jstor.org/citation/text/";	
+	private static final String DOWNLOAD_URL = JSTOR_HOST_NAME + "/citation/text/"; //http://www.jstor.org/citation/text/10.2307/4142852
 	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
-	private static final Pattern DOI = Pattern.compile("class=\"button button-jstor cite-this-item\" data-reveal-id=\"citation-tools\" data-doi=\"(.*?)\"");
+	private static final Pattern DOI = Pattern.compile("data-reveal-id=\"citation-tools\" data-doi=\"(.*?)\"");
 	
 	static {
 		final Pattern hostPattern = Pattern.compile(".*" + JSTOR_HOST);
