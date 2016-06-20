@@ -52,7 +52,7 @@
 						</c:if>
 					</div>
 					<small>
-						<span class="publication-description"><bib:desc publication="${goldstandard}" noSchemaMarkupContainer="${true}" linebreakAfterAuthors="${true}"/></span>
+						<span class="publication-description"><bib:desc publication="${goldstandard}" linebreakAfterAuthors="${true}"/></span>
 					</small>
 				</h1>
 			</div>

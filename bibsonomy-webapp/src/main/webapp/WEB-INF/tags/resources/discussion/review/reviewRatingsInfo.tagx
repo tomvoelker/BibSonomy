@@ -8,7 +8,6 @@
 
 	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
 	
-	<!-- contains schemo.org markup -->
 	<div id="review_info_rating" itemprop="aggregateRating" itemscope="itemscope" itemtype="http://schema.org/AggregateRating">
 		
 		<c:if test="${empty resource.numberOfRatings or resource.numberOfRatings &lt; 1 }">

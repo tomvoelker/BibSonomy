@@ -7,12 +7,7 @@
 	
 	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="false" />
-	<jsp:directive.attribute name="noSchemaMarkupContainer" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="linebreakAfterAuthors" type="java.lang.Boolean" required="false" />
-	
-	<c:if test="${empty noSchemaMarkupContainer}">
-		<c:set var="noSchemaMarkupContainer" value="${false}" />
-	</c:if>
 	
 	<c:if test="${empty linebreakAfterAuthors}">
 		<c:set var="linebreakAfterAuthors" value="${false}" />

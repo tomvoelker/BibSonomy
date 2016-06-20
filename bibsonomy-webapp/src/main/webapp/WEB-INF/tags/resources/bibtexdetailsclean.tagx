@@ -116,5 +116,5 @@
 			<pub:citation post="${post}"/>
 		</div>
 	</div>
-	</div><!-- end of markup -->
+	</div>
 </jsp:root>
