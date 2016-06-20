@@ -36,7 +36,7 @@
 							<li><a onclick="return switchNavi('author', this);"><fmt:message key="navi.author"/></a></li>
 							<li><a onclick="return switchNavi('concept/tag', this);"><fmt:message key="navi.concept"/></a></li>
 							<li><a onclick="return switchNavi('bibtexkey', this);"><fmt:message key="navi.bibtexkey"/></a></li>
-							<li><a onclick="return switchNavi('search', this);"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></a></li>
+							<li><a onclick="return switchNavi('search', this);"><fmt:message key="navi.search"/></a></li>
 							<c:if test="${not empty properties['es.cluster.name']}">
 								<!-- FIXME: remove this theme-switch as soon as we enable remote search functionality on bibsonomy -->
 								<c:if test="${properties['project.theme'] ne 'bibsonomy'}">
@@ -68,7 +68,14 @@
 							<jsp:invoke fragment="pathPart"/>
 						</span>
 					</c:if>
-					<input class="form-control" style="" type="text" size="20" name="${formInputName}" id="inpf" value="${fn:escapeXml(formInputValue)}"/>
+					<input class="form-control" type="text" size="20" name="${formInputName}" id="inpf" value="${fn:escapeXml(formInputValue)}"/>
+					<c:if test="${formInputName eq 'search'}">
+						<fmt:message var="infoURL" key="search.info.url"/> 
+						<fmt:message var="infoText" key="search.info.text"/>
+						<a title="${infoText}" href="${infoURL}" class="input-info">
+							<span class="fa fa-info-circle"><!-- keep me --></span>
+						</a>
+					</c:if>
 					<c:if test="${not empty formExtra}">
 						<jsp:invoke fragment="formExtra"/>
 					</c:if>
@@ -78,19 +85,8 @@
 						<button class="btn btn-default" type="submit"><span class="sr-only"><c:out value="${searchButton}" /></span><span class="fa fa-search"><!--  --></span></button>
 					</span>
 				</div>
-				
-				<!-- info button for search help -->
-				<div class="pull-right">
-					<fmt:message var="infoURL" key="search.info.url"/> 
-					<fmt:message var="infoText" key="search.info.text"/>
-					<a title="${infoText}" href="${infoURL}">
-						<span class="fa fa-info-circle"><!--  --></span>
-					</a>
-				</div>
-
 				<div class="pull-right"><jsp:invoke fragment="afterInput"/></div>
 			</form>
 		</div>
 	</div>
-	
 </jsp:root>
