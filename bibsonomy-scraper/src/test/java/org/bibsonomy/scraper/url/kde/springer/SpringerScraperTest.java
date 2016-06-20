@@ -47,5 +47,11 @@ public class SpringerScraperTest {
 		UnitTestRunner.runSingleTest("url_58");
 	}
 	
-	
+	/**
+	 * starts URL test with id url_239
+	 */
+	@Test
+	public void url2TestRun() {
+		UnitTestRunner.runSingleTest("url_239");
+	}
 }

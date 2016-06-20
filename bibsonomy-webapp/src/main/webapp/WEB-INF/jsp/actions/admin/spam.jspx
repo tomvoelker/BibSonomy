@@ -40,6 +40,11 @@
 					border: 1px solid #ccc;
 				}
 			
+				.logbox {
+					overflow-y:scroll;
+					height:100px;
+				}
+				
 			</style>
 			
 			<!--include spammer scripts -->

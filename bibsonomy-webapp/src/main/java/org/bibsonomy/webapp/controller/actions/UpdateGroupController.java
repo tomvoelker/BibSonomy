@@ -176,7 +176,7 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 				 */
 				final String username = command.getUsername();
 				if (present(username) && !username.equals(groupToUpdate.getName())) {
-					final GroupMembership ms = new GroupMembership(new User(username), null, false);
+					final GroupMembership ms = new GroupMembership(new User(username), null, command.isUserSharedDocuments());
 					try {
 						this.logic.updateGroup(groupToUpdate, GroupUpdateOperation.ADD_MEMBER, ms);
 					} catch (final Exception ex) {
@@ -316,6 +316,12 @@ public class UpdateGroupController implements ValidationAwareController<GroupSet
 					}
 				}
 				selTab = Integer.valueOf(GroupSettingsPageCommand.MEMBER_LIST_IDX);
+				break;
+			}
+			case REGENERATE_API_KEY: {
+				final User groupUser = this.logic.getUserDetails(groupToUpdate.getName());
+				this.logic.updateUser(groupUser, UserUpdateOperation.UPDATE_API);
+				log.debug("api key of groupuser" + groupUser.getName() + " has been changed successfully");
 				break;
 			}
 			default:
