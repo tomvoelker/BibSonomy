@@ -77,7 +77,7 @@
 					<c:if test="${not empty goldstandard.url}">
 						<c:choose>
 							<c:when test="${isLinkToDocument}">
-								<dt>Document</dt> <!-- TODO: i18n -->
+								<dt><fmt:message key="document" /></dt>
 							</c:when>
 							<c:otherwise>
 								<dt>URL</dt>
