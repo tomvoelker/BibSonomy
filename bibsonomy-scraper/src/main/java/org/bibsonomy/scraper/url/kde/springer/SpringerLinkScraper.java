@@ -45,7 +45,7 @@ import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
  */
 public class SpringerLinkScraper extends GenericBibTeXURLScraper {
 	private static final String SITE_NAME = "SpringerLink";
-	private static final String SITE_URL = "http://www.springerlink.com/";
+	private static final String SITE_URL = "http://link.springer.com/";
 	private static final String INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
 	private static final Pattern ID_PATTERN = Pattern.compile("(article|chapter)/(.+?)(/|$)");
 	

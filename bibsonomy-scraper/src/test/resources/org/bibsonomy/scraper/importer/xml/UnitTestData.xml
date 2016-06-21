@@ -127,7 +127,7 @@
 	</URLTest>
 	<URLTest id="url_19">
 		<TestDescription>URL test for work-info pages from librarything (standard language)</TestDescription>
-		<URL>http://www.librarything.com/work/details/10481522</URL>
+		<URL>http://www.librarything.com/work/details/10481522</URL> 
 		<BibFile>LibrarythingScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.librarything.LibrarythingScraper</Scraper>
 	</URLTest>
@@ -1080,7 +1080,7 @@
 	</URLTest>
 	<URLTest id="url_178">
 		<TestDescription>Scraping for Karger wesite</TestDescription>
-		<URL>http://www.karger.com/Article/Abstract/317579</URL>
+		<URL>http://www.karger.com/Article/FullText/210432</URL>
 		<BibFile>KargerScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.karger.KargerScraper</Scraper>
 	</URLTest>
@@ -2229,5 +2229,17 @@
 		<URL>http://cyberleninka.ru/article/n/analiz-dannyh-slozhnyh-obektov-s-pomoschyu-modifitsirovannogo-algoritma-klasterizatsii</URL>
 		<BibFile>CyberleninkaScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.cyberleninka.CyberleninkaScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_369">
+		<TestDescription>Scraping for Karger wesite</TestDescription>
+		<URL>http://www.karger.com/Article/Abstract/210432</URL>
+		<BibFile>KargerScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.karger.KargerScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_370">
+		<TestDescription>Scraping for Karger wesite</TestDescription>
+		<URL>http://www.karger.com/Article/PDF/210432</URL>
+		<BibFile>KargerScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.karger.KargerScraper</Scraper>
 	</URLTest>
 </test:Tests>
