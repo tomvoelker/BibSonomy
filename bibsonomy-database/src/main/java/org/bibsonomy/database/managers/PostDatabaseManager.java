@@ -61,7 +61,7 @@ import org.bibsonomy.database.common.enums.ConstantID;
 import org.bibsonomy.database.common.enums.MetaDataPluginKey;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.Chain;
-import org.bibsonomy.database.params.PostChangeLogParam;
+import org.bibsonomy.database.params.LoggingParam;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.params.metadata.PostParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
@@ -72,6 +72,7 @@ import org.bibsonomy.database.systemstags.executable.ExecutableSystemTag;
 import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.database.validation.DatabaseModelValidator;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -1362,7 +1363,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * .model.Post, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	public boolean createPost(final Post<R> post, User loggedinUser, final DBSession session) {
+	public boolean createPost(final Post<R> post, final User loggedinUser, final DBSession session) {
 		session.beginTransaction();
 		try {
 			this.checkPost(post, session);
@@ -1615,9 +1616,9 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			for (final ExecutableSystemTag systemTag: executableSystemTags) {
 				systemTag.performAfterUpdate(post, oldPost, operation, session);
 			}
-			
-			this.logUpdate(post, oldHash, loginUser, session);
-			
+
+			this.logUpdate(post, oldPost.getContentId(), loginUser, session);
+
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -1625,7 +1626,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		return true;
 	}
 
-	protected void workOnOperation(final Post<R> post, final Post<R> oldPost, User loggedinUser, final PostUpdateOperation operation, final DBSession session) {
+	protected void workOnOperation(final Post<R> post, final Post<R> oldPost, final User loggedinUser, final PostUpdateOperation operation, final DBSession session) {
 		switch (operation) {
 		case UPDATE_TAGS:
 			this.performUpdateOnlyTags(post, oldPost, session);
@@ -1656,7 +1657,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		this.validator.validateFieldLength(resource, resource.getIntraHash(), session);
 	}
 
-	private void performUpdateAll(final Post<R> post, final Post<R> oldPost, User loggedinUser, final DBSession session) {
+	private void performUpdateAll(final Post<R> post, final Post<R> oldPost, final User loggedinUser, final DBSession session) {
 		session.beginTransaction();
 		try {
 			/*
@@ -1934,7 +1935,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * String, java.lang.String, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	public boolean deletePost(final String userName, final String resourceHash, User loggedinUser, final DBSession session) {
+	public boolean deletePost(final String userName, final String resourceHash, final User loggedinUser, final DBSession session) {
 		Post<R> post = null;
 		try {
 			post = this.getPostDetails(userName, resourceHash, userName, new ArrayList<Integer>(), session);
@@ -1984,7 +1985,10 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			this.insertOrUpdatePostHash(param, true, session);
 
 			this.delete("delete" + this.resourceClassName, param, session);
-			this.logDelete(userName, resourceHash, loggedInUser, session);
+
+			if (!update) {
+				this.logDelete(post.getUser(), post.getContentId(), resource, loggedInUser, session);
+			}
 			session.commitTransaction();
 
 		} finally {
@@ -2114,27 +2118,29 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 */
 	protected abstract void onPostMassUpdate(String username, int groupId, DBSession session);
 
-	private boolean logUpdate(final Post<R> post, final String oldHash, final User loginUser, final DBSession session) {
-		final PostChangeLogParam param = new PostChangeLogParam();
-		param.setOldIntraHash(oldHash);
-		param.setNewIntraHash(post.getResource().getIntraHash());
-		param.setPostOwner(post.getUser().getName());
-		param.setPostEditor(loginUser.getName());
+	private boolean logUpdate(final Post<R> post, final int oldContentId, final User loginUser, final DBSession session) {
+		final LoggingParam param = new LoggingParam();
+		param.setOldContentId(oldContentId);
+		param.setNewContentId(post.getContentId());
+		param.setPostOwner(post.getUser());
+		param.setPostEditor(loginUser);
 		param.setDate(new Date());
+		param.setContentType(post.getResource() instanceof Bookmark ? 1 : 2);
 
-		this.insert("log" + this.resourceClassName + "PostUpdate", param, session);
+		this.insert("logPostUpdate", param, session);
 		return true;
 	}
-	
-	private boolean logDelete(final String owner, final String oldHash, final User loginUser, final DBSession session) {
-		final PostChangeLogParam param = new PostChangeLogParam();
-		param.setOldIntraHash(oldHash);
-		param.setNewIntraHash("");
-		param.setPostOwner(owner);
-		param.setPostEditor(loginUser.getName());
-		param.setDate(new Date());
 
-		this.insert("log" + this.resourceClassName + "PostUpdate", param, session);
+	private boolean logDelete(final User owner, final int oldContentId, final R resource, final User loginUser, final DBSession session) {
+		final LoggingParam param = new LoggingParam();
+		param.setOldContentId(oldContentId);
+		param.setNewContentId(-1);
+		param.setPostOwner(owner);
+		param.setPostEditor(loginUser);
+		param.setDate(new Date());
+		param.setContentType(resource instanceof Bookmark ? 1 : 2);
+
+		this.insert("logPostUpdate", param, session);
 		return true;
 	}
 }

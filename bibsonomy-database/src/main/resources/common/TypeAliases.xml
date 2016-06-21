@@ -80,7 +80,6 @@
 	<typeAlias alias="discussionItemParam"	type="org.bibsonomy.database.params.discussion.DiscussionItemParam" />
 	<typeAlias alias="commentParam"		  	type="org.bibsonomy.database.params.discussion.CommentParam" />
 	<typeAlias alias="reviewParam"			type="org.bibsonomy.database.params.discussion.ReviewParam" />
-	<typeAlias alias="postChangeLogParam"	type="org.bibsonomy.database.params.PostChangeLogParam" />
 	
 	<!-- Java types  -->
 	<typeAlias alias="resourceTypeClass"	type="java.lang.Class" />

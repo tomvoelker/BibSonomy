@@ -43,8 +43,8 @@
 	
 	<insert id="logGoldStandard">
 		INSERT INTO log_gold_standard (new_simhash1, content_id, new_content_id, current_content_id, change_date, <include refid ="allGoldStandardPublicationColumns"/>)
-		SELECT #newId#, content_id, #newContentId#, #newContentId#, change_date, <include refid ="allGoldStandardPublicationColumns"/>
-		FROM gold_standard WHERE simhash1 = #oldId#
+		SELECT #newHash#, content_id, #newContentId#, #newContentId#, change_date, <include refid ="allGoldStandardPublicationColumns"/>
+		FROM gold_standard WHERE simhash1 = #oldHash#
 	</insert>
 		
 	<insert id="logGoldStandardRelationDelete">
@@ -224,15 +224,8 @@
 		FROM person WHERE person_id = #personId#
 	</insert>
 
-	<insert id="logBookmarkPostUpdate" parameterClass="postChangeLogParam">
-		INSERT INTO log_postchange VALUES (#postOwner#, #postEditor#, #oldIntraHash#, #newIntraHash#, 1, #date#)
+	<insert id="logPostUpdate" parameterClass="loggingParam">
+		INSERT INTO log_postchange VALUES (#postOwner.name#, #postEditor.name#, #oldContentId#, #newContentId#, #contentType#, #date#)
 	</insert>
 	
-	<insert id="logBibTexPostUpdate" parameterClass="postChangeLogParam">
-		INSERT INTO log_postchange VALUES (#postOwner#, #postEditor#, #oldIntraHash#, #newIntraHash#, 2, #date#)
-	</insert>
-	
-	<insert id="logGoldStandardUpdate" parameterClass="postChangeLogParam">
-		INSERT INTO log_postchange VALUES (#postOwner#, #postEditor#, #oldIntraHash#, #newIntraHash#, 2, #date#)
-	</insert>
 </sqlMap>

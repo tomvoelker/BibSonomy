@@ -35,28 +35,28 @@ import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
  * @author dzo
  */
 public class GoldStandardPublicationReferencePlugin extends AbstractDatabasePlugin {
-	
+
 	@Override
 	public void onGoldStandardDelete(final String interhash, final DBSession session) {
 		// delete all references of the post
 		final GoldStandardReferenceParam param = new GoldStandardReferenceParam();
 		param.setHash(interhash);
 		param.setRefHash(interhash);
-		
+
 		this.delete("deleteRelationsGoldStandardPublication", param, session);
 		this.delete("deleteGoldStandardPublicationRelations", param, session);
 	}
-	
+
 	@Override
 	public void onGoldStandardUpdate(final int oldContentId, final int newContentId, final String newInterhash, final String interhash, final DBSession session) {
 		// update all references of the post
-		final LoggingParam<String> param = new LoggingParam<String>();
-		param.setNewId(newInterhash);
-		param.setOldId(interhash);
-		
+		final LoggingParam param = new LoggingParam();
+		param.setNewHash(newInterhash);
+		param.setOldHash(interhash);
+
 		this.update("updateGoldStandardPublicationRelations", param, session);
 		this.update("updateRelationsGoldStandardPublication", param, session);
-		
+
 		/*
 		 * move discussion with the gold standard
 		 */
