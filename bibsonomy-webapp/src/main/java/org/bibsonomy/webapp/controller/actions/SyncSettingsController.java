@@ -119,14 +119,14 @@ public class SyncSettingsController extends SettingsPageController implements Va
 			final SyncService newSyncServer = command.getNewSyncServer();			
 			this.logic.createSyncServer(loginUserName, newSyncServer);
 			// forward user to sync-page to perform an initial sync in BOTH directions first 
-			if (SyncUtils.syncServiceRequiresInitialSync(newSyncServer)) {
+			if (SyncUtils.autoSyncServiceRequiresInitialSync(newSyncServer)) {
 				return new ExtendedRedirectView("/sync");
 			}
 			break;
 		case PUT:
 			this.logic.updateSyncServer(loginUserName, syncServer, SyncSettingsUpdateOperation.SETTINGS);
 			// forward user to sync-page to perform an initial sync in BOTH directions first 
-			if (SyncUtils.syncServiceRequiresInitialSync(syncServer)) {
+			if (SyncUtils.autoSyncServiceRequiresInitialSync(syncServer)) {
 				return new ExtendedRedirectView("/sync");
 			}
 			break;
