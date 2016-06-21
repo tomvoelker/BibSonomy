@@ -14,7 +14,7 @@
 			<!-- TODO: change message keys when renaming BibTex class to Publication -->
 			<div class="row">
 				<div class="col-md-6 col-md-offset-3">
-					<fontawsome:icon icon="info" /><c:out value=" " />
+					<fontawsome:icon icon="info-circle" /><c:out value=" " />
 					<fmt:message key="post.resource.review.${fn:toLowerCase(resource['class'].simpleName)}.noReview" />
 				</div>
 			</div>
