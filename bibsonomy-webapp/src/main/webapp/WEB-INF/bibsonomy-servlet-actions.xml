@@ -630,6 +630,7 @@
 								<value>groupRole</value>
 								<value>pictureFile</value>
 								<value>deletePicture</value>
+								<value>userSharedDocuments</value>
 								<value>group.name</value>
 								<value>group.realname</value>
 								<value>group.description</value>

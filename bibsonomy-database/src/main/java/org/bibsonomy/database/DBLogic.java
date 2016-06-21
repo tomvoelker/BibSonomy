@@ -1382,7 +1382,7 @@ public class DBLogic implements LogicInterface {
 				case INVITED:
 					// only the user themselves can accept an invitation
 					this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, requestedUserName);
-					this.groupDBManager.addUserToGroup(group.getName(), requestedUserName, groupMembership.isUserSharedDocuments(), GroupRole.USER, session);
+					this.groupDBManager.addUserToGroup(group.getName(), requestedUserName, userSharedDocuments, GroupRole.USER, session);
 					break;
 				case REQUESTED:
 					// only mods or admins can accept requests

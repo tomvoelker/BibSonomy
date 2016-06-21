@@ -75,5 +75,8 @@ public enum GroupUpdateOperation {
 	UPDATE_PERMISSIONS,
 	
 	/** deletes the pending group - used for the request deletion by the user */
-	DELETE_GROUP_REQUEST;
+	DELETE_GROUP_REQUEST,
+	
+	/** updates the API key of the group user **/
+	REGENERATE_API_KEY;
 }
