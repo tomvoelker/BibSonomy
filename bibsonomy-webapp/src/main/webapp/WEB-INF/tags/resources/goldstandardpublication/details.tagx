@@ -62,11 +62,6 @@
 				+-->
 			<c:if test="${not empty goldstandard['abstract']}">
 				<div id="abstract">
-					<!-- 
-					<h2 class="pub-details">
-						<fmt:message key="publications.abstract.headline"/>
-					</h2>
-					 -->
 					<div class="show-more" itemprop="description">
 						<span class="contentContainer"><c:out value="${mtl:cleanBibtex(goldstandard['abstract'])}" /></span>
 					</div>
@@ -169,7 +164,7 @@
 			<pub2:citation post="${post}" isCommunityPost="${true}" />
 		</div>
 		
-		<div class="col-md-3 hidden-xs" id="sidebar-nav">
+		<div class="col-md-3 hidden-md-down" id="sidebar-nav">
 			<nav class="sidebar-nav" data-spy="affix" data-offset-top="275">
 				<ul class="nav">
 					<li>

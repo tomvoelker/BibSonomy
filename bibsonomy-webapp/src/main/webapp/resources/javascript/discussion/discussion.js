@@ -64,7 +64,19 @@ $(function() {
 	$('.reply').click(showReplyForm);
 	
 	if ($('#discussion #ownReview').length > 0) {
+		$('#comment-review-info').hide();
+		
 		$('.createreview').hide();
+	} else {
+		$('.createcomment:first').hide();
+		$('#comment-review-info .btn').click(function() {
+			$(this).siblings('.btn').removeClass('active');
+			$(this).addClass('active');
+			var classToShow = $(this).data('class');
+			var classToHide = $(this).data('hide-class');
+			$('.' + classToShow).show();
+			$('.' + classToHide).hide();
+		});
 	}
 	
 	$('.updatecomment').hide().submit(function() {
