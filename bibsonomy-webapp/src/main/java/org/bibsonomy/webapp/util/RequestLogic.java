@@ -33,9 +33,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import net.oauth.OAuthMessage;
-import net.oauth.server.OAuthServlet;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.User;
@@ -44,6 +41,9 @@ import org.bibsonomy.util.UrlBuilder;
 import org.bibsonomy.webapp.util.spring.security.saml.context.RelayStateSamlContextProviderImpl;
 import org.springframework.security.web.util.UrlUtils;
 import org.springframework.web.servlet.support.RequestContext;
+
+import net.oauth.OAuthMessage;
+import net.oauth.server.OAuthServlet;
 
 /**
  * Provides convenient access to the HTTP request. The request should 
@@ -281,10 +281,12 @@ public class RequestLogic {
 		request.getSession(true);
 	}
 	
+	@Deprecated // Use flash messages TODO: remove
 	public void setLastAction(String lastAction) {
 		setSessionAttribute(LAST_ACTION_SESSION_KEY, lastAction);
 	}
 	
+	@Deprecated // Use flash messages TODO: remove
 	public String getLastAction() {
 		return (String) getSessionAttribute(LAST_ACTION_SESSION_KEY);
 	}
