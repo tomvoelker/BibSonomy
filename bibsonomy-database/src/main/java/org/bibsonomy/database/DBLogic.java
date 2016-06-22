@@ -373,20 +373,21 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public List<SynchronizationPost> getSyncPlan(final String userName, final URI service, final Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction) {
-		
 		// handle resourceType = null
-		if (!present(resourceType))
+		if (!present(resourceType)) {
 			throw new IllegalArgumentException("no resourceType was given - abort getSyncPlan()");
-		
-		// reject sync if direction BOTH and server hasn't synced before
-		if (direction.equals(SynchronizationDirection.BOTH)) {
-			List<SyncService> syncServer = this.getSyncServiceSettings(userName, service, true);
-			if (!present(syncServer))
-				throw new IllegalStateException("no sync-server configured!");
-			else if (present(syncServer) && !syncServer.get(0).isAlreadySyncedOnce())
-				throw new IllegalStateException("sync-server " + syncServer.get(0).getName() + " hasn't performed an initial sync in both directions!");
 		}
 		
+		// FIXME: this does not work the server should check for sync data, server = true is wrong! (the server has no server settings! this is called on the server via api)
+		// reject sync if direction BOTH and server hasn't synced before
+		if (SynchronizationDirection.BOTH.equals(direction)) {
+			final List<SyncService> syncServer = this.getSyncServiceSettings(userName, service, true);
+			if (!present(syncServer)) {
+				throw new IllegalStateException("no sync-server configured!");
+			} else if (present(syncServer) && !syncServer.get(0).isAlreadySyncedOnce()) {
+				throw new IllegalStateException("sync-server " + syncServer.get(0).getName() + " hasn't performed an initial sync in both directions!");
+			}
+		}
 		
 		this.permissionDBManager.ensureWriteAccess(this.loginUser, userName);
 
