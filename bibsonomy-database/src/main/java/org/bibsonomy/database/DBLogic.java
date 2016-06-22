@@ -377,18 +377,7 @@ public class DBLogic implements LogicInterface {
 		if (!present(resourceType)) {
 			throw new IllegalArgumentException("no resourceType was given - abort getSyncPlan()");
 		}
-		
-		// FIXME: this does not work the server should check for sync data, server = true is wrong! (the server has no server settings! this is called on the server via api)
-		// reject sync if direction BOTH and server hasn't synced before
-		if (SynchronizationDirection.BOTH.equals(direction)) {
-			final List<SyncService> syncServer = this.getSyncServiceSettings(userName, service, true);
-			if (!present(syncServer)) {
-				throw new IllegalStateException("no sync-server configured!");
-			} else if (present(syncServer) && !syncServer.get(0).isAlreadySyncedOnce()) {
-				throw new IllegalStateException("sync-server " + syncServer.get(0).getName() + " hasn't performed an initial sync in both directions!");
-			}
-		}
-		
+
 		this.permissionDBManager.ensureWriteAccess(this.loginUser, userName);
 
 		if (!present(strategy)) {
@@ -402,6 +391,12 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = this.openSession();
 		try {
 			final SynchronizationData data = this.syncDBManager.getLastSyncData(userName, service, resourceType, null, session);
+
+			// reject sync if direction BOTH and server hasn't synced before
+			if (SynchronizationDirection.BOTH.equals(direction) && !present(data)) {
+				throw new IllegalStateException("sync request rejected! the server hasn't performed an initial sync in both directions!");
+			}
+
 			/*
 			 * check for a running synchronization
 			 */
