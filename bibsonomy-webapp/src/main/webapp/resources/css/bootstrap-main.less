@@ -166,8 +166,20 @@ a, .btn-link {
 	color: @link-color;
 }
 
-#search ul.dropdown-menu li a {
-	cursor: pointer;
+#search {
+	a.input-info {
+		color: black;
+		float: right;
+		margin-right: 5px;
+		margin-top: -27px;
+		position: relative;
+		z-index: 2;
+		opacity: 0.5;
+	}
+	
+	ul.dropdown-menu li a {
+		cursor: pointer;
+	}
 }
 
 
@@ -202,6 +214,37 @@ a, .btn-link {
 .nav .open>a:hover, 
 .nav .open>a:focus {
 	background-color: inherit;
+}
+
+.sidebar-nav.affix {
+	position: fixed;
+	top: 25px;
+}
+
+.sidebar-nav.affix-top {
+	position: static;
+	margin-top: 50px;
+}
+
+.sidebar-nav .nav>li>a {
+	color: #848484;
+	font-weight: bold;
+	padding-bottom: 5px;
+	padding-top: 5px;
+}
+.sidebar-nav .nav>li>a:focus, .sidebar-nav .nav>li>a:hover {
+	padding-left: 14px;
+	color: @main-color-light;
+	background-color: transparent;
+	border-left: 1px solid @main-color-light;
+}
+
+.sidebar-nav .nav>.active:focus>a, .sidebar-nav .nav>.active:hover>a, .sidebar-nav .nav>.active>a {
+	padding-left: 14px;
+	font-weight: 700;
+	color: @main-color-light;
+	background-color: transparent;
+	border-left: 1px solid @main-color-light;
 }
 
 
@@ -595,8 +638,13 @@ div#sidebar {
 	}
 }
 
-.more-list span.desc {
-	padding-left: 3px;
+.more-list {
+	.more-link-item-inline {
+		display:block;
+	}
+	span.desc {
+		padding-left: 3px;
+	}
 }
 
 .sidebar-setting-box {
@@ -1412,6 +1460,38 @@ ul#urlList {
 
 #caret-with-margin {
 	margin-left: 2px;
+}
+
+/** fixes for rating plugin */
+
+.rating-container {
+	.filled-stars {
+		text-shadow: none;
+	}
+	
+	&.rating-disabled .rating {
+		cursor: default;
+	}
+}
+
+.score {
+	display: inline-block;
+	color: #ccc;
+	font-size: 15px;
+	position: relative;
+}
+
+.score::before, .score span::before{
+	content: "\2605\2605\2605\2605\2605";
+	display: block;
+}
+
+.score span {
+	color: gold;
+	position: absolute;
+	top: 0;
+	left: 0;
+	overflow: hidden;
 }
 
 .btn-group-wrap-text {

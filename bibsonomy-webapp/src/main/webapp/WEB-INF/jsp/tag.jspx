@@ -14,10 +14,8 @@
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<fmt:message var="headline" key="page.tag.headline" />
-	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" headline="${headline}${command.requestedTags}">
-
-    	<jsp:attribute name="breadcrumbs">
+	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
+		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
 					<nav:crumb nameKey="navi.tag" />
@@ -28,7 +26,7 @@
 		
 		<jsp:attribute name="heading">
 			<c:choose>
-				<c:when test="${not empty command.scope and command.scope.name() ne 'LOCAL'}">					
+				<c:when test="${not empty command.scope and command.scope.name() ne 'LOCAL'}">
 					<c:set var="pathMessageKey" value="navi.federatedTag"/>
 					<c:url var="tagUrl" value="${relativeUrlGenerator.getTagUrlByTagName(command.requestedTags)}?scope=FEDERATED"/>
 					<c:url var="tagUrlFolkRank" value ="${tagUrl}">
@@ -36,7 +34,7 @@
 					</c:url>
 				</c:when>
 				<c:otherwise>
-					<c:set var="pathMessageKey" value="navi.tag"/>		
+					<c:set var="pathMessageKey" value="navi.tag"/>
 					<c:url var="tagUrl" value="${relativeUrlGenerator.getTagUrlByTagName(command.requestedTags)}"/>					
 					<c:url var="tagUrlFolkRank" value="${tagUrl}?order=folkrank"/>
 				</c:otherwise>
@@ -73,13 +71,12 @@
 		
 		<jsp:attribute name="sidebar">
 			<parts:tagsAndConceptsForSidebar/>
-
 			
 			<!-- related tags -->
 			<c:if test="${not empty command.relatedTagCommand.relatedTags}">
 				<sidebar:relatedTagsItem requPath="${requPath}" cmd="${command.relatedTagCommand}" scope="${command.scope.name()}" order="${command.order}"/>
 			</c:if>
-
+			
 			<fmt:message key="help.link.tag.similarRelated" var="helpLink"/>
 			
 			<!-- similar tags -->
@@ -89,7 +86,7 @@
 						<tags:similar requPath="${requPath}" cmd="${command.similarTags}" scope="${command.scope.name()}"/>
 					</jsp:attribute>
 				</sidebar:sidebarItem>
-			</c:if>			
+			</c:if>
 			
 			<!-- related users -->
 			<c:if test="${not empty command.relatedUserCommand.relatedUsers}">
@@ -100,7 +97,6 @@
 				</sidebar:sidebarItem>
 			</c:if>
 		</jsp:attribute>
-		
 	</layout:resourceLayout>
 
 </jsp:root>

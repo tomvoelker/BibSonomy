@@ -101,7 +101,9 @@ public class UrlBuilder {
 	 * @return this object
 	 */
 	public UrlBuilder addPathElement(String pathElement) {
-		this.pathElements.add(pathElement);
+		if (present(pathElement)) {
+			this.pathElements.add(pathElement);
+		}
 		return this;
 	}
 	

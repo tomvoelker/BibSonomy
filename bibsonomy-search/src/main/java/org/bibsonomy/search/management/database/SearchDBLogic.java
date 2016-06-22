@@ -305,8 +305,11 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 			session.close();
 		}
 	}
-
-	private String getResourceName() {
+	
+	/**
+	 * @return the resourceName
+	 */
+	protected String getResourceName() {
 		return this.resourceClass.getSimpleName();
 	}
 

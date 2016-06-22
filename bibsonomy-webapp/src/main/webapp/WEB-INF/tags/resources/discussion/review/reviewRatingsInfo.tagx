@@ -3,45 +3,45 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
-	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review">
+	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
+	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
 
-	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />		
-	<!-- contains schemo.org markup -->
-	<!-- contains RDFa infos -->
+	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
+	
 	<div id="review_info_rating" itemprop="aggregateRating" itemscope="itemscope" itemtype="http://schema.org/AggregateRating">
+		
 		<c:if test="${empty resource.numberOfRatings or resource.numberOfRatings &lt; 1 }">
 			<!-- TODO: change message keys when renaming BibTex class to Publication -->
-			<div id="noReviewInfo"><fmt:message key="post.resource.review.${fn:toLowerCase(resource['class'].simpleName)}.noReview" /></div>
+			<div class="row">
+				<div class="col-md-6 col-md-offset-3">
+					<fontawsome:icon icon="info-circle" /><c:out value=" " />
+					<fmt:message key="post.resource.review.${fn:toLowerCase(resource['class'].simpleName)}.noReview" />
+				</div>
+			</div>
 		</c:if>
-		
-		<div id="ratingDistribution">
-			<fmt:message key="post.resource.review.info.ratingDistribution" />
-			<div id="ratingDistributionGraph" style="width: 315px; height: 60px;">
-				<!-- ploted by javascript -->
+		<br />
+		<div class="row">
+			<div class="col-md-6 text-center">
+				<fmt:message key="post.resource.review.info.ratingDistribution" />
+				<canvas id="rating-distribution" width="315" height="60">
+					<!-- ploted by JavaScript -->
+				</canvas>
 			</div>
-		</div>
-		
-		<div id="ratingAvg">
-			<div>
-				<p style="float: left;"><fmt:message key="post.resource.review.info.ratingAvg" />&amp;nbsp;</p>
-				<div style="float: left">
-					<buttons:help iconTextStyle="float:none" message="post.resource.review.ratings.basedOn.help"/>
-				</div> 
-			</div>
-			<!-- TODO: add bigger star images and change dimension to 2 -->
-			<div><review:reviewStars rating="${resource.rating}" /></div>
-
-			<!-- plural -->
-			<fmt:message var="ratingTitle" key="post.resource.review.reviews" />
-			<c:if test="${resource.numberOfRatings == 1}">
-				<!-- singular -->
-				<fmt:message var="ratingTitle" key="post.resource.review.review" />
-			</c:if>
-
-			<fmt:formatNumber var="roundedRating" value="${resource.rating}" maxFractionDigits="1" minFractionDigits="1" />
-
-			<div class="ratingAvgInfo">
-				(<span property="ratingAverage" itemprop="ratingValue"><c:out value="${roundedRating}" /></span>
+			<div class="col-md-6 text-center" id="ratingAvg">
+				<fmt:message key="post.resource.review.info.ratingAvg" />
+				
+				<input id="averageRating" type="number" min="0" max="5" step="0.1" />
+				
+				<fmt:formatNumber var="roundedRating" value="${resource.rating}" maxFractionDigits="1" minFractionDigits="1" />
+				
+				<!-- plural -->
+				<fmt:message var="ratingTitle" key="post.resource.review.reviews" />
+				<c:if test="${resource.numberOfRatings == 1}">
+					<!-- singular -->
+					<fmt:message var="ratingTitle" key="post.resource.review.review" />
+				</c:if>
+				
+				<span property="ratingAverage" itemprop="ratingValue"><c:out value="${roundedRating}" /></span>
 				<c:out value=" " />
 				<fmt:message key="post.resource.review.ratings.of" />
 				<c:out value=" " />
@@ -50,7 +50,7 @@
 				<c:out value=" " />
 				<span>
 					<c:out value="${ratingTitle}" />
-				</span>)
+				</span>
 				<meta itemprop="worstRating" content="0.0"/>
 			</div>
 		</div>

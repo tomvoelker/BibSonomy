@@ -38,7 +38,7 @@ public class SearchGoldStandardLogic extends SearchDBLogic<GoldStandardPublicati
 	protected Integer getLastTasId() {
 		final DBSession session = this.openSession();
 		try {
-			return this.queryForObject("getLastContentId", Integer.class, session);
+			return this.queryForObject("getLastContentId" + this.getResourceName(), Integer.class, session);
 		} finally {
 			session.close();
 		}

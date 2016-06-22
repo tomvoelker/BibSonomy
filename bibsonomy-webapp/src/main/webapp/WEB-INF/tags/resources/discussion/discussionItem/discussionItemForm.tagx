@@ -16,9 +16,6 @@
 	<jsp:directive.attribute name="userName" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="postUserName" type="java.lang.String" required="true" />
 
-
-	<script src="/resources/jquery/plugins/autoresize/jquery.autoresize.js" type="text/javascript"><!--keep me!--></script>
-
 	<form action="/ajax/${discussionItemClass}s" method="post"
 		class="form-horizontal ${action}${discussionItemClass}">
 
@@ -31,7 +28,7 @@
 			<input name="hash" value="${resource.interHash}" type="hidden" />
 			<input name="postUserName" value="${postUserName}" type="hidden" />
 			<input name="intraHash" value="${command.intraHash}" type="hidden" />
-
+			
 			<c:if test="${not empty discussionItem.hash}">
 				<input name="discussionItem.hash" value="${discussionItem.hash}" type="hidden" />
 			</c:if>

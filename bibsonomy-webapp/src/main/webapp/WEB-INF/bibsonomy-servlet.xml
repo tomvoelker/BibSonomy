@@ -741,6 +741,7 @@
 		<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
 		<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
 		<value type="java.lang.Class">org.bibsonomy.model.GoldStandardPublication</value>
+		<value type="java.lang.Class">org.bibsonomy.model.GoldStandardBookmark</value>
 	</util:set>
 	
 	<bean id="homepageController" class="org.bibsonomy.webapp.controller.HomepageController" scope="request" parent="multiResourceListController">
