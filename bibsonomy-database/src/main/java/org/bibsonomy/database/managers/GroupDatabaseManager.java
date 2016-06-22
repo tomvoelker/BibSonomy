@@ -499,7 +499,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		try {
 			session.beginTransaction();
 			// activate the user
-			this.userDb.performActivationSteps(new User(groupName), session);
+			this.userDb.activateUser(new User(groupName), session);
 
 			// "move" the pending group row to the normal group table
 			this.insert("activateGroup", groupName, session);
