@@ -602,7 +602,7 @@ public abstract class GenericParam {
 	 * If you need the system tag which identifies BibSonomy's follower
 	 * relation
 	 * 
-	 * @return BibSonomy's follower network system tag
+	 * @return follower network system tag
 	 */
 	public String getFollowerTag() {
 		return NetworkRelationSystemTag.FOLLOWER_SYSTEMTAG;

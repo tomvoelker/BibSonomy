@@ -219,7 +219,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		if (query == "updateUser" || query == "updateUserProfile") {
 			final UploadedFile profilePicture = user.getProfilePicture();
 
-			if ( !present(profilePicture) ) {
+			if (!present(profilePicture)) {
 				//nothing to do
 				return;
 			}

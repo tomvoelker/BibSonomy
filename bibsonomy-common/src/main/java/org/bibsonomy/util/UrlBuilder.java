@@ -100,7 +100,7 @@ public class UrlBuilder {
 	 * @param pathElement part between two '/'es
 	 * @return this object
 	 */
-	public UrlBuilder addPathElement(String pathElement) {
+	public UrlBuilder addPathElement(final String pathElement) {
 		if (present(pathElement)) {
 			this.pathElements.add(pathElement);
 		}
