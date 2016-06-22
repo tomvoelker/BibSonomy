@@ -56,7 +56,7 @@ public class AhaJournalsScraper extends GenericBibTeXURLScraper{
 	private static final String DOWNLOAD_URL = "http://circ.ahajournals.org/citmgr?type=bibtex&gca=circulationaha%3B";
 	
 	@Override
-	protected String getDownloadURL(final URL url) throws ScrapingException, IOException {
+	protected String getDownloadURL(final URL url, String cookies) throws ScrapingException, IOException {
 		final String id = extractID(url);
 		if (id == null) {
 			return null;

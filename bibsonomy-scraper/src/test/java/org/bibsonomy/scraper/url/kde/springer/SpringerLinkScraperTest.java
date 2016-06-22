@@ -33,81 +33,50 @@ import org.junit.experimental.categories.Category;
 
 /**
  * Scraper URL tests #30 #41 for SpringerLinkScraper
+ * 
  * @author tst
  *
  */
 @Category(RemoteTest.class)
 public class SpringerLinkScraperTest {
-	
+
 	/**
 	 * starts URL test with id url_30
 	 */
 	@Test
-	public void url1TestRun(){
+	public void url1TestRun() {
 		UnitTestRunner.runSingleTest("url_30");
 	}
-	
+
 	/**
 	 * starts URL test with id url_41
 	 */
 	@Test
-	public void url2TestRun(){
+	public void url2TestRun() {
 		UnitTestRunner.runSingleTest("url_41");
 	}
 
 	/**
-	 * starts URL test with id url_142
-	 */
-	@Test
-	public void url3TestRun(){
-		UnitTestRunner.runSingleTest("url_142");
-	}
-
-	/**
-	 * starts URL test with id url_143
-	 */
-	@Test
-	public void url4TestRun(){
-		UnitTestRunner.runSingleTest("url_143");
-	}
-	
-	/**
 	 * starts URL test with id url_183
 	 */
 	@Test
-	public void url5TestRun(){
+	public void url4TestRun() {
 		UnitTestRunner.runSingleTest("url_183");
 	}
-	
-	/**
-	 * starts URL test with id url_187
-	 */
-	@Test
-	public void url6TestRun(){
-		UnitTestRunner.runSingleTest("url_187");
-	}
-	
+
 	/**
 	 * starts URL test with id url_235
 	 */
 	@Test
-	public void url7TestRun(){
+	public void url5TestRun() {
 		UnitTestRunner.runSingleTest("url_235");
 	}
-	
+
 	/**
 	 * starts URL test with id url_238
 	 */
 	@Test
-	public void url8TestRun(){
+	public void url6TestRun() {
 		UnitTestRunner.runSingleTest("url_238");
-	}
-	
-	/**
-	 * starts URL test with id url_239
-	 */
-	@Test
-	public void url9TestRun(){
-		UnitTestRunner.runSingleTest("url_239");
 	}
 }

@@ -4,12 +4,12 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
 	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/resources/discussion/discussionItem">
-
+	
 	<jsp:directive.attribute name="discussionItem" type="org.bibsonomy.model.DiscussionItem" required="true" />
 	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="true" />
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true" />
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>
-	<jsp:directive.attribute name="schemaOrgMarkUp" type="java.lang.Boolean" required="true" />
+	<jsp:directive.attribute name="editor" fragment="true" required="false"/>
 
 	<c:set var="discussionItemUserName" value="${discussionItem.user.name}" />
 
@@ -17,62 +17,55 @@
 	<c:set var="anonymous" value="${discussionItem.anonymous}" />
 
 	<c:set var="clazz" value="${fn:toLowerCase(discussionItem['class'].simpleName)}" />
-
+	
 	<c:set var="displayUserName"><user:username noLink="${true}" username="${discussionItemUserName}"/></c:set>
-
-	<c:choose>
-		<c:when test="${anonymous}">
-			<img class="media-object commentPicture thumbnail img-thumbnail pull-left" src="${resdir}/image/anonymous.png" alt="anonymous" />
-		</c:when>
-		<c:otherwise>
-			<a href="/user/${fn:escapeXml(discussionItemUserName)}" class="thumbnail img-thumbnail pull-left" title="${displayUserName}">
-				<img src="/picture/user/${fn:escapeXml(discussionItemUserName)}" alt="userPicture" class="media-object commentPicture"/>
-				<span><c:out value="${displayUserName}" /></span>
-			</a>
-		</c:otherwise>
-	</c:choose>
-
-	<div class="media-body">
+	
+	<div class="media-left">
 		<c:choose>
-			<c:when test="${schemaOrgMarkUp}">
-				<c:set var="itemtype" value="http://schema.org/Review"/>
-				<c:set var="itemprop" value="reviews"/>
-				<c:if test="${clazz eq 'comment'}">
-					<c:set var="itemtype" value="http://schema.org/UserComment"/>
-					<c:set var="itemprop" value="comment"/>
-				</c:if>
-
-				<div class="${clazz} details"  itemprop="${itemprop}" itemscope="itemscope" itemtype="${itemtype}">
-					<discussionItem:discussionItemInfo discussionItem="${discussionItem}" content="${content}" anonymous="${anonymous}" ownDiscussionItem="${ownDiscussionItem}" schemaOrgMarkUp="${schemaOrgMarkUp}"/>
-					<div class="citeBox" style="display:none" >
-						<!-- keep it -->
-						<h3><fmt:message key="discussion.references" /></h3>
-					</div>
-					<div class="bookCiteBox" style="display:none" >
-							<!-- keep it -->
-							<h3><fmt:message key="discussion.bookmarkReferences" /></h3>
-						</div>
-				</div>
+			<c:when test="${anonymous and not ownDiscussionItem}">
+				<a class="thumbnail img-thumbnail">
+					<img src="${resdir}/image/anonymous.png" alt="anonymous" class="media-object commentPicture" />
+				</a>
 			</c:when>
 			<c:otherwise>
-				<div class="${clazz} details">
-					<discussionItem:discussionItemInfo discussionItem="${discussionItem}" content="${content}" anonymous="${anonymous}" ownDiscussionItem="${ownDiscussionItem}" schemaOrgMarkUp="${schemaOrgMarkUp}"/>
-						<div class="citeBox" style="display:none" >
-							<!-- keep it -->
-							<h3><fmt:message key="discussion.references" /></h3>
-						</div>
-						<div class="bookCiteBox" style="display:none" >
-							<!-- keep it -->
-							<h3><fmt:message key="discussion.bookmarkReferences" /></h3>
-						</div>
-				</div>
+				<a href="/user/${fn:escapeXml(discussionItemUserName)}" class="thumbnail img-thumbnail" title="${displayUserName}">
+					<img src="/picture/user/${fn:escapeXml(discussionItemUserName)}" alt="userPicture" class="media-object commentPicture"/>
+				</a>
 			</c:otherwise>
 		</c:choose>
-
-		<!-- actions -->
-		<discussionItem:discussionItemActions discussionItem="${discussionItem}" />
-		<!-- sub items -->
-		<discussionItem:subDiscussionItems discussionItems="${discussionItem.subDiscussionItems}" loginUser="${loginUser}" resource="${resource}"/>
 	</div>
-
+	<c:set var="itemtype" value="http://schema.org/Review"/>
+	<c:set var="itemprop" value="review"/>
+	<c:if test="${clazz eq 'comment'}">
+		<c:set var="itemtype" value="http://schema.org/Comment"/>
+		<c:set var="itemprop" value="comment"/>
+	</c:if>
+	<div class="media-body" itemprop="${itemprop}" itemscope="itemscope" itemtype="${itemtype}">
+		<div class="info" data-username="${discussionItem.user.name}" data-discussion-item-hash="${discussionItem.hash}">
+			<discussionItem:discussionItemOwner discussionItem="${discussionItem}" loginUser="${loginUser}"/>
+			<discussionItem:discussionItemInfo discussionItem="${discussionItem}" anonymous="${anonymous}" ownDiscussionItem="${ownDiscussionItem}" />
+		</div>
+		<div class="${clazz} details">
+			<jsp:invoke fragment="content"/>
+			<div class="citeBox" style="display:none" >
+				<!-- keep it -->
+				<span class="cite-header"><fmt:message key="discussion.references" /></span>
+			</div>
+			<div class="bookCiteBox" style="display:none">
+				<!-- keep it -->
+				<span class="cite-header"><fmt:message key="discussion.bookmarkReferences" /></span>
+			</div>
+		</div>
+		
+		<c:if test="${not empty editor}">
+			<jsp:invoke fragment="editor"/>
+		</c:if>
+		
+		<div class="actions">
+			<discussionItem:discussionItemActions discussionItem="${discussionItem}" />
+		</div>
+		
+		<!-- sub items -->
+		<discussionItem:subDiscussionItems parentItem="${discussionItem}" loginUser="${loginUser}" resource="${resource}" hidden="${true}"/>
+	</div>
 </jsp:root>

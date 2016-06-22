@@ -1,0 +1,98 @@
+#goldstandard {
+	h1 {
+		font-size: 100%;
+		
+		.publication-description {
+			line-height: 1.3;
+			font-size: 95%;
+			display: block;
+			margin-top: 0.4em;
+		}
+	}
+	
+	.tagcloud {
+		text-align: center;
+		.tag {
+			display: inline-block;
+			padding: 2px 5px 3px;
+			margin: 0.8em;
+			background-color: @main-color;
+			font-weight: 700;
+			line-height: 1;
+			text-align: center;
+			white-space: nowrap;
+			vertical-align: baseline;
+			border-radius: .25em;
+			a {
+				color: white;
+			}
+		}
+		
+		.tagtiny {
+			font-size: 50%;
+		}
+		
+		.tagnormal {
+			font-size: 65%
+		}
+		
+		.taglarge {
+			font-size: 80%;
+		}
+		
+		.taghuge {
+			font-size: 100%;
+			padding: 8px;
+		}
+	}
+	
+	.citation-box {
+		margin-bottom: 50px;
+	}
+	
+	#related-publications {
+		ul {
+			padding-left: 0px;
+		
+			li {
+				list-style: none;
+			}
+			
+			a.title {
+				padding-right: 4px;
+			}
+		}
+		
+		.btn-group {
+			margin-bottom: 10px;
+		}
+	}
+}
+
+.community-info {
+	margin-left: 15px;
+	padding: 7px;
+	margin-top: 1px;
+	border-radius: 5px;
+	
+	&.warning {
+		background-color: @alert-warning-bg;
+	}
+}
+
+span.community-approved {
+	color: @main-color;
+	margin-left: 5px;
+	font-size: 70%;
+}
+
+#linksresources, #related-publications-references {
+	margin-top: 0.5em;
+}
+
+#linksresources {
+	margin-top: 15px;
+	dt, dd {
+		padding-bottom: 3px;
+	}
+}

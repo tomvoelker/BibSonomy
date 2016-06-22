@@ -29,7 +29,6 @@
     <jsp:directive.attribute name="tags" fragment="true" required="false" />
     <jsp:directive.attribute name="groups" fragment="true" required="false" />
     <jsp:directive.attribute name="extraInformation" fragment="true" required="false" description="Extra information which shall be displayed outside the form."/>
-    <jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>
     <jsp:directive.attribute name="postApproval" fragment="true" required="false" description="A checkbox inorder to approve goldstandard posts"/>
 	
 	<fmt:message key="navi.edit${resourceType}" var="editPageTitle" />
@@ -39,7 +38,6 @@
 		pageTitle="${editPageTitle}" 
 		requPath="${requPath}" 
 		activeTab="${activeTab}"
-		minimizedContentWidth="${minimizedContentWidth}"
 		noSidebar="${true}"
 		>
 		

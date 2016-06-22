@@ -15,10 +15,8 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
-	<fmt:message var="headline" key="page.followers.headline" />
 	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
-
-	<layout:resourceLayout pageTitle="${command.pageTitle}"	command="${command}" requPath="${requPath}"	activeTab="${command.context.loginUser.name != null ? 'my' : ''}" headline="${headline}">
+	<layout:resourceLayout pageTitle="${command.pageTitle}"	command="${command}" requPath="${requPath}"	activeTab="${command.context.loginUser.name != null ? 'my' : ''}">
 
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.followees"/>

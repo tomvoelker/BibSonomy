@@ -1,0 +1,49 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+	<jsp:directive.attribute name="postOfLoggedInUser" type="org.bibsonomy.model.Post" required="true"/>
+	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
+	<jsp:directive.attribute name="communityPostExists" type="java.lang.Boolean" required="true"/>
+	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="showEditOnly" type="java.lang.Boolean" required="true"/>
+	
+	<div class="row">
+		<div class="col-md-11 col-md-offset-1">
+			<buttons:communityPostActions post="${post}" resourceType="${resourceType}" communityPostExists="${communityPostExists}"/>
+			<c:choose>
+				<c:when test="${not empty postOfLoggedInUser}">
+					<span class="community-info warning">
+						<fontawsome:icon icon="warning" /><c:out value=" " />
+						<fmt:message key="community.warning.view" /><c:out value=" " />
+						<c:choose>
+							<c:when test="${showEditOnly}">
+								<a href="${relativeUrlGenerator.getEditUrlOfPost(postOfLoggedInUser)}"><fmt:message key="community.warning.edit" /></a>
+							</c:when>
+							<c:otherwise>
+								<fmt:message key="community.warning.edit">
+									<fmt:param value="${relativeUrlGenerator.getPostUrl(postOfLoggedInUser)}" />
+								</fmt:message>
+							</c:otherwise>
+						</c:choose>
+					</span>
+				</c:when>
+				<c:otherwise>
+					<c:if test="${command.context.userLoggedIn}">
+						<span class="community-info">
+							<bs:linkButton href="${relativeUrlGenerator.getCopyUrlOfPost(post) }" size="small" style="success" icon="copy" textKey="${resourceType}.actions.copy.title" />
+						</span>
+					</c:if>
+				</c:otherwise>
+			</c:choose>
+		</div>
+	</div>
+</jsp:root>

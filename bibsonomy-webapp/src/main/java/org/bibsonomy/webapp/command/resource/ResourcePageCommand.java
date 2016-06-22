@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.model.DiscussionItem;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.TagResourceViewCommand;
 
@@ -41,7 +42,9 @@ public class ResourcePageCommand<R extends Resource> extends TagResourceViewComm
 	private String requestedHash;
 
 	private Map<String, List<String>> copyUsersMap;
-
+	
+	private Post<R> postOfLoggedInUser;
+	
 	private List<DiscussionItem> discussionItems;
 
 	private String postOwner;
@@ -96,6 +99,20 @@ public class ResourcePageCommand<R extends Resource> extends TagResourceViewComm
 	 */
 	public void setRequestedHash(final String requestedHash) {
 		this.requestedHash = requestedHash;
+	}
+
+	/**
+	 * @return the postOfLoggedInUser
+	 */
+	public Post<R> getPostOfLoggedInUser() {
+		return this.postOfLoggedInUser;
+	}
+
+	/**
+	 * @param postOfLoggedInUser the postOfLoggedInUser to set
+	 */
+	public void setPostOfLoggedInUser(Post<R> postOfLoggedInUser) {
+		this.postOfLoggedInUser = postOfLoggedInUser;
 	}
 
 	/**

@@ -45,7 +45,9 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlBuilder;
 import org.bibsonomy.util.UrlUtils;
 
@@ -123,7 +125,6 @@ public class URLGenerator {
 	private static final String PUBLICATION_PREFIX = "bibtex";
 	private static final String RELEVANTFOR_PREFIX = "relevantfor";
 	private static final String SEARCH_PREFIX = "search";
-	private static final String SHARED_RESOURCE_SEARCH_PREFIX = "sharedResourceSearch";
 	private static final String SETTINGS_PREFIX = "settings";
 	private static final String TAG_PREFIX = "tag";
 	private static final String USER_PREFIX = "user";
@@ -467,6 +468,46 @@ public class URLGenerator {
 		url += "/" + UrlUtils.encodePathSegment(tagName);
 
 		return this.getUrl(url);
+	}
+	
+	/**
+	 * @param post
+	 * @return edit url for the post
+	 */
+	public String getEditUrlOfPost(final Post<? extends Resource> post) {
+		final UrlBuilder urlBuilder = new UrlBuilder(this.projectHome);
+		final Resource resource = post.getResource();
+		urlBuilder.addPathElement(this.prefix).addPathElement(getEditUrlByResourceClass(resource.getClass()));
+		urlBuilder.addParameter("intraHashToUpdate", resource.getIntraHash());
+		
+		return this.getUrl(urlBuilder.asString());
+	}
+	
+	/**
+	 * @param post
+	 * @return the copy url for the community post
+	 */
+	public String getCopyUrlOfPost(final Post<? extends Resource> post) {
+		final UrlBuilder urlBuilder = new UrlBuilder(this.projectHome);
+		final Resource resource = post.getResource();
+		final Class<? extends Resource> superiorResourceClass = ResourceFactory.findSuperiorResourceClass(resource);
+		urlBuilder.addPathElement(this.prefix).addPathElement(getEditUrlByResourceClass(superiorResourceClass));
+		if (ResourceFactory.isCommunityResource(resource)) {
+			urlBuilder.addParameter("hash", resource.getInterHash());
+		} else {
+			urlBuilder.addParameter("hash", resource.getIntraHash());
+			urlBuilder.addParameter("user", post.getUser().getName());
+		}
+		
+		return this.getUrl(urlBuilder.asString());
+	}
+
+	/**
+	 * @param resourceClass
+	 * @return
+	 */
+	private static String getEditUrlByResourceClass(final Class<? extends Resource> resourceClass) {
+		return "edit" + StringUtils.capitalizeWord(ResourceFactory.getResourceName(resourceClass));
 	}
 	
 	/**
@@ -1396,7 +1437,7 @@ public class URLGenerator {
 				+ UrlUtils.encodePathSegment(userName);
 		return this.getUrl(url);
 	}
-
+	
 	/**
 	 * Constructs the URL for the report as spammer url
 	 * 
@@ -1684,7 +1725,7 @@ public class URLGenerator {
 		final String url = this.projectHome + PUBLICATION_PREFIX + "/"
 				+ PUBLICATION_INTER_HASH_ID + interHash + "?postOwner="
 				+ UrlUtils.encodePathSegment(userName) + "&amp;intraHash="
-				+ intraHash + "#discussionbox";
+				+ intraHash + "#discussionbox"; //FIXME: # are not working in redirects
 		return this.getUrl(url);
 	}
 

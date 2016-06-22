@@ -1,16 +1,19 @@
 /**
  * for deleting and adding references
  */
-
 var FADE_DURATION = 1000;
 var GOLD_REFERENCE_URL = '/ajax/goldstandards/references';
 
 $(function() {
-	$("#gold_exports").tabs();
-	
-	// hide reference list if no publication references it
-	if ($("li.reference").length == 1) { // 1 because template for list item is in the list :)
-		$("#gold_references").hide();
+	$("#related-publications .btn-group > .btn").click(function() {
+		var uls = $("#related-publications ul");
+		uls.hide();
+		uls.eq($(this).index()).show();
+		$(this).addClass("active").siblings().removeClass("active");
+		return false;
+	});
+	if ($('#related-publications-references>li:not(.info)').length == 0) {
+		$('#related-publications .btn-group > .btn:last').click();
 	}
 });
 

@@ -6,6 +6,7 @@
 	<jsp:directive.tag description="Renders a fontawsome icon"/>
 
 	<jsp:directive.attribute name="icon" type="java.lang.String" required="true" description="the font icon"/>
+	<jsp:directive.attribute name="fixedWidth" type="java.lang.Boolean" required="false" description="add space after icon"/>
 	
-	<span class="fa fa-${icon}"><!-- keep me --></span>
+	<span class="fa fa-${icon} ${not empty fixedWidth and fixedWidth ? 'fa-fw' : ''}"><!-- keep me --></span>
 </jsp:root>

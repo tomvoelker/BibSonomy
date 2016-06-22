@@ -112,7 +112,7 @@ public class UserUserPageController extends SingleResourceListControllerWithTags
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
 			// set page title
-			command.setPageTitle("user :: " + groupingName + " (personalized)"); // TODO: i18n
+			command.setPageTitle(groupingName + " (personalized)"); // TODO: i18n
 			
 			// re-compute tag weights
 			RankingUtil.computeRanking(loginUserTags, targetUserTags);

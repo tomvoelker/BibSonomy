@@ -20,11 +20,10 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	<layout:paneLayout requPath="${requPath}" 
 		command="${command}" 
-		pageTitle="${cvPageTitle}" 
+		pageTitle="${command.requestedUser} | ${cvPageTitle}" 
 		headerMessageKey="navi.cv${ownCVPage ? '.my' : ''}" 
 		headerLogoClass="cv" 
-		showPageOptions="${command.context.userLoggedIn and command.context.loginUser.name eq command.requestedUser}"
-		minimizedContentWidth="${true}">
+		showPageOptions="${command.context.userLoggedIn and command.context.loginUser.name eq command.requestedUser}">
 		
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
@@ -71,19 +70,6 @@
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/cv_page.css" />
 			<script type="text/javascript" src="${resdir}/javascript/cv/handlers.js"><!-- keep me --></script>
-		</jsp:attribute>
-
-		<!--+
-		 	| heading
-		 	+-->
-		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.cv">
-				<jsp:attribute name="pathPart">
-					<li>
-						:: <a href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a>
-					</li>
-				</jsp:attribute>
-			</parts:search>	
 		</jsp:attribute>
 		
 		<!--+

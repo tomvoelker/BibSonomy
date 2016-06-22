@@ -64,7 +64,6 @@ public class CiteseerxScraperTest {
 		
 		try {
 			final boolean scrape = scraper.scrape(sc);
-			System.out.println(sc.getBibtexResult());
 			assertTrue(scrape);
 		} catch (final ScrapingException ex) {
 			fail(ex.getMessage());
@@ -79,7 +78,6 @@ public class CiteseerxScraperTest {
 		
 		try {
 			final boolean scrape = scraper.scrape(sc);
-			System.out.println(sc.getBibtexResult());
 			assertTrue(scrape);
 		} catch (final ScrapingException ex) {
 			fail(ex.getMessage());
@@ -94,7 +92,6 @@ public class CiteseerxScraperTest {
 		
 		try {
 			scraper.scrape(sc);
-			System.out.println(sc.getBibtexResult());
 		} catch (final ScrapingException ex) {
 			fail(ex.getMessage());
 		}

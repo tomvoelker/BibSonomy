@@ -97,7 +97,7 @@ public class JournalogyScraper extends GenericBibTeXURLScraper {
 	 * @see org.bibsonomy.scraper.generic.SimpleGenericURLScraper#getBibTeXURL(java.net.URL)
 	 */
 	@Override
-	public String getDownloadURL(URL url) throws ScrapingException {
+	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		try {
 			// extract id
 			final Matcher idMatcher = pattern_id.matcher(url.toString());

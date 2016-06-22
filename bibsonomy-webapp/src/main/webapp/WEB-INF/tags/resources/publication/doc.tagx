@@ -79,8 +79,6 @@
 					
 						<c:choose>
 							<c:when test="${fn:endsWith(fn:toLowerCase(document.fileName), '.pdf')}">
-								<!-- <a class="documentFileName preview" href="/documents/${publication.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(document.fileName)}?qrcode=true" title="${fn:escapeXml(document.fileName)}">  -->
-									<!-- <img src="${resdir}/image/document-txt-blue.png" style="float:left;"/> -->
 								<c:choose>
 									<c:when test="${count eq 0}">
 										<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage">
@@ -106,7 +104,6 @@
 									<c:when test="${count eq 0}">
 										<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage">
 											<a class="img-thumbnail documentFileName preview" href="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(document.fileName)}?qrcode=false" title="${fn:escapeXml(document.fileName)}">
-												<!-- <img src="${resdir}/image/document-txt-blue.png" style="float:left;"/> -->
 												<img class="img-responsive pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(document.fileName)}"/>
 											</a>
 										</div>
