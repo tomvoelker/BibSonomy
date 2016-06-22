@@ -1118,9 +1118,9 @@ public class DBLogic implements LogicInterface {
 		 * check permissions
 		 */
 		this.ensureLoggedIn();
-		
+
 		this.permissionDBManager.ensureIsAdminOrSelfOrHasGroupRoleOrHigher(this.loginUser, userName, GroupRole.MODERATOR);
-		
+
 		/*
 		 * to store hashes of missing resources
 		 */
@@ -1600,14 +1600,14 @@ public class DBLogic implements LogicInterface {
 		if (Role.SYNC.equals(this.loginUser.getRole())) {
 			validateGroupsForSynchronization(post);
 		}
-		
+
 		this.validateGroups(post.getUser(), post.getGroups(), session);
 
 		PostUtils.limitedUserModification(post, this.loginUser);
 		/*
 		 * change group IDs to spam group IDs
 		 */
-		PostUtils.setGroupIds(post, this.loginUser);
+		PostUtils.setGroupIds(post, this.loginUser, null);
 
 		manager.createPost(post, this.loginUser, session);
 
@@ -1691,7 +1691,12 @@ public class DBLogic implements LogicInterface {
 		/*
 		 * change group IDs to spam group IDs
 		 */
-		PostUtils.setGroupIds(post, this.loginUser);
+		// TODO: Change this to a proper permission check.
+		if (post.getUser().equals(this.loginUser)) {
+			PostUtils.setGroupIds(post, this.loginUser, null);
+		} else {
+			PostUtils.setGroupIds(post, this.loginUser, this.getGroupDetails(post.getUser().getName(), false));
+		}
 
 		/*
 		 * XXX: this is a "hack" and will be replaced any time If the operation

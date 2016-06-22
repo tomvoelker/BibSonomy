@@ -109,7 +109,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 
 	private static final String TAGS_KEY = "tags";
 	protected static final String LOGIN_NOTICE = "login.notice.post.";
-	
+
 	private Recommender<TagRecommendationEntity, recommender.impl.model.RecommendedTag> recommender;
 	private Pingback pingback;
 	private Captcha captcha;
@@ -182,6 +182,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		}
 
 		final User loginUser = context.getLoginUser();
+		command.setGroupUser(this.logic.getUserDetails(command.getGroupUser().getName()));
 
 		/*
 		 * After having handled the general issues (login, referer, etc.), sub
@@ -202,6 +203,8 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		/*
 		 * handle copying of a post using intra hash + user name
 		 */
+		// TODO tni: rename these to something more usable like "copiedHash" and
+		// "postOwner" (that should actually be the most sensible way)
 		final String hash = command.getHash();
 		final String user = command.getUser();
 		if (present(hash)) {
@@ -220,12 +223,11 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * check!!!
 		 */
 		final Post<RESOURCE> post = command.getPost();
-		final String intraHashToUpdate = command.getIntraHashToUpdate();
 		final User postOwner;
-		final String groupUser = command.getGroupUser();
+		final User groupUser = command.getGroupUser();
 		if (present(groupUser) && !groupUser.equals(loginUser.getName())) {
 			// FIXME: use admin logic, do we get all details necessary for the posting?
-			postOwner = this.logic.getUserDetails(groupUser);
+			postOwner = groupUser;
 		} else {
 			postOwner = loginUser;
 		}
@@ -236,19 +238,29 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 */
 		this.initPost(command, post, postOwner);
 
-		if (present(intraHashToUpdate)) {
+		if (present(command.getIntraHashToUpdate())) {
 			log.debug("intra hash to update found -> handling update of existing post");
-			return this.handleUpdatePost(command, context, postOwner, post, loginUser, intraHashToUpdate);
+			return this.handleUpdatePost(command, context, postOwner, post, command.getIntraHashToUpdate());
 		}
 
 		log.debug("no intra hash given -> new post");
 		return this.handleCreatePost(command, context, postOwner, post);
 	}
 
+	/**
+	 * @param context
+	 * @return user can edit post
+	 */
 	protected boolean canEditPost(final RequestWrapperContext context) {
 		return context.isUserLoggedIn();
 	}
 
+	/**
+	 * @param loginUser
+	 * @param hash
+	 * @param user
+	 * @return a post
+	 */
 	protected Post<RESOURCE> getCopyPost(final User loginUser, final String hash, final String user) {
 		if (this.urlGenerator.matchesPage(this.requestLogic.getReferer(), URLGenerator.Page.INBOX)) {
 			/*
@@ -335,6 +347,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 *        - the login user.
 	 * @return The post view.
 	 */
+	// FIXME: Make clear if this is called for the postOwner or the loginUser
 	protected View getEditPostView(final COMMAND command, final User loginUser) {
 		/*
 		 * initialize tag sets for groups
@@ -405,24 +418,25 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @param context
 	 * @param postOwner
 	 * @param post
-	 * @param loginUser 
+	 * @param loginUser
 	 * @param intraHashToUpdate
 	 * @return
 	 */
-	private View handleUpdatePost(final COMMAND command, final RequestWrapperContext context, final User postOwner, final Post<RESOURCE> post, final User loginUser, final String intraHashToUpdate) {
+	private View handleUpdatePost(final COMMAND command, final RequestWrapperContext context, final User postOwner, final Post<RESOURCE> post, final String intraHashToUpdate) {
+		final String loginUserName = command.getContext().getLoginUser().getName();
 		final String postOwnerName = postOwner.getName();
-		
+
 		// editing of a group post - check if the user is in the group and has an appropriate role
 		if (present(command.getGroupUser())) {
-			final Group group = this.logic.getGroupDetails(command.getGroupUser(), false);
+			final Group group = this.logic.getGroupDetails(command.getGroupUser().getName(), false);
 			if (present(group)) {
-				final GroupMembership groupMembership = group.getGroupMembershipForUser(loginUser.getName());
+				final GroupMembership groupMembership = group.getGroupMembershipForUser(loginUserName);
 				if (!(present(groupMembership) && (groupMembership.getGroupRole().equals(GroupRole.ADMINISTRATOR) || groupMembership.getGroupRole().equals(GroupRole.MODERATOR)))) {
 					throw new AccessDeniedException("You have no rights to update this post");
 				}
 			}
 		}
-		
+
 		/*
 		 * we're editing an existing post
 		 */
@@ -825,6 +839,8 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		return this.finalRedirect(command, post, loginUserName);
 	}
 
+	// FIXME: Check if loginUserName is valid here and we rather would like to
+	// have the postOwner instead!
 	private View finalRedirect(final COMMAND command, final Post<RESOURCE> post, final String loginUserName) {
 		if (present(command.getSaveAndRate())) {
 			final String ratingUrl = this.urlGenerator.getCommunityRatingUrl(post);
@@ -940,8 +956,15 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @param post
 	 */
 	private void initRelevantForTags(final EditPostCommand<RESOURCE> command, final Post<RESOURCE> post) {
+		final User postOwner;
+		if (present(command.getGroupUser())) {
+			postOwner = command.getGroupUser();
+		} else {
+			postOwner = command.getContext().getLoginUser();
+		}
+
 		final Set<Tag> tags = post.getTags();
-		final List<Group> groups = command.getContext().getLoginUser().getGroups();
+		final List<Group> groups = postOwner.getGroups();
 		final List<String> relevantGroups = command.getRelevantGroups();
 		/*
 		 * null check neccessary, because Spring sets the list to null, when no
@@ -965,8 +988,8 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * sets user; inits post groups, relevant tags and recommender
 	 *
 	 * @param command
-	 * @param post 
-	 * @param postOwner 
+	 * @param post
+	 * @param postOwner
 	 */
 	protected void initPost(final EditPostCommand<RESOURCE> command, final Post<RESOURCE> post, final User postOwner) {
 		/*
@@ -1049,22 +1072,22 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * Gets the tagsets for each group from the DB and stores them in the users
 	 * group list.
 	 *
-	 * @param loginUser
+	 * @param postOwner
 	 */
-	private void initGroupTagSets(final User loginUser) {
+	private void initGroupTagSets(final User postOwner) {
 		/*
 		 * Get tagsets for each group and add them to the loginUser object. Why
 		 * into the loginUser? Because there we already have the groups the user
 		 * is member of.
 		 */
-		final List<Group> usersGroups = loginUser.getGroups();
+		final List<Group> usersGroups = postOwner.getGroups();
 		final List<Group> groupsWithTagSets = new ArrayList<Group>();
 		for (final Group group : usersGroups) {
 			if (group.getName() != null) {
 				groupsWithTagSets.add(this.logic.getGroupDetails(group.getName(), false));
 			}
 		}
-		loginUser.setGroups(groupsWithTagSets);
+		postOwner.setGroups(groupsWithTagSets);
 
 	}
 

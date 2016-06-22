@@ -31,6 +31,7 @@
     <jsp:directive.attribute name="extraInformation" fragment="true" required="false" description="Extra information which shall be displayed outside the form."/>
     <jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>
     <jsp:directive.attribute name="postApproval" fragment="true" required="false" description="A checkbox inorder to approve goldstandard posts"/>
+    <jsp:directive.attribute name="postOwner" type="org.bibsonomy.model.User" fragment="false" required="false" description="The owner of the current post" />
 	
 	<fmt:message key="navi.edit${resourceType}" var="editPageTitle" />
 
@@ -110,7 +111,16 @@
 		  	          	| show global errors
 		    		  	+ -->
 					<errors:global />
-		            
+
+					<c:if test="${postOwner ne command.context.loginUser}">
+						<div class="row">
+							<div class="alert alert-warning alert-dismissible" role="alert">
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&amp;times;</span></button>
+								You are editing the post of another user!
+							</div>
+						</div>
+					</c:if>
+				
 		            <!--+
 		                | form starts here
 		                +-->
@@ -162,7 +172,7 @@
 									<c:if test="${resourceType eq 'Publication'}">
 										<p>
 											<fmt:message key="post.edit.spam_note">
-												<fmt:param value="user ${command.context.loginUser.name} was flagged as spammer"/>
+												<fmt:param value="user ${postOwner.name} was flagged as spammer"/>
 												<fmt:param value="${properties['project.noSpamEmail']}" />
 											</fmt:message>
 										</p>

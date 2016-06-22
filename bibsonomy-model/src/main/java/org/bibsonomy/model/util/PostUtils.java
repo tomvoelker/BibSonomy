@@ -32,9 +32,11 @@ import java.util.Date;
 import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
@@ -105,11 +107,21 @@ public class PostUtils {
 	 * @see #setGroupIds(Post, boolean)
 	 * @param post
 	 * @param user
+	 * @param group
 	 * @throws ValidationException - if the user name of the post does not match the given user name.
 	 */
-	public static void setGroupIds(final Post<? extends Resource> post, final User user) throws ValidationException {
+	// TODO: Change this to a proper permission check.
+	public static void setGroupIds(final Post<? extends Resource> post, final User user, final Group group) throws ValidationException {
+
 		if (!present(user.getName())) {
 			throw new ValidationException("user name of post does not match user name of posting user");
+		}
+
+		if (present(group)) {
+			final GroupMembership ms = GroupUtils.getGroupMembershipForUser(group, user.getName(), false);
+			if (!present(ms) || !GroupRole.MODERATOR.equals(ms.getGroupRole()) && !GroupRole.ADMINISTRATOR.equals(ms.getGroupRole())) {
+				throw new ValidationException("Posting user has no rights to edit posts of this user.");
+			}
 		}
 		setGroupIds(post, user.isSpammer());
 	}

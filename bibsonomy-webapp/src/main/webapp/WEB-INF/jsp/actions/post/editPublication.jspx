@@ -24,9 +24,14 @@
 		|   - JavaScript zur Ausblendung optionaler Felder (siehe edit_bibtex.jsp)
 	-->
 
+	<c:set var="postOwner" value="${command.context.loginUser}" />
+	<c:if test="${command.groupUser ne null and command.context.loginUser.name ne command.groupUser.name}">
+		<c:set var="postOwner" value="${command.groupUser}" />
+	</c:if>
+
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
-	<layout:editPostLayout command="${command}" requPath="${requPath}" resourceType="Publication" activeTab="post" minimizedContentWidth="${true}">
+	<layout:editPostLayout command="${command}" requPath="${requPath}" resourceType="Publication" activeTab="post" minimizedContentWidth="${true}" postOwner="${postOwner}">
 		<jsp:attribute name="generalInformation">
 			<c:if test="${not empty command.scrapingContext}">
 				<c:if test="${not empty command.scrapingContext.selectedText}">
