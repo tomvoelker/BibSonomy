@@ -25,7 +25,6 @@
 	
 	<goldstandard:actionHeader showEditOnly="${true}" post="${post}" communityPostExists="${isRealGoldstandard}" resourceType="bookmark" loginUser="${loginUser}" postOfLoggedInUser="${postOfLoggedInUser}" />
 	
-	<!-- determine the publication type for schema.org markup -->
 	<c:set var="itemType" value="http://schema.org/WebPage"/>
 	<div id="goldstandard" class="row">
 		<div class="col-md-7 col-md-offset-1">

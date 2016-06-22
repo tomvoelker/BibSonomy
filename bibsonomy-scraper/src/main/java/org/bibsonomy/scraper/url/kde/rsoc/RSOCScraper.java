@@ -76,7 +76,7 @@ public class RSOCScraper extends GenericBibTeXURLScraper {
 	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL)
 	 */
 	@Override
-	protected String getDownloadURL(URL url) throws ScrapingException {
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		try {
 			final Matcher m = BIBTEX_PATTERN.matcher(WebUtils.getContentAsString(url));
 			if(m.find()) {

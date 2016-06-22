@@ -11,7 +11,7 @@
 	<c:set var="ownDiscussionItem" value="${loginUser.name eq discussionUsername}" />
 	<c:set var="clazz" value="${fn:toLowerCase(discussionItem['class'].simpleName)}" />
 	
-	<!-- schema.org Markup: Reviews have authors, but Comments have creators -->
+	<!-- schema.org markup: reviews have authors, but comments have creators -->
 	<c:set var="authorCreator" value="author"/>
 	<c:if test="${clazz eq 'comment'}">
 		<c:set var="authorCreator" value="creator"/>

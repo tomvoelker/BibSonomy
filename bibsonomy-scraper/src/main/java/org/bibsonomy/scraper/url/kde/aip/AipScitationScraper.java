@@ -110,7 +110,7 @@ public class AipScitationScraper extends GenericBibTeXURLScraper {
 	}
 	
 	@Override
-	public String getDownloadURL(URL url) throws ScrapingException {
+	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		return "http://" + url.getHost().toString() + url.getPath().toString() + BIBTEX_PATH;
 	}
 	

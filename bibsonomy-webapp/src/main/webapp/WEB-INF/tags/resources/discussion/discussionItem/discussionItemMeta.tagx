@@ -29,21 +29,20 @@
 			<c:if test="${not empty group.name and group.name ne 'public'}">
 				<c:if test="${status.first}">
 					<fmt:message key="post.resource.comment.groups" />
-					<c:out value=" " />
+					<c:out value=" "/>
 				</c:if>
 				<c:if test="${not status.first}">
 					<c:out value=", "/>
 				</c:if>
 				<c:choose>
 					<c:when test="${group.name eq 'friends'}">
-						<fmt:message key="post.groups.friends" /> <!-- TODO: look for message key -->
+						<fmt:message key="post.groups.friends" />
 					</c:when>
 					<c:when test="${group.name eq 'private'}">
-						<fontawsome:icon icon="lock" fixedWidth="${true}"/> <fmt:message key="post.groups.private" /> <!-- TODO: look for message key -->
+						<fontawsome:icon icon="lock" fixedWidth="${true}"/> <fmt:message key="post.groups.private" />
 					</c:when>
 					<c:otherwise>
-						<!-- TODO: use url generator -->
-						<a href="/group/${fn:escapeXml(group.name)}"><fontawsome:icon icon="users" fixedWidth="${true}"/> <c:out value="${group.name}" /></a>
+						<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}"><fontawsome:icon icon="users" fixedWidth="${true}"/> <c:out value="${group.name}" /></a>
 					</c:otherwise>
 				</c:choose>
 			</c:if>	

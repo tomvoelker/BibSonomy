@@ -88,7 +88,7 @@ public class IEEEComputerSocietyScraper extends GenericBibTeXURLScraper {
 	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL)
 	 */
 	@Override
-	protected String getDownloadURL(final URL url) throws ScrapingException {
+	protected String getDownloadURL(final URL url, String cookies) throws ScrapingException {
 		final String urlString = url.toString();
 		if (urlString.endsWith(".pdf")) {
 			return  urlString.replaceAll(".pdf", "-reference.bib");

@@ -78,7 +78,9 @@
 	<fmt:message key="person.show.thatsMeLabel" var="textThatsMeLabel" />
 	<fmt:message key="person.show.thesis" var="textThesis" />
 	
-	<layout:paneLayout pageTitle="${pageTitle} :: ${title}" 
+	<c:set var="title" value="${mtl:cleanBibtex(command.person.mainName.firstName)} ${mtl:cleanBibtex(command.person.mainName.lastName)}" />
+	
+	<layout:paneLayout pageTitle="${title}" 
 		headerLogoClass="publications" 
 		command="${command}" 
 		requestedUser="${command.requestedUser}" 
@@ -139,7 +141,7 @@
 			</c:if>
 		
 			<div class="page-header">
-				<h1><c:out value="${mtl:cleanBibtex(command.person.mainName.firstName)} "/><c:out value="${mtl:cleanBibtex(command.person.mainName.lastName)}"/></h1>
+				<h1><c:out value="${title}"/></h1>
 			</div>
 			
 			

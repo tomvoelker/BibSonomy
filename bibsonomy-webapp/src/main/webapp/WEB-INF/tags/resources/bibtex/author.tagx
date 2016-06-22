@@ -6,7 +6,6 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
 	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />
-	<jsp:directive.attribute name="schemaOrgMarkUp" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="useAbsoluteURL" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="false"/>
 	
@@ -34,7 +33,6 @@
 	
 	<!-- initialize with empty list -->
 	<c:set var="personList" value=""/>
-	<!-- determine personType for schema.org markup -->
 	<c:set var="authorEditor" value=""/>
 	<c:choose>
 		<c:when test="${not empty publication.author}">

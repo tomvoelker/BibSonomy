@@ -104,7 +104,10 @@ $(function() {
 				moreLessLink.addClass('more-link-item-inline');
 			}
 			var text = getString("more");
-			
+			var moreMessage = $(this).data('message');
+			if (moreMessage != undefined) {
+				text = moreMessage;
+			}
 			subItems.slice(maxItemsInMoreList).hide();
 			var link = $('<a class="more"><span class="fa ' + defaultMoreIcon + '"></span><span class="desc">' + text + ' ...</span></a>');
 			if (inline) {
@@ -124,6 +127,9 @@ $(function() {
 					classToAdd = defaultMoreIcon;
 					classToRemove = defaultLessIcon;
 					descText = getString("more");
+					if (moreMessage != undefined) {
+						descText = moreMessage;
+					}
 					$(this).parent().parent().find('li:not(.more-link-item)').slice(maxItemsInMoreList).hide();
 				}
 				icon.removeClass(classToRemove).addClass(classToAdd);

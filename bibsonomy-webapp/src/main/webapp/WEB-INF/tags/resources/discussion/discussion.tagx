@@ -40,17 +40,32 @@
 				</jsp:attribute>
 			</bs:alert>
 		</c:if>
-		<!-- TODO: use spring security tags -->
-		<c:if test="${not fn:contains(resource['class'].simpleName, 'Bookmark') and resource.entrytype=='preprint' and empty resource.discussionItems}">
+		
+		<c:set var="resourceClass" value="publication" />
+		<c:set var="isBookmark" value="${fn:contains(resource['class'].simpleName, 'Bookmark')}" />
+		<c:if test="${isBookmark}">
+			<c:set var="resourceClass" value="bookmark" />
+		</c:if>
+		<c:if test="${not isBookmark and resource.entrytype=='preprint' and empty resource.discussionItems}">
 			<p class="help-block">
 				<fmt:message key="post.resource.preprint.hint" />
 			</p>
 		</c:if>
-	
+		
 		<!-- The input forms -->
 		<div id="discussion" data-interhash="${resource.interHash}" data-public="${postIsPublic}">
 			<!-- TODO: use spring security tags -->
 			<c:if test="${command.context.userLoggedIn}">
+				<div id="comment-review-info">
+					<p><fmt:message key="discussion.${resourceClass}.reviewCommentInfo" /></p>
+					<div class="text-center">
+						<div class="btn-group">
+							<button class="btn btn-sm btn-default active" data-class="createreview" data-hide-class="createcomment:first"><fmt:message key="discussion.review.create" /></button>
+							<button class="btn btn-sm btn-default" data-class="createcomment:first" data-hide-class="createreview"><fmt:message key="discussion.comment.create" /></button>
+						</div>
+					</div>
+				</div>
+				
 				<review:simpleReviewForm resource="${resource}" postUserName="${postUserName}" userName="${loginUser.name}"/>
 			</c:if>
 	

@@ -45,13 +45,14 @@
 	<div id="goldstandard" class="row">
 		<div class="col-md-7 col-md-offset-1" itemtype="${itemType}" itemscope="itemscope" id="${goldstandard.interHash}">
 			<div class="content-header" id="info">
-				<h1><span itemprop="name"><c:out value="${mtl:cleanBibtex(goldstandard.title)}" /></span>
-					<small>
+				<h1><div itemprop="name"><c:out value="${mtl:cleanBibtex(goldstandard.title)}" />
 						<c:if test="${post.approved}">
 							<fmt:message key="goldStandard.approved.title" var="approved"/>
-							<span class="fa fa-check-circle community-approved" data-toggle="tooltip" data-placement="bottom" title="${fn:escapeXml(approved)}" style="margin-left:6px;"><!-- keep me --></span>
+							<span class="fa fa-check-circle community-approved" data-toggle="tooltip" data-placement="bottom" title="${fn:escapeXml(approved)}"><!-- keep me --></span>
 						</c:if>
-						<span class="publication-description"><bib:desc publication="${goldstandard}" noSchemaMarkupContainer="${true}"/></span>
+					</div>
+					<small>
+						<span class="publication-description"><bib:desc publication="${goldstandard}" linebreakAfterAuthors="${true}"/></span>
 					</small>
 				</h1>
 			</div>
@@ -61,11 +62,6 @@
 				+-->
 			<c:if test="${not empty goldstandard['abstract']}">
 				<div id="abstract">
-					<!-- 
-					<h2 class="pub-details">
-						<fmt:message key="publications.abstract.headline"/>
-					</h2>
-					 -->
 					<div class="show-more" itemprop="description">
 						<span class="contentContainer"><c:out value="${mtl:cleanBibtex(goldstandard['abstract'])}" /></span>
 					</div>
@@ -81,7 +77,7 @@
 					<c:if test="${not empty goldstandard.url}">
 						<c:choose>
 							<c:when test="${isLinkToDocument}">
-								<dt>Document</dt> <!-- TODO: i18n -->
+								<dt><fmt:message key="document" /></dt>
 							</c:when>
 							<c:otherwise>
 								<dt>URL</dt>
@@ -115,11 +111,11 @@
 			<c:if test="${hasRelatedPublication}">
 				<div id="related-publications">
 					<h2 class="pub-details">
-						Related Publications <!-- TODO: i18n -->
+						<fmt:message key="publications.related.headline" />
 					</h2>
 					<div class="btn-group">
-						<bs:linkButton additionalClass="active" href="#related-publications" size="small" style="defaultStyle" text="publications referenced by this publication" />
-						<bs:linkButton href="#related-publications" size="small" style="defaultStyle" text="publications citing this publication"/>
+						<bs:linkButton additionalClass="active" href="#related-publications" size="small" style="defaultStyle" textKey="publications.related.referenced" />
+						<bs:linkButton href="#related-publications" size="small" style="defaultStyle" textKey="publications.related.citing"/>
 					</div>
 					<ul id="related-publications-references">
 						<c:forEach var="reference" items="${goldstandard.references}">
@@ -168,7 +164,7 @@
 			<pub2:citation post="${post}" isCommunityPost="${true}" />
 		</div>
 		
-		<div class="col-md-3 hidden-xs" id="sidebar-nav">
+		<div class="col-md-3 hidden-md-down" id="sidebar-nav">
 			<nav class="sidebar-nav" data-spy="affix" data-offset-top="275">
 				<ul class="nav">
 					<li>

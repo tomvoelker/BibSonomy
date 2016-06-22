@@ -35,7 +35,6 @@ $(function() {
 	
 	var discussionItems = $('.subdiscussion:first>li:not(.form)');
 	if (discussionItems.length > MAX_DISCUSSION_ITEMS) {
-		
 		var items = $(discussionItems).slice(MAX_DISCUSSION_ITEMS - discussionItems.length);
 		var link = $('<a data-visible="false" href="#" class="btn btn-default btn-block">' + getString('discussion.show.more') + '</a>');
 		var listItem = $('<li class="moreless-discussion"></li>');
@@ -65,7 +64,19 @@ $(function() {
 	$('.reply').click(showReplyForm);
 	
 	if ($('#discussion #ownReview').length > 0) {
+		$('#comment-review-info').hide();
+		
 		$('.createreview').hide();
+	} else {
+		$('.createcomment:first').hide();
+		$('#comment-review-info .btn').click(function() {
+			$(this).siblings('.btn').removeClass('active');
+			$(this).addClass('active');
+			var classToShow = $(this).data('class');
+			var classToHide = $(this).data('hide-class');
+			$('.' + classToShow).show();
+			$('.' + classToHide).hide();
+		});
 	}
 	
 	$('.updatecomment').hide().submit(function() {
@@ -205,8 +216,9 @@ function createReview() {
 				size : 'xs',
 				readonly : true,
 				showCaption : false,
-				glyphicon : false,
-				ratingClass : 'rating-fa'
+				theme: 'krajee-fa',
+				filledStar: '<i class="fa fa-star"></i>',
+				emptyStar: '<i class="fa fa-star-o"></i>'
 			});
 			
 			reviewTemplate.find('div.rating').data('rating', rating);

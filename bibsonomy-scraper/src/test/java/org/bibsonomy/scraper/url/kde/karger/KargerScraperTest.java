@@ -44,4 +44,20 @@ public class KargerScraperTest {
 	public void url1TestRun(){
 		UnitTestRunner.runSingleTest("url_178");
 	}
+	
+	/**
+	 * starts URL test with id url_369
+	 */
+	@Test
+	public void url2TestRun(){
+		UnitTestRunner.runSingleTest("url_369");
+	}
+	
+	/**
+	 * starts URL test with id url_370
+	 */
+	@Test
+	public void url3TestRun(){
+		UnitTestRunner.runSingleTest("url_370");
+	}
 }

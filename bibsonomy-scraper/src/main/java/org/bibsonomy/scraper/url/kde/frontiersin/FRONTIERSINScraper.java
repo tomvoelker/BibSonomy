@@ -59,7 +59,7 @@ public class FRONTIERSINScraper extends GenericBibTeXURLScraper {
 	}
 	
 	@Override
-	protected String getDownloadURL(URL url) throws ScrapingException {
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		try {
 			final String pageContent = WebUtils.getContentAsString(url);
 			final Matcher m = PATTERN_FOR_BIBTEX_URL.matcher(pageContent); 

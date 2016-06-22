@@ -42,7 +42,7 @@
 	</c:choose>
 
 
-	<layout:paneLayout pageTitle="${relationsPageTitle} :: ${command.requestedUser}" 
+	<layout:paneLayout pageTitle="${command.requestedUser} | ${relationsPageTitle}" 
 			headerMessage="${headerMessage}" 
 			command="${command}" 
 			requestedUser="${command.requestedUser}" 
@@ -50,7 +50,6 @@
 			showPageOptions="${true}">
 
 		<jsp:attribute name="heading">
-<!-- FIXME: Currently the search is the same on all pages (it used to depend on the current page at hand) -->
 			<parts:search pathMessageKey="navi.relations" formAction="${relativeUrlGenerator.getUserUrlByUserName(fn:escapeXml(command.requestedUser))}" formInputName="tag">
 				<jsp:attribute name="pathPart">
 					<a href="${relativeUrlGenerator.getUserUrlByUserName(command.requestedUser)}">@<c:out value='${command.requestedUser}'/></a>

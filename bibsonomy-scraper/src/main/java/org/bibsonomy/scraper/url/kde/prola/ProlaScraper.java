@@ -88,7 +88,7 @@ public class ProlaScraper extends GenericBibTeXURLScraper implements ReferencesS
 	}
 
 	@Override
-	public String getDownloadURL(URL url) throws ScrapingException {
+	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		return url.toString().replace("abstract", "export");
 	}
 

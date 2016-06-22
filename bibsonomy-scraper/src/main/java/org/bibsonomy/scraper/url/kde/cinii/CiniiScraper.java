@@ -52,7 +52,7 @@ public class CiniiScraper extends GenericBibTeXURLScraper{
 	}
 	
 	@Override
-	protected String getDownloadURL(URL url) throws ScrapingException, IOException {
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
 		return url.toString() + ".en.bib";
 	}
 
