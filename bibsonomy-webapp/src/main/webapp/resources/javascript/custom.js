@@ -268,7 +268,6 @@ $(function() {
 	}
 
 	/** MOBILE FUNCTIONS * */
-
 	$('#hide-bookmarks').click(
 			function(event) {
 				event.preventDefault();

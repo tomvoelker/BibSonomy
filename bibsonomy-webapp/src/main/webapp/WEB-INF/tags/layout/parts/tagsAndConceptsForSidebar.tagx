@@ -158,7 +158,7 @@
 							<c:out value=" "/>
 							<fmt:message key="tag.asConceptFrom"/>
 							<c:out value=" "/>
-							${fn:escapeXml(command.context.loginUser.name)}								
+							${fn:escapeXml(command.context.loginUser.name)}
 						</li>
 					</c:forEach>
 					<c:if test="${requTagsListLength > 1}" >
@@ -167,7 +167,7 @@
 							<c:out value=" "/>
 							<fmt:message key="tag.asConceptFrom"/>
 							<c:out value=" "/>
-							${fn:escapeXml(command.context.loginUser.name)}			
+							${fn:escapeXml(command.context.loginUser.name)}
 						</li>
 					</c:if>
 				</c:if>
@@ -189,7 +189,7 @@
 							<c:out value=" "/>
 							<fmt:message key="tag.asConceptFrom"/>
 							<c:out value=" "/>
-							${fn:escapeXml(command.requestedUser)}				
+							${fn:escapeXml(command.requestedUser)}
 						</li>
 					</c:forEach>
 					<c:if test="${requTagsListLength > 1}" >
@@ -198,7 +198,7 @@
 							<c:out value=" "/>
 							<fmt:message key="tag.asConceptFrom"/>
 							<c:out value=" "/>
-								${fn:escapeXml(command.requestedUser)}			
+								${fn:escapeXml(command.requestedUser)}
 						</li>
 					</c:if>
 				</c:if>
@@ -220,8 +220,7 @@
 							<c:out value=" "/>
 							<fmt:message key="tag.asConceptFromGroup"/>
 							<c:out value=" "/>
-							${fn:escapeXml(command.requestedGroup)}		
-						</li>
+							${fn:escapeXml(command.requestedGroup)}
 					</c:forEach>
 					<c:if test="${requTagsListLength > 1}" >
 						<li>
@@ -229,7 +228,7 @@
 							<c:out value=" "/>
 							<fmt:message key="tag.asConceptFromGroup"/>
 							<c:out value=" "/>
-							${fn:escapeXml(command.requestedGroup)}			
+							${fn:escapeXml(command.requestedGroup)}
 						</li>
 					</c:if>
 				</c:if>

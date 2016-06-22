@@ -40,7 +40,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.util.WebUtils;
 
 /**
- * 
+ * FIXME: use GenericBibtexScraper
  * @author Mohammed Abed
  */
 public class AappublicationsScraper extends AbstractUrlScraper{

@@ -204,8 +204,7 @@ public class UrlUtils {
 		/*
 		 * check url
 		 */
-		if (url == null || url.equals("http://") || url.startsWith(UrlUtils.BROKEN_URL)) return false;
-		return true;
+		return !(url == null || url.equals("http://") || url.startsWith(UrlUtils.BROKEN_URL));
 	}
 
 	/**

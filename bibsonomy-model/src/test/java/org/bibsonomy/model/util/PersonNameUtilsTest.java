@@ -511,6 +511,7 @@ public class PersonNameUtilsTest {
 		assertTrue(PersonNameUtils.containsPerson(personName1, Collections.singletonList(personName1), false));
 		assertFalse(PersonNameUtils.containsPerson(personName1, Collections.singletonList(personName1Simple), false));
 		
+		// now check with normed set to true
 		assertTrue(PersonNameUtils.containsPerson(personName1Simple, Collections.singletonList(personName1), true));
 	}
 }

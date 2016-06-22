@@ -63,7 +63,7 @@ public class ACSScraper extends AbstractUrlScraper {
 	private static final Pattern pathPatternBibtex = Pattern.compile(ACS_BIBTEX_PATH + ".*");
 	
 	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
-	private final Pattern URL_PATTERN_FOR_URL = Pattern.compile("URL = \\{ \n        (.*)\n    \n\\}");
+	private static final Pattern URL_PATTERN_FOR_URL = Pattern.compile("URL = \\{ \n        (.*)\n    \n\\}");
 	
 	static {
 		final Pattern hostPattern = Pattern.compile(".*" + "pubs.acs.org");

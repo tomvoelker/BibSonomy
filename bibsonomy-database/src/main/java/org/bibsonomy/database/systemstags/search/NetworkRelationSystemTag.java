@@ -42,9 +42,11 @@ public class NetworkRelationSystemTag extends UserRelationSystemTag {
 	/** the network system tag for reporting a user as spammer */
 	public final static String BibSonomySpammerSystemTag = SystemTagsUtil.buildSystemTagString(NAME, "bibsonomy-spammer");
 	
+	// TODO: remove BibSonomy from name
 	/** the system tag for representing BibSonomy's friendship relation (==trust network) */
 	public final static String BibSonomyFriendSystemTag = SystemTagsUtil.buildSystemTagString(NAME, "bibsonomy-friend");
 	
+	// TODO: remove BibSonomy from name
 	/** the system tag for representing BibSonomy's follower relation  */
 	public final static String FOLLOWER_SYSTEMTAG = SystemTagsUtil.buildSystemTagString(NAME, "bibsonomy-follower");
 	

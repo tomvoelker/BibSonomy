@@ -136,7 +136,7 @@ public class SyncUtils {
 	
 	/**
 	 * @param service
-	 * @return true, if an auto-sync service needs to perform an initial sync
+	 * @return true, if service needs a first sync
 	 */
 	public static boolean autoSyncServiceRequiresInitialSync(SyncService service) {
 		return present(service) && !service.isAlreadySyncedOnce() && service.isAutosync();
