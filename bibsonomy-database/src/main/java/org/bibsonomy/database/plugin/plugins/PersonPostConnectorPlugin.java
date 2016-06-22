@@ -88,7 +88,7 @@ public class PersonPostConnectorPlugin extends AbstractDatabasePlugin {
 		final SortedSet<Integer> foundPersons = new TreeSet<>();
 		if (present(personNames)) {
 			for (final PersonName personName : personNames) {
-				foundPersons.addAll(PersonNameUtils.getPositionInPersonList(personName, personList, true));
+				foundPersons.addAll(PersonNameUtils.getPositionsInPersonList(personName, personList, true));
 			}
 		}
 		

@@ -16,6 +16,7 @@
 		FROM gold_standard WHERE content_type = 2
 	</select>
 	
+	<!-- TODO: merge with getLastContentIdGoldStandardPublication -->
 	<select id="getLastContentIdGoldStandardBookmark" resultClass="integer">
 		SELECT MAX(content_id)
 		FROM gold_standard WHERE content_type = 1

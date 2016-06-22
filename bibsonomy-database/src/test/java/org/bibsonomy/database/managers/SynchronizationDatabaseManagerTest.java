@@ -120,7 +120,7 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 	 * test getAutoSyncServer() statement
 	 */
 	@Test
-	public void testgetAutoSyncServer() {
+	public void testGetAutoSyncServer() {
 		// update sync-service testURI for SyncUser1 with auto-sync settings
 		SyncService autoSyncService = syncDBManager.getSyncServiceDetails(testURI, this.dbSession);
 		assertEquals(testURI, autoSyncService.getService());

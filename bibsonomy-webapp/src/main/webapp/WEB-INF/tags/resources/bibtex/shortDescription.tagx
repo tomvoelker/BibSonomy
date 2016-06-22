@@ -19,7 +19,7 @@
    		<div>
         <div class="ptitle"><bib:title post="${post}"/></div>
         <div class="pdesc"> <bib:desc publication="${post.resource}"/></div>
-        </div>  		
+        </div>
    	</span>	
 	
 </jsp:root>

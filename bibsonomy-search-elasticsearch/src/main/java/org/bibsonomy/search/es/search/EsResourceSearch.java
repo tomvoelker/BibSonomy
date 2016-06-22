@@ -245,7 +245,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			final Set<String> allowedUsers = getUsersThatShareDocuments(userName);
 			final QueryBuilder queryBuilder = this.buildQuery(userName,
 					requestedUserName, requestedGroupName,
-					requestedRelationNames, allowedGroups, null, searchTerms,
+					requestedRelationNames, allowedGroups, allowedUsers, searchTerms,
 					titleSearchTerms, authorSearchTerms, bibtexKey,
 					tagIndex, year, firstYear, lastYear, negatedTags);
 			if (queryBuilder == null) {
@@ -293,13 +293,10 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @return
 	 */
 	private Set<String> getUsersThatShareDocuments(final String userName) {
-		final Set<String> allowedUsers;
 		if (present(userName)) {
-			allowedUsers = this.infoLogic.getUserNamesThatShareDocumentsWithUser(userName);
-		} else {
-			allowedUsers = new HashSet<>();
+			return this.infoLogic.getUserNamesThatShareDocumentsWithUser(userName);
 		}
-		return allowedUsers;
+		return new HashSet<>();
 	}
 	
 	/* (non-Javadoc)
