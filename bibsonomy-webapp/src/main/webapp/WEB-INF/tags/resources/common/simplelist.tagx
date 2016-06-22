@@ -28,7 +28,6 @@
 	
 	<div class="bookbox">
 		<jsp:invoke fragment="extTitle"/>
-		
 		<c:choose>
 			<c:when test="${not empty listView.list}">
 					<!-- iterate over a list of resources and create the list -->
@@ -36,6 +35,8 @@
 				<ul class="posts media-list ${resourceType}">
 					<c:forEach var="post" items="${listView.list}">
 						<!-- show one post -->
+						<c:set var="resourcetype" value="${listView.resourcetype}" />
+						
 						<rc:post post="${post}" resourceType="${resourceType}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}">
 							<jsp:attribute name="title">
 								<jsp:invoke fragment="title"/>

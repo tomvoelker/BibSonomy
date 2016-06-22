@@ -17,18 +17,12 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<layout:paneLayout pageTitle="${command.pageTitle}" requPath="${requPath}" command="${command}" headerMessageKey="joinGroup" minimizedContentWidth="${true}">
+	<layout:paneLayout pageTitle="${command.pageTitle}" requPath="${requPath}" command="${command}" headerMessageKey="joinGroup">
 		<!--+
 		 	| heading
 		 	+-->
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="joinGroup">
-				<jsp:attribute name="pathPart">
-					<li>
-						:: <a href="${relativeUrlGenerator.getGroupUrlByGroupName(command.group)}" itemprop="name"><c:out value='${command.group}'/></a>
-					</li>
-				</jsp:attribute>
-			</parts:search>
+			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
 		</jsp:attribute>
 
 		<!--+
@@ -81,21 +75,5 @@
 				<br />
 		</jsp:attribute>
 		
-		<!--+
-			| sidebar
-			+-->
-		<jsp:attribute name="sidebar">
-			<sidebar:sidebarItem textKey="groups">
-				<jsp:attribute name="content">
-					<!-- loginUser.groups -->
-					<ul class="sidebar_collapse_content">
-						<c:forEach var="group" items="${command.context.loginUser.groups}">
-							<li><a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}"><c:out value='${group.name}'/></a></li>
-						</c:forEach>
-					</ul>
-				</jsp:attribute>
-			</sidebar:sidebarItem>
-		</jsp:attribute>
-	
 	</layout:paneLayout>
 </jsp:root>

@@ -17,16 +17,16 @@
 	<!--+
 		| private documents (pdf, ps) 
 		+-->
-  	<c:if test="${not empty publication.documents or isOwnEntry}">
-  		
-  			<h4><fmt:message key="bibtex.actions.private_document.description"/></h4>
-	  		<c:choose>
-		  		<c:when test="${empty publication.documents}">
-		  		<ul style="list-style:inside; !important;">
-		  		
-			  		<li>Keine Dokumente vorhanden</li>
-			  		<c:if test="${isOwnEntry}">
-					<li style="list-style-image: url(${resdir}/image/document-txt-light.png)">
+	<c:if test="${not empty publication.documents or isOwnEntry}">
+		
+			<h4><fmt:message key="bibtex.actions.private_document.description"/></h4>
+			<c:choose>
+				<c:when test="${empty publication.documents}">
+				<ul style="list-style:inside; !important;">
+				
+					<li>Keine Dokumente vorhanden</li>
+					<c:if test="${isOwnEntry}">
+					<li>
 						<a class="img-thumbnail addDocument" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}">
 							<fmt:message key="bibtex.actions.additionalFiles"/>
 						</a>
@@ -36,19 +36,17 @@
 					</li>
 					</c:if>
 				</ul>
-		  		</c:when>
-		  		<c:otherwise>
-		  			<ul id="documentslist">
-		  				<c:forEach var="document" items="${publication.documents}">
-		  					<li>
-		  						<c:choose>
-		  							<c:when test="${fn:endsWith(fn:toLowerCase(document.fileName), '.pdf')}">
-										<!-- <a class="documentFileName preview" href="/documents/${publication.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=true" title="${fn:escapeXml(document.fileName)}">  -->
-											<!-- <img src="${resdir}/image/document-txt-blue.png" style="float:left;"/> -->
+				</c:when>
+				<c:otherwise>
+					<ul id="documentslist">
+						<c:forEach var="document" items="${publication.documents}">
+							<li>
+								<c:choose>
+									<c:when test="${fn:endsWith(fn:toLowerCase(document.fileName), '.pdf')}">
 										<div class="bibtexpreviewimage">
 											<!-- preview picture of first document -->
-											<a class="img-thumbnail publication preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(publication.documents[0].fileName)}" title="${fn:escapeXml(publication.documents[0].fileName)}">
-												<img class="pre_pic" style="width: 110px;" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(publication.documents[0].fileName)}?preview=MEDIUM" alt="${fn:escapeXml(publication.documents[0].fileName)}?preview=MEDIUM"/>
+											<a class="img-thumbnail publication preview" href="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(publication.documents[0].fileName)}" title="${fn:escapeXml(publication.documents[0].fileName)}">
+												<img class="pre_pic" style="width: 110px;" src="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(publication.documents[0].fileName)}?preview=MEDIUM" alt="${fn:escapeXml(publication.documents[0].fileName)}?preview=MEDIUM"/>
 											</a><br />
 											<div class="preview_meta">
 												<!--+ 
@@ -67,12 +65,12 @@
 													</c:url>
 													<!-- 
 													<p class="publication_action_buttons">
-														<a class="renameDoc" title="renameTitle" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}&amp;fileName=${mtl:encodeURI(document.fileName)}&amp;action=rename" data-filename="${fn:escapeXml(document.fileName)}"><span>rename</span></a>
+														<a class="renameDoc" title="renameTitle" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}&amp;fileName=${mtl:encodePathSegment(document.fileName)}&amp;action=rename" data-filename="${fn:escapeXml(document.fileName)}"><span>rename</span></a>
 													</p>
 													-->
 													<c:set var="filename" value="${document.fileName}" />
 													<p style="clear:left; font-size:95%;">
-														<form class="renameDocForm" style="float: left;" action="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}&amp;fileName=${mtl:encodeURI(document.fileName)}&amp;action=rename" method='POST' enctype='multipart/form-data' autocomplete='off'>
+														<form class="renameDocForm" style="float: left;" action="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}&amp;fileName=${mtl:encodePathSegment(document.fileName)}&amp;action=rename" method='POST' enctype='multipart/form-data' autocomplete='off'>
 															<span class="showName" style="display:none;"><c:out value="${filename}" /></span>
 															<input class="renameDocInput" name='newFileName' type="text" value="${filename}" />
 														</form>
@@ -85,8 +83,8 @@
 												<br />
 												<c:out value=" ("/>
 												<!-- without qr-code -->
-												<a class="documentFileName preview" href="/documents/${publication.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false" title="${fn:escapeXml(document.fileName)}">
-													<img style="display:none;" class="pre_pic" src="/documents/${publication.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=SMALL" alt="${fn:escapeXml(document.fileName)}"/>
+												<a class="documentFileName preview" href="/documents/${publication.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(document.fileName)}?qrcode=false" title="${fn:escapeXml(document.fileName)}">
+													<img style="display:none;" class="pre_pic" src="/documents/${publication.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(document.fileName)}?preview=SMALL" alt="${fn:escapeXml(document.fileName)}"/>
 													<fmt:message key="qrcode.actions.download" />
 												</a>
 												
@@ -106,10 +104,8 @@
 
 									</c:when>
 									<c:otherwise>
-										<a class="img-thumbnail documentFileName preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false" title="${fn:escapeXml(document.fileName)}">
-											<!-- <img src="${resdir}/image/document-txt-blue.png" style="float:left;"/> -->
-											<img style="display:none;" class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=SMALL" alt="${fn:escapeXml(document.fileName)}"/>
-											
+										<a class="img-thumbnail documentFileName preview" href="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(document.fileName)}?qrcode=false" title="${fn:escapeXml(document.fileName)}">
+											<img style="display:none;" class="pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(document.fileName)}?preview=SMALL" alt="${fn:escapeXml(document.fileName)}"/>
 										</a>
 									</c:otherwise>
 								</c:choose>
@@ -132,7 +128,7 @@
 										<p style="font-size:95%;"><fmt:message key="bibtex.actions.additionalFiles"/></p>
 		
 										<div id="inputDiv">
-												<!-- keep me! - temporary content -->										
+												<!-- keep me! - temporary content -->
 										</div> 
 									</div>
 								</div>

@@ -453,7 +453,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * Hereby the resources requested/supported by (i) the controller itself, (ii) the format param, 
 	 * (iii) URL param and (iv) user settings are considered. Parameter settings override user settings,
 	 * if possible.
-	 * @param command TODO
+	 * @param command
 	 * 
 	 * @return all resources that must be initialized by this controller
 	 */

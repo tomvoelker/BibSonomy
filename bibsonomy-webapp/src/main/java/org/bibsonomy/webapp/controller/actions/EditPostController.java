@@ -170,7 +170,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	@Override
 	public View workOn(final COMMAND command) {
 		final RequestWrapperContext context = command.getContext();
-
+		
 		/*
 		 * only users which are logged in might post -> send them to login page
 		 */
@@ -185,7 +185,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * classes can now execute their workOn code
 		 */
 		this.workOnCommand(command, loginUser);
-
+		
 		/*
 		 * If the user is a spammer, we check the captcha
 		 */
@@ -209,7 +209,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 				this.errors.reject("error.post.notfound");
 				return this.getEditPostView(command, loginUser);
 			}
-
 			command.setPost(post);
 		}
 
@@ -847,12 +846,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		if (present(this.pingback) && !loginUser.isSpammer() && GroupUtils.isPublicGroup(post.getGroups())) {
 			this.pingback.sendPingback(post);
 		}
-
 	}
-
-
-
-
 
 	/**
 	 * Populates the command with the given post. Ensures, that fields which

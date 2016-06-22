@@ -30,6 +30,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -46,17 +48,20 @@ import org.bibsonomy.util.WebUtils;
  */
 public abstract class AbstractGenericFormatURLScraper extends AbstractUrlScraper {
 	
-	protected abstract String getDownloadURL(final URL url) throws ScrapingException, IOException;
+	/**
+	 * @param url
+	 * @param cookies
+	 * @return the download url
+	 * @throws ScrapingException
+	 * @throws IOException
+	 */
+	protected abstract String getDownloadURL(final URL url, String cookies) throws ScrapingException, IOException;
 	
 	@Override
 	protected final boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
 		scrapingContext.setScraper(this);
 		try {
 			final URL url = scrapingContext.getUrl();
-			final String downloadURL = this.getDownloadURL(url);
-			if (downloadURL == null) {
-				throw new ScrapingFailureException("can't get download url for " + url);
-			}
 			
 			final String cookies;
 			if (this.retrieveCookiesFromSite()) {
@@ -65,11 +70,25 @@ public abstract class AbstractGenericFormatURLScraper extends AbstractUrlScraper
 				cookies = null;
 			}
 			
+			final String downloadURL = this.getDownloadURL(url, cookies);
+			if (downloadURL == null) {
+				throw new ScrapingFailureException("can't get download url for " + url);
+			}
+			
 			final String downloadResult = WebUtils.getContentAsString(downloadURL, cookies);
 			
 			String bibtex = this.convert(downloadResult);
 			
+			/*
+			 * clean the bibtex for better format
+			 */
 			if (present(bibtex)) {
+				// FIXME: cache pattern, use \s+ instead of whitespace
+				final Pattern URL_PATTERN_FOR_URL = Pattern.compile("URL = \\{ \n        (.*)\n    \n\\}");
+				Matcher m = URL_PATTERN_FOR_URL.matcher(bibtex);
+				if(m.find()) {
+					bibtex = bibtex.replaceAll(URL_PATTERN_FOR_URL.toString(), "URL = {" + m.group(1) + "}");
+				}
 				bibtex = postProcessScrapingResult(scrapingContext, bibtex);
 				scrapingContext.setBibtexResult(bibtex);
 				return true;
@@ -80,6 +99,9 @@ public abstract class AbstractGenericFormatURLScraper extends AbstractUrlScraper
 		return false;
 	}
 	
+	/**
+	 * @return iff the url should be called before 
+	 */
 	protected boolean retrieveCookiesFromSite() {
 		return false;
 	}

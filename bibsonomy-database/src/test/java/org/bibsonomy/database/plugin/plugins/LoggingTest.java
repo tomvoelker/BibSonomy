@@ -88,15 +88,6 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
-	 * tests whether we can add this plugin to the registry
-	 */
-	@Test
-	public void addLoggingPlugin() {
-		pluginRegistry.clearPlugins();
-		pluginRegistry.add(new Logging());
-	}
-
-	/**
 	 * tests onBibTexDelete
 	 */
 	@Test

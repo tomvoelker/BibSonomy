@@ -264,6 +264,7 @@
 	</bean>
 	
 	<bean id="goldStandardBookmarkDatabaseMananger" class="org.bibsonomy.database.managers.GoldStandardBookmarkDatabaseManager" factory-method="getInstance">
+		<property name="search" ref="goldStandardBookmarkSearch" />
 		<property name="chain" ref="goldStandardBookmarkChain" />
 	</bean>
 	
@@ -300,6 +301,26 @@
 	
 	<bean id="personDatabaseManager" class="org.bibsonomy.database.managers.PersonDatabaseManager" factory-method="getInstance">
 		<property name="personSearch" ref="personSearch" />
+	</bean>
+	
+	<bean id="clipboardDatabaseManager" class="org.bibsonomy.database.managers.ClipboardDatabaseManager" factory-method="getInstance" />
+	
+	<bean id="databasePluginManager" class="org.bibsonomy.database.plugin.DatabasePluginRegistry" factory-method="getInstance">
+		<property name="defaultPlugins">
+			<list>
+				<bean class="org.bibsonomy.database.plugin.plugins.Logging" />
+				<bean class="org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin" />
+				<bean class="org.bibsonomy.database.plugin.plugins.ClipboardPlugin">
+					<property name="clipboardDatabaseManager" ref="clipboardDatabaseManager" />
+				</bean>
+				<bean class="org.bibsonomy.database.plugin.plugins.DiscussionPlugin" />
+				<bean class="org.bibsonomy.database.plugin.plugins.GoldStandardPublicationReferencePlugin" />
+				<bean class="org.bibsonomy.database.plugin.plugins.MetaDataPlugin" />
+				<bean class="org.bibsonomy.database.plugin.plugins.PersonPostConnectorPlugin">
+					<property name="personDatabaseManager" ref="personDatabaseManager" />
+				</bean>
+			</list>
+		</property>
 	</bean>
 	
 	<bean id="mainDataSource" class="${database.datasource.class}" parent="basicDataSource">

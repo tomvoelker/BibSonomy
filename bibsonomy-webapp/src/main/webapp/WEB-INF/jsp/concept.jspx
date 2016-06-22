@@ -14,8 +14,8 @@
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<fmt:message var="headline" key="page.concept.headline" />
-	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" headline="${headline}${command.requestedTags}">
+	
+	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
@@ -82,7 +82,7 @@
 			<!--  links to tag / concept pages -->
 			<parts:tagsAndConceptsForSidebar/>
 			
-			<!-- display user's/groups tag relations -->			
+			<!-- display user's/groups tag relations -->
 			<c:set var="headingLink" value="/concepts"/>
 			<c:set var="headingTitleKey" value="tagrelations.all.title"/>
 			<c:choose>
@@ -93,7 +93,7 @@
 				<c:when test="${not empty command.requestedGroup}">
 					<c:set var="headingLink" value="${relativeUrlGenerator.getConceptsUrlByString(command.requestedGroup)}"/>
 					<c:set var="headingTitleKey" value="tagrelations.group.title"/>
-				</c:when>						
+				</c:when>
 			</c:choose>
 			
 			<sidebar:conceptsItem 
@@ -105,17 +105,16 @@
 				headingTitleKey="${headingTitleKey}"/>
 
 
-			<!-- if requestedUser is set, show the tag cloud -->			
+			<!-- if requestedUser is set, show the tag cloud -->
 			<c:if test="${(not empty command.requestedUser) or (not empty command.requestedGroup)}">
 				<c:if test="${not empty command.requestedUser}">
-					<c:set var="requPathTagCloud" value="user/${mtl:encodeURI(command.requestedUser)}"/>
+					<c:set var="requPathTagCloud" value="user/${mtl:encodePathSegment(command.requestedUser)}"/>
 				</c:if>
 				<c:if test="${not empty command.requestedGroup}">
-					<c:set var="requPathTagCloud" value="group/${mtl:encodeURI(command.requestedGroup)}"/>
-				</c:if>				
+					<c:set var="requPathTagCloud" value="group/${mtl:encodePathSegment(command.requestedGroup)}"/>
+				</c:if>
 				<sidebar:sidebarTagCloudItem requPath="${requPathTagCloud}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user"/>
 			</c:if>
-
 		</jsp:attribute>
 		
 	</layout:resourceLayout>

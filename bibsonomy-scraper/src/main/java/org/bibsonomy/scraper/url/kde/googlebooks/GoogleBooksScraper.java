@@ -73,7 +73,7 @@ public class GoogleBooksScraper extends GenericBibTeXURLScraper {
 	}
 
 	@Override
-	public String getDownloadURL(URL url) throws ScrapingException {
+	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		// extract id from url
 		final Matcher idMatcher = ID_PATTERN.matcher(url.toString());
 		

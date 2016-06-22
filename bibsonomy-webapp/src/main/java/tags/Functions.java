@@ -44,6 +44,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.SpamStatus;
@@ -85,6 +86,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
+import com.github.rjeschke.txtmark.Processor;
 import com.google.caja.util.Sets;
 import com.sksamuel.diffpatch.DiffMatchPatch;
 import com.sksamuel.diffpatch.DiffMatchPatch.Diff;
@@ -173,6 +175,15 @@ public class Functions {
 		 */
 		return s.replaceAll("(?m)\n\\s*\n", "\n");
 	}
+	
+	/**
+	 * converts markdown to html
+	 * @param markdown
+	 * @return the converted markdown
+	 */
+	public static String markdownToHtml(final String markdown) {
+		return Processor.process(StringEscapeUtils.escapeHtml(markdown));
+	}
 
 	/**
 	 * Removes all "non-trivial" characters from the file name. If the file name
@@ -191,25 +202,14 @@ public class Functions {
 	}
 
 	/**
-	 * wrapper for {@link UrlUtils#safeURIDecode(String)}
-	 * 
-	 * @param uri
-	 *        a URI string
-	 * @return the decoded URI string
-	 */
-	public static String decodeURI(final String uri) {
-		return UrlUtils.safeURIDecode(uri);
-	}
-
-	/**
-	 * wrapper for {@link UrlUtils#safeURIEncode(String)}
+	 * wrapper for {@link UrlUtils#encodePathSegment(String)}
 	 * 
 	 * @param uri
 	 *        a URI string
 	 * @return the encoded URI string
 	 */
-	public static String encodeURI(final String uri) {
-		return UrlUtils.safeURIEncode(uri);
+	public static String encodePathSegment(final String uri) {
+		return UrlUtils.encodePathSegment(uri);
 	}
 
 	/**

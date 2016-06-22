@@ -11,11 +11,11 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
-	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/spheres"	
-	>
+	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/spheres">
+	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<fmt:message var="headline" key="page.friends.headline" />
-	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}"	activeTab="${command.context.loginUser.name != null ? 'my' : ''}" headline="${headline}">
+	
+	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}"	activeTab="${command.context.loginUser.name != null ? 'my' : ''}">
 	
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.friends" formAction="/friends/" formInputName="user"/>
@@ -32,7 +32,7 @@
 					</fmt:message>
 				</jsp:attribute>
 			</parts:infobox>
-         </jsp:attribute>
+		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
 			<sidebar:sidebarItem textKey="friends.friendof">

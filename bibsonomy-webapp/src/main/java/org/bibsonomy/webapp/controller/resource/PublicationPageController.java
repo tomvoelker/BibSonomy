@@ -95,14 +95,13 @@ public class PublicationPageController extends AbstractResourcePageController<Bi
 	 */
 	@Override
 	protected void handleDiskussionItems(Post<GoldStandardPublication> goldStandard, User loginUser) {
-		
-		//if creating first discussion item on normal post
+		// if creating first discussion item on normal post
 		if (!present(goldStandard)) {
 			return;
 		}
 		
-		//remove all discussion if user self has not discussed
-		if(goldStandard.getResource().getEntrytype().equals(PREPRINT)) {
+		// remove all discussion if user self has not discussed
+		if (goldStandard.getResource().getEntrytype().equals(PREPRINT)) {
 			List<DiscussionItem> discussionItems = goldStandard.getResource().getDiscussionItems();
 			for (DiscussionItem item : discussionItems) {
 				if(item.getUser().equals(loginUser)) {

@@ -37,7 +37,7 @@
 	<parent>
 		<groupId>org.bibsonomy</groupId>
 		<artifactId>bibsonomy</artifactId>
-		<version>3.5.2</version>
+		<version>3.6.0-SNAPSHOT</version>
 	</parent>
 	<licenses>
 		<license>
@@ -76,11 +76,4 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
-	<repositories>
-		<repository>
-			<id>oauth.googlecode.com</id>
-			<url>http://oauth.googlecode.com/svn/code/maven</url>
-		</repository>
-	</repositories>
 </project>

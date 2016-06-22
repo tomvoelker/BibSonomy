@@ -143,10 +143,10 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
 			// set page title
-			command.setPageTitle("user :: " + groupingName); // TODO: i18n
+			command.setPageTitle(groupingName); // TODO: i18n
 			if (present(requTags)) {
 				// add the tags to the title
-				command.setPageTitle(command.getPageTitle() + " :: " + StringUtils.implodeStringCollection(requTags, "+"));
+				command.setPageTitle(command.getPageTitle() + " > " + StringUtils.implodeStringCollection(requTags, " "));
 			}
 			
 			// only fetch tags if they were not already fetched by handleTagsOnly
@@ -213,7 +213,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 				final List<User> followersOfUser = this.logic.getUsers(null, GroupingEntity.FOLLOWER, null, null, null, null, UserRelation.FOLLOWER_OF, null, 0, 0);
 				for (final User u : followersOfUser){
 					if (u.getName().equals(groupingName)) {
-						command.setFollowerOfUser(true);
+						command.setIsFollowerOfUser(true);
 						break;
 					}
 				}

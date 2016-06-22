@@ -7,20 +7,14 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-
 	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
 	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/resources/publication"
 	xmlns:bm="urn:jsptagdir:/WEB-INF/tags/resources/bookmark"
-	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
-	
->
-
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-
-	
 	<layout:paneLayout 
 		requPath="${requPath}" 
 		command="${command}"
@@ -111,18 +105,17 @@
 							| complete Post
 							+-->
 			
-						<div class="title">
+						<div class="title" itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
 							<c:choose>
 								<c:when test="${isPub}">
 									<c:choose>
-									
 										<c:when test="${isGoldStandard}">
 											<input type="hidden" name="intraHashToUpdate" value="${newestPost.resource.interHash}"/>
 											<div class="title">
 												<div class="media">
 													<div class="media-body" id="titletext">
-														<div class="pull-right"><buttons:communityPostActions post="${newestPost}" resourceType="bibtex"/></div>
-														<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(newestPost.resource.title)}" />
+														<div class="pull-right"><buttons:communityPostActions post="${newestPost}" resourceType="bibtex" communityPostExists="${true}" /></div>
+														<h1 class="media-heading" id="pubtitle" itemprop="name"><c:out value="${mtl:cleanBibtex(newestPost.resource.title)}" />
 															<c:if test="${newestPost.approved}">
 																<a title="${fn:escapeXml(approved)}">
 																	<span class="fa fa-check-circle" style="margin-left:6px;"><!--  --></span>
@@ -156,10 +149,10 @@
 											<div class="title">
 											<div class="media">
 												<div class="media-body" id="titletext">
-													<div class="pull-right"><buttons:communityPostActions post="${newestPost}" resourceType="bookmark"/></div>
-													<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(newestPost.resource.title)}" /></h1>
+													<div class="pull-right"><buttons:communityPostActions post="${newestPost}" resourceType="bookmark" communityPostExists="${true}" /></div>
+													<h1 class="media-heading" id="pubtitle" itemprop="name"><c:out value="${mtl:cleanBibtex(newestPost.resource.title)}" /></h1>
 													<c:set var="url" value="${newestPost.resource.url}" />
-													<p><a href="${url}"><c:out value="${url}" /></a></p>
+													<p><a href="${url}" itemprop="url"><c:out value="${url}" /></a></p>
 												</div>
 											</div>
 										</div>
@@ -171,9 +164,9 @@
 												<div class="media">
 												<div class="media-body" id="titletext">
 													<div class="pull-right"><buttons:actions post="${newestPost}" loginUserName="${command.context.loginUser.name}" resourceType="bookmark"/></div>
-													<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(newestPost.resource.title)}" /></h1>
+													<h1 class="media-heading" id="pubtitle" itemprop="name"><c:out value="${mtl:cleanBibtex(newestPost.resource.title)}" /></h1>
 													<c:set var="url" value="${newestPost.resource.url}" />
-													<p><a href="${url}"><c:out value="${url}" /></a></p>
+													<p><a href="${url}" itemprop="url"><c:out value="${url}" /></a></p>
 												</div>
 												</div>
 											</div>
@@ -206,6 +199,8 @@
 
 									<tbody>
 										<c:forEach var="index" begin="0" end="${fieldlength}" varStatus="loopStatus" step="1">
+											<div itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
+											
 											<c:set var="historicalPost" value="${listView.list[(fieldlength-index)]}"/>
 											<c:set var="additionalItemClasses" value="${loopStatus.index % 2 == 0 ? 'odd' : 'even'}" />
 											<tr> 
@@ -314,15 +309,12 @@
 															</div>
 														</c:when>
 													</c:choose>
-													<c:forEach var="diffEntry" items="${diffArrayPre}">
-														<div class="checkbox">
-															<input type="checkbox" class="invisible"/> 
-															<strong><fmt:message key="post.resource.${diffEntry.key}"/></strong>
-															<c:out value=": "/>
-															${diffEntry.value}
-															<br/>
-														</div>
-													</c:forEach>
+													<dl class="dl-horizontal dl-history">
+														<c:forEach var="diffEntry" items="${diffArrayPre}">
+															<dt><fmt:message key="post.resource.${diffEntry.key}"/></dt>
+															<dd>${diffEntry.value}</dd>
+														</c:forEach>
+													</dl>
 									
 												</td>
 												<!-- comparison to the current version -->
@@ -333,21 +325,20 @@
 															<fmt:message key="history.currentVersion" />
 														</div>
 													</c:if>	
-													<c:forEach var="diffEntry" items="${diffArrayCurr}">
-														<div class="checkbox">			
-															<input type="checkbox" id="CurrEntryCheckbox" class="invisible" checked="checked"/>
-															<strong><fmt:message key="post.resource.${diffEntry.key}"/></strong>
-															<c:out value=": "/>
-															${diffEntry.value}
-															<br/>
-														</div>
-								
-														<div>
-															<!-- the following two variables are used in .js file -->
-															<input type="hidden" name="diffEntryKey" value="${diffEntry.key}"/>
-															<input type="hidden" name="compareVersion" value="${fieldlength-index}"/>
-														</div>
-													</c:forEach>
+													<dl class="dl-horizontal dl-history">
+														<c:forEach var="diffEntry" items="${diffArrayCurr}">
+															<dt>
+																<input type="checkbox" id="CurrEntryCheckbox" class="invisible" checked="checked"/><c:out value=" "/>
+																<fmt:message key="post.resource.${diffEntry.key}"/>
+															</dt>
+															<dd>${diffEntry.value}</dd>
+															<div>
+																<!-- the following two variables are used in .js file -->
+																<input type="hidden" name="diffEntryKey" value="${diffEntry.key}"/>
+																<input type="hidden" name="compareVersion" value="${fieldlength-index}"/>
+															</div>
+														</c:forEach>
+													</dl>
 													<!-- restore confirm (alert) question -->
 													<div id="restore_alert_btn" class="invisible hidden">
 														<div class="alert col-sm-10 alert-warning" style="margin-bottom:0px;padding:6px 12px;" role="alert">
@@ -358,6 +349,7 @@
 													</div>
 												</td>
 											</tr>
+											</div>
 										</c:forEach>
 									</tbody>
 								</table>
@@ -373,5 +365,4 @@
 			</div>
 		</jsp:attribute>
 	</layout:paneLayout>
-
 </jsp:root>

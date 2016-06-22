@@ -9,7 +9,7 @@
 		  xmlns:spring="http://www.springframework.org/tags"
 		  xmlns:bform="urn:jsptagdir:/WEB-INF/tags/layout/form"
 		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
-		  xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+		  xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
 		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 		  xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
 		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
@@ -204,9 +204,22 @@
 									</p>
 								</div>
 							</div>
+							
+							<div class="form-group">
+								<div class="col-sm-offset-3 col-sm-9">
+									<bs:linkButton 
+									title="TITLE" 
+									textKey="settings.generateapikey"
+									style="primary" 
+									href="/updateGroup?operation=regenerate_api_key&amp;groupname=${mtl:encodePathSegment(command.group.name)}&amp;ckey=${ckey}" 
+									size="defaultSize" />
+								
+								</div>
+							</div>
+							
 						</c:otherwise>
 					</c:choose>
-				</fieldset>				
+				</fieldset>
 				
 				<bsform:fieldset legendKey="settings.group.picture.header">
 					<jsp:attribute name="content">
@@ -215,7 +228,7 @@
 						<div class ="form-group clearfix">
 							<form:label cssClass="col-sm-3 control-label" path="file"><fmt:message key="settings.picture.current"/></form:label>
 							<div class="col-sm-9">
-								<a title="${mtl:encodeURI(user.name)}" href="/user/${mtl:encodeURI(user.name)}" class="img-thumbnail img-responsive">
+								<a title="${mtl:encodePathSegment(user.name)}" href="/user/${mtl:encodePathSegment(user.name)}" class="img-thumbnail img-responsive">
 									<img class="user-avatar" src="${relativeUrlGenerator.getUserPictureUrlByUsername(user.name)}" />
 									<span><user:username user="${user}" noLink="${true}"/></span>
 								</a>

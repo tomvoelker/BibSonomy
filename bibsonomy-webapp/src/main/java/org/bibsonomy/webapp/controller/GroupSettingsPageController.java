@@ -112,7 +112,7 @@ public class GroupSettingsPageController implements MinimalisticController<Group
 			command.addTab(GroupSettingsPageCommand.GROUP_SETTINGS, "navi.groupsettings");
 			command.addTab(GroupSettingsPageCommand.MEMBER_LIST_IDX, "settings.group.memberList");
 			command.addTab(GroupSettingsPageCommand.CV_IDX, "navi.cvedit");
-			// command.addTab(GroupSettingsPageCommand.DELETE_GROUP, "settings.group.disband"); // TODO_GROUPS: readd
+			command.addTab(GroupSettingsPageCommand.DELETE_GROUP, "settings.group.disband");
 			
 			if (!selectedByUser) {
 				command.setSelTab(GroupSettingsPageCommand.GROUP_SETTINGS);

@@ -241,25 +241,27 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 
 	protected void fillXmlPost(final PostType xmlPost, final Post<? extends Resource> post) {
-		this.modelValidator.checkPost(post);
-		this.modelValidator.checkUser(post.getUser());
-		
 		// set user
+		final String userName = post.getUser().getName();
 		final UserType xmlUser = new UserType();
-		xmlUser.setName(post.getUser().getName());
-		xmlUser.setHref(this.urlRenderer.createHrefForUser(post.getUser().getName()));
+		xmlUser.setName(userName);
+		xmlUser.setHref(this.urlRenderer.createHrefForUser(userName));
 		xmlPost.setUser(xmlUser);
-		if (post.getDate() != null) {
-			xmlPost.setPostingdate(this.createXmlCalendar(post.getDate()));
+		
+		// date infos
+		final Date date = post.getDate();
+		if (date != null) {
+			xmlPost.setPostingdate(this.createXmlCalendar(date));
 		}
-		if (post.getChangeDate() != null) {
-			xmlPost.setChangedate(this.createXmlCalendar(post.getChangeDate()));
+		final Date changeDate = post.getChangeDate();
+		if (changeDate != null) {
+			xmlPost.setChangedate(this.createXmlCalendar(changeDate));
 		}
 	
 		// add tags
-		if (post.getTags() != null) {
-			for (final Tag t : post.getTags()) {
-				this.modelValidator.checkTag(t);
+		final Set<Tag> tags = post.getTags();
+		if (tags != null) {
+			for (final Tag t : tags) {
 				final TagType xmlTag = new TagType();
 				xmlTag.setName(t.getName());
 				xmlTag.setHref(this.urlRenderer.createHrefForTag(t.getName()));
@@ -269,7 +271,6 @@ public abstract class AbstractRenderer implements Renderer {
 	
 		// add groups
 		for (final Group group : post.getGroups()) {
-			this.modelValidator.checkGroup(group);
 			final GroupType xmlGroup = new GroupType();
 			xmlGroup.setName(group.getName());
 			xmlGroup.setHref(this.urlRenderer.createHrefForGroup(group.getName()));
@@ -282,11 +283,14 @@ public abstract class AbstractRenderer implements Renderer {
 		final Resource resource = post.getResource();
 		if ((resource instanceof BibTex) && !(resource instanceof GoldStandardPublication)) {
 			final BibTex publication = (BibTex) post.getResource();
-			this.modelValidator.checkPublication(publication);
-			final String userName = post.getUser().getName();
 			final BibtexType xmlPublication = new BibtexType();
 	
-			xmlPublication.setHref(this.urlRenderer.createHrefForResource(userName, publication.getIntraHash()));
+			final String intraHash = publication.getIntraHash();
+			
+			// new post do not have an intrahash => set no url
+			if (present(intraHash)) {
+				xmlPublication.setHref(this.urlRenderer.createHrefForResource(userName, intraHash));
+			}
 	
 			this.fillXmlPublicationDetails(publication, xmlPublication);
 	
@@ -299,7 +303,7 @@ public abstract class AbstractRenderer implements Renderer {
 				final DocumentsType xmlDocuments = new DocumentsType();
 				for (final Document document : documents){
 					final DocumentType xmlDocument = createXmlDocument(document);
-					xmlDocument.setHref(this.urlRenderer.createHrefForResourceDocument(userName, publication.getIntraHash(), document.getFileName()));
+					xmlDocument.setHref(this.urlRenderer.createHrefForResourceDocument(userName, intraHash, document.getFileName()));
 					xmlDocuments.getDocument().add(xmlDocument);
 				}
 				xmlPost.setDocuments(xmlDocuments);
@@ -309,7 +313,7 @@ public abstract class AbstractRenderer implements Renderer {
 			 * add extra URLs (if they exist)
 			 */
 			final List<BibTexExtra> extraUrls = publication.getExtraUrls();
-			if (ValidationUtils.present(extraUrls)) {
+			if (present(extraUrls)) {
 				final ExtraUrlsType xmlExtraUrls = new ExtraUrlsType();
 				xmlPublication.setExtraurls(xmlExtraUrls);
 				
@@ -325,12 +329,10 @@ public abstract class AbstractRenderer implements Renderer {
 				}
 				
 			}
-			
 		}
 		// if resource is a bookmark create a xml representation
 		if (resource instanceof Bookmark) {
 			final Bookmark bookmark = (Bookmark) post.getResource();
-			this.modelValidator.checkBookmark(bookmark);
 			final BookmarkType xmlBookmark = new BookmarkType();
 			xmlBookmark.setHref(this.urlRenderer.createHrefForResource(post.getUser().getName(), bookmark.getIntraHash()));
 			xmlBookmark.setInterhash(bookmark.getInterHash());
@@ -457,7 +459,6 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 
 	private UserType createXmlUser(final User user) throws InternServerException {
-		this.modelValidator.checkUser(user);
 		final UserType xmlUser = new UserType();
 		xmlUser.setEmail(user.getEmail());
 		if (user.getHomepage() != null) {
@@ -536,7 +537,6 @@ public abstract class AbstractRenderer implements Renderer {
 
 	private TagType createXmlTag(final Tag tag) throws InternServerException {
 		final TagType xmlTag = new TagType();
-		this.modelValidator.checkTag(tag);
 		xmlTag.setName(tag.getName());
 		xmlTag.setHref(this.urlRenderer.createHrefForTag(tag.getName()));
 		// if (tag.getGlobalcount() > 0) {
@@ -574,7 +574,6 @@ public abstract class AbstractRenderer implements Renderer {
 	 */
 	private TagType createXmlRecommendedTag(final RecommendedTag tag) throws InternServerException {
 		final TagType xmlTag = new TagType();
-		this.modelValidator.checkTag(tag);
 		xmlTag.setName(tag.getName());
 		xmlTag.setHref(this.urlRenderer.createHrefForTag(tag.getName()));
 		// if (tag.getGlobalcount() > 0) {
@@ -627,7 +626,6 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 
 	private GroupType createXmlGroup(final Group group) {
-		this.modelValidator.checkGroup(group);
 		final GroupType xmlGroup = new GroupType();
 		xmlGroup.setName(group.getName());
 		xmlGroup.setDescription(group.getDescription());
@@ -673,7 +671,7 @@ public abstract class AbstractRenderer implements Renderer {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setGroupid(groupId);
-		this.serialize(writer, xmlDoc);		
+		this.serialize(writer, xmlDoc);
 	}
 
 	@Override
@@ -681,7 +679,7 @@ public abstract class AbstractRenderer implements Renderer {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setResourcehash(hash);
-		this.serialize(writer, xmlDoc);		
+		this.serialize(writer, xmlDoc);
 	}
 
 	@Override
@@ -689,7 +687,7 @@ public abstract class AbstractRenderer implements Renderer {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setUserid(userId);
-		this.serialize(writer, xmlDoc);		
+		this.serialize(writer, xmlDoc);
 	}
 
 	@Override
@@ -697,7 +695,7 @@ public abstract class AbstractRenderer implements Renderer {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setUri(uri);
-		this.serialize(writer, xmlDoc);		
+		this.serialize(writer, xmlDoc);
 	}
 
 	@Override

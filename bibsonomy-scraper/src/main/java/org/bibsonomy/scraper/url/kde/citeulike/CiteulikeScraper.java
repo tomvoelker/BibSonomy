@@ -82,7 +82,7 @@ public class CiteulikeScraper extends GenericBibTeXURLScraper {
 	}
 
 	@Override
-	public String getDownloadURL(URL url) throws ScrapingException {
+	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		String downloadUrl = url.toString();
 
 		// build bibtex download URL

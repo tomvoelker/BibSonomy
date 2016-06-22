@@ -26,9 +26,6 @@
  */
 package org.bibsonomy.model.logic;
 
-import java.util.Map;
-
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.ResourcePersonRelation;
@@ -46,6 +43,11 @@ public interface PersonLogicInterface {
 
 	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) throws ResourcePersonAlreadyAssignedException;
 
+	/**
+	 * FIXME: remove database id TODO_PERSONS
+	 * removes a resource relation
+	 * @param resourceRelationId
+	 */
 	public void removeResourceRelation(int resourceRelationId);
 
 	/**
@@ -57,6 +59,11 @@ public interface PersonLogicInterface {
 	
 	public Person getPersonById(PersonIdType idType, String id);
 	
+	/**
+	 * FIXME: remove database id TODO_PERSONS
+	 * removes a person name from a specific person
+	 * @param personNameId
+	 */
 	public void removePersonName(Integer personNameId);
 
 	/**

@@ -90,6 +90,8 @@ public class GroupRequestController implements ValidationAwareController<GroupRe
 		}
 
 		final User loginUser = context.getLoginUser();
+		
+		final boolean loggedInUserIsAdmin = Role.ADMIN.equals(loginUser.getRole());
 
 		if (loginUser.isSpammer()) {
 			this.errors.reject("requestGroup.spammerError");
@@ -106,8 +108,9 @@ public class GroupRequestController implements ValidationAwareController<GroupRe
 		/*
 		 * check captcha; an error is added if it fails.
 		 */
-		CaptchaUtil.checkCaptcha(this.captcha, this.errors, log, command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), this.requestLogic.getHostInetAddress());
-		
+		if (!loggedInUserIsAdmin) {
+			CaptchaUtil.checkCaptcha(this.captcha, this.errors, log, command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), this.requestLogic.getHostInetAddress());
+		}
 		final Group requestedGroup = command.getGroup();
 
 		/*
@@ -124,7 +127,9 @@ public class GroupRequestController implements ValidationAwareController<GroupRe
 		}
 
 		if (this.errors.hasErrors()) {
-			command.setCaptchaHTML(this.captcha.createCaptchaHtml(this.requestLogic.getLocale()));
+			if (!loggedInUserIsAdmin) {
+				command.setCaptchaHTML(this.captcha.createCaptchaHtml(this.requestLogic.getLocale()));
+			}
 			return Views.GROUPREQUEST;
 		}
 		
@@ -132,7 +137,6 @@ public class GroupRequestController implements ValidationAwareController<GroupRe
 		
 		// check if group was requested by an admin and she/he specified a group admin
 		final GroupRequest groupRequest = requestedGroup.getGroupRequest();
-		final boolean loggedInUserIsAdmin = Role.ADMIN.equals(loginUser.getRole());
 		if (loggedInUserIsAdmin) {
 			final String groupAdminName = groupRequest.getUserName();
 			if (present(groupAdminName)) {
@@ -175,7 +179,10 @@ public class GroupRequestController implements ValidationAwareController<GroupRe
 	@Override
 	public GroupRequestCommand instantiateCommand() {
 		final GroupRequestCommand command = new GroupRequestCommand();
-		command.setGroup(new Group());
+		final Group group = new Group();
+		// init the group request, we need this object for GroupCreationMode.AUTOMATIC
+		group.setGroupRequest(new GroupRequest());
+		command.setGroup(group);
 		return command;
 	}
 

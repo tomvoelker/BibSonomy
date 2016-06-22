@@ -34,8 +34,6 @@
 	<jsp:directive.attribute name="sidebar" fragment="true"/>
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
-	<jsp:directive.attribute name="noLoginBox" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>
 	
 	<jsp:directive.attribute name="noSidebar" type="java.lang.Boolean" required="false"/>
 	
@@ -46,10 +44,7 @@
 		pageTitle="${pageTitle}" 
 		requestedUser="${requestedUser}"
 		requPath="${requPath}"
-		noLoginBox="${noLoginBox}"
-		hideFooterContainer="true"
 		activeTab="${activeTab}"
-		minimizedContentWidth="${minimizedContentWidth}"
 		noSidebar="${noSidebar }">
 	
 		<jsp:attribute name="breadcrumbs">
@@ -70,13 +65,6 @@
 
 		<jsp:attribute name="heading">
 			<jsp:invoke fragment="heading" />
-		</jsp:attribute>
-
-		<!--+
-			| page content header
-			+-->
-		<jsp:attribute name="headerContainer">
-
 		</jsp:attribute>
 		
 		<jsp:attribute name="content">

@@ -46,15 +46,10 @@ import org.bibsonomy.util.WebUtils;
  * @author tst
  */
 public class ScientificcommonsScraper extends AbstractUrlScraper{
-
-	
 	private static final String SITE_NAME = "ScientificCommons.org";
-
-	private static final String SITE_URL = "http://www.scientificcommons.org/";
-
-	private static final String INFO = "Scraper for journals from the " + href(SITE_URL, SITE_NAME)+".";
-	
 	private static final String HOST = "scientificcommons.org";
+	private static final String SITE_URL = "http://www." + HOST;
+	private static final String INFO = "Scraper for journals from the " + href(SITE_URL, SITE_NAME)+".";
 	
 	private static final String DOWNLOAD_URL = "http://en.scientificcommons.org/export/bibtex/";
 	
@@ -65,8 +60,6 @@ public class ScientificcommonsScraper extends AbstractUrlScraper{
 	private static final Pattern PATTERN_YEAR = Pattern.compile("year = \\{([^\\}]*)\\}");
 	private static final Pattern PATTERN_AUTHORNAME_1 = Pattern.compile("author = \\{([^\\,]*)\\,");
 	private static final Pattern PATTERN_AUTHORNAME_2 = Pattern.compile("author = \\{(.*) and");
-	
-	
 	
 	
 	@Override
@@ -137,25 +130,26 @@ public class ScientificcommonsScraper extends AbstractUrlScraper{
 					// finished
 					sc.setBibtexResult(bibtex);
 					return true;
-				}else
-					throw new ScrapingFailureException("Invalid bibtex, author/year is missing");
-				
-			}else
-				throw new ScrapingFailureException("Bibtex download failed");
+				}
+				throw new ScrapingFailureException("Invalid bibtex, author/year is missing");
+			}
+			throw new ScrapingFailureException("Bibtex download failed");
 			
-		}else
-			throw new ScrapingFailureException("Cannot find identifier in given URL");
-		
+		}
+		throw new ScrapingFailureException("Cannot find identifier in given URL");
 	}
-
+	
+	@Override
 	public String getInfo() {
 		return INFO;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}

@@ -36,7 +36,7 @@
 							<c:forEach var="document" items="${command.post.resource.documents}">
 								<li>
 									<!-- link to document -->
-									<a class="document-filename" href="/documents/${command.post.resource.intraHash}/${mtl:encodeURI(command.post.user.name)}/${mtl:encodeURI(document.fileName)}"><c:out value="${document.fileName}"/></a>
+									<a class="document-filename" href="/documents/${command.post.resource.intraHash}/${mtl:encodePathSegment(command.post.user.name)}/${mtl:encodePathSegment(document.fileName)}"><c:out value="${document.fileName}"/></a>
 									<c:out value="  " /> <!-- TODO: use css -->
 									<!-- link for delete document -->
 									<!-- FIXME. use form! -->

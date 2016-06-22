@@ -231,16 +231,10 @@ INSERT INTO `extended_fields_data` VALUES
 INSERT INTO `friends` VALUES 
 (1, 'testuser1', 'testuser2', 'sys:network:bibsonomy-friend', NULL, '1815-12-10 00:00:00'),
 (3, 'testuser1', 'testuser3', 'sys:network:bibsonomy-friend', NULL, '1815-12-10 00:00:00'),
-(2, 'testuser2', 'testuser1', 'sys:network:bibsonomy-friend', NULL, '1815-12-10 00:00:00');
-
--- 
--- Data for table `followers`
--- 
-
-INSERT INTO `followers` VALUES 
-(1, 'testuser1', 'testuser2', '1815-12-10 00:00:00'),
-(3, 'testuser1', 'testuser3', '1815-12-10 00:00:00'),
-(2, 'testuser2', 'testuser1', '1815-12-10 00:00:00');
+(2, 'testuser2', 'testuser1', 'sys:network:bibsonomy-friend', NULL, '1815-12-10 00:00:00'),
+(4, 'testuser1', 'testuser2', 'sys:network:bibsonomy-follower', NULL, '1815-12-10 00:00:00'),
+(5, 'testuser1', 'testuser3', 'sys:network:bibsonomy-follower', NULL, '1815-12-10 00:00:00'),
+(6, 'testuser2', 'testuser1', 'sys:network:bibsonomy-follower', NULL, '1815-12-10 00:00:00');
 
 
 -- 
@@ -299,7 +293,7 @@ INSERT INTO `ids` VALUES
 (12, 28, 'grouptas id'),
 (14, 3,  'message_id'),
 (15, 4, 'comment_id'),
-(16, 1, 'sync_service_id'),
+(16, 12, 'sync_service_id'),
 (17, 7, 'person_change_id');
 
 

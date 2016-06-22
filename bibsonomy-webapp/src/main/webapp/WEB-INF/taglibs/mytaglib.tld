@@ -17,18 +17,6 @@
 	</tag>
 
 	<tag>
-		<name>encode2</name>
-		<tagclass>tags.Encode2</tagclass>
-		<bodycontent>empty</bodycontent>
-		<info>Encodes the given string TWO TIMES with URLEncoder</info>
-		<attribute>
-			<name>value</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-
-	<tag>
 		<name>debug</name>
 		<tagclass>tags.Debug</tagclass>
 		<bodycontent>empty</bodycontent>
@@ -39,7 +27,6 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
-
 
 	<tag>
 		<name>exists</name>
@@ -74,7 +61,7 @@
 			<name>maxlen</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
-		</attribute>		
+		</attribute>
 	</tag>
 	
 	<tag>
@@ -175,17 +162,17 @@
 		<function-class>tags.Functions</function-class>
 		<function-signature>String trimWhiteSpace (java.lang.String)</function-signature>
 	</function>
-
+	
 	<function>
-		<name>decodeURI</name>
+		<name>markdownToHtml</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String decodeURI (java.lang.String)</function-signature>
+		<function-signature>String markdownToHtml (java.lang.String)</function-signature>
 	</function>
 
 	<function>
-		<name>encodeURI</name>
+		<name>encodePathSegment</name>
 		<function-class>tags.Functions</function-class>
-		<function-signature>String encodeURI (java.lang.String)</function-signature>
+		<function-signature>String encodePathSegment (java.lang.String)</function-signature>
 	</function>
 
 	<function>

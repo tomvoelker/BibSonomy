@@ -58,6 +58,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.TagUtils;
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
 import org.bibsonomy.webapp.util.GroupingCommandUtils;
@@ -151,7 +152,6 @@ public class PostPublicationController extends AbstractEditPublicationController
 		final String selection = command.getSelection();
 		final boolean hasSelection = present(selection);
 		final boolean hasFile = present(command.getFile());
-
 		/*
 		 * check for valid ckey
 		 */
@@ -183,7 +183,37 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 * The user has entered text into the snippet selection - we use that
 			 */
 			log.debug("user has filled selection");
-			snippet = this.publicationImporter.handleSelection(selection);
+			
+			/*
+			 * check whether every line is a URL
+			 * AND can be interpreted by the scraper
+			 */
+			final String[] selectionInLines = selection.split("\n");
+			final StringBuilder urlSnippet = new StringBuilder();
+			snippet = urlSnippet.toString();
+			boolean hasURL = false;
+			for (final String possibleURL : selectionInLines) {
+				if (present(possibleURL)) {
+					final ScrapingContext scrapingContext = this.buildScrapingContext(possibleURL, null, true);
+					if (!present(scrapingContext)) {
+						continue;
+					}
+					hasURL = true;
+					final boolean success = this.scrape(scrapingContext);
+					if (success) {
+						urlSnippet.append(scrapingContext.getBibtexResult());
+						urlSnippet.append("\n");
+					}
+				}
+			}
+			/*
+			 * if not handle the field as a snippet
+			 */
+			if (!hasURL) {
+				snippet = this.publicationImporter.handleSelection(selection);
+			} else {
+				snippet = urlSnippet.toString().trim();
+			}
 		} else if (hasFile) {
 			/*
 			 * The user uploads a BibTeX or EndNote file
@@ -243,17 +273,18 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * FIXME: why aren't commas, etc. removed?
 		 */
 		List<Post<BibTex>> posts = null;
-
 		try {
 			/*
 			 * Parse the BibTeX snippet
 			 */
+			
 			posts = parser.parseBibTeXPosts(snippet);
 		} catch (final ParseException ex) {
 			this.errors.reject("error.upload.failed.parse", ex.getMessage());
 		} catch (final IOException ex) {
 			this.errors.reject("error.upload.failed.parse", ex.getMessage());
 		}
+		
 		PublicationValidator.handleParserWarnings(this.errors, parser, snippet, null);
 
 		/*
@@ -322,7 +353,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 */
 		final Set<String> unique_hashes = new TreeSet<String>();
 		ErrorMessage errorMessage;
-		if  (posts != null) {
+		if (posts != null) {
 			for (final Post<BibTex> post : posts) {
 				post.setUser(context.getLoginUser());
 				if (!present(post.getTags())) {

@@ -39,6 +39,7 @@ import org.elasticsearch.common.xcontent.XContentBuilder;
  * @author dzo
  */
 public class PublicationMappingBuilder extends ResourceMappingBuilder<BibTex> {
+	private static final String COPY_TO = "copy_to";
 
 	/**
 	 * @param resourceType
@@ -68,6 +69,32 @@ public class PublicationMappingBuilder extends ResourceMappingBuilder<BibTex> {
 				.startObject(PROPERTIES)
 					.startObject(Fields.Publication.PERSON_NAME)
 						.field(TYPE_FIELD, STRING_TYPE)
+					.endObject()
+				.endObject()
+			.endObject()
+			.startObject(Fields.Publication.DOCUMENTS)
+				.field(TYPE_FIELD, NESTED_TYPE)
+				.startObject(PROPERTIES)
+					.startObject(Fields.Publication.Document.NAME)
+						.field(TYPE_FIELD, STRING_TYPE)
+						.field(INDEX_FIELD, NOT_INDEXED)
+					.endObject()
+					.startObject(Fields.Publication.Document.TEXT)
+						.field(TYPE_FIELD, STRING_TYPE)
+						.field(INCLUDE_IN_ALL_FIELD, false)
+						.array(COPY_TO, Fields.PRIVATE_ALL_FIELD, Fields.ALL_DOCS)
+					.endObject()
+					.startObject(Fields.Publication.Document.HASH)
+						.field(TYPE_FIELD, STRING_TYPE)
+						.field(INDEX_FIELD, NOT_INDEXED)
+					.endObject()
+					.startObject(Fields.Publication.Document.CONTENT_HASH)
+						.field(TYPE_FIELD, STRING_TYPE)
+						.field(INDEX_FIELD, NOT_INDEXED)
+					.endObject()
+					.startObject(Fields.Publication.Document.DATE)
+						.field(TYPE_FIELD, STRING_TYPE)
+						.field(INDEX_FIELD, NOT_INDEXED)
 					.endObject()
 				.endObject()
 			.endObject()
@@ -150,7 +177,7 @@ public class PublicationMappingBuilder extends ResourceMappingBuilder<BibTex> {
 			.startObject(Fields.Publication.PRIVNOTE)
 				.field(TYPE_FIELD, STRING_TYPE)
 				.field(INCLUDE_IN_ALL_FIELD, false)
-				.field("copy_to", Fields.PRIVATE_ALL_FIELD)
+				.field(COPY_TO, Fields.PRIVATE_ALL_FIELD)
 				.field("store", "false") // TODO: remove?
 			.endObject()
 			.startObject(Fields.PRIVATE_ALL_FIELD)

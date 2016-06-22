@@ -91,11 +91,28 @@ $(function() {
 	var defaultLessIcon = 'fa-caret-up';
 	$('.more-list').each(function() {
 		var maxItemsInMoreList = defaultMaxItemsInMoreList;
+		var items = $(this).data("items");
+		if (items != undefined) {
+			maxItemsInMoreList = items;
+		}
+		var inline = $(this).data('inline') != undefined;
 		var subItems = $(this).find("> li");
 		if (subItems.length > maxItemsInMoreList) {
 			var moreLessLink = $('<li class="more-link-item"></li>');
+			if (inline) {
+				defaultMoreIcon = 'fa-caret-down';
+				moreLessLink.addClass('more-link-item-inline');
+			}
+			var text = getString("more");
+			var moreMessage = $(this).data('message');
+			if (moreMessage != undefined) {
+				text = moreMessage;
+			}
 			subItems.slice(maxItemsInMoreList).hide();
-			var link = $('<a class="more"><span class="fa fa-caret-right"></span><span class="desc">' + getString("more") + '...</span></a>');
+			var link = $('<a class="more"><span class="fa ' + defaultMoreIcon + '"></span><span class="desc">' + text + ' ...</span></a>');
+			if (inline) {
+				link.addClass('btn btn-default btn-block');
+			}
 			link.click(function() {
 				var icon = $(this).find('.fa');
 				var descText;
@@ -110,10 +127,13 @@ $(function() {
 					classToAdd = defaultMoreIcon;
 					classToRemove = defaultLessIcon;
 					descText = getString("more");
+					if (moreMessage != undefined) {
+						descText = moreMessage;
+					}
 					$(this).parent().parent().find('li:not(.more-link-item)').slice(maxItemsInMoreList).hide();
 				}
 				icon.removeClass(classToRemove).addClass(classToAdd);
-				$(this).find('.desc').text(descText + "...");
+				$(this).find('.desc').text(descText + " ...");
 			});
 			moreLessLink.append(link);
 			$(this).append(moreLessLink);
@@ -123,35 +143,32 @@ $(function() {
 	/**
 	 * SYSTEM TAGS HANDLING
 	 */
-	// FIXME: this duplicates code from the context definition
-	// maybe the info should be returned by the controller, or extra info in the
-	// view
 	var isSystemTag = function(item) {
-		var systemTags = [
-			//TODO: check whether this list is complete.
-			'sys:relevantfor:.+',
-			'relevantfor:.+',
-			'sent:.+',
-			'myown',
-			'unfiled',
-			'jabref',
-			'sys:hidden:.+',
-			'hidden:.+',
-			'sys:external:.+',
-			'external',
-			'sys:reported:.+',
-			'reported:.+'
-		];
-
-		for(var i = 0; i < systemTags.length; ++i) {
-			pattern = new RegExp(systemTags[i]);
-			if(!pattern.test(item)) {
-				continue;
+		for (var i = 0; i < hiddenSystemTags.length; i++) {
+			var hiddenSystemTag = hiddenSystemTags[i];
+			var patternString = "(sys:|system:|)?" + hiddenSystemTags[i].name;
+			if (hiddenSystemTag.hasArguments) {
+				patternString += ":.+";
 			}
-			return true;
+			
+			var pattern = new RegExp(patternString);
+			if (pattern.test(item)) {
+				return true;
+			}
 		}
-		
+		return false;
 	};
+	var isHiddenSystemTag = function(item) {
+		for (var i = 0; i < hiddenSystemTags.length; i++) {
+			var hiddenSystemTag = hiddenSystemTags[i];
+			var pattern = new RegExp("(sys:|system:|)?" + hiddenSystemTag.name + ":.+");
+			
+			if (pattern.test(item) && hiddenSystemTag.toHide) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	$('.edit-tagsinput').tagsinput({
 		confirmKeys : [ 32, 13 ], // space and return
@@ -167,12 +184,12 @@ $(function() {
 		e.preventDefault();
 		var submitButton = $(this).find('button[type=submit]');
 		var url = $(this).attr('action');
-		var data = $(this).serialize();
+		var data = $(this).serialize(); 
 		var resourceHash = $(this).data('resource-hash');
 		var tagField = $(this).find('input.edit-tagsinput');
 		var tags = $(tagField).tagsinput('items');
 		var responseMsg = $(this).find('.response-msg');
-		
+
 		$(responseMsg).empty(); //clear previous response message
 		$(submitButton).attr("disabled", "disabled"); //disable submit button
 
@@ -183,11 +200,11 @@ $(function() {
 		}).done(function(result) {
 			// remove old tags and old system tags
 			$('#list-item-' + resourceHash + ' .ptags span.label').remove();
-			$('#list-item-' + resourceHash + ' .hiddenSystemTag ul.tags li').remove();
-			
+			$('#list-item-' + resourceHash + ' .hiddenSystemTag ul.systemtags li').remove();
+
 			// append current tags
 			$(tags).each(function(i, tag) {
-				if (!isSystemTag(tag)) {
+				if (!isHiddenSystemTag(tag)) {
 					var tagView = viewForTag(tag, "grey");
 					var tagContainer = $('#list-item-' + resourceHash + ' .ptags');
 					tagContainer.append(tagView);
@@ -195,18 +212,18 @@ $(function() {
 					var tagView = viewForTag(tag, "warning");
 					var tagListItem = $('<li></li>');
 					tagListItem.append(tagView);
-					$('#list-item-' + resourceHash + ' .hiddenSystemTag ul.tags').append(tagListItem);
+					$('#list-item-' + resourceHash + ' .hiddenSystemTag ul.systemtags').append(tagListItem);
 				}
 			});
-			
+
 			// if there are no systags, hide systag button
-			var systags = $('#list-item-' + resourceHash + ' .hiddenSystemTag ul.tags li');
+			var systags = $('#list-item-' + resourceHash + ' .hiddenSystemTag ul.systemtags li');
 			if ($(systags).size() <= 0) {
 				$('#system-tags-link-' + resourceHash).hide();
 			} else {
 				$('#system-tags-link-' + resourceHash).show();
 			}
-			
+
 			// success message
 			$(responseMsg).append('<div class="alert alert-success" role="alert">' + getString('edittags.update.success') + '</div>');
 			$(submitButton).removeAttr("disabled");
@@ -245,29 +262,12 @@ $(function() {
 		if (el.innerHTML.length > maxChar + dots.length) {
 			text = text.substr(0, maxChar) + dots;
 			shortened = true;
-    
 		}
 		$(el).html(text);
 		return shortened;
 	}
 
-	$('.community-page-user-list li a.show-less').click(function(event) {
-		event.preventDefault();
-		$(this).parent().parent().find('.show').each(function() {
-			$(this).removeClass('show').addClass('hidden');
-		});
-	});
-
-	$('.community-page-user-list li a.show-more').click(function(event) {
-		event.preventDefault();
-		$(this).parent().parent().find('.hidden').each(function() {
-			$(this).removeClass('hidden').addClass('show');
-		});
-
-	});
-
 	/** MOBILE FUNCTIONS * */
-
 	$('#hide-bookmarks').click(
 			function(event) {
 				event.preventDefault();

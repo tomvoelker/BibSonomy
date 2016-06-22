@@ -15,31 +15,27 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<c:set var="requestedAuthorEncoded" value="${mtl:encodeURI(command.requestedAuthor)}" />
-	<fmt:message key="navi.author" var="authorPageTitle" />
-	<layout:resourceLayout
-		pageTitle="${authorPageTitle} :: ${command.requestedAuthor} :: ${command.requestedTags}"
+	<c:set var="requestedAuthor" value="${command.requestedAuthor}" />
+	<layout:resourceLayout pageTitle="${requestedAuthor} > ${command.requestedTags}"
 		command="${command}"
 		requPath="${requPath}"
-		minimizedContentWidth="${true}"
-		disableResourcetypeSelection="${true}"
-		headline="">
+		disableResourcetypeSelection="${true}">
 		
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
 					<nav:authors />
-					<nav:crumb name="${command.requestedAuthor}" href="${relativeUrlGenerator.getAuthorUrlByName(command.requestedAuthor)}" />
+					<nav:crumb name="${requestedAuthor}" href="${relativeUrlGenerator.getAuthorUrlByName(requestedAuthor)}" />
 					<nav:tagcrumb requestedTags="${command.requestedTags}" active="${true}"/>
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
 		
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.author" formAction="${relativeUrlGenerator.getAuthorUrlByName(requestedAuthorEncoded)}" formInputName="tag" formInputValue="${command.requestedTags}">
+			<parts:search pathMessageKey="navi.author" formAction="${relativeUrlGenerator.getAuthorUrlByName(requestedAuthor)}" formInputName="tag" formInputValue="${command.requestedTags}">
 				<jsp:attribute name="pathPart">
 					<span itemscope="itemscope" itemtype="http://schema.org/Person">
-						<a href="${relativeUrlGenerator.getAuthorUrlByName(requestedAuthorEncoded)}" itemprop="name"><c:out value='${command.requestedAuthor}'/></a>
+						<a href="${relativeUrlGenerator.getAuthorUrlByName(requestedAuthor)}" itemprop="name"><c:out value='${command.requestedAuthor}'/></a>
 					</span>
 				</jsp:attribute>
 			</parts:search>

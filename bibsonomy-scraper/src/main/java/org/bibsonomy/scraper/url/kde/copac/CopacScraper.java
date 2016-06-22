@@ -34,18 +34,15 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
 /**
- * TODO: check status of this scraper
  * 
  * this Scraper import data from the host http://copac.jisc.ac.uk
  * @author Mohammed Abed
  */
-public class CopacScraper extends AbstractUrlScraper {
+public class CopacScraper extends GenericBibTeXURLScraper {
 
 	private static final String SITE_NAME = "Copac National, Academic and Specialist Library Catalogue";
 	private static final String SITE_URL = "http://copac.jisc.ac.uk/";
@@ -62,24 +59,8 @@ public class CopacScraper extends AbstractUrlScraper {
 	}
 
 	@Override
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
-		sc.setScraper(this);
-		try {
-			String cookie = WebUtils.getCookies(sc.getUrl());
-			System.out.println(cookie);
-			final String bibResult = WebUtils.getContentAsString(sc.getUrl().toString() + EXPORT_BIBTEX );
-			System.out.println(bibResult);
-		} catch (IOException e) {
-			throw new ScrapingFailureException("URL to scrape does not exist. It maybe malformed.");
-		} 
-		System.out.println(sc.getUrl().toString() + EXPORT_BIBTEX);
-		return false;
-	}
-	
-	//@Override
-	protected String getDownloadURLTest(URL url) throws ScrapingException {
-		return SITE_URL + "/search?";
-		//return "http://copac.jisc.ac.uk/search?title=Measures+and+aggregation%3A+formal+aspects+and+applications+to+clustering+and+decision.&rn=1&format=BibTeX&action=Export";
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
+		return url.toString() + EXPORT_BIBTEX;
 	}
 	
 	@Override

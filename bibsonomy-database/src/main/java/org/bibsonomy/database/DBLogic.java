@@ -1,4 +1,5 @@
 /**
+ * BibSonomy-Database - Database for BibSonomy.
  *
  * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -30,7 +31,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -62,9 +62,8 @@ import org.bibsonomy.common.enums.PostAccess;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SearchType;
-import org.bibsonomy.common.enums.SortKey;
-import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.common.enums.SpamStatus;
+import org.bibsonomy.common.enums.SyncSettingsUpdateOperation;
 import org.bibsonomy.common.enums.TagRelation;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
@@ -136,8 +135,6 @@ import org.bibsonomy.model.Review;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
-import org.bibsonomy.model.comparators.BibTexPostComparator;
-import org.bibsonomy.model.comparators.ResourcePersonRelationByPostComparator;
 import org.bibsonomy.model.enums.GoldStandardRelation;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
@@ -177,8 +174,6 @@ import org.bibsonomy.util.ValidationUtils;
  */
 public class DBLogic implements LogicInterface {
 	private static final Log log = LogFactory.getLog(DBLogic.class);
-	private static final Comparator<ResourcePersonRelation> resourcePersonRelationComparator = new ResourcePersonRelationByPostComparator(new BibTexPostComparator(Arrays.asList(SortKey.YEAR, SortKey.AUTHOR), Arrays.asList(SortOrder.DESC, SortOrder.ASC)));
-
 	/*
 	 * help maps for post managers and discussion managers
 	 */
@@ -412,7 +407,14 @@ public class DBLogic implements LogicInterface {
 			 * statements silently fails. :-(
 			 */
 			log.debug("try to set syncdata as planned");
-			this.syncDBManager.insertSynchronizationData(userName, service, resourceType, new Date(), SynchronizationStatus.PLANNED, session);
+
+			final SyncService syncService = this.syncDBManager.getSyncServiceDetails(service, session);
+			if (present(syncService)) {
+				this.syncDBManager.insertSynchronizationData(userName, service, resourceType, new Date(), SynchronizationStatus.PLANNED, session);
+			} else {
+				log.error("no SyncService found with URI: " + service.toString());
+				throw new IllegalArgumentException("no SyncService found with URI: " + service.toString());
+			}
 
 			/*
 			 * get posts from server (=this machine)
@@ -525,11 +527,11 @@ public class DBLogic implements LogicInterface {
 	 * .String, java.net.URI, java.util.Properties)
 	 */
 	@Override
-	public void updateSyncServer(final String userName, final SyncService service) {
+	public void updateSyncServer(final String userName, final SyncService service, final SyncSettingsUpdateOperation operation) {
 		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
 		final DBSession session = this.openSession();
 		try {
-			this.syncDBManager.updateSyncServerForUser(userName, service, session);
+			this.syncDBManager.updateSyncServerForUser(userName, service, operation, session);
 		} finally {
 			session.close();
 		}
@@ -861,7 +863,7 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#getGroups(int, int)
 	 */
 	@Override
-	public List<Group> getGroups(final boolean pending, String userName, final int start, final int end) {
+	public List<Group> getGroups(final boolean pending, final String userName, final int start, final int end) {
 		final DBSession session = this.openSession();
 		try {
 			if (pending) {
@@ -928,7 +930,7 @@ public class DBLogic implements LogicInterface {
 				}
 				return this.groupDBManager.getPendingGroup(groupName, requestingUser, session);
 			}
-			
+
 			final Group myGroup = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, true, this.permissionDBManager.isAdmin(this.loginUser), session);
 			if (!GroupUtils.isValidGroup(myGroup)) {
 				return null;
@@ -979,6 +981,7 @@ public class DBLogic implements LogicInterface {
 				// need to switch from class to string to ensure legibility of
 				// Tags.xml
 				param.setContentTypeByClass(resourceType);
+				param.setResourceType(resourceType);
 				return this.tagDBManager.getTags(param, session);
 			}
 
@@ -1043,8 +1046,9 @@ public class DBLogic implements LogicInterface {
 	 * org.bibsonomy.model.logic.LogicInterface#deleteGroup(java.lang.String)
 	 */
 	@Override
-	public void deleteGroup(final String groupName, boolean pending) {
+	public void deleteGroup(final String groupName, final boolean pending) {
 		final DBSession session = this.openSession();
+
 		if (pending) {
 			try {
 				session.beginTransaction();
@@ -1061,44 +1065,44 @@ public class DBLogic implements LogicInterface {
 				session.close();
 			}
 		}
-		throw new UnsupportedOperationException("not yet implemented");
-//		this.ensureLoggedIn();
-//		// only group admins are allowed to delete the group
-//		this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, groupName, GroupRole.ADMINISTRATOR);
-//		try {
-//			session.beginTransaction();
-//			// make sure that the group exists
-//			// TODO: remove call to deprecated method TODO_GROUPS
-//			// TODO: method also called later by deleteGroup
-//			final Group group = this.groupDBManager.getGroupByName(groupName, session);
-//	
-//			if (group == null) {
-//				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupName + "') doesn't exist");
-//				throw new RuntimeException(); // never happens but calms down eclipse
-//			}
-//			
-//			// FIXME: does this check work for old groups (there is only one user) TODO_GROUPS
-//			// ensure that the group has no members except the admin. size > 2 because the group user is also part of the membership list.
-//			if (group.getMemberships().size() > 2) {
-//				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupName + "') has more than one member");
-//			}
-//			
-//			// all the posts/discussions of the group admin need to be edited as well before deleting the group
-//			for (final GroupMembership t : group.getMemberships()) {
-//				// as the group can only consist of the group admin and the group user at this point, this check should be enough
-//				// if groups can be deleted without removing all members before this must be adapted!
-//				if (GroupRole.ADMINISTRATOR.equals(t.getGroupRole())) {
-//					// FIXME: why not called for group user FIXME_RELEASE
-//					this.updateUserItemsForLeavingGroup(group, t.getUser().getName(), session);
-//				}
-//			}
-//			
-//			this.groupDBManager.deleteGroup(groupName, session);
-//			session.commitTransaction();
-//		} finally {
-//			session.endTransaction();
-//			session.close();
-//		}
+
+		this.ensureLoggedIn();
+		// only group admins are allowed to delete the group
+		this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, groupName, GroupRole.ADMINISTRATOR);
+		try {
+			session.beginTransaction();
+			// make sure that the group exists
+			final Group group = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, true, true, session);
+			// TODO: method also called later by deleteGroup
+			// final Group group = this.groupDBManager.getGroupByName(groupName,
+			// session);
+
+			if (group == null) {
+				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupName + "') doesn't exist");
+				throw new RuntimeException(); // never happens but calms down eclipse
+			}
+
+			// ensure that the group has no members except the admin. size > 2 because the group user is also part of the membership list or > 1 to cover old groups
+			if (group.getMemberships().size() > 2 || group.getMemberships().size() > 1 && group.getMemberships().get(0).getGroupRole() != GroupRole.DUMMY && group.getMemberships().get(1).getGroupRole() != GroupRole.DUMMY) {
+				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + group.getName() + "') has at least one member beside the administrator.");
+			}
+
+			// all the posts/discussions of the group admin need to be edited as well before deleting the group
+			for (final GroupMembership t : group.getMemberships()) {
+				// as the group can only consist of the group admin and the group user at this point, this check should be enough
+				// if groups can be deleted without removing all members before this must be adapted!
+				if (GroupRole.ADMINISTRATOR.equals(t.getGroupRole())) {
+					// FIXME: why not called for group user FIXME_RELEASE
+					this.updateUserItemsForLeavingGroup(group, t.getUser().getName(), session);
+				}
+			}
+
+			this.groupDBManager.deleteGroup(groupName, session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+			session.close();
+		}
 	}
 
 	/*
@@ -1114,7 +1118,14 @@ public class DBLogic implements LogicInterface {
 		 * check permissions
 		 */
 		this.ensureLoggedIn();
-		this.permissionDBManager.ensureWriteAccess(this.loginUser, userName);
+		/*
+		 * TODO: we do not know anything about the hashes (do they belong to bookmarks,
+		 * and/or publication, community post)
+		 * so the only way to check if the user is allowed to delete the post
+		 * is to check if he/she is an admin or self, for group editing we need to know
+		 * which resource is behind the resource hash
+		 */
+		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
 		/*
 		 * to store hashes of missing resources
 		 */
@@ -1122,7 +1133,7 @@ public class DBLogic implements LogicInterface {
 
 		final DBSession session = this.openSession();
 		try {
-			final String lowerCaseUserName = userName.toLowerCase();
+			final String lowerCaseUserName = present(userName) ? userName.toLowerCase() : null;
 			for (final String resourceHash : resourceHashes) {
 				/*
 				 * delete one resource
@@ -1322,7 +1333,6 @@ public class DBLogic implements LogicInterface {
 
 			// check the groups existence and retrieve the current group
 			final Group group = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, false, false, session);
-			// TODO: When implementing DELETE, alter this check!
 			if (!GroupUtils.isValidGroup(group) && !(GroupUpdateOperation.ACTIVATE.equals(operation) || GroupUpdateOperation.DELETE_GROUP_REQUEST.equals(operation))) {
 				throw new IllegalArgumentException("Group does not exist");
 			}
@@ -1377,7 +1387,7 @@ public class DBLogic implements LogicInterface {
 				case INVITED:
 					// only the user themselves can accept an invitation
 					this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, requestedUserName);
-					this.groupDBManager.addUserToGroup(group.getName(), requestedUserName, groupMembership.isUserSharedDocuments(), GroupRole.USER, session);
+					this.groupDBManager.addUserToGroup(group.getName(), requestedUserName, userSharedDocuments, GroupRole.USER, session);
 					break;
 				case REQUESTED:
 					// only mods or admins can accept requests
@@ -1405,7 +1415,7 @@ public class DBLogic implements LogicInterface {
 						throw new IllegalArgumentException("Group has only this admin left, cannot remove this user.");
 					}
 				}
-				
+
 				this.groupDBManager.removeUserFromGroup(group.getName(), requestedUserName, session);
 				this.updateUserItemsForLeavingGroup(group, requestedUserName, session);
 				break;
@@ -1427,7 +1437,7 @@ public class DBLogic implements LogicInterface {
 				if (!present(requestedGroup)) {
 					throw new AccessDeniedException("You can only delete group requests of groups you have requested.");
 				}
-				
+
 				this.groupDBManager.deletePendingGroup(groupName, session);
 				break;
 			case ADD_INVITED:
@@ -1442,7 +1452,7 @@ public class DBLogic implements LogicInterface {
 				}
 				this.groupDBManager.addPendingMembership(group.getName(), requestedUserName, userSharedDocuments, GroupRole.REQUESTED, session);
 				break;
-			// TODO: Refactor to one GroupUpdateOperation
+				// TODO: Refactor to one GroupUpdateOperation
 			case REMOVE_INVITED:
 			case DECLINE_JOIN_REQUEST:
 				final GroupMembership currentMembership = this.groupDBManager.getPendingMembershipForUserAndGroup(requestedUserName, group.getName(), session);
@@ -1479,17 +1489,15 @@ public class DBLogic implements LogicInterface {
 	private void updateUserItemsForLeavingGroup(final Group group, final String userName, final DBSession session) {
 		// get the id of the group
 		final int groupId = group.getGroupId();
-		
+
 		// set all tas shared with the group to private (groupID 1)
 		this.tagDBManager.updateTasInGroupFromLeavingUser(userName, groupId, session);
-		
+
 		// FIXME: handle group tas?
-		
+
 		/*
-		 * update the visibility of the post that are "assigned" to
-		 * the group
-		 * XXX: a loop over all resource database managers that
-		 * allow groups
+		 * update the visibility of the post that are "assigned" to the group
+		 * XXX: a loop over all resource database managers that allow groups
 		 */
 		this.publicationDBManager.updatePostsInGroupFromLeavingUser(userName, groupId, session);
 		this.bookmarkDBManager.updatePostsInGroupFromLeavingUser(userName, groupId, session);
@@ -3200,7 +3208,7 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	private void prepareComment(final User commentUser, final Set<Group> groups, final DBSession session) {
+	private void prepareDiscussionItem(final User commentUser, final Set<Group> groups, final DBSession session) {
 		this.validateGroups(commentUser, groups, session);
 
 		// transfer to spammer group id's if neccessary
@@ -3208,7 +3216,7 @@ public class DBLogic implements LogicInterface {
 	}
 
 	private <D extends DiscussionItem> void createDiscussionItem(final String interHash, final D discussionItem, final DBSession session) {
-		this.prepareComment(discussionItem.getUser(), discussionItem.getGroups(), session);
+		this.prepareDiscussionItem(discussionItem.getUser(), discussionItem.getGroups(), session);
 		this.getCommentDatabaseManager(discussionItem).createDiscussionItemForResource(interHash, discussionItem, session);
 	}
 
@@ -3233,14 +3241,14 @@ public class DBLogic implements LogicInterface {
 			final User commentUser = this.userDBManager.getUserDetails(username, session);
 			discussionItem.setUser(commentUser);
 
-			this.updateCommentForUser(interHash, discussionItem, session);
+			this.updateDiscussionItemForUser(interHash, discussionItem, session);
 		} finally {
 			session.close();
 		}
 	}
 
-	private <D extends DiscussionItem> void updateCommentForUser(final String interHash, final D discussionItem, final DBSession session) {
-		this.prepareComment(discussionItem.getUser(), discussionItem.getGroups(), session);
+	private <D extends DiscussionItem> void updateDiscussionItemForUser(final String interHash, final D discussionItem, final DBSession session) {
+		this.prepareDiscussionItem(discussionItem.getUser(), discussionItem.getGroups(), session);
 		this.getCommentDatabaseManager(discussionItem).updateDiscussionItemForResource(interHash, discussionItem.getHash(), discussionItem, session);
 	}
 

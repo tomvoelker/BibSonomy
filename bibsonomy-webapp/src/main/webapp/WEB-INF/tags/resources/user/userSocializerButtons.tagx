@@ -31,9 +31,15 @@
 			<button type="submit" class="btn btn-sm btn-default addFriend" style="${command.ofFriendUser ? 'display:none' : ''}">
 				<fmt:message key="friend.add" />
 			</button>
+			<button type="submit" class="btn btn-sm btn-success unfollow" style="${command.isFollowerOfUser ? '' : 'display:none'}" >
+				<span class="fa fa-check"><!--  --></span>
+				<c:out value=" "/>
+				<span class="infotext"><fmt:message key="follow.following" /></span>
+			</button>
+			<button type="submit" class="btn btn-sm btn-default follow" style="${command.isFollowerOfUser ? 'display:none' : ''}">
+				<fmt:message key="follow.link.text.follow" />
+			</button>
 		</form>
-
-		<br />
 			
 		<div class="btn-group btn-group-xs">
 			
@@ -46,7 +52,7 @@
 			
 
 				<c:if test="${mtl:contains(loginUserFriends, user)}">
-					<li><a href="/friend/${mtl:encodeURI(user.name)}"><fmt:message key="friendoverview.offriend.usershared" /></a></li>
+					<li><a href="/friend/${mtl:encodePathSegment(user.name)}"><fmt:message key="friendoverview.offriend.usershared" /></a></li>
 				</c:if>
 				<!-- show posts of requested user in a personalized view -->
 				<fmt:message key="personalized.info" var="personalized"/>

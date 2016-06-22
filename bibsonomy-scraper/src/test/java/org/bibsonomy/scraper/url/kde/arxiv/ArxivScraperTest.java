@@ -71,4 +71,11 @@ public class ArxivScraperTest {
 		UnitTestRunner.runSingleTest("url_133");
 	}
 	
+	/**
+	 * starts URL test with id url_339
+	 */
+	@Test
+	public void urlTestRun5() {
+		UnitTestRunner.runSingleTest("url_339");
+	}
 }

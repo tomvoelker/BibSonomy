@@ -19,9 +19,7 @@
 	<layout:resourceLayout pageTitle="${pageTitle}" command="${command}" 
 			requPath="${requPath}" isClipboard="${true}" 
 			disableListNavigation="${true}"
-			disableResourcetypeSelection="${true}"
-			minimizedContentWidth="${true}"
-			headline="${headline}">
+			disableResourcetypeSelection="${true}">
 
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.clipboard"/>
@@ -42,6 +40,7 @@
 		<jsp:attribute name="sidebar">
 			<sidebar:sidebarItem textKey="post_bibtex.scan.title">
 				<jsp:attribute name="content">
+					<p><fmt:message key="post_bibtex.scan.info" /></p>
 					<parts:qrcode infoMessageKey="qrcode.info.clipboard.readerInfoMessage" />
 				</jsp:attribute>
 			</sidebar:sidebarItem>
@@ -70,7 +69,7 @@
 							</div>
 							<!-- remove -->
 							<div class="form-group">
-								<bs:linkButton style="primary" href="/ajax/pickUnpickPost?action=clearAll&amp;ckey=${mtl:encodeURI(command.context.ckey)}" size="defaultSize" block="${true}" textKey="clipboard.removeAll" titleKey="clipboard.removeAllVerbose" />
+								<bs:linkButton style="primary" href="/ajax/pickUnpickPost?action=clearAll&amp;ckey=${mtl:encodePathSegment(command.context.ckey)}" size="defaultSize" block="${true}" textKey="clipboard.removeAll" titleKey="clipboard.removeAllVerbose" />
 							</div>
 						</li>
 					</ul>

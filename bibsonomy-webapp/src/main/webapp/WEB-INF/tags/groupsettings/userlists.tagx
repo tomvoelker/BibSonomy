@@ -51,7 +51,7 @@
 														<user:username user="${member.user}" />
 													</td>
 													<td class="col-md-2" style="text-align: right">
-														<bs:linkButton title="${revuserTitle}" textKey="settings.group.remInvite.button" icon="times" style="danger" href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" size="xsmall" />
+														<bs:linkButton title="${revuserTitle}" textKey="settings.group.remInvite.button" icon="times" style="danger" href="/updateGroup?operation=remove_invited&amp;groupname=${mtl:encodePathSegment(group.name)}&amp;username=${mtl:encodePathSegment(member.user.name)}&amp;ckey=${ckey}" size="xsmall" />
 													</td>
 												</tr>
 											</c:if>
@@ -108,9 +108,9 @@
 														<user:username user="${member.user}" />
 													</td>
 													<td class="col-md-5" style="text-align: right">
-														<bs:linkButton style="success" href="/updateGroup?operation=ADD_MEMBER&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" size="xsmall" icon="check" title="${accuserTitle}" textKey="settings.group.addUser.button" />
+														<bs:linkButton style="success" href="/updateGroup?operation=ADD_MEMBER&amp;groupname=${mtl:encodePathSegment(group.name)}&amp;username=${mtl:encodePathSegment(member.user.name)}&amp;ckey=${ckey}" size="xsmall" icon="check" title="${accuserTitle}" textKey="settings.group.addUser.button" />
 														<c:out value=" " /> <!-- TODO: replace with css -->
-														<bs:linkButton style="danger" href="/updateGroup?operation=decline_join_request&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" size="xsmall" icon="times" title="${decuserTitle}" textKey="settings.group.deny.button" />
+														<bs:linkButton style="danger" href="/updateGroup?operation=decline_join_request&amp;groupname=${mtl:encodePathSegment(group.name)}&amp;username=${mtl:encodePathSegment(member.user.name)}&amp;ckey=${ckey}" size="xsmall" icon="times" title="${decuserTitle}" textKey="settings.group.deny.button" />
 													</td>
 												</tr>
 											</c:if>
@@ -146,6 +146,9 @@
 										<thead>
 											<tr>
 												<th class="col-md-3" data-field="name" data-sortable="true"><fmt:message key="navi.username" /></th>
+												<c:if test="${groupRole eq 'ADMINISTRATOR' and group.sharedDocuments}">
+													<th class="col-md-1"><fmt:message key="groups.documentsharing.shared" /></th>
+												</c:if>
 												<th class="col-md-5"><fmt:message key="groups.role" /></th>
 												<th class="col-md-2" data-field="joinDate" data-sortable="true"><fmt:message key="group.joinDate" /></th>
 												<c:if test="${groupRole eq 'ADMINISTRATOR'}">
@@ -173,6 +176,24 @@
 														</c:choose>
 													</td>
 													
+													<!-- user sharing documents -->
+													<c:if test="${groupRole eq 'ADMINISTRATOR' and group.sharedDocuments}">
+														<td style="" class="col-md-1">
+															<c:choose>
+																<c:when test="${member.userSharedDocuments}">
+																	<span class="label label-success">
+																		<span class="fa fa-check"><!-- KEEP ME --></span>
+																	</span>
+																</c:when>	
+																<c:otherwise>
+																	<span class="label label-danger">
+																		<span class="fa fa-remove"><!-- KEEP ME --></span>
+																	</span>
+																</c:otherwise>
+															</c:choose>
+														</td>
+													</c:if>
+													
 													<c:set var="canEdit" value="${groupRole eq 'ADMINISTRATOR' or groupRole eq 'MODERATOR'}" />
 													<td class="col-md-5">
 														<c:if test="${isAdmin}">
@@ -185,7 +206,7 @@
 																</c:when>
 																<c:otherwise>
 																	<span class="label label-default uppercase">
-																		<a href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=ADMINISTRATOR&amp;ckey=${ckey}"><fmt:message key="groups.role.admin" /></a>
+																		<a href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodePathSegment(group.name)}&amp;username=${mtl:encodePathSegment(member.user.name)}&amp;groupRole=ADMINISTRATOR&amp;ckey=${ckey}"><fmt:message key="groups.role.admin" /></a>
 																	</span>
 																</c:otherwise>
 															</c:choose>
@@ -201,7 +222,7 @@
 																</c:when>
 																<c:otherwise>
 																	<span class="label label-default uppercase">
-																		<a href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=MODERATOR&amp;ckey=${ckey}"><fmt:message key="groups.role.moderator" /></a>
+																		<a href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodePathSegment(group.name)}&amp;username=${mtl:encodePathSegment(member.user.name)}&amp;groupRole=MODERATOR&amp;ckey=${ckey}"><fmt:message key="groups.role.moderator" /></a>
 																	</span>
 																</c:otherwise>
 															</c:choose>
@@ -217,7 +238,7 @@
 																</c:when>
 																<c:otherwise>
 																	<span class="label label-default uppercase">
-																		<a href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;groupRole=USER&amp;ckey=${ckey}"><fmt:message key="groups.role.user" /></a>
+																		<a href="/updateGroup?operation=update_grouprole&amp;groupname=${mtl:encodePathSegment(group.name)}&amp;username=${mtl:encodePathSegment(member.user.name)}&amp;groupRole=USER&amp;ckey=${ckey}"><fmt:message key="groups.role.user" /></a>
 																	</span>
 																</c:otherwise>
 															</c:choose>
@@ -237,7 +258,7 @@
 															-->
 															<c:choose>
 																<c:when test="${groupRole eq 'ADMINISTRATOR'}">
-																	<bs:linkButton href="/updateGroup?operation=remove_member&amp;groupname=${mtl:encodeURI(group.name)}&amp;username=${mtl:encodeURI(member.user.name)}&amp;ckey=${ckey}" size="xsmall" title="${deluserTitle}" style="danger" textKey="settings.group.delUser.button" icon="times" />
+																	<bs:linkButton href="/updateGroup?operation=remove_member&amp;groupname=${mtl:encodePathSegment(group.name)}&amp;username=${mtl:encodePathSegment(member.user.name)}&amp;ckey=${ckey}" size="xsmall" title="${deluserTitle}" style="danger" textKey="settings.group.delUser.button" icon="times" />
 																</c:when>
 																<c:otherwise>
 																	<c:out value=" " />

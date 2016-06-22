@@ -66,6 +66,7 @@
 							<ul class="dropdown-menu">
 								<li class="${systemReadOnly ? 'disabled' : ''}"><a href="/postBookmark"><fmt:message key="navi.postBookmark"/></a></li>
 								<li class="${systemReadOnly ? 'disabled' : ''}"><a href="/postPublication"><fmt:message key="navi.postPublication"/></a></li>
+								<li class="${systemReadOnly ? 'disabled' : ''}"><a href="/import/bookmarks"><fmt:message key="navi.imports"/></a></li>
 							</ul>
 							
 						</li>
@@ -252,10 +253,22 @@
 						</c:when>
 						<c:otherwise>
 							<li>
-								<a href="#" data-toggle="modal" data-target="#loginModal">
-									<fontawesome:icon icon="sign-in" /><c:out value=" " /> <!-- TODO: remove whitespace -->
-									<fmt:message key="navi.login" />
-								</a>
+								<c:set var="preferredLogin" value="${properties['auth.preferred.login']}" />
+								<c:choose>
+									<c:when test="${not empty preferredLogin}">
+										<a href="/login_${preferredLogin}?rememberMe=true">
+											<fontawesome:icon icon="sign-in" />&amp;nbsp;
+											<fmt:message key="navi.login" />
+										</a>
+									</c:when>
+									<c:otherwise>
+										<a href="#" data-toggle="modal" data-target="#loginModal">
+											<fontawesome:icon icon="sign-in" /><c:out value=" " /> <!-- TODO: remove whitespace -->
+											<fmt:message key="navi.login" />
+										</a>
+									</c:otherwise>
+								</c:choose>
+								
 							</li>
 							<c:if test="${mtl:contains(authConfig, mtl:convertToEnum('org.bibsonomy.common.enums.AuthMethod', 'INTERNAL')) and not properties['auth.register.disabled'] eq 'true'}">
 								<li> 

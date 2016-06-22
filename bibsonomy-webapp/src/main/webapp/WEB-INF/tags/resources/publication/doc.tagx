@@ -8,6 +8,7 @@
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
 	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 	xmlns:form="http://www.springframework.org/tags/form">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" description="The publication post which documents should be showed."/>	
@@ -51,8 +52,8 @@
 								<span class="input-group-btn">
 									<bs:linkButton style="defaultStyle" href="" size="small" additionalClass="btn-stripped rename-btn" title="${renameDocTitle}" icon="pencil" />
 									<bs:linkButton style="defaultStyle" href="${deleteUrl}" title="${deleteDocTitle}" icon="times" size="small" />
-									<a class="btn btn-sm btn-default btn-stripped download-btn" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/FILENAME_PLACEHOLDER" title="Download ${downloadTitle}"><span class="fa fa-download"><!-- KEEP ME --></span></a>
-									<a class="btn btn-sm btn-default btn-stripped qrcode-btn" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/FILENAME_PLACEHOLDER?qrcode=true"  title="${downloadQrTitle}"><span class="fa fa-qrcode"><!-- KEEP ME --></span></a>
+									<a class="btn btn-sm btn-default btn-stripped download-btn" href="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/FILENAME_PLACEHOLDER" title="Download ${downloadTitle}"><span class="fa fa-download"><!-- KEEP ME --></span></a>
+									<a class="btn btn-sm btn-default btn-stripped qrcode-btn" href="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/FILENAME_PLACEHOLDER?qrcode=true"  title="${downloadQrTitle}"><span class="fa fa-qrcode"><!-- KEEP ME --></span></a>
 								</span>
 							</div>
 						</form>
@@ -78,22 +79,21 @@
 					
 						<c:choose>
 							<c:when test="${fn:endsWith(fn:toLowerCase(document.fileName), '.pdf')}">
-								<!-- <a class="documentFileName preview" href="/documents/${publication.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=true" title="${fn:escapeXml(document.fileName)}">  -->
-									<!-- <img src="${resdir}/image/document-txt-blue.png" style="float:left;"/> -->
 								<c:choose>
 									<c:when test="${count eq 0}">
 										<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage">
-											<a class="img-thumbnail publication preview pdfFile" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}" title="${fn:escapeXml(document.fileName)}">
-												<img class="img-responsive pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(document.fileName)}"/>
+											<a class="img-thumbnail publication preview pdfFile" href="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(document.fileName)}" title="${fn:escapeXml(document.fileName)}">
+												<img class="img-responsive pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(document.fileName)}"/>
 											</a>
+											<a href="#" class="doc-magnify"><fontawesome:icon icon="search-plus" /></a>
 										</div>
 									</c:when>
 									<c:otherwise>
 										<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage">
 											<!-- preview picture of first document -->
-											<!--  <a class="publication preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}" title="${fn:escapeXml(document.fileName)}"> -->
-											<a class="img-thumbnail pdfFile" data-toggle="lightbox" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false">
-												<img class="img-resposive" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}" alt="${fn:escapeXml(document.fileName)}"/>
+											<!--  <a class="publication preview" href="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(document.fileName)}" title="${fn:escapeXml(document.fileName)}"> -->
+											<a class="img-thumbnail pdfFile" data-toggle="lightbox" href="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(document.fileName)}?qrcode=false">
+												<img class="img-resposive" src="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(document.fileName)}" alt="${fn:escapeXml(document.fileName)}"/>
 											</a>
 										</div>
 									</c:otherwise>
@@ -103,17 +103,16 @@
 								<c:choose>
 									<c:when test="${count eq 0}">
 										<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage">
-											<a class="img-thumbnail documentFileName preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false" title="${fn:escapeXml(document.fileName)}">
-												<!-- <img src="${resdir}/image/document-txt-blue.png" style="float:left;"/> -->
-												<img class="img-responsive pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(document.fileName)}"/>
+											<a class="img-thumbnail documentFileName preview" href="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(document.fileName)}?qrcode=false" title="${fn:escapeXml(document.fileName)}">
+												<img class="img-responsive pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(document.fileName)}"/>
 											</a>
 										</div>
 									</c:when>
 									<c:otherwise>
 										<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage" style="display:none;">
 											<!-- preview picture of first document -->
-											<a class="img-thumbnail publication preview" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=false" title="${fn:escapeXml(document.fileName)}">
-												<img class="img-responsive pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(document.fileName)}"/>
+											<a class="img-thumbnail publication preview" href="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(document.fileName)}?qrcode=false" title="${fn:escapeXml(document.fileName)}">
+												<img class="img-responsive pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(document.fileName)}"/>
 											</a>
 										</div>
 									</c:otherwise>
@@ -165,16 +164,16 @@
 									<c:set var="downloadTitle"><fmt:message key="qrcode.actions.download"/></c:set>
 									<c:set var="downloadQrTitle"><fmt:message key="qrcode.actions.qrDownload"/></c:set>
 									<c:set var="delete_doc"><fmt:message key="bibtex.actions.private_document.delete"/></c:set>
-									<form class="renameDocForm" action="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}&amp;fileName=${mtl:encodeURI(document.fileName)}&amp;action=rename" method='POST' enctype='multipart/form-data' autocomplete='off'>
+									<form class="renameDocForm" action="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}&amp;fileName=${mtl:encodePathSegment(document.fileName)}&amp;action=rename" method='POST' enctype='multipart/form-data' autocomplete='off'>
 										<span class="show-name" style="display:none;"><c:out value="${filename}" /></span>
 										<div class="input-group">
 											<input class="form-control input-sm renameDocInput" data-ajax-rename="true" name='newFileName' type="text" value="${filename}" />
 											<span class="input-group-btn">
 												<bs:linkButton href="" size="small" style="defaultStyle" additionalClass="rename-btn" title="${renameDocTitle}" icon="pencil"/>
 												<a class="btn btn-sm btn-default btn-stripped remove-btn ${systemReadOnly ? 'disabled' : ''}" title="${deleteDocTitle}" href="${deleteUrl}" data-filename="${fn:escapeXml(document.fileName)}" data-ident="${mtl:downloadFileId(document.fileName)}"><span class="fa fa-times"><!-- KEEP ME --></span></a>
-												<a class="btn btn-sm btn-default btn-stripped download-btn" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}" title="Download ${downloadTitle}"><span class="fa fa-download"><!-- KEEP ME --></span></a>
+												<a class="btn btn-sm btn-default btn-stripped download-btn" href="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(document.fileName)}" title="Download ${downloadTitle}"><span class="fa fa-download"><!-- KEEP ME --></span></a>
 												<c:if test="${fn:endsWith(fn:toLowerCase(document.fileName), '.pdf')}">
-													<a class="btn btn-sm btn-default btn-stripped qrcode-btn" href="/documents/${post.resource.intraHash}/${mtl:encodeURI(post.user.name)}/${mtl:encodeURI(document.fileName)}?qrcode=true" title="${downloadQrTitle}"><span class="fa fa-qrcode"><!-- KEEP ME --></span></a>
+													<a class="btn btn-sm btn-default btn-stripped qrcode-btn" href="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(document.fileName)}?qrcode=true" title="${downloadQrTitle}"><span class="fa fa-qrcode"><!-- KEEP ME --></span></a>
 												</c:if>
 											</span>
 										</div>

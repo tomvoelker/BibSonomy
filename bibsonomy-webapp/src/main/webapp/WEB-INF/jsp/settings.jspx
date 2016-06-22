@@ -23,7 +23,7 @@
 	
 	<fmt:message key="navi.settings" var="settingsPageTitle"/>
 	
-	<layout:tabLayout pageTitle="${settingsPageTitle}" headerMessageKey="navi.settings" headerLogoClass="settings" command="${command}" requPath="${requPath}" activeTab="myprofile" minimizedContentWidth="${true}">
+	<layout:tabLayout pageTitle="${settingsPageTitle}" headerMessageKey="navi.settings" headerLogoClass="settings" command="${command}" requPath="${requPath}" activeTab="myprofile">
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/cv_page.css" />
 			<script type="text/javascript" src="${resdir}/javascript/cv/handlers.js"><!--  --></script>
@@ -51,7 +51,7 @@
 			
 			<settings:settings command="${command}"/>
 			
-			<settings:import command="${command}"/>
+			<settings:jabRef command="${command}"/>
 			
 			<settings:cv command="${command}"/>
 			
@@ -89,25 +89,11 @@
 			<sidebar:sidebarItem textKey="friends.friendof">
 				<jsp:attribute name="content">
 					<span class="user-friends">
-						<ul>
-							<c:forEach var="user" items="${command.userFriends}" begin="0" end="4">
+						<ul class="more-list">
+							<c:forEach var="user" items="${command.userFriends}">
 								<li><a href="${relativeUrlGenerator.getFriendUrlByUserName(user.name)}"><user:username user="${user}" noLink="${true}" /></a><c:out value=" "/></li>
 							</c:forEach>
-							<c:if test="${fn:length(command.userFriends) gt 4}">
-								<li class="more-link-item"><a class="more" onclick="$('.user-friends #user-friends-list-more').show();$(this).parent().hide();"><fmt:message key="more" />...</a></li>
-							</c:if>
 						</ul>
-					
-						<c:if test="${fn:length(command.userFriends) gt 4}">
-							<div id="user-friends-list-more" style="display:none;">
-								<ul>
-									<c:forEach var="user" items="${command.userFriends}" begin="5">
-										<li><a href="${relativeUrlGenerator.getFriendUrlByUserName(user.name)}"><user:username user="${user}" noLink="${true}" /></a><c:out value=" "/></li>
-									</c:forEach>
-									<li><a class="less" onclick="$('.user-friends #user-friends-list-more').hide();$('.user-friends .more-link-item').show();"><fmt:message key="less" />...</a></li>
-								</ul>
-							</div>
-						</c:if>
 					</span>
 				</jsp:attribute>
 			</sidebar:sidebarItem>
@@ -115,10 +101,8 @@
 			<sidebar:sidebarItem textKey="friends.yourfriends">
 				<jsp:attribute name="content">
 					<span class="friends-of-user">
-						<ul>
-							<!-- FIXME: remove copy paste code, create a tagx file and pass begin and end to it or just render all items and
-								use a javascript script to do the more/less thing -->
-							<c:forEach var="user" items="${command.friendsOfUser}" begin="0" end="4">
+						<ul class="more-list">
+							<c:forEach var="user" items="${command.friendsOfUser}">
 								<li>
 									<user:username user="${user}" />
 									<fmt:message var="deleteFriendTitle" key="friends.actions.delete.title"><fmt:param value="${fn:escapeXml(user.name)}"/></fmt:message>
@@ -128,27 +112,7 @@
 									</a>
 								</li>
 							</c:forEach>
-							<c:if test="${fn:length(command.friendsOfUser) gt 4}">
-								<li class="more-link-item"><a class="more" onclick="$('.friends-of-user #friends-of-user-list-more').show();$(this).parent().hide();"><fmt:message key="more" />...</a></li>
-							</c:if>
 						</ul>
-						<c:if test="${fn:length(command.friendsOfUser) gt 4}">
-							<div id="friends-of-user-list-more" style="display:none;">
-								<ul>
-									<c:forEach var="user" items="${command.friendsOfUser}" begin="5">
-										<li>
-											<user:username user="${user}" />
-											<fmt:message var="deleteFriendTitle" key="friends.actions.delete.title"><fmt:param value="${fn:escapeXml(user.name)}"/></fmt:message>
-											&amp;nbsp;
-											<a class="action" href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(user.name)}&amp;action=removeFriend&amp;ckey=${ckey}&amp;forward=settings" title="${deleteFriendTitle}">
-												<fmt:message key="friends.actions.delete"/>
-											</a>
-										</li>
-									</c:forEach>
-									<li><a class="less" onclick="$('.friends-of-user #friends-of-user-list-more').hide();$('.friends-of-user .more-link-item').show();"><fmt:message key="less" />...</a></li>
-								</ul>
-							</div>
-						</c:if>
 					</span>
 				</jsp:attribute>
 			</sidebar:sidebarItem>

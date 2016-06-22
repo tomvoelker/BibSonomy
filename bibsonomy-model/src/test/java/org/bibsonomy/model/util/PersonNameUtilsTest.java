@@ -28,8 +28,10 @@ package org.bibsonomy.model.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.bibsonomy.model.PersonName;
@@ -65,7 +67,7 @@ public class PersonNameUtilsTest {
 		);
 		final List<PersonName> is = PersonNameUtils.discoverPersonNames("D.E. Knuth and Hans Dampf and Donald E. Knuth and Foo van Bar and Jäschke, R. and John Chris Smith and John von Neumann and von der Schmidt, Alex and {Long Company Name} and L. Balby Marinho and Balby Marinho, Leandro and Leandro Balby Marinho and Hanand Foobar");
 		for (int i = 0; i < should.size(); i++) {
-			assertEqualPersonNames(should.get(i), is.get(i));			
+			assertEqualPersonNames(should.get(i), is.get(i));
 		}
 	}
 	
@@ -173,7 +175,7 @@ public class PersonNameUtilsTest {
 		
 		final PersonName pn19 = PersonNameUtils.discoverPersonNames("Rocchio, Jr., Joseph John").get(0);
 		assertEquals("Joseph John", pn19.getFirstName());
-		assertEquals("Rocchio, Jr.", pn19.getLastName());	
+		assertEquals("Rocchio, Jr.", pn19.getLastName());
 	}
 	
 	/**
@@ -356,7 +358,7 @@ public class PersonNameUtilsTest {
 		dsds("Alex von der Schmidt");
 		dsds("Jäschke, R.");
 		dsds("Smith, John Chris");
-		dsds("von der Schmidt, Alex");		
+		dsds("von der Schmidt, Alex");
 		dsds("{Long Company Name}");
 		dsds("L. Balby Marinho");
 		dsds("Leandro Balby Marinho");
@@ -453,9 +455,6 @@ public class PersonNameUtilsTest {
 		 */
 		final List<PersonName> pn6 = PersonNameUtils.discoverPersonNames("Kirsch KA; Schlemmer M");
 		assertEquals(Arrays.asList(new PersonName("KA", "Kirsch"), new PersonName("M", "Schlemmer")), pn6);
-
-
-
 	}
 	
 	/**
@@ -480,7 +479,7 @@ public class PersonNameUtilsTest {
 
 		final PersonName pn12 = PersonNameUtils.discoverPersonNames("Rocchio, Jr., Joseph John").get(0);
 		assertEquals("Joseph John", pn12.getFirstName());
-		assertEquals("Rocchio, Jr.", pn12.getLastName());	
+		assertEquals("Rocchio, Jr.", pn12.getLastName());
 
 	}
 	
@@ -501,6 +500,19 @@ public class PersonNameUtilsTest {
 		assertEquals("[k.blom,others]", PersonNameUtils.getNormalizedPersons(PersonNameUtils.discoverPersonNames("Katarina Blom and others")));
 		assertEquals("[c.dauteroche]", PersonNameUtils.getNormalizedPersons(PersonNameUtils.discoverPersonNames("Chappe d'Auteroche ???")));
 	}
-
+	
+	/**
+	 * tests {@link PersonNameUtils#containsPerson(PersonName, List, boolean)}
+	 */
+	@Test
+	public void testContainsPerson() {
+		final PersonName personName1 = new PersonName("Sansa", "Stark");
+		final PersonName personName1Simple = new PersonName("S.", "Stark");
+		assertTrue(PersonNameUtils.containsPerson(personName1, Collections.singletonList(personName1), false));
+		assertFalse(PersonNameUtils.containsPerson(personName1, Collections.singletonList(personName1Simple), false));
+		
+		// now check with normed set to true
+		assertTrue(PersonNameUtils.containsPerson(personName1Simple, Collections.singletonList(personName1), true));
+	}
 }
 

@@ -23,7 +23,10 @@
          "pluralLabel" : "Publications"
       },
       "GoldStandardPublication" : {
-      	 "pluralLabel" : "GoldStandardPublications"
+         "pluralLabel" : "GoldStandardPublications"
+      },
+      "GoldStandardBookmark" : {
+         "pluralLabel" : "GoldStandardBookmarks"
       },
       "Tag" : {
          "pluralLabel" : "Tags"
@@ -99,7 +102,18 @@
       	</c:forEach>
       </mtl:exists>
       
-
+      <!-- gold standard bookmarks -->
+      <mtl:exists path="command.goldStandardBookmarks">
+      	<!-- comma between gold standard publications resources & gold standard bookmarks, if both present -->
+      	<c:if test="${isCommaNecessary and not empty command.goldStandardBookmarks.list}">,<c:set var="isCommaNecessary" value="${false}"/></c:if>
+      	<c:forEach var="post" varStatus="status" items="${command.goldStandardBookmarks.list}">
+      	<json:goldStandardBookmark post="${post}"/><c:if test="${not status.last}">,</c:if>
+      		<c:if test="${status.last}">
+      			<c:set var="isCommaNecessary" value="${true}"/>
+      		</c:if>
+      	</c:forEach>
+      </mtl:exists>
+      
       <!-- tags -->
       <mtl:exists path="command.tagcloud">
 	    <!-- comma if tags are present, preceded by either bookmarks or publications or gold standard publications -->

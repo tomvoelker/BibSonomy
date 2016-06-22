@@ -560,8 +560,8 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 			for (final SearchPost<R> post : newPosts) {
 				final Map<String, Object> convertedPost = this.tools.getConverter().convert(post);
 				
-				final String id = ElasticsearchUtils.createElasticSearchId(post.getContentId().intValue());
-				
+				final Integer contentId = post.getContentId();
+				final String id = ElasticsearchUtils.createElasticSearchId(contentId.intValue());
 				convertedPosts.put(id, convertedPost);
 				newLastTasId = Math.max(post.getLastTasId().intValue(), newLastTasId);
 			}
@@ -588,6 +588,7 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 			newState.setLast_log_date(targetState.getLast_log_date());
 			newState.setLast_tas_id(Integer.valueOf(newLastTasId));
 			newState.setLastPersonChangeId(targetState.getLastPersonChangeId());
+			newState.setLastDocumentDate(targetState.getLastDocumentDate());
 			this.updateIndexState(indexName, newState);
 		} catch (final RuntimeException e) {
 			this.updateIndexState(indexName, oldState);
@@ -735,7 +736,7 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 				log.debug("updating spammer status for user " + userName);
 				switch (user.getPrediction().intValue()) {
 				case 0:
-					log.debug("unflag non-spammer");
+					log.debug("user " + userName + " flaged as non-spammer");
 					
 					int offset = 0;
 					List<SearchPost<R>> userPosts;
@@ -759,7 +760,7 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 					} while (userPosts.size() == SearchDBInterface.SQL_BLOCKSIZE);
 					break;
 				case 1:
-					log.debug("flag spammer");
+					log.debug("user " + userName + " flaged as spammer");
 					// remove all docs of the user from the index!
 					this.client.deleteDocuments(indexName, this.tools.getResourceTypeAsString(), QueryBuilders.termQuery(Fields.USER_NAME, userName));
 					break;

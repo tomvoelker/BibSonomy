@@ -21,9 +21,7 @@
 		command="${command}" 
 		detailedInformation="${detailedInformation}"
 		resourceType="Bookmark"
-		activeTab="post"
-		minimizedContentWidth="${true}"
-		>
+		activeTab="post">
 
 		<jsp:attribute name="generalInformation">
 		

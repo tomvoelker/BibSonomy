@@ -40,6 +40,11 @@
 					border: 1px solid #ccc;
 				}
 			
+				.logbox {
+					overflow-y:scroll;
+					height:100px;
+				}
+				
 			</style>
 			
 			<!--include spammer scripts -->
@@ -51,13 +56,7 @@
 		</jsp:attribute>
 
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.admin">
-				<jsp:attribute name="pathPart">
-					<li>
-						::<a rel="path_menu" href="${relativeUrlGenerator.getAdminUrlByName('spam')}">Spam</a>
-					</li>
-				</jsp:attribute>
-			</parts:search>
+			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
 		</jsp:attribute>
 
 		<jsp:attribute name="content">
