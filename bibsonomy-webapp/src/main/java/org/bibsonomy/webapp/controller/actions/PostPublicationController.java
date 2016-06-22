@@ -162,7 +162,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 
 		if (command.getPerson() != null) {
 			if (present(command.getPerson().getPersonId())) {
-				final Person person = this.logic.getPersonById(PersonIdType.BIBSONOMY_ID, command.getPersonId());
+				final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getPersonId());
 				command.setPerson(person);
 			}
 		}

@@ -281,7 +281,7 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 */
 	private View updateAction(PersonPageCommand command) {
-		command.setPerson(this.logic.getPersonById(PersonIdType.BIBSONOMY_ID, command.getFormPersonId()));
+		command.setPerson(this.logic.getPersonById(PersonIdType.PERSON_ID, command.getFormPersonId()));
 		if (command.getPerson() == null) {
 			// TODO: proper frontend responses in cases like this
 			throw new NoSuchElementException();
@@ -301,7 +301,7 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 */
 	private View addNameAction(PersonPageCommand command) {
-		final Person person = logic.getPersonById(PersonIdType.BIBSONOMY_ID, command.getFormPersonId());
+		final Person person = logic.getPersonById(PersonIdType.PERSON_ID, command.getFormPersonId());
 		
 		final PersonName personName = new PersonName(command.getFormLastName());
 		personName.setFirstName(command.getFormFirstName());
@@ -339,7 +339,7 @@ public class PersonPageController extends SingleResourceListController implement
 			command.getAvailableRoles().add(prr);
 		}
 		
-		final Person person = this.logic.getPersonById(PersonIdType.BIBSONOMY_ID, command.getRequestedPersonId());
+		final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getRequestedPersonId());
 		if (!present(person)) {
 			// FIXME: return 404 status code
 			return Views.PERSON_SHOW;
