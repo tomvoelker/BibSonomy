@@ -78,13 +78,14 @@
 	<fmt:message key="person.show.thatsMeLabel" var="textThatsMeLabel" />
 	<fmt:message key="person.show.thesis" var="textThesis" />
 	
-	<layout:paneLayout pageTitle="${pageTitle} :: ${title}" 
+	<c:set var="title" value="${mtl:cleanBibtex(command.person.mainName.firstName)} ${mtl:cleanBibtex(command.person.mainName.lastName)}" />
+	
+	<layout:paneLayout pageTitle="${title}" 
 		headerLogoClass="publications" 
 		command="${command}" 
 		requestedUser="${command.requestedUser}" 
 		requPath="${requPath}"
-		showPageOptions="${true}"
-		minimizedContentWidth="${true}" >
+		showPageOptions="${true}">
 
 		<jsp:attribute name="headerExt">
 			<script type='text/javascript' src='/resources/typeahead.js/js/typeahead.bundle.js'><!-- keep me --></script>
@@ -96,7 +97,6 @@
 
 			<script type='text/javascript' src='/resources/javascript/person/roles.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/update.js'><!-- keep me --></script>
-			<script type='text/javascript' src='/resources/javascript/person/explainRoles.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/titleAutocomplete.js'><!-- keep me --></script>
 			<style type='text/css'>
 				.row ul {
@@ -141,7 +141,7 @@
 			</c:if>
 		
 			<div class="page-header">
-				<h1><c:out value="${mtl:cleanBibtex(command.person.mainName.firstName)} "/><c:out value="${mtl:cleanBibtex(command.person.mainName.lastName)}"/></h1>
+				<h1><c:out value="${title}"/></h1>
 			</div>
 			
 			

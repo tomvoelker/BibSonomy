@@ -22,7 +22,6 @@
 	<jsp:directive.attribute name="infobox" fragment="true" required="false"/>
 	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
-	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
 	
 	<layout:layout 
@@ -34,8 +33,6 @@
 		requPath="${requPath}" 
 		headerExt="${headerExt}" 
 		activeTab="${activeTab}" 
-		hideFooterContainer="${true}"
-		minimizedContentWidth="${minimizedContentWidth}"
 		breadcrumbs="${breadcrumbs}">
 		
 		<jsp:attribute name="content">

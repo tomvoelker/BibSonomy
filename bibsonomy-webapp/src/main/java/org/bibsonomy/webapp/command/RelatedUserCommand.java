@@ -26,8 +26,9 @@
  */
 package org.bibsonomy.webapp.command;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bibsonomy.model.User;
 
@@ -37,22 +38,29 @@ import org.bibsonomy.model.User;
 public class RelatedUserCommand extends BaseCommand {
 	
 	/**
-	 *  list of user to show
+	 *  set of user to show
 	 */
-	private List<User> relatedUsers = new ArrayList<User>();
+	private Set<User> relatedUsers = new HashSet<User>();
 
 	/**
-	 * @return list of user
+	 * @return set of user
 	 */
-	public List<User> getRelatedUsers() {
+	public Set<User> getRelatedUsers() {
 		return this.relatedUsers;
 	}
 
 	/**
 	 * @param relatedUsers the relatedUsers to set
 	 */
-	public void setRelatedUsers(final List<User> relatedUsers) {
+	public void setRelatedUsers(final Set<User> relatedUsers) {
 		this.relatedUsers = relatedUsers;
+	}
+	
+	/**
+	 * @param relatedUsers the relatedUsers to set
+	 */
+	public void setRelatedUsers(final List<User> relatedUsers) {
+		this.relatedUsers = new HashSet<User>(relatedUsers);
 	}
 
 }

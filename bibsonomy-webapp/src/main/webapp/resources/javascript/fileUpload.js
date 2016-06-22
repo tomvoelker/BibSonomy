@@ -1,11 +1,7 @@
-var documentUploadSuccessIcon = "/resources/image/document-txt-blue.png";
 /*
  * file upload for publication references
  * 
- */
-
-
-/*
+ * 
  * add handler to delete, add and rename documents
  */
 $(function() {

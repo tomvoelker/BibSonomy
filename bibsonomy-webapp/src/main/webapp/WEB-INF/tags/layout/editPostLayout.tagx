@@ -22,7 +22,6 @@
 	<jsp:directive.attribute name="generalInformation" fragment="true" required="true" description="The form fields to enter general information."/>	
 	<jsp:directive.attribute name="detailedInformation" fragment="true" required="false" description="The form fields to enter detailed information."/>
 	<jsp:directive.attribute name="extraInformation" fragment="true" required="false" description="Extra information which shall be displayed outside the form."/>
-	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="postApproval" fragment="true" required="false" description="A checkbox inorder to approve goldstandard posts"/>
 	
 	
@@ -31,7 +30,6 @@
 		command="${command}" 
 		detailedInformation="${detailedInformation}" 
 		extraInformation="${extraInformation}"
-		minimizedContentWidth="${minimizedContentWidth}"
 		postApproval="${postApproval}">
 		
 		<jsp:attribute name="headerExtResource">

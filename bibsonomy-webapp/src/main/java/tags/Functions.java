@@ -44,6 +44,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.SpamStatus;
@@ -85,6 +86,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
+import com.github.rjeschke.txtmark.Processor;
 import com.google.caja.util.Sets;
 import com.sksamuel.diffpatch.DiffMatchPatch;
 import com.sksamuel.diffpatch.DiffMatchPatch.Diff;
@@ -172,6 +174,15 @@ public class Functions {
 		 * remove empty lines
 		 */
 		return s.replaceAll("(?m)\n\\s*\n", "\n");
+	}
+	
+	/**
+	 * converts markdown to html
+	 * @param markdown
+	 * @return the converted markdown
+	 */
+	public static String markdownToHtml(final String markdown) {
+		return Processor.process(StringEscapeUtils.escapeHtml(markdown));
 	}
 
 	/**

@@ -1,518 +1,373 @@
-var ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR = 'input[name="abstractGrouping"]';
-var OTHER_GROUPING_CLASS_SELECTOR = '.otherGroupsBox';
-
-var DISCUSSION_MENU_SELECTOR = '#discussionMainMenu';
-var DISCUSSION_SELECTOR = '#discussion';
 var REVIEW_INFO_SELECTOR = '#review_info_rating';
-var DISCUSSION_TOGGLE_LINK_SELECTOR = '#toggleDiscussion';
-
-var REVIEW_OWN_ID = 'ownReview';
-var REVIEW_OWN_SELECTOR = '#' + REVIEW_OWN_ID;
-
-var REVIEW_UPDATE_FORM_SELECTOR = 'form.editreview';
-var REPLY_FORM_ID = 'replyForm';
-var REPLY_FORM_SELECTOR = '#' + REPLY_FORM_ID;
-
-var EDIT_COMMENT_FORM_ID = 'editcomment';
-var EDIT_FORM_SELECTOR = '#' + EDIT_COMMENT_FORM_ID;
-
-var CREATE_REVIEW_LINKS_SELECTOR = 'a.createReview';
-var COMMENT_CREATE_FORM = '#createCommentInstance';
-var REVIEW_CREATE_FORM_SELECTOR = 'form.createreview';
-
-var ANONYMOUS_CLASS = 'anonymous';
-
-var ANONYMOUS_SELECTOR = 'input[name=discussionItem\\.anonymous]';
-
-// TODO: move constants
-var BOOKMARK_LIST_SELECTOR = '#bookmarkList';
-var PUBLICATION_LIST_SELECTOR = '#bibtexList';
-var GROUPS_CLASS = 'groups';
-var PUBLIC_GROUPING = 'public';
-var PRIVATE_GROUPING = 'private';
-var OTHER_GROUPING = 'other';
-var FRIENDS_GROUP_NAME = 'friends';
-
-var DISCUSSIONITEM_DATA_KEY = 'discussionItemHash';
-
-var PUBLIC_POST_SELECTOR = 'input#publicInput';
-
-var pub = true;
+var MAX_DISCUSSION_ITEMS = 5;
 
 $(function() {
-	// remove all create review links if user already reviewed resource
-	if ($(REVIEW_OWN_SELECTOR).length > 0) {
-		// user has reviewed this resource hide all create review forms
-		removeReviewActions();
-		$(COMMENT_CREATE_FORM).show();
+	$('.group-selector .dropdown-menu a').click(function() {
+		var abstractGrouping = $(this).data('abstract-grouping');
+		var grouping = $(this).data('group');
+		var form = $(this).parents('form');
 		
-		$(document).ready(function() {
-			createStandaloneReply($("#createCommentInstance"));
-		});
-	}
-	
-	// TODO: move and use in post edit views
-	$(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
-	 
-	$.each($('.abstractGroupingGroup'), function(index, box) {
+		form.find('input[name="abstractGrouping"]').attr('value', abstractGrouping);
+		form.find('input[name="groups"]').attr('value', grouping);
 		
-		toggleGroupBox(box);
+		var button = $(this).parents('.group-selector').find('button');
+		
+		button.find('.group').html($(this).html());
+		
+		$(this).parents('ul').find('li').removeClass('checked');
+		$(this).parent().addClass('checked');
+		
+		button.dropdown("toggle");
+		return false;
 	});
-	var publicValue = $(PUBLIC_POST_SELECTOR).val();
-	// if there is a publicPost item use it to determine warnings
-	if ((publicValue != undefined) && (publicValue=='false')) {
-		pub = false;
-	}
-	if (!pub) {
-		alert(getString('post.resource.discusssion.warning.goldstandard'));
-	}
-	$('.toggleReplies').click(function(event) {
-		event.preventDefault();
-		var replies = $(this).parent().parent().parent().children('.media');
-		
-		$(replies).each(function(){
-			if( $(this).hasClass('hidden') ) {
-				$(this).removeClass('hidden');
-			} else {
-				$(this).addClass('hidden');
-			}
-		});
-	});
-});
-
-function showAppendixForm(o) {
-	o.parent = o.menuItem.parents(".fsOuter");
-	o.bgFrame = o.menuItem.parent().parent().children(".discussionAdditionalControls");
 	
-	if(o.bgFrame[0]==undefined) return;
-	
-	if(o.bgFrame.css("display") != "none") {
-		o.menuItem
-		.removeClass("linkButton")
-		.parent()
-		.children(".controlsContainer")
-		.hide()
-		.parent()
-		.css("z-index",0); 
-		
-		return o.bgFrame.hide();
-	}
-
-	var frameClickCallback = function() {
-		o.bgFrame.unbind("click", frameClickCallback);
-		o.menuItem.trigger("click");
-	};
-	
-	o.bgFrame.bind("click", frameClickCallback);
-	o.menuItem.addClass("linkButton").parent().css("z-index",5);
-	o.ctrlsContainer = o.menuItem.parent().children(".controlsContainer");
-	o.bgFrame.width(o.parent.width()).height(o.parent.height()).css({"top":0,"left":0}).show();
-	o.ctrlsContainer.show().css("left", ""+((o.menuItem.position().left+o.menuItem.width()/2)-o.ctrlsContainer.width()/2)+"px")
-	.css({
-		"left": ""+((o.menuItem.position().left+o.menuItem.width()/2)-o.ctrlsContainer.width()/2)+"px", 
-		"top":""+(o.menuItem.position().top+o.menuItem.height()+10)+"px"
-	});
-
-	if(o.callback!=undefined) o.callback(
-			{
-				bgFrame:o.bgFrame, 
-				menuItem:o.menuItem, 
-				ctrlsContainer: o.ctrlsContainer
-			}
-	);
-}
-
-$(document).ready(function() {
-	$('.descriptiveLabel').each(function() {
-		$(this).descrInputLabel({});
-	});
-	$('.reviewTextBox').children().first("textarea").each(function() {
-		$(this).autosize().focus(showMenu);
-	});
-	$('.reviewrating').stars({split:2});
-});
-
-function setUpLinkbox(o) {
-	o.textArea = o.bgFrame.parents('.fsOuter').children('.textBoxContainer').find("textarea");
-	o.textArea.css({"z-index":5,"position":"relative"});
-	o.ctrlsContainer.find('input').trigger("focus");
-	o.menuItem.css("position","");
-	o.refInput = o.ctrlsContainer.find(".referenceAutocompletion");
-	var callback = function() {
-		o.refInput.val('');
-		o.textArea.css({"z-index":0,"position":""});	
-		o.menuItem.unbind("click", callback);
-	};
-	
-	o.menuItem.bind("click", callback);
-}
-
-function showMenu(e) {
-	$(e.target).unbind("focus", showMenu).removeClass('textAreaWithMinHeightSmall').addClass('textAreaWithMinHeightLarge').height('').parent().parent().parent();
-	
-	var parent = $(e.target).unbind("focus", showMenu).parent().parent().parent();
-	var frames = ["discussionControlsFrame", "discussionPostbuttonFrame"];
-	var rating = getOwnReviewRating!=undefined && !isNaN((rating = getOwnReviewRating()))?parseFloat(rating):0;
-	var reviewRating = parent.find(".reviewrating");
-	
-	for(var i = 0; i < frames.length; i++) parent.children("."+frames[i]).css("display", "block").hide().fadeIn();
-	
-	if(!reviewRating.hasClass('ratingDisabled'))	reviewRating.stars("select", rating.toFixed(1));
-}
-
-function hasGoldstandardCreationPermission() {
-	if (!pub) {
-		// we need to ask whether or not a goldstandard is to be created.
-		if (!confirm(getString('post.resource.discusssion.warning.goldstandard.continue'))) {
-			return false;
-		}
-	}
-	return true;
-}
-
-function createStandaloneReply(parent) {
-		removeAllOtherDiscussionForms();
-		var parentHash = getHash($("#discussionRef"));
-		var form = parent.find("form");
-		form.append($('<input />').attr('name', 'discussionItem.parentHash').attr('type', 'hidden').attr('value', parentHash));
-		
-		// bind some actions (submit, group switch)
-		form.submit(createComment).parent().removeClass("hidden");
-		form.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).click(onAbstractGroupingClick);
-		form.find("textarea").focus(showMenu);
-		addAutocompletionToLinkBox(form);
-}
-
-function updateDiscussionToggleLink() {
-	var visible = $(DISCUSSION_SELECTOR).is(':visible');
-	var text = getString('post.resource.discussion.actions.show');
-	if (visible) {
-		text = getString('post.resource.discussion.actions.hide');
-	}
-	
-	$(DISCUSSION_TOGGLE_LINK_SELECTOR).text(text);
-}
-
-function showDiscussion() {
-	$(DISCUSSION_SELECTOR).show();
-	$(REVIEW_INFO_SELECTOR).show();
-	updateDiscussionToggleLink();
-}
-
-// TODO: rename
-function removeAllOtherDiscussionForms() {
-	$(EDIT_FORM_SELECTOR).remove();
-	$(REVIEW_UPDATE_FORM_SELECTOR).hide();
-	//$(REVIEW_CREATE_FORM_SELECTOR).parent().hide();
-	$(REPLY_FORM_SELECTOR).remove();
-}
-
-function showReviewForm() {
-	$(REVIEW_CREATE_FORM_SELECTOR).parent().show();
-}
-
-function removeReviewActions() {
-	$(CREATE_REVIEW_LINKS_SELECTOR).parent().hide();
-	// create review form
-	$(REVIEW_CREATE_FORM_SELECTOR).parent().hide();
-}
-
-function addReviewActions() {
-	$(CREATE_REVIEW_LINKS_SELECTOR).parent().show();
-}
-
-// TODO: move and use in post edit views
-function onAbstractGroupingClick() {
-	toggleGroupBox($(this).parent().parent().parent().parent());
-}
-
-// TODO: move and use in post edit views
-function toggleGroupBox(radioButtonGroup) {
-	
-	// find the checked abstract grouping
-	var selectedAbstractGrouping = $(radioButtonGroup).find('input:checked');
-
-	// find otherGroupsBox of the abstract grouping
-	var otherBox = $(radioButtonGroup).find('.otherGroupsBox');
-
-	// disable groups select if private or public is checked or enable
-	// if other is checked
-	if (!selectedAbstractGrouping.hasClass('otherGroups')) {
-		otherBox.attr('disabled', 'disabled');
-	} else {
-		otherBox.removeAttr('disabled');
-	}
-}
-
-function populateFormWithGroups(form, abstractGrouping, groups) {
-	// populate form with found values
-	form.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR).removeAttr('checked');
-	form.find(ABSTRACT_GROUPING_RADIO_BOXES_SELECTOR + '[value="' + abstractGrouping + '"]').attr('checked', 'checked');
-	
-	var otherBox = form.find(OTHER_GROUPING_CLASS_SELECTOR);
-	// and other groups if present
-	if (groups.length > 0) {
-		otherBox.removeAttr('disabled');
-		// clear
-		otherBox.find('input').removeAttr('selected');
-		$.each(groups, function(index, group) {
-			otherBox.find('[value="' + group + '"]').attr('selected', 'selected');
-		});
-	} else {
-		otherBox.attr('disabled', 'disabled');
-	}
-}
-
-function getGroups(item) {
-	var groupContainer = item.find('.groups:first');
-	var groupingText = groupContainer.text();
-	
-	var groups = new Array();
-	// if text empty => public group
-	if (groupingText != '') {			
-		var groupViews = groupContainer.find('a');
-		
-		if ((groupViews.length == 0) && (groupingText.indexOf(getString('post.groups.private')) != -1)) {
-			// private
-			return groups;
-		}
-		
-		// friends
-		if (groupingText.indexOf(getString('post.groups.friends')) != -1) {
-			groups.push(FRIENDS_GROUP_NAME);
-		}
-		
-		$.each(groupViews, function(index, groupView) {
-			groups.push($(groupView).text());
-		});
-		
-		return groups;		
-	}
-	
-	return groups;
-}
-
-function getAbstractGrouping(item) {
-	var groupContainer = item.find('.groups:first');
-	var groupingText = groupContainer.text();
-	
-	// if text empty => public group
-	if (groupingText != '') {			
-		var groupViews = groupContainer.find('a');
-		
-		if (groupViews.length == 0) {
-			// private or friends	
-			if (groupingText.indexOf(getString('post.groups.private')) != -1) {
-				return PRIVATE_GROUPING;
-			}
-			// friends
-			return OTHER_GROUPING;
-		}
-		
-		// multiple groups
-		return OTHER_GROUPING;			
-	}
-	
-	return PUBLIC_GROUPING;
-}
-
-function buildGroupView(abstractGrouping, groups) {
-	// check if not public
-	if (abstractGrouping !== 'public') {
-		var container = $('<span></span>').addClass(GROUPS_CLASS);
-		container.append(getString('post.resource.comment.groups') + ' ');
-		// if private only private group
-		if (abstractGrouping == 'private') {
-			container.append(getString('post.groups.private'));
+	$('.toggleReplies').click(function() {
+		var discussionContainer = $(this).parents('.media-body').first();
+		var subdiscussionList = discussionContainer.find('ul.subdiscussion').first();
+		discussionContainer.find('.toggleReplies').first().toggleClass('active');
+		if (!subdiscussionList.is(':visible')) {
+			subdiscussionList.slideDown();
 		} else {
-			// other group box
-			var groupLength = groups.length;
-			$.each(groups, function(index, group) {		
-				// special handling for friends
-				if (group == FRIENDS_GROUP_NAME) {
-					container.append(getString('post.groups.friends'));
+			subdiscussionList.slideUp();
+		}
+		return false;
+	});
+	
+	var discussionItems = $('.subdiscussion:first>li:not(.form)');
+	if (discussionItems.length > MAX_DISCUSSION_ITEMS) {
+		var items = $(discussionItems).slice(MAX_DISCUSSION_ITEMS - discussionItems.length);
+		var link = $('<a data-visible="false" href="#" class="btn btn-default btn-block">' + getString('discussion.show.more') + '</a>');
+		var listItem = $('<li class="moreless-discussion"></li>');
+		link.click(function() {
+			var visible = Boolean($(this).data('visible'));
+			var items = $('.subdiscussion:first>li:not(.moreless-discussion):not(.form)').slice(5 - discussionItems.length);
+			var text;
+			if (!visible) {
+				items.show();
+				text = getString('discussion.show.less');
+			} else {
+				items.hide();
+				text = getString('discussion.show.more');
+			}
+			$(this).text(text);
+			$(this).data('visible', !visible);
+			return false;
+		});
+		$('.subdiscussion:first>li:last').after(listItem.append(link));
+		items.hide();
+	}
+	
+	$('.editLink').click(editDiscussionItem);
+	
+	$('.deleteLink').click(deleteDiscussionItem);
+	
+	$('.reply').click(showReplyForm);
+	
+	if ($('#discussion #ownReview').length > 0) {
+		$('#comment-review-info').hide();
+		
+		$('.createreview').hide();
+	} else {
+		$('.createcomment:first').hide();
+		$('#comment-review-info .btn').click(function() {
+			$(this).siblings('.btn').removeClass('active');
+			$(this).addClass('active');
+			var classToShow = $(this).data('class');
+			var classToHide = $(this).data('hide-class');
+			$('.' + classToShow).show();
+			$('.' + classToHide).hide();
+		});
+	}
+	
+	$('.updatecomment').hide().submit(function() {
+		var form = $(this);
+		var data = form.serialize();
+		
+		$.ajax({
+			url: '/ajax/comments',
+			method: 'POST',
+			data: data,
+			success: function(data) {
+				var textfield = form.find('textarea[name=discussionItem\\.text]');
+				var text = textfield.val();
+				var commentUI = form.parent();
+				commentUI.find('.text:first').text(text);
+				var hash = data.hash;
+				var infoUI = commentUI.find('div.info:first');
+				// alert(hash);
+				infoUI.data('discussion-item-hash', hash);
+				var updateForm = commentUI.find('form.updatecomment:first');
+				var updateHashInput = updateForm.find('input[name=discussionItem\\.hash]');
+				updateHashInput.val(hash);
+				var commentForm = commentUI.find('form.createcomment:first');
+				var input = commentForm.find('input[name=discussionItem\\.parentHash]');
+				input.val(hash);
+				// alert(infoUI.data('discussion-item-hash'));
+				form.hide();
+			}
+		});
+		return false;
+	});
+	
+	$('.updatereview').hide().submit(function() {
+		var form = $(this);
+		var data = form.serialize();
+		
+		var item = form.parent();
+		var ratingDiv = item.find('div.rating');
+		var oldRating = ratingDiv.data('rating');
+		
+		var rating = form.find('input[name=discussionItem\\.rating]').val();
+		if (rating == 0) {
+			if (!confirm(getString("post.resource.review.rating0"))) {
+				return false;
+			}
+		}
+		
+		$.ajax({
+			url: '/ajax/reviews',
+			method: 'POST',
+			data: data,
+			success: function(data) {
+				var reload = (data.reload);
+				if (reload == "true") {
+					window.location.reload();
 					return;
 				}
-				var groupUrl = $('<a></a>').attr('href', '/group/' + group);
-				groupUrl.html(group);
-				container.append(groupUrl);
 				
-				// separate groups with ', '
-				if (groupLength != 1 && (groupLength - 1) == index) {
-					container.append(', ');
-				}
-			});
-		}
-		return container;
-	}
-	return '';
-}
-
-function deleteDiscussionItemView(discussionItemView, success) {
-	if (discussionItemView.find('ul.subdiscussionItems:first li').length > 0) {
-		discussionItemView.removeAttr('id');
-		discussionItemView.removeClass();
-		discussionItemView.addClass('discussionitem');
-		
-		discussionItemView.find('img:first').remove();
-		discussionItemView.find('.details:first').remove();
-		discussionItemView.find('.createReview:first').parent().remove();
-		discussionItemView.find('.deleteInfo:first').parent().remove();
-		discussionItemView.find('a.editLink:first').parent().remove();
-		discussionItemView.find('a.reply:first').parent().remove();
-		
-		var info = $('<div class="deletedInfo"></div').text(getString('post.resource.discussion.info'));
-		discussionItemView.prepend(info);
-		
-		highlight(info);
-		
-		if (success != undefined) {
-			success();
-		}
-	} else {
-		discussionItemView.fadeOut(1000, function() {
-				$(this).remove();
-				if (success != undefined) {
-					success();
-				}
+				var text = form.find('textarea[name=discussionItem\\.text]').val();
+				item.find('.text:first').text(text);
+				
+				var ratingInput = item.find('input.reviewRating');
+				
+				ratingInput.rating('update', rating);
+				
+				ratingDiv.data('rating', rating);
+				
+				// update review count and distribution
+				var currentReviewCount = getReviewCount();
+				var currentAvg = getAvg();
+				var ratingSum = currentAvg * currentReviewCount;
+				ratingSum += rating - oldRating;
+				var avg = ratingSum / currentReviewCount;
+				$('#averageRating').rating('update', avg);
+				$('[property=ratingAverage]').text(avg);
+				
+				plotRatingDistribution();
+				
+				form.hide();
+			},
+			error:		function(jqXHR, data, errorThrown) {
+				handleAjaxErrors(reviewForm, jQuery.parseJSON(jqXHR.responseText));
+			},
 		});
-	}
-}
-
-function updateHash(element, newHash) {
-	$(element).find('div.info:first').data(DISCUSSIONITEM_DATA_KEY, newHash);
-	$(element).find('input[name="discussionItem\\.hash"]:first').attr('value', newHash);
-}
-
-// TODO: rename function
-function getInterHash() {
-	return $(DISCUSSION_SELECTOR).data("interhash");
-}
-
-// TODO: rename function
-function getHash(menuElement) {
-	return $(menuElement).parent().parent().siblings('.details').find('.info').data(DISCUSSIONITEM_DATA_KEY);
-}
-
-function highlight(element) {
-	$(element).css('background-color', '#fff735').animate({ backgroundColor: '#ffffff' }, 1000);
-}
-
-/*
- * scrolls to the specified id
- * TODO: move function for reuse
- */
-function scrollTo(id){
-	var element = $("#" + id);
-	if (element.length) {
-		$('html,body').animate({scrollTop: element.offset().top - 100 },'slow');
-	}
-}
-
-function parseLinks(reviewText) {
-	var originalText = reviewText;
-	var matches = new Array();
-	var links = new Array();
-	var reg = /\[\[(?:(bookmark|url|bibtex|publication)(?:\/))?([0-9a-fA-F]{32,33})(?:\/(.*?))?\]\]/gi;
-	var match;
-	var changed = false;
-	while (match = reg.exec(reviewText)) {
-		if(matches.indexOf(match[0]) != -1) {
-			continue;
-		}
-		changed = true;
-		var url;
-		if(match[1] == "url" || match[1] == "bookmark") {
-			url = "/url/"
-		} else {
-			url = "/bibtex/";
-		}
-		url += match[2];
-		var name = match[3];
-		if(typeof name == "undefined") {
-			name = "";
-		} else  {
-			name = "/" + name;
-			url += name;
-		}
-		matches.push(match[0]);
-		links.push("<a class=\"postlink\" id=\"" + match[2] + name + "\" href=\"" + url + "\">" + match[0] + "</a>");
-	}
-	for (var i = 0; i < matches.length; i++) {
-		reviewText = reviewText.replaceAll(matches[i], links[i], true);
-	}
+		
+		return false;
+	});
 	
-	var ret =  "<div class=\"review text\" itemprop=\"reviewBody\">" + reviewText + "</div>\n";
-	if(changed) {
-		ret += "<div class=\"originalText\" style=\"display:none\">" + originalText + "</div>";
-	}
-	return ret;
-}
-
-
-$(document).ready(function() {
+	$('.createreview').submit(createReview);
 	
-	initCSLSugestions($("input.referenceAutocompletion"));
-
+	$('.createcomment').submit(createComment);
 });
 
-function initCSLSugestions(el) {
-	el.each(function(index){ $(this).autocomplete({
-		source: function( request, response ) {
+function setupActions(container, text, hash) {
+	container.find('.reply').click(showReplyForm);
+	container.find('.deleteLink').click(deleteDiscussionItem);
+	// set text
+	container.find('div.text').text(text);
+	container.find('div.info').data('discussion-item-hash', hash);
+	container.find('.createcomment').submit(createComment);
+	container.find('.editLink').click(editDiscussionItem);
+}
 
-			$.ajax({
-				url: "/json/tag/" + createParameters(request.term),
-				data: {items: 10,resourcetype: 'publication', duplicates: 'no'},
-				dataType: "jsonp",
-				success: function( data ) {
-					response( $.map( data.items, function( item ) {
-						return {
-							label: (highlightMatches(item.label, request.term)+' ('+item.year+')'),
-							value: item.interHash,
-							url: 'hash='+item.intraHash+'&user='+item.user+'&copytag='+item.tags,
-							author: (concatArray(item.author, 40, ' '+getString('and')+' ')),
-							user: item.user,
-							tags: item.tags
-						};
-					}));
-				}
-			});
-		},
-		minLength: 3,
-		select: function( event, ui ) {
-			var item = ui.item;
-			var textArea = $(event.target);
-			var text = "[[publication/" + item.value + "/" + item.user + "]]";
-			textArea.val(text);
-			textArea.select();
-			return false;
-		},
-		focus: function( event, ui ) {
+function createReview() {
+	var form = $(this);
+	var data = form.serialize();
+	
+	var rating = form.find('input[name=discussionItem\\.rating]').val();
+	if (rating == 0) {
+		if (!confirm(getString("post.resource.review.rating0"))) {
 			return false;
 		}
-	})
-	.data( 'autocomplete' )._renderItem = function( ul, item ) {
-		return $('<li></li>')
-		.data( 'item.autocomplete', item )
-		.append(
-				$('<a></a>')
-				.html(	item.label+'<br><span class="ui-autocomplete-subtext">' 
-						+item.author+' '+getString('by')+' '
-						+item.user+'</span>'))
-						.appendTo( ul );
-	};
-	});
-};
-
-
-function highlightMatches(text, input) {
-	var terms = input.split(" ");
-	for ( var i = 0; i < terms.length; i++) {
-		text = highlightMatch(text, terms[i]);
 	}
-	return text;
-};
+	
+	$.ajax({
+		url: '/ajax/reviews',
+		method: 'POST',
+		data: data,
+		success: function(data) {
+			var reload = (data.reload);
+			if (reload == "true") {
+				window.location.reload();
+				return;
+			}
+			
+			var reviewTemplate = $('#reviewTemplate').clone();
+			var text = form.find('textarea[name=discussionItem\\.text]').val();
+			form.parent().find('ul.subdiscussion:first>li.form').after(reviewTemplate);
+			setupActions(reviewTemplate, text, data.hash);
+			reviewTemplate.show();
+			var ratingInput = reviewTemplate.find('input.reviewRating:first');
+			ratingInput.val(rating);
+			ratingInput.rating({
+				min : 0,
+				max : 5,
+				step : 0.5,
+				size : 'xs',
+				readonly : true,
+				showCaption : false,
+				theme: 'krajee-fa',
+				filledStar: '<i class="fa fa-star"></i>',
+				emptyStar: '<i class="fa fa-star-o"></i>'
+			});
+			
+			reviewTemplate.find('div.rating').data('rating', rating);
+			reviewTemplate.attr('id', 'ownReview');
+			
+			// update review count and distribution
+			var currentReviewCount = getReviewCount();
+			var currentAvg = getAvg();
+			var ratingSum = currentAvg * currentReviewCount + rating;
+			
+			var reviewCount = currentReviewCount + 1;
+			var avg = ratingSum / reviewCount;
+			
+			$('#averageRating').rating('update', avg);
+			$('[property=ratingCount]').text(reviewCount);
+			$('[property=ratingAverage]').text(avg);
+			
+			plotRatingDistribution();
+			reviewTemplate.effect("highlight", {}, 2500);
+			form.hide();
+		},
+		error:		function(jqXHR, data, errorThrown) {
+			handleAjaxErrors(reviewForm, jQuery.parseJSON(jqXHR.responseText));
+		},
+	});
+	return false;
+}
 
-function highlightMatch(text, term) {
-	return text.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + $.ui.autocomplete.escapeRegex(term) + ")(?![^<>]*>)(?![^&;]+;)", "gi"), "<strong>$1</strong>");
-};
+function createComment() {
+	var form = $(this);
+	var data = form.serialize();
+	
+	$.ajax({
+		url: '/ajax/comments',
+		method: 'POST',
+		data: data,
+		success: function(data) {
+			var textfield = form.find('textarea[name=discussionItem\\.text]');
+			var text = textfield.val();
+			
+			var parentHash = form.find('input[name=discussionItem\\.parentHash]');
+			
+			var commentTemplate = $('#commentTemplate').clone();
+			
+			if (parentHash.length > 0) {
+				form.parent().parent().append(commentTemplate);
+			} else {
+				form.parent().after(commentTemplate);
+			}
+			
+			commentTemplate.show();
+			setupActions(commentTemplate, text, data.hash);
+			
+			var textarea = commentTemplate.find('form.updatecomment').find('textarea');
+			textarea.val(text);
+			autosize(textarea);
+			// reset form
+			commentTemplate.effect("highlight", {}, 2500);
+			textfield.val('');
+		}
+	});
+	
+	return false;
+}
+
+function deleteDiscussionItem() {
+	var link = $(this);
+	var type = $(this).data("type");
+	if (!confirmDeleteByUser(type)) {
+		return false;
+	}
+	var interhash = $('#discussion').data('interhash');
+	var hash = $(this).parents('.media-body:first').find('.info').first().data('discussion-item-hash');
+	
+	$.ajax({
+		url: '/ajax/' + type + "s",
+		method: 'POST',
+		data:'hash=' + interhash + "&discussionItem.hash=" + hash + "&_method=delete&ckey=" + ckey,
+		success: function() {
+			var item = link.parents('li.media:first');
+			var replyButton = item.parent().siblings('.actions').find('.toggleReplies');
+			var badge = replyButton.find('.badge');
+			
+			var subCount = parseInt(badge.text());
+			if (subCount == 1) {
+				replyButton.remove();
+			} else {
+				badge.text(subCount - 1);
+			}
+			
+			var subItems = item.find('.subdiscussion:first>li.media').length;
+			if (subItems == 0) {
+				item.remove();
+			} else {
+				var left = item.children('.media-left:first');
+				var imageContainer = left.find('a.thumbnail');
+				imageContainer.find('img').remove();
+				imageContainer.find('span').remove();
+				
+				imageContainer.append($('<i class="fa fa-user fa-4x"></i>'));
+				var content = item.children('.media-body');
+				content.prepend($('<div class="alert alert-info">' + getString('post.resource.discussion.info') + '</div>'));
+				content.find('.actions:first>div.edit-media-buttons:last').remove();
+				content.find('.actions:first>div.edit-media-buttons>.reply').remove();
+				content.find('.details:first').remove();
+				content.find('.info:first').text('');
+			}
+			
+			if (item.hasClass('review')) {
+				var rating = parseFloat(item.find('div.rating').data('rating'));
+				// update review count and distribution
+				var currentReviewCount = getReviewCount();
+				var currentAvg = getAvg();
+				var ratingSum = currentAvg * currentReviewCount - rating;
+				
+				var reviewCount = currentReviewCount - 1;
+				var avg;
+				if (reviewCount != 0) {
+					avg = ratingSum / reviewCount;
+				} else {
+					avg = 0;
+				}
+				
+				$('#averageRating').rating('update', avg);
+				$('[property=ratingCount]').text(reviewCount);
+				$('[property=ratingAverage]').text(avg);
+				
+				plotRatingDistribution();
+			}
+		}
+	});
+	
+	return false;
+}
+
+function editDiscussionItem() {
+	var form = $(this).parents('div.actions').siblings('form');
+	form.toggle();
+	var textarea = form.find('textarea');
+	textarea.putCursorAtEnd();
+}
+
+function showReplyForm() {
+	var discussionContainer = $(this).parents('.media-body').first();
+	var subdiscussionList = discussionContainer.find('ul.subdiscussion').first();
+	discussionContainer.find('.toggleReplies').first().addClass('active');
+	if (!subdiscussionList.is(':visible')) {
+		subdiscussionList.slideDown();
+	}
+	
+	subdiscussionList.find('> li.form textarea').focus();
+}

@@ -4,6 +4,7 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:publication="urn:jsptagdir:/WEB-INF/tags/resources/publication"
 	xmlns:goldstandardpublication="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication"
 	xmlns:goldstandardbookmark="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardbookmark"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
@@ -13,10 +14,10 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.SimpleResourceViewCommand" required="true"/>	
+	
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
-	<!-- TODO: remove? unused! -->
-	<jsp:directive.attribute name="headline" type="java.lang.String" required="true"/>
+	
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableResourcetypeSelection" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="showInboxActions" type="java.lang.Boolean" required="false"/>
@@ -25,20 +26,16 @@
 
 	<jsp:directive.attribute name="isClipboard" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="showPageOptions" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="hideFooterContainer" type="java.lang.Boolean" required="false"/>
+	
 	<jsp:directive.attribute name="customPageOptions" fragment="true" required="false"/>
 	<jsp:directive.attribute name="customBookmarksHeaderText" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="customPublicationsHeaderText" type="java.lang.String" required="false"/>
-	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>
 	
-	<!-- quick fix for discussion page -->
-	<jsp:directive.attribute name="resource" type="org.bibsonomy.model.Resource" required="false" />
-	<jsp:directive.attribute name="discussionBox" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="noSidebar" type="java.lang.Boolean" required="false"/>
 	
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="infobox" fragment="true" required="false"/>
-	<jsp:directive.attribute name="beforeMainContainer" fragment="true" required="false"/>
-	<jsp:directive.attribute name="sidebar" fragment="true" required="true"/>
+	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="newsbar" fragment="true" required="false"/>	
 	<jsp:directive.attribute name="contentHeading" fragment="true" required="false"/>
 	<jsp:directive.attribute name="headerExt" fragment="true" required="false"/>
@@ -52,9 +49,6 @@
 		|
 		+-->
 	<fmt:message key="feeds.bookmark" var="bookmarkRssFeed"/>
-	<fmt:message key="feeds.publication" var="publicationRssFeed"/>
-	<fmt:message key="feeds.burst" var="burstRssFeed"/>
-	<fmt:message key="feeds.swrc" var="swrcFeed"/>
 	
 	<!--+
 		| which resource types to display (controlled via URL-param, format, user settings; see ResourceListController.getListsToInitialize)
@@ -73,138 +67,86 @@
 			requestedUser="${command.requestedUser}"
 			infobox="${infobox}"
 			sidebar="${sidebar}"
+			noSidebar="${noSidebar}"
 			newsbar="${newsbar}"
 			requPath="${requPath}"
 			activeTab="${activeTab}"
 			personalized="${command.personalized}"
-			hideFooterContainer="${hideFooterContainer}"
-			beforeMainContainer="${beforeMainContainer}"
-			minimizedContentWidth="${minimizedContentWidth}"
 			breadcrumbs="${breadcrumbs}">
 			
 		<!--+
 			+ HTML header extension
 			+ -->
 		<jsp:attribute name="headerExt">
-			
 			<c:if test="${showPublication}">
-				<link rel="alternate" type="application/rss+xml" title="${publicationRssFeed} /${excapedRequestPath}" href="/publrss/${excapedRequestPath}" />
-				<link rel="alternate" type="application/rss+xml" title="${burstRssFeed} /${excapedRequestPath}" href="/burst/${excapedRequestPath}" />
-				<link rel="alternate" type="application/rdf+xml" title="${swrcFeed} /${excapedRequestPath}" href="/swrc/${excapedRequestPath}" />
+				<publication:feeds path="/${fn:escapeXml(requPath)}" />
 			</c:if>
 			<c:if test="${showBookmark}">
 				<link rel="alternate" type="application/rss+xml" title="${bookmarkRssFeed} /${excapedRequestPath}" href="/rss/${excapedRequestPath}" />
 			</c:if>
+			
 			<!-- UnAPI service -->
 			<link rel="unapi-server" type="application/xml" title="unAPI" href="${properties['project.home']}unapi"/>
 
 			<jsp:invoke fragment="headerExt"/>
-		</jsp:attribute>
-
-			
-		<!--+
-			| header for resource lists and sidebar
-			+-->
-		<jsp:attribute name="headerContainer">
-			<c:if test="${discussionBox}">
-				<!-- Headline -->
-				<div class="header">
-					<c:out value="${mtl:cleanBibtex(resource.title)}" />
-				</div>
-			</c:if>
-			
-			<!-- FIXME: Explain or clean up (left-over from pre-bootstrap?) -->
-			<c:if test="${empty discussion}">
- 				<!-- bookmarks -->
- 				<div class="row">
-					<div class="col-md-6" id="bookmarkListConfig">
-					</div>
-					<!-- publications -->
-					<div class="col-md-6" id="publicationListConfig">
-					</div>
-				</div>
- 			</c:if>
 		</jsp:attribute>
 		
 		<!--+
 			+ main content (resource lists)
 			+-->
 		<jsp:attribute name="content">
-			<!-- 
-			<c:if test="${not empty headline}">
-				<h1 class="content-header"><c:out value="${headline}"/></h1>
-			</c:if>
-			-->
-			
 			<jsp:invoke fragment="content" />
+			<!-- additional heading for content area -->
+			<c:if  test="${not empty contentHeading}">
+				<jsp:invoke fragment="contentHeading" />
+			</c:if>
 			
-			<c:choose>
-				<!-- if a community post is present show the community post, not the list of posts -->
-				<c:when test="${not empty command.goldStandardPublications.list}">
-					<goldstandardpublication:details otherPosts="${command.bibtex.list}" post="${command.goldStandardPublications.list[0]}" loginUser="${command.context.loginUser}"/>
-				</c:when>
-
-				<!-- if a community post is present show the community post, not the list of posts -->
-				<c:when test="${not empty command.goldStandardBookmarks.list}">
-					<goldstandardbookmark:details post="${command.goldStandardBookmarks.list[0]}" loginUser="${command.context.loginUser}"/>
-				</c:when>
-				
-				<c:otherwise>
-				
-					<!-- additional heading for content area -->
-					<c:if  test="${not empty contentHeading}">
-						<jsp:invoke fragment="contentHeading" />
-					</c:if>
+			<c:set var="all" value="${mtl:containsResourceClass(command.resourcetype, 'all')}" />
+			<c:set var="bm" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark')}" />
+			<c:set var="pub" value="${mtl:containsResourceClass(command.resourcetype, 'publication')}" />
+			
+			
+			<!-- bibtex/bookmark lists -->
+			<div class="row">
+				<div class="${ (bm and pub) ? 'col-md-6' : ( (bm and not pub) ? 'col-md-12' : ((not bm) ? 'hide' : ''))} bookmark-list">
 					
-					<c:set var="all" value="${mtl:containsResourceClass(command.resourcetype, 'all')}" />
-					<c:set var="bm" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark')}" />
-					<c:set var="pub" value="${mtl:containsResourceClass(command.resourcetype, 'publication')}" />
+					<resources:bookmarks listView="${command.bookmark}" 
+						loginUserName="${command.context.loginUser.name}"
+						disableListNavigation="${disableListNavigation}"
+						requPath="${excapedRequestPath}" 
+						widthClassName="${bookmarksWidthClass}"
+						isClipboard="${isClipboard}"
+						showBookmark="${showBookmark}"
+						showPublication="${showPublication}">
 					
-					
-					<!-- bibtex/bookmark lists -->
-					<div class="row">
-						<div class="${ (bm and pub) ? 'col-md-6' : ( (bm and not pub) ? 'col-md-12' : ((not bm) ? 'hide' : ''))} bookmark-list">
-							
-							<resources:bookmarks listView="${command.bookmark}" 
-								loginUserName="${command.context.loginUser.name}"
-								disableListNavigation="${disableListNavigation}"
-								requPath="${excapedRequestPath}" 
-								widthClassName="${bookmarksWidthClass}"
-								isClipboard="${isClipboard}"
-								showBookmark="${showBookmark}"
-								showPublication="${showPublication}">
-							
-								<jsp:attribute name="addAsLastItem">
-									<c:if test="${not disableListNavigation}">
-										<div id="bookmarksfooter" class="${bookmarksWidthClass}">
-											<rc:nextprev listView="${command.bookmark}" listViewStartParamName="bookmark.start"/>
-										</div>
-									</c:if>
-								</jsp:attribute>
-							</resources:bookmarks>
-						</div>
-						<div class="${ (pub and bm) ? 'col-md-6' : ( (pub and not bm) ? 'col-md-12' : ((not pub) ? 'hide' : ''))} publication-list">
-							<resources:bibtexs listView="${command.bibtex}" 
-									loginUserName="${command.context.loginUser.name}" 
-									disableListNavigation="${disableListNavigation}" 
-									requPath="${excapedRequestPath}" 
-									widthClassName="${publicationsWidthClass}"
-									isClipboard="${isClipboard}"
-									showBookmark="${showBookmark}"
-									showPublication="${showPublication}">
-								<jsp:attribute name="addAsLastItem">
-									<c:if test="${not disableListNavigation}">
-										<div id="publicationsfooter" class="${publicationsWidthClass}">
-											<rc:nextprev listView="${command.bibtex}" listViewStartParamName="bibtex.start"/>
-										</div>
-									</c:if>
-								</jsp:attribute>
-							</resources:bibtexs>
-							
-						</div>
-					</div>
-				</c:otherwise>
-			</c:choose>
+						<jsp:attribute name="addAsLastItem">
+							<c:if test="${not disableListNavigation}">
+								<div id="bookmarksfooter" class="${bookmarksWidthClass}">
+									<rc:nextprev listView="${command.bookmark}" listViewStartParamName="bookmark.start"/>
+								</div>
+							</c:if>
+						</jsp:attribute>
+					</resources:bookmarks>
+				</div>
+				<div class="${ (pub and bm) ? 'col-md-6' : ( (pub and not bm) ? 'col-md-12' : ((not pub) ? 'hide' : ''))} publication-list">
+					<resources:bibtexs listView="${command.bibtex}" 
+							loginUserName="${command.context.loginUser.name}" 
+							disableListNavigation="${disableListNavigation}" 
+							requPath="${excapedRequestPath}" 
+							widthClassName="${publicationsWidthClass}"
+							isClipboard="${isClipboard}"
+							showBookmark="${showBookmark}"
+							showPublication="${showPublication}">
+						<jsp:attribute name="addAsLastItem">
+							<c:if test="${not disableListNavigation}">
+								<div id="publicationsfooter" class="${publicationsWidthClass}">
+									<rc:nextprev listView="${command.bibtex}" listViewStartParamName="bibtex.start"/>
+								</div>
+							</c:if>
+						</jsp:attribute>
+					</resources:bibtexs>
+				</div>
+			</div>
 		</jsp:attribute>
 	</layout:layout>
 </jsp:root>

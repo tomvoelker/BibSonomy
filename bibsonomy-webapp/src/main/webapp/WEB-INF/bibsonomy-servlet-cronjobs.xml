@@ -35,18 +35,27 @@
 		<property name="concurrent" value="false" />
 	</bean>
 	
-	<!-- 
-	<bean id="searchUpdateGoldStandardPublicationIndexJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="searchGoldStandardPublicationIndexUpdateTrigger" />
-		<property name="targetMethod" value="triggerUpdate" />
+	<bean id="searchUpdateGoldStandardBookmarkIndexJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="searchCommunityBookmarkManager" />
+		<property name="targetMethod" value="updateIndex" />
 		<property name="concurrent" value="false" />
 	</bean>
 	
-	<bean id="searchGoldStandardPublicationIndexUpdateTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
- 		<property name="cronExpression" value="22 1/5 * * * ?" />
-		<property name="jobDetail" ref="searchUpdateGoldStandardPublicationJob" />
+	<bean id="searchUpdateGoldStandardBookmarkIndexCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+ 		<property name="cronExpression" value="5/15 * * * * ?" />
+		<property name="jobDetail" ref="searchUpdateGoldStandardBookmarkIndexJob" />
 	</bean>
-	-->
+	
+	<bean id="searchUpdateGoldStandardPublicationIndexJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="searchCommunityPublicationManager" />
+		<property name="targetMethod" value="updateIndex" />
+		<property name="concurrent" value="false" />
+	</bean>
+	
+	<bean id="searchUpdateGoldStandardPublicationIndexCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+ 		<property name="cronExpression" value="1/15 * * * * ?" />
+		<property name="jobDetail" ref="searchUpdateGoldStandardPublicationIndexJob" />
+	</bean>
 	
 	<!-- Generate index cron jobs -->
 	<bean id="searchGenerateBookmarkIndexCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
@@ -118,9 +127,10 @@
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
-				<ref bean="searchUpdatePublicationIndexCronTrigger" />
 				<ref bean="searchUpdateBookmarkIndexCronTrigger" />
-				<!-- <ref bean="searchUpdateGoldStandardPublicationIndexCronTrigger" /> -->
+				<ref bean="searchUpdatePublicationIndexCronTrigger" />
+				<ref bean="searchUpdateGoldStandardBookmarkIndexCronTrigger" />
+				<ref bean="searchUpdateGoldStandardPublicationIndexCronTrigger" />
 				<ref bean="searchGeneratePublicationIndexCronTrigger" />
 				<ref bean="searchGenerateBookmarkIndexCronTrigger" />
 				<ref bean="autoSyncCronTrigger" />

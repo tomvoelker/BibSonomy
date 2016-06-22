@@ -20,7 +20,6 @@
 	<jsp:directive.attribute name="pageOptions" fragment="true" required="false"/>
 	<jsp:directive.attribute name="headerMessageKey" type="java.lang.String" required="false" description="The key of the message to be shown in the heading."/>
 	
-	<!-- FIXME: footerContainer not used -->
 	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false"/>
 
 	<jsp:directive.attribute name="smallBox" type="java.lang.Boolean" required="false" />

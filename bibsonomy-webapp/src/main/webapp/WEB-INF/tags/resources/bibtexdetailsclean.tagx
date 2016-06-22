@@ -23,6 +23,16 @@
 		<script type="text/javascript" src="/resources_puma/javascript/openaccess.js"><!--  --></script>
 	</c:if>
 	
+	<c:choose>
+		<c:when test="${post.resource.entrytype eq 'book'}">
+			<c:set var="itemtype" value="http://schema.org/Book" />
+		</c:when>
+		<c:otherwise>
+			<c:set var="itemtype" value="http://schema.org/ScholarlyArticle" />
+		</c:otherwise>
+	</c:choose>
+	
+	<div itemscope="itemscope" itemtype="${itemtype}">
 	<div class="title">
 		<pub:title post="${post}">
 			<jsp:attribute name="bibActionButtons">
@@ -33,7 +43,7 @@
 		</pub:title>
 	</div>
 	<div style="border-top: 1px #cbcbcb solid; clear:left">
-		<span> </span>
+		<span><!-- keep me --></span>
 	</div> <!-- border -->
 	
 	<c:choose>
@@ -41,7 +51,7 @@
 			| 
 			| if own entry, render a two column layout to display documents on the right side
 			| 
-		   	+-->
+			+-->
 		<c:when test="${isOwnEntry or not empty publication.documents}">
 			<bs:twoColumns columnSizeLeft="8" columnSizeRight="4">
 				<jsp:attribute name="columnLeft">
@@ -105,5 +115,6 @@
 		 	<h4 class="pub-details"><span class="fa fa-quote-right"><!--  --></span><c:out value=" "/><fmt:message key="publications.citations.headline" /></h4>
 			<pub:citation post="${post}"/>
 		</div>
+	</div>
 	</div>
 </jsp:root>

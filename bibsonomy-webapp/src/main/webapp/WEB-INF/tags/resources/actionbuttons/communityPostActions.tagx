@@ -5,29 +5,39 @@
 
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="communityPostExists" type="java.lang.Boolean" required="true" />
 
 	<c:set var="buttonClasses" value="btn btn-default"/>
 
 	<c:if test="${command.context.userLoggedIn}">
 		<div class="btn-group btn-group-sm">
-
-			<buttons:copyPostButton
-				userLoggedIn="${true}"
+			<c:if test="${not command.context.loginUser.spammer}">
+				<c:choose>
+					<c:when test="${not communityPostExists}">
+						<buttons:copyPostButton
+							userLoggedIn="${true}"
+							post="${post}"
+							resourceType="${resourceType}"
+							buttonClasses="${buttonClasses}"
+							titleKey="post.actions.edit.gold.title"
+							forceCommunityCreate="${true}"
+							icon="pencil" />
+					</c:when>
+					<c:otherwise>
+						<buttons:editPostButton
+							post="${post}"
+							resourceType="${resourceType}"
+							buttonClasses="${buttonClasses}"
+							enforceCommunityPost="${true}"/>
+					</c:otherwise>
+				</c:choose>
+			</c:if>
+			
+			<buttons:historyButton
 				post="${post}"
 				resourceType="${resourceType}"
 				buttonClasses="${buttonClasses}"
 				enforceCommunityPost="${true}"/>
-			<c:if test="${not command.context.loginUser.spammer}">
-				<buttons:editPostButton
-					post="${post}"
-					resourceType="${resourceType}"
-					buttonClasses="${buttonClasses}"
-					enforceCommunityPost="${true}"/>
-			</c:if>
-			<buttons:historyButton
-				post="${post}"
-				resourceType="${resourceType}"
-				buttonClasses="${buttonClasses}"/>
 
 		</div>
 	</c:if>

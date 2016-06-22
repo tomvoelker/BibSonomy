@@ -6,6 +6,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:comment="urn:jsptagdir:/WEB-INF/tags/resources/discussion/comment"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
 	xmlns:discussionItem="urn:jsptagdir:/WEB-INF/tags/resources/discussion/discussionItem"
 	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion">
 	
@@ -13,6 +14,7 @@
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
 	<jsp:directive.attribute name="discussionItems" type="java.util.List" required="false" />
 	<jsp:directive.attribute name="postUserName" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="postIsPublic" type="java.lang.Boolean" required="true"/>
 	
 	<!-- create new review / comment for create review / comment form -->
 	<jsp:useBean id="newDate" class="java.util.Date" />
@@ -31,60 +33,60 @@
 	</c:if>
 	
 	<div class="discussion-all">
-		<!-- TODO: use spring security tags -->
-		<c:if test="${command.context.userLoggedIn}">
-			<h4 class="pub-details">
-				<span class="fa fa-comment-o"><!--  --></span>
-				<c:out value=" " />
-				<fmt:message key="post.resource.comment.actions.create" />
-			</h4>
+		<c:if test="${not postIsPublic}">
+			<bs:alert style="danger">
+				<jsp:attribute name="alertBody">
+					<fmt:message key="post.resource.discusssion.warning.goldstandard" />
+				</jsp:attribute>
+			</bs:alert>
 		</c:if>
-
-
-		<c:if test="${not fn:contains(resource['class'].simpleName, 'Bookmark') and resource.entrytype=='preprint' and empty resource.discussionItems}">
+		
+		<c:set var="resourceClass" value="publication" />
+		<c:set var="isBookmark" value="${fn:contains(resource['class'].simpleName, 'Bookmark')}" />
+		<c:if test="${isBookmark}">
+			<c:set var="resourceClass" value="bookmark" />
+		</c:if>
+		<c:if test="${not isBookmark and resource.entrytype=='preprint' and empty resource.discussionItems}">
 			<p class="help-block">
 				<fmt:message key="post.resource.preprint.hint" />
 			</p>
 		</c:if>
-	
+		
 		<!-- The input forms -->
-		<div id="discussion" data-interhash="${resource.interHash}">
-	    	<!-- TODO: use spring security tags -->
-		    <c:if test="${command.context.userLoggedIn}">
-		    	<div id="createReview" class="createReview">
-		    		<review:reviewForm resource="${resource}" userName="${loginUser.name}" postUserName="${postUserName}"/>
-		    		<!-- TODO: add tips for reviewing a resource !--> 
-	    		</div>
-		    	<!-- review and comment forms !-->
-	    		<div id="createComment" class="hidden">
-		    		<review:reviewForm resource="${resource}" userName="${loginUser.name}" postUserName="${postUserName}" type="comment"/>
-		    		<!-- TODO: add tips for reviewing a resource !--> 
-	    		</div>
-	    		<!-- review and comment forms !-->
-	    		<div id="createCommentInstance" class="hidden">
-		    		<review:reviewForm resource="${resource}" userName="${loginUser.name}" postUserName="${postUserName}" type="comment"/>
-		    		<!-- TODO: add tips for reviewing a resource !--> 
-	    		</div>
-
+		<div id="discussion" data-interhash="${resource.interHash}" data-public="${postIsPublic}">
+			<!-- TODO: use spring security tags -->
+			<c:if test="${command.context.userLoggedIn}">
+				<div id="comment-review-info">
+					<p><fmt:message key="discussion.${resourceClass}.reviewCommentInfo" /></p>
+					<div class="text-center">
+						<div class="btn-group">
+							<button class="btn btn-sm btn-default active" data-class="createreview" data-hide-class="createcomment:first"><fmt:message key="discussion.review.create" /></button>
+							<button class="btn btn-sm btn-default" data-class="createcomment:first" data-hide-class="createreview"><fmt:message key="discussion.comment.create" /></button>
+						</div>
+					</div>
+				</div>
+				
+				<review:simpleReviewForm resource="${resource}" postUserName="${postUserName}" userName="${loginUser.name}"/>
 			</c:if>
-
-			<discussionItem:discussionItems discussionItems="${discussionItems}" loginUser="${loginUser}" resource="${resource}" />
+	
+			<discussionItem:subDiscussionItems discussionItems="${discussionItems}" loginUser="${loginUser}" resource="${resource}" postUserName="${postUserName}" />
 		</div>
-
+		
 		<!-- TODO: use spring security tags -->
 		<c:choose>
 			<c:when test="${command.context.userLoggedIn}">
 				<div id="discussionTemplates" class="hidden">
-					<!-- create comment div structure -->
-					<div id="commentTemplate">
-				   		<comment:comment comment="${newComment}" loginUser="${loginUser}" resource="${resource}" schemaOrgMarkUp="false"/>
-					</div>
+					
 					<ul>
-						<!-- create li, div structure for new review -->
-						<li id="newReview">
-							<review:review review="${newReview}" resource="${resource}" loginUser="${loginUser}" schemaOrgMarkUp="false"/>
+						<!-- create comment div structure -->
+						<li id="commentTemplate" class="media comment">
+							<comment:comment comment="${newComment}" loginUser="${loginUser}" resource="${resource}" postUserName="${postUserName}"/>
 						</li>
-		    		</ul>
+						<!-- create li, div structure for new review -->
+						<li id="reviewTemplate" class="media review">
+							<review:review review="${newReview}" resource="${resource}" loginUser="${loginUser}" postUserName="${postUserName}"/>
+						</li>
+					</ul>
 				</div>
 			</c:when>
 			<c:otherwise>
