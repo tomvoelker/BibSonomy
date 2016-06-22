@@ -71,11 +71,7 @@
 	<!--=======================-->
 
 	<jsp:directive.variable name-given="post" scope="NESTED" />
-
-
 		<form id="batchedit" action="/batchEdit" class="form-horizontal" method="POST">
-
-			<!-- POSSIBLE TODO: make command variable nested/tunnel through servlet-actions.xml for both commands -->
 			<input type="hidden" name="updateExistingPost" value="${updateExistingPost}" />  
 			<input type="hidden" name="overwrite" value="${overwrite}" /> 
 			<input type="hidden" name="resourcetype" value="${resourceType}" />
@@ -153,7 +149,7 @@
 				1. add a tag to all posts
 				2. update privacy  -->
 			<table class="table table-striped" style="margin-bottom:0px;">
-				<THEAD>
+				<thead>
 					<tr>
 						<td id="allTags">
 							<fmt:message key="batchedit.selectedTags" />
@@ -162,8 +158,8 @@
 							<fmt:message key="batchedit.viewable" />
 						</td>
 					</tr>
-				</THEAD>
-				<TBODY>
+				</thead>
+				<tbody>
 					<tr>
 						<td style="width:50%; border-right:1px solid #eee">
 							<input type="text" class="form-control" disabled="disabled" name="tags" size="40"/>
@@ -181,7 +177,7 @@
 							<bsform:button size="defaultSize" value="${buttonUpdate}" style="primary" className="batchUpdateButton pull-right" disabled="disabled" type="submit" />
 						</td>
 					</tr>
-				</TBODY>
+				</tbody>
 			</table>
 			
 
@@ -205,9 +201,8 @@
 						</td>
 					</tr>
 				</thead>
-				<tbody class="">
+				<tbody>
 					<c:forEach var="post" items="${listView.list}" varStatus="postCount">
-						<div itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
 						<spring:bind path="command.${resourceType}.list[${postCount.index}].resource.*">
 							<c:set var="postHasError" value="${status.error}" />
 						</spring:bind>
@@ -232,21 +227,20 @@
 											<spring:bind path="command.${resourceType}.list[${postCount.count - 1}].resource.*">
 												<c:forEach var="errorMessage" items="${status.errorMessages}" varStatus="stat">
 													<c:set var="tooltip_msg" value="${stat.first ? '' : tooltip_msg} ${stat.count}. ${errorMessage}" />
-									           	</c:forEach>
-							               	</spring:bind>
-							               
-							               	<spring:bind path="command.${resourceType}.list[${postCount.count - 1}].resource">
+												</c:forEach>
+											</spring:bind>
+											<spring:bind path="command.${resourceType}.list[${postCount.count - 1}].resource">
 												<c:forEach var="errorMessage" items="${status.errorMessages}" varStatus="stat">
 													<c:set var="tooltip_msg" value="${stat.first ? '' : tooltip_msg} ${stat.count}. ${errorMessage}" />
-									           	</c:forEach>
-							               	</spring:bind>
-							               	
-							               	<c:if test="${not empty postsErrorMessages[post.resource.intraHash]}">
+												</c:forEach>
+											</spring:bind>
+											
+											<c:if test="${not empty postsErrorMessages[post.resource.intraHash]}">
 												<c:forEach var="errorMessage" items="${postsErrorMessages[post.resource.intraHash]}" varStatus="stat">
 													<c:set var="tooltip_msg" value="${stat.first ? '' : tooltip_msg} ${stat.count}. ${errorMessage}" />
-									           	</c:forEach>
+												</c:forEach>
 											</c:if>
-																								
+											
 											<td class="chunkybib">
 												<div class="bg-danger" data-toggle="tooltip" data-placement="right" title="${tooltip_msg}">
 													<jsp:invoke fragment="shortPostDescription" />
@@ -254,9 +248,9 @@
 											</td>
 											
 											<td style="text-align:center">
-					                        	<!-- NO TAGS HERE BECAUSE POST HAS ERRORS -->
-					                        	<b class="smalltext"><fmt:message key="error" /></b> 
-					                       	</td>
+												<!-- NO TAGS HERE BECAUSE POST HAS ERRORS -->
+												<b class="smalltext"><fmt:message key="error" /></b>
+											</td>
 										</tr>
 									</c:when>
 									<c:otherwise>
@@ -293,7 +287,6 @@
 																	   disabled="disabled"
 																	   class="form-control"
 																	   autocomplete="off" />
-																<meta itemprop="keywords" content="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
 															<!--  we don't send the old tags, since we must try to update this post in any case  -->
 														</c:when>
 														<c:otherwise>
@@ -308,7 +301,6 @@
 															<input type="hidden" 
 																   name="oldTags['${post.resource.intraHash}']" 
 																   value="${fn:escapeXml(mtl:toTagString(post.tags))}" />
-															<meta itemprop="keywords" content="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
 														</c:otherwise>
 													</c:choose>
 												</spring:bind>
@@ -322,7 +314,6 @@
 								</c:choose>
 							</c:otherwise>
 						</c:choose>
-						</div>
 					</c:forEach>
 					
 					<!-- if there exists some posts which are not owned by the user -->
@@ -334,7 +325,6 @@
 							</div>
 							</tr>
 						<c:forEach var="post" items="${listView.list}" varStatus="postCount">
-							<div itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
 							<c:if test="${post.user.name ne command.context.loginUser.name}">
 								<tr>
 									<td style="text-align: center;">
@@ -362,14 +352,12 @@
 													<!--  the post has no errors on the tags - show the tags -->
 													<input type="text" size="40" value="${fn:escapeXml(mtl:toTagString(post.tags))}"
 														   disabled="disabled" class="form-control" autocomplete="off" />
-													<meta itemprop="keywords" content="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
 												</c:otherwise>
 											</c:choose>
 										</spring:bind>
 									</td>
 								</tr>
 							</c:if>
-							</div>
 						</c:forEach>
 					</c:if>
 				</tbody>
