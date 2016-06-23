@@ -31,11 +31,11 @@
 
 	<!-- HIDDEN SYSTEM TAGS -->
 	
-	<fmt:message var="systemTagsTitle" key="tag.systemTag.hidden.title" />
+	<fmt:message key="tag.systemTag.hidden.title" var="systemTagsTitle"/>
 	<div class="extend hiddenSystemTag pull-left">
 		
 		<a id="system-tags-link-${post.resource.intraHash}${post.user.name}" href="#" class="system-tags-link" style="${empty post.hiddenSystemTags ? 'display: none;' : ''}">
-			<span class="fa fa-asterisk"><!-- KEEP ME --></span>
+			<span class="fa fa-asterisk" title="${systemTagsTitle}"><!-- KEEP ME --></span>
 		</a>&amp;nbsp;
 		
 		<div class="popover popover-dismiss system-tags hide" id="system-tags-${post.resource.intraHash}${post.user.name}">

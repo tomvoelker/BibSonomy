@@ -11,7 +11,10 @@
 	
 	<c:choose>
 		<c:when test="${not empty userList}">
-			<ul class="list-inline community-page-user-list more-list" data-items="7" data-inline="true">
+			<fmt:message key="show.more.users" var="moreMessage">
+				<fmt:param value="${fn:length(userList)}" />
+			</fmt:message>
+			<ul class="list-inline community-page-user-list more-list" data-items="7" data-inline="true" data-message="${moreMessage}">
 				<c:forEach var="user" items="${userList}" varStatus="count">
 					<li>
 						<a title="@${fn:escapeXml(user.name)}" href="/user/${fn:escapeXml(user.name)}" class="thumbnail img-thumbnail img-responsive">

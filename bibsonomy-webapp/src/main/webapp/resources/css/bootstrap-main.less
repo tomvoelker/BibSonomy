@@ -51,10 +51,6 @@ ul.dropdown-menu.list-options > li > span {
 	font-size: inherit;
 }
 
-
-.community-approved {
-	color: @main-color;
-}
 /*
  * Fonts
  */
@@ -170,8 +166,20 @@ a, .btn-link {
 	color: @link-color;
 }
 
-#search ul.dropdown-menu li a {
-	cursor: pointer;
+#search {
+	a.input-info {
+		color: black;
+		float: right;
+		margin-right: 5px;
+		margin-top: -27px;
+		position: relative;
+		z-index: 2;
+		opacity: 0.5;
+	}
+	
+	ul.dropdown-menu li a {
+		cursor: pointer;
+	}
 }
 
 
@@ -1467,4 +1475,9 @@ ul#urlList {
 	top: 0;
 	left: 0;
 	overflow: hidden;
+}
+
+.btn-group-wrap-text {
+	white-space: normal !important;
+	font-size: 12px !important;
 }

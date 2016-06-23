@@ -88,7 +88,7 @@ public class TheLancetScraper extends GenericRISURLScraper {
 	 * @see org.bibsonomy.scraper.generic.RISGenericURLScraper#getRISURL(java.net.URL)
 	 */
 	@Override
-	public String getDownloadURL(URL url) {
+	public String getDownloadURL(URL url, String cookies) {
 		try{
 			final Matcher m = BIBTEX_PATTERN.matcher(url.toString());
 			if (m.find()) {

@@ -109,7 +109,6 @@
 							<c:choose>
 								<c:when test="${isPub}">
 									<c:choose>
-									
 										<c:when test="${isGoldStandard}">
 											<input type="hidden" name="intraHashToUpdate" value="${newestPost.resource.interHash}"/>
 											<div class="title">
@@ -366,5 +365,4 @@
 			</div>
 		</jsp:attribute>
 	</layout:paneLayout>
-
 </jsp:root>

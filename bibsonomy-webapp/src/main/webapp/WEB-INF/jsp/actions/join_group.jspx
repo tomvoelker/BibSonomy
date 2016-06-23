@@ -22,13 +22,7 @@
 		 	| heading
 		 	+-->
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="joinGroup">
-				<jsp:attribute name="pathPart">
-					<li>
-						:: <a href="${relativeUrlGenerator.getGroupUrlByGroupName(command.group)}" itemprop="name"><c:out value='${command.group}'/></a>
-					</li>
-				</jsp:attribute>
-			</parts:search>
+			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
 		</jsp:attribute>
 
 		<!--+

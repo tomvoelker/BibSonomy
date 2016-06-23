@@ -7,7 +7,7 @@
 	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
-    <jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true" />
 	<c:set var="href" value="${otherPostsUrlPrefix}${post.resource.interHash}#discussionbox" />
 	
@@ -25,10 +25,15 @@
 				<c:if test="${post.resource.numberOfRatings eq 0}">
 					<c:set var="href" value="${otherPostsUrlPrefix}${post.resource.interHash}?postOwner=${post.user.name}&amp;amp;intraHash=${post.resource.intraHash}#discussionbox"/>
 				</c:if>
-				<a href="${href}" title="${title}"> 
-					<review:reviewStars rating="${post.resource.rating}" dimension="0.75" />
-				</a>
-				<span class="reviewInfo" itemprop="aggregateRating">(<c:out value="${post.resource.numberOfRatings}" />)</span>
+				<span class="reviewInfo" itemscope="itemscope" itemprop="aggregateRating" itemtype="http://schema.org/AggregateRating">
+					<a href="${href}" title="${title}"> 
+						<review:reviewStars rating="${post.resource.rating}" dimension="0.75" />
+					</a>
+					(<span itemprop="ratingCount" property="ratingCount"><c:out value="${post.resource.numberOfRatings}" /></span>)
+					<meta content="0.0" itemprop="worstRating" />
+					<meta content="5.0" itemprop="bestRating" />
+					<meta content="${post.resource.rating}" itemprop="ratingValue" property="ratingAverage" />
+				</span>
 			</c:if>
 		</div>
 	</h4>
