@@ -40,7 +40,7 @@
 		
 		<jsp:attribute name="tagsAndGroups">
 			<!-- tags -->
-			<post:tagfield containsComma="${command.containsComma}" labelColSpan="3" inputColSpan="9" tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>
+			<post:tagfield groupPost="${postOwner.name eq command.context.loginUser.name}" containsComma="${command.containsComma}" labelColSpan="3" inputColSpan="9" tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>
 			
 			<!-- groups -->
 			<a name="groups"><!--  --></a>

@@ -182,7 +182,9 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		}
 
 		final User loginUser = context.getLoginUser();
-		command.setGroupUser(this.logic.getUserDetails(command.getGroupUser().getName()));
+		if (present(command.getGroupUser())) {
+			command.setGroupUser(this.logic.getUserDetails(command.getGroupUser().getName()));
+		}
 
 		/*
 		 * After having handled the general issues (login, referer, etc.), sub
@@ -752,6 +754,11 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * has changed, we should redirect to the corresponding new page
 		 */
 		if (!present(referer) || referer.matches(".*/postPublication$") || referer.matches(".*/postBookmark$") || referer.contains("/history/")) {
+			// if the userName/postOwner is a group user, we redirect to the
+			// group page instead.
+			if (present(this.logic.getGroupDetails(userName, false))) {
+				return new ExtendedRedirectView(this.urlGenerator.getGroupUrlByGroupName(userName));
+			}
 			return new ExtendedRedirectView(this.urlGenerator.getUserUrlByUserName(userName));
 		}
 
@@ -841,7 +848,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 
 	// FIXME: Check if loginUserName is valid here and we rather would like to
 	// have the postOwner instead!
-	private View finalRedirect(final COMMAND command, final Post<RESOURCE> post, final String loginUserName) {
+	private View finalRedirect(final COMMAND command, final Post<RESOURCE> post, final String postOwnerName) {
 		if (present(command.getSaveAndRate())) {
 			final String ratingUrl = this.urlGenerator.getCommunityRatingUrl(post);
 			return new ExtendedRedirectView(ratingUrl);
@@ -854,7 +861,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(resourcePersonRelation.getPerson().getPersonId()));
 
 		}
-		return this.finalRedirect(loginUserName, post, command.getReferer());
+		return this.finalRedirect(postOwnerName, post, command.getReferer());
 	}
 
 	/**

@@ -103,7 +103,14 @@
 		
 				<div class="col-md-9 col-sm-12 col-xs-12">
 			
-					<h1 class="content-heading"><fmt:message key="post.resource.edit${resourceType}" /></h1>
+					<c:choose>
+						<c:when test="${postOwner ne command.context.loginUser}">
+							<h1 class="content-heading"><fmt:message key="post.resource.editGroup${resourceType}" /></h1>
+						</c:when>
+						<c:otherwise>
+							<h1 class="content-heading"><fmt:message key="post.resource.edit${resourceType}" /></h1>
+						</c:otherwise> 
+					</c:choose>
 					
 					<!--+ 
 		  	          	| show global errors
@@ -114,7 +121,7 @@
 						<div class="row">
 							<div class="alert alert-warning alert-dismissible" role="alert">
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&amp;times;</span></button>
-								You are editing the post of another user!
+								<fmt:message key="post.resource.editGroupPost.warning" />
 							</div>
 						</div>
 					</c:if>
