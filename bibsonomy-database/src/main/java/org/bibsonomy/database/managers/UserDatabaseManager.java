@@ -384,7 +384,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		if (!present(user)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User object isn't present");
 		}
-		if (present(this.getUserDetails(user.getName(), session))) {
+		if (present(this.getUserDetails(user.getName(), session).getName())) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Username is already taken");
 		}
 		user.setApiKey(UserUtils.generateApiKey());
@@ -1269,6 +1269,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return  a list of users with the username
 	 */
+	// FIXME: Why does this return a list?
 	public List<User> getPendingUserByUsername(final String username, final int start, final int end,  final DBSession session) {
 		final UserParam param = new UserParam();
 		param.setOffset(start);
