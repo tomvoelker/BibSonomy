@@ -181,8 +181,6 @@
 		<constructor-arg value="${project.theme}" />
 	</bean>
 	
-	<bean id="helpPage" class="java.lang.String"/>
-	
 	<!-- handles sending of mails  -->
 	<bean id="mailUtils" class="org.bibsonomy.util.MailUtils" scope="singleton">
 		<property name="projectHome" ref="projectHome" />
@@ -734,6 +732,7 @@
 						<property name="allowedFields">
 							<list>
 								<value>helpPage</value>
+								<value>image</value>
 							</list>
 						</property>
 					</bean>
@@ -1012,9 +1011,11 @@
 	</bean>
 	
 	<bean id="helpPageController" class="org.bibsonomy.webapp.controller.HelpPageController" scope="request">
+		<property name="servletInstance" ref="restServletInstance" />
 		<property name="projectName" ref="projectName"/>
 		<property name="projectTheme" ref="projectTheme"/>
 		<property name="requestLogic" ref="requestLogic"/>
+		<property name="urlGenerator" ref="absoluteUrlGenerator" />
 	</bean>
 
 	
