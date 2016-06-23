@@ -84,7 +84,7 @@ public class SimpleFileContentExtractorService implements FileContentExtractorSe
 				});
 				
 				try {
-					return task.get(2 * 60, TimeUnit.SECONDS); // FIXME: change timeout
+					return task.get(30, TimeUnit.SECONDS);
 				} catch (final InterruptedException | ExecutionException | TimeoutException e) {
 					log.debug("could not extract content in time from document " + document.getFileHash());
 					return null;

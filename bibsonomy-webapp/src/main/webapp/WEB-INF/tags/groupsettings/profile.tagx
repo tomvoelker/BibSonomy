@@ -206,7 +206,7 @@
 							</div>
 							
 							<div class="form-group">
-								<div class="col-sm-offset-3 col-sm-9">								
+								<div class="col-sm-offset-3 col-sm-9">
 									<bs:linkButton 
 									title="TITLE" 
 									textKey="settings.generateapikey"
@@ -219,7 +219,7 @@
 							
 						</c:otherwise>
 					</c:choose>
-				</fieldset>				
+				</fieldset>
 				
 				<bsform:fieldset legendKey="settings.group.picture.header">
 					<jsp:attribute name="content">

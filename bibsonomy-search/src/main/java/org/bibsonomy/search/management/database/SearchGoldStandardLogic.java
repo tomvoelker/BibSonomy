@@ -30,6 +30,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.GoldStandardPublication;
 
 /**
+ * TODO: change Generic
  * @author dzo
  */
 public class SearchGoldStandardLogic extends SearchDBLogic<GoldStandardPublication> {

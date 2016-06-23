@@ -57,6 +57,7 @@ public class RelatedUserCommand extends BaseCommand {
 	}
 	
 	/**
+	 * TODO: should be a set as parameter
 	 * @param relatedUsers the relatedUsers to set
 	 */
 	public void setRelatedUsers(final List<User> relatedUsers) {

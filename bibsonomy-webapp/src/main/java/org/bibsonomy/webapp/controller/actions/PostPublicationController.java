@@ -214,7 +214,6 @@ public class PostPublicationController extends AbstractEditPublicationController
 			} else {
 				snippet = urlSnippet.toString().trim();
 			}
-
 		} else if (hasFile) {
 			/*
 			 * The user uploads a BibTeX or EndNote file

@@ -150,7 +150,7 @@ public class SystemTagFactory {
 	/**
 	 * Returns a new instance of the required systemTag
 	 * 
-	 * @param tagName = the tag describing the systemTag e. g. "user" or "days"
+	 * @param tagName the tag describing the systemTag e. g. "user" or "days"
 	 * @return a search system tag
 	 */
 	public SearchSystemTag getSearchSystemTag(final String tagName) {

@@ -44,7 +44,7 @@ public interface PersonLogicInterface {
 	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) throws ResourcePersonAlreadyAssignedException;
 
 	/**
-	 * FIXME: remove database id
+	 * FIXME: remove database id TODO_PERSONS
 	 * removes a resource relation
 	 * @param resourceRelationId
 	 */
@@ -60,7 +60,7 @@ public interface PersonLogicInterface {
 	public Person getPersonById(PersonIdType idType, String id);
 	
 	/**
-	 * FIXME: remove database id
+	 * FIXME: remove database id TODO_PERSONS
 	 * removes a person name from a specific person
 	 * @param personNameId
 	 */

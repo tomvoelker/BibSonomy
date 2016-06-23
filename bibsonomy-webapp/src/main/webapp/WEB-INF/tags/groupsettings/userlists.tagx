@@ -189,7 +189,7 @@
 																	<span class="label label-danger">
 																		<span class="fa fa-remove"><!-- KEEP ME --></span>
 																	</span>
-																</c:otherwise>												
+																</c:otherwise>
 															</c:choose>
 														</td>
 													</c:if>

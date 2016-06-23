@@ -217,6 +217,7 @@ public class DBLogic implements LogicInterface {
 	 * @param loginUser
 	 *        - the user which wants to use the logic.
 	 * @param dbSessionFactory
+	 * @param bibtexReader 
 	 */
 	protected DBLogic(final User loginUser, final DBSessionFactory dbSessionFactory, final BibTexReader bibtexReader) {
 		this.loginUser = loginUser;
@@ -372,7 +373,11 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public List<SynchronizationPost> getSyncPlan(final String userName, final URI service, final Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction) {
-		// TODO: handle resourceType = null
+		// handle resourceType = null
+		if (!present(resourceType)) {
+			throw new IllegalArgumentException("no resourceType was given - abort getSyncPlan()");
+		}
+
 		this.permissionDBManager.ensureWriteAccess(this.loginUser, userName);
 
 		if (!present(strategy)) {
@@ -386,6 +391,12 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = this.openSession();
 		try {
 			final SynchronizationData data = this.syncDBManager.getLastSyncData(userName, service, resourceType, null, session);
+
+			// reject sync if direction BOTH and server hasn't synced before
+			if (SynchronizationDirection.BOTH.equals(direction) && !present(data)) {
+				throw new IllegalStateException("sync request rejected! the server hasn't performed an initial sync in both directions!");
+			}
+
 			/*
 			 * check for a running synchronization
 			 */
@@ -801,7 +812,7 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	private boolean systemTagsAllowResourceType(final Collection<String> tags, final Class<? extends Resource> resourceType) {
+	private static boolean systemTagsAllowResourceType(final Collection<String> tags, final Class<? extends Resource> resourceType) {
 		if (present(tags)) {
 			for (final String tagName : tags) {
 				final SearchSystemTag sysTag = SystemTagsUtil.createSearchSystemTag(tagName);
@@ -1164,8 +1175,9 @@ public class DBLogic implements LogicInterface {
 	 * Check for each group actually exist and if the
 	 * posting user is allowed to post. If yes, insert the correct group ID into
 	 * the given post's groups.
-	 *
+	 * @param user 
 	 * @param groups the groups to validate
+	 * @param session 
 	 */
 	protected void validateGroups(final User user, final Set<Group> groups, final DBSession session) {
 		/*
@@ -3287,6 +3299,7 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
+	@Deprecated
 	@Override
 	public List<Tag> getTagRelation(final int start, final int end, final TagRelation relation, final List<String> tagNames) {
 		// TODO Auto-generated method stub

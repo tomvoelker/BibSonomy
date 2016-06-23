@@ -63,6 +63,4 @@ public interface SystemTag extends Cloneable{
 	 * @return
 	 */
 	public boolean isToHide();
-	
-	//public SystemTag clone();
 }
