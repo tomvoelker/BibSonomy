@@ -51,13 +51,14 @@
 	<fmt:message key="disambiguation.close" var="textClose"/>
 	<fmt:message key="disambiguation.linkJustShowPerson" var="textJustShowPerson"/>
 	
-	<layout:paneLayout pageTitle="${pageTitle} :: ${title}" 
+	<c:set var="title" value="${mtl:cleanBibtex(command.personName)}" />
+	
+	<layout:paneLayout pageTitle="${title}" 
 		headerLogoClass="publications" 
 		command="${command}" 
 		requestedUser="${command.requestedUser}" 
 		requPath="${requPath}"
-		showPageOptions="${true}"
-		minimizedContentWidth="${true}" >
+		showPageOptions="${true}">
 
 		<jsp:attribute name="headerExt">
 			<script type='text/javascript' src='/resources/javascript/disambiguation/linkPerson.js'><!-- keep me --></script>
@@ -89,7 +90,7 @@
 			<fmt:message key="disambiguation.noInfo" var="textNoFurtherInfo"/>
 			
 			<div class="page-header">
-				<h2><c:out value="${mtl:cleanBibtex(command.personName)}"/></h2>
+				<h2><c:out value="${title}"/></h2>
 			</div>
 		
 			<c:if test="${not empty command.post}">

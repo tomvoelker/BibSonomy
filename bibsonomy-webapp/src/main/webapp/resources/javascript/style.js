@@ -403,6 +403,10 @@ $(function() {
 		
 		return false;
 	});
+	
+	autosize($('textarea[data-autosize]'));
+	
+	$('[data-toggle="tooltip"]').tooltip();
 });
 
 function deleteToggleShowDefaultInfo() {

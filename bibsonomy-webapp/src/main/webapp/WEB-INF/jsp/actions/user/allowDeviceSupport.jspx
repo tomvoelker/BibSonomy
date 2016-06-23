@@ -10,7 +10,7 @@
 	
 	<fmt:message key="devicesupport.header" var="pageTitle" />
 	
-	<layout:paneLayout command="${command}" pageTitle="${pageTitle}" requPath="${requPath}" headerMessageKey="devicesupport.header" minimizedContentWidth="${true}">
+	<layout:paneLayout command="${command}" pageTitle="${pageTitle}" requPath="${requPath}" headerMessageKey="devicesupport.header">
 		
 		<jsp:attribute name="heading">
 			<!-- nothing to show -->

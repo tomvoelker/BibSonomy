@@ -241,6 +241,9 @@ public class ElasticsearchIndexGenerator<R extends Resource> {
 	 * @return the progress
 	 */
 	public double getProgress() {
+		if (this.numberOfPosts == 0) {
+			return 0;
+		}
 		return this.writtenPosts / (double) this.numberOfPosts;
 	}
 

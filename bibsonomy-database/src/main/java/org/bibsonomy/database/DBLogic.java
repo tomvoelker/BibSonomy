@@ -3209,7 +3209,7 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	private void prepareComment(final User commentUser, final Set<Group> groups, final DBSession session) {
+	private void prepareDiscussionItem(final User commentUser, final Set<Group> groups, final DBSession session) {
 		this.validateGroups(commentUser, groups, session);
 
 		// transfer to spammer group id's if neccessary
@@ -3217,7 +3217,7 @@ public class DBLogic implements LogicInterface {
 	}
 
 	private <D extends DiscussionItem> void createDiscussionItem(final String interHash, final D discussionItem, final DBSession session) {
-		this.prepareComment(discussionItem.getUser(), discussionItem.getGroups(), session);
+		this.prepareDiscussionItem(discussionItem.getUser(), discussionItem.getGroups(), session);
 		this.getCommentDatabaseManager(discussionItem).createDiscussionItemForResource(interHash, discussionItem, session);
 	}
 
@@ -3242,14 +3242,14 @@ public class DBLogic implements LogicInterface {
 			final User commentUser = this.userDBManager.getUserDetails(username, session);
 			discussionItem.setUser(commentUser);
 
-			this.updateCommentForUser(interHash, discussionItem, session);
+			this.updateDiscussionItemForUser(interHash, discussionItem, session);
 		} finally {
 			session.close();
 		}
 	}
 
-	private <D extends DiscussionItem> void updateCommentForUser(final String interHash, final D discussionItem, final DBSession session) {
-		this.prepareComment(discussionItem.getUser(), discussionItem.getGroups(), session);
+	private <D extends DiscussionItem> void updateDiscussionItemForUser(final String interHash, final D discussionItem, final DBSession session) {
+		this.prepareDiscussionItem(discussionItem.getUser(), discussionItem.getGroups(), session);
 		this.getCommentDatabaseManager(discussionItem).updateDiscussionItemForResource(interHash, discussionItem.getHash(), discussionItem, session);
 	}
 

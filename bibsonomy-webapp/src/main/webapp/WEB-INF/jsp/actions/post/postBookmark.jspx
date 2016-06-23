@@ -23,8 +23,7 @@
 		headerLogoClass="bookmarks"
 		command="${command}"
 		requPath="${requPath}"
-		activeTab="post"
-		minimizedContentWidth="${true}">
+		activeTab="post">
 
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.postBookmark"/>

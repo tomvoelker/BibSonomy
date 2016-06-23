@@ -207,6 +207,7 @@
 				</thead>
 				<tbody class="">
 					<c:forEach var="post" items="${listView.list}" varStatus="postCount">
+					<div itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
 						<input type="hidden" name="posts['${post.resource.intraHash}_${post.user.name}'].intraHash" value="${post.resource.intraHash}" />
 						<input type="hidden" name="posts['${post.resource.intraHash}_${post.user.name}'].postOwner" value="${post.user.name}" />
 						<spring:bind path="command.${resourceType}.list[${postCount.index}].resource.*">
@@ -302,6 +303,7 @@
 																   disabled="disabled"
 																   class="form-control"
 																   autocomplete="off" />
+															<meta itemprop="keywords" content="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
 															<!--  we don't send the old tags, since we must try to update this post in any case  -->
 														</c:when>
 														<c:otherwise>
@@ -316,6 +318,7 @@
 															<input type="hidden" 
 																   name="posts['${post.resource.intraHash}_${post.user.name}'].oldTags" 
 																   value="${fn:escapeXml(mtl:toTagString(post.tags))}" />
+															<meta itemprop="keywords" content="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
 														</c:otherwise>
 													</c:choose>
 												</spring:bind>
@@ -329,6 +332,7 @@
 								</c:choose>
 							</c:otherwise>
 						</c:choose>
+						</div>
 					</c:forEach>
 					
 					<!-- if there exists some posts which are not owned by the user -->
@@ -340,6 +344,7 @@
 							</div>
 							</tr>
 						<c:forEach var="post" items="${listView.list}" varStatus="postCount">
+							<div itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
 							<c:set var="canEdit" value="${post.user.name eq command.context.loginUser.name }" />
 							<c:forEach items="${command.context.loginUser.groups}" var="group">
 								<c:if test="${group.name eq post.user.name }">
@@ -370,17 +375,20 @@
 													<batch:tagErrors errors="${status}" />
 													<input type="text" size="37" value="${fn:escapeXml(mtl:toTagString(post.tags))}"
 														   disabled="disabled" class="form-control" autocomplete="off" />
+													<meta itemprop="keywords" content="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
 												</c:when>
 												<c:otherwise>
 													<!--  the post has no errors on the tags - show the tags -->
 													<input type="text" size="40" value="${fn:escapeXml(mtl:toTagString(post.tags))}"
 														   disabled="disabled" class="form-control" autocomplete="off" />
+													<meta itemprop="keywords" content="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
 												</c:otherwise>
 											</c:choose>
 										</spring:bind>
 									</td>
 								</tr>
 							</c:if>
+							</div>
 						</c:forEach>
 					</c:if>
 				</tbody>

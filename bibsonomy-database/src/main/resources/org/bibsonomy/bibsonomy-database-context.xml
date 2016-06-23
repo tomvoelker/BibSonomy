@@ -264,6 +264,7 @@
 	</bean>
 	
 	<bean id="goldStandardBookmarkDatabaseMananger" class="org.bibsonomy.database.managers.GoldStandardBookmarkDatabaseManager" factory-method="getInstance">
+		<property name="search" ref="goldStandardBookmarkSearch" />
 		<property name="chain" ref="goldStandardBookmarkChain" />
 	</bean>
 	

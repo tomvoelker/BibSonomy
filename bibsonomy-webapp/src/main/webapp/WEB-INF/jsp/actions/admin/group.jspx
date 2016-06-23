@@ -1,29 +1,28 @@
 <?xml version="1.0" ?>
 <jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
-		  xmlns:jsp="http://java.sun.com/JSP/Page"
-		  xmlns:c="http://java.sun.com/jsp/jstl/core"
-		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-		  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-		  xmlns:tags="urn:jsptagdir:/WEB-INF/tags/users"
-		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-		  xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
-		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-		  xmlns:form="http://www.springframework.org/tags/form"
-		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
-		  xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
-		  xmlns:spring="urn:http://www.springframework.org/tags"
-		  xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
-		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/users"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
+	xmlns:spring="urn:http://www.springframework.org/tags"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<fmt:message key="navi.admin" var="adminPageTitle" />
 
 	<layout:layout 
-		pageTitle="${adminPageTitle} :: Group" 
+		pageTitle="${adminPageTitle} | Group" 
 		loginUser="${command.context.loginUser}" 
-		requPath="${requPath}"
-		minimizedContentWidth="${true}">
+		requPath="${requPath}">
 
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
@@ -33,16 +32,9 @@
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
-
-		<!-- TODO: is this present anywhere? Do we still need that? -->
+		
 		<jsp:attribute name="heading">
-			<parts:search pathMessageKey="navi.admin">
-				<jsp:attribute name="pathPart">
-					<li>
-						:: <a rel="path_menu" href="${relativeUrlGenerator.getAdminUrlByName('group')}">Group</a>
-					</li>
-				</jsp:attribute>
-			</parts:search>
+			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
 		</jsp:attribute>
 
 		<jsp:attribute name="headerExt">

@@ -266,7 +266,6 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 				final SearchHits hits = response.getHits();
 				postList.setTotalCount((int) hits.getTotalHits());
 				
-				
 				log.debug("Current Search results for '" + searchTerms + "': " + response.getHits().getTotalHits());
 				for (final SearchHit hit : hits) {
 					final Post<R> post = this.resourceConverter.convert(hit.getSource(), allowedUsers);

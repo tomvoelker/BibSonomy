@@ -16,9 +16,7 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<c:set var="requestedAuthor" value="${command.requestedAuthor}" />
-	<fmt:message key="navi.author" var="authorPageTitle" />
-	<c:set var="pageTitle" value="${authorPageTitle} :: ${requestedAuthor}" />
-	<layout:resourceLayout pageTitle="${pageTitle}" command="${command}" requPath="${requPath}" disableResourcetypeSelection="${true}" minimizedContentWidth="${true}" headline="${pageTitle}">
+	<layout:resourceLayout pageTitle="${requestedAuthor}" command="${command}" requPath="${requPath}" disableResourcetypeSelection="${true}">
 		
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>

@@ -74,7 +74,7 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 		post.setChangeDate(parseDate(source, Fields.CHANGE_DATE));
 		final String userName = (String) source.get(Fields.USER_NAME);
 		final boolean loadDocuments = allowdUsersForDoc.contains(userName);
-		post.setUser(new User(userName));
+		fillUser(post, userName);
 		post.setDescription((String) source.get(Fields.DESCRIPTION));
 		
 		post.setGroups(convertToGroups((List<String>) source.get(Fields.GROUPS)));
@@ -93,6 +93,14 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 		
 		post.setResource(resource);
 		return post;
+	}
+
+	/**
+	 * @param post
+	 * @param userName
+	 */
+	protected void fillUser(final Post<R> post, final String userName) {
+		post.setUser(new User(userName));
 	}
 	
 	/**
@@ -171,7 +179,7 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 		
 		jsonDocument.put(Fields.DESCRIPTION, post.getDescription());
 		
-		jsonDocument.put(Fields.USER_NAME, post.getUser().getName());
+		fillIndexDocumentUser(post, jsonDocument);
 		
 		jsonDocument.put(Fields.GROUPS, convertGroups(post.getGroups()));
 		
@@ -181,6 +189,14 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 		this.convertResourceInternal(jsonDocument, post.getResource());
 		this.convertPostInternal(post, jsonDocument);
 		return jsonDocument;
+	}
+
+	/**
+	 * @param post
+	 * @param jsonDocument
+	 */
+	protected void fillIndexDocumentUser(final Post<R> post, final Map<String, Object> jsonDocument) {
+		jsonDocument.put(Fields.USER_NAME, post.getUser().getName());
 	}
 
 	/**
