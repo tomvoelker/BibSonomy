@@ -483,8 +483,6 @@
 								<value>ckey</value>
 								<value>tags</value>
 								<value>posts[*].checked</value>
-								<value>posts[*].intraHash</value>
-								<value>posts[*].postOwner</value>
 								<value>posts[*].newTags</value>
 								<value>posts[*].oldTags</value>
 								<value>action</value>
