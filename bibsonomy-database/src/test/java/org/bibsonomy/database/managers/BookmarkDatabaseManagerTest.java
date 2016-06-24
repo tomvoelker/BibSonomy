@@ -612,14 +612,15 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 		assertFalse(delete); // testuser2 cannot delete this posts, the owner is testuser2
 
 		// now try it with testuser1
-		final boolean delete2 = bookmarkDb.deletePost(TESTUSER1_NAME, intraHash, null, this.dbSession);
+		final boolean delete2 = bookmarkDb.deletePost(TESTUSER1_NAME, intraHash, new User(TESTUSER1_NAME), this.dbSession);
 		assertTrue(delete2);
 
 		final List<Post<Bookmark>> post2 = bookmarkDb.getPostsByHash(null, intraHash, HashID.INTRA_HASH, PUBLIC_GROUP_ID, null, 10, 0, this.dbSession);
 		assertEquals(0, post2.size());
 		
 		// recreate the deleted post
-		bookmarkDb.createPost(post.get(0), null, this.dbSession);
+		Post<Bookmark> deletedPost = post.get(0);
+		bookmarkDb.createPost(deletedPost, deletedPost.getUser(), this.dbSession);
 	}
 
 	/**
