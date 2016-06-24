@@ -225,7 +225,8 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 			refPosts.add(bibtexPost);
 			publicationDatabaseManager.createPost(bibtexPost, null, this.dbSession);
 			// delete test post
-			publicationDatabaseManager.deletePost(bibtexPost.getUser().getName(), bibtexPost.getResource().getIntraHash(), null, this.dbSession);
+			final User user = bibtexPost.getUser();
+			publicationDatabaseManager.deletePost(user.getName(), bibtexPost.getResource().getIntraHash(), user, this.dbSession);
 		}
 		// retrieve posts
 		final List<Integer> posts = searchBibTexLogic.getContentIdsToDelete(new Date(fromDate-QUERY_TIME_OFFSET_MS));
