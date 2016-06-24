@@ -72,7 +72,6 @@ import org.bibsonomy.database.systemstags.executable.ExecutableSystemTag;
 import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.database.validation.DatabaseModelValidator;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -1457,13 +1456,11 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	@Override
 	public boolean updatePost(final Post<R> post, final String oldHash, final User loginUser, final PostUpdateOperation operation, final DBSession session) {
 		final String postOwner = post.getUser().getName();
-		if (loginUser == null) {
-			throw new IllegalArgumentException("no loggedin user");
-		}
 		String executingUser = loginUser.getName();
 
 		// If the post owner is a group where the executingUser is an moderator
 		// or higher, we fake updating the post as the post owner (= group user)
+		// TODO: more efficient: we know the group name!
 		final List<Group> executingUserGroups = this.groupDb.getGroupsForUser(executingUser, session);
 		for (final Group g : executingUserGroups) {
 			if (g.getName().equals(postOwner)) {
@@ -2118,29 +2115,25 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 */
 	protected abstract void onPostMassUpdate(String username, int groupId, DBSession session);
 
-	private boolean logUpdate(final Post<R> post, final int oldContentId, final User loginUser, final DBSession session) {
-		final LoggingParam param = new LoggingParam();
-		param.setOldContentId(oldContentId);
-		param.setNewContentId(post.getContentId());
-		param.setPostOwner(post.getUser());
-		param.setPostEditor(loginUser);
-		param.setDate(new Date());
-		param.setContentType(post.getResource() instanceof Bookmark ? 1 : 2);
-
+	private void logUpdate(final Post<R> post, final int oldContentId, final User loginUser, final DBSession session) {
+		final LoggingParam param = createParam(post.getContentId(), oldContentId, loginUser, post.getUser(), post.getResource().getClass());
 		this.insert("logPostUpdate", param, session);
-		return true;
 	}
-
-	private boolean logDelete(final User owner, final int oldContentId, final R resource, final User loginUser, final DBSession session) {
+	
+	private static LoggingParam createParam(int newContentId, int oldContentid, User editor, User postOwner, Class<? extends Resource> clazz) {
 		final LoggingParam param = new LoggingParam();
-		param.setOldContentId(oldContentId);
-		param.setNewContentId(-1);
-		param.setPostOwner(owner);
-		param.setPostEditor(loginUser);
+		param.setOldContentId(oldContentid);
+		param.setNewContentId(newContentId);
+		param.setPostOwner(postOwner);
+		param.setPostEditor(editor);
 		param.setDate(new Date());
-		param.setContentType(resource instanceof Bookmark ? 1 : 2);
-
+		param.setContentType(ConstantID.getContentTypeByClass(clazz).getId());
+		return param;
+	}
+	
+	// TODO: adapt method signature
+	private void logDelete(final User owner, final int oldContentId, final R resource, final User loginUser, final DBSession session) {
+		final LoggingParam param = createParam(-1, oldContentId, loginUser, owner, resource.getClass());
 		this.insert("logPostUpdate", param, session);
-		return true;
 	}
 }

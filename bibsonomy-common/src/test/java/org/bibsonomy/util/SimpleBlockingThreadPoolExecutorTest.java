@@ -39,7 +39,7 @@ import org.junit.Test;
  */
 public class SimpleBlockingThreadPoolExecutorTest {
 	private static final int SLEEP_MILLIS = 50;
-
+	
 	@Test
 	public void testWaitingTaskQueue() throws InterruptedException {
 		final Semaphore sem1 = new Semaphore(0);
@@ -59,7 +59,7 @@ public class SimpleBlockingThreadPoolExecutorTest {
 				return null;
 			}
 		});
-
+		
 		// wait until thread started
 		sem1.acquire();
 		Assert.assertEquals(0, executor.getWaitingTasks().size());
@@ -75,7 +75,7 @@ public class SimpleBlockingThreadPoolExecutorTest {
 		Assert.assertEquals(0, executor.getRunningTasks().size());
 		executor.shutdownNow();
 	}
-
+	
 	/**
 	 * checks times to find out whether the task submission is blocked correctly
 	 */
@@ -138,9 +138,9 @@ public class SimpleBlockingThreadPoolExecutorTest {
 		}
 		this.assertNonParallel(startTimes, endTimes);
 
-		Assert.assertTrue(submissionTimes[1] - submissionTimes[0] < SLEEP_MILLIS * 1000 * 1000);
-		Assert.assertTrue(submissionTimes[2] - timeBefore > SLEEP_MILLIS * 1000 * 1000); // first finished, second in execution -> third can be submitted
-		Assert.assertTrue(submissionTimes[3] - timeBefore > 2 * SLEEP_MILLIS * 1000 * 1000); // first and second finished, third in execution -> fourth can be submitted
+		Assert.assertTrue((submissionTimes[1] - submissionTimes[0]) < SLEEP_MILLIS * 1000 * 1000);
+		Assert.assertTrue((submissionTimes[2] - timeBefore) > SLEEP_MILLIS * 1000 * 1000); // first finished, second in execution -> third can be submitted
+		Assert.assertTrue((submissionTimes[3] - timeBefore) > 2 * SLEEP_MILLIS * 1000 * 1000); // first and second finished, third in execution -> fourth can be submitted
 		Assert.assertTrue((submissionTimes[3] - submissionTimes[2]) < SLEEP_MILLIS * 1100 * 1000);
 		this.assertBlockingOfTaskSubmission(submissionTimes);
 		executor.shutdownNow();
@@ -156,7 +156,7 @@ public class SimpleBlockingThreadPoolExecutorTest {
 
 	private void assertBlockingOfTaskSubmission(final long[] submissionTimes) {
 		// one task in execution, one in the queue so submission should block after the second submission
-		Assert.assertTrue(submissionTimes[1] - submissionTimes[0] < submissionTimes[2] - submissionTimes[1]);
-		Assert.assertTrue(submissionTimes[2] - submissionTimes[1] > SLEEP_MILLIS * 1000 * 1000);
+		Assert.assertTrue((submissionTimes[1] - submissionTimes[0]) < (submissionTimes[2] - submissionTimes[1]));
+		Assert.assertTrue((submissionTimes[2] - submissionTimes[1]) > SLEEP_MILLIS * 1000 * 1000);
 	}
 }
