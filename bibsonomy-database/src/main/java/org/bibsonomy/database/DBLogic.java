@@ -1707,7 +1707,9 @@ public class DBLogic implements LogicInterface {
 		if (post.getUser().equals(this.loginUser)) {
 			PostUtils.setGroupIds(post, this.loginUser, null);
 		} else {
-			PostUtils.setGroupIds(post, this.loginUser, this.getGroupDetails(post.getUser().getName(), false));
+			final String postUserName = post.getUser().getName();
+			final User groupUserDetails = this.userDBManager.getUserDetails(postUserName, session);
+			PostUtils.setGroupIds(post, groupUserDetails, this.getGroupDetails(postUserName, false));
 		}
 
 		/*
@@ -1715,7 +1717,6 @@ public class DBLogic implements LogicInterface {
 		 * is UPDATE_URLS then create/delete the url right here and return the
 		 * intra hash.
 		 */
-
 		if (PostUpdateOperation.UPDATE_URLS_ADD.equals(operation)) {
 			log.debug("Adding URL in updatePost()/DBLogic.java");
 			final BibTexExtra resourceExtra = ((BibTex) post.getResource()).getExtraUrls().get(0);
