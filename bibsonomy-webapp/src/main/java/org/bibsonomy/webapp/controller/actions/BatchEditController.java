@@ -386,7 +386,6 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				 * check its tags
 				 */
 				try {
-					TagUtils.parse(markedPost.getValue().getOldTags());
 					final Set<Tag> newTags = new TreeSet<Tag>();
 					// the following 'if' is for indirect mode, in which
 					// both updates can be done at the same time.
