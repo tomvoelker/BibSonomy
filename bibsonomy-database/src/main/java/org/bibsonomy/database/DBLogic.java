@@ -1129,14 +1129,9 @@ public class DBLogic implements LogicInterface {
 		 * check permissions
 		 */
 		this.ensureLoggedIn();
-		/*
-		 * TODO: we do not know anything about the hashes (do they belong to bookmarks,
-		 * and/or publication, community post)
-		 * so the only way to check if the user is allowed to delete the post
-		 * is to check if he/she is an admin or self, for group editing we need to know
-		 * which resource is behind the resource hash
-		 */
-		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
+
+		this.permissionDBManager.ensureIsAdminOrSelfOrHasGroupRoleOrHigher(this.loginUser, userName, GroupRole.MODERATOR);
+
 		/*
 		 * to store hashes of missing resources
 		 */
@@ -1153,7 +1148,7 @@ public class DBLogic implements LogicInterface {
 				// TODO would be nice to know about the resourcetype or the
 				// instance behind this resourceHash
 				for (final CrudableContent<? extends Resource, ? extends GenericParam> man : this.allDatabaseManagers.values()) {
-					if (man.deletePost(lowerCaseUserName, resourceHash, session)) {
+					if (man.deletePost(lowerCaseUserName, resourceHash, null, session)) {
 						resourceFound = true;
 						break;
 					}
@@ -1617,6 +1612,7 @@ public class DBLogic implements LogicInterface {
 		if (Role.SYNC.equals(this.loginUser.getRole())) {
 			validateGroupsForSynchronization(post);
 		}
+
 		this.validateGroups(post.getUser(), post.getGroups(), session);
 
 		PostUtils.limitedUserModification(post, this.loginUser);
@@ -1625,7 +1621,7 @@ public class DBLogic implements LogicInterface {
 		 */
 		PostUtils.setGroupIds(post, this.loginUser);
 
-		manager.createPost(post, session);
+		manager.createPost(post, this.loginUser, session);
 
 		// if we don't get an exception here, we assume the resource has
 		// been successfully created
@@ -1697,25 +1693,30 @@ public class DBLogic implements LogicInterface {
 	private <T extends Resource> String updatePost(final Post<T> post, final PostUpdateOperation operation, final DBSession session) {
 		final CrudableContent<T, GenericParam> manager = this.getFittingDatabaseManager(post);
 		final String oldIntraHash = post.getResource().getIntraHash();
-
+		
 		if (Role.SYNC.equals(this.loginUser.getRole())) {
 			validateGroupsForSynchronization(post);
 		}
 		this.validateGroups(post.getUser(), post.getGroups(), session);
-
+		
 		PostUtils.limitedUserModification(post, this.loginUser);
+		
 		/*
 		 * change group IDs to spam group IDs
 		 */
-		PostUtils.setGroupIds(post, this.loginUser);
+		if (post.getUser().equals(this.loginUser)) {
+			PostUtils.setGroupIds(post, this.loginUser);
+		} else {
+			final String postUserName = post.getUser().getName();
+			final User groupUserDetails = this.userDBManager.getUserDetails(postUserName, session);
+			PostUtils.setGroupIds(post, groupUserDetails);
+		}
 
 		/*
-		 * XXX: this is a "hack" and will be replaced any time
-		 * If the operation is UPDATE_URLS then create/delete the url right here
-		 * and
-		 * return the intra hash.
+		 * XXX: this is a "hack" and will be replaced any time If the operation
+		 * is UPDATE_URLS then create/delete the url right here and return the
+		 * intra hash.
 		 */
-
 		if (PostUpdateOperation.UPDATE_URLS_ADD.equals(operation)) {
 			log.debug("Adding URL in updatePost()/DBLogic.java");
 			final BibTexExtra resourceExtra = ((BibTex) post.getResource()).getExtraUrls().get(0);
@@ -1736,11 +1737,12 @@ public class DBLogic implements LogicInterface {
 
 		/*
 		 * update post
+		 *
+		 * if we don't get an exception here, we assume the resource has been
+		 * successfully updated
 		 */
-		manager.updatePost(post, oldIntraHash, operation, session, this.loginUser);
+		manager.updatePost(post, oldIntraHash, this.loginUser, operation, session);
 
-		// if we don't get an exception here, we assume the resource has
-		// been successfully updated
 		return post.getResource().getIntraHash();
 	}
 

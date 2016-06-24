@@ -25,7 +25,26 @@
 	</c:choose>
 
 	<div class="edit-media-buttons btn-group btn-group-xs dropdown dropdown-align-right">
-		<!-- edit/delete -->
+				
+		<!-- edit group entry -->
+		<c:set var="editGroupPost" value="false"/>
+		<c:forEach items="${command.context.loginUser.groups}" var="group">
+			<c:if test="${group.name eq post.user.name}">
+				<c:forEach items="${group.memberships}" var="g">
+					<c:if test="${g.groupRole eq 'MODERATOR' || g.groupRole eq 'ADMINISTRATOR' }">
+						<c:set var="editGroupPost" value="true"/>
+					</c:if>
+				</c:forEach>
+			</c:if>
+		</c:forEach>					
+		<c:if test="${editGroupPost}">
+			<buttons:editGroupPostButton
+				post ="${post}" 
+				resourceType="${resourceType}"
+				buttonClasses="${buttonClasses}"/>
+		</c:if>
+				
+		<!-- edit/copy -->
 		<c:choose>
 			<c:when test="${command.context.userLoggedIn and (loginUserName eq post.user.name) and not isRemotePost}">
 				<buttons:editPostButton

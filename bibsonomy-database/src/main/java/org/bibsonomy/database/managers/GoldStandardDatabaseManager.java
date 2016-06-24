@@ -58,23 +58,23 @@ import org.bibsonomy.util.ReflectionUtils;
 
 /**
  * Used to create, read, update and delete gold standard posts from the database
- * 
+ *
  * @param <RR> the resource class of the reference class of <R>
  * @param <R> the resource class that is managed by this class
- * @param <P> 
- * 
+ * @param <P>
+ *
  * @author dzo
  */
 public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends Resource & GoldStandard<RR>, P extends ResourceParam<RR>> extends AbstractDatabaseManager implements CrudableContent<R, P> {
 	private static final Log log = LogFactory.getLog(GoldStandardDatabaseManager.class);
-	
+
 	/** simple class name of the resource managed by the class */
 	protected final String resourceClassName;
-	
+
 	protected final DatabasePluginRegistry plugins;
-	
+
 	private final GeneralDatabaseManager generalManager;
-	
+
 	private ResourceSearch<R> search;
 
 	private Chain<List<Post<R>>, P> chain;
@@ -82,22 +82,22 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	protected GoldStandardDatabaseManager() {
 		this.resourceClassName = this.getResourceClassName();
 		this.plugins = DatabasePluginRegistry.getInstance();
-		
+
 		this.generalManager = GeneralDatabaseManager.getInstance();
 	}
-	
+
 	/**
 	 * @return the searcher
 	 */
 	public ResourceSearch<R> getSearch() {
-	    return this.search;
+		return this.search;
 	}
 
 	/**
 	 * @param search the search to set
 	 */
 	public void setSearch(final ResourceSearch<R> search) {
-	    this.search = search;
+		this.search = search;
 	}
 
 	/**
@@ -106,16 +106,16 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	protected String getResourceClassName() {
 		return ReflectionUtils.getActualClassArguments(this.getClass()).get(1).getSimpleName();
 	}
-	
+
 	@Override
 	public Post<R> getPostDetails(final String loginUserName, final String resourceHash, final String userName, final List<Integer> visibleGroupIDs, final DBSession session) {
 		if (present(userName)) {
 			return null; // TODO: think about this return
 
 		}
-		
+
 		final Post<R> post = this.getGoldStandardPostByHash(resourceHash, session);
-		
+
 		if (present(post)) {
 			final R goldStandard = post.getResource();
 			/*
@@ -128,7 +128,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 		} else {
 			log.debug("gold standard post with interhash '" + resourceHash + "' not found.");
 		}
-		
+
 		return post;
 	}
 
@@ -143,14 +143,14 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 		param.setHash(resourceHash);
 		return param;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	protected Set<RR> getRefencedByForPost(final String resourceHash, final DBSession session) {
 		final P param = this.createResourceParam(resourceHash);
 		param.setRelation(GoldStandardRelation.REFERENCE);
 		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardRelatedBy", param, session));
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	protected Set<RR> getReferencePartOfThisPublication(final String resourceHash, final DBSession session) {
 		final P param = this.createResourceParam(resourceHash);
@@ -164,14 +164,14 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 		param.setRelation(GoldStandardRelation.PART_OF);
 		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardRelated", param, session));
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	protected Set<RR> getReferencesForPost(final String interHash, final DBSession session) {
 		final P param = this.createResourceParam(interHash);
 		param.setRelation(GoldStandardRelation.REFERENCE);
 		return new HashSet<RR>((Collection<? extends RR>) this.queryForList("getGoldStandardRelated", param, session));
 	}
-	
+
 	@Override
 	public List<Post<R>> getPosts(final P param, final DBSession session) {
 		return this.chain.perform(param, session);
@@ -185,13 +185,13 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	}
 
 	@Override
-	public boolean createPost(final Post<R> post, final DBSession session) {
+	public boolean createPost(final Post<R> post, User loggedinUser, final DBSession session) {
 		session.beginTransaction();
 		try {
 			final String resourceHash = post.getResource().getInterHash();
-			
+
 			final Post<R> newPostInDB = this.getGoldStandardPostByHash(resourceHash, session);
-			
+
 			if (present(newPostInDB)) {
 				log.debug("gold stanard post with hash \"" + resourceHash + "\" already exists in DB");
 				final ErrorMessage errorMessage = new DuplicatePostErrorMessage(this.resourceClassName, resourceHash);
@@ -199,17 +199,17 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 				session.commitTransaction();
 				return false;
 			}
-			
+
 			post.setContentId(this.generalManager.getNewId(ConstantID.IDS_CONTENT_ID, session));
-			
+
 			this.onGoldStandardCreate(resourceHash, session);
 			this.insertPost(post, session);
-			
+
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
 		}
-		
+
 		return true;
 	}
 
@@ -218,7 +218,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 		this.insert("insert" + this.resourceClassName, insertParam, session);
 	}
 
-	
+
 	@SuppressWarnings("unchecked") // XXX: java generics :(
 	protected P getInsertParam(final Post<R> post) {
 		final P insert = this.createNewParam();
@@ -227,27 +227,27 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 		insert.setDescription(post.getDescription());
 		insert.setDate(post.getDate());
 		insert.setRequestedContentId(post.getContentId().intValue());
-		insert.setUserName((present(post.getUser()) ? post.getUser().getName() : ""));
+		insert.setUserName(present(post.getUser()) ? post.getUser().getName() : "");
 		insert.setGroupId(GroupID.PUBLIC); // gold standards are public
 		insert.setApproved(post.getApproved());
-		
+
 		return insert;
 	}
-	
+
 	// TODO: remove method!
 	protected abstract P createNewParam();
-	
+
 	@Override
-	public boolean updatePost(final Post<R> post, final String oldHash, final PostUpdateOperation operation, final DBSession session, final User loginUser) {
+	public boolean updatePost(final Post<R> post, final String oldHash, final User loginUser, final PostUpdateOperation operation, final DBSession session) {
 		session.beginTransaction();
 		try {
-			
+
 			/*
 			 * the current interhash of the resource
 			 */
 			final R resource = post.getResource();
 			resource.recalculateHashes();
-			
+
 			final String resourceHash = resource.getInterHash();
 			/*
 			 * the resource with the "old" interhash, that was sent
@@ -269,100 +269,100 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 					session.addError(hash, errorMessage);
 					log.warn("Added UpdatePostErrorMessage for post " + post.getResource().getIntraHash());
 					session.commitTransaction();
-					
+
 					return false;
 				}
 			} else {
 				throw new IllegalArgumentException("Could not update standard post: no interhash specified.");
 			}
-			
+
 			/*
-			 * check for possible duplicates 
+			 * check for possible duplicates
 			 */
 			final Post<R> newPostInDB = this.getGoldStandardPostByHash(resourceHash, session);
-			
-			if (present(newPostInDB) && !(oldHash.equals(resourceHash))) {
+
+			if (present(newPostInDB) && !oldHash.equals(resourceHash)) {
 				log.debug("gold stanard post with hash \"" + resourceHash + "\" already exists in DB");
 				final ErrorMessage errorMessage = new DuplicatePostErrorMessage(this.resourceClassName, resourceHash);
 				session.addError(resourceHash, errorMessage);
-				
+
 				session.commitTransaction();
-				
+
 				return false;
 			}
-			
+
 			final int newContentId = this.generalManager.getNewId(ConstantID.IDS_CONTENT_ID, session).intValue();
 			post.setContentId(Integer.valueOf(newContentId));
-			
+
 			// first log the gold standard
 			this.onGoldStandardUpdate(oldPost.getContentId().intValue(), newContentId, oldHash, resourceHash, session); // logs
-																														// old
-																														// post
-																														// and
-																														// updates
-																														// reference
-																														// table
+			// old
+			// post
+			// and
+			// updates
+			// reference
+			// table
 			// than you can delete it
 			this.deletePost(oldHash, true, session);
 			// and add a new one
 			this.insertPost(post, session);
-			
+
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
 		}
 		return true;
 	}
-	
+
 	@Override
-	public boolean deletePost(final String userName, final String resourceHash, final DBSession session) {
+	public boolean deletePost(final String userName, final String resourceHash, User loggedinUser, final DBSession session) {
 		if (present(userName)) {
 			return false;
 		}
 		return this.deletePost(resourceHash, false, session);
 	}
-	
+
 	protected boolean deletePost(final String resourceHash, final boolean update, final DBSession session) {
 		session.beginTransaction();
 		try {
 			final Post<R> post = this.getGoldStandardPostByHash(resourceHash, session);
-			
+
 			if (!present(post)) {
 				log.debug("gold stanard post with hash \"" + resourceHash + "\" not found");
 				return false;
 			}
-			
+
 			if (!update) {
 				this.onGoldStandardDelete(resourceHash, session);
 			}
-			
+
 			final P param = this.createNewParam();
 			param.setHash(resourceHash);
-			
+
 			this.delete("deleteGoldStandard", param, session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
 		}
-		
+
 		return true;
 	}
-	
+
 	protected GoldStandardReferenceParam createParam(final Post<R> post) {
 		final GoldStandardReferenceParam param = new GoldStandardReferenceParam();
 		param.setHash(post.getResource().getInterHash());
 		param.setUsername(post.getUser().getName());
-		
+
 		return param;
 	}
-	
+
 	/**
 	 * adds references to a standard post
-	 * 
+	 *
 	 * @param userName TODO: currently unused
 	 * @param interHash
 	 * @param references
-	 * @param relation 
+	 * @param relation
 	 * @param session
 	 */
 	public void addRelationsToPost(final String userName, final String interHash, final Set<String> references, final GoldStandardRelation relation, final DBSession session) {
@@ -373,7 +373,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 				log.debug("gold standard post with interhash '" + interHash + "'  not found");
 				throw new ObjectNotFoundException(interHash);
 			}
-			
+
 			final GoldStandardReferenceParam param = this.createParam(post);
 			if (present(references)) {
 				// TODO: A <-> A references and duplicate references
@@ -392,16 +392,16 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 		} finally {
 			session.endTransaction();
 		}
-		
+
 	}
-	
+
 	/**
 	 * removes references from a standard post
-	 * 
+	 *
 	 * @param userName
 	 * @param interHash
 	 * @param references
-	 * @param relation 
+	 * @param relation
 	 * @param session
 	 */
 	public void removeRelationsFromPost(final String userName, final String interHash, final Set<String> references, final GoldStandardRelation relation, final DBSession session) {
@@ -412,7 +412,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 				log.debug("gold standard post with interhash '" + interHash + "'  not found");
 				return;
 			}
-			
+
 			final GoldStandardReferenceParam param = this.createParam(post);
 			if (present(references)) {
 				for (final String referenceHash : references) {
@@ -427,13 +427,13 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 					}
 				}
 			}
-			
+
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
 		}
 	}
-	
+
 	private void onGoldStandardCreate(final String resourceHash, final DBSession session) {
 		this.plugins.onGoldStandardCreate(resourceHash, session);
 	}
@@ -441,13 +441,13 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	private void onGoldStandardUpdate(final int oldContentId, final int newContentId, final String oldHash, final String newResourceHash, final DBSession session) {
 		this.plugins.onGoldStandardUpdate(oldContentId, newContentId, newResourceHash, oldHash, session);
 	}
-	
+
 	private void onGoldStandardDelete(final String resourceHash, final DBSession session) {
 		this.plugins.onGoldStandardDelete(resourceHash, session);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param userName
 	 * @param interHash
 	 * @param interHashRef

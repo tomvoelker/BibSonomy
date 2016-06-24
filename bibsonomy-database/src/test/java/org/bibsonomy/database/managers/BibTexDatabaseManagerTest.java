@@ -838,7 +838,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		
 		final String bibtexHashForUpdate = "14143c6508fe645ca312d0aa5d0e791b"; // INTRA-hash of toInsert
 
-		publicationDb.createPost(toInsert, this.dbSession);
+		publicationDb.createPost(toInsert, null, this.dbSession);
 		
 		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { "tag1", "tag2" }), "", null, 0, 50, null, null, null, null, toInsert.getUser());
 		param.setSimHash(HashID.INTRA_HASH);
@@ -859,7 +859,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		this.postDuplicate(bibtexHashForUpdate);
 		assertTrue(this.pluginMock.isOnBibTexUpdate());
 		
-		publicationDb.deletePost(toInsert.getUser().getName(), toInsert.getResource().getIntraHash(), this.dbSession);
+		publicationDb.deletePost(toInsert.getUser().getName(), toInsert.getResource().getIntraHash(), null, this.dbSession);
 	}
 	
 	/**
@@ -880,7 +880,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		} catch (final PersonListParserException ex) {
 			fail("got exception: " + ex.getMessage());
 		}
-		publicationDb.createPost(toInsert, this.dbSession);
+		publicationDb.createPost(toInsert, null, this.dbSession);
 		
 		// delete public post		
 		final String username = "testuser1";
@@ -891,7 +891,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		assertNotNull(posts);
 		assertEquals(1, posts.size());
 		
-		boolean succ = publicationDb.deletePost(username, hash, this.dbSession);
+		boolean succ = publicationDb.deletePost(username, hash, null, this.dbSession);
 		
 		assertTrue("Post could not be deleted", succ);
 		
@@ -909,13 +909,13 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		assertEquals(0, posts.size());
 		assertEquals(0, post2.size());
 		
-		publicationDb.createPost(toInsert, this.dbSession);
+		publicationDb.createPost(toInsert, null, this.dbSession);
 		post2 = publicationDb.getPosts(postParam, this.dbSession);
 		posts = publicationDb.getPostsByHashForUser(username, hash, requestedUserName, new ArrayList<Integer>(), HashID.INTRA_HASH, this.dbSession);
 		assertEquals(1, posts.size());
 		assertEquals(1, post2.size());
 		
-		succ = publicationDb.deletePost(requestedUserName, hash, this.dbSession);
+		succ = publicationDb.deletePost(requestedUserName, hash, null, this.dbSession);
 		assertTrue("Post could not be deleted", succ);
 		
 		assertEquals(0, publicationDb.getPostsByHashForUser(username, hash, requestedUserName, new ArrayList<Integer>(), HashID.INTRA_HASH, this.dbSession).size());
@@ -930,7 +930,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		this.printMethod("storePostWrongUsage");
 		final Post<BibTex> toInsert = this.generateBibTexDatabaseManagerTestPost();
 
-		publicationDb.updatePost(toInsert, null, null, this.dbSession, loginUser);
+		publicationDb.updatePost(toInsert, null, loginUser, null, this.dbSession);
 	}
 
 	/**
@@ -970,7 +970,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		// someBibTexPost.getGroups().clear();
 		final Post<BibTex> publication = someBibTexPost.get(0);
 		final int count = publication.getResource().getCount();
-		publicationDb.updatePost(publication, hash, PostUpdateOperation.UPDATE_ALL, this.dbSession, loginUser);
+		publicationDb.updatePost(publication, hash, loginUser, PostUpdateOperation.UPDATE_ALL, this.dbSession);
 		
 		// check if resource counter is updated correctly
 		final List<Post<BibTex>> afterUpdate = publicationDb.getPostsByHash(null, hash, HashID.INTRA_HASH, PUBLIC_GROUP_ID, null, 10, 0, this.dbSession);
@@ -1071,7 +1071,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	}
 	
 	/**
-	 * tests if {@link BibTexDatabaseManager#createPost(Post, org.bibsonomy.database.common.DBSession)}
+	 * tests if {@link BibTexDatabaseManager#createPost(Post, User, org.bibsonomy.database.common.DBSession)}
 	 * respects the max field length of table columns
 	 * @throws PersonListParserException 
 	 */
@@ -1090,7 +1090,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		resource.setMonth(longField);
 		
 		try {
-			publicationDb.createPost(testPost, this.dbSession);
+			publicationDb.createPost(testPost, null, this.dbSession);
 			fail("expected a DatabaseException");
 		} catch (final DatabaseException ex) {
 			final List<ErrorMessage> messages = ex.getErrorMessages(resource.getIntraHash());
@@ -1125,7 +1125,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		updateResource.setMonth(longField);
 		
 		try {
-			publicationDb.updatePost(updatePost, updateResource.getIntraHash(), PostUpdateOperation.UPDATE_ALL, this.dbSession, loginUser);
+			publicationDb.updatePost(updatePost, updateResource.getIntraHash(), loginUser, PostUpdateOperation.UPDATE_ALL, this.dbSession);
 			fail("expected a DatabaseException");
 		} catch (final DatabaseException ex) {
 			final List<ErrorMessage> messages = ex.getErrorMessages(updateResource.getIntraHash());

@@ -1254,6 +1254,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return  a list of users with the username
 	 */
+	// FIXME: Why does this return a list?
 	public List<User> getPendingUserByUsername(final String username, final int start, final int end,  final DBSession session) {
 		final UserParam param = new UserParam();
 		param.setOffset(start);
