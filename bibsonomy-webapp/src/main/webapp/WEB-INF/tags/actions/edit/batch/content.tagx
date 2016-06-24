@@ -326,6 +326,7 @@
 								</c:choose>
 							</c:otherwise>
 						</c:choose>
+						</div>
 					</c:forEach>
 					
 					<!-- if there exists some posts which are not owned by the user -->
