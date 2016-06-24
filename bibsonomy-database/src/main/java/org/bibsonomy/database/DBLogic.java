@@ -217,7 +217,7 @@ public class DBLogic implements LogicInterface {
 	 * @param loginUser
 	 *        - the user which wants to use the logic.
 	 * @param dbSessionFactory
-	 * @param bibtexReader 
+	 * @param bibtexReader
 	 */
 	protected DBLogic(final User loginUser, final DBSessionFactory dbSessionFactory, final BibTexReader bibtexReader) {
 		this.loginUser = loginUser;
@@ -730,7 +730,7 @@ public class DBLogic implements LogicInterface {
 		this.handleAdminFilters(filters);
 
 		// check for systemTags disabling this resourceType
-		if (!this.systemTagsAllowResourceType(tags, resourceType)) {
+		if (!DBLogic.systemTagsAllowResourceType(tags, resourceType)) {
 			return new ArrayList<Post<T>>();
 		}
 		final DBSession session = this.openSession();
@@ -1079,7 +1079,7 @@ public class DBLogic implements LogicInterface {
 
 		this.ensureLoggedIn();
 		// only group admins are allowed to delete the group
-		this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, groupName, GroupRole.ADMINISTRATOR);
+		this.permissionDBManager.ensureIsAdminOrHasGroupRoleOrHigher(this.loginUser, groupName, GroupRole.ADMINISTRATOR);
 		try {
 			session.beginTransaction();
 			// make sure that the group exists
@@ -1180,9 +1180,9 @@ public class DBLogic implements LogicInterface {
 	 * Check for each group actually exist and if the
 	 * posting user is allowed to post. If yes, insert the correct group ID into
 	 * the given post's groups.
-	 * @param user 
+	 * @param user
 	 * @param groups the groups to validate
-	 * @param session 
+	 * @param session
 	 */
 	protected void validateGroups(final User user, final Set<Group> groups, final DBSession session) {
 		/*
@@ -1344,7 +1344,7 @@ public class DBLogic implements LogicInterface {
 			session.beginTransaction();
 
 			// check the groups existence and retrieve the current group
-			final Group group = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, false, false, session);
+			final Group group = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, false, this.permissionDBManager.isAdmin(this.loginUser), session);
 			if (!GroupUtils.isValidGroup(group) && !(GroupUpdateOperation.ACTIVATE.equals(operation) || GroupUpdateOperation.DELETE_GROUP_REQUEST.equals(operation))) {
 				throw new IllegalArgumentException("Group does not exist");
 			}
@@ -1421,7 +1421,7 @@ public class DBLogic implements LogicInterface {
 						this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.MODERATOR);
 					}
 				} else {
-					this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.ADMINISTRATOR);
+					this.permissionDBManager.ensureIsAdminOrHasGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.ADMINISTRATOR);
 					// we need at least one admin in the group at all times.
 					if (GroupRole.ADMINISTRATOR.equals(roleOfUserToRemove) && this.groupDBManager.hasExactlyOneAdmin(group, session)) {
 						throw new IllegalArgumentException("Group has only this admin left, cannot remove this user.");

@@ -29,6 +29,7 @@ package org.bibsonomy.webapp.controller.admin;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.HashSet;
+import java.util.List;
 
 import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.logging.Log;
@@ -39,6 +40,7 @@ import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
@@ -53,14 +55,14 @@ import org.springframework.security.access.AccessDeniedException;
 
 /**
  * Controller for group admin page
- * 
+ *
  * TODO: Make ErrorAware for proper error messages
- * 
+ *
  * @author bsc
  */
 public class AdminGroupController implements MinimalisticController<AdminGroupViewCommand> {
 	private static final Log log = LogFactory.getLog(AdminGroupController.class);
-	
+
 	private LogicInterface logic;
 	private MailUtils mailUtils;
 
@@ -68,7 +70,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 	public View workOn(final AdminGroupViewCommand command) {
 		final RequestWrapperContext context = command.getContext();
 		final User loginUser = context.getLoginUser();
-		
+
 		/*
 		 * check user role
 		 * If user is not logged in or not an admin: show error message
@@ -83,55 +85,84 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 			Group group = command.getGroup();
 			User requestingUser;
 			switch(action) {
-				case ACCEPT:
-					group = this.logic.getGroupDetails(group.getName(), true);
-					
-					requestingUser = this.logic.getUserDetails(group.getGroupRequest().getUserName());
-					this.logic.updateGroup(group, GroupUpdateOperation.ACTIVATE, null);
-					if (present(requestingUser.getEmail())) {
-						this.mailUtils.sendGroupActivationNotification(group, requestingUser, LocaleUtils.toLocale(requestingUser.getSettings().getDefaultLanguage()));
-					}
-					return new ExtendedRedirectView("/admin/group");
-				case DECLINE:
-					final String groupName = group.getName();
-					group = this.logic.getGroupDetails(groupName, true);
-					
-					requestingUser = this.logic.getUserDetails(group.getGroupRequest().getUserName());
-					
-					// delete the group
-					log.debug("grouprequest for group \"" + groupName + "\" declined");
-					this.logic.deleteGroup(groupName, true);
-					
-					// send mail
-					String declineMessage = command.getDeclineMessage();
-					if (!present(declineMessage)) {
-						declineMessage = "";
-					}
-					if (present(requestingUser.getEmail())) {
-						this.mailUtils.sendGroupDeclineNotification(groupName, declineMessage, requestingUser, LocaleUtils.toLocale(requestingUser.getSettings().getDefaultLanguage()));
-					}
-					return new ExtendedRedirectView("/admin/group");
-				case FETCH_GROUP_SETTINGS:
-					setGroupOrMarkNonExistent(command);
-					break;
-				case UPDATE_PERMISSIONS:
-					this.updateGroupPermissions(command);
-					break;
-				default:
-					break;
+			case ACCEPT_GROUP:
+				group = this.logic.getGroupDetails(group.getName(), true);
+
+				requestingUser = this.logic.getUserDetails(group.getGroupRequest().getUserName());
+				this.logic.updateGroup(group, GroupUpdateOperation.ACTIVATE, null);
+				if (present(requestingUser.getEmail())) {
+					this.mailUtils.sendGroupActivationNotification(group, requestingUser, LocaleUtils.toLocale(requestingUser.getSettings().getDefaultLanguage()));
+				}
+				return new ExtendedRedirectView("/admin/group");
+			case DECLINE_GROUP:
+				final String groupName = group.getName();
+				group = this.logic.getGroupDetails(groupName, true);
+
+				requestingUser = this.logic.getUserDetails(group.getGroupRequest().getUserName());
+
+				// delete the group
+				log.debug("grouprequest for group \"" + groupName + "\" declined");
+				this.logic.deleteGroup(groupName, true);
+
+				// send mail
+				String declineMessage = command.getDeclineMessage();
+				if (!present(declineMessage)) {
+					declineMessage = "";
+				}
+				if (present(requestingUser.getEmail())) {
+					this.mailUtils.sendGroupDeclineNotification(groupName, declineMessage, requestingUser, LocaleUtils.toLocale(requestingUser.getSettings().getDefaultLanguage()));
+				}
+				return new ExtendedRedirectView("/admin/group");
+			case FETCH_GROUP_SETTINGS:
+				this.setGroupOrMarkNonExistent(command);
+				break;
+			case UPDATE_PERMISSIONS:
+				this.updateGroupPermissions(command);
+				break;
+			case DELETE_GROUP:
+				this.deleteGroup(command);
+				break;
+			default:
+				break;
 			}
 		}
-		
+
 		// load the pending groups
 		command.setPendingGroups(this.logic.getGroups(true, null, 0, Integer.MAX_VALUE));
 		return Views.ADMIN_GROUP;
 	}
-	
+
+	/**
+	 * @param command
+	 */
+	private void deleteGroup(final AdminGroupViewCommand command) {
+		try {
+			final Group groupToDelete = this.logic.getGroupDetails(command.getGroup().getName(), false);
+
+			final List<GroupMembership> groupMembers = groupToDelete.getMemberships();
+			for (final GroupMembership ms : groupMembers) {
+				if (!ms.getUser().getName().equals(groupToDelete.getName())) {
+					this.logic.updateGroup(groupToDelete, GroupUpdateOperation.REMOVE_MEMBER, ms);
+				}
+			}
+
+			for (final GroupMembership ms : groupToDelete.getPendingMemberships()) {
+				this.logic.updateGroup(groupToDelete, GroupUpdateOperation.REMOVE_INVITED, ms);
+			}
+
+			this.logic.deleteGroup(groupToDelete.getName(), false);
+			command.setAdminResponse("Group " + command.getGroup().getName() + " was successfully deleted.");
+			command.setGroup(null);
+		} catch (final IllegalArgumentException ex) {
+			command.setAdminResponse("Could not delete group: " + ex);
+		}
+	}
+
 	/**
 	 * TODO: Documentation.
 	 */
 	private void updateGroupPermissions(final AdminGroupViewCommand command) {
-		final Group dbGroup = getGroupOrMarkNonExistent(command);
+		final Group dbGroup = this.getGroupOrMarkNonExistent(command);
 		if (present(dbGroup) && GroupID.INVALID.getId() != dbGroup.getGroupId()) {
 			dbGroup.setGroupLevelPermissions(new HashSet<GroupLevelPermission>());
 			if (command.isCommunityPostInspectionPermission()) {
@@ -139,11 +170,11 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 				command.setCommunityPostInspectionPermission(false);
 			}
 			try {
-				logic.updateGroup(dbGroup, GroupUpdateOperation.UPDATE_PERMISSIONS, null);
+				this.logic.updateGroup(dbGroup, GroupUpdateOperation.UPDATE_PERMISSIONS, null);
 				command.setAdminResponse("settings.group.update.success");
 				command.setPermissionsUpdated(true);
 				command.setGroup(null);
-			} catch (IllegalArgumentException e) {
+			} catch (final IllegalArgumentException e) {
 				command.setAdminResponse(e.getMessage());
 			}
 		}
@@ -158,12 +189,12 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 			command.setGroup(dbGroup);
 		}
 	}
-	
+
 	/**
 	 * TODO: Documentation.
 	 */
 	private Group getGroupOrMarkNonExistent(final AdminGroupViewCommand command) {
-		final Group dbGroup = logic.getGroupDetails(command.getGroup().getName(), false);
+		final Group dbGroup = this.logic.getGroupDetails(command.getGroup().getName(), false);
 
 		if (!GroupUtils.isValidGroup(dbGroup)) {
 			command.setAdminResponse("The group \"" + command.getGroup().getName() + "\" does not exist.");
@@ -186,7 +217,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 	/**
 	 * @param mailUtils the mailUtils to set
 	 */
-	public void setMailUtils(MailUtils mailUtils) {
+	public void setMailUtils(final MailUtils mailUtils) {
 		this.mailUtils = mailUtils;
 	}
 }
