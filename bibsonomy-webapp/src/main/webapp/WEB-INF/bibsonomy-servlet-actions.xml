@@ -482,7 +482,11 @@
 							<list>
 								<value>ckey</value>
 								<value>tags</value>
-								<value>posts[*].*</value>
+								<value>posts[*].checked</value>
+								<value>posts[*].intraHash</value>
+								<value>posts[*].postOwner</value>
+								<value>posts[*].newTags</value>
+								<value>posts[*].oldTags</value>
 								<value>action</value>
 								<value>referer</value>
 								<!-- retaining postPublication options -->
@@ -493,8 +497,6 @@
 								<value>format</value>
 								<value>groups</value>
 								<value>abstractGrouping</value>
-								
-								
 							</list>
 						</property>
 					</bean>
