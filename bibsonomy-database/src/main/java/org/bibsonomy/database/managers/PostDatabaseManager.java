@@ -1455,6 +1455,10 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 */
 	@Override
 	public boolean updatePost(final Post<R> post, final String oldHash, final User loginUser, final PostUpdateOperation operation, final DBSession session) {
+		if (!present(oldHash)) {
+			throw new IllegalArgumentException("Could not update post: no intrahash specified.");
+		}
+		
 		final String postOwner = post.getUser().getName();
 		String executingUser = loginUser.getName();
 
@@ -1479,42 +1483,36 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 * within the update resource request
 			 */
 			Post<R> oldPost = null;
-			if (present(oldHash)) {
-				// if yes, check if a post exists with the old intrahash
-				try {
-					oldPost = this.getPostDetails(executingUser, oldHash, postOwner, new ArrayList<Integer>(), session);
-				} catch(final ResourceMovedException ex) {
-					/*
-					 * getPostDetails() throws a ResourceMovedException for
-					 * hashes for which
-					 * no actual post exists, but an old post has existed with
-					 * that hash.
-					 *
-					 * Since we are not interested in former posts with that
-					 * hash we ignore
-					 * this exception silently.
-					 */
-				}
+			
+			// if yes, check if a post exists with the old intrahash
+			try {
+				oldPost = this.getPostDetails(executingUser, oldHash, postOwner, new ArrayList<Integer>(), session);
+			} catch(final ResourceMovedException ex) {
 				/*
-				 * check if post to update is in db
+				 * getPostDetails() throws a ResourceMovedException for
+				 * hashes for which
+				 * no actual post exists, but an old post has existed with
+				 * that hash.
+				 *
+				 * Since we are not interested in former posts with that
+				 * hash we ignore
+				 * this exception silently.
 				 */
-				if (!present(oldPost)) {
-					/*
-					 * not found -> throw exception
-					 */
-					final ErrorMessage errorMessage = new UpdatePostErrorMessage(this.resourceClassName, post.getResource().getIntraHash());
-					session.addError(post.getResource().getIntraHash(), errorMessage);
-					// we have to commit to adjust counters in session otherwise
-					// we will not get the DatabaseException from the session
-					session.commitTransaction();
-					log.warn("Added UpdatePostErrorMessage (" + this.resourceClassName + " with hash " + oldHash + " does not exist for user " + postOwner + ")");
-					return false;
-				}
-
-			} else {
-				// we do not add this to the databaseException since this an
-				// error not caused by a user
-				throw new IllegalArgumentException("Could not update post: no intrahash specified.");
+			}
+			/*
+			 * check if post to update is in db
+			 */
+			if (!present(oldPost)) {
+				/*
+				 * not found -> throw exception
+				 */
+				final ErrorMessage errorMessage = new UpdatePostErrorMessage(this.resourceClassName, post.getResource().getIntraHash());
+				session.addError(post.getResource().getIntraHash(), errorMessage);
+				// we have to commit to adjust counters in session otherwise
+				// we will not get the DatabaseException from the session
+				session.commitTransaction();
+				log.warn("Added UpdatePostErrorMessage (" + this.resourceClassName + " with hash " + oldHash + " does not exist for user " + postOwner + ")");
+				return false;
 			}
 
 			/*

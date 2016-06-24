@@ -560,7 +560,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 		toInsert.getResource().recalculateHashes();
 
 		// no oldIntraHash and no update
-		bookmarkDb.createPost(toInsert, null, this.dbSession);
+		bookmarkDb.createPost(toInsert, toInsert.getUser(), this.dbSession);
 		final String userName = toInsert.getUser().getName();
 		final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, GroupingEntity.USER, userName, Arrays.asList(new String[] { "tag1", "tag2" }), "", null, 0, 50, null, null, null, null, toInsert.getUser());
 		final List<Post<Bookmark>> posts = bookmarkDb.getPosts(param, this.dbSession);
@@ -573,7 +573,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 		// Duplicate post and check whether plugins are called
 		assertFalse(this.pluginMock.isOnBibTexUpdate());
 		
-		assertTrue(bookmarkDb.deletePost(userName, toInsert.getResource().getIntraHash(), null, this.dbSession));
+		assertTrue(bookmarkDb.deletePost(userName, toInsert.getResource().getIntraHash(), new User(userName), this.dbSession));
 	}
 	
 	/**

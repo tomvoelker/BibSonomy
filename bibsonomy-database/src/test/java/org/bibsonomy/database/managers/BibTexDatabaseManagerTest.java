@@ -859,7 +859,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		this.postDuplicate(bibtexHashForUpdate);
 		assertTrue(this.pluginMock.isOnBibTexUpdate());
 		
-		publicationDb.deletePost(toInsert.getUser().getName(), toInsert.getResource().getIntraHash(), null, this.dbSession);
+		publicationDb.deletePost(toInsert.getUser().getName(), toInsert.getResource().getIntraHash(), loginUser, this.dbSession);
 	}
 	
 	/**
@@ -891,7 +891,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		assertNotNull(posts);
 		assertEquals(1, posts.size());
 		
-		boolean succ = publicationDb.deletePost(username, hash, null, this.dbSession);
+		boolean succ = publicationDb.deletePost(username, hash, new User(username), this.dbSession);
 		
 		assertTrue("Post could not be deleted", succ);
 		
@@ -915,7 +915,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		assertEquals(1, posts.size());
 		assertEquals(1, post2.size());
 		
-		succ = publicationDb.deletePost(requestedUserName, hash, null, this.dbSession);
+		succ = publicationDb.deletePost(requestedUserName, hash, new User(requestedUserName), this.dbSession);
 		assertTrue("Post could not be deleted", succ);
 		
 		assertEquals(0, publicationDb.getPostsByHashForUser(username, hash, requestedUserName, new ArrayList<Integer>(), HashID.INTRA_HASH, this.dbSession).size());
