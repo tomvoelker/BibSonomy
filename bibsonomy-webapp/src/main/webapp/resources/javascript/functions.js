@@ -558,6 +558,7 @@ function ajax_updateRelations(data) {
  * @return
  */
 function editTags() {
+	alert("editing tags")
 	/*
 	 * div around all tags (will be hidden/replaced with tag edit box)
 	 */

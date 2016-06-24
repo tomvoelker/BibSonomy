@@ -1619,7 +1619,7 @@ public class DBLogic implements LogicInterface {
 		/*
 		 * change group IDs to spam group IDs
 		 */
-		PostUtils.setGroupIds(post, this.loginUser, null);
+		PostUtils.setGroupIds(post, this.loginUser);
 
 		manager.createPost(post, this.loginUser, session);
 
@@ -1705,11 +1705,11 @@ public class DBLogic implements LogicInterface {
 		 */
 		// TODO: Change this to a proper permission check.
 		if (post.getUser().equals(this.loginUser)) {
-			PostUtils.setGroupIds(post, this.loginUser, null);
+			PostUtils.setGroupIds(post, this.loginUser);
 		} else {
 			final String postUserName = post.getUser().getName();
 			final User groupUserDetails = this.userDBManager.getUserDetails(postUserName, session);
-			PostUtils.setGroupIds(post, groupUserDetails, this.getGroupDetails(postUserName, false));
+			PostUtils.setGroupIds(post, groupUserDetails);
 		}
 
 		/*
