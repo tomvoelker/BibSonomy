@@ -1148,7 +1148,7 @@ public class DBLogic implements LogicInterface {
 				// TODO would be nice to know about the resourcetype or the
 				// instance behind this resourceHash
 				for (final CrudableContent<? extends Resource, ? extends GenericParam> man : this.allDatabaseManagers.values()) {
-					if (man.deletePost(lowerCaseUserName, resourceHash, null, session)) {
+					if (man.deletePost(lowerCaseUserName, resourceHash, this.loginUser, session)) {
 						resourceFound = true;
 						break;
 					}
