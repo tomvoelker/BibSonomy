@@ -199,7 +199,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 	 * @return
 	 */
 	private View linkAction(DisambiguationPageCommand command) {
-		final Person person = this.logic.getPersonById(PersonIdType.BIBSONOMY_ID, command.getRequestedPersonId());
+		final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getRequestedPersonId());
 		try {
 			linkToPerson(command, person);
 		} catch (LogicException e) {

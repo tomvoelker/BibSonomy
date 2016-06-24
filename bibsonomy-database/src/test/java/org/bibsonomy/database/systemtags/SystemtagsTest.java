@@ -180,7 +180,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		param.setBibtexKey("test bibtexKey");
 		posts = bibTexDb.getPosts(param, this.dbSession);
 		
-		assertEquals(0, posts.size());		
+		assertEquals(0, posts.size());
 		
 		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.ALL, "testuser1", Collections.singletonList("sys:entrytype:test entrytype"), "", Order.ADDED, 0, 50, null, null, null, null, new User("testuser1"));
 		param.setNumSimpleConcepts(0);
@@ -607,21 +607,18 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 	 * @param name
 	 * @return
 	 */
-	private User createTestUser( final String name ) {
+	private User createTestUser(final String name) {
 		// lookup
 		User user = userDb.getUserDetails(name, this.dbSession);
-		if( user.getName()!=null ) {
-			final List<Post<Bookmark>> bookmarks = 
-				bookmarkDb.getPostsForUser(null, name, HashID.INTRA_HASH, GroupID.INVALID.getId(), new ArrayList<Integer>(), null, null, Integer.MAX_VALUE, 0, null, this.dbSession);
+		if (user.getName() != null) {
+			final List<Post<Bookmark>> bookmarks = bookmarkDb.getPostsForUser(null, name, HashID.INTRA_HASH, GroupID.INVALID.getId(), new ArrayList<Integer>(), null, null, Integer.MAX_VALUE, 0, null, this.dbSession);
 			for( final Post<Bookmark> post : bookmarks ) {
 				bookmarkDb.deletePost(name, post.getResource().getIntraHash(), null, this.dbSession);
 			}
-			final List<Post<BibTex>> publications = 
-				bibTexDb.getPostsForUser(null, name, HashID.INTRA_HASH, GroupID.INVALID.getId(), new ArrayList<Integer>(), null, null, Integer.MAX_VALUE, 0, null, this.dbSession);
+			final List<Post<BibTex>> publications = bibTexDb.getPostsForUser(null, name, HashID.INTRA_HASH, GroupID.INVALID.getId(), new ArrayList<Integer>(), null, null, Integer.MAX_VALUE, 0, null, this.dbSession);
 			for( final Post<BibTex> post : publications) {
 				bibTexDb.deletePost(name, post.getResource().getIntraHash(), null, this.dbSession);
 			}
-			
 		} else {
 			user = new User(name);
 			user.setRealname("New Testuser");
@@ -634,7 +631,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 			user.setRole(Role.DEFAULT);
 			user.setToClassify(1);
 			user.setAlgorithm(null);
-			userDb.createUser(user, this.dbSession);			
+			userDb.createUser(user, this.dbSession);
 			userDb.activateUser(user, this.dbSession);
 		}
 		return user;

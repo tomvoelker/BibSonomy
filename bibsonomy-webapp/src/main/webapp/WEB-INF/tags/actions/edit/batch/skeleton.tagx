@@ -12,10 +12,7 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts" 
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
-
 	<!-- the skeleton for the batchedit pages (batcheditbib, batchediturl) -->
-
-
 	<jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true" />
 	<jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true" />
@@ -31,7 +28,6 @@
 	<fmt:message key="post.meta.edit" var="pageTitle" />
 
 	<layout:paneLayout requPath="${requPath}" command="${command}" pageTitle="${pageTitle}" activeTab="my" headerMessageKey="batchedit.info" showPageOptions="${true}">
-		
 		<jsp:attribute name="infobox">
 			<parts:infobox>
 				<jsp:attribute name="infoTextBody">
@@ -40,7 +36,7 @@
 					<ul style="list-style: square outside none;padding: 10px 10px 10px 25px;">
 						<c:if test="${resourceType eq 'bibtex'}">
 							<li><fmt:message key="batchedit.option1"/></li>
-						</c:if>                
+						</c:if>
 						<li><fmt:message key="batchedit.option2"/></li>
 						<li><fmt:message key="batchedit.option3"/></li>
 						<li><fmt:message key="batchedit.option4"/></li>
@@ -62,14 +58,10 @@
 				otherPostsUrlPrefix="${otherPostsUrlPrefix}" directEdit="${true}" 
 				listViewStartParamName="${listViewStartParamName}" 
 				updateExistingPost="${updateExistingPost}" overwrite="${overwrite}">
-        						 
-			<jsp:attribute name="shortPostDescription">
-				<jsp:invoke fragment="shortPostDescription" />
-			</jsp:attribute>
-			
-        </batch:content> 
-      </jsp:attribute>
-      
+				<jsp:attribute name="shortPostDescription">
+					<jsp:invoke fragment="shortPostDescription" />
+				</jsp:attribute>
+			</batch:content> 
+		</jsp:attribute>
 	</layout:paneLayout>
-
 </jsp:root>

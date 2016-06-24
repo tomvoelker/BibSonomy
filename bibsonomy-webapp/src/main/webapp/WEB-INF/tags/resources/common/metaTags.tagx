@@ -99,4 +99,5 @@
 			</c:choose>
 		</span>
 	</c:forEach>
+	<meta itemprop="keywords" content="${mtl:toTagString(post.visibleTags)}" />
 </jsp:root>

@@ -752,7 +752,7 @@ public class DBLogic implements LogicInterface {
 			 * groupingName, tags, hash, popular, added, start, end, false));
 			 */
 			if (ValidationUtils.safeContains(filters, FilterEntity.HISTORY) && !(resourceType == GoldStandardPublication.class || resourceType == GoldStandardBookmark.class)) {
-				this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, groupingName);
+				// this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, groupingName);
 			}
 			if (resourceType == BibTex.class) {
 				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filters, this.loginUser);
@@ -3529,13 +3529,13 @@ public class DBLogic implements LogicInterface {
 	public Person getPersonById(final PersonIdType idType, final String id) {
 		final DBSession session = this.openSession();
 		try {
-			if (PersonIdType.BIBSONOMY_ID == idType) {
+			if (PersonIdType.PERSON_ID == idType) {
 				return this.personDBManager.getPersonById(id, session);
 			} else if (PersonIdType.DNB_ID == idType) {
 				return this.personDBManager.getPersonByDnbId(id, session);
 				// } else if (PersonIdType.ORCID == idType) {
 				//	TODO: implement
-			} else if (PersonIdType.BIBSONOMY_USER == idType) {
+			} else if (PersonIdType.USER == idType) {
 				return this.personDBManager.getPersonByUser(id, session);
 			} else {
 				throw new UnsupportedOperationException("person cannot be found by it type " + idType);
