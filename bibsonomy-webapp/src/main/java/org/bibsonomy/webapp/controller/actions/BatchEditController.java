@@ -325,7 +325,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			 * STEP 1: Check if post should be deleted or ignored.
 			 */
 			if (action.contains(DELETE_ACTION)) {
-				postsToDelete.add(intraHash);
+				postsToDelete.add(intraHash + "_" + postOwner);
 				continue;
 			}
 
@@ -337,7 +337,6 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 			if (updatePosts) {
 				// updating a post which is already stored
-				// TODO: test if this does not conflict with somewhere else.
 				post = this.logic.getPostDetails(intraHash, postOwner);
 				if (!ValidationUtils.present(post)) {
 					log.warn("post with hash " + intraHash + " not found for user " + postOwner + " while updating");
@@ -345,7 +344,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				}
 			} else {
 				// the post is only temporarily stored
-				post = postMap.get(intraHash);
+				post = postMap.get(intraHash + "_" + postOwner);
 			}
 
 			/*
@@ -435,10 +434,14 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 * delete posts
 		 */
 		if (ValidationUtils.present(postsToDelete)) {
+			String intraHash = "";
+			String postOwner = "";
 			log.debug("deleting " + postsToDelete.size() + " posts for user " + loginUserName);
 			try {
 				for (final String postIter : postsToDelete) {
-					this.logic.deletePosts(markedPostsMap.get(postIter).getPostOwner(), Collections.<String> singletonList(postIter));
+					intraHash = postIter.split("_")[0];
+					postOwner = postIter.split("_")[1];
+					this.logic.deletePosts(postOwner, Collections.<String> singletonList(intraHash));
 				}
 			} catch (final IllegalStateException e) {
 				// ignore - posts were already deleted
@@ -476,16 +479,13 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			 * the PostUpdateOperation value will be considered then.
 			 */
 			if (ValidationUtils.present(postsToNormalize)) {
-				// TODO THONI: update this to reflect the corresponding users.
 				this.updatePosts(postsToNormalize, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_NORMALIZE);
 			}
 			if (ValidationUtils.present(postsToUpdateViewable)) {
-				// TODO THONI: update this to reflect the corresponding users.
 				this.updatePosts(postsToUpdateViewable, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_VIEWABLE);
 			}
 		} else {// if import
 			if (updatePosts) {
-				// TODO THONI: update this to reflect the corresponding users.
 				this.updatePosts(postsToCombiUpdate, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_ALL);
 			} else {
 				/*
@@ -495,7 +495,6 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				 * a bit confusing.
 				 */
 				log.debug("storing " + postsToUpdateTags.size() + " posts for user " + loginUserName);
-				// TODO THONI: update this to reflect the corresponding users.
 				this.storePosts(postsToCombiUpdate, resourceClass, postMap, postsWithErrors, command.isOverwrite(), loginUserName);
 			}
 		}

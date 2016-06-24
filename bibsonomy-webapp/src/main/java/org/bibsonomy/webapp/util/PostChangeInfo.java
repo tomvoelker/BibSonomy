@@ -6,47 +6,12 @@ package org.bibsonomy.webapp.util;
  * @author niebler
  */
 public class PostChangeInfo {
-	// TODO: used?
-	private String intraHash;
-	// TODO: used?
-	private String postOwner;
-
 	private boolean checked;
 	
 	// FIXME: should be of type Set<Tag>
 	private String oldTags;
 	// FIXME: should be of type Set<Tag>
 	private String newTags;
-
-	/**
-	 * @return the intraHash
-	 */
-	public String getIntraHash() {
-		return this.intraHash;
-	}
-
-	/**
-	 * @param intraHash
-	 *            the intraHash to set
-	 */
-	public void setIntraHash(final String intraHash) {
-		this.intraHash = intraHash;
-	}
-
-	/**
-	 * @return the postOwner
-	 */
-	public String getPostOwner() {
-		return this.postOwner;
-	}
-
-	/**
-	 * @param postOwner
-	 *            the postOwner to set
-	 */
-	public void setPostOwner(final String postOwner) {
-		this.postOwner = postOwner;
-	}
 
 	/**
 	 * @return the marked
