@@ -101,11 +101,8 @@ function initView() {
 	 * adds list options (for bookmarks + publication lists)
 	 */
 	addListOptions();
-	/*
-	 * in-place tag edit for posts
-	 */
-	$(".editTags").click(editTags);
-	if($('.extend').hoverIntent!== undefined)
+	
+	if ($('.extend').hoverIntent!== undefined)
 		$('.extend').hoverIntent(function(event) {
 			var infoBox = $('div', this);
 			infoBox.show("fade", {}, 500);
@@ -199,13 +196,6 @@ function processQRCode(text) {
 								$('span.post, span.none').remove();
 								
 								$("#publications_0 ul.posts").prepend($(actData));
-								
-								/*
-								 * FIXME: does this really always work? 
-								 * What about posts that have already been prepared?
-								 * Are there any methods missing?
-								 */
-								$(".editTags").click(editTags);
 							}
 						});
 						$(this).unbind('ajaxStop');
@@ -231,12 +221,8 @@ function renderPosts(query, list) {
 		dataType : "html",
 		success : function(data) {
 			$(list).append($(data));
-			/*
-			 * FIXME: does this really always work? 
-			 * What about posts that have already been prepared?
-			 * Are there any methods missing?
-			 */
-			$(".editTags").click(editTags);
+			
+			// FIXME: add ajax actions
 		}
 	});
 }
@@ -272,13 +258,8 @@ function updatePosts(query, seconds) {
 						}
 						setTimeout(fadePostIn, index * 1000, post);
 					});
-
-					/*
-					 * FIXME: does this really always work? 
-					 * What about posts that have already been prepared?
-					 * Are there any methods missing?
-					 */
-					$(".editTags").click(editTags);
+					
+					// FIXME: bind ajax actions
 				}
 			});
 		});
@@ -550,100 +531,6 @@ function ajax_updateRelations(data) {
 			$("#relations").append(rel_item);
 		}
 	}
-}
-
-/**
- * Edit tags for a post in-place.
- * 
- * @return
- */
-function editTags() {
-	alert("editing tags")
-	/*
-	 * div around all tags (will be hidden/replaced with tag edit box)
-	 */
-	var ptags = $(this).parents(".ptags");
-	/*
-	 * load the jQuery script for sending the form
-	 */
-	$.getScript(
-			"/resources/jquery/plugins/form/jquery.form.js",
-			function() {
-				ptags.hide();
-				/*
-				 * collect regular tags + system tags into a string
-				 */
-				var tagString = "";
-				ptags.find("ul li a").each(function() {tagString += $(this).html() + " ";});
-				ptags.find("div.hiddenSystemTag div a").each(function() {tagString += $(this).html() + " ";});
-				/*
-				 * extract hash of post from edit URL
-				 */
-				var editUrl = ptags.parents(".post").find(".action .edit").attr("href");
-				var hash = editUrl.substr(editUrl.indexOf("intraHashToUpdate=") + "intraHashToUpdate=".length, 32);
-				/*
-				 * extract type of post
-				 */
-				var type = editUrl.search(/^\/editPublication/) != -1 ? "bibtex" : "bookmark";
-				/*
-				 * add form to edit the tags
-				 * also add old tags and marked posts to iterate through and update action, 
-				 * because batchedit controller needs it
-				 */
-				/*
-				 * XXX: this is the only way to get the attribute value in the encoding we need
-				 * not nice!
-				 */
-				var encodedTagString = $('<div />').html(tagString).text(); 
-				var form = $("<form method='post' action='/batchEdit?updateExistingPost=true&format=ajax&resourcetype=" + type + "&action=2' class='editTags'><input type='hidden' name='ckey' value='" + ckey + "'/></form>");
-				var input = $("<input type='text' class='postTagInput' name=\"newTags['" + hash + "']\"'/>").attr("value", encodedTagString);
-				var oldTagsInput = $("<input type='hidden' name=\"oldTags['" + hash + "']\" />").attr("value", encodedTagString);
-				var checkedInput = $("<input type='hidden' name=\"posts['" + hash + "']\" value='true' checked='checked' />");
-				var submit = $("<input type='submit' class='postTagButton' value='" + getString("post.meta.edit") + "'/>");
-				form.append(input).append(oldTagsInput).append(checkedInput).append(submit);
-				/*
-				 * resize input field
-				 */
-//				input.width(parseInt(ptags.width()) + "px");
-				/*
-				 * show form
-				 */
-				ptags.after(form);
-				/*
-				 * start the tag autocompletion
-				 */
-				startTagAutocompletion(input, true, true, true, false);
-				/*
-				 * add submit handler (that removes the form and re-builds the tags)
-				 */
-				form.ajaxForm(function() {
-					/*
-					 * get new tags from form input field
-					 */
-					var tags = input.val().split(" ");
-					/*
-					 * close the autocompletion
-					 */
-					endTagAutocompletion(input);
-					/*
-					 * remove form
-					 */
-					form.remove();
-					/*
-					 * remove old tags
-					 */
-					ptags.find("li").remove();
-					/*
-					 * add new tags
-					 */
-					var ul = ptags.find("ul.tags");
-					for (var t = 0; t < tags.length; t++) {
-						ul.append("<li><a href='/user/" + encodeURIComponent(currUser) + "/" + encodeURIComponent(tags[t]) + "'>" + tags[t] + "</a></li>");
-					}
-					ptags.show();
-				});
-			}
-	);
 }
 
 /**

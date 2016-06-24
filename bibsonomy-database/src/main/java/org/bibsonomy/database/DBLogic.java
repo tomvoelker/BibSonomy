@@ -1693,17 +1693,17 @@ public class DBLogic implements LogicInterface {
 	private <T extends Resource> String updatePost(final Post<T> post, final PostUpdateOperation operation, final DBSession session) {
 		final CrudableContent<T, GenericParam> manager = this.getFittingDatabaseManager(post);
 		final String oldIntraHash = post.getResource().getIntraHash();
-
+		
 		if (Role.SYNC.equals(this.loginUser.getRole())) {
 			validateGroupsForSynchronization(post);
 		}
 		this.validateGroups(post.getUser(), post.getGroups(), session);
-
+		
 		PostUtils.limitedUserModification(post, this.loginUser);
+		
 		/*
 		 * change group IDs to spam group IDs
 		 */
-		// TODO: Change this to a proper permission check.
 		if (post.getUser().equals(this.loginUser)) {
 			PostUtils.setGroupIds(post, this.loginUser);
 		} else {
