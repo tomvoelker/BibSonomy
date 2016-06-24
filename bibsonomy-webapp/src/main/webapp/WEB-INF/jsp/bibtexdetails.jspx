@@ -71,15 +71,15 @@
 					<jsp:attribute name="content">
 						<form action="/batchEdit?action=2" method="POST" style="padding:0.8em;" class="sidebar_collapse_content">
 							<div class="input-group">
-								<input class="form-control input-sm rename-tags" type="text" name="posts['${fn:escapeXml(publication.intraHash)}_${post.user.name}'].newTags" value="${fn:escapeXml(tagsString)}"/>
+								<input class="form-control input-sm rename-tags" type="text" name="posts['${fn:escapeXml(publication.intraHash)}_${fn:escapeXml(post.user.name)}'].newTags" value="${fn:escapeXml(tagsString)}"/>
 								<fmt:message key="bibtex.actions.tags.update" var="updateTags"/>
 								<span class="input-group-btn">
 									<bsform:button style="defaultStyle" value="" size="small" type="submit" icon="pencil" className="rename-tags-btn" title="${updateTags}" srText="${updateTags}" />
 									<button class="btn btn-sm btn-default rename-tags-submit-btn" style="display: none;" title="${updateTags}" type="button"><span class="fa fa-check"><!-- KEEP ME --></span><span class="sr-only">OK</span></button>
 								</span>
 							</div>
-							<input type="hidden" name="posts['${fn:escapeXml(publication.intraHash)}_${post.user.name}'].oldTags" value="${fn:escapeXml(tagsString)}"/>
-							<input type="hidden" name="posts['${fn:escapeXml(publication.intraHash)}_${post.user.name}'].checked" value="true" checked="checked" />
+							<input type="hidden" name="posts['${fn:escapeXml(publication.intraHash)}_${fn:escapeXml(post.user.name)}'].oldTags" value="${fn:escapeXml(tagsString)}"/>
+							<input type="hidden" name="posts['${fn:escapeXml(publication.intraHash)}_${fn:escapeXml(post.user.name)}'].checked" value="true" checked="checked" />
 							<input type="hidden" name="referer" value="/bibtex/2${publication.intraHash}/${mtl:encodePathSegment(post.user.name)}"/>
 							<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
 							<input type="hidden" name="resourcetype" value="bibtex"/>
