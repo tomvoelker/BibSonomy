@@ -106,7 +106,7 @@
 			<goldstandard:tags tagCloudCommand="${command.tagcloud}" />
 			
 			<!-- users that have this resource in their collection -->
-			<common:relatedUsers userList="${command.relatedUserCommand.relatedUsers}"/>
+			<common:relatedUsers userList="${command.relatedUserCommand.relatedUsers}" interHash="${goldstandard.interHash}"/>
 			
 			<c:if test="${hasRelatedPublication}">
 				<div id="related-publications">
