@@ -33,11 +33,13 @@
 				</c:choose>
 			</c:if>
 			
-			<buttons:historyButton
-				post="${post}"
-				resourceType="${resourceType}"
-				buttonClasses="${buttonClasses}"
-				enforceCommunityPost="${true}"/>
+			<c:if test="${communityPostExists}">
+				<buttons:historyButton
+					post="${post}"
+					resourceType="${resourceType}"
+					buttonClasses="${buttonClasses}"
+					enforceCommunityPost="${true}"/>
+			</c:if>
 
 		</div>
 	</c:if>
