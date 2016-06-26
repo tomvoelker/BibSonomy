@@ -9,7 +9,7 @@
 	<jsp:directive.attribute name="userList" type="java.util.Collection" required="true"/>
 	<jsp:directive.attribute name="interHash" type="java.lang.String" required="false"/>
 	
-	<h2 class="pub-details" id="users"><fmt:message key="goldstandard.resource.relatedUsers"/></h2>
+	<h2 class="page-header" id="users"><fmt:message key="goldstandard.resource.relatedUsers"/></h2>
 	
 	<c:choose>
 		<c:when test="${not empty userList}">

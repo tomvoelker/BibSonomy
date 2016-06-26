@@ -111,7 +111,7 @@
 			<c:if test="${hasRelatedPublication}">
 				<div id="related-publications">
 					<div id="related-publications-references" class="related-publications-container">
-						<h2><fmt:message key="publications.related.referenced" /></h2>
+						<h2 class="page-header"><fmt:message key="publications.related.referenced" /></h2>
 						<ul class="more-list" data-items="3">
 							<c:forEach var="reference" items="${goldstandard.references}">
 								<li>
@@ -121,7 +121,7 @@
 						</ul>
 					</div>
 					<div id="related-publications-citing" class="related-publications-container">
-						<h2><fmt:message key="publications.related.citing" /></h2>
+						<h2 class="page-header"><fmt:message key="publications.related.citing" /></h2>
 						<ul data-items="3" class="more-list" data-inline="true">
 							<c:forEach var="reference" items="${goldstandard.referencedBy}">
 								<li>
@@ -137,9 +137,10 @@
 				| discussion and rating
 				+-->
 			<div id="discussion-section">
-				<h2 class="pub-details">
+				<h2 class="page-header">
 					<fmt:message key="publications.discussion.headline"/>
 				</h2>
+
 				<!-- Aggregated RatingInfo -->
 				<review:reviewRatingsInfo resource="${post.resource}" />
 		
@@ -150,7 +151,7 @@
 				<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName="${postUserName}" postIsPublic="${postIsPublic}" />
 			</div>
 			<!-- citation box -->
-			<h2 class="pub-details" id="export">
+			<h2 class="page-header" id="export">
 				<!--<fontawsome:icon icon="share-square-o" /><c:out value=" "/>-->
 				<fmt:message key="publications.citations.headline" />
 			</h2>
