@@ -27,11 +27,11 @@
 	
 	<c:set var="itemType" value="http://schema.org/WebPage"/>
 	<div id="goldstandard" class="row">
-		<div class="col-md-7 col-md-offset-1">
+		<div class="col-md-7 col-md-offset-1" itemtype="${itemType}" itemscope="itemscope" >
 			<div class="content-header" id="info">
 				<h1>
-					<a href="${fn:escapeXml(goldstandard.url)}" ref="nofollow">
-						<c:out value="${goldstandard.title}" />
+					<a href="${fn:escapeXml(goldstandard.url)}" ref="nofollow" itemprop="url">
+						<span itemprop="name"><c:out value="${goldstandard.title}" /></span>
 					</a>
 					<c:if test="${post.approved}">
 						<fmt:message key="goldStandard.approved.title" var="approved"/>
@@ -42,7 +42,7 @@
 			
 			<c:set var="description" value="${post.description}" />
 			<c:if test="${not empty description}">
-				<div class="meta">
+				<div class="meta" itemprop="description">
 					${mtl:markdownToHtml(description)}
 				</div>
 			</c:if>
@@ -51,7 +51,7 @@
 			<c:if test="${not empty imgUrl}">
 				<div class="preview row">
 					<div class="col-md-12 text-center">
-						<a href="${fn:escapeXml(goldstandard.url)}" rel="nofollow"><img src="${imgUrl}/preview/bookmark/${goldstandard.intraHash}?preview=LARGE" /></a>
+						<a href="${fn:escapeXml(goldstandard.url)}" rel="nofollow"><img itemprop="image" src="${imgUrl}/preview/bookmark/${goldstandard.intraHash}?preview=LARGE" /></a>
 					</div>
 				</div>
 			</c:if>
@@ -60,7 +60,7 @@
 			<goldstandard:tags tagCloudCommand="${command.tagcloud}" />
 			
 			<!-- users -->
-			<common:relatedUsers userList="${command.relatedUserCommand.relatedUsers}"/>
+			<common:relatedUsers userList="${command.relatedUserCommand.relatedUsers}" />
 	
 			<!--+
 				| discussion and rating
