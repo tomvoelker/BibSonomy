@@ -185,7 +185,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	}
 
 	@Override
-	public boolean createPost(final Post<R> post, User loggedinUser, final DBSession session) {
+	public boolean createPost(final Post<R> post, final User loggedinUser, final DBSession session) {
 		session.beginTransaction();
 		try {
 			final String resourceHash = post.getResource().getInterHash();
@@ -295,14 +295,9 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 			post.setContentId(Integer.valueOf(newContentId));
 
 			// first log the gold standard
-			this.onGoldStandardUpdate(oldPost.getContentId().intValue(), newContentId, oldHash, resourceHash, session); // logs
-			// old
-			// post
-			// and
-			// updates
-			// reference
-			// table
-			// than you can delete it
+			this.onGoldStandardUpdate(oldPost.getContentId().intValue(), newContentId, oldHash, resourceHash, session);
+			// logs old post and updates reference table
+			// then you can delete it
 			this.deletePost(oldHash, true, session);
 			// and add a new one
 			this.insertPost(post, session);
@@ -315,7 +310,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	}
 
 	@Override
-	public boolean deletePost(final String userName, final String resourceHash, User loggedinUser, final DBSession session) {
+	public boolean deletePost(final String userName, final String resourceHash, final User loggedinUser, final DBSession session) {
 		if (present(userName)) {
 			return false;
 		}

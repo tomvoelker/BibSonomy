@@ -1458,22 +1458,18 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		if (!present(oldHash)) {
 			throw new IllegalArgumentException("Could not update post: no intrahash specified.");
 		}
-		
+
 		final String postOwner = post.getUser().getName();
 		String executingUser = loginUser.getName();
 
 		// If the post owner is a group where the executingUser is an moderator
 		// or higher, we fake updating the post as the post owner (= group user)
-		// TODO: more efficient: we know the group name!
-		final List<Group> executingUserGroups = this.groupDb.getGroupsForUser(executingUser, session);
-		for (final Group g : executingUserGroups) {
-			if (g.getName().equals(postOwner)) {
-				final GroupRole role = g.getGroupMembershipForUser(executingUser).getGroupRole();
-				if (GroupRole.MODERATOR.equals(role) || GroupRole.ADMINISTRATOR.equals(role)) {
-					executingUser = postOwner;
-					break;
-				}
+		if (present(postOwner) && !postOwner.equals(executingUser)) {
+			final Group postOwnerGroup = this.groupDb.getGroupMembers(executingUser, postOwner, false, true, session);
+			if (present(postOwnerGroup) && this.permissionDb.isAdminOrHasGroupRoleOrHigher(loginUser, postOwner, GroupRole.MODERATOR)) {
+				executingUser = postOwner;
 			}
+
 		}
 
 		session.beginTransaction();
@@ -1483,7 +1479,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 * within the update resource request
 			 */
 			Post<R> oldPost = null;
-			
+
 			// if yes, check if a post exists with the old intrahash
 			try {
 				oldPost = this.getPostDetails(executingUser, oldHash, postOwner, new ArrayList<Integer>(), session);
@@ -2115,10 +2111,12 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 	private void logUpdate(final Post<R> post, final int oldContentId, final User loginUser, final DBSession session) {
 		final LoggingParam param = createParam(post.getContentId(), oldContentId, loginUser, post.getUser(), post.getResource().getClass());
-		this.insert("logPostUpdate", param, session);
+		this.insert("logPostInsert", param, session);
+
+		this.update("logPostUpdateCurrentID", param, session);
 	}
-	
-	private static LoggingParam createParam(int newContentId, int oldContentid, User editor, User postOwner, Class<? extends Resource> clazz) {
+
+	private static LoggingParam createParam(final int newContentId, final int oldContentid, final User editor, final User postOwner, final Class<? extends Resource> clazz) {
 		final LoggingParam param = new LoggingParam();
 		param.setOldContentId(oldContentid);
 		param.setNewContentId(newContentId);
@@ -2128,10 +2126,12 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setContentType(ConstantID.getContentTypeByClass(clazz).getId());
 		return param;
 	}
-	
+
 	// TODO: adapt method signature
 	private void logDelete(final User owner, final int oldContentId, final R resource, final User loginUser, final DBSession session) {
 		final LoggingParam param = createParam(-1, oldContentId, loginUser, owner, resource.getClass());
-		this.insert("logPostUpdate", param, session);
+		this.insert("logPostInsert", param, session);
+
+		this.update("logPostUpdateCurrentID", param, session);
 	}
 }

@@ -104,7 +104,7 @@
 				<div class="col-md-9 col-sm-12 col-xs-12">
 			
 					<c:choose>
-						<c:when test="${postOwner ne command.context.loginUser}">
+						<c:when test="${not empty postOwner and postOwner ne command.context.loginUser}">
 							<h1 class="content-heading"><fmt:message key="post.resource.editGroup${resourceType}" /></h1>
 						</c:when>
 						<c:otherwise>
@@ -117,7 +117,7 @@
 		    		  	+ -->
 					<errors:global />
 
-					<c:if test="${postOwner ne command.context.loginUser}">
+					<c:if test="${not empty postOwner and postOwner ne command.context.loginUser}">
 						<div class="row">
 							<div class="alert alert-warning alert-dismissible" role="alert">
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&amp;times;</span></button>

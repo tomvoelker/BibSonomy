@@ -225,8 +225,14 @@
 		FROM person WHERE person_id = #personId#
 	</insert>
 
-	<insert id="logPostUpdate" parameterClass="loggingParam">
-		INSERT INTO log_postchange VALUES (#postOwner.name#, #postEditor.name#, #oldContentId#, #newContentId#, #contentType#, #date#)
+	<insert id="logPostInsert" parameterClass="loggingParam">
+		INSERT INTO log_postchange VALUES (#postOwner.name#, #postEditor.name#, #oldContentId#, #newContentId#, #newContentId#, #contentType#, #date#)
 	</insert>
+	
+	<update id="logPostUpdateCurrentID" parameterClass="loggingParam">
+		UPDATE log_postchange
+		SET current_content_id = #newContentId#
+		WHERE current_content_id = #oldContentId#
+	</update>
 	
 </sqlMap>
