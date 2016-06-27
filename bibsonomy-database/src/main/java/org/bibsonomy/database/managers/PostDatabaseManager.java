@@ -1458,10 +1458,9 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		if (!present(oldHash)) {
 			throw new IllegalArgumentException("Could not update post: no intrahash specified.");
 		}
-
+		
 		final String postOwner = post.getUser().getName();
 		String executingUser = loginUser.getName();
-
 		// If the post owner is a group where the executingUser is an moderator
 		// or higher, we fake updating the post as the post owner (= group user)
 		if (present(postOwner) && !postOwner.equals(executingUser)) {
@@ -1469,9 +1468,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			if (present(postOwnerGroup) && this.permissionDb.isAdminOrHasGroupRoleOrHigher(loginUser, postOwner, GroupRole.MODERATOR)) {
 				executingUser = postOwner;
 			}
-
 		}
-
+		
 		session.beginTransaction();
 		try {
 			/*
