@@ -26,7 +26,7 @@
 						<fmt:message key="community.warning.view" /><c:out value=" " />
 						<c:choose>
 							<c:when test="${showEditOnly}">
-								<a href="${relativeUrlGenerator.getEditUrlOfPost(postOfLoggedInUser)}"><fmt:message key="community.warning.edit" /></a>
+								<a href="${relativeUrlGenerator.getEditUrlOfPost(postOfLoggedInUser)}"><fmt:message key="community.${resourceType}.edit" /></a>
 							</c:when>
 							<c:otherwise>
 								<fmt:message key="community.warning.edit">
