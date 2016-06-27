@@ -34,10 +34,8 @@
 						<c:out value="${goldstandard.title}" />
 					</a>
 					<c:if test="${post.approved}">
-						<small>
-							<fmt:message key="goldStandard.approved.title" var="approved"/>
-							<span class="fa fa-check-circle community-approved" data-toggle="tooltip" data-placement="bottom" title="${fn:escapeXml(approved)}" style="margin-left:6px;"><!-- keep me --></span>
-						</small>
+						<fmt:message key="goldStandard.approved.title" var="approved"/>
+						<span class="fa fa-check-circle community-approved" data-toggle="tooltip" data-placement="bottom" title="${fn:escapeXml(approved)}"><!-- keep me --></span>
 					</c:if>
 				</h1>
 			</div>
