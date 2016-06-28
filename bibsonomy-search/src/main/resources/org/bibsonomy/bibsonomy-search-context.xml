@@ -10,11 +10,11 @@
 	<bean id="searchBookmarkClass" class="java.lang.Class" factory-method="forName">
 		<constructor-arg value="org.bibsonomy.model.Bookmark" />
 	</bean>
-
+	
 	<bean id="searchPublicationClass" class="java.lang.Class" factory-method="forName">
 		<constructor-arg value="org.bibsonomy.model.BibTex" />
 	</bean>
-
+	
 	<bean id="searchGoldStandardPublicationClass" class="java.lang.Class" factory-method="forName">
 		<constructor-arg value="org.bibsonomy.model.GoldStandardPublication" />
 	</bean>
