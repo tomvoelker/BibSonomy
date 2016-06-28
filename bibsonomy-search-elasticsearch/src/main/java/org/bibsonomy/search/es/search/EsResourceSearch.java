@@ -760,7 +760,8 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		}
 		
 		// restrict result to given group
-		if (present(requestedGroupName)) {
+		// FIXME: remove equals check with requestUserName; fix database implementation
+		if (present(requestedGroupName) && !requestedGroupName.equals(requestedUserName)) {
 			// by appending a filter for all members of the group
 			final QueryBuilder groupMembersFilter = this.buildGroupMembersFilter(requestedGroupName);
 			if (groupMembersFilter != null) {
