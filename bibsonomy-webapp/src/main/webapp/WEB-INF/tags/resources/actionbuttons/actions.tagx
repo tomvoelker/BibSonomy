@@ -36,14 +36,14 @@
 					</c:if>
 				</c:forEach>
 			</c:if>
-		</c:forEach>					
+		</c:forEach>
 		<c:if test="${editGroupPost}">
 			<buttons:editGroupPostButton
 				post ="${post}" 
 				resourceType="${resourceType}"
 				buttonClasses="${buttonClasses}"/>
 		</c:if>
-				
+		
 		<!-- edit/copy -->
 		<c:choose>
 			<c:when test="${command.context.userLoggedIn and (loginUserName eq post.user.name) and not isRemotePost}">
@@ -73,7 +73,6 @@
 				<buttons:deletePostButton 
 					post ="${post}" 
 					loginUser="${command.context.loginUser}"
-					loginUserName="${loginUserName}" 
 					userLoggedIn="${command.context.userLoggedIn}" 
 					resourceType="${resourceType}"
 					buttonClasses="${buttonClasses}"/>

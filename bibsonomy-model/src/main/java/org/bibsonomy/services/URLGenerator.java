@@ -485,6 +485,27 @@ public class URLGenerator {
 	
 	/**
 	 * @param post
+	 * @param ckey 
+	 * @return the delete url of the post
+	 */
+	public String getDeleteUrlOfPost(final Post<? extends Resource> post, final String ckey) {
+		final UrlBuilder urlBuilder = new UrlBuilder(this.projectHome);
+		urlBuilder.addPathElement("deletePost");
+		
+		final Resource resource = post.getResource();
+		if (ResourceFactory.isCommunityResource(resource)) {
+			urlBuilder.addParameter("resourceHash", resource.getInterHash());
+		} else {
+			urlBuilder.addParameter("resourceHash", resource.getIntraHash());
+			urlBuilder.addParameter("owner", post.getUser().getName());
+		}
+		urlBuilder.addParameter("ckey", ckey);
+		
+		return this.getUrl(urlBuilder.asString());
+	}
+	
+	/**
+	 * @param post
 	 * @return the copy url for the community post
 	 */
 	public String getCopyUrlOfPost(final Post<? extends Resource> post) {

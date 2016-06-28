@@ -8,10 +8,10 @@
 	<jsp:directive.attribute name="communityPostExists" type="java.lang.Boolean" required="true" />
 
 	<c:set var="buttonClasses" value="btn btn-default"/>
-
+	<c:set var="loginUser" value="${command.context.loginUser}" />
 	<c:if test="${command.context.userLoggedIn}">
 		<div class="btn-group btn-group-sm">
-			<c:if test="${not command.context.loginUser.spammer}">
+			<c:if test="${not loginUser.spammer}">
 				<c:choose>
 					<c:when test="${not communityPostExists}">
 						<buttons:copyPostButton
@@ -39,6 +39,10 @@
 					resourceType="${resourceType}"
 					buttonClasses="${buttonClasses}"
 					enforceCommunityPost="${true}"/>
+			</c:if>
+			
+			<c:if test="${loginUser.role eq 'ADMIN' and communityPostExists}">
+				<buttons:deletePostButton userLoggedIn="${true}" post="${post}" resourceType="${resourceType}" loginUser="${loginUser}" buttonClasses="btn-default btn" />
 			</c:if>
 
 		</div>
