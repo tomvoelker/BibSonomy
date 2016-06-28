@@ -26,11 +26,14 @@
  */
 package org.bibsonomy.webapp.controller.actions;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.Collections;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupRole;
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.User;
@@ -158,6 +161,10 @@ public class DeletePostController implements MinimalisticController<DeletePostCo
 	}
 
 	private boolean canDeletePost(final User loginUser, final String postOwner) {
+		// community post
+		if (!present(postOwner)) {
+			return Role.ADMIN.equals(loginUser.getRole());
+		}
 		// if the loginUser is the postOwner
 		if (loginUser.getName().equals(postOwner)) {
 			return true;
