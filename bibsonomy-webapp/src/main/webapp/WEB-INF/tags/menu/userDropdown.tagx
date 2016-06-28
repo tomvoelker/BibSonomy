@@ -14,8 +14,6 @@
 	<c:set var="loginUserName" value="${loginUser.name}" />
 	<c:set var="userLoggedIn" value="${not empty loginUserName}" />
 	
-
-
 	<li>
 		<fmt:message var="titleInbox" key="navi.inbox" />
 		<a href="/inbox" title="${titleInbox}">
