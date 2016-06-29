@@ -170,7 +170,7 @@ public final class ElasticsearchUtils {
 		if (present(documentDateAsTime)) {
 			lastDocumentDate = new Date(documentDateAsTime.longValue());
 		} else {
-			lastDocumentDate = new Date(0);
+			lastDocumentDate = null;
 		}
 		searchIndexState.setLastDocumentDate(lastDocumentDate);
 		
