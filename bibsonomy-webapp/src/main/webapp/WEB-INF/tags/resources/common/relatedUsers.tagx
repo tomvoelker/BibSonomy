@@ -21,7 +21,6 @@
 					<li>
 						<a title="@${fn:escapeXml(user.name)}" href="/user/${fn:escapeXml(user.name)}" class="thumbnail img-thumbnail img-responsive">
 							<img class="user-avatar" src="/picture/user/${fn:escapeXml(user.name)}" alt="@${fn:escapeXml(user.name)}" />
-							<span>@${fn:escapeXml(user.name)}</span>
 						</a>
 						<c:if test="${not empty interHash}">
 							<a href="${relativeUrlGenerator.getPublicationUrlByInterHashAndUsername(interHash, user.name)}" class="btn btn-sm btn-default btn-block"><fontawsome:icon icon="book" /></a>
