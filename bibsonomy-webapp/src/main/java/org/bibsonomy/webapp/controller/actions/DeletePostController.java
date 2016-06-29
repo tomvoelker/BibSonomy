@@ -83,7 +83,7 @@ public class DeletePostController implements MinimalisticController<DeletePostCo
 		final String resourceHash = command.getResourceHash();
 		final String owner = command.getOwner();
 
-		if (!this.canDeletePost(context.getLoginUser(), owner)) {
+		if (!this.errors.hasErrors() && !this.canDeletePost(context.getLoginUser(), owner)) {
 			this.errors.reject("error.general.edit");
 		}
 
@@ -165,6 +165,7 @@ public class DeletePostController implements MinimalisticController<DeletePostCo
 		if (!present(postOwner)) {
 			return Role.ADMIN.equals(loginUser.getRole());
 		}
+		
 		// if the loginUser is the postOwner
 		if (loginUser.getName().equals(postOwner)) {
 			return true;
