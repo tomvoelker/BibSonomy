@@ -71,7 +71,6 @@ function updateClipboard(element, param) {
 		data : param,
 		dataType : "text",
 		success: function(data) {
-			alert(data);
 			/*
 			 * special case for the /clipboard page
 			 * remove the post from the resource list and update the post count
@@ -89,10 +88,10 @@ function updateClipboard(element, param) {
 			/*
 			 * update the number of clipboard items
 			 */
-			var clipboardCounter = $("#clipboard-counter");
+			var clipboardCounter = $(".clipboard-counter");
+			var clipboardContainer = clipboardCounter.parent();
 			clipboardCounter.text(data);
 			clipboardCounter.css("display", "block !important").show();
-			
 			updateCounter();
 		}
 	});
@@ -103,8 +102,8 @@ function updateClipboard(element, param) {
  * update the counter at the navigation bar to reflect the amount of picked publications and unread messages
  */
 function updateCounter() {
-	var clipboardNum = $("#clipboard-counter");
-	var inboxNum = $("#inbox-counter");
+	var clipboardNum = $(".clipboard-counter:first");
+	var inboxNum = $(".inbox-counter:first");
 	var counter = $("#inbox-clipboard-counter");
 	if (counter.length != 0) {
 		var totalCount = 0;

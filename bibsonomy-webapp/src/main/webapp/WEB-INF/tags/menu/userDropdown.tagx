@@ -22,7 +22,7 @@
 			<c:if test="${loginUser.inbox.numPosts == 0}">
 				<c:set var="inboxCounterStyle" value="display: none;" />
 			</c:if>
-			<span id="inbox-counter" style="position: absolute; right: 10px; ${inboxCounterStyle}" class="badge"><c:out value="${loginUser.inbox.numPosts}"/></span>
+			<span style="position: absolute; right: 10px; ${inboxCounterStyle}" class="badge inbox-counter"><c:out value="${loginUser.inbox.numPosts}"/></span>
 		</a>
 	</li>
 	<li>
@@ -33,7 +33,7 @@
 			<c:if test="${loginUser.clipboard.numPosts == 0}">
 				<c:set var="clipboardCounterStyle" value="display: none;" />
 			</c:if>
-			<span id="clipboard-counter" style="position: absolute; right: 10px; ${clipboardCounterStyle}" class="badge"><c:out value="${loginUser.clipboard.numPosts}"/></span>
+			<span style="position: absolute; right: 10px; ${clipboardCounterStyle}" class="badge clipboard-counter"><c:out value="${loginUser.clipboard.numPosts}"/></span>
 		</a>
 	</li>
 	<li>
