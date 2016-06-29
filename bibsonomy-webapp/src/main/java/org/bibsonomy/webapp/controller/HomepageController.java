@@ -91,7 +91,7 @@ public class HomepageController extends SingleResourceListController implements 
 		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
-			setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, null, MAX_TAGS, null);
+			setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, null, null, MAX_TAGS, null);
 			
 			/*
 			 * add news posts (= latest blog posts)

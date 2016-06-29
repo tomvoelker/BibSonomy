@@ -151,7 +151,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			
 			// only fetch tags if they were not already fetched by handleTagsOnly
 			if (command.getTagstype() == null) {
-				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, Integer.MAX_VALUE, null, command.getScope());
+				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, Integer.MAX_VALUE, null, command.getScope());
 			}
 
 			// retrieve concepts

@@ -131,7 +131,7 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 			// always retrieve all tags of this group
 			// only fetch tags if they were not already fetched by handleTagsOnly
 			if (command.getTagstype() == null) {
-				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, Integer.MAX_VALUE, null);
+				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, Integer.MAX_VALUE, null);
 			}
 			
 			final Group group = this.logic.getGroupDetails(groupingName, false);

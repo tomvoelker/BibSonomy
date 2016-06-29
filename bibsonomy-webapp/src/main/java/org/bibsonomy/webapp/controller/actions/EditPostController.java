@@ -360,7 +360,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * get the tag cloud of the user (this must be done before any error
 		 * checking, because the user must have this)
 		 */
-		this.setTags(command, Resource.class, GroupingEntity.USER, loginUser.getName(), null, null, null, 20000, null);
+		this.setTags(command, Resource.class, GroupingEntity.USER, loginUser.getName(), null, null, null, null, 20000, null);
 		/*
 		 * get the relations of the user
 		 */
