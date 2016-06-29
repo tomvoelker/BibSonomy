@@ -106,7 +106,7 @@
 								</c:otherwise>
 							</c:choose>
 							<c:out value=")"/>
-						</c:if>			
+						</c:if>
 					</li>
 				</c:if>
 				
@@ -221,6 +221,7 @@
 							<fmt:message key="tag.asConceptFromGroup"/>
 							<c:out value=" "/>
 							${fn:escapeXml(command.requestedGroup)}
+						</li>
 					</c:forEach>
 					<c:if test="${requTagsListLength > 1}" >
 						<li>
