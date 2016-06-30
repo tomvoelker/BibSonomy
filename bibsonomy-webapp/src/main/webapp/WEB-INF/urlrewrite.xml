@@ -992,7 +992,7 @@
 	<rule>
 		<name>Images below /help/</name>
 		<from>^/help/+(.*/)?([^/]*)((png)|(jpg)|(jpeg)|(gif)|(svg))$</from>
-		<set type="parameter" name="image">$2$3</set>
+		<set type="parameter" name="filename">$2$3</set>
 		<to last="true">/help</to>
 	</rule>
 	

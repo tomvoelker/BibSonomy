@@ -732,7 +732,7 @@
 						<property name="allowedFields">
 							<list>
 								<value>helpPage</value>
-								<value>image</value>
+								<value>filename</value>
 							</list>
 						</property>
 					</bean>

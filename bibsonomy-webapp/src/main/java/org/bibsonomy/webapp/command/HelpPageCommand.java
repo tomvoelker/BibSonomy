@@ -1,11 +1,15 @@
 package org.bibsonomy.webapp.command;
 
+import org.bibsonomy.webapp.command.actions.DownloadFileCommand;
+
 /**
  * The command for the help pages and images.
  *
  * @author Johannes Blum
  */
-public class HelpPageCommand extends BaseCommand {
+public class HelpPageCommand extends DownloadFileCommand {
+
+	private static final long serialVersionUID = -1480991183960187327L;
 
 	/** The requested help page. */
 	private String helpPage;
@@ -18,9 +22,6 @@ public class HelpPageCommand extends BaseCommand {
 	
 	/** <code>true</code> if the requested help page could not be found. */
 	private boolean pageNotFound = false;
-	
-	/** The requested image. */
-	private String image;
 
 	/**
 	 * @return the helpPage
@@ -76,20 +77,6 @@ public class HelpPageCommand extends BaseCommand {
 	 */
 	public void setPageNotFound(boolean pageNotFound) {
 		this.pageNotFound = pageNotFound;
-	}
-
-	/**
-	 * @return the image
-	 */
-	public String getImage() {
-		return this.image;
-	}
-
-	/**
-	 * @param image the image to set
-	 */
-	public void setImage(String image) {
-		this.image = image;
 	}
 
 }

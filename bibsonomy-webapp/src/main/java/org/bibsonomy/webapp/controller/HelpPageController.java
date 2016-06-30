@@ -2,21 +2,24 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.services.URLGenerator;
+import org.bibsonomy.util.file.FileUtil;
 import org.bibsonomy.webapp.command.HelpPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.markdown.Parser;
-import org.bibsonomy.webapp.util.spring.controller.ServletWrappingController;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 
@@ -25,7 +28,7 @@ import org.bibsonomy.webapp.view.Views;
  *
  * @author Johannes Blum
  */
-public class HelpPageController extends ServletWrappingController implements MinimalisticController<HelpPageCommand> {
+public class HelpPageController implements MinimalisticController<HelpPageCommand> {
 	
 	/** The root location the markdown files */
 	public static String HELP_MARKDOWN_ROOT = "help/";
@@ -36,8 +39,8 @@ public class HelpPageController extends ServletWrappingController implements Min
 	/** The prefix of all help URLS */
 	public static String HELP_URL_PREFIX = "help/";
 	
-	/** The prefix of all image URLS */
-	public static String HELP_IMAGE_PREFIX = "resources/image/help/";
+	/** Directory of the images */
+	public static String HELP_IMG_DIR = "img";
 	
 	/** Name of the default project theme */
 	public static String DEFAULT_PROJECT_THEME = "default";
@@ -69,21 +72,38 @@ public class HelpPageController extends ServletWrappingController implements Min
 	public View workOn(HelpPageCommand command) {
 		String language = requestLogic.getLocale().getLanguage();
 		
-		// If image requested redirect to the correct image URL
-		String image = command.getImage();
+		/* Image request */
+		String image = command.getFilename();
 		if (present(image)) {
-			String prefix = HELP_IMAGE_PREFIX + language + "/";
-			// Try to find project specific image
-			String path = prefix + projectName + "/" + image;
-			String realPath = getServletContext().getRealPath("../" + path);
-			File f = new File(realPath);
-			if (f.exists() && ! f.isDirectory())
-				return new ExtendedRedirectView(urlGenerator.getAbsoluteUrl(path));
-			// Project specific image not found, return default image
-			path = prefix + DEFAULT_PROJECT_THEME + "/" + image;
-			return new ExtendedRedirectView(urlGenerator.getAbsoluteUrl(path));
+			// Project specific image
+			String filename = HELP_MARKDOWN_ROOT + language + "/" + HELP_IMG_DIR + "/" + projectName + "/" + image;
+			URL url = Parser.class.getClassLoader().getResource(filename);
 			
-		}		
+			// Take default image if there is no project specific image
+			if (url == null) {
+				filename = HELP_MARKDOWN_ROOT + language + "/" + HELP_IMG_DIR + "/" + DEFAULT_PROJECT_THEME + "/" + image;
+				url = Parser.class.getClassLoader().getResource(filename);
+			}
+			
+			// If there is no image, trigger 404
+			if (url == null) {
+				throw new ObjectNotFoundException(image);
+			}
+			
+			String path = "";
+			try {
+				path = URLDecoder.decode(url.getPath(), "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				throw new ObjectNotFoundException(image);
+			}
+			
+			command.setPathToFile(path);
+			command.setContentType(FileUtil.getContentType(image));
+			
+			return Views.DOWNLOAD_FILE;
+		}
+		
+		/* Help page requeset */
 		
 		// Build HashMap for variable replacement
 		HashMap<String, String> replacements = new HashMap<>();
