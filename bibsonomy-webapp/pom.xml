@@ -705,6 +705,12 @@
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.6.3</version>
 		</dependency>
+		<!-- for extracting text from pdfs -->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itextpdf</artifactId>
+			<version>5.5.9</version>
+		</dependency>
 	</dependencies>
 	<properties>
 		<wtpversion>1.5</wtpversion>

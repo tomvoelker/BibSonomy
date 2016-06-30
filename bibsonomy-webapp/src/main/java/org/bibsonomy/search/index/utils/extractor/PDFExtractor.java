@@ -39,6 +39,9 @@ import com.itextpdf.text.pdf.parser.SimpleTextExtractionStrategy;
 /**
  * extracts text from pdf
  * 
+ * XXX: itext has a AGPL license so we moved the extractor here to release
+ * all other subprojects with a LGPL license
+ * 
  * @author dzo
  */
 public class PDFExtractor implements ContentExtractor {
