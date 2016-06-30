@@ -85,8 +85,8 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
+import org.pegdown.PegDownProcessor;
 
-import com.github.rjeschke.txtmark.Processor;
 import com.google.caja.util.Sets;
 import com.sksamuel.diffpatch.DiffMatchPatch;
 import com.sksamuel.diffpatch.DiffMatchPatch.Diff;
@@ -183,7 +183,7 @@ public class Functions {
 	 * @return the converted markdown
 	 */
 	public static String markdownToHtml(final String markdown) {
-		return Processor.process(StringEscapeUtils.escapeHtml(markdown));
+		return new PegDownProcessor().markdownToHtml(StringEscapeUtils.escapeHtml(markdown));
 	}
 
 	/**
