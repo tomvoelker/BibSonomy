@@ -49,6 +49,7 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
@@ -113,7 +114,8 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 	 * @see org.bibsonomy.search.es.index.ResourceConverter#convertResourceInternal(org.bibsonomy.model.Resource, java.util.Map, boolean)
 	 */
 	@Override
-	protected void convertResourceInternal(BibTex publication, Map<String, Object> source, final boolean loadDocuments) {
+	protected void convertResourceInternal(final Post<BibTex> post, Map<String, Object> source, final boolean loadDocuments) {
+		final BibTex publication = post.getResource();
 		publication.setAddress((String) source.get(Fields.Publication.ADDRESS));
 		publication.setAnnote((String) source.get(Fields.Publication.ANNOTE));
 		publication.setKey((String) source.get(Fields.Publication.KEY));
@@ -148,15 +150,23 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 		publication.setYear((String) source.get(Publication.YEAR));
 		
 		if (loadDocuments) {
-			publication.setDocuments(convertDocuments(source.get(Publication.DOCUMENTS)));
+			final String userName;
+			final User user = post.getUser();
+			if (present(user)) {
+				userName = user.getName();
+			} else {
+				userName = null;
+			}
+			publication.setDocuments(convertDocuments(source.get(Publication.DOCUMENTS), userName));
 		}
 	}
 
 	/**
 	 * @param object
+	 * @param userName 
 	 * @return
 	 */
-	private static List<Document> convertDocuments(Object object) {
+	private static List<Document> convertDocuments(final Object object, final String userName) {
 		final LinkedList<Document> documents = new LinkedList<>();
 		if (object instanceof List) {
 			@SuppressWarnings("unchecked")
@@ -167,6 +177,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 				document.setFileHash(docMap.get(Publication.Document.HASH));
 				document.setMd5hash(docMap.get(Publication.Document.CONTENT_HASH));
 				document.setDate(ElasticsearchUtils.parseDate(docMap.get(Publication.Document.DATE)));
+				document.setUserName(userName);
 				documents.add(document);
 			}
 		}
