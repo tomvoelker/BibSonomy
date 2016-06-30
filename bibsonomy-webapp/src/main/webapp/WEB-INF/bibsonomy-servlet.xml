@@ -1011,7 +1011,6 @@
 	</bean>
 	
 	<bean id="helpPageController" class="org.bibsonomy.webapp.controller.HelpPageController" scope="request">
-		<property name="servletInstance" ref="restServletInstance" />
 		<property name="projectName" ref="projectName"/>
 		<property name="projectTheme" ref="projectTheme"/>
 		<property name="requestLogic" ref="requestLogic"/>
