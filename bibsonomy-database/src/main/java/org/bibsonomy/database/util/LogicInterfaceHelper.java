@@ -147,11 +147,21 @@ public class LogicInterfaceHelper {
 			param.setSearch(search);
 		}
 		
-		if (grouping != GroupingEntity.GROUP) {
-			param.setRequestedUserName(groupingName);
+		if (present(grouping)) {
+			switch (grouping) {
+			case VIEWABLE:
+			case GROUP:
+				param.setRequestedGroupName(groupingName);
+				break;
+			case INBOX:
+			case USER:
+			case FRIEND:
+				param.setRequestedUserName(groupingName);
+				break;
+			default:
+				break;
+			}
 		}
-		
-		param.setRequestedGroupName(groupingName);
 		
 		// add filters
 		param.setFilters(filters);
