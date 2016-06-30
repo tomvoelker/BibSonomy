@@ -43,6 +43,7 @@ import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.metadata.PostMetaData;
@@ -310,13 +311,13 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 				 * show tags by all users for this resource; the ones by the given user
 				 * will be highlighted later
 				 */
-				this.setTags(command, this.getResourceClass(), GroupingEntity.ALL, null, null, null, longHash, TAG_LIMIT, null);
+				this.setTags(command, this.getResourceClass(), GroupingEntity.ALL, null, null, null, null, longHash, TAG_LIMIT, null);
 				return this.getDetailsView();
 			}
 			/*
 			 * get only those tags, related to the resource
 			 */
-			this.setTags(command, this.getResourceClass(), groupingEntity, requUser, null, null, longHash, TAG_LIMIT, null);
+			this.setTags(command, this.getResourceClass(), groupingEntity, requUser, null, Order.ALPH, null, longHash, TAG_LIMIT, null);
 			return this.getResourcePage();
 		}
 

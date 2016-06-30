@@ -134,6 +134,7 @@ public class Functions {
 	 * @param key
 	 * @return String
 	 */
+	@Deprecated // TODO: remove
 	public static String ch(final String key) {
 		if (chars.getProperty(key) != null) {
 			return chars.getProperty(key);

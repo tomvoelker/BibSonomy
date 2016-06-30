@@ -86,7 +86,7 @@ public class FriendPageController extends SingleResourceListControllerWithTags i
 
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
-			this.setTags(command, Resource.class, groupingEntity, groupingName, null, requTags, null, 20000, null);
+			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, requTags, null, 20000, null);
 
 			// log if a user has reached threshold
 			if (command.getTagcloud().getTags().size() >= Parameters.TAG_THRESHOLD) {

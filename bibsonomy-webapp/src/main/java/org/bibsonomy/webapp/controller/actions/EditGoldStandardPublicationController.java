@@ -35,7 +35,6 @@ import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.ObjectUtils;
-import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
@@ -69,7 +68,7 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 	}
 
 	@Override
-	protected void prepareResourceForDatabase(final BibTex resource) {
+	protected void updateGoldStandardIntraHash(final BibTex resource) {
 		// noop
 	}
 

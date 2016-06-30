@@ -106,37 +106,30 @@
 			<goldstandard:tags tagCloudCommand="${command.tagcloud}" />
 			
 			<!-- users that have this resource in their collection -->
-			<common:relatedUsers userList="${command.relatedUserCommand.relatedUsers}"/>
+			<common:relatedUsers userList="${command.relatedUserCommand.relatedUsers}" interHash="${goldstandard.interHash}"/>
 			
 			<c:if test="${hasRelatedPublication}">
 				<div id="related-publications">
-					<h2 class="pub-details">
-						<fmt:message key="publications.related.headline" />
-					</h2>
-					<div class="btn-group">
-						<bs:linkButton additionalClass="active" href="#related-publications" size="small" style="defaultStyle" textKey="publications.related.referenced" />
-						<bs:linkButton href="#related-publications" size="small" style="defaultStyle" textKey="publications.related.citing"/>
+					<div id="related-publications-references" class="related-publications-container">
+						<h2 class="page-header"><fmt:message key="publications.related.referenced" /></h2>
+						<ul class="more-list" data-items="3">
+							<c:forEach var="reference" items="${goldstandard.references}">
+								<li>
+									<goldstandardpublication:simpleDetails publication="${reference}" />
+								</li>
+							</c:forEach>
+						</ul>
 					</div>
-					<ul id="related-publications-references">
-						<c:forEach var="reference" items="${goldstandard.references}">
-							<li>
-								<goldstandardpublication:simpleDetails publication="${reference}" />
-							</li>
-						</c:forEach>
-						<c:if test="${empty goldstandard.references}">
-							<li class="info"><fmt:message key="publications.related.empty" /></li>
-						</c:if>
-					</ul>
-					<ul id="related-publications-citing" style="display:none">
-						<c:forEach var="reference" items="${goldstandard.referencedBy}">
-							<li>
-								<goldstandardpublication:simpleDetails publication="${reference}" />
-							</li>
-						</c:forEach>
-						<c:if test="${empty goldstandard.referencedBy}">
-							<li class="info"><fmt:message key="publications.related.empty" /></li>
-						</c:if>
-					</ul>
+					<div id="related-publications-citing" class="related-publications-container">
+						<h2 class="page-header"><fmt:message key="publications.related.citing" /></h2>
+						<ul data-items="3" class="more-list" data-inline="true">
+							<c:forEach var="reference" items="${goldstandard.referencedBy}">
+								<li>
+									<goldstandardpublication:simpleDetails publication="${reference}" />
+								</li>
+							</c:forEach>
+						</ul>
+					</div>
 				</div>
 			</c:if>
 			
@@ -144,9 +137,10 @@
 				| discussion and rating
 				+-->
 			<div id="discussion-section">
-				<h2 class="pub-details">
+				<h2 class="page-header">
 					<fmt:message key="publications.discussion.headline"/>
 				</h2>
+
 				<!-- Aggregated RatingInfo -->
 				<review:reviewRatingsInfo resource="${post.resource}" />
 		
@@ -157,7 +151,7 @@
 				<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName="${postUserName}" postIsPublic="${postIsPublic}" />
 			</div>
 			<!-- citation box -->
-			<h2 class="pub-details" id="export">
+			<h2 class="page-header" id="export">
 				<!--<fontawsome:icon icon="share-square-o" /><c:out value=" "/>-->
 				<fmt:message key="publications.citations.headline" />
 			</h2>

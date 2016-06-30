@@ -34,6 +34,7 @@ import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.bibsonomy.util.io.LimitedInputStream;
 import org.bibsonomy.util.io.xml.FilterInvalidXMLCharsWriter;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -117,9 +118,13 @@ public class XmlUtils {
 	public static Document getDOM(final URL inputURL, final boolean xmlTags) throws IOException {
 		final Tidy tidy = getTidy(xmlTags);
 		final HttpURLConnection connection = WebUtils.createConnnection(inputURL);
-		final String encodingName = WebUtils.extractCharset(connection.getContentType());
+		// TODO: maybe we should check for the correct content type? Before parsing video/image data
+		final String contentType = connection.getContentType();
+		final String encodingName = WebUtils.extractCharset(contentType);
 		tidy.setInputEncoding(encodingName);
-		return tidy.parseDOM(connection.getInputStream(), null);
+		try (final LimitedInputStream stream = new LimitedInputStream(connection.getInputStream(), 1024)) {
+			return tidy.parseDOM(stream, null);
+		}
 	}
 
 	/**

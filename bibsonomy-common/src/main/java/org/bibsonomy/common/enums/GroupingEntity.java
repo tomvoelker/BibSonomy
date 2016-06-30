@@ -85,7 +85,7 @@ public enum GroupingEntity {
 	 * for constraining the entities in the list to the ones contained in the
 	 * clipboard collection of a given user
 	 */
-	CLIPBOARD, 
+	CLIPBOARD,
 	
 	/**
 	 * for constraining the entities in the list to the ones contained in the 

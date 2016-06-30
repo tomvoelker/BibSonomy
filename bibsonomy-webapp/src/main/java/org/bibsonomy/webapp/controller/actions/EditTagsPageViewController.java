@@ -95,7 +95,7 @@ public class EditTagsPageViewController extends SingleResourceListControllerWith
 		/*
 		 * set the tags of the user to get his tag cloud
 		 */
-		this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, 20000, null);
+		this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 20000, null);
 
 		/*
 		 * get all concepts of the user

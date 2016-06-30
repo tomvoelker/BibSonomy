@@ -75,6 +75,15 @@ public class XmlUtilsTest {
 		}
 	}
 	
+	/**
+	 * @throws Exception
+	 */
+	@Test
+	@Ignore // depends on 3rd party site
+	public void testGetDOMVideo() throws Exception {
+		XmlUtils.getDOM(new URL("http://cdn.media.ccc.de/events/swucgn/h264-hd/swu.2016.05.betroffenenrechte-im-datenschutz.mp4"));
+	}
+	
 	@Test
 	@Ignore // FIXME: bibsonomy boostrap layout is html 5 so jtidy does not work
 	public void testGetDom() throws Exception {

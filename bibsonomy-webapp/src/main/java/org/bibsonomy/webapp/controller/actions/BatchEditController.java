@@ -40,6 +40,7 @@ import java.util.TreeSet;
 import org.antlr.runtime.RecognitionException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
@@ -48,6 +49,8 @@ import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -63,6 +66,7 @@ import org.bibsonomy.webapp.command.actions.BatchEditCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.GroupingCommandUtils;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.PostChangeInfo;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
@@ -73,7 +77,7 @@ import org.springframework.validation.Errors;
 
 /**
  * Controller to batch edit (update tags and delete) resources.
- * 
+ *
  * The controller handles two cases if multiple posts are edited (on batch edit
  * site or post publication site):
  * <ol>
@@ -82,14 +86,14 @@ import org.springframework.validation.Errors;
  * <li>the given posts should be stored (and eventually some posts ignored - if
  * the user flagged them)</li>
  * </ol>
- * 
+ *
  * Another distinction is between updating existing posts and editing posts
  * before actually storing them. The latter happens when a user selects
  * "edit before import" on a batch edit page.
- * 
+ *
  * The controller also updates tags for single posts with fast edit or on bibtex
  * details page.
- * 
+ *
  * @author pbu
  * @author dzo
  * @author ema
@@ -111,7 +115,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	private static final int UPDATE_VIEWABLE_ACTION = 5;
 
 	/**
-	 * 
+	 *
 	 * @param resourceClass
 	 * @return the old resource name
 	 */
@@ -134,9 +138,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	@Override
 	public BatchEditCommand instantiateCommand() {
 		final BatchEditCommand command = new BatchEditCommand();
-		command.setOldTags(new HashMap<String, String>());
-		command.setNewTags(new HashMap<String, String>());
-		command.setPosts(new HashMap<String, Boolean>());
+		command.setPosts(new HashMap<String, PostChangeInfo>());
 
 		command.getBibtex().setList(new LinkedList<Post<BibTex>>());
 		command.getBookmark().setList(new LinkedList<Post<Bookmark>>());
@@ -154,7 +156,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 * entries'
 	 * 2. Import: When user imports several bibTexes through: Add post-> post
 	 * publication->BibTeX/EndNote snippet
-	 * 
+	 *
 	 * Differences:
 	 * In direct edit, user each time can apply one edit option to the posts. So
 	 * we have a list for each edit option in order to reduce database call load
@@ -248,7 +250,28 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 * hash map (for faster access)
 		 */
 		final Map<String, Post<? extends Resource>> postMap = this.getPostMap(updatePosts);
-		final Map<String, Boolean> markedPostsMap = command.getPosts();
+		final Map<String, PostChangeInfo> markedPostsMap = command.getPosts();
+
+		/*
+		 * check if each post belongs to a user that the loginUser can edit.
+		 */
+		for (final String post : postMap.keySet()) {
+
+			if (!postMap.get(post).getUser().getName().equals(loginUserName)) {
+				final Group group = this.logic.getGroupDetails(postMap.get(post).getUser().getName(), false);
+				if (!ValidationUtils.present(group)) {
+					throw new IllegalArgumentException("cannot edit this post");
+				}
+				final GroupMembership ms = group.getGroupMembershipForUser(loginUserName);
+				if (!ValidationUtils.present(ms)) {
+					throw new IllegalArgumentException("cannot edit this post");
+				}
+				if (ms.getGroupRole().hasRole(GroupRole.MODERATOR)) {
+					throw new IllegalArgumentException("insufficient rights for editing this post.");
+				}
+			}
+		}
+
 		/*
 		 * the tags that should be added to all posts
 		 */
@@ -256,10 +279,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		/*
 		 * for each post we have its old tags and its new tags
 		 */
-		final Map<String, String> newTagsMap = command.getNewTags();
-		final Map<String, String> oldTagsMap = command.getOldTags();
-
-		log.debug("#postFlags: " + markedPostsMap.size() + ", #postMap: " + postMap.size() + ", #addTags: " + addTags.size() + ", #newTags: " + newTagsMap.size() + ", #oldTags: " + oldTagsMap.size());
+		log.debug("#postFlags: " + markedPostsMap.size() + ", #postMap: " + postMap.size() + ", #addTags: " + addTags.size());
 
 		/* *******************************************************
 		 * THIRD: initialize temporary variables (lists)
@@ -287,11 +307,12 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		/*
 		 * loop through all hashes and check for each post, what to do
 		 */
-		for (final Entry<String, Boolean> markedPost : markedPostsMap.entrySet()) {
-			if (!markedPost.getValue()) {
+		for (final Entry<String, PostChangeInfo> markedPost : markedPostsMap.entrySet()) {
+			if (!markedPost.getValue().isChecked()) {
 				continue;
 			}
-			final String intraHash = markedPost.getKey();
+			final String intraHash = markedPost.getKey().split("_")[0];
+			final String postOwner = markedPost.getKey().split("_")[1];
 			log.debug("working on post " + intraHash);
 			/*
 			 * short check if hash is correct
@@ -304,7 +325,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			 * STEP 1: Check if post should be deleted or ignored.
 			 */
 			if (action.contains(DELETE_ACTION)) {
-				postsToDelete.add(intraHash);
+				postsToDelete.add(intraHash + "_" + postOwner);
 				continue;
 			}
 
@@ -316,14 +337,14 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 			if (updatePosts) {
 				// updating a post which is already stored
-				post = this.logic.getPostDetails(intraHash, loginUserName);
+				post = this.logic.getPostDetails(intraHash, postOwner);
 				if (!ValidationUtils.present(post)) {
-					log.warn("post with hash " + intraHash + " not found for user " + loginUserName + " while updating");
+					log.warn("post with hash " + intraHash + " not found for user " + postOwner + " while updating");
 					continue;
 				}
 			} else {
 				// the post is only temporarily stored
-				post = postMap.get(intraHash);
+				post = postMap.get(intraHash + "_" + postOwner);
 			}
 
 			/*
@@ -364,18 +385,17 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				 * check its tags
 				 */
 				try {
-					TagUtils.parse(oldTagsMap.get(intraHash));
 					final Set<Tag> newTags = new TreeSet<Tag>();
 					// the following 'if' is for indirect mode, in which
 					// both updates can be done at the same time.
 
 					if (action.contains(ADD_TAGS_TO_ALL_POSTS_ACTION) && action.contains(UPDATE_TAGS_OF_INDIVIDUAL_POSTS_ACTION)) {
-						newTags.addAll(TagUtils.parse(newTagsMap.get(intraHash)));
+						newTags.addAll(TagUtils.parse(markedPost.getValue().getNewTags()));
 						newTags.addAll(getTagsCopy(addTags));
 					} else if (action.contains(UPDATE_TAGS_OF_INDIVIDUAL_POSTS_ACTION)) {
-						newTags.addAll(TagUtils.parse(newTagsMap.get(intraHash)));
+						newTags.addAll(TagUtils.parse(markedPost.getValue().getNewTags()));
 					} else if (action.contains(ADD_TAGS_TO_ALL_POSTS_ACTION)) {
-						newTags.addAll(TagUtils.parse(oldTagsMap.get(intraHash)));
+						newTags.addAll(TagUtils.parse(markedPost.getValue().getOldTags()));
 						newTags.addAll(getTagsCopy(addTags));
 					}
 					post.setTags(newTags);
@@ -414,9 +434,15 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 * delete posts
 		 */
 		if (ValidationUtils.present(postsToDelete)) {
+			String intraHash = "";
+			String postOwner = "";
 			log.debug("deleting " + postsToDelete.size() + " posts for user " + loginUserName);
 			try {
-				this.logic.deletePosts(loginUserName, postsToDelete);
+				for (final String postIter : postsToDelete) {
+					intraHash = postIter.split("_")[0];
+					postOwner = postIter.split("_")[1];
+					this.logic.deletePosts(postOwner, Collections.<String> singletonList(intraHash));
+				}
 			} catch (final IllegalStateException e) {
 				// ignore - posts were already deleted
 			}
@@ -438,7 +464,8 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 */
 		if (directEdit) {
 			if (ValidationUtils.present(postsToUpdateTags)) {
-				this.updatePosts(postsToUpdateTags, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_TAGS, loginUserName);
+				// TODO THONI: update this to reflect the corresponding users.
+				this.updatePosts(postsToUpdateTags, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_TAGS);
 			}
 			/*
 			 * in the two following updates, postUpdateOperation is set to
@@ -452,14 +479,14 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			 * the PostUpdateOperation value will be considered then.
 			 */
 			if (ValidationUtils.present(postsToNormalize)) {
-				this.updatePosts(postsToNormalize, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_NORMALIZE, loginUserName);
+				this.updatePosts(postsToNormalize, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_NORMALIZE);
 			}
 			if (ValidationUtils.present(postsToUpdateViewable)) {
-				this.updatePosts(postsToUpdateViewable, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_VIEWABLE, loginUserName);
+				this.updatePosts(postsToUpdateViewable, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_VIEWABLE);
 			}
 		} else {// if import
 			if (updatePosts) {
-				this.updatePosts(postsToCombiUpdate, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_ALL, loginUserName);
+				this.updatePosts(postsToCombiUpdate, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_ALL);
 			} else {
 				/*
 				 * FIXME:What happens to those posts that should have been
@@ -503,7 +530,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 	/**
 	 * Returns a copy of the given tags (i.e., new instances!)
-	 * 
+	 *
 	 * @param tags
 	 * @return
 	 */
@@ -518,10 +545,10 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	/**
 	 * Tries to store the posts in the database, updates them if
 	 * necessary (duplicate) and allowed to to so (overwrite = true).
-	 * 
+	 *
 	 * FIXME: the error handling here is almost identical to that
 	 * in {@link PostPublicationController#savePosts}
-	 * 
+	 *
 	 * @param posts - the posts that should be stored
 	 * @param resourceType - the type of resource the posts contain
 	 * @param postMap - to access posts using their hash
@@ -599,14 +626,14 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				/*
 				 * try to update the posts
 				 */
-				this.updatePosts(postsForUpdate, resourceType, postMap, postsWithErrors, PostUpdateOperation.UPDATE_ALL, loginUserName);
+				this.updatePosts(postsForUpdate, resourceType, postMap, postsWithErrors, PostUpdateOperation.UPDATE_ALL);
 			}
 		}
 	}
 
 	/**
 	 * Tries to update the posts in the database.
-	 * 
+	 *
 	 * @param posts - the posts that should be updated
 	 * @param resourceType - the type of resource the posts contain
 	 * @param postMap - to access posts using their hash
@@ -617,7 +644,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 * @param loginUserName - to complete the post from the database, we need
 	 *        the user's name
 	 */
-	private void updatePosts(final List<Post<? extends Resource>> posts, final Class<? extends Resource> resourceType, final Map<String, Post<?>> postMap, final List<Post<?>> postsWithErrors, final PostUpdateOperation operation, final String loginUserName) {
+	private void updatePosts(final List<Post<? extends Resource>> posts, final Class<? extends Resource> resourceType, final Map<String, Post<?>> postMap, final List<Post<?>> postsWithErrors, final PostUpdateOperation operation) {
 		try {
 			this.logic.updatePosts(posts, operation);
 		} catch (final DatabaseException ex) {
@@ -652,7 +679,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 						/*
 						 * we check for errors, to not add the post twice (if it
 						 * has several errors)
-						 * 
+						 *
 						 * NOTE: we need the complete post (not only hash or so)
 						 * to
 						 * show it on the batch edit page.
@@ -662,7 +689,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 							/*
 							 * XXX: we use the type of operation as indicator
 							 * where to get the posts from
-							 * 
+							 *
 							 * Here, the complete post shall be updated, hence,
 							 * we get it from
 							 * the session (user is editing tags after importing
@@ -676,7 +703,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 							 * the page and must get the post from the database
 							 */
 							try {
-								post = this.logic.getPostDetails(postHash, loginUserName);
+								post = this.logic.getPostDetails(postHash, postMap.get(postHash).getUser().getName());
 								/*
 								 * we must add the tags from the post we tried
 								 * to update -
@@ -706,7 +733,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 * the session in the database. Therefore, this method gets
 	 * those posts from the session and puts them into a hashmap
 	 * for faster access.
-	 * 
+	 *
 	 * @param updatePosts
 	 * @return
 	 */
@@ -728,7 +755,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 	/**
 	 * Parses the tags that should be added to each post.
-	 * 
+	 *
 	 * @param addTagString
 	 * @return
 	 */
@@ -748,7 +775,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 * If the referer points to /bedit{bib,url}/abc, we redirect to /abc,
 	 * otherwise
 	 * to /user/loginUserName
-	 * 
+	 *
 	 * @param referer
 	 * @param loginUserName
 	 * @return
@@ -763,7 +790,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		}
 		return new ExtendedRedirectView(redirectUrl);
 	}
-	
+
 	@Override
 	public Errors getErrors() {
 		return this.errors;
@@ -776,7 +803,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 	/**
 	 * sets the logic
-	 * 
+	 *
 	 * @param logic the logic
 	 */
 	public void setLogic(final LogicInterface logic) {
@@ -785,7 +812,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 	/**
 	 * sets the requestLogic
-	 * 
+	 *
 	 * @param requestLogic the RequestLogic
 	 */
 	public void setRequestLogic(final RequestLogic requestLogic) {
@@ -793,7 +820,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	}
 
 	/**
-	 * 
+	 *
 	 * @param urlGenerator
 	 */
 	public void setUrlGenerator(final URLGenerator urlGenerator) {

@@ -7,11 +7,11 @@
 
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true" />
-	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="userLoggedIn" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="buttonClasses" type="java.lang.String" required="true" />
 	
+	<c:set var="loginUserName" value="${loginUser.name}" /> 
 	
 	<c:set var="isCommunityPost" value="${post.user.name eq null}" />
 	
@@ -24,9 +24,25 @@
 		</c:otherwise>
 	</c:choose>
 	
+	<c:set var="editableByUser" value="${loginUserName eq post.user.name}" />
+	<!-- FIXME: extract this check; used more than once in the view! -->
+	<c:forEach items="${loginUser.groups}" var="group">
+		<c:if test="${group.name eq post.user.name }">
+			<c:set var="ms" value="${group.getGroupMembershipForUser(loginUserName) }" />
+			<c:if test="${not empty ms and (ms.groupRole eq 'MODERATOR' or ms.groupRole eq 'ADMINISTRATOR') }">
+				<c:set var="editableByUser" value="${true}" />
+			</c:if>
+		</c:if>
+	</c:forEach>
 	<c:set var="disabled" value="${false}" />
 	<c:choose>
+		<!-- community post -->
 		<c:when test="${not userLoggedIn or isRemotePost or (loginUserName ne post.user.name and isCommunityPost and loginUser.role ne 'ADMIN')}">
+			<fmt:message key="${resourceType}.actions.delete.inactive" var="deleteTitle"/>
+			<c:set var="disabled" value="${true}" />
+		</c:when>
+		<!-- general -->
+		<c:when test="${not editableByUser and not isCommunityPost}">
 			<fmt:message key="${resourceType}.actions.delete.inactive" var="deleteTitle"/>
 			<c:set var="disabled" value="${true}" />
 		</c:when>
@@ -40,22 +56,7 @@
 	</c:choose>
 	
 	<c:set var="buttonClasses" value="${buttonClasses}${disabled ? ' disabled' : ''}" />
-	
-	<c:url var="deleteUrl" value="/deletePost">
-		<c:choose>
-			<!-- Community post -->
-			<c:when test="${isCommunityPost}">
-				<c:param name="resourceHash" value="${post.resource.interHash}" />
-			</c:when>
-			<!-- Normal post -->
-			<c:otherwise>
-				<c:param name="resourceHash" value="${post.resource.intraHash}" />
-				<c:param name="owner" value="${loginUserName}" />
-			</c:otherwise>
-		</c:choose>
-		<c:param name="ckey" value="${ckey}" />
-	</c:url>
-	<a class="${buttonClasses} confirmdelete" href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" data-type="post">
+	<a class="${buttonClasses} confirmdelete" href="${relativeUrlGenerator.getDeleteUrlOfPost(post, command.context.ckey)}" title="${deleteTitle}" data-type="post">
 		<span class="fa fa-times"><!--  --></span>
 		<span class="sr-only"><fmt:message key="post.actions.delete"/></span>
 	</a>

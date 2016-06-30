@@ -26,5 +26,5 @@
 		</c:otherwise>
 	</c:choose>
 	<c:set var="bibTitle" value="${mtl:cleanBibtex(post.resource.title)}"/>
-	<a href="${bibUrlTemplate}" title="${fn:escapeXml(bibTitle)}" itemprop="headline"><c:out value="${bibTitle}" /></a>
+	<a href="${bibUrlTemplate}" title="${fn:escapeXml(bibTitle)}" itemprop="name"><c:out value="${bibTitle}" /></a>
 </jsp:root>

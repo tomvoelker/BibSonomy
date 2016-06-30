@@ -71,27 +71,29 @@ function updateClipboard(element, param) {
 		data : param,
 		dataType : "text",
 		success: function(data) {
-		
-		/*
-		 * special case for the /clipboard page
-		 * remove the post from the resource list and update the post count
-		 */
-		if (location.pathname.startsWith("/clipboard") && isUnpick) {
-			var post = $(element).parents('li.post');
-			post.slideUp(400, function() {
-				post.remove();
-			});
-			var postCountBadge = $('h3.list-headline .badge');
-			var postCount = parseInt(postCountBadge.text());
-			postCountBadge.text(postCount - 1);
+			/*
+			 * special case for the /clipboard page
+			 * remove the post from the resource list and update the post count
+			 */
+			if (location.pathname.startsWith("/clipboard") && isUnpick) {
+				var post = $(element).parents('li.post');
+				post.slideUp(400, function() {
+					post.remove();
+				});
+				var postCountBadge = $('h3.list-headline .badge');
+				var postCount = parseInt(postCountBadge.text());
+				postCountBadge.text(postCount - 1);
+			}
+			
+			/*
+			 * update the number of clipboard items
+			 */
+			var clipboardCounter = $(".clipboard-counter");
+			var clipboardContainer = clipboardCounter.parent();
+			clipboardCounter.text(data);
+			clipboardCounter.css("display", "block !important").show();
+			updateCounter();
 		}
-		
-		/*
-		 * update the number of clipboard items
-		 */
-		$("#clipboard-counter").show().html(data);
-		updateCounter();
-	}
 	});
 	return false;
 }
@@ -100,8 +102,8 @@ function updateClipboard(element, param) {
  * update the counter at the navigation bar to reflect the amount of picked publications and unread messages
  */
 function updateCounter() {
-	var clipboardNum = $("#clipboard-counter");
-	var inboxNum = $("#inbox-counter");
+	var clipboardNum = $(".clipboard-counter:first");
+	var inboxNum = $(".inbox-counter:first");
 	var counter = $("#inbox-clipboard-counter");
 	if (counter.length != 0) {
 		var totalCount = 0;
@@ -109,6 +111,7 @@ function updateCounter() {
 		if (clipboardCount == 0) {
 			clipboardNum.hide();
 		}
+		
 		totalCount += clipboardCount;
 		totalCount += inboxNum.length == 0 ? 0 : parseInt(inboxNum.text());
 		counter.show().text(totalCount);

@@ -103,11 +103,12 @@ public class GeneralAjaxController extends AjaxController implements Minimalisti
 	private static void getDetailsForUrl(final GeneralAjaxCommand command) {
 		final String pageURL = command.getPageURL();
 		
-		if (!present(pageURL)) return;
+		if (!present(pageURL)) {
+			return;
+		}
 
 		try {
 			final Document document = XmlUtils.getDOM(new URL(pageURL));
-
 			final NodeList title = document.getElementsByTagName("title");
 			command.setPageTitle(title.item(0).getChildNodes().item(0).getNodeValue());
 
