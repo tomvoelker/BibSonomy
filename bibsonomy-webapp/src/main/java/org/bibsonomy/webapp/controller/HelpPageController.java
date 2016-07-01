@@ -75,6 +75,10 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 	public View workOn(HelpPageCommand command) {
 		String language = requestLogic.getLocale().getLanguage();
 		
+		// Override project theme if parameter set
+		if (command.getTheme() != null)
+			projectTheme = command.getTheme();
+		
 		/* Image request */
 		String image = command.getFilename();
 		if (present(image)) {

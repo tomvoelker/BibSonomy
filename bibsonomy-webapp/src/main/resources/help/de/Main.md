@@ -1,7 +1,7 @@
 <!-- en: Main -->
 <!-- ru: Main -->
 
-## Herzlich willkommen auf der Hilfeseite zu BibLicious
+## Herzlich willkommen auf der Hilfeseite zu ${project-name}
 
 ![Main](Main.png)
 

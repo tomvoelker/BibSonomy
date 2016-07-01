@@ -733,6 +733,7 @@
 							<list>
 								<value>helpPage</value>
 								<value>filename</value>
+								<value>theme</value>
 							</list>
 						</property>
 					</bean>
