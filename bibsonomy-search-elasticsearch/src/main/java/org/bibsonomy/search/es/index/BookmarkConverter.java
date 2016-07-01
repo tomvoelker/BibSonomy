@@ -30,6 +30,7 @@ import java.net.URI;
 import java.util.Map;
 
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.search.es.ESConstants.Fields;
 
 /**
@@ -67,7 +68,7 @@ public class BookmarkConverter extends ResourceConverter<Bookmark> {
 	 * @see org.bibsonomy.search.es.index.ResourceConverter#convertResourceInternal(org.bibsonomy.model.Resource, java.util.Map, boolean)
 	 */
 	@Override
-	protected void convertResourceInternal(final Bookmark resource, final Map<String, Object> source, final boolean loadDocuments) {
-		resource.setUrl((String) source.get(Fields.Bookmark.URL));
+	protected void convertResourceInternal(final Post<Bookmark> post, final Map<String, Object> source, final boolean loadDocuments) {
+		post.getResource().setUrl((String) source.get(Fields.Bookmark.URL));
 	}
 }
