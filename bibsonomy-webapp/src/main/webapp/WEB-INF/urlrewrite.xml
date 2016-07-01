@@ -999,7 +999,7 @@
 	<rule>
 		<name>Redirect /help/* to /help/Main</name>
 		<from>^/help/*$</from>
-		<to type="permanent-redirect" last="true">/help/Main</to>
+		<to type="permanent-redirect" last="true">/help/en/Main</to>
 	</rule>
 	
 	<rule>

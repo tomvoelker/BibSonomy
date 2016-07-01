@@ -1,3 +1,6 @@
+<!-- en: Main -->
+<!-- ru: Main -->
+
 ## Herzlich willkommen auf der Hilfeseite zu BibLicious
 
 ![Main](Main.png)

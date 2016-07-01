@@ -39,6 +39,9 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 	/** The prefix of all help URLS */
 	public static String HELP_URL_PREFIX = "help/";
 	
+	/** The help home page */
+	public static String HELP_HOME = "Main";
+	
 	/** Directory of the images */
 	public static String HELP_IMG_DIR = "img";
 	
@@ -103,7 +106,20 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 			return Views.DOWNLOAD_FILE;
 		}
 		
-		/* Help page requeset */
+		/* Help page request */
+		
+		// If pageName does not already have the correct language, redirect
+		if (! command.getHelpPage().matches(language + ".*")) {
+			final String localizedPageName = getLocalizedHelpPageName(command.getHelpPage(), language);
+			// Localization does not exist, redirect to home page
+			if (localizedPageName == null) {
+				return new ExtendedRedirectView(urlGenerator.getAbsoluteUrl(HELP_URL_PREFIX + language + "/" + HELP_HOME));
+			}
+			// Redirect to localized URL
+			if (! localizedPageName.equals(command.getHelpPage())) {
+				return new ExtendedRedirectView(urlGenerator.getAbsoluteUrl(HELP_URL_PREFIX + localizedPageName));		
+			}
+		}
 		
 		// Build HashMap for variable replacement
 		HashMap<String, String> replacements = new HashMap<>();
@@ -117,22 +133,16 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 		try {
 			command.setContent(parser.parseFile(getMarkdownLocation(command.getHelpPage())));
 		} catch (IOException e) {
-			String localizedPageName = findLocalizedHelpPageName(command.getHelpPage(), language);
-			if (localizedPageName != null)
-				return new ExtendedRedirectView(urlGenerator.getAbsoluteUrl(HELP_URL_PREFIX + localizedPageName));
-			
 			command.setPageNotFound(true);
 		}
 		
 		// Parse sidebar
-		String filename = getMarkdownLocation(HELP_SIDEBAR_NAME);
-		String sidebar;
+		String filename = getMarkdownLocation(language + "/" + HELP_SIDEBAR_NAME);
 		try {
-			sidebar = parser.parseFile(filename);
+			command.setSidebar(parser.parseFile(filename));
 		} catch (IOException e) {
-			sidebar = "Error: " + filename + " not found.";
+			command.setSidebar("Error: " + filename + " not found.");
 		}
-		command.setSidebar(sidebar);
 		
 		return Views.HELP;
 	}
@@ -142,44 +152,41 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 	 * @param pageName The name of the help page
 	 * @return the location of the source file
 	 */
-	private String getMarkdownLocation(String pageName) {
-		return HELP_MARKDOWN_ROOT + requestLogic.getLocale().getLanguage() + "/" + pageName + ".md";
+	private static String getMarkdownLocation(String pageName) {
+		return HELP_MARKDOWN_ROOT + pageName + ".md";
 	}
 	
 	/**
-	 * Tries to find the name of the given help page in the given language
+	 * Tries to determine the name of the given help page in the given language
 	 * @param pageName the name of the help page
 	 * @param language the requested language
 	 * @return the name of the help page in the given language, if it could be
 	 * found, <code>null</code> otherwise
 	 */
-	private static String findLocalizedHelpPageName(String pageName, String language) {
-		String languages[] = {"en", "de", "ru"};
-		for (String l : languages) {
-			// Try to find the markdown source of the page in the original language
-			String filename = HELP_MARKDOWN_ROOT + l + "/" + pageName + ".md";
+	private static String getLocalizedHelpPageName(String pageName, String language) {
+		final String filename = getMarkdownLocation(pageName);
+		
+		try {
+			final InputStream stream = Parser.class.getClassLoader().getResourceAsStream(filename);
+			final BufferedReader buf = new BufferedReader(new InputStreamReader(stream));
 			
-			try {
-				final InputStream stream = Parser.class.getClassLoader().getResourceAsStream(filename);
-				final BufferedReader buf = new BufferedReader(new InputStreamReader(stream));
-				
-				/*
-				 * Try to find a line of form "<!-- language: localized page name -->"
-				 * in the orignal markdown source and return "localized page name"
-				 */
-				String line = null;				
-				Pattern p = Pattern.compile("<!--\\s" + language + ":\\s(.*)\\s*-->");
-				Matcher m;
-				while ((line = buf.readLine()) != null) {
-					m = p.matcher(line);
-					if (m.find())
-						return m.group(1);
+			/*
+			 * Try to find a line of form "<!-- language: localized page name -->"
+			 * in the orignal markdown source and return "localized page name"
+			 */
+			String line = null;				
+			Pattern p = Pattern.compile("<!--\\s" + language + ":\\s(.*)\\s*-->");
+			Matcher m;
+			while ((line = buf.readLine()) != null) {
+				m = p.matcher(line);
+				if (m.find()) {
+					buf.close();
+					return language + "/" + m.group(1);
 				}
-				buf.close();
-			} catch (Exception e) {
-				// Try next original language
-				continue;
 			}
+			buf.close();
+		} catch (Exception e) {
+			return null;
 		}
 		
 		// Nothing found
