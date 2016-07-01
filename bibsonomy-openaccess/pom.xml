@@ -3,7 +3,7 @@
 
     BibSonomy-OpenAccess - Check Open Access Policies for Publications
 
-    Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+    Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
                                   University of Kassel, Germany
                                   http://www.kde.cs.uni-kassel.de/
                               Data Mining and Information Retrieval Group,
@@ -40,7 +40,7 @@
 	<parent>
 		<groupId>org.bibsonomy</groupId>
 		<artifactId>bibsonomy</artifactId>
-		<version>3.6.0-SNAPSHOT</version>
+		<version>3.7.0-SNAPSHOT</version>
 	</parent>
 	<licenses>
 		<license>

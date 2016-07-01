@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -35,6 +35,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.common.exceptions.DuplicateEntryException;
 import org.bibsonomy.common.exceptions.UnsupportedRelationException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
@@ -219,7 +220,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		if (query == "updateUser" || query == "updateUserProfile") {
 			final UploadedFile profilePicture = user.getProfilePicture();
 
-			if ( !present(profilePicture) ) {
+			if (!present(profilePicture)) {
 				//nothing to do
 				return;
 			}
@@ -378,14 +379,15 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Insert attributes for new user account including new Api key.
+	 * Insert attributes for new user account including new API key.
 	 */
 	private void insertUser(final User user, final DBSession session) {
 		if (!present(user)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User object isn't present");
 		}
-		if (present(this.getUserDetails(user.getName(), session))) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Username is already taken");
+		final User userInDatabase = this.getUserDetails(user.getName(), session);
+		if (present(userInDatabase.getName())) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "username is already taken");
 		}
 		user.setApiKey(UserUtils.generateApiKey());
 
@@ -1172,38 +1174,21 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @return name of created user
 	 */
 	public String activateUser(final User user, final DBSession session) {
-		this.performActivationSteps(user, session);
-		return user.getName();
-	}
-
-	/**
-	 * Small wrapper to make these steps usable in GroupDatabaseManager.
-	 * @param user
-	 * @param session
-	 */
-	protected void performActivationSteps(final User user, final DBSession session) {
-		// only perform the whole thing if there is no user with this name
-		if (!present(this.getUserDetails(user.getName(), session))) {
-			try {
-				session.beginTransaction();
-				this.insert("activateUser", user.getName(), session);
-				this.deletePendingUser(user.getName(), session);
-				session.commitTransaction();
-			} finally {
-				session.endTransaction();
-			}
-
-			// make sure that the user is inserted before adding the wiki.
-			if (present(this.getUserDetails(user.getName(), session))) {
-				try {
-					session.beginTransaction();
-					this.insertDefaultWiki(user, session);
-					session.commitTransaction();
-				} finally {
-					session.endTransaction();
-				}
-			}
+		final String userName = user.getName();
+		try {
+			session.beginTransaction();
+			
+			this.insert("activateUser", userName, session);
+			this.deletePendingUser(userName, session);
+			this.insertDefaultWiki(user, session);
+			
+			session.commitTransaction();
+		} catch (final DuplicateEntryException e) {
+			log.info(userName + " already activated", e);
+		} finally {
+			session.endTransaction();
 		}
+		return userName;
 	}
 
 	/**
@@ -1269,6 +1254,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return  a list of users with the username
 	 */
+	// FIXME: Why does this return a list?
 	public List<User> getPendingUserByUsername(final String username, final int start, final int end,  final DBSession session) {
 		final UserParam param = new UserParam();
 		param.setOffset(start);

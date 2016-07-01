@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -211,7 +211,7 @@ public class ResourceFactory {
 	 * @param resource
 	 * @return <code>true</code> iff the resource represents a community post
 	 */
-	public static boolean isCommunityResource(Resource resource) {
+	public static boolean isCommunityResource(final Resource resource) {
 		return resource instanceof GoldStandard<?>;
 	}
 
@@ -219,7 +219,7 @@ public class ResourceFactory {
 	 * @param resource
 	 * @return the superior resource class
 	 */
-	public static Class<? extends Resource> findSuperiorResourceClass(Resource resource) {
+	public static Class<? extends Resource> findSuperiorResourceClass(final Resource resource) {
 		return RESOURCE_CLASSES_SUPERIOR_MAP.get(resource.getClass());
 	}
 }

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -44,7 +44,7 @@ public interface PersonLogicInterface {
 	public void addResourceRelation(ResourcePersonRelation resourcePersonRelation) throws ResourcePersonAlreadyAssignedException;
 
 	/**
-	 * FIXME: remove database id
+	 * FIXME: remove database id TODO_PERSONS
 	 * removes a resource relation
 	 * @param resourceRelationId
 	 */
@@ -60,7 +60,7 @@ public interface PersonLogicInterface {
 	public Person getPersonById(PersonIdType idType, String id);
 	
 	/**
-	 * FIXME: remove database id
+	 * FIXME: remove database id TODO_PERSONS
 	 * removes a person name from a specific person
 	 * @param personNameId
 	 */

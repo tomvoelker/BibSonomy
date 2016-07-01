@@ -6,7 +6,7 @@ Es wurde bereits gezeigt, wie man nach Lesezeichen/Publikationen suchen kann. Di
 
 __Voraussetzung:__ Sie müssen, um diese Anleitung durchführen zu können, die erweiterte Ansicht freischalten.
 
-![](1.png)
+![](subdir/1.png)
 
 Anleitung:
 

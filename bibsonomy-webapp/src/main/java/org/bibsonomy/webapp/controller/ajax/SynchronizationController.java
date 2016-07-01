@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -123,7 +123,7 @@ public class SynchronizationController extends AjaxController implements Minimal
 			final Map<Class<? extends Resource>, List<SynchronizationPost>> syncPlan;
 			try {
 				// overwrite sync direction if initialAutoSync & auto-sync configured
-				if (SyncUtils.syncServiceRequiresInitialSync(server)) {
+				if (SyncUtils.autoSyncServiceRequiresInitialSync(server)) {
 					server.setDirection(SynchronizationDirection.BOTH);
 				}
 				syncPlan = client.getSyncPlan(logic, server);
@@ -174,7 +174,7 @@ public class SynchronizationController extends AjaxController implements Minimal
 				syncResult = client.synchronize(logic, server, syncPlan2);
 
 				// check servers initialAutoSync and set the servers alreadySyncedOnce to true on successful synchronize
-				if (SyncUtils.syncServiceRequiresInitialSync(server)) {
+				if (SyncUtils.autoSyncServiceRequiresInitialSync(server)) {
 					server.setAlreadySyncedOnce(true);
 					this.logic.updateSyncServer(loginUser.getName(), server, SyncSettingsUpdateOperation.ALL);
 				}

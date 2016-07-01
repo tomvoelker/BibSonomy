@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -248,7 +248,7 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @return
 	 */
 	private View editRoleAction(PersonPageCommand command) {
-		//TODO not used? remove?
+		// TODO not used? remove?
 		for (String role : command.getFormPersonRoles()) {
 			final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
 			Post<BibTex> post = new Post<>();
@@ -281,7 +281,7 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 */
 	private View updateAction(PersonPageCommand command) {
-		command.setPerson(this.logic.getPersonById(PersonIdType.BIBSONOMY_ID, command.getFormPersonId()));
+		command.setPerson(this.logic.getPersonById(PersonIdType.PERSON_ID, command.getFormPersonId()));
 		if (command.getPerson() == null) {
 			// TODO: proper frontend responses in cases like this
 			throw new NoSuchElementException();
@@ -301,7 +301,7 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 */
 	private View addNameAction(PersonPageCommand command) {
-		final Person person = logic.getPersonById(PersonIdType.BIBSONOMY_ID, command.getFormPersonId());
+		final Person person = logic.getPersonById(PersonIdType.PERSON_ID, command.getFormPersonId());
 		
 		final PersonName personName = new PersonName(command.getFormLastName());
 		personName.setFirstName(command.getFormFirstName());
@@ -339,20 +339,25 @@ public class PersonPageController extends SingleResourceListController implement
 			command.getAvailableRoles().add(prr);
 		}
 		
-		command.setPerson(this.logic.getPersonById(PersonIdType.BIBSONOMY_ID, command.getRequestedPersonId()));
+		final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getRequestedPersonId());
+		if (!present(person)) {
+			// FIXME: return 404 status code
+			return Views.PERSON_SHOW;
+		}
+		command.setPerson(person);
 		
 		if (DisambiguationPageController.ACTION_KEY_CREATE_AND_LINK_PERSON.equals(this.requestLogic.getLastAction()) || DisambiguationPageController.ACTION_KEY_LINK_PERSON.equals(this.requestLogic.getLastAction())) {
 			command.setOkHintKey(this.requestLogic.getLastAction());
 			this.requestLogic.setLastAction(null);
 		}
 		
-		List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations().byPersonId(command.getPerson().getPersonId()).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear).getIt();
+		List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations().byPersonId(person.getPersonId()).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear).getIt();
 		List<Post<?>> authorPosts = new ArrayList<>();
 		List<Post<?>> advisorPosts = new ArrayList<>();
 		List<Post<?>> otherAuthorPosts = new ArrayList<>();
 		List<Post<?>> otherAdvisorPosts = new ArrayList<>();
 
-		for(ResourcePersonRelation resourcePersonRelation : resourceRelations) {
+		for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
 			final boolean isThesis = resourcePersonRelation.getPost().getResource().getEntrytype().toLowerCase().endsWith("thesis");
 			
 			if (resourcePersonRelation.getRelationType().equals(PersonResourceRelationType.AUTHOR)) {
@@ -378,7 +383,6 @@ public class PersonPageController extends SingleResourceListController implement
 		command.setOtherPubs(otherAuthorPosts);
 		command.setAdvisedThesis(advisorPosts);
 		command.setOtherAdvisedPubs(otherAdvisorPosts);
-		
 		return Views.PERSON_SHOW;
 	}
 	

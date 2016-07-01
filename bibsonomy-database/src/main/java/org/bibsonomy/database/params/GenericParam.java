@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -602,7 +602,7 @@ public abstract class GenericParam {
 	 * If you need the system tag which identifies BibSonomy's follower
 	 * relation
 	 * 
-	 * @return BibSonomy's follower network system tag
+	 * @return follower network system tag
 	 */
 	public String getFollowerTag() {
 		return NetworkRelationSystemTag.FOLLOWER_SYSTEMTAG;

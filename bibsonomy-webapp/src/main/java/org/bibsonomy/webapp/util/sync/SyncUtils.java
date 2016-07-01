@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -136,9 +136,9 @@ public class SyncUtils {
 	
 	/**
 	 * @param service
-	 * @return true, if service needs to a first sync
+	 * @return true, if service needs a first sync
 	 */
-	public static boolean syncServiceRequiresInitialSync(SyncService service) {
+	public static boolean autoSyncServiceRequiresInitialSync(SyncService service) {
 		return present(service) && !service.isAlreadySyncedOnce() && service.isAutosync();
 	}
 }

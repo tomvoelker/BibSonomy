@@ -1,7 +1,7 @@
 /**
  * BibSonomy Search - Helper classes for search modules.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -155,7 +155,7 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 			// store test posts in database
 			final Post<BibTex> bibtexPost = generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC, i);
 			refPosts.add(bibtexPost);
-			publicationDatabaseManager.createPost(bibtexPost, this.dbSession);
+			publicationDatabaseManager.createPost(bibtexPost, bibtexPost.getUser(), this.dbSession);
 		}
 		
 		// retrieve posts
@@ -191,7 +191,7 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 			// store test posts in database
 			final Post<BibTex> bibtexPost = generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC, i);
 			refPosts.add(bibtexPost);
-			publicationDatabaseManager.createPost(bibtexPost, this.dbSession);
+			publicationDatabaseManager.createPost(bibtexPost, null, this.dbSession);
 		}
 		
 		final List<? extends Post<BibTex>> posts = searchBibTexLogic.getNewPosts(lastTasId.intValue(), 10, 4);
@@ -223,9 +223,10 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 			// store test posts in database
 			final Post<BibTex> bibtexPost = generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC, i);
 			refPosts.add(bibtexPost);
-			publicationDatabaseManager.createPost(bibtexPost, this.dbSession);
+			publicationDatabaseManager.createPost(bibtexPost, null, this.dbSession);
 			// delete test post
-			publicationDatabaseManager.deletePost(bibtexPost.getUser().getName(), bibtexPost.getResource().getIntraHash(), this.dbSession);
+			final User user = bibtexPost.getUser();
+			publicationDatabaseManager.deletePost(user.getName(), bibtexPost.getResource().getIntraHash(), user, this.dbSession);
 		}
 		// retrieve posts
 		final List<Integer> posts = searchBibTexLogic.getContentIdsToDelete(new Date(fromDate-QUERY_TIME_OFFSET_MS));

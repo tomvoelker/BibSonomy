@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -151,7 +151,7 @@ public class SpheresPageController extends SingleResourceListControllerWithTags 
 		}
 		
 		// set the tags / related tags for the sphere
-		this.setTags(command, Resource.class, GroupingEntity.FRIEND, loginUser.getName(), null, queryTags, null, Integer.MAX_VALUE, null);
+		this.setTags(command, Resource.class, GroupingEntity.FRIEND, loginUser.getName(), null, null, queryTags, null, Integer.MAX_VALUE, null);
 
 		if (present(requestedUserTags)) {
 			this.setRelatedTags(command, Resource.class, GroupingEntity.FRIEND, loginUser.getName(), null, queryTags, command.getStartDate(), command.getEndDate(), Order.ADDED, 0, 20, null);

@@ -16,12 +16,19 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
+	<c:set var="postOwner" value="${command.context.loginUser}" />
+	<c:if test="${command.groupUser ne null and command.context.loginUser.name ne command.groupUser.name}">
+		<c:set var="postOwner" value="${command.groupUser}" />
+	</c:if>
+
 	<layout:editPostLayout 
 		requPath="${requPath}" 
 		command="${command}" 
 		detailedInformation="${detailedInformation}"
 		resourceType="Bookmark"
-		activeTab="post">
+		activeTab="post"
+		postOwner="${postOwner}"
+		>
 
 		<jsp:attribute name="generalInformation">
 		

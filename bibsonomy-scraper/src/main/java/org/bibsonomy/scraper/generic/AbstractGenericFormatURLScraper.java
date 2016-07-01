@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -83,6 +83,7 @@ public abstract class AbstractGenericFormatURLScraper extends AbstractUrlScraper
 			 * clean the bibtex for better format
 			 */
 			if (present(bibtex)) {
+				// FIXME: cache pattern, use \s+ instead of whitespace
 				final Pattern URL_PATTERN_FOR_URL = Pattern.compile("URL = \\{ \n        (.*)\n    \n\\}");
 				Matcher m = URL_PATTERN_FOR_URL.matcher(bibtex);
 				if(m.find()) {

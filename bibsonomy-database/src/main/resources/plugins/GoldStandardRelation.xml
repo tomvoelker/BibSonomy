@@ -3,11 +3,11 @@
 
 <sqlMap namespace="GoldStandardPublicationReferneces">
 	<update id="updateGoldStandardPublicationRelations">
-		UPDATE gold_standard_relations SET publication = #newId# WHERE publication = #oldId#
+		UPDATE gold_standard_relations SET publication = #newHash# WHERE publication = #oldHash#
 	</update>
 	
 	<update id="updateRelationsGoldStandardPublication">
-		UPDATE gold_standard_relations SET reference = #newId# WHERE reference = #oldId#
+		UPDATE gold_standard_relations SET reference = #newHash# WHERE reference = #oldHash#
 	</update>
 	
 	<delete id="deleteGoldStandardPublicationRelations">
@@ -19,10 +19,10 @@
 	</delete>
 	
 	<update id="updateDiscussion">
-		UPDATE discussion SET interHash = #newId# WHERE interHash = #oldId#
+		UPDATE discussion SET interHash = #newHash# WHERE interHash = #oldHash#
 	</update>
 	
 	<update id="updateReviewRatingCache">
-		UPDATE review_ratings_cache SET interHash = #newId# WHERE interHash = #oldId#
+		UPDATE review_ratings_cache SET interHash = #newHash# WHERE interHash = #oldHash#
 	</update>
 </sqlMap>

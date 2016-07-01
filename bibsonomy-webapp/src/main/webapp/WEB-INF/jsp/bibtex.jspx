@@ -35,16 +35,6 @@
 			<publication:feeds path="${relativeUrlGenerator.getCommunityPublicationUrlByInterHash(publication.interHash)}" />
 		</jsp:attribute>
 		
-		<jsp:attribute name="breadcrumbs">
-			<nav:breadcrumbs>
-				<jsp:attribute name="crumbs">
-					<fmt:message key="actions.communityPost" var="communityPost"/>
-					<nav:crumb name="${communityPost}" />
-					<nav:crumb name="${mtl:shorten(title, 150)}" active="true" />
-				</jsp:attribute>
-			</nav:breadcrumbs>
-		</jsp:attribute>
-		
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
 		</jsp:attribute>

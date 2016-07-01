@@ -73,6 +73,7 @@
 			) AS b2
 		LEFT JOIN document d USING(content_id)
 		JOIN bibtex b USING(content_id)
+		WHERE b.group &gt;= 0
 		ORDER BY content_id
 	</select>
 	
@@ -168,6 +169,7 @@
 		ORDER BY b.date DESC, b.content_id DESC
 	</select>
 	
+	<!-- TODO: merge with getGoldStandardPublicationPostsForTimeRange -->
 	<select id="getGoldStandardBookmarkPostsForTimeRange" resultMap="SearchGoldStandardBookmarkCommon.searchGoldStandardBookmarkPost">
 		SELECT <include refid ="allGoldStandardBookmarkAttributesNoChangeDate"/>, b.change_date, b.group, 'public' AS group_name, 1 AS count, b.content_id, -1 AS rating, -1 AS number_of_ratings
 		FROM gold_standard b

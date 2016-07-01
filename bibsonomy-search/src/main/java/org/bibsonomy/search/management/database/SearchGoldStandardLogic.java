@@ -1,7 +1,7 @@
 /**
  * BibSonomy Search - Helper classes for search modules.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -30,6 +30,7 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.GoldStandardPublication;
 
 /**
+ * TODO: change Generic
  * @author dzo
  */
 public class SearchGoldStandardLogic extends SearchDBLogic<GoldStandardPublication> {

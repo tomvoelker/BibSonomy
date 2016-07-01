@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -479,6 +479,27 @@ public class URLGenerator {
 		final Resource resource = post.getResource();
 		urlBuilder.addPathElement(this.prefix).addPathElement(getEditUrlByResourceClass(resource.getClass()));
 		urlBuilder.addParameter("intraHashToUpdate", resource.getIntraHash());
+		
+		return this.getUrl(urlBuilder.asString());
+	}
+	
+	/**
+	 * @param post
+	 * @param ckey 
+	 * @return the delete url of the post
+	 */
+	public String getDeleteUrlOfPost(final Post<? extends Resource> post, final String ckey) {
+		final UrlBuilder urlBuilder = new UrlBuilder(this.projectHome);
+		urlBuilder.addPathElement("deletePost");
+		
+		final Resource resource = post.getResource();
+		if (ResourceFactory.isCommunityResource(resource)) {
+			urlBuilder.addParameter("resourceHash", resource.getInterHash());
+		} else {
+			urlBuilder.addParameter("resourceHash", resource.getIntraHash());
+			urlBuilder.addParameter("owner", post.getUser().getName());
+		}
+		urlBuilder.addParameter("ckey", ckey);
 		
 		return this.getUrl(urlBuilder.asString());
 	}
