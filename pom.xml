@@ -34,7 +34,7 @@
 	<groupId>org.bibsonomy</groupId>
 	<artifactId>bibsonomy</artifactId>
 	<packaging>pom</packaging>
-	<version>3.6.0</version>
+	<version>3.6.1</version>
 	<description>
 		A blue social bookmark and publication sharing system.
 	</description>
