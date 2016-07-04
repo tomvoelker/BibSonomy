@@ -37,6 +37,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.AdminGroupOperation;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupLevelPermission;
+import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.Group;
@@ -139,22 +140,52 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		try {
 			final Group groupToDelete = this.logic.getGroupDetails(command.getGroup().getName(), false);
 
-			final List<GroupMembership> groupMembers = groupToDelete.getMemberships();
-			for (final GroupMembership ms : groupMembers) {
-				if (!ms.getUser().getName().equals(groupToDelete.getName())) {
-					this.logic.updateGroup(groupToDelete, GroupUpdateOperation.REMOVE_MEMBER, ms);
+			List<GroupMembership> groupMembers = groupToDelete.getMemberships();
+
+			if (present(groupToDelete.getPendingMemberships())) {
+				for (final GroupMembership ms : groupToDelete.getPendingMemberships()) {
+					this.logic.updateGroup(groupToDelete, GroupUpdateOperation.REMOVE_INVITED, ms);
 				}
 			}
 
-			for (final GroupMembership ms : groupToDelete.getPendingMemberships()) {
-				this.logic.updateGroup(groupToDelete, GroupUpdateOperation.REMOVE_INVITED, ms);
-			}
+			if (GroupRole.DUMMY.equals(groupToDelete.getGroupMembershipForUser(groupToDelete.getName()).getGroupRole())) {
+				// NEW GROUP VARIANT
+				// this means that we have the dummy and the last administrator
+				// in this group. Maybe check for the other user actually being
+				// an admin?
 
+				// TODO: maybe we should also have a view to assign a user to a
+				// group as an admin? That should be fairly easy, actually.
+
+				// delete anybody who isn't a dummy or an admin
+				for (final GroupMembership ms : groupMembers) {
+					if (!ms.getUser().getName().equals(groupToDelete.getName()) && !ms.getGroupRole().equals(GroupRole.ADMINISTRATOR)) {
+						this.logic.updateGroup(groupToDelete, GroupUpdateOperation.REMOVE_MEMBER, ms);
+					}
+				}
+
+				groupMembers = groupToDelete.getMemberships();
+				for (int i = 2; i < groupMembers.size(); i++) {
+					this.logic.updateGroup(groupToDelete, GroupUpdateOperation.REMOVE_MEMBER, groupMembers.get(i));
+				}
+				// At this point, we should only have 2 more members in this
+				// group, which should be the dummy and one admin.
+				// we can now safely delete it.
+			} else {
+				// OLD GROUP VARIANT! JUST KICK EVERYBODY!
+				for (final GroupMembership ms : groupMembers) {
+					if (!ms.getUser().getName().equals(groupToDelete.getName())) {
+						this.logic.updateGroup(groupToDelete, GroupUpdateOperation.REMOVE_MEMBER, ms);
+					}
+				}
+			}
 			this.logic.deleteGroup(groupToDelete.getName(), false);
 			command.setAdminResponse("Group " + command.getGroup().getName() + " was successfully deleted.");
 			command.setGroup(null);
 		} catch (final IllegalArgumentException ex) {
 			command.setAdminResponse("Could not delete group: " + ex);
+		} catch (final NullPointerException ex) {
+			command.setAdminResponse("Group " + command.getGroup().getName() + " does not exist.");
 		}
 	}
 

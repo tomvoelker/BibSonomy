@@ -58,22 +58,22 @@
 			<div>
 				<bs:feedback size="defaultSize" style="success">
 					<jsp:attribute name="feedbackBody">
-						<fmt:message key="${command.adminResponse}" />
+						<c:out value="${command.adminResponse}" />
 					</jsp:attribute>
 				</bs:feedback>
 			</div>
 			</c:if>
 			
-			<bsform:fieldset legendKey="settings.group.admin.deleteGroup">
+			<bsform:fieldset legendKey="settings.group.delete">
 				<jsp:attribute name="content">
-					Enter the name of the group that you want to have deleted. The corresponding group will kick out all members and then
-					be deleted.
+					<fmt:message key="settings.group.delete.description" />
 					<form:form name="groupInfo" action="${relativeUrlGenerator.getAdminUrlByName('group')}" method="POST" cssClass="form-horizontal">
 						<input type="hidden" value="DELETE_GROUP" name="action" />
 						<bsform:input labelColSpan="3" inputColSpan="9" id="fetchGroupInfo" path="group.name" />
 						<div class="form-group">
 							<div class="col-sm-offset-3 col-sm-9">
-								<bsform:button type="submit" style="primary" size="defaultSize" value="Delete Group" />
+								<fmt:message key="settings.group.delete" var="buttonText" />
+								<bsform:button type="submit" style="primary" size="defaultSize" value="${buttonText}" />
 							</div>
 						</div>
 					</form:form>
