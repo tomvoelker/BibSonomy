@@ -29,7 +29,7 @@
 	-->	
 	<delete id="deleteEqualConcepts" parameterClass="loggingParam">
 		DELETE FROM tagtagrelations 
-		  WHERE lower = #newId# AND upper = #newId# AND user_name = #user.name#
+		  WHERE lower = #newTag# AND upper = #newTag# AND user_name = #postEditor.name#
 	</delete>
 	
 	<!--	
@@ -40,7 +40,7 @@
 		-->
 	<delete id="deleteOldConcepts" parameterClass="loggingParam">
 		DELETE FROM tagtagrelations 
-		  WHERE (lower = #oldId# OR upper = #oldId#) AND user_name = #user.name#
+		  WHERE (lower = #oldTag# OR upper = #oldTag#) AND user_name = #postEditor.name#
 	</delete>
 
 	<!-- the resultMap needs the column subTagCount whose value is always 1, since a 
@@ -129,14 +129,14 @@
 	
 	<update id="updateUpperTagRelations" parameterClass="loggingParam">
 		UPDATE IGNORE tagtagrelations t 
-		  SET t.upper = #newId#, t.upper_lcase = LCASE(#newId#)
-		  WHERE t.upper = #oldId# AND t.user_name = #user.name#
+		  SET t.upper = #newTag#, t.upper_lcase = LCASE(#newTag#)
+		  WHERE t.upper = #oldTag# AND t.user_name = #postEditor.name#
 	</update>
 	
 	<update id="updateLowerTagRelations" parameterClass="loggingParam">
 		UPDATE IGNORE tagtagrelations t 
-		  SET t.lower = #newId#, t.lower_lcase = LCASE(#newId#)
-		  WHERE t.lower = #oldId# AND t.user_name = #user.name#
+		  SET t.lower = #newTag#, t.lower_lcase = LCASE(#newTag#)
+		  WHERE t.lower = #oldTag# AND t.user_name = #postEditor.name#
 	</update>
 	
 	<update id="pickConcept" parameterClass="tagRelationParam">

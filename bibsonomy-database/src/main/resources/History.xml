@@ -17,7 +17,7 @@
 	<update id="updateGoldStandardHistory" >
 		UPDATE log_gold_standard
 		SET current_content_id = #newContentId#
-		WHERE current_content_id = #requestedContentId#
+		WHERE current_content_id = #oldContentId#
 	</update>
 	
 	<select id="getBibTexHistory" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">

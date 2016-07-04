@@ -203,6 +203,9 @@
 				</thead>
 				<tbody>
 					<c:forEach var="post" items="${listView.list}" varStatus="postCount">
+					<div itemscope="itemscope" itemtype="http://schema.org/CreativeWork">
+						<input type="hidden" name="posts['${post.resource.intraHash}_${post.user.name}'].intraHash" value="${post.resource.intraHash}" />
+						<input type="hidden" name="posts['${post.resource.intraHash}_${post.user.name}'].postOwner" value="${post.user.name}" />
 						<spring:bind path="command.${resourceType}.list[${postCount.index}].resource.*">
 							<c:set var="postHasError" value="${status.error}" />
 						</spring:bind>
@@ -262,12 +265,21 @@
 							</c:when>
 	
 							<c:otherwise>
+								<c:set var="canEdit" value="${post.user.name eq command.context.loginUser.name }" />
+								<c:forEach items="${command.context.loginUser.groups}" var="group">
+									<c:if test="${group.name eq post.user.name }">
+										<c:set var="ms" value="${group.getGroupMembershipForUser(command.context.loginUser.name) }" />
+										<c:if test="${not empty ms and (ms.groupRole eq 'MODERATOR' or ms.groupRole eq 'ADMINISTRATOR') }">
+											<c:set var="canEdit" value="${true}" />
+										</c:if>
+									</c:if>
+								</c:forEach>
 								<c:choose>
 									<!--  a post owned by the logged in user - show a tag edit form -->
-									<c:when test="${post.user.name eq command.context.loginUser.name}">
+									<c:when test="${canEdit}">
 										<tr>
 											<td style="text-align: center;">
-												<input type="checkbox" name="posts['${post.resource.intraHash}']" value="true" checked="checked" />
+												<input type="checkbox" name="posts['${post.resource.intraHash}_${post.user.name}'].checked" value="true" checked="checked" />
 											</td>
 											<!--  a short description of the post -->
 											<td class="chunkybib">
@@ -280,26 +292,26 @@
 														<c:when test="${status.error}">
 															<!--  the post has some errors on the tags - show the tags -->
 															<batch:tagErrors errors="${status}" />
-															
-																<input type="text"
-																	   name="newTags['${post.resource.intraHash}']" size="37"
-																	   value="${fn:escapeXml(mtl:toTagString(post.tags))}"
-																	   disabled="disabled"
-																	   class="form-control"
-																	   autocomplete="off" />
+															<input type="text"
+																   name="posts['${post.resource.intraHash}_${post.user.name}'].newTags" size="37"
+																   value="${fn:escapeXml(mtl:toTagString(post.tags))}"
+																   disabled="disabled"
+																   class="form-control"
+																   autocomplete="off" />
+															<meta itemprop="keywords" content="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
 															<!--  we don't send the old tags, since we must try to update this post in any case  -->
 														</c:when>
 														<c:otherwise>
 															<!--  the post has no errors on the tags - show the tags -->
 															<input type="text"
-																   name="newTags['${post.resource.intraHash}']" size="40"
+																   name="posts['${post.resource.intraHash}_${post.user.name}'].newTags" size="40"
 																   value="${fn:escapeXml(mtl:toTagString(post.tags))}"
 																   disabled="disabled"
 																   class="form-control" 
 																   autocomplete="off" />
 															<!-- to check if the tags have been changed, we also send the original tags -->
 															<input type="hidden" 
-																   name="oldTags['${post.resource.intraHash}']" 
+																   name="posts['${post.resource.intraHash}_${post.user.name}'].oldTags" 
 																   value="${fn:escapeXml(mtl:toTagString(post.tags))}" />
 														</c:otherwise>
 													</c:choose>
@@ -314,6 +326,7 @@
 								</c:choose>
 							</c:otherwise>
 						</c:choose>
+						</div>
 					</c:forEach>
 					
 					<!-- if there exists some posts which are not owned by the user -->
@@ -325,7 +338,16 @@
 							</div>
 							</tr>
 						<c:forEach var="post" items="${listView.list}" varStatus="postCount">
-							<c:if test="${post.user.name ne command.context.loginUser.name}">
+							<c:set var="canEdit" value="${post.user.name eq command.context.loginUser.name }" />
+							<c:forEach items="${command.context.loginUser.groups}" var="group">
+								<c:if test="${group.name eq post.user.name }">
+									<c:set var="ms" value="${group.getGroupMembershipForUser(command.context.loginUser.name) }" />
+									<c:if test="${not empty ms and (ms.groupRole eq 'MODERATOR' or ms.groupRole eq 'ADMINISTRATOR') }">
+										<c:set var="canEdit" value="${true}" />
+									</c:if>
+								</c:if>
+							</c:forEach>
+							<c:if test="${not canEdit}">
 								<tr>
 									<td style="text-align: center;">
 										

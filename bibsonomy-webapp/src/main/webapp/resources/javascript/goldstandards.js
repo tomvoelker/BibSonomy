@@ -5,16 +5,12 @@ var FADE_DURATION = 1000;
 var GOLD_REFERENCE_URL = '/ajax/goldstandards/references';
 
 $(function() {
-	$("#related-publications .btn-group > .btn").click(function() {
-		var uls = $("#related-publications ul");
-		uls.hide();
-		uls.eq($(this).index()).show();
-		$(this).addClass("active").siblings().removeClass("active");
-		return false;
+	// TODO: edit references
+	$('div.related-publications-container ul').each(function(index, list) {
+		if ($(list).find('li').length == 0) {
+			$(list).parent().hide();
+		}
 	});
-	if ($('#related-publications-references>li:not(.info)').length == 0) {
-		$('#related-publications .btn-group > .btn:last').click();
-	}
 });
 
 function editReferences() {

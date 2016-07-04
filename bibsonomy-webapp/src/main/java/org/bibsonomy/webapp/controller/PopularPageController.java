@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -101,7 +101,7 @@ public class PopularPageController extends MultiResourceListController implement
 		} while (days > 0 && begin < 10); // show max 10 entries
 
 		// only html format, exports are not possible atm 
-		this.setTags(command, Resource.class, groupingEntity, null, null, null, null, MAX_TAGS, null);
+		this.setTags(command, Resource.class, groupingEntity, null, null, null, null, null, MAX_TAGS, null);
 		command.setPageTitle("popular"); // TODO: i18n
 		
 		this.endTiming();

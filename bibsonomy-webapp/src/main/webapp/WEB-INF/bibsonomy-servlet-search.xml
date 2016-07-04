@@ -10,6 +10,8 @@
 	<!-- import the config from the elasticsearch search module -->
 	<import resource="classpath:org/bibsonomy/bibsonomy-search-elasticsearch-context.xml" />
 	
+	<bean id="pdfExtractor" class="org.bibsonomy.search.index.utils.extractor.PDFExtractor" />
+	
 	<alias name="elasticsearchBookmarkManager" alias="searchBookmarkManager" />
 	<alias name="elasticsearchPublicationManager" alias="searchPublicationManager" />
 	<alias name="elasticsearchCommunityBookmarkManager" alias="searchCommunityBookmarkManager" />

@@ -15,7 +15,7 @@
 		<jsp:attribute name="additionalInputs">
 			<div class="row">
 				<div class="col-md-3">
-					<input type="number" class="newRating" name="discussionItem.rating" value="${review.rating}"/>
+					<input type="text" class="newRating" name="discussionItem.rating" value="${review.rating}"/>
 				</div>
 				<div class="col-md-9">
 					<a href="#" class="btn-xs btn btn-default rating-reset"><fmt:message key="rating.reset" /></a>

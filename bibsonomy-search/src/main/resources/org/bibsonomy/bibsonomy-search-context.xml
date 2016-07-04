@@ -10,11 +10,11 @@
 	<bean id="searchBookmarkClass" class="java.lang.Class" factory-method="forName">
 		<constructor-arg value="org.bibsonomy.model.Bookmark" />
 	</bean>
-
+	
 	<bean id="searchPublicationClass" class="java.lang.Class" factory-method="forName">
 		<constructor-arg value="org.bibsonomy.model.BibTex" />
 	</bean>
-
+	
 	<bean id="searchGoldStandardPublicationClass" class="java.lang.Class" factory-method="forName">
 		<constructor-arg value="org.bibsonomy.model.GoldStandardPublication" />
 	</bean>
@@ -75,7 +75,7 @@
 				<property name="extractors">
 					<list>
 						<bean class="org.bibsonomy.search.index.utils.extractor.PlainTextExtractor" />
-						<bean class="org.bibsonomy.search.index.utils.extractor.PDFExtractor" />
+						<ref bean="pdfExtractor" />
 					</list>
 				</property>
 				<property name="fileLogic" ref="fileLogic" />
@@ -83,5 +83,7 @@
 		</constructor-arg>
 		<constructor-arg ref="fileLogic" />
 	</bean>
+	
+	
 	
 </beans>

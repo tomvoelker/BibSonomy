@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -85,8 +85,8 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
+import org.pegdown.PegDownProcessor;
 
-import com.github.rjeschke.txtmark.Processor;
 import com.google.caja.util.Sets;
 import com.sksamuel.diffpatch.DiffMatchPatch;
 import com.sksamuel.diffpatch.DiffMatchPatch.Diff;
@@ -134,6 +134,7 @@ public class Functions {
 	 * @param key
 	 * @return String
 	 */
+	@Deprecated // TODO: remove
 	public static String ch(final String key) {
 		if (chars.getProperty(key) != null) {
 			return chars.getProperty(key);
@@ -182,7 +183,7 @@ public class Functions {
 	 * @return the converted markdown
 	 */
 	public static String markdownToHtml(final String markdown) {
-		return Processor.process(StringEscapeUtils.escapeHtml(markdown));
+		return new PegDownProcessor().markdownToHtml(StringEscapeUtils.escapeHtml(markdown));
 	}
 
 	/**

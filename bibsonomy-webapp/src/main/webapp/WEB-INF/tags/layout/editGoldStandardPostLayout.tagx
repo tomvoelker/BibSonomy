@@ -30,6 +30,7 @@
     <jsp:directive.attribute name="groups" fragment="true" required="false" />
     <jsp:directive.attribute name="extraInformation" fragment="true" required="false" description="Extra information which shall be displayed outside the form."/>
     <jsp:directive.attribute name="postApproval" fragment="true" required="false" description="A checkbox inorder to approve goldstandard posts"/>
+    <jsp:directive.attribute name="postOwner" type="org.bibsonomy.model.User" fragment="false" required="false" description="The owner of the current post" />
 	
 	<fmt:message key="navi.edit${resourceType}" var="editPageTitle" />
 
@@ -102,13 +103,29 @@
 		
 				<div class="col-md-9 col-sm-12 col-xs-12">
 			
-					<h1 class="content-heading"><fmt:message key="post.resource.edit${resourceType}" /></h1>
+					<c:choose>
+						<c:when test="${not empty postOwner and postOwner ne command.context.loginUser}">
+							<h1 class="content-heading"><fmt:message key="post.resource.editGroup${resourceType}" /></h1>
+						</c:when>
+						<c:otherwise>
+							<h1 class="content-heading"><fmt:message key="post.resource.edit${resourceType}" /></h1>
+						</c:otherwise> 
+					</c:choose>
 					
 					<!--+ 
 		  	          	| show global errors
 		    		  	+ -->
 					<errors:global />
-		            
+
+					<c:if test="${not empty postOwner and postOwner ne command.context.loginUser}">
+						<div class="row">
+							<div class="alert alert-warning alert-dismissible" role="alert">
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&amp;times;</span></button>
+								<fmt:message key="post.resource.editGroupPost.warning" />
+							</div>
+						</div>
+					</c:if>
+				
 		            <!--+
 		                | form starts here
 		                +-->
@@ -160,7 +177,7 @@
 									<c:if test="${resourceType eq 'Publication'}">
 										<p>
 											<fmt:message key="post.edit.spam_note">
-												<fmt:param value="user ${command.context.loginUser.name} was flagged as spammer"/>
+												<fmt:param value="user ${postOwner.name} was flagged as spammer"/>
 												<fmt:param value="${properties['project.noSpamEmail']}" />
 											</fmt:message>
 										</p>
@@ -199,6 +216,9 @@
 								<input type="hidden" name="referer" value="${fn:escapeXml(command.referer)}"/>
 								<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
 								<form:hidden path="intraHashToUpdate" />
+								<c:if test="${not empty command.groupUser}">
+									<form:hidden path="groupUser" />
+								</c:if>
 								<div class="col-sm-offset-3 col-sm-9">
 									<fmt:message key="save" var="save" />
 									<fmt:message key="save.and.rate" var="saveAndRate" />

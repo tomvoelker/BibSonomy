@@ -43,11 +43,11 @@
 			</c:if>
 		
 			
-			<div class="media" style="border:none;">
+			<div class="socializer">
 				<!-- user thumbnail -->
 				<user:thumbnail user="${command.user}" />
 			
-				<div class="media-body" id="titletext">
+				<div id="titletext">
 
 					<!--+
 						| only for logged in users: followers, friends, groups, etc.
