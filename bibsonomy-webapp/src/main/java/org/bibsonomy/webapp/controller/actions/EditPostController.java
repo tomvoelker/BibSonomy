@@ -601,7 +601,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		final List<ErrorMessage> errorMessages = ex.getErrorMessages(post.getResource().getIntraHash());
 		for (final ErrorMessage em : errorMessages) {
 			this.errors.reject("error.post.update", "Could not " + process + " this post.");
-			log.warn("could not " + process + " post because " + em.getDefaultMessage());
+			log.warn("could not " + process + " post because " + em.getDefaultMessage(), ex);
 			return Views.ERROR;
 		}
 		return this.getEditPostView(command, loginUser);
