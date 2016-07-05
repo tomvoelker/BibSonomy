@@ -42,19 +42,17 @@ import org.bibsonomy.rest.strategy.Context;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  */
 public class GetListOfPostsStrategy extends AbstractListOfPostsStrategy {
-	private final String nextLinkPrefix;
-
+	
 	/**
 	 * @param context
 	 */
 	public GetListOfPostsStrategy(final Context context) {
 		super(context);
-		this.nextLinkPrefix = this.getUrlRenderer().getApiUrl() + RESTConfig.POSTS_URL;
 	}
 
 	@Override
 	protected StringBuilder getLinkPrefix() {
-		return new StringBuilder(this.nextLinkPrefix);
+		return new StringBuilder(this.getUrlRenderer().getApiUrl() + RESTConfig.POSTS_URL);
 	}
 
 	@SuppressWarnings("unchecked")

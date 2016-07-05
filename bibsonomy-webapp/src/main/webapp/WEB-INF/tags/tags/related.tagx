@@ -62,18 +62,16 @@
 					<c:choose>
 						<c:when test="${not empty scope and scope ne 'LOCAL'}">
 							<c:url var="tagUrl"
-						   		value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}?scope=${scope}"/>
+								value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}?scope=${scope}"/>
 							<c:url var="tagsUrl"
-								value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(fn:join(fn:split(cmd.requestedTags, ' '), '+'))}+${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}?scope=${scope}"/>											
+								value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(fn:join(fn:split(cmd.requestedTags, ' '), '%20'))}%20${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}?scope=${scope}"/>
 						</c:when>
 						<c:otherwise>
-							<c:url var="tagUrl"
-						   		value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
-							<c:url var="tagsUrl"
-								value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(fn:join(fn:split(cmd.requestedTags, ' '), '+'))}+${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>						
+							<c:url var="tagUrl" value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
+							<c:url var="tagsUrl" value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${fn:escapeXml(fn:join(fn:split(cmd.requestedTags, ' '), '%20'))}%20${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
 						</c:otherwise>
 					</c:choose>
-									</c:when>
+				</c:when>
 				<!-- construct relevantfor/group url -->
 				<c:otherwise>
 					<c:choose>
@@ -82,7 +80,7 @@
 									value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${command.requestedGroup}/${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}?scope=${scope}"/>
 							<c:if test="${showRelatedTagsURL}">
 								<c:url var="tagsUrl"
-									value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${command.requestedGroup}/${fn:escapeXml(fn:join(fn:split(cmd.requestedTags, ' '), '+'))}+${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}?scope=${scope}"/>
+									value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${command.requestedGroup}/${fn:escapeXml(fn:join(fn:split(cmd.requestedTags, ' '), '%20'))}%20${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}?scope=${scope}"/>
 							</c:if>
 						</c:when>
 						<c:otherwise>
@@ -90,10 +88,10 @@
 									value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${command.requestedGroup}/${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
 							<c:if test="${showRelatedTagsURL}">
 								<c:url var="tagsUrl"
-									value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${command.requestedGroup}/${fn:escapeXml(fn:join(fn:split(cmd.requestedTags, ' '), '+'))}+${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
+									value="/${fn:escapeXml(mtl:getLowerPath(requPath))}/${command.requestedGroup}/${fn:escapeXml(fn:join(fn:split(cmd.requestedTags, ' '), '%20'))}%20${fn:escapeXml(tag.name)}${fn:escapeXml(mtl:getQuery(requPath))}"/>
 							</c:if>
 						</c:otherwise>
-					</c:choose>						
+					</c:choose>
 				</c:otherwise>
 			</c:choose>
 		
