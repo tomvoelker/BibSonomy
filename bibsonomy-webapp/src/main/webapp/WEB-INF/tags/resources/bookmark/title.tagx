@@ -5,8 +5,8 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
 	
-	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	
 	<c:set var="bookUrl"><c:out value="${mtl:cleanUrl(post.resource.url)}" escapeXml="true"/></c:set>
-	<a href="${bookUrl}" rel="nofollow" title="${fn:escapeXml(post.resource.title)}" data-versiondate="${mtl:formatDateW3CDTF(post.date)}"><c:out value='${post.resource.title}'/></a>
+	<a href="${bookUrl}" rel="nofollow" title="${fn:escapeXml(post.resource.title)}" data-versiondate="${mtl:formatDateW3CDTF(post.date)}" itemprop="url"><span itemprop="name"><c:out value='${post.resource.title}'/></span></a>
 </jsp:root>
