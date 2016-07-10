@@ -21,14 +21,16 @@ import org.pegdown.plugins.ToHtmlSerializerPlugin;
 
 /**
  * Helper class for the Markdown parsing.
+ * 
+ * @author Johannes Blum
  */
 public class Parser {
 	
-	/** A HashMap which maps a variable to the value it should be replaced with */
+	/** A map which maps a variable to the value it should be replaced with */
 	private Map<String, String> replacements;
 
 	/**
-	 * @param replacements the HashMap for the replacement of the variables
+	 * @param replacements the map for the replacement of the variables
 	 */
 	public Parser(Map<String, String> replacements) {
 		super();

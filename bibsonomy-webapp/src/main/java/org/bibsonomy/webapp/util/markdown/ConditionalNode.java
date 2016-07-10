@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.util.markdown;
-import java.util.ArrayList;
+
+import java.util.LinkedList;
 import java.util.List;
 
 import org.pegdown.ast.AbstractNode;
@@ -7,21 +8,20 @@ import org.pegdown.ast.Node;
 import org.pegdown.ast.Visitor;
 
 /**
- * A Node for a conditional expression. 
+ * A {@link Node} for a conditional expression.
  *
  * @author Johannes Blum
  */
 public class ConditionalNode extends AbstractNode {
 	
-	/** The condition */
+	/** the condition */
 	private String condition;
 	
 	private String source;
 	
-	/** The child nodes representing the content */
-	private final List<Node> children = new ArrayList<Node>();
+	/** the child nodes representing the content */
+	private final List<Node> children = new LinkedList<Node>();
 	
-
 	/**
 	 * @param condition The condition
 	 * @param children The children

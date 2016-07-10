@@ -12,8 +12,7 @@ import org.pegdown.plugins.InlinePluginParser;
 import org.pegdown.plugins.PegDownPlugins;
 
 /**
- * 
- * The Plugin.
+ * the plugin extension used by the help pages
  *
  * @author Johannes Blum
  */

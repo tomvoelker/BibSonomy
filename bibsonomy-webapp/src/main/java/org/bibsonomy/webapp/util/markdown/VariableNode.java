@@ -1,4 +1,5 @@
 package org.bibsonomy.webapp.util.markdown;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -7,7 +8,7 @@ import org.pegdown.ast.Node;
 import org.pegdown.ast.Visitor;
 
 /**
- * A Node for a variable.
+ * A {@link Node} for a variable.
  *
  * @author Johannes Blum
  */

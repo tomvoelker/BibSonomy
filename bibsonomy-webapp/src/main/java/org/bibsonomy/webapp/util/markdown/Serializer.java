@@ -1,4 +1,5 @@
 package org.bibsonomy.webapp.util.markdown;
+
 import java.util.Map;
 
 import org.pegdown.Printer;
@@ -13,12 +14,12 @@ import org.pegdown.plugins.ToHtmlSerializerPlugin;
  */
 public class Serializer implements ToHtmlSerializerPlugin {
 	
-	/** Hashmap for the replacement of the variables. */
+	/** map for the replacement of the variables. */
 	private Map<String, String> replacements;
 	
 	/**
 	 * Instantiates a new Serializer.
-	 * @param replacements a Hashmap which maps a variable to the value it should be replaced with
+	 * @param replacements a map which maps a variable to the value it should be replaced with
 	 */
 	public Serializer(final Map<String, String> replacements) {
 		this.replacements = replacements;
@@ -30,7 +31,7 @@ public class Serializer implements ToHtmlSerializerPlugin {
 	@Override
 	public boolean visit(Node node, Visitor visitor, Printer printer) {
 		if (node instanceof VariableNode) {
-			String var = ((VariableNode) node).getName();
+			final String var = ((VariableNode) node).getName();
 			printer.print(replaceVar(var));
 			return true;
 		}
@@ -78,14 +79,13 @@ public class Serializer implements ToHtmlSerializerPlugin {
 	 */
 	private String norm(String lhs) {
 		if (lhs.startsWith("\"") && lhs.endsWith("\"")) {
-			lhs = lhs.substring(1, lhs.length()-1);
-		} else {
-			lhs = replaceVar(lhs);
+			// remove ""
+			return lhs.substring(1, lhs.length() - 1);
 		}
-		return lhs;
+		return this.replaceVar(lhs);
 	}
 	
-	private String replaceVar(String var) {
+	private String replaceVar(final String var) {
 		final String r = this.replacements.get(var);
 		if (r == null) {
 			throw new RuntimeException("Unknown variable: " + var);
@@ -100,17 +100,19 @@ public class Serializer implements ToHtmlSerializerPlugin {
 	 * @return the value 0 if the versions are equal; -1 if v1 < v2; and 1 if v1 > v2
 	 */
 	private static int compareVersions(String v1, String v2) {
-		String[] fields1 = v1.split("\\.");
-		String[] fields2 = v2.split("\\.");
+		final String[] fields1 = v1.split("\\.");
+		final String[] fields2 = v2.split("\\.");
 		
 		for (int i = 0; i < Math.max(fields1.length, fields2.length); i++) {
-			int f1 = (i < fields1.length) ? Integer.parseInt(fields1[i]) : 0;
-			int f2 = (i < fields2.length) ? Integer.parseInt(fields2[i]) : 0;
+			final int f1 = (i < fields1.length) ? Integer.parseInt(fields1[i]) : 0;
+			final int f2 = (i < fields2.length) ? Integer.parseInt(fields2[i]) : 0;
 			
-			if (f1 < f2)
+			if (f1 < f2) {
 				return -1;
-			if (f2 > f1)
+			}
+			if (f2 > f1) {
 				return 1;
+			}
 		}
 		
 		return 0;
