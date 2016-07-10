@@ -1741,7 +1741,8 @@ CREATE TABLE `pub_person` (
   `log_changed_at` datetime DEFAULT NULL,
   `log_changed_by` varchar(30) DEFAULT NULL COMMENT 'user_name of the user, who changed the association last',
   `deleted` tinyint(4) NOT NULL DEFAULT 0 COMMENT 'set to 1 for tuples keeping track of explicitly falsified associations, otherwise 0',
-  PRIMARY KEY (`person_change_id`)
+  PRIMARY KEY (`person_change_id`),
+  UNIQUE KEY `pub_person_simhash1_relator_code_person_index_idx` (`simhash1`,`relator_code`,`person_index`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `log_pub_person` (

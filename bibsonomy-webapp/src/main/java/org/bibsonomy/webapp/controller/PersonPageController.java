@@ -120,7 +120,7 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @return
 	 */
 	private View searchAuthorAction(PersonPageCommand command) { 
-		final List<ResourcePersonRelation> suggestions = this.logic.getPersonSuggestion(command.getFormSelectedName()).withNonEntityPersons(true).withRelationType(PersonResourceRelationType.AUTHOR).preferUnlinked(true).doIt();
+		final List<ResourcePersonRelation> suggestions = this.logic.getPersonSuggestion(command.getFormSelectedName()).withEntityPersons(true).withNonEntityPersons(true).withRelationType(PersonResourceRelationType.AUTHOR).preferUnlinked(true).doIt();
 		
 		JSONArray array = new JSONArray();
 		for (ResourcePersonRelation rel : suggestions) {

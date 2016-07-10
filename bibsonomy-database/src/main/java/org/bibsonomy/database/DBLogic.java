@@ -43,7 +43,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Classifier;
@@ -3412,51 +3411,10 @@ public class DBLogic implements LogicInterface {
 		if (present(person.getPersonId())) {
 			this.personDBManager.updatePerson(person, session);
 		} else {
-			final String tempPersonId = this.generatePersonId(person, session);
-			person.setPersonId(tempPersonId);
 			this.personDBManager.createPerson(person, session);
-			person.setPersonId(tempPersonId);
 		}
 		this.updatePersonNames(person, session);
 	}
-
-	private String generatePersonId(final Person person, final DBSession session) {
-		int counter = 1;
-		final String newPersonId = generatePersonIdBase(person);
-		String tempPersonId = newPersonId;
-		do {
-			final Person tempPerson = this.personDBManager.getPersonById(tempPersonId, session);
-			if (tempPerson != null) {
-				if (counter < 1000000) {
-					tempPersonId = newPersonId + "." + counter;
-				} else {
-					throw new RuntimeException("Too many person id occurences");
-				}
-			} else {
-				break;
-			}
-			counter++;
-		} while(true);
-		return tempPersonId;
-	}
-
-	private static String generatePersonIdBase(final Person person) {
-		final String firstName = person.getMainName().getFirstName();
-		final String lastName  = person.getMainName().getLastName();
-
-		final StringBuilder sb = new StringBuilder();
-		if (!StringUtils.isBlank(firstName)) {
-			sb.append(org.bibsonomy.util.StringUtils.foldToASCII(firstName.trim().toLowerCase().replaceAll("\\s", "_")).charAt(0));
-			sb.append('.');
-		}
-		if (StringUtils.isBlank(lastName)) {
-			throw new IllegalArgumentException("lastName may not be empty");
-		}
-		sb.append(org.bibsonomy.util.StringUtils.foldToASCII(lastName.trim().toLowerCase().replaceAll("\\s", "_")));
-
-		return sb.toString();
-	}
-
 
 	private void updatePersonNames(final Person person, final DBSession session) {
 		this.ensureLoggedIn();

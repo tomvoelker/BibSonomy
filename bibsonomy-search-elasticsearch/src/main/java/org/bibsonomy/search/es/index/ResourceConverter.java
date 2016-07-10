@@ -88,10 +88,10 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 		resource.setInterHash((String) source.get(Fields.Resource.INTERHASH));
 		resource.setIntraHash((String) source.get(Fields.Resource.INTRAHASH));
 		resource.setTitle((String) source.get(Fields.Resource.TITLE));
-		
-		this.convertResourceInternal(resource, source, loadDocuments);
-		
 		post.setResource(resource);
+		
+		this.convertResourceInternal(post, source, loadDocuments);
+		
 		return post;
 	}
 
@@ -127,11 +127,11 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 	}
 
 	/**
-	 * @param resource
+	 * @param post the post
 	 * @param source
 	 * @param loadDocuments 
 	 */
-	protected abstract void convertResourceInternal(R resource, Map<String, Object> source, boolean loadDocuments);
+	protected abstract void convertResourceInternal(Post<R> post, Map<String, Object> source, boolean loadDocuments);
 
 	/**
 	 * @return a new instance of a resource
