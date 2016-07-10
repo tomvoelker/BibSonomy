@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.services.URLGenerator;
+import org.bibsonomy.util.BasicUtils;
 import org.bibsonomy.util.file.FileUtil;
 import org.bibsonomy.webapp.command.HelpPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -125,6 +126,7 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 		replacements.put("project.name", this.projectName);
 		replacements.put("project.theme", theme);
 		replacements.put("project.home", this.projectHome);
+		replacements.put("project.version", BasicUtils.VERSION);
 		
 		// Instantiate a new Parser
 		final Parser parser = new Parser(replacements);
