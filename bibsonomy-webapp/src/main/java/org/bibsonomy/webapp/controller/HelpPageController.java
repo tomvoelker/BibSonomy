@@ -1,14 +1,16 @@
+
 package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +19,7 @@ import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.util.file.FileUtil;
 import org.bibsonomy.webapp.command.HelpPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.markdown.Parser;
@@ -28,25 +31,21 @@ import org.bibsonomy.webapp.view.Views;
  *
  * @author Johannes Blum
  */
-public class HelpPageController implements MinimalisticController<HelpPageCommand> {
-	
-	/** The root location the markdown files */
-	public static String HELP_MARKDOWN_ROOT = "help/";
-	
+public class HelpPageController implements MinimalisticController<HelpPageCommand>, RequestAware {
 	/** The name of the markdown file of the sidebar */
-	public static String HELP_SIDEBAR_NAME = "sidebar";
-	
-	/** The prefix of all help URLS */
-	public static String HELP_URL_PREFIX = "help/";
+	private static String HELP_SIDEBAR_NAME = "Sidebar";
 	
 	/** The help home page */
-	public static String HELP_HOME = "Main";
+	private static String HELP_HOME = "Main";
 	
 	/** Directory of the images */
-	public static String HELP_IMG_DIR = "img";
+	private static String HELP_IMG_DIR = "img";
 	
 	/** Name of the default project theme */
-	public static String DEFAULT_PROJECT_THEME = "default";
+	private static String DEFAULT_PROJECT_THEME = "default";
+	
+	
+	private String helpPath;
 	
 	/** The project name */
 	private String projectName;
@@ -72,80 +71,72 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(org.bibsonomy.webapp.command.ContextCommand)
 	 */
 	@Override
-	public View workOn(HelpPageCommand command) {
-		String language = requestLogic.getLocale().getLanguage();
+	public View workOn(final HelpPageCommand command) {
+		final String requestLanguage = this.requestLogic.getLocale().getLanguage();
+		final String language = command.getLanguage();
 		
 		// Override project theme if parameter set
-		if (command.getTheme() != null)
-			projectTheme = command.getTheme();
+		String theme = command.getTheme();
+		if (!present(theme)) {
+			theme = this.projectTheme;
+		}
 		
 		/* Image request */
-		String image = command.getFilename();
+		final String image = command.getFilename();
 		if (present(image)) {
 			// Project specific image
-			String filename = HELP_MARKDOWN_ROOT + language + "/" + HELP_IMG_DIR + "/" + projectName + "/" + image;
-			URL url = Parser.class.getClassLoader().getResource(filename);
+			String filename = this.helpPath + language + "/" + HELP_IMG_DIR + "/" + theme + "/" + image;
 			
-			// Take default image if there is no project specific image
-			if (url == null) {
-				filename = HELP_MARKDOWN_ROOT + language + "/" + HELP_IMG_DIR + "/" + DEFAULT_PROJECT_THEME + "/" + image;
-				url = Parser.class.getClassLoader().getResource(filename);
+			File imageFile = new File(filename);
+			if (!imageFile.exists()) {
+				filename = this.helpPath + language + "/" + HELP_IMG_DIR + "/" + DEFAULT_PROJECT_THEME + "/" + image;
+				imageFile = new File(filename);
 			}
 			
-			// If there is no image, trigger 404
-			if (url == null) {
+			if (!imageFile.exists()) {
 				throw new ObjectNotFoundException(image);
 			}
 			
-			String path = "";
-			try {
-				path = URLDecoder.decode(url.getPath(), "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				throw new ObjectNotFoundException(image);
-			}
-			
-			command.setPathToFile(path);
+			command.setPathToFile(filename);
 			command.setContentType(FileUtil.getContentType(image));
 			
 			return Views.DOWNLOAD_FILE;
 		}
 		
-		/* Help page request */
+		/* help page request */
 		
-		// If pageName does not already have the correct language, redirect
-		if (! command.getHelpPage().matches(language + ".*")) {
-			final String localizedPageName = getLocalizedHelpPageName(command.getHelpPage(), language);
-			// Localization does not exist, redirect to home page
-			if (localizedPageName == null) {
-				return new ExtendedRedirectView(urlGenerator.getAbsoluteUrl(HELP_URL_PREFIX + language + "/" + HELP_HOME));
-			}
-			// Redirect to localized URL
-			if (! localizedPageName.equals(command.getHelpPage())) {
-				return new ExtendedRedirectView(urlGenerator.getAbsoluteUrl(HELP_URL_PREFIX + localizedPageName));		
-			}
+		
+		String helpPage = command.getHelpPage();
+		if (!present(helpPage)) {
+			helpPage = HELP_HOME;
+		}
+		
+		// if pageName does not already have the correct language, redirect
+		if (present(language) && !language.equals(requestLanguage)) {
+			final String localizedPageName = getLocalizedHelpPageName(helpPage, language, requestLanguage);
+			return new ExtendedRedirectView(this.urlGenerator.getHelpPage(localizedPageName, requestLanguage));
 		}
 		
 		// Build HashMap for variable replacement
-		HashMap<String, String> replacements = new HashMap<>();
-		replacements.put("project-name", projectName);
-		replacements.put("project-theme", projectTheme);
+		final Map<String, String> replacements = new HashMap<>();
+		replacements.put("project-name", this.projectName);
+		replacements.put("project-theme", theme);
 		
 		// Instantiate a new Parser
-		Parser parser = new Parser(replacements);
+		final Parser parser = new Parser(replacements);
 		
-		// Parse content
+		// parse content
 		try {
-			command.setContent(parser.parseFile(getMarkdownLocation(command.getHelpPage())));
-		} catch (IOException e) {
+			command.setContent(parser.parseFile(this.getMarkdownLocation(requestLanguage, helpPage)));
+		} catch (final IOException e) {
 			command.setPageNotFound(true);
 		}
 		
-		// Parse sidebar
-		String filename = getMarkdownLocation(language + "/" + HELP_SIDEBAR_NAME);
+		// parse sidebar
 		try {
-			command.setSidebar(parser.parseFile(filename));
-		} catch (IOException e) {
-			command.setSidebar("Error: " + filename + " not found.");
+			command.setSidebar(parser.parseFile(this.getMarkdownLocation(requestLanguage, HELP_SIDEBAR_NAME)));
+		} catch (final IOException e) {
+			command.setSidebar("Error: sidebar for language " + requestLanguage + " not found.");
 		}
 		
 		return Views.HELP;
@@ -153,39 +144,40 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 	
 	/**
 	 * Returns the location of the markdown source of the localized help page 
+	 * @param language
 	 * @param pageName The name of the help page
 	 * @return the location of the source file
 	 */
-	private static String getMarkdownLocation(String pageName) {
-		return HELP_MARKDOWN_ROOT + pageName + ".md";
+	private String getMarkdownLocation(String language, String pageName) {
+		return this.helpPath + language + File.separator + pageName + ".md";
 	}
 	
 	/**
 	 * Tries to determine the name of the given help page in the given language
 	 * @param pageName the name of the help page
 	 * @param language the requested language
+	 * @param requestLanguage 
 	 * @return the name of the help page in the given language, if it could be
 	 * found, <code>null</code> otherwise
 	 */
-	private static String getLocalizedHelpPageName(String pageName, String language) {
-		final String filename = getMarkdownLocation(pageName);
+	private String getLocalizedHelpPageName(String pageName, String language, String requestLanguage) {
+		final String filename = this.getMarkdownLocation(language, pageName);
 		
-		try {
-			final InputStream stream = Parser.class.getClassLoader().getResourceAsStream(filename);
+		try (final InputStream stream = new FileInputStream(new File(filename))) {
 			final BufferedReader buf = new BufferedReader(new InputStreamReader(stream));
 			
 			/*
 			 * Try to find a line of form "<!-- language: localized page name -->"
 			 * in the orignal markdown source and return "localized page name"
 			 */
-			String line = null;				
-			Pattern p = Pattern.compile("<!--\\s" + language + ":\\s(.*)\\s*-->");
+			String line = null;
+			Pattern p = Pattern.compile("<!--\\s" + requestLanguage + ":\\s(.*)\\s*-->");
 			Matcher m;
 			while ((line = buf.readLine()) != null) {
 				m = p.matcher(line);
 				if (m.find()) {
 					buf.close();
-					return language + "/" + m.group(1);
+					return m.group(1).trim();
 				}
 			}
 			buf.close();
@@ -194,14 +186,7 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 		}
 		
 		// Nothing found
-		return null;
-	}
-
-	/**
-	 * @return the projectName
-	 */
-	public String getProjectName() {
-		return this.projectName;
+		return HELP_HOME;
 	}
 
 	/**
@@ -212,38 +197,18 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 	}
 
 	/**
-	 * @return the projectTheme
-	 */
-	public String getProjectTheme() {
-		return this.projectTheme;
-	}
-
-	/**
 	 * @param projectTheme the projectTheme to set
 	 */
 	public void setProjectTheme(String projectTheme) {
 		this.projectTheme = projectTheme;
 	}
-
-	/**
-	 * @return the requestLogic
-	 */
-	public RequestLogic getRequestLogic() {
-		return this.requestLogic;
-	}
-
+	
 	/**
 	 * @param requestLogic the requestLogic to set
 	 */
+	@Override
 	public void setRequestLogic(RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
-	}
-
-	/**
-	 * @return the urlGenerator
-	 */
-	public URLGenerator getUrlGenerator() {
-		return this.urlGenerator;
 	}
 
 	/**
@@ -251,6 +216,13 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 	 */
 	public void setUrlGenerator(URLGenerator urlGenerator) {
 		this.urlGenerator = urlGenerator;
+	}
+
+	/**
+	 * @param helpPath the helpPath to set
+	 */
+	public void setHelpPath(String helpPath) {
+		this.helpPath = helpPath;
 	}
 
 }

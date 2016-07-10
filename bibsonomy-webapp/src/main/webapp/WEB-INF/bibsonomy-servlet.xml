@@ -731,6 +731,7 @@
 						<property name="controllerBeanName" value="helpPageController"/>
 						<property name="allowedFields">
 							<list>
+								<value>language</value>
 								<value>helpPage</value>
 								<value>filename</value>
 								<value>theme</value>
@@ -1015,7 +1016,8 @@
 		<property name="projectName" ref="projectName"/>
 		<property name="projectTheme" ref="projectTheme"/>
 		<property name="requestLogic" ref="requestLogic"/>
-		<property name="urlGenerator" ref="absoluteUrlGenerator" />
+		<property name="urlGenerator" ref="relativeUrlGenerator" />
+		<property name="helpPath" value="${project.help.path}" />
 	</bean>
 
 	

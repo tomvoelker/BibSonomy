@@ -988,24 +988,20 @@
 		<to last="true">/activate</to>
 	</rule>
 	
-	<!-- ############## help ############### -->	
+	<!-- ############## help ############### -->
 	<rule>
 		<name>Images below /help/</name>
-		<from>^/help/+[^/]*/+(.*)((png)|(jpg)|(jpeg)|(gif)|(svg))$</from>
-		<set type="parameter" name="filename">$1$2</set>
+		<from>^/new_help/+([^/]+)/+(.+)((png)|(jpg)|(jpeg)|(gif)|(svg))$</from>
+		<set type="parameter" name="language">${unescapePath:$1}</set>
+		<set type="parameter" name="filename">${unescapePath:$2$3}</set>
 		<to last="true">/help</to>
 	</rule>
 	
 	<rule>
-		<name>Redirect /help/* to /help/Main</name>
-		<from>^/help/*$</from>
-		<to type="permanent-redirect" last="true">/help/en/Main</to>
-	</rule>
-	
-	<rule>
 		<name>Subpages of /help/</name>
-		<from>^/help/+(.+)</from>
-		<set type="parameter" name="helpPage">${unescapePath:$1}</set>
+		<from>^/new_help/+([^/]+)/+(.+)</from>
+		<set type="parameter" name="language">${unescapePath:$1}</set>
+		<set type="parameter" name="helpPage">${unescapePath:$2}</set>
 		<to last="true">/help</to>
 	</rule>
 	

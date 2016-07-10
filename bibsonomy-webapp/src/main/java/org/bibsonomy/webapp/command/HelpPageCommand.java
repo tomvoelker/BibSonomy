@@ -25,6 +25,9 @@ public class HelpPageCommand extends DownloadFileCommand {
 	
 	/** The project theme */
 	private String theme;
+	
+	/** the language */
+	private String language;
 
 	/**
 	 * @return the helpPage
@@ -94,6 +97,20 @@ public class HelpPageCommand extends DownloadFileCommand {
 	 */
 	public void setTheme(String theme) {
 		this.theme = theme;
+	}
+
+	/**
+	 * @return the language
+	 */
+	public String getLanguage() {
+		return this.language;
+	}
+
+	/**
+	 * @param language the language to set
+	 */
+	public void setLanguage(String language) {
+		this.language = language;
 	}
 
 }

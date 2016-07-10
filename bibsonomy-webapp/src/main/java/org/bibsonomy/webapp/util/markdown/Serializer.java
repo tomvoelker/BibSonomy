@@ -1,5 +1,5 @@
 package org.bibsonomy.webapp.util.markdown;
-import java.util.HashMap;
+import java.util.Map;
 
 import org.pegdown.Printer;
 import org.pegdown.ast.Node;
@@ -14,14 +14,13 @@ import org.pegdown.plugins.ToHtmlSerializerPlugin;
 public class Serializer implements ToHtmlSerializerPlugin {
 	
 	/** Hashmap for the replacement of the variables. */
-	HashMap<String, String> replacements;
+	private Map<String, String> replacements;
 	
 	/**
 	 * Instantiates a new Serializer.
 	 * @param replacements a Hashmap which maps a variable to the value it should be replaced with
 	 */
-	public Serializer(HashMap<String, String> replacements) {
-		super();
+	public Serializer(final Map<String, String> replacements) {
 		this.replacements = replacements;
 	}
 
@@ -40,7 +39,7 @@ public class Serializer implements ToHtmlSerializerPlugin {
 			if (evaluateExpression(((ConditionalNode) node).getCondition())) {
 				for (Node child : node.getChildren()) {
 					child.accept(visitor);
-		        }
+				}
 			}
 			return true;
 		}

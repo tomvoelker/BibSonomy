@@ -1,13 +1,16 @@
 package org.bibsonomy.webapp.util.markdown;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.bibsonomy.util.StringUtils;
 import org.pegdown.LinkRenderer;
 import org.pegdown.PegDownProcessor;
@@ -22,12 +25,12 @@ import org.pegdown.plugins.ToHtmlSerializerPlugin;
 public class Parser {
 	
 	/** A HashMap which maps a variable to the value it should be replaced with */
-	HashMap<String, String> replacements;
+	private Map<String, String> replacements;
 
 	/**
 	 * @param replacements the HashMap for the replacement of the variables
 	 */
-	public Parser(HashMap<String, String> replacements) {
+	public Parser(Map<String, String> replacements) {
 		super();
 		this.replacements = replacements;
 	}
@@ -39,25 +42,26 @@ public class Parser {
 	 * @return The resulting HTML
 	 * @throws IOException
 	 */
-	public String parseFile(String filename) throws IOException {
-		
-		// Read file content
-		final InputStream stream = Parser.class.getClassLoader().getResourceAsStream(filename);
-		if (stream == null)
-			throw new FileNotFoundException(); 
-		String content = StringUtils.getStringFromReader(new BufferedReader(new InputStreamReader(stream)));
+	public String parseFile(final String filename) throws IOException {
+		// read file content
+		final File file = new File(filename);
+		if (!file.exists()) {
+			throw new FileNotFoundException();
+		}
+		try (final InputStream stream = new FileInputStream(file)) {
+			final String content = StringUtils.getStringFromReader(new BufferedReader(new InputStreamReader(stream)));
 
-		// Instantiate Markdown Parser
-		PegDownPlugins plugins = new PegDownPlugins.Builder().withPlugin(Plugin.class).build();
-		PegDownProcessor proc = new PegDownProcessor(0, plugins);
+			// Instantiate Markdown Parser
+			final PegDownPlugins plugins = new PegDownPlugins.Builder().withPlugin(Plugin.class).build();
+			final PegDownProcessor proc = new PegDownProcessor(0, plugins);
 
-		// Parse and serialize content
-		RootNode ast = proc.parseMarkdown(content.toCharArray());
-		List<ToHtmlSerializerPlugin> serializePlugins = Arrays.asList((ToHtmlSerializerPlugin) (new Serializer(replacements)));
-		String output = "test";
-		output = new ToHtmlSerializer(new LinkRenderer(), serializePlugins).toHtml(ast);
-
-		return output;
+			// Parse and serialize content
+			final RootNode ast = proc.parseMarkdown(content.toCharArray());
+			final List<ToHtmlSerializerPlugin> serializePlugins = Arrays.asList((ToHtmlSerializerPlugin) (new Serializer(replacements)));
+			final ToHtmlSerializer serializer = new ToHtmlSerializer(new LinkRenderer(), serializePlugins);
+			
+			return serializer.toHtml(ast);
+		}
 	}
 
 }
