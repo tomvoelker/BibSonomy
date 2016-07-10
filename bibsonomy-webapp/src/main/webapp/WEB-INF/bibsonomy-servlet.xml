@@ -1015,11 +1015,11 @@
 	<bean id="helpPageController" class="org.bibsonomy.webapp.controller.HelpPageController" scope="request">
 		<property name="projectName" ref="projectName"/>
 		<property name="projectTheme" ref="projectTheme"/>
+		<property name="projectHome" ref="projectHome" />
 		<property name="requestLogic" ref="requestLogic"/>
 		<property name="urlGenerator" ref="relativeUrlGenerator" />
 		<property name="helpPath" value="${project.help.path}" />
 	</bean>
-
 	
 	<!--  #################### static views #################### -->
 	<bean id="personIntroPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">

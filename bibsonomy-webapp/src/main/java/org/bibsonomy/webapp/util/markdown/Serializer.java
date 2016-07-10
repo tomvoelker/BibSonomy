@@ -48,23 +48,13 @@ public class Serializer implements ToHtmlSerializerPlugin {
 	}
 	
 	private boolean evaluateExpression(String exp) {
-		String[] fields = exp.split("\\s", 3);
+		final String[] fields = exp.split("\\s", 3);
 		if (fields.length != 3)
 			throw new RuntimeException("Invalid expression: " + exp);
 		
-		String lhs = fields[0];
-		if (lhs.startsWith("\"") && lhs.endsWith("\""))
-			lhs = lhs.substring(1, lhs.length()-1);
-		else
-			lhs = replaceVar(lhs);
-		
-		String rhs = fields[2];
-		if (rhs.startsWith("\"") && rhs.endsWith("\""))
-			rhs = rhs.substring(1, rhs.length()-1);
-		else
-			rhs = replaceVar(rhs);
-		
-		String cmp = fields[1];
+		final String lhs = norm(fields[0]);
+		final String rhs = norm(fields[2]);
+		final String cmp = fields[1];
 		
 		switch(cmp) {
 		case "==":
@@ -81,11 +71,25 @@ public class Serializer implements ToHtmlSerializerPlugin {
 			throw new RuntimeException("Unknown comparator: " + cmp);
 		}
 	}
+
+	/**
+	 * @param lhs
+	 * @return
+	 */
+	private String norm(String lhs) {
+		if (lhs.startsWith("\"") && lhs.endsWith("\"")) {
+			lhs = lhs.substring(1, lhs.length()-1);
+		} else {
+			lhs = replaceVar(lhs);
+		}
+		return lhs;
+	}
 	
 	private String replaceVar(String var) {
-		String r = replacements.get(var);
-		if (r == null)
+		final String r = this.replacements.get(var);
+		if (r == null) {
 			throw new RuntimeException("Unknown variable: " + var);
+		}
 		return r;
 	}
 	
@@ -95,7 +99,7 @@ public class Serializer implements ToHtmlSerializerPlugin {
 	 * @param v2 The second version String
 	 * @return the value 0 if the versions are equal; -1 if v1 < v2; and 1 if v1 > v2
 	 */
-	private static int compareVersions(String v1, String v2) {		
+	private static int compareVersions(String v1, String v2) {
 		String[] fields1 = v1.split("\\.");
 		String[] fields2 = v2.split("\\.");
 		

@@ -68,7 +68,7 @@ public class Plugin extends Parser implements InlinePluginParser, BlockPluginPar
 		return Sequence(
 				"${",
 				ZeroOrMore(TestNot('}'), BaseParser.ANY, condition.append(matchedChar())),
-				"}{",				
+				"}{",
 				ZeroOrMore(FirstOf(
 					Sequence(Variable(), body.append(pop().toString())),
 					Sequence(CondExpression(), body.append(((ConditionalNode) pop()).getSource())),
@@ -87,7 +87,7 @@ public class Plugin extends Parser implements InlinePluginParser, BlockPluginPar
 	 * @param body a StringBuilderVar containing the string to parse
 	 * @return the parsed Sting as a list of nodes
 	 */
-	public List<Node> parse(StringBuilderVar body) {	    
+	public List<Node> parse(StringBuilderVar body) {
 		PegDownProcessor processor = new PegDownProcessor(0,
 				new PegDownPlugins.Builder().withPlugin(Plugin.class).build());
 	

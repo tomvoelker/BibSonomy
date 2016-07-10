@@ -999,7 +999,7 @@
 	
 	<rule>
 		<name>Subpages of /help/</name>
-		<from>^/new_help/+([^/]+)/+(.+)</from>
+		<from>^/new_help/+([^/]+)/?+(.*)</from>
 		<set type="parameter" name="language">${unescapePath:$1}</set>
 		<set type="parameter" name="helpPage">${unescapePath:$2}</set>
 		<to last="true">/help</to>

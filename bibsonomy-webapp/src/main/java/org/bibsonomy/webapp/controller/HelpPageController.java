@@ -53,6 +53,9 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 	/** The project theme */
 	private String projectTheme;
 	
+	/** the url of the project */
+	private String projectHome;
+	
 	/** The request logic */
 	private RequestLogic requestLogic;
 	
@@ -108,7 +111,7 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 		
 		String helpPage = command.getHelpPage();
 		if (!present(helpPage)) {
-			helpPage = HELP_HOME;
+			return new ExtendedRedirectView(this.urlGenerator.getHelpPage(HELP_HOME, language), true);
 		}
 		
 		// if pageName does not already have the correct language, redirect
@@ -119,8 +122,9 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 		
 		// Build HashMap for variable replacement
 		final Map<String, String> replacements = new HashMap<>();
-		replacements.put("project-name", this.projectName);
-		replacements.put("project-theme", theme);
+		replacements.put("project.name", this.projectName);
+		replacements.put("project.theme", theme);
+		replacements.put("project.home", this.projectHome);
 		
 		// Instantiate a new Parser
 		final Parser parser = new Parser(replacements);
@@ -223,6 +227,13 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 	 */
 	public void setHelpPath(String helpPath) {
 		this.helpPath = helpPath;
+	}
+
+	/**
+	 * @param projectHome the projectHome to set
+	 */
+	public void setProjectHome(String projectHome) {
+		this.projectHome = projectHome;
 	}
 
 }
