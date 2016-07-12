@@ -48,6 +48,7 @@
 		</c:choose>
 	</c:if>
 	<!-- ranking -->
+	<!-- TODO: don't use the request path -->
 	<c:if test="${requPathAndQuery.startsWith('/followers')}">
 		${mtl:ch('nbsp')}|${mtl:ch('nbsp')}
 		<c:choose>
