@@ -1,7 +1,7 @@
 /**
  * BibSonomy Search Elasticsearch - Elasticsearch full text search module.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -39,10 +39,6 @@ import org.elasticsearch.common.xcontent.XContentBuilder;
  * @author dzo
  */
 public class PublicationMappingBuilder extends ResourceMappingBuilder<BibTex> {
-
-	/**
-	 * 
-	 */
 	private static final String COPY_TO = "copy_to";
 
 	/**

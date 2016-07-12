@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -61,7 +61,7 @@ import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.converter.DublinCoreToBibtexConverter;
+import org.bibsonomy.scraper.converter.HTMLMetaDataDublinCoreToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 /**
@@ -72,7 +72,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  */
 public class DublinCoreScraper implements Scraper {
 	/** dublin to bibtex converter */
-	private static final DublinCoreToBibtexConverter DUBLIN_CORE_CONVERTER = new DublinCoreToBibtexConverter();
+	private static final HTMLMetaDataDublinCoreToBibtexConverter DUBLIN_CORE_CONVERTER = new HTMLMetaDataDublinCoreToBibtexConverter();
 	//scraper informations
 	private static final String SITE_NAME = "DublinCoreScraper";
 	private static final String SITE_URL = "http://dublincore.org/";

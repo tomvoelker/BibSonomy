@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -44,6 +44,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.SpamStatus;
@@ -84,6 +85,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
+import org.pegdown.PegDownProcessor;
 
 import com.google.caja.util.Sets;
 import com.sksamuel.diffpatch.DiffMatchPatch;
@@ -132,6 +134,7 @@ public class Functions {
 	 * @param key
 	 * @return String
 	 */
+	@Deprecated // TODO: remove
 	public static String ch(final String key) {
 		if (chars.getProperty(key) != null) {
 			return chars.getProperty(key);
@@ -172,6 +175,15 @@ public class Functions {
 		 * remove empty lines
 		 */
 		return s.replaceAll("(?m)\n\\s*\n", "\n");
+	}
+	
+	/**
+	 * converts markdown to html
+	 * @param markdown
+	 * @return the converted markdown
+	 */
+	public static String markdownToHtml(final String markdown) {
+		return new PegDownProcessor().markdownToHtml(StringEscapeUtils.escapeHtml(markdown));
 	}
 
 	/**

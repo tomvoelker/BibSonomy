@@ -1,7 +1,7 @@
 /**
  * BibSonomy Search Elasticsearch - Elasticsearch full text search module.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -241,6 +241,9 @@ public class ElasticsearchIndexGenerator<R extends Resource> {
 	 * @return the progress
 	 */
 	public double getProgress() {
+		if (this.numberOfPosts == 0) {
+			return 0;
+		}
 		return this.writtenPosts / (double) this.numberOfPosts;
 	}
 

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -71,6 +71,7 @@ import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.utils.HeaderUtils;
+import org.bibsonomy.search.InvalidSearchRequestException;
 import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.util.StringUtils;
 import org.springframework.beans.factory.annotation.Required;
@@ -284,7 +285,7 @@ public final class RestServlet extends HttpServlet {
 		} catch (final NoSuchResourceException e) {
 			log.info(e.getMessage());
 			this.sendError(request, response, HttpServletResponse.SC_NOT_FOUND, e.getMessage());
-		} catch (final BadRequestOrResponseException | InvalidModelException e) {
+		} catch (final BadRequestOrResponseException | InvalidModelException | InvalidSearchRequestException | UnsupportedResourceTypeException e) {
 			log.info(e.getMessage(), e);
 			this.sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
 		} catch (final AccessDeniedException e) {
@@ -311,10 +312,7 @@ public final class RestServlet extends HttpServlet {
 		} catch (final UnsupportedMediaTypeException e) {
 			log.error(e.getMessage());
 			this.sendError(request, response, HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, e.getMessage());
-		} catch (final UnsupportedResourceTypeException e) {
-			// the user has not specified the resource type
-			this.sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
-		} catch (final Exception e) {
+		}catch (final Exception e) {
 			log.error(e.getMessage(), e);
 			// well, lets fetch each and every error...
 			this.sendError(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -37,6 +37,7 @@ import java.util.Set;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Resource;
@@ -74,9 +75,11 @@ public class ResourceFactory {
 	/**
 	 * all known resource classes
 	 */
-	private static final Map<String, Class<? extends Resource>> RESOURCE_CLASSES_BY_NAME = new HashMap<String, Class<? extends Resource>>();
+	private static final Map<String, Class<? extends Resource>> RESOURCE_CLASSES_BY_NAME = new HashMap<>();
 	
-	private static final Map<Class<? extends Resource>, String> RESOURCE_CLASS_NAMES = new HashMap<Class<? extends Resource>, String>();
+	private static final Map<Class<? extends Resource>, String> RESOURCE_CLASS_NAMES = new HashMap<>();
+	
+	private static final Map<Class<? extends Resource>, Class<? extends Resource>> RESOURCE_CLASSES_SUPERIOR_MAP = new HashMap<>();
 	
 	static {
 		RESOURCE_CLASSES_BY_NAME.put(BOOKMARK_CLASS_NAME, Bookmark.class);
@@ -84,6 +87,11 @@ public class ResourceFactory {
 		RESOURCE_CLASSES_BY_NAME.put(GOLDSTANDARD_PUBLICATION_CLASS_NAME, GoldStandardPublication.class);
 		RESOURCE_CLASSES_BY_NAME.put(GOLDSTANDARD_BOOKMARK_CLASS_NAME, GoldStandardBookmark.class);
 		RESOURCE_CLASSES_BY_NAME.put(RESOURCE_CLASS_NAME, Resource.class);
+		
+		RESOURCE_CLASSES_SUPERIOR_MAP.put(Bookmark.class, Bookmark.class);
+		RESOURCE_CLASSES_SUPERIOR_MAP.put(BibTex.class, BibTex.class);
+		RESOURCE_CLASSES_SUPERIOR_MAP.put(GoldStandardBookmark.class, Bookmark.class);
+		RESOURCE_CLASSES_SUPERIOR_MAP.put(GoldStandardPublication.class, BibTex.class);
 		
 		for (final Entry<String, Class<? extends Resource>> entry : RESOURCE_CLASSES_BY_NAME.entrySet()) {
 			RESOURCE_CLASS_NAMES.put(entry.getValue(), entry.getKey());
@@ -197,5 +205,21 @@ public class ResourceFactory {
 	 */
 	public GoldStandardPublication createGoldStandardPublication() {
 		return new GoldStandardPublication();
+	}
+
+	/**
+	 * @param resource
+	 * @return <code>true</code> iff the resource represents a community post
+	 */
+	public static boolean isCommunityResource(final Resource resource) {
+		return resource instanceof GoldStandard<?>;
+	}
+
+	/**
+	 * @param resource
+	 * @return the superior resource class
+	 */
+	public static Class<? extends Resource> findSuperiorResourceClass(final Resource resource) {
+		return RESOURCE_CLASSES_SUPERIOR_MAP.get(resource.getClass());
 	}
 }

@@ -20,8 +20,7 @@
 		requPath="${requPath}" 
 		pageTitle="${syncPageTitle}" 
 		command="${command}" 
-		headerMessageKey="navi.sync"
-		minimizedContentWidth="${true}">
+		headerMessageKey="navi.sync">
 	
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/sync.css" />
@@ -67,7 +66,7 @@
 				<form:form action="/ajax/synchronize" method="post" id="sync_${status.index}">
 					
 					<!-- show initial auto-sync message -->
-				 	<c:if test="${service.alreadySyncedOnce eq false}">
+				 	<c:if test="${not service.alreadySyncedOnce}">
 						<fmt:message var="firstAutoSyncInfoMessage" key="sync.auto.firstsync.required"/>
 						<bs:alert style="info">
 							<jsp:attribute name="alertBody">

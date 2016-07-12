@@ -1,7 +1,7 @@
 /**
  * BibSonomy Search Elasticsearch - Elasticsearch full text search module.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -552,7 +552,6 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 		 */
 		log.debug("inserting new/updated posts into " + indexName);
 		final Map<String, Map<String, Object>> convertedPosts = new HashMap<>();
-		final Set<Integer> alreadySavedPosts = new HashSet<>();
 		List<SearchPost<R>> newPosts;
 		int offset = 0;
 		int totalCountNewPosts = 0;
@@ -562,8 +561,6 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 				final Map<String, Object> convertedPost = this.tools.getConverter().convert(post);
 				
 				final Integer contentId = post.getContentId();
-				alreadySavedPosts.add(contentId);
-				
 				final String id = ElasticsearchUtils.createElasticSearchId(contentId.intValue());
 				convertedPosts.put(id, convertedPost);
 				newLastTasId = Math.max(post.getLastTasId().intValue(), newLastTasId);

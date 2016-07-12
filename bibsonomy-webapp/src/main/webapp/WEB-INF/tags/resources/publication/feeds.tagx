@@ -1,0 +1,17 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:jsp="http://java.sun.com/JSP/Page">
+	
+	<jsp:directive.attribute name="path" type="java.lang.String" required="true" />
+	<fmt:message key="feeds.publication" var="publicationRssFeed"/>
+	<fmt:message key="feeds.burst" var="burstRssFeed"/>
+	<fmt:message key="feeds.swrc" var="swrcFeed"/>
+	
+	<link rel="alternate" type="application/rss+xml" title="${publicationRssFeed} ${path}" href="/publrss${path}" />
+	<link rel="alternate" type="application/rss+xml" title="${burstRssFeed} ${path}" href="/burst${path}" />
+	<link rel="alternate" type="application/rdf+xml" title="${swrcFeed} ${path}" href="/swrc${path}" />
+	
+</jsp:root>

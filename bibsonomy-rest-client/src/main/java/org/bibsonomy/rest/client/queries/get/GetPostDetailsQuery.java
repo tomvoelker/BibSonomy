@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Client - The REST-client.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -28,6 +28,7 @@ package org.bibsonomy.rest.client.queries.get;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import org.apache.commons.httpclient.HttpStatus;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.data.NoDataAccessor;
@@ -65,6 +66,9 @@ public final class GetPostDetailsQuery extends AbstractQuery<Post<? extends Reso
 
 	@Override
 	protected Post<? extends Resource> getResultInternal() throws BadRequestOrResponseException, IllegalStateException {
+		if (this.getHttpStatusCode() == HttpStatus.SC_NOT_FOUND) {
+			return null;
+		}
 		return this.getRenderer().parsePost(this.downloadedDocument, NoDataAccessor.getInstance());
 	}
 

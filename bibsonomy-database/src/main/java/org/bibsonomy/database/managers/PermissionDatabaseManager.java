@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -56,7 +56,7 @@ import org.bibsonomy.model.util.UserUtils;
 
 /**
  * Database Manager for permissions
- * 
+ *
  * @author Dominik Benz
  */
 public class PermissionDatabaseManager extends AbstractDatabaseManager {
@@ -81,7 +81,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Checks whether the requested start- / end-values are OK
-	 * 
+	 *
 	 * @param loginUser
 	 * @param groupingEntity
 	 * @param start
@@ -89,10 +89,10 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param itemType
 	 */
 	public void checkStartEnd(final User loginUser, final GroupingEntity groupingEntity, final int start, final int end, final String itemType) {
-		if (!this.isAdmin(loginUser) && ((end - start) > PostLogicInterface.MAX_QUERY_SIZE)) {
+		if (!this.isAdmin(loginUser) && end - start > PostLogicInterface.MAX_QUERY_SIZE) {
 			throw new AccessDeniedException("You are not authorized to retrieve more than " + PostLogicInterface.MAX_QUERY_SIZE + " " + itemType + " at a time.");
 		}
-		
+
 		if (!this.isAdmin(loginUser) && GroupingEntity.ALL.equals(groupingEntity) && (start > PostLogicInterface.MAX_RECENT_POSTS || end > PostLogicInterface.MAX_RECENT_POSTS)) {
 			throw new AccessDeniedException("You are only authorized to retrieve the latest " + PostLogicInterface.MAX_RECENT_POSTS + " " + itemType);
 		}
@@ -100,7 +100,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Check if the logged in user has write access to the given post.
-	 * 
+	 *
 	 * @param post
 	 * @param loginUser
 	 */
@@ -113,18 +113,18 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 			}
 		} else {
 			// delegate write access check
-			this.ensureIsAdminOrSelf(loginUser, post.getUser().getName());
+			this.ensureIsAdminOrSelfOrHasGroupRoleOrHigher(loginUser, post.getUser().getName(), GroupRole.MODERATOR);
 		}
 	}
 
 	/**
 	 * Throws an exception if the loginUser.getName and userName doesn't match.
-	 * 
+	 *
 	 * @param loginUser
 	 * @param userName
 	 */
 	public void ensureWriteAccess(final User loginUser, final String userName) {
-		if ((loginUser.getName() == null) || !loginUser.getName().toLowerCase().equals(userName.toLowerCase())) {
+		if (loginUser.getName() == null || !loginUser.getName().toLowerCase().equals(userName.toLowerCase())) {
 			throw new AccessDeniedException();
 		}
 	}
@@ -132,8 +132,8 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * This method checks, whether the user is allowed to access the posts
 	 * documents. The user is allowed to access the documents,
-	 * 
-	 * 
+	 *
+	 *
 	 * <ul>
 	 * <li>if userName = post.userName</li>
 	 * <li>if the post is public and the posts user is together with the user in
@@ -141,10 +141,10 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * <li>if the post is viewable for a specific group, in which both users are
 	 * and which allows to share documents.
 	 * </ul>
-	 * 
+	 *
 	 * TODO: eventually, we don't want to have the post as parameter, but only
 	 * its groups?
-	 * 
+	 *
 	 * @param userName
 	 *        - the name of the user which wants to access the posts
 	 *        documents.
@@ -161,7 +161,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		/*
 		 * if userName = postUserName, return true
 		 */
-		if (((userName != null) && userName.equalsIgnoreCase(postUserName))) {
+		if (userName != null && userName.equalsIgnoreCase(postUserName)) {
 			return true;
 		}
 		/*
@@ -203,14 +203,14 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * This method checks whether the logged-in user is allowed to see documents
 	 * of the requested user or a requested group. The user is allowed to access
 	 * the documents,
-	 * 
+	 *
 	 * <ul>
 	 * <li>if the logged-in user requests his own posts, i.e. loginUser =
 	 * requestedUser
 	 * <li>if the logged-in user is a member of the requested group AND the
 	 * group allows shared documents.
 	 * </ul>
-	 * 
+	 *
 	 * @param loginUser
 	 *        - the name of the logged-in user
 	 * @param grouping
@@ -253,7 +253,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 				 * check group membership and if the group allows shared
 				 * documents
 				 */
-				return (group != null) && UserUtils.getListOfGroupIDs(loginUser).contains(group.getGroupId()) && group.isSharedDocuments();
+				return group != null && UserUtils.getListOfGroupIDs(loginUser).contains(group.getGroupId()) && group.isSharedDocuments();
 			default:
 				log.debug("grouping '" + grouping + "' not supported");
 				break;
@@ -264,7 +264,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * checks if the loginUser is allowed to access the profile of user
-	 * 
+	 *
 	 * @param user
 	 * @param loginUser
 	 * @param session
@@ -287,8 +287,8 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		 * get privacy level of user from database and respect it
 		 */
 		ProfilePrivlevel privacyLevel = ProfilePrivlevel.PRIVATE; // private is
-																	// default
-																	// setting
+		// default
+		// setting
 
 		/*
 		 * if the settings weren't loaded yet, load the profile privacy setting
@@ -318,7 +318,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Ensures that the user is member of given group.
-	 * 
+	 *
 	 * @param userName
 	 * @param groupName
 	 * @param session
@@ -354,7 +354,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Ensures that the user is an admin.
-	 * 
+	 *
 	 * @param loginUser
 	 */
 	public void ensureAdminAccess(final User loginUser) {
@@ -366,7 +366,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Check whether the ResourceSearch (Lucene Index) should be used for the
 	 * amount of tags in the query
-	 * 
+	 *
 	 * @param i
 	 * @return true if maximum size is exceeded, false otherwise
 	 */
@@ -377,7 +377,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Checks, if the given login user is either an admin, or the user requested
 	 * by user name.
-	 * 
+	 *
 	 * @param loginUser
 	 *        - the logged in user.
 	 * @param userName
@@ -385,16 +385,15 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @return <code>true</code> if loginUser is an admin or userName.
 	 */
 	public boolean isAdminOrSelf(final User loginUser, final String userName) {
-		return ((present(loginUser.getName()) && loginUser.getName().equals(userName)) // loginUser
-																						// =
-																						// userName
-		|| this.isAdmin(loginUser) // loginUser is admin
-		);
+		return present(loginUser.getName()) && loginUser.getName().equals(userName) // loginUser
+				// =
+				// userName
+				|| this.isAdmin(loginUser);
 	}
 
 	/**
 	 * Checks if the given user is an admin.
-	 * 
+	 *
 	 * @param loginUser
 	 * @return <code>true</code> iff user is admin
 	 */
@@ -405,7 +404,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * if {@link #isAdminOrSelf(User, String)} returns false this method throws
 	 * a validation exception
-	 * 
+	 *
 	 * @param loginUser
 	 * @param userName
 	 */
@@ -418,7 +417,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Check whether the user is system admin or has a groupRole larger than the
 	 * minimumRole. The user must be the (already verified) loginUser.
-	 * 
+	 *
 	 * @param loginUser
 	 * @param groupName
 	 * @param minimumRole
@@ -427,18 +426,39 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	public boolean isAdminOrHasGroupRoleOrHigher(final User loginUser, final String groupName, final GroupRole minimumRole) {
 		return this.isAdmin(loginUser) || this.hasGroupRoleOrHigher(loginUser, groupName, minimumRole);
 	}
+	
+	/**
+	 * @param loginUser
+	 * @param userName
+	 * @param role
+	 * @return
+	 */
+	private boolean isAdminOrSelfOrHasGroupRoleOrHigher(User loginUser, String userName, GroupRole role) {
+		return this.isAdminOrSelf(loginUser, userName) || this.hasGroupRoleOrHigher(loginUser, userName, role);
+	}
 
 	/**
 	 * Check whether the user is system admin or has a groupRole larger than the
 	 * minimumRole. The user must be the (already verified) loginUser.
-	 * 
+	 *
 	 * @param loginUser
 	 * @param groupName
 	 * @param minimumRole
-	 * 
+	 *
 	 */
 	public void ensureIsAdminOrHasGroupRoleOrHigher(final User loginUser, final String groupName, final GroupRole minimumRole) {
 		if (!this.isAdminOrHasGroupRoleOrHigher(loginUser, groupName, minimumRole)) {
+			throw new AccessDeniedException();
+		}
+	}
+	
+	/**
+	 * @param loginUser
+	 * @param userName
+	 * @param role
+	 */
+	public void ensureIsAdminOrSelfOrHasGroupRoleOrHigher(User loginUser, String userName, GroupRole role) {
+		if (!this.isAdminOrSelfOrHasGroupRoleOrHigher(loginUser, userName, role)) {
 			throw new AccessDeniedException();
 		}
 	}
@@ -448,7 +468,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * permissions.
 	 * WARNING: Does not retrieve the user and their groups from the database ->
 	 * user must already be correct (e.g. loginUser)
-	 * 
+	 *
 	 * @param loginUser the loginUser
 	 * @param groupName a group
 	 * @param minimumRole the minimum group role
@@ -475,7 +495,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * An AccessDeniedException is thrown if the permissions of the user in the
 	 * given
 	 * group do not satisfy the minimum role
-	 * 
+	 *
 	 * @param LoginUser a user
 	 * @param groupName a group
 	 * @param minimumRole the minimum group role
@@ -488,10 +508,10 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * FIXME: Why do we need relation?
-	 * 
+	 *
 	 * Checks if a user relationship between the logged-in user and a requested
 	 * user may be created.
-	 * 
+	 *
 	 * @param loginUser
 	 *        - the logged-in user
 	 * @param relation
@@ -501,8 +521,8 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param targetUser
 	 *        - the target user
 	 * @return true if everything is OK and the relationship may be created
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	public boolean checkUserRelationship(final User loginUser, final User targetUser, final UserRelation relation, final String tag) {
 		/*
@@ -530,7 +550,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * Only users with ApprovePermission can approve. However, any user who
 	 * changes a post creates not-approved versions and thus must be allowed to
 	 * remove approval.
-	 * 
+	 *
 	 * @param post
 	 * @param loginUser
 	 */
@@ -541,12 +561,12 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	public boolean ensureApprovePermission(final User loginUser) {
-		return (loginUser.hasGroupLevelPermission(GroupLevelPermission.COMMUNITY_POST_INSPECTION) || this.isAdmin(loginUser));
+		return loginUser.hasGroupLevelPermission(GroupLevelPermission.COMMUNITY_POST_INSPECTION) || this.isAdmin(loginUser);
 	}
 
 	/**
 	 * TODO: Documentation
-	 * 
+	 *
 	 * @param loginUser
 	 * @param groupLevelPermission
 	 * @return
@@ -562,7 +582,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * TODO: Documentation
-	 * 
+	 *
 	 * @param loginUser
 	 * @param groupLevelPermission
 	 */

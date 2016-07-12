@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -29,8 +29,8 @@ package org.bibsonomy.database.managers;
 import java.util.List;
 
 import org.bibsonomy.common.enums.PostUpdateOperation;
-import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
+import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.model.Post;
@@ -42,13 +42,13 @@ import org.bibsonomy.model.User;
  * this interface. It supplies basic CRUD: create, read, update and delete.
  * @param <T> extends Resource
  * @param <P> extends GenericParam
- * 
+ *
  * @author Christian Schenk
  */
 public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	/**
 	 * Read
-	 * 
+	 *
 	 * @param param
 	 * @param session
 	 * @return list of posts
@@ -57,52 +57,53 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 
 	/**
 	 * Read
-	 * 
+	 *
 	 * @param loginUserName
 	 * @param resourceHash
 	 * @param userName
 	 * @param visibleGroupIDs
 	 * @param session
-	 * 
-	 * @throws ResourceMovedException - when no resource 
-	 * with that hash exists for that user, but once a resource 
-	 * with that hash existed that has been moved. The new hash 
-	 * is returned inside the exception. 
+	 *
+	 * @throws ResourceMovedException - when no resource
+	 * with that hash exists for that user, but once a resource
+	 * with that hash existed that has been moved. The new hash
+	 * is returned inside the exception.
 	 * @throws ObjectNotFoundException
-	 * 
+	 *
 	 * @return list of posts
 	 */
 	public Post<T> getPostDetails(String loginUserName, String resourceHash, String userName, List<Integer> visibleGroupIDs, DBSession session) throws ResourceMovedException, ObjectNotFoundException;
 
 	/**
 	 * Delete
-	 * 
-	 * @param userName 
-	 * @param resourceHash 
-	 * @param session 
-	 * 
-	 * @return true, if entry existed and was deleted
+	 *
+	 * @param userName
+	 * @param resourceHash
+	 * @param loggedinUser
+	 * @param session
+	 * @return <code>true</code>, if entry existed and was deleted
 	 */
-	public boolean deletePost(String userName, String resourceHash, DBSession session);
+	public boolean deletePost(String userName, String resourceHash, User loggedinUser, DBSession session);
 
 	/**
 	 * create
-	 * 
+	 *
 	 * @param post
+	 * @param loggedinUser
 	 * @param session
 	 * @return true if entry was created
 	 */
-	public boolean createPost(Post<T> post, DBSession session);
+	public boolean createPost(Post<T> post, User loggedinUser, DBSession session);
 
 	/**
 	 * update
-	 * 
+	 *
 	 * @param post
 	 * @param oldHash
+	 * @param loginUser
 	 * @param operation
 	 * @param session
-	 * @param loginUser
 	 * @return <code>true</code> iff update was successful
 	 */
-	public boolean updatePost(Post<T> post, String oldHash, PostUpdateOperation operation, DBSession session, User loginUser);
+	public boolean updatePost(Post<T> post, String oldHash, User loginUser, PostUpdateOperation operation, DBSession session);
 }

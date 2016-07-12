@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -108,7 +108,7 @@ public class IEEEXploreBookScraperTest {
 		
 		assertTrue(reference.length() > 100);
 		
-		assertEquals("<li>".trim(), reference.substring(0, 50).trim());
+		assertEquals("".trim(), reference.substring(0, 50).trim());
 		
 		assertTrue(reference.contains("U. Bojars"));
 	}

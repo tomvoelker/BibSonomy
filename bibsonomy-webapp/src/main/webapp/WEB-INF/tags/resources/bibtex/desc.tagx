@@ -2,23 +2,36 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"	
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
 	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="false" />
+	<jsp:directive.attribute name="linebreakAfterAuthors" type="java.lang.Boolean" required="false" />
+	
+	<c:if test="${empty linebreakAfterAuthors}">
+		<c:set var="linebreakAfterAuthors" value="${false}" />
+	</c:if>
 	
 	<c:choose>
 		<c:when test="${publication.entrytype eq 'article'}">
 			<bib:author publication="${publication}" post="${post}"/>
-			<bib:journal publication="${publication}"/><c:out value=" "/>
-			<bib:volumeNumberPages publication="${publication}"/><c:out value=" "/>
+			<c:if test="${linebreakAfterAuthors }">
+				<br />
+			</c:if>
+			<span itemprop="isPartOf" itemscope="itemscope" itemtype="http://schema.org/PublicationIssue">
+				<bib:journal publication="${publication}"/><c:out value=" "/>
+				<bib:volumeNumberPages publication="${publication}"/><c:out value=" "/>
+			</span>
 			<bib:year publication="${publication}" braces="true"/>
 			<bib:note publication="${publication}"/>
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'book'}">
 			<bib:author publication="${publication}" post="${post}"/>
+			<c:if test="${linebreakAfterAuthors }">
+				<br />
+			</c:if>
 			<bib:series publication="${publication}"/>
 			<bib:publisher publication="${publication}"/>
 			<bib:address publication="${publication}"/>
@@ -29,18 +42,27 @@
 		
 		<c:when test="${publication.entrytype eq 'inbook'}">
 			<bib:author publication="${publication}" post="${post}"/>
+			<c:if test="${linebreakAfterAuthors }">
+				<br />
+			</c:if>
 			<bib:volumeOfSeries publication="${publication}"/>
 			<bib:chapter publication="${publication}"/>
 			<bib:page publication="${publication}"/>
 			<bib:publisher publication="${publication}"/>
 			<bib:address publication="${publication}"/>
-			<bib:edition publication="${publication}"/>
+			<span itemprop="isPartOf" itemscope="itemscope" itemtype="http://schema.org/Book">
+				<bib:edition publication="${publication}"/>
+			</span>
 			<bib:year publication="${publication}" braces="true"/>
 			<bib:note publication="${publication}"/>
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'booklet'}">
+			<meta itemprop="bookFormat" content="booklet"/>
 			<bib:author publication="${publication}" post="${post}"/>
+			<c:if test="${linebreakAfterAuthors }">
+				<br />
+			</c:if>
 			<bib:howpublished publication="${publication}"/>
 			<bib:address publication="${publication}"/>
 			<bib:year publication="${publication}" braces="true"/>
@@ -49,19 +71,31 @@
 		
 		<c:when test="${publication.entrytype eq 'incollection'}">
 			<bib:author publication="${publication}" post="${post}"/>
-			<bib:booktitle publication="${publication}"/>
-			<bib:volumeOfSeries publication="${publication}"/>
-			<bib:chapter publication="${publication}"/>
-			<bib:publisher publication="${publication}"/>
-			<bib:address publication="${publication}"/>
-			<bib:edition publication="${publication}"/>
+			<c:if test="${linebreakAfterAuthors }">
+				<br />
+			</c:if>
+			<span itemprop="isPartOf" itemscope="itemscope" itemtype="http://schema.org/Book">
+				<!-- if it is allowed to change the order of following items,
+					then it is better to put just booktitle and edition in this span -->
+				<bib:booktitle publication="${publication}"/>
+				<bib:volumeOfSeries publication="${publication}"/>
+				<bib:chapter publication="${publication}"/>
+				<bib:publisher publication="${publication}"/>
+				<bib:address publication="${publication}"/>
+				<bib:edition publication="${publication}"/>
+			</span>
 			<bib:note publication="${publication}"/>
 			<bib:year publication="${publication}" braces="true"/>
 		</c:when>
 		
 		<c:when test="${publication.entrytype eq 'inproceedings'}">
 			<bib:author publication="${publication}" post="${post}"/>
-			<bib:booktitle publication="${publication}"/>
+			<c:if test="${linebreakAfterAuthors }">
+				<br />
+			</c:if>
+			<span itemprop="isPartOf" itemscope="itemscope" itemtype="http://schema.org/Book">
+				<bib:booktitle publication="${publication}"/>
+			</span>
 			<bib:volumeOfSeries publication="${publication}"/>
 			<bib:page publication="${publication}"/>
 			<bib:address publication="${publication}"/>
@@ -73,15 +107,24 @@
 		
 		<c:when test="${publication.entrytype eq 'manual'}">
 			<bib:author publication="${publication}" post="${post}"/>
+			<c:if test="${linebreakAfterAuthors }">
+				<br />
+			</c:if>
 			<bib:organization publication="${publication}"/>
 			<bib:address publication="${publication}"/>
-			<bib:edition publication="${publication}"/>
+			<span itemprop="isPartOf" itemscope="itemscope" itemtype="http://schema.org/Book">
+				<bib:edition publication="${publication}"/>
+			</span>
 			<bib:year publication="${publication}" braces="true"/>
 			<bib:note publication="${publication}"/>
 		</c:when>
 	
 		<c:when test="${publication.entrytype eq 'mastersthesis' or publication.entrytype eq 'phdthesis'}">
+			<meta itemprop="educationalUse" content="thesis"/>
 			<bib:author publication="${publication}" post="${post}"/>
+			<c:if test="${linebreakAfterAuthors }">
+				<br />
+			</c:if>
 			<bib:school publication="${publication}"/>
 			<bib:address publication="${publication}"/>
 			<bib:type publication="${publication}"/>
@@ -91,6 +134,9 @@
 		
 		<c:when test="${publication.entrytype eq 'proceedings'}">
 			<bib:author publication="${publication}" post="${post}"/>
+			<c:if test="${linebreakAfterAuthors }">
+				<br />
+			</c:if>
 			<bib:volumeOfSeries publication="${publication}"/>
 			<bib:address publication="${publication}"/>
 			<bib:organization publication="${publication}"/>
@@ -101,6 +147,9 @@
 		
 		<c:when test="${publication.entrytype eq 'techreport'}">
 			<bib:author publication="${publication}" post="${post}"/>
+			<c:if test="${linebreakAfterAuthors }">
+				<br />
+			</c:if>
 			<bib:type publication="${publication}"/>
 			<bib:volume publication="${publication}"/>
 			<bib:institution publication="${publication}"/>
@@ -110,6 +159,9 @@
 		
 		<c:when test="${publication.entrytype eq 'unpublished'}">
 			<bib:author publication="${publication}" post="${post}"/>
+			<c:if test="${linebreakAfterAuthors }">
+				<br />
+			</c:if>
 			<bib:year publication="${publication}" braces="true"/>
 			<bib:note publication="${publication}"/>
 		</c:when>
@@ -117,6 +169,9 @@
 		<!-- Misc and others -->
 		<c:otherwise>
 			<bib:author publication="${publication}" post="${post}"/>
+			<c:if test="${linebreakAfterAuthors }">
+				<br />
+			</c:if>
 			<bib:howpublished publication="${publication}"/>
 			<bib:year publication="${publication}" braces="true"/>
 			<bib:note publication="${publication}"/>

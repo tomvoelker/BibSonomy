@@ -1,7 +1,7 @@
 /**
  * BibSonomy Search Elasticsearch - Elasticsearch full text search module.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -117,8 +117,8 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	private ResourceConverter<R> resourceConverter;
 
 	/**
-	 * logic interface for retrieving data from bibsonomy (friends, groups
-	 * members)
+	 * logic interface for retrieving data from the main database
+	 * (friends, groups members)
 	 */
 	private SearchInfoLogic infoLogic;
 	
@@ -245,7 +245,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			final Set<String> allowedUsers = getUsersThatShareDocuments(userName);
 			final QueryBuilder queryBuilder = this.buildQuery(userName,
 					requestedUserName, requestedGroupName,
-					requestedRelationNames, allowedGroups, null, searchTerms,
+					requestedRelationNames, allowedGroups, allowedUsers, searchTerms,
 					titleSearchTerms, authorSearchTerms, bibtexKey,
 					tagIndex, year, firstYear, lastYear, negatedTags);
 			if (queryBuilder == null) {
@@ -265,7 +265,6 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			if (response != null) {
 				final SearchHits hits = response.getHits();
 				postList.setTotalCount((int) hits.getTotalHits());
-				
 				
 				log.debug("Current Search results for '" + searchTerms + "': " + response.getHits().getTotalHits());
 				for (final SearchHit hit : hits) {
@@ -294,13 +293,10 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 * @return
 	 */
 	private Set<String> getUsersThatShareDocuments(final String userName) {
-		final Set<String> allowedUsers;
 		if (present(userName)) {
-			allowedUsers = this.infoLogic.getUserNamesThatShareDocumentsWithUser(userName);
-		} else {
-			allowedUsers = new HashSet<>();
+			return this.infoLogic.getUserNamesThatShareDocumentsWithUser(userName);
 		}
-		return allowedUsers;
+		return new HashSet<>();
 	}
 	
 	/* (non-Javadoc)

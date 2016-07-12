@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -31,7 +31,9 @@ import org.bibsonomy.database.systemstags.SystemTagsUtil;
 
 /**
  * The External System Tag marks a post relevant for some external system. 
- * For example the tag sys:external:vufind would marks posts that are created through the system VuFind.
+ * For example the tag sys:external:vufind would marks posts that are created
+ * through the system VuFind.
+ * 
  * @author sdo
  */
 public class ExternalSystemTag extends AbstractSystemTagImpl implements MarkUpSystemTag {
@@ -47,7 +49,6 @@ public class ExternalSystemTag extends AbstractSystemTagImpl implements MarkUpSy
 	public boolean isToHide() {
 		return true;
 	}
-
 
 	@Override
 	public ExternalSystemTag newInstance() {

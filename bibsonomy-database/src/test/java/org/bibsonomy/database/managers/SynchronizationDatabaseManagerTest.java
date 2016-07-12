@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -120,7 +120,7 @@ public class SynchronizationDatabaseManagerTest extends AbstractDatabaseManagerT
 	 * test getAutoSyncServer() statement
 	 */
 	@Test
-	public void testgetAutoSyncServer() {
+	public void testGetAutoSyncServer() {
 		// update sync-service testURI for SyncUser1 with auto-sync settings
 		SyncService autoSyncService = syncDBManager.getSyncServiceDetails(testURI, this.dbSession);
 		assertEquals(testURI, autoSyncService.getService());

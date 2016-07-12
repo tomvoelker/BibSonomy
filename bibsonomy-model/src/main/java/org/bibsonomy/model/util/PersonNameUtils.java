@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -359,7 +359,9 @@ public class PersonNameUtils {
 		final String trimmedLast = last.trim();
 		if (trimmedLast.startsWith("{") && trimmedLast.endsWith("}")) {
 			final List<PersonName> name = PersonNameUtils.discoverPersonNamesIgnoreExceptions(trimmedLast.substring(1, trimmedLast.length() - 1));
-			if (present(name)) return normalizedPersonString(name.get(0));
+			if (present(name)) {
+				return normalizedPersonString(name.get(0));
+			}
 		} 
 		/*
 		 * We remove all unusual characters.
@@ -414,21 +416,21 @@ public class PersonNameUtils {
 	}
 
 	/**
-	 * @param personName
+	 * @param person
 	 * @param persons
 	 * @param normPersonNames
 	 * @return <code>true</code> if personName is contained in persons
 	 */
-	public static boolean containsPerson(PersonName personName, List<PersonName> persons, boolean normPersonNames) {
+	public static boolean containsPerson(PersonName person, List<PersonName> persons, boolean normPersonNames) {
 		if (normPersonNames) {
-			personName = normalizePersonName(personName);
+			person = normalizePersonName(person);
 		}
 		if (present(persons)) {
 			for (PersonName personToCheck : persons) {
 				if (normPersonNames) {
 					personToCheck = normalizePersonName(personToCheck);
 				}
-				if (personToCheck.equals(personName)) {
+				if (personToCheck.equals(person)) {
 					return true;
 				}
 			}
@@ -437,14 +439,15 @@ public class PersonNameUtils {
 	}
 
 	/**
-	 * @param personName
-	 * @param personList
+	 * @param person
+	 * @param persons
+	 * @param normPersonNames 
 	 * @return all position indices
 	 */
-	public static SortedSet<Integer> getPositionInPersonList(PersonName personName, List<PersonName> persons, boolean normPersonNames) {
+	public static SortedSet<Integer> getPositionsInPersonList(PersonName person, List<PersonName> persons, boolean normPersonNames) {
 		final SortedSet<Integer> positions = new TreeSet<>();
 		if (normPersonNames) {
-			personName = normalizePersonName(personName);
+			person = normalizePersonName(person);
 		}
 		if (present(persons)) {
 			int index = 0;
@@ -452,7 +455,7 @@ public class PersonNameUtils {
 				if (normPersonNames) {
 					personToCheck = normalizePersonName(personToCheck);
 				}
-				if (personToCheck.equals(personName)) {
+				if (personToCheck.equals(person)) {
 					positions.add(Integer.valueOf(index));
 				}
 				

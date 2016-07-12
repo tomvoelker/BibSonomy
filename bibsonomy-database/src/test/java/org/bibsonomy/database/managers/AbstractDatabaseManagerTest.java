@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -52,7 +52,7 @@ public abstract class AbstractDatabaseManagerTest extends AbstractDatabaseTest {
 	/** the name of the file where username, password, and url are stored */
 	public static final String DATABASE_CONFIG_FILE = "database-test.properties";
 	/** Holds the database schema (script is at /src/main/resources) */
-	private static final String SCHEMA_FILENAME = "bibsonomy-db-schema.sql";
+	private static final String SCHEMA_FILENAME = "database/bibsonomy-db-schema.sql";
 	/** Holds the test data (script is found at /src/test/resources) */
 	private static final String DATA_FILENAME = "database/insert-test-data.sql";
 	

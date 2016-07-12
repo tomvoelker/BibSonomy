@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -45,7 +45,9 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlBuilder;
 import org.bibsonomy.util.UrlUtils;
 
@@ -123,7 +125,6 @@ public class URLGenerator {
 	private static final String PUBLICATION_PREFIX = "bibtex";
 	private static final String RELEVANTFOR_PREFIX = "relevantfor";
 	private static final String SEARCH_PREFIX = "search";
-	private static final String SHARED_RESOURCE_SEARCH_PREFIX = "sharedResourceSearch";
 	private static final String SETTINGS_PREFIX = "settings";
 	private static final String TAG_PREFIX = "tag";
 	private static final String USER_PREFIX = "user";
@@ -467,6 +468,67 @@ public class URLGenerator {
 		url += "/" + UrlUtils.encodePathSegment(tagName);
 
 		return this.getUrl(url);
+	}
+	
+	/**
+	 * @param post
+	 * @return edit url for the post
+	 */
+	public String getEditUrlOfPost(final Post<? extends Resource> post) {
+		final UrlBuilder urlBuilder = new UrlBuilder(this.projectHome);
+		final Resource resource = post.getResource();
+		urlBuilder.addPathElement(this.prefix).addPathElement(getEditUrlByResourceClass(resource.getClass()));
+		urlBuilder.addParameter("intraHashToUpdate", resource.getIntraHash());
+		
+		return this.getUrl(urlBuilder.asString());
+	}
+	
+	/**
+	 * @param post
+	 * @param ckey 
+	 * @return the delete url of the post
+	 */
+	public String getDeleteUrlOfPost(final Post<? extends Resource> post, final String ckey) {
+		final UrlBuilder urlBuilder = new UrlBuilder(this.projectHome);
+		urlBuilder.addPathElement("deletePost");
+		
+		final Resource resource = post.getResource();
+		if (ResourceFactory.isCommunityResource(resource)) {
+			urlBuilder.addParameter("resourceHash", resource.getInterHash());
+		} else {
+			urlBuilder.addParameter("resourceHash", resource.getIntraHash());
+			urlBuilder.addParameter("owner", post.getUser().getName());
+		}
+		urlBuilder.addParameter("ckey", ckey);
+		
+		return this.getUrl(urlBuilder.asString());
+	}
+	
+	/**
+	 * @param post
+	 * @return the copy url for the community post
+	 */
+	public String getCopyUrlOfPost(final Post<? extends Resource> post) {
+		final UrlBuilder urlBuilder = new UrlBuilder(this.projectHome);
+		final Resource resource = post.getResource();
+		final Class<? extends Resource> superiorResourceClass = ResourceFactory.findSuperiorResourceClass(resource);
+		urlBuilder.addPathElement(this.prefix).addPathElement(getEditUrlByResourceClass(superiorResourceClass));
+		if (ResourceFactory.isCommunityResource(resource)) {
+			urlBuilder.addParameter("hash", resource.getInterHash());
+		} else {
+			urlBuilder.addParameter("hash", resource.getIntraHash());
+			urlBuilder.addParameter("user", post.getUser().getName());
+		}
+		
+		return this.getUrl(urlBuilder.asString());
+	}
+
+	/**
+	 * @param resourceClass
+	 * @return
+	 */
+	private static String getEditUrlByResourceClass(final Class<? extends Resource> resourceClass) {
+		return "edit" + StringUtils.capitalizeWord(ResourceFactory.getResourceName(resourceClass));
 	}
 	
 	/**
@@ -1396,7 +1458,7 @@ public class URLGenerator {
 				+ UrlUtils.encodePathSegment(userName);
 		return this.getUrl(url);
 	}
-
+	
 	/**
 	 * Constructs the URL for the report as spammer url
 	 * 
@@ -1416,7 +1478,15 @@ public class URLGenerator {
 	 * @return The URL for the user's page with all posts tagged with tagName
 	 */
 	public String getUserUrlByUserNameAndTagName(final String userName, final String tagName) {
-		return this.getUserUrlByUserNameTagNameAndSysUrl(userName, tagName, this.projectHome);
+		String url = this.projectHome
+				+ prefix
+				+ USER_PREFIX
+				+ "/"
+				+ UrlUtils.encodePathSegment(userName)
+				+ "/"
+				+ UrlUtils.encodePathSegment(tagName);
+		return this.getUrl(url);
+
 	}
 
 	/**
@@ -1676,7 +1746,7 @@ public class URLGenerator {
 		final String url = this.projectHome + PUBLICATION_PREFIX + "/"
 				+ PUBLICATION_INTER_HASH_ID + interHash + "?postOwner="
 				+ UrlUtils.encodePathSegment(userName) + "&amp;intraHash="
-				+ intraHash + "#discussionbox";
+				+ intraHash + "#discussionbox"; //FIXME: # are not working in redirects
 		return this.getUrl(url);
 	}
 
@@ -1745,5 +1815,17 @@ public class URLGenerator {
 	
 	public String getPostPublicationUrl() {
 		return this.projectHome + URLGenerator.POST_PUBLICATION;
+	}
+
+	/**
+	 * @param helpPage
+	 * @param language
+	 * @return the help page
+	 */
+	public String getHelpPage(final String helpPage, final String language) {
+		final UrlBuilder builder = new UrlBuilder(this.projectHome + "new_help");
+		builder.addPathElement(language);
+		builder.addPathElement(helpPage);
+		return this.getUrl(builder.asString());
 	}
 }

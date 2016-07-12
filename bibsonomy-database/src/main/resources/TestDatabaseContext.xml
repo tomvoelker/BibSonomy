@@ -7,11 +7,5 @@
 	<!-- import property configurer -->
 	<import resource="classpath:org/bibsonomy/bibsonomy-database-context.xml"/>
 	
-	<bean id="systemTagFactory" class="org.bibsonomy.database.systemstags.SystemTagFactory" factory-method="getInstance">
-		<property name="executableSystemTagMap" ref="executableSystemTagSet"/>
-		<property name="searchSystemTagMap" ref="searchSystemTagSet"/>
-		<property name="markUpSystemTagMap" ref="markUpSystemTagSet"/>
-	</bean>
-	
 	<bean id="reportInformationService" class="org.bibsonomy.testutil.DummyInformationService" />
 </beans>

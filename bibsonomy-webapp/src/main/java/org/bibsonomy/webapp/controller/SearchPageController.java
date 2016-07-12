@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -137,7 +137,7 @@ public class SearchPageController extends SingleResourceListController implement
 			// html format - retrieve tags and return HTML view
 			if ("html".equals(format)) {
 				// fill the tag cloud with all tag assignments of the relevant documents
-				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, maximumTags, search, searchType);
+				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, maximumTags, search, searchType);
 				this.endTiming();
 				return Views.SEARCHPAGE;
 			}

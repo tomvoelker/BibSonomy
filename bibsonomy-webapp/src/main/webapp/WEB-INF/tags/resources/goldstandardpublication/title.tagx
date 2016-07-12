@@ -2,7 +2,6 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"	
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
-	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
@@ -17,18 +16,15 @@
 		</c:otherwise>
 	</c:choose>
 	
-	<spring:eval var="interHashId" expression="T(org.bibsonomy.common.enums.HashID).INTER_HASH.id" />
-	
 	<!--  display title -->
 	<c:choose>
-		<!-- TODO: use url generator -->
 		<c:when test="${isRemotePost}">
-			<c:set var="bibUrlTemplate">${post.systemUrl}bibtex/${interHashId}${post.resource.interHash}</c:set>
+			<c:set var="bibUrlTemplate">${relativeUrlGenerator.getPublicationUrlByInterHashAndSysUrl(post.resource.interHash, post.systemUrl)}</c:set>
 		</c:when>
 		<c:otherwise>
-			<c:set var="bibUrlTemplate">/bibtex/${interHashId}${post.resource.interHash}</c:set>	
+			<c:set var="bibUrlTemplate">${relativeUrlGenerator.getPublicationUrlByInterHash(post.resource.interHash)}</c:set>
 		</c:otherwise>
 	</c:choose>
 	<c:set var="bibTitle" value="${mtl:cleanBibtex(post.resource.title)}"/>
-	<a href="${bibUrlTemplate}" title="${fn:escapeXml(bibTitle)}"><c:out value="${bibTitle}" /></a>
+	<a href="${bibUrlTemplate}" title="${fn:escapeXml(bibTitle)}" itemprop="name"><c:out value="${bibTitle}" /></a>
 </jsp:root>

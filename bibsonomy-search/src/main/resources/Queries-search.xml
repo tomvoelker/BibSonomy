@@ -73,6 +73,7 @@
 			) AS b2
 		LEFT JOIN document d USING(content_id)
 		JOIN bibtex b USING(content_id)
+		WHERE b.group &gt;= 0
 		ORDER BY content_id
 	</select>
 	
@@ -109,6 +110,11 @@
 	<select id="getGoldStandardPublicationContentIdsToDelete" resultClass="integer" parameterClass="date">
 		SELECT content_id FROM
 		log_gold_standard WHERE log_date &gt; #date# AND content_type = 2
+	</select>
+	
+	<select id="getGoldStandardBookmarkContentIdsToDelete" resultClass="integer" parameterClass="date">
+		SELECT content_id FROM
+		log_gold_standard WHERE log_date &gt; #date# AND content_type = 1
 	</select>
 	
 	<!--+ 
@@ -159,6 +165,15 @@
 		SELECT <include refid="allGoldStandardPublicationAttributesWithSimHashesSearch" />, b.change_date, b.group, 'public' AS group_name, 1 AS count, b.content_id, -1 AS rating, -1 AS number_of_ratings
 		FROM gold_standard b
 		WHERE b.content_type = 2
+			AND b.content_id &gt; #lastTasId#
+		ORDER BY b.date DESC, b.content_id DESC
+	</select>
+	
+	<!-- TODO: merge with getGoldStandardPublicationPostsForTimeRange -->
+	<select id="getGoldStandardBookmarkPostsForTimeRange" resultMap="SearchGoldStandardBookmarkCommon.searchGoldStandardBookmarkPost">
+		SELECT <include refid ="allGoldStandardBookmarkAttributesNoChangeDate"/>, b.change_date, b.group, 'public' AS group_name, 1 AS count, b.content_id, -1 AS rating, -1 AS number_of_ratings
+		FROM gold_standard b
+		WHERE b.content_type = 1
 			AND b.content_id &gt; #lastTasId#
 		ORDER BY b.date DESC, b.content_id DESC
 	</select>

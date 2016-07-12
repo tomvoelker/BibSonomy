@@ -32,6 +32,17 @@
 		+-->
 	<c:set var="requPathAndQuery" value="${requPath}${requQueryString}" scope="request" />
 
+	<!-- prepare hidden system tags for handling in custom.js --> 
+	<c:set var="hiddenSystemTags" value="" />
+	<c:forEach var="markUpSystemTags" items="${systemTagFactory.markUpSystemTags}" varStatus="status">
+		<c:set var="hiddenSystemTags" value='${hiddenSystemTags} { name: "${markUpSystemTags.name}", toHide: ${markUpSystemTags.toHide}, hasArguments: ${markUpSystemTags.hasArguments()} },' />
+	</c:forEach>
+	<c:forEach var="executableSystemTags" items="${systemTagFactory.executableSystemTags}">
+		<c:set var="hiddenSystemTags" value='${hiddenSystemTags} { name: "${executableSystemTags.name}", toHide: ${executableSystemTags.toHide}, hasArguments: ${executableSystemTags.hasArguments()} },' />
+	</c:forEach>
+	<!--  remove last comma -->
+	<c:set var="hiddenSystemTags" value="${fn:substring(hiddenSystemTags, 0, fn:length(hiddenSystemTags) - 1 )}" />
+	
 	<!--+
 		|
 		| real content starts here
@@ -88,6 +99,9 @@
 						"confirmDelete" : ${loginUser.settings.confirmDelete}
 					};
 					var requUser = ${(requestedUser ne '') ? requestedUserString : "null"};
+					var hiddenSystemTags = [
+						${hiddenSystemTags}
+					];
 				]]>
 		</script>
 		
@@ -149,7 +163,7 @@
 		<!-- TODO: use feed links for bibsonomy in puma? -->
 		<link rel="alternate" type="application/atom+xml" title="${properties['project.name']} Blog - Atom" href="http://blog.bibsonomy.org/feeds/posts/default" />
 		<link rel="alternate" type="application/rss+xml"  title="${properties['project.name']} Blog - RSS"  href="http://blog.bibsonomy.org/feeds/posts/default?alt=rss" />
-		<title>${properties['project.name']} <c:if test="${not empty pageTitle}"> :: <c:out value="${pageTitle}"/></c:if></title>
+		<title><c:if test="${not empty pageTitle}"><c:out value="${pageTitle}"/> | </c:if>${properties['project.name']}</title>
 		<jsp:invoke fragment="headerExt"/>
 	</head>
 </jsp:root>
