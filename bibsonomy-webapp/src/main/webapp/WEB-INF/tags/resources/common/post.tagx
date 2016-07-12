@@ -65,7 +65,7 @@
 			<div>
 			<div class="clearline">&#160;</div>
 			<rc:otherpeople post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" />
-			<span class="ptitle" itemprop="name"><jsp:invoke fragment="title"/></span>
+			<span class="ptitle"><jsp:invoke fragment="title"/></span>
 			<div class="clearline">&#160;</div>
 			</div>
 		</h4>

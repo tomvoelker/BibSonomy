@@ -1816,4 +1816,16 @@ public class URLGenerator {
 	public String getPostPublicationUrl() {
 		return this.projectHome + URLGenerator.POST_PUBLICATION;
 	}
+
+	/**
+	 * @param helpPage
+	 * @param language
+	 * @return the help page
+	 */
+	public String getHelpPage(final String helpPage, final String language) {
+		final UrlBuilder builder = new UrlBuilder(this.projectHome + "new_help");
+		builder.addPathElement(language);
+		builder.addPathElement(helpPage);
+		return this.getUrl(builder.asString());
+	}
 }
