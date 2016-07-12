@@ -39,7 +39,6 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.webapp.command.actions.JoinGroupCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -223,7 +222,7 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		if (!present(reason)) {
 			errors.rejectValue("reason", "error.field.required");
 		} else if (reason.length() > reasonMaxLen) {
-			errors.rejectValue("reason", "error.field.valid.limit_exceeded", new Object[] {reasonMaxLen}, "Message is too long");
+			errors.rejectValue("reason", "error.field.valid.limit_exceeded", new Object[] { Integer.valueOf(reasonMaxLen) }, "Message is too long");
 			command.setReason(command.getReason().substring(0, reasonMaxLen));
 		}
 	}

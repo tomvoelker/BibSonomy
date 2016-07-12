@@ -40,7 +40,6 @@ import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.UserUtils;
-import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.webapp.command.actions.UserRegistrationCommand;
 import org.bibsonomy.webapp.util.CookieAware;
