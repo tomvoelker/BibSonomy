@@ -108,7 +108,7 @@
 
 <script language="javascript">
 	var authors = new Array(<c:forEach var='author' items='${command.authors}' varStatus="loopStatus">
-								"${fn:escapeXml(mtl:quoteJSON(author))}"<c:if test="${not loopStatus.last}">,</c:if>
+								"${fn:escapeXml(mtl:quoteJSONcleanBibTeX(author))}"<c:if test="${not loopStatus.last}">,</c:if>
 							</c:forEach>);
 							
 	var tags = new Array(<c:forEach var='tag' items='${command.tags}' varStatus="loopStatus">
@@ -153,10 +153,10 @@
 	
 	for (var i=0;i<tagTitle.length;i++) {
 		var lst = tagTitle[i];
-		for (var j=0;j<lst.length;j++) {
+		for (var j = 0;j<lst.length;j++) {
 			titleTag[lst[j]] += tags[i] + " ";
 		}
-	}	
+	}
 	
 	// initialize the form
 	initBoxes();
