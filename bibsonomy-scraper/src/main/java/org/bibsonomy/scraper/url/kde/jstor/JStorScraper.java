@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -48,9 +48,9 @@ public class JStorScraper extends GenericBibTeXURLScraper {
 	private static final String JSTOR_HOST  = "jstor.org";
 	private static final String JSTOR_HOST_NAME  = "http://www.jstor.org";
 	private static final String JSTOR_STABLE_PATH = "/stable/";
-	private static final String DOWNLOAD_URL = "http://www.jstor.org/citation/text/";	
+	private static final String DOWNLOAD_URL = JSTOR_HOST_NAME + "/citation/text/"; //http://www.jstor.org/citation/text/10.2307/4142852
 	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
-	private static final Pattern DOI = Pattern.compile("class=\"button button-jstor cite-this-item\" data-reveal-id=\"citation-tools\" data-doi=\"(.*?)\"");
+	private static final Pattern DOI = Pattern.compile("data-reveal-id=\"citation-tools\" data-doi=\"(.*?)\"");
 	
 	static {
 		final Pattern hostPattern = Pattern.compile(".*" + JSTOR_HOST);
@@ -58,7 +58,7 @@ public class JStorScraper extends GenericBibTeXURLScraper {
 	}
 	
 	@Override
-	protected String getDownloadURL(URL url) throws ScrapingException, IOException {
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
 		final String doi = exportDOIFromSourceCode(url.toString());
 		if (doi != null) {
 			return DOWNLOAD_URL + doi;

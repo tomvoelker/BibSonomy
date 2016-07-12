@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -100,8 +100,10 @@ public class UrlBuilder {
 	 * @param pathElement part between two '/'es
 	 * @return this object
 	 */
-	public UrlBuilder addPathElement(String pathElement) {
-		this.pathElements.add(pathElement);
+	public UrlBuilder addPathElement(final String pathElement) {
+		if (present(pathElement)) {
+			this.pathElements.add(pathElement);
+		}
 		return this;
 	}
 	

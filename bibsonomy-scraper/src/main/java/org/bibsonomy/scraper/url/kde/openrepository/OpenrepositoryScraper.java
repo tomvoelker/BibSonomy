@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -100,7 +100,7 @@ public class OpenrepositoryScraper extends GenericRISURLScraper {
 	}
 	
 	@Override
-	public String getDownloadURL(URL url) {
+	public String getDownloadURL(URL url, String cookies) {
 		final String sturl = url.toString();
 		if (sturl.contains(SUPPORTED_HOST_OPENREPOSITORY)) {
 			return "http://www." + SUPPORTED_HOST_OPENREPOSITORY + "/references?format=refman&handle=" + getHandle(sturl);

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -499,7 +499,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		try {
 			session.beginTransaction();
 			// activate the user
-			this.userDb.performActivationSteps(new User(groupName), session);
+			this.userDb.activateUser(new User(groupName), session);
 
 			// "move" the pending group row to the normal group table
 			this.insert("activateGroup", groupName, session);

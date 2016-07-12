@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -56,7 +56,7 @@ public class AhaJournalsScraper extends GenericBibTeXURLScraper{
 	private static final String DOWNLOAD_URL = "http://circ.ahajournals.org/citmgr?type=bibtex&gca=circulationaha%3B";
 	
 	@Override
-	protected String getDownloadURL(final URL url) throws ScrapingException, IOException {
+	protected String getDownloadURL(final URL url, String cookies) throws ScrapingException, IOException {
 		final String id = extractID(url);
 		if (id == null) {
 			return null;

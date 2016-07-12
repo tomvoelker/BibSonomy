@@ -24,7 +24,6 @@
 		pageTitle="full text search"
 		loginUser="${command.context.loginUser}" 
 		requPath="${requPath}"
-		minimizedContentWidth="${true}"
 		noSidebar="${true}">
 		
 		<jsp:attribute name="breadcrumbs">

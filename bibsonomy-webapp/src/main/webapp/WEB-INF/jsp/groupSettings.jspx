@@ -17,7 +17,7 @@
 		<fmt:param value="${group.name}" />
 	</fmt:message>
 	
-	<layout:tabLayout pageTitle="${groupSettingsPageTitle}" headerMessageKey="post_bookmark.heading" headerLogoClass="bookmarks" command="${command}" requPath="${requPath}" activeTab="settings" minimizedContentWidth="${true}">
+	<layout:tabLayout pageTitle="${groupSettingsPageTitle}" headerMessageKey="post_bookmark.heading" headerLogoClass="bookmarks" command="${command}" requPath="${requPath}" activeTab="settings">
 
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
@@ -49,7 +49,7 @@
 			
 			<groupsettings:userlists group="${group}" />
 			
-			<!--<groupsettings:delete group="${group}" />-->
+			<groupsettings:delete group="${group}" />
 		</jsp:attribute>
 
 	</layout:tabLayout>

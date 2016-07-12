@@ -21,8 +21,7 @@
 	<layout:paneLayout headerMessageKey="export.header"
 		headerLogoClass="publications" command="${command}"
 		pageTitle="${command.pageTitle}" requPath="export/${requPath}"
-		showPageOptions="${command.context.userLoggedIn}"
-		minimizedContentWidth="${true}">
+		showPageOptions="${command.context.userLoggedIn}">
 
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.export" />

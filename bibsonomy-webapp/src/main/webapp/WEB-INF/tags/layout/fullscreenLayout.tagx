@@ -18,18 +18,11 @@
 	<jsp:directive.attribute name="contentIntro" fragment="true" required="false"/>	
 	<jsp:directive.attribute name="headerExt" fragment="true" />
 	<jsp:directive.attribute name="infobox" fragment="true" required="false"/>
-	<jsp:directive.attribute name="beforeMainContainer" fragment="true" required="false"/>
 	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="newsbar" fragment="true" required="false"/>
-	<jsp:directive.attribute name="headerContainer" fragment="true" required="false"/>
-	<!-- FIXME: footerContainer not used -->
-	<jsp:directive.attribute name="footerContainer" fragment="true" required="false"/>
+	
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="noLoginBox" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="hideFooterContainer" type="java.lang.Boolean" required="false"/>	
-	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>
-	
 	
 	<!--+
 		| 
@@ -43,7 +36,6 @@
 		pageTitle="${editPageTitle}" 
 		requPath="${requPath}" 
 		activeTab="${activeTab}"
-		minimizedContentWidth="${minimizedContentWidth}"
 		noSidebar="${true}"
 		>
 		

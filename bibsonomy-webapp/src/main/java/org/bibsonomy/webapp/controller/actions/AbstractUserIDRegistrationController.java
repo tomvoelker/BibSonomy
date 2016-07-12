@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -153,7 +153,7 @@ public abstract class AbstractUserIDRegistrationController<R> implements ErrorAw
 		/* 
 		 * if there are any errors in the form, we return back to fix them.
 		 */
-		if (this.errors.hasErrors()) {
+		if (this.errors.hasErrors() || command.getContext().isFirstCall()) {
 			log.info("an error occoured: " + this.errors.toString());
 			return this.registrationFormView;
 		}

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -68,11 +68,9 @@ public class ElsevierhealthScraper extends AbstractUrlScraper {
 	
 	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
 
-	
     static {
     	patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(WC + HOST), Pattern.compile(EXPORT_PAGE + WC)));
     }
-    
 
     @Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {

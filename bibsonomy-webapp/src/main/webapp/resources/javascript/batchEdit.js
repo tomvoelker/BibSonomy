@@ -332,7 +332,7 @@ function changeTagInputs(selector, disabled) {
 		/*
 		 * remove possible special characters from selector string
 		 */
-		var attr = $(this).prop('name').replace('posts','newTags').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1');
+		var attr = $(this).prop('name').replace('checked','newTags').replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1');
 		$('input[name=' + attr + ']:text').prop('disabled', disabled);
 	});
 }

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,92 +26,177 @@
  */
 package org.bibsonomy.database.params;
 
+import java.util.Date;
+
 import org.bibsonomy.model.User;
 
 /**
- * @param <T> the class of the id
- * 
+ *
  * @author dzo
- * @version $Id$ 
+ * @author tni
  */
-public class LoggingParam<T> {
-	private T oldId;
-	private T newId;
-	
-	/** Needed for History Update */
-	private int requestedContentId;
-	/** If a newcontentId is updated we need this as reference */
+public class LoggingParam {
+	private String oldTag;
+	private String newTag;
+
+	private String oldHash;
+	private String newHash;
+
+	private int oldContentId;
 	private int newContentId;
-	
-	private User user;
-	
+	private int contentType;
+
+	private User postOwner;
+	private User postEditor;
+
+	private Date date;
+
 	/**
-	 * @return the oldId
+	 * @return the oldTag
 	 */
-	public T getOldId() {
-		return this.oldId;
-	}
-	
-	/**
-	 * @param oldId the oldId to set
-	 */
-	public void setOldId(T oldId) {
-		this.oldId = oldId;
+	public String getOldTag() {
+		return this.oldTag;
 	}
 
 	/**
-	 * @param newId the newId to set
+	 * @param oldTag
+	 *            the oldTag to set
 	 */
-	public void setNewId(T newId) {
-		this.newId = newId;
+	public void setOldTag(final String oldTag) {
+		this.oldTag = oldTag;
 	}
 
 	/**
-	 * @return the newId
+	 * @return the newTag
 	 */
-	public T getNewId() {
-		return newId;
-	}
-	
-	/**
-	 * @return the user
-	 */
-	public User getUser() {
-		return this.user;
+	public String getNewTag() {
+		return this.newTag;
 	}
 
 	/**
-	 * @param user the user to set
+	 * @param newTag
+	 *            the newTag to set
 	 */
-	public void setUser(User user) {
-		this.user = user;
+	public void setNewTag(final String newTag) {
+		this.newTag = newTag;
+	}
+
+	/**
+	 * @return the oldContentId
+	 */
+	public int getOldContentId() {
+		return this.oldContentId;
+	}
+
+	/**
+	 * @param oldContentId
+	 *            the oldContentId to set
+	 */
+	public void setOldContentId(final int oldContentId) {
+		this.oldContentId = oldContentId;
 	}
 
 	/**
 	 * @return the newContentId
 	 */
 	public int getNewContentId() {
-		return newContentId;
+		return this.newContentId;
 	}
 
 	/**
 	 * @param newContentId the newContentId to set
 	 */
-	public void setNewContentId(int newContentId) {
+	public void setNewContentId(final int newContentId) {
 		this.newContentId = newContentId;
 	}
 
 	/**
-	 * @return the contentId
+	 * @return the contentType
 	 */
-	public int getContentId() {
-		return requestedContentId;
+	public int getContentType() {
+		return this.contentType;
 	}
 
 	/**
-	 * @param contentId the contentId to set
+	 * @param contentType
+	 *            the contentType to set
 	 */
-	public void setContentId(int contentId) {
-		this.requestedContentId = contentId;
+	public void setContentType(final int contentType) {
+		this.contentType = contentType;
+	}
+
+	/**
+	 * @return the postOwner
+	 */
+	public User getPostOwner() {
+		return this.postOwner;
+	}
+
+	/**
+	 * @param postOwner
+	 *            the postOwner to set
+	 */
+	public void setPostOwner(final User postOwner) {
+		this.postOwner = postOwner;
+	}
+
+	/**
+	 * @return the postEditor
+	 */
+	public User getPostEditor() {
+		return this.postEditor;
+	}
+
+	/**
+	 * @param postEditor
+	 *            the postEditor to set
+	 */
+	public void setPostEditor(final User postEditor) {
+		this.postEditor = postEditor;
+	}
+
+	/**
+	 * @return the date
+	 */
+	public Date getDate() {
+		return this.date;
+	}
+
+	/**
+	 * @param date
+	 *            the date to set
+	 */
+	public void setDate(final Date date) {
+		this.date = date;
+	}
+
+	/**
+	 * @return the oldHash
+	 */
+	public String getOldHash() {
+		return this.oldHash;
+	}
+
+	/**
+	 * @param oldHash
+	 *            the oldHash to set
+	 */
+	public void setOldHash(final String oldHash) {
+		this.oldHash = oldHash;
+	}
+
+	/**
+	 * @return the newHash
+	 */
+	public String getNewHash() {
+		return this.newHash;
+	}
+
+	/**
+	 * @param newHash
+	 *            the newHash to set
+	 */
+	public void setNewHash(final String newHash) {
+		this.newHash = newHash;
 	}
 }

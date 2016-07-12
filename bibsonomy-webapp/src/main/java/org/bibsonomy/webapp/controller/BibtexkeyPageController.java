@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -95,7 +95,7 @@ public class BibtexkeyPageController extends SingleResourceListController implem
 		// html format - fetch tags and return HTML view
 		if (format.equals("html")) {
 			// tags
-			setTags(command, BibTex.class, groupingEntity, groupingName, null, command.getRequestedTagsList(), null, 1000, null, command.getScope());
+			setTags(command, BibTex.class, groupingEntity, groupingName, null, null, command.getRequestedTagsList(), null, 1000, null, command.getScope());
 			if (command.getTagcloud().getTags().size() > 999) {
 				log.error("Found bibtex entries by bibtex keys with more than 1000 tags assigned!!");
 			}

@@ -5,9 +5,5 @@
  <b>\format[AntiScriptInjection]{\volume}</b>
 \end{volume}
 \begin{number}
-(\format[AntiScriptInjection]{\number})
-\end{number}
-\begin{pages}
-, \format[AntiScriptInjection]{\pages}
-\end{pages}.
+(\format[AntiScriptInjection]{\number})\end{number}\begin{pages}, \format[AntiScriptInjection]{\pages}\end{pages}.
 </p>

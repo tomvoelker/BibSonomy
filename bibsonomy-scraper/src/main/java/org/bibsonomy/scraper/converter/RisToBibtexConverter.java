@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -61,7 +61,6 @@ public class RisToBibtexConverter implements BibtexConverter{
 		 * Parse the entries in the source, and return a List of BibtexEntry
 		 * objects.
 		 */
-
 		String type = "", author = "", editor = "", startPage = "", endPage = "", comment = "";
 		final SortedMap<String,String> bibtexMap = new TreeMap<String,String>();
 
@@ -275,7 +274,7 @@ public class RisToBibtexConverter implements BibtexConverter{
 			}
 		}
 		bibtexString.append("\n}\n");
-
+						
 		return bibtexString.toString();
 	}
 

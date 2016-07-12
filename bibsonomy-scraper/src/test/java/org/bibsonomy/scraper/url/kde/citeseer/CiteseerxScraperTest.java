@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -64,7 +64,6 @@ public class CiteseerxScraperTest {
 		
 		try {
 			final boolean scrape = scraper.scrape(sc);
-			System.out.println(sc.getBibtexResult());
 			assertTrue(scrape);
 		} catch (final ScrapingException ex) {
 			fail(ex.getMessage());
@@ -79,7 +78,6 @@ public class CiteseerxScraperTest {
 		
 		try {
 			final boolean scrape = scraper.scrape(sc);
-			System.out.println(sc.getBibtexResult());
 			assertTrue(scrape);
 		} catch (final ScrapingException ex) {
 			fail(ex.getMessage());
@@ -94,7 +92,6 @@ public class CiteseerxScraperTest {
 		
 		try {
 			scraper.scrape(sc);
-			System.out.println(sc.getBibtexResult());
 		} catch (final ScrapingException ex) {
 			fail(ex.getMessage());
 		}

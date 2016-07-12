@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -27,6 +27,7 @@
 package org.bibsonomy.webapp.view;
 
 import org.bibsonomy.webapp.util.View;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.view.RedirectView;
 
 /**
@@ -39,8 +40,19 @@ public class ExtendedRedirectView extends RedirectView implements View {
 	 * @param redirectURI
 	 */
 	public ExtendedRedirectView(final String redirectURI) {
+		this(redirectURI, false);
+	}
+	
+	/**
+	 * @param redirectURI 
+	 * @param permanent 
+	 */
+	public ExtendedRedirectView(final String redirectURI, final boolean permanent) {
 		super(redirectURI);
-		setExposeModelAttributes(false);
+		this.setExposeModelAttributes(false);
+		if (permanent) {
+			this.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
+		}
 	}
 	
 	@Override

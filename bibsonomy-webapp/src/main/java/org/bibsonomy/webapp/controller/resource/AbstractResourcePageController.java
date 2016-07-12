@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -43,6 +43,7 @@ import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.GoldStandardPostLogicInterface;
 import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.metadata.PostMetaData;
@@ -50,6 +51,7 @@ import org.bibsonomy.webapp.command.resource.ResourcePageCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListControllerWithTags;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
@@ -96,12 +98,12 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 	/**
 	 * Creates the Map with the Copy Metadata.
 	 */
-	private Map<String, List<String>> createCopyUserMap(final List<PostMetaData> metaDataList) {
+	private static Map<String, List<String>> createCopyUserMap(final List<PostMetaData> metaDataList) {
 		Map<String, List<String>> res = new HashMap<String, List<String>>();
 		for (PostMetaData data : metaDataList) {
 			List<String> copyUsers = res.get(data.getValue());
 			// author does not yet exist ?
-			if ( copyUsers == null ) {
+			if (copyUsers == null ) {
 				copyUsers = new ArrayList<String>();
 				res.put(data.getValue(), copyUsers);
 			} 
@@ -141,7 +143,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 		 * If an intra hash was queried, we later must overwrite it with the 
 		 * inter hash.
 		 */
-		String goldHash = shortHash; 
+		String goldHash = shortHash;
 		
 		/*
 		 * retrieve and set the requested resource(s)
@@ -209,7 +211,7 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 		final List<PostMetaData> metaData = null; // this.logic.getPostMetaData(HashID.INTER_HASH, goldHash, null, null);
 		if (present(metaData)) {
 			// try to create the copy users map
-			command.setCopyUsersMap(this.createCopyUserMap(metaData));
+			command.setCopyUsersMap(createCopyUserMap(metaData));
 		}
 	
 		/*
@@ -270,15 +272,19 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 			/*
 			 * Add additional data for HTML view, e.g., tags, other user's posts, ...
 			 */
-			if (GroupingEntity.USER.equals(groupingEntity) || present(goldStandard)) {
-				/*
-				 * fetch posts of all users with the given hash, add users to related
-				 * users list
-				 */
-				final List<Post<R>> allPosts = this.logic.getPosts(this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null,SearchType.LOCAL, null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
-				for (final Post<R> post : allPosts) {
-					command.getRelatedUserCommand().getRelatedUsers().add(post.getUser());
+			/*
+			 * fetch posts of all users with the given hash, add users to related
+			 * users list
+			 */
+			final RequestWrapperContext context = command.getContext();
+			final User loggedinUser = context.getLoginUser();
+			final List<Post<R>> allPosts = this.logic.getPosts(this.getResourceClass(), GroupingEntity.ALL, null, null, firstResource.getInterHash(), null, SearchType.LOCAL, null, null, null, null, 0, PostLogicInterface.MAX_QUERY_SIZE);
+			for (final Post<R> post : allPosts) {
+				final User user = post.getUser();
+				if (user.equals(loggedinUser)) {
+					command.setPostOfLoggedInUser(post);
 				}
+				command.getRelatedUserCommand().getRelatedUsers().add(user);
 			}
 			
 			/*
@@ -305,13 +311,13 @@ public abstract class AbstractResourcePageController<R extends Resource, G exten
 				 * show tags by all users for this resource; the ones by the given user
 				 * will be highlighted later
 				 */
-				this.setTags(command, this.getResourceClass(), GroupingEntity.ALL, null, null, null, longHash, TAG_LIMIT, null);
+				this.setTags(command, this.getResourceClass(), GroupingEntity.ALL, null, null, null, null, longHash, TAG_LIMIT, null);
 				return this.getDetailsView();
 			}
 			/*
 			 * get only those tags, related to the resource
 			 */
-			this.setTags(command, this.getResourceClass(), groupingEntity, requUser, null, null, longHash, TAG_LIMIT, null);			
+			this.setTags(command, this.getResourceClass(), groupingEntity, requUser, null, Order.ALPH, null, longHash, TAG_LIMIT, null);
 			return this.getResourcePage();
 		}
 

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -110,7 +110,7 @@ public class WikiCvPageController extends ResourceListController implements Mini
 			groupingEntity = GroupingEntity.USER;
 		}
 		
-		this.setTags(command, Resource.class, groupingEntity, entityName, null, command.getRequestedTagsList(), null, 1000, null);
+		this.setTags(command, Resource.class, groupingEntity, entityName, null, null, command.getRequestedTagsList(), null, 1000, null);
 		
 		// TODO: Implement date selection on the editing page
 		final Wiki wiki = this.logic.getWiki(entityName, null);

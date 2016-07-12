@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -76,7 +76,7 @@ public class ATSScraperTest {
 		final String cby = sc.getCitedBy();
 		assertNotNull(cby);
 		assertTrue(cby.length() > 100);
-		assertEquals("<div> (2013) Stem Cells, Cell Therapies, and Bioengineering in Lung Biology and Diseases.".trim(), cby.substring(0, 90).trim());
+		assertEquals("<div> (2015) Cytoskeletal mechanisms regulating vascular endothelial barrier function in r".trim(), cby.substring(0, 90).trim());
 		assertTrue(cby.contains(" Markers of Vascular Perturbation Correlate"));
 	}
 }

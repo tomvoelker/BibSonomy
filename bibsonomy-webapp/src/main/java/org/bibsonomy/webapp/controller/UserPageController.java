@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -143,15 +143,15 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
 			// set page title
-			command.setPageTitle("user :: " + groupingName); // TODO: i18n
+			command.setPageTitle(groupingName); // TODO: i18n
 			if (present(requTags)) {
 				// add the tags to the title
-				command.setPageTitle(command.getPageTitle() + " :: " + StringUtils.implodeStringCollection(requTags, "+"));
+				command.setPageTitle(command.getPageTitle() + " > " + StringUtils.implodeStringCollection(requTags, " "));
 			}
 			
 			// only fetch tags if they were not already fetched by handleTagsOnly
 			if (command.getTagstype() == null) {
-				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, Integer.MAX_VALUE, null, command.getScope());
+				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, Integer.MAX_VALUE, null, command.getScope());
 			}
 
 			// retrieve concepts

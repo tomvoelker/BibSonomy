@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -156,7 +156,7 @@ public class WorldScientificScraper extends GenericBibTeXURLScraper implements C
 	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL)
 	 */
 	@Override
-	protected String getDownloadURL(URL url) throws ScrapingException {
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		String id = null;
 		String bibtex_url = "http://" + url.getHost() + "/action/downloadCitation?format=bibtex&doi=";
 

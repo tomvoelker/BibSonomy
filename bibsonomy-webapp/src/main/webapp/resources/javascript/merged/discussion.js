@@ -10,10 +10,8 @@ function includeJavaScript(jsFile) {
 	document.write('<script type="text/javascript" src="' + jsFile + '"></scr' + 'ipt>');
 }
 
-includeJavaScript("/resources/jquery/plugins/ui/plugins/stars/jquery.ui.stars.js");
-includeJavaScript("/resources/jquery/plugins/flot/excanvas.js"); // IE fix
-includeJavaScript("/resources/jquery/plugins/flot/jquery.flot.js");
-includeJavaScript("/resources/jquery/plugins/flot/jquery.flot.stack.js");
+includeJavaScript("/resources/star-rating/star-rating.js");
+includeJavaScript("/resources/Chart.js/Chart.js");
 
 includeJavaScript("/resources/javascript/discussion/discussion.js");
 includeJavaScript("/resources/javascript/discussion/comments.js");

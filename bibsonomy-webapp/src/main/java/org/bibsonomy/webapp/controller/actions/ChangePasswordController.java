@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -118,7 +118,7 @@ public class ChangePasswordController extends SettingsPageController implements 
 		 * go back to the settings page and display errors from command field
 		 * validation
 		 */
-		if (errors.hasErrors()) {
+		if (errors.hasErrors() || command.getContext().isFirstCall()) {
 			return super.workOn(command);
 		}
 

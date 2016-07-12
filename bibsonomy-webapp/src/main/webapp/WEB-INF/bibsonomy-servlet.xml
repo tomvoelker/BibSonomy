@@ -6,7 +6,7 @@
 	                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 	                    http://www.springframework.org/schema/util 
 	                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
-	                    
+
 	<!-- conversion service to convert strings to objects -->
 	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
 		<property name="converters">
@@ -177,6 +177,10 @@
 		<constructor-arg value="${project.home}" />
 	</bean>
 	
+	<bean id="projectTheme" class="java.lang.String">
+		<constructor-arg value="${project.theme}" />
+	</bean>
+	
 	<!-- handles sending of mails  -->
 	<bean id="mailUtils" class="org.bibsonomy.util.MailUtils" scope="singleton">
 		<property name="projectHome" ref="projectHome" />
@@ -269,6 +273,7 @@
 				<value>properties</value>
 				<value>relativeUrlGenerator</value>
 				<value>absoluteUrlGenerator</value>
+				<value>systemTagFactory</value>
 			</list>
 		</property>
 	</bean>
@@ -721,6 +726,19 @@
 						<property name="controllerBeanName" value="personIntroPageController"/>
 					</bean>
 				</entry>
+				<entry key="/help">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="helpPageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>language</value>
+								<value>helpPage</value>
+								<value>filename</value>
+								<value>theme</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>
@@ -740,6 +758,7 @@
 		<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
 		<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
 		<value type="java.lang.Class">org.bibsonomy.model.GoldStandardPublication</value>
+		<value type="java.lang.Class">org.bibsonomy.model.GoldStandardBookmark</value>
 	</util:set>
 	
 	<bean id="homepageController" class="org.bibsonomy.webapp.controller.HomepageController" scope="request" parent="multiResourceListController">
@@ -992,7 +1011,15 @@
 			</list>
 		</property>
 	</bean>
-
+	
+	<bean id="helpPageController" class="org.bibsonomy.webapp.controller.HelpPageController" scope="request">
+		<property name="projectName" ref="projectName"/>
+		<property name="projectTheme" ref="projectTheme"/>
+		<property name="projectHome" ref="projectHome" />
+		<property name="requestLogic" ref="requestLogic"/>
+		<property name="urlGenerator" ref="relativeUrlGenerator" />
+		<property name="helpPath" value="${project.help.path}" />
+	</bean>
 	
 	<!--  #################### static views #################### -->
 	<bean id="personIntroPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
@@ -1050,4 +1077,5 @@
 	<import resource="bibsonomy-servlet-synchronization.xml" />
 	<import resource="bibsonomy-servlet-logging.xml" />
 	<import resource="bibsonomy-servlet-puma.xml" />
+	
 </beans>

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -47,7 +47,7 @@ import org.bibsonomy.model.Tag;
 public class GetTagsByHash extends TagChainElement {
 
 	@Override
-	protected List<Tag> handle(final TagParam param, final DBSession session) {		
+	protected List<Tag> handle(final TagParam param, final DBSession session) {
 		final int contentType = param.getContentType();
 		if (contentType == ConstantID.BIBTEX_CONTENT_TYPE.getId()) {
 			return this.db.getTagsByBibtexHash(param.getUserName(), 

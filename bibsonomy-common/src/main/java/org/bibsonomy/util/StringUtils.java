@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -2454,6 +2454,15 @@ public class StringUtils {
 		}
 		sb.replace(i, i + toBeReplaced.length(), replacement);
 		return sb;
+	}
+	
+	/**
+	 * capitalizes the first letter of a word
+	 * @param word
+	 * @return
+	 */
+	public static String capitalizeWord(final String word) {
+		return Character.toUpperCase(word.charAt(0)) + word.substring(1);
 	}
 
 	/**

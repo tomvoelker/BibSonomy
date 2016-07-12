@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -42,19 +42,17 @@ import org.bibsonomy.rest.strategy.Context;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  */
 public class GetListOfPostsStrategy extends AbstractListOfPostsStrategy {
-	private final String nextLinkPrefix;
-
+	
 	/**
 	 * @param context
 	 */
 	public GetListOfPostsStrategy(final Context context) {
 		super(context);
-		this.nextLinkPrefix = this.getUrlRenderer().getApiUrl() + RESTConfig.POSTS_URL;
 	}
 
 	@Override
 	protected StringBuilder getLinkPrefix() {
-		return new StringBuilder(this.nextLinkPrefix);
+		return new StringBuilder(this.getUrlRenderer().getApiUrl() + RESTConfig.POSTS_URL);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -78,8 +76,8 @@ public class GetListOfPostsStrategy extends AbstractListOfPostsStrategy {
 
 	protected <T extends Resource> List<Post<T>> getList(Class<T> resourceType) {
 		// TODO: support other searchtypes
-		return this.getLogic().getPosts(resourceType, grouping, groupingValue,
-				this.tags, this.hash, search, SearchType.LOCAL, null, order, null, null,
+		return this.getLogic().getPosts(resourceType, this.grouping, this.groupingValue,
+				this.tags, this.hash, this.search, SearchType.LOCAL, null, this.order, null, null,
 				getView().getStartValue(), getView().getEndValue());
 	}
 }

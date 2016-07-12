@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,10 +26,17 @@
  */
 package org.bibsonomy.webapp.controller.actions;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.Collections;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.GroupRole;
+import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.GroupMembership;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.actions.DeletePostCommand;
@@ -48,7 +55,7 @@ import org.springframework.validation.Errors;
  */
 public class DeletePostController implements MinimalisticController<DeletePostCommand>, ErrorAware{
 	private static final Log log = LogFactory.getLog(DeletePostController.class);
-	
+
 	private RequestLogic requestLogic;
 	private LogicInterface logic;
 	private Errors errors;
@@ -60,50 +67,55 @@ public class DeletePostController implements MinimalisticController<DeletePostCo
 	}
 
 	@Override
-	public View workOn(DeletePostCommand command) {
+	public View workOn(final DeletePostCommand command) {
 		final RequestWrapperContext context = command.getContext();
-		
+
 		/*
 		 * user has to be logged in to delete himself
 		 */
 		if (!context.isUserLoggedIn()){
-			errors.reject("error.general.login");
+			this.errors.reject("error.general.login");
 		}
-		
+
 		/*
 		 * check the ckey
 		 */
 		final String resourceHash = command.getResourceHash();
 		final String owner = command.getOwner();
-		if (context.isValidCkey() && !errors.hasErrors()){
+
+		if (!this.errors.hasErrors() && !this.canDeletePost(context.getLoginUser(), owner)) {
+			this.errors.reject("error.general.edit");
+		}
+
+		if (context.isValidCkey() && !this.errors.hasErrors()) {
 			log.debug("User is logged in, ckey is valid");
-			
+
 			try {
 				// delete the post
-				logic.deletePosts(owner, Collections.singletonList(resourceHash));
-			} catch (IllegalStateException e) {
-				errors.reject("error.post.notfound", new Object[]{resourceHash}, " The resource with ID [" + resourceHash + "] does not exist and could hence not be deleted.");
+				this.logic.deletePosts(owner, Collections.singletonList(resourceHash));
+			} catch (final IllegalStateException e) {
+				this.errors.reject("error.post.notfound", new Object[]{resourceHash}, " The resource with ID [" + resourceHash + "] does not exist and could hence not be deleted.");
 			}
 		} else {
-			errors.reject("error.field.valid.ckey");
+			this.errors.reject("error.field.valid.ckey");
 		}
-		
+
 		/*
 		 * if there are errors, show them
 		 */
-		if (errors.hasErrors()){
+		if (this.errors.hasErrors()){
 			return Views.ERROR;
 		}
-		
+
 		/*
-		 * redirect to the user page when the user is coming from the page of 
+		 * redirect to the user page when the user is coming from the page of
 		 * the resource.
 		 */
-		final String referer = requestLogic.getReferer();
-		if (urlGenerator.matchesResourcePage(referer, owner, resourceHash)) {
-			return new ExtendedRedirectView(urlGenerator.getUserUrlByUserName(owner));
+		final String referer = this.requestLogic.getReferer();
+		if (this.urlGenerator.matchesResourcePage(referer, owner, resourceHash)) {
+			return new ExtendedRedirectView(this.urlGenerator.getUserUrlByUserName(owner));
 		}
-		
+
 		/*
 		 * go back where we've come from
 		 */
@@ -116,7 +128,7 @@ public class DeletePostController implements MinimalisticController<DeletePostCo
 	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
 	}
-	
+
 	/**
 	 * @return errors
 	 */
@@ -124,7 +136,7 @@ public class DeletePostController implements MinimalisticController<DeletePostCo
 	public Errors getErrors() {
 		return this.errors;
 	}
-	
+
 	/**
 	 * @param errors
 	 */
@@ -132,20 +144,46 @@ public class DeletePostController implements MinimalisticController<DeletePostCo
 	public void setErrors(final Errors errors) {
 		this.errors = errors;
 	}
-	
+
 	/**
 	 * @param requestLogic
 	 */
 	public void setRequestLogic(final RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
-	
+
 	/**
 	 * @param urlGenerator
 	 */
 	@Required
-	public void setUrlGenerator(URLGenerator urlGenerator) {
+	public void setUrlGenerator(final URLGenerator urlGenerator) {
 		this.urlGenerator = urlGenerator;
 	}
 
+	private boolean canDeletePost(final User loginUser, final String postOwner) {
+		// community post
+		if (!present(postOwner)) {
+			return Role.ADMIN.equals(loginUser.getRole());
+		}
+		
+		// if the loginUser is the postOwner
+		if (loginUser.getName().equals(postOwner)) {
+			return true;
+		}
+
+		// is the postOwner a group user?
+		final Group group = this.logic.getGroupDetails(postOwner, false);
+		if (group == null) {
+			return false;
+		}
+
+		// is loginUser a member of this group?
+		final GroupMembership membership = group.getGroupMembershipForUser(loginUser.getName());
+		if (membership == null) {
+			return false;
+		}
+
+		// does loginUser occupy a sufficiently high role for this operation?
+		return membership.getGroupRole().hasRole(GroupRole.MODERATOR);
+	}
 }

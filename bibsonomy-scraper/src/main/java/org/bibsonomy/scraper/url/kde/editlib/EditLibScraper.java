@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -74,7 +74,7 @@ public class EditLibScraper extends GenericBibTeXURLScraper {
 	}
 
 	@Override
-	public String getDownloadURL(URL url) throws ScrapingException {
+	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
 		String id = null;
 		String sturl = url.toString();
 		if(sturl.startsWith(EDITLIB_HOST_NAME + EDITLIB_ABSTRACT_PATH)) {
