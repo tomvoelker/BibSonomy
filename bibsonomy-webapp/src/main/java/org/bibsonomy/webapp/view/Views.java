@@ -667,6 +667,11 @@ public enum Views implements View {
 	 * show followers
 	 */
 	FOLLOWERS("followers"),
+	
+	/**
+	 * help page
+	 */
+	HELP("help"),
 
 	/*
 	 * Error pages

@@ -21,7 +21,8 @@
 						<img class="user-avatar" src="/picture/user/${fn:escapeXml(user.name)}" alt="@${fn:escapeXml(user.name)}" />
 					</a>
 					<c:if test="${not empty interHash}">
-						<a href="${relativeUrlGenerator.getPublicationUrlByInterHashAndUsername(interHash, user.name)}" class="btn btn-sm btn-default btn-block"><fontawsome:icon icon="book" /></a>
+						<fmt:message key="goldStandard.users.viewInCollection" var="viewCollection" />
+						<a title="${viewCollection}" href="${relativeUrlGenerator.getPublicationUrlByInterHashAndUsername(interHash, user.name)}" class="btn btn-sm btn-default btn-block"><fontawsome:icon icon="book" /></a>
 					</c:if>
 				</li>
 			</c:forEach>

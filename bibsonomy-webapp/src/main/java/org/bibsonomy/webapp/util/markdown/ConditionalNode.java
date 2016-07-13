@@ -24,40 +24,70 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.webapp.view;
+package org.bibsonomy.webapp.util.markdown;
 
-import org.bibsonomy.webapp.util.View;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.servlet.view.RedirectView;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.pegdown.ast.AbstractNode;
+import org.pegdown.ast.Node;
+import org.pegdown.ast.Visitor;
 
 /**
- * @author rja
+ * A {@link Node} for a conditional expression.
+ *
+ * @author Johannes Blum
  */
-public class ExtendedRedirectView extends RedirectView implements View {
-
-	/** Constructs a new redirect view.
-	 * 
-	 * @param redirectURI
+public class ConditionalNode extends AbstractNode {
+	
+	/** the condition */
+	private String condition;
+	
+	private String source;
+	
+	/** the child nodes representing the content */
+	private final List<Node> children = new LinkedList<Node>();
+	
+	/**
+	 * @param condition The condition
+	 * @param children The children
+	 * @param source The source of the children
 	 */
-	public ExtendedRedirectView(final String redirectURI) {
-		this(redirectURI, false);
+	public ConditionalNode(String condition, List<Node> children, String source) {
+		this.children.addAll(children);
+		this.condition = condition;
+		this.source = source;
 	}
 	
 	/**
-	 * @param redirectURI 
-	 * @param permanent 
+	 * @return the condition
 	 */
-	public ExtendedRedirectView(final String redirectURI, final boolean permanent) {
-		super(redirectURI);
-		this.setExposeModelAttributes(false);
-		if (permanent) {
-			this.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
-		}
+	public String getCondition() {
+		return this.condition;
 	}
 	
+	/**
+	 * @return the source
+	 */
+	public String getSource() {
+		return this.source;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.parboiled.trees.GraphNode#getChildren()
+	 */
 	@Override
-	public String getName() {
-		return getUrl();
+	public List<Node> getChildren() {
+		return children;
+	}
+
+	
+	/* (non-Javadoc)
+	 * @see org.pegdown.ast.Node#accept(org.pegdown.ast.Visitor)
+	 */
+	@Override
+	public void accept(Visitor visitor) {
+		visitor.visit(this);
 	}
 
 }
