@@ -177,6 +177,10 @@
 		<constructor-arg value="${project.home}" />
 	</bean>
 	
+	<bean id="projectTheme" class="java.lang.String">
+		<constructor-arg value="${project.theme}" />
+	</bean>
+	
 	<!-- handles sending of mails  -->
 	<bean id="mailUtils" class="org.bibsonomy.util.MailUtils" scope="singleton">
 		<property name="projectHome" ref="projectHome" />
@@ -722,6 +726,19 @@
 						<property name="controllerBeanName" value="personIntroPageController"/>
 					</bean>
 				</entry>
+				<entry key="/help">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="helpPageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>language</value>
+								<value>helpPage</value>
+								<value>filename</value>
+								<value>theme</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>
@@ -994,7 +1011,15 @@
 			</list>
 		</property>
 	</bean>
-
+	
+	<bean id="helpPageController" class="org.bibsonomy.webapp.controller.HelpPageController" scope="request">
+		<property name="projectName" ref="projectName"/>
+		<property name="projectTheme" ref="projectTheme"/>
+		<property name="projectHome" ref="projectHome" />
+		<property name="requestLogic" ref="requestLogic"/>
+		<property name="urlGenerator" ref="relativeUrlGenerator" />
+		<property name="helpPath" value="${project.help.path}" />
+	</bean>
 	
 	<!--  #################### static views #################### -->
 	<bean id="personIntroPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">

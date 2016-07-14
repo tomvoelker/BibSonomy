@@ -7,11 +7,11 @@
 	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />
 	
 	<c:choose>
-		<c:when test="${not empty publication.volume and not empty publication.series}">		
-			<em><fmt:message key="bibtex.volume"/><c:out value=" "/><c:out value="${mtl:cleanBibtex(publication.volume)}" /><c:out value=" "/><fmt:message key="bibtex.volumeOf"/><c:out value=" ${mtl:cleanBibtex(publication.series)}, "/></em>		
+		<c:when test="${not empty publication.volume and not empty publication.series}">
+			<em><fmt:message key="bibtex.volume"/><c:out value=" "/><c:out value="${mtl:cleanBibtex(publication.volume)}" /><c:out value=" "/><fmt:message key="bibtex.volumeOf"/><c:out value=" ${mtl:cleanBibtex(publication.series)}, "/></em>
 		</c:when>
-		<c:when test="${not empty publication.volume}">		
-			<em><c:out value=" "/><c:out value="${mtl:cleanBibtex(publication.volume)}" />,<c:out value=" "/></em>		
+		<c:when test="${not empty publication.volume}">
+			<em><c:out value=" "/><c:out value="${mtl:cleanBibtex(publication.volume)}" />,<c:out value=" "/></em>
 		</c:when>
 		<c:otherwise>
 			<c:if test="${not empty publication.number}">

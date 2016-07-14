@@ -219,9 +219,9 @@ public class UserRegistrationController implements ErrorAware, ValidationAwareCo
 		}
 
 		/*
-		 * return to form until validation passes
+		 * return to form if validation failed or request method not POST
 		 */
-		if (errors.hasErrors()) {
+		if (errors.hasErrors() || command.getContext().isFirstCall()) {
 			/*
 			 * Generate HTML to show captcha.
 			 */
