@@ -43,6 +43,7 @@ import org.bibsonomy.webapp.exceptions.InvalidPasswordReminderException;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
@@ -76,7 +77,9 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 
 	@Override
 	public View workOn(final PasswordChangeOnRemindCommand command) {
-		if (command.getContext().isUserLoggedIn()) {
+		final RequestWrapperContext context = command.getContext();
+		
+		if (context.isUserLoggedIn()) {
 			throw new AccessDeniedException("you can't change a password while loggedin");
 		}
 		log.debug("starting work");
@@ -145,6 +148,14 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 		 * if there are any errors show them
 		 */
 		if (errors.hasErrors()) {
+			return Views.PASSWORD_CHANGE_ON_REMIND;
+		}
+		
+		/*
+		 * check the ckey
+		 */
+		if (! context.isValidCkey()) {
+			errors.reject("error.field.valid.ckey");
 			return Views.PASSWORD_CHANGE_ON_REMIND;
 		}
 
