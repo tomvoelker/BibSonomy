@@ -1823,8 +1823,7 @@ public class URLGenerator {
 	 * @return the help page
 	 */
 	public String getHelpPage(final String helpPage, final String language) {
-		final UrlBuilder builder = new UrlBuilder(this.projectHome + "new_help");
-		builder.addPathElement(language);
+		final UrlBuilder builder = new UrlBuilder(this.projectHome + "new_help" + "_" + language);
 		builder.addPathElement(helpPage);
 		return this.getUrl(builder.asString());
 	}
