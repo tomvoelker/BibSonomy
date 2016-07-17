@@ -104,8 +104,8 @@ public class ElasticsearchClient implements ESClient {
 	}
 
 	@Override
-	public boolean createIndex(String indexName, Set<Mapping<String>> mappings) {
-		final CreateIndexResponse createIndex = this.client.admin().indices().create(new CreateIndexRequest(indexName, Settings.builder().loadFromSource(ESConstants.SETTINGS).build())).actionGet();
+	public boolean createIndex(String indexName, Set<Mapping<String>> mappings, String settings) {
+		final CreateIndexResponse createIndex = this.client.admin().indices().create(new CreateIndexRequest(indexName, Settings.builder().loadFromSource(settings).build())).actionGet();
 		if (!createIndex.isAcknowledged()) {
 			log.error("Error in creating Index");
 			return false;

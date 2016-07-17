@@ -37,6 +37,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.bibsonomy.services.help.HelpParser;
 import org.bibsonomy.util.StringUtils;
 import org.pegdown.LinkRenderer;
 import org.pegdown.PegDownProcessor;
@@ -50,7 +51,7 @@ import org.pegdown.plugins.ToHtmlSerializerPlugin;
  * 
  * @author Johannes Blum
  */
-public class Parser {
+public class Parser implements HelpParser {
 	
 	/** A map which maps a variable to the value it should be replaced with */
 	private Map<String, String> replacements;
@@ -70,6 +71,7 @@ public class Parser {
 	 * @return The resulting HTML
 	 * @throws IOException
 	 */
+	@Override
 	public String parseFile(final String filename) throws IOException {
 		// read file content
 		final File file = new File(filename);

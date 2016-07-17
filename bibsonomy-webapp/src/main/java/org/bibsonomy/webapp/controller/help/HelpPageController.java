@@ -25,7 +25,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.bibsonomy.webapp.controller;
+package org.bibsonomy.webapp.controller.help;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
@@ -35,16 +35,16 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
+import org.bibsonomy.search.es.help.HelpUtils;
 import org.bibsonomy.services.URLGenerator;
-import org.bibsonomy.util.BasicUtils;
+import org.bibsonomy.services.help.HelpSearch;
 import org.bibsonomy.util.file.FileUtil;
-import org.bibsonomy.webapp.command.HelpPageCommand;
+import org.bibsonomy.webapp.command.help.HelpPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
@@ -59,34 +59,35 @@ import org.bibsonomy.webapp.view.Views;
  * @author Johannes Blum
  */
 public class HelpPageController implements MinimalisticController<HelpPageCommand>, RequestAware {
-	/** The name of the markdown file of the sidebar */
+	/** the name of the markdown file of the sidebar */
 	private static String HELP_SIDEBAR_NAME = "Sidebar";
 	
-	/** The help home page */
+	/** the help home page */
 	private static String HELP_HOME = "Main";
 	
-	/** Directory of the images */
+	/** directory of the images */
 	private static String HELP_IMG_DIR = "img";
 	
-	/** Name of the default project theme */
+	/** name of the default project theme */
 	private static String DEFAULT_PROJECT_THEME = "default";
 	
+	private HelpSearch search;
 	
 	private String helpPath;
 	
-	/** The project name */
+	/** the project name */
 	private String projectName;
 	
-	/** The project theme */
+	/** the project theme */
 	private String projectTheme;
 	
 	/** the url of the project */
 	private String projectHome;
 	
-	/** The request logic */
+	/** the request logic */
 	private RequestLogic requestLogic;
 	
-	/** The URL generator */
+	/** the URL generator */
 	private URLGenerator urlGenerator;
 
 	/* (non-Javadoc)
@@ -133,45 +134,53 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 			return Views.DOWNLOAD_FILE;
 		}
 		
+		final Map<String, String> replacements = HelpUtils.buildReplacementMap(this.projectName, theme, this.projectHome);
+		// instantiate a new parser
+		final Parser parser = new Parser(replacements);
+		
+		final String requestedSearch = command.getSearch();
+		if (present(requestedSearch)) {
+			command.setSearchResults(this.search.search(language, requestedSearch));
+			this.renderSidebar(command, language, parser);
+			return Views.HELP_SEARCH;
+		}
+		
 		/* help page request */
-		
-		
-		String helpPage = command.getHelpPage();
+		final String helpPage = command.getHelpPage();
 		if (!present(helpPage)) {
 			return new ExtendedRedirectView(this.urlGenerator.getHelpPage(HELP_HOME, language), true);
 		}
 		
 		// if pageName does not already have the correct language, redirect
 		if (present(language) && !language.equals(requestLanguage)) {
-			final String localizedPageName = getLocalizedHelpPageName(helpPage, language, requestLanguage);
+			final String localizedPageName = this.getLocalizedHelpPageName(helpPage, language, requestLanguage);
 			return new ExtendedRedirectView(this.urlGenerator.getHelpPage(localizedPageName, requestLanguage));
 		}
 		
-		// Build HashMap for variable replacement
-		final Map<String, String> replacements = new HashMap<>();
-		replacements.put("project.name", this.projectName);
-		replacements.put("project.theme", theme);
-		replacements.put("project.home", this.projectHome);
-		replacements.put("project.version", BasicUtils.VERSION);
-		
-		// Instantiate a new Parser
-		final Parser parser = new Parser(replacements);
-		
 		// parse content
 		try {
-			command.setContent(parser.parseFile(this.getMarkdownLocation(requestLanguage, helpPage)));
+			command.setContent(parser.parseFile(this.getMarkdownLocation(language, helpPage)));
 		} catch (final IOException e) {
 			command.setPageNotFound(true);
 		}
 		
-		// parse sidebar
-		try {
-			command.setSidebar(parser.parseFile(this.getMarkdownLocation(requestLanguage, HELP_SIDEBAR_NAME)));
-		} catch (final IOException e) {
-			command.setSidebar("Error: sidebar for language " + requestLanguage + " not found.");
-		}
+		this.renderSidebar(command, language, parser);
 		
 		return Views.HELP;
+	}
+
+	/**
+	 * @param command
+	 * @param language
+	 * @param parser
+	 */
+	private void renderSidebar(final HelpPageCommand command, final String language, final Parser parser) {
+		// parse sidebar
+		try {
+			command.setSidebar(parser.parseFile(this.getMarkdownLocation(language, HELP_SIDEBAR_NAME)));
+		} catch (final IOException e) {
+			command.setSidebar("Error: sidebar for language " + language + " not found.");
+		}
 	}
 	
 	/**
@@ -181,7 +190,7 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 	 * @return the location of the source file
 	 */
 	private String getMarkdownLocation(String language, String pageName) {
-		return this.helpPath + language + File.separator + pageName + ".md";
+		return this.helpPath + language + File.separator + pageName + HelpUtils.FILE_SUFFIX;
 	}
 	
 	/**
@@ -203,16 +212,13 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 			 * in the orignal markdown source and return "localized page name"
 			 */
 			String line = null;
-			Pattern p = Pattern.compile("<!--\\s" + requestLanguage + ":\\s(.*)\\s*-->");
-			Matcher m;
+			final Pattern p = Pattern.compile("<!--\\s" + requestLanguage + ":\\s(.*)\\s*-->");
 			while ((line = buf.readLine()) != null) {
-				m = p.matcher(line);
+				final Matcher m = p.matcher(line);
 				if (m.find()) {
-					buf.close();
 					return m.group(1).trim();
 				}
 			}
-			buf.close();
 		} catch (Exception e) {
 			return null;
 		}
@@ -262,6 +268,13 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 	 */
 	public void setProjectHome(String projectHome) {
 		this.projectHome = projectHome;
+	}
+
+	/**
+	 * @param search the search to set
+	 */
+	public void setSearch(HelpSearch search) {
+		this.search = search;
 	}
 
 }
