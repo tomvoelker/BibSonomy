@@ -32,8 +32,11 @@ import org.elasticsearch.common.text.Text;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.IndexNotFoundException;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.highlight.HighlightField;
@@ -190,7 +193,13 @@ public class HelpSearchManager implements HelpSearch {
 	public SortedSet<HelpSearchResult> search(final String language, final String searchTerms) {
 		final String indexName = this.getIndexNameForLanguage(language);
 		final SearchRequestBuilder searchBuilder = this.client.prepareSearch(indexName);
-		searchBuilder.setQuery(QueryBuilders.queryStringQuery(searchTerms));
+		final QueryStringQueryBuilder searchQuery = QueryBuilders.queryStringQuery(searchTerms);
+		final MatchQueryBuilder sidebarQuery = QueryBuilders.matchQuery(HEADER_FIELD, HelpUtils.HELP_SIDEBAR_NAME);
+		final BoolQueryBuilder query = QueryBuilders.boolQuery();
+		query.must(searchQuery);
+		query.mustNot(sidebarQuery);
+		
+		searchBuilder.setQuery(query);
 		searchBuilder.setTypes(HELP_PAGE_TYPE);
 		searchBuilder.setSearchType(SearchType.DEFAULT);
 		searchBuilder.addHighlightedField(CONTENT_FIELD, 100, 1);

@@ -59,9 +59,6 @@ import org.bibsonomy.webapp.view.Views;
  * @author Johannes Blum
  */
 public class HelpPageController implements MinimalisticController<HelpPageCommand>, RequestAware {
-	/** the name of the markdown file of the sidebar */
-	private static String HELP_SIDEBAR_NAME = "Sidebar";
-	
 	/** the help home page */
 	private static String HELP_HOME = "Main";
 	
@@ -177,7 +174,7 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 	private void renderSidebar(final HelpPageCommand command, final String language, final Parser parser) {
 		// parse sidebar
 		try {
-			command.setSidebar(parser.parseFile(this.getMarkdownLocation(language, HELP_SIDEBAR_NAME)));
+			command.setSidebar(parser.parseFile(this.getMarkdownLocation(language, HelpUtils.HELP_SIDEBAR_NAME)));
 		} catch (final IOException e) {
 			command.setSidebar("Error: sidebar for language " + language + " not found.");
 		}

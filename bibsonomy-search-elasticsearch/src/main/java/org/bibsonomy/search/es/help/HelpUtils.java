@@ -13,6 +13,8 @@ import org.bibsonomy.util.BasicUtils;
 public final class HelpUtils {
 	/** the file suffix */
 	public static final String FILE_SUFFIX = ".md";
+	/** the name of the markdown file of the sidebar */
+	public static String HELP_SIDEBAR_NAME = "Sidebar";
 
 	private HelpUtils() {}
 
