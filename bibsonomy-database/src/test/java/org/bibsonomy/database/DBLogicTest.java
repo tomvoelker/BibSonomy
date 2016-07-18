@@ -714,6 +714,12 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		assertEquals(20, user.size());
 	}
 	
+	@Test
+	public void testGetUsersPendingByUsername() {
+		final List<User> users = this.getDbLogic().getUsers(null, GroupingEntity.PENDING, "activationtestuser1" , null, null, null, null, null, 0, 20);
+		assertEquals(1, users.size());
+	}
+	
 	/**
 	 * tests getUserDetails
 	 */

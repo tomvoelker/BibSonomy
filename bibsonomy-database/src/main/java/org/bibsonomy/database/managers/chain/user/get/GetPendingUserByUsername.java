@@ -2,14 +2,14 @@
  * BibSonomy-Database - Database for BibSonomy.
  *
  * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
- *                               University of Kassel, Germany
- *                               http://www.kde.cs.uni-kassel.de/
- *                           Data Mining and Information Retrieval Group,
- *                               University of Würzburg, Germany
- *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
- *                           L3S Research Center,
- *                               Leibniz University Hannover, Germany
- *                               http://www.l3s.de/
+ *							   University of Kassel, Germany
+ *							   http://www.kde.cs.uni-kassel.de/
+ *						   Data Mining and Information Retrieval Group,
+ *							   University of Würzburg, Germany
+ *							   http://www.is.informatik.uni-wuerzburg.de/en/dmir/
+ *						   L3S Research Center,
+ *							   Leibniz University Hannover, Germany
+ *							   http://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -35,20 +35,20 @@ import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.User;
 
 /**
- * Get group members
+ * get pending users by username
  * 
  * @author cbaier
  */
 public class GetPendingUserByUsername extends UserChainElement {
 
-    @Override
-    protected List<User> handle(final UserParam param, final DBSession session) {
-        return this.userDB.getPendingUserByUsername(param.getRequestedGroupName(), param.getOffset(), param.getLimit(), session);
-    }
-
-    @Override
-    protected boolean canHandle(final UserParam param) {
-        log.debug(param.getRequestedGroupName());
-        return (GroupingEntity.PENDING.equals(param.getGrouping()) && param.getRequestedGroupName() != null);
-    }
+	@Override
+	protected List<User> handle(final UserParam param, final DBSession session) {
+		return this.userDB.getPendingUserByUsername(param.getRequestedGroupName(), param.getOffset(), param.getLimit(), session);
+	}
+	
+	@Override
+	protected boolean canHandle(final UserParam param) {
+		log.debug(param.getRequestedGroupName());
+		return (GroupingEntity.PENDING.equals(param.getGrouping()) && param.getRequestedGroupName() != null);
+	}
 }
