@@ -19,7 +19,7 @@
 	xmlns:goldpub="urn:jsptagdir:/WEB-INF/tags/resources/publication"
 	xmlns:goldstandardpublication="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication"
 	xmlns:goldstandard="urn:jsptagdir:/WEB-INF/tags/resources/goldstandard"
-	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 	xmlns:common="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons">
 	
@@ -28,6 +28,8 @@
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
 	<jsp:directive.attribute name="postUserName" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="postIsPublic" type="java.lang.Boolean" required="true"/>
+	
+	<c:set var="userLoggedIn" value="${not empty loginUser.name and not loginUser.spammer}" />
 	
 	<c:set var="goldstandard" value="${post.resource}" />
 	
@@ -60,13 +62,19 @@
 			<!--+
 				| abstract
 				+-->
-			<c:if test="${not empty goldstandard['abstract']}">
-				<div id="abstract">
-					<div class="show-more" itemprop="description">
-						<span class="contentContainer"><c:out value="${mtl:cleanBibtex(goldstandard['abstract'])}" /></span>
+			<c:set var="abstractPresent" value="${not empty goldstandard['abstract']}" />
+			<c:choose>
+				<c:when test="${abstractPresent}">
+					<div id="abstract">
+						<div class="show-more" itemprop="description">
+							<span class="contentContainer"><c:out value="${mtl:cleanBibtex(goldstandard['abstract'])}" /></span>
+						</div>
 					</div>
-				</div>
-			</c:if>
+				</c:when>
+				<c:otherwise>
+					<goldstandardpublication:editField fieldKey="bibtex.abstract" loginUser="${loginUser}" post="${post}" communityPostExists="${isRealGoldstandard}"/>
+				</c:otherwise>
+			</c:choose>
 			
 			<!-- 
 				| resources
@@ -74,7 +82,7 @@
 			<div id="linksresources">
 				<dl class="dl-horizontal">
 					<c:set var="isLinkToDocument" value="${mtl:isLinkToDocument(goldstandard.url)}" />
-					<c:if test="${not empty goldstandard.url}">
+					<c:if test="${not empty goldstandard.url or userLoggedIn}">
 						<c:choose>
 							<c:when test="${isLinkToDocument}">
 								<dt><fmt:message key="document" /></dt>
@@ -84,19 +92,35 @@
 							</c:otherwise>
 						</c:choose>
 						<dd>
-							<a href="${fn:escapeXml(goldstandard.url)}">
-								<c:if test="${isLinkToDocument}">
-									<fontawsome:icon icon="file-pdf-o" /><c:out value=" " />
-								</c:if>
-								<c:out value="${goldstandard.url}" />
-							</a>
+							<c:choose>
+								<c:when test="${doiPresent}">
+									<a href="${fn:escapeXml(goldstandard.url)}">
+										<c:if test="${isLinkToDocument}">
+											<fontawesome:icon icon="file-pdf-o" /><c:out value=" " />
+										</c:if>
+										<c:out value="${goldstandard.url}" />
+									</a>
+								</c:when>
+								<c:otherwise>
+									<goldstandardpublication:editField post="${post}" communityPostExists="${isRealGoldstandard}" loginUser="${loginUser}" field="URL" />
+								</c:otherwise>
+							</c:choose>
+							
 						</dd>
 					</c:if>
 					<c:set var="doi" value="${mtl:extractDOI(goldstandard.miscFields['doi'])}" />
-					<c:if test="${not empty doi}">
+					<c:set var="doiPresent" value="${not empty doi}" />
+					<c:if test="${doiPresent or userLoggedIn}">
 						<dt>DOI</dt>
 						<dd>
-							<a itemprop="sameAs" href="http://dx.doi.org/${mtl:encodePathSegment(doi)}" title="${urlTitle}"><c:out value="${doi}" /></a>
+							<c:choose>
+								<c:when test="${doiPresent}">
+									<a itemprop="sameAs" href="http://dx.doi.org/${mtl:encodePathSegment(doi)}" title="${urlTitle}"><c:out value="${doi}" /></a>
+								</c:when>
+								<c:otherwise>
+									<goldstandardpublication:editField post="${post}" communityPostExists="${isRealGoldstandard}" loginUser="${loginUser}" field="DOI" />
+								</c:otherwise>
+							</c:choose>
 						</dd>
 					</c:if>
 				</dl>

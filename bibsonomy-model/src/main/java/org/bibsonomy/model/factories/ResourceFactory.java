@@ -47,39 +47,28 @@ import org.bibsonomy.model.Resource;
  */
 public class ResourceFactory {
 	
-	/**
-	 * the string identifying the {@link Resource} class
-	 */
+	/** the string identifying the {@link Resource} class */
 	public static final String RESOURCE_CLASS_NAME = "all";
 
-	/**
-	 * the string identifying the {@link BibTex} class
-	 */
+	/** the string identifying the {@link BibTex} class */
 	public static final String PUBLICATION_CLASS_NAME = "publication";
 
-	/**
-	 * the string identifying the {@link Bookmark} class
-	 */
+	/** the string identifying the {@link Bookmark} class */
 	public static final String BOOKMARK_CLASS_NAME = "bookmark";
 	
-	/**
-	 * the string identifying the {@link GoldStandardBookmark}
-	 */
-	public static final String GOLDSTANDARD_BOOKMARK_CLASS_NAME = "goldstandardbookmark";
+	/** the string identifying the {@link GoldStandardBookmark} */
+	public static final String GOLDSTANDARD_BOOKMARK_CLASS_NAME = "goldstandardBookmark";
 
-	/**
-	 * the string identifying the {@link GoldStandardPublication}
-	 */
-	public static final String GOLDSTANDARD_PUBLICATION_CLASS_NAME = "goldstandardpublication";
+	/** the string identifying the {@link GoldStandardPublication} */
+	public static final String GOLDSTANDARD_PUBLICATION_CLASS_NAME = "goldstandardPublication";
 
-	/**
-	 * all known resource classes
-	 */
+	/** all known resource classes */
 	private static final Map<String, Class<? extends Resource>> RESOURCE_CLASSES_BY_NAME = new HashMap<>();
 	
 	private static final Map<Class<? extends Resource>, String> RESOURCE_CLASS_NAMES = new HashMap<>();
 	
 	private static final Map<Class<? extends Resource>, Class<? extends Resource>> RESOURCE_CLASSES_SUPERIOR_MAP = new HashMap<>();
+	private static final Map<Class<? extends Resource>, Class<? extends Resource>> RESOURCE_CLASSES_COMMUNITY_MAP = new HashMap<>();
 	
 	static {
 		RESOURCE_CLASSES_BY_NAME.put(BOOKMARK_CLASS_NAME, Bookmark.class);
@@ -92,6 +81,11 @@ public class ResourceFactory {
 		RESOURCE_CLASSES_SUPERIOR_MAP.put(BibTex.class, BibTex.class);
 		RESOURCE_CLASSES_SUPERIOR_MAP.put(GoldStandardBookmark.class, Bookmark.class);
 		RESOURCE_CLASSES_SUPERIOR_MAP.put(GoldStandardPublication.class, BibTex.class);
+		
+		RESOURCE_CLASSES_COMMUNITY_MAP.put(Bookmark.class, GoldStandardBookmark.class);
+		RESOURCE_CLASSES_COMMUNITY_MAP.put(BibTex.class, GoldStandardPublication.class);
+		RESOURCE_CLASSES_COMMUNITY_MAP.put(GoldStandardBookmark.class, GoldStandardBookmark.class);
+		RESOURCE_CLASSES_COMMUNITY_MAP.put(GoldStandardPublication.class, GoldStandardPublication.class);
 		
 		for (final Entry<String, Class<? extends Resource>> entry : RESOURCE_CLASSES_BY_NAME.entrySet()) {
 			RESOURCE_CLASS_NAMES.put(entry.getValue(), entry.getKey());
@@ -221,5 +215,13 @@ public class ResourceFactory {
 	 */
 	public static Class<? extends Resource> findSuperiorResourceClass(final Resource resource) {
 		return RESOURCE_CLASSES_SUPERIOR_MAP.get(resource.getClass());
+	}
+
+	/**
+	 * @param resource
+	 * @return the community resource class
+	 */
+	public static Class<? extends Resource> findCommunityResourceClass(Resource resource) {
+		return RESOURCE_CLASSES_COMMUNITY_MAP.get(resource.getClass());
 	}
 }

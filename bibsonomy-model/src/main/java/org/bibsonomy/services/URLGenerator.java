@@ -506,13 +506,30 @@ public class URLGenerator {
 	
 	/**
 	 * @param post
-	 * @return the copy url for the community post
+	 * @return the copy url of the post for logged in user
 	 */
 	public String getCopyUrlOfPost(final Post<? extends Resource> post) {
+		return getCopyUrlOfPost(post, true, false);
+	}
+	/**
+	 * @param post
+	 * @param useSuperiorResourceClass 
+	 * @param forceCommunityResource 
+	 * @return the copy url for the community post
+	 */
+	public String getCopyUrlOfPost(final Post<? extends Resource> post, boolean useSuperiorResourceClass, boolean forceCommunityResource) {
 		final UrlBuilder urlBuilder = new UrlBuilder(this.projectHome);
 		final Resource resource = post.getResource();
-		final Class<? extends Resource> superiorResourceClass = ResourceFactory.findSuperiorResourceClass(resource);
-		urlBuilder.addPathElement(this.prefix).addPathElement(getEditUrlByResourceClass(superiorResourceClass));
+		Class<? extends Resource> resourceClass = resource.getClass();
+		if (useSuperiorResourceClass) {
+			resourceClass = ResourceFactory.findSuperiorResourceClass(resource);
+		}
+		
+		if (forceCommunityResource) {
+			resourceClass = ResourceFactory.findCommunityResourceClass(resource);
+		}
+		
+		urlBuilder.addPathElement(this.prefix).addPathElement(getEditUrlByResourceClass(resourceClass));
 		if (ResourceFactory.isCommunityResource(resource)) {
 			urlBuilder.addParameter("hash", resource.getInterHash());
 		} else {
