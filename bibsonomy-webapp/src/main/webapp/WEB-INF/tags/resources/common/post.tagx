@@ -64,7 +64,7 @@
 		<h4 class="media-heading" data-ident="${post.resource.intraHash}">
 			<div>
 			<div class="clearline">&#160;</div>
-			<rc:otherpeople post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" />
+			<rc:otherpeople post="${post}" />
 			<span class="ptitle"><jsp:invoke fragment="title"/></span>
 			<div class="clearline">&#160;</div>
 			</div>

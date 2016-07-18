@@ -1107,6 +1107,34 @@ public class URLGenerator {
 		url += "/" + UrlUtils.encodePathSegment(userName);
 		return this.getUrl(url);
 	}
+	
+	/**
+	 * @param resource
+	 * @return the link for the resource
+	 */
+	public String getResourceUrl(final Resource resource) {
+		// XXX: not nice :(
+		if (resource instanceof Bookmark) {
+			return getBookmarkUrlByIntraHash(resource.getInterHash());
+		}
+		
+		if (resource instanceof BibTex) {
+			return getPublicationUrl((BibTex) resource);
+		}
+		
+		throw new UnsupportedResourceTypeException(resource.getClass().getName() + " not supported");
+	}
+	
+	/**
+	 * @param publication
+	 * @return the interhash url
+	 */
+	public String getPublicationUrl(final BibTex publication) {
+		final UrlBuilder builder = new UrlBuilder(this.projectHome);
+		builder.addPathElement(PUBLICATION_PREFIX);
+		builder.addPathElement(publication.getInterHash() + "_" + StringUtils.replaceNonNumbersOrLetters(StringUtils.foldToASCII(publication.getTitle()), "_"));
+		return this.getUrl(builder.asString());
+	}
 
 	/**
 	 * Constructs a URL for the given resource and user. If no user is given,
