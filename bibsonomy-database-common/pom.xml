@@ -54,7 +54,6 @@
 		<dependency>
 			<groupId>org.apache.ibatis</groupId>
 			<artifactId>ibatis-sqlmap</artifactId>
-			<classifier>r737724</classifier>
 		</dependency>
 		<dependency>
 			<groupId>org.mockejb</groupId>
