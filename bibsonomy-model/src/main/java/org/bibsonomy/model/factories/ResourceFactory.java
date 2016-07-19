@@ -73,8 +73,8 @@ public class ResourceFactory {
 	static {
 		RESOURCE_CLASSES_BY_NAME.put(BOOKMARK_CLASS_NAME, Bookmark.class);
 		RESOURCE_CLASSES_BY_NAME.put(PUBLICATION_CLASS_NAME, BibTex.class);
-		RESOURCE_CLASSES_BY_NAME.put(GOLDSTANDARD_PUBLICATION_CLASS_NAME, GoldStandardPublication.class);
-		RESOURCE_CLASSES_BY_NAME.put(GOLDSTANDARD_BOOKMARK_CLASS_NAME, GoldStandardBookmark.class);
+		RESOURCE_CLASSES_BY_NAME.put(GOLDSTANDARD_PUBLICATION_CLASS_NAME.toLowerCase(), GoldStandardPublication.class);
+		RESOURCE_CLASSES_BY_NAME.put(GOLDSTANDARD_BOOKMARK_CLASS_NAME.toLowerCase(), GoldStandardBookmark.class);
 		RESOURCE_CLASSES_BY_NAME.put(RESOURCE_CLASS_NAME, Resource.class);
 		
 		RESOURCE_CLASSES_SUPERIOR_MAP.put(Bookmark.class, Bookmark.class);
@@ -101,7 +101,9 @@ public class ResourceFactory {
 	 * returns the {@link Bookmark} class
 	 */
 	public static final Class<? extends Resource> getResourceClass(String resourceName) {
-		if (!present(resourceName)) throw new UnsupportedResourceTypeException("ResourceType is null");
+		if (!present(resourceName)) {
+			throw new UnsupportedResourceTypeException("ResourceType is null");
+		}
 		resourceName = resourceName.toLowerCase();
 		return RESOURCE_CLASSES_BY_NAME.get(resourceName);
 	}
