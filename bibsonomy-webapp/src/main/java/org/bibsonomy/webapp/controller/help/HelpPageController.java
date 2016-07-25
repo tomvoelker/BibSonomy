@@ -39,6 +39,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.search.es.help.HelpUtils;
 import org.bibsonomy.services.URLGenerator;
@@ -48,6 +50,8 @@ import org.bibsonomy.webapp.command.help.HelpPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
+import org.bibsonomy.webapp.util.ResponseAware;
+import org.bibsonomy.webapp.util.ResponseLogic;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.markdown.Parser;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
@@ -58,7 +62,7 @@ import org.bibsonomy.webapp.view.Views;
  *
  * @author Johannes Blum
  */
-public class HelpPageController implements MinimalisticController<HelpPageCommand>, RequestAware {
+public class HelpPageController implements MinimalisticController<HelpPageCommand>, RequestAware, ResponseAware {
 	/** the help home page */
 	private static String HELP_HOME = "Main";
 	
@@ -83,6 +87,9 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 	
 	/** the request logic */
 	private RequestLogic requestLogic;
+	
+	/** the response logic */
+	private ResponseLogic responseLogic;
 	
 	/** the URL generator */
 	private URLGenerator urlGenerator;
@@ -158,6 +165,7 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 		try {
 			command.setContent(parser.parseFile(this.getMarkdownLocation(language, helpPage)));
 		} catch (final IOException e) {
+			this.responseLogic.setHttpStatus(HttpServletResponse.SC_NOT_FOUND);
 			command.setPageNotFound(true);
 		}
 		
@@ -244,6 +252,14 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 	@Override
 	public void setRequestLogic(RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
+	}
+
+	/**
+	 * @param responseLogic the responseLogic to set
+	 */
+	@Override
+	public void setResponseLogic(ResponseLogic responseLogic) {
+		this.responseLogic = responseLogic;
 	}
 
 	/**
