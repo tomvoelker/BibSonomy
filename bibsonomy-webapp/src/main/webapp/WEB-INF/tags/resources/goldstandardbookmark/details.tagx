@@ -61,22 +61,24 @@
 			
 			<!-- users -->
 			<common:relatedUsers userList="${command.relatedUserCommand.relatedUsers}" />
-	
-			<!--+
-				| discussion and rating
-				+-->
-			<h2 class="pub-details">
-				<fmt:message key="publications.discussion.headline"/>
-			</h2>
 			
-			<!-- Aggregated RatingInfo -->
-			<review:reviewRatingsInfo resource="${post.resource}" />
-	
-			<!-- bookmark reference link -->
-			<!--<discussion:linkBox resource="${post.resource}"/>-->
-			
-			<!-- discussion -->
-			<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName="${postUserName}" postIsPublic="${postIsPublic}"/>
+			<div id="discussion-section">
+				<!--+
+					| discussion and rating
+					+-->
+				<h2 class="pub-details">
+					<fmt:message key="publications.discussion.headline"/>
+				</h2>
+				
+				<!-- Aggregated RatingInfo -->
+				<review:reviewRatingsInfo resource="${post.resource}" />
+		
+				<!-- bookmark reference link -->
+				<!--<discussion:linkBox resource="${post.resource}"/>-->
+				
+				<!-- discussion -->
+				<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName="${postUserName}" postIsPublic="${postIsPublic}"/>
+			</div>
 		</div>
 		<div class="col-md-3 hidden-xs" id="sidebar-nav">
 			<nav class="sidebar-nav" data-spy="affix" data-offset-top="275">
