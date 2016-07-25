@@ -179,7 +179,7 @@ public class HelpSearchManager implements HelpSearch {
 					final HelpParser parser = this.factory.createParser(HelpUtils.buildReplacementMap(this.projectName, this.projectTheme, this.projectHome));
 					final String fileName = file.getName().replaceAll(HelpUtils.FILE_SUFFIX, "");
 					try {
-						final String content = parser.parseFile(file.getAbsolutePath());
+						final String content = parser.parseText(file.getAbsolutePath());
 						final Map<String, Object> doc = new HashMap<>();
 						doc.put(HEADER_FIELD, fileName);
 						doc.put(CONTENT_FIELD, content);

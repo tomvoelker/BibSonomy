@@ -45,6 +45,7 @@ import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.search.es.help.HelpUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.help.HelpSearch;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.file.FileUtil;
 import org.bibsonomy.webapp.command.help.HelpPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -64,13 +65,15 @@ import org.bibsonomy.webapp.view.Views;
  */
 public class HelpPageController implements MinimalisticController<HelpPageCommand>, RequestAware, ResponseAware {
 	/** the help home page */
-	private static String HELP_HOME = "Main";
+	private static final String HELP_HOME = "Main";
 	
 	/** directory of the images */
-	private static String HELP_IMG_DIR = "img";
+	private static final String HELP_IMG_DIR = "img";
 	
 	/** name of the default project theme */
-	private static String DEFAULT_PROJECT_THEME = "default";
+	private static final String DEFAULT_PROJECT_THEME = "default";
+	
+	private static final Pattern REDIRECT_PATTERN = Pattern.compile("<!--\\s*redirect\\s*:(.*)\\s*-->");
 	
 	private HelpSearch search;
 	
@@ -162,8 +165,17 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 		}
 		
 		// parse content
-		try {
-			command.setContent(parser.parseFile(this.getMarkdownLocation(language, helpPage)));
+		final String markdownFile = this.getMarkdownLocation(language, helpPage);
+		try (final BufferedReader inputReader = new BufferedReader(new InputStreamReader(new FileInputStream(markdownFile), "UTF-8"))) {
+			final String text = StringUtils.getStringFromReader(inputReader);
+			
+			final Matcher matcher = REDIRECT_PATTERN.matcher(text);
+			if (matcher.find()) {
+				final String redirectPage = matcher.group(1).trim();
+				return new ExtendedRedirectView(this.urlGenerator.getHelpPage(redirectPage, requestLanguage), true);
+			}
+			
+			command.setContent(parser.parseText(text));
 		} catch (final IOException e) {
 			this.responseLogic.setHttpStatus(HttpServletResponse.SC_NOT_FOUND);
 			command.setPageNotFound(true);
@@ -182,7 +194,7 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 	private void renderSidebar(final HelpPageCommand command, final String language, final Parser parser) {
 		// parse sidebar
 		try {
-			command.setSidebar(parser.parseFile(this.getMarkdownLocation(language, HelpUtils.HELP_SIDEBAR_NAME)));
+			command.setSidebar(parser.parseText(this.getMarkdownLocation(language, HelpUtils.HELP_SIDEBAR_NAME)));
 		} catch (final IOException e) {
 			command.setSidebar("Error: sidebar for language " + language + " not found.");
 		}
@@ -214,7 +226,7 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 			
 			/*
 			 * Try to find a line of form "<!-- language: localized page name -->"
-			 * in the orignal markdown source and return "localized page name"
+			 * in the original markdown source and return "localized page name"
 			 */
 			String line = null;
 			final Pattern p = Pattern.compile("<!--\\s" + requestLanguage + ":\\s(.*)\\s*-->");
