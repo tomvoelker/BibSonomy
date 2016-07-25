@@ -1155,9 +1155,21 @@ public class URLGenerator {
 		throw new UnsupportedResourceTypeException(resource.getClass().getName() + " not supported");
 	}
 	
+	/**
+	 * @param post
+	 * @return the resource url
+	 */
 	public String getResourceUrl(final Post<? extends Resource> post) {
 		final Resource resource = post.getResource();
 		return getResourceUrl(resource, post);
+	}
+	
+	/**
+	 * @param publication
+	 * @return the publication url
+	 */
+	public String getPublicationUrl(final BibTex publication) {
+		return this.getPublicationUrl(publication, (Post<? extends Resource>) null);
 	}
 	
 	/**
