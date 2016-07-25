@@ -25,6 +25,9 @@
 				<jsp:attribute name="crumbs">
 					<nav:crumb nameKey="navi.bibtexkey" />
 					<nav:crumb name="${command.requestedKey}" active="${true}" />
+					<c:if test="${not empty command.requestedUser}">
+						<nav:usercrumb loginUser="${command.context.loginUser}" requestedUser="${command.requestedUser}" />
+					</c:if>
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
