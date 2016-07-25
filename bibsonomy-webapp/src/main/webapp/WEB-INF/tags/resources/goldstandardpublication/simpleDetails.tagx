@@ -16,7 +16,7 @@
 	</c:if>
 	
 	<div id="${publication.interHash}" itemtype="${itemType}" itemscope="itemscope" itemprop="citation" class="related">
-		<strong><a class="title" href="${relativeUrlGenerator.getPublicationUrl(publication)}" itemprop="headline"><c:out value="${mtl:cleanBibtex(publication.title)}" /></a></strong>
+		<strong><a class="title" href="${relativeUrlGenerator.getPublicationUrl(publication, null)}" itemprop="headline"><c:out value="${mtl:cleanBibtex(publication.title)}" /></a></strong>
 		<bib:desc publication="${publication}"/>
 	</div>
 </jsp:root>

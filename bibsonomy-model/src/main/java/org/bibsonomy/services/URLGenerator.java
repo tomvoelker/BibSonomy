@@ -310,13 +310,17 @@ public class URLGenerator {
 	/**
 	 * Constructs a bookmark URL for the given intraHash. If you have the
 	 * resource as object, please use {@link #getBookmarkUrl(Bookmark, User)}
-	 * 
-	 * @param intraHash
+	 * @param bookmark 
+	 * @param post 
 	 * @return The URL pointing to the post of that user for the bookmark
 	 *         represented by the given intrahash.
 	 */
-	public String getBookmarkUrlByIntraHash(final String intraHash) {
-		return this.getBookmarkUrlByIntraHashAndUsername(intraHash, null);
+	public String getBookmarkUrl(final Bookmark bookmark, Post<? extends Resource> post) {
+		final UrlBuilder builder = new UrlBuilder(this.projectHome);
+		builder.addPathElement(BOOKMARK_PREFIX);
+		builder.addPathElement(bookmark.getInterHash());
+		addParamsForCommunityPage(bookmark, post, builder);
+		return this.getUrl(builder.asString());
 	}
 
 	/**
@@ -1130,27 +1134,55 @@ public class URLGenerator {
 	 * @return the link for the resource
 	 */
 	public String getResourceUrl(final Resource resource) {
+		return getResourceUrl(resource, null);
+	}
+	
+	/**
+	 * @param resource
+	 * @param post 
+	 * @return the link for the resource
+	 */
+	public String getResourceUrl(final Resource resource, final Post<? extends Resource> post) {
 		// XXX: not nice :(
 		if (resource instanceof Bookmark) {
-			return getBookmarkUrlByIntraHash(resource.getInterHash());
+			return getBookmarkUrl((Bookmark) resource, post);
 		}
 		
 		if (resource instanceof BibTex) {
-			return getPublicationUrl((BibTex) resource);
+			return getPublicationUrl((BibTex) resource, post);
 		}
 		
 		throw new UnsupportedResourceTypeException(resource.getClass().getName() + " not supported");
 	}
 	
+	public String getResourceUrl(final Post<? extends Resource> post) {
+		final Resource resource = post.getResource();
+		return getResourceUrl(resource, post);
+	}
+	
 	/**
 	 * @param publication
+	 * @param post 
 	 * @return the interhash url
 	 */
-	public String getPublicationUrl(final BibTex publication) {
+	public String getPublicationUrl(final BibTex publication, final Post<? extends Resource> post) {
 		final UrlBuilder builder = new UrlBuilder(this.projectHome);
 		builder.addPathElement(PUBLICATION_PREFIX);
 		builder.addPathElement(publication.getInterHash() + "_" + StringUtils.replaceNonNumbersOrLetters(StringUtils.foldToASCII(publication.getTitle()), "_"));
+		addParamsForCommunityPage(publication, post, builder);
 		return this.getUrl(builder.asString());
+	}
+
+	/**
+	 * @param resource
+	 * @param post
+	 * @param builder
+	 */
+	private static void addParamsForCommunityPage(final Resource resource, final Post<? extends Resource> post, final UrlBuilder builder) {
+		if (resource.getNumberOfRatings().intValue() == 0 && present(post)) {
+			builder.addParameter("postOwner", post.getUser().getName());
+			builder.addParameter("intraHash", post.getResource().getIntraHash());
+		}
 	}
 
 	/**
