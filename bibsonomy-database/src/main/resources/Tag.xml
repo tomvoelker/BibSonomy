@@ -327,7 +327,7 @@
           ) AS t
       	  GROUP BY t.tag_lower
 		<isEqual property="order" compareValue="FREQUENCY">
-			ORDER BY t.tag_ctr DESC
+			ORDER BY tag_ctr DESC
 		</isEqual>
 		LIMIT #limit# OFFSET #offset#
 	</select>
@@ -345,18 +345,18 @@
 				) AS t
 		GROUP BY t.tag_lower
 		<isEqual property="order" compareValue="FREQUENCY">
-			ORDER BY t.tag_ctr DESC
+			ORDER BY tag_ctr DESC
 		</isEqual>
-		LIMIT #limit#	OFFSET #offset#
+		LIMIT #limit# OFFSET #offset#
 	</select>
 	
 	<select id="getSimilarTags" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
 		SELECT t2 AS tag_name, ROUND(sim * 100) AS tag_ctr
-		FROM tagtag_similarity TTS
-		WHERE TTS.t1=#tagName#
+			FROM tagtag_similarity TTS
+		WHERE TTS.t1= #tagName#
 		ORDER BY sim DESC
-      	LIMIT #limit#
-      	OFFSET #offset#
+		LIMIT #limit#
+		OFFSET #offset#
 	</select>
 	
 	<select id="getTagsPopular" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
