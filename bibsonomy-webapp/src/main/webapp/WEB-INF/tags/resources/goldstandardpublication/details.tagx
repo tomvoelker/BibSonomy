@@ -34,7 +34,11 @@
 	<c:set var="goldstandard" value="${post.resource}" />
 	
 	<c:set var="isRealGoldstandard" value="${goldstandard['class'].simpleName eq 'GoldStandardPublication' }" />
-	<c:set var="hasRelatedPublication" value="${isRealGoldstandard and (not empty goldstandard.references or not empty goldstandard.referencedBy)}" />
+	<c:set var="hasRelatedPublication" value="${isRealGoldstandard and (not empty goldstandard.references or not empty goldstandard.referencedBy or not empty goldstandard.subGoldStandards)}" />
+	<c:set var="publishedIn" value="" />
+	<c:if test="${isRealGoldstandard and not empty goldstandard.referenceThisPublicationIsPublishedIn}">
+		<c:set var="publishedIn" value="${goldstandard.referenceThisPublicationIsPublishedIn.iterator().next()}" />
+	</c:if>
 	
 	<!-- determine the publication type for schema.org markup -->
 	<c:set var="itemType" value="http://schema.org/ScholarlyArticle"/>
@@ -54,7 +58,7 @@
 						</c:if>
 					</div>
 					<small>
-						<span class="publication-description"><bib:desc publication="${goldstandard}" linebreakAfterAuthors="${true}"/></span>
+						<span class="publication-description"><bib:desc publication="${goldstandard}" linebreakAfterAuthors="${true}" publishedIn="${publishedIn}"/></span>
 					</small>
 				</h1>
 			</div>
@@ -148,6 +152,16 @@
 						<h2 class="page-header"><fmt:message key="publications.related.citing" /></h2>
 						<ul data-items="3" class="more-list" data-inline="true">
 							<c:forEach var="reference" items="${goldstandard.referencedBy}">
+								<li>
+									<goldstandardpublication:simpleDetails publication="${reference}" />
+								</li>
+							</c:forEach>
+						</ul>
+					</div>
+					<div id="related-publications-incollection" class="related-publications-container">
+						<h2 class="page-header"><fmt:message key="publications.related.incollection" /></h2>
+						<ul data-items="3" class="more-list" data-inline="true">
+							<c:forEach var="reference" items="${goldstandard.subGoldStandards}">
 								<li>
 									<goldstandardpublication:simpleDetails publication="${reference}" />
 								</li>

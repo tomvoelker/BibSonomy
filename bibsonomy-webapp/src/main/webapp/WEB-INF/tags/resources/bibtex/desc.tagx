@@ -8,6 +8,7 @@
 	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="false" />
 	<jsp:directive.attribute name="linebreakAfterAuthors" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="publishedIn" type="org.bibsonomy.model.BibTex" required="false" />
 	
 	<c:if test="${empty linebreakAfterAuthors}">
 		<c:set var="linebreakAfterAuthors" value="${false}" />
@@ -77,7 +78,7 @@
 			<span itemprop="isPartOf" itemscope="itemscope" itemtype="http://schema.org/Book">
 				<!-- if it is allowed to change the order of following items,
 					then it is better to put just booktitle and edition in this span -->
-				<bib:booktitle publication="${publication}"/>
+				<bib:booktitle publication="${publication}" publishedIn="${publishedIn}"/>
 				<bib:volumeOfSeries publication="${publication}"/>
 				<bib:chapter publication="${publication}"/>
 				<bib:publisher publication="${publication}"/>
@@ -94,7 +95,7 @@
 				<br />
 			</c:if>
 			<span itemprop="isPartOf" itemscope="itemscope" itemtype="http://schema.org/Book">
-				<bib:booktitle publication="${publication}"/>
+				<bib:booktitle publication="${publication}" publishedIn="${publishedIn}" />
 			</span>
 			<bib:volumeOfSeries publication="${publication}"/>
 			<bib:page publication="${publication}"/>
