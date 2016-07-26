@@ -60,7 +60,6 @@ import org.bibsonomy.util.UrlUtils;
  * @author rja
  */
 public class URLGenerator {
-//test
 
 	/**
 	 * Provides page names.
