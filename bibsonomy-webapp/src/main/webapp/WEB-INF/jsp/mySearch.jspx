@@ -5,17 +5,17 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-    xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
-    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
-    xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-      	
+	
 	<layout:paneLayout 
 		pageTitle="${command.pageTitle}" 
 		headerMessageKey="mysearch.header" 
@@ -24,13 +24,13 @@
 		requPath="${requPath}" 
 		activeTab="my">
 
-    	<jsp:attribute name="heading">
-    		<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
 		</jsp:attribute>
 
-   		<jsp:attribute name="headerExt">
-   			<script type="text/javascript" src="${resdir}/javascript/mySearch.js"><!-- keep me --></script>
-   		</jsp:attribute>
+		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="${resdir}/javascript/mySearch.js"><!-- keep me --></script>
+		</jsp:attribute>
 		
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
@@ -44,8 +44,7 @@
 			| page content
 			+-->
 		<jsp:attribute name="content">
-      <div id="searchbox">
-	    
+	<div id="searchbox">
 	
 	    <form class="" name="searchform" onsubmit="checkInput()">
 	      <bsform:fieldset legendKey="mysearch.option.header">
@@ -85,8 +84,7 @@
 					</div>
 	        	</div>
 	        </div>
-	       </jsp:attribute> 
-
+	       </jsp:attribute>
 	</bsform:fieldset>
 	<br/>
 	
@@ -95,30 +93,26 @@
 		<jsp:attribute name="content">
 			<div class="form-group">
 				<label class="control-label" for="filter"><fmt:message key="mysearch.option.filter"/></label>
-				
-					<input class="form-control descriptiveLabel" value='${listboxtitle}' id="filter" name="filter" type="text" size="40" onKeyUp="showTitleList();" />
-				
+				<input class="form-control descriptiveLabel" value='${listboxtitle}' id="filter" name="filter" type="text" size="40" onKeyUp="showTitleList();" />
 			</div>
-			<p>		
+			<p>
 				<div id='numresult' style="text-align:right; padding-bottom:2px; color:gray;">&#160;</div>
 				<div class="scroller">
 					<table class="result_table"><tbody id="resultlist"></tbody></table>
 				</div>
 			</p>
-		
 		</jsp:attribute>
 	</bsform:fieldset>
-	</form>	
+	</form>
 </div>
-
 
 <script language="javascript">
 	var authors = new Array(<c:forEach var='author' items='${command.authors}' varStatus="loopStatus">
-								"${mtl:quoteJSON(author)}"<c:if test="${not loopStatus.last}">,</c:if>
+								"${fn:escapeXml(mtl:quoteJSONcleanBibTeX(author))}"<c:if test="${not loopStatus.last}">,</c:if>
 							</c:forEach>);
 							
 	var tags = new Array(<c:forEach var='tag' items='${command.tags}' varStatus="loopStatus">
-								"${mtl:quoteJSON(tag)}"<c:if test="${not loopStatus.last}">,</c:if>
+								"${fn:escapeXml(mtl:quoteJSON(tag))}"<c:if test="${not loopStatus.last}">,</c:if>
 						</c:forEach>);
 	
 	var titles = new Array(<c:forEach var='title' items='${command.titles}' varStatus="loopStatus">
@@ -129,8 +123,8 @@
 	* relation arrays for relations between authors, tags and titles
 	**/	
 	var tagTitle 		= <c:out value='${command.tagTitle}'/>;
-	var authorTitle 	= <c:out value='${command.authorTitle}'/>;	
-	var tagAuthor 		= <c:out value='${command.tagAuthor}'/>;	
+	var authorTitle 	= <c:out value='${command.authorTitle}'/>;
+	var tagAuthor 		= <c:out value='${command.tagAuthor}'/>;
 	var titleAuthor 	= <c:out value='${command.titleAuthor}'/>;
 	var simHashID       = <c:out value='${command.simHash}'/>;
 	
@@ -139,16 +133,16 @@
 	**/
 	var contentIds = new Array(<c:forEach var='id' items='${command.bibtexHash}' varStatus="loopStatus">
 								"<c:out value='${mtl:quoteJSON(id)}'/>"<c:if test="${not loopStatus.last}">,</c:if>
-							</c:forEach>);	
+							</c:forEach>);
 							
 	var titleUrls = new Array(<c:forEach var='id' items='${command.bibtexUrls}' varStatus="loopStatus">
 								"<c:out value='${mtl:quoteJSON(id)}'/>"<c:if test="${not loopStatus.last}">,</c:if>
-							</c:forEach>);				
+							</c:forEach>);
 	var titleTag 	= new Array();
 	var titlesIdx	= new Array();
 	
 	// a string of authors separated by comma
-	var titleAuthorStringArray = new Array();	
+	var titleAuthorStringArray = new Array();
 
 
 	<![CDATA[
@@ -159,17 +153,16 @@
 	
 	for (var i=0;i<tagTitle.length;i++) {
 		var lst = tagTitle[i];
-		for (var j=0;j<lst.length;j++) {
+		for (var j = 0;j<lst.length;j++) {
 			titleTag[lst[j]] += tags[i] + " ";
 		}
-	}	
+	}
 	
 	// initialize the form
 	initBoxes();
 	
-  	]]>
+	]]>
 </script>
- 
 		</jsp:attribute>
 	</layout:paneLayout>
 

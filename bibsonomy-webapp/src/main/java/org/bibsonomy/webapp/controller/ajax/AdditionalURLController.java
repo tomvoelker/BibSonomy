@@ -187,7 +187,7 @@ public class AdditionalURLController extends AjaxController implements ErrorAwar
 		try {
 			this.logic.updatePosts(postList, PostUpdateOperation.UPDATE_URLS_ADD);
 		} catch (final DatabaseException e) {
-			return this.handleError("error.url.exists");
+			return this.handleError("error.url.too_long");
 		} catch (final Exception e) {
 			return this.handleError("database.exception.unspecified");
 		}
