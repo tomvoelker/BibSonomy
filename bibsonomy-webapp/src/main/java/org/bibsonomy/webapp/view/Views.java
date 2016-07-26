@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -667,6 +667,14 @@ public enum Views implements View {
 	 * show followers
 	 */
 	FOLLOWERS("followers"),
+	
+	/**
+	 * help page
+	 */
+	HELP("help/help"),
+	
+	/** the search result page */
+	HELP_SEARCH("help/search"),
 
 	/*
 	 * Error pages

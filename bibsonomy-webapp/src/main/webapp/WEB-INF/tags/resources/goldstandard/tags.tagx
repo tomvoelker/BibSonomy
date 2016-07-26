@@ -8,12 +8,14 @@
 	
 	<jsp:directive.attribute name="tagCloudCommand" type="org.bibsonomy.webapp.command.TagCloudCommand" required="true"/>
 	
-	<h2 class="pub-details" id="tags">
+	
+	<h2 class="page-header" id="tags">
 		Tags
 	</h2>
 	<div class="tagcloud">
 		<c:forEach var="tag" items="${tagCloudCommand.tags }">
 			<span class="tag ${mtl:getTagSize(tag.usercount, tagCloudCommand.maxTagCount)}"><a href="${relativeUrlGenerator.getTagUrlByTagName(tag.name)}"><c:out value="${tag.name }" /></a></span>
 		</c:forEach>
+		<meta itemprop="keywords" content="${mtl:toTagString(tagCloudCommand.tags)}" />
 	</div>
 </jsp:root>

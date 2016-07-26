@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -69,7 +69,7 @@ public class ResourceFactoryTest {
 		assertEquals(BibTex.class, ResourceFactory.getResourceClass("publication"));
 		assertEquals(BibTex.class, ResourceFactory.getResourceClass("PUBLICATION"));
 		
-		assertEquals(GoldStandardPublication.class, ResourceFactory.getResourceClass("goldStandardPublication"));
+		assertEquals(GoldStandardPublication.class, ResourceFactory.getResourceClass("goldstandardPublication"));
 		assertEquals(GoldStandardPublication.class, ResourceFactory.getResourceClass("GOLDSTANDARDPUBLICATION"));
 		
 		assertEquals(GoldStandardBookmark.class, ResourceFactory.getResourceClass("goldStandardBookmark"));

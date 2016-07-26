@@ -1,7 +1,7 @@
 /**
  * BibSonomy Search Elasticsearch - Elasticsearch full text search module.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -214,7 +214,7 @@ public class ElasticsearchIndexGenerator<R extends Resource> {
 		final Mapping<String> mapping = this.tools.getMappingBuilder().getMapping();
 		log.info("index not existing - generating a new one ('" + indexName + "')");
 		
-		final boolean created = this.client.createIndex(indexName, Collections.singleton(mapping));
+		final boolean created = this.client.createIndex(indexName, Collections.singleton(mapping), ESConstants.SETTINGS);
 		if (!created) {
 			throw new RuntimeException("can not create index '" + indexName + "'"); // TODO: use specific exception
 		}

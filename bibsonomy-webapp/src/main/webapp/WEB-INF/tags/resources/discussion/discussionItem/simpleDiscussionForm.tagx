@@ -51,8 +51,8 @@
 			<c:set var="colspan" value="12" />
 			<c:if test="${empty discussionItem}">
 				<div class="media-left">
-					<a class="thumbnail img-thumbnail">
-						<img src="${relativeUrlGenerator.getUserPictureUrlByUsername(command.context.loginUser.name)}" alt="userPicture" class="media-object simple-user-pic"/>
+					<a>
+						<img src="${relativeUrlGenerator.getUserPictureUrlByUsername(command.context.loginUser.name)}" alt="userPicture" class="media-object img-circle simple-user-pic"/>
 					</a>
 				</div>
 			</c:if>

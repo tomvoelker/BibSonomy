@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -932,16 +932,18 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param loginUserName
 	 * @param hash
 	 * @param visibleGroupIDs
+	 * @param order 
 	 * @param limit
 	 * @param offset
 	 * @param session
 	 * @return a list of tags attached to the bookmark with the given hash
 	 */
-	public List<Tag> getTagsByBookmarkHash(final String loginUserName, final String hash, final List<Integer> visibleGroupIDs, final int limit, final int offset, final DBSession session) {
+	public List<Tag> getTagsByBookmarkHash(final String loginUserName, final String hash, final List<Integer> visibleGroupIDs, Order order, final int limit, final int offset, final DBSession session) {
 		final TagParam param = new TagParam();
 		param.setHash(hash);
 		param.setUserName(loginUserName);
 		param.addGroups(visibleGroupIDs);
+		param.setOrder(order);
 		param.setLimit(limit);
 		param.setOffset(offset);
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
@@ -974,23 +976,25 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Retrieve tags attached to a bibtex with the given hash.
+	 * Retrieve tags attached to a publication with the given hash.
 	 * 
 	 * @param loginUserName
 	 * @param hash
 	 * @param hashId
 	 * @param visibleGroupIDs
+	 * @param order 
 	 * @param limit
 	 * @param offset
 	 * @param session
-	 * @return a list of tags attached to a bibtex with the given hash
+	 * @return a list of tags attached to a publication with the given hash
 	 */
-	public List<Tag> getTagsByBibtexHash(final String loginUserName, final String hash, final HashID hashId, final List<Integer> visibleGroupIDs, final int limit, final int offset, final DBSession session) {
+	public List<Tag> getTagsByBibtexHash(final String loginUserName, final String hash, final HashID hashId, final List<Integer> visibleGroupIDs, final Order order, final int limit, final int offset, final DBSession session) {
 		final TagParam param = new TagParam();
 		param.setHash(hash);
 		param.setSimHash(hashId);
 		param.setUserName(loginUserName);
 		param.addGroups(visibleGroupIDs);
+		param.setOrder(order);
 		param.setLimit(limit);
 		param.setOffset(offset);
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);

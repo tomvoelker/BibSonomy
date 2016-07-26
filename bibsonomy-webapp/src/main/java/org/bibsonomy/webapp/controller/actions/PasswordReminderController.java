@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -49,6 +49,7 @@ import org.bibsonomy.webapp.command.actions.PasswordReminderCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
@@ -83,7 +84,9 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 	
 	@Override
 	public View workOn(final PasswordReminderCommand command) {
-		if (command.getContext().isUserLoggedIn()) {
+		final RequestWrapperContext context = command.getContext();
+		
+		if (context.isUserLoggedIn()) {
 			throw new AccessDeniedException("only not loggedin users can request a reminder password");
 		}
 		/*
@@ -117,7 +120,7 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		 * If the user name is null, we get an exception on getUserDetails.
 		 * Hence, we send the user back to the form.
 		 */
-		if (errors.hasErrors()) {
+		if (errors.hasErrors() || command.getContext().isFirstCall()) {
 			/*
 			 * Generate HTML to show captcha.
 			 */
@@ -159,6 +162,18 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		 * Hence, we send the user back to the form.
 		 */
 		if (errors.hasErrors()) {
+			/*
+			 * Generate HTML to show captcha.
+			 */
+			command.setCaptchaHTML(captcha.createCaptchaHtml(locale));
+			return Views.PASSWORD_REMINDER;
+		}
+		
+		/*
+		 * check the ckey
+		 */
+		if (!context.isValidCkey()) {
+			errors.reject("error.field.valid.ckey");
 			/*
 			 * Generate HTML to show captcha.
 			 */

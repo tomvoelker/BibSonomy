@@ -9,6 +9,7 @@
 	<jsp:directive.attribute name="user" type="org.bibsonomy.model.User" required="true" />
 	<jsp:directive.attribute name="size" type="java.lang.Integer" required="false" />
 	<jsp:directive.attribute name="noname" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="circle" type="java.lang.Boolean" required="false" />
 	
 	<c:set var="username"><user:username username="${user}" noLink="${true}"/></c:set>
 	
@@ -17,8 +18,13 @@
 		<c:set var="size" value="64" />
 	</c:if>
 	
-	<a class="pull-left img-thumbnail img-responsive" href="${relativeUrlGenerator.getUserUrlByUserName(user)}" title="${username}">
-		<img alt="${username}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(user)}" style="height: ${size}px; width: ${size}px"  class="user-avatar img-responsive"/>
+	<c:set var="imgClass" value="thumbnail img-responsive" />
+	<c:if test="${not empty circle and circle}">
+		<c:set var="imgClass" value="circle" />
+	</c:if>
+	
+	<a href="${relativeUrlGenerator.getUserUrlByUserName(user)}" title="${username}">
+		<img alt="${username}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(user)}" style="height: ${size}px; width: ${size}px"  class="img-${imgClass}"/>
 		<c:if test="${empty noname or not noname}">
 			<span><c:out value="${username}" /></span>
 		</c:if>

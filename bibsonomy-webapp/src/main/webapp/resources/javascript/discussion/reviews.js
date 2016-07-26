@@ -23,6 +23,64 @@ $(function() {
 		$('.newRating').rating('update', 0);
 		return false;
 	});
+	
+	$('.updatereview').hide().submit(function() {
+		var form = $(this);
+		var data = form.serialize();
+		
+		var item = form.parent();
+		var ratingDiv = item.find('div.rating');
+		var oldRating = ratingDiv.data('rating');
+		
+		var rating = form.find('input[name=discussionItem\\.rating]').val();
+		if (rating == 0) {
+			if (!confirm(getString("post.resource.review.rating0"))) {
+				return false;
+			}
+		}
+		
+		$.ajax({
+			url: '/ajax/reviews',
+			method: 'POST',
+			data: data,
+			success: function(data) {
+				var reload = (data.reload);
+				if (reload == "true") {
+					window.location.reload();
+					return;
+				}
+				
+				var text = form.find('textarea[name=discussionItem\\.text]').val();
+				item.find('.text:first').text(text);
+				
+				var ratingInput = item.find('input.reviewRating');
+				
+				ratingInput.rating('update', rating);
+				
+				ratingDiv.data('rating', rating);
+				
+				// update review count and distribution
+				var currentReviewCount = getReviewCount();
+				var currentAvg = getAvg();
+				var ratingSum = currentAvg * currentReviewCount;
+				ratingSum += rating - oldRating;
+				var avg = ratingSum / currentReviewCount;
+				$('#averageRating').rating('update', avg);
+				$('[property=ratingAverage]').text(avg);
+				
+				plotRatingDistribution();
+				
+				form.hide();
+			},
+			error:		function(jqXHR, data, errorThrown) {
+				handleAjaxErrors(reviewForm, jQuery.parseJSON(jqXHR.responseText));
+			},
+		});
+		
+		return false;
+	});
+	
+	$('.createreview').submit(createReview);
 });
 
 function initStars() {
@@ -47,6 +105,16 @@ function initStars() {
 		theme: 'krajee-fa',
 		filledStar: '<i class="fa fa-star"></i>',
 		emptyStar: '<i class="fa fa-star-o"></i>'
+	}).on('rating.change', function(event, value, caption) {
+		var form = $('.simple-review-form.createreview');
+		form.find('textarea').focus();
+		saveReview(form, function(rating, data) {
+			var hash = data.hash;
+			var hashInput = $('<input type="hidden" name="discussionItem.hash">').val(hash);
+			var actionInput = $('<input name="_method" value="PUT" type="hidden">');
+			form.append(actionInput);
+			form.append(hashInput);
+		});
 	});
 }
 
@@ -60,11 +128,14 @@ function getAvg() {
 }
 
 function updateRatingCounter(element) {
-	if(element.target != undefined) element = element.target;
+	if (element.target != undefined) {
+		element = element.target;
+	}
 	var val = $(element).children('input[type=hidden]').val();
 	
-	if(val!=undefined) 
+	if (val!=undefined) {
 		$(element).next('.discussionRatingValue').children('b').html(val);
+	}
 }
 
 function getOwnReviewRating() {
@@ -164,4 +235,80 @@ function plotRatingDistribution() {
 function getRating(element) {
 	var stars = $(element).data("stars");
 	return parseFloat(stars.options.value);
+}
+
+function createReview() {
+	var form = $(this);
+	saveReview(form, function(rating, data) {
+		var reload = $(data.reload);
+		if (reload == "true") {
+			window.location.reload();
+			return;
+		}
+		
+		var reviewTemplate = $('#reviewTemplate').clone();
+		var text = form.find('textarea[name=discussionItem\\.text]').val();
+		form.parent().find('ul.subdiscussion:first>li.form').after(reviewTemplate);
+		setupActions(reviewTemplate, text, data.hash);
+		reviewTemplate.show();
+		var ratingInput = reviewTemplate.find('input.reviewRating:first');
+		ratingInput.val(rating);
+		ratingInput.rating({
+			min : 0,
+			max : 5,
+			step : 0.5,
+			size : 'xs',
+			readonly : true,
+			showCaption : false,
+			theme: 'krajee-fa',
+			filledStar: '<i class="fa fa-star"></i>',
+			emptyStar: '<i class="fa fa-star-o"></i>'
+		});
+		
+		reviewTemplate.find('div.rating').data('rating', rating);
+		reviewTemplate.attr('id', 'ownReview');
+		
+		// update review count and distribution
+		var currentReviewCount = getReviewCount();
+		var currentAvg = getAvg();
+		var ratingSum = currentAvg * currentReviewCount + rating;
+		
+		var reviewCount = currentReviewCount + 1;
+		var avg = ratingSum / reviewCount;
+		
+		$('#averageRating').rating('update', avg);
+		$('[property=ratingCount]').text(reviewCount);
+		$('[property=ratingAverage]').text(avg);
+		
+		plotRatingDistribution();
+		reviewTemplate.effect("highlight", {}, 2500);
+		form.hide();
+		$('#comment-review-info').hide();
+		$('.createcomment:first').show();
+	});
+	return false;
+}
+
+function saveReview(form, successCall) {
+	var postData = form.serialize();
+	
+	var rating = form.find('input[name=discussionItem\\.rating]').val();
+	if (rating == 0) {
+		if (!confirm(getString("post.resource.review.rating0"))) {
+			return false;
+		}
+	}
+	
+	$.ajax({
+		url: '/ajax/reviews',
+		method: 'POST',
+		data: postData,
+		success: function(data) {
+			successCall(rating, data);
+		},
+		error: function(jqXHR, data, errorThrown) {
+			handleAjaxErrors(form, jQuery.parseJSON(jqXHR.responseText));
+		},
+	});
+	return false;
 }

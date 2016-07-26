@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -51,21 +51,23 @@ public class GetTagsByHash extends TagChainElement {
 		final int contentType = param.getContentType();
 		if (contentType == ConstantID.BIBTEX_CONTENT_TYPE.getId()) {
 			return this.db.getTagsByBibtexHash(param.getUserName(), 
-											   param.getHash(), 
-											   HashID.getSimHash(param.getSimHash()), 
-											   param.getGroups(), 
-											   param.getLimit(), 
-											   param.getOffset(), 
-											   session);
+												param.getHash(), 
+												HashID.getSimHash(param.getSimHash()), 
+												param.getGroups(),
+												param.getOrder(),
+												param.getLimit(), 
+												param.getOffset(), 
+												session);
 		}
 		
 		if (contentType == ConstantID.BOOKMARK_CONTENT_TYPE.getId()) {
 			return this.db.getTagsByBookmarkHash(param.getUserName(), 
-												 param.getHash(), 
-												 param.getGroups(), 
-												 param.getLimit(), 
-												 param.getOffset(), 
-												 session);
+													param.getHash(), 
+													param.getGroups(),
+													param.getOrder(),
+													param.getLimit(), 
+													param.getOffset(), 
+													session);
 		}
 		
 		throw new UnsupportedResourceTypeException();

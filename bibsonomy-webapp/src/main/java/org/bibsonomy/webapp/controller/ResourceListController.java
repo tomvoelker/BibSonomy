@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -116,12 +116,13 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @param groupingEntity the grouping entity
 	 * @param groupingName the grouping name
 	 * @param regex regular expression for tag filtering
+	 * @param order forced order
 	 * @param tags list of tags
 	 * @param start start parameter
 	 * @param end end parameter
 	 */
-	protected void setTags(final ResourceViewCommand cmd, final Class<? extends Resource> resourceType, final GroupingEntity groupingEntity, final String groupingName, final String regex, final List<String> tags, final String hash, final int max, final String search) {
-		this.setTags(cmd, resourceType, groupingEntity, groupingName, regex, tags, hash, max, search, SearchType.LOCAL);
+	protected void setTags(final ResourceViewCommand cmd, final Class<? extends Resource> resourceType, final GroupingEntity groupingEntity, final String groupingName, final String regex, Order order, final List<String> tags, final String hash, final int max, final String search) {
+		this.setTags(cmd, resourceType, groupingEntity, groupingName, regex, order, tags, hash, max, search, SearchType.LOCAL);
 	}
 	
 	/**
@@ -132,6 +133,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @param groupingEntity the grouping entity
 	 * @param groupingName the grouping name
 	 * @param regex regular expression for tag filtering
+	 * @param order forced order
 	 * @param tags list of tags
 	 * @param hash 
 	 * @param max 
@@ -140,7 +142,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @param start start parameter
 	 * @param end end parameter
 	 */
-	protected void setTags(final ResourceViewCommand cmd, final Class<? extends Resource> resourceType, final GroupingEntity groupingEntity, final String groupingName, final String regex, final List<String> tags, final String hash, final int max, final String search, final SearchType searchType) {
+	protected void setTags(final ResourceViewCommand cmd, final Class<? extends Resource> resourceType, final GroupingEntity groupingEntity, final String groupingName, final String regex, Order order, final List<String> tags, final String hash, final int max, final String search, final SearchType searchType) {
 		final TagCloudCommand tagCloudCommand = cmd.getTagcloud();
 		// retrieve tags
 		log.debug("getTags " + " " + groupingEntity + " " + groupingName);
@@ -173,6 +175,10 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 		 */
 		tagMax = this.getFixedTagMax(tagMax);
 		tagOrder = this.getFixedTagOrder(tagOrder);
+		
+		if (present(order)) {
+			tagOrder = order;
+		}
 		
 		tagCloudCommand.setTags(this.logic.getTags(resourceType, groupingEntity, groupingName, tags, hash, search, searchType,regex, null, tagOrder, cmd.getStartDate(), cmd.getEndDate(), 0, tagMax));
 		// retrieve tag cloud settings
@@ -238,7 +244,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 			}
 
 			// fetch tags, store them in bean
-			this.setTags(cmd, resourcetype, groupingEntity, groupingName, regex, tags, hash, max, search);
+			this.setTags(cmd, resourcetype, groupingEntity, groupingName, regex, null, tags, hash, max, search);
 
 			// when tags only are requested, we don't need any resources
 			this.setInitializeNoResources(true);

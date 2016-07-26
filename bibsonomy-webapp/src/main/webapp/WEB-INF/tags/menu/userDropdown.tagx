@@ -1,0 +1,90 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:login="urn:jsptagdir:/WEB-INF/tags/actions/login"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
+	
+	<c:set var="loginUserName" value="${loginUser.name}" />
+	<c:set var="userLoggedIn" value="${not empty loginUserName}" />
+	
+	<li>
+		<fmt:message var="titleInbox" key="navi.inbox" />
+		<a href="/inbox" title="${titleInbox}">
+			<span class="fa fa-inbox"><!-- KEEP ME --></span>
+			<fmt:message key="navi.inbox" />
+			<c:if test="${loginUser.inbox.numPosts == 0}">
+				<c:set var="inboxCounterStyle" value="display: none;" />
+			</c:if>
+			<span style="position: absolute; right: 10px; ${inboxCounterStyle}" class="badge inbox-counter"><c:out value="${loginUser.inbox.numPosts}"/></span>
+		</a>
+	</li>
+	<li>
+		<fmt:message var="titleClipboard" key="navi.clipboard"/>
+		<a href="/clipboard" title="${titleClipboard}"><!-- empty -->
+			<span class="fa fa-folder-open"><!--  --></span>
+			<fmt:message key="navi.clipboard" />
+			<c:if test="${loginUser.clipboard.numPosts == 0}">
+				<c:set var="clipboardCounterStyle" value="display: none;" />
+			</c:if>
+			<span style="position: absolute; right: 10px; ${clipboardCounterStyle}" class="badge clipboard-counter"><c:out value="${loginUser.clipboard.numPosts}"/></span>
+		</a>
+	</li>
+	<li>
+		<fmt:message var="friends" key="navi.friends" />
+		<a href="/friendsoverview" title="friends">
+			<span class="fa fa-user"><!--  --></span>
+			<fmt:message key="navi.friends"/>
+		</a>
+	</li>
+	<li> 
+		<fmt:message var="editTags" key="navi.editTags" />
+		<a href="/editTags" title="${editTags}">
+			<span class="fa fa-tag"><!-- KEEP ME --></span>
+			<fmt:message key="navi.editTags" />
+		</a>
+	</li>
+	
+	<!-- settings -->
+	<li>
+		<a href="/settings">
+			<span class="fa fa-cogs"><!-- KEEP ME --></span>
+			<fmt:message key="navi.settings"/>
+		</a>
+	</li>
+	
+	<!-- divider -->
+	<li class="divider"><!-- KEEP ME --></li>
+
+	<li>
+		<fmt:message var="titleBlog" key="navi.blog" />
+		<a href="${properties['project.blog']}" title="${titleBlog}">
+			<span class="fa fa-book"><!-- KEEP ME --></span>
+			<fmt:message key="navi.blog" />
+		</a>
+	</li>
+	<li>
+		<fmt:message var="titleHelp" key="navi.help"/>
+		<fmt:message key="navi.helpUrl" var="helpLangUrl" />
+		<a href="${helpLangUrl}" title="${titleHelp}">
+			<span class="fa fa-question-circle"><!-- KEEP ME --></span>
+			<fmt:message key="navi.help" />
+		</a>
+	</li>
+	
+	<!-- divider -->
+	<li class="divider"><!--  --></li>
+	<li>
+		<a href="/logout">
+			<span class="fa fa-power-off"><!-- KEEP ME --></span>
+			<fmt:message key="navi.logout"/>
+		</a>
+	</li>
+
+</jsp:root>

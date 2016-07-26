@@ -178,15 +178,15 @@
 													
 													<!-- user sharing documents -->
 													<c:if test="${groupRole eq 'ADMINISTRATOR' and group.sharedDocuments}">
-														<td style="" class="col-md-1">
+														<td class="col-md-1">
 															<c:choose>
 																<c:when test="${member.userSharedDocuments}">
-																	<span class="label label-success">
+																	<span class="label label-default">
 																		<span class="fa fa-check"><!-- KEEP ME --></span>
 																	</span>
-																</c:when>	
+																</c:when>
 																<c:otherwise>
-																	<span class="label label-danger">
+																	<span class="label label-default">
 																		<span class="fa fa-remove"><!-- KEEP ME --></span>
 																	</span>
 																</c:otherwise>

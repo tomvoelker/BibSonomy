@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -310,13 +310,17 @@ public class URLGenerator {
 	/**
 	 * Constructs a bookmark URL for the given intraHash. If you have the
 	 * resource as object, please use {@link #getBookmarkUrl(Bookmark, User)}
-	 * 
-	 * @param intraHash
+	 * @param bookmark 
+	 * @param post 
 	 * @return The URL pointing to the post of that user for the bookmark
 	 *         represented by the given intrahash.
 	 */
-	public String getBookmarkUrlByIntraHash(final String intraHash) {
-		return this.getBookmarkUrlByIntraHashAndUsername(intraHash, null);
+	public String getBookmarkUrl(final Bookmark bookmark, Post<? extends Resource> post) {
+		final UrlBuilder builder = new UrlBuilder(this.projectHome);
+		builder.addPathElement(BOOKMARK_PREFIX);
+		builder.addPathElement(bookmark.getInterHash());
+		addParamsForCommunityPage(bookmark, post, builder);
+		return this.getUrl(builder.asString());
 	}
 
 	/**
@@ -485,13 +489,51 @@ public class URLGenerator {
 	
 	/**
 	 * @param post
-	 * @return the copy url for the community post
+	 * @param ckey 
+	 * @return the delete url of the post
+	 */
+	public String getDeleteUrlOfPost(final Post<? extends Resource> post, final String ckey) {
+		final UrlBuilder urlBuilder = new UrlBuilder(this.projectHome);
+		urlBuilder.addPathElement("deletePost");
+		
+		final Resource resource = post.getResource();
+		if (ResourceFactory.isCommunityResource(resource)) {
+			urlBuilder.addParameter("resourceHash", resource.getInterHash());
+		} else {
+			urlBuilder.addParameter("resourceHash", resource.getIntraHash());
+			urlBuilder.addParameter("owner", post.getUser().getName());
+		}
+		urlBuilder.addParameter("ckey", ckey);
+		
+		return this.getUrl(urlBuilder.asString());
+	}
+	
+	/**
+	 * @param post
+	 * @return the copy url of the post for logged in user
 	 */
 	public String getCopyUrlOfPost(final Post<? extends Resource> post) {
+		return getCopyUrlOfPost(post, true, false);
+	}
+	/**
+	 * @param post
+	 * @param useSuperiorResourceClass 
+	 * @param forceCommunityResource 
+	 * @return the copy url for the community post
+	 */
+	public String getCopyUrlOfPost(final Post<? extends Resource> post, boolean useSuperiorResourceClass, boolean forceCommunityResource) {
 		final UrlBuilder urlBuilder = new UrlBuilder(this.projectHome);
 		final Resource resource = post.getResource();
-		final Class<? extends Resource> superiorResourceClass = ResourceFactory.findSuperiorResourceClass(resource);
-		urlBuilder.addPathElement(this.prefix).addPathElement(getEditUrlByResourceClass(superiorResourceClass));
+		Class<? extends Resource> resourceClass = resource.getClass();
+		if (useSuperiorResourceClass) {
+			resourceClass = ResourceFactory.findSuperiorResourceClass(resource);
+		}
+		
+		if (forceCommunityResource) {
+			resourceClass = ResourceFactory.findCommunityResourceClass(resource);
+		}
+		
+		urlBuilder.addPathElement(this.prefix).addPathElement(getEditUrlByResourceClass(resourceClass));
 		if (ResourceFactory.isCommunityResource(resource)) {
 			urlBuilder.addParameter("hash", resource.getInterHash());
 		} else {
@@ -1085,6 +1127,75 @@ public class URLGenerator {
 		url += "/" + USER_PREFIX;
 		url += "/" + UrlUtils.encodePathSegment(userName);
 		return this.getUrl(url);
+	}
+	
+	/**
+	 * @param resource
+	 * @return the link for the resource
+	 */
+	public String getResourceUrl(final Resource resource) {
+		return getResourceUrl(resource, null);
+	}
+	
+	/**
+	 * @param resource
+	 * @param post 
+	 * @return the link for the resource
+	 */
+	public String getResourceUrl(final Resource resource, final Post<? extends Resource> post) {
+		// XXX: not nice :(
+		if (resource instanceof Bookmark) {
+			return getBookmarkUrl((Bookmark) resource, post);
+		}
+		
+		if (resource instanceof BibTex) {
+			return getPublicationUrl((BibTex) resource, post);
+		}
+		
+		throw new UnsupportedResourceTypeException(resource.getClass().getName() + " not supported");
+	}
+	
+	/**
+	 * @param post
+	 * @return the resource url
+	 */
+	public String getResourceUrl(final Post<? extends Resource> post) {
+		final Resource resource = post.getResource();
+		return getResourceUrl(resource, post);
+	}
+	
+	/**
+	 * @param publication
+	 * @return the publication url
+	 */
+	public String getPublicationUrl(final BibTex publication) {
+		return this.getPublicationUrl(publication, (Post<? extends Resource>) null);
+	}
+	
+	/**
+	 * @param publication
+	 * @param post 
+	 * @return the interhash url
+	 */
+	public String getPublicationUrl(final BibTex publication, final Post<? extends Resource> post) {
+		final UrlBuilder builder = new UrlBuilder(this.projectHome);
+		builder.addPathElement(PUBLICATION_PREFIX);
+		builder.addPathElement(publication.getInterHash() + "_" + StringUtils.replaceNonNumbersOrLetters(StringUtils.foldToASCII(publication.getTitle()), "_"));
+		addParamsForCommunityPage(publication, post, builder);
+		return this.getUrl(builder.asString());
+	}
+
+	/**
+	 * @param resource
+	 * @param post
+	 * @param builder
+	 */
+	private static void addParamsForCommunityPage(final Resource resource, final Post<? extends Resource> post, final UrlBuilder builder) {
+		final Integer ratingCount = resource.getNumberOfRatings();
+		if (present(ratingCount) && ratingCount.intValue() == 0 && present(post)) {
+			builder.addParameter("postOwner", post.getUser().getName());
+			builder.addParameter("intraHash", post.getResource().getIntraHash());
+		}
 	}
 
 	/**
@@ -1794,5 +1905,16 @@ public class URLGenerator {
 	
 	public String getPostPublicationUrl() {
 		return this.projectHome + URLGenerator.POST_PUBLICATION;
+	}
+
+	/**
+	 * @param helpPage
+	 * @param language
+	 * @return the help page
+	 */
+	public String getHelpPage(final String helpPage, final String language) {
+		final UrlBuilder builder = new UrlBuilder(this.projectHome + "new_help" + "_" + language);
+		builder.addPathElement(helpPage);
+		return this.getUrl(builder.asString());
 	}
 }

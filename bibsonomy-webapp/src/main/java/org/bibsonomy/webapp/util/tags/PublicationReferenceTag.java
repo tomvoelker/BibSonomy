@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -78,12 +78,12 @@ public class PublicationReferenceTag extends RequestContextAwareTag {
 		 * pattern. We can't use replace first, because the replacement also 
 		 * contains the pattern
 		 */
-		HashSet<String> replacedLinks = new HashSet<String>();
+		final Set<String> replacedLinks = new HashSet<String>();
 
 		boolean changed = false;
 		
 		while (matcher.find()) {
-			if(replacedLinks.contains(matcher.group(0))) {
+			if (replacedLinks.contains(matcher.group(0))) {
 				continue;
 			}
 			changed = true;
@@ -105,7 +105,7 @@ public class PublicationReferenceTag extends RequestContextAwareTag {
 			replacedLinks.add(matcher.group(0));
 		}
 		
-		if(changed) {
+		if (changed) {
 			text += "<div class=\"originalText\" style=\"display:none\">" + originalText + "</div>";
 		}
 		

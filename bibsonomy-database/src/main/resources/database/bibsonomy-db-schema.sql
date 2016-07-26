@@ -1106,7 +1106,7 @@ CREATE TABLE `pendingUser` (
   `show_bookmark` tinyint(1) default '1',
   `show_bibtex` tinyint(1) default '1',
   `useExternalPicture` tinyint(1) DEFAULT '0',
-  `reg_log` TEXT NULL DEFAULT NULL,
+  `reg_log` MEDIUMTEXT NULL DEFAULT NULL,
   UNIQUE (`activation_code`),
   PRIMARY KEY  (`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1509,7 +1509,7 @@ CREATE TABLE `user` (
   `show_bookmark` tinyint(1) default '1',
   `show_bibtex` tinyint(1) default '1',
   `useExternalPicture` tinyint(1) DEFAULT '0',
-  `reg_log` TEXT NULL DEFAULT NULL,
+  `reg_log` MEDIUMTEXT NULL DEFAULT NULL,
   PRIMARY KEY  (`user_name`),
   UNIQUE KEY `user_id` (`id`),
   KEY `spammer_to_classify_user_name_idx` (`spammer`,`to_classify`,`user_name`)
@@ -1741,7 +1741,8 @@ CREATE TABLE `pub_person` (
   `log_changed_at` datetime DEFAULT NULL,
   `log_changed_by` varchar(30) DEFAULT NULL COMMENT 'user_name of the user, who changed the association last',
   `deleted` tinyint(4) NOT NULL DEFAULT 0 COMMENT 'set to 1 for tuples keeping track of explicitly falsified associations, otherwise 0',
-  PRIMARY KEY (`person_change_id`)
+  PRIMARY KEY (`person_change_id`),
+  UNIQUE KEY `pub_person_simhash1_relator_code_person_index_idx` (`simhash1`,`relator_code`,`person_index`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `log_pub_person` (
@@ -1780,6 +1781,16 @@ CREATE TABLE `log_person_name` (
   `log_changed_at` datetime DEFAULT NULL,
   `log_changed_by` varchar(30) DEFAULT NULL COMMENT 'user_name of the user, who changed the tuple last',
   PRIMARY KEY (`person_change_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `log_postchange` (
+	`post_owner` VARCHAR(50) NULL DEFAULT NULL,
+	`post_editor` VARCHAR(50) NOT NULL,
+	`old_content_id` INT(11) NOT NULL,
+	`new_content_id` INT(11) NOT NULL,
+	`current_content_id` INT(11) NOT NULL,
+	`content_type` TINYINT(4) NOT NULL,
+	`date` DATETIME NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

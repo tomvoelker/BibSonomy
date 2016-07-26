@@ -101,7 +101,7 @@
 					<dt><group:groupthumbnail noname="${true}" group="${group}" /></dt>
 					<dd>
 						<div class="row">
-							<div class="col-md-8">
+							<div class="col-md-7">
 								<a href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}">
 									<group:groupname group="${group}" noLink="${true}" showRealname="${true}"/>
 								</a>
@@ -113,7 +113,7 @@
 								<small><a href="/cv/group/${fn:escapeXml(group.name)}">CV</a></small>
 								
 							</div>
-							<div class="col-md-4 text-right">
+							<div class="col-md-5 text-right">
 								<group:actions group="${group}" />
 							</div>
 						</div>

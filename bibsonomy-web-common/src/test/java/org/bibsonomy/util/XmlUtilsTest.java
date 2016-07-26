@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Web-Common - Common things for web
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -73,6 +73,15 @@ public class XmlUtilsTest {
 				fail(xmlParsingThreadimplements.error.getMessage());
 			}
 		}
+	}
+	
+	/**
+	 * @throws Exception
+	 */
+	@Test
+	@Ignore // depends on 3rd party site
+	public void testGetDOMVideo() throws Exception {
+		XmlUtils.getDOM(new URL("http://cdn.media.ccc.de/events/swucgn/h264-hd/swu.2016.05.betroffenenrechte-im-datenschutz.mp4"));
 	}
 	
 	@Test

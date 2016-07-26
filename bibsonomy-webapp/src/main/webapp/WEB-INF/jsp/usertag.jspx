@@ -32,7 +32,6 @@
 					<nav:tagcrumb requestedTags="${command.requestedTags}" active="${true}"/>
 				</jsp:attribute>
 			</nav:breadcrumbs>
-		
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">

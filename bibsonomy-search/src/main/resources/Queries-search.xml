@@ -73,6 +73,7 @@
 			) AS b2
 		LEFT JOIN document d USING(content_id)
 		JOIN bibtex b USING(content_id)
+		WHERE b.group &gt;= 0
 		ORDER BY content_id
 	</select>
 	

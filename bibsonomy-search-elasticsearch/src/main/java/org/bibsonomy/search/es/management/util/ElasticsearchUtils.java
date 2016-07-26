@@ -1,7 +1,7 @@
 /**
  * BibSonomy Search Elasticsearch - Elasticsearch full text search module.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -170,7 +170,7 @@ public final class ElasticsearchUtils {
 		if (present(documentDateAsTime)) {
 			lastDocumentDate = new Date(documentDateAsTime.longValue());
 		} else {
-			lastDocumentDate = new Date(0);
+			lastDocumentDate = null;
 		}
 		searchIndexState.setLastDocumentDate(lastDocumentDate);
 		
@@ -190,6 +190,9 @@ public final class ElasticsearchUtils {
 	 * @return the date as string
 	 */
 	public static String dateToString(final Date date) {
+		if (!present(date)) {
+			return "";
+		}
 		return DATE_TIME_FORMATTER.print(date.getTime());
 	}
 
