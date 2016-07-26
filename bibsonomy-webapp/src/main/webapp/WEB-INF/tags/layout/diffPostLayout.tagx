@@ -27,7 +27,6 @@
     <jsp:directive.attribute name="detailedInformation" fragment="true" required="false" description="The form fields to enter detailed information."/>
     <jsp:directive.attribute name="tagsAndGroups" fragment="true" required="false" />
     <jsp:directive.attribute name="extraInformation" fragment="true" required="false" description="Extra information which shall be displayed outside the form."/>
-    <jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>	
     
     
     <fmt:message key="navi.diff${resourceType}" var="editPageTitle" />
@@ -38,8 +37,7 @@
 		headerLogoClass="${fn:toLowerCase(resourceType)}s" 
 		command="${command}" 
 		requPath="${requPath}" 
-		activeTab="${activeTab}"
-		minimizedContentWidth="${minimizedContentWidth}">
+		activeTab="${activeTab}">
 		
 		    <!--+
     	 	| html header extension: page specific javascript
@@ -145,5 +143,7 @@
           </script>
           
 		</jsp:attribute>
+	    
 	</layout:paneLayout>
+
 </jsp:root>

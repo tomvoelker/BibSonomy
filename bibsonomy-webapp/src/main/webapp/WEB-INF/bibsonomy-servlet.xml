@@ -181,6 +181,10 @@
 		<constructor-arg value="${project.home}" />
 	</bean>
 	
+	<bean id="projectTheme" class="java.lang.String">
+		<constructor-arg value="${project.theme}" />
+	</bean>
+	
 	<!-- handles sending of mails  -->
 	<bean id="mailUtils" class="org.bibsonomy.util.MailUtils" scope="singleton">
 		<property name="projectHome" ref="projectHome" />
@@ -744,7 +748,6 @@
 		</property>
 	</bean>
 	
-	
 	<!--  #################### controller #################### -->
 	<bean id="resourceController" class="org.bibsonomy.webapp.controller.ResourceListController" abstract="true">
 		<property name="logic" ref="logic"/>
@@ -759,6 +762,7 @@
 		<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
 		<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
 		<value type="java.lang.Class">org.bibsonomy.model.GoldStandardPublication</value>
+		<value type="java.lang.Class">org.bibsonomy.model.GoldStandardBookmark</value>
 	</util:set>
 	
 	<bean id="homepageController" class="org.bibsonomy.webapp.controller.HomepageController" scope="request" parent="multiResourceListController">
@@ -937,6 +941,7 @@
 				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
 			</set>
 		</property>
+		<property name="urlGenerator" ref="relativeUrlGenerator" />
 	</bean>
 
 	<bean id="clipboardPageController" class="org.bibsonomy.webapp.controller.ClipboardPageController" scope="request" parent="multiResourceListController">
@@ -1014,7 +1019,6 @@
 			</list>
 		</property>
 	</bean>
-
 	
 	<!--  #################### static views #################### -->
 	<bean id="personIntroPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
@@ -1064,6 +1068,7 @@
 	<import resource="bibsonomy-servlet-admin.xml" />
 	<import resource="bibsonomy-servlet-database.xml" />
 	<import resource="bibsonomy-servlet-search.xml" />
+	<import resource="bibsonomy-servlet-help.xml" />
 	<import resource="bibsonomy-servlet-security.xml" />
 	<import resource="bibsonomy-servlet-opensocial.xml" />
 	<import resource="bibsonomy-servlet-saml.xml" />

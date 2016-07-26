@@ -17,20 +17,15 @@
 	<jsp:directive.attribute name="heading" fragment="true" required="false"/>
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>
 	<jsp:directive.attribute name="contentIntro" fragment="true" required="false" />
+	
 	<jsp:directive.attribute name="headerExt" fragment="true" />
+	
 	<jsp:directive.attribute name="infobox" fragment="true" required="false" />
-	<jsp:directive.attribute name="beforeMainContainer" fragment="true" required="false" />
 	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="newsbar" fragment="true" required="false"/>
-	<jsp:directive.attribute name="headerContainer" fragment="true" required="false"/>
-	<!-- FIXME: footerContainer not used -->
-	<jsp:directive.attribute name="footerContainer" fragment="true" required="false"/>
-	<jsp:directive.attribute name="hideFooterContainer" type="java.lang.Boolean" required="false"/>
 	
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="noLoginBox" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="noSidebar" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
 
@@ -51,10 +46,7 @@
 			pageTitle="${pageTitle}"
 			personalized="${personalized}"
 			/>
-			<body>
-				<c:if test="${not empty beforeMainContainer}">
-					<jsp:invoke fragment="beforeMainContainer"/>
-				</c:if>
+			<body data-spy="scroll" data-target="#sidebar-nav">
 				<div class="container header">
 					<div id="page-header" class="bib-header">
 						<div class="row">
@@ -95,7 +87,6 @@
 				<div class="container main">
 					<c:choose>
 						<c:when test="${noSidebar}">
-							
 							<!-- without sidebar -->
 							<!-- Breadcrumbs -->
 							<c:if test="${not empty breadcrumbs}">

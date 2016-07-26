@@ -1,7 +1,7 @@
 /**
  * BibSonomy Search Elasticsearch - Elasticsearch full text search module.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,7 +26,10 @@
  */
 package org.bibsonomy.search.es.management;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -84,7 +87,11 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 	@Override
 	protected void updateResourceSpecificProperties(String indexName, SearchIndexSyncState oldState, SearchIndexSyncState targetState) {
 		// TODO: limit offset TODODZO
-		final List<Post<P>> postsForDocUpdate = this.inputLogic.getPostsForDocumentUpdate(oldState.getLastDocumentDate(), targetState.getLastDocumentDate());
+		Date lastDocDate = oldState.getLastDocumentDate();
+		if (!present(lastDocDate)) {
+			lastDocDate = targetState.getLastDocumentDate();
+		}
+		final List<Post<P>> postsForDocUpdate = this.inputLogic.getPostsForDocumentUpdate(lastDocDate, targetState.getLastDocumentDate());
 		
 		// TODO: bulk update
 		for (final Post<P> postDocUpdate : postsForDocUpdate) {

@@ -24,12 +24,11 @@
 		command="${command}" 
 		headerMessageKey="navi.publication" 
 		requestedUser="${command.requestedUser}" 
-		requPath="${requPath}"
-		minimizedContentWidth="${true}" >
+		requPath="${requPath}">
 		
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/goldstandards.css" />
-	    </jsp:attribute>
+		</jsp:attribute>
 	
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.publication" formAction="/search" formInputName="search" formInputValue="${title}"/>

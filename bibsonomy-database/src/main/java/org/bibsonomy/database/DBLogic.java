@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -43,7 +43,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Classifier;
@@ -217,6 +216,7 @@ public class DBLogic implements LogicInterface {
 	 * @param loginUser
 	 *        - the user which wants to use the logic.
 	 * @param dbSessionFactory
+	 * @param bibtexReader 
 	 */
 	protected DBLogic(final User loginUser, final DBSessionFactory dbSessionFactory, final BibTexReader bibtexReader) {
 		this.loginUser = loginUser;
@@ -372,7 +372,11 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public List<SynchronizationPost> getSyncPlan(final String userName, final URI service, final Class<? extends Resource> resourceType, final List<SynchronizationPost> clientPosts, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction) {
-		// TODO: handle resourceType = null
+		// handle resourceType = null
+		if (!present(resourceType)) {
+			throw new IllegalArgumentException("no resourceType was given - abort getSyncPlan()");
+		}
+
 		this.permissionDBManager.ensureWriteAccess(this.loginUser, userName);
 
 		if (!present(strategy)) {
@@ -386,6 +390,12 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = this.openSession();
 		try {
 			final SynchronizationData data = this.syncDBManager.getLastSyncData(userName, service, resourceType, null, session);
+
+			// reject sync if direction BOTH and server hasn't synced before
+			if (SynchronizationDirection.BOTH.equals(direction) && !present(data)) {
+				throw new IllegalStateException("sync request rejected! the server hasn't performed an initial sync in both directions!");
+			}
+
 			/*
 			 * check for a running synchronization
 			 */
@@ -741,7 +751,7 @@ public class DBLogic implements LogicInterface {
 			 * groupingName, tags, hash, popular, added, start, end, false));
 			 */
 			if (ValidationUtils.safeContains(filters, FilterEntity.HISTORY) && !(resourceType == GoldStandardPublication.class || resourceType == GoldStandardBookmark.class)) {
-				this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, groupingName);
+				// this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, groupingName);
 			}
 			if (resourceType == BibTex.class) {
 				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filters, this.loginUser);
@@ -801,7 +811,7 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	private boolean systemTagsAllowResourceType(final Collection<String> tags, final Class<? extends Resource> resourceType) {
+	private static boolean systemTagsAllowResourceType(final Collection<String> tags, final Class<? extends Resource> resourceType) {
 		if (present(tags)) {
 			for (final String tagName : tags) {
 				final SearchSystemTag sysTag = SystemTagsUtil.createSearchSystemTag(tagName);
@@ -1118,14 +1128,9 @@ public class DBLogic implements LogicInterface {
 		 * check permissions
 		 */
 		this.ensureLoggedIn();
-		/*
-		 * TODO: we do not know anything about the hashes (do they belong to bookmarks,
-		 * and/or publication, community post)
-		 * so the only way to check if the user is allowed to delete the post
-		 * is to check if he/she is an admin or self, for group editing we need to know
-		 * which resource is behind the resource hash
-		 */
-		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
+
+		this.permissionDBManager.ensureIsAdminOrSelfOrHasGroupRoleOrHigher(this.loginUser, userName, GroupRole.MODERATOR);
+
 		/*
 		 * to store hashes of missing resources
 		 */
@@ -1142,7 +1147,7 @@ public class DBLogic implements LogicInterface {
 				// TODO would be nice to know about the resourcetype or the
 				// instance behind this resourceHash
 				for (final CrudableContent<? extends Resource, ? extends GenericParam> man : this.allDatabaseManagers.values()) {
-					if (man.deletePost(lowerCaseUserName, resourceHash, session)) {
+					if (man.deletePost(lowerCaseUserName, resourceHash, this.loginUser, session)) {
 						resourceFound = true;
 						break;
 					}
@@ -1169,8 +1174,9 @@ public class DBLogic implements LogicInterface {
 	 * Check for each group actually exist and if the
 	 * posting user is allowed to post. If yes, insert the correct group ID into
 	 * the given post's groups.
-	 *
+	 * @param user 
 	 * @param groups the groups to validate
+	 * @param session 
 	 */
 	protected void validateGroups(final User user, final Set<Group> groups, final DBSession session) {
 		/*
@@ -1387,7 +1393,7 @@ public class DBLogic implements LogicInterface {
 				case INVITED:
 					// only the user themselves can accept an invitation
 					this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, requestedUserName);
-					this.groupDBManager.addUserToGroup(group.getName(), requestedUserName, groupMembership.isUserSharedDocuments(), GroupRole.USER, session);
+					this.groupDBManager.addUserToGroup(group.getName(), requestedUserName, userSharedDocuments, GroupRole.USER, session);
 					break;
 				case REQUESTED:
 					// only mods or admins can accept requests
@@ -1605,6 +1611,7 @@ public class DBLogic implements LogicInterface {
 		if (Role.SYNC.equals(this.loginUser.getRole())) {
 			validateGroupsForSynchronization(post);
 		}
+
 		this.validateGroups(post.getUser(), post.getGroups(), session);
 
 		PostUtils.limitedUserModification(post, this.loginUser);
@@ -1613,7 +1620,7 @@ public class DBLogic implements LogicInterface {
 		 */
 		PostUtils.setGroupIds(post, this.loginUser);
 
-		manager.createPost(post, session);
+		manager.createPost(post, this.loginUser, session);
 
 		// if we don't get an exception here, we assume the resource has
 		// been successfully created
@@ -1685,25 +1692,30 @@ public class DBLogic implements LogicInterface {
 	private <T extends Resource> String updatePost(final Post<T> post, final PostUpdateOperation operation, final DBSession session) {
 		final CrudableContent<T, GenericParam> manager = this.getFittingDatabaseManager(post);
 		final String oldIntraHash = post.getResource().getIntraHash();
-
+		
 		if (Role.SYNC.equals(this.loginUser.getRole())) {
 			validateGroupsForSynchronization(post);
 		}
 		this.validateGroups(post.getUser(), post.getGroups(), session);
-
+		
 		PostUtils.limitedUserModification(post, this.loginUser);
+		
 		/*
 		 * change group IDs to spam group IDs
 		 */
-		PostUtils.setGroupIds(post, this.loginUser);
+		if (post.getUser().equals(this.loginUser)) {
+			PostUtils.setGroupIds(post, this.loginUser);
+		} else {
+			final String postUserName = post.getUser().getName();
+			final User groupUserDetails = this.userDBManager.getUserDetails(postUserName, session);
+			PostUtils.setGroupIds(post, groupUserDetails);
+		}
 
 		/*
-		 * XXX: this is a "hack" and will be replaced any time
-		 * If the operation is UPDATE_URLS then create/delete the url right here
-		 * and
-		 * return the intra hash.
+		 * XXX: this is a "hack" and will be replaced any time If the operation
+		 * is UPDATE_URLS then create/delete the url right here and return the
+		 * intra hash.
 		 */
-
 		if (PostUpdateOperation.UPDATE_URLS_ADD.equals(operation)) {
 			log.debug("Adding URL in updatePost()/DBLogic.java");
 			final BibTexExtra resourceExtra = ((BibTex) post.getResource()).getExtraUrls().get(0);
@@ -1724,11 +1736,12 @@ public class DBLogic implements LogicInterface {
 
 		/*
 		 * update post
+		 *
+		 * if we don't get an exception here, we assume the resource has been
+		 * successfully updated
 		 */
-		manager.updatePost(post, oldIntraHash, operation, session, this.loginUser);
+		manager.updatePost(post, oldIntraHash, this.loginUser, operation, session);
 
-		// if we don't get an exception here, we assume the resource has
-		// been successfully updated
 		return post.getResource().getIntraHash();
 	}
 
@@ -3208,7 +3221,7 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	private void prepareComment(final User commentUser, final Set<Group> groups, final DBSession session) {
+	private void prepareDiscussionItem(final User commentUser, final Set<Group> groups, final DBSession session) {
 		this.validateGroups(commentUser, groups, session);
 
 		// transfer to spammer group id's if neccessary
@@ -3216,7 +3229,7 @@ public class DBLogic implements LogicInterface {
 	}
 
 	private <D extends DiscussionItem> void createDiscussionItem(final String interHash, final D discussionItem, final DBSession session) {
-		this.prepareComment(discussionItem.getUser(), discussionItem.getGroups(), session);
+		this.prepareDiscussionItem(discussionItem.getUser(), discussionItem.getGroups(), session);
 		this.getCommentDatabaseManager(discussionItem).createDiscussionItemForResource(interHash, discussionItem, session);
 	}
 
@@ -3241,14 +3254,14 @@ public class DBLogic implements LogicInterface {
 			final User commentUser = this.userDBManager.getUserDetails(username, session);
 			discussionItem.setUser(commentUser);
 
-			this.updateCommentForUser(interHash, discussionItem, session);
+			this.updateDiscussionItemForUser(interHash, discussionItem, session);
 		} finally {
 			session.close();
 		}
 	}
 
-	private <D extends DiscussionItem> void updateCommentForUser(final String interHash, final D discussionItem, final DBSession session) {
-		this.prepareComment(discussionItem.getUser(), discussionItem.getGroups(), session);
+	private <D extends DiscussionItem> void updateDiscussionItemForUser(final String interHash, final D discussionItem, final DBSession session) {
+		this.prepareDiscussionItem(discussionItem.getUser(), discussionItem.getGroups(), session);
 		this.getCommentDatabaseManager(discussionItem).updateDiscussionItemForResource(interHash, discussionItem.getHash(), discussionItem, session);
 	}
 
@@ -3286,6 +3299,7 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
+	@Deprecated
 	@Override
 	public List<Tag> getTagRelation(final int start, final int end, final TagRelation relation, final List<String> tagNames) {
 		// TODO Auto-generated method stub
@@ -3397,51 +3411,10 @@ public class DBLogic implements LogicInterface {
 		if (present(person.getPersonId())) {
 			this.personDBManager.updatePerson(person, session);
 		} else {
-			final String tempPersonId = this.generatePersonId(person, session);
-			person.setPersonId(tempPersonId);
 			this.personDBManager.createPerson(person, session);
-			person.setPersonId(tempPersonId);
 		}
 		this.updatePersonNames(person, session);
 	}
-
-	private String generatePersonId(final Person person, final DBSession session) {
-		int counter = 1;
-		final String newPersonId = generatePersonIdBase(person);
-		String tempPersonId = newPersonId;
-		do {
-			final Person tempPerson = this.personDBManager.getPersonById(tempPersonId, session);
-			if (tempPerson != null) {
-				if (counter < 1000000) {
-					tempPersonId = newPersonId + "." + counter;
-				} else {
-					throw new RuntimeException("Too many person id occurences");
-				}
-			} else {
-				break;
-			}
-			counter++;
-		} while(true);
-		return tempPersonId;
-	}
-
-	private static String generatePersonIdBase(final Person person) {
-		final String firstName = person.getMainName().getFirstName();
-		final String lastName  = person.getMainName().getLastName();
-
-		final StringBuilder sb = new StringBuilder();
-		if (!StringUtils.isBlank(firstName)) {
-			sb.append(org.bibsonomy.util.StringUtils.foldToASCII(firstName.trim().toLowerCase().replaceAll("\\s", "_")).charAt(0));
-			sb.append('.');
-		}
-		if (StringUtils.isBlank(lastName)) {
-			throw new IllegalArgumentException("lastName may not be empty");
-		}
-		sb.append(org.bibsonomy.util.StringUtils.foldToASCII(lastName.trim().toLowerCase().replaceAll("\\s", "_")));
-
-		return sb.toString();
-	}
-
 
 	private void updatePersonNames(final Person person, final DBSession session) {
 		this.ensureLoggedIn();
@@ -3514,13 +3487,13 @@ public class DBLogic implements LogicInterface {
 	public Person getPersonById(final PersonIdType idType, final String id) {
 		final DBSession session = this.openSession();
 		try {
-			if (PersonIdType.BIBSONOMY_ID == idType) {
+			if (PersonIdType.PERSON_ID == idType) {
 				return this.personDBManager.getPersonById(id, session);
 			} else if (PersonIdType.DNB_ID == idType) {
 				return this.personDBManager.getPersonByDnbId(id, session);
 				// } else if (PersonIdType.ORCID == idType) {
 				//	TODO: implement
-			} else if (PersonIdType.BIBSONOMY_USER == idType) {
+			} else if (PersonIdType.USER == idType) {
 				return this.personDBManager.getPersonByUser(id, session);
 			} else {
 				throw new UnsupportedOperationException("person cannot be found by it type " + idType);

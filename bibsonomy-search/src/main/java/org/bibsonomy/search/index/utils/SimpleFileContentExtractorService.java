@@ -1,7 +1,7 @@
 /**
  * BibSonomy Search - Helper classes for search modules.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -84,7 +84,7 @@ public class SimpleFileContentExtractorService implements FileContentExtractorSe
 				});
 				
 				try {
-					return task.get(2 * 60, TimeUnit.SECONDS); // FIXME: change timeout
+					return task.get(30, TimeUnit.SECONDS);
 				} catch (final InterruptedException | ExecutionException | TimeoutException e) {
 					log.debug("could not extract content in time from document " + document.getFileHash());
 					return null;

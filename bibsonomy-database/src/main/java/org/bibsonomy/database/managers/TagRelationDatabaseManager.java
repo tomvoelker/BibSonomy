@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -47,7 +47,7 @@ import org.bibsonomy.util.ExceptionUtils;
 
 /**
  * Used to deal with tag concepts in the database.
- * 
+ *
  * @author Jens Illig
  */
 public class TagRelationDatabaseManager extends AbstractDatabaseManager {
@@ -65,10 +65,10 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 		/** Sub tag */
 		SUB
 	}
-	
+
 	private final GeneralDatabaseManager generalDb;
 	private final DatabasePluginRegistry plugins;
-	
+
 	private Chain<List<Tag>, TagRelationParam> chain;
 
 	private TagRelationDatabaseManager() {
@@ -85,18 +85,18 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Performs the chain
-	 * 
+	 *
 	 * @param param
 	 * @param session
 	 * @return list of concepts
 	 */
 	public List<Tag> getConcepts(final TagRelationParam param, final DBSession session) {
-		return chain.perform(param, session);
+		return this.chain.perform(param, session);
 	}
-	
+
 	/**
 	 * Inserts a relation.
-	 * 
+	 *
 	 * @param tag
 	 * @param userName
 	 * @param session
@@ -107,7 +107,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	private void addRel(final String centerTagName, final List<Tag> relatedTags, final String userName, final Relation rel, final DBSession session) {
-		if ((relatedTags == null) || (relatedTags.size() == 0)) {
+		if (relatedTags == null || relatedTags.size() == 0) {
 			return;
 		}
 		final TagRelationParam trp = new TagRelationParam();
@@ -126,7 +126,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 			} else if (rel == Relation.SUB) {
 				trp.setLowerTagName(tag.getName());
 			}
-			if (!isRelationPresent(trp, session)) {
+			if (!this.isRelationPresent(trp, session)) {
 				this.insertIfNotPresent(trp, session);
 			}
 		}
@@ -148,7 +148,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Deletes a whole concept
-	 * 
+	 *
 	 * @param upperTagName -
 	 *            the concept name
 	 * @param userName -
@@ -166,7 +166,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Deletes a single relation
-	 * 
+	 *
 	 * @param upperTagName -
 	 *            supertag name
 	 * @param lowerTagName -
@@ -197,7 +197,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Retrieve concepts for users as well as groups
-	 * 
+	 *
 	 * @param conceptName
 	 *            the conceptname
 	 * @param userName
@@ -214,7 +214,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Returns the picked concepts for the given user.
-	 * 
+	 *
 	 * @param userName
 	 * @param session
 	 * @return picked concepts for the given user
@@ -244,7 +244,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Checks if the given relation already exists for the user
-	 * 
+	 *
 	 * @param param -
 	 *            TagRelationParam
 	 * @param session -
@@ -253,52 +253,52 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	 *         <code>false</code>
 	 */
 	public boolean isRelationPresent(final TagRelationParam param, final DBSession session) {
-		final String relationID = queryForObject("getRelationID", param, String.class, session);
+		final String relationID = this.queryForObject("getRelationID", param, String.class, session);
 		return relationID != null;
 	}
-	
+
 	/**
 	 * Sets the concept with the given uppertag to picked
-	 * 
-	 * @param concept 
-	 * @param ownerUserName 
+	 *
+	 * @param concept
+	 * @param ownerUserName
 	 * @param session
 	 */
 	public void pickConcept(final Tag concept, final String ownerUserName, final DBSession session){
 		final TagRelationParam param = new TagRelationParam();
 		param.setUpperTagName(concept.getName());
 		param.setOwnerUserName(ownerUserName);
-		
+
 		this.update("pickConcept", param, session);
 	}
-	
+
 	/**
 	 * Sets the concept with the given uppertag to unpicked
-	 * @param concept 
-	 * @param ownerUserName 
+	 * @param concept
+	 * @param ownerUserName
 	 * @param session
 	 */
 	public void unpickConcept(final Tag concept, final String ownerUserName, final DBSession session){
 		final TagRelationParam param = new TagRelationParam();
 		param.setUpperTagName(concept.getName());
 		param.setOwnerUserName(ownerUserName);
-		
+
 		this.update("unpickConcept", param, session);
 	}
-	
+
 	/**
 	 * Sets all concepts to unpicked
-	 * 
+	 *
 	 * @param ownerUserName
 	 * @param session
 	 */
 	public void unpickAllConcepts(final String ownerUserName, final DBSession session){
 		this.update("unpickAllConcepts", ownerUserName, session);
 	}
-	
+
 	/**
 	 * Sets all concepts to picked
-	 * 
+	 *
 	 * @param ownerUserName
 	 * @param session
 	 */
@@ -308,7 +308,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * TODO: improve documentation
-	 * 
+	 *
 	 * @param user
 	 * @param tagToReplace
 	 * @param replacementTag
@@ -319,23 +319,23 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 			log.error("tried to replace tag without name in TagRelationDatabase.updateTagRelations()");
 			throw new ValidationException("tried to replace tag without valid name");
 		}
-		
-		final LoggingParam<String> param = new LoggingParam<String>();
-		param.setOldId(tagToReplace.getName());
-		param.setNewId(replacementTag.getName());
-		param.setUser(user);
-		
+
+		final LoggingParam param = new LoggingParam();
+		param.setOldTag(tagToReplace.getName());
+		param.setNewTag(replacementTag.getName());
+		param.setPostEditor(user);
+
 		this.update("updateUpperTagRelations", param, session);
 		this.update("updateLowerTagRelations", param, session);
 		this.update("deleteEqualConcepts", param, session);
 		this.update("deleteOldConcepts", param, session);
 	}
-	
+
 	/**
 	 * @param session
 	 * @return the number of concepts
 	 */
-	public int getGlobalConceptCount(DBSession session) {
+	public int getGlobalConceptCount(final DBSession session) {
 		final Integer count = this.queryForObject("getGlobalConceptCount", Integer.class, session);
 		return saveConvertToint(count);
 	}
@@ -344,7 +344,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return the number of concepts in the log table
 	 */
-	public int getGlobalConceptHistoryCount(DBSession session) {
+	public int getGlobalConceptHistoryCount(final DBSession session) {
 		final Integer count = this.queryForObject("getGlobalConceptHistoryCount", Integer.class, session);
 		return saveConvertToint(count);
 	}

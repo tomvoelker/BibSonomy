@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Client - The REST-client.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -31,7 +31,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.StringWriter;
 
 import org.bibsonomy.model.User;
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -40,7 +39,7 @@ import org.bibsonomy.util.StringUtils;
 
 /**
  * Create a relationship among users.
- * 
+ *
  * @author Dominik Benz, benz@cs.uni-kassel.de
  */
 public class CreateUserRelationshipQuery extends AbstractQuery<String> {
@@ -61,7 +60,7 @@ public class CreateUserRelationshipQuery extends AbstractQuery<String> {
 
 	/**
 	 * Create new query.
-	 * 
+	 *
 	 * @param username
 	 *            - the (currently logged in) source user
 	 * @param targetUserName
@@ -75,8 +74,12 @@ public class CreateUserRelationshipQuery extends AbstractQuery<String> {
 		/*
 		 * check input
 		 */
-		if (!present(username)) throw new IllegalArgumentException("No source user given!");
-		if (!present(targetUserName)) throw new IllegalArgumentException("No target user given");
+		if (!present(username)) {
+			throw new IllegalArgumentException("No source user given!");
+		}
+		if (!present(targetUserName)) {
+			throw new IllegalArgumentException("No target user given");
+		}
 		if (!(FRIEND_RELATIONSHIP.equals(relationType) || FOLLOWER_RELATIONSHIP.equals(relationType))) {
 			throw new IllegalArgumentException("Relation type must be either '" + FRIEND_RELATIONSHIP + "' or '" + FOLLOWER_RELATIONSHIP + "'");
 		}
@@ -96,19 +99,14 @@ public class CreateUserRelationshipQuery extends AbstractQuery<String> {
 		 */
 		final StringWriter sw = new StringWriter(100);
 		this.getRenderer().serializeUser(sw, new User(this.targetUserName), null);
-		/* 
-		 * TODO: move url generation to url renderer
-		 * friend/follower, tag
-		 */
-		final String friendOrFollower = FRIEND_RELATIONSHIP.equals(relationType) ? RESTConfig.FRIENDS_SUB_PATH : RESTConfig.FOLLOWERS_SUB_PATH;
-		final String queryTag = present(this.tag) ? "/" + tag : "";
 		/*
 		 * perform request
 		 */
+		final String requestUrl = this.getUrlRenderer().createHrefForUserRelationship(this.username, this.relationType, this.tag);
 		// FIXME: document why we call StringUtils.toDefaultCharset twice
-		this.downloadedDocument = performRequest(HttpMethod.POST, this.getUrlRenderer().getApiUrl() + RESTConfig.USERS_URL + "/" + this.username + "/" + friendOrFollower + queryTag, StringUtils.toDefaultCharset(StringUtils.toDefaultCharset(sw.toString())));
+		this.downloadedDocument = this.performRequest(HttpMethod.POST, requestUrl, StringUtils.toDefaultCharset(StringUtils.toDefaultCharset(sw.toString())));
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.rest.client.AbstractQuery#getResultInternal()
 	 */

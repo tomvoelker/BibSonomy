@@ -2,7 +2,7 @@
 
     BibSonomy Search - Helper classes for search modules.
 
-    Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+    Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
                                   University of Kassel, Germany
                                   http://www.kde.cs.uni-kassel.de/
                               Data Mining and Information Retrieval Group,
@@ -32,7 +32,7 @@
 	<parent>
 		<groupId>org.bibsonomy</groupId>
 		<artifactId>bibsonomy</artifactId>
-		<version>3.6.0-SNAPSHOT</version>
+		<version>3.7.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>bibsonomy-search</artifactId>
 	<dependencies>
@@ -43,12 +43,6 @@
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-database</artifactId>
-		</dependency>
-		<!-- for extracting text from pdfs -->
-		<dependency>
-			<groupId>com.itextpdf</groupId>
-			<artifactId>itextpdf</artifactId>
-			<version>5.5.9</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>

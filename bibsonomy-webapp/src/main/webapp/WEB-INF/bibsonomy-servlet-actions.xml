@@ -447,6 +447,8 @@
 								<value>personIndex</value>
 								<value>personRole</value>
 								
+								<!-- used to update posts owned by the group user -->
+								<value>groupUser</value>
 								
 							</list>
 						</property>
@@ -492,10 +494,10 @@
 						<property name="allowedFields">
 							<list>
 								<value>ckey</value>
-								<value>oldTags[*]</value>
-								<value>newTags[*]</value>
 								<value>tags</value>
-								<value>posts[*]</value>
+								<value>posts[*].checked</value>
+								<value>posts[*].newTags</value>
+								<value>posts[*].oldTags</value>
 								<value>action</value>
 								<value>referer</value>
 								<!-- retaining postPublication options -->
@@ -506,9 +508,6 @@
 								<value>format</value>
 								<value>groups</value>
 								<value>abstractGrouping</value>
-								
-								
-								
 							</list>
 						</property>
 					</bean>
@@ -645,6 +644,7 @@
 								<value>groupRole</value>
 								<value>pictureFile</value>
 								<value>deletePicture</value>
+								<value>userSharedDocuments</value>
 								<value>group.name</value>
 								<value>group.realname</value>
 								<value>group.description</value>
@@ -746,6 +746,8 @@
 		
 		<value>compareVersion</value>
 		<value>differentEntryKeys</value>
+		
+		<value>groupUser</value>
 		
 		<value>approved</value>
 	</util:list>

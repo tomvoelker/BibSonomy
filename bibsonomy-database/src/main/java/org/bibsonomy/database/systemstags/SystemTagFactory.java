@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -150,7 +150,7 @@ public class SystemTagFactory {
 	/**
 	 * Returns a new instance of the required systemTag
 	 * 
-	 * @param tagName = the tag describing the systemTag e. g. "user" or "days"
+	 * @param tagName the tag describing the systemTag e. g. "user" or "days"
 	 * @return a search system tag
 	 */
 	public SearchSystemTag getSearchSystemTag(final String tagName) {

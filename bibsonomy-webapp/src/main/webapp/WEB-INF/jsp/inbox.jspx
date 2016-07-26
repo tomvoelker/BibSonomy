@@ -17,8 +17,7 @@
 			command="${command}" 
 			requPath="${requPath}"  
 			showPageOptions="${true}"
-			showInboxActions="${true}"
-			headline="${headline}">
+			showInboxActions="${true}">
 
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>

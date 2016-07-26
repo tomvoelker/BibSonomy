@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -53,7 +53,7 @@ public class BioOneScraper extends AbstractUrlScraper {
 	private static final List<Pair<Pattern, Pattern>> PATTERNS = new LinkedList<Pair<Pattern, Pattern>>();
 	private static final String BIOONE_HOST = "bioone.org";
 	private static final String DOWNLOAD_URL = "http://www.bioone.org/action/downloadCitation";
-	private final RisToBibtexConverter ris = new RisToBibtexConverter();
+	private static final RisToBibtexConverter ris = new RisToBibtexConverter();
 	private static final Pattern DOI_PATTERN_FROM_URL = Pattern.compile("/abs/(.+?)$");
 	static {
 		PATTERNS.add(new Pair<Pattern, Pattern>(Pattern.compile(".*"+ BIOONE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
@@ -79,7 +79,7 @@ public class BioOneScraper extends AbstractUrlScraper {
 					throw new ScrapingFailureException("URL to scrape does not exist. It may be malformed.");
 				}
 
-				final String bibResult = this.ris.toBibtex(resultAsString);
+				final String bibResult = ris.toBibtex(resultAsString);
 				if (bibResult != null) {
 					scrapingContext.setBibtexResult(bibResult);
 					return true;

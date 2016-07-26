@@ -15,14 +15,9 @@
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>	
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="headerExt" fragment="true" />
-	<jsp:directive.attribute name="headerContainer" fragment="true" required="false"/>
-	<!-- FIXME: footerContainer not used -->
-	<jsp:directive.attribute name="footerContainer" fragment="true" required="false"/>
+	
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="noLoginBox" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="hideFooterContainer" type="java.lang.Boolean" required="false"/>	
-	<jsp:directive.attribute name="minimizedContentWidth" type="java.lang.Boolean" required="false"/>
 	
 	<jsp:directive.attribute name="contentIntro" fragment="true" required="false"/>	
 	<jsp:directive.attribute name="leftContent" fragment="true" required="true"/>
@@ -43,7 +38,6 @@
 		pageTitle="${editPageTitle}" 
 		requPath="${requPath}" 
 		activeTab="${activeTab}"
-		minimizedContentWidth="${minimizedContentWidth}"
 		noSidebar="${true}"
 		>
 			<jsp:attribute name="content">
@@ -64,7 +58,7 @@
 		
 					    	<jsp:invoke fragment="rightContent"/>
 						    	
-					  	</div>					  
+					  	</div>
 					</div>
 				</div>
 			</jsp:attribute>

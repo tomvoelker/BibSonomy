@@ -47,17 +47,13 @@
 				</jsp:attribute>
 			</parts:infobox>
 		</jsp:attribute>
-
 		<!--+
 			| page content
 			+-->
 		<jsp:attribute name="content">
-
 			<div class="box align">
 				<div class="entry">
-
 					<c:set var="loginUserName" value="${command.context.loginUser.name}"/>
-
 					<c:choose>
 						<c:when test="${not empty command.bibtex.list}">
 							<c:set var="listView" value="${command.bibtex}"/>
@@ -82,11 +78,11 @@
 					</c:choose>
 
 					<form id="history" method="POST">
-
 						<c:set var="buttonClasses" value="btn btn-primary btn-xs"/>
 						<c:set var="fieldlength" value="${fn:length(listView.list)-1}" />
 						<!-- this is the current version -->
 						<c:set var="newestPost" value="${listView.list[fieldlength]}" />
+						<c:set var="newestResource" value="${newestPost.resource}" />
 						<c:set var="isGoldStandard" value="${isGoldStandard}" />
 
 						<!-- hidden variables are used to communicate with .js file or controllers -->
@@ -101,29 +97,34 @@
 						<fmt:message key="history.restoreBtn.enabled" var="restoreBtnEnabledMsg" />
 						<fmt:message key="goldStandard.approved.title" var="approved"/>
 						<fmt:message key="goldStandard.approved.revision.title" var="approved_revision"/>
+						
 						<!--+
 							| complete Post
 							+-->
-			
 						<div class="title">
 							<c:choose>
 								<c:when test="${isPub}">
+									<!-- TODO: remove copy paste code -->
+									<c:set var="itemType" value="http://schema.org/ScholarlyArticle"/>
+									<c:if test="${not empty newestResource.entrytype and ('book' eq newestResource.entrytype)}">
+										<c:set var="itemType" value="http://schema.org/Book"/>
+									</c:if>
 									<c:choose>
-									
 										<c:when test="${isGoldStandard}">
-											<input type="hidden" name="intraHashToUpdate" value="${newestPost.resource.interHash}"/>
-											<div class="title">
+											<input type="hidden" name="intraHashToUpdate" value="${newestResource.interHash}"/>
+											
+											<div class="title" itemtype="${itemType}" itemscope="itemscope">
 												<div class="media">
 													<div class="media-body" id="titletext">
-														<div class="pull-right"><buttons:communityPostActions post="${newestPost}" resourceType="bibtex"/></div>
+														<div class="pull-right"><buttons:communityPostActions post="${newestPost}" resourceType="bibtex" communityPostExists="${true}" /></div>
 														<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(newestPost.resource.title)}" />
 															<c:if test="${newestPost.approved}">
 																<a title="${fn:escapeXml(approved)}">
 																	<span class="fa fa-check-circle" style="margin-left:6px;"><!--  --></span>
 																</a>
-															</c:if>	
+															</c:if>
 														</h1>
-														<p><bib:desc publication="${newestPost.resource}"/></p>
+														<p><bib:desc publication="${newestResource}"/></p>
 													</div>
 												</div>
 											</div>
@@ -131,32 +132,33 @@
 
 										<c:otherwise>
 											<input type="hidden" name="intraHashToUpdate" value="${newestPost.resource.intraHash}"/>
-											<pub:title post="${newestPost}">
-												<jsp:attribute name="bibActionButtons">
-													<div class="pull-right">
-														<buttons:actions post="${newestPost}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}" resourceType="bibtex"/>
-													</div>
-												</jsp:attribute>
-											</pub:title>
+											<div class="title" itemtype="${itemType}" itemscope="itemscope">
+												<pub:title post="${newestPost}">
+													<jsp:attribute name="bibActionButtons">
+														<div class="pull-right">
+															<buttons:actions post="${newestPost}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}" resourceType="bibtex"/>
+														</div>
+													</jsp:attribute>
+												</pub:title>
+											</div>
 										</c:otherwise>
 									</c:choose>
 								</c:when>
 
 								<c:otherwise>
 									<c:choose>
-
 										<c:when test="${isGoldStandard}">
 											<input type="hidden" name="intraHashToUpdate" value="${newestPost.resource.interHash}"/>
 											<div class="title">
-											<div class="media">
-												<div class="media-body" id="titletext">
-													<div class="pull-right"><buttons:communityPostActions post="${newestPost}" resourceType="bookmark"/></div>
-													<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(newestPost.resource.title)}" /></h1>
-													<c:set var="url" value="${newestPost.resource.url}" />
-													<p><a href="${url}"><c:out value="${url}" /></a></p>
+												<div class="media">
+													<div class="media-body" id="titletext">
+														<div class="pull-right"><buttons:communityPostActions post="${newestPost}" resourceType="bookmark" communityPostExists="${true}" /></div>
+														<h1 class="media-heading" id="pubtitle" itemprop="name"><c:out value="${mtl:cleanBibtex(newestPost.resource.title)}" /></h1>
+														<c:set var="url" value="${newestPost.resource.url}" />
+														<p><a href="${url}" itemprop="url"><c:out value="${url}" /></a></p>
+													</div>
 												</div>
 											</div>
-										</div>
 										</c:when>
 
 										<c:otherwise>
@@ -165,7 +167,7 @@
 												<div class="media">
 												<div class="media-body" id="titletext">
 													<div class="pull-right"><buttons:actions post="${newestPost}" loginUserName="${command.context.loginUser.name}" resourceType="bookmark"/></div>
-													<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(newestPost.resource.title)}" /></h1>
+													<h1 class="media-heading" id="pubtitle" itemprop="name"><c:out value="${mtl:cleanBibtex(newestPost.resource.title)}" /></h1>
 													<c:set var="url" value="${newestPost.resource.url}" />
 													<p><a href="${url}"><c:out value="${url}" /></a></p>
 												</div>
@@ -191,19 +193,20 @@
 								<table class="table table-striped">
 
 									<thead> <!-- history list's header info -->
-										<tr><th colspan="5">
-											<div class="alert alert-info" style="margin-bottom:0px;" role="alert">
-												<fmt:message key="history.historyList.header" />
-											</div>
-										</th></tr>
+										<tr>
+											<th colspan="5">
+												<div class="alert alert-info" style="margin-bottom:0px;" role="alert">
+													<fmt:message key="history.historyList.header" />
+												</div>
+											</th>
+										</tr>
 									</thead>
 
 									<tbody>
 										<c:forEach var="index" begin="0" end="${fieldlength}" varStatus="loopStatus" step="1">
 											<c:set var="historicalPost" value="${listView.list[(fieldlength-index)]}"/>
 											<c:set var="additionalItemClasses" value="${loopStatus.index % 2 == 0 ? 'odd' : 'even'}" />
-											<tr> 
-												
+											<tr>
 												<!-- version number -->
 												<td class="col-sm-1"  id="versionNum" style="border-right:1px solid #eee">
 													<span class="label label-default" style="vertical-align:bottom;padding:8px;">
@@ -212,7 +215,7 @@
 															<a title="${fn:escapeXml(approved_revision)}">
 																<span class="fa fa-check-circle" style="vertical-align:bottom;padding-left:3px;"><!--  --></span>
 															</a>
-														</c:if>	
+														</c:if>
 													</span>
 												</td>
 												
@@ -240,7 +243,7 @@
 													<c:otherwise>
 														<c:set var="diffArrayPre" value="${mtl:diffEntries(listView.list[(fieldlength-index-1)],historicalPost)}"/>
 													</c:otherwise>
-												</c:choose>		
+												</c:choose>
 	
 												<c:set var="diffArrayCurr" value="${mtl:diffEntries(newestPost,historicalPost)}"/>									
 
@@ -274,7 +277,7 @@
 														<div class="help help-header hide"><!--  --></div>
 														<div class="help help-content hide"><fmt:message key="history.selection.help" /></div>
 													</div>
-												</td>	
+												</td>
 
 												<!-- restore button -->
 												<td class="col-sm-1">
@@ -363,5 +366,4 @@
 			</div>
 		</jsp:attribute>
 	</layout:paneLayout>
-
 </jsp:root>

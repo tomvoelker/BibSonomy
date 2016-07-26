@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -187,7 +187,7 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 		param.setNewContentId(currentContentId + 1);
 		Integer result = testDb.countNewContentIdFromBibTex(param);
 		assertThat(result, is(0));
-		publicationDb.updatePost(someBibTexPost, someBibTexPost.getResource().getIntraHash(), PostUpdateOperation.UPDATE_ALL, this.dbSession, loginUser);
+		publicationDb.updatePost(someBibTexPost, someBibTexPost.getResource().getIntraHash(), loginUser, PostUpdateOperation.UPDATE_ALL, this.dbSession);
 
 		currentContentId = testDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID);
 		param.setNewContentId(currentContentId);
@@ -212,7 +212,7 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 		int result = testDb.countRequestedContentIdFromBibTex(param);
 		assertEquals(0, result);
 
-		publicationDb.deletePost(someBibTexPost.getUser().getName(), intraHash, this.dbSession);
+		publicationDb.deletePost(someBibTexPost.getUser().getName(), intraHash, null, this.dbSession);
 
 		result = testDb.countRequestedContentIdFromBibTex(param);
 		assertEquals(1, result);
@@ -233,7 +233,7 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 		int result = testDb.countNewContentIdFromBookmark(param);
 		assertEquals(0, result);
 
-		bookmarkDb.updatePost(someBookmarkPost, HASH, PostUpdateOperation.UPDATE_ALL, this.dbSession, loginUser);
+		bookmarkDb.updatePost(someBookmarkPost, HASH, loginUser, PostUpdateOperation.UPDATE_ALL, this.dbSession);
 
 		currentContentId = testDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID);
 		param.setNewContentId(currentContentId);
@@ -257,7 +257,7 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 		int result = testDb.countRequestedContentIdFromBookmark(param);
 		assertEquals(0, result);
 
-		bookmarkDb.deletePost(someBookmarkPost.getUser().getName(), HASH, this.dbSession);
+		bookmarkDb.deletePost(someBookmarkPost.getUser().getName(), HASH, null, this.dbSession);
 
 		result = testDb.countRequestedContentIdFromBookmark(param);
 		assertEquals(1, result);
@@ -291,7 +291,7 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 		int result = testDb.countRequestedContentIdFromBibTex(param);
 		assertEquals(0, result);
 
-		publicationDb.deletePost(someBibTexPost.getUser().getName(), HASH, this.dbSession);
+		publicationDb.deletePost(someBibTexPost.getUser().getName(), HASH, null, this.dbSession);
 
 		result = testDb.countRequestedContentIdFromBibTex(param);
 		assertEquals(1, result);

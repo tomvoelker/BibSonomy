@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" 
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout">
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	<layout:helpLayout>
+		<jsp:attribute name="mainContent">
+			<c:choose>
+				<c:when test="${!command.pageNotFound}">
+					<c:out value="${command.content}" escapeXml="false" />
+				</c:when>
+				<c:otherwise>
+					<div class="text-center">
+						<h1><fmt:message key="error.404.header" /></h1>
+						<p class="lead"><fmt:message key="error.404" /></p>
+						<img src="/resources/image/404.jpg" style="width: auto;"/>
+					</div>
+				</c:otherwise>
+			</c:choose>
+		</jsp:attribute>
+	</layout:helpLayout>
+</jsp:root>

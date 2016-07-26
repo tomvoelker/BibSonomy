@@ -170,7 +170,15 @@
 				</c:otherwise>
 			</c:choose>
 			<jsp:invoke fragment="appendix" />
-			<bsform:errors path="${path}" />
+			<c:set var="formErrors"><form:errors path="${path}" /></c:set>
+			<c:choose>
+				<c:when test="${empty formErrors and required}">
+					<span class="help-block"><fmt:message key="error.field.required" /></span>
+				</c:when>
+				<c:when test="${not empty formErrors}">
+					<bsform:errors path="${path}" />
+				</c:when>
+			</c:choose>
 		</div>
 	</div>
 </jsp:root>

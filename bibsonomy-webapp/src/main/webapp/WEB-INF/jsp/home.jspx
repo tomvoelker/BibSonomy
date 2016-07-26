@@ -21,9 +21,7 @@
 			requPath="${requPath}" 
 			disableListNavigation="${true}"
 			activeTab="home"
-			showPageOptions="${true}"
-			headline="${command.pageTitle}"
-			hideFooterContainer="${true}">
+			showPageOptions="${true}">
 		
 		<jsp:attribute name="headerExt">
 			<script type="text/javascript">

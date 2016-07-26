@@ -11,17 +11,7 @@
 	
 	<c:set var="groupname"><group:groupname group="${group}" noLink="${true}"/></c:set>
 	
-	<!-- TODO: Adapt to Gravatar-Branch -->
-	<c:if test="${empty size}">
-		<c:set var="size" value="64" />
-	</c:if>
-	
-	<a class="pull-left img-thumbnail img-responsive img-group" href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}" title="${groupname}">
-		<img alt="${groupname}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(group.name)}" style="height: ${size}px; width: ${size}px"  class="user-avatar img-responsive"/>
-		<c:if test="${empty noname or not noname}">
-			<span><c:out value="${groupname}" /></span>
-		</c:if>
+	<a class="text-center" href="${relativeUrlGenerator.getGroupUrlByGroupName(group.name)}" title="${groupname}">
+		<img alt="${groupname}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(group.name)}" class="group-img img-circle"/>
 	</a>
-	
-
 </jsp:root>

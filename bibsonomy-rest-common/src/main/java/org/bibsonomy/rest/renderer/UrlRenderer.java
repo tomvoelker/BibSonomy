@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Common - Common things for the REST-client and server.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -45,15 +45,18 @@ import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlBuilder;
 
-/** 
+/**
  * This renderer creates URLs according to BibSonomys REST URL scheme.
- * 
+ *
  * @author rja
  */
 public class UrlRenderer {
-	
+
+	/** parameter value for friend relationship */
+	public final static String FRIEND_RELATIONSHIP = "friend";
+
 	private final String apiUrl;
-	
+
 	/**
 	 * creates a new url renderer
 	 * @param apiUrl
@@ -64,17 +67,17 @@ public class UrlRenderer {
 
 	/**
 	 * creates a URL which points to the given user.
-	 * 
+	 *
 	 * @param name - the name of the user.
 	 * @return A URL which points to the given user.
 	 */
 	public String createHrefForUser(final String name) {
 		return this.getUrlBuilderForUser(name).asString();
 	}
-	
+
 	/**
 	 * creates a URL which points to the given tag.
-	 * 
+	 *
 	 * @param tag - the name of the tag.
 	 * @return A URL which points to the given tag.
 	 */
@@ -83,9 +86,9 @@ public class UrlRenderer {
 	}
 
 	/** Creates a URL which points to the given group.
-	 * 
+	 *
 	 * @param name - the name of the group.
-	 * @return A URL which points to the given group. 
+	 * @return A URL which points to the given group.
 	 */
 	public String createHrefForGroup(final String name) {
 		return this.getUrlBuilderForGroup(name).asString();
@@ -102,48 +105,48 @@ public class UrlRenderer {
 	}
 
 	/** Creates a URL which points to the given resource.
-	 * 
+	 *
 	 * @param userName - the name of the user which owns the resource.
 	 * @param intraHash - the intra hash of the resource.
 	 * @return A URL which points to the given resource.
 	 */
 	public String createHrefForResource(final String userName, final String intraHash) {
-		return getUrlBuilderForUserPost(userName, intraHash).asString();
+		return this.getUrlBuilderForUserPost(userName, intraHash).asString();
 	}
-	
+
 	/**
 	 * creates a URL which points to the given document attached to the given resource.
-	 * 
+	 *
 	 * @param userName - the name of the user which owns the resource (and document).
 	 * @param intraHash - the intrahash of the resource.
 	 * @param documentFileName - the name of the document.
 	 * @return A URL which points to the given document.
 	 */
 	public String createHrefForResourceDocument(final String userName, final String intraHash, final String documentFileName) {
-		final UrlBuilder urlBuilder = createUrlBuilderForPostDocuments(userName, intraHash);
+		final UrlBuilder urlBuilder = this.createUrlBuilderForPostDocuments(userName, intraHash);
 		urlBuilder.addPathElement(documentFileName);
 		return urlBuilder.asString();
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param userName
 	 * @param intraHash
 	 * @return the url to all documents of the specified post
 	 */
 	public String createHrefForResourceDocuments(final String userName, final String intraHash) {
-		final UrlBuilder urlBuilder = createUrlBuilderForPostDocuments(userName, intraHash);
+		final UrlBuilder urlBuilder = this.createUrlBuilderForPostDocuments(userName, intraHash);
 		return urlBuilder.asString();
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param userName
 	 * @param intraHash
 	 * @return the url builder for documents of the specified post
 	 */
 	protected UrlBuilder createUrlBuilderForPostDocuments(final String userName, final String intraHash) {
-		final UrlBuilder urlBuilder = getUrlBuilderForUserPost(userName, intraHash);
+		final UrlBuilder urlBuilder = this.getUrlBuilderForUserPost(userName, intraHash);
 		urlBuilder.addPathElement(RESTConfig.DOCUMENTS_SUB_PATH);
 		return urlBuilder;
 	}
@@ -153,12 +156,12 @@ public class UrlRenderer {
 	 * @param intraHash
 	 * @return the url builder for
 	 */
-	protected UrlBuilder getUrlBuilderForUserPost(String userName, String intraHash) {
-		final UrlBuilder urlBuilder = createUrlBuilderForUserPosts(userName);
+	protected UrlBuilder getUrlBuilderForUserPost(final String userName, final String intraHash) {
+		final UrlBuilder urlBuilder = this.createUrlBuilderForUserPosts(userName);
 		urlBuilder.addPathElement(intraHash);
 		return urlBuilder;
 	}
-	
+
 	/**
 	 * @param userName
 	 * @return the url to all user's posts
@@ -167,12 +170,12 @@ public class UrlRenderer {
 		return this.createUrlBuilderForUserPosts(userName).asString();
 	}
 
-	protected UrlBuilder createUrlBuilderForUserPosts(String userName) {
-		final UrlBuilder urlBuilder = getUrlBuilderForUser(userName);
+	protected UrlBuilder createUrlBuilderForUserPosts(final String userName) {
+		final UrlBuilder urlBuilder = this.getUrlBuilderForUser(userName);
 		urlBuilder.addPathElement(RESTConfig.POSTS_URL);
 		return urlBuilder;
 	}
-	
+
 	/**
 	 * @return a builder for the base api path
 	 */
@@ -189,12 +192,12 @@ public class UrlRenderer {
 		urlBuilder.addPathElement(userName);
 		return urlBuilder;
 	}
-	
+
 	/**
 	 * @param tag
 	 * @return the urlbuilder for the specified tag
 	 */
-	protected UrlBuilder getUrlBuilderForTag(String tag) {
+	protected UrlBuilder getUrlBuilderForTag(final String tag) {
 		final UrlBuilder urlBuilder = this.createUrlBuilderForApi();
 		urlBuilder.addPathElement(RESTConfig.TAGS_URL);
 		urlBuilder.addPathElement(tag);
@@ -202,7 +205,7 @@ public class UrlRenderer {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return The API URL currently used to render URLs.
 	 */
 	public String getApiUrl() {
@@ -214,26 +217,26 @@ public class UrlRenderer {
 	 * @param resourceType
 	 * @param strategy
 	 * @param direction
-	 * @param syncDate 
-	 * @param status 
+	 * @param syncDate
+	 * @param status
 	 * @return the href for Sync
 	 */
-	public String createHrefForSync(String serviceURI, Class<? extends Resource> resourceType, ConflictResolutionStrategy strategy, SynchronizationDirection direction, Date syncDate, SynchronizationStatus status) {
-		final UrlBuilder urlBuilder = createUrlBuilderForSync(serviceURI, resourceType, strategy, direction, syncDate, status);
+	public String createHrefForSync(final String serviceURI, final Class<? extends Resource> resourceType, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction, final Date syncDate, final SynchronizationStatus status) {
+		final UrlBuilder urlBuilder = this.createUrlBuilderForSync(serviceURI, resourceType, strategy, direction, syncDate, status);
 		return urlBuilder.asString();
 	}
 
 	/**
-	 * 
+	 *
 	 * @param serviceURI
 	 * @param resourceType
 	 * @param strategy
 	 * @param direction
-	 * @param syncDate 
-	 * @param status 
+	 * @param syncDate
+	 * @param status
 	 * @return the builder for sync
 	 */
-	public UrlBuilder createUrlBuilderForSync(String serviceURI, Class<? extends Resource> resourceType, ConflictResolutionStrategy strategy, SynchronizationDirection direction, Date syncDate, SynchronizationStatus status) {
+	public UrlBuilder createUrlBuilderForSync(final String serviceURI, final Class<? extends Resource> resourceType, final ConflictResolutionStrategy strategy, final SynchronizationDirection direction, final Date syncDate, final SynchronizationStatus status) {
 		final UrlBuilder urlBuilder = this.createUrlBuilderForApi();
 		urlBuilder.addPathElement(RESTConfig.SYNC_URL);
 		urlBuilder.addPathElement(serviceURI);
@@ -246,11 +249,11 @@ public class UrlRenderer {
 		if (present(direction)) {
 			urlBuilder.addParameter(RESTConfig.SYNC_DIRECTION_PARAM, direction.getSynchronizationDirection());
 		}
-		
+
 		if (present(syncDate)) {
 			urlBuilder.addParameter(RESTConfig.SYNC_DATE_PARAM, RESTConfig.serializeDate(syncDate));
 		}
-		
+
 		if (present(status)) {
 			urlBuilder.addParameter(RESTConfig.SYNC_STATUS, status.toString());
 		}
@@ -261,13 +264,13 @@ public class UrlRenderer {
 	 * @param grouping
 	 * @param groupingName
 	 * @param conceptName
-	 * @return 
+	 * @return
 	 */
-	public String createHrefForConcept(GroupingEntity grouping, String groupingName, String conceptName) {
-		final UrlBuilder urlBuilder = createUrlBuilderForConcept(grouping, groupingName, conceptName);
+	public String createHrefForConcept(final GroupingEntity grouping, final String groupingName, final String conceptName) {
+		final UrlBuilder urlBuilder = this.createUrlBuilderForConcept(grouping, groupingName, conceptName);
 		return urlBuilder.toString();
 	}
-	
+
 	/**
 	 *
 	 * @param grouping
@@ -275,7 +278,7 @@ public class UrlRenderer {
 	 * @param conceptName
 	 * @return  a url builder for the specified concept
 	 */
-	protected UrlBuilder createUrlBuilderForConcept(GroupingEntity grouping, String groupingName, String conceptName) {
+	protected UrlBuilder createUrlBuilderForConcept(final GroupingEntity grouping, final String groupingName, final String conceptName) {
 		final UrlBuilder urlBuilder;
 		switch (grouping) {
 		case USER:
@@ -295,9 +298,9 @@ public class UrlRenderer {
 		urlBuilder.addPathElement(conceptName);
 		return urlBuilder;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * @param grouping
 	 * @param groupingName
@@ -305,37 +308,37 @@ public class UrlRenderer {
 	 * @param subTag
 	 * @return
 	 */
-	public String createHrefForConceptWithSubTag(GroupingEntity grouping, String groupingName, String conceptName, String subTag) {
+	public String createHrefForConceptWithSubTag(final GroupingEntity grouping, final String groupingName, final String conceptName, final String subTag) {
 		final UrlBuilder builder = this.createUrlBuilderForConcept(grouping, groupingName, conceptName);
-		
+
 		if (subTag != null) {
 			builder.addParameter(RESTConfig.SUB_TAG_PARAM, subTag);
 		}
 		return builder.asString();
 	}
-	
+
 	/**
 	 * @param groupname
 	 * @return the path to all members of a group
 	 */
-	public String createHrefForGroupMembers(String groupname) {
+	public String createHrefForGroupMembers(final String groupname) {
 		final UrlBuilder builder = this.createUrlBuilderForGroupMembers(groupname);
 		return builder.asString();
 	}
-	
+
 	/**
 	 * @param groupname
 	 * @param start
 	 * @param end
 	 * @return the path to all members of a group
 	 */
-	public String createHrefForGroupMembers(String groupname, int start, int end) {
+	public String createHrefForGroupMembers(final String groupname, final int start, final int end) {
 		final UrlBuilder builder = this.createUrlBuilderForGroupMembers(groupname);
 		applyStartEnd(builder, start, end);
 		return builder.asString();
 	}
 
-	protected static void applyStartEnd(final UrlBuilder builder, int start, int end) {
+	protected static void applyStartEnd(final UrlBuilder builder, final int start, final int end) {
 		builder.addParameter(RESTConfig.START_PARAM, String.valueOf(start));
 		builder.addParameter(RESTConfig.END_PARAM, String.valueOf(end));
 	}
@@ -343,12 +346,12 @@ public class UrlRenderer {
 	/**
 	 * @param groupname
 	 */
-	private UrlBuilder createUrlBuilderForGroupMembers(String groupname) {
+	private UrlBuilder createUrlBuilderForGroupMembers(final String groupname) {
 		final UrlBuilder urlBuilder = this.getUrlBuilderForGroup(groupname);
 		urlBuilder.addPathElement(RESTConfig.USERS_URL);
 		return urlBuilder;
 	}
-	
+
 	public String createHrefForUsers() {
 		final UrlBuilder builder = this.createUrlBuilderForUsers();
 		return builder.asString();
@@ -359,14 +362,14 @@ public class UrlRenderer {
 	 * @param end
 	 * @return the api url for a list of users
 	 */
-	public String createHrefForUsers(int start, int end) {
+	public String createHrefForUsers(final int start, final int end) {
 		final UrlBuilder builder = this.createUrlBuilderForUsers();
 		applyStartEnd(builder, start, end);
 		return builder.asString();
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	private UrlBuilder createUrlBuilderForUsers() {
 		final UrlBuilder builder = this.createUrlBuilderForApi();
@@ -379,7 +382,7 @@ public class UrlRenderer {
 	 * @param userName
 	 * @return the href to the group member
 	 */
-	public String createHrefForGroupMember(String groupName, String userName) {
+	public String createHrefForGroupMember(final String groupName, final String userName) {
 		final UrlBuilder builder = this.createUrlBuilderForGroupMembers(groupName);
 		builder.addPathElement(userName);
 		return builder.asString();
@@ -394,9 +397,9 @@ public class UrlRenderer {
 	 * @param regex
 	 * @return
 	 */
-	public String createHrefForConcepts(GroupingEntity grouping, String groupingName, ConceptStatus status, Class<? extends Resource> resourceType, List<String> tags, String regex) {
+	public String createHrefForConcepts(final GroupingEntity grouping, final String groupingName, final ConceptStatus status, final Class<? extends Resource> resourceType, final List<String> tags, final String regex) {
 		UrlBuilder urlBuilder;
-		
+
 		switch (grouping) {
 		case USER:
 			urlBuilder = this.getUrlBuilderForUser(groupingName);
@@ -413,7 +416,7 @@ public class UrlRenderer {
 		default:
 			throw new UnsupportedOperationException("Grouping " + grouping + " is not available for concept query");
 		}
-		
+
 		if (status != null) {
 			urlBuilder.addParameter(RESTConfig.CONCEPT_STATUS_PARAM, status.toString().toLowerCase());
 		}
@@ -421,11 +424,11 @@ public class UrlRenderer {
 		if (resourceType != null) {
 			urlBuilder.addParameter(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.getResourceName(resourceType));
 		}
-		
+
 		if (regex != null) {
 			urlBuilder.addParameter(RESTConfig.REGEX_PARAM, regex);
 		}
-		
+
 		if (present(tags)) {
 			urlBuilder.addParameter(RESTConfig.TAGS_PARAM, StringUtils.appendDelimited(new StringBuilder(), tags, "+").toString());
 		}
@@ -439,14 +442,30 @@ public class UrlRenderer {
 	 * @param end
 	 * @return the users friends
 	 */
-	public String createHrefForFriends(String username, String relation, int start, int end) {
+	public String createHrefForFriends(final String username, final String relation, final int start, final int end) {
 		final UrlBuilder urlBuilder = this.getUrlBuilderForUser(username);
 		urlBuilder.addPathElement(RESTConfig.FRIENDS_SUB_PATH);
 		urlBuilder.addParameter(RESTConfig.ATTRIBUTE_KEY_RELATION, relation);
 		applyStartEnd(urlBuilder, start, end);
 		return urlBuilder.asString();
 	}
-	
+
+	/**
+	 * @param username
+	 * @param relation
+	 * @param start
+	 * @param end
+	 * @return the users friends
+	 */
+	public String createHrefForUserRelationship(final String username, final String relation, final String tag) {
+		final UrlBuilder urlBuilder = this.getUrlBuilderForUser(username);
+		final String friendOrFollower = FRIEND_RELATIONSHIP.equals(relation) ? RESTConfig.FRIENDS_SUB_PATH : RESTConfig.FOLLOWERS_SUB_PATH;
+		present(tag);
+		urlBuilder.addPathElement(friendOrFollower);
+		urlBuilder.addParameter(RESTConfig.ATTRIBUTE_KEY_RELATION, relation);
+		return urlBuilder.asString();
+	}
+
 	/**
 	 * @return the groups overview url
 	 */
@@ -460,7 +479,7 @@ public class UrlRenderer {
 	 * @param end
 	 * @return the groups overview url
 	 */
-	public String createHrefForGroups(int start, int end) {
+	public String createHrefForGroups(final int start, final int end) {
 		final UrlBuilder builder = this.getUrlBuilderForGroups();
 		applyStartEnd(builder, start, end);
 		return builder.asString();
@@ -480,8 +499,8 @@ public class UrlRenderer {
 	 * @param resourceHash
 	 * @return
 	 */
-	public String createHrefForClipboadEntry(String userName,
-			String resourceHash) {
+	public String createHrefForClipboadEntry(final String userName,
+			final String resourceHash) {
 		final UrlBuilder urlBuilder = this.getUrlBuilderForClipboard(userName);
 		urlBuilder.addPathElement(resourceHash);
 		return urlBuilder.asString();
@@ -491,18 +510,18 @@ public class UrlRenderer {
 	 * @param userName
 	 * @return
 	 */
-	private UrlBuilder getUrlBuilderForClipboard(String userName) {
+	private UrlBuilder getUrlBuilderForClipboard(final String userName) {
 		final UrlBuilder urlBuilder = this.getUrlBuilderForUser(userName);
 		urlBuilder.addPathElement(RESTConfig.CLIPBOARD_SUBSTRING);
 		return urlBuilder;
 	}
 
 	/**
-	 * @param userName 
+	 * @param userName
 	 * @param clearAll
 	 * @return the clipboard url for the specified user
 	 */
-	public String createHrefForClipboard(final String userName, Boolean clearAll) {
+	public String createHrefForClipboard(final String userName, final Boolean clearAll) {
 		final UrlBuilder urlBuilder = this.getUrlBuilderForClipboard(userName);
 		if (present(clearAll)) {
 			urlBuilder.addParameter("clear", String.valueOf(clearAll));
@@ -512,7 +531,7 @@ public class UrlRenderer {
 
 	/**
 	 * @param hash
-	 * @param relation 
+	 * @param relation
 	 * @return the path to the references of a community post
 	 */
 	public String createHrefForCommunityPostReferences(final String hash, final GoldStandardRelation relation) {
@@ -529,9 +548,9 @@ public class UrlRenderer {
 		}
 		return builder.asString();
 	}
-	
+
 	protected UrlBuilder createHrefForCommunity(final String hash) {
-		final UrlBuilder builder = createUrlBuilderForPosts();
+		final UrlBuilder builder = this.createUrlBuilderForPosts();
 		builder.addPathElement(RESTConfig.COMMUNITY_SUB_PATH);
 		builder.addPathElement(hash);
 		return builder;
@@ -545,24 +564,24 @@ public class UrlRenderer {
 	 * @param end
 	 * @return
 	 */
-	public String createHrefForAddedPosts(GroupingEntity grouping, String groupingValue, Class<? extends Resource> resourceType, int start, int end) {
-		final UrlBuilder builder = createUrlBuilderForPostAdded();
+	public String createHrefForAddedPosts(final GroupingEntity grouping, final String groupingValue, final Class<? extends Resource> resourceType, final int start, final int end) {
+		final UrlBuilder builder = this.createUrlBuilderForPostAdded();
 		applyStandardPostQueryParams(grouping, groupingValue, resourceType, start, end, builder);
 		return builder.asString();
 	}
 
-	protected static void applyStandardPostQueryParams(GroupingEntity grouping, String groupingValue, Class<? extends Resource> resourceType, int start, int end, final UrlBuilder builder) {
+	protected static void applyStandardPostQueryParams(final GroupingEntity grouping, final String groupingValue, final Class<? extends Resource> resourceType, final int start, final int end, final UrlBuilder builder) {
 		applyStartEnd(builder, start, end);
-		
+
 		if (resourceType != Resource.class) {
 			builder.addParameter(RESTConfig.RESOURCE_TYPE_PARAM, resourceType.toString().toLowerCase());
 		}
-		
+
 		applyGrouping(builder, grouping, groupingValue);
 	}
 
 	protected UrlBuilder createUrlBuilderForPostAdded() {
-		final UrlBuilder builder = createUrlBuilderForPosts();
+		final UrlBuilder builder = this.createUrlBuilderForPosts();
 		builder.addPathElement(RESTConfig.POSTS_ADDED_SUB_PATH);
 		return builder;
 	}
@@ -578,7 +597,7 @@ public class UrlRenderer {
 	 * @param grouping
 	 * @param groupingValue
 	 */
-	private static void applyGrouping(UrlBuilder builder, GroupingEntity grouping, String groupingValue) {
+	private static void applyGrouping(final UrlBuilder builder, final GroupingEntity grouping, final String groupingValue) {
 		switch (grouping) {
 		case USER:
 			builder.addParameter("user", groupingValue);
@@ -602,8 +621,8 @@ public class UrlRenderer {
 	 * @param end
 	 * @return
 	 */
-	public String createHrefForPopularPosts(GroupingEntity grouping, String groupingValue, Class<? extends Resource> resourceType, int start, int end) {
-		final UrlBuilder builder = createUrlBuilderForPostPopular();
+	public String createHrefForPopularPosts(final GroupingEntity grouping, final String groupingValue, final Class<? extends Resource> resourceType, final int start, final int end) {
+		final UrlBuilder builder = this.createUrlBuilderForPostPopular();
 		applyStandardPostQueryParams(grouping, groupingValue, resourceType, start, end, builder);
 		return builder.asString();
 	}
@@ -629,10 +648,10 @@ public class UrlRenderer {
 	 * @param end
 	 * @return
 	 */
-	public String createHrefForPosts(GroupingEntity grouping,
-			String groupingValue, Class<? extends Resource> resourceType,
-			List<String> tags, String resourceHash, String search, Order order,
-			int start, int end) {
+	public String createHrefForPosts(final GroupingEntity grouping,
+			final String groupingValue, final Class<? extends Resource> resourceType,
+			final List<String> tags, final String resourceHash, final String search, final Order order,
+			final int start, final int end) {
 		final UrlBuilder urlBuilder = this.createUrlBuilderForPosts();
 		applyStartEnd(urlBuilder, start, end);
 
@@ -640,13 +659,13 @@ public class UrlRenderer {
 			urlBuilder.addParameter(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.getResourceName(resourceType));
 		}
 
-		final String groupingParameterName = getGroupingParameterName(grouping);
+		final String groupingParameterName = this.getGroupingParameterName(grouping);
 		if (groupingParameterName != null) {
 			urlBuilder.addParameter(groupingParameterName, groupingValue);
 		}
 
 		if (present(tags)) {
-			StringBuilder tagsStringBuilder = new StringBuilder();
+			final StringBuilder tagsStringBuilder = new StringBuilder();
 			for (final String tag : tags) {
 				tagsStringBuilder.append(tag).append(' ');
 			}
@@ -665,11 +684,11 @@ public class UrlRenderer {
 		if (present(search)) {
 			urlBuilder.addParameter(RESTConfig.SEARCH_PARAM, search);
 		}
-		
+
 		return urlBuilder.asString();
 	}
-	
-	public String getGroupingParameterName(GroupingEntity grouping) {
+
+	public String getGroupingParameterName(final GroupingEntity grouping) {
 		String groupingParameterName;
 		switch (grouping) {
 		case USER:
@@ -687,7 +706,7 @@ public class UrlRenderer {
 		case FRIEND:
 			groupingParameterName = "friend";
 			break;
-		// CLIPBOARD is already handled separately and therefore not covered here
+			// CLIPBOARD is already handled separately and therefore not covered here
 		default:
 			throw new UnsupportedOperationException("The grouping " + grouping + " is currently not supported by this query.");
 		}
@@ -706,7 +725,7 @@ public class UrlRenderer {
 	 * @param end
 	 * @return
 	 */
-	public String createHrefForTags(Class<? extends Resource> resourceType, List<String> tagNames, GroupingEntity grouping, String groupingValue, String filter, TagRelation relation, Order order, int start, int end) {
+	public String createHrefForTags(final Class<? extends Resource> resourceType, final List<String> tagNames, final GroupingEntity grouping, final String groupingValue, final String filter, final TagRelation relation, final Order order, final int start, final int end) {
 		// /tags/[tags]?...
 		final UrlBuilder urlBuilder = this.createUrlBuilderForApi();
 		urlBuilder.addPathElement(RESTConfig.TAGS_URL);
@@ -714,26 +733,26 @@ public class UrlRenderer {
 			urlBuilder.addPathElement(StringUtils.implodeStringCollection(tagNames, "+"));
 		}
 		applyStartEnd(urlBuilder, start, end);
-		
+
 		if (order != null) {
 			urlBuilder.addParameter(RESTConfig.ORDER_PARAM, order.toString());
 		}
-		
+
 		applyGrouping(urlBuilder, grouping, groupingValue);
-		
+
 		if (present(filter)) {
 			urlBuilder.addParameter(RESTConfig.FILTER_PARAM, filter);
 		}
-		
-		if ((resourceType != null) && (resourceType != Resource.class)) {
+
+		if (resourceType != null && resourceType != Resource.class) {
 			urlBuilder.addParameter(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.getResourceName(resourceType));
 		}
-		
+
 		if (present(relation)) {
 			// add relation parameter.
 			urlBuilder.addParameter(RESTConfig.RELATION_PARAM, relation.toString());
 		}
-		
+
 		return urlBuilder.asString();
 	}
 

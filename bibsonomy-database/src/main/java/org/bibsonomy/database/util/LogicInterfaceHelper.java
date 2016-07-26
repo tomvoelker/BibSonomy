@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -147,11 +147,22 @@ public class LogicInterfaceHelper {
 			param.setSearch(search);
 		}
 		
-		if (grouping != GroupingEntity.GROUP) {
-			param.setRequestedUserName(groupingName);
+		if (present(grouping)) {
+			switch (grouping) {
+			case VIEWABLE:
+			case GROUP:
+			case PENDING:
+				param.setRequestedGroupName(groupingName);
+				break;
+			case INBOX:
+			case USER:
+			case FRIEND:
+				param.setRequestedUserName(groupingName);
+				break;
+			default:
+				break;
+			}
 		}
-		
-		param.setRequestedGroupName(groupingName);
 		
 		// add filters
 		param.setFilters(filters);

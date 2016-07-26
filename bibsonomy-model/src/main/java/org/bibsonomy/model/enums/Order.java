@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -31,10 +31,6 @@ package org.bibsonomy.model.enums;
  * 
  * FIXME: the orderings "FREQUENCY" AND "POPULAR" probably mean the same. Check
  * their usage and if possible, remove one of them.
- * 
- * IMPORTANT: The general convention of writing constants uppercase
- * (http://docs.oracle.com/javase/tutorial/java/javaOO/enum.html) is a
- * requirement here as constants are retrieved by toUppercased strings.
  * 
  * @author Jens Illig
  */

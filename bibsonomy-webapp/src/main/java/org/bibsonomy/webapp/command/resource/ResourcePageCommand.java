@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.model.DiscussionItem;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.TagResourceViewCommand;
 
@@ -41,7 +42,9 @@ public class ResourcePageCommand<R extends Resource> extends TagResourceViewComm
 	private String requestedHash;
 
 	private Map<String, List<String>> copyUsersMap;
-
+	
+	private Post<R> postOfLoggedInUser;
+	
 	private List<DiscussionItem> discussionItems;
 
 	private String postOwner;
@@ -51,6 +54,8 @@ public class ResourcePageCommand<R extends Resource> extends TagResourceViewComm
 	private Class<R> resourceClass;
 
 	private String requestedType;
+	
+	private String requestedTitle;
 
 	/**
 	 * @return the intraHash of a post
@@ -99,6 +104,20 @@ public class ResourcePageCommand<R extends Resource> extends TagResourceViewComm
 	}
 
 	/**
+	 * @return the postOfLoggedInUser
+	 */
+	public Post<R> getPostOfLoggedInUser() {
+		return this.postOfLoggedInUser;
+	}
+
+	/**
+	 * @param postOfLoggedInUser the postOfLoggedInUser to set
+	 */
+	public void setPostOfLoggedInUser(Post<R> postOfLoggedInUser) {
+		this.postOfLoggedInUser = postOfLoggedInUser;
+	}
+
+	/**
 	 * @return the discussionItems
 	 */
 	public List<DiscussionItem> getDiscussionItems() {
@@ -140,11 +159,31 @@ public class ResourcePageCommand<R extends Resource> extends TagResourceViewComm
 		this.resourceClass = resourceClass;
 	}
 
+	/**
+	 * @return the requestedType
+	 */
 	public String getRequestedType() {
 		return this.requestedType;
 	}
 
-	public void setRequestedType(final String requestedType) {
+	/**
+	 * @param requestedType the requestedType to set
+	 */
+	public void setRequestedType(String requestedType) {
 		this.requestedType = requestedType;
+	}
+
+	/**
+	 * @return the requestedTitle
+	 */
+	public String getRequestedTitle() {
+		return this.requestedTitle;
+	}
+
+	/**
+	 * @param requestedTitle the requestedTitle to set
+	 */
+	public void setRequestedTitle(String requestedTitle) {
+		this.requestedTitle = requestedTitle;
 	}
 }

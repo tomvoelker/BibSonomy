@@ -1,7 +1,7 @@
 /**
  * BibSonomy Search Elasticsearch - Elasticsearch full text search module.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -74,7 +74,7 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 		post.setChangeDate(parseDate(source, Fields.CHANGE_DATE));
 		final String userName = (String) source.get(Fields.USER_NAME);
 		final boolean loadDocuments = allowdUsersForDoc.contains(userName);
-		post.setUser(new User(userName));
+		fillUser(post, userName);
 		post.setDescription((String) source.get(Fields.DESCRIPTION));
 		
 		post.setGroups(convertToGroups((List<String>) source.get(Fields.GROUPS)));
@@ -88,11 +88,19 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 		resource.setInterHash((String) source.get(Fields.Resource.INTERHASH));
 		resource.setIntraHash((String) source.get(Fields.Resource.INTRAHASH));
 		resource.setTitle((String) source.get(Fields.Resource.TITLE));
-		
-		this.convertResourceInternal(resource, source, loadDocuments);
-		
 		post.setResource(resource);
+		
+		this.convertResourceInternal(post, source, loadDocuments);
+		
 		return post;
+	}
+
+	/**
+	 * @param post
+	 * @param userName
+	 */
+	protected void fillUser(final Post<R> post, final String userName) {
+		post.setUser(new User(userName));
 	}
 	
 	/**
@@ -119,11 +127,11 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 	}
 
 	/**
-	 * @param resource
+	 * @param post the post
 	 * @param source
 	 * @param loadDocuments 
 	 */
-	protected abstract void convertResourceInternal(R resource, Map<String, Object> source, boolean loadDocuments);
+	protected abstract void convertResourceInternal(Post<R> post, Map<String, Object> source, boolean loadDocuments);
 
 	/**
 	 * @return a new instance of a resource
@@ -171,7 +179,7 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 		
 		jsonDocument.put(Fields.DESCRIPTION, post.getDescription());
 		
-		jsonDocument.put(Fields.USER_NAME, post.getUser().getName());
+		fillIndexDocumentUser(post, jsonDocument);
 		
 		jsonDocument.put(Fields.GROUPS, convertGroups(post.getGroups()));
 		
@@ -181,6 +189,14 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 		this.convertResourceInternal(jsonDocument, post.getResource());
 		this.convertPostInternal(post, jsonDocument);
 		return jsonDocument;
+	}
+
+	/**
+	 * @param post
+	 * @param jsonDocument
+	 */
+	protected void fillIndexDocumentUser(final Post<R> post, final Map<String, Object> jsonDocument) {
+		jsonDocument.put(Fields.USER_NAME, post.getUser().getName());
 	}
 
 	/**

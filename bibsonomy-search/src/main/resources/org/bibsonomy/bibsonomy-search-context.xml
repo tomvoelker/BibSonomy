@@ -6,17 +6,21 @@
 						http://www.springframework.org/schema/beans/spring-beans.xsd
 						http://www.springframework.org/schema/util
 						http://www.springframework.org/schema/util/spring-util.xsd">
-						
+	
 	<bean id="searchBookmarkClass" class="java.lang.Class" factory-method="forName">
 		<constructor-arg value="org.bibsonomy.model.Bookmark" />
 	</bean>
-
+	
 	<bean id="searchPublicationClass" class="java.lang.Class" factory-method="forName">
 		<constructor-arg value="org.bibsonomy.model.BibTex" />
 	</bean>
-
+	
 	<bean id="searchGoldStandardPublicationClass" class="java.lang.Class" factory-method="forName">
 		<constructor-arg value="org.bibsonomy.model.GoldStandardPublication" />
+	</bean>
+	
+	<bean id="searchGoldStandardBookmarkClass" class="java.lang.Class" factory-method="forName">
+		<constructor-arg value="org.bibsonomy.model.GoldStandardBookmark" />
 	</bean>
 	
 	<bean id="searchSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
@@ -41,8 +45,12 @@
 		<property name="resourceClass" ref="searchPublicationClass" />
 	</bean>
 	
-	<bean id="searchGoldStandardPublicationLogic" class="org.bibsonomy.search.management.database.SearchGoldStandardLogic" parent="searchDBLogic">
+	<bean id="goldStandardPublicationSearchDBLogic" class="org.bibsonomy.search.management.database.SearchGoldStandardLogic" parent="searchDBLogic">
 		<property name="resourceClass" ref="searchGoldStandardPublicationClass" />
+	</bean>
+	
+	<bean id="goldStandardBookmarkSearchDBLogic" class="org.bibsonomy.search.management.database.SearchGoldStandardLogic" parent="searchDBLogic">
+		<property name="resourceClass" ref="searchGoldStandardBookmarkClass" />
 	</bean>
 	
 	<bean id="searchDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" parent="basicDataSource">
@@ -67,7 +75,7 @@
 				<property name="extractors">
 					<list>
 						<bean class="org.bibsonomy.search.index.utils.extractor.PlainTextExtractor" />
-						<bean class="org.bibsonomy.search.index.utils.extractor.PDFExtractor" />
+						<ref bean="pdfExtractor" />
 					</list>
 				</property>
 				<property name="fileLogic" ref="fileLogic" />
@@ -75,5 +83,7 @@
 		</constructor-arg>
 		<constructor-arg ref="fileLogic" />
 	</bean>
+	
+	
 	
 </beans>

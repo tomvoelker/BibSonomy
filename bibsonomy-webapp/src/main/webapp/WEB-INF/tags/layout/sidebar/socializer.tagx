@@ -5,6 +5,7 @@
 	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
 	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
 	<!--+ 
@@ -16,9 +17,6 @@
 	 	|
 	 	| TODO: 
 	 	| - integrate "common groups"
-	 	| - show, if requUser is following login user (privacy?)
-	 	| - TODO: show image/full name, if profile allows it
-	 	| - don't use image map but two separate images and then CSS to show :hover effects
 	 	|
 	 	+-->
 
@@ -31,46 +29,31 @@
 		<c:set var="outLink" value="${fn:escapeXml(command.user.homepage)}"/>
 		<c:set var="outTitleKey" value="${outTitleKey}"/>
 	</c:if>
-	<sidebar:sidebarItem outLink="${outLink}" outTitleKey="${outTitleKey}">
-
-		<jsp:attribute name="text">	
-			${username}
-		</jsp:attribute>
-
-		<jsp:attribute name="content">
+	<div class="user-card">
+		<div class="card-header">
+			<user:thumbnail user="${command.user}" noname="${true}" circle="${true}" />
+			
 			<c:if test="${not empty command.user.realname}">
-				<user:name user="${command.user}"/>
+				<h4>
+					<c:out value="${command.user.realname}" />
+					<c:if test="${not empty command.user.homepage}">
+						<small>
+							<a href="${fn:escapeXml(command.user.homepage)}" rel="nofollow">
+								<fontawesome:icon icon="external-link" />
+							</a>
+						</small>
+					</c:if>
+				</h4>
 			</c:if>
-		
 			
-			<div class="media" style="border:none;">
-				<!-- user thumbnail -->
-				<user:thumbnail user="${command.user}" />
-			
-				<div class="media-body" id="titletext">
-
-					<!--+
-						| only for logged in users: followers, friends, groups, etc.
-						+-->
-					<c:choose>
-						<c:when test="${command.context.userLoggedIn and command.context.loginUser.name ne command.requestedUser}">
-							<p><user:userSocializerButtons user="${command.user}" command="${command}" /></p>
-						</c:when>
-						
-						<c:when test="${not command.context.userLoggedIn}">
-							<p class="small-font"><fmt:message key="friends.addfriend.login" /></p>
-							<a class="btn btn-success btn-xs" href="${relativeUrlGenerator.getLoginUrl()}"><fmt:message key="navi.login" /></a>
-						</c:when>
-						<c:when test="${command.context.userLoggedIn and command.context.loginUser.name eq command.requestedUser}">
-							<p class="small-font"><fmt:message key="friends.addfriend.you" /></p>
-							<!-- button for CV link -->
-							<a class="btn btn-default btn-sm" href="/cv/user/${fn:escapeXml(command.user.name)}" title="${cvtitle}"><span class="fa fa-user"><!-- --></span><fmt:message key="navi.cv.abbrev"/></a>
-						</c:when>
-					</c:choose>
-				</div>
-			</div>
- 			<p class="clearfix"></p>
-		</jsp:attribute>
-	</sidebar:sidebarItem>
-
+			<p class="text-muted"><user:username noLink="${true}" user="${command.user}" /></p>
+		</div>
+		<c:if test="${command.context.userLoggedIn}">
+			<user:userSocializerButtons user="${command.user}" command="${command}" />
+		</c:if>
+		<c:if test="${not command.context.userLoggedIn}">
+			<p class="small-font"><fmt:message key="friends.addfriend.login" /></p>
+			<a class="btn btn-success btn-xs" href="${relativeUrlGenerator.getLoginUrl()}"><fmt:message key="navi.login" /></a>
+		</c:if>
+	</div>
 </jsp:root>

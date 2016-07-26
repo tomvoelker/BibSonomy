@@ -1,0 +1,28 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:login="urn:jsptagdir:/WEB-INF/tags/actions/login"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+		
+	<li>
+		<a href="#" data-toggle="modal" data-target="#loginModal">
+			<fontawesome:icon icon="sign-in" /><c:out value=" " /> <!-- TODO: remove whitespace -->
+			<fmt:message key="navi.login" />
+		</a>
+	</li>
+	
+	<c:if test="${mtl:contains(authConfig, mtl:convertToEnum('org.bibsonomy.common.enums.AuthMethod', 'INTERNAL')) and not properties['auth.register.disabled'] eq 'true'}">
+		<li> 
+			<a href="${relativeUrlGenerator.getRegisterUrl()}">
+				<span class="fa fa-pencil-square-o"><!-- KEEP ME --></span><c:out value=" "></c:out>
+				<fmt:message key="navi.register" />
+			</a>
+		</li>
+	</c:if>
+
+</jsp:root>

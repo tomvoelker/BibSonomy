@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -66,7 +66,7 @@ public class ViewablePageController extends SingleResourceListControllerWithTags
 		final List<String> requTags = command.getRequestedTagsList();
 		
 		// set title
-		command.setPageTitle("viewable :: " + groupingName); // TODO: i18n
+		command.setPageTitle(groupingName);
 		
 		// handle the case when only tags are requested
 		// TODO: max 1000 tags
@@ -82,7 +82,7 @@ public class ViewablePageController extends SingleResourceListControllerWithTags
 		if ("html".equals(format)) {
 			// only fetch tags if they were not already fetched by handleTagsOnly
 			if (command.getTagstype() == null) {
-				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, Integer.MAX_VALUE, null);
+				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, Integer.MAX_VALUE, null);
 			}
 			this.setGroupDetails(command, groupingName);
 			

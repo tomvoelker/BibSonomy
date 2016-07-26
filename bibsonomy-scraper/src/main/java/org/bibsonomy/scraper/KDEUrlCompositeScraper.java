@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -30,6 +30,7 @@ import org.bibsonomy.scraper.url.kde.Econstor.EconstorScraper;
 import org.bibsonomy.scraper.url.kde.RWTH.RWTHAachenScraper;
 import org.bibsonomy.scraper.url.kde.aaai.AAAIScraper;
 import org.bibsonomy.scraper.url.kde.aanda.AandAScraper;
+import org.bibsonomy.scraper.url.kde.aappublications.AappublicationsScraper;
 import org.bibsonomy.scraper.url.kde.acl.AclScraper;
 import org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper;
 import org.bibsonomy.scraper.url.kde.acs.ACSScraper;
@@ -54,16 +55,19 @@ import org.bibsonomy.scraper.url.kde.bmj.BMJOpenScraper;
 import org.bibsonomy.scraper.url.kde.bmj.BMJScraper;
 import org.bibsonomy.scraper.url.kde.cambridge.CambridgeScraper;
 import org.bibsonomy.scraper.url.kde.casesjournal.CasesJournalScraper;
+import org.bibsonomy.scraper.url.kde.catinist.CatinistScraper;
 import org.bibsonomy.scraper.url.kde.cell.CellScraper;
 import org.bibsonomy.scraper.url.kde.cinii.CiniiScraper;
 import org.bibsonomy.scraper.url.kde.citeseer.CiteseerxScraper;
 import org.bibsonomy.scraper.url.kde.citeulike.CiteulikeScraper;
 import org.bibsonomy.scraper.url.kde.copac.CopacScraper;
 import org.bibsonomy.scraper.url.kde.cshlp.CSHLPScraper;
+import org.bibsonomy.scraper.url.kde.cyberleninka.CyberleninkaScraper;
 import org.bibsonomy.scraper.url.kde.dblp.DBLPScraper;
 import org.bibsonomy.scraper.url.kde.degruyter.DeGruyterScraper;
 import org.bibsonomy.scraper.url.kde.dlib.DLibScraper;
 import org.bibsonomy.scraper.url.kde.editlib.EditLibScraper;
+import org.bibsonomy.scraper.url.kde.elsevier.ElsevierScraper;
 import org.bibsonomy.scraper.url.kde.elsevierhealth.ElsevierhealthScraper;
 import org.bibsonomy.scraper.url.kde.eric.EricScraper;
 import org.bibsonomy.scraper.url.kde.faseb.FASEBJournalScraper;
@@ -84,6 +88,7 @@ import org.bibsonomy.scraper.url.kde.inspire.InspireScraper;
 import org.bibsonomy.scraper.url.kde.iop.IOPScraper;
 import org.bibsonomy.scraper.url.kde.iucr.IucrScraper;
 import org.bibsonomy.scraper.url.kde.iwap.IWAPonlineScraper;
+import org.bibsonomy.scraper.url.kde.jamanet.JamaNetScraper;
 import org.bibsonomy.scraper.url.kde.jap.JAPScraper;
 import org.bibsonomy.scraper.url.kde.jcb.JCBScraper;
 import org.bibsonomy.scraper.url.kde.jci.JCIScraper;
@@ -96,6 +101,7 @@ import org.bibsonomy.scraper.url.kde.karger.KargerScraper;
 import org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper;
 import org.bibsonomy.scraper.url.kde.karlsruhe.BibliographyScraper;
 import org.bibsonomy.scraper.url.kde.karlsruhe.UBKAScraper;
+import org.bibsonomy.scraper.url.kde.lccnloc.LccnLocScraper;
 import org.bibsonomy.scraper.url.kde.librarything.LibrarythingScraper;
 import org.bibsonomy.scraper.url.kde.liebert.LiebertScraper;
 import org.bibsonomy.scraper.url.kde.mathscinet.MathSciNetScraper;
@@ -119,6 +125,7 @@ import org.bibsonomy.scraper.url.kde.phcogres.PharmacognosyResearchScraper;
 import org.bibsonomy.scraper.url.kde.pion.PionScraper;
 import org.bibsonomy.scraper.url.kde.plos.PlosScraper;
 import org.bibsonomy.scraper.url.kde.pnas.PNASScraper;
+import org.bibsonomy.scraper.url.kde.proeuclid.ProjectEuclidScraper;
 import org.bibsonomy.scraper.url.kde.prola.ProlaScraper;
 import org.bibsonomy.scraper.url.kde.psycontent.PsyContentScraper;
 import org.bibsonomy.scraper.url.kde.pubmed.PubMedScraper;
@@ -139,6 +146,7 @@ import org.bibsonomy.scraper.url.kde.ssrn.SSRNScraper;
 import org.bibsonomy.scraper.url.kde.stanford.StanfordInfoLabScraper;
 import org.bibsonomy.scraper.url.kde.taylorAndFrancis.TaylorAndFrancisScraper;
 import org.bibsonomy.scraper.url.kde.thelancet.TheLancetScraper;
+import org.bibsonomy.scraper.url.kde.thiemeconnect.ThiemeConnectScraper;
 import org.bibsonomy.scraper.url.kde.uchicago.UChicagoScraper;
 import org.bibsonomy.scraper.url.kde.usenix.UsenixScraper;
 import org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper;
@@ -297,6 +305,14 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new SpieDigitalLibraryScraper());
 		addScraper(new BioOneScraper());
 		addScraper(new UChicagoScraper());
+		addScraper(new CatinistScraper());
+		addScraper(new AappublicationsScraper());
+		addScraper(new ThiemeConnectScraper());
+		addScraper(new JamaNetScraper());
+		addScraper(new ProjectEuclidScraper());
+		addScraper(new LccnLocScraper());
+		addScraper(new ElsevierScraper());
+		addScraper(new CyberleninkaScraper());
 		//addScraper(new AkademiaiScraper()); error = 404
 	}
 

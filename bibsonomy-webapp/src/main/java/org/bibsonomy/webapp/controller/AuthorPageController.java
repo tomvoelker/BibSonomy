@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -117,7 +117,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		if ("html".equals(format)) {
 			// only fetch tags if they were not already fetched by handleTagsOnly
 			if (command.getTagstype() == null) {
-				this.setTags(command, BibTex.class, groupingEntity, null, null, sysTags, null, 1000, null, searchType);
+				this.setTags(command, BibTex.class, groupingEntity, null, null, null, sysTags, null, 1000, null, searchType);
 			}
 			this.endTiming();
 			if (hasTags) {

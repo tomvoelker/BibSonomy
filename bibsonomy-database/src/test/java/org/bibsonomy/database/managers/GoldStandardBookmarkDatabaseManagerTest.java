@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -87,7 +87,7 @@ public class GoldStandardBookmarkDatabaseManagerTest extends AbstractDatabaseMan
 		
 		// create post
 		final Post<GoldStandardBookmark> post = this.generateGoldBookmark();
-		assertTrue(manager.createPost(post, this.dbSession));
+		assertTrue(manager.createPost(post, null, this.dbSession));
 		
 		final String interhash = post.getResource().getInterHash();
 		assertNotNull(manager.getPostDetails("", interhash, "", null, this.dbSession).getResource());
@@ -101,7 +101,7 @@ public class GoldStandardBookmarkDatabaseManagerTest extends AbstractDatabaseMan
 		assertFalse(this.pluginMock.isOnGoldStandardDelete());
 		
 		// delete post
-		manager.deletePost("", interhash, this.dbSession);
+		manager.deletePost("", interhash, null, this.dbSession);
 		assertNull(manager.getPostDetails("", interhash, "", null, this.dbSession));
 		
 		assertTrue(this.pluginMock.isOnGoldStandardDelete());

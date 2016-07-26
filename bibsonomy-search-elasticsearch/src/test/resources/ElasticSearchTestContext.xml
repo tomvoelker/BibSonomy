@@ -25,8 +25,8 @@
 	<alias name="elasticsearchBookmarkSearch" alias="bookmarkSearch" />
 	<alias name="elasticsearchPublicationSearch" alias="publicationSearch" />
 	
-	<!-- FIXME: replace with correct search index -->
 	<alias name="elasticsearchPublicationSearch" alias="goldStandardPublicationSearch" />
+	<alias name="elasticsearchBookmarkSearch" alias="goldStandardBookmarkSearch" />
 	
 	<import resource="classpath:/org/bibsonomy/bibsonomy-search-elasticsearch-context.xml" />
 </beans>

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -548,7 +548,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 	@Test(expected = IllegalArgumentException.class)
 	public void updatePostWrongUsage() {
 		final Post<Bookmark> toInsert = this.generateBookmarkDatabaseManagerTestPost();
-		bookmarkDb.updatePost(toInsert, null, null, this.dbSession, null);
+		bookmarkDb.updatePost(toInsert, null, null, null, this.dbSession);
 	}
 	
 	/**
@@ -560,7 +560,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 		toInsert.getResource().recalculateHashes();
 
 		// no oldIntraHash and no update
-		bookmarkDb.createPost(toInsert, this.dbSession);
+		bookmarkDb.createPost(toInsert, toInsert.getUser(), this.dbSession);
 		final String userName = toInsert.getUser().getName();
 		final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, GroupingEntity.USER, userName, Arrays.asList(new String[] { "tag1", "tag2" }), "", null, 0, 50, null, null, null, null, toInsert.getUser());
 		final List<Post<Bookmark>> posts = bookmarkDb.getPosts(param, this.dbSession);
@@ -573,7 +573,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 		// Duplicate post and check whether plugins are called
 		assertFalse(this.pluginMock.isOnBibTexUpdate());
 		
-		assertTrue(bookmarkDb.deletePost(userName, toInsert.getResource().getIntraHash(), this.dbSession));
+		assertTrue(bookmarkDb.deletePost(userName, toInsert.getResource().getIntraHash(), new User(userName), this.dbSession));
 	}
 	
 	/**
@@ -584,7 +584,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 	public void testUpdatePostMockTest() {
 		final String hash = "7eda282d1d604c702597600a06f8a6b0";
 		final Post<Bookmark> someBookmarkPost = bookmarkDb.getPostsByHash(null, hash, HashID.INTRA_HASH, PUBLIC_GROUP_ID, null, 10, 0, this.dbSession).get(0);
-		bookmarkDb.updatePost(someBookmarkPost, hash, null, this.dbSession, new User("testuser2"));
+		bookmarkDb.updatePost(someBookmarkPost, hash, new User("testuser2"), null, this.dbSession);
 		assertTrue(this.pluginMock.isOnBookmarkUpdate());
 	}
 
@@ -608,18 +608,19 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 		final List<Post<Bookmark>> post = bookmarkDb.getPostsByHash(null, intraHash, HashID.INTRA_HASH, PUBLIC_GROUP_ID, null, 10, 0, this.dbSession);
 		assertEquals(1, post.size());
 		
-		final boolean delete = bookmarkDb.deletePost(TESTUSER2_NAME, intraHash, this.dbSession);
+		final boolean delete = bookmarkDb.deletePost(TESTUSER2_NAME, intraHash, null, this.dbSession);
 		assertFalse(delete); // testuser2 cannot delete this posts, the owner is testuser2
 
 		// now try it with testuser1
-		final boolean delete2 = bookmarkDb.deletePost(TESTUSER1_NAME, intraHash, this.dbSession);
+		final boolean delete2 = bookmarkDb.deletePost(TESTUSER1_NAME, intraHash, new User(TESTUSER1_NAME), this.dbSession);
 		assertTrue(delete2);
 
 		final List<Post<Bookmark>> post2 = bookmarkDb.getPostsByHash(null, intraHash, HashID.INTRA_HASH, PUBLIC_GROUP_ID, null, 10, 0, this.dbSession);
 		assertEquals(0, post2.size());
 		
 		// recreate the deleted post
-		bookmarkDb.createPost(post.get(0), this.dbSession);
+		Post<Bookmark> deletedPost = post.get(0);
+		bookmarkDb.createPost(deletedPost, deletedPost.getUser(), this.dbSession);
 	}
 
 	/**
@@ -715,7 +716,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 		post.setResource(bookmark);
 		final Set<Tag> tags = ModelUtils.getTagSet("google_test", "yahoo_test");
 		post.setTags(tags);
-		bookmarkDb.updatePost(post, intraHash, PostUpdateOperation.UPDATE_TAGS, this.dbSession, loginUser);
+		bookmarkDb.updatePost(post, intraHash, loginUser, PostUpdateOperation.UPDATE_TAGS, this.dbSession);
 		
 		final Post<Bookmark> newPost = bookmarkDb.getPostDetails(userName, intraHash, userName, Collections.singletonList(0), this.dbSession);
 		final Set<Tag> dbTags = newPost.getTags();
@@ -771,7 +772,7 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 		// add some tags that do not interfere with other tests (especially with tags in tag-relations)
 		final Set<Tag> tags = ModelUtils.getTagSet("google_test", "yahoo_test");
 		post.setTags(tags);
-		bookmarkDb.updatePost(post, oldIntraHash, PostUpdateOperation.UPDATE_ALL, this.dbSession, loginUser);
+		bookmarkDb.updatePost(post, oldIntraHash, loginUser, PostUpdateOperation.UPDATE_ALL, this.dbSession);
 		
 		final Post<Bookmark> newPost = bookmarkDb.getPostDetails(userName, newIntraHash, userName, Collections.singletonList(0), this.dbSession);
 		final Set<Tag> dbTags = newPost.getTags();

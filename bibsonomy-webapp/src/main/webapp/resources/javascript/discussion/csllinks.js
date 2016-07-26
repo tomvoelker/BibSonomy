@@ -2,7 +2,7 @@ var typeindex = 2;
 var hashindex = 3;
 var nameindex = 4;
 
-var linkImage = "<img src=\"/resources/image/reference_link_icon.png\">";
+var linkImage = ' <span class="fa fa-external-link"></span>';
 
 var style;
 
