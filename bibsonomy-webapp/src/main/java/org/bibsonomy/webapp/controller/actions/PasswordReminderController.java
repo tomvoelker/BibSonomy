@@ -172,7 +172,7 @@ public class PasswordReminderController implements ErrorAware, ValidationAwareCo
 		/*
 		 * check the ckey
 		 */
-		if (! context.isValidCkey()) {
+		if (!context.isValidCkey()) {
 			errors.reject("error.field.valid.ckey");
 			/*
 			 * Generate HTML to show captcha.

@@ -28,6 +28,7 @@ package filters;
 
 
 import java.io.IOException;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -97,7 +98,7 @@ public class ActionValidationFilter implements Filter {
 		 * if null, create new one
 		 */
 		if (storedCredential == null) {
-			User user = AuthenticationUtils.getUser();
+			final User user = AuthenticationUtils.getUser();
 			storedCredential = getNewCredential(user, httpServletRequest.getSession());
 			request.setAttribute(REQUEST_ATTRIB_CREDENTIAL, storedCredential);
 		}
@@ -130,7 +131,7 @@ public class ActionValidationFilter implements Filter {
 	 */
 	public static boolean isValidCkey (final ServletRequest request) {
 		final Boolean validCredential = (Boolean) request.getAttribute(REQUEST_ATTRIB_VALID_CREDENTIAL);
-		return validCredential != null && validCredential;
+		return validCredential != null && validCredential.booleanValue();
 	}
 	
 	/** Creates the user-dependent credential.
@@ -145,15 +146,11 @@ public class ActionValidationFilter implements Filter {
 	 * @param session
 	 * @return
 	 */
-	private String getNewCredential(User user, HttpSession session) {
-		String email = "";
-		if (user != null && user.getEmail() != null)
-			email = user.getEmail();
-		return (StringUtils.getMD5Hash(email + session.getId())); 
+	private static String getNewCredential(User user, HttpSession session) {
+		final String userMail = user.getEmail();
+		return (StringUtils.getMD5Hash(userMail + session.getId())); 
 	}
-
-
-
+	
 	/**
 	 * Place this filter into service.
 	 *
