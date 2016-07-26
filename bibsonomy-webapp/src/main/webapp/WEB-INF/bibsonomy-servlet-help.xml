@@ -33,10 +33,11 @@
 	</bean>
 	
 	<bean id="helpPageController" class="org.bibsonomy.webapp.controller.help.HelpPageController" scope="request">
-		<property name="projectName" ref="projectName"/>
-		<property name="projectTheme" ref="projectTheme"/>
+		<property name="projectName" ref="projectName" />
+		<property name="projectTheme" ref="projectTheme" />
 		<property name="projectHome" ref="projectHome" />
-		<property name="requestLogic" ref="requestLogic"/>
+		<property name="requestLogic" ref="requestLogic" />
+		<property name="responseLogic" ref="responseLogic" />
 		<property name="urlGenerator" ref="relativeUrlGenerator" />
 		<property name="search" ref="helpSearchManager" />
 		<property name="helpPath" ref="helpPath" />

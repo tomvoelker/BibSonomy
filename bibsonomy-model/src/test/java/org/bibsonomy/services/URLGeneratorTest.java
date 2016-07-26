@@ -87,7 +87,7 @@ public class URLGeneratorTest {
 		
 		//Test without user
 		String expected = projectHome + "url/" + bm.getInterHash();
-		assertEquals(expected, ug.getBookmarkUrl(bm, null));
+		assertEquals(expected, ug.getBookmarkUrl(bm, (User) null));
 		
 		//Test with user
 		expected = projectHome + "url/" + bm.getIntraHash() + "/" + UrlUtils.safeURIEncode(user.getName());
@@ -106,7 +106,7 @@ public class URLGeneratorTest {
 		final Bookmark bm = ModelUtils.generatePost(Bookmark.class).getResource();
 		
 		final String expected = projectHome + "url/" + bm.getIntraHash();
-		assertEquals(expected, ug.getBookmarkUrlByIntraHash(bm.getIntraHash()));
+		assertEquals(expected, ug.getBookmarkUrl(bm, (User) null));
 	}
 
 	@Test

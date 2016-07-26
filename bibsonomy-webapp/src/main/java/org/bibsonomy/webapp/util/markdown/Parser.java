@@ -26,19 +26,12 @@
  */
 package org.bibsonomy.webapp.util.markdown;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.services.help.HelpParser;
-import org.bibsonomy.util.StringUtils;
 import org.pegdown.LinkRenderer;
 import org.pegdown.PegDownProcessor;
 import org.pegdown.ToHtmlSerializer;
@@ -67,31 +60,22 @@ public class Parser implements HelpParser {
 	/**
 	 * Parses the given file and renders it as HTML
 	 * 
-	 * @param filename The file to parse
+	 * @param content the text 
 	 * @return The resulting HTML
 	 * @throws IOException
 	 */
 	@Override
-	public String parseFile(final String filename) throws IOException {
-		// read file content
-		final File file = new File(filename);
-		if (!file.exists()) {
-			throw new FileNotFoundException();
-		}
-		try (final InputStream stream = new FileInputStream(file)) {
-			final String content = StringUtils.getStringFromReader(new BufferedReader(new InputStreamReader(stream)));
+	public String parseText(final String text) throws IOException {
+		// Instantiate Markdown Parser
+		final PegDownPlugins plugins = new PegDownPlugins.Builder().withPlugin(Plugin.class).build();
+		final PegDownProcessor proc = new PegDownProcessor(0, plugins);
 
-			// Instantiate Markdown Parser
-			final PegDownPlugins plugins = new PegDownPlugins.Builder().withPlugin(Plugin.class).build();
-			final PegDownProcessor proc = new PegDownProcessor(0, plugins);
-
-			// Parse and serialize content
-			final RootNode ast = proc.parseMarkdown(content.toCharArray());
-			final List<ToHtmlSerializerPlugin> serializePlugins = Arrays.asList((ToHtmlSerializerPlugin) (new Serializer(replacements)));
-			final ToHtmlSerializer serializer = new ToHtmlSerializer(new LinkRenderer(), serializePlugins);
-			
-			return serializer.toHtml(ast);
-		}
+		// Parse and serialize content
+		final RootNode ast = proc.parseMarkdown(text.toCharArray());
+		final List<ToHtmlSerializerPlugin> serializePlugins = Arrays.asList((ToHtmlSerializerPlugin) (new Serializer(replacements)));
+		final ToHtmlSerializer serializer = new ToHtmlSerializer(new LinkRenderer(), serializePlugins);
+		
+		return serializer.toHtml(ast);
 	}
 
 }

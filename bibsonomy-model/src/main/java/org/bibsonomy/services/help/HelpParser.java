@@ -40,5 +40,5 @@ public interface HelpParser {
 	 * @return the parsed content
 	 * @throws IOException
 	 */
-	public String parseFile(final String fileName) throws IOException;
+	public String parseText(final String fileName) throws IOException;
 }

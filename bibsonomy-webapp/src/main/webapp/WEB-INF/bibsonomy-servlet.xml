@@ -824,6 +824,7 @@
 				</bean>
 			</list>
 		</property>
+		<property name="adminLogic" ref="adminLogic"/>
 	</bean>
 
 	<bean id="downloadFileController" class="org.bibsonomy.webapp.controller.DownloadFileController" scope="request">

@@ -111,11 +111,10 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	public Post<R> getPostDetails(final String loginUserName, final String resourceHash, final String userName, final List<Integer> visibleGroupIDs, final DBSession session) {
 		if (present(userName)) {
 			return null; // TODO: think about this return
-
 		}
-
+		
 		final Post<R> post = this.getGoldStandardPostByHash(resourceHash, session);
-
+		
 		if (present(post)) {
 			final R goldStandard = post.getResource();
 			/*

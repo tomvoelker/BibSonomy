@@ -93,7 +93,7 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 
 	@Override
 	protected View finalRedirect(final String userName, final Post<BibTex> post, final String referer) {
-		return new ExtendedRedirectView(this.urlGenerator.getPublicationUrl(post.getResource(), null));
+		return new ExtendedRedirectView(this.urlGenerator.getResourceUrl(post.getResource()));
 	}
 
 	private static Post<BibTex> convertToGoldStandard(final Post<BibTex> post) {
