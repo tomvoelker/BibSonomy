@@ -49,7 +49,7 @@ public class GetTagsViewable extends TagChainElement {
 		final String requestedGroupName = param.getRequestedGroupName();
 		final String loginUserName = param.getUserName();
 		// retrieve ID of the requested group
-		final Integer groupId = this.groupDb.getGroupIdByGroupNameAndUserName(requestedGroupName, loginUserName, session);
+		final int groupId = this.groupDb.getGroupIdByGroupNameAndUserName(requestedGroupName, loginUserName, session).intValue();
 		if (groupId == GroupID.INVALID.getId()) {
 			log.debug("groupId " + requestedGroupName + " not found");
 			return Collections.emptyList();

@@ -98,7 +98,7 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
 
 	@Override
 	protected View finalRedirect(final String userName, final Post<Bookmark> post, final String referer) {
-		return new ExtendedRedirectView(this.urlGenerator.getBookmarkUrl(post.getResource(), null));
+		return new ExtendedRedirectView(this.urlGenerator.getResourceUrl(post.getResource()));
 	}
 
 	private Post<Bookmark> convertToGoldStandard(final Post<Bookmark> post) {

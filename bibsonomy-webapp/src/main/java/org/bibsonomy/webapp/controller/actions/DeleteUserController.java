@@ -65,7 +65,7 @@ public class DeleteUserController extends SettingsPageController implements Vali
 		 * go back to the settings page and display errors from command field
 		 * validation
 		 */
-		if (errors.hasErrors()) {
+		if (errors.hasErrors()  || command.getContext().isFirstCall()) {
 			return Views.SETTINGSPAGE;
 		}
 		

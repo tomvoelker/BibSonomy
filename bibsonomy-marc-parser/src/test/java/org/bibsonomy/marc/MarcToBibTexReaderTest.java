@@ -31,7 +31,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.ImportResource;
@@ -55,7 +54,7 @@ public class MarcToBibTexReaderTest extends AbstractDataDownloadingTestCase {
 		Collection<BibTex> bibs = reader.read(new ImportResource(new ClasspathResourceData("/hebis_data/HEB01711621X.marc", "application/marc")));
 		Collection<BibTex> springerBibs = reader.read(new ImportResource(new ClasspathResourceData("/marc_files/part29.dat", "application/marc")));
 		
-		// TODO: add asserts
+		// FIXME: add asserts
 		printStuff(bibs);
 	}
 
@@ -67,7 +66,7 @@ public class MarcToBibTexReaderTest extends AbstractDataDownloadingTestCase {
 
 	public void printIt(BibTex b) {
 		b.syncMiscFields();
-		System.out.println("############## new bibtex ######################");
+		/*System.out.println("############## new bibtex ######################");
 		System.out.println("BibtexKey:\t" 	+ b.getBibtexKey());
 		System.out.println("Misc:\t\t" 		+ b.getMisc());
 		System.out.println("Abstract:\t" 	+ b.getAbstract());
@@ -104,7 +103,7 @@ public class MarcToBibTexReaderTest extends AbstractDataDownloadingTestCase {
 		System.out.println("######## Misc Map ########:");
 		for(Map.Entry<String, String> entry : b.getMiscFields().entrySet()) {
 			System.out.println(entry.getKey() + ": \t\t" + entry.getValue());
-		}
+		}*/
 	}
 	
 	@Test

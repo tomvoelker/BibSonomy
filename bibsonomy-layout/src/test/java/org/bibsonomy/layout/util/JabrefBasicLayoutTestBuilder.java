@@ -77,18 +77,6 @@ public class JabrefBasicLayoutTestBuilder {
 	private static final String LAYOUT_ENTRYTYPE_SPLITSUFFIX = ""; //"xmlesc#";
 	private static final String LAYOUT_FILEEXTENSION = ".html"; //".layoutResult";
 	
-	
-	/*
-	 * 
-	 */
-	private String modifyLayout(String renderedLayout) {
-		
-		//renderedLayout = renderedLayout.replaceAll("<xxx>", "&ltxxx&gt");
-		//renderedLayout = renderedLayout.replaceAll("</xxx>", "&lt/xxx&gt");
-		
-		return renderedLayout;
-	}
-	
 	@Test
 	public void createBasicResultLayout() throws LayoutRenderingException, IOException, PersonListParserException {
 		AbstractJabRefLayout layout = RENDERER.getLayout(layoutName, "foo");
@@ -100,8 +88,6 @@ public class JabrefBasicLayoutTestBuilder {
 			
 			StringBuffer sb = RENDERER.renderLayout(layout, testCasePost, false);
 			String renderedLayout = sb.toString().replaceAll("\\r", "").trim();
-			
-			renderedLayout = modifyLayout(renderedLayout);
 			
 			File resultFile = new File(outputFolderPath + layoutName + LAYOUT_ENTRYTYPE_SPLIT  + LAYOUT_ENTRYTYPE_SPLITSUFFIX + entryType + LAYOUT_FILEEXTENSION);
 			resultFile.createNewFile();

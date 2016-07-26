@@ -44,7 +44,7 @@ import org.bibsonomy.common.exceptions.InvalidModelException;
 
 /**
  * Some methods for handling strings.
- * @author 
+ * @author rja
  */
 public class StringUtils {
 	
@@ -75,7 +75,7 @@ public class StringUtils {
 			} catch (UnsupportedEncodingException e) {}
 		}
 		return null;
-	}	
+	}
 	
 	/**
 	 * Calculates the MD5-Hash of a String s and returns it encoded as a hex
@@ -192,8 +192,19 @@ public class StringUtils {
 	 * @return result
 	 */
 	public static String removeNonNumbersOrLetters(final String str) {
+		return replaceNonNumbersOrLetters(str, "");
+	}
+	
+	/**
+	 * replace all non number and letters
+	 * @param str
+	 * @param replacement
+	 * @return the string with the replacements
+	 */
+	public static String replaceNonNumbersOrLetters(String str, final String replacement) {
 		if (str != null) {
-			return NON_NUMBERS_OR_LETTERS.matcher(str).replaceAll("");
+			str = str.trim();
+			return NON_NUMBERS_OR_LETTERS.matcher(str).replaceAll(replacement);
 		}
 		return "";
 	}

@@ -7,14 +7,10 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
-	<jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true" />
-	
 	
 	<c:if test="${not empty post.resource.interHash and post.resource.count > 0}">
-			<c:url var="otherPeopleUrl" value="${otherPostsUrlPrefix}${post.resource.interHash}" />
-			<buttons:singularPluralMsgVar var="title" key="post.meta.postsInSystem" count="${post.resource.count}"/>
-			<a href="${otherPeopleUrl}" title="${title}" class="numpostsbadge pull-right"><span class="badge">${post.resource.count}</span></a>
+		<c:url var="otherPeopleUrl" value="${relativeUrlGenerator.getResourceUrl(post.resource)}" />
+		<buttons:singularPluralMsgVar var="title" key="post.meta.postsInSystem" count="${post.resource.count}"/>
+		<a href="${otherPeopleUrl}" title="${title}" class="numpostsbadge pull-right"><span class="badge">${post.resource.count}</span></a>
 	</c:if>
-	
-	
 </jsp:root>

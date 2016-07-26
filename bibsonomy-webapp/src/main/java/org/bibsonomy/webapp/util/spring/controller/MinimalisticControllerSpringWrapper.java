@@ -149,6 +149,12 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 	@Override
 	protected boolean suppressValidation(final HttpServletRequest request, final Object command) {
 		final MinimalisticController<T> controller = (MinimalisticController<T>) request.getAttribute(CONTROLLER_ATTR_NAME);
+		
+		// Do not validate on first call
+		if (((T)command).getContext().isFirstCall()) {
+			return true;
+		}
+			
 		if (controller instanceof ValidationAwareController<?>) {
 			return !((ValidationAwareController<T>) controller).isValidationRequired((T)command);
 		}
@@ -203,7 +209,13 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		 * TODO: in the future this is hopefully no longer needed, since the wrapper
 		 * only exists to transfer request attributes into the command.
 		 */
-		command.setContext((RequestWrapperContext) request.getAttribute(RequestWrapperContext.class.getName()));
+		final RequestWrapperContext context = (RequestWrapperContext) request.getAttribute(RequestWrapperContext.class.getName());
+		command.setContext(context);
+		
+		/*
+		 * command has only been called previously, if HTTP-Method is POST
+		 */
+		context.setFirstCall(!request.getMethod().equals("POST"));
 
 		/*
 		 * set validator for this instance

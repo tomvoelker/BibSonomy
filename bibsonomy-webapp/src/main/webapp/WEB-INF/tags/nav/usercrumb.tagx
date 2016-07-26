@@ -18,7 +18,7 @@
 	</c:if>
 	<c:choose>
 		<c:when test="${not empty scope and scope ne 'LOCAL'}">
-			<c:set var="ownPage" value="false" />		
+			<c:set var="ownPage" value="false" />
 		</c:when>
 		<c:otherwise>
 			<c:set var="ownPage" value="${command.context.userLoggedIn and ((requestedUser eq loginUser) or empty requestedUser)}" />		

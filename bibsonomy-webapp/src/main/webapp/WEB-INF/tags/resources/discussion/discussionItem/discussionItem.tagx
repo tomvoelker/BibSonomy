@@ -23,13 +23,13 @@
 	<div class="media-left">
 		<c:choose>
 			<c:when test="${anonymous and not ownDiscussionItem}">
-				<a class="thumbnail img-thumbnail">
-					<img src="${resdir}/image/anonymous.png" alt="anonymous" class="media-object commentPicture" />
+				<a>
+					<img src="${resdir}/image/anonymous.png" alt="anonymous" class="media-object commentPicture img-circle" />
 				</a>
 			</c:when>
 			<c:otherwise>
-				<a href="/user/${fn:escapeXml(discussionItemUserName)}" class="thumbnail img-thumbnail" title="${displayUserName}">
-					<img src="/picture/user/${fn:escapeXml(discussionItemUserName)}" alt="userPicture" class="media-object commentPicture"/>
+				<a href="/user/${fn:escapeXml(discussionItemUserName)}" title="${displayUserName}">
+					<img src="/picture/user/${fn:escapeXml(discussionItemUserName)}" alt="userPicture" class="media-object img-circle commentPicture"/>
 				</a>
 			</c:otherwise>
 		</c:choose>

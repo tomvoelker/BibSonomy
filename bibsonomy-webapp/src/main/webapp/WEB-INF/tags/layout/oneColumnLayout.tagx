@@ -38,7 +38,7 @@
 			content="${content}"
 			heading="${heading}"
 			loginUser="${loginUser}"
-			pageTitle="${editPageTitle}" 
+			pageTitle="${pageTitle}" 
 			requPath="${requPath}" 
 			activeTab="${activeTab}"
 			noSidebar="${true}"

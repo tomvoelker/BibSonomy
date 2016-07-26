@@ -78,12 +78,12 @@ public class PublicationReferenceTag extends RequestContextAwareTag {
 		 * pattern. We can't use replace first, because the replacement also 
 		 * contains the pattern
 		 */
-		HashSet<String> replacedLinks = new HashSet<String>();
+		final Set<String> replacedLinks = new HashSet<String>();
 
 		boolean changed = false;
 		
 		while (matcher.find()) {
-			if(replacedLinks.contains(matcher.group(0))) {
+			if (replacedLinks.contains(matcher.group(0))) {
 				continue;
 			}
 			changed = true;
@@ -105,7 +105,7 @@ public class PublicationReferenceTag extends RequestContextAwareTag {
 			replacedLinks.add(matcher.group(0));
 		}
 		
-		if(changed) {
+		if (changed) {
 			text += "<div class=\"originalText\" style=\"display:none\">" + originalText + "</div>";
 		}
 		

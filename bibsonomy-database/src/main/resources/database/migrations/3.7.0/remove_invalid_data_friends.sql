@@ -1,0 +1,1 @@
+DELETE FROM friends WHERE f_user_name = '';

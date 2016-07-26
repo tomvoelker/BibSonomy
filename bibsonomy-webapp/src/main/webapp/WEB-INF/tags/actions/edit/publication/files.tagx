@@ -32,14 +32,12 @@
 					
 				
 					<div class="col-sm-9">
-						<ul class="documents">
+						<ul class="documents edit-added-files">
 							<c:forEach var="document" items="${command.post.resource.documents}">
 								<li>
 									<!-- link to document -->
-									<a class="document-filename" href="/documents/${command.post.resource.intraHash}/${mtl:encodePathSegment(command.post.user.name)}/${mtl:encodePathSegment(document.fileName)}"><c:out value="${document.fileName}"/></a>
-									<c:out value="  " /> <!-- TODO: use css -->
+									<a class="document-filename edit-added-files" href="/documents/${command.post.resource.intraHash}/${mtl:encodePathSegment(command.post.user.name)}/${mtl:encodePathSegment(document.fileName)}"><c:out value="${document.fileName}"/></a>
 									<!-- link for delete document -->
-									<!-- FIXME. use form! -->
 									<bs:linkButton onclick="return deleteFunction(this);" additionalClass="delete-document" href="/ajax/documents?intraHash=${command.intraHashToUpdate}&amp;fileName=${document.fileName}&amp;ckey=${ckey}&amp;temp=false&amp;action=delete" size="xsmall" style="defaultStyle" icon="times" />
 								</li>
 							</c:forEach>
@@ -84,23 +82,16 @@
 				<div class="alert alert-danger" style="display: none">
 					<span></span>
 				</div>
-				<div  class="form-group">
+				<div class="form-group">
 					
 					<label class="col-sm-3 control-label"><fmt:message key="post.bibtex.addedFiles"/></label>
-					
+
 					<div class="col-sm-9">
-						<ul class="documents"><!-- list of files !-->
+						<ul id="deleteLnks" data-title="${delete}" class="documents edit-added-files"><!-- list of files !-->
 							<c:if test="${not empty command.fileName}">
 								<c:forEach var="fileN" items="${command.fileName}" varStatus="status">
 									<li id="file_${status.count}">
 										<span class="documentFileName"><c:out value="${fn:substring(fileN, 64, fn:length(fileN))}"/></span>
-										
-										<!-- FIXME: deleteDocument() does not work -->
-										<a title="${delete}" class="deleteDocument" onclick="return deleteFunction(this);" href="/ajax/documents?fileHash=${fn:substring(fileN, 0, 64)}&amp;ckey=${ckey}&amp;temp=true&amp;action=delete">
-											<!-- <c:out value="${delete}"/> -->
-											<span class="fa fa-remove"><!--  --></span>
-										</a>
-										
 										<input type="hidden" class="tempFileName" value="${fn:escapeXml(fileN)}" name="fileName"/>
 									</li>
 									<!-- increase temporary file counter -->

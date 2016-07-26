@@ -1,0 +1,39 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion">
+	
+	<jsp:directive.attribute name="field" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="fieldKey" type="java.lang.String" required="false"/>
+	
+	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+	<jsp:directive.attribute name="communityPostExists" type="java.lang.Boolean" required="true"/>
+	
+	<c:if test="${not empty fieldKey}">
+		<fmt:message key="${fieldKey }" var="field" />
+	</c:if>
+	
+	<c:if test="${not empty loginUser.name}">
+		<c:choose>
+			<c:when test="${communityPostExists}">
+				<c:set var="link" value="${relativeUrlGenerator.getEditUrlOfPost(post)}" />
+			</c:when>
+			<c:otherwise>
+				<c:set var="link" value="${relativeUrlGenerator.getCopyUrlOfPost(post, false, true)}" />
+			</c:otherwise>
+		</c:choose>
+		<a href="${link}" class="btn btn-default btn-xs">
+			<fontawesome:icon icon="pencil" spaceAfter="5"/>
+			<fmt:message key="community.edit.field">
+				<fmt:param value="${field}"/>
+			</fmt:message>
+		</a>
+	</c:if>
+
+</jsp:root>
