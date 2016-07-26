@@ -134,6 +134,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 	}
 
 	/**
+	 * FIXME: move to logic
 	 * @param command
 	 */
 	private void deleteGroup(final AdminGroupViewCommand command) {
@@ -147,7 +148,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 					this.logic.updateGroup(groupToDelete, GroupUpdateOperation.REMOVE_INVITED, ms);
 				}
 			}
-
+			// TODO: why not remove all members that are not a dummy user? we do not need no admins, we will delete the group
 			if (GroupRole.DUMMY.equals(groupToDelete.getGroupMembershipForUser(groupToDelete.getName()).getGroupRole())) {
 				// NEW GROUP VARIANT
 				// this means that we have the dummy and the last administrator
@@ -160,12 +161,13 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 				// delete anybody who isn't a dummy or an admin
 				for (final GroupMembership ms : groupMembers) {
 					if (!ms.getUser().getName().equals(groupToDelete.getName()) && !ms.getGroupRole().equals(GroupRole.ADMINISTRATOR)) {
+						// TODO: log that the admin removed the user from the group
 						this.logic.updateGroup(groupToDelete, GroupUpdateOperation.REMOVE_MEMBER, ms);
 					}
 				}
 
 				groupMembers = groupToDelete.getMemberships();
-				for (int i = 2; i < groupMembers.size(); i++) {
+				for (int i = 2; i < groupMembers.size(); i++) { // FIXME: why starting at 2?
 					this.logic.updateGroup(groupToDelete, GroupUpdateOperation.REMOVE_MEMBER, groupMembers.get(i));
 				}
 				// At this point, we should only have 2 more members in this
@@ -184,7 +186,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 			command.setGroup(null);
 		} catch (final IllegalArgumentException ex) {
 			command.setAdminResponse("Could not delete group: " + ex);
-		} catch (final NullPointerException ex) {
+		} catch (final NullPointerException ex) { // FIXME: why caching a npe?
 			command.setAdminResponse("Group " + command.getGroup().getName() + " does not exist.");
 		}
 	}
