@@ -84,7 +84,7 @@
         			<!-- source and style always uppercase! -->
         			<c:if test="${citation.style=='ENDNOTE'}">
         				<div class="tab-pane" id="citation_EndNote">
-							<textarea style="width:100%;font-size:80%;border:none;" rows="15">
+				<textarea style="width:100%;font-size:80%;border:none;" rows="15" readonly="readonly">
 								<export:endnote post="${post}" escapeXml="${true}" />
 							</textarea>
 						</div>
