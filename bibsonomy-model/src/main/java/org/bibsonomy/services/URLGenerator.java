@@ -46,8 +46,10 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.FavouriteLayoutSource;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.user.settings.FavouriteLayout;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlBuilder;
 import org.bibsonomy.util.UrlUtils;
 
@@ -124,7 +126,6 @@ public class URLGenerator {
 	private static final String PUBLICATION_PREFIX = "bibtex";
 	private static final String RELEVANTFOR_PREFIX = "relevantfor";
 	private static final String SEARCH_PREFIX = "search";
-	private static final String SHARED_RESOURCE_SEARCH_PREFIX = "sharedResourceSearch";
 	private static final String SETTINGS_PREFIX = "settings";
 	private static final String TAG_PREFIX = "tag";
 	private static final String USER_PREFIX = "user";
@@ -310,13 +311,17 @@ public class URLGenerator {
 	/**
 	 * Constructs a bookmark URL for the given intraHash. If you have the
 	 * resource as object, please use {@link #getBookmarkUrl(Bookmark, User)}
-	 * 
-	 * @param intraHash
+	 * @param bookmark 
+	 * @param post 
 	 * @return The URL pointing to the post of that user for the bookmark
 	 *         represented by the given intrahash.
 	 */
-	public String getBookmarkUrlByIntraHash(final String intraHash) {
-		return this.getBookmarkUrlByIntraHashAndUsername(intraHash, null);
+	public String getBookmarkUrl(final Bookmark bookmark, Post<? extends Resource> post) {
+		final UrlBuilder builder = new UrlBuilder(this.projectHome);
+		builder.addPathElement(BOOKMARK_PREFIX);
+		builder.addPathElement(bookmark.getInterHash());
+		addParamsForCommunityPage(bookmark, post, builder);
+		return this.getUrl(builder.asString());
 	}
 
 	/**
@@ -430,22 +435,6 @@ public class URLGenerator {
 	}
 	
 	/**
-	 * @param favl
-	 * @param intraHash
-	 * @param userName
-	 * @return returns citation link
-	 */
-	public String getCitationUrlbyIntraHashUserName(FavouriteLayout favl, final String intraHash, final String userName){
-		String url =  "/" + LAYOUT_PREFIX + "/" + favl.getStyle().toLowerCase() + "/" + PUBLICATION_PREFIX + "/" + PUBLICATION_INTRA_HASH_ID + intraHash;
-		if (present(userName)) {
-			url += "/" + UrlUtils.encodePathSegment(userName);
-		}
-		return this.getUrl(url);
-	}
-	
-	
-	
-	/**
 	 * Constructs a concepts URL for the given name.
 	 * 
 	 * @param name
@@ -485,6 +474,84 @@ public class URLGenerator {
 		url += "/" + UrlUtils.encodePathSegment(tagName);
 
 		return this.getUrl(url);
+	}
+	
+	/**
+	 * @param post
+	 * @return edit url for the post
+	 */
+	public String getEditUrlOfPost(final Post<? extends Resource> post) {
+		final UrlBuilder urlBuilder = new UrlBuilder(this.projectHome);
+		final Resource resource = post.getResource();
+		urlBuilder.addPathElement(this.prefix).addPathElement(getEditUrlByResourceClass(resource.getClass()));
+		urlBuilder.addParameter("intraHashToUpdate", resource.getIntraHash());
+		
+		return this.getUrl(urlBuilder.asString());
+	}
+	
+	/**
+	 * @param post
+	 * @param ckey 
+	 * @return the delete url of the post
+	 */
+	public String getDeleteUrlOfPost(final Post<? extends Resource> post, final String ckey) {
+		final UrlBuilder urlBuilder = new UrlBuilder(this.projectHome);
+		urlBuilder.addPathElement("deletePost");
+		
+		final Resource resource = post.getResource();
+		if (ResourceFactory.isCommunityResource(resource)) {
+			urlBuilder.addParameter("resourceHash", resource.getInterHash());
+		} else {
+			urlBuilder.addParameter("resourceHash", resource.getIntraHash());
+			urlBuilder.addParameter("owner", post.getUser().getName());
+		}
+		urlBuilder.addParameter("ckey", ckey);
+		
+		return this.getUrl(urlBuilder.asString());
+	}
+	
+	/**
+	 * @param post
+	 * @return the copy url of the post for logged in user
+	 */
+	public String getCopyUrlOfPost(final Post<? extends Resource> post) {
+		return getCopyUrlOfPost(post, true, false);
+	}
+	/**
+	 * @param post
+	 * @param useSuperiorResourceClass 
+	 * @param forceCommunityResource 
+	 * @return the copy url for the community post
+	 */
+	public String getCopyUrlOfPost(final Post<? extends Resource> post, boolean useSuperiorResourceClass, boolean forceCommunityResource) {
+		final UrlBuilder urlBuilder = new UrlBuilder(this.projectHome);
+		final Resource resource = post.getResource();
+		Class<? extends Resource> resourceClass = resource.getClass();
+		if (useSuperiorResourceClass) {
+			resourceClass = ResourceFactory.findSuperiorResourceClass(resource);
+		}
+		
+		if (forceCommunityResource) {
+			resourceClass = ResourceFactory.findCommunityResourceClass(resource);
+		}
+		
+		urlBuilder.addPathElement(this.prefix).addPathElement(getEditUrlByResourceClass(resourceClass));
+		if (ResourceFactory.isCommunityResource(resource)) {
+			urlBuilder.addParameter("hash", resource.getInterHash());
+		} else {
+			urlBuilder.addParameter("hash", resource.getIntraHash());
+			urlBuilder.addParameter("user", post.getUser().getName());
+		}
+		
+		return this.getUrl(urlBuilder.asString());
+	}
+
+	/**
+	 * @param resourceClass
+	 * @return
+	 */
+	private static String getEditUrlByResourceClass(final Class<? extends Resource> resourceClass) {
+		return "edit" + StringUtils.capitalizeWord(ResourceFactory.getResourceName(resourceClass));
 	}
 	
 	/**
@@ -1052,6 +1119,20 @@ public class URLGenerator {
 			throw new UnsupportedResourceTypeException();
 		}
 	}
+	
+	/**
+	 * @param favl
+	 * @param intraHash
+	 * @param userName
+	 * @return returns citation link
+	 */
+	public String getCitationUrlbyIntraHashUserName(FavouriteLayout favl, final String intraHash, final String userName){
+		String url =  "/" + LAYOUT_PREFIX + "/" + favl.getStyle().toLowerCase() + "/" + PUBLICATION_PREFIX + "/" + PUBLICATION_INTRA_HASH_ID + intraHash;
+		if (present(userName)) {
+			url += "/" + UrlUtils.encodePathSegment(userName);
+		}
+		return this.getUrl(url);
+	}
 
 	/**
 	 * @return the projectHome
@@ -1081,6 +1162,75 @@ public class URLGenerator {
 		url += "/" + USER_PREFIX;
 		url += "/" + UrlUtils.encodePathSegment(userName);
 		return this.getUrl(url);
+	}
+
+	/**
+	 * @param resource
+	 * @return the link for the resource
+	 */
+	public String getResourceUrl(final Resource resource) {
+		return getResourceUrl(resource, null);
+	}
+	
+	/**
+	 * @param resource
+	 * @param post 
+	 * @return the link for the resource
+	 */
+	public String getResourceUrl(final Resource resource, final Post<? extends Resource> post) {
+		// XXX: not nice :(
+		if (resource instanceof Bookmark) {
+			return getBookmarkUrl((Bookmark) resource, post);
+		}
+		
+		if (resource instanceof BibTex) {
+			return getPublicationUrl((BibTex) resource, post);
+		}
+		
+		throw new UnsupportedResourceTypeException(resource.getClass().getName() + " not supported");
+	}
+	
+	/**
+	 * @param post
+	 * @return the resource url
+	 */
+	public String getResourceUrl(final Post<? extends Resource> post) {
+		final Resource resource = post.getResource();
+		return getResourceUrl(resource, post);
+	}
+	
+	/**
+	 * @param publication
+	 * @return the publication url
+	 */
+	public String getPublicationUrl(final BibTex publication) {
+		return this.getPublicationUrl(publication, (Post<? extends Resource>) null);
+	}
+	
+	/**
+	 * @param publication
+	 * @param post 
+	 * @return the interhash url
+	 */
+	public String getPublicationUrl(final BibTex publication, final Post<? extends Resource> post) {
+		final UrlBuilder builder = new UrlBuilder(this.projectHome);
+		builder.addPathElement(PUBLICATION_PREFIX);
+		builder.addPathElement(publication.getInterHash() + "_" + StringUtils.replaceNonNumbersOrLetters(StringUtils.foldToASCII(publication.getTitle()), "_"));
+		addParamsForCommunityPage(publication, post, builder);
+		return this.getUrl(builder.asString());
+	}
+	
+	/**
+	 * @param resource
+	 * @param post
+	 * @param builder
+	 */
+	private static void addParamsForCommunityPage(final Resource resource, final Post<? extends Resource> post, final UrlBuilder builder) {
+		final Integer ratingCount = resource.getNumberOfRatings();
+		if (present(ratingCount) && ratingCount.intValue() == 0 && present(post)) {
+			builder.addParameter("postOwner", post.getUser().getName());
+			builder.addParameter("intraHash", post.getResource().getIntraHash());
+		}
 	}
 
 	/**
@@ -1722,7 +1872,7 @@ public class URLGenerator {
 		final String url = this.projectHome + PUBLICATION_PREFIX + "/"
 				+ PUBLICATION_INTER_HASH_ID + interHash + "?postOwner="
 				+ UrlUtils.encodePathSegment(userName) + "&amp;intraHash="
-				+ intraHash + "#discussionbox";
+				+ intraHash + "#discussionbox"; //FIXME: # are not working in redirects
 		return this.getUrl(url);
 	}
 
@@ -1791,5 +1941,16 @@ public class URLGenerator {
 	
 	public String getPostPublicationUrl() {
 		return this.projectHome + URLGenerator.POST_PUBLICATION;
+	}
+
+	/**
+	 * @param helpPage
+	 * @param language
+	 * @return the help page
+	 */
+	public String getHelpPage(final String helpPage, final String language) {
+		final UrlBuilder builder = new UrlBuilder(this.projectHome + "new_help" + "_" + language);
+		builder.addPathElement(helpPage);
+		return this.getUrl(builder.asString());
 	}
 }
