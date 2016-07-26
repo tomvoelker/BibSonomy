@@ -29,8 +29,6 @@ package org.bibsonomy.database.managers;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.DuplicateEntryException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
@@ -57,9 +55,9 @@ import org.bibsonomy.services.searcher.PersonSearch;
  * @author Christian Pfeiffer / eisfair
  */
 public class PersonDatabaseManager  extends AbstractDatabaseManager {
-	private static final Log log = LogFactory.getLog(PersonDatabaseManager.class);
 
 	private final static PersonDatabaseManager singleton = new PersonDatabaseManager();
+	
 	private final GeneralDatabaseManager generalManager;
 	private final DatabasePluginRegistry plugins;
 	private PersonSearch personSearch;

@@ -709,10 +709,10 @@
 			<dependency>
 				<groupId>org.apache.ibatis</groupId>
 				<artifactId>ibatis-sqlmap</artifactId>
-				<!-- XXX: 2.1.0 is not the correct version, but we need a number in the 
-					version to host the jar on our repo -->
-				<version>2.1.0-SNAPSHOT</version>
-				<classifier>r737724</classifier>
+				<!-- XXX: 2.2.0 is not the correct version, but we need a number in the 
+					version to host the jar on our repo; ; classifier was r737724
+					2.2.0: moved asm to asm1 to use newer asm versions-->
+				<version>2.2.0-SNAPSHOT</version>
 				<exclusions>
 					<!-- xmlParserAPIs is an old jar file name from xerces (cf http://stackoverflow.com/questions/11677572/dealing-with-xerces-hell-in-java-maven 
 						) -->

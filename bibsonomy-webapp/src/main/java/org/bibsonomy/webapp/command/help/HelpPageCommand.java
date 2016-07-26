@@ -24,8 +24,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.webapp.command;
+package org.bibsonomy.webapp.command.help;
 
+import java.util.SortedSet;
+
+import org.bibsonomy.services.help.HelpSearchResult;
 import org.bibsonomy.webapp.command.actions.DownloadFileCommand;
 
 /**
@@ -54,6 +57,10 @@ public class HelpPageCommand extends DownloadFileCommand {
 	
 	/** the language */
 	private String language;
+	
+	private SortedSet<HelpSearchResult> searchResults;
+	
+	private String search;
 
 	/**
 	 * @return the helpPage
@@ -137,6 +144,34 @@ public class HelpPageCommand extends DownloadFileCommand {
 	 */
 	public void setLanguage(String language) {
 		this.language = language;
+	}
+
+	/**
+	 * @return the searchResults
+	 */
+	public SortedSet<HelpSearchResult> getSearchResults() {
+		return this.searchResults;
+	}
+
+	/**
+	 * @param searchResults the searchResults to set
+	 */
+	public void setSearchResults(SortedSet<HelpSearchResult> searchResults) {
+		this.searchResults = searchResults;
+	}
+
+	/**
+	 * @return the search
+	 */
+	public String getSearch() {
+		return this.search;
+	}
+
+	/**
+	 * @param search the search to set
+	 */
+	public void setSearch(String search) {
+		this.search = search;
 	}
 
 }

@@ -69,7 +69,7 @@ public class ResourceFactoryTest {
 		assertEquals(BibTex.class, ResourceFactory.getResourceClass("publication"));
 		assertEquals(BibTex.class, ResourceFactory.getResourceClass("PUBLICATION"));
 		
-		assertEquals(GoldStandardPublication.class, ResourceFactory.getResourceClass("goldStandardPublication"));
+		assertEquals(GoldStandardPublication.class, ResourceFactory.getResourceClass("goldstandardPublication"));
 		assertEquals(GoldStandardPublication.class, ResourceFactory.getResourceClass("GOLDSTANDARDPUBLICATION"));
 		
 		assertEquals(GoldStandardBookmark.class, ResourceFactory.getResourceClass("goldStandardBookmark"));

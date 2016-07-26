@@ -845,15 +845,28 @@
 		<from>^/+(bibtex|publication)/+([0-3])([0-9a-fA-F]{32})/$</from>
 		<to type="redirect" last="true">/$1/$2$3</to>
 	</rule>
+	<rule><!-- /[0-3][32]_TITLE -->
+		<name>/bibtex/SHASH_TITLE</name>
+		<from>^/+(bibtex|publication)/+([0-3])([0-9a-fA-F]{32})_(.+)$</from>
+		<set type="parameter" name="requestedHash">$2$3</set>
+		<set type="parameter" name="requestedTitle">$4</set>
+		<to last="true">/bibtex</to>
+	</rule>
 	<rule><!-- /[32] (arbitrary hash) defaults to simhash1 -->
 		<name>/bibtex/HASH</name>
 		<from>^/+(bibtex|publication)/+([0-9a-fA-F]{32})$</from>
 		<set type="parameter" name="requestedHash">1$2</set>
 		<to last="true">/bibtex</to>
 	</rule>
+	<rule><!-- /[32] (arbitrary hash) defaults to simhash1 -->
+		<name>/bibtex/HASH_TITLE</name>
+		<from>^/+(bibtex|publication)/+([0-9a-fA-F]{32})_(.+)$</from>
+		<set type="parameter" name="requestedHash">1$2</set>
+		<set type="parameter" name="requestedTitle">$3</set>
+		<to last="true">/bibtex</to>
+	</rule>
 	
-	
- 	<rule><!--/[32]/USERNAME -->
+	<rule><!--/[32]/USERNAME -->
 		<name>/history/RSCTYPE/HASH/USER</name>
 		<from>^/+history/+(.+)/+([0-9a-fA-F]{32})/+(.+)$</from>
 		<set type="parameter" name="requestedType">${unescapePath:$1}</set>
@@ -863,8 +876,8 @@
 	</rule>
 	
 	<!-- /[32] (arbitrary hash) defaults to simhash1 -->
- 	<rule>
- 		<name>/history/RSCTYPE/HASH</name>
+	<rule>
+		<name>/history/RSCTYPE/HASH</name>
 		<from>^/+history/+(.+)/+([0-9a-fA-F]{32})$</from>
 		<set type="parameter" name="requestedType">${unescapePath:$1}</set>
 		<set type="parameter" name="requestedHash">${unescapePath:$2}</set>
@@ -991,7 +1004,7 @@
 	<!-- ############## help ############### -->
 	<rule>
 		<name>Images below /help/</name>
-		<from>^/new_help/+([^/]+)/+(.+)((png)|(jpg)|(jpeg)|(gif)|(svg))$</from>
+		<from>^/new_help_+([^/]+)/+(.+)((png)|(jpg)|(jpeg)|(gif)|(svg))$</from>
 		<set type="parameter" name="language">${unescapePath:$1}</set>
 		<set type="parameter" name="filename">${unescapePath:$2$3}</set>
 		<to last="true">/help</to>
@@ -999,7 +1012,7 @@
 	
 	<rule>
 		<name>Subpages of /help/</name>
-		<from>^/new_help/+([^/]+)/?+(.*)</from>
+		<from>^/new_help_+([^/]+)/?+(.*)</from>
 		<set type="parameter" name="language">${unescapePath:$1}</set>
 		<set type="parameter" name="helpPage">${unescapePath:$2}</set>
 		<to last="true">/help</to>

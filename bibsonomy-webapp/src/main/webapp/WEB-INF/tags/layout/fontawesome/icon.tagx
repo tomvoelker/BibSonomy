@@ -7,6 +7,16 @@
 
 	<jsp:directive.attribute name="icon" type="java.lang.String" required="true" description="the font icon"/>
 	<jsp:directive.attribute name="fixedWidth" type="java.lang.Boolean" required="false" description="add space after icon"/>
+	<jsp:directive.attribute name="size" type="java.lang.String" required="false" description="size of the icon"/>
+	<jsp:directive.attribute name="spaceAfter" type="java.lang.Integer" required="false" description="space to be added after the icon. supported space: 5"/>
 	
-	<span class="fa fa-${icon} ${not empty fixedWidth and fixedWidth ? 'fa-fw' : ''}"><!-- keep me --></span>
+	<c:if test="${not empty size}">
+		<c:set var="size" value="fa-${size}" />
+	</c:if>
+	
+	<c:if test="${not empty spaceAfter}">
+		<c:set var="spaceAfter" value="fa-space-${spaceAfter}" />
+	</c:if>
+	
+	<span class="fa fa-${icon} ${not empty spaceAfter ? spaceAfter : ''} ${not empty fixedWidth and fixedWidth ? 'fa-fw' : ''} ${not empty size ? size : ''"><!-- keep me --></span>
 </jsp:root>

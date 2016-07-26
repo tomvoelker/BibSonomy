@@ -13,7 +13,7 @@ function addFriendClick() {
 	$(this).hide();
 	$(this).siblings('.removeFriend').show();
 	
-	var form = $(this).parent();
+	var form = $(this).closest('form');
 	form.find('input[name=action]').attr('value', 'addFriend');
 	$.post(form.attr('action'), form.serialize());
 	
@@ -24,7 +24,7 @@ function removeFriendClick() {
 	$(this).hide();
 	$(this).siblings('.addFriend').show();
 	
-	var form = $(this).parent();
+	var form = $(this).closest('form');
 	form.find('input[name=action]').attr('value', 'removeFriend');
 	$.post(form.attr('action'), form.serialize());
 	return false;
@@ -46,7 +46,7 @@ function followClick() {
 	$(this).hide();
 	$(this).siblings('.unfollow').show();
 	
-	var form = $(this).parent();
+	var form = $(this).closest('form');
 	form.find('input[name=action]').attr('value', 'addFollower');
 	$.post(form.attr('action'), form.serialize());
 	
@@ -57,7 +57,7 @@ function unfollowClick() {
 	$(this).hide();
 	$(this).siblings('.follow').show();
 	
-	var form = $(this).parent();
+	var form = $(this).closest('form');
 	form.find('input[name=action]').attr('value', 'removeFollower');
 	$.post(form.attr('action'), form.serialize());
 	

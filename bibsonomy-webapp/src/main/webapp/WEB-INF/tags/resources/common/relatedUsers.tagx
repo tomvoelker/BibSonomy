@@ -16,13 +16,13 @@
 		</fmt:message>
 		<ul class="list-inline community-page-user-list more-list" data-items="10" data-inline="true" data-message="${moreMessage}">
 			<c:forEach var="user" items="${userList}" varStatus="count">
-				<li>
-					<a title="@${fn:escapeXml(user.name)}" href="/user/${fn:escapeXml(user.name)}" class="thumbnail img-thumbnail img-responsive">
-						<img class="user-avatar" src="/picture/user/${fn:escapeXml(user.name)}" alt="@${fn:escapeXml(user.name)}" />
+				<li class="user-card">
+					<a title="@${fn:escapeXml(user.name)}" href="/user/${fn:escapeXml(user.name)}">
+						<img class="user-avatar img-circle" src="/picture/user/${fn:escapeXml(user.name)}" alt="@${fn:escapeXml(user.name)}" />
 					</a>
 					<c:if test="${not empty interHash}">
 						<fmt:message key="goldStandard.users.viewInCollection" var="viewCollection" />
-						<a title="${viewCollection}" href="${relativeUrlGenerator.getPublicationUrlByInterHashAndUsername(interHash, user.name)}" class="btn btn-sm btn-default btn-block"><fontawsome:icon icon="book" /></a>
+						<a title="${viewCollection}" href="${relativeUrlGenerator.getPublicationUrlByInterHashAndUsername(interHash, user.name)}" class="btn btn-xs btn-default btn-block"><fontawsome:icon icon="book" /></a>
 					</c:if>
 				</li>
 			</c:forEach>

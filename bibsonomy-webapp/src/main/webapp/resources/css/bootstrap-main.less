@@ -608,7 +608,7 @@ div#sidebar {
 	margin-right: -15px;
 	margin-top: -20px;
 	padding-top: 10px;
-	padding-right: 30px;
+	padding-right: 10px;
 	margin-left: 15px;
 	border-left: 1px @border-color solid;
 }
@@ -1343,6 +1343,38 @@ a.ui-corner-all:active {
 	float: right;
 }
 
+#groups .group-img {
+	width: 32px;
+	height: 32px;
+}
+
+.main .group-card, .main .user-card {
+	text-align: center;
+	padding-top: 10px;
+	
+	.group-img {
+		width: 96px;
+		height: 96px;
+	}
+	
+	.card-header {
+		text-align: center;
+	}
+	
+	h4 {
+		border: none;
+		margin-bottom: 2px;
+		
+		small {
+			margin-left: 5px;
+		}
+	}
+	
+	.user-card-cv {
+		margin-bottom: 5px;
+	}
+}
+
 #userImg > img {
 	margin: 7px;
 	padding: 5px;
@@ -1495,6 +1527,10 @@ ul#urlList {
 	top: 0;
 	left: 0;
 	overflow: hidden;
+}
+
+.fa-space-5 {
+	margin-right: 5px;
 }
 
 .btn-group-wrap-text {

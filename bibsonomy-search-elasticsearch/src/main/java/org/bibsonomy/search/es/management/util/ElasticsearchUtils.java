@@ -190,6 +190,9 @@ public final class ElasticsearchUtils {
 	 * @return the date as string
 	 */
 	public static String dateToString(final Date date) {
+		if (!present(date)) {
+			return "";
+		}
 		return DATE_TIME_FORMATTER.print(date.getTime());
 	}
 
