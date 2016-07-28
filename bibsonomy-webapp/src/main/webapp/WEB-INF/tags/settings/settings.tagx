@@ -179,7 +179,9 @@
 						<form:errors path="user.settings.listItemcount" />
 					</div>
 					
-					<!-- favourite layouts to be shown-->						
+					
+					<!-- favourite layouts to be shown-->	
+					<div class="form-group">					
 					<form:label cssClass="col-sm-3 control-label" path="user.settings.favouriteLayouts">
 							shown styles
 					</form:label>
@@ -209,8 +211,10 @@
 							</div>
 						</div>
 					</div>
+					</div>
 				
-					<!-- add layouts to list above -->				
+					<!-- add layouts to list above -->
+					<div class="form-group">			
 					<form:label cssClass="col-sm-3 control-label" path="user.settings.favouriteLayouts">
 							add styles
 					</form:label>
@@ -222,6 +226,7 @@
 						</div>
 					</div>
 					
+					</div>
 					<!-- displayed resources -->
 					<!-- new -->
 					<div class="form-group">
