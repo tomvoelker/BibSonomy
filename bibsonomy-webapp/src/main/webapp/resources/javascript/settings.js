@@ -10,6 +10,8 @@ $(function() {
 		$(this).children('.button-text').text(getString('groups.documentsharing.shared'));
 	});
 	
+	
+	$("#JSWarning").remove();
 	// a lot of typeahead configuration will follow
 	// --
 	

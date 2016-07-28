@@ -188,6 +188,9 @@
 					
 					<!-- shown style dropdown list including a nice and smooth animation -->
 					<div class="panel-group col-sm-9">
+						<div class="alert alert-warning" id="JSWarning">
+						For the following settings to work, JavaScript must be enabled.
+						</div>
 						<div class="panel panel-info">
 							<div class="panel-heading">
 								<h4 class="panel-title">
