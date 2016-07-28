@@ -292,6 +292,32 @@ $(function() {
 	})
 });
 
+
+// remove all added tags on modal dismiss
+$(document).ready(function() {
+	$('.tags-edit-link').on('click', function () {
+		var modalId = $(this).data('target'); 
+		$(modalId).on('hidden.bs.modal', function() {
+			var tagField = $(this).find('input.edit-tagsinput');
+			var allTags = $(tagField).tagsinput('items');
+			var oldTags = $(tagField).attr('value').split(' ');
+			// remove tags
+			$(allTags).each(function(i, tag) {
+				if ($.inArray(tag, oldTags) == -1) {
+					$(tagField).tagsinput('remove', tag, false);
+				}
+			});
+			// reset tags
+			$(oldTags).each(function(i, tag) {
+				if ($.inArray(tag, allTags) == -1) {
+					$(tagField).tagsinput('add', tag, false);
+				}
+			});			
+			$(this).off('hidden.bs.modal');
+		});
+	});
+});
+
 function viewForTag(tag, label) {
 	var item = $('<span class="label label-tag"></span>');
 	item.addClass('label-' + label);

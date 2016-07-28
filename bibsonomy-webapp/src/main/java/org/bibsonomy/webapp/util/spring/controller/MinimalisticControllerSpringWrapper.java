@@ -41,6 +41,7 @@ import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ReadOnlyDatabaseException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.rest.exceptions.UnsupportedMediaTypeException;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.ContextCommand;
 import org.bibsonomy.webapp.controller.ajax.AjaxController;
@@ -294,6 +295,9 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 			throw ex;
 		} catch (final ReadOnlyDatabaseException e) {
 			errors.reject("system.readOnly.notice");
+		} catch (final UnsupportedMediaTypeException e) {
+			response.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
+			errors.reject("system.error.unsupportedmediatype");
 		} catch (final Exception ex) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			errors.reject("error.internal", new Object[]{ex}, "Internal Server Error: " + ex.getMessage());

@@ -5,7 +5,7 @@
 	function updateAuthorsForTags() {
 		var authorsIdx 	= new Array()
 		var tagList		= document.searchform.tags;
-		var authorList 	= document.searchform.authors;		
+		var authorList 	= document.searchform.authors;
 		
 		// no tag selected = all tags
 		if (tagList.selectedIndex <= 0) {
@@ -18,47 +18,48 @@
 			
 			for (var i=1; i<options.length; i++) {
 				if (options[i].selected) {
-					if (!found) {						
+					if (!found) {
 						authorsIdx = tagAuthor[options[i].value];
 						found = true;
-					} else {													
-						if (getRadioValue("tag_op") == "and")
+					} else {
+						if (getRadioValue("tag_op") == "and") {
 							authorsIdx = intersect(authorsIdx,tagAuthor[options[i].value]);
-						else
-							authorsIdx = union(authorsIdx,tagAuthor[options[i].value]);
+						} else {
+							authorsIdx = union(authorsIdx, tagAuthor[options[i].value]);
+						}
 					}
 				}
-			}							
-		}	
+			}
+		}
 		
 		// fill list with authors
 
-		authorsIdx = authorsIdx.sort(comparator);	
-		authorList.length = 0;		
+		authorsIdx = authorsIdx.sort(comparator);
+		authorList.length = 0;
 		authorList.options[0] = new Option(getString('options.authors'), -1);
 		
 		for (var i=0; i<authorsIdx.length; i++) {
-			authorList.options[i+1] = new Option(authors[authorsIdx[i]],authorsIdx[i]);		
-		}		
-		authorList.selectedIndex = 0;	
-	}	
+			authorList.options[i+1] = new Option(htmlDecode(authors[authorsIdx[i]]), authorsIdx[i]);
+		}
+		authorList.selectedIndex = 0;
+	}
 	
 	/**
 	* updates the title list 
 	**/
-	function updateTitles() {		
+	function updateTitles() {
 		var tagsTitles		= new Array();
 		var authorsTitles 	= new Array();
 		
-		var tagList		= document.searchform.tags;
-		var authorList 	= document.searchform.authors;			
+		var tagList = document.searchform.tags;
+		var authorList = document.searchform.authors;
 		
 		// no tags and authors selected --> all titles
 		if (tagList.selectedIndex <= 0 && authorList.selectedIndex <= 0) {
 			titlesIdx.length = 0;
 			for (var i=0; i<titles.length; i++) {
 				titlesIdx[titlesIdx.length] = i;
-			}			
+			}
 		} else {
 			// titles from tags	
 			if (tagList.selectedIndex <= 0) {
@@ -67,13 +68,13 @@
 				}
 			} else {
 				var options = tagList.options;
-				var found = false;				
+				var found = false;
 				for (var i=1; i<options.length; i++) {
 					if (options[i].selected) {
-						if (!found) {						
+						if (!found) {
 							tagsTitles = tagTitle[options[i].value];
 							found = true;
-						} else {													
+						} else {
 							if (getRadioValue("tag_op") == "and")
 								tagsTitles = intersect(tagsTitles,tagTitle[options[i].value]);
 							else
@@ -85,18 +86,18 @@
 			
 			// titles from authors
 			if (authorList.selectedIndex <= 0) {
-				for (var i=0; i<titles.length; i++) {
+				for (var i = 0; i < titles.length; i++) {
 					authorsTitles[authorsTitles.length] = i;
 				}
 			} else {
 				var options = authorList.options;
-				var found = false;			
+				var found = false;
 				for (var i=1; i<options.length; i++) {
 					if (options[i].selected) {
-						if (!found) {						
+						if (!found) {
 							authorsTitles = authorTitle[options[i].value];
 							found = true;
-						} else {													
+						} else {
 							if (getRadioValue("author_op") == "and")
 								authorsTitles = intersect(authorsTitles,authorTitle[options[i].value]);
 							else
@@ -107,25 +108,25 @@
 			}
 			
 			// intersection of both sets
-			titlesIdx = intersect(tagsTitles,authorsTitles);			
-		}			
+			titlesIdx = intersect(tagsTitles,authorsTitles);
+		}
 		titlesIdx = titlesIdx.sort(comparator);	
-	}			
-		
+	}
+	
 	/**
 	* shows titles in the list
 	**/	
-	function showTitleList() {		
+	function showTitleList() {
 		removeAllChildren('resultlist');
 		
-		var results = 0;	
+		var results = 0;
 		var k=0;
 		for (var i=0;i<titlesIdx.length;i++) {
 			var t = titles[titlesIdx[i]];
 			var opt;
 			var auth = titleAuthorStringArray[titlesIdx[i]];
 			var my_tags = titleTag[titlesIdx[i]];
-			if (filter(t + " " + auth + " " + my_tags)) {				
+			if (filter(t + " " + auth + " " + my_tags)) {
 				appendRow(trim(t, 90), trim(auth, 80), contentIds[titlesIdx[i]], titleUrls[titlesIdx[i]]);
 				k++;
 				results++;
@@ -163,13 +164,13 @@
 		
 		// taglist
 		for (var i=0; i<tags.length; i++) {
-			var tag = new Option(tags[i],i);
+			var tag = new Option(htmlDecode(tags[i]), i);
 			taglist.options[i+1] = tag;
 		}
 		
 		// authorlist
 		for (var i=0; i<authors.length; i++) {
-			var author = new Option(authors[i],i);
+			var author = new Option(htmlDecode(authors[i]), i);
 			authorlist.options[i+1] = author;
 		}
 		
@@ -181,7 +182,7 @@
 		
 		// default select		
 		taglist.selectedIndex 	 = 0;
-		authorlist.selectedIndex = 0;	
+		authorlist.selectedIndex = 0;
 		
 		// update number of search results
 		displayResults(titles.length);
@@ -200,7 +201,7 @@
 
 		if (node.hasChildNodes()) {
 		    while (node.childNodes.length >= 1) {
-		        node.removeChild( node.firstChild );       
+		        node.removeChild( node.firstChild );
 		    } 
 		}
 	}
@@ -208,26 +209,26 @@
 	/**
 	* appends a row in search result list with given information 
 	**/
-	function appendRow(title, authors, bibtexhash, url) {		
+	function appendRow(title, authors, bibtexhash, url) {
 		// FIXME: mysearch groups: currUser wrong (user of post)
 		var table = document.getElementById("resultlist");
 		var tr = document.createElement("tr");
 		
-		var titletd = document.createElement("td");			
+		var titletd = document.createElement("td");
 		titletd.onclick = function() {checkForm(bibtexhash);}
 		
-		var div1 = document.createElement("div");	
-		div1.style.fontSize = "90%";		
+		var div1 = document.createElement("div");
+		div1.style.fontSize = "90%";
 		
-		var span1 = document.createElement("span");	
+		var span1 = document.createElement("span");
 		span1.style.fontSize = "80%";
 		
-		var linktd = document.createElement("td");	
+		var linktd = document.createElement("td");
 		linktd.style.borderBottom = "1px solid #BBBBBB";
-		linktd.style.textAlign = "right";		
-		linktd.style.fontSize = "70%";	
+		linktd.style.textAlign = "right";
+		linktd.style.fontSize = "70%";
 		
-		var link = document.createElement("a");	
+		var link = document.createElement("a");
 		link.className="litem";
 		link.innerHTML = getString("bibtex.actions.bibtex");
 		link.href = "/bib/bibtex/" + simHashID + bibtexhash + "/" + currUser;
@@ -243,7 +244,7 @@
 		if (url != "") {
 			var urllink = document.createElement("a");
 			urllink.className="litem";
-			urllink.href = url;		
+			urllink.href = url;
 			urllink.title = getString("bibtex.actions.url.title");
 			urllink.innerHTML = getString("bibtex.actions.url");
 		} else {
@@ -252,21 +253,21 @@
 			urllink.title = getString("bibtex.actions.url.inactive");
 			urllink.innerHTML = getString("bibtex.actions.url");
 		}
-				
-		div1.innerHTML = title;	
-		span1.innerHTML = authors;				
-		titletd.appendChild(div1);					
+		
+		div1.innerHTML = title;
+		span1.innerHTML = authors;
+		titletd.appendChild(div1);
 		titletd.appendChild(span1);
-					
+		
 		linktd.appendChild(link);
 		linktd.appendChild(pick);
 //		if (url != "") {
-			linktd.appendChild(urllink);			
+			linktd.appendChild(urllink);
 //		}	
-					
-		tr.appendChild(titletd);	
-		tr.appendChild(linktd);	
-				
+		
+		tr.appendChild(titletd);
+		tr.appendChild(linktd);
+		
 		table.appendChild(tr);
 	}
 	
@@ -287,17 +288,17 @@
 		for (var i=0; i<x.length; i++) {
 			if (found["a" + x[i]] != 1) {
 				result[result.length] = x[i];
-				found["a" + x[i]] = 1;			
-			}			
-		} 			
+				found["a" + x[i]] = 1;
+			}
+		}
 		for (var i=0; i<y.length; i++) {
 			if (found["a" + y[i]] != 1) {
 				result[result.length] = y[i];
-				found["a" + y[i]] = 1;			
-			}			
-		} 		
+				found["a" + y[i]] = 1;
+			}
+		}
 		return result.sort(comparator);	
-	}	
+	}
 	
 	/**
 	* returns intersection of 2 sets (arrays)
@@ -324,7 +325,7 @@
 		var filter_field = document.searchform.filter;
 		filter_field.className = ((filter_field.className.length > 0)?filter_field.className+' ':'')+'descriptiveLabel';
 		filter_field.value = getString("mysearch.option.filter.text");
-	}		
+	}
 	
 	/**
 	* returns the value of an radiobutton(group) in our form
@@ -333,7 +334,7 @@
 		for(i=0;i<document.searchform[radioName].length;i++){
 			if (document.searchform[radioName][i].checked == true)
 				return document.searchform[radioName][i].value;
-		}	
+		}
 	}
 	
 	/**
@@ -377,6 +378,12 @@
 			for (var j=0; j<authorIds.length; j++) {
 				temp[temp.length] = authors[authorIds[j]];
 			}
-			titleAuthorStringArray[i] = temp.join(", ");			
-		}		
+			titleAuthorStringArray[i] = temp.join(", ");
+		}
 	}
+
+function htmlDecode(input){
+	var e = document.createElement('div');
+	e.innerHTML = input;
+	return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+}

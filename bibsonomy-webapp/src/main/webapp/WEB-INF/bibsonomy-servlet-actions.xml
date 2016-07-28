@@ -165,6 +165,7 @@
 						<property name="controllerBeanName" value="passwordReminderController"/>
 						<property name="allowedFields">
 							<list>
+								<value>ckey</value>
 								<value>userName</value>
 								<value>userEmail</value>
 								<value>acknowledgeOpenIDDeletion</value>
@@ -179,6 +180,7 @@
 						<property name="controllerBeanName" value="passwordChangeOnRemindController"/>
 						<property name="allowedFields">
 							<list>
+								<value>ckey</value>
 								<value>userName</value>
 								<value>newPassword</value>
 								<value>passwordCheck</value>
