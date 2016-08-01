@@ -1876,7 +1876,7 @@ public class URLGenerator {
 	 * @return String
 	 */
 	public String getPersonUrl(final String personId) {
-		UrlBuilder url = new UrlBuilder(this.projectHome + URLGenerator.PERSON_PREFIX);
+		final UrlBuilder url = new UrlBuilder(this.projectHome + URLGenerator.PERSON_PREFIX);
 		url.addPathElement(personId);
 		return this.getUrl(url.asString());
 	}
