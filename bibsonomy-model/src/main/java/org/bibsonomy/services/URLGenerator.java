@@ -1180,7 +1180,12 @@ public class URLGenerator {
 	public String getPublicationUrl(final BibTex publication, final Post<? extends Resource> post) {
 		final UrlBuilder builder = new UrlBuilder(this.projectHome);
 		builder.addPathElement(PUBLICATION_PREFIX);
-		builder.addPathElement(publication.getInterHash() + "_" + StringUtils.replaceNonNumbersOrLetters(StringUtils.foldToASCII(publication.getTitle()), "_"));
+		final String title = publication.getTitle();
+		String path = publication.getInterHash();
+		if (present(title)) {
+			path += "_" + StringUtils.replaceNonNumbersOrLetters(StringUtils.foldToASCII(title).trim(), "_");
+		}
+		builder.addPathElement(path);
 		addParamsForCommunityPage(publication, post, builder);
 		return this.getUrl(builder.asString());
 	}
