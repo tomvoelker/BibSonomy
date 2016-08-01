@@ -58,7 +58,7 @@
 			<c:set var="lastName" value="${person.lastName}" />
 			<c:choose>
 				<c:when test="${not empty firstName and not empty lastName}">
-					<c:set var="personName" value="${fn:substring(person.firstName, 0, 1)}. ${lastName}" />
+					<c:set var="personName" value="${fn:substring(mtl:cleanBibtex(person.firstName), 0, 1)}. ${mtl:cleanBibtex(lastName)}" />
 				</c:when>
 				<c:otherwise>
 					<c:set var="personName" value="${lastName}" />
