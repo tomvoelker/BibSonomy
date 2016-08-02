@@ -26,7 +26,7 @@
 		<c:set var="isCommunityPost" value="${false}" />
 	</c:if>
 	
-	
+	<script type="text/javascript" src="${resdir}/javascript/favouriteLayoutLoader.js"><!-- keep me --></script>
 	<div class="citation-box">
 		<ul class="nav nav-tabs">
 			<c:forEach items="${command.context.loginUser.settings.favouriteLayouts}" var="citation">
@@ -49,8 +49,8 @@
         		<c:if test="${(citation.source=='JABREF') || (citation.source=='CSL')}">
         			<li>
 						<c:set var="exportUrl" value="${relativeUrlGenerator.getPostUrl(citation, post)}?formatEmbedded=true&amp;items=1" />
-						<!-- don't forget to use displayName!!!!!!!! -->
-						<a data-toggle="tab" href="#citation_${citation.style}" data-formatUrl="${exportUrl}">
+						<!-- don't forget to use displayName! -->
+						<a class="favouriteLayoutDisplayName" source="${citation.source}" style="${citation.style}" data-toggle="tab" href="#citation_${citation.style}" data-formatUrl="${exportUrl}">
 							${citation.displayName}
 						</a>
 					</li>

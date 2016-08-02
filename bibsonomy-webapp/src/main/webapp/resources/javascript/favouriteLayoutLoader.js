@@ -3,7 +3,7 @@
  */
 
 var ellipsis = "...";
-var lengthToBeTrimmed = 30;
+var lengthToBeTrimmed = 40;
 
 function trimLength(text, maxLength)
 {
