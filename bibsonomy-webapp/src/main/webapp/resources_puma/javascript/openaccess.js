@@ -1,3 +1,4 @@
+// FIXME: extract jquery.dump.js
 /**
  * jquery.dump.js
  * @author Torkild Dyvik Olsen
@@ -330,12 +331,12 @@ function sentPublicationToRepository (elementId, intraHash){
 						});
 
 						s.appendChild(document.createTextNode(data.response.localizedMessage));
-						$('#pumaSword').append(s);						
+						$('#pumaSword').append(s);
 					
 						swordResponseStatusCode = data.response.statuscode;
 						
 						// on error enable button
-						if (data.response.statuscode == 0) {				
+						if (data.response.statuscode == 0) {
 							$(elementId).removeClass("oadisabledsend2repositorybutton");
 							document.getElementById(elementId).disabled = false; 
 						}
@@ -354,19 +355,14 @@ function sentPublicationToRepository (elementId, intraHash){
 			}
 		});
 	} // end of if ($('#authorcontractconfirm').checked)
-
-	
-
-
 }
 
 
 /* open access check */
 /* TODO: add error handling, check apicontrol and outcome in response. */
 function checkOpenAccess () {
-	
-	if ($("#oasherparomeo").length>0) {		
-		var container = $("#oasherparomeo");	
+	if ($("#oasherparomeo").length>0) {
+		var container = $("#oasherparomeo");
 		
 		// TODO: add progress animation
 		var url = oaBaseUrl+$("#oaRequestPublisherUrlParameter").val();
