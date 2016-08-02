@@ -1,6 +1,24 @@
 /**
  *  @author jp
  */
+
+var ellipsis = "...";
+var lengthToBeTrimmed = 30;
+
+function trimLength(text, maxLength)
+{
+    text = $.trim(text);
+
+    if (text.length > maxLength)
+    {
+        text = text.substring(0, maxLength - ellipsis.length)
+        return text.substring(0, text.lastIndexOf(" ")) + ellipsis;
+    }
+    else
+        return text;
+}
+
+
 $(function() {
 	var placeholders = [];
 	$(".favouriteLayoutDisplayName").each(function() {
@@ -36,7 +54,8 @@ $(function() {
 						$(".favouriteLayoutDisplayName").each(function() {
 							if($(this).attr("source").toUpperCase() == "JABREF"){
 								if(jabRefData.layouts[prop].name.toUpperCase() == $(this).attr("style").toUpperCase()){
-									$(this).text(jabRefData.layouts[prop].displayName);
+									$(this).text(trimLength(jabRefData.layouts[prop].displayName, lengthToBeTrimmed));
+									$(this).removeClass("favouriteLayoutDisplayName");
 								}
 							}
 						});
@@ -55,7 +74,8 @@ $(function() {
 						$(".favouriteLayoutDisplayName").each(function() {
 							if($(this).attr("source").toUpperCase() == "CSL"){
 								if(cslData.layouts[prop].name.toUpperCase() == $(this).attr("style").toUpperCase()){
-									$(this).text(cslData.layouts[prop].displayName);
+									$(this).text(trimLength(cslData.layouts[prop].displayName, lengthToBeTrimmed));
+									$(this).removeClass("favouriteLayoutDisplayName");
 								}
 							}
 						});
