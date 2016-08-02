@@ -55,7 +55,7 @@ import de.unikassel.puma.openaccess.sherparomeo.model.Romeoapi;
 public class SherpaRomeoImpl implements SherpaRomeoInterface {
 	private static final Log log = LogFactory.getLog(SherpaRomeoImpl.class);
 
-	private static final String SHERPA_API_URL = "http://www.sherpa.ac.uk/romeo/api24.php";
+	private static final String SHERPA_API_URL = "http://www.sherpa.ac.uk/romeo/api29.php";
 	
 	private JAXBContext context;
 	
