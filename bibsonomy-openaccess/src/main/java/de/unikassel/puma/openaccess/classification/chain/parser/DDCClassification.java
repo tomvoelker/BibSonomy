@@ -130,7 +130,6 @@ public class DDCClassification extends ClassificationTextParser {
 	
 	@Override
 	public String getDelimiter() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
