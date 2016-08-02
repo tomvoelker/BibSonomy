@@ -173,7 +173,7 @@
 						</ul>
 					</li>
 					
-					<c:if test="${genealogy.visible}">
+					<c:if test="${properties['genealogy.activated'] eq 'true'}">
 						<li class="${activeTab eq 'persons' ? 'active' : ''}"><a href="${relativeUrlGenerator.getPersonsUrl()}"><fmt:message key="navi.persons"/></a></li>
 					</c:if>
 					
