@@ -30,6 +30,7 @@
 			<script type="text/javascript" src="${resdir}/javascript/profile/handlers.js"><!-- --></script>			
 			<script type="text/javascript" src="${resdir}/typeahead.js/js/typeahead.bundle.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/settings.js"><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/javascript/favouriteLayoutLoader.js"><!-- keep me --></script>
 			
 			<link rel="stylesheet" type="text/css" href="${resdir}/typeahead.js/css/typeahead.css"/>
 		</jsp:attribute>
