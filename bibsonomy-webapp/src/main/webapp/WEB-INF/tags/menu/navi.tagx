@@ -173,7 +173,9 @@
 						</ul>
 					</li>
 					
-					<li class="${activeTab eq 'persons' ? 'active' : ''}"><a href="${relativeUrlGenerator.getPersonsUrl()}"><fmt:message key="navi.persons"/></a></li>
+					<c:if test="${properties['genealogy.activated'] eq 'true'}">
+						<li class="${activeTab eq 'persons' ? 'active' : ''}"><a href="${relativeUrlGenerator.getPersonsUrl()}"><fmt:message key="navi.persons"/></a></li>
+					</c:if>
 					
 					<c:if test="${loginUser.role eq 'ADMIN' }">
 						<li class="dropdown ${activeTab eq 'admin' ? 'active' : ''}" data-touch="false">
