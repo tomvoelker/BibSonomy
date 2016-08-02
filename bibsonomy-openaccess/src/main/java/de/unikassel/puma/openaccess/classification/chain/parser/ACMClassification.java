@@ -128,13 +128,11 @@ public class ACMClassification extends ClassificationXMLParser {
 	
 	@Override
 	public void endElement (final String uri, final String name, final String qName) throws SAXException {
-		if(this.skip) {
-			
-			if(qName.equals(this.skipElement)) {
+		if (this.skip) {
+			if (qName.equals(this.skipElement)) {
 				this.skip = false;
 				this.skipElement = "";
 			}
-			
 		} else if(present(this.startNode)) {
 			this.classificate(this.startNode, this.startDescription);
 			this.startNode = this.startDescription = "";
@@ -150,7 +148,7 @@ public class ACMClassification extends ClassificationXMLParser {
 		final int delimiter = name.indexOf('.') +1;
 		String actual;
 		
-		if(delimiter != 0) {
+		if (delimiter != 0) {
 			actual = name.substring(0, delimiter);
 			name = name.substring(delimiter, name.length());
 		} else {
@@ -158,15 +156,12 @@ public class ACMClassification extends ClassificationXMLParser {
 			name = "";
 		}
 	
-		if(object.getChildren().containsKey(actual)) {
+		if (object.getChildren().containsKey(actual)) {
 			this.requClassificate(name, description, object.getChildren().get(actual));
-		
 		} else {
-
-			if(name.isEmpty()) {
+			if (name.isEmpty()) {
 				final ClassificationObject co = new ClassificationObject(actual, description);
 				object.addChild(actual, co);
-				
 			} else {
 				final ClassificationObject co = new ClassificationObject(actual, description);
 				object.addChild(actual, co);
@@ -175,28 +170,11 @@ public class ACMClassification extends ClassificationXMLParser {
 		}
 	}
 	
-	/*
-	private String removeUnusedChars(String name) {
-		StringBuffer str = new StringBuffer(name);
-		
-		int i = 0;
-		while(i < str.length()) {
-			if(str.charAt(i) == '.') {
-				str.deleteCharAt(i);
-				continue;
-			}
-			i++;
-		}
-		
-		return str.toString();
-	}
-	*/
-	
 	private void classificate(String name, final String description) {
 		final int delimiter = name.indexOf('.') +1;
 		String actual;
 		
-		if(delimiter != 0) {
+		if (delimiter != 0) {
 			actual = name.substring(0, delimiter);
 			name = name.substring(delimiter, name.length());
 		} else {
@@ -204,7 +182,7 @@ public class ACMClassification extends ClassificationXMLParser {
 			name = "";
 		}
 	
-		if(this.classifications.containsKey(actual)) {
+		if (this.classifications.containsKey(actual)) {
 			this.requClassificate(name, description, this.classifications.get(actual));
 		} else {
 			
@@ -223,6 +201,5 @@ public class ACMClassification extends ClassificationXMLParser {
 	public String getDelimiter() {
 		return DELIMITER;
 	}
-
 
 }
