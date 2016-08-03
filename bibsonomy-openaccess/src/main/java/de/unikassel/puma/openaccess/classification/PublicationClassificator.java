@@ -33,8 +33,6 @@ import java.io.FileFilter;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -101,70 +99,67 @@ public class PublicationClassificator {
 		cceList.add(new ClassificationXMLChainElement(new ACMClassification()));
 		cceList.add(new ClassificationTextChainElement(new DDCClassification()));
 		
-		try {
-			final URL resource = PublicationClassificator.class.getClassLoader().getResource("classifications");
-			final File path = new File(resource.toURI());
-			
-			if (path.isDirectory()) {
-				final File[] files = path.listFiles(new FileFilter() {
-					
-					@Override
-					public boolean accept(final File file) {
-						if (file.isDirectory()) {
-							return false;
-						}
-						
-						if (!file.toString().endsWith(".properties")) {
-							return true;
-						}
-						
+		
+		final String absolutePath = PublicationClassificator.class.getClassLoader().getResource("classifications").toExternalForm();
+		final File path = new File(absolutePath);
+		
+		if (path.isDirectory()) {
+			final File[] files = path.listFiles(new FileFilter() {
+				
+				@Override
+				public boolean accept(final File file) {
+					if (file.isDirectory()) {
 						return false;
 					}
-				});
-				
-				for (final File f : files) {
-					try {
-						Classification c = null;
-						
-						for (int i = 0; (i < cceList.size()) && !present(c); ++i) {
-							c = cceList.get(i).getClassification(f.toURI().toURL());
-						}
-						
-						if (!present(c)) {
-							log.error("Unable to parse " + f.getName());
-							continue;
-						}
-						
-						log.info("Found Classification " + c.getClassName());
-						
-						//try to read values from .properties file
-						try {
-							final Properties properties = new Properties();
-							final org.bibsonomy.model.Classification classification = new org.bibsonomy.model.Classification();
-							
-							properties.load(new FileReader(f.getAbsolutePath().substring(0,f.getAbsolutePath().length() - 4) + ".properties"));
-							
-							classification.setName(properties.getProperty("name"));
-							classification.setDesc(properties.getProperty("desc"));
-							classification.setUrl(properties.getProperty("url"));
-							
-							this.classifications.put(classification, c);
-							
-						} catch (final IOException e) {
-							//no .properties file found, use the file name
-							final org.bibsonomy.model.Classification classification = new org.bibsonomy.model.Classification();
-							classification.setName(f.getName().substring(0,f.getName().length()-4));
-							this.classifications.put(classification, c);
-						}
-					} catch (final MalformedURLException e) {
-						log.error("error converting file url", e);
-					} catch (final IOException e) {
-						log.error("error loading classification", e);
+					
+					if (!file.toString().endsWith(".properties")) {
+						return true;
 					}
+					
+					return false;
+				}
+			});
+			
+			for (final File f : files) {
+				try {
+					Classification c = null;
+					
+					for (int i = 0; (i < cceList.size()) && !present(c); ++i) {
+						c = cceList.get(i).getClassification(f.toURI().toURL());
+					}
+					
+					if (!present(c)) {
+						log.error("Unable to parse " + f.getName());
+						continue;
+					}
+					
+					log.info("Found Classification " + c.getClassName());
+					
+					//try to read values from .properties file
+					try {
+						final Properties properties = new Properties();
+						final org.bibsonomy.model.Classification classification = new org.bibsonomy.model.Classification();
+						
+						properties.load(new FileReader(f.getAbsolutePath().substring(0,f.getAbsolutePath().length() - 4) + ".properties"));
+						
+						classification.setName(properties.getProperty("name"));
+						classification.setDesc(properties.getProperty("desc"));
+						classification.setUrl(properties.getProperty("url"));
+						
+						this.classifications.put(classification, c);
+						
+					} catch (final IOException e) {
+						//no .properties file found, use the file name
+						final org.bibsonomy.model.Classification classification = new org.bibsonomy.model.Classification();
+						classification.setName(f.getName().substring(0,f.getName().length()-4));
+						this.classifications.put(classification, c);
+					}
+				} catch (final MalformedURLException e) {
+					log.error("error converting file url", e);
+				} catch (final IOException e) {
+					log.error("error loading classification", e);
 				}
 			}
-		} catch (final URISyntaxException e) {
-			log.error("failed to load publication classifications", e);
 		}
 	}
 	
