@@ -288,7 +288,7 @@ $(function() {
 			});
 	
 	$('#loginModal').on('shown.bs.modal', function (e) {
-		$('#loginModal').find('input:first').focus();
+		$('#loginModal').find('form:first').find('input:first').focus();
 	})
 });
 

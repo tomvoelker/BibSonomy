@@ -148,11 +148,24 @@ public final class ElasticsearchUtils {
 	public static Map<String, Object> serializeSearchIndexState(SearchIndexSyncState state) {
 		final Map<String, Object> values = new HashMap<>();
 		values.put(LAST_TAS_KEY, state.getLast_tas_id());
-		values.put(LAST_LOG_DATE_KEY, Long.valueOf(state.getLast_log_date().getTime()));
+		final Date lastLogDate = getDateForIndex(state.getLast_log_date());
+		values.put(LAST_LOG_DATE_KEY, Long.valueOf(lastLogDate.getTime()));
 		values.put(LAST_PERSON_CHANGE_ID_KEY, Long.valueOf(state.getLastPersonChangeId()));
-		values.put(LAST_DOCUMENT_DATE_KEY, Long.valueOf(state.getLastDocumentDate().getTime()));
+		final Date lastDocumentDate = getDateForIndex(state.getLastDocumentDate());
+		values.put(LAST_DOCUMENT_DATE_KEY, Long.valueOf(lastDocumentDate.getTime()));
 		values.put(MAPPING_VERSION, state.getMappingVersion());
 		return values;
+	}
+
+	/**
+	 * @param state
+	 * @return
+	 */
+	private static Date getDateForIndex(Date date) {
+		if (!present(date)) {
+			return new Date();
+		}
+		return date;
 	}
 
 	/**
