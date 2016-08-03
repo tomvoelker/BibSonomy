@@ -100,7 +100,7 @@ public class PublicationClassificator {
 		cceList.add(new ClassificationTextChainElement(new DDCClassification()));
 		
 		
-		final String absolutePath = PublicationClassificator.class.getClassLoader().getResource("classifications").toExternalForm();
+		final String absolutePath = PublicationClassificator.class.getClassLoader().getResource("classifications").getFile();
 		final File path = new File(absolutePath);
 		
 		if (path.isDirectory()) {
