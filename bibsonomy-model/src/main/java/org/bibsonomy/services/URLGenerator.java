@@ -61,7 +61,6 @@ import org.bibsonomy.util.UrlUtils;
  */
 public class URLGenerator {
 
-
 	/**
 	 * Provides page names.
 	 * 
@@ -140,7 +139,9 @@ public class URLGenerator {
 
 	private static final String PERSON_INTRO = "persons";
 
-	private static final String POST_PUBLICATION = "/postPublication";
+	private static final String POST_PUBLICATION = "postPublication";
+	
+	private static final String DISCUSSION_ID = "#discussion-section";
 
 	/**
 	 * The default gives relative URLs.
@@ -300,8 +301,7 @@ public class URLGenerator {
 		 * no user given
 		 */
 		if (!present(user) || !present(user.getName())) {
-			return this.getUrl(this.projectHome + prefix + BOOKMARK_PREFIX
-					+ "/" + bookmark.getInterHash());
+			return this.getUrl(this.projectHome + prefix + BOOKMARK_PREFIX + "/" + bookmark.getInterHash());
 		}
 		return this.getBookmarkUrlByIntraHashAndUsername(
 				bookmark.getIntraHash(), user.getName());
@@ -1813,54 +1813,7 @@ public class URLGenerator {
 	 * @return the rating url of the provided post
 	 */
 	public String getCommunityRatingUrl(final Post<? extends Resource> post) {
-		final Resource resource = post.getResource();
-		final String interHash = resource.getInterHash();
-		final String userName = post.getUser().getName();
-		final String intraHash = resource.getIntraHash();
-		if (resource instanceof Bookmark) {
-			return this.getBookmarkRatingUrl(interHash, userName, intraHash);
-		} else if (resource instanceof BibTex) {
-			return this.getPublicationRatingUrl(interHash, userName, intraHash);
-		} else {
-			throw new UnsupportedResourceTypeException();
-		}
-	}
-
-	/**
-	 * Constructs a URL to rate the new publication for the given publication
-	 * and user name.
-	 * 
-	 * @param interHash
-	 * @param userName
-	 * @param intraHash
-	 * @return The URL pointing to rating the post of that user for the
-	 *         publication represented by the given inter and intra hashes.
-	 */
-	public String getPublicationRatingUrl(final String interHash,
-			final String userName, final String intraHash) {
-		final String url = this.projectHome + PUBLICATION_PREFIX + "/"
-				+ PUBLICATION_INTER_HASH_ID + interHash + "?postOwner="
-				+ UrlUtils.encodePathSegment(userName) + "&amp;intraHash="
-				+ intraHash + "#discussionbox"; //FIXME: # are not working in redirects
-		return this.getUrl(url);
-	}
-
-	/**
-	 * Constructs a URL to rate the new bookmark for the given bookmark and user
-	 * name.
-	 * 
-	 * @param interHash
-	 * @param userName
-	 * @param intraHash
-	 * @return The URL pointing to rating the post of that user for the bookmark
-	 *         represented by the given inter and intra hashes.
-	 */
-	public String getBookmarkRatingUrl(final String interHash,
-			final String userName, final String intraHash) {
-		final String url = this.projectHome + BOOKMARK_PREFIX + "/" + interHash
-				+ "?postOwner=" + UrlUtils.encodePathSegment(userName)
-				+ "&amp;intraHash=" + intraHash + "#discussionbox";
-		return this.getUrl(url);
+		return this.getResourceUrl(post) + DISCUSSION_ID;
 	}
 
 	/**
