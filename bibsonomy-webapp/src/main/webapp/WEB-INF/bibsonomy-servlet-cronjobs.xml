@@ -144,6 +144,7 @@
 				<ref bean="searchUpdateGoldStandardPublicationIndexCronTrigger" />
 				<ref bean="searchGeneratePublicationIndexCronTrigger" />
 				<ref bean="searchGenerateBookmarkIndexCronTrigger" />
+				<ref bean="searchUpdateHelpIndexCronTrigger" />
 				<ref bean="autoSyncCronTrigger" />
 				<ref bean="pingbackTrigger" />
 			</list>
