@@ -225,6 +225,8 @@
 		<property name="projectHome" ref="projectHome" />
 	</bean>
 	
+	<bean id="urlGeneratorFactory" class="org.bibsonomy.services.URLGeneratorFactory" scope="singleton" />
+	
 	<bean id="vuFindUrlGenerator" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
 		<property name="condition">
 			<bean class="org.bibsonomy.webapp.util.spring.condition.NonEmptyStringCondition">
@@ -273,6 +275,7 @@
 				<value>properties</value>
 				<value>relativeUrlGenerator</value>
 				<value>absoluteUrlGenerator</value>
+				<value>urlGeneratorFactory</value>
 				<value>systemTagFactory</value>
 			</list>
 		</property>

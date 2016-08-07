@@ -79,10 +79,11 @@
 					<c:url var='pubAuthorUrl' value='${urlGenerator.getAuthorUrlByPersonName(person)}'/>
 				</c:otherwise>
 			</c:choose>
-						
 			<c:choose>
 				<c:when test="${isRemotePost}">
-					<a href="${urlGenerator.getAuthorUrlByNameAndSysUrl(lastName, post.systemUrl)}"><c:out value="${personName}" /></a>	
+					<a href="${urlGeneratorFactory.createURLGeneratorForSystem(post.systemUrl).getAuthorUrlByPersonName(person)}">
+						<c:out value="${personName}" />
+					</a>
 				</c:when>
 				<c:otherwise>
 					<span itemprop="${authorEditor}" itemscope="itemscope" itemtype="http://schema.org/Person">
@@ -92,7 +93,6 @@
 					</span>
 				</c:otherwise>
 			</c:choose>
-		
 			
 			<!-- append separator "," -->
 			<c:if test="${not loopStatus.last}"><c:out value=", "/></c:if>

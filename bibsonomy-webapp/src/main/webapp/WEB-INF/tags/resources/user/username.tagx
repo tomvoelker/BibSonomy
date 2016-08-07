@@ -39,24 +39,18 @@
 		<c:when test="${not noLink and scope ne 'FEDERATED'}">
 			<c:choose>
 				<c:when test="${isRemotePost}">
-					<c:choose>
-						<c:when test="${empty classes}">
-							<a href="${relativeUrlGenerator.getUserUrlByUserNameAndSysUrl(username, post.systemUrl)}"><c:out value="@${username}" /></a>
-						</c:when>
-						<c:otherwise>
-							<a class="${classes}" href="${relativeUrlGenerator.getUserUrlByUserNameAndSysUrl(username, post.systemUrl)}"><c:out value="@${username}" /></a>
-						</c:otherwise>
-					</c:choose>
+					<c:set var="userUrl" value="${urlGeneratorFactory.createURLGeneratorForSystem(post.systemUrl).getUserUrlByUserName(username)}" />
 				</c:when>
 				<c:otherwise>
-					<c:choose>
-						<c:when test="${empty classes}">
-							<a href="${relativeUrlGenerator.getUserUrlByUserName(username)}"><c:out value="@${username}" /></a>
-						</c:when>
-						<c:otherwise>
-							<a class="${classes}" href="${relativeUrlGenerator.getUserUrlByUserName(username)}"><c:out value="@${username}" /></a>
-						</c:otherwise>
-					</c:choose>
+					<c:set var="userUrl" value="${relativeUrlGenerator.getUserUrlByUserName(username)}" />
+				</c:otherwise>
+			</c:choose>
+			<c:choose>
+				<c:when test="${empty classes}">
+					<a href="${userUrl}"><c:out value="@${username}" /></a>
+				</c:when>
+				<c:otherwise>
+					<a class="${classes}" href="${userUrl}"><c:out value="@${username}" /></a>
 				</c:otherwise>
 			</c:choose>
 		</c:when>
@@ -71,5 +65,4 @@
 			</c:choose>
 		</c:otherwise>
 	</c:choose>
-	
 </jsp:root>
