@@ -32,12 +32,11 @@ import java.util.List;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.factories.ResourceFactory;
-import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -74,27 +73,8 @@ public class GetListOfTagsStrategy extends AbstractGetListStrategy<List<Tag>> {
 	}
 
 	@Override
-	protected void appendLinkPostFix(final StringBuilder sb) {
-		if (grouping != GroupingEntity.ALL && groupingValue != null) {
-			sb.append("&").append(grouping.toString().toLowerCase()).append("=").append(groupingValue);
-		}
-		if (regex != null) {
-			sb.append("&").append(RESTConfig.REGEX_PARAM).append("=").append(regex);
-		}
-		if (this.getView().getOrder() == Order.FREQUENCY) {
-			sb.append("&").append(RESTConfig.ORDER_PARAM).append("=").append(this.getView().getOrder().toString().toLowerCase());
-		}
-		if (resourceType != Resource.class) {
-			sb.append("&").append(RESTConfig.RESOURCE_TYPE_PARAM).append("=").append(ResourceUtils.toString(this.resourceType).toLowerCase());
-		}
-		if (hash != null) {
-			sb.append("&").append(RESTConfig.RESOURCE_PARAM).append("=").append(hash);
-		}
-	}
-
-	@Override
-	protected StringBuilder getLinkPrefix() {
-		return new StringBuilder(this.getUrlRenderer().createHrefForTags());
+	protected UrlBuilder getLinkPrefix() {
+		return this.getUrlRenderer().createUrlBuilderForTags(this.resourceType, this.grouping, this.groupingValue, this.hash, this.regex, this.getView().getOrder());
 	}
 
 	@Override

@@ -26,8 +26,6 @@
  */
 package org.bibsonomy.rest.strategy.posts;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import java.io.Writer;
 import java.util.List;
 
@@ -94,25 +92,5 @@ public abstract class AbstractListOfPostsStrategy extends AbstractGetListStrateg
 	@Override
 	protected final String getContentType() {
 		return "posts";
-	}
-
-	@Override
-	protected void appendLinkPostFix(final StringBuilder sb) {
-		// FIXME: urlencode
-		if (this.resourceType != Resource.class) {
-			sb.append("&").append(RESTConfig.RESOURCE_TYPE_PARAM).append("=").append(ResourceFactory.getResourceName(this.resourceType).toLowerCase());
-		}
-		if (present(this.tagString)) {
-			sb.append("&").append(RESTConfig.TAGS_PARAM).append("=").append(this.tagString);
-		}
-		if (present(this.hash)) {
-			sb.append("&").append(RESTConfig.RESOURCE_PARAM).append("=").append(this.hash);
-		}
-		if ((this.grouping != GroupingEntity.ALL) && (present(this.groupingValue))) {
-			sb.append('&').append(this.grouping.toString().toLowerCase()).append('=').append(this.groupingValue);
-		}
-		if (present(this.search)) {
-			sb.append("&").append(RESTConfig.SEARCH_PARAM).append("=").append(this.search);
-		}
 	}
 }

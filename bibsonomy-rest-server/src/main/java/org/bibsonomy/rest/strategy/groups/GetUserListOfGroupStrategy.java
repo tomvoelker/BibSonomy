@@ -33,6 +33,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -58,13 +59,8 @@ public class GetUserListOfGroupStrategy extends AbstractGetListStrategy<List<Use
 	}
 
 	@Override
-	protected void appendLinkPostFix(final StringBuilder sb) {
-		// noop
-	}
-
-	@Override
-	protected StringBuilder getLinkPrefix() {
-		return new StringBuilder(this.getUrlRenderer().createHrefForGroupMembers(this.groupName));
+	protected UrlBuilder getLinkPrefix() {
+		return this.getUrlRenderer().createUrlBuilderForGroupMembers(this.groupName);
 	}
 
 	@Override

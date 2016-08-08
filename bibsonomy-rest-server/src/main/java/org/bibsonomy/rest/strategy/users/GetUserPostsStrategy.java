@@ -37,6 +37,7 @@ import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -64,18 +65,8 @@ public class GetUserPostsStrategy extends AbstractGetListStrategy<List<? extends
 	}
 
 	@Override
-	protected void appendLinkPostFix(final StringBuilder sb) {
-		if (this.tagString != null) {
-			sb.append("&").append(RESTConfig.TAGS_PARAM).append("=").append(this.tagString);
-		}
-		if (this.resourceType != Resource.class) {
-			sb.append("&").append(RESTConfig.RESOURCE_TYPE_PARAM).append("=").append(ResourceFactory.getResourceName(this.resourceType));
-		}
-	}
-
-	@Override
-	protected StringBuilder getLinkPrefix() {
-		return new StringBuilder(this.getUrlRenderer().createHrefForUserPosts(this.userName));
+	protected UrlBuilder getLinkPrefix() {
+		return this.getUrlRenderer().getUrlBuilderForUser(this.userName, this.tagString, this.resourceType);
 	}
 
 	@Override

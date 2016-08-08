@@ -32,6 +32,7 @@ import java.util.List;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -51,13 +52,8 @@ public class GetListOfGroupsStrategy extends AbstractGetListStrategy<List<Group>
 	}
 
 	@Override
-	protected void appendLinkPostFix(final StringBuilder sb) {
-		// noop
-	}
-
-	@Override
-	protected StringBuilder getLinkPrefix() {
-		return new StringBuilder(this.getUrlRenderer().createHrefForGroups());
+	protected UrlBuilder getLinkPrefix() {
+		return this.getUrlRenderer().getUrlBuilderForGroups();
 	}
 
 	@Override
