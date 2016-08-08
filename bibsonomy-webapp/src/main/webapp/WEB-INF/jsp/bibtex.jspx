@@ -32,7 +32,7 @@
 			<script type="text/javascript" src="${resdir}/javascript/merged/discussion.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/publication.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/goldstandards.js"><!-- keep me --></script>
-			<publication:feeds path="${relativeUrlGenerator.getCommunityPublicationUrlByInterHash(publication.interHash)}" />
+			<publication:feeds path="${relativeUrlGenerator.getPublicationUrl(publication)}" />
 		</jsp:attribute>
 		
 		<jsp:attribute name="heading">

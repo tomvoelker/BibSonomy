@@ -36,6 +36,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -52,16 +53,13 @@ import de.unikassel.puma.openaccess.classification.chain.parser.JELClassificatio
  * @author philipp
  */
 public class PublicationClassificator {
-	
 	private static final Log log = LogFactory.getLog(PublicationClassificator.class);
 	
-	private final String xmlPath;
-	
-	private final HashMap<org.bibsonomy.model.Classification, Classification> classifications = new HashMap<org.bibsonomy.model.Classification, Classification>();
+	private final Map<org.bibsonomy.model.Classification, Classification> classifications = new HashMap<org.bibsonomy.model.Classification, Classification>();
 	
 	private Classification getClassificationByName(final String name) {
-		for(final org.bibsonomy.model.Classification c : this.classifications.keySet()) {
-			if(c.getName().equals(name)) {
+		for (final org.bibsonomy.model.Classification c : this.classifications.keySet()) {
+			if (c.getName().equals(name)) {
 				return this.classifications.get(c);
 			}
 		}
@@ -69,14 +67,12 @@ public class PublicationClassificator {
 		return null;
 	}
 	
-	public PublicationClassificator(final String xmlPath) {
-		this.xmlPath = xmlPath;
+	public PublicationClassificator() {
 		this.initialise();
 	}
 	
 	public final List<PublicationClassification> getChildren(final String classification, final String name) {
 		final Classification c = this.getClassificationByName(classification);
-		
 		if (present(c)) {
 			return c.getChildren(name);
 		}
@@ -104,7 +100,8 @@ public class PublicationClassificator {
 		cceList.add(new ClassificationTextChainElement(new DDCClassification()));
 		
 		
-		final File path = new File(this.xmlPath);
+		final String absolutePath = PublicationClassificator.class.getClassLoader().getResource("classifications").getFile();
+		final File path = new File(absolutePath);
 		
 		if (path.isDirectory()) {
 			final File[] files = path.listFiles(new FileFilter() {
@@ -122,7 +119,7 @@ public class PublicationClassificator {
 					return false;
 				}
 			});
-
+			
 			for (final File f : files) {
 				try {
 					Classification c = null;
@@ -143,8 +140,8 @@ public class PublicationClassificator {
 						final Properties properties = new Properties();
 						final org.bibsonomy.model.Classification classification = new org.bibsonomy.model.Classification();
 						
-						properties.load(new FileReader(f.getAbsolutePath().substring(0,f.getAbsolutePath().length()-4) +".properties"));
-
+						properties.load(new FileReader(f.getAbsolutePath().substring(0,f.getAbsolutePath().length() - 4) + ".properties"));
+						
 						classification.setName(properties.getProperty("name"));
 						classification.setDesc(properties.getProperty("desc"));
 						classification.setUrl(properties.getProperty("url"));
@@ -152,7 +149,7 @@ public class PublicationClassificator {
 						this.classifications.put(classification, c);
 						
 					} catch (final IOException e) {
-						//no .properties file found, use the file name						
+						//no .properties file found, use the file name
 						final org.bibsonomy.model.Classification classification = new org.bibsonomy.model.Classification();
 						classification.setName(f.getName().substring(0,f.getName().length()-4));
 						this.classifications.put(classification, c);

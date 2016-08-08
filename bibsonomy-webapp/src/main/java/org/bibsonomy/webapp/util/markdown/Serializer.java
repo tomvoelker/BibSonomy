@@ -112,11 +112,10 @@ public class Serializer implements ToHtmlSerializerPlugin {
 	}
 	
 	private String replaceVar(final String var) {
-		final String r = this.replacements.get(var);
-		if (r == null) {
+		if (!this.replacements.containsKey(var)) {
 			throw new RuntimeException("Unknown variable: " + var);
 		}
-		return r;
+		return this.replacements.get(var);
 	}
 	
 	/**

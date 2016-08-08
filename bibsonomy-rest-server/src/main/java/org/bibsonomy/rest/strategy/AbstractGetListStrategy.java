@@ -37,6 +37,7 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * @author Jens Illig
@@ -87,16 +88,15 @@ public abstract class AbstractGetListStrategy<L extends List<?>> extends Strateg
 	protected abstract L getList();
 
 	private final String buildNextLink() {
-		final StringBuilder sb = getLinkPrefix();
-		sb.append("?").append(RESTConfig.START_PARAM).append("=").append(getView().getEndValue()).append("&").append(RESTConfig.END_PARAM).append("=").append(getView().getEndValue() + getView().getEndValue() - getView().getStartValue());
-		appendLinkPostFix(sb);
-		return sb.toString();
+		final UrlBuilder urlBuilder = this.getLinkPrefix();
+		final int endValue = getView().getEndValue();
+		urlBuilder.addParameter(RESTConfig.START_PARAM, String.valueOf(endValue));
+		urlBuilder.addParameter(RESTConfig.END_PARAM, String.valueOf(endValue + endValue - getView().getStartValue()));
+		return urlBuilder.asString();
 	}
 
-	protected abstract StringBuilder getLinkPrefix();
-
-	protected abstract void appendLinkPostFix(StringBuilder sb);
-
+	protected abstract UrlBuilder getLinkPrefix();
+	
 	protected ViewModel getView() {
 		return this.view;
 	}

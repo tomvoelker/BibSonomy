@@ -23,6 +23,7 @@
 		<value>requestedGroup</value>
 		<value>requestedSearch</value>
 		<value>requestedKey</value>
+		<value>requestedTitle</value>
 		<value>requBibtex</value>
 		<value>requestedHash</value>
 		<value>postOwner</value>

@@ -498,7 +498,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 				 * We also remember the original position of the post to
 				 * add error messages later.
 				 */
-				storageList.put(posts.get(i), i);
+				storageList.put(posts.get(i), Integer.valueOf(i));
 			}
 		}
 		return storageList;
@@ -646,7 +646,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 					 * same as the i-th position in the original list! ->use
 					 * mapping
 					 */
-					final int i = postsToStore.get(post);
+					final int i = postsToStore.get(post).intValue();
 					log.debug("checking post no. " + i + " with intra hash " + intraHash);
 					final List<ErrorMessage> postErrorMessages = allErrorMessages.get(intraHash);
 					if (present(postErrorMessages)) {

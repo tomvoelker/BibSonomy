@@ -671,7 +671,10 @@ public enum Views implements View {
 	/**
 	 * help page
 	 */
-	HELP("help"),
+	HELP("help/help"),
+	
+	/** the search result page */
+	HELP_SEARCH("help/search"),
 
 	/*
 	 * Error pages

@@ -1,12 +1,26 @@
 <jsp:root version="2.0" 
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"	
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />
+	<jsp:directive.attribute name="publishedIn" type="org.bibsonomy.model.BibTex" required="false" />
 	
 	<c:if test="${not empty publication.booktitle}">
-		<em><span itemprop="name"><c:out value="${mtl:cleanBibtex(publication.booktitle)}" /></span>,<c:out value=" "/></em>
+		<em>
+			<span itemprop="name">
+				<c:choose>
+					<c:when test="${not empty publishedIn}">
+						<a href="${relativeUrlGenerator.getPublicationUrl(publishedIn)}">
+							<c:out value="${mtl:cleanBibtex(publication.booktitle)}" />
+						</a>
+					</c:when>
+					<c:otherwise>
+						<c:out value="${mtl:cleanBibtex(publication.booktitle)}" />
+					</c:otherwise>
+				</c:choose>
+			</span>,<c:out value=" "/>
+		</em>
 	</c:if>
 </jsp:root>

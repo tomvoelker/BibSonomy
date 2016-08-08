@@ -76,7 +76,7 @@ var errorData = new errorBoxData("#upload");
 					}
 			};
 			$("#"+form).ajaxSubmit(options);
-			// FIXME: why is a new input field appended? Can't we just replace #fu?
+			// new input type-'file' for new upload form
 			$("#inputDiv").append($("<input id='fu' type='file' name='file'/>"));
 			$("#fu").documentUploader();
 
@@ -107,6 +107,7 @@ var errorData = new errorBoxData("#upload");
 				+ckey
 				+"&amp;temp=true&amp;fileID="
 				+fileID+"&amp;action=delete'>"
+				+$("#deleteLnks").data("title")
 				+"</a>")
 				.click(function(){
 					return deleteFunction(this);

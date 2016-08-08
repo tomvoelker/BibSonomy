@@ -35,20 +35,20 @@ import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.User;
 
 /**
- * Get group members
+ * get pending users by username
  * 
  * @author cbaier
  */
 public class GetPendingUserByUsername extends UserChainElement {
 
-    @Override
-    protected List<User> handle(final UserParam param, final DBSession session) {
-        return this.userDB.getPendingUserByUsername(param.getRequestedGroupName(), param.getOffset(), param.getLimit(), session);
-    }
-
-    @Override
-    protected boolean canHandle(final UserParam param) {
-        log.debug(param.getRequestedGroupName());
-        return (GroupingEntity.PENDING.equals(param.getGrouping()) && param.getRequestedGroupName() != null);
-    }
+	@Override
+	protected List<User> handle(final UserParam param, final DBSession session) {
+		return this.userDB.getPendingUserByUsername(param.getRequestedGroupName(), param.getOffset(), param.getLimit(), session);
+	}
+	
+	@Override
+	protected boolean canHandle(final UserParam param) {
+		log.debug(param.getRequestedGroupName());
+		return (GroupingEntity.PENDING.equals(param.getGrouping()) && param.getRequestedGroupName() != null);
+	}
 }

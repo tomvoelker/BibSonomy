@@ -35,8 +35,8 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.BookmarkUtils;
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.strategy.Context;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -51,8 +51,8 @@ public class GetListOfPostsStrategy extends AbstractListOfPostsStrategy {
 	}
 
 	@Override
-	protected StringBuilder getLinkPrefix() {
-		return new StringBuilder(this.getUrlRenderer().getApiUrl() + RESTConfig.POSTS_URL);
+	protected UrlBuilder getLinkPrefix() {
+		return this.getUrlRenderer().createUrlBuilderForPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.hash, this.search, this.order);
 	}
 
 	@SuppressWarnings("unchecked")

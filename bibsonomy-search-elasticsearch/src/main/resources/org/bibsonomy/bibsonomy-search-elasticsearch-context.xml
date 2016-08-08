@@ -33,14 +33,14 @@
 		<constructor-arg ref="elasticsearchPublicationTools" />
 	</bean>
 	
-	<bean id="elasticsearchCommunityBookmarkManager" class="org.bibsonomy.search.es.management.ElasticsearchManager" destroy-method="shutdown">
+	<bean id="elasticsearchCommunityBookmarkManager" class="org.bibsonomy.search.es.management.ElasticsearchCommunityManager" destroy-method="shutdown">
 		<constructor-arg value="${search.update.enabled}" />
 		<constructor-arg ref="esClient" />
 		<constructor-arg ref="goldStandardBookmarkSearchDBLogic" />
 		<constructor-arg ref="elasticsearchCommunityBookmarkTools" />
 	</bean>
 	
-	<bean id="elasticsearchCommunityPublicationManager" class="org.bibsonomy.search.es.management.ElasticsearchManager" destroy-method="shutdown">
+	<bean id="elasticsearchCommunityPublicationManager" class="org.bibsonomy.search.es.management.ElasticsearchCommunityManager" destroy-method="shutdown">
 		<constructor-arg value="${search.update.enabled}" />
 		<constructor-arg ref="esClient" />
 		<constructor-arg ref="goldStandardPublicationSearchDBLogic" />

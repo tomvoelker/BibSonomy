@@ -288,8 +288,34 @@ $(function() {
 			});
 	
 	$('#loginModal').on('shown.bs.modal', function (e) {
-		$('#loginModal').find('input:first').focus();
+		$('#loginModal').find('form:first').find('input:first').focus();
 	})
+});
+
+
+// remove all added tags on modal dismiss
+$(document).ready(function() {
+	$('.tags-edit-link').on('click', function () {
+		var modalId = $(this).data('target'); 
+		$(modalId).on('hidden.bs.modal', function() {
+			var tagField = $(this).find('input.edit-tagsinput');
+			var allTags = $(tagField).tagsinput('items');
+			var oldTags = $(tagField).attr('value').split(' ');
+			// remove tags
+			$(allTags).each(function(i, tag) {
+				if ($.inArray(tag, oldTags) == -1) {
+					$(tagField).tagsinput('remove', tag, false);
+				}
+			});
+			// reset tags
+			$(oldTags).each(function(i, tag) {
+				if ($.inArray(tag, allTags) == -1) {
+					$(tagField).tagsinput('add', tag, false);
+				}
+			});			
+			$(this).off('hidden.bs.modal');
+		});
+	});
 });
 
 function viewForTag(tag, label) {

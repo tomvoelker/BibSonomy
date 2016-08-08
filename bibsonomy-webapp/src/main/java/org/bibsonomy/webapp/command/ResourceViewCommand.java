@@ -45,7 +45,7 @@ import org.bibsonomy.model.Resource;
  * @author Jens Illig
  * @author Dominik Benz
  */
-public class ResourceViewCommand extends BaseCommand {	
+public class ResourceViewCommand extends BaseCommand {
 	/** default value for sortPage */
 	public static final String DEFAULT_SORTPAGE = "none";
 	/** default value for sortPageOrder */

@@ -87,7 +87,7 @@ public class URLGeneratorTest {
 		
 		//Test without user
 		String expected = projectHome + "url/" + bm.getInterHash();
-		assertEquals(expected, ug.getBookmarkUrl(bm, null));
+		assertEquals(expected, ug.getBookmarkUrl(bm, (User) null));
 		
 		//Test with user
 		expected = projectHome + "url/" + bm.getIntraHash() + "/" + UrlUtils.safeURIEncode(user.getName());
@@ -106,7 +106,7 @@ public class URLGeneratorTest {
 		final Bookmark bm = ModelUtils.generatePost(Bookmark.class).getResource();
 		
 		final String expected = projectHome + "url/" + bm.getIntraHash();
-		assertEquals(expected, ug.getBookmarkUrlByIntraHash(bm.getIntraHash()));
+		assertEquals(expected, ug.getBookmarkUrl(bm, (User) null));
 	}
 
 	@Test
@@ -155,24 +155,6 @@ public class URLGeneratorTest {
 		final String expected = projectHome + "friend/jaescke/kde";
 		assertEquals(expected, ug.getFriendUrlByUserNameAndTagName("jaescke", "kde"));
 	}
-	
-	@Test
-		public void testGetCommunityPublicationUrlByInterHash() throws Exception{
-			final GoldStandardPublication gst = ModelUtils.generatePost(GoldStandardPublication.class).getResource();
-			final String expected = projectHome + "bibtex/" + gst.getInterHash();
-			assertEquals(expected, ug.getCommunityPublicationUrlByInterHash(gst.getInterHash()));
-		}
-	
-	@Test
-		public void testGetCommunityPublicationUrlByInterHashAndUsername() throws Exception{
-			final Post<GoldStandardPublication> post = ModelUtils.generatePost(GoldStandardPublication.class);
-			final BibTex gst = post.getResource();
-			final String userName = post.getUser().getName();
-			
-			String expected = projectHome + "bibtex/" + gst.getInterHash() + "/" +
-							  userName;
-			assertEquals(expected, ug.getCommunityPublicationUrlByInterHashUsernameAndSysUrl(gst.getInterHash(), userName, projectHome));
-		}
 
 	@Test
 	public void testGetGroupUrlByGroupName() throws Exception{

@@ -241,7 +241,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final String loginUserName = "hotho";
 		final String hash = "palim palim";
 		final List<Integer> visibleGroups = Collections.singletonList(PUBLIC_GROUP_ID);
-		final List<Tag> tags = tagDb.getTagsByBibtexHash(loginUserName, hash, HashID.INTER_HASH, visibleGroups, 0, 20, this.dbSession);
+		final List<Tag> tags = tagDb.getTagsByBibtexHash(loginUserName, hash, HashID.INTER_HASH, visibleGroups, Order.FREQUENCY, 0, 20, this.dbSession);
 	}
 
 	/**
@@ -270,7 +270,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final String loginUserName = "hotho";
 		final String hash = "palim palim";
 		final List<Integer> visibleGroups = Collections.singletonList(PUBLIC_GROUP_ID);
-		final List<Tag> tags = tagDb.getTagsByBookmarkHash(loginUserName, hash, visibleGroups, 0, 20, this.dbSession);
+		final List<Tag> tags = tagDb.getTagsByBookmarkHash(loginUserName, hash, visibleGroups, Order.FREQUENCY, 0, 20, this.dbSession);
 	}
 
 	/**

@@ -133,6 +133,6 @@ public class PostPostStrategy extends AbstractCreateStrategy {
 	 */
 	@Override
 	protected void render(final Writer writer, final String resourceHash) {
-		this.getRenderer().serializeResourceHash(writer, resourceHash);		
+		this.getRenderer().serializeResourceHash(writer, resourceHash);
 	}
 }

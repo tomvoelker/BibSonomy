@@ -225,6 +225,8 @@
 		<property name="projectHome" ref="projectHome" />
 	</bean>
 	
+	<bean id="urlGeneratorFactory" class="org.bibsonomy.services.URLGeneratorFactory" scope="singleton" />
+	
 	<bean id="vuFindUrlGenerator" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
 		<property name="condition">
 			<bean class="org.bibsonomy.webapp.util.spring.condition.NonEmptyStringCondition">
@@ -273,6 +275,7 @@
 				<value>properties</value>
 				<value>relativeUrlGenerator</value>
 				<value>absoluteUrlGenerator</value>
+				<value>urlGeneratorFactory</value>
 				<value>systemTagFactory</value>
 			</list>
 		</property>
@@ -726,23 +729,9 @@
 						<property name="controllerBeanName" value="personIntroPageController"/>
 					</bean>
 				</entry>
-				<entry key="/help">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="helpPageController"/>
-						<property name="allowedFields">
-							<list>
-								<value>language</value>
-								<value>helpPage</value>
-								<value>filename</value>
-								<value>theme</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
 			</map>
 		</property>
 	</bean>
-	
 	
 	<!--  #################### controller #################### -->
 	<bean id="resourceController" class="org.bibsonomy.webapp.controller.ResourceListController" abstract="true">
@@ -820,6 +809,7 @@
 				</bean>
 			</list>
 		</property>
+		<property name="adminLogic" ref="adminLogic"/>
 	</bean>
 
 	<bean id="downloadFileController" class="org.bibsonomy.webapp.controller.DownloadFileController" scope="request">
@@ -934,6 +924,7 @@
 				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
 			</set>
 		</property>
+		<property name="urlGenerator" ref="relativeUrlGenerator" />
 	</bean>
 
 	<bean id="clipboardPageController" class="org.bibsonomy.webapp.controller.ClipboardPageController" scope="request" parent="multiResourceListController">
@@ -1012,15 +1003,6 @@
 		</property>
 	</bean>
 	
-	<bean id="helpPageController" class="org.bibsonomy.webapp.controller.HelpPageController" scope="request">
-		<property name="projectName" ref="projectName"/>
-		<property name="projectTheme" ref="projectTheme"/>
-		<property name="projectHome" ref="projectHome" />
-		<property name="requestLogic" ref="requestLogic"/>
-		<property name="urlGenerator" ref="relativeUrlGenerator" />
-		<property name="helpPath" value="${project.help.path}" />
-	</bean>
-	
 	<!--  #################### static views #################### -->
 	<bean id="personIntroPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="PERSON_INTRO"/>
@@ -1069,6 +1051,7 @@
 	<import resource="bibsonomy-servlet-admin.xml" />
 	<import resource="bibsonomy-servlet-database.xml" />
 	<import resource="bibsonomy-servlet-search.xml" />
+	<import resource="bibsonomy-servlet-help.xml" />
 	<import resource="bibsonomy-servlet-security.xml" />
 	<import resource="bibsonomy-servlet-opensocial.xml" />
 	<import resource="bibsonomy-servlet-saml.xml" />

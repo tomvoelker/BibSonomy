@@ -1,5 +1,5 @@
 /**
- * BibSonomy-OpenAccess - Check Open Access Policies for Publications
+ * BibSonomy-Webapp - The web application for BibSonomy.
  *
  * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -12,49 +12,38 @@
  *                               http://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
+ * it under the terms of the GNU Affero General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
+ * GNU Affero General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public License
+ * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package de.unikassel.puma.openaccess.classification;
+package org.bibsonomy.webapp.util.markdown;
 
-import static org.bibsonomy.util.ValidationUtils.present;
+import java.util.Map;
+
+import org.bibsonomy.services.help.HelpParser;
+import org.bibsonomy.services.help.HelpParserFactory;
 
 /**
- * @author philipp
+ * {@link HelpParserFactory} for markdown {@link Parser}
+ *
+ * @author dzo
  */
-@Deprecated // TODO remove and config 
-public class PublicationClassificatorSingleton {
-	
-	private String classificationFilePath;
-	
-	
-	 /** singleton instance */
-    private PublicationClassificator singleton;
-    /**
-     * Gets singleton
-     * @return singleton
-     */
-    public PublicationClassificator getInstance(){
-        
-    	if (!present(this.singleton)) {
-    		this.singleton = new PublicationClassificator(this.classificationFilePath);
-    	}
-    	
-    	return this.singleton;
-    }
-    
-    public void setClassificationFilePath(final String classPath) {
-    	this.classificationFilePath = classPath;
-    }
+public class MarkdownHelpPageParserFactory implements HelpParserFactory {
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.help.HelpParserFactory#createParser(java.util.Map)
+	 */
+	@Override
+	public HelpParser createParser(Map<String, String> replacements) {
+		return new Parser(replacements);
+	}
 
 }
