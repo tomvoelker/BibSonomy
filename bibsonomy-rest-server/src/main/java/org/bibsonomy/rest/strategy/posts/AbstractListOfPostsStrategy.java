@@ -90,10 +90,7 @@ public abstract class AbstractListOfPostsStrategy extends AbstractGetListStrateg
 	protected void render(final Writer writer, final List<? extends Post<? extends Resource>> resultList) {
 		this.getRenderer().serializePosts(writer, resultList, this.getView());
 	}
-
-	@Override
-	protected abstract StringBuilder getLinkPrefix();
-
+	
 	@Override
 	protected final String getContentType() {
 		return "posts";

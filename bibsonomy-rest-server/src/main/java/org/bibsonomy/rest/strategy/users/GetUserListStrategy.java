@@ -31,7 +31,6 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.User;
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
 
@@ -51,11 +50,12 @@ public class GetUserListStrategy extends AbstractGetListStrategy<List<User>> {
 	
 	@Override
 	protected void appendLinkPostFix(final StringBuilder sb) {
+		// noop
 	}
 
 	@Override
 	protected StringBuilder getLinkPrefix() {
-		return new StringBuilder(this.getUrlRenderer().getApiUrl() + RESTConfig.USERS_URL);
+		return new StringBuilder(this.getUrlRenderer().createHrefForUsers());
 	}
 
 	@Override

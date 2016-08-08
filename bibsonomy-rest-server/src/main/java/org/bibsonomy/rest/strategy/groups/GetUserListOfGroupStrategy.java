@@ -31,7 +31,6 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.User;
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
 
@@ -60,11 +59,12 @@ public class GetUserListOfGroupStrategy extends AbstractGetListStrategy<List<Use
 
 	@Override
 	protected void appendLinkPostFix(final StringBuilder sb) {
+		// noop
 	}
 
 	@Override
 	protected StringBuilder getLinkPrefix() {
-		return new StringBuilder(this.getUrlRenderer().getApiUrl()).append(RESTConfig.GROUPS_URL).append("/").append(groupName).append("/").append(RESTConfig.USERS_URL);
+		return new StringBuilder(this.getUrlRenderer().createHrefForGroupMembers(this.groupName));
 	}
 
 	@Override

@@ -43,6 +43,7 @@ import org.bibsonomy.rest.strategy.Context;
  */
 public class GetUserPostsStrategy extends AbstractGetListStrategy<List<? extends Post<? extends Resource>>> {
 
+	/** the requested user name */
 	protected final String userName;
 	private final List<String> tags;
 	private final String tagString;
@@ -74,9 +75,7 @@ public class GetUserPostsStrategy extends AbstractGetListStrategy<List<? extends
 
 	@Override
 	protected StringBuilder getLinkPrefix() {
-		final StringBuilder sb = new StringBuilder(this.getUrlRenderer().getApiUrl());
-		sb.append(RESTConfig.USERS_URL).append("/").append(this.userName).append("/").append(RESTConfig.POSTS_URL);
-		return sb;
+		return new StringBuilder(this.getUrlRenderer().createHrefForUserPosts(this.userName));
 	}
 
 	@Override

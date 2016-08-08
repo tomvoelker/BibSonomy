@@ -44,10 +44,15 @@ import org.bibsonomy.rest.strategy.Context;
  * @author Christian Kramer
  */
 public class GetListOfTagsStrategy extends AbstractGetListStrategy<List<Tag>> {
+	/** the resource type */
 	protected final Class<? extends Resource> resourceType;
+	/** the grouping */
 	protected final GroupingEntity grouping;
+	/** the grouping value */
 	protected final String groupingValue;
+	/** the regex */
 	protected final String regex;
+	/** the hash */
 	protected final String hash;
 	
 	/**
@@ -89,7 +94,7 @@ public class GetListOfTagsStrategy extends AbstractGetListStrategy<List<Tag>> {
 
 	@Override
 	protected StringBuilder getLinkPrefix() {
-		return new StringBuilder(this.getUrlRenderer().getApiUrl()).append(RESTConfig.TAGS_URL);
+		return new StringBuilder(this.getUrlRenderer().createHrefForTags());
 	}
 
 	@Override
@@ -106,6 +111,4 @@ public class GetListOfTagsStrategy extends AbstractGetListStrategy<List<Tag>> {
 	protected String getContentType() {
 		return "tags";
 	}
-
-	
 }

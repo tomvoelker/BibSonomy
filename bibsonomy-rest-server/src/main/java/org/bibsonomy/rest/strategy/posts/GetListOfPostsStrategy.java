@@ -35,7 +35,6 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.BookmarkUtils;
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.strategy.Context;
 
 /**
@@ -52,7 +51,7 @@ public class GetListOfPostsStrategy extends AbstractListOfPostsStrategy {
 
 	@Override
 	protected StringBuilder getLinkPrefix() {
-		return new StringBuilder(this.getUrlRenderer().getApiUrl() + RESTConfig.POSTS_URL);
+		return new StringBuilder(this.getUrlRenderer().createHrefForPosts());
 	}
 
 	@SuppressWarnings("unchecked")

@@ -32,7 +32,6 @@ import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.strategy.Context;
 
 /**
@@ -49,7 +48,7 @@ public class GetNewPostsStrategy extends AbstractListOfPostsStrategy {
 
 	@Override
 	protected StringBuilder getLinkPrefix() {
-		return new StringBuilder(this.getUrlRenderer().getApiUrl() + RESTConfig.POSTS_ADDED_URL);
+		return new StringBuilder(this.getUrlRenderer().createHrefForAddedPosts());
 	}
 
 	@Override

@@ -71,7 +71,6 @@ public class GetRelatedusersForUserStrategy extends AbstractGetListStrategy<List
 	@Override
 	protected void render(final Writer writer, final List<User> resultList) {
 		this.getRenderer().serializeUsers(writer, resultList, getView());
-
 	}
 
 	@Override
@@ -81,11 +80,12 @@ public class GetRelatedusersForUserStrategy extends AbstractGetListStrategy<List
 
 	@Override
 	protected StringBuilder getLinkPrefix() {
-		return new StringBuilder(this.getUrlRenderer().getApiUrl() + RESTConfig.FRIENDS_SUB_PATH);
+		return new StringBuilder(this.getUrlRenderer().createHrefForFriends());
 	}
 
 	@Override
 	protected void appendLinkPostFix(final StringBuilder sb) {
+		// noop
 	}
 
 	@Override
