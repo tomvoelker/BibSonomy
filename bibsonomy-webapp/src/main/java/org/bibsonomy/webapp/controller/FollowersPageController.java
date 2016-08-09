@@ -38,6 +38,7 @@ import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.util.EnumUtils;
 import org.bibsonomy.webapp.command.FollowersViewCommand;
 import org.bibsonomy.webapp.command.ListCommand;
@@ -59,69 +60,97 @@ public class FollowersPageController extends SingleResourceListController implem
 		log.debug(this.getClass().getSimpleName());
 		final String format = command.getFormat();
 		this.startTiming(format);
-
+		
 		// you have to be logged in
 		if (!command.getContext().isUserLoggedIn()) {
 			throw new MalformedURLSchemeException("error.general.login"); // TODO: redirect to login page?!
 		}
 		
+		final String pageSort = command.getSortPage();
+		Order order = command.getOrder();
+		
+		if ("date".equals(pageSort)) {
+			order = Order.ADDED;
+		} else if ("ranking".equals(pageSort)) {
+			order = Order.RANK;
+		}
+		command.setOrder(order);
+		
 		// set params
 		final UserRelation userRelation = EnumUtils.searchEnumByName(UserRelation.values(), command.getUserSimilarity());
 		GroupingEntity groupingEntity = GroupingEntity.FOLLOWER;
 		String groupingName = null;
-		if (present(command.getRequestedUser())) {
+		final String requestedUser = command.getRequestedUser();
+		if (present(requestedUser)) {
 			groupingEntity = GroupingEntity.USER;
-			groupingName = command.getRequestedUser();
+			groupingName = requestedUser;
 		}
-		
-		// ranking settings
-		final Integer start = command.getRanking().getPeriod() * Parameters.NUM_RESOURCES_FOR_PERSONALIZED_RANKING;
-		command.getRanking().setPeriodStart(start + 1);
-		command.getRanking().setPeriodEnd(start + Parameters.NUM_RESOURCES_FOR_PERSONALIZED_RANKING);
-		
 		
 		// handle case when only tags are requested
 		this.handleTagsOnly(command, groupingEntity, groupingName, null, null, null, Integer.MAX_VALUE, null);
 		
-		// personalization settings
-		final int entriesPerPage = Parameters.NUM_RESOURCES_FOR_PERSONALIZED_RANKING;
-		command.setPersonalized(true);
-		command.setDuplicates(Duplicates.NO);
-		
-		// fetch all tags of logged-in user
 		final String username = command.getContext().getLoginUser().getName();
-		final List<Tag> loginUserTags = this.logic.getTags(Resource.class, GroupingEntity.USER, username, null, null, null, null, null, null, command.getStartDate(), command.getEndDate(), 0, Integer.MAX_VALUE);
 		
-		// fetch all tags of followed users TODO implement...
-		final List<Tag> targetUserTags = this.logic.getTags(Resource.class, GroupingEntity.USER, username, null, null, null, null, null, null, command.getStartDate(), command.getEndDate(), 0, Integer.MAX_VALUE);		
-		
-		// retrieve and set the requested resource lists, along with total
-		// counts
-		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
-			final ListCommand<?> listCommand = command.getListCommand(resourceType);
+		switch (order) {
+		case RANK:
 			
-			final int origEntriesPerPage = listCommand.getEntriesPerPage();
-			final int origStart = listCommand.getStart();
-			listCommand.setStart(start);
-			this.setList(command, resourceType, groupingEntity, groupingName, null, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
-			listCommand.setEntriesPerPage(origEntriesPerPage);
-			listCommand.setStart(origStart);
+			// ranking settings
+			final Integer start = command.getRanking().getPeriod() * Parameters.NUM_RESOURCES_FOR_PERSONALIZED_RANKING;
+			command.getRanking().setPeriodStart(start + 1);
+			command.getRanking().setPeriodEnd(start + Parameters.NUM_RESOURCES_FOR_PERSONALIZED_RANKING);
 			
-			// compute the ranking for each post in the list
-			RankingUtil.computeRanking(loginUserTags, targetUserTags, command.getListCommand(resourceType).getList(), command.getRanking().getMethodObj(), command.getRanking().getNormalize());
+			// personalization settings
+			final int entriesPerPage = Parameters.NUM_RESOURCES_FOR_PERSONALIZED_RANKING;
+			command.setPersonalized(true);
+			command.setDuplicates(Duplicates.NO);
+			
+			// fetch all tags of logged-in user
+			final List<Tag> loginUserTags = this.logic.getTags(Resource.class, GroupingEntity.USER, username, null, null, null, null, null, null, command.getStartDate(), command.getEndDate(), 0, Integer.MAX_VALUE);
+			
+			// fetch all tags of followed users TODO implement...
+			final List<Tag> targetUserTags = this.logic.getTags(Resource.class, GroupingEntity.USER, username, null, null, null, null, null, null, command.getStartDate(), command.getEndDate(), 0, Integer.MAX_VALUE);		
+			
+			// retrieve and set the requested resource lists, along with total
+			// counts
+			for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
+				final ListCommand<?> listCommand = command.getListCommand(resourceType);
+				
+				final int origEntriesPerPage = listCommand.getEntriesPerPage();
+				final int origStart = listCommand.getStart();
+				listCommand.setStart(start);
+				this.setList(command, resourceType, groupingEntity, groupingName, null, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
+				listCommand.setEntriesPerPage(origEntriesPerPage);
+				listCommand.setStart(origStart);
+				
+				// compute the ranking for each post in the list
+				RankingUtil.computeRanking(loginUserTags, targetUserTags, command.getListCommand(resourceType).getList(), command.getRanking().getMethodObj(), command.getRanking().getNormalize());
 
-			// post-process & sort
-			this.postProcessAndSortList(command, resourceType);
+				// post-process & sort
+				this.postProcessAndSortList(command, resourceType);
 
-			// show only the top ranked resources for each resource type
-			if (command.getListCommand(resourceType).getList().size() > origEntriesPerPage) {
-				this.restrictResourceList(command, resourceType, listCommand.getStart(), listCommand.getStart() + origEntriesPerPage);
+				// show only the top ranked resources for each resource type
+				if (command.getListCommand(resourceType).getList().size() > origEntriesPerPage) {
+					this.restrictResourceList(command, resourceType, listCommand.getStart(), listCommand.getStart() + origEntriesPerPage);
+				}
+				
+				// set total count
+				//this.setTotalCount(command, resourceType, groupingEntity, null, null, null, null, null, null, origEntriesPerPage, null);
 			}
-			
-			// set total count
-			//this.setTotalCount(command, resourceType, groupingEntity, null, null, null, null, null, null, origEntriesPerPage, null);
+			break;
+		default:
+			for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
+				final ListCommand<?> listCommand = command.getListCommand(resourceType);
+				final int resourceEntriesPerPage = listCommand.getEntriesPerPage();
+				this.setList(command, resourceType, groupingEntity, groupingName, null, null, null, null, null, command.getStartDate(), command.getEndDate(), resourceEntriesPerPage);
+				
+				// post-process & sort
+				this.postProcessAndSortList(command, resourceType);
+				
+				// set total count
+				this.setTotalCount(command, resourceType, groupingEntity, groupingName, null, null, null, null, order, null, null, resourceEntriesPerPage);
+			}
+			break;
 		}
-		
 
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
