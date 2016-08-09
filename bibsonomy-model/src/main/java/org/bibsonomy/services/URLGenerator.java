@@ -906,7 +906,7 @@ public class URLGenerator {
 		}
 		builder.addPathElement(path);
 		addParamsForCommunityPage(publication, post, builder);
-		return this.getUrl(builder.asString());
+		return this.getUrl(this.prefix + builder.asString());
 	}
 
 	/**
