@@ -47,9 +47,9 @@ import org.bibsonomy.model.Resource;
  */
 public class ResourceViewCommand extends BaseCommand {
 	/** default value for sortPage */
-	public static final String DEFAULT_SORTPAGE = "none";
+	public static final String DEFAULT_SORTPAGE = "date";
 	/** default value for sortPageOrder */
-	public static final String DEFAULT_SORTPAGEORDER = "asc";
+	public static final String DEFAULT_SORTPAGEORDER = "desc";
 	
 	private TagCloudCommand tagcloud = new TagCloudCommand();
 	
@@ -86,7 +86,7 @@ public class ResourceViewCommand extends BaseCommand {
 	 * if true, the posts and tags of the requested user will be ranked / highlighted
 	 * according to the logged-in user 
 	 */
-	private Boolean personalized = false;	
+	private boolean personalized = false;
 	
 	/** retrieve only tags without resources */
 	private boolean restrictToTags = false;

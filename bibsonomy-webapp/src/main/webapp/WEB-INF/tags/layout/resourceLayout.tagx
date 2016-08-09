@@ -43,6 +43,7 @@
 	<jsp:directive.attribute name="content" fragment="true" required="false" />
 	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
 	
+	<jsp:directive.attribute name="additionalSorting" fragment="true"/>
 	<!--+
 		|
 		| variables & messages
@@ -117,7 +118,8 @@
 						widthClassName="${bookmarksWidthClass}"
 						isClipboard="${isClipboard}"
 						showBookmark="${showBookmark}"
-						showPublication="${showPublication}">
+						showPublication="${showPublication}"
+						additionalSorting="${additionalSorting}">
 					
 						<jsp:attribute name="addAsLastItem">
 							<c:if test="${not disableListNavigation}">
@@ -136,7 +138,8 @@
 							widthClassName="${publicationsWidthClass}"
 							isClipboard="${isClipboard}"
 							showBookmark="${showBookmark}"
-							showPublication="${showPublication}">
+							showPublication="${showPublication}"
+							additionalSorting="${additionalSorting}">
 						<jsp:attribute name="addAsLastItem">
 							<c:if test="${not disableListNavigation}">
 								<div id="publicationsfooter" class="${publicationsWidthClass}">

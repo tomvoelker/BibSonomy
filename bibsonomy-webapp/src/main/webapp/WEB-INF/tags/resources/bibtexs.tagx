@@ -33,6 +33,7 @@
 	<jsp:directive.attribute name="addAsFirstItem" fragment="true" required="false" />
 	<jsp:directive.attribute name="addAsLastItem" fragment="true" required="false" />
 	<jsp:directive.attribute name="customPageOptions" fragment="true" required="false"/>
+	<jsp:directive.attribute name="additionalSorting" fragment="true"/>
 	
 	<spring:eval var="interHashId" expression="T(org.bibsonomy.common.enums.HashID).INTER_HASH.id" />
 	
@@ -73,19 +74,17 @@
 							<jsp:invoke fragment="customPageOptions"/>
 						</c:when>
 						<c:otherwise>
-								<div class="pull-right btn-group dropdown-align-right" style="margin-bottom: 2px;">
-								<bsform:button gear="${true}" forceEnabled="${true}" value="" dropdown="${true}" size="xsmall" style="defaultStyle" dataToggle="dropdown" />
-								<ul class="dropdown-menu list-options">
-									<rc:actions resourceType="bibtex" 
-										sortPage="${command.sortPage}" 
-										sortPageOrder="${command.sortPageOrder}" 
-										showBookmark="${showBookmark}" 
-										showPublication="${showPublication}" 
-										showInboxActions="${showInboxActions}" 
-										isClipboard="${isClipboard}"
-										disableListNavigation="${disableListNavigation}"
-										disableResourcetypeSelection="${disableResourcetypeSelection}"/>
-								</ul>
+							<div class="pull-right btn-group dropdown-align-right all-resources-menu">
+								<rc:actions resourceType="bibtex" 
+									sortPage="${command.sortPage}" 
+									sortPageOrder="${command.sortPageOrder}" 
+									showBookmark="${showBookmark}" 
+									showPublication="${showPublication}" 
+									showInboxActions="${showInboxActions}" 
+									isClipboard="${isClipboard}"
+									disableListNavigation="${disableListNavigation}"
+									disableResourcetypeSelection="${disableResourcetypeSelection}"
+									additionalSorting="${additionalSorting}"/>
 							</div>
 						</c:otherwise>
 					</c:choose>
