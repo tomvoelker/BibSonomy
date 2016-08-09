@@ -338,7 +338,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 			
 			if (totalCount == 0) {
 				// here we check if the requested tags contain a  to handle our old wrong url form encoding in url paths
-				if (tagResourceViewCommand.getRequestedTags().contains("")) {
+				if (tagResourceViewCommand.getRequestedTags().contains("+")) {
 					
 					final List<String> pathElements = Arrays.asList(realRequestPath.split("/"));
 					final StringBuilder newRequestUriBuilder = new StringBuilder("/");
@@ -351,7 +351,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 							newRequestUriBuilder.append("/");
 						} else {
 							// simple heuristic: the last path element is the path element containing the requested tags
-							newRequestUriBuilder.append(path.replaceAll("\\", "%20"));
+							newRequestUriBuilder.append(path.replaceAll("\\+", "%20"));
 						}
 					}
 					
