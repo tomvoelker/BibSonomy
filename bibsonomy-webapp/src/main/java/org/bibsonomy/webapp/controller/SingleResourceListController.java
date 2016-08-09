@@ -40,7 +40,6 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.BookmarkUtils;
 import org.bibsonomy.util.SortUtils;
-import org.bibsonomy.webapp.command.ResourceViewCommand;
 import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
 
 /**
@@ -62,11 +61,7 @@ public abstract class SingleResourceListController extends ResourceListControlle
 		}
 		if (resourceType == Bookmark.class) {
 			if (!"none".equals(cmd.getSortPage())) {
-				String sortPageOrder = cmd.getSortPageOrder();
-				if (ResourceViewCommand.DEFAULT_SORTPAGEORDER.equalsIgnoreCase(sortPageOrder)) {
-					sortPageOrder = "desc";
-				}
-				BookmarkUtils.sortBookmarkList(cmd.getBookmark().getList(), SortUtils.parseSortKeys(cmd.getSortPage()), SortUtils.parseSortOrders(sortPageOrder) );
+				BookmarkUtils.sortBookmarkList(cmd.getBookmark().getList(), SortUtils.parseSortKeys(cmd.getSortPage()), SortUtils.parseSortOrders(cmd.getSortPageOrder()));
 			}
 		}
 	}
