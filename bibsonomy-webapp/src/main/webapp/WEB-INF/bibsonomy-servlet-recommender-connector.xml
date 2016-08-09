@@ -12,7 +12,7 @@
 
 	<!-- import recommenderLogic -->
 	<import resource="classpath:org/bibsonomy/bibsonomy-recommender-log-context.xml" />
-	<import resource="classpath:org/bibsonomy/bibsonomy-recommender-main-context.xml" />
+	<import resource="classpath:org/bibsonomy/bibsonomy-recommender-tag-context.xml" />
 	
 	<!--+
 	    | Multiplexing tag recommender
