@@ -197,7 +197,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		applicationContext.getBean("responseLogic", ResponseLogic.class).setResponse(response); // hack but thats springs fault
 		
 		final String requestURI = request.getRequestURI();
-		final String realRequestPath = request.getAttribute("requPath").toString();
+		final String realRequestPath = getRequestPath(request);
 		final String query = request.getQueryString();
 		log.debug("Processing " + requestURI + "?" + query + " from " + requestLogic.getInetAddress());
 		if (presenceCondition != null && !presenceCondition.eval()) {
@@ -391,6 +391,18 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		}
 		
 		return new ModelAndView(view.getName(), model);
+	}
+
+	/**
+	 * @param request
+	 * @return the real request path
+	 */
+	public static String getRequestPath(final HttpServletRequest request) {
+		final Object attribute = request.getAttribute("requPath");
+		if (present(attribute)) {
+			return attribute.toString();
+		}
+		return "";
 	}
 
 	@Override
