@@ -244,10 +244,8 @@
 			  ORDER BY date DESC
 			  LIMIT #limit# OFFSET #offset# ) AS b
 		JOIN bibhash h ON <include refid="bibtexSimHash"/>                         <!-- join counts -->
-		LEFT JOIN bibtex my ON b.simHash1 = my.simHash1 AND my.user_name = #userName#  <!--  exclude posts of logged-in user (1) -->
 		LEFT OUTER JOIN tas AS t ON b.content_id = t.content_id <include refid="reviewRatingsJoinPublication" />, groupids AS g     <!-- join with tas (get tags) -->
 		WHERE t.group = g.group                                                    <!-- join groupname -->
-		      AND my.user_name IS NULL											   <!--  exclude posts of logged-in user (2) -->
 		ORDER BY b.date DESC, b.content_id DESC
 	</select>
 
