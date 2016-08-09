@@ -154,7 +154,7 @@ public class HelpSearchManager implements HelpSearch {
 				
 				@Override
 				public boolean accept(File pathname) {
-					return pathname.isDirectory();
+					return pathname.isDirectory() && !pathname.isHidden();
 				}
 			});
 			
