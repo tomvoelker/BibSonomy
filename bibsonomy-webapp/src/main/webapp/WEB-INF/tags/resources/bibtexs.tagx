@@ -33,6 +33,7 @@
 	<jsp:directive.attribute name="addAsFirstItem" fragment="true" required="false" />
 	<jsp:directive.attribute name="addAsLastItem" fragment="true" required="false" />
 	<jsp:directive.attribute name="customPageOptions" fragment="true" required="false"/>
+	<jsp:directive.attribute name="additionalSorting" fragment="true"/>
 	
 	<spring:eval var="interHashId" expression="T(org.bibsonomy.common.enums.HashID).INTER_HASH.id" />
 	
@@ -82,7 +83,8 @@
 									showInboxActions="${showInboxActions}" 
 									isClipboard="${isClipboard}"
 									disableListNavigation="${disableListNavigation}"
-									disableResourcetypeSelection="${disableResourcetypeSelection}"/>
+									disableResourcetypeSelection="${disableResourcetypeSelection}"
+									additionalSorting="${additionalSorting}"/>
 							</div>
 						</c:otherwise>
 					</c:choose>

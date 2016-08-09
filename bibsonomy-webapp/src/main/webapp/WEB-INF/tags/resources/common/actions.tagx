@@ -17,6 +17,7 @@
 	<jsp:directive.attribute name="showInboxActions" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableResourcetypeSelection" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableSort" type="java.lang.Boolean" required="false"/>
+	<jsp:directive.attribute name="additionalSorting" fragment="true"/>
 	
 	<!--+
 		+ heading, variables
@@ -76,7 +77,7 @@
 		<div class="btn-group">
 			<bsform:button size="xsmall" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" />
 			<ul class="dropdown-menu">
-				<rc:sortCriterion requPathAndQuery="${requPathAndQuery}" sortPage="${sortPage}"/>
+				<rc:sortCriterion requPathAndQuery="${requPathAndQuery}" sortPage="${sortPage}" additionalSorting="${additionalSorting}"/>
 				<li class="divider"><!-- keep me --></li>
 				<rc:sortOrder requPathAndQuery="${requPathAndQuery}" sortPageOrder="${sortPageOrder}"/>
 				<c:if test="${isPublication}">

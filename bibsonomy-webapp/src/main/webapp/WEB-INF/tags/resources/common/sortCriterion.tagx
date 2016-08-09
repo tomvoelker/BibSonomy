@@ -8,6 +8,7 @@
 
 	<jsp:directive.attribute name="requPathAndQuery" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="sortPage" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="additionalSorting" fragment="true"/>
 	
 	<!--+
 		+ actions concerning different sorting criteria
@@ -49,16 +50,6 @@
 			</c:otherwise>
 		</c:choose>
 	</c:if>
-	<!-- ranking -->
-	<!-- TODO: don't use the request path -->
-	<c:if test="${requPathAndQuery.startsWith('/followers')}">
-		<c:choose>
-			<c:when test="${sortPage eq 'ranking' }">
-				<li><span class="italic"><fmt:message key="ranking.method"/></span></li>
-			</c:when>
-			<c:otherwise>
-				<li><a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'ranking')}"><fmt:message key="ranking.method"/></a></li>
-			</c:otherwise>
-		</c:choose>
-	</c:if>
+	
+	<jsp:invoke fragment="additionalSorting" />
 </jsp:root>

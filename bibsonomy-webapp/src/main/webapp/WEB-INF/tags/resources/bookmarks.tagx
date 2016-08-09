@@ -30,6 +30,7 @@
 	<jsp:directive.attribute name="addAsFirstItem" fragment="true" required="false" />
 	<jsp:directive.attribute name="addAsLastItem" fragment="true" required="false" />
 	<jsp:directive.attribute name="customPageOptions" fragment="true" required="false"/>
+	<jsp:directive.attribute name="additionalSorting" fragment="true"/>
 	
 	<c:if test="${empty listIndex}">
 		<c:set var="listIndex" value="0"/>
@@ -80,7 +81,8 @@
 											showInboxActions="${showInboxActions}" 
 											isClipboard="${isClipboard}"
 											disableListNavigation="${disableListNavigation}"
-											disableResourcetypeSelection="${disableResourcetypeSelection}"/>
+											disableResourcetypeSelection="${disableResourcetypeSelection}"
+											additionalSorting="${additionalSorting}"/>
 								</div>
 							</c:otherwise>
 						</c:choose>

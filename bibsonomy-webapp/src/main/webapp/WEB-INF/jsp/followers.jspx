@@ -10,6 +10,7 @@
 	xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
@@ -21,8 +22,17 @@
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.followees"/>
 		</jsp:attribute>
-
-
+		
+		<jsp:attribute name="additionalSorting">
+			<c:choose>
+				<c:when test="${command.sortPage eq 'ranking' }">
+					<li><span class="italic"><fontawesome:icon icon="sort-numeric-asc " spaceAfter="5" /><fmt:message key="ranking.method"/></span></li>
+				</c:when>
+				<c:otherwise>
+					<li><a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'ranking')}"><fontawesome:icon icon="sort-numeric-asc " spaceAfter="5" /><fmt:message key="ranking.method"/></a></li>
+				</c:otherwise>
+			</c:choose>
+		</jsp:attribute>
 
 		<jsp:attribute name="sidebar">
 			<script type="text/javascript" src="${resdir}/javascript/userRelation.js"><!-- keep me --></script>
