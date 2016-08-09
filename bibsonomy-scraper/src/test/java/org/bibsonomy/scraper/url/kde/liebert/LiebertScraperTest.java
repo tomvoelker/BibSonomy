@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -86,8 +86,8 @@ public class LiebertScraperTest {
 		
 		assertTrue(cby.length() > 100);
 		
-		assertEquals("<div class=\"citedByEntry\"><div class=\"art_title\">Synthesis, Characterization, and Nanoencapsula".trim(), cby.substring(0, 95).trim());
+		assertEquals("<div class=\"citedByEntry\"><div class=\"art_title\">Injectable LiNc-BuO loaded microspheres as in".trim(), cby.substring(0, 95).trim());
 		
-		assertTrue(cby.contains("Benoît Driesschaert"));
+		assertTrue(cby.contains("Benoît Driesschaert")); //Injectable LiNc-BuO loaded microspheres as in
 	}
 }

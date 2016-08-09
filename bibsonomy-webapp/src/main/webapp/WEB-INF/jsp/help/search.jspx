@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" 
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout">
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	<layout:helpLayout>
+		<jsp:attribute name="mainContent">
+			<h1><fmt:message key="help.search.title" /></h1>
+			<c:set var="searchResults" value="${command.searchResults}" />
+			<c:choose>
+				<c:when test="${fn:length(searchResults) == 0}">
+					<fmt:message key="help.search.noresults" />
+				</c:when>
+				<c:otherwise>
+					<c:forEach var="searchResult" items="${searchResults}" varStatus="status">
+						<div class="help-search-result">
+							<h2><a href="${relativeUrlGenerator.getHelpPage(searchResult.page, pageContext.response.locale)}"><c:out value="${searchResult.page}" /></a></h2>
+							<div><c:out value="… ${searchResult.highlightContent} …" /></div>
+							<c:if test="${not status.last}">
+								<hr />
+							</c:if>
+						</div>
+					</c:forEach>
+				</c:otherwise>
+			</c:choose>
+		</jsp:attribute>
+	</layout:helpLayout>
+</jsp:root>

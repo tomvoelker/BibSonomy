@@ -1,7 +1,7 @@
 /**
  * BibSonomy Search - Helper classes for search modules.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -54,6 +54,8 @@ public class SearchParam {
 	private Date lastLogDate;
 	
 	private Date lastDate;
+	
+	private Date lastDocumentDate;
 	
 	private String userRelation;
 
@@ -181,5 +183,19 @@ public class SearchParam {
 	 */
 	public void setUserRelation(String userRelation) {
 		this.userRelation = userRelation;
+	}
+
+	/**
+	 * @return the lastDocumentDate
+	 */
+	public Date getLastDocumentDate() {
+		return this.lastDocumentDate;
+	}
+
+	/**
+	 * @param lastDocumentDate the lastDocumentDate to set
+	 */
+	public void setLastDocumentDate(Date lastDocumentDate) {
+		this.lastDocumentDate = lastDocumentDate;
 	}
 }

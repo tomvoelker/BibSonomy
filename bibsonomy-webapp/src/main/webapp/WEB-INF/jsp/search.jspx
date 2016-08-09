@@ -9,17 +9,31 @@
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
 	<c:set var="hasTags" value="${not empty command.requestedTags}" />
 	<fmt:message var="pageTitle" key="navi.search" />
-	<fmt:message var="headline" key="page.search.headline" />
-	<layout:resourceLayout pageTitle="${pageTitle}" command="${command}" requPath="${requPath}" headline="${headline}${command.requestedSearch}">
 	
-		<jsp:attribute name="heading">
+	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
+	
+	<layout:resourceLayout pageTitle="${pageTitle}" command="${command}" requPath="${requPath}">
 		
+		<jsp:attribute name="additionalSorting">
+			<c:choose>
+				<c:when test="${command.sortPage eq 'relevance'}">
+					<li><span class="italic"><fontawesome:icon icon="sort-numeric-asc " spaceAfter="5" /><fmt:message key="sort.rank"/></span></li>
+				</c:when>
+				<c:otherwise>
+					<li><a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'relevance')}"><fontawesome:icon icon="sort-numeric-asc " spaceAfter="5" /><fmt:message key="sort.rank"/></a></li>
+				</c:otherwise>
+			</c:choose>
+		</jsp:attribute>
+		
+		<jsp:attribute name="heading">
 			<c:choose>
 				<c:when test="${not empty command.scope and command.scope.name() ne 'LOCAL'}">
 					<c:set var="pathMessageKey" value="navi.${command.scope.name().toLowerCase()}"/>
@@ -28,36 +42,7 @@
 					<c:set var="pathMessageKey" value="navi.search"/>
 				</c:otherwise>
 			</c:choose>
-			<parts:search scope="${command.scope}" pathMessageKey="${pathMessageKey}" formAction="/redirect" formInputName="search" formInputValue="${command.requestedSearch}">
-				<jsp:attribute name="afterInput">
-					<!--  sorting options -->
-					<span style="font-size: 65%">
-						<fmt:message key="sort.orderBy"/>
-						(
-						<c:out value=" "/>
-						<c:choose>
-							<c:when test="${command.order eq 'RANK'}">
-								<fmt:message key="sort.rank"/>
-							</c:when>
-							<c:otherwise>
-								<c:url var="searchUrl" value="${relativeUrlGenerator.getSearchUrl(command.requestedSearch, command.scope, 'RANK')}"/>
-								<a href="${searchUrl}"><fmt:message key="sort.rank"/></a>
-							</c:otherwise>
-						</c:choose>
-						|
-						<c:choose>
-							<c:when test="${command.order eq 'ADDED'}">
-								<fmt:message key="sort.date"/>
-							</c:when>
-							<c:otherwise>
-								<c:url var="searchUrl" value="${relativeUrlGenerator.getSearchUrl(command.requestedSearch, command.scope, 'ADDED')}"/>
-								<a href="${searchUrl}"><fmt:message key="sort.date"/></a>
-							</c:otherwise>
-						</c:choose>
-						)
-					</span>
-				</jsp:attribute>
-			</parts:search>
+			<parts:search scope="${command.scope}" pathMessageKey="${pathMessageKey}" formAction="/redirect" formInputName="search" formInputValue="${command.requestedSearch}" />
 		</jsp:attribute>
 	
 		<!--+

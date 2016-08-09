@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -95,7 +95,7 @@ public class EditTagsPageViewController extends SingleResourceListControllerWith
 		/*
 		 * set the tags of the user to get his tag cloud
 		 */
-		this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, 20000, null);
+		this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 20000, null);
 
 		/*
 		 * get all concepts of the user

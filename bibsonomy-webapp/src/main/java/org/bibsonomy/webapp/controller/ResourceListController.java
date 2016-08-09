@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -116,12 +116,13 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @param groupingEntity the grouping entity
 	 * @param groupingName the grouping name
 	 * @param regex regular expression for tag filtering
+	 * @param order forced order
 	 * @param tags list of tags
 	 * @param start start parameter
 	 * @param end end parameter
 	 */
-	protected void setTags(final ResourceViewCommand cmd, final Class<? extends Resource> resourceType, final GroupingEntity groupingEntity, final String groupingName, final String regex, final List<String> tags, final String hash, final int max, final String search) {
-		this.setTags(cmd, resourceType, groupingEntity, groupingName, regex, tags, hash, max, search, SearchType.LOCAL);
+	protected void setTags(final ResourceViewCommand cmd, final Class<? extends Resource> resourceType, final GroupingEntity groupingEntity, final String groupingName, final String regex, Order order, final List<String> tags, final String hash, final int max, final String search) {
+		this.setTags(cmd, resourceType, groupingEntity, groupingName, regex, order, tags, hash, max, search, SearchType.LOCAL);
 	}
 	
 	/**
@@ -132,6 +133,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @param groupingEntity the grouping entity
 	 * @param groupingName the grouping name
 	 * @param regex regular expression for tag filtering
+	 * @param order forced order
 	 * @param tags list of tags
 	 * @param hash 
 	 * @param max 
@@ -140,7 +142,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @param start start parameter
 	 * @param end end parameter
 	 */
-	protected void setTags(final ResourceViewCommand cmd, final Class<? extends Resource> resourceType, final GroupingEntity groupingEntity, final String groupingName, final String regex, final List<String> tags, final String hash, final int max, final String search, final SearchType searchType) {
+	protected void setTags(final ResourceViewCommand cmd, final Class<? extends Resource> resourceType, final GroupingEntity groupingEntity, final String groupingName, final String regex, Order order, final List<String> tags, final String hash, final int max, final String search, final SearchType searchType) {
 		final TagCloudCommand tagCloudCommand = cmd.getTagcloud();
 		// retrieve tags
 		log.debug("getTags " + " " + groupingEntity + " " + groupingName);
@@ -173,6 +175,10 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 		 */
 		tagMax = this.getFixedTagMax(tagMax);
 		tagOrder = this.getFixedTagOrder(tagOrder);
+		
+		if (present(order)) {
+			tagOrder = order;
+		}
 		
 		tagCloudCommand.setTags(this.logic.getTags(resourceType, groupingEntity, groupingName, tags, hash, search, searchType,regex, null, tagOrder, cmd.getStartDate(), cmd.getEndDate(), 0, tagMax));
 		// retrieve tag cloud settings
@@ -238,7 +244,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 			}
 
 			// fetch tags, store them in bean
-			this.setTags(cmd, resourcetype, groupingEntity, groupingName, regex, tags, hash, max, search);
+			this.setTags(cmd, resourcetype, groupingEntity, groupingName, regex, null, tags, hash, max, search);
 
 			// when tags only are requested, we don't need any resources
 			this.setInitializeNoResources(true);
@@ -258,7 +264,9 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 			post.getResource().setOpenURL(BibTexUtils.getOpenurl(post.getResource()));
 		}
 		// if a jabref layout is to be rendered and no special order is given, set to default order 
-		if (Views.LAYOUT.getName().equalsIgnoreCase(cmd.getFormat()) && ResourceViewCommand.DEFAULT_SORTPAGE.equalsIgnoreCase(cmd.getSortPage())) {
+		if (Views.LAYOUT.getName().equalsIgnoreCase(cmd.getFormat()) &&
+				ResourceViewCommand.DEFAULT_SORTPAGE.equalsIgnoreCase(cmd.getSortPage()) &&
+				ResourceViewCommand.DEFAULT_SORTPAGEORDER.equals(cmd.getSortPageOrder())) {
 			cmd.setSortPage(DEFAULT_SORTPAGE_JABREF_LAYOUTS);
 			cmd.setSortPageOrder(DEFAULT_SORTPAGEORDER_JABREF_LAYOUTS);
 		}
@@ -269,6 +277,8 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 			// re-sort list by date in descending order, if nothing else requested
 			if (ResourceViewCommand.DEFAULT_SORTPAGE.equals(cmd.getSortPage())) {
 				cmd.setSortPage("date");
+			}
+			if (ResourceViewCommand.DEFAULT_SORTPAGEORDER.equals(cmd.getSortPageOrder())) {
 				cmd.setSortPageOrder("desc");
 			}
 		}
@@ -278,7 +288,8 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 			BibTexUtils.mergeDuplicates(posts);
 		}
 		
-		if (!ResourceViewCommand.DEFAULT_SORTPAGE.equals(cmd.getSortPage())) {
+		if (!ResourceViewCommand.DEFAULT_SORTPAGE.equals(cmd.getSortPage()) ||
+				! ResourceViewCommand.DEFAULT_SORTPAGEORDER.equals(cmd.getSortPageOrder())) {
 			BibTexUtils.sortBibTexList(posts, SortUtils.parseSortKeys(cmd.getSortPage()), SortUtils.parseSortOrders(cmd.getSortPageOrder()) );
 		}
 	}
@@ -453,7 +464,7 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * Hereby the resources requested/supported by (i) the controller itself, (ii) the format param, 
 	 * (iii) URL param and (iv) user settings are considered. Parameter settings override user settings,
 	 * if possible.
-	 * @param command TODO
+	 * @param command
 	 * 
 	 * @return all resources that must be initialized by this controller
 	 */

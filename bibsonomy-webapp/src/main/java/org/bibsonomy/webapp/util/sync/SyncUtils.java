@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.sync.SynchronizationAction;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.webapp.util.RequestLogic;
@@ -131,5 +132,13 @@ public class SyncUtils {
 			result.put(resourceType, messages);
 		}
 		return result;
+	}
+	
+	/**
+	 * @param service
+	 * @return true, if service needs a first sync
+	 */
+	public static boolean autoSyncServiceRequiresInitialSync(SyncService service) {
+		return present(service) && !service.isAlreadySyncedOnce() && service.isAutosync();
 	}
 }

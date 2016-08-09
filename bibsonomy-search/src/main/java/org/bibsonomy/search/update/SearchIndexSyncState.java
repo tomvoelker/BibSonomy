@@ -1,7 +1,7 @@
 /**
  * BibSonomy Search - Helper classes for search modules.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -42,6 +42,7 @@ public class SearchIndexSyncState {
 	// TODO: rename attribute to lastLogDate
 	private Date last_log_date;
 	private long lastPersonChangeId;
+	private Date lastDocumentDate;
 	private String mappingVersion;
 
 	/**
@@ -116,12 +117,26 @@ public class SearchIndexSyncState {
 		this.mappingVersion = mappingVersion;
 	}
 
+	/**
+	 * @return the lastDocumentDate
+	 */
+	public Date getLastDocumentDate() {
+		return this.lastDocumentDate;
+	}
+
+	/**
+	 * @param lastDocumentDate the lastDocumentDate to set
+	 */
+	public void setLastDocumentDate(Date lastDocumentDate) {
+		this.lastDocumentDate = lastDocumentDate;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
-		return ObjectUtils.hashCode(last_tas_id) + ObjectUtils.hashCode(last_log_date) + ((int) lastPersonChangeId);
+		return ObjectUtils.hashCode(last_tas_id) + ObjectUtils.hashCode(last_log_date) + ObjectUtils.hashCode(this.lastDocumentDate) + ((int) lastPersonChangeId);
 	}
 
 	/* (non-Javadoc)
@@ -143,6 +158,11 @@ public class SearchIndexSyncState {
 		if (!ObjectUtils.equals(lastPersonChangeId, otherState.lastPersonChangeId)) {
 			return false;
 		}
+		
+		if (!ObjectUtils.equals(this.lastDocumentDate, otherState.lastDocumentDate)) {
+			return false;
+		}
+		
 		return true;
 	}
 	

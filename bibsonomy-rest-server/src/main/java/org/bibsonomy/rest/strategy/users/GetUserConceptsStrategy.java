@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -47,7 +47,7 @@ import org.bibsonomy.rest.strategy.Strategy;
  * @author Stefan Stützer
  */
 public class GetUserConceptsStrategy extends Strategy {
-	protected final Class<? extends Resource> resourceType;
+	private final Class<? extends Resource> resourceType;
 	private final String userName;
 	private final ConceptStatus status;
 	private final String regex;	
@@ -60,7 +60,7 @@ public class GetUserConceptsStrategy extends Strategy {
 	public GetUserConceptsStrategy(final Context context, final String userName) {
 		super(context);
 		this.userName = userName;
-		this.resourceType = ResourceFactory.getResourceClass(context.getStringAttribute(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.RESOURCE_CLASS_NAME));		
+		this.resourceType = ResourceFactory.getResourceClass(context.getStringAttribute(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.RESOURCE_CLASS_NAME));
 		this.status = ConceptStatus.getConceptStatus(context.getStringAttribute(RESTConfig.CONCEPT_STATUS_PARAM, "all"));
 		this.regex = context.getStringAttribute(RESTConfig.FILTER_PARAM, null);
 		this.tags = context.getTags(RESTConfig.TAGS_PARAM);
@@ -69,7 +69,7 @@ public class GetUserConceptsStrategy extends Strategy {
 	@Override
 	public void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException {
 		final List<Tag> concepts = this.getLogic().getConcepts(resourceType, GroupingEntity.USER, userName, regex, tags, status, 0, Integer.MAX_VALUE);
-		this.getRenderer().serializeTags(writer, concepts, new ViewModel());			
+		this.getRenderer().serializeTags(writer, concepts, new ViewModel());
 	}
 	
 	@Override

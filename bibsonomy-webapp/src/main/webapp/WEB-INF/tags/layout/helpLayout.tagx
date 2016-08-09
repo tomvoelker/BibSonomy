@@ -1,0 +1,37 @@
+<jsp:root version="2.0"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout">
+	
+	<jsp:directive.attribute name="mainContent" fragment="true" required="true" />
+	
+	<layout:oneColumnLayout loginUser="${command.context.loginUser}" pageTitle="${command.helpPage}" requPath="${requPath}">
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="search"/>
+		</jsp:attribute>
+		
+		<jsp:attribute name="content">
+			<div class="row">
+				<div class="col-sm-offset-1 col-sm-7" id="help-main">
+					<jsp:invoke fragment="mainContent" />
+				</div>
+				
+				<div class="hidden-xs col-sm-3 list-group section-scroll" id="help-sidebar">
+					<form action="${relativeUrlGenerator.getHelpPage('Main', pageContext.response.locale)}" class="form-inline" id="help-search">
+						<fontawesome:icon icon="search" size="lg"/> <input type="text" name="search" class="form-control" value="${fn:escapeXml(command.search)}" />
+					</form>
+				
+					<c:out value="${command.sidebar}" escapeXml="false" />
+				</div>
+			</div>
+		</jsp:attribute>
+	
+	</layout:oneColumnLayout>
+</jsp:root>

@@ -43,8 +43,8 @@
 	
 	<insert id="logGoldStandard">
 		INSERT INTO log_gold_standard (new_simhash1, content_id, new_content_id, current_content_id, change_date, <include refid ="allGoldStandardPublicationColumns"/>)
-		SELECT #newId#, content_id, #newContentId#, #newContentId#, change_date, <include refid ="allGoldStandardPublicationColumns"/>
-		FROM gold_standard WHERE simhash1 = #oldId#
+		SELECT #newHash#, content_id, #newContentId#, #newContentId#, change_date, <include refid ="allGoldStandardPublicationColumns"/>
+		FROM gold_standard WHERE simhash1 = #oldHash#
 	</insert>
 		
 	<insert id="logGoldStandardRelationDelete">
@@ -120,9 +120,11 @@
 		 FROM user WHERE user_name = #userName#) 
 	</insert>
 	
+	<!-- TODO: merge with logFriendsDelete -->
 	<insert id="logFollowerDelete" parameterClass="userParam">
-		INSERT INTO log_followers (followers_id, user_name, f_user_name, fellowship_date) 
-		(SELECT * FROM followers WHERE user_name = #userName# AND f_user_name = #requestedUserName#)
+		INSERT INTO log_friends (friends_id, user_name, f_user_name, tag_name, friendship_date)
+			SELECT friends_id, user_name, f_user_name, tag_name, friendship_date FROM friends
+			WHERE tag_name = #followerTag# AND user_name = #userName# AND f_user_name = #requestedUserName#
 	</insert>
 	
 	<insert id="logFriendDelete" parameterClass="userParam">
@@ -222,4 +224,15 @@
 		SELECT person_change_id, person_id, academic_degree, user_name, orcid, #changeDate#, #changedBy#, 1 as deleted
 		FROM person WHERE person_id = #personId#
 	</insert>
+
+	<insert id="logPostInsert" parameterClass="loggingParam">
+		INSERT INTO log_postchange VALUES (#postOwner.name#, #postEditor.name#, #oldContentId#, #newContentId#, #newContentId#, #contentType#, #date#)
+	</insert>
+	
+	<update id="logPostUpdateCurrentID" parameterClass="loggingParam">
+		UPDATE log_postchange
+		SET current_content_id = #newContentId#
+		WHERE current_content_id = #oldContentId#
+	</update>
+	
 </sqlMap>

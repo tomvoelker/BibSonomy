@@ -3,7 +3,7 @@
 
     BibSonomy-OpenSocial - Implementation of the Opensocial specification and OAuth Security Handling
 
-    Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+    Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
                                   University of Kassel, Germany
                                   http://www.kde.cs.uni-kassel.de/
                               Data Mining and Information Retrieval Group,
@@ -36,7 +36,7 @@
 	<parent>
 		<groupId>org.bibsonomy</groupId>
 		<artifactId>bibsonomy</artifactId>
-		<version>3.6.0-SNAPSHOT</version>
+		<version>3.7.0-SNAPSHOT</version>
 	</parent>
 	
 	<licenses>
@@ -45,20 +45,6 @@
 			<url>http://www.gnu.org/licenses/lgpl.html</url>
 		</license>
 	</licenses>
-	
-	<repositories>
-		<repository>
-			<id>java.net.m2</id>
-			<url>http://download.java.net/maven/2</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>caja</id>
-			<url>http://google-caja.googlecode.com/svn/maven</url>
-		</repository>
-	</repositories>
 
 	<build>
 		<resources>

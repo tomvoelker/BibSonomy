@@ -33,6 +33,7 @@
 	<jsp:directive.attribute name="addAsFirstItem" fragment="true" required="false" />
 	<jsp:directive.attribute name="addAsLastItem" fragment="true" required="false" />
 	<jsp:directive.attribute name="customPageOptions" fragment="true" required="false"/>
+	<jsp:directive.attribute name="additionalSorting" fragment="true"/>
 	
 	<spring:eval var="interHashId" expression="T(org.bibsonomy.common.enums.HashID).INTER_HASH.id" />
 	
@@ -70,42 +71,20 @@
 					<c:out value=" " />
 					<c:choose>
 						<c:when test="${not empty customPageOptions}">
-
 							<jsp:invoke fragment="customPageOptions"/>
-
 						</c:when>
 						<c:otherwise>
-								<div class="pull-right btn-group dropdown-align-right" style="margin-bottom: 2px;">
-<!--							<div class="pull-right btn-group btn-group-xs dropdown-align-right" style="margin-bottom: 2px;">
-								<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
-								<c:set var="escapedRequestPathAndQuery" value="${fn:escapeXml(requPathAndQuery)}" />
-								
-								<c:choose>
-									<c:when test="${showBookmark}">
-										<fmt:message key="post.meta.show_publications_only" var="showPublicationsOnly"/>
-										<a title="${showPublicationsOnly}" class="btn btn-default" href="${mtl:setParam(escapedRequestPathAndQuery, 'resourcetype', 'publication')}">
-											<span class="fa fa-expand">--><!-- KEEP ME --><!-- </span>
-										</a>
-									</c:when>
-									<c:otherwise>
-										<fmt:message key="navi.all" var="showAll" />
-										<a title="${showAll}" class="btn btn-default" href="${mtl:setParam(escapedRequestPathAndQuery, 'resourcetype', 'all')}">
-											<span class="fa fa-compress">--><!-- KEEP ME --><!-- </span>
-										</a>
-									</c:otherwise>
-								</c:choose>-->
-								<bsform:button gear="${true}" forceEnabled="${true}" value="" dropdown="${true}" size="xsmall" style="defaultStyle" dataToggle="dropdown" />
-								<ul class="dropdown-menu list-options">
-									<rc:actions resourceType="bibtex" 
-										sortPage="${command.sortPage}" 
-										sortPageOrder="${command.sortPageOrder}" 
-										showBookmark="${showBookmark}" 
-										showPublication="${showPublication}" 
-										showInboxActions="${showInboxActions}" 
-										isClipboard="${isClipboard}"
-										disableListNavigation="${disableListNavigation}"
-										disableResourcetypeSelection="${disableResourcetypeSelection}"/>
-								</ul>
+							<div class="pull-right btn-group dropdown-align-right all-resources-menu">
+								<rc:actions resourceType="bibtex" 
+									sortPage="${command.sortPage}" 
+									sortPageOrder="${command.sortPageOrder}" 
+									showBookmark="${showBookmark}" 
+									showPublication="${showPublication}" 
+									showInboxActions="${showInboxActions}" 
+									isClipboard="${isClipboard}"
+									disableListNavigation="${disableListNavigation}"
+									disableResourcetypeSelection="${disableResourcetypeSelection}"
+									additionalSorting="${additionalSorting}"/>
 							</div>
 						</c:otherwise>
 					</c:choose>

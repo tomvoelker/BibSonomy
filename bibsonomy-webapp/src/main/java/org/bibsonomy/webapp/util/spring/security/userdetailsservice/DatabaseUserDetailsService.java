@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -52,7 +52,7 @@ public class DatabaseUserDetailsService implements UserDetailsService {
 	
 	@Override
 	public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException, DataAccessException {
-		final User user = this.getUserFromDatabase(username);	
+		final User user = this.getUserFromDatabase(username);
 		return new UserAdapter(user);
 	}
 

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -85,7 +85,7 @@ public class PutPostStrategy extends AbstractUpdateStrategy {
 
 	@Override
 	protected void render(final Writer writer, final String newResourceHash) {
-		this.getRenderer().serializeResourceHash(writer, newResourceHash);		
+		this.getRenderer().serializeResourceHash(writer, newResourceHash);
 	}
 
 	@Override
@@ -94,7 +94,7 @@ public class PutPostStrategy extends AbstractUpdateStrategy {
 		/*
 		 * XXX: neither the client nor the REST API will calculate the new
 		 * hash - this will be done by the logic behind the LogicInterface!
-		 */ 		
+		 */
 		try {
 			return this.getLogic().updatePosts(Collections.<Post<?>>singletonList(post), PostUpdateOperation.UPDATE_ALL).get(0);
 		} catch (final DatabaseException de) {

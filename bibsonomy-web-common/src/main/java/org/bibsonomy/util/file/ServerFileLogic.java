@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Web-Common - Common things for web
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -53,6 +53,14 @@ public class ServerFileLogic implements FileLogic {
 	@Override
 	public File getFileForDocument(Document document) {
 		return this.documentFileLogic.getFileForDocument(document);
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.filesystem.DocumentFileLogic#getContentCacheFileForDocument(org.bibsonomy.model.Document)
+	 */
+	@Override
+	public File getContentCacheFileForDocument(Document document) {
+		return this.documentFileLogic.getContentCacheFileForDocument(document);
 	}
 	
 	@Override

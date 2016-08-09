@@ -1,7 +1,7 @@
 /**
  * BibSonomy Search - Helper classes for search modules.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -30,7 +30,9 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
@@ -86,6 +88,31 @@ public class SearchInfoDBLogic extends AbstractDatabaseManager implements Search
 		} finally {
 			session.close();
 		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.SearchInfoLogic#getUserNamesThatShareDocumentsWithUser(java.lang.String)
+	 */
+	@Override
+	public Set<String> getUserNamesThatShareDocumentsWithUser(String userName) {
+		final DBSession session = this.openSession();
+		try {
+			final Set<String> users = new HashSet<String>(this.getUserNamesThatShareDocumentsAsList(userName, session));
+			users.add(userName);
+			return users;
+		} finally {
+			session.close();
+		}
+	}
+
+	/**
+	 * @param userName
+	 * @param session
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private List<String> getUserNamesThatShareDocumentsAsList(String userName, final DBSession session) {
+		return (List<String>) this.queryForList("getDocumentUsers", userName, session);
 	}
 
 	/**

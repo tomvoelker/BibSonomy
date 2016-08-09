@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -69,6 +69,13 @@ public class TaylorAndFrancisScraperTest {
 		UnitTestRunner.runSingleTest("url_241");
 	}
 	/**
+	 * 
+	 */
+	@Test
+	public void url4TestRun(){
+		UnitTestRunner.runSingleTest("url_346");
+	}
+	/**
 	 * @throws Exception
 	 */
 	@Test
@@ -82,7 +89,7 @@ public class TaylorAndFrancisScraperTest {
 		assertNotNull(reference);
 		assertTrue(reference.length() > 100);
 		
-		assertEquals("<h2>References</h2> <li id=\"CIT0001\"><s".trim(), reference.substring(0, 40).trim());
+		assertEquals("<br /><h2>References</h2> <li id=\"CIT00".trim(), reference.substring(0, 40).trim());
 		assertTrue(reference.contains("Adams, RP."));
 	}
 }

@@ -6,7 +6,7 @@
 	                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 	                    http://www.springframework.org/schema/util 
 	                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
-	                    
+
 	<!-- conversion service to convert strings to objects -->
 	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
 		<property name="converters">
@@ -177,6 +177,10 @@
 		<constructor-arg value="${project.home}" />
 	</bean>
 	
+	<bean id="projectTheme" class="java.lang.String">
+		<constructor-arg value="${project.theme}" />
+	</bean>
+	
 	<!-- handles sending of mails  -->
 	<bean id="mailUtils" class="org.bibsonomy.util.MailUtils" scope="singleton">
 		<property name="projectHome" ref="projectHome" />
@@ -220,6 +224,8 @@
 	<bean id="absoluteUrlGenerator" class="org.bibsonomy.services.URLGenerator" scope="prototype">
 		<property name="projectHome" ref="projectHome" />
 	</bean>
+	
+	<bean id="urlGeneratorFactory" class="org.bibsonomy.services.URLGeneratorFactory" scope="singleton" />
 	
 	<bean id="vuFindUrlGenerator" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
 		<property name="condition">
@@ -269,6 +275,8 @@
 				<value>properties</value>
 				<value>relativeUrlGenerator</value>
 				<value>absoluteUrlGenerator</value>
+				<value>urlGeneratorFactory</value>
+				<value>systemTagFactory</value>
 			</list>
 		</property>
 	</bean>
@@ -711,6 +719,11 @@
 						<property name="controllerBeanName" value="error503PageController"/>
 					</bean>
 				</entry>
+				<entry key="/authentication/denied/usenotallowed">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="useNotAllowedPageController"/>
+					</bean>
+				</entry>
 				<entry key="/persons">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="personIntroPageController"/>
@@ -719,7 +732,6 @@
 			</map>
 		</property>
 	</bean>
-	
 	
 	<!--  #################### controller #################### -->
 	<bean id="resourceController" class="org.bibsonomy.webapp.controller.ResourceListController" abstract="true">
@@ -735,6 +747,7 @@
 		<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
 		<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
 		<value type="java.lang.Class">org.bibsonomy.model.GoldStandardPublication</value>
+		<value type="java.lang.Class">org.bibsonomy.model.GoldStandardBookmark</value>
 	</util:set>
 	
 	<bean id="homepageController" class="org.bibsonomy.webapp.controller.HomepageController" scope="request" parent="multiResourceListController">
@@ -800,6 +813,7 @@
 				</bean>
 			</list>
 		</property>
+		<property name="adminLogic" ref="adminLogic"/>
 	</bean>
 
 	<bean id="downloadFileController" class="org.bibsonomy.webapp.controller.DownloadFileController" scope="request">
@@ -914,6 +928,7 @@
 				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
 			</set>
 		</property>
+		<property name="urlGenerator" ref="relativeUrlGenerator" />
 	</bean>
 
 	<bean id="clipboardPageController" class="org.bibsonomy.webapp.controller.ClipboardPageController" scope="request" parent="multiResourceListController">
@@ -991,7 +1006,6 @@
 			</list>
 		</property>
 	</bean>
-
 	
 	<!--  #################### static views #################### -->
 	<bean id="personIntroPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
@@ -1018,7 +1032,9 @@
 	<bean id="error503PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="ERROR503"/>
 	</bean>
-	
+	<bean id="useNotAllowedPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="USE_NOT_ALLOWED"/>
+	</bean>
 	<bean id="contextPathFilter" class="org.bibsonomy.webapp.filters.ContextPathFilter">
 		<property name="projectHomeUrl" ref="projectHome"/>
 	</bean>
@@ -1039,6 +1055,7 @@
 	<import resource="bibsonomy-servlet-admin.xml" />
 	<import resource="bibsonomy-servlet-database.xml" />
 	<import resource="bibsonomy-servlet-search.xml" />
+	<import resource="bibsonomy-servlet-help.xml" />
 	<import resource="bibsonomy-servlet-security.xml" />
 	<import resource="bibsonomy-servlet-opensocial.xml" />
 	<import resource="bibsonomy-servlet-saml.xml" />
@@ -1047,4 +1064,5 @@
 	<import resource="bibsonomy-servlet-synchronization.xml" />
 	<import resource="bibsonomy-servlet-logging.xml" />
 	<import resource="bibsonomy-servlet-puma.xml" />
+	
 </beans>

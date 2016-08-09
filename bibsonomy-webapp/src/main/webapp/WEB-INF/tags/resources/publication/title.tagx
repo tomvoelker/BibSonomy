@@ -18,18 +18,17 @@
 	
 	
 	<div class="media">
-		<!-- TODO: (bootstrap) introduce tagx file for this -->
-		<c:set var="postUserName"><user:username noLink="${true}" user="${post.user}"/></c:set>
-		<a class="pull-left img-thumbnail img-responsive" href="/user/${mtl:encodePathSegment(post.user.name)}" title="${postUserName}">
-			<img alt="${postUserName}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(fn:escapeXml(post.user.name))}" class="user-avatar"/>
-			<span><c:out value="${postUserName}" /></span>
-		</a>
-
+		 <div class="media-left">
+			<!-- TODO: (bootstrap) introduce tagx file for this -->
+			<c:set var="postUserName"><user:username noLink="${true}" user="${post.user}"/></c:set>
+			<a href="/user/${mtl:encodePathSegment(post.user.name)}" title="${postUserName}">
+				<img alt="${postUserName}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(fn:escapeXml(post.user.name))}" class="user-avatar img-circle img-responsive"/>
+			</a>
+		</div>
 		<div class="media-body" id="titletext">
 			<h1 class="media-heading" id="pubtitle">
-			
 				<jsp:invoke fragment="bibActionButtons" />
-				<c:out value="${pubTitle}" />
+				<span itemprop="name"><c:out value="${pubTitle}" /></span>
 			
 			</h1>
 			<p><bib:desc post="${post}" publication="${post.resource}"/></p>

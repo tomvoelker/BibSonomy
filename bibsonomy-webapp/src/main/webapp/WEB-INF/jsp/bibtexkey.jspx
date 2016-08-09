@@ -13,31 +13,32 @@
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<fmt:message var="headline" key="page.bibtexkey.headline" />
+	
 	<layout:resourceLayout 
 		pageTitle="${command.pageTitle}" 
 		command="${command}" 
 		requPath="${requPath}" 
-		disableResourcetypeSelection="${true}"
-		minimizedContentWidth="${true}" 
-		headline="${headline}${command.requestedKey}">
+		disableResourcetypeSelection="${true}">
 		
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">
 					<nav:crumb nameKey="navi.bibtexkey" />
 					<nav:crumb name="${command.requestedKey}" active="${true}" />
+					<c:if test="${not empty command.requestedUser}">
+						<nav:usercrumb loginUser="${command.context.loginUser}" requestedUser="${command.requestedUser}" />
+					</c:if>
 				</jsp:attribute>
 			</nav:breadcrumbs>
 		</jsp:attribute>
-		<jsp:attribute name="heading">		
+		<jsp:attribute name="heading">
 			<c:choose>
 				<c:when test="${not empty command.scope and command.scope.name() ne 'LOCAL'}">
 					<c:set var="pathMessageKey" value="navi.federatedBibtexKey"/>
 					<c:set var="bibtexKeyUrl" value="${relativeUrlGenerator.getPublicationUrlByBibTexKey(command.requestedKey)}?scope=${command.scope.name()}"/>
 				</c:when>
 				<c:otherwise>
-					<c:set var="pathMessageKey" value="navi.bibtexkey"/>							
+					<c:set var="pathMessageKey" value="navi.bibtexkey"/>
 					<c:set var="bibtexKeyUrl" value="${relativeUrlGenerator.getPublicationUrlByBibTexKey(command.requestedKey)}"/>
 				</c:otherwise>
 			</c:choose>
@@ -51,7 +52,7 @@
 			<sidebar:sidebarTagCloudItem requPath="tag" cmd="${command.tagcloud}" tagSizeMode="home" scope="${command.scope.name()}"/>
 			
 			<!-- enable autocompletion for bibtexkeys -->
-			<c:if test="${not empty command.requestedUser}"> 
+			<c:if test="${not empty command.requestedUser}">
 				<script type="text/javascript">
 				<![CDATA[
 				         $(function(){
@@ -59,7 +60,7 @@
 				     			width: 260,
 				     			selectFirst: true
 				     		});
-				       });					
+				       });
 					
 				]]>
 				</script>
@@ -70,7 +71,7 @@
 		<jsp:attribute name="headerExt">
 			<c:if test="${not empty command.requestedUser}">
 				<script type="text/javascript" src="${resdir}/jquery/plugins/autocomplete/jquery.autocomplete.js"><!-- keep me --></script>
-	    		<script type="text/javascript" src="${resdir}/jquery/plugins/form/jquery.form.js"><!-- keep me --></script> 
+				<script type="text/javascript" src="${resdir}/jquery/plugins/form/jquery.form.js"><!-- keep me --></script> 
 			</c:if>
 		</jsp:attribute>
 	</layout:resourceLayout>

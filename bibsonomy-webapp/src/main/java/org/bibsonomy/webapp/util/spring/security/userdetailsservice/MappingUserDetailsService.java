@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -39,7 +39,8 @@ import org.springframework.security.saml.userdetails.SAMLUserDetailsService;
 /**
  * @author jensi
  */
-public class MappingUserDetailsService implements SAMLUserDetailsService {	
+public class MappingUserDetailsService implements SAMLUserDetailsService {
+	
 	/**
 	 * {@link UserDetailsService} property that knows how to load the {@link UserDetails}
 	 */
@@ -49,6 +50,7 @@ public class MappingUserDetailsService implements SAMLUserDetailsService {
 	
 	@Override
 	public UserDetails loadUserBySAML(SAMLCredential credential) throws UsernameNotFoundException {
+		
 		// TODO:
 		// map credentials to bibsonomy userid
 		// if no mapping present:

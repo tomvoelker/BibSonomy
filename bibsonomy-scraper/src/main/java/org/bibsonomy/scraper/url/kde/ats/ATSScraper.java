@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -111,7 +111,7 @@ public class ATSScraper extends GenericRISURLScraper implements CitedbyScraper{
 	 * @see org.bibsonomy.scraper.generic.RISGenericURLScraper#getRISURL(java.net.URL)
 	 */
 	@Override
-	protected String getDownloadURL(URL url) {
+	protected String getDownloadURL(URL url, String cookies) {
 		final String id = extractId(url.toString());
 		return BIBTEX_URL + id;
 	}

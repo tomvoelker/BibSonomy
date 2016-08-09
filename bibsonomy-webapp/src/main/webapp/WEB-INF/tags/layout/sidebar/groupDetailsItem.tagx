@@ -5,6 +5,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:group="urn:jsptagdir:/WEB-INF/tags/resources/group"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar">
 	<jsp:directive.attribute name="group" required="true" type="org.bibsonomy.model.Group"/>
 	
@@ -12,29 +13,29 @@
 	<c:if test="${not empty group.realname}">
 		<c:set var="textToUser" value="${group.realname}" />
 	</c:if>
-	<sidebar:sidebarItem outLink="${group.homepage}">
-		<jsp:attribute name="text"><c:out value="${textToUser}" /></jsp:attribute>
-		<jsp:attribute name="content">
-			<div class="row">
-				<div class="col-md-5">
-					<group:groupthumbnail group="${group}" noname="${false}" />
-				</div>
-				<div class="col-md-7 text-right">
-					<group:groupcv group="${group}" />
-					<div class="memberSettings">
-						<group:actions group="${group}" showSettingsLabel="${false}" buttonSize="btn-xs" />
-					</div>
-				</div>
-			</div>
-			<c:if test="${not empty group.description}">
-				<div class="row groupDescription">
-					<div class="col-md-12 show-more" data-max-chars="150" data-extra-class="small">
-						<span class="small contentContainer">
-							<c:out value="${group.description}" />
-						</span>
-					</div>
-				</div>
+	<div class="group-card">
+		<group:groupthumbnail group="${group}" noname="${false}" />
+		<h4>
+			<c:out value="${textToUser}" />
+			<c:if test="${not empty group.homepage}">
+				<small><a href="${fn:escapeXml(group.homepage)}">
+					<fontawesome:icon icon="external-link" />
+				</a>
+				</small>
 			</c:if>
-		</jsp:attribute>
-	</sidebar:sidebarItem>
+		</h4>
+		<p class="text-muted"><c:out value="@${group.name}" /></p>
+		<c:if test="${not empty group.description}">
+			<p><c:out value="${group.description}" /></p>
+		</c:if>
+		
+		<div class="row">
+			<div class="col-sm-5 text-center">
+				<group:groupcv group="${group}" />
+			</div>
+			<div class="col-sm-7">
+				<group:actions group="${group}" showSettingsLabel="${false}" buttonSize="btn-xs" />
+			</div>
+		</div>
+	</div>
 </jsp:root>

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -62,6 +62,7 @@ import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.AuthenticationException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
+import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
 import org.bibsonomy.rest.exceptions.UnsupportedMediaTypeException;
 import org.bibsonomy.rest.fileupload.DualUploadedFileAccessor;
 import org.bibsonomy.rest.fileupload.UploadedFileAccessor;
@@ -71,6 +72,7 @@ import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.utils.HeaderUtils;
+import org.bibsonomy.search.InvalidSearchRequestException;
 import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.util.StringUtils;
 import org.springframework.beans.factory.annotation.Required;
@@ -117,7 +119,7 @@ public final class RestServlet extends HttpServlet {
 
 	private UrlRenderer urlRenderer;
 	private RendererFactory rendererFactory;
-
+	
 	// store some infos about the specific request or the webservice (i.e.
 	// document path)
 	private final Map<String, String> additionalInfos = new HashMap<String, String>();
@@ -231,7 +233,7 @@ public final class RestServlet extends HttpServlet {
 			final UploadedFileAccessor uploadAccessor = new DualUploadedFileAccessor(request);
 
 			// choose rendering format (defaults to xml)
-			final RenderingFormat renderingFormat = RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HeaderUtils.HEADER_ACCEPT), getMainContentType(request));
+			final RenderingFormat renderingFormat = getRenderingFormatForError(request);
 
 			// create Context which selects the appropriate strategy for the
 			// requested API URL
@@ -284,7 +286,7 @@ public final class RestServlet extends HttpServlet {
 		} catch (final NoSuchResourceException e) {
 			log.info(e.getMessage());
 			this.sendError(request, response, HttpServletResponse.SC_NOT_FOUND, e.getMessage());
-		} catch (final BadRequestOrResponseException | InvalidModelException e) {
+		} catch (final BadRequestOrResponseException | InvalidModelException | InvalidSearchRequestException | UnsupportedResourceTypeException | UnsupportedHttpMethodException e) {
 			log.info(e.getMessage(), e);
 			this.sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
 		} catch (final AccessDeniedException e) {
@@ -311,10 +313,7 @@ public final class RestServlet extends HttpServlet {
 		} catch (final UnsupportedMediaTypeException e) {
 			log.error(e.getMessage());
 			this.sendError(request, response, HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, e.getMessage());
-		} catch (final UnsupportedResourceTypeException e) {
-			// the user has not specified the resource type
-			this.sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
-		} catch (final Exception e) {
+		}catch (final Exception e) {
 			log.error(e.getMessage(), e);
 			// well, lets fetch each and every error...
 			this.sendError(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
@@ -366,7 +365,8 @@ public final class RestServlet extends HttpServlet {
 	 */
 	private void sendError(final HttpServletRequest request, final HttpServletResponse response, final int code, final String message) throws IOException {
 		// get renderer
-		final RenderingFormat mediaType = RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HeaderUtils.HEADER_ACCEPT), getMainContentType(request));
+		// FIXME: handle exception if accept != content rendering format
+		final RenderingFormat mediaType = getRenderingFormatForError(request);
 		final Renderer renderer = this.rendererFactory.getRenderer(mediaType);
 
 		// send error
@@ -380,6 +380,26 @@ public final class RestServlet extends HttpServlet {
 		writer.close();
 		response.setContentLength(cachingStream.size());
 		response.getOutputStream().print(cachingStream.toString(RESPONSE_ENCODING));
+	}
+
+	/**
+	 * @param request
+	 * @return the rendering format 
+	 */
+	protected static RenderingFormat getRenderingFormatForError(final HttpServletRequest request) {
+		try {
+			return RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HeaderUtils.HEADER_ACCEPT), getMainContentType(request));
+		} catch (final UnsupportedMediaTypeException e) {
+			// ignore unsupported media types
+			try {
+				// try only with url parameter and accept header
+				return RESTUtils.getRenderingFormatForRequest(request.getParameterMap(), request.getHeader(HeaderUtils.HEADER_ACCEPT), null);
+			} catch (final UnsupportedMediaTypeException e2) {
+				// ignore the last time and just return the default rendering format
+			}
+		}
+		
+		return RESTUtils.DEFAULT_RENDERING_FORMAT;
 	}
 
 	/**

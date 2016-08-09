@@ -6,6 +6,6 @@
 	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />
 	
 	<c:if test="${not empty publication.institution}">		
-		<em><c:out value="${mtl:cleanBibtex(publication.institution)}" /><c:out value=", "/></em>		
+		<em><span itemprop="producer"><c:out value="${mtl:cleanBibtex(publication.institution)}" /></span><c:out value=", "/></em>		
 	</c:if>
 </jsp:root>

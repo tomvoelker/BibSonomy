@@ -1,7 +1,7 @@
 /**
  * BibSonomy-OpenAccess - Check Open Access Policies for Publications
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -56,11 +56,11 @@ public class SherpaRomeoImplTest {
 	
 	@Test
 	public void testOffline() throws Exception {
-    	final String start = "{\"publishers\":[{\"name\":\"American Institute of Physics\"";
-    	final JAXBContext jc = JAXBContext.newInstance("de.unikassel.puma.openaccess.sherparomeo.model");
-    	final Unmarshaller unmarshaller = jc.createUnmarshaller();
-    	
-    	final Romeoapi sp = (Romeoapi) unmarshaller.unmarshal(new File("./src/test/resources/data/institute_of_physics.xml"));            
-        assertEquals(start, SHERPA_ROMEO_IMPL.extractInformations(sp).substring(0, start.length()));
+		final String start = "{\"publishers\":[{\"name\":\"American Institute of Physics\"";
+		final JAXBContext jc = JAXBContext.newInstance("de.unikassel.puma.openaccess.sherparomeo.model");
+		final Unmarshaller unmarshaller = jc.createUnmarshaller();
+		
+		final Romeoapi sp = (Romeoapi) unmarshaller.unmarshal(new File("./src/test/resources/data/institute_of_physics.xml"));            
+		assertEquals(start, SHERPA_ROMEO_IMPL.extractInformations(sp).substring(0, start.length()));
 	}
 }

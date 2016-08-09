@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Layout - Layout engine for the webapp.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -289,6 +289,10 @@ public class CslModelConverter {
 		
 		rec.setMisc(publication.getMiscFields());
 		
+		rec.setInterhash(publication.getInterHash());
+		rec.setIntrahash(publication.getIntraHash());
+		final User user = post.getUser();
+		rec.setUsername(user != null ? user.getName() : null);
 		return rec;
 	}
 

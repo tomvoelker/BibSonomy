@@ -25,7 +25,26 @@
 	</c:choose>
 
 	<div class="edit-media-buttons btn-group btn-group-xs dropdown dropdown-align-right">
-		<!-- edit/delete -->
+				
+		<!-- edit group entry -->
+		<c:set var="editGroupPost" value="false"/>
+		<c:forEach items="${command.context.loginUser.groups}" var="group">
+			<c:if test="${group.name eq post.user.name}">
+				<c:forEach items="${group.memberships}" var="g">
+					<c:if test="${g.groupRole eq 'MODERATOR' || g.groupRole eq 'ADMINISTRATOR' }">
+						<c:set var="editGroupPost" value="true"/>
+					</c:if>
+				</c:forEach>
+			</c:if>
+		</c:forEach>
+		<c:if test="${editGroupPost}">
+			<buttons:editGroupPostButton
+				post ="${post}" 
+				resourceType="${resourceType}"
+				buttonClasses="${buttonClasses}"/>
+		</c:if>
+		
+		<!-- edit/copy -->
 		<c:choose>
 			<c:when test="${command.context.userLoggedIn and (loginUserName eq post.user.name) and not isRemotePost}">
 				<buttons:editPostButton
@@ -54,7 +73,6 @@
 				<buttons:deletePostButton 
 					post ="${post}" 
 					loginUser="${command.context.loginUser}"
-					loginUserName="${loginUserName}" 
 					userLoggedIn="${command.context.userLoggedIn}" 
 					resourceType="${resourceType}"
 					buttonClasses="${buttonClasses}"/>
@@ -142,7 +160,7 @@
 							<fmt:message key="bibtex.actions.bibtex.title" var="bibtexTitle" />
 							<c:choose>
 								<c:when test="${isRemotePost}">
-									<a class="litem" href="${relativeUrlGenerator.getBibtexExportUrlByIntraHashUserNameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}"><fmt:message key="bibtex.actions.bibtex"/></a>															
+									<a class="litem" href="${urlGeneratorFactory.createURLGeneratorForSystem(post.systemUrl).getBibtexExportUrlByIntraHashAndUserName(post.resource.intraHash, post.user.name)}"><fmt:message key="bibtex.actions.bibtex"/></a>															
 								</c:when>
 								<c:otherwise>
 									<a class="litem" href="${relativeUrlGenerator.getBibtexExportUrlByIntraHashAndUserName(post.resource.intraHash, post.user.name)}" title="${bibtexTitle}"><fmt:message key="bibtex.actions.bibtex"/></a>
@@ -155,7 +173,7 @@
 							<fmt:message key="bibtex.actions.endnote.title" var="endnoteTitle" />
 							<c:choose>
 								<c:when test="${isRemotePost}">
-									<a class="litem" href="${relativeUrlGenerator.getEndnoteUrlByIntraHashUserNameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}?formatEmbedded=true" title="${endnoteTitle}"><fmt:message key="bibtex.actions.endnote"/></a>
+									<a class="litem" href="${urlGeneratorFactory.createURLGeneratorForSystem(post.systemUrl).getEndnoteUrlByIntraHashAndUserName(post.resource.intraHash, post.user.name)}?formatEmbedded=true" title="${endnoteTitle}"><fmt:message key="bibtex.actions.endnote"/></a>
 								</c:when>
 								<c:otherwise>
 									<a class="litem" href="${relativeUrlGenerator.getEndnoteUrlByIntraHashAndUserName(post.resource.intraHash, post.user.name)}?formatEmbedded=true" title="${endnoteTitle}"><fmt:message key="bibtex.actions.endnote"/></a>
@@ -168,7 +186,7 @@
 							<fmt:message key="bibtex.actions.msword.title" var="mswordTitle" />
 							<c:choose>
 								<c:when test="${isRemotePost}">
-									<a class="litem" href="${relativeUrlGenerator.getMSWordUrlByIntraHashUserNameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}?formatEmbedded=true" title="${mswordTitle}"><fmt:message key="bibtex.actions.msword"/></a>
+									<a class="litem" href="${urlGeneratorFactory.createURLGeneratorForSystem(post.systemUrl).getMSWordUrlByIntraHashAndUserName(post.resource.intraHash, post.user.name)}?formatEmbedded=true" title="${mswordTitle}"><fmt:message key="bibtex.actions.msword"/></a>
 								</c:when>
 								<c:otherwise>
 									<a class="litem" href="${relativeUrlGenerator.getMSWordUrlByIntraHashAndUserName(post.resource.intraHash, post.user.name)}?formatEmbedded=true" title="${mswordTitle}"><fmt:message key="bibtex.actions.msword"/></a>

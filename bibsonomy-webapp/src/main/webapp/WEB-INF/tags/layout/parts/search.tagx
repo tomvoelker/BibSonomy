@@ -7,16 +7,11 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:spring="http://www.springframework.org/tags">
 	
-    <!-- 
-      set theme variables    
-     -->
-	
 	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="false"/>
 	
 	<jsp:directive.attribute name="pathMessageKey" type="java.lang.String" required="true" description="The message key for the first element of the path"/>
 	<jsp:directive.attribute name="pathPart" fragment="true" required="false" description="Any further elements of the path. Should be enclosed in list elements."/>
 	<jsp:directive.attribute name="afterInput" fragment="true" required="false" description="Anything which should be shown after the form input field."/>
-	
 	
 	<jsp:directive.attribute name="formAction" type="java.lang.String" required="false" description="If not given, the form is hidden."/>
 	<jsp:directive.attribute name="formInputName" type="java.lang.String" required="false"/>
@@ -33,7 +28,7 @@
 				</c:if>
 				<div class="input-group">
 					<div class="input-group-addon">
-						<a href="#"  style="background-color: #eee;" class="dropdown-toggle" data-toggle="dropdown"><span class="search-scope"><fmt:message key="${pathMessageKey}"/></span>&amp;nbsp;<span class="caret"><!--  --></span></a>
+						<a href="#"  style="background-color: #eee;" class="dropdown-toggle" data-toggle="dropdown"><span class="search-scope"><fmt:message key="${pathMessageKey}"/></span><span class="caret"><!--  --></span></a>
 						<ul class="dropdown-menu" role="menu">
 							<li><a onclick="return switchNavi('tag', this);"><fmt:message key="navi.tag"/></a></li>
 							<li><a onclick="return switchNavi('user', this);"><fmt:message key="navi.user"/></a></li>
@@ -41,7 +36,7 @@
 							<li><a onclick="return switchNavi('author', this);"><fmt:message key="navi.author"/></a></li>
 							<li><a onclick="return switchNavi('concept/tag', this);"><fmt:message key="navi.concept"/></a></li>
 							<li><a onclick="return switchNavi('bibtexkey', this);"><fmt:message key="navi.bibtexkey"/></a></li>
-							<li><a onclick="return switchNavi('search', this);"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></a></li>
+							<li><a onclick="return switchNavi('search', this);"><fmt:message key="navi.search"/></a></li>
 							<c:if test="${not empty properties['es.cluster.name']}">
 								<!-- FIXME: remove this theme-switch as soon as we enable remote search functionality on bibsonomy -->
 								<c:if test="${properties['project.theme'] ne 'bibsonomy'}">
@@ -73,29 +68,25 @@
 							<jsp:invoke fragment="pathPart"/>
 						</span>
 					</c:if>
-		  			<input class="form-control" style="" type="text" size="20" name="${formInputName}" id="inpf" value="${fn:escapeXml(formInputValue)}"/>
-		  			<c:if test="${not empty formExtra}">
-		  				<jsp:invoke fragment="formExtra"/>
-		  			</c:if>
-		  			<fmt:message key="navi.search" var="searchButton"/>
-		  			
-		  			<span class="input-group-btn">
-		  				<button class="btn btn-default" type="submit"><span class="sr-only"><c:out value="${searchButton}" /></span><span class="fa fa-search"><!--  --></span></button>
-		  			</span>
-		  		</div>
-		  		
-		  		<!-- info button for search help -->
-		  		<div class="pull-right">
-		  			<fmt:message var="infoURL" key="search.info.url"/> 
-		  			<fmt:message var="infoText" key="search.info.text"/>
-		  			<a title="${infoText}" href="${infoURL}">
-						<span class="fa fa-info-circle"><!--  --></span>
-					</a>
+					<input class="form-control" type="text" size="20" name="${formInputName}" id="inpf" value="${fn:escapeXml(formInputValue)}"/>
+					<c:if test="${formInputName eq 'search'}">
+						<fmt:message var="infoURL" key="search.info.url"/> 
+						<fmt:message var="infoText" key="search.info.text"/>
+						<a title="${infoText}" href="${infoURL}" class="input-info">
+							<span class="fa fa-info-circle"><!-- keep me --></span>
+						</a>
+					</c:if>
+					<c:if test="${not empty formExtra}">
+						<jsp:invoke fragment="formExtra"/>
+					</c:if>
+					<fmt:message key="navi.search" var="searchButton"/>
+					
+					<span class="input-group-btn">
+						<button class="btn btn-default" type="submit"><span class="sr-only"><c:out value="${searchButton}" /></span><span class="fa fa-search"><!--  --></span></button>
+					</span>
 				</div>
-
-		  		<div class="pull-right"><jsp:invoke fragment="afterInput"/></div>
+				<div class="pull-right"><jsp:invoke fragment="afterInput"/></div>
 			</form>
 		</div>
 	</div>
-	
 </jsp:root>

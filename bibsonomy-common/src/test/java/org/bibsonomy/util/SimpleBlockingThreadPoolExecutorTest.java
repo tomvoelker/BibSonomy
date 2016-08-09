@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -81,7 +81,7 @@ public class SimpleBlockingThreadPoolExecutorTest {
 	 */
 	@Test
 	public void testIt() {
-		SimpleBlockingThreadPoolExecutor<Callable<Void>> executor = new SimpleBlockingThreadPoolExecutor<Callable<Void>>("test");
+		final SimpleBlockingThreadPoolExecutor<Callable<Void>> executor = new SimpleBlockingThreadPoolExecutor<Callable<Void>>("test");
 		executor.setQueueLength(1);
 		final int numTasks = 4;
 		final long[] submissionTimes = new long[numTasks];
@@ -107,7 +107,7 @@ public class SimpleBlockingThreadPoolExecutorTest {
 					names[finali] = Thread.currentThread().getName();
 					try {
 						Thread.sleep(SLEEP_MILLIS);
-					} catch (InterruptedException e) {
+					} catch (final InterruptedException e) {
 						Thread.currentThread().interrupt();
 					}
 					endTimes[finali] = System.nanoTime();
@@ -118,7 +118,7 @@ public class SimpleBlockingThreadPoolExecutorTest {
 		}
 		try {
 			Thread.sleep(300);
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 		}
 		System.out.println();
 		System.out.println(submissionTimes[0] - timeBefore);
@@ -136,13 +136,13 @@ public class SimpleBlockingThreadPoolExecutorTest {
 		for (int i = 0; i < submissionTimes.length; ++i) {
 			Assert.assertEquals("test-thread-1", names[i]);
 		}
-		assertNonParallel(startTimes, endTimes);
-		
+		this.assertNonParallel(startTimes, endTimes);
+
 		Assert.assertTrue((submissionTimes[1] - submissionTimes[0]) < SLEEP_MILLIS * 1000 * 1000);
 		Assert.assertTrue((submissionTimes[2] - timeBefore) > SLEEP_MILLIS * 1000 * 1000); // first finished, second in execution -> third can be submitted
 		Assert.assertTrue((submissionTimes[3] - timeBefore) > 2 * SLEEP_MILLIS * 1000 * 1000); // first and second finished, third in execution -> fourth can be submitted
 		Assert.assertTrue((submissionTimes[3] - submissionTimes[2]) < SLEEP_MILLIS * 1100 * 1000);
-		assertBlockingOfTaskSubmission(submissionTimes);
+		this.assertBlockingOfTaskSubmission(submissionTimes);
 		executor.shutdownNow();
 	}
 

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Server - The REST-server.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -31,6 +31,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.Collections;
 
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.rest.exceptions.UnsupportedMediaTypeException;
 import org.bibsonomy.rest.renderer.RenderingFormat;
 import org.junit.Test;
 
@@ -62,6 +63,15 @@ public class RESTUtilsTest {
 
 		format = RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), "text/html", "");
 		assertEquals(RenderingFormat.XML, format);
+		
+		format = RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), "*/*", "");
+		assertEquals(RenderingFormat.XML, format);
+		
+		format = RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), "application/*", "");
+		assertEquals(RenderingFormat.APP_XML, format);
+		
+		format = RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), "application/xml", "");
+		assertEquals(RenderingFormat.APP_XML, format);
 
 		// standard firefox, chromium header
 		format = RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8", "");
@@ -90,6 +100,16 @@ public class RESTUtilsTest {
 		
 		format = RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), RenderingFormat.ENDNOTE.getMimeType(), "");
 		assertEquals(RenderingFormat.ENDNOTE, format);
+	}
+	
+	@Test(expected = UnsupportedMediaTypeException.class)
+	public void testNotSupportedFormatXWWWForm() {
+		RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), "", "application/x-www-form-urlencoded");
+	}
+	
+	@Test(expected = UnsupportedMediaTypeException.class)
+	public void testNotSupportedFormatXWWWFormAndHeadere() {
+		RESTUtils.getRenderingFormatForRequest(Collections.emptyMap(), "*/*", "application/x-www-form-urlencoded");
 	}
 
 	/**

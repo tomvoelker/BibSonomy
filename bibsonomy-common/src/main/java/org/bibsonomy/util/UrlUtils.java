@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -204,8 +204,7 @@ public class UrlUtils {
 		/*
 		 * check url
 		 */
-		if (url == null || url.equals("http://") || url.startsWith(UrlUtils.BROKEN_URL)) return false;
-		return true;
+		return !(url == null || url.equals("http://") || url.startsWith(UrlUtils.BROKEN_URL));
 	}
 
 	/**
@@ -329,8 +328,7 @@ public class UrlUtils {
 		if (pathSegment == null) {
 			return null;
 		}
-		// start at *3 for the worst case when everything is %encoded on one
-		// byte
+		// start at *3 for the worst case when everything is %encoded on one byte
 		final StringBuilder encoded = new StringBuilder(pathSegment.length() * 3);
 		final char[] toEncode = pathSegment.toCharArray();
 		for (int i = 0; i < toEncode.length; i++) {

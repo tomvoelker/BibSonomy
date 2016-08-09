@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -38,19 +38,43 @@ import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.resource.PublicationPageCommand;
 import org.bibsonomy.webapp.command.resource.ResourcePageCommand;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 
 /**
  * @author dzo
  */
 public class PublicationPageController extends AbstractResourcePageController<BibTex, GoldStandardPublication> {
-
+	private URLGenerator urlGenerator;
+	
 	@Override
 	public ResourcePageCommand<BibTex> instantiateCommand() {
 		return new PublicationPageCommand();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.controller.resource.AbstractResourcePageController#workOnResource(org.bibsonomy.webapp.command.resource.ResourcePageCommand, java.lang.String, java.lang.String, java.lang.String, org.bibsonomy.common.enums.GroupingEntity)
+	 */
+	@Override
+	protected View workOnResource(ResourcePageCommand<BibTex> command, String format, String longHash, String requUser, GroupingEntity groupingEntity) {
+		final String title = command.getRequestedTitle();
+		// redirect to /bibtex/interhash_title if only /bibtex/interhash is requested
+		if ("html".equals(command.getFormat()) && !present(title) && GroupingEntity.ALL.equals(groupingEntity)) {
+			this.setList(command, this.getResourceClass(), groupingEntity, requUser, null, longHash, null, command.getFilter(), null, null, null, 1);
+			final List<Post<BibTex>> posts = command.getListCommand(this.getResourceClass()).getList();
+			if (present(posts)) {
+				final Post<BibTex> firstPost = posts.get(0);
+				final BibTex publication = firstPost.getResource();
+				if (present(publication.getTitle())) {
+					return new ExtendedRedirectView(this.urlGenerator.getPublicationUrl(publication), true);
+				}
+			}
+		}
+		return super.workOnResource(command, format, longHash, requUser, groupingEntity);
 	}
 	
 	@Override
@@ -95,14 +119,13 @@ public class PublicationPageController extends AbstractResourcePageController<Bi
 	 */
 	@Override
 	protected void handleDiskussionItems(Post<GoldStandardPublication> goldStandard, User loginUser) {
-		
-		//if creating first discussion item on normal post
+		// if creating first discussion item on normal post
 		if (!present(goldStandard)) {
 			return;
 		}
 		
-		//remove all discussion if user self has not discussed
-		if(goldStandard.getResource().getEntrytype().equals(PREPRINT)) {
+		// remove all discussion if user self has not discussed
+		if (goldStandard.getResource().getEntrytype().equals(PREPRINT)) {
 			List<DiscussionItem> discussionItems = goldStandard.getResource().getDiscussionItems();
 			for (DiscussionItem item : discussionItems) {
 				if(item.getUser().equals(loginUser)) {
@@ -111,5 +134,12 @@ public class PublicationPageController extends AbstractResourcePageController<Bi
 			}
 			discussionItems.clear();
 		}
+	}
+
+	/**
+	 * @param urlGenerator the urlGenerator to set
+	 */
+	public void setUrlGenerator(URLGenerator urlGenerator) {
+		this.urlGenerator = urlGenerator;
 	}
 }

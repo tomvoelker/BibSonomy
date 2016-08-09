@@ -22,8 +22,7 @@
 	<layout:singleContainerLayout requPath="${requPath}" command="${command}" pageTitle="${pageTitle}" loginUser="${command.context.loginUser}" smallBox="${true}">
 		<jsp:attribute name="headerExt">
 			<script type='text/javascript' src="${resdir}/javascript/actions/eventLogger.js"><!-- keep me --></script>
-			
-	    </jsp:attribute>
+		</jsp:attribute>
 		<jsp:attribute name="content">
 		
 			<h1 class="text-center">
@@ -39,7 +38,6 @@
 				</p>
 			</div>
 			
-			
 			<ul class="nav nav-tabs" role="tablist">
 				<li class="active"><a href="#local" role="tab" data-toggle="tab"><fmt:message key="login.method.internal" /></a></li>
 				<li><a href="#openid" role="tab" data-toggle="tab"><fmt:message key="login.method.openid"/></a></li>
@@ -53,13 +51,13 @@
 		
 						<bsform:fieldset legendKey="register.personal">
 							<jsp:attribute name="content">
-								<bsform:input labelColSpan="3" path="registerUser.name" labelKey="navi.username" placeholderLikeLabel="true" inputGroupSymbol="@" noHelp="true" />
+								<bsform:input labelColSpan="3" path="registerUser.name" labelKey="navi.username" placeholderLikeLabel="true" inputGroupSymbol="@" noHelp="true" required="true" />
 								
-								<bsform:password labelColSpan="3" path="registerUser.password" labelKey="navi.password" placeholderLikeLabel="true" inputGroupFaIcon="fa-key" noHelp="true" />
+								<bsform:password labelColSpan="3" path="registerUser.password" labelKey="navi.password" placeholderLikeLabel="true" inputGroupFaIcon="fa-key" noHelp="true" required="true" />
 								
-								<bsform:password labelColSpan="3" path="passwordCheck" labelKey="user.settings.passwordCheck" placeholderLikeLabel="true" inputGroupFaIcon="fa-key" noHelp="true" />
+								<bsform:password labelColSpan="3" path="passwordCheck" labelKey="user.settings.passwordCheck" placeholderLikeLabel="true" inputGroupFaIcon="fa-key" noHelp="true" required="true" />
 								
-								<bsform:input labelColSpan="3" path="registerUser.email" labelKey="user.settings.email" placeholderLikeLabel="true" inputGroupFaIcon="fa-envelope" noHelp="true" />
+								<bsform:input labelColSpan="3" path="registerUser.email" labelKey="user.settings.email" placeholderLikeLabel="true" inputGroupFaIcon="fa-envelope" noHelp="true" required="true" />
 								
 								<form:hidden path="registerUser.registrationLog" />
 								

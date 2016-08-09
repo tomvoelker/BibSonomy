@@ -9,6 +9,7 @@
 	<alias name="dummySearch" alias="bookmarkSearch" />
 	<alias name="dummySearch" alias="goldStandardPublicationSearch" />
 	<alias name="dummySearch" alias="publicationSearch" />
+	<alias name="dummySearch" alias="goldStandardBookmarkSearch" />
 	
 	<bean id="personSearch" class="org.bibsonomy.testutil.DummyPersonSearch" />
 	

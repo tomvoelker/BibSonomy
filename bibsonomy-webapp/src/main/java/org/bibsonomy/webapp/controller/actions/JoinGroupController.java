@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -53,6 +53,7 @@ import org.bibsonomy.webapp.util.captcha.CaptchaUtil;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 
 /**
@@ -101,7 +102,7 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		
 		// get group details and check if present
 		final String groupName = command.getGroup();
-		final Group group = logic.getGroupDetails(groupName, false);
+		final Group group = this.adminLogic.getGroupDetails(groupName, false);
 		if (!present(group)) {
 			// no group given => user did not click join on the group page
 			errors.reject("error.field.valid.groupName");
@@ -153,10 +154,6 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 			return Views.ERROR;
 		}
 		
-		if (!present(reason)) {
-			errors.rejectValue("reason", "error.field.required");
-		}
-		
 		/*
 		 * check if ckey is valid
 		 */
@@ -176,7 +173,7 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 		 */
 		CaptchaUtil.checkCaptcha(this.captcha, this.errors, log, command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), this.requestLogic.getHostInetAddress());
 		
-		if (errors.hasErrors()) {
+		if (errors.hasErrors() || command.getContext().isFirstCall()) {
 			command.setCaptchaHTML(captcha.createCaptchaHtml(requestLogic.getLocale()));
 			return Views.JOIN_GROUP;
 		}
@@ -218,11 +215,14 @@ public class JoinGroupController implements ErrorAware, ValidationAwareControlle
 
 	@Override
 	public void validate(final Object target, final Errors errors) {
+		Assert.notNull(target);
 		final JoinGroupCommand command = (JoinGroupCommand) target;
-
-		// check length
-		if (present(command.getReason()) && command.getReason().length() > reasonMaxLen) {
-			errors.rejectValue("reason", "error.field.valid.limit_exceeded", new Object[] {reasonMaxLen}, "Message is too long");
+		
+		final String reason = command.getReason();
+		if (!present(reason)) {
+			errors.rejectValue("reason", "error.field.required");
+		} else if (reason.length() > reasonMaxLen) {
+			errors.rejectValue("reason", "error.field.valid.limit_exceeded", new Object[] { Integer.valueOf(reasonMaxLen) }, "Message is too long");
 			command.setReason(command.getReason().substring(0, reasonMaxLen));
 		}
 	}

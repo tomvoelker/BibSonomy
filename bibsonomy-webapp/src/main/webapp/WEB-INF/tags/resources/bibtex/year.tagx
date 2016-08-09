@@ -2,12 +2,18 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
-	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />
-	<jsp:directive.attribute name="braces" type="java.lang.Boolean" required="true" />
+	<jsp:directive.attribute name="publication"
+		type="org.bibsonomy.model.BibTex" required="true" />
+	<jsp:directive.attribute name="braces" type="java.lang.Boolean"
+		required="true" />
 
 	<c:if test="${braces}">(</c:if>
 	<em>
-		<c:out value="${mtl:getDate(publication.day, publication.month, publication.year, locale)}" />
+		<span>
+			<c:out value="${mtl:getDate(publication.day, publication.month, publication.year, locale)}" />
+			<!-- use only the year in the microdata -->
+			<meta itemprop="datePublished" content="${mtl:cleanBibtex(publication.year)}" />
+		</span>
 	</em>
 	<c:if test="${braces}">)</c:if>
 

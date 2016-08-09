@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -50,4 +50,11 @@ public abstract class AbstractSystemTagImpl implements SystemTag {
 		return this.argument;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.systemstags.SystemTag#hasArguments()
+	 */
+	@Override
+	public boolean hasArguments() {
+		return true;
+	}
 }

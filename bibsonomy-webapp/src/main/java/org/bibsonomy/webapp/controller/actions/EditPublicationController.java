@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -142,7 +142,7 @@ public class EditPublicationController extends AbstractEditPublicationController
 		final Person person;
 		if (present(command.getPerson().getPersonId())) {
 			// a new publication is added to an existing person
-			person = this.logic.getPersonById(PersonIdType.BIBSONOMY_ID, command.getPerson().getPersonId());
+			person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getPerson().getPersonId());
 			if (command.getPersonIndex() == null) {
 				final List<PersonName> publicationNames = pubPost.getResource().getPersonNamesByRole(command.getPersonRole());
 				command.setPersonIndex(findPersonIndex(person, publicationNames));
@@ -204,7 +204,7 @@ public class EditPublicationController extends AbstractEditPublicationController
 		
 		if (command.getPerson() != null) {
 			if (present(command.getPerson().getPersonId())) {
-				final Person person = this.logic.getPersonById(PersonIdType.BIBSONOMY_ID, command.getPersonId());
+				final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getPersonId());
 				command.setPerson(person);
 			}
 		}

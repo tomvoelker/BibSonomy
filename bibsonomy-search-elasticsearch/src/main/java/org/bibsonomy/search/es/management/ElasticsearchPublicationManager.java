@@ -1,7 +1,7 @@
 /**
  * BibSonomy Search Elasticsearch - Elasticsearch full text search module.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,6 +26,10 @@
  */
 package org.bibsonomy.search.es.management;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -35,18 +39,22 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.ResourcePersonRelationLogStub;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.ESConstants.Fields;
+import org.bibsonomy.search.es.ESConstants.Fields.Publication;
 import org.bibsonomy.search.es.index.PublicationConverter;
 import org.bibsonomy.search.es.index.ResourceConverter;
+import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.management.database.SearchDBInterface;
 import org.bibsonomy.search.update.SearchIndexSyncState;
 import org.bibsonomy.util.ValidationUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.action.update.UpdateRequestBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 
@@ -78,6 +86,22 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 	 */
 	@Override
 	protected void updateResourceSpecificProperties(String indexName, SearchIndexSyncState oldState, SearchIndexSyncState targetState) {
+		// TODO: limit offset TODODZO
+		Date lastDocDate = oldState.getLastDocumentDate();
+		if (!present(lastDocDate)) {
+			lastDocDate = targetState.getLastDocumentDate();
+		}
+		final List<Post<P>> postsForDocUpdate = this.inputLogic.getPostsForDocumentUpdate(lastDocDate, targetState.getLastDocumentDate());
+		
+		// TODO: bulk update
+		for (final Post<P> postDocUpdate : postsForDocUpdate) {
+			final List<Map<String, String>> documents = this.getPublicationConverter().convertDocuments(postDocUpdate.getResource().getDocuments());
+			final String id = ElasticsearchUtils.createElasticSearchId(postDocUpdate.getContentId().intValue());
+			final UpdateRequestBuilder update = this.client.prepareUpdate(indexName, this.tools.getResourceTypeAsString(), id);
+			update.setDoc(Collections.singletonMap(Publication.DOCUMENTS, documents))
+			.setRefresh(true).execute().actionGet();
+		}
+		
 		final LRUMap updatedInterhashes = new LRUMap(UPDATED_INTERHASHES_CACHE_SIZE);
 		applyChangesInPubPersonRelationsToIndex(indexName, oldState, targetState, updatedInterhashes);
 		applyPersonChangesToIndex(indexName, oldState, targetState, updatedInterhashes);
@@ -137,18 +161,23 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 		if (response != null) {
 			for (final SearchHit hit : response.getHits()) {
 				final Map<String, Object> doc = hit.getSource();
-				final ResourceConverter<P> converter = this.tools.getConverter();
-				if (converter instanceof PublicationConverter) {
-					final PublicationConverter publicationConverter = (PublicationConverter) converter;
-					publicationConverter.updateDocumentWithPersonRelation(doc, newRels);
-					this.updatePostDocument(indexName, doc, hit.getId());
-					numUpdatedPosts++;
-				}
+				final PublicationConverter publicationConverter = getPublicationConverter();
+				publicationConverter.updateDocumentWithPersonRelation(doc, newRels);
+				this.updatePostDocument(indexName, doc, hit.getId());
+				numUpdatedPosts++;
 			}
 		}
 		if (log.isDebugEnabled()) {
 			log.debug("updating " + this.toString() + " with " + numUpdatedPosts + " posts having interhash = " + interhash);
 		}
+	}
+
+	/**
+	 * @return
+	 */
+	private PublicationConverter getPublicationConverter() {
+		final ResourceConverter<P> converter = this.tools.getConverter();
+		return (PublicationConverter) converter;
 	}
 	
 	private void updatePostDocument(final String indexName, final Map<String, Object> jsonDocument, String indexIdStr) {

@@ -83,5 +83,6 @@
 		<property name="adminLogic" ref="adminLogic" />
 		<property name="userLogicFactory" ref="restLogicFactory" />
 		<property name="syncClient" ref="synchronizationClient" />
+		<property name="mailUtils" ref="mailUtils"/>
 	</bean>
 </beans>

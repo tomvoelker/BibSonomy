@@ -1,7 +1,7 @@
 /**
  * BibSonomy-OpenAccess - Check Open Access Policies for Publications
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -63,19 +63,18 @@ public class ClassificationTextChainElement implements ClassificationSource {
 	
 	@Override
 	public Classification getClassification(final URL url) throws IOException {
-		final BufferedReader in =
-			new BufferedReader(new FileReader(url.getPath()));
-		
-		this.classificationParser.parse(in);
-		
-		if (!present(this.classificationParser.getList())) {
-			if (!present(this.next)) {
-				return null;
+		try (final BufferedReader in = new BufferedReader(new FileReader(url.getPath()))) {
+			this.classificationParser.parse(in);
+			
+			if (!present(this.classificationParser.getList())) {
+				if (!present(this.next)) {
+					return null;
+				}
+				
+				return this.next.getClassification(url);
 			}
 			
-			return this.next.getClassification(url);
+			return new Classification(this.classificationParser.getName(), this.classificationParser.getList(), this.classificationParser.getDelimiter());
 		}
-		
-		return new Classification(this.classificationParser.getName(), this.classificationParser.getList(), this.classificationParser.getDelimiter());
 	}
 }

@@ -21,27 +21,56 @@
 	<jsp:directive.attribute name="desc" fragment="true" required="true"/>
 	<jsp:directive.attribute name="actions" fragment="true" required="true"/>
 	<jsp:directive.attribute name="documents" fragment="true" required="true"/>
-		
+	
 	<c:set var="isRemotePost" value="${(not empty post.systemUrl) and (post.systemUrl ne properties['project.home'])}"/>
+	
+	<!-- FIXME: not nice here-->
+	<c:choose>
+		<c:when test="${resourceType eq 'bibtex'}">
+			<c:choose>
+				<c:when test="${post.resource.entrytype eq 'book'}">
+					<c:set var="itemtype" value="http://schema.org/Book" />
+				</c:when>
+				<c:otherwise>
+					<c:set var="itemtype" value="http://schema.org/ScholarlyArticle" />
+				</c:otherwise>
+			</c:choose>
+		</c:when>
+		<c:otherwise>
+			<c:set var="itemtype" value="http://schema.org/WebSite" />
+		</c:otherwise>
+	</c:choose>
+	
+	<c:set var="editableByUser" value="${loginUserName eq post.user.name}" />
+	<c:set var="loginUser" value="${command.context.loginUser}" />
+	<c:forEach items="${loginUser.groups}" var="group">
+		<c:if test="${group.name eq post.user.name }">
+			<c:set var="ms" value="${group.getGroupMembershipForUser(loginUser.name) }" />
+			<c:if test="${not empty ms and (ms.groupRole eq 'MODERATOR' or ms.groupRole eq 'ADMINISTRATOR') }">
+				<c:set var="editableByUser" value="${true}" />
+			</c:if>
+		</c:if>
+	</c:forEach>
+	
 	
    <!--+ 
        | TODO: Several tests (not empty post.user.name) are here to test for community posts. 
        | They never have a userName. 
-       | Since they also dont have several other properties, we dont show those.
+       | Since they also dont have several other properties, we don not show those.
        +-->
-
-	<li data-intrahash="2${post.resource.intraHash}" data-user="${fn:escapeXml(post.user.name)}" class="media post ${additionalItemClasses}" id="list-item-${post.resource.intraHash}${post.user.name}">
+	<!-- FIXME: replace 2 with constant! -->
+	<li data-intrahash="2${post.resource.intraHash}" itemtype="${itemtype}" itemscope="itemscope" data-user="${fn:escapeXml(post.user.name)}" class="media post ${additionalItemClasses}" id="list-item-${post.resource.intraHash}${post.user.name}">
 		<div class="clearline">&#160;</div>
 		<h4 class="media-heading" data-ident="${post.resource.intraHash}">
 			<div>
 			<div class="clearline">&#160;</div>
-			<rc:otherpeople post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" />
+			<rc:otherpeople post="${post}" />
 			<span class="ptitle"><jsp:invoke fragment="title"/></span>
 			<div class="clearline">&#160;</div>
 			</div>
 		</h4>
 		
-		<div class="hidden-xs hidden-md pull-left thumbnail-container">
+		<div class="hidden-xs hidden-md media-left thumbnail-container">
 			<jsp:invoke fragment="documents"/>
 			<!-- IN MY COLLECTION: only display the in-my-collection-icon when the user is logged in -->
 			<c:choose>
@@ -79,7 +108,8 @@
 			</div>
 			<div class="ptags">
 				<!-- Edit tags link -->
-				<c:if test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name) and not isRemotePost }">
+				<!-- TODO: Enable tag edits for group admins/mods -->
+				<c:if test="${command.context.userLoggedIn and not empty post.user.name and editableByUser and not isRemotePost }">
 					<fmt:message key="navi.editTags" var="editTags" />
 					<bs:linkButton icon="pencil" dataToggle="modal" dataTarget="#tag-modal-${post.resource.intraHash}${post.user.name}" title="${editTags}" href="#" size="xsmall" additionalClass="tags-edit-link"></bs:linkButton>
 					&amp;nbsp;
@@ -87,7 +117,7 @@
 				<rc:metaTags post="${post}" showTagsLabel="${showTagsLabel}"/>
 			</div>
 			<div class="pull-left">
-				<discussion:rating post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
+				<discussion:rating post="${post}" />
 			</div>
 			<div class="pull-right">
 				<jsp:invoke fragment="actions"/>
@@ -95,7 +125,10 @@
 			<div class="clearfix">&#160;</div>
 			
 			<!-- EDIT TAGS MODAL POPUP-->
-			<c:if test="${command.context.userLoggedIn and not empty post.user.name and (loginUserName eq post.user.name)}">
+			<!-- TODO: Enable tag edits for group admins/mods -->
+			<c:if test="${command.context.userLoggedIn and not empty post.user.name and editableByUser}">
+				
+				<fmt:message key="tag.addTag" var="addTag" />
 			
 				<div id="tag-modal-${post.resource.intraHash}${post.user.name}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 					<div class="modal-dialog">
@@ -125,9 +158,9 @@
 												<c:set var="tagString" value="${tagString} ${tag.name}" />
 											</c:forEach>
 											<input type="hidden" name="ckey" value="${command.context.ckey }"/>
-											<input type="hidden" name="oldTags['${post.resource.intraHash}']" value="${fn:escapeXml(fn:trim(tagString))}" />
-											<input type="hidden" name="posts['${post.resource.intraHash}']" value="true" checked="checked" /> 
-											<input class="edit-tagsinput form-control" name="newTags['${post.resource.intraHash}']" type="text" value="${fn:escapeXml(fn:trim(tagString))}"/>
+											<input type="hidden" name="posts['${post.resource.intraHash}_${post.user.name}'].oldTags" value="${fn:escapeXml(fn:trim(tagString))}" />
+											<input type="hidden" name="posts['${post.resource.intraHash}_${post.user.name}'].checked" value="true" checked="checked" /> 
+											<input class="edit-tagsinput form-control" name="posts['${post.resource.intraHash}_${post.user.name}'].newTags" type="text" value="${fn:escapeXml(fn:trim(tagString))} ${systemTagElementStr}" />
 										</div>
 									</div>
 									
@@ -139,14 +172,12 @@
 							</div>
 							<!-- /.modal-content -->
 						</form>
-						
 					</div>
 					<!-- /.modal-dialog -->
 				</div>
 				<!-- /.modal -->
 			</c:if>
 			<!-- / EDIT TAGS MODAL POPUP-->
-			
 		</div>
 		<div class="clearline">&#160;</div>
 	</li>

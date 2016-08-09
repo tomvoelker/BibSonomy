@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -44,6 +44,12 @@ public interface DocumentFileLogic {
 	 * @return the file to the document
 	 */
 	public File getFileForDocument(Document document);
+	
+	/**
+	 * @param document
+	 * @return the cache file for the content of the document
+	 */
+	public File getContentCacheFileForDocument(Document document);
 	
 	/**
 	 * TODO: return only file path?

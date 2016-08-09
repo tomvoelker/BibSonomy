@@ -1,7 +1,7 @@
 /**
  * BibSonomy Search Elasticsearch - Elasticsearch full text search module.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -30,6 +30,7 @@ import java.net.URI;
 import java.util.Map;
 
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.search.es.ESConstants.Fields;
 
 /**
@@ -62,11 +63,12 @@ public class BookmarkConverter extends ResourceConverter<Bookmark> {
 		return new Bookmark();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.index.ResourceConverter#convertResourceInternal(org.bibsonomy.model.Resource, java.util.Map)
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.search.es.index.ResourceConverter#convertResourceInternal(org.bibsonomy.model.Resource, java.util.Map, boolean)
 	 */
 	@Override
-	protected void convertResourceInternal(Bookmark resource, Map<String, Object> source) {
-		resource.setUrl((String) source.get(Fields.Bookmark.URL));
+	protected void convertResourceInternal(final Post<Bookmark> post, final Map<String, Object> source, final boolean loadDocuments) {
+		post.getResource().setUrl((String) source.get(Fields.Bookmark.URL));
 	}
 }

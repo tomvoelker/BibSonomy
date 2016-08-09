@@ -1,7 +1,7 @@
 /**
  * BibSonomy Search - Helper classes for search modules.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -31,6 +31,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bibsonomy.common.Pair;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
@@ -40,6 +41,7 @@ import org.bibsonomy.database.managers.PersonDatabaseManager;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.ResourcePersonRelationLogStub;
@@ -62,18 +64,11 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 	private final GeneralDatabaseManager generalDatabaseManager = GeneralDatabaseManager.getInstance();
 	private final PersonSearchDatabaseManager personSearchDatabaseManager = PersonSearchDatabaseManager.getInstance();
 	
+	/**
+	 * @return the session for the database
+	 */
 	protected DBSession openSession() {
 		return this.sessionFactory.getDatabaseSession();
-	}
-	
-	@Override
-	public Integer getLastTasId() {
-		final DBSession session = this.openSession();
-		try {
-			return this.queryForObject("getLastTasId", Integer.class, session);
-		} finally {
-			session.close();
-		}
 	}
 	
 	@Override
@@ -142,20 +137,6 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 			session.close();
 		}
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.search.management.database.SearchDBInterface#getNewestRecordDateFromTas()
-	 */
-	@Override
-	public Date getNewestRecordDateFromTas() {
-		final DBSession session = this.openSession();
-		try {
-			return this.queryForObject("getNewestRecordDateFromTas", Date.class, session);
-		} finally {
-			session.close();
-		}
-	}
 	
 	/*
 	 * (non-Javadoc)
@@ -173,31 +154,13 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.bibsonomy.search.management.database.SearchDBInterface#getLastLogDate()
-	 */
-	@Override
-	public Date getLastLogDate() {
-		final DBSession session = this.openSession();
-		try {
-			final Date rVal = this.queryForObject("getLastLog" + this.getResourceName(), Date.class, session);
-			if (rVal != null) {
-				return rVal;
-			}
-			return new Date();
-		} finally {
-			session.close();
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
 	 * @see org.bibsonomy.search.management.database.SearchDBInterface#getNumberOfPosts()
 	 */
 	@Override
 	public int getNumberOfPosts() {
 		final DBSession session = this.openSession();
 		try {
-			return this.queryForObject("get" + this.getResourceName() + "Count", Integer.class, session);
+			return saveConvertToint(this.queryForObject("get" + this.getResourceName() + "Count", Integer.class, session));
 		} finally {
 			session.close();
 		}
@@ -239,37 +202,6 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 			session.close();
 		}
 	}
-	
-	private String getResourceName() {
-		return this.resourceClass.getSimpleName();
-	}
-
-	/**
-	 * @param resourceClass the resourceClass to set
-	 */
-	public void setResourceClass(final Class<R> resourceClass) {
-		this.resourceClass = resourceClass;
-	}
-
-	/**
-	 * @param sessionFactory the sessionFactory to set
-	 */
-	public void setSessionFactory(final DBSessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.management.database.SearchDBInterface#getLastPersonChangeId()
-	 */
-	@Override
-	public long getLastPersonChangeId() {
-		final DBSession session = this.openSession();
-		try {
-			return this.generalDatabaseManager.getLastId(ConstantID.PERSON_CHANGE_ID, session).longValue();
-		} finally {
-			session.close();
-		}
-	}
 
 	@Override
 	public List<ResourcePersonRelationLogStub> getPubPersonRelationsByChangeIdRange(long fromPersonChangeId, long toPersonChangeIdExclusive) {
@@ -286,6 +218,20 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 		final DBSession session = this.openSession();
 		try {
 			return personSearchDatabaseManager.getPersonMainNamesByChangeIdRange(firstChangeId, toPersonChangeIdExclusive, session);
+		} finally {
+			session.close();
+		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.search.management.database.SearchDBInterface#getPostsForDocumentUpdate(java.util.Date, java.util.Date)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Post<R>> getPostsForDocumentUpdate(Date lastDocumentDate, Date targetDocumentDate) {
+		final DBSession session = this.openSession();
+		try {
+			return (List<Post<R>>) this.queryForList("getPostsForDocumentUpdate", new Pair<>(lastDocumentDate, targetDocumentDate), session);
 		} finally {
 			session.close();
 		}
@@ -310,6 +256,74 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 		newState.setLast_tas_id(this.getLastTasId());
 		newState.setLast_log_date(this.getLastLogDate());
 		newState.setLastPersonChangeId(this.getLastPersonChangeId());
+		newState.setLastDocumentDate(this.getLastDocumentDate());
 		return newState;
+	}
+	
+	/**
+	 * @return
+	 */
+	private Date getLastDocumentDate() {
+		final DBSession session = this.openSession();
+		try {
+			return this.queryForObject("getLastDocumentDate", Date.class, session);
+		} finally {
+			session.close();
+		}
+	}
+
+	/**
+	 * @return the last tas id
+	 */
+	protected Integer getLastTasId() {
+		final DBSession session = this.openSession();
+		try {
+			return this.queryForObject("getLastTasId", Integer.class, session);
+		} finally {
+			session.close();
+		}
+	}
+	
+	private Date getLastLogDate() {
+		final DBSession session = this.openSession();
+		try {
+			final Date rVal = this.queryForObject("getLastLog" + this.getResourceName(), Date.class, session);
+			if (rVal != null) {
+				return rVal;
+			}
+			return new Date();
+		} finally {
+			session.close();
+		}
+	}
+	
+	private long getLastPersonChangeId() {
+		final DBSession session = this.openSession();
+		try {
+			return this.generalDatabaseManager.getLastId(ConstantID.PERSON_CHANGE_ID, session).longValue();
+		} finally {
+			session.close();
+		}
+	}
+	
+	/**
+	 * @return the resourceName
+	 */
+	protected String getResourceName() {
+		return this.resourceClass.getSimpleName();
+	}
+
+	/**
+	 * @param resourceClass the resourceClass to set
+	 */
+	public void setResourceClass(final Class<R> resourceClass) {
+		this.resourceClass = resourceClass;
+	}
+
+	/**
+	 * @param sessionFactory the sessionFactory to set
+	 */
+	public void setSessionFactory(final DBSessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 }

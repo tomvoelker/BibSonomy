@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -112,7 +112,7 @@ public class UserUserPageController extends SingleResourceListControllerWithTags
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
 			// set page title
-			command.setPageTitle("user :: " + groupingName + " (personalized)"); // TODO: i18n
+			command.setPageTitle(groupingName + " (personalized)"); // TODO: i18n
 			
 			// re-compute tag weights
 			RankingUtil.computeRanking(loginUserTags, targetUserTags);

@@ -3,7 +3,7 @@
 
     BibSonomy-Web-Common - Common things for web
 
-    Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+    Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
                                   University of Kassel, Germany
                                   http://www.kde.cs.uni-kassel.de/
                               Data Mining and Information Retrieval Group,
@@ -27,12 +27,13 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
-		<version>3.6.0-SNAPSHOT</version>
+		<version>3.7.0-SNAPSHOT</version>
 	</parent>
 	<licenses>
 		<license>
@@ -91,10 +92,16 @@
 			<version>2.7.1</version>
 		</dependency>
 		<dependency>
+			<groupId>org.antlr</groupId>
+			<artifactId>stringtemplate</artifactId>
+			<version>3.2.1</version>
+		</dependency>
+		<dependency>
 			<groupId>jtidy</groupId>
 			<artifactId>jtidy</artifactId>
 			<version>8.0-SNAPSHOT</version>
-			<!-- dom3-xml-apis is a strange duplicate of xml-apis (cf http://sourceforge.net/tracker/?func=detail&aid=2832643&group_id=136013&atid=737763 ) -->
+			<!-- dom3-xml-apis is a strange duplicate of xml-apis (cf http://sourceforge.net/tracker/?func=detail&aid=2832643&group_id=136013&atid=737763 
+				) -->
 			<exclusions>
 				<exclusion>
 					<groupId>xerces</groupId>

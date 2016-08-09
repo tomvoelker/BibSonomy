@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,7 +26,10 @@
  */
 package org.bibsonomy.webapp.validation;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.bibsonomy.model.User;
@@ -51,17 +54,17 @@ public class UserSamlRegistrationValidator implements Validator<UserIDRegistrati
 	private static final String COMMAND_STORE_KEY = UserSamlRegistrationValidator.class.getName() + ".COMMAND_STORE";
 	private final SamlAuthenticationTool samlAuthTool;
 	private final RequestLogic requestLogic;
+	private List<String> requiredFields;
 	
 	
 	/**
 	 * @param samlAuthTool authtool to use
 	 * @param requestLogic 
 	 */
-	public UserSamlRegistrationValidator(SamlAuthenticationTool samlAuthTool, RequestLogic requestLogic) {
+	public UserSamlRegistrationValidator(SamlAuthenticationTool samlAuthTool, RequestLogic requestLogic, List<String> requiredFields) {
 		this.samlAuthTool = samlAuthTool;
-		org.bibsonomy.util.ValidationUtils.assertNotNull(samlAuthTool);
 		this.requestLogic = requestLogic;
-		org.bibsonomy.util.ValidationUtils.assertNotNull(requestLogic);
+		this.requiredFields = requiredFields;
 	}
 	
 	@Override
@@ -104,14 +107,21 @@ public class UserSamlRegistrationValidator implements Validator<UserIDRegistrati
 			 */
 			final User user = userObj.getRegisterUser();
 			Assert.notNull(user);
-
+			
 			/*
 			 * validate user
 			 */
 			errors.pushNestedPath("registerUser");
 			ValidationUtils.invokeValidator(new UserValidator(), user, errors);
+			// validate additional required fields
+			if (present(this.requiredFields)) {
+				for (final String requiredField : this.requiredFields) {
+					ValidationUtils.rejectIfEmptyOrWhitespace(errors, requiredField, ERROR_FIELD_REQUIRED_KEY);
+				}
+			}
+			
 			errors.popNestedPath();
 		}
 
-	}	
+	}
 }

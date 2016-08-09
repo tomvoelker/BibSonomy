@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -55,6 +55,24 @@ public class RisToBibtexConverterTest {
 
 		// test the conversion
 		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "test1_risBibtex.bib");
+		final RisToBibtexConverter ris2bConverter = new RisToBibtexConverter();
+		final String bibTeX = ris2bConverter.toBibtex(ris);
+		assertEquals (expectedBibTeX, bibTeX);
+	}
+	
+	/**
+	 * Test RIS to BibTeX Conversion
+	 * @throws IOException 
+	 */
+	@Test
+	public void testRisToBibtex5() throws IOException {
+		final String ris = TestUtils.readEntryFromFile(PATH_TO_FILES + "test10.ris");
+
+		// test the canHandle heuristic
+		assertTrue(RisToBibtexConverter.canHandle(ris));
+
+		// test the conversion
+		final String expectedBibTeX = TestUtils.readEntryFromFile(PATH_TO_FILES + "test10_risBibtex.bib");
 		final RisToBibtexConverter ris2bConverter = new RisToBibtexConverter();
 		final String bibTeX = ris2bConverter.toBibtex(ris);
 		assertEquals (expectedBibTeX, bibTeX);

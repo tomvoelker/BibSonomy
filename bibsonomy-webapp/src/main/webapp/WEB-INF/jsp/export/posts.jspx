@@ -48,7 +48,7 @@
 			<rc:post post="${post}" resourceType="${command.bookmark.resourcetype}" otherPostsUrlPrefix="/url/" loginUserName="${command.context.loginUser.name}" additionalItemClasses="${additionalItemClasses}">
 				<jsp:attribute name="title">     <bm:title      post="${post}"/></jsp:attribute>
 				<jsp:attribute name="desc">	     <bm:desc       post="${post}"/></jsp:attribute>
-				<jsp:attribute name="actions">   <buttons::actions post="${post}" loginUserName="${command.context.loginUser.name}" resourceType="bookmark"/></jsp:attribute>
+				<jsp:attribute name="actions">   <buttons:actions post="${post}" loginUserName="${command.context.loginUser.name}" resourceType="bookmark"/></jsp:attribute>
 				<jsp:attribute name="documents"> <bm:documents  post="${post}"/></jsp:attribute>
 			</rc:post>
 		</c:forEach>

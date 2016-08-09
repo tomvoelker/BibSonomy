@@ -4,62 +4,47 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:button="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 	xmlns:jsp="http://java.sun.com/JSP/Page">
-
-	<!--+
-		| show link to CV page
-		+-->
+	
 	<jsp:directive.attribute name="user" type="org.bibsonomy.model.User" required="true" />
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
 	
-	<!-- <script type="text/javascript" src="${resdir}/javascript/userRelation.js"> -->
 	<c:set var="friendName" value="${user.name}" />
-	
-		<fmt:message key="cv.title" var="cvtitle">
-			<fmt:param value="${user.name}"/>
-		</fmt:message>
-
-		<form action="/ajax/handleUserRelation">
-			<input type="hidden" name="requestedUserName" value="${fn:escapeXml(friendName)}" />
-			<input type="hidden" name="action" value="none" />
-			<input type="hidden" name="ckey" value="${ckey}" />
-			<button type="submit" class="btn btn-sm btn-success removeFriend" style="${command.ofFriendUser ? '' : 'display:none'}" >
-				<span class="fa fa-check"><!--  --></span>
-				<c:out value=" "/>
-				<span class="infotext"><fmt:message key="friendoverview.friend" /></span>
-			</button>
-			<button type="submit" class="btn btn-sm btn-default addFriend" style="${command.ofFriendUser ? 'display:none' : ''}">
-				<fmt:message key="friend.add" />
-			</button>
-		</form>
-
-		<br />
-			
-		<div class="btn-group btn-group-xs">
-			
+	<c:set var="ownPage" value="${command.context.loginUser.name eq command.requestedUser}" />
+	<fmt:message key="cv.title" var="cvtitle">
+		<fmt:param value="${user.name}"/>
+	</fmt:message>
+	<!--+
+		| show link to CV page
+		+-->
+	<div class="row user-card-cv">
+		<div class="btn-group btn-group-sm">
 	 		<!-- button for CV link -->
-			<a class="btn btn-default btn-sm" href="/cv/user/${fn:escapeXml(user.name)}" title="${cvtitle}"><span class="fa fa-user"><!-- --></span><fmt:message key="navi.cv.abbrev"/></a>
-			
-			<!-- dropdown toggle button -->
-			<button data-toggle="dropdown" class="btn btn-default btn-small dropdown-toggle"><span class="caret"></span></button>
-			<ul class="dropdown-menu">
-			
-
-				<c:if test="${mtl:contains(loginUserFriends, user)}">
-					<li><a href="/friend/${mtl:encodePathSegment(user.name)}"><fmt:message key="friendoverview.offriend.usershared" /></a></li>
-				</c:if>
-				<!-- show posts of requested user in a personalized view -->
-				<fmt:message key="personalized.info" var="personalized"/>
-				<li><a href="/personalized/user/${fn:escapeXml(user.name)}" title="${personalized}"><fmt:message key="personalize"/></a></li>
-			</ul>
+			<a class="btn btn-default btn-sm" href="/cv/user/${fn:escapeXml(user.name)}" title="${cvtitle}"><fontawesome:icon icon="user" spaceAfter="5" /><fmt:message key="navi.cv.abbrev"/></a>
+			<c:if test="${not ownPage}">
+				<!-- dropdown toggle button -->
+				<button data-toggle="dropdown" class="btn btn-default btn-small dropdown-toggle"><span class="caret"></span></button>
+				<ul class="dropdown-menu">
+					<c:if test="${mtl:contains(loginUserFriends, user)}">
+						<li><a href="/friend/${mtl:encodePathSegment(user.name)}"><fmt:message key="friendoverview.offriend.usershared" /></a></li>
+					</c:if>
+					<!-- show posts of requested user in a personalized view -->
+					<fmt:message key="personalized.info" var="personalized"/>
+					<li><a href="/personalized/user/${mtl:encodePathSegment(user.name)}" title="${personalized}"><fmt:message key="personalize"/></a></li>
+				</ul>
+			</c:if>
 		</div>
-	
-	<!-- 
-	<c:if test="${not empty user.profession}">
-		<p class="small-font"><em><fmt:message key="user.profession" />:</em>&amp;nbsp;<c:out value="${user.profession}" /></p>
+	</div>
+	<c:if test="${not ownPage}">
+		<div class="row">
+			<div class="col-sm-6">
+				<user:userRelationForm friendName="${friendName}" addClass="addFriend" addKey="friend.add" hasRelation="${command.ofFriendUser}" infoKey="friendoverview.friend" removeClass="removeFriend" />
+			</div>
+			<div class="col-sm-6">
+				<user:userRelationForm friendName="${friendName}" addClass="follow" addKey="follow.link.text.follow" hasRelation="${command.isFollowerOfUser}" infoKey="follow.following" removeClass="unfollow" />
+			</div>
+		</div>
 	</c:if>
-	<c:if test="${not empty user.interests}">
- 		<p class="small-font"><em><fmt:message key="user.interests" />:</em>&amp;nbsp;<c:out value="${user.interests}" /></p>
-	</c:if>
-	-->
 </jsp:root>

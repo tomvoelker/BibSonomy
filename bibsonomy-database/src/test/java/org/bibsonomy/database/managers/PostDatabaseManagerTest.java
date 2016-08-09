@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -34,6 +34,7 @@ import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.User;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -251,7 +252,7 @@ public abstract class PostDatabaseManagerTest<R extends Resource> extends Abstra
 	}
 
 	/**
-	 * Test method for {@link org.bibsonomy.database.managers.PostDatabaseManager#createPost(org.bibsonomy.model.Post, org.bibsonomy.database.common.DBSession)}.
+	 * Test method for {@link org.bibsonomy.database.managers.PostDatabaseManager#createPost(org.bibsonomy.model.Post, User, org.bibsonomy.database.common.DBSession)}.
 	 */
 	@Test
 	public abstract void testCreatePost();
@@ -263,7 +264,7 @@ public abstract class PostDatabaseManagerTest<R extends Resource> extends Abstra
 	public abstract void testUpdatePost();
 
 	/**
-	 * Test method for {@link org.bibsonomy.database.managers.PostDatabaseManager#deletePost(java.lang.String, java.lang.String, org.bibsonomy.database.common.DBSession)}.
+	 * Test method for {@link org.bibsonomy.database.managers.PostDatabaseManager#deletePost(java.lang.String, java.lang.String, User, org.bibsonomy.database.common.DBSession)}.
 	 */
 	@Test
 	public abstract void testDeletePost();

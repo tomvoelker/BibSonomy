@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -67,8 +67,9 @@ public class DeGruyterScraper extends AbstractUrlScraper {
 		
 		try {
 			final String inRIS = getCitationInRIS(url.toString());
+			final String newRIS = addHTTP(inRIS);
 			final RisToBibtexConverter con = new RisToBibtexConverter();
-			final String bibtex = con.toBibtex(inRIS);
+			final String bibtex = con.toBibtex(newRIS);
 			
 			if (present(bibtex)) {
 				scrapingContext.setBibtexResult(bibtex);
@@ -79,6 +80,17 @@ public class DeGruyterScraper extends AbstractUrlScraper {
 		} catch (final IOException e) {
 			throw new InternalFailureException(e);
 		}
+	}
+	
+	private static String addHTTP(String ris) {
+		final String regex = "UR  - (.*)";
+		Pattern DOI_PATTERN_FROM_URL = Pattern.compile(regex);
+		final Matcher m = DOI_PATTERN_FROM_URL.matcher(ris);
+		if (m.find()) {
+			String newURL = "http:" + m.group(1);
+			ris = ris.replaceAll(regex, "UR  - " + newURL);
+		}
+		return ris;
 	}
 	
 	private static String getCitationInRIS(final String stURL) throws IOException {

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -83,7 +83,7 @@ public class AmazonScraper extends AbstractUrlScraper {
 				+ AMAZON_HOST_FR), AbstractUrlScraper.EMPTY_PATTERN));
 	}
 
-	private static final Pattern ISBN = Pattern.compile("ISBN (\\d+)");
+	private static final Pattern ISBN = Pattern.compile("ISBN(-10:</b>)? (\\d+)");
 
 	/**
 	 * INFO field of this scraper
@@ -98,19 +98,25 @@ public class AmazonScraper extends AbstractUrlScraper {
 	 */
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+		
+		
 		sc.setScraper(this);
 		
 		// try to extract isbn and use the worldcat scraper
 		try {
 			final String content = WebUtils.getContentAsString(sc.getUrl().toString());
 			final Matcher m = ISBN.matcher(content);
-			final String isbn;
+			
+			String isbn;
 			if (m.find()) {
-				isbn = m.group(1);
+				isbn = m.group(2);
+				if (isbn.length() == 9) {
+					isbn = isbn + "X";
+				}
 			} else {
 				isbn = ISBNUtils.extractISBN(sc.getPageContent());
 			}
-			
+						
 			if (!present(isbn)) {
 				return false;
 			}

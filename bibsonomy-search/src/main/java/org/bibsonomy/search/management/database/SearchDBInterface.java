@@ -1,7 +1,7 @@
 /**
  * BibSonomy Search - Helper classes for search modules.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.ResourcePersonRelationLogStub;
@@ -59,11 +60,6 @@ public interface SearchDBInterface<R extends Resource> {
 	 * @return all posts for given user
 	 */
 	public List<SearchPost<R>> getPostsForUser(final String userName, final int limit, final int offset);
-
-	/**
-	 * @return get most recent post's date
-	 */
-	public Date getNewestRecordDateFromTas();
 	
 	/**
 	 * get list of content ids to delete from index with fromDate<date<=date
@@ -91,15 +87,6 @@ public interface SearchDBInterface<R extends Resource> {
 	// methods for building the index
 	// TODO: maybe we should introduce a special class hierarchy
 	//------------------------------------------------------------------------
-	/** 
-	 * @return get newest tas_id from database 
-	 */
-	public Integer getLastTasId();
-
-	/** 
-	 * @return get latest log_date from database
-	 */
-	public Date getLastLogDate();
 	
 	/**
 	 * @return get number of posts
@@ -112,11 +99,6 @@ public interface SearchDBInterface<R extends Resource> {
 	 * @return get post entries for index creation
 	 */
 	public List<SearchPost<R>> getPostEntries(int lastContentId, int max);
-
-	/**
-	 * @return
-	 */
-	public long getLastPersonChangeId();
 
 	/**
 	 * @param fromPersonChangeId
@@ -150,4 +132,11 @@ public interface SearchDBInterface<R extends Resource> {
 	 * @return
 	 */
 	public SearchIndexSyncState getDbState();
+
+	/**
+	 * @param lastDocumentDate
+	 * @param targetDocumentDate
+	 * @return a list of posts to update
+	 */
+	public List<Post<R>> getPostsForDocumentUpdate(Date lastDocumentDate, Date targetDocumentDate);
 }

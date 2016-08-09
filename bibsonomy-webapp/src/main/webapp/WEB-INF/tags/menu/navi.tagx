@@ -7,25 +7,54 @@
 	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
 	xmlns:login="urn:jsptagdir:/WEB-INF/tags/actions/login"
 	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu">
 	
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
 	<jsp:directive.attribute name="activeTab" type="java.lang.String" required="false"/>
 	
 	<c:set var="loginUserName" value="${loginUser.name}" />
 	<c:set var="userLoggedIn" value="${not empty loginUserName}" />
-	<nav class="navbar navbar-bibsonomy" role="banner" id="navigation">
+	
+	<nav class="navbar navbar-bibsonomy" role="navigation" id="navigation">
 		<div class="container navi noborder">
-			<!-- Brand and toggle get grouped for better mobile display -->
+			
 			<div class="navbar-header">
+						
+				<!-- placeholder for collapsed menu -->
 				<button type="button" class="navbar-toggle btn btn-default navbar-btn" data-toggle="collapse" data-target="#bs-navbar-collapse">
 					<span class="sr-only"><fmt:message key="navi.navigation.toggle"/></span>
 					<span class="icon-bar"><!--  --></span>
 					<span class="icon-bar"><!--  --></span>
 					<span class="icon-bar"><!--  --></span>
 				</button>
+
+				<!-- placeholder for user menu -->
+				<button id="menu-user-icon-toggle-button" style="border:none" type="button" class="navbar-toggle btn btn-default navbar-btn" data-toggle="collapse" data-target="#bs-navbar-user-collapse">
+					<span class="sr-only"><fmt:message key="navi.navigation.toggle"/></span>
+					<span class="fa fa-user"><!-- KEEP ME --></span>
+					<b id="caret-with-margin" class="caret">&amp;nbsp;</b>
+				</button>
+				<c:if test="${not empty loginUserName}">
+					<span class="navbar-toggle navbar-btn visible-xs"><user:username user="${loginUser}" /></span>
+				</c:if>
 			</div>
-			<div class="collapse navbar-collapse" id="bs-navbar-collapse">
+			
+			<!--  hidden menu for user dropdown  -->
+			<div id="bs-navbar-user-collapse" class="collapse">
+				<ul class="navbar-nav nav visible-xs">
+					<c:choose>
+						<c:when test="${not empty loginUserName}" >
+							<menu:userDropdown loginUser="${loginUser}"></menu:userDropdown>
+						</c:when>
+						<c:otherwise>
+							<menu:registerSignUpButtons></menu:registerSignUpButtons>
+						</c:otherwise>
+					</c:choose>
+				</ul>
+			</div>
+			
+			<div id="bs-navbar-collapse" class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
 					<li class="${activeTab eq 'home' ? 'active' : ''}"><a href="${relativeUrlGenerator.getProjectHome()}"><fmt:message key="navi.home"/></a></li>
 					<!--+ 
@@ -49,6 +78,8 @@
 									</li>
 								</c:if>
 								<li><a href="${relativeUrlGenerator.prefix('discussed').getUserUrlByUserName(loginUserName)}"><fmt:message key="navi.discussedPosts"/></a></li>
+								<li><a href="/followers"><fmt:message key="navi.followedPosts"/></a></li>
+								<li><a href="/friends"><fmt:message key="navi.postsOfFriends"/></a></li>
 								
 								<c:if test="${not loginUser.settings.layoutSettings.simpleInterface}">
 									<li class="divider"><!-- KEEP ME --></li>
@@ -144,7 +175,9 @@
 						</ul>
 					</li>
 					
-					<li class="${activeTab eq 'persons' ? 'active' : ''}"><a href="${relativeUrlGenerator.getPersonsUrl()}"><fmt:message key="navi.persons"/></a></li>
+					<c:if test="${properties['genealogy.activated'] eq 'true'}">
+						<li class="${activeTab eq 'persons' ? 'active' : ''}"><a href="${relativeUrlGenerator.getPersonsUrl()}"><fmt:message key="navi.persons"/></a></li>
+					</c:if>
 					
 					<c:if test="${loginUser.role eq 'ADMIN' }">
 						<li class="dropdown ${activeTab eq 'admin' ? 'active' : ''}" data-touch="false">
@@ -161,10 +194,10 @@
 						</li>
 					</c:if>
 				</ul>
-				<ul class="nav navbar-nav navbar-right">
+				<ul class="nav navbar-nav navbar-right hidden-xs">
 					<c:choose>
 						<c:when test="${not empty loginUserName}" >
-							<li><user:username user="${loginUser}" /></li>
+							<li class="visible-md visible-lg"><user:username user="${loginUser}" /></li>
 							<li class="dropdown ${activeTab eq 'myprofile' ? 'active' : ''}">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 							<span class="fa fa-user"><!-- KEEP ME --></span>
@@ -176,100 +209,17 @@
 							</b>
 							<b class="caret">&amp;nbsp;</b></a>
 						<ul class="dropdown-menu items-with-icons">
-							<li>
-								<fmt:message var="titleInbox" key="navi.inbox" />
-								<a href="/inbox" title="${titleInbox}">
-									<span class="fa fa-inbox"><!-- KEEP ME --></span>
-									<fmt:message key="navi.inbox" />
-									<c:if test="${loginUser.inbox.numPosts == 0}">
-										<c:set var="inboxCounterStyle" value="display: none;" />
-									</c:if>
-									<span id="inbox-counter" style="position: absolute; right: 10px; ${inboxCounterStyle}" class="badge"><c:out value="${loginUser.inbox.numPosts}"/></span>
-								</a>
-							</li>
-							<li>
-								<fmt:message var="titleClipboard" key="navi.clipboard"/>
-								<a href="/clipboard" title="${titleClipboard}"><!-- empty -->
-									<span class="fa fa-folder-open"><!--  --></span>
-									<fmt:message key="navi.clipboard" />
-									<c:if test="${loginUser.clipboard.numPosts == 0}">
-										<c:set var="clipboardCounterStyle" value="display: none;" />
-									</c:if>
-									<span id="clipboard-counter" style="position: absolute; right: 10px; ${clipboardCounterStyle}" class="badge"><c:out value="${loginUser.clipboard.numPosts}"/></span>
-								</a>
-							</li>
-							<li>
-								<fmt:message var="friends" key="navi.friends" />
-								<a href="/friendsoverview" title="friends">
-									<span class="fa fa-user"><!--  --></span>
-									<fmt:message key="navi.friends"/>
-								</a>
-							</li>
-							<li> 
-								<fmt:message var="editTags" key="navi.editTags" />
-								<a href="/editTags" title="${editTags}">
-									<span class="fa fa-tag"><!-- KEEP ME --></span>
-									<fmt:message key="navi.editTags" />
-								</a>
-							</li>
-							
-							<!-- settings -->
-							<li>
-								<a href="/settings">
-									<span class="fa fa-cogs"><!-- KEEP ME --></span>
-									<fmt:message key="navi.settings"/>
-								</a>
-							</li>
-							
-							<!-- divider -->
-							<li class="divider"><!-- KEEP ME --></li>
-
-							<li>
-								<fmt:message var="titleBlog" key="navi.blog" />
-								<a href="${properties['project.blog']}" title="${titleBlog}">
-									<span class="fa fa-book"><!-- KEEP ME --></span>
-									<fmt:message key="navi.blog" />
-								</a>
-							</li>
-							<li>
-								<fmt:message var="titleHelp" key="navi.help"/>
-								<fmt:message key="navi.helpUrl" var="helpLangUrl" />
-								<a href="${helpLangUrl}" title="${titleHelp}">
-									<span class="fa fa-question-circle"><!-- KEEP ME --></span>
-									<fmt:message key="navi.help" />
-								</a>
-							</li>
-							
-							<!-- divider -->
-							<li class="divider"><!--  --></li>
-							<li>
-								<a href="/logout">
-									<span class="fa fa-power-off"><!-- KEEP ME --></span>
-									<fmt:message key="navi.logout"/>
-								</a>
-							</li>
+							<menu:userDropdown loginUser="${loginUser}" />
 						</ul>
 					</li>
 						</c:when>
 						<c:otherwise>
-							<li>
-								<a href="#" data-toggle="modal" data-target="#loginModal">
-									<fontawesome:icon icon="sign-in" /><c:out value=" " /> <!-- TODO: remove whitespace -->
-									<fmt:message key="navi.login" />
-								</a>
-							</li>
-							<c:if test="${mtl:contains(authConfig, mtl:convertToEnum('org.bibsonomy.common.enums.AuthMethod', 'INTERNAL')) and not properties['auth.register.disabled'] eq 'true'}">
-								<li> 
-									<a href="${relativeUrlGenerator.getRegisterUrl()}">
-										<span class="fa fa-pencil-square-o"><!-- KEEP ME --></span><c:out value=" "></c:out>
-										<fmt:message key="navi.register" />
-									</a>
-								</li>
-							</c:if>
+							<menu:registerSignUpButtons></menu:registerSignUpButtons>
 						</c:otherwise>
 					</c:choose>
 				</ul>
 			</div>
+
 		</div>
 	</nav>
 	

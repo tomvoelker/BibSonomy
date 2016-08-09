@@ -1,7 +1,7 @@
 /**
  * BibSonomy Search - Helper classes for search modules.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.search.management.database;
 
+import static org.bibsonomy.util.ValidationUtils.present;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -43,10 +44,12 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.managers.BibTexDatabaseManager;
 import org.bibsonomy.database.managers.BookmarkDatabaseManager;
+import org.bibsonomy.database.managers.DocumentDatabaseManager;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -115,6 +118,14 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 
 		List<SearchPost<BibTex>> posts = searchBibTexLogic.getPostsForUser(requestedUserName, 10, 0);
 		List<Post<BibTex>> postsRef = publicationDatabaseManager.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, null, 10, 0, null, this.dbSession);
+		int docCount = 0;
+		for (Post<BibTex> post : postsRef) {
+			final List<Document> documents = post.getResource().getDocuments();
+			if (present(documents)) {
+				docCount += documents.size();
+			}
+		}
+		assertEquals(2, docCount);
 		assertEquals(postsRef.size(), posts.size());
 
 		posts = searchBibTexLogic.getPostsForUser(requestedUserName, 10, 0);
@@ -139,12 +150,12 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 		//--------------------------------------------------------------------
 		// TEST 1: insert special posts into test database and search for it
 		//--------------------------------------------------------------------
-		final Integer lastTasId = searchBibTexLogic.getLastTasId();
+		final Integer lastTasId = searchBibTexLogic.getDbState().getLast_tas_id();
 		for (int i = 0; i < 5; i++) {
 			// store test posts in database
-			final Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC, i);
+			final Post<BibTex> bibtexPost = generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC, i);
 			refPosts.add(bibtexPost);
-			publicationDatabaseManager.createPost(bibtexPost, this.dbSession);
+			publicationDatabaseManager.createPost(bibtexPost, bibtexPost.getUser(), this.dbSession);
 		}
 		
 		// retrieve posts
@@ -175,12 +186,12 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 		//--------------------------------------------------------------------
 		// TEST 1: insert special posts into test database and search for it
 		//--------------------------------------------------------------------
-		final Integer lastTasId = searchBibTexLogic.getLastTasId();
+		final Integer lastTasId = searchBibTexLogic.getDbState().getLast_tas_id();
 		for (int i = 0; i < 5; i++) {
 			// store test posts in database
-			final Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC, i);
+			final Post<BibTex> bibtexPost = generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC, i);
 			refPosts.add(bibtexPost);
-			publicationDatabaseManager.createPost(bibtexPost, this.dbSession);
+			publicationDatabaseManager.createPost(bibtexPost, null, this.dbSession);
 		}
 		
 		final List<? extends Post<BibTex>> posts = searchBibTexLogic.getNewPosts(lastTasId.intValue(), 10, 4);
@@ -210,40 +221,17 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 
 		for (int i = 0; i < 5; i++) {
 			// store test posts in database
-			final Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC, i);
+			final Post<BibTex> bibtexPost = generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC, i);
 			refPosts.add(bibtexPost);
-			publicationDatabaseManager.createPost(bibtexPost, this.dbSession);
+			publicationDatabaseManager.createPost(bibtexPost, null, this.dbSession);
 			// delete test post
-			publicationDatabaseManager.deletePost(bibtexPost.getUser().getName(), bibtexPost.getResource().getIntraHash(), this.dbSession);
+			final User user = bibtexPost.getUser();
+			publicationDatabaseManager.deletePost(user.getName(), bibtexPost.getResource().getIntraHash(), user, this.dbSession);
 		}
 		// retrieve posts
 		final List<Integer> posts = searchBibTexLogic.getContentIdsToDelete(new Date(fromDate-QUERY_TIME_OFFSET_MS));
 
 		assertTrue(refPosts.size() <= posts.size());
-	}
-
-	/**
-	 * test whether newest post's date is detected
-	 * @throws PersonListParserException 
-	 */
-	@Test
-	public void getNewestRecordDateFromTas() throws PersonListParserException {
-		//--------------------------------------------------------------------
-		// TEST 1: insert special post into test database and search for it
-		//--------------------------------------------------------------------
-		// store test post in database
-		final Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC, 100);
-		publicationDatabaseManager.createPost(bibtexPost, this.dbSession);
-
-		Date postDate = searchBibTexLogic.getNewestRecordDateFromTas();
-		// compare modulo milliseconds 
-		assertEquals(bibtexPost.getDate().getTime() - (bibtexPost.getDate().getTime() % 100000), postDate.getTime()-(postDate.getTime() % 100000));
-
-		final Post<Bookmark> bookmarkPost = this.generateBookmarkDatabaseManagerTestPost();
-		bookmarkDb.createPost(bookmarkPost, this.dbSession);
-
-		postDate = searchBookmarkLogic.getNewestRecordDateFromTas();
-		assertEquals(bookmarkPost.getDate().getTime() - (bookmarkPost.getDate().getTime() % 100000), postDate.getTime()-(postDate.getTime() % 100000));
 	}
 
 	/**
@@ -389,5 +377,57 @@ public class SearchDBLogicTest extends AbstractDatabaseManagerTest {
 
 		post.setResource(resource);
 		return post;
+	}
+	
+	/**
+	 * tests {@link SearchDBLogic#getPostEntries(int, int)}
+	 * @throws Exception
+	 */
+	@Test
+	public void testGetPostEntries() throws Exception {
+		final List<SearchPost<BibTex>> posts = searchBibTexLogic.getPostEntries(0, 100);
+		assertEquals(14, posts.size());
+		// check for documents
+		for (final SearchPost<BibTex> searchPost : posts) {
+			final BibTex publication = searchPost.getResource();
+			if ("testuser1".equals(searchPost.getUser().getName()) && "b77ddd8087ad8856d77c740c8dc2864a".equals(publication.getIntraHash())) {
+				assertEquals(2, publication.getDocuments().size());
+			}
+		}
+	}
+	
+	/**
+	 * tests {@link SearchDBLogic#getPostsForDocumentUpdate(Date, Date)}
+	 * @throws Exception
+	 */
+	@Test
+	public void testGetPostsForDocumentUpdate() throws Exception {
+		final Date date = new Date();
+		
+		// insert document
+		final DocumentDatabaseManager docManager = DocumentDatabaseManager.getInstance();
+		final String testuser1 = "testuser1";
+		final int contentIdDocAdd = 12;
+		docManager.addDocument(testuser1, contentIdDocAdd, "abc", "abc.pdf", "hash", this.dbSession);
+		
+		// delete document
+		final Document document = new Document();
+		document.setUserName("testuser1");
+		document.setFileName("testdocument_2.pdf");
+		document.setFileHash("00000000000000000000000000000001");
+		document.setMd5hash("00000000000000000000000000000001");
+		final int contentIdDocRemove = 10;
+		docManager.deleteDocument(contentIdDocRemove, document, this.dbSession);
+		
+		// test for documents
+		final List<Post<BibTex>> postsForDocumentUpdate = searchBibTexLogic.getPostsForDocumentUpdate(date, new Date());
+		assertEquals(2, postsForDocumentUpdate.size());
+		final Post<BibTex> post1 = postsForDocumentUpdate.get(0);
+		assertEquals(10, post1.getContentId().intValue());
+		assertEquals(1, post1.getResource().getDocuments().size());
+		
+		final Post<BibTex> post2 = postsForDocumentUpdate.get(1);
+		assertEquals(12, post2.getContentId().intValue());
+		assertEquals(1, post2.getResource().getDocuments().size());
 	}
 }

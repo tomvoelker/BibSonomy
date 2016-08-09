@@ -1,7 +1,7 @@
 /**
  * BibSonomy Search Elasticsearch - Elasticsearch full text search module.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -122,11 +122,14 @@ public final class ESConstants {
 	
 	public static interface Fields {
 		
+		/** field that contains all docs */
+		public static final String ALL_DOCS = "all_docs";
+
 		/** private search content should be copied to this field */
 		public static final String PRIVATE_ALL_FIELD = "all_private";
 		
 		/** all special fields that can't be overridden by a misc field */
-		public static final Set<String> SPECIAL_FIELDS = Sets.asSet("_all", PRIVATE_ALL_FIELD);
+		public static final Set<String> SPECIAL_FIELDS = Sets.asSet("_all", PRIVATE_ALL_FIELD, ALL_DOCS);
 		
 		/** the content id of the post */
 		public static final String CONTENT_ID = "content_id";
@@ -163,11 +166,7 @@ public final class ESConstants {
 		}
 		
 		public static interface Publication {
-			@Deprecated // TODO: remove with 3.6
-			public static final String AUTHOR = "author";
 			public static final String AUTHORS = "authors";
-			@Deprecated // TODO: remove with 3.6
-			public static final String EDITOR = "editor";
 			public static final String EDITORS = "editors";
 			public static final String PERSON_NAME = "name";
 			
@@ -201,6 +200,15 @@ public final class ESConstants {
 			public static final String TYPE = "type";
 			public static final String URL = "url";
 			public static final String VOLUME = "volume";
+			public static final String DOCUMENTS = "documents";
+			
+			public static interface Document {
+				public static final String NAME = "name";
+				public static final String TEXT = "text";
+				public static final String HASH = "hash";
+				public static final String CONTENT_HASH = "content_hash";
+				public static final String DATE = "date";
+			}
 		}
 	}
 

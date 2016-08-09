@@ -18,7 +18,7 @@
 		<fmt:param value="${properties['project.name']}" />
 	</fmt:message>
 
-	<layout:paneLayout pageTitle="${personIntroTitle}" headerMessageKey="gettingStarted.headline" command="${command}" requPath="${requPath}" noSidebar="${true}">
+	<layout:paneLayout pageTitle="${personIntroTitle}" headerMessageKey="gettingStarted.headline" command="${command}" requPath="${requPath}" noSidebar="${true}" activeTab="persons">
 
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="navi.persons" formAction="/search" formInputName="search"/>
@@ -53,9 +53,7 @@
 					<div class="text-center head">
 					
 						<h1>
-							<fmt:message key="persons.intro.head.title">
-								<fmt:param value="${properties['project.name']}" />
-							</fmt:message>
+							<c:out value="${personIntroTitle}" />
 						</h1>
 						
 						<!-- 

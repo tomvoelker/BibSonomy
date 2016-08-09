@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Model - Java- and JAXB-Model.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -150,7 +150,7 @@ public abstract class PostComparator implements Serializable {
 			comp = i2 - i1;
 		}
 		if (comp == 0) throw new SortKeyIsEqualException();
-		return (comp > 0 ? 1 : 0);
+		return (comp > 0 ? 1 : -1);
 	}
 	
 	/**

@@ -33,6 +33,20 @@
 		<constructor-arg ref="elasticsearchPublicationTools" />
 	</bean>
 	
+	<bean id="elasticsearchCommunityBookmarkManager" class="org.bibsonomy.search.es.management.ElasticsearchCommunityManager" destroy-method="shutdown">
+		<constructor-arg value="${search.update.enabled}" />
+		<constructor-arg ref="esClient" />
+		<constructor-arg ref="goldStandardBookmarkSearchDBLogic" />
+		<constructor-arg ref="elasticsearchCommunityBookmarkTools" />
+	</bean>
+	
+	<bean id="elasticsearchCommunityPublicationManager" class="org.bibsonomy.search.es.management.ElasticsearchCommunityManager" destroy-method="shutdown">
+		<constructor-arg value="${search.update.enabled}" />
+		<constructor-arg ref="esClient" />
+		<constructor-arg ref="goldStandardPublicationSearchDBLogic" />
+		<constructor-arg ref="elasticsearchCommunityPublicationTools" />
+	</bean>
+	
 	<bean id="systemURI" class="java.net.URI">
 		<constructor-arg value="${project.home}" />
 	</bean>
@@ -45,13 +59,26 @@
 		<constructor-arg ref="searchPublicationClass" />
 	</bean>
 	
+	<bean id="elasticsearchCommunityBookmarkMappingBuilder" class="org.bibsonomy.search.es.index.BookmarkMappingBuilder">
+		<constructor-arg ref="searchGoldStandardBookmarkClass" />
+	</bean>
+	
+	<bean id="elasticsearchCommunityPublicationMappingBuilder" class="org.bibsonomy.search.es.index.PublicationMappingBuilder">
+		<constructor-arg ref="searchGoldStandardPublicationClass" />
+	</bean>
+	
 	<bean id="elasticsearchResourceConverter" class="org.bibsonomy.search.es.index.ResourceConverter" abstract="true">
 		<constructor-arg ref="systemURI" />
 	</bean>
 	
 	<bean id="elasticsearchBookmarkConverter" class="org.bibsonomy.search.es.index.BookmarkConverter" parent="elasticsearchResourceConverter"/>
 	
-	<bean id="elasticsearchPublicationConverter" class="org.bibsonomy.search.es.index.PublicationConverter" parent="elasticsearchResourceConverter"/>
+	<bean id="elasticsearchPublicationConverter" class="org.bibsonomy.search.es.index.PublicationConverter" parent="elasticsearchResourceConverter">
+		<constructor-arg ref="fileContentExtractorService" />
+	</bean>
+	
+	<bean id="elasticsearchCommunityBookmarkConverter" class="org.bibsonomy.search.es.index.CommunityBookmarkConverter" parent="elasticsearchResourceConverter" />
+	<bean id="elasticsearchCommunityPublicationConverter" class="org.bibsonomy.search.es.index.CommunityPublicationConverter" parent="elasticsearchResourceConverter" />
 	
 	<bean id="elasticsearchBookmarkTools" class="org.bibsonomy.search.es.management.ElasticsearchIndexTools">
 		<constructor-arg ref="searchBookmarkClass" />
@@ -65,6 +92,20 @@
 		<constructor-arg ref="elasticsearchPublicationConverter" />
 		<constructor-arg ref="systemURI" />
 		<constructor-arg ref="elasticsearchPublicationMappingBuilder" />
+	</bean>
+	
+	<bean id="elasticsearchCommunityPublicationTools" class="org.bibsonomy.search.es.management.ElasticsearchIndexTools">
+		<constructor-arg ref="searchGoldStandardPublicationClass" />
+		<constructor-arg ref="elasticsearchCommunityPublicationConverter" />
+		<constructor-arg ref="systemURI" />
+		<constructor-arg ref="elasticsearchCommunityPublicationMappingBuilder" />
+	</bean>
+	
+	<bean id="elasticsearchCommunityBookmarkTools" class="org.bibsonomy.search.es.management.ElasticsearchIndexTools">
+		<constructor-arg ref="searchGoldStandardBookmarkClass" />
+		<constructor-arg ref="elasticsearchCommunityBookmarkConverter" />
+		<constructor-arg ref="systemURI" />
+		<constructor-arg ref="elasticsearchCommunityBookmarkMappingBuilder" />
 	</bean>
 	
 	<bean id="elasticsearchBookmarkSearch" class="org.bibsonomy.search.es.search.EsResourceSearch">
@@ -82,8 +123,25 @@
 		<property name="genealogyUser" value="${genealogy.import.user}" />
 	</bean>
 	
+	<bean id="elasticsearchCommunityBookmarkSearch" class="org.bibsonomy.search.es.search.EsResourceSearch">
+		<property name="manager" ref="elasticsearchCommunityBookmarkManager" />
+		<property name="resourceConverter" ref="elasticsearchCommunityBookmarkConverter" />
+		<property name="resourceType" ref="searchGoldStandardBookmarkClass" />
+		<property name="infoLogic" ref="searchInfoLogic" />
+	</bean>
+	
+	<bean id="elasticsearchCommunityPublicationSearch" class="org.bibsonomy.search.es.search.ElasticsearchPublicationSearch">
+		<property name="manager" ref="elasticsearchCommunityPublicationManager" />
+		<property name="resourceConverter" ref="elasticsearchCommunityPublicationConverter" />
+		<property name="resourceType" ref="searchGoldStandardPublicationClass" />
+		<property name="infoLogic" ref="searchInfoLogic" />
+		<property name="genealogyUser" value="${genealogy.import.user}" />
+	</bean>
+	
 	<util:map id="elasticsearchManagers">
 		<entry key-ref="searchBookmarkClass" value-ref="elasticsearchBookmarkManager" />
 		<entry key-ref="searchPublicationClass" value-ref="elasticsearchPublicationManager" />
+		<entry key-ref="searchGoldStandardBookmarkClass" value-ref="elasticsearchCommunityBookmarkManager" />
+		<entry key-ref="searchGoldStandardPublicationClass" value-ref="elasticsearchCommunityPublicationManager" />
 	</util:map>
 </beans>

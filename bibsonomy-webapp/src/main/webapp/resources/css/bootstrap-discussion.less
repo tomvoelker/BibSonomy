@@ -1,350 +1,156 @@
-
-#goldstandard .discussion-all {
+.simple-comment-form, .simple-review-form {
+	hr {
+		margin-top: 2px;
+		margin-bottom: 2px;
+	}
 	
-	padding-left: 1em;
-	border-left: 3px @border-color solid;
-	margin-top: 1em;
+	.checkbox {
+		display: inline;
+		padding-left: 30px;
+	}
+	
+	.action-menu {
+		margin-right: 15px;
+	}
+	
+	div.rating-container {
+		margin-top: -10px;
+		font-size: 1.7em;
+	}
 }
 
-#review_info_rating {
-	margin-left: 0.5em;
+.discussion-thumbnail {
+	padding: 4px;
+}
+
+li.moreless-discussion {
 	text-align: center;
-	display: table;
-	border-collapse: collapse;
-}
-
-.sidebarcontainer #review_info_rating {
-	width: 90%;
-	margin: 5%;
-}
-.sidebarcontainer #ratingDistribution, .sidebarcontainer #ratingAvg {
-
-}
-
-#postReview, #review_info_rating {
-	margin-bottom: 1.0em;
-}
-
-#ratingDistribution, #ratingAvg {
-	/* font-size: 85%; */
-}
-
-#replyReview, #replyForm, #editcomment, #createReview {
-	margin-bottom: 1em;
-}
-
-#ratingAvg {
-	vertical-align: middle;
-	div {
-		margin: auto;
-	}
-	
-	.info span {
-		 margin-right: 0.3em;
-	}
-	
-	.stars-off-1 {
-		text-align: left !important;
-	}
-}
-
-#ratingAvg {
-	
-}
-
-.stars-off-1, .stars-on-1 {
-	position: relative;
-	height: 16px;
-	background: url(/resources/jquery/plugins/ui/plugins/stars/jquery.ui.stars.gif) repeat-x 0 -32px;
-}
-
-.stars-off-1 {
-	display: inline-table;
-	width: 80px;
-}
- 
-.stars-on-1 {
-	position: absolute;
-	background-position: 0 -48px;
-}
-
-/* this is a hack for firefox */
-.ratingAvgInfo {
-	color: #555;
-	clear:left;
-}
-
-.commentPicture {
-	width: 64px;
-
-}
-
-.review.info, .comment.info {
-	color: #555;
-	font-size: 90%;
-}
-
-.review.details, .comment.details {
-	min-height: 70px;
-}
-
-.review.info a, .comment.info a {
+	margin-top: 20px;
+	padding: 5p;
+	border-radius: 4px;
 	font-weight: bold;
 }
 
-ul.discussionitemMenu {
-	padding-bottom: 0.5em;
-	padding-top: 0.5em;
-	border-bottom: 1px solid #ccc;
-	font-size: 80%;
-	display: block;
-}
-ul.subdiscussionItems {
-	list-style: none;
-}
-ul.discussionitemMenu li {
-	display: inline;
-	padding-left: 0.25em;
-	padding-right: 0.25em;
+#review_info_rating {
+	margin-bottom: 25px;
 }
 
-
-ul.discussionitemMenu li {
-	border-left: 1px solid grey;
-	padding-right: 0.4em;
-	padding-left: 0.4em;
-}
-
-ul.discussionitemMenu li:first-child {
-	border-left: none;
-}
-
-.review.text, .comment.text {
-	/* font-size: 90%; */
-	white-space: pre-wrap;
-}
-
-.reviewTextBox {
-	margin-right:2px;
-}
-
-.fsform {
-	margin-top: 0.5em;
-}
-
-ul.newMenu {
-	float: right;
+.discussion-all {
+	.rating-xs {
+		font-size: 1.3em;
+	}
 	
-	li {
-		display: inline;
-		padding: 3px;
-		margin-right: 5px;
-		a {
-			background-color: @main-color;
-			color: white !important;
-			padding: 3px 5px 3px 5px;
-			font-size: 80%;
-			border: 1px solid black;
+	.simple-review-form {
+		.star-rating {
+			margin-top: -5px;
 		}
-		
-		a:hover {
-			background-color: rgb(233, 233, 233);
-			color: rgb(96, 96, 96) !important;
-		}
+	}
+	
+	.simple-comment-form, simple-review-form {
+		margin-top: 10px;
 	}
 }
 
-.posts .first #discussionMainMenu {
-	margin-top: 3px;
+@discussion-image-size: 44px;
+
+ul.media-list > li.form {
+	margin-top: 20px;
 }
 
-#discussionMainMenu {
-	padding-top: 13px;
+.media-left .thumbnail {
+	margin-bottom: 0px;
 }
 
-#noReviewInfo {
-	padding-top: 12px;
-} 
+li.comment, li.review, li.discussionitem {
+	.rating-disabled {
+		cursor: default;
+	}
+	
+	.bookCiteBox, .citeBox {
+		font-size: 85%;
+		
+		.cite-header {
+			margin-top: 2px;
+			font-size: 95%;
+			font-weight: bold;
+		}
+	}
+	.media-left {
+		width: @discussion-image-size;
+		height: @discussion-image-size;
+		
+		img {
+			max-width: @discussion-image-size;
+			max-height: @discussion-image-size;
+		}
+	}
+	
+	.createcomment {
+		padding-top: 5px;
+	}
+	
+	.btn .badge {
+		font-size: 75%;
+	}
+	
+	.info {
+		font-size: 85%;
+		
+		.groups {
+			margin-left: 4px;
+		}
+	}
+	
+	.actions {
+		margin-top: 4px;
+		
+		.btn-group:last-of-type:not(:first-of-type) {
+			margin-left: 10px;
+		}
+	}
+	
+	.commenter, .reviewer {
+		font-weight: bold;
+	}
+	
+	.media-body .details {
+		display: inline-block;
+	}
+	
+	.subdiscussion {
+		margin-top: 10px;
+		border-left: 2px solid #ccc;
+		padding-left: 10px;
+	}
+}
 
-.csl-entry {
+li.discussionitem {
+	.media-left {
+		padding-right: 15px;
+	}
+}
+
+.group-selector > .dropdown-menu > .checked:before {
+	content: @fa-var-check;
+	font-family: FontAwesome;
+	padding-left: 5px;
+	padding-top: 1px;
+	position: absolute;
+}
+
+img.simple-user-pic {
+	max-width: 40px;
+	max-height: 40px;
+}
+
+form .media {
 	margin-bottom: 5px;
 }
 
-h3 {
-	font-size: 90%
-}
-
-#linkBox, .linkDiscussionBox {
-	position: absolute;
-}
-
-#referenceLinkContainer {
-		position: relative;
-		padding-bottom: 10px;
-		z-index: 100;
-}
-
-.discussionRatingText {
-	vertical-align:middle;
-	margin-right:5px;
-	margin-left:3px;
-	height:22px;
-	width:15px;
-	display:inline-block;
-}
-
-.textBoxContainer {
-	float:right;
-	width:92%;
-	margin-top:0px!important;
-	margin-bottom:0px!important;
-}
-
-.discussionAdditionalControls {
-	position: absolute;
-	display:none;
-	background: rgba(255, 255, 255, 0.8);
-	padding:10px;
-	z-index:4;
-}
-
-.controlsContainer {
-	position:absolute;
-	display:none;
-}
-
-.hoveringControl {
-	margin-left:5px;
-	margin-right:10px; 
-	cursor:pointer;
-	position:relative;
-	z-index:0;
-}
-
-.discussionBox {
-	width:60%;
-	margin:50px;
-	border: 1px solid @main-color;
-	padding-top: 15px;
-	padding-bottom: 15px; 
-	padding-right:10px; 
-	padding-left:10px;
-	background: #EEE;
-	overflow: auto;
-	display:block;
-}
-
-.discussionControls {
-	float:right;
-}
-
-.discussionControlsFrame {
-	height:20px;
-	padding-left:5px;
-	padding-bottom:8px;
-	padding-top:8px;
-	margin-bottom: 10px;
-	transition: height 0.2s;
-    -webkit-transition: height 0.2s; 
-    -moz-transition: height 0.2s;
-}
-
-.discussionStarsContainer {
-	background-color: #fff;
-	-moz-border-radius: 3px;
-	border-radius:3px;
-	padding: 5px;
-	border: 1px solid @border-color;
-	display: inline-block;
-	margin-top: 7px;
-	float: left;
-}
-
-.discussionRatingValue {
-	line-height: 18px;
-	font-size: 18px;
-	font-weight: 200;
-	display: block;
-	float: left;
-	padding-left: 0.3em;
-	margin-top: 10px;
-}
-
-.discussionRatingText:before {
-	content: "(";
-}
-
-.discussionRatingText:after {
-	content: ")";
-}
-
-.discussionPostbuttonFrame {
-	padding-top: 5px;
-	padding-bottom: 10px;
-	display: none;
-	transition: height 0.2s;
-	-webkit-transition: height 0.2s; 
-	-moz-transition: height 0.2s;
-}
-
-.textAreaWithMinHeightSmall {
-	height:38px!important;
-}
-
-.textAreaWithMinHeightLarge {
-	min-height:80px!important;
-}
-
-.discussionPicture {
-	height: 31px;
-	background-color: #fff;
-	border: 1px solid #aaa;
-	padding: 3px;
-	width: auto;
-}
-
-.discussionPictureFrame{
-	width: 5%;
-	float: left;
-}
-
-.textAreaAutoresize {
-	min-height: 30px;
-	float: right;
-	padding: 5px;
-	overflow: hidden;
-	border: 1px solid @main-color;
-	font-family: monospace;
-	font-weight: 400;
-	transition: height 0.2s;
-	-webkit-transition: height 0.2s; 
-	-moz-transition: height 0.2s; 
-	clear: right;
-	width: 100% !important;
-	margin-top: 0px;
-}
-.ratingValueContainer {
-	margin-right: -3px;
-	margin-top: 7px;
-	padding-right: 0px;
-	float: right;
-}
-
-.thumbnail {
-	width: 74px;
-}
-
-.discussionItems .media-body {
-	overflow-x: hidden;
-	overflow-y: hidden;
-	display: block;
-	box-sizing: border-box;
-}
-
-.media {
-	border-bottom: 1px solid @border-color;
-}
-
-.media:last-child {
-	border-bottom: none;
+/*
+ * discussion pages
+ */
+ 
+#sidebox .rating-overview {
+	text-align: center;
 }

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -36,6 +36,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.TagsType;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
@@ -47,6 +48,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.EnumUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.ListCommand;
@@ -65,6 +67,9 @@ import org.bibsonomy.webapp.view.Views;
  */
 public class UserPageController extends SingleResourceListControllerWithTags implements MinimalisticController<UserResourceViewCommand> {
 	private static final Log LOGGER = LogFactory.getLog(UserPageController.class);
+	
+	/** admin logic to get spam info */
+	private LogicInterface adminLogic;
 	
 	@Override
 	public View workOn(final UserResourceViewCommand command) {
@@ -119,8 +124,28 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			uupc.userSettings = this.userSettings;
 			return uupc.workOn(command);
 		}
-
-		int totalNumPosts = 1;
+		
+		final User loginUser = context.getLoginUser();
+		final String loginUserName = loginUser.getName();
+		/*
+		 * Put the user into command to be able to show some details.
+		 * the DBLogic checks, if the login user may see the user's 
+		 * details. To get the spam information we use the adminlogic
+		 */
+		final User requestedUser = this.logic.getUserDetails(groupingName);
+		command.setUser(requestedUser);
+		// if user does not exist, trigger 404
+		final String requestedUserName = requestedUser.getName();
+		if (!present(requestedUserName)) {
+			throw new ObjectNotFoundException(groupingName);
+		}
+		
+		final User fullUserDetails = this.adminLogic.getUserDetails(groupingName);
+		if (fullUserDetails.isSpammer() && !requestedUserName.equals(loginUserName) && !Role.ADMIN.equals(loginUser.getRole())) {
+			throw new ObjectNotFoundException(groupingName);
+		}
+		
+		int totalNumPosts = 1; // FIXME: why one?
 
 		// retrieve and set the requested resource lists, along with total
 		// counts
@@ -143,15 +168,15 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
 			// set page title
-			command.setPageTitle("user :: " + groupingName); // TODO: i18n
+			command.setPageTitle(groupingName); // TODO: i18n
 			if (present(requTags)) {
 				// add the tags to the title
-				command.setPageTitle(command.getPageTitle() + " :: " + StringUtils.implodeStringCollection(requTags, "+"));
+				command.setPageTitle(command.getPageTitle() + " > " + StringUtils.implodeStringCollection(requTags, " "));
 			}
 			
 			// only fetch tags if they were not already fetched by handleTagsOnly
 			if (command.getTagstype() == null) {
-				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, Integer.MAX_VALUE, null, command.getScope());
+				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, Integer.MAX_VALUE, null, command.getScope());
 			}
 
 			// retrieve concepts
@@ -190,16 +215,6 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			 * For logged users we check, if she is in a friends or group relation
 			 * with the requested user. 
 			 */
-			final String loginUserName = context.getLoginUser().getName();
-			
-			/*
-			 * Put the user into command to be able to show some details.
-			 * 
-			 * The DBLogic checks, if the login user may see the user's 
-			 * details. 
-			 */
-			final User requestedUser = this.logic.getUserDetails(groupingName);
-			command.setUser(requestedUser);
 			if (context.isUserLoggedIn()) {
 				/*
 				 * has loginUser this user set as friend?
@@ -213,7 +228,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 				final List<User> followersOfUser = this.logic.getUsers(null, GroupingEntity.FOLLOWER, null, null, null, null, UserRelation.FOLLOWER_OF, null, 0, 0);
 				for (final User u : followersOfUser){
 					if (u.getName().equals(groupingName)) {
-						command.setFollowerOfUser(true);
+						command.setIsFollowerOfUser(true);
 						break;
 					}
 				}
@@ -251,11 +266,6 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 				return Views.USERDOCUMENTPAGE;
 			}
 			
-			// if user does not exist, trigger 404
-			if (!present(requestedUser.getName())) {
-				throw new ObjectNotFoundException(groupingName);
-			}
-			
 			return Views.USERPAGE;
 		}
 		
@@ -271,5 +281,12 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 	@Override
 	public UserResourceViewCommand instantiateCommand() {
 		return new UserResourceViewCommand();
+	}
+
+	/**
+	 * @param adminLogic the adminLogic to set
+	 */
+	public void setAdminLogic(LogicInterface adminLogic) {
+		this.adminLogic = adminLogic;
 	}
 }

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -78,7 +78,7 @@ public class IOPScraper extends AbstractUrlScraper {
 			pubId = publicationIdMatcher.group(1);
 		}
 		// TODO: handle publ id not found
-		
+	
 		final String postArgs = "articleId=" + pubId +
 						  "&exportFormat=iopexport_bib" + 
 						  "&exportType=abs" +

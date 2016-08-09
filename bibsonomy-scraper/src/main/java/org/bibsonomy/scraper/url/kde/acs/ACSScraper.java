@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -63,7 +63,8 @@ public class ACSScraper extends AbstractUrlScraper {
 	private static final Pattern pathPatternBibtex = Pattern.compile(ACS_BIBTEX_PATH + ".*");
 	
 	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
-
+	private static final Pattern URL_PATTERN_FOR_URL = Pattern.compile("URL = \\{ \n        (.*)\n    \n\\}");
+	
 	static {
 		final Pattern hostPattern = Pattern.compile(".*" + "pubs.acs.org");
 		patterns.add(new Pair<Pattern, Pattern>(hostPattern, pathPatternBibtex));
@@ -109,11 +110,17 @@ public class ACSScraper extends AbstractUrlScraper {
 			throw new InternalFailureException(ex);
 		}
 
+		/*
+		 * clean the bibtex for better format
+		 */
 		if (bibResult != null) {
+			Matcher m = URL_PATTERN_FOR_URL.matcher(bibResult);
+			if(m.find()) {
+				bibResult = bibResult.replaceAll(URL_PATTERN_FOR_URL.toString(), "URL = {" + m.group(1) + "}");
+			}
 			sc.setBibtexResult(bibResult);
 			return true;
 		}
-		
 		throw new ScrapingFailureException("getting bibtex failed");
 	}
 

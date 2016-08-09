@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -74,7 +74,7 @@ public class MorganClaypoolScraper extends GenericBibTeXURLScraper {
 	}
 
 	@Override
-	public String getDownloadURL(final URL url) throws ScrapingException {
+	public String getDownloadURL(final URL url, String cookies) throws ScrapingException {
 		final Matcher m = BIBTEX_DOI.matcher(url.toString());
 		if (m.find()) {
 			return "http://" + url.getHost().toString() + BIBTEX_PATH + m.group(1);

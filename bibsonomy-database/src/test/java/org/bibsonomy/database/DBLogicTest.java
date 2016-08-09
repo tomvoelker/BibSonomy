@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -712,6 +712,12 @@ public class DBLogicTest extends AbstractDatabaseManagerTest {
 		tags.add("web");
 		final List<User> user = this.getDbLogic().getUsers(null, null, null, tags, null, Order.FOLKRANK, null, null, 0, 20);
 		assertEquals(20, user.size());
+	}
+	
+	@Test
+	public void testGetUsersPendingByUsername() {
+		final List<User> users = this.getDbLogic().getUsers(null, GroupingEntity.PENDING, "activationtestuser1" , null, null, null, null, null, 0, 20);
+		assertEquals(1, users.size());
 	}
 	
 	/**

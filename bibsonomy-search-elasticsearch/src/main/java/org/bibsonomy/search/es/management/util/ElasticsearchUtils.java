@@ -1,7 +1,7 @@
 /**
  * BibSonomy Search Elasticsearch - Elasticsearch full text search module.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -25,6 +25,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.bibsonomy.search.es.management.util;
+
+import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URI;
 import java.util.Date;
@@ -58,6 +60,7 @@ public final class ElasticsearchUtils {
 	private static final String LAST_PERSON_CHANGE_ID_KEY = "last_person_change_id";
 	private static final String LAST_LOG_DATE_KEY = "last_log_date";
 	private static final String LAST_TAS_KEY = "last_tas_id";
+	private static final String LAST_DOCUMENT_DATE_KEY = "last_document_date";
 	private static final String MAPPING_VERSION = "mapping_version";
 	
 	/** Alias for the inactive index */
@@ -65,8 +68,8 @@ public final class ElasticsearchUtils {
 	
 	/** Alias for the active index */
 	private static final String ACTIVE_INDEX_ALIAS = "activeIndex";
-
-
+	
+	/** Alias for standby index */
 	private static final String STANDBY_INDEX_ALIAS = "standbyIndex";
 
 	/**
@@ -145,10 +148,24 @@ public final class ElasticsearchUtils {
 	public static Map<String, Object> serializeSearchIndexState(SearchIndexSyncState state) {
 		final Map<String, Object> values = new HashMap<>();
 		values.put(LAST_TAS_KEY, state.getLast_tas_id());
-		values.put(LAST_LOG_DATE_KEY, Long.valueOf(state.getLast_log_date().getTime()));
+		final Date lastLogDate = getDateForIndex(state.getLast_log_date());
+		values.put(LAST_LOG_DATE_KEY, Long.valueOf(lastLogDate.getTime()));
 		values.put(LAST_PERSON_CHANGE_ID_KEY, Long.valueOf(state.getLastPersonChangeId()));
+		final Date lastDocumentDate = getDateForIndex(state.getLastDocumentDate());
+		values.put(LAST_DOCUMENT_DATE_KEY, Long.valueOf(lastDocumentDate.getTime()));
 		values.put(MAPPING_VERSION, state.getMappingVersion());
 		return values;
+	}
+
+	/**
+	 * @param state
+	 * @return
+	 */
+	private static Date getDateForIndex(Date date) {
+		if (!present(date)) {
+			return new Date();
+		}
+		return date;
 	}
 
 	/**
@@ -160,6 +177,15 @@ public final class ElasticsearchUtils {
 		searchIndexState.setLast_tas_id((Integer) source.get(LAST_TAS_KEY));
 		final Long dateAsTime = (Long) source.get(LAST_LOG_DATE_KEY);
 		searchIndexState.setLast_log_date(new Date(dateAsTime.longValue()));
+		
+		final Long documentDateAsTime = (Long) source.get(LAST_DOCUMENT_DATE_KEY);
+		final Date lastDocumentDate;
+		if (present(documentDateAsTime)) {
+			lastDocumentDate = new Date(documentDateAsTime.longValue());
+		} else {
+			lastDocumentDate = null;
+		}
+		searchIndexState.setLastDocumentDate(lastDocumentDate);
 		
 		// mapping version
 		String mappingVersion = (String) source.get(MAPPING_VERSION);
@@ -177,6 +203,9 @@ public final class ElasticsearchUtils {
 	 * @return the date as string
 	 */
 	public static String dateToString(final Date date) {
+		if (!present(date)) {
+			return "";
+		}
 		return DATE_TIME_FORMATTER.print(date.getTime());
 	}
 

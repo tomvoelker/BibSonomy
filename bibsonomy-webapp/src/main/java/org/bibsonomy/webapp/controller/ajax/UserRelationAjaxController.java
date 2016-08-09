@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -57,23 +57,20 @@ public class UserRelationAjaxController extends AjaxController implements Minima
 	private static final Log log = LogFactory.getLog(UserRelationAjaxController.class);
 	
 	private static final String ADD_FOLLOWER = "addFollower";
-
 	private static final String REMOVE_RELATION = "removeRelation";
-
-	private static final String ADD_RELATION = "addRelation";
-
-	private static final String REMOVE_FRIEND = "removeFriend";
-
+	private static final String ADD_RELATION = "addRelation";	
 	private static final String ADD_FRIEND = "addFriend";
-
+	private static final String REMOVE_FRIEND = "removeFriend";
 	private static final String REMOVE_FOLLOWER = "removeFollower";
 
-	private Errors errors;
 	
 	private static final int SPHERENAME_MAX_LENGTH = 64;
 	
 	/** We allow only a..z A..Z 0..9 - . _  */
 	private static final Pattern SPHERENAME_DISALLOWED_CHARACTERS_PATTERN = Pattern.compile("[^a-zA-Z0-9:\\.\\-_]");
+	
+	
+	private Errors errors;
 	
 	@Override
 	public UserRelationAjaxCommand instantiateCommand() {
@@ -128,8 +125,9 @@ public class UserRelationAjaxController extends AjaxController implements Minima
 		}
 		
 		// forward to a certain page, if requested 
-		if (present(command.getForward())) {
-			return new ExtendedRedirectView("/" + command.getForward());
+		final String forward = command.getForward();
+		if (present(forward)) {
+			return new ExtendedRedirectView("/" + forward);
 		}
 		
 		// all done
@@ -172,8 +170,7 @@ public class UserRelationAjaxController extends AjaxController implements Minima
 				return;
 			}
 			requestedRelation = relationTags.get(0);
-			if (!present(requestedRelation) || (requestedRelation.length() > SPHERENAME_MAX_LENGTH) ||
-					SPHERENAME_DISALLOWED_CHARACTERS_PATTERN.matcher(requestedRelation).find()) {
+			if (!present(requestedRelation) || (requestedRelation.length() > SPHERENAME_MAX_LENGTH) || SPHERENAME_DISALLOWED_CHARACTERS_PATTERN.matcher(requestedRelation).find()) {
 				this.errors.rejectValue("relationTags","error.field.valid.sphere.name");
 				return;
 			}
@@ -219,7 +216,6 @@ public class UserRelationAjaxController extends AjaxController implements Minima
 		final User user = new User(command.getRequestedUserName());
 		this.logic.deleteUserRelationship(command.getContext().getLoginUser().getName(),user.getName(), UserRelation.OF_FRIEND, null);
 	}
-
 
 	@Override
 	public Errors getErrors() {

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -45,11 +45,11 @@ import org.bibsonomy.model.Resource;
  * @author Jens Illig
  * @author Dominik Benz
  */
-public class ResourceViewCommand extends BaseCommand {	
+public class ResourceViewCommand extends BaseCommand {
 	/** default value for sortPage */
-	public static final String DEFAULT_SORTPAGE = "none";
+	public static final String DEFAULT_SORTPAGE = "date";
 	/** default value for sortPageOrder */
-	public static final String DEFAULT_SORTPAGEORDER = "asc";
+	public static final String DEFAULT_SORTPAGEORDER = "desc";
 	
 	private TagCloudCommand tagcloud = new TagCloudCommand();
 	
@@ -86,7 +86,7 @@ public class ResourceViewCommand extends BaseCommand {
 	 * if true, the posts and tags of the requested user will be ranked / highlighted
 	 * according to the logged-in user 
 	 */
-	private Boolean personalized = false;	
+	private boolean personalized = false;
 	
 	/** retrieve only tags without resources */
 	private boolean restrictToTags = false;

@@ -1,7 +1,7 @@
 /**
  * BibSonomy Search Elasticsearch - Elasticsearch full text search module.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -45,10 +45,10 @@ import org.junit.Test;
 public class ElasticsearchPublicationSearchTest extends AbstractEsIndexTest {
 	
 	/**
-	 * TODO: rename method
+	 * tests person suggestion
 	 */
 	@Test
-	public void testSomething() {
+	public void testPersonSuggestion() {
 		PersonSuggestionQueryBuilder options = new PersonSuggestionQueryBuilder("Schorsche") {
 			@Override
 			public List<ResourcePersonRelation> doIt() {

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -39,10 +39,12 @@ import javax.servlet.http.HttpSession;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.TeerGrube;
 import org.bibsonomy.webapp.util.spring.security.exceptionmapper.UsernameNotFoundExceptionMapper;
+import org.bibsonomy.webapp.util.spring.security.exceptions.UseNotAllowedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
 /**
@@ -80,6 +82,7 @@ public class FailureHandler extends SimpleUrlAuthenticationFailureHandler {
 		/*
 		 * redirect to registration (LDAP and OpenID)
 		 */
+		final RedirectStrategy redirectStrategy = getRedirectStrategy();
 		if (exception instanceof UsernameNotFoundException) {
 			final UsernameNotFoundException unne = (UsernameNotFoundException) exception;
 			/*
@@ -87,21 +90,30 @@ public class FailureHandler extends SimpleUrlAuthenticationFailureHandler {
 			 * exception (LDAP/OpenID) and "converts" the user data to our 
 			 * user object.
 			 */
-			for (final UsernameNotFoundExceptionMapper mapper : usernameNotFoundExceptionMapper) {
+			for (final UsernameNotFoundExceptionMapper mapper : this.usernameNotFoundExceptionMapper) {
 				if (mapper.supports(unne)) {
 					/*
 					 * store user data and authentication in session
 					 */
 					final HttpSession session = request.getSession(true);
 					session.setAttribute(USER_TO_BE_REGISTERED, mapper.mapToUser(unne));
+					mapper.writeAdditionAttributes(session, unne);
+					
 					/*
 					 * redirect to the correct registration page
 					 */
-					getRedirectStrategy().sendRedirect(request, response, mapper.getRedirectUrl());
+					redirectStrategy.sendRedirect(request, response, mapper.getRedirectUrl());
 					return;
 				}
 			}
 		}
+		
+		if (exception instanceof UseNotAllowedException) {
+			// TODO: use urlgenerator
+			redirectStrategy.sendRedirect(request, response, "/authentication/denied/usenotallowed");
+			return;
+		}
+		
 		super.onAuthenticationFailure(request, response, exception);
 	}
 

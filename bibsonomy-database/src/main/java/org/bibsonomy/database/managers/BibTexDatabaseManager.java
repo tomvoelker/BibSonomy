@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Database - Database for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -56,6 +56,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ScraperMetadata;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.logic.querybuilder.PublicationSuggestionQueryBuilder;
 import org.bibsonomy.model.util.file.FileSystemFile;
@@ -647,11 +648,11 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 
 	@Override
-	protected void workOnOperation(final Post<BibTex> post, final Post<BibTex> oldPost, final PostUpdateOperation operation, final DBSession session) {
+	protected void workOnOperation(final Post<BibTex> post, final Post<BibTex> oldPost, User loggedinUser, final PostUpdateOperation operation, final DBSession session) {
 		if (PostUpdateOperation.UPDATE_REPOSITORY.equals(operation)) {
 			this.performUpdateRepositorys(post, oldPost, session);
 		} else {
-			super.workOnOperation(post, oldPost, operation, session);
+			super.workOnOperation(post, oldPost, loggedinUser, operation, session);
 		}
 	}
 

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2014 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -66,7 +66,7 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 	}
 
 	@Override
-	protected void prepareResourceForDatabase(final BibTex resource) {
+	protected void updateGoldStandardIntraHash(final BibTex resource) {
 		// noop
 	}
 
@@ -91,7 +91,7 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 
 	@Override
 	protected View finalRedirect(final String userName, final Post<BibTex> post, final String referer) {
-		return new ExtendedRedirectView(this.urlGenerator.getPublicationUrl(post.getResource(), null));
+		return new ExtendedRedirectView(this.urlGenerator.getResourceUrl(post.getResource()));
 	}
 
 	private static Post<BibTex> convertToGoldStandard(final Post<BibTex> post) {

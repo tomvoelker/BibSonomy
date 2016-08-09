@@ -1,7 +1,7 @@
 /**
  * BibSonomy Search Elasticsearch - Elasticsearch full text search module.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -44,7 +44,7 @@ import org.bibsonomy.search.es.ESConstants.Fields;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 
 /**
- * TODO: add documentation to this class
+ * abstract class to convert the model to the ES mapping
  *
  * @author dzo
  * @param <R> 
@@ -62,8 +62,7 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Post<R> convert(final Map<String, Object> source) {
-		// TODO: implement me
+	public Post<R> convert(final Map<String, Object> source, Set<String> allowdUsersForDoc) {
 		final Post<R> post = new Post<>();
 		
 		if (source.containsKey(Fields.SYSTEM_URL)) {
@@ -73,7 +72,9 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 		
 		post.setDate(parseDate(source, Fields.DATE));
 		post.setChangeDate(parseDate(source, Fields.CHANGE_DATE));
-		post.setUser(new User((String) source.get(Fields.USER_NAME)));
+		final String userName = (String) source.get(Fields.USER_NAME);
+		final boolean loadDocuments = allowdUsersForDoc.contains(userName);
+		fillUser(post, userName);
 		post.setDescription((String) source.get(Fields.DESCRIPTION));
 		
 		post.setGroups(convertToGroups((List<String>) source.get(Fields.GROUPS)));
@@ -87,11 +88,19 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 		resource.setInterHash((String) source.get(Fields.Resource.INTERHASH));
 		resource.setIntraHash((String) source.get(Fields.Resource.INTRAHASH));
 		resource.setTitle((String) source.get(Fields.Resource.TITLE));
-		
-		this.convertResourceInternal(resource, source);
-		
 		post.setResource(resource);
+		
+		this.convertResourceInternal(post, source, loadDocuments);
+		
 		return post;
+	}
+
+	/**
+	 * @param post
+	 * @param userName
+	 */
+	protected void fillUser(final Post<R> post, final String userName) {
+		post.setUser(new User(userName));
 	}
 	
 	/**
@@ -118,10 +127,11 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 	}
 
 	/**
-	 * @param resource
+	 * @param post the post
 	 * @param source
+	 * @param loadDocuments 
 	 */
-	protected abstract void convertResourceInternal(R resource, Map<String, Object> source);
+	protected abstract void convertResourceInternal(Post<R> post, Map<String, Object> source, boolean loadDocuments);
 
 	/**
 	 * @return a new instance of a resource
@@ -144,10 +154,10 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 
 	/**
 	 * @param source
-	 * @param changeDate
-	 * @return
+	 * @param key
+	 * @return the date
 	 */
-	private static Date parseDate(Map<String, Object> source, String key) {
+	protected static Date parseDate(Map<String, Object> source, String key) {
 		final String dateAsString = (String) source.get(key);
 		return ElasticsearchUtils.parseDate(dateAsString);
 	}
@@ -169,7 +179,7 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 		
 		jsonDocument.put(Fields.DESCRIPTION, post.getDescription());
 		
-		jsonDocument.put(Fields.USER_NAME, post.getUser().getName());
+		fillIndexDocumentUser(post, jsonDocument);
 		
 		jsonDocument.put(Fields.GROUPS, convertGroups(post.getGroups()));
 		
@@ -179,6 +189,14 @@ public abstract class ResourceConverter<R extends Resource> implements org.bibso
 		this.convertResourceInternal(jsonDocument, post.getResource());
 		this.convertPostInternal(post, jsonDocument);
 		return jsonDocument;
+	}
+
+	/**
+	 * @param post
+	 * @param jsonDocument
+	 */
+	protected void fillIndexDocumentUser(final Post<R> post, final Map<String, Object> jsonDocument) {
+		jsonDocument.put(Fields.USER_NAME, post.getUser().getName());
 	}
 
 	/**

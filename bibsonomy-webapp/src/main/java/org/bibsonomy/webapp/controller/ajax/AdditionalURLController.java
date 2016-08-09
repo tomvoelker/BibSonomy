@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -187,7 +187,7 @@ public class AdditionalURLController extends AjaxController implements ErrorAwar
 		try {
 			this.logic.updatePosts(postList, PostUpdateOperation.UPDATE_URLS_ADD);
 		} catch (final DatabaseException e) {
-			return this.handleError("error.url.exists");
+			return this.handleError("error.url.too_long");
 		} catch (final Exception e) {
 			return this.handleError("database.exception.unspecified");
 		}

@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Rest-Client - The REST-client.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -66,7 +66,7 @@ public final class CreateUserQuery extends AbstractQuery<String> {
 	protected void doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
 		this.getRenderer().serializeUser(sw, this.user, null);
-		this.downloadedDocument = performRequest(HttpMethod.POST, this.getUrlRenderer().createHrefForUsers(), StringUtils.toDefaultCharset(sw.toString()));
+		this.downloadedDocument = performRequest(HttpMethod.POST, this.getUrlRenderer().createUrlBuilderForUsers().asString(), StringUtils.toDefaultCharset(sw.toString()));
 	}
 	
 	@Override

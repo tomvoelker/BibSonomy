@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -121,7 +121,7 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	 * Get boolean if user is following this user or if not
 	 * @return true if user already follows this user and false if not
 	 */
-	public boolean isFollowerOfUser() {
+	public boolean getIsFollowerOfUser() {
 		return this.isFollowerOfUser;
 	}
 
@@ -129,7 +129,7 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	 * Set if user is following this use or if not
 	 * @param isFollowerOfUser
 	 */
-	public void setFollowerOfUser(boolean isFollowerOfUser) {
+	public void setIsFollowerOfUser(boolean isFollowerOfUser) {
 		this.isFollowerOfUser = isFollowerOfUser;
 	}
 

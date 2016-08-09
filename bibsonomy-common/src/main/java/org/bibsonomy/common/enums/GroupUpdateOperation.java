@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -75,5 +75,8 @@ public enum GroupUpdateOperation {
 	UPDATE_PERMISSIONS,
 	
 	/** deletes the pending group - used for the request deletion by the user */
-	DELETE_GROUP_REQUEST;
+	DELETE_GROUP_REQUEST,
+	
+	/** updates the API key of the group user **/
+	REGENERATE_API_KEY;
 }

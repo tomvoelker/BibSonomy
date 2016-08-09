@@ -43,7 +43,7 @@
 		</c:otherwise>
 	</c:choose>
 	
-	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.groups" command="${command}" pageTitle="${pageTitle}" minimizedContentWidth="${true}">
+	<layout:paneLayout requPath="${requPath}" headerMessageKey="navi.groups" command="${command}" pageTitle="${pageTitle}">
 
 		<!--+
 		 	| heading
@@ -95,8 +95,9 @@
 						<script type="text/javascript" src="${resdir}/javascript/requestGroupAutocomplete.js"><!-- keep me --></script> 
 					</c:if>
 					
-					<bsform:captcha labelColSpan="3" inputColSpan="9" />
-					
+					<c:if test="${!isAdmin}">
+						<bsform:captcha labelColSpan="3" inputColSpan="9" />
+					</c:if>
 					<div class="col-sm-offset-3" >
 						<bsform:button style="primary" size="defaultSize" value="${requestGroup}" type="submit" />
 					</div>

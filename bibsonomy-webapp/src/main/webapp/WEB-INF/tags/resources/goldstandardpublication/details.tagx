@@ -15,122 +15,220 @@
 	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
 	xmlns:goldpub="urn:jsptagdir:/WEB-INF/tags/resources/publication"
 	xmlns:goldstandardpublication="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication"
+	xmlns:goldstandard="urn:jsptagdir:/WEB-INF/tags/resources/goldstandard"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 	xmlns:common="urn:jsptagdir:/WEB-INF/tags/resources/common"
-	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
-	>
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
-	<!-- TODO unused -->
-	<jsp:directive.attribute name="otherPosts" type="java.util.List" required="true"/>
+	<jsp:directive.attribute name="postOfLoggedInUser" type="org.bibsonomy.model.Post" required="false"/>
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
-	<jsp:useBean id="mockReference" class="org.bibsonomy.model.BibTex" />
+	<jsp:directive.attribute name="postUserName" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="postIsPublic" type="java.lang.Boolean" required="true"/>
 	
+	<c:set var="userLoggedIn" value="${not empty loginUser.name and not loginUser.spammer}" />
 	
-	<fmt:message key="goldStandard.approved.title" var="approved"/>
 	<c:set var="goldstandard" value="${post.resource}" />
+	
+	<c:set var="isRealGoldstandard" value="${goldstandard['class'].simpleName eq 'GoldStandardPublication' }" />
+	<c:set var="hasRelatedPublication" value="${isRealGoldstandard and (not empty goldstandard.references or not empty goldstandard.referencedBy or not empty goldstandard.subGoldStandards)}" />
+	<c:set var="publishedIn" value="" />
+	<c:if test="${isRealGoldstandard and not empty goldstandard.referenceThisPublicationIsPublishedIn}">
+		<c:set var="publishedIn" value="${goldstandard.referenceThisPublicationIsPublishedIn.iterator().next()}" />
+	</c:if>
+	
 	<!-- determine the publication type for schema.org markup -->
 	<c:set var="itemType" value="http://schema.org/ScholarlyArticle"/>
 	<c:if test="${not empty goldstandard.entrytype and ('book' eq goldstandard.entrytype)}">
 		<c:set var="itemType" value="http://schema.org/Book"/>
 	</c:if>
-	<div id="goldstandard">
-		<h1 class="content-header"><fmt:message key="community.page"/></h1>
-		<div class="title">
-			<div class="media">
-				<!-- 
-				<span class="pull-left">
-					<span style="font-size: 64px;" class="fa fa-user">&amp;nbsp;</span>
-				</span>
-				-->
-				<div class="media-body" id="titletext">
-					<div class="pull-right"><buttons:communityPostActions post="${post}" resourceType="bibtex"/></div>
-					<h1 class="media-heading" id="pubtitle"><c:out value="${mtl:cleanBibtex(goldstandard.title)}" />
-					<c:if test="${post.approved}">
-						<a  title="${fn:escapeXml(approved)}">
-							<span class="fa fa-check-circle" style="margin-left:6px;"><!--  --></span>
-						</a>
-					</c:if>
-					</h1>
-					<p><bib:desc publication="${post.resource}"/></p>
-				</div>
-			</div>
-		</div>
-		<div style="border-top: 1px #cccccc solid;">
-			<!--  -->
-		</div> <!-- border -->
-		<!--+
-			| abstract
-			+-->
-		<c:if test="${not empty goldstandard['abstract']}"> 
-			<h4 class="pub-details"><span class="fa fa-align-justify"><!--  --></span><c:out value=" " /><fmt:message key="publications.abstract.headline"/></h4>
-			<div id="abstract" class="show-more">
-				<span class="contentContainer"><c:out value="${mtl:cleanBibtex(goldstandard['abstract'])}" /></span>
-			</div>
-		</c:if>
-		<c:choose>
-			<c:when test="${not((not empty goldstandard.url and !mtl:isLinkToDocument(goldstandard.url)) or (not empty goldstandard.miscFields['doi']) or not empty goldstandard.documents or mtl:isLinkToDocument(goldstandard.url))}">
-					<!-- If there are neither links nor documents -->
-					<!-- <fmt:message key="goldstandard.resource.info.noLinks"/> -->
-			</c:when>
-			<c:otherwise>
-				<h4 class="pub-details"><span class="fa fa-link"><!--  --></span><c:out value=" " />Links</h4>
-				<c:if test="${(not empty goldstandard.url and !mtl:isLinkToDocument(goldstandard.url)) or (not empty goldstandard.miscFields['doi'])}">
-					<div id="gold_resources_links">
-						<ul>
-							<c:if test="${not empty goldstandard.miscFields['doi']}">
-								<fmt:message key="bibtex.actions.doi" var="urlTitle"/>
-								<c:set var="doi" value="${mtl:extractDOI(goldstandard.miscFields['doi'])}"/>
-								<li><c:out value="${urlTitle}: " /><a href="http://dx.doi.org/${mtl:encodePathSegment(doi)}" title="${urlTitle}"><c:out value="${doi}" /></a></li>
-							</c:if>
-							<c:if test="${not empty goldstandard.url and !mtl:isLinkToDocument(goldstandard.url)}">
-								<li><span class="gold_info"><a href="${fn:escapeXml(goldstandard.url)}">${fn:escapeXml(goldstandard.url)}</a></span></li>
-							</c:if>
-						</ul>
+	
+	<goldstandard:actionHeader post="${post}" showEditOnly="${false}" postOfLoggedInUser="${postOfLoggedInUser}" communityPostExists="${isRealGoldstandard}" resourceType="bibtex" loginUser="${loginUser}" />
+	
+	<div id="goldstandard" class="row">
+		<div class="col-md-7 col-md-offset-1" itemtype="${itemType}" itemscope="itemscope" id="${goldstandard.interHash}">
+			<div class="content-header" id="info">
+				<h1><div itemprop="name"><c:out value="${mtl:cleanBibtex(goldstandard.title)}" />
+						<c:if test="${post.approved}">
+							<fmt:message key="goldStandard.approved.title" var="approved"/>
+							<span class="fa fa-check-circle community-approved" data-toggle="tooltip" data-placement="bottom" title="${fn:escapeXml(approved)}"><!-- keep me --></span>
+						</c:if>
 					</div>
-				</c:if>
+					<small>
+						<span class="publication-description"><bib:desc publication="${goldstandard}" linebreakAfterAuthors="${true}" publishedIn="${publishedIn}"/></span>
+					</small>
+				</h1>
+			</div>
 			
-				<c:if test="${not empty goldstandard.documents or mtl:isLinkToDocument(goldstandard.url)}">
-					<div id="gold_resources_pdf">
-						<ul>
-							<c:if test="${mtl:isLinkToDocument(goldstandard.url)}">
-								<li>
-									<fmt:message var="downloadPrivDocTitle" key="bibtex.actions.private_document.download"/>
-									<a href="${goldstandard.url}" title="${downloadPrivDocTitle}"> 
-										<img alt="${downloadPrivDocTitle}" src="${resdir}/image/document-txt-blue.png" style="float: left; margin-right: 10px;"/>
+			<!--+
+				| abstract
+				+-->
+			<c:set var="abstractPresent" value="${not empty goldstandard['abstract']}" />
+			<c:choose>
+				<c:when test="${abstractPresent}">
+					<div id="abstract">
+						<div class="show-more" itemprop="description">
+							<span class="contentContainer"><c:out value="${mtl:cleanBibtex(goldstandard['abstract'])}" /></span>
+						</div>
+					</div>
+				</c:when>
+				<c:otherwise>
+					<goldstandardpublication:editField fieldKey="bibtex.abstract" loginUser="${loginUser}" post="${post}" communityPostExists="${isRealGoldstandard}"/>
+				</c:otherwise>
+			</c:choose>
+			
+			<!-- 
+				| resources
+				-->
+			<div id="linksresources">
+				<dl class="dl-horizontal">
+					<c:set var="isLinkToDocument" value="${mtl:isLinkToDocument(goldstandard.url)}" />
+					<c:if test="${not empty goldstandard.url or userLoggedIn}">
+						<c:choose>
+							<c:when test="${isLinkToDocument}">
+								<dt><fmt:message key="document" /></dt>
+							</c:when>
+							<c:otherwise>
+								<dt>URL</dt>
+							</c:otherwise>
+						</c:choose>
+						<dd>
+							<c:choose>
+								<c:when test="${doiPresent}">
+									<a href="${fn:escapeXml(goldstandard.url)}">
+										<c:if test="${isLinkToDocument}">
+											<fontawesome:icon icon="file-pdf-o" /><c:out value=" " />
+										</c:if>
 										<c:out value="${goldstandard.url}" />
 									</a>
+								</c:when>
+								<c:otherwise>
+									<goldstandardpublication:editField post="${post}" communityPostExists="${isRealGoldstandard}" loginUser="${loginUser}" field="URL" />
+								</c:otherwise>
+							</c:choose>
+							
+						</dd>
+					</c:if>
+					<c:set var="doi" value="${mtl:extractDOI(goldstandard.miscFields['doi'])}" />
+					<c:set var="doiPresent" value="${not empty doi}" />
+					<c:if test="${doiPresent or userLoggedIn}">
+						<dt>DOI</dt>
+						<dd>
+							<c:choose>
+								<c:when test="${doiPresent}">
+									<a itemprop="sameAs" href="http://dx.doi.org/${mtl:encodePathSegment(doi)}" title="${urlTitle}"><c:out value="${doi}" /></a>
+								</c:when>
+								<c:otherwise>
+									<goldstandardpublication:editField post="${post}" communityPostExists="${isRealGoldstandard}" loginUser="${loginUser}" field="DOI" />
+								</c:otherwise>
+							</c:choose>
+						</dd>
+					</c:if>
+				</dl>
+			</div>
+			
+			<!-- tags -->
+			<goldstandard:tags tagCloudCommand="${command.tagcloud}" />
+			
+			<!-- users that have this resource in their collection -->
+			<common:relatedUsers userList="${command.relatedUserCommand.relatedUsers}" interHash="${goldstandard.interHash}"/>
+			
+			<c:if test="${hasRelatedPublication}">
+				<div id="related-publications">
+					<div id="related-publications-references" class="related-publications-container">
+						<h2 class="page-header"><fmt:message key="publications.related.referenced" /></h2>
+						<ul class="more-list" data-items="3">
+							<c:forEach var="reference" items="${goldstandard.references}">
+								<li>
+									<goldstandardpublication:simpleDetails publication="${reference}" />
 								</li>
-							</c:if>
+							</c:forEach>
 						</ul>
 					</div>
-				</c:if>
-			</c:otherwise>
-		</c:choose>
-		
-		<common:relatedUsers userList="${command.relatedUserCommand.relatedUsers}"/>
-		
-		<h4 class="pub-details"><span class="fa fa-quote-right"><!--  --></span><c:out value=" "/><fmt:message key="publications.citations.headline" /></h4>
-		
-		<!-- citation box -->
-		<pub2:citation post="${post}" isCommunityPost="${true}" />
-		
-		<!--+
-			| discussion and rating
-			+-->
-		<h4 class="pub-details">
-			<span class="fa fa-comments"><!--  --></span><c:out value=" " />
-			<fmt:message key="publications.discussion.headline"/>
-		</h4>
-		
-		<!-- Aggregated RatingInfo -->
-		<review:reviewRatingsInfo resource="${post.resource}" />
+					<div id="related-publications-citing" class="related-publications-container">
+						<h2 class="page-header"><fmt:message key="publications.related.citing" /></h2>
+						<ul data-items="3" class="more-list" data-inline="true">
+							<c:forEach var="reference" items="${goldstandard.referencedBy}">
+								<li>
+									<goldstandardpublication:simpleDetails publication="${reference}" />
+								</li>
+							</c:forEach>
+						</ul>
+					</div>
+					<div id="related-publications-incollection" class="related-publications-container">
+						<h2 class="page-header"><fmt:message key="publications.related.incollection" /></h2>
+						<ul data-items="3" class="more-list" data-inline="true">
+							<c:forEach var="reference" items="${goldstandard.subGoldStandards}">
+								<li>
+									<goldstandardpublication:simpleDetails publication="${reference}" />
+								</li>
+							</c:forEach>
+						</ul>
+					</div>
+				</div>
+			</c:if>
+			
+			<!--+
+				| discussion and rating
+				+-->
+			<div id="discussion-section">
+				<h2 class="page-header">
+					<fmt:message key="publications.discussion.headline"/>
+				</h2>
 
-		<!-- Publication reference link -->
-		<discussion:linkBox resource="${post.resource}"/>
+				<!-- Aggregated RatingInfo -->
+				<review:reviewRatingsInfo resource="${post.resource}" />
 		
-		<!-- discussion -->
-		<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName=""/>
+				<!-- Publication reference link -->
+				<!-- TODO: discuss this feature: <discussion:linkBox resource="${post.resource}"/> TODODZO -->
+				
+				<!-- discussion -->
+				<discussion:discussion resource="${goldstandard}" loginUser="${loginUser}"  postUserName="${postUserName}" postIsPublic="${postIsPublic}" />
+			</div>
+			<!-- citation box -->
+			<h2 class="page-header" id="export">
+				<!--<fontawsome:icon icon="share-square-o" /><c:out value=" "/>-->
+				<fmt:message key="publications.citations.headline" />
+			</h2>
+			<pub2:citation post="${post}" isCommunityPost="${true}" />
+		</div>
+		
+		<div class="col-md-3 hidden-md-down" id="sidebar-nav">
+			<nav class="sidebar-nav" data-spy="affix" data-offset-top="275">
+				<ul class="nav">
+					<li>
+						<a href="#info"><fmt:message key="community.generalinformation" /></a>
+					</li>
+					<c:if test="${not empty goldstandard['abstract']}"> 
+						<li>
+							<a href="#abstract"><fmt:message key="publications.abstract.headline"/></a>
+						</li>
+					</c:if>
+					<li>
+						<a href="#linksresources"><fmt:message key="publications.resource.headline" /></a>
+					</li>
+					<li>
+						<a href="#tags">Tags</a>
+					</li>
+					<li>
+						<a href="#users"><span class="capitalize"><fmt:message key="users"/></span></a>
+					</li>
+					<c:if test="${hasRelatedPublication}">
+						<li>
+							<a href="#related-publications">Related Publications</a> <!-- TODO: i18n -->
+						</li>
+					</c:if>
+					<li>
+						<a href="#discussion-section"><fmt:message key="publications.discussion.headline"/></a>
+					</li>
+					<li>
+						<a href="#export"><fmt:message key="publications.citations.headline" /></a>
+					</li>
+				</ul>
+			</nav>
+		</div>
 	</div>
 </jsp:root>

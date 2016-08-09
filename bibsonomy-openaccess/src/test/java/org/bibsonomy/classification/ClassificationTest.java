@@ -1,7 +1,7 @@
 /**
  * BibSonomy-OpenAccess - Check Open Access Policies for Publications
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -26,33 +26,22 @@
  */
 package org.bibsonomy.classification;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 import java.util.Set;
 
 import org.bibsonomy.model.Classification;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.unikassel.puma.openaccess.classification.PublicationClassification;
 import de.unikassel.puma.openaccess.classification.PublicationClassificator;
-import de.unikassel.puma.openaccess.classification.PublicationClassificatorSingleton;
 
 public class ClassificationTest {
 	
-	private static PublicationClassificator pubClass;
-	
-	@BeforeClass
-	public static void initialise() {
-		PublicationClassificatorSingleton publClassSingle = new PublicationClassificatorSingleton();
-		publClassSingle.setClassificationFilePath("src/test/resources/classifications");
-		
-		pubClass = publClassSingle.getInstance();
-	}
+	private static final PublicationClassificator pubClass = new PublicationClassificator();
 	
 	public void getAvailableClassificationsTest() {
-
 		Set<Classification> available  = pubClass.getAvailableClassifications();
 		
 		assertEquals(3, available.size());

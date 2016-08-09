@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -91,8 +91,7 @@ public class HomepageController extends SingleResourceListController implements 
 		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
-			command.setPageTitle("home"); // TODO: i18n
-			setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, null, MAX_TAGS, null);
+			setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, null, null, MAX_TAGS, null);
 			
 			/*
 			 * add news posts (= latest blog posts)

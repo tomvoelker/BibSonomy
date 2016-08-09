@@ -1,7 +1,7 @@
 /**
  * BibSonomy-Webapp - The web application for BibSonomy.
  *
- * Copyright (C) 2006 - 2015 Knowledge & Data Engineering Group,
+ * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
@@ -162,7 +162,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 
 		if (command.getPerson() != null) {
 			if (present(command.getPerson().getPersonId())) {
-				final Person person = this.logic.getPersonById(PersonIdType.BIBSONOMY_ID, command.getPersonId());
+				final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getPersonId());
 				command.setPerson(person);
 			}
 		}
@@ -214,7 +214,6 @@ public class PostPublicationController extends AbstractEditPublicationController
 			} else {
 				snippet = urlSnippet.toString().trim();
 			}
-
 		} else if (hasFile) {
 			/*
 			 * The user uploads a BibTeX or EndNote file
@@ -499,7 +498,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 				 * We also remember the original position of the post to
 				 * add error messages later.
 				 */
-				storageList.put(posts.get(i), i);
+				storageList.put(posts.get(i), Integer.valueOf(i));
 			}
 		}
 		return storageList;
@@ -647,7 +646,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 					 * same as the i-th position in the original list! ->use
 					 * mapping
 					 */
-					final int i = postsToStore.get(post);
+					final int i = postsToStore.get(post).intValue();
 					log.debug("checking post no. " + i + " with intra hash " + intraHash);
 					final List<ErrorMessage> postErrorMessages = allErrorMessages.get(intraHash);
 					if (present(postErrorMessages)) {
