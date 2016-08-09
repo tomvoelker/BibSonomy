@@ -1,7 +1,8 @@
 <jsp:root version="2.0" 
-    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
@@ -15,21 +16,22 @@
 	<c:set var="escapedRequestPathAndQuery" value="${fn:escapeXml(requPathAndQuery)}" />
 	<c:if test="${isPublication}">
 		<c:url var="rssPath" value="/publrss${escapedRequestPathAndQuery}" />
-		<a href="${rssPath}"><fmt:message key="post.meta.rss"/></a>,${mtl:ch('nbsp')}
+		<li><a href="${rssPath}"><fontawesome:icon icon="rss" spaceAfter="5" /> <fmt:message key="post.meta.rss"/></a></li>
 		<c:url var="bibPath" value="/bib${escapedRequestPathAndQuery}"/>
-		<a href="${bibPath}" id="bibtexListExport"><fmt:message key="bibtex.actions.bibtex"/></a>,${mtl:ch('nbsp')}
+		<li><a href="${bibPath}" id="bibtexListExport"><fontawesome:icon icon="book" spaceAfter="5" /><fmt:message key="bibtex.actions.bibtex"/></a></li>
 		<c:url var="burstPath"  value="/burst/${escapedRequestPathAndQuery}" />
-		<a href="${burstPath}"><fmt:message key="post.meta.rdf"/></a>,${mtl:ch('nbsp')}
+		<li><a href="${burstPath}"><fontawesome:icon icon="code-fork" spaceAfter="5" /><fmt:message key="post.meta.rdf"/></a></li>
 		<c:url var="morePath" value="/export${escapedRequestPathAndQuery}" />
-		<a href="${morePath}"><fmt:message key="bibtex.more_dots"/></a>
+		<li class="divider"><!-- keep me --></li>
+		<li><a href="${morePath}"><fmt:message key="bibtex.more_dots"/></a></li>
 	</c:if>
 	<c:if test="${isBookmark}">
 		<c:url var="rssPath" value="/rss${escapedRequestPathAndQuery}" />
-		<a href="${rssPath}"><fmt:message key="post.meta.rss"/></a>,${mtl:ch('nbsp')}
+		<li><a href="${rssPath}"><fontawesome:icon icon="rss" spaceAfter="5" /> <fmt:message key="post.meta.rss"/></a></li>
 		<c:url var="bibPath" value="/bookbib${escapedRequestPathAndQuery}" />
-		<a href="${bibPath}"><fmt:message key="bibtex.actions.bibtex"/></a>,${mtl:ch('nbsp')}
+		<li><a href="${bibPath}"><fontawesome:icon icon="book" spaceAfter="5" /> <fmt:message key="bibtex.actions.bibtex"/></a></li>
 		<c:url var="xmlPath" value="/xml${escapedRequestPathAndQuery}" />
-		<a href="${xmlPath}"><fmt:message key="post.meta.xml"/></a>
+		<li><a href="${xmlPath}"><fontawesome:icon icon="code" spaceAfter="5" /> <fmt:message key="post.meta.xml"/></a></li>
 	</c:if>	
 
 </jsp:root>

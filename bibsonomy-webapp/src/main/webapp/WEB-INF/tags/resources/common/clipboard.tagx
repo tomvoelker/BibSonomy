@@ -13,15 +13,17 @@
 	<c:choose>
 		<c:when test="${isClipboard}">
 			<fmt:message key="clipboard.removeAllVerbose" var="removeAllVerbose"/>
-			<a href="/ajax/pickUnpickPost?action=clearAll&amp;ckey=${mtl:encodePathSegment(command.context.ckey)}">
-				<fmt:message key="clipboard.removeAll"/>
-			</a>
+			<li>
+				<a href="/ajax/pickUnpickPost?action=clearAll&amp;ckey=${mtl:encodePathSegment(command.context.ckey)}">
+					<fmt:message key="clipboard.removeAll"/>
+				</a>
+			</li>
 		</c:when>
 		<c:otherwise>
 			<fmt:message var="pickPublications" key="post.meta.pick.title"/>
-			<a href="" title="${pickPublications}" onclick="return pickAll(event);"><fmt:message key="post.meta.pick.all"/></a>,${mtl:ch('nbsp')}
+			<li><a href="" title="${pickPublications}" onclick="return pickAll(event);"><fmt:message key="post.meta.pick.all"/></a></li>
 			<fmt:message var="unPickPublications" key="post.meta.unpick.title"/>
-			<a href="" title="${unPickPublications}" onclick="return unpickAll(event);"><fmt:message key="post.meta.unpick.all"/></a>
+			<li><a href="" title="${unPickPublications}" onclick="return unpickAll(event);"><fmt:message key="post.meta.unpick.all"/></a></li>
 		</c:otherwise>
 	</c:choose>
 </jsp:root>
