@@ -33,18 +33,16 @@ import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.ObjectUtils;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
-import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.GoldStandardPostValidator;
 import org.bibsonomy.webapp.validation.PostValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
-
-import recommender.core.interfaces.model.TagRecommendationEntity;
 
 /**
  * controller for the edit gold standard publication form
@@ -142,24 +140,22 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 	protected PostValidator<BibTex> getValidator() {
 		return new GoldStandardPostValidator<BibTex>();
 	}
+
 	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#canEditPost(org.bibsonomy.webapp.util.RequestWrapperContext)
+	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#setRecommendationFeedback(org.bibsonomy.model.User, org.bibsonomy.model.Post, int)
 	 */
 	@Override
-	protected boolean canEditPost(final RequestWrapperContext context) {
-		return super.canEditPost(context) && !context.getLoginUser().isSpammer();
-	}
-
-	@Override
-	protected void setRecommendationFeedback(final TagRecommendationEntity post, final int postID) {
+	protected void setRecommendationFeedback(User loggedinUser, Post<? extends Resource> entity, int postID) {
 		// noop gold standards have no tags
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.controller.actions.AbstractEditPublicationController#preparePost(org.bibsonomy.webapp.command.actions.EditPublicationCommand, org.bibsonomy.model.Post)
+	 */
 	@Override
-	protected void preparePost(final PostPublicationCommand command, final Post<BibTex> post) {
+	protected void preparePost(PostPublicationCommand command, Post<BibTex> post) {
 		super.preparePost(command, post);
 		post.setApproved(command.isApproved());
 	}
-
 }

@@ -21,24 +21,11 @@
 		<property name="removeAbandonedTimeout" value="${database.recommender.item.removeAbandonedTimeout}" />
 	</bean>
 	
-	<bean id="tagRecommenderDataSource" class="${database.datasource.class}" parent="basicDataSource">
-		<property name="url" value="${database.recommender.tag.url}" />
-		<property name="username" value="${database.recommender.tag.username}" />
-		<property name="password" value="${database.recommender.tag.password}" />
-		<property name="driverClassName" value="${database.recommender.tag.driverClassName}" />
-		<property name="maxIdle" value="${database.recommender.tag.maxIdle}" />
-		<property name="maxActive" value="${database.recommender.tag.maxActive}" />
-		<property name="maxWait" value="${database.recommender.tag.maxWait}" />
-		<property name="removeAbandoned" value="${database.recommender.tag.removeAbandoned}" />
-		<property name="removeAbandonedTimeout" value="${database.recommender.tag.removeAbandonedTimeout}" />
-	</bean>
-	
 	 <!-- +
 		 | itemrecommender datasource and mappings setup for logging and configuration
 		 + -->
-		 
 	<bean id="itemRecommenderSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
-		<property name="configLocation" value="classpath:log_items/SqlMapConfig_recommender.xml" />
+		<property name="configLocation" value="classpath:log_items/SqlMapConfig_item_recommender.xml" />
 		<property name="dataSource" ref="itemRecommenderDataSource" />
 		<property name="transactionConfigClass" value="com.ibatis.sqlmap.engine.transaction.jdbc.JdbcTransactionConfig" />
 	</bean>
@@ -51,22 +38,17 @@
 		<property name="factory" ref="itemRecommenderSessionFactory" />
 	</bean>
 	
-	<bean id="recommendationItemFactory" class="org.bibsonomy.recommender.connector.factories.ConnectorItemFactory" />
-	
-	<bean id="bibtexRecommenderLogic" class="recommender.impl.database.DBLogConfigItemAccess">
-		<property name="itemFactory" ref="recommendationItemFactory" />
+	<bean id="bibtexRecommenderLogic" class="org.bibsonomy.recommender.item.db.DBLogConfigItemAccess">
 		<property name="manager" ref="itemRecommenderManagerImpl" />
 	</bean>
 	
-	<bean id="bookmarkRecommenderLogic" class="recommender.impl.database.DBLogConfigItemAccess">
-		<property name="itemFactory" ref="recommendationItemFactory" />
+	<bean id="bookmarkRecommenderLogic" class="org.bibsonomy.recommender.item.db.DBLogConfigItemAccess">
 		<property name="manager" ref="itemRecommenderManagerImpl" />
 	</bean>
 	
 	<!-- +
 		 | tagrecommender datasource and mappings setup for logging and configuration
 		 + -->
-		 
 	<bean id="tagRecommenderSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
 		<property name="configLocation" value="classpath:log_tags/SqlMapConfig_recommenderBibSonomy.xml" />
 		<property name="dataSource" ref="tagRecommenderDataSource" />
@@ -77,12 +59,11 @@
 		<property name="client" ref="tagRecommenderSqlMapClient" />
 	</bean>
 	
-	 <bean id="tagRecommenderManagerImpl" class="org.bibsonomy.recommender.connector.database.session.RecommenderDatabaseManagerImpl">
+	<bean id="tagRecommenderManagerImpl" class="org.bibsonomy.recommender.connector.database.session.RecommenderDatabaseManagerImpl">
 		<property name="factory" ref="tagRecommenderSessionFactory" />
 	</bean>
 	
-	<bean id="tagRecommenderLogic" class="org.bibsonomy.recommender.connector.database.DBLogConfigBibSonomy">
+	<bean id="tagRecommenderLogic" class="org.bibsonomy.recommender.tag.db.DBLogConfigBibSonomy">
 		<property name="manager" ref="tagRecommenderManagerImpl" />
 	</bean>
-	
 </beans>

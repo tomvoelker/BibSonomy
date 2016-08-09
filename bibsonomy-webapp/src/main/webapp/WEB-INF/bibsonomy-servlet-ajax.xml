@@ -182,7 +182,6 @@
 						</property>
 					</bean>
 				</entry>
-				
 				<entry key="/ajax/comments">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="commentController"/>
@@ -201,7 +200,6 @@
 						</property>
 					</bean>
 				</entry>
-				
 				<entry key="/ajax/reviews">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="reviewController"/>
@@ -215,12 +213,11 @@
 								<value>discussionItem.hash</value>
 								<value>discussionItem.anonymous</value>
 								<value>abstractGrouping</value>
-	  							<value>groups</value>
+								<value>groups</value>
 							</list>
 						</property>
 					</bean>
 				</entry>
-				
 				<entry key="/ajax/updateprivatenote">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="privatenoteController" />
@@ -233,7 +230,6 @@
 						</property>
 					</bean>
 				</entry>
-				
 			</map>
 		</property>
 	</bean>
@@ -272,19 +268,21 @@
 	<bean id="documentsController" class="org.bibsonomy.webapp.controller.ajax.DocumentsController" scope="request" parent="ajaxController">
 		<property name="fileLogic" ref="fileLogic" />
 		<property name="messageSource" ref="messageSource"/>
-	</bean>	
-		
-	<!-- controller for handling recommendation requests -->
-	
-	<bean id="ajaxTagsRecommendationsController" class="org.bibsonomy.webapp.controller.ajax.RecommendationsAjaxController" abstract="true" parent="ajaxController">
-		<!-- used for accessing spam informations -->
-		<property name="adminLogic" ref="adminLogic"/>  
-		<property name="recommender"	ref="multiplexingTagRecommender" />
-		<!-- tag recommender used for spammer -->
-		<property name="spamTagRecommender" ref="jensRecommender"/>
-		<property name="rendererFactory" ref="rendererFactory" />
 	</bean>
 	
+	<!-- controller for handling recommendation requests -->
+	<bean id="ajaxTagsRecommendationsController" class="org.bibsonomy.webapp.controller.ajax.RecommendationsAjaxController" abstract="true" parent="ajaxController">
+		<!-- used for accessing spam informations -->
+		<property name="adminLogic" ref="adminLogic"/>
+		<property name="recommender"	ref="multiplexingTagRecommender" />
+		<!-- tag recommender used for spammer -->
+		<property name="spamTagRecommender" ref="spamTagRecommender" />
+		<property name="recommendationRenderer" ref="recommendedTagRenderer" />
+	</bean>
+	
+	<bean id="spamTagRecommender" class="org.bibsonomy.recommender.RecommendationServiceWrapper">
+		<constructor-arg ref="jensRecommender" />
+	</bean>
 	
 	<bean id="ajaxItemRecommenderFeedbackController" class="org.bibsonomy.webapp.controller.ajax.ItemRecommenderFeedbackController" scope="request" parent="ajaxController">
 		<property name="multiplexingBibTexRecommender" ref="multiplexingBibTexRecommender" />

@@ -86,6 +86,15 @@ public class RecommenderDatabaseManagerImpl extends AbstractDatabaseManager impl
 			session.close();
 		}
 	}
+	
+	public List<?> processQueryForList(String query, Object param) {
+		final DBSession session = factory.getDatabaseSession();
+		try {
+			return this.queryForList(query, param, session);
+		} finally {
+			session.close();
+		}
+	}
 
 	/*
 	 * (non-Javadoc)
