@@ -11,7 +11,7 @@
 	<!--+
 		+ actions concerning different sorting orders
 		+-->
-	<li class="dropdown-header"><fmt:message key="post.meta.sort.order"/></li>
+	<li class="dropdown-header"><fmt:message key="post.meta.sort.order"/>${sortPageOrder}</li>
 	<c:choose>
 		<c:when test="${sortPageOrder eq 'asc'}">
 			<li class="disabled"><a href="#"><fontawesome:icon icon="sort-amount-asc" spaceAfter="5" /><fmt:message key="post.meta.sort.order.ascending"/></a></li>

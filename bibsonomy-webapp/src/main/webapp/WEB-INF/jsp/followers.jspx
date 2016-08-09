@@ -25,7 +25,7 @@
 		
 		<jsp:attribute name="additionalSorting">
 			<c:choose>
-				<c:when test="${command.sortPage eq 'ranking' }">
+				<c:when test="${command.sortPage eq 'ranking'}">
 					<li><span class="italic"><fontawesome:icon icon="sort-numeric-asc " spaceAfter="5" /><fmt:message key="ranking.method"/></span></li>
 				</c:when>
 				<c:otherwise>
