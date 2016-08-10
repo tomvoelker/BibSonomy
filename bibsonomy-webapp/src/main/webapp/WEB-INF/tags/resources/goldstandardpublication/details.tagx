@@ -131,7 +131,7 @@
 			</div>
 			
 			<!-- tags -->
-			<goldstandard:tags tagCloudCommand="${command.tagcloud}" />
+			<goldstandard:tags tagCloudCommand="${command.tagcloud}" tagsOfLoggedinUser="${postOfLoggedInUser.tags}" />
 			
 			<!-- users that have this resource in their collection -->
 			<common:relatedUsers userList="${command.relatedUserCommand.relatedUsers}" interHash="${goldstandard.interHash}"/>

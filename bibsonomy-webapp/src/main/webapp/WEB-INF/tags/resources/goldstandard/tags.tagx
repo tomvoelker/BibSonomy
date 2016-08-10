@@ -7,14 +7,19 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.attribute name="tagCloudCommand" type="org.bibsonomy.webapp.command.TagCloudCommand" required="true"/>
-	
+	<jsp:directive.attribute name="tagsOfLoggedinUser" type="java.util.Set" required="true" />
 	
 	<h2 class="page-header" id="tags">
 		Tags
+		<c:if test="${not empty tagsOfLoggedinUser}">
+			<small>
+				<fmt:message key="community.tags.myown"/>
+			</small>
+		</c:if>
 	</h2>
 	<div class="tagcloud">
 		<c:forEach var="tag" items="${tagCloudCommand.tags }">
-			<span class="tag ${mtl:getTagSize(tag.usercount, tagCloudCommand.maxTagCount)}"><a href="${relativeUrlGenerator.getTagUrlByTagName(tag.name)}"><c:out value="${tag.name }" /></a></span>
+			<span class="tag ${mtl:getTagSize(tag.usercount, tagCloudCommand.maxTagCount)} ${mtl:contains(tagsOfLoggedinUser, tag) ? 'myown' : ''}"><a href="${relativeUrlGenerator.getTagUrlByTagName(tag.name)}"><c:out value="${tag.name }" /></a></span>
 		</c:forEach>
 		<meta itemprop="keywords" content="${mtl:toTagString(tagCloudCommand.tags)}" />
 	</div>
