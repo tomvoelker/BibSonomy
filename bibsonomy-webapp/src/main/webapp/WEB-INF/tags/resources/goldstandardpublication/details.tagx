@@ -109,7 +109,7 @@
 						</c:choose>
 						<dd>
 							<c:choose>
-								<c:when test="${doiPresent}">
+								<c:when test="${not empty goldstandard.url}">
 									<a href="${fn:escapeXml(goldstandard.url)}">
 										<c:if test="${isLinkToDocument}">
 											<fontawesome:icon icon="file-pdf-o" /><c:out value=" " />
