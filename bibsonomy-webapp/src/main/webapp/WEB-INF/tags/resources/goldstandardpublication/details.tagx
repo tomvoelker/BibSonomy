@@ -30,6 +30,7 @@
 	<jsp:directive.attribute name="postIsPublic" type="java.lang.Boolean" required="true"/>
 	
 	<c:set var="userLoggedIn" value="${not empty loginUser.name and not loginUser.spammer}" />
+	<c:set var="isAdmin" value="${loginUser.role eq 'ADMIN'}" />
 	
 	<c:set var="goldstandard" value="${post.resource}" />
 	
@@ -48,7 +49,7 @@
 	
 	<goldstandard:actionHeader post="${post}" showEditOnly="${false}" postOfLoggedInUser="${postOfLoggedInUser}" communityPostExists="${isRealGoldstandard}" resourceType="bibtex" loginUser="${loginUser}" />
 	
-	<div id="goldstandard" class="row">
+	<div id="goldstandard" class="row" data-interhash="${goldstandard.interHash}">
 		<div class="col-md-7 col-md-offset-1" itemtype="${itemType}" itemscope="itemscope" id="${goldstandard.interHash}">
 			<div class="content-header" id="info">
 				<h1><div itemprop="name"><c:out value="${mtl:cleanBibtex(goldstandard.title)}" />
@@ -60,7 +61,18 @@
 					<small>
 						<span class="publication-description"><bib:desc publication="${goldstandard}" linebreakAfterAuthors="${true}" publishedIn="${publishedIn}"/></span>
 					</small>
+					<c:if test="${isAdmin}">
+						<c:choose>
+							<c:when test="${empty publishedIn}">
+								<input data-relation="PART_OF" type="text" placeholder="published in ..." class="addRelation form-control" />
+							</c:when>
+							<c:otherwise>
+								<button class="deleteRelation btn btn-danger btn-xs" data-relation="PART_OF" data-interhash="${publishedIn.interHash}">Delete Published In</button>
+							</c:otherwise>
+						</c:choose>
+					</c:if>
 				</h1>
+				
 			</div>
 			
 			<!--+
@@ -136,7 +148,7 @@
 			<!-- users that have this resource in their collection -->
 			<common:relatedUsers userList="${command.relatedUserCommand.relatedUsers}" interHash="${goldstandard.interHash}"/>
 			
-			<c:if test="${hasRelatedPublication}">
+			<c:if test="${hasRelatedPublication or (isAdmin and isRealGoldstandard)}">
 				<div id="related-publications">
 					<div id="related-publications-references" class="related-publications-container">
 						<h2 class="page-header"><fmt:message key="publications.related.referenced" /></h2>
@@ -144,9 +156,15 @@
 							<c:forEach var="reference" items="${goldstandard.references}">
 								<li>
 									<goldstandardpublication:simpleDetails publication="${reference}" />
+									<c:if test="${isAdmin}">
+										<button class="deleteRelation btn btn-danger btn-xs" data-relation="REFERENCE" data-interhash="${reference.interHash}">Delete</button>
+									</c:if>
 								</li>
 							</c:forEach>
 						</ul>
+						<c:if test="${isAdmin}">
+							<input data-relation="REFERENCE" type="text" placeholder="add publication" class="addRelation form-control" />
+						</c:if>
 					</div>
 					<div id="related-publications-citing" class="related-publications-container">
 						<h2 class="page-header"><fmt:message key="publications.related.citing" /></h2>
@@ -190,7 +208,6 @@
 			</div>
 			<!-- citation box -->
 			<h2 class="page-header" id="export">
-				<!--<fontawsome:icon icon="share-square-o" /><c:out value=" "/>-->
 				<fmt:message key="publications.citations.headline" />
 			</h2>
 			<pub2:citation post="${post}" isCommunityPost="${true}" />
