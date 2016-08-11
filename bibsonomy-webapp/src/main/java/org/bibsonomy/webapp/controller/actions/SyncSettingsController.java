@@ -116,7 +116,7 @@ public class SyncSettingsController extends SettingsPageController implements Va
 
 		switch (httpMethod) {
 		case POST:
-			final SyncService newSyncServer = command.getNewSyncServer();			
+			final SyncService newSyncServer = command.getNewSyncServer();
 			this.logic.createSyncServer(loginUserName, newSyncServer);
 			// forward user to sync-page to perform an initial sync in BOTH directions first 
 			if (SyncUtils.autoSyncServiceRequiresInitialSync(newSyncServer)) {
@@ -137,8 +137,10 @@ public class SyncSettingsController extends SettingsPageController implements Va
 			errors.reject("error.general");
 			break;
 		}
-
-		return new ExtendedRedirectView("/settings?selTab=" + SettingsViewCommand.SYNC_IDX);
+		
+		final ExtendedRedirectViewWithAttributes redirectView = new ExtendedRedirectViewWithAttributes("/settings?selTab=" + SettingsViewCommand.SYNC_IDX);
+		redirectView.addAttribute(ExtendedRedirectViewWithAttributes.ERRORS_KEY, this.errors);
+		return redirectView;
 	}
 	
 	/**

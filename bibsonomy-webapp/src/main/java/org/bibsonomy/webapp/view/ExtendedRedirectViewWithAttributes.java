@@ -40,6 +40,9 @@ public class ExtendedRedirectViewWithAttributes extends ExtendedRedirectView {
 	/** to transfer errors while redirect */
 	public static final String ERRORS_KEY = "errors";
 	
+	/** the success message key */
+	public static final String SUCCESS_MESSAGE_KEY = "successMessageKey";
+	
 	/**
 	 * @param redirectURI
 	 */

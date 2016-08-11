@@ -8,13 +8,14 @@
 	<jsp:directive.attribute name="alertBody" fragment="true" required="true" description="The content of the alert box."/>
 	<jsp:directive.attribute type="org.bibsonomy.webapp.view.constants.BootstrapAlertStyle" name="style" required="true" description="Button Style Type" />
 	<jsp:directive.attribute type="java.lang.Boolean" name="dismissable" required="false" description="Makes alert dismissable" />
+	<jsp:directive.attribute type="java.lang.String" name="id" required="false" />
 	
 	<c:set var="dismissableClass" value="" />
 	<c:if test="${dismissable}">
 		<c:set var="dismissableClass" value="alert-dismissable" />
 	</c:if>
 	
-	<div class="alert ${style.cssClassName} ${dismissableClass}">
+	<div class="alert ${style.cssClassName} ${dismissableClass}" id="${id}">
 		<c:if test="${dismissable}">
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&amp;times;</button>
 		</c:if>

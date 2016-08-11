@@ -88,6 +88,7 @@
 					<c:choose>
 						<c:when test="${noSidebar}">
 							<!-- without sidebar -->
+							<parts:successMessage />
 							<!-- Breadcrumbs -->
 							<c:if test="${not empty breadcrumbs}">
 								<jsp:invoke fragment="breadcrumbs" />
@@ -111,12 +112,15 @@
 											</jsp:attribute>
 										</bs:alert>
 									</c:if>
+									<parts:successMessage />
+									
 									<!-- Breadcrumbs -->
 									<c:if test="${not empty breadcrumbs}">
 										<jsp:invoke fragment="breadcrumbs" />
 									</c:if>
 									<div class="wrapper">
 										<div id="intro">
+											
 											<jsp:invoke fragment="contentIntro"/>
 										</div>
 										<jsp:invoke fragment="content"/>
