@@ -82,7 +82,7 @@ public class UpdateUserController extends SettingsPageController implements Vali
 			this.errors.reject("error.field.valid.ckey");
 		}
 		
-		final ExtendedRedirectViewWithAttributes redirect = new ExtendedRedirectViewWithAttributes("/settings");
+		final ExtendedRedirectViewWithAttributes redirect = new ExtendedRedirectViewWithAttributes(this.urlGenerator.getSettingsUrl());
 		if (this.errors.hasErrors()) {
 			redirect.addAttribute(ExtendedRedirectViewWithAttributes.ERRORS_KEY, this.errors);
 		} else {

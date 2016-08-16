@@ -791,6 +791,7 @@
 		<property name="requestLogic" ref="requestLogic"/>
 		<property name="wikiRenderer" ref="wikiRenderer" />
 		<property name="oauthLogic" ref="oAuthLogic"/>
+		<property name="urlGenerator" ref="relativeUrlGenerator" />
 		<property name="invisibleOAuthConsumers" value="${invisible.oauth.consumers}"/>
 	</bean>
 	
