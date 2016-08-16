@@ -331,7 +331,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 			errors.reject("system.error.unsupportedmediatype");
 		} catch (final BadRequestOrResponseException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			errors.reject(e.getMessage());
+			errors.reject("system.error.badrequest", e.getMessage());
 		} catch (final Exception ex) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			errors.reject("error.internal", new Object[]{ex}, "Internal Server Error: " + ex.getMessage());
