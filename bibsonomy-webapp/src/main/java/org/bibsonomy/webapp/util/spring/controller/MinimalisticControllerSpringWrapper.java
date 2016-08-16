@@ -344,11 +344,22 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 			final int totalCount = safeSize(tagResourceViewCommand.getBibtex()) + safeSize(tagResourceViewCommand.getBookmark()) + safeSize(tagResourceViewCommand.getGoldStandardBookmarks()) + safeSize(tagResourceViewCommand.getGoldStandardPublications());
 			
 			if (totalCount == 0) {
-				// here we check if the requested tags contain a  to handle our old wrong url form encoding in url paths
+				/*
+				 * here we check if the requested tags contain a + to handle
+				 * our old wrong url form encoding in the url path
+				 */
 				if (tagResourceViewCommand.getRequestedTags().contains("+")) {
 					
 					final List<String> pathElements = Arrays.asList(realRequestPath.split("/"));
 					final StringBuilder newRequestUriBuilder = new StringBuilder("/");
+					
+					final String format = tagResourceViewCommand.getFormat();
+					if (!"html".equals(format)) {
+						newRequestUriBuilder.append(format + "/");
+						if ("layout".equals(format)) {
+							newRequestUriBuilder.append(tagResourceViewCommand.getLayout() + "/");
+						}
+					}
 					
 					final Iterator<String> pathIterator = pathElements.iterator();
 					while (pathIterator.hasNext()) {
