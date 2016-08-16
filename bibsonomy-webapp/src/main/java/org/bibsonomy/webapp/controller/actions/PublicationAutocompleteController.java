@@ -1,0 +1,141 @@
+package org.bibsonomy.webapp.controller.actions;
+
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.bibtex.parser.PostBibTeXParser;
+import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.scraper.Scraper;
+import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.id.kde.isbn.ISBNScraper;
+import org.bibsonomy.util.id.DOIUtils;
+import org.bibsonomy.util.id.ISBNUtils;
+import org.bibsonomy.webapp.command.actions.PublicationAutocompleteCommand;
+import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.Views;
+
+import bibtex.parser.ParseException;
+
+/**
+ * publication autocomplete controller
+ *
+ * @author dzo
+ */
+public class PublicationAutocompleteController implements MinimalisticController<PublicationAutocompleteCommand> {
+	private static final Log log = LogFactory.getLog(PublicationAutocompleteController.class);
+	
+	private LogicInterface logic;
+	private Scraper scrapers;
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.util.MinimalisticController#instantiateCommand()
+	 */
+	@Override
+	public PublicationAutocompleteCommand instantiateCommand() {
+		return new PublicationAutocompleteCommand();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(org.bibsonomy.webapp.command.ContextCommand)
+	 */
+	@Override
+	public View workOn(final PublicationAutocompleteCommand command) {
+		final String rawSearch = command.getSearch();
+		final List<Post<BibTex>> allPosts = new LinkedList<>();
+		final String isbn = ISBNUtils.extractISBN(rawSearch);
+		final String doi = DOIUtils.extractDOI(rawSearch);
+		if (present(isbn)) {
+			final Post<BibTex> post = callScraper(new ISBNScraper(), isbn);
+			if (present(post)) {
+				allPosts.add(post);
+			}
+		} if (present(doi)) {
+			final Post<BibTex> post = callScraper(this.scrapers, doi);
+			if (present(post)) {
+				allPosts.add(post);
+			}
+		} else if (present(rawSearch)) {
+			String search = null;
+			List<String> tags = new LinkedList<>();
+			if (rawSearch.matches(".*\\d+.*")) {
+				search = "isbn:" + rawSearch;
+				search += " OR doi:" + rawSearch;
+			} else {
+				final List<String> titleParts = Arrays.asList(rawSearch.split(" "));
+				final Iterator<String> titlePartsIterator = titleParts.iterator();
+				while (titlePartsIterator.hasNext()) {
+					final String titlePart = titlePartsIterator.next();
+					String tag = "sys:title:" + titlePart;
+					if (titlePartsIterator.hasNext()) {
+						tag += "*";
+					}
+					tags.add(tag);
+				}
+			}
+			final List<Post<BibTex>> postsBySearch = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, tags, null, search, SearchType.LOCAL, null, Order.RANK, null, null, 0, 10);
+			allPosts.addAll(postsBySearch);
+		}
+		
+		BibTexUtils.removeDuplicates(allPosts);
+		command.getBibtex().setList(allPosts);
+		
+		return Views.getViewByFormat(command.getFormat());
+	}
+
+	/**
+	 * @param scraper
+	 * @param isbn
+	 * @return 
+	 */
+	private static Post<BibTex> callScraper(final Scraper scraper, final String text) {
+		try {
+			final ScrapingContext context = new ScrapingContext(null, text);
+			final boolean scrape = scraper.scrape(context);
+			if (scrape) {
+				final String result = context.getBibtexResult();
+				final PostBibTeXParser postBibTeXParser = new PostBibTeXParser();
+				return postBibTeXParser.parseBibTeXPost(result);
+			}
+		} catch (final IOException e) {
+			log.info("exception while scraping isbn/issn", e);
+		} catch (ScrapingException e) {
+			// TODO Auto-generated catch block
+			log.error("TODO", e);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			log.error("TODO", e);
+		}
+		
+		return null;
+	}
+
+	/**
+	 * @param logic the logic to set
+	 */
+	public void setLogic(LogicInterface logic) {
+		this.logic = logic;
+	}
+
+	/**
+	 * @param scrapers the scrapers to set
+	 */
+	public void setScrapers(Scraper scrapers) {
+		this.scrapers = scrapers;
+	}
+
+}

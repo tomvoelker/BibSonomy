@@ -408,7 +408,11 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	protected String getHttpsReferrer(final COMMAND command) {
 		return null;
 	}
-
+	
+	/**
+	 * TODO: this could be configured using Spring!
+	 * @return the view to show
+	 */
 	protected abstract View getPostView();
 
 	/**

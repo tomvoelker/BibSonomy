@@ -78,7 +78,17 @@
 						</property>
 					</bean>
 				</entry>
-				
+				<entry key="/ajax/autocomplete">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="autocompleteController"/>
+						<property name="allowedFields">
+							<list>
+								<value>search</value>
+								<value>format</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<!-- get recommendations for user -->
 				<entry key="/ajax/getBookmarkRecommendedTags">
 					<bean parent="controllerBase">
@@ -255,6 +265,10 @@
 	<bean id="commentController" class="org.bibsonomy.webapp.controller.ajax.CommentAjaxController" parent="discussionItemAjaxController" scope="request" />
 	<bean id="reviewController" class="org.bibsonomy.webapp.controller.ajax.ReviewAjaxController" parent="discussionItemAjaxController" scope="request" />
 	
+	<bean id="autocompleteController" class="org.bibsonomy.webapp.controller.actions.PublicationAutocompleteController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="scrapers" ref="kdeScraperChain"/>
+	</bean>
 	
 	<bean id="additionalURLController" class="org.bibsonomy.webapp.controller.ajax.AdditionalURLController" scope="request" parent="ajaxController" />
 	
@@ -262,8 +276,6 @@
 		<property name="wikiRenderer" ref="wikiRenderer"/>
 		<property name="notLoggedInUserLogic" ref="notLoggedInUserLogic"/>
 	</bean>
-
-
 	
 	<bean id="documentsController" class="org.bibsonomy.webapp.controller.ajax.DocumentsController" scope="request" parent="ajaxController">
 		<property name="fileLogic" ref="fileLogic" />

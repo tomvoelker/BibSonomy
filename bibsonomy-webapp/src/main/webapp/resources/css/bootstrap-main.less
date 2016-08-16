@@ -992,6 +992,12 @@ fieldset {
 	padding: 0;
 }
 
+fieldset.collapsible > legend {
+	border: none;
+	font-size: 100%;
+	text-align: right;
+}
+
 /**
  *  FOOTER
  */
@@ -1544,6 +1550,44 @@ ul#urlList {
 .btn-group-wrap-text {
 	white-space: normal !important;
 	font-size: 12px !important;
+}
+
+#post-publication {
+	padding-bottom: 45px;
+	
+	.content-header {
+		border-bottom: none;
+	}
+	
+	#publication-functions {
+		.btn-group {
+			margin-bottom: 20px;
+		}
+	}
+	
+	#publication-search {
+		padding-top: 25px;
+		padding-bottom: 15px;
+		color: grey;
+	}
+	
+	.publication-function {
+		display: none;
+	}
+}
+
+p.separator {
+	color: #ccc;
+	text-align: center;
+	border-bottom: 1px solid #ccc;
+	line-height:0.1em;
+	margin: 25px 0 35px;
+}
+
+.separator span {
+	background-color: #fff;
+	padding-left: 5px;
+	padding-right: 5px;
 }
 
 .all-resources-menu {

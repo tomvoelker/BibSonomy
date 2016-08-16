@@ -41,11 +41,11 @@ $(function() {
 		$(this).popover('show');
 	});
 
-	/**
+	/*
 	 * publication details abstract and description more link
 	 */
 	var defaultMaxChars = 350;
-    	dots = "&hellip;";
+	dots = "&hellip;";
 	moretext = "";
 	lesstext = "";
 
@@ -270,8 +270,25 @@ $(function() {
 		$(el).html(text);
 		return shortened;
 	}
-
-	/** MOBILE FUNCTIONS * */
+	
+	$('fieldset.collapsible > div').hide();
+	$('fieldset.collapsible legend a').click(function() {
+		var fieldset = $(this).closest('fieldset');
+		var div = fieldset.find('div');
+		var span = fieldset.find('legend span');
+		
+		if (div.is(":visible")) {
+			div.hide();
+			span.removeClass('fa-chevron-down').addClass('fa-chevron-right');
+		} else {
+			div.show();
+			span.removeClass('fa-chevron-right').addClass('fa-chevron-down');
+		}
+		return false;
+	});
+	
+	
+	/* mobile functions */
 	$('#hide-bookmarks').click(
 			function(event) {
 				event.preventDefault();

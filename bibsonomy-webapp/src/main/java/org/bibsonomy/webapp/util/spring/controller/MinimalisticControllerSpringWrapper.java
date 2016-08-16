@@ -60,6 +60,7 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ResponseLogic;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.util.WarningAware;
 import org.bibsonomy.webapp.util.spring.condition.Condition;
 import org.bibsonomy.webapp.util.spring.security.exceptions.ServiceUnavailableException;
 import org.bibsonomy.webapp.util.spring.security.exceptions.SpecialAuthMethodRequiredException;
@@ -69,6 +70,7 @@ import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -258,6 +260,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		 */
 		final ServletRequestDataBinder binder = bindAndValidate(request, command);
 		final BindException errors = new BindException(binder.getBindingResult());
+		final Errors warnings = new BeanPropertyBindingResult(null, "");
 		
 		if (present(flashAttributes) && flashAttributes.containsKey(ExtendedRedirectViewWithAttributes.ERRORS_KEY)) {
 			final Errors flashErrors = (Errors) flashAttributes.get(ExtendedRedirectViewWithAttributes.ERRORS_KEY);
@@ -266,6 +269,10 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		
 		if (controller instanceof ErrorAware) {
 			((ErrorAware)controller).setErrors(errors);
+		}
+		
+		if (controller instanceof WarningAware) {
+			((WarningAware) controller).setWarnings(warnings);
 		}
 		
 		View view;
@@ -370,7 +377,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		 * put errors into model 
 		 */
 		model.putAll(errors.getModel());
-		
+		model.put("warnings", warnings);
 		
 		if (present(flashAttributes)) {
 			model.put("flashAttributes", flashAttributes);
