@@ -272,7 +272,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 				final String isbn = ISBNUtils.extractISBN(selection);
 				if (present(isbn)) {
 					errorHandled = true;
-					this.warnings.reject("error.scrape.isbn", new Object[] { isbn }, "We could not get meta formation for the publication with the ISBN {0}");
+					this.warnings.reject("error.scrape.isbn", new Object[] { isbn }, "We could not get meta formation for the publication with the ISBN {0}.");
 				}
 				
 				final String doi = DOIUtils.extractDOI(selection);

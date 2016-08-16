@@ -253,7 +253,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		// document file uploaded
 		final List<String> fileNames = command.getFileName();
 		if (present(fileNames)) {
-			final String firstFileName = fileNames.get(0).substring(0, 32);
+			final String firstFileName = fileNames.get(0).substring(0, 32); // FIXME: this is a hack
 			final File tempFile = this.fileLogic.getTempFile(firstFileName);
 			PdfReader reader = null;
 			try {
@@ -261,7 +261,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 				reader = new PdfReader(inputStream);
 				final HashMap<String, String> metaInfo = reader.getInfo();
 				final String title = StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(metaInfo.get("Title"));
-				
+				boolean foundPublication = false;
 				if (present(title)) {
 					final List<String> tags = new LinkedList<>();
 					for (final String titleToken : title.split(" ")) {
@@ -272,8 +272,13 @@ public class PostPublicationController extends AbstractEditPublicationController
 					final List<Post<BibTex>> publicationPosts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, tags, null, null, SearchType.LOCAL, null, null, null, null, 0, 5);
 					final Post<BibTex> bestMatch = getBestMatch(publicationPosts);
 					if (present(bestMatch)) {
+						foundPublication = true;
 						command.setPost(bestMatch);
 					}
+				}
+				
+				if (!foundPublication) {
+					this.getWarnings().reject("post_publication.file.noinfo");
 				}
 				
 				reader.close();
