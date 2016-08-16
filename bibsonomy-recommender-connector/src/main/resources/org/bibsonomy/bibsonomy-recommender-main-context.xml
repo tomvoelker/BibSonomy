@@ -21,21 +21,19 @@
 		<property name="client" ref="recommenderMainSqlMapClient" />
 	</bean>
 	
-	
 	<!-- +
 		 | factories for bookmark, bibtex and tag recommendations
 		 + -->
 		 
-	<bean id="recommenderBibTexMainLogic" class="org.bibsonomy.recommender.connector.database.RecommenderMainBibTexAccessImpl">
+	<bean id="recommenderBibTexMainLogic" class="org.bibsonomy.recommender.item.db.RecommenderMainBibTexAccessImpl">
 		<property name="mainFactory" ref="recommenderMainSessionFactory" />
 	</bean>
 	
-	<bean id="recommenderBookmarkMainLogic" class="org.bibsonomy.recommender.connector.database.RecommenderMainBookmarkAccessImpl">
+	<bean id="recommenderBookmarkMainLogic" class="org.bibsonomy.recommender.item.db.RecommenderMainBookmarkAccessImpl">
 		<property name="mainFactory" ref="recommenderMainSessionFactory" />
 	</bean>
 	
-	<bean id="recommenderTagMainLogic" class="org.bibsonomy.recommender.connector.database.RecommenderMainTagAccessImpl">
+	<bean id="recommenderTagMainLogic" class="org.bibsonomy.recommender.tag.db.RecommenderMainTagAccessImpl">
 		<property name="mainFactory" ref="recommenderMainSessionFactory" />
 	</bean>
-	
 </beans>

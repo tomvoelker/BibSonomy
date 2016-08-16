@@ -225,7 +225,7 @@
 	-->
 	<rule>
 		<name>requPathAttribute</name>
-		<from>^/+(.+)$</from>
+		<from>^/+(.*)$</from>
 		<set name="requPath">$1</set>
 	</rule>
 	

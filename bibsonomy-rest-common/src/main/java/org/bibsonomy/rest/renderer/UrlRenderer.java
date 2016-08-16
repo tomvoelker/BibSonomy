@@ -41,6 +41,7 @@ import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.sync.ConflictResolutionStrategy;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationStatus;
+import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlBuilder;
@@ -187,10 +188,29 @@ public class UrlRenderer {
 	 * @param userName the name of the user
 	 * @return the urlbuilder for the specified user path
 	 */
-	protected UrlBuilder getUrlBuilderForUser(final String userName) {
+	public UrlBuilder getUrlBuilderForUser(final String userName) {
 		final UrlBuilder urlBuilder = this.createUrlBuilderForUsers();
 		urlBuilder.addPathElement(userName);
 		return urlBuilder;
+	}
+	
+	/**
+	 * @param userName
+	 * @param tagString
+	 * @param resourceType
+	 * @return
+	 */
+	public UrlBuilder getUrlBuilderForUser(String userName, String tagString, Class<? extends Resource> resourceType) {
+		final UrlBuilder builder = this.getUrlBuilderForUser(userName);
+		
+		if (tagString != null) {
+			builder.addParameter(RESTConfig.TAGS_PARAM, tagString);
+		}
+		
+		if (resourceType != Resource.class) {
+			builder.addParameter(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.getResourceName(resourceType));
+		}
+		return builder;
 	}
 
 	/**
@@ -198,8 +218,7 @@ public class UrlRenderer {
 	 * @return the urlbuilder for the specified tag
 	 */
 	protected UrlBuilder getUrlBuilderForTag(final String tag) {
-		final UrlBuilder urlBuilder = this.createUrlBuilderForApi();
-		urlBuilder.addPathElement(RESTConfig.TAGS_URL);
+		final UrlBuilder urlBuilder = createURLBuilderForTags();
 		urlBuilder.addPathElement(tag);
 		return urlBuilder;
 	}
@@ -345,16 +364,12 @@ public class UrlRenderer {
 
 	/**
 	 * @param groupname
+	 * @return the url builder
 	 */
-	private UrlBuilder createUrlBuilderForGroupMembers(final String groupname) {
+	public UrlBuilder createUrlBuilderForGroupMembers(final String groupname) {
 		final UrlBuilder urlBuilder = this.getUrlBuilderForGroup(groupname);
 		urlBuilder.addPathElement(RESTConfig.USERS_URL);
 		return urlBuilder;
-	}
-
-	public String createHrefForUsers() {
-		final UrlBuilder builder = this.createUrlBuilderForUsers();
-		return builder.asString();
 	}
 
 	/**
@@ -369,9 +384,9 @@ public class UrlRenderer {
 	}
 
 	/**
-	 *
+	 * @return the url bulder
 	 */
-	private UrlBuilder createUrlBuilderForUsers() {
+	public UrlBuilder createUrlBuilderForUsers() {
 		final UrlBuilder builder = this.createUrlBuilderForApi();
 		builder.addPathElement(RESTConfig.USERS_URL);
 		return builder;
@@ -436,6 +451,15 @@ public class UrlRenderer {
 	}
 
 	/**
+	 * @return the url builder
+	 */
+	public UrlBuilder createUrlBuilderForFriends() {
+		final UrlBuilder urlBuilder = this.createUrlBuilderForApi();
+		urlBuilder.addPathElement(RESTConfig.FRIENDS_SUB_PATH);
+		return urlBuilder;
+	}
+
+	/**
 	 * @param username
 	 * @param relation
 	 * @param start
@@ -486,9 +510,9 @@ public class UrlRenderer {
 	}
 
 	/**
-	 * @return
+	 * @return url builder for groups
 	 */
-	private UrlBuilder getUrlBuilderForGroups() {
+	public UrlBuilder getUrlBuilderForGroups() {
 		final UrlBuilder builder = this.createUrlBuilderForApi();
 		builder.addPathElement(RESTConfig.GROUPS_URL);
 		return builder;
@@ -557,6 +581,14 @@ public class UrlRenderer {
 	}
 
 	/**
+	 * @return the added posts path
+	 */
+	public String createHrefForAddedPosts() {
+		final UrlBuilder builder = this.createUrlBuilderForPostAdded();
+		return builder.asString();
+	}
+
+	/**
 	 * @param grouping
 	 * @param groupingValue
 	 * @param resourceType
@@ -612,6 +644,14 @@ public class UrlRenderer {
 			break;
 		}
 	}
+	
+	/**
+	 * @return the post popular path
+	 */
+	public String createHrefForPopularPosts() {
+		final UrlBuilder builder = this.createUrlBuilderForPostPopular();
+		return builder.asString();
+	}
 
 	/**
 	 * @param grouping
@@ -635,6 +675,14 @@ public class UrlRenderer {
 		builder.addPathElement(RESTConfig.POSTS_POPULAR_SUB_PATH);
 		return builder;
 	}
+	
+	/**
+	 * @return the base path for global posts
+	 */
+	public String createHrefForPosts() {
+		final UrlBuilder builder = this.createUrlBuilderForPosts();
+		return builder.asString();
+	}
 
 	/**
 	 * @param grouping
@@ -652,9 +700,40 @@ public class UrlRenderer {
 			final String groupingValue, final Class<? extends Resource> resourceType,
 			final List<String> tags, final String resourceHash, final String search, final Order order,
 			final int start, final int end) {
-		final UrlBuilder urlBuilder = this.createUrlBuilderForPosts();
-		applyStartEnd(urlBuilder, start, end);
+		final UrlBuilder urlBuilder = createUrlBuilderForPosts(grouping, groupingValue, resourceType, tags, resourceHash, search, order);
 
+		applyStartEnd(urlBuilder, start, end);
+		return urlBuilder.asString();
+	}
+
+	/**
+	 * @param grouping
+	 * @param groupingValue
+	 * @param resourceType
+	 * @param tags
+	 * @param resourceHash
+	 * @param search
+	 * @param order
+	 * @return
+	 */
+	public UrlBuilder createUrlBuilderForPosts(final GroupingEntity grouping, final String groupingValue, final Class<? extends Resource> resourceType, final List<String> tags, final String resourceHash, final String search, final Order order) {
+		final UrlBuilder urlBuilder = this.createUrlBuilderForPosts();
+
+		applyPostParamsToBuilder(grouping, groupingValue, resourceType, tags, resourceHash, search, order, urlBuilder);
+		return urlBuilder;
+	}
+
+	/**
+	 * @param grouping
+	 * @param groupingValue
+	 * @param resourceType
+	 * @param tags
+	 * @param resourceHash
+	 * @param search
+	 * @param order
+	 * @param urlBuilder
+	 */
+	private void applyPostParamsToBuilder(final GroupingEntity grouping, final String groupingValue, final Class<? extends Resource> resourceType, final List<String> tags, final String resourceHash, final String search, final Order order, final UrlBuilder urlBuilder) {
 		if (resourceType != Resource.class) {
 			urlBuilder.addParameter(RESTConfig.RESOURCE_TYPE_PARAM, ResourceFactory.getResourceName(resourceType));
 		}
@@ -684,8 +763,38 @@ public class UrlRenderer {
 		if (present(search)) {
 			urlBuilder.addParameter(RESTConfig.SEARCH_PARAM, search);
 		}
-
-		return urlBuilder.asString();
+	}
+	
+	/**
+	 * @param grouping
+	 * @param groupingValue
+	 * @param resourceType
+	 * @param tags
+	 * @param hash
+	 * @param search
+	 * @param order
+	 * @return
+	 */
+	public UrlBuilder createUrlBuilderForAddedPosts(GroupingEntity grouping, String groupingValue, Class<? extends Resource> resourceType, List<String> tags, String hash, String search, Order order) {
+		final UrlBuilder builder = this.createUrlBuilderForPostAdded();
+		this.applyPostParamsToBuilder(grouping, groupingValue, resourceType, tags, hash, search, order, builder);
+		return builder;
+	}
+	
+	/**
+	 * @param grouping
+	 * @param groupingValue
+	 * @param resourceType
+	 * @param tags
+	 * @param hash
+	 * @param search
+	 * @param order
+	 * @return
+	 */
+	public UrlBuilder createUrlBuilderForPopularPosts(GroupingEntity grouping, String groupingValue, Class<? extends Resource> resourceType, List<String> tags, String hash, String search, Order order) {
+		final UrlBuilder builder = this.createUrlBuilderForPostPopular();
+		this.applyPostParamsToBuilder(grouping, groupingValue, resourceType, tags, hash, search, order, builder);
+		return builder;
 	}
 
 	public String getGroupingParameterName(final GroupingEntity grouping) {
@@ -712,6 +821,23 @@ public class UrlRenderer {
 		}
 		return groupingParameterName;
 	}
+	
+	/**
+	 * @return the base path for urls
+	 */
+	public String createHrefForTags() {
+		final UrlBuilder urlBuilder = createURLBuilderForTags();
+		return urlBuilder.asString();
+	}
+
+	/**
+	 * @return
+	 */
+	private UrlBuilder createURLBuilderForTags() {
+		final UrlBuilder urlBuilder = this.createUrlBuilderForApi();
+		urlBuilder.addPathElement(RESTConfig.TAGS_URL);
+		return urlBuilder;
+	}
 
 	/**
 	 * @param resourceType
@@ -726,9 +852,7 @@ public class UrlRenderer {
 	 * @return
 	 */
 	public String createHrefForTags(final Class<? extends Resource> resourceType, final List<String> tagNames, final GroupingEntity grouping, final String groupingValue, final String filter, final TagRelation relation, final Order order, final int start, final int end) {
-		// /tags/[tags]?...
-		final UrlBuilder urlBuilder = this.createUrlBuilderForApi();
-		urlBuilder.addPathElement(RESTConfig.TAGS_URL);
+		final UrlBuilder urlBuilder = createURLBuilderForTags();
 		if (present(tagNames)) {
 			urlBuilder.addPathElement(StringUtils.implodeStringCollection(tagNames, "+"));
 		}
@@ -756,5 +880,34 @@ public class UrlRenderer {
 		return urlBuilder.asString();
 	}
 
-
+	/**
+	 * @param resourceType
+	 * @param grouping
+	 * @param groupingValue
+	 * @param hash
+	 * @param regex
+	 * @param order
+	 * @return
+	 */
+	public UrlBuilder createUrlBuilderForTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingValue, String hash, String regex, Order order) {
+		final UrlBuilder builder = this.createURLBuilderForTags();
+		
+		if (grouping != GroupingEntity.ALL && groupingValue != null) {
+			builder.addParameter(grouping.toString().toLowerCase(), groupingValue);
+		}
+		if (regex != null) {
+			builder.addParameter(RESTConfig.REGEX_PARAM, regex);
+		}
+		if (order == Order.FREQUENCY) {
+			builder.addParameter(RESTConfig.ORDER_PARAM, order.toString().toLowerCase());
+		}
+		if (resourceType != Resource.class) {
+			builder.addParameter(RESTConfig.RESOURCE_TYPE_PARAM, ResourceUtils.toString(resourceType).toLowerCase());
+		}
+		if (hash != null) {
+			builder.addParameter(RESTConfig.RESOURCE_PARAM, hash);
+		}
+		
+		return builder;
+	}
 }

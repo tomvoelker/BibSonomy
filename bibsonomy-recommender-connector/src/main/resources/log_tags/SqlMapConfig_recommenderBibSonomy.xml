@@ -2,35 +2,9 @@
 PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
 "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
 <sqlMapConfig>
-	<!-- 
-		| SQL Map Config for the recommender database
-		-->
-
-	<typeAlias alias="byteBuffer"      type="byte[]"/>	
-	<typeAlias alias="timestamp"       type="java.sql.Timestamp"/>
-
-	<typeAlias alias="recSetting"      type="recommender.core.database.params.RecSettingParam" />
-	<typeAlias alias="recQuerySetting" type="recommender.core.database.params.RecQuerySettingParam" />
-	<typeAlias alias="recQuery"        type="org.bibsonomy.recommender.connector.database.params.BibRecQueryParam" />
-	<typeAlias alias="entityParam"     type="recommender.core.database.params.EntityParam" />
-    <typeAlias alias="latencyParam"    type="recommender.core.database.params.LatencyParam" />
-    <typeAlias alias="recResultParam"  type="recommender.core.database.params.ResultParam" />
-    <typeAlias alias="recTag"          type="recommender.impl.model.RecommendedTag" />
-
-	<typeAlias alias="recAdminOverview" type="recommender.core.database.params.RecAdminOverview"/>
-
-	<typeAlias alias="recTagParam"    type="org.bibsonomy.recommender.connector.database.params.RecommendedTagParam" />
-	<typeAlias alias="postParam"      type="org.bibsonomy.recommender.connector.database.params.PostRecParam" />
-	<typeAlias alias="tagRecLogEntry" type="org.bibsonomy.recommender.connector.database.params.TagRecLogEntry" />
+	<sqlMap resource="log_tags/common/TypeAlias.xml"/>
 	
-	<typeAlias alias="bibtexParam"    type="org.bibsonomy.database.params.BibTexParam"/>
-	<typeAlias alias="bookmarkParam"  type="org.bibsonomy.database.params.BookmarkParam"/>
-
-	<typeAlias alias="pair"            type="recommender.core.model.Pair" />
-	<typeAlias alias="selectorMap"     type="recommender.core.database.params.SelectorQueryMapParam" />
-	<typeAlias alias="selectorSetting" type="recommender.core.database.params.SelectorSettingParam" />
-
-	<typeAlias alias="personNameList"       type="java.util.List" />
+	<typeHandler javaType="url"				callback="org.bibsonomy.database.common.typehandler.UrlTypeHandlerCallback" />
 	<typeHandler javaType="personNameList"	callback="org.bibsonomy.database.common.typehandler.PersonNameTypeHandlerCallback" />
 
 	<sqlMap resource="log_tags/common/RecommendationLogCommonBibSonomy.xml" />

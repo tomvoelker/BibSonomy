@@ -28,10 +28,13 @@ package org.bibsonomy.search.es.help;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -51,6 +54,7 @@ import org.bibsonomy.services.help.HelpParser;
 import org.bibsonomy.services.help.HelpParserFactory;
 import org.bibsonomy.services.help.HelpSearch;
 import org.bibsonomy.services.help.HelpSearchResult;
+import org.bibsonomy.util.StringUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -154,7 +158,7 @@ public class HelpSearchManager implements HelpSearch {
 				
 				@Override
 				public boolean accept(File pathname) {
-					return pathname.isDirectory();
+					return pathname.isDirectory() && !pathname.isHidden();
 				}
 			});
 			
@@ -178,8 +182,9 @@ public class HelpSearchManager implements HelpSearch {
 				for (final File file : files) {
 					final HelpParser parser = this.factory.createParser(HelpUtils.buildReplacementMap(this.projectName, this.projectTheme, this.projectHome));
 					final String fileName = file.getName().replaceAll(HelpUtils.FILE_SUFFIX, "");
-					try {
-						final String content = parser.parseText(file.getAbsolutePath());
+					try (final BufferedReader helpPage = new BufferedReader(new InputStreamReader(new FileInputStream(file), StringUtils.DEFAULT_CHARSET))) {
+						final String markdown = StringUtils.getStringFromReader(helpPage);
+						final String content = parser.parseText(markdown);
 						final Map<String, Object> doc = new HashMap<>();
 						doc.put(HEADER_FIELD, fileName);
 						doc.put(CONTENT_FIELD, content);

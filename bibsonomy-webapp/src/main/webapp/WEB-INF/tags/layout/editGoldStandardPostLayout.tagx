@@ -227,7 +227,7 @@
 											<bsform:button type="submit" id="save-post-button" size="defaultSize" value="${save}" style="primary" onclick="clear_tags();" tabindex="2"/>
 										</div>
 										<div class="btn-group">
-											<bsform:button type="submit" id="save-rate-post-button" size="defaultSize" value="${saveAndRate}" style="primary" onclick="clear_tags();" tabindex="2"/>
+											<bsform:button type="submit" id="save-rate-post-button" size="defaultSize" value="${saveAndRate}" name="saveAndRate" style="primary" onclick="clear_tags();" tabindex="2"/>
 										</div>
 									</div>
 								</div>

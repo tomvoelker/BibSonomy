@@ -84,5 +84,4 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy {
 	protected void render(final Writer writer, final String uri) {
 		this.getRenderer().serializeResourceHash(writer, uri);
 	}
-	
 }

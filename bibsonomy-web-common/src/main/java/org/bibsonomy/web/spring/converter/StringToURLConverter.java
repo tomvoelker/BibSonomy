@@ -47,7 +47,6 @@ public class StringToURLConverter implements Converter<String, URL> {
 		}
 		
 		try {
-			// TODO: maybe here is the perfect place to call cleanUrl
 			return new URL(source);
 		} catch (final MalformedURLException ex) {
 			throw new ConversionFailedException(TypeDescriptor.valueOf(String.class), TypeDescriptor.valueOf(URL.class), source, ex);

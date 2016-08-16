@@ -58,11 +58,9 @@
 			
 			<li class="${userclass}">
 				<a title="${fn:escapeXml(userTitle)}" rel="${userSimilarityRef}" href="${userUrl}"><user:username user="${user}" noLink="${true}" /></a>
-				<c:out value=" "/>
 				<c:if test="${displayFollowLink}">
-					<a class="action"
-						onClick="javascript:updateFollowerFollowerPage('add','${user.name}', this, '${ckey}');return false;"
-						style="cursor: pointer;" title="${addFriendTitle}"
+					<c:out value=" "/>
+					<a class="action btn btn-default btn-xs" title="${addFriendTitle}"
 						href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(user.name)}&amp;action=addFollower&amp;ckey=${ckey}&amp;forward=followers">
 						<fmt:message key="follow.link.text.follow" />
 					</a>

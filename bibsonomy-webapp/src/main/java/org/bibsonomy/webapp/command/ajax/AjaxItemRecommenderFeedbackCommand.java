@@ -61,5 +61,4 @@ public class AjaxItemRecommenderFeedbackCommand extends AjaxCommand<String> {
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
-	
 }

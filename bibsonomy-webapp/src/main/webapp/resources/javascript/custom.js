@@ -1,5 +1,4 @@
 $(function() {
-
 	$('.input-group.date').datepicker({
 		autoclose : true
 	});
@@ -238,6 +237,11 @@ $(function() {
 
 	$('.rename-tags-btn').click(function() {
 		$(this).parent().prev().focus().next().show().hide();
+	});
+	
+	var globalSuccess = $("#globalSuccess");
+	globalSuccess.fadeTo(2000, 500).slideUp(500, function(){
+		globalSuccess.slideUp(500);
 	});
 
 	var sidebarAdjustments = function sidebarAdjusts() {

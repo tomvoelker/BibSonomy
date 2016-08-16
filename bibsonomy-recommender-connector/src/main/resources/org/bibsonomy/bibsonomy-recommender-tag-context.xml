@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+						http://www.springframework.org/schema/util 
+						http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+	
+	<import resource="classpath:org/bibsonomy/bibsonomy-recommender-main-context.xml" />
+	
+	<bean id="tagRecommenderDataSource" class="${database.datasource.class}" parent="basicDataSource">
+		<property name="url" value="${database.recommender.tag.url}" />
+		<property name="username" value="${database.recommender.tag.username}" />
+		<property name="password" value="${database.recommender.tag.password}" />
+		<property name="driverClassName" value="${database.recommender.tag.driverClassName}" />
+		<property name="maxIdle" value="${database.recommender.tag.maxIdle}" />
+		<property name="maxActive" value="${database.recommender.tag.maxActive}" />
+		<property name="maxWait" value="${database.recommender.tag.maxWait}" />
+		<property name="removeAbandoned" value="${database.recommender.tag.removeAbandoned}" />
+		<property name="removeAbandonedTimeout" value="${database.recommender.tag.removeAbandonedTimeout}" />
+	</bean>
+	
+	<bean id="previousPostsPublicationTagRecommender" class="org.bibsonomy.recommender.tag.simple.TagsOfPreviousPostsTagRecommender">
+		<constructor-arg ref="recommenderTagMainLogic" />
+	</bean>
+</beans>

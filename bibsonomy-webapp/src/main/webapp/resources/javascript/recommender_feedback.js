@@ -42,7 +42,7 @@ function sendAjaxRecommenderFeedback(regex, extractionString, action) {
 	var userName = data[2];
 	
 	$.ajax({
-	      async: true,
+	      async: false,
 	      type: "POST", 
 	      url: "/ajax/addItemRecommenderFeedback", 
 	      data: "userName="+userName+"&intraHash="+intraHash+"&action=" +action

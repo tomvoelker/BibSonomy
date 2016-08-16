@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.services.help.HelpParser;
+import org.pegdown.Extensions;
 import org.pegdown.LinkRenderer;
 import org.pegdown.PegDownProcessor;
 import org.pegdown.ToHtmlSerializer;
@@ -68,7 +69,7 @@ public class Parser implements HelpParser {
 	public String parseText(final String text) throws IOException {
 		// Instantiate Markdown Parser
 		final PegDownPlugins plugins = new PegDownPlugins.Builder().withPlugin(Plugin.class).build();
-		final PegDownProcessor proc = new PegDownProcessor(0, plugins);
+		final PegDownProcessor proc = new PegDownProcessor(Extensions.TABLES, plugins);
 
 		// Parse and serialize content
 		final RootNode ast = proc.parseMarkdown(text.toCharArray());

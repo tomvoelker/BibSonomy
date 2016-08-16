@@ -37,16 +37,11 @@ import java.util.TreeSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.recommender.connector.model.PostWrapper;
-import org.bibsonomy.recommender.connector.utilities.RecommendationUtilities;
-import org.bibsonomy.rest.renderer.Renderer;
-import org.bibsonomy.rest.renderer.RendererFactory;
-import org.bibsonomy.rest.renderer.RenderingFormat;
+import org.bibsonomy.recommender.tag.model.RecommendedTag;
 import org.bibsonomy.webapp.command.ajax.AjaxRecommenderCommand;
 import org.bibsonomy.webapp.util.GroupingCommandUtils;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -54,8 +49,8 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
-import recommender.core.Recommender;
-import recommender.core.interfaces.model.TagRecommendationEntity;
+import recommender.core.RecommendationService;
+import recommender.core.interfaces.renderer.RecommendationRenderer;
 
 /**
  * Some common operations for recommendation tasks.
@@ -81,15 +76,16 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 	 */
 	private LogicInterface adminLogic;
 	
-	private RendererFactory rendererFactory;
+	/** the renderer for serialing the recommendation results */
+	private RecommendationRenderer<Post<? extends Resource>, RecommendedTag> recommendationRenderer;
 	
 	/** default recommender for serving spammers */
-	private Recommender<TagRecommendationEntity, recommender.impl.model.RecommendedTag> spamTagRecommender;
+	private RecommendationService<Post<? extends Resource>, RecommendedTag> spamTagRecommender;
 	
 	/**
 	 * Provides tag recommendations to the user.
 	 */
-	private Recommender<TagRecommendationEntity, recommender.impl.model.RecommendedTag> recommender;
+	private RecommendationService<Post<? extends Resource>, RecommendedTag> recommender;
 	
 	@Override
 	public View workOn(final AjaxRecommenderCommand<R> command) {
@@ -113,7 +109,8 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 		// TODO: we could probably also filter out those users, which are 
 		//       flagged as 'spammer unsure' 
 		//------------------------------------------------------------------------
-		final User dbUser = this.adminLogic.getUserDetails(loginUser.getName());
+		final String loggedinUserName = loginUser.getName();
+		final User dbUser = this.adminLogic.getUserDetails(loggedinUserName);
 
 		/*
 		 * set the user of the post to the loginUser (the recommender might need
@@ -134,8 +131,8 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 			// the user is a spammer
 			log.debug("Filtering out recommendation request from spammer");
 			if (this.spamTagRecommender != null)	{
-				final SortedSet<recommender.impl.model.RecommendedTag> result = this.spamTagRecommender.getRecommendation(new PostWrapper<R>(command.getPost()));
-				this.processRecommendedTags(command, RecommendationUtilities.getRecommendedTags(result));
+				final SortedSet<RecommendedTag> result = this.spamTagRecommender.getRecommendationsForUser(loggedinUserName, command.getPost());
+				this.processRecommendedTags(command, result);
 			} else {
 				command.setResponseString("");
 			}
@@ -144,8 +141,8 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 			 * get the recommended tags for the post from the normal recommender
 			 */
 			if (this.recommender != null) {
-				final SortedSet<recommender.impl.model.RecommendedTag> result = this.recommender.getRecommendation(new PostWrapper<R>(command.getPost()));
-				this.processRecommendedTags(command, RecommendationUtilities.getRecommendedTags(result));
+				final SortedSet<RecommendedTag> result = this.recommender.getRecommendationsForUser(loggedinUserName, command.getPost());
+				this.processRecommendedTags(command, result);
 			} else {
 				command.setResponseString("");
 			}
@@ -183,18 +180,9 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 	//------------------------------------------------------------------------
 	private void processRecommendedTags(final AjaxRecommenderCommand<R> command, final SortedSet<RecommendedTag> tags) {
 		command.setRecommendedTags(tags);
-		final Renderer renderer = this.rendererFactory.getRenderer(RenderingFormat.JSON);
 		final StringWriter sw = new StringWriter(100);
-		renderer.serializeRecommendedTags(sw, command.getRecommendedTags());
+		this.recommendationRenderer.serializeRecommendationResultList(sw, command.getRecommendedTags());
 		command.setResponseString(sw.toString());
-	}
-
-
-	/**
-	 * @param recommender 
-	 */
-	public void setRecommender(final Recommender<TagRecommendationEntity, recommender.impl.model.RecommendedTag> recommender) {
-		this.recommender = recommender;
 	}
 
 	/**
@@ -205,16 +193,24 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 	}
 
 	/**
+	 * @param recommendationRenderer the recommendationRenderer to set
+	 */
+	public void setRecommendationRenderer(RecommendationRenderer<Post<? extends Resource>, RecommendedTag> recommendationRenderer) {
+		this.recommendationRenderer = recommendationRenderer;
+	}
+
+	/**
 	 * @param spamTagRecommender the spamTagRecommender to set
 	 */
-	public void setSpamTagRecommender(final Recommender<TagRecommendationEntity, recommender.impl.model.RecommendedTag> spamTagRecommender) {
+	public void setSpamTagRecommender(
+			RecommendationService<Post<? extends Resource>, RecommendedTag> spamTagRecommender) {
 		this.spamTagRecommender = spamTagRecommender;
 	}
 
 	/**
-	 * @param rendererFactory the rendererFactory to set
+	 * @param recommender the recommender to set
 	 */
-	public void setRendererFactory(RendererFactory rendererFactory) {
-		this.rendererFactory = rendererFactory;
+	public void setRecommender(RecommendationService<Post<? extends Resource>, RecommendedTag> recommender) {
+		this.recommender = recommender;
 	}
 }

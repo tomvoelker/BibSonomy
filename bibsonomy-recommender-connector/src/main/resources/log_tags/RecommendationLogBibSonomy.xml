@@ -20,27 +20,6 @@
 		FROM recommender_result r 
 		   JOIN recommender_querymap m ON (m.query_id = #id# AND m.query_id = r.query_id) 
 		WHERE r.query_id = #id#
-	</select>	
-	
-	<!-- +
-		 | Get the setting id of a local recommender by it's qualified name
-		 + -->
-	<select id="getSidForLocalRecommender" parameterClass="string" resultClass="long">
-		SELECT setting_id from recommender_status
-		WHERE url = #qualifiedName#
-		AND status=1
-		AND type=1
-	</select>
-	
-	<!-- +
-		 | Get the setting id of a distant recommender by it's url
-		 + -->
-	
-	<select id="getSidForDistantRecommender" parameterClass="string" resultClass="long">
-		SELECT setting_id from recommender_status
-		WHERE url = #url#
-		AND status=1
-		AND type=0
 	</select>
 	
 	<!-- +
@@ -65,11 +44,11 @@
 	
 	<!-- Get all important recommender-info for the admin statuspage  -->
 	<select id="recAdminOverview" resultMap="RecommendationLogCommonBibSonomy.recAdminOverview" parameterClass="String">
-		SELECT setting_id, rec_id, type, 0 AS rec_latency 
+		SELECT setting_id, rec_id, type, 0 AS rec_latency, IF (status = 1, 1, 0) AS active
 		FROM recommender_settings JOIN recommender_status
 		USING (setting_id)
 		WHERE rec_id = #id#
-	</select>	
+	</select>
 	
 	<select id="getRecommenderSettingIdsByStatus" resultClass="long" parameterClass="integer">
 	    SELECT setting_id FROM recommender_status
@@ -102,10 +81,10 @@
        INSERT INTO recommender_settings_log (SELECT * from recommender_settings where rec_id = #url#)
    </insert>
    <delete id="deleteRecommenderFromRecommenderStatus" parameterClass="String">
-       DELETE FROM recommender_status WHERE url=#url#
+       DELETE FROM recommender_status WHERE url= #id#
    </delete>
    <delete id="deleteFromRecommenderSettings" parameterClass="String">
-       DELETE FROM recommender_settings WHERE rec_id=#url#
+       DELETE FROM recommender_settings WHERE rec_id = #id#
    </delete>
    <update id="updateRecommenderStatusUrl" parameterClass="recSetting">
        UPDATE recommender_status SET url=#recId# WHERE setting_id=#setting_id#
@@ -121,6 +100,11 @@
        INSERT INTO recommender_status (setting_id, url, status, type)
             values (#setting_id#, #recId#, 1, 0)
    </insert>
+   
+	<insert id="createStatusForRecommender" parameterClass="recSetting">
+		INSERT INTO recommender_status (setting_id, url, status, type)
+			VALUES (#setting_id#, #recId#, 1, #type#)
+	</insert>
 	
 	<!-- +
 		 | Get list of all recommenders used in given query
@@ -191,52 +175,11 @@
  	<!-- +
 		 | Get list of all queries for given recommender
 		 + -->
- 	<select id="getQueriesBySID" parameterClass="long" resultMap="RecommendationLogCommonBibSonomy.recQuery">
- 		SELECT l.query_id, l.date, l.user_name, l.post_id
- 		FROM log_recommender l 
- 		   JOIN recommender_querymap m ON (m.query_id=l.query_id) 
- 		WHERE m.setting_id=#id#;
- 	</select>
- 	
-	<!-- +
-		 | Get list of all recommendations. 
-		 + -->
-	<select id="getAllRecommendations" resultMap="RecommendationLogCommonBibSonomy.recResponseMeta">
-		SELECT l.query_id,
-			   l.user_name,	
-			   l.date,			 
-			   m.setting_id,
-			   s.rec_id, 
-			   s.rec_meta, 
-			   r.score, 
-			   r.confidence, 
-			   r.tag, 
-			   r.rec_latency
+	<select id="getQueriesBySID" parameterClass="long" resultMap="RecommendationLogCommonBibSonomy.recQuery">
+		SELECT l.query_id, l.date, l.user_name, l.post_id
 		FROM log_recommender l 
-		   JOIN recommender_querymap m ON (l.query_id = m.query_id) 
-		   JOIN recommender_result r ON (r.query_id=l.query_id and r.setting_id=m.setting_id) 
-		   JOIN recommender_settings s ON (s.setting_id=m.setting_id)
-	</select>
-
-	<!-- +
-		 | Get list of all recommendations for given recommender in a given query. 
-		 + -->
-	<select id="getSpecificRecommendations" resultMap="RecommendationLogCommonBibSonomy.recResponseMeta" parameterClass="recQuerySetting">
-		SELECT l.query_id,
-			   l.user_name,	
-			   l.date,			 
-			   m.setting_id,
-			   s.rec_id, 
-			   s.rec_meta, 
-			   r.score, 
-			   r.confidence, 
-			   r.responsetitle, 
-			   r.rec_latency
-		FROM log_recommender l 
-		   JOIN recommender_querymap m ON (l.query_id = m.query_id) 
-		   JOIN recommender_result r ON (r.query_id=l.query_id and r.setting_id=m.setting_id) 
-		   JOIN recommender_settings s ON (s.setting_id=m.setting_id)
-		WHERE l.query_id = #qid# AND m.setting_id = #sid#
+		   JOIN recommender_querymap m ON (m.query_id=l.query_id) 
+		WHERE m.setting_id=#id#;
 	</select>
 
 	<!-- +
@@ -368,7 +311,7 @@
 	<select id="lookupRecommenderSetting" resultClass="long" parameterClass="recSetting">
 		SELECT setting_id
 		FROM recommender_settings
-		WHERE (rec_id = #recId# AND rec_meta = #recMeta#) 
+		WHERE rec_id = #recId#
 	</select>
 
 	<!--+ 
@@ -387,8 +330,8 @@
 		|          choice (see http://issues.apache.org/jira/browse/IBATIS-142)
 	  	+-->
 	<insert id="addRecommenderSetting" parameterClass="recSetting">
-		INSERT INTO recommender_settings (rec_id,rec_meta,rec_descr)
-		VALUES ( #recId#, #recMeta#, #recDescr# )
+		INSERT INTO recommender_settings (rec_id, rec_meta, rec_descr, trusted)
+		VALUES ( #recId#, #recMeta#, #recDescr#, #trusted# )
  		<selectKey resultClass="java.lang.Long" keyProperty="setting_id">
 			SELECT LAST_INSERT_ID() AS value
 	    </selectKey>
@@ -541,5 +484,18 @@
   		SELECT entityId FROM recommender_preset 
   		WHERE query_id = #qid#
 	</statement>
+	
+	<select id="getRemoteRecommenders" resultMap="RecommendationLogCommonBibSonomy.webServiceRecommender" parameterClass="integer">
+		SELECT url, trusted FROM recommender_status
+			JOIN recommender_settings USING(setting_id)
+		WHERE type = #local#
+			AND status != 2
+	</select>
+	
+	<select id="getRecommenderStatus" resultClass="long" parameterClass="recSetting">
+		SELECT setting_id FROM recommender_status
+			JOIN recommender_settings USING(setting_id)
+		WHERE rec_id = #recId# AND status = 1
+	</select>
 
 </sqlMap>

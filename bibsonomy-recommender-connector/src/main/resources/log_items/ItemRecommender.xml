@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+ "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="RecommendationItemManagement">
+
+	<insert id="addRecommendationUserRecommenderQuery">
+		INSERT INTO log_recommender (user_name, date, content_type, entity_id, timeout)
+		VALUES ( #userName#, #timeStamp#, #contentType#, #entity.userName#, #queryTimeout# )
+		<selectKey resultClass="java.lang.Long" keyProperty="qid">
+			SELECT LAST_INSERT_ID() AS value
+		</selectKey>
+	</insert>
+	
+	<insert id="insertRecommendationRecommendationUserEntity">
+		INSERT INTO recommender_log_entities (requestid, entityid, type, username)
+		VALUES (#requestId#, #entity.userName#, #type#, #userName#)
+	</insert>
+	
+	<insert id="insertRecommenderFeedback"><!-- no parametertype because generic entry in param class -->
+		INSERT INTO recommender_feedback (entity_id, result_id, user_name, date )
+		VALUES ( #entity.userName#, #resultId#, #userName#, #date# )
+	</insert>
+</sqlMap>

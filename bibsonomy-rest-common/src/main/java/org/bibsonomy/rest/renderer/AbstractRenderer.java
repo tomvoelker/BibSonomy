@@ -36,15 +36,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -63,12 +60,9 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.ImportResource;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.RecommendedPost;
-import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.comparators.RecommendedTagComparator;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.sync.SynchronizationAction;
@@ -175,43 +169,6 @@ public abstract class AbstractRenderer implements Renderer {
 		xmlDoc.setPost(this.createXmlPost(post));
 		this.serialize(writer, xmlDoc);
 	}
-	
-	@Override
-	public void serializeRecommendedPosts(Writer writer, List<? extends RecommendedPost<? extends Resource>> posts, ViewModel viewModel) {
-		final PostsType xmlPosts = new PostsType();
-		if (viewModel != null) {
-			xmlPosts.setEnd(BigInteger.valueOf(viewModel.getEndValue()));
-			if (viewModel.getUrlToNextResources() != null) {
-				xmlPosts.setNext(viewModel.getUrlToNextResources());
-			}
-			xmlPosts.setStart(BigInteger.valueOf(viewModel.getStartValue()));
-		} else if (posts != null) {
-			xmlPosts.setStart(BigInteger.valueOf(0));
-			xmlPosts.setEnd(BigInteger.valueOf(posts.size()));
-		} else {
-			xmlPosts.setStart(BigInteger.valueOf(0));
-			xmlPosts.setEnd(BigInteger.valueOf(0));
-		}
-	
-		if (present(posts)) {
-			for (final RecommendedPost<? extends Resource> post : posts) {
-				xmlPosts.getPost().add(this.createRecommendedXmlPost(post));
-			}
-		}
-	
-		final BibsonomyXML xmlDoc = new BibsonomyXML();
-		xmlDoc.setStat(StatType.OK);
-		xmlDoc.setPosts(xmlPosts);
-		this.serialize(writer, xmlDoc);
-	}
-	
-	@Override
-	public void serializeRecommendedPost(Writer writer, RecommendedPost<? extends Resource> post, ViewModel viewModel) {
-		final BibsonomyXML xmlDoc = new BibsonomyXML();
-		xmlDoc.setStat(StatType.OK);
-		xmlDoc.setPost(this.createRecommendedXmlPost(post));
-		this.serialize(writer, xmlDoc);
-	}
 
 	@Override
 	public void serializeDocument(Writer writer, Document document) {
@@ -219,13 +176,6 @@ public abstract class AbstractRenderer implements Renderer {
 		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setDocument(this.createXmlDocument(document));
 		this.serialize(writer, xmlDoc);
-	}
-	
-	protected PostType createRecommendedXmlPost(final RecommendedPost<? extends Resource> post) {
-		final PostType xmlPost = createXmlPost(post.getPost());
-		xmlPost.setScore(post.getScore());
-		xmlPost.setConfidence(post.getConfidence());
-		return xmlPost;
 	}
 	
 	protected PostType createXmlPost(final Post<? extends Resource> post) throws InternServerException {
@@ -566,28 +516,6 @@ public abstract class AbstractRenderer implements Renderer {
 		return xmlTags;
 	}
 
-	/**
-	 * Creates an xml-representation for a given {@link RecommendedTag}.
-	 * @param tag recommended tag to encode
-	 * @return an {@link TagType} for given {@link RecommendedTag}
-	 * @throws InternServerException
-	 */
-	private TagType createXmlRecommendedTag(final RecommendedTag tag) throws InternServerException {
-		final TagType xmlTag = new TagType();
-		xmlTag.setName(tag.getName());
-		xmlTag.setHref(this.urlRenderer.createHrefForTag(tag.getName()));
-		// if (tag.getGlobalcount() > 0) {
-		xmlTag.setGlobalcount(BigInteger.valueOf(tag.getGlobalcount()));
-		// }
-		// if (tag.getUsercount() > 0) {
-		xmlTag.setUsercount(BigInteger.valueOf(tag.getUsercount()));
-		// }
-		xmlTag.setConfidence(tag.getConfidence());
-		xmlTag.setScore(tag.getScore());
-	
-		return xmlTag;
-	}
-
 	@Override
 	public void serializeGroups(final Writer writer, final List<Group> groups, final ViewModel viewModel) throws InternServerException {
 		final GroupsType xmlGroups = new GroupsType();
@@ -918,45 +846,6 @@ public abstract class AbstractRenderer implements Renderer {
 		}
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no list of posts defined.");
 	}
-
-	@Override
-	public List<RecommendedPost<? extends Resource>> parseRecommendedItemList(Reader reader, DataAccessor uploadedFileAcessor) throws BadRequestOrResponseException {
-		final BibsonomyXML xmlDoc = this.parse(reader);
-		if (xmlDoc.getPosts() != null) {
-			final List<RecommendedPost<? extends Resource>> items = new ArrayList<RecommendedPost<? extends Resource>>();
-			for (final PostType post : xmlDoc.getPosts().getPost()) {
-				try {
-					items.add(this.createRecommendedPost(post, uploadedFileAcessor));
-				} catch (final PersonListParserException ex) {
-					throw new BadRequestOrResponseException("Error parsing the person names for entry with BibTeX key '" + post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
-				}
-			}
-			return items;
-		}
-		if (xmlDoc.getError() != null) {
-			throw new BadRequestOrResponseException(xmlDoc.getError());
-		}
-		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no list of posts defined.");
-	}
-	
-	@Override
-	public RecommendedPost<? extends Resource> parseRecommendedItem(Reader reader, DataAccessor uploadedFileAccessor) throws BadRequestOrResponseException {
-		final BibsonomyXML xmlDoc = this.parse(reader);
-		
-		final PostType post = xmlDoc.getPost();
-		if (post != null) {
-			try {
-				return this.createRecommendedPost(post, uploadedFileAccessor);
-			} catch (final PersonListParserException ex) {
-				xmlDoc.setError("Error parsing the person names for entry with BibTeXKey '" + post.getBibtex().getBibtexKey() + "': " + ex.getMessage());
-			}
-		}
-	
-		if (xmlDoc.getError() != null) {
-			throw new BadRequestOrResponseException(xmlDoc.getError());
-		}
-		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no post defined.");
-	}
 	
 	@Override
 	public List<Tag> parseTagList(final Reader reader) throws BadRequestOrResponseException {
@@ -1074,59 +963,6 @@ public abstract class AbstractRenderer implements Renderer {
 			throw new BadRequestOrResponseException(xmlDoc.getError());
 		}
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no user id defined.");
-	}
-
-	@Override
-	public RecommendedTag parseRecommendedTag(final Reader reader) throws BadRequestOrResponseException {
-		final BibsonomyXML xmlDoc = this.parse(reader);
-		if (xmlDoc.getTag() != null) {
-			return this.createRecommendedTag(xmlDoc.getTag());
-		}
-		if (xmlDoc.getError() != null) {
-			throw new BadRequestOrResponseException(xmlDoc.getError());
-		}
-		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no tag defined.");
-	}
-
-	@Override
-	public SortedSet<RecommendedTag> parseRecommendedTagList(final Reader reader) throws BadRequestOrResponseException {
-		final BibsonomyXML xmlDoc = this.parse(reader);
-		if (xmlDoc.getTags() != null) {
-			final SortedSet<RecommendedTag> tags = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
-			for (final TagType tt : xmlDoc.getTags().getTag()) {
-				final RecommendedTag t = this.createRecommendedTag(tt);
-				tags.add(t);
-			}
-			return tags;
-		}
-		if (xmlDoc.getError() != null) {
-			throw new BadRequestOrResponseException(xmlDoc.getError());
-		}
-		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no list of tags defined.");
-	}
-
-	@Override
-	public void serializeRecommendedTag(final Writer writer, final RecommendedTag tag) {
-		final BibsonomyXML xmlDoc = new BibsonomyXML();
-		xmlDoc.setStat(StatType.OK);
-		xmlDoc.setTag(this.createXmlRecommendedTag(tag));
-		this.serialize(writer, xmlDoc);		
-	}
-
-	@Override
-	public void serializeRecommendedTags(final Writer writer, final Collection<RecommendedTag> tags) {		
-		final TagsType xmlTags = new TagsType();
-		xmlTags.setStart(BigInteger.valueOf(0));
-		xmlTags.setEnd(BigInteger.valueOf(tags != null ? tags.size() : 0));
-		if (tags != null) {
-			for (final RecommendedTag tag : tags) {
-				xmlTags.getTag().add(this.createXmlRecommendedTag(tag));
-			}
-		}
-		final BibsonomyXML xmlDoc = new BibsonomyXML();
-		xmlDoc.setStat(StatType.OK);
-		xmlDoc.setTags(xmlTags);
-		this.serialize(writer, xmlDoc);	
 	}
 	
 	/**
@@ -1250,30 +1086,6 @@ public abstract class AbstractRenderer implements Renderer {
 	}
 
 	/**
-	 * creates a {@link RecommendedTag} based on the xml tag
-	 * 
-	 * @param xmlTag
-	 * @return the created recommended Tag
-	 */
-	public RecommendedTag createRecommendedTag(final TagType xmlTag) {
-		final RecommendedTag tag = new RecommendedTag();
-		tag.setName(xmlTag.getName()); assert(tag.getName()!=null);
-		if (xmlTag.getGlobalcount() != null) {
-			tag.setGlobalcount(xmlTag.getGlobalcount().intValue());
-		}
-		if (xmlTag.getUsercount() != null) {
-			tag.setUsercount(xmlTag.getUsercount().intValue());
-		}
-		if (xmlTag.getConfidence() != null ) {
-			tag.setConfidence(xmlTag.getConfidence().doubleValue());
-		}
-		if (xmlTag.getScore() != null ) {
-			tag.setScore(xmlTag.getScore().doubleValue());
-		}
-		return tag;
-	}
-
-	/**
 	 * creates a {@link GoldStandard} post based on the xml post
 	 * 
 	 * @param xmlPost
@@ -1300,22 +1112,6 @@ public abstract class AbstractRenderer implements Renderer {
 		}
 
 		return post;
-	}
-
-	/**
-	 * converts an xml post to the model recommended post with score and confidence
-	 * 
-	 * @param xmlPost
-	 * @param uploadedFileAccessor 
-	 * @return the converted recommended post
-	 * @throws PersonListParserException 
-	 */
-	protected RecommendedPost<Resource> createRecommendedPost(final PostType xmlPost, DataAccessor uploadedFileAccessor) throws PersonListParserException {
-		final Post<Resource> post = this.createPost(xmlPost, uploadedFileAccessor);
-		final RecommendedPost<Resource> result = new RecommendedPost<Resource>(post);
-		result.setScore(xmlPost.getScore());
-		result.setConfidence(xmlPost.getConfidence());
-		return result;
 	}
 	
 	/**

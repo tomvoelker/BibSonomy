@@ -34,6 +34,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
+import org.bibsonomy.database.testutil.TestDatabaseLoader;
 import org.bibsonomy.lucene.index.LuceneResourceIndex;
 import org.bibsonomy.lucene.index.manager.LuceneResourceManager;
 import org.bibsonomy.lucene.util.LuceneSpringContextWrapper;
@@ -43,6 +44,7 @@ import org.bibsonomy.model.ResultList;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 
 public class TestNegatedTagsQuery extends AbstractDatabaseManagerTest {
 

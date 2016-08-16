@@ -225,6 +225,8 @@
 		<property name="projectHome" ref="projectHome" />
 	</bean>
 	
+	<bean id="urlGeneratorFactory" class="org.bibsonomy.services.URLGeneratorFactory" scope="singleton" />
+	
 	<bean id="vuFindUrlGenerator" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
 		<property name="condition">
 			<bean class="org.bibsonomy.webapp.util.spring.condition.NonEmptyStringCondition">
@@ -273,6 +275,7 @@
 				<value>properties</value>
 				<value>relativeUrlGenerator</value>
 				<value>absoluteUrlGenerator</value>
+				<value>urlGeneratorFactory</value>
 				<value>systemTagFactory</value>
 			</list>
 		</property>
@@ -775,8 +778,12 @@
 	
 	<bean id="recommendedPostsPageController" class="org.bibsonomy.webapp.controller.RecommendedPostsPageController" scope="request" parent="multiResourceListController">
 		<property name="supportedResources" ref="allResources"/>
-		<property name="bibtexRecommender" ref="multiplexingBibTexRecommender" />
-		<property name="bookmarkRecommender" ref="multiplexingBookmarkRecommender" />
+		<property name="recommenderMap">
+			<map>
+				<entry value-ref="multiplexingBookmarkRecommender" key="org.bibsonomy.model.Bookmark" />
+				<entry value-ref="multiplexingBibTexRecommender" key="org.bibsonomy.model.BibTex" />
+			</map>
+		</property>
 	</bean>
 	
 	<bean id="settingsPageController" class="org.bibsonomy.webapp.controller.SettingsPageController" scope="request">

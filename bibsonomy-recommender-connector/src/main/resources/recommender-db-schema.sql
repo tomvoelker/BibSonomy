@@ -62,6 +62,7 @@ CREATE TABLE recommender_settings(
 	rec_id VARCHAR(255) NOT NULL,
 	rec_meta BLOB,
 	rec_descr VARCHAR(255),
+	trusted int(1) NOT NULL default '0',
 	PRIMARY KEY (setting_id)
 ) DEFAULT CHARSET=utf8;
 

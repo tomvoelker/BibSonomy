@@ -32,8 +32,8 @@ import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.strategy.Context;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -48,13 +48,12 @@ public class GetNewPostsStrategy extends AbstractListOfPostsStrategy {
 	}
 
 	@Override
-	protected StringBuilder getLinkPrefix() {
-		return new StringBuilder(this.getUrlRenderer().getApiUrl() + RESTConfig.POSTS_ADDED_URL);
+	protected UrlBuilder getLinkPrefix() {
+		return this.getUrlRenderer().createUrlBuilderForAddedPosts(this.grouping, this.groupingValue, this.resourceType, this.tags, this.hash, this.search, this.order);
 	}
 
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		// TODO: support other search types
 		return this.getLogic().getPosts(resourceType, grouping, groupingValue, this.tags, null, search, SearchType.LOCAL, null, Order.ADDED, null, null, this.getView().getStartValue(), this.getView().getEndValue());
 	}
 }
