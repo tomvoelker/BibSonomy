@@ -51,6 +51,7 @@ import org.bibsonomy.rest.exceptions.UnsupportedMediaTypeException;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.ContextCommand;
 import org.bibsonomy.webapp.command.ListCommand;
+import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
 import org.bibsonomy.webapp.command.TagResourceViewCommand;
 import org.bibsonomy.webapp.controller.ajax.AjaxController;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -343,25 +344,24 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		final Map<String, Object> model = new HashMap<String, Object>();
 		model.put(getCommandName(), command);
 		
-		if (command instanceof TagResourceViewCommand) {
-			final TagResourceViewCommand tagResourceViewCommand = (TagResourceViewCommand) command;
-			final int totalCount = safeSize(tagResourceViewCommand.getBibtex()) + safeSize(tagResourceViewCommand.getBookmark()) + safeSize(tagResourceViewCommand.getGoldStandardBookmarks()) + safeSize(tagResourceViewCommand.getGoldStandardPublications());
+		if (command instanceof SimpleResourceViewCommand) {
+			final SimpleResourceViewCommand simpleResourceViewCommand = (SimpleResourceViewCommand) command;
+			final int totalCount = safeSize(simpleResourceViewCommand.getBibtex()) + safeSize(simpleResourceViewCommand.getBookmark()) + safeSize(simpleResourceViewCommand.getGoldStandardBookmarks()) + safeSize(simpleResourceViewCommand.getGoldStandardPublications());
 			
 			if (totalCount == 0) {
 				/*
 				 * here we check if the requested tags contain a + to handle
 				 * our old wrong url form encoding in the url path
 				 */
-				if (tagResourceViewCommand.getRequestedTags().contains("+")) {
-					
+				if (command instanceof TagResourceViewCommand && ((TagResourceViewCommand) simpleResourceViewCommand).getRequestedTags().contains("+")) {
 					final List<String> pathElements = Arrays.asList(realRequestPath.split("/"));
 					final StringBuilder newRequestUriBuilder = new StringBuilder("/");
 					
-					final String format = tagResourceViewCommand.getFormat();
+					final String format = simpleResourceViewCommand.getFormat();
 					if (!"html".equals(format)) {
 						newRequestUriBuilder.append(format + "/");
 						if ("layout".equals(format)) {
-							newRequestUriBuilder.append(tagResourceViewCommand.getLayout() + "/");
+							newRequestUriBuilder.append(simpleResourceViewCommand.getLayout() + "/");
 						}
 					}
 					
