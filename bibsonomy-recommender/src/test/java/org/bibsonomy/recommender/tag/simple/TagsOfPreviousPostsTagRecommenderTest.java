@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Recommendation-Connector - Connector for the recommender framework for tag and resource recommendation
+ * BibSonomy Recommendation - Tag and resource recommender.
  *
  * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany

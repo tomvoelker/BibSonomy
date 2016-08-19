@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    BibSonomy-Recommendation-Connector - Connector for the recommender framework for tag and resource recommendation
+    BibSonomy Recommendation - Tag and resource recommender.
 
     Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
                                   University of Kassel, Germany
@@ -31,10 +31,10 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<name>BibSonomy-Recommendation-Connector</name>
+	<name>BibSonomy Recommendation</name>
 	<artifactId>bibsonomy-recommender</artifactId>
 	<packaging>jar</packaging>
-	<description>Connector for the recommender framework for tag and resource recommendation</description>
+	<description>Tag and resource recommender.</description>
 	<properties>
 		<recommender.version>1.0.1-SNAPSHOT</recommender.version>
 	</properties>
