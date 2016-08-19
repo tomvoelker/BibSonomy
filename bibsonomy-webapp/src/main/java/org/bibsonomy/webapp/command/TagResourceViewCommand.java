@@ -94,7 +94,7 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	 */
 	public String getRequestedTags() {
 		return this.requestedTags;
-	}	
+	}
 	
 	/**
 	 * sets the requested tags

@@ -9,6 +9,11 @@
 	<jsp:directive.attribute name="requPathAndQuery" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="isPublication" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="isBookmark" type="java.lang.Boolean" required="true" />
+	<jsp:directive.attribute name="iconOnly" type="java.lang.Boolean" required="false" />
+	
+	<c:if test="${empty iconOnly}">
+		<c:set var="iconOnly" value="${false}" />
+	</c:if>
 	
 	<!--+
 		+ TODO: use urlgenerator
@@ -22,6 +27,10 @@
 		<c:url var="editUrl" value="/bediturl${requPathAndQuery}"/>
 	</c:if>
 	
-	<bs:linkButton block="${true}" style="defaultStyle" href="${editUrl}" size="xsmall" textKey="post.meta.batch_edit" titleKey="post.meta.edit.title" icon="pencil" />
+	<c:if test="${not iconOnly}">
+		<c:set var="textKey" value="post.meta.batch_edit" />
+		<c:set var="block" value="${true}" />
+	</c:if>
+	<bs:linkButton block="${block}" style="link" href="${editUrl}" size="xsmall" textKey="${textKey}" titleKey="post.meta.edit.title" icon="pencil" />
 	
 </jsp:root>

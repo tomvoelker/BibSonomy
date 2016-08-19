@@ -112,6 +112,4 @@ public class PutSyncStatusStrategy extends AbstractUpdateStrategy {
 		logic.updateSyncData(userName, this.serviceURI, this.resourceType, lastSyncDate, status, info, newDate);
 		return null;
 	}
-
-
 }

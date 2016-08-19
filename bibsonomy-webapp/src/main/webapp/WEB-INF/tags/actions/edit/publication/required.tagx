@@ -15,13 +15,11 @@
      -->
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
-	<jsp:directive.attribute name="autocompletion" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="hideBibTeXKey" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="hideAuthorClaim" type="java.lang.Boolean" required="false"/>
 	
 	<jsp:directive.attribute name="personIndex" type="java.lang.Integer" required="false"/>
 	<jsp:directive.attribute name="person" type="org.bibsonomy.model.Person" required="false"/>
-	
 	
 	<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/jquery-ui.css" type="text/css" media="all" />
 	<link rel="stylesheet" href="${resdir}/jquery/plugins/ui/ui.theme.css" type="text/css" media="all" />
@@ -177,15 +175,4 @@
 
 	<bsform:textarea labelColSpan="3" inputColSpan="9" id="post.resource.editor" path="post.resource.editor" required="${true}"/>
 	<bsform:input labelColSpan="3" inputColSpan="9" id="post.resource.year" small="true" path="post.resource.year" required="${true}"/>
-
-	<c:if test="${autocompletion}">
-		<script type="text/javascript">
-           	//<mtl:cdata>
-           	<![CDATA[
-				$(function(){initSuggestionForPartTitles($('#post\\.resource\\.title'));});
-     		]]> 
-           	//</mtl:cdata>
-    		</script>
-	</c:if>
-	    
 </jsp:root>

@@ -313,7 +313,7 @@
 				</entry>
 				<entry key="/import/publications">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="postPublicationController"/>
+						<property name="controllerBeanName" value="importPublicationController"/>
 						<property name="allowedFields">
 							<list>
 								<value>selTab</value>
@@ -420,7 +420,7 @@
 								
 								<value>compareVersion</value>
 								<value>differentEntryKeys</value>
-														
+								
 								<!-- used for fileHandling -->
 								<value>fileName</value>
 								<!-- used to block spammers -->
@@ -811,7 +811,7 @@
 		<!-- used to block spammers -->
 		<value>recaptcha_response_field</value>
 		<value>recaptcha_challenge_field</value>
-		<value>editBeforeSaving</value>				
+		<value>editBeforeSaving</value>
 		<!-- used by the publicationRenderingController -->
 		<value>format</value>
 		<value>layout</value>
@@ -888,6 +888,7 @@
 	
 	<bean id="postPublicationController" class="org.bibsonomy.webapp.controller.actions.PostPublicationController" scope="request">
 		<property name="logic" ref="logic"/>
+		<property name="fileLogic" ref="fileLogic"/>
 		<property name="userSettings" ref="userSettings"/>
 		<property name="recommender" ref="multiplexingTagRecommender"/>
 		<property name="captcha" ref="captcha"/>
@@ -895,22 +896,11 @@
 		<property name="scraper" ref="kdeScraperChain"/>
 		<property name="urlGenerator" ref="absoluteUrlGenerator"/>
 		<property name="publicationImporter" ref="publicationImporter"/>
-		<property name="didYouKnowMessages">
-			<list>
-				<bean class="org.bibsonomy.webapp.util.DidYouKnowMessage">
-					<property name="messageKey" value="didyouknow.browserButtons"/>
-					<property name="alertType" value="warning" /> 
-				</bean>
-				<bean class="org.bibsonomy.webapp.util.DidYouKnowMessage">
-					<property name="messageKey" value="didyouknow.isbn"/>
-					<property name="alertType" value="warning" /> 
-				</bean>
-				<bean class="org.bibsonomy.webapp.util.DidYouKnowMessage">
-					<property name="messageKey" value="didyouknow.scanningQr"/>
-					<property name="alertType" value="warning" /> 
-				</bean>
-			</list>
-		</property>
+		<property name="view" value="POST_PUBLICATION" />
+	</bean>
+	
+	<bean id="importPublicationController" parent="postPublicationController" class="org.bibsonomy.webapp.controller.actions.PostPublicationController" scope="request">
+		<property name="view" value="IMPORT_PUBLICATION" />
 	</bean>
 	
 	<bean id="publicationImporter" class="org.bibsonomy.webapp.util.importer.PublicationImporter">

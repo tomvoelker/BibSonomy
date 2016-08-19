@@ -217,10 +217,8 @@
 	   	      ORDER BY date DESC
        	      LIMIT #limit# OFFSET #offset#) AS b
        	JOIN urls u USING (book_url_hash)                                           <!-- join url -->
-       	LEFT JOIN bookmark my ON b.book_url_hash=my.book_url_hash AND my.user_name='userName' <!--  exclude own posts (1) -->
 	   	LEFT OUTER JOIN tas AS t ON b.content_id = t.content_id <include refid="reviewRatingsJoinBookmark" />, groupids AS g  <!-- join with tas -->
 		WHERE t.group = g.group                                                  <!-- join groupname -->
-		    AND my.user_name IS NULL											<!--  exclude own posts (2) -->
 		ORDER BY b.date DESC, b.content_id DESC
 	</select>
 

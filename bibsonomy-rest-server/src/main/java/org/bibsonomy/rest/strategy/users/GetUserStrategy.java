@@ -60,7 +60,6 @@ public class GetUserStrategy extends Strategy {
 		if (user.getName() == null) {
 			throw new NoSuchResourceException("The requested user '" + userName + "' does not exist.");
 		}
-		//
 		// delegate to the renderer
 		this.getRenderer().serializeUser(writer, user, new ViewModel());
 	}

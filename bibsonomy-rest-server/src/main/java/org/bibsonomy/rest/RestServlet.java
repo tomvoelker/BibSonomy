@@ -62,6 +62,7 @@ import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.exceptions.AuthenticationException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
+import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
 import org.bibsonomy.rest.exceptions.UnsupportedMediaTypeException;
 import org.bibsonomy.rest.fileupload.DualUploadedFileAccessor;
 import org.bibsonomy.rest.fileupload.UploadedFileAccessor;
@@ -285,7 +286,7 @@ public final class RestServlet extends HttpServlet {
 		} catch (final NoSuchResourceException e) {
 			log.info(e.getMessage());
 			this.sendError(request, response, HttpServletResponse.SC_NOT_FOUND, e.getMessage());
-		} catch (final BadRequestOrResponseException | InvalidModelException | InvalidSearchRequestException | UnsupportedResourceTypeException e) {
+		} catch (final BadRequestOrResponseException | InvalidModelException | InvalidSearchRequestException | UnsupportedResourceTypeException | UnsupportedHttpMethodException e) {
 			log.info(e.getMessage(), e);
 			this.sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
 		} catch (final AccessDeniedException e) {

@@ -30,7 +30,7 @@
 			</c:if>
 			<c:set var="historyUrl" value="${relativeUrlGenerator.getHistoryURLByHashAndUserName(hash, post.user.name, resourceType)}"/>
 			<c:if test="${isRemotePost}">
-				<c:set var="historyUrl" value="${relativeUrlGenerator.getHistoryURLByHashUserNameAndSysUrl(hash, post.user.name, resourceType, post.systemUrl)}"/>
+				<c:set var="historyUrl" value="${urlGeneratorFactory.createURLGeneratorForSystem(post.systemUrl).getHistoryURLByHashUserName(hash, post.user.name, resourceType)}"/>
 			</c:if>
 			<li>
 				<a href="${historyUrl}" title="${postHistoryTitle}">

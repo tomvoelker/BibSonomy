@@ -19,18 +19,6 @@ function updateUserRelation(action, userName, relationName, ckey) {
 	handleUserRelation(actionString, userName, relationName, toggleSocializerButtons);
 }
 
-/**
- * add follower on the follower page
- * 
- * @param userName
- * @param element
- * @param ckey
- * @return
- */
-function updateFollowerFollowerPage(action, userName, element, ckey){
-	handleUserRelation("&action=" + action + "Follower", userName, "sys:network:bibsonomy-follower", moveFollwerLink, element, action);
-}
-
 
 /**
  * toggles visibility of the socializer buttons
@@ -42,29 +30,6 @@ function toggleSocializerButtons(relationName) {
 	$('#' + cleanedName + "_followLink").toggle();
 	$('#' + cleanedName + "_removeLink").toggle();
 }
-
-/**
- * moves the requested user from the 'similar' to the 'follower' list
- *  
- * @param relationName
- * @param element referenced dom element
- * @param action one of 'add' or 'remove'
- * @return
- */
-function moveFollwerLink(relationName, element, action){
-	$('#posts.refresh').show();
-	element.setAttribute("href", "");
-	
-	if ("add" == action) {
-		element.parentNode.setAttribute("class", "");
-		document.getElementById("followedUsers").appendChild(element.parentNode);
-		element.parentNode.removeChild(element);
-	} else {
-		element.parentNode.style.display='none';
-		element.parentNode.style.visibility='hidden';
-	}
-}
-
 
 /**
  * sends the requested user relation operation to the server
@@ -90,7 +55,6 @@ function handleUserRelation(actionString, userName, relationName, callback, elem
 		}
 	});
 }
-
 
 /**
  * Function, to submit and add a given User as Friend.

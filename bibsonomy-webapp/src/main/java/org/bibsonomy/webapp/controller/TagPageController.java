@@ -60,6 +60,14 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		final String format = command.getFormat();
 		this.startTiming(format);
 		
+		// FIXME: merge sortPage and order, see SearchPageController
+		final String pageSort = command.getSortPage();
+		if ("date".equals(pageSort)) {
+			command.setOrder(Order.ADDED);
+		} else if ("folkrank".equals(pageSort)) {
+			command.setOrder(Order.FOLKRANK);
+		}
+		
 		// if no tags given return
 		if (!present(command.getRequestedTags())) {
 			throw new MalformedURLSchemeException("error.tag_page_without_tag");

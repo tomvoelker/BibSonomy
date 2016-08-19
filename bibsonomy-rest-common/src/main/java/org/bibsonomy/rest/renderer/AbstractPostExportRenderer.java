@@ -29,10 +29,8 @@ package org.bibsonomy.rest.renderer;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,8 +38,6 @@ import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.RecommendedPost;
-import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
@@ -67,22 +63,6 @@ public abstract class AbstractPostExportRenderer implements Renderer {
 	 * @return the format this PostExportRenderer renders
 	 */
 	protected abstract RenderingFormat getFormat();
-	
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.renderer.Renderer#serializeRecommendedPosts(java.io.Writer, java.util.List, org.bibsonomy.rest.ViewModel)
-	 */
-	@Override
-	public void serializeRecommendedPosts(Writer writer, List<? extends RecommendedPost<? extends Resource>> posts, ViewModel viewModel) {
-		this.handleUnsupportedMediaType();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.renderer.Renderer#serializeRecommendedPost(java.io.Writer, org.bibsonomy.model.RecommendedPost, org.bibsonomy.rest.ViewModel)
-	 */
-	@Override
-	public void serializeRecommendedPost(Writer writer, RecommendedPost<? extends Resource> post, ViewModel viewModel) {
-		this.handleUnsupportedMediaType();
-	}
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.rest.renderer.Renderer#serializeDocument(java.io.Writer, org.bibsonomy.model.Document)
@@ -121,22 +101,6 @@ public abstract class AbstractPostExportRenderer implements Renderer {
 	 */
 	@Override
 	public void serializeTag(Writer writer, Tag tag, ViewModel viewModel) {
-		this.handleUnsupportedMediaType();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.renderer.Renderer#serializeRecommendedTags(java.io.Writer, java.util.Collection)
-	 */
-	@Override
-	public void serializeRecommendedTags(Writer writer, Collection<RecommendedTag> tags) {
-		this.handleUnsupportedMediaType();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.renderer.Renderer#serializeRecommendedTag(java.io.Writer, org.bibsonomy.model.RecommendedTag)
-	 */
-	@Override
-	public void serializeRecommendedTag(Writer writer, RecommendedTag tag) {
 		this.handleUnsupportedMediaType();
 	}
 
@@ -322,26 +286,10 @@ public abstract class AbstractPostExportRenderer implements Renderer {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.renderer.Renderer#parseRecommendedItemList(java.io.Reader, org.bibsonomy.model.util.data.DataAccessor)
-	 */
-	@Override
-	public List<RecommendedPost<? extends Resource>> parseRecommendedItemList(Reader reader, DataAccessor uploadedFileAcessor) throws BadRequestOrResponseException {
-		throw new UnsupportedOperationException();
-	}
-
-	/* (non-Javadoc)
 	 * @see org.bibsonomy.rest.renderer.Renderer#parsePost(java.io.Reader, org.bibsonomy.model.util.data.DataAccessor)
 	 */
 	@Override
 	public Post<? extends Resource> parsePost(Reader reader, DataAccessor uploadedFileAccessor) throws BadRequestOrResponseException {
-		throw new UnsupportedOperationException();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.renderer.Renderer#parseRecommendedItem(java.io.Reader, org.bibsonomy.model.util.data.DataAccessor)
-	 */
-	@Override
-	public RecommendedPost<? extends Resource> parseRecommendedItem(Reader reader, DataAccessor uploadedFileAccessor) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();
 	}
 
@@ -390,22 +338,6 @@ public abstract class AbstractPostExportRenderer implements Renderer {
 	 */
 	@Override
 	public Tag parseTag(Reader reader) throws BadRequestOrResponseException {
-		throw new UnsupportedOperationException();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.renderer.Renderer#parseRecommendedTagList(java.io.Reader)
-	 */
-	@Override
-	public SortedSet<RecommendedTag> parseRecommendedTagList(Reader reader) throws BadRequestOrResponseException {
-		throw new UnsupportedOperationException();
-	}
-
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.rest.renderer.Renderer#parseRecommendedTag(java.io.Reader)
-	 */
-	@Override
-	public RecommendedTag parseRecommendedTag(Reader reader) throws BadRequestOrResponseException {
 		throw new UnsupportedOperationException();
 	}
 
