@@ -7,18 +7,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
 /**
  *
  *
@@ -26,11 +14,18 @@ import org.xml.sax.SAXException;
  */
 public class JabRefFilesManager {
 	final String directory = "org/bibsonomy/layout/jabref/";
-	final String cslFolderDirec = this.getClass().getClassLoader().getResource(directory).getPath();
-	final File CSLFolder = new File(cslFolderDirec);
+	final String jabRefFolderDirec = this.getClass().getClassLoader().getResource(directory).getPath();
+	final File jabRefFolder = new File(jabRefFolderDirec);
 	final String XMLFileDirec = this.getClass().getClassLoader().getResource(directory + "JabrefLayouts.xml").getPath();
 	final File XMLFile = new File(XMLFileDirec);
-
+	
+	/**
+	 * Spring init
+	 */
+	public void init() {
+		//TODO!
+	}
+	
 	/**
 	 * @param JabrefID
 	 * @return returns a display name to a given Jabref style. Throws something if it didn't work

@@ -7,9 +7,8 @@
 	                    http://www.springframework.org/schema/util 
 	                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 	
-	
-	<bean id="CSLFilesManager" class="org.bibsonomy.layout.csl.CSLFilesManager" />	
-	<bean id="JabRefFilesManager" class="org.bibsonomy.layout.jabref.JabRefFilesManager" />
+	<bean id="CSLFilesManager" class="org.bibsonomy.layout.csl.CSLFilesManager" init-method="init"/>	
+	<bean id="JabRefFilesManager" class="org.bibsonomy.layout.jabref.JabRefFilesManager" init-method="init"/>
 
 
 </beans>

@@ -101,10 +101,10 @@
 		<property name="properties" ref="properties"/>
 	</bean>
 	
-	<bean id="CSLFilesManager" class="org.bibsonomy.layout.csl.CSLFilesManager">
+	<bean id="CSLFilesManager" class="org.bibsonomy.layout.csl.CSLFilesManager" scope="prototype">
 	</bean>
 	
-	<bean id="JabRefFilesManager" class="org.bibsonomy.layout.jabref.JabRefFilesManager">
+	<bean id="JabRefFilesManager" class="org.bibsonomy.layout.jabref.JabRefFilesManager" scope="prototype">
 	</bean>
 	
 	

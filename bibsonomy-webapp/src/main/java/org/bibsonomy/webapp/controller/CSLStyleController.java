@@ -1,6 +1,5 @@
 package org.bibsonomy.webapp.controller;
 
-import org.bibsonomy.layout.csl.CSLFilesManager;
 import org.bibsonomy.webapp.command.CSLStyleCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -33,12 +32,13 @@ public class CSLStyleController implements MinimalisticController<CSLStyleComman
 	 */
 	@Override
 	public View workOn(CSLStyleCommand command) {
-		CSLFilesManager CSLFilesManager = new CSLFilesManager();
-		if (command.getStyle() == null || command.getStyle().isEmpty()) {
-			command.setXml(CSLFilesManager.getJSONString());
-			return Views.CSL_STYLE; 
-		}
-		command.setXml(CSLFilesManager.getXML(command.getStyle()));
+		//TODO: absoluter BS
+//		CSLFilesManager CSLFilesManager = new CSLFilesManager();
+//		if (command.getStyle() == null || command.getStyle().isEmpty()) {
+//			command.setXml(CSLFilesManager.getJSONString());
+//			return Views.CSL_STYLE; 
+//		}
+//		command.setXml(CSLFilesManager.getXML(command.getStyle()));
 		return Views.CSL_STYLE;
 	}
 }
