@@ -48,7 +48,6 @@
         		<!-- source and style always uppercase! -->
         		<c:if test="${(citation.source=='JABREF') || (citation.source=='CSL')}">
         			<li>
-						<c:set var="prefix" value="layout/${citation.style}" />
 						<c:set var="exportUrl" value="${relativeUrlGenerator.getPostUrl(citation, post)}?formatEmbedded=true&amp;items=1" />
 						<!-- don't forget to use displayName! -->
 						<a class="favouriteLayoutDisplayName" source="${citation.source}" style="${citation.style}" data-toggle="tab" href="#citation_${citation.style}" data-formatUrl="${exportUrl}">
@@ -60,7 +59,7 @@
 			<li>
 				<c:choose>
 					<c:when test="${isCommunityPost}">
-						<c:set var="exportUrl" value="${relativeUrlGenerator.prefix('export').getPublicationUrl(post.resource)}?formatEmbedded=true&amp;items=1" />
+						<c:set var="exportUrl" value="${relativeUrlGenerator.prefix('export').getCommunityPublicationUrlByInterHash(post.resource.interHash)}?formatEmbedded=true&amp;items=1" />
 					</c:when>
 					<c:otherwise>
 						<c:set var="exportUrl" value="${relativeUrlGenerator.prefix('export').getPublicationUrlByPost(post)}?formatEmbedded=true" />

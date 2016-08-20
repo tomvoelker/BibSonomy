@@ -1078,6 +1078,7 @@
 	<import resource="bibsonomy-servlet-database.xml" />
 	<import resource="bibsonomy-servlet-search.xml" />
 	<import resource="bibsonomy-servlet-help.xml" />
+	<import resource="bibsonomy-servlet-layout.xml" />
 	<import resource="bibsonomy-servlet-security.xml" />
 	<import resource="bibsonomy-servlet-opensocial.xml" />
 	<import resource="bibsonomy-servlet-saml.xml" />

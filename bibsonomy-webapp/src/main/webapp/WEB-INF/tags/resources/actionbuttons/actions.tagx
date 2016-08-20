@@ -196,7 +196,7 @@
 							<c:if test="${(citation.source=='JABREF') || (citation.source=='CSL')}">
         						<li>
         							<!-- don't forget to use displayName!!!!!!!! -->
-        							<a class="litem favouriteLayoutDisplayName" source="${citation.source}" style="${citation.style}" href="${urlGeneratorFactory.createURLGeneratorForSystem(post.systemUrl).getMSWordUrlByIntraHashAndUserName(post.resource.intraHash, post.user.name)}?formatEmbedded=true" title="${citation.displayName}">
+        							<a class="litem favouriteLayoutDisplayName" source="${citation.source}" style="${citation.style}" href="${relativeUrlGenerator.getPostUrl(citation, post)}?formatEmbedded=true" title="${citation.displayName}">
         								${citation.displayName}
         							</a>
         						</li>

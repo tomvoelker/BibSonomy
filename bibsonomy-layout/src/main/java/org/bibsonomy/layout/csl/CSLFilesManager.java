@@ -9,6 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -27,7 +28,57 @@ public class CSLFilesManager {
 	final String directory = "org/bibsonomy/layout/csl/";
 	final String cslFolderDirec = this.getClass().getClassLoader().getResource(directory).getPath();
 	final File CSLFolder = new File(cslFolderDirec);
-	final File cachedJSON = new File(cslFolderDirec + "cache.cached");
+	
+	
+	//mapping from id to CSLStyle
+	HashMap<String, CSLStyle> CSLFiles = new HashMap<String, CSLStyle>();
+	
+	class CSLStyle{
+		private String id;
+		private String displayName;
+		private String content;
+		public void CSLSytle(String id, String displayName, String content){
+			this.id = id;
+			this.displayName = displayName;
+			this.content = content;
+		}
+		/**
+		 * @return the id
+		 */
+		private String getId() {
+			return this.id;
+		}
+		/**
+		 * @param id the id to set
+		 */
+		private void setId(String id) {
+			this.id = id;
+		}
+		/**
+		 * @return the displayName
+		 */
+		private String getDisplayName() {
+			return this.displayName;
+		}
+		/**
+		 * @param displayName the displayName to set
+		 */
+		private void setDisplayName(String displayName) {
+			this.displayName = displayName;
+		}
+		/**
+		 * @return the content
+		 */
+		private String getContent() {
+			return this.content;
+		}
+		/**
+		 * @param content the content to set
+		 */
+		private void setContent(String content) {
+			this.content = content;
+		}
+	}
 
 	final FilenameFilter CSLFilter = new FilenameFilter() {
 		@Override
@@ -38,6 +89,12 @@ public class CSLFilesManager {
 			return name.toLowerCase().endsWith(".csl");
 		}
 	};
+	/**
+	 * Spring init
+	 */
+	public void init() {
+		
+	}
 	
 	/**
 	 * @param CSLFileName
