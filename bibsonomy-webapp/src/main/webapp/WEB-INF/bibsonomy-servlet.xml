@@ -101,6 +101,13 @@
 		<property name="properties" ref="properties"/>
 	</bean>
 	
+	<bean id="CSLFilesManager" class="org.bibsonomy.layout.csl.CSLFilesManager">
+	</bean>
+	
+	<bean id="JabRefFilesManager" class="org.bibsonomy.layout.jabref.JabRefFilesManager">
+	</bean>
+	
+	
 	<bean id="standardLayouts" class="org.bibsonomy.layout.standard.StandardLayouts" />
 	
 	<!-- provides access to the request for all controllers, which need it -->

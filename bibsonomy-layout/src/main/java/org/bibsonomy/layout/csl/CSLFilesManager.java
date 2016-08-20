@@ -28,52 +28,68 @@ public class CSLFilesManager {
 	final String directory = "org/bibsonomy/layout/csl/";
 	final String cslFolderDirec = this.getClass().getClassLoader().getResource(directory).getPath();
 	final File CSLFolder = new File(cslFolderDirec);
-	
-	
-	//mapping from id to CSLStyle
+
+	// mapping from id to CSLStyle which contains the id itself, a display name and the content of the file
 	HashMap<String, CSLStyle> CSLFiles = new HashMap<String, CSLStyle>();
-	
-	class CSLStyle{
+	// complete JSON String ready to be displayed
+	String json;
+
+	private class CSLStyle {
 		private String id;
 		private String displayName;
 		private String content;
-		public void CSLSytle(String id, String displayName, String content){
+
+		/**
+		 * @param name
+		 * @param nameToTitle
+		 * @param nameToXML
+		 */
+		public CSLStyle(String id, String displayName, String content) {
 			this.id = id;
 			this.displayName = displayName;
 			this.content = content;
 		}
+
 		/**
 		 * @return the id
 		 */
 		private String getId() {
 			return this.id;
 		}
+
 		/**
-		 * @param id the id to set
+		 * @param id
+		 *            the id to set
 		 */
 		private void setId(String id) {
 			this.id = id;
 		}
+
 		/**
 		 * @return the displayName
 		 */
 		private String getDisplayName() {
 			return this.displayName;
 		}
+
 		/**
-		 * @param displayName the displayName to set
+		 * @param displayName
+		 *            the displayName to set
 		 */
 		private void setDisplayName(String displayName) {
 			this.displayName = displayName;
 		}
+
 		/**
 		 * @return the content
 		 */
 		private String getContent() {
 			return this.content;
 		}
+
 		/**
-		 * @param content the content to set
+		 * @param content
+		 *            the content to set
 		 */
 		private void setContent(String content) {
 			this.content = content;
@@ -89,22 +105,32 @@ public class CSLFilesManager {
 			return name.toLowerCase().endsWith(".csl");
 		}
 	};
+
 	/**
 	 * Spring init
 	 */
 	public void init() {
-		
+		for (File f : CSLFolder.listFiles(CSLFilter)) {
+			try {
+				CSLFiles.put(f.getName(), new CSLStyle(f.getName(), nameToTitle(f), nameToXML(f)));
+			} catch (ParserConfigurationException | SAXException | IOException e) {
+				//TODO logging
+				continue;
+			}
+		}
+		//TODO read custom user uploads
+		jsonInit();
 	}
-	
+
 	/**
 	 * @param CSLFileName
 	 * @return the .csl file with given name
 	 */
 	private File readStyle(final String CSLFileName) {
 		String searchFor;
-		if(!CSLFileName.endsWith(".csl")){
+		if (!CSLFileName.endsWith(".csl")) {
 			searchFor = CSLFileName + ".csl";
-		}else{
+		} else {
 			searchFor = CSLFileName;
 		}
 		for (File f : CSLFolder.listFiles(CSLFilter)) {
@@ -116,20 +142,21 @@ public class CSLFilesManager {
 	}
 
 	/**
-	 * @param CSLFileName
+	 * @param CSLFile
 	 * @return content of .csl file with given name
+	 * @throws IOException
 	 */
-	public String nameToXML(String CSLFileName) {
-		final File CSLFile = readStyle(CSLFileName);
+	private static String nameToXML(final File CSLFile) throws IOException {
 		if (CSLFile == null || !CSLFile.exists()) {
-			return "No such file: " + CSLFileName;
+			if (CSLFile != null)
+				throw new FileNotFoundException("No such file: " + CSLFile.getName());
+			throw new FileNotFoundException("No such file");
 		}
-
 		List<String> content;
 		try {
 			content = Files.readAllLines(CSLFile.toPath());
 		} catch (IOException e) {
-			return "Problem while reading: " + CSLFileName;
+			throw new IOException("Problem while reading: " + CSLFile.getName() + "\n" + e);
 		}
 		StringBuilder returner = new StringBuilder();
 		for (String line : content) {
@@ -139,90 +166,39 @@ public class CSLFilesManager {
 	}
 
 	/**
-	 * @return returns either a cached version of all .csl files or creates a new String in the format "layouts":[{"source":"CSL","name":"bla_bla","displayName":"Bla Bla"}]
+	 * initializes the json and saves it to a string which can be returned
 	 */
-	public String allToJson() {
-		//TODO: check. Files are being copied on server launch. so not 100% sure here. hard to check
-		if (cachedJSON != null && cachedJSON.exists() && cachedJSON.isFile()) {
-			Date cachedLastModified = new Date(cachedJSON.lastModified());
-			Date today = new Date();
-			Calendar cal1 = Calendar.getInstance();
-			Calendar cal2 = Calendar.getInstance();
-			cal1.setTime(cachedLastModified);
-			cal2.setTime(today);
-			boolean sameDay = cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)
-					&& cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
-			// checking whether cache is older than one day
-			if (!sameDay) {
-				cachedJSON.delete();
-			} else {
-				// checking whether everything has already been cached.
-				// check whether cache is up to date
-				long lastModified = Long.MIN_VALUE;
-				for (File f : CSLFolder.listFiles(CSLFilter)) {
-					long fileLastModified = f.lastModified();
-					if (lastModified < fileLastModified) {
-						lastModified = fileLastModified;
-					}
-				}
-				//check which version is more up to date
-				if (lastModified > cachedJSON.lastModified()) {
-					cachedJSON.delete();
-				} else {
-					try {
-						List<String> allLines = Files.readAllLines(cachedJSON.toPath());
-						StringBuilder returner = new StringBuilder();
-						for (String line : allLines) {
-							returner.append("\n" + line);
-						}
-						return returner.toString();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-					}
-				}
-			}
-		}
-
+	private void jsonInit() {
 		// only reading .csl files
-		StringBuilder json = new StringBuilder();
-		json.append("{\"layouts\":[");
-		for (File f : CSLFolder.listFiles(CSLFilter)) {
-			String filename = f.getName().trim().toUpperCase();
-			filename = filename.replaceAll(".CSL", "");
-			String displayname;
-			try {
-				displayname = nameToTitle(filename);
-			} catch (ParserConfigurationException | SAXException | IOException e) {
-				return "FAILED AT FILE:" + filename;
-			}
-			json.append("{\"source\":\"CSL\",\"name\":\"" + filename + "\",\"displayName\":\"" + displayname + "\"},");
+		StringBuilder jsonSB = new StringBuilder();
+		jsonSB.append("{\"layouts\":[");
+		for (String key : CSLFiles.keySet()) {
+			String filename = CSLFiles.get(key).getId();
+			filename = filename.replaceAll(".csl", "");
+			String displayname = CSLFiles.get(key).getDisplayName();
+			jsonSB.append("{\"source\":\"CSL\",\"name\":\"" + filename + "\",\"displayName\":\"" + displayname + "\"},");
 		}
-		String jsonString = json.toString();
+		String jsonString = jsonSB.toString();
 		if (jsonString.endsWith(",")) {
 			jsonString = jsonString.substring(0, jsonString.lastIndexOf(','));
 		}
 		jsonString += "]}";
-		try {
-			PrintWriter writer = new PrintWriter(cachedJSON, "UTF-8");
-			writer.println(jsonString);
-			writer.close();
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-		}
-		return jsonString;
+		json = jsonString;
 	}
 
 	/**
-	 * @param CSLFileName
-	 * @return returns a display name to a given csl style, which will be loaded from <arg>.csl throws something if it didn't work
+	 * @param CSLFile
+	 * @return returns a display name to a given csl style, which will be loaded
+	 *         from <arg>.csl throws something if it didn't work
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
 	 * @throws IOException
 	 */
-	public String nameToTitle(final String CSLFileName) throws ParserConfigurationException, SAXException, IOException {
-		final File CSLFile = readStyle(CSLFileName);
+	private static String nameToTitle(final File CSLFile) throws ParserConfigurationException, SAXException, IOException {
 		if (CSLFile == null || !CSLFile.exists()) {
-			return "No such file: " + CSLFileName;
+			if (CSLFile != null)
+				throw new FileNotFoundException("No such file: " + CSLFile.getName());
+			throw new FileNotFoundException("No such file");
 		}
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -231,4 +207,35 @@ public class CSLFilesManager {
 		title = title.replaceAll("\"", "'");
 		return title;
 	}
+	
+	/**
+	 * @return the prewritten jsonString
+	 */
+	public String getJSONString(){
+		return json;
+	}
+	
+	/**
+	 * @param CSLFileName
+	 * @return the correct display name for this CSL - style
+	 */
+	public String getDisplayName(final String CSLFileName){
+		String returner = CSLFiles.get(CSLFileName).getDisplayName();
+		if(returner == null || returner.isEmpty()){
+			return "";
+		}
+		return returner;
+	}
+	
+	/**
+	 * @param CSLFileName
+	 * @return the correct XML file content for this CSL - style
+	 */
+	public String getXML(final String CSLFileName){
+	String returner = CSLFiles.get(CSLFileName).getContent();
+	if(returner == null || returner.isEmpty()){
+		return "";
+	}
+	return returner;
+}
 }
