@@ -75,7 +75,7 @@ public class JabRefFilesManager {
 	 *         if it didn't work
 	 * @throws IOException
 	 */
-	public String nameToTitle(final String JabRefID) throws IOException {
+	public String getDisplayName(final String JabRefID) throws IOException {
 		if(!JabRefStyles.containsKey(JabRefID)){
 			return JabRefID;
 		}
