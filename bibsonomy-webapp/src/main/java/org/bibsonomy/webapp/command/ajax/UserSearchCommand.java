@@ -29,13 +29,13 @@ package org.bibsonomy.webapp.command.ajax;
 import java.util.List;
 
 import org.bibsonomy.model.User;
-import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
+import org.bibsonomy.webapp.command.BaseCommand;
 
 
 /**
  * @author bsc
  */
-public class UserSearchCommand extends SimpleResourceViewCommand {
+public class UserSearchCommand extends BaseCommand {
 	private String search;
 	private int limit;
 	private List<User> users;
