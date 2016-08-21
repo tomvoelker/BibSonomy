@@ -65,8 +65,6 @@ public class JabRefFilesManager {
 				JabRefStyles.put(jabRefID.trim(), title.trim());
 			}
 		}
-		System.out.println("finished");
-		System.out.println("For real tho");
 	}
 
 	/**
