@@ -119,25 +119,6 @@ public class CSLFilesManager {
 	}
 
 	/**
-	 * @param CSLFileName
-	 * @return the .csl file with given name
-	 */
-	private File readStyle(final String CSLFileName) {
-		String searchFor;
-		if (!CSLFileName.endsWith(".csl")) {
-			searchFor = CSLFileName + ".csl";
-		} else {
-			searchFor = CSLFileName;
-		}
-		for (File f : CSLFolder.listFiles(CSLFilter)) {
-			if ((f.getName().compareToIgnoreCase(searchFor)) == 0) {
-				return f;
-			}
-		}
-		return null;
-	}
-
-	/**
 	 * @param CSLFile
 	 * @return content of .csl file with given name
 	 * @throws IOException
