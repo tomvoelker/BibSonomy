@@ -26,15 +26,18 @@
  */
 package org.bibsonomy.webapp.command;
 
+import org.bibsonomy.model.User;
 
 /**
  * @author philipp
  */
-public class CvPageViewCommand extends UserResourceViewCommand {
-	private boolean isGroup = false;
+public class CvPageViewCommand extends ResourceViewCommand {
 	private String wikiText;
 	private String renderedWikiText;
-
+	
+	private boolean isGroup = false;
+	private User user;
+	
 	/**
 	 * @return the wikiText
 	 */
@@ -76,5 +79,18 @@ public class CvPageViewCommand extends UserResourceViewCommand {
 	public void setIsGroup(boolean isGroup) {
 		this.isGroup = isGroup;
 	}
-	
+
+	/**
+	 * @return the user
+	 */
+	public User getUser() {
+		return this.user;
+	}
+
+	/**
+	 * @param user the user to set
+	 */
+	public void setUser(User user) {
+		this.user = user;
+	}
 }

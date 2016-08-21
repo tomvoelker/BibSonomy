@@ -70,9 +70,6 @@ public class BaseCommand implements ContextCommand, DidYouKnowMessageCommand {
 	public void setPageTitle(final String pageTitle) {
 		this.pageTitle = pageTitle;
 	}
-
-	
-	
 	
 	/** The context contains the loginUser, the ckey, and other things
 	 * which can not be changed by the user.
