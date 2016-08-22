@@ -79,9 +79,10 @@ public interface SearchDBInterface<R extends Resource> {
 	
 	/**
 	 * @param fromDate
+	 * @param toDate
 	 * @return get list of all user spam flags since last index update  
 	 */
-	public List<User> getPredictionForTimeRange(Date fromDate);
+	public List<User> getPredictionForTimeRange(Date fromDate, Date toDate);
 	
 	//------------------------------------------------------------------------
 	// methods for building the index
