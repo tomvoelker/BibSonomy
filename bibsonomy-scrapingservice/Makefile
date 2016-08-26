@@ -52,8 +52,9 @@ gandalf: mvn_deploy
 
 gromit: mvn_deploy 
 
-slave_kassel: mvn_deploy
-slave_wuerzburg: mvn_deploy
+gimli: mvn_deploy
+
+legolas: mvn_deploy
 
 mvn_deploy:
 	${MAVEN} -Dtomcat-server=${DEPLOY_SERVER} -Dmaven.test.skip war:inplace tomcat7:redeploy

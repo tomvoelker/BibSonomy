@@ -27,11 +27,12 @@
 package org.bibsonomy.scraper.url.kde.cyberleninka;
 
 import org.bibsonomy.scraper.UnitTestRunner;
-import org.junit.Test;
+import org.junit.*;
 
 /**
  * @author Mohammed Abed
  */
+@Ignore
 public class CyberleninkaScraperTest {
 
 	/**
