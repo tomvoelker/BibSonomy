@@ -108,7 +108,7 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 		/*
 		 * Check permissions
 		 */
-		if (!this.hasPermissions(sender, receiver, intraHash, session)) {
+		if (!hasPermissions(sender, receiver, intraHash, session)) {
 			// sender is not allowed to use this tag, errorMessages were added
 			return;
 		}
@@ -149,7 +149,7 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 	 * @param receiver
 	 * @return true iff sender is allowed to use the tag
 	 */
-	private boolean hasPermissions(final String sender, final String receiver, final String intraHash, final DBSession session) {
+	private static boolean hasPermissions(final String sender, final String receiver, final String intraHash, final DBSession session) {
 		final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
 		final GeneralDatabaseManager generalDb = GeneralDatabaseManager.getInstance();
 		
@@ -191,6 +191,4 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 			return null;
 		}
 	}
-
-
 }
