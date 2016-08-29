@@ -263,7 +263,7 @@
 		AbstractPublicationType extracted to be able to deserialize publication
 		in JSON format; seems that JAXB has some problems with inheritance
 		(else GoldStandardPublicationType would extend BibtexType)
-   		-->
+		-->
 	<xsd:complexType name="AbstractPublicationType">
 		<!-- extra URLs -->
 		<xsd:sequence>
@@ -314,8 +314,8 @@
 	-->
 	<xsd:complexType name="BibtexType">
 		<xsd:complexContent>
-   			<xsd:extension base="AbstractPublicationType">
-   				<!-- see comment for abstract publication type -->
+			<xsd:extension base="AbstractPublicationType">
+				<!-- see comment for abstract publication type -->
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
@@ -332,12 +332,13 @@
 	
 	<xsd:complexType name="ReferenceType">
 		<xsd:attribute name="interhash" type="xsd:string" />
+		<xsd:attribute name="href" type="xsd:anyURI" />
 	</xsd:complexType>
 	
 	<xsd:complexType name="GoldStandardPublicationType">
 		<xsd:complexContent>
-   			<xsd:extension base="AbstractPublicationType">
-   				<xsd:sequence>
+			<xsd:extension base="AbstractPublicationType">
+				<xsd:sequence>
 					<xsd:element maxOccurs="1" minOccurs="1" name="references" type="ReferencesType" />
 				</xsd:sequence>
 			</xsd:extension>

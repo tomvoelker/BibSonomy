@@ -313,7 +313,9 @@ public abstract class AbstractRenderer implements Renderer {
 	
 			for (final BibTex reference : publication.getReferences()) {
 				final ReferenceType xmlReference = new ReferenceType();
-				xmlReference.setInterhash(reference.getInterHash());
+				final String interHash = reference.getInterHash();
+				xmlReference.setInterhash(interHash);
+				xmlReference.setHref(this.urlRenderer.createHrefForCommunityPost(interHash));
 	
 				referenceList.add(xmlReference);
 			}
