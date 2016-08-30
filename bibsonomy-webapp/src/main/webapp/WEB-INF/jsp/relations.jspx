@@ -46,6 +46,7 @@
 			        <fmt:message key="tagrelations.all.text.partOne">
 			        	<fmt:param value="${properties['project.name']}"/>
 			        </fmt:message>
+			         <p><fmt:message key="tagrelations.all.text.conceptsExplained"></fmt:message></p>
 				    <c:if test="${command.context.userLoggedIn}">
 				    <c:out value=" " />
 						<fmt:message key="tagrelations.all.text.partTwo">
