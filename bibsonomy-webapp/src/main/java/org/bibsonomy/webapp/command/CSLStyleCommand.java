@@ -1,8 +1,7 @@
 package org.bibsonomy.webapp.command;
 
 /**
- * TODO: add documentation to this class
- *
+ * 
  * @author jp
  */
 public class CSLStyleCommand extends ResourceViewCommand{
@@ -20,7 +19,7 @@ public class CSLStyleCommand extends ResourceViewCommand{
 	 * @param style the style to set
 	 */
 	public void setStyle(String style) {
-		this.style = style.toUpperCase();
+		this.style = style.toLowerCase();
 	}
 
 	/**

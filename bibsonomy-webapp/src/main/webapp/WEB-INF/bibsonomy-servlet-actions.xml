@@ -1257,6 +1257,10 @@
 		<constructor-arg value="${project.document.path}" />
 	</bean>
 	
+	<bean id="cslFileLogic" class="org.bibsonomy.webapp.util.file.csl.ServerCSLFileLogic">
+		<constructor-arg value="${project.document.path}" />
+	</bean>
+	
 	<bean id="documentFileLogic" class="org.bibsonomy.webapp.util.file.document.ServerDocumentFileLogic">
 		<constructor-arg value="${project.document.path}" />
 		<property name="extensionChecker" ref="extensionChecker" />
@@ -1266,6 +1270,7 @@
 		<property name="tempFileLogic" ref="tempFileLogic" />
 		<property name="profileFileLogic" ref="profileFileLogic" />
 		<property name="jabRefFileLogic" ref="jabRefFileLogic" />
+		<property name="cslFileLogic" ref="cslFileLogic" />
 		<property name="documentFileLogic" ref="documentFileLogic" />
 	</bean>
 	

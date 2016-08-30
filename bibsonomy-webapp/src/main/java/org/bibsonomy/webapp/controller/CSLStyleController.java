@@ -13,6 +13,9 @@ import org.bibsonomy.webapp.view.Views;
  */
 public class CSLStyleController implements MinimalisticController<CSLStyleCommand> {
 	
+	/**
+	 * is used to read metadata from CSL - Name
+	 */
 	protected CSLFilesManager cslFilesManager;
 	
 	/*
@@ -39,7 +42,7 @@ public class CSLStyleController implements MinimalisticController<CSLStyleComman
 			command.setXml(cslFilesManager.getJSONString());
 			return Views.CSL_STYLE; 
 		}
-		command.setXml(cslFilesManager.getXML(command.getStyle()));
+		command.setXml(cslFilesManager.getXML(command.getStyle().toLowerCase()));
 		return Views.CSL_STYLE;
 	}
 

@@ -108,7 +108,7 @@ public class CSLFilesManager {
 	public void init() {
 		for (File f : CSLFolder.listFiles(CSLFilter)) {
 			try {
-				CSLFiles.put(f.getName(), new CSLStyle(f.getName(), nameToTitle(f), nameToXML(f)));
+				CSLFiles.put(f.getName().toLowerCase().replace(".csl", ""), new CSLStyle(f.getName(), nameToTitle(f), nameToXML(f)));
 			} catch (ParserConfigurationException | SAXException | IOException e) {
 				//TODO logging
 				continue;
@@ -139,7 +139,7 @@ public class CSLFilesManager {
 		for (String line : content) {
 			returner.append("\n" + line);
 		}
-		return returner.toString();
+		return returner.toString().trim();
 	}
 
 	/**
@@ -160,7 +160,7 @@ public class CSLFilesManager {
 			jsonString = jsonString.substring(0, jsonString.lastIndexOf(','));
 		}
 		jsonString += "]}";
-		json = jsonString;
+		json = jsonString.trim();
 	}
 
 	/**
@@ -182,7 +182,7 @@ public class CSLFilesManager {
 		Document document = documentBuilder.parse(CSLFile);
 		String title = document.getElementsByTagName("title").item(0).getTextContent();
 		title = title.replaceAll("\"", "'");
-		return title;
+		return title.trim();
 	}
 	
 	/**
@@ -201,7 +201,7 @@ public class CSLFilesManager {
 		if(returner == null || returner.isEmpty()){
 			return "";
 		}
-		return returner;
+		return returner.trim();
 	}
 	
 	/**
@@ -213,6 +213,6 @@ public class CSLFilesManager {
 	if(returner == null || returner.isEmpty()){
 		return "";
 	}
-	return returner;
+	return returner.trim();
 }
 }
