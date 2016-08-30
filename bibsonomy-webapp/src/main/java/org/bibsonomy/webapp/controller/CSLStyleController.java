@@ -51,7 +51,7 @@ public class CSLStyleController implements MinimalisticController<CSLStyleComman
 	}
 
 	/**
-	 * @param cslFfilesManager the cslFilesManager to set
+	 * @param cslFilesManager the cslFilesManager to set
 	 */
 	public void setCslFilesManager(CSLFilesManager cslFilesManager) {
 		this.cslFilesManager = cslFilesManager;
