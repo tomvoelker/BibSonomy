@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <bibsonomy stat="ok">
     <post>
-        <user href="http://www.bibsonomy.org/api/users/foo" name="foo"/>
-        <goldStandardPublication interhash="9fbfff0ad07c0382055333d1fd9ffb38" intrahash="9fbfff0ad07c0382055333d1fd9ffb38" year="2004" author="Doe, John" bibtexKey="doe2004" title="The ten famoust">
+        <user name="foo" href="http://www.bibsonomy.org/api/users/foo"/>
+        <goldStandardPublication title="The ten famoust" bibtexKey="doe2004" author="Doe, John" year="2004" intrahash="9fbfff0ad07c0382055333d1fd9ffb38" interhash="9fbfff0ad07c0382055333d1fd9ffb38">
             <references>
-                <reference interhash="abc"/>
+                <reference interhash="abc" href="http://www.bibsonomy.org/api/posts/community/abc"/>
             </references>
+            <publications/>
         </goldStandardPublication>
     </post>
 </bibsonomy>
