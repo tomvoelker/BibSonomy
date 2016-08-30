@@ -40,6 +40,7 @@ import org.bibsonomy.model.ResourcePersonRelationLogStub;
  *
  * @author jensi
  */
+@Deprecated // move to PersonDatabaseManager
 public class PersonSearchDatabaseManager  extends AbstractDatabaseManager {
 	private final static PersonSearchDatabaseManager singleton = new PersonSearchDatabaseManager();
 

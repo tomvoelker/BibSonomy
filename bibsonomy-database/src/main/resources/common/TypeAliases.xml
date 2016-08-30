@@ -78,7 +78,7 @@
 	<typeAlias alias="wikiParam"			type="org.bibsonomy.database.params.WikiParam" />
 	
 	<typeAlias alias="discussionItemParam"	type="org.bibsonomy.database.params.discussion.DiscussionItemParam" />
-	<typeAlias alias="commentParam"		  	type="org.bibsonomy.database.params.discussion.CommentParam" />
+	<typeAlias alias="commentParam"			type="org.bibsonomy.database.params.discussion.CommentParam" />
 	<typeAlias alias="reviewParam"			type="org.bibsonomy.database.params.discussion.ReviewParam" />
 	
 	<!-- Java types  -->

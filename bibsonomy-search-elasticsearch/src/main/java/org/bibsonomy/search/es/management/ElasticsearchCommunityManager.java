@@ -51,10 +51,10 @@ public class ElasticsearchCommunityManager<R extends Resource> extends Elasticse
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.bibsonomy.search.es.management.ElasticsearchManager#updatePredictions(java.lang.String, java.util.Date)
+	 * @see org.bibsonomy.search.es.management.ElasticsearchManager#updatePredictions(java.lang.String, java.util.Date, java.util.Date)
 	 */
 	@Override
-	protected void updatePredictions(String indexName, Date lastLogDate) {
-		// nothing to do
+	protected void updatePredictions(String indexName, Date lastPredictionChangeDate, Date currentLastPreditionChangeDate) {
+		// noop no user related content
 	}
 }
