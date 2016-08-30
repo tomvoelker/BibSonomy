@@ -35,7 +35,6 @@ public class CSLStyleController implements MinimalisticController<CSLStyleComman
 	 */
 	@Override
 	public View workOn(CSLStyleCommand command) {
-		//TODO: absoluter BS
 		if (command.getStyle() == null || command.getStyle().isEmpty()) {
 			command.setXml(cslFilesManager.getJSONString());
 			return Views.CSL_STYLE; 
