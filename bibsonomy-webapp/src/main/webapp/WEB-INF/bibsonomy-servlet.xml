@@ -938,7 +938,8 @@
 		<property name="layouts" ref="standardLayouts" />
 	</bean>
 	
-	<bean id="CSLStyleController" class="org.bibsonomy.webapp.controller.CSLStyleController" scope="request"> 
+	<bean id="CSLStyleController" class="org.bibsonomy.webapp.controller.CSLStyleController" scope="request">
+		<property name="cslFilesManager" ref="CSLFilesManager" />
 	</bean>
 	
 	<bean id="statisticsController" class="org.bibsonomy.webapp.controller.StatisticsController" scope="request">
