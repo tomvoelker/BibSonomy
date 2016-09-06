@@ -209,9 +209,6 @@ public class BibTexUtils {
 	
 	/** presentation */
 	public static final String PRESENTATION = "presentation";
-	
-	/** preamble */
-	public static final String PREAMBLE = "preamble";
 
 	/** periodical */
 	public static final String PERIODICAL = "periodical";
@@ -262,7 +259,7 @@ public class BibTexUtils {
 	 * the common entrytypes of a BibTeX
 	 */
 	public static final String[] ENTRYTYPES = {ARTICLE, BOOK, BOOKLET, CONFERENCE, ELECTRONIC, INBOOK, INCOLLECTION, INPROCEEDINGS,
-		MANUAL, MASTERS_THESIS, MISC, PATENT, PERIODICAL, PHD_THESIS, PREAMBLE, PRESENTATION, PROCEEDINGS, STANDARD, TECH_REPORT, UNPUBLISHED,
+		MANUAL, MASTERS_THESIS, MISC, PATENT, PERIODICAL, PHD_THESIS, PRESENTATION, PROCEEDINGS, STANDARD, TECH_REPORT, UNPUBLISHED,
 		PREPRINT
 	};
 
