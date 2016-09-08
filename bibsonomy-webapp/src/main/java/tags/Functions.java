@@ -26,7 +26,6 @@
  */
 package tags;
 
-import static org.bibsonomy.model.util.BibTexUtils.ENTRYTYPES;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.MalformedURLException;
@@ -629,7 +628,7 @@ public class Functions {
 	 * @return The list of available bibtex entry types
 	 */
 	public static String[] getBibTeXEntryTypes() {
-		return ENTRYTYPES;
+		return BibTexUtils.ENTRYTYPES;
 	}
 
 	/**
