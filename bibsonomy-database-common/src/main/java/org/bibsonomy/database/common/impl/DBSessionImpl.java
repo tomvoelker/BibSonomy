@@ -109,7 +109,7 @@ public class DBSessionImpl implements DBSession {
 	}
 
 	/**
-	 * Marks the current (virtual) transaction as having been sucessfully
+	 * Marks the current (virtual) transaction as having been successfully
 	 * completed. If the transaction isn't virtual a following call to
 	 * endTransaction will do a commit on the real transaction.
 	 */

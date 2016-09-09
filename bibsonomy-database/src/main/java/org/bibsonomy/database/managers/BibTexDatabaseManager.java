@@ -566,6 +566,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		insert.setGroupId(groupId);
 
 		// inform plugin
+		// FIXME: why calling the plugins in the create insert param method, not expected here!
 		this.plugins.onPublicationInsert(post, session);
 		return insert;
 	}
