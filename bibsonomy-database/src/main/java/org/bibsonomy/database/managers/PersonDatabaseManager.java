@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.exceptions.DuplicateEntryException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.enums.ConstantID;
@@ -47,8 +48,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
 import org.bibsonomy.services.searcher.PersonSearch;
-
-import com.ibatis.common.jdbc.exception.NestedSQLException;
 
 /**
  * TODO: add documentation to this class
@@ -163,13 +162,8 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			this.insert("addResourceRelation", resourcePersonRelation, session);
 			session.commitTransaction();
 			return true;
-		} catch (RuntimeException e) {
-			if (e.getCause() instanceof NestedSQLException) {
-				if ((e.getCause().getCause() != null) && (e.getCause().getCause().getMessage().contains("Duplicate entry"))) {
-					return false;
-				}
-			}
-			throw e;
+		} catch (final DuplicateEntryException e) {
+			return false;
 		} finally {
 			session.endTransaction();
 		}
