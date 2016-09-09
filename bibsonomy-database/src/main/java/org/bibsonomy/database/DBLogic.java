@@ -1673,6 +1673,7 @@ public class DBLogic implements LogicInterface {
 				} catch (final Exception ex) {
 					// some exception other than those covered in the
 					// DatabaseException was thrown
+					log.error("updating post " + post.getResource().getIntraHash() + "/" + this.loginUser.getName() + " failed", ex);
 					collectedException.addToErrorMessages(post.getResource().getIntraHash(), new UnspecifiedErrorMessage(ex));
 				}
 			}
