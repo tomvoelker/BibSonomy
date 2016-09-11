@@ -145,17 +145,6 @@
 			<!--+
 				| OpenURL
 				+-->
-			<c:set var="userOpenURL" value="${command.context.loginUser.openURL}" />
-			<c:if test="${not empty userOpenURL}">
-				<fmt:message var="openurlTitle" key="bibtex.actions.openurl.title" />
-				<dt><fmt:message key="bibtex.actions.openurl"/>:</dt>
-				<dd>
-					<c:set var="publicationOpenURL" value="${publication.openURL}"/>
-					<a itemprop="url" href="${fn:escapeXml(userOpenURL)}?${fn:escapeXml(publicationOpenURL)}" title="${openurlTitle}">
-						<c:out value="${userOpenURL}"/>?<c:out value="${mtl:shorten(publicationOpenURL, 30)}"/>
-					</a>
-				</dd>
-			</c:if>
 	
 			<!--+
 				| BibTeX key
@@ -181,48 +170,12 @@
 				|
 				+-->
 				
-			<!-- the string you would usually enter in google scholar, world cat etc. -->
-			<c:set var="externalQueryString" value="${fn:escapeXml(mtl:cleanBibtex(publication.title))}" />
-			<!-- build the urls -->
-			<c:url var="googleScholarPostUrl"
-				value="http://scholar.google.com/scholar">
-				<c:param name="hl" value="${locale}" />
-				<c:param name="q" value="${externalQueryString}" />
-			</c:url>
-			
-			<c:url var="microsoftAcademicUrl"
-				value="http://academic.research.microsoft.com/Search">
-				<c:param name="query" value="${externalQueryString}" />
-			</c:url>
-			
-			<c:url var="worldCatUrl" value="http://www.worldcat.org/search">
-				<c:param name="qt" value="worldcat_org_all" />
-				<c:param name="q" value="${externalQueryString}" />
-			</c:url>
-			
-			<c:url var="baseSearchUrl" value="http://www.base-search.net/Search/Results">
-				<c:param name="lookfor" value="${externalQueryString}" />
-				<c:param name="type" value="tit" />
-				<c:param name="ling" value="1" />
-				<c:param name="refid" value="dcbasde" />
-			</c:url>
 			
 			<!-- Go message -->
 			<fmt:message key="resources.searchExternal.go" var="goMsg" />
 			<dt><fmt:message key="resources.searchExternal.dropDownLabel" />:</dt>
 			<dd>
-				<div class="btn-group">
-					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-						<fmt:message key="resources.searchExternal.dropDownTitle" /><c:out value=" " />
-						<span class="caret"><!-- keep me --></span>
-					</button>
-					<ul class="dropdown-menu" role="menu">
-						<li><a href="${googleScholarPostUrl}">Google Scholar</a></li>
-						<li><a href="${microsoftAcademicUrl}">Microsoft Academic Search</a></li>
-						<li><a href="${worldCatUrl}">WorldCat</a></li>
-						<li><a href="${baseSearchUrl}">BASE</a></li>
-					</ul>
-				</div>
+				<pub:externalSearchPublication loggedinUser="${command.context.loginUser}" publication="${publication}" />
 			</dd>
 		</dl>
 		
