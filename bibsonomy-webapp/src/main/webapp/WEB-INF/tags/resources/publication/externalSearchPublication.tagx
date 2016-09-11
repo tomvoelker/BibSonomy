@@ -1,0 +1,75 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"	
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication"
+	xmlns:form="http://www.springframework.org/tags/form">
+	
+	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" description="The publication"/>	
+	<jsp:directive.attribute name="loggedinUser" type="org.bibsonomy.model.User" required="true" description="The loggedin user"/>
+	<!-- the string you would usually enter in google scholar, world cat etc. -->
+		<c:set var="externalQueryString" value="${fn:escapeXml(mtl:cleanBibtex(publication.title))}" />
+		<!-- build the urls -->
+		<c:url var="googleScholarPostUrl"
+			value="http://scholar.google.com/scholar">
+			<c:param name="hl" value="${locale}" />
+			<c:param name="q" value="${externalQueryString}" />
+		</c:url>
+		
+		<c:url var="microsoftAcademicUrl"
+			value="http://academic.research.microsoft.com/Search">
+			<c:param name="query" value="${externalQueryString}" />
+		</c:url>
+		
+		<c:url var="worldCatUrl" value="http://www.worldcat.org/search">
+			<c:param name="qt" value="worldcat_org_all" />
+			<c:param name="q" value="${externalQueryString}" />
+		</c:url>
+		
+		<c:url var="baseSearchUrl" value="http://www.base-search.net/Search/Results">
+			<c:param name="lookfor" value="${externalQueryString}" />
+			<c:param name="type" value="tit" />
+			<c:param name="ling" value="1" />
+			<c:param name="refid" value="dcbasde" />
+		</c:url>
+		
+		<c:set var="userOpenURL" value="${command.context.loginUser.openURL}" />
+		<spring:eval var="publicationOpenURL" expression="T(org.bibsonomy.model.util.BibTexUtils).getOpenurl(publication)" />
+		<c:set var="systemOpenURLProvider" value="${properties['system.openurl.provider']}" />
+		<div class="btn-group">
+			<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+				<fmt:message key="resources.searchExternal.dropDownTitle" /><c:out value=" " />
+				<span class="caret"><!-- keep me --></span>
+			</button>
+			<ul class="dropdown-menu" role="menu">
+				<c:if test="${not empty userOpenURL}">
+					<fmt:message var="openurlTitle" key="bibtex.actions.openurl.title" />
+					<li>
+						<a itemprop="url" href="${fn:escapeXml(userOpenURL)}?${fn:escapeXml(publicationOpenURL)}" title="${openurlTitle}">
+							<fmt:message key="bibtex.actions.openurl"/>
+						</a>
+					</li>
+				</c:if>
+				<c:if test="${not empty systemOpenURLProvider}">
+					<li>
+						<fmt:message key="bibtex.actions.openurl.system.title" var="openurlTitle" />
+						<a href="${fn:escapeXml(systemOpenURLProvider)}?${fn:escapeXml(publicationOpenURL)}" title="${openurlTitle}">
+							<fmt:message key="bibtex.actions.openurl.system" />
+						</a>
+					</li>
+				</c:if>
+				<c:if test="${not empty systemOpenURLProvider or not empty userOpenURL}">
+					<li class="divider"><!-- keep me --></li>
+				</c:if>
+				<li><a href="${googleScholarPostUrl}">Google Scholar</a></li>
+				<li><a href="${microsoftAcademicUrl}">Microsoft Academic Search</a></li>
+				<li><a href="${worldCatUrl}">WorldCat</a></li>
+				<li><a href="${baseSearchUrl}">BASE</a></li>
+			</ul>
+		</div>
+</jsp:root>

@@ -1,3 +1,7 @@
+$(function(){
+	myownTagInit($('#myownChkBox'), $('#inpf_tags'));
+});
+
 function highlightMatches(text, input) {
 	var terms = input.split(" ");
 	for (var i=0; i < terms.length; i++) {
@@ -44,7 +48,3 @@ function myownTagInit(chkbox, tagbox) {
 				}
 			}).parent().removeClass('hiddenElement');
 }
-
-$(function(){
-		myownTagInit($('#myownChkBox'), $('#inpf_tags'));
-});

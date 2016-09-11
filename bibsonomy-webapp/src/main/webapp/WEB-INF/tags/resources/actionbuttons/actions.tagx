@@ -5,8 +5,7 @@
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
-	>
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons">
 
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
@@ -15,18 +14,9 @@
 	
 
 	<c:set var="buttonClasses" value="btn btn-default btn-xs "/>
-	
-	<c:choose>
-		<c:when test="${not empty post.systemUrl }">
-			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
-		</c:when>
-		<c:otherwise>
-			<c:set var ="isRemotePost" value="false"/>
-		</c:otherwise>
-	</c:choose>
+	<c:set var="isRemotePost" value="${not empty post.systemUrl and post.systemUrl ne properties['project.home']}"/>
 
 	<div class="edit-media-buttons btn-group btn-group-xs dropdown dropdown-align-right">
-				
 		<!-- edit group entry -->
 		<c:set var="editGroupPost" value="false"/>
 		<c:forEach items="${command.context.loginUser.groups}" var="group">
@@ -140,11 +130,12 @@
 						</c:choose>
 
 						<!-- DOI -->
+						<c:set var="doi" value="${post.resource.miscFields['doi']}" />
 						<c:choose>
-							<c:when test="${not empty post.resource.miscFields['doi']}">
+							<c:when test="${not empty doi}">
 								<li>
 									<fmt:message key="bibtex.actions.doi" var="urlTitle"/>
-									<a class="litem" href="http://dx.doi.org/${mtl:encodePathSegment(mtl:extractDOI(post.resource.miscFields['doi']))}" title="${urlTitle}"><fmt:message key="bibtex.actions.doi"/></a>
+									<a class="litem" href="http://dx.doi.org/${mtl:encodePathSegment(mtl:extractDOI(doi))}" title="${urlTitle}"><fmt:message key="bibtex.actions.doi"/></a>
 								</li>
 							</c:when>
 							<c:otherwise>
@@ -205,20 +196,31 @@
 																			
 						
 						<!-- OPENURL -->
-						<c:if test="${command.context.userLoggedIn and not command.context.loginUser.settings.layoutSettings.simpleInterface}">
-							<li class="divider"><!--  --></li>
-							<li>
-								<c:choose>
-									<c:when test="${not empty command.context.loginUser.openURL}">
-										<fmt:message key="bibtex.actions.openurl.title" var="openurlTitle" />
-										<a class="litem" href="${fn:escapeXml(command.context.loginUser.openURL)}?${fn:escapeXml(post.resource.openURL)}" title="${openurlTitle}"><fmt:message key="bibtex.actions.openurl"/></a>
-									</c:when>
-									<c:otherwise>
+						<c:set var="userOpenURL" value="${command.context.loginUser.openURL}" />
+						<c:set var="systemOpenURLProvider" value="${properties['system.openurl.provider']}" />
+						<c:if test="${command.context.userLoggedIn and (not empty userOpenURL or not empty systemOpenURLProvider)}">
+							<spring:eval var="openUrl" expression="T(org.bibsonomy.model.util.BibTexUtils).getOpenurl(post.resource)" />
+							<li class="divider"><!-- keep me --></li>
+							<c:choose>
+								<c:when test="${not empty userOpenURL}">
+									<fmt:message key="bibtex.actions.openurl.title" var="openurlTitle" />
+									<li>
+										<a class="litem" href="${fn:escapeXml(userOpenURL)}?${fn:escapeXml(openUrl)}" title="${openurlTitle}"><fmt:message key="bibtex.actions.openurl"/></a>
+									</li>
+								</c:when>
+								<c:when test="${empty systemOpenURLProvider}">
+									<li>
 										<fmt:message key="bibtex.actions.openurl.inactive" var="openurlTitle" />
 										<span class="ilitem" title="${openurlTitle}"><fmt:message key="bibtex.actions.openurl"/></span>
-									</c:otherwise>
-								</c:choose>
-							</li>
+									</li>
+								</c:when>
+							</c:choose>
+							<c:if test="${not empty systemOpenURLProvider}">
+								<fmt:message key="bibtex.actions.openurl.system.title" var="openurlTitle" />
+								<li>
+									<a class="litem" href="${fn:escapeXml(systemOpenURLProvider)}?${fn:escapeXml(openUrl)}" title="${openurlTitle}"><fmt:message key="bibtex.actions.openurl.system"/></a>
+								</li>
+							</c:if>
 						</c:if>
 					</c:if>
 

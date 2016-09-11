@@ -49,7 +49,7 @@ public interface DBSession {
 	public void beginTransaction();
 
 	/**
-	 * Marks the current transaction as having been sucessfully completed.
+	 * Marks the current transaction as having been successfully completed.
 	 * However, the real commit may not be called before endTransaction has been
 	 * called.
 	 */
