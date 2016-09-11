@@ -1,7 +1,5 @@
 package org.bibsonomy.webapp.controller.actions;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.User;
 import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
@@ -17,11 +15,7 @@ import org.springframework.security.access.AccessDeniedException;
  *
  * @author jp
  */
-
-
-public class CSLImportController extends SettingsPageController{
-	
-private static final Log log = LogFactory.getLog(ImportBookmarksController.class);
+public class CSLImportController extends SettingsPageController {
 	
 	private static final String DELETE = "delete";
 
@@ -50,13 +44,16 @@ private static final Log log = LogFactory.getLog(ImportBookmarksController.class
 		if (!context.isValidCkey()) {
 			errors.reject("error.field.valid.ckey");
 			return Views.SETTINGSPAGE;
-		}		
+		}
 		
+		return Views.ERROR;
 	}
+	
 	@Override
 	public SettingsViewCommand instantiateCommand() {
 		return new CSLImportCommand();
 	}
+	
 	/**
 	 * @param fileLogic the fileLogic to set
 	 */
