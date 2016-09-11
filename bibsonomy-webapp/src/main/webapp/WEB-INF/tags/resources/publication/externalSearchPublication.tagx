@@ -42,7 +42,7 @@
 		<spring:eval var="publicationOpenURL" expression="T(org.bibsonomy.model.util.BibTexUtils).getOpenurl(publication)" />
 		<c:set var="systemOpenURLProvider" value="${properties['system.openurl.provider']}" />
 		<div class="btn-group">
-			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+			<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
 				<fmt:message key="resources.searchExternal.dropDownTitle" /><c:out value=" " />
 				<span class="caret"><!-- keep me --></span>
 			</button>
@@ -62,6 +62,9 @@
 							<fmt:message key="bibtex.actions.openurl.system" />
 						</a>
 					</li>
+				</c:if>
+				<c:if test="${not empty systemOpenURLProvider or not empty userOpenURL}">
+					<li class="divider"><!-- keep me --></li>
 				</c:if>
 				<li><a href="${googleScholarPostUrl}">Google Scholar</a></li>
 				<li><a href="${microsoftAcademicUrl}">Microsoft Academic Search</a></li>

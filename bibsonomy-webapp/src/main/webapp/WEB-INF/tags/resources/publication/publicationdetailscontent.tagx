@@ -163,16 +163,11 @@
 				<c:set var="linkText" value="[[publication/${interHashId}${publication.interHash}/${mtl:encodePathSegment(post.user.name)}]]" />
 				<bsform:copyInput id="resource-link" value="${linkText}" onclick="$(this).focus().select();" helpText="${helpText}" noHelp="${false}" />
 			</dd>-->
-			
 			<!--+ 
 				|
 				| dropdown menu from which you can pick an external literature site and try to find the publication there
 				|
 				+-->
-				
-			
-			<!-- Go message -->
-			<fmt:message key="resources.searchExternal.go" var="goMsg" />
 			<dt><fmt:message key="resources.searchExternal.dropDownLabel" />:</dt>
 			<dd>
 				<pub:externalSearchPublication loggedinUser="${command.context.loginUser}" publication="${publication}" />
