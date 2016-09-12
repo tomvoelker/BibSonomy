@@ -47,7 +47,7 @@ $(function() {
 		},
 		queryTokenizer: Bloodhound.tokenizers.whitespace,
 		prefetch:{
-			url: '/layoutinfo',
+			url: '/layoutinfo/',
 			cache: false, // TODO: discuss
 			transform : function(response) {
 				return $.map(response.layouts, function(item) {

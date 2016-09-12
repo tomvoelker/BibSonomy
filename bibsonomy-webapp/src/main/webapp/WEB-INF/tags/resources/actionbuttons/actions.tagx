@@ -153,12 +153,16 @@
         						or JABREF / CSL which will be assigned a source URL by generator-->
 						<c:forEach items="${command.context.loginUser.settings.favouriteLayouts}" var="citation">
 							<li>
-								<!-- TODO: add title -->
-								<!-- <fmt:message key="bibtex.actions.bibtex.title" var="bibtexTitle" />
-								<fmt:message key="bibtex.actions.endnote.title" var="endnoteTitle" />
-								-->
-								<a class="litem" source="${citation.source}" style="${citation.style}" href="${relativeUrlGenerator.getPostExportUrl(post, citation)}?formatEmbedded=true" title="${citation.displayName}">
-									<mtl:favouriteLayoutDisplayName favouriteLayout="${citation}" />
+								<c:set var="name"><mtl:favouriteLayoutDisplayName favouriteLayout="${citation}" /></c:set>
+								<fmt:message key="publication.export.${fn:toLowerCase(citation.source)}_${fn:toLowerCase(citation.style)}.title" var="exportTitle" />
+								<c:if test="${fn:startsWith(exportTitle, '???')}">
+									<fmt:message key="publication.export.title" var="exportTitle">
+										<fmt:param value="${name}" />
+									</fmt:message>
+								</c:if>
+								
+								<a class="litem" source="${citation.source}" style="${citation.style}" href="${relativeUrlGenerator.getPostExportUrl(post, citation)}?formatEmbedded=true" title="${exportTitle}">
+									<c:out value="${name}" />
 								</a>
 							</li>
 						</c:forEach>
