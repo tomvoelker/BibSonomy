@@ -26,7 +26,6 @@
 		<c:set var="isCommunityPost" value="${false}" />
 	</c:if>
 	
-	<script type="text/javascript" src="${resdir}/javascript/favouriteLayoutLoader.js"><!-- keep me --></script>
 	<div class="citation-box">
 		<ul class="nav nav-tabs">
 			<c:forEach items="${command.context.loginUser.settings.favouriteLayouts}" var="citation">

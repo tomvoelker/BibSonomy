@@ -2,12 +2,17 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Map.Entry;
+
 import org.bibsonomy.layout.csl.CSLFilesManager;
 import org.bibsonomy.layout.csl.CSLStyle;
 import org.bibsonomy.webapp.command.CSLStyleCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 /**
  *
@@ -40,7 +45,19 @@ public class CSLStyleController implements MinimalisticController<CSLStyleComman
 	public View workOn(CSLStyleCommand command) {
 		final String styleName = command.getStyle();
 		if (!present(styleName)) {
-			// command.setXml(cslFilesManager.getJSONString()); // TODO: loop through all styles
+			final JSONObject layouts = new JSONObject();
+			final JSONArray styleArray = new JSONArray();
+			for (final Entry<String, CSLStyle> cslFilesEntry : this.cslFilesManager.getCslFiles().entrySet()) {
+				final CSLStyle style = cslFilesEntry.getValue();
+				final JSONObject styleObject = new JSONObject();
+				styleObject.put("source", "CSL");
+				styleObject.put("name", cslFilesEntry.getKey());
+				styleObject.put("displayName", style.getDisplayName());
+				styleArray.add(styleObject);
+			}
+			
+			layouts.put("layouts", styleArray);
+			command.setXml(layouts.toString());
 			return Views.CSL_STYLE;
 		}
 		final CSLStyle style = this.cslFilesManager.getStyleByName(styleName.toLowerCase());

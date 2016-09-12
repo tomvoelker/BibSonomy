@@ -193,7 +193,7 @@
         						</li>
         					</c:if>
 						</c:forEach>
-																			
+						
 						
 						<!-- OPENURL -->
 						<c:set var="userOpenURL" value="${command.context.loginUser.openURL}" />

@@ -179,56 +179,43 @@
 					</div>
 					
 					
-					<!-- favourite layouts to be shown-->	
-					<div class="form-group">					
-					<form:label cssClass="col-sm-3 control-label" path="user.settings.favouriteLayouts">
-							shown styles
-					</form:label>
+					<!-- favourite layouts to be shown-->
+					<div class="form-group">
+						<form:label cssClass="col-sm-3 control-label" path="user.settings.favouriteLayouts">
+							<fmt:message key="settings.favouriteExports" />
+						</form:label>
 					
-					<!-- shown style dropdown list including a nice and smooth animation -->
-					<div class="panel-group col-sm-9">
-						<div class="alert alert-warning" id="JSWarning">
-						For the following settings to work, JavaScript must be enabled.
-						</div>
-						<div class="panel panel-info">
-							<div class="panel-heading">
-								<h4 class="panel-title">
-									<a data-toggle="collapse" href="#collapse1">show/hide styles</a>
-								</h4>
+						<!-- shown style dropdown list including a nice and smooth animation -->
+						<div class="col-sm-9">
+							<ul class="list-group" id="favouriteLayoutsList">
+								<!-- ID has to be "source"/"id" for the StringToFavouriteLayoutConverter to read -->
+								<!-- don't forget to use displayName in the right places! -->
+								<c:forEach var="favl" items="${command.context.loginUser.settings.favouriteLayouts}" varStatus="counter">
+									<li class="list-group-item favouriteLayoutsListItem clearfix" data-source="${favl.source}" data-style="${favl.style}">
+										<input type="hidden" name="user.settings.favouriteLayouts" id="${favl.source}/${favl.style}" value="${favl.source}/${favl.style}"/>
+										
+										<span class="favouriteLayoutDisplayName" id="displayName:${favl.source}/${favl.style}" source="${favl.source}" style="${favl.style}">
+											<mtl:favouriteLayoutDisplayName favouriteLayout="${favl}" />
+										</span>
+										<c:out value=" " /> <!-- TODO: use css -->
+										<span class="btn btn-danger btn-xs pull-right delete-Style">
+											<fmt:message key="delete" />
+										</span>
+									</li>
+								</c:forEach>
+							</ul>
+							<!-- add new styles with typeahead -->
+							<div class="row">
+								<div class="col-sm-3 text-right">
+									<fmt:message key="settings.favouriteExports.add" />
+								</div>
+								<div class="col-sm-9">
+									<input class="form-control typeahead" id='searchCitationAutocomplete' type='text' name='searchCitationAutocomplete' autocomplete="off" placeholder='BibTeX, EndNote, CSL, JabRef...'/>
+								</div>
 							</div>
-							<div id="collapse1" class="panel-collapse collapse panel-body">
-								<ul class="list-group" id="favouriteLayoutsList">				
-									<!-- ID has to be "source"/"id" for the StringToFavouriteLayoutConverter to read -->
-									<!-- don't forget to use displayName in the right places! -->
-									<c:forEach var="favl" items="${command.context.loginUser.settings.favouriteLayouts}" varStatus="counter">
-										<li class="list-group-item favouriteLayoutsListItem" sourceAndStyle="${favl.source}/${favl.style}">
-											<input type="hidden" name="user.settings.favouriteLayouts" id="${favl.source}/${favl.style}" value="${favl.source}/${favl.style}"/>
-											<span class="btn btn-default badge label-danger delete-Style">Delete</span>
-											<span class="favouriteLayoutDisplayName" id="displayName:${favl.source}/${favl.style}" source="${favl.source}" style="${favl.style}">
-												${favl.displayName}
-											</span>
-										</li>
-       								</c:forEach>
-								</ul>
-							</div>
-						</div>
-					</div>
-					</div>
-				
-					<!-- add layouts to list above -->
-					<div class="form-group">			
-					<form:label cssClass="col-sm-3 control-label" path="user.settings.favouriteLayouts">
-							add styles
-					</form:label>
-					
-					<!-- typeahead -->
-					<div class="input-group col-sm-9" inputColSpan="8">
-						<input class='form-control typeahead' id='searchCitationAutocomplete' type='text' name='searchCitationAutocomplete' autocomplete="off" placeholder='BibTeX, EndNote, CSL, JabRef...'/>
-						<div class="alert alert-info" id="infoAlertBox" style="display:none">
 						</div>
 					</div>
 					
-					</div>
 					<!-- displayed resources -->
 					<!-- new -->
 					<div class="form-group">

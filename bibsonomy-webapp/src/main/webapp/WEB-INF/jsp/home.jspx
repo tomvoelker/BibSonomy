@@ -44,7 +44,6 @@
 					);
 				});
 			</script>
-			<script type="text/javascript" src="${resdir}/javascript/favouriteLayoutLoader.js"><!-- keep me --></script>
 		</jsp:attribute>
 		
 		<jsp:attribute name="content">

@@ -278,7 +278,7 @@ public class URLGenerator {
 	 * @return URL pointing to the clipboard page.
 	 */
 	public String getClipboardUrl() {
-		String url = this.projectHome + prefix + Page.CLIPBOARD.getPath();
+		final String url = this.projectHome + prefix + Page.CLIPBOARD.getPath();
 		return this.getUrl(url);
 	}
 

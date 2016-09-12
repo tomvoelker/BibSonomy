@@ -1,5 +1,6 @@
-/** TODO: merge with friendsoverview logic */
+var LAYOUT_TEMPLATE = Handlebars.compile("<p>{{displayName}} ({{source}})</p>");
 $(function() {
+	/* TODO: merge with friendsoverview logic */
 	$('.groupUnshare').hover(function() {
 		$(this).removeClass('btn-success').addClass('btn-danger');
 		$(this).children('.fa').removeClass('fa-check').addClass('fa-times');
@@ -10,129 +11,149 @@ $(function() {
 		$(this).children('.button-text').text(getString('groups.documentsharing.shared'));
 	});
 	
+	// typeahead configuration
+	// firstly two "simple" styles
+	var bibTex = {"source": "SIMPLE", "displayName": "BibTeX", "name":"BIBTEX"};
+	var endnote = {"source": "SIMPLE", "displayName": "EndNote", "name":"ENDNOTE"};
+	var simpleFormatsData = [bibTex, endnote];
 	
-	$("#JSWarning").remove();
-	// a lot of typeahead configuration will follow
-	// --
-	
-	//firstly two "simple" styles in JSON
-	var simpleData = '[{"source": "SIMPLE", "displayName": "BibTeX", "name":"BIBTEX"},{"source": "SIMPLE", "displayName": "EndNote", "name":"ENDNOTE"}]';
-	var jsonObj = $.parseJSON(simpleData);
-	
-	//initializing what has already been loaded. Nothing.
-	var csl = false;
-	var jabref = false;
-	
-	var cslData;
-	var jabRefData;
-	
-	
-	//getting external JSON for CSL styles
-	$.get("/csl-style", function (data) {
-		//safety first, safety always
-		data = $.trim(data);
-		data = $.parseJSON(data);
-		cslData = data;
-		processResultCSL(data);
+	var simpleFormats = new Bloodhound({
+		datumTokenizer: function (datum) {
+			return layoutTokenizer(datum);
+		},
+		queryTokenizer: Bloodhound.tokenizers.whitespace,
+		local: simpleFormatsData
 	});
 	
-	//getting external JSON for JABREF styles
-	$.get("/layoutinfo", function (data) {
-		jabRefData = data;
-		processResultJabref(data);
+	// csl formats
+	var cslFormats = new Bloodhound({
+		datumTokenizer: function (datum) {
+			return layoutTokenizer(datum);
+		},
+		queryTokenizer: Bloodhound.tokenizers.whitespace,
+		prefetch:{
+			url: '/csl-style',
+			cache: false, // TODO: discuss
+			transform: function(response) {
+				return response.layouts;
+			}
+		}
 	});
-
-	//adding JABREF to the "simple" styles array, which will be displayed on the twitter typeahead
-	function processResultJabref(data) {
-		for (var prop in data.layouts) {
-			var JabrefData = '{"source": "JABREF", "displayName": "' + data.layouts[prop].displayName + '", "name":"' + data.layouts[prop].name.toUpperCase() +'"}';
-			var JabrefObj = $.parseJSON(JabrefData);
-			jsonObj.push(JabrefObj);
-		}
-		//everything fetched, good to go
-		jabref = true;
-		initializeBloodhound();
-	};
 	
-	//adding CSL to the "simple" styles array, which will be displayed on the twitter typeahead
-	function processResultCSL(data) {
-		for (var prop in data.layouts) {		
-			var CSLData = '{"source":"CSL","displayName":"' + data.layouts[prop].displayName + '","name":"' + data.layouts[prop].name.toUpperCase() +'"}';
-			var CSLObj = $.parseJSON(CSLData);
-			jsonObj.push(CSLObj);
+	// jabref formats
+	var jabRefFormats = new Bloodhound({
+		datumTokenizer: function (datum) {
+			return layoutTokenizer(datum);
+		},
+		queryTokenizer: Bloodhound.tokenizers.whitespace,
+		prefetch:{
+			url: '/layoutinfo',
+			cache: false, // TODO: discuss
+			transform : function(response) {
+				return $.map(response.layouts, function(item) {
+					return {
+						displayName: item.displayName,
+						source: "JABREF",
+						name: item.name
+					};
+				});
+			}
 		}
-	
-		//everything fetched, good to go
-		csl = true;
-		initializeBloodhound();
-	};
-
-	//instantiate the bloodhound suggestion engine
-	//more or less standard procedure for typeahead
-	function initializeBloodhound() {
-		//only begin initializing if everything has been loaded
-		if(csl && jabref){
-			var engine = new Bloodhound({
-				datumTokenizer: function (d) {return Bloodhound.tokenizers.whitespace(d.displayName);},
-				queryTokenizer: Bloodhound.tokenizers.whitespace,
-				//using the created combination of "simple" layouts array, CSL and Jabref layouts
-				local: jsonObj
-			});
-
-
-			// initialize the bloodhound suggestion engine
-			engine.initialize();
-
-			$('.typeahead').typeahead({
-				highlight: true,
-				minLength: 1
-			},
-			{
-				displayKey: 'displayName',
-				source: engine.ttAdapter()
-			});
+	})
+	var citationAutocomplete = $('#searchCitationAutocomplete');
+	citationAutocomplete.typeahead({
+		minLength: 1,
+		highlight: true
+	}, {
+		name: 'simple-formats',
+		displayKey: 'displayName',
+		source: simpleFormats,
+		templates: {
+			suggestion: LAYOUT_TEMPLATE
 		}
-	};
-
-	//triggers when something is selected in the typeahead
-	//adds a new list item to the list including a remove button and an input field with correct ID, source and displayName
-	//ID has to be "source"/"id" for the StringToFavouriteLayoutConverter to read
-	$('#searchCitationAutocomplete').on('typeahead:select', function (e, datum) {
-		var toBeAppended = '<li class="list-group-item favouriteLayoutsListItem" sourceAndStyle="' + datum.source.toUpperCase() + '/' + datum.name.toUpperCase() + '"><input type="hidden" name="user.settings.favouriteLayouts"  id="'+ datum.source.toUpperCase() + '/' + datum.name.toUpperCase() + '" value="'+datum.source.toUpperCase()+'/' + datum.name.toUpperCase() + '"/><span class="btn btn-default badge label-danger delete-Style">Delete</span>' + datum.displayName + '</li>';
-		$('#favouriteLayoutsList').append(toBeAppended);
-		clearFavouriteLayoutsList();
-		var infoBox = $("#infoAlertBox");
-		infoBox.hide(100);
-		infoBox.html("Style '<strong>" + datum.displayName + "</strong>' has been added to the list of displayed styles or was already present.");
-		infoBox.show(200);
+	}, {
+		name: 'csl-formats',
+		displayKey: 'displayName',
+		source: cslFormats,
+		templates: {
+			suggestion: LAYOUT_TEMPLATE
+		}
+	}, {
+		name: 'jabref-formats',
+		displayKey: 'displayName',
+		source: jabRefFormats,
+		templates: {
+			suggestion: LAYOUT_TEMPLATE
+		}
 	});
-
-	//catching presses of "enter", else the form would be submitted by each "accidental" press
-	$('#searchCitationAutocomplete').on('keydown', function(event) {
-		if (event.which == 13) // if pressing enter
+	
+	/* 
+	 * triggers when something is selected in the typeahead
+	 * adds a new list item to the list including a remove button and an input field with correct ID, source and displayName
+	 * value has to be "source"/"id" for the StringToFavouriteLayoutConverter to read
+	 */
+	citationAutocomplete.on('typeahead:select', function (e, datum) {
+		var source = datum.source.toUpperCase();
+		var style = datum.name.toUpperCase();
+		var id = source + '/' + style;
+		var favList = $('#favouriteLayoutsList');
+		var items = favList.find('li[data-source="' + source + '"][data-style="' + style + '"]');
+		var toHighlight;
+		var deleteMsg = getString('delete');
+		if (items.length == 0) {
+			var toBeAppended = $('<li class="list-group-item favouriteLayoutsListItem clearfix" data-source="' + source + '" data-style="' + style + '"></li>');
+			
+			var input = $('<input type="hidden" name="user.settings.favouriteLayouts"  id="' + id + '" value="' + id + '"/>');
+			var deleteButton = $('<span class="btn btn-danger btn-xs pull-right delete-Style">' + deleteMsg + '</span>');
+			deleteButton.click(deleteStyle);
+			
+			toBeAppended.append(input);
+			toBeAppended.append(deleteButton);
+			toBeAppended.append(datum.displayName);
+			favList.append(toBeAppended);
+			toHighlight = toBeAppended;
+		} else {
+			toHighlight = items;
+		}
+		
+		// highlight new or already added export format
+		toHighlight.effect("highlight", {}, 2500);
+		
+		// reset input field
+		citationAutocomplete.typeahead('val','');
+	});
+	
+	// catching presses of "enter", else the form would be submitted by each "accidental" press
+	citationAutocomplete.on('keydown', function(event) {
+		if (event.which == 13) {// if pressing enter
 			event.preventDefault();
+		}
 	});
 	
-	//getting the "Delete" batch to work
-	$('.delete-Style').click(function(){
-		$(this).parent().slideUp(200, function(){
-			$(this).remove();
-        });
-		
-		//not animated:
-		//$(this).parent().remove();
-	});
-		
-	function clearFavouriteLayoutsList() { //removing duplicates
+	// getting the "Delete" batch to work
+	$('.delete-Style').click(deleteStyle);
+	
+	function clearFavouriteLayoutsList() { // removing duplicates
 		var seen = {};
 		$('.favouriteLayoutsListItem').each(function() {
-			var txt = $(this).attr("sourceAndStyle");
-			if (seen[txt])
+			var txt = $(this).data("source") + "/" + $(this).data("style");
+			if (seen[txt]) {
 				$(this).remove();
-			else
+			} else {
 				seen[txt] = true;
+			}
 		});
 	}
 	
 	clearFavouriteLayoutsList();
 });
+
+function deleteStyle() {
+	$(this).parent().slideUp(200, function() {
+		$(this).remove();
+	});
+}
+
+function layoutTokenizer(datum) {
+	return Bloodhound.tokenizers.whitespace(datum.displayName);
+}

@@ -87,6 +87,18 @@
 	</tag>
 	
 	<tag>
+		<name>favouriteLayoutDisplayName</name>
+		<info>outputs the fav layout display name</info>
+		<tagclass>org.bibsonomy.webapp.util.tags.FavouriteLayoutsDisplayNameTag</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<attribute>
+			<name>favouriteLayout</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	
+	<tag>
 		<name>messageSourceKeys</name>
 		<info>stores all keys of the messagesource into the specified var</info>
 		<tagclass>org.bibsonomy.webapp.util.tags.MessageSourceKeysTag</tagclass>

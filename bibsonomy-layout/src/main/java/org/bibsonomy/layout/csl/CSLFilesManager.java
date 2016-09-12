@@ -6,6 +6,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -115,5 +116,12 @@ public class CSLFilesManager {
 	 */
 	public CSLStyle getStyleByName(final String cslName) {
 		return this.cslFiles.get(cslName);
+	}
+
+	/**
+	 * @return the cslFiles
+	 */
+	public Map<String, CSLStyle> getCslFiles() {
+		return Collections.unmodifiableMap(this.cslFiles);
 	}
 }
