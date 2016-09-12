@@ -21,7 +21,6 @@
 	<html>
 		<head>
 			<!-- if several CSL-Styles are embedded on a page every div has an unique ID, which is written to a JS variable-->
-			<script>var layoutToUse="${command.layout}";</script>
 			<script type="text/javascript" src="/resources/jquery/jquery.js"><!-- keep me --></script>
 			<script type="text/javascript; e4x=1" src="/resources/javascript/citeproc/xmle4x.js"><!-- keep me --></script> 
 			<script type="text/javascript" src="/resources/javascript/citeproc/xmldom.js"><!-- keep me --></script>
@@ -35,7 +34,7 @@
 			</style>
 		</head>
 		<body>
-			<div id="csl-container-${command.layout}" data-url="/csl/${fn:escapeXml(requPath)}" data-style="${command.layout}">
+			<div id="csl-container" data-url="/csl/${fn:escapeXml(requPath)}" data-style="${command.layout}">
 				<!-- rendered by javascript / each div has unique ID-->
 			</div>
 		</body>

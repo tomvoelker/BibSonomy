@@ -5,7 +5,7 @@ package org.bibsonomy.webapp.command;
  * @author jp
  */
 public class CSLStyleCommand extends ResourceViewCommand{
-	private String xml;
+	private String responseString;
 	private String style;
 	
 	/**
@@ -23,17 +23,16 @@ public class CSLStyleCommand extends ResourceViewCommand{
 	}
 
 	/**
-	 * @return the xml
+	 * @return the responseString
 	 */
-	public String getXml() {
-		return this.xml;
+	public String getResponseString() {
+		return this.responseString;
 	}
 
 	/**
-	 * @param xml the xml to set
+	 * @param responseString the responseString to set
 	 */
-	public void setXml(String xml) {
-		this.xml = xml;
+	public void setResponseString(String responseString) {
+		this.responseString = responseString;
 	}
-	
 }

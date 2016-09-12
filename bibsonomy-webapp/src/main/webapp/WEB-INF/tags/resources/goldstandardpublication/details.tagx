@@ -15,11 +15,13 @@
 	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
 	xmlns:goldpub="urn:jsptagdir:/WEB-INF/tags/resources/publication"
 	xmlns:goldstandardpublication="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication"
+	xmlns:goldstandard="urn:jsptagdir:/WEB-INF/tags/resources/goldstandard"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 	xmlns:common="urn:jsptagdir:/WEB-INF/tags/resources/common"
-	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
-	>
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	<jsp:directive.attribute name="postOfLoggedInUser" type="org.bibsonomy.model.Post" required="false"/>
@@ -147,8 +149,6 @@
 			<!-- users that have this resource in their collection -->
 			<common:relatedUsers userList="${command.relatedUserCommand.relatedUsers}" interHash="${goldstandard.interHash}"/>
 			
-			<!-- citation box -->
-			<pub2:citation post="${post}" isCommunityPost="${true}"/>
 			<c:if test="${hasRelatedPublication or (isAdmin and isRealGoldstandard)}">
 				<div id="related-publications">
 					<div id="related-publications-references" class="related-publications-container">

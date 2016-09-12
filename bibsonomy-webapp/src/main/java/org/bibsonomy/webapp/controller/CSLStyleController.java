@@ -42,7 +42,7 @@ public class CSLStyleController implements MinimalisticController<CSLStyleComman
 	 * webapp.command.ContextCommand)
 	 */
 	@Override
-	public View workOn(CSLStyleCommand command) {
+	public View workOn(final CSLStyleCommand command) {
 		final String styleName = command.getStyle();
 		if (!present(styleName)) {
 			final JSONObject layouts = new JSONObject();
@@ -57,12 +57,12 @@ public class CSLStyleController implements MinimalisticController<CSLStyleComman
 			}
 			
 			layouts.put("layouts", styleArray);
-			command.setXml(layouts.toString());
-			return Views.CSL_STYLE;
+			command.setResponseString(layouts.toString());
+			return Views.AJAX_JSON;
 		}
 		final CSLStyle style = this.cslFilesManager.getStyleByName(styleName.toLowerCase());
-		command.setXml(style.getContent());
-		return Views.CSL_STYLE;
+		command.setResponseString(style.getContent());
+		return Views.AJAX_XML;
 	}
 
 	/**

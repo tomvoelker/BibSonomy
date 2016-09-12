@@ -27,9 +27,9 @@
 	</c:if>
 	
 	<div class="citation-box">
-		<ul class="nav nav-tabs">
+		<ul class="nav nav-tabs" data-publication-url="${relativeUrlGenerator.getPostUrl(post)}">
 			<c:forEach items="${command.context.loginUser.settings.favouriteLayouts}" var="citation">
-        		<!-- checks whether the source is "simple" which gets a special treatment,
+				<!-- checks whether the source is "simple" which gets a special treatment,
         				or JABREF / CSL which will be assigned a source URL by generator-->
           		<!-- source and style always uppercase! -->
           		<c:if test="${citation.source=='SIMPLE'}">
@@ -41,20 +41,20 @@
         			<!-- source and style always uppercase! -->
         			<c:if test="${citation.style=='ENDNOTE'}">
         				<li>
-        				<a data-toggle="tab" href="#citation_EndNote">Endnote</a></li>
+        					<a data-toggle="tab" href="#citation_EndNote">Endnote</a>
+        				</li>
         			</c:if>
         		</c:if>
         		<!-- source and style always uppercase! -->
-        		<c:if test="${(citation.source=='JABREF') || (citation.source=='CSL')}">
-        			<li>
-						<c:set var="exportUrl" value="${relativeUrlGenerator.getPostUrl(citation, post)}?formatEmbedded=true&amp;items=1" />
-						<!-- don't forget to use displayName! -->
-						<a class="favouriteLayoutDisplayName" source="${citation.source}" style="${citation.style}" data-toggle="tab" href="#citation_${citation.style}" data-formatUrl="${exportUrl}">
-							${citation.displayName}
+				<c:if test="${(citation.source=='JABREF') || (citation.source=='CSL')}">
+					<li>
+						<c:set var="exportUrl" value="${relativeUrlGenerator.getPostExportUrl(post, citation)}?formatEmbedded=true&amp;items=1" />
+						<a class="favouriteLayoutDisplayName" data-source="${citation.source}" data-style="${citation.style}" data-toggle="tab" href="#citation_${citation.style}" data-formatUrl="${exportUrl}">
+							<mtl:favouriteLayoutDisplayName favouriteLayout="${citation}" />
 						</a>
 					</li>
-        		</c:if>
-        	</c:forEach>			
+				</c:if>
+			</c:forEach>
 			<li>
 				<c:choose>
 					<c:when test="${isCommunityPost}">
@@ -95,8 +95,7 @@
 						<!-- keep me -->
 					</div>
         		</c:if>
-        	</c:forEach>			
-						
+			</c:forEach>
 			<div class="tab-pane" id="citation_all">
 				<!-- keep -->
 			</div>

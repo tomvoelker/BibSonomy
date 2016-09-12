@@ -7,9 +7,6 @@ var linkImage = ' <span class="fa fa-external-link"></span>';
 var style;
 
 $(document).ready(function() {
-
-	var style = elsevierHarvard;
-
 	// handle all list elements with class review
 	$('li.review').each(function() {
 		handleLinks($(this))
@@ -19,12 +16,14 @@ $(document).ready(function() {
 	$('li.comment').each(function() {
 		handleLinks($(this))
 	});
+	
+	loadStyle('elsevier-harvard', function(xml) {
+		style = xml;
+	});
 });
 
 function handleLinks(discussionItem) {
-
-	//find all required links:
-	style = elsevierHarvard;
+	// find all required links:
 	var proceededLinks = new Array();
 	discussionItem.find("a.postlink").each(function() {
 		var matches = $(this).attr("href").match(/(.*?)\/{1}(bibtex|publication|url|bookmark)\/([0-9a-f]{32,33})(?:\/(.*))?/);
@@ -211,7 +210,7 @@ function Sys(data) {
 	this.data = data;
 
 	this.retrieveLocale = function(lang) {
-		return locale[lang];
+		return cslLocale[lang];
 	};
 
 	this.retrieveItem = function(id) {
