@@ -33,6 +33,7 @@ import java.net.URL;
 
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.SearchType;
+import org.bibsonomy.common.exceptions.UnsupportedFormatException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
@@ -46,6 +47,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.FavouriteLayoutSource;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.enums.SimpleExportLayout;
 import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.user.settings.FavouriteLayout;
 import org.bibsonomy.model.util.BibTexUtils;
@@ -1104,21 +1106,40 @@ public class URLGenerator {
 	
 	
 	/**
-	 * @param favl
 	 * @param post
+	 * @param favl
 	 * @return url
 	 */
-	public String getPostUrl(FavouriteLayout favl, final Post<? extends Resource> post) {
+	public String getPostExportUrl(final Post<? extends Resource> post, FavouriteLayout favl) {
 		final Resource resource = post.getResource();
+		final FavouriteLayoutSource source = favl.getSource();
+		final String style = favl.getStyle();
+		final User user = post.getUser();
 		if (resource instanceof Bookmark) {
-			return "/layout/" + favl.getStyle().toLowerCase() + "/" + this.getBookmarkUrl(((Bookmark) resource), post.getUser());
-		} else if (favl.getSource() == FavouriteLayoutSource.CSL){
-			return "/csl-layout/" + favl.getStyle().toUpperCase() + this.getPublicationUrl(((BibTex) resource), post.getUser());
-		} else if (resource instanceof BibTex) {
-			return "/layout/" + favl.getStyle().toLowerCase() + this.getPublicationUrl(((BibTex) resource), post.getUser());
-		} else {
-			throw new UnsupportedResourceTypeException();
+			return "/layout/" + style.toLowerCase() + "/" + this.getBookmarkUrl(((Bookmark) resource), user);
 		}
+		if (resource instanceof BibTex) {
+			final BibTex publication = (BibTex) resource;
+			final String publicationUrl = this.getPublicationUrl(publication, user);
+			switch (source) {
+			case CSL:
+				return "/csl-layout/" + style.toUpperCase() + publicationUrl;
+			case JABREF:
+				return "/layout/" + style.toLowerCase() + publicationUrl;
+			case SIMPLE:
+				if (SimpleExportLayout.BIBTEX.toString().equals(style)) {
+					return "/bib" + this.getPublicationUrl(publication, post.getUser());
+				}
+				if (SimpleExportLayout.ENDNOTE.toString().equals(style)) {
+					return "/endnote" + publicationUrl;
+				}
+				//$FALL-THROUGH$
+			default:
+				throw new UnsupportedFormatException(source + "/" + style);
+			}
+		}
+		
+		throw new UnsupportedResourceTypeException(resource.getClass() + " not supported");
 	}
 	
 	/**
