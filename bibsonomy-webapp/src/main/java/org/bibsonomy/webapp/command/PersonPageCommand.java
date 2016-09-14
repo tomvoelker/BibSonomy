@@ -27,17 +27,19 @@
 package org.bibsonomy.webapp.command;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
+import org.bibsonomy.model.logic.exception.LogicException;
 
 /**
  * @author Christian Pfeiffer
  */
-public class PersonPageCommand extends UserResourceViewCommand {
+public class PersonPageCommand extends BaseCommand {
 
 	private String requestedPersonId;
 	private String requestedAction;
@@ -78,6 +80,36 @@ public class PersonPageCommand extends UserResourceViewCommand {
 	private String okHintKey;
 	
 
+
+	///////////////////////////////////////////////////////////////////////////////////
+	// stuff of other Commands added to fix the needs
+	private final Collection<LogicException> logicExceptions = new ArrayList<>();
+	private String requestedUser;
+	
+	/**
+	 * @return the logicExceptions
+	 */
+	public Collection<LogicException> getLogicExceptions() {
+		return this.logicExceptions;
+	}
+	
+	/**
+	 * @return name of the user whose resources are requested
+	 */
+	public String getRequestedUser() {
+		return this.requestedUser;
+	}
+	/**
+	 * @param requestedUser name of the user whose resources are requested
+	 */
+	public void setRequestedUser(final String requestedUser) {
+		this.requestedUser = requestedUser;
+	}
+	
+	
+	///////////////////////////////////////////////////////////////////////////////////
+	
+	
 	/**
 	 * @return the formSelectedName
 	 */
