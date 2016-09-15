@@ -92,11 +92,15 @@
 								<include>${project.build.webapp.resourcedir}/jquery/plugins/scrollTo/jquery.scrollTo.js</include>
 								<include>${project.build.webapp.resourcedir}/jquery/plugins/putCursorAtEnd/putCursorAtEnd.js</include>
 								<include>${project.build.webapp.resourcedir}/bootstrap/js/bootstrap.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/holder.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/bootstrap-dialog.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/custom.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bootstrap-datepicker.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/bootstrap-tagsinput.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bootstrap-dialog.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/holder.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/custom.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/citeproc/xmldom.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/citeproc/csllocales.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/citeproc/citeproc.js</include>
+								<include>${project.build.webapp.resourcedir}/javascript/citeproc-wrapper.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/friendoverview.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/functions.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/actions/clipboard.js</include>
@@ -119,10 +123,6 @@
 								<include>${project.build.webapp.resourcedir}/javascript/discussion/reviews.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/discussion/comments.js</include>
 								<include>${project.build.webapp.resourcedir}/javascript/discussion/csllinks.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/citeproc/csllocales.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/citeproc/xmldom.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/citeproc/citeproc.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/citeproc/cslstyles.js</include>
 							</includes>
 						</aggregation>
 					</aggregations>
