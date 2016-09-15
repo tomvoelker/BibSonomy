@@ -453,6 +453,7 @@
 						<property name="allowedFields">
 							<list>
 								<value>requestedUser</value>
+								<value>requestedType</value>
 								<value>layout</value>
 								<value>wikiText</value>
 							</list>

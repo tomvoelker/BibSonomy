@@ -34,10 +34,12 @@ import org.bibsonomy.model.User;
 public class CvPageViewCommand extends ResourceViewCommand {
 	private String wikiText;
 	private String renderedWikiText;
-	
+
+	private String requestedType;
+
 	private boolean isGroup = false;
 	private User user;
-	
+
 	/**
 	 * @return the wikiText
 	 */
@@ -48,7 +50,7 @@ public class CvPageViewCommand extends ResourceViewCommand {
 	/**
 	 * @param wikiText the wikiText to set
 	 */
-	public void setWikiText(String wikiText) {
+	public void setWikiText(final String wikiText) {
 		this.wikiText = wikiText.trim();
 	}
 
@@ -56,13 +58,13 @@ public class CvPageViewCommand extends ResourceViewCommand {
 	 * @return the renderedWikiText
 	 */
 	public String getRenderedWikiText() {
-		return renderedWikiText;
+		return this.renderedWikiText;
 	}
 
 	/**
 	 * @param renderedWikiText the renderedWikiText to set
 	 */
-	public void setRenderedWikiText(String renderedWikiText) {
+	public void setRenderedWikiText(final String renderedWikiText) {
 		this.renderedWikiText = renderedWikiText;
 	}
 
@@ -70,13 +72,13 @@ public class CvPageViewCommand extends ResourceViewCommand {
 	 * @return the isGroup
 	 */
 	public boolean getIsGroup() {
-		return isGroup;
+		return this.isGroup;
 	}
 
 	/**
 	 * @param isGroup the isGroup to set
 	 */
-	public void setIsGroup(boolean isGroup) {
+	public void setIsGroup(final boolean isGroup) {
 		this.isGroup = isGroup;
 	}
 
@@ -90,7 +92,23 @@ public class CvPageViewCommand extends ResourceViewCommand {
 	/**
 	 * @param user the user to set
 	 */
-	public void setUser(User user) {
+	public void setUser(final User user) {
 		this.user = user;
 	}
+
+	/**
+	 * @return the requestedType
+	 */
+	public String getRequestedType() {
+		return this.requestedType;
+	}
+
+	/**
+	 * @param requestedType
+	 *            the requestedType to set
+	 */
+	public void setRequestedType(final String requestedType) {
+		this.requestedType = requestedType;
+	}
+
 }
