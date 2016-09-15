@@ -104,5 +104,10 @@
 			<artifactId>joda-time</artifactId>
 			<version>2.3</version>
 		</dependency>
+		<dependency>
+			<groupId>org.citationstyles</groupId>
+			<artifactId>csl-styles</artifactId>
+			<version>[1.0.5,)</version>
+		</dependency>
 	</dependencies>
 </project>
