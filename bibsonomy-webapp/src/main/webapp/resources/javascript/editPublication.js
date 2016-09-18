@@ -17,20 +17,23 @@ var fields = ["booktitle","journal","volume","number","pages","publisher","addre
 		"howpublished","institution","organization",
 		"school","series","crossref","misc"];
 
+var inproceedingsField = ["publisher","booktitle","volume","number","series","pages","address","month","organization","note"];
+
 var requiredForType = {
         "article":["journal","volume","number","pages","month","note"],
         "book":["publisher","volume","number","series","address","edition","month","note"],
         "booklet":["howpublished","address","month","note"],
+        "conference":inproceedingsField,
         "inbook":["chapter","pages","publisher","volume","number","series","type","address","edition","month","note"],
         "incollection":["publisher","booktitle","volume","number","series","type","chapter","pages","address","edition","month","note"],
-        "inproceedings":["publisher","booktitle","volume","number","series","pages","address","month","organization","note"],
+        "inproceedings":inproceedingsField,
         "manual":["organization","address","edition","month","note"],
         "masterthesis":["school","type","address","month","note"],
         "misc":["howpublished","month","note"],
         "phdthesis":["school","address","type","month","note"],
         "proceedings":["publisher","volume","number","series","address","month","organization","note"],
         "techreport":["institution","number","type","address","month","note"],
-        "unpublished":["month","note"]
+        "unpublished":["note"]
 }
 
 /* update view when user selects another type of publication in list */

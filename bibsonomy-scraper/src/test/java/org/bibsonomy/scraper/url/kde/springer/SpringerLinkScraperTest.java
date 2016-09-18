@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.springer;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
@@ -78,5 +80,10 @@ public class SpringerLinkScraperTest {
 	@Test
 	public void url6TestRun() {
 		UnitTestRunner.runSingleTest("url_238");
+	}
+	
+	@Test
+	public void url7Test() {
+		assertScraperResult("https://link.springer.com/chapter/10.1007/978-3-540-46332-0_1", null, SpringerLinkScraper.class, "springerlink/SpringerLinkScraperUnitURLTest7.bib");
 	}
 }
