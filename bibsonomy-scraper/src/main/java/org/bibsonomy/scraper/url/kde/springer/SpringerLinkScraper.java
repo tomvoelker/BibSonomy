@@ -26,17 +26,23 @@
  */
 package org.bibsonomy.scraper.url.kde.springer;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
+import org.bibsonomy.util.UrlUtils;
+import org.bibsonomy.util.id.DOIUtils;
 
 /**
  * Scraper für SpringerLink.
@@ -44,10 +50,11 @@ import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
  * @author rja
  */
 public class SpringerLinkScraper extends GenericBibTeXURLScraper {
+	private static final Log log = LogFactory.getLog(SpringerLinkScraper.class);
+	
 	private static final String SITE_NAME = "SpringerLink";
 	private static final String SITE_URL = "http://link.springer.com/";
 	private static final String INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
-	private static final Pattern ID_PATTERN = Pattern.compile("(article|chapter)/(.+?)(/|$)");
 	
 	private static final String DOWNLOAD_URL = "http://citation-needed.services.springer.com/v2/references/";
 	private static final String DOWNLOAD_TYPE = "?format=bibtex&flavour=citation";
@@ -57,14 +64,43 @@ public class SpringerLinkScraper extends GenericBibTeXURLScraper {
 	static{
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SPRINGER_CITATION_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	}
+	
+	/**
+	 * @param doi
+	 * @return
+	 */
+	private static String downloadLinkForDoi(final String doi) {
+		return DOWNLOAD_URL + doi + DOWNLOAD_TYPE;
+	}
+	
+	private static String extractDownloadLink(final String path) {
+		final String doi = DOIUtils.extractDOI(path);
+		if (present(doi)) {
+			return downloadLinkForDoi(doi);
+		}
+		
+		return null;
+	}
 		
 	@Override
 	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
-		final Matcher m = ID_PATTERN.matcher(url.getPath());
-		if (m.find()) {
-			final String id = m.group(2);
-			return DOWNLOAD_URL + id + DOWNLOAD_TYPE;
+		final String path = url.getPath();
+		
+		final String downloadLink = extractDownloadLink(path);
+		if (present(downloadLink)) {
+			return downloadLink;
 		}
+		// sometimes the slash is encoded
+		try {
+			final String decodePathSegment = UrlUtils.decodePathSegment(path);
+			final String extractDownloadLinkDecoded = extractDownloadLink(decodePathSegment);
+			if (present(extractDownloadLinkDecoded)) {
+				return extractDownloadLinkDecoded;
+			}
+		} catch (final URISyntaxException e) {
+			log.error("error decoding path " + path, e);
+		}
+		
 		return null;
 	}
 	
