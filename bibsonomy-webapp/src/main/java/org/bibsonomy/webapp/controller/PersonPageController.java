@@ -155,8 +155,6 @@ public class PersonPageController extends SingleResourceListController implement
 		return Views.AJAX_JSON;
 	}
 
-
-
 	/**
 	 * @param command
 	 * @return
