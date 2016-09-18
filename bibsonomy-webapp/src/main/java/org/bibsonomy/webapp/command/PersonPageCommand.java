@@ -45,23 +45,41 @@ public class PersonPageCommand extends BaseCommand {
 	private String requestedAction;
 
 	private String formSelectedName;
+	@Deprecated // TODO: bind person directly
 	private String formAcademicDegree;
+	@Deprecated // TODO: bind person directly
 	private String formFirstName;
+	@Deprecated // TODO: bind person directly
 	private String formMiddleName;
+	@Deprecated // TODO: bind person directly
 	private String formLastName;
+	@Deprecated // TODO: bind person directly
 	private String formResourceHash;
+	@Deprecated // TODO: bind person directly
 	private String formPersonId;
+	@Deprecated // TODO: bind person directly
 	private PersonResourceRelationType formPersonRole;
+	@Deprecated // TODO: bind person directly
 	private String formOrcid;
+	@Deprecated // TODO: bind person directly
 	private String formThesisId;
+	@Deprecated // TODO: bind person directly
 	private String formUser;
+	@Deprecated // TODO: bind person directly
 	private String formPersonNameId;
+	@Deprecated // TODO: bind person directly
 	private List<String> formPersonRoles;
+	@Deprecated // TODO: bind person directly
 	private String formRequestType;
+	@Deprecated // TODO: bind person directly
 	private String formResourcePersonRelationId;
+	@Deprecated // TODO: bind person directly
 	private String formInterHash;
+	@Deprecated // TODO: bind person directly
 	private String formIntraHash;
+	@Deprecated // TODO: bind person directly
 	private boolean formThatsMe;
+	@Deprecated // TODO: bind person directly
 	private int formPersonIndex = -1;
 	
 	private String formAction;
@@ -72,6 +90,8 @@ public class PersonPageCommand extends BaseCommand {
 	private List<Post<?>> thesis;
 	private List<Post<?>> advisedThesis;
 	private List<Post<?>> allPosts;
+	
+	@Deprecated // FIXME: access enum directly
 	private List<PersonResourceRelationType> availableRoles = new ArrayList<>();
 	
 	private String responseString;
@@ -79,16 +99,14 @@ public class PersonPageCommand extends BaseCommand {
 	private List<Post<?>> otherAdvisedPubs;
 	private String okHintKey;
 	
-
-
-	///////////////////////////////////////////////////////////////////////////////////
-	// stuff of other Commands added to fix the needs
+	@Deprecated // FIXME: remove use errors handling build into spring
 	private final Collection<LogicException> logicExceptions = new ArrayList<>();
 	private String requestedUser;
 	
 	/**
 	 * @return the logicExceptions
 	 */
+	@Deprecated
 	public Collection<LogicException> getLogicExceptions() {
 		return this.logicExceptions;
 	}
@@ -105,10 +123,6 @@ public class PersonPageCommand extends BaseCommand {
 	public void setRequestedUser(final String requestedUser) {
 		this.requestedUser = requestedUser;
 	}
-	
-	
-	///////////////////////////////////////////////////////////////////////////////////
-	
 	
 	/**
 	 * @return the formSelectedName
@@ -309,6 +323,7 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @return String
 	 */
+	@Deprecated // TODO: bind person directly
 	public String getFormResourceHash() {
 		return this.formResourceHash;
 	}
@@ -316,6 +331,7 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @return the formPersonId
 	 */
+	@Deprecated // TODO: bind person directly
 	public String getFormPersonId() {
 		return this.formPersonId;
 	}
@@ -323,6 +339,7 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @param formPersonId the formPersonId to set
 	 */
+	@Deprecated // TODO: bind person directly
 	public void setFormPersonId(String formPersonId) {
 		this.formPersonId = formPersonId;
 	}
@@ -330,6 +347,7 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @return the formPersonRole
 	 */
+	@Deprecated // TODO: bind person directly
 	public PersonResourceRelationType getFormPersonRole() {
 		return this.formPersonRole;
 	}
@@ -337,6 +355,7 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @param formPersonRole the formPersonRole to set
 	 */
+	@Deprecated // TODO: bind person directly
 	public void setFormPersonRole(PersonResourceRelationType formPersonRole) {
 		this.formPersonRole = formPersonRole;
 	}
@@ -344,6 +363,7 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @return the formThesisId
 	 */
+	@Deprecated // TODO: bind person directly
 	public String getFormThesisId() {
 		return this.formThesisId;
 	}
@@ -351,6 +371,7 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @param formThesisId the formThesisId to set
 	 */
+	@Deprecated // TODO: bind person directly
 	public void setFormThesisId(String formThesisId) {
 		this.formThesisId = formThesisId;
 	}
@@ -358,6 +379,7 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @return the formUser
 	 */
+	@Deprecated // TODO: bind person directly
 	public String getFormUser() {
 		return this.formUser;
 	}
@@ -365,6 +387,7 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @param formUser the formUser to set
 	 */
+	@Deprecated // TODO: bind person directly
 	public void setFormUser(String formUser) {
 		this.formUser = formUser;
 	}
@@ -372,6 +395,7 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @param formResourceHash the formResourceHash to set
 	 */
+	@Deprecated // TODO: bind person directly
 	public void setFormResourceHash(String formResourceHash) {
 		this.formResourceHash = formResourceHash;
 	}
@@ -379,6 +403,7 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @return String
 	 */
+	@Deprecated // TODO: bind person directly
 	public String getFormPersonNameId() {
 		return this.formPersonNameId;
 	}
@@ -386,6 +411,7 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @param personNameId2 the nameId to set
 	 */
+	@Deprecated // TODO: bind person directly
 	public void setFormPersonNameId(String personNameId2) {
 		this.formPersonNameId = personNameId2;
 	}
@@ -393,6 +419,7 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @return the formOrcid
 	 */
+	@Deprecated // TODO: bind person directly
 	public String getFormOrcid() {
 		return this.formOrcid;
 	}
@@ -400,6 +427,7 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @param formOrcid the formOrcid to set
 	 */
+	@Deprecated // TODO: bind person directly
 	public void setFormOrcid(String formOrcid) {
 		this.formOrcid = formOrcid;
 	}
@@ -409,7 +437,6 @@ public class PersonPageCommand extends BaseCommand {
 	 */
 	public void setResponseString(String jsonString) {
 		this.responseString = jsonString;
-		
 	}
 
 	/**
@@ -478,6 +505,7 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @return the availableRoles
 	 */
+	@Deprecated // FIXME: access enum directly
 	public List<PersonResourceRelationType> getAvailableRoles() {
 		return this.availableRoles;
 	}
@@ -485,6 +513,7 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @param availableRoles the availableRoles to set
 	 */
+	@Deprecated // FIXME: access enum directly
 	public void setAvailableRoles(List<PersonResourceRelationType> availableRoles) {
 		this.availableRoles = availableRoles;
 	}
@@ -492,6 +521,7 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @return true if the current login user is associated to this person
 	 */
+	@Deprecated // TODO: bind person directly
 	public boolean isFormThatsMe() {
 		return this.formThatsMe;
 	}
@@ -499,6 +529,7 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @param formThatsMe if the current login user is associated to this person
 	 */
+	@Deprecated // TODO: bind person directly
 	public void setFormThatsMe(boolean formThatsMe) {
 		this.formThatsMe = formThatsMe;
 	}
@@ -506,6 +537,7 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @return the formAuthorIndex
 	 */
+	@Deprecated // TODO: bind person directly
 	public int getFormPersonIndex() {
 		return this.formPersonIndex;
 	}
@@ -513,6 +545,7 @@ public class PersonPageCommand extends BaseCommand {
 	/**
 	 * @param formAuthorIndex the formAuthorIndex to set
 	 */
+	@Deprecated // TODO: bind person directly
 	public void setFormPersonIndex(int formAuthorIndex) {
 		this.formPersonIndex = formAuthorIndex;
 	}
