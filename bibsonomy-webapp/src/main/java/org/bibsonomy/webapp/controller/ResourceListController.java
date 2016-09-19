@@ -259,10 +259,6 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @param posts 
 	 */
 	protected void postProcessAndSortList(final ResourceViewCommand cmd, final List<Post<BibTex>> posts) {
-		for (final Post<BibTex> post : posts) {
-			// insert openURL into publication objects
-			post.getResource().setOpenURL(BibTexUtils.getOpenurl(post.getResource()));
-		}
 		// if a jabref layout is to be rendered and no special order is given, set to default order 
 		if (Views.LAYOUT.getName().equalsIgnoreCase(cmd.getFormat()) &&
 				ResourceViewCommand.DEFAULT_SORTPAGE.equalsIgnoreCase(cmd.getSortPage()) &&
