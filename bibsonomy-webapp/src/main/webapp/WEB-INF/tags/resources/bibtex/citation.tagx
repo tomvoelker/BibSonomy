@@ -42,10 +42,12 @@
         				<li><a href="#citation_Endnote">Endnote</a></li>
         			</c:if>
         		</c:if>
-        		<c:if test="${citation.source=='JABREF'}">
+        		<c:if test="${(citation.source=='JABREF') || (citation.source=='CSL')}">
         			<li>
         				<a data-formatUrl="${relativeUrlGenerator.getCitationUrlbyIntraHashUserName(citation, post.resource.intraHash, post.user.name)}?formatEmbedded=true" href="#citation_${citation.style}">
-        					<mtl:favouriteLayoutDisplayName favouriteLayout="${citation}" />
+        					<c:set var="name"><mtl:favouriteLayoutDisplayName favouriteLayout="${citation}"/>
+							</c:set>
+							${mtl:shorten(name, 25)}
         				</a>
         			</li>
         		</c:if>

@@ -50,7 +50,9 @@
 					<li>
 						<c:set var="exportUrl" value="${relativeUrlGenerator.getPostExportUrl(post, citation)}?formatEmbedded=true&amp;items=1" />
 						<a class="favouriteLayoutDisplayName" data-source="${citation.source}" data-style="${citation.style}" data-toggle="tab" href="#citation_${citation.style}" data-formatUrl="${exportUrl}">
-							<mtl:favouriteLayoutDisplayName favouriteLayout="${citation}" />
+							<c:set var="name"><mtl:favouriteLayoutDisplayName favouriteLayout="${citation}"/>
+							</c:set>
+							${mtl:shorten(name, 25)}
 						</a>
 					</li>
 				</c:if>
