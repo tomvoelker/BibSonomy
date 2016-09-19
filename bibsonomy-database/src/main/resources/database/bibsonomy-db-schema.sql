@@ -1510,6 +1510,7 @@ CREATE TABLE `user` (
   `show_bibtex` tinyint(1) default '1',
   `useExternalPicture` tinyint(1) DEFAULT '0',
   `reg_log` MEDIUMTEXT NULL DEFAULT NULL,
+  `favourite_layouts` LONGTEXT NULL,
   PRIMARY KEY  (`user_name`),
   UNIQUE KEY `user_id` (`id`),
   KEY `spammer_to_classify_user_name_idx` (`spammer`,`to_classify`,`user_name`)
