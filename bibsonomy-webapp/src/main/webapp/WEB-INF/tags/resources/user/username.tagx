@@ -14,14 +14,7 @@
 	
 	<c:choose>
 		<c:when test="${not empty post}">
-			<c:choose>
-				<c:when test="${not empty post.systemUrl }">
-					<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
-				</c:when>
-				<c:otherwise>
-					<c:set var ="isRemotePost" value="false"/>
-				</c:otherwise>
-			</c:choose>
+			<c:set var="isRemotePost" value="${not empty post.systemUrl and not mtl:isSameHost(post.systemUrl, properties['project.home'])}" />
 		</c:when>
 		<c:otherwise>
 			<c:set var ="isRemotePost" value="false"/>

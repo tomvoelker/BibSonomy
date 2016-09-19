@@ -459,5 +459,11 @@
 		<function-class>tags.Functions</function-class>
 		<function-signature>java.lang.Boolean hasDidYouKnowMessage(org.bibsonomy.webapp.command.BaseCommand)</function-signature>
 	</function>
+	
+	<function>
+		<name>isSameHost</name>
+		<function-class>tags.Functions</function-class>
+		<function-signature>boolean isSameHost(java.lang.String, java.lang.String)</function-signature>
+	</function>
 
 </taglib>

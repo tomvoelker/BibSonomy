@@ -2,6 +2,7 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
@@ -15,14 +16,7 @@
 	
 	<spring:eval expression="T(org.bibsonomy.model.factories.ResourceFactory).isCommunityResource(post.resource)" var="isCommunityPost" />
 	
-	<c:choose>
-		<c:when test="${not empty post.systemUrl}">
-			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
-		</c:when>
-		<c:otherwise>
-			<c:set var ="isRemotePost" value="false"/>
-		</c:otherwise>
-	</c:choose>
+	<c:set var="isRemotePost" value="${not empty post.systemUrl and not mtl:isSameHost(post.systemUrl, properties['project.home'])}" />
 	
 	<c:set var="editableByUser" value="${loginUserName eq post.user.name}" />
 	<!-- FIXME: extract this check; used more than once in the view! -->

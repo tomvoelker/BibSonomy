@@ -32,7 +32,7 @@
 		
 	</c:if>
 	
-	<c:set var="isRemotePost" value="${not empty post.systemUrl and post.systemUrl ne properties['project.home']}"/>
+	<c:set var="isRemotePost" value="${not empty post.systemUrl and not mtl:isSameHost(post.systemUrl, properties['project.home'])}"/>
 
 	<!-- TODO: use the urlGenerator for this -->
 	<c:set var="url" value="Publication"/>

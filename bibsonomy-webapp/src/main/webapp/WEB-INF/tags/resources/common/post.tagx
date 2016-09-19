@@ -22,7 +22,7 @@
 	<jsp:directive.attribute name="actions" fragment="true" required="true"/>
 	<jsp:directive.attribute name="documents" fragment="true" required="true"/>
 	
-	<c:set var="isRemotePost" value="${(not empty post.systemUrl) and (post.systemUrl ne properties['project.home'])}"/>
+	<c:set var="isRemotePost" value="${not empty post.systemUrl and not mtl:isSameHost(post.systemUrl, properties['project.home'])}" />
 	
 	<!-- FIXME: not nice here-->
 	<c:choose>
