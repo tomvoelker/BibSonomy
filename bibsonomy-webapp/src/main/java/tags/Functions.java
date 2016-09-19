@@ -30,6 +30,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.Normalizer;
 import java.util.ArrayList;
@@ -1038,6 +1039,26 @@ public class Functions {
 
 	public static Boolean isRegularGroup(final Group group) {
 		return GroupUtils.isValidGroup(group) && !GroupUtils.isExclusiveGroup(group);
+	}
+	
+	/**
+	 * 
+	 * @param url1
+	 * @param url2
+	 * @return <code>true</code> iff url1 and url2 has the same host
+	 */
+	public static boolean isSameHost(final String url1, final String url2) {
+		if (!present(url1) || !present(url2)) {
+			return false;
+		}
+		try {
+			final URI uri1 = new URI(url1);
+			final URI uri2 = new URI(url2);
+			return uri1.getHost().equals(uri2.getHost());
+		} catch (final URISyntaxException e) {
+			log.error("error while checking for same host", e);
+		}
+		return false;
 	}
 
 }
