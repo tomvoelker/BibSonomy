@@ -114,7 +114,6 @@ public class MarcToBibTexReaderTest extends AbstractDataDownloadingTestCase {
 		for(int i = 0; i < RESOURCES_TO_TEST && i < RESOURCES.length; i++) {
 			dat = new DualDataWrapper(new ClasspathResourceData("/hebis_data/"+RESOURCES[i].split(":")[0], "application/marc"), new ClasspathResourceData("/hebis_data/"+RESOURCES[i].split(":")[1], "application/pica"));
 			for (BibTex bib : reader.read(new ImportResource(dat))) {
-				bib.setOpenURL(RESOURCES[i]);
 				bibs.add(bib);
 			}
 			

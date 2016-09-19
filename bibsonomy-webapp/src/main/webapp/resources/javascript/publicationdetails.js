@@ -13,23 +13,46 @@ $(document).ready(function () {
 	});
 	*/
 	
-	$('.edit-document-forms .bibtexpreviewimage').first().show();
+	var docInfo = $('#document-info .item');
+	docInfo.hide();
+	docInfo.first().show();
+	var docCarousel = $('#carousel-documents');
+	
+	if (docCarousel.find('ol.carousel-indicators li').length == 0) {
+		docCarousel.hide();
+		$('#document-info').hide();
+	} else {
+		$('#add-document').hide();
+		docCarousel.on('slid.bs.carousel', function () {
+			var currentIndex = $('#carousel-documents div.active').index();
+			docInfo.hide();
+			$(docInfo[currentIndex]).show();
+		});
+	}
+	
 
 	/* DELETE BUTTON */
-	$('.remove-btn').click(function(e){
-		e.preventDefault();
-		var url = this.getAttribute("href");
-		var parent = this.parentNode.parentNode;
-		var el = this;
-		var ident = this.getAttribute('data-ident');
+	$('.remove-btn').click(function() {
+		var url = $(this).attr("href");
+		var parent = $(this).parent().parent().parent();
+		var el = $(this);
+		
+		var container = $(this).closest('.row');
+		var index = container.data('index');
 		$.ajax({
 			url: url,
 			dataType: "xml",
 			success: function(data) {
-				handleDeleteResponse({parent:parent, data: data, el: el, ident: ident});
-			},
-			error: function(data) {
-				handleDeleteResponse({parent:parent, data: data, el: el});
+				if ($(data).find('status').text() == "deleted") {
+					container.remove();
+					
+					// show the next item
+					$('#carousel-documents').carousel('next');
+					
+					// remove item from carousel
+					$('#carousel-documents .carousel-inner > .item:eq(' + index + ')').remove();
+					$('#carousel-documents ol.carousel-indicators > li:eq(' + index + ')').remove();
+				}
 			}
 		});
 		

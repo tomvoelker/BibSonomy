@@ -60,7 +60,7 @@
 			<!-- Did you know? -->
 			<c:if test="${	command.context.userLoggedIn and 
 							command.context.loginUser.name eq command.requestedUser and 
-							mtl:hasDidYouKnowMessage(command) and
+							not empty command.didYouKnowMessage and
 							command.context.loginUser.settings.layoutSettings.simpleInterface}">
 				<bs:didYouKnow command="${command}"/>
 			</c:if>
