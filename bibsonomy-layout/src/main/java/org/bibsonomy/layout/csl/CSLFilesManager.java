@@ -21,7 +21,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
- * class for manaaging all csl files
+ * class for managing all csl files
  * 
  * @author jp
  */
