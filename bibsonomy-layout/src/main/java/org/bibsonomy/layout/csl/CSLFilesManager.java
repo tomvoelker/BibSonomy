@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -20,6 +22,8 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import net.sf.json.JSONObject;
+
 /**
  * class for managing all csl files
  * 
@@ -30,15 +34,33 @@ public class CSLFilesManager {
 
 	// mapping from id to CSLStyle which contains the id itself, a display name and the content of the file
 	private Map<String, CSLStyle> cslFiles = new HashMap<String, CSLStyle>();
-
+	private Map<String, HashSet<String>> aliases = new HashMap<String, HashSet<String>>();
+	
 	/**
 	 * init this manager
 	 * reads all csl files from {@link #CSL_FOLDER}
 	 */
 	public void init() {
 		final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(CSLFilesManager.class.getClassLoader());
-		
+
 		try {
+			final Resource[] aliasesResource = resolver.getResources("classpath:/org/citationstyles/styles/renamed-styles.json");
+			final BufferedReader jsonReader = new BufferedReader(new InputStreamReader(aliasesResource[0].getInputStream()));
+			final StringBuilder jsonBuilder = new StringBuilder();
+			while (jsonReader.ready()) {
+				jsonBuilder.append(jsonReader.readLine());
+			}
+			//"inverting" hashmap
+			JSONObject aliasesObj = JSONObject.fromObject(jsonBuilder.toString());
+			for(Object keyObj : aliasesObj.keySet()){
+				String key = (String) keyObj;
+				String value = (String) aliasesObj.get(key);
+				
+				if(!aliases.containsKey(value)){
+					aliases.put(value, new HashSet<String>());
+				}
+				aliases.get(value).add(key);
+			}
 			final Resource[] resources = resolver.getResources("classpath:/org/citationstyles/styles/*.csl");
 			for (final Resource resource : resources) {
 				try (final BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
@@ -75,7 +97,7 @@ public class CSLFilesManager {
 		final Document document = documentBuilder.parse(new InputSource(new StringReader(cslStyleSource)));
 		
 		String title = document.getElementsByTagName("title").item(0).getTextContent();
-		title = title.replaceAll("\"", "'"); // TODO: @jpf: why do we replace every " with a '?
+//		title = title.replaceAll("\"", "'"); // TODO: @jpf: why do we replace every " with a '?
 		return title.trim();
 	}
 	

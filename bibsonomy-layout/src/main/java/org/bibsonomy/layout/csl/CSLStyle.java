@@ -2,7 +2,7 @@ package org.bibsonomy.layout.csl;
 
 /**
  * 
- * @author jpf
+ * @author jp
  */
 public class CSLStyle {
 	private String id;
