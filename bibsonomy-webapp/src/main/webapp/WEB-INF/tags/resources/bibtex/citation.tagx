@@ -45,7 +45,7 @@
         		<c:if test="${citation.source=='JABREF'}">
         			<li>
         				<a data-formatUrl="${relativeUrlGenerator.getCitationUrlbyIntraHashUserName(citation, post.resource.intraHash, post.user.name)}?formatEmbedded=true" href="#citation_${citation.style}">
-        					${citation.displayName}
+        					<mtl:favouriteLayoutDisplayName favouriteLayout="${citation}" />
         				</a>
         			</li>
         		</c:if>

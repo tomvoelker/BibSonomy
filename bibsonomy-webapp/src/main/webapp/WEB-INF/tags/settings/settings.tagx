@@ -193,10 +193,7 @@
 								<c:forEach var="favl" items="${command.context.loginUser.settings.favouriteLayouts}" varStatus="counter">
 									<li class="list-group-item favouriteLayoutsListItem clearfix" data-source="${favl.source}" data-style="${favl.style}">
 										<input type="hidden" name="user.settings.favouriteLayouts" id="${favl.source}/${favl.style}" value="${favl.source}/${favl.style}"/>
-										
-										<span class="favouriteLayoutDisplayName" id="displayName:${favl.source}/${favl.style}" source="${favl.source}" style="${favl.style}">
-											<mtl:favouriteLayoutDisplayName favouriteLayout="${favl}" />
-										</span>
+										<mtl:favouriteLayoutDisplayName favouriteLayout="${favl}" />
 										<c:out value=" " /> <!-- TODO: use css -->
 										<span class="btn btn-danger btn-xs pull-right delete-Style">
 											<fmt:message key="delete" />
