@@ -15,194 +15,85 @@
 	<c:set var="publication" value="${post.resource}"/>
 	<c:set var="isOwnEntry" value="${post.user.name eq command.context.loginUser.name}"/>
 	
+	<div id="add-document">
+		<a href="#" class="addDocument">
+			<span class="fa-stack fa-6x">
+				<fontawesome:icon icon="file-o" stack="${true}" size="2" />
+				<fontawesome:icon icon="plus" stack="${true}" />
+			</span>
+		</a>
+	</div>
 	
-	<!--+
-		| private documents (pdf, ps) 
-		+-->
-		<c:if test="${not empty publication.documents or isOwnEntry}">
-			<div class="modal fade bs-example-modal-lg" style="text-align:center" tabindex="-1" role="dialog" aria-hidden="true"><iframe id="pdfViewer" style="margin: auto; width: 80%; height: 100%; border-top: none; border-bottom: none"><!--  keep  --></iframe></div>
-			<h4>&amp;nbsp;</h4>
-			<ul class="edit-document-forms">
-				<!-- FIXME: remove duplicates see below -->
-				<li class="document" style="display:none" id="file-upload-placeholder">
-					<div class="preview_meta">
-						<!--+ 
-							| delete and rename options
-							+-->
-						<!-- delete -->
-						<fmt:message key="bibtex.actions.private_document.delete" var="deleteTitle"/>
-						<fmt:message key="bibtex.actions.private_document.rename" var="renameTitle"/>
+	<div id="carousel-documents" class="carousel" data-ride="carousel" data-interval="false">
+		<ol class="carousel-indicators">
+			<!-- keep me -->
+			<c:forEach var="document" items="${post.resource.documents}" varStatus="status">
+				<li data-target="#carousel-documents" data-slide-to="${status.index}" class="${status.first ? 'active' : ''}"><!-- keep me --></li>
+			</c:forEach>
+		</ol>
+		
+		<div class="carousel-inner" role="listbox">
+			<c:forEach var="document" items="${post.resource.documents}" varStatus="status">
+				<div class="item ${status.first ? 'active' : ''}">
+					<a href="${relativeUrlGenerator.getDocumentUrlByIntraHashUserNameAndFileName(post.resource.intraHash, post.user.name, document.fileName)}">
+						<img src="${relativeUrlGenerator.getDocumentUrlByIntraHashUserNameAndFileName(post.resource.intraHash, post.user.name, document.fileName)}?preview=LARGE" alt="test" />
+					</a>
+					<c:if test="${fn:endsWith(fn:toLowerCase(document.fileName), '.pdf')}">
+						<a href="#" class="doc-magnify"><fontawesome:icon icon="search-plus" /></a>
+					</c:if>
+				</div>
+			</c:forEach>
+		</div>
+		
+		<!-- Controls -->
+		<a class="left carousel-control" href="#carousel-documents" role="button" data-slide="prev">
+			<fontawesome:icon icon="chevron-left" />
+			<span class="sr-only">Previous</span>
+		</a>
+		<a class="right carousel-control" href="#carousel-documents" role="button" data-slide="next">
+			<fontawesome:icon icon="chevron-right" />
+			<span class="sr-only">Next</span>
+		</a>
+	</div>
+	<div id="document-info">
+		<fmt:message key="qrcode.actions.download" var="downloadTitle" />
+		<fmt:message key="qrcode.actions.qrDownload" var="downloadQrTitle" />
+		<fmt:message key="bibtex.actions.private_document.rename" var="renameDocTitle" />
+		<c:forEach var="document" items="${post.resource.documents}" varStatus="status">
+			<div class="item row" data-index="${status.index}">
+				<div class="col-xs-6">
+					<c:out value="${document.fileName}" />
+				</div>
+				<div class="col-xs-6 text-right">
+					<div class="btn-group" role="group">
 						<c:url var="deleteUrl" value="/ajax/documents">
 							<c:param name="intraHash" value="${post.resource.intraHash}" />
-							<c:param name="fileName" value="FILENAME_PLACEHOLDER" />
+							<c:param name="fileName" value="${document.fileName}" />
 							<c:param name="ckey" value="${ckey}" />
 							<c:param name="temp" value="false" />
 							<c:param name="action" value="delete" />
 						</c:url>
-						<c:set var="renameDocTitle"><fmt:message key="bibtex.actions.private_document.rename"/></c:set>
-						<c:set var="deleteDocTitle"><fmt:message key="bibtex.actions.private_document.delete"/>&amp;nbsp;FILENAME_PLACEHOLDER</c:set>
-						<c:set var="downloadTitle"><fmt:message key="qrcode.actions.download"/></c:set>
-						<c:set var="downloadQrTitle"><fmt:message key="qrcode.actions.qrDownload"/></c:set>
-						<c:set var="delete_doc"><fmt:message key="bibtex.actions.private_document.delete"/></c:set>
-						<!-- TODO: use url generator -->
-						<form class="renameDocForm" action="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}&amp;fileName=FILENAME_PLACEHOLDER&amp;action=rename" method='POST' enctype='multipart/form-data' autocomplete='off'>
-							<span class="show-name" style="display:none;"><!-- keep --></span>
-							<div class="input-group" data-toggle="tooltip">
-								<input class="form-control input-sm renameDocInput" data-ajax-rename="true" name='newFileName' type="text" value="" />
-								<span class="input-group-btn">
-									<bs:linkButton style="defaultStyle" href="" size="small" additionalClass="btn-stripped rename-btn" title="${renameDocTitle}" icon="pencil" />
-									<bs:linkButton style="defaultStyle" href="${deleteUrl}" title="${deleteDocTitle}" icon="times" size="small" />
-									<a class="btn btn-sm btn-default btn-stripped download-btn" href="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/FILENAME_PLACEHOLDER" title="Download ${downloadTitle}"><span class="fa fa-download"><!-- KEEP ME --></span></a>
-									<a class="btn btn-sm btn-default btn-stripped qrcode-btn" href="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/FILENAME_PLACEHOLDER?qrcode=true"  title="${downloadQrTitle}"><span class="fa fa-qrcode"><!-- KEEP ME --></span></a>
-								</span>
-							</div>
-						</form>
-						<!-- delete/rename -->
-					</div>
-				</li>
-			<c:choose>
-				<c:when test="${empty publication.documents}"> <!-- no documents -->
-					<c:if test="${isOwnEntry}">
-						<div class="img-thumbnail publication preview bibtexpreviewimage">
-							<a class="addDocument addDocumentImg" href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}">
-								<img class="img-responsive pre_pic" src="${resdir}/image/addDocument-LARGE.jpg" alt=""/>							
+						<a class="btn btn-xs btn-default rename-btn ${systemReadOnly ? 'disabled' : ''}" title="${renameDocTitle}" href="${deleteUrl}" data-filename="${fn:escapeXml(document.fileName)}">
+							<fontawesome:icon icon="pencil" />
+						</a>
+						<c:set var="deleteDocTitle"><fmt:message key="bibtex.actions.private_document.delete"/>&amp;nbsp;${filename}</c:set>
+						<a class="btn btn-xs btn-default btn-stripped remove-btn ${systemReadOnly ? 'disabled' : ''}" title="${deleteDocTitle}" href="${deleteUrl}" data-filename="${fn:escapeXml(document.fileName)}">
+							<fontawesome:icon icon="times" />
+						</a>
+						<a class="btn btn-xs btn-default btn-stripped" href="${relativeUrlGenerator.getDocumentUrlByIntraHashUserNameAndFileName(post.resource.intraHash, post.user.name, document.fileName)}" title="Download ${downloadTitle}">
+							<fontawesome:icon icon="download" />
+						</a>
+						<c:if test="${fn:endsWith(fn:toLowerCase(document.fileName), '.pdf')}">
+							<a class="btn btn-xs btn-default btn-stripped qrcode-btn" href="${relativeUrlGenerator.getDocumentUrlByIntraHashUserNameAndFileName(post.resource.intraHash, post.user.name, document.fileName)}?qrcode=true" title="${downloadQrTitle}">
+								<fontawesome:icon icon="qrcode" />
 							</a>
-						</div>
-						<div id="inputDiv">
-						<!-- keep me! - temporary content -->
-						</div>
-					</c:if>
-				</c:when>
-				<c:otherwise> <!-- documents available -->
-					<c:set var="count" value="0" scope="page" />
-					<c:forEach var="document" items="${publication.documents}">
-					
-						<c:choose>
-							<c:when test="${fn:endsWith(fn:toLowerCase(document.fileName), '.pdf')}">
-								<c:choose>
-									<c:when test="${count eq 0}">
-										<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage">
-											<a class="img-thumbnail publication preview pdfFile" href="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(document.fileName)}" title="${fn:escapeXml(document.fileName)}">
-												<img class="img-responsive pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(document.fileName)}"/>
-											</a>
-											<a href="#" class="doc-magnify"><fontawesome:icon icon="search-plus" /></a>
-										</div>
-									</c:when>
-									<c:otherwise>
-										<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage">
-											<!-- preview picture of first document -->
-											<!--  <a class="publication preview" href="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(document.fileName)}" title="${fn:escapeXml(document.fileName)}"> -->
-											<a class="img-thumbnail pdfFile" data-toggle="lightbox" href="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(document.fileName)}?qrcode=false">
-												<img class="img-resposive" src="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(document.fileName)}" alt="${fn:escapeXml(document.fileName)}"/>
-											</a>
-										</div>
-									</c:otherwise>
-								</c:choose>
-							</c:when>
-							<c:otherwise>
-								<c:choose>
-									<c:when test="${count eq 0}">
-										<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage">
-											<a class="img-thumbnail documentFileName preview" href="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(document.fileName)}?qrcode=false" title="${fn:escapeXml(document.fileName)}">
-												<img class="img-responsive pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(document.fileName)}"/>
-											</a>
-										</div>
-									</c:when>
-									<c:otherwise>
-										<div id="${mtl:downloadFileId(document.fileName)}" class="bibtexpreviewimage" style="display:none;">
-											<!-- preview picture of first document -->
-											<a class="img-thumbnail publication preview" href="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(document.fileName)}?qrcode=false" title="${fn:escapeXml(document.fileName)}">
-												<img class="img-responsive pre_pic" src="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(document.fileName)}?preview=LARGE" alt="${fn:escapeXml(document.fileName)}"/>
-											</a>
-										</div>
-									</c:otherwise>
-								</c:choose>
-							</c:otherwise>
-						</c:choose>
-						<c:set var="count" value="${count + 1}" scope="page"/>
-					</c:forEach>
-					<c:if test="${fn:length(publication.documents) gt 1}">
-						
-						<div id="previewSelectBullets">
-								<c:set var="count" value="0" scope="page" />
-								<c:forEach var="document" items="${publication.documents}">
-									<c:choose>
-										<c:when test="${count eq 0}">
-											<a rel="${mtl:downloadFileId(document.fileName)}" class="bullet active" href="#" title="${fn:escapeXml(document.fileName)}"><span>&amp;nbsp;&amp;nbsp;&amp;nbsp;</span></a>
-										</c:when>
-										<c:otherwise>
-											<a rel="${mtl:downloadFileId(document.fileName)}" class="bullet" href="#" title="${fn:escapeXml(document.fileName)}"><span>&amp;nbsp;&amp;nbsp;&amp;nbsp;</span></a>
-										</c:otherwise>
-									</c:choose>
-									
-									<c:set var="count" value="${count + 1}" scope="page"/>
-								</c:forEach>
-						</div>
-						
-						
-					</c:if>
-					<c:forEach var="document" items="${publication.documents}">
-						<li class="document  ${mtl:downloadFileId(document.fileName)} active">
-							<div class="preview_meta">
-								<!--+ 
-								 	| delete and rename options
-								 	+-->
-								<c:if test="${isOwnEntry}">
-									<!-- delete -->
-									<fmt:message key="bibtex.actions.private_document.delete" var="deleteTitle"/>
-									<fmt:message key="bibtex.actions.private_document.rename" var="renameTitle"/>
-									<c:url var="deleteUrl" value="/ajax/documents">
-										<c:param name="intraHash" value="${post.resource.intraHash}" />
-										<c:param name="fileName" value="${document.fileName}" />
-										<c:param name="ckey" value="${ckey}" />
-										<c:param name="temp" value="false" />
-										<c:param name="action" value="delete" />
-									</c:url>
-									<c:set var="filename" value="${document.fileName}" />
-									<c:set var="renameDocTitle"><fmt:message key="bibtex.actions.private_document.rename"/></c:set>
-									<c:set var="deleteDocTitle"><fmt:message key="bibtex.actions.private_document.delete"/>&amp;nbsp;${filename}</c:set>
-									<c:set var="downloadTitle"><fmt:message key="qrcode.actions.download"/></c:set>
-									<c:set var="downloadQrTitle"><fmt:message key="qrcode.actions.qrDownload"/></c:set>
-									<c:set var="delete_doc"><fmt:message key="bibtex.actions.private_document.delete"/></c:set>
-									<form class="renameDocForm" action="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}&amp;fileName=${mtl:encodePathSegment(document.fileName)}&amp;action=rename" method='POST' enctype='multipart/form-data' autocomplete='off'>
-										<span class="show-name" style="display:none;"><c:out value="${filename}" /></span>
-										<div class="input-group">
-											<input class="form-control input-sm renameDocInput" data-ajax-rename="true" name='newFileName' type="text" value="${filename}" />
-											<span class="input-group-btn">
-												<bs:linkButton href="" size="small" style="defaultStyle" additionalClass="rename-btn" title="${renameDocTitle}" icon="pencil"/>
-												<a class="btn btn-sm btn-default btn-stripped remove-btn ${systemReadOnly ? 'disabled' : ''}" title="${deleteDocTitle}" href="${deleteUrl}" data-filename="${fn:escapeXml(document.fileName)}" data-ident="${mtl:downloadFileId(document.fileName)}"><span class="fa fa-times"><!-- KEEP ME --></span></a>
-												<a class="btn btn-sm btn-default btn-stripped download-btn" href="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(document.fileName)}" title="Download ${downloadTitle}"><span class="fa fa-download"><!-- KEEP ME --></span></a>
-												<c:if test="${fn:endsWith(fn:toLowerCase(document.fileName), '.pdf')}">
-													<a class="btn btn-sm btn-default btn-stripped qrcode-btn" href="/documents/${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}/${mtl:encodePathSegment(document.fileName)}?qrcode=true" title="${downloadQrTitle}"><span class="fa fa-qrcode"><!-- KEEP ME --></span></a>
-												</c:if>
-											</span>
-										</div>
-									</form>
-									<!-- delete/rename -->
-									
-								</c:if>
-							</div>
-						</li>
-					</c:forEach>
-						<li>
-							<div class="preview_meta">
-								<c:if test="${isOwnEntry}">
-									<bs:linkButton href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}" size="defaultSize" textKey="bibtex.actions.additionalFiles" additionalClass="addDocument pull-right" style="defaultStyle" />
-									<div id="inputDiv">
-											<!-- keep me! - temporary content -->
-									</div> 
-								</c:if>
-							</div>
-						</li>
-					
-					<!--+
-						|
-						| add another document
-						|
-						+-->
-					
-					</c:otherwise>
-				</c:choose>
-			</ul>
-		</c:if>
+						</c:if>
+					</div>
+				</div>
+			</div>
+		</c:forEach>
+		<div class="add-document text-right">
+			<bs:linkButton href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}" size="xsmall" textKey="bibtex.actions.additionalFiles" additionalClass="addDocument" style="defaultStyle" icon="file-o" />
+		</div>
+	</div>
 </jsp:root>

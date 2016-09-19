@@ -1036,22 +1036,7 @@ public class Functions {
 		}
 		return users;
 	}
-
-	/**
-	 * 
-	 * @param filename
-	 * @return all invalid characters for html attribute id replaced by '-'.
-	 */
-	public static String downloadFileId(final String filename) {
-		return filename.replaceAll("[^A-Za-z0-9]", "-");
-	}
-
-	/**
-	 * returns true, if command implements DidYouKnowMessageCommand interface
-	 * 
-	 * @param command
-	 * @return true|false
-	 */
+	
 	/**
 	 * returns true, if command implements DidYouKnowMessageCommand interface
 	 * and has a didYouKnowMessage set
