@@ -30,7 +30,6 @@ public class FavouriteLayout {
 	public FavouriteLayout(FavouriteLayoutSource source, String style) {
 		this.source = source;
 		this.style = style.toUpperCase();
-		//TODO working with Filemanagers
 		this.displayName = style.toLowerCase();
 		if (SimpleExportLayout.BIBTEX.getDisplayName().equalsIgnoreCase(style)) {
 			displayName = SimpleExportLayout.BIBTEX.getDisplayName();
@@ -47,7 +46,8 @@ public class FavouriteLayout {
 	}
 	
 	/**
-	 * @return the displayName
+	 * ATTENTION
+	 * @return the displayName. Works only for "SIMPLE" source. Nothing else!!
 	 */
 	public String getDisplayName() {
 		return this.displayName;

@@ -36,7 +36,7 @@ public class FavouriteLayoutsDisplayNameTag extends RequestContextAwareTag {
 	}
 
 	/**
-	 * @return
+	 * @return a correct display name for the given style
 	 */
 	private String renderFavouriteLayout() {
 		final FavouriteLayoutSource source = this.favouriteLayout.getSource();

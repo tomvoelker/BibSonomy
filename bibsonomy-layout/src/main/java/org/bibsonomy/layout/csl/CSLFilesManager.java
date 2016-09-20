@@ -40,7 +40,7 @@ public class CSLFilesManager {
 	
 	/**
 	 * init this manager
-	 * reads all csl files from {@link #CSL_FOLDER}
+	 * reads all csl files from classpath: /org/citationstyles/styles/
 	 */
 	public void init() {
 		final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(CSLFilesManager.class.getClassLoader());
@@ -113,6 +113,9 @@ public class CSLFilesManager {
 	 * @return the csl style
 	 */
 	public CSLStyle getStyleByName(final String cslName) {
+		if(!cslFiles.containsKey(cslName)){
+			return cslFilesIncludingAliases.get(cslName);
+		}
 		return this.cslFiles.get(cslName);
 	}
 
