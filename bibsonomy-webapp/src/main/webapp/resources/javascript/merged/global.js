@@ -23,6 +23,7 @@ includeJavaScript("/resources/javascript/holder.js");
 includeJavaScript("/resources/javascript/bootstrap-dialog.js");
 includeJavaScript("/resources/javascript/custom.js");
 includeJavaScript("/resources/javascript/bootstrap-datepicker.js");
+includeJavaScript("/resources/select2/js/select2.full.js");
 includeJavaScript("/resources/javascript/bootstrap-tagsinput.js");
 includeJavaScript("/resources/javascript/citeproc/xmldom.js");
 includeJavaScript("/resources/javascript/citeproc/csllocales.js");

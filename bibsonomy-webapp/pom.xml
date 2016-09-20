@@ -98,6 +98,7 @@
 										<include>${project.build.webapp.resourcedir}/javascript/bootstrap-dialog.js</include>
 										<include>${project.build.webapp.resourcedir}/javascript/custom.js</include>
 										<include>${project.build.webapp.resourcedir}/javascript/bootstrap-datepicker.js</include>
+										<include>${project.build.webapp.resourcedir}/select2/js/select2.full.js</include>
 										<include>${project.build.webapp.resourcedir}/javascript/bootstrap-tagsinput.js</include>
 										<include>${project.build.webapp.resourcedir}/javascript/citeproc/xmldom.js</include>
 										<include>${project.build.webapp.resourcedir}/javascript/citeproc/csllocales.js</include>

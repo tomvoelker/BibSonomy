@@ -29,10 +29,6 @@
 
 
 		<jsp:attribute name="headerExt">
-			<script type="text/javascript" src="${resdir}/select2/js/select2.full.js"><!-- keep me --></script>
-			
-			<link rel="stylesheet" type="text/css" href="${resdir}/select2/css/select2.css"/>
-			
 			
 			<!-- start and setup the logic behind the export size radio buttons (setupPostExportSize in functions.js)-->
 			<script type="text/javascript">
