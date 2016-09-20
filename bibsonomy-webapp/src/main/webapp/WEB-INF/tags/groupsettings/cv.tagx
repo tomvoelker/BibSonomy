@@ -10,6 +10,7 @@
 		  xmlns:form="http://www.springframework.org/tags/form"
 		  xmlns:spring="http://www.springframework.org/tags"
 		  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true" />
@@ -69,8 +70,10 @@
 								</div>
 							</div>
 							<div class="col-md-4" id="statusField">
-								<div style="float:right; display: none" class="col-md-2"> 
-									<img src="${resdir}/image/ajax_loader.gif" alt="wait" id="loadingDiv" />
+								<div style="float:right; display: none" class="col-md-2">
+									<span id="loadingDiv">
+										<fontawesome:icon icon="circle-o-notch" fixedWidth="${true}" spin="${true}"/>
+									</span>
 								</div>
 								<div id="statusText" class="col-md-10"><!-- keep me --></div>
 							</div>
