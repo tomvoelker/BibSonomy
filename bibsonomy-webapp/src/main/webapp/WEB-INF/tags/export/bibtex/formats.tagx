@@ -60,5 +60,8 @@
 				</c:if>
 			</c:forEach>
 		</select>
+		<div class="alert alert-info">
+  			Your default citation options to be shown in the bar above, can be changed in the <a href="/settings?selTab=1" target="_blank">settings</a>.
+		</div>	
 	</div>
 </jsp:root>
