@@ -26,7 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.iucr;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -45,7 +46,15 @@ public class IucrScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_92");
+		assertScraperResult("http://scripts.iucr.org/cgi-bin/paper?S0108768108005119", null, IucrScraper.class, "iucr/IucrScraperUnitURLTest.bib");
+	}
+	
+	/**
+	 * the journals test
+	 */
+	@Test
+	public void url2Test() {
+		assertScraperResult("http://journals.iucr.org/j/issues/2012/02/00/he5533/index.html", null, IucrScraper.class, "iucr/IucrScraperUnitURLTest2.bib");
 	}
 
 }

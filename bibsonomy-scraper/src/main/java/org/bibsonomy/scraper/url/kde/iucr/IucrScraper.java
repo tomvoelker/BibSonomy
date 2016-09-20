@@ -26,9 +26,11 @@
  */
 package org.bibsonomy.scraper.url.kde.iucr;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.net.URL;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,14 +38,9 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
-import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.scraper.exceptions.UsageFailureException;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 import org.bibsonomy.util.WebUtils;
 
 /**
@@ -68,102 +65,55 @@ import org.bibsonomy.util.WebUtils;
  * one ->
  * http://scripts.iucr.org/cgi-bin/paper?S0108768108005119
  * 
- * The rest is simple: extract the cnor from the form and build a download link,
+ * The rest is simple: extract the cnor from the url
  * like this -> http://scripts.iucr.org/cgi-bin/biblio?Action=download&cnor=ck5030&saveas=BIBTeX
  * 
  * @author tst
  */
-public class IucrScraper extends AbstractUrlScraper {
+public class IucrScraper extends GenericBibTeXURLScraper {
 	private static final Log log = LogFactory.getLog(IucrScraper.class);
 	
 	private static final String SITE_NAME = "International Union of Crystallography";
 	private static final String SITE_URL = "http://www.iucr.org/";
 	private static final String INFO = "Scraper for journals from the " + href(SITE_URL, SITE_NAME) +".";
 	
-	/*
-	 * messages
-	 */
-	private static final String USEAGE_FAILURE_MESSAGE = "Please open the publication in a new browser tab and post it again.";
-
-	/*
-	 * hosts
-	 */
-
 	private static final String HOST = "iucr.org";
-
-	private static final String HOST_JOURNAL_PREFIX = "journal";
-
-	private static final String HOST_SCRIPTS_PREFIX = "scripts";
-
-	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
-	private static final Pattern cnorPattern = Pattern.compile("<input name=\"cnor\" value=\"([^\"]*)\" type=\"hidden\">");
+	private static final List<Pair<Pattern, Pattern>> patterns = Arrays.asList(
+		new Pair<Pattern, Pattern>(Pattern.compile(".*scripts." + HOST), AbstractUrlScraper.EMPTY_PATTERN),
+		new Pair<Pattern, Pattern>(Pattern.compile(".*journals." + HOST), AbstractUrlScraper.EMPTY_PATTERN)
+	);
 
-	/*
-	 * Download link
-	 */
+	/** Download link */
 	private static final String DOWNLOAD_LINK_PART = "http://scripts.iucr.org/cgi-bin/biblio?Action=download&saveas=BIBTeX&cnor=";
-	private static final Pattern abstractPattern = Pattern.compile("<meta name=\"DC.description\" content=\"(.*) />");
+	
+	private static final Pattern DC_LINK_PATTERN = Pattern.compile("<meta name=\"DC.link\" content=\"(.*)\" />");
 
 	@Override
 	public String getInfo() {
 		return INFO;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL, java.lang.String)
+	 */
 	@Override
-	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
-		sc.setScraper(this);
-
-		if (sc.getUrl().getHost().startsWith(HOST_JOURNAL_PREFIX)){
-			throw new UsageFailureException(USEAGE_FAILURE_MESSAGE);
-		}
-		
-		if (sc.getUrl().getHost().startsWith(HOST_SCRIPTS_PREFIX)) {
-			try {
-				final String pageContent = sc.getPageContent();
-
-				// extract cnor number from HTML
-				final Matcher cnorMatcher = cnorPattern.matcher(pageContent);
-				if(cnorMatcher.find()) {
-					final String cnor = cnorMatcher.group(1);
-
-					// download bibtex
-					String bibtex = WebUtils.getContentAsString(new URL((DOWNLOAD_LINK_PART + cnor)));
-
-					if (bibtex != null) {
-
-						bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "abstract", abstractParser(sc.getUrl()));
-						bibtex = bibtex.replace("}\nkeywords={", "},\nkeywords={");
-						// successful
-						sc.setBibtexResult(bibtex);
-						return true;
-
-					}
-					throw new ScrapingFailureException("Bibtex download failed. Bibtex result is null.");
-
-					// can't extract cnor
-				}
-				// missing id
-				throw new ScrapingFailureException("ID for donwload link is missing.");
-			} catch (IOException ex) {
-				throw new InternalFailureException(ex);
-			}
-		}
-		// no journal or scripts page
-		throw new PageNotSupportedException(PageNotSupportedException.DEFAULT_ERROR_MESSAGE + this.getClass().getName());
-	}
-	
-	private static String abstractParser(URL url){
+	protected String getDownloadURL(final URL url, String cookies) throws ScrapingException, IOException {
 		try {
-			Matcher m = abstractPattern.matcher(WebUtils.getContentAsString(url));
-			if(m.find()) {
-				return m.group(1);
+			final String pageContent = WebUtils.getContentAsString(url);
+			final Matcher matcher = DC_LINK_PATTERN.matcher(pageContent);
+			if (matcher.find()) {
+				final String id = matcher.group(1);
+				if (present(id)) {
+					return DOWNLOAD_LINK_PART + id.replace("http://scripts.iucr.org/cgi-bin/paper?", "");
+				}
 			}
-		} catch(Exception e) {
-			log.error("error while getting abstract for " + url, e);
+		} catch (final IOException e) {
+			log.error("can't get pape content", e);
 		}
 		return null;
 	}
+	
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
