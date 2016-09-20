@@ -929,6 +929,7 @@
 	<bean id="exportPageController" class="org.bibsonomy.webapp.controller.ExportPageController" scope="request">
 		<property name="layoutRenderer" ref="jabrefLayoutRenderer"/>
 		<property name="layouts" ref="standardLayouts" />
+		<property name="cslFilesManager" ref="CSLFilesManager" />
 	</bean>
 	
 	<bean id="CSLStyleController" class="org.bibsonomy.webapp.controller.CSLStyleController" scope="request">
