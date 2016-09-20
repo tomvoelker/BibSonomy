@@ -81,6 +81,9 @@ public class UserSettings implements Serializable {
 	 */
 	private int listItemcount = 20;
 	
+	/**
+	 * the layouts to be shown on publications and citations
+	 */
 	private LinkedList<FavouriteLayout> favouriteLayouts = new LinkedList<FavouriteLayout>();	
 	
 	private boolean showBookmark = true;
