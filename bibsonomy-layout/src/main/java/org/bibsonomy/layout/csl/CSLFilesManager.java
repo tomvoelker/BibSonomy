@@ -34,6 +34,8 @@ public class CSLFilesManager {
 
 	// mapping from id to CSLStyle which contains the id itself, a display name and the content of the file
 	private Map<String, CSLStyle> cslFiles = new HashMap<String, CSLStyle>();
+	
+	private Map<String, CSLStyle> cslFilesIncludingAliases = new HashMap<String, CSLStyle>();
 	private Map<String, HashSet<String>> aliases = new HashMap<String, HashSet<String>>();
 	
 	/**
@@ -75,7 +77,7 @@ public class CSLFilesManager {
 						this.cslFiles.put(fileName.toLowerCase().replace(".csl", ""), new CSLStyle(fileName, extractTitle(cslStyleSource), cslStyleSource));
 						if(aliases.containsKey(fileName.toLowerCase().replace(".csl", ""))){
 							for(String alias : aliases.get(fileName.toLowerCase().replace(".csl", ""))){
-								this.cslFiles.put(alias, new CSLStyle(fileName, extractTitle(cslStyleSource), cslStyleSource));
+								this.cslFilesIncludingAliases.put(alias, new CSLStyle(fileName, extractTitle(cslStyleSource), cslStyleSource));
 							}
 						}
 					} catch (final ParserConfigurationException | SAXException | IOException e) {
@@ -84,6 +86,7 @@ public class CSLFilesManager {
 					
 				}
 			}
+			cslFilesIncludingAliases.putAll(cslFiles);
 		} catch (final IOException e) {
 			log.error("error while loading csl files", e);
 		}
@@ -119,5 +122,14 @@ public class CSLFilesManager {
 	 */
 	public Map<String, CSLStyle> getCslFiles() {
 		return Collections.unmodifiableMap(this.cslFiles);
+	}
+	/**
+	 * ATTENTION
+	 * should only be used if {@link #getCslFiles()} does NOT contain the correct key.
+	 * @return all cslFiles INCLUDING the ones which have been renamed or moved.
+	 * Can and will contain duplicates!! {@link #getCslFiles()} will not.
+	 */
+	public Map<String, CSLStyle> getCslFilesIncludingAliases() {
+		return Collections.unmodifiableMap(this.cslFilesIncludingAliases);
 	}
 }
