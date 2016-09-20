@@ -27,6 +27,7 @@
 package org.bibsonomy.model;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.TimeZone;
 
@@ -83,9 +84,10 @@ public class UserSettings implements Serializable {
 	
 	/**
 	 * the layouts to be shown on publications and citations
+	 * Reihenfolge ist egal. Wird vor jedem speichern in der Datenbank sortiert.
 	 */
-	private LinkedList<FavouriteLayout> favouriteLayouts = new LinkedList<FavouriteLayout>();	
-	
+	private LinkedList<FavouriteLayout> favouriteLayouts = (LinkedList<FavouriteLayout>) Arrays.asList(new FavouriteLayout("SIMPLE", "BIBTEX"), new FavouriteLayout("SIMPLE", "ENDNOTE"), new FavouriteLayout("JABREF", "APA_HTML"),new FavouriteLayout("JABREF", "CHICAGO"),new FavouriteLayout("JABREF", "DIN1505"),new FavouriteLayout("JABREF", "HARVARDHTML"), new FavouriteLayout("JABREF", "MSOFFICEXML"));
+		
 	private boolean showBookmark = true;
 	
 	// TODO: rename to showPublication
