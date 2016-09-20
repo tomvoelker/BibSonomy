@@ -62,12 +62,6 @@
 		</select>
 		<div class="alert alert-info">
   			Your default citation options to be shown in the bar above, can be changed in the <a href="/settings?selTab=1" target="_blank" class="alert-link">settings</a>.
-		</div>
-		<select class="selectpicker">
- 			<option>Mustard</option>
-  			<option>Ketchup</option>
-  			<option>Relish</option>
-		</select>
-		
+		</div>		
 	</div>
 </jsp:root>
