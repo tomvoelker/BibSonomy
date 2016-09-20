@@ -73,6 +73,11 @@ public class CSLFilesManager {
 						final String cslStyleSource = builder.toString().trim();
 						final String fileName = resource.getFilename();
 						this.cslFiles.put(fileName.toLowerCase().replace(".csl", ""), new CSLStyle(fileName, extractTitle(cslStyleSource), cslStyleSource));
+						if(aliases.containsKey(fileName.toLowerCase().replace(".csl", ""))){
+							for(String alias : aliases.get(fileName.toLowerCase().replace(".csl", ""))){
+								this.cslFiles.put(alias, new CSLStyle(fileName, extractTitle(cslStyleSource), cslStyleSource));
+							}
+						}
 					} catch (final ParserConfigurationException | SAXException | IOException e) {
 						log.error("error reading file " + resource.getFilename(), e);
 					}
