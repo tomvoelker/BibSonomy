@@ -105,7 +105,6 @@ public class CSLFilesManager {
 		final Document document = documentBuilder.parse(new InputSource(new StringReader(cslStyleSource)));
 		
 		String title = document.getElementsByTagName("title").item(0).getTextContent();
-//		title = title.replaceAll("\"", "'"); // TODO: @jpf: why do we replace every " with a '?
 		return title.trim();
 	}
 	
