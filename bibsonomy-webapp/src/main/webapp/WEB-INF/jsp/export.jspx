@@ -29,7 +29,6 @@
 
 
 		<jsp:attribute name="headerExt">
-			
 			<!-- start and setup the logic behind the export size radio buttons (setupPostExportSize in functions.js)-->
 			<script type="text/javascript">
 				<![CDATA[

@@ -37,7 +37,9 @@
 					</c:choose>
 				</c:if>
 			</c:forEach>
-			
+			<!-- 
+			| CSL layouts
+			 -->
 			<c:forEach var="mapEntry" items="${command.cslLayoutMap}">
 				<option value='/csl-layout/${fn:substringBefore(mapEntry.value.id,".csl")}/${pathAndQueryString}'><c:out value="${mapEntry.value.displayName}"/></option>	
 			</c:forEach>
