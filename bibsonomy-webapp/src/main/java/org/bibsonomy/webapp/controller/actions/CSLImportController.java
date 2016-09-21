@@ -1,14 +1,23 @@
 package org.bibsonomy.webapp.controller.actions;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.LayoutPart;
+import org.bibsonomy.layout.csl.CSLFilesManager;
+import org.bibsonomy.model.Document;
 import org.bibsonomy.model.User;
 import org.bibsonomy.services.filesystem.FileLogic;
+import org.bibsonomy.util.file.ServerUploadedFile;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.command.actions.CSLImportCommand;
 import org.bibsonomy.webapp.controller.SettingsPageController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.validation.CslImportValidator;
+import org.bibsonomy.webapp.validation.JabRefImportValidator;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * TODO: add documentation to this class
@@ -16,11 +25,14 @@ import org.springframework.security.access.AccessDeniedException;
  * @author jp
  */
 public class CSLImportController extends SettingsPageController {
+	private static final Log log = LogFactory.getLog(ImportBookmarksController.class);	
 	
 	private static final String DELETE = "delete";
 
 	private static final String CREATE = "create";
-
+	
+	private CSLFilesManager cslFileManager;
+	private CslImportValidator validator;
 	private FileLogic fileLogic;
 	
 	@Override
@@ -45,8 +57,47 @@ public class CSLImportController extends SettingsPageController {
 			errors.reject("error.field.valid.ckey");
 			return Views.SETTINGSPAGE;
 		}
+		/*
+		 * delete a layout
+		 */
+		if (DELETE.equals(command.getAction())) {
+			final String hash = CSLImpCom.getHash();
+			final String userName = loginUser.getName();
+			
+			log.debug("attempting to delete layout " + hash + " for user " + userName);
+			
+			final Document document = this.logic.getDocument(userName, hash);
+
+			if (document != null) {
+				log.debug("deleting layout " + document.getFileName() + " for user " + userName);
+				
+				this.logic.deleteDocument(document, null);
+				this.fileLogic.deleteJabRefLayout(hash);
+				
+				/*
+				 * delete layout object from exporter
+				 */
+				this.jabrefLayoutRenderer.unloadUserLayout(userName);
+			} else {
+				errors.reject("error.document_not_found");
+			}
+
+		} else if (CREATE.equals(command.getAction())) {
+			this.validator.validate(command, errors);
+			if (!this.errors.hasErrors()) {
+				log.debug("creating layouts for user " + loginUser.getName());
+				/*
+				 * .item LAYOUT
+				 */
+				writeLayoutPart(loginUser, CSLImpCom.getFileItem());
+			}
+		}
 		
-		return Views.ERROR;
+		/*
+		 * Show SettingsView-ImportTab(2)
+		 */
+		command.setSelTab(Integer.valueOf(2));
+		return super.workOn(command);
 	}
 	
 	@Override
@@ -59,5 +110,45 @@ public class CSLImportController extends SettingsPageController {
 	 */
 	public void setFileLogic(FileLogic fileLogic) {
 		this.fileLogic = fileLogic;
+	}
+	
+	/**
+	 * Writes the file of the specified layout part to disk and into the 
+	 * database.
+	 * 
+	 * @param loginUser
+	 * @param fileItem
+	 * @param layoutPart
+	 */
+	private void writeLayoutPart(final User loginUser, final MultipartFile fileItem) {
+		if (fileItem != null && fileItem.getSize() > 0) {
+			log.debug("writing layout part with file " + fileItem.getOriginalFilename());
+			try {
+				/*
+				 * write file to disk
+				 */
+				final Document uploadedFile = this.fileLogic.writeCSLLayout(loginUser.getName(), new ServerUploadedFile(fileItem));
+				/*
+				 * store document in database
+				 */
+				this.logic.createDocument(uploadedFile, null);
+			} catch (final Exception ex) {
+				errors.reject("settings.jabRef.error.import", new Object[]{ex.getMessage()}, null);
+			}
+		}
+	}
+	
+	/**
+	 * @param validator the validator to set
+	 */
+	public void setValidator(CslImportValidator validator) {
+		this.validator = validator;
+	}
+
+	/**
+	 * @param cslFileManager the cslFileManager to set
+	 */
+	public void setCslFileManager(CSLFilesManager cslFileManager) {
+		this.cslFileManager = cslFileManager;
 	}
 }

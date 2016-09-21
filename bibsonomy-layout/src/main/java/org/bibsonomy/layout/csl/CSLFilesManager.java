@@ -4,12 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -136,5 +133,13 @@ public class CSLFilesManager {
 	 */
 	public Map<String, CSLStyle> getCslFilesIncludingAliases() {
 		return Collections.unmodifiableMap(this.cslFilesIncludingAliases);
+	}
+	/** Unloads the custom layout of the user.
+	 * 
+	 * @param userName
+	 */
+	public void unloadUserLayout(final String userName) {
+		cslFiles.remove(CslLayoutUtils.userLayoutName(userName));
+		cslFilesIncludingAliases.remove(CslLayoutUtils.userLayoutName(userName));
 	}
 }

@@ -33,7 +33,7 @@ import org.bibsonomy.common.enums.LayoutPart;
 import org.bibsonomy.common.enums.PreviewSize;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.util.file.UploadedFile;
-import org.bibsonomy.services.filesystem.CSLFileLogic;
+import org.bibsonomy.services.filesystem.CslFileLogic;
 import org.bibsonomy.services.filesystem.DocumentFileLogic;
 import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.services.filesystem.JabRefFileLogic;
@@ -50,7 +50,7 @@ public class ServerFileLogic implements FileLogic {
 	private TempFileLogic tempFileLogic;
 	private JabRefFileLogic jabRefFileLogic;
 	private DocumentFileLogic documentFileLogic;
-	private CSLFileLogic cslFileLogic;
+	private CslFileLogic cslFileLogic;
 	
 	@Override
 	public File getFileForDocument(Document document) {
@@ -198,7 +198,7 @@ public class ServerFileLogic implements FileLogic {
 	/**
 	 * @param cslFileLogic the cslFileLogic to set
 	 */
-	public void setCslFileLogic(CSLFileLogic cslFileLogic) {
+	public void setCslFileLogic(CslFileLogic cslFileLogic) {
 		this.cslFileLogic = cslFileLogic;
 	}
 

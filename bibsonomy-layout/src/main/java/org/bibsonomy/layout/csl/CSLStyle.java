@@ -4,10 +4,11 @@ package org.bibsonomy.layout.csl;
  * 
  * @author jp
  */
-public class CSLStyle {
+public class CSLStyle extends org.bibsonomy.model.Layout{
 	private String id;
 	private String displayName;
 	private String content;
+	private boolean userLayout;
 
 	/**
 	 * @param id 
@@ -15,11 +16,20 @@ public class CSLStyle {
 	 * @param content 
 	 */
 	public CSLStyle(String id, String displayName, String content) {
+		super(id);
 		this.id = id;
 		this.displayName = displayName;
 		this.content = content;
 	}
-
+	//TODO eigtl nur vorrübergehend.. vielleicht
+	/**
+	 * @param id 
+	 */
+	public CSLStyle(String id) {
+		super(id);
+		this.id = id;
+	}
+	
 	/**
 	 * @return the id
 	 */
@@ -36,21 +46,6 @@ public class CSLStyle {
 	}
 
 	/**
-	 * @return the displayName
-	 */
-	public String getDisplayName() {
-		return this.displayName;
-	}
-
-	/**
-	 * @param displayName
-	 *            the displayName to set
-	 */
-	public void setDisplayName(String displayName) {
-		this.displayName = displayName;
-	}
-
-	/**
 	 * @return the content
 	 */
 	public String getContent() {
@@ -63,5 +58,28 @@ public class CSLStyle {
 	 */
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.Layout#hasEmbeddedLayout()
+	 */
+	@Override
+	public boolean hasEmbeddedLayout() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	/**
+	 * @return the userLayout
+	 */
+	public boolean isUserLayout() {
+		return this.userLayout;
+	}
+
+	/**
+	 * @param userLayout the userLayout to set
+	 */
+	public void setUserLayout(boolean userLayout) {
+		this.userLayout = userLayout;
 	}
 }

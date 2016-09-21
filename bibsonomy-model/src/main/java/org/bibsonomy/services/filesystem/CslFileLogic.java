@@ -10,7 +10,7 @@ import org.bibsonomy.model.util.file.UploadedFile;
  *
  * @author jp
  */
-public interface CSLFileLogic {
+public interface CslFileLogic {
 	/**
 	 * The file extension of layout filter file names.
 	 */

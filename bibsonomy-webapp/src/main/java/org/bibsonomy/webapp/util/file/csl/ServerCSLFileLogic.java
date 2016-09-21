@@ -7,7 +7,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.bibsonomy.layout.csl.CslLayoutUtils;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.util.file.UploadedFile;
-import org.bibsonomy.services.filesystem.CSLFileLogic;
+import org.bibsonomy.services.filesystem.CslFileLogic;
 import org.bibsonomy.services.filesystem.extension.ExtensionChecker;
 import org.bibsonomy.services.filesystem.extension.ListExtensionChecker;
 import org.bibsonomy.util.HashUtils;
@@ -20,9 +20,9 @@ import org.bibsonomy.util.file.FileUtil;
  *
  * @author jan
  */
-public class ServerCSLFileLogic extends AbstractServerFileLogic implements CSLFileLogic{
+public class ServerCSLFileLogic extends AbstractServerFileLogic implements CslFileLogic{
 	
-	private final ExtensionChecker extensionChecker = new ListExtensionChecker(Sets.asSet(CSLFileLogic.LAYOUT_FILE_EXTENSION));
+	private final ExtensionChecker extensionChecker = new ListExtensionChecker(Sets.asSet(CslFileLogic.LAYOUT_FILE_EXTENSION));
 	
 	/**
 	 * default constructor
@@ -71,8 +71,7 @@ public class ServerCSLFileLogic extends AbstractServerFileLogic implements CSLFi
 	 */
 	@Override
 	public boolean validCSLLayoutFile(UploadedFile file) {
-		// TODO Auto-generated method stub
-		return true;
+		return this.extensionChecker.checkExtension(file.getFileName());
 	}
 
 	/* (non-Javadoc)
@@ -80,8 +79,7 @@ public class ServerCSLFileLogic extends AbstractServerFileLogic implements CSLFi
 	 */
 	@Override
 	public Collection<String> allowedCSLFileExtensions() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.extensionChecker.getAllowedExtensions();
 	}
 
 }
