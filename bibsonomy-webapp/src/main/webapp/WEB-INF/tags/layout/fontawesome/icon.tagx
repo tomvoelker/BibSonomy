@@ -9,6 +9,7 @@
 	<jsp:directive.attribute name="fixedWidth" type="java.lang.Boolean" required="false" description="add space after icon"/>
 	<jsp:directive.attribute name="stack" type="java.lang.Boolean" required="false" description="stacked"/>
 	<jsp:directive.attribute name="size" type="java.lang.String" required="false" description="size of the icon"/>
+	<jsp:directive.attribute name="spin" type="java.lang.Boolean" required="false" description="spin the icon"/>
 	<jsp:directive.attribute name="spaceAfter" type="java.lang.Integer" required="false" description="space to be added after the icon. supported space: 5"/>
 	
 	<c:if test="${empty stack}">
@@ -35,5 +36,9 @@
 		<c:set var="spaceAfter" value="fa-space-${spaceAfter}" />
 	</c:if>
 	
-	<span class="fa fa-${icon} ${not empty spaceAfter ? spaceAfter : ''} ${not empty fixedWidth and fixedWidth ? 'fa-fw' : ''} ${not empty size and empty stacked ? size : ''} ${not empty stacked ? stacked : ''}"><!-- keep me --></span>
+	<c:if test="${not empty spin and spin}">
+		<c:set var="spinClass" value="fa-spin" />
+	</c:if>
+	
+	<span class="fa fa-${icon} ${not empty spaceAfter ? spaceAfter : ''} ${not empty fixedWidth and fixedWidth ? 'fa-fw' : ''} ${not empty size and empty stacked ? size : ''} ${not empty stacked ? stacked : ''} ${not empty spinClass ? spinClass : ''}"><!-- keep me --></span>
 </jsp:root>

@@ -30,6 +30,24 @@ $(document).ready(function () {
 		});
 	}
 	
+	/* rename button */
+	$('#renameModal').on('show.bs.modal', function (e) {
+		var filename = $(e.relatedTarget).data('filename');
+		
+		$('#fileName').val(filename);
+		$(e.target).find('.modal-progress').hide();
+		$('#newFileName').val(filename).attr('placeholder', filename);
+		$('#rename-doc-button').removeClass('disabled');
+	});
+	
+	$('#renameModal form').submit(function() {
+		renameDocument($('#rename-doc-button'));
+		return false;
+	});
+	
+	$('#rename-doc-button').click(function() {
+		renameDocument(this);
+	});
 
 	/* DELETE BUTTON */
 	$('.remove-btn').click(function() {
@@ -60,27 +78,25 @@ $(document).ready(function () {
 	});
 });
 
-function handleDeleteResponse(o) {
+function renameDocument(button) {
+	$(button).siblings('.modal-progress').show();
+	$(button).addClass('disabled');
+	var form = $(button).closest('.modal-content').find('form');
 	
-	if (o.data.getElementsByTagName("status")[0].innerHTML=="deleted" || o.data.getElementsByTagName("status")[0].innerHTML=="ok") { 
-		
-		o.parent.parentNode.removeChild(o.parent); //remove edit form and buttons
-		$('#'+o.ident).remove(); //remove thumbnail
-		$('.bibtexpreviewimage').first().show(); //show next thumbnail
-		
-	} else {
-		$(o.el).removeClass("btn-stripped").addClass("btn-danger").popover({
-				animation: false,
-				trigger: 'manual',
-				delay: 0,
-				title: function() {
-					return getString("post.resource.document.remove.error.title");
-				},
-				content: function() {
-					return getString("post.resource.document.remove.error");
-				}
-		}).popover("show");
-	}
+	var url = $(form).attr('action');
+	var formData = $(form).serialize();
+	$.ajax({
+		url: url,
+		method: 'POST',
+		data: formData,
+		success: function(data) {
+			$('#renameModal').modal('hide');
+			var newName = $('#newFileName').val();
+			$('.document-name:visible').text(newName).data('filename', newName);
+			
+			showSuccessMessage(getString("publication.documents.rename.success"));
+		}
+	});
 }
 
 function privNoteCallback(o) {
