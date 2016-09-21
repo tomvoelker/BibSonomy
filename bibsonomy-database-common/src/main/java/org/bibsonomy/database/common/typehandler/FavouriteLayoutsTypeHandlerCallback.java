@@ -51,6 +51,7 @@ public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCall
 			setter.setString(null);
 			return;
 		}
+		//removing duplicates
 		final List<FavouriteLayout> favls = new LinkedList<FavouriteLayout>(new LinkedHashSet<FavouriteLayout>((List<FavouriteLayout>) parameter));
 		if (favls.isEmpty()) {
 			setter.setString(null);
@@ -67,7 +68,7 @@ public class FavouriteLayoutsTypeHandlerCallback extends AbstractTypeHandlerCall
 					toBeSet.append(SEP);
 				}
 			}
-			//sets the DB String as '"source1"/"style1", "source2","style2"'
+			//sets the DB String as '"source1"/"style1", "source2"/"style2"'
 			//ofc without the '"'
 			setter.setString(toBeSet.toString().toUpperCase());
 		}
