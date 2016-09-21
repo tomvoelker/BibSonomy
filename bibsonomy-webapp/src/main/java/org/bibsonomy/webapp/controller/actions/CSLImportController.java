@@ -14,7 +14,6 @@ import org.bibsonomy.webapp.controller.SettingsPageController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.CslImportValidator;
-import org.bibsonomy.webapp.validation.JabRefImportValidator;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,7 +30,7 @@ public class CSLImportController extends SettingsPageController {
 
 	private static final String CREATE = "create";
 	
-	private CSLFilesManager cslFileManager;
+	private CSLFilesManager cslFilesManager;
 	private CslImportValidator validator;
 	private FileLogic fileLogic;
 	
@@ -77,7 +76,7 @@ public class CSLImportController extends SettingsPageController {
 				/*
 				 * delete layout object from exporter
 				 */
-				this.jabrefLayoutRenderer.unloadUserLayout(userName);
+				this.cslFilesManager.unloadUserLayout(userName);
 			} else {
 				errors.reject("error.document_not_found");
 			}
@@ -149,6 +148,6 @@ public class CSLImportController extends SettingsPageController {
 	 * @param cslFileManager the cslFileManager to set
 	 */
 	public void setCslFileManager(CSLFilesManager cslFileManager) {
-		this.cslFileManager = cslFileManager;
+		this.cslFilesManager = cslFileManager;
 	}
 }
