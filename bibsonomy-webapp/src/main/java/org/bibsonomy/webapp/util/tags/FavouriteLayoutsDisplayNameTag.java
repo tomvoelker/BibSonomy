@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.servlet.jsp.JspException;
 
 import org.bibsonomy.layout.csl.CSLFilesManager;
+import org.bibsonomy.layout.csl.CSLStyle;
 import org.bibsonomy.layout.jabref.AbstractJabRefLayout;
 import org.bibsonomy.layout.jabref.JabrefLayoutRenderer;
 import org.bibsonomy.model.enums.FavouriteLayoutSource;
@@ -49,8 +50,9 @@ public class FavouriteLayoutsDisplayNameTag extends RequestContextAwareTag {
 		case CSL:
 			return getCslDisplayName(name);
 		default:
-			return ("Style has been deleted.");
+			break;
 		}
+		return null;
 	}
 
 	/**
@@ -58,7 +60,11 @@ public class FavouriteLayoutsDisplayNameTag extends RequestContextAwareTag {
 	 * @return
 	 */
 	private String getCslDisplayName(final String displayName) {
-		return this.getCslFileManager().getStyleByName(displayName).getDisplayName();
+		CSLStyle style = this.getCslFileManager().getStyleByName(displayName);
+		if(style == null){
+			return "Style has been deleted.";			
+		}
+		return style.getDisplayName();
 	}
 
 	/**
