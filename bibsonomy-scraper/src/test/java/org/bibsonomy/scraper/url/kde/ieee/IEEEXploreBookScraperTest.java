@@ -39,7 +39,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * Scraper URL tests #36 for IEEEXploreBookScraper
+ * Scraper URL tests for {@link IEEEXploreBookScraper}
  * @author tst
  *
  *
@@ -96,7 +96,7 @@ public class IEEEXploreBookScraperTest {
 	public void testReferences() throws Exception{
 		final ScrapingContext sc = new ScrapingContext(new URL("http://ieeexplore.ieee.org/xpl/articleDetails.jsp?arnumber=5286085"));
 		
-		IEEEXploreBookScraper book = new IEEEXploreBookScraper();
+		final IEEEXploreBookScraper book = new IEEEXploreBookScraper();
 		
 		assertTrue(book.scrape(sc));
 		
@@ -108,7 +108,7 @@ public class IEEEXploreBookScraperTest {
 		
 		assertTrue(reference.length() > 100);
 		
-		assertEquals("".trim(), reference.substring(0, 50).trim());
+		assertEquals("1.", reference.trim().substring(0, 2));
 		
 		assertTrue(reference.contains("U. Bojars"));
 	}
