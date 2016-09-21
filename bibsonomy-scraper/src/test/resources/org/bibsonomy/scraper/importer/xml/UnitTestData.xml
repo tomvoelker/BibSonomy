@@ -554,12 +554,6 @@
 		<BibFile>PubMedScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.pubmed.PubMedScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_92">
-		<TestDescription>test for scripts.iucr.org</TestDescription>
-		<URL>http://scripts.iucr.org/cgi-bin/paper?S0108768108005119</URL>
-		<BibFile>IucrScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.iucr.IucrScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_93">
 		<TestDescription>OSA Scraper url test</TestDescription>
 		<URL>https://www.osapublishing.org/josaa/abstract.cfm?uri=josaa-25-5-1084</URL>
