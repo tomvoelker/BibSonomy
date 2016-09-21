@@ -11,7 +11,7 @@
 	  <!-- goldstandard bookmarks -->
 	  {  
          "type" : "GoldStandardBookmark",
-         "id"   : "${relativeUrlGenerator.getCommunityBookmarkUrlByInterHash(post.resource.interHash)}",
+         "id"   : "${relativeUrlGenerator.getBookmarkUrl(post.resource, null)}",
          <json:abstractBookmark post="${post}" />
       }
 </jsp:root>

@@ -155,8 +155,6 @@ public class PersonPageController extends SingleResourceListController implement
 		return Views.AJAX_JSON;
 	}
 
-
-
 	/**
 	 * @param command
 	 * @return
@@ -165,7 +163,7 @@ public class PersonPageController extends SingleResourceListController implement
 	private View searchAction(PersonPageCommand command) {
 		final List<ResourcePersonRelation> suggestions = this.logic.getPersonSuggestion(command.getFormSelectedName()).withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values()).doIt();
 		
-		JSONArray array = new JSONArray();
+		final JSONArray array = new JSONArray();
 		for (ResourcePersonRelation rel : suggestions) {
 			JSONObject jsonPersonName = new JSONObject();
 			jsonPersonName.put("personId", rel.getPerson().getPersonId());
@@ -283,7 +281,7 @@ public class PersonPageController extends SingleResourceListController implement
 	private View updateAction(PersonPageCommand command) {
 		command.setPerson(this.logic.getPersonById(PersonIdType.PERSON_ID, command.getFormPersonId()));
 		if (command.getPerson() == null) {
-			// TODO: proper frontend responses in cases like this
+			// FIXME: proper frontend responses in cases like this
 			throw new NoSuchElementException();
 		}
 		command.getPerson().setAcademicDegree(command.getFormAcademicDegree());

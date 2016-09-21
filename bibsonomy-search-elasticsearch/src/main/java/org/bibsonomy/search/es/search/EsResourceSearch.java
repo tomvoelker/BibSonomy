@@ -89,6 +89,7 @@ import org.elasticsearch.index.query.MultiMatchQueryBuilder.Type;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
+import org.elasticsearch.index.query.SimpleQueryStringBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
@@ -779,7 +780,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		}
 
 		if (present(titleSearchTerms)) {
-			final QueryBuilder titleSearchQuery = QueryBuilders.simpleQueryStringQuery(titleSearchTerms).field(Fields.Resource.TITLE);
+			final QueryBuilder titleSearchQuery = QueryBuilders.simpleQueryStringQuery(titleSearchTerms).field(Fields.Resource.TITLE).defaultOperator(SimpleQueryStringBuilder.Operator.AND);
 			mainQueryBuilder.must(titleSearchQuery);
 		}
 		

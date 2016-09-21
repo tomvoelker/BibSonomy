@@ -12,15 +12,7 @@
 	<c:choose>
 		<c:when test="${not empty post}">
 			<c:set var="resourceType" value="${post.resource.getClass().getSimpleName()}"/>
-			<c:choose>
-				<c:when test="${not empty post.systemUrl }">
-					<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
-					<c:set var="systemUrl" value="${fn:substringBefore(post.systemUrl,'/') }"/>
-				</c:when>
-				<c:otherwise>
-					<c:set var ="isRemotePost" value="false"/>
-				</c:otherwise>
-			</c:choose>
+			<c:set var="isRemotePost" value="${not empty post.systemUrl and not mtl:isSameHost(post.systemUrl, properties['project.home'])}" />
 		</c:when>
 		<c:otherwise>
 			<c:set var ="isRemotePost" value="false"/>
@@ -54,8 +46,8 @@
 				it is displayed later only via c:out, which escapes XML chars 
 				anyway. 
 			 -->
-			<c:set var="firstName" value="${person.firstName}" />
-			<c:set var="lastName" value="${person.lastName}" />
+			<c:set var="firstName" value="${mtl:cleanBibtex(person.firstName)}" />
+			<c:set var="lastName" value="${mtl:cleanBibtex(person.lastName)}" />
 			<c:choose>
 				<c:when test="${not empty firstName and not empty lastName}">
 					<c:set var="personName" value="${fn:substring(person.firstName, 0, 1)}. ${lastName}" />
@@ -70,20 +62,29 @@
 			</c:if>
 			
 			<!-- FIXME: urls should be build correctly for remote posts. urls should be built using urlgenerator methods -->
-			<c:url var='pubAuthorUrl' value='${urlGenerator.getDisambiguationUrl(publication.interHash, authorEditorUppper, loopStatus.index)}'/>
+			
+			<c:choose>
+				<c:when test="${properties['genealogy.activated'] eq 'true'}">
+					<c:url var='pubAuthorUrl' value='${urlGenerator.getDisambiguationUrl(publication.interHash, authorEditorUppper, loopStatus.index)}'/>
+				</c:when>
+				<c:otherwise>
+					<c:url var='pubAuthorUrl' value='${urlGenerator.getAuthorUrlByPersonName(person)}'/>
+				</c:otherwise>
+			</c:choose>
 			<c:choose>
 				<c:when test="${isRemotePost}">
-					<a href="${urlGenerator.getAuthorUrlByNameAndSysUrl(person.lastName, post.systemUrl)}"><c:out value="${personName}" /></a>	
+					<a href="${urlGeneratorFactory.createURLGeneratorForSystem(post.systemUrl).getAuthorUrlByPersonName(person)}">
+						<c:out value="${personName}" />
+					</a>
 				</c:when>
 				<c:otherwise>
 					<span itemprop="${authorEditor}" itemscope="itemscope" itemtype="http://schema.org/Person">
-						<a href="${pubAuthorUrl}" itemprop="url">
+						<a href="${pubAuthorUrl}" itemprop="url" title="${fn:escapeXml(firstName)} ${fn:escapeXml(lastName)}">
 							<span itemprop="name"><c:out value="${personName}"/></span>
 						</a>
 					</span>
 				</c:otherwise>
 			</c:choose>
-		
 			
 			<!-- append separator "," -->
 			<c:if test="${not loopStatus.last}"><c:out value=", "/></c:if>

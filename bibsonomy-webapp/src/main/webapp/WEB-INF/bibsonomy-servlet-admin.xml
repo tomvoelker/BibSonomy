@@ -7,8 +7,6 @@
 	                    http://www.springframework.org/schema/util 
 	                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-
-
 	<!--  #################### url mapping #################### -->
 	<!--+
 		| url mapping for admin requests
@@ -77,15 +75,11 @@
 					 	<property name="allowedFields">
 							<list>
 								<value>action</value>
+								<value>recommendationResultClass</value>
+								<value>recommenderId</value>
 								<value>queriesPerLatency</value>
 								<value>newrecurl</value>
-								<value>editSid</value>
-								<value>deleteRecIds</value>
-								<value>activeItemRecs</value>
-								<value>disabledItemRecs</value>
-								<value>activeTagRecs</value>
-								<value>disabledTagRecs</value>
-								<value>tab</value>
+								<value>trusted</value>
 							</list>
 						</property>
 					</bean>
@@ -167,10 +161,18 @@
 	</bean>
 	
 	<bean id="adminRecommenderController" class="org.bibsonomy.webapp.controller.admin.AdminRecommenderController" scope="request">
-		<property name="tagRecommender" ref="multiplexingTagRecommender" />
-		<property name="itemRecommender" ref="multiplexingBibTexRecommender" />
-		<property name="dbTagLogic" ref="tagRecommenderLogic" />
-		<property name="dbItemLogic" ref="bibtexRecommenderLogic" />
+		<property name="recommenderMap">
+			<util:map key-type="java.lang.Class">
+				<entry key="org.bibsonomy.recommender.tag.model.RecommendedTag" value-ref="multiplexingTagRecommender" />
+				<entry key="org.bibsonomy.recommender.item.model.RecommendedPost" value-ref="multiplexingBibTexRecommender" />
+			</util:map>
+		</property>
+		<property name="recommenderLogicMap">
+			<util:map key-type="java.lang.Class">
+				<entry key="org.bibsonomy.recommender.tag.model.RecommendedTag" value-ref="tagRecommenderLogic" />
+				<entry key="org.bibsonomy.recommender.item.model.RecommendedPost" value-ref="bibtexRecommenderLogic" />
+			</util:map>
+		</property>
 	</bean>
 	
 	<bean id="adminGroupController" class="org.bibsonomy.webapp.controller.admin.AdminGroupController" scope="request">

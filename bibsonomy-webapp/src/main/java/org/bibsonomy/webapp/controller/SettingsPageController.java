@@ -49,6 +49,7 @@ import org.bibsonomy.model.sync.SyncService;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.opensocial.oauth.database.OAuthLogic;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthUserInfo;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -74,6 +75,9 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	protected OAuthLogic oauthLogic;
 	protected LogicInterface logic;
 	protected RequestLogic requestLogic;
+	
+	protected URLGenerator urlGenerator;
+	
 	/**
 	 * The List is used in a hack to protect certain oAuth Tokens from
 	 * deletions. Particularly, the oAuth-Tokens in PUMA are created
@@ -390,4 +394,10 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		this.invisibleOAuthConsumers = invisibleOAuthConsumers;
 	}
 
+	/**
+	 * @param urlGenerator the urlGenerator to set
+	 */
+	public void setUrlGenerator(URLGenerator urlGenerator) {
+		this.urlGenerator = urlGenerator;
+	}
 }

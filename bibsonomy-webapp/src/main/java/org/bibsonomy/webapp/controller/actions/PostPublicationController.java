@@ -28,9 +28,12 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,7 +47,9 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.bibtex.parser.PostBibTeXParser;
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.DuplicatePostInSnippetErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
@@ -54,11 +59,12 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.services.filesystem.FileLogic;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
 import org.bibsonomy.webapp.util.GroupingCommandUtils;
@@ -70,6 +76,8 @@ import org.bibsonomy.webapp.validation.PostPublicationCommandValidator;
 import org.bibsonomy.webapp.validation.PublicationValidator;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.ValidationUtils;
+
+import com.itextpdf.text.pdf.PdfReader;
 
 import bibtex.parser.ParseException;
 
@@ -93,6 +101,8 @@ public class PostPublicationController extends AbstractEditPublicationController
 	private static final Pattern lineNumberPattern = Pattern.compile("([0-9]+)");
 
 	private PublicationImporter publicationImporter;
+	private FileLogic fileLogic;
+	private Views view;
 
 	@Override
 	public PostPublicationCommand instantiateCommand() {
@@ -236,12 +246,51 @@ public class PostPublicationController extends AbstractEditPublicationController
 					publication.setAuthor(authorNames);
 				}
 			}
-
-			return Views.POST_PUBLICATION;
+			
+			return this.view;
 		}
 
-		// pdf file uploaded
-		if (present(command.getFileName())) {
+		// document file uploaded
+		final List<String> fileNames = command.getFileName();
+		if (present(fileNames)) {
+			final String firstFileName = fileNames.get(0).substring(0, 32); // FIXME: this is a hack
+			final File tempFile = this.fileLogic.getTempFile(firstFileName);
+			PdfReader reader = null;
+			try {
+				final FileInputStream inputStream = new FileInputStream(tempFile);
+				reader = new PdfReader(inputStream);
+				final HashMap<String, String> metaInfo = reader.getInfo();
+				final String title = StringUtils.removeNonNumbersOrLettersOrDotsOrSpace(metaInfo.get("Title"));
+				boolean foundPublication = false;
+				if (present(title)) {
+					final List<String> tags = new LinkedList<>();
+					for (final String titleToken : title.split(" ")) {
+						if (present(titleToken)) {
+							tags.add("sys:title:" + titleToken);
+						}
+					}
+					final List<Post<BibTex>> publicationPosts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, tags, null, null, SearchType.LOCAL, null, null, null, null, 0, 5);
+					final Post<BibTex> bestMatch = getBestMatch(publicationPosts);
+					if (present(bestMatch)) {
+						foundPublication = true;
+						command.setPost(bestMatch);
+					}
+				}
+				
+				if (!foundPublication) {
+					this.getWarnings().reject("post_publication.file.noinfo");
+				}
+				
+				reader.close();
+				inputStream.close();
+			} catch (final IOException e) {
+				log.error("error file reading content from document file", e);
+			} finally {
+				if (reader != null) {
+					reader.close();
+				}
+			}
+			
 			return super.workOn(command);
 		}
 
@@ -254,7 +303,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 			if (log.isDebugEnabled()) {
 				log.debug(this.errors);
 			}
-			return Views.POST_PUBLICATION;
+			return this.view;
 		}
 
 		/*
@@ -293,7 +342,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * (We did not collect errors due to individual broken BibTeX lines, yet!)
 		 */
 		if (this.errors.hasErrors()) {
-			return Views.POST_PUBLICATION;
+			return this.view;
 		}
 
 		/*
@@ -307,7 +356,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 * the parser was not able to produce posts but did not add errors nor throw exceptions
 			 */
 			this.errors.reject("error.upload.failed.parse", "Upload failed because of parser errors.");
-			return Views.POST_PUBLICATION;
+			return this.view;
 		}
 		/* case:
 		 * 	1) we are redirected to this page from a person page, and
@@ -318,7 +367,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		if (command.getPerson() != null) {
 			if (posts != null && posts.size() > 1) {
 				this.errors.reject("error.add_new_thesis", "Only ONE new thesis is allowed to be added!");
-				return Views.POST_PUBLICATION;
+				return this.view;
 			}
 		}
 
@@ -335,16 +384,12 @@ public class PostPublicationController extends AbstractEditPublicationController
 				 */
 				command.setSelection(null);
 				command.setPost(post);
-				/*
-				 * When exactly one post is imported, its tags are not put into
-				 * the tag field. Instead, we show them here as "tags of copied post".
-				 */
-				command.setCopytags(new LinkedList<Tag>(post.getTags()));
+				command.setTags(TagUtils.toTagString(post.getTags(), " "));
+				command.setEditBeforeSaving(true);
 				return super.workOn(command);
 			}
 		}
-
-
+		
 		/*
 		 * Complete the posts with missing information:
 		 *
@@ -438,7 +483,19 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * If there are errors now or not - we return to the post
 		 * publication view to let the user edit his/her posts.
 		 */
-		return Views.POST_PUBLICATION;
+		return this.view;
+	}
+
+	/**
+	 * @param publicationPosts
+	 * @return 
+	 */
+	private static Post<BibTex> getBestMatch(List<Post<BibTex>> publicationPosts) {
+		if (present(publicationPosts)) {
+			return publicationPosts.get(0);
+		}
+		
+		return null;
 	}
 
 	/**
@@ -498,7 +555,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 				 * We also remember the original position of the post to
 				 * add error messages later.
 				 */
-				storageList.put(posts.get(i), i);
+				storageList.put(posts.get(i), Integer.valueOf(i));
 			}
 		}
 		return storageList;
@@ -646,7 +703,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 					 * same as the i-th position in the original list! ->use
 					 * mapping
 					 */
-					final int i = postsToStore.get(post);
+					final int i = postsToStore.get(post).intValue();
 					log.debug("checking post no. " + i + " with intra hash " + intraHash);
 					final List<ErrorMessage> postErrorMessages = allErrorMessages.get(intraHash);
 					if (present(postErrorMessages)) {
@@ -663,15 +720,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		return new PostPublicationCommand();
 	}
 
-	/**
-	 * @param publicationImporter the publicationImporter to set
-	 */
-	public void setPublicationImporter(final PublicationImporter publicationImporter) {
-		this.publicationImporter = publicationImporter;
-	}
-
 	private boolean isPostDuplicate(final Post<BibTex> post, final boolean isOverwrite) {
-
 		final String userName = post.getUser().getName();
 		final String intraHash = post.getResource().getIntraHash();
 		boolean postExisted = false;
@@ -682,5 +731,26 @@ public class PostPublicationController extends AbstractEditPublicationController
 		}
 
 		return !isOverwrite && postExisted;
+	}
+	
+	/**
+	 * @param publicationImporter the publicationImporter to set
+	 */
+	public void setPublicationImporter(final PublicationImporter publicationImporter) {
+		this.publicationImporter = publicationImporter;
+	}
+
+	/**
+	 * @param fileLogic the fileLogic to set
+	 */
+	public void setFileLogic(FileLogic fileLogic) {
+		this.fileLogic = fileLogic;
+	}
+
+	/**
+	 * @param view the view to set
+	 */
+	public void setView(Views view) {
+		this.view = view;
 	}
 }

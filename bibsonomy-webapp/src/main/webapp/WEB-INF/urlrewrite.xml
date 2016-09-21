@@ -225,7 +225,7 @@
 	-->
 	<rule>
 		<name>requPathAttribute</name>
-		<from>^/+(.+)$</from>
+		<from>^/+(.*)$</from>
 		<set name="requPath">$1</set>
 	</rule>
 	
@@ -479,12 +479,13 @@
 	<!-- ############## Curriculum vitae pages ############### -->
 	
 	<!--+
-		| /cv/NAME and /cv/GROUP
+		| /cv/user/USER and /cv/group/GROUP
 		+-->
 	<rule>
 		<name>/cv/user/USER</name>
 		<from>^/+cv/+user/(.+)$</from>
 		<set type="parameter" name="requestedUser">${unescapePath:$1}</set>
+		<set type="parameter" name="requestedType">user</set>
 		<to last="true">/cvpage</to>
 	</rule>
 	
@@ -492,6 +493,7 @@
 		<name>/cv/group/USER</name>
 		<from>^/+cv/+group/(.+)$</from>
 		<set type="parameter" name="requestedUser">${unescapePath:$1}</set>
+		<set type="parameter" name="requestedType">group</set>
 		<to last="true">/cvpage</to>
 	</rule>
 	

@@ -68,7 +68,10 @@ public class PublicationPageController extends AbstractResourcePageController<Bi
 			final List<Post<BibTex>> posts = command.getListCommand(this.getResourceClass()).getList();
 			if (present(posts)) {
 				final Post<BibTex> firstPost = posts.get(0);
-				return new ExtendedRedirectView(this.urlGenerator.getPublicationUrl(firstPost.getResource()), true);
+				final BibTex publication = firstPost.getResource();
+				if (present(publication.getTitle())) {
+					return new ExtendedRedirectView(this.urlGenerator.getPublicationUrl(publication), true);
+				}
 			}
 		}
 		return super.workOnResource(command, format, longHash, requUser, groupingEntity);

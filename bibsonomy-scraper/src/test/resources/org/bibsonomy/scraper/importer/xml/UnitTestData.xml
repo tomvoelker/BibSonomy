@@ -180,20 +180,11 @@
 		<BibFile>PubMedScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.pubmed.PubMedScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_28">
-		<TestDescription>URL scraping test with publication from siencedirect</TestDescription>
-		<URL>http://www.sciencedirect.com/science?_ob=ArticleURL&amp;_udi=B6TYF-4NB99GY-1&amp;_user=616166&amp;_coverDate=06%2F30%2F2007&amp;_alid=1646707541&amp;_rdoc=1&amp;_fmt=high&amp;_orig=search&amp;_origin=search&amp;_zone=rslt_list_item&amp;_cdi=5617&amp;_sort=r&amp;_st=13&amp;_docanchor=&amp;view=c&amp;_ct=99&amp;_acct=C000032339&amp;_version=1&amp;_urlVersion=0&amp;_userid=616166&amp;md5=43c8111ca75493939f9a31643be7a758</URL>
-		<BibFile>ScienceDirectScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper</Scraper>
-		<!-- 400 Bad request -->
-		<Enabled>false</Enabled>
-	</URLTest>
 	<URLTest id="url_29">
 		<TestDescription>URL scraping test with publication from slac spires</TestDescription>
 		<URL>http://inspirehep.net/search?p=find+r+desy-thesis-2007-018</URL>
 		<BibFile>SpiresScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.spires.SpiresScraper</Scraper>
-		<Enabled>true</Enabled>
 	</URLTest>
 	<URLTest id="url_30">
 		<TestDescription>URL scraping test with publication from springerlink</TestDescription>
@@ -206,7 +197,6 @@
 		<URL>http://primo.bibliothek.kit.edu/primo_library/libweb/action/display.do?tabs=detailsTab&amp;ct=display&amp;fn=search&amp;doc=KITSRC087550059&amp;indx=3&amp;recIds=KITSRC087550059&amp;recIdxs=2&amp;elementId=&amp;renderMode=poppedOut&amp;displayMode=full</URL>
 		<BibFile>UBKAScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.karlsruhe.UBKAScraper</Scraper>
-		<Enabled>true</Enabled>
 	</URLTest>
 	<URLTest id="url_32">
 		<TestDescription>URL scraping test with a publication page from Universitätsbibliothek Karlsruhe</TestDescription>
@@ -564,12 +554,6 @@
 		<BibFile>PubMedScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.pubmed.PubMedScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_92">
-		<TestDescription>test for scripts.iucr.org</TestDescription>
-		<URL>http://scripts.iucr.org/cgi-bin/paper?S0108768108005119</URL>
-		<BibFile>IucrScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.iucr.IucrScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_93">
 		<TestDescription>OSA Scraper url test</TestDescription>
 		<URL>https://www.osapublishing.org/josaa/abstract.cfm?uri=josaa-25-5-1084</URL>
@@ -851,14 +835,6 @@
 		<!-- Scientificcommons is down, reason why is unnknown -->
 		<Enabled>false</Enabled>
 	</URLTest>
-	<URLTest id="url_141">
-		<TestDescription>test for siencedirect</TestDescription>
-		<URL>http://www.sciencedirect.com/science?_ob=ArticleURL&amp;_udi=B758F-4K5HWKT-1&amp;_user=616166&amp;_coverDate=06%2F30%2F2006&amp;_alid=1646710831&amp;_rdoc=1&amp;_fmt=high&amp;_orig=search&amp;_origin=search&amp;_zone=rslt_list_item&amp;_cdi=12925&amp;_sort=r&amp;_st=13&amp;_docanchor=&amp;view=c&amp;_ct=571&amp;_acct=C000032339&amp;_version=1&amp;_urlVersion=0&amp;_userid=616166&amp;md5=eb0d5fb01f90e5e79c76356a881d468a</URL>
-		<BibFile>ScienceDirectScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper</Scraper>
-		<!-- 400 Bad request -->
-		<Enabled>false</Enabled>
-	</URLTest>
 	<URLTest id="url_144">
 		<TestDescription>test for cell scraper</TestDescription>
 		<URL>http://www.cell.com/cell/abstract/S0092-8674(09)00271-2</URL>
@@ -952,14 +928,6 @@
 		<BibFile>IEEEXploreBookScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEXploreBookScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_159">
-		<TestDescription>URL scraping test for sciencedirect scraper</TestDescription>
-		<URL>http://www.sciencedirect.com/science?_ob=ArticleURL&amp;_udi=B6VRG-4P2J0DY-2&amp;_user=4861060&amp;_rdoc=1&amp;_fmt=&amp;_orig=search&amp;_sort=d&amp;_docanchor=&amp;view=c&amp;_acct=C000065416&amp;_version=1&amp;_urlVersion=0&amp;_userid=4861060&amp;md5=79ade29e7ed69e54fd25657532c9f419</URL>
-		<BibFile>ScienceDirectScraperUnitURLTest3.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper</Scraper>
-		<!-- URL is incorrect -->
-		<Enabled>false</Enabled>
-	</URLTest>
 	<URLTest id="url_160">
 		<TestDescription>Amazon.de scraping test</TestDescription>
 		<URL>http://www.amazon.de/gp/product/3426274914/ref=s9_top_bw_i3/278-8327421-8514538?pf_rd_m=A3JWKAKR8XB7XF&amp;pf_rd_s=center-4&amp;pf_rd_r=0QDEYW5TCNM11354JY22&amp;pf_rd_t=101&amp;pf_rd_p=473590033&amp;pf_rd_i=299956</URL>
@@ -973,14 +941,6 @@
 		<BibFile>AmazonScraperUnitURLTest10.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.amazon.AmazonScraper</Scraper>
 		<Enabled>true</Enabled>
-	</URLTest>
-	<URLTest id="url_162">
-		<TestDescription>URL scraping test with books from sciencedirect</TestDescription>
-		<URL>http://www.sciencedirect.com/science?_ob=ArticleURL&amp;_udi=B6VRG-45H0GV7-5&amp;_user=4861060&amp;_rdoc=1&amp;_fmt=&amp;_orig=search&amp;_sort=d&amp;view=c&amp;_acct=C000065416&amp;_version=1&amp;_urlVersion=0&amp;_userid=4861060&amp;md5=8a685c3a81d7902fff82b21d6596a82b</URL>
-		<BibFile>ScienceDirectScraperUnitURLTest4.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper</Scraper>
-		<!-- URL is incorrect -->
-		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_163">
 		<TestDescription>Test for worldcat publication page</TestDescription>
@@ -1084,14 +1044,6 @@
 		<BibFile>KargerScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.karger.KargerScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_179">
-		<TestDescription>URL scraping test with publication from siencedirect</TestDescription>
-		<URL>http://www.sciencedirect.com/science?_ob=ArticleURL&amp;_udi=B6TFN-3YYMK95-X&amp;_user=4861060&amp;_coverDate=03%2F31%2F2000&amp;_rdoc=1&amp;_fmt=high&amp;_orig=search&amp;_sort=d&amp;_docanchor=&amp;view=c&amp;_acct=C000065416&amp;_version=1&amp;_urlVersion=0&amp;_userid=4861060&amp;md5=97f0b3ba3f66fa8a5d57a5b48b0beb8c</URL>
-		<BibFile>ScienceDirectScraperUnitURLTest5.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper</Scraper>
-		<!-- URL is incorrect -->
-		<Enabled>false</Enabled>
-	</URLTest>
 	<URLTest id="url_180">
 		<TestDescription>DBLP scraping test (html page)</TestDescription>
 		<URL>http://dblp.uni-trier.de/rec/bibtex/conf/semweb/ChoudhuryBP09</URL>
@@ -1122,14 +1074,6 @@
 		<URL>http://portal.acm.org/beta/citation.cfm?id=359859</URL>
 		<BibFile>ACMBasicScraperUnitURLTest5.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_185">
-		<TestDescription>URL scraping test with publication from siencedirect</TestDescription>
-		<URL>http://www.sciencedirect.com/science?_ob=ArticleURL&amp;_udi=B758F-4YXK4HW-1&amp;_user=616166&amp;_coverDate=07%2F31%2F2010&amp;_rdoc=1&amp;_fmt=high&amp;_orig=search&amp;_sort=d&amp;_docanchor=&amp;view=c&amp;_acct=C000032339&amp;_version=1&amp;_urlVersion=0&amp;_userid=616166&amp;md5=f5c400363dcb6cc7cfddf6c637c3484c</URL>
-		<BibFile>ScienceDirectScraperUnitURLTest6.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper</Scraper>
-		<!-- URL is incorrect -->
-		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_186">
 		<TestDescription>acm url test</TestDescription>

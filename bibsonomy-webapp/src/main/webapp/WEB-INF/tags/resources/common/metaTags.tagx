@@ -8,15 +8,9 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<!-- Decide wether or not to display "Tags: " before listing all tags -->
 	<jsp:directive.attribute name="showTagsLabel" type="java.lang.Boolean" required="false" />
-
-	<c:choose>
-		<c:when test="${not empty post.systemUrl }">
-			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
-		</c:when>
-		<c:otherwise>
-			<c:set var ="isRemotePost" value="false"/>
-		</c:otherwise>
-	</c:choose>
+	
+	
+	<c:set var="isRemotePost" value="${not empty post.systemUrl and not mtl:isSameHost(post.systemUrl, properties['project.home'])}" />
 
 	<span style="margin-top: 2px;" class="fa fa-tag pull-left">
 		<!--  -->
@@ -56,7 +50,7 @@
 								<span class="label label-warning">
 									<c:choose>
 										<c:when test="${isRemotePost}">
-											<a href="${relativeUrlGenerator.getUserUrlByUserNameTagNameAndSysUrl(post.user.name, systag.name, post.systemUrl)}">
+											<a href="${urlGeneratorFactory.createURLGeneratorForSystem(post.systemUrl).getUserUrlByUserNameAndTagName(post.user.name, systag.name)}">
 												<c:out value="${systag.name}" />
 											</a>
 										</c:when>
@@ -87,7 +81,7 @@
 		<span class="label label-grey label-tag">
 			<c:choose>
 				<c:when test="${isRemotePost}">
-					<a href="${relativeUrlGenerator.getUserUrlByUserNameTagNameAndSysUrl(post.user.name, tag.name, post.systemUrl)}">
+					<a href="${urlGeneratorFactory.createURLGeneratorForSystem(post.systemUrl).getUserUrlByUserNameAndTagName(post.user.name, tag.name)}">
 						<c:out value="${tag.name}" />
 					</a>
 				</c:when>

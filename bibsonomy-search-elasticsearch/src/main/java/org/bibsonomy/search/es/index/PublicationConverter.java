@@ -315,7 +315,10 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 			documentMap.put(Publication.Document.NAME, document.getFileName());
 			documentMap.put(Publication.Document.HASH, document.getFileHash());
 			documentMap.put(Publication.Document.CONTENT_HASH, document.getMd5hash());
-			documentMap.put(Publication.Document.TEXT, this.fileContentExtractorService.extractContent(document));
+			final String content = this.fileContentExtractorService.extractContent(document);
+			if (present(content)) {
+				documentMap.put(Publication.Document.TEXT, content);
+			}
 			documentMap.put(Publication.Document.DATE, ElasticsearchUtils.dateToString(document.getDate()));
 			list.add(documentMap);
 		}

@@ -32,7 +32,7 @@
 		
 	</c:if>
 	
-	<c:set var="isRemotePost" value="${not empty post.systemUrl and post.systemUrl ne properties['project.home']}"/>
+	<c:set var="isRemotePost" value="${not empty post.systemUrl and not mtl:isSameHost(post.systemUrl, properties['project.home'])}"/>
 
 	<!-- TODO: use the urlGenerator for this -->
 	<c:set var="url" value="Publication"/>
@@ -46,7 +46,7 @@
 			<!-- FIXME: remove old url calling -->
 			<c:url var="url" value="/BibtexHandler">
 				<c:param name="requTask" value="upload"/>
-				<c:param name="url" value="${relativeUrlGenerator.getPublicationUrlByIntraHashUsernameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}"/>
+				<c:param name="url" value="${urlGeneratorFactory.createURLGeneratorForSystem(post.systemUrl).getPublicationUrlByIntraHashAndUsername(post.resource.intraHash, post.user.name)}"/>
 				<c:param name="description" value="${post.description}"/>
 				<c:param name="selection"/>
 				<c:param name="referer" value="${mtl:cleanUrl(post.resource.url)}"/>

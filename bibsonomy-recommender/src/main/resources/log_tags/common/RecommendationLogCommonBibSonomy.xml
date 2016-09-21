@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="RecommendationLogCommonBibSonomy">
+	<!-- + 
+		 | Result mappings.
+	 	 + -->
+    <resultMap id="pairMap" class="pair">
+        <result property="first"  column="first" javaType="long"/>
+        <result property="second" column="second" javaType="long"/>
+    </resultMap>
+	
+    <parameterMap id="recSetting" class="recSetting">
+        <parameter property="recId"   javaType="string"/>
+        <parameter property="recMeta" jdbcType="BLOB"/>
+    </parameterMap>
+    
+    <resultMap id="recSetting" class="recSetting">
+        <result property="recId"       column="rec_id"     javaType="string"/>
+        <result property="recMeta"     column="rec_meta"   jdbcType="BLOB"/>
+    </resultMap>
+    
+    <resultMap id="recAdminOverview" class="recAdminOverview">
+        <result property="settingID" column="setting_id"  javaType="long" />
+        <result property="recID"     column="rec_id"      javaType="string"  />
+        <result property="latency"   column="rec_latency" javaType="long" />
+        <result property="local"     column="type"        javaType="integer" />
+        <result property="active"    column="active"      javaType="boolean" />
+    </resultMap>
+    
+    <resultMap id="selectorSetting" class="selectorSetting">
+        <result property="info"        column="selector_name"   javaType="string"/>
+        <result property="meta"        column="selector_meta"   jdbcType="BLOB"/>
+    </resultMap>    
+    
+	<resultMap id="recQuery" class="recQuery">
+		<result property="qid"         column="query_id"   javaType="long" />
+		<result property="post_id"     column="post_id"    javaType="integer" />
+		<result property="userName"    column="user_name"  javaType="string" />
+		<result property="timeStamp"   column="date"       javaType="timestamp"/> 
+	</resultMap>
+	
+	<resultMap id="recLog_preset" class="string">
+		<result property="tag"          column="tag"             javaType="string"/>
+	</resultMap>
+	
+	<resultMap id="entityParam" class="entityParam">
+		<result property="entityId" column="post_id" javaType="string" />
+		<result property="date" column="date" jdbcType="DATETIME" />
+		<result property="userName" column="user_name" javaType="string" />
+		<result property="type" column="content_type" javaType="string" />
+	</resultMap>
+	
+	<resultMap id="recResponse"	class="recTag">
+		<result property="score" column="score" javaType="double"/>
+		<result property="confidence" column="confidence" javaType="double" />
+		<result property="name" column="tag" javaType="string" />
+	</resultMap>
+	
+	<resultMap class="webserviceRecommender" id="webServiceRecommender">
+		<result property="address" column="url"     javaType="url" />
+		<result property="trusted" column="trusted" javaType="boolean" />
+	</resultMap>
+</sqlMap>

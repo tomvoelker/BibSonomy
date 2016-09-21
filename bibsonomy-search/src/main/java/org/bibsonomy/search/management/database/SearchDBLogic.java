@@ -72,10 +72,10 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 	}
 	
 	@Override
-	public List<User> getPredictionForTimeRange(final Date fromDate) {
+	public List<User> getPredictionForTimeRange(final Date fromDate, Date toDate) {
 		final DBSession session = this.openSession();
 		try {
-			return this.queryForList("getPredictionForTimeRange", fromDate, User.class, session);
+			return this.queryForList("getPredictionForTimeRange", new Pair<>(fromDate, toDate), User.class, session);
 		} finally {
 			session.close();
 		}
@@ -257,9 +257,26 @@ public class SearchDBLogic<R extends Resource> extends AbstractDatabaseManager i
 		newState.setLast_log_date(this.getLastLogDate());
 		newState.setLastPersonChangeId(this.getLastPersonChangeId());
 		newState.setLastDocumentDate(this.getLastDocumentDate());
+		newState.setLastPredictionChangeDate(this.getLastPreditionDate());
 		return newState;
 	}
 	
+	/**
+	 * @return
+	 */
+	private Date getLastPreditionDate() {
+		final DBSession session = this.openSession();
+		try {
+			final Date date = this.queryForObject("getLastPredictionDate", Date.class, session);
+			if (date == null) {
+				return new Date();
+			}
+			return date;
+		} finally {
+			session.close();
+		}
+	}
+
 	/**
 	 * @return
 	 */

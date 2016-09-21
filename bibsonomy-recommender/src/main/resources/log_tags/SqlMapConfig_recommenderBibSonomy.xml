@@ -1,0 +1,14 @@
+<!DOCTYPE sqlMapConfig
+PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
+"http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+	<sqlMap resource="log_tags/common/TypeAlias.xml"/>
+	
+	<typeHandler javaType="url"				callback="org.bibsonomy.database.common.typehandler.UrlTypeHandlerCallback" />
+	<typeHandler javaType="personNameList"	callback="org.bibsonomy.database.common.typehandler.PersonNameTypeHandlerCallback" />
+
+	<sqlMap resource="log_tags/common/RecommendationLogCommonBibSonomy.xml" />
+	<sqlMap resource="log_tags/RecommendationLogBibSonomy.xml" />
+</sqlMapConfig>
+
+

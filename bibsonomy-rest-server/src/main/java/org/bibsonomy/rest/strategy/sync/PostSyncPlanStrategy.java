@@ -94,6 +94,4 @@ public class PostSyncPlanStrategy extends AbstractCreateStrategy {
 	protected void render(Writer writer, String resourceID) {
 		this.getRenderer().serializeSynchronizationPosts(this.writer, this.syncPlan);
 	}
-
-
 }

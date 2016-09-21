@@ -2,6 +2,7 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
 	
 	<jsp:directive.attribute name="discussionItem" type="org.bibsonomy.model.DiscussionItem" required="false" />
@@ -55,10 +56,8 @@
 	</c:if>
 	
 	<!-- TODO: admin actions for mark as spammer -->
-
-	
 	<span class="deleteInfo hidden">
-		<img src="${resdir}/image/ajax_loader.gif" alt="loading" />
+		<fontawesome:icon icon="circle-o-notch" fixedWidth="${true}" spin="${true}"/>
 		<fmt:message key="post.resource.${discussionItemClass}.action.delete" />
 	</span>
 </jsp:root>

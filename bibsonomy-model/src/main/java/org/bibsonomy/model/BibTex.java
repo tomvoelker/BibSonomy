@@ -97,8 +97,6 @@ public class BibTex extends Resource {
 	// TODO: this is user specific and should be moved to the post
 	private String privnote;
 	private Map<String, String> miscFields;
-	// this field holds the description part of an openURL to this bibtex object
-	private String openURL;
 	
 	private List<BibTexExtra> extraUrls;
 	
@@ -115,20 +113,6 @@ public class BibTex extends Resource {
 	 * A document attached to this bibtex resource.
 	 */
 	private List<Document> documents;
-		
-	/**
-	 * @return openURL
-	 */
-	public String getOpenURL() {
-		return this.openURL;
-	}
-
-	/**
-	 * @param openURL
-	 */
-	public void setOpenURL(final String openURL) {
-		this.openURL = openURL;
-	}
 
 	/**
 	 * @return privnote

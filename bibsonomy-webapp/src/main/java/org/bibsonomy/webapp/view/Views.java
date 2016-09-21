@@ -458,10 +458,11 @@ public enum Views implements View {
 	 */
 	SUCCESS("actions/success"),
 
-	/**
-	 * import view
-	 */
+	/** import view */
 	IMPORT("actions/post/import"),
+	
+	/** the import publication view */
+	IMPORT_PUBLICATION("actions/post/importPublication"),
 
 	/**
 	 * Show a form to request a password reminder.

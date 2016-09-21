@@ -28,17 +28,13 @@ package org.bibsonomy.rest.renderer;
 
 import java.io.Reader;
 import java.io.Writer;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
 
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.RecommendedPost;
-import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
@@ -84,32 +80,6 @@ public interface Renderer {
 	 */
 	public void serializePost(Writer writer, Post<? extends Resource> post, ViewModel model);
 
-	/**
-	 * Serializes one {@link RecommendedPost}.
-	 * 
-	 * @param writer
-	 *            a {@link Writer} to use.
-	 * @param posts
-	 *            a list of {@link RecommendedPost} objects.
-	 * @param viewModel 
-	 * @param model
-	 *            the {@link ViewModel} encapsulates additional information,
-	 */
-	public void serializeRecommendedPosts(Writer writer, List<? extends RecommendedPost<? extends Resource>> posts, ViewModel viewModel);
-	
-	/**
-	 * Serializes one {@link RecommendedPost}.
-	 * 
-	 * @param writer
-	 *            a {@link Writer} to use.
-	 * @param post
-	 *            one {@link RecommendedPost} object.
-	 * @param viewModel 
-	 * @param model
-	 *            the {@link ViewModel} encapsulates additional information,
-	 */
-	public void serializeRecommendedPost(Writer writer, RecommendedPost<? extends Resource> post, ViewModel viewModel);
-	
 	/**
 	 * serializes one {@link Document}
 	 * @param writer
@@ -165,26 +135,6 @@ public interface Renderer {
 	 *            the {@link ViewModel} encapsulates additional information,
 	 */
 	public void serializeTag(Writer writer, Tag tag, ViewModel viewModel);
-
-	/**
-	 * Serializes a {@link List} of {@link RecommendedTag}s.
-	 * 
-	 * @param writer
-	 *            a {@link Writer} to use.
-	 * @param tags
-	 *            a {@link List} of {@link Tag} objects.
-	 */
-	public void serializeRecommendedTags(Writer writer, Collection<RecommendedTag> tags);
-
-	/**
-	 * Serializes a {@link RecommendedTag}'s details
-	 * 
-	 * @param writer
-	 *            a {@link Writer} to use.
-	 * @param tag
-	 *            one {@link RecommendedTag} object.
-	 */
-	public void serializeRecommendedTag(Writer writer, RecommendedTag tag);
 
 	/**
 	 * Serializes a list of {@link Group}s.
@@ -400,18 +350,6 @@ public interface Renderer {
 	public List<Post<? extends Resource>> parsePostList(Reader reader, DataAccessor uploadedFileAcessor) throws BadRequestOrResponseException;
 
 	/**
-	 * Reads a List of {@link RecommendedItem}s from a {@link Reader}
-	 * 
-	 * @param reader
-	 *            the {@link Reader} to use.
-	 * @param uploadedFileAcessor 
-	 * @return a {@link List} of {@link RecommendedPost} objects
-	 * @throws BadRequestOrResponseException
-	 *             if the document within the reader is errorenous.
-	 */
-	public List<RecommendedPost<? extends Resource>> parseRecommendedItemList(Reader reader, DataAccessor uploadedFileAcessor) throws BadRequestOrResponseException;
-	
-	/**
 	 * Reads one {@link Post} from a {@link Reader}.
 	 * 
 	 * @param reader
@@ -423,18 +361,6 @@ public interface Renderer {
 	 */
 	public Post<? extends Resource> parsePost(Reader reader, DataAccessor uploadedFileAccessor) throws BadRequestOrResponseException;
 
-	/**
-	 * Reads one {@link RecommendedItem} from a {@link Reader}
-	 * 
-	 * @param reader
-	 *            the {@link Reader} to use.
-	 * @param uploadedFileAccessor 
-	 * @return one {@link RecommendedPost} object
-	 * @throws BadRequestOrResponseException
-	 *             if the document within the reader is errorenous.
-	 */
-	public RecommendedPost<? extends Resource> parseRecommendedItem(Reader reader, DataAccessor uploadedFileAccessor) throws BadRequestOrResponseException;
-	
 	/**
 	 * Reads one {@link Document} from a {@link Reader}
 	 * 
@@ -502,28 +428,6 @@ public interface Renderer {
 	 *             if the document within the reader is errorenous.
 	 */
 	public Tag parseTag(Reader reader) throws BadRequestOrResponseException;
-
-	/**
-	 * Reads a List of {@link RecommendedTag}s from a {@link Reader}.
-	 * 
-	 * @param reader
-	 *            the {@link Reader} to use.
-	 * @return a {@link List} of {@link Tag} objects.
-	 * @throws BadRequestOrResponseException
-	 *             if the document within the reader is errorenous.
-	 */
-	public SortedSet<RecommendedTag> parseRecommendedTagList(Reader reader) throws BadRequestOrResponseException;
-
-	/**
-	 * Reads one {@link RecommendedTag} from a {@link Reader}.
-	 * 
-	 * @param reader
-	 *            the {@link Reader} to use.
-	 * @return one {@link Post} object.
-	 * @throws BadRequestOrResponseException
-	 *             if the document within the reader is errorenous.
-	 */
-	public RecommendedTag parseRecommendedTag(Reader reader) throws BadRequestOrResponseException;
 
 	/**
 	 * @param reader the reader to use

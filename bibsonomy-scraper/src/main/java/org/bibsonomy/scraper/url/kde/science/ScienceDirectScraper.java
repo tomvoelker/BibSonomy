@@ -26,19 +26,16 @@
  */
 package org.bibsonomy.scraper.url.kde.science;
 
-import java.io.IOException;
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
-import org.bibsonomy.util.WebUtils;
 
 /**
  * Scraper for ScienceDirect.
@@ -47,7 +44,6 @@ import org.bibsonomy.util.WebUtils;
  *
  */
 public class ScienceDirectScraper extends GenericBibTeXURLScraper {
-	private static final Log log = LogFactory.getLog(ScienceDirectScraper.class);
 	
 	private static final String SCIENCE_CITATION_HOST     = "sciencedirect.com";
 	
@@ -56,9 +52,6 @@ public class ScienceDirectScraper extends GenericBibTeXURLScraper {
 	private static final String info = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
 	private static final String SCIENCE_CITATION_PATH     = "/science";
 
-	private static final String end = "zone=exportDropDown&citation-type=BIBTEX&export=Export&format=cite-abs";
-	private static final Pattern PATTERN_FORM = Pattern.compile("<form name=\"exportCite\" method=post action=(.*) target=\"\">");
-	
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + SCIENCE_CITATION_HOST), Pattern.compile(SCIENCE_CITATION_PATH + ".*")));
 
 
@@ -67,36 +60,28 @@ public class ScienceDirectScraper extends GenericBibTeXURLScraper {
 		return info;
 	}
 
-
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
-
 
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
-
 	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
 
-
 	@Override
 	public String getDownloadURL(URL url, String cookies) throws ScrapingException {
-		String download_link = "";
-		try{
-			Matcher m = PATTERN_FORM.matcher(WebUtils.getContentAsString(url));
-			if (m.find()){
-				download_link = m.group(1);
-			}
-			return "http://" + url.getHost().toString() + download_link + end;
-		} catch(IOException e) {
-			log.error("error while getting download url for " + url, e);
+		final String path = url.getPath();
+		if (present(path)) {
+			final String[] pathParts = path.split("/");
+			final String id = pathParts[pathParts.length - 1];
+			return SITE_URL + "/sdfe/export/" +  id + "/format?export-format=BIBTEX";
 		}
 		return null;
 	}

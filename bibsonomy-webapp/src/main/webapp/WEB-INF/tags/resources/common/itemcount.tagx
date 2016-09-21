@@ -16,19 +16,17 @@
 	<!-- entrytype whose entries per page will be in/decreased -->
 	<c:set var="entryTypeEntriesPerPage" value="${entryType}.entriesPerPage"/>
 	
-	<fmt:message key="${titleKey}"/>${mtl:ch('nbsp')}<fmt:message key="list.entriesPerPage" />:${mtl:ch('nbsp')}
+	<li class="dropdown-header"><fmt:message key="${titleKey}"/>${mtl:ch('nbsp')}<fmt:message key="list.entriesPerPage" /></li>
 	<c:forEach var="num" items="${fn:split(allEntryCounts, ',')}">
-	
 		<!-- build url --> 
 		<c:url var="numListUrl" value="${mtl:setParam(requPathAndQuery, entryTypeEntriesPerPage, num)}"/>
-
 		<!-- display link or current number of entries per page -->
 		<c:choose>
 			<c:when test="${num == entriesPerPage}">
-				${num}${mtl:ch('nbsp')}
+				<li class="disabled"><a href="#">${num}</a></li>
 			</c:when>
 			<c:otherwise>
-				<a href="${fn:escapeXml(numListUrl)}">${num}</a>${mtl:ch('nbsp')}
+				<li><a href="${fn:escapeXml(numListUrl)}">${num}</a></li>
 			</c:otherwise>
 		</c:choose>
 	</c:forEach>

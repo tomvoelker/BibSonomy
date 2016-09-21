@@ -840,6 +840,9 @@ span.web					{background-position:-2px -1106px;width:61px;height:37px; margin-to
 	font-size: 10px !important;
 }
 
+.popover{
+	max-width: 500px; /* Max Width of the popover (depending on the container!) */
+}
 
 /**
  * PUBLICATION PAGE
@@ -963,20 +966,6 @@ a.edit-added-files {
 	margin-right: 10px;
 }
 
-a.doc-magnify {
-	color: white;
-	padding: 5px;
-	font-size: 25px;
-	position: absolute;
-	right: 25px;
-	bottom: 95px;
-	border-radius: 25px;
-	width: 50px;
-	height: 48px;
-	background-color: rgba(0, 0, 0, 0.5);
-	text-align: center;
-}
-
 .small-box {
 	width: 616px;
 	margin: auto;
@@ -990,6 +979,12 @@ a.doc-magnify {
 fieldset {
 	margin: 0 20px;
 	padding: 0;
+}
+
+fieldset.collapsible > legend {
+	border: none;
+	font-size: 100%;
+	text-align: right;
 }
 
 /**
@@ -1537,6 +1532,10 @@ ul#urlList {
 	overflow: hidden;
 }
 
+.fa-6x {
+	font-size: 10em;
+}
+
 .fa-space-5 {
 	margin-right: 5px;
 }
@@ -1544,4 +1543,53 @@ ul#urlList {
 .btn-group-wrap-text {
 	white-space: normal !important;
 	font-size: 12px !important;
+}
+
+#post-publication {
+	padding-bottom: 45px;
+	
+	.content-header {
+		border-bottom: none;
+	}
+	
+	#publication-functions {
+		.btn-group {
+			margin-bottom: 20px;
+		}
+	}
+	
+	#publication-search {
+		padding-top: 25px;
+		padding-bottom: 15px;
+		color: grey;
+	}
+	
+	.publication-function {
+		display: none;
+	}
+}
+
+p.separator {
+	color: #ccc;
+	text-align: center;
+	border-bottom: 1px solid #ccc;
+	line-height:0.1em;
+	margin: 25px 0 35px;
+}
+
+.separator span {
+	background-color: #fff;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.all-resources-menu {
+	a, button {
+		color: #a0a0a0;
+	}
+	
+	li.dropdown-header {
+		margin-left: -8px;
+		text-transform: uppercase;
+	}
 }

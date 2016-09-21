@@ -29,6 +29,7 @@ package org.bibsonomy.rest.strategy.users;
 import java.util.Collections;
 
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.AbstractDeleteStrategy;
 import org.bibsonomy.rest.strategy.Context;
 
@@ -53,7 +54,12 @@ public class DeletePostStrategy extends AbstractDeleteStrategy {
 
 	@Override
 	protected boolean delete() throws InternServerException {
-		this.getLogic().deletePosts(this.userName, Collections.singletonList(this.resourceHash));
+		try {
+			this.getLogic().deletePosts(this.userName, Collections.singletonList(this.resourceHash));
+		} catch (final IllegalStateException e) {
+			// illegal state => resource not found
+			throw new NoSuchResourceException(e.getMessage());
+		}
 		// no exception -> assume success
 		return true;
 	}

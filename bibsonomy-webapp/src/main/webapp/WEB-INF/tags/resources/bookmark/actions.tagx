@@ -10,14 +10,7 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
 	
-	<c:choose>
-		<c:when test="${not empty post.systemUrl }">
-			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
-		</c:when>
-		<c:otherwise>
-			<c:set var ="isRemotePost" value="false"/>
-		</c:otherwise>
-	</c:choose>
+	<c:set var="isRemotePost" value="${not empty post.systemUrl and not mtl:isSameHost(post.systemUrl, properties['project.home'])}" />
 
 	<c:set var="rscType" value="bookmark" />
 

@@ -31,9 +31,9 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.User;
-import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * shows all users of the system
@@ -48,14 +48,10 @@ public class GetUserListStrategy extends AbstractGetListStrategy<List<User>> {
 	public GetUserListStrategy(final Context context) {
 		super(context);
 	}
-	
-	@Override
-	protected void appendLinkPostFix(final StringBuilder sb) {
-	}
 
 	@Override
-	protected StringBuilder getLinkPrefix() {
-		return new StringBuilder(this.getUrlRenderer().getApiUrl() + RESTConfig.USERS_URL);
+	protected UrlBuilder getLinkPrefix() {
+		return this.getUrlRenderer().createUrlBuilderForUsers();
 	}
 
 	@Override

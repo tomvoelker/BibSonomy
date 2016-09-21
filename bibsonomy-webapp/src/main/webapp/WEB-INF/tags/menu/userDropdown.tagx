@@ -54,7 +54,7 @@
 	<!-- settings -->
 	<li>
 		<a href="/settings">
-			<span class="fa fa-cogs"><!-- KEEP ME --></span>
+			<span class="fa fa-wrench"><!-- KEEP ME --></span>
 			<fmt:message key="navi.settings"/>
 		</a>
 	</li>

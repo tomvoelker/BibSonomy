@@ -63,7 +63,6 @@
 							<div class="help help-content hide">
 								<p><fmt:message key="settings.tag.showAs.help"/></p>
 							</div>
-							
 						</div>
 						
 					</div>

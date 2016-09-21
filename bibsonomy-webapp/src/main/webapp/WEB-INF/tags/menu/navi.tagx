@@ -78,6 +78,8 @@
 									</li>
 								</c:if>
 								<li><a href="${relativeUrlGenerator.prefix('discussed').getUserUrlByUserName(loginUserName)}"><fmt:message key="navi.discussedPosts"/></a></li>
+								<li><a href="/followers"><fmt:message key="navi.followedPosts"/></a></li>
+								<li><a href="/friends"><fmt:message key="navi.postsOfFriends"/></a></li>
 								
 								<c:if test="${not loginUser.settings.layoutSettings.simpleInterface}">
 									<li class="divider"><!-- KEEP ME --></li>
@@ -96,6 +98,7 @@
 								<li class="${systemReadOnly ? 'disabled' : ''}"><a href="/postBookmark"><fmt:message key="navi.postBookmark"/></a></li>
 								<li class="${systemReadOnly ? 'disabled' : ''}"><a href="/postPublication"><fmt:message key="navi.postPublication"/></a></li>
 								<li class="${systemReadOnly ? 'disabled' : ''}"><a href="/import/bookmarks"><fmt:message key="navi.imports"/></a></li>
+								<li class="${systemReadOnly ? 'disabled' : ''}"><a href="/import/publications"><fmt:message key="publication.import.title"/></a></li>
 							</ul>
 							
 						</li>
@@ -173,7 +176,9 @@
 						</ul>
 					</li>
 					
-					<li class="${activeTab eq 'persons' ? 'active' : ''}"><a href="${relativeUrlGenerator.getPersonsUrl()}"><fmt:message key="navi.persons"/></a></li>
+					<c:if test="${properties['genealogy.activated'] eq 'true'}">
+						<li class="${activeTab eq 'persons' ? 'active' : ''}"><a href="${relativeUrlGenerator.getPersonsUrl()}"><fmt:message key="navi.persons"/></a></li>
+					</c:if>
 					
 					<c:if test="${loginUser.role eq 'ADMIN' }">
 						<li class="dropdown ${activeTab eq 'admin' ? 'active' : ''}" data-touch="false">

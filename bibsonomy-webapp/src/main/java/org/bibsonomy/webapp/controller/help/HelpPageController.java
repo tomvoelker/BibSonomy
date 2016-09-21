@@ -194,7 +194,11 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 	private void renderSidebar(final HelpPageCommand command, final String language, final Parser parser) {
 		// parse sidebar
 		try {
-			command.setSidebar(parser.parseText(this.getMarkdownLocation(language, HelpUtils.HELP_SIDEBAR_NAME)));
+			final String sidebarLocation = this.getMarkdownLocation(language, HelpUtils.HELP_SIDEBAR_NAME);
+			try (final BufferedReader inputReader = new BufferedReader(new InputStreamReader(new FileInputStream(sidebarLocation), "UTF-8"))) {
+				final String text = StringUtils.getStringFromReader(inputReader);
+				command.setSidebar(parser.parseText(text));
+			}
 		} catch (final IOException e) {
 			command.setSidebar("Error: sidebar for language " + language + " not found.");
 		}

@@ -28,8 +28,11 @@ package org.bibsonomy.webapp.util.spring.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,8 +44,15 @@ import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ReadOnlyDatabaseException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.rest.exceptions.UnsupportedMediaTypeException;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.ContextCommand;
+import org.bibsonomy.webapp.command.ListCommand;
+import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
+import org.bibsonomy.webapp.command.TagResourceViewCommand;
 import org.bibsonomy.webapp.controller.ajax.AjaxController;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -52,14 +62,17 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ResponseLogic;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.util.WarningAware;
 import org.bibsonomy.webapp.util.spring.condition.Condition;
 import org.bibsonomy.webapp.util.spring.security.exceptions.ServiceUnavailableException;
 import org.bibsonomy.webapp.util.spring.security.exceptions.SpecialAuthMethodRequiredException;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.ExtendedRedirectViewWithAttributes;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -83,6 +96,18 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 	private static final Log log = LogFactory.getLog(MinimalisticControllerSpringWrapper.class);
 	
 	private static final String CONTROLLER_ATTR_NAME = "minctrlatrr";
+	
+	/**
+	 * @param listCommand
+	 * @return
+	 */
+	private static <T extends Resource> int safeSize(ListCommand<Post<T>> listCommand) {
+		final List<Post<T>> list = listCommand.getList();
+		if (!present(list)) {
+			return 0;
+		}
+		return list.size();
+	}
 
 	private String controllerBeanName;
 	
@@ -175,7 +200,10 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		requestLogic.setRequest(request); // hack but thats springs fault
 		applicationContext.getBean("responseLogic", ResponseLogic.class).setResponse(response); // hack but thats springs fault
 		
-		log.debug("Processing " + request.getRequestURI() + "?" + request.getQueryString() + " from " + requestLogic.getInetAddress());
+		final String requestURI = request.getRequestURI();
+		final String realRequestPath = getRequestPath(request);
+		final String query = request.getQueryString();
+		log.debug("Processing " + requestURI + "?" + query + " from " + requestLogic.getInetAddress());
 		if (presenceCondition != null && !presenceCondition.eval()) {
 			throw new NoSuchRequestHandlingMethodException(request);
 		}
@@ -234,6 +262,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		 */
 		final ServletRequestDataBinder binder = bindAndValidate(request, command);
 		final BindException errors = new BindException(binder.getBindingResult());
+		final Errors warnings = new BeanPropertyBindingResult(null, "");
 		
 		if (present(flashAttributes) && flashAttributes.containsKey(ExtendedRedirectViewWithAttributes.ERRORS_KEY)) {
 			final Errors flashErrors = (Errors) flashAttributes.get(ExtendedRedirectViewWithAttributes.ERRORS_KEY);
@@ -242,6 +271,10 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		
 		if (controller instanceof ErrorAware) {
 			((ErrorAware)controller).setErrors(errors);
+		}
+		
+		if (controller instanceof WarningAware) {
+			((WarningAware) controller).setWarnings(warnings);
 		}
 		
 		View view;
@@ -294,10 +327,16 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 			throw ex;
 		} catch (final ReadOnlyDatabaseException e) {
 			errors.reject("system.readOnly.notice");
+		} catch (final UnsupportedMediaTypeException e) {
+			response.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
+			errors.reject("system.error.unsupportedmediatype");
+		} catch (final BadRequestOrResponseException e) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			errors.reject("system.error.badrequest", e.getMessage());
 		} catch (final Exception ex) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			errors.reject("error.internal", new Object[]{ex}, "Internal Server Error: " + ex.getMessage());
-			log.error("Could not complete controller (general exception) for request " + request.getRequestURI() + "?" + request.getQueryString() + " with referer " + request.getHeader("Referer"), ex);
+			log.error("Could not complete controller (general exception) for request " + realRequestPath + "?" + request.getQueryString() + " with referer " + request.getHeader("Referer"), ex);
 		}
 		
 		log.debug("Exception catching block passed, putting comand+errors into model.");
@@ -305,11 +344,55 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		final Map<String, Object> model = new HashMap<String, Object>();
 		model.put(getCommandName(), command);
 		
+		if (command instanceof SimpleResourceViewCommand) {
+			final SimpleResourceViewCommand simpleResourceViewCommand = (SimpleResourceViewCommand) command;
+			final int totalCount = safeSize(simpleResourceViewCommand.getBibtex()) + safeSize(simpleResourceViewCommand.getBookmark()) + safeSize(simpleResourceViewCommand.getGoldStandardBookmarks()) + safeSize(simpleResourceViewCommand.getGoldStandardPublications());
+			
+			if (totalCount == 0) {
+				/*
+				 * here we check if the requested tags contain a + to handle
+				 * our old wrong url form encoding in the url path
+				 */
+				if (command instanceof TagResourceViewCommand && ((TagResourceViewCommand) simpleResourceViewCommand).getRequestedTags().contains("+")) {
+					final List<String> pathElements = Arrays.asList(realRequestPath.split("/"));
+					final StringBuilder newRequestUriBuilder = new StringBuilder("/");
+					
+					final String format = simpleResourceViewCommand.getFormat();
+					if (!"html".equals(format)) {
+						newRequestUriBuilder.append(format + "/");
+						if ("layout".equals(format)) {
+							newRequestUriBuilder.append(simpleResourceViewCommand.getLayout() + "/");
+						}
+					}
+					
+					final Iterator<String> pathIterator = pathElements.iterator();
+					while (pathIterator.hasNext()) {
+						final String path = pathIterator.next();
+						if (pathIterator.hasNext()) {
+							newRequestUriBuilder.append(path);
+							newRequestUriBuilder.append("/");
+						} else {
+							// simple heuristic: the last path element is the path element containing the requested tags
+							newRequestUriBuilder.append(path.replaceAll("\\+", "%20"));
+						}
+					}
+					
+					if (present(query)) {
+						newRequestUriBuilder.append("?").append(query);
+					}
+					view = new ExtendedRedirectView(newRequestUriBuilder.toString(), true);
+				} else {
+					// no resources found, render 404 for search engines (soft-404 warning)
+					response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+				}
+			}
+		}
+		
 		/*
 		 * put errors into model 
 		 */
 		model.putAll(errors.getModel());
-		
+		model.put("warnings", warnings);
 		
 		if (present(flashAttributes)) {
 			model.put("flashAttributes", flashAttributes);
@@ -330,6 +413,18 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		}
 		
 		return new ModelAndView(view.getName(), model);
+	}
+
+	/**
+	 * @param request
+	 * @return the real request path
+	 */
+	public static String getRequestPath(final HttpServletRequest request) {
+		final Object attribute = request.getAttribute("requPath");
+		if (present(attribute)) {
+			return attribute.toString();
+		}
+		return "";
 	}
 
 	@Override

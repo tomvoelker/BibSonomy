@@ -18,16 +18,26 @@
 				<jsp:attribute name="alertBody">
 					<h4><fmt:message key="error.msg"/><c:out value=" " /><small><fmt:message key="error.report"/>:${mtl:ch('nbsp')}<parts:email address="${properties['project.email']}" subject="[${command.context.loginUser.name}] error on /${fn:escapeXml(requPath)}" body="${fn:escapeXml(errors.globalErrors)}"/></small></h4>
 					<c:forEach var="error" items="${errors.globalErrors}">
-					<c:if test="${empty cssClass}">
-						<c:set var="cssClass" value="error"/>
-					</c:if>
-					
-					<pre class="${cssClass}" style="margin-top: 1.5em;">
-						<spring:message code="${error.code}" text="${error.defaultMessage}" arguments="${error.arguments}" htmlEscape="true"/>
-					</pre>
-				</c:forEach>
+						<c:if test="${empty cssClass}">
+							<c:set var="cssClass" value="error"/>
+						</c:if>
+						
+						<pre class="${cssClass}" style="margin-top: 1.5em;">
+							<spring:message code="${error.code}" text="${error.defaultMessage}" arguments="${error.arguments}" htmlEscape="true"/>
+						</pre>
+					</c:forEach>
 				</jsp:attribute>
 			</bs:alert>
 		</c:if>
 	</spring:hasBindErrors>
+	
+	<c:if test="${not empty warnings.globalErrors}">
+		<bs:alert style="warning">
+			<jsp:attribute name="alertBody">
+				<c:forEach var="warning" items="${warnings.globalErrors}">
+					<spring:message code="${warning.code}" text="${warning.defaultMessage}" arguments="${warning.arguments}" htmlEscape="true"/>
+				</c:forEach>
+			</jsp:attribute>
+		</bs:alert>
+	</c:if>
 </jsp:root>

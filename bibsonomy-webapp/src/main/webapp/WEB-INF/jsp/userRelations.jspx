@@ -58,6 +58,13 @@
 		</jsp:attribute>
 
 		<jsp:attribute name="sidebar">
+		
+			<parts:infobox>
+				<jsp:attribute name="infoTextBody">
+			         <p><fmt:message key="tagrelations.all.text.conceptsExplained"></fmt:message></p>
+				</jsp:attribute>
+			</parts:infobox>
+					
 			<sidebar:sidebarTagCloudItem 
 				requPath="user/${command.requestedUser}" 
 				cmd="${command.tagcloud}"

@@ -78,7 +78,17 @@
 						</property>
 					</bean>
 				</entry>
-				
+				<entry key="/ajax/autocomplete">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="autocompleteController"/>
+						<property name="allowedFields">
+							<list>
+								<value>search</value>
+								<value>format</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<!-- get recommendations for user -->
 				<entry key="/ajax/getBookmarkRecommendedTags">
 					<bean parent="controllerBase">
@@ -182,7 +192,6 @@
 						</property>
 					</bean>
 				</entry>
-				
 				<entry key="/ajax/comments">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="commentController"/>
@@ -201,7 +210,6 @@
 						</property>
 					</bean>
 				</entry>
-				
 				<entry key="/ajax/reviews">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="reviewController"/>
@@ -215,12 +223,11 @@
 								<value>discussionItem.hash</value>
 								<value>discussionItem.anonymous</value>
 								<value>abstractGrouping</value>
-	  							<value>groups</value>
+								<value>groups</value>
 							</list>
 						</property>
 					</bean>
 				</entry>
-				
 				<entry key="/ajax/updateprivatenote">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="privatenoteController" />
@@ -233,7 +240,6 @@
 						</property>
 					</bean>
 				</entry>
-				
 			</map>
 		</property>
 	</bean>
@@ -259,6 +265,10 @@
 	<bean id="commentController" class="org.bibsonomy.webapp.controller.ajax.CommentAjaxController" parent="discussionItemAjaxController" scope="request" />
 	<bean id="reviewController" class="org.bibsonomy.webapp.controller.ajax.ReviewAjaxController" parent="discussionItemAjaxController" scope="request" />
 	
+	<bean id="autocompleteController" class="org.bibsonomy.webapp.controller.actions.PublicationAutocompleteController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="scrapers" ref="kdeScraperChain"/>
+	</bean>
 	
 	<bean id="additionalURLController" class="org.bibsonomy.webapp.controller.ajax.AdditionalURLController" scope="request" parent="ajaxController" />
 	
@@ -266,25 +276,25 @@
 		<property name="wikiRenderer" ref="wikiRenderer"/>
 		<property name="notLoggedInUserLogic" ref="notLoggedInUserLogic"/>
 	</bean>
-
-
 	
 	<bean id="documentsController" class="org.bibsonomy.webapp.controller.ajax.DocumentsController" scope="request" parent="ajaxController">
 		<property name="fileLogic" ref="fileLogic" />
 		<property name="messageSource" ref="messageSource"/>
-	</bean>	
-		
-	<!-- controller for handling recommendation requests -->
-	
-	<bean id="ajaxTagsRecommendationsController" class="org.bibsonomy.webapp.controller.ajax.RecommendationsAjaxController" abstract="true" parent="ajaxController">
-		<!-- used for accessing spam informations -->
-		<property name="adminLogic" ref="adminLogic"/>  
-		<property name="recommender"	ref="multiplexingTagRecommender" />
-		<!-- tag recommender used for spammer -->
-		<property name="spamTagRecommender" ref="jensRecommender"/>
-		<property name="rendererFactory" ref="rendererFactory" />
 	</bean>
 	
+	<!-- controller for handling recommendation requests -->
+	<bean id="ajaxTagsRecommendationsController" class="org.bibsonomy.webapp.controller.ajax.RecommendationsAjaxController" abstract="true" parent="ajaxController">
+		<!-- used for accessing spam informations -->
+		<property name="adminLogic" ref="adminLogic"/>
+		<property name="recommender"	ref="multiplexingTagRecommender" />
+		<!-- tag recommender used for spammer -->
+		<property name="spamTagRecommender" ref="spamTagRecommender" />
+		<property name="recommendationRenderer" ref="recommendedTagRenderer" />
+	</bean>
+	
+	<bean id="spamTagRecommender" class="org.bibsonomy.recommender.RecommendationServiceWrapper">
+		<constructor-arg ref="jensRecommender" />
+	</bean>
 	
 	<bean id="ajaxItemRecommenderFeedbackController" class="org.bibsonomy.webapp.controller.ajax.ItemRecommenderFeedbackController" scope="request" parent="ajaxController">
 		<property name="multiplexingBibTexRecommender" ref="multiplexingBibTexRecommender" />

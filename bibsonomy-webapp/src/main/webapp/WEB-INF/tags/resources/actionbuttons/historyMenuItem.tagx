@@ -2,9 +2,9 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
-	>
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons">
 
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
@@ -12,15 +12,8 @@
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="buttonClasses" type="java.lang.String" required="true" />
 
-	<c:choose>
-		<c:when test="${not empty post.systemUrl }">
-			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
-		</c:when>
-		<c:otherwise>
-			<c:set var ="isRemotePost" value="false"/>
-		</c:otherwise>
-	</c:choose>
-
+	<c:set var="isRemotePost" value="${not empty post.systemUrl and not mtl:isSameHost(post.systemUrl, properties['project.home'])}" />
+	
 	<fmt:message key="${resourceType}.actions.posthistory.title" var="postHistoryTitle" />
 	<c:choose>
 		<c:when test="${(userLoggedIn and (loginUserName eq post.user.name) and (not isRemotePost)) or (empty post.user)}">
@@ -30,7 +23,7 @@
 			</c:if>
 			<c:set var="historyUrl" value="${relativeUrlGenerator.getHistoryURLByHashAndUserName(hash, post.user.name, resourceType)}"/>
 			<c:if test="${isRemotePost}">
-				<c:set var="historyUrl" value="${relativeUrlGenerator.getHistoryURLByHashUserNameAndSysUrl(hash, post.user.name, resourceType, post.systemUrl)}"/>
+				<c:set var="historyUrl" value="${urlGeneratorFactory.createURLGeneratorForSystem(post.systemUrl).getHistoryURLByHashUserName(hash, post.user.name, resourceType)}"/>
 			</c:if>
 			<li>
 				<a href="${historyUrl}" title="${postHistoryTitle}">

@@ -9,11 +9,15 @@
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
 	xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
+	
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
@@ -22,6 +26,17 @@
 					<nav:tagcrumb requestedTags="${command.requestedTags}" active="${true}" />
 				</jsp:attribute>
 			</nav:breadcrumbs>
+		</jsp:attribute>
+		
+		<jsp:attribute name="additionalSorting">
+			<c:choose>
+				<c:when test="${command.sortPage eq 'folkrank'}">
+					<li><span class="italic"><fontawesome:icon icon="sort-numeric-asc " spaceAfter="5" /><fmt:message key="sort.folkrank"/></span></li>
+				</c:when>
+				<c:otherwise>
+					<li><a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'folkrank')}"><fontawesome:icon icon="sort-numeric-asc " spaceAfter="5" /><fmt:message key="sort.folkrank"/></a></li>
+				</c:otherwise>
+			</c:choose>
 		</jsp:attribute>
 		
 		<jsp:attribute name="heading">
@@ -35,38 +50,11 @@
 				</c:when>
 				<c:otherwise>
 					<c:set var="pathMessageKey" value="navi.tag"/>
-					<c:url var="tagUrl" value="${relativeUrlGenerator.getTagUrlByTagName(command.requestedTags)}"/>					
+					<c:url var="tagUrl" value="${relativeUrlGenerator.getTagUrlByTagName(command.requestedTags)}" />
 					<c:url var="tagUrlFolkRank" value="${tagUrl}?order=folkrank"/>
 				</c:otherwise>
 			</c:choose>
-			<parts:search scope="${command.scope}" pathMessageKey="${pathMessageKey}" formAction="/tag/" formInputName="tag" formInputValue="${command.requestedTags}">
-				<jsp:attribute name="afterInput">
-					<!--  sorting options -->
-					<span style="font-size: 65%">
-						<fmt:message key="sort.orderBy"/>
-						(
-						<c:out value=" "/>
-						<c:choose>
-							<c:when test="${command.order eq 'ADDED'}">
-								<fmt:message key="sort.date"/>
-							</c:when>
-							<c:otherwise>
-								<a href="${tagUrl}"><fmt:message key="sort.date"/></a>
-							</c:otherwise>
-						</c:choose>
-						|
-						<c:choose>
-							<c:when test="${command.order eq 'FOLKRANK'}">
-								<fmt:message key="sort.folkrank"/>
-							</c:when>
-							<c:otherwise>
-								<a href="${tagUrlFolkRank}"><fmt:message key="sort.folkrank"/></a>
-							</c:otherwise>
-						</c:choose>
-						)
-					</span>
-				</jsp:attribute>
-			</parts:search>
+			<parts:search scope="${command.scope}" pathMessageKey="${pathMessageKey}" formAction="/tag/" formInputName="tag" formInputValue="${command.requestedTags}" />
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">

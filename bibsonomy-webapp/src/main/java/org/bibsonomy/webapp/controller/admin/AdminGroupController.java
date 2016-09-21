@@ -37,7 +37,6 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.AdminGroupOperation;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupLevelPermission;
-import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.Group;
@@ -47,25 +46,27 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.webapp.command.admin.AdminGroupViewCommand;
+import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.validation.Errors;
 
 /**
  * Controller for group admin page
  *
- * TODO: Make ErrorAware for proper error messages
  *
- * @author bsc
+ * @author bsc, tni
  */
-public class AdminGroupController implements MinimalisticController<AdminGroupViewCommand> {
+public class AdminGroupController implements MinimalisticController<AdminGroupViewCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(AdminGroupController.class);
 
 	private LogicInterface logic;
 	private MailUtils mailUtils;
+	private Errors errors;
 
 	@Override
 	public View workOn(final AdminGroupViewCommand command) {
@@ -121,7 +122,31 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 				this.updateGroupPermissions(command);
 				break;
 			case DELETE_GROUP:
-				this.deleteGroup(command);
+				final Group groupToDelete = this.logic.getGroupDetails(command.getGroup().getName(), false);
+
+				if (!present(groupToDelete)) {
+					this.errors.reject("No such group.");
+					command.setGroup(null);
+					break;
+				}
+
+				if (present(groupToDelete.getPendingMemberships())) {
+					for (final GroupMembership ms : groupToDelete.getPendingMemberships()) {
+						this.logic.updateGroup(groupToDelete, GroupUpdateOperation.REMOVE_INVITED, ms);
+					}
+				}
+
+				final List<GroupMembership> groupMembers = groupToDelete.getMemberships();
+
+				for (final GroupMembership ms: groupMembers) {
+					if (!ms.getUser().getName().equals(groupToDelete.getName())) {
+						this.logic.updateGroup(groupToDelete, GroupUpdateOperation.REMOVE_MEMBER, ms);
+					}
+				}
+
+				// TODO: log that the admin removed the user from the group
+				this.logic.deleteGroup(groupToDelete.getName(), false);
+				command.setGroup(null);
 				break;
 			default:
 				break;
@@ -131,64 +156,6 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 		// load the pending groups
 		command.setPendingGroups(this.logic.getGroups(true, null, 0, Integer.MAX_VALUE));
 		return Views.ADMIN_GROUP;
-	}
-
-	/**
-	 * FIXME: move to logic
-	 * @param command
-	 */
-	private void deleteGroup(final AdminGroupViewCommand command) {
-		try {
-			final Group groupToDelete = this.logic.getGroupDetails(command.getGroup().getName(), false);
-
-			List<GroupMembership> groupMembers = groupToDelete.getMemberships();
-
-			if (present(groupToDelete.getPendingMemberships())) {
-				for (final GroupMembership ms : groupToDelete.getPendingMemberships()) {
-					this.logic.updateGroup(groupToDelete, GroupUpdateOperation.REMOVE_INVITED, ms);
-				}
-			}
-			// TODO: why not remove all members that are not a dummy user? we do not need no admins, we will delete the group
-			if (GroupRole.DUMMY.equals(groupToDelete.getGroupMembershipForUser(groupToDelete.getName()).getGroupRole())) {
-				// NEW GROUP VARIANT
-				// this means that we have the dummy and the last administrator
-				// in this group. Maybe check for the other user actually being
-				// an admin?
-
-				// TODO: maybe we should also have a view to assign a user to a
-				// group as an admin? That should be fairly easy, actually.
-
-				// delete anybody who isn't a dummy or an admin
-				for (final GroupMembership ms : groupMembers) {
-					if (!ms.getUser().getName().equals(groupToDelete.getName()) && !ms.getGroupRole().equals(GroupRole.ADMINISTRATOR)) {
-						// TODO: log that the admin removed the user from the group
-						this.logic.updateGroup(groupToDelete, GroupUpdateOperation.REMOVE_MEMBER, ms);
-					}
-				}
-
-				groupMembers = groupToDelete.getMemberships();
-				for (int i = 2; i < groupMembers.size(); i++) { // FIXME: why starting at 2?
-					this.logic.updateGroup(groupToDelete, GroupUpdateOperation.REMOVE_MEMBER, groupMembers.get(i));
-				}
-				// At this point, we should only have 2 more members in this
-				// group, which should be the dummy and one admin.
-				// we can now safely delete it.
-			} else {
-				// OLD GROUP VARIANT! JUST KICK EVERYBODY!
-				for (final GroupMembership ms : groupMembers) {
-					if (!ms.getUser().getName().equals(groupToDelete.getName())) {
-						this.logic.updateGroup(groupToDelete, GroupUpdateOperation.REMOVE_MEMBER, ms);
-					}
-				}
-			}
-			this.logic.deleteGroup(groupToDelete.getName(), false);
-			command.setAdminResponse("Group " + command.getGroup().getName() + " was successfully deleted.");
-			command.setGroup(null);
-		} catch (final IllegalArgumentException ex) {
-			command.setAdminResponse("Could not delete group: " + ex);
-		} catch (final NullPointerException ex) { // FIXME: why caching a npe?
-			command.setAdminResponse("Group " + command.getGroup().getName() + " does not exist.");
-		}
 	}
 
 	/**
@@ -252,5 +219,26 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 	 */
 	public void setMailUtils(final MailUtils mailUtils) {
 		this.mailUtils = mailUtils;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see org.bibsonomy.webapp.util.ErrorAware#getErrors()
+	 */
+	@Override
+	public Errors getErrors() {
+		return this.errors;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see org.bibsonomy.webapp.util.ErrorAware#setErrors(org.springframework.
+	 * validation.Errors)
+	 */
+	@Override
+	public void setErrors(final Errors errors) {
+		this.errors = errors;
 	}
 }

@@ -1083,13 +1083,9 @@ public class DBLogic implements LogicInterface {
 			session.beginTransaction();
 			// make sure that the group exists
 			final Group group = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, true, true, session);
-			// TODO: method also called later by deleteGroup
-			// final Group group = this.groupDBManager.getGroupByName(groupName,
-			// session);
 
-			if (group == null) {
+			if (!present(group)) {
 				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupName + "') doesn't exist");
-				throw new RuntimeException(); // never happens but calms down eclipse
 			}
 
 			// ensure that the group has no members except the admin. size > 2 because the group user is also part of the membership list or > 1 to cover old groups
@@ -1103,6 +1099,7 @@ public class DBLogic implements LogicInterface {
 				// if groups can be deleted without removing all members before this must be adapted!
 				if (GroupRole.ADMINISTRATOR.equals(t.getGroupRole())) {
 					// FIXME: why not called for group user FIXME_RELEASE
+					// Because the group user will be marked as a spammer.
 					this.updateUserItemsForLeavingGroup(group, t.getUser().getName(), session);
 				}
 			}
@@ -1672,6 +1669,7 @@ public class DBLogic implements LogicInterface {
 				} catch (final Exception ex) {
 					// some exception other than those covered in the
 					// DatabaseException was thrown
+					log.error("updating post " + post.getResource().getIntraHash() + "/" + this.loginUser.getName() + " failed", ex);
 					collectedException.addToErrorMessages(post.getResource().getIntraHash(), new UnspecifiedErrorMessage(ex));
 				}
 			}
@@ -1692,14 +1690,14 @@ public class DBLogic implements LogicInterface {
 	private <T extends Resource> String updatePost(final Post<T> post, final PostUpdateOperation operation, final DBSession session) {
 		final CrudableContent<T, GenericParam> manager = this.getFittingDatabaseManager(post);
 		final String oldIntraHash = post.getResource().getIntraHash();
-		
+
 		if (Role.SYNC.equals(this.loginUser.getRole())) {
 			validateGroupsForSynchronization(post);
 		}
 		this.validateGroups(post.getUser(), post.getGroups(), session);
-		
+
 		PostUtils.limitedUserModification(post, this.loginUser);
-		
+
 		/*
 		 * change group IDs to spam group IDs
 		 */

@@ -105,10 +105,7 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 			command.setResponseString("Error in input: " + errors.getFieldError().getObjectName() + " " + errors.getFieldError().getRejectedValue());
 			return Views.AJAX_TEXT;
 		}
-		/*
-		 * 	
-		 */
-	
+		
 		switch (action) {
 		case FLAG_SPAMMER:
 			log.debug("flag spammer");
@@ -271,7 +268,6 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 	@Override
 	public void setErrors(final Errors errors) {
 		this.errors = errors;
-		
 	}
 
 	@Override
@@ -283,5 +279,4 @@ public class AdminAjaxController extends AjaxController implements ValidationAwa
 	public boolean isValidationRequired(final AdminAjaxCommand command) {
 		return false;
 	}
-	
 }

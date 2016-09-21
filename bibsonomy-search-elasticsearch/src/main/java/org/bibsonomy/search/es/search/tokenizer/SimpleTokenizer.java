@@ -46,7 +46,7 @@ public class SimpleTokenizer implements Iterable<String> {
 	/**
 	 * @param toBeTokenized the string to be tokenized
 	 */
-	public SimpleTokenizer(String toBeTokenized) {
+	public SimpleTokenizer(final String toBeTokenized) {
 		if (toBeTokenized == null) {
 			this.toBeTokenized = toBeTokenized;
 		} else {

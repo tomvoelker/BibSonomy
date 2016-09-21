@@ -63,19 +63,18 @@ public class ClassificationTextChainElement implements ClassificationSource {
 	
 	@Override
 	public Classification getClassification(final URL url) throws IOException {
-		final BufferedReader in =
-			new BufferedReader(new FileReader(url.getPath()));
-		
-		this.classificationParser.parse(in);
-		
-		if (!present(this.classificationParser.getList())) {
-			if (!present(this.next)) {
-				return null;
+		try (final BufferedReader in = new BufferedReader(new FileReader(url.getPath()))) {
+			this.classificationParser.parse(in);
+			
+			if (!present(this.classificationParser.getList())) {
+				if (!present(this.next)) {
+					return null;
+				}
+				
+				return this.next.getClassification(url);
 			}
 			
-			return this.next.getClassification(url);
+			return new Classification(this.classificationParser.getName(), this.classificationParser.getList(), this.classificationParser.getDelimiter());
 		}
-		
-		return new Classification(this.classificationParser.getName(), this.classificationParser.getList(), this.classificationParser.getDelimiter());
 	}
 }

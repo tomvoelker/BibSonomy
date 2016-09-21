@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+ "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="RecommendationLog">
+	<!-- +
+		 | Get list of pairs containing given user's most popular tag name and frequency
+		 + --> 
+	<select id="getMostPopularTagsForUser" parameterClass="getTagsForResParam" resultMap="RecommendationBibCommon.tagFrequency">
+		SELECT t.tag_lower AS first, COUNT(tag_lower) AS second 
+		FROM tas t
+		WHERE t.user_name = #userName# 
+		GROUP BY tag_lower 
+		ORDER BY second DESC 
+		LIMIT #range#
+	</select>
+	
+	<!--  +
+		  | Get list of pairs containing given bookmark's most popular tag name and frequency
+		  | - Only take public posts into account!
+		  + -->
+	<select id="getMostPopularTagsForBookmark" parameterClass="getTagsForResParam" resultMap="RecommendationBibCommon.tagFrequency">
+		SELECT tag_lower as first, COUNT(tag_lower) as second 
+		  FROM tas t 
+		    JOIN bookmark b USING (content_id)
+		  WHERE b.book_url_hash = #hash#
+		    AND b.group = 0
+		  GROUP BY tag_lower 
+		  ORDER BY second DESC 
+		  LIMIT #range#
+	</select>
+	
+	<!--  +
+		  | Get list of pairs containing given publication's most popular tag name and frequency
+		  + -->
+	<select id="getMostPopularTagsForBibTeX" parameterClass="getTagsForResParam" resultMap="RecommendationBibCommon.tagFrequency">
+		SELECT tag_lower as first, COUNT(tag_lower) as second 
+		  FROM tas t
+		    JOIN bibtex b USING (content_id) 
+		WHERE b.simhash1 = #hash#
+		  AND b.group = 0 
+		GROUP BY tag_lower 
+		ORDER BY second DESC 
+		LIMIT #range#
+	</select>
+	
+	<select id="getTagsOfPreviousPostsForUser" parameterClass="getTagsForResParam" resultMap="RecommendationBibCommon.tagFrequency">
+		SELECT tag_lower as first, COUNT(tag_lower) as second
+		FROM tas t
+			JOIN <include refid="content-id-join"/>
+		USING(content_id)
+	</select>
+	
+	<!-- +
+		 | get number of tags used by a user 
+		 -->
+	<select id="getTagCountOfPreviousPostsForUser" parameterClass="getTagsForResParam" resultClass="integer">
+		SELECT COUNT(*)
+		FROM tas t
+			JOIN <include refid="content-id-join"/>
+		USING(content_id)
+	</select>
+		
+	<!-- +
+		 | Get number of tags used by a user
+		 + --> 
+	<select id="getNumberOfTagsForUser" parameterClass="string" resultClass="integer">
+		SELECT COUNT(DISTINCT tag_lower) 
+		FROM tas 
+		WHERE user_name = #userName#
+	</select>
+
+	<!-- +
+		 | Get number of TAS  
+		 + --> 
+	<select id="getNumberOfTasForUser" parameterClass="string" resultClass="integer">
+		SELECT COUNT(*) 
+		FROM tas 
+		WHERE user_name = #userName#
+	</select>
+	
+	<!-- +
+		 | Get number of TAS for bookmark 
+		 + --> 
+	<select id="getNumberOfTasForBookmark" parameterClass="string" resultClass="integer">
+		SELECT COUNT(*) 
+		  FROM tas 
+		    JOIN bookmark b USING (content_id)
+		  WHERE b.book_url_hash = #hash#
+		    AND b.group = 0
+	</select>
+	
+	<!-- +
+		 | Get number of TAS 
+		 + --> 
+	<select id="getNumberOfTasForBibTeX" parameterClass="string" resultClass="integer">
+		SELECT COUNT(*) 
+		  FROM tas
+		    JOIN bibtex b USING (content_id) 
+		  WHERE b.simhash1 = #hash#
+		    AND b.group = 0
+	</select>
+
+	<!-- +
+		 | Get user name for given user id 
+		 + --> 
+	<select id="getUserNameByID" parameterClass="integer" resultClass="string">
+		SELECT user_name 
+		  FROM user 
+		  WHERE id = #id#
+	</select>
+
+	<!-- +
+		 | Get user id for given user name 
+		 + --> 
+	<select id="getUserIDByName" parameterClass="string" resultClass="integer">
+		SELECT id 
+		  FROM user 
+		  WHERE user_name = #name#
+	</select>
+</sqlMap>

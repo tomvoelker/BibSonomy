@@ -255,7 +255,7 @@
 		<module>bibsonomy-web-common</module>
 		<module>bibsonomy-webapp</module>
 		<module>bibsonomy-wiki</module>
-		<module>bibsonomy-recommender-connector</module>
+		<module>bibsonomy-recommender</module>
 	</modules>
 	<build>
 		<pluginManagement>

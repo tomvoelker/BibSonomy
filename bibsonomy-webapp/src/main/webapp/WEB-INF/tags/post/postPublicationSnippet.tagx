@@ -14,32 +14,28 @@
     	the form for snippet posting on /postPublication
      -->
 	<form:form cssClass="form-horizontal" method="post" action="/import/publications">
-		<bsform:fieldset legendKey="post_bibtex.pub_snippet.heading">
-			<jsp:attribute name="content">
-				<p><fmt:message key="post_bibtex.pub_snippet.description" /></p>
-			
-				<input type="hidden" name="selTab" value="1" />
-				<input type="hidden" name="ckey" value="${ckey}" />
-				<input type="hidden" name="personId" value="${command.personId}" /> 
-				<input type="hidden" name="personRole" value="${command.personRole}"/>
-				
-				<bsform:textarea labelColSpan="2" inputColSpan="10" path="selection" id="selection" />
-				<div class="form-group">
-					<label class="col-sm-2 control-label" for="${fn:escapeXml(id)}">
-						<fmt:message key="post.resource.viewablefor" />
-					</label>
-					<div class="col-sm-10">
-						<div class="row">
-	 						<div class="col-sm-6">
-								<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}" />
-							</div>
-						</div>
+		<p><fmt:message key="post_bibtex.pub_snippet.description" /></p>
+		
+		<input type="hidden" name="selTab" value="1" />
+		<input type="hidden" name="ckey" value="${ckey}" />
+		<input type="hidden" name="personId" value="${command.personId}" /> 
+		<input type="hidden" name="personRole" value="${command.personRole}"/>
+		
+		<bsform:textarea labelColSpan="2" inputColSpan="10" path="selection" id="selection" rows="5" />
+		<div class="form-group">
+			<label class="col-sm-2 control-label" for="${fn:escapeXml(id)}">
+				<fmt:message key="post.resource.viewablefor" />
+			</label>
+			<div class="col-sm-10">
+				<div class="row">
+						<div class="col-sm-6">
+						<discussion:ajaxGroupBox groups="${command.context.loginUser.groups}" />
 					</div>
 				</div>
-			</jsp:attribute>
-		</bsform:fieldset>
+			</div>
+		</div>
 		
-		<bsform:fieldset legendKey="post_bibtex.upload.options">
+		<bsform:fieldset legendKey="post_bibtex.upload.options" collapsible="${true}">
 			<jsp:attribute name="content">
 				<bsform:checkbox inputColSpan="10" path="editBeforeImport" labelKey="import.edit_before_import" helpKey="import.edit_before_import.help" />
 				<bsform:checkbox inputColSpan="10" path="overwrite" labelKey="import.overwrite2" helpKey="import.overwritten"/>
@@ -50,17 +46,17 @@
 					| 
 					+-->
 				<c:set var="labels">' ' (<fmt:message key="delimiters.whitespace"/>)|, (<fmt:message key="delimiters.comma"/>)|; (<fmt:message key="delimiters.semicolon"/>)</c:set>
-				<bsform:select id="delimiter-0" path="delimiter" items="${fn:split(' |,|;','|')}" itemLabels="${fn:split(labels, '|')}" />
+				<bsform:select id="delimiter" path="delimiter" items="${fn:split(' |,|;','|')}" itemLabels="${fn:split(labels, '|')}" />
 				
-				<bsform:input id="whitespace-0" path="whitespace" labelKey="post_bibtex.upload.option.whitespace_substitute" helpKey="post_bibtex.upload.option.whitespace_substitute_help" small="${true}" />
-				
-				<div class="form-group">
-					<div class="col-sm-offset-2 col-sm-10">
-						<fmt:message var="post_button" key="post_bibtex.button_label_post" />
-						<bsform:button type="submit" style="primary" size="defaultSize" value="${post_button}" />
-					</div>
-				</div>
+				<bsform:input id="whitespace" path="whitespace" labelKey="post_bibtex.upload.option.whitespace_substitute" helpKey="post_bibtex.upload.option.whitespace_substitute_help" small="${true}" />
 			</jsp:attribute>
 		</bsform:fieldset>
+		
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				<fmt:message var="post_button" key="post_bibtex.button_label_post" />
+				<bsform:button type="submit" style="primary" size="defaultSize" value="${post_button}" />
+			</div>
+		</div>
 	</form:form>
 </jsp:root>

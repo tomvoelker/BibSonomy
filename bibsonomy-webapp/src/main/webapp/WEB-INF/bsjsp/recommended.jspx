@@ -1,0 +1,45 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/bstags/layout"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/bstags/layout/sidebar"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/bstags/tags"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/bstags/layout/parts">
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+	<fmt:message key="recommended.pagetitle" var="pageTitle"/>
+	<fmt:message var="headline" key="page.recommended.headline" />
+	<layout:resourceLayout pageTitle="${pageTitle}" 
+			command="${command}" 
+			requPath="${requPath}" 
+			disableListNavigation="${true}" 
+			activeTab="my"
+			showPageOptions="${true}"
+			hideFooterContainer="${true}"
+			headline="${headline}">
+			
+		<jsp:attribute name="heading">
+			<parts:search pathMessageKey="navi.search" formAction="/search" formInputName="search"/>
+		</jsp:attribute>
+		
+		<jsp:attribute name="headerExt">
+			<script src="${resdir}/javascript/bs/recommender_feedback.js" type="text/javascript"><!-- keep me --></script>
+		</jsp:attribute>
+		
+		<!-- show tags of recommended resources, scaled by the count of appearance in the recommendations -->
+		<jsp:attribute name="sidebar">
+			<ul>
+				<li>
+					<sidebar:sidebarHeader textKey="tags.of_recommendations" />
+					<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" tagSizeMode="user"/>
+				</li>
+			</ul>
+		</jsp:attribute>
+
+	</layout:resourceLayout>
+
+</jsp:root>
