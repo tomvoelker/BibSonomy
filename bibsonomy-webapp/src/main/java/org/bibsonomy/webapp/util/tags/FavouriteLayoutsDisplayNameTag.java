@@ -49,9 +49,8 @@ public class FavouriteLayoutsDisplayNameTag extends RequestContextAwareTag {
 		case CSL:
 			return getCslDisplayName(name);
 		default:
-			break;
+			return ("Style has been deleted.");
 		}
-		return null;
 	}
 
 	/**

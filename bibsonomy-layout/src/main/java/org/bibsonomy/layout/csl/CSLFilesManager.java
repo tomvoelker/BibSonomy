@@ -65,12 +65,11 @@ public class CSLFilesManager {
 				}
 				aliases.get(value).add(key);
 			}
-			//soooo schön
-			final Resource[] resourcesTopLevel = resolver.getResources("classpath:/org/citationstyles/styles/*.csl");
-			final Resource[] resourcesDependent = resolver.getResources("classpath:/org/citationstyles/styles/dependent/*.csl");
-			LinkedList<Resource> resources = new LinkedList<>();
-			resources.addAll(Arrays.asList(resourcesTopLevel));
-			resources.addAll(Arrays.asList(resourcesDependent));
+			final Resource[] resources = resolver.getResources("classpath:/org/citationstyles/styles/*.csl");
+//			final Resource[] resourcesDependent = resolver.getResources("classpath:/org/citationstyles/styles/dependent/*.csl");
+//			LinkedList<Resource> resources = new LinkedList<>();
+//			resources.addAll(Arrays.asList(resourcesTopLevel));
+//			resources.addAll(Arrays.asList(resourcesDependent));
 			
 			for (final Resource resource : resources) {
 				try (final BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
