@@ -4,9 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -63,7 +65,13 @@ public class CSLFilesManager {
 				}
 				aliases.get(value).add(key);
 			}
-			final Resource[] resources = resolver.getResources("classpath:/org/citationstyles/styles/*.csl");
+			//soooo schön
+			final Resource[] resourcesTopLevel = resolver.getResources("classpath:/org/citationstyles/styles/*.csl");
+			final Resource[] resourcesDependent = resolver.getResources("classpath:/org/citationstyles/styles/dependent/*.csl");
+			LinkedList<Resource> resources = new LinkedList<>();
+			resources.addAll(Arrays.asList(resourcesTopLevel));
+			resources.addAll(Arrays.asList(resourcesDependent));
+			
 			for (final Resource resource : resources) {
 				try (final BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
 					final StringBuilder builder = new StringBuilder();
