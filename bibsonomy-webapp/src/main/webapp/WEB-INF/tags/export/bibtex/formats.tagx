@@ -13,14 +13,9 @@
 	<fmt:message key="form.input.select" var="placeholderText"/>
 	<div class="col-sm-9">
 		<script type="text/javascript">
-		var $comboBox =  $("#selectAllStyles").select2();	
-		$(document).ready(function() {
-			$comboBox.select2({
-				placeholder: "${placeholderText}"
-				});
-			});
+			var $comboBox =  $("#selectAllStyles").select2();
 		</script>
-		<select id="selectAllStyles" class="form-control" onchange="generateExportPostLink(this.value)" size="1">		
+		<select id="selectAllStyles" data-placeholder="${placeholderText}" class="form-control" onchange="generateExportPostLink(this.value)" size="1">		
 			<option><!-- keep me! --></option>
 			<c:forEach var="mapEntry" items="${command.layoutMap}">
 				<c:if test="${mapEntry.value.publicLayout and mapEntry.value.isFavorite}">
