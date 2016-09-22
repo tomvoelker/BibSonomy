@@ -35,7 +35,6 @@ import org.bibsonomy.search.es.help.HelpUtils;
 import org.bibsonomy.services.help.HelpParser;
 import org.pegdown.Extensions;
 import org.pegdown.PegDownProcessor;
-import org.pegdown.ToHtmlSerializer;
 import org.pegdown.ast.RootNode;
 import org.pegdown.plugins.PegDownPlugins;
 import org.pegdown.plugins.ToHtmlSerializerPlugin;
