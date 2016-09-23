@@ -748,6 +748,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			final User user = this.getUserDetails(userName, session);
 			user.setPassword("inactive"); // FIXME: this must be documented and refactored into a constant!
 			user.setRole(Role.DELETED);   // this is new - use it to check if a user has been deleted!
+			user.setSpammer(true);
 			user.setPasswordSalt(null);
 			this.plugins.onUserDelete(userName, session);
 
@@ -759,11 +760,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			 */
 			final List<Group> groups = groupDBManager.getGroupsForUser(userName, true, session);
 			for (final Group group : groups) {
-				// if the group name equals the username, this user is a group
-				// user.
-				if (group.getName().equals(userName)) {
-					throw new UnsupportedOperationException("User " + userName + " is a group and thus can't be deleted this way. Please delete the group.");
-				}
 				// if the user is the last admin of a group, we can't delete it
 				// either.
 				if (GroupUtils.getGroupMembershipForUser(group, userName, false).getGroupRole().equals(GroupRole.ADMINISTRATOR) && groupDBManager.hasExactlyOneAdmin(group, session)) {
