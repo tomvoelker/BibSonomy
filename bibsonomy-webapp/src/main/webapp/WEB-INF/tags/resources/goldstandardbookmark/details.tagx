@@ -57,7 +57,7 @@
 			</c:if>
 			
 			<!-- tags -->
-			<goldstandard:tags tagCloudCommand="${command.tagcloud}" />
+			<goldstandard:tags tagCloudCommand="${command.tagcloud}" tagsOfLoggedinUser="${postOfLoggedInUser.tags}" />
 			
 			<!-- users -->
 			<common:relatedUsers userList="${command.relatedUserCommand.relatedUsers}" />
