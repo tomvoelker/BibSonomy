@@ -46,14 +46,12 @@ import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.GroupParam;
-import org.bibsonomy.database.params.TagSetParam;
 import org.bibsonomy.database.params.WikiParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.GroupRequest;
-import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.TagSet;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
@@ -64,7 +62,7 @@ import org.bibsonomy.wiki.TemplateManager;
 
 /**
  * Used to retrieve groups from the database.
- * 
+ *
  * @author Christian Schenk
  * @author Thomas Niebler
  */
@@ -81,7 +79,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	private UserDatabaseManager userDb;
-	private AdminDatabaseManager adminDatabaseManager;
+	private final AdminDatabaseManager adminDatabaseManager;
 	private final DatabasePluginRegistry plugins;
 
 	private GroupDatabaseManager() {
@@ -91,7 +89,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Returns a list of all groups without membership information
-	 * 
+	 *
 	 * @param start
 	 * @param end
 	 * @param session
@@ -108,10 +106,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @param start
 	 * @param end
 	 * @param session
-	 * 
+	 *
 	 * @return list of all pending groups
 	 */
-	public List<Group> getPendingGroups(String userName, final int start, final int end, final DBSession session) {
+	public List<Group> getPendingGroups(final String userName, final int start, final int end, final DBSession session) {
 		final GroupParam param = new GroupParam();
 		param.setUserName(userName);
 		param.setOffset(start);
@@ -122,7 +120,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Returns a specific group with memberships
 	 * DEPRECATED: Use getGroupMembers instead
-	 * 
+	 *
 	 * @param groupname
 	 * @param session
 	 * @return Returns a {@link Group} object if the group exists otherwise
@@ -151,7 +149,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Returns a list of tagsets for a group
-	 * 
+	 *
 	 * @param groupname - the name of the group
 	 * @param session
 	 * @return Return a list of {@link TagSet} objects if the group exists and
@@ -162,31 +160,16 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Returns a TagSet for a group with a given setname
-	 * 
-	 * @param setName - the name of the tagSet
-	 * @param groupId - the id of the group
-	 * @param session
-	 * @return a TagSet
-	 */
-	private TagSet getTagSetBySetNameAndGroup(final String setName, final int groupId, final DBSession session) {
-		final TagSetParam param = new TagSetParam();
-		param.setSetName(setName);
-		param.setGroupId(groupId);
-		return this.queryForObject("getTagSetBySetNameAndGroup", param, TagSet.class, session);
-	}
-
-	/**
 	 * Returns a group with all its members if the user is allowed to see them.
-	 * 
+	 *
 	 * @param authUserName
 	 * @param groupname
 	 * @param getPermissions <code>true</code> iff permissions should be loaded
-	 * @param adminAccess 
+	 * @param adminAccess
 	 * @param session
 	 * @return group
 	 */
-	public Group getGroupMembers(final String authUserName, final String groupname, final boolean getPermissions, boolean adminAccess, final DBSession session) {
+	public Group getGroupMembers(final String authUserName, final String groupname, final boolean getPermissions, final boolean adminAccess, final DBSession session) {
 		log.debug("getGroupMembers " + groupname);
 		Group group;
 		if ("friends".equals(groupname)) {
@@ -217,13 +200,13 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 		group = this.queryForObject(statement, groupname, Group.class, session);
 		// the group has no members. At least the dummy user should exist.
-		if (group == null) {
+		if (!present(group)) {
 			log.debug("group " + groupname + " does not exist");
 			group = GroupUtils.buildInvalidGroup();
 			group.setMemberships(Collections.<GroupMembership> emptyList());
 			return group;
 		}
-		
+
 		/*
 		 * update the membership list according to the privlevel settings
 		 * system admins can see all members by default
@@ -244,7 +227,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 				// only a group admins or moderators may always see the group
 				// members
 				final GroupMembership groupMembershipForUser = this.getGroupMembershipForUser(authUserName, group, session);
-				
+
 				final List<GroupMembership> groupMemberships;
 				if (present(groupMembershipForUser)) {
 					if (groupMembershipForUser.getGroupRole().hasRole(GroupRole.MODERATOR)) {
@@ -265,7 +248,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 				break;
 			}
 		}
-		
+
 		return group;
 	}
 
@@ -301,8 +284,8 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * @param g 
-	 * @param session 
+	 * @param g
+	 * @param session
 	 * @return <code>true</code> iff there's only one admin for the group.
 	 */
 	public boolean hasExactlyOneAdmin(final Group g, final DBSession session) {
@@ -310,18 +293,18 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		p.setMembership(new GroupMembership(null, GroupRole.ADMINISTRATOR, true));
 		p.setGroupId(g.getGroupId());
 		final Integer count = this.queryForObject("countPerRole", p, Integer.class, session);
-		return (count != null) && (count.intValue() == 1);
+		return count != null && count.intValue() == 1;
 	}
-	
+
 	/**
 	 * @param session
 	 * @return the number of members in the members log table
 	 */
-	public int getGroupMembersInHistoryCount(DBSession session) {
+	public int getGroupMembersInHistoryCount(final DBSession session) {
 		final Integer count = this.queryForObject("getGroupMemberHistoryCount", Integer.class, session);
 		return saveConvertToint(count);
 	}
-	
+
 	private static boolean isUserInGroup(final String username, final Group group) {
 		for (final GroupMembership ms : group.getMemberships()) {
 			if (ms.getUser().getName().equals(username)) {
@@ -333,7 +316,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Returns a a list of groups for a given user
-	 * 
+	 *
 	 * @param username
 	 * @param session
 	 * @return a list of groups
@@ -344,7 +327,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Get all groups a user is a member of, with or without special groups.
-	 * 
+	 *
 	 * @param userName
 	 * @param removeSpecialGroups
 	 * @param session
@@ -361,7 +344,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Helper function to remove special groups from a List of groups
-	 * 
+	 *
 	 * @param groups a list of groups
 	 * @return a new list of groups with special groups removed
 	 */
@@ -378,7 +361,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Gets all groups in which both user A and user B are in.
 	 * The userSharedDocuments values of userNameB will be returned.
-	 * 
+	 *
 	 * @param userNameA - name of the first user.
 	 * @param userNameB - name of the second user.
 	 * @param session
@@ -412,7 +395,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Returns a a list of groups for a given contentID
-	 * 
+	 *
 	 * @param contentId
 	 * @param session
 	 * @return a list of groups
@@ -423,7 +406,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Gets all the groupIds of the given users groups.
-	 * 
+	 *
 	 * @param userName userName to get the groupids for
 	 * @param session a db session
 	 * @return A list of groupids
@@ -437,7 +420,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Checks if group exists.
-	 * 
+	 *
 	 * @param groupname
 	 * @param session a db session
 	 * @return groupid of group, GroupID.GROUP_INVALID otherwise
@@ -448,7 +431,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Checks if a given user is in the given group.
-	 * 
+	 *
 	 * @param groupname
 	 * @param username
 	 * @param session a db session
@@ -482,14 +465,14 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Activates a group.
-	 * 
+	 *
 	 * @param groupName
 	 * @param session
 	 */
 	public void activateGroup(final String groupName, final DBSession session) {
 		// get the group
 		final Group group = this.getPendingGroup(groupName, null, session);
-		
+
 		if (!present(group)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group " + groupName + " is no pending group.");
 		}
@@ -521,19 +504,19 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Returns a specific pending group
-	 * 
+	 *
 	 * @param groupname
-	 * @param requestingUser 
+	 * @param requestingUser
 	 * @param session
 	 * @return Returns a {@link Group} object if the group exists otherwise
 	 *         null.
 	 */
-	public Group getPendingGroup(final String groupname, String requestingUser, final DBSession session) {
+	public Group getPendingGroup(final String groupname, final String requestingUser, final DBSession session) {
 		if (!present(groupname)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Pending-Groupname isn't present");
 		}
 		final String normedGroupName = this.getNormedGroupName(groupname);
-		
+
 		final GroupParam groupParam = new GroupParam();
 		groupParam.setUserName(requestingUser);
 		groupParam.setRequestedGroupName(normedGroupName);
@@ -542,7 +525,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Creates a group in the database.
-	 * 
+	 *
 	 * @param group
 	 * @param session
 	 */
@@ -583,7 +566,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Returns the normed group name. Everything is in lower case.
-	 * 
+	 *
 	 * @param groupName a group name
 	 * @return groupName in lower case
 	 */
@@ -607,7 +590,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Removes the group and the groupuser from the pending tables.
-	 * 
+	 *
 	 * @param groupname
 	 * @param session
 	 */
@@ -616,14 +599,14 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		if (groupname == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Pending Group ('" + groupname + "') doesn't exist");
 		}
-		
+
 		this.userDb.deletePendingUser(groupname, session);
 		this.delete("deletePendingGroup", groupname, session);
 	}
 
 	/**
 	 * Inserts a default wiki for a newly created group.
-	 * 
+	 *
 	 * @param group
 	 * @param session
 	 */
@@ -637,61 +620,6 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Insert a TagSet
-	 * 
-	 * @param tagset the Set to insert
-	 * @param group the group which owns the tagset
-	 * @param session
-	 */
-	private void insertTagSet(final TagSet tagset, final String groupname, final DBSession session) {
-		final Group group = this.getGroupByName(groupname, session);
-		if (!present(group)) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist");
-		}
-		if (tagset.getSetName().isEmpty() || tagset.getTags().isEmpty()) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Invalid tagset - a tagset must contain a setname and at least one valid tag");
-		}
-
-		final TagSetParam param = new TagSetParam();
-		param.setSetName(tagset.getSetName());
-		param.setGroupId(group.getGroupId());
-		final TagSet set = this.getTagSetBySetNameAndGroup(tagset.getSetName(), group.getGroupId(), session);
-		for (final Tag tag : tagset.getTags()) {
-			if (set.getTags().contains(tag)) {
-				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "INSERT FAILED: tag ('" + tag.getName() + "') already contained in the tagset ('" + tagset.getSetName() + "') for group ('" + group.getName() + "')");
-			}
-			param.setTagName(tag.getName());
-			this.insert("insertTagSet", param, session);
-		}
-
-	}
-
-	/**
-	 * Deletes a TagSet in the DataBase
-	 * 
-	 * @param setName - the name of the TagSet to delete
-	 * @param group - the group of the TagSet
-	 * @param session
-	 */
-	private void deleteTagSet(final String setName, final String groupname, final DBSession session) {
-		final Group group = this.getGroupByName(groupname, session);
-		if (group == null) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist");
-			throw new RuntimeException(); // never happens but calms down
-											// eclipse
-		}
-		final TagSet tagset = this.getTagSetBySetNameAndGroup(setName, group.getGroupId(), session);
-		if (tagset == null) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "TagSet ('" + setName + "') doesn't exist for group ('" + groupname + "')");
-		}
-
-		final TagSetParam param = new TagSetParam();
-		param.setSetName(setName);
-		param.setGroupId(group.getGroupId());
-		this.delete("deleteTagSet", param, session);
-	}
-
-	/**
 	 * Returns a new groupId.
 	 */
 	private int getNewGroupId(final DBSession session) {
@@ -699,36 +627,60 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Delete a group from the database.
-	 * 
+	 * Delete a group from the database. The group must only contain the group
+	 * user at this point.
+	 *
 	 * @param groupname
 	 * @param session
 	 */
-	public void deleteGroup(final String groupname, final DBSession session) {
+	public void deleteGroup(final String groupname, final boolean quickDelete, final DBSession session) {
 		// make sure that the group exists
-		final Group group = this.getGroupByName(groupname, session);
-		
-		if (group == null) {
+		final Group group = this.getGroupMembers(groupname, groupname, false, false, session);
+
+		if (!present(group)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist");
-			throw new RuntimeException(); // never happens but calms down eclipse TODO: remove?
+		}
+
+		if (!quickDelete) {
+			final GroupMembership dummyMs = GroupUtils.getGroupMembershipForUser(group, group.getName(), false);
+			// check for group type. If there is a Dummy user in the group,
+			// the group must be down to 2 users: the Dummy and the Admin.
+			if (dummyMs.getGroupRole().equals(GroupRole.DUMMY)) {
+				if (group.getMemberships().size() > 2) {
+					ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') contains other users besides the administrator.");
+				}
+			} else {
+				if (group.getMemberships().size() > 1) {
+					ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') contains other users besides the administrator.");
+				}
+			}
+		}
+
+		// remove all pending memberships
+		for (final GroupMembership pms : group.getPendingMemberships()) {
+			this.removePendingMembership(groupname, pms.getUser().getName(), session);
+		}
+		// this forces all members out of the group and does not check for
+		// consistency issues. After this step, the group will be completely
+		// empty (this also removes the group user)
+		for (final GroupMembership ms : group.getMemberships()) {
+			this.removeUserFromGroup(groupname, ms.getUser().getName(), true, session);
 		}
 
 		final Integer groupId = Integer.valueOf(group.getGroupId());
 		this.delete("deleteGroup", groupId, session);
-		// FIXME: remove
-		this.delete("removeAllUserFromGroup", groupId, session);
-		
+
 		// get the group user and flag him as spammer
 		final User groupUser = this.userDb.getUserDetails(groupname, session);
 		groupUser.setToClassify(0);
 		groupUser.setAlgorithm("group_user");
-		groupUser.setSpammer(true);
+		groupUser.setSpammer(Boolean.TRUE);
 		this.adminDatabaseManager.flagSpammer(groupUser, AdminDatabaseManager.DELETED_UPDATED_BY, session);
 	}
 
 	/**
 	 * Adds a user to a group.
-	 * 
+	 *
 	 * @param groupname
 	 * @param username
 	 * @param role
@@ -752,7 +704,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't add user to nonexistent group");
 			}
 			// make sure that the user isn't a member of the group
-			if (this.isUserInGroup(username, group)) {
+			if (GroupDatabaseManager.isUserInGroup(username, group)) {
 				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') is already a member of this group ('" + groupname + "')");
 			}
 
@@ -777,23 +729,26 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Removes a user from a group.
-	 * 
+	 *
 	 * @param groupname
 	 * @param username
+	 * @param force
+	 *            if true, the user is removed from the group, regardless of
+	 *            consistency issues.
 	 * @param session
 	 */
-	public void removeUserFromGroup(final String groupname, final String username, final DBSession session) {
+	public void removeUserFromGroup(final String groupname, final String username, final boolean force, final DBSession session) {
 		// make sure that the group exists
 		final Group group = this.getGroupByName(groupname, session);
-		if (group == null) {
+		if (!present(group)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't remove user from nonexistent group");
 		}
 		// make sure that the user is a member of the group
-		if (!this.isUserInGroup(username, group)) {
+		if (!GroupDatabaseManager.isUserInGroup(username, group)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') isn't a member of this group ('" + groupname + "')");
 		}
 		// check if we have only one group admin
-		if (this.hasExactlyOneAdmin(group, session)) {
+		if (!force && this.hasExactlyOneAdmin(group, session)) {
 			// check the group role for the given username
 			final GroupRole activeRole = group.getGroupMembershipForUser(username).getGroupRole();
 			// the user is the last admin, we can't remove him.
@@ -812,7 +767,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Updates the users role.
-	 * 
+	 *
 	 * @param loginUser
 	 * @param groupname
 	 * @param username
@@ -825,7 +780,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		if (group == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't update the grouprole");
 		}
-		if (!this.isUserInGroup(username, group)) {
+		if (!GroupDatabaseManager.isUserInGroup(username, group)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') isn't a member of this group ('" + groupname + "')");
 		}
 
@@ -854,7 +809,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Removes the join request or invite from the group.
-	 * 
+	 *
 	 * @param groupname
 	 * @param username
 	 * @param session
@@ -904,7 +859,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 				membership.setUser(new User(username));
 				membership.setGroupRole(pendingGroupRole);
 				membership.setUserSharedDocuments(userSharedDocuments);
-				
+
 				final GroupParam param = new GroupParam();
 				param.setMembership(membership);
 				param.setGroupId(group.getGroupId());
@@ -935,7 +890,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Updates a group's privacy level and documents settings.
 	 * TODO: tests
-	 * 
+	 *
 	 * @param groupToUpdate
 	 * @param session
 	 */
@@ -948,7 +903,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "During updateGroupSettings: Incomplete group information: group ID, privlevel, shared documents and allowJoin are required.");
 		}
 		// TODO: Logging!
-		
+
 		/*
 		 * store the bean
 		 */
@@ -957,7 +912,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * updates the user shared documents field for the given user.
-	 * 
+	 *
 	 * @param group
 	 * @param membership
 	 * @param session
@@ -973,7 +928,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * updates the groups publication reporting settings
-	 * 
+	 *
 	 * @param group
 	 * @param session
 	 */

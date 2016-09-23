@@ -1037,10 +1037,8 @@ public class DBLogic implements LogicInterface {
 			 */
 			this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
 			final User u = this.getUserDetails(userName);
-			for (final Group g : u.getGroups()) {
-				if (this.groupDBManager.hasExactlyOneAdmin(g, session) && g.getGroupMembershipForUser(userName).getGroupRole().equals(GroupRole.ADMINISTRATOR)) {
-					throw new IllegalArgumentException("This would leave group " + g + " without an admin.");
-				}
+			if (!present(u.getName())) {
+				throw new IllegalArgumentException("Cannot delete user with name " + userName + ": user not found.");
 			}
 
 			this.userDBManager.deleteUser(userName, session);
@@ -1056,7 +1054,10 @@ public class DBLogic implements LogicInterface {
 	 * org.bibsonomy.model.logic.LogicInterface#deleteGroup(java.lang.String)
 	 */
 	@Override
-	public void deleteGroup(final String groupName, final boolean pending) {
+	public void deleteGroup(final String groupName, final boolean pending, final boolean quickDelete) {
+		// needs login.
+		this.ensureLoggedIn();
+
 		final DBSession session = this.openSession();
 
 		if (pending) {
@@ -1065,7 +1066,7 @@ public class DBLogic implements LogicInterface {
 				this.permissionDBManager.ensureAdminAccess(this.loginUser);
 				final Group pendingGroup = this.groupDBManager.getPendingGroup(groupName, null, session);
 				if (!present(pendingGroup)) {
-					throw new IllegalStateException("group '" + groupName + "' does not exist");
+					throw new IllegalStateException("pending group '" + groupName + "' does not exist");
 				}
 				this.groupDBManager.deletePendingGroup(groupName, session);
 				session.commitTransaction();
@@ -1076,9 +1077,9 @@ public class DBLogic implements LogicInterface {
 			}
 		}
 
-		this.ensureLoggedIn();
-		// only group admins are allowed to delete the group
+		// only group and system admins are allowed to delete the group
 		this.permissionDBManager.ensureIsAdminOrHasGroupRoleOrHigher(this.loginUser, groupName, GroupRole.ADMINISTRATOR);
+
 		try {
 			session.beginTransaction();
 			// make sure that the group exists
@@ -1089,22 +1090,18 @@ public class DBLogic implements LogicInterface {
 			}
 
 			// ensure that the group has no members except the admin. size > 2 because the group user is also part of the membership list or > 1 to cover old groups
-			if (group.getMemberships().size() > 2 || group.getMemberships().size() > 1 && group.getMemberships().get(0).getGroupRole() != GroupRole.DUMMY && group.getMemberships().get(1).getGroupRole() != GroupRole.DUMMY) {
-				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + group.getName() + "') has at least one member beside the administrator.");
-			}
-
-			// all the posts/discussions of the group admin need to be edited as well before deleting the group
-			for (final GroupMembership t : group.getMemberships()) {
-				// as the group can only consist of the group admin and the group user at this point, this check should be enough
-				// if groups can be deleted without removing all members before this must be adapted!
-				if (GroupRole.ADMINISTRATOR.equals(t.getGroupRole())) {
-					// FIXME: why not called for group user FIXME_RELEASE
-					// Because the group user will be marked as a spammer.
-					this.updateUserItemsForLeavingGroup(group, t.getUser().getName(), session);
+			if (!quickDelete) {
+				if (group.getMemberships().size() > 2 || group.getMemberships().size() > 1 && group.getMemberships().get(0).getGroupRole() != GroupRole.DUMMY && group.getMemberships().get(1).getGroupRole() != GroupRole.DUMMY) {
+					ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + group.getName() + "') has at least one member beside the administrator.");
 				}
 			}
 
-			this.groupDBManager.deleteGroup(groupName, session);
+			// all the posts/discussions of the group admin need to be edited as well before deleting the group
+			for (final GroupMembership membership : group.getMemberships()) {
+				this.updateUserItemsForLeavingGroup(group, membership.getUser().getName(), session);
+			}
+
+			this.groupDBManager.deleteGroup(groupName, quickDelete, session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -1419,7 +1416,7 @@ public class DBLogic implements LogicInterface {
 					}
 				}
 
-				this.groupDBManager.removeUserFromGroup(group.getName(), requestedUserName, session);
+				this.groupDBManager.removeUserFromGroup(group.getName(), requestedUserName, false, session);
 				this.updateUserItemsForLeavingGroup(group, requestedUserName, session);
 				break;
 			case UPDATE_USER_SHARED_DOCUMENTS:
