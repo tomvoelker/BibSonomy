@@ -84,6 +84,7 @@ public class Plugin extends Parser implements InlinePluginParser, BlockPluginPar
 	
 	/**
 	 * Rule for a ConditionalExpression.
+	 * @return 
 	 */
 	public Rule CondExpression() {
 		StringBuilderVar condition = new StringBuilderVar();

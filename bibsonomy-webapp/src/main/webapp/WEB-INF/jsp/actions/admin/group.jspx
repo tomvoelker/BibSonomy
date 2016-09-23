@@ -5,6 +5,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/users"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
@@ -64,12 +65,14 @@
 			</div>
 			</c:if>
 			
+			<errors:global />
+			
 			<bsform:fieldset legendKey="settings.group.delete">
 				<jsp:attribute name="content">
 					<fmt:message key="settings.group.delete.description" />
 					<form:form name="groupInfo" action="${relativeUrlGenerator.getAdminUrlByName('group')}" method="POST" cssClass="form-horizontal">
 						<input type="hidden" value="DELETE_GROUP" name="action" />
-						<bsform:input labelColSpan="3" inputColSpan="9" id="fetchGroupInfo" path="group.name" />
+						<bsform:select path="group.name" items="${command.allGroupNames}" labelColSpan="3" inputColSpan="9" id="fetchGroupInfo" />
 						<div class="form-group">
 							<div class="col-sm-offset-3 col-sm-9">
 								<fmt:message key="settings.group.delete" var="buttonText" />

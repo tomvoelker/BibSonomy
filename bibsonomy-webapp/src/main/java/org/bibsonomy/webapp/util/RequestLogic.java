@@ -100,7 +100,7 @@ public class RequestLogic {
 	 * rather the contents of the x-forwarded-for header. This also contains
 	 * all involved proxies, separated by comma.
 	 */
-	public String getInetAddress() {		
+	public String getInetAddress() {
 		return request.getHeader(HEADER_X_FORWARDED_FOR);
 	}
 

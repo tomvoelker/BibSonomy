@@ -57,6 +57,7 @@ public class AdminGroupViewCommand extends BaseCommand {
 	 * list of pending groups
 	 */
 	private List<Group> pendingGroups;
+	private String[] allGroupNames;
 
 	public AdminGroupViewCommand() {
 		this.group = new Group();
@@ -157,6 +158,21 @@ public class AdminGroupViewCommand extends BaseCommand {
 	 */
 	public void setDeclineMessage(final String declineMessage) {
 		this.declineMessage = declineMessage;
+	}
+
+	/**
+	 * @return the allGroups
+	 */
+	public String[] getAllGroupNames() {
+		return this.allGroupNames;
+	}
+
+	/**
+	 * @param allGroups
+	 *            the allGroups to set
+	 */
+	public void setAllGroupNames(final String[] allGroups) {
+		this.allGroupNames = allGroups;
 	}
 
 }

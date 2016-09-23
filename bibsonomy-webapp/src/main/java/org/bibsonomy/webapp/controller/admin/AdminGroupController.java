@@ -40,7 +40,6 @@ import org.bibsonomy.common.enums.GroupLevelPermission;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.Group;
-import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
@@ -104,7 +103,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 
 				// delete the group
 				log.debug("grouprequest for group \"" + groupName + "\" declined");
-				this.logic.deleteGroup(groupName, true);
+				this.logic.deleteGroup(groupName, true, false);
 
 				// send mail
 				String declineMessage = command.getDeclineMessage();
@@ -125,28 +124,15 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 				final Group groupToDelete = this.logic.getGroupDetails(command.getGroup().getName(), false);
 
 				if (!present(groupToDelete)) {
-					this.errors.reject("No such group.");
+					this.errors.reject("group.doesnotexist.header");
 					command.setGroup(null);
 					break;
 				}
 
-				if (present(groupToDelete.getPendingMemberships())) {
-					for (final GroupMembership ms : groupToDelete.getPendingMemberships()) {
-						this.logic.updateGroup(groupToDelete, GroupUpdateOperation.REMOVE_INVITED, ms);
-					}
-				}
-
-				final List<GroupMembership> groupMembers = groupToDelete.getMemberships();
-
-				for (final GroupMembership ms: groupMembers) {
-					if (!ms.getUser().getName().equals(groupToDelete.getName())) {
-						this.logic.updateGroup(groupToDelete, GroupUpdateOperation.REMOVE_MEMBER, ms);
-					}
-				}
-
 				// TODO: log that the admin removed the user from the group
-				this.logic.deleteGroup(groupToDelete.getName(), false);
+				this.logic.deleteGroup(groupToDelete.getName(), false, true);
 				command.setGroup(null);
+				command.setAdminResponse("settings.group.delete.success");
 				break;
 			default:
 				break;
@@ -155,6 +141,13 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 
 		// load the pending groups
 		command.setPendingGroups(this.logic.getGroups(true, null, 0, Integer.MAX_VALUE));
+		final List<Group> allGroups = this.logic.getGroups(false, null, 0, Integer.MAX_VALUE);
+		final String[] allGroupnames = new String[allGroups.size()];
+		for (int i = 0; i < allGroups.size(); i++) {
+			allGroupnames[i] = allGroups.get(i).getName();
+		}
+		command.setAllGroupNames(allGroupnames);
+
 		return Views.ADMIN_GROUP;
 	}
 
