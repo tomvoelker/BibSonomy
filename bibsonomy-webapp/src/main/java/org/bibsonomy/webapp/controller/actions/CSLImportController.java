@@ -2,7 +2,6 @@ package org.bibsonomy.webapp.controller.actions;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.LayoutPart;
 import org.bibsonomy.layout.csl.CSLFilesManager;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.User;
