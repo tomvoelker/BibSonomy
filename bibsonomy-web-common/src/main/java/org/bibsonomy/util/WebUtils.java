@@ -55,6 +55,7 @@ import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpClientParams;
+import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -98,7 +99,13 @@ public class WebUtils {
 	 * according to http://hc.apache.org/httpclient-3.x/threading.html
 	 * HttpClient is thread safe and we can use one instance for several requests.
 	 */
-	private static final MultiThreadedHttpConnectionManager connectionManager =	new MultiThreadedHttpConnectionManager();
+	private static final MultiThreadedHttpConnectionManager CONNECTION_MANAGER = new MultiThreadedHttpConnectionManager();
+	static {
+		final HttpConnectionManagerParams params = new HttpConnectionManagerParams();
+		params.setConnectionTimeout(CONNECTION_TIMEOUT);
+		params.setSoTimeout(READ_TIMEOUT);
+		CONNECTION_MANAGER.setParams(params);
+	}
 	private static final HttpClient CLIENT = getHttpClient();
 
 	
@@ -108,15 +115,17 @@ public class WebUtils {
 	 * call to this method should be documented with an explanation why it is 
 	 * necessary.
 	 * 
-	 * @return
+	 * @return the configured {@link HttpClient}
 	 */
 	public static HttpClient getHttpClient() {
-		final HttpClient client = new HttpClient(connectionManager);
+		final HttpClient client = new HttpClient(CONNECTION_MANAGER);
 		final HttpClientParams params = client.getParams();
 		/*
 		 * configure client
 		 */
 		params.setParameter(HttpMethodParams.USER_AGENT, USER_AGENT_PROPERTY_VALUE);
+		params.setParameter(HttpClientParams.SO_TIMEOUT, Integer.valueOf(READ_TIMEOUT));
+		params.setConnectionManagerTimeout(READ_TIMEOUT);
 		params.setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
 		params.setBooleanParameter(HttpMethodParams.SINGLE_COOKIE_HEADER, true);
 		params.setIntParameter(HttpClientParams.MAX_REDIRECTS, MAX_REDIRECT_COUNT);

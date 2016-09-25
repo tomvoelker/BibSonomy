@@ -37,6 +37,8 @@ import org.bibsonomy.util.BasicUtils;
  * @author dzo
  */
 public final class HelpUtils {
+	/** the key for project home */
+	public static final String PROJECT_HOME = "project.home";
 	/** the file suffix */
 	public static final String FILE_SUFFIX = ".md";
 	/** the name of the markdown file of the sidebar */
@@ -55,7 +57,7 @@ public final class HelpUtils {
 		final Map<String, String> replacements = new HashMap<>();
 		replacements.put("project.name", projectName);
 		replacements.put("project.theme", projectTheme);
-		replacements.put("project.home", projectHome);
+		replacements.put(PROJECT_HOME, projectHome);
 		replacements.put("project.version", BasicUtils.VERSION);
 		return replacements;
 	}

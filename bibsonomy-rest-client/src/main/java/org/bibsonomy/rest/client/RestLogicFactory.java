@@ -48,12 +48,15 @@ public class RestLogicFactory implements LogicInterfaceFactory {
 	public static final String API_SUBPATH = "api/";
 
 	/** the url of BibSonomy (bibsonomy.org) */
-	public static final String BIBSONOMY_URL = "http://www.bibsonomy.org/";
+	public static final String BIBSONOMY_URL = "https://www.bibsonomy.org/";
 	
 	/** the url of the BibSonomy (bibsonomy.org) API */
 	public static final String BIBSONOMY_API_URL = BIBSONOMY_URL + API_SUBPATH;
 	
+	/** the default rendering format */
 	public static final RenderingFormat DEFAULT_RENDERING_FORMAT = RenderingFormat.XML;
+	
+	/** the dafult callback factory */
 	public static final ProgressCallbackFactory DEFAULT_CALLBACK_FACTORY = new ProgressCallbackFactoryImpl();
 	
 	private final String apiUrl;
