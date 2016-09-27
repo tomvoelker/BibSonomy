@@ -99,7 +99,7 @@ public class CSLFilesManager {
 	 * @throws SAXException 
 	 * @throws ParserConfigurationException 
 	 */
-	private static String extractTitle(final String cslStyleSource) throws SAXException, IOException, ParserConfigurationException {
+	static String extractTitle(final String cslStyleSource) throws SAXException, IOException, ParserConfigurationException {
 		final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		final DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 		final Document document = documentBuilder.parse(new InputSource(new StringReader(cslStyleSource)));

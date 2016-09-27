@@ -6,6 +6,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Scanner;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,6 +17,7 @@ import org.bibsonomy.services.filesystem.CslFileLogic;
 import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.file.FileUtil;
+import org.xml.sax.SAXException;
 
 import net.sf.jabref.export.layout.Layout;
 import net.sf.jabref.export.layout.LayoutHelper;
@@ -83,26 +87,33 @@ public class CslLayoutUtils {
 	 * @return The loaded layout, or <code>null</code> if it could not be found.
 	 * @throws IOException
 	 */
-	private static Layout loadLayout(final String fileLocation) throws IOException {
+	private static CSLStyle loadLayout(final String fileLocation) throws IOException {
 		final InputStream resourceAsStream = CslLayoutUtils.getResourceAsStream(fileLocation);
+		CSLStyle cslLayout = null;
 		if (resourceAsStream != null) {
-			/*
-			 * give file to layout helper
-			 */
-			final LayoutHelper layoutHelper = new LayoutHelper(new BufferedReader(new InputStreamReader(resourceAsStream, StringUtils.CHARSET_UTF_8)));
-			/*
-			 * load layout
-			 */
-			try {
-				return layoutHelper.getLayoutFromText(GLOBALS_FORMATTER_PACKAGE);
-			} catch (Exception e) {
-				log.error("Error while trying to load layout " + fileLocation + " : " + e.getMessage());
-				throw new IOException(e);
-			} finally {
-				resourceAsStream.close();
+			Scanner sc = new Scanner(resourceAsStream);
+			StringBuilder sb = new StringBuilder();
+		    if(sc.hasNext()){
+		    	sb.append(sc.next());
 			}
+			sc.close();
+			String fileContent = sb.toString();
+			String displayName = "";
+			String id;
+			//TODO quite a bit hackyy
+			try {
+				displayName = CSLFilesManager.extractTitle(fileContent).trim();
+			} catch (SAXException | ParserConfigurationException e1) {
+				log.error("Failed to extract a display name in a user custom layout. XML-tag 'title' is missing or in the wrong place. File causing problems: " + fileLocation, e1);
+				displayName = "User uploaded custom layout";
+			}
+			if(displayName == null || displayName.trim().isEmpty()){
+				displayName = "User uploaded custom layout";
+			}
+			id = displayName.replaceAll(" ", "");
+			cslLayout = new CSLStyle(id, displayName, fileContent);			
 		}
-		return null;
+		return cslLayout;
 	}
 	
 	/**
