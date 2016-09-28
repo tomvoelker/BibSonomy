@@ -42,7 +42,29 @@
 			</c:if>
 			<bsform:input labelColSpan="3" path="post.resource.series"/>
 			<bsform:input labelColSpan="3" path="post.resource.crossref"/>	
-			<bsform:textarea labelColSpan="3" path="post.resource.misc"/>
+			
+					
+							<!-- Misc -->
+			<div id="miscDiv">
+			<div class="col-sm-12" style="text-align: right">
+				<bsform:checkbox path="" id="expertView" labelText="expert view" noHelp="true"/>	
+			</div>
+				<bsform:textarea labelColSpan="3" path="post.resource.misc"/>
+			
+				<div class="input_fields_wrap form-group">
+					<label class="col-sm-3 control-label" for="">misc fields</label> 
+					<div class="col-sm-4">					 
+			    		<form:input class="form-control" path=""/>	
+					</div>
+					<div class="col-sm-4">
+			    		<form:input class="form-control" path=""/>	
+					</div>
+					<div class="col-sm-1">
+						<form:button class="btn btn-sm" type="button" id="add_field_button">+</form:button>
+					</div>
+				</div>
+			</div>
+			
 			<bsform:textarea labelColSpan="3" path="post.resource.abstract"/>
 
         </jsp:attribute>

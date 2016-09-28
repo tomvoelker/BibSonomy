@@ -70,6 +70,14 @@ function changeView(showAll) {
 			}
 		}
 	}
+	
+	if(showAll){
+		$("#miscDiv").show();
+	}else{
+		if (!$("#post\\.resource\\.misc").val()){
+			$("#miscDiv").hide();
+		}
+	}
 }	
 
 /* checks if element is member of given array */
@@ -346,3 +354,125 @@ function applyKeyDownHandler(element) {
 	})
 	.bind("keydown",function(e) {keyHandler(e);});
 }
+
+
+/*  
+ * change appearance of misc and transfer data
+ */
+$(document).ready(function() {
+    var wrapper         = $(".input_fields_wrap"); //Fields wrapper
+    var add_button      = $("#add_field_button"); //Add button ID
+    var misc 			= $("#post\\.resource\\.misc");
+    var miscFields = [];
+    
+    function addInputs(){
+    	$(wrapper).append('<div class="extraInputs"><label class="col-sm-3"></label><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-1"><button class="btn btn-sm remove_field" type="button">-</form:button></div></div>'); 
+    };
+    
+    function transferArrayToOldField(){
+    	var fieldString = [];
+    	for (var i = 0; i < miscFields.length; i+=2){
+    		if (miscFields[i] != "undefined" || miscFields[i+1] != "undefined"){
+        		fieldString.push("  " + miscFields[i] + " = {" + miscFields[i+1] + "}");
+    		}
+    	}
+    	$(misc).val(fieldString.join(", \n"));
+    }
+    
+    
+    function transferDataFromOldToNew(){
+    	//gets the data from misc
+		var miscVal = $(misc).val();
+		var pairs = miscVal.split(",");
+		var values = [];
+		
+		//split the pairs and delete the characters not needed then save data 
+		$.each(pairs, function(index, item){
+			item = item.trim();
+			var itemValues = item.split(" = {");
+			if (itemValues.length === 2){ //should have 2 values
+				if (itemValues[0].substr(0,2) === "  "){ //formatting
+					itemValues[0] = itemValues[0].substr(2, itemValues[0].length);
+				}
+				if (itemValues[1].charAt(itemValues[1].length-1) === "}"){ //formatting
+    				itemValues[1] = itemValues[1].substr(0, itemValues[1].length-1);
+    			}
+				//show an empty input instead of "undefined"
+				for(var i = 0; i < itemValues.length; i++){
+					if (itemValues[i] === "undefined"){
+						itemValues[i] = "";
+					}
+				}
+			}    			
+			values = values.concat(itemValues);
+		});
+
+		//adjusts the number of inputs and populates them with the data
+		for(var i = 0; i < pairs.length-1; i++){
+			addInputs();  
+		}
+		var valueCounter = 0;
+		$(".input_fields_wrap :input[type=text]").each(function(){
+    		$(this).val(values[valueCounter])
+    		valueCounter++;
+    	});
+    }
+    
+    
+    /*
+     * transfer from old to new in case of reloading and hide old misc at the beginning
+     */
+    transferDataFromOldToNew();
+    $(misc).parent("div").parent("div").addClass("hidden");
+    
+    //on add input button click
+    $(add_button).click(function(e){ 
+        e.preventDefault();
+        addInputs();
+    });
+    
+    //user click on remove button
+    $(wrapper).on("click",".remove_field", function(e){ 
+    	e.preventDefault();
+        $(this).parent('div').parent('div').remove(); 
+        
+        //this refreshes the values in the array/old misc-field
+        $(wrapper).focusout();
+    });
+    
+    //transfer field values of new design to array
+    $(wrapper).focusout(function (){
+    	miscFields = [];
+    	$(".input_fields_wrap :input[type=text]").each(function(){
+    		/*
+    		 * pushes the value of each text-input if it is not empty after deleting every whitespace
+    		 * else pushes "undefined"
+    		 */
+    		if ($(this).val().replace(/\s+/g, '') != ""){
+        		miscFields.push($(this).val());    			
+    		}else{
+    			miscFields.push("undefined");
+    		}
+    	});
+    	transferArrayToOldField();
+    });
+    
+    
+    //change view to old or new
+    $("#expertView").change(function(){
+    	if (this.checked){
+    		// old/expert view
+    		$(wrapper).addClass("hidden");
+    		$(misc).closest(".form-group").removeClass("hidden");
+    		$(".extraInputs").remove();
+    	}else{
+    		// new/normal view
+    		transferDataFromOldToNew();
+    		
+    		//actually changes the view
+    		$(misc).closest(".form-group").addClass("hidden");
+    		$(wrapper).removeClass("hidden");
+    	}
+    });
+    
+});

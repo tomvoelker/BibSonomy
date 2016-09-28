@@ -64,7 +64,7 @@
 					<bsform:fieldset legendKey="post.resource.fields.scraper" >
 						<jsp:attribute name="content">
 	
-		                  	<div class="form-group">
+		                  	<div class="form-group">		                  	
 		                    	<label class="col-sm-3 control-label"><fmt:message key="post.resource.fields.scraper.url"/></label>
 		                    
 		                    	<div class="col-sm-3">
