@@ -118,6 +118,7 @@ public class XmlUtils {
 	public static Document getDOM(final URL inputURL, final boolean xmlTags) throws IOException {
 		final Tidy tidy = getTidy(xmlTags);
 		final HttpURLConnection connection = WebUtils.createConnnection(inputURL);
+		
 		// TODO: maybe we should check for the correct content type? Before parsing video/image data
 		final String contentType = connection.getContentType();
 		final String encodingName = WebUtils.extractCharset(contentType);

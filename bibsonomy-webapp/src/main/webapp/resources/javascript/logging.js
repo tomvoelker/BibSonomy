@@ -93,7 +93,6 @@ function log_sendRequest(e) {
 	}
 
 	function mouseposition(e){
-
 		// find out if ie runs in quirks mode
 		//
 		var docEl = (
@@ -114,21 +113,14 @@ function log_sendRequest(e) {
 			xPos    += document[docEl].scrollLeft;
 			yPos    += document[docEl].scrollTop;
 		}
-
-		return xPos + " " + yPos;			
-
+		return xPos + " " + yPos;
 	}
 
 	function absolutemouseposition(e){
-
 		// position where event happens
-		//
 		var xPos    =  e? e.clientX : window.event.clientX;
 		var yPos    =  e? e.clientY : window.event.clientY;
-
-
-		return xPos + " " + yPos;			
-
+		return xPos + " " + yPos;
 	}
 
 
@@ -276,12 +268,18 @@ function log_sendRequest(e) {
 		'&username=' + encodeURIComponent(currUser);
 
 		// post data
-		http_request.open('POST', LOGGING_SERVICE, false);
+		var async = sendAsync(element);
+		http_request.open('POST', LOGGING_SERVICE, async);
 		http_request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 		http_request.send(senddata);
 	}
 }
 
-$(function(){
+function sendAsync(element) {
+	var link = $(element).attr('href');
+	return link.startsWith('#') || link.startsWith('/');
+}
+
+$(function() {
 	log_register_events();
 });
