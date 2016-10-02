@@ -470,7 +470,6 @@ INSERT INTO `tags` (`tag_id`, `tag_name`, `tag_stem`, `tag_ctr`, `tag_ctr_public
 -- Data for table `tagtag`
 -- 
 
-
 -- 
 -- Data for table `tagtag_batch`
 -- 
@@ -521,6 +520,7 @@ INSERT INTO `tas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `content_typ
 (1, 'testtag',        'testtag',        1, 1, 'testuser1',   '1815-12-10 00:00:00', 3, '2008-01-18 10:20:07'),
 (2, 'google',         'google',         2, 1, 'testuser1',   '1815-12-10 00:00:00', 0, '2008-01-18 10:20:17'),
 (3, 'suchmaschine',   'suchmaschine',   2, 1, 'testuser1',   '1815-12-10 00:00:00', 0, '2008-01-18 10:19:51'),
+(25, 'search',    'search',    2, 2, 'testuser1',   '1815-12-10 00:00:00', 3, '2008-03-20 20:35:21'),
 (4, 'yahoo',          'yahoo',          3, 1, 'testuser2',   '1815-12-10 00:00:00', 0, '2008-01-18 10:21:12'),
 (5, 'suchmaschine',   'suchmaschine',   3, 1, 'testuser2',   '1815-12-10 00:00:00', 0, '2008-01-18 10:21:47'),
 (6, 'friends',        'friends',        4, 1, 'testuser1',   '1815-12-10 00:00:00', 2, '2008-01-18 10:24:31'),
@@ -542,10 +542,6 @@ INSERT INTO `tas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `content_typ
 (22, 'privatebibtex', 'privatebibtex', 13, 2, 'testuser2',   '1815-12-10 00:00:00', 1, '2008-03-20 20:35:21'),
 (23, 'friendbibtex',  'friendbibtex',  14, 2, 'testuser2',   '1815-12-10 00:00:00', 2, '2008-03-20 20:35:21'),
 (24, 'testbibtex',    'testbibtex',    12, 2, 'testuser1',   '1815-12-10 00:00:00', 3, '2008-03-20 20:35:21'),
-(25, 'suchmaschine',   'suchmaschine',  2, 1, 'testuser1',   '1815-12-10 00:00:00', 0, '2008-01-18 10:19:51'),
-(26, 'suchmaschine',   'suchmaschine',  2, 1, 'testuser1',   '1815-12-10 00:00:00', 0, '2008-01-18 10:19:51'),
-(27, 'suchmaschine',   'suchmaschine',  2, 1, 'testuser1',   '1815-12-10 00:00:00', 0, '2008-01-18 10:19:51'),
-(28, 'google',         'google',        2, 1, 'testuser1',   '1815-12-10 00:00:00', 0, '2008-01-18 10:20:17'),
 (29, 'tomcat',         'tomcat',        15, 1, 'testuser1',   '1815-12-10 00:00:00', 0, '2008-01-18 10:20:17'),
 (30, 'amazon',         'amazon',        15, 1, 'testuser1',   '1815-12-10 00:00:00', 0, '2008-01-18 10:20:17'),
 (31, 'weltmeisterschaft', 'weltmeisterschaft', 16, 1, 'testuser1',   '1815-12-10 00:00:00', 3, '2008-01-18 10:20:17'),
