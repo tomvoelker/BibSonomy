@@ -53,6 +53,10 @@ public class CSLStyleController implements MinimalisticController<CSLStyleComman
 				styleObject.put("source", "CSL");
 				styleObject.put("name", cslFilesEntry.getKey());
 				styleObject.put("displayName", style.getDisplayName());
+				final String aliasedTo = style.getAliasedTo();
+				if (present(aliasedTo)) {
+					styleObject.put("aliasedTo", aliasedTo);
+				}
 				styleArray.add(styleObject);
 			}
 			

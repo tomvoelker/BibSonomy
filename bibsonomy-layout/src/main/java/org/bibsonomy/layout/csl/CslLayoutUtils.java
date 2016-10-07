@@ -12,14 +12,12 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.LayoutPart;
 import org.bibsonomy.services.filesystem.CslFileLogic;
 import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.file.FileUtil;
 import org.xml.sax.SAXException;
 
-import net.sf.jabref.export.layout.Layout;
 import net.sf.jabref.export.layout.LayoutHelper;
 
 /**
@@ -93,8 +91,8 @@ public class CslLayoutUtils {
 		if (resourceAsStream != null) {
 			Scanner sc = new Scanner(resourceAsStream);
 			StringBuilder sb = new StringBuilder();
-		    if(sc.hasNext()){
-		    	sb.append(sc.next());
+			if (sc.hasNext()) {
+				sb.append(sc.next());
 			}
 			sc.close();
 			String fileContent = sb.toString();
@@ -111,7 +109,7 @@ public class CslLayoutUtils {
 				displayName = "User uploaded custom layout";
 			}
 			id = displayName.replaceAll(" ", "");
-			cslLayout = new CSLStyle(id, displayName, fileContent);			
+			cslLayout = new CSLStyle(id, displayName, fileContent);
 		}
 		return cslLayout;
 	}
@@ -144,7 +142,7 @@ public class CslLayoutUtils {
 			final LayoutHelper layoutHelper = new LayoutHelper(reader);
 			try {
 				//TODO
-				cslLayout.addSubLayout(layoutHelper.getLayoutFromText(GLOBALS_FORMATTER_PACKAGE));
+				// cslLayout.addSubLayout(layoutHelper.getLayoutFromText(GLOBALS_FORMATTER_PACKAGE));
 				} catch (final Exception e) {
 					/*
 					 * unfortunately, layoutHelper.getLayoutFromText throws a generic Exception, 

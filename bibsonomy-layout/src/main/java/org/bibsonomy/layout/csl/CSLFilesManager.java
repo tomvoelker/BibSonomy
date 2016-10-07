@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -30,12 +31,11 @@ import net.sf.json.JSONObject;
  */
 public class CSLFilesManager {
 	private static final Log log = LogFactory.getLog(CSLFilesManager.class);
+	
+	private static final String BASE_PATH = "classpath:/org/citationstyles/styles/";
 
 	// mapping from id to CSLStyle which contains the id itself, a display name and the content of the file
-	private Map<String, CSLStyle> cslFiles = new HashMap<String, CSLStyle>();
-	
-	private Map<String, CSLStyle> cslFilesIncludingAliases = new HashMap<String, CSLStyle>();
-	private Map<String, HashSet<String>> aliases = new HashMap<String, HashSet<String>>();
+	private Map<String, CSLStyle> cslFiles = new HashMap<>();
 	
 	/**
 	 * init this manager
@@ -45,24 +45,25 @@ public class CSLFilesManager {
 		final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(CSLFilesManager.class.getClassLoader());
 
 		try {
-			final Resource[] aliasesResource = resolver.getResources("classpath:/org/citationstyles/styles/renamed-styles.json");
-			final BufferedReader jsonReader = new BufferedReader(new InputStreamReader(aliasesResource[0].getInputStream()));
+			final Resource aliasesResource = resolver.getResource(BASE_PATH + "renamed-styles.json");
+			final BufferedReader jsonReader = new BufferedReader(new InputStreamReader(aliasesResource.getInputStream()));
 			final StringBuilder jsonBuilder = new StringBuilder();
 			while (jsonReader.ready()) {
 				jsonBuilder.append(jsonReader.readLine());
 			}
-			//"inverting" hashmap
-			JSONObject aliasesObj = JSONObject.fromObject(jsonBuilder.toString());
-			for(Object keyObj : aliasesObj.keySet()){
-				String key = (String) keyObj;
-				String value = (String) aliasesObj.get(key);
+			final Map<String, Set<String>> aliases = new HashMap<>();
+			// "inverting" hashmap
+			final JSONObject aliasesObj = JSONObject.fromObject(jsonBuilder.toString());
+			for (final Object keyObj : aliasesObj.keySet() ){
+				final String key = (String) keyObj;
+				final String value = (String) aliasesObj.get(key);
 				
-				if(!aliases.containsKey(value)){
+				if (!aliases.containsKey(value)) {
 					aliases.put(value, new HashSet<String>());
 				}
 				aliases.get(value).add(key);
 			}
-			final Resource[] resources = resolver.getResources("classpath:/org/citationstyles/styles/*.csl");
+			final Resource[] resources = resolver.getResources(BASE_PATH + "*.csl");
 			
 			for (final Resource resource : resources) {
 				try (final BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
@@ -74,10 +75,11 @@ public class CSLFilesManager {
 					try {
 						final String cslStyleSource = builder.toString().trim();
 						final String fileName = resource.getFilename();
-						this.cslFiles.put(fileName.toLowerCase().replace(".csl", ""), new CSLStyle(fileName, extractTitle(cslStyleSource), cslStyleSource));
-						if(aliases.containsKey(fileName.toLowerCase().replace(".csl", ""))){
-							for(String alias : aliases.get(fileName.toLowerCase().replace(".csl", ""))){
-								this.cslFilesIncludingAliases.put(alias, new CSLStyle(fileName, extractTitle(cslStyleSource), cslStyleSource));
+						final String layoutName = fileName.toLowerCase().replace(".csl", "");
+						this.cslFiles.put(layoutName, new CSLStyle(fileName, extractTitle(cslStyleSource), cslStyleSource));
+						if (aliases.containsKey(layoutName)){
+							for (final String alias : aliases.get(layoutName)){
+								this.cslFiles.put(alias, new CSLStyle(fileName, extractTitle(cslStyleSource), cslStyleSource, layoutName));
 							}
 						}
 					} catch (final ParserConfigurationException | SAXException | IOException e) {
@@ -86,7 +88,6 @@ public class CSLFilesManager {
 					
 				}
 			}
-			cslFilesIncludingAliases.putAll(cslFiles);
 		} catch (final IOException e) {
 			log.error("error while loading csl files", e);
 		}
@@ -104,8 +105,7 @@ public class CSLFilesManager {
 		final DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 		final Document document = documentBuilder.parse(new InputSource(new StringReader(cslStyleSource)));
 		
-		String title = document.getElementsByTagName("title").item(0).getTextContent();
-		return title.trim();
+		return document.getElementsByTagName("title").item(0).getTextContent().trim();
 	}
 	
 	/**
@@ -113,9 +113,6 @@ public class CSLFilesManager {
 	 * @return the csl style
 	 */
 	public CSLStyle getStyleByName(final String cslName) {
-		if(!cslFiles.containsKey(cslName)){
-			return cslFilesIncludingAliases.get(cslName);
-		}
 		return this.cslFiles.get(cslName);
 	}
 
@@ -125,21 +122,12 @@ public class CSLFilesManager {
 	public Map<String, CSLStyle> getCslFiles() {
 		return Collections.unmodifiableMap(this.cslFiles);
 	}
-	/**
-	 * ATTENTION
-	 * should only be used if {@link #getCslFiles()} does NOT contain the correct key.
-	 * @return all cslFiles INCLUDING the ones which have been renamed or moved.
-	 * Can and will contain duplicates!! {@link #getCslFiles()} will not.
-	 */
-	public Map<String, CSLStyle> getCslFilesIncludingAliases() {
-		return Collections.unmodifiableMap(this.cslFilesIncludingAliases);
-	}
+	
 	/** Unloads the custom layout of the user.
 	 * 
 	 * @param userName
 	 */
 	public void unloadUserLayout(final String userName) {
 		cslFiles.remove(CslLayoutUtils.userLayoutName(userName));
-		cslFilesIncludingAliases.remove(CslLayoutUtils.userLayoutName(userName));
 	}
 }

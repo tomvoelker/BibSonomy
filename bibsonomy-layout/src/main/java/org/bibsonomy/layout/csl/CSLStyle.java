@@ -4,10 +4,11 @@ package org.bibsonomy.layout.csl;
  * 
  * @author jp
  */
-public class CSLStyle extends org.bibsonomy.model.Layout{
+public class CSLStyle extends org.bibsonomy.model.Layout {
+	
 	private String id;
-	private String displayName;
 	private String content;
+	private String aliasedTo;
 	private boolean userLayout;
 
 	/**
@@ -21,6 +22,19 @@ public class CSLStyle extends org.bibsonomy.model.Layout{
 		this.displayName = displayName;
 		this.content = content;
 	}
+	
+	/**
+	 * @param name
+	 * @param id
+	 * @param displayName
+	 * @param content
+	 * @param aliasedTo
+	 */
+	public CSLStyle(String id, String displayName, String content, String aliasedTo) {
+		this(id, displayName, content);
+		this.setAliasedTo(aliasedTo);
+	}
+
 	//TODO eigtl nur vorrübergehend.. vielleicht
 	/**
 	 * @param id 
@@ -81,5 +95,19 @@ public class CSLStyle extends org.bibsonomy.model.Layout{
 	 */
 	public void setUserLayout(boolean userLayout) {
 		this.userLayout = userLayout;
+	}
+
+	/**
+	 * @return the aliasedTo
+	 */
+	public String getAliasedTo() {
+		return this.aliasedTo;
+	}
+
+	/**
+	 * @param aliasedTo the aliasedTo to set
+	 */
+	public void setAliasedTo(String aliasedTo) {
+		this.aliasedTo = aliasedTo;
 	}
 }
