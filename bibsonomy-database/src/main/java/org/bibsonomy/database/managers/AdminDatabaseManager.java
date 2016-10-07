@@ -79,6 +79,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * @return a singleton instance of this AdminDatabaseManager
 	 */
+	@Deprecated
 	public static AdminDatabaseManager getInstance() {
 		return singleton;
 	}

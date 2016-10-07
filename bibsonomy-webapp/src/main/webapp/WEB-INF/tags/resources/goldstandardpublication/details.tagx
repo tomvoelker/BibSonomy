@@ -139,6 +139,8 @@
 							</c:choose>
 						</dd>
 					</c:if>
+					<dt><fmt:message key="resources.searchExternal.dropDownLabel" /></dt>
+					<dd><pub2:externalSearchPublication loggedinUser="${loginUser}" publication="${goldstandard}" /></dd>
 				</dl>
 			</div>
 			

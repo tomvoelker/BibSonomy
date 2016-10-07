@@ -46,10 +46,12 @@ import org.bibsonomy.common.exceptions.ReadOnlyDatabaseException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.UnsupportedMediaTypeException;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.ContextCommand;
 import org.bibsonomy.webapp.command.ListCommand;
+import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
 import org.bibsonomy.webapp.command.TagResourceViewCommand;
 import org.bibsonomy.webapp.controller.ajax.AjaxController;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -60,6 +62,7 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ResponseLogic;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.util.WarningAware;
 import org.bibsonomy.webapp.util.spring.condition.Condition;
 import org.bibsonomy.webapp.util.spring.security.exceptions.ServiceUnavailableException;
 import org.bibsonomy.webapp.util.spring.security.exceptions.SpecialAuthMethodRequiredException;
@@ -69,6 +72,7 @@ import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -258,6 +262,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		 */
 		final ServletRequestDataBinder binder = bindAndValidate(request, command);
 		final BindException errors = new BindException(binder.getBindingResult());
+		final Errors warnings = new BeanPropertyBindingResult(null, "");
 		
 		if (present(flashAttributes) && flashAttributes.containsKey(ExtendedRedirectViewWithAttributes.ERRORS_KEY)) {
 			final Errors flashErrors = (Errors) flashAttributes.get(ExtendedRedirectViewWithAttributes.ERRORS_KEY);
@@ -266,6 +271,10 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		
 		if (controller instanceof ErrorAware) {
 			((ErrorAware)controller).setErrors(errors);
+		}
+		
+		if (controller instanceof WarningAware) {
+			((WarningAware) controller).setWarnings(warnings);
 		}
 		
 		View view;
@@ -321,6 +330,9 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		} catch (final UnsupportedMediaTypeException e) {
 			response.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
 			errors.reject("system.error.unsupportedmediatype");
+		} catch (final BadRequestOrResponseException e) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			errors.reject("system.error.badrequest", e.getMessage());
 		} catch (final Exception ex) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			errors.reject("error.internal", new Object[]{ex}, "Internal Server Error: " + ex.getMessage());
@@ -332,16 +344,26 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		final Map<String, Object> model = new HashMap<String, Object>();
 		model.put(getCommandName(), command);
 		
-		if (command instanceof TagResourceViewCommand) {
-			final TagResourceViewCommand tagResourceViewCommand = (TagResourceViewCommand) command;
-			final int totalCount = safeSize(tagResourceViewCommand.getBibtex()) + safeSize(tagResourceViewCommand.getBookmark()) + safeSize(tagResourceViewCommand.getGoldStandardBookmarks()) + safeSize(tagResourceViewCommand.getGoldStandardPublications());
+		if (command instanceof SimpleResourceViewCommand) {
+			final SimpleResourceViewCommand simpleResourceViewCommand = (SimpleResourceViewCommand) command;
+			final int totalCount = safeSize(simpleResourceViewCommand.getBibtex()) + safeSize(simpleResourceViewCommand.getBookmark()) + safeSize(simpleResourceViewCommand.getGoldStandardBookmarks()) + safeSize(simpleResourceViewCommand.getGoldStandardPublications());
 			
 			if (totalCount == 0) {
-				// here we check if the requested tags contain a  to handle our old wrong url form encoding in url paths
-				if (tagResourceViewCommand.getRequestedTags().contains("+")) {
-					
+				/*
+				 * here we check if the requested tags contain a + to handle
+				 * our old wrong url form encoding in the url path
+				 */
+				if (command instanceof TagResourceViewCommand && ((TagResourceViewCommand) simpleResourceViewCommand).getRequestedTags().contains("+")) {
 					final List<String> pathElements = Arrays.asList(realRequestPath.split("/"));
 					final StringBuilder newRequestUriBuilder = new StringBuilder("/");
+					
+					final String format = simpleResourceViewCommand.getFormat();
+					if (!"html".equals(format)) {
+						newRequestUriBuilder.append(format + "/");
+						if ("layout".equals(format)) {
+							newRequestUriBuilder.append(simpleResourceViewCommand.getLayout() + "/");
+						}
+					}
 					
 					final Iterator<String> pathIterator = pathElements.iterator();
 					while (pathIterator.hasNext()) {
@@ -370,7 +392,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		 * put errors into model 
 		 */
 		model.putAll(errors.getModel());
-		
+		model.put("warnings", warnings);
 		
 		if (present(flashAttributes)) {
 			model.put("flashAttributes", flashAttributes);

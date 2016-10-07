@@ -837,8 +837,13 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * Get related tags for a given tag.
-	 * 
-	 * @param param
+	 * @param contentType 
+	 * @param loginUserName 
+	 * @param groupId 
+	 * @param tagIndex 
+	 * @param order 
+	 * @param limit 
+	 * @param offset 
 	 * @param session
 	 * @return list of tags
 	 */
@@ -847,6 +852,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		if (this.exceedsMaxSize(tagIndex)) {
 			return new ArrayList<Tag>();
 		}
+		
 		final TagParam param = new TagParam();
 		param.setContentType(contentType);
 		param.setGroupId(groupId);
@@ -988,7 +994,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return a list of tags attached to a publication with the given hash
 	 */
-	public List<Tag> getTagsByBibtexHash(final String loginUserName, final String hash, final HashID hashId, final List<Integer> visibleGroupIDs, final Order order, final int limit, final int offset, final DBSession session) {
+	public List<Tag> getTagsByPublicationHash(final String loginUserName, final String hash, final HashID hashId, final List<Integer> visibleGroupIDs, final Order order, final int limit, final int offset, final DBSession session) {
 		final TagParam param = new TagParam();
 		param.setHash(hash);
 		param.setSimHash(hashId);
@@ -1015,7 +1021,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @return a list of tags attached to a given user's bibtex with the given
 	 *         hash
 	 */
-	public List<Tag> getTagsByBibtexHashForUser(final String loginUserName, final String requestedUserName, final String hash, final HashID hashId, final List<Integer> visibleGroupIDs, final int limit, final int offset, final DBSession session) {
+	public List<Tag> getTagsByPublicationHashForUser(final String loginUserName, final String requestedUserName, final String hash, final HashID hashId, final List<Integer> visibleGroupIDs, final int limit, final int offset, final DBSession session) {
 		final TagParam param = new TagParam();
 		param.setHash(hash);
 		param.setSimHash(hashId);

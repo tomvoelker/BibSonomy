@@ -98,6 +98,7 @@
 								<li class="${systemReadOnly ? 'disabled' : ''}"><a href="/postBookmark"><fmt:message key="navi.postBookmark"/></a></li>
 								<li class="${systemReadOnly ? 'disabled' : ''}"><a href="/postPublication"><fmt:message key="navi.postPublication"/></a></li>
 								<li class="${systemReadOnly ? 'disabled' : ''}"><a href="/import/bookmarks"><fmt:message key="navi.imports"/></a></li>
+								<li class="${systemReadOnly ? 'disabled' : ''}"><a href="/import/publications"><fmt:message key="publication.import.title"/></a></li>
 							</ul>
 							
 						</li>

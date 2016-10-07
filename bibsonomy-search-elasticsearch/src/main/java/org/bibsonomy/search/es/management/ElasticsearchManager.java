@@ -525,11 +525,9 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 		int newLastTasId = oldLastTasId;
 		
 		/*
-		 * 1) flag/unflag spammer if the index existed before
+		 * 1) flag/unflag spammer
 		 */
-		if (oldState.getLast_log_date() != null) {
-			this.updatePredictions(indexName, oldState.getLast_log_date());
-		}
+		this.updatePredictions(indexName, oldState.getLastPredictionChangeDate(), targetState.getLastPredictionChangeDate());
 		
 		/*
 		 * 2) remove old deleted or updated posts
@@ -712,14 +710,15 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 	 * more efficient to get all un-flagged-posts directly via a join with the
 	 * user table
 	 * @param indexName 
-	 * @param lastLogDate 
+	 * @param lastPredictionChangeDate 
+	 * @param currentLastPreditionChangeDate 
 	 */
-	protected void updatePredictions(final String indexName, final Date lastLogDate) {
+	protected void updatePredictions(final String indexName, final Date lastPredictionChangeDate, final Date currentLastPreditionChangeDate) {
 		// keeps track of the newest log_date during last index update
 		// get date of last index update
-		final Date fromDate = new Date(lastLogDate.getTime() - QUERY_TIME_OFFSET_MS);
+		final Date fromDate = new Date(lastPredictionChangeDate.getTime());
 
-		final List<User> predictedUsers = this.inputLogic.getPredictionForTimeRange(fromDate);
+		final List<User> predictedUsers = this.inputLogic.getPredictionForTimeRange(fromDate, currentLastPreditionChangeDate);
 
 		// the prediction table holds up to two entries per user
 		// - the first entry is the one to consider (ordered descending by date)

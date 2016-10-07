@@ -104,7 +104,6 @@ public class WileyIntersienceScraper extends AbstractUrlScraper {
 
 	@Override
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
-
 		return patterns;
 	}
 
@@ -113,7 +112,7 @@ public class WileyIntersienceScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteURL() {
-		return SITE_HOST;
+		return SITE_URL;
 	}
 
 	private boolean containsMandatoryEndnoteInformation(String endnote)

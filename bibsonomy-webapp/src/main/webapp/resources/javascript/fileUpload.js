@@ -194,7 +194,7 @@ function addDocument() {
 	/*
 	 * build upload form
 	 */
-	var upForm = "<form id='upForm' action='" + $(this).attr('href') + "' method='POST' enctype='multipart/form-data'>" + 
+	var upForm = "<form id='upForm' class='document-upload' action='" + $(this).attr('href') + "' method='POST' enctype='multipart/form-data'>" + 
 	"<input id='upFile' type='file' name='file'/></form>";
 
 	/*
@@ -258,10 +258,9 @@ function fileSelected(obj) {
 	 * add progress icon and hide form (XXX: don't yet remove form, otherwise upload fails!)
 	 */
 	$(upForm).after($(
-			"<div id='upProgress' >" + fileName  + 
-			"<img alt='uploading...' src='/resources/image/ajax_loader.gif' /></div>"		
+			'<div id="upProgress"><span class="fa fa-circle-o-notch fa-spin fa-fw"></span>' + fileName  + 
+			'</div>'
 	)).hide();
-
 } 
 
 /**

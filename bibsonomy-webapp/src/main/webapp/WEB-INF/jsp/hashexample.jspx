@@ -38,7 +38,7 @@
 				</jsp:attribute>
 			</bs:alert>
 			<form:form class="form-horizontal" role="form">
-				<editpub:required post="${command.post}" autocompletion="${false}" hideBibTeXKey="${true}" hideAuthorClaim="${true}" />
+				<editpub:required post="${command.post}" hideBibTeXKey="${true}" hideAuthorClaim="${true}" />
 				<c:set var="inputColSpan" value="9" />
 				<bsform:input path="post.resource.journal" inputColSpan="${inputColSpan}"/>
 				<bsform:input path="post.resource.booktitle" inputColSpan="${inputColSpan}"/>

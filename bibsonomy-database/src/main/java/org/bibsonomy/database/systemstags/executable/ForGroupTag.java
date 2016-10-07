@@ -285,7 +285,7 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 		 * remove all systemTags to avoid any side effects and contradictions 
 		 */
 		final Set<Tag> groupTags = new HashSet<Tag>(userTags);
-		SystemTagsExtractor.removeAllSystemTags(groupTags);
+		SystemTagsExtractor.removeAllExecutableSystemTags(groupTags);
 		/*
 		 * adding this tag also guarantees, that the new post will
 		 * have an empty tag set (which would be illegal)!

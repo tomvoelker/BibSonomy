@@ -90,6 +90,9 @@ import org.bibsonomy.rest.renderer.xml.GroupType;
 import org.bibsonomy.rest.renderer.xml.GroupsType;
 import org.bibsonomy.rest.renderer.xml.PostType;
 import org.bibsonomy.rest.renderer.xml.PostsType;
+import org.bibsonomy.rest.renderer.xml.PublicationType;
+import org.bibsonomy.rest.renderer.xml.PublicationsType;
+import org.bibsonomy.rest.renderer.xml.PublishedInType;
 import org.bibsonomy.rest.renderer.xml.ReferenceType;
 import org.bibsonomy.rest.renderer.xml.ReferencesType;
 import org.bibsonomy.rest.renderer.xml.StatType;
@@ -313,11 +316,37 @@ public abstract class AbstractRenderer implements Renderer {
 	
 			for (final BibTex reference : publication.getReferences()) {
 				final ReferenceType xmlReference = new ReferenceType();
-				xmlReference.setInterhash(reference.getInterHash());
+				final String interHash = reference.getInterHash();
+				xmlReference.setInterhash(interHash);
+				xmlReference.setHref(this.urlRenderer.createHrefForCommunityPost(interHash));
 	
 				referenceList.add(xmlReference);
 			}
-	
+			
+			final Set<BibTex> publishedInSet = publication.getReferenceThisPublicationIsPublishedIn();
+			if (present(publishedInSet)) {
+				final BibTex publishedIn = publishedInSet.iterator().next();
+				final PublishedInType publisedInXml = new PublishedInType();
+				final String interHash = publishedIn.getInterHash();
+				publisedInXml.setInterhash(interHash);
+				publisedInXml.setHref(this.urlRenderer.createHrefForCommunityPost(interHash));
+				xmlPublication.setPublishedIn(publisedInXml);
+			}
+			
+			final Set<BibTex> publicationsPartOfPublication = publication.getSubGoldStandards();
+			final PublicationsType partOfList = new PublicationsType();
+			xmlPublication.setPublications(partOfList);
+			
+			final List<PublicationType> publications = partOfList.getPublication();
+			for (final BibTex publicationPart : publicationsPartOfPublication) {
+				final PublicationType xmlPublicationPart = new PublicationType();
+				final String interHash = publicationPart.getInterHash();
+				
+				xmlPublicationPart.setInterhash(interHash);
+				xmlPublicationPart.setHref(this.urlRenderer.createHrefForCommunityPost(interHash));
+				publications.add(xmlPublicationPart);
+			}
+			
 			xmlPost.setGoldStandardPublication(xmlPublication);
 		}
 	}

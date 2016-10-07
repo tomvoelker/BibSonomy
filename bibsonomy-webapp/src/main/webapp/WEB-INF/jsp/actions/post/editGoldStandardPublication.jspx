@@ -12,7 +12,7 @@
 	<layout:editGoldStandardPostLayout command="${command}" requPath="${requPath}" resourceType="GoldStandardPublication">
 		
 		<jsp:attribute name="generalInformation">
-			<editpub:required post="${command.post}" autocompletion="$(false)"/>
+			<editpub:required post="${command.post}" />
 		</jsp:attribute>
 
 		<jsp:attribute name="detailedInformation">

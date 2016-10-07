@@ -113,8 +113,8 @@
 					</c:choose>
 					
 					<!--+ 
-		  	          	| show global errors
-		    		  	+ -->
+						| show global errors / warnings
+						+ -->
 					<errors:global />
 
 					<c:if test="${not empty postOwner and postOwner ne command.context.loginUser}">

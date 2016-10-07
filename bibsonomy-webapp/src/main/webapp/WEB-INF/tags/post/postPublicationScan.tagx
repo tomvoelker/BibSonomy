@@ -8,7 +8,7 @@
      -->
 
 	<fieldset>
-		<legend><fmt:message key="post_bibtex.scan.title" /></legend>
+		<!-- <legend><fmt:message key="post_bibtex.scan.title" /></legend> -->
 		<p><fmt:message key="post_bibtex.scan.info" /></p>
 		<div style="max-width:35%;">
 			<parts:qrcode infoMessageKey="qrcode.info.postPublication.readerInfoMessage" />

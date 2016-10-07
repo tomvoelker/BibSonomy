@@ -34,11 +34,11 @@ import org.apache.commons.io.FileUtils;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.search.es.EsSpringContextWrapper;
-import org.bibsonomy.search.exceptions.IndexAlreadyGeneratingException;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.springframework.beans.factory.BeanFactory;
 
@@ -48,34 +48,32 @@ import org.springframework.beans.factory.BeanFactory;
  * @author jensi
  * @author dzo
  */
-public abstract class AbstractEsIndexTest {
+public abstract class AbstractEsIndexTest extends AbstractDatabaseManagerTest {
 	private static final String ELASTICSEARCH_DEFAULT_PATH = "target/elasticsearch-data";
 	
 	private static Node node;
 
 	/**
-	 * inits:
-	 * 	(1) test database
-	 * 	(2) start embedded elasticsearch
-	 * 	(3) create indices from test database
-	 * @throws IndexAlreadyGeneratingException
-	 * @throws InterruptedException 
+	 * start embedded elasticsearch
 	 */
 	@BeforeClass
-	public static void beforeClass() throws InterruptedException {
-		initTestDatabase();
+	public static void initElasticSearch() {
 		startEmbeddedElasticsearchServer();
-		createIndices();
-		
-		// wait a little bit to get all systems ready TODO: remove?
-		Thread.sleep(1000);
 	}
 	
-	private static void createIndices() {
+	/**
+	 * generates the indices
+	 * @throws InterruptedException
+	 */
+	@Before
+	public void createIndices() throws InterruptedException {
 		final Map<Class<? extends Resource>, ElasticsearchManager<? extends Resource>> managers = getAllManagers();
 		for (ElasticsearchManager<? extends Resource> manager : managers.values()) {
 			manager.regenerateAllIndices();
 		}
+		
+		// wait a little bit to get all systems ready TODO: remove?
+		Thread.sleep(1000);
 	}
 
 	private static void startEmbeddedElasticsearchServer() {
@@ -86,10 +84,6 @@ public abstract class AbstractEsIndexTest {
 		
 		node = NodeBuilder.nodeBuilder().clusterName("bibsonomy-testcluster")
 				.settings(elasticsearchSettings.build()).node();
-	}
-
-	private static void initTestDatabase() {
-		AbstractDatabaseManagerTest.LOADER.load(AbstractDatabaseManagerTest.DATABASE_CONFIG_FILE, AbstractDatabaseManagerTest.DATABASE_ID);
 	}
 
 	/**
@@ -126,7 +120,7 @@ public abstract class AbstractEsIndexTest {
 	/**
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "resource" })
 	private static Map<Class<? extends Resource>, ElasticsearchManager<? extends Resource>> getAllManagers() {
 		final BeanFactory bf = EsSpringContextWrapper.getContext();
 		return (Map<Class<? extends Resource>, ElasticsearchManager<? extends Resource>>) bf.getBean("elasticsearchManagers");

@@ -30,20 +30,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.bibsonomy.search.es.search.tokenizer.SimpleTokenizer;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * TODO: add documentation to this class
+ * tests for {@link SimpleTokenizer}
  *
  * @author jensi
  */
 public class SimpleTokenizerTest {
+	
+	/**
+	 * {@link SimpleTokenizer#iterator()}
+	 */
 	@Test
-	public void testIt() {
-		List<String >res = new ArrayList<>();
-		for (String token : new SimpleTokenizer("Henner Hurz  Schorsche")) {
+	public void testIterator() {
+		final List<String >res = new ArrayList<>();
+		for (final String token : new SimpleTokenizer("Henner Hurz  Schorsche")) {
 			res.add(token);
 		}
 		Assert.assertEquals(Arrays.asList("Henner", "Hurz", "Schorsche"), res);

@@ -43,6 +43,7 @@ public class SearchIndexSyncState {
 	private Date last_log_date;
 	private long lastPersonChangeId;
 	private Date lastDocumentDate;
+	private Date lastPredictionChangeDate;
 	private String mappingVersion;
 
 	/**
@@ -59,6 +60,7 @@ public class SearchIndexSyncState {
 		this.last_tas_id = state.last_tas_id;
 		this.lastPersonChangeId = state.lastPersonChangeId;
 		this.mappingVersion = state.mappingVersion;
+		this.lastPredictionChangeDate = state.lastPredictionChangeDate;
 	}
 	
 	/**
@@ -131,6 +133,20 @@ public class SearchIndexSyncState {
 		this.lastDocumentDate = lastDocumentDate;
 	}
 
+	/**
+	 * @return the lastPredictionChangeDate
+	 */
+	public Date getLastPredictionChangeDate() {
+		return this.lastPredictionChangeDate;
+	}
+
+	/**
+	 * @param lastPredictionChangeDate the lastPredictionChangeDate to set
+	 */
+	public void setLastPredictionChangeDate(Date lastPredictionChangeDate) {
+		this.lastPredictionChangeDate = lastPredictionChangeDate;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -160,6 +176,10 @@ public class SearchIndexSyncState {
 		}
 		
 		if (!ObjectUtils.equals(this.lastDocumentDate, otherState.lastDocumentDate)) {
+			return false;
+		}
+		
+		if (!ObjectUtils.equals(lastPredictionChangeDate, otherState.lastPredictionChangeDate)) {
 			return false;
 		}
 		

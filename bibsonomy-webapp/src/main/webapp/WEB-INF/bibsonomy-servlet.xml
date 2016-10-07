@@ -453,6 +453,7 @@
 						<property name="allowedFields">
 							<list>
 								<value>requestedUser</value>
+								<value>requestedType</value>
 								<value>layout</value>
 								<value>wikiText</value>
 							</list>
@@ -791,6 +792,7 @@
 		<property name="requestLogic" ref="requestLogic"/>
 		<property name="wikiRenderer" ref="wikiRenderer" />
 		<property name="oauthLogic" ref="oAuthLogic"/>
+		<property name="urlGenerator" ref="relativeUrlGenerator" />
 		<property name="invisibleOAuthConsumers" value="${invisible.oauth.consumers}"/>
 	</bean>
 	
@@ -1049,7 +1051,7 @@
 	
 	<!-- webapp -->
 	<import resource="bibsonomy-servlet-fields.xml" />
-	<import resource="bibsonomy-servlet-recommender-connector.xml" />
+	<import resource="bibsonomy-servlet-recommender.xml" />
 	<import resource="bibsonomy-servlet-actions.xml" />
 	<import resource="bibsonomy-servlet-ajax.xml" />	
 	<import resource="bibsonomy-servlet-admin.xml" />

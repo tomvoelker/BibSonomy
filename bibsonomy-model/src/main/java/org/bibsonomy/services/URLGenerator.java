@@ -1118,8 +1118,7 @@ public class URLGenerator {
 	 * @return settings url
 	 */
 	public String getSettingsUrl() {
-		String url = this.projectHome + prefix + SETTINGS_PREFIX;
-
+		final String url = this.projectHome + prefix + SETTINGS_PREFIX;
 		return this.getUrl(url);
 	}
 

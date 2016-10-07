@@ -552,6 +552,16 @@ public class UrlRenderer {
 		}
 		return urlBuilder.asString();
 	}
+	
+	/**
+	 * creates the href for a community post
+	 * @param hash
+	 * @return href for the community post
+	 */
+	public String createHrefForCommunityPost(final String hash) {
+		final UrlBuilder builder = this.createHrefForCommunity(hash);
+		return builder.asString();
+	}
 
 	/**
 	 * @param hash

@@ -26,9 +26,11 @@
  */
 package org.bibsonomy.database.systemtags;
 
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -60,6 +62,7 @@ import org.bibsonomy.database.managers.UserDatabaseManager;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.database.systemstags.SystemTagFactory;
+import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.database.systemstags.search.YearSystemTag;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
@@ -341,7 +344,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		testUser2.setGroups(groupDb.getGroupsForUser(testUser2.getName(), this.dbSession));
 
 		// create posts
-		final Set<Tag> tags1 = ModelUtils.getTagSet("for:forgroup1");
+		final Set<Tag> tags1 = ModelUtils.getTagSet("for:forgroup1", MyOwnSystemTag.NAME);
 		final Set<Tag> tags2 = ModelUtils.getTagSet("for:forgroup1", "for:forgroup2");
 		
 		final List<Post<?>> posts1 = new LinkedList<Post<?>>();
@@ -375,16 +378,17 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		
 		// forgroupuser1 gives post1 to forgroup1
 		logic1.createPosts(posts1);
-		List<?> retVal = this.lookupGroupPost(posts1.get(0), logic1, testGroup1.getName());
+		List<Post<Bookmark>> retVal = lookupGroupPost(posts1.get(0), logic1, testGroup1.getName());
 		assertEquals(1, retVal.size());
-		retVal = this.lookupGroupPost(posts1.get(0), logic1, testGroup2.getName());
+		assertThat(retVal.get(0).getTags(), hasItem(new Tag(MyOwnSystemTag.NAME)));
+		retVal = lookupGroupPost(posts1.get(0), logic1, testGroup2.getName());
 		assertEquals(0, retVal.size());
 		
 		// forgroupuser2 gives post1 and post2 to forgroup1
 		logic2.createPosts(posts2);
-		retVal = this.lookupGroupPost(posts2.get(0), logic2, testGroup2.getName());
+		retVal = lookupGroupPost(posts2.get(0), logic2, testGroup2.getName());
 		assertEquals(1, retVal.size());
-		retVal = this.lookupGroupPost(posts2.get(0), logic2, testGroup2.getName());
+		retVal = lookupGroupPost(posts2.get(0), logic2, testGroup2.getName());
 		assertEquals(1, retVal.size());
 		
 		// forgroupuser1 gives post3 to forgroup2 -- we expect an error
@@ -669,7 +673,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 	 * @param groupName
 	 * @return
 	 */
-	private <T extends Resource> List<Post<T>> lookupGroupPost(final Post<T> post, final LogicInterface logic, final String groupName ) {
+	private static <T extends Resource> List<Post<T>> lookupGroupPost(final Post<?> post, final LogicInterface logic, final String groupName ) {
 		final GroupingEntity groupingEntity = GroupingEntity.USER;
 		final List<String> tags = new LinkedList<String>();
 		// FIXME: why does GetPostsForGroup chain element not allow

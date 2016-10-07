@@ -12,4 +12,5 @@
 	
 	<!-- Parameters -->
 	<typeAlias alias="searchParam"      type="org.bibsonomy.search.management.database.params.SearchParam" />
+	<typeAlias alias="pair"				type="org.bibsonomy.common.Pair" />
 </sqlMap>

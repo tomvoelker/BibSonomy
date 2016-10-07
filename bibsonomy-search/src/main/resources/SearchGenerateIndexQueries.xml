@@ -22,6 +22,11 @@
 		FROM gold_standard WHERE content_type = 1
 	</select>
 	
+	<select id="getLastPredictionDate" resultClass="date">
+		SELECT MAX(updated_at)
+		FROM prediction
+	</select>
+	
 	<select id="getLastDocumentDate" resultClass="date">
 		SELECT MAX(date)
 		FROM (SELECT MAX(date) AS date
@@ -80,10 +85,11 @@
 	</select>
 	
 	<!-- get users which where flagged as spammers/non-spammers since last index update --> 
-	<select id="getPredictionForTimeRange" parameterClass="date" resultMap="SearchCommon.spamPrediction">
+	<select id="getPredictionForTimeRange" parameterClass="pair" resultMap="SearchCommon.spamPrediction">
 		SELECT user_name, prediction, updated_at 
 			FROM prediction 
-			WHERE updated_at &gt;= #date# 
+			WHERE updated_at &gt;= #first# 
+					AND updated_at &lt;= #second#
 			ORDER BY updated_at DESC
 	</select>
 	
