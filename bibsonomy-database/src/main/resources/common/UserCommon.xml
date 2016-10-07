@@ -123,7 +123,7 @@
 		<isNotNull property="settings.defaultLanguage">#settings.defaultLanguage#,</isNotNull>
 		<isNull property="settings.defaultLanguage">DEFAULT(lang),</isNull> 
 		#settings.logLevel#, #settings.confirmDelete#, #settings.profilePrivlevel#, #settings.tagboxMaxCount#, #settings.isMaxCount#, 
-		#settings.showBookmark#, #settings.showBibtex#, #settings.layoutSettings.simpleInterface#
+		#settings.showBookmark#, #settings.showBibtex#, #settings.layoutSettings.simpleInterface#,
 		#settings.favouriteLayouts,handler=org.bibsonomy.database.common.typehandler.FavouriteLayoutsTypeHandlerCallback#
 	</sql>
 
