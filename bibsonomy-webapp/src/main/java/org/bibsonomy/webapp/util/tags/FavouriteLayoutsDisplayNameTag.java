@@ -62,7 +62,7 @@ public class FavouriteLayoutsDisplayNameTag extends RequestContextAwareTag {
 	private String getCslDisplayName(final String displayName) {
 		final CSLStyle style = this.getCslFileManager().getStyleByName(displayName);
 		if (style == null){
-			return "Style has been deleted.";
+			return "Style has been deleted."; // TODO: i18n
 		}
 		return style.getDisplayName();
 	}
