@@ -1107,6 +1107,7 @@ CREATE TABLE `pendingUser` (
   `show_bibtex` tinyint(1) default '1',
   `useExternalPicture` tinyint(1) DEFAULT '0',
   `reg_log` MEDIUMTEXT NULL DEFAULT NULL,
+  `favourite_layouts` LONGTEXT NULL,
   UNIQUE (`activation_code`),
   PRIMARY KEY  (`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
