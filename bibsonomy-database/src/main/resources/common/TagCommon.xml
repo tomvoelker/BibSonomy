@@ -5,13 +5,13 @@
 
 	<!-- tag with its global count, i.e. the number of posts it is part of -->
 	<resultMap id="tagWithGlobalCount" class="tag" extends="Common.tag">
-	    <result property="globalcount" column="tag_ctr" javaType="int" />
+		<result property="globalcount" column="tag_ctr" javaType="int" />
 	</resultMap>
 	
 	<resultMap id="tagWithGlobalAndUserCount" class="tag" extends="Common.tag">
-	    <result property="usercount" column="tag_ctr_user" javaType="int" />
-	    <result property="globalcount" column="tag_ctr_global" javaType="int" />
-	</resultMap>	
+		<result property="usercount" column="tag_ctr_user" javaType="int" />
+		<result property="globalcount" column="tag_ctr_global" javaType="int" />
+	</resultMap>
 
 	<resultMap id="subTag" class="tag">
 		<result property="name" column="subTag" javaType="string" />
@@ -20,31 +20,29 @@
 
 	<!-- tag name with its usercount, i.e. the number of users that have used it -->
 	<resultMap id="tagWithUserCount" class="tag" extends="Common.tag">
-	    <result property="usercount" column="user_count" javaType="int" />
+		<result property="usercount" column="user_count" javaType="int" />
 	</resultMap>
 	
 	<!--  tag name with its subtags -->
 	<resultMap id="tagWithSubtags" class="tag" extends="Common.tag">
-	    <result property="subTags" resultMap="TagCommon.subTag" />
+		<result property="subTags" resultMap="TagCommon.subTag" />
 	</resultMap>
-		
+	
 	<resultMap id="tagWithSubtagsAndUserCount" class="tag" extends="tagWithUserCount">
-	    <result property="subTags" resultMap="TagCommon.subTag" />
+		<result property="subTags" resultMap="TagCommon.subTag" />
 	</resultMap>
 	
 	<!-- tag with its id, name and global count -->
 	<resultMap id="tagWithDetails" class="tag" extends="Common.tag">
 		<result property="id"     		column="tag_id"      	javaType="int" />
-		<result property="globalcount" 	column="tag_ctr"      	javaType="int" />	    
+		<result property="globalcount" 	column="tag_ctr"      	javaType="int" />
 	    <!-- not yet supported:	    	
 	    	<result property="stem"			column="tag_stem"      	javaType="string" />
 	     -->
 	    <!-- 
 	    	excluded for now because it does not correspond to a table field in the
-	    	database, and hast to be computed separately:
+	    	database, and has to be computed separately:
 	    	<result property="usercount" column="user_count" javaType="int" />
-	     -->	     	     
-	</resultMap>	
-	
-			
+	     -->
+	</resultMap>
 </sqlMap>

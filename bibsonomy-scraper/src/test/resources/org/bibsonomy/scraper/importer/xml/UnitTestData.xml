@@ -1138,20 +1138,6 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.inspire.InspireScraper</Scraper>
 		<Enabled>true</Enabled>
 	</URLTest>
-	<URLTest id="url_197">
-		<TestDescription>test for TaylorAndFrancisScraper</TestDescription>
-		<URL>http://www.tandfonline.com/doi/abs/10.1080/09540091.2014.906388#.VNtRzC7_-Uk</URL>
-		<BibFile>TaylorAndFrancisScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.taylorAndFrancis.TaylorAndFrancisScraper</Scraper>
-		<Enabled>true</Enabled>
-	</URLTest>
-	<URLTest id="url_198">
-		<TestDescription>test for TaylorAndFrancisScraper</TestDescription>
-		<URL>http://www.tandfonline.com/doi/abs/10.1080/09540091.2011.587505</URL>
-		<BibFile>TaylorAndFrancisScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.taylorAndFrancis.TaylorAndFrancisScraper</Scraper>
-		<Enabled>true</Enabled>
-	</URLTest>
 	<URLTest id="url_199">
 		<TestDescription>acm test</TestDescription>
 		<URL>http://dl.acm.org/citation.cfm?id=1571977</URL>
@@ -1404,13 +1390,6 @@
 		<URL>http://www.aaai.org/ojs/index.php/aimagazine/article/view/2376</URL>
 		<BibFile>AAAIScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.aaai.AAAIScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_241">
-		<TestDescription>test for TaylorAndFrancisScraper</TestDescription>
-		<URL>http://www.tandfonline.com/doi/abs/10.1080/14786419.2010.534733?url_ver=Z39.88-2003&amp;rfr_id=ori:rid:crossref.org&amp;rfr_dat=cr_pub%3dpubmed</URL>
-		<BibFile>TaylorAndFrancisScraperUnitURLTest3.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.taylorAndFrancis.TaylorAndFrancisScraper</Scraper>
-		<Enabled>true</Enabled>
 	</URLTest>
 	<URLTest id="url_242">
 		<TestDescription>test for Sage Journals CDP Scraper</TestDescription>
@@ -2033,12 +2012,6 @@
 		<URL>http://ci.nii.ac.jp/naid/110009888944</URL>
 		<BibFile>CiniiScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.cinii.CiniiScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_346">
-		<TestDescription>test for TaylorAndFrancisScraper</TestDescription>
-		<URL>http://amstat.tandfonline.com/doi/abs/10.1080/01621459.1977.10479922</URL>
-		<BibFile>TaylorAndFrancisScraperUnitURLTest4.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.taylorAndFrancis.TaylorAndFrancisScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_347">
 		<TestDescription>test for osti website</TestDescription>

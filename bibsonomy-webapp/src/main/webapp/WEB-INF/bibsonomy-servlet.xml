@@ -1073,7 +1073,7 @@
 	
 	<!-- webapp -->
 	<import resource="bibsonomy-servlet-fields.xml" />
-	<import resource="bibsonomy-servlet-recommender-connector.xml" />
+	<import resource="bibsonomy-servlet-recommender.xml" />
 	<import resource="bibsonomy-servlet-actions.xml" />
 	<import resource="bibsonomy-servlet-ajax.xml" />	
 	<import resource="bibsonomy-servlet-admin.xml" />

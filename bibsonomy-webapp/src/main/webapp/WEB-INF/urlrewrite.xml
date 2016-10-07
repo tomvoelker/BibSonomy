@@ -652,7 +652,7 @@
 		<!-- REDIRECT TO GROUPPAGE AND BUILD A SYSTEMTAG -->
 		<from>^/+relevantfor/+group/+([^/]+)/(.+)$</from>
 		<set type="parameter" name="requestedGroup">${unescapePath:$1}</set>
-		<set type="parameter" name="requestedTags">sys:relevantFor:${unescapePath:$1} ${unescapePath:$2}</set>
+		<set type="parameter" name="requestedTags">sys:relevantFor:${unescapePath:$1%20$2}</set>
 		<to last="true">/group</to>
 	</rule>
 

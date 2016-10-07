@@ -258,7 +258,7 @@ public final class Context {
 	 * @param parameterName
 	 * @param enumType name of enum type to be searched for the constant
 	 * @param defaultValue
-	 * @return paramter value
+	 * @return parameter value
 	 */
 	public <X extends Enum<X>> X getEnumAttribute(final String parameterName, Class<X> enumType, X defaultValue) {
 		String valueStr = RESTUtils.getStringAttribute(this.parameterMap, parameterName, null);
