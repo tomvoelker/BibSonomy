@@ -729,7 +729,7 @@ public class DBLogic implements LogicInterface {
 		this.handleAdminFilters(filters);
 
 		// check for systemTags disabling this resourceType
-		if (!this.systemTagsAllowResourceType(tags, resourceType)) {
+		if (!systemTagsAllowResourceType(tags, resourceType)) {
 			return new ArrayList<Post<T>>();
 		}
 		final DBSession session = this.openSession();
@@ -751,7 +751,7 @@ public class DBLogic implements LogicInterface {
 			 * groupingName, tags, hash, popular, added, start, end, false));
 			 */
 			if (ValidationUtils.safeContains(filters, FilterEntity.HISTORY) && !(resourceType == GoldStandardPublication.class || resourceType == GoldStandardBookmark.class)) {
-				// this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, groupingName);
+				this.permissionDBManager.ensureIsAdminOrSelfOrHasGroupRoleOrHigher(this.loginUser, groupingName, GroupRole.USER);
 			}
 			if (resourceType == BibTex.class) {
 				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filters, this.loginUser);
