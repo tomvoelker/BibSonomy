@@ -8,7 +8,7 @@
 	<select id="getMostPopularTagsForUser" parameterClass="getTagsForResParam" resultMap="RecommendationBibCommon.tagFrequency">
 		SELECT t.tag_lower AS first, COUNT(tag_lower) AS second 
 		FROM tas t
-		WHERE t.user_name = #userName# 
+		WHERE t.user_name = #userName#
 		GROUP BY tag_lower 
 		ORDER BY second DESC 
 		LIMIT #range#

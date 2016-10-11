@@ -32,6 +32,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.tag.model.RecommendedTag;
@@ -60,6 +61,9 @@ public abstract class AbstractTagRecommender implements Recommender<Post<? exten
 	 * {@link TagStringUtils#isIgnoreTag(String)}?
 	 */
 	protected boolean cleanTags = false;
+	
+	/** should the recommender ignore system tags */
+	protected boolean removeSystemTags = true;
 
 	/**
 	 * Returns user's five overall most popular tags
@@ -138,6 +142,13 @@ public abstract class AbstractTagRecommender implements Recommender<Post<? exten
 	}
 	
 	/**
+	 * @param removeSystemTags the removeSystemTags to set
+	 */
+	public void setRemoveSystemTags(boolean removeSystemTags) {
+		this.removeSystemTags = removeSystemTags;
+	}
+
+	/**
 	 * Cleans the tag depending on the setting of {@link #cleanTags}. 
 	 * If it is <code>false</code> (default), the tag is returned as is.
 	 * If it is <code>true</code>, the tag is cleaned according to {@link TagStringUtils#cleanTag(String)}
@@ -153,7 +164,10 @@ public abstract class AbstractTagRecommender implements Recommender<Post<? exten
 	 * an ignore tag.
 	 */
 	protected String getCleanedTag(final String tag) {
-		if (cleanTags) {
+		if (this.removeSystemTags && SystemTagsUtil.isSystemTag(tag)) {
+			return null;
+		}
+		if (this.cleanTags) {
 			final String cleanedTag = TagStringUtils.cleanTag(tag);
 			if (TagStringUtils.isIgnoreTag(cleanedTag)) {
 				return null;

@@ -35,7 +35,9 @@ import java.util.LinkedList;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
+import org.bibsonomy.recommender.connector.testutil.RecommenderTestContext;
 import org.bibsonomy.recommender.tag.model.RecommendedTag;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -45,7 +47,13 @@ import org.junit.Test;
  * @author rja
  */
 public class SimpleContentBasedTagRecommenderTest {
-
+	
+	@BeforeClass
+	public static void initContext() {
+		// XXX: just init the system tag framework
+		RecommenderTestContext.getBeanFactory().getBean(TagsOfPreviousPostsTagRecommender.class);
+	}
+	
 	@Test
 	public void testGetRecommendedTags() {
 		final Post<Bookmark> post = new Post<Bookmark>();

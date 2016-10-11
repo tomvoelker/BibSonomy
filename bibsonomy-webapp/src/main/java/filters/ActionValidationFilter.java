@@ -148,7 +148,7 @@ public class ActionValidationFilter implements Filter {
 	 */
 	private static String getNewCredential(User user, HttpSession session) {
 		final String userMail = user.getEmail();
-		return (StringUtils.getMD5Hash(userMail + session.getId())); 
+		return (StringUtils.getMD5Hash(userMail + session.getId()));
 	}
 	
 	/**

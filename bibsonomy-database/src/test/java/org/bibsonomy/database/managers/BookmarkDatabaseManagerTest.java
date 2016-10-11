@@ -117,11 +117,11 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 	 */
 	@Override
 	public void testGetPostsByTagNamesCount() {
-		final List<TagIndex> tagIndex = DBTestUtils.getTagIndex("suchmaschine");							
-		assertEquals(6, bookmarkDb.getPostsByTagNamesCount(tagIndex, PUBLIC_GROUP_ID, this.dbSession));
+		final List<TagIndex> tagIndex = DBTestUtils.getTagIndex("suchmaschine");
+		assertEquals(3, bookmarkDb.getPostsByTagNamesCount(tagIndex, PUBLIC_GROUP_ID, this.dbSession));
 		
 		DBTestUtils.addToTagIndex(tagIndex, "google");
-		assertEquals(8, bookmarkDb.getPostsByTagNamesCount(tagIndex, PUBLIC_GROUP_ID, this.dbSession));
+		assertEquals(1, bookmarkDb.getPostsByTagNamesCount(tagIndex, PUBLIC_GROUP_ID, this.dbSession));
 		
 		DBTestUtils.addToTagIndex(tagIndex, "yahoo");
 		assertEquals(0, bookmarkDb.getPostsByTagNamesCount(tagIndex, PUBLIC_GROUP_ID, this.dbSession));

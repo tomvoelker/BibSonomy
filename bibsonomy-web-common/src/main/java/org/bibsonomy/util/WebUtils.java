@@ -567,12 +567,12 @@ public class WebUtils {
 	 * @throws IOException
 	 */
 	public static String getLongCookies(final URL url) throws IOException {
-		List<String> cookies = new ArrayList<String>();
+		final List<String> cookies = new ArrayList<String>();
 		final GetMethod getMethod = new GetMethod(url.toString());
-        int executeMethod = CLIENT.executeMethod(getMethod);
-        Header[] responseHeaders = getMethod.getResponseHeaders("Set-Cookie");
-        for (int i = 0; i < responseHeaders.length; i++) {
-        	cookies.add(responseHeaders[i].getValue().toString());
+		CLIENT.executeMethod(getMethod);
+		final Header[] responseHeaders = getMethod.getResponseHeaders("Set-Cookie");
+		for (int i = 0; i < responseHeaders.length; i++) {
+			cookies.add(responseHeaders[i].getValue().toString());
 		}
 		return buildCookieString(cookies);
 	}
