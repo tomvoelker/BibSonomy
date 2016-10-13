@@ -52,13 +52,14 @@ public class JCIScraper extends AbstractUrlScraper implements ReferencesScraper{
 	
 	private static final String SITE_NAME = "The Journal of Clinical Investigation";
 
-	private static final String SITE_URL = "www.jci.org";
+	private static final String SITE_HOST = "www.jci.org";
+	private static final String SITE_URL = "http://" + SITE_HOST;
 
 	private static final String INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME) + ".";
 
 	private static final String BIBTEX_URL = "/cite/bibtex";
 
-	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(SITE_URL), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(SITE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
 	private static final Pattern REFERENCES = Pattern.compile("(?s)<ol compact>(.*)</ol>");
 	

@@ -27,7 +27,7 @@
 		<property name="privacyFilter"  ref="postPrivacyFilter"/>
 		<property name="renderer" ref="recommendedTagRenderer" />
 	</bean>
-	 
+	
 	<bean id="postPrivacyFilter" class="org.bibsonomy.recommender.tag.filter.PostPrivacyFilter" />
 
 	<bean id="recommendedTagRenderer" class="org.bibsonomy.recommender.tag.renderer.RecommendedTagRenderer" />
@@ -92,7 +92,7 @@
 	<bean id="allTagsOfUserRecommender"  class="org.bibsonomy.recommender.tag.popular.MostPopularByUserTagRecommender">
 		<!-- to get "almost all" tags of the user -->
 		<property name="numberOfTagsToRecommend" value="10000"/>
-		<property name="cleanTags" value="true"/>
+		<property name="cleanTags" value="false"/>
 		<property name="dbAccess" ref="recommenderTagMainLogic" />
 	</bean>
 	

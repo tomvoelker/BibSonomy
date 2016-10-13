@@ -206,7 +206,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 				if (present(possibleURL)) {
 					final ScrapingContext scrapingContext = this.buildScrapingContext(possibleURL, null, true);
 					if (!present(scrapingContext)) {
-						continue;
+						break;
 					}
 					hasURL = true;
 					final boolean success = this.scrape(scrapingContext);
