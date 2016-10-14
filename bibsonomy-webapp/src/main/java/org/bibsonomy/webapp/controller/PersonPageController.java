@@ -338,9 +338,9 @@ public class PersonPageController extends SingleResourceListController implement
 		}
 		
 		final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getRequestedPersonId());
+		
 		if (!present(person)) {
-			// FIXME: return 404 status code
-			return Views.PERSON_SHOW;
+			return Views.ERROR404;
 		}
 		command.setPerson(person);
 		

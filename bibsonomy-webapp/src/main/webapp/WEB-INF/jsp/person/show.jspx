@@ -26,9 +26,7 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
-	<c:set var="post" value="${command.post}" />
-	<c:set var="publication" value="${post.resource}" />
-	<c:set var="loginUserName" value="${command.context.loginUser.name}" />
+	<!-- <c:set var="post" value="${command.post}" /> -->
 	
 	<fmt:message key="navi.person" var="PersonPageTitle" />
 	<fmt:message key="person.show.academicDegree" var="textAcademicDegree" />
@@ -76,7 +74,6 @@
 	<fmt:message key="person.show.supervisor" var="textSupervisor" />
 	<fmt:message key="person.show.thatsMeButton" var="textThatsMeButton" />
 	<fmt:message key="person.show.thatsMeLabel" var="textThatsMeLabel" />
-	<fmt:message key="person.show.thesis" var="textThesis" />
 	
 	<c:set var="title" value="${mtl:cleanBibtex(command.person.mainName.firstName)} ${mtl:cleanBibtex(command.person.mainName.lastName)}" />
 	
@@ -99,6 +96,12 @@
 			<script type='text/javascript' src='/resources/javascript/person/roles.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/update.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/titleAutocomplete.js'><!-- keep me --></script>
+			
+			<script type='text/javascript' src='/resources/javascript/person/personPage.js'><!-- keep me --></script>
+			
+
+			
+			
 			<style type='text/css'>
 				.row ul {
 					-webkit-padding-start: 10px;
@@ -111,25 +114,61 @@
 					margin-left: auto;
 					margin-right: auto;
 				}
+						
+						
+				<!-- NEW CSS -->		
+				.personPageFormPlaceholder {}
+				.personPageFormField { display: none; padding: 0; margin: 0; }
 				
-				.academicDegree .tt-dropdown-menu {
-					max-height: 300px;
-					overflow-y: auto;
-					width: 100%;
-				} 
 				
-				#resourcesTabList {
-					margin-top: 2.5em;
+				table.personOtherPublicationTable {
+					table-layout: fixed;
 				}
+				
+				table.personOtherPublicationTable tr:nth-child(even) {
+					background: #eee;
+				}
+				
+				table.personOtherPublicationTable tr:nth-child(odd) {
+					background: #fff;
+				}
+				
+				
+				table.personOtherPublicationTable th:first-child {
+					width: 50%;
+				}
+				
+				table.personOtherPublicationTable th:nth-child(2) {
+					width: 40%;
+				}
+				
+				
+				table.personOtherPublicationTable th:last-child {
+					width: 10%;
+				}
+				
+				table.personOtherPublicationTable > tbody > tr >th {
+					border-bottom: 2px solid #ddd;
+					border-top: none;
+				}
+				
+				table.personOtherPublicationTable td {
+					text-overflow: ellipsis;
+					overflow: hidden;
+					line-height: 19px;
+					height: 19px;
+					white-space: nowrap;
+				}
+				
+				
 			</style>
 			<link rel="stylesheet" type="text/css" href='/resources/typeahead.js/css/typeahead.css'/>
 		</jsp:attribute>
 		
-		<jsp:attribute name="heading">
-		</jsp:attribute>
-		
-		<jsp:attribute name="sidebar">
-		</jsp:attribute>
+		<jsp:attribute name="heading"></jsp:attribute>
+		<jsp:attribute name="sidebar">TODO ADD CONTENT</jsp:attribute>
+
+
 
 		<jsp:attribute name="content">
 			<errors:logicExceptions exceptions="${command.logicExceptions}" />
@@ -140,201 +179,298 @@
 					</jsp:attribute>
 				</bs:alert>
 			</c:if>
-			<c:choose>
-				<c:when test="${not empty command.person}">
-					<div class="page-header">
-						<h1><c:out value="${title}"/></h1>
-					</div>
-					
-					<div id='personInfo'>
-						<div id='aboutThisPerson'>
-							<form method='post' name='personForm' action="" class='form-horizontal'>
-								<input type="hidden" name="ckey" value="${ckey}"/>
-								<c:if test="${false and command.person.disambiguatingPublication.post ne null}">
-									<div class='form-group'>
-										<label class="control-label col-md-4">${textAuthorOf}</label>
-										<div class="col-md-6">
-											<p class='form-control-static'><c:out value="${mtl:cleanBibtex(command.person.disambiguatingPublication.post.resource.title)}" /></p>
-										</div>
-									</div>
-								</c:if>
-								<div class='form-group'>
-									<label class="control-label col-md-4" for='formAcademicDegree'>${textAcademicDegree}</label>
-									<div class="col-md-6 academicDegree">
-										<input class='form-control' type="text" name='formAcademicDegree' id='formAcademicDegree' placeholder="${textAcademicDegree}" autocomplete="off" value="${command.person.academicDegree }"/>
-									</div>
+
+			<div class="page-header">
+				<h1><c:out value="${title}"/></h1>
+			</div>
+			
+			<!-- VCard -->
+			<div id="personInfo" class="row">
+				<div class="col-md-8">
+			
+					<form method='post' name='personForm' action="" class='form-horizontal'>
+						<input type="hidden" name="ckey" value="${ckey}"/>
+						
+						
+						<!-- ?????????????????????????????? -->
+						<c:if test="${false and command.person.disambiguatingPublication.post ne null}">
+							<div class='form-group'>
+								<label class="control-label col-md-4">${textAuthorOf}</label>
+								<div class="col-md-6">
+									<p class='form-control-static'><c:out value="${mtl:cleanBibtex(command.person.disambiguatingPublication.post.resource.title)}" /></p>
 								</div>
-								<div class='form-group'>
-									<label class="control-label col-md-4">${textPersonAlternateNames}<br/>${textPersonAlternateNamesSelect}</label>
-									<div class="col-md-6">
-										<c:choose>
-											<c:when test="${fn:length(command.person.names) gt 0}">
-												<c:forEach var='name' items="${command.person.names}">
-													<c:choose>
-														<c:when test="${name.main}">
-															<div class='checkbox' id='personName_${name.personNameChangeId}'><label><input type='radio' name='formSelectedName' value='${name.personNameChangeId}' checked='checked' /> ${name.firstName} ${name.lastName}</label>&#160;
-															</div>
-														</c:when>
-														<c:otherwise>
-															<div class='checkbox' id='personName_${name.personNameChangeId}'><label><input type='radio' name='formSelectedName' value='${name.personNameChangeId}' /> ${name.firstName} ${name.lastName}</label>&#160;
-																<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-																	<span data-person-name-id='${name.personNameChangeId}' data-firstName='${name.firstName}' data-lastName='${name.lastName}' data-toggle='modal' data-target='#removeName' style='color:darkred;cursor:pointer' href='#remName' id='removeName_${name.personNameChangeId}' class='removeName fa fa-remove'></span>
-																</c:if>
-															</div>
-														</c:otherwise>
-													</c:choose>
-												</c:forEach>
-											</c:when>
-											<c:otherwise>
-												<p class='form-control-static'>${textNoNamesFound}</p>
-											</c:otherwise>
-										</c:choose>
-										<br id='nameInsertionPoint'/>
-										<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-											<bsform:button size="defaultSize" value="${textAddAlternateNameButton}" style="defaultStyle" dataToggle="modal" dataTarget="#addName" />
-										</c:if>
-									</div>
-								</div>
-								<div class='form-group'>
-									<label class="control-label col-md-4" for='formOrcid'>${textOrcidId}</label>
-									<div class="col-md-6">
-										<input class='form-control' type="text" name='formOrcid' id='formOrcid' placeholder="${textOrcidId}" value="${command.person.orcid}"/>
-									</div>
-								</div>
-								<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-									<div class='form-group'>
-										<label class="control-label col-md-4" for='thatsMe'>${textThatsMeLabel}</label>
-											<div class="col-md-6">
-												<div class="checkbox"><label>
-													<c:choose>
-														<c:when test='${not empty command.person.user and command.person.user eq command.context.loginUser.name}'>
-															<input type="checkbox" name='formThatsMe' id='formThatsMe' checked="checked" /> ${textThatsMeButton}
-														</c:when>
-														<c:when test='${not empty command.person.user}'>
-															<a href="${absoluteUrlGenerator.getUserUrlByUserName(command.person.user)}"><c:out value="${command.person.user}"/></a>
-														</c:when>
-														<c:otherwise>
-															<input type="checkbox" name='formThatsMe' id='formThatsMe' /> ${textThatsMeButton}
-														</c:otherwise>
-													</c:choose>
-												</label>
-											</div>
-										</div>
-									</div>
-								</c:if>
-								<div class="row">
-									<div class='col-md-4'>&#160;</div>
-									<div class="col-md-6">
-										<!-- 
-										<c:choose>
-											<c:when test='${command.person.user eq null}'>
-												${textThatsMeButton}
-												<c:set var="displayLinkButton" value='display:none'/>
-												<c:set var="displayUnlinkButton" value='' />
-											</c:when>
-											<c:otherwise>
-												<c:set var="displayLinkButton" value=''/>
-												<c:set var="displayUnlinkButton" value='display:none' />
-											</c:otherwise>
-										</c:choose>
-										<button style='${displayLinkButton}' type='button' id='btnLink' class='btn btn-default' data-toggle="modal" data-target="#linkPerson">${textThatsMeButton}</button>
-										<button style='${displayUnlinkButton}' type='button' id='btnUnlink' class='btn btn-default' data-toggle="modal" data-target="#unlinkPerson">${textThatsNotMeButton}</button>
-										-->
-										<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-											<!-- TODO: can we use the bsform:button tagx file? -->
-											<button id='btnSaveSubmit' data-person-id="${command.person.personId}" type='button' class="btn btn-primary pull-right ${systemReadOnly ? 'disabled' : '' }">${textSaveButton}</button>
-										</c:if>
-									</div>
-								</div>
-							</form>
-						</div>
-					</div>
-					
-					<ul id='resourcesTabList' class="nav nav-tabs" role="tablist">
-						<li><a href="#ownThesis" role="tab" data-toggle="tab"><strong>${textOwnPubTab}</strong></a></li>
-						<li><a href="#ownPublications" role="tab" data-toggle="tab"><strong>${textRolePubTab}</strong></a></li>
-					</ul>
-							<div class='tab-content pub-person-tab-content'>
-							
-								<div id='ownThesis' class='tab-pane'>
-									<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-										<br/>
-										<bsform:button size="defaultSize" value="${textAddThesisButton}" style="defaultStyle" dataToggle="modal" dataTarget="#addThesis" block="${true}" />
-										<br/>
-									</c:if>
-									<h3 class="list-headline"><fmt:message key="person.show.thesis" /></h3>
-									<c:choose>
-										<c:when test="${fn:length(command.thesis) gt 0}">
-											<c:forEach var="post" items="${command.thesis}">
-												<per:pubWithRoles post="${post}" loginUser="${command.context.loginUser}" availableRoles="${command.availableRoles}" />
-												<hr />
-											</c:forEach>
-										</c:when>
-										<c:otherwise>
-											<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
-										</c:otherwise>
-									</c:choose>
-									
-									<h3 class="list-headline"><fmt:message key="person.show.otherPub" /></h3>
-									<c:choose>
-										<c:when test="${fn:length(command.otherPubs) gt 0}">
-											<c:forEach var="post" items="${command.otherPubs}">
-												<per:pubWithRoles post="${post}" loginUser="${command.context.loginUser}" availableRoles="${command.availableRoles}" />
-												<hr />
-											</c:forEach>
-										</c:when>
-										<c:otherwise>
-											<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
-										</c:otherwise>
-									</c:choose>
-								</div>
-								
-								<div id='ownPublications' class='tab-pane'>
-									<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-										<br/>
-										<button style='width: 100%;' class='btn btn-default' data-toggle='modal' data-target='#addSupervisedThesis'>${textAddThesisButton}</button>
-										<br/>
-									</c:if>
-									<h3 class="list-headline"><fmt:message key="person.show.thesis" /></h3>
-									<c:choose>
-										<c:when test="${fn:length(command.advisedThesis) gt 0}">
-											<c:forEach var="post" items="${command.advisedThesis}">
-												<per:pubWithRoles post="${post}" loginUser="${command.context.loginUser}" availableRoles="${command.availableRoles}" />
-												<hr />
-											</c:forEach>
-										</c:when>
-										<c:otherwise>
-											<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
-										</c:otherwise>
-									</c:choose>
-									
-									<h3 class="list-headline"><fmt:message key="person.show.otherPub" /></h3>
-									<c:choose>
-										<c:when test="${fn:length(command.otherAdvisedPubs) gt 0}">
-											<c:forEach var="post" items="${command.otherAdvisedPubs}">
-												<per:pubWithRoles post="${post}" loginUser="${command.context.loginUser}" availableRoles="${command.availableRoles}" />
-												<hr />
-											</c:forEach>
-										</c:when>
-										<c:otherwise>
-											<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
-										</c:otherwise>
-									</c:choose>
-								</div>
-								
-								<script type="text/javascript">
-									$("#resourcesTabList a:first").click();
-								</script>
 							</div>
-						</c:when>
-						<c:otherwise>
-							<!-- TODO: i18n -->
-							Person not found
-						</c:otherwise>
-					</c:choose>
+						</c:if>
+						
+						
+						
+						<!-- Academic degree -->
+						<div class='form-group'>
+							<label class="control-label col-md-4" for='formAcademicDegree'>${textAcademicDegree}</label>
+							
+							<div class="col-md-8">
+								<div class="personPageFormPlaceholder"><span class="personPageEnableForm fa fa-pencil"><!--  --></span> ${command.person.academicDegree}</div>
+								<div class="personPageFormField col-md-8">
+									<input class='form-control' type="text" name='formAcademicDegree' id='formAcademicDegree' placeholder="${textAcademicDegree}" autocomplete="off" value="${command.person.academicDegree}" />
+								</div>
+								<!-- TODO: REMOVE INLINE CSS -->
+								<div style="margin:8px 0 0 10px; padding: 0 0 0 0 important;" class="personPageFormField col-md-2">
+									<button type="button" class="btn btn-primary btn-xs">TODO</button>
+								</div>
+							</div>
+			
+						</div>
+						
+						
+						
+						<!-- Alternative Names -->
+						<div class='form-group'>
+							<label class="control-label col-md-4">${textPersonAlternateNames}<br/>${textPersonAlternateNamesSelect}</label>
+							<div class="col-md-6">
+								<c:choose>
+									<c:when test="${fn:length(command.person.names) gt 0}">
+										<c:forEach var='name' items="${command.person.names}">
+											<c:choose>
+												<c:when test="${name.main}">
+													<div class='checkbox' id='personName_${name.personNameChangeId}'><label><input type='radio' name='formSelectedName' value='${name.personNameChangeId}' checked='checked' /> ${name.firstName} ${name.lastName}</label>&#160;
+													</div>
+												</c:when>
+												<c:otherwise>
+													<div class='checkbox' id='personName_${name.personNameChangeId}'><label><input type='radio' name='formSelectedName' value='${name.personNameChangeId}' /> ${name.firstName} ${name.lastName}</label>&#160;
+														<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
+															<span data-person-name-id='${name.personNameChangeId}' data-firstName='${name.firstName}' data-lastName='${name.lastName}' data-toggle='modal' data-target='#removeName' style='color:darkred;cursor:pointer' href='#remName' id='removeName_${name.personNameChangeId}' class='removeName fa fa-remove'></span>
+														</c:if>
+													</div>
+												</c:otherwise>
+											</c:choose>
+										</c:forEach>
+									</c:when>
+									<c:otherwise>
+										<p class='form-control-static'>${textNoNamesFound}</p>
+									</c:otherwise>
+								</c:choose>
+								<br id='nameInsertionPoint'/>
+								<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
+									<bsform:button size="defaultSize" value="${textAddAlternateNameButton}" style="defaultStyle" dataToggle="modal" dataTarget="#addName" />
+								</c:if>
+							</div>
+						</div>
+						
+						
+						
+						<!-- ORCID -->						
+						<div class='form-group'>
+							<label class="control-label col-md-4" for='formOrcid'>${textOrcidId}</label>
+							
+							<div class="col-md-8">
+								<div class="personPageFormPlaceholder"><span class="personPageEnableForm fa fa-pencil"><!--  --></span> ${command.person.orcid}</div>
+								<div class="personPageFormField col-md-8">
+									<input class='form-control' type="text" name='formOrcid' id='formOrcid' placeholder="${textOrcidId}" value="${command.person.orcid}"/>
+								</div>
+								<!-- TODO: REMOVE INLINE CSS -->
+								<div style="margin:8px 0 0 10px; padding: 0 0 0 0 important;" class="personPageFormField col-md-2">
+									<button type="button" class="btn btn-primary btn-xs">TODO</button>
+								</div>
+							</div>
+			
+						</div>
+						
+						
+						
+						
+						
+						
+						<!-- It's me -->
+						<!-- 
+						<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
+							<div class='form-group'>
+								<label class="control-label col-md-4" for='thatsMe'>${textThatsMeLabel}</label>
+									<div class="col-md-6">
+										<div class="checkbox"><label>
+											<c:choose>
+												<c:when test='${not empty command.person.user and command.person.user eq command.context.loginUser.name}'>
+													<input type="checkbox" name='formThatsMe' id='formThatsMe' checked="checked" /> ${textThatsMeButton}
+												</c:when>
+												<c:when test='${not empty command.person.user}'>
+													<a href="${absoluteUrlGenerator.getUserUrlByUserName(command.person.user)}"><c:out value="${command.person.user}"/></a>
+												</c:when>
+												<c:otherwise>
+													<input type="checkbox" name='formThatsMe' id='formThatsMe' /> ${textThatsMeButton}
+												</c:otherwise>
+											</c:choose>
+										</label>
+									</div>
+								</div>
+							</div>
+						</c:if>
+						 -->
+						
+						
+						<div class="row">
+							<div class='col-md-4'>&#160;</div>
+							<div class="col-md-6">
+								<!-- 
+								<c:choose>
+									<c:when test='${command.person.user eq null}'>
+										${textThatsMeButton}
+										<c:set var="displayLinkButton" value='display:none'/>
+										<c:set var="displayUnlinkButton" value='' />
+									</c:when>
+									<c:otherwise>
+										<c:set var="displayLinkButton" value=''/>
+										<c:set var="displayUnlinkButton" value='display:none' />
+									</c:otherwise>
+								</c:choose>
+								<button style='${displayLinkButton}' type='button' id='btnLink' class='btn btn-default' data-toggle="modal" data-target="#linkPerson">${textThatsMeButton}</button>
+								<button style='${displayUnlinkButton}' type='button' id='btnUnlink' class='btn btn-default' data-toggle="modal" data-target="#unlinkPerson">${textThatsNotMeButton}</button>
+								-->
+								<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
+									<!-- TODO: can we use the bsform:button tagx file? -->
+									<button id='btnSaveSubmit' data-person-id="${command.person.personId}" type='button' class="btn btn-primary pull-right ${systemReadOnly ? 'disabled' : '' }">${textSaveButton}</button>
+								</c:if>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="col-md-4">
+					CURRENT AFFILIATION <br />
+					etc...
+				</div>
+			</div>
+			
+			
+			
+			
+			
+			<!-- Thesis block -->
+			<div id="thesisBlock">
+				<ul class="nav nav-tabs" role="tablist">
+					<li class="active"><a href="#ownThesis" role="tab" data-toggle="tab"><strong>${textOwnPubTab}</strong></a></li>
+					<li><a href="#relatedThesis" role="tab" data-toggle="tab"><strong>${textRolePubTab}</strong></a></li>
+				</ul>
+				
+				<div class='tab-content pub-person-tab-content' >
+				
+					<!-- Own Thesis tab content-->
+					<div id='ownThesis' class='tab-pane active'>
+						
+						<!-- 
+						<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
+							<br/>
+							<bsform:button size="defaultSize" value="${textAddThesisButton}" style="defaultStyle" dataToggle="modal" dataTarget="#addThesis" block="${true}" />
+							<br/>
+						</c:if>
+						-->
+						
+						<c:choose>
+							<c:when test="${fn:length(command.thesis) gt 0}">
+								<c:forEach var="post" items="${command.thesis}">
+									<per:pubWithRoles post="${post}" loginUser="${command.context.loginUser}" availableRoles="${command.availableRoles}" />
+									<hr />
+								</c:forEach>
+							</c:when>
+							<c:otherwise>
+								<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
+							</c:otherwise>
+						</c:choose>
+					</div>
+					
+					
+					<!-- Related Thesis tab content -->
+					<div id="relatedThesis" class="tab-pane">
+						<!-- 
+						<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
+							<br/>
+							<button style='width: 100%;' class='btn btn-default' data-toggle='modal' data-target='#addSupervisedThesis'>${textAddThesisButton}</button>
+							<br/>
+						</c:if>
+						-->
+						
+						<c:choose>
+							<c:when test="${fn:length(command.advisedThesis) gt 0}">
+								<c:forEach var="post" items="${command.advisedThesis}">
+									<per:pubWithRoles post="${post}" loginUser="${command.context.loginUser}" availableRoles="${command.availableRoles}" />
+									<hr />
+								</c:forEach>
+							</c:when>
+							<c:otherwise>
+								<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
+							</c:otherwise>
+						</c:choose>
+					</div>
+
+				</div>
+			</div>
+			
+			<!-- Other publications -->
+			<c:if test="${fn:length(command.otherPubs) gt 0}">
+				<h3 class="list-headline"><fmt:message key="person.show.otherPub" /></h3>
+				<div id="otherPublications" class="table-responsive">
+					<table class="table personOtherPublicationTable">
+						<tr>
+							<th><fmt:message key="post.resource.title" /></th>
+							<th><fmt:message key="post.resource.author" /></th>
+							<th><fmt:message key="post.resource.year" /></th>
+						</tr>
+						<c:forEach var="post" items="${command.otherPubs}">
+							<per:simplePubView post="${post}" />
+						</c:forEach>
+					</table>
+				</div>
+				
+				<script type="text/javascript">
+				$(document).ready(function() {
+					$("table.personOtherPublicationTable").dataTable();
+				});
+				</script>
+				
+			</c:if>
+			
+			
+			<!-- Other publications of similar authors -->
+			<c:if test="${fn:length(command.otherAdvisedPubs) gt 0}">
+				<h3 class="list-headline"><fmt:message key="person.show.otherPub" /></h3>
+				<div id="otherPublicationsOfSimialrAuthor" class="table-responsive">
+					<table class="table">
+						<c:forEach var="post" items="${command.otherAdvisedPubs}">
+							<per:pubWithRoles post="${post}" loginUser="${command.context.loginUser}" availableRoles="${command.availableRoles}" />
+						</c:forEach>
+					</table>
+				</div>
+			</c:if>
+					
+					
+
 		</jsp:attribute>
 	
 	</layout:paneLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   <div class="modal fade" id="addName" tabindex="-1" role="dialog" aria-labelledby="addNameLabel" aria-hidden="true">
     <div class="modal-dialog">
