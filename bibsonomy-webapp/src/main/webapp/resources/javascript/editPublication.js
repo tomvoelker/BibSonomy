@@ -360,11 +360,19 @@ function applyKeyDownHandler(element) {
  * change appearance of misc and transfer data
  */
 $(document).ready(function() {
+    /*
+     * add misc fields in the beginning, so they don't show up if js is disabled
+     */
+    $("#miscDiv").append('<div class="input_fields_wrap form-group"><label class="col-sm-3 control-label" for="">misc fields</label><div class="col-sm-4"><input class="form-control" type="text" path=""/></div><div class="col-sm-4"><input class="form-control" type="text" path=""/></div><div class="col-sm-1"><button class="btn btn-sm" type="button" id="add_field_button">+</button></div></div>');
+    $("#miscCheckboxDiv").append('<label><input type="checkbox" id="expertView" labelText="expert view"/> expert view</label>');
+    
+    //variables
     var wrapper         = $(".input_fields_wrap"); //Fields wrapper
     var add_button      = $("#add_field_button"); //Add button ID
     var misc 			= $("#post\\.resource\\.misc");
     var miscFields = [];
     
+    //functions
     function addInputs(){
     	$(wrapper).append('<div class="extraInputs"><label class="col-sm-3"></label><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-1"><button class="btn btn-sm remove_field" type="button">-</form:button></div></div>'); 
     };
@@ -418,7 +426,6 @@ $(document).ready(function() {
     	});
     }
     
-    
     /*
      * transfer from old to new in case of reloading and hide old misc at the beginning
      */
@@ -454,6 +461,7 @@ $(document).ready(function() {
     			miscFields.push("undefined");
     		}
     	});
+    	console.log(miscFields);
     	transferArrayToOldField();
     });
     
