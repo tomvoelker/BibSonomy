@@ -16,6 +16,14 @@ $(function() {
 	});
 });
 
+function fixData(data) {
+	$.each(data, function(index, citation) {
+		delete citation.issued.literal;
+	});
+	
+	return data;
+}
+
 function loadStyle(styleName, success) {
 	$.ajax({
 		type: "get",
@@ -31,6 +39,7 @@ function loadStyle(styleName, success) {
 }
 
 function renderCSL(csl, styleName, container) {
+	csl = fixData(csl);
 	// getting style for CSL from /csl-style/"style"
 	loadStyle(styleName, function(xml) {
 		//building CSL based on XML
