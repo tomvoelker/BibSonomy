@@ -216,7 +216,7 @@ public class DBLogic implements LogicInterface {
 	 * @param loginUser
 	 *        - the user which wants to use the logic.
 	 * @param dbSessionFactory
-	 * @param bibtexReader 
+	 * @param bibtexReader
 	 */
 	protected DBLogic(final User loginUser, final DBSessionFactory dbSessionFactory, final BibTexReader bibtexReader) {
 		this.loginUser = loginUser;
@@ -943,7 +943,7 @@ public class DBLogic implements LogicInterface {
 
 			final Group myGroup = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, true, this.permissionDBManager.isAdmin(this.loginUser), session);
 			if (!GroupUtils.isValidGroup(myGroup)) {
-				return null;
+				return new Group();
 			}
 			myGroup.setTagSets(this.groupDBManager.getGroupTagSets(groupName, session));
 			if (this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, groupName, GroupRole.MODERATOR)) {
@@ -1174,9 +1174,9 @@ public class DBLogic implements LogicInterface {
 	 * Check for each group actually exist and if the
 	 * posting user is allowed to post. If yes, insert the correct group ID into
 	 * the given post's groups.
-	 * @param user 
+	 * @param user
 	 * @param groups the groups to validate
-	 * @param session 
+	 * @param session
 	 */
 	protected void validateGroups(final User user, final Set<Group> groups, final DBSession session) {
 		/*
@@ -1693,14 +1693,14 @@ public class DBLogic implements LogicInterface {
 	private <T extends Resource> String updatePost(final Post<T> post, final PostUpdateOperation operation, final DBSession session) {
 		final CrudableContent<T, GenericParam> manager = this.getFittingDatabaseManager(post);
 		final String oldIntraHash = post.getResource().getIntraHash();
-		
+
 		if (Role.SYNC.equals(this.loginUser.getRole())) {
 			validateGroupsForSynchronization(post);
 		}
 		this.validateGroups(post.getUser(), post.getGroups(), session);
-		
+
 		PostUtils.limitedUserModification(post, this.loginUser);
-		
+
 		/*
 		 * change group IDs to spam group IDs
 		 */
