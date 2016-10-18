@@ -475,6 +475,9 @@ public class URLGenerator {
 		} else {
 			urlBuilder.addParameter("hash", resource.getIntraHash());
 			urlBuilder.addParameter("user", post.getUser().getName());
+			if (forceCommunityResource) {
+				urlBuilder.addParameter("editBeforeSaving", String.valueOf(true));
+			}
 		}
 		
 		return this.getUrl(urlBuilder.asString());
@@ -485,9 +488,21 @@ public class URLGenerator {
 	 * @return
 	 */
 	private static String getEditUrlByResourceClass(final Class<? extends Resource> resourceClass) {
-		return "edit" + StringUtils.capitalizeWord(ResourceFactory.getResourceName(resourceClass));
+		return "edit" + StringUtils.capitalizeWord(getResourceNameForEditForm(resourceClass));
 	}
 	
+	/**
+	 * @param resourceClass
+	 * @return
+	 */
+	private static String getResourceNameForEditForm(Class<? extends Resource> resourceClass) {
+		// XXX: special handling for the publication class; remove after renaming the class
+		if (BibTex.class.equals(resourceClass)) {
+			return ResourceFactory.PUBLICATION_CLASS_NAME;
+		}
+		return resourceClass.getSimpleName();
+	}
+
 	/**
 	 * url of the document
 	 * 
