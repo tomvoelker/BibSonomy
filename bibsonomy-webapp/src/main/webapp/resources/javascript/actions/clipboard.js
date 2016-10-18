@@ -24,29 +24,31 @@ $(function() {
 	});
 	
 	var copyButton = $('#copyToLocalClipboard');
-	var clipboard = new Clipboard(copyButton.get(0), {
-		text: function(trigger) {
-			var citationContainer = $('#exportModalCitation');
-			var targetElement = citationContainer;
-			var pre = citationContainer.find('pre');
-			if (pre.length > 0) {
-				targetElement = pre;
+	if (copyButton.length > 0) {
+		var clipboard = new Clipboard(copyButton.get(0), {
+			text: function(trigger) {
+				var citationContainer = $('#exportModalCitation');
+				var targetElement = citationContainer;
+				var pre = citationContainer.find('pre');
+				if (pre.length > 0) {
+					targetElement = pre;
+				}
+				return targetElement.text();
 			}
-			return targetElement.text();
-		}
-	});
-	
-	
-	copyButton.mouseleave(function() {
-		copyButton.tooltip('destroy');
-	});
-	
-	clipboard.on('success', function(e) {
-		copyButton.tooltip({
-			placement: 'bottom',
-			title: getString('export.copyToLocalClipboard.success')
-		}).tooltip('show');
-	});
+		});
+		
+		
+		copyButton.mouseleave(function() {
+			copyButton.tooltip('destroy');
+		});
+		
+		clipboard.on('success', function(e) {
+			copyButton.tooltip({
+				placement: 'bottom',
+				title: getString('export.copyToLocalClipboard.success')
+			}).tooltip('show');
+		});
+	}
 });
 
 function pickAll() {

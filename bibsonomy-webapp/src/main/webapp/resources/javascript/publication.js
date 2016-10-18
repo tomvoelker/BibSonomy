@@ -20,7 +20,7 @@ $(function() {
 			});
 			return;
 		}
-		
+		var tabContainer = $(this).closest('ul');
 		targetElement.html(getString("bibtex.citation_format.loading")); // activated tab
 		var publicationLink = tabContainer.data('publication-url');
 		
