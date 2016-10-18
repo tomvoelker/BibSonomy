@@ -331,6 +331,19 @@ public class ElasticsearchClient implements ESClient {
 		return !bulkResponse.hasFailures();
 	}
 	
+	/**
+	 * @return <code>true</code> if a connection to es can be established 
+	 */
+	public boolean isValidConnection() {
+		try {
+			this.waitForReadyState();
+			return true;
+		} catch (final Exception e) {
+			log.error("disabled indexing", e);
+			return false;
+		}
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.search.es.ESClient#prepareCount(java.lang.String)
 	 */

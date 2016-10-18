@@ -130,6 +130,7 @@ public class HelpSearchManager implements HelpSearch {
 		}
 	}
 	
+	private boolean indexingDisabled;
 	
 	private String path;
 	
@@ -147,6 +148,10 @@ public class HelpSearchManager implements HelpSearch {
 	 * re-index the complete help pages
 	 */
 	public void reindex() {
+		if (this.indexingDisabled) {
+			return;
+		}
+		
 		if (!this.updateLock.tryAcquire()) {
 			log.warn("reindexing in progress");
 			return;
@@ -309,5 +314,12 @@ public class HelpSearchManager implements HelpSearch {
 	 */
 	public void setFactory(HelpParserFactory factory) {
 		this.factory = factory;
+	}
+
+	/**
+	 * @param indexingDisabled the indexingDisabled to set
+	 */
+	public void setIndexingDisabled(boolean indexingDisabled) {
+		this.indexingDisabled = indexingDisabled;
 	}
 }
