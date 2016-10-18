@@ -13,7 +13,7 @@
    	<span class="truncatedDesc batchInfo">
    		<span itemprop="name">${post.resource.title}</span> 
    		<br/>
-   		<bib:year publication="${post.resource}" braces="true"/>
+   		<bib:date publication="${post.resource}" braces="true"/>
    		<c:out value=" "/>
    		<bib:author publication="${post.resource}"/>
    		<div>

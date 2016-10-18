@@ -8,8 +8,9 @@
 	<c:if test="${braces}">(</c:if>
 	<em>
 		<span>
-			<c:out value="${mtl:getDate('', '', publication.year, locale)}" />
-			<meta itemprop="datePublished" content="${mtl:cleanBibtex(publication.year)}" />
+			<c:set var="date" value="${mtl:getDate(publication.day, publication.month, publication.year, locale)}" />
+			<c:out value="${date}" />
+			<meta itemprop="datePublished" content="${date}" />
 		</span>
 	</em>
 	<c:if test="${braces}">)</c:if>

@@ -30,16 +30,13 @@
 	<c:set var="loginUserName" value="${loginUser.name}"/>
 	
 	<div class='row ${post.resource.interHash}_${post.resource.intraHash}'>
-		<div style='border-right:1px solid lightgrey' class='col-md-6 publication-list'>
-			<div class="title">
-				<!-- show one post -->
-				<rc:post post="${post}" otherPostsUrlPrefix="/bibtex/" loginUserName="${loginUserName}" resourceType="publication">
-					<jsp:attribute name="title">    <bib:title post="${post}"/>    </jsp:attribute>
-					<jsp:attribute name="actions">  <actionbuttons:actions loginUserName="${loginUserName}" post="${post}" disableResourceLinks="${false}" resourceType="bibtex"/></jsp:attribute>
-					<jsp:attribute name="desc">     <bib:desc post="${post}" publication="${post.resource}"/></jsp:attribute>
-					<jsp:attribute name="documents"><bib:documents post="${post}"/></jsp:attribute>
-				</rc:post>
+		<div style="border-right:1px solid lightgrey" class="col-md-6">
+			
+			<span class="ptitle"><bib:title post="${post}" /></span>
+			<div class="pdesc ellipsis">
+				<div class="ellipsis-content"><bib:desc post="${post}" publication="${post.resource}"/></div>
 			</div>
+			
 		</div>
 		<div class='col-md-6'>
 			<ul>
