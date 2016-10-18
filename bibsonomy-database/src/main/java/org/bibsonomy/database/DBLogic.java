@@ -943,7 +943,7 @@ public class DBLogic implements LogicInterface {
 
 			final Group myGroup = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, true, this.permissionDBManager.isAdmin(this.loginUser), session);
 			if (!GroupUtils.isValidGroup(myGroup)) {
-				return new Group();
+				return null;
 			}
 			myGroup.setTagSets(this.groupDBManager.getGroupTagSets(groupName, session));
 			if (this.permissionDBManager.isAdminOrHasGroupRoleOrHigher(this.loginUser, groupName, GroupRole.MODERATOR)) {
