@@ -1202,18 +1202,20 @@ public abstract class AbstractRenderer implements Renderer {
 		if (upload != null) {
 			final String name = upload.getMultipartName();
 			if (present(name)) {
-				Data data = uploadedFileAccessor.getData(name);
+				final Data data = uploadedFileAccessor.getData(name);
 				if (data == null) {
 					log.warn("missing data in API");
 				} else {
-					BibTex alreadyParsedBibtex = null;
+					final BibTex alreadyParsedBibtex;
 					if (post.getResource() instanceof BibTex) {
 						alreadyParsedBibtex = (BibTex) post.getResource();
+					} else {
+						alreadyParsedBibtex = null;
 					}
 					post.setResource(new ImportResource(alreadyParsedBibtex, data));
 				}
 			} else {
-				log.warn("missing multipartname  in API");
+				log.warn("missing multipartname in API");
 			}
 		}
 
