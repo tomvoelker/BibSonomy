@@ -104,8 +104,6 @@ import org.bibsonomy.rest.renderer.xml.TagsType;
 import org.bibsonomy.rest.renderer.xml.UploadDataType;
 import org.bibsonomy.rest.renderer.xml.UserType;
 import org.bibsonomy.rest.renderer.xml.UsersType;
-import org.bibsonomy.rest.validation.ModelValidator;
-import org.bibsonomy.rest.validation.StandardModelValidator;
 import org.bibsonomy.rest.validation.StandardXMLModelValidator;
 import org.bibsonomy.rest.validation.XMLModelValidator;
 import org.bibsonomy.util.ValidationUtils;
@@ -116,7 +114,6 @@ import org.bibsonomy.util.ValidationUtils;
 public abstract class AbstractRenderer implements Renderer {
 	private static final Log log = LogFactory.getLog(AbstractRenderer.class);
 	
-	protected ModelValidator modelValidator = new StandardModelValidator();
 	protected XMLModelValidator xmlModelValidator = new StandardXMLModelValidator();
 	protected final UrlRenderer urlRenderer;
 	protected final DatatypeFactory datatypeFactory;
@@ -1131,9 +1128,6 @@ public abstract class AbstractRenderer implements Renderer {
 			ModelValidationUtils.checkPublication(xmlPublication);
 			final GoldStandardPublication publication = new GoldStandardPublication();
 			this.fillPublicationWithInformation(xmlPublication, publication);
-
-			this.modelValidator.checkPublication(publication);
-
 			post.setResource(publication);
 		} else {
 			// TODO: add goldstandard bookmark
@@ -1189,8 +1183,6 @@ public abstract class AbstractRenderer implements Renderer {
 				publication.setDocuments(documents);
 			}
 			
-			this.modelValidator.checkPublication(publication);
-
 			post.setResource(publication);
 		}
 
@@ -1456,13 +1448,6 @@ public abstract class AbstractRenderer implements Renderer {
 		 * strategies when creating or updating a post (see above) 
 		 */
 		return date.toGregorianCalendar().getTime();
-	}
-
-	/**
-	 * @param modelValidator the modelValidator to set
-	 */
-	public void setModelValidator(final ModelValidator modelValidator) {
-		this.modelValidator = modelValidator;
 	}
 
 	/**

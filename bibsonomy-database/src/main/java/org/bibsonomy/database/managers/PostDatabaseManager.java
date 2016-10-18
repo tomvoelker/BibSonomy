@@ -51,7 +51,6 @@ import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.IdenticalHashErrorMessage;
-import org.bibsonomy.common.errors.MissingFieldErrorMessage;
 import org.bibsonomy.common.errors.UpdatePostErrorMessage;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
@@ -82,6 +81,7 @@ import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.SimHash;
+import org.bibsonomy.model.validation.ModelValidator;
 import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.util.ReflectionUtils;
 
@@ -151,6 +151,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	protected DatabaseModelValidator<R> validator;
 
 	private Chain<List<Post<R>>, P> chain;
+
+	private ModelValidator modelValidator;
 
 
 	/**
@@ -1804,17 +1806,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 */
 	private void insertPost(final Post<R> post, final DBSession session) {
-		boolean errors = false;
-		if (!present(post.getResource())) {
-			final ErrorMessage errorMessage = new MissingFieldErrorMessage("Resource");
-			session.addError(post.getResource().getIntraHash(), errorMessage);
-			errors = true;
-		}
-		if (!present(post.getGroups())) {
-			final ErrorMessage errorMessage = new MissingFieldErrorMessage("Groups");
-			session.addError(post.getResource().getIntraHash(), errorMessage);
-			errors = true;
-		}
+		boolean errors = this.validateModel(post, session);
 		if (errors) {
 			// one or more errors occurred in this method
 			// => we don't want to go deeper into the process with these kinds
@@ -1826,6 +1818,29 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		final P param = this.getInsertParam(post, session);
 		// insert
 		this.insertPost(param, session);
+	}
+
+	/**
+	 * @param post
+	 * @param session
+	 * @return
+	 */
+	private boolean validateModel(final Post<R> post, final DBSession session) {
+		final List<ErrorMessage> validationErrors = this.modelValidator.validatePost(post);
+		
+		final String errorKey;
+		final R resource = post.getResource();
+		if (present(resource)) {
+			errorKey = resource.getIntraHash();
+		} else {
+			errorKey = "unknown";
+		}
+		
+		for (final ErrorMessage errorMessage : validationErrors) {
+			session.addError(errorKey, errorMessage);
+		}
+		
+		return present(validationErrors);
 	}
 
 	/**
@@ -2131,5 +2146,12 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		this.insert("logPostInsert", param, session);
 
 		this.update("logPostUpdateCurrentID", param, session);
+	}
+
+	/**
+	 * @param modelValidator the modelValidator to set
+	 */
+	public void setModelValidator(ModelValidator modelValidator) {
+		this.modelValidator = modelValidator;
 	}
 }
