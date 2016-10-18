@@ -39,17 +39,18 @@ import org.bibsonomy.search.management.database.SearchDBInterface;
  * @param <R> 
  */
 public class ElasticsearchCommunityManager<R extends Resource> extends ElasticsearchManager<R> {
-
+	
 	/**
 	 * @param updateEnabled
+	 * @param disabledIndexing
 	 * @param client
 	 * @param inputLogic
 	 * @param tools
 	 */
-	public ElasticsearchCommunityManager(boolean updateEnabled, ESClient client, SearchDBInterface<R> inputLogic, ElasticsearchIndexTools<R> tools) {
-		super(updateEnabled, client, inputLogic, tools);
+	public ElasticsearchCommunityManager(boolean updateEnabled, boolean disabledIndexing, ESClient client, SearchDBInterface<R> inputLogic, ElasticsearchIndexTools<R> tools) {
+		super(updateEnabled, disabledIndexing, client, inputLogic, tools);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.search.es.management.ElasticsearchManager#updatePredictions(java.lang.String, java.util.Date, java.util.Date)
 	 */

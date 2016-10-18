@@ -10,5 +10,5 @@
 	</bean>
 	
 	<bean id="fileLogic" class="org.bibsonomy.testutil.DummyFileLogic" />
-
+	<bean id="dbModelValidator" class="org.bibsonomy.model.validation.ModelValidator" />
 </beans>

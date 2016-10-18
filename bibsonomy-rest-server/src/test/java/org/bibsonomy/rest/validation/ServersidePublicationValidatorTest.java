@@ -36,15 +36,15 @@ import org.junit.Test;
 /**
  * @author rja
  */
-public class ServersideModelValidatorTest {
-	private static final ServersideModelValidator MODEL_VALIDATOR = new ServersideModelValidator();
+public class ServersidePublicationValidatorTest {
+	private static final ServersidePublicationValidator MODEL_VALIDATOR = new ServersidePublicationValidator();
 
 	/**
 	 * Tests whether author/editor names are normalizes
 	 * @throws PersonListParserException
 	 */
 	@Test
-	public void testCheckPublication() throws PersonListParserException {
+	public void testValidateResource() throws PersonListParserException {
 		final BibTex pub = new BibTex();
 		pub.setTitle("Some author names that might cause problems");
 		pub.setAuthor(PersonNameUtils.discoverPersonNames("D. E. Knuth and von und zu Schmitz, Hans and {Long Company Name} and Bal Mar, Leo"));
@@ -53,7 +53,7 @@ public class ServersideModelValidatorTest {
 		/*
 		 * modifies the author and editor names!
 		 */
-		MODEL_VALIDATOR.checkPublication(pub);
+		MODEL_VALIDATOR.validateResource(pub);
 		assertEquals("Knuth, D. E. and von und zu Schmitz, Hans and {Long Company Name} and Bal Mar, Leo", PersonNameUtils.serializePersonNames(pub.getAuthor()));
 		assertEquals("Andersen, Hans Christian and {Die Brüder Grimm} and others", PersonNameUtils.serializePersonNames(pub.getEditor()));
 	}
