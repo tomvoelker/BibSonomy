@@ -123,8 +123,8 @@ public class DatabaseException extends RuntimeException {
 	 * @param de
 	 */
 	public void addErrors(DatabaseException de) {
-		for (String hash: de.getErrorMessages().keySet()) {
-			for (ErrorMessage errorMessage: de.getErrorMessages(hash))  {
+		for (final String hash : de.getErrorMessages().keySet()) {
+			for (final ErrorMessage errorMessage : de.getErrorMessages(hash))  {
 				this.addToErrorMessages(hash, errorMessage);
 			}
 		}

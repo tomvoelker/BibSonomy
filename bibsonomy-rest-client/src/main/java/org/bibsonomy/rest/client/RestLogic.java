@@ -65,6 +65,7 @@ import org.bibsonomy.model.sync.SynchronizationData;
 import org.bibsonomy.model.sync.SynchronizationDirection;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.sync.SynchronizationStatus;
+import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.auth.AuthenticationAccessor;
 import org.bibsonomy.rest.client.queries.delete.DeleteGroupQuery;
@@ -334,7 +335,7 @@ public class RestLogic extends AbstractLogicInterface {
 			final ChangePostQuery query = new ChangePostQuery(this.authUser.getName(), post.getResource().getIntraHash(), post);
 			final String hash = execute(query);
 			if (!query.isSuccess()) {
-				collectedException.addToErrorMessages(post.getResource().getIntraHash(), new ErrorMessage(hash, hash));
+				collectedException.addToErrorMessages(PostUtils.getKeyForPost(post), new ErrorMessage(hash, hash));
 			}
 			// hashes are recalculated by the server
 			resourceHashes.add(hash);

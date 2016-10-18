@@ -80,6 +80,7 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.model.validation.ModelValidator;
 import org.bibsonomy.services.searcher.ResourceSearch;
@@ -1405,7 +1406,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 */
 			if (present(postInDB)) {
 				final ErrorMessage errorMessage = new DuplicatePostErrorMessage(this.resourceClassName, post.getResource().getIntraHash());
-				session.addError(post.getResource().getIntraHash(), errorMessage);
+				session.addError(PostUtils.getKeyForPost(post), errorMessage);
 				log.warn("Added DuplicatePostErrorMessage for post " + post.getResource().getIntraHash());
 				session.commitTransaction();
 				return false;
@@ -1503,7 +1504,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 				 * not found -> throw exception
 				 */
 				final ErrorMessage errorMessage = new UpdatePostErrorMessage(this.resourceClassName, post.getResource().getIntraHash());
-				session.addError(post.getResource().getIntraHash(), errorMessage);
+				session.addError(PostUtils.getKeyForPost(post), errorMessage);
 				// we have to commit to adjust counters in session otherwise
 				// we will not get the DatabaseException from the session
 				session.commitTransaction();
@@ -1645,7 +1646,10 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 	protected void checkPost(final Post<R> post, final DBSession session) {
 		final R resource = post.getResource();
-		this.validator.validateFieldLength(resource, resource.getIntraHash(), session);
+		final ErrorMessage fieldLengthError = this.validator.validateFieldLength(resource, session);
+		if (present(fieldLengthError)) {
+			session.addError(PostUtils.getKeyForPost(post), fieldLengthError);
+		}
 	}
 
 	private void performUpdateAll(final Post<R> post, final Post<R> oldPost, final User loggedinUser, final DBSession session) {
@@ -1830,8 +1834,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		
 		final String errorKey;
 		final R resource = post.getResource();
-		if (present(resource)) {
-			errorKey = resource.getIntraHash();
+		if (present(resource) && present(post.getUser())) {
+			errorKey = PostUtils.getKeyForPost(post);
 		} else {
 			errorKey = "unknown";
 		}
