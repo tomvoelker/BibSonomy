@@ -164,7 +164,7 @@
 									</fmt:message>
 								</c:if>
 								
-								<a class="litem" source="${citation.source}" style="${citation.style}" href="${relativeUrlGenerator.getPostExportUrl(post, citation)}?formatEmbedded=true" title="${exportTitle}">
+								<a class="litem publ-export" data-source="${citation.source}" data-style="${citation.style}" href="${relativeUrlGenerator.getPostExportUrl(post, citation)}?formatEmbedded=true" title="${exportTitle}">
 									<c:out value="${name}" />
 								</a>
 							</li>

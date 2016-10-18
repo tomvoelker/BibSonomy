@@ -64,6 +64,68 @@ function renderCSL(csl, styleName, container) {
 	});
 }
 
+function loadExportLayout(clickedElement, targetElement, publicationLink) {
+	var source = clickedElement.data("source");
+	if (source == 'CSL') {
+		var style = clickedElement.data("style");
+		var tabContainer = clickedElement.closest('ul');
+		var csl = tabContainer.data('csl');
+		if (csl == undefined) {
+			$.ajax({
+				url: '/csl' + publicationLink,
+				dataType: "json",
+				success: function(data) {
+					csl = data;
+					tabContainer.data('csl', data);
+					renderCSL(csl, style, targetElement);
+				}
+			})
+		} else {
+			renderCSL(csl, style, targetElement);
+		}
+	} else if (source == 'SIMPLE') {
+		loadSimpleLayout(clickedElement, targetElement, true);
+	} else {
+		loadSimpleLayout(clickedElement, targetElement, false);
+	}
+}
+
+function loadSimpleLayout(clickedElement, targetElement, plain) {
+	var url = clickedElement.data("formaturl");
+	if (url == undefined) {
+		url = clickedElement.attr('href');
+	}
+	$.ajax({
+		url: url,
+		dataType: "html",
+		success: function(data) {
+			data = cleanupHtml(data);
+			if (plain) {
+				var pre = $('<pre></pre>');
+				targetElement.html(pre);
+				targetElement = pre;
+			}
+			
+			targetElement.html(data);
+		}
+	});
+}
+
+// FIXME: jabref renderer returns html which jquery can not parse
+function cleanupHtml(htmlString) {
+	var htmlParsed = $.parseHTML(htmlString);
+	var result = [];
+	var html = $(htmlParsed);
+	$.each(html, function(index, element) {
+		var nodeName = $(element).prop('nodeName');
+		if (nodeName != 'META' && nodeName != 'TITLE') {
+			result.push(element);
+		}
+	});
+	
+	return result;
+}
+
 //helper class for citeproc
 function Sys(data) {
 	this.data = data;

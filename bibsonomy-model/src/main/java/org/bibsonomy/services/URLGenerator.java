@@ -1110,7 +1110,7 @@ public class URLGenerator {
 	 * @param favl
 	 * @return url
 	 */
-	public String getPostExportUrl(final Post<? extends Resource> post, FavouriteLayout favl) {
+	public String getPostExportUrl(final Post<? extends Resource> post, final FavouriteLayout favl) {
 		final Resource resource = post.getResource();
 		final FavouriteLayoutSource source = favl.getSource();
 		final String style = favl.getStyle();

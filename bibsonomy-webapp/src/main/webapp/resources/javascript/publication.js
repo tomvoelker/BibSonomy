@@ -22,36 +22,9 @@ $(function() {
 		}
 		
 		targetElement.html(getString("bibtex.citation_format.loading")); // activated tab
+		var publicationLink = tabContainer.data('publication-url');
 		
-		var source = selectedTab.data("source");
-		if (source == 'CSL') {
-			var style = selectedTab.data("style");
-			var tabContainer = selectedTab.closest('ul');
-			var csl = tabContainer.data('csl');
-			var cslUrl = '/csl/' + tabContainer.data('publication-url');
-			if (csl == undefined) {
-				$.ajax({
-					url: cslUrl,
-					dataType: "json",
-					success: function(data) {
-						csl = data;
-						tabContainer.data('csl', data);
-						renderCSL(csl, style, targetElement);
-					}
-				})
-			} else {
-				renderCSL(csl, style, targetElement);
-			}
-		} else {
-			var url = selectedTab.data("formaturl");
-			$.ajax({
-				url: url,
-				dataType: "html",
-				success: function(data) {
-					targetElement.html(data);
-				}
-			});
-		}
+		loadExportLayout(selectedTab, targetElement, publicationLink);
 	});
 	
 	tabs.first().tab("show");

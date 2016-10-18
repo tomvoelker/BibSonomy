@@ -39,5 +39,6 @@ includeJavaScript("/resources/javascript/jquery.fadebox.js");
 includeJavaScript("/resources/javascript/userRelation.js");
 includeJavaScript("/resources/javascript/addToSpheres.js");
 includeJavaScript("/resources/javascript/logging.js");
+includeJavaScript("/resources/clipboard/clipboard.js");
 /* the following scripts are for development only */
 includeJavaScript("/resources/less/less.js");
