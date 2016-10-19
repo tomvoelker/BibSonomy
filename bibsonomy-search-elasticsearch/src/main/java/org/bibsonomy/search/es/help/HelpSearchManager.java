@@ -257,7 +257,7 @@ public class HelpSearchManager implements HelpSearch {
 						final Text[] fragments = contentHighlight.getFragments();
 						final StringBuilder builder = new StringBuilder();
 						for (final Text fragment : fragments) {
-							builder.append(Jsoup.parse(fragment.toString()).text());
+							builder.append(removeHtml(fragment));
 						}
 						
 						final String highlightText = builder.toString();
@@ -272,6 +272,24 @@ public class HelpSearchManager implements HelpSearch {
 		}
 		
 		return results;
+	}
+
+	/**
+	 * @param fragment
+	 * @return
+	 */
+	private static String removeHtml(final Text fragment) {
+		String text = Jsoup.parse(fragment.toString()).text();
+		final int index = text.indexOf('>');
+		if (index != -1) {
+			text = text.substring(index + 1, text.length());
+		}
+		
+		final int tagStartIndex = text.lastIndexOf('<');
+		if (tagStartIndex != -1) {
+			text = text.substring(0, tagStartIndex);
+		}
+		return text;
 	}
 
 	/**
