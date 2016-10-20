@@ -8,19 +8,11 @@
 	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:sql="http://java.sun.com/jsp/jstl/sql"
-	xmlns:settings="urn:jsptagdir:/WEB-INF/tags/settings"
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
-	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/spheres"
-	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
-	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/resources/publication"
-	xmlns:actionbuttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
-	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
 	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
