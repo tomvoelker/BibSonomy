@@ -702,7 +702,7 @@ public abstract class AbstractRendererTest {
 		final UserType xmlUser = new UserType();
 		xmlUser.setName("tuser");
 		xmlPost.setUser(xmlUser);
-		this.checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "resource is missing inside element 'post'");
+		this.checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "resource (or publication upload) is missing inside element 'post'");
 		final BookmarkType xmlBookmark = new BookmarkType();
 		xmlPost.setBookmark(xmlBookmark);
 		this.checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "tag name is missing in element 'tag'");
@@ -751,8 +751,6 @@ public abstract class AbstractRendererTest {
 		assertEquals("model not correctly initialized", "foo bar", ((BibTex) post.getResource()).getTitle());
 		assertEquals("model not correctly initialized", "testtag", post.getTags().iterator().next().getName());
 		assertEquals("model not correctly initialized", extraUrl, ((BibTex) post.getResource()).getExtraUrls().get(0).getUrl().toExternalForm());
-		
-		
 	}
 
 	private void checkInvalidPost(final PostType xmlPost, final String exceptionMessage) throws PersonListParserException {
