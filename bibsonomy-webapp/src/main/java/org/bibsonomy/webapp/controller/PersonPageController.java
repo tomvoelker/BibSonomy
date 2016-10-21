@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.apache.commons.lang.StringUtils;
+import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
@@ -57,6 +58,8 @@ import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 
 /**
@@ -280,18 +283,48 @@ public class PersonPageController extends SingleResourceListController implement
 	 */
 	private View updateAction(PersonPageCommand command) {
 		command.setPerson(this.logic.getPersonById(PersonIdType.PERSON_ID, command.getFormPersonId()));
+		
 		if (command.getPerson() == null) {
 			// FIXME: proper frontend responses in cases like this
 			throw new NoSuchElementException();
 		}
+		
+		
+		PersonUpdateOperation operation = command.getUpdateOperation();
+		JSONObject jsonResponse = new JSONObject();
+		
 		command.getPerson().setAcademicDegree(command.getFormAcademicDegree());
-		command.getPerson().getMainName().setMain(false);
-		command.getPerson().setMainName(Integer.parseInt(command.getFormSelectedName()));
+		
+		// FIXME: write independent update method
+		// FIXME: add its me action
+		
+		//command.getPerson().getMainName().setMain(false);
+		//command.getPerson().setMainName(Integer.parseInt(command.getFormSelectedName()));
+		
 		command.getPerson().setOrcid(command.getFormOrcid());
 		command.getPerson().setUser(command.isFormThatsMe() ? AuthenticationUtils.getUser().getName() : null);
-		this.logic.createOrUpdatePerson(command.getPerson());
+				
+		try {	
+			if (operation != null) {
+				this.logic.updatePerson(command.getPerson(), operation);
+			} else {						
+				// standard
+				this.logic.createOrUpdatePerson(command.getPerson());
+			}
+			
+		} catch (Exception e) {
+			jsonResponse.put("status", false);
+			// TODO: set proper error message
+			//jsonResponse.put("message", "Some error occured");
+			command.setResponseString(jsonResponse.toString());
+			return Views.AJAX_JSON;
+		}
 		
-		return Views.AJAX_TEXT;
+		jsonResponse.put("status", true);
+		command.setResponseString(jsonResponse.toString());
+		return Views.AJAX_JSON;
+	
+
 	}
 
 	/**
@@ -301,20 +334,37 @@ public class PersonPageController extends SingleResourceListController implement
 	private View addNameAction(PersonPageCommand command) {
 		final Person person = logic.getPersonById(PersonIdType.PERSON_ID, command.getFormPersonId());
 		
+		final JSONObject jsonResponse = new JSONObject();
+		
 		final PersonName personName = new PersonName(command.getFormLastName());
 		personName.setFirstName(command.getFormFirstName());
 		personName.setPersonId(command.getFormPersonId());
 		
 		for (PersonName otherName : person.getNames()) {
 			if (personName.equals(otherName)) {
-				command.setResponseString(otherName.getPersonNameChangeId()+ "");
-				return Views.AJAX_TEXT;
+				//command.setResponseString(otherName.getPersonNameChangeId()+ "");
+				jsonResponse.put("status", true);
+				jsonResponse.put("personNameChangeId", otherName.getPersonNameChangeId());
+				command.setResponseString(jsonResponse.toString());
+				return Views.AJAX_JSON;
 			}
 		}
-		this.logic.createPersonName(personName);
-		command.setResponseString(Integer.toString(personName.getPersonNameChangeId()));
 		
-		return Views.AJAX_TEXT;
+		
+		try {			
+			this.logic.createPersonName(personName);
+		} catch (Exception e) {
+			jsonResponse.put("status", false);
+			// TODO: set proper error message
+			//jsonResponse.put("message", "Some error occured");
+			command.setResponseString(jsonResponse.toString());
+			return Views.AJAX_JSON;
+		}
+		
+		jsonResponse.put("status", true);
+		jsonResponse.put("personNameChangeId", personName.getPersonNameChangeId());
+		command.setResponseString(jsonResponse.toString());
+		return Views.AJAX_JSON;		
 	}
 
 	/**
@@ -323,9 +373,22 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @return
 	 */
 	private View deleteNameAction(PersonPageCommand command) {
-		this.logic.removePersonName(new Integer(command.getFormPersonNameId()));
-		return Views.AJAX_TEXT;
+		final JSONObject jsonResponse = new JSONObject();
+		try {			
+			this.logic.removePersonName(new Integer(command.getFormPersonNameId()));
+		} catch (Exception e) {
+			jsonResponse.put("status", false);
+			// TODO: set proper error message
+			//jsonResponse.put("message", "Some error occured");
+			command.setResponseString(jsonResponse.toString());
+			return Views.AJAX_JSON;
+		}
+		
+		jsonResponse.put("status", true);
+		command.setResponseString(jsonResponse.toString());
+		return Views.AJAX_JSON;	
 	}
+	
 	
 	/**
 	 * Default action called when a user url is called

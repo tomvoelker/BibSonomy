@@ -172,6 +172,42 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			session.endTransaction();
 		}
 	}
+	
+	/**
+	 * Update the OrcID of a person
+	 * @param person
+	 * @param session
+	 */
+	public void updateOrcid(Person person, DBSession session) {
+		session.beginTransaction();
+		try {
+			this.plugins.onPersonUpdate(person.getPersonId(), session);
+			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			this.insert("updateOrcid", person, session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+	}
+	
+	/**
+	 * Update the academic degree of a person
+	 * @param person
+	 * @param session
+	 */
+	public void updateAcademicDegree(Person person, DBSession session) {
+		session.beginTransaction();
+		try {
+			this.plugins.onPersonUpdate(person.getPersonId(), session);
+			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			this.insert("updateAcademicDegree", person, session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+	}
+	
+	
 
 	/**
 	 * @param resourcePersonRelation

@@ -353,6 +353,7 @@
 								<value>formThesisId</value>
 								<value>formResourcePersonRelationId</value>
 								<value>formPersonIndex</value>
+								<value>updateOperation</value>
 							</list>
 						</property>
 					</bean>

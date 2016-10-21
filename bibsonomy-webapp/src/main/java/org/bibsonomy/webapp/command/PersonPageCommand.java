@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -103,6 +104,22 @@ public class PersonPageCommand extends BaseCommand {
 	private final Collection<LogicException> logicExceptions = new ArrayList<>();
 	private String requestedUser;
 	
+	private PersonUpdateOperation updateOperation;
+	
+	/**
+	 * @return the updateOperation
+	 */
+	public PersonUpdateOperation getUpdateOperation() {
+		return this.updateOperation;
+	}
+
+	/**
+	 * @param updateOperation the updateOperation to set
+	 */
+	public void setUpdateOperation(PersonUpdateOperation updateOperation) {
+		this.updateOperation = updateOperation;
+	}
+
 	/**
 	 * @return the logicExceptions
 	 */

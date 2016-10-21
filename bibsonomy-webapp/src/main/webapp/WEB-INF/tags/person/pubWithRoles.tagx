@@ -29,39 +29,44 @@
 	
 	<c:set var="loginUserName" value="${loginUser.name}"/>
 	
-	<div class='row ${post.resource.interHash}_${post.resource.intraHash}'>
-		<div style="border-right:1px solid lightgrey" class="col-md-6">
-			
+	<div class="personThesisEntry row ${post.resource.interHash}_${post.resource.intraHash}">
+	
+		<div class="col-md-6">
 			<span class="ptitle"><bib:title post="${post}" /></span>
-			<div class="pdesc ellipsis">
+			<div class="personPdesc pdesc ellipsis">
 				<div class="ellipsis-content"><bib:desc post="${post}" publication="${post.resource}"/></div>
-			</div>
-			
+			</div>	
 		</div>
-		<div class='col-md-6'>
-			<ul>
+		
+		<div class="col-md-6" style="border-left: 1px solid lightgrey">
+			<ul class="list-unstyled">
 				<c:forEach var="role" items="${availableRoles}">
-					<fmt:message key="person.show.${role.relatorCode}" var="textRole" />
-					<fmt:message key="person.show.${role.relatorCode}Tooltip" var="textRoleTooltip" />
-					<li class='${role}'><span class='fa fa-question-circle explainRole' data-toggle="tooltip" data-placement="left" title="${textRoleTooltip}" data-role='${role}'>&#160;</span>${textRole}: 
-						<c:forEach var="relation" items="${post.resourcePersonRelations}">
-							<c:if test="${relation.relationType eq role}">
-								<span class='resourcePersonRelation_${relation.personRelChangeId}'>
-									<a href="${absoluteUrlGenerator.getPersonUrl(relation.person.personId)}"><c:out value="${relation.person.mainName.firstName} "/> <c:out value="${relation.person.mainName.lastName}"/></a><c:out value=" " />
-									<!--  <span data-toggle='modal' data-target="#editRole" data-resource-title="${post.resource.title}" data-person-name="${relation.personName.firstName} ${relation.personName.lastName}" data-relation-simhash1="${relation.simhash1}" data-relation-simhash2='${relation.simhash2}' data-person-role="${role}" style='color:orange;cursor:pointer' href="#editRole" class='editRole fa fa-pencil'>&#160;</span> -->
-									<c:if test="${not empty loginUserName and not loginUser.spammer}">
-										<!-- TODO: use tagx file -->
-											<span data-toggle='modal' data-target="#deleteRole" data-resourcePersonRelation-id='${relation.personRelChangeId}' style='color:darkred;cursor:pointer' href="#deleteRole" class='deleteRole'><button class="btn btn-default btn-xs ${systemReadOnly ? 'disabled' : '' }"><fontawsome:icon icon="times" /></button></span>
-									</c:if>
-								</span>
-							</c:if>
-						</c:forEach>
-						<c:if test="${not empty loginUserName and not loginUser.spammer}">
-								<span data-toggle='modal' data-target="#addRole" data-relation-pubowner="${post.user.name}" data-resourceTitle="${post.resource.title}" data-relation-simhash1="${post.resource.interHash}" data-relation-simhash2='${post.resource.intraHash}' data-person-role="${role}" href="#addRole" class='addRole'><button class="btn btn-default btn-xs  ${systemReadOnly ? 'disabled' : '' }" ><fontawsome:icon icon="plus" /></button></span>
-						</c:if> 
-					</li>
+					<!-- TODO: replace by proper handling -->				
+					<c:if test="${role == 'DOCTOR_VATER' or role == 'FIRST_REVIEWER'}">
+						<fmt:message key="person.show.${role.relatorCode}" var="textRole" />
+						<fmt:message key="person.show.${role.relatorCode}Tooltip" var="textRoleTooltip" />
+						<li class="${role}">
+						<span class='fa fa-question-circle explainRole' data-toggle="tooltip" data-placement="left" title="${textRoleTooltip}" data-role='${role}'>&#160;</span>${textRole}: 
+							<c:forEach var="relation" items="${post.resourcePersonRelations}">
+								<c:if test="${relation.relationType eq role}">
+									<span class='resourcePersonRelation_${relation.personRelChangeId}'>
+										<a href="${absoluteUrlGenerator.getPersonUrl(relation.person.personId)}"><c:out value="${relation.person.mainName.firstName} "/> <c:out value="${relation.person.mainName.lastName}"/></a><c:out value=" " />
+										<!--  <span data-toggle='modal' data-target="#editRole" data-resource-title="${post.resource.title}" data-person-name="${relation.personName.firstName} ${relation.personName.lastName}" data-relation-simhash1="${relation.simhash1}" data-relation-simhash2='${relation.simhash2}' data-person-role="${role}" style='color:orange;cursor:pointer' href="#editRole" class='editRole fa fa-pencil'>&#160;</span> -->
+										<c:if test="${not empty loginUserName and not loginUser.spammer}">
+											<!-- TODO: use tagx file -->
+												<span data-toggle='modal' data-target="#deleteRole" data-resourcePersonRelation-id='${relation.personRelChangeId}' style='color:darkred;cursor:pointer' href="#deleteRole" class='deleteRole'><button class="btn btn-default btn-xs ${systemReadOnly ? 'disabled' : '' }"><fontawsome:icon icon="times" /></button></span>
+										</c:if>
+									</span>
+								</c:if>
+							</c:forEach>
+							<c:if test="${not empty loginUserName and not loginUser.spammer}">
+									<span data-toggle='modal' data-target="#addRole" data-relation-pubowner="${post.user.name}" data-resourceTitle="${post.resource.title}" data-relation-simhash1="${post.resource.interHash}" data-relation-simhash2='${post.resource.intraHash}' data-person-role="${role}" href="#addRole" class='addRole'><button class="btn btn-default btn-xs  ${systemReadOnly ? 'disabled' : '' }" ><fontawsome:icon icon="plus" /></button></span>
+							</c:if> 
+						</li>
+					</c:if>
 				</c:forEach>
 			</ul>
 		</div>
+		
 	</div>
 </jsp:root>

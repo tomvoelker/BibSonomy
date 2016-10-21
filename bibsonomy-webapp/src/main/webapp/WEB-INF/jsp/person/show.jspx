@@ -19,12 +19,13 @@
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
 	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/resources/publication"
-	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:actionbuttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
 	xmlns:per="urn:jsptagdir:/WEB-INF/tags/person"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
 	
 	<!-- <c:set var="post" value="${command.post}" /> -->
 	
@@ -65,7 +66,6 @@
 	<fmt:message key="person.show.person" var="textPerson"/>
 	<fmt:message key="person.show.personPanelHeader" var="textPersonPanelHeader" />
 	<fmt:message key="person.show.personAlternateNames" var="textPersonAlternateNames" />
-	<fmt:message key="person.show.personAlternateNamesSelect" var="textPersonAlternateNamesSelect" />
 	<fmt:message key="person.show.deleteNameButton" var="textDeleteNameButton" />
 	<fmt:message key="person.show.resourcesPanelHeader" var="textResourcePanelHeader" />
 	<fmt:message key="person.show.role" var="textRole" />
@@ -90,36 +90,74 @@
 			<script type='text/javascript' src='/resources/javascript/person/personAutocomplete.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/autocompleteThesis.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/autocompleteRelatedThesis.js'><!-- keep me --></script>
-			<script type='text/javascript' src='/resources/javascript/person/names.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/linkUser.js'><!-- keep me --></script>
 
 			<script type='text/javascript' src='/resources/javascript/person/roles.js'><!-- keep me --></script>
-			<script type='text/javascript' src='/resources/javascript/person/update.js'><!-- keep me --></script>
 			<script type='text/javascript' src='/resources/javascript/person/titleAutocomplete.js'><!-- keep me --></script>
 			
 			<script type='text/javascript' src='/resources/javascript/person/personPage.js'><!-- keep me --></script>
 			
-
+			<script type="text/javascript" src="${resdir}/javascript/bs/bootstrap-table.min.js"><!-- keep me --></script>
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/bootstrap-table.min.css" />
+			
+			<!--TODO: move to CSS file -->
+			<style type="text/css">
+				.bootstrap-table .fixed-table-container {border: none;} 
+				.bootstrap-table .fixed-table-container .table-no-bordered th {border: none;} 
+				.bootstrap-table .fixed-table-container .table-no-bordered td {border: none;} 
+			</style>
 			
 			
 			<style type='text/css'>
-				.row ul {
-					-webkit-padding-start: 10px;
+				#personPageAjaxError {
+					display:none;
 				}
-				.row  li {
-					list-style-type: none;
+				
+				.page-header .form-group {
+					margin: 0;
 				}
+				
+				.page-header .form-group input {
+					width: auto;
+					display: inline;
+				}
+				
+				.page-header .form-group .personPageEnableForm {
+					font-size: 14px;
+				}
+				
+				
+				
+				.page-header .form-group .twitter-typeahead {
+					display: inline !important;
+				}				
+				
 				.person-search input.typeahead {
 					with: 90%;
 					margin-left: auto;
 					margin-right: auto;
 				}
 						
-						
-				<!-- NEW CSS -->		
-				.personPageFormPlaceholder {}
-				.personPageFormField { display: none; padding: 0; margin: 0; }
+							
+				.personPageFormPlaceholder {
+					display: inline-block;
+					padding: 7px 0 0 0;
+				}
 				
+				h1 .personPageFormPlaceholder {
+					display: inline-block;
+					padding: 0;
+				}
+				
+				.personPageFormField { 
+					display: none; 
+					padding: 0; 
+					margin: 0;
+				}
+				
+				.personPageEnableForm {
+					padding: 0 5px 0 0;
+				}
 				
 				table.personOtherPublicationTable {
 					table-layout: fixed;
@@ -160,6 +198,49 @@
 					white-space: nowrap;
 				}
 				
+				img.person-image {
+					max-width: 128px;
+					max-height: 128px;
+				}
+				
+				#personInfo {
+					padding: 0 0 15px 0;
+				}
+				
+				#thesisBlock {}
+				
+				.personThesisEntry {
+				}
+				
+				.personPdesc {
+					height: 14px;
+					line-height: 14px;
+					margin: 0;
+					padding: 0;
+				}
+				
+				.pub-person-tab-content .personThesisSeperator:last-of-type {
+					display: none;
+				}
+				
+				.personThesisSeperator {
+					margin: 10px 0 10px 0;
+					border-bottom: 1px solid lightgrey;
+				}
+				
+				#personPageAlternativeNameList .removeName {
+					color: darkred;
+					cursor: pointer;
+				}
+				
+				.personPageVcardLeft {
+					padding: 0;
+					margin: 0;
+				}
+				
+				.personPageVcardLeft > img {
+					margin: 0 !important;
+				}
 				
 			</style>
 			<link rel="stylesheet" type="text/css" href='/resources/typeahead.js/css/typeahead.css'/>
@@ -179,19 +260,61 @@
 					</jsp:attribute>
 				</bs:alert>
 			</c:if>
+	
+			<form method='post' name='personForm' action="" class='form-horizontal'>
+				<input type="hidden" name="ckey" value="${ckey}"/>
 
-			<div class="page-header">
-				<h1><c:out value="${title}"/></h1>
-			</div>
-			
-			<!-- VCard -->
-			<div id="personInfo" class="row">
-				<div class="col-md-8">
-			
-					<form method='post' name='personForm' action="" class='form-horizontal'>
-						<input type="hidden" name="ckey" value="${ckey}"/>
+				<div class="page-header">
+					
+					<div class="alert alert-danger" id="personPageAjaxError">
+						<span id="personPageAjaxErrorDefaultMessage"><fmt:message key="error.500" /></span>
+					</div>
+				
+					<div class="form-group">
+						<h1>
+							<div class="personPageFormPlaceholder">
+								<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
+								<span class="personPageFormFieldContent" id="personPageFormAcademicDegreeValue">${command.person.academicDegree}</span>
+							</div>
+							<div class="personPageFormField">
+								<input class='form-control' type="text" name='formAcademicDegree' id='formAcademicDegree' placeholder="${textAcademicDegree}" autocomplete="off" value="${command.person.academicDegree}" />
+							</div>
+							
+							<!-- TODO: REMOVE INLINE CSS -->
+							<div style="margin:8px 0 0 10px; padding: 0 0 0 0 important;" class="personPageFormField">
+								<actionbuttons:personPageupdateButton person="${command.person}" loginUser="${command.context.loginUser}" text="${textSaveButton}" operation="UPDATE_ACADEMIC_DEGREE"></actionbuttons:personPageupdateButton>
+							</div>
+							
+							<c:out value=" "/>
+							<c:out value="${title}"/>
+						</h1>
+					</div>
+				</div>
+				
+				
+				<!-- VCard -->
+				<div id="personInfo" class="row">
+					<div class="col-md-6">
+				
+						<!-- Picture -->	
+						<div id="userImg" class="col-md-4 personPageVcardLeft">
+							<c:choose>
+								<c:when test="${not empty command.person.user}">
+									<img class="person-image" src="${relativeUrlGenerator.getUserPictureUrlByUsername(command.person.user)}" />
+								</c:when>
+								<c:otherwise>
+									<!-- FIXME: use message property. AND REMOVE HARD CODED USERNAME GENEALOGIE-->
+									<img class="person-image" src="${relativeUrlGenerator.getUserPictureUrlByUsername('genealogie')}" />
+								</c:otherwise>
+							</c:choose>
+						</div>
+
+
+						<div id="userImg" class="col-md-8">
+						TODO AFFILIATION
+						</div>
 						
-						
+
 						<!-- ?????????????????????????????? -->
 						<c:if test="${false and command.person.disambiguatingPublication.post ne null}">
 							<div class='form-group'>
@@ -200,83 +323,8 @@
 									<p class='form-control-static'><c:out value="${mtl:cleanBibtex(command.person.disambiguatingPublication.post.resource.title)}" /></p>
 								</div>
 							</div>
-						</c:if>
-						
-						
-						
-						<!-- Academic degree -->
-						<div class='form-group'>
-							<label class="control-label col-md-4" for='formAcademicDegree'>${textAcademicDegree}</label>
-							
-							<div class="col-md-8">
-								<div class="personPageFormPlaceholder"><span class="personPageEnableForm fa fa-pencil"><!--  --></span> ${command.person.academicDegree}</div>
-								<div class="personPageFormField col-md-8">
-									<input class='form-control' type="text" name='formAcademicDegree' id='formAcademicDegree' placeholder="${textAcademicDegree}" autocomplete="off" value="${command.person.academicDegree}" />
-								</div>
-								<!-- TODO: REMOVE INLINE CSS -->
-								<div style="margin:8px 0 0 10px; padding: 0 0 0 0 important;" class="personPageFormField col-md-2">
-									<button type="button" class="btn btn-primary btn-xs">TODO</button>
-								</div>
-							</div>
-			
-						</div>
-						
-						
-						
-						<!-- Alternative Names -->
-						<div class='form-group'>
-							<label class="control-label col-md-4">${textPersonAlternateNames}<br/>${textPersonAlternateNamesSelect}</label>
-							<div class="col-md-6">
-								<c:choose>
-									<c:when test="${fn:length(command.person.names) gt 0}">
-										<c:forEach var='name' items="${command.person.names}">
-											<c:choose>
-												<c:when test="${name.main}">
-													<div class='checkbox' id='personName_${name.personNameChangeId}'><label><input type='radio' name='formSelectedName' value='${name.personNameChangeId}' checked='checked' /> ${name.firstName} ${name.lastName}</label>&#160;
-													</div>
-												</c:when>
-												<c:otherwise>
-													<div class='checkbox' id='personName_${name.personNameChangeId}'><label><input type='radio' name='formSelectedName' value='${name.personNameChangeId}' /> ${name.firstName} ${name.lastName}</label>&#160;
-														<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-															<span data-person-name-id='${name.personNameChangeId}' data-firstName='${name.firstName}' data-lastName='${name.lastName}' data-toggle='modal' data-target='#removeName' style='color:darkred;cursor:pointer' href='#remName' id='removeName_${name.personNameChangeId}' class='removeName fa fa-remove'></span>
-														</c:if>
-													</div>
-												</c:otherwise>
-											</c:choose>
-										</c:forEach>
-									</c:when>
-									<c:otherwise>
-										<p class='form-control-static'>${textNoNamesFound}</p>
-									</c:otherwise>
-								</c:choose>
-								<br id='nameInsertionPoint'/>
-								<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-									<bsform:button size="defaultSize" value="${textAddAlternateNameButton}" style="defaultStyle" dataToggle="modal" dataTarget="#addName" />
-								</c:if>
-							</div>
-						</div>
-						
-						
-						
-						<!-- ORCID -->						
-						<div class='form-group'>
-							<label class="control-label col-md-4" for='formOrcid'>${textOrcidId}</label>
-							
-							<div class="col-md-8">
-								<div class="personPageFormPlaceholder"><span class="personPageEnableForm fa fa-pencil"><!--  --></span> ${command.person.orcid}</div>
-								<div class="personPageFormField col-md-8">
-									<input class='form-control' type="text" name='formOrcid' id='formOrcid' placeholder="${textOrcidId}" value="${command.person.orcid}"/>
-								</div>
-								<!-- TODO: REMOVE INLINE CSS -->
-								<div style="margin:8px 0 0 10px; padding: 0 0 0 0 important;" class="personPageFormField col-md-2">
-									<button type="button" class="btn btn-primary btn-xs">TODO</button>
-								</div>
-							</div>
-			
-						</div>
-						
-						
-						
+						</c:if>					
+								
 						
 						
 						
@@ -304,11 +352,12 @@
 							</div>
 						</c:if>
 						 -->
-						
-						
+							
+						<!-- 
 						<div class="row">
 							<div class='col-md-4'>&#160;</div>
 							<div class="col-md-6">
+							 -->
 								<!-- 
 								<c:choose>
 									<c:when test='${command.person.user eq null}'>
@@ -324,24 +373,96 @@
 								<button style='${displayLinkButton}' type='button' id='btnLink' class='btn btn-default' data-toggle="modal" data-target="#linkPerson">${textThatsMeButton}</button>
 								<button style='${displayUnlinkButton}' type='button' id='btnUnlink' class='btn btn-default' data-toggle="modal" data-target="#unlinkPerson">${textThatsNotMeButton}</button>
 								-->
+								<!--  
 								<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-									<!-- TODO: can we use the bsform:button tagx file? -->
 									<button id='btnSaveSubmit' data-person-id="${command.person.personId}" type='button' class="btn btn-primary pull-right ${systemReadOnly ? 'disabled' : '' }">${textSaveButton}</button>
 								</c:if>
 							</div>
 						</div>
-					</form>
+						-->
+						
+						
+					</div>
+					<div class="col-md-6">
+						
+						<!-- Alternative Names -->
+						<div class='form-group'>
+							<label class="control-label col-md-6">${textPersonAlternateNames}</label>
+							<div class="col-md-6">
+								<div class="personPageFormPlaceholder">
+									<c:choose>
+										<c:when test="${fn:length(command.person.names) gt 1}">
+											<ul id="personPageAlternativeNameList" class="list-unstyled">
+												<c:forEach var='name' items="${command.person.names}">
+													<c:if test="${!name.main}">
+														<li id="personPageAlternativeNameID_${name.personNameChangeId}">${name.firstName} ${name.lastName} 
+															<span data-person-name-id='${name.personNameChangeId}' data-firstName='${name.firstName}' 
+																  data-lastName='${name.lastName}' data-toggle='modal' data-target='#removeName' 
+																  id='removeName_${name.personNameChangeId}' class='removeName fa fa-remove'>
+															</span>
+														</li>	
+													</c:if>
+												</c:forEach>
+											</ul>
+										</c:when>
+										<c:otherwise>
+											<ul id="personPageAlternativeNameList" class="hidden list-unstyled"><!--  --></ul>
+											<p id="personPageAlternativeNamePlaceholder">${textNoNamesFound}</p>
+										</c:otherwise>
+									</c:choose>
+									
+										
+									<!-- 
+									<div class='checkbox' id='personName_${name.personNameChangeId}'>
+											<label><input type='radio' name='formSelectedName' value='${name.personNameChangeId}' checked='checked' /> ${name.firstName} ${name.lastName}</label>&#160;
+											</div>
+										<c:otherwise>
+											<div class='checkbox' id='personName_${name.personNameChangeId}'><label><input type='radio' name='formSelectedName' value='${name.personNameChangeId}' /> ${name.firstName} ${name.lastName}</label>&#160;
+												<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
+													<span data-person-name-id='${name.personNameChangeId}' data-firstName='${name.firstName}' data-lastName='${name.lastName}' data-toggle='modal' data-target='#removeName' style='color:darkred;cursor:pointer' href='#remName' id='removeName_${name.personNameChangeId}' class='removeName fa fa-remove'></span>
+												</c:if>
+											</div>
+										</c:otherwise>
+									</c:choose>
+									-->
+									
+									<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
+										<bsform:button size="xsmall" value="${textAddAlternateNameButton}" style="defaultStyle" dataToggle="modal" dataTarget="#addName" />
+									</c:if>
+								
+								</div>
+							</div>
+						</div>
+							
+					
+						<!-- ORCID -->						
+						<div class='form-group'>
+							<label class="control-label col-md-6" for='formOrcid'>${textOrcidId}</label>
+							
+							<div class="col-md-6">
+								<div class="personPageFormPlaceholder">
+									<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
+									<span class="personPageFormFieldContent" id="personPageFormOrcidValue">${command.person.orcid}</span> 
+								</div>
+								<div class="personPageFormField col-md-8">
+									<input class='form-control' type="text" name='formOrcid' id='formOrcid' placeholder="${textOrcidId}" value="${command.person.orcid}"/>
+								</div>
+								
+								<!-- TODO: REMOVE INLINE CSS -->
+								<div style="margin:12px 0 0 10px; padding: 0 0 0 0 important;" class="personPageFormField col-md-2">
+									<actionbuttons:personPageupdateButton person="${command.person}" loginUser="${command.context.loginUser}" text="${textSaveButton}" operation="UPDATE_ORCID"></actionbuttons:personPageupdateButton>
+								</div>
+							</div>
+						</div>
+
+
+					</div>
+					
+			
 				</div>
-				<div class="col-md-4">
-					CURRENT AFFILIATION <br />
-					etc...
-				</div>
-			</div>
+			</form>
 			
-			
-			
-			
-			
+						
 			<!-- Thesis block -->
 			<div id="thesisBlock">
 				<ul class="nav nav-tabs" role="tablist">
@@ -355,6 +476,7 @@
 					<div id='ownThesis' class='tab-pane active'>
 						
 						<!-- 
+						TODO: implement add thesis 
 						<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
 							<br/>
 							<bsform:button size="defaultSize" value="${textAddThesisButton}" style="defaultStyle" dataToggle="modal" dataTarget="#addThesis" block="${true}" />
@@ -366,7 +488,7 @@
 							<c:when test="${fn:length(command.thesis) gt 0}">
 								<c:forEach var="post" items="${command.thesis}">
 									<per:pubWithRoles post="${post}" loginUser="${command.context.loginUser}" availableRoles="${command.availableRoles}" />
-									<hr />
+									<div class="personThesisSeperator"><!-- KEEP ME --></div>
 								</c:forEach>
 							</c:when>
 							<c:otherwise>
@@ -390,7 +512,7 @@
 							<c:when test="${fn:length(command.advisedThesis) gt 0}">
 								<c:forEach var="post" items="${command.advisedThesis}">
 									<per:pubWithRoles post="${post}" loginUser="${command.context.loginUser}" availableRoles="${command.availableRoles}" />
-									<hr />
+									<div class="personThesisSeperator"><!-- KEEP ME --></div>
 								</c:forEach>
 							</c:when>
 							<c:otherwise>
@@ -406,24 +528,19 @@
 			<c:if test="${fn:length(command.otherPubs) gt 0}">
 				<h3 class="list-headline"><fmt:message key="person.show.otherPub" /></h3>
 				<div id="otherPublications" class="table-responsive">
-					<table class="table personOtherPublicationTable">
-						<tr>
-							<th><fmt:message key="post.resource.title" /></th>
-							<th><fmt:message key="post.resource.author" /></th>
-							<th><fmt:message key="post.resource.year" /></th>
-						</tr>
+					<table class="table table-striped personOtherPublicationTable" data-toggle="table">
+						<thead>
+							<tr>
+								<th data-field="title" data-sortable="true"><fmt:message key="post.resource.title" /></th>
+								<th data-field="author" data-sortable="true"><fmt:message key="post.resource.author" /></th>
+								<th data-field="year" data-sortable="true"><fmt:message key="post.resource.year" /></th>
+							</tr>
+						</thead>
 						<c:forEach var="post" items="${command.otherPubs}">
 							<per:simplePubView post="${post}" />
 						</c:forEach>
 					</table>
-				</div>
-				
-				<script type="text/javascript">
-				$(document).ready(function() {
-					$("table.personOtherPublicationTable").dataTable();
-				});
-				</script>
-				
+				</div>				
 			</c:if>
 			
 			
