@@ -35,7 +35,7 @@ import org.bibsonomy.rest.renderer.xml.TagType;
 import org.bibsonomy.rest.renderer.xml.UserType;
 
 /**
- * standard implementation for a xmlmodelvalidator
+ * standard implementation for a {@link XMLModelValidator}
  *
  * @author dzo
  */

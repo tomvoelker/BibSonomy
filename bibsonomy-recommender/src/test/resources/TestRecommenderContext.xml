@@ -4,8 +4,15 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
 	                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 	
-	<import resource="classpath:org/bibsonomy/bibsonomy-recommender-log-context.xml"/>
-	<import resource="classpath:org/bibsonomy/bibsonomy-recommender-tag-context.xml"/>
+	<import resource="classpath:org/bibsonomy/bibsonomy-recommender-log-context.xml" />
+	<import resource="classpath:org/bibsonomy/bibsonomy-recommender-tag-context.xml" />
+	
+	<!-- we need the system tag utils class to remove system tags -->
+	<import resource="classpath:org/bibsonomy/bibsonomy-systemtags-context.xml" />
+	<bean id="fileLogic" class="org.bibsonomy.testutil.DummyFileLogic" />
+	<bean id="dbSessionFactory" class="org.bibsonomy.testutil.DBSessionFactoryDummy"/>
+	<bean id="reportInformationService" class="org.bibsonomy.testutil.DummyInformationService" />
+	
 	
 	<bean id="mainDataSource" class="${database.datasource.class}" parent="basicDataSource">
 		<property name="url" value="${database.main.url}" />

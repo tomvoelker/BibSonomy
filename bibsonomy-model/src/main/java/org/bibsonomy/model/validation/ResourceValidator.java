@@ -24,41 +24,25 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.model.util;
+package org.bibsonomy.model.validation;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.List;
 
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.ImportResource;
-import org.bibsonomy.model.util.data.Data;
+import org.bibsonomy.common.errors.ErrorMessage;
+import org.bibsonomy.model.Resource;
 
 /**
- * @author jensi
+ * validates a {@link Resource}
+ *
+ * @author dzo
+ * @param <R> 
  */
-public class CompositeBibtexReader implements BibTexReader {
-	private final Map<String, BibTexReader> bibtexReadersByMimeType;
+public interface ResourceValidator<R extends Resource> {
 	
 	/**
-	 * instantiate
-	 * @param bibtexReadersByMimeType
+	 * validates a resource
+	 * @param resource
+	 * @return the validation errors
 	 */
-	public CompositeBibtexReader(final Map<String, BibTexReader> bibtexReadersByMimeType) {
-		this.bibtexReadersByMimeType = bibtexReadersByMimeType;
-	}
-	
-	@Override
-	public Collection<BibTex> read(final ImportResource importRes) {
-		final Data data = importRes.getData();
-		final String type = data.getMimeType();
-		if (type == null) {
-			throw new IllegalArgumentException("null mimetype");
-		}
-		final BibTexReader bibReader = this.bibtexReadersByMimeType.get(type);
-		if (bibReader == null) {
-			throw new UnsupportedOperationException("unsupported import mimetype '" + type + "'");
-		}
-		return bibReader.read(importRes);
-	}
-
+	public List<ErrorMessage> validateResource(final R resource);
 }

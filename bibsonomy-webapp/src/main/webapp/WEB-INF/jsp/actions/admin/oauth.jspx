@@ -22,9 +22,7 @@
 			pageTitle="${adminPageTitle} | OAuth"
 			requPath="${requPath}"
 			headerMessageKey="gettingStarted.headline"
-			command="${command}"
-			loginUser="${command.context.loggedinUser}"
-			noSidebar="${true}">
+			loginUser="${command.context.loginUser}">
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>
 				<jsp:attribute name="crumbs">

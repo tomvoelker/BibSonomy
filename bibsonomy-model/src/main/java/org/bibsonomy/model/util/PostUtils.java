@@ -47,6 +47,8 @@ import org.bibsonomy.util.Sets;
  */
 public class PostUtils {
 
+	private static final String INTRAHASH_OWNER_SPLIT = "_";
+
 	/**
 	 * populates the post
 	 * {@link #populatePostWithDate(Post, User)}
@@ -147,6 +149,56 @@ public class PostUtils {
 			 */
 			group.setGroupId(GroupID.getGroupId(group.getGroupId(), isSpammer));
 		}
+	}
+
+	/**
+	 * @param post
+	 * @return the key for a post, e.g. used for error mapping
+	 */
+	public static String getKeyForPost(Post<?> post) {
+		return getKeyForPost(post.getResource().getIntraHash(), post.getUser().getName());
+	}
+
+	/**
+	 * @param intraHash
+	 * @param owner
+	 * @return @see {@link #getKeyForPost(Post)}
+	 */
+	public static String getKeyForPost(String intraHash, String owner) {
+		return intraHash + INTRAHASH_OWNER_SPLIT + owner;
+	}
+
+	/**
+	 * @param post
+	 * @return the key for a community post
+	 */
+	public static String getKeyForCommunityPost(Post<?> post) {
+		return post.getResource().getInterHash();
+	}
+
+	/**
+	 * @param key
+	 * @return the hash encoded in the key
+	 */
+	public static String getHashFromKey(final String key) {
+		return getKeyPart(key, 0);
+	}
+
+	/**
+	 * @param key
+	 * @return
+	 */
+	private static String getKeyPart(final String key, final int index) {
+		final String[] intraHashOwnerSplit = key.split(INTRAHASH_OWNER_SPLIT);
+		return intraHashOwnerSplit[index];
+	}
+	
+	/**
+	 * @param key
+	 * @return the hash encoded in the key
+	 */
+	public static String getOwnerFromKey(final String key) {
+		return getKeyPart(key, 1);
 	}
 
 }

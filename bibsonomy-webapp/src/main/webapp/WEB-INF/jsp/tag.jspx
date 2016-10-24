@@ -29,14 +29,16 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="additionalSorting">
-			<c:choose>
-				<c:when test="${command.sortPage eq 'folkrank'}">
-					<li><span class="italic"><fontawesome:icon icon="sort-numeric-asc " spaceAfter="5" /><fmt:message key="sort.folkrank"/></span></li>
-				</c:when>
-				<c:otherwise>
-					<li><a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'folkrank')}"><fontawesome:icon icon="sort-numeric-asc " spaceAfter="5" /><fmt:message key="sort.folkrank"/></a></li>
-				</c:otherwise>
-			</c:choose>
+			<c:if test="${command.numberOfNormalTags > 0}">
+				<c:choose>
+					<c:when test="${command.sortPage eq 'folkrank'}">
+						<li><span class="italic"><fontawesome:icon icon="sort-numeric-asc " spaceAfter="5" /><fmt:message key="sort.folkrank"/></span></li>
+					</c:when>
+					<c:otherwise>
+						<li><a href="${mtl:setParam(requPathAndQuery, 'sortPage', 'folkrank')}"><fontawesome:icon icon="sort-numeric-asc " spaceAfter="5" /><fmt:message key="sort.folkrank"/></a></li>
+					</c:otherwise>
+				</c:choose>
+			</c:if>
 		</jsp:attribute>
 		
 		<jsp:attribute name="heading">

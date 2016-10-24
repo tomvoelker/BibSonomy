@@ -51,4 +51,15 @@
 		<property name="bibtexReader" ref="bibtexReader"/>
 		<property name="readOnly" value="true" /> <!-- don't write to slaves -->
 	</bean>
+	
+	<bean id="bookmarkValidator" class="org.bibsonomy.model.validation.BookmarkValidator" />
+	<bean id="publicationValidator" class="org.bibsonomy.rest.validation.ServersidePublicationValidator" />
+	<util:map id="resourceValidators">
+		<entry key-ref="bookmarkClass" value-ref="bookmarkValidator" />
+		<entry key-ref="publicationClass" value-ref="publicationValidator" />
+	</util:map>
+	
+	<bean id="dbModelValidator" class="org.bibsonomy.model.validation.ModelValidator">
+		<property name="resourceValidators" ref="resourceValidators" />
+	</bean>
 </beans>

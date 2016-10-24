@@ -667,13 +667,15 @@ public class UrlRenderer {
 	 * @param grouping
 	 * @param groupingValue
 	 * @param resourceType
+	 * @param periodIndex
 	 * @param start
 	 * @param end
-	 * @return
+	 * @return the url for popular
 	 */
-	public String createHrefForPopularPosts(final GroupingEntity grouping, final String groupingValue, final Class<? extends Resource> resourceType, final int start, final int end) {
+	public String createHrefForPopularPosts(final GroupingEntity grouping, final String groupingValue, final Class<? extends Resource> resourceType, int periodIndex, final int start, final int end) {
 		final UrlBuilder builder = this.createUrlBuilderForPostPopular();
 		applyStandardPostQueryParams(grouping, groupingValue, resourceType, start, end, builder);
+		builder.addParameter(RESTConfig.PERIOD_INDEX, String.valueOf(periodIndex));
 		return builder.asString();
 	}
 
@@ -753,14 +755,7 @@ public class UrlRenderer {
 			urlBuilder.addParameter(groupingParameterName, groupingValue);
 		}
 
-		if (present(tags)) {
-			final StringBuilder tagsStringBuilder = new StringBuilder();
-			for (final String tag : tags) {
-				tagsStringBuilder.append(tag).append(' ');
-			}
-			tagsStringBuilder.setLength(tagsStringBuilder.length() - 1);
-			urlBuilder.addParameter(RESTConfig.TAGS_PARAM, tagsStringBuilder.toString());
-		}
+		applyTags(tags, urlBuilder);
 
 		if (present(resourceHash)) {
 			urlBuilder.addParameter(RESTConfig.RESOURCE_PARAM, resourceHash);
@@ -772,6 +767,21 @@ public class UrlRenderer {
 
 		if (present(search)) {
 			urlBuilder.addParameter(RESTConfig.SEARCH_PARAM, search);
+		}
+	}
+
+	/**
+	 * @param tags
+	 * @param urlBuilder
+	 */
+	private void applyTags(final List<String> tags, final UrlBuilder urlBuilder) {
+		if (present(tags)) {
+			final StringBuilder tagsStringBuilder = new StringBuilder();
+			for (final String tag : tags) {
+				tagsStringBuilder.append(tag).append(' ');
+			}
+			tagsStringBuilder.setLength(tagsStringBuilder.length() - 1);
+			urlBuilder.addParameter(RESTConfig.TAGS_PARAM, tagsStringBuilder.toString());
 		}
 	}
 	

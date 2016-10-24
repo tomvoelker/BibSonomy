@@ -182,7 +182,8 @@ public final class ElasticsearchUtils {
 		final SearchIndexSyncState searchIndexState = new SearchIndexSyncState();
 		searchIndexState.setLast_tas_id((Integer) source.get(LAST_TAS_KEY));
 		final Long dateAsTime = (Long) source.get(LAST_LOG_DATE_KEY);
-		searchIndexState.setLast_log_date(new Date(dateAsTime.longValue()));
+		final Date lastLogDate = new Date(dateAsTime.longValue());
+		searchIndexState.setLast_log_date(lastLogDate);
 		
 		final Long documentDateAsTime = (Long) source.get(LAST_DOCUMENT_DATE_KEY);
 		final Date lastDocumentDate;
@@ -198,7 +199,8 @@ public final class ElasticsearchUtils {
 		if (present(predictionChangeDateAsTime)) {
 			predictionChangeDate = new Date(predictionChangeDateAsTime.longValue());
 		} else {
-			predictionChangeDate = null;
+			// the change date was the last log date
+			predictionChangeDate = lastLogDate;
 		}
 		searchIndexState.setLastPredictionChangeDate(predictionChangeDate);
 		// mapping version
