@@ -4,24 +4,15 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
-	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:sql="http://java.sun.com/jsp/jstl/sql"
-	xmlns:settings="urn:jsptagdir:/WEB-INF/tags/settings"
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
-	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/spheres"
-	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:spring="http://www.springframework.org/tags"
-	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
-	xmlns:pub="urn:jsptagdir:/WEB-INF/tags/resources/publication"
-	xmlns:actionbuttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
-	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
+	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+	xmlns:per="urn:jsptagdir:/WEB-INF/tags/person">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
@@ -39,33 +30,29 @@
 		</div>
 		
 		<div class="col-md-6" style="border-left: 1px solid lightgrey">
+		
+			<!-- Doctorial advisor and first reviewer should always be visible -->
 			<ul class="list-unstyled">
 				<c:forEach var="role" items="${availableRoles}">
 					<!-- TODO: replace by proper handling -->				
 					<c:if test="${role == 'DOCTOR_VATER' or role == 'FIRST_REVIEWER'}">
-						<fmt:message key="person.show.${role.relatorCode}" var="textRole" />
-						<fmt:message key="person.show.${role.relatorCode}Tooltip" var="textRoleTooltip" />
-						<li class="${role}">
-						<span class='fa fa-question-circle explainRole' data-toggle="tooltip" data-placement="left" title="${textRoleTooltip}" data-role='${role}'>&#160;</span>${textRole}: 
-							<c:forEach var="relation" items="${post.resourcePersonRelations}">
-								<c:if test="${relation.relationType eq role}">
-									<span class='resourcePersonRelation_${relation.personRelChangeId}'>
-										<a href="${absoluteUrlGenerator.getPersonUrl(relation.person.personId)}"><c:out value="${relation.person.mainName.firstName} "/> <c:out value="${relation.person.mainName.lastName}"/></a><c:out value=" " />
-										<!--  <span data-toggle='modal' data-target="#editRole" data-resource-title="${post.resource.title}" data-person-name="${relation.personName.firstName} ${relation.personName.lastName}" data-relation-simhash1="${relation.simhash1}" data-relation-simhash2='${relation.simhash2}' data-person-role="${role}" style='color:orange;cursor:pointer' href="#editRole" class='editRole fa fa-pencil'>&#160;</span> -->
-										<c:if test="${not empty loginUserName and not loginUser.spammer}">
-											<!-- TODO: use tagx file -->
-												<span data-toggle='modal' data-target="#deleteRole" data-resourcePersonRelation-id='${relation.personRelChangeId}' style='color:darkred;cursor:pointer' href="#deleteRole" class='deleteRole'><button class="btn btn-default btn-xs ${systemReadOnly ? 'disabled' : '' }"><fontawsome:icon icon="times" /></button></span>
-										</c:if>
-									</span>
-								</c:if>
-							</c:forEach>
-							<c:if test="${not empty loginUserName and not loginUser.spammer}">
-									<span data-toggle='modal' data-target="#addRole" data-relation-pubowner="${post.user.name}" data-resourceTitle="${post.resource.title}" data-relation-simhash1="${post.resource.interHash}" data-relation-simhash2='${post.resource.intraHash}' data-person-role="${role}" href="#addRole" class='addRole'><button class="btn btn-default btn-xs  ${systemReadOnly ? 'disabled' : '' }" ><fontawsome:icon icon="plus" /></button></span>
-							</c:if> 
-						</li>
+						<per:editRoles post="${post}" loginUser="${loginUser}" role="${role}"></per:editRoles>	
 					</c:if>
 				</c:forEach>
 			</ul>
+			
+			<!-- All other roles are hidden by default -->
+			<ul class="list-unstyled personPageAdditionalRoleFields">
+				<c:forEach var="role" items="${availableRoles}">
+					<!-- TODO: replace by proper handling -->				
+					<c:if test="${role != 'DOCTOR_VATER' and role != 'FIRST_REVIEWER'}">
+						<per:editRoles post="${post}" loginUser="${loginUser}" role="${role}"></per:editRoles>	
+					</c:if>
+				</c:forEach>
+			</ul>
+			
+			<a href="#" class="personPageShowAdditionalRoleFields pull-right">TODO</a>
+			
 		</div>
 		
 	</div>

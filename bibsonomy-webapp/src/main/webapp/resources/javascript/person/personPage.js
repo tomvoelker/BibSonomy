@@ -1,5 +1,10 @@
 $(document).ready(function() {
 	
+	// toggle view/hide all available roles
+	$(".personPageShowAdditionalRoleFields").click(function() {
+		$(".personPageAdditionalRoleFields", $(this).parent()).toggle();
+	});
+	
 	// enables the form field of the clicked element
 	$(".personPageEnableForm").click(function() {
 		parent = $(this).parents('.form-group');

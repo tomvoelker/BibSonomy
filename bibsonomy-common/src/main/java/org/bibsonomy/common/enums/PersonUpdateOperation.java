@@ -27,6 +27,7 @@
 package org.bibsonomy.common.enums;
 
 /**
+ * Enum that contains all possible update operations for person updates
  * @author mho
  */
 public enum PersonUpdateOperation {

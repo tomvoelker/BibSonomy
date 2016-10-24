@@ -310,21 +310,17 @@ public class PersonPageController extends SingleResourceListController implement
 			} else {						
 				// standard
 				this.logic.createOrUpdatePerson(command.getPerson());
-			}
-			
+			}	
 		} catch (Exception e) {
 			jsonResponse.put("status", false);
 			// TODO: set proper error message
 			//jsonResponse.put("message", "Some error occured");
 			command.setResponseString(jsonResponse.toString());
 			return Views.AJAX_JSON;
-		}
-		
+		}	
 		jsonResponse.put("status", true);
 		command.setResponseString(jsonResponse.toString());
 		return Views.AJAX_JSON;
-	
-
 	}
 
 	/**

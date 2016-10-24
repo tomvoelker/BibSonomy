@@ -204,7 +204,7 @@
 				}
 				
 				#personInfo {
-					padding: 0 0 15px 0;
+					margin-bottom: 15px;
 				}
 				
 				#thesisBlock {}
@@ -240,6 +240,10 @@
 				
 				.personPageVcardLeft > img {
 					margin: 0 !important;
+				}
+				
+				.personPageAdditionalRoleFields {
+					display: none;
 				}
 				
 			</style>
@@ -311,11 +315,12 @@
 
 
 						<div id="userImg" class="col-md-8">
-						TODO AFFILIATION
+							TODO AFFILIATION
 						</div>
 						
 
-						<!-- ?????????????????????????????? -->
+						<!-- ????????????????????????????????????????????????????????????????????????????????????????????? -->	
+						<!-- ????????????????????????????????????????????????????????????????????????????????????????????? -->
 						<c:if test="${false and command.person.disambiguatingPublication.post ne null}">
 							<div class='form-group'>
 								<label class="control-label col-md-4">${textAuthorOf}</label>
@@ -324,7 +329,8 @@
 								</div>
 							</div>
 						</c:if>					
-								
+						<!-- ????????????????????????????????????????????????????????????????????????????????????????????? -->	
+						<!-- ????????????????????????????????????????????????????????????????????????????????????????????? -->	
 						
 						
 						
@@ -588,41 +594,44 @@
 
 
 
-
-  <div class="modal fade" id="addName" tabindex="-1" role="dialog" aria-labelledby="addNameLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-      <form action="" method="post" id='addNameForm' name="addNameForm" class='form-horizontal'>
-      	<input type="hidden" name="ckey" value="${ckey}"/>
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>
-          <h4 class="modal-title">${textModalAddNameHeader}</h4>
-        </div>
-        <div class="modal-body">
-				<fieldset>
-					<div class="form-group">
-						<label class="control-label col-md-3" for='formFirstName'>${textFormFirstName}</label>
-						<div class="col-md-7">
-					  		<input type="text" class="form-control" placeholder="${textFormFirstName}" name='formFirstName' id='formFirstName'/>
-					  	</div>
-						<input type='hidden' id='formPersonId' name='formPersonId' value='${command.person.personId}'/>
-						<label class="control-label col-md-3" for='formLastName'>${textFormLastName}</label>
-						<div class="col-md-7">
-					  		<input type="text" class="form-control" placeholder="${textFormLastName}" name='formLastName' id='formLastName'/>
-					  	</div>
+	<!-- Add new name modal dialog -->
+	<div class="modal fade" id="addName" tabindex="-1" role="dialog"
+		aria-labelledby="addNameLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form action="" method="post" id='addNameForm' name="addNameForm" class='form-horizontal'>
+					<input type="hidden" name="ckey" value="${ckey}" />
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>
+						<h4 class="modal-title">${textModalAddNameHeader}</h4>
 					</div>
-				</fieldset>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
-          <button id='btnAddNameSubmit' type='button' class="btn btn-primary">${textAddNameButton}</button>
-        </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  
-  <div class="modal fade" id="removeName" tabindex="-1" role="dialog"
+					<div class="modal-body">
+						<fieldset>
+							<div class="form-group">
+								<label class="control-label col-md-3" for='formFirstName'>${textFormFirstName}</label>
+								<div class="col-md-7">
+									<input type="text" class="form-control" placeholder="${textFormFirstName}" name='formFirstName' id='formFirstName' />
+								</div>
+								<input type='hidden' id='formPersonId' name='formPersonId' value='${command.person.personId}' /> 
+								<label class="control-label col-md-3" for='formLastName'>${textFormLastName}</label>
+								<div class="col-md-7">
+									<input type="text" class="form-control" placeholder="${textFormLastName}" name='formLastName' id='formLastName' />
+								</div>
+							</div>
+						</fieldset>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">${textClose}</button>
+						<button id='btnAddNameSubmit' type='button' class="btn btn-primary">${textAddNameButton}</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- Remove name modal dialog -->
+	<div class="modal fade" id="removeName" tabindex="-1" role="dialog"
 		aria-labelledby="removeNameLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -647,6 +656,7 @@
 		</div>
 	</div>
 	
+	<!-- Add thesis modal dialog -->
 	<bs:modal modalTitle="${textModalAddThesisHeader}" id="addThesis">
 		<jsp:attribute name="modalBody">
 			<fieldset>
@@ -680,6 +690,7 @@
 			</form>
 		</jsp:attribute>
 	</bs:modal>
+	
 	
 	<fmt:message key="person.show.modal.addSupervisedThesis.header" var="tmpMsg" />
 	<bs:modal modalTitle="${tmpMsg}" id="addSupervisedThesis">
@@ -738,6 +749,8 @@
 		</jsp:attribute>
 	</bs:modal>
 	
+	
+	<!-- Add role modal dialog -->
 	<div class="modal fade" id="addRole" tabindex="-1" role="dialog"
 		aria-labelledby="addRoleLabel" aria-hidden="true">
 		<div class="modal-dialog">
@@ -767,6 +780,8 @@
 		</div>
 	</div>
 	
+	
+	<!-- Edit role modal dialog -->
 	<div class="modal fade" id="editRole" tabindex="-1" role="dialog" aria-labelledby="editRoleLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -798,6 +813,7 @@
 		</div>
 	</div>
 	
+	<!-- Delete role modal dialog -->
 	<div class="modal fade" id="deleteRole" tabindex="-1" role="dialog"
 		aria-labelledby="deleteRoleLabel" aria-hidden="true">
 		<div class="modal-dialog">
@@ -822,6 +838,7 @@
 		</div>
 	</div>
 	
+	<!-- Link person modal dialog -->
 	<div class="modal fade" id="linkPerson" tabindex="-1" role="dialog"
 		aria-labelledby="linkPersonLabel" aria-hidden="true">
 		<div class="modal-dialog">
@@ -845,7 +862,9 @@
 			</div>
 		</div>
 	</div>
-		<div class="modal fade" id="unlinkPerson" tabindex="-1" role="dialog"
+	
+	<!-- Unlink person modal dialog -->	
+	<div class="modal fade" id="unlinkPerson" tabindex="-1" role="dialog"
 		aria-labelledby="unlinkPersonLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
