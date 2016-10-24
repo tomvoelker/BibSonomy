@@ -277,7 +277,7 @@ function log_sendRequest(e) {
 
 function sendAsync(element) {
 	var link = $(element).attr('href');
-	return link.startsWith('#') || link.startsWith('/');
+	return link == undefined || link.startsWith('#') || link.startsWith('/');
 }
 
 $(function() {

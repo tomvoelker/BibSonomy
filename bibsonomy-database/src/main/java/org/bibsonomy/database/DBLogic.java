@@ -217,7 +217,7 @@ public class DBLogic implements LogicInterface {
 	 * @param loginUser
 	 *        - the user which wants to use the logic.
 	 * @param dbSessionFactory
-	 * @param bibtexReader 
+	 * @param bibtexReader
 	 */
 	protected DBLogic(final User loginUser, final DBSessionFactory dbSessionFactory, final BibTexReader bibtexReader) {
 		this.loginUser = loginUser;
@@ -730,7 +730,7 @@ public class DBLogic implements LogicInterface {
 		this.handleAdminFilters(filters);
 
 		// check for systemTags disabling this resourceType
-		if (!this.systemTagsAllowResourceType(tags, resourceType)) {
+		if (!systemTagsAllowResourceType(tags, resourceType)) {
 			return new ArrayList<Post<T>>();
 		}
 		final DBSession session = this.openSession();
@@ -752,7 +752,7 @@ public class DBLogic implements LogicInterface {
 			 * groupingName, tags, hash, popular, added, start, end, false));
 			 */
 			if (ValidationUtils.safeContains(filters, FilterEntity.HISTORY) && !(resourceType == GoldStandardPublication.class || resourceType == GoldStandardBookmark.class)) {
-				// this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, groupingName);
+				this.permissionDBManager.ensureIsAdminOrSelfOrHasGroupRoleOrHigher(this.loginUser, groupingName, GroupRole.USER);
 			}
 			if (resourceType == BibTex.class) {
 				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, grouping, groupingName, tags, hash, order, start, end, startDate, endDate, search, filters, this.loginUser);
@@ -1175,9 +1175,9 @@ public class DBLogic implements LogicInterface {
 	 * Check for each group actually exist and if the
 	 * posting user is allowed to post. If yes, insert the correct group ID into
 	 * the given post's groups.
-	 * @param user 
+	 * @param user
 	 * @param groups the groups to validate
-	 * @param session 
+	 * @param session
 	 */
 	protected void validateGroups(final User user, final Set<Group> groups, final DBSession session) {
 		/*
@@ -1554,7 +1554,7 @@ public class DBLogic implements LogicInterface {
 				} catch (final Exception ex) {
 					// some exception other than those covered in the
 					// DatabaseException was thrown
-					collectedException.addToErrorMessages(post.getResource().getIntraHash(), new UnspecifiedErrorMessage(ex));
+					collectedException.addToErrorMessages(PostUtils.getKeyForPost(post), new UnspecifiedErrorMessage(ex));
 					log.warn("'unspecified' error message due to exception", ex);
 				}
 			}
@@ -1674,7 +1674,7 @@ public class DBLogic implements LogicInterface {
 					// some exception other than those covered in the
 					// DatabaseException was thrown
 					log.error("updating post " + post.getResource().getIntraHash() + "/" + this.loginUser.getName() + " failed", ex);
-					collectedException.addToErrorMessages(post.getResource().getIntraHash(), new UnspecifiedErrorMessage(ex));
+					collectedException.addToErrorMessages(PostUtils.getKeyForPost(post), new UnspecifiedErrorMessage(ex));
 				}
 			}
 		} finally {
@@ -1694,14 +1694,14 @@ public class DBLogic implements LogicInterface {
 	private <T extends Resource> String updatePost(final Post<T> post, final PostUpdateOperation operation, final DBSession session) {
 		final CrudableContent<T, GenericParam> manager = this.getFittingDatabaseManager(post);
 		final String oldIntraHash = post.getResource().getIntraHash();
-		
+
 		if (Role.SYNC.equals(this.loginUser.getRole())) {
 			validateGroupsForSynchronization(post);
 		}
 		this.validateGroups(post.getUser(), post.getGroups(), session);
-		
+
 		PostUtils.limitedUserModification(post, this.loginUser);
-		
+
 		/*
 		 * change group IDs to spam group IDs
 		 */

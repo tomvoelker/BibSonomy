@@ -31,9 +31,9 @@
 			<script type="text/javascript" src="${resdir}/javascript/merged/discussion.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/publication.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/goldstandards.js"><!-- keep me --></script>
-			<script type='text/javascript' src='/resources/typeahead.js/js/typeahead.bundle.js'><!-- keep me --></script>
+			<script type='text/javascript' src='${resdir}/typeahead.js/js/typeahead.bundle.js'><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/handlebars/handlebars.js"><!-- keep me --></script>
-			<link rel="stylesheet" type="text/css" href='/resources/typeahead.js/css/typeahead.css'/>
+			<link rel="stylesheet" type="text/css" href='${resdir}/typeahead.js/css/typeahead.css'/>
 			<publication:feeds path="${relativeUrlGenerator.getPublicationUrl(publication)}" />
 		</jsp:attribute>
 		

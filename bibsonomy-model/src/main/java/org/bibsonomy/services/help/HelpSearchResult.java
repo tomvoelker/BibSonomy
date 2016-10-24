@@ -85,7 +85,7 @@ public class HelpSearchResult implements Comparable<HelpSearchResult> {
 	 */
 	@Override
 	public int compareTo(HelpSearchResult o) {
-		final float scoreDiff = this.score - o.score;
+		final float scoreDiff = o.score - this.score;
 		if (scoreDiff == 0) {
 			return this.page.compareTo(o.page);
 		}

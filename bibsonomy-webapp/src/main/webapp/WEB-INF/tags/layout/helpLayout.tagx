@@ -12,7 +12,9 @@
 	
 	<jsp:directive.attribute name="mainContent" fragment="true" required="true" />
 	
-	<layout:oneColumnLayout loginUser="${command.context.loginUser}" pageTitle="${command.helpPage}" requPath="${requPath}">
+	<fmt:message key="help" var="helpTitle" />
+	
+	<layout:oneColumnLayout loginUser="${command.context.loginUser}" pageTitle="${command.helpPage} | ${helpTitle}" requPath="${requPath}">
 		<jsp:attribute name="heading">
 			<parts:search pathMessageKey="search"/>
 		</jsp:attribute>

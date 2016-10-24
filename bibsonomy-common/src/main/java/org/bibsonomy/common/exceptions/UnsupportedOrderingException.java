@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Model - Java- and JAXB-Model.
+ * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
  * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -24,41 +24,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.model.util;
-
-import java.util.Collection;
-import java.util.Map;
-
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.ImportResource;
-import org.bibsonomy.model.util.data.Data;
+package org.bibsonomy.common.exceptions;
 
 /**
- * @author jensi
+ * Exception thrown if an unsupported ordering is requested
+ *
+ * @author dzo
  */
-public class CompositeBibtexReader implements BibTexReader {
-	private final Map<String, BibTexReader> bibtexReadersByMimeType;
-	
-	/**
-	 * instantiate
-	 * @param bibtexReadersByMimeType
-	 */
-	public CompositeBibtexReader(final Map<String, BibTexReader> bibtexReadersByMimeType) {
-		this.bibtexReadersByMimeType = bibtexReadersByMimeType;
-	}
-	
-	@Override
-	public Collection<BibTex> read(final ImportResource importRes) {
-		final Data data = importRes.getData();
-		final String type = data.getMimeType();
-		if (type == null) {
-			throw new IllegalArgumentException("null mimetype");
-		}
-		final BibTexReader bibReader = this.bibtexReadersByMimeType.get(type);
-		if (bibReader == null) {
-			throw new UnsupportedOperationException("unsupported import mimetype '" + type + "'");
-		}
-		return bibReader.read(importRes);
-	}
+public class UnsupportedOrderingException extends RuntimeException {
+	private static final long serialVersionUID = 1221062491499989190L;
 
+	/**
+	 * @param order
+	 */
+	public UnsupportedOrderingException(String order) {
+		super("Order '" + order + "' not supported");
+	}
 }

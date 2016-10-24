@@ -1006,7 +1006,7 @@
 	<!-- ############## help ############### -->
 	<rule>
 		<name>Images below /help/</name>
-		<from>^/new_help_+([^/]+)/+(.+)((png)|(jpg)|(jpeg)|(gif)|(svg))$</from>
+		<from>^/help_+([^/]+)/+(.+)((png)|(jpg)|(jpeg)|(gif)|(svg))$</from>
 		<set type="parameter" name="language">${unescapePath:$1}</set>
 		<set type="parameter" name="filename">${unescapePath:$2$3}</set>
 		<to last="true">/help</to>
@@ -1014,7 +1014,7 @@
 	
 	<rule>
 		<name>Subpages of /help/</name>
-		<from>^/new_help_+([^/]+)/?+(.*)</from>
+		<from>^/help_+([^/]+)/?+(.*)</from>
 		<set type="parameter" name="language">${unescapePath:$1}</set>
 		<set type="parameter" name="helpPage">${unescapePath:$2}</set>
 		<to last="true">/help</to>

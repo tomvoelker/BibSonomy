@@ -184,7 +184,7 @@ public class SimpleBibTeXParser {
 	public List<BibTex> parseInternal(final BufferedReader bibtex, final boolean firstEntryOnly) throws ParseException, IOException {
 		final List<BibTex> result = new LinkedList<BibTex>();
 
-		final BibtexParser parser = new BibtexParser(!tryParseAll);
+		final BibtexParser parser = new BibtexParser(!this.tryParseAll);
 		/*
 		 * configure the parser
 		 */
@@ -218,8 +218,7 @@ public class SimpleBibTeXParser {
 		/* ****************************************************************
 		 * iterate over all entries and put them in BibTex objects
 		 * ****************************************************************/
-		for (Object potentialEntry:bibtexFile.getEntries()) {
-
+		for (final Object potentialEntry : bibtexFile.getEntries()) {
 			if (!(potentialEntry instanceof BibtexEntry)) {
 				/*
 				 * Process top level comment, but drop macros, because
@@ -327,7 +326,7 @@ public class SimpleBibTeXParser {
 		nonStandardFieldNames.removeAll(StandardBibTeXFields.getStandardBibTeXFields());
 
 		// iterate over list to retrieve nonstandard field values
-		for (final String key:nonStandardFieldNames) {
+		for (final String key : nonStandardFieldNames) {
 			bibtex.addMiscField(key, getValue(entry.getFieldValue(key)));
 		}
 		bibtex.serializeMiscFields();
@@ -346,41 +345,115 @@ public class SimpleBibTeXParser {
 		bibtex.setEntrytype(entry.getEntryType());
 
 		String field = null;
-		field = getValue(entry.getFieldValue("title")); if (field != null) bibtex.setTitle(field);
-		field = getValue(entry.getFieldValue("year"));  if (field != null) bibtex.setYear(field); 
+		field = getValue(entry.getFieldValue("title"));
+		if (field != null) {
+			bibtex.setTitle(field);
+		}
+		field = getValue(entry.getFieldValue("year"));
+		if (field != null) {
+			bibtex.setYear(field);
+		}
 
 		/*
 		 * add optional fields
 		 */
-		field = getValue(entry.getFieldValue("crossref"));     if (field != null) bibtex.setCrossref(field);     
-		field = getValue(entry.getFieldValue("address"));      if (field != null) bibtex.setAddress(field);      
-		field = getValue(entry.getFieldValue("annote"));       if (field != null) bibtex.setAnnote(field);       
-		field = getValue(entry.getFieldValue("booktitle"));    if (field != null) bibtex.setBooktitle(field);    
-		field = getValue(entry.getFieldValue("chapter"));      if (field != null) bibtex.setChapter(field);      
-		field = getValue(entry.getFieldValue("day"));          if (field != null) bibtex.setDay(field);
-		field = getValue(entry.getFieldValue("edition"));      if (field != null) bibtex.setEdition(field);      
-		field = getValue(entry.getFieldValue("howpublished")); if (field != null) bibtex.setHowpublished(field); 
-		field = getValue(entry.getFieldValue("institution"));  if (field != null) bibtex.setInstitution(field);  
-		field = getValue(entry.getFieldValue("journal"));      if (field != null) bibtex.setJournal(field);      
-		field = getValue(entry.getFieldValue("key"));	       if (field != null) bibtex.setKey(field);
-		field = getValue(entry.getFieldValue("note"));         if (field != null) bibtex.setNote(field);         
-		field = getValue(entry.getFieldValue("number"));       if (field != null) bibtex.setNumber(field);       
-		field = getValue(entry.getFieldValue("organization")); if (field != null) bibtex.setOrganization(field);
-		field = getValue(entry.getFieldValue("pages"));        if (field != null) bibtex.setPages(field);
-		field = getValue(entry.getFieldValue("publisher"));    if (field != null) bibtex.setPublisher(field);
-		field = getValue(entry.getFieldValue("school"));       if (field != null) bibtex.setSchool(field);
-		field = getValue(entry.getFieldValue("series"));       if (field != null) bibtex.setSeries(field);
-		field = getValue(entry.getFieldValue("url"));          if (field != null) bibtex.setUrl(field);
-		field = getValue(entry.getFieldValue("volume"));	   if (field != null) bibtex.setVolume(field);
-		field = getValue(entry.getFieldValue("abstract"));	   if (field != null) bibtex.setAbstract(field);
-		field = getValue(entry.getFieldValue("type"));  	   if (field != null) bibtex.setType(field);
+		field = getValue(entry.getFieldValue("crossref"));
+		if (field != null) {
+			bibtex.setCrossref(field);
+		}
+		field = getValue(entry.getFieldValue("address"));
+		if (field != null) {
+			bibtex.setAddress(field);
+		}
+		field = getValue(entry.getFieldValue("annote"));
+		if (field != null) {
+			bibtex.setAnnote(field);
+		}
+		field = getValue(entry.getFieldValue("booktitle"));
+		if (field != null) {
+			bibtex.setBooktitle(field);
+		}
+		field = getValue(entry.getFieldValue("chapter"));
+		if (field != null) {
+			bibtex.setChapter(field);
+		}
+		field = getValue(entry.getFieldValue("day"));
+		if (field != null) {
+			bibtex.setDay(field);
+		}
+		field = getValue(entry.getFieldValue("edition"));
+		if (field != null) {
+			bibtex.setEdition(field);
+		}
+		field = getValue(entry.getFieldValue("howpublished"));
+		if (field != null) {
+			bibtex.setHowpublished(field);
+		}
+		field = getValue(entry.getFieldValue("institution"));
+		if (field != null) {
+			bibtex.setInstitution(field);
+		}
+		field = getValue(entry.getFieldValue("journal"));
+		if (field != null) {
+			bibtex.setJournal(field);
+		}
+		field = getValue(entry.getFieldValue("key")); 
+		if (field != null) {
+			bibtex.setKey(field);
+		}
+		field = getValue(entry.getFieldValue("note"));
+		if (field != null) {
+			bibtex.setNote(field);
+		}
+		field = getValue(entry.getFieldValue("number"));
+		if (field != null) {
+			bibtex.setNumber(field);
+		}
+		field = getValue(entry.getFieldValue("organization"));
+		if (field != null) {
+			bibtex.setOrganization(field);
+		}
+		field = getValue(entry.getFieldValue("pages"));
+		if (field != null) {
+			bibtex.setPages(field);
+		}
+		field = getValue(entry.getFieldValue("publisher"));
+		if (field != null) {
+			bibtex.setPublisher(field);
+		}
+		field = getValue(entry.getFieldValue("school"));
+		if (field != null) {
+			bibtex.setSchool(field);
+		}
+		field = getValue(entry.getFieldValue("series"));
+		if (field != null) {
+			bibtex.setSeries(field);
+		}
+		field = getValue(entry.getFieldValue("url"));
+		if (field != null) {
+			bibtex.setUrl(field);
+		}
+		field = getValue(entry.getFieldValue("volume"));
+		if (field != null) {
+			bibtex.setVolume(field);
+		}
+		field = getValue(entry.getFieldValue("abstract"));
+		if (field != null) {
+			bibtex.setAbstract(field);
+		}
+		field = getValue(entry.getFieldValue("type"));
+		if (field != null) {
+			bibtex.setType(field);
+		}
 
 		/*
 		 * Sometimes the "number" is contained in the "issue" field. If no number
 		 * is given but an issue, we use this one.
 		 */
 		field = getValue(entry.getFieldValue("issue"));
-		if (present(field) && !present(bibtex.getNumber())) bibtex.setNumber(field);
+		if (present(field) && !present(bibtex.getNumber())) {
+			bibtex.setNumber(field);
+		}
 		
 		/*
 		 * special handling for month - it can be a macro!
@@ -411,12 +484,16 @@ public class SimpleBibTeXParser {
 		 * FIXME: add a test for this!
 		 */
 		field = getValue(entry.getFieldValue("comment"));
-		if (field != null) bibtex.setPrivnote(field.replace("(private-note)", ""));
+		if (field != null) {
+			bibtex.setPrivnote(field.replace("(private-note)", ""));
+		}
 		/*
 		 * we export our private notes as "privnote" - add it here
 		 */
 		field = getValue(entry.getFieldValue("privnote"));
-		if (field != null) bibtex.setPrivnote(field);
+		if (field != null) {
+			bibtex.setPrivnote(field);
+		}
 
 		return bibtex;
 	}
@@ -493,7 +570,7 @@ public class SimpleBibTeXParser {
 		/*
 		 * "others" has a special meaning in BibTeX (it's converted to "et al."),
 		 * so we must not ignore it! 
-		 */		
+		 */
 		if (person.isOthers()) return new PersonName(null, "others");
 		/*
 		 * build one person
@@ -521,7 +598,6 @@ public class SimpleBibTeXParser {
 			if (present(lineage)) {
 				/*
 				 * we add the lineage after a comma and enclose the last name in brackets
-				 * 
 				 */
 				personName.setLastName("{" + preLast + last + ", " + lineage + "}");
 			} else {

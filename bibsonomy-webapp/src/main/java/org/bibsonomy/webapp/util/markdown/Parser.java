@@ -70,7 +70,7 @@ public class Parser implements HelpParser {
 	public String parseText(final String text) throws IOException {
 		// Instantiate Markdown Parser
 		final PegDownPlugins plugins = new PegDownPlugins.Builder().withPlugin(Plugin.class).build();
-		final PegDownProcessor proc = new PegDownProcessor(Extensions.TABLES, plugins);
+		final PegDownProcessor proc = new PegDownProcessor(Extensions.TABLES | Extensions.EXTANCHORLINKS, plugins);
 
 		// Parse and serialize content
 		final RootNode ast = proc.parseMarkdown(text.toCharArray());

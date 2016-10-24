@@ -68,6 +68,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.services.searcher.ResourceSearch;
@@ -334,7 +335,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 */
 	private void checkTags(final Post<?> post, final DBSession session) {
 		if (!present(post.getTags())) {
-			session.addError(post.getResource().getIntraHash(), new MissingTagsErrorMessage());
+			session.addError(PostUtils.getKeyForPost(post), new MissingTagsErrorMessage());
 			log.warn("Added missingTagsErrorMessage for " + post.getResource().getIntraHash());
 		}
 	}

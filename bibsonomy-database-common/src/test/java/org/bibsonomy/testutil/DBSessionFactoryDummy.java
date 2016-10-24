@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Rest-Common - Common things for the REST-client and server.
+ * BibSonomy-Database-Common - Helper classes for database interaction
  *
  * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -24,52 +24,24 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.rest.validation;
+package org.bibsonomy.testutil;
 
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
+import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.DBSessionFactory;
 
 /**
- * Validates the given model.
+ * a dummy implementation for {@link DBSessionFactory}
+ * useful for tests
  * 
- * @author rja
+ * @author dzo
  */
-public interface ModelValidator {
+public class DBSessionFactoryDummy implements DBSessionFactory {
 
-	/**
-	 * Check the publication for correctness.
-	 * @param publication
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.common.DBSessionFactory#getDatabaseSession()
 	 */
-	public void checkPublication(final BibTex publication);
-
-	/**
-	 * @param post
-	 */
-	public void checkPost(Post<? extends Resource> post);
-
-	/**
-	 * @param user
-	 */
-	public void checkUser(User user);
-
-	/**
-	 * @param tag
-	 */
-	public void checkTag(Tag tag);
-
-	/**
-	 * @param group
-	 */
-	public void checkGroup(Group group);
-
-	/**
-	 * @param bookmark
-	 */
-	public void checkBookmark(Bookmark bookmark);
-	
+	@Override
+	public DBSession getDatabaseSession() {
+		return null;
+	}
 }
