@@ -83,14 +83,12 @@ function loadExportLayout(clickedElement, targetElement, publicationLink) {
 		} else {
 			renderCSL(csl, style, targetElement);
 		}
-	} else if (source == 'SIMPLE') {
-		loadSimpleLayout(clickedElement, targetElement, true);
 	} else {
-		loadSimpleLayout(clickedElement, targetElement, false);
+		loadSimpleLayout(clickedElement, targetElement);
 	}
 }
 
-function loadSimpleLayout(clickedElement, targetElement, plain) {
+function loadSimpleLayout(clickedElement, targetElement) {
 	var url = clickedElement.data("formaturl");
 	if (url == undefined) {
 		url = clickedElement.attr('href');
@@ -98,15 +96,23 @@ function loadSimpleLayout(clickedElement, targetElement, plain) {
 	$.ajax({
 		url: url,
 		dataType: "html",
-		success: function(data) {
-			data = cleanupHtml(data);
+		success: function(data, status, xhr) {
+			var contentType = xhr.getResponseHeader("content-type");
+			var plain = !contentType.startsWith("text/html");
 			if (plain) {
 				var pre = $('<pre></pre>');
 				targetElement.html(pre);
 				targetElement = pre;
+			} else {
+				data = cleanupHtml(data);
 			}
 			
-			targetElement.html(data);
+			var isXML = contentType.startsWith("text/xml");
+			if (isXML) {
+				targetElement.text(data);
+			} else {
+				targetElement.html(data);
+			}
 		}
 	});
 }
