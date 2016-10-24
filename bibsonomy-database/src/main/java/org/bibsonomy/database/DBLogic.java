@@ -390,12 +390,7 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = this.openSession();
 		try {
 			final SynchronizationData data = this.syncDBManager.getLastSyncData(userName, service, resourceType, null, session);
-
-			// reject sync if direction BOTH and server hasn't synced before
-			if (SynchronizationDirection.BOTH.equals(direction) && !present(data)) {
-				throw new IllegalStateException("sync request rejected! the server hasn't performed an initial sync in both directions!");
-			}
-
+			
 			/*
 			 * check for a running synchronization
 			 */
@@ -410,6 +405,9 @@ public class DBLogic implements LogicInterface {
 			final SynchronizationData lsd = this.syncDBManager.getLastSyncData(userName, service, resourceType, SynchronizationStatus.DONE, session);
 			if (present(lsd)) {
 				lastSuccessfulSyncDate = lsd.getLastSyncDate();
+			} else if (!SynchronizationDirection.BOTH.equals(direction)) {
+				// be sure that both systems are in sync before only syncing only in one direction
+				throw new IllegalStateException("sync request rejected! The client hasn't performed an initial sync in both directions!");
 			}
 			/*
 			 * flag synchronization as planned
