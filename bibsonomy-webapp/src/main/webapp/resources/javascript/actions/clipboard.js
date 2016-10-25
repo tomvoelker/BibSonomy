@@ -26,14 +26,14 @@ $(function() {
 	var copyButton = $('#copyToLocalClipboard');
 	if (copyButton.length > 0) {
 		var clipboard = new Clipboard(copyButton.get(0), {
-			text: function(trigger) {
+			target: function(trigger) {
 				var citationContainer = $('#exportModalCitation');
 				var targetElement = citationContainer;
 				var pre = citationContainer.find('pre');
 				if (pre.length > 0) {
 					targetElement = pre;
 				}
-				return targetElement.text();
+				return targetElement.get(0);
 			}
 		});
 		
