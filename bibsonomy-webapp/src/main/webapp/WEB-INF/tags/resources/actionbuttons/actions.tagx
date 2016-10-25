@@ -150,13 +150,11 @@
 						
 						<!-- BibTeX or Endnote or JABREF or CSL-->
 						<!-- checks whether the source is "simple" which gets a special treatment,
-        						or JABREF / CSL which will be assigned a source URL by generator-->
+							or JABREF / CSL which will be assigned a source URL by generator-->
 						<c:forEach items="${command.context.loginUser.settings.favouriteLayouts}" var="citation">
 							<li>
-								<c:set var="name"><mtl:favouriteLayoutDisplayName favouriteLayout="${citation}"/>
-								</c:set>
-								<c:set var="name">${mtl:shorten(name, 25)}
-								</c:set>
+								<c:set var="name"><mtl:favouriteLayoutDisplayName favouriteLayout="${citation}"/></c:set>
+								<c:set var="shortName" value="${mtl:shorten(name, 25)}" />
 								<fmt:message key="publication.export.${fn:toLowerCase(citation.source)}_${fn:toLowerCase(citation.style)}.title" var="exportTitle" />
 								<c:if test="${fn:startsWith(exportTitle, '???')}">
 									<fmt:message key="publication.export.title" var="exportTitle">
@@ -165,7 +163,7 @@
 								</c:if>
 								
 								<a class="litem publ-export" data-source="${citation.source}" data-style="${citation.style}" href="${relativeUrlGenerator.getPostExportUrl(post, citation)}?formatEmbedded=true" title="${exportTitle}">
-									<c:out value="${name}" />
+									<c:out value="${shortName}" />
 								</a>
 							</li>
 						</c:forEach>
