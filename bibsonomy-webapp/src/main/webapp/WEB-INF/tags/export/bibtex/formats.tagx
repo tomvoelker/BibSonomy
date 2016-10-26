@@ -11,69 +11,68 @@
 	
 	<c:set var="pathAndQueryString" value="${requPath}${requQueryString}" />
 	<fmt:message key="form.input.select" var="placeholderText"/>
-	<div class="col-sm-9">
-		<script type="text/javascript">
-			$( document ).ready(function() {
-				var $comboBox =  $("#selectAllStyles").select2();
-			});
-		</script>
-		<select id="selectAllStyles" data-placeholder="${placeholderText}" class="form-control" onchange="generateExportPostLink(this.value)" size="1">		
-			<option><!-- keep me! --></option>
-			<c:forEach var="mapEntry" items="${command.layoutMap}">
-				<c:if test="${mapEntry.value.publicLayout and mapEntry.value.isFavorite}">
-					<c:choose>
-						<!-- 
-						| JabRef layouts
-						 -->
-						<c:when test="${abstractJabRefLayoutClass.isInstance(mapEntry.value)}">
-							<c:url var="url" value="/layout/${mapEntry.value.name}/${pathAndQueryString}" />
-							<option value="${fn:escapeXml(url)}"><c:out value="${mapEntry.value.displayName}"/></option>
-						</c:when>
-						<!-- 
-						| Standard layouts
-						 -->
-						<c:otherwise>
-							<c:url var="url" value="/${mapEntry.value.name}/${pathAndQueryString}" />
-							<option value="${fn:escapeXml(url)}"><c:out value="${mapEntry.value.displayName}"/></option>
-						</c:otherwise>
-					</c:choose>
-				</c:if>
-			</c:forEach>
-			<!-- 
-			| CSL layouts
-			 -->
-			<c:forEach var="mapEntry" items="${command.cslLayoutMap}">
-				<option value='/csl-layout/${fn:substringBefore(mapEntry.value.id,".csl")}/${pathAndQueryString}'><c:out value="${mapEntry.value.displayName}"/></option>	
-			</c:forEach>
-			
-			
-			<c:if test="/layout/custom/${pathAndQueryString}">
-				<c:url var="url" value="/layout/custom/${pathAndQueryString}" />
-				<option value="${fn:escapeXml(url)}"><c:out value="${mapEntry.value.displayName}"/></option>
-			</c:if>
-			<c:forEach var="mapEntry" items="${command.layoutMap}">
-				<c:if test="${mapEntry.value.publicLayout and not mapEntry.value.isFavorite}">
-					<c:choose>
-						<!-- 
-						| JabRef layouts
-						 -->	
-						<c:when test="${abstractJabRefLayoutClass.isInstance(mapEntry.value)}">
-							<c:url var="url" value="/layout/${mapEntry.value.name}/${pathAndQueryString}" />
-							<option value="${fn:escapeXml(url)}"><c:out value="${mapEntry.value.displayName}"/></option>
-						</c:when>
-						<!-- 
+	<div class="row">
+		<div class="col-sm-9">
+			<script type="text/javascript">
+				$( document ).ready(function() {
+					var $comboBox =  $("#selectAllStyles").select2();
+				});
+			</script>
+			<select id="selectAllStyles" data-placeholder="${placeholderText}" class="form-control" onchange="generateExportPostLink(this.value)" size="1">		
+				<option><!-- keep me! --></option>
+				<c:forEach var="mapEntry" items="${command.layoutMap}">
+					<c:if test="${mapEntry.value.publicLayout and mapEntry.value.isFavorite}">
+						<c:choose>
+							<!-- 
+							| JabRef layouts
+							 -->
+							<c:when test="${abstractJabRefLayoutClass.isInstance(mapEntry.value)}">
+								<c:url var="url" value="/layout/${mapEntry.value.name}/${pathAndQueryString}" />
+								<option value="${fn:escapeXml(url)}"><c:out value="${mapEntry.value.displayName}"/></option>
+							</c:when>
+							<!-- 
 							| Standard layouts
-						 -->
-						<c:otherwise>
-							<c:url var="url" value="/${mapEntry.value.name}/${pathAndQueryString}" />
-							<option value="${fn:escapeXml(url)}"><c:out value="${mapEntry.value.displayName}"/></option>
-						</c:otherwise>
-					</c:choose>
+							 -->
+							<c:otherwise>
+								<c:url var="url" value="/${mapEntry.value.name}/${pathAndQueryString}" />
+								<option value="${fn:escapeXml(url)}"><c:out value="${mapEntry.value.displayName}"/></option>
+							</c:otherwise>
+						</c:choose>
+					</c:if>
+				</c:forEach>
+				<!-- 
+				| CSL layouts
+				 -->
+				<c:forEach var="mapEntry" items="${command.cslLayoutMap}">
+					<option value='/csl-layout/${fn:substringBefore(mapEntry.value.id,".csl")}/${pathAndQueryString}'><c:out value="${mapEntry.value.displayName}"/></option>	
+				</c:forEach>
+				
+				
+				<c:if test="/layout/custom/${pathAndQueryString}">
+					<c:url var="url" value="/layout/custom/${pathAndQueryString}" />
+					<option value="${fn:escapeXml(url)}"><c:out value="${mapEntry.value.displayName}"/></option>
 				</c:if>
-			</c:forEach>
-		</select>
-		<div class="alert alert-info">
-  			Your default citation options to be shown in the bar above, can be changed in the <a href="/settings?selTab=1" target="_blank" class="alert-link">settings</a>.
+				<c:forEach var="mapEntry" items="${command.layoutMap}">
+					<c:if test="${mapEntry.value.publicLayout and not mapEntry.value.isFavorite}">
+						<c:choose>
+							<!-- 
+							| JabRef layouts
+							 -->	
+							<c:when test="${abstractJabRefLayoutClass.isInstance(mapEntry.value)}">
+								<c:url var="url" value="/layout/${mapEntry.value.name}/${pathAndQueryString}" />
+								<option value="${fn:escapeXml(url)}"><c:out value="${mapEntry.value.displayName}"/></option>
+							</c:when>
+							<!-- 
+								| Standard layouts
+							 -->
+							<c:otherwise>
+								<c:url var="url" value="/${mapEntry.value.name}/${pathAndQueryString}" />
+								<option value="${fn:escapeXml(url)}"><c:out value="${mapEntry.value.displayName}"/></option>
+							</c:otherwise>
+						</c:choose>
+					</c:if>
+				</c:forEach>
+			</select>
 		</div>
 	</div>
 </jsp:root>

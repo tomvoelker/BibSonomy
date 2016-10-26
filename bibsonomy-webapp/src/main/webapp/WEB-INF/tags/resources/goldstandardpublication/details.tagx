@@ -210,6 +210,7 @@
 			<!-- citation box -->
 			<h2 class="page-header" id="export">
 				<fmt:message key="publications.citations.headline" />
+				<export:favLayoutHint />
 			</h2>
 			<pub2:citation post="${post}" isCommunityPost="${true}" />
 		</div>
