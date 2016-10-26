@@ -45,6 +45,8 @@ import org.pegdown.plugins.ToHtmlSerializerPlugin;
  * @author Johannes Blum
  */
 public class Parser implements HelpParser {
+	/** the configuration for a processor */
+	protected static final int PROCESSOR_CONFIG = Extensions.TABLES | Extensions.EXTANCHORLINKS;
 	
 	/** A map which maps a variable to the value it should be replaced with */
 	private Map<String, String> replacements;
@@ -70,7 +72,7 @@ public class Parser implements HelpParser {
 	public String parseText(final String text) throws IOException {
 		// Instantiate Markdown Parser
 		final PegDownPlugins plugins = new PegDownPlugins.Builder().withPlugin(Plugin.class).build();
-		final PegDownProcessor proc = new PegDownProcessor(Extensions.TABLES | Extensions.EXTANCHORLINKS, plugins);
+		final PegDownProcessor proc = new PegDownProcessor(PROCESSOR_CONFIG, plugins);
 
 		// Parse and serialize content
 		final RootNode ast = proc.parseMarkdown(text.toCharArray());
