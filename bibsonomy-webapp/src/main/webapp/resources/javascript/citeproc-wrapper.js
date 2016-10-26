@@ -100,7 +100,7 @@ function loadSimpleLayout(clickedElement, targetElement) {
 			var contentType = xhr.getResponseHeader("content-type");
 			var plain = !contentType.startsWith("text/html");
 			if (plain) {
-				var pre = $('<pre></pre>');
+				var pre = $('<pre></pre>').addClass('export');
 				targetElement.html(pre);
 				targetElement = pre;
 			} else {
