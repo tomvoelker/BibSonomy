@@ -43,13 +43,12 @@
 			<bsform:input labelColSpan="3" path="post.resource.series"/>
 			<bsform:input labelColSpan="3" path="post.resource.crossref"/>	
 			
-					
-							<!-- Misc -->
+			<!-- Misc -->
 			<div id="miscDiv">
 				<div id="miscCheckboxDiv" class="col-sm-12" style="text-align: right">
 					<!-- needed for js -->	
 				</div>
-				<bsform:textarea labelColSpan="3" path="post.resource.misc"/>							
+				<bsform:textarea labelColSpan="3" path="post.resource.misc"/>
 			</div>
 			
 			<bsform:textarea labelColSpan="3" path="post.resource.abstract"/>
