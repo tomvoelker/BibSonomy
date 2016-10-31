@@ -13,7 +13,7 @@ var tagRecoOptions = {
 
 var getFriends = null;
 var fields = ["booktitle","journal","volume","number","pages","publisher","address",
-        "month","day","edition","chapter","key","type","annote","note",
+		"month","day","edition","chapter","key","type","annote","note",
 		"howpublished","institution","organization",
 		"school","series","crossref","misc"];
 
@@ -57,7 +57,7 @@ function changeView(showAll) {
 	
 	collapse.firstChild.nodeValue = message;
 	
-	for (var i=0; i<fields.length; i++) {
+	for (var i = 0; i < fields.length; i++) {
 		
 		var field = $("#post\\.resource\\." + fields[i]);
 		var parent = field.closest(".form-group");
@@ -124,7 +124,7 @@ function getFirstPersonsLastName(person) {
 		if (firstand < 0) {
 			firstauthor = person;
 		} else {
-			firstauthor = person.substring(0, firstand);				
+			firstauthor = person.substring(0, firstand);
 		}
 		/*
 		 * first author extracted, get its last name
@@ -359,49 +359,41 @@ function applyKeyDownHandler(element) {
  * change appearance of misc and transfer data
  */
 $(document).ready(function() {
-    /*
-     * add misc fields in the beginning, so they don't show up if js is disabled
-     */
-    $("#miscDiv").append('<div id="allFieldsWrap"><div id="extraFieldsWrap" class="form-group"><label class="col-sm-3 control-label" for="">misc fields</label><div><div class="col-sm-4"><input class="form-control" type="text" path=""/></div><div class="col-sm-4"><input class="form-control" type="text" path=""/></div><div class="col-sm-1"><button class="btn btn-sm" type="button" id="add_field_button">+</button></div></div></div><div id="standardFieldsWrap" class="form-group"></div></div>');
-    $("#miscCheckboxDiv").append('<label><input type="checkbox" id="expertView" /> expert view</label>');
-    
-    
-    
-    
-    /*
-     * variables
-     */
-    var wrapper         = $("#extraFieldsWrap"); //Fields wrapper
-    var add_button      = $("#add_field_button"); //Add button ID
-    var misc 			= $("#post\\.resource\\.misc");
-    var miscFieldValues = [];
-    //Important fields that are often used, use ["labelName", "fieldName"]
-    var standardMiscFields = [["DOI", "DOI"],["TEST", "TEST"] ,["asdf", "asdf"]];
-    
-    
-    
-    
-    /*
-     * functions
-     */
-    function addInputs(){
-    	$(wrapper).append('<div class="extraInputs"><label class="col-sm-3"></label><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-1"><button class="btn btn-sm remove_field" type="button">-</form:button></div></div>'); 
-    };
-    
-    
-    function transferMiscFieldValuesToOldField(){
-    	var fieldString = [];
-    	for (var i = 0; i < miscFieldValues.length; i+=2){
-    		if (miscFieldValues[i] != "undefined" || miscFieldValues[i+1] != "undefined"){
-        		fieldString.push("  " + miscFieldValues[i] + " = {" + miscFieldValues[i+1] + "}");
-    		}
-    	}
-    	$(misc).val(fieldString.join(", \n"));
-    }
-    
-    
-    function transferDataFromOldToNew(){
-    	//gets the data from misc
+	/*
+	 * add misc fields in the beginning, so they don't show up if js is disabled
+	 */
+	$("#miscDiv").append('<div id="allFieldsWrap"><div id="extraFieldsWrap" class="form-group"><label class="col-sm-3 control-label" for="">misc fields</label><div><div class="col-sm-4"><input class="form-control" type="text" path=""/></div><div class="col-sm-4"><input class="form-control" type="text" path=""/></div><div class="col-sm-1"><button class="btn btn-sm" type="button" id="add_field_button">+</button></div></div></div><div id="standardFieldsWrap" class="form-group"></div></div>');
+	$("#miscCheckboxDiv").append('<label><input type="checkbox" id="expertView" /> expert view</label>');
+	
+	/*
+	 * variables
+	 */
+	var wrapper = $("#extraFieldsWrap"); //Fields wrapper
+	var add_button = $("#add_field_button"); //Add button ID
+	var misc = $("#post\\.resource\\.misc");
+	var miscFieldValues = [];
+	// important fields that are often used, use ["labelName", "fieldName"]
+	var standardMiscFields = [["DOI", "DOI"],["TEST", "TEST"] ,["asdf", "asdf"]];
+	
+	/*
+	 * functions
+	 */
+	function addInputs(){
+		$(wrapper).append('<div class="extraInputs"><label class="col-sm-3"></label><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-1"><button class="btn btn-sm remove_field" type="button">-</form:button></div></div>'); 
+	};
+	
+	function transferMiscFieldValuesToOldField(){
+		var fieldString = [];
+		for (var i = 0; i < miscFieldValues.length; i+=2){
+			if (miscFieldValues[i] != "undefined" || miscFieldValues[i+1] != "undefined"){
+				fieldString.push("  " + miscFieldValues[i] + " = {" + miscFieldValues[i+1] + "}");
+			}
+		}
+		$(misc).val(fieldString.join(", \n"));
+	}
+	
+	function transferDataFromOldToNew(){
+		// gets the data from misc
 		var miscVal = $(misc).val();
 		var pairs = miscVal.split(",");
 		var values = [];
@@ -415,16 +407,16 @@ $(document).ready(function() {
 					itemValues[0] = itemValues[0].substr(2, itemValues[0].length);
 				}
 				if (itemValues[1].charAt(itemValues[1].length-1) === "}"){ //formatting
-    				itemValues[1] = itemValues[1].substr(0, itemValues[1].length-1);
-    			}
+					itemValues[1] = itemValues[1].substr(0, itemValues[1].length-1);
+				}
 				//show an empty input instead of "undefined"
 				for(var i = 0; i < itemValues.length; i++){
 					if (itemValues[i] === "undefined"){
 						itemValues[i] = "";
 					}
 				}
-			}    			
-			values = values.concat(itemValues);			
+			}
+			values = values.concat(itemValues);
 		});
 
 		//set length to 0, so no new line is added
@@ -446,100 +438,95 @@ $(document).ready(function() {
 				addInputs();
 			}
 		}
-    }
-    
-    
-    //adds fields, that have a special input
-    function addStandardFields(){
-    	for (var i = 0; i < standardMiscFields.length; i++){
-    		var standardField = standardMiscFields[i];
-    		$("#standardFieldsWrap").append('<div class="standardInputs"><label class="col-sm-3 control-label">' + standardField[0] + '</label><div class="col-sm-9"><input name="' + standardField[1].toLowerCase() + '"class="form-control" type="text"/></div></div>');
-    	}
-    }
-    
-    
-    function refreshOldView(){
-    	miscFieldValues = [];
-    	
-    	//extra fields
-    	$("#extraFieldsWrap :input[type=text]").each(function(){
-    		/*
-    		 * pushes the value of each text-input if it is not empty after deleting every whitespace
-    		 * else pushes "undefined"
-    		 */
-    		if ($(this).val().replace(/\s+/g, '') != ""){
-        		miscFieldValues.push($(this).val());    			
-    		}else{
-    			miscFieldValues.push("undefined");
-    		}
-    	});
-    	
-    	//standard fields
-    	$("#standardFieldsWrap :input[type=text]").each(function(){
-    		/*
-    		 * pushes the name, then the value if not empty, else "undefined"
-    		 */
-    		miscFieldValues.push($(this).attr("name"));
-    		if ($(this).val().replace(/\s+/g, '') != ""){
-        		miscFieldValues.push($(this).val());    			
-    		}else{
-    			miscFieldValues.push("undefined");
-    		}
-    	});
-    	transferMiscFieldValuesToOldField();
-    };
-    
-    
-    /*
-     * after loading
-     */
-    addStandardFields();
-    //transfer Data after loading, so the values of the potentially filled old view are shown
-    transferDataFromOldToNew();
-    //hides old view
-    $(misc).parent("div").parent("div").addClass("hidden");
-    
-    
-    
-    //on add input button click
-    $(add_button).click(function(e){ 
-        e.preventDefault();
-        addInputs();
-    });
-    
-    
-    //user click on remove button
-    $(wrapper).on("click",".remove_field", function(e){ 
-    	e.preventDefault();
-        $(this).parent('div').parent('div').remove(); 
-        
-        //this refreshes the values in the array/old misc-field
-        refreshOldView();
-    });
-    
-    //transfer field values of new design to array
-    $("#allFieldsWrap").focusout(refreshOldView);
-    
-    
-    //change view to old or new
-    $("#expertView").change(function(){
-    	if (this.checked){
-    		// old/expert view    
-    		refreshOldView();
-    		$("#allFieldsWrap").addClass("hidden");
-    		$(misc).closest(".form-group").removeClass("hidden");
-    		$(".extraInputs").remove();
-    		$("#standardFieldsWrap :input[type=text]").each(function(){
-    			$(this).val("");
-    		});
-    	}else{
-    		// new/normal view
-    		transferDataFromOldToNew();
-    		
-    		//actually changes the view
-    		$(misc).closest(".form-group").addClass("hidden");
-    		$("#allFieldsWrap").removeClass("hidden");
-    	}
-    });
-    
+	}
+	
+	//adds fields, that have a special input
+	function addStandardFields(){
+		for (var i = 0; i < standardMiscFields.length; i++){
+			var standardField = standardMiscFields[i];
+			$("#standardFieldsWrap").append('<div class="standardInputs"><label class="col-sm-3 control-label">' + standardField[0] + '</label><div class="col-sm-9"><input name="' + standardField[1].toLowerCase() + '"class="form-control" type="text"/></div></div>');
+		}
+	}
+	
+	function refreshOldView(){
+		miscFieldValues = [];
+		
+		//extra fields
+		$("#extraFieldsWrap :input[type=text]").each(function(){
+			/*
+			 * pushes the value of each text-input if it is not empty after deleting every whitespace
+			 * else pushes "undefined"
+			 */
+			if ($(this).val().replace(/\s+/g, '') != ""){
+				miscFieldValues.push($(this).val());
+			}else{
+				miscFieldValues.push("undefined");
+			}
+		});
+		
+		//standard fields
+		$("#standardFieldsWrap :input[type=text]").each(function(){
+			/*
+			 * pushes the name, then the value if not empty, else "undefined"
+			 */
+			miscFieldValues.push($(this).attr("name"));
+			if ($(this).val().replace(/\s+/g, '') != ""){
+				miscFieldValues.push($(this).val());
+			}else{
+				miscFieldValues.push("undefined");
+			}
+		});
+		transferMiscFieldValuesToOldField();
+	};
+	
+	
+	/*
+	 * after loading
+	 */
+	addStandardFields();
+	//transfer Data after loading, so the values of the potentially filled old view are shown
+	transferDataFromOldToNew();
+	//hides old view
+	$(misc).parent("div").parent("div").addClass("hidden");
+	
+	//on add input button click
+	$(add_button).click(function(e){ 
+		e.preventDefault();
+		addInputs();
+	});
+	
+	
+	//user click on remove button
+	$(wrapper).on("click",".remove_field", function(e){ 
+		e.preventDefault();
+		$(this).parent('div').parent('div').remove(); 
+		
+		//this refreshes the values in the array/old misc-field
+		refreshOldView();
+	});
+	
+	//transfer field values of new design to array
+	$("#allFieldsWrap").focusout(refreshOldView);
+	
+	//change view to old or new
+	$("#expertView").change(function(){
+		if (this.checked){
+			// old/expert view
+			refreshOldView();
+			$("#allFieldsWrap").addClass("hidden");
+			$(misc).closest(".form-group").removeClass("hidden");
+			$(".extraInputs").remove();
+			$("#standardFieldsWrap :input[type=text]").each(function(){
+				$(this).val("");
+			});
+		}else{
+			// new/normal view
+			transferDataFromOldToNew();
+			
+			//actually changes the view
+			$(misc).closest(".form-group").addClass("hidden");
+			$("#allFieldsWrap").removeClass("hidden");
+		}
+	});
+	
 });
