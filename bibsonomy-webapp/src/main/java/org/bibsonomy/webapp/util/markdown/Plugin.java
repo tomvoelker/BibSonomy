@@ -114,9 +114,7 @@ public class Plugin extends Parser implements InlinePluginParser, BlockPluginPar
 	 * @return the parsed Sting as a list of nodes
 	 */
 	public List<Node> parse(StringBuilderVar body) {
-		PegDownProcessor processor = new PegDownProcessor(0,
-				new PegDownPlugins.Builder().withPlugin(Plugin.class).build());
-	
+		final PegDownProcessor processor = new PegDownProcessor(org.bibsonomy.webapp.util.markdown.Parser.PROCESSOR_CONFIG, new PegDownPlugins.Builder().withPlugin(Plugin.class).build());
 		return processor.parseMarkdown(body.getChars()).getChildren();
 	}
 
