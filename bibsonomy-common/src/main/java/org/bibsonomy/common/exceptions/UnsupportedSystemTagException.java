@@ -32,11 +32,7 @@ package org.bibsonomy.common.exceptions;
  * @author Dominik Benz
  */
 public class UnsupportedSystemTagException extends RuntimeException {
-
-	/**
-	 * uid
-	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1334124737104117889L;
 
 	/**
 	 * Exception for unsupported types of system tags

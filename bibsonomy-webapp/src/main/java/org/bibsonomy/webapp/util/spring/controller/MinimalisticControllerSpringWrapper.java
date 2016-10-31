@@ -44,6 +44,7 @@ import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ReadOnlyDatabaseException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.UnsupportedOrderingException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -330,7 +331,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		} catch (final UnsupportedMediaTypeException e) {
 			response.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
 			errors.reject("system.error.unsupportedmediatype");
-		} catch (final BadRequestOrResponseException e) {
+		} catch (final BadRequestOrResponseException | UnsupportedOrderingException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			errors.reject("system.error.badrequest", e.getMessage());
 		} catch (final Exception ex) {

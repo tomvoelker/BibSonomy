@@ -580,6 +580,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 		publication.setEntrytype("article");
 		publication.setEditor(PersonNameUtils.discoverPersonNames("Edith Editor"));
 		publication.setTitle("test");
+		publication.setYear("2014");
 		return this.createTestPost(publication, user, tags);
 	}
 	

@@ -52,5 +52,6 @@
 		<property name="projectHome" ref="projectHome" />
 		<property name="client" ref="esClient" />
 		<property name="factory" ref="markdownFactory" />
+		<property name="indexingDisabled" value="#{!isValidESConnection}" />
 	</bean>
 </beans>

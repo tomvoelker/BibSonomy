@@ -52,6 +52,12 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	/** tags to search for, as list */
 	private List<String> requestedTagsList = null;
 	
+	/**
+	 * the number of normal tags (no system tags)
+	 * TODO: remove as soon as we can check for system tags in the view
+	 */
+	private int numberOfNormalTags;
+	
 	/** the specified order */
 	private Order order = Order.ADDED;
 		
@@ -272,6 +278,20 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand {
 	 */
 	public List<Tag> getConceptsOfAll() {
 		return conceptsOfAll;
+	}
+
+	/**
+	 * @return the numberOfNormalTags
+	 */
+	public int getNumberOfNormalTags() {
+		return this.numberOfNormalTags;
+	}
+
+	/**
+	 * @param numberOfNormalTags the numberOfNormalTags to set
+	 */
+	public void setNumberOfNormalTags(int numberOfNormalTags) {
+		this.numberOfNormalTags = numberOfNormalTags;
 	}
 
 	/**

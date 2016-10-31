@@ -172,22 +172,7 @@ public class SimHash {
 				PersonNameUtils.getNormalizedPersons(publication.getAuthor())            + " " + 
 				getNormalizedYear(publication.getYear()));
 	}
-
-	/*
-	notwendige Anpassungen:
-
-	 - entsprechende zusätzliche Spalten (Volume/Number) im ResourceHandler mit herausgeben
-	   (in getBibtexSelect() columns[] anpassen)
-	 - Bibtex.java anpassen: getSimHash(), setHashesToNull(), später getHash()
-	 - writing of hashes in insertBibIntoDB() in BibtexHandler is already done for 0 to 4
-	 - update queries in ResourceHandler to use correct hashes for query
-	 
-	 changing in Bibtex.getHash() from 0 to 2 should imply changing column in resource handler and 
-	 pre-0 to pre-2 in JSPs?!
-	 
-	 have a look at SIM_HASH and INTRA_HASH - where are they used and should they be changed?
-
-	*/
+	
 	/**
 	 * @param bibtex the object whose hash is to be calculated
 	 * @return the calculated simHash0, which consideres: author, editor, year, entryType, journal, booktitle, volume, number.

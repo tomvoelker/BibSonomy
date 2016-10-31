@@ -24,41 +24,42 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.model.util;
+package org.bibsonomy.model.validation;
 
-import java.util.Collection;
-import java.util.Map;
+import static org.bibsonomy.util.ValidationUtils.present;
 
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.ImportResource;
-import org.bibsonomy.model.util.data.Data;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.bibsonomy.common.errors.ErrorMessage;
+import org.bibsonomy.common.errors.MissingFieldErrorMessage;
+import org.bibsonomy.model.Bookmark;
 
 /**
- * @author jensi
+ * validator for {@link Bookmark}s
+ *
+ * @author dzo
  */
-public class CompositeBibtexReader implements BibTexReader {
-	private final Map<String, BibTexReader> bibtexReadersByMimeType;
-	
-	/**
-	 * instantiate
-	 * @param bibtexReadersByMimeType
+public class BookmarkValidator implements ResourceValidator<Bookmark> {
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.validation.ResourceValidator#validateResource(org.bibsonomy.model.Resource)
 	 */
-	public CompositeBibtexReader(final Map<String, BibTexReader> bibtexReadersByMimeType) {
-		this.bibtexReadersByMimeType = bibtexReadersByMimeType;
-	}
-	
 	@Override
-	public Collection<BibTex> read(final ImportResource importRes) {
-		final Data data = importRes.getData();
-		final String type = data.getMimeType();
-		if (type == null) {
-			throw new IllegalArgumentException("null mimetype");
+	public List<ErrorMessage> validateResource(Bookmark bookmark) {
+		final List<ErrorMessage> errors = new LinkedList<>();
+		
+		if (!present(bookmark.getUrl())) {
+			final ErrorMessage errorMessage = new MissingFieldErrorMessage("url");
+			errors.add(errorMessage);
 		}
-		final BibTexReader bibReader = this.bibtexReadersByMimeType.get(type);
-		if (bibReader == null) {
-			throw new UnsupportedOperationException("unsupported import mimetype '" + type + "'");
+		
+		if (!present(bookmark.getInterHash()) || !present(bookmark.getIntraHash())) {
+			final ErrorMessage errorMessage = new MissingFieldErrorMessage("intraHash");
+			errors.add(errorMessage);
 		}
-		return bibReader.read(importRes);
+		
+		return errors;
 	}
 
 }

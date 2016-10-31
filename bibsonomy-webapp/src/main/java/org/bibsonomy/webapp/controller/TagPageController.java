@@ -32,6 +32,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.common.exceptions.UnsupportedOrderingException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.MyOwnSystemTag;
 import org.bibsonomy.model.Resource;
@@ -83,13 +84,19 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		if (tagCount == 0 && requTags.size() == 1 && MyOwnSystemTag.NAME.equalsIgnoreCase(requTags.get(0))) {
 			tagCount = 1;
 		}
+		// requested order
+		final Order order = command.getOrder();
+		if (tagCount == 0 && Order.FOLKRANK.equals(order)) {
+			throw new UnsupportedOrderingException(Order.FOLKRANK.name());
+		}
+		
+		command.setNumberOfNormalTags(tagCount);
 		
 		// handle case when only tags are requested
 		// FIXME we can only retrieve 1000 tags here
 		this.handleTagsOnly(command, GroupingEntity.ALL, null, null, requTags, null, 1000, null);
 		
-		// requested order
-		final Order order = command.getOrder();
+		
 		int totalNumPosts = 1; 
 		
 		// retrieve and set the requested resource lists
@@ -145,7 +152,6 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		this.endTiming();
 		// export - return the appropriate view
 		return Views.getViewByFormat(format);
-		
 	}
 	
 	@Override

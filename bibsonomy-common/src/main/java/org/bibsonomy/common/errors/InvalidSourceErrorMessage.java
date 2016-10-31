@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Rest-Common - Common things for the REST-client and server.
+ * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
  * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -24,52 +24,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.rest.validation;
-
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
+package org.bibsonomy.common.errors;
 
 /**
- * Validates the given model.
- * 
- * @author rja
+ * {@link ErrorMessage} for publications with invalid BibTeX
+ *
+ * @author dzo
  */
-public interface ModelValidator {
+public class InvalidSourceErrorMessage extends ErrorMessage {
 
 	/**
-	 * Check the publication for correctness.
-	 * @param publication
+	 * default constructor
 	 */
-	public void checkPublication(final BibTex publication);
+	public InvalidSourceErrorMessage() {
+		super("Invalid BibTeX for this post.", "database.exception.invalid.bibtex");
+	}
 
-	/**
-	 * @param post
-	 */
-	public void checkPost(Post<? extends Resource> post);
-
-	/**
-	 * @param user
-	 */
-	public void checkUser(User user);
-
-	/**
-	 * @param tag
-	 */
-	public void checkTag(Tag tag);
-
-	/**
-	 * @param group
-	 */
-	public void checkGroup(Group group);
-
-	/**
-	 * @param bookmark
-	 */
-	public void checkBookmark(Bookmark bookmark);
-	
 }

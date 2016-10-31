@@ -30,7 +30,7 @@ package org.bibsonomy.common.errors;
 /**
  * @author nna
  */
-public class DuplicatePostInSnippetErrorMessage extends ErrorMessage{
+public class DuplicatePostInSnippetErrorMessage extends ErrorMessage {
 
 	/**
 	 * @param resourceClassName

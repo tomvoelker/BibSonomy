@@ -53,6 +53,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.GoldStandardRelation;
+import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.util.ReflectionUtils;
 
@@ -194,7 +195,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 			if (present(newPostInDB)) {
 				log.debug("gold stanard post with hash \"" + resourceHash + "\" already exists in DB");
 				final ErrorMessage errorMessage = new DuplicatePostErrorMessage(this.resourceClassName, resourceHash);
-				session.addError(resourceHash, errorMessage);
+				session.addError(PostUtils.getKeyForPost(post), errorMessage);
 				session.commitTransaction();
 				return false;
 			}
@@ -265,7 +266,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 					 * not found -> add ErrorMessage
 					 */
 					final ErrorMessage errorMessage = new UpdatePostErrorMessage(this.resourceClassName, hash);
-					session.addError(hash, errorMessage);
+					session.addError(PostUtils.getKeyForCommunityPost(post), errorMessage);
 					log.warn("Added UpdatePostErrorMessage for post " + post.getResource().getIntraHash());
 					session.commitTransaction();
 
