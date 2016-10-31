@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.webapp.command;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.bibsonomy.model.BibTex;
@@ -54,6 +55,8 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	private PersonName personName;
 	private Post<BibTex> post;
 	private List<ResourcePersonRelation> personSuggestions;
+	private HashMap<ResourcePersonRelation, List<Post<?>>> suggestedPersonPosts;
+	private List<Post<?>> suggestedPosts;
 
 	/**
 	 * @return the requestedHash
@@ -180,5 +183,33 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	@Deprecated
 	public void setPersonRoleRenderer(PersonRoleRenderer personRoleRenderer) {
 		this.personRoleRenderer = personRoleRenderer;
+	}
+
+	/**
+	 * @return the suggestedPersonPosts
+	 */
+	public HashMap<ResourcePersonRelation, List<Post<?>>> getSuggestedPersonPosts() {
+		return this.suggestedPersonPosts;
+	}
+
+	/**
+	 * @param suggestedPersonPosts the suggestedPersonPosts to set
+	 */
+	public void setSuggestedPersonPosts(HashMap<ResourcePersonRelation, List<Post<?>>> suggestedPersonPosts) {
+		this.suggestedPersonPosts = suggestedPersonPosts;
+	}
+
+	/**
+	 * @return the suggestedPosts
+	 */
+	public List<Post<?>> getSuggestedPosts() {
+		return this.suggestedPosts;
+	}
+
+	/**
+	 * @param suggestedPosts the suggestedPosts to set
+	 */
+	public void setSuggestedPosts(List<Post<?>> suggestedPosts) {
+		this.suggestedPosts = suggestedPosts;
 	}
 }

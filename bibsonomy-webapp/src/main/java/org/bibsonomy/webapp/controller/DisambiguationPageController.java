@@ -28,6 +28,8 @@ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -42,6 +44,7 @@ import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.LogicException;
 import org.bibsonomy.model.logic.exception.ResourcePersonAlreadyAssignedException;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
+import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.person.PersonRoleRenderer;
 import org.bibsonomy.webapp.command.DisambiguationPageCommand;
@@ -122,7 +125,43 @@ public class DisambiguationPageController extends SingleResourceListController i
 		
 		String name = requestedName.toString();
 		PersonSuggestionQueryBuilder query = this.logic.getPersonSuggestion(name).withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values());
-		command.setPersonSuggestions(query.doIt());
+		
+		// [personID] List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations().byPersonId(person.getPersonId()).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear).getIt();
+		
+		List<ResourcePersonRelation> suggestedPersons = query.doIt();
+		
+		// command.setPersonSuggestions(suggestedPersons);
+		
+		// find posts from suggested persons
+		List<Post<?>> otherAuthorPosts;
+		List<Post<?>> otherAdvisorPosts = new ArrayList<>();
+		HashMap<ResourcePersonRelation, List<Post<?>>> suggestedPersonPosts = new HashMap<>();
+		
+		// fetch posts from each user with same name to the requested one
+		for (final ResourcePersonRelation suggestedPerson : suggestedPersons) {
+			List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations().byPersonId(suggestedPerson.getPerson().getPersonId()).withPosts(true).withPersonsOfPosts(true).groupByInterhash(true).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear).getIt();
+			otherAuthorPosts = new ArrayList<>();
+
+			for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
+				// escape thesis
+				final boolean isThesis = resourcePersonRelation.getPost().getResource().getEntrytype().toLowerCase().endsWith("thesis");
+				if (isThesis)
+					continue;
+
+				// get posts from suggested persons				
+				if (resourcePersonRelation.getRelationType().equals(PersonResourceRelationType.AUTHOR)) {
+					// posts from a known author
+					otherAuthorPosts.add(resourcePersonRelation.getPost());
+				} else {
+					// posts from an author with the same name but no assignment
+					otherAdvisorPosts.add(resourcePersonRelation.getPost());
+				}
+			}
+			suggestedPersonPosts.put(suggestedPerson, otherAuthorPosts);
+		}
+		
+		command.setSuggestedPersonPosts(suggestedPersonPosts);
+		command.setSuggestedPosts(otherAdvisorPosts);
 		
 		return Views.DISAMBIGUATION;
 	}
@@ -218,5 +257,3 @@ public class DisambiguationPageController extends SingleResourceListController i
 		this.personRoleRenderer = personRoleRenderer;
 	}
 }
-
-

@@ -130,7 +130,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	private ElasticsearchManager<R> manager;
 
 	/** the number of person suggestions */
-	private int suggestionSize = 5;
+	// private int suggestionSize = 5;
 
 	private String genealogyUser;
 
@@ -357,7 +357,8 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		double bestScore = Double.NaN;
 		// remember alreadyAnalyzedInterhashes to skip over multiple posts of the same resource
 		final Set<String> alreadyAnalyzedInterhashes = new HashSet<>();
-		for (int offset = 0; relSorter.size() < suggestionSize && offset < MAX_OFFSET; offset += 1024 / 10) {
+//		for (int offset = 0; relSorter.size() < suggestionSize && offset < MAX_OFFSET; offset += 1024 / 10) {
+		for (int offset = 0; offset < MAX_OFFSET; offset += 1024 / 10) {
 			// although we change the query by changing the minimum score of the results, we can still
 			// reuse the same offset(skip) counter, because the order of the ranked results remains the
 			// same and the increased minimum score only drops results beyond those we have seen so far.
@@ -705,9 +706,9 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 			if ((rpr.getPerson().getPersonId() == null) || (foundPersonIds.add(rpr.getPerson().getPersonId()) == true)) {
 				// we have not seen this personId earlier in the sorted map, so add it to the response list
 				rVal.add(rpr);
-				if (rVal.size() == suggestionSize) {
-					return rVal;
-				}
+//				if (rVal.size() == suggestionSize) {
+//					return rVal;
+//				}
 			}
 		}
 		return rVal;
@@ -716,9 +717,9 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	/**
 	 * @param personSuggestionSize the person suggestion size
 	 */
-	public void setSuggestionSize(int personSuggestionSize) {
-		this.suggestionSize = personSuggestionSize;
-	}
+//	public void setSuggestionSize(int personSuggestionSize) {
+//		this.suggestionSize = personSuggestionSize;
+//	}
 	
 	/**
 	 * build the overall elasticsearch query term
