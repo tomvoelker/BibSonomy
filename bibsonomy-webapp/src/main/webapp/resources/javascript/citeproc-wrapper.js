@@ -138,7 +138,7 @@ function Sys(data) {
 
 	this.retrieveLocale = function(lang) {
 		var xhr = new XMLHttpRequest();
-		xhr.open('GET', '/csl-language/' + lang, false);
+		xhr.open('GET', '/csl-locale/' + lang, false);
 		xhr.send(null);
 		return xhr.responseText;
 	};

@@ -481,7 +481,7 @@
 						<property name="allowedFields">
 							<list>
 								<value>style</value>
-								<value>language</value>
+								<value>locale</value>
 							</list>
 						</property>
 					</bean>

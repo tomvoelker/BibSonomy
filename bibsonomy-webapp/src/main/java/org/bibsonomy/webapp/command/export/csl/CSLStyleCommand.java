@@ -1,14 +1,14 @@
 package org.bibsonomy.webapp.command.export.csl;
 
-import org.bibsonomy.webapp.command.ResourceViewCommand;
+import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
  * @author jp
  */
-public class CSLStyleCommand extends ResourceViewCommand {
+public class CSLStyleCommand extends BaseCommand {
 	private String responseString;
 	private String style;
-	private String language;
+	private String locale;
 	
 	/**
 	 * @return the style
@@ -25,17 +25,17 @@ public class CSLStyleCommand extends ResourceViewCommand {
 	}
 
 	/**
-	 * @return the language
+	 * @return the locale
 	 */
-	public String getLanguage() {
-		return this.language;
+	public String getLocale() {
+		return this.locale;
 	}
 
 	/**
-	 * @param language the language to set
+	 * @param locale the locale to set
 	 */
-	public void setLanguage(String language) {
-		this.language = language;
+	public void setLocale(String locale) {
+		this.locale = locale;
 	}
 
 	/**

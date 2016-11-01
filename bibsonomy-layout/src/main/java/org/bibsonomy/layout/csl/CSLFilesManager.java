@@ -145,11 +145,11 @@ public class CSLFilesManager {
 	}
 	
 	/**
-	 * @param language
+	 * @param locale
 	 * @return the locale file content
 	 */
-	public String getLocaleFile(String language) {
-		return this.cslLocaleFiles .get(language);
+	public String getLocaleFile(final String locale) {
+		return this.cslLocaleFiles.get(locale);
 	}
 
 	/**

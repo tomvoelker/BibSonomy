@@ -44,9 +44,9 @@ public class CSLStyleController implements MinimalisticController<CSLStyleComman
 	@Override
 	public View workOn(final CSLStyleCommand command) {
 		final String styleName = command.getStyle();
-		final String language = command.getLanguage();
+		final String locale = command.getLocale();
 		if (!present(styleName)) {
-			if (!present(language)) {
+			if (!present(locale)) {
 				/*
 				 * export a list of all available csl layouts
 				 */
@@ -72,7 +72,7 @@ public class CSLStyleController implements MinimalisticController<CSLStyleComman
 			/*
 			 * return the language file
 			 */
-			command.setResponseString(this.cslFilesManager.getLocaleFile(language));
+			command.setResponseString(this.cslFilesManager.getLocaleFile(locale));
 			return Views.AJAX_XML;
 		}
 		
