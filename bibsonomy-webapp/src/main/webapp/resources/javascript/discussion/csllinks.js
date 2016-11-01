@@ -206,26 +206,6 @@ function PostLinkResult(publication, hash, name) {
 	};
 };
 
-function Sys(data) {
-	this.data = data;
-
-	this.retrieveLocale = function(lang) {
-		return cslLocale[lang];
-	};
-
-	this.retrieveItem = function(id) {
-		return this.data[id];
-	};
-
-	this.getAbbreviations = function(name) {
-		var ABBREVS = {
-			"default" : {}
-		};
-		return ABBREVS[name];
-	};
-
-};
-
 /**
  * source: http://stackoverflow.com/questions/2390789/how-to-replace-all-points-in-a-string-in-javascript/9918856#9918856 
  */
