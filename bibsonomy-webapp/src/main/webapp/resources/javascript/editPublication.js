@@ -43,11 +43,11 @@ function changeView(showAll) {
 	var noRequiredFields = (requiredFields === undefined); 
 	var collpase = document.getElementById('collapse');
 	
-	if(showAll || noRequiredFields) {
+	if (showAll || noRequiredFields) {
 		requiredFields = fields;
-		if(noRequiredFields)
+		if (noRequiredFields) {
 			$(collapse).parent().addClass("hidden");
-		else {
+		} else {
 			message = getString('post.resource.fields.detailed.show.required');
 			$(collapse).parent().removeClass("hidden");
 		}
@@ -58,10 +58,10 @@ function changeView(showAll) {
 	collapse.firstChild.nodeValue = message;
 	
 	for (var i = 0; i < fields.length; i++) {
-		
-		var field = $("#post\\.resource\\." + fields[i]);
+		var bibtexField = fields[i];
+		var field = $("#post\\.resource\\." + bibtexField);
 		var parent = field.closest(".form-group");
-		if(showAll || in_array(requiredFields,fields[i])) {
+		if (showAll || in_array(requiredFields, bibtexField)) {
 			parent.show();
 		} else {
 			if (!field.val()) { //fix: don't hide not empty fields
@@ -373,7 +373,7 @@ $(document).ready(function() {
 	var misc = $("#post\\.resource\\.misc");
 	var miscFieldValues = [];
 	// important fields that are often used, use ["labelName", "fieldName"]
-	var standardMiscFields = [["DOI", "DOI"],["TEST", "TEST"] ,["asdf", "asdf"]];
+	var standardMiscFields = [["DOI", "DOI"]];
 	
 	/*
 	 * functions
