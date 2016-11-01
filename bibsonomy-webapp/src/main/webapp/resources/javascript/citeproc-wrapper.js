@@ -11,11 +11,12 @@ $(function() {
 		url: url,
 		success: function(data) {
 			//callback
-			renderCSL(data, format, container);
+			renderCSL(data, format, container, false);
 		}
 	});
 });
 
+// FIXME: workaround for the wrong csl export
 function fixData(data) {
 	$.each(data, function(index, citation) {
 		delete citation.issued.literal;
@@ -38,28 +39,38 @@ function loadStyle(styleName, success) {
 	});
 }
 
-function renderCSL(csl, styleName, container) {
+function renderCSL(csl, styleName, container, clearContainer) {
 	csl = fixData(csl);
 	// getting style for CSL from /csl-style/"style"
 	loadStyle(styleName, function(xml) {
 		//building CSL based on XML
 		//kept this as it was
 		var sys = new Sys(csl);
+		
+		var citationItems = [];
+		
 		for (var key in csl) {
-			var citeproc = new CSL.Engine(sys, xml);
-			var citation = {
-				"citationItems" : [ {
-					id : key
-				} ],
-				"properties" : {
-					"noteIndex" : 1
-				}
-			};
-			var renderedCitation = citeproc.appendCitationCluster(citation);
-			var bibliographyEntry = citeproc.makeBibliography();
-			var output = bibliographyEntry[1][0];
+			citationItems.push({
+				id : key
+			});
+		}
+		
+		if (clearContainer) {
 			container.empty();
-			container.append(output);
+		}
+		
+		var citeproc = new CSL.Engine(sys, xml);
+		var citation = {
+			"citationItems" : citationItems,
+			"properties" : {
+				"noteIndex" : 1
+			}
+		};
+		var renderedCitation = citeproc.appendCitationCluster(citation);
+		var bibliographyEntry = citeproc.makeBibliography();
+		var output = bibliographyEntry[1];
+		for (var i = 0; i < output.length; i++) {
+			container.append(output[i]);
 		}
 	});
 }
@@ -77,11 +88,11 @@ function loadExportLayout(clickedElement, targetElement, publicationLink) {
 				success: function(data) {
 					csl = data;
 					tabContainer.data('csl', data);
-					renderCSL(csl, style, targetElement);
+					renderCSL(csl, style, targetElement, true);
 				}
 			})
 		} else {
-			renderCSL(csl, style, targetElement);
+			renderCSL(csl, style, targetElement, true);
 		}
 	} else {
 		loadSimpleLayout(clickedElement, targetElement);

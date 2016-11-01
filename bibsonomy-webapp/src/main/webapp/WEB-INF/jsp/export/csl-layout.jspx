@@ -17,21 +17,15 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<!-- TODO: support embedding of the format -->
 	<html>
 		<head>
-			<!-- if several CSL-Styles are embedded on a page every div has an unique ID, which is written to a JS variable-->
 			<script type="text/javascript" src="/resources/jquery/jquery.js"><!-- keep me --></script>
 			<script type="text/javascript; e4x=1" src="/resources/javascript/citeproc/xmle4x.js"><!-- keep me --></script> 
-			<script type="text/javascript" src="/resources/javascript/citeproc/xmldom.js"><!-- keep me --></script>
-			<script type="text/javascript" src="/resources/javascript/citeproc/csllocales.js"><!-- keep me --></script>
 			<script type="text/javascript" src="/resources/javascript/citeproc/citeproc.js"><!-- keep me --></script>
+			<script type="text/javascript" src="/resources/javascript/citeproc/xmldom.js"><!-- keep me --></script>
 			<script type="text/javascript" src="/resources/javascript/citeproc-wrapper.js"><!-- keep me --></script>
-			<style type="text/css">
-				.csl-entry {
-					margin-bottom: 5px;
-				}
-			</style>
+			<!-- only for development <script type="text/javascript" src="/resources/less/less.js">keep me</script>  -->
+			<mtl:styleSheet path="/resources/css/csl.css" />
 		</head>
 		<body>
 			<div id="csl-container" data-url="/csl/${fn:escapeXml(requPath)}" data-style="${command.layout}">

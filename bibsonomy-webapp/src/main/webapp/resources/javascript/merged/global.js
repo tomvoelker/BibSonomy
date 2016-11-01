@@ -26,7 +26,6 @@ includeJavaScript("/resources/javascript/bootstrap-datepicker.js");
 includeJavaScript("/resources/select2/js/select2.full.js");
 includeJavaScript("/resources/javascript/bootstrap-tagsinput.js");
 includeJavaScript("/resources/javascript/citeproc/xmldom.js");
-includeJavaScript("/resources/javascript/citeproc/csllocales.js");
 includeJavaScript("/resources/javascript/citeproc/citeproc.js");
 includeJavaScript("/resources/javascript/citeproc-wrapper.js");
 includeJavaScript("/resources/javascript/friendoverview.js");
