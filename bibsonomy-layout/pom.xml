@@ -109,5 +109,10 @@
 			<artifactId>csl-styles</artifactId>
 			<version>[1.0.5,)</version>
 		</dependency>
+		<dependency>
+			<groupId>org.citationstyles</groupId>
+			<artifactId>csl-locales</artifactId>
+			<version>[1.0.1,)</version>
+		</dependency>
 	</dependencies>
 </project>

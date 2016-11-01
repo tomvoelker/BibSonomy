@@ -1,5 +1,6 @@
 package org.bibsonomy.layout.csl;
 
+import static org.bibsonomy.util.ValidationUtils.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
@@ -32,5 +33,13 @@ public class CSLFilesManagerTest {
 		final CSLStyle style = MANAGER.getStyleByName(cslID);
 		assertEquals("Colombian Journal of Anesthesiology", style.getDisplayName());
 		assertEquals(cslID + ".csl", style.getId());
+	}
+	
+	/**
+	 * tests {@link CSLFilesManager#getLocaleFile(String)}
+	 */
+	@Test
+	public void testGetLocale() {
+		assertNotNull(MANAGER.getLocaleFile("de-DE"));
 	}
 }

@@ -481,6 +481,7 @@
 						<property name="allowedFields">
 							<list>
 								<value>style</value>
+								<value>language</value>
 							</list>
 						</property>
 					</bean>
@@ -932,7 +933,7 @@
 		<property name="cslFilesManager" ref="CSLFilesManager" />
 	</bean>
 	
-	<bean id="CSLStyleController" class="org.bibsonomy.webapp.controller.CSLStyleController" scope="request">
+	<bean id="CSLStyleController" class="org.bibsonomy.webapp.controller.export.csl.CSLStyleController" scope="request">
 		<property name="cslFilesManager" ref="CSLFilesManager" />
 	</bean>
 	

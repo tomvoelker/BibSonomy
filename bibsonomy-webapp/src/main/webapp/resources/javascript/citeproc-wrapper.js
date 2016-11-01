@@ -137,7 +137,10 @@ function Sys(data) {
 	this.data = data;
 
 	this.retrieveLocale = function(lang) {
-		return cslLocale[lang];
+		var xhr = new XMLHttpRequest();
+		xhr.open('GET', '/csl-language/' + lang, false);
+		xhr.send(null);
+		return xhr.responseText;
 	};
 
 	this.retrieveItem = function(id) {

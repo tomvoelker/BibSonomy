@@ -1,4 +1,4 @@
-package org.bibsonomy.webapp.controller;
+package org.bibsonomy.webapp.controller.export.csl;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
@@ -6,7 +6,7 @@ import java.util.Map.Entry;
 
 import org.bibsonomy.layout.csl.CSLFilesManager;
 import org.bibsonomy.layout.csl.CSLStyle;
-import org.bibsonomy.webapp.command.CSLStyleCommand;
+import org.bibsonomy.webapp.command.export.csl.CSLStyleCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
@@ -44,26 +44,38 @@ public class CSLStyleController implements MinimalisticController<CSLStyleComman
 	@Override
 	public View workOn(final CSLStyleCommand command) {
 		final String styleName = command.getStyle();
+		final String language = command.getLanguage();
 		if (!present(styleName)) {
-			final JSONObject layouts = new JSONObject();
-			final JSONArray styleArray = new JSONArray();
-			for (final Entry<String, CSLStyle> cslFilesEntry : this.cslFilesManager.getCslFiles().entrySet()) {
-				final CSLStyle style = cslFilesEntry.getValue();
-				final JSONObject styleObject = new JSONObject();
-				styleObject.put("source", "CSL");
-				styleObject.put("name", cslFilesEntry.getKey());
-				styleObject.put("displayName", style.getDisplayName());
-				final String aliasedTo = style.getAliasedTo();
-				if (present(aliasedTo)) {
-					styleObject.put("aliasedTo", aliasedTo);
+			if (!present(language)) {
+				/*
+				 * export a list of all available csl layouts
+				 */
+				final JSONObject layouts = new JSONObject();
+				final JSONArray styleArray = new JSONArray();
+				for (final Entry<String, CSLStyle> cslFilesEntry : this.cslFilesManager.getCslFiles().entrySet()) {
+					final CSLStyle style = cslFilesEntry.getValue();
+					final JSONObject styleObject = new JSONObject();
+					styleObject.put("source", "CSL");
+					styleObject.put("name", cslFilesEntry.getKey());
+					styleObject.put("displayName", style.getDisplayName());
+					final String aliasedTo = style.getAliasedTo();
+					if (present(aliasedTo)) {
+						styleObject.put("aliasedTo", aliasedTo);
+					}
+					styleArray.add(styleObject);
 				}
-				styleArray.add(styleObject);
+				
+				layouts.put("layouts", styleArray);
+				command.setResponseString(layouts.toString());
+				return Views.AJAX_JSON;
 			}
-			
-			layouts.put("layouts", styleArray);
-			command.setResponseString(layouts.toString());
-			return Views.AJAX_JSON;
+			/*
+			 * return the language file
+			 */
+			command.setResponseString(this.cslFilesManager.getLocaleFile(language));
+			return Views.AJAX_XML;
 		}
+		
 		final CSLStyle style = this.cslFilesManager.getStyleByName(styleName.toLowerCase());
 		command.setResponseString(style.getContent());
 		return Views.AJAX_XML;

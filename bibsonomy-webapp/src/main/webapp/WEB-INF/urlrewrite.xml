@@ -179,6 +179,12 @@
 		<to>/$2</to>
 	</rule>
 	<rule>
+		<name>/csl-language</name>
+		<from>^/+csl-language/+(.*)$</from>
+		<set type="parameter" name="language">${unescapePath:$1}</set>
+		<to>/csl-style</to>
+	</rule>
+	<rule>
 		<name>/csl-style/</name>
 		<from>^/+csl-style/+(.*)$</from>
 		<set type="parameter" name="style">${unescapePath:$1}</set>

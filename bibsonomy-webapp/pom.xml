@@ -104,7 +104,6 @@
 										<!-- citeproc.js must be included before xmldom.js -->
 										<include>${project.build.webapp.resourcedir}/javascript/citeproc/citeproc.js</include>
 										<include>${project.build.webapp.resourcedir}/javascript/citeproc/xmldom.js</include>
-										<include>${project.build.webapp.resourcedir}/javascript/citeproc/csllocales.js</include>
 										<include>${project.build.webapp.resourcedir}/javascript/citeproc-wrapper.js</include>
 										<include>${project.build.webapp.resourcedir}/javascript/friendoverview.js</include>
 										<include>${project.build.webapp.resourcedir}/javascript/functions.js</include>

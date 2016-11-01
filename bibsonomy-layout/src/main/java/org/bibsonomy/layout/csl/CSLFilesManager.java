@@ -32,10 +32,14 @@ import net.sf.json.JSONObject;
 public class CSLFilesManager {
 	private static final Log log = LogFactory.getLog(CSLFilesManager.class);
 	
-	private static final String BASE_PATH = "classpath:/org/citationstyles/styles/";
+	private static final String BASE_PATH = "classpath:/org/citationstyles/";
+	private static final String BASE_PATH_STYLES = BASE_PATH + "styles/";
+	private static final String BASE_PATH_LOCALES = BASE_PATH + "locales/";
 
 	// mapping from id to CSLStyle which contains the id itself, a display name and the content of the file
 	private Map<String, CSLStyle> cslFiles = new HashMap<>();
+
+	private Map<String, String> cslLocaleFiles = new HashMap<>();
 	
 	/**
 	 * init this manager
@@ -45,7 +49,7 @@ public class CSLFilesManager {
 		final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(CSLFilesManager.class.getClassLoader());
 
 		try {
-			final Resource aliasesResource = resolver.getResource(BASE_PATH + "renamed-styles.json");
+			final Resource aliasesResource = resolver.getResource(BASE_PATH_STYLES + "renamed-styles.json");
 			final BufferedReader jsonReader = new BufferedReader(new InputStreamReader(aliasesResource.getInputStream()));
 			final StringBuilder jsonBuilder = new StringBuilder();
 			while (jsonReader.ready()) {
@@ -63,7 +67,7 @@ public class CSLFilesManager {
 				}
 				aliases.get(value).add(key);
 			}
-			final Resource[] resources = resolver.getResources(BASE_PATH + "*.csl");
+			final Resource[] resources = resolver.getResources(BASE_PATH_STYLES + "*.csl");
 			
 			for (final Resource resource : resources) {
 				try (final BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
@@ -85,12 +89,36 @@ public class CSLFilesManager {
 					} catch (final ParserConfigurationException | SAXException | IOException e) {
 						log.error("error reading file " + resource.getFilename(), e);
 					}
-					
 				}
 			}
+			
+			this.cslLocaleFiles = loadLanguageFiles(resolver);
 		} catch (final IOException e) {
 			log.error("error while loading csl files", e);
 		}
+	}
+
+	/**
+	 * @param resolver 
+	 * @return
+	 * @throws IOException 
+	 */
+	private static Map<String, String> loadLanguageFiles(PathMatchingResourcePatternResolver resolver) throws IOException {
+		final Map<String, String> locales = new HashMap<>();
+		final Resource[] resources = resolver.getResources(BASE_PATH_LOCALES + "locales-*.xml");
+		for (final Resource resource : resources) {
+			try (final BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
+				final StringBuilder builder = new StringBuilder();
+				while (reader.ready()) {
+					builder.append(reader.readLine() + "\n");
+				}
+				
+				final String cslLocaleSource = builder.toString().trim();
+				final String locale = resource.getFilename().replaceAll("locales-", "").replaceAll(".xml", "");
+				locales.put(locale, cslLocaleSource);
+			}
+		}
+		return locales;
 	}
 
 	/**
@@ -114,6 +142,14 @@ public class CSLFilesManager {
 	 */
 	public CSLStyle getStyleByName(final String cslName) {
 		return this.cslFiles.get(cslName);
+	}
+	
+	/**
+	 * @param language
+	 * @return the locale file content
+	 */
+	public String getLocaleFile(String language) {
+		return this.cslLocaleFiles .get(language);
 	}
 
 	/**
