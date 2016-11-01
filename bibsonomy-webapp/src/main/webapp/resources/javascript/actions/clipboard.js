@@ -48,6 +48,13 @@ $(function() {
 				title: getString('export.copyToLocalClipboard.success')
 			}).tooltip('show');
 		});
+		
+		clipboard.on('error', function(e) {
+			copyButton.tooltip({
+				placement: 'bottom',
+				title: getString('export.copyToLocalClipboard.error')
+			}).tooltip('show');
+		});
 	}
 });
 
