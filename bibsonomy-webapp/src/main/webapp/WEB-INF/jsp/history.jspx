@@ -134,7 +134,7 @@
 											<input type="hidden" name="intraHashToUpdate" value="${newestPost.resource.intraHash}"/>
 											<div class="title" itemtype="${itemType}" itemscope="itemscope">
 												<pub:title post="${newestPost}">
-													<jsp:attribute name="bibActionButtons">
+													<jsp:attribute name="pubActionButtons">
 														<div class="pull-right">
 															<buttons:actions post="${newestPost}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}" resourceType="bibtex"/>
 														</div>

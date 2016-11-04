@@ -15,6 +15,7 @@
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
+	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
 	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/spheres"
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:actionbuttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
@@ -22,7 +23,8 @@
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
 	xmlns:bsold="urn:jsptagdir:/WEB-INF/tags/bs"
 	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
-	xmlns:form="http://www.springframework.org/tags/form"> 
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:per="urn:jsptagdir:/WEB-INF/tags/person">	 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
@@ -96,8 +98,8 @@
 			<c:if test="${not empty command.post}">
 				<h2><fmt:message key="disambiguation.fromPost"/></h2>
 						<div class="title">
-							<pub:title post="${command.post}">
-								<jsp:attribute name="bibActionButtons">
+							<pub:title post="${command.post}" showUserPicture="${false}">
+								<jsp:attribute name="pubActionButtons">
 									<div class="pull-right">
 										<actionbuttons:actions post="${command.post }" resourceType="bibtex" loginUserName="${command.context.loginUser.name}" />
 									</div>
@@ -113,9 +115,9 @@
 					<h2><fmt:message key="disambiguation.pleaseChooseMsg"><fmt:param value="${mtl:cleanBibtex(command.personName)}"/></fmt:message></h2>
 					<p><fmt:message key="disambiguation.listExplanation"/></p>
 						<c:choose>
-							<c:when test="${fn:length(command.personSuggestions) gt 0}">
+							<c:when test="${fn:length(command.suggestedPersonPosts) gt 0}">
 								<div class="list-group">
-									<c:forEach var='rel' items="${command.personSuggestions}">
+									<c:forEach var='rel' items="${command.suggestedPersonPosts}">
 										<div class="list-group-item">
 											<c:choose>
 												<c:when test="${not empty command.context.loginUser.name}">
@@ -125,12 +127,12 @@
 												</c:when>
 												<c:otherwise>
 													<c:set var="dataToggle" value=""/>
-													<c:set var="href" value="${absoluteUrlGenerator.getPersonUrl(rel.person.personId)}"/>
+													<c:set var="href" value="${absoluteUrlGenerator.getPersonUrl(rel.key.person.personId)}"/>
 													<c:set var="dataTarget" value=""/>
 												</c:otherwise>
 											</c:choose>
-											<a class='btnLinkPerson' data-toggle="${dataToggle}" data-target="${dataTarget}" href="${href}" data-person-url="${absoluteUrlGenerator.getPersonUrl(rel.person.personId)}" data-person-id="${fn:escapeXml(rel.person.personId)}" >
-												${command.personRoleRenderer.getExtendedPersonName(rel, request.locale, true)}
+											<a class='btnLinkPerson' data-toggle="${dataToggle}" data-target="${dataTarget}" href="${href}" data-person-url="${absoluteUrlGenerator.getPersonUrl(rel.key.person.personId)}" data-person-id="${fn:escapeXml(rel.key.person.personId)}" >
+												${command.personRoleRenderer.getExtendedPersonName(rel.key, request.locale, true)}
 											</a>
 										</div>
 									</c:forEach>
@@ -163,6 +165,24 @@
 							</c:otherwise>
 						</c:choose>
 					</c:if>
+					
+					<!--  <h3 class="list-headline"><fmt:message key="person.show.otherPub" /></h3> -->
+					<div class="list-group">
+						<div class="list-group-item">
+							<c:choose>
+								<c:when test="${fn:length(command.suggestedPosts) gt 0}">
+									<c:forEach var="post" items="${command.suggestedPosts}">
+										<review:simpleReviewForm userName="${command.context.loginUser.name}" resource="${post}" postUserName="${post.user.name}" />
+										<hr />
+									</c:forEach>
+								</c:when>
+								<c:otherwise>
+									<p class="text-info"><strong> ** NOTHING FOUND ** </strong></p>
+								</c:otherwise>
+							</c:choose>
+						</div>
+					</div>
+									
 				</div>
 		</jsp:attribute>
 	

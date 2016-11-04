@@ -1,3 +1,5 @@
+var resultLimit = 100;
+
 function setupPersonSearch(inputFieldSelector, buttonSelector) {
 	setupPersonAutocomplete(inputFieldSelector, "search", 'extendedPersonName', function(data) {
 		$(buttonSelector).attr("data-person-name", data.personName);
@@ -39,15 +41,23 @@ function setupPersonAutocomplete(inputFieldSelector, formAction, displayKey, sel
 	var personNameTypeahead = $(inputFieldSelector).typeahead({
 		hint: true,
 		highlight: true,
-		minLength: 1
+		minLength: 1,
 	},
 	{
 		name: 'personNames',
-		displayKey: displayKey, //display – For a given suggestion, determines the string representation of it. This will be used when setting the value of the input control after a suggestion is selected. Can be either a key string or a function that transforms a suggestion object into a string. Defaults to stringifying the suggestion.
+		limit: resultLimit,
 		
-		// `ttAdapter` wraps the suggestion engine in an adapter that
-		// is compatible with the typeahead jQuery plugin
-		source: personNames.ttAdapter()
+		// display – For a given suggestion, determines the string representation of it. 
+		// This will be used when setting the value of the input control after a suggestion is selected. 
+		// Can be either a key string or a function that transforms a suggestion object into a string. Defaults to stringifying the suggestion.
+		// `ttAdapter` wraps the suggestion engine in an adapter that is compatible with the typeahead jQuery plugin
+		displayKey: displayKey,
+
+		source: personNames.ttAdapter(),
+		templates: {
+            header: printResults,
+            empty: [ getString('persons.intro.search.result0') ]
+        },
 	});
 	
 	personNameTypeahead.on('typeahead:selected', function(evt, data) {
@@ -58,4 +68,11 @@ function setupPersonAutocomplete(inputFieldSelector, formAction, displayKey, sel
 	.on('typeahead:asynccancel typeahead:asyncreceive', function() {
 	    $(this).removeClass("ui-autocomplete-loading");
 	});
+}
+
+var printResults = function (context) {
+	if (context.suggestions.length < resultLimit)	
+		return "<b>" + getString('persons.intro.search.result', [context.suggestions.length]) + "</b>";
+	else
+		return "<b>" + getString('persons.intro.search.resultMax', [context.suggestions.length]) + "</b>";
 }
