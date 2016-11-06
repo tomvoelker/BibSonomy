@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.util.tags;
 
 import java.io.IOException;
+import java.util.Locale;
 
 import javax.servlet.jsp.JspException;
 
@@ -11,6 +12,8 @@ import org.bibsonomy.layout.jabref.JabrefLayoutRenderer;
 import org.bibsonomy.model.enums.FavouriteLayoutSource;
 import org.bibsonomy.model.user.settings.FavouriteLayout;
 import org.bibsonomy.services.renderer.LayoutRenderer;
+import org.springframework.context.MessageSource;
+import org.springframework.context.NoSuchMessageException;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.tags.RequestContextAwareTag;
 
@@ -42,6 +45,12 @@ public class FavouriteLayoutsDisplayNameTag extends RequestContextAwareTag {
 	private String renderFavouriteLayout() {
 		final FavouriteLayoutSource source = this.favouriteLayout.getSource();
 		final String name = this.favouriteLayout.getDisplayName();
+		try {
+			return this.getMessageSource().getMessage("bibtex.citation_format." + name, null, this.getLocale());
+		} catch (final NoSuchMessageException e) {
+			// ignore
+		}
+		
 		switch (source) {
 		case SIMPLE:
 			return name;
@@ -83,6 +92,17 @@ public class FavouriteLayoutsDisplayNameTag extends RequestContextAwareTag {
 	private LayoutRenderer<AbstractJabRefLayout> getJabRefLayoutRenderer() {
 		final WebApplicationContext ctx = this.getRequestContext().getWebApplicationContext();
 		return ctx.getBean(JabrefLayoutRenderer.class);
+	}
+	
+	private MessageSource getMessageSource() {
+		return getRequestContext().getMessageSource();
+	}
+	
+	/**
+	 * Use the current RequestContext's application context as MessageSource.
+	 */
+	private Locale getLocale() {
+		return getRequestContext().getLocale();
 	}
 
 	/**
