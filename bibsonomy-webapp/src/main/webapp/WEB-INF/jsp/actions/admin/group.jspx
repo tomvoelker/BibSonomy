@@ -5,6 +5,7 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/users"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
@@ -58,11 +59,29 @@
 			<div>
 				<bs:feedback size="defaultSize" style="success">
 					<jsp:attribute name="feedbackBody">
-						<fmt:message key="${command.adminResponse}" />
+						<c:out value="${command.adminResponse}" />
 					</jsp:attribute>
 				</bs:feedback>
 			</div>
 			</c:if>
+			
+			<errors:global />
+			
+			<bsform:fieldset legendKey="settings.group.delete">
+				<jsp:attribute name="content">
+					<fmt:message key="settings.group.delete.description" />
+					<form:form name="groupInfo" action="${relativeUrlGenerator.getAdminUrlByName('group')}" method="POST" cssClass="form-horizontal">
+						<input type="hidden" value="DELETE_GROUP" name="action" />
+						<bsform:select path="group.name" itemsList="${command.allGroupNames}" labelColSpan="3" inputColSpan="9" id="fetchGroupInfo" />
+						<div class="form-group">
+							<div class="col-sm-offset-3 col-sm-9">
+								<fmt:message key="settings.group.delete" var="buttonText" />
+								<bsform:button type="submit" style="primary" size="defaultSize" value="${buttonText}" />
+							</div>
+						</div>
+					</form:form>
+				</jsp:attribute>
+			</bsform:fieldset>
 
 			<bsform:fieldset legendKey="settings.group.permissionHeading">
 				<jsp:attribute name="content">
@@ -135,7 +154,7 @@
 									</td>
 									<td>
 										<span class="groupsButtons">
-											<a href="/admin/group?action=ACCEPT&amp;group.name=${fn:escapeXml(entry.name)}"><fmt:message key="admin.actions.group.accept"/></a>
+											<a href="/admin/group?action=ACCEPT_GROUP&amp;group.name=${fn:escapeXml(entry.name)}"><fmt:message key="admin.actions.group.accept"/></a>
 											${mtl:ch('nbsp')}
 											<a href="javascript:void(0)" class="declineGroupExpand" onclick="declineGroup(this);"><fmt:message key="admin.actions.group.decline"/></a>	
 										</span>
@@ -149,7 +168,7 @@
 											<fmt:param value="${fn:escapeXml(entry.name)}" />
 										</fmt:message>
 									
-										<form:form name="declineGroupRequest" action="/admin/group?action=DECLINE&amp;group.name=${fn:escapeXml(entry.name)}" method="POST" cssClass="form-horizontal" >
+										<form:form name="declineGroupRequest" action="/admin/group?action=DECLINE_GROUP&amp;group.name=${fn:escapeXml(entry.name)}" method="POST" cssClass="form-horizontal" >
 											<bsform:textarea noHelp="true" labelText="${decLabelText}" path="declineMessage" labelColSpan="3" inputColSpan="9" />
 											
 											<div class="form-group">
