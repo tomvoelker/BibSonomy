@@ -102,7 +102,7 @@ public class SyncSettingsController extends SettingsPageController implements Va
 
 		final HttpMethod httpMethod = this.requestLogic.getHttpMethod();
 		
-		if (errors.hasErrors()) {
+		if (this.errors.hasErrors()) {
 			final View view = super.workOn(command);
 			/*
 			 * On update, we replace the sync service from the DB with the one

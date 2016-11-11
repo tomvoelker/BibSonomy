@@ -32,7 +32,7 @@ package org.bibsonomy.common.errors;
  * 
  * @author sdo
  */
-public class MissingFieldErrorMessage extends ErrorMessage{
+public class MissingFieldErrorMessage extends ErrorMessage {
 
 	/**
 	 * @param missing 

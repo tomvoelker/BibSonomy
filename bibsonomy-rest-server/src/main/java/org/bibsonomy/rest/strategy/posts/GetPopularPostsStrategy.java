@@ -26,12 +26,14 @@
  */
 package org.bibsonomy.rest.strategy.posts;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.util.UrlBuilder;
 
@@ -40,11 +42,15 @@ import org.bibsonomy.util.UrlBuilder;
  */
 public class GetPopularPostsStrategy extends AbstractListOfPostsStrategy {
 	
+	private int periodIndex;
+
 	/**
 	 * @param context
 	 */
 	public GetPopularPostsStrategy(final Context context) {
 		super(context);
+		
+		this.periodIndex = context.getIntAttribute(RESTConfig.PERIOD_INDEX, 0);
 	}
 
 	@Override
@@ -54,6 +60,7 @@ public class GetPopularPostsStrategy extends AbstractListOfPostsStrategy {
 
 	@Override
 	protected List<? extends Post<? extends Resource>> getList() {
-		return this.getLogic().getPosts(this.resourceType, this.grouping, this.groupingValue, this.tags, null, this.search, SearchType.LOCAL, null, Order.POPULAR, null, null, this.getView().getStartValue(), this.getView().getEndValue());
+		final List<String> tag = Collections.singletonList("sys:days:" + String.valueOf(this.periodIndex)); // FIXME: use system tag builder
+		return this.getLogic().getPosts(this.resourceType, this.grouping, this.groupingValue, tag, null, this.search, SearchType.LOCAL, null, Order.POPULAR, null, null, this.getView().getStartValue(), this.getView().getEndValue());
 	}
 }

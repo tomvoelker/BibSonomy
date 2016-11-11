@@ -1103,13 +1103,6 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.pnas.PNASScraper</Scraper>
 		<Enabled>true</Enabled>
 	</URLTest>
-	<URLTest id="url_192">
-		<TestDescription>test for ScienceMagScraper</TestDescription>
-		<URL>http://www.sciencemag.org/content/326/5956/1057</URL>
-		<BibFile>ScienceMagScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.sciencemag.ScienceMagScraper</Scraper>
-		<Enabled>true</Enabled>
-	</URLTest>
 	<URLTest id="url_193">
 		<TestDescription>test for JournalogyScraper</TestDescription>
 		<URL>http://academic.research.microsoft.com/Paper/13850916</URL>
@@ -1317,13 +1310,6 @@
 		<URL>http://www.annualreviews.org/doi/full/10.1146/annurev-bioeng-071811-150124</URL>
 		<BibFile>AnnualreviewsScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.annualreviews.AnnualreviewsScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_229">
-		<TestDescription>test for ScienceMagScraper</TestDescription>
-		<URL>http://www.sciencemag.org/content/276/5317/1425.full</URL>
-		<BibFile>ScienceMagScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.sciencemag.ScienceMagScraper</Scraper>
-		<Enabled>true</Enabled>
 	</URLTest>
 	<URLTest id="url_230">
 		<TestDescription>test for pages with emeraldinsight</TestDescription>

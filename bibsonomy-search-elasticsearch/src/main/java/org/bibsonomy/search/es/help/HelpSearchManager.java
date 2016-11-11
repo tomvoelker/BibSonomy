@@ -130,6 +130,7 @@ public class HelpSearchManager implements HelpSearch {
 		}
 	}
 	
+	private boolean indexingDisabled;
 	
 	private String path;
 	
@@ -147,6 +148,10 @@ public class HelpSearchManager implements HelpSearch {
 	 * re-index the complete help pages
 	 */
 	public void reindex() {
+		if (this.indexingDisabled) {
+			return;
+		}
+		
 		if (!this.updateLock.tryAcquire()) {
 			log.warn("reindexing in progress");
 			return;
@@ -252,7 +257,7 @@ public class HelpSearchManager implements HelpSearch {
 						final Text[] fragments = contentHighlight.getFragments();
 						final StringBuilder builder = new StringBuilder();
 						for (final Text fragment : fragments) {
-							builder.append(Jsoup.parse(fragment.toString()).text());
+							builder.append(removeHtml(fragment));
 						}
 						
 						final String highlightText = builder.toString();
@@ -267,6 +272,24 @@ public class HelpSearchManager implements HelpSearch {
 		}
 		
 		return results;
+	}
+
+	/**
+	 * @param fragment
+	 * @return
+	 */
+	private static String removeHtml(final Text fragment) {
+		String text = Jsoup.parse(fragment.toString()).text();
+		final int index = text.indexOf('>');
+		if (index != -1) {
+			text = text.substring(index + 1, text.length());
+		}
+		
+		final int tagStartIndex = text.lastIndexOf('<');
+		if (tagStartIndex != -1) {
+			text = text.substring(0, tagStartIndex);
+		}
+		return text;
 	}
 
 	/**
@@ -309,5 +332,12 @@ public class HelpSearchManager implements HelpSearch {
 	 */
 	public void setFactory(HelpParserFactory factory) {
 		this.factory = factory;
+	}
+
+	/**
+	 * @param indexingDisabled the indexingDisabled to set
+	 */
+	public void setIndexingDisabled(boolean indexingDisabled) {
+		this.indexingDisabled = indexingDisabled;
 	}
 }

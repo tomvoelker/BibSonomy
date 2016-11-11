@@ -105,5 +105,4 @@ public class StandardBibTeXFields {
 	public static Set<String> getStandardBibTeXFields() {
 		return standardBibTeXFields;
 	}
-	
 }

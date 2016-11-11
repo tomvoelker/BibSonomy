@@ -26,82 +26,62 @@
  */
 package org.bibsonomy.scraper.url.kde.sciencemag;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import javax.print.attribute.standard.PresentationDirection;
 
 import org.bibsonomy.common.Pair;
-import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.generic.CitationManagerScraper;
-import org.bibsonomy.util.UrlBuilder;
+import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * @author clemens
  */
-public class ScienceMagScraper extends CitationManagerScraper {
-	// <li><a href="/citmgr?gca=sci;276/5317/1425">Download Citation</a></li>
-	private static final Pattern DOWNLOAD_LINK_PATTERN = Pattern.compile("<a href=\"(.+?)\">Download Citation</a>");
+public class ScienceMagScraper extends GenericBibTeXURLScraper {
+	private static final Pattern BIBTEX_PATTERN = Pattern.compile("<a.*href=\"([^\"]+)\".*>BibTeX</a>");
 	private static final String SITE_NAME = "Science Magazine";
-	private static final String SITE_URL = "http://www.sciencemag.org/";
+	private static final String SITE_HOST = "sciencemag.org";
+	private static final String SITE_URL = "http://www." + SITE_HOST;
 	private static final String INFO = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 	private static final List<Pair<Pattern, Pattern>> URL_PATTERNS = Collections.singletonList(new Pair<Pattern, Pattern>(
-			Pattern.compile(".*" + "sciencemag.org"), 
+			Pattern.compile(".*" + SITE_HOST), 
 			Pattern.compile("/content" + ".*")
 			));
-
-	/** 
-	 * If the IP where the scraper is run has not access to the full text, URLs ending with 
-	 * ".full" (e.g., http://www.sciencemag.org/content/302/5651/1704.full) do not contain
-	 * the BibTeX download link. If we modify the URL to ".short" (e.g., 
-	 * http://www.sciencemag.org/content/302/5651/1704.short), the link is contained.
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL, java.lang.String)
 	 */
 	@Override
-	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
+	protected String getDownloadURL(URL url, String cookies) throws ScrapingException, IOException {
 		try {
-			sc.setUrl(this.fullUrlToShort(sc.getUrl()));
-		} catch (MalformedURLException e) {
-			throw new ScrapingException("Could not modify URL: " + e.getMessage());
-		}
-		return super.scrapeInternal(sc);
-	}
-	
-	/**
-	 * Modifying URLs ending with .full to end with .short.
-	 * 
-	 * @param url
-	 * @return The modified URL.
-	 * @throws MalformedURLException 
-	 */
-	protected URL fullUrlToShort(final URL url) throws MalformedURLException {
-		if (url != null) {
-			final String path = url.getPath();
-			if (path.endsWith(".full")) {
-				return new URL(url.getProtocol(), url.getHost(), url.getPort(), path.substring(0, path.length() - ".full".length()) + ".short");
+			final String content = WebUtils.getContentAsString(url);
+			final Matcher m = BIBTEX_PATTERN.matcher(content);
+			if (m.find()) {
+				return "http://science." + SITE_HOST + m.group(1);
 			}
+		} catch (final IOException e) {
+			throw new ScrapingException(e);
 		}
-		return url;
+		return null;
 	}
 
+	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
 
+	@Override
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
 
+	@Override
 	public String getInfo() {
 		return INFO;
-	}
-
-	@Override
-	public Pattern getDownloadLinkPattern() {
-		return DOWNLOAD_LINK_PATTERN;
 	}
 
 	@Override

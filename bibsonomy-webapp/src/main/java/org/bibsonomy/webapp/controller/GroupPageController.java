@@ -138,7 +138,7 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 			}
 
 			final Group group = this.logic.getGroupDetails(groupingName, false);
-			if (!present(group.getName())) {
+			if (!present(group)) {
 				throw new ObjectNotFoundException(groupingName);
 			}
 

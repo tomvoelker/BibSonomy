@@ -36,6 +36,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.DuplicateEntryException;
 import org.bibsonomy.common.exceptions.UnsupportedRelationException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
@@ -377,7 +378,10 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	private void checkUser(final User user, final DBSession session) {
-		this.validator.validateFieldLength(user, user.getName(), session);
+		final ErrorMessage validateFieldLengthError = this.validator.validateFieldLength(user, session);
+		if (present(validateFieldLengthError)) {
+			session.addError(user.getName(), validateFieldLengthError);
+		}
 	}
 
 	/**

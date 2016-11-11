@@ -173,6 +173,8 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 	/** iff <code>true</code> the update of the index is disabled */
 	private boolean updateEnabled;
 	
+	private boolean disabledIndexing;
+	
 	/** the client to use for all interaction with elasticsearch */
 	protected final ESClient client;
 	
@@ -190,14 +192,16 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 	
 	/**
 	 * @param updateEnabled 
+	 * @param disabledIndexing 
 	 * @param client
 	 * @param systemURI
 	 * @param inputLogic
 	 * @param tools
 	 */
-	public ElasticsearchManager(final boolean updateEnabled, ESClient client, SearchDBInterface<R> inputLogic, ElasticsearchIndexTools<R> tools) {
+	public ElasticsearchManager(final boolean updateEnabled, final boolean disabledIndexing, final ESClient client, SearchDBInterface<R> inputLogic, ElasticsearchIndexTools<R> tools) {
 		super();
 		this.updateEnabled = updateEnabled;
+		this.disabledIndexing = disabledIndexing;
 		this.client = client;
 		this.inputLogic = inputLogic;
 		this.tools = tools;
@@ -209,7 +213,7 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 	 */
 	@Override
 	public void generateIndex() throws IndexAlreadyGeneratingException {
-		generateIndex(true, true);
+		this.generateIndex(true, true);
 	}
 
 	/**
@@ -327,6 +331,9 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 	 */
 	@Override
 	public void regenerateAllIndices() {
+		if (this.disabledIndexing) {
+			return;
+		}
 		try {
 			final String activeIndex = this.client.getIndexNameForAlias(this.getActiveLocalAlias());
 			if (present(activeIndex)) {
@@ -801,5 +808,12 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 	 */
 	public void shutdown() {
 		this.executorService.shutdownNow();
+	}
+
+	/**
+	 * @param disabledIndexing the disabledIndexing to set
+	 */
+	public void setDisabledIndexing(boolean disabledIndexing) {
+		this.disabledIndexing = disabledIndexing;
 	}
 }

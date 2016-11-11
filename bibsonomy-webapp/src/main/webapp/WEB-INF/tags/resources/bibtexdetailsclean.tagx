@@ -9,7 +9,8 @@
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:editpub="urn:jsptagdir:/WEB-INF/tags/actions/edit/publication"
 	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs"
-	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons">
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
+	xmlns:export="urn:jsptagdir:/WEB-INF/tags/export/bibtex">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" description="The publication post that should be rendered."/>
 	<jsp:directive.attribute name="referer" type="java.lang.String" required="true" description="The referer to the scraped site"/>
@@ -112,7 +113,10 @@
 			 	| selection of citation format 
 			 	+-->
 			<hr />
-		 	<h4 class="pub-details"><span class="fa fa-quote-right"><!--  --></span><c:out value=" "/><fmt:message key="publications.citations.headline" /></h4>
+			<h4 class="pub-details">
+				<span class="fa fa-quote-right"><!--  --></span><c:out value=" "/><fmt:message key="publications.citations.headline" />
+				<export:favLayoutHint />
+			</h4>
 			<pub:citation post="${post}"/>
 		</div>
 	</div>

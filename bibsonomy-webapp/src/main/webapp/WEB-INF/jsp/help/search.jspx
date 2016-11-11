@@ -8,11 +8,15 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:nav="urn:jsptagdir:/WEB-INF/tags/nav"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	<layout:helpLayout>
 		<jsp:attribute name="mainContent">
+			<a href="${relativeUrlGenerator.getHelpPage('Main', pageContext.response.locale)}">
+				<fontawesome:icon icon="chevron-left" /> Home
+			</a>
 			<h1><fmt:message key="help.search.title" /></h1>
 			<c:set var="searchResults" value="${command.searchResults}" />
 			<c:choose>

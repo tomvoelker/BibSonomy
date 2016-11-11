@@ -40,6 +40,7 @@ import org.bibsonomy.database.systemstags.markup.SentSystemTag;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.util.PostUtils;
 
 /**
  * This system tag creates a link to its post in the inbox of a specified user (the receiver)
@@ -130,7 +131,7 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 			// 4. rename this tag for the sender (store receiverName)
 			this.tag.setName(SentSystemTag.NAME + SystemTagsUtil.DELIM + receiver);
 		} catch (final UnsupportedResourceTypeException urte) {
-			session.addError(intraHash, new UnspecifiedErrorMessage(urte));
+			session.addError(PostUtils.getKeyForPost(post), new UnspecifiedErrorMessage(urte));
 			log.warn("Added UnspecifiedErrorMessage (unsupported ResourceType) for post " + intraHash);
 		}
 		// 5. store the tags for the sender with the confirmation tag: sent:userName
