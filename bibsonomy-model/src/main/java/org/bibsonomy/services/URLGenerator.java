@@ -1530,12 +1530,12 @@ public class URLGenerator {
 	 */
 	public String getDisambiguationUrl(String resourceHash, final PersonResourceRelationType role, final Integer authorIndex) {
 		if (resourceHash.length() < 33) {
-			resourceHash = "1" + resourceHash;
+			resourceHash = HashID.INTER_HASH.getId() + resourceHash;
 		}
-		return this.getUrl(new UrlBuilder(this.projectHome + URLGenerator.DISAMBIGUATION_PREFIX) //
-			.addPathElement(resourceHash) //
-			.addPathElement(role.name().toLowerCase()) //
-			.addPathElement(Integer.toString(authorIndex)) //
+		return this.getUrl(new UrlBuilder(this.projectHome + URLGenerator.DISAMBIGUATION_PREFIX)
+			.addPathElement(resourceHash)
+			.addPathElement(role.name().toLowerCase())
+			.addPathElement(Integer.toString(authorIndex.intValue()))
 			.asString());
 	}
 	
