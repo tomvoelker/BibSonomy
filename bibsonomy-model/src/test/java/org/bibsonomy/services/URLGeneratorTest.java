@@ -46,7 +46,7 @@ import org.junit.Test;
  */
 public class URLGeneratorTest {
 
-	private static String projectHome = "http://www.bibsonomy.org/";
+	private static String projectHome = "https://www.bibsonomy.org/";
 	private static URLGenerator ug = new URLGenerator(projectHome);
 	
 	@Test
@@ -115,19 +115,17 @@ public class URLGeneratorTest {
 		final Bookmark bm = post.getResource();
 		final String userName = post.getUser().getName();
 		final String intraHash = bm.getIntraHash();
-		String url = projectHome + "url/" + intraHash + "/" +
-				     UrlUtils.safeURIEncode(userName);
-		assertEquals(url, ug.getBookmarkUrlByIntraHashAndUsername(intraHash, 
-															      userName));
+		String url = projectHome + "url/" + intraHash + "/" + UrlUtils.safeURIEncode(userName);
+		assertEquals(url, ug.getBookmarkUrlByIntraHashAndUsername(intraHash, userName));
 	}
 
 	@Test
 	public void testGetConceptsUrlByString() throws Exception{
-		//test without username
+		// test without username
 		String expected = projectHome + "concepts";
 		assertEquals(expected, ug.getConceptsUrlByString(""));
 		
-		//test with username
+		// test with username
 		expected += "/jaescke";
 		assertEquals(expected, ug.getConceptsUrlByString("jaescke"));
 	}
@@ -405,10 +403,10 @@ public class URLGeneratorTest {
 	
 	@Test
 	public void testPrefix() throws Exception {
-		URLGenerator urlg = new URLGenerator(projectHome);
+		URLGenerator urlg = new URLGeneratorFactory().createURLGeneratorForPrefix(projectHome, "export");
 		String expected = projectHome + "export/user/jaeschke";
 		
-		assertEquals(expected, urlg.prefix("export/").getUserUrlByUserName("jaeschke"));
+		assertEquals(expected, urlg.getUserUrlByUserName("jaeschke"));
 	}
 	
 	@Test

@@ -31,7 +31,6 @@
 			<li>
 				<a class="firstTab" href="#citation_plain"><fmt:message key="bibtex.citation_format.plain" /></a>
 			</li>
-						
 			
 			<c:forEach items="${command.context.loginUser.settings.favouriteLayouts}" var="citation">
         		<c:if test="${citation.source=='SIMPLE'}">

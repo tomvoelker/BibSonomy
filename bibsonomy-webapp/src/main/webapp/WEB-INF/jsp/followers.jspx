@@ -60,13 +60,14 @@
 				</sidebar:sidebarItem>
 			</c:if>
 			
+			<c:set var="urlGeneratorPersonalized" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'personalized')}" />
 			<script type="text/javascript" src="${resdir}/javascript/userRelation.js"><!-- keep me --></script>
 			<sidebar:sidebarItem textKey="follow.offollower">
 				<jsp:attribute name="content">
 					<ul id="followedUsers" class="sidebar_collapse_content">
 						<c:forEach var="user" items="${command.followersOfUser}">
 							<li>
-								<a href="${relativeUrlGenerator.prefix('personalized').getUserUrlByUserName(user.name)}">
+								<a href="${urlGeneratorPersonalized.getUserUrlByUserName(user.name)}">
 									<c:out value='${user.name}' />
 								</a>&amp;nbsp;
 								<fmt:message var="deleteFriendTitle" key="follow.actions.delete.title">
@@ -92,7 +93,7 @@
 					<ul class="sidebar_collapse_content">
 						<c:forEach var="user" items="${command.userIsFollowing}">
 							<li>
-								<a href="${relativeUrlGenerator.prefix('personalized').getUserUrlByUserName(user.name)}"><c:out value="${user.name}" /></a>
+								<a href="${urlGeneratorPersonalized.getUserUrlByUserName(user.name)}"><c:out value="${user.name}" /></a>
 								<c:choose>
 									<c:when test="${not mtl:contains(command.followersOfUser, user)}">
 										<c:out value=" " />
