@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.webapp.command;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -135,16 +137,16 @@ public class ResourceViewCommand extends BaseCommand {
 	 * 
 	 */
 	public String getFormat() {
-		if (this.format != null && !this.format.trim().equals("")) return this.format;
+		if (present(this.format)) {
+			return this.format;
+		}
+		
 		/*
 		 * the default is html
 		 * */
 		return "html";
 	}
-
-	/** 
-	 * delegated to {@link RequestWrapperContext}
-	 */
+	
 	/**
 	 * @param format
 	 */

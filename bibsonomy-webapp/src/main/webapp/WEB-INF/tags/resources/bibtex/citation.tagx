@@ -20,6 +20,7 @@
 		+-->
 	<!-- TODO: (Bootstrap) remove! -->
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+	
 
 	<div id="citation" class="tabs">
 		<!-- tab header -->
@@ -30,11 +31,29 @@
 			<li>
 				<a class="firstTab" href="#citation_plain"><fmt:message key="bibtex.citation_format.plain" /></a>
 			</li>
-			<c:forEach var="citationStyle" items="${fn:split('harvardhtml,chicago,apa_html,din1505',',')}">
-				<li><a data-formatUrl="/layout/${citationStyle}/bibtex/2${post.resource.intraHash}/${mtl:encodePathSegment(post.user.name)}?formatEmbedded=true" href="#citation_${citationStyle}"><fmt:message key="bibtex.citation_format.${citationStyle}" /></a></li>
-			</c:forEach>
-			<li><a href="#citation_bibtex">BibTeX</a></li>
-			<li><a href="#citation_endnote">EndNote</a></li>
+						
+			
+			<c:forEach items="${command.context.loginUser.settings.favouriteLayouts}" var="citation">
+        		<c:if test="${citation.source=='SIMPLE'}">
+        			<c:if test="${citation.style=='BibTeX'}">
+        				<li><a href="#citation_BibTeX">BibTeX</a></li>
+					</c:if>
+        			<c:if test="${citation.style=='Endnote'}">
+        				<li><a href="#citation_Endnote">Endnote</a></li>
+        			</c:if>
+        		</c:if>
+        		<c:if test="${(citation.source=='JABREF') || (citation.source=='CSL')}">
+        			<li>
+        				<a data-formatUrl="${relativeUrlGenerator.getCitationUrlbyIntraHashUserName(citation, post.resource.intraHash, post.user.name)}?formatEmbedded=true" href="#citation_${citation.style}">
+        					<c:set var="name"><mtl:favouriteLayoutDisplayName favouriteLayout="${citation}"/>
+							</c:set>
+							${mtl:shorten(name, 25)}
+        				</a>
+        			</li>
+        		</c:if>
+        	</c:forEach>
+			
+			
 			<li>
 				<a href="#citation_all"><fmt:message key="bibtex.all_exports" /></a>
 			</li>
@@ -50,17 +69,28 @@
 				</h3>
 				<bib:desc publication="${post.resource}"/>
 			</div>
-			<c:forEach var="citationStyle" items="${fn:split('harvardhtml,chicago,apa_html,din1505',',')}">
-				<div>
-					<a id="citation_${citationStyle}"><!-- keep --></a>
-				</div>
-			</c:forEach>
-			<div id="citation_bibtex">
-				<textarea style="width:100%;font-size:80%;border:none;" rows="15"><export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="${true}" generatedBibtexKeys="${false}"/></textarea>
-			</div>
-			<div id="citation_endnote">
-				<textarea style="width:100%;font-size:80%;border:none;" rows="15"><export:endnote post="${post}" escapeXml="${true}" /></textarea>
-			</div>
+			
+			
+			<c:forEach items="${command.context.loginUser.settings.favouriteLayouts}" var="citation">
+        		<c:if test="${citation.source=='JABREF'}">
+        			<div>
+						<a id="citation_${citation.style}"><!-- keep --></a>
+					</div>
+        		</c:if>
+        		
+        		<c:if test="${citation.source=='SIMPLE'}">
+        			<c:if test="${citation.style=='BibTeX'}">
+        				<div id="citation_bibtex">
+							<textarea style="width:100%;font-size:80%;border:none;" rows="15"><export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="${true}" generatedBibtexKeys="${false}"/></textarea>
+						</div>
+					</c:if>
+        			<c:if test="${citation.style=='Endnote'}">
+        				<div id="citation_endnote">
+							<textarea style="width:100%;font-size:80%;border:none;" rows="15"><export:endnote post="${post}" escapeXml="${true}" /></textarea>
+						</div>
+        			</c:if>
+        		</c:if>
+        	</c:forEach>			
 			<div id="citation_all">
 					<!--   -->
 			</div>

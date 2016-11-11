@@ -22,4 +22,3 @@ includeJavaScript("/resources/javascript/citeproc/csllocales.js");
 includeJavaScript("/resources/javascript/citeproc/xmldom.js");
 includeJavaScript("/resources/javascript/citeproc/xmle4x.js");
 includeJavaScript("/resources/javascript/citeproc/citeproc.js");
-includeJavaScript("/resources/javascript/citeproc/cslstyles.js");

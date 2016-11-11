@@ -11,6 +11,10 @@
 	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
 		<property name="converters">
 			<list>
+				
+				<!-- strings to a single FavouriteLayout which then has to be placed in the user settings list -->
+				<bean class="org.bibsonomy.web.spring.converter.StringToFavouriteLayoutConverter" />
+				
 				<!-- strings to enums (a generic converter) -->
 				<bean class="org.bibsonomy.web.spring.converter.factories.StringToEnumConverterFactory"/>
 				
@@ -470,6 +474,20 @@
 						<property name="controllerBeanName" value="exportPageController"/>
 					</bean>
 				</entry>
+				
+				<entry key="/csl-style">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="CSLStyleController"/> 
+						<property name="allowedFields">
+							<list>
+								<value>style</value>
+								<value>locale</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				
+				
 				<entry key="/statistics">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="statisticsController"/>
@@ -912,6 +930,11 @@
 	<bean id="exportPageController" class="org.bibsonomy.webapp.controller.ExportPageController" scope="request">
 		<property name="layoutRenderer" ref="jabrefLayoutRenderer"/>
 		<property name="layouts" ref="standardLayouts" />
+		<property name="cslFilesManager" ref="CSLFilesManager" />
+	</bean>
+	
+	<bean id="CSLStyleController" class="org.bibsonomy.webapp.controller.export.csl.CSLStyleController" scope="request">
+		<property name="cslFilesManager" ref="CSLFilesManager" />
 	</bean>
 	
 	<bean id="statisticsController" class="org.bibsonomy.webapp.controller.StatisticsController" scope="request">
@@ -1058,6 +1081,7 @@
 	<import resource="bibsonomy-servlet-database.xml" />
 	<import resource="bibsonomy-servlet-search.xml" />
 	<import resource="bibsonomy-servlet-help.xml" />
+	<import resource="bibsonomy-servlet-layout.xml" />
 	<import resource="bibsonomy-servlet-security.xml" />
 	<import resource="bibsonomy-servlet-opensocial.xml" />
 	<import resource="bibsonomy-servlet-saml.xml" />
