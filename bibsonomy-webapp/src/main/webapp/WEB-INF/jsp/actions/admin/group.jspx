@@ -72,7 +72,7 @@
 					<fmt:message key="settings.group.delete.description" />
 					<form:form name="groupInfo" action="${relativeUrlGenerator.getAdminUrlByName('group')}" method="POST" cssClass="form-horizontal">
 						<input type="hidden" value="DELETE_GROUP" name="action" />
-						<bsform:select path="group.name" items="${command.allGroupNames}" labelColSpan="3" inputColSpan="9" id="fetchGroupInfo" />
+						<bsform:select path="group.name" itemsList="${command.allGroupNames}" labelColSpan="3" inputColSpan="9" id="fetchGroupInfo" />
 						<div class="form-group">
 							<div class="col-sm-offset-3 col-sm-9">
 								<fmt:message key="settings.group.delete" var="buttonText" />

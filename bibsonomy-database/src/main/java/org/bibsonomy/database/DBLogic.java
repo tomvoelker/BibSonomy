@@ -1035,8 +1035,10 @@ public class DBLogic implements LogicInterface {
 			 */
 			this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
 			final User u = this.getUserDetails(userName);
-			if (!present(u.getName())) {
-				throw new IllegalArgumentException("Cannot delete user with name " + userName + ": user not found.");
+			for (final Group g : u.getGroups()) {
+				if (this.groupDBManager.hasExactlyOneAdmin(g, session) && g.getGroupMembershipForUser(userName).getGroupRole().equals(GroupRole.ADMINISTRATOR)) {
+					throw new IllegalArgumentException("This would leave group " + g + " without an admin.");
+				}
 			}
 
 			this.userDBManager.deleteUser(userName, session);
@@ -1086,10 +1088,11 @@ public class DBLogic implements LogicInterface {
 			if (!present(group)) {
 				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupName + "') doesn't exist");
 			}
-
-			// ensure that the group has no members except the admin. size > 2 because the group user is also part of the membership list or > 1 to cover old groups
+			
 			if (!quickDelete) {
-				if (group.getMemberships().size() > 2 || group.getMemberships().size() > 1 && group.getMemberships().get(0).getGroupRole() != GroupRole.DUMMY && group.getMemberships().get(1).getGroupRole() != GroupRole.DUMMY) {
+				// ensure that the group has no members except the admin (please not the group user of older groups has role ADMIN)
+				final List<GroupMembership> groupMemberships = GroupUtils.getGroupMemberShipsWithoutDummyUser(group.getMemberships());
+				if (groupMemberships.size() > 1) {
 					ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + group.getName() + "') has at least one member beside the administrator.");
 				}
 			}

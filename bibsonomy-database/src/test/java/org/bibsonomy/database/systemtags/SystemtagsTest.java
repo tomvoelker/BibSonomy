@@ -650,7 +650,7 @@ public class SystemtagsTest extends AbstractDatabaseManagerTest {
 	 */
 	private Group createTestGroup( final String name ) {
 		Group group = groupDb.getGroupByName(name, this.dbSession);
-		if( group!=null ) {
+		if (group != null) {
 			groupDb.deleteGroup(name, false, this.dbSession);
 		}
 		group = new Group();

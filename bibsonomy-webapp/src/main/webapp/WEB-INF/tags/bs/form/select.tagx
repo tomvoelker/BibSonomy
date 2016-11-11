@@ -33,12 +33,15 @@
 	<jsp:directive.attribute name="multiple" type="java.lang.Boolean" required="false" description="value attribute for input field"/>
 	
 	<jsp:directive.attribute name="items" type="java.lang.String[]" required="false" description="items for select field"/>
+	<jsp:directive.attribute name="itemsList" type="java.util.List" required="false" description="items for select field"/>
 	<jsp:directive.attribute name="itemLabels" type="java.lang.String[]" required="false" description="labels for items"/>
 	
 	<!-- HTML event handler -->
 	<jsp:directive.attribute name="onchange" type="java.lang.String" required="false" description="Javascript for onchange event" />
 
-
+	<c:if test="${not empty itemsList}">
+		<c:set var="items" value="${itemsList}" />
+	</c:if>
 
 	<!--+ 
 		| calculates grid colSpan of label and input field

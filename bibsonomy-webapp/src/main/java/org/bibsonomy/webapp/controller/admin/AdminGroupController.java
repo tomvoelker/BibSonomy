@@ -29,6 +29,7 @@ package org.bibsonomy.webapp.controller.admin;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang.LocaleUtils;
@@ -56,7 +57,6 @@ import org.springframework.validation.Errors;
 
 /**
  * Controller for group admin page
- *
  *
  * @author bsc, tni
  */
@@ -128,8 +128,7 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 					command.setGroup(null);
 					break;
 				}
-
-				// TODO: log that the admin removed the user from the group
+				
 				this.logic.deleteGroup(groupToDelete.getName(), false, true);
 				command.setGroup(null);
 				command.setAdminResponse("settings.group.delete.success");
@@ -141,10 +140,12 @@ public class AdminGroupController implements MinimalisticController<AdminGroupVi
 
 		// load the pending groups
 		command.setPendingGroups(this.logic.getGroups(true, null, 0, Integer.MAX_VALUE));
+		
+		// TODO: move extracting of the username to the view
 		final List<Group> allGroups = this.logic.getGroups(false, null, 0, Integer.MAX_VALUE);
-		final String[] allGroupnames = new String[allGroups.size()];
-		for (int i = 0; i < allGroups.size(); i++) {
-			allGroupnames[i] = allGroups.get(i).getName();
+		final List<String> allGroupnames = new LinkedList<>();
+		for (final Group group : allGroups) {
+			allGroupnames.add(group.getName());
 		}
 		command.setAllGroupNames(allGroupnames);
 

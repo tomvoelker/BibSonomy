@@ -631,6 +631,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * user at this point.
 	 *
 	 * @param groupname
+	 * @param quickDelete 
 	 * @param session
 	 */
 	public void deleteGroup(final String groupname, final boolean quickDelete, final DBSession session) {
@@ -642,17 +643,11 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		}
 
 		if (!quickDelete) {
-			final GroupMembership dummyMs = GroupUtils.getGroupMembershipForUser(group, group.getName(), false);
+			final List<GroupMembership> groupMemberships = GroupUtils.getGroupMemberShipsWithoutDummyUser(group.getMemberships());
 			// check for group type. If there is a Dummy user in the group,
 			// the group must be down to 2 users: the Dummy and the Admin.
-			if (dummyMs.getGroupRole().equals(GroupRole.DUMMY)) {
-				if (group.getMemberships().size() > 2) {
-					ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') contains other users besides the administrator.");
-				}
-			} else {
-				if (group.getMemberships().size() > 1) {
-					ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') contains other users besides the administrator.");
-				}
+			if (groupMemberships.size() > 1) {
+				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') contains other users besides the administrator.");
 			}
 		}
 
@@ -660,6 +655,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		for (final GroupMembership pms : group.getPendingMemberships()) {
 			this.removePendingMembership(groupname, pms.getUser().getName(), session);
 		}
+		
 		// this forces all members out of the group and does not check for
 		// consistency issues. After this step, the group will be completely
 		// empty (this also removes the group user)
@@ -669,10 +665,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 
 		final Integer groupId = Integer.valueOf(group.getGroupId());
 		this.delete("deleteGroup", groupId, session);
-
+		
 		// get the group user and flag him as spammer
 		final User groupUser = this.userDb.getUserDetails(groupname, session);
-		groupUser.setToClassify(0);
+		groupUser.setToClassify(Integer.valueOf(0));
 		groupUser.setAlgorithm("group_user");
 		groupUser.setSpammer(Boolean.TRUE);
 		this.adminDatabaseManager.flagSpammer(groupUser, AdminDatabaseManager.DELETED_UPDATED_BY, session);

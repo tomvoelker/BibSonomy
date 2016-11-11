@@ -53,11 +53,9 @@ public class AdminGroupViewCommand extends BaseCommand {
 	// TODO a more general field should be Set<GroupLevelPermission>
 	private boolean communityPostInspectionPermission;
 	private boolean permissionsUpdated = false;
-	/**
-	 * list of pending groups
-	 */
+	/** list of pending groups */
 	private List<Group> pendingGroups;
-	private String[] allGroupNames;
+	private List<String> allGroupNames;
 
 	public AdminGroupViewCommand() {
 		this.group = new Group();
@@ -163,7 +161,7 @@ public class AdminGroupViewCommand extends BaseCommand {
 	/**
 	 * @return the allGroups
 	 */
-	public String[] getAllGroupNames() {
+	public List<String> getAllGroupNames() {
 		return this.allGroupNames;
 	}
 
@@ -171,7 +169,7 @@ public class AdminGroupViewCommand extends BaseCommand {
 	 * @param allGroups
 	 *            the allGroups to set
 	 */
-	public void setAllGroupNames(final String[] allGroups) {
+	public void setAllGroupNames(final List<String> allGroups) {
 		this.allGroupNames = allGroups;
 	}
 
