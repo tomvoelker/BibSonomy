@@ -963,11 +963,11 @@ public class URLGenerator {
 	public String getPublicationUrl(final BibTex publication, final Post<? extends Resource> post) {
 		final UrlBuilder builder = new UrlBuilder(this.projectHome);
 		builder.addPathElement(PUBLICATION_PREFIX);
-		final String title = publication.getTitle();
+		// final String title = publication.getTitle(); see issue #2512
 		String path = publication.getInterHash();
-		if (present(title)) {
+		/*if (present(title)) {
 			path += "_" + StringUtils.replaceNonNumbersOrLetters(StringUtils.foldToASCII(title).trim(), "_");
-		}
+		}*/
 		builder.addPathElement(path);
 		addParamsForCommunityPage(publication, post, builder);
 		return this.getUrl(builder.asString());
@@ -1435,13 +1435,11 @@ public class URLGenerator {
 	 *            - the intra hash of the resource
 	 * @return <code>true</code> if the url points to the resource.
 	 */
-	public boolean matchesResourcePage(final String url, final String userName,
-			final String intraHash) {
+	public boolean matchesResourcePage(final String url, final String userName, final String intraHash) {
 		if (!present(url)) {
 			return false;
 		}
-		return url.matches(".*/(" + PUBLICATION_PREFIX + "|" + BOOKMARK_PREFIX
-				+ ")/[0-3]?" + intraHash + "/" + userName + ".*");
+		return url.matches(".*/(" + PUBLICATION_PREFIX + "|" + BOOKMARK_PREFIX + ")/[0-3]?" + intraHash + "/" + userName + ".*");
 	}
 
 	/**
