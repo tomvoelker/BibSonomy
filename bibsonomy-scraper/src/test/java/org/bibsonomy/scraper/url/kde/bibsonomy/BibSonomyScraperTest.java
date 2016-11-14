@@ -26,10 +26,12 @@
  */
 package org.bibsonomy.scraper.url.kde.bibsonomy;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import org.bibsonomy.scraper.Scraper;
+//import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.bibsonomy.scraper.junit.RemoteTestAssert;
 
 /**
  * Scraper URL tests for BibSonomyScraper
@@ -43,7 +45,13 @@ public class BibSonomyScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_38");
+//		UnitTestRunner.runSingleTest("url_38");
+		
+		final String url = "https://www.bibsonomy.org/bibtex/2101efca8c9368b56d680ce92329784e5/jaeschke";
+		final String selection = null;
+		final Class<? extends Scraper> scraperClass = BibSonomyScraper.class;
+		final String resultFile = "BibSonomyScraperUnitURLTest.bib";
+		RemoteTestAssert.assertScraperResult(url, selection, scraperClass, resultFile);
 	}
 	
 	/**
@@ -51,7 +59,13 @@ public class BibSonomyScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_39");
+//		UnitTestRunner.runSingleTest("url_39");
+		
+		final String url = "https://www.bibsonomy.org/bib/bibtex/2101efca8c9368b56d680ce92329784e5/jaeschke";
+		final String selection = null;
+		final Class<? extends Scraper> scraperClass = BibSonomyScraper.class;
+		final String resultFile = "BibSonomyScraperUnitURLTest.bib";
+		RemoteTestAssert.assertScraperResult(url, selection, scraperClass, resultFile);
 	}
 	
 	/**
@@ -59,7 +73,13 @@ public class BibSonomyScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		UnitTestRunner.runSingleTest("url_209");
+//		UnitTestRunner.runSingleTest("url_209");
+		
+		final String url = "https://www.bibsonomy.org/publication/2101efca8c9368b56d680ce92329784e5/jaeschke";
+		final String selection = null;
+		final Class<? extends Scraper> scraperClass = BibSonomyScraper.class;
+		final String resultFile = "BibSonomyScraperUnitURLTest.bib";
+		RemoteTestAssert.assertScraperResult(url, selection, scraperClass, resultFile);
 	}
 
 	/**
@@ -67,6 +87,12 @@ public class BibSonomyScraperTest {
 	 */
 	@Test
 	public void url4TestRun(){
-		UnitTestRunner.runSingleTest("url_210");
+//		UnitTestRunner.runSingleTest("url_210");
+		
+		final String url = "https://www.bibsonomy.org/bib/publication/2101efca8c9368b56d680ce92329784e5/jaeschke";
+		final String selection = null;
+		final Class<? extends Scraper> scraperClass = BibSonomyScraper.class;
+		final String resultFile = "BibSonomyScraperUnitURLTest.bib";
+		RemoteTestAssert.assertScraperResult(url, selection, scraperClass, resultFile);
 	}
 }
