@@ -17,7 +17,9 @@
 	<fmt:message key="persons.intro.head.title" var="personIntroTitle">
 		<fmt:param value="${properties['project.name']}" />
 	</fmt:message>
-
+	<fmt:message key="person.index.placeholder" var="placeholderText"/>
+	<fmt:message key="person.index.searchInfo" var="searchInfo"/>
+	
 	<layout:paneLayout pageTitle="${personIntroTitle}" headerMessageKey="gettingStarted.headline" command="${command}" requPath="${requPath}" noSidebar="${true}" activeTab="persons">
 
 		<jsp:attribute name="heading">
@@ -111,8 +113,7 @@
 									<form action="#">
 										<input type="hidden" name="ckey" value="${ckey}"/>
 										<div id="person-scroll-menu" class='input-group' style="margin-left: auto; width: 100%; margin-right: auto; ">
-											
-											<fmt:message key="person.index.placeholder" var="placeholderText"/>
+											<a class="input-info" href="#" data-toggle="tooltip" title="${searchInfo}"><span class="fa fa-info-circle"></span></a>											
 											<input class='form-control typeahead' id='searchPersonAutocomplete' type='text' name='searchPersonAutocomplete' autocomplete="off" placeholder='${placeholderText}'/>
 											<!-- 
 											<span class="input-group-btn">
