@@ -24,32 +24,26 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.model.enums;
+package org.bibsonomy.services;
+
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 /**
- * representation for BibTeX / EndNote
- * 
+ * tests for the {@link URLGeneratorFactory}
+ *
  * @author dzo
  */
-public enum SimpleExportLayout {
-	/** endnote */
-	ENDNOTE("EndNote"),
-	/** BibTeX */
-	BIBTEX("BibTeX");
+public class URLGeneratorFactoryTest {
 	
-	private final String displayName;
-
 	/**
-	 * @param displayName
+	 * tests {@link URLGeneratorFactory#buildProjectHome(String, String)}
 	 */
-	private SimpleExportLayout(String displayName) {
-		this.displayName = displayName;
-	}
-
-	/**
-	 * @return the displayName
-	 */
-	public String getDisplayName() {
-		return this.displayName;
+	@Test
+	public void testBuildProjectHome() {
+		assertEquals("/", URLGeneratorFactory.buildProjectHome(null, null));
+		assertEquals("/export/", URLGeneratorFactory.buildProjectHome(null, "export"));
+		assertEquals("https://www.bibsonomy.org/export/", URLGeneratorFactory.buildProjectHome("https://www.bibsonomy.org/", "export"));
 	}
 }

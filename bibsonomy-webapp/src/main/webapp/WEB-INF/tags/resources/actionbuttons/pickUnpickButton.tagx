@@ -3,7 +3,8 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
 
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="userLoggedIn" type="java.lang.Boolean" required="true" />
@@ -43,7 +44,7 @@
 	</c:url>
 	
 	<a class="pickUnpickPostBtn ${buttonClasses}" onclick="return pickUnpickPublication(this);" title="${pickUnpickTitle}" href="${fn:escapeXml(pickUnpick_url)}">
-		<span class="fa fa-clipboard"><!--  --></span>
+		<fontawesome:icon icon="folder-open" />
 		<span class="sr-only"><fmt:message key="bibtex.actions.${pickUnpick}.title"/></span>
 	</a>
 </jsp:root>

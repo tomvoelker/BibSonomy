@@ -196,9 +196,15 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		//get post with SIM_HASH0 = hash2_0 for testuser2: sees own post
 		posts = publicationDb.getPostsByHash("testuser2", hash2_0, HashID.SIM_HASH0, INVALID_GROUP_ID, groups2, 10, 0, this.dbSession);
 		assertEquals(1, posts.size());
-
-		
-		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.managers.PostDatabaseManagerTest#testGetPostsFromTrash()
+	 */
+	@Override
+	public void testGetPostsFromTrash() {
+		// TODO add statement and checks TODODZO
+	}
 	
 	@Override
 	public void testGetPostsFromInbox() {

@@ -43,7 +43,7 @@
 		+-->
 		<c:if test="${isPublication}">
 			<div class="btn-group">
-				<bsform:button size="xsmall" style="link" icon="folder-open" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" />
+				<bsform:button size="xsmall" style="link" icon="folder-open" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.clipboard.title" />
 				<ul class="dropdown-menu">
 					<rc:clipboard isClipboard="${isClipboard}" />
 				</ul>
@@ -52,7 +52,7 @@
 	</c:if>
 	
 	<div class="btn-group">
-		<bsform:button size="xsmall" style="link" icon="filter" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}"/>
+		<bsform:button size="xsmall" style="link" icon="filter" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.filter.title" />
 		<ul class="dropdown-menu">
 			<!-- show / hide resource types -->
 			<c:if test="${not disableResourcetypeSelection}">
@@ -75,7 +75,7 @@
 		+-->
 	<c:if test="${not disableSort}">
 		<div class="btn-group">
-			<bsform:button size="xsmall" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" />
+			<bsform:button size="xsmall" style="link" icon="sort-amount-asc" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.sortorder.title" />
 			<ul class="dropdown-menu">
 				<rc:sortCriterion requPathAndQuery="${requPathAndQuery}" sortPage="${sortPage}" additionalSorting="${additionalSorting}"/>
 				<li class="divider"><!-- keep me --></li>
@@ -92,7 +92,7 @@
 		+ export (RSS, BibTeX, XML, more...) 
 		+-->
 	<div class="btn-group">
-		<bsform:button size="xsmall" style="link" icon="share-square-o" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" />
+		<bsform:button size="xsmall" style="link" icon="share-square-o" dropdown="${true}" dataToggle="dropdown" hideCaret="${true}" titleKey="post.meta.export.title" />
 		<ul class="dropdown-menu">
 			<rc:export requPathAndQuery="${requPathAndQuery}" isPublication="${isPublication}" isBookmark="${isBookmark}"/>
 		</ul>

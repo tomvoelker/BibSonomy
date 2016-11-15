@@ -35,7 +35,11 @@ $(function() {
 			url: '/csl-style',
 			cache: false, // TODO: discuss
 			transform: function(response) {
-				return response.layouts;
+				var returnedData = $.grep(response.layouts, function (layout, index) {
+					return layout.aliasedTo == undefined;
+				});
+				
+				return returnedData;
 			}
 		}
 	});
