@@ -155,7 +155,7 @@ public class PostUtils {
 	 * @param post
 	 * @return the key for a post, e.g. used for error mapping
 	 */
-	public static String getKeyForPost(Post<?> post) {
+	public static String getKeyForPost(final Post<?> post) {
 		return getKeyForPost(post.getResource().getIntraHash(), post.getUser().getName());
 	}
 
@@ -164,7 +164,7 @@ public class PostUtils {
 	 * @param owner
 	 * @return @see {@link #getKeyForPost(Post)}
 	 */
-	public static String getKeyForPost(String intraHash, String owner) {
+	public static String getKeyForPost(final String intraHash, final String owner) {
 		return intraHash + INTRAHASH_OWNER_SPLIT + owner;
 	}
 
@@ -172,7 +172,7 @@ public class PostUtils {
 	 * @param post
 	 * @return the key for a community post
 	 */
-	public static String getKeyForCommunityPost(Post<?> post) {
+	public static String getKeyForCommunityPost(final Post<?> post) {
 		return post.getResource().getInterHash();
 	}
 
@@ -189,10 +189,10 @@ public class PostUtils {
 	 * @return
 	 */
 	private static String getKeyPart(final String key, final int index) {
-		final String[] intraHashOwnerSplit = key.split(INTRAHASH_OWNER_SPLIT);
+		final String[] intraHashOwnerSplit = key.split(INTRAHASH_OWNER_SPLIT, 2);
 		return intraHashOwnerSplit[index];
 	}
-	
+
 	/**
 	 * @param key
 	 * @return the hash encoded in the key
