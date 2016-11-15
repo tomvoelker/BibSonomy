@@ -57,6 +57,8 @@
 			
 			<settings:jabRef command="${command}"/>
 			
+			<settings:csl command="${command}"/>
+			
 			<settings:cv command="${command}"/>
 			
 			<settings:oauth command="${command}"/>
