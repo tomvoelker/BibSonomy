@@ -71,8 +71,12 @@ function setupPersonAutocomplete(inputFieldSelector, formAction, displayKey, sel
 }
 
 var printResults = function (context) {
+	var responseText = "";	
 	if (context.suggestions.length < resultLimit)	
-		return "<b>" + getString('persons.intro.search.result', [context.suggestions.length]) + "</b>";
+		responseText = getString('persons.intro.search.result', [context.suggestions.length]);
 	else
-		return "<b>" + getString('persons.intro.search.resultMax', [context.suggestions.length]) + "</b>";
+		responseText = getString('persons.intro.search.resultMax', [context.suggestions.length]);
+	
+	//return '<span style="font-weight: bold; border-bottom: 1px;">' + responseText + '</span>';
+	return '<h5 class="response">' + responseText + '</h5>';
 }

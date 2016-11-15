@@ -1,6 +1,25 @@
+@border-dropdown: 1px solid @border-color;
+
 #person-scroll-menu {
 	.tt-menu {
 		max-height: 250px;
 		overflow-y: auto;
+		cursor: pointer;
+	}
+	
+	.tt-suggestion:nth-child(2n+1) {
+		background-color: @gray-lighter;
+		border-top: @border-dropdown;
+		border-bottom: @border-dropdown;
+	}
+	
+	.tt-suggestion:hover {
+		background-color: @main-color-light;
+	}
+	
+	.response {
+  		margin: 0 20px 5px 20px;
+  		padding: 3px 0;
+  		border-bottom: 1px solid #ccc;
 	}
 }	
