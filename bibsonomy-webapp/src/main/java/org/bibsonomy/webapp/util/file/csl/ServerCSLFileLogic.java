@@ -44,7 +44,7 @@ import org.bibsonomy.util.file.FileUtil;
 /**
  * TODO: add documentation to this class
  *
- * @author jan
+ * @author jp
  */
 public class ServerCSLFileLogic extends AbstractServerFileLogic implements CslFileLogic{
 	
