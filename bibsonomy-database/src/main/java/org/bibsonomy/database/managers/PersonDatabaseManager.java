@@ -207,6 +207,56 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		}
 	}
 	
+	/**
+	 * Update the College of a person
+	 * @param person
+	 * @param session
+	 */
+	public void updateCollege(Person person, DBSession session) {
+		session.beginTransaction();
+		try {
+			this.plugins.onPersonUpdate(person.getPersonId(), session);
+			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			this.insert("updateCollege", person, session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+	}
+	
+	/**
+	 * Update the Email of a person
+	 * @param person
+	 * @param session
+	 */
+	public void updateEmail(Person person, DBSession session) {
+		session.beginTransaction();
+		try {
+			this.plugins.onPersonUpdate(person.getPersonId(), session);
+			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			this.insert("updateEmail", person, session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+	}
+	
+	/**
+	 * Update the Homepage of a person
+	 * @param person
+	 * @param session
+	 */
+	public void updateHomepage(Person person, DBSession session) {
+		session.beginTransaction();
+		try {
+			this.plugins.onPersonUpdate(person.getPersonId(), session);
+			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			this.insert("updateHomepage", person, session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+	}
 	
 
 	/**

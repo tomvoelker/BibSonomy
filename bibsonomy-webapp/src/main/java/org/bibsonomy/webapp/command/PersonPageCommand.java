@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.webapp.command;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -82,6 +83,13 @@ public class PersonPageCommand extends BaseCommand {
 	private boolean formThatsMe;
 	@Deprecated // TODO: bind person directly
 	private int formPersonIndex = -1;
+	
+	@Deprecated // TODO: bind person directly
+	private String formCollege;
+	@Deprecated // TODO: bind person directly
+	private URL formHomepage;
+	@Deprecated // TODO: bind person directly
+	private String formEmail;
 	
 	private String formAction;
 	
@@ -601,6 +609,51 @@ public class PersonPageCommand extends BaseCommand {
 	 */
 	public String getOkHintKey() {
 		return this.okHintKey;
+	}
+
+	/**
+	 * @return the formCollege
+	 */
+	@Deprecated // TODO: bind person directly
+	public String getFormCollege() {
+		return this.formCollege;
+	}
+
+	/**
+	 * @param formCollege the formCollege to set
+	 */
+	public void setFormCollege(String formCollege) {
+		this.formCollege = formCollege;
+	}
+
+	/**
+	 * @return the formHomepage
+	 */
+	@Deprecated // TODO: bind person directly
+	public URL getFormHomepage() {
+		return this.formHomepage;
+	}
+
+	/**
+	 * @param formHomepage the formHomepage to set
+	 */
+	public void setFormHomepage(URL formHomepage) {
+		this.formHomepage = formHomepage;
+	}
+
+	/**
+	 * @return the formEmail
+	 */
+	@Deprecated // TODO: bind person directly
+	public String getFormEmail() {
+		return this.formEmail;
+	}
+
+	/**
+	 * @param formEmail the formEmail to set
+	 */
+	public void setFormEmail(String formEmail) {
+		this.formEmail = formEmail;
 	}
 	
 }

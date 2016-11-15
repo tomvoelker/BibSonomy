@@ -3425,6 +3425,15 @@ public class DBLogic implements LogicInterface {
 				case UPDATE_NAMES:
 					this.updatePersonNames(person, session);
 					break;
+				case UPDATE_COLLEGE:
+					this.personDBManager.updateCollege(person, session);
+					break;
+				case UPDATE_EMAIL:
+					this.personDBManager.updateEmail(person, session);
+					break;
+				case UPDATE_HOMEPAGE:
+					this.personDBManager.updateHomepage(person, session);
+					break;
 				case UPDATE_ALL:
 					this.personDBManager.updatePerson(person, session);
 					this.updatePersonNames(person, session);

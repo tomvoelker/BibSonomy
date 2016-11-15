@@ -294,6 +294,9 @@ public class PersonPageController extends SingleResourceListController implement
 		JSONObject jsonResponse = new JSONObject();
 		
 		command.getPerson().setAcademicDegree(command.getFormAcademicDegree());
+		command.getPerson().setCollege(command.getFormCollege());
+		command.getPerson().setEmail(command.getFormEmail());
+		command.getPerson().setHomepage(command.getFormHomepage());
 		
 		// FIXME: write independent update method
 		// FIXME: add its me action

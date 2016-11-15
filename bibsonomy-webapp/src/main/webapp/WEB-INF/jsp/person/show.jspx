@@ -314,8 +314,30 @@
 						</div>
 
 
-						<div id="userImg" class="col-md-8">
-							TODO AFFILIATION
+						<div class="col-md-8 col-nopadding">
+							
+							<!-- College -->						
+							<div class='form-group'>
+								<label class="control-label col-md-4 col-smallpadding" for='formCollege'>College</label>
+								
+								<div class="col-md-8">
+									<div class="personPageFormPlaceholder">
+										<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
+										<span class="personPageFormFieldContent" id="personPageFormCollegeValue">${command.person.college}</span> 
+									</div>
+									
+									<div class="personPageFormField col-md-8">
+										<input class='form-control' type="text" name='formCollege' id='formCollege' placeholder="TODO College" value="${command.person.college}"/>
+									</div>
+									
+									<!-- TODO: REMOVE INLINE CSS -->
+									<div style="margin:12px 0 0 10px; padding: 0 0 0 0 important;" class="personPageFormField col-md-2">
+										<actionbuttons:personPageupdateButton person="${command.person}" loginUser="${command.context.loginUser}" text="${textSaveButton}" operation="UPDATE_COLLEGE"></actionbuttons:personPageupdateButton>
+									</div>
+								</div>
+							</div>
+							
+							
 						</div>
 						
 

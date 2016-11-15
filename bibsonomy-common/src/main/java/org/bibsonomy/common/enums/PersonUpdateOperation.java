@@ -44,6 +44,15 @@ public enum PersonUpdateOperation {
 	/** Updates all attributes of a person */
 	UPDATE_ALL,
 
+	/** Updates the college */
+	UPDATE_COLLEGE,
+	
+	/** Updates the college */
+	UPDATE_EMAIL,
+	
+	/** Updates the college */
+	UPDATE_HOMEPAGE,
+	
 	/** Creates a new person */
 	CREATE_PERSON
 }

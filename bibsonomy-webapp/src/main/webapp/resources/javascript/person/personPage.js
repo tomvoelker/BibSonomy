@@ -19,7 +19,9 @@ $(document).ready(function() {
 		orcid =  $("#formOrcid").val();
 		academicDegree = $("#formAcademicDegree").val();
 		
-		// both values orcid and academic degree are sent to the server,
+		college = $("#formCollege").val();
+		
+		// all values (college, emil, homepage, orcid and academic degree are sent to the server,
 		// but maybe only one is updated according to the defined updateOperation
 		// this operation is set at the update button definition
 		$.post("/person",
@@ -28,7 +30,8 @@ $(document).ready(function() {
 				updateOperation: $(this).attr("data-operation"),
 				formPersonId: $(this).attr("data-person-id"),
 				formAcademicDegree: academicDegree,
-				formOrcid: orcid,					
+				formOrcid: orcid,
+				formCollege: college,
 			}
 		).done(function(data) {
 			// error handling

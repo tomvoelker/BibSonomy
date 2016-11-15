@@ -350,6 +350,9 @@
 								<value>formLastName</value>
 								<value>formSelectedName</value>
 								<value>formAcademicDegree</value>
+								<value>formCollege</value>
+								<value>formEmail</value>
+								<value>formHomepage</value>
 								<value>formThesisId</value>
 								<value>formResourcePersonRelationId</value>
 								<value>formPersonIndex</value>
