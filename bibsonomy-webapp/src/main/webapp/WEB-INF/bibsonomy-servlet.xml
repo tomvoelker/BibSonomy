@@ -334,6 +334,7 @@
 								<value>requestedUser</value>
 								<value>requestedRole</value>
 								<value>requestedIndex</value>
+								
 								<value>formAction</value>
 								<value>formPersonRoles</value>
 								<value>formPersonRole</value>
@@ -343,20 +344,33 @@
 								<value>formResourceHash</value>
 								<value>formUser</value>
 								<value>formThatsMe</value>
-								<value>formOrcid</value>
+								<!-- <value>formOrcid</value> -->
 								<value>formPersonNameId</value>
 								<value>formFirstName</value>
 								<value>formMiddleName</value>
 								<value>formLastName</value>
 								<value>formSelectedName</value>
-								<value>formAcademicDegree</value>
+								<!-- <value>formAcademicDegree</value>
 								<value>formCollege</value>
 								<value>formEmail</value>
-								<value>formHomepage</value>
+								<value>formHomepage</value>-->
 								<value>formThesisId</value>
 								<value>formResourcePersonRelationId</value>
 								<value>formPersonIndex</value>
 								<value>updateOperation</value>
+								
+								
+								<value>person.personId</value>
+								<value>person.orcid</value>
+								<value>person.academicDegree</value>
+								<value>person.college</value>
+								<value>person.email</value>
+								<value>person.homepage</value>
+								
+								<value>newName.lastName</value>
+								<value>newName.firstName</value>
+								
+																
 							</list>
 						</property>
 					</bean>

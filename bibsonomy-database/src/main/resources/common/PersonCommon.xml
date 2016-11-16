@@ -14,6 +14,11 @@
 		<result property="changedBy"        column="log_changed_by"      javaType="java.lang.String" />
 		<result property="changeDate"       column="log_changed_at"      javaType="java.util.Date" />
 		<result property="user"             column="user_name"           javaType="java.lang.String" />
+		
+		<result property="college"          column="college"           	 javaType="java.lang.String" />
+		<result property="homepage"         column="homepage"     		 javaType="url" />
+		<result property="email"            column="email"           	 javaType="java.lang.String" />
+		
 	</resultMap>
 	
 	<resultMap id='lazyLoadingPerson' class='org.bibsonomy.model.Person' extends="abstractPerson">

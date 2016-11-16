@@ -12,37 +12,39 @@ $(document).ready(function() {
 		$(".personPageFormPlaceholder", parent).hide();
 	});
 	
-	// sends the update request
+	// sends the update request	
 	$(".personProfileUpdate").on("click", function() {
 		parent = $(this).parents('.form-group');
 		
+		// save the form values to update the preview
 		orcid =  $("#formOrcid").val();
 		academicDegree = $("#formAcademicDegree").val();
-		
 		college = $("#formCollege").val();
+		email = $("#formEmail").val();
+		homepage = $("#formHomepage").val();
 		
 		// all values (college, emil, homepage, orcid and academic degree are sent to the server,
 		// but maybe only one is updated according to the defined updateOperation
 		// this operation is set at the update button definition
-		$.post("/person",
-			{ 	
-				formAction: "update",
-				updateOperation: $(this).attr("data-operation"),
-				formPersonId: $(this).attr("data-person-id"),
-				formAcademicDegree: academicDegree,
-				formOrcid: orcid,
-				formCollege: college,
-			}
-		).done(function(data) {
+		var form_data = $("#personForm").serializeArray();
+		form_data.push({name: "formAction", value: "update"});
+		form_data.push({name: "updateOperation", value: $(this).attr("data-operation")});
+		form_data.push({name: "formPersonId", value: $(this).attr("data-person-id")});
+		
+		$.post("/person", form_data).done(function(data) {
 			// error handling
 			if (data.status) {
 				// everything is fine
 				$(".personPageFormPlaceholder", parent).show();
 				$(".personPageFormField", parent).hide();
 				
-				// TODO: update the preview values
+				// TODO: update the preview values (only the updated one)
 				$("#personPageFormAcademicDegreeValue").text(academicDegree);
 				$("#personPageFormOrcidValue").text(orcid);
+				$("#personPageFormCollegeValue").text(college);
+				$("#personPageFormHomepageValue").text(homepage);
+				
+				// TODO put success text somewhere??
 				
 			} else {
 				// error during update
@@ -57,15 +59,20 @@ $(document).ready(function() {
 		});
 	});
 	
+	
+	
 	// add a new name to the alternative names list
 	$("#btnAddNameSubmit").on("click", function() {
-		$.post("/person",
-			{ 	
-				formAction: "addName",
-				formPersonId: $("#formPersonId").val() ,
-				formFirstName: $("#formFirstName").val(),
-				formLastName: $("#formLastName").val()
-			}
+		var form_data = $("#addNameForm").serializeArray();
+		form_data.push({name: "formAction", value: "addName"});
+		
+		$.post("/person", form_data
+//			{ 	
+//				formAction: "addName",
+//				formPersonId: $("#formPersonId").val() ,
+//				formFirstName: $("#formFirstName").val(),
+//				formLastName: $("#formLastName").val()
+//			}
 		).done(function(data) {
 			// error handling
 			if (data.status) {

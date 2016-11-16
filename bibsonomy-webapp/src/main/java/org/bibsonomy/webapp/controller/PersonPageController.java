@@ -282,7 +282,7 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 */
 	private View updateAction(PersonPageCommand command) {
-		command.setPerson(this.logic.getPersonById(PersonIdType.PERSON_ID, command.getFormPersonId()));
+		final Person person = this.logic.getPersonById(PersonIdType.PERSON_ID, command.getFormPersonId());
 		
 		if (command.getPerson() == null) {
 			// FIXME: proper frontend responses in cases like this
@@ -293,18 +293,26 @@ public class PersonPageController extends SingleResourceListController implement
 		PersonUpdateOperation operation = command.getUpdateOperation();
 		JSONObject jsonResponse = new JSONObject();
 		
-		command.getPerson().setAcademicDegree(command.getFormAcademicDegree());
-		command.getPerson().setCollege(command.getFormCollege());
-		command.getPerson().setEmail(command.getFormEmail());
-		command.getPerson().setHomepage(command.getFormHomepage());
+		
+		// set all attributes that might be updated
+		person.setAcademicDegree(command.getPerson().getAcademicDegree());
+		person.setOrcid(command.getPerson().getOrcid());
+		person.setCollege(command.getPerson().getCollege());
+		
+		// TODO only allow updates if the editor "is" this person
+		person.setEmail(command.getPerson().getEmail());
+		person.setHomepage(command.getPerson().getHomepage());
 		
 		// FIXME: write independent update method
 		// FIXME: add its me action
 		
 		//command.getPerson().getMainName().setMain(false);
 		//command.getPerson().setMainName(Integer.parseInt(command.getFormSelectedName()));
+
+		// bind the new person
+		command.setPerson(person);
 		
-		command.getPerson().setOrcid(command.getFormOrcid());
+		// ???
 		command.getPerson().setUser(command.isFormThatsMe() ? AuthenticationUtils.getUser().getName() : null);
 				
 		try {	

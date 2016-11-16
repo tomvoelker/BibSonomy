@@ -265,8 +265,9 @@
 				</bs:alert>
 			</c:if>
 	
-			<form method='post' name='personForm' action="" class='form-horizontal'>
+			<form method='post' name='personForm' id="personForm" action="" class='form-horizontal'>
 				<input type="hidden" name="ckey" value="${ckey}"/>
+				<input type="hidden" name="personId" value="${command.person.personId}"/>
 
 				<div class="page-header">
 					
@@ -281,7 +282,7 @@
 								<span class="personPageFormFieldContent" id="personPageFormAcademicDegreeValue">${command.person.academicDegree}</span>
 							</div>
 							<div class="personPageFormField">
-								<input class='form-control' type="text" name='formAcademicDegree' id='formAcademicDegree' placeholder="${textAcademicDegree}" autocomplete="off" value="${command.person.academicDegree}" />
+								<input class='form-control' type="text" name='person.academicDegree' id='formAcademicDegree' placeholder="${textAcademicDegree}" autocomplete="off" value="${command.person.academicDegree}" />
 							</div>
 							
 							<!-- TODO: REMOVE INLINE CSS -->
@@ -327,7 +328,7 @@
 									</div>
 									
 									<div class="personPageFormField col-md-8">
-										<input class='form-control' type="text" name='formCollege' id='formCollege' placeholder="TODO College" value="${command.person.college}"/>
+										<input class='form-control' type="text" name='person.college' id="formCollege" placeholder="TODO College" value="${command.person.college}"/>
 									</div>
 									
 									<!-- TODO: REMOVE INLINE CSS -->
@@ -336,6 +337,50 @@
 									</div>
 								</div>
 							</div>
+							
+							<!-- FIXME TODO THE FOLLOWING FIELDS CAN ONLY BE EDITED IF THE EDITOR IS THE OWNER OF THE PAGE -->
+							<!-- Email -->						
+							<div class='form-group'>
+								<label class="control-label col-md-4 col-smallpadding" for='formCollege'>Email</label>
+								
+								<div class="col-md-8">
+									<div class="personPageFormPlaceholder">
+										<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
+										<span class="personPageFormFieldContent" id="personPageFormEmailValue">${command.person.email}</span> 
+									</div>
+									
+									<div class="personPageFormField col-md-8">
+										<input class='form-control' type="text" name='person.email' id="formEmail" placeholder="TODO Email" value="${command.person.college}"/>
+									</div>
+									
+									<!-- TODO: REMOVE INLINE CSS -->
+									<div style="margin:12px 0 0 10px; padding: 0 0 0 0 important;" class="personPageFormField col-md-2">
+										<actionbuttons:personPageupdateButton person="${command.person}" loginUser="${command.context.loginUser}" text="${textSaveButton}" operation="UPDATE_EMAIL"></actionbuttons:personPageupdateButton>
+									</div>
+								</div>
+							</div>
+							
+							<!-- Homepage -->						
+							<div class='form-group'>
+								<label class="control-label col-md-4 col-smallpadding" for='formCollege'>Homepage</label>
+								
+								<div class="col-md-8">
+									<div class="personPageFormPlaceholder">
+										<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
+										<span class="personPageFormFieldContent" id="personPageFormHomepageValue">${command.person.homepage}</span> 
+									</div>
+									
+									<div class="personPageFormField col-md-8">
+										<input class='form-control' type="text" name='person.homepage' id="formHomepage" placeholder="TODO College" value="${command.person.homepage}"/>
+									</div>
+									
+									<!-- TODO: REMOVE INLINE CSS -->
+									<div style="margin:12px 0 0 10px; padding: 0 0 0 0 important;" class="personPageFormField col-md-2">
+										<actionbuttons:personPageupdateButton person="${command.person}" loginUser="${command.context.loginUser}" text="${textSaveButton}" operation="UPDATE_HOMEPAGE"></actionbuttons:personPageupdateButton>
+									</div>
+								</div>
+							</div>
+							
 							
 							
 						</div>
@@ -473,7 +518,7 @@
 									<span class="personPageFormFieldContent" id="personPageFormOrcidValue">${command.person.orcid}</span> 
 								</div>
 								<div class="personPageFormField col-md-8">
-									<input class='form-control' type="text" name='formOrcid' id='formOrcid' placeholder="${textOrcidId}" value="${command.person.orcid}"/>
+									<input class='form-control' type="text" name='person.orcid' id='formOrcid' placeholder="${textOrcidId}" value="${command.person.orcid}"/>
 								</div>
 								
 								<!-- TODO: REMOVE INLINE CSS -->
@@ -623,6 +668,8 @@
 			<div class="modal-content">
 				<form action="" method="post" id='addNameForm' name="addNameForm" class='form-horizontal'>
 					<input type="hidden" name="ckey" value="${ckey}" />
+					<input type='hidden' name='person.personId' value='${command.person.personId}' /> 					
+					
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&amp;times;</button>
 						<h4 class="modal-title">${textModalAddNameHeader}</h4>
@@ -632,12 +679,11 @@
 							<div class="form-group">
 								<label class="control-label col-md-3" for='formFirstName'>${textFormFirstName}</label>
 								<div class="col-md-7">
-									<input type="text" class="form-control" placeholder="${textFormFirstName}" name='formFirstName' id='formFirstName' />
+									<input type="text" class="form-control" placeholder="${textFormFirstName}" name='newName.firstName' id='formFirstName' />
 								</div>
-								<input type='hidden' id='formPersonId' name='formPersonId' value='${command.person.personId}' /> 
 								<label class="control-label col-md-3" for='formLastName'>${textFormLastName}</label>
 								<div class="col-md-7">
-									<input type="text" class="form-control" placeholder="${textFormLastName}" name='formLastName' id='formLastName' />
+									<input type="text" class="form-control" placeholder="${textFormLastName}" name='newName.lastName' id='formLastName' />
 								</div>
 							</div>
 						</fieldset>

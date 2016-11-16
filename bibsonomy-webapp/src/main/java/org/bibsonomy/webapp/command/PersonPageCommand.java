@@ -33,6 +33,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.PersonUpdateOperation;
 import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
@@ -43,17 +44,26 @@ import org.bibsonomy.model.logic.exception.LogicException;
  */
 public class PersonPageCommand extends BaseCommand {
 
+	/** Used during the generation of new names */
+	private PersonName newName;
+	
+	
+	
+	
 	private String requestedPersonId;
 	private String requestedAction;
 
+	
+	
+	
+	
 	private String formSelectedName;
-	@Deprecated // TODO: bind person directly
-	private String formAcademicDegree;
-	@Deprecated // TODO: bind person directly
+
+
 	private String formFirstName;
 	@Deprecated // TODO: bind person directly
 	private String formMiddleName;
-	@Deprecated // TODO: bind person directly
+
 	private String formLastName;
 	@Deprecated // TODO: bind person directly
 	private String formResourceHash;
@@ -61,9 +71,8 @@ public class PersonPageCommand extends BaseCommand {
 	private String formPersonId;
 	@Deprecated // TODO: bind person directly
 	private PersonResourceRelationType formPersonRole;
-	@Deprecated // TODO: bind person directly
-	private String formOrcid;
-	@Deprecated // TODO: bind person directly
+
+	@Deprecated // TODO: bind person dier rectly
 	private String formThesisId;
 	@Deprecated // TODO: bind person directly
 	private String formUser;
@@ -84,12 +93,6 @@ public class PersonPageCommand extends BaseCommand {
 	@Deprecated // TODO: bind person directly
 	private int formPersonIndex = -1;
 	
-	@Deprecated // TODO: bind person directly
-	private String formCollege;
-	@Deprecated // TODO: bind person directly
-	private URL formHomepage;
-	@Deprecated // TODO: bind person directly
-	private String formEmail;
 	
 	private String formAction;
 	
@@ -175,20 +178,6 @@ public class PersonPageCommand extends BaseCommand {
 	 */
 	public void setPerson(Person person) {
 		this.person = person;
-	}
-	
-	/**
-	 * @return the formGraduation
-	 */
-	public String getFormAcademicDegree() {
-		return this.formAcademicDegree;
-	}
-
-	/**
-	 * @param formAcademicDegree the formAcademicDegree to set
-	 */
-	public void setFormAcademicDegree(String formAcademicDegree) {
-		this.formAcademicDegree = formAcademicDegree;
 	}
 	
 	/**
@@ -442,22 +431,6 @@ public class PersonPageCommand extends BaseCommand {
 	}
 
 	/**
-	 * @return the formOrcid
-	 */
-	@Deprecated // TODO: bind person directly
-	public String getFormOrcid() {
-		return this.formOrcid;
-	}
-
-	/**
-	 * @param formOrcid the formOrcid to set
-	 */
-	@Deprecated // TODO: bind person directly
-	public void setFormOrcid(String formOrcid) {
-		this.formOrcid = formOrcid;
-	}
-
-	/**
 	 * @param jsonString
 	 */
 	public void setResponseString(String jsonString) {
@@ -612,48 +585,17 @@ public class PersonPageCommand extends BaseCommand {
 	}
 
 	/**
-	 * @return the formCollege
+	 * @return the newName
 	 */
-	@Deprecated // TODO: bind person directly
-	public String getFormCollege() {
-		return this.formCollege;
+	public PersonName getNewName() {
+		return this.newName;
 	}
 
 	/**
-	 * @param formCollege the formCollege to set
+	 * @param newName the newName to set
 	 */
-	public void setFormCollege(String formCollege) {
-		this.formCollege = formCollege;
+	public void setNewName(PersonName newName) {
+		this.newName = newName;
 	}
 
-	/**
-	 * @return the formHomepage
-	 */
-	@Deprecated // TODO: bind person directly
-	public URL getFormHomepage() {
-		return this.formHomepage;
-	}
-
-	/**
-	 * @param formHomepage the formHomepage to set
-	 */
-	public void setFormHomepage(URL formHomepage) {
-		this.formHomepage = formHomepage;
-	}
-
-	/**
-	 * @return the formEmail
-	 */
-	@Deprecated // TODO: bind person directly
-	public String getFormEmail() {
-		return this.formEmail;
-	}
-
-	/**
-	 * @param formEmail the formEmail to set
-	 */
-	public void setFormEmail(String formEmail) {
-		this.formEmail = formEmail;
-	}
-	
 }
