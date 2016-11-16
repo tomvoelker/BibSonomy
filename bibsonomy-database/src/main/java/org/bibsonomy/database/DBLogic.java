@@ -2065,6 +2065,7 @@ public class DBLogic implements LogicInterface {
 				 */
 				Post<BibTex> post = null;
 				try {
+					// FIXME: remove strange getpostdetails method
 					post = this.publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, lowerCaseUserName, UserUtils.getListOfGroupIDs(this.loginUser), true, session);
 				} catch (final ResourceMovedException ex) {
 					// ignore
