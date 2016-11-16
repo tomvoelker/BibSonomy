@@ -149,7 +149,7 @@
 						</dl>
 					</jsp:attribute>
 				</bsform:fieldset>
-			</c:if>		
+			</c:if>
 
 			<bsform:fieldset legendKey="settings.groups">
 				<jsp:attribute name="content">
@@ -170,7 +170,7 @@
 									<c:if test="${groupMembership.groupRole ne 'DUMMY'}">
 										<form:form cssClass="form-horizontal" class="groupShareSettings"  method="POST" action="/ajax/handleGroupShare">
 											<dt>
-												<group:groupthumbnail group="${group}" noname="${true}" size="16"  />
+												<group:groupthumbnail group="${group}" noname="${true}" />
 											</dt>
 											
 											<dd>
@@ -221,9 +221,5 @@
 				</jsp:attribute>
 			</bsform:fieldset>
 		</fieldset>
-		
-	
-<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% -->
-
 	</div>
 </jsp:root>
