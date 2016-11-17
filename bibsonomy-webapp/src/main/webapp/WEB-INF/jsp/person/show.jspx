@@ -590,12 +590,12 @@
 						
 						<!-- 
 						TODO: implement add thesis 
+						-->
 						<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
 							<br/>
 							<bsform:button size="defaultSize" value="${textAddThesisButton}" style="defaultStyle" dataToggle="modal" dataTarget="#addThesis" block="${true}" />
 							<br/>
 						</c:if>
-						-->
 						
 						<c:choose>
 							<c:when test="${fn:length(command.thesis) gt 0}">
@@ -614,12 +614,12 @@
 					<!-- Related Thesis tab content -->
 					<div id="relatedThesis" class="tab-pane">
 						<!-- 
+						-->
 						<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
 							<br/>
 							<button style='width: 100%;' class='btn btn-default' data-toggle='modal' data-target='#addSupervisedThesis'>${textAddThesisButton}</button>
 							<br/>
 						</c:if>
-						-->
 						
 						<c:choose>
 							<c:when test="${fn:length(command.advisedThesis) gt 0}">
@@ -657,7 +657,7 @@
 			</c:if>
 			
 			
-			<!-- Other publications of similar authors -->
+			<!-- Other publications of similar authors
 			<c:if test="${fn:length(command.otherAdvisedPubs) gt 0}">
 				<h3 class="list-headline"><fmt:message key="person.show.otherPub" /></h3>
 				<div id="otherPublicationsOfSimialrAuthor" class="table-responsive">
@@ -668,7 +668,7 @@
 					</table>
 				</div>
 			</c:if>
-					
+				 -->	
 					
 
 		</jsp:attribute>

@@ -131,6 +131,7 @@
 											<input type="hidden" name='personRole' value='AUTHOR'/>
 											<input type="hidden" name='post.resource.entrytype' value='phdthesis'/>
 											<input type="hidden" name="ckey" value="${ckey}"/>
+											<input type="hidden" name="method" value="manual" />
 											
 											<fmt:message key="persons.intro.addperson.text"/><c:out value=" " />
 											<fmt:message key="persons.intro.addperson.button" var="textAddPersonButton"/>
