@@ -728,7 +728,7 @@
 	<bs:modal modalTitle="${textModalAddThesisHeader}" id="addThesis">
 		<jsp:attribute name="modalBody">
 			<fieldset>
-				<div class="form-group">
+				<div id="person-scroll-menu" class="form-group">
 					<label for='addThesisAuto' class="control-label">${textThesis}</label>
 					<fmt:message key="person.show.modal.addThesis.placeholder" var="tmpMsg" />
 					<input class='form-control typeahead' id='addThesisAuto' type='text' name='addThesisAuto' autocomplete="off" placeholder="${tmpMsg}"/>
@@ -766,7 +766,7 @@
 			<form id="addSupervisedThesisForm" action="${absoluteUrlGenerator.getPersonUrl(command.person.personId)}" method="post" class="form-horizontal">
 				<input type="hidden" name="ckey" value="${ckey}"/>
 				<fieldset>
-					<div class="form-group">
+					<div id="person-scroll-menu" class="form-group">
 						<label for='addSupervisedThesisAuto' class="control-label"><fmt:message key="person.show.modal.addSupervisedThesis.text" /></label>
 						<fmt:message key="person.show.modal.addSupervisedThesis.placeholder" var="tmpMsg" />
 						<input class='form-control typeahead' id='addSupervisedThesisAuto' type='text' name='addSupervisedThesisAuto' autocomplete="off" placeholder="${tmpMsg}"/>
@@ -830,7 +830,7 @@
 					</div>
 					<div class="modal-body">
 						<fieldset>
-							<div class="form-group person-search">
+							<div id="person-scroll-menu" class="form-group person-search">
 								<label for='addRoleAuto' class="control-label col-md-3">${textPerson}</label>
 								<fmt:message key="person.show.modal.addRole.placeholder" var="textModalAddRolePlaceholder" />
 								<input class='form-control typeahead' id='addRoleAuto' type='text' name='addRoleAuto' autocomplete="off" placeholder="${textModalAddRolePlaceholder}"/>
