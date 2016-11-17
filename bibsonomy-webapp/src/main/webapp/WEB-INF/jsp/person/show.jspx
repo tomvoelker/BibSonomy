@@ -25,11 +25,7 @@
 	xmlns:per="urn:jsptagdir:/WEB-INF/tags/person"> 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	
-	
-	<!-- <c:set var="post" value="${command.post}" /> -->
-	
-	<fmt:message key="navi.person" var="PersonPageTitle" />
+
 	<fmt:message key="person.show.academicDegree" var="textAcademicDegree" />
 	<fmt:message key="person.show.addAlternateNameButton" var="textAddAlternateNameButton" />
 	<fmt:message key="person.show.addNameButton" var="textAddNameButton" />
@@ -127,7 +123,6 @@
 				}
 				
 				
-				
 				.page-header .form-group .twitter-typeahead {
 					display: inline !important;
 				}				
@@ -157,6 +152,7 @@
 				
 				.personPageEnableForm {
 					padding: 0 5px 0 0;
+					cursor: pointer;
 				}
 				
 				table.personOtherPublicationTable {
@@ -209,8 +205,7 @@
 				
 				#thesisBlock {}
 				
-				.personThesisEntry {
-				}
+				.personThesisEntry {}
 				
 				.personPdesc {
 					height: 14px;
@@ -246,12 +241,39 @@
 					display: none;
 				}
 				
+				a.personPageShowAdditionalRoleFields {
+					position: absolute;
+					right: 5px;
+					bottom: -13px;
+				}
+				
 			</style>
 			<link rel="stylesheet" type="text/css" href='/resources/typeahead.js/css/typeahead.css'/>
 		</jsp:attribute>
 		
 		<jsp:attribute name="heading"></jsp:attribute>
-		<jsp:attribute name="sidebar">TODO ADD CONTENT</jsp:attribute>
+		<jsp:attribute name="sidebar">
+			<!-- Links to the user who claimed this page or buttons to claim it/realease it -->
+			<c:choose>
+				<c:when test='${not empty command.person.user and command.person.user eq command.context.loginUser.name}'>
+					TODO TEXT: unlink?
+					<bsform:button size="defaultSize" style="primary" dataTarget="#linkPerson" dataToggle="modal" valueKey="person.show.thatsMeButton" titleKey="person.show.thatsMeButton" />				
+				</c:when>
+				<c:when test='${not empty command.person.user}'>
+					TODO ADD INFOS ABOUT THE USER
+					<a href="${absoluteUrlGenerator.getUserUrlByUserName(command.person.user)}"><c:out value="${command.person.user}"/></a>
+				</c:when>
+				
+				<c:when test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
+					TODO TEXT: connect
+					<bsform:button size="defaultSize" style="primary" dataTarget="#linkPerson" dataToggle="modal" valueKey="person.show.thatsMeButton" titleKey="person.show.thatsMeButton" />				
+				</c:when>
+				
+				<c:otherwise>
+					TODO: only spammer and not logged in users?
+				</c:otherwise>
+			</c:choose>
+		</jsp:attribute>
 
 
 
@@ -282,7 +304,7 @@
 								<span class="personPageFormFieldContent" id="personPageFormAcademicDegreeValue">${command.person.academicDegree}</span>
 							</div>
 							<div class="personPageFormField">
-								<input class='form-control' type="text" name='person.academicDegree' id='formAcademicDegree' placeholder="${textAcademicDegree}" autocomplete="off" value="${command.person.academicDegree}" />
+								<input class='form-control' type="text" name='person.academicDegree' id='formAcademicDegree' placeholder="Dr" autocomplete="off" value="${command.person.academicDegree}" />
 							</div>
 							
 							<!-- TODO: REMOVE INLINE CSS -->
@@ -328,7 +350,7 @@
 									</div>
 									
 									<div class="personPageFormField col-md-8">
-										<input class='form-control' type="text" name='person.college' id="formCollege" placeholder="TODO College" value="${command.person.college}"/>
+										<input class='form-control' type="text" name='person.college' id="formCollege" value="${command.person.college}"/>
 									</div>
 									
 									<!-- TODO: REMOVE INLINE CSS -->
@@ -345,18 +367,30 @@
 								
 								<div class="col-md-8">
 									<div class="personPageFormPlaceholder">
-										<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
+										<c:choose>
+											<!-- Only visible if the loginUser claimed this person -->
+											<c:when test='${not empty command.person.user and command.person.user eq command.context.loginUser.name}'>
+												<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
+											</c:when>
+											<c:otherwise>
+												TODO INFO SIGN + TEXT
+											</c:otherwise>
+										</c:choose>
+
 										<span class="personPageFormFieldContent" id="personPageFormEmailValue">${command.person.email}</span> 
 									</div>
 									
-									<div class="personPageFormField col-md-8">
-										<input class='form-control' type="text" name='person.email' id="formEmail" placeholder="TODO Email" value="${command.person.college}"/>
-									</div>
-									
-									<!-- TODO: REMOVE INLINE CSS -->
-									<div style="margin:12px 0 0 10px; padding: 0 0 0 0 important;" class="personPageFormField col-md-2">
-										<actionbuttons:personPageupdateButton person="${command.person}" loginUser="${command.context.loginUser}" text="${textSaveButton}" operation="UPDATE_EMAIL"></actionbuttons:personPageupdateButton>
-									</div>
+									<!-- Only visible if te loginUser claimed this person -->
+									<c:if test='${not empty command.person.user and command.person.user eq command.context.loginUser.name}'>
+										<div class="personPageFormField col-md-8">
+											<input class='form-control' type="text" name='person.email' id="formEmail" value="${command.person.college}"/>
+										</div>
+										
+										<!-- TODO: REMOVE INLINE CSS -->
+										<div style="margin:12px 0 0 10px; padding: 0 0 0 0 important;" class="personPageFormField col-md-2">
+											<actionbuttons:personPageupdateButton person="${command.person}" loginUser="${command.context.loginUser}" text="${textSaveButton}" operation="UPDATE_EMAIL"></actionbuttons:personPageupdateButton>
+										</div>
+									</c:if>
 								</div>
 							</div>
 							
@@ -366,18 +400,24 @@
 								
 								<div class="col-md-8">
 									<div class="personPageFormPlaceholder">
-										<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
+										<!-- Only visible if te loginUser claimed this person -->
+										<c:if test='${not empty command.person.user and command.person.user eq command.context.loginUser.name}'>
+											<span class="personPageEnableForm fa fa-pencil"><!--  --></span> 
+										</c:if>
 										<span class="personPageFormFieldContent" id="personPageFormHomepageValue">${command.person.homepage}</span> 
 									</div>
 									
-									<div class="personPageFormField col-md-8">
-										<input class='form-control' type="text" name='person.homepage' id="formHomepage" placeholder="TODO College" value="${command.person.homepage}"/>
-									</div>
-									
-									<!-- TODO: REMOVE INLINE CSS -->
-									<div style="margin:12px 0 0 10px; padding: 0 0 0 0 important;" class="personPageFormField col-md-2">
-										<actionbuttons:personPageupdateButton person="${command.person}" loginUser="${command.context.loginUser}" text="${textSaveButton}" operation="UPDATE_HOMEPAGE"></actionbuttons:personPageupdateButton>
-									</div>
+									<!-- Only visible if te loginUser claimed this person -->
+									<c:if test='${not empty command.person.user and command.person.user eq command.context.loginUser.name}'>
+										<div class="personPageFormField col-md-8">
+											<input class='form-control' type="text" name='person.homepage' id="formHomepage" placeholder="TODO College" value="${command.person.homepage}"/>
+										</div>
+										
+										<!-- TODO: REMOVE INLINE CSS -->
+										<div style="margin:12px 0 0 10px; padding: 0 0 0 0 important;" class="personPageFormField col-md-2">
+											<actionbuttons:personPageupdateButton person="${command.person}" loginUser="${command.context.loginUser}" text="${textSaveButton}" operation="UPDATE_HOMEPAGE"></actionbuttons:personPageupdateButton>
+										</div>
+									</c:if>
 								</div>
 							</div>
 							
@@ -819,8 +859,7 @@
 	
 	
 	<!-- Add role modal dialog -->
-	<div class="modal fade" id="addRole" tabindex="-1" role="dialog"
-		aria-labelledby="addRoleLabel" aria-hidden="true">
+	<div class="modal fade" id="addRole" tabindex="-1" role="dialog" aria-labelledby="addRoleLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 					<div class="modal-header">
@@ -907,8 +946,7 @@
 	</div>
 	
 	<!-- Link person modal dialog -->
-	<div class="modal fade" id="linkPerson" tabindex="-1" role="dialog"
-		aria-labelledby="linkPersonLabel" aria-hidden="true">
+	<div class="modal fade" id="linkPerson" tabindex="-1" role="dialog" aria-labelledby="linkPersonLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 					<div class="modal-header">

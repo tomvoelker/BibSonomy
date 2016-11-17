@@ -339,13 +339,21 @@ public class PersonPageController extends SingleResourceListController implement
 	 * @param command
 	 */
 	private View addNameAction(PersonPageCommand command) {
-		final Person person = logic.getPersonById(PersonIdType.PERSON_ID, command.getFormPersonId());
-		
+		final Person person = logic.getPersonById(PersonIdType.PERSON_ID, command.getPerson().getPersonId());
+
 		final JSONObject jsonResponse = new JSONObject();
+
+		if (!present(person) || !present(command.getNewName())) {
+			jsonResponse.put("status", false);
+			// TODO: set proper error message
+			//jsonResponse.put("message", "Person cannot be found.");
+			command.setResponseString(jsonResponse.toString());
+			return Views.AJAX_JSON;
+		}
 		
-		final PersonName personName = new PersonName(command.getFormLastName());
-		personName.setFirstName(command.getFormFirstName());
-		personName.setPersonId(command.getFormPersonId());
+		
+		final PersonName personName = command.getNewName();
+		personName.setPersonId(command.getPerson().getPersonId());
 		
 		for (PersonName otherName : person.getNames()) {
 			if (personName.equals(otherName)) {
@@ -356,7 +364,6 @@ public class PersonPageController extends SingleResourceListController implement
 				return Views.AJAX_JSON;
 			}
 		}
-		
 		
 		try {			
 			this.logic.createPersonName(personName);

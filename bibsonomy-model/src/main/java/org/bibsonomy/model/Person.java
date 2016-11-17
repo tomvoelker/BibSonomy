@@ -73,7 +73,8 @@ public class Person implements Serializable {
 	
 	private String college;
 	private String email;
-	private URL homepage;
+	// FIXME use URL instead of string
+	private String homepage;
 	
 	
 	/**
@@ -334,14 +335,14 @@ public class Person implements Serializable {
 	/**
 	 * @return the homepage
 	 */
-	public URL getHomepage() {
+	public String getHomepage() {
 		return this.homepage;
 	}
 
 	/**
 	 * @param homepage the homepage to set
 	 */
-	public void setHomepage(URL homepage) {
+	public void setHomepage(String homepage) {
 		this.homepage = homepage;
 	}
 

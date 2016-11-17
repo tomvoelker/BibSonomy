@@ -51,7 +51,10 @@
 				</c:forEach>
 			</ul>
 			
-			<a href="#" class="personPageShowAdditionalRoleFields pull-right">TODO</a>
+			<a href="#" class="personPageShowAdditionalRoleFields pull-right">
+				<span class="personPageShowAdditionalRoleFieldsMore"><fmt:message key="more" /></span>
+				<span style="display:none" class="personPageShowAdditionalRoleFieldsLess"><fmt:message key="less" /></span>
+			</a>
 			
 		</div>
 		

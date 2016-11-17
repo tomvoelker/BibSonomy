@@ -3,6 +3,24 @@ $(document).ready(function() {
 	// toggle view/hide all available roles
 	$(".personPageShowAdditionalRoleFields").click(function() {
 		$(".personPageAdditionalRoleFields", $(this).parent()).toggle();
+		
+		// toggle the link text
+		if ($(".personPageShowAdditionalRoleFieldsMore", this).is(":visible")) {
+			$(".personPageShowAdditionalRoleFieldsMore", this).hide();
+			$(".personPageShowAdditionalRoleFieldsLess", this).show();
+		} else {
+			$(".personPageShowAdditionalRoleFieldsLess", this).hide();
+			$(".personPageShowAdditionalRoleFieldsMore", this).show();		
+		}
+		
+		// resize the sidebar
+		// TODO: maybe get the path somehow else?
+		$.getScript("/resources/javascript/custom.js", function() {
+			//sidebarAdjusts();
+			var sidebarAdjustments = sidebarAdjusts;
+			sidebarAdjustments();
+			$(window).resize(sidebarAdjustments);
+		});
 	});
 	
 	// enables the form field of the clicked element
