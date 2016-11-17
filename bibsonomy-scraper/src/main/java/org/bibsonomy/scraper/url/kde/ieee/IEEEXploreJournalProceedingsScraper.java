@@ -115,7 +115,7 @@ public class IEEEXploreJournalProceedingsScraper extends AbstractUrlScraper {
 					method.addParameter("fromPage", "");
 					method.addParameter("download-format", "download-bibtex");
 					method.addParameter("recordIds", id);
-					System.out.println("HALLO");
+
 					//now get bibtex
 					bibtex = WebUtils.getPostContentAsString(client, method);
 				} catch (MalformedURLException ex) {
