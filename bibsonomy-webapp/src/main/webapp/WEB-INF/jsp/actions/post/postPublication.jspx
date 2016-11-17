@@ -39,16 +39,6 @@
 			
 			<script type="text/javascript" src="${resdir}/javascript/postPublication.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/handlebars/handlebars.js"><!-- keep me --></script>
-			
-			<c:if test="${command.person != null}">
-				<script type="text/javascript">
-					// FIXME: replace by proper implementation
-					$(document).ready(function() {
-						$("#publication-functions-btn").click();
-					});
-				</script>
-			</c:if>
-			
 		</jsp:attribute>
 		
 		<jsp:attribute name="content">
@@ -77,7 +67,7 @@
 								<button data-target="file" type="button" class="btn btn-default"><fmt:message key="post_publication.file.title" /></button>
 								<button data-target="snippet" type="button" class="btn btn-default"><fmt:message key="post_bibtex.pub_snippet.snippet"/></button>
 								<button data-target="scan" type="button" class="btn btn-default"><fmt:message key="post_bibtex.scan.title" /></button>
-								<button data-target="manual" type="button" class="btn btn-default" id="publication-functions-btn"><fmt:message key="post_bibtex.manual.title" /></button>
+								<button data-target="manual" type="button" class="btn btn-default"><fmt:message key="post_bibtex.manual.title" /></button>
 							</div>
 						</div>
 					</div>
