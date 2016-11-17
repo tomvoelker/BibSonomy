@@ -15,6 +15,7 @@
   xmlns:bs="urn:jsptagdir:/WEB-INF/tags/bs">
   
 	<jsp:directive.attribute name="command"  type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
+	
   
 	<!-- ############################################# settings tab ############################################# -->
 	<fmt:message var="cloud" key="settings.cloud"/>
@@ -172,11 +173,45 @@
 					<!-- new -->
 					<fmt:message var="labelText" key="settings.tag.itemsPerPage" />
 					<fmt:message var="helpText" key="settings.tag.itemsPerPage.help"/>
-					<bsform:input path="user.settings.listItemcount" labelColSpan="3"  labelText="${labelText }" inputColSpan="9" helpText="${helpText }" />
+					<bsform:input path="user.settings.listItemcount" labelColSpan="3"  labelText="${labelText}" inputColSpan="9" helpText="${helpText }" />
 					<div class="dissError">
 						<form:errors path="user.settings.listItemcount" />
 					</div>
-
+					
+					
+					<!-- favourite layouts to be shown-->
+					<div class="form-group">
+						<form:label cssClass="col-sm-3 control-label" path="user.settings.favouriteLayouts">
+							<fmt:message key="settings.favouriteExports" />
+						</form:label>
+					
+						<!-- shown style dropdown list including a nice and smooth animation -->
+						<div class="col-sm-9">
+							<ul class="list-group" id="favouriteLayoutsList">
+								<!-- ID has to be "source"/"id" for the StringToFavouriteLayoutConverter to read -->
+								<!-- don't forget to use displayName in the right places! -->
+								<c:forEach var="favl" items="${command.context.loginUser.settings.favouriteLayouts}" varStatus="counter">
+									<li class="list-group-item favouriteLayoutsListItem clearfix" data-source="${favl.source}" data-style="${favl.style}">
+										<input type="hidden" name="user.settings.favouriteLayouts" id="${favl.source}/${favl.style}" value="${favl.source}/${favl.style}"/>
+										<mtl:favouriteLayoutDisplayName favouriteLayout="${favl}" />
+										<c:out value=" " /> <!-- TODO: use css -->
+										<span class="btn btn-danger btn-xs pull-right delete-Style">
+											<fmt:message key="delete" />
+										</span>
+									</li>
+								</c:forEach>
+							</ul>
+							<!-- add new styles with typeahead -->
+							<div class="row">
+								<div class="col-sm-3 text-right">
+									<fmt:message key="settings.favouriteExports.add" />
+								</div>
+								<div class="col-sm-9">
+									<input class="form-control typeahead" id='searchCitationAutocomplete' type='text' name='searchCitationAutocomplete' autocomplete="off" placeholder='BibTeX, EndNote, CSL, JabRef...'/>
+								</div>
+							</div>
+						</div>
+					</div>
 					
 					<!-- displayed resources -->
 					<!-- new -->
@@ -185,7 +220,7 @@
 							<fmt:message key="settings.resource.resourceToShow"/>
 						</form:label>
 						
-						<div class="col-sm-4">
+						<div class="col-sm-3">
 							<label>
 								<form:checkbox path="user.settings.showBookmark" />&amp;nbsp;
 								<fmt:message key="settings.bookmark"/>

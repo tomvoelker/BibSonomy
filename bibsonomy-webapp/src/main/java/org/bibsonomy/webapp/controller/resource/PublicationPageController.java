@@ -42,7 +42,6 @@ import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.resource.PublicationPageCommand;
 import org.bibsonomy.webapp.command.resource.ResourcePageCommand;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 
 /**
@@ -56,13 +55,15 @@ public class PublicationPageController extends AbstractResourcePageController<Bi
 		return new PublicationPageCommand();
 	}
 	
-	/* (non-Javadoc)
+	/* see issue #2512
+	 * (non-Javadoc)
 	 * @see org.bibsonomy.webapp.controller.resource.AbstractResourcePageController#workOnResource(org.bibsonomy.webapp.command.resource.ResourcePageCommand, java.lang.String, java.lang.String, java.lang.String, org.bibsonomy.common.enums.GroupingEntity)
-	 */
+	 *
 	@Override
 	protected View workOnResource(ResourcePageCommand<BibTex> command, String format, String longHash, String requUser, GroupingEntity groupingEntity) {
 		final String title = command.getRequestedTitle();
 		// redirect to /bibtex/interhash_title if only /bibtex/interhash is requested
+		
 		if ("html".equals(command.getFormat()) && !present(title) && GroupingEntity.ALL.equals(groupingEntity)) {
 			this.setList(command, this.getResourceClass(), groupingEntity, requUser, null, longHash, null, command.getFilter(), null, null, null, 1);
 			final List<Post<BibTex>> posts = command.getListCommand(this.getResourceClass()).getList();
@@ -76,6 +77,7 @@ public class PublicationPageController extends AbstractResourcePageController<Bi
 		}
 		return super.workOnResource(command, format, longHash, requUser, groupingEntity);
 	}
+	*/
 	
 	@Override
 	protected View handleFormat(final ResourcePageCommand<BibTex> command, final String format, final String longHash, final String requUser, final GroupingEntity groupingEntity, final String goldHash, final Post<GoldStandardPublication> goldStandard, final BibTex firstResource) {

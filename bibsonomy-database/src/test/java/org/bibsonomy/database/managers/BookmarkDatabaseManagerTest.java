@@ -199,6 +199,18 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 		assertEquals(0, postsFromInboxByHash.size());
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.managers.PostDatabaseManagerTest#testGetPostsFromTras()
+	 */
+	@Override
+	public void testGetPostsFromTrash() {
+		final List<Post<Bookmark>> posts = bookmarkDb.getPostsFromTrash("testuser1", 10, 0, this.dbSession);
+		assertEquals(1, posts.size());
+		
+		final Post<Bookmark> firstPost = posts.get(0);
+		assertEquals("IT-News, ct, iX, Technology Review, Telepolis | heise online", firstPost.getResource().getTitle());
+	}
+	
 	/**
 	 * tests testGetPostsByUserFriends
 	 * 

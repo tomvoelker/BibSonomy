@@ -98,5 +98,4 @@
 	<typeAlias alias="GroupLevelPermission"	type="org.bibsonomy.common.enums.GroupLevelPermission" />
 	
 	<typeAlias alias="LayoutSettings"    type="org.bibsonomy.model.user.settings.LayoutSettings" />
-	
 </sqlMap>

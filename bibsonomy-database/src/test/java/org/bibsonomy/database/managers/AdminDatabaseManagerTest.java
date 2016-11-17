@@ -211,7 +211,7 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			Assert.fail("User cannot be marked as spammer since he is member of at least one group.");
 		} catch (final IllegalStateException ex) {
 			for (final Group group : userGroups) {
-				groupDatabaseManager.removeUserFromGroup(group.getName(), userName, this.dbSession);
+				groupDatabaseManager.removeUserFromGroup(group.getName(), userName, false, this.dbSession);
 			}
 			adminDb.flagSpammer(user, "not-classifier", "off", this.dbSession);
 		}
@@ -271,19 +271,19 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		review.setGroups(Collections.singleton(GroupUtils.buildPublicSpamGroup()));
 		assertTrue(reviewDatabaseManager.createDiscussionItemForResource(newHash, review, this.dbSession));
 		assertEquals(0.0, testDatabaseManager.getReviewRatingsArithmeticMean(newHash), 0);
-		
+
 		spammer.setSpammer(false);
 		spammer.setAlgorithm("admin");
 		adminDb.flagSpammer(spammer, "admin", this.dbSession);
-		
+
 		assertEquals(rating, testDatabaseManager.getReviewRatingsArithmeticMean(newHash), 0);
-		
+
 		spammer.setSpammer(true);
 		adminDb.flagSpammer(spammer, "admin", this.dbSession);
-		
+
 		assertEquals(0.0, testDatabaseManager.getReviewRatingsArithmeticMean(newHash), 0);
 	}
-	
+
 	@Test
 	public void markUserMemberOfGroupsAsSpammer() {
 		final User user = new User();
@@ -296,12 +296,12 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		groupRequest.setUserName(userName);
 		groupRequest.setReason("testrequestreason1");
 		newGroup.setGroupRequest(groupRequest);
-		
+
 		groupDatabaseManager.createGroup(newGroup, this.dbSession);
 		groupDatabaseManager.activateGroup(newGroup.getName(), this.dbSession);
-		
+
 		user.setSpammer(Boolean.TRUE);
-		
+
 		try {
 			adminDb.flagSpammer(user, "admin", this.dbSession);
 			// this should throw an exception

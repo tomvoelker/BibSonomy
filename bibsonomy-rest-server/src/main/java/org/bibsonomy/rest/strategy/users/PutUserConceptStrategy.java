@@ -55,7 +55,7 @@ public class PutUserConceptStrategy extends AbstractUpdateStrategy {
 	@Override
 	protected String update() {
 		final Tag concept = this.getRenderer().parseTag(this.doc);
-		return this.getLogic().updateConcept(concept, GroupingEntity.USER, this.userName, ConceptUpdateOperation.UPDATE);		
+		return this.getLogic().updateConcept(concept, GroupingEntity.USER, this.userName, ConceptUpdateOperation.UPDATE);
 	}
 
 	@Override

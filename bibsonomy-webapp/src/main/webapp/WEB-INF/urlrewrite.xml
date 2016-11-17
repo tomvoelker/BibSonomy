@@ -171,6 +171,25 @@
 		<set type="parameter" name="layout">${unescapePath:$1}</set>
 		<to>/$2</to>
 	</rule>
+	<rule>
+		<name>/csl-layout/</name>
+		<from>^/+csl-layout/+(.+?)/+(.*)$</from>
+		<set type="parameter" name="format">csl-layout</set>
+		<set type="parameter" name="layout">${unescapePath:$1}</set>
+		<to>/$2</to>
+	</rule>
+	<rule>
+		<name>/csl-locale</name>
+		<from>^/+csl-locale/+(.*)$</from>
+		<set type="parameter" name="locale">${unescapePath:$1}</set>
+		<to>/csl-style</to>
+	</rule>
+	<rule>
+		<name>/csl-style/</name>
+		<from>^/+csl-style/+(.*)$</from>
+		<set type="parameter" name="style">${unescapePath:$1}</set>
+		<to>/csl-style</to>
+	</rule>
 	<!-- json export of our jabref layouts -->
 	<rule>
 		<name>/layoutinfo</name>
@@ -847,26 +866,28 @@
 		<from>^/+(bibtex|publication)/+([0-3])([0-9a-fA-F]{32})/$</from>
 		<to type="redirect" last="true">/$1/$2$3</to>
 	</rule>
-	<rule><!-- /[0-3][32]_TITLE -->
+	<!-- see issue #2512
+	<rule> /[0-3][32]_TITLE 
 		<name>/bibtex/SHASH_TITLE</name>
 		<from>^/+(bibtex|publication)/+([0-3])([0-9a-fA-F]{32})_(.+)$</from>
 		<set type="parameter" name="requestedHash">$2$3</set>
 		<set type="parameter" name="requestedTitle">$4</set>
 		<to last="true">/bibtex</to>
-	</rule>
+	</rule>-->
 	<rule><!-- /[32] (arbitrary hash) defaults to simhash1 -->
 		<name>/bibtex/HASH</name>
 		<from>^/+(bibtex|publication)/+([0-9a-fA-F]{32})$</from>
 		<set type="parameter" name="requestedHash">1$2</set>
 		<to last="true">/bibtex</to>
 	</rule>
-	<rule><!-- /[32] (arbitrary hash) defaults to simhash1 -->
+	<!--
+	<rule> /[32] (arbitrary hash) defaults to simhash1
 		<name>/bibtex/HASH_TITLE</name>
 		<from>^/+(bibtex|publication)/+([0-9a-fA-F]{32})_(.+)$</from>
 		<set type="parameter" name="requestedHash">1$2</set>
 		<set type="parameter" name="requestedTitle">$3</set>
 		<to last="true">/bibtex</to>
-	</rule>
+	</rule> -->
 	
 	<rule><!--/[32]/USERNAME -->
 		<name>/history/RSCTYPE/HASH/USER</name>

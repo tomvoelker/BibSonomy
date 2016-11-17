@@ -1,5 +1,8 @@
 User-agent: *
 Disallow: /layout/
+Disallow: /csl-layout/
+Disallow: /endnote/
+Disallow: /bib/
 Disallow: /concept/
 Disallow: /search/
 Disallow: /documents/

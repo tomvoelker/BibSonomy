@@ -214,6 +214,20 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setRequestedUserName(receiver);
 		return this.postList("get" + this.resourceClassName + "FromInbox", param, session);
 	}
+	
+	/**
+	 * 
+	 * @param loggedinUser
+	 * @param limit
+	 * @param offset
+	 * @param session
+	 * @return a list of posts of type R which were deleted
+	 */
+	public List<Post<R>> getPostsFromTrash(final String loggedinUser, final int limit, final int offset, final DBSession session) {
+		final P param = this.createParam(limit, offset);
+		param.setRequestedUserName(loggedinUser);
+		return this.postList("get" + this.resourceClassName + "FromTrash", param, session);
+	}
 
 	/**
 	 * @param receiver
@@ -1801,7 +1815,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param newContentId	the new content id of the post
 	 * @param session
 	 */
-	protected abstract void onPostUpdate(Integer oldContentId, Integer newContentId, DBSession session);
+	protected abstract void onPostUpdate(int oldContentId, int newContentId, DBSession session);
 
 	/**
 	 * inserts a post into the database
@@ -2012,7 +2026,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param contentId	the content id of the post which was deleted
 	 * @param session
 	 */
-	protected abstract void onPostDelete(Integer contentId, DBSession session);
+	protected abstract void onPostDelete(int contentId, DBSession session);
 
 	/**
 	 * @return the simple class name of the first generic param (<R>, Resource)

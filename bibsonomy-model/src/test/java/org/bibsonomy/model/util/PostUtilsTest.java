@@ -40,6 +40,16 @@ import org.junit.Test;
  * @author rja
  */
 public class PostUtilsTest {
+	
+	@Test
+	public void testGetOwnerFromKey() {
+		final String owner = "test_test";
+		final String hash = "121212";
+		final String key = PostUtils.getKeyForPost(hash, owner);
+		assertEquals(hash + "_" + owner, key);
+		assertEquals(owner, PostUtils.getOwnerFromKey(key));
+		assertEquals(hash, PostUtils.getHashFromKey(key));
+	}
 
 	@Test
 	public void testSetGroupIdsPostOfQextendsResourceBoolean() {

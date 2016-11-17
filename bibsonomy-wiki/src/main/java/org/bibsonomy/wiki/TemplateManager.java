@@ -33,6 +33,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
@@ -43,13 +45,13 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
  * @author tni
  */
 public class TemplateManager {
-
+	private static final Log log = LogFactory.getLog(TemplateManager.class);
+	
+	private static final Map<String, String> templates;
 	static {
-		templates = new HashMap<String, String>();
-		loadTemplatesFromFile();
+		templates = loadTemplatesFromFile();
 	}
 
-	private static final Map<String, String> templates;
 
 	/**
 	 * Receives a template by name.
@@ -71,24 +73,24 @@ public class TemplateManager {
 		return templates.keySet();
 	}
 
-	private static void loadTemplatesFromFile() {
+	private static Map<String, String> loadTemplatesFromFile() {
+		final Map<String, String> loadedTemplates = new HashMap<>();
 		final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(TemplateManager.class.getClassLoader());
 		try {
 			final Resource[] resources = resolver.getResources("classpath:/org/bibsonomy/wiki/*.wikitemplate");
-			for (Resource r : resources) {
-				try {
-					BufferedReader reader = new BufferedReader(new InputStreamReader(r.getInputStream()));
+			for (final Resource resource : resources) {
+				try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
 					String content = "";
 					while (reader.ready()) {
 						content += reader.readLine() + "\n";
 					}
-					templates.put(r.getFilename().split("\\.")[0], content);
-					reader.close();
-				} catch (IOException e) {
+					loadedTemplates.put(resource.getFilename().split("\\.")[0], content);
 				}
-				
 			}
 		} catch (IOException e) {
+			
 		}
+		
+		return loadedTemplates;
 	}
 }

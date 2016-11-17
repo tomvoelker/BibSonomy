@@ -53,7 +53,7 @@ import org.junit.Test;
 
 /**
  * Tests related to groups.
- * 
+ *
  * @author Jens Illig
  * @author Christian Schenk
  */
@@ -241,7 +241,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	/**
 	 * tests storeGroup
-	 * 
+	 *
 	 * @see GroupDatabaseManagerTest#deleteGroup()
 	 */
 	@Test
@@ -262,7 +262,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertGroupContainsMembers(newGroupTest, Sets.asSet(groupName, requestedUser));
 
 		// check that the group and all members are gone
-		groupDb.deleteGroup(groupName, this.dbSession);
+		groupDb.deleteGroup(groupName, false, this.dbSession);
 		assertNull(groupDb.getGroupByName(groupName, this.dbSession));
 
 		final List<GroupMembership> newGroupMemberships = newGroupTest.getMemberships();
@@ -305,7 +305,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	/**
 	 * tests deleteGroup
-	 * 
+	 *
 	 * @see GroupDatabaseManagerTest#storeGroup()
 	 */
 	@Test
@@ -314,7 +314,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		// can't delete a group that doesn't exist
 		try {
-			groupDb.deleteGroup(ParamUtils.NOGROUP_NAME, this.dbSession);
+			groupDb.deleteGroup(ParamUtils.NOGROUP_NAME, false, this.dbSession);
 			fail("Should throw an exception");
 		} catch (final RuntimeException ignored) {
 			// ignore
@@ -323,7 +323,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	/**
 	 * tests addUserToGroup
-	 * 
+	 *
 	 * @see GroupDatabaseManagerTest#addUserToGroup()
 	 */
 	@Test
@@ -336,20 +336,20 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// add user
 		final String userToAdd = "testuser3";
 		final boolean userSharedDocuments = false;
-		
+
 		groupDb.addPendingMembership(testGroup, userToAdd, userSharedDocuments, GroupRole.INVITED, this.dbSession);
 		groupDb.addUserToGroup(testGroup, userToAdd, userSharedDocuments, GroupRole.USER, this.dbSession);
 		group = groupDb.getGroupMembers(userToAdd, testGroup, false, false, this.dbSession);
 		assertEquals(3 + 1, group.getMemberships().size());
 
 		// test userSharedDocuments
-		for (GroupMembership ms : group.getMemberships()) {
+		for (final GroupMembership ms : group.getMemberships()) {
 			if (ms.getUser().getName().equals(userToAdd)) {
 				assertEquals(ms.isUserSharedDocuments(), userSharedDocuments);
 			}
 		}
-		
-		groupDb.removeUserFromGroup(testGroup, userToAdd, this.dbSession);
+
+		groupDb.removeUserFromGroup(testGroup, userToAdd, false, this.dbSession);
 		group = groupDb.getGroupMembers(userToAdd, testGroup, false, false, this.dbSession);
 		assertEquals(3, group.getMemberships().size());
 
@@ -385,7 +385,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	/**
 	 * tests removeUserFromGroup
-	 * 
+	 *
 	 * @see GroupDatabaseManagerTest#removeUserFromGroup()
 	 */
 	@Test
@@ -395,7 +395,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		for (final String groupname : new String[] { "testgroup2", "testgroup3" }) {
 			for (final String username : new String[] { "testuser2", "testuser3" }) {
 				try {
-					groupDb.removeUserFromGroup(groupname, username, this.dbSession);
+					groupDb.removeUserFromGroup(groupname, username, false, this.dbSession);
 					fail("Should throw an exception");
 				} catch (final RuntimeException ignored) {
 				}
@@ -536,7 +536,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void testGetPendingGroup() throws Exception {
 		final Group group = groupDb.getPendingGroup("testpendinggroup1", "testrequestuser1", this.dbSession);
 		assertNotNull(group);
-		
+
 		final Group groupForOtherUser = groupDb.getPendingGroup("testpendinggroup1", "testrequestuser2", this.dbSession);
 		assertNull(groupForOtherUser);
 	}
