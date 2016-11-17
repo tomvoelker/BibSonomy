@@ -391,12 +391,7 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = this.openSession();
 		try {
 			final SynchronizationData data = this.syncDBManager.getLastSyncData(userName, service, resourceType, null, session);
-
-			// reject sync if direction BOTH and server hasn't synced before
-			if (SynchronizationDirection.BOTH.equals(direction) && !present(data)) {
-				throw new IllegalStateException("sync request rejected! the server hasn't performed an initial sync in both directions!");
-			}
-
+			
 			/*
 			 * check for a running synchronization
 			 */
@@ -411,6 +406,9 @@ public class DBLogic implements LogicInterface {
 			final SynchronizationData lsd = this.syncDBManager.getLastSyncData(userName, service, resourceType, SynchronizationStatus.DONE, session);
 			if (present(lsd)) {
 				lastSuccessfulSyncDate = lsd.getLastSyncDate();
+			} else if (!SynchronizationDirection.BOTH.equals(direction)) {
+				// be sure that both systems are in sync before only syncing only in one direction
+				throw new IllegalStateException("sync request rejected! The client hasn't performed an initial sync in both directions!");
 			}
 			/*
 			 * flag synchronization as planned
@@ -1057,7 +1055,10 @@ public class DBLogic implements LogicInterface {
 	 * org.bibsonomy.model.logic.LogicInterface#deleteGroup(java.lang.String)
 	 */
 	@Override
-	public void deleteGroup(final String groupName, final boolean pending) {
+	public void deleteGroup(final String groupName, final boolean pending, final boolean quickDelete) {
+		// needs login.
+		this.ensureLoggedIn();
+
 		final DBSession session = this.openSession();
 
 		if (pending) {
@@ -1066,7 +1067,7 @@ public class DBLogic implements LogicInterface {
 				this.permissionDBManager.ensureAdminAccess(this.loginUser);
 				final Group pendingGroup = this.groupDBManager.getPendingGroup(groupName, null, session);
 				if (!present(pendingGroup)) {
-					throw new IllegalStateException("group '" + groupName + "' does not exist");
+					throw new IllegalStateException("pending group '" + groupName + "' does not exist");
 				}
 				this.groupDBManager.deletePendingGroup(groupName, session);
 				session.commitTransaction();
@@ -1077,38 +1078,32 @@ public class DBLogic implements LogicInterface {
 			}
 		}
 
-		this.ensureLoggedIn();
-		// only group admins are allowed to delete the group
-		this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, groupName, GroupRole.ADMINISTRATOR);
+		// only group and system admins are allowed to delete the group
+		this.permissionDBManager.ensureIsAdminOrHasGroupRoleOrHigher(this.loginUser, groupName, GroupRole.ADMINISTRATOR);
+
 		try {
 			session.beginTransaction();
 			// make sure that the group exists
 			final Group group = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, true, true, session);
-			// TODO: method also called later by deleteGroup
-			// final Group group = this.groupDBManager.getGroupByName(groupName,
-			// session);
 
-			if (group == null) {
+			if (!present(group)) {
 				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupName + "') doesn't exist");
-				throw new RuntimeException(); // never happens but calms down eclipse
 			}
-
-			// ensure that the group has no members except the admin. size > 2 because the group user is also part of the membership list or > 1 to cover old groups
-			if (group.getMemberships().size() > 2 || group.getMemberships().size() > 1 && group.getMemberships().get(0).getGroupRole() != GroupRole.DUMMY && group.getMemberships().get(1).getGroupRole() != GroupRole.DUMMY) {
-				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + group.getName() + "') has at least one member beside the administrator.");
-			}
-
-			// all the posts/discussions of the group admin need to be edited as well before deleting the group
-			for (final GroupMembership t : group.getMemberships()) {
-				// as the group can only consist of the group admin and the group user at this point, this check should be enough
-				// if groups can be deleted without removing all members before this must be adapted!
-				if (GroupRole.ADMINISTRATOR.equals(t.getGroupRole())) {
-					// FIXME: why not called for group user FIXME_RELEASE
-					this.updateUserItemsForLeavingGroup(group, t.getUser().getName(), session);
+			
+			if (!quickDelete) {
+				// ensure that the group has no members except the admin (please not the group user of older groups has role ADMIN)
+				final List<GroupMembership> groupMemberships = GroupUtils.getGroupMemberShipsWithoutDummyUser(group.getMemberships());
+				if (groupMemberships.size() > 1) {
+					ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + group.getName() + "') has at least one member beside the administrator.");
 				}
 			}
 
-			this.groupDBManager.deleteGroup(groupName, session);
+			// all the posts/discussions of the group admin need to be edited as well before deleting the group
+			for (final GroupMembership membership : group.getMemberships()) {
+				this.updateUserItemsForLeavingGroup(group, membership.getUser().getName(), session);
+			}
+
+			this.groupDBManager.deleteGroup(groupName, quickDelete, session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -1339,7 +1334,7 @@ public class DBLogic implements LogicInterface {
 			session.beginTransaction();
 
 			// check the groups existence and retrieve the current group
-			final Group group = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, false, false, session);
+			final Group group = this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, false, this.permissionDBManager.isAdmin(this.loginUser), session);
 			if (!GroupUtils.isValidGroup(group) && !(GroupUpdateOperation.ACTIVATE.equals(operation) || GroupUpdateOperation.DELETE_GROUP_REQUEST.equals(operation))) {
 				throw new IllegalArgumentException("Group does not exist");
 			}
@@ -1416,14 +1411,14 @@ public class DBLogic implements LogicInterface {
 						this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.MODERATOR);
 					}
 				} else {
-					this.permissionDBManager.ensureGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.ADMINISTRATOR);
+					this.permissionDBManager.ensureIsAdminOrHasGroupRoleOrHigher(this.loginUser, group.getName(), GroupRole.ADMINISTRATOR);
 					// we need at least one admin in the group at all times.
 					if (GroupRole.ADMINISTRATOR.equals(roleOfUserToRemove) && this.groupDBManager.hasExactlyOneAdmin(group, session)) {
 						throw new IllegalArgumentException("Group has only this admin left, cannot remove this user.");
 					}
 				}
 
-				this.groupDBManager.removeUserFromGroup(group.getName(), requestedUserName, session);
+				this.groupDBManager.removeUserFromGroup(group.getName(), requestedUserName, false, session);
 				this.updateUserItemsForLeavingGroup(group, requestedUserName, session);
 				break;
 			case UPDATE_USER_SHARED_DOCUMENTS:
@@ -2071,6 +2066,7 @@ public class DBLogic implements LogicInterface {
 				 */
 				Post<BibTex> post = null;
 				try {
+					// FIXME: remove strange getpostdetails method
 					post = this.publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, lowerCaseUserName, UserUtils.getListOfGroupIDs(this.loginUser), true, session);
 				} catch (final ResourceMovedException ex) {
 					// ignore

@@ -63,8 +63,9 @@ public class Serializer implements ToHtmlSerializerPlugin {
 		}
 		
 		if (node instanceof ConditionalNode) {
-			if (evaluateExpression(((ConditionalNode) node).getCondition())) {
-				for (Node child : node.getChildren()) {
+			final ConditionalNode conditionalNode = (ConditionalNode) node;
+			if (evaluateExpression(conditionalNode.getCondition())) {
+				for (final Node child : node.getChildren()) {
 					child.accept(visitor);
 				}
 			}
@@ -76,9 +77,9 @@ public class Serializer implements ToHtmlSerializerPlugin {
 	
 	private boolean evaluateExpression(String exp) {
 		final String[] fields = exp.split("\\s", 3);
-		if (fields.length != 3)
+		if (fields.length != 3) {
 			throw new RuntimeException("Invalid expression: " + exp);
-		
+		}
 		final String lhs = norm(fields[0]);
 		final String rhs = norm(fields[2]);
 		final String cmp = fields[1];

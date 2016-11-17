@@ -6,11 +6,12 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons">
-
+	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="disableResourceLinks" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
+	
 
 	<c:set var="buttonClasses" value="btn btn-default btn-xs "/>
 	<c:set var="isRemotePost" value="${not empty post.systemUrl and post.systemUrl ne properties['project.home']}"/>
@@ -146,44 +147,27 @@
 						</c:choose>
 						
 						<li class="divider"><!--  --></li>
-						<!-- BibTeX -->
-						<li>
-							<fmt:message key="bibtex.actions.bibtex.title" var="bibtexTitle" />
-							<c:choose>
-								<c:when test="${isRemotePost}">
-									<a class="litem" href="${urlGeneratorFactory.createURLGeneratorForSystem(post.systemUrl).getBibtexExportUrlByIntraHashAndUserName(post.resource.intraHash, post.user.name)}"><fmt:message key="bibtex.actions.bibtex"/></a>															
-								</c:when>
-								<c:otherwise>
-									<a class="litem" href="${relativeUrlGenerator.getBibtexExportUrlByIntraHashAndUserName(post.resource.intraHash, post.user.name)}" title="${bibtexTitle}"><fmt:message key="bibtex.actions.bibtex"/></a>
-								</c:otherwise>
-							</c:choose>
-						</li>
 						
-						<!-- ENDNOTE -->
-						<li>
-							<fmt:message key="bibtex.actions.endnote.title" var="endnoteTitle" />
-							<c:choose>
-								<c:when test="${isRemotePost}">
-									<a class="litem" href="${urlGeneratorFactory.createURLGeneratorForSystem(post.systemUrl).getEndnoteUrlByIntraHashAndUserName(post.resource.intraHash, post.user.name)}?formatEmbedded=true" title="${endnoteTitle}"><fmt:message key="bibtex.actions.endnote"/></a>
-								</c:when>
-								<c:otherwise>
-									<a class="litem" href="${relativeUrlGenerator.getEndnoteUrlByIntraHashAndUserName(post.resource.intraHash, post.user.name)}?formatEmbedded=true" title="${endnoteTitle}"><fmt:message key="bibtex.actions.endnote"/></a>
-								</c:otherwise>
-							</c:choose>
-						</li>
-					
-						<!-- MS WORD Reference Manager -->
-						<li>
-							<fmt:message key="bibtex.actions.msword.title" var="mswordTitle" />
-							<c:choose>
-								<c:when test="${isRemotePost}">
-									<a class="litem" href="${urlGeneratorFactory.createURLGeneratorForSystem(post.systemUrl).getMSWordUrlByIntraHashAndUserName(post.resource.intraHash, post.user.name)}?formatEmbedded=true" title="${mswordTitle}"><fmt:message key="bibtex.actions.msword"/></a>
-								</c:when>
-								<c:otherwise>
-									<a class="litem" href="${relativeUrlGenerator.getMSWordUrlByIntraHashAndUserName(post.resource.intraHash, post.user.name)}?formatEmbedded=true" title="${mswordTitle}"><fmt:message key="bibtex.actions.msword"/></a>
-								</c:otherwise>
-							</c:choose>
-						</li>
+						<!-- BibTeX or Endnote or JABREF or CSL-->
+						<!-- checks whether the source is "simple" which gets a special treatment,
+							or JABREF / CSL which will be assigned a source URL by generator-->
+						<c:forEach items="${command.context.loginUser.settings.favouriteLayouts}" var="citation">
+							<li>
+								<c:set var="name"><mtl:favouriteLayoutDisplayName favouriteLayout="${citation}"/></c:set>
+								<c:set var="shortName" value="${mtl:shorten(name, 25)}" />
+								<fmt:message key="publication.export.${fn:toLowerCase(citation.source)}_${fn:toLowerCase(citation.style)}.title" var="exportTitle" />
+								<c:if test="${fn:startsWith(exportTitle, '???')}">
+									<fmt:message key="publication.export.title" var="exportTitle">
+										<fmt:param value="${name}" />
+									</fmt:message>
+								</c:if>
+								
+								<a class="litem publ-export" data-source="${citation.source}" data-style="${citation.style}" href="${relativeUrlGenerator.getPostExportUrl(post, citation)}?formatEmbedded=true" title="${exportTitle}">
+									<c:out value="${shortName}" />
+								</a>
+							</li>
+						</c:forEach>
+						
 						
 						<!-- OPENURL -->
 						<c:set var="userOpenURL" value="${command.context.loginUser.openURL}" />

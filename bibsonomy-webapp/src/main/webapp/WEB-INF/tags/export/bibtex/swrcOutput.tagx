@@ -15,7 +15,8 @@
 	<c:set var="swrc" value="http://swrc.ontoware.org/ontology#"/>
 
 	<rdf:Description rdf:about="${absoluteUrlGenerator.getPublicationUrlByPost(post)}">
-		<owl:sameAs rdf:resource="${absoluteUrlGenerator.prefix('uri').getPublicationUrlByPost(post)}" />
+		<c:set var="urlGeneratorUri" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'uri')}" />
+		<owl:sameAs rdf:resource="${urlGeneratorUri.getPublicationUrlByPost(post)}" />
 		<rdf:type rdf:resource="${swrc}${mtl:getSWRCEntryType(post.resource.entrytype)}" />
 		<swrctags:swrcAttributes post="${post}" />
 	</rdf:Description>

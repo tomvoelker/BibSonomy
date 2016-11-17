@@ -55,10 +55,13 @@ public abstract class AbstractEsIndexTest extends AbstractDatabaseManagerTest {
 
 	/**
 	 * start embedded elasticsearch
+	 * @throws InterruptedException 
 	 */
 	@BeforeClass
-	public static void initElasticSearch() {
+	public static void initElasticSearch() throws InterruptedException {
 		startEmbeddedElasticsearchServer();
+		
+		Thread.sleep(1000); // FIXME: just for testing
 	}
 	
 	/**

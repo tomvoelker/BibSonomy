@@ -33,6 +33,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.GroupRole;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.errors.ErrorMessage;
@@ -54,6 +55,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.user.remote.RemoteUserId;
 import org.bibsonomy.model.user.remote.SamlRemoteUserId;
+import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.model.util.file.UploadedFile;
 import org.bibsonomy.services.filesystem.FileLogic;
@@ -750,18 +752,30 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			final User user = this.getUserDetails(userName, session);
 			user.setPassword("inactive"); // FIXME: this must be documented and refactored into a constant!
 			user.setRole(Role.DELETED);   // this is new - use it to check if a user has been deleted!
-			user.setSpammer(true);        // FIXME: Why is this necessary here, and is not performed by the flagSpammer method below?
+			user.setSpammer(true);
 			user.setPasswordSalt(null);
 			this.plugins.onUserDelete(userName, session);
 
 			this.updateUser(user, session);
 
 			/*
-			 * before deleting user remove it from all non-special groups
+			 * check if the user can be deleted or has some dependencies in any
+			 * group, i.e. is last admin or the group user itself.
 			 */
 			final List<Group> groups = groupDBManager.getGroupsForUser(userName, true, session);
+			for (final Group group : groups) {
+				// if the user is the last admin of a group, we can't delete it
+				// either.
+				if (GroupUtils.getGroupMembershipForUser(group, userName, false).getGroupRole().equals(GroupRole.ADMINISTRATOR) && groupDBManager.hasExactlyOneAdmin(group, session)) {
+					throw new UnsupportedOperationException("User " + userName + " is the last admin of the group " + group.getName() + " and thus can't be deleted.");
+				}
+			}
+			/*
+			 * user can safely be deleted from any group. in any case, we still
+			 * check, if we can delete the user from the corresponding group.
+			 */
 			for (final Group group: groups){
-				groupDBManager.removeUserFromGroup(group.getName(), userName, session);
+				groupDBManager.removeUserFromGroup(group.getName(), userName, false, session);
 			}
 
 			/*
@@ -1181,11 +1195,11 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		final String userName = user.getName();
 		try {
 			session.beginTransaction();
-			
+
 			this.insert("activateUser", userName, session);
 			this.deletePendingUser(userName, session);
 			this.insertDefaultWiki(user, session);
-			
+
 			session.commitTransaction();
 		} catch (final DuplicateEntryException e) {
 			log.info(userName + " already activated", e);

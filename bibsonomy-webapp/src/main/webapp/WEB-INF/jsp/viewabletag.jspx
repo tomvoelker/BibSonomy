@@ -62,7 +62,8 @@
 						</c:if>
 					
 						<li style="margin-bottom: 1ex;">
-							<a href="${relativeUrlGenerator.prefix('concept').getTagUrlByTagName(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
+							<c:set var="urlGeneratorConcept" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'concept')}" />
+							<a href="${urlGeneratorConcept.getTagUrlByTagName(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 							<c:out value=" "/>
 							<fmt:message key="tag.asConceptFromAll"/>
 						</li>
