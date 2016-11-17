@@ -56,7 +56,7 @@ function setupPersonAutocomplete(inputFieldSelector, formAction, displayKey, sel
 		source: personNames.ttAdapter(),
 		templates: {
             header: printResults,
-            empty: [ getString('persons.intro.search.result0') ]
+            empty: [ '<h5 class="response">' + getString('persons.intro.search.result0') + '</h5>' ]
         },
 	});
 	
@@ -77,6 +77,5 @@ var printResults = function (context) {
 	else
 		responseText = getString('persons.intro.search.resultMax', [context.suggestions.length]);
 	
-	//return '<span style="font-weight: bold; border-bottom: 1px;">' + responseText + '</span>';
 	return '<h5 class="response">' + responseText + '</h5>';
 }
