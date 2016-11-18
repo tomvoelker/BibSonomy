@@ -458,10 +458,11 @@ public enum Views implements View {
 	 */
 	SUCCESS("actions/success"),
 
-	/**
-	 * import view
-	 */
+	/** import view */
 	IMPORT("actions/post/import"),
+	
+	/** the import publication view */
+	IMPORT_PUBLICATION("actions/post/importPublication"),
 
 	/**
 	 * Show a form to request a password reminder.
@@ -607,6 +608,12 @@ public enum Views implements View {
 	 * /layout/* pages which are rendered by JabRef
 	 */
 	LAYOUT("layout"),
+	
+	/**
+	 * csl layout
+	 */
+	CSL_LAYOUT("export/csl-layout"),
+	
 	/**
 	 * csl-compatible JSON output
 	 */
@@ -667,6 +674,14 @@ public enum Views implements View {
 	 * show followers
 	 */
 	FOLLOWERS("followers"),
+	
+	/**
+	 * help page
+	 */
+	HELP("help/help"),
+	
+	/** the search result page */
+	HELP_SEARCH("help/search"),
 
 	/*
 	 * Error pages
@@ -861,6 +876,9 @@ public enum Views implements View {
 		}
 		if (FORMAT_STRING_LAYOUT.equals(format)) {
 			return LAYOUT;
+		}
+		if ("csl-layout".equals(format)) {
+			return CSL_LAYOUT;
 		}
 		if ("batcheditbib".equals(format)) {
 			return BATCHEDITBIB;

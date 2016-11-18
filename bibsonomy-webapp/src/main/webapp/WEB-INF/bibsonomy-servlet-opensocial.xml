@@ -81,9 +81,13 @@
 		<property name="removeAbandoned" value="${database.opensocial.removeAbandoned}" />
 		<property name="removeAbandonedTimeout" value="${database.opensocial.removeAbandonedTimeout}" />
 	</bean>
-
+	
+	<bean id="opensocialDbSessionFactory" class="org.bibsonomy.database.common.impl.SqlMapClientDBSessionFactory">
+		<property name="client" ref="oAuthSqlMapClient" />
+	</bean>
+	
 	<bean id="oAuthLogic" class="org.bibsonomy.opensocial.oauth.database.IbatisOAuthLogic">
-		<property name="sqlMap" ref="oAuthSqlMapClient" />
+		<property name="oauthSessionFactory" ref="opensocialDbSessionFactory" />
 	</bean>
 	
 	<bean id="oAuthController" class="org.bibsonomy.webapp.controller.opensocial.OAuthProtocolController" abstract="true">

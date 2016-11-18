@@ -117,11 +117,11 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 	 */
 	@Override
 	public void testGetPostsByTagNamesCount() {
-		final List<TagIndex> tagIndex = DBTestUtils.getTagIndex("suchmaschine");							
-		assertEquals(6, bookmarkDb.getPostsByTagNamesCount(tagIndex, PUBLIC_GROUP_ID, this.dbSession));
+		final List<TagIndex> tagIndex = DBTestUtils.getTagIndex("suchmaschine");
+		assertEquals(3, bookmarkDb.getPostsByTagNamesCount(tagIndex, PUBLIC_GROUP_ID, this.dbSession));
 		
 		DBTestUtils.addToTagIndex(tagIndex, "google");
-		assertEquals(8, bookmarkDb.getPostsByTagNamesCount(tagIndex, PUBLIC_GROUP_ID, this.dbSession));
+		assertEquals(1, bookmarkDb.getPostsByTagNamesCount(tagIndex, PUBLIC_GROUP_ID, this.dbSession));
 		
 		DBTestUtils.addToTagIndex(tagIndex, "yahoo");
 		assertEquals(0, bookmarkDb.getPostsByTagNamesCount(tagIndex, PUBLIC_GROUP_ID, this.dbSession));
@@ -197,6 +197,18 @@ public class BookmarkDatabaseManagerTest extends PostDatabaseManagerTest<Bookmar
 		
 		postsFromInboxByHash = bookmarkDb.getPostsFromInboxByHash("testuser1", "6f372faea7ff92eedf52f597090a6291", this.dbSession);
 		assertEquals(0, postsFromInboxByHash.size());
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.managers.PostDatabaseManagerTest#testGetPostsFromTras()
+	 */
+	@Override
+	public void testGetPostsFromTrash() {
+		final List<Post<Bookmark>> posts = bookmarkDb.getPostsFromTrash("testuser1", 10, 0, this.dbSession);
+		assertEquals(1, posts.size());
+		
+		final Post<Bookmark> firstPost = posts.get(0);
+		assertEquals("IT-News, ct, iX, Technology Review, Telepolis | heise online", firstPost.getResource().getTitle());
 	}
 	
 	/**

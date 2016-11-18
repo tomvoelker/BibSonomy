@@ -26,7 +26,6 @@
  */
 package tags;
 
-import static org.bibsonomy.model.util.BibTexUtils.ENTRYTYPES;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.MalformedURLException;
@@ -80,14 +79,13 @@ import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.XmlUtils;
 import org.bibsonomy.util.id.DOIUtils;
 import org.bibsonomy.web.spring.converter.StringToEnumConverter;
-import org.bibsonomy.webapp.command.BaseCommand;
 import org.bibsonomy.webapp.util.TagViewUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
+import org.pegdown.PegDownProcessor;
 
-import com.github.rjeschke.txtmark.Processor;
 import com.google.caja.util.Sets;
 import com.sksamuel.diffpatch.DiffMatchPatch;
 import com.sksamuel.diffpatch.DiffMatchPatch.Diff;
@@ -184,7 +182,7 @@ public class Functions {
 	 * @return the converted markdown
 	 */
 	public static String markdownToHtml(final String markdown) {
-		return Processor.process(StringEscapeUtils.escapeHtml(markdown));
+		return new PegDownProcessor().markdownToHtml(StringEscapeUtils.escapeHtml(markdown));
 	}
 
 	/**
@@ -630,7 +628,7 @@ public class Functions {
 	 * @return The list of available bibtex entry types
 	 */
 	public static String[] getBibTeXEntryTypes() {
-		return ENTRYTYPES;
+		return BibTexUtils.ENTRYTYPES;
 	}
 
 	/**
@@ -1037,34 +1035,6 @@ public class Functions {
 			}
 		}
 		return users;
-	}
-
-	/**
-	 * 
-	 * @param filename
-	 * @return all invalid characters for html attribute id replaced by '-'.
-	 */
-	public static String downloadFileId(final String filename) {
-		return filename.replaceAll("[^A-Za-z0-9]", "-");
-	}
-
-	/**
-	 * returns true, if command implements DidYouKnowMessageCommand interface
-	 * 
-	 * @param command
-	 * @return true|false
-	 */
-	/**
-	 * returns true, if command implements DidYouKnowMessageCommand interface
-	 * and has a didYouKnowMessage set
-	 * 
-	 * @param command
-	 * @return true|false
-	 */
-	@Deprecated
-	// TODO: (bootstrap) remove and use not empty check
-	public static Boolean hasDidYouKnowMessage(final BaseCommand command) {
-		return (command.getDidYouKnowMessage() != null);
 	}
 
 	public static Boolean isRegularGroup(final Group group) {

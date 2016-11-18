@@ -40,7 +40,7 @@ import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.model.Tag;
 
 /**
- * Retrieve tags by Hash
+ * Retrieve tags by hash
  * 
  * @author Dominik Benz
  */
@@ -50,22 +50,24 @@ public class GetTagsByHash extends TagChainElement {
 	protected List<Tag> handle(final TagParam param, final DBSession session) {
 		final int contentType = param.getContentType();
 		if (contentType == ConstantID.BIBTEX_CONTENT_TYPE.getId()) {
-			return this.db.getTagsByBibtexHash(param.getUserName(), 
-											   param.getHash(), 
-											   HashID.getSimHash(param.getSimHash()), 
-											   param.getGroups(), 
-											   param.getLimit(), 
-											   param.getOffset(), 
-											   session);
+			return this.db.getTagsByPublicationHash(param.getUserName(), 
+												param.getHash(), 
+												HashID.getSimHash(param.getSimHash()), 
+												param.getGroups(),
+												param.getOrder(),
+												param.getLimit(), 
+												param.getOffset(), 
+												session);
 		}
 		
 		if (contentType == ConstantID.BOOKMARK_CONTENT_TYPE.getId()) {
 			return this.db.getTagsByBookmarkHash(param.getUserName(), 
-												 param.getHash(), 
-												 param.getGroups(), 
-												 param.getLimit(), 
-												 param.getOffset(), 
-												 session);
+													param.getHash(), 
+													param.getGroups(),
+													param.getOrder(),
+													param.getLimit(), 
+													param.getOffset(), 
+													session);
 		}
 		
 		throw new UnsupportedResourceTypeException();

@@ -251,7 +251,7 @@ public class RedirectController implements MinimalisticController<RedirectComman
 			return userPage + "?filter=" + FilterEntity.DUPLICATES;
 		}
 		if ("myNotReported".equals(myPage)) {
-			return userPage + "/myown+sys:not:reported:*";
+			return userPage + "/myown%20sys:not:reported:*";
 		}
 		
 		log.error("Unknown /my* page called: " + myPage);

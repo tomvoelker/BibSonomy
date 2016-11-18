@@ -92,7 +92,7 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 	 * .lang.Integer, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	protected void onPostDelete(final Integer contentId, final DBSession session) {
+	protected void onPostDelete(final int contentId, final DBSession session) {
 		this.plugins.onBookmarkDelete(contentId, session);
 	}
 
@@ -104,7 +104,7 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 	 * .lang.Integer, java.lang.Integer, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	protected void onPostUpdate(final Integer oldContentId, final Integer newContentId, final DBSession session) {
+	protected void onPostUpdate(final int oldContentId, final int newContentId, final DBSession session) {
 		this.plugins.onBookmarkUpdate(oldContentId, newContentId, session);
 	}
 	

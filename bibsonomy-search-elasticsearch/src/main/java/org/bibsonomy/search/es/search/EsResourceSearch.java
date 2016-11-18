@@ -89,9 +89,14 @@ import org.elasticsearch.index.query.MultiMatchQueryBuilder.Type;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
+import org.elasticsearch.index.query.SimpleQueryStringBuilder;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket;
+import org.elasticsearch.search.aggregations.bucket.terms.TermsBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 
 /**
@@ -129,6 +134,8 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 
 	private String genealogyUser;
 
+	private boolean useAggregation;
+
 	
 	/**
 	 * get tag cloud for given search query for the Shared Resource System
@@ -156,6 +163,35 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		if (query == null) {
 			return new LinkedList<>();
 		}
+		
+		if (useAggregation) {
+			final SearchRequestBuilder searchRequestBuilder = this.manager.prepareSearch();
+			searchRequestBuilder.setQuery(query);
+			searchRequestBuilder.setTypes(ResourceFactory.getResourceName(resourceType));
+			
+			final String name = "tags_count";
+			final TermsBuilder count = AggregationBuilders.terms(name).field(Fields.TAGS);
+			searchRequestBuilder.addAggregation(count);
+			
+			final SearchResponse response = searchRequestBuilder.execute().actionGet();
+			if (response != null) {
+				final StringTerms aggregation = response.getAggregations().get(name);
+				final LinkedList<Tag> tags = new LinkedList<>();
+				
+				for (final Bucket bucket : aggregation.getBuckets()) {
+					final String tagName = bucket.getKeyAsString();
+					final long tagCount = bucket.getDocCount();
+					
+					final Tag tag = new Tag();
+					tag.setGlobalcount((int) tagCount);
+					tag.setName(tagName);
+					
+					tags.add(tag);
+				}
+				return tags;
+			}
+		}
+		
 		final Map<Tag, Integer> tagCounter = new HashMap<Tag, Integer>();
 
 		try {
@@ -744,7 +780,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		}
 
 		if (present(titleSearchTerms)) {
-			final QueryBuilder titleSearchQuery = QueryBuilders.simpleQueryStringQuery(titleSearchTerms).field(Fields.Resource.TITLE);
+			final QueryBuilder titleSearchQuery = QueryBuilders.simpleQueryStringQuery(titleSearchTerms).field(Fields.Resource.TITLE).defaultOperator(SimpleQueryStringBuilder.Operator.AND);
 			mainQueryBuilder.must(titleSearchQuery);
 		}
 		
@@ -760,8 +796,7 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 		}
 		
 		// restrict result to given group
-		// FIXME: remove equals check with requestUserName; fix database implementation
-		if (present(requestedGroupName) && !requestedGroupName.equals(requestedUserName)) {
+		if (present(requestedGroupName)) {
 			// by appending a filter for all members of the group
 			final QueryBuilder groupMembersFilter = this.buildGroupMembersFilter(requestedGroupName);
 			if (groupMembersFilter != null) {
@@ -963,5 +998,12 @@ public class EsResourceSearch<R extends Resource> implements PersonSearch, Resou
 	 */
 	public void setGenealogyUser(String genealogyUser) {
 		this.genealogyUser = genealogyUser;
+	}
+
+	/**
+	 * @param useAggregation the useAggregation to set
+	 */
+	public void setUseAggregation(boolean useAggregation) {
+		this.useAggregation = useAggregation;
 	}
 }

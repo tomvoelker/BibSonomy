@@ -36,7 +36,8 @@ import org.bibsonomy.common.exceptions.InternServerException;
  * @author Dominik Benz
  */
 public abstract class AbstractCreateStrategy extends Strategy {
-
+	
+	/** the doc containing the entity to create */
 	protected final Reader doc;
 	
 	/**
@@ -52,7 +53,7 @@ public abstract class AbstractCreateStrategy extends Strategy {
 		final String resourceID = this.create();
 		render(this.writer, resourceID);
 	}
-
+	
 	protected abstract void render(Writer writer, String resourceID);
 
 	protected abstract String create();

@@ -120,6 +120,15 @@ public class StringUtilsTest {
 		assertEquals(TEST_VALUE1, StringUtils.removeNonNumbersOrLetters("!-test-!"));
 		assertEquals(TEST_VALUE1, StringUtils.removeNonNumbersOrLetters(" !-test-! "));
 	}
+	
+	/**
+	 * tests {@link StringUtils#replaceNonNumbersOrLetters(String, String)}
+	 */
+	@Test
+	public void testReplaceNonNumbersOrLetters() {
+		assertEquals("What_Users_Actually_Do_in_a_Social_Tagging_System", StringUtils.replaceNonNumbersOrLetters("What Users Actually Do in a Social Tagging System  ", "_"));
+		assertEquals("What_Users_Actually_Do_in_a_Social_Tagging_System", StringUtils.replaceNonNumbersOrLetters("What Users Actually Do in a Social   Tagging System", "_"));
+	}
 
 	/**
 	 * tests removeNonNumbersOrLettersOrDotsOrSpace

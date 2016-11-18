@@ -259,12 +259,10 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 	 * @param posts 
 	 */
 	protected void postProcessAndSortList(final ResourceViewCommand cmd, final List<Post<BibTex>> posts) {
-		for (final Post<BibTex> post : posts) {
-			// insert openURL into publication objects
-			post.getResource().setOpenURL(BibTexUtils.getOpenurl(post.getResource()));
-		}
 		// if a jabref layout is to be rendered and no special order is given, set to default order 
-		if (Views.LAYOUT.getName().equalsIgnoreCase(cmd.getFormat()) && ResourceViewCommand.DEFAULT_SORTPAGE.equalsIgnoreCase(cmd.getSortPage())) {
+		if (Views.LAYOUT.getName().equalsIgnoreCase(cmd.getFormat()) &&
+				ResourceViewCommand.DEFAULT_SORTPAGE.equalsIgnoreCase(cmd.getSortPage()) &&
+				ResourceViewCommand.DEFAULT_SORTPAGEORDER.equals(cmd.getSortPageOrder())) {
 			cmd.setSortPage(DEFAULT_SORTPAGE_JABREF_LAYOUTS);
 			cmd.setSortPageOrder(DEFAULT_SORTPAGEORDER_JABREF_LAYOUTS);
 		}
@@ -275,6 +273,8 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 			// re-sort list by date in descending order, if nothing else requested
 			if (ResourceViewCommand.DEFAULT_SORTPAGE.equals(cmd.getSortPage())) {
 				cmd.setSortPage("date");
+			}
+			if (ResourceViewCommand.DEFAULT_SORTPAGEORDER.equals(cmd.getSortPageOrder())) {
 				cmd.setSortPageOrder("desc");
 			}
 		}
@@ -284,7 +284,8 @@ public abstract class ResourceListController extends DidYouKnowMessageController
 			BibTexUtils.mergeDuplicates(posts);
 		}
 		
-		if (!ResourceViewCommand.DEFAULT_SORTPAGE.equals(cmd.getSortPage())) {
+		if (!ResourceViewCommand.DEFAULT_SORTPAGE.equals(cmd.getSortPage()) ||
+				! ResourceViewCommand.DEFAULT_SORTPAGEORDER.equals(cmd.getSortPageOrder())) {
 			BibTexUtils.sortBibTexList(posts, SortUtils.parseSortKeys(cmd.getSortPage()), SortUtils.parseSortOrders(cmd.getSortPageOrder()) );
 		}
 	}

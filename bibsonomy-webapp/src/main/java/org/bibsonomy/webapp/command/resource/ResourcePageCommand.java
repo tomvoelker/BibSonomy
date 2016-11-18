@@ -54,6 +54,8 @@ public class ResourcePageCommand<R extends Resource> extends TagResourceViewComm
 	private Class<R> resourceClass;
 
 	private String requestedType;
+	
+	private String requestedTitle;
 
 	/**
 	 * @return the intraHash of a post
@@ -157,11 +159,31 @@ public class ResourcePageCommand<R extends Resource> extends TagResourceViewComm
 		this.resourceClass = resourceClass;
 	}
 
+	/**
+	 * @return the requestedType
+	 */
 	public String getRequestedType() {
 		return this.requestedType;
 	}
 
-	public void setRequestedType(final String requestedType) {
+	/**
+	 * @param requestedType the requestedType to set
+	 */
+	public void setRequestedType(String requestedType) {
 		this.requestedType = requestedType;
+	}
+
+	/**
+	 * @return the requestedTitle
+	 */
+	public String getRequestedTitle() {
+		return this.requestedTitle;
+	}
+
+	/**
+	 * @param requestedTitle the requestedTitle to set
+	 */
+	public void setRequestedTitle(String requestedTitle) {
+		this.requestedTitle = requestedTitle;
 	}
 }

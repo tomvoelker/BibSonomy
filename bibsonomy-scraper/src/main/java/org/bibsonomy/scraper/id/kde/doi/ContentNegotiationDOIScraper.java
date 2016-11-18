@@ -132,9 +132,10 @@ public class ContentNegotiationDOIScraper implements Scraper {
 			 * Unfortunately, content negotiation does not always work (TODO: why?). 
 			 * Hence, we here check, if we really got BibTeX.
 			 */
-			final SimpleBibTeXParser parser = new SimpleBibTeXParser(); // not thread-safe!
-			
-			parser.parseBibTeX(content);
+			if (present(content)) {
+				final SimpleBibTeXParser parser = new SimpleBibTeXParser(); // not thread-safe!
+				parser.parseBibTeX(content);
+			}
 			
 			return content;
 		} catch (final HttpException ex) {

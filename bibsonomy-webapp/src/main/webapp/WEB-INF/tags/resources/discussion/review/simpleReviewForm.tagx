@@ -14,14 +14,13 @@
 	<discussionItem:simpleDiscussionForm rows="3" discussionItem="${review}" postUserName="${postUserName}" userName="${userName}" resource="${resource}" discussionItemClass="review">
 		<jsp:attribute name="additionalInputs">
 			<div class="row">
-				<div class="col-md-3">
+				<div class="col-md-4">
 					<input type="text" class="newRating" name="discussionItem.rating" value="${review.rating}"/>
 				</div>
-				<div class="col-md-9">
+				<div class="col-md-8">
 					<a href="#" class="btn-xs btn btn-default rating-reset"><fmt:message key="rating.reset" /></a>
 				</div>
 			</div>
 		</jsp:attribute>
 	</discussionItem:simpleDiscussionForm>
-	
 </jsp:root>

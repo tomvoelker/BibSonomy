@@ -43,6 +43,7 @@ import org.bibsonomy.webapp.exceptions.InvalidPasswordReminderException;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
@@ -76,16 +77,19 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 
 	@Override
 	public View workOn(final PasswordChangeOnRemindCommand command) {
-		if (command.getContext().isUserLoggedIn()) {
+		final RequestWrapperContext context = command.getContext();
+		
+		if (context.isUserLoggedIn()) {
 			throw new AccessDeniedException("you can't change a password while loggedin");
 		}
+		
 		log.debug("starting work");
 		
 		/*
 		 * check if internal authentication is supported
 		 */
 		if (!authConfig.contains(AuthMethod.INTERNAL)) {
-			errors.reject("error.method_not_allowed");
+			this.errors.reject("error.method_not_allowed");
 			log.warn("authmethod " + AuthMethod.INTERNAL + " missing in config");
 			return Views.ERROR;
 		}
@@ -106,13 +110,13 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 		try {
 			cred = this.decryptReminderHash(reminderHash);
 		} catch (final InvalidPasswordReminderException ex) {
-			errors.reject("error.method_not_allowed");
+			this.errors.reject("error.method_not_allowed");
 			log.warn("could not decrypt reminder hash " + reminderHash);
 			return Views.ERROR;
 		}
 		
 		if (!present(cred.username) || !present(cred.reminderPassword)) {
-			errors.reject("error.method_not_allowed");
+			this.errors.reject("error.method_not_allowed");
 			log.warn("either username " + cred.username + ") or reminderPassword (" + cred.reminderPassword + ") not present");
 			return Views.ERROR;
 		}
@@ -123,7 +127,7 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 		 * check if the reminderPassword is correct
 		 */
 		if (!present(user.getReminderPassword()) || !user.getReminderPassword().equals(cred.reminderPassword) ) {
-			errors.reject("error.reminder_password_not_correct");
+			this.errors.reject("error.reminder_password_not_correct");
 			return Views.ERROR;
 		}
 		
@@ -131,11 +135,10 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 		 * check if the reminderPassword has expired
 		 */
 		if (this.hasExpired(user.getReminderPasswordRequestDate())) {
-			errors.reject("error.reminder_password_expired");
+			this.errors.reject("error.reminder_password_expired");
 			return Views.ERROR;
 		}
-
-
+		
 		/*
 		 * set user name into command to show it in form field
 		 */
@@ -144,7 +147,15 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 		/*
 		 * if there are any errors show them
 		 */
-		if (errors.hasErrors()) {
+		if (this.errors.hasErrors()) {
+			return Views.PASSWORD_CHANGE_ON_REMIND;
+		}
+		
+		/*
+		 * check the ckey
+		 */
+		if (!context.isValidCkey()) {
+			this.errors.reject("error.field.valid.ckey");
 			return Views.PASSWORD_CHANGE_ON_REMIND;
 		}
 
@@ -159,10 +170,10 @@ public class PasswordChangeOnRemindController implements ErrorAware, ValidationA
 		 * - sets new password
 		 * - removes temporary password
 		 */
-		adminLogic.updateUser(user, UserUpdateOperation.UPDATE_PASSWORD);
+		this.adminLogic.updateUser(user, UserUpdateOperation.UPDATE_PASSWORD);
 
 		// destroy session
-		requestLogic.invalidateSession();
+		this.requestLogic.invalidateSession();
 
 		log.debug("redirect to login page");
 		// redirect to home

@@ -5,6 +5,7 @@
 	xmlns:export="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<!--+
@@ -19,64 +20,85 @@
 		| 
 		+-->
 	
-	
-	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" /> 
 	<jsp:directive.attribute name="isCommunityPost" type="java.lang.Boolean" required="false" />
 	
 	<c:if test="${empty isCommunityPost}">
 		<c:set var="isCommunityPost" value="${false}" />
 	</c:if>
 	
-	<c:set var="citationStylesToShow" value="harvardhtml,chicago,apa_html,din1505" />
 	<div class="citation-box">
-		<ul class="nav nav-tabs">
-			<c:forEach var="citationStyle" items="${fn:split(citationStylesToShow,',')}">
-				<li>
-					<c:set var="prefix" value="layout/${citationStyle}" />
-					<c:choose>
-						<c:when test="${isCommunityPost}">
-							<!-- TODO: use goldstandard not the first post -->
-							<c:set var="exportUrl" value="${relativeUrlGenerator.prefix(prefix).getCommunityPublicationUrlByInterHash(post.resource.interHash)}?formatEmbedded=true&amp;items=1" />
-						</c:when>
-						<c:otherwise>
-							<c:set var="exportUrl" value="${relativeUrlGenerator.prefix(prefix).getPublicationUrlByPost(post)}?formatEmbedded=true" />
-						</c:otherwise>
-					</c:choose>
-					<a data-toggle="tab" href="#citation_${citationStyle}" data-formatUrl="${exportUrl}">
-						<fmt:message key="bibtex.citation_format.${citationStyle}" />
-					</a>
-				</li>
+		<ul class="nav nav-tabs" data-publication-url="${relativeUrlGenerator.getPostUrl(post)}">
+			<c:forEach items="${command.context.loginUser.settings.favouriteLayouts}" var="citation">
+				<!-- checks whether the source is "simple" which gets a special treatment,
+					or JABREF / CSL which will be assigned a source URL by generator-->
+				<!-- source and style always uppercase! -->
+					<c:if test="${citation.source=='SIMPLE'}">
+					<!-- source and style always uppercase! -->
+					<c:if test="${citation.style=='BIBTEX'}">
+						<li>
+							<a data-toggle="tab" href="#citation_BibTeX">BibTeX</a>
+						</li>
+					</c:if>
+					<!-- source and style always uppercase! -->
+					<c:if test="${citation.style=='ENDNOTE'}">
+						<li>
+							<a data-toggle="tab" href="#citation_EndNote">Endnote</a>
+						</li>
+					</c:if>
+				</c:if>
+				<!-- source and style always uppercase! -->
+				<c:if test="${(citation.source=='JABREF') || (citation.source=='CSL')}">
+					<li>
+						<c:set var="exportUrl" value="${relativeUrlGenerator.getPostExportUrl(post, citation)}?formatEmbedded=true&amp;items=1" />
+						<a class="favouriteLayoutDisplayName" data-source="${citation.source}" data-style="${citation.style}" data-toggle="tab" href="#citation_${citation.style}" data-formatUrl="${exportUrl}">
+							<c:set var="name"><mtl:favouriteLayoutDisplayName favouriteLayout="${citation}"/></c:set>
+							<c:out value="${mtl:shorten(name, 25)}" />
+						</a>
+					</li>
+				</c:if>
 			</c:forEach>
-			<li><a data-toggle="tab" href="#citation_bibtex">BibTeX</a></li>
-			<li><a data-toggle="tab" href="#citation_endnote">EndNote</a></li>
 			<li>
 				<c:choose>
 					<c:when test="${isCommunityPost}">
-						<c:set var="exportUrl" value="${relativeUrlGenerator.prefix('export').getCommunityPublicationUrlByInterHash(post.resource.interHash)}?formatEmbedded=true&amp;items=1" />
+						<c:set var="exportUrl" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'export').getPublicationUrl(post.resource)}?formatEmbedded=true&amp;items=1" />
 					</c:when>
 					<c:otherwise>
-						<c:set var="exportUrl" value="${relativeUrlGenerator.prefix('export').getPublicationUrlByPost(post)}?formatEmbedded=true" />
+						<c:set var="exportUrl" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'export').getPublicationUrlByPost(post)}?formatEmbedded=true" />
 					</c:otherwise>
 				</c:choose>
 				<a data-toggle="tab" href="#citation_all" data-formatUrl="${exportUrl}"><fmt:message key="bibtex.all_exports" /></a>
 			</li>
 		</ul>
+		
 		<div id="citation-styles" class="tab-content pub-citation-tab-content">
-			<c:forEach var="citationStyle" items="${fn:split(citationStylesToShow,',')}">
-				<div class="tab-pane" id="citation_${citationStyle}">
-					<!-- keep -->
-				</div>
+			<c:forEach items="${command.context.loginUser.settings.favouriteLayouts}" var="citation">
+				<!-- source and style always uppercase! -->
+				<c:if test="${citation.source=='SIMPLE'}">
+					<!-- source and style always uppercase! -->
+					<c:if test="${citation.style=='BIBTEX'}">
+						<div class="tab-pane" id="citation_BibTeX">
+							<textarea style="width:100%;font-size:80%;border:none;" rows="15">
+								<export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="${true}" generatedBibtexKeys="${false}"/>
+							</textarea>
+						</div>
+					</c:if>
+					<!-- source and style always uppercase! -->
+					<c:if test="${citation.style=='ENDNOTE'}">
+						<div class="tab-pane" id="citation_EndNote">
+							<textarea style="width:100%;font-size:80%;border:none;" rows="15" readonly="readonly">
+								<export:endnote post="${post}" escapeXml="${true}" />
+							</textarea>
+						</div>
+					</c:if>
+				</c:if>
+				<!-- source and style always uppercase! -->
+				<c:if test="${(citation.source=='JABREF') || (citation.source=='CSL')}">
+					<div class="tab-pane" id="citation_${citation.style}">
+						<!-- keep me -->
+					</div>
+				</c:if>
 			</c:forEach>
-			<div class="tab-pane" id="citation_bibtex">
-				<textarea style="width:100%;font-size:80%;border:none;" rows="15">
-					<export:bibtex post="${post}" escapeXml="${true}" lastFirstNames="${true}" generatedBibtexKeys="${false}"/>
-				</textarea>
-			</div>
-			<div class="tab-pane" id="citation_endnote">
-				<textarea style="width:100%;font-size:80%;border:none;" rows="15" readonly="readonly">
-					<export:endnote post="${post}" escapeXml="${true}" />
-				</textarea>
-			</div>
 			<div class="tab-pane" id="citation_all">
 				<!-- keep -->
 			</div>

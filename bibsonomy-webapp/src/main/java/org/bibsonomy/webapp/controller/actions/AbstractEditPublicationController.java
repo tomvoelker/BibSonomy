@@ -46,8 +46,11 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.id.DOIUtils;
+import org.bibsonomy.util.id.ISBNUtils;
 import org.bibsonomy.webapp.command.actions.EditPublicationCommand;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.util.WarningAware;
 import org.bibsonomy.webapp.validation.PostValidator;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
@@ -68,16 +71,17 @@ import bibtex.parser.ParseException;
  * 
  * @param <COMMAND>
  */
-public abstract class AbstractEditPublicationController<COMMAND extends EditPublicationCommand> extends EditPostController<BibTex, COMMAND> {
+public abstract class AbstractEditPublicationController<COMMAND extends EditPublicationCommand> extends EditPostController<BibTex, COMMAND> implements WarningAware {
 
 	private static final String SESSION_ATTRIBUTE_SCRAPER_METADATA = "scraperMetaData";
-
+	
+	private Errors warnings;
+	
 	protected Scraper scraper;
 
 	@Override
 	protected View getPostView() {
-		return Views.EDIT_PUBLICATION; // TODO: this could be configured using
-										// Spring!
+		return Views.EDIT_PUBLICATION;
 	}
 
 	/**
@@ -262,7 +266,24 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 			 * FIXME: in this case we should probably show the
 			 * boxes/import_publication_hints.jsp
 			 */
-			this.getErrors().reject("error.scrape.nothing", new Object[] { scrapingContext.getUrl() }, "The URL {0} is not supported by one of our scrapers.");
+			boolean errorHandled = false;
+			if (present(selection)) {
+				final String isbn = ISBNUtils.extractISBN(selection);
+				if (present(isbn)) {
+					errorHandled = true;
+					this.warnings.reject("error.scrape.isbn", new Object[] { isbn }, "We could not get meta formation for the publication with the ISBN {0}.");
+				}
+				
+				final String doi = DOIUtils.extractDOI(selection);
+				if (present(doi)) {
+					errorHandled = true;
+					this.warnings.reject("error.scrape.doi", new Object[] { doi }, "We could not get meta information for the publication with the DOI {0}.");
+				}
+			}
+			
+			if (!errorHandled) {
+				this.getErrors().reject("error.scrape.nothing", new Object[] { scrapingContext.getUrl() }, "The URL {0} is not supported by one of our scrapers.");
+			}
 		}
 	}
 
@@ -442,5 +463,21 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 	 */
 	public void setScraper(final Scraper scraper) {
 		this.scraper = scraper;
+	}
+
+	/**
+	 * @return the warnings
+	 */
+	@Override
+	public Errors getWarnings() {
+		return this.warnings;
+	}
+
+	/**
+	 * @param warnings the warnings to set
+	 */
+	@Override
+	public void setWarnings(Errors warnings) {
+		this.warnings = warnings;
 	}
 }

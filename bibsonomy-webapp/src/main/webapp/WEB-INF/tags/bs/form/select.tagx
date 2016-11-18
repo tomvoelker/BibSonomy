@@ -21,6 +21,7 @@
 	<jsp:directive.attribute name="labelKey" type="java.lang.String" required="false" description="Alternativly to path, you can define directly a message key for the label."/>
 	<jsp:directive.attribute name="helpText" type="java.lang.String" required="false" description="Alternativly to path.help, you can define the content for popover help"/>
 	<jsp:directive.attribute name="helpKey" type="java.lang.String" required="false" description="Alternativly to path.help, you can define the message key for popover help"/>
+	<jsp:directive.attribute name="helpBlock" fragment="true" required="false" description="the help block of this select"/>
 	<jsp:directive.attribute name="small" type="java.lang.Boolean" required="false" description="Reduces the element width to 33 percent" />
 	
 	<!-- HTML attributes -->
@@ -32,12 +33,15 @@
 	<jsp:directive.attribute name="multiple" type="java.lang.Boolean" required="false" description="value attribute for input field"/>
 	
 	<jsp:directive.attribute name="items" type="java.lang.String[]" required="false" description="items for select field"/>
+	<jsp:directive.attribute name="itemsList" type="java.util.List" required="false" description="items for select field"/>
 	<jsp:directive.attribute name="itemLabels" type="java.lang.String[]" required="false" description="labels for items"/>
 	
 	<!-- HTML event handler -->
 	<jsp:directive.attribute name="onchange" type="java.lang.String" required="false" description="Javascript for onchange event" />
 
-
+	<c:if test="${not empty itemsList}">
+		<c:set var="items" value="${itemsList}" />
+	</c:if>
 
 	<!--+ 
 		| calculates grid colSpan of label and input field
@@ -101,7 +105,7 @@
 
 		<div class="col-sm-${inputColSpan}">
 			<c:choose>
-				<c:when test="${ not empty itemLabels}">
+				<c:when test="${not empty itemLabels}">
 					<form:select multiple="${multiple ? 'multiple' : 'false'}" path="${path}" cssClass="form-control ${helpPopover} ${ small ? classSmallField : ''}" onchange="${onchange}" id="${id}"> 
 						<c:forEach items="${itemLabels}" var="optionLabel" varStatus="cnt">
 							<form:option value="${items[cnt.index]}"><c:out value="${optionLabel}" /></form:option>
@@ -117,6 +121,12 @@
 			<c:if test="${empty noHelp or not noHelp}">
 				<div class="help help-header hide"><c:out value="${labelText}" /></div>
 				<div class="help help-content hide">${helpText}</div>
+			</c:if>
+			
+			<c:if test="${not empty helpBlock}">
+				<p class="help-block">
+					<jsp:invoke fragment="helpBlock"/>
+				</p>
 			</c:if>
 			
 			<bsform:errors path="${path}" />

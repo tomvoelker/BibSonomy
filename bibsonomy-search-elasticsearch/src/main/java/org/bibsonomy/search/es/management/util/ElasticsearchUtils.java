@@ -61,6 +61,7 @@ public final class ElasticsearchUtils {
 	private static final String LAST_LOG_DATE_KEY = "last_log_date";
 	private static final String LAST_TAS_KEY = "last_tas_id";
 	private static final String LAST_DOCUMENT_DATE_KEY = "last_document_date";
+	private static final String LAST_PREDICTION_CHANGE_DATE = "lastPredictionChangeDate";
 	private static final String MAPPING_VERSION = "mapping_version";
 	
 	/** Alias for the inactive index */
@@ -154,6 +155,10 @@ public final class ElasticsearchUtils {
 		final Date lastDocumentDate = getDateForIndex(state.getLastDocumentDate());
 		values.put(LAST_DOCUMENT_DATE_KEY, Long.valueOf(lastDocumentDate.getTime()));
 		values.put(MAPPING_VERSION, state.getMappingVersion());
+		final Date lastPredictionDate = state.getLastPredictionChangeDate();
+		if (present(lastPredictionDate)) {
+			values.put(LAST_PREDICTION_CHANGE_DATE, Long.valueOf(lastPredictionDate.getTime()));
+		}
 		return values;
 	}
 
@@ -176,7 +181,8 @@ public final class ElasticsearchUtils {
 		final SearchIndexSyncState searchIndexState = new SearchIndexSyncState();
 		searchIndexState.setLast_tas_id((Integer) source.get(LAST_TAS_KEY));
 		final Long dateAsTime = (Long) source.get(LAST_LOG_DATE_KEY);
-		searchIndexState.setLast_log_date(new Date(dateAsTime.longValue()));
+		final Date lastLogDate = new Date(dateAsTime.longValue());
+		searchIndexState.setLast_log_date(lastLogDate);
 		
 		final Long documentDateAsTime = (Long) source.get(LAST_DOCUMENT_DATE_KEY);
 		final Date lastDocumentDate;
@@ -187,6 +193,15 @@ public final class ElasticsearchUtils {
 		}
 		searchIndexState.setLastDocumentDate(lastDocumentDate);
 		
+		final Long predictionChangeDateAsTime = (Long) source.get(LAST_PREDICTION_CHANGE_DATE);
+		final Date predictionChangeDate;
+		if (present(predictionChangeDateAsTime)) {
+			predictionChangeDate = new Date(predictionChangeDateAsTime.longValue());
+		} else {
+			// the change date was the last log date
+			predictionChangeDate = lastLogDate;
+		}
+		searchIndexState.setLastPredictionChangeDate(predictionChangeDate);
 		// mapping version
 		String mappingVersion = (String) source.get(MAPPING_VERSION);
 		if (mappingVersion == null) {
@@ -203,6 +218,9 @@ public final class ElasticsearchUtils {
 	 * @return the date as string
 	 */
 	public static String dateToString(final Date date) {
+		if (!present(date)) {
+			return "";
+		}
 		return DATE_TIME_FORMATTER.print(date.getTime());
 	}
 

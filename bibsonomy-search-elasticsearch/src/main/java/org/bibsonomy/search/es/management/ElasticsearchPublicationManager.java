@@ -69,16 +69,17 @@ public class ElasticsearchPublicationManager<P extends BibTex> extends Elasticse
 	private static final Log log = LogFactory.getLog(ElasticsearchPublicationManager.class);
 	
 	private static final int UPDATED_INTERHASHES_CACHE_SIZE = 25000;
+	
 
 	/**
 	 * @param updateEnabled
+	 * @param disabledIndexing
 	 * @param client
-	 * @param systemURI
 	 * @param inputLogic
 	 * @param tools
 	 */
-	public ElasticsearchPublicationManager(boolean updateEnabled, ESClient client, SearchDBInterface<P> inputLogic, ElasticsearchIndexTools<P> tools) {
-		super(updateEnabled, client, inputLogic, tools);
+	public ElasticsearchPublicationManager(boolean updateEnabled, boolean disabledIndexing, ESClient client, SearchDBInterface<P> inputLogic, ElasticsearchIndexTools<P> tools) {
+		super(updateEnabled, disabledIndexing, client, inputLogic, tools);
 	}
 
 	/* (non-Javadoc)

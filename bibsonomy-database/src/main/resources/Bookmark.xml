@@ -217,10 +217,8 @@
 	   	      ORDER BY date DESC
        	      LIMIT #limit# OFFSET #offset#) AS b
        	JOIN urls u USING (book_url_hash)                                           <!-- join url -->
-       	LEFT JOIN bookmark my ON b.book_url_hash=my.book_url_hash AND my.user_name='userName' <!--  exclude own posts (1) -->
 	   	LEFT OUTER JOIN tas AS t ON b.content_id = t.content_id <include refid="reviewRatingsJoinBookmark" />, groupids AS g  <!-- join with tas -->
 		WHERE t.group = g.group                                                  <!-- join groupname -->
-		    AND my.user_name IS NULL											<!--  exclude own posts (2) -->
 		ORDER BY b.date DESC, b.content_id DESC
 	</select>
 
@@ -317,7 +315,25 @@
 		<include refid="reviewRatingsJoinBookmark2" />
 		ORDER BY bb.inbox_date DESC, bb.content_id
 	</select>
-
+	
+	<select id="getBookmarkFromTrash" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
+		SELECT bb.content_id, bb.description, bb.date, bb.user_name, t.tag_name,
+				bb.log_date, u.book_url, bb.title, bb.book_url_hash AS interhash, bb.book_url_hash AS intrahash, u.book_url_ctr AS count, bb.group, g.group_name, bb.change_date, <include refid="reviewRatingsRows" />
+		FROM (
+			SELECT b.content_id, b.user_name, b.book_url_hash, b.book_description AS title, b.book_extended AS description,
+				b.date, b.change_date, b.`group`, b.log_date
+				FROM log_bookmark b
+				WHERE current_content_id = 0
+					AND user_name = #requestedUserName#
+				ORDER BY b.log_date DESC, b.content_id
+				LIMIT #limit# OFFSET #offset#
+			) AS bb
+		LEFT OUTER JOIN urls u USING(book_url_hash)
+		LEFT OUTER JOIN log_tas t USING(content_id)
+		LEFT OUTER JOIN groupids g USING(`group`)
+		<include refid="reviewRatingsJoinBookmark2" />
+		ORDER BY bb.log_date DESC, bb.content_id
+	</select>
 
 	<select id="getBookmarkFromInboxByHash" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT bb.content_id, bb.interhash, bb.intrahash, bb.description, bb.date, bb.user_name, t.tag_name,

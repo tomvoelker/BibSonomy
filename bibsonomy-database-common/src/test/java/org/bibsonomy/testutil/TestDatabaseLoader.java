@@ -42,6 +42,7 @@ import java.util.Scanner;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.Ignore;
 
 /**
  * This class loads the SQL script for the test database. This should be
@@ -49,6 +50,7 @@ import org.apache.commons.logging.LogFactory;
  * 
  * @author Christian Schenk
  */
+@Ignore
 public class TestDatabaseLoader {
 	private final static Log log = LogFactory.getLog(TestDatabaseLoader.class);
 	

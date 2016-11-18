@@ -37,66 +37,74 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.Wiki;
 import org.bibsonomy.webapp.command.CvPageViewCommand;
-import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.bibsonomy.wiki.CVWikiModel;
 import org.springframework.beans.factory.annotation.Required;
 
 /**
- * Controller for the cv page: 
+ * Controller for the cv page:
  * - /cv/user/<USERNAME>
  * - /cv/group/<GROUPNAME>
- * 
+ *
  * @author Bernd Terbrack
  */
 public class WikiCvPageController extends ResourceListController implements MinimalisticController<CvPageViewCommand> {
 	private static final Log log = LogFactory.getLog(WikiCvPageController.class);
-	
-	
+
+
 	private CVWikiModel wikiRenderer;
 
 	@Override
 	public View workOn(final CvPageViewCommand command) {
 		log.debug("cvPageController accessed.");
-		
+
 		final String requestedUser = command.getRequestedUser();
 		final User requestedUserWithDetails = this.logic.getUserDetails(requestedUser);
-		
-		// prevent showing cv pages of deleted and not existiing users
+
+		// prevent showing cv pages of deleted and not existing users and groups
 		if (!present(requestedUserWithDetails.getName())) {
 			throw new ObjectNotFoundException(requestedUser);
 		}
-		
-		try {
-			final Group requestedGroup = this.logic.getGroupDetails(requestedUser, false);
+
+		// check if the requested type is a group and then, if the requested
+		// user
+		// is a group user. if not, throw a 404.
+		if (command.getRequestedType().equals("group")) {
 			/*
 			 * Check if the group is present. If it should be a user. If its no
 			 * user the we will catch the exception and return an error message
 			 * to the user
 			 */
+			final Group requestedGroup = this.logic.getGroupDetails(requestedUser, false);
 			if (present(requestedGroup)) {
 				command.setIsGroup(true);
-				return handleCV(command, null, requestedGroup);
+				return this.handleCV(command, null, requestedGroup);
 			}
-			
-			command.setUser(requestedUserWithDetails);
-			return handleCV(command, requestedUserWithDetails, null);
-		} catch (RuntimeException e) {
-			// If the name does not fit to anything a runtime exception is thrown while attempting to get the requestedUser
-			throw new MalformedURLSchemeException("Something went wrong! You are most likely looking for a non existant user/group.");
-		} catch (Exception e) {
-			throw new MalformedURLSchemeException("Something went wrong while working on your request. Please try again.");
+
+			return new ExtendedRedirectView("/cv/user/" + requestedUser);
 		}
+
+		// requested type was user.
+
+		// if the requestedUser was a group user, we redirect to the group page.
+		final Group requestedGroup = this.logic.getGroupDetails(requestedUser, false);
+		if (present(requestedGroup)) {
+			return new ExtendedRedirectView("/cv/group/" + requestedUser);
+		}
+		// requested type was a user and the user exists.
+		command.setUser(requestedUserWithDetails);
+		return this.handleCV(command, requestedUserWithDetails, null);
 	}
 
 	/**
 	 * Handles the cv page request
 	 * @param command
-	 * @param requestedUser 
+	 * @param requestedUser
 	 * @param reqGroup
-	 * 
+	 *
 	 * @return The cv-page view
 	 */
 	private View handleCV(final CvPageViewCommand command, final User requestedUser, final Group requestedGroup) {
@@ -109,15 +117,19 @@ public class WikiCvPageController extends ResourceListController implements Mini
 			entityName = requestedUser.getName();
 			groupingEntity = GroupingEntity.USER;
 		}
-		
-		this.setTags(command, Resource.class, groupingEntity, entityName, null, null, command.getRequestedTagsList(), null, 1000, null);
-		
+
+		if (!present(entityName)) {
+			throw new ObjectNotFoundException(entityName);
+		}
+
+		this.setTags(command, Resource.class, groupingEntity, entityName, null, null, null, null, 1000, null);
+
 		// TODO: Implement date selection on the editing page
 		final Wiki wiki = this.logic.getWiki(entityName, null);
 		final String wikiText;
 
 		boolean showCV = present(wiki);
-		
+
 		/*
 		 * hide cv page of spammers
 		 */
@@ -125,14 +137,14 @@ public class WikiCvPageController extends ResourceListController implements Mini
 			final boolean isNoSpammer = !requestedUser.isSpammer();
 			final boolean isClassified = requestedUser.getToClassify() != null && requestedUser.getToClassify() != 1;
 			final boolean ownCVPage = requestedUser.equals(command.getContext().getLoginUser());
-			showCV &= (ownCVPage || isNoSpammer && isClassified);
+			showCV &= ownCVPage || isNoSpammer && isClassified;
 		}
 		if (showCV) {
 			wikiText = wiki.getWikiText();
 		} else {
 			wikiText = "";
 		}
-		
+
 		/*
 		 * set the group/user to render
 		 */
@@ -157,7 +169,7 @@ public class WikiCvPageController extends ResourceListController implements Mini
 	 *            the wikiRenderer to set
 	 */
 	@Required
-	public void setWikiRenderer(CVWikiModel wikiRenderer) {
+	public void setWikiRenderer(final CVWikiModel wikiRenderer) {
 		this.wikiRenderer = wikiRenderer;
 	}
 }

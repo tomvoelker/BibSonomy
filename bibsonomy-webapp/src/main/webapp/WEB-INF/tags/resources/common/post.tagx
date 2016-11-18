@@ -64,7 +64,7 @@
 		<h4 class="media-heading" data-ident="${post.resource.intraHash}">
 			<div>
 			<div class="clearline">&#160;</div>
-			<rc:otherpeople post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" />
+			<rc:otherpeople post="${post}" />
 			<span class="ptitle"><jsp:invoke fragment="title"/></span>
 			<div class="clearline">&#160;</div>
 			</div>
@@ -117,7 +117,7 @@
 				<rc:metaTags post="${post}" showTagsLabel="${showTagsLabel}"/>
 			</div>
 			<div class="pull-left">
-				<discussion:rating post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}"/>
+				<discussion:rating post="${post}" />
 			</div>
 			<div class="pull-right">
 				<jsp:invoke fragment="actions"/>

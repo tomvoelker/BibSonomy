@@ -35,48 +35,21 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-			<sidebar:sidebarItem textKey="friends.friendof">
-				<jsp:attribute name="content">
-				    <ul class="tagcloud sidebar_collapse_content">
-		              <c:forEach var="user" items="${command.userFriends}">
-        		        <li><a href="${relativeUrlGenerator.getFriendUrlByUserName(user.name)}"><c:out value="${user.name}"/></a><c:out value=" "/></li>
-              		</c:forEach>
-            		</ul>
-            	</jsp:attribute>
-            </sidebar:sidebarItem>
-          
 			<sidebar:sidebarItem textKey="friends.yourfriends">
 				<jsp:attribute name="content">
-				    <ul class="sidebar_collapse_content">
-              			<c:forEach var="user" items="${command.friendsOfUser}">
-                			<li>
-                  				<a href="${relativeUrlGenerator.getUserUrlByUserName(user.name)}"><c:out value='${user.name}'/>&amp;nbsp;</a> 
-                				<fmt:message var="deleteFriendTitle" key="friends.actions.delete.title"><fmt:param value="${fn:escapeXml(user.name)}"/></fmt:message>
-                  				<a
-		    		             class="action" 
-    			    	         href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(user.name)}&amp;action=removeFriend&amp;ckey=${ckey}&amp;forward=friends"
-    	             			 title="${deleteFriendTitle}">
-    		        				<fmt:message key="friends.actions.delete"/>
-                  				</a>
-                			</li>
-              			</c:forEach>
-            		</ul>
-          		</jsp:attribute>
+					<ul class="sidebar_collapse_content">
+						<c:forEach var="user" items="${command.friendsOfUser}">
+							<li>
+								<a href="${relativeUrlGenerator.getUserUrlByUserName(user.name)}"><c:out value='${user.name}'/>&amp;nbsp;</a> 
+									<fmt:message var="deleteFriendTitle" key="friends.actions.delete.title"><fmt:param value="${fn:escapeXml(user.name)}"/></fmt:message>
+								<a class="action" href="/ajax/handleUserRelation?requestedUserName=${fn:escapeXml(user.name)}&amp;action=removeFriend&amp;ckey=${ckey}&amp;forward=friends" title="${deleteFriendTitle}">
+									<fmt:message key="friends.actions.delete"/>
+								</a>
+							</li>
+						</c:forEach>
+					</ul>
+				</jsp:attribute>
 			</sidebar:sidebarItem>
-          	<!--  add a friend  -->
-			<sidebar:sidebarItem textKey="friends.addfriend">
-				<jsp:attribute name="content">
-		            <form class="sidebar_collapse_content" name="friends" method="POST" action="/ajax/handleUserRelation">
-        				<label for="laddfriend"><fmt:message key="user"/> </label><c:out value=" "/>
-              			<input type="text" size="20" name="requestedUserName" id="laddfriend"/><c:out value=" "/>
-              			<input type="hidden" value="addFriend" name="action"/>
-              			<input type="hidden" value="friends" name="forward"/>
-              			<input type="hidden" value="${ckey}" name="ckey"/>
-              			<fmt:message var="addFriend" key="friends.button.add"/>
-              			<input type="submit" name="submit" value="${addFriend}"/>
-            		</form>
-            	</jsp:attribute>
-            </sidebar:sidebarItem>
 		</jsp:attribute>
 	</layout:resourceLayout>
 </jsp:root>

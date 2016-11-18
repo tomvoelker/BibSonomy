@@ -27,12 +27,15 @@
 package org.bibsonomy.scraper.url.kde.cinii;
 
 import org.bibsonomy.scraper.UnitTestRunner;
+import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * 
  * @author Mohammed Abed
  */
+@Category(RemoteTest.class)
 public class CiniiScraperTest {
 	/**
 	 * starts URL test with id url_345

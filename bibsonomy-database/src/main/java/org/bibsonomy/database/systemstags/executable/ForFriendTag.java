@@ -40,6 +40,7 @@ import org.bibsonomy.database.systemstags.markup.SentSystemTag;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.util.PostUtils;
 
 /**
  * This system tag creates a link to its post in the inbox of a specified user (the receiver)
@@ -108,7 +109,7 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 		/*
 		 * Check permissions
 		 */
-		if (!this.hasPermissions(sender, receiver, intraHash, session)) {
+		if (!hasPermissions(sender, receiver, intraHash, session)) {
 			// sender is not allowed to use this tag, errorMessages were added
 			return;
 		}
@@ -130,7 +131,7 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 			// 4. rename this tag for the sender (store receiverName)
 			this.tag.setName(SentSystemTag.NAME + SystemTagsUtil.DELIM + receiver);
 		} catch (final UnsupportedResourceTypeException urte) {
-			session.addError(intraHash, new UnspecifiedErrorMessage(urte));
+			session.addError(PostUtils.getKeyForPost(post), new UnspecifiedErrorMessage(urte));
 			log.warn("Added UnspecifiedErrorMessage (unsupported ResourceType) for post " + intraHash);
 		}
 		// 5. store the tags for the sender with the confirmation tag: sent:userName
@@ -149,7 +150,7 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 	 * @param receiver
 	 * @return true iff sender is allowed to use the tag
 	 */
-	private boolean hasPermissions(final String sender, final String receiver, final String intraHash, final DBSession session) {
+	private static boolean hasPermissions(final String sender, final String receiver, final String intraHash, final DBSession session) {
 		final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
 		final GeneralDatabaseManager generalDb = GeneralDatabaseManager.getInstance();
 		
@@ -191,6 +192,4 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 			return null;
 		}
 	}
-
-
 }

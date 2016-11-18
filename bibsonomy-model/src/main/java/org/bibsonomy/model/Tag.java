@@ -354,5 +354,4 @@ public class Tag implements Comparable<Tag>, Serializable {
 		// FIXME: what about upper vs. lower case?
 		return this.getName().compareTo(tag.getName());
 	}
-	
 }

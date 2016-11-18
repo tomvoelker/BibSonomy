@@ -173,6 +173,8 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 	/** iff <code>true</code> the update of the index is disabled */
 	private boolean updateEnabled;
 	
+	private boolean disabledIndexing;
+	
 	/** the client to use for all interaction with elasticsearch */
 	protected final ESClient client;
 	
@@ -190,14 +192,16 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 	
 	/**
 	 * @param updateEnabled 
+	 * @param disabledIndexing 
 	 * @param client
 	 * @param systemURI
 	 * @param inputLogic
 	 * @param tools
 	 */
-	public ElasticsearchManager(final boolean updateEnabled, ESClient client, SearchDBInterface<R> inputLogic, ElasticsearchIndexTools<R> tools) {
+	public ElasticsearchManager(final boolean updateEnabled, final boolean disabledIndexing, final ESClient client, SearchDBInterface<R> inputLogic, ElasticsearchIndexTools<R> tools) {
 		super();
 		this.updateEnabled = updateEnabled;
+		this.disabledIndexing = disabledIndexing;
 		this.client = client;
 		this.inputLogic = inputLogic;
 		this.tools = tools;
@@ -209,7 +213,7 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 	 */
 	@Override
 	public void generateIndex() throws IndexAlreadyGeneratingException {
-		generateIndex(true, true);
+		this.generateIndex(true, true);
 	}
 
 	/**
@@ -327,6 +331,9 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 	 */
 	@Override
 	public void regenerateAllIndices() {
+		if (this.disabledIndexing) {
+			return;
+		}
 		try {
 			final String activeIndex = this.client.getIndexNameForAlias(this.getActiveLocalAlias());
 			if (present(activeIndex)) {
@@ -525,11 +532,9 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 		int newLastTasId = oldLastTasId;
 		
 		/*
-		 * 1) flag/unflag spammer if the index existed before
+		 * 1) flag/unflag spammer
 		 */
-		if (oldState.getLast_log_date() != null) {
-			this.updatePredictions(indexName, oldState.getLast_log_date());
-		}
+		this.updatePredictions(indexName, oldState.getLastPredictionChangeDate(), targetState.getLastPredictionChangeDate());
 		
 		/*
 		 * 2) remove old deleted or updated posts
@@ -712,14 +717,15 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 	 * more efficient to get all un-flagged-posts directly via a join with the
 	 * user table
 	 * @param indexName 
-	 * @param lastLogDate 
+	 * @param lastPredictionChangeDate 
+	 * @param currentLastPreditionChangeDate 
 	 */
-	protected void updatePredictions(final String indexName, final Date lastLogDate) {
+	protected void updatePredictions(final String indexName, final Date lastPredictionChangeDate, final Date currentLastPreditionChangeDate) {
 		// keeps track of the newest log_date during last index update
 		// get date of last index update
-		final Date fromDate = new Date(lastLogDate.getTime() - QUERY_TIME_OFFSET_MS);
+		final Date fromDate = new Date(lastPredictionChangeDate.getTime());
 
-		final List<User> predictedUsers = this.inputLogic.getPredictionForTimeRange(fromDate);
+		final List<User> predictedUsers = this.inputLogic.getPredictionForTimeRange(fromDate, currentLastPreditionChangeDate);
 
 		// the prediction table holds up to two entries per user
 		// - the first entry is the one to consider (ordered descending by date)
@@ -802,5 +808,12 @@ public class ElasticsearchManager<R extends Resource> implements SearchIndexMana
 	 */
 	public void shutdown() {
 		this.executorService.shutdownNow();
+	}
+
+	/**
+	 * @param disabledIndexing the disabledIndexing to set
+	 */
+	public void setDisabledIndexing(boolean disabledIndexing) {
+		this.disabledIndexing = disabledIndexing;
 	}
 }

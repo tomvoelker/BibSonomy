@@ -1,0 +1,16 @@
+<!DOCTYPE sqlMapConfig
+PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
+"http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+	<sqlMap resource="iBatisMappings/common/RecommenderTypeAlias.xml" />
+	
+	<typeHandler javaType="url"		callback="org.bibsonomy.database.common.typehandler.UrlTypeHandlerCallback" />
+
+	<sqlMap resource="iBatisMappings/common/RecommenderManagementCommon.xml" />
+	<sqlMap resource="iBatisMappings/common/RecommendationLogCommon.xml" />
+	
+	<sqlMap resource="iBatisMappings/RecommendationManagement.xml" />
+	<sqlMap resource="iBatisMappings/RecommenderManagement.xml" />
+	<sqlMap resource="iBatisMappings/RecommenderTest.xml" />
+	<sqlMap resource="log_items/ItemRecommender.xml" />
+</sqlMapConfig>

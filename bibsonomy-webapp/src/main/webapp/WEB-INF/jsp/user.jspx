@@ -60,7 +60,7 @@
 			<!-- Did you know? -->
 			<c:if test="${	command.context.userLoggedIn and 
 							command.context.loginUser.name eq command.requestedUser and 
-							mtl:hasDidYouKnowMessage(command) and
+							not empty command.didYouKnowMessage and
 							command.context.loginUser.settings.layoutSettings.simpleInterface}">
 				<bs:didYouKnow command="${command}"/>
 			</c:if>
@@ -76,7 +76,9 @@
 											<fmt:param value="${fn:escapeXml(command.requestedUser)}"/>
 										</fmt:message>
 								</h5>
-								<a href="${relativeUrlGenerator.prefix('discussed').getUserUrlByUserName(fn:escapeXml(command.requestedUser))}" title="${title}">
+								
+								<c:set var="urlGeneratorDiscussed" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'personalized')}" />
+								<a href="${urlGeneratorDiscussed.getUserUrlByUserName(fn:escapeXml(command.requestedUser))}" title="${title}">
 									<fmt:message key="discussion.byUser"><fmt:param value="${fn:escapeXml(command.requestedUser)}"/></fmt:message>
 								</a>
 							</li>

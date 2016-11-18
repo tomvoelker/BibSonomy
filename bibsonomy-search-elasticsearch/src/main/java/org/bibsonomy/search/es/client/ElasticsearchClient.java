@@ -104,8 +104,8 @@ public class ElasticsearchClient implements ESClient {
 	}
 
 	@Override
-	public boolean createIndex(String indexName, Set<Mapping<String>> mappings) {
-		final CreateIndexResponse createIndex = this.client.admin().indices().create(new CreateIndexRequest(indexName, Settings.builder().loadFromSource(ESConstants.SETTINGS).build())).actionGet();
+	public boolean createIndex(String indexName, Set<Mapping<String>> mappings, String settings) {
+		final CreateIndexResponse createIndex = this.client.admin().indices().create(new CreateIndexRequest(indexName, Settings.builder().loadFromSource(settings).build())).actionGet();
 		if (!createIndex.isAcknowledged()) {
 			log.error("Error in creating Index");
 			return false;
@@ -156,7 +156,11 @@ public class ElasticsearchClient implements ESClient {
 		}
 		
 		final BulkResponse bulkResponse = bulk.get();
-		return !bulkResponse.hasFailures();
+		final boolean hasFailures = bulkResponse.hasFailures();
+		if (hasFailures) {
+			log.error("failure while bulk insert " + bulkResponse.buildFailureMessage());
+		}
+		return !hasFailures;
 	}
 	
 	/* (non-Javadoc)
@@ -325,6 +329,19 @@ public class ElasticsearchClient implements ESClient {
 		
 		final BulkResponse bulkResponse = bulkRequest.get();
 		return !bulkResponse.hasFailures();
+	}
+	
+	/**
+	 * @return <code>true</code> if a connection to es can be established 
+	 */
+	public boolean isValidConnection() {
+		try {
+			this.waitForReadyState();
+			return true;
+		} catch (final Exception e) {
+			log.error("disabled indexing", e);
+			return false;
+		}
 	}
 	
 	/* (non-Javadoc)

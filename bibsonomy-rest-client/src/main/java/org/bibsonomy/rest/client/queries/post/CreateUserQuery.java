@@ -66,7 +66,7 @@ public final class CreateUserQuery extends AbstractQuery<String> {
 	protected void doExecute() throws ErrorPerformingRequestException {
 		final StringWriter sw = new StringWriter(100);
 		this.getRenderer().serializeUser(sw, this.user, null);
-		this.downloadedDocument = performRequest(HttpMethod.POST, this.getUrlRenderer().createHrefForUsers(), StringUtils.toDefaultCharset(sw.toString()));
+		this.downloadedDocument = performRequest(HttpMethod.POST, this.getUrlRenderer().createUrlBuilderForUsers().asString(), StringUtils.toDefaultCharset(sw.toString()));
 	}
 	
 	@Override

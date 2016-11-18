@@ -58,6 +58,12 @@ public abstract class PostDatabaseManagerTest<R extends Resource> extends Abstra
 	 */
 	@Test
 	public abstract void testGetPostsFromInbox();
+	
+	/**
+	 * tests {@link PostDatabaseManager#getPostsFromTrash(String, int, int, org.bibsonomy.database.common.DBSession)}
+	 */
+	@Test
+	public abstract void testGetPostsFromTrash();
 
 	/**
 	 * Test method for {@link org.bibsonomy.database.managers.PostDatabaseManager#getPostsFromInboxByHash(java.lang.String, java.lang.String, org.bibsonomy.database.common.DBSession)}.

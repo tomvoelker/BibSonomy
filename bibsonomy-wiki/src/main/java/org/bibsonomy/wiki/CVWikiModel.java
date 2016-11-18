@@ -79,12 +79,12 @@ public class CVWikiModel extends AbstractWikiModel {
 		register(new HobbyTag());
 		register(new ProfessionTag());
 		register(new TagcloudTag());
-		
+
 		/* Group Tags */
 		register(new MembersTag());
 		register(new GroupImageTag());
 		register(new GroupDescriptionTag());
-		
+
 		/* Shared Tags */
 		register(new HomepageTag());
 		register(new NameTag());
@@ -108,20 +108,21 @@ public class CVWikiModel extends AbstractWikiModel {
 
 	/**
 	 * Default Constructor
-	 * @param locale 
+	 * @param locale
 	 */
 	public CVWikiModel(final Locale locale) {
 		super(Configuration.DEFAULT_CONFIGURATION, locale, null, null);
 	}
 
-	/*
-	 * defines the look and feel of the section headlines. can be changed by the class mw-headline.
-	 * 
+	/**
+	 * defines the look and feel of the section headlines. can be changed by the
+	 * class mw-headline.
+	 *
 	 * @param rawHead a pure title from the wiki syntax, without the enclosing =
 	 * @param headLevel the number of =, indicating the position in the section hierarchy of this title
-	 * @param noToC good question. TODO: FIX THIS! Welcher Wahnsinnige verwendet eigentlich negierte boolsche Variablen?!
+	 * @param noToC good question.
 	 * @param headCounter
-	 * 
+	 *
 	 * @see info.bliki.wiki.model.AbstractWikiModel#appendHead(java.lang.String,
 	 * int, boolean, int, int, int)
 	 */
@@ -130,14 +131,14 @@ public class CVWikiModel extends AbstractWikiModel {
 			final boolean noToC, final int headCounter, final int startPosition, final int endPosition) {
 		final TagStack localStack = WikipediaParser.parseRecursive(rawHead.trim(), this, true, true);
 
-		// This only generates a HTML node 
+		// This only generates a HTML node
 		final WPTag headTagNode = new WPTag("h" + headLevel);
-		for (BaseToken t : localStack.getNodeList()) {
+		for (final BaseToken t : localStack.getNodeList()) {
 			headTagNode.addChild(t);
 		}
-		
+
 		headTagNode.addAttribute("class", "mw-headline level" + headLevel, true);
-		
+
 		this.append(headTagNode);
 		return this.fTableOfContentTag;
 	}
@@ -159,7 +160,7 @@ public class CVWikiModel extends AbstractWikiModel {
 
 	/**
 	 * set the LogicInterface
-	 * 
+	 *
 	 * @param logic
 	 *            the logic to set
 	 */
@@ -176,7 +177,7 @@ public class CVWikiModel extends AbstractWikiModel {
 
 	/**
 	 * set the user
-	 * 
+	 *
 	 * @param user
 	 *            the user to add
 	 */
@@ -225,13 +226,13 @@ public class CVWikiModel extends AbstractWikiModel {
 	 * @return the messageSource
 	 */
 	public MessageSource getMessageSource() {
-		return messageSource;
+		return this.messageSource;
 	}
 
 	/**
 	 * @param messageSource the messageSource to set
 	 */
-	public void setMessageSource(MessageSource messageSource) {
+	public void setMessageSource(final MessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
 
@@ -245,7 +246,7 @@ public class CVWikiModel extends AbstractWikiModel {
 	/**
 	 * @param urlGenerator the urlGenerator to set
 	 */
-	public void setUrlGenerator(URLGenerator urlGenerator) {
+	public void setUrlGenerator(final URLGenerator urlGenerator) {
 		this.urlGenerator = urlGenerator;
 	}
 

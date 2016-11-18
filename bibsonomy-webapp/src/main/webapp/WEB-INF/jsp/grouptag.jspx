@@ -39,29 +39,7 @@
 		<jsp:attribute name="sidebar">
 			<c:set var="groupName" value="${command.group.name}" />
 			<c:if test="${not empty groupName}">
-				<sidebar:sidebarItem>
-					<jsp:attribute name="text">
-						<c:out value="${groupName}"/>
-					</jsp:attribute> 
-					<jsp:attribute name="content">
-						<group:groupcv group="${command.group}"/>
-						
-						<!-- link to join group -->
-						<c:if test="${command.context.userLoggedIn}">
-							<c:choose>
-								<c:when test="${mtl:contains(command.context.loginUser.groups, command.group)}">
-									<!-- FIXME: add link to leave group, if user is already member -->
-								</c:when>
-								<c:otherwise>
-									<c:out value=" "/>
-									<a class="btn btn-default btn-primary" href="/joinGroup?group=${fn:escapeXml(groupName)}">
-										<fmt:message key="joinGroup"/>
-									</a>
-								</c:otherwise>
-							</c:choose>
-						</c:if>
-					</jsp:attribute>
-				</sidebar:sidebarItem>
+				<sidebar:groupDetailsItem group="${command.group}"/>
 			</c:if>
 
 			<parts:tagsAndConceptsForSidebar/>

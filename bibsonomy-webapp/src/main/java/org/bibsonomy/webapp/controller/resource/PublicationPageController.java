@@ -38,6 +38,7 @@ import org.bibsonomy.model.DiscussionItem;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.webapp.command.resource.PublicationPageCommand;
 import org.bibsonomy.webapp.command.resource.ResourcePageCommand;
 import org.bibsonomy.webapp.util.View;
@@ -47,11 +48,36 @@ import org.bibsonomy.webapp.view.Views;
  * @author dzo
  */
 public class PublicationPageController extends AbstractResourcePageController<BibTex, GoldStandardPublication> {
-
+	private URLGenerator urlGenerator;
+	
 	@Override
 	public ResourcePageCommand<BibTex> instantiateCommand() {
 		return new PublicationPageCommand();
 	}
+	
+	/* see issue #2512
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.webapp.controller.resource.AbstractResourcePageController#workOnResource(org.bibsonomy.webapp.command.resource.ResourcePageCommand, java.lang.String, java.lang.String, java.lang.String, org.bibsonomy.common.enums.GroupingEntity)
+	 *
+	@Override
+	protected View workOnResource(ResourcePageCommand<BibTex> command, String format, String longHash, String requUser, GroupingEntity groupingEntity) {
+		final String title = command.getRequestedTitle();
+		// redirect to /bibtex/interhash_title if only /bibtex/interhash is requested
+		
+		if ("html".equals(command.getFormat()) && !present(title) && GroupingEntity.ALL.equals(groupingEntity)) {
+			this.setList(command, this.getResourceClass(), groupingEntity, requUser, null, longHash, null, command.getFilter(), null, null, null, 1);
+			final List<Post<BibTex>> posts = command.getListCommand(this.getResourceClass()).getList();
+			if (present(posts)) {
+				final Post<BibTex> firstPost = posts.get(0);
+				final BibTex publication = firstPost.getResource();
+				if (present(publication.getTitle())) {
+					return new ExtendedRedirectView(this.urlGenerator.getPublicationUrl(publication), true);
+				}
+			}
+		}
+		return super.workOnResource(command, format, longHash, requUser, groupingEntity);
+	}
+	*/
 	
 	@Override
 	protected View handleFormat(final ResourcePageCommand<BibTex> command, final String format, final String longHash, final String requUser, final GroupingEntity groupingEntity, final String goldHash, final Post<GoldStandardPublication> goldStandard, final BibTex firstResource) {
@@ -110,5 +136,12 @@ public class PublicationPageController extends AbstractResourcePageController<Bi
 			}
 			discussionItems.clear();
 		}
+	}
+
+	/**
+	 * @param urlGenerator the urlGenerator to set
+	 */
+	public void setUrlGenerator(URLGenerator urlGenerator) {
+		this.urlGenerator = urlGenerator;
 	}
 }

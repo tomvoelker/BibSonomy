@@ -35,6 +35,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.systemstags.markup.RelevantForSystemTag;
 import org.bibsonomy.model.Bookmark;
@@ -50,22 +51,22 @@ import org.bibsonomy.webapp.view.Views;
 
 /**
  * Controller for Grouppages
- * 
+ *
  * group/GROUP and group/GROUP/TAGS
- * 
+ *
  * @author Stefan Stuetzer
  */
 public class GroupPageController extends SingleResourceListControllerWithTags implements MinimalisticController<GroupResourceViewCommand> {
 	private static final Log log = LogFactory.getLog(GroupPageController.class);
 
 	@Override
-	public View workOn(GroupResourceViewCommand command) {
+	public View workOn(final GroupResourceViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
 		final String format = command.getFormat();
 		this.startTiming(format);
 
 		final String groupingName = command.getRequestedGroup();
-		
+
 		// if no group given -> error
 		if (!present(groupingName)) {
 			throw new MalformedURLSchemeException("error.group_page_without_groupname");
@@ -77,13 +78,15 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 
 		//check if system-tag "sys:relevantFor:" exists in taglist
 		final boolean isRelevantFor = SystemTagsUtil.containsSystemTag(requTags, RelevantForSystemTag.NAME);
-		
+
 		// handle case when only tags are requested
 		this.handleTagsOnly(command, groupingEntity, groupingName, null, requTags , null, Integer.MAX_VALUE, null);
 
 		// special group given - return empty page
-		if (GroupID.isSpecialGroup(groupingName)) return Views.GROUPPAGE;
-		
+		if (GroupID.isSpecialGroup(groupingName)) {
+			return Views.GROUPPAGE;
+		}
+
 		// this controller only supports "JUST_PDF"
 		final FilterEntity filter = FilterEntity.JUST_PDF.equals(command.getFilter()) ? FilterEntity.JUST_PDF : null;
 
@@ -91,7 +94,7 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 		if (FilterEntity.JUST_PDF.equals(filter)) {
 			this.supportedResources.remove(Bookmark.class);
 		}
-		
+
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
@@ -100,7 +103,7 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 			this.postProcessAndSortList(command, resourceType);
 
 			// retrieve resource counts, if no tags are given
-			if (requTags.size() == 0 && filter != FilterEntity.JUST_PDF) { 
+			if (requTags.size() == 0 && filter != FilterEntity.JUST_PDF) {
 				this.setTotalCount(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			}
 		}
@@ -115,15 +118,15 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, command.getStartDate(), command.getEndDate(), Order.ADDED, 0, 20, null);
 				this.endTiming();
 				/*
-				 * Remove "relevant:for" from tags such that only the remaining 
+				 * Remove "relevant:for" from tags such that only the remaining
 				 * tags are shown in the input form.
-				 * XXX: another way to achieve this would be to let the 
-				 * urlrewritefilter signal in another way that "sys:relevantFor:GROUP" 
+				 * XXX: another way to achieve this would be to let the
+				 * urlrewritefilter signal in another way that "sys:relevantFor:GROUP"
 				 * is requested (e.g., by another parameter or so)
 				 */
 				command.setRequestedTags(SystemTagsUtil.removeSystemTag(command.getRequestedTags(), RelevantForSystemTag.NAME));
 				return Views.RELEVANTFORPAGE;
-			} 
+			}
 
 			// set title
 			command.setPageTitle("group :: " + groupingName); // TODO: i18n
@@ -133,14 +136,18 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 			if (command.getTagstype() == null) {
 				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, Integer.MAX_VALUE, null);
 			}
-			
+
 			final Group group = this.logic.getGroupDetails(groupingName, false);
+			if (!present(group)) {
+				throw new ObjectNotFoundException(groupingName);
+			}
+
 			command.setGroup(group);
 
 			if (requTags.size() > 0) {
 				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, command.getStartDate(), command.getEndDate(), Order.ADDED, 0, 20, null);
 			}
-			
+
 			this.endTiming();
 
 			// forward to bibtex page if PDF filter is set
@@ -153,13 +160,13 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 				command.setConceptsOfGroup(this.getConceptsForSidebar(command, GroupingEntity.GROUP, groupingName, requTags));
 				command.setConceptsOfAll(this.getConceptsForSidebar(command, GroupingEntity.ALL, null, requTags));
 				command.setPostCountForTagsForAll(this.getPostCountForSidebar(GroupingEntity.ALL, "", requTags));
-				
+
 				return Views.GROUPTAGPAGE;
-			} 
+			}
 
 			return Views.GROUPPAGE;
 		}
-		
+
 		this.endTiming();
 		// export - return the appropriate view
 		return Views.getViewByFormat(format);

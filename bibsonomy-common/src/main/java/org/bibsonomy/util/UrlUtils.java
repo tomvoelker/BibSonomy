@@ -328,8 +328,7 @@ public class UrlUtils {
 		if (pathSegment == null) {
 			return null;
 		}
-		// start at *3 for the worst case when everything is %encoded on one
-		// byte
+		// start at *3 for the worst case when everything is %encoded on one byte
 		final StringBuilder encoded = new StringBuilder(pathSegment.length() * 3);
 		final char[] toEncode = pathSegment.toCharArray();
 		for (int i = 0; i < toEncode.length; i++) {

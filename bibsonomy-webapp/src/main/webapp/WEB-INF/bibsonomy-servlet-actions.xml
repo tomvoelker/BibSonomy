@@ -165,6 +165,7 @@
 						<property name="controllerBeanName" value="passwordReminderController"/>
 						<property name="allowedFields">
 							<list>
+								<value>ckey</value>
 								<value>userName</value>
 								<value>userEmail</value>
 								<value>acknowledgeOpenIDDeletion</value>
@@ -179,6 +180,7 @@
 						<property name="controllerBeanName" value="passwordChangeOnRemindController"/>
 						<property name="allowedFields">
 							<list>
+								<value>ckey</value>
 								<value>userName</value>
 								<value>newPassword</value>
 								<value>passwordCheck</value>
@@ -296,9 +298,22 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/import/csl">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="importCSLLayout"/>
+						<property name="allowedFields">
+							<list>
+								<value>file</value>
+								<value>action</value>
+								<value>ckey</value>
+								<value>hash</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<entry key="/import/publications">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="postPublicationController"/>
+						<property name="controllerBeanName" value="importPublicationController"/>
 						<property name="allowedFields">
 							<list>
 								<value>selTab</value>
@@ -405,7 +420,7 @@
 								
 								<value>compareVersion</value>
 								<value>differentEntryKeys</value>
-														
+								
 								<!-- used for fileHandling -->
 								<value>fileName</value>
 								<!-- used to block spammers -->
@@ -574,6 +589,7 @@
 								<value>user.settings.showBookmark</value>
 								<value>user.settings.showBibtex</value>
 								<value>user.settings.layoutSettings.simpleInterface</value>
+								<value>user.settings.favouriteLayouts</value>
 							</list>
 						</property>
 					</bean>
@@ -795,7 +811,7 @@
 		<!-- used to block spammers -->
 		<value>recaptcha_response_field</value>
 		<value>recaptcha_challenge_field</value>
-		<value>editBeforeSaving</value>				
+		<value>editBeforeSaving</value>
 		<!-- used by the publicationRenderingController -->
 		<value>format</value>
 		<value>layout</value>
@@ -872,6 +888,7 @@
 	
 	<bean id="postPublicationController" class="org.bibsonomy.webapp.controller.actions.PostPublicationController" scope="request">
 		<property name="logic" ref="logic"/>
+		<property name="fileLogic" ref="fileLogic"/>
 		<property name="userSettings" ref="userSettings"/>
 		<property name="recommender" ref="multiplexingTagRecommender"/>
 		<property name="captcha" ref="captcha"/>
@@ -879,22 +896,11 @@
 		<property name="scraper" ref="kdeScraperChain"/>
 		<property name="urlGenerator" ref="absoluteUrlGenerator"/>
 		<property name="publicationImporter" ref="publicationImporter"/>
-		<property name="didYouKnowMessages">
-			<list>
-				<bean class="org.bibsonomy.webapp.util.DidYouKnowMessage">
-					<property name="messageKey" value="didyouknow.browserButtons"/>
-					<property name="alertType" value="warning" /> 
-				</bean>
-				<bean class="org.bibsonomy.webapp.util.DidYouKnowMessage">
-					<property name="messageKey" value="didyouknow.isbn"/>
-					<property name="alertType" value="warning" /> 
-				</bean>
-				<bean class="org.bibsonomy.webapp.util.DidYouKnowMessage">
-					<property name="messageKey" value="didyouknow.scanningQr"/>
-					<property name="alertType" value="warning" /> 
-				</bean>
-			</list>
-		</property>
+		<property name="view" value="POST_PUBLICATION" />
+	</bean>
+	
+	<bean id="importPublicationController" parent="postPublicationController" class="org.bibsonomy.webapp.controller.actions.PostPublicationController" scope="request">
+		<property name="view" value="IMPORT_PUBLICATION" />
 	</bean>
 	
 	<bean id="publicationImporter" class="org.bibsonomy.webapp.util.importer.PublicationImporter">
@@ -1207,6 +1213,13 @@
 		<property name="validator" ref="jabRefLayoutValidator" />
 	</bean>
 	
+	<bean id="importCSLLayout" class="org.bibsonomy.webapp.controller.actions.CSLImportController" scope="request" parent="settingsPageController">
+		<property name="logic" ref="logic" />
+		<property name="fileLogic" ref="fileLogic" />
+		<!-- <property name="jabrefLayoutRenderer" ref="jabrefLayoutRenderer" />
+		<property name="validator" ref="jabRefLayoutValidator" /> -->
+	</bean>
+	
 	<bean id="jabRefLayoutValidator" class="org.bibsonomy.webapp.validation.JabRefImportValidator">
 		<property name="fileLogic" ref="jabRefFileLogic" />
 	</bean>
@@ -1244,6 +1257,10 @@
 		<constructor-arg value="${project.document.path}" />
 	</bean>
 	
+	<bean id="cslFileLogic" class="org.bibsonomy.webapp.util.file.csl.ServerCSLFileLogic">
+		<constructor-arg value="${project.document.path}" />
+	</bean>
+	
 	<bean id="documentFileLogic" class="org.bibsonomy.webapp.util.file.document.ServerDocumentFileLogic">
 		<constructor-arg value="${project.document.path}" />
 		<property name="extensionChecker" ref="extensionChecker" />
@@ -1253,6 +1270,7 @@
 		<property name="tempFileLogic" ref="tempFileLogic" />
 		<property name="profileFileLogic" ref="profileFileLogic" />
 		<property name="jabRefFileLogic" ref="jabRefFileLogic" />
+		<property name="cslFileLogic" ref="cslFileLogic" />
 		<property name="documentFileLogic" ref="documentFileLogic" />
 	</bean>
 	

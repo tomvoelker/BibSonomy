@@ -374,7 +374,7 @@ CREATE TABLE `log_gold_standard` (
   `new_simhash1` char(32) NOT NULL default '',
   `content_type` tinyint(1) unsigned default NULL,
   `approved` tinyint(1) default 0,
-  `log_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `log_date` timestamp NOT NULL default CURRENT_TIMESTAMP,
   `current_content_id` int(10) unsigned NOT NULL default '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
@@ -467,8 +467,7 @@ CREATE TABLE `extended_fields_data` (
   `value` text NOT NULL,
   `content_id` int(10) unsigned NOT NULL,
   `date_of_create` datetime NOT NULL,
-  `date_of_last_mod` timestamp NOT NULL default CURRENT_TIMESTAMP on
-update CURRENT_TIMESTAMP
+  `date_of_last_mod` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -629,7 +628,7 @@ CREATE TABLE `log_inboxMail` (
   `receiver_user` varchar(30) NOT NULL,
   `date` datetime default NULL,
   `content_type` tinyint(1) unsigned,
-  `log_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `log_date` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`message_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
@@ -706,7 +705,7 @@ CREATE TABLE `log_bibtexurls` (
   `text` text,
   `group` int(10) default '0',
   `date` datetime NOT NULL default '1815-12-10 00:00:00',
-  `log_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `log_date` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`content_id`,`url`,`date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
@@ -760,7 +759,7 @@ CREATE TABLE `log_bibtex` (
   `change_date` datetime NOT NULL default '1815-12-10 00:00:00',
   `rating` tinyint(3) NOT NULL default '0',
   `privnote` text,
-  `log_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `log_date` timestamp NOT NULL default CURRENT_TIMESTAMP,
   `current_content_id` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`content_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -786,7 +785,7 @@ CREATE TABLE IF NOT EXISTS `log_document` (
   `user_name` varchar(255) DEFAULT '',
   `date` datetime DEFAULT '0000-00-00 00:00:00',
   `md5hash` char(32) NOT NULL DEFAULT '00000000000000000000000000000000',
-  `log_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `log_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `log_id` int(10) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`log_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
@@ -811,7 +810,7 @@ CREATE TABLE `log_bookmark` (
   `new_content_id` int(10) unsigned NOT NULL default '0',
   `change_date` datetime NOT NULL default '1815-12-10 00:00:00',
   `rating` tinyint(3) NOT NULL default '0',
-  `log_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `log_date` timestamp NOT NULL default CURRENT_TIMESTAMP,
   `current_content_id` int(10) unsigned NOT NULL default '0',
   PRIMARY KEY  (`content_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -828,7 +827,7 @@ CREATE TABLE `log_collector` (
   `user_name` varchar(30) NOT NULL,
   `content_id` int(10) unsigned NOT NULL,
   `add_date` datetime NOT NULL default '1815-12-10 00:00:00',
-  `del_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP
+  `del_date` timestamp NOT NULL default CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
 
@@ -846,7 +845,7 @@ CREATE TABLE `log_friends` (
   `tag_name` varchar(255) NOT NULL DEFAULT 'sys:network:bibsonomy-friend',
   `f_network_user_id` int(10) DEFAULT NULL,
   `friendship_date` datetime NOT NULL default '1815-12-10 00:00:00',
-  `friendship_end_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `friendship_end_date` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`friends_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1565 DEFAULT CHARSET=utf8;
 SET character_set_client = @saved_cs_client;
@@ -863,7 +862,7 @@ CREATE TABLE `log_group_memberships` (
 	`group` INT(10) NULL DEFAULT '0',
 	`defaultgroup` INT(10) NULL DEFAULT '0',
 	`start_date` DATETIME NOT NULL DEFAULT '1815-12-10 00:00:00',
-	`end_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	`end_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`group_role` INT(10) NOT NULL DEFAULT '2',
 	`user_shared_documents` TINYINT(1) NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -881,7 +880,7 @@ CREATE TABLE `log_prediction` (
   `user_name` varchar(30) NOT NULL,
   `prediction` tinyint(4) NOT NULL,
   `timestamp` bigint(20) default NULL,
-  `updated_at` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL default CURRENT_TIMESTAMP,
   `algorithm` varchar(100) default NULL,
   `mode` char(1) default NULL,
   `confidence` double default NULL,
@@ -902,7 +901,7 @@ CREATE TABLE `log_tagtagrelations` (
   `lower` varchar(255) character set utf8 collate utf8_bin NOT NULL default '',
   `upper` varchar(255) character set utf8 collate utf8_bin NOT NULL default '',
   `date_of_create` datetime NOT NULL default '1815-12-10 00:00:00',
-  `date_of_last_mod` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `date_of_last_mod` timestamp NOT NULL default CURRENT_TIMESTAMP,
   `user_name` varchar(30) NOT NULL default '',
   PRIMARY KEY  (`relationID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -944,7 +943,7 @@ CREATE TABLE `log_user` (
   `user_realname` varchar(255) NOT NULL,
   `spammer` tinyint(1) NOT NULL default '0',
   `openurl` varchar(255) default NULL,
-  `reg_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `reg_date` timestamp NOT NULL default CURRENT_TIMESTAMP,
   `ip_address` varchar(255) default NULL,
   `id` int(11) default NULL,
   `tmp_password` char(32) default NULL,
@@ -1107,6 +1106,7 @@ CREATE TABLE `pendingUser` (
   `show_bibtex` tinyint(1) default '1',
   `useExternalPicture` tinyint(1) DEFAULT '0',
   `reg_log` MEDIUMTEXT NULL DEFAULT NULL,
+  `favourite_layouts` LONGTEXT NULL,
   UNIQUE (`activation_code`),
   PRIMARY KEY  (`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1510,6 +1510,7 @@ CREATE TABLE `user` (
   `show_bibtex` tinyint(1) default '1',
   `useExternalPicture` tinyint(1) DEFAULT '0',
   `reg_log` MEDIUMTEXT NULL DEFAULT NULL,
+  `favourite_layouts` LONGTEXT NULL,
   PRIMARY KEY  (`user_name`),
   UNIQUE KEY `user_id` (`id`),
   KEY `spammer_to_classify_user_name_idx` (`spammer`,`to_classify`,`user_name`)
@@ -1741,7 +1742,8 @@ CREATE TABLE `pub_person` (
   `log_changed_at` datetime DEFAULT NULL,
   `log_changed_by` varchar(30) DEFAULT NULL COMMENT 'user_name of the user, who changed the association last',
   `deleted` tinyint(4) NOT NULL DEFAULT 0 COMMENT 'set to 1 for tuples keeping track of explicitly falsified associations, otherwise 0',
-  PRIMARY KEY (`person_change_id`)
+  PRIMARY KEY (`person_change_id`),
+  UNIQUE KEY `pub_person_simhash1_relator_code_person_index_idx` (`simhash1`,`relator_code`,`person_index`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `log_pub_person` (

@@ -70,6 +70,14 @@ public class SearchPageController extends SingleResourceListController implement
 			log.debug(this.getClass().getSimpleName());
 			final String format = command.getFormat();
 			
+			// FIXME: this is a hack because we have the property sortPage and order
+			final String pageOrder = command.getSortPage();
+			if ("date".equals(pageOrder)) {
+				command.setOrder(Order.ADDED);
+			} else if ("relevance".equals(pageOrder)) {
+				command.setOrder(Order.RANK);
+			}
+			
 			this.startTiming(format);
 			String search = command.getRequestedSearch();
 			if (!present(search)) {
@@ -155,6 +163,7 @@ public class SearchPageController extends SingleResourceListController implement
 		final SearchViewCommand command = new SearchViewCommand();
 		// set the order to rank by default
 		command.setOrder(Order.RANK);
+		command.setSortPage("relevance");
 		return command;
 	}
 

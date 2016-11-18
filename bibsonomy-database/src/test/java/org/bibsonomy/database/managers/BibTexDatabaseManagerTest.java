@@ -69,6 +69,7 @@ import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PersonNameParser.PersonListParserException;
 import org.bibsonomy.model.util.PersonNameUtils;
+import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.testutil.DBTestUtils;
 import org.bibsonomy.testutil.ModelUtils;
@@ -195,9 +196,15 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		//get post with SIM_HASH0 = hash2_0 for testuser2: sees own post
 		posts = publicationDb.getPostsByHash("testuser2", hash2_0, HashID.SIM_HASH0, INVALID_GROUP_ID, groups2, 10, 0, this.dbSession);
 		assertEquals(1, posts.size());
-
-		
-		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.database.managers.PostDatabaseManagerTest#testGetPostsFromTrash()
+	 */
+	@Override
+	public void testGetPostsFromTrash() {
+		// TODO add statement and checks TODODZO
+	}
 	
 	@Override
 	public void testGetPostsFromInbox() {
@@ -1093,7 +1100,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 			publicationDb.createPost(testPost, null, this.dbSession);
 			fail("expected a DatabaseException");
 		} catch (final DatabaseException ex) {
-			final List<ErrorMessage> messages = ex.getErrorMessages(resource.getIntraHash());
+			final List<ErrorMessage> messages = ex.getErrorMessages(PostUtils.getKeyForPost(testPost));
 			assertEquals(1, messages.size());
 			
 			assertEquals(FieldLengthErrorMessage.class, messages.get(0).getClass());
@@ -1128,7 +1135,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 			publicationDb.updatePost(updatePost, updateResource.getIntraHash(), loginUser, PostUpdateOperation.UPDATE_ALL, this.dbSession);
 			fail("expected a DatabaseException");
 		} catch (final DatabaseException ex) {
-			final List<ErrorMessage> messages = ex.getErrorMessages(updateResource.getIntraHash());
+			final List<ErrorMessage> messages = ex.getErrorMessages(PostUtils.getKeyForPost(updatePost));
 			assertEquals(1, messages.size());
 			
 			assertEquals(FieldLengthErrorMessage.class, messages.get(0).getClass());

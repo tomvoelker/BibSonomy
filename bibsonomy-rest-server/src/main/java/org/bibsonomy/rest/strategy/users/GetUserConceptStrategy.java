@@ -44,8 +44,8 @@ import org.bibsonomy.rest.strategy.Strategy;
  */
 public class GetUserConceptStrategy extends Strategy {
 
-	private final String conceptName; 
-	private final String userName;	
+	private final String conceptName;
+	private final String userName;
 
 	/**
 	 * @param context -  the context
@@ -63,8 +63,8 @@ public class GetUserConceptStrategy extends Strategy {
 		final Tag concept = this.getLogic().getConceptDetails(this.conceptName, GroupingEntity.USER, userName);
 		if (concept == null) {
 			throw new NoSuchResourceException("The requested concept '" + conceptName + "' does not exist for user '" + userName + "'.");
-		}		
-		this.getRenderer().serializeTag(writer, concept, new ViewModel());		
+		}
+		this.getRenderer().serializeTag(writer, concept, new ViewModel());
 	}
 	
 	@Override

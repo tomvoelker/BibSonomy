@@ -26,13 +26,14 @@
  */
 package org.bibsonomy.scraper.url.kde.science;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * Scraper URL tests #28 #141 #159 #162 for ScienceDirectScraper
+ * Scraper Tests for ScienceDirectScraper
  * @author tst
  *
  */
@@ -44,23 +45,23 @@ public class ScienceDirectScraperTest {
 	 */
 	@Test
 	public void urlTestRun1(){
-		UnitTestRunner.runSingleTest("url_28");
+		assertScraperResult("http://www.sciencedirect.com/science/article/pii/S0004370207000471", null, ScienceDirectScraper.class, "sciencedirect/ScienceDirectScraperUnitURLTest1.bib");
 	}
 
 	/**
 	 * starts URL test with id url_141
 	 */
 	@Test
-	public void urlTestRun2(){
-		UnitTestRunner.runSingleTest("url_141");
+	public void urlTestRun2() {
+		assertScraperResult("http://www.sciencedirect.com/science/article/pii/S1570826806000084", null, ScienceDirectScraper.class, "sciencedirect/ScienceDirectScraperUnitURLTest2.bib");
 	}
 
 	/**
 	 * starts URL test with id url_159
 	 */
 	@Test
-	public void url3TestRun(){
-		UnitTestRunner.runSingleTest("url_159");
+	public void url3TestRun() {
+		assertScraperResult("http://www.sciencedirect.com/science/article/pii/S138912860700179X", null, ScienceDirectScraper.class, "sciencedirect/ScienceDirectScraperUnitURLTest3.bib");
 	}
 	
 	/**
@@ -68,23 +69,31 @@ public class ScienceDirectScraperTest {
 	 */
 	@Test
 	public void url4TestRun(){
-		UnitTestRunner.runSingleTest("url_162");
+		assertScraperResult("http://www.sciencedirect.com/science/article/pii/S1389128602002116", null, ScienceDirectScraper.class, "sciencedirect/ScienceDirectScraperUnitURLTest4.bib");
 	}
 	
 	/**
 	 * starts URL test with id url_179
 	 */
 	@Test
-	public void url5TestRun(){
-		UnitTestRunner.runSingleTest("url_179");
+	public void url5TestRun() {
+		assertScraperResult("http://www.sciencedirect.com/science/article/pii/S0009261400002268", null, ScienceDirectScraper.class, "sciencedirect/ScienceDirectScraperUnitURLTest5.bib");
 	}
 	
 	/**
 	 * starts URL test with id url_185
 	 */
 	@Test
-	public void url6TestRun(){
-		UnitTestRunner.runSingleTest("url_185");
+	public void url6TestRun() {
+		assertScraperResult("http://www.sciencedirect.com/science/article/pii/S1570826810000326", null, ScienceDirectScraper.class, "sciencedirect/ScienceDirectScraperUnitURLTest6.bib");
+	}
+	
+	/**
+	 * tests another url
+	 */
+	@Test
+	public void url7TestRun() {
+		assertScraperResult("http://www.sciencedirect.com/science/article/pii/S0304397507000631", null, ScienceDirectScraper.class, "sciencedirect/ScienceDirectScraperUnitURLTest7.bib");
 	}
 
 }

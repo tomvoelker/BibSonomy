@@ -59,7 +59,7 @@ public class PostUserStrategy extends AbstractCreateStrategy {
 	}
 
 	@Override
-	protected void render(Writer writer, String userID) {
-		this.getRenderer().serializeUserId(writer, userID);		
+	protected void render(final Writer writer, String userID) {
+		this.getRenderer().serializeUserId(writer, userID);
 	}
 }

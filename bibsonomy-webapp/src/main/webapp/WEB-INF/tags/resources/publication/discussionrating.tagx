@@ -4,6 +4,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:discussion="urn:jsptagdir:/WEB-INF/tags/resources/discussion"
 	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
@@ -12,30 +13,7 @@
 	<c:set var="href" value="${otherPostsUrlPrefix}${post.resource.interHash}#discussionbox" />
 	
 	<h4 class="pub-details"><span class="pull-left"><spann class="fa fa-comments"><!-- --></spann><c:out value=" " /><fmt:message key="publications.discussion.headline"/>&amp;nbsp;&amp;nbsp;</span>
-		<div class="rating">
-			<c:if test="${not empty post.resource.rating}">
-				<fmt:message var="title" key="post.resource.discussion.title.${fn:toLowerCase(post.resource['class'].simpleName)}" />
-				
-				<!--+
-					|TODO: Once we know for each post whether a goldstandard exists,
-					| we can use that information for the decision between long or short link
-					+-->
-				
-				<c:set var="href" value="${otherPostsUrlPrefix}${post.resource.interHash}#discussionbox"/>
-				<c:if test="${post.resource.numberOfRatings eq 0}">
-					<c:set var="href" value="${otherPostsUrlPrefix}${post.resource.interHash}?postOwner=${post.user.name}&amp;amp;intraHash=${post.resource.intraHash}#discussionbox"/>
-				</c:if>
-				<span class="reviewInfo" itemscope="itemscope" itemprop="aggregateRating" itemtype="http://schema.org/AggregateRating">
-					<a href="${href}" title="${title}"> 
-						<review:reviewStars rating="${post.resource.rating}" dimension="0.75" />
-					</a>
-					(<span itemprop="ratingCount" property="ratingCount"><c:out value="${post.resource.numberOfRatings}" /></span>)
-					<meta content="0.0" itemprop="worstRating" />
-					<meta content="5.0" itemprop="bestRating" />
-					<meta content="${post.resource.rating}" itemprop="ratingValue" property="ratingAverage" />
-				</span>
-			</c:if>
-		</div>
+		<discussion:rating post="${post}" />
 	</h4>
 	<div id="discussion" style="margin-top: 0.5em;">
 	

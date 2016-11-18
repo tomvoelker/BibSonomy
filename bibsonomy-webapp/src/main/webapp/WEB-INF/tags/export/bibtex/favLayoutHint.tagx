@@ -1,0 +1,17 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+	<c:if test="${command.context.userLoggedIn}">
+		<c:set var="content">
+			<fmt:message key="settings.favouriteExports.hint">
+				<fmt:param value="${relativeUrlGenerator.getSettingsUrlWithSelectedTab(1)}" />
+			</fmt:message>
+		</c:set>
+		<button type="button" class="btn btn-link citation-info-box" data-toggle="popover" data-content="${fn:escapeXml(content)}"><fontawesome:icon icon="info-circle" /></button>
+	</c:if>
+</jsp:root>

@@ -33,6 +33,7 @@ import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.GoldStandardBookmark;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.ObjectUtils;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
@@ -43,8 +44,6 @@ import org.bibsonomy.webapp.validation.PostValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
-
-import recommender.core.interfaces.model.TagRecommendationEntity;
 
 /**
  * @author dzo
@@ -98,7 +97,7 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
 
 	@Override
 	protected View finalRedirect(final String userName, final Post<Bookmark> post, final String referer) {
-		return new ExtendedRedirectView(this.urlGenerator.getBookmarkUrl(post.getResource(), null));
+		return new ExtendedRedirectView(this.urlGenerator.getResourceUrl(post.getResource()));
 	}
 
 	private Post<Bookmark> convertToGoldStandard(final Post<Bookmark> post) {
@@ -160,7 +159,7 @@ public class EditGoldStandardBookmarkController extends EditBookmarkController {
 	}
 
 	@Override
-	protected void setRecommendationFeedback(final TagRecommendationEntity post, final int postID) {
+	protected void setRecommendationFeedback(User loggedinUser, Post<? extends Resource> entity, int postID) {
 		// noop gold standards have no tags
 	}
 }

@@ -75,6 +75,7 @@
 		<result property="profilePrivlevel" column="profilegroup"   	javaType="ProfilePrivlevel" />
 		<result property="showBookmark"   	column="show_bookmark"  	javaType="boolean" />
 		<result property="showBibtex"   	column="show_bibtex"  		javaType="boolean" />
+		<result property="favouriteLayouts" column="favourite_layouts"  typeHandler="org.bibsonomy.database.common.typehandler.FavouriteLayoutsTypeHandlerCallback" />
 		<result property="layoutSettings"   resultMap="UserCommon.layoutSettings" />
 	</resultMap>
 	
@@ -105,8 +106,8 @@
 	<sql id="userSettingsAttributes">
 		tagbox_style, tagbox_sort, tagbox_minfreq, tagbox_tooltip, list_itemcount, 
 		lang, log_level, confirmDelete, profilegroup, tagbox_max_count, is_max_count, 
-		show_bookmark, show_bibtex, simple_interface
-	</sql>	
+		show_bookmark, show_bibtex, simple_interface, favourite_layouts
+	</sql>
 
 	<!-- 
 		for insert and update statements matching 'allUserAttributes'  
@@ -116,13 +117,14 @@
 		#password#, #passwordSalt#, #apiKey#, #openURL#,
 		<isNotNull property="reminderPassword">#reminderPassword#,#reminderPasswordRequestDate#,</isNotNull>
 		<isNull property="reminderPassword">NULL,DEFAULT(tmp_request_date),</isNull>
-		#role#, #IPAddress#, #registrationDate#, #spammer#, #updatedBy#, #updatedAt#, #toClassify#, LEFT(#registrationLog#, 900000),
+		#role#, #IPAddress#, #registrationDate#, #spammer#, #updatedBy#, #updatedAt#, #toClassify#, LEFT(#registrationLog#, 1000000),
 		#email#, #homepage#, #birthday#, #gender#, #hobbies#, #interests#, #place#, #profession#, #institution#, #useExternalPicture#,
 		#settings.tagboxStyle#, #settings.tagboxSort#, #settings.tagboxMinfreq#, #settings.tagboxTooltip#, #settings.listItemcount#, 
 		<isNotNull property="settings.defaultLanguage">#settings.defaultLanguage#,</isNotNull>
 		<isNull property="settings.defaultLanguage">DEFAULT(lang),</isNull> 
 		#settings.logLevel#, #settings.confirmDelete#, #settings.profilePrivlevel#, #settings.tagboxMaxCount#, #settings.isMaxCount#, 
-		#settings.showBookmark#, #settings.showBibtex#, #settings.layoutSettings.simpleInterface#
+		#settings.showBookmark#, #settings.showBibtex#, #settings.layoutSettings.simpleInterface#,
+		#settings.favouriteLayouts,handler=org.bibsonomy.database.common.typehandler.FavouriteLayoutsTypeHandlerCallback#
 	</sql>
 
 	<sql id="updateUserProfileAttributes">
@@ -153,7 +155,8 @@
 		confirmDelete = #settings.confirmDelete#, 
 		show_bookmark = #settings.showBookmark#,
 		show_bibtex = #settings.showBibtex#, 
-		simple_interface = #settings.layoutSettings.simpleInterface#
+		simple_interface = #settings.layoutSettings.simpleInterface#,
+		favourite_layouts = #settings.favouriteLayouts,handler=org.bibsonomy.database.common.typehandler.FavouriteLayoutsTypeHandlerCallback#
 	</sql>
 	
 	<!-- matches resources owned by group members which trust the currUser -->

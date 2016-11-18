@@ -103,9 +103,10 @@ public interface ESClient {
 	/**
 	 * @param indexName
 	 * @param mappings 
+	 * @param settings TODO
 	 * @return
 	 */
-	boolean createIndex(String indexName, Set<Mapping<String>> mappings);
+	boolean createIndex(String indexName, Set<Mapping<String>> mappings, String settings);
 	
 	/**
 	 * @param oldIndexName

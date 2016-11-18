@@ -35,6 +35,7 @@ import org.bibsonomy.rest.RESTConfig;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
+import org.bibsonomy.util.UrlBuilder;
 
 /**
  * 
@@ -71,7 +72,6 @@ public class GetRelatedusersForUserStrategy extends AbstractGetListStrategy<List
 	@Override
 	protected void render(final Writer writer, final List<User> resultList) {
 		this.getRenderer().serializeUsers(writer, resultList, getView());
-
 	}
 
 	@Override
@@ -80,12 +80,8 @@ public class GetRelatedusersForUserStrategy extends AbstractGetListStrategy<List
 	}
 
 	@Override
-	protected StringBuilder getLinkPrefix() {
-		return new StringBuilder(this.getUrlRenderer().getApiUrl() + RESTConfig.FRIENDS_SUB_PATH);
-	}
-
-	@Override
-	protected void appendLinkPostFix(final StringBuilder sb) {
+	protected UrlBuilder getLinkPrefix() {
+		return this.getUrlRenderer().createUrlBuilderForFriends();
 	}
 
 	@Override

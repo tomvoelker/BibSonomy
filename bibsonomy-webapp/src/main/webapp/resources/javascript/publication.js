@@ -1,31 +1,32 @@
 $(function() {
 	var tabs = $('.citation-box a[data-toggle="tab"]')
 	tabs.on('show.bs.tab', function (e) {
-		var targetElement  = $(e.target.getAttribute("href"));
-		if (targetElement.html().length > 0) return; 
-		
-		if (e.target.getAttribute("href")=="#citation_all") {
-				var url = $(e.target).data("formaturl");
-				$.ajax({
-					url: url, 
-					dataType: "html", 
-					success: function(data) {
-								targetElement.html(data).find("select").addClass("form-control input-sm");
-							}
-				});
+		var selectedTab = $(e.target);
+		var targetId = selectedTab.attr("href");
+		var targetElement = $(targetId);
+		// skip loading if the tab has content
+		if (targetElement.html().length > 0) {
 			return;
 		}
-			
+		
+		if (targetId == "#citation_all") {
+			var url = selectedTab.data("formaturl");
+			$.ajax({
+				url: url, 
+				dataType: "html", 
+				success: function(data) {
+					targetElement.html(data).find("select").addClass("form-control input-sm");
+				}
+			});
+			return;
+		}
+		var tabContainer = $(this).closest('ul');
 		targetElement.html(getString("bibtex.citation_format.loading")); // activated tab
-		var url = $(e.target).data("formaturl");
-		$.ajax({
-			url: url, 
-			dataType: "html", 
-			success: function(data) {
-						targetElement.html(data);
-			}
-		});
+		var publicationLink = tabContainer.data('publication-url');
+		
+		loadExportLayout(selectedTab, targetElement, publicationLink);
 	});
 	
 	tabs.first().tab("show");
 });
+

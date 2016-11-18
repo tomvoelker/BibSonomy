@@ -2,39 +2,54 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 	<jsp:directive.attribute name="legendKey" type="java.lang.String" required="true" description="The message key describing the form fields inside this field set. If the corresponding message is empty, the fieldset is not rendered."/>
 	<jsp:directive.attribute name="legendExt" fragment="true" required="false" description="If text is not sufficient for the legend, use this fragment to add arbitrary content."/>	
 	<jsp:directive.attribute name="content" fragment="true" required="true" description="The content of the fieldset (i.e., the form fields)."/>	
-
+	<jsp:directive.attribute name="collapsible" type="java.lang.Boolean" required="false"/>
+	<c:if test="${empty collapsible}">
+		<c:set var="collapsible" value="${false}" />
+	</c:if>
+	
 	<!-- 
 		If the message for the given legendKey is empty, the fieldset is not
 		rendered. This can be used to disable certain fieldsets based on 
 		message properties.
 	 -->
-
 	<fmt:message key="${legendKey}" var="legendKeyMsg"/>
 	<c:if test="${not empty legendKeyMsg}">
-	
-		<fieldset>
-			<legend>
-
-				<c:out value="${legendKeyMsg}" />
-				<c:if test="${not empty legendExt}">
-					<c:out value=" "/>
-					<jsp:invoke fragment="legendExt"/>
-				</c:if>
-			</legend>
+		<fieldset class="${collapsible ? 'collapsible' : ''}">
+		
+			<c:choose>
+				<c:when test="${collapsible}">
+					<legend>
+						<a href="#" class="collapsible-toggle">
+							<fontawesome:icon icon="chevron-right" spaceAfter="5" />
+							<c:out value="${legendKeyMsg}" />
+						</a>
+						<c:if test="${not empty legendExt}">
+							<c:out value=" "/>
+							<jsp:invoke fragment="legendExt"/>
+						</c:if>
+					</legend>
+				</c:when>
+				<c:otherwise>
+					<legend>
+						<c:out value="${legendKeyMsg}" />
+						<c:if test="${not empty legendExt}">
+							<c:out value=" "/>
+							<jsp:invoke fragment="legendExt"/>
+						</c:if>
+					</legend>
+				</c:otherwise>
+			</c:choose>
 			
-			<!-- 
-				| fieldset content
-				-->
+			<!-- fieldset content -->
 			<div>
 				<jsp:invoke fragment="content"/>
 			</div>
 		</fieldset>
 	</c:if>
-
-
 </jsp:root>

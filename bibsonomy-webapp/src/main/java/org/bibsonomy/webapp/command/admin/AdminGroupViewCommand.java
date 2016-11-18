@@ -35,29 +35,28 @@ import org.bibsonomy.webapp.command.BaseCommand;
 
 
 /**
- * Command bean for admin page 
- * 
+ * Command bean for admin page
+ *
  * @author bsc
  */
 public class AdminGroupViewCommand extends BaseCommand {
-	
+
 	/** specific action for admin page */
 	private AdminGroupOperation action;
-	
+
 	private String adminResponse;
 	private Group group;
-	
+
 	private String declineMessage;
-	
+
 	@Deprecated
 	// TODO a more general field should be Set<GroupLevelPermission>
 	private boolean communityPostInspectionPermission;
 	private boolean permissionsUpdated = false;
-	/**
-	 * list of pending groups
-	 */
+	/** list of pending groups */
 	private List<Group> pendingGroups;
-	
+	private List<String> allGroupNames;
+
 	public AdminGroupViewCommand() {
 		this.group = new Group();
 	}
@@ -70,7 +69,7 @@ public class AdminGroupViewCommand extends BaseCommand {
 	}
 
 	/**
-	 * @param group the group to set 
+	 * @param group the group to set
 	 */
 	public void setGroup(final Group group) {
 		this.group = group;
@@ -101,22 +100,23 @@ public class AdminGroupViewCommand extends BaseCommand {
 	 * @return the admin response
 	 */
 	public String getAdminResponse() {
-		return adminResponse;
+		return this.adminResponse;
 	}
 
 	/**
 	 * @return the pendingGroups
 	 */
 	public List<Group> getPendingGroups() {
-		if (this.pendingGroups == null)
+		if (this.pendingGroups == null) {
 			this.pendingGroups = new LinkedList<Group>();
+		}
 		return this.pendingGroups;
 	}
 
 	/**
 	 * @param pendingGroups the pendingGroups to set
 	 */
-	public void setPendingGroups(List<Group> pendingGroups) {
+	public void setPendingGroups(final List<Group> pendingGroups) {
 		this.pendingGroups = pendingGroups;
 	}
 
@@ -126,18 +126,24 @@ public class AdminGroupViewCommand extends BaseCommand {
 	}
 
 	@Deprecated
-	public void setCommunityPostInspectionPermission(boolean communityPostInspectionPermission) {
+	public void setCommunityPostInspectionPermission(final boolean communityPostInspectionPermission) {
 		this.communityPostInspectionPermission = communityPostInspectionPermission;
 	}
 
+	/**
+	 * @return
+	 */
 	public boolean isPermissionsUpdated() {
 		return this.permissionsUpdated;
 	}
 
-	public void setPermissionsUpdated(boolean permissionsUpdated) {
+	/**
+	 * @param permissionsUpdated
+	 */
+	public void setPermissionsUpdated(final boolean permissionsUpdated) {
 		this.permissionsUpdated = permissionsUpdated;
 	}
-	
+
 	/**
 	 * @return the declineMessage
 	 */
@@ -148,8 +154,23 @@ public class AdminGroupViewCommand extends BaseCommand {
 	/**
 	 * @param declineMessage the declineMessage to set
 	 */
-	public void setDeclineMessage(String declineMessage) {
+	public void setDeclineMessage(final String declineMessage) {
 		this.declineMessage = declineMessage;
 	}
-	
+
+	/**
+	 * @return the allGroups
+	 */
+	public List<String> getAllGroupNames() {
+		return this.allGroupNames;
+	}
+
+	/**
+	 * @param allGroups
+	 *            the allGroups to set
+	 */
+	public void setAllGroupNames(final List<String> allGroups) {
+		this.allGroupNames = allGroups;
+	}
+
 }

@@ -11,12 +11,6 @@
 		<constructor-arg name="apiUrl" value="${project.home}api/" />
 	</bean>
 	
-	<bean id="modelRestValidator" class="org.bibsonomy.rest.validation.ServersideModelValidator" />
-
-	<bean id="abstractRenderer" class="org.bibsonomy.rest.renderer.AbstractRenderer" abstract="true">
-		<property name="modelValidator" ref="modelRestValidator" />
-	</bean>
-
 	<bean id="rendererFactory" class="org.bibsonomy.rest.renderer.RendererFactory">
 		<property name="urlRenderer" ref="restUrlRenderer" />
 		<property name="renderers">
@@ -25,7 +19,7 @@
 					<key>
 						<util:constant static-field="org.bibsonomy.rest.renderer.RenderingFormat.JSON" />
 					</key>
-					<bean class="org.bibsonomy.rest.renderer.impl.json.JSONRenderer" parent="abstractRenderer">
+					<bean class="org.bibsonomy.rest.renderer.impl.json.JSONRenderer">
 						<constructor-arg name="urlRenderer" ref="restUrlRenderer" />
 					</bean>
 				</entry>
@@ -33,7 +27,7 @@
 					<key>
 						<util:constant static-field="org.bibsonomy.rest.renderer.RenderingFormat.XML" />
 					</key>
-					<bean class="org.bibsonomy.rest.renderer.impl.xml.XMLRenderer" parent="abstractRenderer" init-method="init">
+					<bean class="org.bibsonomy.rest.renderer.impl.xml.XMLRenderer" init-method="init">
 						<constructor-arg name="urlRenderer" ref="restUrlRenderer" />
 					</bean>
 				</entry>

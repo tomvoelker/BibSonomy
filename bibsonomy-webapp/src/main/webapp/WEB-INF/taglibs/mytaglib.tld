@@ -87,6 +87,18 @@
 	</tag>
 	
 	<tag>
+		<name>favouriteLayoutDisplayName</name>
+		<info>outputs the fav layout display name</info>
+		<tagclass>org.bibsonomy.webapp.util.tags.FavouriteLayoutsDisplayNameTag</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<attribute>
+			<name>favouriteLayout</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	
+	<tag>
 		<name>messageSourceKeys</name>
 		<info>stores all keys of the messagesource into the specified var</info>
 		<tagclass>org.bibsonomy.webapp.util.tags.MessageSourceKeysTag</tagclass>
@@ -446,18 +458,6 @@
 		<name>uniqueDiscussionUsers</name>
 		<function-class>tags.Functions</function-class>
 		<function-signature>java.util.List uniqueDiscussionUsers(java.util.List)</function-signature>
-	</function>
-	
-	<function>
-		<name>downloadFileId</name>
-		<function-class>tags.Functions</function-class>
-		<function-signature>java.lang.String downloadFileId(java.lang.String)</function-signature>
-	</function>
-	
-	<function>
-		<name>hasDidYouKnowMessage</name>
-		<function-class>tags.Functions</function-class>
-		<function-signature>java.lang.Boolean hasDidYouKnowMessage(org.bibsonomy.webapp.command.BaseCommand)</function-signature>
 	</function>
 	
 	<function>

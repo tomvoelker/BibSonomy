@@ -209,7 +209,6 @@ public class SystemTagFactory {
 	 * @return <code>true</code> iff it's a search system tag
 	 */
 	public boolean isSearchSystemTag(final String tagName) {
-		
 		final String tagType = SystemTagsUtil.extractType(tagName);
 		if (present(tagType)) {
 			final SearchSystemTag sysTag = this.searchSystemTagMap.get(tagType);

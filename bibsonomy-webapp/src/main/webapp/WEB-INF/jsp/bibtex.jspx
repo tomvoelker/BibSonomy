@@ -27,12 +27,14 @@
 	<fmt:message key="navi.publication" var="pageTitle"/>
 	
 	<layout:layout pageTitle="${title}" loginUser="${command.context.loginUser}" requPath="${requPath}" noSidebar="${true}">
-		
 		<jsp:attribute name="headerExt">
 			<script type="text/javascript" src="${resdir}/javascript/merged/discussion.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/publication.js"><!-- keep me --></script>
 			<script type="text/javascript" src="${resdir}/javascript/goldstandards.js"><!-- keep me --></script>
-			<publication:feeds path="${relativeUrlGenerator.getCommunityPublicationUrlByInterHash(publication.interHash)}" />
+			<script type='text/javascript' src='${resdir}/typeahead.js/js/typeahead.bundle.js'><!-- keep me --></script>
+			<script type="text/javascript" src="${resdir}/handlebars/handlebars.js"><!-- keep me --></script>
+			<link rel="stylesheet" type="text/css" href='${resdir}/typeahead.js/css/typeahead.css'/>
+			<publication:feeds path="${relativeUrlGenerator.getPublicationUrl(publication)}" />
 		</jsp:attribute>
 		
 		<jsp:attribute name="heading">

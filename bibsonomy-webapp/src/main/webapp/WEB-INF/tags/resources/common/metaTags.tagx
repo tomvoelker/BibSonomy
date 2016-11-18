@@ -50,7 +50,7 @@
 								<span class="label label-warning">
 									<c:choose>
 										<c:when test="${isRemotePost}">
-											<a href="${relativeUrlGenerator.getUserUrlByUserNameTagNameAndSysUrl(post.user.name, systag.name, post.systemUrl)}">
+											<a href="${urlGeneratorFactory.createURLGeneratorForSystem(post.systemUrl).getUserUrlByUserNameAndTagName(post.user.name, systag.name)}">
 												<c:out value="${systag.name}" />
 											</a>
 										</c:when>
@@ -81,7 +81,7 @@
 		<span class="label label-grey label-tag">
 			<c:choose>
 				<c:when test="${isRemotePost}">
-					<a href="${relativeUrlGenerator.getUserUrlByUserNameTagNameAndSysUrl(post.user.name, tag.name, post.systemUrl)}">
+					<a href="${urlGeneratorFactory.createURLGeneratorForSystem(post.systemUrl).getUserUrlByUserNameAndTagName(post.user.name, tag.name)}">
 						<c:out value="${tag.name}" />
 					</a>
 				</c:when>

@@ -50,7 +50,7 @@
 			</c:if>
 			<input type="hidden" name="personRole" value="${command.personRole}"/>
 			
-			<editpub:required post="${command.post}" autocompletion="${false}" personIndex="${command.personIndex}" person="${command.person}" />
+			<editpub:required post="${command.post}" personIndex="${command.personIndex}" person="${command.person}" />
 		</jsp:attribute>
 	
 		<jsp:attribute name="detailedInformation">

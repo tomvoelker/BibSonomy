@@ -29,8 +29,6 @@ package org.bibsonomy.database.managers;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.DuplicateEntryException;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
@@ -47,22 +45,25 @@ import org.bibsonomy.model.ResourcePersonRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.querybuilder.PersonSuggestionQueryBuilder;
+import org.bibsonomy.model.util.PersonUtils;
 import org.bibsonomy.services.searcher.PersonSearch;
 
 /**
- * TODO: add documentation to this class
+ * database manger for handling {@link Person} related actions
  *
  * @author jensi
  * @author Christian Pfeiffer / eisfair
  */
 public class PersonDatabaseManager  extends AbstractDatabaseManager {
-	private static final Log log = LogFactory.getLog(PersonDatabaseManager.class);
 
 	private final static PersonDatabaseManager singleton = new PersonDatabaseManager();
+	
 	private final GeneralDatabaseManager generalManager;
 	private final DatabasePluginRegistry plugins;
 	private PersonSearch personSearch;
-
+	
+	// TODO: remove
+	@Deprecated // in favor of spring bean config
 	public static PersonDatabaseManager getInstance() {
 		return singleton;
 	}
@@ -80,6 +81,8 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	 */
 	public void createPerson(final Person person, final DBSession session) {
 		session.beginTransaction();
+		final String tempPersonId = this.generatePersonId(person, session);
+		person.setPersonId(tempPersonId);
 		try {
 			person.setPersonChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("insertPerson", person, session);
@@ -88,8 +91,27 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			session.endTransaction();
 		}
 	}
-
-
+	
+	private String generatePersonId(final Person person, final DBSession session) {
+		int counter = 1;
+		final String newPersonId = PersonUtils.generatePersonIdBase(person);
+		String tempPersonId = newPersonId;
+		do {
+			final Person tempPerson = this.getPersonById(tempPersonId, session);
+			if (tempPerson != null) {
+				if (counter < 1000000) {
+					tempPersonId = newPersonId + "." + counter;
+				} else {
+					throw new RuntimeException("Too many person id occurences");
+				}
+			} else {
+				break;
+			}
+			counter++;
+		} while(true);
+		return tempPersonId;
+	}
+	
 	/**
 	 * @param user
 	 * @param session 
@@ -170,7 +192,6 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			session.endTransaction();
 		}
 	}
-
 
 	/**
 	 * @param personRelChangeId

@@ -35,7 +35,6 @@ import org.bibsonomy.common.Pair;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
 
-
 /**
  * TODO: add support for all PUMA instances
  * 
@@ -45,7 +44,7 @@ import org.bibsonomy.scraper.generic.GenericBibTeXURLScraper;
  */
 public class BibSonomyScraper extends GenericBibTeXURLScraper {
 	private static final String SITE_NAME = "BibSonomy";
-	private static final String SITE_URL = "http://www.bibsonomy.org";
+	private static final String SITE_URL = "https://www.bibsonomy.org";
 	private static final String INFO = "If you don't like the copy button from " + href(SITE_URL, SITE_NAME) + ", use your postPublication button.";
 
 	private static final String BIBSONOMY_HOST = "bibsonomy.org";
@@ -57,8 +56,6 @@ public class BibSonomyScraper extends GenericBibTeXURLScraper {
 		new Pair<Pattern, Pattern>(Pattern.compile(".*" + BIBSONOMY_HOST), Pattern.compile(BIBTEX_PUBLICATION_PATH_PATTERN))
 	);
 	
-
-
 	@Override
 	public String getInfo() {
 		return INFO;

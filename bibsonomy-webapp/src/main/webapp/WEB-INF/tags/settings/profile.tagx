@@ -34,8 +34,9 @@
 				
 					<!-- Der Text der oben steht -->
 					<p>
+						<c:set var="urlGeneratorFOAF" value="${urlGeneratorFactory.createURLGeneratorForPrefix(properties['project.home'], 'foaf')}" />
 						<fmt:message key="settings.profileInfo">
-							<fmt:param><a href="${relativeUrlGenerator.prefix('foaf').getUserUrl(user)}">/foaf/user/<c:out value="${user.name}"/></a></fmt:param>
+							<fmt:param><a href="${urlGeneratorFOAF.getUserUrl(user)}">/foaf/user/<c:out value="${user.name}"/></a></fmt:param>
 							<fmt:param><fmt:message key="settings.profileViewableFor"/></fmt:param>
 							<fmt:param value="/cv/user/${mtl:encodePathSegment(user.name)}"/>
 						</fmt:message>
@@ -76,16 +77,20 @@
 						</div>
 						
 						<!-- BIRTHDAY -->
-						
-						<div class="form-group clearfix">
-						 <label class="col-sm-3 control-label"><fmt:message key="user.birthday"/></label>
-						  <div class="col-sm-9">
-						   	<fmt:formatDate value="${command.user.birthday}" pattern="yyyy-MM-dd" var="userBirthday" />
-						    <div class="input-group date" id="dp3" data-date="${empty userBirthday ? '1989-01-01' : userBirthday }" data-date-format="yyyy-mm-dd" data-date-viewmode="years">
-						      <input class="form-control" type="text" name="user.birthday" value="${userBirthday }"/>
-						      <span class="input-group-addon"><i class="fa fa-calendar"><!--  --></i></span>
-						    </div>
-						  </div>
+						<c:set var="formErrors"><form:errors path="user.birthday" /></c:set>					
+						<div class="form-group clearfix ${not empty formErrors ? ' has-error' : ''}">
+							<label class="col-sm-3 control-label" for="user.birthday"><fmt:message key="user.birthday"/></label>
+							<div class="col-sm-9">
+							   	<fmt:formatDate value="${command.user.birthday}" pattern="yyyy-MM-dd" var="userBirthday" />
+							    <div class="input-group date" id="dp3" data-date="${empty userBirthday ? '1989-01-01' : userBirthday }" data-date-format="yyyy-mm-dd" data-date-viewmode="years">
+							    	<input class="form-control" type="text" name="user.birthday" value="${userBirthday }"/>
+							    	<span class="input-group-addon"><i class="fa fa-calendar"><!--  --></i></span>
+							    </div>
+							    
+							    <c:if test="${not empty formErrors}">
+							    	<bsform:errors path="user.birthday" />
+							    </c:if>
+							</div>
 						</div>
 						
 						<!-- PLACE -->

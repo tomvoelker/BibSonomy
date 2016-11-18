@@ -37,8 +37,8 @@
 				<c:if test="${not empty developerFooter}">
 					<dt><c:out value="${developerFooter}" /></dt>
 					
-					<dd><span class="fa fa-bitbucket"><!--  --></span><c:out value=" " /><a href="http://bibsonomy.bitbucket.org/"><fmt:message key="footer.overview"/></a></dd>
-					<dd><span class="fa fa-puzzle-piece"><!--  --></span><c:out value=" " /><a href="http://bitbucket.org/bibsonomy/bibsonomy/wiki/documentation/api/REST%20API"><fmt:message key="settings.apidoc"/></a></dd>
+					<dd><span class="fa fa-bitbucket"><!--  --></span><c:out value=" " /><a href="https://bibsonomy.bitbucket.io"><fmt:message key="footer.overview"/></a></dd>
+					<dd><span class="fa fa-puzzle-piece"><!--  --></span><c:out value=" " /><a href="https://bitbucket.org/bibsonomy/bibsonomy/wiki/documentation/api/REST%20API"><fmt:message key="settings.apidoc"/></a></dd>
 				</c:if>
 			</dl>
 			
@@ -69,9 +69,9 @@
 				<dt><fmt:message key="footer.integration"/></dt>
 			
 				<dd><a href="http://academic-puma.de/"><fmt:message key="footer.academicPuma"/></a></dd>
-				<dd><a href="http://typo3.org/extensions/repository/view/ext_bibsonomy_csl"><fmt:message key="typoThree.plugin"/></a></dd>
-				<dd><a href="http://wordpress.org/plugins/bibsonomy-csl/"><fmt:message key="wordpress.plugin"/></a></dd>
-				<dd><a href="http://dev.bibsonomy.org/maven2/org/bibsonomy/bibsonomy-rest-client/"><fmt:message key="restClient.java"/></a></dd>
+				<dd><a href="https://typo3.org/extensions/repository/view/ext_bibsonomy_csl"><fmt:message key="typoThree.plugin"/></a></dd>
+				<dd><a href="https://wordpress.org/plugins/bibsonomy-csl/"><fmt:message key="wordpress.plugin"/></a></dd>
+				<dd><a href="https://dev.bibsonomy.org/maven2/org/bibsonomy/bibsonomy-rest-client/"><fmt:message key="restClient.java"/></a></dd>
 				<dd><a href="/scraperinfo"><fmt:message key="footer.scraperInfo" /></a></dd>
 				<dd><a href="${helpLangUrl}/Integration"><fmt:message key="more"/></a></dd>
 			</dl>
@@ -94,7 +94,7 @@
 				<dt><fmt:message key="footer.socialMedia"/></dt>
 				<c:set var="twitter" value="${properties['project.social.twitter']}" />
 				<c:if test="${not empty twitter}">
-					<dd><span class="fa fa-twitter"><!--  --></span>&amp;nbsp;<a href="http://twitter.com/${twitter}"><fmt:message key="footer.social.twitter"/></a></dd>
+					<dd><span class="fa fa-twitter"><!--  --></span>&amp;nbsp;<a href="https://twitter.com/${twitter}"><fmt:message key="footer.social.twitter"/></a></dd>
 				</c:if>
 				
 				<c:set var="googleCommunity" value="${properties['project.social.google-plus']}" />

@@ -75,7 +75,7 @@
 				<property name="extractors">
 					<list>
 						<bean class="org.bibsonomy.search.index.utils.extractor.PlainTextExtractor" />
-						<bean class="org.bibsonomy.search.index.utils.extractor.PDFExtractor" />
+						<ref bean="pdfExtractor" />
 					</list>
 				</property>
 				<property name="fileLogic" ref="fileLogic" />
@@ -83,5 +83,7 @@
 		</constructor-arg>
 		<constructor-arg ref="fileLogic" />
 	</bean>
+	
+	
 	
 </beans>

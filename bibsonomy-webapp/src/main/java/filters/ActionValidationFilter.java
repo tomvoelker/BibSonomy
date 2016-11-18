@@ -91,41 +91,35 @@ public class ActionValidationFilter implements Filter {
 		} 
 
 		/*
-		 * This filter makes only sense, if user is logged in.
+		 * get sessions credential storage variable
 		 */
-		User user = AuthenticationUtils.getUser();
-		if (user != null && user.getName() != null) {
-			/*
-			 * get sessions credential storage variable
-			 */
-			String storedCredential = (String) request.getAttribute(REQUEST_ATTRIB_CREDENTIAL);
-			/*
-			 * if null, create new one
-			 */
-			if (storedCredential == null) {
-				storedCredential = getNewCredential(user, httpServletRequest.getSession());
-				request.setAttribute(REQUEST_ATTRIB_CREDENTIAL, storedCredential);
-			}
-			log.debug("credential for " + user.getName() + " = " + storedCredential);
-			
-			/*
-			 * get credential from request parameter
-			 * 
-			 * FIXME: This does not work with multipart-requests! Thus, on such
-			 * requests we must otherwise send the ckey.
-			 */
-			String requestCredential = request.getParameter(REQUEST_PARAM_CREDENTIAL);
-			
-			boolean valid = storedCredential.equals(requestCredential);
-			if (!valid && log.isDebugEnabled()) {
-				log.debug("requested ckey not valid: Expected '" + storedCredential + "' but was '" + requestCredential + "' for '" + ((HttpServletRequest) request).getRequestURI() + "'");
-			}
-			/*
-			 * check and propagate correctness 
-			 */
-			request.setAttribute(REQUEST_ATTRIB_VALID_CREDENTIAL, valid);
-			
+		String storedCredential = (String) request.getAttribute(REQUEST_ATTRIB_CREDENTIAL);
+		/*
+		 * if null, create new one
+		 */
+		if (storedCredential == null) {
+			final User user = AuthenticationUtils.getUser();
+			storedCredential = getNewCredential(user, httpServletRequest.getSession());
+			request.setAttribute(REQUEST_ATTRIB_CREDENTIAL, storedCredential);
 		}
+		log.debug("credential = " + storedCredential);
+		
+		/*
+		 * get credential from request parameter
+		 * 
+		 * FIXME: This does not work with multipart-requests! Thus, on such
+		 * requests we must otherwise send the ckey.
+		 */
+		String requestCredential = request.getParameter(REQUEST_PARAM_CREDENTIAL);
+		
+		boolean valid = storedCredential.equals(requestCredential);
+		if (!valid && log.isDebugEnabled()) {
+			log.debug("requested ckey not valid: Expected '" + storedCredential + "' but was '" + requestCredential + "' for '" + ((HttpServletRequest) request).getRequestURI() + "'");
+		}
+		/*
+		 * check and propagate correctness 
+		 */
+		request.setAttribute(REQUEST_ATTRIB_VALID_CREDENTIAL, valid);
 
 		// Pass control on to the next filter
 		chain.doFilter(request, response);
@@ -137,25 +131,26 @@ public class ActionValidationFilter implements Filter {
 	 */
 	public static boolean isValidCkey (final ServletRequest request) {
 		final Boolean validCredential = (Boolean) request.getAttribute(REQUEST_ATTRIB_VALID_CREDENTIAL);
-		return validCredential != null && validCredential;
+		return validCredential != null && validCredential.booleanValue();
 	}
 	
 	/** Creates the user-dependent credential.
 	 * 
-	 * Currently we use the hashed email-address + session-id of user. Another (better) 
+	 * Currently we use the hashed email-address + session-id of user. If the
+	 * email-address is not set we just use the session-id. Another (better) 
 	 * option would be the password + session-id. 
-	 * Even better would be separate credentials for each specific action (delete, change 
-	 * email, etc.).
+	 * Even better would be separate credentials for each specific action
+	 * (delete, change, email, etc.).
 	 * 
 	 * @param user
 	 * @param session
 	 * @return
 	 */
-	private String getNewCredential(User user, HttpSession session) {
-		return (StringUtils.getMD5Hash(user.getEmail() + session.getId())); 
+	private static String getNewCredential(User user, HttpSession session) {
+		final String userMail = user.getEmail();
+		return (StringUtils.getMD5Hash(userMail + session.getId()));
 	}
-
-
+	
 	/**
 	 * Place this filter into service.
 	 *

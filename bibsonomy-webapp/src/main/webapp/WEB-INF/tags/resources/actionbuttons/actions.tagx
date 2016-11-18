@@ -5,27 +5,18 @@
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
-	>
-
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons">
+	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="disableResourceLinks" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
+	
 
 	<c:set var="buttonClasses" value="btn btn-default btn-xs "/>
-	
-	<c:choose>
-		<c:when test="${not empty post.systemUrl }">
-			<c:set var="isRemotePost" value="${post.systemUrl ne properties['project.home']}"/>
-		</c:when>
-		<c:otherwise>
-			<c:set var ="isRemotePost" value="false"/>
-		</c:otherwise>
-	</c:choose>
+	<c:set var="isRemotePost" value="${not empty post.systemUrl and post.systemUrl ne properties['project.home']}"/>
 
 	<div class="edit-media-buttons btn-group btn-group-xs dropdown dropdown-align-right">
-				
 		<!-- edit group entry -->
 		<c:set var="editGroupPost" value="false"/>
 		<c:forEach items="${command.context.loginUser.groups}" var="group">
@@ -139,11 +130,12 @@
 						</c:choose>
 
 						<!-- DOI -->
+						<c:set var="doi" value="${post.resource.miscFields['doi']}" />
 						<c:choose>
-							<c:when test="${not empty post.resource.miscFields['doi']}">
+							<c:when test="${not empty doi}">
 								<li>
 									<fmt:message key="bibtex.actions.doi" var="urlTitle"/>
-									<a class="litem" href="http://dx.doi.org/${mtl:encodePathSegment(mtl:extractDOI(post.resource.miscFields['doi']))}" title="${urlTitle}"><fmt:message key="bibtex.actions.doi"/></a>
+									<a class="litem" href="http://dx.doi.org/${mtl:encodePathSegment(mtl:extractDOI(doi))}" title="${urlTitle}"><fmt:message key="bibtex.actions.doi"/></a>
 								</li>
 							</c:when>
 							<c:otherwise>
@@ -155,60 +147,54 @@
 						</c:choose>
 						
 						<li class="divider"><!--  --></li>
-						<!-- BibTeX -->
-						<li>
-							<fmt:message key="bibtex.actions.bibtex.title" var="bibtexTitle" />
-							<c:choose>
-								<c:when test="${isRemotePost}">
-									<a class="litem" href="${relativeUrlGenerator.getBibtexExportUrlByIntraHashUserNameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}"><fmt:message key="bibtex.actions.bibtex"/></a>															
-								</c:when>
-								<c:otherwise>
-									<a class="litem" href="${relativeUrlGenerator.getBibtexExportUrlByIntraHashAndUserName(post.resource.intraHash, post.user.name)}" title="${bibtexTitle}"><fmt:message key="bibtex.actions.bibtex"/></a>
-								</c:otherwise>
-							</c:choose>
-						</li>
 						
-						<!-- ENDNOTE -->
-						<li>
-							<fmt:message key="bibtex.actions.endnote.title" var="endnoteTitle" />
-							<c:choose>
-								<c:when test="${isRemotePost}">
-									<a class="litem" href="${relativeUrlGenerator.getEndnoteUrlByIntraHashUserNameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}?formatEmbedded=true" title="${endnoteTitle}"><fmt:message key="bibtex.actions.endnote"/></a>
-								</c:when>
-								<c:otherwise>
-									<a class="litem" href="${relativeUrlGenerator.getEndnoteUrlByIntraHashAndUserName(post.resource.intraHash, post.user.name)}?formatEmbedded=true" title="${endnoteTitle}"><fmt:message key="bibtex.actions.endnote"/></a>
-								</c:otherwise>
-							</c:choose>
-						</li>
-					
-						<!-- MS WORD Reference Manager -->
-						<li>
-							<fmt:message key="bibtex.actions.msword.title" var="mswordTitle" />
-							<c:choose>
-								<c:when test="${isRemotePost}">
-									<a class="litem" href="${relativeUrlGenerator.getMSWordUrlByIntraHashUserNameAndSysUrl(post.resource.intraHash, post.user.name, post.systemUrl)}?formatEmbedded=true" title="${mswordTitle}"><fmt:message key="bibtex.actions.msword"/></a>
-								</c:when>
-								<c:otherwise>
-									<a class="litem" href="${relativeUrlGenerator.getMSWordUrlByIntraHashAndUserName(post.resource.intraHash, post.user.name)}?formatEmbedded=true" title="${mswordTitle}"><fmt:message key="bibtex.actions.msword"/></a>
-								</c:otherwise>
-							</c:choose>
-						</li>
+						<!-- BibTeX or Endnote or JABREF or CSL-->
+						<!-- checks whether the source is "simple" which gets a special treatment,
+							or JABREF / CSL which will be assigned a source URL by generator-->
+						<c:forEach items="${command.context.loginUser.settings.favouriteLayouts}" var="citation">
+							<li>
+								<c:set var="name"><mtl:favouriteLayoutDisplayName favouriteLayout="${citation}"/></c:set>
+								<c:set var="shortName" value="${mtl:shorten(name, 25)}" />
+								<fmt:message key="publication.export.${fn:toLowerCase(citation.source)}_${fn:toLowerCase(citation.style)}.title" var="exportTitle" />
+								<c:if test="${fn:startsWith(exportTitle, '???')}">
+									<fmt:message key="publication.export.title" var="exportTitle">
+										<fmt:param value="${name}" />
+									</fmt:message>
+								</c:if>
+								
+								<a class="litem publ-export" data-source="${citation.source}" data-style="${citation.style}" href="${relativeUrlGenerator.getPostExportUrl(post, citation)}?formatEmbedded=true" title="${exportTitle}">
+									<c:out value="${shortName}" />
+								</a>
+							</li>
+						</c:forEach>
+						
 						
 						<!-- OPENURL -->
-						<c:if test="${command.context.userLoggedIn and not command.context.loginUser.settings.layoutSettings.simpleInterface}">
-							<li class="divider"><!--  --></li>
-							<li>
-								<c:choose>
-									<c:when test="${not empty command.context.loginUser.openURL}">
-										<fmt:message key="bibtex.actions.openurl.title" var="openurlTitle" />
-										<a class="litem" href="${fn:escapeXml(command.context.loginUser.openURL)}?${fn:escapeXml(post.resource.openURL)}" title="${openurlTitle}"><fmt:message key="bibtex.actions.openurl"/></a>
-									</c:when>
-									<c:otherwise>
+						<c:set var="userOpenURL" value="${command.context.loginUser.openURL}" />
+						<c:set var="systemOpenURLProvider" value="${properties['system.openurl.provider']}" />
+						<c:if test="${command.context.userLoggedIn and (not empty userOpenURL or not empty systemOpenURLProvider)}">
+							<spring:eval var="openUrl" expression="T(org.bibsonomy.model.util.BibTexUtils).getOpenurl(post.resource)" />
+							<li class="divider"><!-- keep me --></li>
+							<c:choose>
+								<c:when test="${not empty userOpenURL}">
+									<fmt:message key="bibtex.actions.openurl.title" var="openurlTitle" />
+									<li>
+										<a class="litem" href="${fn:escapeXml(userOpenURL)}?${fn:escapeXml(openUrl)}" title="${openurlTitle}"><fmt:message key="bibtex.actions.openurl"/></a>
+									</li>
+								</c:when>
+								<c:when test="${empty systemOpenURLProvider}">
+									<li>
 										<fmt:message key="bibtex.actions.openurl.inactive" var="openurlTitle" />
 										<span class="ilitem" title="${openurlTitle}"><fmt:message key="bibtex.actions.openurl"/></span>
-									</c:otherwise>
-								</c:choose>
-							</li>
+									</li>
+								</c:when>
+							</c:choose>
+							<c:if test="${not empty systemOpenURLProvider}">
+								<fmt:message key="bibtex.actions.openurl.system.title" var="openurlTitle" />
+								<li>
+									<a class="litem" href="${fn:escapeXml(systemOpenURLProvider)}?${fn:escapeXml(openUrl)}" title="${openurlTitle}"><fmt:message key="bibtex.actions.openurl.system"/></a>
+								</li>
+							</c:if>
 						</c:if>
 					</c:if>
 

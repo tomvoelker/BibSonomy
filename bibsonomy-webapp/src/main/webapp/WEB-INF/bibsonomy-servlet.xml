@@ -11,6 +11,10 @@
 	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
 		<property name="converters">
 			<list>
+				
+				<!-- strings to a single FavouriteLayout which then has to be placed in the user settings list -->
+				<bean class="org.bibsonomy.web.spring.converter.StringToFavouriteLayoutConverter" />
+				
 				<!-- strings to enums (a generic converter) -->
 				<bean class="org.bibsonomy.web.spring.converter.factories.StringToEnumConverterFactory"/>
 				
@@ -177,6 +181,10 @@
 		<constructor-arg value="${project.home}" />
 	</bean>
 	
+	<bean id="projectTheme" class="java.lang.String">
+		<constructor-arg value="${project.theme}" />
+	</bean>
+	
 	<!-- handles sending of mails  -->
 	<bean id="mailUtils" class="org.bibsonomy.util.MailUtils" scope="singleton">
 		<property name="projectHome" ref="projectHome" />
@@ -220,6 +228,8 @@
 	<bean id="absoluteUrlGenerator" class="org.bibsonomy.services.URLGenerator" scope="prototype">
 		<property name="projectHome" ref="projectHome" />
 	</bean>
+	
+	<bean id="urlGeneratorFactory" class="org.bibsonomy.services.URLGeneratorFactory" scope="singleton" />
 	
 	<bean id="vuFindUrlGenerator" class="org.bibsonomy.webapp.util.spring.factorybeans.ConditionedFactoryBean">
 		<property name="condition">
@@ -269,6 +279,7 @@
 				<value>properties</value>
 				<value>relativeUrlGenerator</value>
 				<value>absoluteUrlGenerator</value>
+				<value>urlGeneratorFactory</value>
 				<value>systemTagFactory</value>
 			</list>
 		</property>
@@ -446,6 +457,7 @@
 						<property name="allowedFields">
 							<list>
 								<value>requestedUser</value>
+								<value>requestedType</value>
 								<value>layout</value>
 								<value>wikiText</value>
 							</list>
@@ -460,6 +472,17 @@
 				<entry key="/export">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="exportPageController"/>
+					</bean>
+				</entry>
+				<entry key="/csl-style">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="CSLStyleController"/> 
+						<property name="allowedFields">
+							<list>
+								<value>style</value>
+								<value>locale</value>
+							</list>
+						</property>
 					</bean>
 				</entry>
 				<entry key="/statistics">
@@ -726,7 +749,6 @@
 		</property>
 	</bean>
 	
-	
 	<!--  #################### controller #################### -->
 	<bean id="resourceController" class="org.bibsonomy.webapp.controller.ResourceListController" abstract="true">
 		<property name="logic" ref="logic"/>
@@ -772,8 +794,12 @@
 	
 	<bean id="recommendedPostsPageController" class="org.bibsonomy.webapp.controller.RecommendedPostsPageController" scope="request" parent="multiResourceListController">
 		<property name="supportedResources" ref="allResources"/>
-		<property name="bibtexRecommender" ref="multiplexingBibTexRecommender" />
-		<property name="bookmarkRecommender" ref="multiplexingBookmarkRecommender" />
+		<property name="recommenderMap">
+			<map>
+				<entry value-ref="multiplexingBookmarkRecommender" key="org.bibsonomy.model.Bookmark" />
+				<entry value-ref="multiplexingBibTexRecommender" key="org.bibsonomy.model.BibTex" />
+			</map>
+		</property>
 	</bean>
 	
 	<bean id="settingsPageController" class="org.bibsonomy.webapp.controller.SettingsPageController" scope="request">
@@ -781,6 +807,7 @@
 		<property name="requestLogic" ref="requestLogic"/>
 		<property name="wikiRenderer" ref="wikiRenderer" />
 		<property name="oauthLogic" ref="oAuthLogic"/>
+		<property name="urlGenerator" ref="relativeUrlGenerator" />
 		<property name="invisibleOAuthConsumers" value="${invisible.oauth.consumers}"/>
 	</bean>
 	
@@ -803,6 +830,7 @@
 				</bean>
 			</list>
 		</property>
+		<property name="adminLogic" ref="adminLogic"/>
 	</bean>
 
 	<bean id="downloadFileController" class="org.bibsonomy.webapp.controller.DownloadFileController" scope="request">
@@ -899,6 +927,11 @@
 	<bean id="exportPageController" class="org.bibsonomy.webapp.controller.ExportPageController" scope="request">
 		<property name="layoutRenderer" ref="jabrefLayoutRenderer"/>
 		<property name="layouts" ref="standardLayouts" />
+		<property name="cslFilesManager" ref="CSLFilesManager" />
+	</bean>
+	
+	<bean id="CSLStyleController" class="org.bibsonomy.webapp.controller.export.csl.CSLStyleController" scope="request">
+		<property name="cslFilesManager" ref="CSLFilesManager" />
 	</bean>
 	
 	<bean id="statisticsController" class="org.bibsonomy.webapp.controller.StatisticsController" scope="request">
@@ -917,6 +950,7 @@
 				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
 			</set>
 		</property>
+		<property name="urlGenerator" ref="relativeUrlGenerator" />
 	</bean>
 
 	<bean id="clipboardPageController" class="org.bibsonomy.webapp.controller.ClipboardPageController" scope="request" parent="multiResourceListController">
@@ -994,7 +1028,6 @@
 			</list>
 		</property>
 	</bean>
-
 	
 	<!--  #################### static views #################### -->
 	<bean id="personIntroPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
@@ -1038,12 +1071,14 @@
 	
 	<!-- webapp -->
 	<import resource="bibsonomy-servlet-fields.xml" />
-	<import resource="bibsonomy-servlet-recommender-connector.xml" />
+	<import resource="bibsonomy-servlet-recommender.xml" />
 	<import resource="bibsonomy-servlet-actions.xml" />
 	<import resource="bibsonomy-servlet-ajax.xml" />	
 	<import resource="bibsonomy-servlet-admin.xml" />
 	<import resource="bibsonomy-servlet-database.xml" />
 	<import resource="bibsonomy-servlet-search.xml" />
+	<import resource="bibsonomy-servlet-help.xml" />
+	<import resource="bibsonomy-servlet-layout.xml" />
 	<import resource="bibsonomy-servlet-security.xml" />
 	<import resource="bibsonomy-servlet-opensocial.xml" />
 	<import resource="bibsonomy-servlet-saml.xml" />

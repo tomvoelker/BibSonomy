@@ -10,6 +10,7 @@
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
@@ -43,6 +44,7 @@
 	<jsp:directive.attribute name="content" fragment="true" required="false" />
 	<jsp:directive.attribute name="breadcrumbs" fragment="true" required="false" description="Breadcrumb navigation"/>
 	
+	<jsp:directive.attribute name="additionalSorting" fragment="true"/>
 	<!--+
 		|
 		| variables & messages
@@ -105,6 +107,26 @@
 			<c:set var="bm" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark')}" />
 			<c:set var="pub" value="${mtl:containsResourceClass(command.resourcetype, 'publication')}" />
 			
+			<div class="modal fade" id="exportModal" tabindex="-1" role="dialog" aria-labelledby="exportModalLabel">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&amp;times;</span></button>
+							<h4 class="modal-title" id="exportModalLabel">Publication title</h4>
+						</div>
+						<div class="modal-body">
+							<div id="exportModalCitation">
+								<!-- keep me -->
+							</div>
+							
+							<bsform:button size="defaultSize" style="defaultStyle" valueKey="export.copyToLocalClipboard" icon="clipboard" block="${true}" id="copyToLocalClipboard" />
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="close" /></button>
+						</div>
+					</div>
+				</div>
+			</div>
 			
 			<!-- bibtex/bookmark lists -->
 			<div class="row">
@@ -117,7 +139,8 @@
 						widthClassName="${bookmarksWidthClass}"
 						isClipboard="${isClipboard}"
 						showBookmark="${showBookmark}"
-						showPublication="${showPublication}">
+						showPublication="${showPublication}"
+						additionalSorting="${additionalSorting}">
 					
 						<jsp:attribute name="addAsLastItem">
 							<c:if test="${not disableListNavigation}">
@@ -136,7 +159,8 @@
 							widthClassName="${publicationsWidthClass}"
 							isClipboard="${isClipboard}"
 							showBookmark="${showBookmark}"
-							showPublication="${showPublication}">
+							showPublication="${showPublication}"
+							additionalSorting="${additionalSorting}">
 						<jsp:attribute name="addAsLastItem">
 							<c:if test="${not disableListNavigation}">
 								<div id="publicationsfooter" class="${publicationsWidthClass}">

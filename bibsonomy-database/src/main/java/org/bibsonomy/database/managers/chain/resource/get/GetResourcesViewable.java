@@ -57,7 +57,6 @@ public class GetResourcesViewable<R extends Resource, P extends ResourceParam<R>
 		return (present(param.getUserName()) &&
 				(param.getGrouping() == GroupingEntity.VIEWABLE) &&
 				present(param.getRequestedGroupName()) &&
-				present(param.getRequestedUserName()) &&
 				!present(param.getHash()) &&
 				nullOrEqual(param.getOrder(), Order.ADDED) &&
 				!present(param.getSearch())) && 
@@ -67,16 +66,16 @@ public class GetResourcesViewable<R extends Resource, P extends ResourceParam<R>
 
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {
-		final Integer groupId = this.groupDb.getGroupIdByGroupNameAndUserName(param.getRequestedGroupName(), param.getUserName(), session);
+		final int groupId = this.groupDb.getGroupIdByGroupNameAndUserName(param.getRequestedGroupName(), param.getUserName(), session).intValue();
 		if (groupId == GroupID.INVALID.getId()) {
 			log.debug("groupId " + param.getRequestedGroupName() + " not found");
 			return new ArrayList<Post<R>>(0);
 		}
-
+		
 		if (present(param.getTagIndex())) {
 			return this.databaseManager.getPostsViewableByTag(param.getRequestedGroupName(), param.getUserName(), param.getTagIndex(), groupId, param.getFilters(), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
 		}
-
+		
 		return this.databaseManager.getPostsViewable(param.getRequestedGroupName(), param.getUserName(), groupId, HashID.getSimHash(param.getSimHash()), param.getLimit(), param.getOffset(), param.getSystemTags(), session);
 	}
 

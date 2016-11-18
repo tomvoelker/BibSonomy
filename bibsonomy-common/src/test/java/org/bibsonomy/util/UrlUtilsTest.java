@@ -140,5 +140,15 @@ public class UrlUtilsTest {
 		assertEquals("aa", UrlUtils.getFirstPathElement("/aa/b/c"));
 		assertEquals("aaaaaa", UrlUtils.getFirstPathElement("/aaaaaa/b/c"));
 	}
+	
+	/**
+	 * tests {@link UrlUtils#encodePathSegment(String)}
+	 */
+	@Test
+	public void testEncodePathSegment() {
+		assertEquals("test%20test", UrlUtils.encodePathSegment("test test"));
+		assertEquals("%c3%a4%c3%bc%c3%b6", UrlUtils.encodePathSegment("äüö"));
+		assertEquals("test+test", UrlUtils.encodePathSegment("test+test"));
+	}
 
 }

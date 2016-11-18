@@ -122,8 +122,8 @@ public abstract class PostComparator implements Serializable {
 	 * @return an int comparison value
 	 * @throws SortKeyIsEqualException 
 	 */
-	protected int compare (final int i1, final int i2, final SortOrder order) throws SortKeyIsEqualException {
-		int comp = 0;
+	protected int compare(final int i1, final int i2, final SortOrder order) throws SortKeyIsEqualException {
+		final int comp;
 		if (SortOrder.ASC.equals(order)) {
 			comp = i1 - i2;
 		} else {
@@ -135,22 +135,21 @@ public abstract class PostComparator implements Serializable {
 	
 	/**
 	 * Compare two doubles following a specified order
-	 * 
-	 * @param d1 first double
-	 * @param d2 second double
+	 * @param i1 first double
+	 * @param i2 second double
 	 * @param order sort order
 	 * @return an int comparison value
 	 * @throws SortKeyIsEqualException 
 	 */
-	protected int compare (final double i1, final double i2, final SortOrder order) throws SortKeyIsEqualException {
-		double comp = 0;
+	protected int compare(final double i1, final double i2, final SortOrder order) throws SortKeyIsEqualException {
+		final double comp;
 		if (order.equals(SortOrder.ASC)) {
 			comp = i1 - i2;
 		} else {
 			comp = i2 - i1;
 		}
 		if (comp == 0) throw new SortKeyIsEqualException();
-		return (comp > 0 ? 1 : 0);
+		return (comp > 0 ? 1 : -1);
 	}
 	
 	/**
@@ -162,8 +161,8 @@ public abstract class PostComparator implements Serializable {
 	 * @return an int comparison value
 	 * @throws SortKeyIsEqualException
 	 */
-	protected int compare (final Date d1, final Date d2, final SortOrder order) throws SortKeyIsEqualException {
-		int comp = 0;
+	protected int compare(final Date d1, final Date d2, final SortOrder order) throws SortKeyIsEqualException {
+		final int comp;
 		if (SortOrder.ASC.equals(order)) {
 			comp = DateUtils.secureCompareTo(d1, d2);
 		} else {

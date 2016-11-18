@@ -30,6 +30,7 @@
 	<jsp:directive.attribute name="addAsFirstItem" fragment="true" required="false" />
 	<jsp:directive.attribute name="addAsLastItem" fragment="true" required="false" />
 	<jsp:directive.attribute name="customPageOptions" fragment="true" required="false"/>
+	<jsp:directive.attribute name="additionalSorting" fragment="true"/>
 	
 	<c:if test="${empty listIndex}">
 		<c:set var="listIndex" value="0"/>
@@ -70,11 +71,8 @@
 								<jsp:invoke fragment="customPageOptions"/>
 							</c:when>
 							<c:otherwise>
-								<div class="pull-right btn-group dropdown-align-right" style="margin-bottom: 2px;">
-									<bsform:button forceEnabled="${true}" gear="${true}" value="" dropdown="${true}" size="xsmall" style="defaultStyle" dataToggle="dropdown" />
-									
-									<ul class="dropdown-menu list-options">
-										<rc:actions 
+								<div class="pull-right btn-group dropdown-align-right all-resources-menu">
+									<rc:actions 
 											resourceType="bookmark" 
 											sortPage="${command.sortPage}" 
 											sortPageOrder="${command.sortPageOrder}" 
@@ -83,8 +81,8 @@
 											showInboxActions="${showInboxActions}" 
 											isClipboard="${isClipboard}"
 											disableListNavigation="${disableListNavigation}"
-											disableResourcetypeSelection="${disableResourcetypeSelection}"/>
-									</ul>
+											disableResourcetypeSelection="${disableResourcetypeSelection}"
+											additionalSorting="${additionalSorting}"/>
 								</div>
 							</c:otherwise>
 						</c:choose>
