@@ -244,7 +244,7 @@
 				a.personPageShowAdditionalRoleFields {
 					position: absolute;
 					right: 5px;
-					bottom: -13px;
+					top: -13px;
 				}
 				
 			</style>
@@ -586,17 +586,7 @@
 				<div class='tab-content pub-person-tab-content' >
 				
 					<!-- Own Thesis tab content-->
-					<div id='ownThesis' class='tab-pane active'>
-						
-						<!-- 
-						TODO: implement add thesis 
-						-->
-						<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-							<br/>
-							<bsform:button size="defaultSize" value="${textAddThesisButton}" style="defaultStyle" dataToggle="modal" dataTarget="#addThesis" block="${true}" />
-							<br/>
-						</c:if>
-						
+					<div id='ownThesis' class='tab-pane active'>						
 						<c:choose>
 							<c:when test="${fn:length(command.thesis) gt 0}">
 								<c:forEach var="post" items="${command.thesis}">
@@ -608,19 +598,16 @@
 								<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
 							</c:otherwise>
 						</c:choose>
+						
+						<!--Open Add Thesis dialog button -->
+						<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
+							<bsform:button className="pull-right" size="defaultSize" value="${textAddThesisButton}" style="defaultStyle" dataToggle="modal" dataTarget="#addThesis" valueKey="person.show.addThesisButton" titleKey="person.show.addThesisButton" />	
+						</c:if>	
 					</div>
 					
 					
 					<!-- Related Thesis tab content -->
-					<div id="relatedThesis" class="tab-pane">
-						<!-- 
-						-->
-						<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-							<br/>
-							<button style='width: 100%;' class='btn btn-default' data-toggle='modal' data-target='#addSupervisedThesis'>${textAddThesisButton}</button>
-							<br/>
-						</c:if>
-						
+					<div id="relatedThesis" class="tab-pane">						
 						<c:choose>
 							<c:when test="${fn:length(command.advisedThesis) gt 0}">
 								<c:forEach var="post" items="${command.advisedThesis}">
@@ -632,6 +619,12 @@
 								<p class="text-info"><strong>${textNoResourcesFound}</strong></p>
 							</c:otherwise>
 						</c:choose>
+						
+						<!--Open Add Thesis dialog button-->
+						<c:if test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
+							<bsform:button className="pull-right" size="defaultSize" style="defaultStyle" dataTarget="#addSupervisedThesis" dataToggle="modal" valueKey="person.show.addThesisButton" titleKey="person.show.addThesisButton" />
+						</c:if>
+						
 					</div>
 
 				</div>
