@@ -102,23 +102,25 @@
 		<jsp:attribute name="heading"></jsp:attribute>
 		<jsp:attribute name="sidebar">
 			<!-- Links to the user who claimed this page or buttons to claim it/realease it -->
+			<h3><fmt:message key="person.sidebar.linkedUserTitle" /></h3>
 			<c:choose>
-				<c:when test='${not empty command.person.user and command.person.user eq command.context.loginUser.name}'>
-					TODO TEXT: unlink?
-					<bsform:button size="defaultSize" style="primary" dataTarget="#linkPerson" dataToggle="modal" valueKey="person.show.thatsMeButton" titleKey="person.show.thatsMeButton" />				
+				<c:when test='${not empty command.person.user and (command.person.user eq command.context.loginUser.name)}'>
+					<p><fmt:message key="person.sidebar.linkedUserUnlinkText" /></p>
+					<bsform:button size="defaultSize" style="danger" dataTarget="#unlinkPerson" dataToggle="modal" valueKey="person.show.thatsNotMeButton" titleKey="person.show.thatsNotMeButton" />				
 				</c:when>
+				
 				<c:when test='${not empty command.person.user}'>
-					TODO ADD INFOS ABOUT THE USER
+					<p><fmt:message key="person.sidebar.linkedUserClaimedText" /></p>
 					<a href="${absoluteUrlGenerator.getUserUrlByUserName(command.person.user)}"><c:out value="${command.person.user}"/></a>
 				</c:when>
 				
 				<c:when test="${not empty command.context.loginUser.name and not command.context.loginUser.spammer}">
-					TODO TEXT: connect
+					<p><fmt:message key="person.sidebar.linkedUserClaimText" /></p>
 					<bsform:button size="defaultSize" style="primary" dataTarget="#linkPerson" dataToggle="modal" valueKey="person.show.thatsMeButton" titleKey="person.show.thatsMeButton" />				
 				</c:when>
 				
 				<c:otherwise>
-					TODO: only spammer and not logged in users?
+					<p><fmt:message key="person.sidebar.linkedUserDefaultInfoText" /></p>
 				</c:otherwise>
 			</c:choose>
 		</jsp:attribute>
