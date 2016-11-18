@@ -147,7 +147,6 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 		command.setGroups(new ArrayList<String>());
 		command.setAbstractGrouping(GroupUtils.buildPublicGroup().getName());
-		// command.setSelectNorm(true);
 		command.setAction(new ArrayList<Integer>());
 		return command;
 	}
@@ -414,7 +413,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				}
 			}
 			if (action.contains(UPDATE_VIEWABLE_ACTION)) {
-				/**
+				/*
 				 * set visibility of this post for the groups,
 				 * the user specified
 				 */
@@ -424,7 +423,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 					continue;
 				}
 			}
-			/**
+			/*
 			 * if we reach here, it means we have skipped all
 			 * 'continues' and we
 			 * are in indirect edit mode

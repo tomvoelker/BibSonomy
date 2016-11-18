@@ -266,7 +266,6 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 			 * FIXME: in this case we should probably show the
 			 * boxes/import_publication_hints.jsp
 			 */
-			
 			boolean errorHandled = false;
 			if (present(selection)) {
 				final String isbn = ISBNUtils.extractISBN(selection);
