@@ -60,7 +60,7 @@
 			<plugin>
 				<groupId>org.bibsonomy</groupId>
 				<artifactId>webresource-maven-plugin</artifactId>
-				<version>1.5.0-SNAPSHOT</version>
+				<version>1.5.1</version>
 				<executions>
 					<execution>
 						<id>webresource-compress-aggregation</id>
@@ -167,7 +167,7 @@
 			<plugin>
 				<groupId>org.bibsonomy</groupId>
 				<artifactId>javascript-i18n-messagesource-maven-plugin</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
+				<version>1.0.0</version>
 				<configuration>
 					<messageSources>
 						<messageSource>file:///${project.basedir}/src/main/resources/messages</messageSource>
@@ -253,6 +253,25 @@
 										<goals>
 											<goal>
 												buildMessageFiles
+											</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.bibsonomy</groupId>
+										<artifactId>
+											webresource-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.5.0-SNAPSHOT,)
+										</versionRange>
+										<goals>
+											<goal>
+												compress-aggregate
 											</goal>
 										</goals>
 									</pluginExecutionFilter>
