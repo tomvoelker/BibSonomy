@@ -467,7 +467,6 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 */
 		if (directEdit) {
 			if (present(postsToUpdateTags)) {
-				// TODO THONI: update this to reflect the corresponding users. TODODZO
 				this.updatePosts(postsToUpdateTags, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_TAGS);
 			}
 			/*
