@@ -67,16 +67,28 @@ $(document).ready(function() {
 			var firstName = "";
 			var lastName = nameSplit[0];
 		}
-
-		$.post("/person",
-			{ 	formAction: "addRole",
-				formFirstName: firstName,
-				formLastName: lastName,
-				formPersonId: e.attr("data-person-id"),
-				formInterHash: e.attr("data-relation-simhash1"),
-				formPersonRole: e.attr("data-person-role"),
-				formPersonIndex: e.attr("data-author-index")
-			}).done(
+		
+		var form_data = $("#addRoleForm").serializeArray();
+		form_data.push({name: "formAction", value: "addRole"});
+		form_data.push({name: "newName.firstName", value: firstName});
+		form_data.push({name: "newName.lastName", value: lastName});
+		form_data.push({name: "formPersonId", value: e.attr("data-person-id")});
+		form_data.push({name: "formInterHash", value: e.attr("data-relation-simhash1")});
+		form_data.push({name: "formPersonRole", value: e.attr("data-person-role")});
+		form_data.push({name: "resourcePersonRelation.personIndex", value: e.attr("data-author-index")});
+		form_data.push({name: "formPersonIndex", value: e.attr("data-author-index")});
+		
+		$.post("/person", form_data
+//			{ 	
+//				formAction: "addRole",
+//				formFirstName: firstName,
+//				formLastName: lastName,
+//				formPersonId: e.attr("data-person-id"),
+//				formInterHash: e.attr("data-relation-simhash1"),
+//				formPersonRole: e.attr("data-person-role"),
+//				formPersonIndex: e.attr("data-author-index")
+//			}
+		).done(
 				function(data) {
 					if (data.exception) {
 						alert(getString('person.show.error.addRoleFailed'));

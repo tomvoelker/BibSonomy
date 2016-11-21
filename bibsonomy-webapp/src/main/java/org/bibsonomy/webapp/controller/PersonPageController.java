@@ -218,10 +218,8 @@ public class PersonPageController extends SingleResourceListController implement
 			if (present(command.getFormPersonId())) {
 				person.setPersonId(command.getFormPersonId());
 			} else {
-				final PersonName mainName = new PersonName();
+				final PersonName mainName = command.getNewName();
 				mainName.setMain(true);
-				mainName.setFirstName(command.getFormFirstName());
-				mainName.setLastName(command.getFormLastName());
 				person.setMainName(mainName);
 				this.logic.createOrUpdatePerson(person);
 			}

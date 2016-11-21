@@ -84,14 +84,7 @@ $(document).ready(function() {
 		var form_data = $("#addNameForm").serializeArray();
 		form_data.push({name: "formAction", value: "addName"});
 		
-		$.post("/person", form_data
-//			{ 	
-//				formAction: "addName",
-//				formPersonId: $("#formPersonId").val() ,
-//				formFirstName: $("#formFirstName").val(),
-//				formLastName: $("#formLastName").val()
-//			}
-		).done(function(data) {
+		$.post("/person", form_data).done(function(data) {
 			// error handling
 			if (data.status) {
 				// everything is fine

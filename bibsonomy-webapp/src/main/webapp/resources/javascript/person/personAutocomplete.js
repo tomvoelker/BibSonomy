@@ -11,7 +11,7 @@ function setupPersonSearch(inputFieldSelector, buttonSelector) {
 function setupBibtexAuthorSearchForForm(inputFieldSelector, formSelector) {
 	setupPersonAutocomplete(inputFieldSelector, "searchAuthor", 'extendedPublicationName', function(data) {
 		$(formSelector + " input[name='formInterHash']").val(data.interhash);
-		$(formSelector + " input[name='formPersonIndex']").val(data.personIndex);
+		$(formSelector + " input[name='resourcePersonRelation.personIndex']").val(data.personIndex);
 		// already set in form:
 		//FormPersonId
 		//FormPersonRole  AUTHOR
@@ -21,7 +21,7 @@ function setupBibtexAuthorSearchForForm(inputFieldSelector, formSelector) {
 function setupBibtexSearchForForm(inputFieldSelector, formSelector) {
 	setupPersonAutocomplete(inputFieldSelector, "searchPub", 'extendedPublicationName', function(data) {
 		$(formSelector + " input[name='formInterHash']").val(data.interhash);
-		$(formSelector + " input[name='formPersonIndex']").val(data.personIndex);
+		$(formSelector + " input[name='resourcePersonRelation.personIndex']").val(data.personIndex);
 	});
 }
 

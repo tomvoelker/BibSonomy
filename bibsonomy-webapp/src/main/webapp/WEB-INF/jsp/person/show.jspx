@@ -76,7 +76,6 @@
 	<layout:paneLayout pageTitle="${title}" 
 		headerLogoClass="publications" 
 		command="${command}" 
-		requestedUser="${command.requestedUser}" 
 		requPath="${requPath}"
 		showPageOptions="${true}">
 
@@ -102,7 +101,7 @@
 		<jsp:attribute name="heading"></jsp:attribute>
 		<jsp:attribute name="sidebar">
 			<!-- Links to the user who claimed this page or buttons to claim it/realease it -->
-			<h3><fmt:message key="person.sidebar.linkedUserTitle" /></h3>
+			<h4><fmt:message key="person.sidebar.linkedUserTitle" /></h4>
 			<c:choose>
 				<c:when test='${not empty command.person.user and (command.person.user eq command.context.loginUser.name)}'>
 					<p><fmt:message key="person.sidebar.linkedUserUnlinkText" /></p>
@@ -630,7 +629,7 @@
 				<!-- set via autocomplete -->
 				<input type="hidden" name="ckey" value="${ckey}"/>
 				<input type='hidden' name='formInterHash' value=''/>
-				<input type='hidden' name='formPersonIndex' value=''/>
+				<input type='hidden' name='resourcePersonRelation.personIndex' value=''/>
 				<!-- set statically -->
 				<input type='hidden' name='formPersonId' value='${command.person.personId}'/>
 				<input type='hidden' name='formPersonRole' value='AUTHOR'/>
@@ -676,7 +675,7 @@
 				</fieldset>
 				<!-- set via autocomplete -->
 				<input type='hidden' name='formInterHash' value=''/>
-				<input type='hidden' name='formPersonIndex' value=''/>
+				<input type='hidden' name='resourcePersonRelation.personIndex' value=''/>
 				<!-- set statically -->
 				<input type='hidden' name='formPersonId' value='${command.person.personId}'/>
 				<input type="hidden" name='formAction' value='addThesis' />
