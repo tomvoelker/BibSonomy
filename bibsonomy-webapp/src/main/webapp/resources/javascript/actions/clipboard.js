@@ -1,3 +1,5 @@
+var TITLE_MAX_LENGTH = 60;
+
 $(function() {
 	$('a.publ-export').click(function(e) {
 		if (e.metaKey || e.ctrlKey) {
@@ -22,6 +24,9 @@ $(function() {
 		
 		
 		var publicationTitle = titleContainer.text();
+		if (publicationTitle !== undefined && publicationTitle.length > TITLE_MAX_LENGTH) {
+			publicationTitle = publicationTitle.substring(0, TITLE_MAX_LENGTH - 3) + "…";
+		}
 		
 		$('#exportModalLabel').text(publicationTitle);
 		
