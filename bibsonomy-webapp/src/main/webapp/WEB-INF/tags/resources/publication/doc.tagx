@@ -16,7 +16,12 @@
 	<c:set var="isOwnEntry" value="${post.user.name eq command.context.loginUser.name}"/>
 	
 	<div id="add-document">
-		<a href="#" class="addDocument">
+		<c:url var="addDocumentLink" value="/ajax/documents">
+			<c:param name="temp" value="false" />
+			<c:param name="ckey" value="${command.context.ckey}" />
+			<c:param name="intraHash" value="${post.resource.intraHash}" />
+		</c:url>
+		<a href="${addDocumentLink}" class="addDocument">
 			<img src="${resdir}/image/add-document.png" alt="document upload" />
 			<!--
 			TODO: readd as soon as text-stoke is supported by all browsers
