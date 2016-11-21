@@ -145,6 +145,7 @@
 					<compress>true</compress>
 					<includes>
 						<include>bootstrap-style.less</include>
+						<include>csl.less</include>
 					</includes>
 				</configuration>
 				<executions>
