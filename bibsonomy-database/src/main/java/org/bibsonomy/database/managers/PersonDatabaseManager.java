@@ -262,16 +262,17 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	/**
 	 * @param resourcePersonRelation
 	 * @param session 
+	 * @return TODO: add documentation
 	 */
 	public boolean addResourceRelation(ResourcePersonRelation resourcePersonRelation, DBSession session) {
 		session.beginTransaction();
 		try {
-			resourcePersonRelation.setPersonRelChangeId(generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
+			resourcePersonRelation.setPersonRelChangeId(this.generalManager.getNewId(ConstantID.PERSON_CHANGE_ID, session));
 			this.insert("addResourceRelation", resourcePersonRelation, session);
 			session.commitTransaction();
 			return true;
-		} catch (final DuplicateEntryException ex) {
-			// ignore
+		} catch (final DuplicateEntryException e) {
+			session.commitTransaction(); // FIXME: only called to not cancel the transaction
 			return false;
 		} finally {
 			session.endTransaction();

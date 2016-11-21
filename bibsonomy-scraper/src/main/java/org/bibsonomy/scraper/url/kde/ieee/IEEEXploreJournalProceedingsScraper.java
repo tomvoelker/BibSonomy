@@ -65,7 +65,7 @@ public class IEEEXploreJournalProceedingsScraper extends AbstractUrlScraper {
 	private static final String info = "This scraper creates a BibTeX entry for the journals and proceedings at " + href(SITE_URL, SITE_NAME)+".";
 	
 	private static final String IEEE_HOST = "ieeexplore.ieee.org";
-	private static final String IEEE_PATH = "xpl";
+	private static final String IEEE_PATH = "document";
 	private static final String IEEE_JOURNAL	   = "@article";
 	private static final String IEEE_PROCEEDINGS   = "@proceedings";
 	private static final String IEEE_INPROCEEDINGS = "@inproceedings";
@@ -115,7 +115,7 @@ public class IEEEXploreJournalProceedingsScraper extends AbstractUrlScraper {
 					method.addParameter("fromPage", "");
 					method.addParameter("download-format", "download-bibtex");
 					method.addParameter("recordIds", id);
-					
+
 					//now get bibtex
 					bibtex = WebUtils.getPostContentAsString(client, method);
 				} catch (MalformedURLException ex) {

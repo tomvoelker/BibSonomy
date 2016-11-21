@@ -893,7 +893,7 @@ public class URLGenerator {
 	 * @return URL to all publications of the main page in bibtex formats.
 	 */
 	public String getPublicationsAsBibtexUrl() {
-		String url = this.projectHome + BIBTEXEXPORT_PREFIX;
+		final String url = this.projectHome + BIBTEXEXPORT_PREFIX;
 		return this.getUrl(url);
 	}
 
@@ -1011,7 +1011,7 @@ public class URLGenerator {
 					+ PUBLICATION_INTER_HASH_ID + publication.getInterHash();
 			return this.getUrl(url);
 		}
-		String url = this.projectHome + PUBLICATION_PREFIX + "/"
+		final String url = this.projectHome + PUBLICATION_PREFIX + "/"
 				+ PUBLICATION_INTRA_HASH_ID + publication.getIntraHash() + "/"
 				+ UrlUtils.encodePathSegment(user.getName());
 		return this.getUrl(url);
@@ -1328,7 +1328,7 @@ public class URLGenerator {
 	 * @return URL pointing to the public viewable posts
 	 */
 	public String getViewablePublicUrl() {
-		String url = this.getProjectHome() + VIEWABLE_PREFIX + "/"
+		final String url = this.getProjectHome() + VIEWABLE_PREFIX + "/"
 				+ VIEWABLE_PUBLIC_SUFFIX;
 		return this.getUrl(url);
 	}
@@ -1354,8 +1354,7 @@ public class URLGenerator {
 	 * @return URL pointing to the private viewable posts
 	 */
 	public String getViewablePrivateUrl() {
-		String url = this.getProjectHome() + VIEWABLE_PREFIX + "/"
-				+ VIEWABLE_PRIVATE_SUFFIX;
+		final String url = this.getProjectHome() + VIEWABLE_PREFIX + "/" + VIEWABLE_PRIVATE_SUFFIX;
 		return this.getUrl(url);
 	}
 

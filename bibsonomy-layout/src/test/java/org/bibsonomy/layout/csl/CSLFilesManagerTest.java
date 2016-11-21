@@ -65,7 +65,7 @@ public class CSLFilesManagerTest {
 	 * tests {@link CSLFilesManager#getLocaleFile(String)}
 	 */
 	@Test
-	public void testGetLocale() {
+	public void testGetLocaleFile() {
 		assertNotNull(MANAGER.getLocaleFile("de-DE"));
 	}
 }
