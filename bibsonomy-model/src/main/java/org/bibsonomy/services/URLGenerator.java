@@ -415,8 +415,13 @@ public class URLGenerator {
 		final UrlBuilder urlBuilder = new UrlBuilder(this.projectHome);
 		final Resource resource = post.getResource();
 		urlBuilder.addPathElement(getEditUrlByResourceClass(resource.getClass()));
-		urlBuilder.addParameter("intraHashToUpdate", resource.getIntraHash());
-		
+		final String hash;
+		if (ResourceFactory.isCommunityResource(resource)) {
+			hash = resource.getInterHash();
+		} else {
+			hash = resource.getIntraHash();
+		}
+		urlBuilder.addParameter("intraHashToUpdate", hash);
 		return this.getUrl(urlBuilder.asString());
 	}
 	
