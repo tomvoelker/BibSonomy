@@ -986,8 +986,16 @@ public class URLGenerator {
 	private static void addParamsForCommunityPage(final Resource resource, final Post<? extends Resource> post, final UrlBuilder builder) {
 		final Integer ratingCount = resource.getNumberOfRatings();
 		if (present(ratingCount) && ratingCount.intValue() == 0 && present(post)) {
-			builder.addParameter("postOwner", post.getUser().getName());
-			builder.addParameter("intraHash", post.getResource().getIntraHash());
+			final User user = post.getUser();
+			final String hash;
+			if (present(user)) {
+				builder.addParameter("postOwner", user.getName());
+				hash = post.getResource().getIntraHash();
+			} else {
+				hash = post.getResource().getInterHash();
+			}
+			
+			builder.addParameter("intraHash", hash);
 		}
 	}
 
