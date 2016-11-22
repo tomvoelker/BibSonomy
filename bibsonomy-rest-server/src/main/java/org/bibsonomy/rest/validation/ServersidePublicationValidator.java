@@ -27,6 +27,7 @@
 package org.bibsonomy.rest.validation;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -53,7 +54,7 @@ public class ServersidePublicationValidator extends PublicationValidator {
 	 */
 	@Override
 	public List<ErrorMessage> validateResource(final BibTex publication) {
-		final List<ErrorMessage> errors = super.validateResource(publication);
+		final List<ErrorMessage> errors = new LinkedList<>();
 		
 		/*
 		 * parse BibTeX so see whether the entry is valid
@@ -79,6 +80,8 @@ public class ServersidePublicationValidator extends PublicationValidator {
 			log.error("error parsing publication " + publication.getIntraHash(), ex);
 			errors.add(new InvalidSourceErrorMessage());
 		}
+		
+		errors.addAll(super.validateResource(publication));
 		
 		return errors;
 	}

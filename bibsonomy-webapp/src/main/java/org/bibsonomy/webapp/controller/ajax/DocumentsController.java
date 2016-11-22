@@ -76,7 +76,7 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 	}
 
 	@Override
-	public View workOn(AjaxDocumentCommand command) {
+	public View workOn(final AjaxDocumentCommand command) {
 		log.debug("workOn started");
 		final RequestWrapperContext context = command.getContext();
 		final Locale locale = requestLogic.getLocale();
@@ -264,7 +264,7 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 		// TODO: move file size check to ServerDocumentFileLogic!
 		final long size = file.getSize();
 		if (size >= this.maxFileSize) {
-			return getXmlError("error.upload.failed.size", new Object[] {maxFileSizeMB}, fileID, fileName, locale);
+			return getXmlError("error.upload.failed.size", new Object[] { Integer.valueOf(maxFileSizeMB) }, fileID, fileName, locale);
 		} else if (size == 0) {
 			return getXmlError("error.upload.failed.size0", null, fileID, fileName, locale);
 		}
