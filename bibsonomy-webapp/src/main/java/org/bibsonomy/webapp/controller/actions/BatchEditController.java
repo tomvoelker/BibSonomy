@@ -784,6 +784,8 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 * @return
 	 */
 	private View getFinalRedirect(final String referer, final String loginUserName) {
+		this.requestLogic.removeSessionAttribute(PostPublicationController.TEMPORARILY_IMPORTED_PUBLICATIONS);
+		
 		String redirectUrl = referer;
 		/*
 		 * if no URL is given, we redirect to the user's page
