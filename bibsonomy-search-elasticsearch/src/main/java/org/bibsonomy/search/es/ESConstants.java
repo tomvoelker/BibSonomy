@@ -26,16 +26,13 @@
  */
 package org.bibsonomy.search.es;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import org.bibsonomy.util.Sets;
 import org.bibsonomy.util.tex.TexDecode;
 import org.elasticsearch.common.xcontent.XContentFactory;
+
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * constants for elastic search engine
@@ -119,18 +116,43 @@ public final class ESConstants {
 	
 	/** the max number of docs per bulk insert */
 	public static final int BULK_INSERT_SIZE = 5000;
-	
-	public static interface Fields {
-		
+
+	/** contains all field information */
+	public static final class Fields {
+
+		/** the all field of Elasticsearch */
+		private static final String ALL_FIELD = "_all";
+
+		/** all fields that are mapped */
+		public static final Set<String> ALL_FIELDS = new HashSet<>();
+
+		static {
+			addAllFields(Fields.class);
+			addAllFields(Resource.class);
+			addAllFields(Bookmark.class);
+			addAllFields(Publication.class);
+			addAllFields(Publication.Document.class);
+		}
+
+		private static void addAllFields(final Class<?> clazz) {
+			try {
+				final Field fieldlist[] = clazz.getDeclaredFields();
+				for (final Field field : fieldlist) {
+					if (field.getType().equals(String.class)) {
+						ALL_FIELDS.add((String) field.get(null));
+					}
+				}
+			} catch (Throwable e) {
+				throw new RuntimeException(e);
+			}
+		}
+
 		/** field that contains all docs */
 		public static final String ALL_DOCS = "all_docs";
 
 		/** private search content should be copied to this field */
 		public static final String PRIVATE_ALL_FIELD = "all_private";
-		
-		/** all special fields that can't be overridden by a misc field */
-		public static final Set<String> SPECIAL_FIELDS = Sets.asSet("_all", PRIVATE_ALL_FIELD, ALL_DOCS);
-		
+
 		/** the content id of the post */
 		public static final String CONTENT_ID = "content_id";
 		/** the name of the user of the post */
