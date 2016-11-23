@@ -18,5 +18,5 @@ bibsonomy-lucene/data
 
 # intellij files
 \.iml$
-out/*
+/out/*
 .idea/*
