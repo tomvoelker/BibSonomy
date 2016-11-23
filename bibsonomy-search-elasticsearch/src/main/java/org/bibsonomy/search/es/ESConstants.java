@@ -26,13 +26,17 @@
  */
 package org.bibsonomy.search.es;
 
-import org.bibsonomy.util.tex.TexDecode;
-import org.elasticsearch.common.xcontent.XContentFactory;
-
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
+
+import org.bibsonomy.util.tex.TexDecode;
+import org.elasticsearch.common.xcontent.XContentFactory;
 
 /**
  * constants for elastic search engine
@@ -249,7 +253,7 @@ public final class ESConstants {
 	 * @param key
 	 * @return
 	 */
-	private static String escape(String string) {
+	private static String escape(final String string) {
 		return string.replaceAll("\\\\", "\\\\\\\\");
 	}
 }
