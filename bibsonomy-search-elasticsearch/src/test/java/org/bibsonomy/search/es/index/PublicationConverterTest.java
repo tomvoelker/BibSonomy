@@ -28,6 +28,8 @@ package org.bibsonomy.search.es.index;
 
 import static org.junit.Assert.assertFalse;
 
+import java.util.Map;
+
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
@@ -35,8 +37,6 @@ import org.bibsonomy.search.es.ESConstants;
 import org.bibsonomy.search.index.utils.SimpleFileContentExtractorService;
 import org.bibsonomy.testutil.TestUtils;
 import org.junit.Test;
-
-import java.util.Map;
 
 /**
  * @author dzo

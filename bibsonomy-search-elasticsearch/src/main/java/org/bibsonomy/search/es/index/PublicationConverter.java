@@ -28,12 +28,28 @@ package org.bibsonomy.search.es.index;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.InvalidModelException;
-import org.bibsonomy.model.*;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Document;
+import org.bibsonomy.model.Person;
+import org.bibsonomy.model.PersonName;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
@@ -43,10 +59,6 @@ import org.bibsonomy.search.es.ESConstants.Fields.Publication;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.index.utils.FileContentExtractorService;
 import org.bibsonomy.util.ValidationUtils;
-
-import java.net.URI;
-import java.util.*;
-import java.util.Map.Entry;
 
 /**
  * converts a {@link BibTex} to the ElasticSearch representation and vice versa
@@ -259,7 +271,7 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 			for (final Entry<String, String> miscFieldEntry : parsedMiscField.entrySet()) {
 				String key = normKey(miscFieldEntry.getKey());
 				
-				// check if the key was already added before;
+				// check if the key can be added by other fields
 				if (jsonDocument.containsKey(key) || Fields.ALL_FIELDS.contains(key)) {
 					key = "misc_" + key;
 				}
