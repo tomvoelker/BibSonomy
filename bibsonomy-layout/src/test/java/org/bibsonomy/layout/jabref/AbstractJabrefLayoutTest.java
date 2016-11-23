@@ -26,7 +26,12 @@
  */
 package org.bibsonomy.layout.jabref;
 
-import static org.junit.Assert.assertEquals;
+import org.apache.commons.io.FilenameUtils;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.services.URLGenerator;
+import org.bibsonomy.testutil.TestUtils;
+import org.junit.Before;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -35,11 +40,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.io.FilenameUtils;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.services.URLGenerator;
-import org.bibsonomy.testutil.TestUtils;
+import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractJabrefLayoutTest {
 	
@@ -52,23 +53,25 @@ public abstract class AbstractJabrefLayoutTest {
 	private static final String LAYOUT_ENTRYTYPE_SPLIT = "#";
 	private static String entryTypeSplitSuffix;
 	
-	protected static final JabrefLayoutRenderer RENDERER;
-	static {
-		try {
-			final JabRefConfig config = new JabRefConfig();
-			config.setDefaultLayoutFilePath("org/bibsonomy/layout/jabref");
-			RENDERER = new JabrefLayoutRenderer(config);
-			
-			RENDERER.setUrlGenerator(new URLGenerator("http://www.bibsonomy.org"));
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+	protected JabrefLayoutRenderer renderer;
 	
 	public AbstractJabrefLayoutTest(File layoutTest, String layoutName) {
 		this.layoutTest = layoutTest;
 		this.layoutName = layoutName;
 		this.entryType = this.extractEntryType();
+	}
+
+	@Before
+	public void setupRenderer() {
+		try {
+			final JabRefConfig config = new JabRefConfig();
+			config.setDefaultLayoutFilePath("org/bibsonomy/layout/jabref");
+			this.renderer = new JabrefLayoutRenderer(config);
+
+			this.renderer.setUrlGenerator(new URLGenerator("http://www.bibsonomy.org"));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	protected static Collection<Object[]> initTests(Set<String> testedLayouts, String testCaseFolderPath, String entryTypeSplitSuffix) {
@@ -99,17 +102,17 @@ public abstract class AbstractJabrefLayoutTest {
 	}
 	
 	protected void testRender(List<Post<BibTex>> testCasePost) throws Exception{
-		final AbstractJabRefLayout layout = RENDERER.getLayout(this.layoutName, "foo");
-		String renderedLayout = RENDERER.renderLayout(layout, testCasePost, false).toString();
-		String resultLayout = TestUtils.readEntryFromFile(layoutTest).trim();
+		final AbstractJabRefLayout layout = this.renderer.getLayout(this.layoutName, "foo");
+		String renderedLayout = this.renderer.renderLayout(layout, testCasePost, false).toString();
+		String resultLayout = TestUtils.readEntryFromFile(this.layoutTest).trim();
 
 		// format JUnit output
-		final String printedEntryType = entryType.equals("") ? "NA" : entryType;
+		final String printedEntryType = this.entryType.equals("") ? "NA" : this.entryType;
 		
 		// prepare Layouts - Remove varying lines etc.
 		renderedLayout = prepareTest(renderedLayout, this.layoutName);
 		resultLayout = prepareTest(resultLayout, this.layoutName);
-		assertEquals("layout: " + layoutName + ", testfile: " + layoutTest + ", entrytype: " + printedEntryType, resultLayout, renderedLayout);
+		assertEquals("layout: " + this.layoutName + ", testfile: " + this.layoutTest + ", entrytype: " + printedEntryType, resultLayout, renderedLayout);
 	}
 	
 	private static String prepareTest(String renderedLayout, final String layoutName) {
