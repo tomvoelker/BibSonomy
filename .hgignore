@@ -3,7 +3,7 @@ bin
 work
 .classpath
 .project
-.settings
+/.settings/
 .externalToolBuilders
 .tomcatplugin
 .springBeans
@@ -15,3 +15,8 @@ nbactions.xml
 nb-configuration.xml
 Thumbs.db
 bibsonomy-lucene/data
+
+# intellij files
+\.iml$
+out/*
+.idea/*
