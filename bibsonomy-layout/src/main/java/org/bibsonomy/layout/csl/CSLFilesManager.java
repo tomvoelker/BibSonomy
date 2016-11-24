@@ -95,7 +95,7 @@ public class CSLFilesManager {
 			final Resource[] resources = resolver.getResources(BASE_PATH_STYLES + "*.csl");
 			
 			for (final Resource resource : resources) {
-				try (final BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
+				try (final BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), StringUtils.DEFAULT_CHARSET))) {
 					final StringBuilder builder = new StringBuilder();
 					while (reader.ready()) {
 						builder.append(reader.readLine() + "\n");
