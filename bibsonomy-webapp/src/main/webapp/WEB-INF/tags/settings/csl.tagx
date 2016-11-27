@@ -17,7 +17,7 @@
 	<!--   ############################################# import tab ############################################# -->
 	
 	<div id="selTab2" class="tab-pane ${(command.selTab eq 7) ? 'active' : ''}">
-		<fieldset>			
+		<fieldset>
 			<!-- csl layout file -->
 			<!-- handle layout file -->
 			<c:set var="userName" value="${command.context.loginUser.name}" />
