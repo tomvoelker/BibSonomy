@@ -51,7 +51,7 @@
 		
 		<jsp:attribute name="sidebar">
 			<c:set var="isAdmin" value="${command.context.loginUser.role == 'ADMIN'}" />
-			<sidebar:socializer command="${command}" />
+			<sidebar:socializer command="${command}" user="${command.user}" />
 			
 			<c:if test="${isAdmin}">
 				spammer: <adminUser:spamActions user="${command.user}" />

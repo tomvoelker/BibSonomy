@@ -1,3 +1,6 @@
+/**
+ * this file contains a wrapper for the cslproc implementation
+ */
 $(function() {
 	// if several of this scripts are embedded on another page this prevents the script from writing to the wrong div
 	var container = $('#csl-container');

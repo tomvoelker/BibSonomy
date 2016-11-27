@@ -114,17 +114,13 @@ public class CVWikiModel extends AbstractWikiModel {
 		super(Configuration.DEFAULT_CONFIGURATION, locale, null, null);
 	}
 
-	/*
+	/**
 	 * defines the look and feel of the section headlines. can be changed by the
 	 * class mw-headline.
 	 *
 	 * @param rawHead a pure title from the wiki syntax, without the enclosing =
-	 * 
-	 * @param headLevel the number of =, indicating the position in the section
-	 * hierarchy of this title
-	 * 
+	 * @param headLevel the number of =, indicating the position in the section hierarchy of this title
 	 * @param noToC good question.
-	 * 
 	 * @param headCounter
 	 *
 	 * @see info.bliki.wiki.model.AbstractWikiModel#appendHead(java.lang.String,

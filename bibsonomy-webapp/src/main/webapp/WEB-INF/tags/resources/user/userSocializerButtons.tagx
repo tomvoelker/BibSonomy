@@ -37,6 +37,8 @@
 			</c:if>
 		</div>
 	</div>
+	<!-- FIXME: remove check -->
+	<mtl:exists path="command.ofFriendUser">
 	<c:if test="${not ownPage}">
 		<div class="row">
 			<div class="col-sm-6">
@@ -47,4 +49,5 @@
 			</div>
 		</div>
 	</c:if>
+	</mtl:exists>
 </jsp:root>

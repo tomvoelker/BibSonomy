@@ -1815,7 +1815,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param newContentId	the new content id of the post
 	 * @param session
 	 */
-	protected abstract void onPostUpdate(Integer oldContentId, Integer newContentId, DBSession session);
+	protected abstract void onPostUpdate(int oldContentId, int newContentId, DBSession session);
 
 	/**
 	 * inserts a post into the database
@@ -2026,7 +2026,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param contentId	the content id of the post which was deleted
 	 * @param session
 	 */
-	protected abstract void onPostDelete(Integer contentId, DBSession session);
+	protected abstract void onPostDelete(int contentId, DBSession session);
 
 	/**
 	 * @return the simple class name of the first generic param (<R>, Resource)

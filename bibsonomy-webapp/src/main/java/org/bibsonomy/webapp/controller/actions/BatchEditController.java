@@ -147,7 +147,6 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 		command.setGroups(new ArrayList<String>());
 		command.setAbstractGrouping(GroupUtils.buildPublicGroup().getName());
-		// command.setSelectNorm(true);
 		command.setAction(new ArrayList<Integer>());
 		return command;
 	}
@@ -414,7 +413,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				}
 			}
 			if (action.contains(UPDATE_VIEWABLE_ACTION)) {
-				/**
+				/*
 				 * set visibility of this post for the groups,
 				 * the user specified
 				 */
@@ -424,7 +423,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 					continue;
 				}
 			}
-			/**
+			/*
 			 * if we reach here, it means we have skipped all
 			 * 'continues' and we
 			 * are in indirect edit mode
@@ -468,7 +467,6 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 */
 		if (directEdit) {
 			if (present(postsToUpdateTags)) {
-				// TODO THONI: update this to reflect the corresponding users. TODODZO
 				this.updatePosts(postsToUpdateTags, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_TAGS);
 			}
 			/*
@@ -786,6 +784,8 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 * @return
 	 */
 	private View getFinalRedirect(final String referer, final String loginUserName) {
+		this.requestLogic.removeSessionAttribute(PostPublicationController.TEMPORARILY_IMPORTED_PUBLICATIONS);
+		
 		String redirectUrl = referer;
 		/*
 		 * if no URL is given, we redirect to the user's page

@@ -271,8 +271,8 @@ public class PublicationConverter extends ResourceConverter<BibTex> {
 			for (final Entry<String, String> miscFieldEntry : parsedMiscField.entrySet()) {
 				String key = normKey(miscFieldEntry.getKey());
 				
-				// check if the key was already added before;
-				if (jsonDocument.containsKey(key) || Fields.SPECIAL_FIELDS.contains(key)) {
+				// check if the key can be added by other fields
+				if (jsonDocument.containsKey(key) || Fields.ALL_FIELDS.contains(key)) {
 					key = "misc_" + key;
 				}
 				

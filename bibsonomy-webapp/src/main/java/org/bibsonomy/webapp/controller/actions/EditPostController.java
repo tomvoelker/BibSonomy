@@ -860,10 +860,9 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 		 * if the user is adding a new thesis to a person's page, he should be redirected to that person's page
 		 */
 		if (present(command.getPost().getResourcePersonRelations())) {
-			final ResourcePersonRelation resourcePersonRelation = post.getResourcePersonRelations().get(post.getResourcePersonRelations().size()-1);
+			final ResourcePersonRelation resourcePersonRelation = post.getResourcePersonRelations().get(post.getResourcePersonRelations().size() - 1);
 			// FIXME: cache url generator!
 			return new ExtendedRedirectView(new URLGenerator().getPersonUrl(resourcePersonRelation.getPerson().getPersonId()));
-
 		}
 		return this.finalRedirect(postOwnerName, post, command.getReferer());
 	}

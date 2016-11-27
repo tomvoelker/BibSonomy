@@ -140,7 +140,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		param.setRequestedUserName(requestedUserName);
 
 		final Integer result = this.queryForObject("getBibTexDuplicateCount", param, Integer.class, session);
-		return present(result) ? result : 0;
+		return present(result) ? result.intValue() : 0;
 	}
 
 	/**
@@ -502,15 +502,8 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * .lang.Integer, java.lang.Integer, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	protected void onPostUpdate(final Integer oldContentId, final Integer newContentId, final DBSession session) {
+	protected void onPostUpdate(final int oldContentId, final int newContentId, final DBSession session) {
 		this.plugins.onPublicationUpdate(oldContentId, newContentId, session);
-		/*
-		 * rewrites the history
-		 */
-		// BibTexParam param = new BibTexParam();
-		// param.setNewContentId(newContentId);
-		// param.setRequestedContentId(oldContentId);
-		// this.update("updateBibTexHistory", param, session);
 	}
 	
 	/* (non-Javadoc)
@@ -529,7 +522,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * .lang.Integer, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	protected void onPostDelete(final Integer contentId, final DBSession session) {
+	protected void onPostDelete(final int contentId, final DBSession session) {
 		this.plugins.onPublicationDelete(contentId, session);
 	}
 

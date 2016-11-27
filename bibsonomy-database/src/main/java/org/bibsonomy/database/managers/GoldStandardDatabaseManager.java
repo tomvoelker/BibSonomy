@@ -195,7 +195,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 			if (present(newPostInDB)) {
 				log.debug("gold stanard post with hash \"" + resourceHash + "\" already exists in DB");
 				final ErrorMessage errorMessage = new DuplicatePostErrorMessage(this.resourceClassName, resourceHash);
-				session.addError(PostUtils.getKeyForPost(post), errorMessage);
+				session.addError(PostUtils.getKeyForCommunityPost(post), errorMessage);
 				session.commitTransaction();
 				return false;
 			}

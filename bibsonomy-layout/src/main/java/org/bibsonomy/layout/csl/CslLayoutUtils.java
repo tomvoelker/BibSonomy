@@ -59,7 +59,7 @@ public class CslLayoutUtils {
 	 * @param user
 	 * @return
 	 */
-	public static String userLayoutHash (final String user) {
+	public static String userLayoutHash(final String user) {
 		return StringUtils.getMD5Hash("user." + user.toLowerCase() + "." + CslFileLogic.LAYOUT_FILE_EXTENSION).toLowerCase();
 	}
 	
@@ -69,7 +69,7 @@ public class CslLayoutUtils {
 	 * @param userName
 	 * @return the name of a custom layout
 	 */
-	public static String userLayoutName (final String userName) {
+	public static String userLayoutName(final String userName) {
 		return LayoutRenderer.CUSTOM_LAYOUT + "_" + userName;
 	}
 	
@@ -78,7 +78,7 @@ public class CslLayoutUtils {
 	 * @param location
 	 * @return
 	 */
-	public static InputStream getResourceAsStream (final String location) {
+	public static InputStream getResourceAsStream(final String location) {
 		final InputStream resourceAsStream = CSLFilesManager.class.getClassLoader().getResourceAsStream(location);
 		if (resourceAsStream != null) 
 			return resourceAsStream;

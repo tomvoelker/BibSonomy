@@ -144,7 +144,6 @@ public class IbatisOAuthLogic extends AbstractDatabaseManager implements OAuthLo
 		
 		final DBSession session = this.createSession();
 		try {
-			
 			final OAuthTokenInfo tokenInfo = this.queryForObject("getToken", tokenIndex, OAuthTokenInfo.class, session);
 			// we have to construct the temporary parameter object as the TokenInfo class has no default constructor
 			// FIXME: Ibatis supports pre-initialized parameter objects

@@ -1034,13 +1034,6 @@ public class DBLogic implements LogicInterface {
 			 * only an admin or the user himself may delete the account
 			 */
 			this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
-			final User u = this.getUserDetails(userName);
-			for (final Group g : u.getGroups()) {
-				if (this.groupDBManager.hasExactlyOneAdmin(g, session) && g.getGroupMembershipForUser(userName).getGroupRole().equals(GroupRole.ADMINISTRATOR)) {
-					throw new IllegalArgumentException("This would leave group " + g + " without an admin.");
-				}
-			}
-
 			this.userDBManager.deleteUser(userName, session);
 		} finally {
 			session.close();
@@ -1097,7 +1090,7 @@ public class DBLogic implements LogicInterface {
 				}
 			}
 
-			// all the posts/discussions of the group admin need to be edited as well before deleting the group
+			// all the posts/discussions of the group members (one admin and the dummy user) need to be edited as well before deleting the group
 			for (final GroupMembership membership : group.getMemberships()) {
 				this.updateUserItemsForLeavingGroup(group, membership.getUser().getName(), session);
 			}
@@ -2065,6 +2058,7 @@ public class DBLogic implements LogicInterface {
 				 */
 				Post<BibTex> post = null;
 				try {
+					// FIXME: remove strange getpostdetails method
 					post = this.publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, lowerCaseUserName, UserUtils.getListOfGroupIDs(this.loginUser), true, session);
 				} catch (final ResourceMovedException ex) {
 					// ignore
