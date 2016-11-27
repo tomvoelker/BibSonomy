@@ -165,7 +165,6 @@ public class CslLayoutUtils {
 			log.debug("custom layout found!");
 			
 			final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), StringUtils.CHARSET_UTF_8));
-			final LayoutHelper layoutHelper = new LayoutHelper(reader);
 			try {
 				//TODO
 				// cslLayout.addSubLayout(layoutHelper.getLayoutFromText(GLOBALS_FORMATTER_PACKAGE));
