@@ -38,7 +38,7 @@ import org.bibsonomy.util.ValidationUtils;
 public class HebisIdExtractor implements AttributeExtractor{
 
 	@Override
-	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
+	public void extractAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 		String ppn = null;
 		if (src instanceof ExtendedMarcWithPicaRecord) {
 			final ExtendedMarcWithPicaRecord extendedMarcPicaRecord = (ExtendedMarcWithPicaRecord) src;

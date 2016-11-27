@@ -26,11 +26,12 @@
  */
 package org.bibsonomy.marc.extractors;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.marc.AttributeExtractor;
 import org.bibsonomy.marc.ExtendedMarcRecord;
 import org.bibsonomy.marc.ExtendedMarcWithPicaRecord;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author nilsraabe
@@ -38,23 +39,23 @@ import org.bibsonomy.util.ValidationUtils;
 public class ISBNExtractor implements AttributeExtractor {
 
 	@Override
-	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
+	public void extractAndSetAttribute(final BibTex target, final ExtendedMarcRecord src) {
 		String isbn = null;
-		if(src instanceof ExtendedMarcWithPicaRecord) {
-			ExtendedMarcWithPicaRecord picaSrc = (ExtendedMarcWithPicaRecord) src;
+		if (src instanceof ExtendedMarcWithPicaRecord) {
+			final ExtendedMarcWithPicaRecord picaSrc = (ExtendedMarcWithPicaRecord) src;
 			
 			isbn = src.getFirstFieldValue("020", 'a');
-			if (!ValidationUtils.present(isbn)) {
+			if (!present(isbn)) {
 				isbn = src.getFirstFieldValue("020", 'z');
 			}
-			if (!ValidationUtils.present(isbn)) {
+			if (!present(isbn)) {
 				isbn = picaSrc.getFirstPicaFieldValue("004a","$0");
 			}
 		} else {
 			isbn = src.getFirstFieldValue("020", 'a');
 		}
 
-		if (ValidationUtils.present(isbn)) {
+		if (present(isbn)) {
 			target.parseMiscField();
 			target.addMiscField("isbn", isbn);
 			target.serializeMiscFields();

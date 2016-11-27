@@ -105,7 +105,7 @@ public class MarcToBibTexReader implements BibTexReader {
 			initialize(b, importRes.getResource());
 
 			try {
-				ex.extraxtAndSetAttribute(b, er);
+				ex.extractAndSetAttribute(b, er);
 			} catch (IllegalArgumentException e) {
 				// TODO: log exception?
 			}

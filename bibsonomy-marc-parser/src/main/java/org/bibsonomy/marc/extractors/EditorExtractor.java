@@ -45,7 +45,7 @@ public class EditorExtractor extends AbstractParticipantExtractor {
 	}
 
 	@Override
-	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
+	public void extractAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 		ArrayList<PersonName> editors = new ArrayList<PersonName>();
 		
 		boolean edtFound = true;
