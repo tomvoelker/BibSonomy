@@ -303,7 +303,7 @@
 						<property name="controllerBeanName" value="importCSLLayout"/>
 						<property name="allowedFields">
 							<list>
-								<value>file</value>
+								<value>fileItem</value>
 								<value>action</value>
 								<value>ckey</value>
 								<value>hash</value>
