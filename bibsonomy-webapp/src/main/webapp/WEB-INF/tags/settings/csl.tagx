@@ -57,8 +57,6 @@
 							<p class="help-block"><fmt:message key="settings.csl.item.help"/></p>
 						</div>
 					</div>
-
-		      		<!-- end.layout (optional) -->
 					<div class="form-group">						
 						<input name="action" type="hidden" value="${actionCSL}"/> 
 						<input name="importType" type="hidden" value="csl"/>
