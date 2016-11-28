@@ -30,6 +30,7 @@ import org.bibsonomy.marc.AttributeExtractor;
 import org.bibsonomy.marc.ExtendedMarcRecord;
 import org.bibsonomy.marc.ExtendedMarcWithPicaRecord;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.util.MiscFieldConflictResolutionStrategy;
 import org.bibsonomy.util.ValidationUtils;
 
 /**
@@ -53,14 +54,15 @@ public class HebisIdExtractor implements AttributeExtractor{
 //		if (!ValidationUtils.present(pages)) {
 //			pages = src.getFirstFieldValue("300", 'a');
 //		}
+
 		if (ValidationUtils.present(ppn)) {
-			target.parseMiscField();
+			// FIXME: ppn can't be null here (present checks for null)
 			if (ppn != null) {
 				target.addMiscField("uniqueid", "HEB" + ppn.trim());
 			} else {
 				target.addMiscField("uniqueid","HEB" + ppn);
 			}
-			target.serializeMiscFields();
+			target.syncMiscFields(MiscFieldConflictResolutionStrategy.MISC_FIELD_MAP_WINS);
 		}
 		// + 31A $h (pages) (bei pages extractor)
 	}

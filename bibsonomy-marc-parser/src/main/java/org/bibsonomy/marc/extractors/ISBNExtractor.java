@@ -32,6 +32,7 @@ import org.bibsonomy.marc.AttributeExtractor;
 import org.bibsonomy.marc.ExtendedMarcRecord;
 import org.bibsonomy.marc.ExtendedMarcWithPicaRecord;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.util.MiscFieldConflictResolutionStrategy;
 
 /**
  * @author nilsraabe
@@ -56,9 +57,8 @@ public class ISBNExtractor implements AttributeExtractor {
 		}
 
 		if (present(isbn)) {
-			target.parseMiscField();
 			target.addMiscField("isbn", isbn);
-			target.serializeMiscFields();
+			target.syncMiscFields(MiscFieldConflictResolutionStrategy.MISC_FIELD_MAP_WINS);
 		}
 	}
 }

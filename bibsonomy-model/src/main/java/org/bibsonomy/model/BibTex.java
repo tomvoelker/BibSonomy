@@ -572,7 +572,7 @@ public class BibTex extends Resource {
 	}
 
 	/**
-	 * FIXME: this method must be called after {@link #parseMiscField()}
+	 * FIXME: this method must be called after {@link #parseMiscField()} or {@link #syncMiscFields(MiscFieldConflictResolutionStrategy)}
 	 * check state and throw an IllegalStateException?
 	 *
 	 * @param miscKey
@@ -587,6 +587,8 @@ public class BibTex extends Resource {
 	 * FIXME: this method deletes the old misc fields if {@link #parseMiscField()}
 	 * is not called before (e.g. call {@link #addMiscField(String, String)} and than
 	 * {@link #serializeMiscFields()})
+	 *
+	 * NOTE: after adding misc fields you have to {@link #syncMiscFields(MiscFieldConflictResolutionStrategy)}
 	 *
 	 * @param miscKey
 	 * @param value
@@ -697,6 +699,7 @@ public class BibTex extends Resource {
 	/**
 	 * Serializes the internal miscFields map into the a string 
 	 * representation and stores it in the 'misc'-field.
+	 * NOTE: this will override all misc fields that are not parsed before using {@link #parseMiscField()}
 	 */
 	public void serializeMiscFields() {
 		this.misc = BibTexUtils.serializeMapToBibTeX(this.miscFields);
@@ -709,9 +712,20 @@ public class BibTex extends Resource {
 	 *
 	 * 1/ the content of the 'misc' field is parsed and stored as key/valued pairs in the 'miscFields' attribute
 	 *    (possibly overwriting existing values)
-	 * 2/ the 'miscFields'-attribute is serialized and the result is stored in the 'misc' attribute      
+	 * 2/ the 'miscFields'-attribute is serialized and the result is stored in the 'misc' attribute
+	 * @deprecated use {@link #syncMiscFields(MiscFieldConflictResolutionStrategy)} if you want to sync the misc field
+	 * with the map representation and {@link #resetMiscFieldMap()} if you want to reinitialize the misc field map
 	 */
+	@Deprecated // TODO: remove with 4.0.0
 	public void syncMiscFields() {
+		this.resetMiscFieldMap();
+	}
+
+	/**
+	 * resets the map representation with the content of the misc field
+	 * and serializes the map to the misc field
+	 */
+	public void resetMiscFieldMap() {
 		this.parseMiscField();
 		this.serializeMiscFields();
 		this.miscFieldParsed = true;
@@ -756,7 +770,10 @@ public class BibTex extends Resource {
 	}
 
 	/**
-	 * Remove a misc field from the parsed array.
+	 * Remove a misc field from the parsed map.
+	 *
+	 * NOTE: you have to call {@link #syncMiscFields(MiscFieldConflictResolutionStrategy)} or
+	 * {@link #serializeMiscFields()}
 	 *
 	 * @param miscKey - the requested key
 	 * @return - the previous value for key
