@@ -36,7 +36,7 @@
 	<div itemscope="itemscope" itemtype="${itemtype}">
 	<div class="title">
 		<pub:title post="${post}">
-			<jsp:attribute name="bibActionButtons">
+			<jsp:attribute name="pubActionButtons">
 				<div class="pull-right">
 					<buttons:actions post="${post}" loginUserName="${command.context.loginUser.name}" disableResourceLinks="${false}" resourceType="bibtex"/>
 				</div>

@@ -7,6 +7,7 @@ $(document).ready(function() {
 
 	function addRole(obj) {
 		$("#btnAddRoleSubmit").attr("data-person-id", obj.attr("data-person-id"));
+		// FIXME: seems to be not existing/used. check
 		$("#btnAddRoleSubmit").attr("data-author-index", obj.attr("data-author-index"));
 		$("#btnAddRoleSubmit").attr("data-relation-simhash1", obj.attr("data-relation-simhash1"));
 		$("#btnAddRoleSubmit").attr("data-relation-simhash2", obj.attr("data-relation-simhash2"));
@@ -75,6 +76,8 @@ $(document).ready(function() {
 		form_data.push({name: "formPersonId", value: e.attr("data-person-id")});
 		form_data.push({name: "formInterHash", value: e.attr("data-relation-simhash1")});
 		form_data.push({name: "formPersonRole", value: e.attr("data-person-role")});
+		
+		// TODO: validate
 		form_data.push({name: "resourcePersonRelation.personIndex", value: e.attr("data-author-index")});
 		form_data.push({name: "formPersonIndex", value: e.attr("data-author-index")});
 		
