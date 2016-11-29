@@ -744,6 +744,7 @@ public enum Views implements View {
 	/*
 	 * both bookmarks and publications
 	 */
+	public static final String FORMAT_STRING_HTML = "html";
 	public static final String FORMAT_STRING_CSV = "csv";
 	public static final String FORMAT_STRING_JSON = "json";
 	public static final String FORMAT_STRING_POSTS = "posts";

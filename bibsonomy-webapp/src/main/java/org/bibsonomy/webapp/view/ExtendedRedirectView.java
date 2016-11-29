@@ -53,6 +53,9 @@ public class ExtendedRedirectView extends RedirectView implements View {
 		if (permanent) {
 			this.setStatusCode(HttpStatus.MOVED_PERMANENTLY);
 		}
+
+		// by default we do not support expanding of uri template vars
+		this.setExpandUriTemplateVariables(false);
 	}
 	
 	@Override
