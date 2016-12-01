@@ -30,7 +30,7 @@
 					</div>
 					
 					<fmt:message key="post_bookmark.description" var="desc" />
-					<p><c:out value="${desc}" /></p>
+					<p class="lead"><c:out value="${desc}" /></p>
 					
 					<form:form cssClass="form-horizontal" role="form" method="POST" action="/editBookmark">
 						<bsform:input id="url" labelColSpan="2" inputColSpan="10" placeholder="http://" path="post.resource.url" required="${true}" helpKey="post_bookmark.heading" />

@@ -45,10 +45,10 @@ public class StringToFilterConverter implements Converter<String, Filter> {
 	private Set<StringToEnumConverter<? extends Filter>> converters = new HashSet<StringToEnumConverter<? extends Filter>>();
 	
 	/**
-	 * 
+	 * inits the converter
 	 */
 	public StringToFilterConverter() {
-		for (Class<?> class1 : FILTER_CLASSES) {
+		for (final Class<?> class1 : FILTER_CLASSES) {
 			converters.add(new StringToEnumConverter(class1));
 		}
 	}

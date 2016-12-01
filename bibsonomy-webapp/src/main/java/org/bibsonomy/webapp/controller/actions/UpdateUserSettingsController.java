@@ -134,11 +134,10 @@ public class UpdateUserSettingsController extends SettingsPageController {
 		userSettings.setDefaultLanguage(commandSettings.getDefaultLanguage());
 		userSettings.setListItemcount(commandSettings.getListItemcount());
 		userSettings.setTagboxTooltip(commandSettings.getTagboxTooltip());
+		userSettings.setFavouriteLayouts(commandSettings.getFavouriteLayouts());
 		userSettings.setShowBookmark(commandSettings.isShowBookmark());
 		userSettings.setShowBibtex(commandSettings.isShowBibtex());
-		
 		userSettings.getLayoutSettings().setSimpleInterface(commandSettings.getLayoutSettings().isSimpleInterface());
-		
 		userSettings.setIsMaxCount(commandSettings.getIsMaxCount());
 		if (userSettings.getIsMaxCount()) {
 			userSettings.setTagboxMaxCount(command.getChangeTo());

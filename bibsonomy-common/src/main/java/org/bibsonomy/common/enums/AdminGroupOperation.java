@@ -31,12 +31,11 @@ package org.bibsonomy.common.enums;
  * @author niebler
  */
 public enum AdminGroupOperation {
-	
+
 	FETCH_GROUP_SETTINGS,
-	// TODO: rename to ACCEPT_GROUP TODO_GROUPS
-	ACCEPT,
-	// TODO: rename to DECLINE_GROUP TODO_GROUPS
-	DECLINE,
+	ACCEPT_GROUP,
+	DECLINE_GROUP,
+	DELETE_GROUP,
 	UPDATE_PERMISSIONS;
 
 }

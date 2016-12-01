@@ -232,7 +232,7 @@
 		link.className="litem";
 		link.innerHTML = getString("bibtex.actions.bibtex");
 		link.href = "/bib/bibtex/" + simHashID + bibtexhash + "/" + currUser;
-		link.title = getString("bibtex.actions.bibtex.title");
+		link.title = getString("publication.export.simple_bibtex.title");
 		
 		
 		var pick = document.createElement("a");

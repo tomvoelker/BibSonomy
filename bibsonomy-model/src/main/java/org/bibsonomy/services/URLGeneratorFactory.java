@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.services;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 /**
  * a factory for {@link URLGenerator}
  * @author dzo
@@ -39,5 +41,40 @@ public class URLGeneratorFactory {
 	 */
 	public URLGenerator createURLGeneratorForSystem(final String systemUrl) {
 		return new URLGenerator(systemUrl);
+	}
+	
+	/**
+	 * @param projectHome
+	 * @param prefix
+	 * @return the {@link URLGenerator} for this prefix
+	 */
+	public URLGenerator createURLGeneratorForPrefix(final String projectHome, final String prefix) {
+		return new URLGenerator(buildProjectHome(projectHome, prefix));
+	}
+
+	/**
+	 * @param projectHome
+	 * @param prefix
+	 * @return the projectHome including the prefix
+	 */
+	protected static String buildProjectHome(final String projectHome, final String prefix) {
+		String rootPath = projectHome;
+		if (!present(rootPath)) {
+			rootPath = "";
+		}
+		
+		if (!rootPath.endsWith("/")) {
+			rootPath += "/";
+		}
+		
+		if (present(prefix)) {
+			rootPath += prefix;
+		}
+		
+		if (!rootPath.endsWith("/")) {
+			rootPath += "/";
+		}
+		
+		return rootPath;
 	}
 }

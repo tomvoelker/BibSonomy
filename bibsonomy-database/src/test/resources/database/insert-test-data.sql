@@ -337,6 +337,8 @@ INSERT INTO log_bibtex (`content_id`, `new_content_id`, `current_content_id`, `l
 -- Data for table `log_bookmark`
 -- 
 
+INSERT INTO `log_bookmark` (`content_id`, `book_url_hash`, `book_description`, `book_extended`, `group`, `date`, `user_name`, `new_content_id`, `change_date`, `rating`, `log_date`, `current_content_id`) VALUES
+(1073742052, 'bbf9b0339a070080a3668c9cb6158ecf', 'IT-News, ct, iX, Technology Review, Telepolis | heise online', 'News und Foren zu Computer, IT, Wissenschaft, Medien und Politik. Preisvergleich von Hardware und Software sowie Downloads beim Heise Zeitschriften Verlag.', 0, '2013-10-23 17:29:05', 'testuser1', 0, '2015-03-08 00:43:45', 0, '2015-04-15 00:15:57', 0);
 
 
 -- 
@@ -369,7 +371,12 @@ INSERT INTO log_bibtex (`content_id`, `new_content_id`, `current_content_id`, `l
 -- Data for table `log_tas`
 -- 
 
-INSERT INTO `log_tas` VALUES (1073741825,'phd',1073741825,2,'2015-07-06 14:15:12','2015-07-06 14:15:12','2015-07-06 12:21:34'),(1073741826,'test',1073741825,2,'2015-07-06 14:15:12','2015-07-06 14:15:12','2015-07-06 12:21:34');
+INSERT INTO `log_tas` VALUES
+(1073741825,'phd',1073741825,2,'2015-07-06 14:15:12','2015-07-06 14:15:12','2015-07-06 12:21:34'),
+(1073741826,'test',1073741825,2,'2015-07-06 14:15:12','2015-07-06 14:15:12','2015-07-06 12:21:34'),
+(1073742431, 'lesezeichen', 1073742052, 1, '2013-10-23 17:29:05', '2015-03-08 00:43:45', '2015-04-15 00:15:57'),
+(1073742432, 'news', 1073742052, 1, '2013-10-23 17:29:05', '2015-03-08 00:43:45', '2015-04-15 00:15:57'),
+(1073742433, 'it', 1073742052, 1, '2013-10-23 17:29:05', '2015-03-08 00:43:45', '2015-04-15 00:15:57');
 
 
 
@@ -598,6 +605,7 @@ INSERT INTO `urls` (`book_url_hash`, `book_url`, `book_url_ctr`) VALUES
 ('85ab919107e4cc79b345e996b3c0b097', 'http://www.ard.de', 2),
 ('e9ea2574c49c3778f166e8b4b6ed63dd', 'http://www.apple.com\r\n', 1),
 ('10ab297107e4bb79b345e406b3c2a087', 'http://www.cs.uni-kassel.de', 1),
+('bbf9b0339a070080a3668c9cb6158ecf', 'http://www.heise.de', 0),
 ('2574200000e4bb79b100e406b777a044', 'http://www.wm2010.com', 1);
 
 

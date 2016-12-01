@@ -48,6 +48,14 @@
 						<h1><fmt:message key="navi.postPublication"/></h1>
 					</div>
 					<errors:global />
+					
+					<div class="row">
+						<div class="col-sm-12">
+							<p class="lead">
+								<fmt:message key="post_publication.desc" />
+							</p>
+						</div>
+					</div>
 					<div class="row" id="publication-search">
 						<div class="col-sm-2 text-right">
 							<fontawesome:icon icon="search" size="3x"/>
@@ -139,10 +147,14 @@
 					<p class="separator"><span><fmt:message key="post_publication.addons.title" /></span></p>
 					
 					<div class="row">
-						<div class="col-sm-10 col-sm-offset-1">
+						<div class="col-sm-12">
 							<p class="lead">
 								<fmt:message key="post_publication.addons.desc" />
 							</p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-10 col-sm-offset-1">
 							<buttons:addons showBookmarkletAlternative="${false}"/>
 						</div>
 					</div>

@@ -1,25 +1,29 @@
 <jsp:root version="2.0"
-		  xmlns="http://www.w3.org/1999/xhtml"
-		  xmlns:jsp="http://java.sun.com/JSP/Page"
-		  xmlns:c="http://java.sun.com/jsp/jstl/core"
-		  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-		  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-		  xmlns:form="http://www.springframework.org/tags/form"
-		  xmlns:spring="http://www.springframework.org/tags"
-		  xmlns:bform="urn:jsptagdir:/WEB-INF/tags/layout/form"
-		  xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
-		  xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
-		  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-		  xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
-		  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
-		  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons">
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:bform="urn:jsptagdir:/WEB-INF/tags/layout/form"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:bs="urn:jsptagdir:/WEB-INF/tags/layout/bootstrap"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons">
 
 	<jsp:directive.attribute name="command"  type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
 	
 	<c:set var="updateProfileUrl" value="/updateGroupProfile" />
-	<c:set var="foafUrl" value="${relativeUrlGenerator.prefix('foaf').getGroupUrlByGroupName(command.group.name)}" />
-	<c:set var="cvUrl"   value="${relativeUrlGenerator.prefix('cv').getGroupUrlByGroupName(command.group.name)}" />
+	
+	<c:set var="urlGeneratorFOAF" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'foaf')}" />
+	<c:set var="urlGeneratorCV" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'cv')}" />
+	
+	<c:set var="foafUrl" value="${urlGeneratorFOAF.getGroupUrlByGroupName(command.group.name)}" />
+	<c:set var="cvUrl"   value="${urlGeneratorCV.getGroupUrlByGroupName(command.group.name)}" />
 
 	<!-- ############################################# profile tab ############################################# -->
 	<c:set var="user" value="${command.user}" />
