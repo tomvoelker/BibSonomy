@@ -64,6 +64,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.recommender.tag.model.RecommendedTag;
@@ -402,7 +403,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * and set this as referer.
 	 *
 	 * @param command
-	 * @param referer
 	 * @return
 	 */
 	protected String getHttpsReferrer(final COMMAND command) {
@@ -422,7 +422,6 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @param context
 	 * @param postOwner
 	 * @param post
-	 * @param loginUser
 	 * @param intraHashToUpdate
 	 * @return
 	 */
@@ -600,7 +599,7 @@ public abstract class EditPostController<RESOURCE extends Resource, COMMAND exte
 	 * @return
 	 */
 	private View handleDatabaseException(final COMMAND command, final User loginUser, final Post<RESOURCE> post, final DatabaseException ex, final String process) {
-		final List<ErrorMessage> errorMessages = ex.getErrorMessages(post.getResource().getIntraHash());
+		final List<ErrorMessage> errorMessages = ex.getErrorMessages(PostUtils.getKeyForPost(post));
 		for (final ErrorMessage em : errorMessages) {
 			this.errors.reject("error.post.update", "Could not " + process + " this post.");
 			log.warn("could not " + process + " post because " + em.getDefaultMessage(), ex);
