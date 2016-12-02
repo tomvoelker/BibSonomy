@@ -19,26 +19,25 @@
 	 	| - integrate "common groups"
 	 	|
 	 	+-->
-
-	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.UserResourceViewCommand" required="true"/>
-
-	<c:set var="username"><user:username username="${command.user}" noLink="${true}"/></c:set>
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
+	<jsp:directive.attribute name="user" type="org.bibsonomy.model.User" required="true" />
+	
+	<c:set var="username"><user:username username="${user}" noLink="${true}"/></c:set>
 	<c:set var="outLink" value=""/>
 	<c:set var="outTitleKey" value=""/>
-	<c:if test="${not empty command.user.homepage}">
-		<c:set var="outLink" value="${fn:escapeXml(command.user.homepage)}"/>
+	<c:if test="${not empty user.homepage}">
+		<c:set var="outLink" value="${fn:escapeXml(user.homepage)}"/>
 		<c:set var="outTitleKey" value="${outTitleKey}"/>
 	</c:if>
 	<div class="user-card">
 		<div class="card-header">
-			<user:thumbnail user="${command.user}" noname="${true}" circle="${true}" />
-			
-			<c:if test="${not empty command.user.realname}">
+			<user:thumbnail user="${user}" noname="${true}" circle="${true}" />
+			<c:if test="${not empty user.realname}">
 				<h4>
-					<c:out value="${command.user.realname}" />
-					<c:if test="${not empty command.user.homepage}">
+					<c:out value="${user.realname}" />
+					<c:if test="${not empty user.homepage}">
 						<small>
-							<a href="${fn:escapeXml(command.user.homepage)}" rel="nofollow">
+							<a href="${fn:escapeXml(user.homepage)}" rel="nofollow">
 								<fontawesome:icon icon="external-link" />
 							</a>
 						</small>
@@ -46,10 +45,10 @@
 				</h4>
 			</c:if>
 			
-			<p class="text-muted"><user:username noLink="${true}" user="${command.user}" /></p>
+			<p class="text-muted"><user:username noLink="${true}" user="${user}" /></p>
 		</div>
 		<c:if test="${command.context.userLoggedIn}">
-			<user:userSocializerButtons user="${command.user}" command="${command}" />
+			<user:userSocializerButtons user="${user}" command="${command}" />
 		</c:if>
 		<c:if test="${not command.context.userLoggedIn}">
 			<p class="small-font"><fmt:message key="friends.addfriend.login" /></p>

@@ -28,15 +28,14 @@ package org.bibsonomy.webapp.util.spring.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -97,7 +96,9 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 	private static final Log log = LogFactory.getLog(MinimalisticControllerSpringWrapper.class);
 	
 	private static final String CONTROLLER_ATTR_NAME = "minctrlatrr";
-	
+	public static final String PATH_SEPERATOR = "/";
+	public static final String PATH_QUERY_SEPERATOR = "?";
+
 	/**
 	 * @param listCommand
 	 * @return
@@ -204,7 +205,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		final String requestURI = request.getRequestURI();
 		final String realRequestPath = getRequestPath(request);
 		final String query = request.getQueryString();
-		log.debug("Processing " + requestURI + "?" + query + " from " + requestLogic.getInetAddress());
+		log.debug("Processing " + requestURI + PATH_QUERY_SEPERATOR + query + " from " + requestLogic.getInetAddress());
 		if (presenceCondition != null && !presenceCondition.eval()) {
 			throw new NoSuchRequestHandlingMethodException(request);
 		}
@@ -337,7 +338,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 		} catch (final Exception ex) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			errors.reject("error.internal", new Object[]{ex}, "Internal Server Error: " + ex.getMessage());
-			log.error("Could not complete controller (general exception) for request " + realRequestPath + "?" + request.getQueryString() + " with referer " + request.getHeader("Referer"), ex);
+			log.error("Could not complete controller (general exception) for request " + realRequestPath + PATH_QUERY_SEPERATOR + request.getQueryString() + " with referer " + request.getHeader("Referer"), ex);
 		}
 		
 		log.debug("Exception catching block passed, putting comand+errors into model.");
@@ -350,39 +351,49 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 			final int totalCount = safeSize(simpleResourceViewCommand.getBibtex()) + safeSize(simpleResourceViewCommand.getBookmark()) + safeSize(simpleResourceViewCommand.getGoldStandardBookmarks()) + safeSize(simpleResourceViewCommand.getGoldStandardPublications());
 			
 			if (totalCount == 0) {
+				final String format = simpleResourceViewCommand.getFormat();
+				final boolean isHtml = Views.FORMAT_STRING_HTML.equals(format);
 				/*
 				 * here we check if the requested tags contain a + to handle
 				 * our old wrong url form encoding in the url path
 				 */
-				if (command instanceof TagResourceViewCommand && ((TagResourceViewCommand) simpleResourceViewCommand).getRequestedTags().contains("+")) {
-					final List<String> pathElements = Arrays.asList(realRequestPath.split("/"));
-					final StringBuilder newRequestUriBuilder = new StringBuilder("/");
-					
-					final String format = simpleResourceViewCommand.getFormat();
-					if (!"html".equals(format)) {
-						newRequestUriBuilder.append(format + "/");
-						if ("layout".equals(format)) {
-							newRequestUriBuilder.append(simpleResourceViewCommand.getLayout() + "/");
+				if (command instanceof TagResourceViewCommand) {
+					final TagResourceViewCommand tagResourceViewCommand = (TagResourceViewCommand) command;
+
+					if (tagResourceViewCommand.getRequestedTags().contains("+")) {
+						final List<String> pathElements = Arrays.asList(realRequestPath.split(PATH_SEPERATOR));
+						final StringBuilder newRequestUriBuilder = new StringBuilder(PATH_SEPERATOR);
+
+						if (!isHtml) {
+							newRequestUriBuilder.append(format + "/");
+							if (Views.FORMAT_STRING_LAYOUT.equals(format)) {
+								newRequestUriBuilder.append(simpleResourceViewCommand.getLayout() + PATH_SEPERATOR);
+							}
 						}
-					}
-					
-					final Iterator<String> pathIterator = pathElements.iterator();
-					while (pathIterator.hasNext()) {
-						final String path = pathIterator.next();
-						if (pathIterator.hasNext()) {
-							newRequestUriBuilder.append(path);
-							newRequestUriBuilder.append("/");
-						} else {
-							// simple heuristic: the last path element is the path element containing the requested tags
-							newRequestUriBuilder.append(path.replaceAll("\\+", "%20"));
+
+						final Iterator<String> pathIterator = pathElements.iterator();
+						while (pathIterator.hasNext()) {
+							final String path = pathIterator.next();
+							if (pathIterator.hasNext()) {
+								newRequestUriBuilder.append(path);
+								newRequestUriBuilder.append(PATH_SEPERATOR);
+							} else {
+								// simple heuristic: the last path element is the path element containing the requested tags
+								newRequestUriBuilder.append(path.replaceAll("\\+", "%20"));
+							}
 						}
+
+						// append query
+						if (present(query)) {
+							newRequestUriBuilder.append(PATH_QUERY_SEPERATOR).append(query);
+						}
+
+						view = new ExtendedRedirectView(newRequestUriBuilder.toString(), true);
 					}
-					
-					if (present(query)) {
-						newRequestUriBuilder.append("?").append(query);
-					}
-					view = new ExtendedRedirectView(newRequestUriBuilder.toString(), true);
-				} else {
+				}
+
+				// don't render a 404 on the homepage and only on html pages
+				if (!"".equals(realRequestPath) && isHtml) {
 					// no resources found, render 404 for search engines (soft-404 warning)
 					response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 				}
@@ -399,7 +410,7 @@ public class MinimalisticControllerSpringWrapper<T extends ContextCommand> exten
 			model.put("flashAttributes", flashAttributes);
 		}
 		
-		log.debug("Returning model and view for " + request.getRequestURI() + "?" + request.getQueryString() + " from " + requestLogic.getInetAddress());
+		log.debug("Returning model and view for " + request.getRequestURI() + PATH_QUERY_SEPERATOR + request.getQueryString() + " from " + requestLogic.getInetAddress());
 		
 		/*
 		 * If the view is already a Spring view, use it directly.

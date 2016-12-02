@@ -7,10 +7,11 @@
 	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
-
+	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
-	<jsp:directive.attribute name="pubActionButtons" fragment="true" required="false"/>
-	<jsp:directive.attribute name="showUserPicture" type="java.lang.Boolean" required="false" />
+	
+	<!-- TODO: (bootstrap) rename to pubActionButttons -->
+	<jsp:directive.attribute name="bibActionButtons" fragment="true" required="false"/>
 
 	<c:set var="pubTitle" value="${mtl:cleanBibtex(post.resource.title)}" />
 	<c:set var="year" value="${mtl:cleanBibtex(post.resource.year)}" />
@@ -29,6 +30,15 @@
 			</div>
 		</c:if>
 	
+	
+	<div class="media">
+		 <div class="media-left">
+			<!-- TODO: (bootstrap) introduce tagx file for this -->
+			<c:set var="postUserName"><user:username noLink="${true}" user="${post.user}"/></c:set>
+			<a href="/user/${mtl:encodePathSegment(post.user.name)}" title="${postUserName}">
+				<img alt="${postUserName}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(fn:escapeXml(post.user.name))}" class="user-avatar img-circle img-responsive"/>
+			</a>
+		</div>
 		<div class="media-body" id="titletext">
 			<h1 class="media-heading" id="pubtitle">
 				<jsp:invoke fragment="pubActionButtons" />

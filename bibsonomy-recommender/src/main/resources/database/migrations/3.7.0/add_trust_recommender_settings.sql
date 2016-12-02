@@ -1,0 +1,1 @@
+ALTER TABLE recommender_settings ADD COLUMN `trusted` tinyint(1) unsigned NOT NULL DEFAULT '0';

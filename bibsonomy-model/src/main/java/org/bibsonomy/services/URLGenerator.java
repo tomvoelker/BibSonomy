@@ -415,8 +415,13 @@ public class URLGenerator {
 		final UrlBuilder urlBuilder = new UrlBuilder(this.projectHome);
 		final Resource resource = post.getResource();
 		urlBuilder.addPathElement(getEditUrlByResourceClass(resource.getClass()));
-		urlBuilder.addParameter("intraHashToUpdate", resource.getIntraHash());
-		
+		final String hash;
+		if (ResourceFactory.isCommunityResource(resource)) {
+			hash = resource.getInterHash();
+		} else {
+			hash = resource.getIntraHash();
+		}
+		urlBuilder.addParameter("intraHashToUpdate", hash);
 		return this.getUrl(urlBuilder.asString());
 	}
 	
@@ -981,8 +986,16 @@ public class URLGenerator {
 	private static void addParamsForCommunityPage(final Resource resource, final Post<? extends Resource> post, final UrlBuilder builder) {
 		final Integer ratingCount = resource.getNumberOfRatings();
 		if (present(ratingCount) && ratingCount.intValue() == 0 && present(post)) {
-			builder.addParameter("postOwner", post.getUser().getName());
-			builder.addParameter("intraHash", post.getResource().getIntraHash());
+			final User user = post.getUser();
+			final String hash;
+			if (present(user)) {
+				builder.addParameter("postOwner", user.getName());
+				hash = post.getResource().getIntraHash();
+			} else {
+				hash = post.getResource().getInterHash();
+			}
+			
+			builder.addParameter("intraHash", hash);
 		}
 	}
 

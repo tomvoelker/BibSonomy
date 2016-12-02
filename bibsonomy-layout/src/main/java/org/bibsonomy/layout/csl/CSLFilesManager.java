@@ -26,6 +26,9 @@
  */
 package org.bibsonomy.layout.csl;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -36,19 +39,15 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
+import net.sf.json.JSONObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.util.StringUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
-import net.sf.json.JSONObject;
 
 /**
  * class for managing all csl files
@@ -76,7 +75,7 @@ public class CSLFilesManager {
 
 		try {
 			final Resource aliasesResource = resolver.getResource(BASE_PATH_STYLES + "renamed-styles.json");
-			final BufferedReader jsonReader = new BufferedReader(new InputStreamReader(aliasesResource.getInputStream()));
+			final BufferedReader jsonReader = new BufferedReader(new InputStreamReader(aliasesResource.getInputStream(), StringUtils.DEFAULT_CHARSET));
 			final StringBuilder jsonBuilder = new StringBuilder();
 			while (jsonReader.ready()) {
 				jsonBuilder.append(jsonReader.readLine());
@@ -96,7 +95,7 @@ public class CSLFilesManager {
 			final Resource[] resources = resolver.getResources(BASE_PATH_STYLES + "*.csl");
 			
 			for (final Resource resource : resources) {
-				try (final BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
+				try (final BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), StringUtils.DEFAULT_CHARSET))) {
 					final StringBuilder builder = new StringBuilder();
 					while (reader.ready()) {
 						builder.append(reader.readLine() + "\n");

@@ -467,7 +467,6 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 */
 		if (directEdit) {
 			if (present(postsToUpdateTags)) {
-				// TODO THONI: update this to reflect the corresponding users. TODODZO
 				this.updatePosts(postsToUpdateTags, resourceClass, postMap, postsWithErrors, PostUpdateOperation.UPDATE_TAGS);
 			}
 			/*
@@ -785,6 +784,8 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 * @return
 	 */
 	private View getFinalRedirect(final String referer, final String loginUserName) {
+		this.requestLogic.removeSessionAttribute(PostPublicationController.TEMPORARILY_IMPORTED_PUBLICATIONS);
+		
 		String redirectUrl = referer;
 		/*
 		 * if no URL is given, we redirect to the user's page

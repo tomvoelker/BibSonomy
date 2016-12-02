@@ -24,6 +24,9 @@
 		<script type="text/javascript" src="/resources_puma/javascript/openaccess.js"><!--  --></script>
 	</c:if>
 	
+	<!-- modal for exports -->
+	<export:modal />
+	
 	<c:choose>
 		<c:when test="${post.resource.entrytype eq 'book'}">
 			<c:set var="itemtype" value="http://schema.org/Book" />
