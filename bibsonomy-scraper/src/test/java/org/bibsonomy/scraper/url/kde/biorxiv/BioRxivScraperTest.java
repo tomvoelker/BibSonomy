@@ -24,58 +24,39 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.scraper.url.kde.bibsonomy;
+package org.bibsonomy.scraper.url.kde.biorxiv;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
+import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * Scraper URL tests for {@link BibSonomyScraper}
- * @author tst
+ * Scraper URL tests for {@link BioRxivScraper}
+ * @author Johannes
  */
 @Category(RemoteTest.class)
-public class BibSonomyScraperTest {
-	
-	/**
-	 * tests old path 'bibtex'
-	 */
-	@Test
-	public void url1TestRun() {
-		final String url = "https://www.bibsonomy.org/bibtex/2101efca8c9368b56d680ce92329784e5/jaeschke";
-		final String resultFile = "BibSonomyScraperUnitURLTest.bib";
-		assertScraperResult(url, null, BibSonomyScraper.class, resultFile);
-	}
-	
-	/**
-	 * tests old path 'bibtex' (BibTeX)
-	 */
-	@Test
-	public void url2TestRun() {
-		final String url = "https://www.bibsonomy.org/bib/bibtex/2101efca8c9368b56d680ce92329784e5/jaeschke";
-		final String resultFile = "BibSonomyScraperUnitURLTest.bib";
-		assertScraperResult(url, null, BibSonomyScraper.class, resultFile);
-	}
-	
-	/**
-	 * tests new path 'publication'
-	 */
-	@Test
-	public void url3TestRun() {
-		final String url = "https://www.bibsonomy.org/publication/2101efca8c9368b56d680ce92329784e5/jaeschke";
-		final String resultFile = "BibSonomyScraperUnitURLTest.bib";
-		assertScraperResult(url, null, BibSonomyScraper.class, resultFile);
-	}
+public class BioRxivScraperTest {
 
 	/**
-	 * tests new path 'publication' (BibTeX)
+	 * starts URL test 1
 	 */
 	@Test
-	public void url4TestRun() {
-		final String url = "https://www.bibsonomy.org/bib/publication/2101efca8c9368b56d680ce92329784e5/jaeschke";
-		final String resultFile = "BibSonomyScraperUnitURLTest.bib";
-		assertScraperResult(url, null, BibSonomyScraper.class, resultFile);
+	public void url1Test1Run(){		
+		final String url = "http://biorxiv.org/content/early/2016/11/30/090654";
+		final String resultFile = "BioRxivScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, BioRxivScraper.class, resultFile);
+	}
+	
+	/**
+	 * starts URL test 2
+	 */
+	@Test
+	public void url1Test2Run(){		
+		final String url = "http://biorxiv.org/content/early/2016/11/30/090514.full.pdf+html";
+		final String resultFile = "BioRxivScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, BioRxivScraper.class, resultFile);
 	}
 }

@@ -238,18 +238,6 @@
 		<BibFile>LibrarythingScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.librarything.LibrarythingScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_38">
-		<TestDescription>URL test for bibsonomy.org/bibtex</TestDescription>
-		<URL>http://www.bibsonomy.org/bibtex/2101efca8c9368b56d680ce92329784e5/jaeschke</URL>
-		<BibFile>BibSonomyScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.bibsonomy.BibSonomyScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_39">
-		<TestDescription>URL test for bibsonomy.org/bib/bibtex</TestDescription>
-		<URL>http://www.bibsonomy.org/bib/bibtex/2101efca8c9368b56d680ce92329784e5/jaeschke</URL>
-		<BibFile>BibSonomyScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.bibsonomy.BibSonomyScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_40">
 		<TestDescription>Scraping test for IEEE computer society scraper</TestDescription>
 		<URL>http://www.computer.org/csdl/proceedings/dexa/2006/2641/00/26410603-abs.html</URL>
@@ -1190,18 +1178,6 @@
 		<URL>http://books.google.com/books?id=zZ3CAAAACAAJ&amp;dq=deutscher+dokumentartag+1991&amp;hl=en&amp;ei=g1m6Tr71KObY4QT4v_SWCA&amp;sa=X&amp;oi=book_result&amp;ct=result&amp;resnum=1&amp;ved=0CCwQ6AEwAA</URL>
 		<BibFile>GoogleBooksScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.googlebooks.GoogleBooksScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_209">
-		<TestDescription>URL test for bibsonomy.org/publication</TestDescription>
-		<URL>http://www.bibsonomy.org/publication/2101efca8c9368b56d680ce92329784e5/jaeschke</URL>
-		<BibFile>BibSonomyScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.bibsonomy.BibSonomyScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_210">
-		<TestDescription>URL test for bibsonomy.org/bib/publication</TestDescription>
-		<URL>http://www.bibsonomy.org/bib/publication/2101efca8c9368b56d680ce92329784e5/jaeschke</URL>
-		<BibFile>BibSonomyScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.bibsonomy.BibSonomyScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_211">
 		<TestDescription>URL test for http://jap.physiology.org/</TestDescription>
