@@ -27,13 +27,13 @@ var requiredForType = {
         "inbook":["chapter","pages","publisher","volume","number","series","type","address","edition","month","misc.DOI","note"],
         "incollection":["publisher","booktitle","volume","number","series","type","chapter","pages","address","edition","month","misc.DOI","note"],
         "inproceedings":inproceedingsField,
-        "manual":["organization","address","edition","month","misc.DOI","note"],
-        "masterthesis":["school","type","address","month","misc.DOI","note"],
-        "misc":["howpublished","month","misc.DOI","note"],
+        "manual":["organization","address","edition","month","note"],
+        "masterthesis":["school","type","address","month","note"],
+        "misc":["howpublished","month","note"],
         "phdthesis":["school","address","type","month","misc.DOI","note"],
         "proceedings":["publisher","volume","number","series","address","month","misc.DOI","organization","note"],
         "techreport":["institution","number","type","address","month","misc.DOI","note"],
-        "unpublished":["misc.DOI","note"]
+        "unpublished":["note"]
 }
 
 /* update view when user selects another type of publication in list */
@@ -372,7 +372,7 @@ $(document).ready(function() {
 	/*
 	 * add misc fields in the beginning, so they don't show up if js is disabled
 	 */
-	$("#miscDiv").append('<div id="allFieldsWrap" class="form-group"><div id="standardFieldsWrap" ></div><div id="extraFieldsWrap" ></div><div class="col-sm-9 col-sm-offset-3"><button class="btn btn-default btn-xs btn-block" type="button" id="add_field_button">+</button></div></div>');
+	$("#miscDiv").append('<div id="allFieldsWrap" class="form-group"><div id="standardFieldsWrap" ></div><div id="extraFieldsWrap" ></div><div class="col-sm-9 col-sm-offset-3"><button class="btn btn-default btn-block" type="button" id="add_field_button">' + getString("post.resource.misc.add") + '</button></div></div>');
 	$("#miscCheckboxDiv").append('<label><input type="checkbox" id="expertView" />' + getString('post.resource.misc.checkbox') + '</label>');
 	
 	/*
@@ -387,11 +387,11 @@ $(document).ready(function() {
 	 * functions
 	 */
 	function addInputs(){
-		//check if there are any extraInputs, if not, adds "misc" as labeltext 
-		if($(".extraInputs").length){
-			$(wrapper).append('<div class="extraInputs"><label class="col-sm-3 control-label"></label><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-1"><button class="btn btn-default btn-xs remove_field" type="button">-</form:button></div></div>'); 
-		}else{
-			$(wrapper).append('<div class="extraInputs"><label class="col-sm-3 control-label">' + getString('post.resource.misc') +'</label><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-1"><button class="btn btn-default btn-xs remove_field" type="button">-</form:button></div></div>'); 
+		// check if there are any extraInputs, if not, adds "misc" as labeltext
+		if ($(".extraInputs").length) {
+			$(wrapper).append('<div class="extraInputs"><label class="col-sm-3 control-label"></label><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-1"><button class="btn btn-default remove_field" type="button">-</form:button></div></div>');
+		} else {
+			$(wrapper).append('<div class="extraInputs"><label class="col-sm-3 control-label">' + getString('post.resource.misc') +'</label><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-1"><button class="btn btn-default remove_field" type="button">-</form:button></div></div>');
 		}
 	};
 	
