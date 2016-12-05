@@ -26,15 +26,15 @@
  */
 package org.bibsonomy.scraper.url.kde.biorxiv;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.junit.RemoteTest;
-import org.bibsonomy.scraper.junit.RemoteTestAssert;
-import org.bibsonomy.scraper.url.kde.bibsonomy.BibSonomyScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * Scraper URL tests for BioRxivScraper
+ * Scraper URL tests for {@link BioRxivScraper}
  * @author Johannes
  */
 @Category(RemoteTest.class)
@@ -46,10 +46,8 @@ public class BioRxivScraperTest {
 	@Test
 	public void url1Test1Run(){		
 		final String url = "http://biorxiv.org/content/early/2016/11/30/090654";
-		final String selection = null;
-		final Class<? extends Scraper> scraperClass = BioRxivScraper.class;
 		final String resultFile = "BioRxivScraperUnitURLTest1.bib";
-		RemoteTestAssert.assertScraperResult(url, selection, scraperClass, resultFile);
+		assertScraperResult(url, null, BioRxivScraper.class, resultFile);
 	}
 	
 	/**
@@ -58,9 +56,7 @@ public class BioRxivScraperTest {
 	@Test
 	public void url1Test2Run(){		
 		final String url = "http://biorxiv.org/content/early/2016/11/30/090514.full.pdf+html";
-		final String selection = null;
-		final Class<? extends Scraper> scraperClass = BioRxivScraper.class;
 		final String resultFile = "BioRxivScraperUnitURLTest2.bib";
-		RemoteTestAssert.assertScraperResult(url, selection, scraperClass, resultFile);
+		assertScraperResult(url, null, BioRxivScraper.class, resultFile);
 	}
 }
