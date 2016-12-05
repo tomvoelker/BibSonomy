@@ -244,7 +244,7 @@ public class ImportBookmarksController implements ErrorAware, ValidationAwareCon
 				newBookmarkEntries.put(createdPostHash.get(0), title);
 			} catch (final DatabaseException de) {
 				// an error occured: handle duplicates throw all other 
-				for (final String hash: de.getErrorMessages().keySet()) {
+				for (final String hash : de.getErrorMessages().keySet()) {
 					for (final ErrorMessage errorMessage: de.getErrorMessages(hash)) {
 						if (errorMessage instanceof DuplicatePostErrorMessage) {
 							// duplicate post detected => handle this

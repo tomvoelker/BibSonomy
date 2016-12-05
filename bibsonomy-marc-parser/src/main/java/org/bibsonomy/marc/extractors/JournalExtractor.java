@@ -53,7 +53,7 @@ public class JournalExtractor implements AttributeExtractor {
 	private ExtendedMarcWithPicaRecord record = null;
 
 	@Override
-	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) throws IllegalArgumentException {
+	public void extractAndSetAttribute(BibTex target, ExtendedMarcRecord src) throws IllegalArgumentException {
 		if (src instanceof ExtendedMarcWithPicaRecord) {
 			record = (ExtendedMarcWithPicaRecord) src;
 			final String nullNull2At = record.getFirstPicaFieldValue("002@", "$0", "");

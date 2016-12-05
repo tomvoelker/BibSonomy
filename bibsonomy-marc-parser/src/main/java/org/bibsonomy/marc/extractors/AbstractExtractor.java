@@ -39,7 +39,7 @@ import org.bibsonomy.util.ValidationUtils;
 public class AbstractExtractor implements AttributeExtractor {
 
 	@Override
-	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
+	public void extractAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 		String marcValue = src.getFirstFieldValue("520", 'a');
 		if (ValidationUtils.present(marcValue)) {
 			target.setAbstract(marcValue.trim());

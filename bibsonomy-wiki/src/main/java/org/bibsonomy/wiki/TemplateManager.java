@@ -88,7 +88,7 @@ public class TemplateManager {
 				}
 			}
 		} catch (IOException e) {
-			
+			log.error("error while loading templates", e);
 		}
 		
 		return loadedTemplates;

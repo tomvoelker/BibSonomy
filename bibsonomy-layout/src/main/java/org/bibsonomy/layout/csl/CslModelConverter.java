@@ -120,6 +120,7 @@ public class CslModelConverter {
 	public static Record convertPost(final Post<? extends Resource> post) {
 		final Record rec = new Record();
 		final BibTex publication = (BibTex) post.getResource();
+		// parse the misc field to extract DOI, ISBN, … TODO: database module should return the model with a parsed misc field
 		if (!publication.isMiscFieldParsed()) {
 			try {
 				publication.parseMiscField();

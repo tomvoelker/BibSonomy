@@ -43,7 +43,7 @@ import org.bibsonomy.util.ValidationUtils;
 public class EmergencyRepairingExtractor implements AttributeExtractor {
 
 	@Override
-	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
+	public void extractAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 		setDummyAuthorIfNeeded(target);
 		setDummyYearIfNeeded(target);
 	}

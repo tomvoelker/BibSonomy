@@ -28,18 +28,18 @@ package org.bibsonomy.layout.jabref;
 
 import static org.junit.Assert.assertEquals;
 
+import org.apache.commons.io.FilenameUtils;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.services.URLGenerator;
+import org.bibsonomy.testutil.TestUtils;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-
-import org.apache.commons.io.FilenameUtils;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.services.URLGenerator;
-import org.bibsonomy.testutil.TestUtils;
 
 public abstract class AbstractJabrefLayoutTest {
 	
@@ -58,7 +58,7 @@ public abstract class AbstractJabrefLayoutTest {
 			final JabRefConfig config = new JabRefConfig();
 			config.setDefaultLayoutFilePath("org/bibsonomy/layout/jabref");
 			RENDERER = new JabrefLayoutRenderer(config);
-			
+
 			RENDERER.setUrlGenerator(new URLGenerator("http://www.bibsonomy.org"));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -101,15 +101,15 @@ public abstract class AbstractJabrefLayoutTest {
 	protected void testRender(List<Post<BibTex>> testCasePost) throws Exception{
 		final AbstractJabRefLayout layout = RENDERER.getLayout(this.layoutName, "foo");
 		String renderedLayout = RENDERER.renderLayout(layout, testCasePost, false).toString();
-		String resultLayout = TestUtils.readEntryFromFile(layoutTest).trim();
+		String resultLayout = TestUtils.readEntryFromFile(this.layoutTest).trim();
 
 		// format JUnit output
-		final String printedEntryType = entryType.equals("") ? "NA" : entryType;
+		final String printedEntryType = this.entryType.equals("") ? "NA" : this.entryType;
 		
 		// prepare Layouts - Remove varying lines etc.
 		renderedLayout = prepareTest(renderedLayout, this.layoutName);
 		resultLayout = prepareTest(resultLayout, this.layoutName);
-		assertEquals("layout: " + layoutName + ", testfile: " + layoutTest + ", entrytype: " + printedEntryType, resultLayout, renderedLayout);
+		assertEquals("layout: " + this.layoutName + ", testfile: " + this.layoutTest + ", entrytype: " + printedEntryType, resultLayout, renderedLayout);
 	}
 	
 	private static String prepareTest(String renderedLayout, final String layoutName) {

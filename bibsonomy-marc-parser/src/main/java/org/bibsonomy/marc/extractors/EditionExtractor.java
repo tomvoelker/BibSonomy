@@ -38,7 +38,7 @@ import org.bibsonomy.model.BibTex;
 public class EditionExtractor implements AttributeExtractor {
 
 	@Override
-	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
+	public void extractAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 		
 		final String edition = src.getFirstFieldValue("250", 'a');
 		if (edition != null) {

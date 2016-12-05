@@ -1,2 +1,2 @@
-DROP TABLE follower;
-DROP TABLE log_follower;
+DROP TABLE followers;
+DROP TABLE log_followers;

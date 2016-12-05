@@ -68,7 +68,7 @@ public class DBTagAccessTest {
 	@BeforeClass
 	public static void setUp() {
 		dbLogic = RecommenderTestContext.getBeanFactory().getBean("tagRecommenderLogic", DBLogConfigBibSonomy.class);
-		final TestDatabaseLoader loader = new TestDatabaseLoader("recommender-db-schema.sql");
+		final TestDatabaseLoader loader = new TestDatabaseLoader("database/recommender-db-schema.sql");
 		loader.load("recommender-test.properties", "recommender.tag");
 	}
 	
