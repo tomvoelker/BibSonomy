@@ -29,6 +29,7 @@ package org.bibsonomy.model;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.TimeZone;
 
 import org.bibsonomy.common.enums.ProfilePrivlevel;
@@ -86,7 +87,7 @@ public class UserSettings implements Serializable {
 	 * the layouts to be shown on publications and citations
 	 * Reihenfolge ist egal. Wird vor jedem speichern in der Datenbank sortiert.
 	 */
-	private LinkedList<FavouriteLayout> favouriteLayouts = new LinkedList<FavouriteLayout>(Arrays.asList(new FavouriteLayout("SIMPLE", "BIBTEX"), new FavouriteLayout("SIMPLE", "ENDNOTE"), new FavouriteLayout("JABREF", "APA_HTML"),new FavouriteLayout("JABREF", "CHICAGO"),new FavouriteLayout("JABREF", "DIN1505"),new FavouriteLayout("JABREF", "HARVARDHTML"), new FavouriteLayout("JABREF", "MSOFFICEXML")));
+	private List<FavouriteLayout> favouriteLayouts = new LinkedList<FavouriteLayout>(Arrays.asList(new FavouriteLayout("SIMPLE", "BIBTEX"), new FavouriteLayout("SIMPLE", "ENDNOTE"), new FavouriteLayout("JABREF", "APA_HTML"),new FavouriteLayout("JABREF", "CHICAGO"),new FavouriteLayout("JABREF", "DIN1505"),new FavouriteLayout("JABREF", "HARVARDHTML"), new FavouriteLayout("JABREF", "MSOFFICEXML")));
 		
 	private boolean showBookmark = true;
 	
@@ -346,14 +347,14 @@ public class UserSettings implements Serializable {
 	/**
 	 * @return the favourite_layouts
 	 */
-	public LinkedList<FavouriteLayout> getFavouriteLayouts() {
+	public List<FavouriteLayout> getFavouriteLayouts() {
 		return this.favouriteLayouts;
 	}
 
 	/**
 	 * @param favouriteLayouts the favourite_layouts to set
 	 */
-	public void setFavouriteLayouts(LinkedList<FavouriteLayout> favouriteLayouts) {
+	public void setFavouriteLayouts(final List<FavouriteLayout> favouriteLayouts) {
 		this.favouriteLayouts = favouriteLayouts;
 	}
 }

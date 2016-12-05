@@ -142,10 +142,7 @@
 				</dd>
 			</c:if>
 			
-			<!--+
-				| OpenURL
-				+-->
-	
+			
 			<!--+
 				| BibTeX key
 				+-->
@@ -170,6 +167,9 @@
 				+-->
 			<dt><fmt:message key="resources.searchExternal.dropDownLabel" />:</dt>
 			<dd>
+				<!--+
+					| OpenURL and external resources
+					+-->
 				<pub:externalSearchPublication loggedinUser="${command.context.loginUser}" publication="${publication}" />
 			</dd>
 		</dl>

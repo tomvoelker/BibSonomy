@@ -61,7 +61,7 @@ public abstract class AbstractEsIndexTest extends AbstractDatabaseManagerTest {
 	public static void initElasticSearch() throws InterruptedException {
 		startEmbeddedElasticsearchServer();
 		
-		Thread.sleep(1000); // FIXME: just for testing
+		Thread.sleep(5 * 1000); // FIXME: just for testing
 	}
 	
 	/**

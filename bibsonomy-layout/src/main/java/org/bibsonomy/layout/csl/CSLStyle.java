@@ -105,7 +105,6 @@ public class CSLStyle extends org.bibsonomy.model.Layout {
 	 */
 	@Override
 	public boolean hasEmbeddedLayout() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	

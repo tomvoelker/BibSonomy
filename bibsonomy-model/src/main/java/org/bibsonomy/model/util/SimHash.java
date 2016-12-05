@@ -169,7 +169,7 @@ public class SimHash {
 		}
 		// author set
 		return StringUtils.getMD5Hash(getNormalizedTitle(publication.getTitle()) + " " + 
-				PersonNameUtils.getNormalizedPersons(publication.getAuthor())            + " " + 
+				PersonNameUtils.getNormalizedPersons(publication.getAuthor()) + " " + 
 				getNormalizedYear(publication.getYear()));
 	}
 	
@@ -208,7 +208,4 @@ public class SimHash {
 		if (str == null) return "";
 		return StringUtils.removeNonNumbersOrLetters(str).toLowerCase();
 	}
-	
-
-
 }

@@ -1,3 +1,5 @@
+var TITLE_MAX_LENGTH = 60;
+
 $(function() {
 	$('a.publ-export').click(function(e) {
 		if (e.metaKey || e.ctrlKey) {
@@ -9,16 +11,28 @@ $(function() {
 		exportModal.modal('show');
 		
 		var postListItem = $(this).closest('li.post');
-		var titleContainer = postListItem.find('.ptitle');
-		var link = titleContainer.find('a');
+		var linkToPublication;
+		var titleContainer;
+		if (postListItem.length > 0) {
+			titleContainer = postListItem.find('.ptitle');
+			var link = titleContainer.find('a');
+			linkToPublication = link.attr('href');
+		} else {
+			titleContainer = $('h1.publication-title > span');
+			linkToPublication = $('h1.publication-title').data('url');
+		}
+		
 		
 		var publicationTitle = titleContainer.text();
+		if (publicationTitle !== undefined && publicationTitle.length > TITLE_MAX_LENGTH) {
+			publicationTitle = publicationTitle.substring(0, TITLE_MAX_LENGTH - 3) + "…";
+		}
 		
 		$('#exportModalLabel').text(publicationTitle);
 		
 		$(this).closest('div.btn-group').removeClass('open');
 		
-		loadExportLayout($(this), targetElement, link.attr('href'));
+		loadExportLayout($(this), targetElement, linkToPublication);
 		
 		return false;
 	});

@@ -49,11 +49,6 @@ import org.joda.time.format.ISODateTimeFormat;
  * @author dzo
  */
 public final class ElasticsearchUtils {
-	/**
-	 * 
-	 */
-	private static final String LAST_PREDICTION_CHANGE_DATE = "lastPredictionChangeDate";
-
 	private ElasticsearchUtils() {}
 	
 	private static final Log log = LogFactory.getLog(ElasticsearchUtils.class);
@@ -66,6 +61,7 @@ public final class ElasticsearchUtils {
 	private static final String LAST_LOG_DATE_KEY = "last_log_date";
 	private static final String LAST_TAS_KEY = "last_tas_id";
 	private static final String LAST_DOCUMENT_DATE_KEY = "last_document_date";
+	private static final String LAST_PREDICTION_CHANGE_DATE = "lastPredictionChangeDate";
 	private static final String MAPPING_VERSION = "mapping_version";
 	
 	/** Alias for the inactive index */
@@ -159,7 +155,10 @@ public final class ElasticsearchUtils {
 		final Date lastDocumentDate = getDateForIndex(state.getLastDocumentDate());
 		values.put(LAST_DOCUMENT_DATE_KEY, Long.valueOf(lastDocumentDate.getTime()));
 		values.put(MAPPING_VERSION, state.getMappingVersion());
-		values.put(LAST_PREDICTION_CHANGE_DATE, Long.valueOf(state.getLastPredictionChangeDate().getTime()));
+		final Date lastPredictionDate = state.getLastPredictionChangeDate();
+		if (present(lastPredictionDate)) {
+			values.put(LAST_PREDICTION_CHANGE_DATE, Long.valueOf(lastPredictionDate.getTime()));
+		}
 		return values;
 	}
 

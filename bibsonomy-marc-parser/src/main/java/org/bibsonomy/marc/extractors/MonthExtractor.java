@@ -40,7 +40,7 @@ import org.bibsonomy.util.ValidationUtils;
 public class MonthExtractor implements AttributeExtractor{
 
 	@Override
-	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
+	public void extractAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 		String month = null;
 		 // TODO: ask Martina if this is correct
 		if (!ValidationUtils.present(month) && (src instanceof ExtendedMarcWithPicaRecord)) {

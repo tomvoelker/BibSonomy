@@ -32,7 +32,7 @@
 	<parent>
 		<groupId>org.bibsonomy</groupId>
 		<artifactId>bibsonomy</artifactId>
-		<version>3.7.0-SNAPSHOT</version>
+		<version>3.8.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>bibsonomy-search-elasticsearch</artifactId>
 	<properties>
@@ -51,6 +51,12 @@
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-search</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-common</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>

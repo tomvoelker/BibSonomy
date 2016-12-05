@@ -202,8 +202,7 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 	/**
 	 * @param spamTagRecommender the spamTagRecommender to set
 	 */
-	public void setSpamTagRecommender(
-			RecommendationService<Post<? extends Resource>, RecommendedTag> spamTagRecommender) {
+	public void setSpamTagRecommender(RecommendationService<Post<? extends Resource>, RecommendedTag> spamTagRecommender) {
 		this.spamTagRecommender = spamTagRecommender;
 	}
 

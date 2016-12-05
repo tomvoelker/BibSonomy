@@ -45,6 +45,7 @@ import org.bibsonomy.webapp.view.Views;
 import de.unikassel.puma.openaccess.classification.PublicationClassificator;
 import de.unikassel.puma.openaccess.sword.SwordService;
 import de.unikassel.puma.webapp.command.ajax.PublicationClassificationCommand;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
