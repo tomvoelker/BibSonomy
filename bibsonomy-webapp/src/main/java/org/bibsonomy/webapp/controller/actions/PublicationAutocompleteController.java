@@ -48,6 +48,7 @@ import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.id.kde.isbn.ISBNScraper;
+import org.bibsonomy.search.InvalidSearchRequestException;
 import org.bibsonomy.util.id.DOIUtils;
 import org.bibsonomy.util.id.ISBNUtils;
 import org.bibsonomy.webapp.command.actions.PublicationAutocompleteCommand;
@@ -113,8 +114,13 @@ public class PublicationAutocompleteController implements MinimalisticController
 					tags.add(tag);
 				}
 			}
-			final List<Post<BibTex>> postsBySearch = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, tags, null, search, SearchType.LOCAL, null, Order.RANK, null, null, 0, 10);
-			allPosts.addAll(postsBySearch);
+			try {
+				final List<Post<BibTex>> postsBySearch = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, tags, null, search, SearchType.LOCAL, null, Order.RANK, null, null, 0, 10);
+				allPosts.addAll(postsBySearch);
+			} catch (final InvalidSearchRequestException e) {
+				// ignore
+			}
+
 		}
 		
 		BibTexUtils.removeDuplicates(allPosts);
@@ -125,7 +131,7 @@ public class PublicationAutocompleteController implements MinimalisticController
 
 	/**
 	 * @param scraper
-	 * @param isbn
+	 * @param text
 	 * @return 
 	 */
 	private static Post<BibTex> callScraper(final Scraper scraper, final String text) {
@@ -137,14 +143,8 @@ public class PublicationAutocompleteController implements MinimalisticController
 				final PostBibTeXParser postBibTeXParser = new PostBibTeXParser();
 				return postBibTeXParser.parseBibTeXPost(result);
 			}
-		} catch (final IOException e) {
-			log.info("exception while scraping isbn/issn", e);
-		} catch (ScrapingException e) {
-			// TODO Auto-generated catch block
-			log.error("TODO", e);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			log.error("TODO", e);
+		} catch (final IOException | ScrapingException | ParseException e) {
+			log.info("exception while scraping", e);
 		}
 		
 		return null;
