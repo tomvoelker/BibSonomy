@@ -99,17 +99,19 @@ public class PublicationAutocompleteController implements MinimalisticController
 		} else if (present(rawSearch)) {
 			String search = null;
 			List<String> tags = new LinkedList<>();
+			// if search is a number search for isbn or doi
 			if (rawSearch.matches(".*\\d+.*")) {
 				search = "isbn:" + rawSearch;
 				search += " OR doi:" + rawSearch;
 			} else {
+				// build title system tags for searching publication by title
 				final List<String> titleParts = Arrays.asList(rawSearch.split(" "));
 				final Iterator<String> titlePartsIterator = titleParts.iterator();
 				while (titlePartsIterator.hasNext()) {
 					final String titlePart = titlePartsIterator.next();
 					String tag = "sys:title:" + titlePart;
-					if (titlePartsIterator.hasNext()) {
-						tag += "*";
+					if (!titlePartsIterator.hasNext()) {
+						tag += "*"; // TODO: * is elasticsearch specific; should be a constant
 					}
 					tags.add(tag);
 				}
