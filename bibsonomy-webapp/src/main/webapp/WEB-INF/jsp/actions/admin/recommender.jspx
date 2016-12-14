@@ -15,7 +15,7 @@
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
-	<layout:layout pageTitle="admin :: recommender" loginUser="${command.context.loginUser}" requPath="">
+	<layout:layout pageTitle="admin :: recommender" loginUser="${command.context.loginUser}" requPath="" noSidebar="${true}">
 		
 		<jsp:attribute name="breadcrumbs">
 			<nav:breadcrumbs>

@@ -249,8 +249,9 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 
 		for (final String additionalField: BibTexUtils.ADDITIONAL_MISC_FIELDS) {
 			final BibtexString field = (BibtexString) entry.getFieldValue(additionalField); 
-			if (field != null) bibtex.addMiscField(additionalField, field.getContent());
-
+			if (field != null) {
+				bibtex.addMiscField(additionalField, field.getContent());
+			}
 		}
 
 		return bibtex;

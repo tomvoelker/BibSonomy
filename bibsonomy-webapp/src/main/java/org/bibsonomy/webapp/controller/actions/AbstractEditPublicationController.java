@@ -34,6 +34,8 @@ import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.bibtex.parser.PostBibTeXParser;
 import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
 import org.bibsonomy.common.exceptions.ValidationException;
@@ -72,7 +74,7 @@ import bibtex.parser.ParseException;
  * @param <COMMAND>
  */
 public abstract class AbstractEditPublicationController<COMMAND extends EditPublicationCommand> extends EditPostController<BibTex, COMMAND> implements WarningAware {
-
+	private static final Log log = LogFactory.getLog(AbstractEditPublicationController.class);
 	private static final String SESSION_ATTRIBUTE_SCRAPER_METADATA = "scraperMetaData";
 	
 	private Errors warnings;
@@ -134,6 +136,9 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 			publication.setDocuments(new LinkedList<Document>());
 		}
 		for (final String compoundFileName : fileNames) {
+			if (!present(compoundFileName) || compoundFileName.length() < 32) {
+				log.error("could not extract hash and name from temp file. Filename was: '" + compoundFileName + "'");
+			}
 			final String fileHash = compoundFileName.substring(0, 32);
 			final String fileName = compoundFileName.substring(32);
 			/*
@@ -266,7 +271,6 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 			 * FIXME: in this case we should probably show the
 			 * boxes/import_publication_hints.jsp
 			 */
-			
 			boolean errorHandled = false;
 			if (present(selection)) {
 				final String isbn = ISBNUtils.extractISBN(selection);

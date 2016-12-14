@@ -874,7 +874,7 @@ public class UrlRenderer {
 	public String createHrefForTags(final Class<? extends Resource> resourceType, final List<String> tagNames, final GroupingEntity grouping, final String groupingValue, final String filter, final TagRelation relation, final Order order, final int start, final int end) {
 		final UrlBuilder urlBuilder = createURLBuilderForTags();
 		if (present(tagNames)) {
-			urlBuilder.addPathElement(StringUtils.implodeStringCollection(tagNames, "+"));
+			urlBuilder.addPathElement(StringUtils.implodeStringCollection(tagNames, " "));
 		}
 		applyStartEnd(urlBuilder, start, end);
 

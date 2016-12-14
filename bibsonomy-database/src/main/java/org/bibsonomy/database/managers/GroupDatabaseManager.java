@@ -46,12 +46,14 @@ import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.GroupParam;
+import org.bibsonomy.database.params.TagSetParam;
 import org.bibsonomy.database.params.WikiParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.GroupMembership;
 import org.bibsonomy.model.GroupRequest;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.TagSet;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
@@ -157,6 +159,21 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public List<TagSet> getGroupTagSets(final String groupname, final DBSession session) {
 		return this.queryForList("getTagSetsForGroup", groupname, TagSet.class, session);
+	}
+
+	/**
+	 * Returns a TagSet for a group with a given setname
+	 * 
+	 * @param setName - the name of the tagSet
+	 * @param groupId - the id of the group
+	 * @param session
+	 * @return a TagSet
+	 */
+	private TagSet getTagSetBySetNameAndGroup(final String setName, final int groupId, final DBSession session) {
+		final TagSetParam param = new TagSetParam();
+		param.setSetName(setName);
+		param.setGroupId(groupId);
+		return this.queryForObject("getTagSetBySetNameAndGroup", param, TagSet.class, session);
 	}
 
 	/**
@@ -620,6 +637,61 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
+	 * Insert a TagSet
+	 * 
+	 * @param tagset the Set to insert
+	 * @param group the group which owns the tagset
+	 * @param session
+	 */
+	private void insertTagSet(final TagSet tagset, final String groupname, final DBSession session) {
+		final Group group = this.getGroupByName(groupname, session);
+		if (!present(group)) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist");
+		}
+		if (tagset.getSetName().isEmpty() || tagset.getTags().isEmpty()) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Invalid tagset - a tagset must contain a setname and at least one valid tag");
+		}
+
+		final TagSetParam param = new TagSetParam();
+		param.setSetName(tagset.getSetName());
+		param.setGroupId(group.getGroupId());
+		final TagSet set = this.getTagSetBySetNameAndGroup(tagset.getSetName(), group.getGroupId(), session);
+		for (final Tag tag : tagset.getTags()) {
+			if (set.getTags().contains(tag)) {
+				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "INSERT FAILED: tag ('" + tag.getName() + "') already contained in the tagset ('" + tagset.getSetName() + "') for group ('" + group.getName() + "')");
+			}
+			param.setTagName(tag.getName());
+			this.insert("insertTagSet", param, session);
+		}
+
+	}
+
+	/**
+	 * Deletes a TagSet in the DataBase
+	 * 
+	 * @param setName - the name of the TagSet to delete
+	 * @param group - the group of the TagSet
+	 * @param session
+	 */
+	private void deleteTagSet(final String setName, final String groupname, final DBSession session) {
+		final Group group = this.getGroupByName(groupname, session);
+		if (group == null) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist");
+			throw new RuntimeException(); // never happens but calms down
+											// eclipse
+		}
+		final TagSet tagset = this.getTagSetBySetNameAndGroup(setName, group.getGroupId(), session);
+		if (tagset == null) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "TagSet ('" + setName + "') doesn't exist for group ('" + groupname + "')");
+		}
+
+		final TagSetParam param = new TagSetParam();
+		param.setSetName(setName);
+		param.setGroupId(group.getGroupId());
+		this.delete("deleteTagSet", param, session);
+	}
+
+	/**
 	 * Returns a new groupId.
 	 */
 	private int getNewGroupId(final DBSession session) {
@@ -700,7 +772,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't add user to nonexistent group");
 			}
 			// make sure that the user isn't a member of the group
-			if (GroupDatabaseManager.isUserInGroup(username, group)) {
+			if (isUserInGroup(username, group)) {
 				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') is already a member of this group ('" + groupname + "')");
 			}
 
@@ -740,7 +812,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't remove user from nonexistent group");
 		}
 		// make sure that the user is a member of the group
-		if (!GroupDatabaseManager.isUserInGroup(username, group)) {
+		if (!isUserInGroup(username, group)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') isn't a member of this group ('" + groupname + "')");
 		}
 		// check if we have only one group admin
@@ -776,7 +848,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		if (group == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Group ('" + groupname + "') doesn't exist - can't update the grouprole");
 		}
-		if (!GroupDatabaseManager.isUserInGroup(username, group)) {
+		if (!isUserInGroup(username, group)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User ('" + username + "') isn't a member of this group ('" + groupname + "')");
 		}
 

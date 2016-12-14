@@ -99,7 +99,7 @@ public class TitleExtractor implements AttributeExtractor {
 	}
 
 	@Override
-	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
+	public void extractAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 		final StringBuilder sb = new StringBuilder();
 		if (isDependentPart(src)) {
 			final String seriesName = ExtendedMarcRecord.trimAndNormalize(((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("036C", "$a", "")).replace("@", "");

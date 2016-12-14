@@ -52,7 +52,7 @@
 				| and not on his own cv page
 		 		-->
 			<c:if test="${command.context.userLoggedIn and not ownCVPage and not command.isGroup}">
-				<sidebar:socializer command="${command}" />
+				<sidebar:socializer command="${command}" user="${command.user}" />
 			</c:if>
 			
 			<sidebar:sidebarTagCloudItem 

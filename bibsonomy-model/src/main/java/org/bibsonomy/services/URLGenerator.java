@@ -415,8 +415,13 @@ public class URLGenerator {
 		final UrlBuilder urlBuilder = new UrlBuilder(this.projectHome);
 		final Resource resource = post.getResource();
 		urlBuilder.addPathElement(getEditUrlByResourceClass(resource.getClass()));
-		urlBuilder.addParameter("intraHashToUpdate", resource.getIntraHash());
-		
+		final String hash;
+		if (ResourceFactory.isCommunityResource(resource)) {
+			hash = resource.getInterHash();
+		} else {
+			hash = resource.getIntraHash();
+		}
+		urlBuilder.addParameter("intraHashToUpdate", hash);
 		return this.getUrl(urlBuilder.asString());
 	}
 	
@@ -893,7 +898,7 @@ public class URLGenerator {
 	 * @return URL to all publications of the main page in bibtex formats.
 	 */
 	public String getPublicationsAsBibtexUrl() {
-		String url = this.projectHome + BIBTEXEXPORT_PREFIX;
+		final String url = this.projectHome + BIBTEXEXPORT_PREFIX;
 		return this.getUrl(url);
 	}
 
@@ -981,8 +986,16 @@ public class URLGenerator {
 	private static void addParamsForCommunityPage(final Resource resource, final Post<? extends Resource> post, final UrlBuilder builder) {
 		final Integer ratingCount = resource.getNumberOfRatings();
 		if (present(ratingCount) && ratingCount.intValue() == 0 && present(post)) {
-			builder.addParameter("postOwner", post.getUser().getName());
-			builder.addParameter("intraHash", post.getResource().getIntraHash());
+			final User user = post.getUser();
+			final String hash;
+			if (present(user)) {
+				builder.addParameter("postOwner", user.getName());
+				hash = post.getResource().getIntraHash();
+			} else {
+				hash = post.getResource().getInterHash();
+			}
+			
+			builder.addParameter("intraHash", hash);
 		}
 	}
 
@@ -1011,7 +1024,7 @@ public class URLGenerator {
 					+ PUBLICATION_INTER_HASH_ID + publication.getInterHash();
 			return this.getUrl(url);
 		}
-		String url = this.projectHome + PUBLICATION_PREFIX + "/"
+		final String url = this.projectHome + PUBLICATION_PREFIX + "/"
 				+ PUBLICATION_INTRA_HASH_ID + publication.getIntraHash() + "/"
 				+ UrlUtils.encodePathSegment(user.getName());
 		return this.getUrl(url);
@@ -1328,7 +1341,7 @@ public class URLGenerator {
 	 * @return URL pointing to the public viewable posts
 	 */
 	public String getViewablePublicUrl() {
-		String url = this.getProjectHome() + VIEWABLE_PREFIX + "/"
+		final String url = this.getProjectHome() + VIEWABLE_PREFIX + "/"
 				+ VIEWABLE_PUBLIC_SUFFIX;
 		return this.getUrl(url);
 	}
@@ -1354,8 +1367,7 @@ public class URLGenerator {
 	 * @return URL pointing to the private viewable posts
 	 */
 	public String getViewablePrivateUrl() {
-		String url = this.getProjectHome() + VIEWABLE_PREFIX + "/"
-				+ VIEWABLE_PRIVATE_SUFFIX;
+		final String url = this.getProjectHome() + VIEWABLE_PREFIX + "/" + VIEWABLE_PRIVATE_SUFFIX;
 		return this.getUrl(url);
 	}
 

@@ -774,7 +774,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			 * user can safely be deleted from any group. in any case, we still
 			 * check, if we can delete the user from the corresponding group.
 			 */
-			for (final Group group: groups){
+			for (final Group group: groups) {
 				groupDBManager.removeUserFromGroup(group.getName(), userName, false, session);
 			}
 

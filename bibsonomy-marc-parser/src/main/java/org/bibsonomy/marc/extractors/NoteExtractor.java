@@ -41,7 +41,7 @@ import org.bibsonomy.util.ValidationUtils;
 public class NoteExtractor implements AttributeExtractor {
 
 	@Override
-	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
+	public void extractAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 		if (target.getEntrytype().equals("phdthesis") == false) {
 			return;
 		}

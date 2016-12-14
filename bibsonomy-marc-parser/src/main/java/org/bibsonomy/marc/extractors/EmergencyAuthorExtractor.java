@@ -43,7 +43,7 @@ import org.bibsonomy.util.ValidationUtils;
 public class EmergencyAuthorExtractor extends AbstractParticipantExtractor {
 
 	@Override
-	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
+	public void extractAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 		final List<PersonName> authors = target.getAuthor();
 		if (ValidationUtils.present(authors) || ValidationUtils.present(target.getEditor())) {
 			return;

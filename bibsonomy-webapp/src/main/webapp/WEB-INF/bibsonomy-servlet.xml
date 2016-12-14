@@ -474,7 +474,6 @@
 						<property name="controllerBeanName" value="exportPageController"/>
 					</bean>
 				</entry>
-				
 				<entry key="/csl-style">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="CSLStyleController"/> 
@@ -486,8 +485,6 @@
 						</property>
 					</bean>
 				</entry>
-				
-				
 				<entry key="/statistics">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="statisticsController"/>
