@@ -26,8 +26,10 @@
  */
 package org.bibsonomy.scraper.url.kde.ieee;
 
+import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.scraper.junit.RemoteTestAssert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -44,7 +46,22 @@ public class IEEEXploreStandardsScraperTest {
 	 */
 	@Test
 	public void urlTestRun(){
-		UnitTestRunner.runSingleTest("url_14");
+//		UnitTestRunner.runSingleTest("url_14");
+		
+		final String url = "http://ieeexplore.ieee.org/xpl/freeabs_all.jsp?tp=&isnumber=21156&arnumber=982216&punumber=7718";
+		final String selection = null;
+		final Class<? extends Scraper> scraperClass = org.bibsonomy.scraper.url.kde.ieee.IEEEXploreStandardsScraper.class;
+		final String resultFile = "IEEEXploreStandardsScraperUnitURLTest.bib";
+		RemoteTestAssert.assertScraperResult(url, selection, scraperClass, resultFile);
+	}
+	
+	@Test
+	public void url2TestRun(){
+		final String url = "http://ieeexplore.ieee.org/document/982216/";
+		final String selection = null;
+		final Class<? extends Scraper> scraperClass = org.bibsonomy.scraper.url.kde.ieee.IEEEXploreStandardsScraper.class;
+		final String resultFile = "IEEEXploreStandardsScraperUnitURLTest1.bib";
+		RemoteTestAssert.assertScraperResult(url, selection, scraperClass, resultFile);
 	}
 	
 }

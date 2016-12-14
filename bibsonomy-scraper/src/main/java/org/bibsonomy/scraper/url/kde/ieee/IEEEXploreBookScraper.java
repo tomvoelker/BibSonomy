@@ -436,7 +436,7 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 		String citedBy = "";
 		String ids = ExtractID(scrapingContext);
 		try {
-			Matcher m = CITEDBY_PATTERN.matcher(WebUtils.getContentAsString(CITEDBY_ARNUM_URL + ids, WebUtils.getCookies(scrapingContext.getUrl())));
+			Matcher m = CITEDBY_PATTERN.matcher(WebUtils.getContentAsString(CITEDBY_ARNUM_URL + ids, WebUtils.getCookies(scrapingContext.getUrl())));			
 			if(m.find()){
 				citedBy = m.group(1);
 				scrapingContext.setCitedBy(citedBy);

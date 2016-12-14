@@ -26,8 +26,10 @@
  */
 package org.bibsonomy.scraper.url.kde.ieee;
 
+import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.scraper.junit.RemoteTestAssert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -44,7 +46,13 @@ public class IEEEXploreJournalProceedingsScraperTest {
 	 */
 	@Test
 	public void urlTestRun1(){
-		UnitTestRunner.runSingleTest("url_13");
+//		UnitTestRunner.runSingleTest("url_13");
+		
+		final String url = "http://ieeexplore.ieee.org/xpl/articleDetails.jsp?tp=&arnumber=6136685&contentType=Conference+Publications&searchField%3DSearch_All%26queryText%3DEnergy+efficient+hierarchical+epidemics+in+peer-to-peer+systems";
+		final String selection = null;
+		final Class<? extends Scraper> scraperClass = org.bibsonomy.scraper.url.kde.ieee.IEEEXploreJournalProceedingsScraper.class;
+		final String resultFile = "IEEEXploreJournalProceedingsScraperUnitURLTest1.bib";
+		RemoteTestAssert.assertScraperResult(url, selection, scraperClass, resultFile);
 	}
 
 	/**
@@ -52,6 +60,12 @@ public class IEEEXploreJournalProceedingsScraperTest {
 	 */
 	@Test
 	public void urlTestRun2(){
-		UnitTestRunner.runSingleTest("url_127");
+//		UnitTestRunner.runSingleTest("url_127");
+		
+		final String url = "http://ieeexplore.ieee.org/xpl/articleDetails.jsp?arnumber=4536262";
+		final String selection = null;
+		final Class<? extends Scraper> scraperClass = org.bibsonomy.scraper.url.kde.ieee.IEEEXploreJournalProceedingsScraper.class;
+		final String resultFile = "IEEEXploreJournalProceedingsScraperUnitURLTest2.bib";
+		RemoteTestAssert.assertScraperResult(url, selection, scraperClass, resultFile);
 	}
 }
