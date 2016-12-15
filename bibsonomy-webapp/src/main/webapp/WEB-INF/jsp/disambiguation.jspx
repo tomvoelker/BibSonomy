@@ -99,7 +99,7 @@
 				<h2><fmt:message key="disambiguation.fromPost"/></h2>
 						<div class="title">
 							<pub:title post="${command.post}" showUserPicture="${false}">
-								<jsp:attribute name="pubActionButtons">
+								<jsp:attribute name="bibActionButtons">
 									<div class="pull-right">
 										<actionbuttons:actions post="${command.post }" resourceType="bibtex" loginUserName="${command.context.loginUser.name}" />
 									</div>
@@ -109,7 +109,7 @@
 			</c:if>
 			
 			<div class="clearfix">&#160;</div>
-			
+			<c:set var="collapseID" value="0"/>
 			<div class="clearfix">
 				<c:if test="${not empty command.context.loginUser.name}">
 					<h2><fmt:message key="disambiguation.pleaseChooseMsg"><fmt:param value="${mtl:cleanBibtex(command.personName)}"/></fmt:message></h2>
@@ -118,6 +118,7 @@
 							<c:when test="${fn:length(command.suggestedPersonPosts) gt 0}">
 								<div class="list-group">
 									<c:forEach var='rel' items="${command.suggestedPersonPosts}">
+										
 										<div class="list-group-item">
 											<c:choose>
 												<c:when test="${not empty command.context.loginUser.name}">
@@ -134,6 +135,26 @@
 											<a class='btnLinkPerson' data-toggle="${dataToggle}" data-target="${dataTarget}" href="${href}" data-person-url="${absoluteUrlGenerator.getPersonUrl(rel.key.person.personId)}" data-person-id="${fn:escapeXml(rel.key.person.personId)}" >
 												${command.personRoleRenderer.getExtendedPersonName(rel.key, request.locale, true)}
 											</a>
+											<!-- show some publications of the person if there are any to show -->
+											<c:set var="collapseID" value="${collapseID + 1}"/>
+											<c:if test="${fn:length(rel.value) gt 0}">											
+											<a style="float: right;" data-toggle="collapse" aria-expanded="false" href="#collapse_${collapseID}">
+          										<button class="btn btn-default btn-xs"> <span class="fa fa-expand"></span> </button>
+        									</a>        									
+        									<div id="collapse_${collapseID}" >
+												<table class="table table-striped personOtherPublicationTable" >
+													<thead>
+														<tr>
+															<th data-field="title" data-sortable="true"><fmt:message key="post.resource.title" /></th>
+															<th data-field="year" data-sortable="true"><fmt:message key="post.resource.year" /></th>
+														</tr>
+													</thead>
+													<c:forEach var="posts" items="${rel.value}">
+														<per:simplePubView post="${posts}" showAuthor="${false}" />
+													</c:forEach>
+												</table>
+											</div>
+											</c:if>
 										</div>
 									</c:forEach>
 									<c:if test="${not empty command.context.loginUser.name}">
@@ -166,22 +187,24 @@
 						</c:choose>
 					</c:if>
 					
-					<!--  <h3 class="list-headline"><fmt:message key="person.show.otherPub" /></h3> -->
-					<div class="list-group">
-						<div class="list-group-item">
-							<c:choose>
-								<c:when test="${fn:length(command.suggestedPosts) gt 0}">
-									<c:forEach var="post" items="${command.suggestedPosts}">
-										<review:simpleReviewForm userName="${command.context.loginUser.name}" resource="${post}" postUserName="${post.user.name}" />
-										<hr />
-									</c:forEach>
-								</c:when>
-								<c:otherwise>
-									<p class="text-info"><strong> ** NOTHING FOUND ** </strong></p>
-								</c:otherwise>
-							</c:choose>
-						</div>
-					</div>
+			<c:if test="${fn:length(command.suggestedPosts) gt 0}">
+				<h3 class="list-headline"><fmt:message key="person.show.otherPub" /></h3>
+				<div id="otherPublications" class="personPageTable table-responsive">
+					<table class="table table-striped personOtherPublicationTable" data-toggle="table">
+						<thead>
+							<tr>
+								<th data-field="title" data-sortable="true"><fmt:message key="post.resource.title" /></th>
+								<th data-field="author" data-sortable="true"><fmt:message key="post.resource.author" /></th>
+								<th data-field="year" data-sortable="true"><fmt:message key="post.resource.year" /></th>
+							</tr>
+						</thead>
+						<c:forEach var="post" items="${command.suggestedPosts}">
+							<per:simplePubView post="${post}" />
+						</c:forEach>
+					</table>
+				</div>				
+			</c:if>
+
 									
 				</div>
 		</jsp:attribute>

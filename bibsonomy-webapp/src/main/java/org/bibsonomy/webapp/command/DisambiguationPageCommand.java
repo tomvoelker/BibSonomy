@@ -56,7 +56,7 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	private Post<BibTex> post;
 	private List<ResourcePersonRelation> personSuggestions;
 	private HashMap<ResourcePersonRelation, List<Post<?>>> suggestedPersonPosts;
-	private List<Post<?>> suggestedPosts;
+	private List<Post<BibTex>> suggestedPosts;
 
 	/**
 	 * @return the requestedHash
@@ -202,14 +202,14 @@ public class DisambiguationPageCommand extends UserResourceViewCommand {
 	/**
 	 * @return the suggestedPosts
 	 */
-	public List<Post<?>> getSuggestedPosts() {
+	public List<Post<BibTex>> getSuggestedPosts() {
 		return this.suggestedPosts;
 	}
 
 	/**
-	 * @param suggestedPosts the suggestedPosts to set
+	 * @param otherAdvisorPosts the suggestedPosts to set
 	 */
-	public void setSuggestedPosts(List<Post<?>> suggestedPosts) {
-		this.suggestedPosts = suggestedPosts;
+	public void setSuggestedPosts(List<Post<BibTex>> otherAdvisorPosts) {
+		this.suggestedPosts = otherAdvisorPosts;
 	}
 }

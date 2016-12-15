@@ -12,7 +12,8 @@
 	
 	<!-- TODO: (bootstrap) rename to pubActionButttons -->
 	<jsp:directive.attribute name="bibActionButtons" fragment="true" required="false"/>
-
+	<jsp:directive.attribute name="showUserPicture" type="java.lang.Boolean" required="false" />
+	
 	<c:set var="pubTitle" value="${mtl:cleanBibtex(post.resource.title)}" />
 	<c:set var="year" value="${mtl:cleanBibtex(post.resource.year)}" />
 	<c:if test="${empty showUserPicture}">
@@ -29,22 +30,13 @@
 				</a>
 			</div>
 		</c:if>
-	
-	
-	<div class="media">
-		 <div class="media-left">
-			<!-- TODO: (bootstrap) introduce tagx file for this -->
-			<c:set var="postUserName"><user:username noLink="${true}" user="${post.user}"/></c:set>
-			<a href="/user/${mtl:encodePathSegment(post.user.name)}" title="${postUserName}">
-				<img alt="${postUserName}" src="${relativeUrlGenerator.getUserPictureUrlByUsername(fn:escapeXml(post.user.name))}" class="user-avatar img-circle img-responsive"/>
-			</a>
-		</div>
+
 		<div class="media-body" id="titletext">
 			<h1 class="media-heading" id="pubtitle">
-				<jsp:invoke fragment="pubActionButtons" />
+				<jsp:invoke fragment="bibActionButtons" />
 				<span itemprop="name"><c:out value="${pubTitle}" /></span>
-			
 			</h1>
+
 			<p><bib:desc post="${post}" publication="${post.resource}"/></p>
 		</div>
 	</div>

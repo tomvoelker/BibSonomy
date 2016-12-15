@@ -16,10 +16,17 @@
 	xmlns:fontawsome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+	<jsp:directive.attribute name="showAuthor" type="java.lang.Boolean" required="false" />
+	
+	<c:if test="${empty showAuthor}">
+		<c:set var="showAuthor" value="${true}" />
+	</c:if>
 	
 	<tr>
 		<td><bib:title post="${post}" /></td>
-		<td><bib:author publication="${post.resource}" post="${post}"/></td>
+		<c:if test="${showAuthor eq true}">
+			<td><bib:author publication="${post.resource}" post="${post}"/></td>
+		</c:if>
 		<td><bib:year publication="${post.resource}" braces="false"/></td>
 	</tr>
 
