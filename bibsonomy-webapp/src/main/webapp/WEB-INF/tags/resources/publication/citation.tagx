@@ -6,7 +6,8 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form">
 	
 	<!--+
 		|
@@ -102,6 +103,8 @@
 			<div class="tab-pane" id="citation_all">
 				<!-- keep -->
 			</div>
+			<!-- one button for all of the citations! -->
+			<bsform:button className="copyToLocalClipboard_citationBox" size="defaultSize" style="defaultStyle" valueKey="export.copyToLocalClipboard" icon="clipboard" block="${true}" />
 		</div>
 	</div>
 </jsp:root>
