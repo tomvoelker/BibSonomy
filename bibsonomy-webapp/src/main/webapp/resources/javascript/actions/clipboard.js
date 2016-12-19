@@ -43,7 +43,7 @@ $(function() {
 
 						return false;
 					});
-
+	//TODO, remove copypaste code
 	var copyButton = $('#copyToLocalClipboard');
 	if (copyButton.length > 0) {
 		var clipboard = new Clipboard(copyButton.get(0), {
@@ -76,6 +76,7 @@ $(function() {
 			}).tooltip('show');
 		});
 	}
+	//TODO, remove copypaste code
 	var copyButton = $('.copyToLocalClipboard_citationBox');
 	if (copyButton.length > 0) {
 		var clipboard = new Clipboard(copyButton.get(0), {
