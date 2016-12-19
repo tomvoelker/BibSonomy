@@ -37,7 +37,7 @@ import org.bibsonomy.util.ValidationUtils;
 public class OrganizationExtractor extends AbstractParticipantExtractor {
 
 	@Override
-	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
+	public void extractAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 
 		if (src instanceof ExtendedMarcWithPicaRecord) {
 

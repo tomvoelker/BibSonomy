@@ -26,47 +26,56 @@
  */
 package org.bibsonomy.scraper.url.kde.bibsonomy;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * Scraper URL tests for BibSonomyScraper
+ * Scraper URL tests for {@link BibSonomyScraper}
  * @author tst
  */
 @Category(RemoteTest.class)
 public class BibSonomyScraperTest {
 	
 	/**
-	 * starts URL test with id url_38
+	 * tests old path 'bibtex'
 	 */
 	@Test
-	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_38");
+	public void url1TestRun() {
+		final String url = "https://www.bibsonomy.org/bibtex/2101efca8c9368b56d680ce92329784e5/jaeschke";
+		final String resultFile = "BibSonomyScraperUnitURLTest.bib";
+		assertScraperResult(url, null, BibSonomyScraper.class, resultFile);
 	}
 	
 	/**
-	 * starts URL test with id url_39
+	 * tests old path 'bibtex' (BibTeX)
 	 */
 	@Test
-	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_39");
+	public void url2TestRun() {
+		final String url = "https://www.bibsonomy.org/bib/bibtex/2101efca8c9368b56d680ce92329784e5/jaeschke";
+		final String resultFile = "BibSonomyScraperUnitURLTest.bib";
+		assertScraperResult(url, null, BibSonomyScraper.class, resultFile);
 	}
 	
 	/**
-	 * starts URL test with id url_209
+	 * tests new path 'publication'
 	 */
 	@Test
-	public void url3TestRun(){
-		UnitTestRunner.runSingleTest("url_209");
+	public void url3TestRun() {
+		final String url = "https://www.bibsonomy.org/publication/2101efca8c9368b56d680ce92329784e5/jaeschke";
+		final String resultFile = "BibSonomyScraperUnitURLTest.bib";
+		assertScraperResult(url, null, BibSonomyScraper.class, resultFile);
 	}
 
 	/**
-	 * starts URL test with id url_210
+	 * tests new path 'publication' (BibTeX)
 	 */
 	@Test
-	public void url4TestRun(){
-		UnitTestRunner.runSingleTest("url_210");
+	public void url4TestRun() {
+		final String url = "https://www.bibsonomy.org/bib/publication/2101efca8c9368b56d680ce92329784e5/jaeschke";
+		final String resultFile = "BibSonomyScraperUnitURLTest.bib";
+		assertScraperResult(url, null, BibSonomyScraper.class, resultFile);
 	}
 }

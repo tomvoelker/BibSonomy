@@ -40,7 +40,7 @@ import org.bibsonomy.util.ValidationUtils;
 public class AddressExtractor implements AttributeExtractor {
 
 	@Override
-	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
+	public void extractAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 	
 		String address = null;
 		

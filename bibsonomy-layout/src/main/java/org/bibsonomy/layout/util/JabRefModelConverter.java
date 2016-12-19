@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import net.sf.jabref.BibtexDatabase;
@@ -59,6 +60,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.model.util.MiscFieldConflictResolutionStrategy;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.services.URLGenerator;
@@ -212,19 +214,20 @@ public class JabRefModelConverter {
 				}
 
 				if (bibtex.getMiscFields() != null) {
-					for (final String key : bibtex.getMiscFields().keySet()) {
+					for (final Map.Entry<String, String> miscFieldEntry : bibtex.getMiscFields().entrySet()) {
+						final String key = miscFieldEntry.getKey();
+						final String value = miscFieldEntry.getValue();
 						if ("id".equals(key)) {
 							// id is used by jabref
-							entry.setField("misc_id", clean(bibtex.getMiscField(key), cleanBibTex));
+							entry.setField("misc_id", clean(value, cleanBibTex));
+							continue;
+						}
+						// ignore fields starting with __ - jabref uses them for control
+						if (key.startsWith("__")) {
 							continue;
 						}
 
-						if (key.startsWith("__")) // ignore fields starting with
-							// __ - jabref uses them for
-							// control
-							continue;
-
-						entry.setField(key, clean(bibtex.getMiscField(key), cleanBibTex));
+						entry.setField(key, clean(value, cleanBibTex));
 					}
 				}
 			}
@@ -327,11 +330,11 @@ public class JabRefModelConverter {
 	 */
 	public static Post<? extends Resource> convertEntry(final BibtexEntry entry) {
 		try {
-			final Post<BibTex> post = new Post<BibTex>();
+			final Post<BibTex> post = new Post<>();
 			final BibTex bibtex = new BibTex();
 			post.setResource(bibtex);
 
-			final List<String> knownFields = new ArrayList<String>();
+			final List<String> knownFields = new ArrayList<>();
 
 			final BeanInfo info = Introspector.getBeanInfo(bibtex.getClass());
 			final PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
@@ -339,20 +342,19 @@ public class JabRefModelConverter {
 			bibtex.setMisc("");
 
 			// set all known properties of the BibTex
-			for (final PropertyDescriptor pd : descriptors)
-				if (present(entry.getField((pd.getName().toLowerCase())))
-						&& !JabRefModelConverter.EXCLUDE_FIELDS.contains(pd.getName().toLowerCase())) {
+			for (final PropertyDescriptor pd : descriptors) {
+				if (present(entry.getField((pd.getName().toLowerCase()))) && !JabRefModelConverter.EXCLUDE_FIELDS.contains(pd.getName().toLowerCase())) {
 					pd.getWriteMethod().invoke(bibtex, entry.getField(pd.getName().toLowerCase()));
 					knownFields.add(pd.getName());
 				}
-
+			}
 			// Add not known Properties to misc
-			for (final String field : entry.getAllFields())
-				if (!knownFields.contains(field)
-						&& !JabRefModelConverter.EXCLUDE_FIELDS.contains(field))
+			for (final String field : entry.getAllFields()) {
+				if (!knownFields.contains(field) && !JabRefModelConverter.EXCLUDE_FIELDS.contains(field)) {
 					bibtex.addMiscField(field, entry.getField(field));
-
-			bibtex.serializeMiscFields();
+				}
+			}
+			bibtex.syncMiscFields(MiscFieldConflictResolutionStrategy.MISC_FIELD_MAP_WINS);
 
 			// set the key
 			bibtex.setBibtexKey(entry.getCiteKey());
@@ -360,41 +362,40 @@ public class JabRefModelConverter {
 
 			// set the date of the post
 			final String timestamp = entry.getField("timestamp");
-			if (present(timestamp))
+			if (present(timestamp)) {
 				post.setDate(fmt.parseDateTime(timestamp).toDate());
-
+			}
 			final String abstractt = entry.getField("abstract");
-			if (present(abstractt))
+			if (present(abstractt)) {
 				bibtex.setAbstract(abstractt);
-
+			}
 			final String keywords = entry.getField("keywords");
-			if (present(keywords))
+			if (present(keywords)) {
 				post.setTags(TagUtils.parse(keywords.replaceAll(jabRefKeywordSeparator, " ")));
-
+			}
 			// Set the groups
 			if (present(entry.getField("groups"))) {
-
 				final String[] groupsArray = entry.getField("groups").split(" ");
 				final Set<Group> groups = new HashSet<Group>();
 
-				for (final String group : groupsArray)
+				for (final String group : groupsArray) {
 					groups.add(new Group(group));
-
+				}
 				post.setGroups(groups);
 			}
 
 			final String description = entry.getField("description");
-			if (present(description))
+			if (present(description)) {
 				post.setDescription(description);
-
+			}
 			final String comment = entry.getField("comment");
-			if (present(comment))
+			if (present(comment)) {
 				post.setDescription(comment);
-
+			}
 			final String month = entry.getField("month");
-			if (present(month))
+			if (present(month)) {
 				bibtex.setMonth(month);
-
+			}
 			return post;
 		} catch (final Exception e) {
 			log.debug("Could not convert JabRef entry into BibSonomy post.", e);

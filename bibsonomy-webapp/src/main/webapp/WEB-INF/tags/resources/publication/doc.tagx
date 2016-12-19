@@ -45,7 +45,7 @@
 			<c:forEach var="document" items="${post.resource.documents}" varStatus="status">
 				<div class="item ${status.first ? 'active' : ''}">
 					<a href="${relativeUrlGenerator.getDocumentUrlByIntraHashUserNameAndFileName(post.resource.intraHash, post.user.name, document.fileName)}">
-						<img src="${relativeUrlGenerator.getDocumentUrlByIntraHashUserNameAndFileName(post.resource.intraHash, post.user.name, document.fileName)}?preview=LARGE" alt="test" />
+						<img src="${relativeUrlGenerator.getDocumentUrlByIntraHashUserNameAndFileName(post.resource.intraHash, post.user.name, document.fileName)}?preview=LARGE" alt="${fn:escapeXml(document.fileName)}" />
 					</a>
 					<c:if test="${fn:endsWith(fn:toLowerCase(document.fileName), '.pdf')}">
 						<a href="#" class="doc-magnify"><fontawesome:icon icon="search-plus" /></a>

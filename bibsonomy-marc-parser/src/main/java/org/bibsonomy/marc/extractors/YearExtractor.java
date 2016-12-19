@@ -41,7 +41,7 @@ import org.bibsonomy.util.ValidationUtils;
 public class YearExtractor implements AttributeExtractor{
 	
 	@Override
-	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
+	public void extractAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 		
 		Pattern regex = Pattern.compile("^*\\d{4}");
 		

@@ -1,5 +1,5 @@
 /**
- * BibSonomy-MARC-Parser - Marc Parser for BibSonomy
+ * BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
  *
  * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -24,35 +24,39 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.marc.extractors;
+package org.bibsonomy.scraper.url.kde.biorxiv;
 
-import static org.junit.Assert.assertEquals;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.model.BibTex;
+import org.bibsonomy.scraper.Scraper;
+import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
- * @author jensi
+ * Scraper URL tests for {@link BioRxivScraper}
+ * @author Johannes
  */
-public class TitleExtractorTest extends AbstractExtractorTest {
-	
+@Category(RemoteTest.class)
+public class BioRxivScraperTest {
+
+	/**
+	 * starts URL test 1
+	 */
 	@Test
-	public void testTrimming() {
-		BibTex b = new BibTex();
-		TitleExtractor e = new TitleExtractor();
-		e.extractAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField("245", 'a', " Title "));
-		assertEquals("Title", b.getTitle());
-		b = new BibTex();
-		e.extractAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField("245", 'a', ""));
-		assertEquals("", b.getTitle());
-		b = new BibTex();
-		e.extractAndSetAttribute(b, createExtendedMarcWithPicaRecord());
-		assertEquals("", b.getTitle());
-		b = new BibTex();
-		e.extractAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField("245", 'a', " Title").withMarcField("245", 'b', "bla ; blub  "));
-		assertEquals("Title : bla", b.getTitle());
-		b = new BibTex();
-		e.extractAndSetAttribute(b, createExtendedMarcWithPicaRecord().withMarcField("245", 'a', "Title").withMarcField("245", 'b', "bla ; blub  "));
-		assertEquals("Title : bla", b.getTitle());
+	public void url1Test1Run(){		
+		final String url = "http://biorxiv.org/content/early/2016/11/30/090654";
+		final String resultFile = "BioRxivScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, BioRxivScraper.class, resultFile);
+	}
+	
+	/**
+	 * starts URL test 2
+	 */
+	@Test
+	public void url1Test2Run(){		
+		final String url = "http://biorxiv.org/content/early/2016/11/30/090514.full.pdf+html";
+		final String resultFile = "BioRxivScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, BioRxivScraper.class, resultFile);
 	}
 }

@@ -490,7 +490,7 @@ public class BibtexUtilsTest {
 		/*
 		 * parse and re-write the misc string
 		 */
-		bib.syncMiscFields();
+		bib.resetMiscFieldMap();
 
 		final Post<BibTex> post = new Post<BibTex>();
 		post.setResource(bib);
