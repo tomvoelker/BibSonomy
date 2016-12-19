@@ -70,6 +70,38 @@ $(function() {
 			}).tooltip('show');
 		});
 	}
+	
+	$('.copyToLocalClipboard_citationBox').click(function(e) {
+		var copyButton = $(this);
+		if (copyButton.length > 0) {
+			var clipboard = new Clipboard(copyButton.get(0), {
+				target: function(trigger) {
+					var citationContainer = $("#citation-styles .active");
+					var targetElement = citationContainer.first();
+					return targetElement.get(0);
+				}
+			});
+			
+			
+			copyButton.mouseleave(function() {
+				copyButton.tooltip('destroy');
+			});
+			
+			clipboard.on('success', function(e) {
+				copyButton.tooltip({
+					placement: 'bottom',
+					title: getString('export.copyToLocalClipboard.success')
+				}).tooltip('show');
+			});
+			
+			clipboard.on('error', function(e) {
+				copyButton.tooltip({
+					placement: 'bottom',
+					title: getString('export.copyToLocalClipboard.error')
+				}).tooltip('show');
+			});
+		}
+	});
 });
 
 function pickAll() {
