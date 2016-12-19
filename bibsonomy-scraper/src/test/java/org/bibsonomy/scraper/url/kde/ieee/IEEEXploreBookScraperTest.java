@@ -97,19 +97,19 @@ public class IEEEXploreBookScraperTest {
 		final ScrapingContext sc = new ScrapingContext(new URL("http://ieeexplore.ieee.org/xpl/articleDetails.jsp?arnumber=5286085"));
 		
 		IEEEXploreBookScraper book = new IEEEXploreBookScraper();
-		
+
 		assertTrue(book.scrape(sc));
 
 		assertTrue(book.scrapeCitedby(sc));
 
 		final String cby = sc.getCitedBy();
 		assertNotNull(cby);
-		
+
 		assertTrue(cby.length() > 100);
-		
-		assertEquals("<!-- BEGIN IEEE CITATIONS LI Records --".trim(), cby.substring(0, 43).trim());
-		
-		assertTrue(cby.contains("Beldjoudi, S.;"));
+
+		assertEquals("{\"formulaStrippedArticleTitle\":\"Collaborative Semantic Structuring of Folksonomies\",\"title\":\"Collaborative".trim(), cby.substring(0, 106).trim());
+
+		assertTrue(cby.contains("S. Beldjoudi,"));
 	}
 	@Test
 	public void testReferences() throws Exception{
