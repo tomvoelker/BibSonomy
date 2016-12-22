@@ -26,11 +26,13 @@
  */
 package org.bibsonomy.scraper.id.kde.isbn;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import static org.junit.Assert.assertTrue;
 
 import org.bibsonomy.scraper.ReachabilityTestRunner;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -46,7 +48,10 @@ public class ISBNScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_166");
+//		UnitTestRunner.runSingleTest("url_166");
+		final String selection = "978-3404201600";
+		final String resultFile = "ISBNScraperUnitURLTest1.bib";
+		assertScraperResult(null, selection, ISBNScraper.class, resultFile);
 	}
 	
 	/**
@@ -54,7 +59,10 @@ public class ISBNScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_167");
+//		UnitTestRunner.runSingleTest("url_167");
+		final String selection = "9780387485300";
+		final String resultFile = "ISBNScraperUnitURLTest2.bib";
+		assertScraperResult(null, selection, ISBNScraper.class, resultFile);
 	}
 	
 	/**
@@ -63,7 +71,10 @@ public class ISBNScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		UnitTestRunner.runSingleTest("url_170");
+//		UnitTestRunner.runSingleTest("url_170");
+		final String selection = "0025-5858";
+		final String resultFile = "ISSNScraperUnitURLTest1.bib";
+		assertScraperResult(null, selection, ISBNScraper.class, resultFile);
 	}
 	
 	/**
@@ -71,7 +82,10 @@ public class ISBNScraperTest {
 	 */
 	@Test
 	public void url4TestRun(){
-		UnitTestRunner.runSingleTest("url_171");
+//		UnitTestRunner.runSingleTest("url_171");
+		final String selection = "9783921568705";
+		final String resultFile = "ISSNScraperUnitURLTest2.bib";
+		assertScraperResult(null, selection, ISBNScraper.class, resultFile);
 	}
 
 	/**
