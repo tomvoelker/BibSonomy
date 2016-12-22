@@ -53,15 +53,5 @@ public class IEEEXploreStandardsScraperTest {
 		final Class<? extends Scraper> scraperClass = org.bibsonomy.scraper.url.kde.ieee.IEEEXploreStandardsScraper.class;
 		final String resultFile = "IEEEXploreStandardsScraperUnitURLTest.bib";
 		RemoteTestAssert.assertScraperResult(url, selection, scraperClass, resultFile);
-	}
-	
-	@Test
-	public void url2TestRun(){
-		final String url = "http://ieeexplore.ieee.org/document/982216/";
-		final String selection = null;
-		final Class<? extends Scraper> scraperClass = org.bibsonomy.scraper.url.kde.ieee.IEEEXploreStandardsScraper.class;
-		final String resultFile = "IEEEXploreStandardsScraperUnitURLTest1.bib";
-		RemoteTestAssert.assertScraperResult(url, selection, scraperClass, resultFile);
-	}
-	
+	}	
 }

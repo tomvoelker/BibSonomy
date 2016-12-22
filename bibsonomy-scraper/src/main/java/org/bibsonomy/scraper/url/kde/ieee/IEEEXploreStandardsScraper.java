@@ -68,7 +68,6 @@ public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
 
 	private static final String IEEE_HOST        	 	  = "ieeexplore.ieee.org";
 	private static final String IEEE_STANDARDS_PATH   	  = "xpl";
-	private static final String IEEE_DOCUMENT_PATH 		  = "document";
 	private static final String IEEE_STANDARDS		 	  = "@misc";
 	private static final String IEEE_STANDARDS_IDENTIFIER = "punumber";
 
@@ -77,14 +76,12 @@ public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
 	private static final String CONST_DATE                = "Publication Date: ";
 
 	private static final Pattern pattern1 = Pattern.compile("arnumber=([^&]*)");
-	private static final Pattern pattern2 = Pattern.compile("/document/([^&]*)/");
 
 	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
 
 
 	static {
 		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile("/" + IEEE_STANDARDS_PATH + ".*")));
-		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile("/" + IEEE_DOCUMENT_PATH + ".*")));
 	}
 
 
@@ -95,10 +92,6 @@ public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
 		String id = null;
 		Matcher matcher = pattern1.matcher(sc.getUrl().toString());
 		if (matcher.find()) {
-			id = matcher.group(1);
-		}
-		matcher = pattern2.matcher(sc.getUrl().toString());
-		if (id == null && matcher.find()) {
 			id = matcher.group(1);
 		}
 		if(id != null){
