@@ -117,8 +117,7 @@
 						<c:choose>
 							<c:when test="${fn:length(command.suggestedPersonPosts) gt 0}">
 								<div class="list-group">
-									<c:forEach var='rel' items="${command.suggestedPersonPosts}">
-										
+									<c:forEach var='rel' items="${command.suggestedPersonPosts}">								
 										<div class="list-group-item">
 											<c:choose>
 												<c:when test="${not empty command.context.loginUser.name}">
@@ -138,22 +137,22 @@
 											<!-- show some publications of the person if there are any to show -->
 											<c:set var="collapseID" value="${collapseID + 1}"/>
 											<c:if test="${fn:length(rel.value) gt 0}">											
-											<a style="float: right;" data-toggle="collapse" aria-expanded="false" href="#collapse_${collapseID}">
-          										<button class="btn btn-default btn-xs"> <span class="fa fa-expand"></span> </button>
-        									</a>        									
-        									<div id="collapse_${collapseID}" >
-												<table class="table table-striped personOtherPublicationTable" >
-													<thead>
-														<tr>
-															<th data-field="title" data-sortable="true"><fmt:message key="post.resource.title" /></th>
-															<th data-field="year" data-sortable="true"><fmt:message key="post.resource.year" /></th>
-														</tr>
-													</thead>
-													<c:forEach var="posts" items="${rel.value}">
-														<per:simplePubView post="${posts}" showAuthor="${false}" />
-													</c:forEach>
-												</table>
-											</div>
+												<a class="btn btn-default btn-xs" style="float: right;" aria-expanded="false" data-toggle="collapse" href="#collapse_${collapseID}">
+	          										<span class="fa fa-expand"></span>
+	        									</a>        									
+	        									<div id="collapse_${collapseID}" class="collapse collapsingOverflow">													
+													<table class="table table-striped personOtherPublicationTable">
+														<thead>
+															<tr>
+																<th data-field="title" data-sortable="true"><fmt:message key="post.resource.title" /></th>
+																<th data-field="year" data-sortable="true"><fmt:message key="post.resource.year" /></th>
+															</tr>
+														</thead>
+														<c:forEach var="posts" items="${rel.value}">
+															<per:simplePubView post="${posts}" showAuthor="${false}" />
+														</c:forEach>
+													</table>
+												</div>
 											</c:if>
 										</div>
 									</c:forEach>

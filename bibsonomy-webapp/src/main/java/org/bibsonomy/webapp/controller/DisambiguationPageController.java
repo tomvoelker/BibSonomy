@@ -83,6 +83,7 @@ public class DisambiguationPageController extends SingleResourceListController i
 		}
 		
 		final List<Post<BibTex>> posts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, command.getRequestedHash(), null, null, null, null, null, null, 0, 100);
+		
 		if (!present(posts)) {
 			throw new ObjectNotFoundException(command.getRequestedHash());
 		}
@@ -125,54 +126,65 @@ public class DisambiguationPageController extends SingleResourceListController i
 		command.setPersonName(requestedName);
 		
 		String name = requestedName.toString();
-
+		
 		PersonSuggestionQueryBuilder query = this.logic.getPersonSuggestion(name).withEntityPersons(true).withNonEntityPersons(true).allowNamesWithoutEntities(false).withRelationType(PersonResourceRelationType.values());
-		List<ResourcePersonRelation> suggestedPersons = query.doIt();
-		
-		// command.setPersonSuggestions(suggestedPersons);
-		
-		// find posts from suggested persons
-		List<Post<?>> otherAuthorPosts = null;
-		List<Post<?>> otherAdvisorPosts = new ArrayList<>();
-		HashMap<ResourcePersonRelation, List<Post<?>>> suggestedPersonPosts = new HashMap<>();
-		
+		List<ResourcePersonRelation> suggestedPersons = query.doIt();		
+			
 		/*
-		 * get all persons with same name, their latest 3 pubs + thesis 
-		 */
-		for (final ResourcePersonRelation suggestedPerson : suggestedPersons) {
-			
-			otherAuthorPosts = new ArrayList<>();	
-			
-			List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations().byPersonId(suggestedPerson.getPerson().getPersonId()).getIt();
-							// byPersonId(suggestedPerson.getPerson().getPersonId()).withPosts(true).groupByInterhash(true).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear).getIt();			
+		 * FIXME: use author-parameter in getPosts method
+		 * @see bibsonomy.database.managers.PostDatabaseManager.#getPostsByResourceSearch()
+		 * 
+		 * get at least 50 publications from authors with same name
+		 */	
+		final List<Post<BibTex>> pubAuthorSearch = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, null, name, SearchType.LOCAL, null , null, null, null, 0, 50);
+		
+		List<Post<BibTex>> pubsWithSameAuthorName = new ArrayList<>(pubAuthorSearch);
+		for (final Post<BibTex> post : pubAuthorSearch) {
+			// remove post from search if the author has not exactly the same sur- and last-name
+			if (!post.getResource().getAuthor().contains(requestedName)) {
+				pubsWithSameAuthorName.remove(post);
+			}
+		}
+		
+		List<Post<?>> postsOfSuggestedPersons = new ArrayList<>();
+		HashMap<ResourcePersonRelation, List<Post<?>>> suggestedPersonPosts = new HashMap<>();
 
-			for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {						
-				// escape thesis
+		// get all persons with same name
+		for (final ResourcePersonRelation suggestedPerson : suggestedPersons) {
+
+			List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations().byPersonId(suggestedPerson.getPerson().getPersonId()).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear).getIt();
+			List<Post<?>> personPosts = new ArrayList<>();
+			
+			for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
+				// escape thesis of person
 				final boolean isThesis = resourcePersonRelation.getPost().getResource().getEntrytype().toLowerCase().endsWith("thesis");
 				if (isThesis)
 					continue;
 
-				// get posts from suggested persons				
+				// get pub from the known person			
 				if (resourcePersonRelation.getRelationType().equals(PersonResourceRelationType.AUTHOR)) {
-					// posts from a known author
-					otherAuthorPosts.add(resourcePersonRelation.getPost());
-//				} else {
-//					// posts from an author with the same name but no assignment
-//					otherAdvisorPosts.add(resourcePersonRelation.getPost());
+					personPosts.add(resourcePersonRelation.getPost());
+					postsOfSuggestedPersons.add(resourcePersonRelation.getPost());
 				}
 			}
-			suggestedPersonPosts.put(suggestedPerson, otherAuthorPosts);
+			suggestedPersonPosts.put(suggestedPerson, personPosts);
 		}
-				
-		command.setSuggestedPersonPosts(suggestedPersonPosts);
-		//command.setSuggestedPosts(otherAdvisorPosts);
+
+		// update the post-list from the search result
+		List<Post<BibTex>> noPersonRelPubList = new ArrayList<>(pubsWithSameAuthorName);
+		for (final Post<BibTex> post : pubsWithSameAuthorName) {
+			// remove post if it's already related to a person, also remove the derivated post from the list
+			for (final Post<?> personPost : postsOfSuggestedPersons) {				
+				if ( post.getResource().getInterHash().equals(personPost.getResource().getInterHash()) ||
+						post.getResource().getInterHash().equals(command.getPost().getResource().getInterHash())) {
+					noPersonRelPubList.remove(post);
+					break;
+				}
+			}
+		}
 		
-		/*
-		 * get pubs from authors with same name (no persons)
-		 */
-		//this.logic.getPosts(resourceType, groupingEntity, groupingName, tags, hash, search, searchType, filters, order, startDate, endDate, start, start + itemsPerPage));
-		final List<Post<BibTex>> publicationPosts = this.logic.getPosts(BibTex.class, GroupingEntity.USER, name, null, null, null, null, null, null, null, null, 0, 5);
-		command.setSuggestedPosts(publicationPosts);
+		command.setSuggestedPersonPosts(suggestedPersonPosts);		
+		command.setSuggestedPosts(noPersonRelPubList);
 		
 		return Views.DISAMBIGUATION;
 	}
