@@ -16,6 +16,7 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:resource="urn:jsptagdir:/WEB-INF/tags/resources"
 	xmlns:review="urn:jsptagdir:/WEB-INF/tags/resources/discussion/review"
+	xmlns:sidebar="urn:jsptagdir:/WEB-INF/tags/layout/sidebar"
 	xmlns:spheres="urn:jsptagdir:/WEB-INF/tags/spheres"
 	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:actionbuttons="urn:jsptagdir:/WEB-INF/tags/resources/actionbuttons"
@@ -27,7 +28,8 @@
 	xmlns:per="urn:jsptagdir:/WEB-INF/tags/person">	 
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-
+	
+	<c:set var="title" value="${mtl:cleanBibtex(command.personName)}" />
 	<c:set var="post" value="${command.bibtex.list[0]}" />
 	<c:set var="publication" value="${post.resource}" />
 	
@@ -41,9 +43,10 @@
 	<fmt:message key="disambiguation.modalNewPersonHeader" var="textModalnewPersonHeader"/>
 	<fmt:message key="disambiguation.modalNewPersonContent" var="textModalNewPersonContent"/>
 	<fmt:message key="disambiguation.modalSearchPersonHeader" var="textModalSerachPersonHeader"/>
-	
-	
-	
+	<fmt:message key="disambiguation.info" var="genealogyInfo">
+		<fmt:param value="${properties['project.name']}" />
+		<fmt:param value="${title}" />
+	</fmt:message>
 	<fmt:message key="disambiguation.linkPersonButton" var="textLinkPersonButton"/>
 	<fmt:message key="disambiguation.otherPersonButton" var="textOtherPersonButton"/>
 	<fmt:message key="disambiguation.personsPanelHeader" var="textPersonsPanelHeader"/>
@@ -52,8 +55,6 @@
 	<fmt:message key="disambiguation.postPanelHeader" var="textPostPanelHeader"/>
 	<fmt:message key="disambiguation.close" var="textClose"/>
 	<fmt:message key="disambiguation.linkJustShowPerson" var="textJustShowPerson"/>
-	
-	<c:set var="title" value="${mtl:cleanBibtex(command.personName)}" />
 	
 	<layout:paneLayout pageTitle="${title}" 
 		headerLogoClass="publications" 
@@ -78,9 +79,6 @@
 		
 		<jsp:attribute name="heading">
 		</jsp:attribute>
-		
-		<jsp:attribute name="sidebar">
-		</jsp:attribute>
 
 		<jsp:attribute name="content">
 			<fmt:message key="disambiguation.otherPerson" var="textOtherPerson"/>
@@ -88,7 +86,6 @@
 			<fmt:message key="disambiguation.otherPerson.modal.selectPersonButton" var="textSelectPersonButton"/>
 			<fmt:message key="disambiguation.otherPerson.modal.abortButton" var="textAbortButton"/>
 			<fmt:message key="disambiguation.otherPerson.modal.search.placeholder" var="textPersonSearchPlaceholder"/>
-			
 			<fmt:message key="disambiguation.noInfo" var="textNoFurtherInfo"/>
 			
 			<div class="page-header">
@@ -96,16 +93,16 @@
 			</div>
 		
 			<c:if test="${not empty command.post}">
-				<h2><fmt:message key="disambiguation.fromPost"/></h2>
-						<div class="title">
-							<pub:title post="${command.post}" showUserPicture="${false}">
-								<jsp:attribute name="bibActionButtons">
-									<div class="pull-right">
-										<actionbuttons:actions post="${command.post }" resourceType="bibtex" loginUserName="${command.context.loginUser.name}" />
-									</div>
-								</jsp:attribute>
-							</pub:title>
-						</div>
+				<fmt:message key="disambiguation.fromPost"/>
+				<div class="title">
+					<pub:title post="${command.post}" showUserPicture="${false}">
+						<jsp:attribute name="bibActionButtons">
+							<div class="pull-right">
+								<actionbuttons:actions post="${command.post }" resourceType="bibtex" loginUserName="${command.context.loginUser.name}" />
+							</div>
+						</jsp:attribute>
+					</pub:title>
+				</div>
 			</c:if>
 			
 			<div class="clearfix">&#160;</div>
@@ -185,29 +182,38 @@
 							</c:otherwise>
 						</c:choose>
 					</c:if>
-					
-			<c:if test="${fn:length(command.suggestedPosts) gt 0}">
-				<h3 class="list-headline"><fmt:message key="person.show.otherPub" /></h3>
-				<div id="otherPublications" class="personPageTable table-responsive">
-					<table class="table table-striped personOtherPublicationTable" data-toggle="table">
-						<thead>
-							<tr>
-								<th data-field="title" data-sortable="true"><fmt:message key="post.resource.title" /></th>
-								<th data-field="author" data-sortable="true"><fmt:message key="post.resource.author" /></th>
-								<th data-field="year" data-sortable="true"><fmt:message key="post.resource.year" /></th>
-							</tr>
-						</thead>
-						<c:forEach var="post" items="${command.suggestedPosts}">
-							<per:simplePubView post="${post}" />
-						</c:forEach>
-					</table>
-				</div>				
-			</c:if>
-
-									
-				</div>
+				
+				<!-- show more publications of authors with the same name if there are any -->	
+				<c:if test="${fn:length(command.suggestedPosts) gt 0}">
+					<div class="clearfix">&#160;</div>					
+					<h3 class="list-headline"><fmt:message key="disambiguation.otherPub" /></h3>
+					<div id="otherPublications" class="personPageTable table-responsive">
+						<table class="table table-striped personOtherPublicationTable" data-toggle="table">
+							<thead>
+								<tr>
+									<th data-field="title" data-sortable="true"><fmt:message key="post.resource.title" /></th>
+									<th data-field="author" data-sortable="true"><fmt:message key="post.resource.author" /></th>
+									<th data-field="year" data-sortable="true"><fmt:message key="post.resource.year" /></th>
+								</tr>
+							</thead>
+							<c:forEach var="post" items="${command.suggestedPosts}">
+								<per:simplePubView post="${post}" />
+							</c:forEach>
+						</table>
+					</div>				
+				</c:if>
+			</div>
+			
 		</jsp:attribute>
-	
+
+		<!-- sidebar info for genealogy -->
+		<jsp:attribute name="sidebar">
+			<sidebar:sidebarItem textKey="disambiguation.header">
+				<jsp:attribute name="content">
+					<c:out value="${genealogyInfo}"></c:out>
+				</jsp:attribute>
+			</sidebar:sidebarItem>
+		</jsp:attribute>
 	</layout:paneLayout>
 	
 	<fmt:message var="otherPersonModalTitle" key="disambiguation.otherPerson.modal.title"/>
@@ -216,6 +222,7 @@
 			<p>
 				<fmt:message key="disambiguation.otherPerson.modal.msg"><fmt:param value="${command.personName}"/></fmt:message>
 			</p>
+					
 			<ul class="nav nav-tabs">
 				<li class="active"><a href="#newPerson" data-toggle="tab"><fmt:message key="disambiguation.otherPerson.modal.tab.newPerson"/></a></li>
 				<li><a href="#existingPerson" data-toggle="tab"><fmt:message key="disambiguation.otherPerson.modal.tab.linkPerson"/></a></li>
@@ -267,10 +274,6 @@
 		<jsp:attribute name="modalFooter">
 		</jsp:attribute>
 	</bsold:modal>
-	
-	
-	
-	
 	
 	<fmt:message var="otherPersonModalTitle" key="disambiguation.link.modal.title"/>
 	<bsold:modal modalTitle="${otherPersonModalTitle}" id="linkPerson">

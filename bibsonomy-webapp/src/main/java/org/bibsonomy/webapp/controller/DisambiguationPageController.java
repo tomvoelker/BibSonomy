@@ -40,6 +40,7 @@ import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResourcePersonRelation;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.enums.PersonIdType;
 import org.bibsonomy.model.enums.PersonResourceRelationType;
 import org.bibsonomy.model.logic.exception.LogicException;
@@ -136,8 +137,8 @@ public class DisambiguationPageController extends SingleResourceListController i
 		 * 
 		 * get at least 50 publications from authors with same name
 		 */	
-		final List<Post<BibTex>> pubAuthorSearch = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, null, name, SearchType.LOCAL, null , null, null, null, 0, 50);
-		
+		final List<Post<BibTex>> pubAuthorSearch = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, null, name, SearchType.LOCAL, null , Order.ALPH, null, null, 0, 50);
+
 		List<Post<BibTex>> pubsWithSameAuthorName = new ArrayList<>(pubAuthorSearch);
 		for (final Post<BibTex> post : pubAuthorSearch) {
 			// remove post from search if the author has not exactly the same sur- and last-name
@@ -171,12 +172,20 @@ public class DisambiguationPageController extends SingleResourceListController i
 		}
 
 		// update the post-list from the search result
+		// FIXME: this should be redone once the author-parameter is used
 		List<Post<BibTex>> noPersonRelPubList = new ArrayList<>(pubsWithSameAuthorName);
 		for (final Post<BibTex> post : pubsWithSameAuthorName) {
-			// remove post if it's already related to a person, also remove the derivated post from the list
+			final String currentPostInterHash = post.getResource().getInterHash();
+
+			// remove the derivated post from the list
+			if (currentPostInterHash.equals(command.getPost().getResource().getInterHash())) {
+				noPersonRelPubList.remove(post);
+				break;
+			}
+
+			// remove post if it's already related to a person
 			for (final Post<?> personPost : postsOfSuggestedPersons) {				
-				if ( post.getResource().getInterHash().equals(personPost.getResource().getInterHash()) ||
-						post.getResource().getInterHash().equals(command.getPost().getResource().getInterHash())) {
+				if (currentPostInterHash.equals(personPost.getResource().getInterHash())) {
 					noPersonRelPubList.remove(post);
 					break;
 				}
