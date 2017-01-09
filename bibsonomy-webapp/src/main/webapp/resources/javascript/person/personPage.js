@@ -174,4 +174,9 @@ $(document).ready(function() {
 		});
 	});
 	
+	// empty the input field for the add role dialog
+	$('#addRole').on('show.bs.modal', function (e) {
+	    $('#addRoleAuto').val('');
+	});
+	
 });
