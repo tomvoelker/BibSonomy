@@ -89,6 +89,7 @@ public class PersonPageController extends SingleResourceListController implement
 				case "update": return this.updateAction(command);
 				case "addName": return this.addNameAction(command);
 				case "deleteName": return this.deleteNameAction(command);
+				case "setMainName": return this.setMainNameAction(command);
 				case "addRole": return this.addRoleAction(command);
 				case "addThesis": return this.addThesisAction(command);
 				case "editRole": return this.editRoleAction(command);
@@ -398,6 +399,35 @@ public class PersonPageController extends SingleResourceListController implement
 		
 		jsonResponse.put("status", true);
 		command.setResponseString(jsonResponse.toString());
+		return Views.AJAX_JSON;	
+	}
+	
+	
+	private View setMainNameAction(PersonPageCommand command) {
+		final Person person = logic.getPersonById(PersonIdType.PERSON_ID, command.getPerson().getPersonId());
+		
+		final JSONObject jsonResponse = new JSONObject();
+		
+		
+		person.getMainName().setMain(false);
+		person.setMainName(Integer.parseInt(command.getFormSelectedName()));
+		
+		// bind the new person
+		command.setPerson(person);
+		
+		try {			
+			this.logic.updatePerson(person, PersonUpdateOperation.UPDATE_NAMES);
+		} catch (Exception e) {
+			jsonResponse.put("status", false);
+			// TODO: set proper error message
+			//jsonResponse.put("message", "Some error occured");
+			command.setResponseString(jsonResponse.toString());
+			return Views.AJAX_JSON;
+		}
+		
+		jsonResponse.put("status", true);
+		command.setResponseString(jsonResponse.toString());
+		
 		return Views.AJAX_JSON;	
 	}
 	

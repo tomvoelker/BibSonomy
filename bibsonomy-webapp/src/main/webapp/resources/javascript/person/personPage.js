@@ -179,4 +179,37 @@ $(document).ready(function() {
 	    $('#addRoleAuto').val('');
 	});
 	
+	
+	// inserts the the values into the modal
+	$(".personPageAlternativeName").on("click", function() {
+		var e = $(this);
+		$("#setMainNameForm input[name=formSelectedName]").val(e.attr("data-person-name-id"));
+		$("#modalMainNameText").html(e.attr("data-firstName") + " " + e.attr("data-lastName"));
+	});
+	
+	// submit the new main name form
+	$("#btnSetMainNameSubmit").on("click", function() {
+		var form_data = $("#setMainNameForm").serializeArray();
+		form_data.push({name: "formAction", value: "setMainName"});
+		
+		$.post("/person", form_data).done(function(data) {
+			// error handling
+			if (data.status) {
+				// everything is fine - reload to render the page again
+				location.reload();
+			} else {
+				// error during update
+				if (data.message != "") {
+					// display the error somewhere
+					$("#personPageAjaxError").text(data.message).show();
+				} else {
+					$("#personPageAjaxError").show();
+					$("personPageAjaxErrorDefaultMessage").show();
+				}
+			}
+		});
+	});
+	
+	
+	
 });
