@@ -28,8 +28,6 @@ package org.bibsonomy.scraper.url.kde.ieee;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -62,7 +60,7 @@ public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
 	private static final String SITE_NAME 	= "IEEEXplore Standards";
 	private static final String SITE_URL  	= "http://ieeexplore.ieee.org/";
 	private static final String info 		= "This scraper creates a BibTeX entry for the standards at " + href(SITE_URL, SITE_NAME)+".";
-
+	private static final String DOWNLOAD_URL = SITE_URL + "xpl/downloadCitations";
 
 	private static final Log log = LogFactory.getLog(IEEEXploreStandardsScraper.class);
 
@@ -85,6 +83,43 @@ public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
 	}
 
 
+	protected static String getBibTeX(final ScrapingContext sc, final String id) throws InternalFailureException {
+		// using own client because I do not want to configure any client to allow circular redirects
+		final HttpClient client = WebUtils.getHttpClient();
+		client.getParams().setBooleanParameter(HttpClientParams.ALLOW_CIRCULAR_REDIRECTS, true);
+
+		try {
+			// better get the page first
+			final String url = sc.getUrl().toExternalForm();
+			WebUtils.getContentAsString(client, url);
+
+			//create a post method
+			final PostMethod method = new PostMethod(DOWNLOAD_URL);
+			method.addParameter("citations-format", "citation-abstract");
+			method.addParameter("fromPage", "");
+			method.addParameter("download-format", "download-bibtex");
+			method.addParameter("recordIds", id);
+
+			// now get bibtex
+			String bibtex = WebUtils.getPostContentAsString(client, method);
+
+			if (bibtex != null) {
+				// clean up
+				bibtex = bibtex.replace("<br>", "");
+
+				// append url
+				bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", url);
+
+				return bibtex.trim();
+			}
+			return null;
+		} catch (MalformedURLException ex) {
+			throw new InternalFailureException(ex);
+		} catch (IOException ex) {
+			throw new InternalFailureException(ex);
+		}
+	}
+
 	@Override
 	protected boolean scrapeInternal (ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
@@ -94,51 +129,20 @@ public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
 		if (matcher.find()) {
 			id = matcher.group(1);
 		}
-		if(id != null){
-			String downUrl = "http://ieeexplore.ieee.org/xpl/downloadCitations";
+		if (id != null) {
+			String bibtex = getBibTeX(sc, id);
 
-			//using own client because I do not want to configure any client to allow circular redirects
-			HttpClient client = WebUtils.getHttpClient();
-			client.getParams().setBooleanParameter(HttpClientParams.ALLOW_CIRCULAR_REDIRECTS, true);
-
-			String bibtex = null;
-			try {
-				//better get the page first
-				WebUtils.getContentAsString(client, sc.getUrl().toExternalForm());
-
-				//create a post method
-				PostMethod method = new PostMethod(downUrl);
-				method.addParameter("citations-format", "citation-abstract");
-				method.addParameter("fromPage", "");
-				method.addParameter("download-format", "download-bibtex");
-				method.addParameter("recordIds", id);
-
-				//now get bibtex
-				bibtex = WebUtils.getPostContentAsString(client, method);
-			} catch (MalformedURLException ex) {
-				throw new InternalFailureException(ex);
-			} catch (IOException ex) {
-				throw new InternalFailureException(ex);
-			}
-
-			if(bibtex != null){
-				// clean up
-				bibtex = bibtex.replace("<br>", "");
-
-				// append url
-				bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
-
+			if (bibtex != null) {
 				// add downloaded bibtex to result 
 				sc.setBibtexResult(bibtex.toString().trim());
 				return true;
 
-			}else{
+			} else {
 				log.debug("IEEEXploreStandardsScraper: direct bibtex download failed. Use JTidy to get bibliographic data.");
 				sc.setBibtexResult(ieeeStandardsScrape(sc));
 				return true;
-
 			}
-		}else{
+		} else {
 			log.debug("IEEEXploreStandardsScraper use JTidy to get Bibtex from " + sc.getUrl().toString());
 			sc.setBibtexResult(ieeeStandardsScrape(sc));
 			return true;

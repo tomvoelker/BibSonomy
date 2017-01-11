@@ -45,9 +45,7 @@ public class IEEEXploreStandardsScraperTest {
 	 * starts URL test with id url_14
 	 */
 	@Test
-	public void urlTestRun(){
-//		UnitTestRunner.runSingleTest("url_14");
-		
+	public void urlTestRun() {
 		final String url = "http://ieeexplore.ieee.org/xpl/freeabs_all.jsp?tp=&isnumber=21156&arnumber=982216&punumber=7718";
 		final String selection = null;
 		final Class<? extends Scraper> scraperClass = org.bibsonomy.scraper.url.kde.ieee.IEEEXploreStandardsScraper.class;
