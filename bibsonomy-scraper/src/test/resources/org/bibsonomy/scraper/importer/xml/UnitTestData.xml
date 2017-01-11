@@ -84,12 +84,6 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.citeseer.CiteseerBasicScraper</Scraper>
 		<Enabled>false</Enabled>
 	</URLTest>
-	<URLTest id="url_13">
-		<TestDescription>URL scraping test with journals and proceedings from ieeexlpore</TestDescription>
-		<URL>http://ieeexplore.ieee.org/xpl/articleDetails.jsp?tp=&amp;arnumber=6136685&amp;contentType=Conference+Publications&amp;searchField%3DSearch_All%26queryText%3DEnergy+efficient+hierarchical+epidemics+in+peer-to-peer+systems</URL>
-		<BibFile>IEEEXploreJournalProceedingsScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEXploreJournalProceedingsScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_14">
 		<TestDescription>URL scraping test with standards from ieeexplore</TestDescription>
 		<URL>http://ieeexplore.ieee.org/xpl/freeabs_all.jsp?tp=&amp;isnumber=21156&amp;arnumber=982216&amp;punumber=7718</URL>
@@ -745,12 +739,6 @@
 		<BibFile>ArxivScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.arxiv.ArxivScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_127">
-		<TestDescription>Test for IEEEXploreJournalProceedingsScraper</TestDescription>
-		<URL>http://ieeexplore.ieee.org/xpl/articleDetails.jsp?arnumber=4536262</URL>
-		<BibFile>IEEEXploreJournalProceedingsScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEXploreJournalProceedingsScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_129">
 		<TestDescription>URL scraping test with arxiv publications</TestDescription>
 		<URL>http://arxiv.org/abs/0810.1951</URL>
@@ -811,14 +799,6 @@
 		<TestDescription>Test for scientificcommons.org</TestDescription>
 		<URL>http://en.scientificcommons.org/39659008</URL>
 		<BibFile>ScientificcommonsScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.scientificcommons.ScientificcommonsScraper</Scraper>
-		<!-- Scientificcommons is down, reason why is unnknown -->
-		<Enabled>false</Enabled>
-	</URLTest>
-	<URLTest id="url_140">
-		<TestDescription>Test for scientificcommons.org</TestDescription>
-		<URL>http://en.scientificcommons.org/42505917</URL>
-		<BibFile>ScientificcommonsScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.scientificcommons.ScientificcommonsScraper</Scraper>
 		<!-- Scientificcommons is down, reason why is unnknown -->
 		<Enabled>false</Enabled>
@@ -949,20 +929,6 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.ssrn.SSRNScraper</Scraper>
 		<Enabled>true</Enabled>
 	</URLTest>
-	<URLTest id="url_166">
-		<TestDescription>Test for ISBN amazon scraper</TestDescription>
-		<URL></URL>
-		<BibFile>ISBNScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.id.kde.isbn.ISBNScraper</Scraper>
-		<Selection>978-3404201600</Selection>
-	</URLTest>
-	<URLTest id="url_167">
-		<TestDescription>Test for ISBN worldcat scraper</TestDescription>
-		<URL></URL>
-		<BibFile>ISBNScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.id.kde.isbn.ISBNScraper</Scraper>
-		<Selection>9780387485300</Selection>
-	</URLTest>
 	<URLTest id="url_168">
 		<TestDescription>Test for elsevier health publication page</TestDescription>
 		<URL>http://www.us.elsevierhealth.com/product.jsp?lid=2&amp;iid=0&amp;sid=0&amp;isbn=9780323055666</URL>
@@ -975,20 +941,6 @@
 		<URL>http://www.ingentaconnect.com/content/mcb/026/2007/00000026/00000004/art00005</URL>
 		<BibFile>IngentaconnectScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ingenta.IngentaconnectScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_170">
-		<TestDescription>Test for ISSN worldcat scraper</TestDescription>
-		<URL></URL>
-		<BibFile>ISSNScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.id.kde.isbn.ISBNScraper</Scraper>
-		<Selection>0025-5858</Selection>
-	</URLTest>
-	<URLTest id="url_171">
-		<TestDescription>Test for ISSN worldcat scraper</TestDescription>
-		<URL></URL>
-		<BibFile>ISSNScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.id.kde.isbn.ISBNScraper</Scraper>
-		<Selection>9783921568705</Selection>
 	</URLTest>
 	<URLTest id="url_172">
 		<TestDescription>scraping test for jornal page from plos.org</TestDescription>
