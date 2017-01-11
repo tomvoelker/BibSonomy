@@ -509,18 +509,27 @@
 			</c:if>
 			
 			
-			<!-- Other publications of similar authors
-			<c:if test="${fn:length(command.otherAdvisedPubs) gt 0}">
-				<h3 class="list-headline"><fmt:message key="person.show.otherPub" /></h3>
-				<div id="otherPublicationsOfSimialrAuthor" class="table-responsive">
-					<table class="table">
-						<c:forEach var="post" items="${command.otherAdvisedPubs}">
-							<per:pubWithRoles post="${post}" loginUser="${command.context.loginUser}" availableRoles="${command.availableRoles}" />
+			<!-- Other publications of similar authors -->
+			<c:if test="${fn:length(command.similarAuthorPubs) gt 0}">
+				<h3 class="list-headline"><fmt:message key="person.show.otherPubOfSimilarAuthor" /></h3>
+				<div id="otherPublicationsOfSimialrAuthor" class="personPageTable table-responsive">
+					
+					<table class="table table-striped personOtherPublicationOfSimialrAuthorTable" data-toggle="table">
+						<thead>
+							<tr>
+								<th data-field="title" data-sortable="true"><fmt:message key="post.resource.title" /></th>
+								<th data-field="author" data-sortable="true"><fmt:message key="post.resource.author" /></th>
+								<th data-field="year" data-sortable="true"><fmt:message key="post.resource.year" /></th>
+							</tr>
+						</thead>
+						<c:forEach var="post" items="${command.similarAuthorPubs}">
+							<per:simplePubView post="${post}" />
 						</c:forEach>
 					</table>
+					
 				</div>
 			</c:if>
-				 -->	
+
 					
 
 		</jsp:attribute>

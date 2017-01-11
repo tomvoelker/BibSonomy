@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.bibsonomy.common.enums.PersonUpdateOperation;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Person;
 import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
@@ -99,6 +100,9 @@ public class PersonPageCommand extends BaseCommand {
 	private String responseString;
 	private List<Post<?>> otherPubs;
 	private List<Post<?>> otherAdvisedPubs;
+	
+	private List<Post<BibTex>> similarAuthorPubs;
+	
 	private String okHintKey;
 	
 	@Deprecated // FIXME: remove use errors handling build into spring
@@ -514,6 +518,20 @@ public class PersonPageCommand extends BaseCommand {
 	 */
 	public void setResourcePersonRelation(ResourcePersonRelation resourcePersonRelation) {
 		this.resourcePersonRelation = resourcePersonRelation;
+	}
+
+	/**
+	 * @return the similarAuthorPubs
+	 */
+	public List<Post<BibTex>> getSimilarAuthorPubs() {
+		return this.similarAuthorPubs;
+	}
+
+	/**
+	 * @param similarAuthorPubs the similarAuthorPubs to set
+	 */
+	public void setSimilarAuthorPubs(List<Post<BibTex>> similarAuthorPubs) {
+		this.similarAuthorPubs = similarAuthorPubs;
 	}
 
 }
