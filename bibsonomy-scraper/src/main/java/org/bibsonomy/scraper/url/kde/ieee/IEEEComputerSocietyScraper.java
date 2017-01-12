@@ -114,6 +114,8 @@ public class IEEEComputerSocietyScraper extends GenericBibTeXURLScraper {
 	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
 		try {
 			bibtex = bibtex.replaceAll("<br/>\\s*", "\n");
+			bibtex = bibtex.replaceAll(",\\s+\\},", "},");
+			
 			final Matcher m = ABSTRACT_PATTERN.matcher(WebUtils.getContentAsString(scrapingContext.getUrl().toString()));
 			if (m.find())
 				return BibTexUtils.addFieldIfNotContained(bibtex, "abstract", m.group(1));
