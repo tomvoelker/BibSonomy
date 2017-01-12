@@ -96,7 +96,7 @@ public class CSLImportController extends SettingsPageController {
 				log.debug("deleting layout " + document.getFileName() + " for user " + userName);
 				
 				this.logic.deleteDocument(document, null);
-				this.fileLogic.deleteJabRefLayout(hash);
+				this.fileLogic.deleteCSLLayout(hash);
 				
 				/*
 				 * delete layout object from exporter
