@@ -118,7 +118,7 @@ public class CSLImportController extends SettingsPageController {
 		}
 		
 		/*
-		 * Show SettingsView-ImportTab(2)
+		 * Show SettingsView-ImportTab(7)
 		 */
 		command.setSelTab(Integer.valueOf(7));
 		return super.workOn(command);

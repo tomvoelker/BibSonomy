@@ -58,7 +58,7 @@ public class CslImportValidator implements Validator<SettingsViewCommand> {
 	@Override
 	public void validate(Object target, Errors errors) {
 		final SettingsViewCommand command = (SettingsViewCommand) target;
-		this.checkFileName(command.getClsFile(), errors, "Item");
+		this.checkFileName(command.getCslFile(), errors, "Item");
 	}
 	
 	

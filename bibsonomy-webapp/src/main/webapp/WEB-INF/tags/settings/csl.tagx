@@ -50,8 +50,8 @@
 			        				<input id="csl-file-item" name="fileItem" type="file" class="fsInput fsSmall"/>
 			        			</c:when>
 			        			<c:otherwise>
-			        				<c:out value="${command.itemName} "/>
-	    		    				<a class="action" href="/import/csl?hash=${command.itemHash}&amp;action=delete&amp;ckey=${mtl:encodePathSegment(ckey)}">delete</a>
+			        				<c:out value="${command.cslName} "/>
+	    		    				<a class="action" href="/import/csl?hash=${command.cslHash}&amp;action=delete&amp;ckey=${mtl:encodePathSegment(ckey)}">delete</a>
 	        					</c:otherwise>
 			      			</c:choose>
 							<p class="help-block"><fmt:message key="settings.csl.item.help"/></p>
