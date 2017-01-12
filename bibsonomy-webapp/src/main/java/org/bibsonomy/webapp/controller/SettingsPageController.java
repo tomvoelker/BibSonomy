@@ -38,6 +38,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.LayoutPart;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
+import org.bibsonomy.layout.csl.CslLayoutUtils;
 import org.bibsonomy.layout.jabref.JabrefLayoutUtils;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
@@ -141,6 +142,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			this.errors.reject("error.settings.tab");
 		} else {
 			this.checkInstalledJabrefLayout(command);
+			this.checkInstalledCSLLayout(command);
 			this.workOnSyncSettingsTab(command);
 			this.workOnCVTab(command);
 			this.workOnOAuthTab(command);
@@ -190,6 +192,32 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			}
 		}
 	}
+	
+	/**
+	 * checks whether the user has already uploaded csl layout definitions
+	 * 
+	 * @param command
+	 */
+	private void checkInstalledCSLLayout(final SettingsViewCommand command) {
+		final String loggedInUserName = command.getContext().getLoginUser().getName();
+		/*
+		 * set csl layouts of the users
+		 */
+		final String fileHash = CslLayoutUtils.userLayoutHash(loggedInUserName);
+		/*
+		* check whether the user has the jabref layout (begin, end or item)
+		*/
+		final Document document = this.logic.getDocument(loggedInUserName, fileHash);
+		/*
+		* if a document was found set the corresponding hash and name of
+		* the file
+		*/
+		if (present(document)) {
+			command.setCslHash(fileHash);
+			command.setCslName(document.getFileName());
+		}
+	}
+	
 
 	/**
 	 * function to get the OAuth User Information and store it in the

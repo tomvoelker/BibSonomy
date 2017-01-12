@@ -57,7 +57,7 @@ public class CslLayoutUtils {
 	/** Builds the hash for the custom layout files of the user.
 	 * 
 	 * @param user
-	 * @return
+	 * @return hash for custom file of user
 	 */
 	public static String userLayoutHash(final String user) {
 		return StringUtils.getMD5Hash("user." + user.toLowerCase() + "." + CslFileLogic.LAYOUT_FILE_EXTENSION).toLowerCase();

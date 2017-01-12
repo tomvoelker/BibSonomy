@@ -40,7 +40,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
  *
  * @author jp
  */
-public class CslImportValidator  implements Validator<SettingsViewCommand> {
+public class CslImportValidator implements Validator<SettingsViewCommand> {
 	
 	private CslFileLogic fileLogic;
 
@@ -58,7 +58,7 @@ public class CslImportValidator  implements Validator<SettingsViewCommand> {
 	@Override
 	public void validate(Object target, Errors errors) {
 		final SettingsViewCommand command = (SettingsViewCommand) target;
-		this.checkFileName(command.getFileItem(), errors, "Item");
+		this.checkFileName(command.getClsFile(), errors, "Item");
 	}
 	
 	

@@ -54,7 +54,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public final static int SYNC_IDX = 4;
 	public final static int CV_IDX = 5;
 	public final static int OAUTH_IDX = 6;
-	public final static int CSL_IDX = 6;
+	public final static int CSL_IDX = 7;
 	
 	private static final String TAB_URL = "/settings";
 	
@@ -229,7 +229,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	private CommonsMultipartFile fileEnd;
 	
 	/** the csl file to import **/
-	private CommonsMultipartFile clsFile;
+	private CommonsMultipartFile cslFile;
 	
 
 	/**
@@ -943,17 +943,17 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 
 
 	/**
-	 * @return the clsFile
+	 * @return the cslFile
 	 */
-	public CommonsMultipartFile getClsFile() {
-		return this.clsFile;
+	public CommonsMultipartFile getCslFile() {
+		return this.cslFile;
 	}
 
 
 	/**
-	 * @param clsFile the clsFile to set
+	 * @param cslFile the cslFile to set
 	 */
-	public void setClsFile(CommonsMultipartFile clsFile) {
-		this.clsFile = clsFile;
+	public void setCslFile(CommonsMultipartFile cslFile) {
+		this.cslFile = cslFile;
 	}
 }

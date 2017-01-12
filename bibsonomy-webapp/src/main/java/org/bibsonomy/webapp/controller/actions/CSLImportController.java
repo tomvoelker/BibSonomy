@@ -120,7 +120,7 @@ public class CSLImportController extends SettingsPageController {
 		/*
 		 * Show SettingsView-ImportTab(2)
 		 */
-		command.setSelTab(Integer.valueOf(2));
+		command.setSelTab(Integer.valueOf(7));
 		return super.workOn(command);
 	}
 	
@@ -157,7 +157,7 @@ public class CSLImportController extends SettingsPageController {
 				 */
 				this.logic.createDocument(uploadedFile, null);
 			} catch (final Exception ex) {
-				errors.reject("settings.jabRef.error.import", new Object[]{ex.getMessage()}, null);
+				errors.reject("settings.csl.error.import", new Object[]{ex.getMessage()}, null);
 			}
 		}
 	}
