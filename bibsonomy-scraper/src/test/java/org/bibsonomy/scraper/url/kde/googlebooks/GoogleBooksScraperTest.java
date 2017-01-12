@@ -26,8 +26,11 @@
  */
 package org.bibsonomy.scraper.url.kde.googlebooks;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.scraper.url.kde.elsevier.ElsevierScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -43,7 +46,10 @@ public class GoogleBooksScraperTest {
 	 */
 	@Test
 	public void urlTestRun1(){
-		UnitTestRunner.runSingleTest("url_207");
+//		UnitTestRunner.runSingleTest("url_207");
+		final String url = "http://books.google.com/books?id=OhstAAAAYAAJ&amp;source=gbs_slider_gbs_user_shelves_1040_homepage";
+		final String resultFile = "GoogleBooksScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, GoogleBooksScraper.class, resultFile);
 	}
 	
 	/**
@@ -51,6 +57,9 @@ public class GoogleBooksScraperTest {
 	 */
 	@Test
 	public void urlTestRun2(){
-		UnitTestRunner.runSingleTest("url_208");
+//		UnitTestRunner.runSingleTest("url_208");
+		final String url = "http://books.google.com/books?id=zZ3CAAAACAAJ&dq=deutscher+dokumentartag+1991&hl=en&ei=g1m6Tr71KObY4QT4v_SWCA&sa=X&oi=book_result&ct=result&resnum=1&ved=0CCwQ6AEwAA";
+		final String resultFile = "GoogleBooksScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, GoogleBooksScraper.class, resultFile);
 	}
 }

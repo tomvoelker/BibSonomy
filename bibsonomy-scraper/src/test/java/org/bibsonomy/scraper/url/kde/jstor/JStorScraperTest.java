@@ -26,8 +26,11 @@
  */
 package org.bibsonomy.scraper.url.kde.jstor;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.scraper.url.kde.biorxiv.BioRxivScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -43,7 +46,10 @@ public class JStorScraperTest {
 	 */
 	@Test
 	public void urlTest1Run(){
-		UnitTestRunner.runSingleTest("url_97");
+//		UnitTestRunner.runSingleTest("url_97");
+		final String url = "http://www.jstor.org/stable/4142852";
+		final String resultFile = "JStorScraperUnitURLTest.bib";
+		assertScraperResult(url, null, JStorScraper.class, resultFile);
 	}
 	
 	/**
@@ -51,7 +57,10 @@ public class JStorScraperTest {
 	 */
 	@Test
 	public void urlTest2Run(){
-		UnitTestRunner.runSingleTest("url_98");
+//		UnitTestRunner.runSingleTest("url_98");
+		final String url = "http://www.jstor.org/stable/j.ctt7zv8mk?Search=yes&resultItemClick=true&searchText=clustering&searchUri=%2Faction%2FdoBasicSearch%3FQuery%3Dclustering%26amp%3Bacc%3Doff%26amp%3Bwc%3Don%26amp%3Bfc%3Doff%26amp%3Bgroup%3Dnone";
+		final String resultFile = "JStorScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, JStorScraper.class, resultFile);
 	}
 	
 	/**
@@ -59,6 +68,9 @@ public class JStorScraperTest {
 	 */
 	@Test
 	public void urlTest3Run(){
-		UnitTestRunner.runSingleTest("url_222");
+//		UnitTestRunner.runSingleTest("url_222");
+		final String url = "http://www.jstor.org/stable/20569359?seq=1#page_scan_tab_contents";
+		final String resultFile = "JStorScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, JStorScraper.class, resultFile);
 	}
 }
