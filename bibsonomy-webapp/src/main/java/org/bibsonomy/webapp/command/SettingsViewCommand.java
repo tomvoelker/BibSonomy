@@ -908,4 +908,52 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public void setFileEnd(CommonsMultipartFile fileEnd) {
 		this.fileEnd = fileEnd;
 	}
+
+
+	/**
+	 * @return the cslName
+	 */
+	public String getCslName() {
+		return this.cslName;
+	}
+
+
+	/**
+	 * @param cslName the cslName to set
+	 */
+	public void setCslName(String cslName) {
+		this.cslName = cslName;
+	}
+
+
+	/**
+	 * @return the cslHash
+	 */
+	public String getCslHash() {
+		return this.cslHash;
+	}
+
+
+	/**
+	 * @param cslHash the cslHash to set
+	 */
+	public void setCslHash(String cslHash) {
+		this.cslHash = cslHash;
+	}
+
+
+	/**
+	 * @return the clsFile
+	 */
+	public CommonsMultipartFile getClsFile() {
+		return this.clsFile;
+	}
+
+
+	/**
+	 * @param clsFile the clsFile to set
+	 */
+	public void setClsFile(CommonsMultipartFile clsFile) {
+		this.clsFile = clsFile;
+	}
 }
