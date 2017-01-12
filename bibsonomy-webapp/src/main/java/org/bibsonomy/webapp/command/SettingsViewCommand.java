@@ -868,42 +868,42 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		this.operation = operation;
 	}
 	/**
-	 * @return the fileBegin
+	 * @return the fileBegin for jabref
 	 */
 	public CommonsMultipartFile getFileBegin() {
 		return this.fileBegin;
 	}
 
 	/**
-	 * @param fileBegin the fileBegin to set
+	 * @param fileBegin the jabref fileBegin to set
 	 */
 	public void setFileBegin(CommonsMultipartFile fileBegin) {
 		this.fileBegin = fileBegin;
 	}
 
 	/**
-	 * @return the fileItem
+	 * @return the fileItem for jabref
 	 */
 	public CommonsMultipartFile getFileItem() {
 		return this.fileItem;
 	}
 
 	/**
-	 * @param fileItem the fileItem to set
+	 * @param fileItem the jabref fileItem to set
 	 */
 	public void setFileItem(CommonsMultipartFile fileItem) {
 		this.fileItem = fileItem;
 	}
 
 	/**
-	 * @return the fileEnd
+	 * @return the fileEnd for jabref
 	 */
 	public CommonsMultipartFile getFileEnd() {
 		return this.fileEnd;
 	}
 
 	/**
-	 * @param fileEnd the fileEnd to set
+	 * @param fileEnd the jabref fileEnd to set
 	 */
 	public void setFileEnd(CommonsMultipartFile fileEnd) {
 		this.fileEnd = fileEnd;
