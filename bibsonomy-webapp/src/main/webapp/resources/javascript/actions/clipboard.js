@@ -43,12 +43,18 @@ $(function() {
 
 						return false;
 					});
-	//TODO, remove copypaste code
-	var copyButton = $('#copyToLocalClipboard');
+	
+	initNewClipboard('#copyToLocalClipboard', '#exportModalCitation');
+	initNewClipboard('.copyToLocalClipboard_citationBox', '#citation-styles .active');
+});
+
+
+function initNewClipboard(copyButtonString, citationStringContainer){
+	var copyButton = $(copyButtonString);
 	if (copyButton.length > 0) {
 		var clipboard = new Clipboard(copyButton.get(0), {
 			target : function(trigger) {
-				var citationContainer = $('#exportModalCitation');
+				var citationContainer = $(citationStringContainer);
 				var targetElement = citationContainer;
 				var pre = citationContainer.find('pre');
 				if (pre.length > 0) {
@@ -76,36 +82,8 @@ $(function() {
 			}).tooltip('show');
 		});
 	}
-	//TODO, remove copypaste code
-	var copyButton = $('.copyToLocalClipboard_citationBox');
-	if (copyButton.length > 0) {
-		var clipboard = new Clipboard(copyButton.get(0), {
-			target : function(trigger) {
-				var citationContainer = $("#citation-styles .active");
-				var targetElement = citationContainer.first();
-				return targetElement.get(0);
-			}
-		});
+}
 
-		copyButton.mouseleave(function() {
-			copyButton.tooltip('destroy');
-		});
-
-		clipboard.on('success', function(e) {
-			copyButton.tooltip({
-				placement : 'bottom',
-				title : getString('export.copyToLocalClipboard.success')
-			}).tooltip('show');
-		});
-
-		clipboard.on('error', function(e) {
-			copyButton.tooltip({
-				placement : 'bottom',
-				title : getString('export.copyToLocalClipboard.error')
-			}).tooltip('show');
-		});
-	}
-});
 
 function pickAll() {
 	return pickUnpickAll(false);
