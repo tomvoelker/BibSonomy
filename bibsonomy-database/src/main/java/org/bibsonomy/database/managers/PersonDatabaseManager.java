@@ -92,10 +92,17 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		}
 	}
 	
+	/**
+	 * Generates a unique person id (used for speaking URL)
+	 * @param person
+	 * @param session
+	 * @return
+	 */
 	private String generatePersonId(final Person person, final DBSession session) {
 		int counter = 1;
 		final String newPersonId = PersonUtils.generatePersonIdBase(person);
 		String tempPersonId = newPersonId;
+		// increment id until we find the first that is not used (for the current name)
 		do {
 			final Person tempPerson = this.getPersonById(tempPersonId, session);
 			if (tempPerson != null) {
