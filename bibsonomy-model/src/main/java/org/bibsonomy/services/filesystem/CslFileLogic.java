@@ -40,7 +40,7 @@ public interface CslFileLogic {
 	/**
 	 * The file extension of layout filter file names.
 	 */
-	public static final String LAYOUT_FILE_EXTENSION = "csllayout";
+	public static final String LAYOUT_FILE_EXTENSION = "csl";
 
 	/**
 	 * 
