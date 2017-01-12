@@ -27,7 +27,6 @@
 package org.bibsonomy.webapp.command;
 
 import java.io.Serializable;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +54,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public final static int SYNC_IDX = 4;
 	public final static int CV_IDX = 5;
 	public final static int OAUTH_IDX = 6;
+	public final static int CSL_IDX = 6;
 	
 	private static final String TAB_URL = "/settings";
 	
@@ -141,34 +141,45 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	private List<String> nonCreatedBookmarks = null;
 	
 	/**
-	 * name of the begin layout file
+	 * name of the jabref begin layout file
 	 */
 	private String beginName = null;
 	
 	/**
-	 * hash of the begin layout file
+	 * hash of the jabref begin layout file
 	 */
 	private String beginHash = null;
 	
 	/**
-	 * name of the item layout file
+	 * name of the jabref item layout file
 	 */
 	private String itemName = null;
 	
 	/**
-	 * hash of the begin layout file
+	 * hash of the jabref begin layout file
 	 */
 	private String itemHash = null;
 	
 	/**
-	 * name of the end layout file
+	 * name of the jabref end layout file
 	 */
 	private String endName = null;
 	
 	/**
-	 * hash of the end layout file
+	 * hash of the jabref end layout file
 	 */
 	private String endHash = null;
+	
+	/**
+	 * name of the csl layout file
+	 */
+	private String cslName = null;
+	
+	/**
+	 * hash of the csl layout file
+	 */
+	private String cslHash = null;
+	
 	
 	/**
 	 * delete the account yes or no
@@ -210,12 +221,15 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	private boolean deletePicture;
 
-	/** the file to import **/
+	/** the jabref file to import **/
 	private CommonsMultipartFile fileBegin;
-
+	/** the jabref file to import **/
 	private CommonsMultipartFile fileItem;
-
+	/** the jabref file to import **/
 	private CommonsMultipartFile fileEnd;
+	
+	/** the csl file to import **/
+	private CommonsMultipartFile clsFile;
 	
 
 	/**
@@ -224,7 +238,8 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public SettingsViewCommand() {
 		this.addTab(MY_PROFILE_IDX, "navi.myprofile");
 		this.addTab(SETTINGS_IDX, "navi.settings");
-		this.addTab(JABREF_IDX, "settings.jabRef.layoutfile");	
+		this.addTab(JABREF_IDX, "settings.jabRef.layoutfile");
+		this.addTab(CSL_IDX, "settings.csl.layoutfile");
 		this.addTab(CV_IDX, "navi.cvedit");
 		this.addTab(OAUTH_IDX, "navi.oauth.consumers");
 		this.addTab(GROUP_IDX, "navi.groups");
@@ -273,14 +288,14 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	}
 
 	/**
-	 * @return the file
+	 * @return the jabref file
 	 */
 	public CommonsMultipartFile getFile() {
 		return this.file;
 	}
 
 	/**
-	 * @param file the file to set
+	 * @param file the jabref file to set
 	 */
 	public void setFile(CommonsMultipartFile file) {
 		this.file = file;
@@ -375,42 +390,42 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	}
 
 	/**
-	 * @param beginName
+	 * @param beginName for jabref
 	 */
 	public void setBeginName(String beginName) {
 		this.beginName = beginName;
 	}
 
 	/**
-	 * @param beginHash
+	 * @param beginHash for jabref 
 	 */
 	public void setBeginHash(String beginHash) {
 		this.beginHash = beginHash;
 	}
 
 	/**
-	 * @param itemName
+	 * @param itemName for jabref 
 	 */
 	public void setItemName(String itemName) {
 		this.itemName = itemName;
 	}
 
 	/**
-	 * @param itemHash
+	 * @param itemHash for jabref
 	 */
 	public void setItemHash(String itemHash) {
 		this.itemHash = itemHash;
 	}
 
 	/**
-	 * @param endName
+	 * @param endName for jabref
 	 */
 	public void setEndName(String endName) {
 		this.endName = endName;
 	}
 
 	/**
-	 * @param endHash
+	 * @param endHash for jabref
 	 */
 	public void setEndHash(String endHash) {
 		this.endHash = endHash;
