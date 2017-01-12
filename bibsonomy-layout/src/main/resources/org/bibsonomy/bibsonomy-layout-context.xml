@@ -7,5 +7,11 @@
 	                    http://www.springframework.org/schema/util 
 	                    http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 	
-	<bean id="CSLFilesManager" class="org.bibsonomy.layout.csl.CSLFilesManager" init-method="init"/>
+	
+	<bean id="CSLConfig" class="org.bibsonomy.layout.csl.CslConfig">
+		<property name="userLayoutFilePath" value="${project.document.path}"/>
+	</bean>
+	<bean id="CSLFilesManager" class="org.bibsonomy.layout.csl.CSLFilesManager" init-method="init">
+		<property name="config" ref="CSLConfig"/>
+	</bean>
 </beans>

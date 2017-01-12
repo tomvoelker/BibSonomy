@@ -26,9 +26,8 @@
  */
 package org.bibsonomy.layout.csl;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -39,7 +38,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import net.sf.json.JSONObject;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.util.StringUtils;
@@ -48,6 +50,8 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import net.sf.json.JSONObject;
 
 /**
  * class for managing all csl files
@@ -60,17 +64,19 @@ public class CSLFilesManager {
 	private static final String BASE_PATH = "classpath:/org/citationstyles/";
 	private static final String BASE_PATH_STYLES = BASE_PATH + "styles/";
 	private static final String BASE_PATH_LOCALES = BASE_PATH + "locales/";
+	
+	private CslConfig config;
 
-	// mapping from id to CSLStyle which contains the id itself, a display name and the content of the file
+	/**mapping from id to CSLStyle which contains the id itself, a display name and the content of the file */
 	private Map<String, CSLStyle> cslFiles = new HashMap<>();
 
 	private Map<String, String> cslLocaleFiles = new HashMap<>();
-	
+		
 	/**
 	 * init this manager
 	 * reads all csl files from classpath: /org/citationstyles/styles/
 	 */
-	public void init() {
+	private void init() {
 		final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(CSLFilesManager.class.getClassLoader());
 
 		try {
@@ -184,6 +190,49 @@ public class CSLFilesManager {
 		return Collections.unmodifiableMap(this.cslFiles);
 	}
 	
+	/**
+	 * @param userName
+	 * @return the layout for the given user. If no layout could be found, <code>null</code>
+	 * is returned instead of throwing an exception. This allows for missing parts (i.e., 
+	 * no begin.layout).
+	 */
+	protected CSLStyle getUserLayout(final String userName) {
+		/*
+		 * check if custom filter exists
+		 */
+		final String userLayoutName = CslLayoutUtils.userLayoutName(userName);
+		if (present(userName) && !cslFiles.containsKey(userLayoutName)) {
+			/*
+			 * custom filter of current user is not loaded yet -> check if a filter exists at all
+			 */
+			try {
+				CSLStyle layout = CslLayoutUtils.loadUserLayout(userName, this.config);
+				
+				/*
+				 * we add the layout only to the map, if it is complete, i.e., it contains an item layout
+				 */
+				if (layout != null) {
+					/*
+					 * add user layout to map
+					 */
+					log.debug("user layout exists - loading it");
+					cslFiles.put(layout.getName(), layout);
+				}
+			} catch (final Exception e) {
+				log.info("Error loading custom filter for user " + userName, e);
+			}
+		}
+		
+		return cslFiles.get(userLayoutName);
+	}
+	
+	/**
+	 * @param config the config to set
+	 */
+	public void setConfig(CslConfig config) {
+		this.config = config;
+	}
+
 	/** Unloads the custom layout of the user.
 	 * 
 	 * @param userName

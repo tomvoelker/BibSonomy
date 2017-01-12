@@ -170,9 +170,9 @@ public class CSLImportController extends SettingsPageController {
 	}
 
 	/**
-	 * @param cslFileManager the cslFileManager to set
+	 * @param cslFileManager the cslFilesManager to set
 	 */
-	public void setCslFileManager(CSLFilesManager cslFileManager) {
-		this.cslFilesManager = cslFileManager;
+	public void setCslFilesManager(CSLFilesManager cslFilesManager) {
+		this.cslFilesManager = cslFilesManager;
 	}
 }
