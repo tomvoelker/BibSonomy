@@ -93,7 +93,8 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	}
 	
 	/**
-	 * Generates a unique person id (used for speaking URL)
+	 * Generates a unique person ID (used for speaking URL)
+	 * Concatinates the name and a counter variable
 	 * @param person
 	 * @param session
 	 * @return

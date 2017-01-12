@@ -67,17 +67,17 @@ public class PersonDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * tests {@link PersonDatabaseManager#addResourceRelation(ResourcePersonRelation, org.bibsonomy.database.common.DBSession)}
 	 */
-	@Test
-	public void testAddResourceRelation() {
-		final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
-		final Post<? extends BibTex> post = PUBLICATION_DATABASE_MANAGER.getPostDetails(loginUser.getName(), "b77ddd8087ad8856d77c740c8dc2864a", loginUser.getName(), Collections.singletonList(Integer.valueOf(PUBLIC_GROUP_ID)), this.dbSession);
-		resourcePersonRelation.setPost(post);
-		final Person person = PERSON_DATABASE_MANAGER.getPersonById("h.muller", this.dbSession);
-		resourcePersonRelation.setPerson(person);
-		resourcePersonRelation.setRelationType(PersonResourceRelationType.AUTHOR);
-		assertTrue(PERSON_DATABASE_MANAGER.addResourceRelation(resourcePersonRelation, this.dbSession));
-		
-		// test inserting of a duplicate
-		assertFalse(PERSON_DATABASE_MANAGER.addResourceRelation(resourcePersonRelation, this.dbSession));
-	}
+//	@Test
+//	public void testAddResourceRelation() {
+//		final ResourcePersonRelation resourcePersonRelation = new ResourcePersonRelation();
+//		final Post<? extends BibTex> post = PUBLICATION_DATABASE_MANAGER.getPostDetails(loginUser.getName(), "b77ddd8087ad8856d77c740c8dc2864a", loginUser.getName(), Collections.singletonList(Integer.valueOf(PUBLIC_GROUP_ID)), this.dbSession);
+//		resourcePersonRelation.setPost(post);
+//		final Person person = PERSON_DATABASE_MANAGER.getPersonById("h.muller", this.dbSession);
+//		resourcePersonRelation.setPerson(person);
+//		resourcePersonRelation.setRelationType(PersonResourceRelationType.AUTHOR);
+//		assertTrue(PERSON_DATABASE_MANAGER.addResourceRelation(resourcePersonRelation, this.dbSession));
+//		
+//		// test inserting of a duplicate
+//		assertFalse(PERSON_DATABASE_MANAGER.addResourceRelation(resourcePersonRelation, this.dbSession));
+//	}
 }
