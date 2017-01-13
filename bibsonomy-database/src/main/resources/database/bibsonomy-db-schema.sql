@@ -1720,7 +1720,7 @@ CREATE TABLE `person` (
 
 CREATE TABLE `log_person` (
   `person_change_id` int(10) unsigned NOT NULL unique COMMENT 'sequential number shared among all person tables. Ensures the order of changes and helps updating separate search indexes like elasticsearch.',
-  `id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `person_id` varchar(64) NOT NULL,
   `academic_degree` varchar(64) DEFAULT NULL,
   `user_name` varchar(30) DEFAULT NULL,
