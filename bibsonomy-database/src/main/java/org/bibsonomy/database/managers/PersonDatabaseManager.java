@@ -121,6 +121,8 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	}
 	
 	/**
+	 * Returns a Person identified by it's linked username or
+	 * null if the given User has not claimed a Person so far
 	 * @param user
 	 * @param session 
 	 * @return Person
@@ -129,8 +131,8 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		return (Person) this.queryForObject("getPersonByUser", user, session);
 	}
 
-
 	/**
+	 * Returns a Person identified by it's unique ID
 	 * @param id
 	 * @param session
 	 * @return Person
@@ -139,8 +141,8 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		return (Person) this.queryForObject("getPersonById", id, session);
 	}
 
-
 	/**
+	 * Returns a Person identified by it's unique DNB ID
 	 * @param dnbid
 	 * @param session
 	 * @return Person
@@ -150,6 +152,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	}
 
 	/**
+	 * Creates a new name and adds it to the specified Person
 	 * @param mainName
 	 * @param session
 	 */
@@ -164,8 +167,8 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		}
 	}
 
-
 	/**
+	 * Updates all fields of a given Person
 	 * @param person
 	 * @param session
 	 */
@@ -182,7 +185,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	}
 	
 	/**
-	 * Update the OrcID of a person
+	 * Update the OrcID of a Person
 	 * @param person
 	 * @param session
 	 */
@@ -199,7 +202,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	}
 	
 	/**
-	 * Update the academic degree of a person
+	 * Update the academic degree of a Person
 	 * @param person
 	 * @param session
 	 */
@@ -216,7 +219,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	}
 	
 	/**
-	 * Update the College of a person
+	 * Update the College of a Person
 	 * @param person
 	 * @param session
 	 */
@@ -233,7 +236,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	}
 	
 	/**
-	 * Update the Email of a person
+	 * Update the Email of a Person
 	 * @param person
 	 * @param session
 	 */
@@ -250,7 +253,7 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 	}
 	
 	/**
-	 * Update the Homepage of a person
+	 * Update the Homepage of a Person
 	 * @param person
 	 * @param session
 	 */
@@ -266,7 +269,6 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 		}
 	}
 	
-
 	/**
 	 * @param resourcePersonRelation
 	 * @param session 
@@ -306,7 +308,6 @@ public class PersonDatabaseManager  extends AbstractDatabaseManager {
 			databaseSession.endTransaction();
 		}
 	}
-
 
 	/**
 	 * @param personNameChangeId
