@@ -257,18 +257,6 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.amazon.AmazonScraper</Scraper>
 		<Enabled>true</Enabled>
 	</URLTest>
-	<URLTest id="url_43">
-		<TestDescription>scraping test for jornal page from plos.org</TestDescription>
-		<URL>http://www.plosbiology.org/article/info:doi/10.1371/journal.pbio.0060010</URL>
-		<BibFile>PlosScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_44">
-		<TestDescription>scraping test for jornal page from plos.org</TestDescription>
-		<URL>http://www.plosbiology.org/article/citationList.action?articleURI=info:doi/10.1371/journal.pbio.0060010</URL>
-		<BibFile>PlosScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_45">
 		<TestDescription>test for nature.com</TestDescription>
 		<URL>http://www.nature.com/ajh/journal/v21/n4/abs/ajh20089a.html</URL>
@@ -990,18 +978,6 @@
 		<Scraper>org.bibsonomy.scraper.id.kde.isbn.ISBNScraper</Scraper>
 		<Selection>9783921568705</Selection>
 	</URLTest>
-	<URLTest id="url_172">
-		<TestDescription>scraping test for jornal page from plos.org</TestDescription>
-		<URL>http://www.plosmedicine.org/article/info:doi/10.1371/journal.pmed.1000248</URL>
-		<BibFile>PlosScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_173">
-		<TestDescription>scraping test for jornal page from plos.org</TestDescription>
-		<URL>http://www.plosmedicine.org/article/getBibTexCitation.action?articleURI=info:doi/10.1371/journal.pmed.1000248</URL>
-		<BibFile>PlosScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_174">
 		<TestDescription>URL test for scraping a bibtex page from scitation.aip.org</TestDescription>
 		<URL>http://scitation.aip.org/content/asa/journal/jasa/42/5/10.1121/1.2144160</URL>
@@ -1125,49 +1101,7 @@
 		<BibFile>ACMBasicScraperUnitURLTest7.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_200">
-		<TestDescription>scraping test for plos biology (url encoded)</TestDescription>
-		<URL>http://www.plosbiology.org/article/info%3Adoi%2F10.1371%2Fjournal.pbio.1001148</URL>
-		<BibFile>PlosScraperUnitURLTest3.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_201">
-		<TestDescription>scraping test for plos medicine (url encoded)</TestDescription>
-		<URL>http://www.plosmedicine.org/article/info%3Adoi%2F10.1371%2Fjournal.pmed.1001094</URL>
-		<BibFile>PlosScraperUnitURLTest4.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_202">
-		<TestDescription>scraping test for plos computational biology (url encoded)</TestDescription>
-		<URL>http://www.ploscompbiol.org/article/info%3Adoi%2F10.1371%2Fjournal.pcbi.1002146</URL>
-		<BibFile>PlosScraperUnitURLTest5.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_203">
-		<TestDescription>scraping test for plos genetics (url encoded)</TestDescription>
-		<URL>http://www.plosgenetics.org/article/info%3Adoi%2F10.1371%2Fjournal.pgen.1002285</URL>
-		<BibFile>PlosScraperUnitURLTest6.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_204">
-		<TestDescription>scraping test for plos pathogens (url encoded)</TestDescription>
-		<URL>http://www.plospathogens.org/article/info%3Adoi%2F10.1371%2Fjournal.ppat.1002253</URL>
-		<BibFile>PlosScraperUnitURLTest7.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_205">
-		<TestDescription>scraping test for plos ones (url encoded)</TestDescription>
-		<URL>http://www.plosone.org/article/info%3Adoi%2F10.1371%2Fjournal.pone.0025007</URL>
-		<BibFile>PlosScraperUnitURLTest8.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_206">
-		<TestDescription>scraping test for plos neglected tropical diseases (url encoded)</TestDescription>
-		<URL>http://www.plosntds.org/article/info%3Adoi%2F10.1371%2Fjournal.pntd.0001305</URL>
-		<BibFile>PlosScraperUnitURLTest9.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_207">
+		<URLTest id="url_207">
 		<TestDescription>scraping test for Google Books</TestDescription>
 		<URL>http://books.google.com/books?id=OhstAAAAYAAJ&amp;source=gbs_slider_gbs_user_shelves_1040_homepage</URL>
 		<BibFile>GoogleBooksScraperUnitURLTest1.bib</BibFile>
@@ -1609,12 +1543,6 @@
 		<BibFile>IEEEComputerSocietyScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_284">
-		<TestDescription>scraping test for journal page from plos.org</TestDescription>
-		<URL>http://www.plosone.org/article/info%3Adoi%2F10.1371%2Fjournal.pone.0114825</URL>
-		<BibFile>PlosScraperUnitURLTest10.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_285">
 		<TestDescription>scraping test for journal page from nowpublishers.com</TestDescription>
 		<URL>http://www.nowpublishers.com/article/Details/INR-043</URL>
@@ -1944,12 +1872,6 @@
 		<URL>http://journal.frontiersin.org/article/10.3389/fphys.2016.00071/full</URL>
 		<BibFile>FRONTIERSINScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.frontiersin.FRONTIERSINScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_341">
-		<TestDescription>scraping test for journal page from plos.org</TestDescription>
-		<URL>http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0089052</URL>
-		<BibFile>PlosScraperUnitURLTest11.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_342">
 		<TestDescription>URL scraping test for the aha journals scraper</TestDescription>

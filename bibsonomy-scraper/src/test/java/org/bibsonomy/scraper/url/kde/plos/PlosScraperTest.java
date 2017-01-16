@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.plos;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -35,6 +36,7 @@ import java.net.URL;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.scraper.url.kde.biorxiv.BioRxivScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -57,7 +59,9 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest1Run(){
-		UnitTestRunner.runSingleTest("url_43");
+		final String url = "http://www.plosbiology.org/article/info:doi/10.1371/journal.pbio.0060010";
+		final String resultFile = "PlosScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, PlosScraper.class, resultFile);
 	}
 	
 	/**
@@ -65,7 +69,9 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest2Run(){
-		UnitTestRunner.runSingleTest("url_44");
+		final String url = "http://www.plosbiology.org/article/citationList.action?articleURI=info:doi/10.1371/journal.pbio.0060010";
+		final String resultFile = "PlosScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, PlosScraper.class, resultFile);
 	}
 	
 	/**
@@ -73,7 +79,9 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest3Run(){
-		UnitTestRunner.runSingleTest("url_172");
+		final String url = "http://www.plosmedicine.org/article/info:doi/10.1371/journal.pmed.1000248";
+		final String resultFile = "PlosScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, PlosScraper.class, resultFile);
 	}
 	
 	/**
@@ -81,7 +89,9 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest4Run(){
-		UnitTestRunner.runSingleTest("url_173");
+		final String url = "http://www.plosmedicine.org/article/getBibTexCitation.action?articleURI=info:doi/10.1371/journal.pmed.1000248";
+		final String resultFile = "PlosScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, PlosScraper.class, resultFile);
 	}
 	
 	/**
@@ -89,7 +99,9 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest5Run(){
-		UnitTestRunner.runSingleTest("url_200");
+		final String url = "http://www.plosbiology.org/article/info%3Adoi%2F10.1371%2Fjournal.pbio.1001148";
+		final String resultFile = "PlosScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, PlosScraper.class, resultFile);
 	}
 	
 	/**
@@ -97,7 +109,9 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest6Run(){
-		UnitTestRunner.runSingleTest("url_201");
+		final String url = "http://www.plosmedicine.org/article/info%3Adoi%2F10.1371%2Fjournal.pmed.1001094";
+		final String resultFile = "PlosScraperUnitURLTest4.bib";
+		assertScraperResult(url, null, PlosScraper.class, resultFile);
 	}
 	
 	/**
@@ -105,7 +119,9 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest7Run(){
-		UnitTestRunner.runSingleTest("url_202");
+		final String url = "http://www.ploscompbiol.org/article/info%3Adoi%2F10.1371%2Fjournal.pcbi.1002146";
+		final String resultFile = "PlosScraperUnitURLTest5.bib";
+		assertScraperResult(url, null, PlosScraper.class, resultFile);
 	}
 	
 	/**
@@ -113,7 +129,9 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest8Run(){
-		UnitTestRunner.runSingleTest("url_203");
+		final String url = "http://www.plosgenetics.org/article/info%3Adoi%2F10.1371%2Fjournal.pgen.1002285";
+		final String resultFile = "PlosScraperUnitURLTest6.bib";
+		assertScraperResult(url, null, PlosScraper.class, resultFile);
 	}
 	
 	/**
@@ -121,7 +139,9 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest9Run(){
-		UnitTestRunner.runSingleTest("url_204");
+		final String url = "http://www.plospathogens.org/article/info%3Adoi%2F10.1371%2Fjournal.ppat.1002253";
+		final String resultFile = "PlosScraperUnitURLTest7.bib";
+		assertScraperResult(url, null, PlosScraper.class, resultFile);
 	}
 	
 	/**
@@ -129,7 +149,9 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest10Run(){
-		UnitTestRunner.runSingleTest("url_205");
+		final String url = "http://www.plosone.org/article/info%3Adoi%2F10.1371%2Fjournal.pone.0025007";
+		final String resultFile = "PlosScraperUnitURLTest8.bib";
+		assertScraperResult(url, null, PlosScraper.class, resultFile);
 	}
 	
 	/**
@@ -137,7 +159,9 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest11Run(){
-		UnitTestRunner.runSingleTest("url_206");
+		final String url = "http://www.plosntds.org/article/info%3Adoi%2F10.1371%2Fjournal.pntd.0001305";
+		final String resultFile = "PlosScraperUnitURLTest9.bib";
+		assertScraperResult(url, null, PlosScraper.class, resultFile);
 	}
 	
 	/**
@@ -145,7 +169,9 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest12Run(){
-		UnitTestRunner.runSingleTest("url_284");
+		final String url = "http://www.plosone.org/article/info%3Adoi%2F10.1371%2Fjournal.pone.0114825";
+		final String resultFile = "PlosScraperUnitURLTest10.bib";
+		assertScraperResult(url, null, PlosScraper.class, resultFile);
 	}
 	
 	/**
@@ -153,7 +179,9 @@ public class PlosScraperTest {
 	 */
 	@Test
 	public void urlTest13Run(){
-		UnitTestRunner.runSingleTest("url_341");
+		final String url = "http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0089052";
+		final String resultFile = "PlosScraperUnitURLTest11.bib";
+		assertScraperResult(url, null, PlosScraper.class, resultFile);
 	}
 	
 	/**
