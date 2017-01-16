@@ -67,6 +67,9 @@ function setupPersonAutocomplete(inputFieldSelector, formAction, displayKey, sel
 	})
 	.on('typeahead:asynccancel typeahead:asyncreceive', function() {
 	    $(this).removeClass("ui-autocomplete-loading");
+	})
+	.on('typeahead:change', function(evt, data, async, name) {
+		$('#btnAddRoleSubmit').removeClass('disabled');
 	});
 }
 

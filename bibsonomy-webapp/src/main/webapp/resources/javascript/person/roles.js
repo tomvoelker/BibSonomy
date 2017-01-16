@@ -81,17 +81,7 @@ $(document).ready(function() {
 		form_data.push({name: "resourcePersonRelation.personIndex", value: e.attr("data-author-index")});
 		form_data.push({name: "formPersonIndex", value: e.attr("data-author-index")});
 		
-		$.post("/person", form_data
-//			{ 	
-//				formAction: "addRole",
-//				formFirstName: firstName,
-//				formLastName: lastName,
-//				formPersonId: e.attr("data-person-id"),
-//				formInterHash: e.attr("data-relation-simhash1"),
-//				formPersonRole: e.attr("data-person-role"),
-//				formPersonIndex: e.attr("data-author-index")
-//			}
-		).done(
+		$.post("/person", form_data).done(
 				function(data) {
 					if (data.exception) {
 						alert(getString('person.show.error.addRoleFailed'));

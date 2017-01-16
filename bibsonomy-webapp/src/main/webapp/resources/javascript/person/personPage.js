@@ -77,8 +77,6 @@ $(document).ready(function() {
 		});
 	});
 	
-	
-	
 	// add a new name to the alternative names list
 	$("#btnAddNameSubmit").on("click", function() {
 		var form_data = $("#addNameForm").serializeArray();
@@ -176,7 +174,14 @@ $(document).ready(function() {
 	
 	// empty the input field for the add role dialog
 	$('#addRole').on('show.bs.modal', function (e) {
-	    $('#addRoleAuto').val('');
+		$('#addRoleAuto').val('');
+	    // also remove the fields set by typeahead
+		$('#btnAddRoleSubmit').removeAttr('data-person-name');
+		$('#btnAddRoleSubmit').removeAttr('data-extended-person-name');
+		$('#btnAddRoleSubmit').removeAttr('data-person-id');
+		$("#addRoleAuto").typeahead('val', '');
+	    
+	    $('#btnAddRoleSubmit').addClass('disabled');
 	});
 	
 	
