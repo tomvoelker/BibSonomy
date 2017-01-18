@@ -76,6 +76,10 @@ public class ServersidePublicationValidator extends PublicationValidator {
 			 */
 			publication.setAuthor(parsedBibTeX.getAuthor());
 			publication.setEditor(parsedBibTeX.getEditor());
+			/* we have modified the publication
+			 * we should recalculate the hashes
+			 */
+			publication.recalculateHashes();
 		} catch (final IOException | ParseException ex) {
 			log.error("error parsing publication " + publication.getIntraHash(), ex);
 			errors.add(new InvalidSourceErrorMessage());

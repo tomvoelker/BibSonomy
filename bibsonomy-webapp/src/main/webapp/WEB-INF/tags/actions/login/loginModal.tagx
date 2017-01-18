@@ -2,7 +2,6 @@
 <jsp:root version="2.0" 
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:fontawesome="urn:jsptagdir:/WEB-INF/tags/layout/fontawesome"
 	xmlns:user="urn:jsptagdir:/WEB-INF/tags/actions/user"
 	xmlns:login="urn:jsptagdir:/WEB-INF/tags/actions/login"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
@@ -41,7 +40,7 @@
 							<login:simpleLoginForm authMethod="${authMethodName}" index="${authMethodLoopState.index}" />
 						</c:if>
 						<c:if test="${authMethod == 'SAML'}">
-							<a href="/login_saml?rememberMe=true" class="btn btn-primary">
+							<a href="/login_saml?rememberMe=true" class="btn btn-primary btn-block">
 								<fmt:message key="navi.login" />
 							</a>
 						</c:if>

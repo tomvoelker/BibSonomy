@@ -166,7 +166,7 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 		
 		// parse content
 		final String markdownFile = this.getMarkdownLocation(language, helpPage);
-		try (final BufferedReader inputReader = new BufferedReader(new InputStreamReader(new FileInputStream(markdownFile), "UTF-8"))) {
+		try (final BufferedReader inputReader = new BufferedReader(new InputStreamReader(new FileInputStream(markdownFile), StringUtils.CHARSET_UTF_8))) {
 			final String text = StringUtils.getStringFromReader(inputReader);
 			
 			final Matcher matcher = REDIRECT_PATTERN.matcher(text);
@@ -195,7 +195,7 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 		// parse sidebar
 		try {
 			final String sidebarLocation = this.getMarkdownLocation(language, HelpUtils.HELP_SIDEBAR_NAME);
-			try (final BufferedReader inputReader = new BufferedReader(new InputStreamReader(new FileInputStream(sidebarLocation), "UTF-8"))) {
+			try (final BufferedReader inputReader = new BufferedReader(new InputStreamReader(new FileInputStream(sidebarLocation), StringUtils.CHARSET_UTF_8))) {
 				final String text = StringUtils.getStringFromReader(inputReader);
 				command.setSidebar(parser.parseText(text));
 			}
@@ -226,7 +226,7 @@ public class HelpPageController implements MinimalisticController<HelpPageComman
 		final String filename = this.getMarkdownLocation(language, pageName);
 		
 		try (final InputStream stream = new FileInputStream(new File(filename))) {
-			final BufferedReader buf = new BufferedReader(new InputStreamReader(stream));
+			final BufferedReader buf = new BufferedReader(new InputStreamReader(stream, StringUtils.CHARSET_UTF_8));
 			
 			/*
 			 * Try to find a line of form "<!-- language: localized page name -->"

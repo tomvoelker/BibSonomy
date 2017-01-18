@@ -89,6 +89,12 @@ public interface DBSession {
 	public void addError(String key, ErrorMessage errorMessage);
 
 	/**
+	 * @param key
+	 * @return <code>true</code> iff the session has one or more errors for the provided key
+	 */
+	public boolean hasErrorsForKey(final String key);
+
+	/**
 	 * 
 	 * @param query
 	 * @param param

@@ -48,48 +48,17 @@ import org.springframework.web.multipart.MultipartFile;
  * 
  * @author ema
  */
-public class PostPublicationCommand extends EditPublicationCommand implements TabsCommandInterface<Object>, BibtexViewCommand, LayoutViewCommand {
-	
-	/**
-	 * The URL which the tab header links to.
-	 */
-	private static final String TAB_URL = "/postPublication"; 
-	
-	/* ***************************
-	 * FOR THE TAB FUNCTIONALITY
-	 * ***************************/
-	
-	/**
-	 * TAB HEADER LOCALIZED
-	 */
-	private final static String[] tabTitles = {
-		"post_bibtex.manual.title", 
-		"post_bibtex.pub_snippet.title", 
-		"post_bibtex.upload.title", 
-		"post_bibtex.doi_isbn.title",
-		"post_bibtex.scan.title"
-	};
+public class PostPublicationCommand extends EditPublicationCommand implements BibtexViewCommand, LayoutViewCommand {
+
 	/**
 	 * stores if the user wants to overwrite existing posts 
 	 */
 	private boolean overwrite;
 	
 	/**
-	 *  id of currently selected tab 
-	 */
-	protected Integer selTab = null;
-	
-	/**
-	 * holds the tabcommands, containing tuples of the number of a tab and the message key
-	 * representing the clickable textheader of the corresponding tab. 
-	 */
-	private List<TabCommand> tabs;
-	
-	/**
 	 * the description of the snippet/upload file
 	 */
 	private String description;
-	
 
 	/**
 	 * each intrahash(post) is maped to a list of errors. Erroneous posts cannot be edited later*/
@@ -98,113 +67,61 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	/**
 	 * For multiple posts
 	 */
-	private ListCommand<Post<BibTex>> posts = new ListCommand<Post<BibTex>>(this);
+	private ListCommand<Post<BibTex>> posts = new ListCommand<>(this);
+
+	/****************************
+	 * FOR ALL IMPORTS
+	 ****************************/
+	/**
+	 * this flag determines, whether an existing post is being edited or a new post
+	 * should be added and edited**/
+	private boolean updateExistingPost;
+
+	/****************************
+	 * SPECIAL FOR FILE UPLOAD
+	 ****************************/
+
+	/**
+	 * the BibTeX/Endnote file
+	 */
+	private MultipartFile file;
+
+	/**
+	 * The whitespace substitute
+	 */
+	private String whitespace;
+
+	/**
+	 * encoding of the file
+	 */
+	private String encoding;
+
+	/**
+	 * the delimiter
+	 */
+	private String delimiter;
+
+	/**
+	 * Determines, if the bookmarks will be saved before being edited or afterwards
+	 */
+	private boolean editBeforeImport;
+
+	/**
+	 * The posts, that were updated during import.
+	 */
+	private Map<String,String> updatedPosts;
 	
 	/**
 	 * constructor
 	 * inits the tabs and sets their titles
 	 */
 	public PostPublicationCommand() {
-		tabs = new ArrayList<TabCommand>();
-		// Preparation for all tabs
-		//=== make the tabtitle available
-		this.addTabs(tabTitles);
-
-		//=== change default tab to the manual tab
-		
-		if (!present(selTab))
-			selTab = Integer.valueOf(0);
-		
-		this.setTabURL(TAB_URL);
-		
 		/*
 		 * defaults:
 		 */
 		this.whitespace = "_";
 	}
-	
-	/**
-	 * @return The index of the currently selected tab.
-	 */
-	@Override
-	public Integer getSelTab() {
-		return selTab;
-	}
-	
-	/**
-	 * @param selectedTab 
-	 */
-	@Override
-	public void setSelTab(final Integer selectedTab) {
-		this.selTab = selectedTab;
-	}
-	
-	/**
-	 * @return the tabcommands (tabs)
-	 */
-	@Override
-	public List<TabCommand> getTabs() {
-		return tabs;
-	}
 
-	/**
-	 * *not used in general*
-	 * @param tabs the tabcommands (tabs) 
-	 */
-	@Override
-	public void setTabs(final List<TabCommand> tabs) {
-		this.tabs = tabs;
-	}
-	
-	/**
-	 * @param id the index of the new tab to add
-	 * @param title the message key of the tab to add (clickable text header)
-	 */
-	private void addTab(final Integer id, final String title) {
-		tabs.add(new TabCommand(id, title));
-	}
-
-	/**
-	 * @param titles the message keys of the tabs to add (clickable text header)
-	 */
-	private void addTabs(final String[] titles) {
-		for (int i = 0; i < titles.length; i++) {
-			addTab(Integer.valueOf(i), titles[i]);
-		}
-	}
-
-	/**
-	 * URL of the tabheader-anchor-links 
-	 * (needed, because postPublication calls this site first, but tabs-hrefs have to be...
-	 * ... import/publications)
-	 */
-	private String tabURL;
-	
-	/**
-	 * @return the url of the tabbed site
-	 */
-	public String getTabURL() {
-		return this.tabURL;
-	}
-
-	/**
-	 * @param tabURL the url of the tabbed site
-	 */
-	public void setTabURL(final String tabURL) {
-		this.tabURL = tabURL;
-	}
-	
-
-	/****************************
-	 * FOR ALL IMPORTS
-	 ****************************/
-	
-	
-	/**
-	 * this flag determines, whether an existing post is being edited or a new post 
-	 * should be added and edited**/
-	private boolean updateExistingPost;
-	
 	/**
 	 * @return the description
 	 */
@@ -216,16 +133,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	public void setDescription(final String description) {
 		this.description = description;
 	}
-	
-	/****************************
-	 * SPECIAL FOR FILE UPLOAD
-	 ****************************/
 
-	/**
-	 * the BibTeX/Endnote file
-	 */
-	private MultipartFile file;
-	
 	/**
 	 * @return the file
 	 */
@@ -239,11 +147,6 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	public void setFile(MultipartFile file) {
 		this.file = file;
 	}
-
-	/**
-	 * The whitespace substitute
-	 */
-	private String whitespace;
 	
 	/**
 	 * @return the whitespace
@@ -258,11 +161,6 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	public void setWhitespace(String whitespace) {
 		this.whitespace = whitespace;
 	}
-
-	/**
-	 * encoding of the file
-	 */
-	private String encoding;
 	
 	/**
 	 * @return the encoding
@@ -277,11 +175,6 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	public void setEncoding(String encoding) {
 		this.encoding = encoding;
 	}
-
-	/**
-	 * the delimiter
-	 */
-	private String delimiter;
 	
 	/**
 	 * @return the delimiter
@@ -296,11 +189,6 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	public void setDelimiter(String delimiter) {
 		this.delimiter = delimiter;
 	}
-
-	/**
-	 * Determines, if the bookmarks will be saved before being edited or afterwards
-	 */
-	private boolean editBeforeImport;
 	
 	/**
 	 * @param editBeforeImport the editBeforeImport to set
@@ -322,11 +210,6 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	public boolean getEditBeforeImport() {
 		return this.editBeforeImport;
 	}
-
-	/**
-	 * The posts, that were updated during import.
-	 */
-	private Map<String,String> updatedPosts;	
 
 	/**
 	 * @return the updatedPosts
@@ -370,17 +253,6 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	public void setPosts(final ListCommand<Post<BibTex>> bibtex) {
 		this.posts = bibtex;
 	}
-	
-	@Override
-	public List<Object> getContent() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setContent(final List<Object> content) {
-		// TODO Auto-generated method stub
-	}
 
 	/**
 	 * @return the overwrite
@@ -416,7 +288,6 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		this.updateExistingPost = updateExistingPost;
 	}
 
-	
 	/**
 	 * @return the postsErrorList
 	 */

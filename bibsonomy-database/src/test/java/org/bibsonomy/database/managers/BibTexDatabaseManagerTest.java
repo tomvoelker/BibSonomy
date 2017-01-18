@@ -54,6 +54,7 @@ import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.FieldLengthErrorMessage;
 import org.bibsonomy.common.exceptions.DatabaseException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.systemstags.SystemTag;
@@ -1095,7 +1096,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 		resource.setAuthor(PersonNameUtils.discoverPersonNames("W. Walt"));
 		resource.setYear(longField);
 		resource.setMonth(longField);
-		
+		resource.recalculateHashes();
 		try {
 			publicationDb.createPost(testPost, null, this.dbSession);
 			fail("expected a DatabaseException");
@@ -1108,7 +1109,7 @@ public class BibTexDatabaseManagerTest extends PostDatabaseManagerTest<BibTex> {
 	}
 	
 	/**
-	 * tests if {@link BibTexDatabaseManager#updatePost(Post, String, PostUpdateOperation, org.bibsonomy.database.common.DBSession)}
+	 * tests if {@link BibTexDatabaseManager#updatePost(Post, String, User, PostUpdateOperation, DBSession)}
 	 * respects the max field length of table columns
 	 */
 	@Test
