@@ -264,12 +264,6 @@
 		<BibFile>DLibScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.dlib.DLibScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_56">
-		<TestDescription>DBLP scraping test (html page)</TestDescription>
-		<URL>http://dblp.uni-trier.de/rec/bibtex/journals/ws/JaschkeHSGS08</URL>
-		<BibFile>DBLPScraperUnitTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_58">
 		<TestDescription>springer.com url test</TestDescription>
 		<URL>http://www.springer.com/computer/database+management+&amp;+information+retrieval/book/978-0-387-95433-2</URL>
@@ -889,12 +883,6 @@
 		<URL>http://www.karger.com/Article/FullText/210432</URL>
 		<BibFile>KargerScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.karger.KargerScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_180">
-		<TestDescription>DBLP scraping test (html page)</TestDescription>
-		<URL>http://dblp.uni-trier.de/rec/bibtex/conf/semweb/ChoudhuryBP09</URL>
-		<BibFile>DBLPScraperUnitTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_181">
 		<TestDescription>A and A scraping test</TestDescription>
@@ -1592,108 +1580,6 @@
 		<URL>http://cat.inist.fr/?aModele=afficheN&amp;cpsidt=3620772</URL>
 		<BibFile>CatInistScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.catinist.CatinistScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_314">
-		<TestDescription>DBLP scraping test (html page)</TestDescription>
-		<URL>http://dblp.uni-trier.de/rec/bibtex/books/sp/stdesign14/AtzmuellerBHKM0SSS14</URL>
-		<BibFile>DBLPScraperUnitTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_315">
-		<TestDescription>DBLP scraping test (html page)</TestDescription>
-		<URL>http://dblp.uni-trier.de/rec/xml/books/sp/stdesign14/AtzmuellerBHKM0SSS14.xml</URL>
-		<BibFile>DBLPScraperUnitTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_316">
-		<TestDescription>DBLP scraping test (html page)</TestDescription>
-		<URL>http://dblp.uni-trier.de/rec/rdf/books/sp/stdesign14/AtzmuellerBHKM0SSS14.rdf</URL>
-		<BibFile>DBLPScraperUnitTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_317">
-		<TestDescription>DBLP scraping test (html page)</TestDescription>
-		<URL>http://dblp.uni-trier.de/rec/ris/books/sp/stdesign14/AtzmuellerBHKM0SSS14.ris</URL>
-		<BibFile>DBLPScraperUnitTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_318">
-		<TestDescription>DBLP scraping test (html page)</TestDescription>
-		<URL>http://dblp.uni-trier.de/rec/bib1/conf/gi/HothoJSS06.bib</URL>
-		<BibFile>DBLPScraperUnitTest3.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_319">
-		<TestDescription>DBLP scraping test (html page)</TestDescription>
-		<URL>http://dblp.uni-trier.de/rec/bib2/conf/gi/HothoJSS06.bib</URL>
-		<BibFile>DBLPScraperUnitTest4.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_320">
-		<TestDescription>DBLP scraping test (html page)</TestDescription>
-		<URL>http://dblp.uni-trier.de/rec/html/books/sp/stdesign14/AtzmuellerBHKM0SSS14</URL>
-		<BibFile>DBLPScraperUnitTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_321">
-		<TestDescription>DBLP scraping test (html page)</TestDescription>
-		<URL>http://dblp.dagstuhl.de/rec/html/journals/logcom/BelohlavekV11</URL>
-		<BibFile>DBLPScraperUnitTest5.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_322">
-		<TestDescription>DBLP scraping test (html page)</TestDescription>
-		<URL>http://dblp.dagstuhl.de/rec/bibtex/journals/logcom/BelohlavekV11</URL>
-		<BibFile>DBLPScraperUnitTest5.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_323">
-		<TestDescription>DBLP scraping test (html page)</TestDescription>
-		<URL>http://dblp.dagstuhl.de/rec/xml/journals/logcom/BelohlavekV11.xml</URL>
-		<BibFile>DBLPScraperUnitTest5.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_324">
-		<TestDescription>DBLP scraping test (html page)</TestDescription>
-		<URL>http://dblp.dagstuhl.de/rec/ris/journals/logcom/BelohlavekV11.ris</URL>
-		<BibFile>DBLPScraperUnitTest5.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_325">
-		<TestDescription>DBLP scraping test (html page)</TestDescription>
-		<URL>http://dblp.dagstuhl.de/rec/rdf/journals/logcom/BelohlavekV11.rdf</URL>
-		<BibFile>DBLPScraperUnitTest5.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_326">
-		<TestDescription>DBLP scraping test (html page)</TestDescription>
-		<URL>http://www.dblp.org/rec/html/conf/icassp/AlmeidaK14</URL>
-		<BibFile>DBLPScraperUnitTest6.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_327">
-		<TestDescription>DBLP scraping test (html page)</TestDescription>
-		<URL>http://www.dblp.org/rec/bibtex/conf/icassp/AlmeidaK14</URL>
-		<BibFile>DBLPScraperUnitTest6.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_328">
-		<TestDescription>DBLP scraping test (html page)</TestDescription>
-		<URL>http://www.dblp.org/rec/xml/conf/icassp/AlmeidaK14.xml</URL>
-		<BibFile>DBLPScraperUnitTest6.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_329">
-		<TestDescription>DBLP scraping test (html page)</TestDescription>
-		<URL>http://www.dblp.org/rec/ris/conf/icassp/AlmeidaK14.ris</URL>
-		<BibFile>DBLPScraperUnitTest6.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_330">
-		<TestDescription>DBLP scraping test (html page)</TestDescription>
-		<URL>http://www.dblp.org/rec/rdf/conf/icassp/AlmeidaK14.rdf</URL>
-		<BibFile>DBLPScraperUnitTest6.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_331">
 		<TestDescription>Url test for GoogleScholarScraper (Firefox plugin support)</TestDescription>
