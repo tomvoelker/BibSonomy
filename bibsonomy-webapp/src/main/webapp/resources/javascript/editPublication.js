@@ -1,6 +1,10 @@
 //methods for editPublication page
 //setup jQuery to update recommender with form data
 
+var MISC_EXPERT_SELECTOR = '#expert-mode-btn';
+var MISC_ADD_CONTAINER_ID = 'add-field-container';
+var MISC_ADD_CONTAINER_SELECTOR = '#' + MISC_ADD_CONTAINER_ID;
+
 var tagRecoOptions = {
 		type: "POST",
 		url: '/ajax/getPublicationRecommendedTags',
@@ -13,42 +17,41 @@ var tagRecoOptions = {
 
 var getFriends = null;
 var fields = ["booktitle","journal","volume","number","pages","publisher","address",
-        "month","day","edition","chapter","key","type","annote","note",
+		"month","day","edition","chapter","key","type","annote","note",
 		"howpublished","institution","organization",
 		"school","series","crossref","misc"];
 
-var inproceedingsField = ["publisher","booktitle","volume","number","series","pages","address","month","organization","note"];
+var inproceedingsField = ["publisher","booktitle","volume","number","series","pages","address","month","organization","misc.DOI","note"];
 
 var requiredForType = {
-        "article":["journal","volume","number","pages","month","note"],
-        "book":["publisher","volume","number","series","address","edition","month","note"],
-        "booklet":["howpublished","address","month","note"],
+        "article":["journal","volume","number","pages","month","misc.DOI","note"],
+        "book":["publisher","volume","number","series","address","edition","month","misc.DOI","note"],
+        "booklet":["howpublished","address","month","misc.DOI","note"],
         "conference":inproceedingsField,
-        "inbook":["chapter","pages","publisher","volume","number","series","type","address","edition","month","note"],
-        "incollection":["publisher","booktitle","volume","number","series","type","chapter","pages","address","edition","month","note"],
+        "inbook":["chapter","pages","publisher","volume","number","series","type","address","edition","month","misc.DOI","note"],
+        "incollection":["publisher","booktitle","volume","number","series","type","chapter","pages","address","edition","month","misc.DOI","note"],
         "inproceedings":inproceedingsField,
-        "manual":["organization","address","edition","month","note"],
-        "masterthesis":["school","type","address","month","note"],
-        "misc":["howpublished","month","note"],
-        "phdthesis":["school","address","type","month","note"],
-        "proceedings":["publisher","volume","number","series","address","month","organization","note"],
-        "techreport":["institution","number","type","address","month","note"],
-        "unpublished":["note"]
+        "manual":["organization","address","edition","month","misc.DOI","note"],
+        "masterthesis":["school","type","address","month","misc.DOI","note"],
+        "misc":["howpublished","month","misc.DOI","note"],
+        "phdthesis":["school","address","type","month","misc.DOI","note"],
+        "proceedings":["publisher","volume","number","series","address","month","misc.DOI","organization","note"],
+        "techreport":["institution","number","type","address","month","misc.DOI","note"],
+        "unpublished":["misc.DOI","note"]
 }
 
 /* update view when user selects another type of publication in list */
-function changeView(showAll) {	
-	
+function changeView(showAll) {
 	var requiredFields = requiredForType[document.getElementById('post.resource.entrytype').value];
 	var message = getString('post.resource.fields.detailed.show.all');
 	var noRequiredFields = (requiredFields === undefined); 
 	var collpase = document.getElementById('collapse');
 	
-	if(showAll || noRequiredFields) {
+	if (showAll || noRequiredFields) {
 		requiredFields = fields;
-		if(noRequiredFields)
+		if (noRequiredFields) {
 			$(collapse).parent().addClass("hidden");
-		else {
+		} else {
 			message = getString('post.resource.fields.detailed.show.required');
 			$(collapse).parent().removeClass("hidden");
 		}
@@ -58,11 +61,11 @@ function changeView(showAll) {
 	
 	collapse.firstChild.nodeValue = message;
 	
-	for (var i=0; i<fields.length; i++) {
-		
-		var field = $("#post\\.resource\\." + fields[i]);
+	for (var i = 0; i < fields.length; i++) {
+		var bibtexField = fields[i];
+		var field = $("#post\\.resource\\." + bibtexField);
 		var parent = field.closest(".form-group");
-		if(showAll || in_array(requiredFields,fields[i])) {
+		if (showAll || in_array(requiredFields, bibtexField)) {
 			parent.show();
 		} else {
 			if (!field.val()) { //fix: don't hide not empty fields
@@ -70,7 +73,47 @@ function changeView(showAll) {
 			}
 		}
 	}
-}	
+
+	if (showAll || in_array(requiredFields, "misc")) {
+		$(MISC_EXPERT_SELECTOR).show();
+		$(MISC_ADD_CONTAINER_SELECTOR).show();
+		$("#miscDiv").show();
+	} else {
+		var hasMiscField = false;
+		$.each(requiredFields, function(index, item){
+			if(item.startsWith("misc.")){
+				$("#miscDiv").show();
+				$("#post\\.resource\\.misc").closest(".form-group").show();
+				hasMiscField = true;
+				//ends the function
+				return false;
+			}
+		});
+		
+		$.each($(".extraInputs"), function(){
+			var hasValue = false;
+			$(this).find("input[type='text']").each(function(){
+				if ($(this).val()){
+					hasValue = true;
+					hasMiscField = true;
+					return false;
+				}
+			});
+			
+			if (!hasValue){
+				$(this).remove();
+			}
+		});
+		
+		$(MISC_ADD_CONTAINER_SELECTOR).hide();
+		
+		if (!hasMiscField && !$("#post\\.resource\\.misc").val()){
+			$("#miscDiv").hide();
+		}
+
+		$(MISC_EXPERT_SELECTOR).hide();
+	}
+}
 
 /* checks if element is member of given array */
 function in_array(array, element) {    	
@@ -78,6 +121,18 @@ function in_array(array, element) {
 		if(array[j] == element) {
 			return true;
 		}
+	}
+	return false;
+}  
+
+/* checks if element is member of given array in lowerCase*/
+function in_array_lower(array, element) {
+	if (typeof array != "undefined"){
+		for(var j = 0; j < array.length; j++) {
+			if(array[j].toLowerCase() == element) {
+				return true;
+			}
+		}		
 	}
 	return false;
 }  
@@ -117,7 +172,7 @@ function getFirstPersonsLastName(person) {
 		if (firstand < 0) {
 			firstauthor = person;
 		} else {
-			firstauthor = person.substring(0, firstand);				
+			firstauthor = person.substring(0, firstand);
 		}
 		/*
 		 * first author extracted, get its last name
@@ -153,7 +208,6 @@ function getFirstRelevantWord(title) {
 }
 
 function toggleView() {
-	 
 	var collapse = $("#collapse");
 	var showAll = collapse.data("showAll");
 	collapse.data("showAll", !showAll);
@@ -346,3 +400,229 @@ function applyKeyDownHandler(element) {
 	})
 	.bind("keydown",function(e) {keyHandler(e);});
 }
+
+
+/*  
+ * change appearance of misc and transfer data
+ */
+$(document).ready(function() {
+	/*
+	 * add misc fields in the beginning, so they don't show up if js is disabled
+	 */
+	$("#miscDiv").append('<div id="allFieldsWrap" class=""><div id="standardFieldsWrap" ></div><div id="extraFieldsWrap" ></div><div id="' + MISC_ADD_CONTAINER_ID + '" class="col-sm-9 col-sm-offset-3 wrapper"><button title="' + getString('post.resource.misc.tooltipAdd') + '"class="btn btn-default btn-sm btn-block" type="button" id="add_field_button">'+ getString('post.resource.misc.addbutton') +'</button></div></div>');
+	$("#miscCheckboxDiv").append('<label id="expert-mode-btn"><input type="checkbox" id="expertView" /> ' + getString('post.resource.misc.checkbox') + '</label>');
+	$(MISC_EXPERT_SELECTOR).hide();
+	$(MISC_ADD_CONTAINER_SELECTOR).hide();
+	/*
+	 * variables
+	 */
+	var wrapper = $("#extraFieldsWrap"); // fields wrapper
+	var add_button = $("#add_field_button"); // add button ID
+	var misc = $("#post\\.resource\\.misc");
+	var miscFieldValues = [];
+	
+	/*
+	 * functions
+	 */
+	function addInputs() {
+		// check if there are any extraInputs, if not, adds "misc" as labeltext
+		var title = getString('post.resource.misc.tooltipRemove');
+		if ($('.extraInputs').length > 0) {
+			$(wrapper).append('<div class="extraInputs form-group"><label class="col-sm-3 control-label"></label><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-1"><button title="' + title + '" class="btn btn-default pull-right remove_field" type="button">-</form:button></div></div>');
+		} else {
+			$(wrapper).append('<div class="extraInputs form-group"><label class="col-sm-3 control-label">' + getString('post.resource.misc') +'</label><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-1"><button title="' + title + '" class="btn btn-default pull-right remove_field" type="button">-</form:button></div></div>');
+		}
+	};
+	
+	function transferMiscFieldValuesToOldField(){
+		var fieldString = [];
+		for (var i = 0; i < miscFieldValues.length; i+=2){
+			if (miscFieldValues[i] != "undefined" || miscFieldValues[i+1] != "undefined"){
+				fieldString.push("  " + miscFieldValues[i] + " = {" + miscFieldValues[i+1] + "}");
+			}
+		}
+		$(misc).val(fieldString.join(", \n"));
+	}
+	
+	function transferDataFromOldToNew() {
+		// gets the data from misc
+		var miscVal = $(misc).val();
+		var pairs = miscVal.split(",");
+		var values = [];
+		
+		//split the pairs and delete the characters not needed then save data 
+		$.each(pairs, function(index, item){
+			item = item.trim();
+			var itemValues = item.split(/\s*=\s*{/);
+			if (itemValues.length === 2){ //should have 2 values
+				if (itemValues[0].substr(0, 2) === "  "){ //formatting
+					itemValues[0] = itemValues[0].substr(2, itemValues[0].length);
+				}
+				if (itemValues[1].charAt(itemValues[1].length-1) === "}"){ //formatting
+					itemValues[1] = itemValues[1].substr(0, itemValues[1].length-1);
+				}
+				// show an empty input instead of "undefined"
+				for (var i = 0; i < itemValues.length; i++){
+					if (itemValues[i] === "undefined"){
+						itemValues[i] = "";
+					}
+				}
+			}
+			values = values.concat(itemValues);
+		});
+
+		// set length to 0, so no new line is added
+		if (values.length === 1){
+			values = [];
+		}
+		
+		for(var i = 0; i < values.length; i+=2){
+			var isStandardField = false;
+			$("#standardFieldsWrap :input[type=text]").each(function(){
+				if ($(this).attr("name").toLowerCase() === values[i].toLowerCase()){
+					$(this).val(values[i + 1]);
+					isStandardField = true;
+				}
+			});
+
+			if (!isStandardField) {
+				addInputs();
+				$("#extraFieldsWrap > div:last > div:eq(0) > input").val(values[i]);
+				$("#extraFieldsWrap > div:last > div:eq(1) > input").val(values[i+1]);
+			}
+		}
+	}
+	
+	// adds fields, that have a special input
+	function addStandardFields(){
+		var requiredFields = requiredForType[document.getElementById('post.resource.entrytype').value];
+		var existingInputs = [];
+		
+		// remove not required inputs for this entry type
+		var standardInputs  = $('.standardInputs');
+		$.each(standardInputs, function(){
+			var input = $(this).find("input");
+			var inputName = "misc." + $(input).attr("name").toLowerCase();
+
+			
+			if (!$(input).val() && !in_array_lower(requiredFields, inputName)) {
+				$(this).remove();
+			} else {
+				existingInputs.push(inputName);
+			}
+		});
+
+		// add the required ones for this entry type
+		if (typeof requiredFields != 'undefined'){
+			for (var i = 0; i < requiredFields.length; i++) {
+				var requiredField = requiredFields[i].toLowerCase();
+				if (requiredField.startsWith("misc.") && !in_array_lower(existingInputs, requiredField)) {
+					var labelKey = "post.resource." + requiredField;
+					var name = getString(labelKey);
+					if (name.startsWith("???")) {
+						name = requiredField.slice(5);
+					}
+
+					$("#standardFieldsWrap").append('<div class="standardInputs form-group"><label for="post.resource.' + requiredField + '" class="col-sm-3 control-label">' + name + '</label><div class="col-sm-9"><input id="post.resource.' + requiredField + '"name="' + name + '"class="form-control" type="text"/></div></div>');
+				}
+			}
+		} else if (!$(".extraInputs").length){
+			addInputs();
+		}
+	}
+	
+	function refreshOldView() {
+		miscFieldValues = [];
+		
+		//standard fields
+		$("#standardFieldsWrap :input[type=text]").each(function() {
+			/*
+			 * pushes the name, then the value if not empty
+			 */
+			if ($(this).val().replace(/\s+/g, '') != ""){
+				miscFieldValues.push($(this).attr("name"));
+				miscFieldValues.push($(this).val());
+			}
+		});
+		
+		//extra fields
+		$("#extraFieldsWrap :input[type=text]").each(function() {
+			/*
+			 * pushes the value of each text-input if it is not empty after deleting every whitespace
+			 * else pushes "undefined"
+			 */
+			if ($(this).val().replace(/\s+/g, '') != ""){
+				miscFieldValues.push($(this).val());
+			} else {
+				miscFieldValues.push("undefined");
+			}
+		});
+
+		transferMiscFieldValuesToOldField();
+	};
+	
+	function showNewMiscView() {
+		if ($(".standardInputs").length == 0) {
+			addInputs();
+		}
+		$(misc).closest(".form-group").addClass("hidden");
+		$("#allFieldsWrap").removeClass("hidden");
+	};
+
+	/*
+	 * after loading
+	 */
+	addStandardFields();
+	//transfer Data after loading, so the values of the potentially filled old view are shown
+	transferDataFromOldToNew();
+	//hides old view
+	$(misc).parent("div").parent("div").addClass("hidden");
+	
+	//on add input button click
+	$(add_button).click(function(e) {
+		e.preventDefault();
+		addInputs();
+	});
+
+	// user click on remove button
+	$(wrapper).on("click",".remove_field", function(e) {
+		e.preventDefault();
+		var parentDiv = $(this).parent('div').parent('div'); 
+		var labelText = parentDiv.find("label").first().text();
+		
+		parentDiv.remove();
+		$(".extraInputs").first().find("label").first().text(getString('post.resource.misc'));
+		
+		//this refreshes the values in the array/old misc-field
+		refreshOldView();
+	});
+	
+	//reloads standard fields for new entry type
+	$("#post\\.resource\\.entrytype").change(function(e) {
+		addStandardFields();
+	});
+	
+	//transfer field values of new design to array
+	$("#allFieldsWrap").focusout(refreshOldView);
+	
+	//change view to old or new
+	$("#expertView").change(function() {
+		if (this.checked){
+			// old/expert view
+			refreshOldView();
+			$("#allFieldsWrap").addClass("hidden");
+			$(misc).closest(".form-group").removeClass("hidden");
+			$(".extraInputs").remove();
+			$("#standardFieldsWrap :input[type=text]").each(function(){
+				$(this).val("");
+			});
+		}else{
+			// new/normal view
+			transferDataFromOldToNew();
+			
+			//actually changes the view
+			showNewMiscView();
+		}
+	});
+	
+});
