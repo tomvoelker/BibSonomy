@@ -1,6 +1,10 @@
 //methods for editPublication page
 //setup jQuery to update recommender with form data
 
+var MISC_EXPERT_SELECTOR = '#expert-mode-btn';
+var MISC_ADD_CONTAINER_ID = 'add-field-container';
+var MISC_ADD_CONTAINER_SELECTOR = '#' + MISC_ADD_CONTAINER_ID;
+
 var tagRecoOptions = {
 		type: "POST",
 		url: '/ajax/getPublicationRecommendedTags',
@@ -69,9 +73,10 @@ function changeView(showAll) {
 			}
 		}
 	}
-	
+
 	if (showAll || in_array(requiredFields, "misc")) {
-		$("#add_field_button").show();
+		$(MISC_EXPERT_SELECTOR).show();
+		$(MISC_ADD_CONTAINER_SELECTOR).show();
 		$("#miscDiv").show();
 	} else {
 		var hasMiscField = false;
@@ -100,11 +105,13 @@ function changeView(showAll) {
 			}
 		});
 		
-		$("#add_field_button").hide();
+		$(MISC_ADD_CONTAINER_SELECTOR).hide();
 		
 		if (!hasMiscField && !$("#post\\.resource\\.misc").val()){
 			$("#miscDiv").hide();
 		}
+
+		$(MISC_EXPERT_SELECTOR).hide();
 	}
 }
 
@@ -402,27 +409,28 @@ $(document).ready(function() {
 	/*
 	 * add misc fields in the beginning, so they don't show up if js is disabled
 	 */
-	$("#miscDiv").append('<div id="allFieldsWrap" class=""><div id="standardFieldsWrap" ></div><div id="extraFieldsWrap" ></div><div class="col-sm-9 col-sm-offset-3 wrapper"><button title="' + getString('post.resource.misc.tooltipAdd') + '"class="btn btn-default btn-xs btn-block" type="button" id="add_field_button" style="display: none">'+ getString('post.resource.misc.addbutton') +'</button></div></div>');
-	$("#miscCheckboxDiv").append('<label><input type="checkbox" id="expertView" /> ' + getString('post.resource.misc.checkbox') + '</label>');
-	
+	$("#miscDiv").append('<div id="allFieldsWrap" class=""><div id="standardFieldsWrap" ></div><div id="extraFieldsWrap" ></div><div id="' + MISC_ADD_CONTAINER_ID + '" class="col-sm-9 col-sm-offset-3 wrapper"><button title="' + getString('post.resource.misc.tooltipAdd') + '"class="btn btn-default btn-sm btn-block" type="button" id="add_field_button">'+ getString('post.resource.misc.addbutton') +'</button></div></div>');
+	$("#miscCheckboxDiv").append('<label id="expert-mode-btn"><input type="checkbox" id="expertView" /> ' + getString('post.resource.misc.checkbox') + '</label>');
+	$(MISC_EXPERT_SELECTOR).hide();
+	$(MISC_ADD_CONTAINER_SELECTOR).hide();
 	/*
 	 * variables
 	 */
-	var wrapper = $("#extraFieldsWrap"); //Fields wrapper
-	var add_button = $("#add_field_button"); //Add button ID
+	var wrapper = $("#extraFieldsWrap"); // fields wrapper
+	var add_button = $("#add_field_button"); // add button ID
 	var misc = $("#post\\.resource\\.misc");
 	var miscFieldValues = [];
 	
 	/*
 	 * functions
 	 */
-	function addInputs(){
-		//check if there are any extraInputs, if not, adds "misc" as labeltext 
+	function addInputs() {
+		// check if there are any extraInputs, if not, adds "misc" as labeltext
 		var title = getString('post.resource.misc.tooltipRemove');
-		if($(".extraInputs").length){
-			$(wrapper).append('<div class="extraInputs form-group"><label class="col-sm-3 control-label"></label><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-1"><button title="' + title + '" class="btn btn-default btn-xs pull-right remove_field" type="button">-</form:button></div></div>'); 
-		}else{
-			$(wrapper).append('<div class="extraInputs form-group"><label class="col-sm-3 control-label">' + getString('post.resource.misc') +'</label><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-1"><button title="' + title + '" class="btn btn-default btn-xs pull-right remove_field" type="button">-</form:button></div></div>'); 
+		if ($('.extraInputs').length > 0) {
+			$(wrapper).append('<div class="extraInputs form-group"><label class="col-sm-3 control-label"></label><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-1"><button title="' + title + '" class="btn btn-default pull-right remove_field" type="button">-</form:button></div></div>');
+		} else {
+			$(wrapper).append('<div class="extraInputs form-group"><label class="col-sm-3 control-label">' + getString('post.resource.misc') +'</label><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-4"><input class="form-control" type="text"/></div><div class="col-sm-1"><button title="' + title + '" class="btn btn-default pull-right remove_field" type="button">-</form:button></div></div>');
 		}
 	};
 	
@@ -436,7 +444,7 @@ $(document).ready(function() {
 		$(misc).val(fieldString.join(", \n"));
 	}
 	
-	function transferDataFromOldToNew(){
+	function transferDataFromOldToNew() {
 		// gets the data from misc
 		var miscVal = $(misc).val();
 		var pairs = miscVal.split(",");
@@ -447,14 +455,14 @@ $(document).ready(function() {
 			item = item.trim();
 			var itemValues = item.split(/\s*=\s*{/);
 			if (itemValues.length === 2){ //should have 2 values
-				if (itemValues[0].substr(0,2) === "  "){ //formatting
+				if (itemValues[0].substr(0, 2) === "  "){ //formatting
 					itemValues[0] = itemValues[0].substr(2, itemValues[0].length);
 				}
 				if (itemValues[1].charAt(itemValues[1].length-1) === "}"){ //formatting
 					itemValues[1] = itemValues[1].substr(0, itemValues[1].length-1);
 				}
-				//show an empty input instead of "undefined"
-				for(var i = 0; i < itemValues.length; i++){
+				// show an empty input instead of "undefined"
+				for (var i = 0; i < itemValues.length; i++){
 					if (itemValues[i] === "undefined"){
 						itemValues[i] = "";
 					}
@@ -463,7 +471,7 @@ $(document).ready(function() {
 			values = values.concat(itemValues);
 		});
 
-		//set length to 0, so no new line is added
+		// set length to 0, so no new line is added
 		if (values.length === 1){
 			values = [];
 		}
@@ -471,12 +479,13 @@ $(document).ready(function() {
 		for(var i = 0; i < values.length; i+=2){
 			var isStandardField = false;
 			$("#standardFieldsWrap :input[type=text]").each(function(){
-				if ($(this).attr("name") === values[i]){
-					$(this).val(values[i+1]);
+				if ($(this).attr("name").toLowerCase() === values[i].toLowerCase()){
+					$(this).val(values[i + 1]);
 					isStandardField = true;
 				}
 			});
-			if (!isStandardField){
+
+			if (!isStandardField) {
 				addInputs();
 				$("#extraFieldsWrap > div:last > div:eq(0) > input").val(values[i]);
 				$("#extraFieldsWrap > div:last > div:eq(1) > input").val(values[i+1]);
@@ -484,48 +493,49 @@ $(document).ready(function() {
 		}
 	}
 	
-	//adds fields, that have a special input
+	// adds fields, that have a special input
 	function addStandardFields(){
 		var requiredFields = requiredForType[document.getElementById('post.resource.entrytype').value];
 		var existingInputs = [];
 		
-		//remove not required inputs for this entry type
-		$.each($(".standardInputs"), function(){
+		// remove not required inputs for this entry type
+		var standardInputs  = $('.standardInputs');
+		$.each(standardInputs, function(){
 			var input = $(this).find("input");
-			var inputName = "misc." + $(input).attr("name");
+			var inputName = "misc." + $(input).attr("name").toLowerCase();
+
 			
-			if(!$(input).val() && !in_array_lower(requiredFields, inputName)){		
+			if (!$(input).val() && !in_array_lower(requiredFields, inputName)) {
 				$(this).remove();
-			}else{
+			} else {
 				existingInputs.push(inputName);
 			}
 		});
-		
-		
-		//add the required ones for this entry type		
+
+		// add the required ones for this entry type
 		if (typeof requiredFields != 'undefined'){
-			for(var i = 0; i < requiredFields.length; i++){
-				if (requiredFields[i].startsWith("misc.") && !in_array_lower(existingInputs, requiredFields[i].toLowerCase())){
-					var name;
-					if (getString("post.resource." + requiredFields[i]).startsWith("???")){
-						name = requiredFields[i].slice(5);
-					}else{
-						name = getString("post.resource." + requiredFields[i]);
+			for (var i = 0; i < requiredFields.length; i++) {
+				var requiredField = requiredFields[i].toLowerCase();
+				if (requiredField.startsWith("misc.") && !in_array_lower(existingInputs, requiredField)) {
+					var labelKey = "post.resource." + requiredField;
+					var name = getString(labelKey);
+					if (name.startsWith("???")) {
+						name = requiredField.slice(5);
 					}
-					name = name.toLowerCase();
-					$("#standardFieldsWrap").append('<div class="standardInputs form-group"><label for="post.resource.misc.' + name + '" class="col-sm-3 control-label">' + name + '</label><div class="col-sm-9"><input ' + 'id="post.resource.misc.' + name + '"name="' + name + '"class="form-control" type="text"/></div></div>');
+
+					$("#standardFieldsWrap").append('<div class="standardInputs form-group"><label for="post.resource.' + requiredField + '" class="col-sm-3 control-label">' + name + '</label><div class="col-sm-9"><input id="post.resource.' + requiredField + '"name="' + name + '"class="form-control" type="text"/></div></div>');
 				}
 			}
-		}else if (!$(".extraInputs").length){
+		} else if (!$(".extraInputs").length){
 			addInputs();
 		}
 	}
 	
-	function refreshOldView(){
+	function refreshOldView() {
 		miscFieldValues = [];
 		
 		//standard fields
-		$("#standardFieldsWrap :input[type=text]").each(function(){
+		$("#standardFieldsWrap :input[type=text]").each(function() {
 			/*
 			 * pushes the name, then the value if not empty
 			 */
@@ -536,29 +546,29 @@ $(document).ready(function() {
 		});
 		
 		//extra fields
-		$("#extraFieldsWrap :input[type=text]").each(function(){
+		$("#extraFieldsWrap :input[type=text]").each(function() {
 			/*
 			 * pushes the value of each text-input if it is not empty after deleting every whitespace
 			 * else pushes "undefined"
 			 */
 			if ($(this).val().replace(/\s+/g, '') != ""){
 				miscFieldValues.push($(this).val());
-			}else{
+			} else {
 				miscFieldValues.push("undefined");
 			}
-		});		
+		});
+
 		transferMiscFieldValuesToOldField();
 	};
 	
-	function showNewMiscView(){
-		if (!$(".standardInputs").length){
+	function showNewMiscView() {
+		if ($(".standardInputs").length == 0) {
 			addInputs();
 		}
 		$(misc).closest(".form-group").addClass("hidden");
 		$("#allFieldsWrap").removeClass("hidden");
 	};
-	
-	
+
 	/*
 	 * after loading
 	 */
@@ -569,14 +579,13 @@ $(document).ready(function() {
 	$(misc).parent("div").parent("div").addClass("hidden");
 	
 	//on add input button click
-	$(add_button).click(function(e){ 
+	$(add_button).click(function(e) {
 		e.preventDefault();
 		addInputs();
 	});
-	
-	
-	//user click on remove button
-	$(wrapper).on("click",".remove_field", function(e){ 
+
+	// user click on remove button
+	$(wrapper).on("click",".remove_field", function(e) {
 		e.preventDefault();
 		var parentDiv = $(this).parent('div').parent('div'); 
 		var labelText = parentDiv.find("label").first().text();
@@ -597,7 +606,7 @@ $(document).ready(function() {
 	$("#allFieldsWrap").focusout(refreshOldView);
 	
 	//change view to old or new
-	$("#expertView").change(function(){
+	$("#expertView").change(function() {
 		if (this.checked){
 			// old/expert view
 			refreshOldView();
