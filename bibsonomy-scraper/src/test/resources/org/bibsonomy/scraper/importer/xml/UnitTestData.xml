@@ -244,13 +244,6 @@
 		<BibFile>SpringerLinkScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_42">
-		<TestDescription>Amazon.com scraping test</TestDescription>
-		<URL>http://www.amazon.com/Semantic-Primer-Cooperative-Information-Systems/dp/0262012103/ref=pd_bbs_sr_1?ie=UTF8&amp;s=books&amp;qid=1200485020&amp;sr=1-1</URL>
-		<BibFile>AmazonScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.amazon.AmazonScraper</Scraper>
-		<Enabled>true</Enabled>
-	</URLTest>
 	<URLTest id="url_45">
 		<TestDescription>test for nature.com</TestDescription>
 		<URL>http://www.nature.com/ajh/journal/v21/n4/abs/ajh20089a.html</URL>
@@ -258,41 +251,6 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.nature.NatureScraper</Scraper>
 		<!--redirected to another service -->
 		<Enabled>false</Enabled>
-	</URLTest>
-	<URLTest id="url_46">
-		<TestDescription>Amazon.de scraping test</TestDescription>
-		<URL>http://www.amazon.de/gp/product//3827415020/ref=br_fq_2</URL>
-		<BibFile>AmazonScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.amazon.AmazonScraper</Scraper>
-		<Enabled>true</Enabled>
-	</URLTest>
-	<URLTest id="url_47">
-		<TestDescription>Amazon.ca scraping test</TestDescription>
-		<URL>http://www.amazon.ca/Digital-Photography-Book-Scott-Kelby/dp/032147404X/ref=sr_1_3?ie=UTF8&amp;s=books&amp;qid=1201615938&amp;sr=1-3</URL>
-		<BibFile>AmazonScraperUnitURLTest3.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.amazon.AmazonScraper</Scraper>
-		<Enabled>true</Enabled>
-	</URLTest>
-	<URLTest id="url_48">
-		<TestDescription>Amazon.fr scraping test</TestDescription>
-		<URL>http://www.amazon.fr/Mac-programmation-AppleScript-Dashboard-Core-Animation/dp/2100500767/ref=sr_1_5?ie=UTF8&amp;s=books&amp;qid=1201616015&amp;sr=1-5</URL>
-		<BibFile>AmazonScraperUnitURLTest4.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.amazon.AmazonScraper</Scraper>
-		<Enabled>true</Enabled>
-	</URLTest>
-	<URLTest id="url_49">
-		<TestDescription>Amazon.jp scraping test</TestDescription>
-		<URL>http://www.amazon.co.jp/Programming-Collective-Intelligence-Building-Applications/dp/0596529325/ref=sr_1_1/249-7857785-0612358?ie=UTF8&amp;s=gateway&amp;qid=1201616160&amp;sr=8-1</URL>
-		<BibFile>AmazonScraperUnitURLTest5.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.amazon.AmazonScraper</Scraper>
-		<Enabled>true</Enabled>
-	</URLTest>
-	<URLTest id="url_50">
-		<TestDescription>Amazon.co.uk scraping test</TestDescription>
-		<URL>http://www.amazon.co.uk/Pro-2008-NET-Platform-Fourth/dp/1590598849/ref=sr_1_1?ie=UTF8&amp;s=books&amp;qid=1201616235&amp;sr=1-1</URL>
-		<BibFile>AmazonScraperUnitURLTest6.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.amazon.AmazonScraper</Scraper>
-		<Enabled>true</Enabled>
 	</URLTest>
 	<URLTest id="url_54">
 		<TestDescription>D-Lib scraping test (html page)</TestDescription>
@@ -311,13 +269,6 @@
 		<URL>http://dblp.uni-trier.de/rec/bibtex/journals/ws/JaschkeHSGS08</URL>
 		<BibFile>DBLPScraperUnitTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_57">
-		<TestDescription>failure with amazon.com</TestDescription>
-		<URL>http://www.amazon.com/Text-Mining-Predictive-Unstructured-Information/dp/0387954333</URL>
-		<BibFile>AmazonScraperUnitURLTest7.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.amazon.AmazonScraper</Scraper>
-		<Enabled>true</Enabled>
 	</URLTest>
 	<URLTest id="url_58">
 		<TestDescription>springer.com url test</TestDescription>
@@ -593,13 +544,6 @@
 		<URL>http://jmlr.csail.mit.edu/papers/v8/list07a.html</URL>
 		<BibFile>JMLRScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.jmlr.JMLRScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_105">
-		<TestDescription>amazon Scraper url test (build authors with creator items)</TestDescription>
-		<URL>http://www.amazon.de/Web-2-0-Unternehmenspraxis-Grundlagen-Fallstudien/dp/3486585797/ref=pd_bbs_sr_1?ie=UTF8&amp;s=books&amp;qid=1214381841&amp;sr=8-1</URL>
-		<BibFile>AmazonScraperUnitURLTest8.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.amazon.AmazonScraper</Scraper>
-		<Enabled>true</Enabled>
 	</URLTest>
 	<URLTest id="url_106">
 		<TestDescription>URL test for AnnualreviewsScraper</TestDescription>
@@ -883,20 +827,6 @@
 		<URL>http://ieeexplore.ieee.org/search/srchabstract.jsp?arnumber=4383076&amp;isnumber=4407525&amp;punumber=10376&amp;k2dockey=4383076@ieeejrns&amp;query=%28%28hotho%29%3Cin%3Eau+%29&amp;pos=0&amp;access=n0</URL>
 		<BibFile>IEEEXploreBookScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEXploreBookScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_160">
-		<TestDescription>Amazon.de scraping test</TestDescription>
-		<URL>http://www.amazon.de/gp/product/3426274914/ref=s9_top_bw_i3/278-8327421-8514538?pf_rd_m=A3JWKAKR8XB7XF&amp;pf_rd_s=center-4&amp;pf_rd_r=0QDEYW5TCNM11354JY22&amp;pf_rd_t=101&amp;pf_rd_p=473590033&amp;pf_rd_i=299956</URL>
-		<BibFile>AmazonScraperUnitURLTest9.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.amazon.AmazonScraper</Scraper>
-		<Enabled>true</Enabled>
-	</URLTest>
-	<URLTest id="url_161">
-		<TestDescription>Amazon.de scraping test</TestDescription>
-		<URL>http://www.amazon.de/Sebastian-Deisler-Zur%C3%BCck-Geschichte-Fu%C3%9Fballspielers/dp/3941378287%3FSubscriptionId%3DAKIAJOMMTFWDOHFJSJXQ%26tag%3Dws%26linkCode%3Dxm2%26camp%3D2025%26creative%3D165953%26creativeASIN%3D3941378287</URL>
-		<BibFile>AmazonScraperUnitURLTest10.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.amazon.AmazonScraper</Scraper>
-		<Enabled>true</Enabled>
 	</URLTest>
 	<URLTest id="url_163">
 		<TestDescription>Test for worldcat publication page</TestDescription>
@@ -1420,12 +1350,6 @@
 		<URL>http://journals.aps.org/pre/abstract/10.1103/PhysRevE.64.016131</URL>
 		<BibFile>ProlaScraperUnitURLTest5.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.prola.ProlaScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_272">
-		<TestDescription>AmazonScraper</TestDescription>
-		<URL>http://www.amazon.de/Computational-Intelligence-Cyber-Security-Models-ebook/dp/B00GXY5FFC/ref=sr_1_1</URL>
-		<BibFile>AmazonScraperUnitURLTest11.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.amazon.AmazonScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_273">
 		<TestDescription>Morgan Claypool Scraper</TestDescription>
