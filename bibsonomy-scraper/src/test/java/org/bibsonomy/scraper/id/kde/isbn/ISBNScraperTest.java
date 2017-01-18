@@ -48,7 +48,6 @@ public class ISBNScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-//		UnitTestRunner.runSingleTest("url_166");
 		final String selection = "978-3404201600";
 		final String resultFile = "ISBNScraperUnitURLTest1.bib";
 		assertScraperResult(null, selection, ISBNScraper.class, resultFile);
@@ -59,7 +58,6 @@ public class ISBNScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-//		UnitTestRunner.runSingleTest("url_167");
 		final String selection = "9780387485300";
 		final String resultFile = "ISBNScraperUnitURLTest2.bib";
 		assertScraperResult(null, selection, ISBNScraper.class, resultFile);
@@ -71,7 +69,6 @@ public class ISBNScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-//		UnitTestRunner.runSingleTest("url_170");
 		final String selection = "0025-5858";
 		final String resultFile = "ISSNScraperUnitURLTest1.bib";
 		assertScraperResult(null, selection, ISBNScraper.class, resultFile);
@@ -82,7 +79,6 @@ public class ISBNScraperTest {
 	 */
 	@Test
 	public void url4TestRun(){
-//		UnitTestRunner.runSingleTest("url_171");
 		final String selection = "9783921568705";
 		final String resultFile = "ISSNScraperUnitURLTest2.bib";
 		assertScraperResult(null, selection, ISBNScraper.class, resultFile);

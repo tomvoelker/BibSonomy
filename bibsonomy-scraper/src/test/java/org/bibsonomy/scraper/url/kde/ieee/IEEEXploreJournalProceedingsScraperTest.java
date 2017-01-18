@@ -45,9 +45,7 @@ public class IEEEXploreJournalProceedingsScraperTest {
 	 * starts URL test with id url_13
 	 */
 	@Test
-	public void urlTestRun1(){
-//		UnitTestRunner.runSingleTest("url_13");
-		
+	public void urlTestRun1() {
 		final String url = "http://ieeexplore.ieee.org/document/6136685/?tp=&arnumber=6136685&contentType=Conference%20Publications&searchField%3DSearch_All%26queryText%3DEnergy%20efficient%20hierarchical%20epidemics%20in%20peer-to-peer%20systems";
 		final String selection = null;
 		final Class<? extends Scraper> scraperClass = org.bibsonomy.scraper.url.kde.ieee.IEEEXploreJournalProceedingsScraper.class;
@@ -59,9 +57,7 @@ public class IEEEXploreJournalProceedingsScraperTest {
 	 * starts URL test with id url_127
 	 */
 	@Test
-	public void urlTestRun2(){
-//		UnitTestRunner.runSingleTest("url_127");
-		
+	public void urlTestRun2() {
 		final String url = "http://ieeexplore.ieee.org/document/4536262/?arnumber=4536262";
 		final String selection = null;
 		final Class<? extends Scraper> scraperClass = org.bibsonomy.scraper.url.kde.ieee.IEEEXploreJournalProceedingsScraper.class;
