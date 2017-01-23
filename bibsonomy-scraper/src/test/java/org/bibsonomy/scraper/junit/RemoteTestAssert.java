@@ -85,8 +85,8 @@ public class RemoteTestAssert {
 						bibtexValid = true;
 				// test if expected bib is equal to scraped bib (which must be valid bibtex) 
 				assertTrue("scraped BibTeX not valid", bibtexValid);
-				final String expectedRefrence = getExpectedBibTeX(resultFile).trim();
-				assertEquals(expectedRefrence, bibTeXResult.trim());
+				final String expectedRefrence = getExpectedBibTeX(resultFile).replaceAll("\\r\\n", "\n").trim();				
+				assertEquals(expectedRefrence, bibTeXResult.replaceAll("\\r\\n", "\n").trim());
 			} else {
 				fail("nothing scraped");
 			}

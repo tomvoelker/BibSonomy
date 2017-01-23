@@ -884,19 +884,6 @@
 		<BibFile>KargerScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.karger.KargerScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_181">
-		<TestDescription>A and A scraping test</TestDescription>
-		<URL>http://www.aanda.org/articles/aa/abs/2006/01/aa3694-05/aa3694-05.html</URL>
-		<BibFile>AandAScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.aanda.AandAScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_182">
-		<TestDescription>A and A scraping test</TestDescription>
-		<URL>http://www.aanda.org/articles/aa/abs/2010/05/aa14294-10/aa14294-10.html</URL>
-		<BibFile>AandAScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.aanda.AandAScraper</Scraper>
-		<AdditionalInfo>wait until AandA changed their output</AdditionalInfo>
-	</URLTest>
 	<URLTest id="url_183">
 		<TestDescription>test for springerlink</TestDescription>
 		<URL>http://link.springer.com/article/10.1007%2Fs13222-010-0004-8</URL>

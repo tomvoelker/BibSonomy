@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.aanda;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -48,7 +49,9 @@ public class AandAScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_181");
+		final String url = "http://www.aanda.org/articles/aa/abs/2006/01/aa3694-05/aa3694-05.html";
+		final String resultFile = "AandAScraperUnitURLTest.bib";
+		assertScraperResult(url, null, AandAScraper.class, resultFile);
 	}
 
 	/**
@@ -56,7 +59,9 @@ public class AandAScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_182");
+		final String url = "http://www.aanda.org/articles/aa/abs/2010/05/aa14294-10/aa14294-10.html";
+		final String resultFile = "AandAScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, AandAScraper.class, resultFile);
 	}
 	@Test
 	public void testReferences() throws Exception{
