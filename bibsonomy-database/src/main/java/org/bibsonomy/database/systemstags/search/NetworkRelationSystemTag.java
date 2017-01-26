@@ -38,7 +38,8 @@ public class NetworkRelationSystemTag extends UserRelationSystemTag {
 
 	/** the name of the network system tag */
 	public static final String NAME = "network";
-	
+
+	// TODO: remove BibSonomy from name
 	/** the network system tag for reporting a user as spammer */
 	public final static String BibSonomySpammerSystemTag = SystemTagsUtil.buildSystemTagString(NAME, "bibsonomy-spammer");
 	
