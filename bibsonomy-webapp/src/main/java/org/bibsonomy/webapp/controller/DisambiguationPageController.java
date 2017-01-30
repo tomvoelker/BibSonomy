@@ -31,7 +31,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
@@ -50,6 +49,7 @@ import org.bibsonomy.model.logic.querybuilder.ResourcePersonRelationQueryBuilder
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.person.PersonRoleRenderer;
 import org.bibsonomy.webapp.command.DisambiguationPageCommand;
+import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
@@ -146,23 +146,26 @@ public class DisambiguationPageController extends SingleResourceListController i
 				pubsWithSameAuthorName.remove(post);
 			}
 		}
-		
+
 		List<Post<?>> postsOfSuggestedPersons = new ArrayList<>();
 		HashMap<ResourcePersonRelation, List<Post<?>>> suggestedPersonPosts = new HashMap<>();
 
 		// get all persons with same name
 		for (final ResourcePersonRelation suggestedPerson : suggestedPersons) {
-
+			// discard theses from authors with a different name
+			if (!suggestedPerson.getPerson().getMainName().toString().equals(name))
+				continue;
+			
 			List<ResourcePersonRelation> resourceRelations = this.logic.getResourceRelations().byPersonId(suggestedPerson.getPerson().getPersonId()).orderBy(ResourcePersonRelationQueryBuilder.Order.publicationYear).getIt();
 			List<Post<?>> personPosts = new ArrayList<>();
-			
+
 			for (final ResourcePersonRelation resourcePersonRelation : resourceRelations) {
 				// escape thesis of person
 				final boolean isThesis = resourcePersonRelation.getPost().getResource().getEntrytype().toLowerCase().endsWith("thesis");
 				if (isThesis)
 					continue;
 
-				// get pub from the known person			
+				// get pub from the known person
 				if (resourcePersonRelation.getRelationType().equals(PersonResourceRelationType.AUTHOR)) {
 					personPosts.add(resourcePersonRelation.getPost());
 					postsOfSuggestedPersons.add(resourcePersonRelation.getPost());
@@ -180,11 +183,11 @@ public class DisambiguationPageController extends SingleResourceListController i
 			// remove the derivated post from the list
 			if (currentPostInterHash.equals(command.getPost().getResource().getInterHash())) {
 				noPersonRelPubList.remove(post);
-				break;
+				continue;
 			}
 
 			// remove post if it's already related to a person
-			for (final Post<?> personPost : postsOfSuggestedPersons) {				
+			for (final Post<?> personPost : postsOfSuggestedPersons) {
 				if (currentPostInterHash.equals(personPost.getResource().getInterHash())) {
 					noPersonRelPubList.remove(post);
 					break;
