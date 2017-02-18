@@ -113,18 +113,6 @@
 			not in correct format, yet -->
 		<Enabled>false</Enabled>
 	</URLTest>
-	<URLTest id="url_18">
-		<TestDescription>URL test for work-info pages from librarything (no standard language)</TestDescription>
-		<URL>http://www.librarything.de/work/details/10481522</URL>
-		<BibFile>LibrarythingScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.librarything.LibrarythingScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_19">
-		<TestDescription>URL test for work-info pages from librarything (standard language)</TestDescription>
-		<URL>http://www.librarything.com/work/details/10481522</URL> 
-		<BibFile>LibrarythingScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.librarything.LibrarythingScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_20">
 		<TestDescription>Test for scraping publications with the ams scraper (normal publication page)</TestDescription>
 		<URL>http://www.ams.org/mathscinet/search/publdoc.html?pg1=IID&amp;s1=198275&amp;r=1</URL>
@@ -225,12 +213,6 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEXploreBookScraper</Scraper>
 		<Enabled>true</Enabled>
 		<AdditionalInfo>This file has dos formatted line endings</AdditionalInfo>
-	</URLTest>
-	<URLTest id="url_37">
-		<TestDescription>URL test for work pages from librarything (standard language)</TestDescription>
-		<URL>http://www.librarything.de/work/1926837/details</URL>
-		<BibFile>LibrarythingScraperUnitURLTest3.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.librarything.LibrarythingScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_40">
 		<TestDescription>Scraping test for IEEE computer society scraper</TestDescription>
@@ -1198,13 +1180,6 @@
 		<BibFile>BMJOpenScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.bmj.BMJOpenScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_251">
-		<TestDescription>Pharmacognosy Research Scraper Test</TestDescription>
-		<URL>http://www.phcogres.com/article.asp?issn=0974-8490;year=2009;volume=1;issue=4;spage=172;epage=174;aulast=Shuge;t=6</URL>
-		<BibFile>PharmacognosyResearchScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.phcogres.PharmacognosyResearchScraper</Scraper>
-	</URLTest>
-
 	<URLTest id="url_252">
 		<TestDescription>Econstor Scraper test</TestDescription>
 		<URL>http://www.econstor.eu/handle/10419/64547</URL>
