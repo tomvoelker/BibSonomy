@@ -1066,12 +1066,6 @@
 		<BibFile>APHAScraperUnitURLTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.apha.APHAScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_231">
-		<TestDescription>test for nature.com</TestDescription>
-		<URL>http://www.nature.com/ncomms/journal/v3/n10/full/ncomms2132.html</URL>
-		<BibFile>NatureScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.nature.NatureScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_232">
 		<TestDescription>Test for JNeurosciScraper</TestDescription>
 		<URL>http://www.jneurosci.org/content/32/42/14465.short?rss=1</URL>
@@ -1343,12 +1337,6 @@
 		<BibFile>WorldScientificScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.worldscientific.WorldScientificScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_280">
-		<TestDescription>test for nature.com</TestDescription>
-		<URL>http://www.nature.com/news/online-collaboration-scientists-and-the-social-network-1.15711</URL>
-		<BibFile>NatureScraperUnitURLTest3.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.nature.NatureScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_281">
 		<TestDescription>test for Akademiai</TestDescription>
 		<URL>http://www.akademiai.com/content/y5t2lbg5nn3hxa0y/</URL>
@@ -1356,12 +1344,6 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.akademiai.AkademiaiScraper</Scraper>
 		<!-- 404 -->
 		<Enabled>false</Enabled>
-	</URLTest>
-	<URLTest id="url_282">
-		<TestDescription>test for nature.com</TestDescription>
-		<URL>http://www.nature.com/news/images-of-the-month-october-2014-1.16228</URL>
-		<BibFile>NatureScraperUnitURLTest4.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.nature.NatureScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_283">
 		<TestDescription>Scraping test for IEEE computer society scraper PDF</TestDescription>

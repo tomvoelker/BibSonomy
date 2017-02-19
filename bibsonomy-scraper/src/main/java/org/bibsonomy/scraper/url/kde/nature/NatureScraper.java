@@ -85,7 +85,7 @@ public class NatureScraper extends AbstractUrlScraper implements ReferencesScrap
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("(?s)Abstract.*\\s+<p>(.*)</p>\\s+<div class=\"article-keywords inline-list cleared\">");
-	private static final Pattern REFERENCES_PATTERN = Pattern.compile("<a href=\"(.*)\">Download references</a>");
+	private static final Pattern REFERENCES_PATTERN = Pattern.compile("href=\"?(\\S*)\"?[^>]*>Download references");
 	
 	
 	private final RisToBibtexConverter ris = new RisToBibtexConverter();

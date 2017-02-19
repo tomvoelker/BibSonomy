@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.nature;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -35,6 +36,7 @@ import java.net.URL;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.scraper.url.kde.biorxiv.BioRxivScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -60,21 +62,27 @@ public class NatureScraperTest {
 	 */
 	@Test
 	public void urlTest2Run(){
-		UnitTestRunner.runSingleTest("url_231");
+		final String url = "http://www.nature.com/ncomms/journal/v3/n10/full/ncomms2132.html";
+		final String resultFile = "NatureScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, NatureScraper.class, resultFile);
 	}
 	/**
 	 * starts URL test with id url_280
 	 */
 	@Test
 	public void urlTest3Run(){
-		UnitTestRunner.runSingleTest("url_280");
+		final String url = "http://www.nature.com/news/online-collaboration-scientists-and-the-social-network-1.15711";
+		final String resultFile = "NatureScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, NatureScraper.class, resultFile);
 	}
 	/**
 	 * starts URL test with id url_282
 	 */
 	@Test
 	public void urlTest4Run(){
-		UnitTestRunner.runSingleTest("url_282");
+		final String url = "http://www.nature.com/news/images-of-the-month-october-2014-1.16228";
+		final String resultFile = "NatureScraperUnitURLTest4.bib";
+		assertScraperResult(url, null, NatureScraper.class, resultFile);
 	}
 	/**
 	 * @throws Exception
