@@ -927,13 +927,6 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.journalogy.JournalogyScraper</Scraper>
 		<Enabled>true</Enabled>
 	</URLTest>
-	<URLTest id="url_196">
-		<TestDescription>test for InspireScraper</TestDescription>
-		<URL>http://inspirehep.net/record/920296</URL>
-		<BibFile>InspireScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.inspire.InspireScraper</Scraper>
-		<Enabled>true</Enabled>
-	</URLTest>
 	<URLTest id="url_199">
 		<TestDescription>acm test</TestDescription>
 		<URL>http://dl.acm.org/citation.cfm?id=1571977</URL>
@@ -1306,12 +1299,6 @@
 		<URL>http://www.morganclaypool.com/action/showCitFormats?doi=10.2200%2FS00334ED1V01Y201102WBE001</URL>
 		<BibFile>MorganClaypoolScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.morganclaypool.MorganClaypoolScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_275">
-		<TestDescription>MDPI Scraper</TestDescription>
-		<URL>http://www.mdpi.com/2072-4292/5/10/5122</URL>
-		<BibFile>MDPIScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.mdpi.MDPIScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_276">
 		<TestDescription>JStage Scraper</TestDescription>

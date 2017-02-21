@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper.url.kde.mdpi;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -35,6 +36,7 @@ import java.net.URL;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.scraper.url.kde.biorxiv.BioRxivScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -50,7 +52,9 @@ public class MDPIScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_275");
+		final String url = "http://www.mdpi.com/2072-4292/5/10/5122";
+		final String resultFile = "MDPIScraperUnitURLTest.bib";
+		assertScraperResult(url, null, MDPIScraper.class, resultFile);
 	}
 	
 	/**
