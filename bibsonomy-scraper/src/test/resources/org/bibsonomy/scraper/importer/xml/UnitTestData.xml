@@ -2,13 +2,6 @@
 <test:Tests xmlns:test="http://www.example.org/UnitTestDataSchema"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.example.org/UnitTestDataSchema UnitTestDataSchema.xsd ">
-	<URLTest id="url_1">
-		<TestDescription>Basic URL unit test for ACMBasicScraper.</TestDescription>
-		<URL>http://portal.acm.org/citation.cfm?id=1015428&amp;coll=Portal&amp;dl=ACM&amp;CFID=22531872&amp;CFTOKEN=18437036</URL>
-		<BibFile>ACMBasicScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
-		<Enabled>true</Enabled>
-	</URLTest>
 	<URLTest id="url_2">
 		<TestDescription>URL test for a single aifb publication (article).</TestDescription>
 		<URL>http://www.aifb.kit.edu/web/Article1764</URL>
@@ -672,12 +665,6 @@
 		<BibFile>ArxivScraperUnitURLTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.arxiv.ArxivScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_134">
-		<TestDescription>acm  url test (failure with IllegalArgumentException)</TestDescription>
-		<URL>http://portal.acm.org/citation.cfm?id=333115.333119&amp;coll=GUIDE&amp;dl=GUIDE&amp;CFID=11052258&amp;CFTOKEN=84161555</URL>
-		<BibFile>ACMBasicScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_135">
 		<TestDescription>informaworld url test</TestDescription>
 		<URL>http://www.informaworld.com/smpp/content~content=a905990187~db=all~jumptype=rss</URL>
@@ -761,24 +748,12 @@
 		<BibFile>RSOCScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.rsoc.RSOCScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_153">
-		<TestDescription>acm test</TestDescription>
-		<URL>http://portal.acm.org/citation.cfm?id=1105676</URL>
-		<BibFile>ACMBasicScraperUnitURLTest3.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_154">
 		<TestDescription>CasesJournal url test</TestDescription>
 		<URL>http://www.casesjournal.com/content/2/1/164</URL>
 		<BibFile>CasesJournalScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.casesjournal.CasesJournalScraper</Scraper>
 		<Enabled>true</Enabled>
-	</URLTest>
-	<URLTest id="url_155">
-		<TestDescription>acm test</TestDescription>
-		<URL>http://portal.acm.org/citation.cfm?id=553876</URL>
-		<BibFile>ACMBasicScraperUnitURLTest4.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_156">
 		<TestDescription>Citeulike url test</TestDescription>
@@ -866,18 +841,6 @@
 		<BibFile>SpringerLinkScraperUnitURLTest5.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_184">
-		<TestDescription>acm url test</TestDescription>
-		<URL>http://portal.acm.org/beta/citation.cfm?id=359859</URL>
-		<BibFile>ACMBasicScraperUnitURLTest5.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_186">
-		<TestDescription>acm url test</TestDescription>
-		<URL>http://portal.acm.org/citation.cfm?id=1082036.1082037&amp;coll=Portal&amp;dl=GUIDE&amp;CFID=88775871&amp;CFTOKEN=40392553#</URL>
-		<BibFile>ACMBasicScraperUnitURLTest6.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
-	</URLTest>
 	<URLTest id="url_189">
 		<TestDescription>URL scraping test with a citation page from intersience wiley</TestDescription>
 		<URL>http://onlinelibrary.wiley.com/doi/10.1002/1521-4095(200011)12:22%3C1655::AID-ADMA1655%3E3.0.CO;2-2/abstract</URL>
@@ -920,12 +883,6 @@
 		<BibFile>JournalogyScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.journalogy.JournalogyScraper</Scraper>
 		<Enabled>true</Enabled>
-	</URLTest>
-	<URLTest id="url_199">
-		<TestDescription>acm test</TestDescription>
-		<URL>http://dl.acm.org/citation.cfm?id=1571977</URL>
-		<BibFile>ACMBasicScraperUnitURLTest7.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
 	</URLTest>
 		<URLTest id="url_207">
 		<TestDescription>scraping test for Google Books</TestDescription>
@@ -1355,12 +1312,6 @@
 		<URL>http://ajph.aphapublications.org/doi/abs/10.2105/AJPH.2009.160184</URL>
 		<BibFile>APHAScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.apha.APHAScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_289">
-		<TestDescription>scraping test for ACAM page from acm.org/</TestDescription>
-		<URL>http://cacm.acm.org/magazines/2015/8/189841-understanding-the-us-domestic-computer-science-phd-pipeline/fulltext</URL>
-		<BibFile>ACMBasicScraperUnitURLTest9.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_290">
 		<TestDescription>scraping test for Copac Scraper</TestDescription>
