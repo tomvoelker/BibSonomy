@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.scraper.url.kde.nature;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -48,7 +50,6 @@ import org.bibsonomy.scraper.ReferencesScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
 
 /**
@@ -85,7 +86,7 @@ public class NatureScraper extends AbstractUrlScraper implements ReferencesScrap
 
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("(?s)Abstract.*\\s+<p>(.*)</p>\\s+<div class=\"article-keywords inline-list cleared\">");
-	private static final Pattern REFERENCES_PATTERN = Pattern.compile("<a href=\"(.*)\">Download references</a>");
+	private static final Pattern REFERENCES_PATTERN = Pattern.compile("href=\"?(\\S*)\"?[^>]*>Download references");
 	
 	
 	private final RisToBibtexConverter ris = new RisToBibtexConverter();
@@ -110,7 +111,7 @@ public class NatureScraper extends AbstractUrlScraper implements ReferencesScrap
 		try {
 			con = (HttpURLConnection) url.openConnection();
 			con.connect();
-			//sometimes the page is behind an gzip stream. this will be indicated by response code 401.
+			// sometimes the page is behind an gzip stream. this will be indicated by response code 401.
 			if (con.getResponseCode() == HttpURLConnection.HTTP_UNAUTHORIZED) {
 				in = new GZIPInputStream(con.getErrorStream());
 			} else {
@@ -159,7 +160,7 @@ public class NatureScraper extends AbstractUrlScraper implements ReferencesScrap
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		try {
 			final String bibtexUrl = findBibtexUrl(sc.getUrl());
-			if (ValidationUtils.present(bibtexUrl)) {
+			if (present(bibtexUrl)) {
 				sc.setBibtexResult(BibTexUtils.addFieldIfNotContained(ris.toBibtex(WebUtils.getContentAsString(bibtexUrl)),"abstract",abstractParser(sc.getUrl())));
 			} else {
 				sc.setBibtexResult(constructBibtexFromHtmlMeta(sc));	

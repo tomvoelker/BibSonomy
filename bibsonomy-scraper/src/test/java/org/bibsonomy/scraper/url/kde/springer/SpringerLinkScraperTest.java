@@ -28,7 +28,6 @@ package org.bibsonomy.scraper.url.kde.springer;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -47,7 +46,6 @@ public class SpringerLinkScraperTest {
 	 */
 	@Test
 	public void url1TestRun() {
-//		UnitTestRunner.runSingleTest("url_30");
 		final String url = "http://link.springer.com/article/10.1140%2Fepje%2Fi2002-10160-7";
 		final String resultFile = "SpringerLinkScraperUnitURLTest1.bib";
 		assertScraperResult(url, null, SpringerLinkScraper.class, resultFile);
@@ -58,7 +56,6 @@ public class SpringerLinkScraperTest {
 	 */
 	@Test
 	public void url2TestRun() {
-//		UnitTestRunner.runSingleTest("url_41");
 		final String url = "http://link.springer.com/chapter/10.1007%2F3-540-34416-0_27";
 		final String resultFile = "SpringerLinkScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, SpringerLinkScraper.class, resultFile);
@@ -69,7 +66,6 @@ public class SpringerLinkScraperTest {
 	 */
 	@Test
 	public void url4TestRun() {
-//		UnitTestRunner.runSingleTest("url_183");
 		final String url = "http://link.springer.com/article/10.1007%2Fs13222-010-0004-8";
 		final String resultFile = "SpringerLinkScraperUnitURLTest5.bib";
 		assertScraperResult(url, null, SpringerLinkScraper.class, resultFile);
@@ -80,7 +76,6 @@ public class SpringerLinkScraperTest {
 	 */
 	@Test
 	public void url5TestRun() {
-//		UnitTestRunner.runSingleTest("url_235");
 		final String url = "http://link.springer.com/chapter/10.1007%2F3-540-44527-7_10?LI=true";
 		final String resultFile = "SpringerLinkScraperUnitURLTest7.bib";
 		assertScraperResult(url, null, SpringerLinkScraper.class, resultFile);
@@ -91,7 +86,6 @@ public class SpringerLinkScraperTest {
 	 */
 	@Test
 	public void url6TestRun() {
-//		UnitTestRunner.runSingleTest("url_238");
 		final String url = "http://link.springer.com/article/10.1023%2FA%3A1008346807097?LI=true#page-1";
 		final String resultFile = "SpringerLinkScraperUnitURLTest8.bib";
 		assertScraperResult(url, null, SpringerLinkScraper.class, resultFile);

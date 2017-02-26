@@ -26,8 +26,13 @@
  */
 package org.bibsonomy.scraper.url.kde.ieee;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
+import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.scraper.junit.RemoteTestAssert;
+import org.bibsonomy.scraper.url.kde.bibsonomy.BibSonomyScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -44,7 +49,10 @@ public class IEEEComputerSocietyScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_40");
+//		UnitTestRunner.runSingleTest("url_40");
+		final String url = "http://www.computer.org/csdl/proceedings/dexa/2006/2641/00/26410603-abs.html";
+		final String resultFile = "IEEEComputerSocietyScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, IEEEComputerSocietyScraper.class, resultFile);
 	}
 
 	/**
@@ -52,7 +60,10 @@ public class IEEEComputerSocietyScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_137");
+//		UnitTestRunner.runSingleTest("url_137");
+		final String url = "http://www.computer.org/csdl/proceedings/dexa/2006/2641/00/26410603-reference.bib";
+		final String resultFile = "IEEEComputerSocietyScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, IEEEComputerSocietyScraper.class, resultFile);
 	}
 	
 	/**
@@ -60,6 +71,9 @@ public class IEEEComputerSocietyScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		UnitTestRunner.runSingleTest("url_283");
+//		UnitTestRunner.runSingleTest("url_283");
+		final String url = "http://www.computer.org/csdl/mags/co/2001/02/r2026.pdf";
+		final String resultFile = "IEEEComputerSocietyScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, IEEEComputerSocietyScraper.class, resultFile);
 	}
 }
