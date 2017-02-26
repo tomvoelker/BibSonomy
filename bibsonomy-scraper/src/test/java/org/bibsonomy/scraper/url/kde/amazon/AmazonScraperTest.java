@@ -28,14 +28,12 @@ package org.bibsonomy.scraper.url.kde.amazon;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
-import org.bibsonomy.scraper.url.kde.biorxiv.BioRxivScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * Scraper URL tests #42, #46, #47, #48, #49, #50, #57, #105, #160, #161 for AmazonScraper
+ * Scraper URL tests for AmazonScraper
  * @author tst
  */
 @Category(RemoteTest.class)

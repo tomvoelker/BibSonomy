@@ -28,9 +28,7 @@ package org.bibsonomy.scraper.url.kde.elsevier;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
-import org.bibsonomy.scraper.url.kde.biorxiv.BioRxivScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -44,8 +42,7 @@ public class ElsevierScraperTest {
 	 * starts URL test with id url_365
 	 */
 	@Test
-	public void urlTestRun1(){
-//		UnitTestRunner.runSingleTest("url_365");
+	public void urlTestRun1() {
 		final String url = "http://www.elsevier.es/es-revista-journal-of-applied-research-and-81-articulo-extensions-to-k-medoids-with-balance-90391442";
 		final String resultFile = "ElsevierScraperUnitURLTest.bib";
 		assertScraperResult(url, null, ElsevierScraper.class, resultFile);
@@ -55,8 +52,7 @@ public class ElsevierScraperTest {
 	 * starts URL test with id url_366
 	 */
 	@Test
-	public void urlTestRun2(){
-//		UnitTestRunner.runSingleTest("url_366");
+	public void urlTestRun2() {
 		final String url = "http://www.elsevier.es/es-revista-allergologia-et-immunopathologia-105-articulo-identification-of-therapeutic-targets-for-90446632?referer=buscador";
 		final String resultFile = "ElsevierScraper1UnitURLTest.bib";
 		assertScraperResult(url, null, ElsevierScraper.class, resultFile);
