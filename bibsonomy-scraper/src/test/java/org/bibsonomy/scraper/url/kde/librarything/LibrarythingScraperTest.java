@@ -28,14 +28,12 @@ package org.bibsonomy.scraper.url.kde.librarything;
 
 import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
 
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
-import org.bibsonomy.scraper.url.kde.biorxiv.BioRxivScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * Scraper URL tests #18 #19 #37 for LibrarythingScraper
+ * Scraper URL tests for LibrarythingScraper
  * @author tst
  *
  */
@@ -67,7 +65,7 @@ public class LibrarythingScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		final String url = "http://www.librarything.de/work/1926837/details";
+		final String url = "http://www.librarything.com/work/1926837/details";
 		final String resultFile = "LibrarythingScraperUnitURLTest3.bib";
 		assertScraperResult(url, null, LibrarythingScraper.class, resultFile);
 	}
