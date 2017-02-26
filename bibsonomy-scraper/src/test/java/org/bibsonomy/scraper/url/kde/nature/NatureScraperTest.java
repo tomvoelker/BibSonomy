@@ -38,9 +38,8 @@ import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-
 /**
- * Scraper URL tests #45 for NatureScraper
+ * Scraper URL tests for NatureScraper
  * @author tst
  */
 @Category(RemoteTest.class)
@@ -70,7 +69,7 @@ public class NatureScraperTest {
 	@Test
 	public void urlTest4Run() {
 		final String url = "http://www.nature.com/news/images-of-the-month-october-2014-1.16228";
-		final String resultFile = "NatureScraperUnitURLTest4.bib";
+		final String resultFile = "w.bib";
 		assertScraperResult(url, null, NatureScraper.class, resultFile);
 	}
 
