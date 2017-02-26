@@ -220,14 +220,6 @@
 		<BibFile>SpringerLinkScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
 	</URLTest>
-	<URLTest id="url_45">
-		<TestDescription>test for nature.com</TestDescription>
-		<URL>http://www.nature.com/ajh/journal/v21/n4/abs/ajh20089a.html</URL>
-		<BibFile>NatureScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.nature.NatureScraper</Scraper>
-		<!--redirected to another service -->
-		<Enabled>false</Enabled>
-	</URLTest>
 	<URLTest id="url_54">
 		<TestDescription>D-Lib scraping test (html page)</TestDescription>
 		<URL>http://www.dlib.org/dlib/january08/smith/01smith.html</URL>

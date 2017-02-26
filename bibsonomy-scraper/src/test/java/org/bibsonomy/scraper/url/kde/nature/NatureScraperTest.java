@@ -34,9 +34,7 @@ import static org.junit.Assert.assertTrue;
 import java.net.URL;
 
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
-import org.bibsonomy.scraper.url.kde.biorxiv.BioRxivScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -47,21 +45,12 @@ import org.junit.experimental.categories.Category;
  */
 @Category(RemoteTest.class)
 public class NatureScraperTest {
-
-	/**
-	 * starts URL test with id url_45
-	 
-	@Test
-	public void urlTest1Run(){
-		UnitTestRunner.runSingleTest("url_45");
-	}
-	 */
 	
 	/**
 	 * starts URL test with id url_231
 	 */
 	@Test
-	public void urlTest2Run(){
+	public void urlTest2Run() {
 		final String url = "http://www.nature.com/ncomms/journal/v3/n10/full/ncomms2132.html";
 		final String resultFile = "NatureScraperUnitURLTest2.bib";
 		assertScraperResult(url, null, NatureScraper.class, resultFile);
@@ -70,7 +59,7 @@ public class NatureScraperTest {
 	 * starts URL test with id url_280
 	 */
 	@Test
-	public void urlTest3Run(){
+	public void urlTest3Run() {
 		final String url = "http://www.nature.com/news/online-collaboration-scientists-and-the-social-network-1.15711";
 		final String resultFile = "NatureScraperUnitURLTest3.bib";
 		assertScraperResult(url, null, NatureScraper.class, resultFile);
@@ -79,11 +68,12 @@ public class NatureScraperTest {
 	 * starts URL test with id url_282
 	 */
 	@Test
-	public void urlTest4Run(){
+	public void urlTest4Run() {
 		final String url = "http://www.nature.com/news/images-of-the-month-october-2014-1.16228";
 		final String resultFile = "NatureScraperUnitURLTest4.bib";
 		assertScraperResult(url, null, NatureScraper.class, resultFile);
 	}
+
 	/**
 	 * @throws Exception
 	 */
