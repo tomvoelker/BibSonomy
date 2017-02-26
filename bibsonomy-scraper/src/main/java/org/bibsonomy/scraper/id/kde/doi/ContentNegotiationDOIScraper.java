@@ -38,6 +38,7 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -134,7 +135,10 @@ public class ContentNegotiationDOIScraper implements Scraper {
 			 */
 			if (present(content)) {
 				final SimpleBibTeXParser parser = new SimpleBibTeXParser(); // not thread-safe!
-				parser.parseBibTeX(content);
+				final BibTex publication = parser.parseBibTeX(content);
+				if (!present(publication)) {
+					return null;
+				}
 			}
 			
 			return content;
@@ -142,7 +146,7 @@ public class ContentNegotiationDOIScraper implements Scraper {
 			throw new InternalFailureException(ex);
 		} catch (final IOException ex) {
 			throw new InternalFailureException(ex);
-		} catch (ParseException e) {
+		} catch (final ParseException e) {
 			throw new InternalFailureException("Server did not return BibTeX during content negotiation. Scraping not supported.");
 		}
 	}
