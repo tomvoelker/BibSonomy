@@ -118,17 +118,6 @@ public class ACMBasicScraperTest {
 	}
 	
 	/**
-	 * ACM Queue
-	 */
-	@Test
-	public void urlTestRun8(){
-//		UnitTestRunner.runSingleTest("url_286");
-		final String url = "http://www.nowpublishers.com/article/Details/INR-012";
-		final String resultFile = "ACMBasicScraperUnitURLTest7.bib";
-		assertScraperResult(url, null, ACMBasicScraper.class, resultFile);
-	}
-	
-	/**
 	 * CACM
 	 */
 	@Test
