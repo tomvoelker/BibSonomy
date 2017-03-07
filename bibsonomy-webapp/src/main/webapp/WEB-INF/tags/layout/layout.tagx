@@ -45,6 +45,18 @@
 			personalized="${personalized}"
 			/>
 			<body data-spy="scroll" data-target="#sidebar-nav">
+				<c:set var="statisticsUrl" value="${properties['project.statistics.service.url']}" />
+				<c:if test="${not empty statisticsUrl}">
+					<c:set var="siteid" value="${properties['project.statisitics.siteid']}" />
+					<noscript>
+						<p>
+							<c:url var="statImgUrl" value="//${statisticsUrl}/piwik.php">
+								<c:param name="idsite" value="${siteid}" />
+							</c:url>
+							<img src="${statImgUrl}" style="border:0" alt="" />
+						</p>
+					</noscript>
+				</c:if>
 				<!-- XXX: remove as soon as we redirect all http traffic to https -->
 				<c:if test="${fn:startsWith(properties['project.home'], 'http') and fn:contains(properties['project.home'], 'bibsonomy.org')}">
 					<div class="alert alert-warning" style="padding-top: 2px; padding-bottom: 2px">
