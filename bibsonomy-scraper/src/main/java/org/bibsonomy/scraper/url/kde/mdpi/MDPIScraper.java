@@ -105,7 +105,6 @@ public class MDPIScraper extends AbstractUrlScraper implements CitedbyScraper{
 			final String pageContent = WebUtils.getContentAsString(scrapingContext.getUrl()); // TODO: cache!!
 			Matcher m = CITATION_PATTERN.matcher(pageContent);
 			if (m.find()) {
-				System.out.println(SITE_URL + "citedby/" + m.group(1));
 				scrapingContext.setCitedBy(WebUtils.getContentAsString(SITE_URL + "citedby/" + m.group(1).replaceAll("/", "%252F")));
 				return true;
 			}

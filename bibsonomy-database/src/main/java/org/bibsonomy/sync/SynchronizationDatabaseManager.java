@@ -207,8 +207,7 @@ public class SynchronizationDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	/**
-	 * @param serviceURI 
-	 * @param server
+	 * @param serviceURI
 	 * @param session
 	 * @return get available SyncService via SSLDn / ServiceID - if SSLDn empty, ServiceID is selected
 	 */

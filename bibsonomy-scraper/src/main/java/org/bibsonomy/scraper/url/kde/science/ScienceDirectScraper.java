@@ -86,4 +86,8 @@ public class ScienceDirectScraper extends GenericBibTeXURLScraper {
 		return null;
 	}
 
+	@Override
+	protected boolean retrieveCookiesFromSite() {
+		return true;
+	}
 }
