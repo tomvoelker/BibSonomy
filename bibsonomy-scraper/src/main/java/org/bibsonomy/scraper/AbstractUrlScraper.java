@@ -129,5 +129,4 @@ public abstract class AbstractUrlScraper implements UrlScraper {
 	public boolean supportsScrapingContext(final ScrapingContext scrapingContext) {
 		return this.supportsUrl(scrapingContext.getUrl());
 	}
-
 }

@@ -26,8 +26,11 @@
  */
 package org.bibsonomy.scraper.url.kde.springer;
 
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.junit.RemoteTest;
+import org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -44,14 +47,20 @@ public class SpringerScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_58");
+//		UnitTestRunner.runSingleTest("url_58");
+		final String url = "http://www.springer.com/computer/database+management+&amp;+information+retrieval/book/978-0-387-95433-2";
+		final String resultFile = "SpringerScraperUnitURLTest.bib";
+		assertScraperResult(url, null, SpringerScraper.class, resultFile);
 	}
 	
 	/**
 	 * starts URL test with id url_239
 	 */
 	@Test
-	public void url2TestRun() {
-		UnitTestRunner.runSingleTest("url_239");
+	public void url8TestRun() {
+//		UnitTestRunner.runSingleTest("url_239");
+		final String url = "http://link.springer.com/book/10.1007/978-0-387-85820-3/page/1";
+		final String resultFile = "SpringerLinkScraperUnitURLTest9.bib";
+		assertScraperResult(url, null, SpringerScraper.class, resultFile);
 	}
 }
