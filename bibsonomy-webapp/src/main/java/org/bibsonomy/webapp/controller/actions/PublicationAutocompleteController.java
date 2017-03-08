@@ -36,7 +36,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.bibtex.parser.PostBibTeXParser;
+import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.model.BibTex;
@@ -142,8 +142,13 @@ public class PublicationAutocompleteController implements MinimalisticController
 			final boolean scrape = scraper.scrape(context);
 			if (scrape) {
 				final String result = context.getBibtexResult();
-				final PostBibTeXParser postBibTeXParser = new PostBibTeXParser();
-				return postBibTeXParser.parseBibTeXPost(result);
+				final SimpleBibTeXParser parser = new SimpleBibTeXParser();
+				final BibTex publication = parser.parseBibTeX(result);
+				if (present(publication)) {
+					final Post<BibTex> post = new Post<>();
+					post.setResource(publication);
+					return post;
+				}
 			}
 		} catch (final IOException | ScrapingException | ParseException e) {
 			log.info("exception while scraping", e);

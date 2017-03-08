@@ -28,8 +28,7 @@ package org.bibsonomy.scraper.url.kde.ieee;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -61,80 +60,93 @@ public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
 	private static final String SITE_NAME 	= "IEEEXplore Standards";
 	private static final String SITE_URL  	= "http://ieeexplore.ieee.org/";
 	private static final String info 		= "This scraper creates a BibTeX entry for the standards at " + href(SITE_URL, SITE_NAME)+".";
+	private static final String DOWNLOAD_URL = SITE_URL + "xpl/downloadCitations";
 
-	
 	private static final Log log = LogFactory.getLog(IEEEXploreStandardsScraper.class);
-	
+
 	private static final String IEEE_HOST        	 	  = "ieeexplore.ieee.org";
 	private static final String IEEE_STANDARDS_PATH   	  = "xpl";
 	private static final String IEEE_STANDARDS		 	  = "@misc";
 	private static final String IEEE_STANDARDS_IDENTIFIER = "punumber";
-	
+
 	private static final String CONST_EISBN               = "E-ISBN: ";
 	private static final String CONST_PAGE                = "Page(s): ";
 	private static final String CONST_DATE                = "Publication Date: ";
 
-	private static final Pattern pattern = Pattern.compile("arnumber=([^&]*)");
-	
-	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile("/" + IEEE_STANDARDS_PATH + ".*")));
+	private static final Pattern pattern1 = Pattern.compile("arnumber=([^&]*)");
 
-	
+	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
+
+
+	static {
+		patterns.add(new Pair<Pattern, Pattern>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile("/" + IEEE_STANDARDS_PATH + ".*")));
+	}
+
+
+	protected static String getBibTeX(final ScrapingContext sc, final String id) throws InternalFailureException {
+		// using own client because I do not want to configure any client to allow circular redirects
+		final HttpClient client = WebUtils.getHttpClient();
+		client.getParams().setBooleanParameter(HttpClientParams.ALLOW_CIRCULAR_REDIRECTS, true);
+
+		try {
+			// better get the page first
+			final String url = sc.getUrl().toExternalForm();
+			WebUtils.getContentAsString(client, url);
+
+			//create a post method
+			final PostMethod method = new PostMethod(DOWNLOAD_URL);
+			method.addParameter("citations-format", "citation-abstract");
+			method.addParameter("fromPage", "");
+			method.addParameter("download-format", "download-bibtex");
+			method.addParameter("recordIds", id);
+
+			// now get bibtex
+			String bibtex = WebUtils.getPostContentAsString(client, method);
+
+			if (bibtex != null) {
+				// clean up
+				bibtex = bibtex.replace("<br>", "");
+
+				// append url
+				bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", url);
+
+				return bibtex.trim();
+			}
+			return null;
+		} catch (MalformedURLException ex) {
+			throw new InternalFailureException(ex);
+		} catch (IOException ex) {
+			throw new InternalFailureException(ex);
+		}
+	}
+
+	@Override
 	protected boolean scrapeInternal (ScrapingContext sc) throws ScrapingException {
-		if (sc.getUrl().toString().indexOf(IEEE_STANDARDS_IDENTIFIER) != -1 ) {
-			sc.setScraper(this);
-			
-			Matcher matcher = pattern.matcher(sc.getUrl().toString());
-			if(matcher.find()){
-				String downUrl = "http://ieeexplore.ieee.org/xpl/downloadCitations";
-				
-				//using own client because I do not want to configure any client to allow circular redirects
-				HttpClient client = WebUtils.getHttpClient();
-				client.getParams().setBooleanParameter(HttpClientParams.ALLOW_CIRCULAR_REDIRECTS, true);
+		sc.setScraper(this);
 
-				String bibtex = null;
-				try {
-					//better get the page first
-					WebUtils.getContentAsString(client, sc.getUrl().toExternalForm());
-					
-					//create a post method
-					PostMethod method = new PostMethod(downUrl);
-					method.addParameter("citations-format", "citation-abstract");
-					method.addParameter("fromPage", "");
-					method.addParameter("download-format", "download-bibtex");
-					method.addParameter("recordIds", matcher.group(1));
-					
-					//now get bibtex
-					bibtex = WebUtils.getPostContentAsString(client, method);
-				} catch (MalformedURLException ex) {
-					throw new InternalFailureException(ex);
-				} catch (IOException ex) {
-					throw new InternalFailureException(ex);
-				}
-				
-				if(bibtex != null){
-					// clean up
-					bibtex = bibtex.replace("<br>", "");
-					
-					// append url
-					bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
-					
-					// add downloaded bibtex to result 
-					sc.setBibtexResult(bibtex.toString().trim());
-					return true;
-					
-				}else{
-					log.debug("IEEEXploreStandardsScraper: direct bibtex download failed. Use JTidy to get bibliographic data.");
-					sc.setBibtexResult(ieeeStandardsScrape(sc));
-					return true;
-					
-				}
-			}else{
-				log.debug("IEEEXploreStandardsScraper use JTidy to get Bibtex from " + sc.getUrl().toString());
+		String id = null;
+		Matcher matcher = pattern1.matcher(sc.getUrl().toString());
+		if (matcher.find()) {
+			id = matcher.group(1);
+		}
+		if (id != null) {
+			String bibtex = getBibTeX(sc, id);
+
+			if (bibtex != null) {
+				// add downloaded bibtex to result 
+				sc.setBibtexResult(bibtex.toString().trim());
+				return true;
+
+			} else {
+				log.debug("IEEEXploreStandardsScraper: direct bibtex download failed. Use JTidy to get bibliographic data.");
 				sc.setBibtexResult(ieeeStandardsScrape(sc));
 				return true;
 			}
+		} else {
+			log.debug("IEEEXploreStandardsScraper use JTidy to get Bibtex from " + sc.getUrl().toString());
+			sc.setBibtexResult(ieeeStandardsScrape(sc));
+			return true;
 		}
-		return false;
 	}
 
 	public String getInfo() {
@@ -147,7 +159,7 @@ public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
 			NodeList pres 		= null; 
 			Node currNode 		= null;
 			NodeList temp 		= null;
-	
+
 			//-- init String map for bibtex entries
 			String type 		= IEEE_STANDARDS;
 			String url 			= sc.getUrl().toString();
@@ -156,10 +168,10 @@ public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
 			String isbn 		= "";
 			String abstr	 	= "";
 			String year 		= "";
-	
+
 			//-- get the html doc and parse the DOM
 			final Document document = XmlUtils.getDOM(sc.getPageContent());
-	
+
 			/* -- get the spans to extract the title and abstract
 			 */
 			pres = null;
@@ -180,8 +192,8 @@ public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
 					}
 				}
 			}
-	
-	
+
+
 			/*-- get all <p>-Tags to extract the standard informations
 			 *  In every standard page the css-class "bodyCopyBlackLargeSpaced"
 			 *  indicates the collection of all informations.
@@ -195,7 +207,7 @@ public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
 					Attr own = g.getAttributeNode("class");
 					if ("bodyCopyBlackLargeSpaced".equals(own.getValue())){
 						temp = currNode.getChildNodes();
-	
+
 						for(int j =0; j<temp.getLength(); j++){
 							if (temp.item(j).getNodeValue().indexOf(CONST_DATE) != -1){
 								String date = temp.item(j).getNodeValue().substring(CONST_DATE.length()).trim();
@@ -211,21 +223,21 @@ public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
 					}
 				}
 			}
-	
+
 			//create valid bibtex snippet
 			return type + " {," 
-						+ "title = {" + title + "}, " 
-						+ "year = {" + year + "}, " 
-						+ "url = {" + url + "}, "
-						+ "pages = {" + numpages + "}, " 
-						+ "abstract = {" + abstr + "}, "
-						+ "isbn = {" + isbn + "}}";
-		
+			+ "title = {" + title + "}, " 
+			+ "year = {" + year + "}, " 
+			+ "url = {" + url + "}, "
+			+ "pages = {" + numpages + "}, " 
+			+ "abstract = {" + abstr + "}, "
+			+ "isbn = {" + isbn + "}}";
+
 		}catch(Exception e){
 			throw new InternalFailureException(e);
 		}
 	}
-	
+
 	public List<Pair<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
@@ -237,5 +249,5 @@ public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
 	public String getSupportedSiteURL() {
 		return SITE_URL;
 	}
-	
+
 }

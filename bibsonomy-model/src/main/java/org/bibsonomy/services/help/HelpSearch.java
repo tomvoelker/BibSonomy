@@ -26,6 +26,8 @@
  */
 package org.bibsonomy.services.help;
 
+import org.bibsonomy.search.InvalidSearchRequestException;
+
 import java.util.SortedSet;
 
 /**
@@ -41,6 +43,6 @@ public interface HelpSearch {
 	 * @param searchTerms
 	 * @return the page results
 	 */
-	public SortedSet<HelpSearchResult> search(final String language, final String searchTerms);
+	public SortedSet<HelpSearchResult> search(final String language, final String searchTerms) throws InvalidSearchRequestException;
 
 }
