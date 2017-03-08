@@ -68,7 +68,7 @@
 						<c:set var="exportUrl" value="${urlGeneratorFactory.createURLGeneratorForPrefix(null, 'export').getPublicationUrlByPost(post)}?formatEmbedded=true" />
 					</c:otherwise>
 				</c:choose>
-				<a data-toggle="tab" href="#citation_all" data-formatUrl="${exportUrl}"><fmt:message key="bibtex.all_exports" /></a>
+				<a id="citation-box-citation-all-button" data-toggle="tab" href="#citation_all" data-formatUrl="${exportUrl}"><fmt:message key="bibtex.all_exports" /></a>
 			</li>
 		</ul>
 		
@@ -103,8 +103,8 @@
 			<div class="tab-pane" id="citation_all">
 				<!-- keep -->
 			</div>
-			<!-- one button for all of the citations! -->
-			<bsform:button className="copyToLocalClipboard_citationBox" size="defaultSize" style="defaultStyle" valueKey="export.copyToLocalClipboard" icon="clipboard" block="${true}" />
+			<!-- one button for all citations! -->
+			<bsform:button id="copyToLocalClipboard_citationBoxButton" className="copyToLocalClipboard_citationBox" size="defaultSize" style="defaultStyle" valueKey="export.copyToLocalClipboard" icon="clipboard" block="${true}" />
 		</div>
 	</div>
 </jsp:root>

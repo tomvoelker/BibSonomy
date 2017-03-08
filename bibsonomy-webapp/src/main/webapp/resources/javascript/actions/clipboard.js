@@ -46,6 +46,27 @@ $(function() {
 	
 	initNewClipboard('#copyToLocalClipboard', '#exportModalCitation');
 	initNewClipboard('.copyToLocalClipboard_citationBox', '#citation-styles .active');
+	
+	
+	//hiding / showing "copy to clipboard" button
+	
+	$(".citation-box .nav li a").each(function(index, value) {
+		if($(this).attr('id')=="citation-box-citation-all-button"){
+			$(this).on("click", hideClipboardButton);
+		}else{
+			
+			$(this).on("click", displayClipboardButton);
+		}
+	});
+
+	
+	function displayClipboardButton() {
+		document.getElementById("copyToLocalClipboard_citationBoxButton").style.display = "";
+	}
+
+	function hideClipboardButton() {
+		document.getElementById("copyToLocalClipboard_citationBoxButton").style.display = "none";
+	}
 });
 
 
