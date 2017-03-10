@@ -97,6 +97,7 @@
 						<fmt:message key="history.restoreBtn.enabled" var="restoreBtnEnabledMsg" />
 						<fmt:message key="goldStandard.approved.title" var="approved"/>
 						<fmt:message key="goldStandard.approved.revision.title" var="approved_revision"/>
+						<fmt:message key="history.backToPost" var="backToPostBtnMsg" />
 						
 						<!--+
 							| complete Post
@@ -178,8 +179,13 @@
 								</c:otherwise>
 							</c:choose>
 						</div>
-
-						<div style="border-top: 1px #cbcbcb solid; clear:left">
+						
+						<a id="backToPostBtn" class="${buttonClasses} visible" style="vertical-align:bottom;padding:4px;float: right;" 
+									title="${backToPostBtnMsg}" disabled="disabled">
+									<fmt:message key="history.backToPost"/>
+						</a>
+						
+						<div style="border-bottom: 1px #cbcbcb solid; clear:right;padding-top:10px">
 							<span> </span>
 						</div> <!-- border -->
 
