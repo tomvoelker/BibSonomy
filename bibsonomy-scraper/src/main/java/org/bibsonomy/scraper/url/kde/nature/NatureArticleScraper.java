@@ -12,7 +12,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericRISURLScraper;
 
 /**
- * TODO: add documentation to this class
+ * Scraper for Nature
  *
  * @author Johannes
  */

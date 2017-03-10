@@ -11,7 +11,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericRISURLScraper;
 
 /**
- *
+ * Scraper for Nature
  * @author Johannes
  */
 public class NatureJournalScraper extends GenericRISURLScraper{
