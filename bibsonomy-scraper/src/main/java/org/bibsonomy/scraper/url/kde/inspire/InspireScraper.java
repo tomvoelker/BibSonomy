@@ -83,7 +83,9 @@ public class InspireScraper extends AbstractUrlScraper implements ReferencesScra
 			
 			if(idMatcher.find()) {
 				URL bibtexUrl = new URL(SITE_URL + "record/" + idMatcher.group(1) + pattern_download);
-				final Document temp = XmlUtils.getDOM(bibtexUrl);
+				
+				final String siteContent = WebUtils.getContentAsString(bibtexUrl);
+				final Document temp = XmlUtils.getDOM(siteContent);
 				
 				//extract the bibtex snippet which is embedded in pre tags
 				String bibtex = null;
