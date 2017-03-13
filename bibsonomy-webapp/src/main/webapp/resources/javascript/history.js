@@ -64,7 +64,6 @@ $(document).ready(function () {
 	$('a[id = backToPostBtn]').click(function() {	
 		window.location.href = window.location.href.replace("history/", "");
 	});
-
 });
 
 
