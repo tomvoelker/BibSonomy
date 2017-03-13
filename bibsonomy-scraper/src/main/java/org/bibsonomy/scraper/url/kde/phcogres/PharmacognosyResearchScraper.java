@@ -40,6 +40,8 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.generic.GenericRISURLScraper;
 
 /**
+ * bibtex download is broken so we use RIS instead
+ * 
  * @author hagen
  */
 public class PharmacognosyResearchScraper extends GenericRISURLScraper {
@@ -88,5 +90,13 @@ public class PharmacognosyResearchScraper extends GenericRISURLScraper {
 			return url.toString().replace(m.group(1), "citeman") + ";t=3";
 		}
 		return null;
+	}
+	
+	@Override
+	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
+		bibtex = bibtex.replaceAll("<i>", "");
+		bibtex = bibtex.replaceAll("</i>", "");
+		
+		return bibtex;
 	}
 }
