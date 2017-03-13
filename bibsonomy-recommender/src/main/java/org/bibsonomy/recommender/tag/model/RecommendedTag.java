@@ -146,7 +146,7 @@ public class RecommendedTag extends Tag implements RecommendationResult {
 		/*
 		 * cast
 		 */
-		final RecommendedTag recTag = (RecommendedTag)tag;
+		final RecommendedTag recTag = (RecommendedTag) tag;
 		
 		/*
 		 * accept the super classes 'equals' method 
