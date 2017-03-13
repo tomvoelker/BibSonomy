@@ -380,6 +380,20 @@ function activateAffixEntry(el) {
 	});
 }
 
+function showSuccessMessage(message) {
+	// build successmessage
+	var successContainer = $('<div class="alert alert-success alert-dismissable" id="globalSuccess"></div>');
+	var button = $('<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>');
+	successContainer.append(button);
+	successContainer.append(message);
+	$('.container.main > .row > .content').prepend(successContainer);
+	// scroll to it
+	$.scrollTo(successContainer);
+	successContainer.fadeTo(2000, 500).slideUp(500, function() {
+		successContainer.slideUp(500);
+	});
+}
+
 function findBootstrapEnvironment() {
 	var envs = [ 'xs', 'sm', 'md', 'lg' ];
 

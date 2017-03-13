@@ -1,0 +1,1 @@
+ALTER TABLE oauth_provider_tokens MODIFY consumer_key VARCHAR(255);

@@ -128,7 +128,7 @@ public class APAScraper extends AbstractUrlScraper {
 		//Is the id present?
 		if (!present(lstUIDs)) throw new ScrapingException("could not find lstUIDs");
 		
-		//Build link to RIS download
+		// Build link to RIS download
 		HttpURL risURL;
 		try {
 			risURL = new HttpURL("http://psycnet.apa.org/index.cfm?fa=search.export&id=&lstUids=" + lstUIDs);
@@ -136,7 +136,7 @@ public class APAScraper extends AbstractUrlScraper {
 			throw new ScrapingException(ex1);
 		}
 		
-		//download RIS exactly two times, because the first request will finally be redirected to a login page
+		// download RIS exactly two times, because the first request will finally be redirected to a login page
 		String ris = null;
 		for (int i = 0; i < 2; i++) {
 			try {
@@ -147,11 +147,15 @@ public class APAScraper extends AbstractUrlScraper {
 			if (ris.contains("Provider: American Psychological Association")) break;
 		}
 		
-		//Convert RIS to BibTeX
-		if (!present(ris)) throw new ScrapingException("Could not download citation");
+		// convert RIS to BibTeX
+		if (!present(ris)) {
+			throw new ScrapingException("Could not download citation");
+		}
 		final RisToBibtexConverter converter = new RisToBibtexConverter();
 		final String bibtex = converter.toBibtex(ris);
-		if (!present(bibtex)) throw new ScrapingException("Something went wrong while converting RIS to BibTeX");
+		if (!present(bibtex)) {
+			throw new ScrapingException("Something went wrong while converting RIS to BibTeX");
+		}
 		scrapingContext.setBibtexResult(bibtex);
 		
 		//success

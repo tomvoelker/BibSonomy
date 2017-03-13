@@ -10,6 +10,8 @@
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:bsform="urn:jsptagdir:/WEB-INF/tags/bs/form"
+	xmlns:export="urn:jsptagdir:/WEB-INF/tags/export/bibtex"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
@@ -106,6 +108,7 @@
 			<c:set var="bm" value="${mtl:containsResourceClass(command.resourcetype, 'bookmark')}" />
 			<c:set var="pub" value="${mtl:containsResourceClass(command.resourcetype, 'publication')}" />
 			
+			<export:modal />
 			
 			<!-- bibtex/bookmark lists -->
 			<div class="row">

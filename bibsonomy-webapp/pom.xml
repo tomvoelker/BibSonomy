@@ -32,7 +32,7 @@
 	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
-		<version>3.7.0-SNAPSHOT</version>
+		<version>3.8.0-SNAPSHOT</version>
 	</parent>
 	<licenses>
 		<license>
@@ -58,86 +58,94 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>net.alchim31.maven</groupId>
-				<artifactId>yuicompressor-maven-plugin</artifactId>
+				<groupId>org.bibsonomy</groupId>
+				<artifactId>webresource-maven-plugin</artifactId>
 				<version>1.5.1</version>
 				<executions>
 					<execution>
-						<id>check_and_compress</id>
+						<id>webresource-compress-aggregation</id>
+						<phase>compile</phase>
 						<goals>
-							<goal>compress</goal>
+							<goal>compress-aggregate</goal>
 						</goals>
+						<configuration>
+							<compressions>
+								<compression>
+									<directory>${project.source.webapp.resourcedir}</directory>
+									<excludes>
+										<exclude>javascript/citeproc/xmle4x.js</exclude>
+									</excludes>
+									<includes>
+										<include>**/*.js</include>
+										<include>**/*.css</include>
+									</includes>
+									<copyExcludedFiles>true</copyExcludedFiles>
+									<outputDirectory>${project.build.webapp.resourcedir}</outputDirectory>
+								</compression>
+							</compressions>
+							<aggregations>
+								<!-- javascript files for all pages -->
+								<aggregation>
+									<insertNewLine>true</insertNewLine>
+									<output>${project.build.webapp.resourcedir}/javascript/merged/global.js</output>
+									<includes>
+										<include>${project.build.webapp.resourcedir}/jquery/jquery.js</include>
+										<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/jquery-ui.js</include>
+										<include>${project.build.webapp.resourcedir}/jquery/plugins/autosize/autosize.js</include>
+										<include>${project.build.webapp.resourcedir}/jquery/plugins/scrollTo/jquery.scrollTo.js</include>
+										<include>${project.build.webapp.resourcedir}/jquery/plugins/putCursorAtEnd/putCursorAtEnd.js</include>
+										<include>${project.build.webapp.resourcedir}/bootstrap/js/bootstrap.js</include>
+										<include>${project.build.webapp.resourcedir}/javascript/holder.js</include>
+										<include>${project.build.webapp.resourcedir}/javascript/bootstrap-dialog.js</include>
+										<include>${project.build.webapp.resourcedir}/javascript/custom.js</include>
+										<include>${project.build.webapp.resourcedir}/javascript/bootstrap-datepicker.js</include>
+										<include>${project.build.webapp.resourcedir}/select2/js/select2.full.js</include>
+										<include>${project.build.webapp.resourcedir}/javascript/bootstrap-tagsinput.js</include>
+										<!-- citeproc.js must be included before xmldom.js -->
+										<include>${project.build.webapp.resourcedir}/javascript/citeproc/citeproc.js</include>
+										<include>${project.build.webapp.resourcedir}/javascript/citeproc/xmldom.js</include>
+										<include>${project.build.webapp.resourcedir}/javascript/citeproc-wrapper.js</include>
+										<include>${project.build.webapp.resourcedir}/javascript/friendoverview.js</include>
+										<include>${project.build.webapp.resourcedir}/javascript/functions.js</include>
+										<include>${project.build.webapp.resourcedir}/javascript/actions/clipboard.js</include>
+										<include>${project.build.webapp.resourcedir}/javascript/ajaxUtils.js</include>
+										<include>${project.build.webapp.resourcedir}/javascript/fileUpload.js</include>
+										<include>${project.build.webapp.resourcedir}/javascript/style.js</include>
+										<include>${project.build.webapp.resourcedir}/javascript/jquery.fadebox.js</include>
+										<include>${project.build.webapp.resourcedir}/javascript/userRelation.js</include>
+										<include>${project.build.webapp.resourcedir}/javascript/addToSpheres.js</include>
+										<include>${project.build.webapp.resourcedir}/javascript/logging.js</include>
+										<include>${project.build.webapp.resourcedir}/clipboard/clipboard.js</include>
+									</includes>
+								</aggregation>
+								<aggregation>
+									<insertNewLine>true</insertNewLine>
+									<output>${project.build.webapp.resourcedir}/javascript/merged/discussion.js</output>
+									<includes>
+										<include>${project.build.webapp.resourcedir}/star-rating/star-rating.js</include>
+										<include>${project.build.webapp.resourcedir}/Chart.js/Chart.js</include>
+										<include>${project.build.webapp.resourcedir}/javascript/discussion/discussion.js</include>
+										<include>${project.build.webapp.resourcedir}/javascript/discussion/reviews.js</include>
+										<include>${project.build.webapp.resourcedir}/javascript/discussion/comments.js</include>
+										<include>${project.build.webapp.resourcedir}/javascript/discussion/csllinks.js</include>
+									</includes>
+								</aggregation>
+							</aggregations>
+						</configuration>
 					</execution>
 				</executions>
-				<configuration>
-					<excludes>
-						<exclude>**/pdfworker.js</exclude>
-						<exclude>**/pdf.js/**</exclude>
-					</excludes>
-					<encoding>UTF-8</encoding>
-					<jswarn>false</jswarn>
-					<nosuffix>true</nosuffix>
-					<suffix></suffix>
-					<disableOptimizations>true</disableOptimizations>
-					<!-- note: use the compressed javascript files in ${project.build.webapp.resourcedir} -->
-					<aggregations>
-						<!-- javascript files for bootstrap front-end -->
-						<aggregation>
-							<insertNewLine>true</insertNewLine>
-							<output>${project.build.webapp.resourcedir}/javascript/merged/global.js</output>
-							<includes>
-								<include>${project.build.webapp.resourcedir}/jquery/jquery.js</include>
-								<include>${project.build.webapp.resourcedir}/jquery/plugins/ui/jquery-ui.js</include>
-								<include>${project.build.webapp.resourcedir}/jquery/plugins/autosize/autosize.js</include>
-								<include>${project.build.webapp.resourcedir}/jquery/plugins/scrollTo/jquery.scrollTo.js</include>
-								<include>${project.build.webapp.resourcedir}/jquery/plugins/putCursorAtEnd/putCursorAtEnd.js</include>
-								<include>${project.build.webapp.resourcedir}/bootstrap/js/bootstrap.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bootstrap-datepicker.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bootstrap-tagsinput.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/bootstrap-dialog.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/holder.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/custom.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/friendoverview.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/functions.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/actions/clipboard.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/ajaxUtils.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/fileUpload.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/style.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/jquery.fadebox.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/userRelation.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/addToSpheres.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/logging.js</include>
-							</includes>
-						</aggregation>
-						<aggregation>
-							<insertNewLine>true</insertNewLine>
-							<output>${project.build.webapp.resourcedir}/javascript/merged/discussion.js</output>
-							<includes>
-								<include>${project.build.webapp.resourcedir}/star-rating/star-rating.js</include>
-								<include>${project.build.webapp.resourcedir}/Chart.js/Chart.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/discussion/discussion.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/discussion/reviews.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/discussion/comments.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/discussion/csllinks.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/citeproc/csllocales.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/citeproc/xmldom.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/citeproc/citeproc.js</include>
-								<include>${project.build.webapp.resourcedir}/javascript/citeproc/cslstyles.js</include>
-							</includes>
-						</aggregation>
-					</aggregations>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.lesscss</groupId>
 				<artifactId>lesscss-maven-plugin</artifactId>
 				<version>1.7.0.1.1</version>
 				<configuration>
-					<sourceDirectory>${project.basedir}/src/main/webapp/resources/css</sourceDirectory>
-					<outputDirectory>${project.build.directory}/${project.build.finalName}/resources/css</outputDirectory>
+					<sourceDirectory>${project.source.webapp.resourcedir}/css</sourceDirectory>
+					<outputDirectory>${project.build.webapp.resourcedir}/css</outputDirectory>
 					<compress>true</compress>
 					<includes>
 						<include>bootstrap-style.less</include>
+						<include>csl.less</include>
 					</includes>
 				</configuration>
 				<executions>
@@ -160,7 +168,7 @@
 			<plugin>
 				<groupId>org.bibsonomy</groupId>
 				<artifactId>javascript-i18n-messagesource-maven-plugin</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
+				<version>1.0.1</version>
 				<configuration>
 					<messageSources>
 						<messageSource>file:///${project.basedir}/src/main/resources/messages</messageSource>
@@ -236,19 +244,6 @@
 								</pluginExecution>
 								<pluginExecution>
 									<pluginExecutionFilter>
-										<groupId>net.alchim31.maven</groupId>
-										<artifactId>yuicompressor-maven-plugin</artifactId>
-										<versionRange>[1.1,)</versionRange>
-										<goals>
-											<goal>compress</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
 										<groupId>org.bibsonomy</groupId>
 										<artifactId>
 											javascript-i18n-messagesource-maven-plugin
@@ -259,6 +254,25 @@
 										<goals>
 											<goal>
 												buildMessageFiles
+											</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.bibsonomy</groupId>
+										<artifactId>
+											webresource-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.5.0-SNAPSHOT,)
+										</versionRange>
+										<goals>
+											<goal>
+												compress-aggregate
 											</goal>
 										</goals>
 									</pluginExecutionFilter>
@@ -720,6 +734,7 @@
 	<properties>
 		<wtpversion>1.5</wtpversion>
 		<project.build.webapp.resourcedir>${project.build.directory}/${project.build.finalName}/resources</project.build.webapp.resourcedir>
+		<project.source.webapp.resourcedir>${project.basedir}/src/main/webapp/resources</project.source.webapp.resourcedir>
 		<tomcat.version>7.0.55</tomcat.version>
 		<!-- We need to wrap the maven.build.timestamp property as it is not used 
 			for filtering, cf. http://stackoverflow.com/questions/13228472/how-to-acces-maven-build-timestamp-for-resource-filtering -->

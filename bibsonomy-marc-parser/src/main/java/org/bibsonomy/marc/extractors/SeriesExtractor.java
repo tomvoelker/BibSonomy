@@ -39,7 +39,7 @@ import org.bibsonomy.model.BibTex;
 public class SeriesExtractor implements AttributeExtractor {
 
 	@Override
-	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
+	public void extractAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 		
 		/*
 		 * first try to get series value from marc record

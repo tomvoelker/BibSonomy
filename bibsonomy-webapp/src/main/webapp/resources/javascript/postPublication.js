@@ -1,4 +1,19 @@
 $(function() {
+	// buttons
+	$('#publication-functions .btn-group .btn[data-target]').click(function() {
+		var id = "#publication-" + $(this).data('target');
+		if ($(this).hasClass('active')) {
+			$(id).hide();
+			$(this).removeClass('active');
+		} else {
+			$(this).siblings().removeClass('active');
+			$(this).addClass('active');
+			$('.publication-function').hide();
+			$(id).show();
+			$.scrollTo($('#publication-search'));
+		}
+	});
+
 	// init title autocomplete
 	var searchInput = $('#publication-search input');
 	if (searchInput.length > 0) {
@@ -42,7 +57,6 @@ $(function() {
 		
 		// to e.g. keep isbns to pass them to the edit post controller
 		var originalSearch;
-		
 		searchInput.bind('typeahead:select', function(evt, data) {
 			var hash = data.intrahash;
 			
@@ -57,29 +71,23 @@ $(function() {
 		}).bind('typeahead:render', function(evt, suggestion) {
 			$('#tt-notfound').click(function() {
 				var input = searchInput.val();
-				
-				$('.btn[data-target=manual]').click();
-				$('#post\\.resource\\.title').focus().val(input);
+				showManualForm(input);
 			});
 		});
 		
-		searchInput.focus();
-	}
-	
-	// buttons
-	$('#publication-functions .btn-group .btn[data-target]').click(function() {
-		var id = "#publication-" + $(this).data('target');
-		if ($(this).hasClass('active')) {
-			$(id).hide();
-			$(this).removeClass('active');
+		// handle person add function from /persons page
+		if ($('#personIndex').length > 0) {
+			showManualForm('');
 		} else {
-			$(this).siblings().removeClass('active');
-			$(this).addClass('active');
-			$('.publication-function').hide();
-			$(id).show();
-			$.scrollTo($('#publication-search'));
+			var anchor = window.location.hash.substr(1);
+			if (anchor.length > 0) {
+				$('button[data-target=' + anchor + ']').click();
+				$.scrollTo($('publication-functions'));
+			} else {
+				searchInput.focus();
+			}
 		}
-	});
+	}
 	
 	// whitespace substitute
 	$('#whitespace').attr('disabled', 1);
@@ -87,4 +95,12 @@ $(function() {
 	$('#delimiter').change(function(){
 		$('#whitespace').attr('disabled', $(this).val() == " ");
 	});
+
+
 });
+
+function showManualForm(titleText) {
+	var manualButton = $('.btn[data-target=manual]');
+	manualButton.click();
+	$('#post\\.resource\\.title').focus().val(titleText);
+}

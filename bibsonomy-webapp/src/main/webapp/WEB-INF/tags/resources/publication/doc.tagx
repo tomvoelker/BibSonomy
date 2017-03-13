@@ -16,11 +16,20 @@
 	<c:set var="isOwnEntry" value="${post.user.name eq command.context.loginUser.name}"/>
 	
 	<div id="add-document">
-		<a href="#" class="addDocument">
-			<span class="fa-stack fa-6x">
+		<c:url var="addDocumentLink" value="/ajax/documents">
+			<c:param name="temp" value="false" />
+			<c:param name="ckey" value="${command.context.ckey}" />
+			<c:param name="intraHash" value="${post.resource.intraHash}" />
+		</c:url>
+		<a href="${addDocumentLink}" class="addDocument">
+			<img src="${resdir}/image/add-document.png" alt="document upload" />
+			<!--
+			TODO: readd as soon as text-stoke is supported by all browsers
+			 <span class="fa-stack fa-6x">
 				<fontawesome:icon icon="file-o" stack="${true}" size="2" />
 				<fontawesome:icon icon="plus" stack="${true}" />
 			</span>
+			 -->
 		</a>
 	</div>
 	
@@ -36,7 +45,7 @@
 			<c:forEach var="document" items="${post.resource.documents}" varStatus="status">
 				<div class="item ${status.first ? 'active' : ''}">
 					<a href="${relativeUrlGenerator.getDocumentUrlByIntraHashUserNameAndFileName(post.resource.intraHash, post.user.name, document.fileName)}">
-						<img src="${relativeUrlGenerator.getDocumentUrlByIntraHashUserNameAndFileName(post.resource.intraHash, post.user.name, document.fileName)}?preview=LARGE" alt="test" />
+						<img src="${relativeUrlGenerator.getDocumentUrlByIntraHashUserNameAndFileName(post.resource.intraHash, post.user.name, document.fileName)}?preview=LARGE" alt="${fn:escapeXml(document.fileName)}" />
 					</a>
 					<c:if test="${fn:endsWith(fn:toLowerCase(document.fileName), '.pdf')}">
 						<a href="#" class="doc-magnify"><fontawesome:icon icon="search-plus" /></a>
@@ -61,26 +70,28 @@
 		<fmt:message key="bibtex.actions.private_document.rename" var="renameDocTitle" />
 		<c:forEach var="document" items="${post.resource.documents}" varStatus="status">
 			<div class="item row" data-index="${status.index}">
-				<div class="col-xs-6">
+				<div class="col-xs-7 document-name">
 					<c:out value="${document.fileName}" />
 				</div>
-				<div class="col-xs-6 text-right">
+				<div class="col-xs-5 text-right">
 					<div class="btn-group" role="group">
-						<c:url var="deleteUrl" value="/ajax/documents">
-							<c:param name="intraHash" value="${post.resource.intraHash}" />
-							<c:param name="fileName" value="${document.fileName}" />
-							<c:param name="ckey" value="${ckey}" />
-							<c:param name="temp" value="false" />
-							<c:param name="action" value="delete" />
-						</c:url>
-						<a class="btn btn-xs btn-default rename-btn ${systemReadOnly ? 'disabled' : ''}" title="${renameDocTitle}" href="${deleteUrl}" data-filename="${fn:escapeXml(document.fileName)}">
-							<fontawesome:icon icon="pencil" />
-						</a>
-						<c:set var="deleteDocTitle"><fmt:message key="bibtex.actions.private_document.delete"/>&amp;nbsp;${filename}</c:set>
-						<a class="btn btn-xs btn-default btn-stripped remove-btn ${systemReadOnly ? 'disabled' : ''}" title="${deleteDocTitle}" href="${deleteUrl}" data-filename="${fn:escapeXml(document.fileName)}">
-							<fontawesome:icon icon="times" />
-						</a>
-						<a class="btn btn-xs btn-default btn-stripped" href="${relativeUrlGenerator.getDocumentUrlByIntraHashUserNameAndFileName(post.resource.intraHash, post.user.name, document.fileName)}" title="Download ${downloadTitle}">
+						<c:if test="${isOwnEntry}">
+							<c:url var="deleteUrl" value="/ajax/documents">
+								<c:param name="intraHash" value="${post.resource.intraHash}" />
+								<c:param name="fileName" value="${document.fileName}" />
+								<c:param name="ckey" value="${ckey}" />
+								<c:param name="temp" value="false" />
+								<c:param name="action" value="rename" />
+							</c:url>
+							<a class="btn btn-xs btn-default rename-btn ${systemReadOnly ? 'disabled' : ''}" title="${renameDocTitle}" data-filename="${fn:escapeXml(document.fileName)}" data-toggle="modal" data-target="#renameModal">
+								<fontawesome:icon icon="pencil" />
+							</a>
+							<c:set var="deleteDocTitle"><fmt:message key="bibtex.actions.private_document.delete"/>&amp;nbsp;${filename}</c:set>
+							<a class="btn btn-xs btn-default btn-stripped remove-btn ${systemReadOnly ? 'disabled' : ''}" title="${deleteDocTitle}" href="${deleteUrl}" data-filename="${fn:escapeXml(document.fileName)}">
+								<fontawesome:icon icon="times" />
+							</a>
+						</c:if>
+						<a class="btn btn-xs btn-default ${isOwnEntry ? 'btn-stripped' : ''}" href="${relativeUrlGenerator.getDocumentUrlByIntraHashUserNameAndFileName(post.resource.intraHash, post.user.name, document.fileName)}" title="Download ${downloadTitle}">
 							<fontawesome:icon icon="download" />
 						</a>
 						<c:if test="${fn:endsWith(fn:toLowerCase(document.fileName), '.pdf')}">
@@ -92,8 +103,43 @@
 				</div>
 			</div>
 		</c:forEach>
-		<div class="add-document text-right">
-			<bs:linkButton href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}" size="xsmall" textKey="bibtex.actions.additionalFiles" additionalClass="addDocument" style="defaultStyle" icon="file-o" />
+		<c:if test="${isOwnEntry}">
+			<div class="add-document">
+				<bs:linkButton href="/ajax/documents?ckey=${ckey}&amp;temp=false&amp;intraHash=${post.resource.intraHash}" size="small" textKey="bibtex.actions.additionalFiles" additionalClass="addDocument" style="defaultStyle" icon="file-o" block="${true}" />
+			</div>
+		</c:if>
+		
+		<div class="modal fade" tabindex="-1" role="dialog" id="renameModal">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&amp;times;</span></button>
+						<h4 class="modal-title"><fmt:message key="publication.documents.rename" /></h4>
+					</div>
+					<div class="modal-body">
+						<form class="form-horizontal" role="form" method="POST" action="/ajax/documents">
+							<div class="form-group">
+								<div class="col-sm-12">
+									<input type="hidden" name="ckey" value="${command.context.ckey}" />
+									<input type="hidden" name="intraHash" value="${post.resource.intraHash}" />
+									<input type="hidden" name="temp" value="false" />
+									<input type="hidden" name="action" value="rename" />
+									<input type="hidden" name="fileName" id="fileName" />
+									<input type="text" name="newFileName" class="form-control" id="newFileName" />
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<span class="modal-progress">
+							<fontawesome:icon icon="circle-o-notch" spin="${true}" spaceAfter="5"/>
+							<fmt:message key="publication.documents.rename.progress" />
+						</span>
+						<button type="button" class="btn btn-default" data-dismiss="modal"><fmt:message key="close" /></button>
+						<button type="button" class="btn btn-primary" id="rename-doc-button"><c:out value="${renameDocTitle}" /></button>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </jsp:root>

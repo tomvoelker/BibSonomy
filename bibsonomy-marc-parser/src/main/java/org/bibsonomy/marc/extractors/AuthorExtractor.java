@@ -47,7 +47,7 @@ import org.bibsonomy.util.ValidationUtils;
 public class AuthorExtractor extends AbstractParticipantExtractor {
 
 	@Override
-	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
+	public void extractAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 		final List<PersonName> authors = new ArrayList<PersonName>();
 		
 		//in case of conference typed in 013H/0X as k we use 110, 111, 710 for organization

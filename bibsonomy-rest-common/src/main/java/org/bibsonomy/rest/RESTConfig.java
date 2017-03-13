@@ -54,6 +54,8 @@ public final class RESTConfig {
 	public static final String POSTS_ADDED_URL = POSTS_URL + "/" + POSTS_ADDED_SUB_PATH;
 
 	public static final String POSTS_POPULAR_SUB_PATH = "popular";
+	
+	public static final String PERIOD_INDEX = "periodIndex";
 
 	public static final String POSTS_POPULAR_URL = POSTS_URL + "/" + POSTS_POPULAR_SUB_PATH;
 

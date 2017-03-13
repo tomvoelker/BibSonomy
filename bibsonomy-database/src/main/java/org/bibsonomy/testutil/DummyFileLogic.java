@@ -143,4 +143,40 @@ public class DummyFileLogic implements FileLogic {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.filesystem.CSLFileLogic#writeCSLLayout(java.lang.String, org.bibsonomy.model.util.file.UploadedFile)
+	 */
+	@Override
+	public Document writeCSLLayout(String username, UploadedFile file) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.filesystem.CSLFileLogic#deleteCSLLayout(java.lang.String)
+	 */
+	@Override
+	public boolean deleteCSLLayout(String hash) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.filesystem.CSLFileLogic#validCSLLayoutFile(org.bibsonomy.model.util.file.UploadedFile)
+	 */
+	@Override
+	public boolean validCSLLayoutFile(UploadedFile file) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.filesystem.CSLFileLogic#allowedCSLFileExtensions()
+	 */
+	@Override
+	public Collection<String> allowedCSLFileExtensions() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

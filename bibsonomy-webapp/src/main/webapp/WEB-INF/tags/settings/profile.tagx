@@ -34,8 +34,9 @@
 				
 					<!-- Der Text der oben steht -->
 					<p>
+						<c:set var="urlGeneratorFOAF" value="${urlGeneratorFactory.createURLGeneratorForPrefix(properties['project.home'], 'foaf')}" />
 						<fmt:message key="settings.profileInfo">
-							<fmt:param><a href="${relativeUrlGenerator.prefix('foaf').getUserUrl(user)}">/foaf/user/<c:out value="${user.name}"/></a></fmt:param>
+							<fmt:param><a href="${urlGeneratorFOAF.getUserUrl(user)}">/foaf/user/<c:out value="${user.name}"/></a></fmt:param>
 							<fmt:param><fmt:message key="settings.profileViewableFor"/></fmt:param>
 							<fmt:param value="/cv/user/${mtl:encodePathSegment(user.name)}"/>
 						</fmt:message>

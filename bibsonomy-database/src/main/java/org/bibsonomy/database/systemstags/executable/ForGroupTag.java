@@ -55,6 +55,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.file.FileSystemFile;
 import org.bibsonomy.services.filesystem.FileLogic;
 import org.joda.time.DateTime;
@@ -317,9 +318,9 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 			 */
 			for (final String hash : dbex.getErrorMessages().keySet()) {
 				for (final ErrorMessage errorMessage : dbex.getErrorMessages(hash)) {
-					errorMessage.setDefaultMessage("This error occured while executing the for: tag: "+errorMessage.getDefaultMessage());
+					errorMessage.setDefaultMessage("This error occured while executing the for: tag: " + errorMessage.getDefaultMessage());
 					errorMessage.setErrorCode("database.exception.systemTag.forGroup.copy");
-					session.addError(intraHash, errorMessage);
+					session.addError(PostUtils.getKeyForPost(userPost), errorMessage);
 					log.warn("Added SystemTagErrorMessage (for group: errors while storing group's post) for post " + intraHash);
 				}
 			}

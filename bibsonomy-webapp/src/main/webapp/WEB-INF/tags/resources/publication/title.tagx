@@ -26,10 +26,9 @@
 			</a>
 		</div>
 		<div class="media-body" id="titletext">
-			<h1 class="media-heading" id="pubtitle">
+			<h1 class="media-heading publication-title" id="pubtitle" data-url="${relativeUrlGenerator.getPostUrl(post)}">
 				<jsp:invoke fragment="bibActionButtons" />
 				<span itemprop="name"><c:out value="${pubTitle}" /></span>
-			
 			</h1>
 			<p><bib:desc post="${post}" publication="${post.resource}"/></p>
 		</div>

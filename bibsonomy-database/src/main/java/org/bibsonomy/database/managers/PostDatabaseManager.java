@@ -51,7 +51,6 @@ import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.IdenticalHashErrorMessage;
-import org.bibsonomy.common.errors.MissingFieldErrorMessage;
 import org.bibsonomy.common.errors.UpdatePostErrorMessage;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
@@ -81,7 +80,9 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.metadata.PostMetaData;
 import org.bibsonomy.model.sync.SynchronizationPost;
 import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.SimHash;
+import org.bibsonomy.model.validation.ModelValidator;
 import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.util.ReflectionUtils;
 
@@ -152,6 +153,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 	private Chain<List<Post<R>>, P> chain;
 
+	private ModelValidator modelValidator;
+
 
 	/**
 	 * inits the database managers and resource class name
@@ -210,6 +213,20 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		final P param = this.createParam(limit, offset);
 		param.setRequestedUserName(receiver);
 		return this.postList("get" + this.resourceClassName + "FromInbox", param, session);
+	}
+	
+	/**
+	 * 
+	 * @param loggedinUser
+	 * @param limit
+	 * @param offset
+	 * @param session
+	 * @return a list of posts of type R which were deleted
+	 */
+	public List<Post<R>> getPostsFromTrash(final String loggedinUser, final int limit, final int offset, final DBSession session) {
+		final P param = this.createParam(limit, offset);
+		param.setRequestedUserName(loggedinUser);
+		return this.postList("get" + this.resourceClassName + "FromTrash", param, session);
 	}
 
 	/**
@@ -478,7 +495,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * 'sys:network:bibsonomy-friends'
 	 *
 	 * @param user
-	 * @param tags
+	 * @param tagIndex
 	 * @param userRelationTags
 	 * @param limit
 	 * @param offset
@@ -641,7 +658,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 	/**
 	 * get list of posts from resource searcher
-	 * @param resourceType
 	 * @param userName
 	 * @param requestedUserName
 	 * @param requestedGroupName
@@ -697,10 +713,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 		final P param = this.createParam(loginUserName, null, limit, offset);
 		param.setRequestedGroupName(requestedGroupName); // only set to avoid
-		// the JOIN with the
-		// group table and
-		// directly show the
-		// group name
+		// the JOIN with the group table and directly show the group name
 		param.setGroupId(groupId);
 		param.setSimHash(simHash);
 		param.addAllToSystemTags(systemTags);
@@ -720,7 +733,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param tagIndex
 	 * @param groupId - the id of the group for which the posts shall be
 	 *        viewable
-	 * @param filter
+	 * @param filters
 	 * @param limit
 	 * @param offset
 	 * @param systemTags
@@ -735,10 +748,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 		final P param = this.createParam(loginUserName, loginUserName, limit, offset);
 		param.setRequestedGroupName(requestedGroupName); // only set to avoid
-		// the JOIN with the
-		// group table and
-		// directly show the
-		// group name
+		// the JOIN with the group table and directly show the group name
 		param.setGroupId(groupId);
 		param.setTagIndex(tagIndex);
 		param.addAllToSystemTags(systemTags);
@@ -765,10 +775,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @return list of posts
 	 */
 	public List<Post<R>> getPostsForGroup(final int groupId, final List<Integer> visibleGroupIDs, final SearchType searchType,final String loginUserName, final HashID simHash, final PostAccess postAccess, final Set<Filter> filters, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
-		if(searchType==SearchType.FEDERATED){
-			//TODO
-		}
-
 		return this.getPostsForGroup(groupId, visibleGroupIDs, loginUserName, simHash, postAccess, filters, limit, offset, systemTags, session);
 	}
 
@@ -1403,7 +1409,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 */
 			if (present(postInDB)) {
 				final ErrorMessage errorMessage = new DuplicatePostErrorMessage(this.resourceClassName, post.getResource().getIntraHash());
-				session.addError(post.getResource().getIntraHash(), errorMessage);
+				session.addError(PostUtils.getKeyForPost(post), errorMessage);
 				log.warn("Added DuplicatePostErrorMessage for post " + post.getResource().getIntraHash());
 				session.commitTransaction();
 				return false;
@@ -1442,6 +1448,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 */
 	protected void createdPost(final Post<R> post, final DBSession session) {
+		// noop
 	}
 
 	/*
@@ -1501,7 +1508,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 				 * not found -> throw exception
 				 */
 				final ErrorMessage errorMessage = new UpdatePostErrorMessage(this.resourceClassName, post.getResource().getIntraHash());
-				session.addError(post.getResource().getIntraHash(), errorMessage);
+				session.addError(PostUtils.getKeyForPost(post), errorMessage);
 				// we have to commit to adjust counters in session otherwise
 				// we will not get the DatabaseException from the session
 				session.commitTransaction();
@@ -1597,7 +1604,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			if (present(operation)) {
 				this.workOnOperation(post, oldPost, loginUser, operation, session);
 			} else {
-				this.performUpdateAll(post, oldPost, null, session);
+				this.performUpdateAll(post, oldPost, loginUser, session);
 			}
 			/*
 			 * systemTags perform after Update
@@ -1643,7 +1650,17 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 	protected void checkPost(final Post<R> post, final DBSession session) {
 		final R resource = post.getResource();
-		this.validator.validateFieldLength(resource, resource.getIntraHash(), session);
+		if (present(resource)) {
+			final ErrorMessage fieldLengthError = this.validator.validateFieldLength(resource, session);
+			if (present(fieldLengthError)) {
+				session.addError(PostUtils.getKeyForPost(post), fieldLengthError);
+			}
+		}
+		/*
+		 * we have to validate the post before checking for duplicates because the validator is
+		 * currently modifying the post
+		 */
+		this.validateModel(post, session);
 	}
 
 	private void performUpdateAll(final Post<R> post, final Post<R> oldPost, final User loggedinUser, final DBSession session) {
@@ -1795,7 +1812,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param newContentId	the new content id of the post
 	 * @param session
 	 */
-	protected abstract void onPostUpdate(Integer oldContentId, Integer newContentId, DBSession session);
+	protected abstract void onPostUpdate(int oldContentId, int newContentId, DBSession session);
 
 	/**
 	 * inserts a post into the database
@@ -1804,18 +1821,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 */
 	private void insertPost(final Post<R> post, final DBSession session) {
-		boolean errors = false;
-		if (!present(post.getResource())) {
-			final ErrorMessage errorMessage = new MissingFieldErrorMessage("Resource");
-			session.addError(post.getResource().getIntraHash(), errorMessage);
-			errors = true;
-		}
-		if (!present(post.getGroups())) {
-			final ErrorMessage errorMessage = new MissingFieldErrorMessage("Groups");
-			session.addError(post.getResource().getIntraHash(), errorMessage);
-			errors = true;
-		}
-		if (errors) {
+		if (session.hasErrorsForKey(PostUtils.getKeyForPost(post))) {
 			// one or more errors occurred in this method
 			// => we don't want to go deeper into the process with these kinds
 			// of errors
@@ -1826,6 +1832,33 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		final P param = this.getInsertParam(post, session);
 		// insert
 		this.insertPost(param, session);
+	}
+
+	/**
+	 * @param post
+	 * @param session
+	 * @return
+	 */
+	private boolean validateModel(final Post<R> post, final DBSession session) {
+		final List<ErrorMessage> validationErrors = this.modelValidator.validatePost(post);
+
+		final String errorKey = this.getErrorKeyForPost(post);
+		for (final ErrorMessage errorMessage : validationErrors) {
+			session.addError(errorKey, errorMessage);
+		}
+		
+		return present(validationErrors);
+	}
+
+	private static String getErrorKeyForPost(final Post<? extends Resource> post) {
+		final String errorKey;
+		final Resource resource = post.getResource();
+		if (present(resource) && present(post.getUser())) {
+			errorKey = PostUtils.getKeyForPost(post);
+		} else {
+			errorKey = "unknown";
+		}
+		return errorKey;
 	}
 
 	/**
@@ -1993,7 +2026,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param contentId	the content id of the post which was deleted
 	 * @param session
 	 */
-	protected abstract void onPostDelete(Integer contentId, DBSession session);
+	protected abstract void onPostDelete(int contentId, DBSession session);
 
 	/**
 	 * @return the simple class name of the first generic param (<R>, Resource)
@@ -2131,5 +2164,12 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		this.insert("logPostInsert", param, session);
 
 		this.update("logPostUpdateCurrentID", param, session);
+	}
+
+	/**
+	 * @param modelValidator the modelValidator to set
+	 */
+	public void setModelValidator(ModelValidator modelValidator) {
+		this.modelValidator = modelValidator;
 	}
 }

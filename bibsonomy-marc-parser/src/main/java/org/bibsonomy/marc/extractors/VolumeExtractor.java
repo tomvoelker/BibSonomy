@@ -40,7 +40,7 @@ import org.bibsonomy.util.ValidationUtils;
 public class VolumeExtractor implements AttributeExtractor {
 
 	@Override
-	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
+	public void extractAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 		
 		/*
 		 * first try to get volume from the marc record

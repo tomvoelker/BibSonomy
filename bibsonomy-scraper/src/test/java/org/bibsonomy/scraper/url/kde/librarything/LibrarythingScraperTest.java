@@ -26,13 +26,14 @@
  */
 package org.bibsonomy.scraper.url.kde.librarything;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * Scraper URL tests #18 #19 #37 for LibrarythingScraper
+ * Scraper URL tests for LibrarythingScraper
  * @author tst
  *
  */
@@ -44,7 +45,9 @@ public class LibrarythingScraperTest {
 	 */
 	@Test
 	public void url1TestRun(){
-		UnitTestRunner.runSingleTest("url_18");
+		final String url = "http://www.librarything.de/work/details/10481522";
+		final String resultFile = "LibrarythingScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, LibrarythingScraper.class, resultFile);
 	}
 
 	/**
@@ -52,7 +55,9 @@ public class LibrarythingScraperTest {
 	 */
 	@Test
 	public void url2TestRun(){
-		UnitTestRunner.runSingleTest("url_19");
+		final String url = "http://www.librarything.com/work/details/10481522";
+		final String resultFile = "LibrarythingScraperUnitURLTest2.bib";
+		assertScraperResult(url, null, LibrarythingScraper.class, resultFile);
 	}
 
 	/**
@@ -60,7 +65,9 @@ public class LibrarythingScraperTest {
 	 */
 	@Test
 	public void url3TestRun(){
-		UnitTestRunner.runSingleTest("url_37");
+		final String url = "http://www.librarything.com/work/1926837/details";
+		final String resultFile = "LibrarythingScraperUnitURLTest3.bib";
+		assertScraperResult(url, null, LibrarythingScraper.class, resultFile);
 	}
 
 }

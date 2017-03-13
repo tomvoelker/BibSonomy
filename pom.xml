@@ -34,7 +34,7 @@
 	<groupId>org.bibsonomy</groupId>
 	<artifactId>bibsonomy</artifactId>
 	<packaging>pom</packaging>
-	<version>3.7.0-SNAPSHOT</version>
+	<version>3.8.0-SNAPSHOT</version>
 	<description>
 		A blue social bookmark and publication sharing system.
 	</description>
@@ -196,13 +196,6 @@
 			<post>bibsonomy-discuss@cs.uni-kassel.de</post>
 			<archive>https://mail.cs.uni-kassel.de/pipermail/bibsonomy-discuss</archive>
 		</mailingList>
-		<mailingList>
-			<name>Api-Discuss: for users and developers of the BibSonomy-API.</name>
-			<subscribe>https://mail.cs.uni-kassel.de/mailman/listinfo/api-discuss</subscribe>
-			<unsubscribe>https://mail.cs.uni-kassel.de/mailman/listinfo/api-discuss</unsubscribe>
-			<post>api-discuss@cs.uni-kassel.de</post>
-			<archive>https://mail.cs.uni-kassel.de/pipermail/api-discuss</archive>
-		</mailingList>
 	</mailingLists>
 	<repositories>
 		<repository>
@@ -317,8 +310,7 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<!-- generate a source jar during build pase and deploy it along with 
-					binary jar -->
+				<!-- generate a source jar during build phase and deploy it along with binary jar -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
 				<version>2.1.2</version>
@@ -330,14 +322,6 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>
-				<version>2.0</version>
-				<configuration>
-					<!-- <goals>deploy assembly:assembly site-deploy tomcat:undeploy tomcat:deploy</goals> -->
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -422,21 +406,6 @@
 				<maven.tomcat.url>http://gromit.cs.uni-kassel.de:8080/manager/text</maven.tomcat.url>
 			</properties>
 		</profile>
-		<profile>
-			<id>deploy-to-puma-ks-dev</id>
-			<!-- change tomcat deploy destination when -Ddeploy-to=puma_ks_dev is 
-				given as parameter. -->
-			<activation>
-				<property>
-					<name>deploy-to</name>
-					<value>puma_ks_dev</value>
-				</property>
-			</activation>
-			<properties>
-				<maven.tomcat.server>tomcat_puma_ks_dev</maven.tomcat.server>
-				<maven.tomcat.url>http://ks-dev.puma.bibliothek.uni-kassel.de:8080/manager/text</maven.tomcat.url>
-			</properties>
-		</profile>
 	</profiles>
 	<dependencies>
 		<dependency>
@@ -472,11 +441,6 @@
 			<name>Repository for BibSonomy Releases</name>
 			<url>http://artifactory.cs.uni-kassel.de/artifactory/bibsonomy-release</url>
 		</repository>
-		<site>
-			<id>website-bibsonomy-documentation</id>
-			<name>Website documentation for BibSonomy</name>
-			<url>dav:http://bibsonomy:bibsonomy@www.bibsonomy.org/help/doc/</url>
-		</site>
 	</distributionManagement>
 	<dependencyManagement>
 		<dependencies>

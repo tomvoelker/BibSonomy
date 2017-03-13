@@ -239,6 +239,7 @@
 	
 	<bean id="postDatabaseManager" class="org.bibsonomy.database.managers.PostDatabaseManager" abstract="true">
 		<property name="validator" ref="databaseValidator" />
+		<property name="modelValidator" ref="dbModelValidator" />
 	</bean>
 	
 	<bean id="bookmarkDatabaseManager" class="org.bibsonomy.database.managers.BookmarkDatabaseManager" factory-method="getInstance" parent="postDatabaseManager">

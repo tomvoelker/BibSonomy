@@ -36,13 +36,13 @@
 	<packaging>jar</packaging>
 	<description>Tag and resource recommender.</description>
 	<properties>
-		<recommender.version>1.0.1-SNAPSHOT</recommender.version>
+		<recommender.version>1.0.1</recommender.version>
 	</properties>
 	
 	<parent>
 		<groupId>org.bibsonomy</groupId>
 		<artifactId>bibsonomy</artifactId>
-		<version>3.7.0-SNAPSHOT</version>
+		<version>3.8.0-SNAPSHOT</version>
 	</parent>
 	
 	<licenses>

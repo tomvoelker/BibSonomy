@@ -1,3 +1,77 @@
+var TITLE_MAX_LENGTH = 60;
+
+$(function() {
+	$('a.publ-export').click(function(e) {
+		if (e.metaKey || e.ctrlKey) {
+			return true;
+		}
+		var targetElement = $('#exportModalCitation');
+		targetElement.html(getString("bibtex.citation_format.loading"));
+		var exportModal = $('#exportModal');
+		exportModal.modal('show');
+		
+		var postListItem = $(this).closest('li.post');
+		var linkToPublication;
+		var titleContainer;
+		if (postListItem.length > 0) {
+			titleContainer = postListItem.find('.ptitle');
+			var link = titleContainer.find('a');
+			linkToPublication = link.attr('href');
+		} else {
+			titleContainer = $('h1.publication-title > span');
+			linkToPublication = $('h1.publication-title').data('url');
+		}
+		
+		
+		var publicationTitle = titleContainer.text();
+		if (publicationTitle !== undefined && publicationTitle.length > TITLE_MAX_LENGTH) {
+			publicationTitle = publicationTitle.substring(0, TITLE_MAX_LENGTH - 3) + "…";
+		}
+		
+		$('#exportModalLabel').text(publicationTitle);
+		
+		$(this).closest('div.btn-group').removeClass('open');
+		
+		loadExportLayout($(this), targetElement, linkToPublication);
+		
+		return false;
+	});
+	
+	var copyButton = $('#copyToLocalClipboard');
+	if (copyButton.length > 0) {
+		var clipboard = new Clipboard(copyButton.get(0), {
+			target: function(trigger) {
+				var citationContainer = $('#exportModalCitation');
+				var targetElement = citationContainer;
+				var pre = citationContainer.find('pre');
+				if (pre.length > 0) {
+					targetElement = pre;
+				}
+				return targetElement.get(0);
+			}
+		});
+		
+		
+		copyButton.mouseleave(function() {
+			copyButton.tooltip('destroy');
+		});
+		
+		clipboard.on('success', function(e) {
+			copyButton.tooltip({
+				placement: 'bottom',
+				title: getString('export.copyToLocalClipboard.success')
+			}).tooltip('show');
+		});
+		
+		clipboard.on('error', function(e) {
+			copyButton.tooltip({
+				placement: 'bottom',
+				title: getString('export.copyToLocalClipboard.error')
+			}).tooltip('show');
+		});
+	}
+});
+
 function pickAll() {
 	return pickUnpickAll(false);
 }

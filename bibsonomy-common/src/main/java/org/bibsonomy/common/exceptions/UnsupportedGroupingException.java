@@ -30,8 +30,7 @@ package org.bibsonomy.common.exceptions;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  */
 public class UnsupportedGroupingException extends RuntimeException {
-
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 8894220940055305032L;
 
 	/**
 	 * Constructs a new unsupported grouping exception with the specified

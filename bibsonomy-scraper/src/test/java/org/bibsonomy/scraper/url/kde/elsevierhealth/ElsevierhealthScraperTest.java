@@ -26,13 +26,14 @@
  */
 package org.bibsonomy.scraper.url.kde.elsevierhealth;
 
-import org.bibsonomy.scraper.UnitTestRunner;
+import static org.bibsonomy.scraper.junit.RemoteTestAssert.assertScraperResult;
+
 import org.bibsonomy.scraper.junit.RemoteTest;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 /**
- * Scraper URL test #168 for Elsevierhealth Scraper  
+ * Scraper URL tests for Elsevierhealth Scraper
  * @author ccl
  *
  */
@@ -44,7 +45,9 @@ public class ElsevierhealthScraperTest {
 	 */
 	@Test
 	public void urlTestRun1(){
-		UnitTestRunner.runSingleTest("url_168");
+		final String url = "http://www.us.elsevierhealth.com/product.jsp?lid=2&iid=0&sid=0&isbn=9780323055666";
+		final String resultFile = "ElsevierhealthScraperUnitURLTest1.bib";
+		assertScraperResult(url, null, ElsevierhealthScraper.class, resultFile);
 	}
 	
 }

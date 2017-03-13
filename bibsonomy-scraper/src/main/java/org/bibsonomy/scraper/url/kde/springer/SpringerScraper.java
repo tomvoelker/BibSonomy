@@ -40,6 +40,7 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper;
+import org.bibsonomy.util.id.ISBNUtils;
 
 /**
  * Scraper for springer.com
@@ -68,13 +69,13 @@ public class SpringerScraper extends AbstractUrlScraper {
 
 		try {
 			final String url = sc.getUrl().toString();
-			final String isbn = url.substring(url.lastIndexOf("/") + 1);
+			final String isbn = ISBNUtils.extractISBN(url);
 			final String bibtex = WorldCatScraper.getBibtexByISBN(isbn);
 
 			if (present(bibtex)) {
 				sc.setBibtexResult(bibtex);
 				return true;
-			}
+			} 
 			
 			throw new ScrapingFailureException("getting bibtex failed");
 

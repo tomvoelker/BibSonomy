@@ -206,7 +206,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 				if (present(possibleURL)) {
 					final ScrapingContext scrapingContext = this.buildScrapingContext(possibleURL, null, true);
 					if (!present(scrapingContext)) {
-						continue;
+						break;
 					}
 					hasURL = true;
 					final boolean success = this.scrape(scrapingContext);
@@ -283,7 +283,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 				
 				reader.close();
 				inputStream.close();
-			} catch (final IOException e) {
+			} catch (final Exception e) {
 				log.error("error file reading content from document file", e);
 			} finally {
 				if (reader != null) {

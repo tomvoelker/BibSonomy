@@ -47,6 +47,7 @@ import java.util.concurrent.Semaphore;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.search.InvalidSearchRequestException;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.util.Mapping;
@@ -55,6 +56,7 @@ import org.bibsonomy.services.help.HelpParserFactory;
 import org.bibsonomy.services.help.HelpSearch;
 import org.bibsonomy.services.help.HelpSearchResult;
 import org.bibsonomy.util.StringUtils;
+import org.elasticsearch.action.search.SearchPhaseExecutionException;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -130,6 +132,7 @@ public class HelpSearchManager implements HelpSearch {
 		}
 	}
 	
+	private boolean indexingDisabled;
 	
 	private String path;
 	
@@ -147,6 +150,10 @@ public class HelpSearchManager implements HelpSearch {
 	 * re-index the complete help pages
 	 */
 	public void reindex() {
+		if (this.indexingDisabled) {
+			return;
+		}
+		
 		if (!this.updateLock.tryAcquire()) {
 			log.warn("reindexing in progress");
 			return;
@@ -221,7 +228,7 @@ public class HelpSearchManager implements HelpSearch {
 	 * @return all results
 	 */
 	@Override
-	public SortedSet<HelpSearchResult> search(final String language, final String searchTerms) {
+	public SortedSet<HelpSearchResult> search(final String language, final String searchTerms) throws InvalidSearchRequestException {
 		final String indexName = this.getIndexNameForLanguage(language);
 		final SearchRequestBuilder searchBuilder = this.client.prepareSearch(indexName);
 		final QueryStringQueryBuilder searchQuery = QueryBuilders.queryStringQuery(searchTerms);
@@ -252,7 +259,7 @@ public class HelpSearchManager implements HelpSearch {
 						final Text[] fragments = contentHighlight.getFragments();
 						final StringBuilder builder = new StringBuilder();
 						for (final Text fragment : fragments) {
-							builder.append(Jsoup.parse(fragment.toString()).text());
+							builder.append(removeHtml(fragment));
 						}
 						
 						final String highlightText = builder.toString();
@@ -264,9 +271,30 @@ public class HelpSearchManager implements HelpSearch {
 			}
 		} catch (final IndexNotFoundException e) {
 			log.error("index " + indexName + " not found");
+		} catch (final SearchPhaseExecutionException e) {
+			log.info("parsing query failed.", e);
+			throw new InvalidSearchRequestException();
 		}
 		
 		return results;
+	}
+
+	/**
+	 * @param fragment
+	 * @return
+	 */
+	private static String removeHtml(final Text fragment) {
+		String text = Jsoup.parse(fragment.toString()).text();
+		final int index = text.indexOf('>');
+		if (index != -1) {
+			text = text.substring(index + 1, text.length());
+		}
+		
+		final int tagStartIndex = text.lastIndexOf('<');
+		if (tagStartIndex != -1) {
+			text = text.substring(0, tagStartIndex);
+		}
+		return text;
 	}
 
 	/**
@@ -309,5 +337,12 @@ public class HelpSearchManager implements HelpSearch {
 	 */
 	public void setFactory(HelpParserFactory factory) {
 		this.factory = factory;
+	}
+
+	/**
+	 * @param indexingDisabled the indexingDisabled to set
+	 */
+	public void setIndexingDisabled(boolean indexingDisabled) {
+		this.indexingDisabled = indexingDisabled;
 	}
 }

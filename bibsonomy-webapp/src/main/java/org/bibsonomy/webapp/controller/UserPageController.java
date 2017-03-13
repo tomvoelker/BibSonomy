@@ -146,7 +146,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			throw new ObjectNotFoundException(groupingName);
 		}
 
-		int totalNumPosts = 1; // FIXME: why one?
+		int totalNumPosts = 0;
 
 		// retrieve and set the requested resource lists, along with total
 		// counts

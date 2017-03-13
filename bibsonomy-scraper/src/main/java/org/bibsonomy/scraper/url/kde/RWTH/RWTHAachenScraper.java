@@ -47,7 +47,7 @@ import org.bibsonomy.util.WebUtils;
 public class RWTHAachenScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "RWTH Aachen University";
-	private static final String SITE_URL = "www.rwth-aachen.de";
+	private static final String SITE_URL = "https://www.rwth-aachen.de";
 	private static final String INFO = "Scraper for references from " + href(SITE_URL, SITE_NAME)+".";
 	private static final String RWTH_HOST = "publications.rwth-aachen.de";
 	private static final String DOWNLOAD_BIBTEX_FORMAT = "/export/hx?ln=de";

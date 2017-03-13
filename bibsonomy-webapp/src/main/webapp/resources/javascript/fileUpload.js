@@ -104,20 +104,20 @@ function renameSelected(button) {
 		}
 	});
 	
-	var fileName = entry.data("filename"); //get value of the rename field
+	var fileName = entry.data("filename"); // get value of the rename field
 	var newFileType = fileName.split(".");
 	var length = newFileType.length;
 	newFileType = newFileType[newFileType.length-1];
 	var fileExist = false;
 	
 	/*
-	 * check wether the file-type is consistent
+	 * check whether the file-type is consistent
 	 */
 	if(!checkConsistency(type, newFileType, length)) {
 		return false;
 	}
 	
-	//check wether a file with this name already exists
+	//check whether a file with this name already exists
 	$(".documentFileName").each(function() {
 		if($(this).hasClass("current-form")) {
 			$(this).removeClass("current-form")
@@ -130,7 +130,7 @@ function renameSelected(button) {
 		}
 	});
 	
-	//file already exists
+	// file already exists
 	if (fileExist) {
 		alert(getString("post.bibtex.fileExists"));
 		return;
@@ -138,7 +138,7 @@ function renameSelected(button) {
 	
 	entry.val(decodeURI(entry.val()).replace(/&/g, "%26"));
 	
-	//do an ajaxsubmit of the renameForm
+	// do an ajaxsubmit of the renameForm
 	$("#renameBtn").ajaxSubmit({
 		dataType: "xml",
 		success: function(data) {
@@ -194,7 +194,7 @@ function addDocument() {
 	/*
 	 * build upload form
 	 */
-	var upForm = "<form id='upForm' action='" + $(this).attr('href') + "' method='POST' enctype='multipart/form-data'>" + 
+	var upForm = "<form id='upForm' class='document-upload' action='" + $(this).attr('href') + "' method='POST' enctype='multipart/form-data'>" + 
 	"<input id='upFile' type='file' name='file'/></form>";
 
 	/*
@@ -258,10 +258,9 @@ function fileSelected(obj) {
 	 * add progress icon and hide form (XXX: don't yet remove form, otherwise upload fails!)
 	 */
 	$(upForm).after($(
-			"<div id='upProgress' >" + fileName  + 
-			"<img alt='uploading...' src='/resources/image/ajax_loader.gif' /></div>"		
+			'<div id="upProgress"><span class="fa fa-circle-o-notch fa-spin fa-fw"></span>' + fileName  + 
+			'</div>'
 	)).hide();
-
 } 
 
 /**
@@ -285,75 +284,77 @@ function uploadRequestSuccessful(data) {
 	}
 	
 	if (status == "ok") {
-		var fileHash  = $("filehash", data).text();
-		var intrahash = $("intrahash", data).text();
-		var fileName  = $("filename", data).text();
-		
-		var copyData = $("#file-upload-placeholder").clone();
-		copyData.attr("id", "");
-		var encodedFileName = encodeURIComponent(fileName).replace(/%20/g, '+');
-		var inputGroup = copyData.find(".input-group").filter(":first");
-		var inputGroupButtons = copyData.find(".input-group-btn").filter(":first");
-
-		var documentUri = "/documents/" + intrahash + "/" + encodeURIComponent(currUser) + "/" + encodeURIComponent(encodedFileName);
-		var documentHelp = getString("bibtex.actions.private_document.download");
-		
-		var documentQRMessage = getString("qrcode.actions.download");
-		var params = [projectName];
-		var documentQRHelp = getString("qrcode.info.embedderInfoMessage", params);
-		var form = inputGroup.parent();
-		var downloadForm = inputGroupButtons.children(".download-btn").filter(":first").data("filename", encodedFileName).attr("href", documentUri + "?qrcode=false").attr("title", documentHelp);
-		var qrForm = inputGroupButtons.children(".qrcode-btn").data("filename", encodedFileName).data("filename", encodedFileName).attr("href", documentUri + "?qrcode=true").attr("title", documentHelp);
-		var renameInput = inputGroup.children(".renameDocInput").val(fileName).data("filename", fileName);
-		var renameButton = inputGroupButtons.children(".rename-btn");
-		var deleteForm = inputGroupButtons.children(".remove-btn").attr("href", "/ajax/documents?intraHash=" + intrahash + "&fileName="+ encodedFileName + "&ckey=" + ckey + "&temp=false&action=delete").attr("title", getString("delete")).data("filename", fileName);
-		var imgPreview = inputGroup.children(".pre_pic").attr("src", documentUri + "?preview=SMALL").attr("alt", fileName);
-		
-		/*
-		 * on /bibtex pages we have a list where we add links to the files
-		 */
-		var filesUl = $(".edit-document-forms").filter(":first");
-
-		/*
-		 * file extension for qr code embedding
-		 */
-		var suffix = ".pdf";
-		var o = {
-				renameButton:renameButton,
-				form:form,
-				deleteForm:deleteForm,
-				renameInput:renameInput
-		};
-		form.attr("action", form.attr("action").replace("FILENAME_PLACEHOLDER", fileName));
-		
-		if (!filesUl.length) {
-			//if(documentImg!==undefined) upA.children().first().replaceWith($(documentImg));
-		}
-			
-			
-			/*
-			 * check if file ends with '.pdf'
-			 */
-		if (fileName.toLowerCase().indexOf(suffix, fileName.length - suffix.length) == -1) qrForm.hide();
-			
-			/*
-			 * find the new added document(it's always the element at index n-1 in filesUl)
-			 * and add listener
-			 */
-		filesUl.find(".bibtexpreviewimage").after(copyData);
-		
-		renameButton.click(function(e){
-			renameFile(o);
-		});
-		
-		form.submit(function(e) {
-			e.preventDefault();
-			renameFile(o);
-			return false;
-		});
-		deleteForm.click(deleteLinkClicked);
-		copyData.show();
-		
+		location.reload();
+		// FIXME: add success message and update view
+//		var fileHash  = $("filehash", data).text();
+//		var intrahash = $("intrahash", data).text();
+//		var fileName  = $("filename", data).text();
+//		
+//		var copyData = $("#file-upload-placeholder").clone();
+//		copyData.attr("id", "");
+//		var encodedFileName = encodeURIComponent(fileName).replace(/%20/g, '+');
+//		var inputGroup = copyData.find(".input-group").filter(":first");
+//		var inputGroupButtons = copyData.find(".input-group-btn").filter(":first");
+//
+//		var documentUri = "/documents/" + intrahash + "/" + encodeURIComponent(currUser) + "/" + encodeURIComponent(encodedFileName);
+//		var documentHelp = getString("bibtex.actions.private_document.download");
+//		
+//		var documentQRMessage = getString("qrcode.actions.download");
+//		var params = [projectName];
+//		var documentQRHelp = getString("qrcode.info.embedderInfoMessage", params);
+//		var form = inputGroup.parent();
+//		var downloadForm = inputGroupButtons.children(".download-btn").filter(":first").data("filename", encodedFileName).attr("href", documentUri + "?qrcode=false").attr("title", documentHelp);
+//		var qrForm = inputGroupButtons.children(".qrcode-btn").data("filename", encodedFileName).data("filename", encodedFileName).attr("href", documentUri + "?qrcode=true").attr("title", documentHelp);
+//		var renameInput = inputGroup.children(".renameDocInput").val(fileName).data("filename", fileName);
+//		var renameButton = inputGroupButtons.children(".rename-btn");
+//		var deleteForm = inputGroupButtons.children(".remove-btn").attr("href", "/ajax/documents?intraHash=" + intrahash + "&fileName="+ encodedFileName + "&ckey=" + ckey + "&temp=false&action=delete").attr("title", getString("delete")).data("filename", fileName);
+//		var imgPreview = inputGroup.children(".pre_pic").attr("src", documentUri + "?preview=SMALL").attr("alt", fileName);
+//		
+//		/*
+//		 * on /bibtex pages we have a list where we add links to the files
+//		 */
+//		var filesUl = $(".edit-document-forms").filter(":first");
+//
+//		/*
+//		 * file extension for qr code embedding
+//		 */
+//		var suffix = ".pdf";
+//		var o = {
+//				renameButton:renameButton,
+//				form:form,
+//				deleteForm:deleteForm,
+//				renameInput:renameInput
+//		};
+//		form.attr("action", form.attr("action").replace("FILENAME_PLACEHOLDER", fileName));
+//		
+//		if (!filesUl.length) {
+//			//if(documentImg!==undefined) upA.children().first().replaceWith($(documentImg));
+//		}
+//			
+//			
+//			/*
+//			 * check if file ends with '.pdf'
+//			 */
+//		if (fileName.toLowerCase().indexOf(suffix, fileName.length - suffix.length) == -1) qrForm.hide();
+//			
+//			/*
+//			 * find the new added document(it's always the element at index n-1 in filesUl)
+//			 * and add listener
+//			 */
+//		filesUl.find(".bibtexpreviewimage").after(copyData);
+//		
+//		renameButton.click(function(e){
+//			renameFile(o);
+//		});
+//		
+//		form.submit(function(e) {
+//			e.preventDefault();
+//			renameFile(o);
+//			return false;
+//		});
+//		deleteForm.click(deleteLinkClicked);
+//		copyData.show();
+//		
 		return;
 	}
 }

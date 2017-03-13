@@ -5,8 +5,7 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:export="urn:jsptagdir:/WEB-INF/tags/export/bibtex">
 	
-	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />	
 	<style type="text/css">
 		select, option { width: 100%; }
 	</style>

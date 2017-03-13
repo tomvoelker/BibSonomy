@@ -11,7 +11,7 @@
 	<jsp:directive.attribute type="java.lang.String" name="value" required="false" description="inscription of the button" />
 	<jsp:directive.attribute type="java.lang.String" name="valueKey" required="false" description="inscription of the button" />
 	<jsp:directive.attribute type="java.lang.String" name="id" required="false" description="id of the button" />
-	<jsp:directive.attribute type="java.lang.String" name="href" required="false" description="title of the button" />
+	<jsp:directive.attribute type="java.lang.String" name="href" required="false" description="link of the button" />
 	<jsp:directive.attribute type="java.lang.String" name="title" required="false" description="title of the button" />
 	<jsp:directive.attribute type="java.lang.String" name="titleKey" required="false" description="key for the title of the button" />
 	<jsp:directive.attribute type="java.lang.String" name="srText" required="false" description="screen reader text" />

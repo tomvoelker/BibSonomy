@@ -48,10 +48,9 @@ public class CompositeBibtexReader implements BibTexReader {
 	}
 	
 	@Override
-	public Collection<BibTex> read(ImportResource importRes) {
-		
+	public Collection<BibTex> read(final ImportResource importRes) {
 		final Data data = importRes.getData();
-		String type = data.getMimeType();
+		final String type = data.getMimeType();
 		if (type == null) {
 			throw new IllegalArgumentException("null mimetype");
 		}

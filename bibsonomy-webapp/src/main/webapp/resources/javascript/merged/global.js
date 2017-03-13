@@ -23,7 +23,11 @@ includeJavaScript("/resources/javascript/holder.js");
 includeJavaScript("/resources/javascript/bootstrap-dialog.js");
 includeJavaScript("/resources/javascript/custom.js");
 includeJavaScript("/resources/javascript/bootstrap-datepicker.js");
+includeJavaScript("/resources/select2/js/select2.full.js");
 includeJavaScript("/resources/javascript/bootstrap-tagsinput.js");
+includeJavaScript("/resources/javascript/citeproc/citeproc.js");
+includeJavaScript("/resources/javascript/citeproc/xmldom.js");
+includeJavaScript("/resources/javascript/citeproc-wrapper.js");
 includeJavaScript("/resources/javascript/friendoverview.js");
 includeJavaScript("/resources/javascript/functions.js");
 includeJavaScript("/resources/javascript/actions/clipboard.js");
@@ -34,5 +38,6 @@ includeJavaScript("/resources/javascript/jquery.fadebox.js");
 includeJavaScript("/resources/javascript/userRelation.js");
 includeJavaScript("/resources/javascript/addToSpheres.js");
 includeJavaScript("/resources/javascript/logging.js");
+includeJavaScript("/resources/clipboard/clipboard.js");
 /* the following scripts are for development only */
 includeJavaScript("/resources/less/less.js");

@@ -61,9 +61,9 @@ public class AandAScraper extends AbstractUrlScraper implements ReferencesScrape
 	private static final String downloadUrl = SITE_URL + "component/makeref/?task=output&type=bibtex&doi=";
 	private static final List<Pair<Pattern, Pattern>> patterns = Collections.singletonList(new Pair<Pattern, Pattern>(hostPattern, AbstractUrlScraper.EMPTY_PATTERN));
 	
-	private static final Pattern pat_references = Pattern.compile("(?s)<ul class=\"references\">(.*)<div class=\"export-article\">");
+	private static final Pattern pat_references = Pattern.compile("(?s)<ul class=\"references\">(.*)</div>");
 	private static final Pattern pat_references_1 = Pattern.compile("(?s)<HR><b>References(.*)</UL>");
-	private static final Pattern pat_link_ref = Pattern.compile("<a href=\"(.*)\">References</a>");
+	private static final Pattern pat_link_ref = Pattern.compile("href=\"(.*?)\"");
 	
 	@Override
 	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
@@ -154,7 +154,7 @@ public class AandAScraper extends AbstractUrlScraper implements ReferencesScrape
 		try{
 			final Matcher m = pat_link_ref.matcher(WebUtils.getContentAsString(scrapingContext.getUrl().toString()));
 			if (m.find()) {
-				String url = "http://" + scrapingContext.getUrl().getHost().toString() + m.group(1);
+				String url = m.group(1).replace("/abs/", "/ref/");
 				Matcher m2 = pat_references.matcher(WebUtils.getContentAsString(url));
 				if (m2.find()) {
 					references = m2.group(1);

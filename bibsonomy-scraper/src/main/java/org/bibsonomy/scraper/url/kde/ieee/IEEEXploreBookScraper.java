@@ -57,9 +57,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-/** Scraper for IEEE Explore
+/**
+ * Scraper for IEEE Explore
  * @author rja
- *
  */
 public class IEEEXploreBookScraper extends AbstractUrlScraper implements ReferencesScraper, CitedbyScraper {
 	private static final String SITE_NAME = "IEEEXplore Books";
@@ -81,7 +81,7 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 	private static final String CONST_DATE	   = "Publication Date: ";
 
 	private static final String EXPORT_ARNUM_URL = "http://ieeexplore.ieee.org/xpl/downloadCitations";
-	private static final String REFERENCE_ARNUM_URL = "http://ieeexplore.ieee.org/xpl/abstractReferences.jsp?arnumber=";
+	private static final String REFERENCE_ARNUM_URL = "http://ieeexplore.ieee.org/xpl/dwnldReferences?arnumber=";
 	private static final String CITEDBY_ARNUM_URL = "http://ieeexplore.ieee.org/xpl/abstractCitations.jsp?arnumber=";
 
 	private static final Pattern URL_PATTERN_BKN      = Pattern.compile("bkn=([^&]*)");
@@ -89,7 +89,7 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 
 	private static final Pattern PAGE_PATTERN_ISBN = Pattern.compile("ISBN[^>]++>\\s++([\\dx]++)");
 	private static final Pattern CITEDBY_PATTERN = Pattern.compile("(?s)<ol id=\".*\" class=\"docs\">(.*)</ol>");
-	private static final Pattern REFERENCE_PATTERN = Pattern.compile("(?s)<ol class=\"docs\">(.*)</ol>");
+	private static final Pattern REFERENCE_PATTERN = Pattern.compile("(?s)<body>(.*)</body>");
 
 
 	private static final List<Pair<Pattern,Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
@@ -436,12 +436,14 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 		String citedBy = "";
 		String ids = ExtractID(scrapingContext);
 		try {
-			Matcher m = CITEDBY_PATTERN.matcher(WebUtils.getContentAsString(CITEDBY_ARNUM_URL + ids, WebUtils.getCookies(scrapingContext.getUrl())));
-			if(m.find()){
-				citedBy = m.group(1);
+			String url = "http://ieeexplore.ieee.org/rest/document/" + ids + "/citations";
+			citedBy = WebUtils.getContentAsString(url);
+
+			if (citedBy != ""){
 				scrapingContext.setCitedBy(citedBy);
 				return true;
 			}
+			
 		} catch (IOException ex) {
 			throw new InternalFailureException(ex);
 		}
@@ -453,12 +455,11 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper implements Referen
 	 */
 	@Override
 	public boolean scrapeReferences(ScrapingContext scrapingContext) throws ScrapingException {
-		String reference = "";
-		String ids = ExtractID(scrapingContext);
+		final String ids = ExtractID(scrapingContext);
 		try {
 			Matcher m = REFERENCE_PATTERN.matcher(WebUtils.getContentAsString(REFERENCE_ARNUM_URL + ids, WebUtils.getCookies(scrapingContext.getUrl())));
-			if(m.find()){
-				reference = m.group(1);
+			if (m.find()) {
+				final String reference = m.group(1);
 				scrapingContext.setReferences(reference);
 				return true;
 			}

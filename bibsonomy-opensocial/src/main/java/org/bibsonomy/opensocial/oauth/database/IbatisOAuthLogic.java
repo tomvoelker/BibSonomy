@@ -28,17 +28,8 @@ package org.bibsonomy.opensocial.oauth.database;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.sql.SQLException;
-import java.util.Collections;
 import java.util.List;
 
-import net.oauth.OAuth;
-import net.oauth.OAuthConsumer;
-import net.oauth.OAuthServiceProvider;
-import net.oauth.signature.RSA_SHA1;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.shindig.auth.SecurityToken;
 import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret;
 import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret.KeyType;
@@ -48,26 +39,33 @@ import org.apache.shindig.gadgets.oauth.OAuthStore.ConsumerInfo;
 import org.apache.shindig.gadgets.oauth.OAuthStore.TokenInfo;
 import org.apache.shindig.social.opensocial.oauth.OAuthEntry;
 import org.bibsonomy.database.common.AbstractDatabaseManager;
+import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthConsumerInfo;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthParam;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthTokenIndex;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthTokenInfo;
 import org.bibsonomy.opensocial.oauth.database.beans.OAuthUserInfo;
 
-import com.ibatis.sqlmap.client.SqlMapClient;
+import net.oauth.OAuth;
+import net.oauth.OAuthConsumer;
+import net.oauth.OAuthServiceProvider;
+import net.oauth.signature.RSA_SHA1;
 
 /**
- * TODO: use {@link AbstractDatabaseManager}
+ * iBatis implementation of the {@link OAuthLogic}
  * 
  * @author fei
  */
-public class IbatisOAuthLogic implements OAuthLogic {
-	private static final Log log = LogFactory.getLog(IbatisOAuthLogic.class);
+public class IbatisOAuthLogic extends AbstractDatabaseManager implements OAuthLogic {
 	
-	/** Initialize iBatis layer. */
-	private SqlMapClient sqlMap;
+	private DBSessionFactory oauthSessionFactory;
 
 	private String defaultCallbackUrl;
+	
+	private final DBSession createSession() {
+		return this.oauthSessionFactory.getDatabaseSession();
+	}
 	
 	@Override
 	public void createAuthentication(String gadgetUrl, String server, String consumerKey, String consumerSecret, KeyType keyType) {
@@ -77,39 +75,38 @@ public class IbatisOAuthLogic implements OAuthLogic {
 
 	@Override
 	public ConsumerInfo readAuthentication(SecurityToken securityToken, String serviceName, OAuthServiceProvider provider) throws OAuthRequestException {
-		OAuthConsumerInfo consumerParam = makeConsumerInfo(securityToken, serviceName);
-		OAuthConsumerInfo consumerInfo = null;
+		final OAuthConsumerInfo consumerParam = makeConsumerInfo(securityToken, serviceName);
+		final DBSession session = this.createSession();
 		try {
-			consumerInfo = (OAuthConsumerInfo) this.sqlMap.queryForObject("getAuthentication", consumerParam);
-		} catch (SQLException e) {
-			log.error("No consumer information found for '"+securityToken.getActiveUrl()+"' on '"+serviceName+"'");
+			final OAuthConsumerInfo consumerInfo = this.queryForObject("getAuthentication", OAuthConsumerInfo.class, consumerParam, session);
+			if (!present(consumerInfo)) {
+				throw new OAuthRequestException(OAuthError.INVALID_PARAMETER, "No key for gadget " + securityToken.getAppUrl() + " and service " + serviceName);
+			}
+			
+			final BasicOAuthStoreConsumerKeyAndSecret cks = new BasicOAuthStoreConsumerKeyAndSecret(
+						consumerInfo.getConsumerKey(),
+						consumerInfo.getConsumerSecret(),
+						consumerInfo.getKeyType(), 
+						consumerInfo.getKeyName(), 
+						consumerInfo.getCallbackUrl()
+				);
+			final OAuthConsumer consumer;
+			if (cks.getKeyType() == KeyType.RSA_PRIVATE) {
+				consumer = new OAuthConsumer(null, cks.getConsumerKey(), null, provider);
+				// The oauth.net java code has lots of magic.  By setting this property here, code thousands
+				// of lines away knows that the consumerSecret value in the consumer should be treated as
+				// an RSA private key and not an HMAC key.
+				consumer.setProperty(OAuth.OAUTH_SIGNATURE_METHOD, OAuth.RSA_SHA1);
+				consumer.setProperty(RSA_SHA1.PRIVATE_KEY, cks.getConsumerSecret());
+			} else {
+				consumer = new OAuthConsumer(null, cks.getConsumerKey(), cks.getConsumerSecret(), provider);
+				consumer.setProperty(OAuth.OAUTH_SIGNATURE_METHOD, OAuth.HMAC_SHA1);
+			}
+			final String callback = (cks.getCallbackUrl() != null ? cks.getCallbackUrl() : this.defaultCallbackUrl);
+			return new ConsumerInfo(consumer, cks.getKeyName(), callback);
+		} finally {
+			session.close();
 		}
-		
-		if (!present(consumerInfo)) {
-			throw new OAuthRequestException(OAuthError.INVALID_PARAMETER, "No key for gadget " + securityToken.getAppUrl() + " and service " + serviceName);
-		}
-		
-		final BasicOAuthStoreConsumerKeyAndSecret cks = new BasicOAuthStoreConsumerKeyAndSecret(
-					consumerInfo.getConsumerKey(),
-					consumerInfo.getConsumerSecret(),
-					consumerInfo.getKeyType(), 
-					consumerInfo.getKeyName(), 
-					consumerInfo.getCallbackUrl()
-			);
-		final OAuthConsumer consumer;
-		if (cks.getKeyType() == KeyType.RSA_PRIVATE) {
-			consumer = new OAuthConsumer(null, cks.getConsumerKey(), null, provider);
-			// The oauth.net java code has lots of magic.  By setting this property here, code thousands
-			// of lines away knows that the consumerSecret value in the consumer should be treated as
-			// an RSA private key and not an HMAC key.
-			consumer.setProperty(OAuth.OAUTH_SIGNATURE_METHOD, OAuth.RSA_SHA1);
-			consumer.setProperty(RSA_SHA1.PRIVATE_KEY, cks.getConsumerSecret());
-		} else {
-			consumer = new OAuthConsumer(null, cks.getConsumerKey(), cks.getConsumerSecret(), provider);
-			consumer.setProperty(OAuth.OAUTH_SIGNATURE_METHOD, OAuth.HMAC_SHA1);
-		}
-		final String callback = (cks.getCallbackUrl() != null ? cks.getCallbackUrl() : this.defaultCallbackUrl);
-		return new ConsumerInfo(consumer, cks.getKeyName(), callback);
 	}
 
 	@Override
@@ -120,23 +117,24 @@ public class IbatisOAuthLogic implements OAuthLogic {
 		tokenIndex.setAccessToken(tokenInfo.getAccessToken());
 		tokenIndex.setSessionHandle(tokenInfo.getSessionHandle());
 		
+		final DBSession session = this.createSession();
 		try {
-			this.sqlMap.insert("setToken", tokenIndex);
-		} catch (SQLException e) {
-			log.error("Error setting token for viewer '"+tokenIndex.getUserId()+"' on gadget '"+tokenIndex.getGadgetUri()+"'");
+			this.insert("setToken", tokenIndex, session);
+			return tokenInfo;
+		} finally {
+			session.close();
 		}
-		
-		return tokenInfo;
 	}
 
 	@Override
 	public void deleteToken(SecurityToken securityToken, ConsumerInfo consumerInfo, String serviceName, String tokenName) {
 		final OAuthTokenIndex tokenIndex = makeTokenIndex(securityToken, serviceName);
 		
+		final DBSession session = this.createSession();
 		try {
-			this.sqlMap.delete("removeToken", tokenIndex);
-		} catch (SQLException e) {
-			log.error("Error removing token for viewer '"+tokenIndex.getUserId()+"' on gadget '"+tokenIndex.getGadgetUri()+"'");
+			this.delete("removeToken", tokenIndex, session);
+		} finally {
+			session.close();
 		}
 	}
 
@@ -144,18 +142,18 @@ public class IbatisOAuthLogic implements OAuthLogic {
 	public TokenInfo readToken(SecurityToken securityToken, ConsumerInfo consumerInfo, String serviceName, String tokenName) {
 		final OAuthTokenIndex tokenIndex = makeTokenIndex(securityToken, serviceName);
 		
+		final DBSession session = this.createSession();
 		try {
-			final OAuthTokenInfo tokenInfo = (OAuthTokenInfo) this.sqlMap.queryForObject("getToken", tokenIndex);
+			final OAuthTokenInfo tokenInfo = this.queryForObject("getToken", tokenIndex, OAuthTokenInfo.class, session);
 			// we have to construct the temporary parameter object as the TokenInfo class has no default constructor
 			// FIXME: Ibatis supports pre-initialized parameter objects
 			if (present(tokenInfo)) {
 				return new TokenInfo(tokenInfo.getAccessToken(), tokenInfo.getTokenSecret(), tokenInfo.getSessionHandle(), tokenInfo.getTokenExpireMillis());
 			}
-		} catch (SQLException e) {
-			log.error("Error fetching token for viewer '"+tokenIndex.getUserId()+"' on gadget '"+tokenIndex.getGadgetUri()+"'", e);
+			return null;
+		} finally {
+			session.close();
 		}
-		
-		return null;
 	}
 
 	private static OAuthTokenIndex makeTokenIndex(SecurityToken securityToken, String serviceName) {
@@ -169,15 +167,17 @@ public class IbatisOAuthLogic implements OAuthLogic {
 	
 	@Override
 	public void createProviderToken(OAuthEntry entry) {
+		final DBSession session = createSession();
 		try {
-			this.sqlMap.insert("setProviderToken", entry);
-		} catch (SQLException e) {
-			log.error("Error creating provider token for '"+entry.getAppId()+"'", e);
+			this.insert("setProviderToken", entry, session);
+		} finally {
+			session.close();
 		}
 	}
 
 	@Override
 	public void createConsumer(OAuthConsumerInfo consumerInfo) {
+		final DBSession session = this.createSession();
 		try {
 			// if the key name is given, RSA is used for request signing
 			if (present(consumerInfo.getKeyName())) {
@@ -187,96 +187,93 @@ public class IbatisOAuthLogic implements OAuthLogic {
 			if (!present(consumerInfo.getKeyName()) && KeyType.RSA_PRIVATE.equals(consumerInfo.getKeyType())) {
 				consumerInfo.setKeyName(RSA_SHA1.PUBLIC_KEY);
 			}
-			this.sqlMap.insert("setConsumerInfo", consumerInfo);
-		} catch (SQLException e) {
-			throw new RuntimeException("Error creating consumer info", e);
+			this.insert("setConsumerInfo", consumerInfo, session);
+		} finally {
+			session.close();
 		}
 	}
 	
 	@Override
 	public OAuthConsumerInfo readConsumer(String consumerKey) {
+		final DBSession session = this.createSession();
 		try {
-			return (OAuthConsumerInfo ) this.sqlMap.queryForObject("getConsumerInfo", consumerKey);
-		} catch (SQLException e) {
-			log.error("Error fetching consumer info for consumer key '" + consumerKey + "'", e);
+			return this.queryForObject("getConsumerInfo", consumerKey, OAuthConsumerInfo.class, session);
+		} finally {
+			session.close();
 		}
-		
-		return null;
 	}
 	
 	@Override
 	public void deleteConsumer(String consumerKey) {
+		final DBSession session = this.createSession();
 		try {
-			this.sqlMap.delete("removeConsumerInfo", consumerKey);
-		} catch (SQLException e) {
-			log.error("Error removing consumerInfo for consumerKey '" + consumerKey + "'", e);
+			this.delete("removeConsumerInfo", consumerKey, session);
+		} finally {
+			session.close();
 		}
 	}
 	
 	@Override
-	@SuppressWarnings("unchecked")
 	public List<OAuthConsumerInfo> listConsumers() {
+		final DBSession session = this.createSession();
 		try {
-			return this.sqlMap.queryForList("listConsumerInfo");
-		} catch (SQLException e) {
-			log.error("Error listing consumer info", e);
+			return this.queryForList("listConsumerInfo", null, OAuthConsumerInfo.class, session);
+		} finally {
+			session.close();
 		}
-		
-		return null;
 	}
 
 	@Override
 	public OAuthEntry readProviderToken(String oauthToken) {
+		final DBSession session = this.createSession();
 		try {
-			return (OAuthEntry) this.sqlMap.queryForObject("getProviderToken", oauthToken);
-		} catch (SQLException e) {
-			log.error("Error retrieving token details for token '"+oauthToken+"'", e);
+			return this.queryForObject("getProviderToken", oauthToken, OAuthEntry.class, session);
+		} finally {
+			session.close();
 		}
-		return null;
 	}
 
 	@Override
 	public void updateProviderToken(OAuthEntry entry) {
+		final DBSession session = this.createSession();
 		try {
-			this.sqlMap.insert("updateProviderToken", entry);
-		} catch (SQLException e) {
-			log.error("Error updating provider token for '"+entry.getAppId()+"'", e);
+			this.update("updateProviderToken", entry, session);
+		} finally {
+			session.close();
 		}
 	}
 	
 	@Override
 	public void deleteProviderToken(String token) {
+		final DBSession session = this.createSession();
 		try {
-			this.sqlMap.delete("removeProviderToken", token);
-		} catch (SQLException e) {
-			log.error("Error removing token '"+token+"'", e);
+			this.delete("removeProviderToken", token, session);
+		} finally {
+			session.close();
 		}
 	}
 	
 	@Override
-	public void removeSpecificAccessToken(String userName, String accessToken){
+	public void removeSpecificAccessToken(String userName, String accessToken) {
+		final DBSession session = this.createSession();
 		final OAuthParam param = new OAuthParam(userName, accessToken);
-		try{
-			this.sqlMap.delete("removeSpecificAccessToken", param);
-		} catch (SQLException e) {
-			log.error("Error removing token '"+param.getAccessToken()+"'", e);
-		}
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public List <OAuthUserInfo> getOAuthUserApplication (String username) {
 		try {
-			 return this.sqlMap.queryForList("getUserInfo", username);
-		} catch (SQLException e) {
-			log.error("No user information found about OAuth for '"+username+"'");
+			this.delete("removeSpecificAccessToken", param, session);
+		} finally {
+			session.close();
 		}
-		return Collections.emptyList();
 	}
 	
-	//------------------------------------------------------------------------
-	// private helper
-	//------------------------------------------------------------------------
+	@Override
+	public List <OAuthUserInfo> getOAuthUserApplication(String username) {
+		final DBSession session = this.createSession();
+		try {
+			return this.queryForList("getUserInfo", username, OAuthUserInfo.class, session);
+		} finally {
+			session.close();
+		}
+	}
+	
 	private static OAuthConsumerInfo makeConsumerInfo(SecurityToken securityToken, String serviceName) {
 		final OAuthConsumerInfo consumerInfo = new OAuthConsumerInfo();
 		consumerInfo.setGadgetUrl(securityToken.getAppUrl());
@@ -292,9 +289,9 @@ public class IbatisOAuthLogic implements OAuthLogic {
 	}
 
 	/**
-	 * @param sqlMap the sqlMap to set
+	 * @param oauthSessionFactory the oauthSessionFactory to set
 	 */
-	public void setSqlMap(SqlMapClient sqlMap) {
-		this.sqlMap = sqlMap;
+	public void setOauthSessionFactory(DBSessionFactory oauthSessionFactory) {
+		this.oauthSessionFactory = oauthSessionFactory;
 	}
 }

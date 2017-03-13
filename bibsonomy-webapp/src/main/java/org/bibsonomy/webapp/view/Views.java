@@ -608,6 +608,12 @@ public enum Views implements View {
 	 * /layout/* pages which are rendered by JabRef
 	 */
 	LAYOUT("layout"),
+	
+	/**
+	 * csl layout
+	 */
+	CSL_LAYOUT("export/csl-layout"),
+	
 	/**
 	 * csl-compatible JSON output
 	 */
@@ -738,6 +744,7 @@ public enum Views implements View {
 	/*
 	 * both bookmarks and publications
 	 */
+	public static final String FORMAT_STRING_HTML = "html";
 	public static final String FORMAT_STRING_CSV = "csv";
 	public static final String FORMAT_STRING_JSON = "json";
 	public static final String FORMAT_STRING_POSTS = "posts";
@@ -870,6 +877,9 @@ public enum Views implements View {
 		}
 		if (FORMAT_STRING_LAYOUT.equals(format)) {
 			return LAYOUT;
+		}
+		if ("csl-layout".equals(format)) {
+			return CSL_LAYOUT;
 		}
 		if ("batcheditbib".equals(format)) {
 			return BATCHEDITBIB;

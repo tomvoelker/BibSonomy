@@ -37,7 +37,7 @@ import org.bibsonomy.model.User;
 /**
  * get pending users by username
  * 
- * @author cbaier
+ * @author mho, tni
  */
 public class GetPendingUserByUsername extends UserChainElement {
 

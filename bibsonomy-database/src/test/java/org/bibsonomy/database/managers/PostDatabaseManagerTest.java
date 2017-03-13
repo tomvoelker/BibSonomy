@@ -30,9 +30,12 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.bibsonomy.common.enums.PostAccess;
+import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.systemstags.SystemTag;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.junit.Before;
@@ -58,6 +61,12 @@ public abstract class PostDatabaseManagerTest<R extends Resource> extends Abstra
 	 */
 	@Test
 	public abstract void testGetPostsFromInbox();
+	
+	/**
+	 * tests {@link PostDatabaseManager#getPostsFromTrash(String, int, int, org.bibsonomy.database.common.DBSession)}
+	 */
+	@Test
+	public abstract void testGetPostsFromTrash();
 
 	/**
 	 * Test method for {@link org.bibsonomy.database.managers.PostDatabaseManager#getPostsFromInboxByHash(java.lang.String, java.lang.String, org.bibsonomy.database.common.DBSession)}.
@@ -258,7 +267,7 @@ public abstract class PostDatabaseManagerTest<R extends Resource> extends Abstra
 	public abstract void testCreatePost();
 
 	/**
-	 * Test method for {@link org.bibsonomy.database.managers.PostDatabaseManager#updatePost(org.bibsonomy.model.Post, java.lang.String, org.bibsonomy.common.enums.PostUpdateOperation, org.bibsonomy.database.common.DBSession)}.
+	 * Test method for {@link org.bibsonomy.database.managers.PostDatabaseManager#updatePost(Post, String, User, PostUpdateOperation, DBSession)}
 	 */
 	@Test
 	public abstract void testUpdatePost();

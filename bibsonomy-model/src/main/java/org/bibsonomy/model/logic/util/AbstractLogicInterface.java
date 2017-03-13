@@ -552,7 +552,7 @@ public abstract class AbstractLogicInterface implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#deleteGroup(java.lang.String)
 	 */
 	@Override
-	public void deleteGroup(String groupName, boolean pending) {
+	public void deleteGroup(String groupName, boolean pending, boolean quickDelete) {
 		this.doDefaultAction();
 	}
 

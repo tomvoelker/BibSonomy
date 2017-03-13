@@ -33,6 +33,7 @@ import org.bibsonomy.common.enums.LayoutPart;
 import org.bibsonomy.common.enums.PreviewSize;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.util.file.UploadedFile;
+import org.bibsonomy.services.filesystem.CslFileLogic;
 import org.bibsonomy.services.filesystem.DocumentFileLogic;
 import org.bibsonomy.services.filesystem.FileLogic;
 import org.bibsonomy.services.filesystem.JabRefFileLogic;
@@ -49,6 +50,7 @@ public class ServerFileLogic implements FileLogic {
 	private TempFileLogic tempFileLogic;
 	private JabRefFileLogic jabRefFileLogic;
 	private DocumentFileLogic documentFileLogic;
+	private CslFileLogic cslFileLogic;
 	
 	@Override
 	public File getFileForDocument(Document document) {
@@ -132,6 +134,38 @@ public class ServerFileLogic implements FileLogic {
 	public void deleteTempFile(String name) {
 		this.tempFileLogic.deleteTempFile(name);
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.filesystem.CSLFileLogic#writeCSLLayout(java.lang.String, org.bibsonomy.model.util.file.UploadedFile)
+	 */
+	@Override
+	public Document writeCSLLayout(String username, UploadedFile file) throws Exception {
+		return this.cslFileLogic.writeCSLLayout(username, file);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.filesystem.CSLFileLogic#deleteCSLLayout(java.lang.String)
+	 */
+	@Override
+	public boolean deleteCSLLayout(String hash) {
+		return this.cslFileLogic.deleteCSLLayout(hash);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.filesystem.CSLFileLogic#validCSLLayoutFile(org.bibsonomy.model.util.file.UploadedFile)
+	 */
+	@Override
+	public boolean validCSLLayoutFile(UploadedFile file) {
+		return this.cslFileLogic.validCSLLayoutFile(file);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.services.filesystem.CSLFileLogic#allowedCSLFileExtensions()
+	 */
+	@Override
+	public Collection<String> allowedCSLFileExtensions() {
+		return this.cslFileLogic.allowedCSLFileExtensions();
+	}
 
 	/**
 	 * @param profileFileLogic the profileFileLogic to set
@@ -161,6 +195,13 @@ public class ServerFileLogic implements FileLogic {
 		this.documentFileLogic = documentFileLogic;
 	}
 	
+	/**
+	 * @param cslFileLogic the cslFileLogic to set
+	 */
+	public void setCslFileLogic(CslFileLogic cslFileLogic) {
+		this.cslFileLogic = cslFileLogic;
+	}
+
 	@Override
 	public ExtensionChecker getDocumentExtensionChecker() {
 		return this.documentFileLogic.getDocumentExtensionChecker();
