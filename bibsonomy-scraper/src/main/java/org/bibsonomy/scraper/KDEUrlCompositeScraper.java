@@ -115,7 +115,6 @@ import org.bibsonomy.scraper.url.kde.nasaads.NasaAdsScraper;
 import org.bibsonomy.scraper.url.kde.nature.NatureArticleScraper;
 import org.bibsonomy.scraper.url.kde.nature.NatureJournalScraper;
 import org.bibsonomy.scraper.url.kde.nature.NatureNewsScraper;
-import org.bibsonomy.scraper.url.kde.nature.NatureScraper;
 import org.bibsonomy.scraper.url.kde.nber.NberScraper;
 import org.bibsonomy.scraper.url.kde.nejm.NEJMScraper;
 import org.bibsonomy.scraper.url.kde.nowpublishers.NowPublishersScraper;
