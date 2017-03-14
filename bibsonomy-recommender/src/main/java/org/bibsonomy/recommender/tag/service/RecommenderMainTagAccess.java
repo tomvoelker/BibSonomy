@@ -60,7 +60,6 @@ public interface RecommenderMainTagAccess {
 	 * @param entity
 	 * @param hash
 	 * @param range
-	 * @param resourceType
 	 * @return The most popular tags of the given resource.
 	 */
 	public List<Pair<String, Integer>> getMostPopularTagsForRecommendationEntity(final Post<? extends Resource> entity, String hash, final int range);
