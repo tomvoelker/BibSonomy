@@ -123,7 +123,7 @@ public class XmlUtils {
 		final String contentType = connection.getContentType();
 		final String encodingName = WebUtils.extractCharset(contentType);
 		tidy.setInputEncoding(encodingName);
-		try (final LimitedInputStream stream = new LimitedInputStream(connection.getInputStream(), 1024)) {
+		try (final LimitedInputStream stream = new LimitedInputStream(connection.getInputStream(), (1024*1024))) {
 			return tidy.parseDOM(stream, null);
 		}
 	}
