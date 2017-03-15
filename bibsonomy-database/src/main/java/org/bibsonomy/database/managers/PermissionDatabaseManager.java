@@ -124,7 +124,9 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param userName
 	 */
 	public void ensureWriteAccess(final User loginUser, final String userName) {
-		if (loginUser.getName() == null || !loginUser.getName().toLowerCase().equals(userName.toLowerCase())) {
+		if (loginUser.getName() == null
+				|| !(loginUser.getName().toLowerCase().equals(userName.toLowerCase())
+					|| this.hasGroupRoleOrHigher(loginUser, userName, GroupRole.ADMINISTRATOR))) {
 			throw new AccessDeniedException();
 		}
 	}
@@ -185,6 +187,13 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		 * Find a common group of both users, which allows to share documents.
 		 */
 		for (final Group group : commonGroups) {
+			/* check if user is admin */
+			Group trueGroup =  this.groupDb.getGroupMembers(userName, group.getName(), true, false, session);
+			GroupMembership adminMembership = GroupUtils.getGroupMembershipForUser(trueGroup, userName, false);
+			if (present(adminMembership)
+					&& adminMembership.getGroupRole().hasRole(GroupRole.ADMINISTRATOR)) {
+				return true;
+			}
 			if (group.isSharedDocuments()) {
 				// both users are in a group which allows to share documents
 				if (postGroups.contains(publicGroup) || postGroups.contains(group)) {
