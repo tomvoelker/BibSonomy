@@ -43,16 +43,15 @@ import recommender.core.model.Pair;
  * @author dzo
  */
 public class TagsOfPreviousPostsTagRecommender extends AbstractTagRecommender {
-	private RecommenderMainTagAccess dbAccess;
-	private int numberOfPreviousPosts = 1;
+	private final RecommenderMainTagAccess dbAccess;
+	private final int numberOfPreviousPosts;
 
 	/**
 	 * init constructor
 	 * @param dbAccess 
 	 */
 	public TagsOfPreviousPostsTagRecommender(final RecommenderMainTagAccess dbAccess) {
-		super();
-		this.dbAccess = dbAccess;
+		this(dbAccess, 1);
 	}
 
 	/**
@@ -60,7 +59,7 @@ public class TagsOfPreviousPostsTagRecommender extends AbstractTagRecommender {
 	 * @param numberOfPreviousPosts
 	 */
 	public TagsOfPreviousPostsTagRecommender(final RecommenderMainTagAccess dbAccess, int numberOfPreviousPosts) {
-		this(dbAccess);
+		this.dbAccess = dbAccess;
 		this.numberOfPreviousPosts = numberOfPreviousPosts;
 	}
 	
