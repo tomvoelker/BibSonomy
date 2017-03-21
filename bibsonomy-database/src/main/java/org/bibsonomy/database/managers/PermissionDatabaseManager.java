@@ -5,7 +5,7 @@
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
- *                               University of WÃ¼rzburg, Germany
+ *                               University of Würzburg, Germany
  *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
@@ -124,7 +124,9 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param userName
 	 */
 	public void ensureWriteAccess(final User loginUser, final String userName) {
-		if (loginUser.getName() == null || !loginUser.getName().toLowerCase().equals(userName.toLowerCase())) {
+		if (loginUser.getName() == null
+				|| !(loginUser.getName().toLowerCase().equals(userName.toLowerCase())  // This check is for old groups 
+				|| this.hasGroupRoleOrHigher(loginUser, userName, GroupRole.ADMINISTRATOR))) { // this check applies to new groups (hence, userName -> groupName)
 			throw new AccessDeniedException();
 		}
 	}
@@ -185,6 +187,12 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		 * Find a common group of both users, which allows to share documents.
 		 */
 		for (final Group group : commonGroups) {
+			/* check if user is admin */
+			Group trueGroup =  this.groupDb.getGroupMembers(userName, group.getName(), true, false, session);
+			GroupMembership adminMembership = GroupUtils.getGroupMembershipForUser(trueGroup, userName, false);
+			if (present(adminMembership) && adminMembership.getGroupRole().hasRole(GroupRole.ADMINISTRATOR)) {
+				return true;
+			}
 			if (group.isSharedDocuments()) {
 				// both users are in a group which allows to share documents
 				if (postGroups.contains(publicGroup) || postGroups.contains(group)) {

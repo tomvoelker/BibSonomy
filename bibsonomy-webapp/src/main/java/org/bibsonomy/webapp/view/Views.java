@@ -175,15 +175,13 @@ public enum Views implements View {
 
 	/**
 	 * publication page shows all publications with the given inter-/intrahash
-	 * TODO: rename to PUBLICATION_PAGE
 	 */
-	BIBTEXPAGE("bibtex"),
+	PUBLICATIONPAGE("publicationpage"),
 
 	/**
 	 * details of a publication
-	 * TODO: rename to PUBLICATION_DETAILS
 	 */
-	BIBTEXDETAILS("bibtexdetails"),
+	PUBLICATIONDETAILS("publicationdetails"),
 
 	/**
 	 * PostHistory-Page. page with post history
