@@ -5,7 +5,7 @@
  *                               University of Kassel, Germany
  *                               http://www.kde.cs.uni-kassel.de/
  *                           Data Mining and Information Retrieval Group,
- *                               University of Würzburg, Germany
+ *                               University of WÃ¼rzburg, Germany
  *                               http://www.is.informatik.uni-wuerzburg.de/en/dmir/
  *                           L3S Research Center,
  *                               Leibniz University Hannover, Germany
@@ -125,7 +125,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void ensureWriteAccess(final User loginUser, final String userName) {
 		if (loginUser.getName() == null
-				|| !(loginUser.getName().toLowerCase().equals(userName.toLowerCase())  // This check is for old groups 
+				|| !(loginUser.getName().toLowerCase().equals(userName.toLowerCase())  // This check applies for old groups as well 
 				|| this.hasGroupRoleOrHigher(loginUser, userName, GroupRole.ADMINISTRATOR))) { // this check applies to new groups (hence, userName -> groupName)
 			throw new AccessDeniedException();
 		}

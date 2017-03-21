@@ -134,13 +134,19 @@ public class DocumentsController extends AjaxController implements MinimalisticC
 		return Views.AJAX_XML;
 	}
 
+	/**
+	 * TODO: thoni
+	 * @param user
+	 * @param document
+	 * @return
+	 */
 	private boolean canEdit(User user, Document document) {
 		final String documentOwner = document.getUserName();
 		boolean canEdit = user.getName().equals(documentOwner);
 		for (Group g: user.getGroups()) {
-			canEdit = canEdit ||
-					g.getName().equals(documentOwner)
-							&& g.getGroupMembershipForUser(user.getName()).getGroupRole().hasRole(GroupRole.ADMINISTRATOR);
+			canEdit = canEdit
+					  || g.getName().equals(documentOwner) 
+					  && g.getGroupMembershipForUser(user.getName()).getGroupRole().hasRole(GroupRole.ADMINISTRATOR);
 		}
 
 		return canEdit;
