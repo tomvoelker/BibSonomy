@@ -1,5 +1,5 @@
 /**
- * BibSonomy-Webapp - The web application for BibSonomy.
+ * BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *
  * Copyright (C) 2006 - 2016 Knowledge & Data Engineering Group,
  *                               University of Kassel, Germany
@@ -12,36 +12,35 @@
  *                               http://www.l3s.de/
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.bibsonomy.webapp.util.picture;
-
-import org.bibsonomy.model.User;
+package org.bibsonomy.common.exceptions;
 
 /**
- * Interface {@code PictureHandlerFactory} handles requests for a target
- * {@link PictureHandler} implementation.
- * 
- * @author cut
+ * User not found exception. Takes the username as input.
+ *
+ * @author niebler
  */
-public interface PictureHandlerFactory {
-	
-	/**
-	 * Returns a target {@link PictureHandler} implementation depending on requested user
-	 * and the actual picture command.
-	 * 
-	 * @param requestedUser - requested user
-	 * @return target {@link PictureHandler} implementation
-	 */
-	public PictureHandler getPictureHandler(User requestedUser);
+public class UserNotFoundException extends RuntimeException {
+
+	private final String username;
+
+	public UserNotFoundException(final String username) {
+		super("The requested user " + username + " was not found.");
+		this.username = username;
+	}
+
+	public String getUsername() {
+		return this.username;
+	}
 }

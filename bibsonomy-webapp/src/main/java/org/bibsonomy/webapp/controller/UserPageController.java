@@ -40,6 +40,7 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.TagsType;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.ObjectNotFoundException;
+import org.bibsonomy.common.exceptions.UserNotFoundException;
 import org.bibsonomy.database.systemstags.search.NetworkRelationSystemTag;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -62,40 +63,40 @@ import org.bibsonomy.webapp.view.Views;
 
 /**
  * Controller for user pages /user/USERNAME
- * 
+ *
  * @author Dominik Benz
  */
 public class UserPageController extends SingleResourceListControllerWithTags implements MinimalisticController<UserResourceViewCommand> {
 	private static final Log LOGGER = LogFactory.getLog(UserPageController.class);
-	
+
 	/** admin logic to get spam info */
 	private LogicInterface adminLogic;
-	
+
 	@Override
 	public View workOn(final UserResourceViewCommand command) {
 		final String format = command.getFormat();
 		this.startTiming(format);
-		
-		initializeDidYouKnowMessageCommand(command);
+
+		this.initializeDidYouKnowMessageCommand(command);
 
 		final String groupingName = command.getRequestedUser();
-		
+
 		// no user given -> error
 		if (!present(groupingName)) {
 			throw new MalformedURLSchemeException("error.user_page_without_username");
 		}
-		
+
 		// set grouping entity, grouping name, tags, userSimilarity
 		final GroupingEntity groupingEntity = GroupingEntity.USER;
-		
+
 		final List<String> requTags = command.getRequestedTagsList();
 		final UserRelation userRelation = EnumUtils.searchEnumByName(UserRelation.values(), command.getUserSimilarity());
-		
+
 		// wrong user similarity requested -> error
 		if (!present(userRelation)) {
 			throw new MalformedURLSchemeException("error.user_page_with_wrong_user_similarity");
 		}
-		
+
 		/*
 		 * handle case when only tags are requested
 		 */
@@ -106,7 +107,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		} else {
 			this.handleTagsOnly(command, groupingEntity, groupingName, null, requTags, null, Integer.MAX_VALUE, null);
 		}
-		
+
 		/*
 		 * extract filter
 		 */
@@ -124,12 +125,12 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			uupc.userSettings = this.userSettings;
 			return uupc.workOn(command);
 		}
-		
+
 		final User loginUser = context.getLoginUser();
 		final String loginUserName = loginUser.getName();
 		/*
 		 * Put the user into command to be able to show some details.
-		 * the DBLogic checks, if the login user may see the user's 
+		 * the DBLogic checks, if the login user may see the user's
 		 * details. To get the spam information we use the adminlogic
 		 */
 		final User requestedUser = this.logic.getUserDetails(groupingName);
@@ -137,14 +138,14 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		// if user does not exist, trigger 404
 		final String requestedUserName = requestedUser.getName();
 		if (!present(requestedUserName)) {
-			throw new ObjectNotFoundException(groupingName);
+			throw new UserNotFoundException(groupingName);
 		}
-		
+
 		final User fullUserDetails = this.adminLogic.getUserDetails(groupingName);
 		if (fullUserDetails.isSpammer() && !requestedUserName.equals(loginUserName) && !Role.ADMIN.equals(loginUser.getRole())) {
 			throw new ObjectNotFoundException(groupingName);
 		}
-		
+
 		int totalNumPosts = 0;
 
 		// retrieve and set the requested resource lists, along with total
@@ -152,7 +153,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		for (final Class<? extends Resource> resourceType : this.getListsToInitialize(command)) {
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
-			
+
 			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, command.getScope(), command.getFilter(), null, command.getStartDate(), command.getEndDate(), entriesPerPage);
 			this.postProcessAndSortList(command, resourceType);
 
@@ -164,7 +165,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 				totalNumPosts += listCommand.getTotalCount();
 			}
 		}
-		
+
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
 			// set page title
@@ -173,7 +174,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 				// add the tags to the title
 				command.setPageTitle(command.getPageTitle() + " > " + StringUtils.implodeStringCollection(requTags, " "));
 			}
-			
+
 			// only fetch tags if they were not already fetched by handleTagsOnly
 			if (command.getTagstype() == null) {
 				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, Integer.MAX_VALUE, null, command.getScope());
@@ -182,16 +183,16 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			// retrieve concepts
 			final List<Tag> concepts = this.logic.getConcepts(null, groupingEntity, groupingName, null, null, ConceptStatus.PICKED, 0, Integer.MAX_VALUE);
 			command.getConcepts().setConceptList(concepts);
-			
+
 			// log if a user has reached threshold
 			if (command.getTagcloud().getTags().size() >= Parameters.TAG_THRESHOLD) {
 				LOGGER.debug("User " + groupingName + " has reached threshold of " + Parameters.TAG_THRESHOLD + " tags on user page");
 			}
-			
+
 			// retrieve similar users, by the given user similarity measure
-			final List<User> similarUsers = this.logic.getUsers(null, GroupingEntity.USER, groupingName, null, null, null, userRelation, null, 0, 10);	
+			final List<User> similarUsers = this.logic.getUsers(null, GroupingEntity.USER, groupingName, null, null, null, userRelation, null, 0, 10);
 			command.getRelatedUserCommand().setRelatedUsers(similarUsers);
-			
+
 			if (present(requTags)) {
 				//TODO: make it federated search enable
 				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, command.getStartDate(), command.getEndDate(), Order.ADDED, 0, 20, null);
@@ -202,18 +203,18 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 				if (publicationFilter) {
 					return Views.USERDOCUMENTPAGE;
 				}
-				
+
 				// get the information needed for the sidebar
 				command.setConceptsOfRequestedUser(this.getConceptsForSidebar(command, GroupingEntity.USER, groupingName, requTags));
 				command.setConceptsOfAll(this.getConceptsForSidebar(command, GroupingEntity.ALL, null, requTags));
 				command.setPostCountForTagsForAll(this.getPostCountForSidebar(GroupingEntity.ALL, "", requTags));
-				
+
 				return Views.USERTAGPAGE;
 			}
-			
+
 			/*
 			 * For logged users we check, if she is in a friends or group relation
-			 * with the requested user. 
+			 * with the requested user.
 			 */
 			if (context.isUserLoggedIn()) {
 				/*
@@ -221,7 +222,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 				 */
 				command.setOfFriendUser(this.logic.getUserRelationship(loginUserName, UserRelation.OF_FRIEND, NetworkRelationSystemTag.BibSonomyFriendSystemTag).contains(requestedUser));
 				command.setFriendOfUser(this.logic.getUserRelationship(loginUserName, UserRelation.FRIEND_OF, NetworkRelationSystemTag.BibSonomyFriendSystemTag).contains(requestedUser));
-				
+
 				/*
 				 * has loginUser this user set as follower?
 				 */
@@ -232,14 +233,14 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 						break;
 					}
 				}
-				
+
 				if (!loginUserName.equals(groupingName)) {
 					/*
 					 * calc common groups
 					 */
 					final List<Group> loginUserNameGroups = context.getLoginUser().getGroups();
 					final List<Group> sharedGroups =  new LinkedList<Group>();
-					
+
 					for (final Group group : loginUserNameGroups) {
 						final Group groupDetails = this.logic.getGroupDetails(group.getName(), false);
 						/*
@@ -258,17 +259,17 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 					command.setSharedGroups(sharedGroups);
 				}
 			}
-			
+
 			this.endTiming();
-			
+
 			// forward to bibtex page if filter is set
 			if (publicationFilter) {
 				return Views.USERDOCUMENTPAGE;
 			}
-			
+
 			return Views.USERPAGE;
 		}
-		
+
 		this.endTiming();
 		// export - return the appropriate view
 		return Views.getViewByFormat(format);
@@ -286,7 +287,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 	/**
 	 * @param adminLogic the adminLogic to set
 	 */
-	public void setAdminLogic(LogicInterface adminLogic) {
+	public void setAdminLogic(final LogicInterface adminLogic) {
 		this.adminLogic = adminLogic;
 	}
 }
