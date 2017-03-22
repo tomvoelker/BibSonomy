@@ -79,7 +79,7 @@ public class TagsOfPreviousPostsTagRecommender extends AbstractTagRecommender {
 		final String username = entity.getUser().getName();
 		final int count = this.dbAccess.getNumberOfTagsOfPreviousPostsForUser(username, this.numberOfPreviousPosts);
 		
-		final List<Pair<String, Integer>> tags = this.dbAccess.getTagsOfPreviousPostsForUser(username, this.numberOfPreviousPosts);
+		final List<Pair<String, Integer>> tags = this.dbAccess.getTagsOfPreviousPostsForUser(username, this.numberOfPreviousPosts, this.numberOfTagsToRecommend);
 		for (final Pair<String, Integer> tagWithCount : tags) {
 			final String tag = this.getCleanedTag(tagWithCount.getFirst());
 			if (tag != null) {

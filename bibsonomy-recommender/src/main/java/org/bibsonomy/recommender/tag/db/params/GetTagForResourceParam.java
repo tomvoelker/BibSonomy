@@ -36,6 +36,7 @@ public class GetTagForResourceParam {
 	private String userName;
 	private String hash;
 	private int range;
+	private int numberOfTags;
 	private Date startDate;
 	private Date endDate;
 	
@@ -107,5 +108,19 @@ public class GetTagForResourceParam {
 	 */
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+
+	/**
+	 * @return the numberOfTags
+	 */
+	public int getNumberOfTags() {
+		return numberOfTags;
+	}
+
+	/**
+	 * @param numberOfTags the numberOfTags to set
+	 */
+	public void setNumberOfTags(int numberOfTags) {
+		this.numberOfTags = numberOfTags;
 	}
 }
