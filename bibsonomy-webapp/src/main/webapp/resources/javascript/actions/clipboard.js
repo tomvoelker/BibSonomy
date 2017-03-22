@@ -47,26 +47,18 @@ $(function() {
 	initNewClipboard('#copyToLocalClipboard', '#exportModalCitation');
 	initNewClipboard('.copyToLocalClipboard_citationBox', '#citation-styles .active');
 	
-	
-	//hiding / showing "copy to clipboard" button
-	
-	$(".citation-box .nav li a").each(function(index, value) {
-		if($(this).attr('id')=="citation-box-citation-all-button"){
-			$(this).on("click", hideClipboardButton);
-		}else{
-			
-			$(this).on("click", displayClipboardButton);
+	// hiding / showing "copy to clipboard" button
+	$(".citation-box .nav li a").each(function(index, link) {
+		if ($(link).attr('id') == "citation-box-citation-all-button") {
+			$(link).click(function() {
+				$("#copyToLocalClipboard_citationBoxButton").hide();
+			});
+		} else {
+			$(link).click(function() {
+				$("#copyToLocalClipboard_citationBoxButton").show();
+			});
 		}
 	});
-
-	
-	function displayClipboardButton() {
-		document.getElementById("copyToLocalClipboard_citationBoxButton").style.display = "";
-	}
-
-	function hideClipboardButton() {
-		document.getElementById("copyToLocalClipboard_citationBoxButton").style.display = "none";
-	}
 });
 
 
@@ -217,9 +209,7 @@ function updateCounter() {
 	var counter = $("#inbox-clipboard-counter");
 	if (counter.length != 0) {
 		var totalCount = 0;
-		var clipboardCount = clipboardNum.length == 0
-				? 0
-				: parseInt(clipboardNum.text());
+		var clipboardCount = clipboardNum.length == 0 ? 0 : parseInt(clipboardNum.text());
 		if (clipboardCount == 0) {
 			clipboardNum.hide();
 		}
