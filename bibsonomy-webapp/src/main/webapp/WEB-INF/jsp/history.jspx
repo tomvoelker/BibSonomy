@@ -180,12 +180,12 @@
 							</c:choose>
 						</div>
 						
-						<a id="backToPostBtn" class="${buttonClasses} visible" style="vertical-align:bottom;padding:4px;float: right;" 
-									title="${backToPostBtnMsg}" disabled="disabled">
+						<a id="backToPostBtn" class="${buttonClasses} visible" 
+									title="${backToPostBtnMsg}">
 									<fmt:message key="history.backToPost"/>
 						</a>
 						
-						<div style="border-bottom: 1px #cbcbcb solid; clear:right;padding-top:10px">
+						<div id="historyBorder">
 							<span> </span>
 						</div> <!-- border -->
 
