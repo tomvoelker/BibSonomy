@@ -40,7 +40,7 @@ import org.bibsonomy.util.ValidationUtils;
 public class DayExtractor implements AttributeExtractor {
 
 	@Override
-	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
+	public void extractAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 		String day = null;
 		 // TODO: ask Martina if this is correct
 		if (!ValidationUtils.present(day) && (src instanceof ExtendedMarcWithPicaRecord)) {

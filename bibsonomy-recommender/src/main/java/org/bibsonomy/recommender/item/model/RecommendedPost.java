@@ -108,8 +108,9 @@ public class RecommendedPost<R extends Resource> implements RecommendationResult
 	public int compareToOtherRecommendationResult(RecommendationResult o) {
 		if (o instanceof RecommendedPost) {
 			final RecommendedPost<? extends Resource> otherRecommendedPost = (RecommendedPost<? extends Resource>) o;
-			
+			// FIXME: add some logic here
 		}
+
 		return -1;
 	}
 

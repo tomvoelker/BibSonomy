@@ -56,6 +56,7 @@ public class IEEEComputerSocietyScraper extends GenericBibTeXURLScraper {
 	private static final String HOST_NEW = "computer.org";
 	
 	private static final Pattern ABSTRACT_PATTERN = Pattern.compile("<meta property=\"og:description\" content=\"(.*?)\" />");
+	private static final Pattern REPLACE_PATTERN = Pattern.compile("replace\\(\"(.*)\"\\)");
 	
 	private static final List<Pair<Pattern, Pattern>> patterns = new LinkedList<Pair<Pattern,Pattern>>();
 	
@@ -88,17 +89,33 @@ public class IEEEComputerSocietyScraper extends GenericBibTeXURLScraper {
 	 * @see org.bibsonomy.scraper.generic.AbstractGenericFormatURLScraper#getDownloadURL(java.net.URL)
 	 */
 	@Override
-	protected String getDownloadURL(final URL url, String cookies) throws ScrapingException {
-		final String urlString = url.toString();
+	protected String getDownloadURL(final URL url, String cookies) throws ScrapingException {		
+		String urlString= url.toString();
 		if (urlString.endsWith(".pdf")) {
-			return  urlString.replaceAll(".pdf", "-reference.bib");
+			urlString = urlString.replaceAll(".pdf", "-reference.bib");
+		} else {
+			urlString = urlString.replaceAll("-.*", "-reference.bib");
 		}
-		return  urlString.replaceAll("-.*", "-reference.bib");
+		
+		try {
+			urlString = WebUtils.getContentAsString(urlString, cookies);
+		} catch (IOException e) {
+			throw new ScrapingException(e);
+		}
+		
+		final Matcher m = REPLACE_PATTERN.matcher(urlString);
+		if (m.find()){
+			return m.group(1);
+		}
+		return null;	
 	}
 	
 	@Override
 	protected String postProcessScrapingResult(ScrapingContext scrapingContext, String bibtex) {
 		try {
+			bibtex = bibtex.replaceAll("<br/>\\s*", "\n");
+			bibtex = bibtex.replaceAll(",\\s*\\},", "},");
+			
 			final Matcher m = ABSTRACT_PATTERN.matcher(WebUtils.getContentAsString(scrapingContext.getUrl().toString()));
 			if (m.find())
 				return BibTexUtils.addFieldIfNotContained(bibtex, "abstract", m.group(1));

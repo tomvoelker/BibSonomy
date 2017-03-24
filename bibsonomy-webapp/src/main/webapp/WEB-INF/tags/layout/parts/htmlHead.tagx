@@ -144,14 +144,6 @@
 					})();
 				]]>
 			</script>
-			<noscript>
-				<p>
-					<c:url var="statImgUrl" value="//${statisticsUrl}/piwik.php">
-						<c:param name="idsite" value="${siteid}" />
-					</c:url>
-					<img src="${statImgUrl}" style="border:0" alt="" />
-				</p>
-			</noscript>
 		</c:if>
 		<!-- End Piwik Tracking Code --> 
 	

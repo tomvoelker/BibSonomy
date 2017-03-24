@@ -33,6 +33,8 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public class AjaxDocumentCommand extends AjaxCommand<String> {
 
+	private String ownerName;
+
 	private String intraHash;
 	
 	private String fileName;
@@ -146,6 +148,14 @@ public class AjaxDocumentCommand extends AjaxCommand<String> {
 	public void setNewFileName(String newFileName) {
 		this.newFileName = newFileName;
 	}
-	
-		
+
+
+	public String getOwnerName() {
+		return ownerName;
+	}
+
+	public void setOwnerName(String ownerName) {
+		this.ownerName = ownerName;
+	}
+
 }

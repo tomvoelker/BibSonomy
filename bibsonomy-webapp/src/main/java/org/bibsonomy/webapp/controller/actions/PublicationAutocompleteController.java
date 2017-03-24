@@ -36,7 +36,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.bibtex.parser.PostBibTeXParser;
+import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SearchType;
 import org.bibsonomy.model.BibTex;
@@ -48,6 +48,7 @@ import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.id.kde.isbn.ISBNScraper;
+import org.bibsonomy.search.InvalidSearchRequestException;
 import org.bibsonomy.util.id.DOIUtils;
 import org.bibsonomy.util.id.ISBNUtils;
 import org.bibsonomy.webapp.command.actions.PublicationAutocompleteCommand;
@@ -85,36 +86,45 @@ public class PublicationAutocompleteController implements MinimalisticController
 		final List<Post<BibTex>> allPosts = new LinkedList<>();
 		final String isbn = ISBNUtils.extractISBN(rawSearch);
 		final String doi = DOIUtils.extractDOI(rawSearch);
+
+		// handle isbn and doi and get the publication from the source
 		if (present(isbn)) {
 			final Post<BibTex> post = callScraper(new ISBNScraper(), isbn);
 			if (present(post)) {
 				allPosts.add(post);
 			}
-		} if (present(doi)) {
+		} else if (present(doi)) {
 			final Post<BibTex> post = callScraper(this.scrapers, doi);
 			if (present(post)) {
 				allPosts.add(post);
 			}
 		} else if (present(rawSearch)) {
 			String search = null;
-			List<String> tags = new LinkedList<>();
+			final List<String> tags = new LinkedList<>();
+			// if search is a number search for isbn or doi
 			if (rawSearch.matches(".*\\d+.*")) {
 				search = "isbn:" + rawSearch;
-				search += " OR doi:" + rawSearch;
+				search += " OR doi:" + rawSearch; // TODO: OR is elasticsearch specific
 			} else {
+				// build title system tags for searching publication by title
 				final List<String> titleParts = Arrays.asList(rawSearch.split(" "));
 				final Iterator<String> titlePartsIterator = titleParts.iterator();
 				while (titlePartsIterator.hasNext()) {
 					final String titlePart = titlePartsIterator.next();
 					String tag = "sys:title:" + titlePart;
-					if (titlePartsIterator.hasNext()) {
-						tag += "*";
+					if (!titlePartsIterator.hasNext()) {
+						tag += "*"; // TODO: * is elasticsearch specific; should be a constant
 					}
 					tags.add(tag);
 				}
 			}
-			final List<Post<BibTex>> postsBySearch = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, tags, null, search, SearchType.LOCAL, null, Order.RANK, null, null, 0, 10);
-			allPosts.addAll(postsBySearch);
+			try {
+				final List<Post<BibTex>> postsBySearch = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, tags, null, search, SearchType.LOCAL, null, Order.RANK, null, null, 0, 10);
+				allPosts.addAll(postsBySearch);
+			} catch (final InvalidSearchRequestException e) {
+				// ignore
+			}
+
 		}
 		
 		BibTexUtils.removeDuplicates(allPosts);
@@ -125,7 +135,7 @@ public class PublicationAutocompleteController implements MinimalisticController
 
 	/**
 	 * @param scraper
-	 * @param isbn
+	 * @param text
 	 * @return 
 	 */
 	private static Post<BibTex> callScraper(final Scraper scraper, final String text) {
@@ -134,17 +144,16 @@ public class PublicationAutocompleteController implements MinimalisticController
 			final boolean scrape = scraper.scrape(context);
 			if (scrape) {
 				final String result = context.getBibtexResult();
-				final PostBibTeXParser postBibTeXParser = new PostBibTeXParser();
-				return postBibTeXParser.parseBibTeXPost(result);
+				final SimpleBibTeXParser parser = new SimpleBibTeXParser();
+				final BibTex publication = parser.parseBibTeX(result);
+				if (present(publication)) {
+					final Post<BibTex> post = new Post<>();
+					post.setResource(publication);
+					return post;
+				}
 			}
-		} catch (final IOException e) {
-			log.info("exception while scraping isbn/issn", e);
-		} catch (ScrapingException e) {
-			// TODO Auto-generated catch block
-			log.error("TODO", e);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			log.error("TODO", e);
+		} catch (final IOException | ScrapingException | ParseException e) {
+			log.info("exception while scraping", e);
 		}
 		
 		return null;

@@ -41,7 +41,6 @@ public interface PictureHandlerFactory {
 	 * and the actual picture command.
 	 * 
 	 * @param requestedUser - requested user
-	 * @param command - the actual picture command
 	 * @return target {@link PictureHandler} implementation
 	 */
 	public PictureHandler getPictureHandler(User requestedUser);

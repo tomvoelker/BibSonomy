@@ -47,6 +47,7 @@ import java.util.concurrent.Semaphore;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.search.InvalidSearchRequestException;
 import org.bibsonomy.search.es.ESClient;
 import org.bibsonomy.search.es.management.util.ElasticsearchUtils;
 import org.bibsonomy.search.util.Mapping;
@@ -55,6 +56,7 @@ import org.bibsonomy.services.help.HelpParserFactory;
 import org.bibsonomy.services.help.HelpSearch;
 import org.bibsonomy.services.help.HelpSearchResult;
 import org.bibsonomy.util.StringUtils;
+import org.elasticsearch.action.search.SearchPhaseExecutionException;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -226,7 +228,7 @@ public class HelpSearchManager implements HelpSearch {
 	 * @return all results
 	 */
 	@Override
-	public SortedSet<HelpSearchResult> search(final String language, final String searchTerms) {
+	public SortedSet<HelpSearchResult> search(final String language, final String searchTerms) throws InvalidSearchRequestException {
 		final String indexName = this.getIndexNameForLanguage(language);
 		final SearchRequestBuilder searchBuilder = this.client.prepareSearch(indexName);
 		final QueryStringQueryBuilder searchQuery = QueryBuilders.queryStringQuery(searchTerms);
@@ -269,6 +271,9 @@ public class HelpSearchManager implements HelpSearch {
 			}
 		} catch (final IndexNotFoundException e) {
 			log.error("index " + indexName + " not found");
+		} catch (final SearchPhaseExecutionException e) {
+			log.info("parsing query failed.", e);
+			throw new InvalidSearchRequestException();
 		}
 		
 		return results;

@@ -146,7 +146,7 @@ public class RecommendedTag extends Tag implements RecommendationResult {
 		/*
 		 * cast
 		 */
-		final RecommendedTag recTag = (RecommendedTag)tag;
+		final RecommendedTag recTag = (RecommendedTag) tag;
 		
 		/*
 		 * accept the super classes 'equals' method 
@@ -177,7 +177,7 @@ public class RecommendedTag extends Tag implements RecommendationResult {
 	 * @see recommender.core.interfaces.model.RecommendationResult#compareToOtherRecommendationResult(recommender.core.interfaces.model.RecommendationResult)
 	 */
 	@Override
-	public int compareToOtherRecommendationResult(RecommendationResult o) {
+	public int compareToOtherRecommendationResult(final RecommendationResult o) {
 		if (o instanceof RecommendedTag) {
 			final RecommendedTag otherRecommendedTag = (RecommendedTag) o;
 			return this.getName().compareTo(otherRecommendedTag.getName());

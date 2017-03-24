@@ -40,7 +40,7 @@ import org.bibsonomy.util.ValidationUtils;
 public class PagesExtractor implements AttributeExtractor{
 
 	@Override
-	public void extraxtAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
+	public void extractAndSetAttribute(BibTex target, ExtendedMarcRecord src) {
 		String pages = null;
 		if (src instanceof ExtendedMarcWithPicaRecord) {
 			pages = ((ExtendedMarcWithPicaRecord) src).getFirstPicaFieldValue("031A", "$h", null);

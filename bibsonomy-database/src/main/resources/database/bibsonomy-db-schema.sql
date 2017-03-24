@@ -1699,7 +1699,7 @@ CREATE TABLE `group_level_permission` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
---- PERSON stuff
+-- PERSON stuff
 
 CREATE TABLE `person` (
   `person_change_id` int(10) unsigned NOT NULL unique COMMENT 'sequential number shared among all person tables. Ensures the order of changes and helps updating separate search indexes like elasticsearch.',

@@ -95,12 +95,12 @@ public class PublicationPageController extends AbstractResourcePageController<Bi
 	
 	@Override
 	protected View getResourcePage() {
-		return Views.BIBTEXPAGE;
+		return Views.PUBLICATIONPAGE;
 	}
 
 	@Override
 	protected View getDetailsView() {
-		return Views.BIBTEXDETAILS;
+		return Views.PUBLICATIONDETAILS;
 	}
 
 	@Override
