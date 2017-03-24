@@ -55,7 +55,6 @@
 	<div style="border-top: 1px #cbcbcb solid; clear:left">
 		<span><!-- keep me --></span>
 	</div> <!-- border -->
-	Documents: <c:out value="${empty publication.documents}" />
 	<c:choose>
 		<!--+
 			| 
