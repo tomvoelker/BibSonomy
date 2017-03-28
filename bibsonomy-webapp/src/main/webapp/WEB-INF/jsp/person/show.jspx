@@ -502,10 +502,10 @@
 							</tr>
 						</thead>
 						<c:forEach var="post" items="${command.otherPubs}">
-							<per:simplePubView post="${post}" />
+							<per:simplePubViewTable post="${post}" />
 						</c:forEach>
 					</table>
-				</div>				
+				</div>		
 			</c:if>
 			
 			
@@ -523,7 +523,7 @@
 							</tr>
 						</thead>
 						<c:forEach var="post" items="${command.similarAuthorPubs}">
-							<per:simplePubView post="${post}" />
+							<per:simplePubViewTable post="${post}" />
 						</c:forEach>
 					</table>
 					
